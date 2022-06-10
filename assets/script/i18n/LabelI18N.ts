@@ -20,6 +20,7 @@ export default class LabelI18N extends cc.Component {
     onLoad() {
         this.checkLabel(this.node.getComponent(cc.Label));
         this.checkEditBox(this.node.getComponent(cc.EditBox));
+        //cc.log("LabelI18N key:",this.key);
         this.translate();
     }
 

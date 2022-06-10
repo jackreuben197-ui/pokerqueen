@@ -1,22 +1,25 @@
 import LabelI18N from "../i18n/LabelI18N";
+import SingleManager from "./SingleManager";
 
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class I18NManager extends cc.Component {
+export default class I18NManager extends SingleManager{
 
     static ins: I18NManager = null;
 
     cn_json = {
         "Please enter phone number": "请输入手机号码",
         "Please enter password": "请输入密码",
-        "Log in": "登 录"
+        "Log in": "登 录",
+        "Alligator" : "鳄鱼",
     };
     en_json = {
         "Please enter phone number": "Please enter phone number",
-        "请输入密码": "Please enter password",
-        "登 录": "Log in"
+        "Please enter password": "Please enter password",
+        "Log in": "Log in",
+        "Alligator":"Alligator",
     };
 
     language_json: {};
@@ -25,16 +28,16 @@ export default class I18NManager extends cc.Component {
 
     languageType: number;
 
-    onLoad() {
-        if (!I18NManager.ins) {
-            I18NManager.ins = this;
-        } else {
-            this.destroy();
-            return;
-        }
-    }
+    // onLoad() {
+    //     if (!I18NManager.ins) {
+    //         I18NManager.ins = this;
+    //     } else {
+    //         this.destroy();
+    //         return;
+    //     }
+    // }
 
-    protected start(): void {
+    start(): void {
         this.transLanguage(0);
     }
 
