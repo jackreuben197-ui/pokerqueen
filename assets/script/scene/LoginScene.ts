@@ -26,7 +26,7 @@ export default class LoginScene extends cc.Component {
     }
 
     start() {
-        cc.log(this.phone_editbox);
+        
 
     }
 
