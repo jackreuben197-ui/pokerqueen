@@ -5,6 +5,7 @@
 import { ProcedureEnum } from "../define/GlobalEnum";
 import ProcedureBase from "../procedure/ProcedureBase";
 import ProcedureInit from "../procedure/ProcedureInit";
+import ProcedureLogin from "../procedure/ProcedureLogin";
 import ProcedurePreLoading from "../procedure/ProcedurePreloading";
 
 export default class ProcedureManager {
@@ -17,6 +18,7 @@ export default class ProcedureManager {
 
         this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();
         this.procedureDic[ProcedureEnum.Preloading] = new ProcedurePreLoading();
+        this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin();
 
         //this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();
         //this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();
@@ -29,7 +31,10 @@ export default class ProcedureManager {
 
     static StartProcedure(procedureIndex: number, param: any = null) {
         let procedure = this.procedureDic[procedureIndex];
-        if (!procedure) return;
+        if (!procedure) {
+            cc.log("未定义流程:", ProcedureEnum[procedureIndex]);
+            return;
+        }
         ProcedureManager.currProcedure = procedure;
         let prevProcedure = ProcedureManager.prevProcedure;
         if (prevProcedure) {

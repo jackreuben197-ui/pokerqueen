@@ -1,23 +1,46 @@
+import { ProcedureEnum } from "../define/GlobalEnum";
+import { UIDefine } from "../define/UIDefine";
+import ProcedureManager from "../manager/ProcedureManager";
+import BaseScene from "./BaseScene";
+import LoginScene from "./LoginScene";
 
 
-const {ccclass, property} = cc._decorator;
+const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class PreloadingScene extends cc.Component {
+export default class PreloadingScene extends BaseScene {
 
+    @property(cc.ProgressBar)
+    progressBar: cc.ProgressBar = null;
     @property(cc.Label)
     label: cc.Label = null;
 
-    @property
-    text: string = 'hello';
+    public Name: string = "PreloadingScene";
 
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {}
-
-    start () {
-
+    protected onLoad(): void {
+        this.setProgress(0);
+        this.setLabel("0 %");
     }
 
-    // update (dt) {}
+    setProgress(progress: number) {
+        this.progressBar.progress = progress;
+    }
+    setLabel(content: string) {
+        this.label.string = content;
+    }
+
+    Enter(param: any): void {
+        super.Enter(param);
+        cc.resources.loadDir("/", (finish: number, total: number) => {
+            let percent = finish / total;
+            this.setProgress(percent);
+            this.setLabel((percent * 100 ^ 0) + " %");
+        }, (error: Error, assets) => {
+            cc.log("预加载资源加载完成");
+            ProcedureManager.StartProcedure(ProcedureEnum.Login);
+        })
+    }
+    Exit(param) {
+        super.Exit(param);
+    }
 }

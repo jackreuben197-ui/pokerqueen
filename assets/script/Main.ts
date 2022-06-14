@@ -13,6 +13,10 @@ export default class Main extends cc.Component {
 
     static instance: Main;
 
+
+    static Cache_Scene: cc.Node;
+    static Cache_UI: cc.Node;
+
     static Scene: cc.Node;
     static UI: cc.Node;
     static Block: cc.Node;
@@ -23,6 +27,11 @@ export default class Main extends cc.Component {
         //@ts-ignore
         window.Main = Main;
         Main.instance = this;
+
+        Main.Cache_Scene = this.node.parent.getChildByName("Cache_Scene - 场景缓存");
+        Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - 面板缓存");
+       
+
         Main.Scene = this.node.parent.getChildByName("Scene - 场景");
         Main.UI = this.node.parent.getChildByName("UI - 面板层");
         Main.Block = this.node.parent.getChildByName("Block - 遮挡");

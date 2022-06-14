@@ -1,5 +1,6 @@
 
 import { ProcedureEnum } from "../define/GlobalEnum";
+import { UIDefine } from "../define/UIDefine";
 import Main from "../Main";
 import I18NManager from "../manager/I18NManager";
 import ProcedureManager from "../manager/ProcedureManager";
@@ -22,6 +23,7 @@ export default class ProcedureInit extends ProcedureBase {
     Enter(param: any) {
         super.Enter(param);
         this.setCCC();
+        this.setToWin();
         this.setFit();
         this.bindManagers();
         ProcedureManager.StartProcedure(ProcedureEnum.Preloading);
@@ -48,12 +50,21 @@ export default class ProcedureInit extends ProcedureBase {
         cc.game.setFrameRate(30); // FPS 设置 30
         cc.macro.ENABLE_MULTI_TOUCH = false; // 禁止多点触摸
     }
+    /**
+     * 设置到全局引用
+     */
+    setToWin() {
+        //@ts-ignore
+        window.UIDefine = UIDefine;
+    }
+
+
     bindManagers() {
         for (let manager of this.managers) {
             Main.instance.node.addComponent(manager);
             cc.log("manager.name : ", manager.name);
             window[manager.name] = manager;
         }
-        
+
     }
 }

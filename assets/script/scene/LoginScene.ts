@@ -1,10 +1,11 @@
 import I18NManager from "../manager/I18NManager";
-import CCTools from "../tools/CCTools";
+
+import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class LoginScene extends cc.Component {
+export default class LoginScene extends BaseScene {
 
     @property(cc.EditBox)
     phone_editbox: cc.EditBox = null;
@@ -19,6 +20,8 @@ export default class LoginScene extends cc.Component {
     close_eyes_icon: cc.Node = null;
 
 
+    public Name: string = "LoginScene";
+
     // LIFE-CYCLE CALLBACKS:
     eyesIsOpen: boolean = false;
     onLoad() {
@@ -26,7 +29,7 @@ export default class LoginScene extends cc.Component {
     }
 
     start() {
-        
+
 
     }
 

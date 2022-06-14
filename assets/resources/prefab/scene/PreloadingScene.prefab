@@ -189,7 +189,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "progress",
+    "_name": "progressBar",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -395,7 +395,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 102.3,
+      "width": 68.93,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -447,8 +447,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "100%",
-    "_N$string": "100%",
+    "_string": "0 %",
+    "_N$string": "0 %",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -544,8 +544,12 @@
       "__id__": 1
     },
     "_enabled": true,
-    "label": null,
-    "text": "hello",
+    "progressBar": {
+      "__id__": 13
+    },
+    "label": {
+      "__id__": 10
+    },
     "_id": ""
   },
   {

@@ -7,4 +7,7 @@ export enum ProcedureEnum {
     Init = 1,
     //预加载
     Preloading = 2,
+    //登录
+    Login = 3,
+
 }
