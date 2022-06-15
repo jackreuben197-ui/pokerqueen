@@ -1,3 +1,4 @@
+import { UIDefine } from "../define/UIDefine";
 import I18NManager from "../manager/I18NManager";
 
 import BaseScene from "./BaseScene";
@@ -6,6 +7,10 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class LoginScene extends BaseScene {
+
+
+    public UIDefine: { Name: string, Bundle: string, Path: string } = UIDefine.LoginScene;
+
 
     @property(cc.EditBox)
     phone_editbox: cc.EditBox = null;
@@ -19,12 +24,10 @@ export default class LoginScene extends BaseScene {
     @property(cc.Node)
     close_eyes_icon: cc.Node = null;
 
-
-    public Name: string = "LoginScene";
-
     // LIFE-CYCLE CALLBACKS:
     eyesIsOpen: boolean = false;
     onLoad() {
+        super.onLoad();
         this.setEyesOpen(this.eyesIsOpen);
     }
 

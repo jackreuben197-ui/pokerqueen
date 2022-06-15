@@ -2,6 +2,7 @@
 import { ProcedureEnum } from "../define/GlobalEnum";
 import { UIDefine } from "../define/UIDefine";
 import Main from "../Main";
+import FormManager from "../manager/FormManager";
 import I18NManager from "../manager/I18NManager";
 import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
@@ -17,6 +18,7 @@ export default class ProcedureInit extends ProcedureBase {
         I18NManager,
         ToastManager,
         SceneManager,
+        FormManager,
     ];
 
 

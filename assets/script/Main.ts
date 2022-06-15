@@ -15,9 +15,11 @@ export default class Main extends cc.Component {
 
 
     static Cache_Scene: cc.Node;
+    static Cache_Form: cc.Node;
     static Cache_UI: cc.Node;
 
     static Scene: cc.Node;
+    static Form: cc.Node;
     static UI: cc.Node;
     static Block: cc.Node;
     static Toast: cc.Node;
@@ -28,11 +30,14 @@ export default class Main extends cc.Component {
         window.Main = Main;
         Main.instance = this;
 
+        //可能用一个节点缓存就行了
         Main.Cache_Scene = this.node.parent.getChildByName("Cache_Scene - 场景缓存");
+        Main.Cache_Form = this.node.parent.getChildByName("Cache_Form - 窗体缓存");
         Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - 面板缓存");
        
 
         Main.Scene = this.node.parent.getChildByName("Scene - 场景");
+        Main.Form = this.node.parent.getChildByName("Form - 窗体层");
         Main.UI = this.node.parent.getChildByName("UI - 面板层");
         Main.Block = this.node.parent.getChildByName("Block - 遮挡");
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");

@@ -10,8 +10,8 @@ const { ccclass, property } = cc._decorator;
 export default class SceneManager extends SingleManager {
 
     static ins: SceneManager;
-    sceneMap = {};
-    currScene: cc.Node;
+    uiMap = {};
+    currUI: cc.Node;
     /**
      * 场景切换
      * currEnterParams 进入当前场景的参数
@@ -22,11 +22,11 @@ export default class SceneManager extends SingleManager {
 
         let bundleName = uiDefine.Bundle + uiDefine.Path;
 
-        let newScene = this.sceneMap[bundleName];
+        let newUI = this.uiMap[bundleName];
 
-        if (newScene) {
+        if (newUI) {
 
-            this._doScene(this.currScene, newScene, currExitParams, newEnterParams);
+            this._doScene(this.currUI, newUI, currExitParams, newEnterParams);
 
         } else {
 
@@ -35,28 +35,21 @@ export default class SceneManager extends SingleManager {
                     cc.log("加载场景", uiDefine.Bundle, uiDefine.Path, "发生错误", err);
                     return;
                 }
-                newScene = cc.instantiate(asset);
-                this._doScene(this.currScene, newScene, currExitParams, newEnterParams);
-                this.currScene = newScene;
-                this.sceneMap[bundleName] = newScene;
+                newUI = cc.instantiate(asset);
+                this._doScene(this.currUI, newUI, currExitParams, newEnterParams);
+                this.currUI = newUI;
+                this.uiMap[bundleName] = newUI;
             });
-
-            // cc.resources.load("prefab/scene/PreloadingScene",cc.Prefab,(err)=>{
-            //     cc.log("加载成功")
-            // })
-
-
 
         }
 
     }
 
-    private _doScene(currScene: cc.Node, newScene: cc.Node, currExitParams: any = null, newEnterParams: any = null) {
-        currScene?.getComponent(BaseScene)?.Exit(currExitParams);
-        newScene?.getComponent(BaseScene)?.Enter(newEnterParams);
-        currScene && (currScene.parent = Main.Cache_Scene);
-        newScene.parent = Main.Scene;
+    private _doScene(currUI: cc.Node, newUI: cc.Node, currExitParams: any = null, newEnterParams: any = null) {
+        newUI && (newUI.parent = Main.Scene);
+        currUI && (currUI.parent = Main.Cache_Scene);
+        currUI?.getComponent(BaseScene)?.Exit(currExitParams);
+        newUI?.getComponent(BaseScene)?.Enter(newEnterParams);
     }
-
 
 }

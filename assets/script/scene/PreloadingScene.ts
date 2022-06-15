@@ -2,22 +2,23 @@ import { ProcedureEnum } from "../define/GlobalEnum";
 import { UIDefine } from "../define/UIDefine";
 import ProcedureManager from "../manager/ProcedureManager";
 import BaseScene from "./BaseScene";
-import LoginScene from "./LoginScene";
-
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class PreloadingScene extends BaseScene {
 
+    public UIDefine: { Name: string, Bundle: string, Path: string } = UIDefine.PreloadingScene;
+
+
+
     @property(cc.ProgressBar)
     progressBar: cc.ProgressBar = null;
     @property(cc.Label)
     label: cc.Label = null;
 
-    public Name: string = "PreloadingScene";
-
-    protected onLoad(): void {
+    onLoad(): void {
+        super.onLoad();
         this.setProgress(0);
         this.setLabel("0 %");
     }
