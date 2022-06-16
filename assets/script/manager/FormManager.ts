@@ -1,5 +1,6 @@
-import SampleForm from "../form/SampleForm";
+import { FormEffect } from "../define/GlobalEnum";
 import Main from "../Main";
+import SampleForm from "../ui/form/SampleForm";
 import { ResManager } from "./ResManager";
 import SingleManager from "./SingleManager";
 
@@ -23,9 +24,9 @@ export default class FormManager extends SingleManager {
      * @param param 携带的参数
      */
 
-    openForm(uiDefine: { Name: string, Bundle: string, Path: string, Title: string }, param: any = null) {
+    openForm(uiDefine: { Name: string, Bundle: string, Path: string, Title: string }, effect: FormEffect = FormEffect.None, param: any = null) {
 
-        if (this.currUI.UIDefine.Name == uiDefine.Name) {
+        if (this.currUI?.UIDefine.Name == uiDefine.Name) {
             cc.log("当前面板已经存在!");
             return;
         }
@@ -34,7 +35,7 @@ export default class FormManager extends SingleManager {
 
         if (newUI) {
 
-            this._doForm(newUI, param);
+            this._doForm(newUI, effect, param);
 
         } else {
 
@@ -45,24 +46,59 @@ export default class FormManager extends SingleManager {
                 }
                 let ui_node = cc.instantiate(asset);
                 newUI = ui_node.getComponent(SampleForm);
-                this._doForm(newUI, param);
+                this._doForm(newUI, effect, param);
                 this.uiMap[uiDefine.Name] = newUI;
             });
         }
     }
 
-    closeForm(uiDefine: { Bundle: string, Path: string, Title: string }) {
+    async closeForm(uiDefine: { Name: string, Bundle: string, Path: string } = null, effect: FormEffect = FormEffect.None) {
+        if (uiDefine) {
+            for (let i = 0; i < this.showUIs.length; i++) {
+                let ui = this.showUIs[i];
+                if (ui.UIDefine.Name == uiDefine.Name) {
+                    ui.node.parent = Main.Cache_Form;
+                    this.showUIs.splice(i, 1);
+                    this.currUI = this.showUIs[this.showUIs.length - 1];
+                    break;
+                }
+            }
+        } else {
+            if (this.currUI) {
+                await this.faceOut(this.currUI.node, effect);
+                this.currUI.node.parent = Main.Cache_Form;
+                this.showUIs.pop();
+                this.currUI = this.showUIs[this.showUIs.length - 1];
 
-
-
+            }
+        }
     }
 
 
-    private _doForm(ui: SampleForm, param: any = null) {
+    private _doForm(ui: SampleForm, effect = FormEffect.None, param: any = null) {
         ui && (ui.node.parent = Main.Form);
         ui?.onShow(param);
         this.currUI = ui;
         this.showUIs.push(ui);
+        this.fadeIn(ui?.node, effect);
     }
 
+    fadeIn(node: cc.Node, effect = FormEffect.None) {
+        if (node) {
+            switch (effect) {
+                case FormEffect.RightInOut:
+                    node.x = node.width;
+                    cc.tween(node).to(.2, { x: 0 }).start();
+                    break;
+            }
+        }
+    }
+
+    faceOut(node: cc.Node, effect = FormEffect.None) {
+        return new Promise((resolve, reject) => {
+            cc.tween(node).to(.2, { x: node.width }).call(() => {
+                resolve(0);
+            }).start();
+        })
+    }
 }

@@ -1,5 +1,5 @@
 import Main from "../Main";
-import BaseScene from "../scene/BaseScene";
+import BaseScene from "../ui/scene/BaseScene";
 import { ResManager } from "./ResManager";
 import SingleManager from "./SingleManager";
 

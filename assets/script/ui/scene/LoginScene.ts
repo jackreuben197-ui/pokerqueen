@@ -1,6 +1,8 @@
-import { UIDefine } from "../define/UIDefine";
-import I18NManager from "../manager/I18NManager";
 
+import { FormEffect } from "../../define/GlobalEnum";
+import { UIDefine } from "../../define/UIDefine";
+import FormManager from "../../manager/FormManager";
+import I18NManager from "../../manager/I18NManager";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -8,31 +10,30 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class LoginScene extends BaseScene {
 
-
-    public UIDefine: { Name: string, Bundle: string, Path: string } = UIDefine.LoginScene;
-
-
+    /**
+     * 绑定内容
+     */
     @property(cc.EditBox)
     phone_editbox: cc.EditBox = null;
-
     @property(cc.EditBox)
     pass_editbox: cc.EditBox = null;
-
-
     @property(cc.Node)
     open_eyes_icon: cc.Node = null;
     @property(cc.Node)
     close_eyes_icon: cc.Node = null;
+    ///////////////////////////////////
+    /**
+     * 声明内容
+     */
 
-    // LIFE-CYCLE CALLBACKS:
     eyesIsOpen: boolean = false;
-    onLoad() {
-        super.onLoad();
+
+    ///////////////////////////////////
+    protected lateLoad() {
         this.setEyesOpen(this.eyesIsOpen);
     }
 
     start() {
-
 
     }
 
@@ -69,6 +70,7 @@ export default class LoginScene extends BaseScene {
      */
     onForgotClick() {
         cc.log("onForgotClick");
+        FormManager.ins.openForm(UIDefine.ResetPassForm, FormEffect.RightInOut);
     }
 
     /**
@@ -76,6 +78,7 @@ export default class LoginScene extends BaseScene {
      */
     onRegisterClick() {
         cc.log("onRegisterClick");
+        FormManager.ins.openForm(UIDefine.RegisterForm, FormEffect.RightInOut);
     }
 
     /**
@@ -83,8 +86,10 @@ export default class LoginScene extends BaseScene {
      */
     onLanguageClick() {
         cc.log("onLanguageClick");
-        I18NManager.ins.languageType = (I18NManager.ins.languageType + 1) % 2;
-        I18NManager.ins.transLanguage(I18NManager.ins.languageType);
+        //I18NManager.ins.languageType = (I18NManager.ins.languageType + 1) % 2;
+        //I18NManager.ins.transLanguage(I18NManager.ins.languageType);
+        FormManager.ins.openForm(UIDefine.LanguageForm, FormEffect.RightInOut);
+    
     }
 
 }

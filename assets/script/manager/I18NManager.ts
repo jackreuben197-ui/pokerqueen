@@ -14,12 +14,14 @@ export default class I18NManager extends SingleManager{
         "Please enter password": "请输入密码",
         "Log in": "登 录",
         "Alligator" : "鳄鱼",
+        "Reset Password" : "重置密码",
     };
     en_json = {
         "Please enter phone number": "Please enter phone number",
         "Please enter password": "Please enter password",
         "Log in": "Log in",
         "Alligator":"Alligator",
+        "Reset Password":"Reset Password"
     };
 
     language_json: {};

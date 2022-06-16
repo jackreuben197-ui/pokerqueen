@@ -20,10 +20,12 @@ export default class LabelI18N extends cc.Component {
     onLoad() {
         this.checkLabel(this.node.getComponent(cc.Label));
         this.checkEditBox(this.node.getComponent(cc.EditBox));
+    }
+    protected onEnable(): void {
         //cc.log("LabelI18N key:",this.key);
+        //节点被激活触发
         this.translate();
     }
-
     checkLabel(label: cc.Label) {
         if (label) {
             this.label = label;
@@ -49,11 +51,4 @@ export default class LabelI18N extends cc.Component {
             (<cc.Label>this.label).string = value;
         }
     }
-
-
-    setLabel() {
-
-    }
-
-    // update (dt) {}
 }

@@ -1,6 +1,6 @@
-import { ProcedureEnum } from "../define/GlobalEnum";
-import { UIDefine } from "../define/UIDefine";
-import ProcedureManager from "../manager/ProcedureManager";
+
+import { ProcedureEnum } from "../../define/GlobalEnum";
+import ProcedureManager from "../../manager/ProcedureManager";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -8,17 +8,20 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class PreloadingScene extends BaseScene {
 
-    public UIDefine: { Name: string, Bundle: string, Path: string } = UIDefine.PreloadingScene;
-
-
-
+    /**
+     * 绑定内容
+     */
     @property(cc.ProgressBar)
     progressBar: cc.ProgressBar = null;
     @property(cc.Label)
     label: cc.Label = null;
+    ///////////////////////////////////
 
-    onLoad(): void {
-        super.onLoad();
+    /**
+     * 声明内容
+     */
+    ///////////////////////////////////
+    protected lateLoad(): void {
         this.setProgress(0);
         this.setLabel("0 %");
     }

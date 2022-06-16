@@ -1,5 +1,5 @@
 
-import Toast from "../component/Toast";
+
 import Main from "../Main";
 import SingleManager from "./SingleManager";
 
