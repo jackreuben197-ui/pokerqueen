@@ -8,7 +8,6 @@ const { ccclass } = cc._decorator;
 @ccclass
 export default class SampleForm extends UIBase {
 
-    //public UIDefine: { Name?: string, Bundle: string, Path: string, Title: string } = null;
 
     title_label: cc.Label = null;
 

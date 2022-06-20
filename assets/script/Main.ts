@@ -11,6 +11,8 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class Main extends cc.Component {
 
+
+
     static instance: Main;
 
 
@@ -34,7 +36,7 @@ export default class Main extends cc.Component {
         Main.Cache_Scene = this.node.parent.getChildByName("Cache_Scene - 场景缓存");
         Main.Cache_Form = this.node.parent.getChildByName("Cache_Form - 窗体缓存");
         Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - 面板缓存");
-       
+
 
         Main.Scene = this.node.parent.getChildByName("Scene - 场景");
         Main.Form = this.node.parent.getChildByName("Form - 窗体层");
