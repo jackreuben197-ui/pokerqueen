@@ -96,9 +96,17 @@ export default class FormManager extends SingleManager {
 
     faceOut(node: cc.Node, effect = FormEffect.None) {
         return new Promise((resolve, reject) => {
-            cc.tween(node).to(.2, { x: node.width }).call(() => {
-                resolve(0);
-            }).start();
+            switch (effect) {
+                case FormEffect.RightInOut:
+                    cc.tween(node).to(.2, { x: node.width }).call(() => {
+                        resolve(0);
+                    }).start();
+                    break;
+                default:
+                    resolve(0);
+                    break;
+            }
+
         })
     }
 }

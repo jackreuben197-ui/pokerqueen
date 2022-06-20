@@ -23,7 +23,7 @@ export default class PreloadingScene extends BaseScene {
     ///////////////////////////////////
     protected lateLoad(): void {
         this.setProgress(0);
-        this.setLabel("0 %");
+        this.setLabel("加载中...0%");
     }
 
     setProgress(progress: number) {
@@ -35,14 +35,15 @@ export default class PreloadingScene extends BaseScene {
 
     Enter(param: any): void {
         super.Enter(param);
-        cc.resources.loadDir("/", (finish: number, total: number) => {
-            let percent = finish / total;
-            this.setProgress(percent);
-            this.setLabel((percent * 100 ^ 0) + " %");
-        }, (error: Error, assets) => {
-            cc.log("预加载资源加载完成");
-            ProcedureManager.StartProcedure(ProcedureEnum.Login);
-        })
+        cc.resources.loadDir("/",
+            (finish: number, total: number) => {
+                let percent = finish / total;
+                this.setProgress(percent);
+                this.setLabel(`加载中...${percent * 100 ^ 0}%`);
+            }, (error: Error, assets) => {
+                cc.log("预加载资源加载完成");
+                ProcedureManager.StartProcedure(ProcedureEnum.Login);
+            })
     }
     Exit(param) {
         super.Exit(param);

@@ -1,4 +1,5 @@
 
+import { FormEffect } from "../../define/GlobalEnum";
 import FormManager from "../../manager/FormManager";
 import SampleForm from "./SampleForm";
 
@@ -31,7 +32,7 @@ export default class RegisterForm extends SampleForm {
     }
 
     protected lateClose() {
-        FormManager.ins.closeForm(null,);
+        FormManager.ins.closeForm(null,FormEffect.RightInOut);
     }
 
 

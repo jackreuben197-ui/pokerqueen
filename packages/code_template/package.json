@@ -1,0 +1,19 @@
+{
+  "name": "code_template",
+  "version": "0.0.1",
+  "description": "The package template for getting started.",
+  "author": "Cocos Creator",
+  "main": "main.js",
+  "main-menu": {
+    "i18n:MAIN_MENU.package.title/code_template/open": {
+      "message": "code_template:open"
+    }
+  },
+  "panel": {
+    "main": "panel/index.js",
+    "type": "dockable",
+    "title": "code_template",
+    "width": 400,
+    "height": 400
+  }
+}
