@@ -49,7 +49,7 @@ export default class ProcedureInit extends ProcedureBase {
      * 引擎设置
      */
     setCCC() {
-        cc.game.setFrameRate(30); // FPS 设置 30
+        cc.game.setFrameRate(60); // FPS 设置 30
         cc.macro.ENABLE_MULTI_TOUCH = false; // 禁止多点触摸
     }
     /**

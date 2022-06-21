@@ -88,8 +88,8 @@ export default class LoginScene extends BaseScene {
         cc.log("onLanguageClick");
         //I18NManager.ins.languageType = (I18NManager.ins.languageType + 1) % 2;
         //I18NManager.ins.transLanguage(I18NManager.ins.languageType);
-        FormManager.ins.openForm(UIDefine.LanguageForm, FormEffect.RightInOut);
-    
+        FormManager.ins.openForm(UIDefine.LanguageForm, FormEffect.RightInOut, { language_id: 0 });
+
     }
 
 }
