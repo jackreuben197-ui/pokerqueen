@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "e1445b04-3126-4459-ba60-651609cbd3b0",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 321,
+  "height": 812,
+  "platformSettings": {},
+  "subMetas": {
+    "icon_image_game_huigu_bg": {
+      "ver": "1.0.6",
+      "uuid": "3b061d83-7736-4c0f-a9b4-db5db7e75b19",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "e1445b04-3126-4459-ba60-651609cbd3b0",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 321,
+      "height": 812,
+      "rawWidth": 321,
+      "rawHeight": 812,
+      "borderTop": 59,
+      "borderBottom": 71,
+      "borderLeft": 76,
+      "borderRight": 76,
+      "subMetas": {}
+    }
+  }
+}

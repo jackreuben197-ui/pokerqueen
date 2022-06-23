@@ -1,4 +1,4 @@
-import { FormEffect } from "../../define/GlobalEnum";
+
 import FormManager from "../../manager/FormManager";
 import GGToggleContainer from "../component/GGToggleContainer";
 import LanguageFormItem from "../item/LanguageFormItem";
@@ -56,19 +56,15 @@ export default class LanguageForm extends SampleForm {
     }
 
     protected lateClose() {
-        FormManager.ins.closeForm(null, FormEffect.RightInOut);
+        FormManager.ins.close();
     }
 
 
     onShow(param: any = null) {
         //cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);
         super.onShow(param);
-        this.toggleContainer.checkedIndex = param.language_id;
+        this.toggleContainer.checkedIndex = param?.language_id || 0;
     }
-
-
-
-
 
     //选择回调，参数为序号
     private onCheckedHandler(index: number) {

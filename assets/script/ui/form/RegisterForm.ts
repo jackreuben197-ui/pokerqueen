@@ -1,5 +1,4 @@
 
-import { FormEffect } from "../../define/GlobalEnum";
 import FormManager from "../../manager/FormManager";
 import SampleForm from "./SampleForm";
 
@@ -21,7 +20,6 @@ export default class RegisterForm extends SampleForm {
      * 声明内容
      */
 
-    //public UIDefine: { Bundle: string, Path: string, Title: string } = UIDefine.RegisterForm;
 
     eyesIsOpen: boolean = false;
 
@@ -32,7 +30,7 @@ export default class RegisterForm extends SampleForm {
     }
 
     protected lateClose() {
-        FormManager.ins.closeForm(null,FormEffect.RightInOut);
+        FormManager.ins.close();
     }
 
 

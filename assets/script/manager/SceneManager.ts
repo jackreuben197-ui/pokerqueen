@@ -12,6 +12,22 @@ export default class SceneManager extends SingleManager {
     static ins: SceneManager;
     uiMap = {};
     currUI: cc.Node;
+
+
+    //加载的UI层级
+    protected UILayer: cc.Node;
+    //缓存的UI层级
+    protected CacheUILayer: cc.Node;
+
+    protected lateLoad() {
+
+        this.UILayer = Main.Scene;
+
+        this.CacheUILayer = Main.Cache_UI;
+
+    }
+
+
     /**
      * 场景切换
      * currEnterParams 进入当前场景的参数
@@ -40,14 +56,11 @@ export default class SceneManager extends SingleManager {
                 this.currUI = newUI;
                 this.uiMap[bundleName] = newUI;
             });
-
         }
-
     }
-
     private _doScene(currUI: cc.Node, newUI: cc.Node, currExitParams: any = null, newEnterParams: any = null) {
-        newUI && (newUI.parent = Main.Scene);
-        currUI && (currUI.parent = Main.Cache_Scene);
+        newUI && (newUI.parent = this.UILayer);
+        currUI && (currUI.parent = this.CacheUILayer);
         currUI?.getComponent(BaseScene)?.Exit(currExitParams);
         newUI?.getComponent(BaseScene)?.Enter(newEnterParams);
     }

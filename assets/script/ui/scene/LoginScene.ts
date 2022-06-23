@@ -1,8 +1,9 @@
 
-import { FormEffect } from "../../define/GlobalEnum";
 import { UIDefine } from "../../define/UIDefine";
+import BoardManager from "../../manager/BoardManager";
 import FormManager from "../../manager/FormManager";
 import I18NManager from "../../manager/I18NManager";
+import UIManager from "../../manager/UIManager";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -70,7 +71,7 @@ export default class LoginScene extends BaseScene {
      */
     onForgotClick() {
         cc.log("onForgotClick");
-        FormManager.ins.openForm(UIDefine.ResetPassForm, FormEffect.RightInOut);
+        UIManager.open(UIDefine.ResetPassForm);
     }
 
     /**
@@ -78,7 +79,7 @@ export default class LoginScene extends BaseScene {
      */
     onRegisterClick() {
         cc.log("onRegisterClick");
-        FormManager.ins.openForm(UIDefine.RegisterForm, FormEffect.RightInOut);
+        UIManager.open(UIDefine.RegisterForm);
     }
 
     /**
@@ -88,7 +89,31 @@ export default class LoginScene extends BaseScene {
         cc.log("onLanguageClick");
         //I18NManager.ins.languageType = (I18NManager.ins.languageType + 1) % 2;
         //I18NManager.ins.transLanguage(I18NManager.ins.languageType);
-        FormManager.ins.openForm(UIDefine.LanguageForm, FormEffect.RightInOut, { language_id: 0 });
+        UIManager.open(UIDefine.LanguageForm, { language_id: 0 });
+
+    }
+
+    //////////////////////////////////测试///////////////////////////////////
+
+    onTest001() {
+        //BoardManager.ins.open(UIDefine.BaseTouchBoard);
+        UIManager.open(UIDefine.TestTouchBoard);
+
+    }
+    onTest002() {
+        UIManager.open(UIDefine.LanguageForm);
+        UIManager.open(UIDefine.RegisterForm);
+    }
+    onTest003() {
+        UIManager.open(UIDefine.BaseDialog);
+    }
+    onTest004() {
+
+    }
+    onTest005() {
+
+    }
+    onTest006() {
 
     }
 

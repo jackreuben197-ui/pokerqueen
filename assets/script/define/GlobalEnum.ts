@@ -11,8 +11,10 @@ export enum ProcedureEnum {
     Login = 3,
 
 }
-
-export enum FormEffect {
+/**
+ * UI 进出特效
+ */
+export enum UIFadeEffect {
     None = 0,
     //右边划入划出
     RightInOut = 1,

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "38b1342c-1056-4592-ae1c-9bc9e9b82e3b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 282,
+  "height": 208,
+  "platformSettings": {},
+  "subMetas": {
+    "icon_image_jing_zhun_jiazhu_bg": {
+      "ver": "1.0.6",
+      "uuid": "4fafd523-9632-47ce-b474-1e23de741ed2",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "38b1342c-1056-4592-ae1c-9bc9e9b82e3b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 282,
+      "height": 208,
+      "rawWidth": 282,
+      "rawHeight": 208,
+      "borderTop": 37,
+      "borderBottom": 38,
+      "borderLeft": 51,
+      "borderRight": 60,
+      "subMetas": {}
+    }
+  }
+}

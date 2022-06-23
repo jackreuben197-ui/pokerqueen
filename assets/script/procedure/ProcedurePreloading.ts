@@ -11,7 +11,7 @@ export default class ProcedurePreloading extends ProcedureBase {
         SceneManager.ins.switchScene(UIDefine.PreloadingScene);
     }
     Leave() {
-
+        super.Leave();
     }
 
 }

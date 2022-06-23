@@ -1,6 +1,7 @@
-import { FormEffect } from "../define/GlobalEnum";
+
+import { UIFadeEffect } from "../define/GlobalEnum";
 import Main from "../Main";
-import SampleForm from "../ui/form/SampleForm";
+import UIBase from "../ui/UIBase";
 import { ResManager } from "./ResManager";
 import SingleManager from "./SingleManager";
 
@@ -14,28 +15,48 @@ export default class FormManager extends SingleManager {
 
     uiMap = {};
 
-    currUI: SampleForm = null;
+    currUI: UIBase = null;
 
     //已经打开的ui列表
-    showUIs: SampleForm[] = [];
+    showUIs: UIBase[] = [];
+
+
+    //加载的UI层级
+    protected UILayer: cc.Node;
+    //缓存的UI层级
+    protected CacheUILayer: cc.Node;
+
+    protected lateLoad() {
+
+        this.UILayer = Main.Form;
+
+        this.CacheUILayer = Main.Cache_UI;
+
+    }
+
+    find(uiDefine: { Name: string, Bundle: string, Path: string }): UIBase {
+        return this.uiMap[uiDefine.Name];
+    }
 
     /**
      * 打开一个窗体
      * @param param 携带的参数
      */
 
-    openForm(uiDefine: { Name: string, Bundle: string, Path: string, Title: string }, effect: FormEffect = FormEffect.None, param: any = null) {
+    open(uiDefine: { Name: string, Bundle: string, Path: string, UIFadeEffect?: UIFadeEffect }, param: any = null) {
 
         if (this.currUI?.UIDefine.Name == uiDefine.Name) {
             cc.log("当前面板已经存在!");
             return;
         }
 
-        let newUI = this.uiMap[uiDefine.Name];
+        let fadeEffect = param?.fadeEffect || uiDefine.UIFadeEffect;
+
+        let newUI = this.find(uiDefine);
 
         if (newUI) {
 
-            this._doForm(newUI, effect, param);
+            this.doForm(newUI, fadeEffect, param);
 
         } else {
 
@@ -45,19 +66,19 @@ export default class FormManager extends SingleManager {
                     return;
                 }
                 let ui_node = cc.instantiate(asset);
-                newUI = ui_node.getComponent(SampleForm);
-                this._doForm(newUI, effect, param);
+                newUI = ui_node.getComponent(UIBase);
+                this.doForm(newUI, fadeEffect, param);
                 this.uiMap[uiDefine.Name] = newUI;
             });
         }
     }
 
-    async closeForm(uiDefine: { Name: string, Bundle: string, Path: string } = null, effect: FormEffect = FormEffect.None) {
+    async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null) {
         if (uiDefine) {
             for (let i = 0; i < this.showUIs.length; i++) {
                 let ui = this.showUIs[i];
                 if (ui.UIDefine.Name == uiDefine.Name) {
-                    ui.node.parent = Main.Cache_Form;
+                    ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
                     break;
@@ -65,28 +86,26 @@ export default class FormManager extends SingleManager {
             }
         } else {
             if (this.currUI) {
-                await this.faceOut(this.currUI.node, effect);
-                this.currUI.node.parent = Main.Cache_Form;
+                let fadeEffect = param?.fadeEffect || this.currUI.UIDefine.UIFadeEffect;
+                await this.faceOut(this.currUI.node, fadeEffect);
+                this.currUI.node.parent = this.CacheUILayer;
                 this.showUIs.pop();
                 this.currUI = this.showUIs[this.showUIs.length - 1];
-
             }
         }
     }
-
-
-    private _doForm(ui: SampleForm, effect = FormEffect.None, param: any = null) {
-        ui && (ui.node.parent = Main.Form);
+    protected doForm(ui: UIBase, effect = UIFadeEffect.None, param: any = null) {
+        ui && (ui.node.parent = this.UILayer);
         ui?.onShow(param);
         this.currUI = ui;
         this.showUIs.push(ui);
         this.fadeIn(ui?.node, effect);
     }
 
-    fadeIn(node: cc.Node, effect = FormEffect.None) {
+    fadeIn(node: cc.Node, effect = UIFadeEffect.None) {
         if (node) {
             switch (effect) {
-                case FormEffect.RightInOut:
+                case UIFadeEffect.RightInOut:
                     node.x = node.width;
                     cc.tween(node).to(.2, { x: 0 }).start();
                     break;
@@ -94,10 +113,10 @@ export default class FormManager extends SingleManager {
         }
     }
 
-    faceOut(node: cc.Node, effect = FormEffect.None) {
+    faceOut(node: cc.Node, effect = UIFadeEffect.None) {
         return new Promise((resolve, reject) => {
             switch (effect) {
-                case FormEffect.RightInOut:
+                case UIFadeEffect.RightInOut:
                     cc.tween(node).to(.2, { x: node.width }).call(() => {
                         resolve(0);
                     }).start();

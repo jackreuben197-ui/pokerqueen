@@ -1,5 +1,5 @@
 
-import { FormEffect } from "../../define/GlobalEnum";
+import { UIFadeEffect } from "../../define/GlobalEnum";
 import FormManager from "../../manager/FormManager";
 import SampleForm from "./SampleForm";
 
@@ -13,7 +13,7 @@ export default class ResetPassForm extends SampleForm {
     @property(cc.Node)
     open_eyes_icon: cc.Node = null;
     @property(cc.Node)
-    close_eyes_icon: cc.Node = null;
+    close_eyes_icon: cc.Node = null;s
     @property(cc.EditBox)
     pass_editbox: cc.EditBox = null;
     ///////////////////////////////////
@@ -31,7 +31,7 @@ export default class ResetPassForm extends SampleForm {
     }
 
     protected lateClose() {
-        FormManager.ins.closeForm(null, FormEffect.RightInOut);
+        FormManager.ins.close();
     }
 
 
