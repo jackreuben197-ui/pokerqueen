@@ -6,7 +6,7 @@
 import DialogManager from "../../manager/DialogManager";
 import UIBase from "../UIBase";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass } = cc._decorator;
 
 @ccclass
 export default class BaseDialog extends UIBase {
@@ -21,15 +21,26 @@ export default class BaseDialog extends UIBase {
     content_label: cc.Label = null;
     confirm_label: cc.Label = null;
 
+    defaultStyle: any = {
+        mask: {
+            duration: .2,
+            //ease: cc.easeBackOut(),
+        },
+        main: {
+            duration: .3,
+            ease: cc.easeBackOut(),
+        }
+    }
 
-    onShow(param = null) {
+    onShow(param: { title: string, content: string, confirm: string, block?: boolean, maskEffectStyle?: any, mainEffectStyle?: any } = null) {
         super.onShow(param);
-        this.title_label.string = param?.title || "dialog"
+        this.title_label.string = param?.title || "dialog";
         this.content_label.string = param?.content || "content";
         this.confirm_label.string = param?.confirm || "confirm";
         this.block.enabled = param?.block || false;
-        this.main.scale = 0;
-        cc.tween(this.main).to(.3, { scale: 1 },cc.easeBackOut()).start();
+
+        this.doMaskEffect(param.maskEffectStyle);
+        this.doMainEffect(param.mainEffectStyle);
     }
     onLoad(): void {
         super.onLoad();
@@ -45,4 +56,27 @@ export default class BaseDialog extends UIBase {
         super.lateClose();
         DialogManager.ins.close();
     }
+
+
+    
+    protected stopAllTweens(): void {
+        this.mask.stopAllActions();
+        this.main.stopAllActions();
+    }
+
+
+    doMaskEffect(style: any) {
+        this.mask.opacity = 1;
+        let duration = style?.duration || this.defaultStyle.mask.duration;
+        let ease = style?.ease || this.defaultStyle.mask.ease;
+        cc.tween(this.mask).to(duration, { opacity: 128 }, ease).start();
+    }
+    doMainEffect(style: any) {
+        this.main.scale = 0;
+        let duration = style?.duration || this.defaultStyle.main.duration;
+        let ease = style?.ease || this.defaultStyle.main.ease;
+        cc.tween(this.main).to(duration, { scale: 1 }, ease).start();
+    }
+
+
 }

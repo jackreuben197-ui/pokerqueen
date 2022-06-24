@@ -1,8 +1,6 @@
 
+import { DialogParam } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
-import BoardManager from "../../manager/BoardManager";
-import FormManager from "../../manager/FormManager";
-import I18NManager from "../../manager/I18NManager";
 import UIManager from "../../manager/UIManager";
 import BaseScene from "./BaseScene";
 
@@ -98,14 +96,13 @@ export default class LoginScene extends BaseScene {
     onTest001() {
         //BoardManager.ins.open(UIDefine.BaseTouchBoard);
         UIManager.open(UIDefine.TestTouchBoard);
-
     }
     onTest002() {
         UIManager.open(UIDefine.LanguageForm);
         UIManager.open(UIDefine.RegisterForm);
     }
     onTest003() {
-        UIManager.open(UIDefine.BaseDialog);
+        UIManager.open<DialogParam>(UIDefine.BaseDialog, { title: "大大的标题" });
     }
     onTest004() {
 

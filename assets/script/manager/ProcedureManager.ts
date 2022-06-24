@@ -1,8 +1,7 @@
 /**
  * 全局流程管理器
  */
-
-import { ProcedureEnum } from "../define/GlobalEnum";
+import { ProcedureEnum } from "../define/EIDefine";
 import ProcedureBase from "../procedure/ProcedureBase";
 import ProcedureInit from "../procedure/ProcedureInit";
 import ProcedureLogin from "../procedure/ProcedureLogin";

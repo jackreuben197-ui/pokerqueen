@@ -1,5 +1,5 @@
 
-import { ProcedureEnum } from "../../define/GlobalEnum";
+import { ProcedureEnum } from "../../define/EIDefine";
 import ProcedureManager from "../../manager/ProcedureManager";
 import BaseScene from "./BaseScene";
 

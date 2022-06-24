@@ -1,5 +1,5 @@
 
-import { ProcedureEnum } from "../define/GlobalEnum";
+import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import Main from "../Main";
 import BoardManager from "../manager/BoardManager";

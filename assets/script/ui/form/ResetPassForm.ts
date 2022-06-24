@@ -1,5 +1,5 @@
 
-import { UIFadeEffect } from "../../define/GlobalEnum";
+
 import FormManager from "../../manager/FormManager";
 import SampleForm from "./SampleForm";
 

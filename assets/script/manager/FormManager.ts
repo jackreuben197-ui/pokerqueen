@@ -1,5 +1,5 @@
 
-import { UIFadeEffect } from "../define/GlobalEnum";
+import { UIFadeEffectEnum } from "../define/EIDefine";
 import Main from "../Main";
 import UIBase from "../ui/UIBase";
 import { ResManager } from "./ResManager";
@@ -43,7 +43,7 @@ export default class FormManager extends SingleManager {
      * @param param 携带的参数
      */
 
-    open(uiDefine: { Name: string, Bundle: string, Path: string, UIFadeEffect?: UIFadeEffect }, param: any = null) {
+    open(uiDefine: { Name: string, Bundle: string, Path: string, UIFadeEffect?: UIFadeEffectEnum }, param: any = null) {
 
         if (this.currUI?.UIDefine.Name == uiDefine.Name) {
             cc.log("当前面板已经存在!");
@@ -67,8 +67,8 @@ export default class FormManager extends SingleManager {
                 }
                 let ui_node = cc.instantiate(asset);
                 newUI = ui_node.getComponent(UIBase);
-                this.doForm(newUI, fadeEffect, param);
                 this.uiMap[uiDefine.Name] = newUI;
+                this.doForm(newUI, fadeEffect, param);
             });
         }
     }
@@ -94,7 +94,7 @@ export default class FormManager extends SingleManager {
             }
         }
     }
-    protected doForm(ui: UIBase, effect = UIFadeEffect.None, param: any = null) {
+    protected doForm(ui: UIBase, effect = UIFadeEffectEnum.None, param: any = null) {
         ui && (ui.node.parent = this.UILayer);
         ui?.onShow(param);
         this.currUI = ui;
@@ -102,10 +102,10 @@ export default class FormManager extends SingleManager {
         this.fadeIn(ui?.node, effect);
     }
 
-    fadeIn(node: cc.Node, effect = UIFadeEffect.None) {
+    fadeIn(node: cc.Node, effect = UIFadeEffectEnum.None) {
         if (node) {
             switch (effect) {
-                case UIFadeEffect.RightInOut:
+                case UIFadeEffectEnum.RightInOut:
                     node.x = node.width;
                     cc.tween(node).to(.2, { x: 0 }).start();
                     break;
@@ -113,10 +113,10 @@ export default class FormManager extends SingleManager {
         }
     }
 
-    faceOut(node: cc.Node, effect = UIFadeEffect.None) {
+    faceOut(node: cc.Node, effect = UIFadeEffectEnum.None) {
         return new Promise((resolve, reject) => {
             switch (effect) {
-                case UIFadeEffect.RightInOut:
+                case UIFadeEffectEnum.RightInOut:
                     cc.tween(node).to(.2, { x: node.width }).call(() => {
                         resolve(0);
                     }).start();

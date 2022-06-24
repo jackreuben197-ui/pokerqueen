@@ -29,6 +29,13 @@ export default class UIBase extends cc.Component {
     }
 
     protected lateClose() {
+        this.stopAllTweens();
+    }
+
+    /**
+     * 停止所有tweens
+     */
+    protected stopAllTweens() {
 
     }
 

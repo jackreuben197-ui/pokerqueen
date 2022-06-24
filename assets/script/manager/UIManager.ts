@@ -1,17 +1,19 @@
+
+import { DialogParam } from "../define/EIDefine";
 import { UIType } from "../define/UIDefine";
 import BoardManager from "./BoardManager";
 import DialogManager from "./DialogManager";
 import FormManager from "./FormManager";
 import SingleManager from "./SingleManager";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIManager extends SingleManager {
 
     static ins: UIManager;
 
-    static open(UIDefine: { UIType: UIType, Name: string, Bundle: string, Path: string }, param: any = null) {
+    static open<TParam extends unknown>(UIDefine: { UIType: UIType, Name: string, Bundle: string, Path: string }, param: TParam = null) {
 
         switch (UIDefine.UIType) {
             case UIType.Form:

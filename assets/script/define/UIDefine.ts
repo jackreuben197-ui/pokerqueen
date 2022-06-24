@@ -1,4 +1,5 @@
-import { UIFadeEffect } from "./GlobalEnum";
+import { UIFadeEffectEnum } from "./EIDefine";
+
 
 
 export enum UIType {
@@ -23,13 +24,13 @@ export const UIDefine = {
      *  标题窗口
      */
     //标题模板(不使用)
-    SampleForm: { UIType: UIType.Form, Name: "SampleForm", Bundle: null, Path: "prefab/form/SampleForm", Title: "Sample", IsAdaptScreen: true, UIFadeEffect: UIFadeEffect.RightInOut },
+    SampleForm: { UIType: UIType.Form, Name: "SampleForm", Bundle: null, Path: "prefab/form/SampleForm", Title: "Sample", IsAdaptScreen: true, UIFadeEffect: UIFadeEffectEnum.RightInOut },
     //重置密码
-    ResetPassForm: { UIType: UIType.Form, Name: "ResetPassForm", Bundle: null, Path: "prefab/form/ResetPassForm", Title: "Reset Password", IsAdaptScreen: true, UIFadeEffect: UIFadeEffect.RightInOut },
+    ResetPassForm: { UIType: UIType.Form, Name: "ResetPassForm", Bundle: null, Path: "prefab/form/ResetPassForm", Title: "Reset Password", IsAdaptScreen: true, UIFadeEffect: UIFadeEffectEnum.RightInOut },
     //注册账号
-    RegisterForm: { UIType: UIType.Form, Name: "RegisterForm", Bundle: null, Path: "prefab/form/RegisterForm", Title: "Register", IsAdaptScreen: true, UIFadeEffect: UIFadeEffect.RightInOut },
+    RegisterForm: { UIType: UIType.Form, Name: "RegisterForm", Bundle: null, Path: "prefab/form/RegisterForm", Title: "Register", IsAdaptScreen: true, UIFadeEffect: UIFadeEffectEnum.RightInOut },
 
-    LanguageForm: { UIType: UIType.Form, Name: "LanguageForm", Bundle: null, Path: "prefab/form/LanguageForm", Title: "Language", IsAdaptScreen: true, UIFadeEffect: UIFadeEffect.RightInOut },
+    LanguageForm: { UIType: UIType.Form, Name: "LanguageForm", Bundle: null, Path: "prefab/form/LanguageForm", Title: "Language", IsAdaptScreen: true, UIFadeEffect: UIFadeEffectEnum.RightInOut },
 
     /**
      *  触摸板子（触摸黑色底板关闭）
