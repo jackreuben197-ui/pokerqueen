@@ -1,5 +1,6 @@
 
 import FormManager from "../../manager/FormManager";
+import UIManager from "../../manager/UIManager";
 import GGToggleContainer from "../component/GGToggleContainer";
 import LanguageFormItem from "../item/LanguageFormItem";
 import SampleForm from "./SampleForm";
@@ -43,6 +44,7 @@ export default class LanguageForm extends SampleForm {
     ///////////////////////////////////
 
     protected lateLoad() {
+        super.lateLoad();
         this.languageItem.node.active = false;
         let languageItem;
         for (let i = 0; i < this.config.length; i++) {
@@ -56,7 +58,7 @@ export default class LanguageForm extends SampleForm {
     }
 
     protected lateClose() {
-        FormManager.ins.close();
+        super.lateClose();
     }
 
 

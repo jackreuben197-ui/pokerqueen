@@ -1,5 +1,5 @@
 
-import { UIFadeEffectEnum } from "../define/EIDefine";
+import { UIFadeStyleEnum } from "../define/EIDefine";
 import Main from "../Main";
 import UIBase from "../ui/UIBase";
 import { ResManager } from "./ResManager";
@@ -43,20 +43,18 @@ export default class FormManager extends SingleManager {
      * @param param 携带的参数
      */
 
-    open(uiDefine: { Name: string, Bundle: string, Path: string, UIFadeEffect?: UIFadeEffectEnum }, param: any = null) {
+    open(uiDefine: { Name: string, Bundle: string, Path: string, UIFadeStyle?: UIFadeStyleEnum }, param: any = null) {
 
         if (this.currUI?.UIDefine.Name == uiDefine.Name) {
             cc.log("当前面板已经存在!");
             return;
         }
 
-        let fadeEffect = param?.fadeEffect || uiDefine.UIFadeEffect;
-
         let newUI = this.find(uiDefine);
 
         if (newUI) {
 
-            this.doForm(newUI, fadeEffect, param);
+            this.lateOpen(newUI, uiDefine.UIFadeStyle, param);
 
         } else {
 
@@ -68,55 +66,63 @@ export default class FormManager extends SingleManager {
                 let ui_node = cc.instantiate(asset);
                 newUI = ui_node.getComponent(UIBase);
                 this.uiMap[uiDefine.Name] = newUI;
-                this.doForm(newUI, fadeEffect, param);
+                this.lateOpen(newUI, uiDefine.UIFadeStyle, param);
             });
         }
     }
 
     async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null) {
+
         if (uiDefine) {
             for (let i = 0; i < this.showUIs.length; i++) {
                 let ui = this.showUIs[i];
                 if (ui.UIDefine.Name == uiDefine.Name) {
+                    let fadeEffect = param?.fadeEffect || this.currUI.UIDefine.UIFadeStyle;
+                    await this.faceOut(this.currUI.node, fadeEffect);
+                    this.currUI.onClose();
                     ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
+                    cc.log("关闭面板:", this.currUI);
                     break;
                 }
             }
         } else {
             if (this.currUI) {
-                let fadeEffect = param?.fadeEffect || this.currUI.UIDefine.UIFadeEffect;
+                let fadeEffect = param?.fadeEffect || this.currUI.UIDefine.UIFadeStyle;
                 await this.faceOut(this.currUI.node, fadeEffect);
+                this.currUI.onClose();
                 this.currUI.node.parent = this.CacheUILayer;
                 this.showUIs.pop();
                 this.currUI = this.showUIs[this.showUIs.length - 1];
             }
         }
     }
-    protected doForm(ui: UIBase, effect = UIFadeEffectEnum.None, param: any = null) {
+
+    protected lateOpen(ui: UIBase, style: UIFadeStyleEnum = UIFadeStyleEnum.None, param: any = null) {
         ui && (ui.node.parent = this.UILayer);
         ui?.onShow(param);
+        this.fadeIn(ui, style, param);
         this.currUI = ui;
         this.showUIs.push(ui);
-        this.fadeIn(ui?.node, effect);
+
     }
 
-    fadeIn(node: cc.Node, effect = UIFadeEffectEnum.None) {
-        if (node) {
+    fadeIn(ui: UIBase, effect = UIFadeStyleEnum.None, param: any = null) {
+        if (ui.node) {
             switch (effect) {
-                case UIFadeEffectEnum.RightInOut:
-                    node.x = node.width;
-                    cc.tween(node).to(.2, { x: 0 }).start();
+                case UIFadeStyleEnum.RightInOut:
+                    ui.node.x = ui.node.width;
+                    cc.tween(ui.node).to(.2, { x: 0 }).start();
                     break;
             }
         }
     }
 
-    faceOut(node: cc.Node, effect = UIFadeEffectEnum.None) {
+    faceOut(node: cc.Node, effect = UIFadeStyleEnum.None) {
         return new Promise((resolve, reject) => {
             switch (effect) {
-                case UIFadeEffectEnum.RightInOut:
+                case UIFadeStyleEnum.RightInOut:
                     cc.tween(node).to(.2, { x: node.width }).call(() => {
                         resolve(0);
                     }).start();
@@ -125,7 +131,6 @@ export default class FormManager extends SingleManager {
                     resolve(0);
                     break;
             }
-
         })
     }
 }

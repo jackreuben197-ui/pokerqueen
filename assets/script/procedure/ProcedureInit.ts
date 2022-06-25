@@ -1,4 +1,6 @@
 
+import { GameConfig } from "../config/GameConfig";
+import { ConstDefine } from "../define/ConstDefine";
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import Main from "../Main";
@@ -14,8 +16,6 @@ import UIManager from "../manager/UIManager";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureInit extends ProcedureBase {
-
-
 
     managers: typeof SingleManager[] = [
         I18NManager,
@@ -55,8 +55,8 @@ export default class ProcedureInit extends ProcedureBase {
      * 引擎设置
      */
     setCCC() {
-        cc.game.setFrameRate(60); // FPS 设置 30
-        cc.macro.ENABLE_MULTI_TOUCH = false; // 禁止多点触摸
+        cc.game.setFrameRate(GameConfig.FrameRate); // FPS 设置
+        cc.macro.ENABLE_MULTI_TOUCH = GameConfig.ENABLE_MULTI_TOUCH; // 禁止多点触摸
     }
     /**
      * 设置到全局引用
@@ -65,8 +65,6 @@ export default class ProcedureInit extends ProcedureBase {
         //@ts-ignore
         window.UIDefine = UIDefine;
     }
-
-
     bindManagers() {
         for (let manager of this.managers) {
             Main.instance.node.addComponent(manager);

@@ -30,7 +30,7 @@ export default class RegisterForm extends SampleForm {
     }
 
     protected lateClose() {
-        FormManager.ins.close();
+        super.lateClose();
     }
 
 

@@ -4,6 +4,7 @@
  */
 
 import DialogManager from "../../manager/DialogManager";
+import UIManager from "../../manager/UIManager";
 import UIBase from "../UIBase";
 
 const { ccclass } = cc._decorator;
@@ -21,26 +22,45 @@ export default class BaseDialog extends UIBase {
     content_label: cc.Label = null;
     confirm_label: cc.Label = null;
 
-    defaultStyle: any = {
+    defaultStyle = {
+        //底部半透层
         mask: {
-            duration: .2,
-            //ease: cc.easeBackOut(),
+            //渐入
+            fadeIn: {
+                duration: .2,
+                ease: null
+            },
+            //渐出
+            fadeOut: {
+                duration: .2,
+                ease: null
+            }
         },
+        //上部主窗口
         main: {
-            duration: .3,
-            ease: cc.easeBackOut(),
+            //渐入
+            fadeIn: {
+                duration: .3,
+                ease: cc.easeBackOut(),
+            },
+            //渐出
+            fadeOut: {
+                duration: .2,
+                ease: cc.easeBackIn(),
+            }
+
         }
     }
 
-    onShow(param: { title: string, content: string, confirm: string, block?: boolean, maskEffectStyle?: any, mainEffectStyle?: any } = null) {
+    onShow(param: { title: string, content: string, confirm: string, block?: boolean, maskStyle?: any, mainStyle?: any } = null) {
         super.onShow(param);
         this.title_label.string = param?.title || "dialog";
         this.content_label.string = param?.content || "content";
         this.confirm_label.string = param?.confirm || "confirm";
         this.block.enabled = param?.block || false;
 
-        this.doMaskEffect(param.maskEffectStyle);
-        this.doMainEffect(param.mainEffectStyle);
+        this.maskFadeIn(param?.maskStyle);
+        this.mainFadeIn(param?.mainStyle);
     }
     onLoad(): void {
         super.onLoad();
@@ -54,27 +74,42 @@ export default class BaseDialog extends UIBase {
     }
     protected lateClose() {
         super.lateClose();
-        DialogManager.ins.close();
+        //UIManager.close(this.UIDefine);
+        //cc.tween(this.main).to(.2, { scale: 0 }, cc.easeBackIn()).start();
+        //maskFadeOut
+        UIManager.close(this.UIDefine);
     }
 
 
-    
     protected stopAllTweens(): void {
         this.mask.stopAllActions();
         this.main.stopAllActions();
     }
 
 
-    doMaskEffect(style: any) {
+    maskFadeIn(style: any) {
         this.mask.opacity = 1;
-        let duration = style?.duration || this.defaultStyle.mask.duration;
-        let ease = style?.ease || this.defaultStyle.mask.ease;
+        let duration = style?.duration || this.defaultStyle.mask.fadeIn.duration;
+        let ease = style?.fadeIn?.ease || this.defaultStyle.mask.fadeIn.ease;
         cc.tween(this.mask).to(duration, { opacity: 128 }, ease).start();
     }
-    doMainEffect(style: any) {
+    mainFadeIn(style: any) {
         this.main.scale = 0;
-        let duration = style?.duration || this.defaultStyle.main.duration;
-        let ease = style?.ease || this.defaultStyle.main.ease;
+        let duration = style?.duration || this.defaultStyle.main.fadeIn.duration;
+        let ease = style?.fadeIn?.ease || this.defaultStyle.main.fadeIn.ease;
+        cc.tween(this.main).to(duration, { scale: 1 }, ease).start();
+    }
+
+    maskFadeOut(style: any) {
+        this.mask.opacity = 1;
+        let duration = style?.duration || this.defaultStyle.mask.fadeIn.duration;
+        let ease = style?.fadeIn?.ease || this.defaultStyle.mask.fadeIn.ease;
+        cc.tween(this.mask).to(duration, { opacity: 128 }, ease).start();
+    }
+    mainFadeOut(style: any) {
+        this.main.scale = 0;
+        let duration = style?.duration || this.defaultStyle.main.fadeIn.duration;
+        let ease = style?.fadeIn?.ease || this.defaultStyle.main.fadeIn.ease;
         cc.tween(this.main).to(duration, { scale: 1 }, ease).start();
     }
 

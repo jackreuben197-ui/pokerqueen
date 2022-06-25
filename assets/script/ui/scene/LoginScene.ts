@@ -102,7 +102,7 @@ export default class LoginScene extends BaseScene {
         UIManager.open(UIDefine.RegisterForm);
     }
     onTest003() {
-        UIManager.open<DialogParam>(UIDefine.BaseDialog, { title: "大大的标题" });
+        UIManager.open<DialogParam>(UIDefine.BaseDialog, { title: "大大的标题", content: "无限的能量", confirm: "Sure" });
     }
     onTest004() {
 

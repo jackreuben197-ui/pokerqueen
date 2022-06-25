@@ -33,11 +33,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 87
+        "__id__": 86
       }
     ],
     "_prefab": {
-      "__id__": 88
+      "__id__": 87
     },
     "_opacity": 255,
     "_color": {
@@ -2463,11 +2463,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 85
+        "__id__": 84
       }
     ],
     "_prefab": {
-      "__id__": 86
+      "__id__": 85
     },
     "_opacity": 255,
     "_color": {
@@ -2825,7 +2825,7 @@
       }
     ],
     "_prefab": {
-      "__id__": 84
+      "__id__": 83
     },
     "_opacity": 255,
     "_color": {
@@ -2943,11 +2943,7 @@
     "_grayMaterial": null,
     "duration": 0.1,
     "zoomScale": 1.2,
-    "clickEvents": [
-      {
-        "__id__": 83
-      }
-    ],
+    "clickEvents": [],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": false,
     "_N$transition": 0,
@@ -3002,16 +2998,6 @@
     "_N$disabledSprite": null,
     "_N$target": null,
     "_id": ""
-  },
-  {
-    "__type__": "cc.ClickEvent",
-    "target": {
-      "__id__": 1
-    },
-    "component": "",
-    "_componentId": "c4596g0hV9Oq59gFdj6FjAX",
-    "handler": "onClose",
-    "customEventData": ""
   },
   {
     "__type__": "cc.PrefabInfo",

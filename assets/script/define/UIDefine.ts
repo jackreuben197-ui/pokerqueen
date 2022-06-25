@@ -1,5 +1,4 @@
-import { UIFadeEffectEnum } from "./EIDefine";
-
+import { UIFadeStyleEnum } from "./EIDefine";
 
 
 export enum UIType {
@@ -24,13 +23,13 @@ export const UIDefine = {
      *  标题窗口
      */
     //标题模板(不使用)
-    SampleForm: { UIType: UIType.Form, Name: "SampleForm", Bundle: null, Path: "prefab/form/SampleForm", Title: "Sample", IsAdaptScreen: true, UIFadeEffect: UIFadeEffectEnum.RightInOut },
+    SampleForm: { UIType: UIType.Form, Name: "SampleForm", Bundle: null, Path: "prefab/form/SampleForm", Title: "Sample", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.RightInOut },
     //重置密码
-    ResetPassForm: { UIType: UIType.Form, Name: "ResetPassForm", Bundle: null, Path: "prefab/form/ResetPassForm", Title: "Reset Password", IsAdaptScreen: true, UIFadeEffect: UIFadeEffectEnum.RightInOut },
+    ResetPassForm: { UIType: UIType.Form, Name: "ResetPassForm", Bundle: null, Path: "prefab/form/ResetPassForm", Title: "Reset Password", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.RightInOut },
     //注册账号
-    RegisterForm: { UIType: UIType.Form, Name: "RegisterForm", Bundle: null, Path: "prefab/form/RegisterForm", Title: "Register", IsAdaptScreen: true, UIFadeEffect: UIFadeEffectEnum.RightInOut },
+    RegisterForm: { UIType: UIType.Form, Name: "RegisterForm", Bundle: null, Path: "prefab/form/RegisterForm", Title: "Register", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.RightInOut },
 
-    LanguageForm: { UIType: UIType.Form, Name: "LanguageForm", Bundle: null, Path: "prefab/form/LanguageForm", Title: "Language", IsAdaptScreen: true, UIFadeEffect: UIFadeEffectEnum.RightInOut },
+    LanguageForm: { UIType: UIType.Form, Name: "LanguageForm", Bundle: null, Path: "prefab/form/LanguageForm", Title: "Language", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.RightInOut },
 
     /**
      *  触摸板子（触摸黑色底板关闭）
@@ -42,7 +41,7 @@ export const UIDefine = {
     /**
      * 弹窗面板(默认触摸全屏可关闭)
      */
-    BaseDialog: { UIType: UIType.Dialog, Name: "BaseDialog", Bundle: null, Path: "prefab/dialog/BaseDialog", IsAdaptScreen: true },
+    BaseDialog: { UIType: UIType.Dialog, Name: "BaseDialog", Bundle: null, Path: "prefab/dialog/BaseDialog", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.ScaleInOut },
 
 }
 //批量设置

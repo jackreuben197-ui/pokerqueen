@@ -14,8 +14,8 @@ export class WebRequestDataBase {
 
 export class Web_Login extends WebRequestDataBase {
 
-    phone: string;       // 手机号
-    password: string;       // 密码MD5
+    phone       : string;       // 手机号
+    password    : string;       // 密码MD5
 
     constructor() {
         super();
