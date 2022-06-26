@@ -74,16 +74,16 @@ export default class FormManager extends SingleManager {
     async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null) {
 
         if (uiDefine) {
-            for (let i = 0; i < this.showUIs.length; i++) {
+            for (let i = this.showUIs.length - 1; i >= 0; i--) {
                 let ui = this.showUIs[i];
                 if (ui.UIDefine.Name == uiDefine.Name) {
                     let fadeEffect = param?.fadeEffect || this.currUI.UIDefine.UIFadeStyle;
                     await this.faceOut(this.currUI.node, fadeEffect);
-                    this.currUI.onClose();
+                    this.currUI.onClose(param);
                     ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
-                    cc.log("关闭面板:", this.currUI);
+                    cc.log("剩下的面板数量:", this.constructor.name, this.showUIs.length);
                     break;
                 }
             }
@@ -91,7 +91,7 @@ export default class FormManager extends SingleManager {
             if (this.currUI) {
                 let fadeEffect = param?.fadeEffect || this.currUI.UIDefine.UIFadeStyle;
                 await this.faceOut(this.currUI.node, fadeEffect);
-                this.currUI.onClose();
+                this.currUI.onClose(param);
                 this.currUI.node.parent = this.CacheUILayer;
                 this.showUIs.pop();
                 this.currUI = this.showUIs[this.showUIs.length - 1];

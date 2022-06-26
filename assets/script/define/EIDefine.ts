@@ -1,7 +1,12 @@
 /**
  * 全局枚举和接口定义
  */
-
+export enum UIType {
+    Scene,
+    Form,
+    Board,
+    Dialog,
+}
 /**
  * 流程
  */
@@ -25,8 +30,21 @@ export enum UIFadeStyleEnum {
     LeftInOut = 2,
     //缩放渐入渐出
     ScaleInOut = 3,
-
 }
+
+/**
+ * UIDefine接口
+ */
+export interface IUIDefine {
+    UIType: UIType,
+    Name: string,
+    Bundle: string,
+    Path: string,
+    Title?: string,
+    DisAdaptScreen?: boolean,
+    UIFadeStyle?: UIFadeStyleEnum
+}
+
 /**
  * Dialog参数接口
  */
@@ -34,4 +52,8 @@ export interface DialogParam {
     title?: string;
     content?: string;
     confirm?: string;
+    confirmCallback?: Function;
+    block?: boolean;
+    maskStyle?: any;
+    mainStyle?: any;
 }

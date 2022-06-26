@@ -1,6 +1,5 @@
 
-import { DialogParam } from "../define/EIDefine";
-import { UIType } from "../define/UIDefine";
+import { IUIDefine, UIType } from "../define/EIDefine";
 import BoardManager from "./BoardManager";
 import DialogManager from "./DialogManager";
 import FormManager from "./FormManager";
@@ -13,7 +12,7 @@ export default class UIManager extends SingleManager {
 
     static ins: UIManager;
 
-    static open<TParam extends unknown>(UIDefine: { UIType: UIType, Name: string, Bundle: string, Path: string }, param: TParam = null) {
+    static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null) {
 
         switch (UIDefine.UIType) {
             case UIType.Form:
@@ -28,7 +27,7 @@ export default class UIManager extends SingleManager {
         }
     }
 
-    static close(UIDefine: { UIType: UIType, Name: string, Bundle: string, Path: string } = null, param: any = null) {
+    static close<TParam extends unknown>(UIDefine: IUIDefine = null, param: TParam = null) {
 
         switch (UIDefine.UIType) {
             case UIType.Form:
@@ -42,5 +41,4 @@ export default class UIManager extends SingleManager {
                 break;
         }
     }
-
 }

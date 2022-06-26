@@ -1,6 +1,5 @@
 
 import { GameConfig } from "../config/GameConfig";
-import { ConstDefine } from "../define/ConstDefine";
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import Main from "../Main";
@@ -64,9 +63,15 @@ export default class ProcedureInit extends ProcedureBase {
     setToWin() {
         //@ts-ignore
         window.UIDefine = UIDefine;
+        //@ts-ignore
+        window.Main = Main;
+        //@ts-ignore
+        window.ProcedureManager = ProcedureManager;
+
     }
     bindManagers() {
         for (let manager of this.managers) {
+            
             Main.instance.node.addComponent(manager);
             cc.log("manager.name : ", manager.name);
             window[manager.name] = manager;

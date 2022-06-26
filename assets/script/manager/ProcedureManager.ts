@@ -23,9 +23,6 @@ export default class ProcedureManager {
         //this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();
         //this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();
         ProcedureManager.StartProcedure(ProcedureEnum.Init);
-
-        //@ts-ignore
-        window.ProcedureManager = ProcedureManager;
     }
 
     static StartProcedure(procedureIndex: number, param: any = null) {

@@ -1,6 +1,4 @@
 
-
-import FormManager from "../../manager/FormManager";
 import SampleForm from "./SampleForm";
 
 const { ccclass, property } = cc._decorator;
@@ -13,25 +11,24 @@ export default class ResetPassForm extends SampleForm {
     @property(cc.Node)
     open_eyes_icon: cc.Node = null;
     @property(cc.Node)
-    close_eyes_icon: cc.Node = null; s
+    close_eyes_icon: cc.Node = null;
     @property(cc.EditBox)
     pass_editbox: cc.EditBox = null;
     ///////////////////////////////////
     /**
      * 声明内容
      */
-    //public UIDefine: { Bundle: string, Path: string, Title: string } = UIDefine.ResetPassForm;
-
     eyesIsOpen: boolean = false;
 
     ///////////////////////////////////
 
     protected lateLoad() {
+        super.lateLoad();
         this.setEyesOpen(this.eyesIsOpen);
     }
 
-    protected lateClose() {
-        super.lateClose();
+    protected lateClose(param: any = null) {
+        super.lateClose(param);
     }
 
 

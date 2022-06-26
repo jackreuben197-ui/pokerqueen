@@ -6,8 +6,7 @@ const { ccclass, property } = cc._decorator;
 export default class TestTouchBoard extends BaseTouchBoard {
 
     content: cc.Node = null;
-
-
+    
     protected lateLoad() {
         super.lateLoad();
         //this.content = this.main.getChildByName("content");

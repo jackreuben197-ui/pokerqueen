@@ -1,47 +1,101 @@
-import { UIFadeStyleEnum } from "./EIDefine";
 
-
-export enum UIType {
-    Scene,
-    Form,
-    Board,
-    Dialog,
-}
+import { UIFadeStyleEnum, UIType } from "./EIDefine";
 
 export const UIDefine = {
     /**
      *  场景
      */
     //预加载
-    PreloadingScene: { UIType: UIType.Scene, Name: "PreloadingScene", Bundle: null, Path: "prefab/scene/PreloadingScene", IsAdaptScreen: true },
+    PreloadingScene: {
+        UIType: UIType.Scene,
+        Name: "PreloadingScene",
+        Bundle: null,
+        Path: "prefab/scene/PreloadingScene"
+    },
     //登录场景
-    LoginScene: { UIType: UIType.Scene, Name: "LoginScene", Bundle: null, Path: "prefab/scene/LoginScene", IsAdaptScreen: true },
+    LoginScene: {
+        UIType: UIType.Scene,
+        Name: "LoginScene",
+        Bundle: null,
+        Path: "prefab/scene/LoginScene"
+    },
     //大厅场景
-    LobbyScene: { UIType: UIType.Scene, Name: "LobbyScene", Bundle: null, Path: "prefab/scene/LobbyScene", IsAdaptScreen: true },
+    LobbyScene: {
+        UIType: UIType.Scene,
+        Name: "LobbyScene",
+        Bundle: null,
+        Path: "prefab/scene/LobbyScene"
+    },
 
     /**
      *  标题窗口
      */
     //标题模板(不使用)
-    SampleForm: { UIType: UIType.Form, Name: "SampleForm", Bundle: null, Path: "prefab/form/SampleForm", Title: "Sample", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.RightInOut },
+    SampleForm: {
+        UIType: UIType.Form,
+        Name: "SampleForm",
+        Bundle: null,
+        Path: "prefab/form/SampleForm",
+        Title: "Sample",
+        UIFadeStyle: UIFadeStyleEnum.RightInOut
+    },
     //重置密码
-    ResetPassForm: { UIType: UIType.Form, Name: "ResetPassForm", Bundle: null, Path: "prefab/form/ResetPassForm", Title: "Reset Password", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.RightInOut },
+    ResetPassForm: {
+        UIType: UIType.Form,
+        Name: "ResetPassForm",
+        Bundle: null,
+        Path: "prefab/form/ResetPassForm",
+        Title: "Reset Password",
+        UIFadeStyle: UIFadeStyleEnum.RightInOut
+    },
     //注册账号
-    RegisterForm: { UIType: UIType.Form, Name: "RegisterForm", Bundle: null, Path: "prefab/form/RegisterForm", Title: "Register", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.RightInOut },
+    RegisterForm: {
+        UIType: UIType.Form,
+        Name: "RegisterForm",
+        Bundle: null,
+        Path: "prefab/form/RegisterForm",
+        Title: "Register",
+        UIFadeStyle: UIFadeStyleEnum.RightInOut
+    },
 
-    LanguageForm: { UIType: UIType.Form, Name: "LanguageForm", Bundle: null, Path: "prefab/form/LanguageForm", Title: "Language", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.RightInOut },
+    LanguageForm: {
+        UIType: UIType.Form,
+        Name: "LanguageForm",
+        Bundle: null,
+        Path: "prefab/form/LanguageForm",
+        Title: "Language",
+        UIFadeStyle: UIFadeStyleEnum.RightInOut
+    },
 
     /**
      *  触摸板子（触摸黑色底板关闭）
      */
     //触摸板子模板(不使用)
-    BaseTouchBoard: { UIType: UIType.Board, Name: "BaseTouchBoard", Bundle: null, Path: "prefab/board/BaseTouchBoard", IsAdaptScreen: true },
-    TestTouchBoard: { UIType: UIType.Board, Name: "TestTouchBoard", Bundle: null, Path: "prefab/board/TestTouchBoard", IsAdaptScreen: true },
+    BaseTouchBoard: {
+        UIType: UIType.Board,
+        Name: "BaseTouchBoard",
+        Bundle: null,
+        Path: "prefab/board/BaseTouchBoard",
+
+    },
+    TestTouchBoard: {
+        UIType: UIType.Board,
+        Name: "TestTouchBoard",
+        Bundle: null,
+        Path: "prefab/board/TestTouchBoard",
+
+    },
 
     /**
      * 弹窗面板(默认触摸全屏可关闭)
      */
-    BaseDialog: { UIType: UIType.Dialog, Name: "BaseDialog", Bundle: null, Path: "prefab/dialog/BaseDialog", IsAdaptScreen: true, UIFadeStyle: UIFadeStyleEnum.ScaleInOut },
+    BaseDialog: {
+        UIType: UIType.Dialog,
+        Name: "BaseDialog",
+        Bundle: null,
+        Path: "prefab/dialog/BaseDialog",
+        UIFadeStyle: UIFadeStyleEnum.ScaleInOut
+    },
 
 }
 //批量设置
@@ -51,4 +105,3 @@ cc.game.on(cc.game.EVENT_GAME_INITED, () => {
         if (constructor) constructor['UIDefine'] = UIDefine[key];
     }
 });
-

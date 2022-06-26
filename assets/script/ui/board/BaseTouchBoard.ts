@@ -14,14 +14,18 @@ export default class BaseTouchBoard extends UIBase {
     mask: cc.Node = null;
     main: cc.Node = null;
 
-    onLoad(): void {
-        super.onLoad();
+
+    protected lateLoad(): void {
+        super.lateLoad();
         this.mask = this.node.getChildByName("mask");
         this.main = this.node.getChildByName("main");
+        this.mask.on("click", this.onCloseClick, this);
     }
 
     protected lateClose() {
         super.lateClose();
+    }
+    protected onCloseClick() {
         UIManager.close(this.UIDefine);
     }
 }

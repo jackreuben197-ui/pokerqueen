@@ -26,11 +26,12 @@ export default class RegisterForm extends SampleForm {
     ///////////////////////////////////
 
     protected lateLoad() {
+        super.lateLoad();
         this.setEyesOpen(this.eyesIsOpen);
     }
 
-    protected lateClose() {
-        super.lateClose();
+    protected lateClose(param: any = null) {
+        super.lateClose(param);
     }
 
 

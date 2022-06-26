@@ -9,6 +9,7 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class LanguageForm extends SampleForm {
+    
     /**
      * 绑定内容
      */
@@ -57,8 +58,8 @@ export default class LanguageForm extends SampleForm {
         languageItem.getComponent(LanguageFormItem).showBottomLine();
     }
 
-    protected lateClose() {
-        super.lateClose();
+    protected lateClose(param: any = null) {
+        super.lateClose(param);
     }
 
 

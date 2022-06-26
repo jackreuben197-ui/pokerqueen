@@ -3,8 +3,6 @@
 import Main from "../Main";
 import FormManager from "./FormManager";
 
-
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass

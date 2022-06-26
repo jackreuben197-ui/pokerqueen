@@ -1,3 +1,5 @@
+import DialogManager from "./DialogManager";
+import FormManager from "./FormManager";
 
 const { ccclass, property } = cc._decorator;
 
@@ -6,8 +8,8 @@ const { ccclass, property } = cc._decorator;
 export default class SingleManager extends cc.Component {
 
     onLoad() {
-
-        if (!this.constructor["ins"]) {
+        if (!SingleManager[this.constructor.name]) {
+            SingleManager[this.constructor.name] = true;
             this.constructor["ins"] = this;
             this.lateLoad();
         } else {
@@ -17,6 +19,6 @@ export default class SingleManager extends cc.Component {
         }
     }
     protected lateLoad() {
-        
+
     }
 }
