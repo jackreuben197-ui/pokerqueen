@@ -1,15 +1,14 @@
 
-import FormManager from "../../manager/FormManager";
-import UIManager from "../../manager/UIManager";
 import GGToggleContainer from "../component/GGToggleContainer";
 import LanguageFormItem from "../item/LanguageFormItem";
-import SampleForm from "./SampleForm";
+import BaseForm from "./BaseForm";
+
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class LanguageForm extends SampleForm {
-    
+export default class LanguageForm extends BaseForm {
+
     /**
      * 绑定内容
      */
@@ -62,9 +61,7 @@ export default class LanguageForm extends SampleForm {
         super.lateClose(param);
     }
 
-
     onShow(param: any = null) {
-        //cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);
         super.onShow(param);
         this.toggleContainer.checkedIndex = param?.language_id || 0;
     }

@@ -1,10 +1,10 @@
 
-import SampleForm from "./SampleForm";
+import BaseForm from "./BaseForm";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class ResetPassForm extends SampleForm {
+export default class ResetPassForm extends BaseForm {
     /**
      * 绑定内容
      */

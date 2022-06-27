@@ -1,7 +1,5 @@
 import AdapterComponent from "../AdapterComponent";
-
-import DialogManager from "../manager/DialogManager";
-
+import { IUIDefine } from "../define/EIDefine";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -11,6 +9,7 @@ export default class UIBase extends cc.Component {
     protected param: any;
 
     protected onLoad() {
+
         this.UIDefine.DisAdaptScreen || this.node.addComponent(AdapterComponent);
         this.lateLoad();
     }
@@ -41,7 +40,7 @@ export default class UIBase extends cc.Component {
 
     }
 
-    get UIDefine() {
+    get UIDefine(): IUIDefine {
         return this.constructor["UIDefine"];
     }
 

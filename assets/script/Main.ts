@@ -20,11 +20,11 @@ export default class Main extends cc.Component {
     static Block: cc.Node;
     static Toast: cc.Node;
 
-    
+
     onLoad() {
-        
-        cc.log("游戏启动", cc.sys.os, cc.view.getVisibleSize());
-    
+
+        cc.log("游戏启动", cc.sys.os);
+
         Main.instance = this;
 
         // UI 节点缓存
@@ -44,9 +44,13 @@ export default class Main extends cc.Component {
         // cc.log(grace.proto.msg.Player.decode(buffer));
 
     }
+    protected onEnable(): void {
+        cc.log("屏幕分辨率:", cc.view.getFrameSize().toString());
+        cc.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
+    }
 
     start() {
-        // ToastManager.ins.craeteToast("Alligator");
+
         // new Web_Login();
     }
 

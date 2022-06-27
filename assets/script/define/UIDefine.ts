@@ -31,6 +31,14 @@ export const UIDefine = {
      *  标题窗口
      */
     //标题模板(不使用)
+    BaseForm: {
+        UIType: UIType.Form,
+        Name: "BaseForm",
+        Bundle: null,
+        Path: "prefab/form/BaseForm",
+        Title: "BaseForm",
+        UIFadeStyle: UIFadeStyleEnum.RightInOut
+    },
     SampleForm: {
         UIType: UIType.Form,
         Name: "SampleForm",

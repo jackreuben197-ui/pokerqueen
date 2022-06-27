@@ -54,7 +54,7 @@ export default class FormManager extends SingleManager {
 
         if (newUI) {
 
-            this.lateOpen(newUI, uiDefine.UIFadeStyle, param);
+            this.lateOpen(newUI, param);
 
         } else {
 
@@ -66,7 +66,7 @@ export default class FormManager extends SingleManager {
                 let ui_node = cc.instantiate(asset);
                 newUI = ui_node.getComponent(UIBase);
                 this.uiMap[uiDefine.Name] = newUI;
-                this.lateOpen(newUI, uiDefine.UIFadeStyle, param);
+                this.lateOpen(newUI, param);
             });
         }
     }
@@ -77,20 +77,16 @@ export default class FormManager extends SingleManager {
             for (let i = this.showUIs.length - 1; i >= 0; i--) {
                 let ui = this.showUIs[i];
                 if (ui.UIDefine.Name == uiDefine.Name) {
-                    let fadeEffect = param?.fadeEffect || this.currUI.UIDefine.UIFadeStyle;
-                    await this.faceOut(this.currUI.node, fadeEffect);
-                    this.currUI.onClose(param);
+                    await this.currUI.onClose(param);
                     ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
-                    cc.log("剩下的面板数量:", this.constructor.name, this.showUIs.length);
+                    cc.log("close ui left count:", this.constructor.name, this.showUIs.length);
                     break;
                 }
             }
         } else {
             if (this.currUI) {
-                let fadeEffect = param?.fadeEffect || this.currUI.UIDefine.UIFadeStyle;
-                await this.faceOut(this.currUI.node, fadeEffect);
                 this.currUI.onClose(param);
                 this.currUI.node.parent = this.CacheUILayer;
                 this.showUIs.pop();
@@ -99,38 +95,11 @@ export default class FormManager extends SingleManager {
         }
     }
 
-    protected lateOpen(ui: UIBase, style: UIFadeStyleEnum = UIFadeStyleEnum.None, param: any = null) {
+    protected lateOpen(ui: UIBase, param: any = null) {
         ui && (ui.node.parent = this.UILayer);
         ui?.onShow(param);
-        this.fadeIn(ui, style, param);
         this.currUI = ui;
         this.showUIs.push(ui);
-
-    }
-
-    fadeIn(ui: UIBase, effect = UIFadeStyleEnum.None, param: any = null) {
-        if (ui.node) {
-            switch (effect) {
-                case UIFadeStyleEnum.RightInOut:
-                    ui.node.x = ui.node.width;
-                    cc.tween(ui.node).to(.2, { x: 0 }).start();
-                    break;
-            }
-        }
-    }
-
-    faceOut(node: cc.Node, effect = UIFadeStyleEnum.None) {
-        return new Promise((resolve, reject) => {
-            switch (effect) {
-                case UIFadeStyleEnum.RightInOut:
-                    cc.tween(node).to(.2, { x: node.width }).call(() => {
-                        resolve(0);
-                    }).start();
-                    break;
-                default:
-                    resolve(0);
-                    break;
-            }
-        })
+        cc.log("open ui count:", this.constructor.name, this.showUIs.length);
     }
 }

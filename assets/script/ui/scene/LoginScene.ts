@@ -1,6 +1,7 @@
 
 import { DialogParam } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
+import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
 import BaseScene from "./BaseScene";
 
@@ -105,10 +106,10 @@ export default class LoginScene extends BaseScene {
         UIManager.open<DialogParam>(UIDefine.BaseDialog, { title: "大大的标题", content: "无限的能量", confirm: "Sure" });
     }
     onTest004() {
-
+        //ToastManager.ins.craeteToast("Alligator");
     }
     onTest005() {
-
+        
     }
     onTest006() {
 

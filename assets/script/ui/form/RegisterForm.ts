@@ -1,11 +1,11 @@
 
-import FormManager from "../../manager/FormManager";
-import SampleForm from "./SampleForm";
+import BaseForm from "./BaseForm";
+
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class RegisterForm extends SampleForm {
+export default class RegisterForm extends BaseForm {
     /**
      * 绑定内容
      */
