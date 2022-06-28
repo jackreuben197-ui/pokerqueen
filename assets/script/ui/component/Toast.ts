@@ -16,8 +16,8 @@ export default class Toast extends cc.Component {
     next: Toast;
 
     move: boolean;
+    middle: number;
     end: number;
-    step: number;
 
     disapear: boolean;
 
@@ -30,47 +30,25 @@ export default class Toast extends cc.Component {
         this.labelI18N.translate();
     }
 
-    init(start: number, end: number, step: number) {
+    init(start: number, middle: number, end: number, time: number) {
         this.node.y = start;
+        this.middle = middle;
         this.end = end;
-        this.step = step;
-    }
-    protected update(dt: number): void {
-        if (this.move) {
+        // if (this.prev) {
+        //     cc.tween(this.node).to(.2, { y: this.end }).start();
+        // }
+        cc.tween(this.node).to(.2, { y: this.middle }).delay(1).to(.3, { y: this.end, opacity: 0 }).start();
 
-            if (this.prev) {
-                //this.node.y += (this.prev.node.y - this.step - this.node.y) * .2;
-                this.node.y = this.prev.node.y - this.step;
-            } else {
-                this.stayTime += dt;
-                this.node.y += (this.end - this.node.y) * .3;
-                if (this.isHeader) {
-
-                    if (this.stayTime > 2) {
-                        this.node.opacity -= 20;
-                    }
-                    if (this.stayTime > 2.1) {
-                        this.next && (this.next.prev = null);
-                        //this.move = false;
-                    }
-                    if (this.stayTime > 2.5) {
-                        //this.next && (this.next.prev = null);
-                        this.move = false;
-                    }
-                } else {
-                    this.node.y += 30;
-                    this.node.opacity -= 10;
-                    if (this.stayTime > .2) {
-                        this.next && (this.next.prev = null);
-                        //this.move = false;
-                    }
-                    if (this.stayTime > 2) {
-                        //this.next && (this.next.prev = null);
-                        this.move = false;
-                    }
-                }
-            }
-        }
     }
+    // protected update(dt: number): void {
+    //     if (this.move) {
+    //         if (this.prev) {
+    //             this.node.y += (this.prev.node.y - this.step - this.node.y) * .2;
+    //             //this.node.y = this.prev.node.y - this.step;
+    //         } else {
+    //             this.node.y += (this.end - this.node.y) * .2;
+    //         }
+    //     }
+    // }
 
 }

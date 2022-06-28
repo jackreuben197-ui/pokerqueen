@@ -46,7 +46,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 207.87,
+      "width": 336.86,
       "height": 87
     },
     "_anchorPoint": {
@@ -113,7 +113,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 117.87,
+      "width": 246.86,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -165,8 +165,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "please",
-    "_N$string": "please",
+    "_string": "please please",
+    "_N$string": "please please",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -246,7 +246,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 207.87,
+      "width": 336.86,
       "height": 87
     },
     "_resize": 1,

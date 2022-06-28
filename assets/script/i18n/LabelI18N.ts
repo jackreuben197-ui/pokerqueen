@@ -26,6 +26,7 @@ export default class LabelI18N extends cc.Component {
         //节点被激活触发
         this.translate();
     }
+
     checkLabel(label: cc.Label) {
         if (label) {
             this.label = label;
