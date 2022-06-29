@@ -106,10 +106,18 @@ export default class LoginScene extends BaseScene {
         UIManager.open<DialogParam>(UIDefine.BaseDialog, { title: "大大的标题", content: "无限的能量", confirm: "Sure" });
     }
     onTest004() {
-        ToastManager.ins.craeteToast("AlligatorAlligator");
+
+        let dic = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789阿克苏据了解阿卡链接发圣诞节快乐收到简历咖决胜巅峰";
+        let len = 5 + Math.random() * 20 ^ 0;
+        let str = "";
+        for (let i = 0; i < len; i++) {
+            str += dic[Math.random() * dic.length ^ 0];
+        }
+        ToastManager.ins.craeteToast(str);
+    
     }
     onTest005() {
-        
+
     }
     onTest006() {
 

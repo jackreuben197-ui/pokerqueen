@@ -1,7 +1,5 @@
-
-
 /**
- * toast管理调试中...
+ * toast管理器 队列上行显示
  */
 
 import Main from "../Main";
@@ -18,115 +16,131 @@ export default class ToastManager extends SingleManager {
     static ins: ToastManager = null;
 
     config: any = {
-        fadeInPosY: 0,
-        fadeOutPosY: 150,
-        spaceY: 20,
+        //容器起始位置
+        contentStartPosition: 150,
+        //渐入的偏移距离
+        fadeInOffSetDis: 100,
+        //节点间隔距离
+        spaceDis: 20,
+        //缓冲出现时间(解决文本自适应有异步时间差)
+        bufferDuration: .1,
+        //渐入时间
+        fadeInDuration: .2,
+        //停留时间
+        stayDuration: 2,
+        //消失时间
+        fadeOutDuration: .3,
+
     }
-    list: Toast[] = [];
-
-    header: Toast = null;
-
+    //存储节点的Toast组件
+    sequenceToasts: Toast[] = [];
+    //队列容器(承载队列节点的容器)
+    sequenceContent: cc.Node = null;
+    //上一个节点的Toast组件
     prevToast: Toast = null;
-
-    content: cc.Node = null;
-
-    move: boolean = false;
-
-    content_move: boolean = false;
-
-    step: number;
-
+    //toast节点池
     toast_pool: cc.Node[] = [];
 
+    fadeDuration: number;
+
     protected lateLoad() {
-        this.content = new cc.Node;
-        this.content.parent = Main.Toast;
+        this.sequenceContent = new cc.Node("sequenceContent");
+        this.sequenceContent.parent = Main.Toast;
+        this.fadeDuration = this.config.bufferDuration + this.config.fadeInDuration + this.config.stayDuration + this.config.fadeOutDuration;
+        this.resetSCPosition();
+    }
+    //重置队列容器位置
+    resetSCPosition() {
+        this.sequenceContent.y = this.config.contentStartPosition;
     }
 
-    async craeteToast(content: string) {
-        let toast_pb = this.node.getComponent(ToastContext)?.toast_prefab;
-        if (toast_pb) {
-            let toast = this.createToast();
-            toast.stopAllActions();
-            toast.opacity = 255;;
-            let toast_script = toast.getComponent(Toast);
-            toast.parent = this.content;
+    craeteToast(content: string) {
+        let toast: cc.Node = this.getToast();
+        if (toast) {
+            let toast_script: Toast = toast.getComponent(Toast);
+            toast.parent = this.sequenceContent;
+            toast.opacity = 0;
             toast_script.setLabel(content);
-            let start, end;
-            this.step = this.config.spaceY + toast.height;
-            if (this.list.length == 0) {
-                cc.log("创建头部")
-                this.content.y = 150;
-                end = 0;
-                start = end - 100;
-                toast.y = start;
-                cc.tween(toast).to(.2, { y: end }).delay(2).to(.3, { opacity: 0 }).call(this.moveComplete, this).start();
-                cc.tween(toast).delay(2.5).call(() => {
-
-                    this.delayCom();
+            if (this.sequenceToasts.length == 0) {
+                this.resetSCPosition();
+                toast_script.posY = 0;
+                toast.y = toast_script.posY - this.config.fadeInOffSetDis;
+                cc.tween(toast).to(this.config.bufferDuration, { opacity: 255 }).to(this.config.fadeInDuration, { y: toast_script.posY }).delay(this.config.stayDuration).to(this.config.fadeOutDuration, { opacity: 0 }).call(() => {
+                    this.fadeComplete();
+                    this.sequenceMove();
                 }).start();
             } else {
-                toast_script.prev = this.prevToast;
-                end = this.prevToast.node.y - this.step;
-
-                //end = (this.prevToast.node.y - step) - (this.content.y - 150);
-
-                start = end - 100;
-                toast.y = start;
-                cc.tween(toast).to(.2, { y: end }).start();
+                cc.log("上节点高度", this.prevToast.node.height, toast.height)
+                let step: number = this.config.spaceDis + (this.prevToast.node.height + toast.height) / 2;
+                toast_script.posY = this.prevToast.posY - step;
+                toast_script.markFadeOriTime = new Date().getTime();
+                toast.y = toast_script.posY - this.config.fadeInOffSetDis;
+                cc.tween(toast).to(this.config.bufferDuration, { opacity: 255 }).to(this.config.fadeInDuration, { y: toast_script.posY }).delay(this.config.stayDuration).to(this.config.fadeOutDuration, { opacity: 0 }).start();
             }
             this.prevToast = toast_script;
-            this.list.push(toast_script);
+            this.sequenceToasts.push(toast_script);
         }
     }
 
-    async delayCom() {
-        while (this.list.length) {
-            await this.moveCircle();
+    /**
+     * 队列集体运动
+     */
+    async sequenceMove() {
+        while (this.sequenceToasts.length) {
+            await this.moveStep();
         }
-        cc.log("complete");
+        cc.log("sequenceMove complete");
     }
-    async moveCircle() {
+    /**
+     *  每步运动
+     */
+    async moveStep() {
 
         return new Promise((reslove, reject) => {
-            let toast = this.list[0].node;
-            let target = this.content.y + this.step;
-            cc.tween(this.content).to(.2, { y: target }).call(() => {
-                cc.tween(toast).to(.3, { opacity: 0 }).call(() => {
-                    toast.parent = null;
-                }).start();
-                cc.tween(toast).delay(.05).call(() => {
-                    this.moveComplete();
+            let toast_script = this.sequenceToasts[0];
+            let toast = toast_script.node;
+            let target = this.config.contentStartPosition - toast_script.posY;
+            cc.tween(this.sequenceContent).to(.2, { y: target }).call(() => {
+                //判断时长，超过变化时长就算完成,否在需要补充停留时间
+                let disTime = (new Date().getTime() - toast_script.markFadeOriTime) / 1000;
+                let passTime = this.fadeDuration - disTime;
+                if (passTime <= 0) {
+                    this.fadeComplete();
                     reslove(0);
-                }).start();
+                } else {
+                    cc.tween(toast).delay(passTime).call(() => {
+                        this.fadeComplete();
+                        reslove(0);
+                    }).start();
+                }
             }).start();
         });
     }
-
-
-    moveComplete() {
-        let toast = this.list.shift();
+    //渐入渐出完成
+    fadeComplete() {
+        let toast = this.sequenceToasts.shift();
+        toast.reset();
         this.returnToast(toast.node);
-        if (this.list.length == 0) {
-            this.move = false;
+        //判断所有完成
+        if (this.sequenceToasts.length == 0) {
             this.prevToast = null;
-            this.content.stopAllActions();
-            this.content_move = false;
-            cc.log("列表为空");
+            this.sequenceContent.stopAllActions();
+            cc.log("所有toast节点运动结束");
         }
     }
-    protected update(dt: number): void {
-
-    }
-
-
+    /**
+     *  节点返回池子
+     */
     returnToast(toast: cc.Node) {
+        toast.parent = null;
         this.toast_pool.push(toast);
     }
-
-    createToast() {
-        //if (this.toast_pool.length) return this.toast_pool.shift();
+    /**
+     * 从池子取出节点
+     */
+    getToast() {
+        if (this.toast_pool.length) return this.toast_pool.shift();
         let toast_pb = this.node.getComponent(ToastContext)?.toast_prefab;
-        return cc.instantiate(toast_pb);
+        return toast_pb && cc.instantiate(toast_pb) || null;
     }
 }
