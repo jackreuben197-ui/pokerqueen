@@ -95,7 +95,7 @@ export default class LoginScene extends BaseScene {
     //////////////////////////////////测试///////////////////////////////////
 
     onTest001() {
-    
+
         UIManager.open(UIDefine.RightTouchBoard);
     }
     onTest002() {
@@ -115,11 +115,24 @@ export default class LoginScene extends BaseScene {
     onTest004() {
 
         let dic = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789阿克苏据了解阿卡链接发圣诞节快乐收到简历咖决胜巅峰";
-        let len = 5 + Math.random() * 20 ^ 0;
+        let len = 5 + Math.random() * 50 ^ 0;
         let str = "";
         for (let i = 0; i < len; i++) {
             str += dic[Math.random() * dic.length ^ 0];
         }
+        if (str.length > 30) {
+            let a = str.substring(0, str.length / 3 ^ 0);
+            let b = str.substring(str.length / 3 ^ 0, str.length * (2 / 3) ^ 0);
+            let c = str.substring(str.length * (2 / 3) ^ 0, str.length);
+
+            str = a + "\n" + b + "\n" + c;
+        } else if (str.length > 20) {
+            let a = str.substring(0, str.length / 2 ^ 0);
+            let b = str.substring((str.length / 2 ^ 0), str.length - 1);
+            str = a + "\n" + b;
+        }
+
+
         ToastManager.ins.craeteToast(str);
 
     }
