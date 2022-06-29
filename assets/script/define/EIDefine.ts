@@ -52,7 +52,9 @@ export interface DialogParam {
     title?: string;
     content?: string;
     confirm?: string;
+    cancel?: string;
     confirmCallback?: Function;
+    cancelCallback?: Function;
     block?: boolean;
     maskStyle?: any;
     mainStyle?: any;

@@ -103,7 +103,14 @@ export default class LoginScene extends BaseScene {
         UIManager.open(UIDefine.RegisterForm);
     }
     onTest003() {
-        UIManager.open<DialogParam>(UIDefine.BaseDialog, { title: "大大的标题", content: "无限的能量", confirm: "Sure" });
+        UIManager.open<DialogParam>(UIDefine.BaseDialog, {
+            title: "大大的标题", content: "无限的能量", confirm: "Sure", cancel: "Cancel", confirmCallback: () => {
+                ToastManager.ins.craeteToast("面板 确认 回调");
+            },
+            cancelCallback: () => {
+                ToastManager.ins.craeteToast("面板 取消 回调");
+            }
+        });
     }
     onTest004() {
 
@@ -114,7 +121,7 @@ export default class LoginScene extends BaseScene {
             str += dic[Math.random() * dic.length ^ 0];
         }
         ToastManager.ins.craeteToast(str);
-    
+
     }
     onTest005() {
 
