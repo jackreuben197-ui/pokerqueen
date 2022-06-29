@@ -28,35 +28,6 @@ export default class BaseDialog extends UIBase {
     cancel_button: cc.Node = null;
     cancel_label: cc.Label = null;
 
-    // defaultStyle = {
-    //     //底部半透层
-    //     mask: {
-    //         //渐入
-    //         fadeIn: {
-    //             duration: .2,
-    //             ease: null
-    //         },
-    //         //渐出
-    //         fadeOut: {
-    //             duration: .2,
-    //             ease: null
-    //         }
-    //     },
-    //     //上部主窗口
-    //     main: {
-    //         //渐入
-    //         fadeIn: {
-    //             duration: .3,
-    //             ease: cc.easeBackOut(),
-    //         },
-    //         //渐出
-    //         fadeOut: {
-    //             duration: .2,
-    //             ease: cc.easeBackIn(),
-    //         }
-
-    //     }
-    // }
 
 
     //面板渐入渐出样式
@@ -104,8 +75,8 @@ export default class BaseDialog extends UIBase {
             this.cancel_label.string = "cancel";
         }
 
-        this.maskFadeIn(param?.maskStyle);
-        this.mainFadeIn(param?.mainStyle);
+        this.maskFadeIn(param?.style);
+        this.mainFadeIn(param?.style);
     }
     protected lateLoad(): void {
         super.lateLoad();

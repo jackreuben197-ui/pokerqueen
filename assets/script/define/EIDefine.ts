@@ -56,6 +56,5 @@ export interface DialogParam {
     confirmCallback?: Function;
     cancelCallback?: Function;
     block?: boolean;
-    maskStyle?: any;
-    mainStyle?: any;
+    style?: any;
 }

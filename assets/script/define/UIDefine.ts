@@ -86,11 +86,11 @@ export const UIDefine = {
         Path: "prefab/board/BaseTouchBoard",
 
     },
-    TestTouchBoard: {
+    RightTouchBoard: {
         UIType: UIType.Board,
-        Name: "TestTouchBoard",
+        Name: "RightTouchBoard",
         Bundle: null,
-        Path: "prefab/board/TestTouchBoard",
+        Path: "prefab/board/RightTouchBoard",
 
     },
 

@@ -95,8 +95,8 @@ export default class LoginScene extends BaseScene {
     //////////////////////////////////测试///////////////////////////////////
 
     onTest001() {
-        //BoardManager.ins.open(UIDefine.BaseTouchBoard);
-        UIManager.open(UIDefine.TestTouchBoard);
+    
+        UIManager.open(UIDefine.RightTouchBoard);
     }
     onTest002() {
         UIManager.open(UIDefine.LanguageForm);
