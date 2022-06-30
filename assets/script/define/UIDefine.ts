@@ -94,6 +94,13 @@ export const UIDefine = {
 
     },
 
+    BottomTouchBoard: {
+        UIType: UIType.Board,
+        Name: "BottomTouchBoard",
+        Bundle: null,
+        Path: "prefab/board/BottomTouchBoard",
+    },
+
     /**
      * 确认取消 弹窗面板(默认触摸全屏可关闭)
      */

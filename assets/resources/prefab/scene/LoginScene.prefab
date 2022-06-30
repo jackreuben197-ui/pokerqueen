@@ -4850,7 +4850,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 143.07,
+      "width": 156,
       "height": 49.14
     },
     "_anchorPoint": {
@@ -4862,7 +4862,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        279.4649999999999,
+        285.9299999999999,
         39.570000000000014,
         0,
         0,
@@ -4902,8 +4902,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "测试005",
-    "_N$string": "测试005",
+    "_string": "底入面板",
+    "_N$string": "底入面板",
     "_fontSize": 39,
     "_lineHeight": 39,
     "_enableWrapText": true,
@@ -4931,7 +4931,7 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 8,
-    "_left": 770.43,
+    "_left": 770.4299999999998,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,

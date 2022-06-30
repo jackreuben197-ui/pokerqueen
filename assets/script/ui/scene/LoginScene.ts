@@ -140,6 +140,8 @@ export default class LoginScene extends BaseScene {
     }
     onTest005() {
 
+        UIManager.open(UIDefine.BottomTouchBoard);
+
     }
     onTest006() {
 

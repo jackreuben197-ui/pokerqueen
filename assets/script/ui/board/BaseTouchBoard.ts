@@ -17,8 +17,8 @@ export default class BaseTouchBoard extends UIBase {
     //mask上的block遮挡
     mask_block: cc.BlockInputEvents = null;
 
-    //main上的block遮挡
-    main_block: cc.BlockInputEvents = null;
+    //content上的block遮挡
+    content_block: cc.BlockInputEvents = null;
 
     //顶部block遮挡
     top_block: cc.Node = null;
@@ -37,7 +37,7 @@ export default class BaseTouchBoard extends UIBase {
         this.main = this.node.getChildByName("main");
         this.content = this.main.getChildByName("content");
         this.mask_block = this.mask.getComponent(cc.BlockInputEvents);
-        this.main_block = this.main.getComponent(cc.BlockInputEvents);
+        this.content_block = this.content.getComponent(cc.BlockInputEvents);
         this.top_block = this.node.getChildByName("top_block");
         this.mask.on("click", this.goClose, this);
     }
@@ -86,6 +86,7 @@ export default class BaseTouchBoard extends UIBase {
     protected checkFadeComplete() {
         if (this.mainFadeInIsComplete && this.maskFadeInIsComplete) {
             this.top_block.active = false;
+            cc.log("面板动画完成");
         }
     }
     protected lateClose(param: any = null) {

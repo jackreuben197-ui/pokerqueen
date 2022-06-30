@@ -65,7 +65,7 @@ export default class BaseAlert extends BaseTouchBoard {
         super.lateShow(param);
         this.title_label.string = param?.data?.title || "dialog";
         this.content_label.string = param?.data?.content || "content";
-        this.main_block.enabled = param?.style?.main_block || false;
+        this.content_block.enabled = param?.style?.main_block || false;
 
         this.confirm_button.active = false;
         this.cancel_button.active = false;
