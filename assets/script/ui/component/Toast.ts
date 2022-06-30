@@ -19,10 +19,9 @@ export default class Toast extends cc.Component {
         //@ts-ignore
         this.labelI18N.node.getComponent(cc.Label)._forceUpdateRenderData();
         let layout = this.node.getComponent(cc.Layout);
-        // layout.type = cc.Layout.Type.NONE;
         layout.resizeMode = cc.Layout.ResizeMode.CONTAINER;
         layout.updateLayout();
-        
+
     }
     reset() {
         //this.setLabel("");

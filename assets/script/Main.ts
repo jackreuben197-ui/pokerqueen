@@ -17,6 +17,7 @@ export default class Main extends cc.Component {
     static Form: cc.Node;
     static Board: cc.Node;
     static Dialog: cc.Node;
+    static Alert: cc.Node;
     static Block: cc.Node;
     static Toast: cc.Node;
 
@@ -35,6 +36,7 @@ export default class Main extends cc.Component {
         Main.Form = this.node.parent.getChildByName("Form - 窗体层");
         Main.Board = this.node.parent.getChildByName("Board - 遮挡浮窗层");
         Main.Dialog = this.node.parent.getChildByName("Dialog - 弹窗层");
+        Main.Alert = this.node.parent.getChildByName("Alert - 提示框");
         Main.Block = this.node.parent.getChildByName("Block - 遮挡");
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");
         ProcedureManager.Init();

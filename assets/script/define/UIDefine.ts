@@ -95,13 +95,13 @@ export const UIDefine = {
     },
 
     /**
-     * 弹窗面板(默认触摸全屏可关闭)
+     * 确认取消 弹窗面板(默认触摸全屏可关闭)
      */
-    BaseDialog: {
-        UIType: UIType.Dialog,
-        Name: "BaseDialog",
+    BaseAlert: {
+        UIType: UIType.Alert,
+        Name: "BaseAlert",
         Bundle: null,
-        Path: "prefab/dialog/BaseDialog",
+        Path: "prefab/alert/BaseAlert",
         UIFadeStyle: UIFadeStyleEnum.ScaleInOut
     },
 

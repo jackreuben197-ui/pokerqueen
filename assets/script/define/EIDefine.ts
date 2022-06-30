@@ -6,6 +6,7 @@ export enum UIType {
     Form,
     Board,
     Dialog,
+    Alert,
 }
 /**
  * 流程
@@ -53,8 +54,8 @@ export interface DialogParam {
     content?: string;
     confirm?: string;
     cancel?: string;
-    confirmCallback?: Function;
-    cancelCallback?: Function;
+    confirmCallback?: () => void;
+    cancelCallback?: () => void;
     block?: boolean;
     style?: any;
 }

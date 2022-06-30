@@ -2,7 +2,6 @@
  *  触摸板基类
  */
 
-import BoardManager from "../../manager/BoardManager";
 import UIManager from "../../manager/UIManager";
 import UIBase from "../UIBase";
 
@@ -15,38 +14,20 @@ export default class BaseTouchBoard extends UIBase {
     main: cc.Node = null;
     content: cc.Node = null;
 
+    //mask上的block遮挡
+    mask_block: cc.BlockInputEvents = null;
+
+    //main上的block遮挡
+    main_block: cc.BlockInputEvents = null;
+
     //顶部block遮挡
     top_block: cc.Node = null;
-
-    //主内容节点偏移位置
-    protected mainOffSetDis: number = 80;
 
     protected mainFadeInIsComplete: boolean;
     protected maskFadeInIsComplete: boolean;
 
     //面板渐入渐出样式
-    protected defaultStyle = {
-        //内容顶层节点
-        main_fadeIn_active: true,
-        main_fadeIn_duration: .2,
-        main_fadeIn_ease: cc.easeElasticIn,
-
-        main_fadeOut_active: true,
-        main_fadeOut_duration: .2,
-        main_fadeOut_ease: cc.easeElasticOut,
-
-        //mask节点
-        mask_fadeIn_active: true,
-        mask_fadeIn_duration: .2,
-        mask_fadeIn_ease: null,
-
-        mask_fadeOut_active: true,
-        mask_fadeOut_duration: .2,
-        mask_fadeOut_ease: null,
-
-        mainOffSetDis: 160,
-
-        maskOpacity: 128,
+    protected defaultStyle: any = {
 
     }
 
@@ -54,21 +35,30 @@ export default class BaseTouchBoard extends UIBase {
         super.lateLoad();
         this.mask = this.node.getChildByName("mask");
         this.main = this.node.getChildByName("main");
+        this.content = this.main.getChildByName("content");
+        this.mask_block = this.mask.getComponent(cc.BlockInputEvents);
+        this.main_block = this.main.getComponent(cc.BlockInputEvents);
         this.top_block = this.node.getChildByName("top_block");
         this.mask.on("click", this.goClose, this);
     }
 
     onShow(param: { data?: any, style?: any } = null) {
         super.onShow(param);
-        if (param?.style?.mainOffSetDis) {
-            this.defaultStyle.mainOffSetDis = param.style.mainOffSetDis;
-        }
-        this.main.width = this.node.width - this.defaultStyle.mainOffSetDis;
+        this.lateShow(param);
         this.mainFadeInIsComplete = false;
         this.maskFadeInIsComplete = false;
+        //设置mask挡板的block
+        this.mask_block.enabled = param?.style?.mask_block || false;
+        //设置mask是否禁用点击
+        this.mask.getComponent(cc.Button).interactable = param?.style?.mask_click == false ? false : true;
+        //激活顶层block
         this.top_block.active = true;
         this.maskFadeIn(param?.style);
         this.mainFadeIn(param?.style);
+    }
+
+    protected lateShow(param: { data?: any, style?: any } = null) {
+
     }
 
 
@@ -98,8 +88,12 @@ export default class BaseTouchBoard extends UIBase {
             this.top_block.active = false;
         }
     }
-    protected lateClose() {
-        super.lateClose();
+    protected lateClose(param: any = null) {
+        super.lateClose(param);
+    }
+    protected stopAllTweens(): void {
+        this.mask.stopAllActions();
+        this.main.stopAllActions();
     }
     protected goClose() {
         UIManager.close(this.UIDefine);

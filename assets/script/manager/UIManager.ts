@@ -1,5 +1,6 @@
 
 import { IUIDefine, UIType } from "../define/EIDefine";
+import AlertManager from "./AlertManager";
 import BoardManager from "./BoardManager";
 import DialogManager from "./DialogManager";
 import FormManager from "./FormManager";
@@ -24,6 +25,9 @@ export default class UIManager extends SingleManager {
             case UIType.Board:
                 BoardManager.ins.open(UIDefine, param);
                 break;
+            case UIType.Alert:
+                AlertManager.ins.open(UIDefine, param);
+                break;
         }
     }
 
@@ -38,6 +42,9 @@ export default class UIManager extends SingleManager {
                 break;
             case UIType.Board:
                 BoardManager.ins.close(UIDefine, param);
+                break;
+            case UIType.Alert:
+                AlertManager.ins.close(UIDefine, param);
                 break;
         }
     }
