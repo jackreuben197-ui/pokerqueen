@@ -2,6 +2,7 @@
  * loadng 菊花|文字 效果组件 延迟显示
  */
 
+import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
 import UIBase from "../UIBase";
 
@@ -22,6 +23,8 @@ export default class UIPromptComponent extends UIBase {
     //超时时间
     private timeout: number = 10;
 
+    mask_opacitys: number[] = [1, 60];
+
     mask: cc.Node = null;
     loading: cc.Node = null;
 
@@ -36,30 +39,48 @@ export default class UIPromptComponent extends UIBase {
     protected lateLoad() {
         this.mask = this.node.getChildByName("mask");
         this.loading = this.node.getChildByName("loading");
-        this.status = this.statusType.Idle;
-        this.mask.on("click", this.goClose, this);
+        this.translateStatus(this.statusType.Idle);
+        //this.mask.on("click", this.goClose, this);
     }
 
     onShow(param: any = null) {
         super.onShow(param);
-        this.waitShow = true;
-        this.isShow = false;
         this.showStartTime = new Date().getTime();
-        this.loading.active = true;
+        this.translateStatus(this.statusType.WaitShow);
     }
 
     protected update(dt: number): void {
-        if (this.waitShow && this.isShow) return;
-        //判断超时
-        if (this.isShow) {
-            if (new Date().getTime() - this.showStartTime > this.timeout) {
-                //关闭
-                return;
-            }
+
+        switch (this.status) {
+            //case this.statusType.Idle:
+            //return;
+            case this.statusType.Showing:
+                if ((new Date().getTime() - this.showStartTime) / 1000 > this.timeout) {
+                    ToastManager.ins.craeteToast(`请求超时 ${this.timeout}秒`);
+                    this.goClose();
+                }
+                break;
+            case this.statusType.WaitShow:
+                if ((new Date().getTime() - this.showStartTime) / 1000 > this.showDelay) {
+                    this.translateStatus(this.statusType.Showing);
+                }
+                break;
         }
     }
     goClose() {
+        this.translateStatus(this.statusType.Idle);
         UIManager.close(this.UIDefine);
     }
 
+    //切换状态
+    translateStatus(status: number) {
+        this.status = status;
+        if (status == this.statusType.Showing) {
+            this.loading.active = true;
+            this.mask.opacity = this.mask_opacitys[1];
+        } else {
+            this.loading.active = false;
+            this.mask.opacity = this.mask_opacitys[0];
+        }
+    }
 }
