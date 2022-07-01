@@ -70,7 +70,6 @@ export default class ToastManager extends SingleManager {
                     this.sequenceMove();
                 }).start();
             } else {
-                cc.log("上节点高度", this.prevToast.node.height, toast.height)
                 let step: number = this.config.spaceDis + (this.prevToast.node.height + toast.height) / 2;
                 toast_script.posY = this.prevToast.posY - step;
                 toast_script.markFadeOriTime = new Date().getTime();
