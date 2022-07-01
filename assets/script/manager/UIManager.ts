@@ -4,6 +4,7 @@ import AlertManager from "./AlertManager";
 import BoardManager from "./BoardManager";
 import DialogManager from "./DialogManager";
 import FormManager from "./FormManager";
+import PromptManager from "./PromptManager";
 import SingleManager from "./SingleManager";
 
 const { ccclass } = cc._decorator;
@@ -28,6 +29,9 @@ export default class UIManager extends SingleManager {
             case UIType.Alert:
                 AlertManager.ins.open(UIDefine, param);
                 break;
+            case UIType.Prompt:
+                PromptManager.ins.open(UIDefine, param);
+                break;
         }
     }
 
@@ -43,8 +47,8 @@ export default class UIManager extends SingleManager {
             case UIType.Board:
                 BoardManager.ins.close(UIDefine, param);
                 break;
-            case UIType.Alert:
-                AlertManager.ins.close(UIDefine, param);
+            case UIType.Prompt:
+                PromptManager.ins.close(UIDefine, param);
                 break;
         }
     }

@@ -50,17 +50,21 @@ export default class BottomTouchBoard extends BaseTouchBoard {
             cc.tween(this.mask).to(duration, { opacity: mask_opacity }, ease).call(this.maskFadeInComplete, this).start();
         }
     }
-    protected mainFadeIn(style: any) {
+    protected async mainFadeIn(style: any) {
         let startPos = -this.content.height;
-        //(this.main.width + this.node.width) / 2;
         let endPos = 0;
-        this.main.y = startPos;
+        this.main.opacity = 0;
         this.top_block.active = true;
         let fade_switch_on = style?.fade_switch_on == false ? false : this.defaultStyle.fade_switch_on;
         if (fade_switch_on == false || style?.main_fadeIn_active == false) {
+            await this.delaySetMain();
+            this.main.opacity = 255;
             this.main.y = endPos;
             this.mainFadeInComplete();
         } else {
+            await this.delaySetMain();
+            this.main.opacity = 255;
+            this.main.y = startPos;
             let duration = style?.main_fadeIn_duration || this.defaultStyle.main_fadeIn_duration;
             let ease = style?.main_fadeIn_ease || this.defaultStyle.main_fadeIn_ease;
             cc.tween(this.main).to(duration, { y: endPos }, ease).call(this.mainFadeInComplete, this).start();
@@ -77,5 +81,14 @@ export default class BottomTouchBoard extends BaseTouchBoard {
         let duration = style?.main_fadeOut_duration || this.defaultStyle.main_fadeOut_duration;
         let ease = style?.main_fadeOut_ease || this.defaultStyle.main_fadeOut_ease;
         cc.tween(this.main).to(duration, { scale: 1 }, ease).start();
+    }
+
+    delaySetMain() {
+        return new Promise((reslove, reject) => {
+            cc.tween(this.main).delay(0).call(() => {
+                reslove(0);
+            }).start();
+        });
+
     }
 }

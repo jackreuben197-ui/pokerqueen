@@ -37,7 +37,6 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/form/BaseForm",
         Title: "BaseForm",
-        UIFadeStyle: UIFadeStyleEnum.RightInOut
     },
     SampleForm: {
         UIType: UIType.Form,
@@ -45,7 +44,6 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/form/SampleForm",
         Title: "Sample",
-        UIFadeStyle: UIFadeStyleEnum.RightInOut
     },
     //重置密码
     ResetPassForm: {
@@ -54,7 +52,6 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/form/ResetPassForm",
         Title: "Reset Password",
-        UIFadeStyle: UIFadeStyleEnum.RightInOut
     },
     //注册账号
     RegisterForm: {
@@ -63,7 +60,6 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/form/RegisterForm",
         Title: "Register",
-        UIFadeStyle: UIFadeStyleEnum.RightInOut
     },
 
     LanguageForm: {
@@ -72,7 +68,6 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/form/LanguageForm",
         Title: "Language",
-        UIFadeStyle: UIFadeStyleEnum.RightInOut
     },
 
     /**
@@ -109,8 +104,14 @@ export const UIDefine = {
         Name: "BaseAlert",
         Bundle: null,
         Path: "prefab/alert/BaseAlert",
-        UIFadeStyle: UIFadeStyleEnum.ScaleInOut
     },
+
+    UIPromptComponent: {
+        UIType: UIType.Prompt,
+        Name: "UIPromptComponent",
+        Bundle: null,
+        Path: "prefab/component/UIPromptComponent",
+    }
 
 }
 //批量设置

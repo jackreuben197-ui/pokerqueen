@@ -144,7 +144,7 @@ export default class LoginScene extends BaseScene {
 
     }
     onTest006() {
-
+        UIManager.open(UIDefine.UIPromptComponent);
     }
 
 }

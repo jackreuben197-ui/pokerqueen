@@ -19,6 +19,7 @@ export default class Main extends cc.Component {
     static Dialog: cc.Node;
     static Alert: cc.Node;
     static Block: cc.Node;
+    static Prompt: cc.Node;
     static Toast: cc.Node;
 
 
@@ -38,6 +39,7 @@ export default class Main extends cc.Component {
         Main.Dialog = this.node.parent.getChildByName("Dialog - 弹窗层");
         Main.Alert = this.node.parent.getChildByName("Alert - 提示框");
         Main.Block = this.node.parent.getChildByName("Block - 遮挡");
+        Main.Prompt = this.node.parent.getChildByName("Prompt - 网络菊花层");
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");
         ProcedureManager.Init();
         //测试protobuf

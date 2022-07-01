@@ -43,7 +43,7 @@ export default class FormManager extends SingleManager {
      * @param param 携带的参数
      */
 
-    open(uiDefine: { Name: string, Bundle: string, Path: string, UIFadeStyle?: UIFadeStyleEnum }, param: any = null) {
+    open(uiDefine: { Name: string, Bundle: string, Path: string }, param: any = null) {
 
         if (this.currUI?.UIDefine.Name == uiDefine.Name) {
             cc.log("当前面板已经存在!");

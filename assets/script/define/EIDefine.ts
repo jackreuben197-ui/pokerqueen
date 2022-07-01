@@ -7,6 +7,7 @@ export enum UIType {
     Board,
     Dialog,
     Alert,
+    Prompt,
 }
 /**
  * 流程
