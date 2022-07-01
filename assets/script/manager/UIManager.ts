@@ -47,6 +47,9 @@ export default class UIManager extends SingleManager {
             case UIType.Board:
                 BoardManager.ins.close(UIDefine, param);
                 break;
+            case UIType.Alert:
+                AlertManager.ins.close(UIDefine, param);
+                break;
             case UIType.Prompt:
                 PromptManager.ins.close(UIDefine, param);
                 break;
