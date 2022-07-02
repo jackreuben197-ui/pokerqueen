@@ -19,8 +19,8 @@ export default class BaseForm extends UIBase {
     //填充内容节点
     content: cc.Node = null;
 
-    //顶部block组件
-    top_block: cc.BlockInputEvents = null;
+    //顶部block节点
+    top_block: cc.Node = null;
 
     //面板渐入渐出样式
     protected defaultStyle = {
@@ -38,10 +38,10 @@ export default class BaseForm extends UIBase {
         super.lateLoad();
         //元素赋值
         this.main = this.node.getChildByName("main");
-        this.title_label = cc.find("top/title", this.main).getComponent(cc.Label);
-        this.back_click = cc.find("top/back_click", this.main);
+        this.title_label = cc.find("FormTopTitle/title", this.main).getComponent(cc.Label);
+        this.back_click = cc.find("FormTopTitle/back_click", this.main);
         this.content = this.main.getChildByName("content - 内容填充");
-        this.top_block = this.main.getChildByName("top").getComponent(cc.BlockInputEvents);
+        this.top_block = this.main.getChildByName("top_block");
         this.title_label.string = this.UIDefine?.Title || "未定义标题";
         //设置尺寸
         this.main.setContentSize(this.node.getContentSize());
@@ -68,7 +68,7 @@ export default class BaseForm extends UIBase {
     }
 
     mainFadeIn(style: any) {
-        this.top_block.enabled = true;
+        this.top_block.active = true;
         if (style?.main_fadeIn_active == false) {
             this.main.x = 0;
             this.fadeInComplete();
@@ -95,7 +95,7 @@ export default class BaseForm extends UIBase {
     }
 
     fadeInComplete() {
-        this.top_block.enabled = false;
+        this.top_block.active = false;
     }
 
     fadeOutComplete(resolve) {
