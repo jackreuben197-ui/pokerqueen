@@ -9,52 +9,47 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class LanguageForm extends BaseForm {
 
-    /**
-     * 绑定内容
-     */
-    @property(cc.Node)
-    scrollContent: cc.Node = null;
 
-    @property(LanguageFormItem)
+    /**
+     * 节点|组件 定义
+     */
+
     languageItem: LanguageFormItem = null;
 
-    @property(GGToggleContainer)
+    scrollContent: cc.Node = null;
+
     toggleContainer: GGToggleContainer = null;
+
     ///////////////////////////////////
     /**
      * 声明内容
      */
     config = [
-        { s_language: "English", language: "English", flag: 0 },
-        { s_language: "China", language: "中文", flag: 1 },
-        { s_language: "Bra", language: "Bra", flag: 2 },
-        { s_language: "English", language: "English", flag: 0 },
-        { s_language: "China", language: "中文", flag: 1 },
-        { s_language: "Bra", language: "Bra", flag: 2 },
-        { s_language: "English", language: "English", flag: 0 },
-        { s_language: "China", language: "中文", flag: 1 },
-        { s_language: "Bra", language: "Bra", flag: 2 },
-        { s_language: "English", language: "English", flag: 0 },
-        { s_language: "China", language: "中文", flag: 1 },
-        { s_language: "Bra", language: "Bra", flag: 2 },
-        { s_language: "China", language: "中文", flag: 1 },
-        { s_language: "Bra", language: "Bra", flag: 2 },
+        { s_language: "English", language: "English", flag: "Flag_USA" },
+        { s_language: "China", language: "中文", flag: "Flag_CHN" },
+        { s_language: "Bra", language: "Bra", flag: "Flag_BRA" },
     ]
 
     ///////////////////////////////////
 
     protected lateLoad() {
         super.lateLoad();
+        this.languageItem = this.getChildNode("languageItem")?.getComponent(LanguageFormItem);
+        this.scrollContent = this.getChildNode("scrollContent");
+        this.toggleContainer = this.getChildNode("toggleContainer")?.getComponent(GGToggleContainer);
+
         this.languageItem.node.active = false;
-        let languageItem;
+        let languageItem, languageItem_script;
         for (let i = 0; i < this.config.length; i++) {
             languageItem = cc.instantiate(this.languageItem.node);
+            languageItem_script = languageItem.getComponent(LanguageFormItem);
             languageItem.parent = this.scrollContent;
             languageItem.active = true;
-            languageItem.getComponent(LanguageFormItem).onShow(this.config[i]);
+            languageItem_script.onShow(this.config[i]);
+            languageItem_script.addToToggleContainer(this.toggleContainer);
         }
         this.toggleContainer.onChecked = this.onCheckedHandler;
-        languageItem.getComponent(LanguageFormItem).showBottomLine();
+        languageItem_script.showBottomLine();
     }
 
     protected lateClose(param: any = null) {

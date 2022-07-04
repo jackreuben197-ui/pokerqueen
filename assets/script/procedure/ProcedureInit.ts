@@ -12,6 +12,7 @@ import SceneManager from "../manager/SceneManager";
 import SingleManager from "../manager/SingleManager";
 import ToastManager from "../manager/ToastManager";
 import UIManager from "../manager/UIManager";
+import AssetContext from "../ui/component/AssetContext";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureInit extends ProcedureBase {
@@ -58,7 +59,7 @@ export default class ProcedureInit extends ProcedureBase {
         cc.macro.ENABLE_MULTI_TOUCH = GameConfig.ENABLE_MULTI_TOUCH; // 禁止多点触摸
     }
     /**
-     * 设置到全局引用
+     * 设置到全局引用 (方便浏览器F12控制台可以直接输入)
      */
     setToWin() {
         //@ts-ignore
@@ -67,11 +68,12 @@ export default class ProcedureInit extends ProcedureBase {
         window.Main = Main;
         //@ts-ignore
         window.ProcedureManager = ProcedureManager;
+        //@ts-ignore
+        window.AssetContext = AssetContext;
 
     }
     bindManagers() {
         for (let manager of this.managers) {
-            
             Main.instance.node.addComponent(manager);
             cc.log("manager.name : ", manager.name);
             window[manager.name] = manager;

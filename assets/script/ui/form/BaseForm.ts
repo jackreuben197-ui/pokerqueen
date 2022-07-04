@@ -7,9 +7,8 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class BaseForm extends UIBase {
     /**
-    * 声明内容
-    */
-
+     * 节点|组件 定义
+     */
     //标题文本
     title_label: cc.Label = null;
     //回退按钮
@@ -18,10 +17,12 @@ export default class BaseForm extends UIBase {
     main: cc.Node = null;
     //填充内容节点
     content: cc.Node = null;
-
     //顶部block节点
     top_block: cc.Node = null;
-
+    ////////////////////////////////////
+    /**
+     * 声明内容
+     */
     //面板渐入渐出样式
     protected defaultStyle = {
         //内容顶层节点
@@ -33,18 +34,23 @@ export default class BaseForm extends UIBase {
         main_fadeOut_duration: .2,
         main_fadeOut_ease: null,
     }
-
+    ////////////////////////////////////
     protected lateLoad() {
         super.lateLoad();
         //元素赋值
-        this.main = this.node.getChildByName("main");
-        this.title_label = cc.find("FormTopTitle/title", this.main).getComponent(cc.Label);
-        this.back_click = cc.find("FormTopTitle/back_click", this.main);
-        this.content = this.main.getChildByName("content - 内容填充");
-        this.top_block = this.main.getChildByName("top_block");
+        this.main = this.getChildNode("main");
+        this.title_label = this.getChildNode("title_label")?.getComponent(cc.Label);
+        this.back_click = this.getChildNode("back_click");
+        this.content = this.getChildNode("content - 内容填充");
+        this.top_block = this.getChildNode("top_block");
+
         this.title_label.string = this.UIDefine?.Title || "未定义标题";
         //设置尺寸
         this.main.setContentSize(this.node.getContentSize());
+
+    }
+
+    protected regiterTouchEvents(): void {
         //回退触发
         this.back_click.on("click", this.onBackClick, this);
     }

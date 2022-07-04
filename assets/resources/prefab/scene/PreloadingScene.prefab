@@ -379,7 +379,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "progressBar",
+    "_name": "progress_node",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -449,7 +449,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "track",
+    "_name": "progress_bar",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11
@@ -687,7 +687,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "label",
+    "_name": "progress_label",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11
@@ -795,7 +795,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "desc",
+    "_name": "progress_desc",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11
@@ -920,12 +920,6 @@
       "__id__": 1
     },
     "_enabled": true,
-    "progressBar": {
-      "__id__": 17
-    },
-    "label": {
-      "__id__": 20
-    },
     "_id": ""
   },
   {

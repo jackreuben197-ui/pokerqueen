@@ -1,32 +1,30 @@
 
+import AssetContext from "../component/AssetContext";
 import GGToggleContainer from "../component/GGToggleContainer";
+import UIBase from "../UIBase";
 
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class LanguageFormItem extends cc.Component {
+export default class LanguageFormItem extends UIBase {
     /**
      * 绑定内容
      */
-    @property(cc.Toggle)
+
+    /////////////////////////////////////////////
+    /**
+     * 节点|组件 定义
+     */
+
     toggle: cc.Toggle = null;
-    @property(GGToggleContainer)
-    toggleContainer: GGToggleContainer = null;
 
-    @property(cc.Sprite)
-    flag_sp: cc.Sprite = null;
+    flag_icon: cc.Sprite = null;
 
-    @property(cc.Label)
     s_language_label: cc.Label = null;
-    @property(cc.Label)
+
     language_label: cc.Label = null;
 
-    @property([cc.SpriteFrame])
-    flag_sfs: cc.SpriteFrame[] = [];
-
-
-    @property(cc.Node)
     bottom_line: cc.Node = null;
 
     ///////////////////////////////////
@@ -36,21 +34,27 @@ export default class LanguageFormItem extends cc.Component {
 
     ///////////////////////////////////
 
-    onLoad() {
-        this
-        if (this.toggleContainer) {
-            this.toggleContainer.addToggle(this.toggle);
-        }
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.toggle = this.getChildNode("toggle")?.getComponent(cc.Toggle);
+        this.flag_icon = this.getChildNode("flag_icon")?.getComponent(cc.Sprite);
+        this.s_language_label = this.getChildNode("s_language_label")?.getComponent(cc.Label);
+        this.language_label = this.getChildNode("language_label")?.getComponent(cc.Label);
+        this.bottom_line = this.getChildNode("bottom_line");
+
     }
 
-    start() {
 
+    addToToggleContainer(container: GGToggleContainer) {
+        container.addToggle(this.toggle);
     }
 
-    onShow(config: any) {
-        this.s_language_label.string = config.s_language;
-        this.language_label.string = config.language;
-        this.flag_sp.spriteFrame = this.flag_sfs[config.flag];
+    onShow(param: any = null) {
+        super.onShow(param);
+        this.s_language_label.string = param.s_language;
+        this.language_label.string = param.language;
+        this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag);
+
     }
 
     showBottomLine() {

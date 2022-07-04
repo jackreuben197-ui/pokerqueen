@@ -41,7 +41,7 @@ export default class Main extends cc.Component {
         Main.Block = this.node.parent.getChildByName("Block - 遮挡");
         Main.Prompt = this.node.parent.getChildByName("Prompt - 网络菊花层");
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");
-        ProcedureManager.Init();
+        
         //测试protobuf
         // let message = grace.proto.msg.Player.create({ name: "yechun", id: 123, enterTime: 111 })
         // let buffer = grace.proto.msg.Player.encode(message).finish();
@@ -54,8 +54,7 @@ export default class Main extends cc.Component {
     }
 
     start() {
-
-        // new Web_Login();
+        ProcedureManager.Init();
     }
 
     // update (dt) {}

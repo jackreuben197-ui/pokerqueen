@@ -9,12 +9,11 @@ const { ccclass, property } = cc._decorator;
 export default class PreloadingScene extends BaseScene {
 
     /**
-     * 绑定内容
+     * 节点|组件 定义
      */
-    @property(cc.ProgressBar)
-    progressBar: cc.ProgressBar = null;
-    @property(cc.Label)
-    label: cc.Label = null;
+    progress_bar: cc.ProgressBar = null;
+    progress_label: cc.Label = null;
+    progress_desc: cc.Label = null;
     ///////////////////////////////////
 
     /**
@@ -22,15 +21,26 @@ export default class PreloadingScene extends BaseScene {
      */
     ///////////////////////////////////
     protected lateLoad(): void {
+
+        super.lateLoad();
+
+        this.progress_bar = this.getChildNode("progress_bar")?.getComponent(cc.ProgressBar);
+        this.progress_label = this.getChildNode("progress_label")?.getComponent(cc.Label);
+        this.progress_desc = this.getChildNode("progress_desc")?.getComponent(cc.Label);
+
         this.setProgress(0);
         this.setLabel("加载中...0%");
     }
 
     setProgress(progress: number) {
-        this.progressBar.progress = progress;
+        this.progress_bar.progress = progress;
     }
     setLabel(content: string) {
-        this.label.string = content;
+        this.progress_label.string = content;
+    }
+
+    setDesc(content: string) {
+        this.progress_desc.string = content;
     }
 
     Enter(param: any): void {

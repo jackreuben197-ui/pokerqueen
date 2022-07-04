@@ -333,17 +333,19 @@
     "_id": "59CZH9nahE/752wHBiM2Is"
   },
   {
-    "__type__": "27f0eddFFtOw5MPjBDfZ4Nj",
+    "__type__": "36ae3RivWlM+6qcJcDDYAPq",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 5
     },
     "_enabled": true,
-    "toast_prefab": {
-      "__uuid__": "a9541ad2-39bf-40d8-b2c2-d7ef682beede"
-    },
-    "_id": "d8K+NGlBhI9pbmOUyUU4fL"
+    "assets": [
+      {
+        "__uuid__": "a9541ad2-39bf-40d8-b2c2-d7ef682beede"
+      }
+    ],
+    "_id": "63HVFRZTxHpYcQRLuagF9S"
   },
   {
     "__type__": "cc.Node",

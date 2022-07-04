@@ -37,10 +37,9 @@ export default class UIPromptComponent extends UIBase {
     status: number;
 
     protected lateLoad() {
-        this.mask = this.node.getChildByName("mask");
-        this.loading = this.node.getChildByName("loading");
+        this.mask = this.getChildNode("mask");
+        this.loading = this.getChildNode("loading");
         this.translateStatus(this.statusType.Idle);
-        //this.mask.on("click", this.goClose, this);
     }
 
     onShow(param: any = null) {

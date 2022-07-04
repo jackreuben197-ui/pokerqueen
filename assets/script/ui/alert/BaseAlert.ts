@@ -61,6 +61,34 @@ export default class BaseAlert extends BaseTouchBoard {
         maskOpacity: 128,
 
     }
+
+
+    protected lateLoad(): void {
+        super.lateLoad();
+
+        this.title_label = this.getChildNode("title_label").getComponent(cc.Label);
+        this.content_label = this.getChildNode("content_label").getComponent(cc.Label);
+
+        this.confirm_button = this.getChildNode("confirm_button");
+        this.confirm_label = this.getChildNode("confirm_label")?.getComponent(cc.Label);
+
+        this.cancel_button = this.getChildNode("cancel_button");
+        this.cancel_label = this.getChildNode("cancel_label")?.getComponent(cc.Label);
+
+
+        this.specialLoad();
+    }
+
+
+    protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
+        this.confirm_button?.on("click", this.onConfirmClick, this);
+        this.cancel_button?.on("click", this.goClose, this);
+    }
+
+
+
+
     protected lateShow(param: { data?: DialogParam, style?: any } = null) {
         super.lateShow(param);
         this.title_label.string = param?.data?.title || "dialog";
@@ -85,24 +113,6 @@ export default class BaseAlert extends BaseTouchBoard {
         }
 
 
-    }
-
-    protected lateLoad(): void {
-        super.lateLoad();
-
-        this.title_label = this.content.getChildByName("title_label").getComponent(cc.Label);
-        this.content_label = this.content.getChildByName("content_label").getComponent(cc.Label);
-
-        this.confirm_button = cc.find("buttonLayout/confirm_button", this.content);
-        this.confirm_label = this.confirm_button?.getChildByName("confirm_label")?.getComponent(cc.Label);
-
-        this.cancel_button = cc.find("buttonLayout/cancel_button", this.content);
-        this.cancel_label = this.cancel_button?.getChildByName("cancel_label")?.getComponent(cc.Label);
-
-        this.confirm_button?.on("click", this.onConfirmClick, this);
-        this.cancel_button?.on("click", this.goClose, this);
-
-        this.specialLoad();
     }
     /**
      * 方便子类扩展
@@ -144,7 +154,7 @@ export default class BaseAlert extends BaseTouchBoard {
         }
     }
     mainFadeIn(style: any) {
-       
+
         this.top_block.active = true;
 
         if (style?.fade_switch_on || style?.main_fadeIn_active == false) {

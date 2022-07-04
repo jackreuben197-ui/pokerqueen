@@ -9,29 +9,49 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class LoginScene extends BaseScene {
-
     /**
-     * 绑定内容
+     * 节点|组件 定义
      */
-    @property(cc.EditBox)
     phone_editbox: cc.EditBox = null;
-    @property(cc.EditBox)
+
     pass_editbox: cc.EditBox = null;
-    @property(cc.Node)
+
     open_eyes_icon: cc.Node = null;
-    @property(cc.Node)
+
     close_eyes_icon: cc.Node = null;
+
+    eyes_button: cc.Node = null;
+
+    confirm_button: cc.Node = null;
+
+    forgot_button: cc.Node = null;
+
+    register_button: cc.Node = null;
+
+    language_button: cc.Node = null;
     ///////////////////////////////////
     /**
      * 声明内容
      */
     testLayout: cc.Node = null;
-    eyesIsOpen: boolean = false;
 
     ///////////////////////////////////
     protected lateLoad() {
-        this.setEyesOpen(this.eyesIsOpen);
-        this.testLayout = cc.find("测试节点/layout", this.node);
+        super.lateLoad();
+
+        this.phone_editbox = this.getChildNode("phone_editbox")?.getComponent(cc.EditBox);
+        this.pass_editbox = this.getChildNode("pass_editbox")?.getComponent(cc.EditBox);
+        this.open_eyes_icon = this.getChildNode("open_eyes_icon");
+        this.close_eyes_icon = this.getChildNode("close_eyes_icon");
+        this.eyes_button = this.getChildNode("eyes_button");
+        this.confirm_button = this.getChildNode("confirm_button");
+        this.forgot_button = this.getChildNode("forgot_button");
+        this.register_button = this.getChildNode("register_button");
+        this.language_button = this.getChildNode("language_button");
+        this.setEyesOpen(false);
+
+        //调试节点
+        this.testLayout = this.getChildNode("测试 - layout");
         if (this.testLayout) {
             for (let i = 0; i < this.testLayout.childrenCount; i++) {
                 let button = this.testLayout.children[i];
@@ -41,6 +61,12 @@ export default class LoginScene extends BaseScene {
         }
     }
 
+    protected regiterTouchEvents() {
+        this.eyes_button.on("click", this.onEyesClick, this);
+        this.confirm_button.on("click", this.onConfirmClick, this);
+        this.forgot_button.on("click", this.onForgotClick, this);
+        this.register_button.on("click", this.onRegisterClick, this);
+    }
     start() {
 
     }
@@ -58,8 +84,8 @@ export default class LoginScene extends BaseScene {
      * 眼睛点击
      */
     onEyesClick() {
-        this.setEyesOpen(this.eyesIsOpen = !this.eyesIsOpen);
-        if (this.eyesIsOpen) {
+        this.setEyesOpen(!this.open_eyes_icon.active);
+        if (this.open_eyes_icon.active) {
             this.pass_editbox.inputFlag = cc.EditBox.InputFlag.DEFAULT;
         } else {
             this.pass_editbox.inputFlag = cc.EditBox.InputFlag.PASSWORD;
@@ -68,8 +94,8 @@ export default class LoginScene extends BaseScene {
     /**
     * 登录点击
     */
-    onLoginClick() {
-        cc.log("onLoginClick");
+    onConfirmClick() {
+        cc.log("onConfirmClick");
         //强制触发输入框的弹出键盘
         //CCTools.EditBoxBeginEditing(this.phone_editbox);
     }

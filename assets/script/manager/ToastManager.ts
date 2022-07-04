@@ -3,8 +3,8 @@
  */
 
 import Main from "../Main";
-import Toast from "../ui/component/Toast";
-import ToastContext from "../ui/toast/ToastContext";
+import AssetContext from "../ui/component/AssetContext";
+import Toast from "../ui/toast/Toast";
 import SingleManager from "./SingleManager";
 
 
@@ -87,6 +87,7 @@ export default class ToastManager extends SingleManager {
     async sequenceMove() {
         while (this.sequenceToasts.length) {
             await this.moveStep();
+            this.fadeComplete();
         }
         cc.log("sequenceMove complete");
     }
@@ -104,11 +105,9 @@ export default class ToastManager extends SingleManager {
                 let disTime = (new Date().getTime() - toast_script.markFadeOriTime) / 1000;
                 let passTime = this.fadeDuration - disTime;
                 if (passTime <= 0) {
-                    this.fadeComplete();
                     reslove(0);
                 } else {
                     cc.tween(toast).delay(passTime).call(() => {
-                        this.fadeComplete();
                         reslove(0);
                     }).start();
                 }
@@ -124,7 +123,6 @@ export default class ToastManager extends SingleManager {
         if (this.sequenceToasts.length == 0) {
             this.prevToast = null;
             this.sequenceContent.stopAllActions();
-            cc.log("所有toast节点运动结束");
         }
     }
     /**
@@ -139,7 +137,7 @@ export default class ToastManager extends SingleManager {
      */
     getToast() {
         if (this.toast_pool.length) return this.toast_pool.shift();
-        let toast_pb = this.node.getComponent(ToastContext)?.toast_prefab;
+        let toast_pb: cc.Prefab = AssetContext.getAsset<cc.Prefab>("Toast");
         return toast_pb && cc.instantiate(toast_pb) || null;
     }
 }
