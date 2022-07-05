@@ -1,6 +1,7 @@
 /**
  * 入口函数
  */
+import Dispatcher from "./event/Dispatcher";
 import DialogManager from "./manager/DialogManager";
 import ProcedureManager from "./manager/ProcedureManager";
 
@@ -41,12 +42,11 @@ export default class Main extends cc.Component {
         Main.Block = this.node.parent.getChildByName("Block - 遮挡");
         Main.Prompt = this.node.parent.getChildByName("Prompt - 网络菊花层");
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");
-        
+
         //测试protobuf
         // let message = grace.proto.msg.Player.create({ name: "yechun", id: 123, enterTime: 111 })
         // let buffer = grace.proto.msg.Player.encode(message).finish();
         // cc.log(grace.proto.msg.Player.decode(buffer));
-
     }
     protected onEnable(): void {
         cc.log("屏幕分辨率:", cc.view.getFrameSize().toString());
@@ -56,7 +56,6 @@ export default class Main extends cc.Component {
     start() {
         ProcedureManager.Init();
     }
-
 
     // update (dt) {}
 }

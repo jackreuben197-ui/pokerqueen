@@ -2,6 +2,7 @@
  * toast管理器 队列上行显示
  */
 
+import Dispatcher from "../event/Dispatcher";
 import Main from "../Main";
 import AssetContext from "../ui/component/AssetContext";
 import Toast from "../ui/toast/Toast";

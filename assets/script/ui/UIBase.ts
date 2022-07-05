@@ -1,5 +1,6 @@
 import AdapterComponent from "../AdapterComponent";
 import { IUIDefine } from "../define/EIDefine";
+import Dispatcher from "../event/Dispatcher";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -17,6 +18,7 @@ export default class UIBase extends cc.Component {
         !this.UIDefine || this.UIDefine.DisAdaptScreen || this.node.addComponent(AdapterComponent);
         this.lateLoad();
         this.regiterTouchEvents();
+        this.regiterDispatchEvent();
     }
 
     onShow(param: any = null) {
@@ -36,6 +38,12 @@ export default class UIBase extends cc.Component {
      */
     protected regiterTouchEvents() {
 
+    }
+    /**
+     * 注册广播事件
+     */
+    protected regiterDispatchEvent() {
+        //Dispatcher.on();
     }
 
     protected lateLoad() {

@@ -2,6 +2,7 @@
 import { GameConfig } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import Dispatcher from "../event/Dispatcher";
 import Main from "../Main";
 import BoardManager from "../manager/BoardManager";
 import DialogManager from "../manager/DialogManager";
@@ -70,6 +71,9 @@ export default class ProcedureInit extends ProcedureBase {
         window.ProcedureManager = ProcedureManager;
         //@ts-ignore
         window.AssetContext = AssetContext;
+        //@ts-ignore
+        window.Dispatcher = Dispatcher;
+
 
     }
     bindManagers() {
