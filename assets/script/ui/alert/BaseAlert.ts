@@ -66,14 +66,14 @@ export default class BaseAlert extends BaseTouchBoard {
     protected lateLoad(): void {
         super.lateLoad();
 
-        this.title_label = this.getChildNode("title_label").getComponent(cc.Label);
-        this.content_label = this.getChildNode("content_label").getComponent(cc.Label);
+        this.title_label = this.getChildNodeOrComponent("title_label", cc.Label);
+        this.content_label = this.getChildNodeOrComponent("content_label", cc.Label);
 
-        this.confirm_button = this.getChildNode("confirm_button");
-        this.confirm_label = this.getChildNode("confirm_label")?.getComponent(cc.Label);
+        this.confirm_button = this.getChildNodeOrComponent("confirm_button");
+        this.confirm_label = this.getChildNodeOrComponent("confirm_label", cc.Label);
 
-        this.cancel_button = this.getChildNode("cancel_button");
-        this.cancel_label = this.getChildNode("cancel_label")?.getComponent(cc.Label);
+        this.cancel_button = this.getChildNodeOrComponent("cancel_button");
+        this.cancel_label = this.getChildNodeOrComponent("cancel_label", cc.Label);
 
 
         this.specialLoad();

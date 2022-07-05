@@ -29,11 +29,11 @@ export default class ResetPassForm extends BaseForm {
     protected lateLoad() {
         super.lateLoad();
 
-        this.pass_editbox = this.getChildNode("pass_editbox")?.getComponent(cc.EditBox);
-        this.open_eyes_icon = this.getChildNode("open_eyes_icon");
-        this.close_eyes_icon = this.getChildNode("close_eyes_icon");
-        this.eyes_button = this.getChildNode("eyes_button");
-        this.confirm_button = this.getChildNode("confirm_button");
+        this.pass_editbox = this.getChildNodeOrComponent("pass_editbox",cc.EditBox);
+        this.open_eyes_icon = this.getChildNodeOrComponent("open_eyes_icon");
+        this.close_eyes_icon = this.getChildNodeOrComponent("close_eyes_icon");
+        this.eyes_button = this.getChildNodeOrComponent("eyes_button");
+        this.confirm_button = this.getChildNodeOrComponent("confirm_button");
         this.setEyesOpen(false);
     }
 

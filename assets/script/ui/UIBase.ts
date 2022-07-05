@@ -61,12 +61,14 @@ export default class UIBase extends cc.Component {
     }
 
     /**
-     * 通过节点名字索引获取节点
+     * 通过节点名字获取节点 或者 通过 节点名字 + 组件类型 获取节点上的组件
      * @param name 
+     * @component 组件类型
      * @returns 
      */
-    public getChildNode(name: string): cc.Node {
-        return this.view[name];
+    public getChildNodeOrComponent<T extends cc.Component | cc.Node>(name: string, component?: { prototype: T }): T {
+        let node = this.view[name];
+        return component ? (node?.getComponent(component)) : node;
     }
 
     /**
@@ -78,15 +80,15 @@ export default class UIBase extends cc.Component {
     load_all_object(root: cc.Node): void {
         for (let i = 0; i < root.childrenCount; i++) {
             let child: cc.Node = root.children[i];
-            console.log("child", child);
+            //console.log("child", child);
             //@ts-ignore
-            child._components.forEach(nodeComponent => {
-                let name = this._getComponentName(nodeComponent);
-                if (name !== "Widget") {
-                    name = `$${name}`;
-                    child[name] = nodeComponent;
-                }
-            });
+            // child._components.forEach(nodeComponent => {
+            //     let name = this._getComponentName(nodeComponent);
+            //     if (name !== "Widget") {
+            //         name = `$${name}`;
+            //         child[name] = nodeComponent;
+            //     }
+            // });
             this.view[root.children[i].name] = child;
             this.load_all_object(root.children[i]);
         }

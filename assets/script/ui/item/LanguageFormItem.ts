@@ -36,11 +36,11 @@ export default class LanguageFormItem extends UIBase {
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.toggle = this.getChildNode("toggle")?.getComponent(cc.Toggle);
-        this.flag_icon = this.getChildNode("flag_icon")?.getComponent(cc.Sprite);
-        this.s_language_label = this.getChildNode("s_language_label")?.getComponent(cc.Label);
-        this.language_label = this.getChildNode("language_label")?.getComponent(cc.Label);
-        this.bottom_line = this.getChildNode("bottom_line");
+        this.toggle = this.getChildNodeOrComponent("toggle", cc.Toggle);
+        this.flag_icon = this.getChildNodeOrComponent("flag_icon", cc.Sprite);
+        this.s_language_label = this.getChildNodeOrComponent("s_language_label", cc.Label);
+        this.language_label = this.getChildNodeOrComponent("language_label", cc.Label);
+        this.bottom_line = this.getChildNodeOrComponent("bottom_line");
 
     }
 

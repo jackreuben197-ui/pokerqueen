@@ -33,12 +33,12 @@ export default class BaseTouchBoard extends UIBase {
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.mask = this.getChildNode("mask");
-        this.main = this.getChildNode("main");
-        this.content = this.getChildNode("content");
+        this.mask = this.getChildNodeOrComponent("mask");
+        this.main = this.getChildNodeOrComponent("main");
+        this.content = this.getChildNodeOrComponent("content");
         this.mask_block = this.mask.getComponent(cc.BlockInputEvents);
         this.content_block = this.content.getComponent(cc.BlockInputEvents);
-        this.top_block = this.getChildNode("top_block");
+        this.top_block = this.getChildNodeOrComponent("top_block");
     }
 
 

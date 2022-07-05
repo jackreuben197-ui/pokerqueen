@@ -38,11 +38,11 @@ export default class BaseForm extends UIBase {
     protected lateLoad() {
         super.lateLoad();
         //元素赋值
-        this.main = this.getChildNode("main");
-        this.title_label = this.getChildNode("title_label")?.getComponent(cc.Label);
-        this.back_click = this.getChildNode("back_click");
-        this.content = this.getChildNode("content - 内容填充");
-        this.top_block = this.getChildNode("top_block");
+        this.main = this.getChildNodeOrComponent("main");
+        this.title_label = this.getChildNodeOrComponent("title_label", cc.Label);
+        this.back_click = this.getChildNodeOrComponent("back_click");
+        this.content = this.getChildNodeOrComponent("content - 内容填充");
+        this.top_block = this.getChildNodeOrComponent("top_block");
 
         this.title_label.string = this.UIDefine?.Title || "未定义标题";
         //设置尺寸

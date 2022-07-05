@@ -57,5 +57,6 @@ export default class Main extends cc.Component {
         ProcedureManager.Init();
     }
 
+
     // update (dt) {}
 }

@@ -24,9 +24,9 @@ export default class PreloadingScene extends BaseScene {
 
         super.lateLoad();
 
-        this.progress_bar = this.getChildNode("progress_bar")?.getComponent(cc.ProgressBar);
-        this.progress_label = this.getChildNode("progress_label")?.getComponent(cc.Label);
-        this.progress_desc = this.getChildNode("progress_desc")?.getComponent(cc.Label);
+        this.progress_bar = this.getChildNodeOrComponent("progress_bar", cc.ProgressBar);
+        this.progress_label = this.getChildNodeOrComponent("progress_label", cc.Label);
+        this.progress_desc = this.getChildNodeOrComponent("progress_desc", cc.Label);
 
         this.setProgress(0);
         this.setLabel("加载中...0%");

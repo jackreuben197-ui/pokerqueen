@@ -34,9 +34,9 @@ export default class LanguageForm extends BaseForm {
 
     protected lateLoad() {
         super.lateLoad();
-        this.languageItem = this.getChildNode("languageItem")?.getComponent(LanguageFormItem);
-        this.scrollContent = this.getChildNode("scrollContent");
-        this.toggleContainer = this.getChildNode("toggleContainer")?.getComponent(GGToggleContainer);
+        this.languageItem = this.getChildNodeOrComponent("languageItem", LanguageFormItem);
+        this.scrollContent = this.getChildNodeOrComponent("scrollContent");
+        this.toggleContainer = this.getChildNodeOrComponent("toggleContainer", GGToggleContainer);
 
         this.languageItem.node.active = false;
         let languageItem, languageItem_script;
