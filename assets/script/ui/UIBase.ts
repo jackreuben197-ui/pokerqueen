@@ -47,10 +47,7 @@ export default class UIBase extends cc.Component {
     }
 
     protected lateLoad() {
-        let start_time = new Date().getTime();
         this.load_all_object(this.node);
-        UIBase.load_all_objects_duration += new Date().getTime() - start_time;
-        cc.log("load_all_object 总消耗时间(s):", new Date().getTime(), UIBase.load_all_objects_duration);
     }
 
     protected lateClose(param: any = null) {
