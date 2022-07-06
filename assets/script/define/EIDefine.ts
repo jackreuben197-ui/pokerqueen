@@ -17,8 +17,10 @@ export enum ProcedureEnum {
     Init = 1,
     //预加载
     Preloading = 2,
+    //配置
+    Config = 3,
     //登录
-    Login = 3,
+    Login = 4,
 
 }
 /**
@@ -59,4 +61,20 @@ export interface DialogParam {
     cancelCallback?: () => void;
     block?: boolean;
     style?: any;
+}
+
+export interface INetWork {
+    HTTP: string;
+    WebHost: string;
+    LoginHost: string;
+    APIPort: string;
+    PayPort: string;
+    LoginPort: string;
+    HeadPort: string;
+    PaipuPort: string; //牌谱
+    UploadPort: string; //头像上传
+    UseDNS: string;
+    AboutWeURL: string;
+    UserAgentURL: string;
+    DataAnalysURL: string;
 }

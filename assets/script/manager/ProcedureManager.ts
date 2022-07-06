@@ -3,6 +3,7 @@
  */
 import { ProcedureEnum } from "../define/EIDefine";
 import ProcedureBase from "../procedure/ProcedureBase";
+import ProcedureConfig from "../procedure/ProcedureConfig";
 import ProcedureInit from "../procedure/ProcedureInit";
 import ProcedureLogin from "../procedure/ProcedureLogin";
 import ProcedurePreLoading from "../procedure/ProcedurePreloading";
@@ -17,6 +18,7 @@ export default class ProcedureManager {
 
         this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();
         this.procedureDic[ProcedureEnum.Preloading] = new ProcedurePreLoading();
+        this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig();
         this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin();
 
         //this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();

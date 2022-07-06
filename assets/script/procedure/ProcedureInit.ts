@@ -63,23 +63,25 @@ export default class ProcedureInit extends ProcedureBase {
      * 设置到全局引用 (方便浏览器F12控制台可以直接输入)
      */
     setToWin() {
-        //@ts-ignore
-        window.UIDefine = UIDefine;
-        //@ts-ignore
-        window.Main = Main;
-        //@ts-ignore
-        window.ProcedureManager = ProcedureManager;
-        //@ts-ignore
-        window.AssetContext = AssetContext;
-        //@ts-ignore
-        window.Dispatcher = Dispatcher;
 
+        let classes = {
+            UIDefine,
+            Main,
+            ProcedureManager,
+            AssetContext,
+            Dispatcher,
+            GameConfig
+        }
 
+        for (let key in classes) {
+            cc.log(`[window class.name : ${key}]`)
+            window[key] = classes[key];
+        }
     }
     bindManagers() {
         for (let manager of this.managers) {
             Main.instance.node.addComponent(manager);
-            cc.log("manager.name : ", manager.name);
+            cc.log(`[window manager.name : ${manager.name}]`);
             window[manager.name] = manager;
         }
 

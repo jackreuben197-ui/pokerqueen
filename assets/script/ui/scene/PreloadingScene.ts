@@ -52,7 +52,7 @@ export default class PreloadingScene extends BaseScene {
                 this.setLabel(`加载中...${percent * 100 ^ 0}%`);
             }, (error: Error, assets) => {
                 cc.log("预加载资源加载完成");
-                ProcedureManager.StartProcedure(ProcedureEnum.Login);
+                ProcedureManager.StartProcedure(ProcedureEnum.Config);
             })
     }
     Exit(param) {

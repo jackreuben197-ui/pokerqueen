@@ -39,8 +39,8 @@ export default class LoginScene extends BaseScene {
     protected lateLoad() {
         super.lateLoad();
 
-        this.phone_editbox = this.getChildNodeOrComponent("phone_editbox",cc.EditBox);
-        this.pass_editbox = this.getChildNodeOrComponent("pass_editbox",cc.EditBox);
+        this.phone_editbox = this.getChildNodeOrComponent("phone_editbox", cc.EditBox);
+        this.pass_editbox = this.getChildNodeOrComponent("pass_editbox", cc.EditBox);
         this.open_eyes_icon = this.getChildNodeOrComponent("open_eyes_icon");
         this.close_eyes_icon = this.getChildNodeOrComponent("close_eyes_icon");
         this.eyes_button = this.getChildNodeOrComponent("eyes_button");
@@ -67,8 +67,8 @@ export default class LoginScene extends BaseScene {
         this.forgot_button.on("click", this.onForgotClick, this);
         this.register_button.on("click", this.onRegisterClick, this);
     }
-    start() {
-
+    protected lateEnter() {
+        
     }
 
     // update (dt) {}

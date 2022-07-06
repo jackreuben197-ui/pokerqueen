@@ -3,12 +3,22 @@
  * 游戏配置
  */
 
-export var GameConfig = {
+import { INetWork } from "../define/EIDefine";
+
+export class GameConfig {
     //设计分辨率
-    DesignResolution: cc.size(1242, 2688),
+    static DesignResolution = cc.size(1242, 2688);
     //fps
-    FrameRate: 60,
+    static FrameRate = 60;
     //多点触摸
-    ENABLE_MULTI_TOUCH: false,
+    static ENABLE_MULTI_TOUCH = false;
+
+    //服务器类型 1测试 2正式
+    static Server_Type = 2;
+
+    //对应 GlobalProto.txt
+    static C_GlobalProto = null;
+    //网络配置
+    static Network: INetWork;
 
 }
