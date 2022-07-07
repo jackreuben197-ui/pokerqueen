@@ -1,4 +1,6 @@
+import { UIDefine } from "../../define/UIDefine";
 import ToastManager from "../../manager/ToastManager";
+import UIManager from "../../manager/UIManager";
 import { HttpErrorCode } from "./HttpErrorCode";
 
 /**
@@ -11,9 +13,10 @@ export default class HttpClient {
      * post 请求
      */
     static async post(url, param = null, { onFailure, onSuccess = null }) {
-
-        let response = await this.__request(url, "POST", param);
-        cc.log("post - url : ", url);
+        cc.log("post - url : ", url, param);
+        UIManager.open(UIDefine.UIPromptComponent);
+        let response: string = <string>await this.__request(url, "POST", param);
+        UIManager.close(UIDefine.UIPromptComponent);
         cc.log("post - response : ", response);
         this.__response(response, onFailure, onSuccess);
     }
@@ -21,13 +24,13 @@ export default class HttpClient {
      * get 请求
      */
     static async get(url, { onFailure = null, onSuccess = null }) {
-        let response: string = <string>await this.__request(url, "GET");
         cc.log("get - url : ", url);
+        UIManager.open(UIDefine.UIPromptComponent);
+        let response: string = <string>await this.__request(url, "GET");
+        UIManager.close(UIDefine.UIPromptComponent);
         cc.log("get - response : ", response);
         this.__response(response, onFailure, onSuccess);
     }
-
-
     static __response(response, onFailure, onSuccess) {
         switch (response) {
             case "timeout":
@@ -42,7 +45,12 @@ export default class HttpClient {
                 if (response?.code > 0) {
                     //错误码提示
                 }
-                onSuccess && onSuccess(response);
+                try {
+                    let response_json = JSON.parse(response);
+                    onSuccess && onSuccess(response_json);
+                } catch (e) {
+                    onSuccess && onSuccess(null)
+                }
                 break;
         }
     }
@@ -57,7 +65,7 @@ export default class HttpClient {
                 resolve("timeout");
             }, HttpClient.TimeOut);
             xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && (xhr.status >= 200 && xhr.status < 300)) {
+                if (xhr.readyState === 4 && (xhr.status >= 200 && xhr.status < 400)) {
                     var response = xhr.responseText;
                     if (isTimeout) return;//请求已经超时，忽略
                     clearTimeout(timer);//取消等待的超时                 
@@ -79,7 +87,7 @@ export default class HttpClient {
             xhr.timeout = HttpClient.TimeOut;
             xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
             xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(param);
+            xhr.send(param ? JSON.stringify(param) : null);
         })
     }
 }

@@ -21,7 +21,9 @@ export default class ProcedureConfig extends ProcedureBase {
         await HttpClient.get(GameConfig.GlobalProto.NetLineSwitchUrl, {
             onFailure() {
             },
-            onSuccess: () => { }
+            onSuccess: (response) => {
+                cc.log("data:", response);
+            }
         });
         SceneManager.ins.switchScene(UIDefine.LoginScene);
     }

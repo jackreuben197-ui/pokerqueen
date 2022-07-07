@@ -67,11 +67,13 @@ export default class UIPromptComponent extends UIBase {
                 break;
         }
     }
-    goClose() {
+    protected lateClose(param: any = null) {
         this.translateStatus(this.statusType.Idle);
+        cc.log("status 0");
+    }
+    goClose() {
         UIManager.close(this.UIDefine);
     }
-
     //切换状态
     translateStatus(status: number) {
         this.status = status;
