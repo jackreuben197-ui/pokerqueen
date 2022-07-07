@@ -19,13 +19,11 @@ export default class ProcedureConfig extends ProcedureBase {
         console.log("GameConfig.Network : ", GameConfig.Network);
         //请求linklist
         await HttpClient.get(GameConfig.GlobalProto.NetLineSwitchUrl, {
-            onFailure() {
-            },
             onSuccess: (response) => {
                 cc.log("data:", response);
+                SceneManager.ins.switchScene(UIDefine.LoginScene);
             }
         });
-        SceneManager.ins.switchScene(UIDefine.LoginScene);
     }
     Leave() {
         super.Leave();
