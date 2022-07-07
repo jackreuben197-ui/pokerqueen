@@ -94,5 +94,9 @@ export default class NewClass extends cc.Component {
 
 ```
 
+8. Md5库安装
 
+npm install ts-md5 --save  
+
+```
 

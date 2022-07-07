@@ -12,7 +12,7 @@ export default class HttpClient {
     /**
      * post 请求
      */
-    static async post(url, param = null, { onFailure = null, onSuccess = null }) {
+    static async post({ url = null, param = null, onFailure = null, onSuccess = null }) {
         cc.log("post - url : ", url, param);
         UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "POST", param);
@@ -23,10 +23,10 @@ export default class HttpClient {
     /**
      * get 请求
      */
-    static async get(url, { onFailure = null, onSuccess = null }) {
+    static async get({ url = null, param = null, onFailure = null, onSuccess = null }) {
         cc.log("get - url : ", url);
         UIManager.open(UIDefine.UIPromptComponent);
-        let response: string = <string>await this.__request(url, "GET");
+        let response: string = <string>await this.__request(url, "GET", param);
         UIManager.close(UIDefine.UIPromptComponent);
         cc.log("get - response : ", response);
         this.__response(response, onFailure, onSuccess);

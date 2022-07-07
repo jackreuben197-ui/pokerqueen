@@ -1,8 +1,13 @@
 
+import { Md5 } from "ts-md5";
+import { GameConfig } from "../../config/GameConfig";
 import { DialogParam } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
+import HttpClient from "../../net/https/HttpClient";
+import HttpRequest from "../../net/https/HttpRequest";
+import { Web_Login } from "../../net/https/WebRequest";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -59,7 +64,7 @@ export default class LoginScene extends BaseScene {
         this.register_button.on("click", this.onRegisterClick, this);
     }
     protected lateEnter() {
-        
+
     }
 
     // update (dt) {}
@@ -89,6 +94,26 @@ export default class LoginScene extends BaseScene {
         cc.log("onConfirmClick");
         //强制触发输入框的弹出键盘
         //CCTools.EditBoxBeginEditing(this.phone_editbox);
+
+        //GameConfig.GlobalProto.
+
+        HttpRequest.Send(
+            {
+                api: Web_Login.API,
+                param: Web_Login.Request({
+                    phone: "13718482686",
+                    password: "08aaf7b5d3bf1979c1fd183517cecb23",
+                    //Md5.hashStr(""),
+                    area: "55",
+                    is_simulator: false,
+                }),
+                onSuccess() {
+
+                },
+                onFailure() {
+
+                }
+            })
     }
     /**
      * 找回密码点击

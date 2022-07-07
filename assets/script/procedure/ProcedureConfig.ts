@@ -1,3 +1,4 @@
+
 import { GameConfig, NetWorkBase } from "../config/GameConfig";
 import { UIDefine } from "../define/UIDefine";
 import SceneManager from "../manager/SceneManager";
@@ -18,7 +19,8 @@ export default class ProcedureConfig extends ProcedureBase {
         GameConfig.Network = this.getNetwork();
         console.log("GameConfig.Network : ", GameConfig.Network);
         //请求linklist
-        await HttpClient.get(GameConfig.GlobalProto.NetLineSwitchUrl, {
+        await HttpClient.get({
+            url: GameConfig.GlobalProto.NetLineSwitchUrl,
             onSuccess: (response) => {
                 cc.log("data:", response);
                 SceneManager.ins.switchScene(UIDefine.LoginScene);
