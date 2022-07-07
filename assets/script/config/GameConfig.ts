@@ -17,8 +17,25 @@ export class GameConfig {
     static Server_Type = 2;
 
     //对应 GlobalProto.txt
-    static C_GlobalProto = null;
+    static GlobalProto: { NetLineSwitchUrl?: string } = null;
     //网络配置
-    static Network: INetWork;
+    static Network: INetWork = null;
 
+}
+/**
+ * 网络配置
+ */
+export var NetWorkBase = {
+    WebHostIP: "152.70.234.14",
+    LoginHostIP: "152.70.234.14",
+    LoginPort: "8058",
+    APIPort: "5060",
+    PayPort: "9403",
+    HeadPort: "5051",
+    PaipuPort: "6038",
+    UploadPort: "5050",
+    UseDNS: "false",
+    AboutWeURL: "xxx",
+    UserAgentURL: "xxx",
+    DataAnalysisURL: "xxx",
 }

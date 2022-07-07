@@ -1,7 +1,7 @@
-import { GameConfig } from "../config/GameConfig";
-import { NetWorkBase } from "../config/NetWorkBase";
+import { GameConfig, NetWorkBase } from "../config/GameConfig";
 import { UIDefine } from "../define/UIDefine";
 import SceneManager from "../manager/SceneManager";
+import HttpClient from "../net/https/HttpClient";
 import ProcedureBase from "./ProcedureBase";
 
 
@@ -13,10 +13,16 @@ export default class ProcedureConfig extends ProcedureBase {
     async Enter(param: any) {
         super.Enter(param);
         //设置 GlobalProto 配置
-        GameConfig.C_GlobalProto = await this.getGlobalProto();
-
-        this.initNetwork();
-
+        GameConfig.GlobalProto = await this.getGlobalProto();
+        console.log("GameConfig.GlobalProto : ", GameConfig.GlobalProto);
+        GameConfig.Network = this.getNetwork();
+        console.log("GameConfig.Network : ", GameConfig.Network);
+        //请求linklist
+        await HttpClient.get(GameConfig.GlobalProto.NetLineSwitchUrl, {
+            onFailure() {
+            },
+            onSuccess: () => { }
+        });
         SceneManager.ins.switchScene(UIDefine.LoginScene);
     }
     Leave() {
@@ -24,31 +30,49 @@ export default class ProcedureConfig extends ProcedureBase {
     }
 
     //初始化网络配置
-    private initNetwork() {
+    private getNetwork() {
+        let keys =
+            [
+                "APIPort",
+                "PayPort",
+                "LoginPort",
+                "HeadPort",
+                "PaipuPort",
+                "UploadPort",
+                "UseDNS",
+                "AboutWeURL",
+                "UserAgentURL",
+                "DataAnalysisURL"
+            ];
+        let network: any = {};
         switch (GameConfig.Server_Type) {
             case 1://测试服
-                GameConfig.Network.HTTP = cc.sys.localStorage.getItem("");
+                network.HTTP = cc.sys.localStorage.getItem("");
                 //PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
-                GameConfig.Network.WebHost = `http://${GameConfig.Network.HTTP}`;
-                GameConfig.Network.LoginHost = cc.sys.localStorage.getItem("");
-                [
-                    "APIPort",
-                    "PayPort",
-                    "LoginPort",
-                    "HeadPort",
-                    "PaipuPort",
-                    "UploadPort",
-                    "UseDNS",
-                    "AboutWeURL",
-                    "UserAgentURL",
-                    "DataAnalysisURL"
-                ].forEach(item => {
-                    GameConfig.Network[item] = NetWorkBase[item];
+                network.WebHost = `http://${network.HTTP}`;
+                network.LoginHost = cc.sys.localStorage.getItem("");
+                keys.forEach(item => {
+                    network[item] = NetWorkBase[item];
                 })
                 break;
             case 2://正式服
+                network.HTTP = "dev.k8s.awanptesting.com";////PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
+                network.WebHost = `http://${network.HTTP}`;
+                network.LoginHost = "52.221.136.216";
+                //Dns.GetHostEntry("dev.k8s.awanptesting.com").AddressList[0].ToString(); //PlayerPrefsMgr.mInstance.GetString(sckKey, networkConf.LoginHostIP);
+                keys.forEach(item => {
+                    network[item] = NetWorkBase[item];
+                })
+                network.APIPort = "80";
                 break;
         }
+        network.WebURL = `${network.WebHost}:${network.APIPort}`;
+        network.PayURL = `${network.WebHost}:${network.PayPort}`;
+        network.HeadUrl = `${network.WebHost}:${network.HeadPort}`;
+        network.BannerImageUrl = `${network.WebHost}:${network.HeadPort}`;
+        network.UploadURL = `${network.WebHost}:${network.UploadPort}`;
+        network.PaipuBaseUrl = `${network.WebHost}:${network.PaipuPort}?lan=zh&info_id=`;
+        return network;
     }
 
     private getGlobalProto() {

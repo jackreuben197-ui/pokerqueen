@@ -77,4 +77,12 @@ export interface INetWork {
     AboutWeURL: string;
     UserAgentURL: string;
     DataAnalysURL: string;
+
+    WebURL: string;
+    PayURL: string;
+    HeadUrl: string;
+    BannerImageUrl: string;
+    UploadURL: string;
+    PaipuBaseUrl: string;
+
 }
