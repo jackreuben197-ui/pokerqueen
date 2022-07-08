@@ -1,13 +1,13 @@
+import Singleton from "../common/Singleton";
 import Main from "../Main";
 import BaseScene from "../ui/scene/BaseScene";
 import { ResManager } from "./ResManager";
-import SingleManager from "./SingleManager";
 
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class SceneManager extends SingleManager {
+export default class SceneManager extends Singleton {
 
     static ins: SceneManager;
     uiMap = {};

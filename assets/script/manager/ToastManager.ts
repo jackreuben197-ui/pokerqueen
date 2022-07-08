@@ -2,17 +2,17 @@
  * toast管理器 队列上行显示
  */
 
+import Singleton from "../common/Singleton";
 import Dispatcher from "../event/Dispatcher";
 import Main from "../Main";
 import AssetContext from "../ui/component/AssetContext";
 import Toast from "../ui/toast/Toast";
-import SingleManager from "./SingleManager";
 
 
 const { ccclass } = cc._decorator;
 
 @ccclass
-export default class ToastManager extends SingleManager {
+export default class ToastManager extends Singleton {
 
     static ins: ToastManager = null;
 

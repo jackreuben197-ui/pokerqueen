@@ -1,16 +1,16 @@
 
+import Singleton from "../common/Singleton";
 import { IUIDefine, UIType } from "../define/EIDefine";
 import AlertManager from "./AlertManager";
 import BoardManager from "./BoardManager";
 import DialogManager from "./DialogManager";
 import FormManager from "./FormManager";
 import PromptManager from "./PromptManager";
-import SingleManager from "./SingleManager";
 
 const { ccclass } = cc._decorator;
 
 @ccclass
-export default class UIManager extends SingleManager {
+export default class UIManager extends Singleton {
 
     static ins: UIManager;
 

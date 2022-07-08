@@ -1,4 +1,5 @@
 
+import Singleton from "../common/Singleton";
 import { GameConfig } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
@@ -10,15 +11,16 @@ import FormManager from "../manager/FormManager";
 import I18NManager from "../manager/I18NManager";
 import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
-import SingleManager from "../manager/SingleManager";
 import ToastManager from "../manager/ToastManager";
 import UIManager from "../manager/UIManager";
+import HttpClient from "../net/https/HttpClient";
+import LoginSession from "../session/LoginSession";
 import AssetContext from "../ui/component/AssetContext";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureInit extends ProcedureBase {
 
-    managers: typeof SingleManager[] = [
+    managers: typeof Singleton[] = [
         I18NManager,
         ToastManager,
         SceneManager,
@@ -26,6 +28,7 @@ export default class ProcedureInit extends ProcedureBase {
         BoardManager,
         DialogManager,
         UIManager,
+        LoginSession,
     ];
 
 
@@ -70,9 +73,9 @@ export default class ProcedureInit extends ProcedureBase {
             ProcedureManager,
             AssetContext,
             Dispatcher,
-            GameConfig
+            GameConfig,
+            HttpClient,
         }
-
         for (let key in classes) {
             cc.log(`[window class.name : ${key}]`)
             window[key] = classes[key];

@@ -21,6 +21,8 @@ export enum ProcedureEnum {
     Config = 3,
     //登录
     Login = 4,
+    //进入请求
+    Enter = 5.
 
 }
 /**

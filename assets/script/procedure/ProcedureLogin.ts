@@ -1,14 +1,22 @@
+import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
+import LoginSession from "../session/LoginSession";
 import ProcedureBase from "./ProcedureBase";
 
 
 export default class ProcedureLogin extends ProcedureBase {
     Enter(param: any) {
         super.Enter(param);
-        //判断是否自动登录
-        //展示登录界面
-        SceneManager.ins.switchScene(UIDefine.LoginScene);
+        //判断是否存在有效token
+        if (LoginSession.ins.isTokenVaild()) {
+            //进入登录请求流程
+            ProcedureManager.StartProcedure(ProcedureEnum.Enter);
+        } else {
+            //展示登录界面
+            SceneManager.ins.switchScene(UIDefine.LoginScene);
+        }
     }
     Leave() {
         super.Leave();

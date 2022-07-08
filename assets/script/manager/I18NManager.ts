@@ -1,11 +1,11 @@
+import Singleton from "../common/Singleton";
 import LabelI18N from "../i18n/LabelI18N";
-import SingleManager from "./SingleManager";
 
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class I18NManager extends SingleManager{
+export default class I18NManager extends Singleton {
 
     static ins: I18NManager = null;
 
@@ -13,15 +13,15 @@ export default class I18NManager extends SingleManager{
         "Please enter phone number": "请输入手机号码",
         "Please enter password": "请输入密码",
         "Log in": "登 录",
-        "Alligator" : "鳄鱼",
-        "Reset Password" : "重置密码",
+        "Alligator": "鳄鱼",
+        "Reset Password": "重置密码",
     };
     en_json = {
         "Please enter phone number": "Please enter phone number",
         "Please enter password": "Please enter password",
         "Log in": "Log in",
-        "Alligator":"Alligator",
-        "Reset Password":"Reset Password"
+        "Alligator": "Alligator",
+        "Reset Password": "Reset Password"
     };
 
     language_json: {};

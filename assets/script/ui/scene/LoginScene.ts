@@ -1,13 +1,16 @@
 
 import { Md5 } from "ts-md5";
 import { GameConfig } from "../../config/GameConfig";
-import { DialogParam } from "../../define/EIDefine";
+import { DialogParam, ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
+import ProcedureManager from "../../manager/ProcedureManager";
+import PromptManager from "../../manager/PromptManager";
 import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
 import HttpClient from "../../net/https/HttpClient";
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Login } from "../../net/https/WebRequest";
+import { IResponseData, Web_Login } from "../../net/https/WebRequest";
+import ProcedureEnter from "../../procedure/ProcedureEnter";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -91,29 +94,44 @@ export default class LoginScene extends BaseScene {
     * 登录点击
     */
     onConfirmClick() {
-        cc.log("onConfirmClick");
-        //强制触发输入框的弹出键盘
-        //CCTools.EditBoxBeginEditing(this.phone_editbox);
 
-        //GameConfig.GlobalProto.
 
-        HttpRequest.Send(
-            {
-                api: Web_Login.API,
-                param: Web_Login.Request({
-                    phone: "13718482686",
-                    password: "08aaf7b5d3bf1979c1fd183517cecb23",
-                    //Md5.hashStr(""),
-                    area: "55",
-                    is_simulator: false,
-                }),
-                onSuccess() {
+        // HttpRequest.Send({
+        //     request: Web_Login,
+        //     param: Web_Login.Request(
+        //         {
+        //             phone: "13718482686",
+        //             password: "08aaf7b5d3bf1979c1fd183517cecb23",
+        //             //Md5.hashStr(""),
+        //             area: "55",
+        //             is_simulator: false,
+        //         }),
+        //     onSuccess() {
+        //         cc.log("Web_Login.Data", Web_Login.Response.data);
+        //     }
+        // });
+        ProcedureManager.StartProcedure(ProcedureEnum.Enter, { phone: "13718482686", password: "woshishui", area: "55" });
 
-                },
-                onFailure() {
 
-                }
-            })
+
+        // HttpRequest.Send(
+        //     {
+        //         api: Web_Login.API,
+        //         param: Web_Login.Request({
+        //             phone: "13718482686",
+        //             password: "08aaf7b5d3bf1979c1fd183517cecb23",
+        //             //Md5.hashStr(""),
+        //             area: "55",
+        //             is_simulator: false,
+        //         }),
+        //         onSuccess(response: IResponseData) {
+        //             Web_Login.Response(response.data);
+        //             cc.log("Web_Login >> ", Web_Login.Data);
+        //         },
+        //         onFailure() {
+
+        //         }
+        //     })
     }
     /**
      * 找回密码点击

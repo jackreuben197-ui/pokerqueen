@@ -1,15 +1,16 @@
 
+import Singleton from "../common/Singleton";
 import { UIFadeStyleEnum } from "../define/EIDefine";
 import Main from "../Main";
 import UIBase from "../ui/UIBase";
 import { ResManager } from "./ResManager";
-import SingleManager from "./SingleManager";
+
 
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class FormManager extends SingleManager {
+export default class FormManager extends Singleton {
 
     static ins: FormManager;
 
@@ -46,7 +47,7 @@ export default class FormManager extends SingleManager {
     open(uiDefine: { Name: string, Bundle: string, Path: string }, param: any = null) {
 
         if (this.currUI?.UIDefine.Name == uiDefine.Name) {
-            cc.log("当前面板已经存在!");
+            cc.log("当前面板已经存在:", uiDefine.Name);
             return;
         }
 

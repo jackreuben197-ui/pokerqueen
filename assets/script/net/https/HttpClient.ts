@@ -9,7 +9,7 @@ import { HttpErrorCode } from "./HttpErrorCode";
 export default class HttpClient {
     //超时时间设置(毫秒)
     static TimeOut: number = 10000;
-    /**
+    /**s
      * post 请求
      */
     static async post({ url = null, param = null, onFailure = null, onSuccess = null }) {
@@ -17,20 +17,21 @@ export default class HttpClient {
         UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "POST", param);
         UIManager.close(UIDefine.UIPromptComponent);
-        cc.log("post - response : ", response);
+        cc.log("post - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
     }
     /**
      * get 请求
      */
     static async get({ url = null, param = null, onFailure = null, onSuccess = null }) {
-        cc.log("get - url : ", url);
+        cc.log("get - url : ", url, param);
         UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "GET", param);
         UIManager.close(UIDefine.UIPromptComponent);
-        cc.log("get - response : ", response);
+        cc.log("get - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
     }
+
     static __response(response, onFailure, onSuccess) {
         switch (response) {
             case "timeout":
