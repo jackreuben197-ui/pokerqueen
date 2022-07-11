@@ -1,18 +1,14 @@
 
-export interface IResponseData {
-    code: number;
-    message?: string;
-    data?: any;
-}
-// export interface IRequest {
-//     API: number;
-//     RequestParams?: any;
-//     Request: (param: typeof this.RequestParams)
+// export interface IResponseData {
+//     code: number;
+//     message?: string;
+//     data?: any;
 // }
+
 /**
- * https 请求的数据模型
+ * https 请求登录获取Token
  */
-export class Web_Login {
+export class Web_Login{
     //接口地址
     public static API: string = "/api/user/login";
     //字段声明
@@ -41,7 +37,9 @@ export class Web_Login {
     public static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
 }
 
-
+/**
+ * https 请求用户信息
+ */
 export class Web_User_Info {
     //接口地址
     public static API: string = "/api/user/info";
@@ -77,4 +75,24 @@ export class Web_User_Info {
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_User_Info.ResponseData };
 }
+/**
+ * https 请求频道信息 socket的port
+ */
+export class Web_Channel {
+    //接口地址
+    public static API: string = "/api/user/channel";
+    //字段声明
+    public static RequestParams: {
+    } = null;
 
+    public static ResponseData: {
+        port?        : number,        // socket port
+    } = null;
+
+
+    public static Request(param: typeof Web_Login.RequestParams) {
+        Web_Channel.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Channel.ResponseData };
+}

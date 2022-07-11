@@ -1,6 +1,8 @@
 
 import { GameConfig, NetWorkBase } from "../config/GameConfig";
+import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
 import HttpClient from "../net/https/HttpClient";
 import ProcedureBase from "./ProcedureBase";
@@ -22,7 +24,8 @@ export default class ProcedureConfig extends ProcedureBase {
         await HttpClient.get({
             url: GameConfig.GlobalProto.NetLineSwitchUrl,
             onSuccess: (response) => {
-                SceneManager.ins.switchScene(UIDefine.LoginScene);
+                //SceneManager.ins.switchScene(UIDefine.LoginScene);
+                ProcedureManager.StartProcedure(ProcedureEnum.Login);
             }
         });
     }

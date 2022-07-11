@@ -2281,7 +2281,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "a_code",
+    "_name": "area_label",
     "_objFlags": 0,
     "_parent": {
       "__id__": 62

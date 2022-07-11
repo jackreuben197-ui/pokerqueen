@@ -7,7 +7,7 @@ import HttpClient from "./HttpClient";
 
 export default class HttpRequest {
 
-    static async Send({ request = null, param = null, cuscomHost = null, onSuccess = null, onFailure = null }) {
+    static async Send({ request = null, param = {}, cuscomHost = null, onSuccess = null, onFailure = null }) {
 
         let host = cuscomHost || GameConfig.Network.WebURL;
         //@ts-ignore

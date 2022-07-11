@@ -11,7 +11,7 @@ export default class MainTest extends UIBase {
 
     testLayout: cc.Node;
 
-    lateLoad() {
+    async lateLoad() {
         super.lateLoad();
         //调试节点
         this.testLayout = this.getChildNodeOrComponent("测试 - layout");
@@ -22,6 +22,8 @@ export default class MainTest extends UIBase {
                 button.on("click", this.testClick, this);
             }
         }
+
+
     }
 
     //////////////////////////////////测试///////////////////////////////////

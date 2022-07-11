@@ -5,6 +5,7 @@ import { ProcedureEnum } from "../define/EIDefine";
 import ProcedureBase from "../procedure/ProcedureBase";
 import ProcedureConfig from "../procedure/ProcedureConfig";
 import ProcedureEnter from "../procedure/ProcedureEnter";
+import ProcedureIdle from "../procedure/ProcedureIdle";
 import ProcedureInit from "../procedure/ProcedureInit";
 import ProcedureLogin from "../procedure/ProcedureLogin";
 import ProcedurePreLoading from "../procedure/ProcedurePreloading";
@@ -16,17 +17,16 @@ export default class ProcedureManager {
     public static currProcedure: ProcedureBase = null;
 
     static Init() {
-
+        this.procedureDic[ProcedureEnum.Idel] = new ProcedureIdle();
         this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();
         this.procedureDic[ProcedureEnum.Preloading] = new ProcedurePreLoading();
         this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig();
         this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin();
         this.procedureDic[ProcedureEnum.Enter] = new ProcedureEnter();
-
         ProcedureManager.StartProcedure(ProcedureEnum.Init);
     }
-
-    static StartProcedure(procedureIndex: number, param: any = null) {
+    //开始某个流程
+    static StartProcedure(procedureIndex: number, param: any = null, doEnter: boolean = true) {
         let procedure = this.procedureDic[procedureIndex];
         if (!procedure) {
             cc.log("未定义流程:", ProcedureEnum[procedureIndex]);
@@ -42,5 +42,4 @@ export default class ProcedureManager {
         ProcedureManager.prevProcedure = procedure;
         procedure.Enter(param);
     }
-
 }

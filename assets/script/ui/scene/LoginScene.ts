@@ -1,16 +1,12 @@
 
 import { Md5 } from "ts-md5";
-import { GameConfig } from "../../config/GameConfig";
+import ButtonClickCD from "../../common/ButtonClickCD";
 import { DialogParam, ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import ProcedureManager from "../../manager/ProcedureManager";
-import PromptManager from "../../manager/PromptManager";
 import ToastManager from "../../manager/ToastManager";
+
 import UIManager from "../../manager/UIManager";
-import HttpClient from "../../net/https/HttpClient";
-import HttpRequest from "../../net/https/HttpRequest";
-import { IResponseData, Web_Login } from "../../net/https/WebRequest";
-import ProcedureEnter from "../../procedure/ProcedureEnter";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -37,6 +33,8 @@ export default class LoginScene extends BaseScene {
     register_button: cc.Node = null;
 
     language_button: cc.Node = null;
+
+    area_label: cc.Label = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -56,6 +54,8 @@ export default class LoginScene extends BaseScene {
         this.forgot_button = this.getChildNodeOrComponent("forgot_button");
         this.register_button = this.getChildNodeOrComponent("register_button");
         this.language_button = this.getChildNodeOrComponent("language_button");
+        this.area_label = this.getChildNodeOrComponent("area_label", cc.Label);
+        this.setArea();
         this.setEyesOpen(false);
 
     }
@@ -70,7 +70,9 @@ export default class LoginScene extends BaseScene {
 
     }
 
-    // update (dt) {}
+    setArea() {
+        this.area_label.string = "+55";
+    }
 
     setEyesOpen(boo: boolean) {
         this.open_eyes_icon.active = boo;
@@ -93,45 +95,29 @@ export default class LoginScene extends BaseScene {
     /**
     * 登录点击
     */
-    onConfirmClick() {
+    onConfirmClick(button: cc.Button) {
 
+        if (!ButtonClickCD.canClick(button.node)) return;
 
-        // HttpRequest.Send({
-        //     request: Web_Login,
-        //     param: Web_Login.Request(
-        //         {
-        //             phone: "13718482686",
-        //             password: "08aaf7b5d3bf1979c1fd183517cecb23",
-        //             //Md5.hashStr(""),
-        //             area: "55",
-        //             is_simulator: false,
-        //         }),
-        //     onSuccess() {
-        //         cc.log("Web_Login.Data", Web_Login.Response.data);
-        //     }
-        // });
-        ProcedureManager.StartProcedure(ProcedureEnum.Enter, { phone: "13718482686", password: "woshishui", area: "55" });
+        let phone: string = this.phone_editbox.string;
+        let password: string = this.pass_editbox.string;
+        let area: string = this.area_label.string.substring(1);
+        //判断用户名
+        cc.log("account:", phone, "password:", password);
 
+        if (phone == "") {
+            return ToastManager.ins.craeteToast("account is null");
 
-
-        // HttpRequest.Send(
-        //     {
-        //         api: Web_Login.API,
-        //         param: Web_Login.Request({
-        //             phone: "13718482686",
-        //             password: "08aaf7b5d3bf1979c1fd183517cecb23",
-        //             //Md5.hashStr(""),
-        //             area: "55",
-        //             is_simulator: false,
-        //         }),
-        //         onSuccess(response: IResponseData) {
-        //             Web_Login.Response(response.data);
-        //             cc.log("Web_Login >> ", Web_Login.Data);
-        //         },
-        //         onFailure() {
-
-        //         }
-        //     })
+        }
+        if (password.length < 6) {
+            return ToastManager.ins.craeteToast("password length is error");
+        }
+        let param = {
+            phone,
+            password,
+            area,
+        }
+        ProcedureManager.StartProcedure(ProcedureEnum.Enter, param);
     }
     /**
      * 找回密码点击

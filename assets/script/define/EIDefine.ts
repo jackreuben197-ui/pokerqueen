@@ -13,6 +13,8 @@ export enum UIType {
  * 流程
  */
 export enum ProcedureEnum {
+    //闲置
+    Idel = 0,
     //初始化
     Init = 1,
     //预加载
@@ -22,7 +24,9 @@ export enum ProcedureEnum {
     //登录
     Login = 4,
     //进入请求
-    Enter = 5.
+    Enter = 5,
+    //大厅
+    Lobby = 6,
 
 }
 /**

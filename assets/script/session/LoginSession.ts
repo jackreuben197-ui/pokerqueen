@@ -5,7 +5,7 @@
 import { Md5 } from "ts-md5";
 import Singleton from "../common/Singleton";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Login, Web_User_Info } from "../net/https/WebRequest";
+import { Web_Channel, Web_Login, Web_User_Info } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -16,6 +16,7 @@ export default class LoginSession extends Singleton {
     private _token: string = null;
     private _tokenExpireAt: number = 0;
 
+    //登录请求
     async Login(param: typeof Web_Login.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -27,33 +28,50 @@ export default class LoginSession extends Singleton {
                         area: param.area,
                         is_simulator: false,
                     }),
-                onSuccess() {
-                    cc.log("Web_Login.Data", Web_Login.Response.data);
+                onSuccess: function () {
                     this.token = Web_Login.Response.data.token;
                     this.tokenExpireAt = Web_Login.Response.data.expire_at;
                     resolve(0);
-                },
-                onFailure() {
+                }.bind(this),
+                onFailure: function () {
                     reject();
-                }
+                }.bind(this)
             });
         });
 
     }
+    //用户信息请求
     async GetUserInfo() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Info,
-                onSuccess() {
+                onSuccess: function () {
                     cc.log("Web_User_Info.Data", Web_User_Info.Response.data);
                     resolve(0);
-                },
-                onFailure() {
-                    reject();
-                }
+                }.bind(this),
+                onFailure: function () {
+                    reject(0);
+                }.bind(this)
             });
         });
     }
+
+    //socket port 请求
+    async GetChannel() {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Channel,
+                onSuccess: function () {
+                    cc.log("Web_Channel.Data", Web_Channel.Response.data);
+                    resolve(0);
+                }.bind(this),
+                onFailure: function () {
+                    reject(0);
+                }.bind(this)
+            });
+        });
+    }
+
     //判断用户是否有效token
     public isTokenVaild(): boolean {
         if (this.token == null || this.token == undefined) {

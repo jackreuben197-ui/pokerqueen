@@ -1,6 +1,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
+import LoginSession from "../../session/LoginSession";
 import { HttpErrorCode } from "./HttpErrorCode";
 
 /**
@@ -35,19 +36,22 @@ export default class HttpClient {
     static __response(response, onFailure, onSuccess) {
         switch (response) {
             case "timeout":
-                ToastManager.ins.craeteToast(HttpErrorCode[HttpErrorCode.Timeout].key);
+                ToastManager.ins.craeteToast(HttpErrorCode.GetKey(HttpErrorCode.Timeout));
                 onFailure && onFailure();
                 break;
             case "error":
-                ToastManager.ins.craeteToast(HttpErrorCode[HttpErrorCode.Error].key);
+                ToastManager.ins.craeteToast(HttpErrorCode.GetKey(HttpErrorCode.Error));
                 onFailure && onFailure();
                 break;
             default:
-                if (response?.code > 0) {
-                    //错误码提示
-                }
                 try {
                     let response_json = JSON.parse(response);
+                    if (response_json?.code > 0) {
+                        //错误码提示
+                        ToastManager.ins.craeteToast(HttpErrorCode.GetKey(response_json.code));
+                        onFailure && onFailure();
+                        return;
+                    }
                     onSuccess && onSuccess(response_json);
                 } catch (e) {
                     onSuccess && onSuccess(null)
@@ -86,8 +90,8 @@ export default class HttpClient {
 
             xhr.open(type, url, true);
             xhr.timeout = HttpClient.TimeOut;
-            xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
             xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("md5at", LoginSession.ins.token);
             xhr.send(param ? JSON.stringify(param) : null);
         })
     }
