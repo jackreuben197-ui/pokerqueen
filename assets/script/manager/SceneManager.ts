@@ -1,4 +1,5 @@
 import Singleton from "../common/Singleton";
+import { IUIDefine } from "../define/EIDefine";
 import Main from "../Main";
 import BaseScene from "../ui/scene/BaseScene";
 import { ResManager } from "./ResManager";
@@ -63,6 +64,13 @@ export default class SceneManager extends Singleton {
         currUI && (currUI.parent = this.CacheUILayer);
         currUI?.getComponent(BaseScene)?.Exit(currExitParams);
         newUI?.getComponent(BaseScene)?.Enter(newEnterParams);
+    }
+
+    /**
+     * 获取当前 UIDefine
+     */
+    public getCurrUIDefine(): IUIDefine {
+        return this.currUI?.getComponent(BaseScene)?.UIDefine;
     }
 
 }

@@ -33,8 +33,8 @@ export default class LoginSession extends Singleton {
                     this.tokenExpireAt = Web_Login.Response.data.expire_at;
                     resolve(0);
                 }.bind(this),
-                onFailure: function () {
-                    reject();
+                onFailure: function (content) {
+                    reject(content);
                 }.bind(this)
             });
         });
@@ -49,8 +49,8 @@ export default class LoginSession extends Singleton {
                     cc.log("Web_User_Info.Data", Web_User_Info.Response.data);
                     resolve(0);
                 }.bind(this),
-                onFailure: function () {
-                    reject(0);
+                onFailure: function (content) {
+                    reject(content);
                 }.bind(this)
             });
         });
@@ -65,8 +65,8 @@ export default class LoginSession extends Singleton {
                     cc.log("Web_Channel.Data", Web_Channel.Response.data);
                     resolve(0);
                 }.bind(this),
-                onFailure: function () {
-                    reject(0);
+                onFailure: function (content) {
+                    reject(content);
                 }.bind(this)
             });
         });
@@ -74,7 +74,7 @@ export default class LoginSession extends Singleton {
 
     //判断用户是否有效token
     public isTokenVaild(): boolean {
-        if (this.token == null || this.token == undefined) {
+        if (this.token == null || this.token == undefined || this.token == "") {
             return false;
         }
         return GlobalSession.NowTime() < this.tokenExpireAt;

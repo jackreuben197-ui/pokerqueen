@@ -2,7 +2,9 @@
  * 进入流程
  */
 import { ProcedureEnum } from "../define/EIDefine";
+import { UIDefine } from "../define/UIDefine";
 import ProcedureManager from "../manager/ProcedureManager";
+import SceneManager from "../manager/SceneManager";
 import LoginSession from "../session/LoginSession";
 import ProcedureBase from "./ProcedureBase";
 
@@ -24,8 +26,14 @@ export default class ProcedureEnter extends ProcedureBase {
         super.Leave();
     }
     /////////////////////////////////////////////
-    _catchHandler() {
-        ProcedureManager.StartProcedure(ProcedureEnum.Idel);
+    _catchHandler(code: number) {
+        cc.log("code", code);
+        if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene && code == 90010) {
+            LoginSession.ins.token = "";
+            ProcedureManager.StartProcedure(ProcedureEnum.Login);
+        } else {
+            ProcedureManager.StartProcedure(ProcedureEnum.Idel);
+        }
     }
 
     //1.登录请求,获取Token

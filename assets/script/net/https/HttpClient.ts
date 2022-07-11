@@ -49,7 +49,7 @@ export default class HttpClient {
                     if (response_json?.code > 0) {
                         //错误码提示
                         ToastManager.ins.craeteToast(HttpErrorCode.GetKey(response_json.code));
-                        onFailure && onFailure();
+                        onFailure && onFailure(response_json.code);
                         return;
                     }
                     onSuccess && onSuccess(response_json);
