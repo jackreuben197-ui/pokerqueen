@@ -12,11 +12,12 @@ export default class HttpClient {
     static TimeOut: number = 10000;
     /**s
      * post 请求
+     * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
-    static async post({ url = null, param = null, onFailure = null, onSuccess = null }) {
+    static async post({ url = null, param = null, onFailure = null, onSuccess = null, headers = null }) {
         cc.log("post - url : ", url, param);
         UIManager.open(UIDefine.UIPromptComponent);
-        let response: string = <string>await this.__request(url, "POST", param);
+        let response: string = <string>await this.__request(url, "POST", param, headers);
         UIManager.close(UIDefine.UIPromptComponent);
         cc.log("post - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
@@ -60,7 +61,7 @@ export default class HttpClient {
         }
     }
 
-    static async __request(url, type = "POST", param = null) {
+    static async __request(url, type = "POST", param = null, headers = null) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             var isTimeout = false;//是否超时
@@ -92,6 +93,11 @@ export default class HttpClient {
             xhr.timeout = HttpClient.TimeOut;
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader("md5at", LoginSession.ins.token);
+            if (headers) {
+                for (let header of headers) {
+                    xhr.setRequestHeader(header[0], header[1]);
+                }
+            }
             xhr.send(param ? JSON.stringify(param) : null);
         })
     }

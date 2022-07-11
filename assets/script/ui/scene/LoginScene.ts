@@ -35,6 +35,8 @@ export default class LoginScene extends BaseScene {
     language_button: cc.Node = null;
 
     area_label: cc.Label = null;
+
+    code_button: cc.Node = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -55,6 +57,7 @@ export default class LoginScene extends BaseScene {
         this.register_button = this.getChildNodeOrComponent("register_button");
         this.language_button = this.getChildNodeOrComponent("language_button");
         this.area_label = this.getChildNodeOrComponent("area_label", cc.Label);
+        this.code_button = this.getChildNodeOrComponent("code_button");
         this.setArea();
         this.setEyesOpen(false);
 
@@ -65,6 +68,7 @@ export default class LoginScene extends BaseScene {
         this.confirm_button.on("click", this.onConfirmClick, this);
         this.forgot_button.on("click", this.onForgotClick, this);
         this.register_button.on("click", this.onRegisterClick, this);
+        this.code_button.on("click", this.onCodeClick, this);
     }
     protected lateEnter() {
 
@@ -145,6 +149,10 @@ export default class LoginScene extends BaseScene {
         UIManager.open(UIDefine.LanguageForm, { language_id: 0 });
 
     }
-
-
+    /**
+     * 区号点击
+     */
+    onCodeClick() {
+        UIManager.open(UIDefine.AreaCodeForm);
+    }
 }

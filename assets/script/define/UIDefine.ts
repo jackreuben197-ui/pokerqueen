@@ -61,7 +61,7 @@ export const UIDefine = {
         Path: "prefab/form/RegisterForm",
         Title: "Register",
     },
-
+    //语言
     LanguageForm: {
         UIType: UIType.Form,
         Name: "LanguageForm",
@@ -69,7 +69,14 @@ export const UIDefine = {
         Path: "prefab/form/LanguageForm",
         Title: "Language",
     },
-
+    //电话区号
+    AreaCodeForm: {
+        UIType: UIType.Form,
+        Name: "AreaCodeForm",
+        Bundle: null,
+        Path: "prefab/form/AreaCodeForm",
+        Title: "Select country or region",
+    },
     /**
      *  触摸板子（触摸黑色底板关闭）
      */

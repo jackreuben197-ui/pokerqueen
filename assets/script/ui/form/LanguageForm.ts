@@ -14,7 +14,7 @@ export default class LanguageForm extends BaseForm {
      * 节点|组件 定义
      */
 
-    languageItem: LanguageFormItem = null;
+    LanguageFormItem: cc.Node = null;
 
     scrollContent: cc.Node = null;
 
@@ -34,14 +34,13 @@ export default class LanguageForm extends BaseForm {
 
     protected lateLoad() {
         super.lateLoad();
-        this.languageItem = this.getChildNodeOrComponent("languageItem", LanguageFormItem);
+        this.LanguageFormItem = this.getChildNodeOrComponent("LanguageFormItem");
         this.scrollContent = this.getChildNodeOrComponent("scrollContent");
         this.toggleContainer = this.getChildNodeOrComponent("toggleContainer", GGToggleContainer);
-
-        this.languageItem.node.active = false;
+        this.LanguageFormItem.active = false;
         let languageItem, languageItem_script;
         for (let i = 0; i < this.config.length; i++) {
-            languageItem = cc.instantiate(this.languageItem.node);
+            languageItem = cc.instantiate(this.LanguageFormItem);
             languageItem_script = languageItem.getComponent(LanguageFormItem);
             languageItem.parent = this.scrollContent;
             languageItem.active = true;
