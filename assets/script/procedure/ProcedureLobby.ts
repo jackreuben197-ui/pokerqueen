@@ -8,8 +8,8 @@ import ProcedureBase from "./ProcedureBase";
 export default class ProcedureLobby extends ProcedureBase {
     Enter(param: any) {
         super.Enter(param);
-        
-        SceneManager.ins.switchScene(UIDefine.LoginScene);
+        SceneManager.ins.switchScene(UIDefine.LobbyScene);
+        //请求
     }
     Leave() {
         super.Leave();

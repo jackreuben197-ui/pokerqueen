@@ -7,6 +7,7 @@ import ProcedureConfig from "../procedure/ProcedureConfig";
 import ProcedureEnter from "../procedure/ProcedureEnter";
 import ProcedureIdle from "../procedure/ProcedureIdle";
 import ProcedureInit from "../procedure/ProcedureInit";
+import ProcedureLobby from "../procedure/ProcedureLobby";
 import ProcedureLogin from "../procedure/ProcedureLogin";
 import ProcedurePreLoading from "../procedure/ProcedurePreloading";
 
@@ -23,6 +24,7 @@ export default class ProcedureManager {
         this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig();
         this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin();
         this.procedureDic[ProcedureEnum.Enter] = new ProcedureEnter();
+        this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby();
         ProcedureManager.StartProcedure(ProcedureEnum.Init);
     }
     //开始某个流程

@@ -78,6 +78,7 @@ export default class ProcedureInit extends ProcedureBase {
             HttpClient,
             AreaCodeConfig,
         }
+
         for (let key in classes) {
             cc.log(`[window class.name : ${key}]`)
             window[key] = classes[key];

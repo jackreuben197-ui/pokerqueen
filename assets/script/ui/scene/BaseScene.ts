@@ -6,19 +6,19 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class BaseScene extends UIBase {
 
-    Enter(param) {
+    Enter(param: any = null) {
         cc.log("::", this.UIDefine.Name, "Enter()", "param:", param);
         this.lateEnter();
     }
-    Exit(param) {
+    Exit(param: any = null) {
         cc.log("::", this.UIDefine.Name, "Exit()", "param:", param);
         this.lateExit();
     }
 
-    protected lateEnter() {
+    protected lateEnter(param: any = null) {
 
     }
-    protected lateExit() {
+    protected lateExit(param: any = null) {
 
     }
 
