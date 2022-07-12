@@ -1,5 +1,6 @@
 
 import Singleton from "../common/Singleton";
+import { AreaCodeConfig } from "../config/AreaCodeConfig";
 import { GameConfig } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
@@ -75,6 +76,7 @@ export default class ProcedureInit extends ProcedureBase {
             Dispatcher,
             GameConfig,
             HttpClient,
+            AreaCodeConfig,
         }
         for (let key in classes) {
             cc.log(`[window class.name : ${key}]`)

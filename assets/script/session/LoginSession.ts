@@ -4,6 +4,7 @@
 
 import { Md5 } from "ts-md5";
 import Singleton from "../common/Singleton";
+import { GameConfig } from "../config/GameConfig";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Channel, Web_Login, Web_User_Info } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
@@ -12,9 +13,14 @@ import StorageKey from "./StorageKey";
 export default class LoginSession extends Singleton {
 
     static ins: LoginSession;
-
     private _token: string = null;
     private _tokenExpireAt: number = 0;
+    //当前区号
+    private _areaCode: string;
+
+    init() {
+        this._areaCode = localStorage.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
+    }
 
     //登录请求
     async Login(param: typeof Web_Login.RequestParams) {
@@ -94,6 +100,14 @@ export default class LoginSession extends Singleton {
     }
     get tokenExpireAt(): number {
         return +(this._tokenExpireAt || localStorage.getItem(StorageKey.TOKEN_EXPIREAT));
+    }
+
+    set areaCode(value: string) {
+        this._areaCode = value;
+        localStorage.setItem(StorageKey.AERA_CODE, value);
+    }
+    get areaCode(): string {
+        return this._areaCode;
     }
 }
 

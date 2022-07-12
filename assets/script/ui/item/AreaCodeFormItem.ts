@@ -1,28 +1,40 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-const {ccclass, property} = cc._decorator;
+import UIBase from "../UIBase";
+
+const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class AreaCodeFormItem extends cc.Component {
+export default class AreaCodeFormItem extends UIBase {
+    ///////////////////////////////////
+    /**
+     * 节点|组件 定义
+     */
+    country_label: cc.Label = null;
+    code_label: cc.Label = null;
+    button: cc.Button = null;
+    ///////////////////////////////////
 
-    @property(cc.Label)
-    label: cc.Label = null;
-
-    @property
-    text: string = 'hello';
-
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {}
-
-    start () {
-
+    ///////////////////////////////////
+    /**
+     * 声明内容
+     */
+    label_colors = ["#FFFFFF", "#DDBA82"];
+    ///////////////////////////////////
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.country_label = this.getChildNodeOrComponent("country_label", cc.Label);
+        this.code_label = this.getChildNodeOrComponent("code_label", cc.Label);
+        this.button = this.node.getComponent(cc.Button);
     }
 
-    // update (dt) {}
+    onShow(param?: { country: string, code: string }): void {
+        super.onShow(param);
+        this.country_label.string = param?.country;
+        this.code_label.string = param?.code;
+    }
+    //设置被选中
+    setSelected(boo: boolean) {
+        this.country_label.node.color = cc.Color.BLACK.fromHEX(this.label_colors[boo ? 1 : 0]);
+        this.button.normalColor = cc.Color.BLACK.fromHEX(this.label_colors[boo ? 1 : 0]);
+    }
 }

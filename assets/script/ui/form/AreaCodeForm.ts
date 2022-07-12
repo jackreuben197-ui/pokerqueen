@@ -1,5 +1,10 @@
 
+import { AreaCodeConfig } from "../../config/AreaCodeConfig";
+import Dispatcher from "../../event/Dispatcher";
+import GGEvent from "../../event/GGEvent";
+import LoginSession from "../../session/LoginSession";
 import GGToggleContainer from "../component/GGToggleContainer";
+import AreaCodeFormItem from "../item/AreaCodeFormItem";
 import BaseForm from "./BaseForm";
 
 
@@ -12,42 +17,30 @@ export default class AreaCodeForm extends BaseForm {
      * 节点|组件 定义
      */
 
-    //languageItem: LanguageFormItem = null;
+    AreaCodeFormItem: cc.Node = null;
 
     scrollContent: cc.Node = null;
 
-    toggleContainer: GGToggleContainer = null;
+    search_editbox: cc.EditBox = null;
 
     ///////////////////////////////////
     /**
      * 声明内容
      */
-    // config = [
-    //     { s_language: "English", language: "English", flag: "Flag_USA" },
-    //     { s_language: "China", language: "中文", flag: "Flag_CHN" },
-    //     { s_language: "Bra", language: "Bra", flag: "Flag_BRA" },
-    // ]
+    //用map的value当key来映射AreaCodeFormItem
+    itemDic: { [key: string]: AreaCodeFormItem } = {};
 
+    map: Map<string, string> = null;
     ///////////////////////////////////
 
     protected lateLoad() {
         super.lateLoad();
-        // this.languageItem = this.getChildNodeOrComponent("languageItem", LanguageFormItem);
-        // this.scrollContent = this.getChildNodeOrComponent("scrollContent");
-        // this.toggleContainer = this.getChildNodeOrComponent("toggleContainer", GGToggleContainer);
+        this.AreaCodeFormItem = this.getChildNodeOrComponent("AreaCodeFormItem");
+        this.scrollContent = this.getChildNodeOrComponent("scrollContent");
+        this.search_editbox = this.getChildNodeOrComponent("search_editbox", cc.EditBox);
+        this.AreaCodeFormItem.active = false;
+        this.createAreaList();
 
-        // this.languageItem.node.active = false;
-        // let languageItem, languageItem_script;
-        // for (let i = 0; i < this.config.length; i++) {
-        //     languageItem = cc.instantiate(this.languageItem.node);
-        //     languageItem_script = languageItem.getComponent(LanguageFormItem);
-        //     languageItem.parent = this.scrollContent;
-        //     languageItem.active = true;
-        //     languageItem_script.onShow(this.config[i]);
-        //     languageItem_script.addToToggleContainer(this.toggleContainer);
-        // }
-        // this.toggleContainer.onChecked = this.onCheckedHandler;
-        // languageItem_script.showBottomLine();
     }
 
     protected lateClose(param: any = null) {
@@ -56,12 +49,78 @@ export default class AreaCodeForm extends BaseForm {
 
     onShow(param: any = null) {
         super.onShow(param);
-        //this.toggleContainer.checkedIndex = param?.language_id || 0;
+        this.clearSearch();
+        this.map = this.getAreaMap();
+        this.scheduleOnce(() => {
+            this.updateAreaList();
+        }, .1);
+
+    }
+    /**
+     * 注册触摸事件
+     */
+    protected regiterTouchEvents() {
+        super.regiterTouchEvents();
+        let handler = new cc.Component.EventHandler();
+        handler.target = this.node;
+        handler.component = "AreaCodeForm";
+        handler.handler = "onSearchChange"
+        this.search_editbox.textChanged = [handler];
     }
 
-    //选择回调，参数为序号
-    private onCheckedHandler(index: number) {
+    createAreaList() {
+        this.map = this.getAreaMap();
+        cc.log("areacode map size:", this.map.size);
+        this.map.forEach((value: string, key: string) => {
+            let item_code = cc.instantiate(this.AreaCodeFormItem);
+            item_code.active = true;
+            item_code.parent = this.scrollContent;
+            let item = item_code.getComponent(AreaCodeFormItem);
+            item.onShow({ country: key, code: value });
+            this.itemDic[value] = item;
+            item.node.on("click", this.onItemClick, this);
+        })
+    }
+    updateAreaList() {
+        this.map.forEach((value: string, key: string) => {
+            let item = this.itemDic[value];
+            item.onShow({ country: key, code: value })
+            item.setSelected(value == LoginSession.ins.areaCode);
+        })
+    }
+    getAreaMap() {
+        //TODO 判断语言
+        return AreaCodeConfig.EN;
+    }
+    /**
+     * 搜索内容改变
+     */
+    onSearchChange() {
+        let str = this.search_editbox.string.toLocaleLowerCase();
+        this.map.forEach((value: string, key: string) => {
+            let item = this.itemDic[value];
+            item.node.active = true;
+            if (str.length && value.toLocaleLowerCase().indexOf(str) == -1 && key.toLocaleLowerCase().indexOf(str) == -1) {
+                item.node.active = false;
+            }
+        })
+    }
+    /**
+     * 清空搜索
+     */
+    clearSearch() {
+        this.search_editbox.string = "";
+        this.onSearchChange();
+    }
 
+    /**
+     * 选项点击
+     */
+    onItemClick(button: cc.Button) {
+        let code = button.node.getComponent(AreaCodeFormItem).param.code;
+        LoginSession.ins.areaCode = code;
+        Dispatcher.emit(GGEvent.Change_AreaCode);
+        this.onBackClick();
     }
 
 }

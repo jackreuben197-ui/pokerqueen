@@ -47,7 +47,6 @@ export default class BaseForm extends UIBase {
         this.title_label.string = this.UIDefine?.Title || "未定义标题";
         //设置尺寸
         this.main.setContentSize(this.node.getContentSize());
-
     }
 
     protected regiterTouchEvents(): void {

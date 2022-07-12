@@ -8,11 +8,8 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class LanguageFormItem extends UIBase {
-    /**
-     * 绑定内容
-     */
 
-    /////////////////////////////////////////////
+
     /**
      * 节点|组件 定义
      */

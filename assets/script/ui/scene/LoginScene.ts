@@ -1,12 +1,18 @@
 
 import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
+import { AreaCodeConfig } from "../../config/AreaCodeConfig";
+import { GameConfig } from "../../config/GameConfig";
 import { DialogParam, ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
+import Dispatcher from "../../event/Dispatcher";
+import GGEvent from "../../event/GGEvent";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 
 import UIManager from "../../manager/UIManager";
+import LoginSession from "../../session/LoginSession";
+import StorageKey from "../../session/StorageKey";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -63,6 +69,10 @@ export default class LoginScene extends BaseScene {
 
     }
 
+    protected regiterDispatchEvent(): void {
+        Dispatcher.on(GGEvent.Change_AreaCode, this.onChangeAreaCode, this);
+    }
+
     protected regiterTouchEvents() {
         this.eyes_button.on("click", this.onEyesClick, this);
         this.confirm_button.on("click", this.onConfirmClick, this);
@@ -75,14 +85,13 @@ export default class LoginScene extends BaseScene {
     }
 
     setArea() {
-        this.area_label.string = "+55";
+        this.area_label.string = LoginSession.ins.areaCode;
     }
 
     setEyesOpen(boo: boolean) {
         this.open_eyes_icon.active = boo;
         this.close_eyes_icon.active = !boo;
     }
-
 
     ///////////////////////////////////按钮响应回调//////////////////////////////////////////
     /**
@@ -154,5 +163,9 @@ export default class LoginScene extends BaseScene {
      */
     onCodeClick() {
         UIManager.open(UIDefine.AreaCodeForm);
+    }
+
+    onChangeAreaCode() {
+        this.area_label.string = LoginSession.ins.areaCode;
     }
 }

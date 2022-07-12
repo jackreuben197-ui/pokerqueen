@@ -7,20 +7,19 @@ const { ccclass, property } = cc._decorator;
 
 export default class UIBase extends cc.Component {
 
-    protected param: any;
+    public param: any;
 
     private view: any = {};
 
     static load_all_objects_duration: number = 0;
 
     protected onLoad() {
-
         !this.UIDefine || this.UIDefine.DisAdaptScreen || this.node.addComponent(AdapterComponent);
+        if (this.UIDefine) window[this.UIDefine.Name] = this;
         this.lateLoad();
         this.regiterTouchEvents();
         this.regiterDispatchEvent();
     }
-
     onShow(param: any = null) {
         this.param = param;
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);

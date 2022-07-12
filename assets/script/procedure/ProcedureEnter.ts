@@ -9,6 +9,7 @@ import LoginSession from "../session/LoginSession";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureEnter extends ProcedureBase {
+
     async Enter(param: any) {
 
         super.Enter(param);
@@ -27,8 +28,9 @@ export default class ProcedureEnter extends ProcedureBase {
     }
     /////////////////////////////////////////////
     _catchHandler(code: number) {
-        cc.log("code", code);
+        cc.log("login error code", code);
         if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene && code == 90010) {
+            //Token失败,这里清理Token，重新进入登录界面
             LoginSession.ins.token = "";
             ProcedureManager.StartProcedure(ProcedureEnum.Login);
         } else {
@@ -38,17 +40,17 @@ export default class ProcedureEnter extends ProcedureBase {
 
     //1.登录请求,获取Token
     login(param) {
-        cc.log("登陆步骤1 ------>")
+        cc.log("登陆步骤1 ------>login")
         return LoginSession.ins.Login(param);
     }
     //2.用户信息请求
     getUserInfo() {
-        cc.log("登陆步骤2 ------>")
+        cc.log("登陆步骤2 ------>getUserInfo")
         return LoginSession.ins.GetUserInfo();
     }
     //3.socket port
     getChannel() {
-        cc.log("登陆步骤3 ------>")
+        cc.log("登陆步骤3 ------>getChannel")
         return LoginSession.ins.GetChannel();
     }
     //4.进入大厅
