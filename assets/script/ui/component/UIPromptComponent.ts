@@ -18,7 +18,7 @@ export default class UIPromptComponent extends UIBase {
         Showing: 2,
     }
     //延时显示
-    private showDelay: number = 0.5;
+    private showDelay: number = 2;
 
     //超时时间
     private timeout: number = 10;

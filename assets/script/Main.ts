@@ -1,9 +1,11 @@
 /**
  * 入口函数
  */
+import { GameConfig } from "./config/GameConfig";
 import Dispatcher from "./event/Dispatcher";
 import DialogManager from "./manager/DialogManager";
 import ProcedureManager from "./manager/ProcedureManager";
+import CCTools from "./tools/CCTools";
 
 const { ccclass, property } = cc._decorator;
 
@@ -29,6 +31,8 @@ export default class Main extends cc.Component {
         cc.log("游戏启动", cc.sys.os);
 
         Main.instance = this;
+        //设置是否代理模式(根据地址栏配置proxy字段)
+        GameConfig.useProxy = !!CCTools.getQueryString("proxy");
 
         // UI 节点缓存
         Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - UI缓存");

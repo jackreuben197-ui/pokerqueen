@@ -1,3 +1,4 @@
+import { GameConfig } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
@@ -101,4 +102,5 @@ export default class HttpClient {
             xhr.send(param ? JSON.stringify(param) : null);
         })
     }
+
 }

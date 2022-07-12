@@ -6,6 +6,9 @@
 import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
+
+    //是否使用代理
+    static useProxy: boolean = false;
     //设计分辨率
     static DesignResolution = cc.size(1242, 2688);
     //fps

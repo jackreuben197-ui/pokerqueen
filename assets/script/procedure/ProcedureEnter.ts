@@ -20,7 +20,7 @@ export default class ProcedureEnter extends ProcedureBase {
                 this.enterLobby();
             }).catch(this._catchHandler);
         } else {
-            this.getUserInfo().then(() => { this.getChannel() }).then(() => { this.enterLobby() }).catch(this._catchHandler);
+            this.getUserInfo().then(() => this.getChannel()).then(() => this.enterLobby()).catch(this._catchHandler);
         }
     }
     Leave() {

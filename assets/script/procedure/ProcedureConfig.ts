@@ -21,12 +21,13 @@ export default class ProcedureConfig extends ProcedureBase {
         GameConfig.Network = this.getNetwork();
         console.log("GameConfig.Network : ", GameConfig.Network);
         //请求linklist
-        await HttpClient.get({
-            url: GameConfig.GlobalProto.NetLineSwitchUrl,
-            onSuccess: (response) => {
-                ProcedureManager.StartProcedure(ProcedureEnum.Login);
-            }
-        });
+        // await HttpClient.get({
+        //     url: GameConfig.GlobalProto.NetLineSwitchUrl,
+        //     onSuccess: (response) => {
+        //         ProcedureManager.StartProcedure(ProcedureEnum.Login);
+        //     }
+        // });
+        ProcedureManager.StartProcedure(ProcedureEnum.Login);
     }
     Leave() {
         super.Leave();
