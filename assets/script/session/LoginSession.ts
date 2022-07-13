@@ -3,10 +3,9 @@
  */
 
 import { Md5 } from "ts-md5";
-import Singleton from "../common/Singleton";
 import { GameConfig } from "../config/GameConfig";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Channel, Web_Login, Web_User_Info } from "../net/https/WebRequest";
+import { Web_Channel, Web_Login, Web_User_Info, Web_User_Register } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -25,7 +24,9 @@ export default class LoginSession {
         this._phone = localStorage.getItem(StorageKey.PHONE) || "";
     }
 
-    //登录请求
+    /**
+     * 登录请求
+     */
     static async Login(param: typeof Web_Login.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -51,7 +52,10 @@ export default class LoginSession {
         });
 
     }
-    //用户信息请求
+
+    /**
+     * 用户信息请求
+     */
     static async SyncUserInfo() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -66,7 +70,9 @@ export default class LoginSession {
         });
     }
 
-    //socket port 请求
+    /**
+     * socket port 请求
+     */
     static async SyncChannel() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -81,7 +87,30 @@ export default class LoginSession {
         });
     }
 
-    //判断用户是否有效token
+    /**
+     * 用户手机号注册
+     */
+    static async APISendRegister(param:typeof Web_User_Register.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_User_Register,
+                param: Web_User_Register.Request(param),
+                onSuccess: function () {
+                    resolve(Web_User_Register.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    /**
+     * 判断用户是否有效token
+     */
     public static IsTokenVaild(): boolean {
         let token = this.Token;
         if (token == null || token == undefined || this.Token == "") {

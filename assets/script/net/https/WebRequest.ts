@@ -31,10 +31,38 @@ export class Web_Login {
 
 
     public static Request(param: typeof Web_Login.RequestParams) {
-        Web_Login.RequestParams = param;
+        this.RequestParams = param;
         return param;
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
+}
+
+
+
+/**
+ * https 手机号用户注册
+ */
+ export class Web_User_Register {
+    //接口地址
+    public static API: string = "/api/user/register";
+    //字段声明
+    public static RequestParams: {
+        phone               : string,// 手机号码
+		password            : string,  // 密码
+		area                : string, // 国家代号
+		code                : string,  // 验证码
+		platform            : number,//平台(platform):1-IOS 2-Android 3-Windows 4-OSX 5-Web 6-MiniWeb 7-Linux
+    } = null;
+
+    public static ResponseData: {
+        userId              :number,// 用户id
+    } = null;
+
+    public static Request(param: typeof Web_User_Register.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Register.ResponseData };
 }
 
 /**
@@ -70,7 +98,7 @@ export class Web_User_Info {
         forbid_bring_in?: number,        //带入冻结，1 开启，2 关闭
     } = null;
     public static Request(param: typeof Web_Login.RequestParams) {
-        Web_User_Info.RequestParams = param;
+        this.RequestParams = param;
         return param;
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_User_Info.ResponseData };
@@ -92,7 +120,7 @@ export class Web_Channel {
 
 
     public static Request(param: typeof Web_Login.RequestParams) {
-        Web_Channel.RequestParams = param;
+        this.RequestParams = param;
         return param;
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_Channel.ResponseData };
@@ -124,7 +152,7 @@ export class Web_Config_Global_Config {
         apple_mtt_switch?: number,//iosMTT功能开关 1 开 2 关
     } = null;
     public static Request(param: typeof Web_Login.RequestParams) {
-        Web_Channel.RequestParams = param;
+        this.RequestParams = param;
         return param;
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_Config_Global_Config.ResponseData };
@@ -150,7 +178,7 @@ export class Web_Config_Multi_Language_Template {
         br_name: string,//葡语      
     } = null;
     public static Request(param: typeof Web_Config_Multi_Language_Template.RequestParams) {
-        Web_Config_Multi_Language_Template.RequestParams = param;
+        this.RequestParams = param;
         return param;
     }
     public static Response: { code?: number, message?: string, data?: (typeof Web_Config_Multi_Language_Template.ResponseData)[] };
@@ -189,7 +217,7 @@ export class Web_Misc_Banner_List {
     } = null;
 
     public static Request(param: typeof Web_Misc_Banner_List.RequestParams) {
-        Web_Misc_Banner_List.RequestParams = param;
+        this.RequestParams = param;
         return param;
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_Misc_Banner_List.ResponseData };
