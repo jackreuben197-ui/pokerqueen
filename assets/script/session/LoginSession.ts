@@ -10,20 +10,23 @@ import { Web_Channel, Web_Login, Web_User_Info } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
-export default class LoginSession extends Singleton {
+export default class LoginSession {
 
-    static ins: LoginSession;
-    private _token: string = null;
-    private _tokenExpireAt: number = 0;
+    //static ins: LoginSession;
+    static _token: string = null;
+    static _tokenExpireAt: number = 0;
     //当前区号
-    private _areaCode: string;
+    static _areaCode: string;
+    //手机号
+    static _phone: string;
 
-    init() {
+    static Init() {
         this._areaCode = localStorage.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
+        this._phone = localStorage.getItem(StorageKey.PHONE) || "";
     }
 
     //登录请求
-    async Login(param: typeof Web_Login.RequestParams) {
+    static async Login(param: typeof Web_Login.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Login,
@@ -35,11 +38,13 @@ export default class LoginSession extends Singleton {
                         is_simulator: false,
                     }),
                 onSuccess: function () {
-                    this.token = Web_Login.Response.data.token;
-                    this.tokenExpireAt = Web_Login.Response.data.expire_at;
+                    this.Token = Web_Login.Response.data.token;
+                    this.TokenExpireAt = Web_Login.Response.data.expire_at;
+                    this.Phone = param.phone;
                     resolve(0);
                 }.bind(this),
                 onFailure: function (content) {
+                    this.Phone = param.phone;
                     reject(content);
                 }.bind(this)
             });
@@ -47,12 +52,11 @@ export default class LoginSession extends Singleton {
 
     }
     //用户信息请求
-    async GetUserInfo() {
+    static async SyncUserInfo() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Info,
                 onSuccess: function () {
-                    cc.log("Web_User_Info.Data", Web_User_Info.Response.data);
                     resolve(0);
                 }.bind(this),
                 onFailure: function (content) {
@@ -63,12 +67,11 @@ export default class LoginSession extends Singleton {
     }
 
     //socket port 请求
-    async GetChannel() {
+    static async SyncChannel() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Channel,
                 onSuccess: function () {
-                    cc.log("Web_Channel.Data", Web_Channel.Response.data);
                     resolve(0);
                 }.bind(this),
                 onFailure: function (content) {
@@ -79,38 +82,47 @@ export default class LoginSession extends Singleton {
     }
 
     //判断用户是否有效token
-    public isTokenVaild(): boolean {
-        if (this.token == null || this.token == undefined || this.token == "") {
+    public static IsTokenVaild(): boolean {
+        let token = this.Token;
+        if (token == null || token == undefined || this.Token == "") {
             return false;
         }
-        return GlobalSession.NowTime() < this.tokenExpireAt;
+        return GlobalSession.NowTime() < this.TokenExpireAt;
     }
 
-    set token(value: string) {
+    static set Token(value: string) {
         this._token = value;
         localStorage.setItem(StorageKey.TOKEN, value);
     }
-    get token() {
+    static get Token() {
         return this._token || localStorage.getItem(StorageKey.TOKEN);
     }
 
-    set tokenExpireAt(value: number) {
+    static set TokenExpireAt(value: number) {
         this._tokenExpireAt = value;
         localStorage.setItem(StorageKey.TOKEN_EXPIREAT, value.toString());
     }
-    get tokenExpireAt(): number {
+    static get TokenExpireAt(): number {
         return +(this._tokenExpireAt || localStorage.getItem(StorageKey.TOKEN_EXPIREAT));
     }
 
-    set areaCode(value: string) {
+    static set AreaCode(value: string) {
         this._areaCode = value;
         localStorage.setItem(StorageKey.AERA_CODE, value);
     }
-    get areaCode(): string {
+    static get AreaCode(): string {
         return this._areaCode;
+    }
+
+    static set Phone(value: string) {
+        this._phone = value;
+        localStorage.setItem(StorageKey.PHONE, value);
+    }
+    static get Phone(): string {
+        return this._phone;
     }
 }
 
-
+(window as any).LoginSession = LoginSession;
 
 

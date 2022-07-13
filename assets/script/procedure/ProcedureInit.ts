@@ -29,7 +29,6 @@ export default class ProcedureInit extends ProcedureBase {
         BoardManager,
         DialogManager,
         UIManager,
-        LoginSession,
     ];
 
 

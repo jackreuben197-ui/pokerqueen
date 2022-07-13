@@ -11,10 +11,10 @@ export default class ProcedureLogin extends ProcedureBase {
         super.Enter(param);
 
         //登陆数据初始化
-        LoginSession.ins.init();
+        LoginSession.Init();
 
         //判断是否存在有效token
-        if (LoginSession.ins.isTokenVaild()) {
+        if (LoginSession.IsTokenVaild()) {
             //进入登录请求流程
             ProcedureManager.StartProcedure(ProcedureEnum.Enter);
         } else {

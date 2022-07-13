@@ -16,22 +16,24 @@ export default class HttpClient {
      * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
     static async post({ url = null, param = null, onFailure = null, onSuccess = null, headers = null }) {
-        cc.log("post - url : ", url, param);
+        param = JSON.stringify(param);
+        console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
         UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "POST", param, headers);
         UIManager.close(UIDefine.UIPromptComponent);
-        cc.log("post - response : ", url, response);
+        console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - response : ", url.replace("http://", ""), response);
         this.__response(response, onFailure, onSuccess);
     }
     /**
      * get 请求
      */
     static async get({ url = null, param = null, onFailure = null, onSuccess = null }) {
-        cc.log("get - url : ", url, param);
+        param = JSON.stringify(param);
+        console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
         UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "GET", param);
         UIManager.close(UIDefine.UIPromptComponent);
-        cc.log("get - response : ", url, response);
+        console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - response : ", url.replace("http://", ""), response);
         this.__response(response, onFailure, onSuccess);
     }
 
@@ -93,13 +95,13 @@ export default class HttpClient {
             xhr.open(type, url, true);
             xhr.timeout = HttpClient.TimeOut;
             xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.setRequestHeader("md5at", LoginSession.ins.token);
+            xhr.setRequestHeader("md5at", LoginSession.Token);
             if (headers) {
                 for (let header of headers) {
                     xhr.setRequestHeader(header[0], header[1]);
                 }
             }
-            xhr.send(param ? JSON.stringify(param) : null);
+            xhr.send(param ? param : null);
         })
     }
 

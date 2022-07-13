@@ -7,4 +7,6 @@ export default class StorageKey {
     static TOKEN_EXPIREAT = "TOKEN_EXPIREAT";
     //电话区号
     static AERA_CODE = "AERA_CODE";
+    //手机号
+    static PHONE = "PHONE";
 }

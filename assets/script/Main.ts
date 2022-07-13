@@ -3,6 +3,7 @@
  */
 import { GameConfig } from "./config/GameConfig";
 import Dispatcher from "./event/Dispatcher";
+
 import DialogManager from "./manager/DialogManager";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";

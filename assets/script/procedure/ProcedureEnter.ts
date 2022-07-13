@@ -15,12 +15,12 @@ export default class ProcedureEnter extends ProcedureBase {
         super.Enter(param);
 
         if (param) {
-            this.login(param).then(() => this.getUserInfo()).then(() => this.getChannel()).then(() => {
+            this.Login(param).then(() => this.SyncUserInfo()).then(() => this.SyncChannel()).then(() => {
                 //准备进入大厅
                 this.enterLobby();
             }).catch(this._catchHandler);
         } else {
-            this.getUserInfo().then(() => this.getChannel()).then(() => this.enterLobby()).catch(this._catchHandler);
+            this.SyncUserInfo().then(() => this.SyncChannel()).then(() => this.enterLobby()).catch(this._catchHandler);
         }
     }
     Leave() {
@@ -31,7 +31,7 @@ export default class ProcedureEnter extends ProcedureBase {
         cc.log("login error code", code);
         if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene && code == 90010) {
             //Token失败,这里清理Token，重新进入登录界面
-            LoginSession.ins.token = "";
+            LoginSession.Token = "";
             ProcedureManager.StartProcedure(ProcedureEnum.Login);
         } else {
             ProcedureManager.StartProcedure(ProcedureEnum.Idel);
@@ -39,19 +39,19 @@ export default class ProcedureEnter extends ProcedureBase {
     }
 
     //1.登录请求,获取Token
-    login(param) {
-        cc.log("登陆步骤1 ------>login")
-        return LoginSession.ins.Login(param);
+    Login(param) {
+        cc.log("登陆步骤1 ------>Login")
+        return LoginSession.Login(param);
     }
     //2.用户信息请求
-    getUserInfo() {
-        cc.log("登陆步骤2 ------>getUserInfo")
-        return LoginSession.ins.GetUserInfo();
+    SyncUserInfo() {
+        cc.log("登陆步骤2 ------>SyncUserInfo")
+        return LoginSession.SyncUserInfo();
     }
     //3.socket port
-    getChannel() {
-        cc.log("登陆步骤3 ------>getChannel")
-        return LoginSession.ins.GetChannel();
+    SyncChannel() {
+        cc.log("登陆步骤3 ------>SyncChannel")
+        return LoginSession.SyncChannel();
     }
     //4.进入大厅
     enterLobby() {

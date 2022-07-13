@@ -64,7 +64,7 @@ export default class LoginScene extends BaseScene {
         this.language_button = this.getChildNodeOrComponent("language_button");
         this.area_label = this.getChildNodeOrComponent("area_label", cc.Label);
         this.code_button = this.getChildNodeOrComponent("code_button");
-        this.setArea();
+        this.setAreaAndPhone();
         this.setEyesOpen(false);
 
     }
@@ -84,8 +84,9 @@ export default class LoginScene extends BaseScene {
 
     }
 
-    setArea() {
-        this.area_label.string = LoginSession.ins.areaCode;
+    setAreaAndPhone() {
+        this.area_label.string = LoginSession.AreaCode;
+        this.phone_editbox.string = LoginSession.Phone;
     }
 
     setEyesOpen(boo: boolean) {
@@ -166,6 +167,6 @@ export default class LoginScene extends BaseScene {
     }
 
     onChangeAreaCode() {
-        this.area_label.string = LoginSession.ins.areaCode;
+        this.area_label.string = LoginSession.AreaCode;
     }
 }

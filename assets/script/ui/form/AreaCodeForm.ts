@@ -85,7 +85,7 @@ export default class AreaCodeForm extends BaseForm {
         this.map.forEach((value: string, key: string) => {
             let item = this.itemDic[value];
             item.onShow({ country: key, code: value })
-            item.setSelected(value == LoginSession.ins.areaCode);
+            item.setSelected(value == LoginSession.AreaCode);
         })
     }
     getAreaMap() {
@@ -118,7 +118,7 @@ export default class AreaCodeForm extends BaseForm {
      */
     onItemClick(button: cc.Button) {
         let code = button.node.getComponent(AreaCodeFormItem).param.code;
-        LoginSession.ins.areaCode = code;
+        LoginSession.AreaCode = code;
         Dispatcher.emit(GGEvent.Change_AreaCode);
         this.onBackClick();
     }
