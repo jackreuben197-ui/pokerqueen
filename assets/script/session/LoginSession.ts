@@ -41,7 +41,7 @@ export default class LoginSession {
                     this.Token = Web_Login.Response.data.token;
                     this.TokenExpireAt = Web_Login.Response.data.expire_at;
                     this.Phone = param.phone;
-                    resolve(0);
+                    resolve(Web_Login.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     this.Phone = param.phone;
@@ -57,7 +57,7 @@ export default class LoginSession {
             HttpRequest.Send({
                 request: Web_User_Info,
                 onSuccess: function () {
-                    resolve(0);
+                    resolve(Web_User_Info.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -72,7 +72,7 @@ export default class LoginSession {
             HttpRequest.Send({
                 request: Web_Channel,
                 onSuccess: function () {
-                    resolve(0);
+                    resolve(Web_Channel.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

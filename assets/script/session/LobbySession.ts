@@ -24,7 +24,7 @@ export default class LobbySession {
                 request: Web_Config_Global_Config,
                 onSuccess: function () {
                     LobbySession.parseGlobalConfig();
-                    resolve(0);
+                    resolve(Web_Config_Global_Config.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -41,7 +41,7 @@ export default class LobbySession {
                 request: Web_Config_Multi_Language_Template,
                 onSuccess: function () {
                     LobbySession.parseRoomLanguase();
-                    resolve(0);
+                    resolve(Web_Config_Multi_Language_Template.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -70,7 +70,7 @@ export default class LobbySession {
                 onSuccess: function () {
                     //TODO 广播刷新
                     //Web_Misc_Banner_List.Response.data
-                    resolve(0);
+                    resolve(Web_Misc_Banner_List.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -89,7 +89,7 @@ export default class LobbySession {
                 onSuccess: function () {
                     //TODO 广播刷新
                     //Web_Room_Center_Groups.Response.data
-                    resolve(0);
+                    resolve(Web_Room_Center_Groups.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -108,7 +108,7 @@ export default class LobbySession {
                 onSuccess: function () {
                     //TODO 广播刷新
                     //Web_Msg_Message_Unread.Response.data
-                    resolve(0);
+                    resolve(Web_Msg_Message_Unread.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
