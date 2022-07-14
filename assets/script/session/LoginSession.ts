@@ -5,7 +5,7 @@
 import { Md5 } from "ts-md5";
 import { GameConfig } from "../config/GameConfig";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Channel, Web_Login, Web_User_Info, Web_User_Register } from "../net/https/WebRequest";
+import { Web_Channel, Web_Login, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -31,13 +31,7 @@ export default class LoginSession {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Login,
-                param: Web_Login.Request(
-                    {
-                        phone: param.phone,
-                        password: Md5.hashStr(param.password),
-                        area: param.area,
-                        is_simulator: false,
-                    }),
+                param: Web_Login.Request(param),
                 onSuccess: function () {
                     this.Token = Web_Login.Response.data.token;
                     this.TokenExpireAt = Web_Login.Response.data.expire_at;
@@ -90,7 +84,7 @@ export default class LoginSession {
     /**
      * 用户手机号注册
      */
-    static async APISendRegister(param:typeof Web_User_Register.RequestParams) {
+    static async APISendRegister(param: typeof Web_User_Register.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Register,
@@ -104,9 +98,59 @@ export default class LoginSession {
             });
         });
     }
-
-
-
+    /**
+     * 验证手机号
+     */
+    static async APIPHoneExist(param: typeof Web_User_Check_Phone.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_User_Check_Phone,
+                param: Web_User_Check_Phone.Request(param),
+                onSuccess: function () {
+                    resolve(Web_User_Check_Phone.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    /**
+     * 获取验证码
+     */
+    static async APISendCode(param: typeof Web_User_Send_Code.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_User_Send_Code,
+                param: Web_User_Send_Code.Request(param),
+                onSuccess: function () {
+                    resolve(Web_User_Send_Code.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    /**
+     * 修改密码
+     * @param param 
+     * @returns 
+     */
+    static async APISendModifyPW(param: typeof Web_User_Modify_Password.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_User_Modify_Password,
+                param: Web_User_Modify_Password.Request(param),
+                onSuccess: function () {
+                    resolve(Web_User_Modify_Password.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
     //////////////////////////////////////////////////////////////////////////////
     /**
      * 判断用户是否有效token

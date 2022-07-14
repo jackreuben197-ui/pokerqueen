@@ -51,7 +51,7 @@ export default class BaseForm extends UIBase {
 
     protected regiterTouchEvents(): void {
         //回退触发
-        this.back_click.on("click", this.onBackClick, this);
+        this.back_click.on("click", this.close, this);
     }
 
     protected lateClose(param: any = null) {
@@ -68,7 +68,8 @@ export default class BaseForm extends UIBase {
         super.onClose(param);
     }
 
-    onBackClick() {
+    //关闭界面
+    close() {
         UIManager.close(this.UIDefine);
     }
 

@@ -10,7 +10,7 @@ import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureEnter extends ProcedureBase {
 
-    async Enter(param: any) {
+    async Enter(param?: any) {
 
         super.Enter(param);
 

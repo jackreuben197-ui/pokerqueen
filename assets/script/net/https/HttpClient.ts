@@ -17,7 +17,7 @@ export default class HttpClient {
      */
     static async post({ url = null, param = null, onFailure = null, onSuccess = null, headers = null }) {
         param = JSON.stringify(param);
-        console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
+        console.log("%c%s%s\n%s", "color:yellow;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
         UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "POST", param, headers);
         UIManager.close(UIDefine.UIPromptComponent);
@@ -29,7 +29,7 @@ export default class HttpClient {
      */
     static async get({ url = null, param = null, onFailure = null, onSuccess = null }) {
         param = JSON.stringify(param);
-        console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
+        console.log("%c%s%s\n%s", "color:yellow;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
         UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "GET", param);
         UIManager.close(UIDefine.UIPromptComponent);

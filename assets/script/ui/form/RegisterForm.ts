@@ -1,7 +1,16 @@
 
 import { Md5 } from "ts-md5";
+import ButtonClickCD from "../../common/ButtonClickCD";
+import { ProcedureEnum } from "../../define/EIDefine";
+import { UIDefine } from "../../define/UIDefine";
+import Dispatcher from "../../event/Dispatcher";
+import GGEvent from "../../event/GGEvent";
+import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
+import UIManager from "../../manager/UIManager";
+import { Web_Login, Web_User_Register } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
+import LabelCDTime from "../component/LabelCDTime";
 import BaseForm from "./BaseForm";
 
 
@@ -19,6 +28,10 @@ export default class RegisterForm extends BaseForm {
 
     eyes_button: cc.Node = null;
 
+    code_button: cc.Node = null;
+
+    getcode_button: cc.Node = null;
+
 
     area_label: cc.Label = null;
 
@@ -30,10 +43,12 @@ export default class RegisterForm extends BaseForm {
     confirm_button: cc.Node = null;
     agree_toggle: cc.Toggle = null;
 
+
     ///////////////////////////////////
     /**
      * 声明内容
      */
+    tcode_canclick: boolean = true;
 
     ///////////////////////////////////
 
@@ -41,13 +56,16 @@ export default class RegisterForm extends BaseForm {
         super.lateLoad();
         this.phone_editbox = this.getChildNodeOrComponent("phone_editbox", cc.EditBox);
         this.pass_editbox = this.getChildNodeOrComponent("pass_editbox", cc.EditBox);
-        this.tcode_editbox = this.getChildNodeOrComponent("pass_editbox", cc.EditBox);
+        this.tcode_editbox = this.getChildNodeOrComponent("tcode_editbox", cc.EditBox);
         this.agree_toggle = this.getChildNodeOrComponent("agree_toggle", cc.Toggle);
         this.area_label = this.getChildNodeOrComponent("area_label", cc.Label);
         this.open_eyes_icon = this.getChildNodeOrComponent("open_eyes_icon");
         this.close_eyes_icon = this.getChildNodeOrComponent("close_eyes_icon");
         this.eyes_button = this.getChildNodeOrComponent("eyes_button");
         this.confirm_button = this.getChildNodeOrComponent("confirm_button");
+        this.code_button = this.getChildNodeOrComponent("code_button");
+        this.getcode_button = this.getChildNodeOrComponent("getcode_button");
+        this.getcode_button.addComponent(LabelCDTime);
     }
 
     onShow(param?: any): void {
@@ -66,8 +84,17 @@ export default class RegisterForm extends BaseForm {
         super.regiterTouchEvents();
         this.eyes_button.on("click", this.onEyesClick, this);
         this.confirm_button.on("click", this.onConfirmClick, this);
+        this.code_button.on("click", this.onCodeClick, this);
+        this.getcode_button.on("click", this.onGetCodeClick, this);
 
     }
+
+    protected regiterDispatchEvent(): void {
+        Dispatcher.on(GGEvent.Change_AreaCode, this.onChangeAreaCode, this);
+    }
+
+
+
     setArea() {
         this.area_label.string = LoginSession.AreaCode;
     }
@@ -76,7 +103,7 @@ export default class RegisterForm extends BaseForm {
         this.close_eyes_icon.active = !boo;
     }
     resetAgreeCheck() {
-        this.agree_toggle.uncheck();
+        this.agree_toggle?.uncheck();
     }
 
     /**
@@ -93,29 +120,110 @@ export default class RegisterForm extends BaseForm {
     /**
      * 确认点击
      */
-    onConfirmClick() {
+    protected async onConfirmClick(button: cc.Button) {
         cc.log("onConfirmClick");
-        var phone = this.phone_editbox.string.trim();
-        var pass = this.pass_editbox.string.trim();
-        var tcode = this.tcode_editbox.string.trim();
-        var agree_checked = this.agree_toggle.isChecked;
+        if (!ButtonClickCD.canClick(button.node)) return;
+        let phone = this.phone_editbox.string.trim();
+        let password = this.pass_editbox.string.trim();
+        let code = this.tcode_editbox.string.trim();
+        let agree_checked = this.agree_toggle.isChecked;
+        let area = this.area_label.string.substring(1);
         if (phone == "") {
-            ToastManager.ins.craeteToast("UILogin_1001");//("请输入手机号");
+            ToastManager.ins.craeteToast("UILogin_1001|请输入手机号");//("请输入手机号");
             return;
         }
-        if (pass.length < 6) {
-            ToastManager.ins.craeteToast("UILogin_1002");//("密码不得少于6个字符");
+        if (password.length < 6) {
+            ToastManager.ins.craeteToast("UILogin_1002|密码不得少于6个字符");//("密码不得少于6个字符");
             return;
         }
-        if (tcode == "") {
-            ToastManager.ins.craeteToast("UILogin_1008");//("请输入验证码");
+        if (code == "") {
+            ToastManager.ins.craeteToast("UILogin_1008|请输入验证码");//("请输入验证码");
             return;
         }
         if (agree_checked == false) {
-            ToastManager.ins.craeteToast("UILogin_ReadOK");//("阅读并同意用户协议");
+            ToastManager.ins.craeteToast("UILogin_ReadOK|阅读并同意用户协议");//("阅读并同意用户协议");
             return;
         }
-        pass = Md5.hashStr(pass);
+        password = Md5.hashStr(password);
 
+        let result = await LoginSession.APISendRegister({
+            phone,
+            password,
+            area,
+            code,
+            platform: 5,
+        }).catch(() => { });
+
+        if (result == undefined) return;
+        Web_Login
+        //关闭当前页面
+        this.close();
+        //进入登录流程
+        ProcedureManager.StartProcedure(ProcedureEnum.Enter, {
+            phone,
+            password,
+            area,
+            is_simulator: false
+        });
+
+    }
+
+    /**
+     * 获取验证码点击
+     */
+    protected async onGetCodeClick(button: cc.Button) {
+
+        if (!ButtonClickCD.canClick(button.node)) return;
+
+        let phone = this.phone_editbox.string.trim();
+        let area = this.area_label.string.substring(1);
+
+
+        if (phone == "") {
+            ToastManager.ins.craeteToast("UILogin_1004|请输入手机号");//请输入手机号
+            return;
+        }
+        if (!this.tcode_canclick) {
+            ToastManager.ins.craeteToast("UILogin_1005|请稍等再发");//("请稍等再发");
+            return;
+        }
+
+        let result: any = await LoginSession.APIPHoneExist({ phone, area }).catch((e) => { });
+
+        if (result == undefined) return;
+
+        if (result?.data) {
+            ToastManager.ins.craeteToast("UILogin_1006|此号码已注册");//("此号码已注册");
+            return;
+        }
+        this.tcode_canclick = false;
+
+        result = await LoginSession.APISendCode({ phone, area }).catch(() => { });
+
+        if (result == undefined) return;
+
+        ToastManager.ins.craeteToast("UILogin_1007|验证码已发送");//("验证码已发送");
+
+        this.getcode_button.getComponent(LabelCDTime).show(5, this.resetGetCodeLabel.bind(this));
+    }
+    /**
+     * 重置getcode文本
+     */
+    resetGetCodeLabel() {
+        this.tcode_canclick = true;
+        this.getcode_button.getComponent(cc.Label).string = "Get Code";
+    }
+    /**
+     * 区号点击
+     */
+    onCodeClick() {
+        UIManager.open(UIDefine.AreaCodeForm);
+    }
+
+    /**
+     * 区号改变
+     */
+    onChangeAreaCode() {
+        this.area_label.string = LoginSession.AreaCode;
     }
 }

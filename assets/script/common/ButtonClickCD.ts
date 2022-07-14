@@ -12,8 +12,8 @@ export default class ButtonClickCD {
     static canClick(button: cc.Node, duration: number = 2, showToast: boolean = true) {
         let lastTime: number = ButtonClickCD.clickMap[button.uuid];
         let now = GlobalSession.NowTime();
+        ButtonClickCD.clickMap[button.uuid] = now;
         if (!lastTime || now - lastTime > duration) {
-            ButtonClickCD.clickMap[button.uuid] = now;
             return true;
         }
         showToast && ToastManager.ins.craeteToast("clickNum");

@@ -99,7 +99,7 @@ export default class BaseTouchBoard extends UIBase {
     protected lateClose(param: any = null) {
         super.lateClose(param);
     }
-    protected stopAllTweens(): void {
+    protected stopAllThings(): void {
         this.mask.stopAllActions();
         this.main.stopAllActions();
     }

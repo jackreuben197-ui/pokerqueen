@@ -1,75 +1,83 @@
 
-import BaseForm from "./BaseForm";
+/**
+ * 密码重置 
+ */
+const { ccclass } = cc._decorator;
+import { Md5 } from "ts-md5";
+import ButtonClickCD from "../../common/ButtonClickCD";
+import ToastManager from "../../manager/ToastManager";
+import LoginSession from "../../session/LoginSession";
+import LabelCDTime from "../component/LabelCDTime";
+import RegisterForm from "./RegisterForm";
 
-const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class ResetPassForm extends BaseForm {
-    /**
-     * 节点|组件 定义
-     */
-
-    open_eyes_icon: cc.Node = null;
-
-    close_eyes_icon: cc.Node = null;
-
-    eyes_button: cc.Node = null;
-
-    pass_editbox: cc.EditBox = null;
-
-    confirm_button: cc.Node = null;
-    ///////////////////////////////////
-    /**
-     * 声明内容
-     */
+// 先写的RegisterForm 所有这里继承
+export default class ResetPassForm extends RegisterForm {
 
 
-    ///////////////////////////////////
+    protected async onConfirmClick(button: cc.Button) {
+        cc.log("onConfirmClick");
+        if (!ButtonClickCD.canClick(button.node)) return;
+        let phone = this.phone_editbox.string.trim();
+        let password = this.pass_editbox.string.trim();
+        let code = this.tcode_editbox.string.trim();
+        let area = this.area_label.string.substring(1);
+        if (phone == "") {
+            ToastManager.ins.craeteToast("UILogin_1001|请输入手机号");//("请输入手机号");
+            return;
+        }
+        if (password.length < 6) {
+            ToastManager.ins.craeteToast("UILogin_1002|密码不得少于6个字符");//("密码不得少于6个字符");
+            return;
+        }
+        if (code == "") {
+            ToastManager.ins.craeteToast("UILogin_1008|请输入验证码");//("请输入验证码");
+            return;
+        }
+        password = Md5.hashStr(password);
 
-    protected lateLoad() {
-        super.lateLoad();
-
-        this.pass_editbox = this.getChildNodeOrComponent("pass_editbox",cc.EditBox);
-        this.open_eyes_icon = this.getChildNodeOrComponent("open_eyes_icon");
-        this.close_eyes_icon = this.getChildNodeOrComponent("close_eyes_icon");
-        this.eyes_button = this.getChildNodeOrComponent("eyes_button");
-        this.confirm_button = this.getChildNodeOrComponent("confirm_button");
-        this.setEyesOpen(false);
-    }
-
-    protected lateClose(param: any = null) {
-        super.lateClose(param);
-    }
-
-    protected regiterTouchEvents() {
-        super.regiterTouchEvents();
-        this.eyes_button.on("click", this.onEyesClick, this);
-        this.confirm_button.on("click", this.onConfirmClick, this);
-
-    }
-
-    setEyesOpen(boo: boolean) {
-        this.open_eyes_icon.active = boo;
-        this.close_eyes_icon.active = !boo;
-    }
-
-
-    /**
-     * 眼睛点击
-     */
-    onEyesClick() {
-        this.setEyesOpen(!this.open_eyes_icon.active);
-        if (this.open_eyes_icon.active) {
-            this.pass_editbox.inputFlag = cc.EditBox.InputFlag.DEFAULT;
-        } else {
-            this.pass_editbox.inputFlag = cc.EditBox.InputFlag.PASSWORD;
+        let result = await LoginSession.APISendModifyPW({
+            phone,
+            area,
+            code,
+            password
+        }).catch(() => { })
+        if (result) {
+            ToastManager.ins.craeteToast("UILogin_1009|更改密码成功");//("更改密码成功");
+            this.close();
         }
     }
+
     /**
-     * 确认点击
+     * 获取验证码点击
      */
-    onConfirmClick() {
-        cc.log("onConfirmClick");
+    protected async onGetCodeClick(button: cc.Button) {
+
+        if (!ButtonClickCD.canClick(button.node)) return;
+
+        let phone = this.phone_editbox.string.trim();
+        let area = this.area_label.string.substring(1);
+
+
+        if (phone == "") {
+            ToastManager.ins.craeteToast("UILogin_1004|请输入手机号");//请输入手机号
+            return;
+        }
+        if (!this.tcode_canclick) {
+            ToastManager.ins.craeteToast("UILogin_1005|请稍等再发");//("请稍等再发");
+            return;
+        }
+
+        this.tcode_canclick = false;
+
+        let result = await LoginSession.APISendCode({ phone, area }).catch(() => { });
+
+        if (result == undefined) return;
+
+        ToastManager.ins.craeteToast("UILogin_1007|验证码已发送");//("验证码已发送");
+
+        this.getcode_button.getComponent(LabelCDTime).show(5, this.resetGetCodeLabel.bind(this));
     }
 
 }

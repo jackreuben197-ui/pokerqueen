@@ -23,6 +23,8 @@ export default class AreaCodeForm extends BaseForm {
 
     search_editbox: cc.EditBox = null;
 
+    scrollView: cc.ScrollView = null;
+
     ///////////////////////////////////
     /**
      * 声明内容
@@ -38,6 +40,7 @@ export default class AreaCodeForm extends BaseForm {
         this.AreaCodeFormItem = this.getChildNodeOrComponent("AreaCodeFormItem");
         this.scrollContent = this.getChildNodeOrComponent("scrollContent");
         this.search_editbox = this.getChildNodeOrComponent("search_editbox", cc.EditBox);
+        this.scrollView = this.getChildNodeOrComponent("scrollView", cc.ScrollView);
         this.AreaCodeFormItem.active = false;
         this.createAreaList();
 
@@ -51,6 +54,7 @@ export default class AreaCodeForm extends BaseForm {
         super.onShow(param);
         this.clearSearch();
         this.map = this.getAreaMap();
+        this.scrollView.scrollToTop(.5);
         this.scheduleOnce(() => {
             this.updateAreaList();
         }, .1);
@@ -120,7 +124,7 @@ export default class AreaCodeForm extends BaseForm {
         let code = button.node.getComponent(AreaCodeFormItem).param.code;
         LoginSession.AreaCode = code;
         Dispatcher.emit(GGEvent.Change_AreaCode);
-        this.onBackClick();
+        this.close();
     }
 
 }

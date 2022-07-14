@@ -1,7 +1,7 @@
 
 export default class ProcedureBase {
 
-    Enter(param: any) {
+    Enter(param?: any) {
         cc.log("::", this.Name, "Enter()", "param:", param);
     }
     Leave() {

@@ -28,7 +28,7 @@ export default class UIBase extends cc.Component {
 
     onClose(param: any = null) {
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onClose()");
-        this.stopAllTweens();
+        this.stopAllThings();
         this.lateClose(param);
     }
 
@@ -54,9 +54,9 @@ export default class UIBase extends cc.Component {
     }
 
     /**
-     * 停止所有tweens
+     * 停止所有 动作，包括 tween ,update，等
      */
-    protected stopAllTweens() {
+    protected stopAllThings() {
 
     }
 

@@ -11,6 +11,7 @@ import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 
 import UIManager from "../../manager/UIManager";
+import { Web_Login } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import StorageKey from "../../session/StorageKey";
 import BaseScene from "./BaseScene";
@@ -126,10 +127,12 @@ export default class LoginScene extends BaseScene {
         if (password.length < 6) {
             return ToastManager.ins.craeteToast("password length is error");
         }
-        let param = {
+
+        let param: typeof Web_Login.RequestParams = {
             phone,
-            password,
+            password: Md5.hashStr(password),
             area,
+            is_simulator: false
         }
         ProcedureManager.StartProcedure(ProcedureEnum.Enter, param);
     }
@@ -165,7 +168,9 @@ export default class LoginScene extends BaseScene {
     onCodeClick() {
         UIManager.open(UIDefine.AreaCodeForm);
     }
-
+    /**
+     * 区号改变
+     */
     onChangeAreaCode() {
         this.area_label.string = LoginSession.AreaCode;
     }

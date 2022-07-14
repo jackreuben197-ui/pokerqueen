@@ -38,24 +38,94 @@ export class Web_Login {
 }
 
 
+/**
+ * https 验证手机号
+ */
+export class Web_User_Check_Phone {
+    //接口地址
+    public static API: string = "/api/user/check_phone";
+    //字段声明
+    public static RequestParams: {
+        phone?: string,// 手机号码
+        area?: string, // 国家代号
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+
+    public static Request(param: typeof Web_User_Check_Phone.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Check_Phone.ResponseData };
+}
+/**
+ * https 获取验证码
+ */
+export class Web_User_Send_Code {
+    //接口地址
+    public static API: string = "/api/user/sendcode";
+    //字段声明
+    public static RequestParams: {
+        phone?: string,// 手机号码
+        area?: string, // 国家代号
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+
+    public static Request(param: typeof Web_User_Send_Code.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Send_Code.ResponseData };
+}
+
+/**
+ * https 修改密码
+ */
+export class Web_User_Modify_Password {
+    //接口地址
+    public static API: string = "/api/user/modify/password";
+    //字段声明
+    public static RequestParams: {
+        phone?: string,  // 手机号码
+        password?: string, // 密码
+        area?: string,  // 国家代号 
+        code?: string  // 验证码
+    } = null;
+
+    public static ResponseData: {
+        user_id?: number,s
+    } = null;
+
+    public static Request(param: typeof Web_User_Modify_Password.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Modify_Password.ResponseData };
+}
 
 /**
  * https 手机号用户注册
  */
- export class Web_User_Register {
+export class Web_User_Register {
     //接口地址
     public static API: string = "/api/user/register";
     //字段声明
     public static RequestParams: {
-        phone               : string,// 手机号码
-		password            : string,  // 密码
-		area                : string, // 国家代号
-		code                : string,  // 验证码
-		platform            : number,//平台(platform):1-IOS 2-Android 3-Windows 4-OSX 5-Web 6-MiniWeb 7-Linux
+        phone?: string,// 手机号码
+        password?: string,  // 密码
+        area?: string, // 国家代号
+        code?: string,  // 验证码
+        platform?: number,//平台(platform):1-IOS 2-Android 3-Windows 4-OSX 5-Web 6-MiniWeb 7-Linux
     } = null;
 
     public static ResponseData: {
-        userId              :number,// 用户id
+        userId: number,// 用户id
     } = null;
 
     public static Request(param: typeof Web_User_Register.RequestParams) {

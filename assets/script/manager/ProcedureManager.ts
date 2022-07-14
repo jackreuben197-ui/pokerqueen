@@ -28,7 +28,7 @@ export default class ProcedureManager {
         ProcedureManager.StartProcedure(ProcedureEnum.Init);
     }
     //开始某个流程
-    static StartProcedure(procedureIndex: number, param: any = null, doEnter: boolean = true) {
+    static StartProcedure(procedureIndex: number, param: any = null) {
         let procedure = this.procedureDic[procedureIndex];
         if (!procedure) {
             cc.log("未定义流程:", ProcedureEnum[procedureIndex]);
