@@ -15,12 +15,12 @@ export default class ProcedureEnter extends ProcedureBase {
         super.Enter(param);
 
         if (param) {
-            this.Login(param).then(() => this.SyncUserInfo()).then(() => this.SyncChannel()).then(() => {
+            this.Login(param).then(() => this.SyncUserInfo()).then(() => this.SyncWS()).then(() => {
                 //准备进入大厅
                 this.enterLobby();
             }).catch(this._catchHandler);
         } else {
-            this.SyncUserInfo().then(() => this.SyncChannel()).then(() => this.enterLobby()).catch(this._catchHandler);
+            this.SyncUserInfo().then(() => this.SyncWS()).then(() => this.enterLobby()).catch(this._catchHandler);
         }
     }
     Leave() {
@@ -48,10 +48,10 @@ export default class ProcedureEnter extends ProcedureBase {
         cc.log("登陆步骤2 ------>SyncUserInfo")
         return LoginSession.SyncUserInfo();
     }
-    //3.socket port
-    SyncChannel() {
-        cc.log("登陆步骤3 ------>SyncChannel")
-        return LoginSession.SyncChannel();
+    //3.websocket port
+    SyncWS() {
+        cc.log("登陆步骤3 ------>SyncWS")
+        return LoginSession.SyncWS();
     }
     //4.进入大厅
     enterLobby() {

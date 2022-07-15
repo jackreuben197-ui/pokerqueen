@@ -195,6 +195,29 @@ export class Web_Channel {
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_Channel.ResponseData };
 }
+
+/**
+ * https 请求频道信息 websocket的port
+ */
+ export class Web_WS {
+    //接口地址
+    public static API: string = "/api/user/ws";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+        port?: number,        // websocket port
+    } = null;
+
+
+    public static Request(param: typeof Web_WS.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_WS.ResponseData };
+}
+
 /**
  * https 获取全局配置
  */

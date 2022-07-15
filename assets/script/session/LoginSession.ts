@@ -5,7 +5,7 @@
 import { Md5 } from "ts-md5";
 import { GameConfig } from "../config/GameConfig";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Channel, Web_Login, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code } from "../net/https/WebRequest";
+import { Web_Channel, Web_Login, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -73,6 +73,22 @@ export default class LoginSession {
                 request: Web_Channel,
                 onSuccess: function () {
                     resolve(Web_Channel.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    /**
+     * websocket port 请求
+     */
+    static async SyncWS() {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_WS,
+                onSuccess: function () {
+                    resolve(Web_WS.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
