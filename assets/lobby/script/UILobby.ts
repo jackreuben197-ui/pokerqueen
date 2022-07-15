@@ -1,0 +1,55 @@
+const { ccclass, property } = cc._decorator;
+import UIBase from "../../../assets/script/ui/UIBase";
+@ccclass
+export default class UILobby extends UIBase {
+    protected onLoad(): void {
+        cc.log(`UILobby onLoad`);
+        super.onLoad();
+        let widget: cc.Widget = this.node.getComponent(cc.Widget);
+        widget.target = cc.find("Canvas");
+    }
+    protected lateLoad(): void {
+        cc.log(`UILobby on lateLoad`);
+        super.lateLoad();
+        this.setScrollTop();
+    }
+    /**
+  * @description: 主要用来设置 下拉刷新--
+  * @return {void}
+  */
+    private setScrollTop(): void {
+        let scrollView: cc.Node = this.getChildNodeOrComponent("ScrollView");
+        let content: cc.Node = this.getChildNodeOrComponent("Scrollview_Content");
+        let ContentHeight = content.height;
+        let Scrollheight = scrollView.height;
+        if (ContentHeight < Scrollheight) {
+            let padding: cc.Node = this.getChildNodeOrComponent("padding");
+            padding.height = Scrollheight - ContentHeight + 1;
+            cc.log(`改变之后的paddingHeight=${padding.height}`)
+        }
+        content.getComponent(cc.Layout).updateLayout();
+        let ItemPrefab0: cc.Node = this.getChildNodeOrComponent("ItemPrefab0");
+        let root: cc.Node = ItemPrefab0.getChildByName("root");
+        scrollView.on('scrolling', (e) => {
+            let y = content.y;
+            if (y < -100) {
+                ItemPrefab0.active = true;
+                root.getChildByName("arrow").active = true;
+                root.getChildByName("Text_1").active = true;
+                root.getChildByName("waiticon").active = false;
+            }
+            if (ItemPrefab0.active === true) {
+                if ((y ^ 0) === 0) {
+                    root.getChildByName("arrow").active = false;
+                    root.getChildByName("Text_1").active = false;
+                    root.getChildByName("waiticon").active = true;
+                    cc.tween(root.getChildByName("waiticon")).to(0.5, { angle: -360 }).start();
+                    this.scheduleOnce(() => {
+                        root.getChildByName("waiticon").stopAllActions();
+                        ItemPrefab0.active = false;
+                    },0.5)
+                }
+            }
+        })
+    }
+}

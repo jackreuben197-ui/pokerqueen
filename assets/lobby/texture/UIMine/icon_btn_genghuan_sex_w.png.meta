@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "128d1d5e-1e05-471f-8395-678246db8f0f",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 120,
+  "height": 45,
+  "platformSettings": {},
+  "subMetas": {
+    "icon_btn_genghuan_sex_w": {
+      "ver": "1.0.6",
+      "uuid": "ae87393f-360f-44de-b147-0ccc949ed144",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "128d1d5e-1e05-471f-8395-678246db8f0f",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 120,
+      "height": 45,
+      "rawWidth": 120,
+      "rawHeight": 45,
+      "borderTop": 41,
+      "borderBottom": 0,
+      "borderLeft": 49,
+      "borderRight": 54,
+      "subMetas": {}
+    }
+  }
+}
