@@ -1,3 +1,4 @@
+import { i18nMgr } from "../../i18n/i18nMgr";
 import UIManager from "../../manager/UIManager";
 import UIBase from "../UIBase";
 
@@ -43,8 +44,8 @@ export default class BaseForm extends UIBase {
         this.back_click = this.getChildNodeOrComponent("back_click");
         this.content = this.getChildNodeOrComponent("content - 内容填充");
         this.top_block = this.getChildNodeOrComponent("top_block");
-
-        this.title_label.string = this.UIDefine?.Title || "未定义标题";
+        this.title_label.string = i18nMgr._getLabel(this.UIDefine?.Title) || "";
+        
         //设置尺寸
         this.main.setContentSize(this.node.getContentSize());
     }

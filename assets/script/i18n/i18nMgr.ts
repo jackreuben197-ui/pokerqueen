@@ -9,6 +9,12 @@ var LanguageAllObject = {
     en: {},
     pt: {}
 };
+//补充一些表格内缺失的,优先判断
+var excelAdd = {
+    en: {
+        UILogin_USER101: "Read and agree to<color = #DCBA82>《User Agreement》</color>",
+    }
+}
 cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
     var _csv = new CSV(data.text, { header: true });
     var _con = _csv.parse();
@@ -45,22 +51,22 @@ export class i18nMgr {
             return;
         }
         this.language = language;
-        cc.sys.localStorage.setItem("language",this.language);
+        cc.sys.localStorage.setItem("language", this.language);
         this.reloadLabel();
         this.reloadSprite();
         this.resetRemoteSprite();
     }
 
     // 观察所有与多语言有关的图片 重新调用服务器接口
-    public static resetRemoteSprite(){
+    public static resetRemoteSprite() {
         // zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
         let changeObj = {
-            cn:"zh_CN",
-            zh:"zh_HK",
-            en:"en_US",
-            pt:"pt_BR"
+            cn: "zh_CN",
+            zh: "zh_HK",
+            en: "en_US",
+            pt: "pt_BR"
         }
-        if(UIMatchBanner.instance){
+        if (UIMatchBanner.instance) {
             UIMatchBanner.instance.initBannerList(changeObj[this.language]);
         }
     }
@@ -80,12 +86,13 @@ export class i18nMgr {
 
     public static _getLabel(opt: string): string {
         this.checkInit();
-        if(this.LanguageObject){
-            if(this.LanguageObject[opt]){
+        if (excelAdd[this.language]?.[opt]) return excelAdd[this.language][opt];
+        if (this.LanguageObject) {
+            if (this.LanguageObject[opt]) {
                 return this.LanguageObject[opt] || opt;
             }
             return opt;
-        }else{
+        } else {
             return opt;
         }
     }
@@ -131,3 +138,5 @@ export class i18nMgr {
     }
 
 }
+//@ts-ignore
+window.i18nMgr = i18nMgr;

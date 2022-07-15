@@ -10,7 +10,7 @@ export default class HttpRequest {
 
         let host = cuscomHost || GameConfig.Network.WebURL;
         let url = host + request.API;
-        //GameConfig.useProxy && (url = HttpRequest.handleUrl(url));
+        url = this.handleUrl(url);
         //@ts-ignore
         await HttpClient.post({
             url: url, param, onFailure, onSuccess: HttpRequest.onSuccess.bind(HttpRequest, request, onSuccess),
@@ -23,7 +23,7 @@ export default class HttpRequest {
     }
     //代理转换
     public static handleUrl(url: string): string {
-        if (url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
+        if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
             return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
         }
         return url;

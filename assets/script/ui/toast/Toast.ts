@@ -1,30 +1,30 @@
-import LabelI18N from "../../i18n/LabelI18N";
-
-
+import LabelI18N from "../../i18n_old/LabelI18N";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class Toast extends cc.Component {
 
-    @property(LabelI18N)
-    labelI18N: LabelI18N = null;
+    label: cc.Label;
+
     posY: number;
     //记录渐入浅出起始时间
     markFadeOriTime: number;
 
+    onLoad() {
+        this.label = this.node.getChildByName("label").getComponent(cc.Label);
+    }
+
     setLabel(content: string) {
-        this.labelI18N.key = content;
-        this.labelI18N.translate();
+        this.label.getComponent(cc.Label).string = content;
         //@ts-ignore
-        this.labelI18N.node.getComponent(cc.Label)._forceUpdateRenderData();
+        this.label.getComponent(cc.Label)._forceUpdateRenderData();
         let layout = this.node.getComponent(cc.Layout);
         layout.resizeMode = cc.Layout.ResizeMode.CONTAINER;
         layout.updateLayout();
 
     }
     reset() {
-        //this.setLabel("");
         this.node.stopAllActions();
         this.node.opacity = 255;
     }

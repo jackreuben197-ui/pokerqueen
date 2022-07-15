@@ -51,7 +51,7 @@ export const UIDefine = {
         Name: "ResetPassForm",
         Bundle: null,
         Path: "prefab/form/ResetPassForm",
-        Title: "Reset Password",
+        Title: "UILogin_Forget",
     },
     //注册账号
     RegisterForm: {
@@ -59,7 +59,7 @@ export const UIDefine = {
         Name: "RegisterForm",
         Bundle: null,
         Path: "prefab/form/RegisterForm",
-        Title: "Register",
+        Title: "UILogin_Register",
     },
     //语言
     LanguageForm: {

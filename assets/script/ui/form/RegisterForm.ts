@@ -5,6 +5,7 @@ import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import Dispatcher from "../../event/Dispatcher";
 import GGEvent from "../../event/GGEvent";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
@@ -66,13 +67,14 @@ export default class RegisterForm extends BaseForm {
         this.code_button = this.getChildNodeOrComponent("code_button");
         this.getcode_button = this.getChildNodeOrComponent("getcode_button");
         this.getcode_button.addComponent(LabelCDTime);
+        this.setEyesOpen(false);
     }
 
     onShow(param?: any): void {
         super.onShow(param);
         this.setArea();
-        this.setEyesOpen(false);
-        this.resetAgreeCheck();
+        //this.setEyesOpen(false);
+        //this.resetAgreeCheck();
     }
 
     protected lateClose(param: any = null) {
@@ -129,19 +131,19 @@ export default class RegisterForm extends BaseForm {
         let agree_checked = this.agree_toggle.isChecked;
         let area = this.area_label.string.substring(1);
         if (phone == "") {
-            ToastManager.ins.craeteToast("UILogin_1001|请输入手机号");//("请输入手机号");
+            ToastManager.ins.craeteToast("UILogin_1001");//("请输入手机号");
             return;
         }
         if (password.length < 6) {
-            ToastManager.ins.craeteToast("UILogin_1002|密码不得少于6个字符");//("密码不得少于6个字符");
+            ToastManager.ins.craeteToast("UILogin_1002");//("密码不得少于6个字符");
             return;
         }
         if (code == "") {
-            ToastManager.ins.craeteToast("UILogin_1008|请输入验证码");//("请输入验证码");
+            ToastManager.ins.craeteToast("UILogin_1008");//("请输入验证码");
             return;
         }
         if (agree_checked == false) {
-            ToastManager.ins.craeteToast("UILogin_ReadOK|阅读并同意用户协议");//("阅读并同意用户协议");
+            ToastManager.ins.craeteToast("UILogin_ReadOK");//("阅读并同意用户协议");
             return;
         }
         password = Md5.hashStr(password);
@@ -180,11 +182,11 @@ export default class RegisterForm extends BaseForm {
 
 
         if (phone == "") {
-            ToastManager.ins.craeteToast("UILogin_1004|请输入手机号");//请输入手机号
+            ToastManager.ins.craeteToast("UILogin_1004");//请输入手机号
             return;
         }
         if (!this.tcode_canclick) {
-            ToastManager.ins.craeteToast("UILogin_1005|请稍等再发");//("请稍等再发");
+            ToastManager.ins.craeteToast("UILogin_1005");//("请稍等再发");
             return;
         }
 
@@ -193,7 +195,7 @@ export default class RegisterForm extends BaseForm {
         if (result == undefined) return;
 
         if (result?.data) {
-            ToastManager.ins.craeteToast("UILogin_1006|此号码已注册");//("此号码已注册");
+            ToastManager.ins.craeteToast("UILogin_1006");//("此号码已注册");
             return;
         }
         this.tcode_canclick = false;
@@ -202,7 +204,7 @@ export default class RegisterForm extends BaseForm {
 
         if (result == undefined) return;
 
-        ToastManager.ins.craeteToast("UILogin_1007|验证码已发送");//("验证码已发送");
+        ToastManager.ins.craeteToast("UILogin_1007");//("验证码已发送");
 
         this.getcode_button.getComponent(LabelCDTime).show(5, this.resetGetCodeLabel.bind(this));
     }
@@ -211,7 +213,7 @@ export default class RegisterForm extends BaseForm {
      */
     resetGetCodeLabel() {
         this.tcode_canclick = true;
-        this.getcode_button.getComponent(cc.Label).string = "Get Code";
+        this.getcode_button.getComponent(cc.Label).string = i18nMgr._getLabel("UILogin_GetCode");
     }
     /**
      * 区号点击

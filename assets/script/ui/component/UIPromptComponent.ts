@@ -56,7 +56,7 @@ export default class UIPromptComponent extends UIBase {
             //return;
             case this.statusType.Showing:
                 if ((new Date().getTime() - this.showStartTime) / 1000 > this.timeout) {
-                    ToastManager.ins.craeteToast(`请求超时 ${this.timeout}秒`);
+                    ToastManager.ins.craeteToast("adaptation10126");
                     this.goClose();
                 }
                 break;

@@ -4,7 +4,7 @@ import { i18nMgr } from "./i18nMgr";
 const { ccclass, property, executeInEditMode, disallowMultiple, requireComponent, menu } = cc._decorator;
 @ccclass
 @executeInEditMode
-@requireComponent(cc.Label)
+//@requireComponent(cc.Label)
 @disallowMultiple
 export class i18nLabel extends cc.Component {
     @property({ visible: false })
@@ -48,9 +48,17 @@ export class i18nLabel extends cc.Component {
     }
 
     private setEndValue() {
-        let label = this.getComponent(cc.Label);
+        let label: any = this.getComponent(cc.Label);
         if (cc.isValid(label)) {
             label.string = i18nMgr._getLabel(this.i18n_string);
+        }
+        label = this.getComponent(cc.RichText);
+        if (cc.isValid(label)) {
+            label.string = i18nMgr._getLabel(this.i18n_string);
+        }
+        label = this.getComponent(cc.EditBox);
+        if (cc.isValid(label)) {
+            label.placeholder = i18nMgr._getLabel(this.i18n_string);
         }
     }
 

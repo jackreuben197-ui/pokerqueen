@@ -4,6 +4,7 @@
 
 import Singleton from "../common/Singleton";
 import Dispatcher from "../event/Dispatcher";
+import { i18nMgr } from "../i18n/i18nMgr";
 import Main from "../Main";
 import AssetContext from "../ui/component/AssetContext";
 import Toast from "../ui/toast/Toast";
@@ -61,7 +62,7 @@ export default class ToastManager extends Singleton {
             let toast_script: Toast = toast.getComponent(Toast);
             toast.parent = this.sequenceContent;
             toast.opacity = 0;
-            toast_script.setLabel(content);
+            toast_script.setLabel(i18nMgr._getLabel(content));
             if (this.sequenceToasts.length == 0) {
                 this.resetSCPosition();
                 toast_script.posY = 0;

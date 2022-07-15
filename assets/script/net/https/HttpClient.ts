@@ -40,11 +40,11 @@ export default class HttpClient {
     static __response(response, onFailure, onSuccess) {
         switch (response) {
             case "timeout":
-                ToastManager.ins.craeteToast(HttpErrorCode.GetKey(HttpErrorCode.Timeout));
+                ToastManager.ins.craeteToast("adaptation10126");
                 onFailure && onFailure();
                 break;
             case "error":
-                ToastManager.ins.craeteToast(HttpErrorCode.GetKey(HttpErrorCode.Error));
+                ToastManager.ins.craeteToast("errorDefault");
                 onFailure && onFailure();
                 break;
             default:
@@ -52,7 +52,7 @@ export default class HttpClient {
                     let response_json = JSON.parse(response);
                     if (response_json?.code > 0) {
                         //错误码提示
-                        ToastManager.ins.craeteToast(HttpErrorCode.GetKey(response_json.code));
+                        ToastManager.ins.craeteToast(`ServerErrorCode_${response_json.code}`);
                         onFailure && onFailure(response_json.code);
                         return;
                     }
@@ -91,8 +91,7 @@ export default class HttpClient {
                 clearTimeout(timer);//取消等待的超时
                 resolve("timeout");
             };
-
-            xhr.open(type, this.handleUrl(url), true);
+            xhr.open(type, url, true);
             xhr.timeout = HttpClient.TimeOut;
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader("md5at", LoginSession.Token);
@@ -104,13 +103,4 @@ export default class HttpClient {
             xhr.send(param ? param : null);
         })
     }
-
-    //代理转换
-    public static handleUrl(url: string): string {
-        if (url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
-            return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
-        }
-        return url;
-    }
-
 }
