@@ -19,6 +19,8 @@ export default class PreloadingScene extends BaseScene {
     /**
      * 声明内容
      */
+    //上一次进度
+    private prevPercent: number = 0;
     ///////////////////////////////////
     protected lateLoad(): void {
 
@@ -42,14 +44,16 @@ export default class PreloadingScene extends BaseScene {
     setDesc(content: string) {
         this.progress_desc.string = content;
     }
-
     Enter(param: any): void {
         super.Enter(param);
         cc.resources.loadDir("/",
             (finish: number, total: number) => {
                 let percent = finish / total;
+                //纠错，保证当前进度不会小于上次进度
+                percent = Math.max(percent, this.prevPercent);
                 this.setProgress(percent);
-                this.setLabel(`加载中...${percent * 100 ^ 0}%`);
+                this.setLabel(`loading...${percent * 100 ^ 0}%`);
+                this.prevPercent = percent;
             }, (error: Error, assets) => {
                 cc.log("预加载资源加载完成");
                 ProcedureManager.StartProcedure(ProcedureEnum.Config);

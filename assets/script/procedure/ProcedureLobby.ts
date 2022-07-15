@@ -11,11 +11,11 @@ export default class ProcedureLobby extends ProcedureBase {
         super.Enter(param);
         SceneManager.ins.switchScene(UIDefine.LobbyScene);
         //请求
-        LobbySession.APIConfig_Global_Config();
-        LobbySession.APIConfig_Multi_Language_Template();
-        LobbySession.APIMiscBannerList(1, 10, 0);
-        LobbySession.RequestListSummary();
-        LobbySession.APIMsgMessageUnread();
+        // LobbySession.APIConfig_Global_Config();
+        // LobbySession.APIConfig_Multi_Language_Template();
+        // LobbySession.APIMiscBannerList(1, 10, 0);
+        // LobbySession.RequestListSummary();
+        // LobbySession.APIMsgMessageUnread();
     }
     Leave() {
         super.Leave();

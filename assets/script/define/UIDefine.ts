@@ -23,7 +23,7 @@ export const UIDefine = {
     LobbyScene: {
         UIType: UIType.Scene,
         Name: "LobbyScene",
-        Bundle: null,
+        Bundle: "lobby",
         Path: "prefab/scene/LobbyScene"
     },
 

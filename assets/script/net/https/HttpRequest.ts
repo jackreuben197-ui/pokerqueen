@@ -10,7 +10,7 @@ export default class HttpRequest {
 
         let host = cuscomHost || GameConfig.Network.WebURL;
         let url = host + request.API;
-        GameConfig.useProxy && (url = HttpRequest.handleUrl(url));
+        //GameConfig.useProxy && (url = HttpRequest.handleUrl(url));
         //@ts-ignore
         await HttpClient.post({
             url: url, param, onFailure, onSuccess: HttpRequest.onSuccess.bind(HttpRequest, request, onSuccess),
