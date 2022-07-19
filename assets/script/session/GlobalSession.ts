@@ -1,7 +1,7 @@
 
 export default class GlobalSession {
 
-    static NowTime(): number {
+    static get NowTime(): number {
         return + new Date().getTime() / 1000;
     }
 

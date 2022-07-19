@@ -2,11 +2,12 @@
 import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
 import { AreaCodeConfig } from "../../config/AreaCodeConfig";
-import { GameConfig } from "../../config/GameConfig";
+import { GameConfig, LanguageList } from "../../config/GameConfig";
 import { DialogParam, ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import Dispatcher from "../../event/Dispatcher";
 import GGEvent from "../../event/GGEvent";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 
@@ -44,6 +45,13 @@ export default class LoginScene extends BaseScene {
     area_label: cc.Label = null;
 
     code_button: cc.Node = null;
+
+    language_layer: cc.Node = null;
+
+    language_panel: cc.Node = null;
+
+    lan_item: cc.Node = null;
+
     ///////////////////////////////////
     /**
      * 声明内容
@@ -65,8 +73,13 @@ export default class LoginScene extends BaseScene {
         this.language_button = this.getChildNodeOrComponent("language_button");
         this.area_label = this.getChildNodeOrComponent("area_label", cc.Label);
         this.code_button = this.getChildNodeOrComponent("code_button");
+        this.language_layer = this.getChildNodeOrComponent("language_layer");
+        this.language_panel = this.getChildNodeOrComponent("language_panel");
+        this.lan_item = this.getChildNodeOrComponent("lan_item");
         this.setAreaAndPhone();
         this.setEyesOpen(false);
+        this.setLanLayerActive(false);
+        this.setLanguagePanel();
 
     }
 
@@ -80,11 +93,33 @@ export default class LoginScene extends BaseScene {
         this.forgot_button.on("click", this.onForgotClick, this);
         this.register_button.on("click", this.onRegisterClick, this);
         this.code_button.on("click", this.onCodeClick, this);
+        this.language_button.on("click", this.onLanguageClick, this);
+        this.language_layer.on("click", this.onLanguageLayerClick, this);
     }
     protected lateEnter() {
-
+        //设置语言显示
+        cc.log("i18nMgr.Language : ", i18nMgr.Language);
     }
 
+    setLanguagePanel() {
+        this.lan_item.active = false;
+        for (let lan of LanguageList) {
+            let lan_item = cc.instantiate(this.lan_item);
+            lan_item.active = true;
+            lan_item.parent = this.language_panel;
+            let lan_label = lan_item.getChildByName("lan_lab")?.getComponent(cc.Label);
+            lan_label && (lan_label.string = lan.name);
+            lan_item.name = lan.lan;
+            lan_item.on("click", this.onLanguageItemClick, this);
+        }
+    }
+
+
+
+
+    setLanLayerActive(boo: boolean) {
+        this.language_layer.active = boo;
+    }
     setAreaAndPhone() {
         this.area_label.string = LoginSession.AreaCode;
         this.phone_editbox.string = LoginSession.Phone;
@@ -153,16 +188,6 @@ export default class LoginScene extends BaseScene {
     }
 
     /**
-     * 语言切换点击
-     */
-    onLanguageClick() {
-        cc.log("onLanguageClick");
-        //I18NManager.ins.languageType = (I18NManager.ins.languageType + 1) % 2;
-        //I18NManager.ins.transLanguage(I18NManager.ins.languageType);
-        UIManager.open(UIDefine.LanguageForm, { language_id: 0 });
-
-    }
-    /**
      * 区号点击
      */
     onCodeClick() {
@@ -173,5 +198,26 @@ export default class LoginScene extends BaseScene {
      */
     onChangeAreaCode() {
         this.area_label.string = LoginSession.AreaCode;
+    }
+    /**
+     * 语言切换点击
+     */
+    onLanguageClick() {
+        cc.log("onLanguageClick");
+        //I18NManager.ins.languageType = (I18NManager.ins.languageType + 1) % 2;
+        //I18NManager.ins.transLanguage(I18NManager.ins.languageType);
+        //UIManager.open(UIDefine.LanguageForm, { language_id: 0 });
+        this.setLanLayerActive(!this.language_layer.active);
+    }
+    /**
+     * 语言面板层点击
+     */
+    onLanguageLayerClick() {
+        this.setLanLayerActive(false);
+    }
+    onLanguageItemClick(button: cc.Button) {
+        let lan = button.node.name;
+        i18nMgr.setLanguage(lan);
+        this.onLanguageLayerClick();
     }
 }

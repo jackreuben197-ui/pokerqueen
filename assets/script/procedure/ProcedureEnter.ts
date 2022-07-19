@@ -29,7 +29,7 @@ export default class ProcedureEnter extends ProcedureBase {
     /////////////////////////////////////////////
     _catchHandler(code: number) {
         cc.log("login error code", code);
-        if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene && code == 90010) {
+        if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene) {
             //Token失败,这里清理Token，重新进入登录界面
             LoginSession.Token = "";
             ProcedureManager.StartProcedure(ProcedureEnum.Login);

@@ -1,4 +1,5 @@
 import UIMatchBanner from "../../lobby/script/UIMatchBanner";
+import { GameConfig } from "../config/GameConfig";
 import * as i18nLabel from "./i18nLabel";
 import * as i18nSprite from "./i18nSprite";
 var CSV = require("CSV");
@@ -38,7 +39,7 @@ export class i18nMgr {
     private static checkInit() {
         this.language = cc.sys.localStorage.getItem("language");
         if (!this.language) {
-            this.setLanguage("en");
+            this.setLanguage(GameConfig.Default_Language);
         }
         this.LanguageObject = LanguageAllObject[this.language];
     }
@@ -135,6 +136,14 @@ export class i18nMgr {
         for (let one of this.spriteArr) {
             one._resetValue();
         }
+    }
+    /**
+     * 获取当前语言
+     */
+    public static get Language() {
+        if (this.language) return this.language;
+        this.checkInit();
+        return this.language;
     }
 
 }

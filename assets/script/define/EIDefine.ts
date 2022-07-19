@@ -92,3 +92,10 @@ export interface INetWork {
     PaipuBaseUrl: string;
 
 }
+/**
+ * 刷新接口
+ */
+export interface IUpdate {
+    allowUpdate: boolean;
+    update(dt: number);
+}

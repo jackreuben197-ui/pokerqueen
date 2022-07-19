@@ -13,20 +13,20 @@ export class Web_Login {
     public static API: string = "/api/user/login";
     //字段声明
     public static RequestParams: {
-        phone?: string,        // 手机号
-        password?: string,        // 密码MD5
-        area?: string,        // 区号ProtocolCode
-        device_id?: string,        // 设备唯一id
-        mac_addr?: string,        // mac地址
-        is_simulator?: boolean,        // 是否是模拟器
-        simulator_name?: string,        // 模拟器名称
-        system_version?: string,        // 系统版本号
-        user_device_no?: string,        // 设备机型
+        phone?            : string,        // 手机号
+        password?         : string,        // 密码MD5
+        area?             : string,        // 区号ProtocolCode
+        device_id?        : string,        // 设备唯一id
+        mac_addr?         : string,        // mac地址
+        is_simulator?     : boolean,        // 是否是模拟器
+        simulator_name?   : string,        // 模拟器名称
+        system_version?   : string,        // 系统版本号
+        user_device_no?   : string,        // 设备机型
     } = null;
 
     public static ResponseData: {
-        token?: string,        // 手机号
-        expire_at?: number,        // 密码MD5
+        token?        : string,        // 手机号
+        expire_at?    : number,        // 密码MD5
     } = null;
 
 
@@ -37,6 +37,28 @@ export class Web_Login {
     public static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
 }
 
+/**
+ * https 刷新token
+ */
+ export class Web_Refresh_Token {
+    //接口地址
+    public static API: string = "/api/user/refresh";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+        token?        : string,        // 手机号
+        expire_at?    : number,        // 密码MD5
+    } = null;
+
+    public static Request(param: typeof Web_Refresh_Token.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Refresh_Token.ResponseData };
+}
 
 /**
  * https 验证手机号
@@ -92,10 +114,10 @@ export class Web_User_Modify_Password {
     public static API: string = "/api/user/modify/password";
     //字段声明
     public static RequestParams: {
-        phone?: string,  // 手机号码
-        password?: string, // 密码
-        area?: string,  // 国家代号 
-        code?: string  // 验证码
+        phone?    : string,  // 手机号码
+        password? : string, // 密码
+        area?     : string,  // 国家代号
+        code?     : string  // 验证码
     } = null;
 
     public static ResponseData: {
@@ -147,25 +169,25 @@ export class Web_User_Info {
         user?: typeof Web_User_Info.UserInfo,        // 用户信息
     } = null;
     public static UserInfo: {
-        area?: string,        //手机号地区 例子：+86
-        phone?: string,        //手机号
-        forbid?: number,        //0禁止登陆; 1正常登录
-        gold?: number,        //金豆
-        gold_lock?: number,        //被锁金豆
-        wallet_status?: number,        //钱包状态
-        un_id?: number,        //玩家随机id
-        nickname?: string,        //名字
-        avatar?: string,        //头像
-        sex?: number,        //性别
-        birthday?: string,        //生日
-        country?: string,        //国家
-        city?: string,        //城市
-        province?: string,        //省会
-        mnt?: number,        //修改用户[名称]次数
-        mat?: number,        //修改用户[头像]次数
-        ut?: number,        //1 普通用户; 2 支桌号; 3 牌局机器人; 4 牛仔机器人
-        forbid_withdraw_gold?: number,        //提现冻结，1 开启，2 关闭
-        forbid_bring_in?: number,        //带入冻结，1 开启，2 关闭
+        area?                   : string,        //手机号地区 例子：+86
+        phone?                  : string,        //手机号
+        forbid?                 : number,        //0禁止登陆; 1正常登录
+        gold?                   : number,        //金豆
+        gold_lock?              : number,        //被锁金豆
+        wallet_status?          : number,        //钱包状态
+        un_id?                  : number,        //玩家随机id
+        nickname?               : string,        //名字
+        avatar?                 : string,        //头像
+        sex?                    : number,        //性别
+        birthday?               : string,        //生日
+        country?                : string,        //国家
+        city?                   : string,        //城市
+        province?               : string,        //省会
+        mnt?                    : number,        //修改用户[名称]次数
+        mat?                    : number,        //修改用户[头像]次数
+        ut?                     : number,        //1 普通用户; 2 支桌号; 3 牌局机器人; 4 牛仔机器人
+        forbid_withdraw_gold?   : number,        //提现冻结，1 开启，2 关闭
+        forbid_bring_in?        : number,        //带入冻结，1 开启，2 关闭
     } = null;
     public static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -231,18 +253,18 @@ export class Web_Config_Global_Config {
     } = null;
 
     public static ResponseData: {
-        operating_model?: number,//运营模式 1 直营模式 2 工会联盟模式
-        recharge_gold?: number,//直营模式下，充豆功能开关 1 开 2 关
-        user_special_recharge?: number,//直营模式下 operating_model=1  支桌号功能开关 1 自动充值（平台充值） 2 手动充值（公会充值） ，3 全选
-        user_ordinary_recharge?: number,//直营模式下 operating_model=1  普通用户功能开关 1 自动充值（平台充值） 2 手动充值（公会充值） ，3 全选
-        normal_room_model?: number,//模式开关
-        apple_pay_switch?: number,//苹果支付服务功能开关 1 开 2 关
-        user_modify_name_cost?: number,//修改名字花费
-        mtt_switch?: number,//MTT功能开关 1 开 2 关
-        normal_return_profit_switch?: number,//返水开关屏蔽 1开，2关
-        android_mtt_switch?: number,//androidMTT功能开关 1 开 2 关
-        android_pay_switch?: number,//android支付功能开关 1 开 2 关
-        apple_mtt_switch?: number,//iosMTT功能开关 1 开 2 关
+        operating_model?                : number,//运营模式 1 直营模式 2 工会联盟模式
+        recharge_gold?                  : number,//直营模式下，充豆功能开关 1 开 2 关
+        user_special_recharge?          : number,//直营模式下 operating_model=1  支桌号功能开关 1 自动充值（平台充值） 2 手动充值（公会充值） ，3 全选
+        user_ordinary_recharge?         : number,//直营模式下 operating_model=1  普通用户功能开关 1 自动充值（平台充值） 2 手动充值（公会充值） ，3 全选
+        normal_room_model?              : number,//模式开关
+        apple_pay_switch?               : number,//苹果支付服务功能开关 1 开 2 关
+        user_modify_name_cost?          : number,//修改名字花费
+        mtt_switch?                     : number,//MTT功能开关 1 开 2 关
+        normal_return_profit_switch?    : number,//返水开关屏蔽 1开，2关
+        android_mtt_switch?             : number,//androidMTT功能开关 1 开 2 关
+        android_pay_switch?             : number,//android支付功能开关 1 开 2 关
+        apple_mtt_switch?               : number,//iosMTT功能开关 1 开 2 关
     } = null;
     public static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -288,25 +310,25 @@ export class Web_Misc_Banner_List {
 
     //字段声明
     public static RequestParams: {
-        lang?: string,        //语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文
-        type?: number,        //1-大厅Banner,2-发现页(工会)Banner
-        limit?: number,        //条目
-        offset?: number,        //开始下标。例子（offset=0，limit=10，0-9。）
+        lang?   : string,        //语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文
+        type?   : number,        //1-大厅Banner,2-发现页(工会)Banner
+        limit?  : number,        //条目
+        offset? : number,        //开始下标。例子（offset=0，limit=10，0-9。）
     } = null;
 
     public static ResponseData: {
-        limit: number,//条目
-        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-        total: number,//总条数
-        list: typeof Web_Misc_Banner_List.BannerInfo// Banner列表
+        limit   : number,//条目
+        offset  : number,//开始下标。例子（offset=0，limit=10，0-9。）
+        total   : number,//总条数
+        list    : typeof Web_Misc_Banner_List.BannerInfo// Banner列表
     } = null;
     public static BannerInfo: {
-        id: number,//banner id
-        lang: string,//语言
-        banner_type: number,//1-大厅Banner,2-发现页(工会)Banner
-        image_url: string,//Banner图片连接
-        redirect_url: string,//跳转连接
-        description: string,//描述
+        id            : number,//banner id
+        lang          : string,//语言
+        banner_type   : number,//1-大厅Banner,2-发现页(工会)Banner
+        image_url     : string,//Banner图片连接
+        redirect_url  : string,//跳转连接
+        description   : string,//描述
     } = null;
 
     public static Request(param: typeof Web_Misc_Banner_List.RequestParams) {
@@ -330,25 +352,25 @@ export class Web_Room_Center_Groups {
     } = null;
 
     public static ResponseData: {
-        game_type: number,//游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
-        count: number,//房间数量
-        player_count: number,//人数
-        sub_group: typeof Web_Room_Center_Groups.DataGroupOne[],
+        game_type       : number,//游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
+        count           : number,//房间数量
+        player_count    : number,//人数
+        sub_group       : typeof Web_Room_Center_Groups.DataGroupOne[],
     } = null;
     public static DataGroupOne: {
-        game_type: number,//游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
-        count: number,//房间数量
-        poker_type: number,//牌类型 0 长牌，1 短牌
-        player_count: number,//人数
-        sub_group: typeof Web_Room_Center_Groups.DataGroupTwo[],
+        game_type       : number,//游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
+        count           : number,//房间数量
+        poker_type      : number,//牌类型 0 长牌，1 短牌
+        player_count    : number,//人数
+        sub_group       : typeof Web_Room_Center_Groups.DataGroupTwo[],
     } = null;
 
     public static DataGroupTwo: {
-        game_type: number,//游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
-        poker_type: number,//牌类型 0 长牌，1 短牌
-        limit_bet_type: number,//下注限制 0 不限制，1 底池限注，2 AOF
-        count: number,//房间数量
-        player_count: number, //人数
+        game_type         : number,//游戏类型，0 德州，1奥马哈四张，2 奥马哈五张，3 奥马哈六张
+        poker_type        : number,//牌类型 0 长牌，1 短牌
+        limit_bet_type    : number,//下注限制 0 不限制，1 底池限注，2 AOF
+        count             : number,//房间数量
+        player_count      : number, //人数
     } = null;
 
     public static Request(param: typeof Web_Room_Center_Groups.RequestParams) {
@@ -371,13 +393,13 @@ export class Web_Msg_Message_Unread {
     } = null;
 
     public static ResponseData: {
-        msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
-        num: number,//未读消息数量
-        title: string,
-        content: string,
-        remark: string,
-        msg_type: number,//消息类型 MessageSubType
-        create_time: string,//创建时间
+        msg_main_type   : number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
+        num             : number,//未读消息数量
+        title           : string,
+        content         : string,
+        remark          : string,
+        msg_type        : number,//消息类型 MessageSubType
+        create_time     : string,//创建时间
     } = null;
     public static Request(param: typeof Web_Msg_Message_Unread.RequestParams) {
         this.RequestParams = param;

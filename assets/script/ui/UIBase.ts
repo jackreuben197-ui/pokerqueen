@@ -1,6 +1,6 @@
-import AdapterComponent from "../AdapterComponent";
+
 import { IUIDefine } from "../define/EIDefine";
-import Dispatcher from "../event/Dispatcher";
+import AdapterComponent from "../funcomponent/AdapterComponent";
 const { ccclass, property } = cc._decorator;
 
 @ccclass

@@ -2,10 +2,8 @@
  * 入口函数
  */
 import { GameConfig } from "./config/GameConfig";
-import Dispatcher from "./event/Dispatcher";
-
-import DialogManager from "./manager/DialogManager";
 import ProcedureManager from "./manager/ProcedureManager";
+import WebSocketClient from "./net/websocket/WebSocketClient";
 import CCTools from "./tools/CCTools";
 
 const { ccclass, property } = cc._decorator;
@@ -25,7 +23,6 @@ export default class Main extends cc.Component {
     static Block: cc.Node;
     static Prompt: cc.Node;
     static Toast: cc.Node;
-
 
     onLoad() {
 
@@ -52,7 +49,10 @@ export default class Main extends cc.Component {
         // let message = grace.proto.msg.Player.create({ name: "yechun", id: 123, enterTime: 111 })
         // let buffer = grace.proto.msg.Player.encode(message).finish();
         // cc.log(grace.proto.msg.Player.decode(buffer));
+        //WebSocketClient.connect();
+
     }
+
     protected onEnable(): void {
         cc.log("屏幕分辨率:", cc.view.getFrameSize().toString());
         cc.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
@@ -61,6 +61,4 @@ export default class Main extends cc.Component {
     start() {
         ProcedureManager.Init();
     }
-
-    // update (dt) {}
 }

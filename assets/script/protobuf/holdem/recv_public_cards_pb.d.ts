@@ -1,0 +1,40 @@
+// package: holdem.pb
+// file: protobuf/holdem/recv_public_cards.proto
+
+import * as jspb from "google-protobuf";
+import * as protobuf_holdem_define_pb from "../../protobuf/holdem/define_pb";
+
+export class ServerMessagePublicCards extends jspb.Message {
+  clearPublicCardsArrayList(): void;
+  getPublicCardsArrayList(): Array<number>;
+  setPublicCardsArrayList(value: Array<number>): void;
+  addPublicCardsArray(value: number, index?: number): number;
+
+  hasNextOperator(): boolean;
+  clearNextOperator(): void;
+  getNextOperator(): protobuf_holdem_define_pb.Operator | undefined;
+  setNextOperator(value?: protobuf_holdem_define_pb.Operator): void;
+
+  clearExtPublicCardsArrayList(): void;
+  getExtPublicCardsArrayList(): Array<number>;
+  setExtPublicCardsArrayList(value: Array<number>): void;
+  addExtPublicCardsArray(value: number, index?: number): number;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ServerMessagePublicCards.AsObject;
+  static toObject(includeInstance: boolean, msg: ServerMessagePublicCards): ServerMessagePublicCards.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ServerMessagePublicCards, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ServerMessagePublicCards;
+  static deserializeBinaryFromReader(message: ServerMessagePublicCards, reader: jspb.BinaryReader): ServerMessagePublicCards;
+}
+
+export namespace ServerMessagePublicCards {
+  export type AsObject = {
+    publicCardsArrayList: Array<number>,
+    nextOperator?: protobuf_holdem_define_pb.Operator.AsObject,
+    extPublicCardsArrayList: Array<number>,
+  }
+}
+

@@ -22,8 +22,6 @@ export default class MainTest extends UIBase {
                 button.on("click", this.testClick, this);
             }
         }
-
-
     }
 
     //////////////////////////////////测试///////////////////////////////////
@@ -76,6 +74,8 @@ export default class MainTest extends UIBase {
                 break;
             case "loading":
                 UIManager.open(UIDefine.UIPromptComponent);
+                break;
+            case "判断this":
                 break;
 
         }

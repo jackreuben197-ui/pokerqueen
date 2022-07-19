@@ -6,7 +6,7 @@
 import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
-
+    static Default_Language: string = "en";
     //是否使用代理
     static useProxy: boolean = false;
     //设计分辨率
@@ -45,3 +45,12 @@ export var NetWorkBase = {
     UserAgentURL: "xxx",
     DataAnalysisURL: "xxx",
 }
+
+/**
+ * 语言列表
+ */
+export var LanguageList: { lan: string, name: string }[] = [
+    { lan: "en", name: "Englist" },
+    { lan: "pt", name: "Português" },
+    { lan: "cn", name: "Chinese" },
+];
