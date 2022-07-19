@@ -1,5 +1,6 @@
 import UIMatchBanner from "../../lobby/script/UIMatchBanner";
 import { GameConfig } from "../config/GameConfig";
+import StorageKey from "../session/StorageKey";
 import * as i18nLabel from "./i18nLabel";
 import * as i18nSprite from "./i18nSprite";
 var CSV = require("CSV");
@@ -37,7 +38,7 @@ export class i18nMgr {
     private static spriteArr: i18nSprite.i18nSprite[] = [];       // i18nSprite 列表
 
     private static checkInit() {
-        this.language = cc.sys.localStorage.getItem("language");
+        this.language = localStorage.getItem(StorageKey.Language);
         if (!this.language) {
             this.setLanguage(GameConfig.Default_Language);
         }
@@ -52,7 +53,7 @@ export class i18nMgr {
             return;
         }
         this.language = language;
-        cc.sys.localStorage.setItem("language", this.language);
+        localStorage.setItem(StorageKey.Language, this.language);
         this.reloadLabel();
         this.reloadSprite();
         this.resetRemoteSprite();

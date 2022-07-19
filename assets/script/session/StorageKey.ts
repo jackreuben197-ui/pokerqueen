@@ -9,4 +9,6 @@ export default class StorageKey {
     static AERA_CODE = "AERA_CODE";
     //手机号
     static PHONE = "PHONE";
+    //语言
+    static Language = "Language";
 }

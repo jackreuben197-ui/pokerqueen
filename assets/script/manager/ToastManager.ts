@@ -19,7 +19,7 @@ export default class ToastManager extends Singleton {
 
     config: any = {
         //容器起始位置
-        contentStartPosition: 150,
+        contentStartPosition: 350,
         //渐入的偏移距离
         fadeInOffSetDis: 100,
         //节点间隔距离

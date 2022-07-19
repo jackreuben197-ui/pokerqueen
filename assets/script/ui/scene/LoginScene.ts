@@ -15,6 +15,7 @@ import UIManager from "../../manager/UIManager";
 import { Web_Login } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import StorageKey from "../../session/StorageKey";
+import AssetContext from "../component/AssetContext";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -50,7 +51,11 @@ export default class LoginScene extends BaseScene {
 
     language_panel: cc.Node = null;
 
+    lan_flag: cc.Sprite = null;
+
     lan_item: cc.Node = null;
+
+
 
     ///////////////////////////////////
     /**
@@ -75,6 +80,7 @@ export default class LoginScene extends BaseScene {
         this.code_button = this.getChildNodeOrComponent("code_button");
         this.language_layer = this.getChildNodeOrComponent("language_layer");
         this.language_panel = this.getChildNodeOrComponent("language_panel");
+        this.lan_flag = this.getChildNodeOrComponent("lan_flag", cc.Sprite);
         this.lan_item = this.getChildNodeOrComponent("lan_item");
         this.setAreaAndPhone();
         this.setEyesOpen(false);
@@ -103,22 +109,30 @@ export default class LoginScene extends BaseScene {
 
     setLanguagePanel() {
         this.lan_item.active = false;
-        for (let lan of LanguageList) {
-            let lan_item = cc.instantiate(this.lan_item);
+        let i: number = 0, lan_item: cc.Node = null;
+        for (; i < LanguageList.length; i++) {
+            let lan_obj = LanguageList[i];
+            lan_item = cc.instantiate(this.lan_item);
             lan_item.active = true;
             lan_item.parent = this.language_panel;
             let lan_label = lan_item.getChildByName("lan_lab")?.getComponent(cc.Label);
-            lan_label && (lan_label.string = lan.name);
-            lan_item.name = lan.lan;
+            let flag_img = lan_item.getChildByName("flag_img")?.getComponent(cc.Sprite);
+            lan_label && (lan_label.string = lan_obj.name);
+            flag_img && (flag_img.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`icon_flag_${lan_obj.lan}`));
+            lan_item.name = lan_obj.lan;
             lan_item.on("click", this.onLanguageItemClick, this);
         }
+        lan_item.getChildByName("bottom_line").active = false;
+        this.refreshLanguageFlag();
     }
-
-
-
-
     setLanLayerActive(boo: boolean) {
         this.language_layer.active = boo;
+        this.language_panel.scale = 1;
+        if (boo) {
+            this.language_panel.stopAllActions();
+            this.language_panel.scale = 0;
+            cc.tween(this.language_panel).to(.2, { scale: 1 }, cc.easeBackOut()).start();
+        }
     }
     setAreaAndPhone() {
         this.area_label.string = LoginSession.AreaCode;
@@ -128,6 +142,12 @@ export default class LoginScene extends BaseScene {
     setEyesOpen(boo: boolean) {
         this.open_eyes_icon.active = boo;
         this.close_eyes_icon.active = !boo;
+    }
+    /**
+     * 刷新旗子
+     */
+    refreshLanguageFlag() {
+        this.lan_flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`icon_flag_${i18nMgr.Language}`);
     }
 
     ///////////////////////////////////按钮响应回调//////////////////////////////////////////
@@ -219,5 +239,6 @@ export default class LoginScene extends BaseScene {
         let lan = button.node.name;
         i18nMgr.setLanguage(lan);
         this.onLanguageLayerClick();
+        this.refreshLanguageFlag();
     }
 }
