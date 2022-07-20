@@ -1,10 +1,7 @@
 
 import { GameConfig, NetWorkBase } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
-import { UIDefine } from "../define/UIDefine";
 import ProcedureManager from "../manager/ProcedureManager";
-import SceneManager from "../manager/SceneManager";
-import HttpClient from "../net/https/HttpClient";
 import ProcedureBase from "./ProcedureBase";
 
 
@@ -64,7 +61,7 @@ export default class ProcedureConfig extends ProcedureBase {
                 network.WebHost = `http://${network.HTTP}`;
                 //network.LoginHost = "52.221.136.216"; 
                 network.LoginHost = "13.214.62.42";
-                
+
                 //Dns.GetHostEntry("dev.k8s.awanptesting.com").AddressList[0].ToString(); //PlayerPrefsMgr.mInstance.GetString(sckKey, networkConf.LoginHostIP);
                 keys.forEach(item => {
                     network[item] = NetWorkBase[item];

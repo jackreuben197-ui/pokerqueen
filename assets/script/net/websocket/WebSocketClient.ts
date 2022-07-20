@@ -3,6 +3,7 @@ import ToastManager from "../../manager/ToastManager";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import GameSession from "../../session/GameSession";
 import { Web_WS } from "../https/WebRequest";
+import ProtocolCode from "./ProtocolCode";
 import { Protocol_Holdem_Register } from "./ProtocolHoldemMessages";
 
 /**
@@ -36,7 +37,7 @@ export default class WebSocketClient {
         console.log("%c%s", "color:yellow;background:#780404", "websocket connect success:" + WebSocketClient.Host_Port);
         if (!WebSocketClient._onConnent) {
             WebSocketClient._onConnent = true;
-            GameSession.Send({ protocol: new ClientMessageRegister(), RoomID: 0, MatchID: 0 });
+            GameSession.Send({ protocol: new ClientMessageRegister(), RoomID: 0, MatchID: 0, Code: ProtocolCode.Protocol_Holdem_Register });
         } else {
 
         }
@@ -52,9 +53,8 @@ export default class WebSocketClient {
     }
 
     public static Send(code: number, msg: { RoomID: number, MatchID: number }) {
-        let ab = new ArrayBuffer(18);
-        let dataView = new DataView(ab);
-        //dataView.setInt16()
+
     }
 
 }
+(window as any).WebSocketClient = WebSocketClient;

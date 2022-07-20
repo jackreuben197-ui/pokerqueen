@@ -3,8 +3,16 @@
  */
 export default class PacketHead{
 
+    static CharsFlag: string = "YM";
+
     static offset:number = 0;
 
+    static ProtoVersion = 
+        {
+            Unknown  : 0,
+            Json     : 1,
+            Protobuf : 2,
+        };
     static FieldSize = {
         DataLength    : 4,
         CharsFlag     : 2,
@@ -25,12 +33,22 @@ export default class PacketHead{
     };
     static FieldOffset = {
         DataLength    : 0,
-        CharsFlag     : this.offset+= PacketHead.FieldSize.DataLength,
-        Code          : this.offset+= PacketHead.FieldSize.CharsFlag,
-        Token         : this.offset+= PacketHead.FieldSize.Code,
-        RoomID        : this.offset+= PacketHead.FieldSize.Token,
-        MatchID       : this.offset+= PacketHead.FieldSize.RoomID,
-        ProtoVersion  : this.offset+= PacketHead.FieldSize.MatchID,
+        CharsFlag     : 0,
+        Code          : 0,
+        Token         : 0,
+        RoomID        : 0,
+        MatchID       : 0,
+        ProtoVersion  : 0,
+    }
+
+    static Init(){
+        
+        this.FieldOffset.CharsFlag = this.FieldOffset.DataLength + this.FieldSize.DataLength;
+        this.FieldOffset.Code = this.FieldOffset.CharsFlag + this.FieldSize.CharsFlag;
+        this.FieldOffset.Token = this.FieldOffset.Code + this.FieldSize.Code;
+        this.FieldOffset.RoomID = this.FieldOffset.Token + this.FieldSize.Token;
+        this.FieldOffset.MatchID = this.FieldOffset.RoomID + this.FieldSize.RoomID;
+        this.FieldOffset.ProtoVersion = this.FieldOffset.MatchID + this.FieldSize.MatchID;
     }
 
     static get Length():number{
