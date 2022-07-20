@@ -44,7 +44,7 @@ export default class RegisterForm extends BaseForm {
     confirm_button: cc.Node = null;
     agree_toggle: cc.Toggle = null;
 
-
+    agreement_click: cc.Node = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -66,6 +66,7 @@ export default class RegisterForm extends BaseForm {
         this.confirm_button = this.getChildNodeOrComponent("confirm_button");
         this.code_button = this.getChildNodeOrComponent("code_button");
         this.getcode_button = this.getChildNodeOrComponent("getcode_button");
+        this.agreement_click = this.getChildNodeOrComponent("agreement_click");
         this.getcode_button.addComponent(LabelCDTime);
         this.setEyesOpen(false);
     }
@@ -80,15 +81,13 @@ export default class RegisterForm extends BaseForm {
     protected lateClose(param: any = null) {
         super.lateClose(param);
     }
-
-
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
         this.eyes_button.on("click", this.onEyesClick, this);
         this.confirm_button.on("click", this.onConfirmClick, this);
         this.code_button.on("click", this.onCodeClick, this);
         this.getcode_button.on("click", this.onGetCodeClick, this);
-
+        this.agreement_click && this.agreement_click.on("click", this.onUserAgreeClick, this);
     }
 
     protected regiterDispatchEvent(): void {
@@ -227,5 +226,12 @@ export default class RegisterForm extends BaseForm {
      */
     onChangeAreaCode() {
         this.area_label.string = LoginSession.AreaCode;
+    }
+
+    /**
+     * 用戶注意事項
+     */
+    onUserAgreeClick() {
+        UIManager.open(UIDefine.UserAgreeForm);
     }
 }

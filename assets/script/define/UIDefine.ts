@@ -75,7 +75,15 @@ export const UIDefine = {
         Name: "AreaCodeForm",
         Bundle: null,
         Path: "prefab/form/AreaCodeForm",
-        Title: "Select country or region",
+        Title: "UILogin_Local",
+    },
+    //电话区号
+    UserAgreeForm: {
+        UIType: UIType.Form,
+        Name: "UserAgreeForm",
+        Bundle: null,
+        Path: "prefab/form/UserAgreeForm",
+        Title: "tc_5E0V3qlb",
     },
     /**
      *  触摸板子（触摸黑色底板关闭）

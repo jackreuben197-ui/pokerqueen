@@ -12,7 +12,7 @@
   "height": 43,
   "platformSettings": {},
   "subMetas": {
-    "icon_flag_en": {
+    "flag_en": {
       "ver": "1.0.6",
       "uuid": "e54153bc-8194-48ee-b4e2-63172541561d",
       "importer": "sprite-frame",

@@ -44,8 +44,8 @@ export default class BaseForm extends UIBase {
         this.back_click = this.getChildNodeOrComponent("back_click");
         this.content = this.getChildNodeOrComponent("content - 内容填充");
         this.top_block = this.getChildNodeOrComponent("top_block");
-        this.title_label.string = i18nMgr._getLabel(this.UIDefine?.Title) || "";
-        
+        //this.title_label.string = i18nMgr._getLabel(this.UIDefine?.Title) || "";
+
         //设置尺寸
         this.main.setContentSize(this.node.getContentSize());
     }
@@ -61,6 +61,7 @@ export default class BaseForm extends UIBase {
 
     onShow(param: any = null) {
         super.onShow(param);
+        this.title_label.string = i18nMgr._getLabel(this.UIDefine?.Title) || "";
         this.mainFadeIn(param?.style);
     }
 

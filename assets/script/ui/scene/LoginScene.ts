@@ -118,7 +118,7 @@ export default class LoginScene extends BaseScene {
             let lan_label = lan_item.getChildByName("lan_lab")?.getComponent(cc.Label);
             let flag_img = lan_item.getChildByName("flag_img")?.getComponent(cc.Sprite);
             lan_label && (lan_label.string = lan_obj.name);
-            flag_img && (flag_img.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`icon_flag_${lan_obj.lan}`));
+            flag_img && (flag_img.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${lan_obj.lan}`));
             lan_item.name = lan_obj.lan;
             lan_item.on("click", this.onLanguageItemClick, this);
         }
@@ -147,7 +147,7 @@ export default class LoginScene extends BaseScene {
      * 刷新旗子
      */
     refreshLanguageFlag() {
-        this.lan_flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`icon_flag_${i18nMgr.Language}`);
+        this.lan_flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${i18nMgr.Language}`);
     }
 
     ///////////////////////////////////按钮响应回调//////////////////////////////////////////
