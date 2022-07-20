@@ -15,24 +15,24 @@ export default class HttpClient {
      * post 请求
      * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
-    static async post({ url = null, param = null, onFailure = null, onSuccess = null, headers = null }) {
+    static async post({ url = null, param = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
         param = JSON.stringify(param);
         console.log("%c%s%s\n%s", "color:yellow;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
-        UIManager.open(UIDefine.UIPromptComponent);
+        needJuhua && UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "POST", param, headers);
-        UIManager.close(UIDefine.UIPromptComponent);
+        needJuhua && UIManager.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - response : ", url.replace("http://", ""), response);
         this.__response(response, onFailure, onSuccess);
     }
     /**
      * get 请求
      */
-    static async get({ url = null, param = null, onFailure = null, onSuccess = null }) {
+    static async get({ url = null, param = null, onFailure = null, onSuccess = null, needJuhua = true }) {
         param = JSON.stringify(param);
         console.log("%c%s%s\n%s", "color:yellow;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
-        UIManager.open(UIDefine.UIPromptComponent);
+        needJuhua && UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "GET", param);
-        UIManager.close(UIDefine.UIPromptComponent);
+        needJuhua && UIManager.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - response : ", url.replace("http://", ""), response);
         this.__response(response, onFailure, onSuccess);
     }

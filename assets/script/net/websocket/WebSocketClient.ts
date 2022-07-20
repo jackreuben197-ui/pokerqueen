@@ -22,6 +22,7 @@ export default class WebSocketClient {
             this.WS.onerror = this.onerror;
             this.WS.onmessage = this.onmessage;
             this.WS.onclose = this.onclose;
+            cc.log("鏈接設置")
         } else {
             ToastManager.ins.craeteToast("host or port is error!");
         }

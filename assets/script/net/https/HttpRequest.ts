@@ -1,5 +1,6 @@
 import { GameConfig } from "../../config/GameConfig";
 import HttpClient from "./HttpClient";
+import WebHelper from "./WebHelper";
 /**
  * HttpRequest 在HttpClient基础上包装一层
  */
@@ -11,10 +12,11 @@ export default class HttpRequest {
         let host = cuscomHost || GameConfig.Network.WebURL;
         let url = host + request.API;
         url = this.handleUrl(url);
+        let needJuhua = WebHelper.NeedJuhua(request.API);
         //@ts-ignore
         await HttpClient.post({
             url: url, param, onFailure, onSuccess: HttpRequest.onSuccess.bind(HttpRequest, request, onSuccess),
-            headers: headers
+            headers: headers, needJuhua
         });
     }
     private static onSuccess(request, onSuccess, response) {
