@@ -3,6 +3,7 @@ import ToastManager from "../../manager/ToastManager";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import GameSession from "../../session/GameSession";
 import { Web_WS } from "../https/WebRequest";
+import ProtocolAgency from "./ProtocolAgency";
 import ProtocolCode from "./ProtocolCode";
 import { Protocol_Holdem_Register } from "./ProtocolHoldemMessages";
 
@@ -37,7 +38,7 @@ export default class WebSocketClient {
         console.log("%c%s", "color:yellow;background:#780404", "websocket connect success:" + WebSocketClient.Host_Port);
         if (!WebSocketClient._onConnent) {
             WebSocketClient._onConnent = true;
-            GameSession.Send({ protocol: new ClientMessageRegister(), RoomID: 0, MatchID: 0, Code: ProtocolCode.Protocol_Holdem_Register });
+            ProtocolAgency.Send({ protocol: new ClientMessageRegister(), RoomID: 0, MatchID: 0, Code: ProtocolCode.Protocol_Holdem_Register });
         } else {
 
         }
@@ -46,7 +47,8 @@ export default class WebSocketClient {
         console.log("%c%s", "color:yellow;background:#780404", "websocket connect error:" + WebSocketClient.Host_Port);
     }
     private static onmessage(this: WebSocket, ev: MessageEvent) {
-        console.log("%c%s", "color:yellow;background:#780404", "websocket connect onmessage:");
+        console.log("%c%s", "color:yellow;background:#780404", "websocket connect onmessage:", ev);
+        ProtocolAgency.Receive(ev.data);
     }
     private static onclose(this: WebSocket, ev: CloseEvent) {
         console.log("%c%s", "color:yellow;background:#780404", "websocket connect close:" + WebSocketClient.Host_Port);

@@ -2,10 +2,13 @@
  * 头部包体结构
  */
 export default class PacketHead{
-
+    //固定标记
     static CharsFlag: string = "YM";
 
     static offset:number = 0;
+
+    static _length:number = 0;
+    static _fixlength:number = 0;
 
     static ProtoVersion = 
         {
@@ -49,20 +52,23 @@ export default class PacketHead{
         this.FieldOffset.RoomID = this.FieldOffset.Token + this.FieldSize.Token;
         this.FieldOffset.MatchID = this.FieldOffset.RoomID + this.FieldSize.RoomID;
         this.FieldOffset.ProtoVersion = this.FieldOffset.MatchID + this.FieldSize.MatchID;
-    }
 
-    static get Length():number{
-        return this.FieldSize.DataLength
+        this._length = this.FieldSize.DataLength
         + this.FieldSize.CharsFlag
         + this.FieldSize.Code
         + this.FieldSize.Token
         + this.FieldSize.RoomID
         + this.FieldSize.MatchID
-        + this.FieldSize.ProtoVersion
+        + this.FieldSize.ProtoVersion;
+        this._fixlength = this._length - this.FieldSize.DataLength;
+    }
+
+    static get Length():number{
+        return this._length;
     }
 
     static get FixHeadLength():number{
-        return this.Length - this.FieldSize.DataLength;
+        return this._fixlength;
     }
 
 }

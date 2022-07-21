@@ -50,7 +50,6 @@ export default class Main extends cc.Component {
         // let buffer = grace.proto.msg.Player.encode(message).finish();
         // cc.log(grace.proto.msg.Player.decode(buffer));
         //WebSocketClient.connect();
-
     }
 
     protected onEnable(): void {
