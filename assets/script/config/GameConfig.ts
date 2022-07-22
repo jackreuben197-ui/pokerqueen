@@ -54,3 +54,12 @@ export var LanguageList: { lan: string, name: string }[] = [
     { lan: "pt", name: "Português" },
     { lan: "cn", name: "Chinese" },
 ];
+/**
+ * Log样式
+ */
+export var LogStyle = {
+    http_request: "color:yellow;background:#1E1E1E",
+    http_response: "color:#38A7F1;background:#1E1E1E",
+    ws_request: "color:#19FF00;background:#47100A",
+    ws_response: "color:#19FF00;background:#47100A",
+}

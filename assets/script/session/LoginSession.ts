@@ -5,6 +5,7 @@
 import { Md5 } from "ts-md5";
 import { GameConfig } from "../config/GameConfig";
 import { IUpdate } from "../define/EIDefine";
+import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Channel, Web_Login, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
@@ -21,30 +22,11 @@ export default class LoginSession {
     //手机号
     static _phone: string;
 
-    //token刷新间隔
-    tokenUpdateInterval: number = 5;
-    //token上次刷新时间
-    tokenLastTime: number = 0;
-    //token需要刷新的阈值 
-    tokenUpdateThreshold: number = 7200;
-    allowUpdate: boolean = false;
-
-    update(dt: number) {
-        if (!LoginSession.IsTokenVaild()) return;
-        let nowTime = GlobalSession.NowTime;
-        if (nowTime - this.tokenLastTime < this.tokenUpdateInterval) return;
-        this.tokenLastTime = nowTime;
-        let timeDiff = LoginSession.TokenExpireAt - GlobalSession.NowTime;
-        if (timeDiff < this.tokenUpdateThreshold) {
-            LoginSession.SyncRefreshToken();
-        }
-    }
+    static tokenRefreshComponent: TokenRefreshComponent;
 
     static Init() {
         this._areaCode = localStorage.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
         this._phone = localStorage.getItem(StorageKey.PHONE) || "";
-        this.prototype.allowUpdate = true;
-        UpdateComponent.Add(this.prototype);
     }
     /**
      * 登录请求
@@ -216,6 +198,14 @@ export default class LoginSession {
         }
         return GlobalSession.NowTime < this.TokenExpireAt;
     }
+    /**
+     * 登出
+     */
+    public static LoginOut() {
+        cc.log("game loginout");
+        this.ClearToken();
+    }
+
     /**
      * 清理Token
      */

@@ -1,10 +1,9 @@
-import { GameConfig } from "../../config/GameConfig";
+import { GameConfig, LogStyle } from "../../config/GameConfig";
 import ToastManager from "../../manager/ToastManager";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import GameSession from "../../session/GameSession";
 import { Web_WS } from "../https/WebRequest";
 import ProtocolAgency from "./ProtocolAgency";
-import ProtocolCode from "./ProtocolCode";
 import { Protocol_Holdem_Register } from "./ProtocolHoldemMessages";
 
 /**
@@ -24,7 +23,7 @@ export default class WebSocketClient {
         if (host && port) {
             this.Host_Port = `ws://${host}:${port}`;
             this.WS = new WebSocket(this.Host_Port);
-            console.log("%c%s", "color:yellow;background:#780404", "websocket connect:" + WebSocketClient.Host_Port);
+            console.log("%c%s", LogStyle.ws_request, ">>>>> websocket connect:" + WebSocketClient.Host_Port);
             this.WS.binaryType = "arraybuffer";
             this.WS.onopen = this.onopen.bind(this);
             this.WS.onerror = this.onerror.bind(this);
@@ -35,23 +34,29 @@ export default class WebSocketClient {
         }
     }
     private static onopen(this: WebSocket, ev: Event) {
-        console.log("%c%s", "color:yellow;background:#780404", "websocket connect success:" + WebSocketClient.Host_Port);
+        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket connect success:" + WebSocketClient.Host_Port);
         if (!WebSocketClient._onConnent) {
             WebSocketClient._onConnent = true;
-            ProtocolAgency.Send({ protocol: new ClientMessageRegister(), RoomID: 0, MatchID: 0, Code: ProtocolCode.Protocol_Holdem_Register });
+            //发送握手后的注册
+            ProtocolAgency.Send({
+                protocol: Protocol_Holdem_Register,
+                RoomID: 0,
+                MatchID: 0,
+                body: Protocol_Holdem_Register.Request(),
+            });
         } else {
 
         }
     }
     private static onerror(this: WebSocket, ev: Event) {
-        console.log("%c%s", "color:yellow;background:#780404", "websocket connect error:" + WebSocketClient.Host_Port);
+        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onerror:" + WebSocketClient.Host_Port);
     }
     private static onmessage(this: WebSocket, ev: MessageEvent) {
-        console.log("%c%s", "color:yellow;background:#780404", "websocket connect onmessage:", ev);
+        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onmessage:", ev);
         ProtocolAgency.Receive(ev.data);
     }
     private static onclose(this: WebSocket, ev: CloseEvent) {
-        console.log("%c%s", "color:yellow;background:#780404", "websocket connect close:" + WebSocketClient.Host_Port);
+        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);
     }
 
     public static Send(code: number, msg: { RoomID: number, MatchID: number }) {

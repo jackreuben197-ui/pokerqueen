@@ -5,7 +5,7 @@ export default class Dispatcher {
      * 事件池
      */
     private static _handlers: {
-        [key: string]: {
+        [key: string | number]: {
             caller: any,
             handler: Function
         }[]
@@ -17,7 +17,7 @@ export default class Dispatcher {
      * @param event 事件
      * @param params 参数
      */
-    public static emit(event: string, ...params: any[]) {
+    public static emit(event: string | number, ...params: any[]) {
         const list = Dispatcher._handlers[event];
         if (list?.length) {
             for (let t of list) {
@@ -33,7 +33,7 @@ export default class Dispatcher {
      * @param handler 回调方法
      * @param caller 作用域
      */
-    public static on(event: string, handler: Function, caller: any): void {
+    public static on(event: string | number, handler: Function, caller?: any): void {
 
         Dispatcher._handlers[event] || (Dispatcher._handlers[event] = []);
 
@@ -46,7 +46,7 @@ export default class Dispatcher {
      * @param handler 回调方法(未定义则移除事件类型的所有监听)
      * @param caller 作用域
      */
-    public static off(event: string, handler?: Function, caller?: any): void {
+    public static off(event: string | number, handler?: Function, caller?: any): void {
 
         if (handler) {
             //获取事件队列

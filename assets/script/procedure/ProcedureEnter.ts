@@ -31,7 +31,7 @@ export default class ProcedureEnter extends ProcedureBase {
         cc.log("login error code", code);
         if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene) {
             //Token失败,这里清理Token，重新进入登录界面
-            LoginSession.Token = "";
+            LoginSession.LoginOut();
             ProcedureManager.StartProcedure(ProcedureEnum.Login);
         } else {
             ProcedureManager.StartProcedure(ProcedureEnum.Idel);

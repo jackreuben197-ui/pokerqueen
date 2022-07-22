@@ -98,4 +98,6 @@ export interface INetWork {
 export interface IUpdate {
     allowUpdate: boolean;
     update(dt: number);
+    start();
+    stop();
 }

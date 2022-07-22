@@ -1,4 +1,4 @@
-import { GameConfig } from "../../config/GameConfig";
+import { GameConfig, LogStyle } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
@@ -17,11 +17,11 @@ export default class HttpClient {
      */
     static async post({ url = null, param = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
         param = JSON.stringify(param);
-        console.log("%c%s%s\n%s", "color:yellow;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
+        console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url.replace("http://", ""), param);
         needJuhua && UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "POST", param, headers);
         needJuhua && UIManager.close(UIDefine.UIPromptComponent);
-        console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - response : ", url.replace("http://", ""), response);
+        console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url.replace("http://", ""), response);
         this.__response(response, onFailure, onSuccess);
     }
     /**
@@ -29,11 +29,11 @@ export default class HttpClient {
      */
     static async get({ url = null, param = null, onFailure = null, onSuccess = null, needJuhua = true }) {
         param = JSON.stringify(param);
-        console.log("%c%s%s\n%s", "color:yellow;background:#1E1E1E", ">>>>> post - request : ", url.replace("http://", ""), param);
+        console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url.replace("http://", ""), param);
         needJuhua && UIManager.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "GET", param);
         needJuhua && UIManager.close(UIDefine.UIPromptComponent);
-        console.log("%c%s%s\n%s", "color:#38A7F1;background:#1E1E1E", ">>>>> post - response : ", url.replace("http://", ""), response);
+        console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url.replace("http://", ""), response);
         this.__response(response, onFailure, onSuccess);
     }
 

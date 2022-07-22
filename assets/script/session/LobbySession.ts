@@ -2,9 +2,15 @@
  * 大厅Session
  */
 
+import Dispatcher from "../event/Dispatcher";
+import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
+import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
+import UpdateComponent from "../funcomponent/UpdateComponent";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups } from "../net/https/WebRequest";
-
+import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { Protocol_Holdem_Register } from "../net/websocket/ProtocolHoldemMessages";
+import LoginSession from "./LoginSession";
 
 export default class LobbySession {
 
@@ -15,6 +21,38 @@ export default class LobbySession {
     //开关数据
     static Switch: any = {};
 
+    public static tokenRefreshComponent: TokenRefreshComponent;
+    public static heartbeatComponent: HeartbeatComponent;
+
+    //只初始化一次
+    static _initOnce: boolean = true;
+
+    static Init() {
+        if (this._initOnce) {
+            this._initOnce = false;
+            this.tokenRefreshComponent = new TokenRefreshComponent;
+            this.heartbeatComponent = new HeartbeatComponent;
+            UpdateComponent.Add(this.tokenRefreshComponent);
+            UpdateComponent.Add(this.heartbeatComponent);
+            this.regiterEvents();
+        }
+        this.tokenRefreshComponent.start();
+    }
+
+    static regiterEvents() {
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
+    }
+
+    private static on_Protocol_Holdem_Register(body: typeof Protocol_Holdem_Register.Response_AsObject) {
+        if (!body) {
+            return;
+        }
+        if (body.status == 0) {
+            this.heartbeatComponent.start();
+        } else {
+            LoginSession.LoginOut();
+        }
+    }
     /**
      * 获取全局配置
      */

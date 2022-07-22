@@ -1,5 +1,6 @@
 import { GameConfig } from "../config/GameConfig";
 import { UIDefine } from "../define/UIDefine";
+import UpdateComponent from "../funcomponent/UpdateComponent";
 import SceneManager from "../manager/SceneManager";
 import { Web_WS } from "../net/https/WebRequest";
 import PacketHead from "../net/websocket/PacketHead";
@@ -11,6 +12,10 @@ import ProcedureBase from "./ProcedureBase";
  * 大厅进程
  */
 export default class ProcedureLobby extends ProcedureBase {
+
+    tokenRefreshComponent
+
+
     Enter(param: any) {
         super.Enter(param);
         SceneManager.ins.switchScene(UIDefine.LobbyScene);

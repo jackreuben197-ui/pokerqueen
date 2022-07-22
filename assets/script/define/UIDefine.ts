@@ -1,5 +1,4 @@
-
-import { UIFadeStyleEnum, UIType } from "./EIDefine";
+import { UIType } from "./EIDefine";
 
 export const UIDefine = {
     /**

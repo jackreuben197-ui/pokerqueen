@@ -1,24 +1,28 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import { LogStyle } from "../../config/GameConfig";
+import Dispatcher from "../../event/Dispatcher";
 import { ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import LoginSession from "../../session/LoginSession";
 import PacketHead from "./PacketHead";
+import { ProtocolCode } from "./ProtocolCode";
+import { BaseProtocol, Protocol_Holdem_Register } from "./ProtocolHoldemMessages";
 import WebSocketClient from "./WebSocketClient";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class ProtocolAgency extends cc.Component {
-    static Send({ protocol = null, RoomID = 0, MatchID = 0, Code = null }) {
+
+    static Send({ protocol = null, RoomID = 0, MatchID = 0, body = null }) {
 
         if (WebSocketClient.WS.readyState == WebSocket.OPEN) {
+            let code: number = this._getCodeByProtocolName(protocol.name);
+            if (!code) {
+                cc.log("%c%s:%s\n%s", LogStyle.ws_request, "undefined code", protocol.name, JSON.stringify(arguments[0]));
+                return;
+            }
+            cc.log("%c%s:%s\n%s", LogStyle.ws_request, "protocol send", protocol.name, JSON.stringify(arguments[0]));
 
-            let body: Uint8Array = protocol.serializeBinary();
             let bodyLength: number = body.byteLength;
             //数据长度(要写入前4个字节)
             let dataLength: number = PacketHead.FixHeadLength + bodyLength;
@@ -27,8 +31,8 @@ export default class ProtocolAgency extends cc.Component {
             let arrayBuffer: ArrayBuffer = new ArrayBuffer(bufferLength);
             let dataView: DataView = new DataView(arrayBuffer);
             this._writeUint32(dataView, PacketHead.FieldOffset.DataLength, dataLength);
-            this._writeString(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
-            this._writeUint16(dataView, PacketHead.FieldOffset.Code, Code);
+            this._writeUint8Array(dataView, PacketHead.FieldOffset.CharsFlag, PacketHead.CharsFlag);
+            this._writeUint16(dataView, PacketHead.FieldOffset.Code, code);
             this._writeString(dataView, PacketHead.FieldOffset.Token, LoginSession.Token);
             this._writeUint64(dataView, PacketHead.FieldOffset.RoomID, RoomID);
             this._writeUint64(dataView, PacketHead.FieldOffset.MatchID, MatchID);
@@ -47,6 +51,12 @@ export default class ProtocolAgency extends cc.Component {
     static _writeUint32(dataView: DataView, offset: number, num: number) {
         dataView.setUint32(offset, num);
     }
+    /**
+     * js不具备64位整型，需要特殊处理
+     * @param dataView 
+     * @param offset 
+     * @param num 
+     */
     static _writeUint64(dataView: DataView, offset: number, num: number) {
         if (num > 0xFFFFFFFF) {
             let num_hex_str = num.toString(16);
@@ -72,36 +82,60 @@ export default class ProtocolAgency extends cc.Component {
             dataView.setUint8(offset++, value);
         }
     }
-
-
     static Receive(data: ArrayBuffer) {
-
         let ua = new Uint8Array(data);
+        for (let i = 0; i < PacketHead.CharsFlag.length; i++) {
+            if (ua[i] != PacketHead.CharsFlag[i]) {
+                cc.log("%c%s", LogStyle.ws_response, "charsflag is no match");
+                return;
+            }
+        }
 
-        let code = ua.slice();
+        let code_offset = PacketHead.FieldOffset.Code - PacketHead.FieldSize.DataLength;
+        let code: number = this._readNumber(ua, code_offset, PacketHead.FieldSize.Code);
 
-        let body_ua = ua.slice(PacketHead.FixHeadLength);
+        let protocolName = this._getProtocolNameByCode(code);
+        if (!protocolName) {
+            cc.log("%c%s", LogStyle.ws_response, "code is undefined " + code);
+            return;
+        }
+        let roomid_offset = PacketHead.FieldOffset.RoomID - PacketHead.FieldSize.DataLength;
+        let matchid_offset = PacketHead.FieldOffset.MatchID - PacketHead.FieldSize.DataLength;
 
-        cc.log("ua : >", body_ua);
+        let roomid: number = this._readNumber(ua, roomid_offset, PacketHead.FieldSize.RoomID);
+        let matchid: number = this._readNumber(ua, matchid_offset, PacketHead.FieldSize.MatchID);
 
-        let msg = ServerMessageRegister.deserializeBinary(new Uint8Array(body_ua))
+        cc.log("msg : >", roomid, matchid);
 
-        cc.log("msg : >", msg.getStatus(), msg.getTimestamp());
 
-        // let dataView: DataView = new DataView(data);
+        let protocol: any = cc.js.getClassByName(protocolName);
+        if (!protocol) {
+            cc.log("%c%s", LogStyle.ws_response, "protocol is undefined or unregistered " + protocolName);
+            return;
+        }
 
-        // let offset = PacketHead.FieldSize.DataLength;
+        let body_ua = data.slice(PacketHead.FixHeadLength);
 
-        // let code = dataView.getUint16(PacketHead.FieldOffset.Code - offset);
+        let body = protocol.Response(body_ua);
 
-        // cc.log("code:", code);
+        cc.log("%c%s", LogStyle.ws_response, "body:" + JSON.stringify(body));
 
-        // let body_buffer = data.slice(PacketHead.FixHeadLength, data.byteLength - 1);
+        Dispatcher.emit(code, body);
 
-        // if (code == 1) {
-        //     let msg = ServerMessageRegister.deserializeBinary(new Uint8Array(body_buffer))
-        //     cc.log("msg : >", msg.getStatus(), msg.getTimestamp());
-        // }
     }
 
+    static _readNumber(ua: Uint8Array, offset, size): number {
+        let hex: string = "0x";
+        for (let i = 0; i < size; i++) {
+            hex += ua[offset + i].toString(16);
+        }
+        return parseInt(hex);
+    }
+
+    static _getProtocolNameByCode(code): string {
+        return ProtocolCode[code];
+    }
+    static _getCodeByProtocolName(name: string): number {
+        return ProtocolCode[name];
+    }
 }
