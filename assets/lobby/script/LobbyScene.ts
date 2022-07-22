@@ -51,9 +51,9 @@ export default class LobbyScene extends BaseScene {
                     return;
                 }
                 if (this.currUI) {
-                    this.currUI.opacity = 0;
+                    this.currUI.active = false;
                 }
-                newUI.opacity = 255;
+                newUI.active = true;
                 this.currUI = newUI;
                 resolve(newUI);
             } else {
@@ -61,15 +61,11 @@ export default class LobbyScene extends BaseScene {
                     if (err) {
                         return;
                     }
-                    if (this.currUI) {
-                        this.currUI.opacity = 0;
-                    }
                     newUI = cc.instantiate(asset);
                     this.Layer.addChild(newUI);
                     this.currUI = newUI;
                     this.uiMap[content] = newUI;
                     newUI.active = true;
-                    newUI.opacity = 255;
                     resolve(newUI);
                 });
             }
