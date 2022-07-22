@@ -3,13 +3,11 @@ import UIBase from "../../../assets/script/ui/UIBase";
 @ccclass
 export default class UILobby extends UIBase {
     protected onLoad(): void {
-        cc.log(`UILobby onLoad`);
         super.onLoad();
         let widget: cc.Widget = this.node.getComponent(cc.Widget);
         widget.target = cc.find("Canvas");
     }
     protected lateLoad(): void {
-        cc.log(`UILobby on lateLoad`);
         super.lateLoad();
         this.setScrollTop();
     }
@@ -25,7 +23,6 @@ export default class UILobby extends UIBase {
         if (ContentHeight < Scrollheight) {
             let padding: cc.Node = this.getChildNodeOrComponent("padding");
             padding.height = Scrollheight - ContentHeight + 1;
-            cc.log(`改变之后的paddingHeight=${padding.height}`)
         }
         content.getComponent(cc.Layout).updateLayout();
         let ItemPrefab0: cc.Node = this.getChildNodeOrComponent("ItemPrefab0");

@@ -6,7 +6,6 @@ export default class UIMineBackpack extends cc.Component {
     public view = {};
     onLoad() {
         this.load_all_object(this.node);
-        cc.log(this.view);
         this.setBackPack();
     }
     load_all_object(root: cc.Node): void {
@@ -34,12 +33,9 @@ export default class UIMineBackpack extends cc.Component {
         private setScrollTop():void{
             let Scrollheight = this.view["Backpack_Scrollview"].height;
             let contentHeight = this.view["Content"].height;
-            cc.log("Scrollheight=", Scrollheight);
-            cc.log("contentHeight=", contentHeight);
             if (contentHeight < Scrollheight) {
                 let padding = this.view["Padding"];
                 padding.height = Scrollheight - contentHeight + 10;
-                cc.log("paddingHeight=", padding.height);
             }
 
             // //监听一下scroll事件

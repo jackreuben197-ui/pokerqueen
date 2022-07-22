@@ -85,6 +85,13 @@ export const UIDefine = {
         Path: "prefab/form/UserAgreeForm",
         Title: "tc_5E0V3qlb",
     },
+    //房间模版
+    UIMatchPlayView: {
+        UIType: UIType.Form,
+        Name: "UIMatchPlayView",
+        Bundle: "lobby",
+        Path: "prefab/UIMatchPlayView"
+    },
     /**
      *  触摸板子（触摸黑色底板关闭）
      */

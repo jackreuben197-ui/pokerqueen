@@ -3,21 +3,16 @@ import UIBase from "../../../assets/script/ui/UIBase";
 
 import HttpRequest from "../../../assets/script/net/https/HttpRequest";
 import { Web_Room_Center_Groups } from "../../../assets/script/net/https/WebRequest";
-//设置人数 和 桌数
-// textPlayer = RoomButtons[i].transform.Find("TextPlayer").GetComponent<Text>();
-// textDesk = RoomButtons[i].transform.Find("TextDesk").GetComponent<Text>();
-// textPlayer.text = RoomTypesInfos[i].playerCount.ToString();
-// textDesk.text = RoomTypesInfos[i].roomCount.ToString();
-/**
- * @description: 
- * @return {*}
- */
+import LobbyScene from "./LobbyScene";
+import UIMatchPlayView from "./UIMatchPlayView";
+import UIManager from "../../script/manager/UIManager";
+import { UIDefine } from "../../script/define/UIDefine";
 @ccclass
 export default class UIMatchRoom extends UIBase {
     public static instance: UIMatchRoom = null;
-    private RoomTypesInfos = [];
+    private roomLen:number = 0;
+    public RoomTypesInfos = [];
     protected lateLoad(): void {
-        cc.log(`UIMatchRoom on lateLoad`);
         super.lateLoad();
         if (UIMatchRoom.instance === null) {
             UIMatchRoom.instance = this;
@@ -25,13 +20,13 @@ export default class UIMatchRoom extends UIBase {
             this.destroy();
             return;
         }
-        this.initRoom();
     }
-    public initRoom(): void {
-        let _data = { "code": 0, "data": [{ "game_type": 1, "count": 9, "player_count": 0, "sub_group": [{ "game_type": 1, "poker_type": 2, "count": 8, "player_count": 0, "sub_group": [{ "game_type": 1, "poker_type": 2, "limit_bet_type": 0, "count": 8, "player_count": 0 }] }, { "game_type": 1, "poker_type": 0, "count": 1, "player_count": 0, "sub_group": [{ "game_type": 1, "poker_type": 0, "limit_bet_type": 0, "count": 1, "player_count": 0 }] }] }, { "game_type": 2, "count": 1, "player_count": 0, "sub_group": [{ "game_type": 2, "poker_type": 0, "count": 1, "player_count": 0, "sub_group": [{ "game_type": 2, "poker_type": 0, "limit_bet_type": 0, "count": 1, "player_count": 0 }] }] }, { "game_type": 3, "count": 1, "player_count": 0, "sub_group": [{ "game_type": 3, "poker_type": 0, "count": 1, "player_count": 0, "sub_group": [{ "game_type": 3, "poker_type": 0, "limit_bet_type": 0, "count": 1, "player_count": 0 }] }] }, { "game_type": 0, "count": 5, "player_count": 0, "sub_group": [{ "game_type": 0, "poker_type": 0, "count": 4, "player_count": 0, "sub_group": [{ "game_type": 0, "poker_type": 0, "limit_bet_type": 0, "count": 4, "player_count": 0 }] }, { "game_type": 0, "poker_type": 2, "count": 1, "player_count": 0, "sub_group": [{ "game_type": 0, "poker_type": 2, "limit_bet_type": 0, "count": 1, "player_count": 0 }] }] }] }
-        this.handleData(_data.data);
+    onShow(param?: any): void {
+        super.onShow();
+        this.handleData(param.data,this.node);
     }
-    private handleData(data): void {
+    public handleData(data:any,roomContent:cc.Node): any[] {
+        this.RoomTypesInfos = [];
         for (let i = 0; i < this.node.childrenCount; i++) {
             let obj = {
                 gameType: 0,
@@ -53,13 +48,17 @@ export default class UIMatchRoom extends UIBase {
             this.RoomTypesInfos[element.game_type].roomCount = element.count;
             this.SetSixPlusData(element);
         }
-        for(let i = 0; i < this.node.childrenCount; i++){
-            let btn = this.node.children[i];
+        for(let i = 0; i < roomContent.childrenCount; i++){
+            let btn = roomContent.children[i];
             btn.active = this.RoomTypesInfos[i].roomCount > 0
+            if(btn.active){
+                this.roomLen++;
+            }
         }
-        this.SetRoomListBtnInfo()
+        this.SetRoomListBtnInfo(roomContent);
+        return this.RoomTypesInfos;
     }
-    private SetSixPlusData(data: typeof Web_Room_Center_Groups.ResponseData): void {
+    public SetSixPlusData(data: typeof Web_Room_Center_Groups.ResponseData): void {
         let SixPlus = []
         if (data.sub_group == null) {
             return;
@@ -78,13 +77,32 @@ export default class UIMatchRoom extends UIBase {
             this.RoomTypesInfos[data.game_type].roomCount -= item.count;
         }
     }
-    private SetRoomListBtnInfo():void{
-        for(let i = 0; i < this.node.childrenCount; i++){
-            let player:cc.Label = this.getChildNodeOrComponent("TextPlayer_"+(i+1),cc.Label);
-            let desk:cc.Label = this.getChildNodeOrComponent("TextDesk_"+(i+1),cc.Label);
-            player.string = this.RoomTypesInfos[i].playerCount;
-            desk.string = this.RoomTypesInfos[i].roomCount;
+    public SetRoomListBtnInfo(room:cc.Node):void{
+        for(let element in this.RoomTypesInfos){
+            let info = this.RoomTypesInfos[element];
+            let roomChild:cc.Node = room.children[element];
+            let player:cc.Label = roomChild.getChildByName("TextPlayer_"+(parseInt(element)+1)).getComponent(cc.Label);
+            let desk:cc.Label = roomChild.getChildByName("TextDesk_"+(parseInt(element)+1)).getComponent(cc.Label);
+            player.string = info.playerCount;
+            desk.string = info.roomCount;
         }
+    }
+    protected regiterTouchEvents():void{
+        let roomList: cc.Node = this.node;
+        for (let element in roomList.children) {
+            let item: cc.Node = roomList.children[element];
+            item.on(cc.Node.EventType.TOUCH_END, this.clickRoom.bind(this, element), this)
+        }
+    }
+      private clickRoom(CustomEventData: string, e: cc.Event.EventTouch) {
+        let roomInfo = this.RoomTypesInfos[CustomEventData];
+        let sendDate = {
+            game_type:roomInfo.gameType,
+            poker_type:roomInfo.pokerType,
+            index:parseInt(CustomEventData),
+            len:this.roomLen,
+        }
+        UIManager.open(UIDefine.UIMatchPlayView,sendDate);
     }
 }
 

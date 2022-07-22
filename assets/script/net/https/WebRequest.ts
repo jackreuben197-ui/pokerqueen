@@ -407,7 +407,123 @@ export class Web_Msg_Message_Unread {
     }
     public static Response: { code?: number, message?: string, data?: (typeof Web_Msg_Message_Unread.ResponseData)[] };
 }
+export class Web_Room_Center_Rooms_Blinds {
+    //接口地址
+    public static API: string = "/api/roomcenter/room_blinds";
 
+    //字段声明
+    public static RequestParams: {
+        game_type: number,//游戏类型
+        poker_type: number//牌类型
+    } = null;
+
+    public static ResponseData: {
+        records: (typeof Web_Room_Center_Rooms_Blinds.DataElement)[]
+    } = null;
+
+    public static DataElement: {
+        sb: number,//小盲
+        cnt: number,//该条件房间数
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Rooms_Blinds.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Rooms_Blinds.ResponseData) };
+}
+export class Web_Room_Center_Rooms {
+    //接口地址
+    public static API: string = "/api/roomcenter/rooms";
+
+    //字段声明
+    public static RequestParams: {
+        limit: number,//条目
+        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+        types: number[],
+        sb_min: number,//小盲
+        sb_max: number,
+        ant_min: number,//前注
+        ant_max: number,
+        room_ids: number[],//房间id
+        game_type: number[],//游戏类型
+        poker_type: number[],//牌类型
+        limit_bet_type: number[],//下注类型
+        order: string[]//排序//oneof=id_asc id_desc start_asc start_desc enter_asc enter_desc eseat_asc eseat_desc seat_asc seat_desc sb_asc sb_desc"
+    } = null;
+
+    public static ResponseData: {
+        total: number,
+        limit: number,
+        offset: number,
+        records: (typeof Web_Room_Center_Rooms.DataElement)[]
+    } = null;
+
+    public static DataElement: {
+        rid:number,//房间id
+        name:string,//房间名称
+        room_type:number,//room path 房间类型
+        game_type:number,//游戏类型
+        poker_type:number,//牌类型
+		limit_bet_type:number,//底池限注类型
+		status:number,//房间状态  0 未真是创建，1  已创建 未开始，2 进行中，3 强制关闭，4 即将关闭，5 房间关闭 。 RoomStatus
+		ante:number,//前注
+        sb:number,//小盲
+        op_duration:number,//操作时间
+		no_user_wait_duration:number,//无用户等待时间
+		keep_seat_duration:number,//留座离桌时间
+		total_bring_in:number,//总带入
+		total_bring_out:number,//总带出	
+		total_chip:number,//总记分牌
+        min_rate:number,//最小带入倍率
+        max_rate:number,//最大带入倍率
+		min_players:number,//最小人数
+		autostart_min_players:number,//最小人数自动开桌
+        straddle_on:number,//强制盲注开启。1：开启，0：关闭
+		straddle_max:number,//强制盲注最大人数
+        insurance_on:number,//保险开启。1：开启，0：关闭
+        insurance_op_duration:number,//保险操作时间
+		delay_view_card_on:number,//延迟看牌。1：开启，0，关闭	
+        post_on:number,//补盲开关，1：开启，0，关闭
+		muck_on:number,//是否开启盖牌
+        limit_ip_on:number,//IP开启
+        limit_gps_on:number,//gps开启
+        limit_gps_distance:number,//gps 距离
+        limit_delay_times:number,//操作延迟次数
+        limit_auto_check_times:number,//自动过牌次数
+		limit_auto_fold_times:number,//自动弃牌次数
+        seat_count:number,//房间座位数量
+		empty_seat:number,//剩余空座位
+        roomers:number,//房间内人数
+		enter_time:string,//允许进入时间	
+		play_duration:number,//游戏时长
+        retain_type:number,//藏钱类型
+		retain_min_rate:number,//最小倍率	
+		schedule_start_time:string,//	
+		start_time:string,//开始时间
+        end_time:string,//结束时间	
+		hand_num:number,//手数
+        tribe_id:number,//联盟id	
+		end_reason:string,//结束原因	
+		hc_total_hand_lv:number,//限制总手数胜率
+        hc_total_hand:number,//限制总手数	
+		hc_pool_rate_lv:number,//限制入池率	
+		hc_pool_rate:number,//限制入池数	
+		service_id:string,//用于查询IP列表IP Port
+        create_time:string,//创建时间	
+		update_time:string,//	
+		voiceprint_verify_on:number,//开启声纹验证 0 关闭，1 开启。	
+        voiceprint_verify_limit_times:number,//该房间次数限制 
+		voiceprint_verify_duration:number,//被验证倒计时	
+		voiceprint_verify_interval_duration:number//被验证间隔时间
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Rooms.RequestParams) {
+    this.RequestParams = param;
+    return param;
+}
+    public static Response: { code ?: number, message ?: string, data ?: (typeof Web_Room_Center_Rooms.ResponseData) };
+}
 /**
  * 注册全局访问
  */
@@ -419,3 +535,5 @@ export class Web_Msg_Message_Unread {
 (window as any).Web_Misc_Banner_List = Web_Misc_Banner_List;
 (window as any).Web_Room_Center_Groups = Web_Room_Center_Groups;
 (window as any).Web_Msg_Message_Unread = Web_Msg_Message_Unread;
+(window as any).Web_Room_Center_Rooms_Blinds = Web_Room_Center_Rooms_Blinds;
+(window as any).Web_Room_Center_Rooms = Web_Room_Center_Rooms;

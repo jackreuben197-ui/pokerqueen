@@ -1,14 +1,16 @@
-//avatar:http://static.awanptesting.com/image-normal/20220310094704-gzJFs.png
 const { ccclass, property } = cc._decorator;
-
+import UIBase from "../../../assets/script/ui/UIBase";
 @ccclass
-export default class UIMine extends cc.Component {
-    public view = {};
+export default class UIMine extends UIBase {
     private pageData: any = null;
-    onLoad() {
-        this.load_all_object(this.node);
+    protected onLoad(): void {
+        super.onLoad();
+        let widget: cc.Widget = this.node.getComponent(cc.Widget);
+        widget.target = cc.find("Canvas");
+    }
+    protected lateLoad(): void {
+        super.lateLoad();
         this.setMine(null);
-        cc.log(this.view);
     }
     setMine(param: any): void {
         let testData =
@@ -32,20 +34,20 @@ export default class UIMine extends cc.Component {
         }
         this.pageData = testData.data.user;
         //设置用户的头像 nickname id  
-        this.loadRawImage(this.pageData.avatar).then((frame: cc.SpriteFrame) => {
-            this.view["img_head"].getComponent(cc.Sprite).spriteFrame = frame;
-        })
-        this.view["text_name"].getComponent(cc.Label).string = this.pageData.nickname;
-        this.view["text_userID"].getComponent(cc.Label).string = "ID:" + this.pageData.user_id;
-        let listArr = ["我的钱包", "我的背包", "我的消息", "设置", "设置", "设置"];
-        for (let i = 0; i < listArr.length; i++) {
-            let key = listArr[i];
-            let item: cc.Node = cc.instantiate(this.view["item"]);
-            let text: cc.Label = item.getChildByName("item_text").getComponent(cc.Label);
-            text.string = key;
-            item.active = true;
-            this.view["content"].addChild(item);
-        }
+        // this.loadRawImage(this.pageData.avatar).then((frame: cc.SpriteFrame) => {
+        //     this.view["img_head"].getComponent(cc.Sprite).spriteFrame = frame;
+        // })
+        // this.view["text_name"].getComponent(cc.Label).string = this.pageData.nickname;
+        // this.view["text_userID"].getComponent(cc.Label).string = "ID:" + this.pageData.user_id;
+        // let listArr = ["我的钱包", "我的背包", "我的消息", "设置", "设置", "设置"];
+        // for (let i = 0; i < listArr.length; i++) {
+        //     let key = listArr[i];
+        //     let item: cc.Node = cc.instantiate(this.view["item"]);
+        //     let text: cc.Label = item.getChildByName("item_text").getComponent(cc.Label);
+        //     text.string = key;
+        //     item.active = true;
+        //     this.view["content"].addChild(item);
+        // }
         // console.log(this.view["bg"].$Sprite)
     }
     /**
@@ -66,12 +68,5 @@ export default class UIMine extends cc.Component {
                 }
             });
         })
-    }
-    load_all_object(root: cc.Node): void {
-        for (let i = 0; i < root.childrenCount; i++) {
-            let child: cc.Node = root.children[i];
-            this.view[root.children[i].name] = child;
-            this.load_all_object(root.children[i]);
-        }
     }
 }

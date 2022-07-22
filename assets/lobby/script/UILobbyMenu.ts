@@ -1,5 +1,5 @@
 const { ccclass, property } = cc._decorator;
-
+import LobbyScene from "./LobbyScene";
 @ccclass
 export default class UILobbyMenu extends cc.Component {
     public view = {};
@@ -28,20 +28,20 @@ export default class UILobbyMenu extends cc.Component {
 
     }
     lobby_click(e:cc.Event.EventTouch){
-        cc.log(e.target.name);
         this.changeBtn(e.target);
+        LobbyScene.instance.switchContent("UILobby")
     }
     world_chat_click(e:cc.Event.EventTouch){
-        cc.log(e.target.name);
         this.changeBtn(e.target);
+        LobbyScene.instance.switchContent("UIChat")
     }
     career_click(e:cc.Event.EventTouch){
-        cc.log(e.target.name);
         this.changeBtn(e.target);
+        LobbyScene.instance.switchContent("UICareer")
     }
     my_click(e:cc.Event.EventTouch){
-        cc.log(e.target.name);
         this.changeBtn(e.target);
+        LobbyScene.instance.switchContent("UIMine")
     }
     //显示btn的状态
     changeBtn(btn:cc.Node){
@@ -71,5 +71,4 @@ export default class UILobbyMenu extends cc.Component {
             cc.tween(this.curBtn).to(0.1,{scale:1.2}).start()
         }
     }
-    // update (dt) {}
 }

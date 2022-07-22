@@ -68,9 +68,9 @@ export class i18nMgr {
             en: "en_US",
             pt: "pt_BR"
         }
-        if (UIMatchBanner.instance) {
-            UIMatchBanner.instance.initBannerList(changeObj[this.language]);
-        }
+        // if (UIMatchBanner.instance) {
+        //     UIMatchBanner.instance.initBannerList(changeObj[this.language]);
+        // }
     }
     /**
      * 添加或移除 i18nLabel
