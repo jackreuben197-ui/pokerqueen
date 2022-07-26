@@ -4,6 +4,7 @@ import LobbyScene from "./LobbyScene";
 import UIMatchRoom from "./UIMatchRoom";
 import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms } from "../../../assets/script/net/https/WebRequest";
 import { i18nLabel } from "../../script/i18n/i18nLabel";
+import LobbySession from "../../script/session/LobbySession";
 enum EnumLoadType {
     "Init" = 1,
     "Refresh" = 2,
@@ -197,7 +198,7 @@ export default class UIMatchPlayView extends BaseForm {
     //获取语言信息
     async sendLanguageGetData(){
         let languageInfo:any = await LobbyScene.instance.GetLanguage({})
-        if(languageInfo.data!==null){
+        if(languageInfo?.data!==null){
             this.LocalDicRoomName.clear();
             this.LocalDicRoomName_EN.clear();
             this.LocalDicRoomName_PT.clear();
@@ -280,7 +281,8 @@ export default class UIMatchPlayView extends BaseForm {
             "limit_bet_type": null,
             "order": ["sb_asc"]
         }
-        let roomsInfoData: any = await LobbyScene.instance.GetRoomsInfo(roomsInfo);
+        let roomsInfoData: any = {"code":0,"data":{"limit":20,"offset":0,"records":[{"rid":97995898,"name":"ROOM202206181655523126304847-2","room_type":0,"game_type":0,"poker_type":0,"limit_bet_type":0,"status":1,"ante":0,"sb":1000,"op_duration":120,"no_user_wait_duration":2,"keep_seat_duration":180,"total_bring_in":0,"total_bring_out":0,"total_chip":0,"min_rate":100,"max_rate":400,"min_players":2,"autostart_min_players":2,"straddle_on":0,"straddle_max":0,"insurance_on":0,"insurance_op_duration":0,"second_pcs_on":0,"second_pcs_op_duration":0,"second_pcs_user_limit":0,"delay_view_card_on":0,"post_on":0,"muck_on":0,"limit_ip_on":0,"limit_gps_on":0,"limit_gps_distance":0,"limit_delay_times":2,"limit_auto_check_times":2,"limit_auto_fold_times":2,"seat_count":6,"empty_seat":6,"roomers":0,"enter_time":"2022-07-25T04:08:30Z","play_duration":1800,"no_user_close_duration":0,"retain_type":0,"retain_min_rate":0,"schedule_start_time":null,"start_time":null,"end_time":null,"settlement_type":1,"hand_num":0,"tribe_id":1,"end_reason":"","hc_total_hand_lv":0,"hc_total_hand":0,"hc_pool_rate_lv":0,"hc_pool_rate":0,"service_id":"grpc-throom-1","create_time":"2022-07-25T04:08:31Z","update_time":"2022-07-25T04:08:52Z","voiceprint_verify_on":1,"voiceprint_verify_limit_times":10,"voiceprint_verify_duration":120,"voiceprint_verify_interval_duration":600,"participation_status":0}],"total":1}}
+        //await LobbyScene.instance.GetRoomsInfo(roomsInfo);
         if(this.cacheResponseData == null){
             this.UICareerRecordViewCall(loadType,roomsInfoData);
         }else{
@@ -290,7 +292,7 @@ export default class UIMatchPlayView extends BaseForm {
         this.registerBlindsEvent();
     }
     private UICareerRecordViewCall(loadType: EnumLoadType, pAct: typeof Web_Room_Center_Rooms.Response): void {
-        if(pAct.code == 0){
+        if(pAct){
             let roomData = pAct.data;
             let offset = roomData.limit + roomData.offset;
             let tmpRooms =[];
@@ -504,8 +506,22 @@ export default class UIMatchPlayView extends BaseForm {
         item.on(cc.Node.EventType.TOUCH_END,this.EnterRoomAPI,this);
     }
     //加入房间
-    private EnterRoomAPI(e:cc.Event.EventCustom):void{
-        let roominfo = e.target.roomInfo;
+    private async EnterRoomAPI(e:cc.Event.EventCustom){
+        let roominfo:typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
         cc.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
+        LobbySession.cache_data.serviceId = roominfo.service_id;
+        LobbySession.cache_data.roomName = this.GetRoomNameByKey(roominfo.name);
+        LobbySession.cache_data.room_type = roominfo.room_type;
+        LobbySession.cache_data.game_type = roominfo.game_type;
+        LobbySession.cache_data.poker_type = roominfo.poker_type;
+        LobbySession.cache_data.bet_type = roominfo.limit_bet_type;
+        LobbySession.cache_data.room_id = roominfo.rid;
+        LobbySession.cache_data.seat_count = roominfo.seat_count;
+        LobbySession.cache_data.straddle = roominfo.straddle_on;
+        LobbySession.cache_data.insurance = roominfo.insurance_on > 0;
+        LobbySession.cache_data.muck_switch = roominfo.muck_on;
+        LobbySession.cache_data.voiceprint_verify_on = roominfo.voiceprint_verify_on;
+        LobbySession.cache_data.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
+        let response = await LobbySession.APIWebUserRoominsur();
     }
 }

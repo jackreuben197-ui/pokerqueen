@@ -8,6 +8,7 @@ export enum UIType {
     Dialog,
     Alert,
     Prompt,
+    MatchLoading,
 }
 /**
  * 流程

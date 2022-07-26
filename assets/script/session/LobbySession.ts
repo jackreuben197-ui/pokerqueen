@@ -7,7 +7,7 @@ import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups } from "../net/https/WebRequest";
+import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_Register } from "../net/websocket/ProtocolHoldemMessages";
 import LoginSession from "./LoginSession";
@@ -24,9 +24,22 @@ export default class LobbySession {
     public static tokenRefreshComponent: TokenRefreshComponent;
     public static heartbeatComponent: HeartbeatComponent;
 
-    static cache_roomid: number;
-    static cache_matchid: number;
-
+    public static cache_data = {
+        serviceId: null,
+        roomName: null,
+        room_type: null,
+        game_type: null,
+        poker_type: null,
+        bet_type: null,
+        room_id: null,
+        seat_count: null,
+        straddle: null,
+        insurance: null,
+        muck_switch: null,
+        voiceprint_verify_on: null,
+        voiceprint_verify_duration: null,
+        match_id: null,
+    }
     //只初始化一次
     static _initOnce: boolean = false;
 
@@ -157,6 +170,65 @@ export default class LobbySession {
             });
         });
     }
+
+
+    /**
+    * 设置该房间保险赔率表
+    */
+    static APIWebUserRoominsur() {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                api: Web_User_Room_insur.API.replace("{id}", this.cache_data.room_id.toString()),
+                request: Web_User_Room_insur,
+                onSuccess: function () {
+                    //TODO 广播刷新
+                    //Web_User_Room_insur.Response.data
+                    resolve(Web_User_Room_insur.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+
+
+    // <summary>
+    /// 设置该房间保险赔率表
+    /// </summary>
+    /// <param name="pAct"></param>
+    // public void APIWebUserRoominsur(Action<Web_User_Room_insur.ResponseData> pAct)
+    // {
+    // 	var paramas = new Web_User_Room_insur.RequestData() { };
+    // 	HttpRequestComponent.Instance.Send(StringHelper.GetWebUrlString(Web_User_Room_insur.API, GameCache.Instance.room_id.ToString()), Web_User_Room_insur.Request(paramas), RequestData =>
+    // 	{
+    // 		var tResp = Web_User_Room_insur.Response(RequestData);
+
+    // 		if (pAct != null)
+    // 		{
+    // 			if (tResp.code == 0)
+    // 			{
+    // 				GameUtil.OutsList.Clear();
+    // 				foreach (var outs in tResp.data)
+    // 				{
+    // 					List<float> OddsAndOuts = new List<float>();
+    // 					foreach (var item in outs.detail)
+    // 					{
+    // 						OddsAndOuts.Add((float)item.odds);
+    // 					}
+    // 					GameUtil.OutsList.Add((uint)outs.pot_user_count, OddsAndOuts);
+    // 				}
+    // 			}
+    // 			pAct(tResp);
+    // 		}
+    // 	});
+    // }
+
+
+
+
+
 
 
     ///////////////////////////////////////////////////////////////////////////////////////

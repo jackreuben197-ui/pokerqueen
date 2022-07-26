@@ -132,7 +132,13 @@ export const UIDefine = {
         Name: "UIPromptComponent",
         Bundle: null,
         Path: "prefab/component/UIPromptComponent",
-    }
+    },
+    UIMatchLoading: {
+        UIType: UIType.MatchLoading,
+        Name: "UIMatchLoading",
+        Bundle: null,
+        Path: "prefab/component/UIMatchLoading",
+    },
 
 }
 //批量设置

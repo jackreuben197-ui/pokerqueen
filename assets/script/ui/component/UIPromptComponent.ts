@@ -23,7 +23,7 @@ export default class UIPromptComponent extends UIBase {
     //超时时间
     private timeout: number = 10;
 
-    mask_opacitys: number[] = [1, 60];
+    protected mask_opacitys: number[] = [1, 60];
 
     mask: cc.Node = null;
     loading: cc.Node = null;
@@ -56,7 +56,7 @@ export default class UIPromptComponent extends UIBase {
             //return;
             case this.statusType.Showing:
                 if ((new Date().getTime() - this.showStartTime) / 1000 > this.timeout) {
-                    ToastManager.ins.craeteToast("adaptation10126");
+                    //ToastManager.ins.craeteToast("adaptation10126");
                     this.goClose();
                 }
                 break;
@@ -69,7 +69,6 @@ export default class UIPromptComponent extends UIBase {
     }
     protected lateClose(param: any = null) {
         this.translateStatus(this.statusType.Idle);
-        cc.log("status 0");
     }
     goClose() {
         UIManager.close(this.UIDefine);

@@ -1,5 +1,6 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
+import LanguageCode from "../../i18n/LanguageCode";
 import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
 import LoginSession from "../../session/LoginSession";
@@ -40,7 +41,7 @@ export default class HttpClient {
     static __response(response, onFailure, onSuccess) {
         switch (response) {
             case "timeout":
-                ToastManager.ins.craeteToast("adaptation10126");
+                ToastManager.ins.craeteToast(LanguageCode.getAdaptation(10126));
                 onFailure && onFailure();
                 break;
             case "error":
@@ -52,7 +53,7 @@ export default class HttpClient {
                     let response_json = JSON.parse(response);
                     if (response_json?.code > 0) {
                         //错误码提示
-                        ToastManager.ins.craeteToast(`ServerErrorCode_${response_json.code}`);
+                        ToastManager.ins.craeteToast(LanguageCode.getServerErrorCode(response_json.code));
                         onFailure && onFailure(response_json.code);
                         return;
                     }

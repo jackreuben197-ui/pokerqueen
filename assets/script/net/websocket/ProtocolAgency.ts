@@ -114,11 +114,11 @@ export default class ProtocolAgency extends cc.Component {
         // RoomID or MatchID 和当前不匹配,请求离开房间
         if (code != ProtocolCode.Protocol_Holdem_Leave
             && code != ProtocolCode.Protocol_Holdem_EnterRoom) {
-            let isRubbish = (roomid != 0 && roomid != LobbySession.cache_roomid)
-                || (matchid != 0 && matchid != LobbySession.cache_matchid);
+            let isRubbish = (roomid != 0 && roomid != LobbySession.cache_data.room_id)
+                || (matchid != 0 && matchid != LobbySession.cache_data.match_id);
             if (isRubbish) {
                 cc.log("%c%s", LogStyle.ws_response, `roomid or matchid is no match
-                cache:{RoomID:${LobbySession.cache_roomid},MatchID:${LobbySession.cache_matchid} 
+                cache:{RoomID:${LobbySession.cache_data.room_id},MatchID:${LobbySession.cache_data.match_id} 
                 receive:{RoomID:${roomid},MatchID:${matchid}`);
                 ProtocolAgency.Send({
                     protocol: Protocol_Holdem_Leave,
