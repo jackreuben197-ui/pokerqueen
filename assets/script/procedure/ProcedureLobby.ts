@@ -26,6 +26,7 @@ export default class ProcedureLobby extends ProcedureBase {
         // LobbySession.RequestListSummary();
         // LobbySession.APIMsgMessageUnread();
         PacketHead.Init();
+        LobbySession.Init();
         WebSocketClient.Connect();
     }
     Leave() {

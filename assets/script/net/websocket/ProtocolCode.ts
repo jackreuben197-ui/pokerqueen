@@ -50,7 +50,7 @@ export enum ProtocolCode {
     Protocol_Holdem_StartInfo                     = Code.MSG_S_START_INFO, // Code: 1103 开始一手
     Protocol_Holdem_PublicCards                   = Code.MSG_S_PUBLIC_CARDS, // Code: 1104 所有人收到公共牌
     Protocol_Holdem_SidePots                      = Code.MSG_S_SIDE_POTS, // Code: 1105 边池信息
-    Protocol_Holdem_AddOnFail                     = Code.MSG_D_HEARTBEAT, // Code: 1106 MTT AddOn失败
+    //Protocol_Holdem_AddOnFail                     = Code.MSG_S_ADDON_FAIL, // Code: 1106 MTT AddOn失败
     Protocol_Holdem_ChipsChange                   = Code.MSG_S_CHIPS_CHANGE, // Code: 1107 桌上筹码带入变动（上桌的筹码变动)
     Protocol_Holdem_ActionAll                     = Code.MSG_S_ACTION_ALL, // Code: 1108 所有人收到主动/自动行为（包括自己）
     Protocol_Holdem_AutoOp                        = Code.MSG_S_AUTO_OP, // Code: 1109 自动托管

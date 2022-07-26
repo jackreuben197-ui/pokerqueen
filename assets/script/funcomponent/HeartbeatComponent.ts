@@ -4,6 +4,8 @@
  */
 
 import { IUpdate } from "../define/EIDefine";
+import ProtocolAgency from "../net/websocket/ProtocolAgency";
+import { Protocol_Holdem_Heartbeat } from "../net/websocket/ProtocolHoldemMessages";
 import GameSession from "../session/GameSession";
 import GlobalSession from "../session/GlobalSession";
 import LobbySession from "../session/LobbySession";
@@ -43,6 +45,7 @@ export default class HeartbeatComponent implements IUpdate {
 
             //判断超时
             if (this.sendTime >= 5) {
+                //websocket进行重新连接
             }
         }
 
@@ -50,12 +53,12 @@ export default class HeartbeatComponent implements IUpdate {
 
         this.sendTime += 1;
 
-        // CPGameSessionComponent.Instance?.Send(new Protocol_Holdem_Heartbeat()
-        // 	{
-        // 		RoomID = 0,
-        // 		MatchID = 0,
-        // 		request = new ClientMessageHeartbeat() {}
-        // 	});
+        ProtocolAgency.Send({
+            protocol: Protocol_Holdem_Heartbeat,
+            RoomID: 0,
+            MatchID: 0,
+            body: Protocol_Holdem_Heartbeat.Request(),
+        });
     }
 
     get interval() {

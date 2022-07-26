@@ -18,17 +18,17 @@ export default class UIBase extends cc.Component {
         if (this.UIDefine) window[this.UIDefine.Name] = this;
         this.lateLoad();
         this.regiterTouchEvents();
-        this.regiterDispatchEvent();
     }
     onShow(param: any = null) {
         this.param = param;
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);
-
+        this.regiterDispatchEvent();
     }
 
     onClose(param: any = null) {
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onClose()");
         this.stopAllThings();
+        this.unregiterDispatchEvent();
         this.lateClose(param);
     }
 
@@ -43,6 +43,12 @@ export default class UIBase extends cc.Component {
      */
     protected regiterDispatchEvent() {
         //Dispatcher.on();
+    }
+    /**
+     * 注销广播事件
+     */
+    protected unregiterDispatchEvent() {
+        //Dispatcher.off();
     }
 
     protected lateLoad() {

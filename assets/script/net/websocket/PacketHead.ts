@@ -10,6 +10,9 @@ export default class PacketHead {
     static _length: number = 0;
     static _fixlength: number = 0;
 
+    //只初始化一次
+    static _initOnce: boolean = false;
+
     static ProtoVersion =
         {
             Unknown: 0,
@@ -45,22 +48,24 @@ export default class PacketHead {
     }
 
     static Init() {
+        if (!this._initOnce) {
+            this._initOnce = true;
+            this.FieldOffset.CharsFlag = this.FieldOffset.DataLength + this.FieldSize.DataLength;
+            this.FieldOffset.Code = this.FieldOffset.CharsFlag + this.FieldSize.CharsFlag;
+            this.FieldOffset.Token = this.FieldOffset.Code + this.FieldSize.Code;
+            this.FieldOffset.RoomID = this.FieldOffset.Token + this.FieldSize.Token;
+            this.FieldOffset.MatchID = this.FieldOffset.RoomID + this.FieldSize.RoomID;
+            this.FieldOffset.ProtoVersion = this.FieldOffset.MatchID + this.FieldSize.MatchID;
 
-        this.FieldOffset.CharsFlag = this.FieldOffset.DataLength + this.FieldSize.DataLength;
-        this.FieldOffset.Code = this.FieldOffset.CharsFlag + this.FieldSize.CharsFlag;
-        this.FieldOffset.Token = this.FieldOffset.Code + this.FieldSize.Code;
-        this.FieldOffset.RoomID = this.FieldOffset.Token + this.FieldSize.Token;
-        this.FieldOffset.MatchID = this.FieldOffset.RoomID + this.FieldSize.RoomID;
-        this.FieldOffset.ProtoVersion = this.FieldOffset.MatchID + this.FieldSize.MatchID;
-
-        this._length = this.FieldSize.DataLength
-            + this.FieldSize.CharsFlag
-            + this.FieldSize.Code
-            + this.FieldSize.Token
-            + this.FieldSize.RoomID
-            + this.FieldSize.MatchID
-            + this.FieldSize.ProtoVersion;
-        this._fixlength = this._length - this.FieldSize.DataLength;
+            this._length = this.FieldSize.DataLength
+                + this.FieldSize.CharsFlag
+                + this.FieldSize.Code
+                + this.FieldSize.Token
+                + this.FieldSize.RoomID
+                + this.FieldSize.MatchID
+                + this.FieldSize.ProtoVersion;
+            this._fixlength = this._length - this.FieldSize.DataLength;
+        }
     }
 
     static get Length(): number {

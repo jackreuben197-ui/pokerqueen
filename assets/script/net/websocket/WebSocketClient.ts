@@ -52,8 +52,8 @@ export default class WebSocketClient {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onerror:" + WebSocketClient.Host_Port);
     }
     private static onmessage(this: WebSocket, ev: MessageEvent) {
-        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onmessage:", ev);
-        ProtocolAgency.Receive(ev.data);
+        //console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onmessage:", ev?.data);
+        ProtocolAgency.Receive(ev?.data);
     }
     private static onclose(this: WebSocket, ev: CloseEvent) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);

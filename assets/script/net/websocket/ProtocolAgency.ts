@@ -2,10 +2,12 @@
 import { LogStyle } from "../../config/GameConfig";
 import Dispatcher from "../../event/Dispatcher";
 import { ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
+import LobbySession from "../../session/LobbySession";
 import LoginSession from "../../session/LoginSession";
+import OpCodeHelper from "./OpCodeHelper";
 import PacketHead from "./PacketHead";
 import { ProtocolCode } from "./ProtocolCode";
-import { BaseProtocol, Protocol_Holdem_Register } from "./ProtocolHoldemMessages";
+import { BaseProtocol, Protocol_Holdem_Leave, Protocol_Holdem_Register } from "./ProtocolHoldemMessages";
 import WebSocketClient from "./WebSocketClient";
 
 const { ccclass, property } = cc._decorator;
@@ -21,7 +23,9 @@ export default class ProtocolAgency extends cc.Component {
                 cc.log("%c%s:%s\n%s", LogStyle.ws_request, "undefined code", protocol.name, JSON.stringify(arguments[0]));
                 return;
             }
-            cc.log("%c%s:%s\n%s", LogStyle.ws_request, "protocol send", protocol.name, JSON.stringify(arguments[0]));
+
+            if (OpCodeHelper.NeedLog(code))
+                cc.log("%c%s\n%s", LogStyle.ws_request, `>>>>> protocol send : ${protocol.name}`, JSON.stringify(arguments[0]));
 
             let bodyLength: number = body.byteLength;
             //数据长度(要写入前4个字节)
@@ -83,6 +87,7 @@ export default class ProtocolAgency extends cc.Component {
         }
     }
     static Receive(data: ArrayBuffer) {
+        if (!data) return;
         let ua = new Uint8Array(data);
         for (let i = 0; i < PacketHead.CharsFlag.length; i++) {
             if (ua[i] != PacketHead.CharsFlag[i]) {
@@ -90,7 +95,6 @@ export default class ProtocolAgency extends cc.Component {
                 return;
             }
         }
-
         let code_offset = PacketHead.FieldOffset.Code - PacketHead.FieldSize.DataLength;
         let code: number = this._readNumber(ua, code_offset, PacketHead.FieldSize.Code);
 
@@ -99,14 +103,37 @@ export default class ProtocolAgency extends cc.Component {
             cc.log("%c%s", LogStyle.ws_response, "code is undefined " + code);
             return;
         }
+
         let roomid_offset = PacketHead.FieldOffset.RoomID - PacketHead.FieldSize.DataLength;
         let matchid_offset = PacketHead.FieldOffset.MatchID - PacketHead.FieldSize.DataLength;
 
         let roomid: number = this._readNumber(ua, roomid_offset, PacketHead.FieldSize.RoomID);
         let matchid: number = this._readNumber(ua, matchid_offset, PacketHead.FieldSize.MatchID);
 
-        cc.log("msg : >", roomid, matchid);
 
+        // RoomID or MatchID 和当前不匹配,请求离开房间
+        if (code != ProtocolCode.Protocol_Holdem_Leave
+            && code != ProtocolCode.Protocol_Holdem_EnterRoom) {
+            let isRubbish = (roomid != 0 && roomid != LobbySession.cache_roomid)
+                || (matchid != 0 && matchid != LobbySession.cache_matchid);
+            if (isRubbish) {
+                cc.log("%c%s", LogStyle.ws_response, `roomid or matchid is no match
+                cache:{RoomID:${LobbySession.cache_roomid},MatchID:${LobbySession.cache_matchid} 
+                receive:{RoomID:${roomid},MatchID:${matchid}`);
+                ProtocolAgency.Send({
+                    protocol: Protocol_Holdem_Leave,
+                    RoomID: roomid,
+                    MatchID: matchid,
+                    body: Protocol_Holdem_Leave.Request({
+                        room: {
+                            roomId: roomid,
+                            matchId: matchid,
+                        }
+                    }),
+                });
+                return;
+            };
+        }
 
         let protocol: any = cc.js.getClassByName(protocolName);
         if (!protocol) {
@@ -117,8 +144,8 @@ export default class ProtocolAgency extends cc.Component {
         let body_ua = data.slice(PacketHead.FixHeadLength);
 
         let body = protocol.Response(body_ua);
-
-        cc.log("%c%s", LogStyle.ws_response, "body:" + JSON.stringify(body));
+        if (OpCodeHelper.NeedLog(code))
+            cc.log("%c%s\n%s", LogStyle.ws_response, `>>>>> protocol receive : ${protocolName}`, `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`);
 
         Dispatcher.emit(code, body);
 

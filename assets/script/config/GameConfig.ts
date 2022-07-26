@@ -6,7 +6,7 @@
 import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
-    static Default_Language: string = "en";
+    static Default_Language: string = "pt";
     //是否使用代理
     static useProxy: boolean = false;
     //设计分辨率
@@ -60,6 +60,6 @@ export var LanguageList: { lan: string, name: string }[] = [
 export var LogStyle = {
     http_request: "color:yellow;background:#1E1E1E",
     http_response: "color:#38A7F1;background:#1E1E1E",
-    ws_request: "color:#19FF00;background:#47100A",
+    ws_request: "color:#E3C127;background:#47100A",
     ws_response: "color:#19FF00;background:#47100A",
 }

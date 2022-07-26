@@ -3,9 +3,9 @@ import { Web_Config_Global_Config, Web_Misc_Banner_List, Web_Msg_Message_Unread,
 export default class WebHelper {
 
     /**
-     * 不需要菊花的Web API接口
+     * 忽略菊花的Web API接口
      */
-    static AbandonJuhua_APIS = [
+    static _IgnoreShowJuhua_APIS = [
         //Web_Chat_Messages.API,
         //Web_Chat.API,
         //Web_Send_Messages.API,
@@ -18,7 +18,7 @@ export default class WebHelper {
         //Web_Pay_Apple_Order_Verifyreceipt.API,
     ];
     static NeedJuhua(api: string): boolean {
-        return this.AbandonJuhua_APIS.indexOf(api) == -1;
+        return this._IgnoreShowJuhua_APIS.indexOf(api) == -1;
     }
 
 }

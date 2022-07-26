@@ -24,12 +24,15 @@ export default class LobbySession {
     public static tokenRefreshComponent: TokenRefreshComponent;
     public static heartbeatComponent: HeartbeatComponent;
 
+    static cache_roomid: number;
+    static cache_matchid: number;
+
     //只初始化一次
-    static _initOnce: boolean = true;
+    static _initOnce: boolean = false;
 
     static Init() {
-        if (this._initOnce) {
-            this._initOnce = false;
+        if (!this._initOnce) {
+            this._initOnce = true;
             this.tokenRefreshComponent = new TokenRefreshComponent;
             this.heartbeatComponent = new HeartbeatComponent;
             UpdateComponent.Add(this.tokenRefreshComponent);
