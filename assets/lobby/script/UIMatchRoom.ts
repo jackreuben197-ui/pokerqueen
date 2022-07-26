@@ -89,17 +89,24 @@ export default class UIMatchRoom extends UIBase {
     }
     protected regiterTouchEvents():void{
         let roomList: cc.Node = this.node;
-        for (let element in roomList.children) {
-            let item: cc.Node = roomList.children[element];
-            item.on(cc.Node.EventType.TOUCH_END, this.clickRoom.bind(this, element), this)
-        }
+        roomList.children.forEach((item,index)=>{
+            cc.log(`UIMatchRoom-----item-${index}`)
+            item["index"] = index;
+            item.on(cc.Node.EventType.TOUCH_END, this.clickRoom, this)
+        })
     }
-      private clickRoom(CustomEventData: string, e: cc.Event.EventTouch) {
-        let roomInfo = this.RoomTypesInfos[CustomEventData];
+    protected removeTouchEvents():void{
+        let roomList: cc.Node = this.node;
+        roomList.children.forEach((item,index)=>{
+            item.off(cc.Node.EventType.TOUCH_END, this.clickRoom, this)
+        })
+    }
+      private clickRoom(e: cc.Event.EventTouch) {
+        let roomInfo = this.RoomTypesInfos[e.target.index];
         let sendDate = {
             game_type:roomInfo.gameType,
             poker_type:roomInfo.pokerType,
-            index:parseInt(CustomEventData),
+            index:parseInt(e.target.index),
             len:this.roomLen,
         }
         UIManager.open(UIDefine.UIMatchPlayView,sendDate);

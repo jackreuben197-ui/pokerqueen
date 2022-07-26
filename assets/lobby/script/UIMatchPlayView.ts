@@ -4,7 +4,6 @@ import LobbyScene from "./LobbyScene";
 import UIMatchRoom from "./UIMatchRoom";
 import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms } from "../../../assets/script/net/https/WebRequest";
 import { i18nLabel } from "../../script/i18n/i18nLabel";
-import { strict } from "assert";
 enum EnumLoadType {
     "Init" = 1,
     "Refresh" = 2,
@@ -50,24 +49,33 @@ export default class UIMatchPlayView extends BaseForm {
     }
     private registerTypeEvent(): void {
         let viewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
-        for (let element in viewContent.children) {
-            let item: cc.Node = viewContent.children[element];
-            item.on(cc.Node.EventType.TOUCH_END, this.TypeBtn.bind(this, element), this)
-        }
+        viewContent.children.forEach((item,index)=>{
+            cc.log(`registerTypeEvent----item-${index}`);
+            item["index"] = index;
+            item.on(cc.Node.EventType.TOUCH_END, this.TypeBtn, this)
+        })
+    }
+    private removeTypeEvent(): void {
+        let viewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
+        viewContent.children.forEach((item,index)=>{
+            cc.log(`removeTypeEvent---item-${index}`);
+            item.off(cc.Node.EventType.TOUCH_END, this.TypeBtn, this)
+        })
     }
     private registerBlindsEvent(): void {
         let viewBilndContent: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
-        for (let element in viewBilndContent.children) {
-            let item: cc.Node = viewBilndContent.children[element];
-            item.on(cc.Node.EventType.TOUCH_END, this.BlindBtn.bind(this, element), this)
-        }
+        viewBilndContent.children.forEach((item,index)=>{
+            cc.log(`registerBlindsEvent---item-${index}`);
+            item["index"] = index;
+            item.on(cc.Node.EventType.TOUCH_END, this.BlindBtn, this)
+        })
     }
     private removeBlindsEvent(): void {
         let viewBilndContent: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
-        for (let element in viewBilndContent.children) {
-            let item: cc.Node = viewBilndContent.children[element];
-            item.off(cc.Node.EventType.TOUCH_END, this.BlindBtn.bind(this, element), this)
-        }
+        viewBilndContent.children.forEach((item,index)=>{
+            cc.log(`removeBlindsEvent---item-${index}`);
+            item.off(cc.Node.EventType.TOUCH_END, this.BlindBtn, this)
+        })
     }
     /**
      * @description: 
@@ -75,10 +83,14 @@ export default class UIMatchPlayView extends BaseForm {
      * @param {cc} e:touch事件
      * @return {*}
      */
-    private TypeBtn(index: string, e: cc.Event.EventTouch): void {
+    private TypeBtn(e: cc.Event.EventTouch): void {
         let target: cc.Node = e.target;
+        let index = target["index"];
+        // if(this.CurTypeBtn.name === target.name){
+        //     return;
+        // }
         let scrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewType", cc.ScrollView);
-        this.TypeScroll(parseInt(index), scrollView, target);
+        this.TypeScroll(index, scrollView, target);
 
         this.RoomInfo = this.RoomTypesInfos[index];
         let sendDate = {
@@ -87,7 +99,9 @@ export default class UIMatchPlayView extends BaseForm {
         }
         this.sendBlindsGetData(sendDate);
     }
-    private BlindBtn(index: string, e: cc.Event.EventTouch): void {
+    private BlindBtn(e: cc.Event.EventTouch): void {
+        let target = e.target;
+        let index = target["index"];
         let scrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewBlind", cc.ScrollView);
         this.MangInfo = this.MangList[index];
         this.DragRequestData_Room(EnumLoadType.Refresh);
@@ -160,6 +174,7 @@ export default class UIMatchPlayView extends BaseForm {
     onShow(param?: any): void {
         //根据点击的显示
         //获取groups信息刷新 typeScrollView
+        cc.log("UIMatchPlayView onClose");
         this.TypeContentLength = param.len;
         //获取roominfo
         this.sendGroupGetData(param);
@@ -174,8 +189,9 @@ export default class UIMatchPlayView extends BaseForm {
         let groupData: any = await LobbyScene.instance.GetRoomList({})
         this.RoomTypesInfos = UIMatchRoom.instance.handleData(groupData.data, typeViewContent);
         this.RoomInfo = this.RoomTypesInfos[param.index];
-        this.TypeScroll(param.index, typesScrollView, typeViewContent.children[param.index]);
+        this.removeTypeEvent();
         this.registerTypeEvent();
+        this.TypeScroll(param.index, typesScrollView, typeViewContent.children[param.index]);
         this.sendBlindsGetData(param);
     }
     //获取语言信息
@@ -230,8 +246,6 @@ export default class UIMatchPlayView extends BaseForm {
         let blindData: any = await LobbyScene.instance.GetRoomBlinds(blind);
         //通过blindData生成mangBar
         this.setMangBar(blindData);
-        this.removeBlindsEvent();
-        this.registerBlindsEvent();
         this.DragRequestData_Room(EnumLoadType.Init);
     }
     //获取房间消息
@@ -272,6 +286,8 @@ export default class UIMatchPlayView extends BaseForm {
         }else{
             this.cacheResponseData = roomsInfoData;
         }
+        this.removeBlindsEvent();
+        this.registerBlindsEvent();
     }
     private UICareerRecordViewCall(loadType: EnumLoadType, pAct: typeof Web_Room_Center_Rooms.Response): void {
         if(pAct.code == 0){
@@ -373,6 +389,7 @@ export default class UIMatchPlayView extends BaseForm {
        
     }
     async onClose(param: any = null) {
+        cc.log("UIMatchPlayView onClose");
         super.onClose();
     }
     private OnClickEmptySet(isOn:boolean){
@@ -482,11 +499,13 @@ export default class UIMatchPlayView extends BaseForm {
         let peopleNum2:cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_2").getComponent(cc.Label);
         peopleNum1.string = `${roomInfo.seat_count - roomInfo.empty_seat}/`;
         peopleNum2.string = `${roomInfo.seat_count}`
+        item["roomInfo"] = roomInfo;
         item.off(cc.Node.EventType.TOUCH_END,this.EnterRoomAPI,this);
-        item.on(cc.Node.EventType.TOUCH_END,this.EnterRoomAPI.bind(this,roomInfo),this);
+        item.on(cc.Node.EventType.TOUCH_END,this.EnterRoomAPI,this);
     }
     //加入房间
-    private EnterRoomAPI(roominfo:typeof Web_Room_Center_Rooms.DataElement):void{
+    private EnterRoomAPI(e:cc.Event.EventCustom):void{
+        let roominfo = e.target.roomInfo;
         cc.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
     }
 }
