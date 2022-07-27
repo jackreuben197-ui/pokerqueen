@@ -3,6 +3,7 @@
  */
 import { GameConfig } from "./config/GameConfig";
 import ProcedureManager from "./manager/ProcedureManager";
+import HttpClient from "./net/https/HttpClient";
 import WebSocketClient from "./net/websocket/WebSocketClient";
 import CCTools from "./tools/CCTools";
 
@@ -50,7 +51,6 @@ export default class Main extends cc.Component {
         // let buffer = grace.proto.msg.Player.encode(message).finish();
         // cc.log(grace.proto.msg.Player.decode(buffer));
         //WebSocketClient.connect();
-        
         
     }
 

@@ -95,6 +95,7 @@ export default class HttpClient {
             xhr.open(type, url, true);
             xhr.timeout = HttpClient.TimeOut;
             xhr.setRequestHeader("Content-Type", "application/json");
+            //xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
             xhr.setRequestHeader("md5at", LoginSession.Token);
             if (headers) {
                 for (let header of headers) {

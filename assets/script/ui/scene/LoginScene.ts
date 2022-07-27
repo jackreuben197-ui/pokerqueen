@@ -12,6 +12,7 @@ import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 
 import UIManager from "../../manager/UIManager";
+import HttpClient from "../../net/https/HttpClient";
 import { Web_Login } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import StorageKey from "../../session/StorageKey";
@@ -86,7 +87,7 @@ export default class LoginScene extends BaseScene {
         this.setEyesOpen(false);
         this.setLanLayerActive(false);
         this.setLanguagePanel();
-
+        HttpClient.post({url:"https://dev.k8s.awanptesting.com/api/config/network/linklist"})
     }
 
     protected regiterDispatchEvent(): void {

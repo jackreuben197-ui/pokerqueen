@@ -551,7 +551,7 @@ export class Web_User_Room_insur {
         this.RequestParams = param;
         return param;
     }
-    public static Response: { code?: number, message?: string, data?: (typeof Web_Msg_Message_Unread.ResponseData)[] };
+    public static Response: { code?: number, message?: string, data?: (typeof Web_User_Room_insur.ResponseData)[] };
 }
 
 
