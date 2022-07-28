@@ -9,6 +9,8 @@ import CCTools from "./tools/CCTools";
 
 const { ccclass, property } = cc._decorator;
 
+console.log("游戏入口函数");
+
 @ccclass
 export default class Main extends cc.Component {
 
@@ -27,7 +29,7 @@ export default class Main extends cc.Component {
 
     onLoad() {
 
-        cc.log("游戏启动", cc.sys.os);
+        console.log("游戏启动", cc.sys.os);
 
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)
@@ -55,8 +57,8 @@ export default class Main extends cc.Component {
     }
 
     protected onEnable(): void {
-        cc.log("屏幕分辨率:", cc.view.getFrameSize().toString());
-        cc.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
+        console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
+        console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
     }
 
     start() {

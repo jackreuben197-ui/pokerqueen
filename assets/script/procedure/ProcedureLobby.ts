@@ -14,7 +14,7 @@ import ProcedureBase from "./ProcedureBase";
 export default class ProcedureLobby extends ProcedureBase {
 
 
-    lateEnter(param: any) {
+    lateEnter(param?: any) {
         super.lateEnter(param);
         SceneManager.ins.switchScene(UIDefine.LobbyScene);
         //请求

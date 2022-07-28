@@ -105,3 +105,9 @@ export interface IUpdate {
     start();
     stop();
 }
+/**
+ * bundle包
+ */
+export var Bundle = {
+    Texas: "texas",
+}

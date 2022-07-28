@@ -7,7 +7,7 @@ import ProcedureBase from "./ProcedureBase";
 
 
 export default class ProcedureLogin extends ProcedureBase {
-    lateEnter(param: any) {
+    lateEnter(param?: any) {
         super.lateEnter(param);
         //登陆数据初始化
         LoginSession.Init();

@@ -1,6 +1,7 @@
 
 import Singleton from "../common/Singleton";
 import { IUIDefine, UIType } from "../define/EIDefine";
+import UIBase from "../ui/UIBase";
 import AlertManager from "./AlertManager";
 import BoardManager from "./BoardManager";
 import DialogManager from "./DialogManager";
@@ -56,5 +57,32 @@ export default class UIManager extends Singleton {
                 PromptManager.ins.close(UIDefine, param);
                 break;
         }
+    }
+
+    static find(UIDefine: IUIDefine): UIBase {
+
+        let ui: UIBase = null;
+
+        switch (UIDefine.UIType) {
+            case UIType.Form:
+                ui = FormManager.ins.find(UIDefine);
+                break;
+            case UIType.Dialog:
+                ui = DialogManager.ins.find(UIDefine);
+                break;
+            case UIType.Board:
+                ui = BoardManager.ins.find(UIDefine);
+                break;
+            case UIType.Alert:
+                ui = AlertManager.ins.find(UIDefine);
+                break;
+            case UIType.Prompt:
+            case UIType.TexasPreLoad:
+                ui = PromptManager.ins.find(UIDefine);
+                break;
+            default:
+                break;
+        }
+        return ui;
     }
 }

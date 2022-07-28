@@ -3,6 +3,7 @@ import { GameConfig } from "../config/GameConfig";
 import StorageKey from "../session/StorageKey";
 import * as i18nLabel from "./i18nLabel";
 import * as i18nSprite from "./i18nSprite";
+console.log("游戏启动了么");
 var CSV = require("CSV");
 //上来先处理数据 当前的语言 0简中 1繁中 2英文 3葡语  let type = ["cn","zh","en","pt"]
 var LanguageAllObject = {

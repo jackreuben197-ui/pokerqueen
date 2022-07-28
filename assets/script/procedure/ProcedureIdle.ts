@@ -9,7 +9,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class ProcedureIdle extends ProcedureBase {
 
-    lateEnter(param: any) {
+    lateEnter(param?: any) {
         super.lateEnter(param);
     }
     Leave() {

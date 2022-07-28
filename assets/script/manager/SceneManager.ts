@@ -37,6 +37,8 @@ export default class SceneManager extends Singleton {
     switchScene(uiDefine: { Bundle: string, Path: string }, currExitParams: any = null, newEnterParams: any = null) {
 
 
+        console.log("switchScene");
+
         let bundleName = uiDefine.Bundle + uiDefine.Path;
 
         let newUI = this.uiMap[bundleName];
@@ -49,7 +51,7 @@ export default class SceneManager extends Singleton {
 
             ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
                 if (err) {
-                    cc.log("加载场景", uiDefine.Bundle, uiDefine.Path, "发生错误", err);
+                    console.log("加载场景", uiDefine.Bundle, uiDefine.Path, "发生错误", err);
                     return;
                 }
                 newUI = cc.instantiate(asset);

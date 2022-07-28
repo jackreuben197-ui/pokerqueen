@@ -34,7 +34,7 @@ export default class ProcedureManager {
     static StartProcedure(procedureIndex: number, param: any = null) {
         let procedure = this.procedureDic[procedureIndex];
         if (!procedure) {
-            cc.log("未定义流程:", ProcedureEnum[procedureIndex]);
+            console.log("未定义流程:", ProcedureEnum[procedureIndex]);
             return;
         }
         ProcedureManager.currProcedure = procedure;
@@ -43,7 +43,7 @@ export default class ProcedureManager {
             if (prevProcedure.Name == procedure.Name) return;
             prevProcedure.Leave();
         }
-        cc.log("[上个流程:", prevProcedure && prevProcedure.Name, "切换到==>当前流程:", procedure.Name, "]");
+        console.log("[上个流程:", prevProcedure && prevProcedure.Name, "切换到==>当前流程:", procedure.Name, "]");
         ProcedureManager.prevProcedure = procedure;
         procedure.Enter(param);
     }

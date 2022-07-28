@@ -32,7 +32,7 @@ export default class ProcedureInit extends ProcedureBase {
     ];
 
 
-    lateEnter(param: any) {
+    lateEnter(param?: any) {
         super.lateEnter(param);
         this.setCCC();
         this.setToWin();
