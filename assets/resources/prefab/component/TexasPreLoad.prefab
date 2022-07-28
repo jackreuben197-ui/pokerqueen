@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "UIMatchLoading",
+    "_name": "TexasPreLoad",
     "_objFlags": 0,
     "_parent": null,
     "_children": [
@@ -232,7 +232,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "loading_node",
+    "_name": "loading",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -245,7 +245,7 @@
         "__id__": 10
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 14
@@ -349,7 +349,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "loading",
+    "_name": "_loading",
     "_objFlags": 0,
     "_parent": {
       "__id__": 7

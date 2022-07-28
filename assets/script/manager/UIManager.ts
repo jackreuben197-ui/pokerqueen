@@ -30,6 +30,7 @@ export default class UIManager extends Singleton {
                 AlertManager.ins.open(UIDefine, param);
                 break;
             case UIType.Prompt:
+            case UIType.TexasPreLoad:
                 PromptManager.ins.open(UIDefine, param);
                 break;
         }
@@ -51,6 +52,7 @@ export default class UIManager extends Singleton {
                 AlertManager.ins.close(UIDefine, param);
                 break;
             case UIType.Prompt:
+            case UIType.TexasPreLoad:
                 PromptManager.ins.close(UIDefine, param);
                 break;
         }

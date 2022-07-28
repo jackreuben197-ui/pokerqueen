@@ -13,11 +13,9 @@ import ProcedureBase from "./ProcedureBase";
  */
 export default class ProcedureLobby extends ProcedureBase {
 
-    tokenRefreshComponent
 
-
-    Enter(param: any) {
-        super.Enter(param);
+    lateEnter(param: any) {
+        super.lateEnter(param);
         SceneManager.ins.switchScene(UIDefine.LobbyScene);
         //请求
         // LobbySession.APIConfig_Global_Config();

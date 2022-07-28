@@ -32,8 +32,8 @@ export default class ProcedureInit extends ProcedureBase {
     ];
 
 
-    Enter(param: any) {
-        super.Enter(param);
+    lateEnter(param: any) {
+        super.lateEnter(param);
         this.setCCC();
         this.setToWin();
         this.setFit();

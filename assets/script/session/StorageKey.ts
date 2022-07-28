@@ -11,4 +11,9 @@ export default class StorageKey {
     static PHONE = "PHONE";
     //语言
     static Language = "Language";
+
+    
+    //=======================设置相关========================
+    //桌布类型
+    static SettingDeskType = "SettingDeskType";
 }

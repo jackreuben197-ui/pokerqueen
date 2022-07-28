@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "c62d491f-ecd4-4c24-b9cd-9735f81228e4",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1500,
+  "height": 3248,
+  "platformSettings": {},
+  "subMetas": {
+    "TexasDeskBg1": {
+      "ver": "1.0.6",
+      "uuid": "bb78fa41-7e6b-4810-bfbf-9dbc1ac236c4",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "c62d491f-ecd4-4c24-b9cd-9735f81228e4",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1500,
+      "height": 3248,
+      "rawWidth": 1500,
+      "rawHeight": 3248,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

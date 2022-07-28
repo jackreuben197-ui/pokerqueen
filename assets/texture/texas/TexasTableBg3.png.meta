@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "26574f97-5afa-4f08-afbe-078710f6ea80",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1329,
+  "height": 2133,
+  "platformSettings": {},
+  "subMetas": {
+    "TexasTableBg3": {
+      "ver": "1.0.6",
+      "uuid": "67c88982-3326-4dd4-9ce7-67fdde4a26ed",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "26574f97-5afa-4f08-afbe-078710f6ea80",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 1.5,
+      "offsetY": -1.5,
+      "trimX": 69,
+      "trimY": 75,
+      "width": 1194,
+      "height": 1986,
+      "rawWidth": 1329,
+      "rawHeight": 2133,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

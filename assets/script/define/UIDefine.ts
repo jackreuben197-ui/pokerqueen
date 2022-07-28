@@ -133,11 +133,11 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/component/UIPromptComponent",
     },
-    UIMatchLoading: {
-        UIType: UIType.MatchLoading,
-        Name: "UIMatchLoading",
+    TexasPreLoad: {
+        UIType: UIType.TexasPreLoad,
+        Name: "TexasPreLoad",
         Bundle: null,
-        Path: "prefab/component/UIMatchLoading",
+        Path: "prefab/component/TexasPreLoad",
     },
 
 }

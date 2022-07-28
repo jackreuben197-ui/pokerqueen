@@ -5,6 +5,8 @@ import UIMatchRoom from "./UIMatchRoom";
 import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms } from "../../../assets/script/net/https/WebRequest";
 import { i18nLabel } from "../../script/i18n/i18nLabel";
 import LobbySession from "../../script/session/LobbySession";
+import ProcedureManager from "../../script/manager/ProcedureManager";
+import { ProcedureEnum } from "../../script/define/EIDefine";
 enum EnumLoadType {
     "Init" = 1,
     "Refresh" = 2,
@@ -25,14 +27,14 @@ export default class UIMatchPlayView extends BaseForm {
     private RoomInfo = null;
     private MangList = null;
     private MangInfo = null;
-    private isSelectEmptySeat:boolean = false;
+    private isSelectEmptySeat: boolean = false;
     private cacheResponseData: typeof Web_Room_Center_Rooms.Response = null;
-    private type_List = ["NLH","PLO4","PLO5","PLO6"];
+    private type_List = ["NLH", "PLO4", "PLO5", "PLO6"];
     private six_List = ["6+NLH", "6+PLO4", "6+PLO5", "6+PLO6"];
     private LocalDicRoomName = new Map();
     private LocalDicRoomName_EN = new Map();
     private LocalDicRoomName_PT = new Map();
-    private mLoopListView:cc.Node = null;
+    private mLoopListView: cc.Node = null;
     protected onLoad(): void {
         super.onLoad();
         let widget: cc.Widget = this.node.getComponent(cc.Widget);
@@ -50,7 +52,7 @@ export default class UIMatchPlayView extends BaseForm {
     }
     private registerTypeEvent(): void {
         let viewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
-        viewContent.children.forEach((item,index)=>{
+        viewContent.children.forEach((item, index) => {
             cc.log(`registerTypeEvent----item-${index}`);
             item["index"] = index;
             item.on(cc.Node.EventType.TOUCH_END, this.TypeBtn, this)
@@ -58,14 +60,14 @@ export default class UIMatchPlayView extends BaseForm {
     }
     private removeTypeEvent(): void {
         let viewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
-        viewContent.children.forEach((item,index)=>{
+        viewContent.children.forEach((item, index) => {
             cc.log(`removeTypeEvent---item-${index}`);
             item.off(cc.Node.EventType.TOUCH_END, this.TypeBtn, this)
         })
     }
     private registerBlindsEvent(): void {
         let viewBilndContent: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
-        viewBilndContent.children.forEach((item,index)=>{
+        viewBilndContent.children.forEach((item, index) => {
             cc.log(`registerBlindsEvent---item-${index}`);
             item["index"] = index;
             item.on(cc.Node.EventType.TOUCH_END, this.BlindBtn, this)
@@ -73,7 +75,7 @@ export default class UIMatchPlayView extends BaseForm {
     }
     private removeBlindsEvent(): void {
         let viewBilndContent: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
-        viewBilndContent.children.forEach((item,index)=>{
+        viewBilndContent.children.forEach((item, index) => {
             cc.log(`removeBlindsEvent---item-${index}`);
             item.off(cc.Node.EventType.TOUCH_END, this.BlindBtn, this)
         })
@@ -196,44 +198,44 @@ export default class UIMatchPlayView extends BaseForm {
         this.sendBlindsGetData(param);
     }
     //获取语言信息
-    async sendLanguageGetData(){
-        let languageInfo:any = await LobbyScene.instance.GetLanguage({})
-        if(languageInfo?.data!==null){
+    async sendLanguageGetData() {
+        let languageInfo: any = await LobbyScene.instance.GetLanguage({})
+        if (languageInfo?.data !== null) {
             this.LocalDicRoomName.clear();
             this.LocalDicRoomName_EN.clear();
             this.LocalDicRoomName_PT.clear();
-            for(let element in languageInfo.data){
+            for (let element in languageInfo.data) {
                 let data = languageInfo.data[element];
-                if(this.LocalDicRoomName[data.template_id]){
+                if (this.LocalDicRoomName[data.template_id]) {
                     this.LocalDicRoomName[data.template_id] = data.cn_name;
-                }else{
-                    this.LocalDicRoomName.set(data.template_id,data.cn_name)
+                } else {
+                    this.LocalDicRoomName.set(data.template_id, data.cn_name)
                 }
-                if(this.LocalDicRoomName_EN[data.template_id]){
+                if (this.LocalDicRoomName_EN[data.template_id]) {
                     this.LocalDicRoomName_EN[data.template_id] = data.us_name;
-                }else{
-                    this.LocalDicRoomName_EN.set(data.template_id,data.us_name)
+                } else {
+                    this.LocalDicRoomName_EN.set(data.template_id, data.us_name)
                 }
-                if(this.LocalDicRoomName_PT[data.template_id]){
+                if (this.LocalDicRoomName_PT[data.template_id]) {
                     this.LocalDicRoomName_PT[data.template_id] = data.br_name;
-                }else{
-                    this.LocalDicRoomName_PT.set(data.template_id,data.br_name);
+                } else {
+                    this.LocalDicRoomName_PT.set(data.template_id, data.br_name);
                 }
             }
         }
     }
     //通过key值给房间命民
-    public GetRoomNameByKey(pStrKey:string):string{
-        let name:string = "";
+    public GetRoomNameByKey(pStrKey: string): string {
+        let name: string = "";
         let strArray = pStrKey.split("-");
         //如果中文
-        if(true){
-            if(this.LocalDicRoomName.get(strArray[0])){
+        if (true) {
+            if (this.LocalDicRoomName.get(strArray[0])) {
                 name = this.LocalDicRoomName.get(strArray[0]);
             }
         }
-        if(strArray.length>1){
-            name += "-"+strArray[1];
+        if (strArray.length > 1) {
+            name += "-" + strArray[1];
         }
         return name
     }
@@ -250,8 +252,8 @@ export default class UIMatchPlayView extends BaseForm {
         this.DragRequestData_Room(EnumLoadType.Init);
     }
     //获取房间消息
-    async DragRequestData_Room(loadType:EnumLoadType) {
-         let param = {
+    async DragRequestData_Room(loadType: EnumLoadType) {
+        let param = {
             "sb_min": this.MangInfo,
             "sb_max": this.MangInfo,
             "game_type": this.RoomInfo.gameType,
@@ -281,122 +283,122 @@ export default class UIMatchPlayView extends BaseForm {
             "limit_bet_type": null,
             "order": ["sb_asc"]
         }
-        let roomsInfoData: any = {"code":0,"data":{"limit":20,"offset":0,"records":[{"rid":97995898,"name":"ROOM202206181655523126304847-2","room_type":0,"game_type":0,"poker_type":0,"limit_bet_type":0,"status":1,"ante":0,"sb":1000,"op_duration":120,"no_user_wait_duration":2,"keep_seat_duration":180,"total_bring_in":0,"total_bring_out":0,"total_chip":0,"min_rate":100,"max_rate":400,"min_players":2,"autostart_min_players":2,"straddle_on":0,"straddle_max":0,"insurance_on":0,"insurance_op_duration":0,"second_pcs_on":0,"second_pcs_op_duration":0,"second_pcs_user_limit":0,"delay_view_card_on":0,"post_on":0,"muck_on":0,"limit_ip_on":0,"limit_gps_on":0,"limit_gps_distance":0,"limit_delay_times":2,"limit_auto_check_times":2,"limit_auto_fold_times":2,"seat_count":6,"empty_seat":6,"roomers":0,"enter_time":"2022-07-25T04:08:30Z","play_duration":1800,"no_user_close_duration":0,"retain_type":0,"retain_min_rate":0,"schedule_start_time":null,"start_time":null,"end_time":null,"settlement_type":1,"hand_num":0,"tribe_id":1,"end_reason":"","hc_total_hand_lv":0,"hc_total_hand":0,"hc_pool_rate_lv":0,"hc_pool_rate":0,"service_id":"grpc-throom-1","create_time":"2022-07-25T04:08:31Z","update_time":"2022-07-25T04:08:52Z","voiceprint_verify_on":1,"voiceprint_verify_limit_times":10,"voiceprint_verify_duration":120,"voiceprint_verify_interval_duration":600,"participation_status":0}],"total":1}}
+        let roomsInfoData: any = { "code": 0, "data": { "limit": 20, "offset": 0, "records": [{ "rid": 97995898, "name": "ROOM202206181655523126304847-2", "room_type": 0, "game_type": 0, "poker_type": 0, "limit_bet_type": 0, "status": 1, "ante": 0, "sb": 1000, "op_duration": 120, "no_user_wait_duration": 2, "keep_seat_duration": 180, "total_bring_in": 0, "total_bring_out": 0, "total_chip": 0, "min_rate": 100, "max_rate": 400, "min_players": 2, "autostart_min_players": 2, "straddle_on": 0, "straddle_max": 0, "insurance_on": 0, "insurance_op_duration": 0, "second_pcs_on": 0, "second_pcs_op_duration": 0, "second_pcs_user_limit": 0, "delay_view_card_on": 0, "post_on": 0, "muck_on": 0, "limit_ip_on": 0, "limit_gps_on": 0, "limit_gps_distance": 0, "limit_delay_times": 2, "limit_auto_check_times": 2, "limit_auto_fold_times": 2, "seat_count": 6, "empty_seat": 6, "roomers": 0, "enter_time": "2022-07-25T04:08:30Z", "play_duration": 1800, "no_user_close_duration": 0, "retain_type": 0, "retain_min_rate": 0, "schedule_start_time": null, "start_time": null, "end_time": null, "settlement_type": 1, "hand_num": 0, "tribe_id": 1, "end_reason": "", "hc_total_hand_lv": 0, "hc_total_hand": 0, "hc_pool_rate_lv": 0, "hc_pool_rate": 0, "service_id": "grpc-throom-1", "create_time": "2022-07-25T04:08:31Z", "update_time": "2022-07-25T04:08:52Z", "voiceprint_verify_on": 1, "voiceprint_verify_limit_times": 10, "voiceprint_verify_duration": 120, "voiceprint_verify_interval_duration": 600, "participation_status": 0 }], "total": 1 } }
         //await LobbyScene.instance.GetRoomsInfo(roomsInfo);
-        if(this.cacheResponseData == null){
-            this.UICareerRecordViewCall(loadType,roomsInfoData);
-        }else{
+        if (this.cacheResponseData == null) {
+            this.UICareerRecordViewCall(loadType, roomsInfoData);
+        } else {
             this.cacheResponseData = roomsInfoData;
         }
         this.removeBlindsEvent();
         this.registerBlindsEvent();
     }
     private UICareerRecordViewCall(loadType: EnumLoadType, pAct: typeof Web_Room_Center_Rooms.Response): void {
-        if(pAct){
+        if (pAct) {
             let roomData = pAct.data;
             let offset = roomData.limit + roomData.offset;
-            let tmpRooms =[];
-            if(loadType==EnumLoadType.Init||loadType==EnumLoadType.Refresh){
-                if(roomData.records.length>10){
-                    let index:number = 0;
-                    for(let element in roomData.records){
+            let tmpRooms = [];
+            if (loadType == EnumLoadType.Init || loadType == EnumLoadType.Refresh) {
+                if (roomData.records.length > 10) {
+                    let index: number = 0;
+                    for (let element in roomData.records) {
                         index++;
-                        if(index<10){
+                        if (index < 10) {
                             tmpRooms.push(roomData[element]);
                         }
                     }
                     this.cacheResponseData.code = pAct.code;
                     this.cacheResponseData.data = {
-                        limit:roomData.limit,
-                        offset:roomData.offset,
-                        total:roomData.total,
-                        records:[]
+                        limit: roomData.limit,
+                        offset: roomData.offset,
+                        total: roomData.total,
+                        records: []
                     }
                     let _index = 0;
-                    for(let element in roomData.records){
+                    for (let element in roomData.records) {
                         let item = roomData.records[element];
                         _index++;
-                        if(_index>10){
+                        if (_index > 10) {
                             this.cacheResponseData.data.records.push(item);
                         }
                     }
-                }else{
+                } else {
                     this.cacheResponseData = null;
                     tmpRooms = pAct.data.records;
                 }
             }
             //空座筛选
-            if(this.isSelectEmptySeat){
+            if (this.isSelectEmptySeat) {
                 let list = [];
                 let sb = "";
                 let content: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
-                for(let i=0;i<content.childrenCount;i++){
-                    if(content.children[i].getChildByName("Select").active){
+                for (let i = 0; i < content.childrenCount; i++) {
+                    if (content.children[i].getChildByName("Select").active) {
                         sb = content.children[i].name;
                     }
                 }
-                for(let i=0;i<this.mNormalData.length;i++){
-                    if(this.mNormalData[i].empty_seat!=0&&this.GetLongString(this.mNormalData[i].sb)==sb){
+                for (let i = 0; i < this.mNormalData.length; i++) {
+                    if (this.mNormalData[i].empty_seat != 0 && this.GetLongString(this.mNormalData[i].sb) == sb) {
                         list.push(this.mNormalData[i]);
                     }
                 }
                 list.push(typeof Web_Room_Center_Rooms.DataElement);
-                this.mNormalData = list.length>1?list:this.mNormalData;
+                this.mNormalData = list.length > 1 ? list : this.mNormalData;
             }
-            if(loadType===EnumLoadType.LoadMore){
-                this.mNormalData.splice(this.mNormalData.length-1,1);
+            if (loadType === EnumLoadType.LoadMore) {
+                this.mNormalData.splice(this.mNormalData.length - 1, 1);
                 this.mNormalData.concat(roomData.records);
-                this.OnDataSourceLoadMoreFinished(roomData.records.length>0);
-            }else if(loadType === EnumLoadType.Refresh){
+                this.OnDataSourceLoadMoreFinished(roomData.records.length > 0);
+            } else if (loadType === EnumLoadType.Refresh) {
                 //AddRange
-                this.mNormalData = tmpRooms.length>0?tmpRooms:[];
-                if(this.mNormalData!==null &&this.mNormalData.length>0){
+                this.mNormalData = tmpRooms.length > 0 ? tmpRooms : [];
+                if (this.mNormalData !== null && this.mNormalData.length > 0) {
                     this.mNormalData.push(typeof Web_Room_Center_Rooms.DataElement)
-                }else{
+                } else {
                     this.mNormalData = [];
                 }
                 this.OnDataSourceLoadMoreFinished(true);
-            }else{
-                this.mNormalData = tmpRooms.length>0?tmpRooms:[];
-                cc.log("this.mNormalData=",this.mNormalData);
+            } else {
+                this.mNormalData = tmpRooms.length > 0 ? tmpRooms : [];
+                cc.log("this.mNormalData=", this.mNormalData);
                 //在这里初始化房间列表
                 //判断当前数组长度是否大于childrenCount
-                if(this.mNormalData.length>0){
-                    for(let i=0;i<this.mNormalData.length;i++){
-                        let item:cc.Node
-                        if(this.mLoopListView.children[i]){
+                if (this.mNormalData.length > 0) {
+                    for (let i = 0; i < this.mNormalData.length; i++) {
+                        let item: cc.Node
+                        if (this.mLoopListView.children[i]) {
                             item = this.mLoopListView.children[i];
-                            this.SetItemDataInfo(item,this.mNormalData[i],i);
-                        }else{
-                            let prefab:cc.Node = this.getChildNodeOrComponent("RoomInfo");
+                            this.SetItemDataInfo(item, this.mNormalData[i], i);
+                        } else {
+                            let prefab: cc.Node = this.getChildNodeOrComponent("RoomInfo");
                             item = cc.instantiate(prefab);
                             this.mLoopListView.addChild(item);
-                            this.SetItemDataInfo(item,this.mNormalData[i],i);
+                            this.SetItemDataInfo(item, this.mNormalData[i], i);
                         }
                     }
-                    if(this.mLoopListView.childrenCount>this.mNormalData.length){
-                        for(let i=this.mNormalData.length;i<this.mLoopListView.childrenCount;i++){
+                    if (this.mLoopListView.childrenCount > this.mNormalData.length) {
+                        for (let i = this.mNormalData.length; i < this.mLoopListView.childrenCount; i++) {
                             this.mLoopListView.children[i].active = false;
                         }
                     }
                 }
             }
-            let NonShowed:cc.Node = this.getChildNodeOrComponent("NonShowed");
-            NonShowed.active = this.mNormalData.length===0;
-        }else{
-           
+            let NonShowed: cc.Node = this.getChildNodeOrComponent("NonShowed");
+            NonShowed.active = this.mNormalData.length === 0;
+        } else {
+
         }
     }
-    async OnDataSourceLoadMoreFinished(pLength:boolean){
-       
+    async OnDataSourceLoadMoreFinished(pLength: boolean) {
+
     }
     async onClose(param: any = null) {
         cc.log("UIMatchPlayView onClose");
         super.onClose();
     }
-    private OnClickEmptySet(isOn:boolean){
+    private OnClickEmptySet(isOn: boolean) {
         this.isSelectEmptySeat = false;
-        if(isOn){
+        if (isOn) {
             this.isSelectEmptySeat = true;
             this.DragRequestData_Room(EnumLoadType.Refresh);
         }
@@ -480,34 +482,34 @@ export default class UIMatchPlayView extends BaseForm {
         return num / 100 + "";
     }
     //设置列表信息
-    private SetItemDataInfo(item:cc.Node,roomInfo:typeof Web_Room_Center_Rooms.DataElement,index:number){
+    private SetItemDataInfo(item: cc.Node, roomInfo: typeof Web_Room_Center_Rooms.DataElement, index: number) {
         item.active = true;
-        item.getChildByName("Text_Mang").getComponent(cc.Label).string = `${this.GetLongString(roomInfo.sb)}/${this.GetLongString(roomInfo.sb*2)}${this.GetLongString(roomInfo.ante)}`;
-        item.getChildByName("Text_Type").getComponent(cc.Label).string = roomInfo.poker_type==2?this.six_List[roomInfo.game_type]:this.type_List[roomInfo.game_type];
-        let layout:cc.Node = item.getChildByName("Text_Icon_Layout");
-        if(roomInfo.play_duration == 0){
+        item.getChildByName("Text_Mang").getComponent(cc.Label).string = `${this.GetLongString(roomInfo.sb)}/${this.GetLongString(roomInfo.sb * 2)}${this.GetLongString(roomInfo.ante)}`;
+        item.getChildByName("Text_Type").getComponent(cc.Label).string = roomInfo.poker_type == 2 ? this.six_List[roomInfo.game_type] : this.type_List[roomInfo.game_type];
+        let layout: cc.Node = item.getChildByName("Text_Icon_Layout");
+        if (roomInfo.play_duration == 0) {
             layout.getChildByName("Text_Icon_Time").active = false;
             layout.getChildByName("Text_Icon_Time_node").active = true;
-        }else{
+        } else {
             layout.getChildByName("Text_Icon_Time").active = true;
             layout.getChildByName("Text_Icon_Time_node").active = false;
             //值取小数点后一位
-            let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600)*10)/10
+            let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600) * 10) / 10
             layout.getChildByName("Text_Icon_Time").getComponent(cc.Label).string = `${duration}h/${duration}h`
         }
         item.getChildByName("Text_Name").getComponent(cc.Label).string = this.GetRoomNameByKey(roomInfo.name);
 
-        let peopleNum1:cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_1").getComponent(cc.Label);
-        let peopleNum2:cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_2").getComponent(cc.Label);
+        let peopleNum1: cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_1").getComponent(cc.Label);
+        let peopleNum2: cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_2").getComponent(cc.Label);
         peopleNum1.string = `${roomInfo.seat_count - roomInfo.empty_seat}/`;
         peopleNum2.string = `${roomInfo.seat_count}`
         item["roomInfo"] = roomInfo;
-        item.off(cc.Node.EventType.TOUCH_END,this.EnterRoomAPI,this);
-        item.on(cc.Node.EventType.TOUCH_END,this.EnterRoomAPI,this);
+        item.off(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
+        item.on(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
     }
     //加入房间
-    private async EnterRoomAPI(e:cc.Event.EventCustom){
-        let roominfo:typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
+    private async EnterRoomAPI(e: cc.Event.EventCustom) {
+        let roominfo: typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
         cc.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
         LobbySession.cache_data.serviceId = roominfo.service_id;
         LobbySession.cache_data.roomName = this.GetRoomNameByKey(roominfo.name);
@@ -522,6 +524,9 @@ export default class UIMatchPlayView extends BaseForm {
         LobbySession.cache_data.muck_switch = roominfo.muck_on;
         LobbySession.cache_data.voiceprint_verify_on = roominfo.voiceprint_verify_on;
         LobbySession.cache_data.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
-        let response = await LobbySession.APIWebUserRoominsur();
+        let response = await LobbySession.APIWebUserRoominsur().catch(() => { });
+        if (response) {
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas);
+        }
     }
 }

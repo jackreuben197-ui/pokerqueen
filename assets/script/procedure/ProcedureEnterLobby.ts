@@ -8,11 +8,11 @@ import SceneManager from "../manager/SceneManager";
 import LoginSession from "../session/LoginSession";
 import ProcedureBase from "./ProcedureBase";
 
-export default class ProcedureEnter extends ProcedureBase {
+export default class ProcedureEnterLobby extends ProcedureBase {
 
-    async Enter(param?: any) {
+    async lateEnter(param?: any) {
 
-        super.Enter(param);
+        super.lateEnter(param);
 
         if (param) {
             this.Login(param).then(() => this.SyncUserInfo()).then(() => this.SyncWS()).then(() => {

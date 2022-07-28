@@ -4,7 +4,8 @@
 import { ProcedureEnum } from "../define/EIDefine";
 import ProcedureBase from "../procedure/ProcedureBase";
 import ProcedureConfig from "../procedure/ProcedureConfig";
-import ProcedureEnter from "../procedure/ProcedureEnter";
+import ProcedureEnterLobby from "../procedure/ProcedureEnterLobby";
+import ProcedureEnterTexas from "../procedure/ProcedureEnterTexas";
 import ProcedureIdle from "../procedure/ProcedureIdle";
 import ProcedureInit from "../procedure/ProcedureInit";
 import ProcedureLobby from "../procedure/ProcedureLobby";
@@ -23,8 +24,10 @@ export default class ProcedureManager {
         this.procedureDic[ProcedureEnum.Preloading] = new ProcedurePreLoading();
         this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig();
         this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin();
-        this.procedureDic[ProcedureEnum.Enter] = new ProcedureEnter();
+        this.procedureDic[ProcedureEnum.EnterLobby] = new ProcedureEnterLobby();
         this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby();
+        this.procedureDic[ProcedureEnum.EnterTexas] = new ProcedureEnterTexas();
+
         ProcedureManager.StartProcedure(ProcedureEnum.Init);
     }
     //开始某个流程
@@ -43,5 +46,10 @@ export default class ProcedureManager {
         cc.log("[上个流程:", prevProcedure && prevProcedure.Name, "切换到==>当前流程:", procedure.Name, "]");
         ProcedureManager.prevProcedure = procedure;
         procedure.Enter(param);
+    }
+    //设置当前流程
+    static SetCurrProcedure(procedureIndex: number) {
+        let procedure = this.procedureDic[procedureIndex];
+        ProcedureManager.currProcedure = procedure;
     }
 }

@@ -10,8 +10,8 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class ProcedureConfig extends ProcedureBase {
 
-    async Enter(param: any) {
-        super.Enter(param);
+    async lateEnter(param: any) {
+        super.lateEnter(param);
         //设置 GlobalProto 配置
         GameConfig.GlobalProto = await this.getGlobalProto();
         console.log("GameConfig.GlobalProto : ", GameConfig.GlobalProto);

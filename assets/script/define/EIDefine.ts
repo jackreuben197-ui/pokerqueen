@@ -8,7 +8,7 @@ export enum UIType {
     Dialog,
     Alert,
     Prompt,
-    MatchLoading,
+    TexasPreLoad,
 }
 /**
  * 流程
@@ -24,11 +24,14 @@ export enum ProcedureEnum {
     Config = 3,
     //登录
     Login = 4,
-    //进入请求
-    Enter = 5,
+    //进入大厅请求
+    EnterLobby = 5,
     //大厅
     Lobby = 6,
-
+    //进入牌桌
+    EnterTexas = 7,
+    //牌桌
+    Texas = 8
 }
 /**
  * UI 渐入渐出样式

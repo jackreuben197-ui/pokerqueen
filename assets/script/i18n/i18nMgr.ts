@@ -1,4 +1,4 @@
-import UIMatchBanner from "../../lobby/script/UIMatchBanner";
+
 import { GameConfig } from "../config/GameConfig";
 import StorageKey from "../session/StorageKey";
 import * as i18nLabel from "./i18nLabel";

@@ -87,7 +87,18 @@ export default class LoginScene extends BaseScene {
         this.setEyesOpen(false);
         this.setLanLayerActive(false);
         this.setLanguagePanel();
-        HttpClient.post({url:"https://dev.k8s.awanptesting.com/api/config/network/linklist"})
+        HttpClient.get({ url: "http://dev.k8s.awanptesting.com/api/config/network/linklist" })
+        // var xhr = new XMLHttpRequest();
+        // xhr.open('POST', 'http://dev.k8s.awanptesting.com/api/config/global/config');
+        // xhr.setRequestHeader('Content-Type', 'application/json')
+        // xhr.setRequestHeader('md5At', '8edfbbe637cb2418ded30508afd4ac63')
+        // var obj = {};
+        // xhr.send(JSON.stringify(obj));
+        // xhr.onload = function (e) {
+        //     var xhr = e.target;
+        //     console.log(">>",e);
+        // }
+
     }
 
     protected regiterDispatchEvent(): void {
@@ -190,7 +201,7 @@ export default class LoginScene extends BaseScene {
             area,
             is_simulator: false
         }
-        ProcedureManager.StartProcedure(ProcedureEnum.Enter, param);
+        ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, param);
     }
     /**
      * 找回密码点击
@@ -199,7 +210,7 @@ export default class LoginScene extends BaseScene {
         cc.log("onForgotClick");
         UIManager.open(UIDefine.ResetPassForm);
     }
-
+    
     /**
      * 注册账号点击
      */

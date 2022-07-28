@@ -1,11 +1,9 @@
 
 import Singleton from "../common/Singleton";
-import { UIFadeStyleEnum } from "../define/EIDefine";
+
 import Main from "../Main";
 import UIBase from "../ui/UIBase";
 import { ResManager } from "./ResManager";
-
-
 
 const { ccclass, property } = cc._decorator;
 

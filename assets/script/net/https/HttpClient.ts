@@ -92,7 +92,7 @@ export default class HttpClient {
                 clearTimeout(timer);//取消等待的超时
                 resolve("timeout");
             };
-            xhr.open(type, url, true);
+            xhr.open(type, url);
             xhr.timeout = HttpClient.TimeOut;
             xhr.setRequestHeader("Content-Type", "application/json");
             //xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
