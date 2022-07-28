@@ -17,20 +17,6 @@ var excelAdd = {
         UILogin_USER101: "Read and agree to<color = #DCBA82>《User Agreement》</color>",
     }
 }
-cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
-    var _csv = new CSV(data.text, { header: true });
-    var _con = _csv.parse();
-    for (let i = 0; i < _con.length; i++) {
-        let val = _con[i];
-        if (val.key) {
-            LanguageAllObject.cn[val.key] = val.cn;
-            LanguageAllObject.zh[val.key] = val.zh;
-            LanguageAllObject.en[val.key] = val.en;
-            LanguageAllObject.pt[val.key] = val.pt;
-        }
-    }
-    // cc.log("LanguageAllObject----",LanguageAllObject);
-});
 export class i18nMgr {
     private static language = "";     // 当前语言
     private static labelArr: i18nLabel.i18nLabel[] = [];        // i18nLabel 列表
@@ -38,11 +24,9 @@ export class i18nMgr {
     private static spriteArr: i18nSprite.i18nSprite[] = [];       // i18nSprite 列表
 
     private static checkInit() {
-        this.language = localStorage.getItem(StorageKey.Language);
         if (!this.language) {
             this.setLanguage(GameConfig.Default_Language);
         }
-        this.LanguageObject = LanguageAllObject[this.language];
     }
 
     /**
@@ -52,7 +36,16 @@ export class i18nMgr {
         if (this.language === language) {
             return;
         }
-        this.language = language;
+        if(language===GameConfig.Default_Language){
+            let _localLanguage =  localStorage.getItem(StorageKey.Language);
+            if(_localLanguage){
+                this.language = _localLanguage;
+            }else{
+                this.language = GameConfig.Default_Language
+            }
+        }else{
+            this.language = language;
+        }
         localStorage.setItem(StorageKey.Language, this.language);
         this.reloadLabel();
         this.reloadSprite();
@@ -129,9 +122,23 @@ export class i18nMgr {
      * @return {*}
      */
     private static reloadLabel() {
-        for (let one of this.labelArr) {
-            one._resetValue();
-        }
+        cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
+            var _csv = new CSV(data.text, { header: true });
+            var _con = _csv.parse();
+            for (let i = 0; i < _con.length; i++) {
+                let val = _con[i];
+                if (val.key) {
+                    LanguageAllObject.cn[val.key] = val.cn;
+                    LanguageAllObject.zh[val.key] = val.zh;
+                    LanguageAllObject.en[val.key] = val.en;
+                    LanguageAllObject.pt[val.key] = val.pt;
+                }
+            }
+            this.LanguageObject = LanguageAllObject[this.language];
+            for (let one of this.labelArr) {
+                one._resetValue();
+            }
+        });
     }
     private static reloadSprite() {
         for (let one of this.spriteArr) {
