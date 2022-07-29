@@ -11,6 +11,7 @@ import ProcedureInit from "../procedure/ProcedureInit";
 import ProcedureLobby from "../procedure/ProcedureLobby";
 import ProcedureLogin from "../procedure/ProcedureLogin";
 import ProcedurePreLoading from "../procedure/ProcedurePreloading";
+import ProcedureTexas from "../procedure/ProcedureTexas";
 
 export default class ProcedureManager {
 
@@ -27,6 +28,7 @@ export default class ProcedureManager {
         this.procedureDic[ProcedureEnum.EnterLobby] = new ProcedureEnterLobby();
         this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby();
         this.procedureDic[ProcedureEnum.EnterTexas] = new ProcedureEnterTexas();
+        this.procedureDic[ProcedureEnum.Texas] = new ProcedureTexas();
 
         ProcedureManager.StartProcedure(ProcedureEnum.Init);
     }

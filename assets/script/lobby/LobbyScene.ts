@@ -86,7 +86,7 @@ export default class LobbyScene extends BaseScene {
     }
     //刷新room
     public refreshRoom(): void {
-        this.GetRoomList({}).then((res) => {
+        this.RequestListSummary({}).then((res) => {
             UIMatchRoom.instance.onShow(res);
         })
     }
@@ -115,10 +115,10 @@ export default class LobbyScene extends BaseScene {
         });
     }
     /**
-     * @description: 请求RoomGroup数据
+     * @description: 请求房间列表统计信息
      * @return {Web_Room_Center_Groups.Response}
      */
-    async GetRoomList(param: typeof Web_Room_Center_Groups.RequestParams) {
+    async RequestListSummary(param: typeof Web_Room_Center_Groups.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Room_Center_Groups,
@@ -136,7 +136,7 @@ export default class LobbyScene extends BaseScene {
     * @description: 请求mang信息
     * @return {Web_Room_Center_Rooms_Blinds.Response}
     */
-    async GetRoomBlinds(param: typeof Web_Room_Center_Rooms_Blinds.RequestParams) {
+    async RequestSbList(param: typeof Web_Room_Center_Rooms_Blinds.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Room_Center_Rooms_Blinds,
@@ -151,10 +151,10 @@ export default class LobbyScene extends BaseScene {
         });
     }
     /**
- * @description: 请求rooms信息
- * @return {Web_Room_Center_Rooms.Response}
- */
-    async GetRoomsInfo(param: typeof Web_Room_Center_Rooms.RequestParams) {
+     * @description: 请求rooms信息
+     * @return {Web_Room_Center_Rooms.Response}
+     */
+    async APIWebRoomCenterRooms(param: typeof Web_Room_Center_Rooms.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Room_Center_Rooms,
@@ -169,10 +169,10 @@ export default class LobbyScene extends BaseScene {
         });
     }
     /**
-* @description: 请求rooms信息
-* @return {Web_Config_Multi_Language_Template.Response}
-*/
-    async GetLanguage(param: typeof Web_Config_Multi_Language_Template.RequestParams) {
+    * @description: 请求rooms信息
+    * @return {Web_Config_Multi_Language_Template.Response}
+    */
+    async APIConfig_Multi_Language_Template(param: typeof Web_Config_Multi_Language_Template.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Config_Multi_Language_Template,

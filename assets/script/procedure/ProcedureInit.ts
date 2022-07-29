@@ -6,11 +6,12 @@ import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import Dispatcher from "../event/Dispatcher";
 import Main from "../Main";
+import AlertManager from "../manager/AlertManager";
 import BoardManager from "../manager/BoardManager";
 import DialogManager from "../manager/DialogManager";
 import FormManager from "../manager/FormManager";
-import I18NManager from "../manager/I18NManager";
 import ProcedureManager from "../manager/ProcedureManager";
+import PromptManager from "../manager/PromptManager";
 import SceneManager from "../manager/SceneManager";
 import ToastManager from "../manager/ToastManager";
 import UIManager from "../manager/UIManager";
@@ -21,13 +22,17 @@ import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureInit extends ProcedureBase {
 
+
+    Name: string = "ProcedureInit";
+
     managers: typeof Singleton[] = [
-        I18NManager,
+        AlertManager,
         ToastManager,
         SceneManager,
         FormManager,
         BoardManager,
         DialogManager,
+        PromptManager,
         UIManager,
     ];
 
@@ -66,7 +71,6 @@ export default class ProcedureInit extends ProcedureBase {
      * 设置到全局引用 (方便浏览器F12控制台可以直接输入)
      */
     setToWin() {
-
         let classes = {
             UIDefine,
             Main,
@@ -86,9 +90,9 @@ export default class ProcedureInit extends ProcedureBase {
     bindManagers() {
         for (let manager of this.managers) {
             Main.instance.node.addComponent(manager);
-            cc.log(`[window manager.name : ${manager.name}]`);
-            window[manager.name] = manager;
+            let name: string = (manager as any)?.Name;
+            cc.log(`[window manager.name : ${name}]`);
+            window[name] = manager;
         }
-
     }
 }

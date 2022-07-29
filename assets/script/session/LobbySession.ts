@@ -40,6 +40,11 @@ export default class LobbySession {
         voiceprint_verify_on: null,
         voiceprint_verify_duration: null,
         match_id: null,
+
+        /////////////////
+        RoomUIMode: 0,//房间列表UI模式开关 1 模式1 ，2 模式2
+        MTTEntranceMode: 2,//MTT开关 1 开 ，2 关
+
     }
     //只初始化一次
     static _initOnce: boolean = false;

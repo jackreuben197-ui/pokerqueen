@@ -87,18 +87,6 @@ export default class LoginScene extends BaseScene {
         this.setEyesOpen(false);
         this.setLanLayerActive(false);
         this.setLanguagePanel();
-        HttpClient.get({ url: "http://dev.k8s.awanptesting.com/api/config/network/linklist" })
-        // var xhr = new XMLHttpRequest();
-        // xhr.open('POST', 'http://dev.k8s.awanptesting.com/api/config/global/config');
-        // xhr.setRequestHeader('Content-Type', 'application/json')
-        // xhr.setRequestHeader('md5At', '8edfbbe637cb2418ded30508afd4ac63')
-        // var obj = {};
-        // xhr.send(JSON.stringify(obj));
-        // xhr.onload = function (e) {
-        //     var xhr = e.target;
-        //     console.log(">>",e);
-        // }
-
     }
 
     protected regiterDispatchEvent(): void {
@@ -115,8 +103,7 @@ export default class LoginScene extends BaseScene {
         this.language_layer.on("click", this.onLanguageLayerClick, this);
     }
     protected lateEnter() {
-        //设置语言显示
-        cc.log("i18nMgr.Language : ", i18nMgr.Language);
+
     }
 
     setLanguagePanel() {
@@ -159,7 +146,7 @@ export default class LoginScene extends BaseScene {
      * 刷新旗子
      */
     refreshLanguageFlag() {
-        this.lan_flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${i18nMgr.Language}`);
+        this.lan_flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${i18nMgr.language}`);
     }
 
     ///////////////////////////////////按钮响应回调//////////////////////////////////////////
@@ -210,7 +197,7 @@ export default class LoginScene extends BaseScene {
         cc.log("onForgotClick");
         UIManager.open(UIDefine.ResetPassForm);
     }
-    
+
     /**
      * 注册账号点击
      */

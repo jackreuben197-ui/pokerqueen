@@ -6,6 +6,8 @@ import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedurePreloading extends ProcedureBase {
 
+    Name: string = "ProcedurePreloading";
+
     protected lateEnter(param?: any) {
         super.lateEnter(param);
         SceneManager.ins.switchScene(UIDefine.PreloadingScene);

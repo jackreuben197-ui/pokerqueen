@@ -2,6 +2,10 @@ import TexasGame from "../game/TexasGame";
 
 export default class GameSession {
 
+    public static cache_data = {
+
+    }
+
     static currentRoomID: number = 0;
 
     static texasGame: TexasGame = null;

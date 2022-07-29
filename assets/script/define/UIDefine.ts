@@ -25,7 +25,13 @@ export const UIDefine = {
         Bundle: "lobby",
         Path: "prefab/scene/LobbyScene"
     },
-
+    //大厅场景
+    TexasScene: {
+        UIType: UIType.Scene,
+        Name: "TexasScene",
+        Bundle: "texas",
+        Path: "prefab/scene/TexasScene"
+    },
     /**
      *  标题窗口
      */

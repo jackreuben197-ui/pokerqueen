@@ -13,10 +13,12 @@ const { ccclass } = cc._decorator;
 @ccclass
 export default class UIManager extends Singleton {
 
+    static Name: string = "UIManager";
+
     static ins: UIManager;
 
     static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null) {
-
+        if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
                 FormManager.ins.open(UIDefine, param);
@@ -38,7 +40,7 @@ export default class UIManager extends Singleton {
     }
 
     static close<TParam extends unknown>(UIDefine: IUIDefine = null, param: TParam = null) {
-
+        if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
                 FormManager.ins.close(UIDefine, param);

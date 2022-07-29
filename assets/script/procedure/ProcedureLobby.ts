@@ -12,7 +12,8 @@ import ProcedureBase from "./ProcedureBase";
  * 大厅进程
  */
 export default class ProcedureLobby extends ProcedureBase {
-
+    
+    Name: string = "ProcedureLobby";
 
     lateEnter(param?: any) {
         super.lateEnter(param);

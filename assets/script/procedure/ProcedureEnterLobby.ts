@@ -1,5 +1,5 @@
 /**
- * 进入流程
+ * 进入大厅流程
  */
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
@@ -9,6 +9,8 @@ import LoginSession from "../session/LoginSession";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureEnterLobby extends ProcedureBase {
+
+    Name: string = "ProcedureEnterLobby";
 
     async lateEnter(param?: any) {
 

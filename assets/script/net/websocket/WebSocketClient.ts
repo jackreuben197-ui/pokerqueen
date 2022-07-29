@@ -1,7 +1,5 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
 import ToastManager from "../../manager/ToastManager";
-import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
-import GameSession from "../../session/GameSession";
 import { Web_WS } from "../https/WebRequest";
 import ProtocolAgency from "./ProtocolAgency";
 import { Protocol_Holdem_Register } from "./ProtocolHoldemMessages";

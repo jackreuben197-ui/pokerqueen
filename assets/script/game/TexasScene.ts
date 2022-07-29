@@ -1,10 +1,6 @@
+import BaseScene from "../ui/scene/BaseScene";
+import GameSession from "./GameSession";
 
-import TexasConfig from "../../config/TexasConfig";
-import { ProcedureEnum } from "../../define/EIDefine";
-import ProcedureManager from "../../manager/ProcedureManager";
-import GameSession from "../../session/GameSession";
-import StorageKey from "../../session/StorageKey";
-import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
 
@@ -28,7 +24,6 @@ export default class TexasScene extends BaseScene {
         super.lateLoad();
         this.desk_bg = this.getChildNodeOrComponent("desk_bg", cc.Sprite);
         this.table_bg = this.getChildNodeOrComponent("table_bg", cc.Sprite);
-
     }
     setDeskType(index: number) {
         let sps = GameSession.texasGame.getDeskSpriteFrames(index);

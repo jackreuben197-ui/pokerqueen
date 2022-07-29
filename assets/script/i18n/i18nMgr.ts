@@ -19,15 +19,17 @@ var excelAdd = {
     }
 }
 export class i18nMgr {
-    private static language = "";     // 当前语言
+    public static language = "";     // 当前语言
+    
     private static labelArr: i18nLabel.i18nLabel[] = [];        // i18nLabel 列表
     private static LanguageObject: { [key: string]: string } = {};   // 文字配置
     private static spriteArr: i18nSprite.i18nSprite[] = [];       // i18nSprite 列表
 
-    private static checkInit() {
-        if (!this.language) {
-            this.setLanguage(GameConfig.Default_Language);
-        }
+
+    public static initLanguage() {
+
+        this.language = localStorage.getItem(StorageKey.Language) || GameConfig.Default_Language;
+        this.LanguageObject = LanguageAllObject[this.language];
     }
 
     /**
@@ -37,18 +39,10 @@ export class i18nMgr {
         if (this.language === language) {
             return;
         }
-        if(language===GameConfig.Default_Language){
-            let _localLanguage =  localStorage.getItem(StorageKey.Language);
-            if(_localLanguage){
-                this.language = _localLanguage;
-            }else{
-                this.language = GameConfig.Default_Language
-            }
-        }else{
-            this.language = language;
-        }
+        this.language = language;
         localStorage.setItem(StorageKey.Language, this.language);
-        this.reloadLabel();
+        this.LanguageObject = LanguageAllObject[this.language];
+        this.refreshAllLabel();
         this.reloadSprite();
         this.resetRemoteSprite();
     }
@@ -81,7 +75,7 @@ export class i18nMgr {
     }
 
     public static _getLabel(opt: string): string {
-        this.checkInit();
+
         if (excelAdd[this.language]?.[opt]) return excelAdd[this.language][opt];
         if (this.LanguageObject) {
             if (this.LanguageObject[opt]) {
@@ -109,7 +103,7 @@ export class i18nMgr {
     }
 
     public static _getSprite(path: string, cb: (spriteFrame: cc.SpriteFrame) => void) {
-        this.checkInit();
+
         cc.resources.load("i18n/sprite/" + this.language + "/" + path, cc.SpriteFrame, (err, spriteFrame: cc.SpriteFrame) => {
             if (err) {
                 return cb(null);
@@ -122,37 +116,46 @@ export class i18nMgr {
      * @description: 此方法读取Language里面的数据 再根据语言类型分配相应的字符串
      * @return {*}
      */
-    private static reloadLabel() {
-        cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
-            var _csv = new CSV(data.text, { header: true });
-            var _con = _csv.parse();
-            for (let i = 0; i < _con.length; i++) {
-                let val = _con[i];
-                if (val.key) {
-                    LanguageAllObject.cn[val.key] = val.cn;
-                    LanguageAllObject.zh[val.key] = val.zh;
-                    LanguageAllObject.en[val.key] = val.en;
-                    LanguageAllObject.pt[val.key] = val.pt;
-                }
-            }
-            this.LanguageObject = LanguageAllObject[this.language];
-            for (let one of this.labelArr) {
-                one._resetValue();
-            }
-        });
-    }
-    private static reloadSprite() {
-        for (let one of this.spriteArr) {
+    private static refreshAllLabel() {
+
+        for (let one of this.labelArr) {
             one._resetValue();
         }
     }
     /**
-     * 获取当前语言
+     * 读取语言配置文件_csv格式
      */
-    public static get Language() {
-        if (this.language) return this.language;
-        this.checkInit();
-        return this.language;
+    public static loadLanguage_csv() {
+
+        return new Promise((resolve, reject) => {
+
+            cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
+
+                if (err) {
+                    reject(err);
+                } else {
+                    var _csv = new CSV(data.text, { header: true });
+                    var _con = _csv.parse();
+                    for (let i = 0; i < _con.length; i++) {
+                        let val = _con[i];
+                        if (val.key) {
+                            LanguageAllObject.cn[val.key] = val.cn;
+                            LanguageAllObject.zh[val.key] = val.zh;
+                            LanguageAllObject.en[val.key] = val.en;
+                            LanguageAllObject.pt[val.key] = val.pt;
+                        }
+                    }
+                    resolve(1);
+                }
+            });
+        });
+
+    }
+
+    private static reloadSprite() {
+        for (let one of this.spriteArr) {
+            one._resetValue();
+        }
     }
 
 }

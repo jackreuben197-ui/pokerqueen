@@ -1,6 +1,7 @@
 
 import { GameConfig, NetWorkBase } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
+import { i18nMgr } from "../i18n/i18nMgr";
 import ProcedureManager from "../manager/ProcedureManager";
 import ProcedureBase from "./ProcedureBase";
 
@@ -10,20 +11,21 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class ProcedureConfig extends ProcedureBase {
 
+    Name: string = "ProcedureConfig";
+
     async lateEnter(param?: any) {
         super.lateEnter(param);
         //设置 GlobalProto 配置
         GameConfig.GlobalProto = await this.getGlobalProto();
-        console.log("GameConfig.GlobalProto : ", GameConfig.GlobalProto);
+        console.log("config :: GameConfig.GlobalProto : ", GameConfig.GlobalProto);
+        //读取 语言配置
+        await i18nMgr.loadLanguage_csv();
+        i18nMgr.initLanguage();
+        console.log("config :: i18nMgr initLanguage");
+        //设置网络配置
         GameConfig.Network = this.getNetwork();
-        console.log("GameConfig.Network : ", GameConfig.Network);
-        //请求linklist
-        // await HttpClient.get({
-        //     url: GameConfig.GlobalProto.NetLineSwitchUrl,
-        //     onSuccess: (response) => {
-        //         ProcedureManager.StartProcedure(ProcedureEnum.Login);
-        //     }
-        // });
+        console.log("config :: GameConfig.Network : ", GameConfig.Network);
+
         ProcedureManager.StartProcedure(ProcedureEnum.Login);
     }
     Leave() {

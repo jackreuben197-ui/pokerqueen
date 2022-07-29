@@ -1,6 +1,6 @@
 export var AreaCodeConfig = {
     /** 区号 简体中文 */
-    CN: new Map([
+    cn: new Map([
         ["巴西", "+55"],
         ["美国", "+1"],
         ["英国", "+44"],
@@ -30,7 +30,7 @@ export var AreaCodeConfig = {
         ["阿拉伯酋长国", "+971"]
     ]),
     /** 区号 台湾省繁体 */
-    TW: new Map([
+    zh: new Map([
         ["巴西", "+55"],
         ["美國", "+1"],
         ["英國", "+44"],
@@ -60,7 +60,7 @@ export var AreaCodeConfig = {
         ["阿拉伯酋长国", "+971"]
     ]),
     /** 区号 英语 */
-    EN: new Map([
+    en: new Map([
         ["Brazil", "+55"],
         ["United States", "+1"],
         ["British", "+44"],
@@ -90,7 +90,7 @@ export var AreaCodeConfig = {
         ["The United Arab Emirates", "+971"]
     ]),
     /** 区号 巴西 */
-    BR: new Map([
+    pt: new Map([
         ["Brasil", "+55"],
         ["Estados Unidos", "+1"],
         ["Britânico", "+44"],

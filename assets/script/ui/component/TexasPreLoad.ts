@@ -1,4 +1,6 @@
 
+import LanguageCode from "../../i18n/LanguageCode";
+import ToastManager from "../../manager/ToastManager";
 import UIBase from "../UIBase";
 
 const { ccclass } = cc._decorator;
@@ -25,38 +27,49 @@ export default class TexasPreLoad extends UIBase {
         this.progress_bar = this.getChildNodeOrComponent("progress_bar", cc.ProgressBar);
         this.progress_label = this.getChildNodeOrComponent("progress_label", cc.Label);
     }
-    onShow(param: any = null) {
+    async onShow(param: any = null) {
         super.onShow(param);
         this.setProgress(0);
         this.bundleName = param?.bundleName;
         this.wsEnterRoom();
-        this.loadBundle();
+        let loadBundle_result = await this.loadBundle().catch(() => { });
+        if (loadBundle_result) {
+            console.log(`bundle => ${this.bundleName} 包体资源加载完成`);
+            param.completeHandler();
+        } else {
+            ToastManager.ins.craeteToast(LanguageCode.getAdaptation(10050))
+            param.errorHandler();
+        }
     }
 
     loadBundle() {
         if (this.bundleName) {
             //加载包
-            cc.assetManager.loadBundle(this.bundleName, (err, bundle) => {
-                if (err) {
-                    cc.log("load bundle error:", this.bundleName);
-                } else {
-                    bundle.loadDir("/",
-                        (finish: number, total: number) => {
-                            let percent = finish / total;
-                            //纠错，保证当前进度不会小于上次进度
-                            percent = Math.max(percent, this.prevPercent);
-                            this.setProgress(percent);
-                        }, (error: Error, assets) => {
-                            //cc.log("预加载资源加载完成");
-                            //ProcedureManager.StartProcedure(ProcedureEnum.Config);
-                            if (error) {
-                                cc.log("load dir error:", error);
-                            } else {
-
-                            }
-                        })
-                }
-            })
+            return new Promise((resolve, reject) => {
+                cc.assetManager.loadBundle(this.bundleName, (err, bundle) => {
+                    if (err) {
+                        cc.log("load bundle error:", this.bundleName);
+                        reject(0);
+                    } else {
+                        bundle.loadDir("/",
+                            (finish: number, total: number) => {
+                                let percent = finish / total;
+                                //纠错，保证当前进度不会小于上次进度
+                                percent = Math.max(percent, this.prevPercent);
+                                this.setProgress(percent);
+                            }, (error: Error, assets) => {
+                                //cc.log("预加载资源加载完成");
+                                //ProcedureManager.StartProcedure(ProcedureEnum.Config);
+                                if (error) {
+                                    cc.log("load dir error:", error);
+                                    reject(0);
+                                } else {
+                                    resolve(1);
+                                }
+                            })
+                    }
+                })
+            });
         }
     }
 
@@ -74,6 +87,6 @@ export default class TexasPreLoad extends UIBase {
     }
 
     private wsEnterRoom() {
-        
+
     }
 }

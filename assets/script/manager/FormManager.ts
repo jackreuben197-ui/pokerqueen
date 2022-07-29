@@ -10,8 +10,8 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class FormManager extends Singleton {
 
+    static Name: string = "FormManager";
     static ins: FormManager;
-
     uiMap = {};
 
     currUI: UIBase = null;
@@ -80,7 +80,7 @@ export default class FormManager extends Singleton {
                     ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
-                    cc.log("close ui left count:", this.constructor.name, this.showUIs.length);
+                    cc.log("close ui left count:", this.constructor["Name"], ui.UIDefine, this.showUIs.length);
                     break;
                 }
             }
@@ -99,6 +99,6 @@ export default class FormManager extends Singleton {
         ui?.onShow(param);
         this.currUI = ui;
         this.showUIs.push(ui);
-        cc.log("open ui count:", this.constructor.name, this.showUIs.length);
+        cc.log("open ui count:", this.constructor["Name"], ui.UIDefine, this.showUIs.length);
     }
 }

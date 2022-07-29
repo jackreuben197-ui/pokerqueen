@@ -4,11 +4,10 @@
  */
 
 import { IUpdate } from "../define/EIDefine";
+import GameSession from "../game/GameSession";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_Heartbeat } from "../net/websocket/ProtocolHoldemMessages";
-import GameSession from "../session/GameSession";
 import GlobalSession from "../session/GlobalSession";
-import LobbySession from "../session/LobbySession";
 
 export default class HeartbeatComponent implements IUpdate {
 

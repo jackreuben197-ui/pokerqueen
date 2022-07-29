@@ -438,18 +438,18 @@ export class Web_Room_Center_Rooms {
 
     //字段声明
     public static RequestParams: {
-        limit: number,//条目
-        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-        types: number[],
-        sb_min: number,//小盲
-        sb_max: number,
-        ant_min: number,//前注
-        ant_max: number,
-        room_ids: number[],//房间id
-        game_type: number[],//游戏类型
-        poker_type: number[],//牌类型
-        limit_bet_type: number[],//下注类型
-        order: string[]//排序//oneof=id_asc id_desc start_asc start_desc enter_asc enter_desc eseat_asc eseat_desc seat_asc seat_desc sb_asc sb_desc"
+        limit?: number,//条目
+        offset?: number,//开始下标。例子（offset=0，limit=10，0-9。）
+        types?: number[],
+        sb_min?: number,//小盲
+        sb_max?: number,
+        ant_min?: number,//前注
+        ant_max?: number,
+        room_ids?: number[],//房间id
+        game_type?: number[],//游戏类型
+        poker_type?: number[],//牌类型
+        limit_bet_type?: number[],//下注类型
+        order?: string[]//排序//oneof=id_asc id_desc start_asc start_desc enter_asc enter_desc eseat_asc eseat_desc seat_asc seat_desc sb_asc sb_desc"
     } = null;
 
     public static ResponseData: {

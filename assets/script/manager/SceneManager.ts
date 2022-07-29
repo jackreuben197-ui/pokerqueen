@@ -10,7 +10,10 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class SceneManager extends Singleton {
 
+    static Name: string = "SceneManager";
+
     static ins: SceneManager;
+
     uiMap = {};
     currUI: cc.Node;
 

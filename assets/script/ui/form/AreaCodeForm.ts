@@ -2,6 +2,7 @@
 import { AreaCodeConfig } from "../../config/AreaCodeConfig";
 import Dispatcher from "../../event/Dispatcher";
 import GGEvent from "../../event/GGEvent";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import LoginSession from "../../session/LoginSession";
 import GGToggleContainer from "../component/GGToggleContainer";
 import AreaCodeFormItem from "../item/AreaCodeFormItem";
@@ -74,7 +75,6 @@ export default class AreaCodeForm extends BaseForm {
 
     createAreaList() {
         this.map = this.getAreaMap();
-        cc.log("areacode map size:", this.map.size);
         this.map.forEach((value: string, key: string) => {
             let item_code = cc.instantiate(this.AreaCodeFormItem);
             item_code.active = true;
@@ -94,7 +94,7 @@ export default class AreaCodeForm extends BaseForm {
     }
     getAreaMap() {
         //TODO 判断语言
-        return AreaCodeConfig.EN;
+        return AreaCodeConfig[i18nMgr.language];
     }
     /**
      * 搜索内容改变

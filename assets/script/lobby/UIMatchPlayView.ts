@@ -174,32 +174,36 @@ export default class UIMatchPlayView extends BaseForm {
      * len:len,
      * @return {*}
      */
-    onShow(param?: any): void {
+    async onShow(param?: any) {
         //根据点击的显示
         //获取groups信息刷新 typeScrollView
-        cc.log("UIMatchPlayView onClose");
         this.TypeContentLength = param.len;
         //获取roominfo
-        this.sendGroupGetData(param);
+        await this.sendGroupGetData(param);
         //获取LocalDicRoomName
-        this.sendLanguageGetData();
+        await this.sendBlindsGetData(param);
+
+        await this.sendLanguageGetData();
+
+        this.DragRequestData_Room(EnumLoadType.Init);
+
+        console.log("allcomplete");
     }
     //获取group消息
     async sendGroupGetData(param?: any) {
         //请求group信息
         let typeViewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
         let typesScrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewType", cc.ScrollView);
-        let groupData: any = await LobbyScene.instance.GetRoomList({})
+        let groupData: any = await LobbyScene.instance.RequestListSummary({})
         this.RoomTypesInfos = UIMatchRoom.instance.handleData(groupData.data, typeViewContent);
         this.RoomInfo = this.RoomTypesInfos[param.index];
         this.removeTypeEvent();
         this.registerTypeEvent();
         this.TypeScroll(param.index, typesScrollView, typeViewContent.children[param.index]);
-        this.sendBlindsGetData(param);
     }
     //获取语言信息
     async sendLanguageGetData() {
-        let languageInfo: any = await LobbyScene.instance.GetLanguage({})
+        let languageInfo: any = await LobbyScene.instance.APIConfig_Multi_Language_Template({})
         if (languageInfo?.data !== null) {
             this.LocalDicRoomName.clear();
             this.LocalDicRoomName_EN.clear();
@@ -246,13 +250,14 @@ export default class UIMatchPlayView extends BaseForm {
             game_type: param.game_type,
             poker_type: param.poker_type
         }
-        let blindData: any = await LobbyScene.instance.GetRoomBlinds(blind);
+        let blindData: any = await LobbyScene.instance.RequestSbList(blind);
         //通过blindData生成mangBar
         this.setMangBar(blindData);
-        this.DragRequestData_Room(EnumLoadType.Init);
+        //await this.DragRequestData_Room(EnumLoadType.Init);
     }
     //获取房间消息
     async DragRequestData_Room(loadType: EnumLoadType) {
+
         let param = {
             "sb_min": this.MangInfo,
             "sb_max": this.MangInfo,
@@ -271,20 +276,20 @@ export default class UIMatchPlayView extends BaseForm {
         }
         let roomsInfo: typeof Web_Room_Center_Rooms.RequestParams = {
             "limit": limit,
-            "offset": limit,
-            "types": null,
+            "offset": offset,
+            //"types": null,
             "sb_min": param.sb_min,
             "sb_max": param.sb_max,
-            "ant_min": 0,
-            "ant_max": 0,
-            "room_ids": null,
-            "game_type": [param.game_type],
-            "poker_type": [param.poker_type],
-            "limit_bet_type": null,
+            //"ant_min": 0,
+            //"ant_max": 0,
+            //"room_ids": null,
+            "game_type": [+param.game_type],
+            "poker_type": [+param.poker_type],
+            //"limit_bet_type": null,
             "order": ["sb_asc"]
         }
-        let roomsInfoData: any = { "code": 0, "data": { "limit": 20, "offset": 0, "records": [{ "rid": 97995898, "name": "ROOM202206181655523126304847-2", "room_type": 0, "game_type": 0, "poker_type": 0, "limit_bet_type": 0, "status": 1, "ante": 0, "sb": 1000, "op_duration": 120, "no_user_wait_duration": 2, "keep_seat_duration": 180, "total_bring_in": 0, "total_bring_out": 0, "total_chip": 0, "min_rate": 100, "max_rate": 400, "min_players": 2, "autostart_min_players": 2, "straddle_on": 0, "straddle_max": 0, "insurance_on": 0, "insurance_op_duration": 0, "second_pcs_on": 0, "second_pcs_op_duration": 0, "second_pcs_user_limit": 0, "delay_view_card_on": 0, "post_on": 0, "muck_on": 0, "limit_ip_on": 0, "limit_gps_on": 0, "limit_gps_distance": 0, "limit_delay_times": 2, "limit_auto_check_times": 2, "limit_auto_fold_times": 2, "seat_count": 6, "empty_seat": 6, "roomers": 0, "enter_time": "2022-07-25T04:08:30Z", "play_duration": 1800, "no_user_close_duration": 0, "retain_type": 0, "retain_min_rate": 0, "schedule_start_time": null, "start_time": null, "end_time": null, "settlement_type": 1, "hand_num": 0, "tribe_id": 1, "end_reason": "", "hc_total_hand_lv": 0, "hc_total_hand": 0, "hc_pool_rate_lv": 0, "hc_pool_rate": 0, "service_id": "grpc-throom-1", "create_time": "2022-07-25T04:08:31Z", "update_time": "2022-07-25T04:08:52Z", "voiceprint_verify_on": 1, "voiceprint_verify_limit_times": 10, "voiceprint_verify_duration": 120, "voiceprint_verify_interval_duration": 600, "participation_status": 0 }], "total": 1 } }
-        //await LobbyScene.instance.GetRoomsInfo(roomsInfo);
+        //let roomsInfoData: any = { "code": 0, "data": { "limit": 20, "offset": 0, "records": [{ "rid": 97995898, "name": "ROOM202206181655523126304847-2", "room_type": 0, "game_type": 0, "poker_type": 0, "limit_bet_type": 0, "status": 1, "ante": 0, "sb": 1000, "op_duration": 120, "no_user_wait_duration": 2, "keep_seat_duration": 180, "total_bring_in": 0, "total_bring_out": 0, "total_chip": 0, "min_rate": 100, "max_rate": 400, "min_players": 2, "autostart_min_players": 2, "straddle_on": 0, "straddle_max": 0, "insurance_on": 0, "insurance_op_duration": 0, "second_pcs_on": 0, "second_pcs_op_duration": 0, "second_pcs_user_limit": 0, "delay_view_card_on": 0, "post_on": 0, "muck_on": 0, "limit_ip_on": 0, "limit_gps_on": 0, "limit_gps_distance": 0, "limit_delay_times": 2, "limit_auto_check_times": 2, "limit_auto_fold_times": 2, "seat_count": 6, "empty_seat": 6, "roomers": 0, "enter_time": "2022-07-25T04:08:30Z", "play_duration": 1800, "no_user_close_duration": 0, "retain_type": 0, "retain_min_rate": 0, "schedule_start_time": null, "start_time": null, "end_time": null, "settlement_type": 1, "hand_num": 0, "tribe_id": 1, "end_reason": "", "hc_total_hand_lv": 0, "hc_total_hand": 0, "hc_pool_rate_lv": 0, "hc_pool_rate": 0, "service_id": "grpc-throom-1", "create_time": "2022-07-25T04:08:31Z", "update_time": "2022-07-25T04:08:52Z", "voiceprint_verify_on": 1, "voiceprint_verify_limit_times": 10, "voiceprint_verify_duration": 120, "voiceprint_verify_interval_duration": 600, "participation_status": 0 }], "total": 1 } }
+        let roomsInfoData: any = await LobbyScene.instance.APIWebRoomCenterRooms(roomsInfo);
         if (this.cacheResponseData == null) {
             this.UICareerRecordViewCall(loadType, roomsInfoData);
         } else {
@@ -526,7 +531,8 @@ export default class UIMatchPlayView extends BaseForm {
         LobbySession.cache_data.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
         let response = await LobbySession.APIWebUserRoominsur().catch(() => { });
         if (response) {
-            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas);
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: this.UIDefine });
         }
+        
     }
 }

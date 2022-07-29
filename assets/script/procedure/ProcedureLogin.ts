@@ -7,6 +7,9 @@ import ProcedureBase from "./ProcedureBase";
 
 
 export default class ProcedureLogin extends ProcedureBase {
+    
+    Name: string = "ProcedureLogin";
+
     lateEnter(param?: any) {
         super.lateEnter(param);
         //登陆数据初始化

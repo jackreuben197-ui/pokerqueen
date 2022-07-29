@@ -6,8 +6,9 @@ const { ccclass, property } = cc._decorator;
 export default class Singleton extends cc.Component {
 
     onLoad() {
-        if (!Singleton[this.constructor.name]) {
-            Singleton[this.constructor.name] = true;
+        let name = (this.constructor as any)?.Name;
+        if (!Singleton[name]) {
+            Singleton[name] = true;
             this.constructor["ins"] = this;
             this.lateLoad();
         } else {

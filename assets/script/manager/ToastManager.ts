@@ -15,7 +15,9 @@ const { ccclass } = cc._decorator;
 @ccclass
 export default class ToastManager extends Singleton {
 
-    static ins: ToastManager = null;
+    static Name: string = "ToastManager";
+
+    static ins: ToastManager;
 
     config: any = {
         //容器起始位置

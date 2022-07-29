@@ -111,3 +111,31 @@ export interface IUpdate {
 export var Bundle = {
     Texas: "texas",
 }
+
+///////////////////////////////////////////////////
+/**
+ * 游戏类型
+ */
+export enum GameType {
+    Holdem = 0,//德州
+    Omaha4 = 1,//奥马哈四张
+    Omaha5 = 2,//奥马哈五张
+    Omaha6 = 3,//奥马哈六张
+}
+
+/**
+ * 扑克类型
+ */
+export enum PokerType {
+    Normal = 0,//普通
+    SixPlus = 2//短牌
+}
+
+/**
+ * 下注类型
+ */
+export enum BetType {
+    NoLimit = 0,//无限注
+    PotLimit = 1,//底池限注
+    Aof = 2,//aof
+}
