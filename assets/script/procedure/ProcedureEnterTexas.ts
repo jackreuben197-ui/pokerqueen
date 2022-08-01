@@ -1,6 +1,7 @@
 
 import { Bundle, ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import GameCache from "../manager/GameCache";
 import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
 import UIManager from "../manager/UIManager";
@@ -24,9 +25,9 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     }
 
     completeHandler() {
-        UIManager.close(this.param?.fromUI);
+        UIManager.close(this.param?.[0]);
         UIManager.close(UIDefine.TexasPreLoad);
-        ProcedureManager.StartProcedure(ProcedureEnum.Texas);
+        ProcedureManager.StartProcedure(ProcedureEnum.Texas, this.param);
     }
     errorHandler() {
         UIManager.close(UIDefine.TexasPreLoad);

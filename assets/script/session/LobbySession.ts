@@ -6,6 +6,7 @@ import Dispatcher from "../event/Dispatcher";
 import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
+import GameCache from "../manager/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -25,27 +26,6 @@ export default class LobbySession {
     public static tokenRefreshComponent: TokenRefreshComponent;
     public static heartbeatComponent: HeartbeatComponent;
 
-    public static cache_data = {
-        serviceId: null,
-        roomName: null,
-        room_type: null,
-        game_type: null,
-        poker_type: null,
-        bet_type: null,
-        room_id: null,
-        seat_count: null,
-        straddle: null,
-        insurance: null,
-        muck_switch: null,
-        voiceprint_verify_on: null,
-        voiceprint_verify_duration: null,
-        match_id: null,
-
-        /////////////////
-        RoomUIMode: 0,//房间列表UI模式开关 1 模式1 ，2 模式2
-        MTTEntranceMode: 2,//MTT开关 1 开 ，2 关
-
-    }
     //只初始化一次
     static _initOnce: boolean = false;
 
@@ -184,7 +164,7 @@ export default class LobbySession {
     static APIWebUserRoominsur() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_User_Room_insur.API.replace("{id}", this.cache_data.room_id.toString()),
+                api: Web_User_Room_insur.API.replace("{id}", GameCache.ins.room_id.toString()),
                 request: Web_User_Room_insur,
                 onSuccess: function () {
                     //TODO 广播刷新

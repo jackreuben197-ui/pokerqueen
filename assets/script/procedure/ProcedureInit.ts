@@ -10,6 +10,7 @@ import AlertManager from "../manager/AlertManager";
 import BoardManager from "../manager/BoardManager";
 import DialogManager from "../manager/DialogManager";
 import FormManager from "../manager/FormManager";
+import GameCache from "../manager/GameCache";
 import ProcedureManager from "../manager/ProcedureManager";
 import PromptManager from "../manager/PromptManager";
 import SceneManager from "../manager/SceneManager";
@@ -34,6 +35,7 @@ export default class ProcedureInit extends ProcedureBase {
         DialogManager,
         PromptManager,
         UIManager,
+        GameCache,
     ];
 
 

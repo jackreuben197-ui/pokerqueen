@@ -1,3 +1,5 @@
+import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
+import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
 import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
@@ -5,11 +7,38 @@ import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/hol
 export class BaseProtocol {
     //RoomID: number;
     //MatchID: number;
-    static SetBody(request: any, body: any = null) {
+
+    static _SetBody(obj, body, classDic?: any) {
+
         for (let key in body) {
-            request[`set${key[0].toLocaleUpperCase()}${key.slice(1)}`](body[key]);
+
+            let value = body[key];
+
+            let func = `set${key[0].toLocaleUpperCase()}${key.slice(1)}`;
+
+            cc.log("func:", func);
+            cc.log("key:", key);
+
+            if (classDic[key]) {
+
+                let childObj = new classDic[key]();
+
+                obj[func](childObj);
+
+                this._SetBody(childObj, value, classDic);
+            } else {
+                obj[func](value);
+
+            }
         }
+
     }
+    static SetBody(request: any, body: any = null, cls?: any) {
+        this.body = body;
+        this._SetBody(request, body, cls);
+    }
+
+    static body: any;
 }
 /**
  * 初次握手后注册
@@ -71,6 +100,28 @@ export class Protocol_Holdem_Leave extends BaseProtocol {
     }
 }
 
+/**
+ * 进入房间
+ */
+export class Protocol_Holdem_EnterRoom extends BaseProtocol {
+
+    static _request: ClientMessageEnterRoom;
+    public static Request_AsObject: ClientMessageEnterRoom.AsObject = null;
+    public static Response_AsObject: ServerMessageEnterRoom.AsObject = null;
+
+    static Request(body?: ClientMessageEnterRoom.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessageEnterRoom());
+        this.SetBody(this._request, body, { room: Room, gps: GPS });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessageEnterRoom.AsObject {
+        let result: ServerMessageEnterRoom = ServerMessageEnterRoom.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
+
 
 
 
@@ -79,3 +130,4 @@ export class Protocol_Holdem_Leave extends BaseProtocol {
 
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
 cc.js.setClassName("Protocol_Holdem_Register", Protocol_Holdem_Register);
+cc.js.setClassName("Protocol_Holdem_EnterRoom", Protocol_Holdem_EnterRoom);

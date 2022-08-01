@@ -1,6 +1,12 @@
 
+// <Protocol_Holdem_EnterRoom>{RoomID:91995898, MatchID:0, 
+// request:<ClientMessageEnterRoom>{Room:<Room>{RoomId:91995898, MatchId:0, },Gps:<GPS>{Longitude:"0", Latitude:"0", },MttPartialBringIn:0, Observer:False, },response:null,RpcId:0, Error:0, },
+
+
+
 import { LogStyle } from "../../config/GameConfig";
 import Dispatcher from "../../event/Dispatcher";
+import GameCache from "../../manager/GameCache";
 import { ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import LobbySession from "../../session/LobbySession";
 import LoginSession from "../../session/LoginSession";
@@ -24,8 +30,11 @@ export default class ProtocolAgency extends cc.Component {
                 return;
             }
 
-            if (OpCodeHelper.NeedLog(code))
-                cc.log("%c%s\n%s", LogStyle.ws_request, `>>>>> protocol send : ${protocol.name}`, JSON.stringify(arguments[0]));
+            if (OpCodeHelper.NeedLog(code)) {
+
+                cc.log("%c%s\n%s", LogStyle.ws_request, `>>>>> protocol send : ${protocol.name}`, `RoomID:${RoomID},MatchID:${MatchID},body:${JSON.stringify(protocol.body)}`);
+            }
+
 
             let bodyLength: number = body.byteLength;
             //数据长度(要写入前4个字节)
@@ -114,11 +123,11 @@ export default class ProtocolAgency extends cc.Component {
         // RoomID or MatchID 和当前不匹配,请求离开房间
         if (code != ProtocolCode.Protocol_Holdem_Leave
             && code != ProtocolCode.Protocol_Holdem_EnterRoom) {
-            let isRubbish = (roomid != 0 && roomid != LobbySession.cache_data.room_id)
-                || (matchid != 0 && matchid != LobbySession.cache_data.match_id);
+            let isRubbish = (roomid != 0 && roomid != GameCache.ins.room_id)
+                || (matchid != 0 && matchid != GameCache.ins.match_id);
             if (isRubbish) {
                 cc.log("%c%s", LogStyle.ws_response, `roomid or matchid is no match
-                cache:{RoomID:${LobbySession.cache_data.room_id},MatchID:${LobbySession.cache_data.match_id} 
+                cache:{RoomID:${GameCache.ins.room_id},MatchID:${GameCache.ins.match_id} 
                 receive:{RoomID:${roomid},MatchID:${matchid}`);
                 ProtocolAgency.Send({
                     protocol: Protocol_Holdem_Leave,

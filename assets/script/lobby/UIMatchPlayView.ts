@@ -7,6 +7,7 @@ import { i18nLabel } from "../../script/i18n/i18nLabel";
 import LobbySession from "../../script/session/LobbySession";
 import ProcedureManager from "../../script/manager/ProcedureManager";
 import { ProcedureEnum } from "../../script/define/EIDefine";
+import GameCache from "../manager/GameCache";
 enum EnumLoadType {
     "Init" = 1,
     "Refresh" = 2,
@@ -516,23 +517,23 @@ export default class UIMatchPlayView extends BaseForm {
     private async EnterRoomAPI(e: cc.Event.EventCustom) {
         let roominfo: typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
         cc.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
-        LobbySession.cache_data.serviceId = roominfo.service_id;
-        LobbySession.cache_data.roomName = this.GetRoomNameByKey(roominfo.name);
-        LobbySession.cache_data.room_type = roominfo.room_type;
-        LobbySession.cache_data.game_type = roominfo.game_type;
-        LobbySession.cache_data.poker_type = roominfo.poker_type;
-        LobbySession.cache_data.bet_type = roominfo.limit_bet_type;
-        LobbySession.cache_data.room_id = roominfo.rid;
-        LobbySession.cache_data.seat_count = roominfo.seat_count;
-        LobbySession.cache_data.straddle = roominfo.straddle_on;
-        LobbySession.cache_data.insurance = roominfo.insurance_on > 0;
-        LobbySession.cache_data.muck_switch = roominfo.muck_on;
-        LobbySession.cache_data.voiceprint_verify_on = roominfo.voiceprint_verify_on;
-        LobbySession.cache_data.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
+        GameCache.ins.serviceId = roominfo.service_id;
+        GameCache.ins.roomName = this.GetRoomNameByKey(roominfo.name);
+        GameCache.ins.room_type = roominfo.room_type;
+        GameCache.ins.game_type = roominfo.game_type;
+        GameCache.ins.poker_type = roominfo.poker_type;
+        GameCache.ins.bet_type = roominfo.limit_bet_type;
+        GameCache.ins.room_id = roominfo.rid;
+        GameCache.ins.seat_count = roominfo.seat_count;
+        GameCache.ins.straddle = roominfo.straddle_on;
+        GameCache.ins.insurance = roominfo.insurance_on > 0;
+        GameCache.ins.muck_switch = roominfo.muck_on;
+        GameCache.ins.voiceprint_verify_on = roominfo.voiceprint_verify_on;
+        GameCache.ins.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
         let response = await LobbySession.APIWebUserRoominsur().catch(() => { });
         if (response) {
-            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: this.UIDefine });
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, [this.UIDefine, false, 0]);
         }
-        
+
     }
 }

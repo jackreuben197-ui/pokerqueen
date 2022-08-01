@@ -6,7 +6,7 @@ export default class TexasGame {
 
     private setting = {
         deskType: null,
-    }
+    };
     //桌布资源索引[desk,table]
     deskTypeIndexs = [
         [0],
@@ -21,7 +21,13 @@ export default class TexasGame {
         [9, 2],
         [10, 3],
         [11, 5],
-    ]
+    ];
+
+    public IsLookOn: boolean = false;
+
+
+
+
     constructor() {
 
     }
@@ -34,10 +40,13 @@ export default class TexasGame {
     }
     //根据样式获取桌布资源
     getDeskSpriteFrames(index: number): cc.SpriteFrame[] {
-        let c = this.deskTypeIndexs[index];
+        let c = this.deskTypeIndexs[index] || this.deskTypeIndexs[0]
         let desk = AssetContext.getAsset("TexasDeskBg" + c[0]) as cc.SpriteFrame;
         let table = AssetContext.getAsset("TexasTableBg" + c[1]) as cc.SpriteFrame;
         return [desk, table];
     }
+
+
+
 
 }

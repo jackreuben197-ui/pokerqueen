@@ -1,5 +1,7 @@
 
 import { UIDefine } from "../define/UIDefine";
+import GameSession from "../game/GameSession";
+import GameCache from "../manager/GameCache";
 import SceneManager from "../manager/SceneManager";
 import ProcedureBase from "./ProcedureBase";
 
@@ -12,7 +14,10 @@ export default class ProcedureTexas extends ProcedureBase {
 
     lateEnter(param?: any) {
         super.lateEnter(param);
-        SceneManager.ins.switchScene(UIDefine.TexasScene);
+        GameSession.Init();
+        GameCache.ins.initTexasGame();
+        SceneManager.ins.switchScene(UIDefine.TexasScene, param);
+        GameSession.EnterRoom();
     }
     Leave() {
         super.Leave();
