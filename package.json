@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "ts-md5": "^1.2.11",
-    "google-protobuf":"3.2.0"
+    "google-protobuf": "^3.21.0",
+    "ts-md5": "^1.2.11"
   },
   "devDependencies": {
     "@types/node": "^18.0.4"
