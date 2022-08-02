@@ -1,6 +1,8 @@
-import TexasConfig from "../config/TexasConfig"
-import StorageKey from "../session/StorageKey"
+import TexasConfig from "../config/TexasConfig";
+import StorageKey from "../session/StorageKey";
 import AssetContext from "../ui/component/AssetContext";
+
+
 
 export default class TexasGame {
 
@@ -24,7 +26,6 @@ export default class TexasGame {
     ];
 
     public IsLookOn: boolean = false;
-
 
 
 

@@ -1,10 +1,9 @@
 import { RoomType } from "../define/EIDefine";
-import TexasGame from "../game/TexasGame";
 import GameCache from "../manager/GameCache";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
-import { GPS, Room } from "../protobuf/holdem/define_pb";
-import { ClientMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
+import TexasGame from "./TexasGame";
+
 
 export default class GameSession {
 

@@ -1,7 +1,7 @@
 import GameCache from "../manager/GameCache";
-import GameUtil from "../tools/GameUtil";
 import BaseScene from "../ui/scene/BaseScene";
 import GameSession from "./GameSession";
+
 
 
 const { ccclass, property } = cc._decorator;
@@ -50,8 +50,6 @@ export default class TexasScene extends BaseScene {
         this.cursituation_btn.on("click", this.sideClick, this);
         this.chat_btn.on("click", this.sideClick, this);
     }
-
-
     setDeskType(index: number) {
         let sps = GameSession.texasGame.getDeskSpriteFrames(index);
         this.desk_bg.spriteFrame = sps[0];
