@@ -39,9 +39,8 @@ export default class GameCache extends Singleton {
     longitude: string = "0";//经度
     latitude: string = "0";//纬度
 
-
+    CurrentRoomID: number = 0;
     CurGame: TexasGame = null;
-
 
     initTexasGame() {
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);

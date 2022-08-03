@@ -41,11 +41,11 @@ export default class HttpClient {
     static __response(response, onFailure, onSuccess) {
         switch (response) {
             case "timeout":
-                ToastManager.ins.craeteToast(LanguageCode.getAdaptation(10126));
+                ToastManager.ins.createToast(LanguageCode.LanguageDescription(10126));
                 onFailure && onFailure();
                 break;
             case "error":
-                ToastManager.ins.craeteToast("errorDefault");
+                ToastManager.ins.createToast("errorDefault");
                 onFailure && onFailure();
                 break;
             default:
@@ -53,7 +53,7 @@ export default class HttpClient {
                     let response_json = JSON.parse(response);
                     if (response_json?.code > 0) {
                         //错误码提示
-                        ToastManager.ins.craeteToast(LanguageCode.getServerErrorCode(response_json.code));
+                        ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(response_json.code));
                         onFailure && onFailure(response_json.code);
                         return;
                     }

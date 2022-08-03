@@ -28,7 +28,7 @@ export default class WebSocketClient {
             this.WS.onmessage = this.onmessage.bind(this);
             this.WS.onclose = this.onclose.bind(this);
         } else {
-            ToastManager.ins.craeteToast("host or port is error!");
+            ToastManager.ins.createToast("host or port is error!");
         }
     }
     private static onopen(this: WebSocket, ev: Event) {
@@ -55,10 +55,6 @@ export default class WebSocketClient {
     }
     private static onclose(this: WebSocket, ev: CloseEvent) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);
-    }
-
-    public static Send(code: number, msg: { RoomID: number, MatchID: number }) {
-
     }
 
 }

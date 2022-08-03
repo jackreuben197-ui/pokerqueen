@@ -40,10 +40,10 @@ export default class MainTest extends UIBase {
                 UIManager.open(UIDefine.BaseAlert, {
                     data: {
                         title: "大大的标题", content: "无限的能量", confirm: "Sure", cancel: "Cancel", confirmCallback: () => {
-                            ToastManager.ins.craeteToast("面板 确认 回调");
+                            ToastManager.ins.createToast("面板 确认 回调");
                         },
                         cancelCallback: () => {
-                            ToastManager.ins.craeteToast("面板 取消 回调");
+                            ToastManager.ins.createToast("面板 取消 回调");
                         }
                     }
                 });
@@ -67,7 +67,7 @@ export default class MainTest extends UIBase {
                     str = a + "\n" + b;
                 }
 
-                ToastManager.ins.craeteToast(str);
+                ToastManager.ins.createToast(str);
                 break;
             case "下入面板":
                 UIManager.open(UIDefine.BottomTouchBoard);

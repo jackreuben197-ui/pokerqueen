@@ -175,11 +175,11 @@ export default class LoginScene extends BaseScene {
         cc.log("account:", phone, "password:", password);
 
         if (phone == "") {
-            return ToastManager.ins.craeteToast("adaptation10329");
+            return ToastManager.ins.createToast("adaptation10329");
 
         }
         if (password.length < 6) {
-            return ToastManager.ins.craeteToast("adaptation10330");
+            return ToastManager.ins.createToast("adaptation10330");
         }
 
         let param: typeof Web_Login.RequestParams = {

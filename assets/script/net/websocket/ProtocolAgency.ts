@@ -153,6 +153,7 @@ export default class ProtocolAgency extends cc.Component {
         let body_ua = data.slice(PacketHead.FixHeadLength);
 
         let body = protocol.Response(body_ua);
+        
         if (OpCodeHelper.NeedLog(code))
             cc.log("%c%s\n%s", LogStyle.ws_response, `>>>>> protocol receive : ${protocolName}`, `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`);
 

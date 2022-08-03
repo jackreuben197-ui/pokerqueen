@@ -58,13 +58,14 @@ export default class ToastManager extends Singleton {
         this.sequenceContent.y = this.config.contentStartPosition;
     }
 
-    craeteToast(content: string) {
+    createToast(content: string) {
         let toast: cc.Node = this.getToast();
         if (toast) {
             let toast_script: Toast = toast.getComponent(Toast);
             toast.parent = this.sequenceContent;
             toast.opacity = 0;
-            toast_script.setLabel(i18nMgr._getLabel(content));
+            //toast_script.setLabel(i18nMgr._getLabel(content));
+            toast_script.setLabel(content);
             if (this.sequenceToasts.length == 0) {
                 this.resetSCPosition();
                 toast_script.posY = 0;

@@ -56,7 +56,7 @@ export default class UIPromptComponent extends UIBase {
             //return;
             case this.statusType.Showing:
                 if ((new Date().getTime() - this.showStartTime) / 1000 > this.timeout) {
-                    //ToastManager.ins.craeteToast("adaptation10126");
+                    //ToastManager.ins.createToast("adaptation10126");
                     this.goClose();
                 }
                 break;

@@ -20,7 +20,7 @@ var excelAdd = {
 }
 export class i18nMgr {
     public static language = "";     // 当前语言
-    
+
     private static labelArr: i18nLabel.i18nLabel[] = [];        // i18nLabel 列表
     private static LanguageObject: { [key: string]: string } = {};   // 文字配置
     private static spriteArr: i18nSprite.i18nSprite[] = [];       // i18nSprite 列表
@@ -76,18 +76,16 @@ export class i18nMgr {
 
     public static _getLabel(opt: string): string {
 
-        if (excelAdd[this.language]?.[opt]) return excelAdd[this.language][opt];
-        if (this.LanguageObject) {
-            if (this.LanguageObject[opt]) {
-                return this.LanguageObject[opt] || opt;
-            }
-            return opt;
-        } else {
-            return opt;
-        }
+        let value: string = this.getLabelFromLO(opt);
+
+        return value || opt;
     }
-
-
+    //从表格获取内容
+    public static getLabelFromLO(opt: string): string {
+        if (excelAdd[this.language]?.[opt]) return excelAdd[this.language][opt];
+        if (this.LanguageObject?.[opt]) return this.LanguageObject[opt];
+        return null;
+    }
     /**
      * 添加或移除 i18nSprite
      */

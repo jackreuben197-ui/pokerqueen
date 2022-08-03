@@ -37,7 +37,7 @@ export default class TexasPreLoad extends UIBase {
             console.log(`bundle => ${this.bundleName} 包体资源加载完成`);
             param.completeHandler();
         } else {
-            ToastManager.ins.craeteToast(LanguageCode.getAdaptation(10050))
+            ToastManager.ins.createToast(LanguageCode.LanguageDescription(10050))
             param.errorHandler();
         }
     }

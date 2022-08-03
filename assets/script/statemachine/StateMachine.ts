@@ -1,19 +1,22 @@
+import { StateHandler } from "./StateHandler";
+
 /**
  * 状态机
  */
 export default class StateMachine {
     //上一个状态
-    previousState = null;
+    previousState: StateHandler = null;
     //当前状态
-    currentState = null;
+    currentState: StateHandler = null;
     //全局状态
-    globalState = null;
-    constructor(public owner: any) {
+    globalState: StateHandler = null;
+
+    constructor(public owner?: any) {
     }
     /**
      * 改变状态
      */
-    public ChangeState(newState: any) {
+    public ChangeState(newState: StateHandler) {
 
         if (newState == null) {
             console.log("state is null");

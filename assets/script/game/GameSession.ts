@@ -2,31 +2,21 @@ import { RoomType } from "../define/EIDefine";
 import GameCache from "../manager/GameCache";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
+import GameUtil from "../tools/GameUtil";
 import TexasGame from "./TexasGame";
 
 
 export default class GameSession {
 
-    public static cache_data = {
-        //经度
-        longitude: "0",
-        //纬度
-        latitude: "0",
-    }
-
     static currentRoomID: number = 0;
-
-    static texasGame: TexasGame = null;
-
-    static Init() {
-        this.texasGame || (this.texasGame = new TexasGame());
-    }
 
     static isInGameplay() {
         return this.currentRoomID != 0;
     }
 
-
+    /**
+     * 请求进入房间
+     */
     static EnterRoom() {
         let roomType = GameCache.ins.room_type;
         if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {

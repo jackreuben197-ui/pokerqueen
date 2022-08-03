@@ -16,9 +16,6 @@ export class BaseProtocol {
 
             let func = `set${key[0].toLocaleUpperCase()}${key.slice(1)}`;
 
-            cc.log("func:", func);
-            cc.log("key:", key);
-
             if (classDic[key]) {
 
                 let childObj = new classDic[key]();

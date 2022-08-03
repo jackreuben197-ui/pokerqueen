@@ -16,7 +16,7 @@ export default class ButtonClickCD {
         if (!lastTime || now - lastTime > duration) {
             return true;
         }
-        showToast && ToastManager.ins.craeteToast("clickNum");
+        showToast && ToastManager.ins.createToast("clickNum");
         return false;
     }
     // update (dt) {}

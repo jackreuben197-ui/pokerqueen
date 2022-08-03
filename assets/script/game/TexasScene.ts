@@ -1,6 +1,8 @@
 import GameCache from "../manager/GameCache";
 import BaseScene from "../ui/scene/BaseScene";
+import FSMLogicComponent from "./FSMLogicComponent";
 import GameSession from "./GameSession";
+import TexasGame from "./TexasGame";
 
 
 
@@ -25,7 +27,7 @@ export default class TexasScene extends BaseScene {
     /**
      * 声明内容
      */
-
+    game: TexasGame = null;
     ///////////////////////////////////
     protected lateLoad(): void {
         super.lateLoad();
@@ -40,6 +42,10 @@ export default class TexasScene extends BaseScene {
         //GameCache.ins.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
 
+        this.game = GameCache.ins.CurGame;
+
+        this.game.gameUI = this;
+
         window["TexasScene"] = this;
 
     }
@@ -51,7 +57,7 @@ export default class TexasScene extends BaseScene {
         this.chat_btn.on("click", this.sideClick, this);
     }
     setDeskType(index: number) {
-        let sps = GameSession.texasGame.getDeskSpriteFrames(index);
+        let sps = GameCache.ins.CurGame.getDeskSpriteFrames(index);
         this.desk_bg.spriteFrame = sps[0];
         this.table_bg.spriteFrame = sps[1];
     }
@@ -63,10 +69,10 @@ export default class TexasScene extends BaseScene {
         if (param != null) {
             // object[] arr = obj as object[];
             // fromUI = null != arr[0] ? arr[0].ToString() : string.Empty;
-            GameCache.ins.CurGame.IsLookOn = param?.[1] || false;
+            this.game.IsLookOn = param?.[1] || false;
         }
 
-        this.setDeskType(GameSession.texasGame.deskType);
+        this.setDeskType(this.game.deskType);
 
 
     }
