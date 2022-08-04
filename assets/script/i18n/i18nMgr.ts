@@ -16,6 +16,16 @@ var LanguageAllObject = {
 var excelAdd = {
     en: {
         UILogin_USER101: "Read and agree to<color = #DCBA82>《User Agreement》</color>",
+        UISettingPassword001: "Account Management",
+    },
+    cn: {
+        UISettingPassword001: "账号管理",
+    },
+    zh: {
+        UISettingPassword001: "賬號管理",
+    },
+    pt: {
+        UISettingPassword001: "Gestão de contas",
     }
 }
 export class i18nMgr {

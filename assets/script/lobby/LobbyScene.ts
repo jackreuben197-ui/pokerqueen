@@ -61,6 +61,7 @@ export default class LobbyScene extends BaseScene {
                     if (err) {
                         return;
                     }
+                    if (this.currUI) this.currUI.active = false;
                     newUI = cc.instantiate(asset);
                     this.Layer.addChild(newUI);
                     this.currUI = newUI;

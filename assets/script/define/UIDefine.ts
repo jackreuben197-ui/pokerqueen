@@ -90,13 +90,15 @@ export const UIDefine = {
         Path: "prefab/form/UserAgreeForm",
         Title: "tc_5E0V3qlb",
     },
-    //房间模版
-    UIMatchPlayView: {
+    //设置
+    SettingsForm: {
         UIType: UIType.Form,
-        Name: "UIMatchPlayView",
+        Name: "SettingsForm",
         Bundle: null,
-        Path: "lobby/prefab/UIMatchPlayView"
+        Path: "prefab/form/SettingsForm",
+        Title: "UIMine_btn_setting",
     },
+
     /**
      *  触摸板子（触摸黑色底板关闭）
      */
@@ -144,6 +146,13 @@ export const UIDefine = {
         Name: "TexasPreLoad",
         Bundle: null,
         Path: "prefab/component/TexasPreLoad",
+    },
+    //房间模版
+    UIMatchPlayView: {
+        UIType: UIType.Form,
+        Name: "UIMatchPlayView",
+        Bundle: null,
+        Path: "lobby/prefab/UIMatchPlayView"
     },
 
 }

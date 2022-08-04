@@ -12,7 +12,7 @@
   "height": 270,
   "platformSettings": {},
   "subMetas": {
-    "light_wallty_bg": {
+    "wallty_light_bg": {
       "ver": "1.0.6",
       "uuid": "564cb3d7-b05e-49cb-a356-df672b1257d0",
       "importer": "sprite-frame",

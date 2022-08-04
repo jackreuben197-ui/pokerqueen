@@ -37,10 +37,13 @@
       },
       {
         "__id__": 98
+      },
+      {
+        "__id__": 99
       }
     ],
     "_prefab": {
-      "__id__": 99
+      "__id__": 100
     },
     "_opacity": 255,
     "_color": {
@@ -1754,7 +1757,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 92.64,
+      "width": 306.1,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1806,8 +1809,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Lobby",
-    "_N$string": "Lobby",
+    "_string": "UIMatch_GtO8YEcc",
+    "_N$string": "UIMatch_GtO8YEcc",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -2244,7 +2247,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 71.82,
+      "width": 262.69,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2296,8 +2299,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Chat",
-    "_N$string": "Chat",
+    "_string": "UIChat_message",
+    "_N$string": "UIChat_message",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -2734,7 +2737,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 103.93,
+      "width": 304.27,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2786,8 +2789,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Career",
-    "_N$string": "Career",
+    "_string": "UIMine_VIP_dataAll",
+    "_N$string": "UIMine_VIP_dataAll",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -3224,7 +3227,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 47.23,
+      "width": 464.96,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -3276,8 +3279,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Me",
-    "_N$string": "Me",
+    "_string": "UILobby_Menu_menu_btn_my",
+    "_N$string": "UILobby_Menu_menu_btn_my",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -3590,6 +3593,51 @@
       "__id__": 1
     },
     "_enabled": true,
+    "_id": ""
+  },
+  {
+    "__type__": "36ae3RivWlM+6qcJcDDYAPq",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "assets": [
+      {
+        "__uuid__": "1553d63c-c5b3-422c-a8f0-ce9b5ddfe08b"
+      },
+      {
+        "__uuid__": "473c0bf1-d608-4b5f-8d0d-1e2ede9739d4"
+      },
+      {
+        "__uuid__": "7de8938f-a344-4af5-9bff-ef3740ddb9c5"
+      },
+      {
+        "__uuid__": "86e56aeb-5465-484f-b653-5153e7d4d27b"
+      },
+      {
+        "__uuid__": "7c387abb-9f34-4254-a4ed-145d5962ff1c"
+      },
+      {
+        "__uuid__": "564cb3d7-b05e-49cb-a356-df672b1257d0"
+      },
+      {
+        "__uuid__": "c60f2521-ca0b-4908-9dc6-80adf4d69e7a"
+      },
+      {
+        "__uuid__": "4b99ddff-7bd8-4950-9469-2bb6ddad00d3"
+      },
+      {
+        "__uuid__": "a44cf04f-d078-469e-81ea-b2d91c0685b0"
+      },
+      {
+        "__uuid__": "d8c8e648-4a04-4a7c-b6e8-7edd49ab0627"
+      },
+      {
+        "__uuid__": "7e91133e-958f-4ac2-ac94-9d68b72e37cf"
+      }
+    ],
     "_id": ""
   },
   {

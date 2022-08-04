@@ -1,3 +1,4 @@
+import GGToggleChild from "./GGToggleChild";
 
 const { ccclass, property } = cc._decorator;
 
@@ -8,11 +9,11 @@ export default class GGToggleContainer extends cc.Component {
     @property
     _startIndex: number = 0;
 
-    _toggles: cc.Toggle[] = [];
+    _toggles: GGToggleChild[] = [];
 
     eventHandlers: cc.Component.EventHandler[] = null;
 
-    _checkedToggle: cc.Toggle = null;
+    _checkedToggle: GGToggleChild = null;
 
     _onChecked: Function = null;
 
@@ -30,32 +31,36 @@ export default class GGToggleContainer extends cc.Component {
     }
 
 
-    addToggle(toggle: cc.Toggle) {
+    addToggle(toggle: GGToggleChild) {
         this._toggles.push(toggle);
-        if (!this.eventHandlers) this.initEventHandlers();
-        toggle.checkEvents = this.eventHandlers;
-        this.checkedIndex = this._startIndex;
+        toggle.node.on("click", this.onToggleClick, this);
     }
 
-
-    setToggles(list: cc.Toggle[], startIndex: number = this._startIndex) {
+    setToggles(list: GGToggleChild[], startIndex: number = this._startIndex) {
         this._toggles = list;
         this.addHandler();
         this.checkToggle(this._toggles[startIndex]);
     }
 
+    onToggleClick(button: cc.Button) {
+
+    }
+
+
+
+
     addHandler() {
         for (let toggle of this._toggles) {
-            toggle.checkEvents = this.eventHandlers;
+            //toggle.checkEvents = this.eventHandlers;
         }
     }
-    checkToggle(toggle: cc.Toggle) {
+    checkToggle(toggle: GGToggleChild) {
         this.uncheckAll();
         this._checkedToggle = toggle;
         this._checkedToggle.check();
     }
     private onCheckHandler(toggle: cc.Toggle) {
-        this.checkToggle(toggle);
+        //this.checkToggle(toggle);
         this._onChecked && this._onChecked(this.checkedIndex);
         //cc.log(this.checkedIndex);
     }

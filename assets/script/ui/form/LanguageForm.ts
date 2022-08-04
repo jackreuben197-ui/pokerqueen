@@ -25,9 +25,9 @@ export default class LanguageForm extends BaseForm {
      * 声明内容
      */
     config = [
-        { s_language: "English", language: "English", flag: "Flag_USA" },
-        { s_language: "China", language: "中文", flag: "Flag_CHN" },
-        { s_language: "Bra", language: "Bra", flag: "Flag_BRA" },
+        { s_language: "sl_K8cPNvxU", language: "English", flag: "icon_flag_US" },
+        { s_language: "sl_ptyyPutao", language: "Portuguese", flag: "icon_flag_PT" },
+        { s_language: "tc_MHoYsIbY", language: "Simplified Chinese", flag: "icon_flag_CN" },
     ]
 
     ///////////////////////////////////
@@ -38,7 +38,7 @@ export default class LanguageForm extends BaseForm {
         this.scrollContent = this.getChildNodeOrComponent("scrollContent");
         this.toggleContainer = this.getChildNodeOrComponent("toggleContainer", GGToggleContainer);
         this.LanguageFormItem.active = false;
-        let languageItem, languageItem_script;
+        let languageItem, languageItem_script:LanguageFormItem;
         for (let i = 0; i < this.config.length; i++) {
             languageItem = cc.instantiate(this.LanguageFormItem);
             languageItem_script = languageItem.getComponent(LanguageFormItem);

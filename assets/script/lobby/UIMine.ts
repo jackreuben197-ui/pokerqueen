@@ -1,8 +1,24 @@
 const { ccclass, property } = cc._decorator;
 import UIBase from "../../../assets/script/ui/UIBase";
+import { UIDefine } from "../define/UIDefine";
+import { i18nLabel } from "../i18n/i18nLabel";
+import UIManager from "../manager/UIManager";
+import AssetContext from "../ui/component/AssetContext";
 @ccclass
 export default class UIMine extends UIBase {
     private pageData: any = null;
+
+
+    items_config = [
+        { string: "UIMine_btn_MyWallet", icon: "icon_btn_wallet", light_bg: "wallty_light_bg" },
+        { string: "UIMine_Backpack", icon: "icon_btn_backpack", light_bg: "backpack_light_bg" },
+        { string: "UIMine_btn_paipu", icon: "icon_btn_mymsg", light_bg: "message_light_bg" },
+        { string: "UIMine_btn_setting", icon: "icon_btn_set", light_bg: "setting_light_bg" }
+    ]
+
+    func_item: cc.Node = null;
+    content: cc.Node = null;
+
     protected onLoad(): void {
         super.onLoad();
         let widget: cc.Widget = this.node.getComponent(cc.Widget);
@@ -10,29 +26,31 @@ export default class UIMine extends UIBase {
     }
     protected lateLoad(): void {
         super.lateLoad();
-        this.setMine(null);
+        this.func_item = this.getChildNodeOrComponent("func_item");
+        this.content = this.getChildNodeOrComponent("content");
+        this.setMine();
     }
-    setMine(param: any): void {
-        let testData =
-        {
-            "code": 0,
-            "message": "",
-            "data":
-            {
-                "user":
-                {
-                    "user_id": 3733, "area": "886", "phone": "18601113024", "status": 1
-                    , "forbid": 1, "lc": 13, "lt": "2022-07-04T02:13:55Z", "ut": 1,
-                    "forbid_bring_in": 2, "forbid_withdraw_gold": 2, "description": "",
-                    "ub_operator_id": 0, "w_u_id": 3733, "gold": 0, "gold_lock": 0,
-                    "wallet_status": 1, "p_u_id": 3733, "un_id": 93323898, "nickname": "Player",
-                    "avatar": "http://static.awanptesting.com/image-normal/20220310094704-gzJFs.png",
-                    "sex": 2, "birthday": null, "country": "", "city": "", "province": "",
-                    "platform": 2, "mnt": 0, "mat": 0, "operator_id": 0
-                }
-            }
-        }
-        this.pageData = testData.data.user;
+    setMine(): void {
+        // let testData =
+        // {
+        //     "code": 0,
+        //     "message": "",
+        //     "data":
+        //     {
+        //         "user":
+        //         {
+        //             "user_id": 3733, "area": "886", "phone": "18601113024", "status": 1
+        //             , "forbid": 1, "lc": 13, "lt": "2022-07-04T02:13:55Z", "ut": 1,
+        //             "forbid_bring_in": 2, "forbid_withdraw_gold": 2, "description": "",
+        //             "ub_operator_id": 0, "w_u_id": 3733, "gold": 0, "gold_lock": 0,
+        //             "wallet_status": 1, "p_u_id": 3733, "un_id": 93323898, "nickname": "Player",
+        //             "avatar": "http://static.awanptesting.com/image-normal/20220310094704-gzJFs.png",
+        //             "sex": 2, "birthday": null, "country": "", "city": "", "province": "",
+        //             "platform": 2, "mnt": 0, "mat": 0, "operator_id": 0
+        //         }
+        //     }
+        // }
+        // this.pageData = testData.data.user;
         //设置用户的头像 nickname id  
         // this.loadRawImage(this.pageData.avatar).then((frame: cc.SpriteFrame) => {
         //     this.view["img_head"].getComponent(cc.Sprite).spriteFrame = frame;
@@ -49,6 +67,22 @@ export default class UIMine extends UIBase {
         //     this.view["content"].addChild(item);
         // }
         // console.log(this.view["bg"].$Sprite)
+        this.func_item.active = false;
+        for (let i = 0; i < this.items_config.length; i++) {
+            let item = cc.instantiate(this.func_item);
+            let config = this.items_config[i];
+            item.active = true;
+            item.parent = this.content;
+            let light_bg = cc.find("Bg_Group/Light", item)?.getComponent(cc.Sprite);
+            let icon = item.getChildByName("Paipu_Icon")?.getComponent(cc.Sprite);
+            let text = item.getChildByName("Paipu_Text")?.getComponent(i18nLabel);
+
+            light_bg && (light_bg.spriteFrame = AssetContext.getAsset(config.light_bg));
+            icon && (icon.spriteFrame = AssetContext.getAsset(config.icon));
+            text && (text.string = config.string);
+            item.name = config.string;
+            item.on("click", this.onItemClick, this);
+        }
     }
     /**
    * @description: 
@@ -68,5 +102,19 @@ export default class UIMine extends UIBase {
                 }
             });
         })
+    }
+
+    private onItemClick(button: cc.Button) {
+        switch (button.node.name) {
+            case "UIMine_btn_MyWallet"://我的钱包
+                break;
+            case "UIMine_Backpack"://我的背包
+                break;
+            case "UIMine_btn_paipu"://牌谱收藏
+                break;
+            case "UIMine_btn_setting"://设置
+                UIManager.open(UIDefine.SettingsForm);
+                break;
+        }
     }
 }

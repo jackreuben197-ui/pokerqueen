@@ -1,5 +1,6 @@
 
 import AssetContext from "../component/AssetContext";
+import GGToggleChild from "../component/GGToggleChild";
 import GGToggleContainer from "../component/GGToggleContainer";
 import UIBase from "../UIBase";
 
@@ -14,7 +15,7 @@ export default class LanguageFormItem extends UIBase {
      * 节点|组件 定义
      */
 
-    toggle: cc.Toggle = null;
+    toggle: GGToggleChild = null;
 
     flag_icon: cc.Sprite = null;
 
@@ -33,14 +34,12 @@ export default class LanguageFormItem extends UIBase {
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.toggle = this.getChildNodeOrComponent("toggle", cc.Toggle);
+        this.toggle = this.getChildNodeOrComponent("toggle", GGToggleChild);
         this.flag_icon = this.getChildNodeOrComponent("flag_icon", cc.Sprite);
         this.s_language_label = this.getChildNodeOrComponent("s_language_label", cc.Label);
         this.language_label = this.getChildNodeOrComponent("language_label", cc.Label);
         this.bottom_line = this.getChildNodeOrComponent("bottom_line");
-
     }
-
 
     addToToggleContainer(container: GGToggleContainer) {
         container.addToggle(this.toggle);
