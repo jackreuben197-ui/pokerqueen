@@ -17,10 +17,11 @@ export default class GGToggleContainer extends cc.Component {
 
     _onChecked: Function = null;
 
+    _prevToggle: GGToggleChild = null;
+
     onLoad() {
 
     }
-
 
     initEventHandlers() {
         let eventHandler = new cc.Toggle.EventHandler();
@@ -43,7 +44,12 @@ export default class GGToggleContainer extends cc.Component {
     }
 
     onToggleClick(button: cc.Button) {
-
+        let toggle: GGToggleChild = button.node?.getComponent(GGToggleChild);
+        if (toggle != this._prevToggle) {
+            this._prevToggle && this._prevToggle.uncheck()
+            toggle.check();
+            this._prevToggle = toggle;
+        }
     }
 
 

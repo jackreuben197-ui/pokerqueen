@@ -1,7 +1,9 @@
 
+import { i18nLabel } from "../../i18n/i18nLabel";
 import AssetContext from "../component/AssetContext";
 import GGToggleChild from "../component/GGToggleChild";
 import GGToggleContainer from "../component/GGToggleContainer";
+import { ILanguageFormItem } from "../form/LanguageForm";
 import UIBase from "../UIBase";
 
 
@@ -19,43 +21,45 @@ export default class LanguageFormItem extends UIBase {
 
     flag_icon: cc.Sprite = null;
 
-    s_language_label: cc.Label = null;
+    s_language_label: i18nLabel = null;
 
     language_label: cc.Label = null;
-
-    bottom_line: cc.Node = null;
 
     ///////////////////////////////////
     /**
      * 声明内容
      */
-
+    public param: ILanguageFormItem;
+    label_colors = ["#FFFFFF", "#DDBA82"];
     ///////////////////////////////////
 
     protected lateLoad(): void {
         super.lateLoad();
         this.toggle = this.getChildNodeOrComponent("toggle", GGToggleChild);
         this.flag_icon = this.getChildNodeOrComponent("flag_icon", cc.Sprite);
-        this.s_language_label = this.getChildNodeOrComponent("s_language_label", cc.Label);
+        this.s_language_label = this.getChildNodeOrComponent("s_language_label", i18nLabel);
         this.language_label = this.getChildNodeOrComponent("language_label", cc.Label);
-        this.bottom_line = this.getChildNodeOrComponent("bottom_line");
     }
 
     addToToggleContainer(container: GGToggleContainer) {
         container.addToggle(this.toggle);
     }
-
-    onShow(param: any = null) {
+    onShow(param: ILanguageFormItem = null) {
         super.onShow(param);
         this.s_language_label.string = param.s_language;
         this.language_label.string = param.language;
         this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag);
-
+    }
+    check() {
+        this.toggle.check();
+    }
+    uncheck() {
+        this.toggle.uncheck();
+    }
+    //设置被选中
+    setSelected(boo: boolean) {
+        this.s_language_label.node.color = cc.Color.BLACK.fromHEX(this.label_colors[boo ? 1 : 0]);
+        this.language_label.node.color = cc.Color.BLACK.fromHEX(this.label_colors[boo ? 1 : 0]);
     }
 
-    showBottomLine() {
-        this.bottom_line.active = true;
-    }
-
-    // update (dt) {}
 }
