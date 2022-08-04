@@ -44,20 +44,20 @@ export default class LobbyScene extends BaseScene {
      * @return {*}
      */
     public async switchContent(content: string) {
+
+        if (this.currUI && content === this.currUI.name) {
+            return;
+        }
+
         return new Promise((resolve, reject) => {
             let newUI = this.uiMap[content];
             if (newUI) {
-                if (newUI.name === this.currUI.name) {
-                    return;
-                }
-                if (this.currUI) {
-                    this.currUI.active = false;
-                }
+                if (this.currUI) this.currUI.active = false;
                 newUI.active = true;
                 this.currUI = newUI;
                 resolve(newUI);
             } else {
-                ResManager.Load("lobby", "prefab/" + content, cc.Prefab, (err, asset: cc.Prefab) => {
+                ResManager.Load(null, "lobby/prefab/" + content, cc.Prefab, (err, asset: cc.Prefab) => {
                     if (err) {
                         return;
                     }

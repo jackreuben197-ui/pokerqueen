@@ -22,8 +22,8 @@ export const UIDefine = {
     LobbyScene: {
         UIType: UIType.Scene,
         Name: "LobbyScene",
-        Bundle: "lobby",
-        Path: "prefab/scene/LobbyScene"
+        Bundle: null,
+        Path: "lobby/prefab/scene/LobbyScene"
     },
     //大厅场景
     TexasScene: {
@@ -94,8 +94,8 @@ export const UIDefine = {
     UIMatchPlayView: {
         UIType: UIType.Form,
         Name: "UIMatchPlayView",
-        Bundle: "lobby",
-        Path: "prefab/UIMatchPlayView"
+        Bundle: null,
+        Path: "lobby/prefab/UIMatchPlayView"
     },
     /**
      *  触摸板子（触摸黑色底板关闭）

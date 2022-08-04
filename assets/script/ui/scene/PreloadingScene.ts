@@ -34,7 +34,7 @@ export default class PreloadingScene extends BaseScene {
     setProgress(progress: number) {
         this.progress_bar.progress = progress;
         this.setLabel(`loading...${progress * 100 ^ 0}%`);
-        this.prevPercent = 0;
+        this.prevPercent = progress;
     }
     setLabel(content: string) {
         this.progress_label.string = content;

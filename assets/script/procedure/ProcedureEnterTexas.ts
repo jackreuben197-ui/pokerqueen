@@ -26,7 +26,6 @@ export default class ProcedureEnterTexas extends ProcedureBase {
 
     completeHandler() {
         UIManager.close(this.param?.[0]);
-        UIManager.close(UIDefine.TexasPreLoad);
         ProcedureManager.StartProcedure(ProcedureEnum.Texas, this.param);
     }
     errorHandler() {

@@ -1,7 +1,9 @@
 const { ccclass, property } = cc._decorator;
 import UIBase from "../../../assets/script/ui/UIBase";
+import { i18nSprite } from "../i18n/i18nSprite";
 @ccclass
 export default class UILobby extends UIBase {
+
     protected onLoad(): void {
         super.onLoad();
         let widget: cc.Widget = this.node.getComponent(cc.Widget);
@@ -9,12 +11,19 @@ export default class UILobby extends UIBase {
     }
     protected lateLoad(): void {
         super.lateLoad();
+        this.setMTTImage();
         this.setScrollTop();
     }
+
+    private setMTTImage() {
+        let Button_MTT:cc.Node = this.getChildNodeOrComponent("Button_MTT");
+        Button_MTT.getComponent(i18nSprite).string = "image_match_mtt";
+    }
+   
     /**
-  * @description: 主要用来设置 下拉刷新--
-  * @return {void}
-  */
+      * @description: 主要用来设置 下拉刷新--
+      * @return {void}
+      */
     private setScrollTop(): void {
         let scrollView: cc.Node = this.getChildNodeOrComponent("ScrollView");
         let content: cc.Node = this.getChildNodeOrComponent("Scrollview_Content");
@@ -44,7 +53,7 @@ export default class UILobby extends UIBase {
                     this.scheduleOnce(() => {
                         root.getChildByName("waiticon").stopAllActions();
                         ItemPrefab0.active = false;
-                    },0.5)
+                    }, 0.5)
                 }
             }
         })

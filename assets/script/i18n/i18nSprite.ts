@@ -4,11 +4,11 @@ const { ccclass, property, executeInEditMode, disallowMultiple, requireComponent
 @executeInEditMode
 @requireComponent(cc.Sprite)
 @disallowMultiple
-export  class i18nSprite extends cc.Component {
+export class i18nSprite extends cc.Component {
 
     @property({ visible: false })
     private i18n_string: string = "";
-    start () {
+    start() {
         i18nMgr._addOrDelSprite(this, true);
         this._resetValue();
     }
@@ -18,8 +18,8 @@ export  class i18nSprite extends cc.Component {
     }
 
     set string(value: string) {
+        if (value == "" || value == null) return;
         this.i18n_string = value;
-
         let sprite = this.getComponent(cc.Sprite);
         if (cc.isValid(sprite)) {
             i18nMgr._getSprite(value, (spriteFrame) => {
