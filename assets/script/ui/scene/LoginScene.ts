@@ -1,7 +1,6 @@
 
 import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
-import { AreaCodeConfig } from "../../config/AreaCodeConfig";
 import { GameConfig, LanguageList } from "../../config/GameConfig";
 import { DialogParam, ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
@@ -12,7 +11,6 @@ import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 
 import UIManager from "../../manager/UIManager";
-import HttpClient from "../../net/https/HttpClient";
 import { Web_Login } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import StorageKey from "../../session/StorageKey";
@@ -103,7 +101,7 @@ export default class LoginScene extends BaseScene {
         this.language_layer.on("click", this.onLanguageLayerClick, this);
     }
     protected lateEnter() {
-
+        this.refreshLanguageFlag();
     }
 
     setLanguagePanel() {
@@ -122,7 +120,6 @@ export default class LoginScene extends BaseScene {
             lan_item.on("click", this.onLanguageItemClick, this);
         }
         lan_item.getChildByName("bottom_line").active = false;
-        this.refreshLanguageFlag();
     }
     setLanLayerActive(boo: boolean) {
         this.language_layer.active = boo;

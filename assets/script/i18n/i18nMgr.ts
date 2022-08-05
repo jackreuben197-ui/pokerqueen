@@ -3,8 +3,7 @@ import { GameConfig } from "../config/GameConfig";
 import StorageKey from "../session/StorageKey";
 import * as i18nLabel from "./i18nLabel";
 import * as i18nSprite from "./i18nSprite";
-console.log("游戏启动了么");
-var CSV = require("CSV");
+//var CSV = require("CSV");
 //上来先处理数据 当前的语言 0简中 1繁中 2英文 3葡语  let type = ["cn","zh","en","pt"]
 var LanguageAllObject = {
     cn: {},
@@ -14,19 +13,19 @@ var LanguageAllObject = {
 };
 //补充一些表格内缺失的,优先判断
 var excelAdd = {
-    en: {
-        UILogin_USER101: "Read and agree to<color = #DCBA82>《User Agreement》</color>",
-        UISettingPassword001: "Account Management",
-    },
-    cn: {
-        UISettingPassword001: "账号管理",
-    },
-    zh: {
-        UISettingPassword001: "賬號管理",
-    },
-    pt: {
-        UISettingPassword001: "Gestão de contas",
-    }
+    // en: {
+    //     UILogin_USER101: "Read and agree to<color = #DCBA82>《User Agreement》</color>",
+    //     UISettingPassword001: "Account Management",
+    // },
+    // cn: {
+    //     UISettingPassword001: "账号管理",
+    // },
+    // zh: {
+    //     UISettingPassword001: "賬號管理",
+    // },
+    // pt: {
+    //     UISettingPassword001: "Gestão de contas",
+    // }
 }
 export class i18nMgr {
     public static language = "";     // 当前语言
@@ -37,7 +36,6 @@ export class i18nMgr {
 
 
     public static initLanguage() {
-
         this.language = localStorage.getItem(StorageKey.Language) || GameConfig.Default_Language;
         this.LanguageObject = LanguageAllObject[this.language];
     }
@@ -60,12 +58,12 @@ export class i18nMgr {
     // 观察所有与多语言有关的图片 重新调用服务器接口
     public static resetRemoteSprite() {
         // zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
-        let changeObj = {
-            cn: "zh_CN",
-            zh: "zh_HK",
-            en: "en_US",
-            pt: "pt_BR"
-        }
+        // let changeObj = {
+        //     cn: "zh_CN",
+        //     zh: "zh_HK",
+        //     en: "en_US",
+        //     pt: "pt_BR"
+        // }
         // if (UIMatchBanner.instance) {
         //     UIMatchBanner.instance.initBannerList(changeObj[this.language]);
         // }
@@ -130,36 +128,32 @@ export class i18nMgr {
             one._resetValue();
         }
     }
+
     /**
-     * 读取语言配置文件_csv格式
+     * 解析配置表
      */
-    public static loadLanguage_csv() {
-
-        return new Promise((resolve, reject) => {
-
-            cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
-
-                if (err) {
-                    reject(err);
-                } else {
-                    var _csv = new CSV(data.text, { header: true });
-                    var _con = _csv.parse();
-                    for (let i = 0; i < _con.length; i++) {
-                        let val = _con[i];
-                        if (val.key) {
-                            LanguageAllObject.cn[val.key] = val.cn;
-                            LanguageAllObject.zh[val.key] = val.zh;
-                            LanguageAllObject.en[val.key] = val.en;
-                            LanguageAllObject.pt[val.key] = val.pt;
-                        }
-                    }
-                    resolve(1);
-                }
-            });
-        });
-
+    public static praseConfig() {
+        this._praseConfig("en", cc.resources.get("config/USER_EN", cc.TextAsset));
+        this._praseConfig("pt", cc.resources.get("config/USER_PT", cc.TextAsset));
+        this._praseConfig("zh", cc.resources.get("config/USER_TW", cc.TextAsset));
+        this._praseConfig("cn", cc.resources.get("config/USER_ZH", cc.TextAsset));
     }
-
+    public static _praseConfig(language: string, config: cc.TextAsset) {
+        if (config && config.text) {
+            let list = config.text.split("\n");
+            for (let item of list) {
+                let eq_index = item.indexOf("=");
+                if (~eq_index) {
+                    let key = item.slice(0, eq_index);
+                    let value = item.slice(eq_index + 1);
+                    LanguageAllObject[language][key] = value;
+                }
+            }
+        }
+    }
+    public static get LanguageAllObject() {
+        return LanguageAllObject;
+    }
     private static reloadSprite() {
         for (let one of this.spriteArr) {
             one._resetValue();
@@ -169,3 +163,33 @@ export class i18nMgr {
 }
 //@ts-ignore
 window.i18nMgr = i18nMgr;
+
+/**
+     * 读取语言配置文件_csv格式
+     */
+    // public static loadLanguage_csv() {
+
+    //     return new Promise((resolve, reject) => {
+
+    //         cc.resources.load("i18n/Language", (err, data: cc.TextAsset) => {
+
+    //             if (err) {
+    //                 reject(err);
+    //             } else {
+    //                 var _csv = new CSV(data.text, { header: true });
+    //                 var _con = _csv.parse();
+    //                 for (let i = 0; i < _con.length; i++) {
+    //                     let val = _con[i];
+    //                     if (val.key) {
+    //                         LanguageAllObject.cn[val.key] = val.cn;
+    //                         LanguageAllObject.zh[val.key] = val.zh;
+    //                         LanguageAllObject.en[val.key] = val.en;
+    //                         LanguageAllObject.pt[val.key] = val.pt;
+    //                     }
+    //                 }
+    //                 resolve(1);
+    //             }
+    //         });
+    //     });
+
+    // }

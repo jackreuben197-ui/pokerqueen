@@ -17,12 +17,12 @@ export default class ProcedureConfig extends ProcedureBase {
     async lateEnter(param?: any) {
         super.lateEnter(param);
         //设置 GlobalProto 配置
-        GameConfig.GlobalProto = await this.getGlobalProto();
+        GameConfig.GlobalProto = this.getGlobalProto();
         console.log("config :: GameConfig.GlobalProto : ", GameConfig.GlobalProto);
-        //读取 语言配置
-        await i18nMgr.loadLanguage_csv();
+        //解析 语言配置
+        i18nMgr.praseConfig();
         i18nMgr.initLanguage();
-        console.log("config :: i18nMgr initLanguage");
+        console.log("config :: i18nMgr praseConfig");
         //设置网络配置
         GameConfig.Network = this.getNetwork();
         console.log("config :: GameConfig.Network : ", GameConfig.Network);
@@ -83,14 +83,10 @@ export default class ProcedureConfig extends ProcedureBase {
     }
 
     private getGlobalProto() {
-        return new Promise((resolve, reject) => {
-            cc.resources.load("config/GlobalProto", cc.TextAsset, (err, asset: cc.TextAsset) => {
-                if (err) {
-                    cc.log("资源缺失:", err);
-                    return;
-                }
-                return resolve(JSON.parse(asset.text));
-            })
-        });
+        let GlobalProto: cc.TextAsset = cc.resources.get("config/GlobalProto", cc.TextAsset);
+        if (GlobalProto && GlobalProto.text) {
+            return JSON.parse(GlobalProto.text)
+        }
+        return null;
     }
 }
