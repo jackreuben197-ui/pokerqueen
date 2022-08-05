@@ -7,6 +7,7 @@ import { Web_Misc_Banner_List, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Gro
 import UIMatchBanner from "./UIMatchBanner";
 import UIMatchRoom from "./UIMatchRoom";
 import UILobbyMenu from "./UILobbyMenu";
+import UIBase from "../ui/UIBase";
 @ccclass
 export default class LobbyScene extends BaseScene {
     public static instance: LobbyScene = null;
@@ -64,6 +65,7 @@ export default class LobbyScene extends BaseScene {
                 if (this.currUI) this.currUI.active = false;
                 newUI.active = true;
                 this.currUI = newUI;
+                this.currUI.getComponent(UIBase)?.onShow();
                 resolve(newUI);
             } else {
                 ResManager.Load(null, "lobby/prefab/" + content, cc.Prefab, (err, asset: cc.Prefab) => {
@@ -76,6 +78,7 @@ export default class LobbyScene extends BaseScene {
                     this.currUI = newUI;
                     this.uiMap[content] = newUI;
                     newUI.active = true;
+                    this.currUI.getComponent(UIBase)?.onShow();
                     resolve(newUI);
                 });
             }

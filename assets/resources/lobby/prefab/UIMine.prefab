@@ -1017,7 +1017,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "text_name",
+    "_name": "nickname_lab",
     "_objFlags": 0,
     "_parent": {
       "__id__": 19
@@ -1155,7 +1155,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "text_userID",
+    "_name": "userid_lab",
     "_objFlags": 0,
     "_parent": {
       "__id__": 19
