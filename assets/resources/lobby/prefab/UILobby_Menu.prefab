@@ -721,7 +721,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 92.64,
+      "width": 306.1,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -773,8 +773,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Lobby",
-    "_N$string": "Lobby",
+    "_string": "UIMatch_GtO8YEcc",
+    "_N$string": "UIMatch_GtO8YEcc",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -1211,7 +1211,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 71.82,
+      "width": 262.69,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1263,8 +1263,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Chat",
-    "_N$string": "Chat",
+    "_string": "UIChat_message",
+    "_N$string": "UIChat_message",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -1701,7 +1701,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 103.93,
+      "width": 304.27,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1753,8 +1753,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Career",
-    "_N$string": "Career",
+    "_string": "UIMine_VIP_dataAll",
+    "_N$string": "UIMine_VIP_dataAll",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -2191,7 +2191,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 47.23,
+      "width": 464.96,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2243,8 +2243,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Me",
-    "_N$string": "Me",
+    "_string": "UILobby_Menu_menu_btn_my",
+    "_N$string": "UILobby_Menu_menu_btn_my",
     "_fontSize": 34,
     "_lineHeight": 40,
     "_enableWrapText": true,

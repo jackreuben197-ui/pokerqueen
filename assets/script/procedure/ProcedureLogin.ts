@@ -7,7 +7,7 @@ import ProcedureBase from "./ProcedureBase";
 
 
 export default class ProcedureLogin extends ProcedureBase {
-    
+
     Name: string = "ProcedureLogin";
 
     lateEnter(param?: any) {
@@ -15,8 +15,8 @@ export default class ProcedureLogin extends ProcedureBase {
         //登陆数据初始化
         LoginSession.Init();
 
-        //判断是否存在有效token
-        if (LoginSession.IsTokenVaild()) {
+        //判断是否跳过登录界面
+        if (param?.skipLogin) {
             //进入登录请求流程
             ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby);
         } else {

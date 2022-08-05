@@ -245,6 +245,13 @@ export default class LoginSession {
     static get Phone(): string {
         return this._phone;
     }
+    /**
+     * 清理本地存储的token和token时效
+     */
+    static clearToken() {
+        localStorage.removeItem(StorageKey.TOKEN);
+        localStorage.removeItem(StorageKey.TOKEN_EXPIREAT);
+    }
 }
 
 (window as any).LoginSession = LoginSession;

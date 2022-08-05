@@ -25,7 +25,7 @@ export default class UIBase extends cc.Component {
         this.regiterDispatchEvent();
     }
 
-    onClose(param: any = null) {
+    onClose(param?: any) {
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onClose()");
         this.stopAllThings();
         this.unregiterDispatchEvent();
@@ -55,7 +55,7 @@ export default class UIBase extends cc.Component {
         this.load_all_object(this.node);
     }
 
-    protected lateClose(param: any = null) {
+    protected lateClose(param?: any) {
 
     }
 

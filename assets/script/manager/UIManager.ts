@@ -89,7 +89,10 @@ export default class UIManager extends Singleton {
     }
 
     static closeAll() {
-
+        FormManager.ins.closeAll();
+        DialogManager.ins.closeAll();
+        BoardManager.ins.closeAll();
+        AlertManager.ins.closeAll();
+        PromptManager.ins.closeAll();
     }
-
 }

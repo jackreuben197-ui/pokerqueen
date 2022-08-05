@@ -34,10 +34,10 @@ export default class LobbySession {
             this._initOnce = true;
             this.tokenRefreshComponent = new TokenRefreshComponent;
             this.heartbeatComponent = new HeartbeatComponent;
-            UpdateComponent.Add(this.tokenRefreshComponent);
-            UpdateComponent.Add(this.heartbeatComponent);
             this.regiterEvents();
         }
+        UpdateComponent.Add(this.tokenRefreshComponent);
+        UpdateComponent.Add(this.heartbeatComponent);
         this.tokenRefreshComponent.start();
     }
 

@@ -63,7 +63,6 @@ export default class TexasGame {
         SceneManager.ins.switchScene(UIDefine.TexasScene);
     }
 
-
     RegisterMsgHandler() {
         this.messageHandler.RegisterMessageHandler();
         this.texasGameProtocol.RegisterMsgHandler();

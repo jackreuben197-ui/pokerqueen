@@ -3,6 +3,7 @@ import { GameConfig, NetWorkBase } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
 import ProcedureManager from "../manager/ProcedureManager";
+import LoginSession from "../session/LoginSession";
 import ProcedureBase from "./ProcedureBase";
 
 
@@ -26,7 +27,9 @@ export default class ProcedureConfig extends ProcedureBase {
         GameConfig.Network = this.getNetwork();
         console.log("config :: GameConfig.Network : ", GameConfig.Network);
 
-        ProcedureManager.StartProcedure(ProcedureEnum.Login);
+
+        let skipLogin: boolean = LoginSession.IsTokenVaild();
+        ProcedureManager.StartProcedure(ProcedureEnum.Login, { skipLogin: skipLogin });
     }
     Leave() {
         super.Leave();

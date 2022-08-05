@@ -11,15 +11,19 @@ export default class WebSocketClient {
 
     static Host_Port: string = null;
 
+    static Host: string;
+    static Port: number;
+
+
     static WS: WebSocket = null;
     //判断连接上(处理首次发送注册消息)
     static _onConnent: boolean = false;
 
     static Connect() {
-        let host: string = GameConfig.Network?.LoginHost;
-        let port: number = Web_WS.Response?.data?.port;
-        if (host && port) {
-            this.Host_Port = `ws://${host}:${port}`;
+        this.Host = GameConfig.Network?.LoginHost;
+        this.Port = Web_WS.Response?.data?.port;
+        if (this.Host && this.Port) {
+            this.Host_Port = `ws://${this.Host}:${this.Port}`;
             this.WS = new WebSocket(this.Host_Port);
             console.log("%c%s", LogStyle.ws_request, ">>>>> websocket connect:" + WebSocketClient.Host_Port);
             this.WS.binaryType = "arraybuffer";
@@ -55,7 +59,11 @@ export default class WebSocketClient {
     }
     private static onclose(this: WebSocket, ev: CloseEvent) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);
+        console.log("close reason : > ", ev.reason);
     }
-
+    //主动关闭
+    static Close() {
+        this.WS.close();
+    }
 }
 (window as any).WebSocketClient = WebSocketClient;

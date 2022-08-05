@@ -1,13 +1,17 @@
 
+import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
+import ProcedureManager from "../../manager/ProcedureManager";
 import UIManager from "../../manager/UIManager";
+import WebSocketClient from "../../net/websocket/WebSocketClient";
+import GlobalSession from "../../session/GlobalSession";
 import SettingsFormItem from "../item/SettingsFormItem";
 import BaseForm from "./BaseForm";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class $name extends BaseForm {
+export default class SettingsForm extends BaseForm {
     /**
      * 节点|组件 定义
      */
@@ -121,9 +125,6 @@ export default class $name extends BaseForm {
      * 退出点击
      */
     onLogoutClick() {
-
-        //清理面板
-        UIManager.closeAll();
-
+        GlobalSession.Logout();
     }
 }

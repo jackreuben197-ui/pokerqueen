@@ -1,16 +1,13 @@
-const { ccclass, property } = cc._decorator;
+const { ccclass } = cc._decorator;
 import UIBase from "../../../assets/script/ui/UIBase";
-
-import HttpRequest from "../../../assets/script/net/https/HttpRequest";
 import { Web_Room_Center_Groups } from "../../../assets/script/net/https/WebRequest";
-import LobbyScene from "./LobbyScene";
-import UIMatchPlayView from "./UIMatchPlayView";
+
 import UIManager from "../../script/manager/UIManager";
 import { UIDefine } from "../../script/define/UIDefine";
 @ccclass
 export default class UIMatchRoom extends UIBase {
     public static instance: UIMatchRoom = null;
-    private roomLen:number = 0;
+    private roomLen: number = 0;
     public RoomTypesInfos = [];
     protected lateLoad(): void {
         super.lateLoad();
@@ -23,9 +20,9 @@ export default class UIMatchRoom extends UIBase {
     }
     onShow(param?: any): void {
         super.onShow();
-        this.handleData(param.data,this.node);
+        this.handleData(param.data, this.node);
     }
-    public handleData(data:any,roomContent:cc.Node): any[] {
+    public handleData(data: any, roomContent: cc.Node): any[] {
         this.RoomTypesInfos = [];
         for (let i = 0; i < this.node.childrenCount; i++) {
             let obj = {
@@ -42,7 +39,7 @@ export default class UIMatchRoom extends UIBase {
                 this.RoomTypesInfos.push(obj)
             }
         }
-        data.forEach((element)=>{
+        data.forEach((element) => {
             this.RoomTypesInfos[element.game_type].playerCount = element.player_count;
             this.RoomTypesInfos[element.game_type].roomCount = element.count;
             this.SetSixPlusData(element);
@@ -53,10 +50,10 @@ export default class UIMatchRoom extends UIBase {
         //     this.RoomTypesInfos[element.game_type].roomCount = element.count;
         //     this.SetSixPlusData(element);
         // }
-        for(let i = 0; i < roomContent.childrenCount; i++){
+        for (let i = 0; i < roomContent.childrenCount; i++) {
             let btn = roomContent.children[i];
             btn.active = this.RoomTypesInfos[i].roomCount > 0
-            if(btn.active){
+            if (btn.active) {
                 this.roomLen++;
             }
         }
@@ -68,7 +65,7 @@ export default class UIMatchRoom extends UIBase {
         if (data.sub_group == null) {
             return;
         }
-        data.sub_group.forEach((item)=>{
+        data.sub_group.forEach((item) => {
             if (item.poker_type == 2) {
                 SixPlus.push(item);
             }
@@ -79,7 +76,7 @@ export default class UIMatchRoom extends UIBase {
         //         SixPlus.push(item);
         //     }
         // }
-        SixPlus.forEach((item)=>{
+        SixPlus.forEach((item) => {
             this.RoomTypesInfos[this.RoomTypesInfos.length - 1].playerCount += item.player_count;
             this.RoomTypesInfos[this.RoomTypesInfos.length - 1].roomCount += item.count;
             this.RoomTypesInfos[data.game_type].playerCount -= item.player_count;
@@ -93,11 +90,11 @@ export default class UIMatchRoom extends UIBase {
         //     this.RoomTypesInfos[data.game_type].roomCount -= item.count;
         // }
     }
-    public SetRoomListBtnInfo(room:cc.Node):void{
-        this.RoomTypesInfos.forEach((info,index)=>{
-            let roomChild:cc.Node = room.children[index];
-            let player:cc.Label = roomChild.getChildByName("TextPlayer_"+(index+1)).getComponent(cc.Label);
-            let desk:cc.Label = roomChild.getChildByName("TextDesk_"+(index+1)).getComponent(cc.Label);
+    public SetRoomListBtnInfo(room: cc.Node): void {
+        this.RoomTypesInfos.forEach((info, index) => {
+            let roomChild: cc.Node = room.children[index];
+            let player: cc.Label = roomChild.getChildByName("TextPlayer_" + (index + 1)).getComponent(cc.Label);
+            let desk: cc.Label = roomChild.getChildByName("TextDesk_" + (index + 1)).getComponent(cc.Label);
             player.string = info.playerCount;
             desk.string = info.roomCount;
         })
@@ -110,29 +107,29 @@ export default class UIMatchRoom extends UIBase {
         //     desk.string = info.roomCount;
         // }
     }
-    protected regiterTouchEvents():void{
+    protected regiterTouchEvents(): void {
         let roomList: cc.Node = this.node;
-        roomList.children.forEach((item,index)=>{
+        roomList.children.forEach((item, index) => {
             cc.log(`UIMatchRoom-----item-${index}`)
             item["index"] = index;
             item.on(cc.Node.EventType.TOUCH_END, this.clickRoom, this)
         })
     }
-    protected removeTouchEvents():void{
+    protected removeTouchEvents(): void {
         let roomList: cc.Node = this.node;
-        roomList.children.forEach((item,index)=>{
+        roomList.children.forEach((item, index) => {
             item.off(cc.Node.EventType.TOUCH_END, this.clickRoom, this)
         })
     }
-      private clickRoom(e: cc.Event.EventTouch) {
+    private clickRoom(e: cc.Event.EventTouch) {
         let roomInfo = this.RoomTypesInfos[e.target.index];
         let sendDate = {
-            game_type:roomInfo.gameType,
-            poker_type:roomInfo.pokerType,
-            index:parseInt(e.target.index),
-            len:this.roomLen,
+            game_type: roomInfo.gameType,
+            poker_type: roomInfo.pokerType,
+            index: parseInt(e.target.index),
+            len: this.roomLen,
         }
-        UIManager.open(UIDefine.UIMatchPlayView,sendDate);
+        UIManager.open(UIDefine.UIMatchPlayViewForm, sendDate);
     }
 }
 

@@ -18,8 +18,8 @@ enum PokerType {
     SixPlus = 2//短牌
 }
 @ccclass
-export default class UIMatchPlayView extends BaseForm {
-    public static instance: UIMatchPlayView = null;
+export default class UIMatchPlayViewForm extends BaseForm {
+    //public static instance: UIMatchPlayViewForm = null;
     private TypeContentLength: number = 0;
     private CurTypeBtn: cc.Node = null;
     private CurListBtn: cc.Node = null;
@@ -36,17 +36,7 @@ export default class UIMatchPlayView extends BaseForm {
     private LocalDicRoomName_EN = new Map();
     private LocalDicRoomName_PT = new Map();
     private mLoopListView: cc.Node = null;
-    protected onLoad(): void {
-        super.onLoad();
-        let widget: cc.Widget = this.node.getComponent(cc.Widget);
-        widget.target = cc.find("Canvas");
-        if (UIMatchPlayView.instance === null) {
-            UIMatchPlayView.instance = this;
-        } else {
-            this.destroy();
-            return;
-        }
-    }
+
     protected lateLoad(): void {
         super.lateLoad();
         this.mLoopListView = this.getChildNodeOrComponent("ViewRoomLayout");
@@ -175,7 +165,8 @@ export default class UIMatchPlayView extends BaseForm {
      * len:len,
      * @return {*}
      */
-    async onShow(param?: any) {
+    async onShow(param?: any, fromUI?: BaseForm) {
+        super.onShow(param, fromUI);
         //根据点击的显示
         //获取groups信息刷新 typeScrollView
         this.TypeContentLength = param.len;
@@ -187,8 +178,6 @@ export default class UIMatchPlayView extends BaseForm {
         await this.sendLanguageGetData();
 
         this.DragRequestData_Room(EnumLoadType.Init);
-
-        console.log("allcomplete");
     }
     //获取group消息
     async sendGroupGetData(param?: any) {

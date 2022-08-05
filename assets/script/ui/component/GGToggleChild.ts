@@ -2,10 +2,10 @@
 
 import UIBase from "../UIBase";
 
-const { ccclass, property, requireComponent, executeInEditMode } = cc._decorator;
+const { ccclass} = cc._decorator;
 @ccclass
-@executeInEditMode
-@requireComponent(cc.Button)
+// @executeInEditMode
+// @requireComponent(cc.Button)
 export default class GGToggleChild extends UIBase {
 
     checkmark: cc.Node = null;

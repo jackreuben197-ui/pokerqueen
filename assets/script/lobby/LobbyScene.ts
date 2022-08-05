@@ -6,14 +6,22 @@ import HttpRequest from "../../../assets/script/net/https/HttpRequest";
 import { Web_Misc_Banner_List, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Config_Multi_Language_Template } from "../../../assets/script/net/https/WebRequest";
 import UIMatchBanner from "./UIMatchBanner";
 import UIMatchRoom from "./UIMatchRoom";
+import UILobbyMenu from "./UILobbyMenu";
 @ccclass
 export default class LobbyScene extends BaseScene {
     public static instance: LobbyScene = null;
     public uiMap = {};
     private currUI: cc.Node = null;
     private Layer: cc.Node = null;
+
+
+    UILobby_Menu: UILobbyMenu = null;
+
     protected onLoad(): void {
         super.onLoad();
+        this.UILobby_Menu = this.getChildNodeOrComponent("UILobby_Menu", UILobbyMenu);
+        this.Layer = this.getChildNodeOrComponent("Layer");
+
         let widget: cc.Widget = this.node.getComponent(cc.Widget);
         widget.target = cc.find("Canvas");
         if (LobbyScene.instance === null) {
@@ -24,7 +32,8 @@ export default class LobbyScene extends BaseScene {
         }
     }
     protected lateEnter() {
-        this.Layer = this.getChildNodeOrComponent("Layer");
+
+        this.UILobby_Menu.onShow();
         this.setLooby();
     }
     /**

@@ -11,6 +11,13 @@ export default class UpdateComponent extends cc.Component {
         this._updates.push(update);
         update.awake && update.awake(awake_param);
     }
+    public static RemoveAll() {
+        while (UpdateComponent._updates.length) {
+            let update_item = UpdateComponent._updates.pop();
+            update_item.stop();
+        }
+        cc.log("UpdateComponent RemoveAll", UpdateComponent._updates.length);
+    }
     update(dt) {
         for (let update of UpdateComponent._updates) {
             update.allowUpdate && update.update(dt);

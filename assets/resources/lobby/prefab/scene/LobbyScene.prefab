@@ -1258,7 +1258,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 153
+      "height": 200
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1326,7 +1326,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 153
+      "height": 200
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1515,7 +1515,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "unselect_1",
+    "_name": "unselect",
     "_objFlags": 0,
     "_parent": {
       "__id__": 36
@@ -1622,7 +1622,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "select_1",
+    "_name": "select",
     "_objFlags": 0,
     "_parent": {
       "__id__": 36
@@ -1729,7 +1729,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "text_1",
+    "_name": "text",
     "_objFlags": 0,
     "_parent": {
       "__id__": 36
@@ -2005,7 +2005,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "unselect_2",
+    "_name": "unselect",
     "_objFlags": 0,
     "_parent": {
       "__id__": 49
@@ -2112,7 +2112,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "select_2",
+    "_name": "select",
     "_objFlags": 0,
     "_parent": {
       "__id__": 49
@@ -2219,7 +2219,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "text_2",
+    "_name": "text",
     "_objFlags": 0,
     "_parent": {
       "__id__": 49
@@ -2495,7 +2495,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "unselect_3",
+    "_name": "unselect",
     "_objFlags": 0,
     "_parent": {
       "__id__": 62
@@ -2602,7 +2602,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "select_3",
+    "_name": "select",
     "_objFlags": 0,
     "_parent": {
       "__id__": 62
@@ -2709,7 +2709,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "text_3",
+    "_name": "text",
     "_objFlags": 0,
     "_parent": {
       "__id__": 62
@@ -2985,7 +2985,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "unselect_4",
+    "_name": "unselect",
     "_objFlags": 0,
     "_parent": {
       "__id__": 75
@@ -3092,7 +3092,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "select_4",
+    "_name": "select",
     "_objFlags": 0,
     "_parent": {
       "__id__": 75
@@ -3199,7 +3199,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "text_4",
+    "_name": "text",
     "_objFlags": 0,
     "_parent": {
       "__id__": 75

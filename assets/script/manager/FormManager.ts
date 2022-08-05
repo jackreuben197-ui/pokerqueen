@@ -96,10 +96,11 @@ export default class FormManager extends Singleton {
     }
     protected lateOpen(ui: UIBase, param: any = null) {
         if (ui) {
-            ui.node.active = true;
+            //ui.node.active = true;
             ui.node.parent = this.UILayer
             if (ui instanceof BaseForm) {
                 ui.onShow(param, this.currUI as BaseForm);
+                cc.log("ui.main.x onShow >> ", ui.main.x);
             } else {
                 ui.onShow(param);
             }
@@ -108,4 +109,17 @@ export default class FormManager extends Singleton {
             cc.log("open ui count:", this.constructor["Name"], this.showUIs.length);
         }
     }
+
+    public async closeAll() {
+
+        while (this.showUIs.length) {
+            let ui = this.showUIs[this.showUIs.length - 1];
+            await this.close(ui.UIDefine, { style: { main_fadeOut_active: false } })
+        }
+
+        this.showUIs = [];
+
+        this.currUI = null;
+    }
+
 }

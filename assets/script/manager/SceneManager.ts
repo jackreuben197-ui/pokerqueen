@@ -48,7 +48,7 @@ export default class SceneManager extends Singleton {
 
         if (newUI) {
 
-            this._doScene(this.currUI, newUI, currExitParams, newEnterParams);
+            this._doScene(newUI, currExitParams, newEnterParams);
 
         } else {
 
@@ -58,17 +58,22 @@ export default class SceneManager extends Singleton {
                     return;
                 }
                 newUI = cc.instantiate(asset);
-                this._doScene(this.currUI, newUI, currExitParams, newEnterParams);
-                this.currUI = newUI;
+                this._doScene(newUI, currExitParams, newEnterParams);
                 this.uiMap[bundleName] = newUI;
             });
         }
     }
-    private _doScene(currUI: cc.Node, newUI: cc.Node, currExitParams: any = null, newEnterParams: any = null) {
-        newUI && (newUI.parent = this.UILayer);
-        currUI && (currUI.parent = this.CacheUILayer);
-        currUI?.getComponent(BaseScene)?.Exit(currExitParams);
-        newUI?.getComponent(BaseScene)?.Enter(newEnterParams);
+    private _doScene(newUI: cc.Node, currExitParams: any = null, newEnterParams: any = null) {
+
+        if (this.currUI) {
+            this.currUI.parent = this.CacheUILayer;
+            this.currUI.getComponent(BaseScene)?.Exit(currExitParams);
+        }
+        if (newUI) {
+            newUI.parent = this.UILayer;
+            newUI.getComponent(BaseScene)?.Enter(newEnterParams);
+            this.currUI = newUI;
+        }
     }
 
     /**

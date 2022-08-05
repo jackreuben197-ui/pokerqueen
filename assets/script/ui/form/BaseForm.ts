@@ -65,6 +65,7 @@ export default class BaseForm extends UIBase {
         cc.log(">>> formUI form :", fromUI?.UIDefine?.Name);
         super.onShow(param);
         this.mainFadeIn(param?.style);
+        cc.log("ui.main.x onShow2 >> ", this.main.x);
     }
 
     async onClose(param?: any) {
