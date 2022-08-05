@@ -72,7 +72,7 @@ export const UIDefine = {
         Name: "LanguageForm",
         Bundle: null,
         Path: "prefab/form/LanguageForm",
-        Title: "Language",
+        Title: "UIMine_SettingLanguage",
     },
     //电话区号
     AreaCodeForm: {

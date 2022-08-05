@@ -87,4 +87,9 @@ export default class UIManager extends Singleton {
         }
         return ui;
     }
+
+    static closeAll() {
+
+    }
+
 }

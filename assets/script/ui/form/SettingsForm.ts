@@ -13,6 +13,7 @@ export default class $name extends BaseForm {
      */
     func_item: cc.Node = null;
     content: cc.Node = null;
+    logout_btn: cc.Node = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -35,6 +36,7 @@ export default class $name extends BaseForm {
         super.lateLoad();
         this.func_item = this.getChildNodeOrComponent("func_item");
         this.content = this.getChildNodeOrComponent("content");
+        this.logout_btn = this.getChildNodeOrComponent("logout_btn");
         this.setItems();
     }
     /**
@@ -46,14 +48,15 @@ export default class $name extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param: any = null) {
-        super.onShow(param);
+    onShow(param?: any, fromUI?: BaseForm): void {
+        super.onShow(param, fromUI);
     }
     /**
      * 注册触摸事件
      */
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
+        this.logout_btn.on("click", this.onLogoutClick, this);
     }
     /**
      * 注册广播事件
@@ -113,5 +116,14 @@ export default class $name extends BaseForm {
                 break;
 
         }
+    }
+    /**
+     * 退出点击
+     */
+    onLogoutClick() {
+
+        //清理面板
+        UIManager.closeAll();
+
     }
 }

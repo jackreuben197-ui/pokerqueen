@@ -30,8 +30,8 @@ export default class $name extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param: any = null) {
-        super.onShow(param);
+     onShow(param?: any, fromUI?: BaseForm): void {
+        super.onShow(param, fromUI);
     }
     /**
      * 注册触摸事件

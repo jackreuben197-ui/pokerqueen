@@ -1,3 +1,4 @@
+import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import UIManager from "../../manager/UIManager";
 import UIBase from "../UIBase";
@@ -11,7 +12,7 @@ export default class BaseForm extends UIBase {
      * 节点|组件 定义
      */
     //标题文本
-    title_label: cc.Label = null;
+    title_label: i18nLabel = null;
     //回退按钮
     back_click: cc.Node = null;
     //内容顶层节点
@@ -35,17 +36,17 @@ export default class BaseForm extends UIBase {
         main_fadeOut_duration: .2,
         main_fadeOut_ease: null,
     }
+    fromUI: BaseForm = null;
     ////////////////////////////////////
     protected lateLoad() {
         super.lateLoad();
         //元素赋值
         this.main = this.getChildNodeOrComponent("main");
-        this.title_label = this.getChildNodeOrComponent("title_label", cc.Label);
+        this.title_label = this.getChildNodeOrComponent("title_label", i18nLabel);
         this.back_click = this.getChildNodeOrComponent("back_click");
         this.content = this.getChildNodeOrComponent("content - 内容填充");
         this.top_block = this.getChildNodeOrComponent("top_block");
-        //this.title_label.string = i18nMgr._getLabel(this.UIDefine?.Title) || "";
-
+        this.title_label.string = this.UIDefine?.Title || "";
         //设置尺寸
         this.main.setContentSize(this.node.getContentSize());
     }
@@ -59,13 +60,15 @@ export default class BaseForm extends UIBase {
 
     }
 
-    onShow(param: any = null) {
+    onShow(param?: any, fromUI?: BaseForm) {
+        this.fromUI = fromUI;
+        cc.log(">>> formUI form :", fromUI?.UIDefine?.Name);
         super.onShow(param);
-        this.title_label.string = i18nMgr._getLabel(this.UIDefine?.Title) || "";
         this.mainFadeIn(param?.style);
     }
 
     async onClose(param?: any) {
+        this.showFromUI();
         await this.mainFadeOut(param?.style);
         super.onClose(param);
     }
@@ -104,10 +107,22 @@ export default class BaseForm extends UIBase {
 
     fadeInComplete() {
         this.top_block.active = false;
+        this.hideFromUI();
     }
 
     fadeOutComplete(resolve) {
         resolve(0);
     }
+
+    /**
+     * 显示隐藏来源界面
+     */
+    hideFromUI() {
+        if (this.fromUI) this.fromUI.node.active = false;
+    }
+    showFromUI() {
+        if (this.fromUI) this.fromUI.node.active = true;
+    }
+
 
 }

@@ -518,7 +518,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 2428
+      "height": 2178
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -887,7 +887,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 2428
+      "height": 2178
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1858,7 +1858,7 @@
     "_left": 0,
     "_right": 0,
     "_top": 250,
-    "_bottom": 10,
+    "_bottom": 260,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -1884,7 +1884,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "YellowButton",
+    "_name": "logout_btn",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11

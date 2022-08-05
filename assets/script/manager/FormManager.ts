@@ -2,6 +2,7 @@
 import Singleton from "../common/Singleton";
 
 import Main from "../Main";
+import BaseForm from "../ui/form/BaseForm";
 import UIBase from "../ui/UIBase";
 import { ResManager } from "./ResManager";
 
@@ -80,7 +81,7 @@ export default class FormManager extends Singleton {
                     ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
-                    cc.log("close ui left count:", this.constructor["Name"], ui.UIDefine, this.showUIs.length);
+                    cc.log("close ui left count:", this.constructor["Name"], this.showUIs.length);
                     break;
                 }
             }
@@ -93,12 +94,18 @@ export default class FormManager extends Singleton {
             }
         }
     }
-
     protected lateOpen(ui: UIBase, param: any = null) {
-        ui && (ui.node.parent = this.UILayer);
-        ui?.onShow(param);
-        this.currUI = ui;
-        this.showUIs.push(ui);
-        cc.log("open ui count:", this.constructor["Name"], ui.UIDefine, this.showUIs.length);
+        if (ui) {
+            ui.node.active = true;
+            ui.node.parent = this.UILayer
+            if (ui instanceof BaseForm) {
+                ui.onShow(param, this.currUI as BaseForm);
+            } else {
+                ui.onShow(param);
+            }
+            this.currUI = ui;
+            this.showUIs.push(ui);
+            cc.log("open ui count:", this.constructor["Name"], this.showUIs.length);
+        }
     }
 }

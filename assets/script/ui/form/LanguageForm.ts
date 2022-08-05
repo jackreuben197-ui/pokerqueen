@@ -46,8 +46,8 @@ export default class LanguageForm extends BaseForm {
         super.lateClose(param);
     }
 
-    onShow(param: any = null) {
-        super.onShow(param);
+    onShow(param?: any, fromUI?: BaseForm) {
+        super.onShow(param, fromUI);
         this.showLanguage(i18nMgr.language);
     }
 
@@ -84,7 +84,7 @@ export default class LanguageForm extends BaseForm {
         item.setSelected(true);
     }
     onItemTouchCancel(e: cc.Event.EventTouch) {
-        let item:LanguageFormItem = e.target.getComponent(LanguageFormItem);
+        let item: LanguageFormItem = e.target.getComponent(LanguageFormItem);
         item.setSelected(false);
     }
 

@@ -51,8 +51,8 @@ export default class AreaCodeForm extends BaseForm {
         super.lateClose(param);
     }
 
-    onShow(param: any = null) {
-        super.onShow(param);
+    onShow(param?: any, fromUI?: BaseForm) {
+        super.onShow(param, fromUI);
         this.clearSearch();
         this.map = this.getAreaMap();
         this.scrollView.scrollToTop(.5);

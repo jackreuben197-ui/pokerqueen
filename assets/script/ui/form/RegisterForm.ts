@@ -71,8 +71,8 @@ export default class RegisterForm extends BaseForm {
         this.setEyesOpen(false);
     }
 
-    onShow(param?: any): void {
-        super.onShow(param);
+    onShow(param?: any, fromUI?: BaseForm): void {
+        super.onShow(param, fromUI);
         this.setArea();
         //this.setEyesOpen(false);
         //this.resetAgreeCheck();
@@ -160,7 +160,7 @@ export default class RegisterForm extends BaseForm {
         //关闭当前页面
         this.close();
         //进入登录流程
-        ProcedureManager.StartProcedure(ProcedureEnum.Enter, {
+        ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
             phone,
             password,
             area,

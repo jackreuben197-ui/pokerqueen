@@ -19,7 +19,7 @@ export default class UIBase extends cc.Component {
         this.lateLoad();
         this.regiterTouchEvents();
     }
-    onShow(param: any = null) {
+    onShow(param?: any) {
         this.param = param;
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);
         this.regiterDispatchEvent();
