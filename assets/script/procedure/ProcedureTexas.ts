@@ -16,9 +16,8 @@ export default class ProcedureTexas extends ProcedureBase {
 
     lateEnter(param?: any) {
         super.lateEnter(param);
-        UIManager.close(UIDefine.TexasPreLoad);
         GameCache.ins.initTexasGame();
-        GameCache.ins.CurGame.start();
+        GameCache.ins.CurGame.Start();
         GameCache.ins.CurGame.SMAgency.ChangeGameState(TexasGameState.Launch);
     }
     Leave() {

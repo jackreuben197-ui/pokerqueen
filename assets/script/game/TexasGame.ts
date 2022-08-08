@@ -56,11 +56,11 @@ export default class TexasGame {
         this.SMAgency = new TexasSMAgency(this);
     }
 
-    start() {
+    Start() {
         UpdateComponent.Add(this.gameLogicSMComponent, this);
         this.gameLogicSMComponent.start();
         this.SMAgency.LoadGameStateConf();
-        SceneManager.ins.switchScene(UIDefine.TexasScene);
+        //SceneManager.ins.switchScene(UIDefine.TexasScene);
     }
 
     RegisterMsgHandler() {
@@ -96,7 +96,7 @@ export default class TexasGame {
     }
     //更新房间数据
     public UpdateRoom(obj: any) {
-
+        
         if (obj instanceof ServerMessageEnterRoom) {
             this.UpdateRoomCommon(obj);
         }

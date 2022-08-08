@@ -1,8 +1,7 @@
 import { i18nMgr } from "./i18nMgr";
 
-export default class LanguageCode {
+export class LanguageCode {
 
-    
     // static LanguageDescription(code: number): string {
     //     return `adaptation${code}`;
     // }

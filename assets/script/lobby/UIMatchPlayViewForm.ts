@@ -521,7 +521,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         GameCache.ins.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
         let response = await LobbySession.APIWebUserRoominsur().catch(() => { });
         if (response) {
-            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, [this.UIDefine, false, 0]);
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: this.UIDefine, lookOn: false });//[this.UIDefine, false, 0]
         }
 
     }

@@ -2,7 +2,7 @@ import GameCache from "../manager/GameCache";
 import { StateHandler } from "../statemachine/StateHandler";
 import TexasGame from "./TexasGame";
 import { TexasGameState } from "./TexasGameState";
-import { TexasGameStateHandlerLaunch, TexasGameStateHandlerNetworkException } from "./TexasGameStateHandler";
+import { TexasGameStateHandlerInit, TexasGameStateHandlerLaunch, TexasGameStateHandlerNetworkException } from "./TexasGameStateHandler";
 
 /**
  * Texas 状态机注册
@@ -26,6 +26,8 @@ export default class TexasSMAgency {
             this.GameSMStates[TexasGameState.NetworkException] = new TexasGameStateHandlerNetworkException;
 
             this.GameSMStates[TexasGameState.Launch] = new TexasGameStateHandlerLaunch;
+
+            this.GameSMStates[TexasGameState.Init] = new TexasGameStateHandlerInit;
 
             //this.GameSMStates[TexasGameState.Init] = new TexasGameStateInit;
             // TexasGameStateInit<Entity>.Instance.Handler = TexasGameStateHandlerInit.Instance;

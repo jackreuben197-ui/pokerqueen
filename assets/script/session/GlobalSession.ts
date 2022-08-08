@@ -15,8 +15,8 @@ export default class GlobalSession {
         cc.log("-------------游戏登出--------------");
         //清理面板
         UIManager.closeAll();
-        ProcedureManager.StartProcedure(ProcedureEnum.Login);
         WebSocketClient.Close();
         UpdateComponent.RemoveAll();
+        ProcedureManager.StartProcedure(ProcedureEnum.Login);
     }
 }

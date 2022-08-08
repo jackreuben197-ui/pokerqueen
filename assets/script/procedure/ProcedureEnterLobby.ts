@@ -5,6 +5,7 @@ import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
+import GlobalSession from "../session/GlobalSession";
 import LoginSession from "../session/LoginSession";
 import ProcedureBase from "./ProcedureBase";
 
@@ -12,7 +13,7 @@ export default class ProcedureEnterLobby extends ProcedureBase {
 
     Name: string = "ProcedureEnterLobby";
 
-    async lateEnter(param?: any) {
+    lateEnter(param?: any) {
 
         super.lateEnter(param);
 
@@ -21,6 +22,7 @@ export default class ProcedureEnterLobby extends ProcedureBase {
                 //准备进入大厅
                 this.enterLobby();
             }).catch(this._catchHandler);
+
         } else {
             this.SyncUserInfo().then(() => this.SyncWS()).then(() => this.enterLobby()).catch(this._catchHandler);
         }
@@ -31,13 +33,15 @@ export default class ProcedureEnterLobby extends ProcedureBase {
     /////////////////////////////////////////////
     _catchHandler(code: number) {
         cc.log("login error code", code);
-        if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene) {
-            //Token失败,这里清理Token，重新进入登录界面
-            LoginSession.LoginOut();
-            ProcedureManager.StartProcedure(ProcedureEnum.Login);
-        } else {
-            ProcedureManager.StartProcedure(ProcedureEnum.Idel);
-        }
+        // if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene) {
+        //     //Token失败,这里清理Token，重新进入登录界面
+        //     LoginSession.LoginOut();
+        //     ProcedureManager.StartProcedure(ProcedureEnum.Login);
+        // } else {
+        //     //ProcedureManager.StartProcedure(ProcedureEnum.Idel);
+        //     GlobalSession.Logout();
+        // }
+        GlobalSession.Logout();
     }
 
     //1.登录请求,获取Token

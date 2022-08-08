@@ -1,5 +1,6 @@
 
-import LanguageCode from "../../i18n/LanguageCode";
+import { LanguageCode } from "../../i18n/LanguageCode";
+import { ResManager } from "../../manager/ResManager";
 import ToastManager from "../../manager/ToastManager";
 import UIBase from "../UIBase";
 
@@ -31,62 +32,30 @@ export default class TexasPreLoad extends UIBase {
         super.onShow(param);
         this.setProgress(0);
         this.bundleName = param?.bundleName;
-        this.wsEnterRoom();
-        let loadBundle_result = await this.loadBundle().catch(() => { });
-        if (loadBundle_result) {
-            console.log(`bundle => ${this.bundleName} 包体资源加载完成`);
-            param.completeHandler();
-        } else {
-            ToastManager.ins.createToast(LanguageCode.LanguageDescription(10050))
-            param.errorHandler();
-        }
-    }
-
-    loadBundle() {
         if (this.bundleName) {
-            //加载包
-            return new Promise((resolve, reject) => {
-                cc.assetManager.loadBundle(this.bundleName, (err, bundle) => {
-                    if (err) {
-                        cc.log("load bundle error:", this.bundleName);
-                        reject(0);
-                    } else {
-                        bundle.loadDir("/",
-                            (finish: number, total: number) => {
-                                let percent = finish / total;
-                                //纠错，保证当前进度不会小于上次进度
-                                percent = Math.max(percent, this.prevPercent);
-                                this.setProgress(percent);
-                            }, (error: Error, assets) => {
-                                //cc.log("预加载资源加载完成");
-                                //ProcedureManager.StartProcedure(ProcedureEnum.Config);
-                                if (error) {
-                                    cc.log("load dir error:", error);
-                                    reject(0);
-                                } else {
-                                    resolve(1);
-                                }
-                            })
-                    }
-                })
-            });
+            let loadBundle_result = await ResManager.LoadABs(this.bundleName, this.setProgress.bind(this)).catch(() => { });
+            if (loadBundle_result) {
+                console.log(`bundle => ${this.bundleName} 包体资源加载完成`);
+                param.completeHandler();
+            } else {
+                ToastManager.ins.createToast(LanguageCode.LanguageDescription(10050))
+                param.errorHandler();
+            }
+        } else {
+            cc.log("bundleName is undefined");
         }
     }
-
     public reset(): void {
 
     }
 
     public setProgress(progress: number) {
+        progress = Math.max(progress, this.prevPercent);
         this.progress_bar.progress = progress;
         this.setLabel(`${progress * 100 ^ 0}%`);
         this.prevPercent = progress;
     }
     public setLabel(content: string) {
         this.progress_label.string = content;
-    }
-
-    private wsEnterRoom() {
-
     }
 }

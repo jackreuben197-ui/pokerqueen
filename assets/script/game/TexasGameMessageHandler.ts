@@ -1,7 +1,12 @@
+import { ProcedureEnum } from "../define/EIDefine";
+import { UIDefine } from "../define/UIDefine";
 import Dispatcher from "../event/Dispatcher";
-import LanguageCode from "../i18n/LanguageCode";
+import { LanguageCode } from "../i18n/LanguageCode";
 import GameCache from "../manager/GameCache";
+import ProcedureManager from "../manager/ProcedureManager";
+import SceneManager from "../manager/SceneManager";
 import ToastManager from "../manager/ToastManager";
+import UIManager from "../manager/UIManager";
 import OpCodeHelper from "../net/websocket/OpCodeHelper";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
@@ -16,7 +21,8 @@ export default class TexasGameMessageHandler {
     }
 
     public RegisterMessageHandler() {
-        Dispatcher.on(ProtocolCode.Protocol_Holdem_EnterRoom, this.Protocol_Holdem_EnterRoom_Handler,this);
+        cc.log("RegisterMessageHandler");
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_EnterRoom, this.Protocol_Holdem_EnterRoom_Handler, this);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Leave, Protocol_Holdem_Leave_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_LeaveNotification, Protocol_Holdem_LeaveNotification_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Seated, Protocol_Holdem_Seated_Handler);
@@ -108,9 +114,20 @@ export default class TexasGameMessageHandler {
             if (isMtt) {
                 // 缓存房间id
                 GameCache.ins.room_id = response.mttRoom.roomId;
+
                 console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.ins.room_id}`);
             }
-            // 成功进入房间
+
+            if (ProcedureManager.currProcedure.id == ProcedureEnum.Texas) {
+
+                let fromUI = ProcedureManager.currProcedure.param?.fromUI;
+
+                if (fromUI) UIManager.close(fromUI);
+
+            }
+
+            SceneManager.ins.switchScene(UIDefine.TexasScene, null, ProcedureManager.currProcedure.param);
+
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 
         }

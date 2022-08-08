@@ -123,8 +123,7 @@ export class Protocol_Holdem_EnterRoom extends BaseProtocol {
 
 
 
-
-
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
 cc.js.setClassName("Protocol_Holdem_Register", Protocol_Holdem_Register);
+cc.js.setClassName("Protocol_Holdem_Leave", Protocol_Holdem_Leave);
 cc.js.setClassName("Protocol_Holdem_EnterRoom", Protocol_Holdem_EnterRoom);

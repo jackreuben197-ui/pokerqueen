@@ -18,14 +18,14 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         super.lateEnter(param);
         //显示房间进入loading
         UIManager.open(UIDefine.TexasPreLoad, { bundleName: Bundle.Texas, completeHandler: this.completeHandler.bind(this), errorHandler: this.errorHandler.bind(this) });
-        //连接服务器进入房间
+
     }
     Leave() {
         super.Leave();
     }
 
     completeHandler() {
-        UIManager.close(this.param?.[0]);
+        //UIManager.close(this.param?.[0]);
         ProcedureManager.StartProcedure(ProcedureEnum.Texas, this.param);
     }
     errorHandler() {

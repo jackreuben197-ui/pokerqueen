@@ -1,8 +1,12 @@
+import { IUIDefine } from "../define/EIDefine";
+import { UIDefine } from "../define/UIDefine";
 import GameCache from "../manager/GameCache";
+import UIManager from "../manager/UIManager";
 import BaseScene from "../ui/scene/BaseScene";
 import FSMLogicComponent from "./FSMLogicComponent";
 import GameSession from "./GameSession";
 import TexasGame from "./TexasGame";
+import { TexasGameState } from "./TexasGameState";
 
 
 
@@ -62,18 +66,21 @@ export default class TexasScene extends BaseScene {
         this.table_bg.spriteFrame = sps[1];
     }
 
-    Enter(param: any): void {
+    Enter(param: { fromUI: IUIDefine, lookOn: boolean }): void {
 
         super.Enter(param);
 
-        if (param != null) {
-            // object[] arr = obj as object[];
-            // fromUI = null != arr[0] ? arr[0].ToString() : string.Empty;
-            this.game.IsLookOn = param?.[1] || false;
+        if (param != null) { // { fromUI: this.UIDefine, lookOn: false }
+
+            this.game.IsLookOn = param?.lookOn || false;
+            //param?.fromUI && UIManager.close(param.fromUI);
         }
+
+        UIManager.close(UIDefine.TexasPreLoad);
 
         this.setDeskType(this.game.deskType);
 
+        cc.log("Enter complete");
 
     }
     Exit(param) {

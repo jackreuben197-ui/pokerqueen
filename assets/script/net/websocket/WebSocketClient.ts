@@ -60,10 +60,13 @@ export default class WebSocketClient {
     private static onclose(this: WebSocket, ev: CloseEvent) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);
         console.log("close reason : > ", ev.reason);
+        WebSocketClient._onConnent = false;
     }
     //主动关闭
     static Close() {
-        this.WS.close();
+        if (this.WS && WebSocketClient._onConnent) {
+            this.WS.close();
+        }
     }
 }
 (window as any).WebSocketClient = WebSocketClient;

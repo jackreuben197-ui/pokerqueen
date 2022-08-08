@@ -1,6 +1,7 @@
 /**
  * 按钮点击冷却判断
  */
+import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import GlobalSession from "../session/GlobalSession";
 
@@ -16,7 +17,7 @@ export default class ButtonClickCD {
         if (!lastTime || now - lastTime > duration) {
             return true;
         }
-        showToast && ToastManager.ins.createToast("clickNum");
+        showToast && ToastManager.ins.createToast(i18nMgr.getLabelFromLO("clickNum"));
         return false;
     }
     // update (dt) {}

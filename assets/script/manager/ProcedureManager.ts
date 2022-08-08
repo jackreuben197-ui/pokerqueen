@@ -20,15 +20,15 @@ export default class ProcedureManager {
     public static currProcedure: ProcedureBase = null;
 
     static Init() {
-        this.procedureDic[ProcedureEnum.Idel] = new ProcedureIdle();
-        this.procedureDic[ProcedureEnum.Init] = new ProcedureInit();
-        this.procedureDic[ProcedureEnum.Preloading] = new ProcedurePreLoading();
-        this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig();
-        this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin();
-        this.procedureDic[ProcedureEnum.EnterLobby] = new ProcedureEnterLobby();
-        this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby();
-        this.procedureDic[ProcedureEnum.EnterTexas] = new ProcedureEnterTexas();
-        this.procedureDic[ProcedureEnum.Texas] = new ProcedureTexas();
+        this.procedureDic[ProcedureEnum.Idel] = new ProcedureIdle(ProcedureEnum.Idel);
+        this.procedureDic[ProcedureEnum.Init] = new ProcedureInit(ProcedureEnum.Init);
+        this.procedureDic[ProcedureEnum.Preloading] = new ProcedurePreLoading(ProcedureEnum.Preloading);
+        this.procedureDic[ProcedureEnum.Config] = new ProcedureConfig(ProcedureEnum.Config);
+        this.procedureDic[ProcedureEnum.Login] = new ProcedureLogin(ProcedureEnum.Login);
+        this.procedureDic[ProcedureEnum.EnterLobby] = new ProcedureEnterLobby(ProcedureEnum.EnterLobby);
+        this.procedureDic[ProcedureEnum.Lobby] = new ProcedureLobby(ProcedureEnum.Lobby);
+        this.procedureDic[ProcedureEnum.EnterTexas] = new ProcedureEnterTexas(ProcedureEnum.EnterTexas);
+        this.procedureDic[ProcedureEnum.Texas] = new ProcedureTexas(ProcedureEnum.Texas);
 
         ProcedureManager.StartProcedure(ProcedureEnum.Init);
     }
@@ -42,10 +42,10 @@ export default class ProcedureManager {
         ProcedureManager.currProcedure = procedure;
         let prevProcedure = ProcedureManager.prevProcedure;
         if (prevProcedure) {
-            if (prevProcedure.Name == procedure.Name) return;
+            if (prevProcedure.id == procedure.id) return;
             prevProcedure.Leave();
         }
-        console.log("[上个流程:", prevProcedure && prevProcedure.Name, "切换到==>当前流程:", procedure.Name, "]");
+        console.log("[上个流程:", prevProcedure && prevProcedure.Name, "切换到==>当前流程:", ProcedureEnum[procedure.id], "]");
         ProcedureManager.prevProcedure = procedure;
         procedure.Enter(param);
     }

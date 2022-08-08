@@ -55,7 +55,7 @@ export default class ProcedureConfig extends ProcedureBase {
             case 1://测试服
                 network.HTTP = cc.sys.localStorage.getItem("");
                 //PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
-                network.WebHost = `http://${network.HTTP}`;
+                network.WebHost = `https://${network.HTTP}`;
                 network.LoginHost = cc.sys.localStorage.getItem("");
                 keys.forEach(item => {
                     network[item] = NetWorkBase[item];
@@ -63,8 +63,9 @@ export default class ProcedureConfig extends ProcedureBase {
                 break;
             case 2://开发服
                 network.HTTP = "dev.k8s.awanptesting.com";////PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
+                //network.HTTP = "13.215.246.46";
                 network.WebHost = `http://${network.HTTP}`;
-                //network.LoginHost = "52.220.9.110"; 
+                //network.LoginHost = "152.70.234.14"; 
                 network.LoginHost = "13.215.246.46";
                 //Dns.GetHostEntry("dev.k8s.awanptesting.com").AddressList[0].ToString(); //PlayerPrefsMgr.mInstance.GetString(sckKey, networkConf.LoginHostIP);
                 keys.forEach(item => {

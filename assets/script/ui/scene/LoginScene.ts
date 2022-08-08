@@ -7,6 +7,7 @@ import { UIDefine } from "../../define/UIDefine";
 import Dispatcher from "../../event/Dispatcher";
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import {LanguageCode} from "../../i18n/LanguageCode";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 
@@ -172,11 +173,11 @@ export default class LoginScene extends BaseScene {
         cc.log("account:", phone, "password:", password);
 
         if (phone == "") {
-            return ToastManager.ins.createToast("adaptation10329");
+            return ToastManager.ins.createToast(LanguageCode.LanguageDescription(10329));
 
         }
         if (password.length < 6) {
-            return ToastManager.ins.createToast("adaptation10330");
+            return ToastManager.ins.createToast(LanguageCode.LanguageDescription(10330));
         }
 
         let param: typeof Web_Login.RequestParams = {
