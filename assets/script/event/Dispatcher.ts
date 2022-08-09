@@ -20,7 +20,9 @@ export default class Dispatcher {
     public static emit(event: string | number, ...params: any[]) {
         const list = Dispatcher._handlers[event];
         if (list?.length) {
-            for (let t of list) {
+            //这里需要倒查询，防止数组长度发生变化
+            for (let i: number = list.length - 1; i >= 0; i--) {
+                let t = list[i];
                 t.handler.call(t.caller, ...params);
             }
         }

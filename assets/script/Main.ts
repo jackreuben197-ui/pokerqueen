@@ -53,14 +53,12 @@ export default class Main extends cc.Component {
         // let buffer = grace.proto.msg.Player.encode(message).finish();
         // cc.log(grace.proto.msg.Player.decode(buffer));
         //WebSocketClient.connect();
-        
-    }
+        this.scheduleOnce(() => {
+            console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
+            console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
+        }, 1)
 
-    protected onEnable(): void {
-        console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
-        console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
     }
-
     start() {
         ProcedureManager.Init();
     }

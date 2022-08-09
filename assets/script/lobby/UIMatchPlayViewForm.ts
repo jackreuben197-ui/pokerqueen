@@ -2,12 +2,13 @@ const { ccclass, property } = cc._decorator;
 import BaseForm from "../../script/ui/form/BaseForm";
 import LobbyScene from "./LobbyScene";
 import UIMatchRoom from "./UIMatchRoom";
-import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms } from "../../../assets/script/net/https/WebRequest";
+import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Config_Multi_Language_Template } from "../../../assets/script/net/https/WebRequest";
 import { i18nLabel } from "../../script/i18n/i18nLabel";
 import LobbySession from "../../script/session/LobbySession";
 import ProcedureManager from "../../script/manager/ProcedureManager";
 import { ProcedureEnum } from "../../script/define/EIDefine";
 import GameCache from "../manager/GameCache";
+import { i18nMgr } from "../i18n/i18nMgr";
 enum EnumLoadType {
     "Init" = 1,
     "Refresh" = 2,
@@ -32,9 +33,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     private cacheResponseData: typeof Web_Room_Center_Rooms.Response = null;
     private type_List = ["NLH", "PLO4", "PLO5", "PLO6"];
     private six_List = ["6+NLH", "6+PLO4", "6+PLO5", "6+PLO6"];
-    private LocalDicRoomName = new Map();
-    private LocalDicRoomName_EN = new Map();
-    private LocalDicRoomName_PT = new Map();
+    private LocalDicRoomName: Map<string, { [key: string]: string }> = new Map();
     private mLoopListView: cc.Node = null;
 
     protected lateLoad(): void {
@@ -193,45 +192,29 @@ export default class UIMatchPlayViewForm extends BaseForm {
     }
     //获取语言信息
     async sendLanguageGetData() {
-        let languageInfo: any = await LobbyScene.instance.APIConfig_Multi_Language_Template({})
-        if (languageInfo?.data !== null) {
+        //{"template_id":"MTT202206181655521398625081","cn_name":"阿斯顿gggg","us_name":"111fffffffff11呆呆呆呆呆","br_name":"22222dddccc"}
+        let languageInfo: any = await LobbyScene.instance.APIConfig_Multi_Language_Template({});
+        if (languageInfo?.data) {
             this.LocalDicRoomName.clear();
-            this.LocalDicRoomName_EN.clear();
-            this.LocalDicRoomName_PT.clear();
-            for (let element in languageInfo.data) {
-                let data = languageInfo.data[element];
-                if (this.LocalDicRoomName[data.template_id]) {
-                    this.LocalDicRoomName[data.template_id] = data.cn_name;
-                } else {
-                    this.LocalDicRoomName.set(data.template_id, data.cn_name)
-                }
-                if (this.LocalDicRoomName_EN[data.template_id]) {
-                    this.LocalDicRoomName_EN[data.template_id] = data.us_name;
-                } else {
-                    this.LocalDicRoomName_EN.set(data.template_id, data.us_name)
-                }
-                if (this.LocalDicRoomName_PT[data.template_id]) {
-                    this.LocalDicRoomName_PT[data.template_id] = data.br_name;
-                } else {
-                    this.LocalDicRoomName_PT.set(data.template_id, data.br_name);
-                }
+            let data: typeof Web_Config_Multi_Language_Template.ResponseData[] = languageInfo.data;
+            for (let obj of data) {
+                this.LocalDicRoomName.set(obj.template_id, { cn: obj.cn_name, en: obj.us_name, pt: obj.br_name });
             }
+
         }
     }
     //通过key值给房间命民
     public GetRoomNameByKey(pStrKey: string): string {
         let name: string = "";
         let strArray = pStrKey.split("-");
-        //如果中文
-        if (true) {
-            if (this.LocalDicRoomName.get(strArray[0])) {
-                name = this.LocalDicRoomName.get(strArray[0]);
-            }
+        let name_obj = this.LocalDicRoomName.get(strArray[0]);
+        if (name_obj) {
+            name = name_obj[i18nMgr.language] || "";
         }
         if (strArray.length > 1) {
             name += "-" + strArray[1];
         }
-        return name
+        return name;
     }
     //获取blinds消息
     async sendBlindsGetData(param?: any) {

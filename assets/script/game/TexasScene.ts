@@ -6,8 +6,6 @@ import BaseScene from "../ui/scene/BaseScene";
 import FSMLogicComponent from "./FSMLogicComponent";
 import GameSession from "./GameSession";
 import TexasGame from "./TexasGame";
-import { TexasGameState } from "./TexasGameState";
-
 
 
 const { ccclass, property } = cc._decorator;
@@ -26,8 +24,14 @@ export default class TexasScene extends BaseScene {
     cursituation_btn: cc.Node = null;
     chat_btn: cc.Node = null;
 
-    ///////////////////////////////////
+    roominfo_lab: cc.Label = null;
 
+    ImageWaitForStartTips: cc.Node = null;
+
+    //座位模板节点
+    Seat: cc.Node = null;
+
+    ///////////////////////////////////
     /**
      * 声明内容
      */
@@ -42,6 +46,9 @@ export default class TexasScene extends BaseScene {
         this.report_btn = this.getChildNodeOrComponent("report_btn");
         this.cursituation_btn = this.getChildNodeOrComponent("cursituation_btn");
         this.chat_btn = this.getChildNodeOrComponent("chat_btn");
+        this.roominfo_lab = this.getChildNodeOrComponent("roominfo_lab", cc.Label);
+        this.ImageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
+        this.Seat = this.getChildNodeOrComponent("Seat");
 
         //GameCache.ins.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
@@ -75,8 +82,6 @@ export default class TexasScene extends BaseScene {
             this.game.IsLookOn = param?.lookOn || false;
             //param?.fromUI && UIManager.close(param.fromUI);
         }
-
-        UIManager.close(UIDefine.TexasPreLoad);
 
         this.setDeskType(this.game.deskType);
 

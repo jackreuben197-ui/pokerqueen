@@ -29,8 +29,12 @@ export default class GameCache extends Singleton {
     match_id: number = 0;
 
     /////////////////
-    RoomUIMode: number = 0;//房间列表UI模式开关 1 模式1 ，2 模式2
-    MTTEntranceMode: number = 2;//MTT开关 1 开 ，2 关
+    //房间列表UI模式开关 1 模式1 ，2 模式2
+    RoomUIMode: number = 0;
+    //MTT开关 1 开 ，2 关
+    MTTEntranceMode: number = 2;
+    //最小带入记分牌，如200
+    carry_small: number;
 
 
     PartialBringIn: number = 0;
@@ -41,6 +45,16 @@ export default class GameCache extends Singleton {
 
     CurrentRoomID: number = 0;
     CurGame: TexasGame = null;
+
+
+
+    /// <summary>
+    /// // 延迟看牌0否 1开启
+    /// </summary>
+    public CurlimitDelaySeeCard: boolean;
+
+
+
 
     initTexasGame() {
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);

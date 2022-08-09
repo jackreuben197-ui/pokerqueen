@@ -17,7 +17,7 @@ export default class ButtonClickCD {
         if (!lastTime || now - lastTime > duration) {
             return true;
         }
-        showToast && ToastManager.ins.createToast(i18nMgr.getLabelFromLO("clickNum"));
+        showToast && ToastManager.ins.createToast(i18nMgr.Get("clickNum"));
         return false;
     }
     // update (dt) {}

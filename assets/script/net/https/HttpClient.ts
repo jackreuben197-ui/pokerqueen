@@ -46,7 +46,7 @@ export default class HttpClient {
                 onFailure && onFailure(response);
                 break;
             case "error":
-                ToastManager.ins.createToast(i18nMgr.getLabelFromLO("errorDefault"));
+                ToastManager.ins.createToast(i18nMgr.Get("errorDefault"));
                 onFailure && onFailure(response);
                 break;
             default:

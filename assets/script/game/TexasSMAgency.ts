@@ -89,7 +89,7 @@ export default class TexasSMAgency {
         }
         this.GameState = state;
         stateHandler.SourceData = sourceData;
-        this.game.gameLogicSMComponent.SM.ChangeState(stateHandler);
+        this.game.fSMLogicComponent.SM.ChangeState(stateHandler);
     }
 
 }

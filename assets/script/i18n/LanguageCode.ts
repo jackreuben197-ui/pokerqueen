@@ -7,15 +7,15 @@ export class LanguageCode {
     // }
 
     public static ServerErrorDescription(errorCode: number): string {
-        let errDes = i18nMgr.getLabelFromLO(`ServerErrorCode_${errorCode}`);
+        let errDes = i18nMgr.Get(`ServerErrorCode_${errorCode}`);
         if (errDes == null) {
-            errDes = `${i18nMgr.getLabelFromLO("errorDefault")}(${errorCode})`
+            errDes = `${i18nMgr.Get("errorDefault")}(${errorCode})`
         }
         return errDes;
     }
     public static LanguageDescription(LanguageCode:number, strParams = null):string
         {
-            let errDes = i18nMgr.getLabelFromLO(`adaptation${LanguageCode}`);
+            let errDes = i18nMgr.Get(`adaptation${LanguageCode}`);
             //LanguageManager.Get($"adaptation{LanguageCode}");
 
             if (errDes == null)

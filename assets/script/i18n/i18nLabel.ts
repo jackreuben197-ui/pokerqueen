@@ -3,7 +3,7 @@ import { i18nMgr } from "./i18nMgr";
 // const {ccclass, property} = cc._decorator;
 const { ccclass, property, executeInEditMode, disallowMultiple, requireComponent, menu } = cc._decorator;
 @ccclass
-@executeInEditMode
+//@executeInEditMode
 //@requireComponent(cc.Label)
 @disallowMultiple
 export class i18nLabel extends cc.Component {
