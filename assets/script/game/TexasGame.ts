@@ -439,7 +439,6 @@ export default class TexasGame {
         let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
         for (let i = 0; i < seatCount; i++) {
             let seatUI = this.getSeatUI();
-
             seatUI.getComponent(cc.Widget).enabled = false;
             seatUI.active = true;
             seatUI.parent = this.gameUI.Seat.parent;
@@ -505,7 +504,7 @@ export default class TexasGame {
     }
     getSeatUI() {
         if (this.seatUI_pool.length) return this.seatUI_pool.pop();
-        return cc.instantiate(this.gameUI.Seat)
+        return cc.instantiate(this.gameUI.Seat);
     }
     removeSeatUI(seatUI: cc.Node) {
         this.seatUI_pool.push(seatUI);

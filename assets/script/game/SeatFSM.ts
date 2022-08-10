@@ -9,7 +9,7 @@ export class SeatFSM {
     //#region 坐下
     public SitEnter(): void {
         // this.seat.SetClient0BubblePos();
-        // this.seat.UpdateHead();
+        this.seat.UpdateHead();
         // this.seat.UpdateNickname();
         // this.seat.UpdateCoin();
         // this.seat.UpdateHolding();

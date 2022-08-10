@@ -3,6 +3,7 @@ import { StateHandler } from "../statemachine/StateHandler";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import { SeatFSM } from "./SeatFSM";
+import SeatUIRC from "./SeatUIRC";
 
 export default class Seat {
 
@@ -27,10 +28,13 @@ export default class Seat {
 
     protected PlayerCount: number;//最大人数
 
+    public uirc: SeatUIRC = null;
 
     constructor(public ui: cc.Node) {
 
         this.fsm = new SeatFSM(this);
+
+        this.uirc = ui.getComponent(SeatUIRC);
 
         UpdateComponent.Add(this.FsmLogicComponent = new FSMLogicComponent(), this.fsm);
 
@@ -122,6 +126,20 @@ export default class Seat {
         //     WaitforthenextmoveTips.GetComponent<Text>().text = $"{CPErrorCode.LanguageDescription(20091)}";
         //     WaitforthenextmoveTips.localPosition = new Vector3(0, -240);
         // }
+    }
+
+    /// <summary>
+    /// 刷新头像
+    /// </summary>
+    public UpdateHead(): void {
+        if (null == this.Player) {
+            this.uirc.imageEmpty.node.active = true;
+            this.uirc.imageHeadFrame.node.active = false;
+        }
+        else {
+            //WebImageHelper.SetUrlImage(rawimageHead, Player.headPic);
+            //this.uirc.rawimageHead,this.Player.headPic
+        }
     }
 
 

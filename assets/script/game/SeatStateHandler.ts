@@ -61,18 +61,18 @@ export class SeatWaitStart extends StateHandler {
     }
     public Enter(entity?: any) {
         super.Enter(entity);
-        if (entity instanceof SeatFSM) entity.SitEnter();
+        //if (entity instanceof SeatFSM) entity.SitEnter();
 
     }
 
     public Execute(entity?: any) {
         super.Execute(entity);
-        if (entity instanceof SeatFSM) entity.SitExecute();
+        //if (entity instanceof SeatFSM) entity.SitExecute();
 
     }
 
     public Exit(entity?: any) {
         super.Exit(entity);
-        if (entity instanceof SeatFSM) entity.SitExit();
+        //if (entity instanceof SeatFSM) entity.SitExit();
     }
 }

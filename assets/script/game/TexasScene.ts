@@ -5,6 +5,7 @@ import UIManager from "../manager/UIManager";
 import BaseScene from "../ui/scene/BaseScene";
 import FSMLogicComponent from "./FSMLogicComponent";
 import GameSession from "./GameSession";
+import SeatUIRC from "./SeatUIRC";
 import TexasGame from "./TexasGame";
 
 
@@ -28,7 +29,7 @@ export default class TexasScene extends BaseScene {
 
     ImageWaitForStartTips: cc.Node = null;
 
-    //座位模板节点
+    //座位节点
     Seat: cc.Node = null;
 
     ///////////////////////////////////
