@@ -97,6 +97,7 @@ export default class TexasScene extends BaseScene {
         switch (e.node) {
             case this.menu_btn://菜单按钮
                 cc.log("menu_btn is clicked");
+                this.CallbackExit();
                 break;
             case this.report_btn://报告按钮
                 cc.log("report_btn is clicked");
@@ -108,6 +109,12 @@ export default class TexasScene extends BaseScene {
                 cc.log("chat_btn is clicked");
                 break;
         }
+    }
 
+    /**
+     * 响应退出触发
+     */
+    public CallbackExit() {
+        GameSession.LeaveRoom();
     }
 }

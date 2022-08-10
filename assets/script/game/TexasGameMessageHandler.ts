@@ -12,6 +12,7 @@ import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
+import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import TexasGame from "./TexasGame";
 import { TexasGameState } from "./TexasGameState";
 
@@ -23,6 +24,7 @@ export default class TexasGameMessageHandler {
     public RegisterMessageHandler() {
         cc.log("RegisterMessageHandler");
         Dispatcher.on(ProtocolCode.Protocol_Holdem_EnterRoom, this.Protocol_Holdem_EnterRoom_Handler, this);
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_Leave, this.Protocol_Holdem_Leave_Handler, this);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Leave, Protocol_Holdem_Leave_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_LeaveNotification, Protocol_Holdem_LeaveNotification_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Seated, Protocol_Holdem_Seated_Handler);
@@ -60,7 +62,8 @@ export default class TexasGameMessageHandler {
     }
 
     public RemoveMessageHandler() {
-        Dispatcher.off(ProtocolCode.Protocol_Holdem_EnterRoom, this.Protocol_Holdem_EnterRoom_Handler);
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_EnterRoom, this.Protocol_Holdem_EnterRoom_Handler, this);
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_Leave, this.Protocol_Holdem_Leave_Handler, this);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Leave, Protocol_Holdem_Leave_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_LeaveNotification, Protocol_Holdem_LeaveNotification_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Seated, Protocol_Holdem_Seated_Handler);
@@ -97,6 +100,11 @@ export default class TexasGameMessageHandler {
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Error, Protocol_Holdem_Error_Handler);
     }
 
+    /**
+     * 进入房间消息返回
+     * @param response 
+     * @returns 
+     */
     Protocol_Holdem_EnterRoom_Handler(response: ServerMessageEnterRoom.AsObject) {
 
         console.log(`# MSG_CALLBACK: Protocol_Holdem_EnterRoom_Handler`);
@@ -140,6 +148,22 @@ export default class TexasGameMessageHandler {
             ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(response.status));
             // 进入房间失败
             this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
+        }
+
+    }
+    /**
+     * 离开房间消息返回
+     * @param response 
+     */
+    Protocol_Holdem_Leave_Handler(response: ServerMessageLeave.AsObject) {
+
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_Leave_Handler`);
+
+        if (response == null) return;
+
+        if (response.status == 0) {
+
+            ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
         }
 
     }

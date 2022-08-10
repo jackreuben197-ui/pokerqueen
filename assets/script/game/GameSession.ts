@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import GameCache from "../manager/GameCache";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
+import { Protocol_Holdem_EnterRoom, Protocol_Holdem_Leave } from "../net/websocket/ProtocolHoldemMessages";
 import GameUtil from "../tools/GameUtil";
 import TexasGame from "./TexasGame";
 
@@ -35,5 +35,22 @@ export default class GameSession {
                     }),
             });
         }
+    }
+    /**
+     * 离开房间
+     */
+    static LeaveRoom() {
+        ProtocolAgency.Send({
+            protocol: Protocol_Holdem_Leave,
+            RoomID: GameCache.ins.room_id,
+            MatchID: GameCache.ins.match_id,
+            body: Protocol_Holdem_Leave.Request(
+                {
+                    room: {
+                        roomId: GameCache.ins.room_id,
+                        matchId: GameCache.ins.match_id,
+                    }
+                }),
+        });
     }
 }

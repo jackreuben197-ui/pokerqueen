@@ -12,21 +12,17 @@ import ProcedureBase from "./ProcedureBase";
  * 大厅进程
  */
 export default class ProcedureLobby extends ProcedureBase {
-    
+
     Name: string = "ProcedureLobby";
 
     lateEnter(param?: any) {
         super.lateEnter(param);
+        if (!param?.leaveRoom) {
+            PacketHead.Init();
+            LobbySession.Init();
+            WebSocketClient.Connect();
+        }
         SceneManager.ins.switchScene(UIDefine.LobbyScene);
-        //请求
-        // LobbySession.APIConfig_Global_Config();
-        // LobbySession.APIConfig_Multi_Language_Template();
-        // LobbySession.APIMiscBannerList(1, 10, 0);
-        // LobbySession.RequestListSummary();
-        // LobbySession.APIMsgMessageUnread();
-        PacketHead.Init();
-        LobbySession.Init();
-        WebSocketClient.Connect();
     }
     Leave() {
         super.Leave();

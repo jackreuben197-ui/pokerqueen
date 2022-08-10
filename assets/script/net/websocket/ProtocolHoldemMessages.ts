@@ -16,7 +16,7 @@ export class BaseProtocol {
 
             let func = `set${key[0].toLocaleUpperCase()}${key.slice(1)}`;
 
-            if (classDic[key]) {
+            if (classDic && classDic[key]) {
 
                 let childObj = new classDic[key]();
 
@@ -88,7 +88,7 @@ export class Protocol_Holdem_Leave extends BaseProtocol {
 
     static Request(body?: ClientMessageLeave.AsObject): Uint8Array {
         this._request || (this._request = new ClientMessageLeave());
-        this.SetBody(this._request, body);
+        this.SetBody(this._request, body, { room: Room });
         return this._request.serializeBinary();
     }
     static Response(bytes: Uint8Array): ServerMessageLeave.AsObject {

@@ -37,8 +37,6 @@ export default class ProcedureInit extends ProcedureBase {
         UIManager,
         GameCache,
     ];
-
-
     lateEnter(param?: any) {
         super.lateEnter(param);
         this.setCCC();
@@ -55,8 +53,15 @@ export default class ProcedureInit extends ProcedureBase {
      */
     setFit(): void {
         let framesize = cc.view.getFrameSize();
-        if (framesize.width > framesize.height) {
-            cc.Canvas.instance.fitWidth = true;
+        // if (framesize.width > framesize.height) {
+        //     cc.Canvas.instance.fitWidth = true;
+        //     cc.Canvas.instance.fitHeight = true;
+        // } else {
+        //     cc.Canvas.instance.fitWidth = true;
+        // }
+        let w_h_r = framesize.width / framesize.height;
+
+        if (w_h_r > 0.6) {
             cc.Canvas.instance.fitHeight = true;
         } else {
             cc.Canvas.instance.fitWidth = true;
