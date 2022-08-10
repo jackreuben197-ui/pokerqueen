@@ -15,7 +15,7 @@ import GameUtil from "../tools/GameUtil";
 import AssetContext from "../ui/component/AssetContext";
 import FSMLogicComponent from "./FSMLogicComponent";
 import GameSession from "./GameSession";
-import { ISeatUIInfo } from "./Seat";
+import Seat, { SeatUIInfo } from "./Seat";
 import TexasGameMessageHandler from "./TexasGameMessageHandler";
 import TexasGameProtocol from "./TexasGameProtocol";
 import TexasScene from "./TexasScene";
@@ -24,13 +24,8 @@ import TexasSMAgency from "./TexasSMAgency";
 
 
 export default class TexasGame {
-
-
-
-
-
-
-
+    //座位UI节点缓存池
+    private seatUI_pool: cc.Node[] = [];
     ///////////////////////////////
     private setting = {
         deskType: null,
@@ -59,11 +54,15 @@ export default class TexasGame {
 
     public texasGameProtocol: TexasGameProtocol = null;
 
-    public fSMLogicComponent: FSMLogicComponent = null;
+    public FsmLogicComponent: FSMLogicComponent = null;
 
     public SMAgency: TexasSMAgency = null;
 
-    public listSeat: any[];
+    public listSeat: Seat[];
+    /// <summary>
+    /// key:客户端seatId
+    /// </summary>
+    protected dicSeatOnlyClient: Map<number, Seat> = null;
 
     /// <summary>
     /// 当前游戏状态，0:倒计时中 1:游戏中 -2:等待开局 -1:其他状态
@@ -284,19 +283,18 @@ export default class TexasGame {
 
     public VoiceprintCountdown: number;
 
-
-
     constructor() {
         this.messageHandler = new TexasGameMessageHandler(this);
         this.texasGameProtocol = new TexasGameProtocol(this);
-        this.fSMLogicComponent = new FSMLogicComponent();
+        this.FsmLogicComponent = new FSMLogicComponent();
         this.SMAgency = new TexasSMAgency(this);
         this.listSeat = [];
+        this.dicSeatOnlyClient = new Map<number, Seat>();
     }
 
     Start() {
-        UpdateComponent.Add(this.fSMLogicComponent, this);
-        this.fSMLogicComponent.start();
+        UpdateComponent.Add(this.FsmLogicComponent, this);
+        this.FsmLogicComponent.start();
         this.SMAgency.LoadGameStateConf();
         //SceneManager.ins.switchScene(UIDefine.TexasScene);
     }
@@ -304,6 +302,10 @@ export default class TexasGame {
     RegisterMsgHandler() {
         this.messageHandler.RegisterMessageHandler();
         this.texasGameProtocol.RegisterMsgHandler();
+    }
+    UnRegisterMsgHandler() {
+        this.messageHandler.RemoveMessageHandler();
+        this.texasGameProtocol.RemoveMsgHandler();
     }
 
 
@@ -346,7 +348,6 @@ export default class TexasGame {
         } else {
             this.InitSeatByCount(GameCache.ins.seat_count);
         }
-
 
         this.gamestatus = rec.gameStatus;
 
@@ -434,20 +435,25 @@ export default class TexasGame {
     }
 
     //初始化座位
-    InitSeatByCount(seatCount: number) {
-        let mInfos: ISeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
+    public InitSeatByCount(seatCount: number) {
+        let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
         for (let i = 0; i < seatCount; i++) {
-            let seat = cc.instantiate(this.gameUI.Seat);
-            seat.getComponent(cc.Widget).enabled = false;
-            seat.active = true;
-            seat.parent = this.gameUI.Seat.parent;
-            seat.name = `Seat${i}}`;
+            let seatUI = this.getSeatUI();
+
+            seatUI.getComponent(cc.Widget).enabled = false;
+            seatUI.active = true;
+            seatUI.parent = this.gameUI.Seat.parent;
+            seatUI.name = `Seat${i}}`;
             if (i == 0 && cc.view.getVisibleSize().height < 2688) {
-                mInfos[i].Pos = cc.v3(this.gameUI.Seat.x,this.gameUI.Seat.y,0);
+                mInfos[i].Pos = cc.v3(this.gameUI.Seat.x, this.gameUI.Seat.y, 0);
             }
-            seat.setPosition(mInfos[i].Pos);
+            seatUI.setPosition(mInfos[i].Pos);
             // mGo.transform.localRotation = Quaternion.identity;
             // mGo.transform.localScale = Vector3.one;
+            let mSeat: Seat = new Seat(seatUI);
+            mSeat.InitSeatUIInfo(mInfos[i], seatCount);
+            this.listSeat.push(mSeat);
+            this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
             // Seat mSeat = ComponentFactory.CreateWithId<Seat, Transform>(i, mGo.transform);
             // mSeat.InitSeatUIInfo(mInfos[i], seatCount);
             // listSeat.Add(mSeat);
@@ -455,10 +461,62 @@ export default class TexasGame {
         }
     }
 
+    /// <summary>
+    /// 转换远端座位号到本地座位号 服务器下发位置从  1开始，0为默认值，客户端-1为默认值(所以需要减一下，暂时不大改客户端)
+    /// </summary>
+    /// <param name="remoteSeatID"></param>
+    /// <returns></returns>
+    public GetLocalSeatID(remoteSeatID: number): number {
+        let id: number = remoteSeatID - 1;
+        if (id < -1) return -1;
+        return id;
+    }
+    /// <summary>
+    /// 通过本地座位号获取位置对象
+    /// </summary>
+    /// <param name="localSeatID"></param>
+    /// <returns></returns>
+    public GetSeatByLocalSeatID(localSeatID: number): Seat {
+        let mSeat: Seat = null;
+        if (localSeatID >= 0 && localSeatID < this.listSeat.length)
+            mSeat = this.listSeat[localSeatID];
+        return mSeat;
+    }
+    /// <summary>
+    /// 获取默认手牌背面
+    /// </summary>
+    /// <returns></returns>
+    public GetEmptyHandCards(): number[] {
+        return [0, 0];
+    }
+
     ClearAllData() {
         cc.log("清理所有数据");
     }
     ClearAllPlayers() {
+
         cc.log("清理所有玩家");
+
+        while (this.listSeat.length) {
+            let seat = this.listSeat.pop();
+            this.removeSeatUI(seat.ui);
+            seat.Clear();
+        }
     }
+    getSeatUI() {
+        if (this.seatUI_pool.length) return this.seatUI_pool.pop();
+        return cc.instantiate(this.gameUI.Seat)
+    }
+    removeSeatUI(seatUI: cc.Node) {
+        this.seatUI_pool.push(seatUI);
+    }
+
+    /**
+     * 退出
+     */
+    Exit() {
+        this.UnRegisterMsgHandler()
+    }
+
+
 }

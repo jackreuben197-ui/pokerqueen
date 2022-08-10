@@ -53,6 +53,8 @@ export default class TexasScene extends BaseScene {
         //GameCache.ins.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
 
+        this.Seat.active = false;
+
         this.game = GameCache.ins.CurGame;
 
         this.game.gameUI = this;

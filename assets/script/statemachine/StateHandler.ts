@@ -5,14 +5,13 @@ export abstract class StateHandler {
 
     public SourceData: any;
 
-    public Enter(param?: any) {
+    public Enter(entity?: any) {
         console.log(`>>> StateHandler->${this.Name} is Enter`);
     }
-
-    public Execute(param?: any) {
+    public Execute(entity?: any) {
     }
 
-    public Exit(param?: any) {
+    public Exit(entity?: any) {
         console.log(`>>> StateHandler->${this.Name} is Exit`);
         this.SourceData = null; // 解除对源数据的引用
     }

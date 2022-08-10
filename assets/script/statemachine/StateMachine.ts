@@ -40,7 +40,6 @@ export default class StateMachine {
         return this.currentState == state;
     }
 
-
     /**
      * 返回上一个状态
      */

@@ -36,9 +36,13 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
     private _checkInterval: number = 1.0;
     private _lastCheckTime: number;
 
-    public Enter(game?: TexasGame) {
+    public Enter(entity?: any) {
 
-        super.Enter(game);
+        super.Enter(entity);
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
 
         game.RegiterEnterRoom();
 
@@ -49,10 +53,10 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
         this._checkFlag = true;
     }
 
-    public Execute(game: TexasGame) {
+    public Execute(entity?: TexasGame) {
     }
 
-    public Exit(game: TexasGame) {
+    public Exit(entity?: TexasGame) {
 
     }
 
@@ -63,9 +67,14 @@ export class TexasGameStateHandlerInit extends StateHandler {
     public Name: string = "TexasGameStateHandlerInit";
 
 
-    public Enter(game?: TexasGame) {
+    public Enter(entity?: any) {
 
-        super.Enter(game);
+        super.Enter(entity);
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
 
         var source = this.SourceData as ServerMessageEnterRoom.AsObject;
         if (source == null) {
@@ -79,10 +88,10 @@ export class TexasGameStateHandlerInit extends StateHandler {
         GameCache.ins.CurGame.UpdateRoom(source);
     }
 
-    public Execute(game: TexasGame) {
+    public Execute(entity?: any) {
     }
 
-    public Exit(game: TexasGame) {
+    public Exit(entity?: any) {
 
     }
 

@@ -11,12 +11,22 @@ export default class UpdateComponent extends cc.Component {
         this._updates.push(update);
         update.awake && update.awake(awake_param);
     }
+
+    public static Remove(update: IUpdate) {
+        for (let i = this._updates.length - 1; i >= 0; i--) {
+            let item = this._updates[i];
+            if (item == update) {
+                this._updates.splice(i, 1);
+                break;
+            }
+        }
+    }
     public static RemoveAll() {
         while (UpdateComponent._updates.length) {
-            let update_item = UpdateComponent._updates.pop();
+            let update_item = this._updates.pop();
             update_item.stop();
         }
-        cc.log("UpdateComponent RemoveAll", UpdateComponent._updates.length);
+        cc.log("UpdateComponent RemoveAll", this._updates.length);
     }
     update(dt) {
         for (let update of UpdateComponent._updates) {

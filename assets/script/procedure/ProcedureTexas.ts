@@ -22,5 +22,6 @@ export default class ProcedureTexas extends ProcedureBase {
     }
     Leave() {
         super.Leave();
+        GameCache.ins.CurGame.Exit();
     }
 }

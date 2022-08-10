@@ -14,9 +14,9 @@ export default class FSMLogicComponent implements IUpdate {
 
     protected _sm: StateMachine = null;
 
-    public awake(game: TexasGame) {
+    public awake(entity: any) {
 
-        this._sm = new StateMachine(game);
+        this._sm = new StateMachine(entity);
 
     }
 

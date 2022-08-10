@@ -1,4 +1,5 @@
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
+import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
 import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
 import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
@@ -118,6 +119,26 @@ export class Protocol_Holdem_EnterRoom extends BaseProtocol {
 }
 
 
+/**
+ * 其他玩家坐下
+ */
+export class Protocol_Holdem_SeatedOthers extends BaseProtocol {
+
+    //static _request: ClientSeatth;
+    //public static Request_AsObject: ClientMessageEnterRoom.AsObject = null;
+    public static Response_AsObject: ServerMessageSeatedOthers.AsObject = null;
+
+    // static Request(body?: ClientMessageEnterRoom.AsObject): Uint8Array {
+    //     this._request || (this._request = new ClientMessageEnterRoom());
+    //     this.SetBody(this._request, body, { room: Room, gps: GPS });
+    //     return this._request.serializeBinary();
+    // }
+    static Response(bytes: Uint8Array): ServerMessageSeatedOthers.AsObject {
+        let result: ServerMessageSeatedOthers = ServerMessageSeatedOthers.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
 
 
 
@@ -127,3 +148,4 @@ cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
 cc.js.setClassName("Protocol_Holdem_Register", Protocol_Holdem_Register);
 cc.js.setClassName("Protocol_Holdem_Leave", Protocol_Holdem_Leave);
 cc.js.setClassName("Protocol_Holdem_EnterRoom", Protocol_Holdem_EnterRoom);
+cc.js.setClassName("Protocol_Holdem_SeatedOthers", Protocol_Holdem_SeatedOthers);

@@ -11,6 +11,7 @@ import OpCodeHelper from "../net/websocket/OpCodeHelper";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
+import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import TexasGame from "./TexasGame";
@@ -25,6 +26,7 @@ export default class TexasGameMessageHandler {
         cc.log("RegisterMessageHandler");
         Dispatcher.on(ProtocolCode.Protocol_Holdem_EnterRoom, this.Protocol_Holdem_EnterRoom_Handler, this);
         Dispatcher.on(ProtocolCode.Protocol_Holdem_Leave, this.Protocol_Holdem_Leave_Handler, this);
+
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Leave, Protocol_Holdem_Leave_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_LeaveNotification, Protocol_Holdem_LeaveNotification_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Seated, Protocol_Holdem_Seated_Handler);
@@ -43,7 +45,7 @@ export default class TexasGameMessageHandler {
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_StoreChips, Protocol_Holdem_StoreChips_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers, Protocol_Holdem_ShowPublicCardsOthers_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Showcards, Protocol_Holdem_Showcards_Handler);
-        // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_SeatedOthers, Protocol_Holdem_SeatedOthers_Handler);
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_SeatedOthers, this.Protocol_Holdem_SeatedOthers_Handler, this);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_StartInfo, Protocol_Holdem_StartInfo_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_PublicCards, Protocol_Holdem_PublicCards_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_SidePots, Protocol_Holdem_SidePots_Handler);
@@ -82,7 +84,7 @@ export default class TexasGameMessageHandler {
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_StoreChips, Protocol_Holdem_StoreChips_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers, Protocol_Holdem_ShowPublicCardsOthers_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Showcards, Protocol_Holdem_Showcards_Handler);
-        // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_SeatedOthers, Protocol_Holdem_SeatedOthers_Handler);
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_SeatedOthers, this.Protocol_Holdem_SeatedOthers_Handler, this);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_StartInfo, Protocol_Holdem_StartInfo_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_PublicCards, Protocol_Holdem_PublicCards_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_SidePots, Protocol_Holdem_SidePots_Handler);
@@ -167,4 +169,18 @@ export default class TexasGameMessageHandler {
         }
 
     }
+
+    /**
+     * 其他玩家坐下
+     * @param response 
+     */
+    Protocol_Holdem_SeatedOthers_Handler(response: ServerMessageSeatedOthers.AsObject) {
+
+
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_SeatedOthers_Handler`);
+
+
+
+    }
+
 }

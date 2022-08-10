@@ -1,5 +1,5 @@
 import { RoomType } from "../define/EIDefine";
-import { ISeatUIInfo } from "../game/Seat";
+import { SeatUIInfo } from "../game/Seat";
 import TexasGame from "../game/TexasGame";
 
 export default class GameUtil {
@@ -196,7 +196,7 @@ export default class GameUtil {
         ];
 
 
-    public static readonly SeatUIInfos: { [key: number]: ISeatUIInfo[] } = {
+    public static readonly SeatUIInfos: { [key: number]: SeatUIInfo[] } = {
 
         2: [{
             Pos: GameUtil.SeatPosV3[0],

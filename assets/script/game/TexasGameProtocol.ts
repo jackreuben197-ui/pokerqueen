@@ -1,5 +1,10 @@
 import Dispatcher from "../event/Dispatcher";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { Def } from "../protobuf/holdem/define_pb";
+import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
+import { CPlayer } from "./CPlayer";
+import Seat from "./Seat";
+import { SeatSitAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
 
 export default class TexasGameProtocol {
@@ -12,7 +17,7 @@ export default class TexasGameProtocol {
         console.log(`TexasGame : RegisterMsgHandler`);
 
         //Dispatcher.on(ProtocolCode.Protocol_Holdem_Seated, HANDLER_REQ_GAME_SEND_MY_SEAT,this);//自己坐下
-        // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_SeatedOthers, HANDLER_REQ_GAME_RECV_SEAT_DOWN);  // 别人坐下
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_SeatedOthers, this.HANDLER_REQ_GAME_RECV_SEAT_DOWN, this);  // 别人坐下
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Action, HANDLER_REQ_GAME_SEND_ACTION);  // 自己牌桌操作
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_ActionAll, HANDLER_REQ_GAME_RECV_ACTION);  // 收到牌桌操作
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Showcards, HANDLER_REQ_GAME_PLAYER_CARDS);  // Allin下发玩家手牌
@@ -75,4 +80,36 @@ export default class TexasGameProtocol {
         //RemoveMessageHandler();
     }
 
+    /// <summary>
+    /// 其他玩家坐下
+    /// </summary>
+    /// <param name="response"></param>
+    HANDLER_REQ_GAME_RECV_SEAT_DOWN(rec: ServerMessageSeatedOthers.AsObject) {
+        if (rec == null) return;
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
+        if (null == mSeat) return;
+        if (null != mSeat.Player) {
+            mSeat.Player.Dispose();
+            mSeat.Player = null;
+        }
+        let randomId = rec.userRid;
+        let mPlayer: CPlayer = new CPlayer(randomId);
+        //ComponentFactory.CreateWithId<CPlayer>(randomId);
+        mPlayer.seatID = mSeat.seatID;
+        mPlayer.sex = rec.sex;
+        mPlayer.headPic = rec.avatar;
+        mPlayer.nick = rec.name;
+        mPlayer.userID = randomId;
+        mPlayer.chips = rec.chips;
+        mPlayer.canPlayStatus = Def.CanPlayStatus.DISABLE;
+        mPlayer.actionStatus = Def.Action.NONE;
+        mPlayer.ante = 0;
+        mPlayer.IsAutoOp = false;
+        mPlayer.cards = this.game.GetEmptyHandCards();
+        mPlayer.HunterHeadValue = rec.hunterHeadValue;
+        mPlayer.HunterKillAwardOther = rec.hunterKillAwardOther;
+        mSeat.Player = mPlayer;
+        mSeat.isBank = false;
+        mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
+    }
 }
