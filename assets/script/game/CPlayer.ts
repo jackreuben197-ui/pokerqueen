@@ -52,8 +52,24 @@ export class CPlayer {
     public Sponsor_rid: string;//发起声纹验证人的id
     public UpdateStateTime: number;//声纹改变状态的时间
 
+
+
+    /// <summary>
+    /// 当前玩家藏钱缓存
+    /// </summary>
+    public cacheStoreChips:number;
+
+
     constructor(public id: number) {
 
+    }
+
+
+    public SetCards(list: number[]): void {
+        if (null == this.cards) this.cards = [];
+        if (this.cards.length > 0) this.cards.length = 0;
+        //cards.AddRange(list);
+        this.cards = this.cards.concat(list);
     }
 
     public Dispose(): void {

@@ -489,19 +489,19 @@ export default class UIMatchPlayViewForm extends BaseForm {
     private async EnterRoomAPI(e: cc.Event.EventCustom) {
         let roominfo: typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
         cc.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
-        GameCache.ins.serviceId = roominfo.service_id;
-        GameCache.ins.roomName = this.GetRoomNameByKey(roominfo.name);
-        GameCache.ins.room_type = roominfo.room_type;
-        GameCache.ins.game_type = roominfo.game_type;
-        GameCache.ins.poker_type = roominfo.poker_type;
-        GameCache.ins.bet_type = roominfo.limit_bet_type;
-        GameCache.ins.room_id = roominfo.rid;
-        GameCache.ins.seat_count = roominfo.seat_count;
-        GameCache.ins.straddle = roominfo.straddle_on;
-        GameCache.ins.insurance = roominfo.insurance_on > 0;
-        GameCache.ins.muck_switch = roominfo.muck_on;
-        GameCache.ins.voiceprint_verify_on = roominfo.voiceprint_verify_on;
-        GameCache.ins.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
+        GameCache.Instance.serviceId = roominfo.service_id;
+        GameCache.Instance.roomName = this.GetRoomNameByKey(roominfo.name);
+        GameCache.Instance.room_type = roominfo.room_type;
+        GameCache.Instance.game_type = roominfo.game_type;
+        GameCache.Instance.poker_type = roominfo.poker_type;
+        GameCache.Instance.bet_type = roominfo.limit_bet_type;
+        GameCache.Instance.room_id = roominfo.rid;
+        GameCache.Instance.seat_count = roominfo.seat_count;
+        GameCache.Instance.straddle = roominfo.straddle_on;
+        GameCache.Instance.insurance = roominfo.insurance_on > 0;
+        GameCache.Instance.muck_switch = roominfo.muck_on;
+        GameCache.Instance.voiceprint_verify_on = roominfo.voiceprint_verify_on;
+        GameCache.Instance.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
         let response = await LobbySession.APIWebUserRoominsur().catch(() => { });
         if (response) {
             ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: this.UIDefine, lookOn: false });//[this.UIDefine, false, 0]

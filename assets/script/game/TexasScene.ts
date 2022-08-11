@@ -51,12 +51,12 @@ export default class TexasScene extends BaseScene {
         this.ImageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.Seat = this.getChildNodeOrComponent("Seat");
 
-        //GameCache.ins.room_type
+        //GameCache.Instance.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
 
         this.Seat.active = false;
 
-        this.game = GameCache.ins.CurGame;
+        this.game = GameCache.Instance.CurGame;
 
         this.game.gameUI = this;
 
@@ -71,7 +71,7 @@ export default class TexasScene extends BaseScene {
         this.chat_btn.on("click", this.sideClick, this);
     }
     setDeskType(index: number) {
-        let sps = GameCache.ins.CurGame.getDeskSpriteFrames(index);
+        let sps = GameCache.Instance.CurGame.getDeskSpriteFrames(index);
         this.desk_bg.spriteFrame = sps[0];
         this.table_bg.spriteFrame = sps[1];
     }

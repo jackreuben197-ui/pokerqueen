@@ -12,6 +12,10 @@ export default class StorageKey {
     //语言
     static Language = "Language";
 
+    static KEY_USERID = "KEY_USERID";
+    static KEY_PHONE = "KEY_PHONE";
+    static KEY_PHONE_FIRST = "KEY_PHONE_FIRST";
+
     
     //=======================设置相关========================
     //桌布类型

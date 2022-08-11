@@ -1,8 +1,4 @@
 
-// <Protocol_Holdem_EnterRoom>{RoomID:91995898, MatchID:0, 
-// request:<ClientMessageEnterRoom>{Room:<Room>{RoomId:91995898, MatchId:0, },Gps:<GPS>{Longitude:"0", Latitude:"0", },MttPartialBringIn:0, Observer:False, },response:null,RpcId:0, Error:0, },
-
-
 
 import { LogStyle } from "../../config/GameConfig";
 import Dispatcher from "../../event/Dispatcher";
@@ -123,11 +119,11 @@ export default class ProtocolAgency extends cc.Component {
         // RoomID or MatchID 和当前不匹配,请求离开房间
         if (code != ProtocolCode.Protocol_Holdem_Leave
             && code != ProtocolCode.Protocol_Holdem_EnterRoom) {
-            let isRubbish = (roomid != 0 && roomid != GameCache.ins.room_id)
-                || (matchid != 0 && matchid != GameCache.ins.match_id);
+            let isRubbish = (roomid != 0 && roomid != GameCache.Instance.room_id)
+                || (matchid != 0 && matchid != GameCache.Instance.match_id);
             if (isRubbish) {
                 cc.log("%c%s", LogStyle.ws_response, `roomid or matchid is no match
-                cache:{RoomID:${GameCache.ins.room_id},MatchID:${GameCache.ins.match_id} 
+                cache:{RoomID:${GameCache.Instance.room_id},MatchID:${GameCache.Instance.match_id} 
                 receive:{RoomID:${roomid},MatchID:${matchid}`);
                 ProtocolAgency.Send({
                     protocol: Protocol_Holdem_Leave,

@@ -10,14 +10,14 @@ import AlertManager from "../manager/AlertManager";
 import BoardManager from "../manager/BoardManager";
 import DialogManager from "../manager/DialogManager";
 import FormManager from "../manager/FormManager";
-import GameCache from "../manager/GameCache";
+
 import ProcedureManager from "../manager/ProcedureManager";
 import PromptManager from "../manager/PromptManager";
 import SceneManager from "../manager/SceneManager";
 import ToastManager from "../manager/ToastManager";
 import UIManager from "../manager/UIManager";
 import HttpClient from "../net/https/HttpClient";
-import LoginSession from "../session/LoginSession";
+
 import AssetContext from "../ui/component/AssetContext";
 import ProcedureBase from "./ProcedureBase";
 
@@ -35,7 +35,6 @@ export default class ProcedureInit extends ProcedureBase {
         DialogManager,
         PromptManager,
         UIManager,
-        GameCache,
     ];
     lateEnter(param?: any) {
         super.lateEnter(param);

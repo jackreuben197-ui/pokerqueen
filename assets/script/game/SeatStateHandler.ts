@@ -2,6 +2,65 @@ import { StateHandler } from "../statemachine/StateHandler";
 import Seat from "./Seat";
 import { SeatFSM } from "./SeatFSM";
 
+
+
+export class SeatEmpty extends StateHandler {
+
+    public Name: string = "SeatEmpty";
+
+    private static _Instance: SeatEmpty = null;
+
+    public static get Instance() {
+        return this._Instance || (this._Instance = new SeatEmpty);
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.EmptyEnter();
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.EmptyExecute();
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.EmptyExit();
+    }
+
+}
+
+
+
+
+
+export class SeatIdle extends StateHandler {
+
+    public Name: string = "SeatIdle";
+
+    private static _Instance: SeatIdle = null;
+
+    public static get Instance() {
+        return this._Instance || (this._Instance = new SeatIdle);
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.IdleEnter();
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.IdleExecute();
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.IdleExit();
+    }
+
+}
+
+
 export class SeatSitAnimation extends StateHandler {
 
     public Name: string = "SeatSitAnimation";
@@ -61,18 +120,18 @@ export class SeatWaitStart extends StateHandler {
     }
     public Enter(entity?: any) {
         super.Enter(entity);
-        //if (entity instanceof SeatFSM) entity.SitEnter();
+        if (entity instanceof SeatFSM) entity.WaitStartEnter();
 
     }
 
     public Execute(entity?: any) {
         super.Execute(entity);
-        //if (entity instanceof SeatFSM) entity.SitExecute();
+        if (entity instanceof SeatFSM) entity.WaitStartExecute();
 
     }
 
     public Exit(entity?: any) {
         super.Exit(entity);
-        //if (entity instanceof SeatFSM) entity.SitExit();
+        if (entity instanceof SeatFSM) entity.WaitStartExit();
     }
 }

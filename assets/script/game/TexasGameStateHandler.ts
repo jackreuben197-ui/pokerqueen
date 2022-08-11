@@ -83,9 +83,9 @@ export class TexasGameStateHandlerInit extends StateHandler {
 
         UIManager.close(UIDefine.TexasPreLoad);
 
-        GameCache.ins.CurrentRoomID = GameCache.ins.room_id;
-        GameCache.ins.CurGame.RegisterMsgHandler();
-        GameCache.ins.CurGame.UpdateRoom(source);
+        GameCache.Instance.CurrentRoomID = GameCache.Instance.room_id;
+        GameCache.Instance.CurGame.RegisterMsgHandler();
+        GameCache.Instance.CurGame.UpdateRoom(source);
     }
 
     public Execute(entity?: any) {

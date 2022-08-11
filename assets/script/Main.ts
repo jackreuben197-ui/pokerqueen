@@ -38,7 +38,6 @@ export default class Main extends cc.Component {
         // UI 节点缓存
         Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - UI缓存");
 
-
         Main.Scene = this.node.parent.getChildByName("Scene - 场景");
         Main.Form = this.node.parent.getChildByName("Form - 窗体层");
         Main.Board = this.node.parent.getChildByName("Board - 遮挡浮窗层");
@@ -48,11 +47,6 @@ export default class Main extends cc.Component {
         Main.Prompt = this.node.parent.getChildByName("Prompt - 网络菊花层");
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");
 
-        //测试protobuf
-        // let message = grace.proto.msg.Player.create({ name: "yechun", id: 123, enterTime: 111 })
-        // let buffer = grace.proto.msg.Player.encode(message).finish();
-        // cc.log(grace.proto.msg.Player.decode(buffer));
-        //WebSocketClient.connect();
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());

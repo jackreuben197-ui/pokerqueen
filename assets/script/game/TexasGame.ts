@@ -13,9 +13,11 @@ import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../session/StorageKey";
 import GameUtil from "../tools/GameUtil";
 import AssetContext from "../ui/component/AssetContext";
+import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import GameSession from "./GameSession";
 import Seat, { SeatUIInfo } from "./Seat";
+import { SeatEmpty, SeatIdle } from "./SeatStateHandler";
 import TexasGameMessageHandler from "./TexasGameMessageHandler";
 import TexasGameProtocol from "./TexasGameProtocol";
 import TexasScene from "./TexasScene";
@@ -68,7 +70,30 @@ export default class TexasGame {
     /// 当前游戏状态，0:倒计时中 1:游戏中 -2:等待开局 -1:其他状态
     /// </summary>
     public gamestatus: number;
-
+    /// <summary>
+    /// 大盲所在位置
+    /// </summary>
+    public bigIndex: number;
+    /// <summary>
+    /// 小盲所在位置
+    /// </summary>
+    public smallIndex: number;
+    /// <summary>
+    /// 庄家所在位置
+    /// </summary>
+    public bankerIndex: number;
+    /// <summary>
+    /// 当前操作玩家所在位置
+    /// </summary>
+    public operationID: number = -1;
+    /// <summary>
+    /// 已发出公共牌
+    /// </summary>
+    public cards: number[];
+    /// <summary>
+    /// 已发出第二套公共牌
+    /// </summary>
+    public secondCards: number[];
 
     /// <summary>
     /// 大盲
@@ -168,7 +193,7 @@ export default class TexasGame {
     /// <summary>
     /// 当前玩家
     /// </summary>
-    //protected Player mainPlayer;
+    public mainPlayer: CPlayer;
     /// <summary>
     /// 本地座位号就是对应座位的下标
     /// </summary>
@@ -346,14 +371,28 @@ export default class TexasGame {
         if (this.listSeat?.length) {
 
         } else {
-            this.InitSeatByCount(GameCache.ins.seat_count);
+            this.InitSeatByCount(GameCache.Instance.seat_count);
         }
 
+        this.mainPlayer = new CPlayer(GameCache.Instance.nUserId);
+        //ComponentFactory.CreateWithId<Player>(GameCache.Instance.nUserId);
+        this.mainPlayer.sex = GameCache.Instance.sex;
+        this.mainPlayer.headPic = GameCache.Instance.headPic;
+        this.mainPlayer.nick = GameCache.Instance.nick;
+        this.mainPlayer.userID = GameCache.Instance.nUserId;
+        this.mainPlayer.SetCards(this.GetEmptyHandCards());
+        if (rec.myInfo != null) {
+            this.mainPlayer.seatID = this.GetLocalSeatID(rec.myInfo.seatId);
+            this.mainPlayer.chips = rec.myInfo.chip;
+            this.mainPlayer.cacheStoreChips = rec.myInfo.storeChips;
+        }
+
+        this.cacheUniqueId = rec.roomInfo.uniqueId;
         this.gamestatus = rec.gameStatus;
 
 
         this.smallBlind = rec.roomInfo.smallBlind;
-        GameCache.ins.carry_small = rec.roomInfo.smallBlind * 2;
+        GameCache.Instance.carry_small = rec.roomInfo.smallBlind * 2;
         this.bigBlind = rec.roomInfo.smallBlind * 2;
         this.alreadAnte = rec.handInfo.allBet;
         this.maxPlayTime = rec.roomInfo.schedulePlayDuration;
@@ -362,7 +401,7 @@ export default class TexasGame {
         this.CurlimitOutChip = rec.roomInfo.retainType;
         this.CurrentMinRate = rec.roomInfo.limitRetainMinRate * rec.roomInfo.currentMinRate;
         this.mHandNum = rec.handInfo.handNum;
-        GameCache.ins.CurlimitDelaySeeCard = rec.roomInfo.delaySeeCard;
+        GameCache.Instance.CurlimitDelaySeeCard = rec.roomInfo.delaySeeCard;
         this.CurStraddle = rec.roomInfo.straddle;
 
         this.opTime = rec.roomInfo.opDuration;
@@ -374,11 +413,93 @@ export default class TexasGame {
 
         this.gameUI.ImageWaitForStartTips.active = this.gamestatus == 0;
 
+
+        // 显示可用位置
+        let mPlayerIds: number[] = [];
+        for (let i = 0; i < rec.playersList.length; i++) {
+            mPlayerIds.push(this.GetLocalSeatID(rec.playersList[i].seatId));
+        }
+
+        let mSeat: Seat = null;
+        //客户端赋值本地座位号。座位空人也设置
+        for (let i = 0, n = GameCache.Instance.seat_count; i < n; i++) {
+            mSeat = this.listSeat[i];
+            mSeat.seatID = i;
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
+            if (!mPlayerIds.includes(i)) {
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
+            }
+        }
+        for (let i = 0, n = rec.playersList.length; i < n; i++) {
+            mSeat = this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
+            mSeat.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
+
+            let mPlayerId = rec.playersList[i].userRid;
+            if (mPlayerId == 0) {
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
+                continue;
+            }
+            let mAnte = rec.playersList[i].roundActioned ? rec.playersList[i].roundBet : 0;
+            let mNickname = rec.playersList[i].name;
+            let mChips = rec.playersList[i].chip;
+            let OffLineState = 0;
+            let mHeadPic = rec.playersList[i].avatar;
+            mSeat.isBig = this.bigIndex == this.GetLocalSeatID(rec.playersList[i].seatId);
+            mSeat.isSmall = this.smallIndex == this.GetLocalSeatID(rec.playersList[i].seatId);
+            mSeat.isBank = this.bankerIndex == this.GetLocalSeatID(rec.playersList[i].seatId);
+            mSeat.isStraddle = false;
+            let mSex = rec.playersList[i].sex;
+            let mKeptTime = rec.playersList[i].keepSeatLeftTime;
+            mSeat.keepSeatLeftTime = mKeptTime;
+            let mPlayer: CPlayer = new CPlayer(mPlayerId);
+            mPlayer.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
+            mPlayer.sex = mSex;
+            mPlayer.headPic = mHeadPic;
+            mPlayer.nick = mNickname;
+            mPlayer.userID = mPlayerId;
+            mPlayer.chips = rec.playersList[i].chip;
+            mPlayer.canPlayStatus = rec.playersList[i].status;
+            mPlayer.actionStatus = rec.playersList[i].action;
+            mPlayer.ante = mAnte;
+            mPlayer.anteNumber = mAnte;
+            mPlayer.isOffLine = OffLineState;
+            mPlayer.IsAutoOp = rec.playersList[i].isAutoop;
+            mPlayer.SetCards(this.GetHandCardsAtEnterRoom(rec, i));
+            mPlayer.RoundActioned = rec.playersList[i].roundActioned;
+            mSeat.Player = mPlayer;
+
+            if (rec.myInfo != null && this.GetLocalSeatID(rec.myInfo.seatId) == this.GetLocalSeatID(rec.playersList[i].seatId)) {
+                if (null != this.mainPlayer) {
+                    this.mainPlayer.Dispose();
+                    this.mainPlayer = null;
+                }
+                this.mainPlayer = mSeat.Player;
+            }
+            //mSeat.UpdateFSMbyStatus(true);
+            //更新玩家离线状态
+            mSeat.UpdateOnOrOffLine();
+        }
+
         this.UpdateRoomDes();
 
+        mSeat = this.GetSeatByLocalSeatID(this.mainPlayer.seatID);
+        if (null != mSeat) {
+            this.ResetSeatUIInfo(mSeat.ClientSeatId);
+        }
+        for (let i = 0, n = rec.playersList.length; i < n; i++) {
+            mSeat = this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
+            mSeat.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
 
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
 
+            let mPlayerId = rec.playersList[i].userRid;
 
+            if (mPlayerId == 0) {
+                continue;
+            }
+            mSeat.UpdateFSMbyStatus(true);
+        }
     }
 
     /**
@@ -387,9 +508,9 @@ export default class TexasGame {
     UpdateRoomDes() {
 
         let info: string = ``;
-        info += `\n${GameCache.ins.roomName}`;
+        info += `\n${GameCache.Instance.roomName}`;
         info += `\n${this.GetRoomTypeDes()}`;
-        info += `\n${GameCache.ins.room_id}-${this.mHandNum}`;
+        info += `\n${GameCache.Instance.room_id}-${this.mHandNum}`;
         let straddleStr: string = "";
         if (this.groupBet > 0) {
             info += `\n${LanguageCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)}(${StringHelper.getStringDiv100(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
@@ -399,27 +520,27 @@ export default class TexasGame {
         }
         //带出，最小带入倍数
         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL) {
-            info += `\n${LanguageCode.LanguageDescription(20087)}:${(GameCache.ins.carry_small * this.CurrentMinRate) / 100 ^ 0}`;
+            info += `\n${LanguageCode.LanguageDescription(20087)}:${(GameCache.Instance.carry_small * this.CurrentMinRate) / 100 ^ 0}`;
         }
 
         let insuranceStr = "";
         if (this.isGPSRestrictions && this.isIpRestrictions) {
             // "GPS  IP限制";
-            info += `\n${insuranceStr = ((GameCache.ins.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS  IP${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS  IP${LanguageCode.LanguageDescription(20008)}`;
         }
         else if (this.isGPSRestrictions && !this.isIpRestrictions) {
             //"GPS限制";
-            info += `\n${insuranceStr = ((GameCache.ins.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS${LanguageCode.LanguageDescription(20008)}`;
 
         }
         else if (!this.isGPSRestrictions && this.isIpRestrictions) {
             // "IP限制;
-            info += `\n${insuranceStr = ((GameCache.ins.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}IP${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}IP${LanguageCode.LanguageDescription(20008)}`;
         }
-        else if (GameCache.ins.insurance) {
+        else if (GameCache.Instance.insurance) {
             info += `\n${LanguageCode.LanguageDescription(10021)}`;
         }
-        if (GameCache.ins.CurlimitDelaySeeCard) {
+        if (GameCache.Instance.CurlimitDelaySeeCard) {
             info += `\n${LanguageCode.LanguageDescription(20088)}`;
         }
         info += "\n\n";
@@ -428,9 +549,9 @@ export default class TexasGame {
 
 
     protected GetRoomTypeDes(): string {
-        let gameTypeStr: string = i18nMgr.Get("GameType_" + GameCache.ins.game_type);
-        let pokerTypeStr: string = i18nMgr.Get("PokerType_" + GameCache.ins.poker_type);
-        let betTypeStr: string = i18nMgr.Get("BetType_" + GameCache.ins.bet_type);
+        let gameTypeStr: string = i18nMgr.Get("GameType_" + GameCache.Instance.game_type);
+        let pokerTypeStr: string = i18nMgr.Get("PokerType_" + GameCache.Instance.poker_type);
+        let betTypeStr: string = i18nMgr.Get("BetType_" + GameCache.Instance.bet_type);
         return gameTypeStr + "-" + pokerTypeStr + "-" + betTypeStr;
     }
 
@@ -440,16 +561,16 @@ export default class TexasGame {
         for (let i = 0; i < seatCount; i++) {
             let seatUI = this.getSeatUI();
             seatUI.getComponent(cc.Widget).enabled = false;
-            seatUI.active = true;
+            //seatUI.active = true;
             seatUI.parent = this.gameUI.Seat.parent;
             seatUI.name = `Seat${i}}`;
             if (i == 0 && cc.view.getVisibleSize().height < 2688) {
-                mInfos[i].Pos = cc.v3(this.gameUI.Seat.x, this.gameUI.Seat.y, 0);
+                mInfos[i].Pos = cc.v3(this.gameUI.Seat.x, 454 - cc.view.getVisibleSize().height / 2, 0);
             }
             seatUI.setPosition(mInfos[i].Pos);
             // mGo.transform.localRotation = Quaternion.identity;
             // mGo.transform.localScale = Vector3.one;
-            let mSeat: Seat = new Seat(seatUI);
+            let mSeat: Seat = new Seat(i, seatUI);
             mSeat.InitSeatUIInfo(mInfos[i], seatCount);
             this.listSeat.push(mSeat);
             this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
@@ -487,6 +608,52 @@ export default class TexasGame {
     /// <returns></returns>
     public GetEmptyHandCards(): number[] {
         return [0, 0];
+    }
+
+    /// <summary>
+    /// 获取进入房间手牌
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    protected GetHandCardsAtEnterRoom(rec: ServerMessageEnterRoom.AsObject, index: number): number[] {
+        if (rec.playersList[index].cardsList == null || rec.playersList[index].cardsList.length <= 0) {
+            return [0, 0];
+        }
+        let mFirstCard: number = rec.playersList[index].cardsList[0];
+        let mSecondCard: number = rec.playersList[index].cardsList[1];
+        return [mFirstCard, mSecondCard];
+    }
+
+    // 重置位置信息
+    protected ResetSeatUIInfo(clientSeatId: number): void {
+        if (clientSeatId == 0)
+            return;
+
+        this.dicSeatOnlyClient.clear();
+        let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[this.listSeat.length];
+        for (let i = 0, n = mInfos.length; i < n; i++) {
+            let mSeat: Seat = this.listSeat[i];
+            let tmp: number = mSeat.ClientSeatId - clientSeatId;
+            if (tmp < 0)
+                tmp += mInfos.length;
+            mSeat.ClientSeatId = tmp;
+            mSeat.ui.name = `Seat${tmp}`;
+
+            this.dicSeatOnlyClient.set(tmp, mSeat);
+            // tweenerResetSeatUIInfo = mSeat.Trans.DOLocalMove(mInfos[tmp].Pos, 0.3f).OnComplete(() => {
+            //     mSeat.InitSeatUIInfo(mInfos[tmp], listSeat.Count);
+            // });
+            cc.tween(mSeat.ui).to(0.3, { position: mInfos[tmp].Pos }).call(() => {
+                mSeat.InitSeatUIInfo(mInfos[tmp], this.listSeat.length);
+            }).start();
+
+        }
+
+        // PlayGameAnimation(GameAnimation.ResetSeatUIInfo);
+        // tweenerResetSeatUIInfo.onComplete += () => {
+        //     // StopGameAnimation(GameAnimation.ResetSeatUIInfo);
+        // };
     }
 
     ClearAllData() {

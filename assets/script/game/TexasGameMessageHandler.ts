@@ -123,9 +123,9 @@ export default class TexasGameMessageHandler {
 
             if (isMtt) {
                 // 缓存房间id
-                GameCache.ins.room_id = response.mttRoom.roomId;
+                GameCache.Instance.room_id = response.mttRoom.roomId;
 
-                console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.ins.room_id}`);
+                console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
             }
 
             if (ProcedureManager.currProcedure.id == ProcedureEnum.Texas) {
@@ -166,6 +166,8 @@ export default class TexasGameMessageHandler {
         if (response.status == 0) {
 
             ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
+        } else {
+            cc.warn(LanguageCode.ServerErrorDescription(response.status));
         }
 
     }

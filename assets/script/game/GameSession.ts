@@ -18,18 +18,18 @@ export default class GameSession {
      * 请求进入房间
      */
     static EnterRoom() {
-        let roomType = GameCache.ins.room_type;
+        let roomType = GameCache.Instance.room_type;
         if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {
             //MTT
         } else {
             ProtocolAgency.Send({
                 protocol: Protocol_Holdem_EnterRoom,
-                RoomID: GameCache.ins.room_id,
-                MatchID: GameCache.ins.match_id,
+                RoomID: GameCache.Instance.room_id,
+                MatchID: GameCache.Instance.match_id,
                 body: Protocol_Holdem_EnterRoom.Request(
                     {
-                        room: { roomId: GameCache.ins.room_id, matchId: GameCache.ins.match_id },
-                        gps: { longitude: GameCache.ins.longitude, latitude: GameCache.ins.latitude },
+                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                        gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
                         mttPartialBringIn: 0,
                         observer: false,
                     }),
@@ -42,13 +42,13 @@ export default class GameSession {
     static LeaveRoom() {
         ProtocolAgency.Send({
             protocol: Protocol_Holdem_Leave,
-            RoomID: GameCache.ins.room_id,
-            MatchID: GameCache.ins.match_id,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
             body: Protocol_Holdem_Leave.Request(
                 {
                     room: {
-                        roomId: GameCache.ins.room_id,
-                        matchId: GameCache.ins.match_id,
+                        roomId: GameCache.Instance.room_id,
+                        matchId: GameCache.Instance.match_id,
                     }
                 }),
         });

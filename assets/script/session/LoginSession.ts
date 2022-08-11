@@ -7,6 +7,7 @@ import { GameConfig } from "../config/GameConfig";
 import { IUpdate } from "../define/EIDefine";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
+import GameCache from "../manager/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Channel, Web_Login, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
@@ -75,6 +76,7 @@ export default class LoginSession {
             HttpRequest.Send({
                 request: Web_User_Info,
                 onSuccess: function () {
+                    this.CacheUserInfo(Web_User_Info.Response.data.user);
                     resolve(Web_User_Info.Response);
                 }.bind(this),
                 onFailure: function (content) {
@@ -188,6 +190,27 @@ export default class LoginSession {
         });
     }
     //////////////////////////////////////////////////////////////////////////////
+
+    //缓存用户信息
+    public static CacheUserInfo(info: typeof Web_User_Info.UserInfo) {
+
+        GameCache.Instance.nUserId = info.un_id;
+        GameCache.Instance.gold = info.gold;
+        GameCache.Instance.strPhone = info.phone;
+        GameCache.Instance.kDouNum = 0;
+        GameCache.Instance.sex = info.sex;
+        GameCache.Instance.nick = info.nickname;
+        GameCache.Instance.headPic = info.avatar;
+        GameCache.Instance.userType = info.ut;
+
+        localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
+        localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);
+        //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, info.area.replace("+", ""));
+        localStorage.setItem(StorageKey.KEY_PHONE_FIRST, `${info.area}`);
+
+    }
+
+
     /**
      * 判断用户是否有效token
      */
