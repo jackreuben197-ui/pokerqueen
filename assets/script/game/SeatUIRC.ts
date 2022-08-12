@@ -35,6 +35,4 @@ export default class SeatUIRC extends UIBase {
         this.textCoinBg = this.getChildNodeOrComponent("Text_Coin_Bg", cc.Sprite);
         this.textNickname = this.getChildNodeOrComponent("Text_Nickname", cc.Label);
     }
-
-
 }

@@ -1,7 +1,9 @@
 import { RoomType } from "../define/EIDefine";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import WebImageHelper from "../helper/WebImageHelper";
+import { UIMineModel } from "../lobby/UIMineModel";
 import GameCache from "../manager/GameCache";
+import LobbySession from "../session/LobbySession";
 import { StateHandler } from "../statemachine/StateHandler";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
@@ -57,6 +59,8 @@ export default class Seat {
 
         UpdateComponent.Add(this.FsmLogicComponent = new FSMLogicComponent(), this.fsm);
 
+        this.RegiterTouchEvents();
+
     }
 
     public Clear() {
@@ -68,6 +72,39 @@ export default class Seat {
         UpdateComponent.Remove(this.FsmLogicComponent);
 
     }
+
+    RegiterTouchEvents() {
+        //this.uirc.imageEmpty.node.on("click", this.onEmptyClick, this);
+    }
+    UnRegiterTouchEvents() {
+
+    }
+
+
+    onEmptyClick() {
+
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+            if (pDto.user.forbid_bring_in == 1) {
+                // UIComponent.Instance.ShowNoAnimation(UIType.UIDialog,
+                //     new UIDialogComponent.DialogData()
+                // 				{
+                //         type = UIDialogComponent.DialogData.DialogType.Commit,
+                //         title = "",
+
+                //         content = LanguageManager.Get("UIForbidBringInTips"),
+                //         // contentCommit = "确定",
+                //         contentCommit = CPErrorCode.LanguageDescription(10012),
+                //         actionCommit = () => { },
+                //         actionCancel = null
+                //     });
+                return;
+            }
+            else {
+                GameCache.Instance.CurGame.Sitdown(this.ClientSeatId, true);
+            }
+        });
+    }
+
 
     /// <summary>
     /// 初始化SeatUI元素

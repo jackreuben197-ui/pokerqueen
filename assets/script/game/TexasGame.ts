@@ -229,7 +229,7 @@ export default class TexasGame {
     /// <summary>
     /// 缓存坐下SeatId
     /// </summary>
-    //protected sbyte cacheSitdownSeatId;
+    protected  cacheSitdownSeatId:number;
     /// <summary>
     /// 等待GPS
     /// </summary>
@@ -655,34 +655,164 @@ export default class TexasGame {
         //     // StopGameAnimation(GameAnimation.ResetSeatUIInfo);
         // };
     }
-
-    ClearAllData() {
-        cc.log("清理所有数据");
+    /// <summary>
+    /// 通过客户端位置获取位置对象
+    /// </summary>
+    /// <param name="clientSeatId"></param>
+    /// <returns></returns>
+    public GetSeatByClientId(clientSeatId: number): Seat {
+        return this.dicSeatOnlyClient.get(clientSeatId);;
     }
-    ClearAllPlayers() {
 
-        cc.log("清理所有玩家");
+    /// <summary>
+    /// 坐下 
+    /// </summary>
+    /// <param name="clientSeatId"></param>
+    public Sitdown(clientSeatId: number, isEmptyClick: boolean = false): void {
 
-        while (this.listSeat.length) {
-            let seat = this.listSeat.pop();
-            this.removeSeatUI(seat.ui);
-            seat.Clear();
+        let mSeat: Seat = this.GetSeatByClientId(clientSeatId);
+        if (null == mSeat) {
+            cc.log(`Sitdown 位置不存在 clientSeatId:${clientSeatId}`);
+            return;
         }
-    }
-    getSeatUI() {
-        if (this.seatUI_pool.length) return this.seatUI_pool.pop();
-        return cc.instantiate(this.gameUI.Seat);
-    }
-    removeSeatUI(seatUI: cc.Node) {
-        this.seatUI_pool.push(seatUI);
-    }
 
-    /**
-     * 退出
-     */
-    Exit() {
-        this.UnRegisterMsgHandler()
+        if (this.mainPlayer.seatID != -1) {
+            cc.log(`Sitdown 你已在其他位置 seatID ${this.mainPlayer.seatID}, clientSeatId ${this.GetSeatByLocalSeatID(this.mainPlayer.seatID).ClientSeatId}`);
+            return;
+        }
+
+        if (null != mSeat.Player) {
+
+            if (mSeat.Player.userID == this.mainPlayer.userID) {
+                cc.log(`Sitdown 你已在该位置 clientSeatId:${clientSeatId}`);
+                return;
+            }
+
+            cc.log(`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
+            return;
+        }
+        this.cacheSitdownSeatId = mSeat.seatID;
+
+        // UITexasModel.mInstance.APIUserRoom(tResp => {
+        //     if (tResp.code == 0 && tResp.data.last_bring_out != null) {
+		// 			long fee = tResp.data.last_bring_out.fee;
+		// 			long bring_out = tResp.data.last_bring_out.to_wallet;
+        //         if (bring_out + fee > 0) {
+        //             if (tResp.data.last_bring_out.to_wallet <= tResp.data.wallet.gold) {
+        //                 CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Seated()
+		// 					{
+        //                         RoomID = (ulong)GameCache.Instance.room_id,
+        //                         MatchID = (ulong)GameCache.Instance.match_id,
+        //                         request = new ClientMessageSeated()
+		// 						{
+        //                         Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
+        //                     SeatId = GetRemoteSeatID(mSeat.seatID),
+        //                     ReturnOrNew = 1,
+        //                     BringIn = (ulong)(bring_out + fee)
+
+		// 						}
+
+        //         });
     }
+//     else
+// 						{
+
+//     //if (UIMineModel.mInstance.mIsVIP == 0)
+//     //{
+//     //    return;
+//     //}
+//     UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
+// 							{
+//             type = UIDialogComponent.DialogData.DialogType.CommitCancel,
+//             // title = $"余额不足",
+//             title = CPErrorCode.LanguageDescription(10025),
+//             // content = $"金豆余额不足，请先充值",
+//             content = CPErrorCode.LanguageDescription(20010),
+//             // contentCommit = "去充豆",
+//             contentCommit = CPErrorCode.LanguageDescription(10026),
+//             // contentCancel = "取消",
+//             contentCancel = CPErrorCode.LanguageDescription(10013),
+//             actionCommit = () => {
+//                 //商城
+//                 //UIMineModel.mInstance.APIGetClubId(tDtoHasClub =>
+//                 //{
+//                 //    if (tDtoHasClub)
+//                 //    {
+//                 //        UIMineModel.mInstance.APIClubTransType(pDto =>
+//                 //        {
+//                 UIComponent.Instance.ShowNoAnimation(UIType.UIMine_WalletAddBeansList, null);// pDto
+//                 //        });
+//                 //    }
+//                 //    else
+//                 //    {
+//                 //        UIComponent.Instance.ToastLanguage("WalletMy11");
+//                 //    }
+//                 //});
+//             },
+//             actionCancel = null
+//         });
+//     return;
+// }
+
+// 					}
+// 					else
+// {
+//     if (CurlimitOutChip == RoomInfo.Types.RetainType.RtAuto) {
+//         ShowSetAutoAddChips();
+//     }
+//     else {
+//         ShowAddChips();
+//     }
+// }
+// 				}
+// 				else
+// {
+//     if (CurlimitOutChip == RoomInfo.Types.RetainType.RtAuto) {
+//         ShowSetAutoAddChips();
+//     }
+//     else {
+//         ShowAddChips();
+//     }
+// }
+// 			});
+
+
+
+
+
+//     }
+
+
+
+
+
+ClearAllData() {
+    cc.log("清理所有数据");
+}
+ClearAllPlayers() {
+
+    cc.log("清理所有玩家");
+
+    while (this.listSeat.length) {
+        let seat = this.listSeat.pop();
+        this.removeSeatUI(seat.ui);
+        seat.Clear();
+    }
+}
+getSeatUI() {
+    if (this.seatUI_pool.length) return this.seatUI_pool.pop();
+    return cc.instantiate(this.gameUI.Seat);
+}
+removeSeatUI(seatUI: cc.Node) {
+    this.seatUI_pool.push(seatUI);
+}
+
+/**
+ * 退出
+ */
+Exit() {
+    this.UnRegisterMsgHandler()
+}
 
 
 }

@@ -1,0 +1,67 @@
+import GameCache from "../manager/GameCache";
+import ToastManager from "../manager/ToastManager";
+import HttpRequest from "../net/https/HttpRequest";
+import { Web_User_Info } from "../net/https/WebRequest";
+
+export class UIMineModel {
+
+    private static _instance: UIMineModel = null;
+
+    public static get mInstance(): UIMineModel {
+        return UIMineModel._instance ||= new UIMineModel;
+    }
+
+    public UserInfoDto: typeof Web_User_Info.ResponseData;
+
+    public modifyHeadTime: number;
+
+    //#region  自已的个人信息
+    public ObtainUserInfo(pAct) {
+        this.APIUserInfo().then(
+            (tDto: typeof Web_User_Info.Response) => {
+                if (tDto.code == 0) {
+                    this.UserInfoDto = tDto.data;
+                    this.modifyHeadTime = tDto.data.user.mat;
+                    GameCache.Instance.modifyNickNum = tDto.data.user.mnt;
+                    GameCache.Instance.gold = tDto.data.user.gold;
+                    GameCache.Instance.isTestflight = tDto.data.user.province;
+                    this.UIRefreshGoldEvent();
+                    if (pAct != null)
+                        pAct(tDto.data);
+                } else {
+                    ToastManager.ins.createToast("" + tDto.code);
+                }
+            },
+            () => {
+
+            })
+
+    }
+    //#endregion
+
+    /// <summary>
+    /// 请求用户数据
+    /// </summary>
+    public APIUserInfo() {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_User_Info,
+                onSuccess: function () {
+                    this.CacheUserInfo(Web_User_Info.Response.data.user);
+                    resolve(Web_User_Info.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+
+    /// <summary>
+    /// 刷新各个UI金币显示 
+    /// </summary>
+    public UIRefreshGoldEvent() {
+        //Game.EventSystem.Run(EventIdType.UIMine_GoldText);
+    }
+}

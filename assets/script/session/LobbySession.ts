@@ -8,7 +8,7 @@ import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import GameCache from "../manager/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Room_insur } from "../net/https/WebRequest";
+import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_Register } from "../net/websocket/ProtocolHoldemMessages";
 import GameUtil from "../tools/GameUtil";
@@ -184,6 +184,47 @@ export default class LobbySession {
                 }.bind(this)
             });
         });
+    }
+
+    //自已的个人信息
+    static APIUserInfo() {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_User_Info,
+                onSuccess: function () {
+                    this.CacheUserInfo(Web_User_Info.Response.data.user);
+                    resolve(Web_User_Info.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    public static async ObtainUserInfo(callback: Function) {
+        // UIMineModel.mInstance.APIUserInfo(tDto => {
+        //     if (tDto.code == 0) {
+        //         UserInfoDto = tDto.data;
+        //         modifyHeadTime = tDto.data.user.mat;
+        //         GameCache.Instance.modifyNickNum = tDto.data.user.mnt;
+        //         GameCache.Instance.gold = tDto.data.user.gold;
+        //         GameCache.Instance.isTestflight = tDto.data.user.province;
+        //         UIRefreshGoldEvent();
+        //         if (pAct != null)
+        //             pAct(tDto.data);
+        //     }
+        //     else {
+        //         UIComponent.Instance.Toast(tDto.code);
+        //     }
+        // });
+        let response: typeof Web_User_Info.Response = await this.APIUserInfo().catch(() => { });
+
+        if (response) {
+
+            if (response.code == 0) {
+
+            }
+        }
     }
 
 
