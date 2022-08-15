@@ -31,9 +31,6 @@ export class UIMineModel {
                 } else {
                     ToastManager.ins.createToast("" + tDto.code);
                 }
-            },
-            () => {
-
             })
 
     }
@@ -47,7 +44,6 @@ export class UIMineModel {
             HttpRequest.Send({
                 request: Web_User_Info,
                 onSuccess: function () {
-                    this.CacheUserInfo(Web_User_Info.Response.data.user);
                     resolve(Web_User_Info.Response);
                 }.bind(this),
                 onFailure: function (content) {

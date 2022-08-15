@@ -74,14 +74,14 @@ export default class Seat {
     }
 
     RegiterTouchEvents() {
-        //this.uirc.imageEmpty.node.on("click", this.onEmptyClick, this);
+        this.uirc.imageEmpty.node.on("click", this.onClickEmpty, this);
     }
     UnRegiterTouchEvents() {
 
     }
 
 
-    onEmptyClick() {
+    onClickEmpty() {
 
         UIMineModel.mInstance.ObtainUserInfo(pDto => {
             if (pDto.user.forbid_bring_in == 1) {

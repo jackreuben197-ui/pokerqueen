@@ -30,8 +30,8 @@
       "rawHeight": 9,
       "borderTop": 4,
       "borderBottom": 4,
-      "borderLeft": 0,
-      "borderRight": 0,
+      "borderLeft": 7,
+      "borderRight": 7,
       "subMetas": {}
     }
   }

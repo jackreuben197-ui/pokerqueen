@@ -18,18 +18,21 @@ export default class GGSlider extends cc.Component {
     @property({ range: [0, 50], step: 1 })
     max: number = 3;
 
+    curValue: number;
+
     step_count: number;
 
     press: boolean;
 
     step_dis: number;
 
-    private _pos: number;
+    //倍数
+    private _rate: number;
     private _param: any;
 
+    private _onChange: Function;
+
     onLoad() {
-        this.step_count = this.max - this.min;
-        this.step_dis = this.node.width / this.step_count;
         this.bar.on(cc.Node.EventType.TOUCH_START, this.onBarTouchStart, this);
         this.bar.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.bar.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
@@ -43,14 +46,12 @@ export default class GGSlider extends cc.Component {
         this.reset();
     }
 
-
     reset(): void {
-        this.setBarPos(this.min);
+        this.value = this.min;
     }
 
     onShow(param?: any) {
         this._param = param;
-        this.setBarPos(param?.pos || this.min);
     }
 
     onBarTouchStart(e: cc.Event.EventTouch) {
@@ -81,18 +82,39 @@ export default class GGSlider extends cc.Component {
         return Math.ceil((postion - this.step_dis / 2) / this.step_dis);
     }
 
-    setBarPos(pos: number) {
-        this.pos = pos;
-        let step = pos - this.min;
+    setBarPos(rate: number) {
+        this.rate = rate;
+        let step = rate - this.min;
         this.bar.x = step / this.step_count * this.node.width;
         this.track_top.width = this.bar.x;
         //响应回调
-        this._param?.onChange(this);
+        this._onChange?.(rate);
     }
-    get pos(): number {
-        return this._pos;
+    get rate(): number {
+        return this._rate;
     }
-    set pos(pos: number) {
-        this._pos = pos;
+    set rate(rate: number) {
+        this._rate = rate;
+    }
+
+    public onChange(callback: Function) {
+        this._onChange = callback;
+    }
+
+    public set maxValue(value: number) {
+        this.max = value;
+        this.updateBase();
+    }
+    public set minValue(value: number) {
+        this.min = value;
+        this.updateBase();
+    }
+    public set value(value: number) {
+        this.curValue = value;
+        this.setBarPos(this.curValue);
+    }
+    public updateBase() {
+        this.step_count = this.max - this.min;
+        this.step_dis = this.node.width / this.step_count;
     }
 }

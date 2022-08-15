@@ -1,7 +1,7 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import {LanguageCode} from "../../i18n/LanguageCode";
+import { LanguageCode } from "../../i18n/LanguageCode";
 import ToastManager from "../../manager/ToastManager";
 import UIManager from "../../manager/UIManager";
 import LoginSession from "../../session/LoginSession";
@@ -50,17 +50,22 @@ export default class HttpClient {
                 onFailure && onFailure(response);
                 break;
             default:
+                let response_json: any;
                 try {
-                    let response_json = JSON.parse(response);
-                    if (response_json?.code > 0) {
-                        //错误码提示
-                        ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(response_json.code));
-                        onFailure && onFailure(response_json.code);
-                        return;
-                    }
-                    onSuccess && onSuccess(response_json);
+                    response_json = JSON.parse(response);
                 } catch (e) {
-                    onSuccess && onSuccess(null)
+                    //json 解析异常
+                    ToastManager.ins.createToast(i18nMgr.Get("json_exception"));
+                    onFailure && onFailure(null);
+                    return;
+                }
+
+                if (response_json?.code == 0) {
+                    onSuccess && onSuccess(response_json);
+                } else {
+                    //错误码提示
+                    ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(response_json.code));
+                    onFailure && onFailure(response_json.code);
                 }
                 break;
         }

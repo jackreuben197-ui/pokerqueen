@@ -1,13 +1,11 @@
-
-// export interface IResponseData {
-//     code: number;
-//     message?: string;
-//     data?: any;
-// }
-
 /**
- * https 请求登录获取Token
+ * Http请求接口
  */
+
+
+/// <summary>
+/// 登陆
+/// </summary>
 export class Web_Login {
     //接口地址
     public static API: string = "/api/user/login";
@@ -37,9 +35,9 @@ export class Web_Login {
     public static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
 }
 
-/**
- * https 刷新token
- */
+/// <summary>
+/// 刷新token
+/// </summary>
 export class Web_Refresh_Token {
     //接口地址
     public static API: string = "/api/user/refresh";
@@ -60,9 +58,9 @@ export class Web_Refresh_Token {
     public static Response: { code?: number, message?: string, data?: typeof Web_Refresh_Token.ResponseData };
 }
 
-/**
- * https 验证手机号
- */
+/// <summary>
+/// 验证手机号
+/// </summary>
 export class Web_User_Check_Phone {
     //接口地址
     public static API: string = "/api/user/check_phone";
@@ -83,9 +81,9 @@ export class Web_User_Check_Phone {
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_User_Check_Phone.ResponseData };
 }
-/**
- * https 获取验证码
- */
+/// <summary>
+/// 获取验证码
+/// </summary>
 export class Web_User_Send_Code {
     //接口地址
     public static API: string = "/api/user/sendcode";
@@ -106,9 +104,9 @@ export class Web_User_Send_Code {
     public static Response: { code?: number, message?: string, data?: typeof Web_User_Send_Code.ResponseData };
 }
 
-/**
- * https 修改密码
- */
+/// <summary>
+/// 修改密码
+/// </summary>
 export class Web_User_Modify_Password {
     //接口地址
     public static API: string = "/api/user/modify/password";
@@ -131,9 +129,9 @@ export class Web_User_Modify_Password {
     public static Response: { code?: number, message?: string, data?: typeof Web_User_Modify_Password.ResponseData };
 }
 
-/**
- * https 手机号用户注册
- */
+/// <summary>
+/// 手机号注册
+/// </summary>
 export class Web_User_Register {
     //接口地址
     public static API: string = "/api/user/register";
@@ -157,9 +155,9 @@ export class Web_User_Register {
     public static Response: { code?: number, message?: string, data?: typeof Web_User_Register.ResponseData };
 }
 
-/**
- * https 请求用户信息
- */
+/// <summary>
+/// 请求用户数据
+/// </summary>
 export class Web_User_Info {
     //接口地址
     public static API: string = "/api/user/info";
@@ -196,9 +194,9 @@ export class Web_User_Info {
     public static Response: { code?: number, message?: string, data?: typeof Web_User_Info.ResponseData };
 }
 
-/**
- * https 请求频道信息 socket的port
- */
+/// <summary>
+/// socket channel info
+/// </summary>
 export class Web_Channel {
     //接口地址
     public static API: string = "/api/user/channel";
@@ -218,9 +216,9 @@ export class Web_Channel {
     public static Response: { code?: number, message?: string, data?: typeof Web_Channel.ResponseData };
 }
 
-/**
- * https 请求频道信息 websocket的port
- */
+/// <summary>
+/// 请求频道信息 websocket的port
+/// </summary>
 export class Web_WS {
     //接口地址
     public static API: string = "/api/user/ws";
@@ -240,9 +238,9 @@ export class Web_WS {
     public static Response: { code?: number, message?: string, data?: typeof Web_WS.ResponseData };
 }
 
-/**
- * https 获取全局配置
- */
+/// <summary>
+/// 获取全局配置
+/// </summary>
 export class Web_Config_Global_Config {
 
     //接口地址
@@ -274,9 +272,9 @@ export class Web_Config_Global_Config {
 }
 
 
-/**
- * https 获取多语言配置
- */
+/// <summary>
+/// 获取多语言配置
+/// </summary>
 export class Web_Config_Multi_Language_Template {
 
     //接口地址
@@ -300,9 +298,9 @@ export class Web_Config_Multi_Language_Template {
 }
 
 
-/**
- * https 获取banner列表
- */
+/// <summary>
+/// Banner
+/// </summary>
 export class Web_Misc_Banner_List {
 
     //接口地址
@@ -339,9 +337,9 @@ export class Web_Misc_Banner_List {
 }
 
 
-/**
- * https 获取大厅房间列表
- */
+/// <summary>
+/// 大厅房间列表
+/// </summary>
 export class Web_Room_Center_Groups {
     //接口地址
     public static API: string = "/api/roomcenter/groups";
@@ -380,9 +378,9 @@ export class Web_Room_Center_Groups {
     public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Groups.ResponseData)[] };
 }
 
-/**
- * https 获取未读消息 （只有五条）
- */
+/// <summary>
+/// 未读消息 （只有五条）
+/// </summary>
 export class Web_Msg_Message_Unread {
     //接口地址
     public static API: string = "/api/msg/message/unread";
@@ -407,6 +405,9 @@ export class Web_Msg_Message_Unread {
     }
     public static Response: { code?: number, message?: string, data?: (typeof Web_Msg_Message_Unread.ResponseData)[] };
 }
+/// <summary>
+/// 小盲列表
+/// </summary>
 export class Web_Room_Center_Rooms_Blinds {
     //接口地址
     public static API: string = "/api/roomcenter/room_blinds";
@@ -432,6 +433,9 @@ export class Web_Room_Center_Rooms_Blinds {
     }
     public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Rooms_Blinds.ResponseData) };
 }
+/// <summary>
+/// 房间详细列表
+/// </summary>
 export class Web_Room_Center_Rooms {
     //接口地址
     public static API: string = "/api/roomcenter/rooms";
@@ -525,9 +529,9 @@ export class Web_Room_Center_Rooms {
     public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Rooms.ResponseData) };
 }
 
-/**
- * https 查询在该房间保险赔率表
- */
+/// <summary>
+/// 查询在该房间保险赔率表
+/// </summary>
 export class Web_User_Room_insur {
     //接口地址
     public static API: string = "/api/roomcenter/room/{id}/insur";
@@ -538,20 +542,59 @@ export class Web_User_Room_insur {
     } = null;
 
     public static ResponseData: {
-        pot_user_count    : number,//几人池
-        detail            : typeof Web_User_Room_insur.Outs[],
+        pot_user_count: number,//几人池
+        detail: typeof Web_User_Room_insur.Outs[],
     } = null;
 
     public static Outs: {
-        outs    : number,//outs 张数
-        odds    : number//对应outs张数赔率
+        outs: number,//outs 张数
+        odds: number//对应outs张数赔率
     } = null;
 
-    public static Request(param: typeof Web_Msg_Message_Unread.RequestParams) {
+    public static Request(param: typeof Web_User_Room_insur.RequestParams) {
         this.RequestParams = param;
         return param;
     }
     public static Response: { code?: number, message?: string, data?: (typeof Web_User_Room_insur.ResponseData)[] };
+}
+
+
+/// <summary>
+/// 查询在该房间带出信息
+/// </summary>
+export class Web_User_Room {
+    //接口地址
+    public static API: string = "/api/user/room/{id}";
+
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+        last_bring_out: typeof Web_User_Room.BringOut,
+        wallet: typeof Web_User_Room.Wallet,
+    } = null;
+
+    public static BringOut: {
+        to_wallet: number,//带出（减去服务费后的带出金额）
+        fee: number//服务费
+    } = null;
+
+    public static Wallet: {
+        w_u_id: number,//钱包id
+        gold: number,//钱包金额
+        gold_lock: number,//被锁定金额
+        wallet_status: number,//钱包状态
+    } = null;
+
+    public static Request(param: typeof Web_User_Room.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
+
 }
 
 

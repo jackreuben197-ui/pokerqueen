@@ -7,6 +7,7 @@ import FSMLogicComponent from "./FSMLogicComponent";
 import GameSession from "./GameSession";
 import SeatUIRC from "./SeatUIRC";
 import TexasGame from "./TexasGame";
+import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 
 
 const { ccclass, property } = cc._decorator;
@@ -32,6 +33,9 @@ export default class TexasScene extends BaseScene {
     //座位节点
     Seat: cc.Node = null;
 
+
+    UIAddChips:UIAddChipsComponent = null;
+
     ///////////////////////////////////
     /**
      * 声明内容
@@ -50,6 +54,7 @@ export default class TexasScene extends BaseScene {
         this.roominfo_lab = this.getChildNodeOrComponent("roominfo_lab", cc.Label);
         this.ImageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.Seat = this.getChildNodeOrComponent("Seat");
+        this.UIAddChips = this.getChildNodeOrComponent("UIAddChips",UIAddChipsComponent);
 
         //GameCache.Instance.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);

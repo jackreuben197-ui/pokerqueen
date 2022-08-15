@@ -201,32 +201,6 @@ export default class LobbySession {
             });
         });
     }
-    public static async ObtainUserInfo(callback: Function) {
-        // UIMineModel.mInstance.APIUserInfo(tDto => {
-        //     if (tDto.code == 0) {
-        //         UserInfoDto = tDto.data;
-        //         modifyHeadTime = tDto.data.user.mat;
-        //         GameCache.Instance.modifyNickNum = tDto.data.user.mnt;
-        //         GameCache.Instance.gold = tDto.data.user.gold;
-        //         GameCache.Instance.isTestflight = tDto.data.user.province;
-        //         UIRefreshGoldEvent();
-        //         if (pAct != null)
-        //             pAct(tDto.data);
-        //     }
-        //     else {
-        //         UIComponent.Instance.Toast(tDto.code);
-        //     }
-        // });
-        let response: typeof Web_User_Info.Response = await this.APIUserInfo().catch(() => { });
-
-        if (response) {
-
-            if (response.code == 0) {
-
-            }
-        }
-    }
-
 
 
     // <summary>
