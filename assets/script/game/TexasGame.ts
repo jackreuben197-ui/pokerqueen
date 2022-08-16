@@ -703,22 +703,23 @@ export default class TexasGame {
                 let fee: number = tResp.data.last_bring_out.fee;
                 let bring_out: number = tResp.data.last_bring_out.to_wallet;
                 if (bring_out + fee > 0) {
-                    // if (tResp.data.last_bring_out.to_wallet <= tResp.data.wallet.gold) {
-                    //     ProtocolAgency.Send({
-                    //         protocol: Protocol_Holdem_Seated,
-                    //         RoomID: GameCache.Instance.room_id,
-                    //         MatchID: GameCache.Instance.match_id,
-                    //         body: Protocol_Holdem_Seated.Request(
-                    //             {
-                    //                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                    //                 seatId: this.GetRemoteSeatID(mSeat.seatID),
-                    //                 bringIn: bring_out + fee,
-                    //                 autoOnTable: 0,
-                    //                 autoUseWallet: false,
-                    //                 returnOrNew: 0,
-                    //                 store: 0,
-                    //             }),
-                    //     });
+                    if (tResp.data.last_bring_out.to_wallet <= tResp.data.wallet.gold) {
+                        ProtocolAgency.Send({
+                            protocol: Protocol_Holdem_Seated,
+                            RoomID: GameCache.Instance.room_id,
+                            MatchID: GameCache.Instance.match_id,
+                            body: Protocol_Holdem_Seated.Request(
+                                {
+                                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                                    seatId: this.GetRemoteSeatID(mSeat.seatID),
+                                    bringIn: bring_out + fee,
+                                    autoOnTable: 0,
+                                    autoUseWallet: false,
+                                    returnOrNew: 0,
+                                    store: 0,
+                                }),
+                        });
+                    }
                 } else {
 
                 }

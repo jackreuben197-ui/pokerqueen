@@ -1,7 +1,11 @@
 import Dispatcher from "../event/Dispatcher";
+import { LanguageCode } from "../i18n/LanguageCode";
+import GameCache from "../manager/GameCache";
+import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { CPlayer } from "./CPlayer";
 import Seat from "./Seat";
 import { SeatSitAnimation } from "./SeatStateHandler";
@@ -16,7 +20,7 @@ export default class TexasGameProtocol {
         this.RemoveMsgHandler();
         console.log(`TexasGame : RegisterMsgHandler`);
 
-        //Dispatcher.on(ProtocolCode.Protocol_Holdem_Seated, HANDLER_REQ_GAME_SEND_MY_SEAT,this);//自己坐下
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_Seated, this.HANDLER_REQ_GAME_SEND_MY_SEAT, this);//自己坐下
         Dispatcher.on(ProtocolCode.Protocol_Holdem_SeatedOthers, this.HANDLER_REQ_GAME_RECV_SEAT_DOWN, this);  // 别人坐下
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Action, HANDLER_REQ_GAME_SEND_ACTION);  // 自己牌桌操作
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_ActionAll, HANDLER_REQ_GAME_RECV_ACTION);  // 收到牌桌操作
@@ -50,7 +54,7 @@ export default class TexasGameProtocol {
     public RemoveMsgHandler(): void {
         console.log(`TexasGame : RemoveMsgHandler`);
 
-        // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Seated, HANDLER_REQ_GAME_SEND_MY_SEAT);//自己坐下
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_Seated, this.HANDLER_REQ_GAME_SEND_MY_SEAT, this);//自己坐下
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_SeatedOthers, HANDLER_REQ_GAME_RECV_SEAT_DOWN);  // 别人坐下
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Action, HANDLER_REQ_GAME_SEND_ACTION);  // 自己牌桌操作
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_ActionAll, HANDLER_REQ_GAME_RECV_ACTION);  // 收到牌桌操作
@@ -111,5 +115,77 @@ export default class TexasGameProtocol {
         mSeat.Player = mPlayer;
         mSeat.isBank = false;
         mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
+    }
+    /// <summary>
+    /// 自己坐下
+    /// </summary>
+    /// <param name="response"></param>
+    HANDLER_REQ_GAME_SEND_MY_SEAT(rec: ServerMessageSeated.AsObject) {
+
+        if (rec == null) {
+            return;
+        }
+        if (rec.status != 0) {
+            ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(rec.status));
+            return;
+        }
+        this.game.mainPlayer.chips = rec.chips;
+        this.game.mainPlayer.leavelChips = rec.accountChips;
+        GameCache.Instance.gold = rec.accountChips;
+        this.game.mainPlayer.cacheStoreChips = rec.storeChips;
+
+        this.game.mainPlayer.actionStatus = Def.Action.NONE;
+        this.game.mainPlayer.canPlayStatus = rec.postStatus;
+        this.game.mainPlayer.IsAutoOp = false;
+        this.game.mainPlayer.ante = 0;
+        this.game.mainPlayer.anteNumber = 0;
+        this.game.mainPlayer.cards = this.game.GetEmptyHandCards();
+
+        let mSeat: Seat = null;
+        // mSeat = GetSeatByLocalSeatID(GetLocalSeatID(rec.RecvSeatId));
+        // if (null == mSeat)
+        //     return;
+
+        // mainPlayer.seatID = GetLocalSeatID(rec.RecvSeatId);
+        // mSeat.Player = mainPlayer;
+        // mSeat.isBank = false;
+        // if (!mainPlayer.isParticipateInTheGame) {
+        //     mSeat.UpdateWaiteNextTips(true);
+        // }
+        // HideWaitBlindBtn();
+
+        // if (mSeat.Player.chips > GetMinPlayChips() && mSeat.seatID == mainPlayer.seatID) {
+        //     if (mainPlayer.canPlayStatus == Def.Types.CanPlayStatus.NeedPost) {
+        //         // 需要补盲
+        //         ShowWaitBlindBtn();
+        //         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind<Entity>.Instance);
+        //     }
+        //     else {
+        //         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart<Entity>.Instance);
+        //     }
+
+        // }
+
+        // mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation<Entity>.Instance);
+
+        // // todo 这里要搞十分十分十分酷炫的动画，把自己位移到最下方，0号位
+
+        // if (mSeat.ClientSeatId > 0) {
+        //     ResetSeatUIInfo(mSeat.ClientSeatId);
+        // }
+        // //房间坐下时时添加firebase事件触发
+        // Dictionary < string, string > paramMap = new Dictionary<string, string>();
+        // paramMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
+        // paramMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
+        // paramMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
+        // paramMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
+        // GoogleFirebaseHelper.LevelStartEvent(paramMap);
+        // //添加到appsFlyer统计进入金币房间消息
+        // Dictionary < string, string > valuesMap = new Dictionary<string, string>();
+        // valuesMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
+        // valuesMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
+        // valuesMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
+        // valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
+        // AppsFlyerHelper.GameEnterEvent(valuesMap);
     }
 }

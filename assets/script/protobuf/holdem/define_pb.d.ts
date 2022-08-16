@@ -19,19 +19,61 @@ export namespace Def {
   }
 
   export interface ActionMap {
+    /// <summary>
+    /// 未比赛自由状态
+    /// </summary>
     NONE: 0;
+    /// <summary>
+    /// 前注
+    /// </summary>
     ANTE: 1;
+    /// <summary>
+    /// 小盲
+    /// </summary>
     SB: 2;
+    /// <summary>
+    /// 大盲
+    /// </summary>
     BB: 3;
+    /// <summary>
+    /// 抓
+    /// </summary>
     STRADDLE: 4;
+    /// <summary>
+    /// 下
+    /// </summary>
     BET: 5;
+    /// <summary>
+    /// 跟
+    /// </summary>
     CALL: 6;
+    /// <summary>
+    /// 盖
+    /// </summary>
     FOLD: 7;
+    /// <summary>
+    /// 观望
+    /// </summary>
     CHECK: 8;
+    /// <summary>
+    /// 追
+    /// </summary>
     RAISE: 9;
+    /// <summary>
+    /// 全压
+    /// </summary>
     ALLIN: 10;
+    /// <summary>
+    /// 补盲扣款
+    /// </summary>
     POST: 11;
+    /// <summary>
+    /// 已经开始比赛还未动作
+    /// </summary>
     READY: 12;
+    /// <summary>
+    /// 又补盲又前住
+    /// </summary>
     POSTANTE: 13;
   }
 

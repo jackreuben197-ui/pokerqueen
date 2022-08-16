@@ -13,7 +13,6 @@ export default class HttpRequest {
         let url = host + (api || request.API);
         url = this.handleUrl(url);
         let needJuhua = WebHelper.NeedJuhua(request.API);
-        //@ts-ignore
         await HttpClient.post({
             url: url, param, onFailure, onSuccess: HttpRequest.onSuccess.bind(HttpRequest, request, onSuccess),
             headers: headers, needJuhua

@@ -29,11 +29,11 @@ export default class HttpClient {
     /**
      * get 请求
      */
-    static async get({ url = null, param = null, onFailure = null, onSuccess = null, needJuhua = true }) {
+    static async get({ url = null, param = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
         param = JSON.stringify(param);
         console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, param);
         needJuhua && UIManager.open(UIDefine.UIPromptComponent);
-        let response: string = <string>await this.__request(url, "GET", param);
+        let response: string = <string>await this.__request(url, "GET", param, headers);
         needJuhua && UIManager.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
         this.__response(response, onFailure, onSuccess);

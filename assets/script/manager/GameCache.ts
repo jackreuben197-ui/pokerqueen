@@ -282,7 +282,7 @@ export default class GameCache {
 
 
     public static get Instance(): GameCache {
-        return this._instance || (this._instance = new GameCache());
+        return this._instance ||= new GameCache();
     }
     constructor() {
         this.nUserId = 0;
