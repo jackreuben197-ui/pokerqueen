@@ -23,6 +23,7 @@ export default class UIAddChipsComponent extends UIBase {
 
 
     private Button_Close: cc.Node = null;
+    private Button_Commit: cc.Node = null;
     private Image_Mask: cc.Node = null;
     ////////////////////////////////////////
 
@@ -48,14 +49,17 @@ export default class UIAddChipsComponent extends UIBase {
         this.imageDialog = this.getChildNodeOrComponent("Image_Dialog");
         this.Button_Close = this.getChildNodeOrComponent("Button_Close");
         this.Image_Mask = this.getChildNodeOrComponent("Image_Mask");
+        this.Button_Commit = this.getChildNodeOrComponent("Button_Commit");
 
         this.sliderCoin = this.getChildNodeOrComponent("Slider_Coin", GGSlider);
         this.sliderCoin.onChange(this.onValueChangedSliderCoin.bind(this));
 
+
     }
     protected regiterTouchEvents(): void {
-        this.Button_Close.on("click", this.closeUI, this);
-        this.Image_Mask.on("click", this.closeUI, this);
+        this.Button_Close.on("click", this.onClickClose, this);
+        this.Image_Mask.on("click", this.onClickClose, this);
+        this.Button_Commit.on("click", this.onClickCommit, this);
     }
     onShow(addClipsData?: typeof this.AddClipsData): void {
         super.onShow(addClipsData);
@@ -94,11 +98,28 @@ export default class UIAddChipsComponent extends UIBase {
     onValueChangedSliderCoin(rate: number) {
         this.textCoin.string = `${StringHelper.getStringDiv100(rate * GameCache.Instance.carry_small * 100 ^ 0)}`;
         this.textNeedCoin.string = `${StringHelper.getStringDiv100(rate * GameCache.Instance.carry_small * 100 ^ 0)}`;
+
+        if (rate * GameCache.Instance.carry_small * 100 > GameCache.Instance.gold) {
+            this.textNeedCoin.node.color = new cc.Color(184, 43, 48, 255);
+        }
+        else {
+            this.textNeedCoin.node.color = new cc.Color(255, 255, 255, 255);
+        }
+    }
+    private onClickCommit() {
+
+        let mAnteNumber = (+this.textCoin.string) * 100;
+        GameCache.Instance.CurGame.AddChips(mAnteNumber);
+        this.hideUI();
     }
     /**
-     * 关闭界面
+     * 隐藏界面
      */
-    closeUI() {
+    onClickClose() {
+        this.hideUI();
+    }
+
+    private hideUI() {
         this.node.active = false;
     }
 }

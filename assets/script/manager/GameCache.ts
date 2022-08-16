@@ -130,11 +130,11 @@ export default class GameCache {
     /// <summary>
     /// MTT比赛id
     /// </summary>
-    public match_id: number;
+    public match_id: number = 0;
     /// <summary>
     /// 房间号
     /// </summary>
-    public room_id: number;
+    public room_id: number = 0;
     /// <summary>
     /// 房间座位
     /// </summary>

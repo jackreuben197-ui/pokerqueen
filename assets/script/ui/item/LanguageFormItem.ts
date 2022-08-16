@@ -46,7 +46,7 @@ export default class LanguageFormItem extends UIBase {
     }
     onShow(param: ILanguageFormItem = null) {
         super.onShow(param);
-        this.s_language_label.string = param.s_language;
+        this.s_language_label.i18NString = param.s_language;
         this.language_label.string = param.language;
         this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag);
     }

@@ -1,51 +1,53 @@
 import { i18nMgr } from "./i18nMgr";
 
-// const {ccclass, property} = cc._decorator;
-const { ccclass, property, executeInEditMode, disallowMultiple, requireComponent, menu } = cc._decorator;
-@ccclass
-//@executeInEditMode
+//@executeInEditMode()
 //@requireComponent(cc.Label)
+const { ccclass, property, disallowMultiple } = cc._decorator;
+@ccclass
+
 @disallowMultiple
 export class i18nLabel extends cc.Component {
-    @property({ visible: false })
+    @property
     private i18n_string: string = "";
-
-    @property({ visible: false })
-    private i18n_params: string[] = [];
 
     start() {
         i18nMgr._addOrDelLabel(this, true);
         this._resetValue();
     }
 
-    @property({ type: cc.String })
-    get string() {
-        return this.i18n_string;
-    }
-
-    set string(value: string) {
+    set i18NString(value: string) {
         this.i18n_string = value;
-
         this.setEndValue()
     }
 
-    @property({ type: [cc.String] })
-    get params() {
-        return this.i18n_params;
-    }
 
-    set params(value: string[]) {
-        this.i18n_params = value;
+    // @property({ type: cc.String })
+    // // get string() {
+    // //     return this.i18n_string;
+    // // }
 
-        this.setEndValue()
-    }
+    // // set string(value: string) {
+    // //     this.i18n_string = value;
 
-    init(string: string, params: string[]) {
-        this.i18n_string = string;
-        this.i18n_params = params;
+    // //     this.setEndValue()
+    // // }
+    // string: string = null;
 
-        this.setEndValue()
-    }
+    // @property({ type: [cc.String] })
+    // get params() {
+    //     return this.i18n_params;
+    // }
+
+    // set params(value: string[]) {
+    //     this.i18n_params = value;
+
+    //     this.setEndValue()
+    // }
+
+    // init(string: string, params: string[]) {
+    //     this.i18n_string = string;
+    //     this.setEndValue()
+    // }
 
     private setEndValue() {
         let label: any = this.getComponent(cc.Label);
@@ -63,7 +65,8 @@ export class i18nLabel extends cc.Component {
     }
 
     _resetValue() {
-        this.string = this.i18n_string;
+        //this.string = this.i18n_string;
+        this.setEndValue();
     }
 
     onDestroy() {

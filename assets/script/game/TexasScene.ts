@@ -34,7 +34,7 @@ export default class TexasScene extends BaseScene {
     Seat: cc.Node = null;
 
 
-    UIAddChips:UIAddChipsComponent = null;
+    UIAddChips: UIAddChipsComponent = null;
 
     ///////////////////////////////////
     /**
@@ -54,10 +54,12 @@ export default class TexasScene extends BaseScene {
         this.roominfo_lab = this.getChildNodeOrComponent("roominfo_lab", cc.Label);
         this.ImageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.Seat = this.getChildNodeOrComponent("Seat");
-        this.UIAddChips = this.getChildNodeOrComponent("UIAddChips",UIAddChipsComponent);
+        this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
 
         //GameCache.Instance.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
+
+        this.UIAddChips.node.active = false;
 
         this.Seat.active = false;
 

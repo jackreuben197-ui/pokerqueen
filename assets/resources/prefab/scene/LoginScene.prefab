@@ -1027,7 +1027,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_InputMoblie",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -1794,7 +1793,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_InputPW",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -2857,7 +2855,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_BtnLogin",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -3265,7 +3262,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_Forget",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -3750,7 +3746,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_Register",
-    "i18n_params": [],
     "_id": ""
   },
   {

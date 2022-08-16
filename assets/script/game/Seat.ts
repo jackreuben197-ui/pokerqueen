@@ -69,6 +69,8 @@ export default class Seat {
 
         this.fsm = null;
 
+        this.UnRegiterTouchEvents();
+
         UpdateComponent.Remove(this.FsmLogicComponent);
 
     }
@@ -77,7 +79,7 @@ export default class Seat {
         this.uirc.imageEmpty.node.on("click", this.onClickEmpty, this);
     }
     UnRegiterTouchEvents() {
-
+        this.uirc.imageEmpty.node.off("click", this.onClickEmpty, this);
     }
 
 

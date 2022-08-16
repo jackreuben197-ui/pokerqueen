@@ -56,7 +56,7 @@ export default class UIMine extends UIBase {
 
             light_bg && (light_bg.spriteFrame = AssetContext.getAsset(config.light_bg));
             icon && (icon.spriteFrame = AssetContext.getAsset(config.icon));
-            text && (text.string = config.string);
+            text && (text.i18NString = config.string);
             item.name = config.string;
             item.on("click", this.onItemClick, this);
         }

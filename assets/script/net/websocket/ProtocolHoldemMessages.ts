@@ -1,9 +1,11 @@
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
+import { ClientMessageBringIn, ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
 import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
+import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 
 export class BaseProtocol {
     //RoomID: number;
@@ -139,6 +141,50 @@ export class Protocol_Holdem_SeatedOthers extends BaseProtocol {
     }
 }
 
+/**
+ * 主动坐下(非MTT使用)
+ */
+export class Protocol_Holdem_Seated extends BaseProtocol {
+
+    static _request: ClientMessageSeated;
+    public static Request_AsObject: ClientMessageSeated.AsObject = null;
+    public static Response_AsObject: ServerMessageSeated.AsObject = null;
+
+    static Request(body?: ClientMessageSeated.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessageSeated());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessageSeated.AsObject {
+        let result: ServerMessageSeated = ServerMessageSeated.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
+/**
+ * 桌子上额外买入(非MTT)
+ */
+export class Protocol_Holdem_BringIn extends BaseProtocol {
+
+    static _request: ClientMessageBringIn;
+    public static Request_AsObject: ClientMessageBringIn.AsObject = null;
+    public static Response_AsObject: ServerMessageBringIn.AsObject = null;
+
+    static Request(body?: ClientMessageBringIn.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessageBringIn());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessageBringIn.AsObject {
+        let result: ServerMessageBringIn = ServerMessageBringIn.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
+
+
 
 
 
@@ -149,3 +195,5 @@ cc.js.setClassName("Protocol_Holdem_Register", Protocol_Holdem_Register);
 cc.js.setClassName("Protocol_Holdem_Leave", Protocol_Holdem_Leave);
 cc.js.setClassName("Protocol_Holdem_EnterRoom", Protocol_Holdem_EnterRoom);
 cc.js.setClassName("Protocol_Holdem_SeatedOthers", Protocol_Holdem_SeatedOthers);
+cc.js.setClassName("Protocol_Holdem_Seated", Protocol_Holdem_Seated);
+cc.js.setClassName("Protocol_Holdem_BringIn", Protocol_Holdem_BringIn);

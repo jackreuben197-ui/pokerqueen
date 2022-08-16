@@ -136,11 +136,11 @@ export const UIDefine = {
     /**
      * 确认取消 弹窗面板(默认触摸全屏可关闭)
      */
-    BaseAlert: {
-        UIType: UIType.Alert,
-        Name: "BaseAlert",
+    UIDialogComponent: {
+        UIType: UIType.Dialog,
+        Name: "UIDialogComponent",
         Bundle: null,
-        Path: "prefab/alert/BaseAlert",
+        Path: "prefab/dialog/UIDialogComponent",
     },
 
     UIPromptComponent: {

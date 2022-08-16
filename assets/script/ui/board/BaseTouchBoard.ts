@@ -47,11 +47,13 @@ export default class BaseTouchBoard extends UIBase {
         this.mask.on("click", this.goClose, this);
     }
 
-
-
-    onShow(param: { data?: any, style?: any } = null) {
+    onShow(param: { data?: any, style?: any, noAnimation?: boolean } = null) {
         super.onShow(param);
         this.lateShow(param);
+        if (param.noAnimation) {
+            this.top_block.active = false;
+            return;
+        }
         this.mainFadeInIsComplete = false;
         this.maskFadeInIsComplete = false;
         //设置mask挡板的block
@@ -64,7 +66,7 @@ export default class BaseTouchBoard extends UIBase {
         this.mainFadeIn(param?.style);
     }
 
-    protected lateShow(param: { data?: any, style?: any } = null) {
+    protected lateShow(param?: any) {
 
     }
 

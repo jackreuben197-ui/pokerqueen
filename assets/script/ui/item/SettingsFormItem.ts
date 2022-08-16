@@ -33,8 +33,8 @@ export default class SettingsFormItem extends UIBase {
 
     onShow(param?: { type: number, right_string: string, left_string: string }): void {
         super.onShow(param);
-        this.left_lab.string = param?.left_string;
-        this.right_lab.string = param?.right_string;
+        this.left_lab.i18NString = param?.left_string;
+        this.right_lab.i18NString = param?.right_string;
     }
 
     protected regiterTouchEvents(): void {

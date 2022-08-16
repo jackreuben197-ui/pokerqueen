@@ -5,15 +5,20 @@ import UpdateComponent from "../funcomponent/UpdateComponent";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { LanguageCode } from "../i18n/LanguageCode";
+import { UIMineModel } from "../lobby/UIMineModel";
 import GameCache from "../manager/GameCache";
 import SceneManager from "../manager/SceneManager";
+import UIManager from "../manager/UIManager";
 import { Web_User_Room } from "../net/https/WebRequest";
+import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { Protocol_Holdem_BringIn, Protocol_Holdem_Seated } from "../net/websocket/ProtocolHoldemMessages";
 import { RoomInfo } from "../protobuf/holdem/define_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../session/StorageKey";
 import GameUtil from "../tools/GameUtil";
 import AssetContext from "../ui/component/AssetContext";
+import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import GameSession from "./GameSession";
@@ -689,29 +694,31 @@ export default class TexasGame {
             cc.log(`Sitdown 该位置有其他玩家 clientSeatId:${clientSeatId}`);
             return;
         }
+
         this.cacheSitdownSeatId = mSeat.seatID;
 
         UITexasModel.mInstance.APIUserRoom().then((tResp: typeof Web_User_Room.Response) => {
+            //last_bring_out 有数据
             if (tResp.code == 0 && tResp.data.last_bring_out != null) {
                 let fee: number = tResp.data.last_bring_out.fee;
                 let bring_out: number = tResp.data.last_bring_out.to_wallet;
                 if (bring_out + fee > 0) {
-                    //     if (tResp.data.last_bring_out.to_wallet <= tResp.data.wallet.gold) {
-                    //         CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Seated()
-                    // 			{
-                    //                 RoomID = (ulong)GameCache.Instance.room_id,
-                    //                 MatchID = (ulong)GameCache.Instance.match_id,
-                    //                 request = new ClientMessageSeated()
-                    // 				{
-                    //                 Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
-                    //             SeatId = GetRemoteSeatID(mSeat.seatID),
-                    //             ReturnOrNew = 1,
-                    //             BringIn = (ulong)(bring_out + fee)
-
-                    // 				}
-
-
-                    // })
+                    // if (tResp.data.last_bring_out.to_wallet <= tResp.data.wallet.gold) {
+                    //     ProtocolAgency.Send({
+                    //         protocol: Protocol_Holdem_Seated,
+                    //         RoomID: GameCache.Instance.room_id,
+                    //         MatchID: GameCache.Instance.match_id,
+                    //         body: Protocol_Holdem_Seated.Request(
+                    //             {
+                    //                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                    //                 seatId: this.GetRemoteSeatID(mSeat.seatID),
+                    //                 bringIn: bring_out + fee,
+                    //                 autoOnTable: 0,
+                    //                 autoUseWallet: false,
+                    //                 returnOrNew: 0,
+                    //                 store: 0,
+                    //             }),
+                    //     });
                 } else {
 
                 }
@@ -720,10 +727,127 @@ export default class TexasGame {
                     //this.ShowSetAutoAddChips();
                 }
                 else {
+                    //弹出设置
                     this.ShowAddChips();
                 }
             }
         })
+    }
+
+    /// <summary>
+    /// 转换本地座位号到远端座位号 客户端发位置从  1开始，0为默认值，客户端-1为默认值
+    /// </summary>
+    /// <param name="localSeatID"></param>
+    /// <returns></returns>
+    public GetRemoteSeatID(localSeatID: number): number {
+        return localSeatID + 1
+    }
+
+    /// <summary>
+    /// 带入
+    /// </summary>
+    /// <param name="anteNumber"></param>
+    public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false) {
+        if (GameCache.Instance.gold < anteNumber) {
+            UIManager.open(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.CommitCancel,
+                    // title = $"余额不足",
+                    title: LanguageCode.LanguageDescription(10025),
+                    // content = $"金豆余额不足，请先充值",
+                    content: LanguageCode.LanguageDescription(20010),
+                    // contentCommit = "去充豆",
+                    contentCommit: LanguageCode.LanguageDescription(10026),
+                    // contentCancel = "取消",
+                    contentCancel: LanguageCode.LanguageDescription(10013),
+                    actionCommit: () => {
+                        // UIMineModel.mInstance.APIGetClubId(tDtoHasClub => {
+                        //     if (tDtoHasClub) {
+                        //         UIComponent.Instance.ShowNoAnimation(UIType.UIMine_WalletAddBeansList, null);
+                        //     }
+                        //     else {
+                        //         UIComponent.Instance.ToastLanguage("WalletMy11");
+                        //     }
+                        // });
+                    },
+                    actionCancel: null,
+                    noAnimation: true,
+                });
+            return;
+        }
+        if (this.mainPlayer == null || this.mainPlayer.seatID == -1) {
+            //声纹认证开启判断
+            if (GameCache.Instance.voiceprint_verify_on == 1) {
+                //             UITexasModel.mInstance.APIUserVoiceprint(0, 0, Act => {
+                //                 if (Act.code == 0) {
+                //                     if (Act.data == null) {
+                //                         if (!MicrophoneHelper.IsMicrophonePermissionAllowed()) {
+                //                             return;
+                //                         }
+                //                         Game.Scene.GetComponent<UIComponent>().ShowNoAnimation(UIType.UITexasHumanYZ, new UITexasHumanYZComponent.VerificationDataInfo()
+                //     								{
+                //                                 cacheVoiceprint = VoiceprintRoomType.Hall,
+                //                                 isHaveVoice = true
+                //                             });
+                //                     }
+                //                     else {
+                //                         CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Seated()
+                //     								{
+                //                                 RoomID = (ulong)GameCache.Instance.room_id,
+                //                                 MatchID = (ulong)GameCache.Instance.match_id,
+                //                                 request = new ClientMessageSeated()
+                //     									{
+                //                                 Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
+                //                             SeatId = GetRemoteSeatID((sbyte)cacheSitdownSeatId),
+                //                             BringIn = (ulong)anteNumber,//rec.Chips
+                //                             AutoOnTable = autoOnTable,
+                //                             //Store= storeChip,
+                //                             AutoUseWallet = autoUseWallet
+                //     									}
+                //                 });
+                //         }
+                //         return;
+                //     }
+                // });
+            }
+            else {
+
+                ProtocolAgency.Send({
+                    protocol: Protocol_Holdem_Seated,
+                    RoomID: GameCache.Instance.room_id,
+                    MatchID: GameCache.Instance.match_id,
+                    body: Protocol_Holdem_Seated.Request(
+                        {
+                            room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                            seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
+                            bringIn: anteNumber,//rec.Chips
+                            autoOnTable: autoOnTable,
+                            autoUseWallet: autoUseWallet,
+                            returnOrNew: 0,
+                            store: 0,
+                        }),
+                });
+
+            }
+
+            return;
+        }
+        let IsUseWallet = true;
+        if (this.mainPlayer.cacheStoreChips >= anteNumber) {
+            IsUseWallet = false;
+        }
+        ProtocolAgency.Send({
+            protocol: Protocol_Holdem_BringIn,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            body: Protocol_Holdem_BringIn.Request(
+                {
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                    bringIn: anteNumber,
+                    useWallet: IsUseWallet
+                }),
+        });
+
     }
 
     /**
@@ -747,34 +871,28 @@ export default class TexasGame {
 
         cc.log("清理所有玩家");
 
-        // while (this.listSeat.length) {
-        //     let seat = this.listSeat.pop();
-        //     this.removeSeatUI(seat.ui);
-        //     seat.Clear();
-        // }
-
         if (null != this.mainPlayer) {
             this.mainPlayer.Dispose();
             this.mainPlayer = null;
         }
-        let mSeat = null;
-        for (let i = 0, n = this.listSeat.length; i < n; i++) {
-            mSeat = this.listSeat[i];
-            if (null == mSeat)
-                continue;
 
-            if (null == mSeat.Player)
-                continue;
-            mSeat.Player.Dispose();
-            mSeat.Player = null;
+        while (this.listSeat.length) {
+            let mSeat: Seat = this.listSeat.pop();
+            if (mSeat?.Player) {
+                mSeat.Player.Dispose();
+                mSeat.Player = null;
+            }
+            this.returnSeatUIPool(mSeat?.ui);
+            mSeat?.Clear();
         }
+
     }
     getSeatUI() {
         if (this.seatUI_pool.length) return this.seatUI_pool.pop();
         return cc.instantiate(this.gameUI.Seat);
     }
-    removeSeatUI(seatUI: cc.Node) {
-        this.seatUI_pool.push(seatUI);
+    returnSeatUIPool(seatUI: cc.Node) {
+        seatUI && this.seatUI_pool.push(seatUI);
     }
 
     /**
