@@ -5,9 +5,13 @@ import UIManager from "../manager/UIManager";
 import WebSocketClient from "../net/websocket/WebSocketClient";
 
 export default class GlobalSession {
-
-    static get NowTime(): number {
+    //单位秒
+    static get NowTimeS(): number {
         return + new Date().getTime() / 1000;
+    }
+    //单位毫秒
+    static get NowTimeMS(): number {
+        return + new Date().getTime();
     }
 
     //游戏登出

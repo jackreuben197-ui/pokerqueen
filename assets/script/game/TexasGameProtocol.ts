@@ -8,8 +8,10 @@ import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { CPlayer } from "./CPlayer";
 import Seat from "./Seat";
-import { SeatSitAnimation } from "./SeatStateHandler";
+import { SeatSitAnimation, SeatWaitBlind, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
+
+const CanPlayStatus = Def.CanPlayStatus;
 
 export default class TexasGameProtocol {
 
@@ -142,38 +144,38 @@ export default class TexasGameProtocol {
         this.game.mainPlayer.cards = this.game.GetEmptyHandCards();
 
         let mSeat: Seat = null;
-        // mSeat = GetSeatByLocalSeatID(GetLocalSeatID(rec.RecvSeatId));
-        // if (null == mSeat)
-        //     return;
+        mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.recvSeatId));
+        if (null == mSeat)
+            return;
 
-        // mainPlayer.seatID = GetLocalSeatID(rec.RecvSeatId);
-        // mSeat.Player = mainPlayer;
-        // mSeat.isBank = false;
-        // if (!mainPlayer.isParticipateInTheGame) {
-        //     mSeat.UpdateWaiteNextTips(true);
-        // }
-        // HideWaitBlindBtn();
+        this.game.mainPlayer.seatID = this.game.GetLocalSeatID(rec.recvSeatId);
+        mSeat.Player = this.game.mainPlayer;
+        mSeat.isBank = false;
+        if (!this.game.mainPlayer.isParticipateInTheGame) {
+            mSeat.UpdateWaiteNextTips(true);
+        }
+        this.game.HideWaitBlindBtn();
 
-        // if (mSeat.Player.chips > GetMinPlayChips() && mSeat.seatID == mainPlayer.seatID) {
-        //     if (mainPlayer.canPlayStatus == Def.Types.CanPlayStatus.NeedPost) {
-        //         // 需要补盲
-        //         ShowWaitBlindBtn();
-        //         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind<Entity>.Instance);
-        //     }
-        //     else {
-        //         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart<Entity>.Instance);
-        //     }
+        if (mSeat.Player.chips > this.game.GetMinPlayChips() && mSeat.seatID == this.game.mainPlayer.seatID) {
+            if (this.game.mainPlayer.canPlayStatus == CanPlayStatus.NEED_POST) {
+                // 需要补盲
+                this.game.ShowWaitBlindBtn();
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind.Instance);
+            }
+            else {
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+            }
 
-        // }
+        }
 
-        // mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation<Entity>.Instance);
+        mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
 
-        // // todo 这里要搞十分十分十分酷炫的动画，把自己位移到最下方，0号位
+        // todo 这里要搞十分十分十分酷炫的动画，把自己位移到最下方，0号位
 
-        // if (mSeat.ClientSeatId > 0) {
-        //     ResetSeatUIInfo(mSeat.ClientSeatId);
-        // }
-        // //房间坐下时时添加firebase事件触发
+        if (mSeat.ClientSeatId > 0) {
+            this.game.ResetSeatUIInfo(mSeat.ClientSeatId);
+        }
+        //房间坐下时时添加firebase事件触发
         // Dictionary < string, string > paramMap = new Dictionary<string, string>();
         // paramMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
         // paramMap.Add("roomId", GameCache.Instance.room_id + "");//房间id

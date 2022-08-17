@@ -1,6 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import WebImageHelper from "../helper/WebImageHelper";
+import { LanguageCode } from "../i18n/LanguageCode";
 import { UIMineModel } from "../lobby/UIMineModel";
 import GameCache from "../manager/GameCache";
 import LobbySession from "../session/LobbySession";
@@ -77,9 +78,11 @@ export default class Seat {
 
     RegiterTouchEvents() {
         this.uirc.imageEmpty.node.on("click", this.onClickEmpty, this);
+        this.uirc.rawimageHead.node.on("click", this.onClickEmpty, this);
     }
     UnRegiterTouchEvents() {
         this.uirc.imageEmpty.node.off("click", this.onClickEmpty, this);
+        this.uirc.rawimageHead.node.off("click", this.onClickEmpty, this);
     }
 
 
@@ -496,6 +499,23 @@ export default class Seat {
         //     this.uirc.textNickname.node.color = cc.Color.WHITE;
         // }
     }
+
+    //刷新座位下的等待文本
+    public UpdateWaiteNextTips(ishow: boolean): void {
+        if (this.IsMySeat) {
+            this.uirc.WaitforthenextmoveTips.string = `${LanguageCode.LanguageDescription(20090)}`;
+            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -416);
+        }
+        else {
+            this.uirc.WaitforthenextmoveTips.string = `${LanguageCode.LanguageDescription(20091)}`;
+            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
+        }
+        if (GameCache.Instance.GameStatus == 1) {
+            this.uirc.WaitforthenextmoveTips.node.active = ishow;
+        }
+    }
+
+
 
     public SetNickname(name: string): void {
         this.uirc.textNickname.node.active = !this.IsMySeat;

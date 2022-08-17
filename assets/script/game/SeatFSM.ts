@@ -139,4 +139,23 @@ export class SeatFSM {
     }
     //#endregion
 
+    //#region 等待补盲
+    public WaitBlindEnter():void
+    {
+
+    }
+
+    public WaitBlindExecute():void
+    {
+
+    }
+
+    public WaitBlindExit():void
+    {
+
+    }
+    //#endregion
+
+
+
 }

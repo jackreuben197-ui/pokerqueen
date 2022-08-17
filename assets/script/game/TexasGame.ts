@@ -629,7 +629,7 @@ export default class TexasGame {
     }
 
     // 重置位置信息
-    protected ResetSeatUIInfo(clientSeatId: number): void {
+    public ResetSeatUIInfo(clientSeatId: number): void {
         if (clientSeatId == 0)
             return;
 
@@ -736,12 +736,48 @@ export default class TexasGame {
     }
 
     /// <summary>
+    /// 最小可玩的筹码，少于等于此数需要带入才能玩
+    /// </summary>
+    public GetMinPlayChips(): number {
+        return this.bigBlind + this.groupBet;
+    }
+
+    /// <summary>
+    /// 当前用户是否有坐下
+    /// </summary>
+    /// <returns></returns>
+    public UserSitdown(): boolean {
+        if (null != this.mainPlayer) {
+            return this.mainPlayer.seatID != -1;
+        }
+        return false;
+    }
+
+
+    /// <summary>
     /// 转换本地座位号到远端座位号 客户端发位置从  1开始，0为默认值，客户端-1为默认值
     /// </summary>
     /// <param name="localSeatID"></param>
     /// <returns></returns>
     public GetRemoteSeatID(localSeatID: number): number {
         return localSeatID + 1
+    }
+
+    /// <summary>
+    /// 展示补盲按钮
+    /// </summary>
+    public ShowWaitBlindBtn(): void {
+        if (null == this.gameUI.buttonWaitBlind || this.gameUI.buttonWaitBlind.activeInHierarchy)
+            return;
+        this.gameUI.buttonWaitBlind.active = true;
+    }
+    /// <summary>
+    /// 隐藏补盲按钮
+    /// </summary>
+    public HideWaitBlindBtn(): void {
+        if (null == this.gameUI.buttonWaitBlind || !this.gameUI.buttonWaitBlind.activeInHierarchy)
+            return;
+        this.gameUI.buttonWaitBlind.active = false;
     }
 
     /// <summary>

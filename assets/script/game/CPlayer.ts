@@ -1,5 +1,7 @@
 import { Def } from "../protobuf/holdem/define_pb";
 
+const CanPlayStatus = Def.CanPlayStatus;
+const Action = Def.Action;
 export class CPlayer {
 
     public seatID: number; // 座位号
@@ -13,44 +15,44 @@ export class CPlayer {
     public clientIP: string; // 客户端IP，进房API有返回
     public leavelChips: number = 0;// 玩家的金豆余额
     public ante: number = 0; // 当前这一局各玩家下的赌注
-    public anteNumber: number= 0;// 当前操作下注筹码数
+    public anteNumber: number = 0;// 当前操作下注筹码数
     public cards: number[];
-    public extraBlind: number= 0;// 各玩家是否补盲 0 1
-    public initialBets: number= 0;// 开始的时候玩家下注的筹码(SNG时会返回)
-    public muckStatus: number= 0;// 盖牌的状态 0未盖牌 1为盖牌
-    public cardType: number= 0;// 赢牌类型 1皇家同花 2同花顺 3四条 4葫芦 5同花 6顺子 7三条 8两对 9一对 10高牌
+    public extraBlind: number = 0;// 各玩家是否补盲 0 1
+    public initialBets: number = 0;// 开始的时候玩家下注的筹码(SNG时会返回)
+    public muckStatus: number = 0;// 盖牌的状态 0未盖牌 1为盖牌
+    public cardType: number = 0;// 赢牌类型 1皇家同花 2同花顺 3四条 4葫芦 5同花 6顺子 7三条 8两对 9一对 10高牌
     public IsAutoOp: boolean;// 托管标志
-    public isOffLine: number= 0;//离线，0否，1是
+    public isOffLine: number = 0;//离线，0否，1是
     public playerStatus_insurance: boolean;// 保险人状态（true 正在保险操作）
-    public timeLeft_insurance: number= 0;// 保险人剩余时间(单位：秒，对应所有可购买的人，状态不是正在购买的，值为0)
-    public totalInsuredAmount: number= 0; // 保险人投保额
-    public autoInsuredAmount: number= 0; // 保险人背保额
-    public claimInsuredAmount: number= 0; // 保险赔付额
-    public delayTimes: number= 0;//已加时次数
-    public recyclingChip: number= 0;// 收筹码数量
+    public timeLeft_insurance: number = 0;// 保险人剩余时间(单位：秒，对应所有可购买的人，状态不是正在购买的，值为0)
+    public totalInsuredAmount: number = 0; // 保险人投保额
+    public autoInsuredAmount: number = 0; // 保险人背保额
+    public claimInsuredAmount: number = 0; // 保险赔付额
+    public delayTimes: number = 0;//已加时次数
+    public recyclingChip: number = 0;// 收筹码数量
     public isWin: boolean; // 收筹码玩家是否是赢家 0是 1否
-    public winChips: number= 0; // 赢家赢的筹码数
-    public isMaxcard: number= 0; // 是否是最大手牌 0是 1不是 未使用
-    public huterKill: number= 0;//人头
-    public huterAward: number= 0;//奖励
-    public huterKillPlus: number= 0;//人头增量
-    public MttHunterKillAwardOtherPlus: number= 0;//奖励增量
-    public HunterKillAwardOther: number= 0//用户滚雪球猎人,给下家的奖励(MTT)
-    public HunterHeadValue: number= 0;//人头价值
+    public winChips: number = 0; // 赢家赢的筹码数
+    public isMaxcard: number = 0; // 是否是最大手牌 0是 1不是 未使用
+    public huterKill: number = 0;//人头
+    public huterAward: number = 0;//奖励
+    public huterKillPlus: number = 0;//人头增量
+    public MttHunterKillAwardOtherPlus: number = 0;//奖励增量
+    public HunterKillAwardOther: number = 0//用户滚雪球猎人,给下家的奖励(MTT)
+    public HunterHeadValue: number = 0;//人头价值
     public isFold: boolean; // 是否已弃牌
-    public waitNextGame: number= 0; //等带下一手 0 不显示 1 显示
-    public actionStatus: number= 0;//动作
-    public canPlayStatus: number= 0;//是否可以打牌状态。Normal AgreePost 可以打牌，其余不能
+    public waitNextGame: number = 0; //等带下一手 0 不显示 1 显示
+    public actionStatus: number = 0;//动作
+    public canPlayStatus: number = 0;//是否可以打牌状态。Normal AgreePost 可以打牌，其余不能
     public RoundActioned: boolean;//还原场景，是否在本轮操作过
     public AddOn: boolean;//用户是否已经Addon
-    public AddonPlusMode1Times: number= 0;// 用户已增购次数(MTT) 截止买入/重购前(客户端断线后更新)
-    public AddonPlusMode2Times: number= 0;// 用户已增购次数(MTT) 截止买入/重购后(客户端断线后更新)
-    public cacheChips: number= 0;//缓存每把开始筹码量，MTT addon plus 模式1 使用 
+    public AddonPlusMode1Times: number = 0;// 用户已增购次数(MTT) 截止买入/重购前(客户端断线后更新)
+    public AddonPlusMode2Times: number = 0;// 用户已增购次数(MTT) 截止买入/重购后(客户端断线后更新)
+    public cacheChips: number = 0;//缓存每把开始筹码量，MTT addon plus 模式1 使用 
     public usedAddon: boolean;//本手是否使用过Add on
-    public VoiceprintId: number= 0;//声纹ID
+    public VoiceprintId: number = 0;//声纹ID
     public Sponsor_name: string;//发起声纹验证的人的名字												
     public Sponsor_rid: string;//发起声纹验证人的id
-    public UpdateStateTime: number= 0;//声纹改变状态的时间
+    public UpdateStateTime: number = 0;//声纹改变状态的时间
 
 
 
@@ -67,6 +69,17 @@ export class CPlayer {
         // else
         //     cards = new List<sbyte>();
     }
+
+
+    /// <summary>
+    /// 是否参与了本手游戏。
+    /// </summary>
+    public get isParticipateInTheGame(): boolean {
+
+        return ((this.canPlayStatus == CanPlayStatus.NORMAL || this.canPlayStatus == CanPlayStatus.AGREE_POST) && this.actionStatus != Action.NONE);
+
+    }
+
 
 
     public SetCards(list: number[]): void {
