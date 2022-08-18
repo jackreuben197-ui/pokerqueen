@@ -55,11 +55,10 @@ export class CPlayer {
     public UpdateStateTime: number = 0;//声纹改变状态的时间
 
 
-
     /// <summary>
     /// 当前玩家藏钱缓存
     /// </summary>
-    public cacheStoreChips: number;
+    public cacheStoreChips: number = 0;
 
 
     constructor(public id: number) {

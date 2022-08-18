@@ -12,7 +12,7 @@ export default class ButtonClickCD {
     //默认冷却 2000 毫秒
     static canClick(button: cc.Node, duration: number = 2, showToast: boolean = true) {
         let lastTime: number = ButtonClickCD.clickMap[button.uuid];
-        let now = GlobalSession.NowTime;
+        let now = GlobalSession.NowTimeS;
         ButtonClickCD.clickMap[button.uuid] = now;
         if (!lastTime || now - lastTime > duration) {
             return true;

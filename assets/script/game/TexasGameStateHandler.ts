@@ -48,7 +48,7 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
 
         game.EnterRoom();
 
-        this._waitTimeoutTime = GlobalSession.NowTime + this._waitTimeoutThreshold;
+        this._waitTimeoutTime = GlobalSession.NowTimeS + this._waitTimeoutThreshold;
 
         this._checkFlag = true;
     }

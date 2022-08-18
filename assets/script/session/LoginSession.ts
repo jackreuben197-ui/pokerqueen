@@ -219,7 +219,7 @@ export default class LoginSession {
         if (token == null || token == undefined || this.Token == "") {
             return false;
         }
-        return GlobalSession.NowTime < this.TokenExpireAt;
+        return GlobalSession.NowTimeS < this.TokenExpireAt;
     }
     /**
      * 登出

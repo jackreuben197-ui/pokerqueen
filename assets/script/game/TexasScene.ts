@@ -1,6 +1,8 @@
+import { CommonDefine } from "../define/CommonDefine";
 import { IUIDefine } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import { StringHelper } from "../helper/StringHelper";
+import { i18nLabel } from "../i18n/i18nLabel";
 import { UIMineModel } from "../lobby/UIMineModel";
 import GameCache from "../manager/GameCache";
 import UIManager from "../manager/UIManager";
@@ -37,13 +39,19 @@ export default class TexasScene extends BaseScene {
     transSubMenu: cc.Node = null;
     imageMenuMask: cc.Node = null;
     textTotalBean: cc.Label = null;
+    Menu_Buttons: cc.Node = null;
+
+    textStoreBean: cc.Label = null;
+
+    //按钮模板节点
+    Menu_Button: cc.Node = null;
+
+
 
 
 
 
     ImageWaitForStartTips: cc.Node = null;
-
-
 
     //座位节点
     Seat: cc.Node = null;
@@ -55,6 +63,68 @@ export default class TexasScene extends BaseScene {
     /**
      * 声明内容
      */
+    MenuButton_Type: {
+        node: cc.Node, text: string, i18n_string: string, hideLine?: boolean
+    } = null;
+    MenuButtons_Dic: any = {
+        Button_Standup: {
+            node: null,
+            text: "Sit out",
+            i18n_string: "UITexas_standUp",
+        },
+        Button_Rebuy: {
+            node: null,
+            text: "Rebuy",
+            i18n_string: "UITexas_Rebuy",
+        },
+        Button_Owner: {
+            node: null,
+            text: "Functions",
+            i18n_string: "UITexas_OwerFund",
+        },
+        Button_Setting: {
+            node: null,
+            text: "Options",
+            i18n_string: "UITexas_Setting",
+        },
+        Button_Rule: {
+            node: null,
+            text: "Rules",
+            i18n_string: "UITexas_RuleTips",
+        },
+        Button_SetAutoOnTable: {
+            node: null,
+            text: "Set up automatic table chips",
+            i18n_string: "UITexasAutoOutChip",
+        },
+        Button_AddChips: {
+            node: null,
+            text: "Supplementary scoreboard",
+            i18n_string: "UITexas_AddChipsMenu",
+        },
+        Button_TakeOut: {
+            node: null,
+            text: "Bring out the scoreboard",
+            i18n_string: "UITexas_BringOutChipsMenu",
+        },
+        Button_Trust: {
+            node: null,
+            text: "Auto check/fold",
+            i18n_string: "UITexas_TrustGame",
+        },
+        Button_LeaveDesk: {
+            node: null,
+            text: "Leave the table",
+            i18n_string: "UITexas_LeaveTheTable",
+        },
+        Button_Exit: {
+            node: null,
+            text: "Exit to lobby",
+            i18n_string: "UITexas_Leave",
+            hideLine: true
+        },
+
+    }
     game: TexasGame = null;
     lastClickTime: number = 0;
     ///////////////////////////////////
@@ -76,8 +146,12 @@ export default class TexasScene extends BaseScene {
         this.transSubMenu = this.getChildNodeOrComponent("SubMenu");
         this.imageMenuMask = this.getChildNodeOrComponent("Image_MenuMask");
         this.textTotalBean = this.getChildNodeOrComponent("Text_TotalBean", cc.Label);
+        this.textStoreBean = this.getChildNodeOrComponent("Text_StoreBean", cc.Label);
 
+        this.Menu_Buttons = this.getChildNodeOrComponent("Menu_Buttons");
+        this.Menu_Button = this.getChildNodeOrComponent("Menu_Button");
 
+        this.buildMenuButtons();
         //GameCache.Instance.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
 
@@ -92,12 +166,30 @@ export default class TexasScene extends BaseScene {
         window["TexasScene"] = this;
 
     }
+    private buildMenuButtons() {
+        for (let key in this.MenuButtons_Dic) {
+            let item: typeof this.MenuButton_Type = this.MenuButtons_Dic[key];
+            let button = cc.instantiate(this.Menu_Button);
+            button.parent = this.Menu_Buttons;
+            button.getChildByName("Text").getComponent(cc.Label).string = item.text;
+            button.getChildByName("Text").getComponent(i18nLabel).i18NString = item.i18n_string;
+            button.on("click", this.onMenuButtonClick, this);
+            button.on(cc.Node.EventType.TOUCH_START, this.onMenuButtonTouchStart, this);
+            button.on(cc.Node.EventType.TOUCH_END, this.onMenuButtonTouchEnd, this);
+            button.on(cc.Node.EventType.TOUCH_CANCEL, this.onMenuButtonTouchEnd, this);
+            item.node = button;
+        }
+        this.Menu_Button.active = false;
+    }
 
     protected regiterTouchEvents(): void {
         this.menu_btn.on("click", this.sideClick, this);
         this.report_btn.on("click", this.sideClick, this);
         this.cursituation_btn.on("click", this.sideClick, this);
         this.chat_btn.on("click", this.sideClick, this);
+
+        this.imageMenuMask.on("click", this.hideMenu, this);
+
     }
     setDeskType(index: number) {
         let sps = GameCache.Instance.CurGame.getDeskSpriteFrames(index);
@@ -129,7 +221,10 @@ export default class TexasScene extends BaseScene {
         switch (e.node) {
             case this.menu_btn://菜单按钮
                 cc.log("menu_btn is clicked");
-                this.CallbackExit();
+                //this.CallbackExit();
+                if (this.CanClick() == false) return;
+                this.lastClickTime = GlobalSession.NowTimeMS;
+                this.showMenu();
                 break;
             case this.report_btn://报告按钮
                 cc.log("report_btn is clicked");
@@ -142,93 +237,86 @@ export default class TexasScene extends BaseScene {
                 break;
         }
     }
-    //菜单点击
-    public onClickMenu(): void {
-        if (this.CanClick() == false)
-            return;
-        this.lastClickTime = GlobalSession.NowTimeMS;
-        this.showMenu();
-    }
 
     private showMenu(): void {
         this.UpdateMenu();
-        // 	RectTransform mRectTransform = transSubMenu as RectTransform;
-        // if (null != mRectTransform)
-        //     mRectTransform.DOAnchorPosX(0, 0.25f);
-        // if (null != imageMenuMask)
-        //     imageMenuMask.gameObject.SetActive(true);
+        if (null != this.transSubMenu)
+            cc.tween(this.transSubMenu).to(0.25, { x: -621 }).start();
+        if (null != this.imageMenuMask)
+            this.imageMenuMask.active = true;
     }
     protected hideMenu(): void {
         if (null != this.transSubMenu)
-            //mRectTransform.DOAnchorPosX(-700, 0.25f);
-            cc.tween(this.transSubMenu).to(0.25, { x: -1320 });
+            cc.tween(this.transSubMenu).to(0.25, { x: -1320 }).start();
         if (null != this.imageMenuMask)
             this.imageMenuMask.active = false;
     }
 
     protected UpdateMenu(): void {
-        UIMineModel.mInstance.ObtainUserInfo(pDto => {
-            this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
-        });
-        //更新金豆
+        // UIMineModel.mInstance.ObtainUserInfo(pDto => {
+        //     this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
+        // });
+        // //更新金豆
 
-        this.textTotalBean.string = StringHelper.getStringDiv100(this.game.mainPlayer.cacheStoreChips);
-        this.textTotalBean.node.parent.active = (this.game.mainPlayer.cacheStoreChips > 0);
+        this.textStoreBean.string = StringHelper.getStringDiv100(this.game.mainPlayer.cacheStoreChips);
+        this.textStoreBean.node.parent.active = (this.game.mainPlayer.cacheStoreChips > 0);
 
         let UserSitdown = this.game.UserSitdown();
 
-        let menuHeight = UserSitdown == true ? 1615 : 1800;
+        //let menuHeight = UserSitdown == true ? 1615 : 1800;
 
-        // if (UserSitdown) //已坐下
-        // {
-        //     this.buttonStandup.gameObject.SetActive(true);
-
-        //     this.buttonAddChips.gameObject.SetActive(true);
-        //     if (mainPlayer.chips >= GameCache.Instance.carry_small * (currentMaxRate + 1)) {
-        //         //已带入最大值,不可点击
-        //         buttonAddChips.interactable = false;
-        //     }
-        //     else {
-        //         buttonAddChips.interactable = true;
-        //     }
-
-        //     if (CurlimitOutChip == RoomInfo.Types.RetainType.RtManual && gamestatus >= 1 && gamestatus < 7) {
-        //         buttonoutChips.gameObject.SetActive(true);
-        //         buttonoutChips.interactable = true;
-        //         buttonoutChips.transform.GetChild(0).GetComponent<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 245 / 255f);
-        //         buttonoutChips.transform.GetChild(2).gameObject.SetActive(true);
-        //     }
-        //     else if (CurlimitOutChip == RoomInfo.Types.RetainType.RtManual && gamestatus != 1 && gamestatus < 7) {
-        //         buttonoutChips.gameObject.SetActive(true);
-        //         buttonoutChips.interactable = false;
-        //         buttonoutChips.transform.GetChild(0).GetComponent<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 120 / 255f);
-        //         buttonoutChips.transform.GetChild(2).gameObject.SetActive(false);
-        //     }
-        //     else {
-        //         buttonoutChips.gameObject.SetActive(false);
-        //         buttonoutChips.interactable = false;
-        //         menuHeight -= 185;
-        //     }
-
-        //     Button_LeaveDesk.gameObject.SetActive(true);
-        //     if (gamestatus != 1)//游戏没开始的时候，座离桌按钮显示不可点击状态   !HasStarted()
-        //     {
-        //         Button_LeaveDesk.transform.GetComponentInChildren<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 120 / 255f);
-        //         Button_LeaveDesk.interactable = false;
-        //         Button_LeaveDesk.transform.GetChild(2).gameObject.SetActive(false);
-        //     }
-        //     else {
-        //         Button_LeaveDesk.transform.GetChild(0).GetComponent<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 245 / 255f);
-        //         Button_LeaveDesk.interactable = true;
-        //         Button_LeaveDesk.transform.GetChild(2).gameObject.SetActive(true);
-        //     }
-        //     if (CurlimitOutChip == RoomInfo.Types.RetainType.RtAuto) {
-        //         buttonSetAutoOnTable.gameObject.SetActive(true);
-        //         menuHeight += 185;
-        //     }
+        if (UserSitdown) //已坐下
+        {
+            //this.buttonStandup.gameObject.SetActive(true);
+            this.MenuButtons_Dic.Button_Standup.node.active = true;
 
 
-        // }
+            // this.buttonAddChips.gameObject.SetActive(true);
+            // if (mainPlayer.chips >= GameCache.Instance.carry_small * (currentMaxRate + 1)) {
+            //     //已带入最大值,不可点击
+            //     buttonAddChips.interactable = false;
+            // }
+            // else {
+            //     buttonAddChips.interactable = true;
+            // }
+
+            // if (CurlimitOutChip == RoomInfo.Types.RetainType.RtManual && gamestatus >= 1 && gamestatus < 7) {
+            //     buttonoutChips.gameObject.SetActive(true);
+            //     buttonoutChips.interactable = true;
+            //     buttonoutChips.transform.GetChild(0).GetComponent<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 245 / 255f);
+            //     buttonoutChips.transform.GetChild(2).gameObject.SetActive(true);
+            // }
+            // else if (CurlimitOutChip == RoomInfo.Types.RetainType.RtManual && gamestatus != 1 && gamestatus < 7) {
+            //     buttonoutChips.gameObject.SetActive(true);
+            //     buttonoutChips.interactable = false;
+            //     buttonoutChips.transform.GetChild(0).GetComponent<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 120 / 255f);
+            //     buttonoutChips.transform.GetChild(2).gameObject.SetActive(false);
+            // }
+            // else {
+            //     buttonoutChips.gameObject.SetActive(false);
+            //     buttonoutChips.interactable = false;
+            //     menuHeight -= 185;
+            // }
+
+            // Button_LeaveDesk.gameObject.SetActive(true);
+            // if (gamestatus != 1)//游戏没开始的时候，座离桌按钮显示不可点击状态   !HasStarted()
+            // {
+            //     Button_LeaveDesk.transform.GetComponentInChildren<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 120 / 255f);
+            //     Button_LeaveDesk.interactable = false;
+            //     Button_LeaveDesk.transform.GetChild(2).gameObject.SetActive(false);
+            // }
+            // else {
+            //     Button_LeaveDesk.transform.GetChild(0).GetComponent<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 245 / 255f);
+            //     Button_LeaveDesk.interactable = true;
+            //     Button_LeaveDesk.transform.GetChild(2).gameObject.SetActive(true);
+            // }
+            // if (CurlimitOutChip == RoomInfo.Types.RetainType.RtAuto) {
+            //     buttonSetAutoOnTable.gameObject.SetActive(true);
+            //     menuHeight += 185;
+            // }
+
+
+        }
         // else //未坐下
         // {
         //     buttonStandup.gameObject.SetActive(false);
@@ -253,13 +341,59 @@ export default class TexasScene extends BaseScene {
         // //线路
         // buttonNetline.transform.Find("Text").GetComponent<Text>().text = GlobalData.Instance.NameForServerID(GlobalData.Instance.CurrentUsingServerID());
 
-		// 	RectTransform mRectTransform = transSubMenu as RectTransform;
+        // 	RectTransform mRectTransform = transSubMenu as RectTransform;
         // if (null != mRectTransform)
         //     mRectTransform.sizeDelta = new Vector2(mRectTransform.sizeDelta.x, menuHeight);
     }
 
 
 
+    //左侧菜单按钮点击
+    onMenuButtonClick(button: cc.Button) {
+        switch (button.node) {
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+            case this.MenuButtons_Dic.Button_Standup.node:
+
+                break;
+        }
+    }
+
+    onMenuButtonTouchStart(e: cc.Event.EventTouch) {
+        let target: cc.Node = e.currentTarget;
+        target.getChildByName("Text").color = CommonDefine.Color_Yellow;
+        target.getChildByName("Arrow").color = CommonDefine.Color_Yellow;
+    }
+    onMenuButtonTouchEnd(e: cc.Event.EventTouch) {
+        let target: cc.Node = e.currentTarget;
+        target.getChildByName("Text").color = cc.Color.WHITE;
+        target.getChildByName("Arrow").color = cc.Color.WHITE;
+    }
 
     CanClick(): boolean {
         if (GlobalSession.NowTimeMS - this.lastClickTime > 500) {

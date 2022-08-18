@@ -32,7 +32,7 @@ export default class HeartbeatComponent implements IUpdate {
 
     async update(dt: number) {
 
-        let passTime = GlobalSession.NowTime - this.lastTime;
+        let passTime = GlobalSession.NowTimeS - this.lastTime;
 
         if (passTime < this.interval) {
             return;
@@ -48,7 +48,7 @@ export default class HeartbeatComponent implements IUpdate {
             }
         }
 
-        this.lastTime = GlobalSession.NowTime;
+        this.lastTime = GlobalSession.NowTimeS;
 
         this.sendTime += 1;
 
@@ -71,7 +71,7 @@ export default class HeartbeatComponent implements IUpdate {
 
     start() {
         this.allowUpdate = true;
-        this.lastTime = GlobalSession.NowTime;
+        this.lastTime = GlobalSession.NowTimeS;
     }
     stop() {
         this.allowUpdate = false;

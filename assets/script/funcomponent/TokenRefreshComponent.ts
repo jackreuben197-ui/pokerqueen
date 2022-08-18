@@ -23,10 +23,10 @@ export default class TokenRefreshComponent implements IUpdate {
         // 刷新请求中 || 
         if (this.isRefreshRequesting || !LoginSession.IsTokenVaild()) return;
 
-        let nowTime = GlobalSession.NowTime;
+        let nowTime = GlobalSession.NowTimeS;
         if (nowTime - this.lasttime < this.interval) return;
         this.lasttime = nowTime;
-        let timeDiff = LoginSession.TokenExpireAt - GlobalSession.NowTime;
+        let timeDiff = LoginSession.TokenExpireAt - GlobalSession.NowTimeS;
         if (timeDiff < this.threshold) {
             this.isRefreshRequesting = true;
             await LoginSession.SyncRefreshToken();
