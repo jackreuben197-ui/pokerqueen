@@ -1,6 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import { SeatUIInfo } from "../game/Seat";
 import TexasGame from "../game/TexasGame";
+import GameCache from "../manager/GameCache";
 
 export default class GameUtil {
     private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
@@ -1042,6 +1043,7 @@ export default class GameUtil {
 
     }
 
-
-
+    static get isInGameplay() {
+        return GameCache.Instance.CurrentRoomID != 0;
+    }
 }

@@ -1,6 +1,7 @@
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import Dispatcher from "../event/Dispatcher";
+import { i18nMgr } from "../i18n/i18nMgr";
 import { LanguageCode } from "../i18n/LanguageCode";
 import GameCache from "../manager/GameCache";
 import ProcedureManager from "../manager/ProcedureManager";
@@ -9,12 +10,16 @@ import ToastManager from "../manager/ToastManager";
 import UIManager from "../manager/UIManager";
 import OpCodeHelper from "../net/websocket/OpCodeHelper";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
+import { Protocol_Holdem_EnterRoom, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageStandup } from "../protobuf/holdem/recv_stand_up_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
+import { ServerMessageStandupActive } from "../protobuf/holdem/req_stand_up_active_pb";
+import Seat from "./Seat";
+import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
 import { TexasGameState } from "./TexasGameState";
 
@@ -35,8 +40,8 @@ export default class TexasGameMessageHandler {
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_BringIn, Protocol_Holdem_BringIn_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Action, Protocol_Holdem_Action_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_SetAutoOnTable, Protocol_Holdem_SetAutoOnTable_Handler);
-        // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_StandupActive, Protocol_Holdem_StandupActive_Handler);
-        // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Standup, Protocol_Holdem_Standup_Handler);
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_StandupActive, this.Protocol_Holdem_StandupActive_Handler, this);
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_Standup, this.Protocol_Holdem_Standup_Handler, this);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_KeepSeatActive, Protocol_Holdem_KeepSeatActive_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Showdown, Protocol_Holdem_Showdown_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_ShowPublicCards, Protocol_Holdem_ShowPublicCards_Handler);
@@ -69,13 +74,13 @@ export default class TexasGameMessageHandler {
         Dispatcher.off(ProtocolCode.Protocol_Holdem_Leave, this.Protocol_Holdem_Leave_Handler, this);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Leave, Protocol_Holdem_Leave_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_LeaveNotification, Protocol_Holdem_LeaveNotification_Handler);
-        Dispatcher.off(ProtocolCode.Protocol_Holdem_Seated, this.Protocol_Holdem_Seated_Handler);
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_Seated, this.Protocol_Holdem_Seated_Handler, this);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_AddOn, Protocol_Holdem_AddOn_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_BringIn, Protocol_Holdem_BringIn_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Action, Protocol_Holdem_Action_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_SetAutoOnTable, Protocol_Holdem_SetAutoOnTable_Handler);
-        // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_StandupActive, Protocol_Holdem_StandupActive_Handler);
-        // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Standup, Protocol_Holdem_Standup_Handler);
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_StandupActive, this.Protocol_Holdem_StandupActive_Handler, this);
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_Standup, this.Protocol_Holdem_Standup_Handler, this);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_KeepSeatActive, Protocol_Holdem_KeepSeatActive_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Showdown, Protocol_Holdem_Showdown_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_ShowPublicCards, Protocol_Holdem_ShowPublicCards_Handler);
@@ -188,6 +193,61 @@ export default class TexasGameMessageHandler {
 
         console.log(`# MSG_CALLBACK: Protocol_Holdem_Seated_Handler`);
 
+    }
+
+    /// <summary>
+    /// 用户主动站起（非MTT）消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_StandupActive_Handler(response: ServerMessageStandupActive.AsObject): void {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_StandupActive_Handler`);
+        if (response == null) {
+            return;
+        }
+        if (response.status == 0) {
+            if (this.game.mainPlayer != null && this.game.mainPlayer.isPlaying) {
+                ToastManager.ins.createToast(i18nMgr.Get("Over_folded"));
+            }
+        }
+        else {
+            ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(response.status));
+        }
+    }
+
+    /// <summary>
+    /// 接收用户站起信息,PlayerID=自己代表自己被强制站起了,reason给出原因 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_Standup_Handler(response: ServerMessageStandup.AsObject): void {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_Standup_Handler`);
+
+        if (response == null) {
+            return;
+        }
+
+        let localSeatID: number = this.game.GetLocalSeatID(response.seatId);
+        let seat: Seat = this.game.GetSeatByLocalSeatID(localSeatID);
+        if (seat == null || seat.Player == null) {
+            return;
+        }
+
+        let isMainPlayer: boolean = seat.Player.userID == this.game.mainPlayer.userID;
+        if (isMainPlayer) {
+            this.game.mainPlayer.cacheStoreChips = response.storeChips;
+            // HideOperationPanel();
+            // HideAutoOperationPanel();
+            // HideSeeMorePublic();
+            this.game.utils.doStandUp(localSeatID);
+        }
+        else {
+            //     UI uiTexasPlayerInfo = UIComponent.Instance.Get(UIType.UITexasPlayerInfo);
+            // if (uiTexasPlayerInfo != null && uiTexasPlayerInfo.GameObject.activeInHierarchy) {
+            //         UITexasPlayerInfoComponent uiComponent = uiTexasPlayerInfo.GetComponent<UITexasPlayerInfoComponent>();
+            //     uiComponent.PlayerStandUp((int)seat.Player.userID);
+            // }
+            //seat.HideFold();
+            seat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
+        }
     }
 
 }

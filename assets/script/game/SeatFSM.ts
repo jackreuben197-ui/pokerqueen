@@ -1,5 +1,6 @@
+import FSMLogicComponent from "./FSMLogicComponent";
 import Seat from "./Seat";
-import { SeatSit, SeatWaitStart } from "./SeatStateHandler";
+import { SeatEmpty, SeatSit, SeatStandup, SeatWaitStart } from "./SeatStateHandler";
 
 export class SeatFSM {
 
@@ -140,18 +141,46 @@ export class SeatFSM {
     //#endregion
 
     //#region 等待补盲
-    public WaitBlindEnter():void
-    {
+    public WaitBlindEnter(): void {
 
     }
 
-    public WaitBlindExecute():void
-    {
+    public WaitBlindExecute(): void {
 
     }
 
-    public WaitBlindExit():void
-    {
+    public WaitBlindExit(): void {
+
+    }
+    //#endregion
+
+    //#region 站起
+    public StandupEnter(): void {
+        //HideCards(listCardUIInfos);
+        //HideCards(listSmallCardUIInfos);
+        this.seat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
+    }
+
+    public StandupExecute(): void {
+
+    }
+
+    public StandupExit(): void {
+
+    }
+    //#endregion
+
+    //#region 站起动画
+    public StandupAnimationEnter(): void {
+        this.seat.FsmLogicComponent.SM.ChangeState(SeatStandup.Instance);
+        cc.tween(this.seat.ui).sequence(cc.scaleTo(0.15, 0, 1), cc.scaleTo(0.15, 1, 1)).start();
+    }
+
+    public StandupAnimationExecute(): void {
+
+    }
+
+    public StandupAnimationExit(): void {
 
     }
     //#endregion

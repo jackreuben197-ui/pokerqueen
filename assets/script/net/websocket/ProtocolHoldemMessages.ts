@@ -1,11 +1,13 @@
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
 import { ClientMessageBringIn, ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
 import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
+import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
 
 export class BaseProtocol {
     //RoomID: number;
@@ -182,10 +184,37 @@ export class Protocol_Holdem_BringIn extends BaseProtocol {
     }
 }
 
+/**
+ * 用户主动站起（非MTT）
+ */
+export class Protocol_Holdem_StandupActive extends BaseProtocol {
 
+    static _request: ClientMessageStandupActive;
+    public static Request_AsObject: ClientMessageStandupActive.AsObject = null;
+    public static Response_AsObject: ServerMessageStandupActive.AsObject = null;
 
+    static Request(body?: ClientMessageStandupActive.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessageStandupActive());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessageStandupActive.AsObject {
+        let result: ServerMessageStandupActive = ServerMessageStandupActive.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+/**
+ * 接收用户站起信息,PlayerID=自己代表自己被强制站起了,reason给出原因
+ */
+export class Protocol_Holdem_Standup extends BaseProtocol {
 
+    public static Response_AsObject: ServerMessageStandup.AsObject = null;
 
+    static Response(bytes: Uint8Array): ServerMessageStandup.AsObject {
+        let result: ServerMessageStandup = ServerMessageStandup.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 
 
 
@@ -197,3 +226,5 @@ cc.js.setClassName("Protocol_Holdem_EnterRoom", Protocol_Holdem_EnterRoom);
 cc.js.setClassName("Protocol_Holdem_SeatedOthers", Protocol_Holdem_SeatedOthers);
 cc.js.setClassName("Protocol_Holdem_Seated", Protocol_Holdem_Seated);
 cc.js.setClassName("Protocol_Holdem_BringIn", Protocol_Holdem_BringIn);
+cc.js.setClassName("Protocol_Holdem_StandupActive", Protocol_Holdem_StandupActive);
+cc.js.setClassName("Protocol_Holdem_Standup", Protocol_Holdem_Standup);

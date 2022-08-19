@@ -4,17 +4,16 @@
  */
 
 import { IUpdate } from "../define/EIDefine";
-import GameSession from "../game/GameSession";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_Heartbeat } from "../net/websocket/ProtocolHoldemMessages";
 import GlobalSession from "../session/GlobalSession";
+import GameUtil from "../tools/GameUtil";
 
 export default class HeartbeatComponent implements IUpdate {
 
     //刷新间隔
-    ingameInterval: number = 1;
-    normalInterval: number = 5;
-
+    SendIntervalNormal: number = 5;
+    SendIntervalInGameplay: number = 1;
 
     //上次刷新时间
     tokenLastTime: number = 0;
@@ -61,11 +60,11 @@ export default class HeartbeatComponent implements IUpdate {
     }
 
     get interval() {
-        if (GameSession.isInGameplay()) {
-            return this.ingameInterval;
+        if (GameUtil.isInGameplay) {
+            return this.SendIntervalInGameplay;
         }
         else {
-            return this.normalInterval;
+            return this.SendIntervalNormal;
         }
     }
 

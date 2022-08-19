@@ -9,7 +9,6 @@ export default class GameCache {
 
     private static _instance: GameCache;
 
-
     CurrentRoomID: number = 0;
 
 
@@ -282,7 +281,7 @@ export default class GameCache {
 
 
     public static get Instance(): GameCache {
-        return this._instance ||= new GameCache();
+        return this._instance ??= new GameCache();
     }
     constructor() {
         this.nUserId = 0;

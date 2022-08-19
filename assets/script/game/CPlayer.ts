@@ -79,6 +79,12 @@ export class CPlayer {
 
     }
 
+    /// <summary>
+    /// 参与打牌，没有弃牌
+    /// </summary>
+    public get isPlaying(): boolean {
+        return (this.canPlayStatus == CanPlayStatus.NORMAL || this.canPlayStatus == CanPlayStatus.AGREE_POST) && (this.actionStatus != Action.FOLD && this.actionStatus != Action.NONE);
+    }
 
 
     public SetCards(list: number[]): void {
@@ -94,7 +100,7 @@ export class CPlayer {
     /// <summary>
     /// 清空数据
     /// </summary>
-    protected ClearData(): void {
+    public ClearData(): void {
         this.ClearGameData();
         this.sex = 0;
         this.headPic = "";
@@ -106,7 +112,7 @@ export class CPlayer {
     /// <summary>
     /// 清空游戏数据
     /// </summary>
-    protected ClearGameData(): void {
+    public ClearGameData(): void {
         this.seatID = -1;
         this.longitude = "";
         this.latitude = "";

@@ -1,10 +1,6 @@
 
-import { UIDefine } from "../define/UIDefine";
-import GameSession from "../game/GameSession";
 import { TexasGameState } from "../game/TexasGameState";
 import GameCache from "../manager/GameCache";
-import SceneManager from "../manager/SceneManager";
-import UIManager from "../manager/UIManager";
 import ProcedureBase from "./ProcedureBase";
 
 /**

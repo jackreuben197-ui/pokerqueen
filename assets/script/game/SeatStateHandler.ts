@@ -161,4 +161,63 @@ export class SeatWaitBlind extends StateHandler {
         super.Exit(entity);
         if (entity instanceof SeatFSM) entity.WaitBlindExit();
     }
+
 }
+
+// 站起动画
+export class SeatStandupAnimation extends StateHandler {
+
+    public Name: string = "SeatStandupAnimation";
+
+    private static _Instance: SeatStandupAnimation = null;
+
+    public static get Instance() {
+        return this._Instance ??= new SeatStandupAnimation;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.StandupAnimationEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.StandupAnimationExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.StandupAnimationExit();
+    }
+}
+
+
+//站起
+export class SeatStandup extends StateHandler {
+
+    public Name: string = "SeatStandup";
+
+    private static _Instance: SeatStandup = null;
+
+    public static get Instance() {
+        return this._Instance ??= new SeatStandup;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.StandupEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.StandupExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.StandupExit();
+    }
+}
+

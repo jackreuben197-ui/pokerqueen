@@ -1,4 +1,5 @@
 import TexasConfig from "../config/TexasConfig";
+import { RoomType } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import Dispatcher from "../event/Dispatcher";
 import UpdateComponent from "../funcomponent/UpdateComponent";
@@ -12,7 +13,7 @@ import UIManager from "../manager/UIManager";
 import { Web_User_Room } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Protocol_Holdem_BringIn, Protocol_Holdem_Seated } from "../net/websocket/ProtocolHoldemMessages";
+import { Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
 import { RoomInfo } from "../protobuf/holdem/define_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../session/StorageKey";
@@ -21,11 +22,11 @@ import AssetContext from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
-import GameSession from "./GameSession";
 import Seat, { SeatUIInfo } from "./Seat";
 import { SeatEmpty, SeatIdle } from "./SeatStateHandler";
 import TexasGameMessageHandler from "./TexasGameMessageHandler";
 import TexasGameProtocol from "./TexasGameProtocol";
+import TexasGameUtils from "./TexasGameUtils";
 import TexasScene from "./TexasScene";
 import TexasSMAgency from "./TexasSMAgency";
 import { UITexasModel } from "./UITexasModel";
@@ -66,6 +67,8 @@ export default class TexasGame {
     public FsmLogicComponent: FSMLogicComponent = null;
 
     public SMAgency: TexasSMAgency = null;
+
+    public utils: TexasGameUtils = null;
 
     public listSeat: Seat[];
     /// <summary>
@@ -260,7 +263,7 @@ export default class TexasGame {
     /// <summary>
     /// // 允许带出记分牌0否 1 自动  2手动
     /// </summary>
-    private CurlimitOutChip: number;
+    public CurlimitOutChip: number;
     /// <summary>
     /// 强制盲注
     /// </summary>
@@ -315,11 +318,13 @@ export default class TexasGame {
 
     public VoiceprintCountdown: number;
 
+
     constructor() {
         this.messageHandler = new TexasGameMessageHandler(this);
         this.texasGameProtocol = new TexasGameProtocol(this);
         this.FsmLogicComponent = new FSMLogicComponent();
         this.SMAgency = new TexasSMAgency(this);
+        this.utils = new TexasGameUtils(this);
         this.listSeat = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
     }
@@ -364,7 +369,7 @@ export default class TexasGame {
     }
 
     public EnterRoom() {
-        GameSession.EnterRoom();
+        this.utils.EnterRoom();
     }
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
@@ -885,6 +890,31 @@ export default class TexasGame {
                 }),
         });
 
+    }
+    /// <summary>
+    /// 站起
+    /// </summary>
+    /// <param name="clientSeatId"></param>
+    public Standup(): void {
+
+        if (this.mainPlayer.seatID == -1) {
+            return;
+        }
+
+        let mSeat: Seat = this.GetSeatByLocalSeatID(this.mainPlayer.seatID);
+
+        if (null == mSeat)
+            return;
+
+        ProtocolAgency.Send({
+            protocol: Protocol_Holdem_StandupActive,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            body: Protocol_Holdem_StandupActive.Request(
+                {
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                }),
+        })
     }
 
     /**
