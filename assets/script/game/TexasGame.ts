@@ -271,7 +271,7 @@ export default class TexasGame {
     /// <summary>
     /// 结束轮
     /// </summary>
-    // public Def.Types.Round cacheRound;
+    public cacheRound: number;
     /// <summary>
     /// 本手缓存
     /// </summary>
@@ -784,7 +784,6 @@ export default class TexasGame {
             return;
         this.gameUI.buttonWaitBlind.active = false;
     }
-
     /// <summary>
     /// 带入
     /// </summary>
@@ -915,6 +914,14 @@ export default class TexasGame {
                     room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                 }),
         })
+    }
+    /// <summary>
+    /// 获取筹码Sprite
+    /// </summary>
+    /// <param name="spriteName"></param>
+    /// <returns></returns>
+    public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
+        return AssetContext.getAsset(spriteName);
     }
 
     /**

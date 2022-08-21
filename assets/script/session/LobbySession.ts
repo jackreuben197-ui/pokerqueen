@@ -95,12 +95,11 @@ export default class LobbySession {
      * @param limit 条目
      * @param offset 开始下标
      */
-
     static APIMiscBannerList(type: number, limit: number, offset: number) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Misc_Banner_List,
-                param: Web_Misc_Banner_List.Request(
+                body: Web_Misc_Banner_List.Request(
                     {
                         lang: "en_US",//当前语言
                         type: type,

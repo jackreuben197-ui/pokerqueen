@@ -111,7 +111,7 @@ export default class LobbyScene extends BaseScene {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Misc_Banner_List,
-                param: Web_Misc_Banner_List.Request(
+                body: Web_Misc_Banner_List.Request(
                     {
                         lang: param.lang,        // 语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
                         type: param.type,        // 1-大厅Banner,2-发现页(工会)Banner
@@ -135,7 +135,7 @@ export default class LobbyScene extends BaseScene {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Room_Center_Groups,
-                param: Web_Room_Center_Groups.Request({}),
+                body: Web_Room_Center_Groups.Request(param),
                 onSuccess: function () {
                     resolve(Web_Room_Center_Groups.Response);
                 }.bind(this),
@@ -153,7 +153,7 @@ export default class LobbyScene extends BaseScene {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Room_Center_Rooms_Blinds,
-                param: Web_Room_Center_Rooms_Blinds.Request(param),
+                body: Web_Room_Center_Rooms_Blinds.Request(param),
                 onSuccess: function () {
                     resolve(Web_Room_Center_Rooms_Blinds.Response);
                 }.bind(this),
@@ -171,7 +171,7 @@ export default class LobbyScene extends BaseScene {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Room_Center_Rooms,
-                param: Web_Room_Center_Rooms.Request(param),
+                body: Web_Room_Center_Rooms.Request(param),
                 onSuccess: function () {
                     resolve(Web_Room_Center_Rooms.Response);
                 }.bind(this),
@@ -189,7 +189,7 @@ export default class LobbyScene extends BaseScene {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Config_Multi_Language_Template,
-                param: Web_Config_Multi_Language_Template.Request(param),
+                body: Web_Config_Multi_Language_Template.Request(param),
                 onSuccess: function () {
                     resolve(Web_Config_Multi_Language_Template.Response);
                 }.bind(this),

@@ -18,7 +18,13 @@ export default class SeatUIRC extends UIBase {
     textCoin: cc.Label = null;
     textCoinBg: cc.Sprite = null;
     textNickname: cc.Label = null;
-    WaitforthenextmoveTips:cc.Label = null;
+    WaitforthenextmoveTips: cc.Label = null;
+
+
+    transCurRoundHaveBet: cc.Node = null;
+    imageIconChip: cc.Sprite = null;
+    textCurRoundHaveBet: cc.Label = null;
+
     ///////////////////////////////////
 
     ///////////////////////////////////
@@ -36,5 +42,9 @@ export default class SeatUIRC extends UIBase {
         this.textCoinBg = this.getChildNodeOrComponent("Text_Coin_Bg", cc.Sprite);
         this.textNickname = this.getChildNodeOrComponent("Text_Nickname", cc.Label);
         this.WaitforthenextmoveTips = this.getChildNodeOrComponent("WaitforthenextmoveTips", cc.Label);
+
+        this.transCurRoundHaveBet = this.getChildNodeOrComponent("CurRoundHaveBet");
+        this.imageIconChip = this.getChildNodeOrComponent("Image_IconChip", cc.Sprite);
+        this.textCurRoundHaveBet = this.getChildNodeOrComponent("Text_CurRoundHaveBet", cc.Label);
     }
 }

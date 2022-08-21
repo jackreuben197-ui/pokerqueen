@@ -3,8 +3,6 @@
  */
 import { GameConfig } from "./config/GameConfig";
 import ProcedureManager from "./manager/ProcedureManager";
-import HttpClient from "./net/https/HttpClient";
-import WebSocketClient from "./net/websocket/WebSocketClient";
 import CCTools from "./tools/CCTools";
 
 const { ccclass, property } = cc._decorator;

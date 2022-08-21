@@ -13,7 +13,6 @@ export default class GlobalSession {
     static get NowTimeMS(): number {
         return + new Date().getTime();
     }
-
     //游戏登出
     static Logout() {
         cc.log("-------------游戏登出--------------");

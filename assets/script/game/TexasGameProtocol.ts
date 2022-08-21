@@ -4,6 +4,7 @@ import GameCache from "../manager/GameCache";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
+import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { CPlayer } from "./CPlayer";
@@ -39,7 +40,7 @@ export default class TexasGameProtocol {
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_KeepSeat, HANDLER_REQ_GAME_KEEP_SEAT);  // 留座离桌
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_KeepSeatActive, HANDLER_REQ_GAME_MY_KEEP_SEAT);  // 自己留座离桌
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_AgreePost, HANDLER_REQ_WAIT_BLIND);  // 过庄补盲
-        // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_PostStatusChange, HANDLER_REQ_WAIT_BLIND_STATE);  // 补盲状态变化
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_PostStatusChange, this.HANDLER_REQ_WAIT_BLIND_STATE, this);  // 补盲状态变化
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_BringIn, HANDLER_REQ_GAME_ADD_CHIPS);  // 带入
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_StoreChips, HANDLER_REQ_GAME_OUT_CHIPS);  // 带出
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_ChipsChange, HANDLER_REQ_GAME_CHANGE_CHIPS);  // 玩家牌桌记分牌变化
@@ -57,7 +58,7 @@ export default class TexasGameProtocol {
         console.log(`TexasGame : RemoveMsgHandler`);
 
         Dispatcher.off(ProtocolCode.Protocol_Holdem_Seated, this.HANDLER_REQ_GAME_SEND_MY_SEAT, this);//自己坐下
-        // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_SeatedOthers, HANDLER_REQ_GAME_RECV_SEAT_DOWN);  // 别人坐下
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_SeatedOthers, this.HANDLER_REQ_GAME_RECV_SEAT_DOWN,this);  // 别人坐下
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Action, HANDLER_REQ_GAME_SEND_ACTION);  // 自己牌桌操作
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_ActionAll, HANDLER_REQ_GAME_RECV_ACTION);  // 收到牌桌操作
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Showcards, HANDLER_REQ_GAME_PLAYER_CARDS);  // Allin下发玩家手牌
@@ -73,7 +74,7 @@ export default class TexasGameProtocol {
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_KeepSeat, HANDLER_REQ_GAME_KEEP_SEAT);  // 留座离桌
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_KeepSeatActive, HANDLER_REQ_GAME_MY_KEEP_SEAT);  // 自己留座离桌
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_AgreePost, HANDLER_REQ_WAIT_BLIND);  // 过庄补盲
-        // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_PostStatusChange, HANDLER_REQ_WAIT_BLIND_STATE);  // 补盲状态变化
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_PostStatusChange, this.HANDLER_REQ_WAIT_BLIND_STATE, this);  // 补盲状态变化
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_BringIn, HANDLER_REQ_GAME_ADD_CHIPS);  // 带入
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_StoreChips, HANDLER_REQ_GAME_OUT_CHIPS);  // 带出
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_ChipsChange, HANDLER_REQ_GAME_CHANGE_CHIPS);  // 玩家牌桌记分牌变化
@@ -90,7 +91,7 @@ export default class TexasGameProtocol {
     /// 其他玩家坐下
     /// </summary>
     /// <param name="response"></param>
-    HANDLER_REQ_GAME_RECV_SEAT_DOWN(rec: ServerMessageSeatedOthers.AsObject) {
+    protected HANDLER_REQ_GAME_RECV_SEAT_DOWN(rec: ServerMessageSeatedOthers.AsObject) {
         if (rec == null) return;
         let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
         if (null == mSeat) return;
@@ -122,7 +123,7 @@ export default class TexasGameProtocol {
     /// 自己坐下
     /// </summary>
     /// <param name="response"></param>
-    HANDLER_REQ_GAME_SEND_MY_SEAT(rec: ServerMessageSeated.AsObject) {
+    protected HANDLER_REQ_GAME_SEND_MY_SEAT(rec: ServerMessageSeated.AsObject) {
 
         if (rec == null) {
             return;
@@ -189,5 +190,40 @@ export default class TexasGameProtocol {
         // valuesMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
         // valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
         // AppsFlyerHelper.GameEnterEvent(valuesMap);
+    }
+    /// <summary>
+    /// 补盲状态变化
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_WAIT_BLIND_STATE(rec: ServerMessagePostStatusChange.AsObject): void {
+
+        if (rec == null) {
+            return;
+        }
+
+        if (rec.changesList == null) {
+            return;
+        }
+
+        for (let i = 0; i < rec.changesList.length; i++) {
+            let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.changesList[i].seatId));
+            if (null != mSeat) {
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+            }
+            if (mSeat.seatID == this.game.mainPlayer.seatID) {
+                if (rec.changesList[i].currentPostStatus == Def.CanPlayStatus.NORMAL || rec.changesList[i].currentPostStatus == Def.CanPlayStatus.AGREE_POST) {
+                    mSeat.Player.canPlayStatus = Def.CanPlayStatus.NORMAL;
+                    this.game.HideWaitBlindBtn();
+                }
+                else if (rec.changesList[i].currentPostStatus == Def.CanPlayStatus.NEED_POST) {
+                    // 需要补盲
+                    this.game.ShowWaitBlindBtn();
+                    mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind.Instance);
+                }
+            }
+            else {
+                mSeat.Player.canPlayStatus = rec.changesList[i].currentPostStatus;
+            }
+        }
     }
 }

@@ -4,8 +4,11 @@ import WebImageHelper from "../helper/WebImageHelper";
 import { LanguageCode } from "../i18n/LanguageCode";
 import { UIMineModel } from "../lobby/UIMineModel";
 import GameCache from "../manager/GameCache";
+import { Def } from "../protobuf/holdem/define_pb";
 import LobbySession from "../session/LobbySession";
 import { StateHandler } from "../statemachine/StateHandler";
+import GameUtil from "../tools/GameUtil";
+import { CacheDataManager } from "./CacheDataManager";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import { SeatFSM } from "./SeatFSM";
@@ -18,11 +21,12 @@ export default class Seat {
 
     // ui
     protected imageBanker: cc.Sprite = null;
+    //protected imageIconChip: cc.Sprite = null;
     protected transSmallCardBacks: cc.Node = null;
-    protected transCurRoundHaveBet: cc.Node = null;
+    //protected transCurRoundHaveBet: cc.Node = null;
     protected armatureVoice: cc.Node = null;
 
-
+    protected defaultIconChipLocalPos: cc.Vec2;
 
 
     public FsmLogicComponent: FSMLogicComponent;//状态机
@@ -493,11 +497,51 @@ export default class Seat {
     /// 刷新昵称
     /// </summary>
     public UpdateNickname(): void {
-        // this.SetNickname(null == this.Player ? "" : CacheDataManager.mInstance.GetRemarkName((int)Player.userID, Player.nick));
-        // // textNickname.text = null == Player ? string.Empty : CacheDataManager.mInstance.GetRemarkName(Player.userID, Player.nick);
-        // if (null != this.Player) {
-        //     this.uirc.textNickname.node.color = cc.Color.WHITE;
-        // }
+        this.SetNickname(null == this.Player ? "" : CacheDataManager.mInstance.GetRemarkName(this.Player.userID, this.Player.nick));
+        // textNickname.text = null == Player ? string.Empty : CacheDataManager.mInstance.GetRemarkName(Player.userID, Player.nick);
+        if (null != this.Player) {
+            this.uirc.textNickname.node.color = cc.Color.WHITE;
+        }
+    }
+    /// <summary>
+    /// 刷新本手下注筹码
+    /// </summary>
+    public UpdateCurRoundHaveBet(): void {
+        let mOffset: number = 5;
+        // 0不显示
+        if (null == this.Player || this.Player.anteNumber <= 0) {
+            this.uirc.transCurRoundHaveBet.active = false;
+            return;
+        }
+
+
+        if (this.isBig && GameCache.Instance.CurGame.cacheRound == Def.Round.PREFLOP) {
+            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_big_chip");
+            this.isBig = false;
+        }
+        else if (this.isSmall && GameCache.Instance.CurGame.cacheRound == Def.Round.PREFLOP) {
+            this.isSmall = false;
+            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_small_chip");
+        }
+        else {
+            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+
+        }
+        let str: string = `${this.Player.anteNumber / 100}`;
+
+        let num: number = +str;
+
+        if (num != (num ^ 0)) {
+            str = num.toFixed(1);
+        }
+        this.uirc.textCurRoundHaveBet.string = str;
+
+        this.uirc.textCurRoundHaveBet.node.active = true;
+
+
+        this.defaultIconChipLocalPos = this.uirc.imageIconChip.node.getPosition();
+        this.uirc.imageIconChip.node.active = true;
+        this.uirc.transCurRoundHaveBet.active = true;
     }
 
     //刷新座位下的等待文本

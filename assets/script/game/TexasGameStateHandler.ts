@@ -9,6 +9,7 @@ import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
 import TexasGame from "./TexasGame";
+import { TexasGameState } from "./TexasGameState";
 
 
 export class TexasGameStateHandlerNetworkException extends StateHandler {
@@ -95,6 +96,31 @@ export class TexasGameStateHandlerInit extends StateHandler {
 
     }
 
+}
+export class TexasGameStateHandlerHandStarted extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerHandStarted";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+        game.SMAgency.ChangeGameState(TexasGameState.HandPreflop, this.SourceData);
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+        super.Exit(game);
+    }
 }
 
 

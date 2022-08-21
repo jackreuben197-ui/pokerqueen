@@ -12,8 +12,10 @@ import OpCodeHelper from "../net/websocket/OpCodeHelper";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_EnterRoom, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
+import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageStandup } from "../protobuf/holdem/recv_stand_up_pb";
+import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
@@ -52,7 +54,7 @@ export default class TexasGameMessageHandler {
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers, Protocol_Holdem_ShowPublicCardsOthers_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Showcards, Protocol_Holdem_Showcards_Handler);
         Dispatcher.on(ProtocolCode.Protocol_Holdem_SeatedOthers, this.Protocol_Holdem_SeatedOthers_Handler, this);
-        // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_StartInfo, Protocol_Holdem_StartInfo_Handler);
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_StartInfo, this.Protocol_Holdem_StartInfo_Handler, this);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_PublicCards, Protocol_Holdem_PublicCards_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_SidePots, Protocol_Holdem_SidePots_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_ChipsChange, Protocol_Holdem_ChipsChange_Handler);
@@ -62,7 +64,7 @@ export default class TexasGameMessageHandler {
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_AddTimeOthers, Protocol_Holdem_AddTimeOthers_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_InsuranceTrigged, Protocol_Holdem_InsuranceTrigged_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_BuyInsurance, Protocol_Holdem_BuyInsurance_Handler);
-        // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_PostStatusChange, Protocol_Holdem_PostStatusChange_Handler);
+        Dispatcher.on(ProtocolCode.Protocol_Holdem_PostStatusChange, this.Protocol_Holdem_PostStatusChange_Handler, this);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_BringInOrStoreFail, Protocol_Holdem_BringInOrStoreFail_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_HandClear, Protocol_Holdem_HandClear_Handler);
         // CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_UpBlind, Protocol_Holdem_UpBlind_Handler);
@@ -91,7 +93,7 @@ export default class TexasGameMessageHandler {
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers, Protocol_Holdem_ShowPublicCardsOthers_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Showcards, Protocol_Holdem_Showcards_Handler);
         Dispatcher.off(ProtocolCode.Protocol_Holdem_SeatedOthers, this.Protocol_Holdem_SeatedOthers_Handler, this);
-        // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_StartInfo, Protocol_Holdem_StartInfo_Handler);
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_StartInfo, this.Protocol_Holdem_StartInfo_Handler, this);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_PublicCards, Protocol_Holdem_PublicCards_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_SidePots, Protocol_Holdem_SidePots_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_ChipsChange, Protocol_Holdem_ChipsChange_Handler);
@@ -101,7 +103,7 @@ export default class TexasGameMessageHandler {
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_AddTimeOthers, Protocol_Holdem_AddTimeOthers_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_InsuranceTrigged, Protocol_Holdem_InsuranceTrigged_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_BuyInsurance, Protocol_Holdem_BuyInsurance_Handler);
-        // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_PostStatusChange, Protocol_Holdem_PostStatusChange_Handler);
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_PostStatusChange, this.Protocol_Holdem_PostStatusChange_Handler, this);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_BringInOrStoreFail, Protocol_Holdem_BringInOrStoreFail_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_HandClear, Protocol_Holdem_HandClear_Handler);
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_UpBlind, Protocol_Holdem_UpBlind_Handler);
@@ -250,4 +252,23 @@ export default class TexasGameMessageHandler {
         }
     }
 
+    /// <summary>
+    /// 补盲状态变化 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_PostStatusChange_Handler(response: ServerMessagePostStatusChange.AsObject): void {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_PostStatusChange_Handler`);
+    }
+
+    /// <summary>
+    /// 开始一手 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    public Protocol_Holdem_StartInfo_Handler(response: ServerMessageStartInfo.AsObject): void {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_StartInfo_Handler`);
+        if (response == null) {
+            return;
+        }
+        this.game.SMAgency.ChangeGameState(TexasGameState.HandStarted, response);
+    }
 }

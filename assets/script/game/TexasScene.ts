@@ -242,8 +242,6 @@ export default class TexasScene extends BaseScene {
 
         this.setDeskType(this.game.deskType);
 
-        cc.log("Enter complete");
-
     }
     Exit(param) {
         super.Exit(param);

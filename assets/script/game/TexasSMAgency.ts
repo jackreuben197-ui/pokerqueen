@@ -2,7 +2,7 @@ import GameCache from "../manager/GameCache";
 import { StateHandler } from "../statemachine/StateHandler";
 import TexasGame from "./TexasGame";
 import { TexasGameState } from "./TexasGameState";
-import { TexasGameStateHandlerInit, TexasGameStateHandlerLaunch, TexasGameStateHandlerNetworkException } from "./TexasGameStateHandler";
+import { TexasGameStateHandlerHandStarted, TexasGameStateHandlerInit, TexasGameStateHandlerLaunch, TexasGameStateHandlerNetworkException } from "./TexasGameStateHandler";
 
 /**
  * Texas 状态机注册
@@ -22,7 +22,6 @@ export default class TexasSMAgency {
 
             this.GameSMStates = new Map<TexasGameState, any>();
 
-            //TexasGameStateNetworkException<Entity>.Instance.Handler = TexasGameStateHandlerNetworkException.Instance;
             this.GameSMStates[TexasGameState.NetworkException] = new TexasGameStateHandlerNetworkException;
 
             this.GameSMStates[TexasGameState.Launch] = new TexasGameStateHandlerLaunch;
@@ -46,7 +45,7 @@ export default class TexasSMAgency {
             // this.GameSMStates[TexasGameState.WaitHandStart] = TexasGameStateWaitHandStart<Entity>.Instance;
 
             // TexasGameStateHandStarted<Entity>.Instance.Handler = TexasGameStateHandlerHandStarted.Instance;
-            // this.GameSMStates[TexasGameState.HandStarted] = TexasGameStateHandStarted<Entity>.Instance;
+            this.GameSMStates[TexasGameState.HandStarted] = new TexasGameStateHandlerHandStarted;
 
             // TexasGameStateHandPreflop<Entity>.Instance.Handler = TexasGameStateHandlerHandPreflop.Instance;
             // this.GameSMStates[TexasGameState.HandPreflop] = TexasGameStateHandPreflop<Entity>.Instance;

@@ -17,11 +17,11 @@ export default class HttpClient {
      * post 请求
      * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
-    static async post({ url = null, param = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
-        param = JSON.stringify(param);
-        console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, param);
+    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
+        body = JSON.stringify(body);
+        console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
         needJuhua && UIManager.open(UIDefine.UIPromptComponent);
-        let response: string = <string>await this.__request(url, "POST", param, headers);
+        let response: string = <string>await this.__request(url, "POST", body, headers);
         needJuhua && UIManager.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
@@ -29,11 +29,11 @@ export default class HttpClient {
     /**
      * get 请求
      */
-    static async get({ url = null, param = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
-        param = JSON.stringify(param);
-        console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, param);
+    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
+        body = JSON.stringify(body);
+        console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
         needJuhua && UIManager.open(UIDefine.UIPromptComponent);
-        let response: string = <string>await this.__request(url, "GET", param, headers);
+        let response: string = <string>await this.__request(url, "GET", body, headers);
         needJuhua && UIManager.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
@@ -71,7 +71,7 @@ export default class HttpClient {
         }
     }
 
-    static async __request(url, type = "POST", param = null, headers = null) {
+    static async __request(url, type = "POST", body = null, headers = null) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             var isTimeout = false;//是否超时
@@ -108,7 +108,7 @@ export default class HttpClient {
                     xhr.setRequestHeader(header[0], header[1]);
                 }
             }
-            xhr.send(param ? param : null);
+            xhr.send(body ? body : null);
         })
     }
 }

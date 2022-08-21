@@ -1,12 +1,8 @@
 /**
  * 登录内容
  */
-
-import { Md5 } from "ts-md5";
 import { GameConfig } from "../config/GameConfig";
-import { IUpdate } from "../define/EIDefine";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
-import UpdateComponent from "../funcomponent/UpdateComponent";
 import GameCache from "../manager/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Channel, Web_Login, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
@@ -36,7 +32,7 @@ export default class LoginSession {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Login,
-                param: Web_Login.Request(param),
+                body: Web_Login.Request(param),
                 onSuccess: function () {
                     this.Token = Web_Login.Response.data.token;
                     this.TokenExpireAt = Web_Login.Response.data.expire_at;
@@ -126,7 +122,7 @@ export default class LoginSession {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Register,
-                param: Web_User_Register.Request(param),
+                body: Web_User_Register.Request(param),
                 onSuccess: function () {
                     resolve(Web_User_Register.Response);
                 }.bind(this),
@@ -143,7 +139,7 @@ export default class LoginSession {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Check_Phone,
-                param: Web_User_Check_Phone.Request(param),
+                body: Web_User_Check_Phone.Request(param),
                 onSuccess: function () {
                     resolve(Web_User_Check_Phone.Response);
                 }.bind(this),
@@ -160,7 +156,7 @@ export default class LoginSession {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Send_Code,
-                param: Web_User_Send_Code.Request(param),
+                body: Web_User_Send_Code.Request(param),
                 onSuccess: function () {
                     resolve(Web_User_Send_Code.Response);
                 }.bind(this),
@@ -179,7 +175,7 @@ export default class LoginSession {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Modify_Password,
-                param: Web_User_Modify_Password.Request(param),
+                body: Web_User_Modify_Password.Request(param),
                 onSuccess: function () {
                     resolve(Web_User_Modify_Password.Response);
                 }.bind(this),

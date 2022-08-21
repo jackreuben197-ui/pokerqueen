@@ -7,14 +7,14 @@ import WebHelper from "./WebHelper";
 
 export default class HttpRequest {
 
-    static async Send({ api = null, request = null, param = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null }) {
+    static async Send({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null }) {
 
         let host = cuscomHost || GameConfig.Network.WebURL;
         let url = host + (api || request.API);
         url = this.handleUrl(url);
         let needJuhua = WebHelper.NeedJuhua(request.API);
         await HttpClient.post({
-            url: url, param, onFailure, onSuccess: HttpRequest.onSuccess.bind(HttpRequest, request, onSuccess),
+            url: url, body, onFailure, onSuccess: HttpRequest.onSuccess.bind(HttpRequest, request, onSuccess),
             headers: headers, needJuhua
         });
     }

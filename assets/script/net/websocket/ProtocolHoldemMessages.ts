@@ -1,6 +1,8 @@
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
+import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
+import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
 import { ClientMessageBringIn, ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
@@ -215,8 +217,26 @@ export class Protocol_Holdem_Standup extends BaseProtocol {
         return result.toObject();
     }
 }
-
-
+/**
+ * 补盲状态变化
+ */
+export class Protocol_Holdem_PostStatusChange extends BaseProtocol {
+    public static Response_AsObject: ServerMessagePostStatusChange.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessagePostStatusChange.AsObject {
+        let result: ServerMessagePostStatusChange = ServerMessagePostStatusChange.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+/**
+ * 补盲状态变化
+ */
+ export class Protocol_Holdem_StartInfo extends BaseProtocol {
+    public static Response_AsObject: ServerMessageStartInfo.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageStartInfo.AsObject {
+        let result: ServerMessageStartInfo = ServerMessageStartInfo.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 
 
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
@@ -228,3 +248,4 @@ cc.js.setClassName("Protocol_Holdem_Seated", Protocol_Holdem_Seated);
 cc.js.setClassName("Protocol_Holdem_BringIn", Protocol_Holdem_BringIn);
 cc.js.setClassName("Protocol_Holdem_StandupActive", Protocol_Holdem_StandupActive);
 cc.js.setClassName("Protocol_Holdem_Standup", Protocol_Holdem_Standup);
+cc.js.setClassName("Protocol_Holdem_PostStatusChange", Protocol_Holdem_PostStatusChange);

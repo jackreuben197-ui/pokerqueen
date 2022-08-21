@@ -76,11 +76,11 @@ export class SeatFSM {
     public SitEnter(): void {
         // this.seat.SetClient0BubblePos();
         this.seat.UpdateHead();
-        // this.seat.UpdateNickname();
+        this.seat.UpdateNickname();
         this.seat.UpdateCoin();
-        // this.seat.UpdateHolding();
+        //this.seat.UpdateHolding();
         // //UpdateShowCardsId(new List<sbyte>());
-        // this.seat.UpdateCurRoundHaveBet();
+        this.seat.UpdateCurRoundHaveBet();
         // this.seat.UpdateCards();
         // this.seat.UpdateBanker();
 
@@ -102,12 +102,6 @@ export class SeatFSM {
 
     //#region 坐下动画
     SitAnimationEnter() {
-        // sequenceSitAnimationEnter = DOTween.Sequence();
-        // sequenceSitAnimationEnter.Append(Trans.DOScaleX(0, 0.15f).OnComplete(() => {
-        //     this.FsmLogicComponent.SM.ChangeState(SeatSit.Instance);
-        //     this.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
-        // }));
-        // sequenceSitAnimationEnter.Append(Trans.DOScaleX(1, 0.15f));
 
         cc.tween(this.seat.ui).sequence(cc.scaleTo(0.15, 0, 1), cc.callFunc(() => {
             this.seat.FsmLogicComponent.SM.ChangeState(SeatSit.Instance);
@@ -125,7 +119,7 @@ export class SeatFSM {
     //#region 等待开始
     public WaitStartEnter(): void {
         this.seat.UpdateHead();
-        // UpdateNickname();
+        //this.seat.UpdateNickname();
         this.seat.UpdateCoin();
         this.seat.uirc.imageHeadFrame.node.active = true;
         this.seat.uirc.imageEmpty.node.active = false;
