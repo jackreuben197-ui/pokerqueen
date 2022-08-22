@@ -13,7 +13,7 @@ import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import { SeatFSM } from "./SeatFSM";
 import { SeatEmpty, SeatSit } from "./SeatStateHandler";
-import SeatUIRC from "./SeatUIRC";
+import SeatUIRC, { CardUIInfo } from "./SeatUIRC";
 
 export default class Seat {
 
@@ -50,6 +50,7 @@ export default class Seat {
     //private Transform OriginalVoiceObj;
 
 
+
     public seatUIInfo: SeatUIInfo;
 
     protected PlayerCount: number;//最大人数
@@ -61,6 +62,8 @@ export default class Seat {
         this.fsm = new SeatFSM(id, this);
 
         this.uirc = ui.getComponent(SeatUIRC);
+
+        this.uirc.seat = this;
 
         UpdateComponent.Add(this.FsmLogicComponent = new FSMLogicComponent(), this.fsm);
 
@@ -544,6 +547,30 @@ export default class Seat {
         this.uirc.transCurRoundHaveBet.active = true;
     }
 
+    /// <summary>
+    /// 隐藏手牌
+    /// </summary>
+    public HideCards(list: CardUIInfo[]): void {
+        for (let i = 0, n = list.length; i < n; i++) {
+            list[i].imageCard.node.active = false;
+        }
+    }
+    /// <summary>
+    /// 隐藏手牌背面
+    /// </summary>
+    public HideCardBack(): void {
+        this.transSmallCardBacks.active = false;
+    }
+
+    /// <summary>
+    /// 刷新庄家标识
+    /// </summary>
+    public UpdateBanker(): void {
+        this.imageBanker.node.active = this.isBank;
+    }
+
+
+
     //刷新座位下的等待文本
     public UpdateWaiteNextTips(ishow: boolean): void {
         if (this.IsMySeat) {
@@ -578,6 +605,23 @@ export default class Seat {
         }
 
         return this.Player.userID == GameCache.Instance.CurGame.mainPlayer.userID && this.seatID == GameCache.Instance.CurGame.mainPlayer.seatID;
+    }
+
+
+    public FoldHeadGray(active: boolean): void {
+        this.uirc.imageHeadGray.node.active = active;
+        if (this.IsMySeat) {
+            let mCardUiInfo: CardUIInfo = null;
+            for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
+                mCardUiInfo = this.uirc.listCardUIInfos[i];
+                if (null == mCardUiInfo)
+                    continue;
+
+                mCardUiInfo.imageSelect.node.active = false;
+
+                mCardUiInfo.imageCard.node.color = active ? cc.Color.GRAY : cc.Color.WHITE;
+            }
+        }
     }
 
 }

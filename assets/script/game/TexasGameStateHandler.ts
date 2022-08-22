@@ -5,6 +5,7 @@
 import { UIDefine } from "../define/UIDefine";
 import GameCache from "../manager/GameCache";
 import UIManager from "../manager/UIManager";
+import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
@@ -123,4 +124,33 @@ export class TexasGameStateHandlerHandStarted extends StateHandler {
     }
 }
 
+
+export class TexasGameStateHandlerHandPreflop extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerHandPreflop";
+
+    public Enter(entity?: any): void {
+
+        var source = this.SourceData as ServerMessageStartInfo.AsObject;
+        if (source == null) {
+            return;
+        }
+
+        let game: TexasGame = entity as TexasGame;
+
+        game.texasGameProtocol.handleRecvStartInfoCommon(source, source);
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+        super.Exit(game);
+    }
+}
 

@@ -48,11 +48,7 @@ export default class TexasScene extends BaseScene {
     Menu_Button: cc.Node = null;
 
 
-
-
-
-
-    ImageWaitForStartTips: cc.Node = null;
+    imageWaitForStartTips: cc.Node = null;
 
     //座位节点
     Seat: cc.Node = null;
@@ -169,7 +165,7 @@ export default class TexasScene extends BaseScene {
         this.cursituation_btn = this.getChildNodeOrComponent("cursituation_btn");
         this.chat_btn = this.getChildNodeOrComponent("chat_btn");
         this.roominfo_lab = this.getChildNodeOrComponent("roominfo_lab", cc.Label);
-        this.ImageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
+        this.imageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.Seat = this.getChildNodeOrComponent("Seat");
         this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");

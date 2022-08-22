@@ -220,4 +220,57 @@ export class SeatStandup extends StateHandler {
         if (entity instanceof SeatFSM) entity.StandupExit();
     }
 }
+//每手开始
+export class SeatStart extends StateHandler {
 
+    public Name: string = "SeatStart";
+
+    private static _Instance: SeatStart = null;
+
+    public static get Instance() {
+        return this._Instance ??= new SeatStart;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.StartEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.StartExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.StartExit();
+    }
+}
+//抓
+export class SeatStraddle extends StateHandler {
+
+    public Name: string = "SeatStraddle";
+
+    private static _Instance: SeatStraddle = null;
+
+    public static get Instance() {
+        return this._Instance ??= new SeatStraddle;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.StraddleEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.StraddleExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.StraddleExit();
+    }
+}

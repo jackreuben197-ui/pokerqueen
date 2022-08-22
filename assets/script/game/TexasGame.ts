@@ -15,6 +15,7 @@ import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
 import { RoomInfo } from "../protobuf/holdem/define_pb";
+import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../session/StorageKey";
 import GameUtil from "../tools/GameUtil";
@@ -235,7 +236,7 @@ export default class TexasGame {
     /// <summary>
     /// 上一局庄家
     /// </summary>
-    //public sbyte lastBankerIndex;
+    public lastBankerIndex: number = 0;
     /// <summary>
     /// 缓存坐下SeatId
     /// </summary>
@@ -247,11 +248,11 @@ export default class TexasGame {
     /// <summary>
     /// 已经Allin下发玩家手牌
     /// </summary>
-    protected isAllinGetPlayerCards: boolean;
+    public isAllinGetPlayerCards: boolean;
     /// <summary>
     /// 保险模式，三张公共牌后，没有保险可买，马上来了第四张公共牌 0默认 1首次收筹码并位移
     /// </summary>
-    protected fuck4thPCardByInsuranceState: number = 0;
+    public fuck4thPCardByInsuranceState: number = 0;
     /// <summary>
     /// 最低入池率 0不限制
     /// </summary>
@@ -423,7 +424,7 @@ export default class TexasGame {
         this.isGPSRestrictions = rec.roomInfo.limitGps;
 
 
-        this.gameUI.ImageWaitForStartTips.active = this.gamestatus == 0;
+        this.gameUI.imageWaitForStartTips.active = this.gamestatus == 0;
 
 
         // 显示可用位置
@@ -916,6 +917,22 @@ export default class TexasGame {
         })
     }
     /// <summary>
+    /// 获取游戏开始手牌
+    /// </summary>
+    /// <param name="rec"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public GetHandCardsAtRecvStartInfo(rec: ServerMessageStartInfo.AsObject, index: number): number[] {
+
+        if (rec.playersList[index].cardsList == null || rec.playersList[index].cardsList.length <= 0) {
+            return [0, 0];
+        }
+        let mFirstCard: number = rec.playersList[index].cardsList[0];
+        let mSecondCard: number = rec.playersList[index].cardsList[1];
+        return [mFirstCard, mSecondCard];
+    }
+
+    /// <summary>
     /// 获取筹码Sprite
     /// </summary>
     /// <param name="spriteName"></param>
@@ -923,6 +940,131 @@ export default class TexasGame {
     public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
         return AssetContext.getAsset(spriteName);
     }
+
+
+    /// <summary>
+    /// 播放发牌动画
+    /// </summary>
+    //public PlayDealAnimation(TweenCallback tweenCallback:Function) {
+    public PlayDealAnimation(tweenCallback: Function) {
+        // sequencePlayDealAnimation = DOTween.Sequence();
+
+        // Seat mSeat = null;
+
+        // // 庄家标志动画
+        // mSeat = GetSeatByLocalSeatID(bankerIndex);
+        // if (null != mSeat)
+        // {
+        // 	Tweener mTweener = mSeat.PlayBankerAnimation();
+        // 	if (null != mTweener)
+        // 	{
+        // 		sequencePlayDealAnimation.Append(mTweener);
+        // 		sequencePlayDealAnimation.AppendInterval(0.2f);
+        // 	}
+        // }
+
+        // // 前注
+        // if (groupBet > 0)
+        // {
+
+        // 	ulong allGroupBet = 0;
+        // 	bool mIsFirstGroupBet = true;
+        // 	for (int i = 0, n = listSeat.Count; i < n; i++)
+        // 	{
+        // 		mSeat = listSeat[i];
+        // 		if (null == mSeat || null == mSeat.Player || !mSeat.Player.isPlaying)
+        // 			continue;
+        // 		mSeat.UpdateGroupBet();
+        // 		allGroupBet += groupBet;
+
+        // 		mSeat.PlayBetAnimation();
+
+        // 	}
+
+        // 	mIsFirstGroupBet = true;
+        // 	for (int i = 0, n = listSeat.Count; i < n; i++)
+        // 	{
+        // 		mSeat = listSeat[i];
+        // 		if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
+        // 			continue;
+
+        // 		mSeat.PlayRecyclingChipAnimation();
+
+        // 	}
+
+        // 	GameObject mObj = null;
+        // 	PotInfo mPotInfo = null;
+        // 	if (listPotInfo.Count == 0)
+        // 	{
+
+        // 		mObj = GameObject.Instantiate(transAllPot.gameObject);
+        // 		mObj.transform.SetParent(transPots);
+        // 		mObj.transform.localPosition = GameUtil.TexasPots[0];
+        // 		mObj.transform.localRotation = Quaternion.identity;
+        // 		mObj.transform.localScale = Vector3.one;
+        // 		mObj.name = $"Pot{0}";
+
+        // 		mPotInfo = new PotInfo(mObj.transform);
+        // 		listPotInfo.Add(mPotInfo);
+        // 	}
+        // 	else
+        // 	{
+
+        // 		mPotInfo = listPotInfo[0];
+        // 	}
+
+        // 	mPotInfo.textPot.text = StringHelper.GetLongString((long)allGroupBet);
+        // 	mPotInfo.trans.gameObject.SetActive(true);
+        // }
+
+        // // 从小盲位置开始发牌
+        // Vector3 mStartPos = rc.transform.TransformPoint(Vector3.zero);
+        // bool mIsFirst = true;
+        // int mTmpIndex = 0;
+        // for (int i = smallIndex, n = listSeat.Count; i < n; i++)
+        // {
+        // 	mSeat = listSeat[i];
+        // 	if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
+        // 		continue;
+
+        // 	if (mIsFirst)
+        // 	{
+        // 		mIsFirst = false;
+        // 		sequencePlayDealAnimation.Append(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
+        // 											   : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
+        // 	}
+        // 	else
+        // 	{
+        // 		sequencePlayDealAnimation.Join(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
+        // 											   : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
+        // 	}
+
+        // 	mTmpIndex++;    // 发牌时间间隔
+        // }
+
+        // for (int i = 0, n = smallIndex; i < n; i++)
+        // {
+        // 	mSeat = listSeat[i];
+        // 	if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
+        // 		continue;
+
+        // 	sequencePlayDealAnimation.Join(listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
+
+        // 	mTmpIndex++;    // 发牌时间间隔
+        // }
+
+        // if (null != tweenCallback)
+        // 	// sequencePlayDealAnimation.AppendCallback(tweenCallback);
+        // 	sequencePlayDealAnimation.OnComplete(tweenCallback);
+
+        // sequencePlayDealAnimation.Play();
+    }
+
+
+
+
+
+
 
     /**
      * 显示手动设置面板 

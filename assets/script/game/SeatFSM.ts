@@ -179,6 +179,38 @@ export class SeatFSM {
     }
     //#endregion
 
+    //#region 每手开始
+    public StartEnter(): void {
+        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
+        //this.seat.HideCards(listSmallCardUIInfos);
+        this.seat.HideCardBack();
+        //this.seat.UpdateHolding(true);
+    }
+
+    public StartExecute(): void {
+
+    }
+
+    public StartExit(): void {
+
+    }
+    //#endregion
+
+
+    //#region straddle
+    public StraddleEnter(): void {
+        this.seat.UpdateBubble();
+    }
+
+    public StraddleExecute(): void {
+
+    }
+
+    public StraddleExit(): void {
+
+    }
+    //#endregion
+
 
 
 }
