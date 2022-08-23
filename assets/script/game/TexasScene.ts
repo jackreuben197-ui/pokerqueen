@@ -32,7 +32,7 @@ export default class TexasScene extends BaseScene {
     cursituation_btn: cc.Node = null;
     chat_btn: cc.Node = null;
 
-    roominfo_lab: cc.Label = null;
+    textRoomInfo: cc.Label = null;
 
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
@@ -55,6 +55,8 @@ export default class TexasScene extends BaseScene {
 
 
     UIAddChips: UIAddChipsComponent = null;
+
+    textAlreadAnte: cc.Label = null;
 
     ///////////////////////////////////
     /**
@@ -164,7 +166,7 @@ export default class TexasScene extends BaseScene {
         this.report_btn = this.getChildNodeOrComponent("report_btn");
         this.cursituation_btn = this.getChildNodeOrComponent("cursituation_btn");
         this.chat_btn = this.getChildNodeOrComponent("chat_btn");
-        this.roominfo_lab = this.getChildNodeOrComponent("roominfo_lab", cc.Label);
+        this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
         this.imageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.Seat = this.getChildNodeOrComponent("Seat");
         this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
@@ -174,6 +176,8 @@ export default class TexasScene extends BaseScene {
         this.imageMenuMask = this.getChildNodeOrComponent("Image_MenuMask");
         this.textTotalBean = this.getChildNodeOrComponent("Text_TotalBean", cc.Label);
         this.textStoreBean = this.getChildNodeOrComponent("Text_StoreBean", cc.Label);
+
+        this.textAlreadAnte =  this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
 
         this.Menu_Buttons = this.getChildNodeOrComponent("Menu_Buttons");
         this.Menu_Button = this.getChildNodeOrComponent("Menu_Button");

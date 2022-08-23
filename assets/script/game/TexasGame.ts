@@ -141,7 +141,7 @@ export default class TexasGame {
     /// <summary>
     /// 前注
     /// </summary>
-    public groupBet: number;
+    public groupBet: number = 0;
     /// <summary>
     /// 各分池的筹码数
     /// </summary>
@@ -557,7 +557,7 @@ export default class TexasGame {
             info += `\n${LanguageCode.LanguageDescription(20088)}`;
         }
         info += "\n\n";
-        this.gameUI.roominfo_lab.string = info;
+        this.gameUI.textRoomInfo.string = info;
     }
 
 
@@ -941,6 +941,14 @@ export default class TexasGame {
         return AssetContext.getAsset(spriteName);
     }
 
+    /// <summary>
+    /// 获取扑克牌Sprite
+    /// </summary>
+    /// <param name="spriteName"></param>
+    /// <returns></returns>
+    public GetPokerSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
+        return AssetContext.getAsset(spriteName);
+    }
 
     /// <summary>
     /// 播放发牌动画
@@ -949,120 +957,116 @@ export default class TexasGame {
     public PlayDealAnimation(tweenCallback: Function) {
         // sequencePlayDealAnimation = DOTween.Sequence();
 
-        // Seat mSeat = null;
+        let sequencePlayDealAnimation = [];
 
-        // // 庄家标志动画
-        // mSeat = GetSeatByLocalSeatID(bankerIndex);
-        // if (null != mSeat)
-        // {
-        // 	Tweener mTweener = mSeat.PlayBankerAnimation();
-        // 	if (null != mTweener)
-        // 	{
-        // 		sequencePlayDealAnimation.Append(mTweener);
-        // 		sequencePlayDealAnimation.AppendInterval(0.2f);
-        // 	}
-        // }
+        let mSeat: Seat = null;
 
-        // // 前注
-        // if (groupBet > 0)
-        // {
+        // 庄家标志动画
+        mSeat = this.GetSeatByLocalSeatID(this.bankerIndex);
+        if (null != mSeat) {
+            let mTweener: cc.Tween = mSeat.PlayBankerAnimation();
+            if (null != mTweener) {
+                sequencePlayDealAnimation.push(mTweener);
+                sequencePlayDealAnimation.push(cc.tween().delay(0.2));
+            }
+        }
 
-        // 	ulong allGroupBet = 0;
-        // 	bool mIsFirstGroupBet = true;
-        // 	for (int i = 0, n = listSeat.Count; i < n; i++)
-        // 	{
-        // 		mSeat = listSeat[i];
-        // 		if (null == mSeat || null == mSeat.Player || !mSeat.Player.isPlaying)
-        // 			continue;
-        // 		mSeat.UpdateGroupBet();
-        // 		allGroupBet += groupBet;
+        // 前注
+        if (this.groupBet > 0) {
 
-        // 		mSeat.PlayBetAnimation();
+            let allGroupBet = 0;
+            let mIsFirstGroupBet = true;
+            for (let i = 0, n = this.listSeat.length; i < n; i++) {
+                mSeat = this.listSeat[i];
+                if (null == mSeat || null == mSeat.Player || !mSeat.Player.isPlaying)
+                    continue;
+                mSeat.UpdateGroupBet();
+                allGroupBet += this.groupBet;
+                mSeat.PlayBetAnimation();
+            }
 
-        // 	}
+            mIsFirstGroupBet = true;
+            for (let i = 0, n = this.listSeat.length; i < n; i++) {
+                mSeat = this.listSeat[i];
+                if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
+                    continue;
+                mSeat.PlayRecyclingChipAnimation();
+            }
 
-        // 	mIsFirstGroupBet = true;
-        // 	for (int i = 0, n = listSeat.Count; i < n; i++)
-        // 	{
-        // 		mSeat = listSeat[i];
-        // 		if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
-        // 			continue;
+            // GameObject mObj = null;
+            // PotInfo mPotInfo = null;
+            // if (listPotInfo.Count == 0) {
 
-        // 		mSeat.PlayRecyclingChipAnimation();
+            //     mObj = GameObject.Instantiate(transAllPot.gameObject);
+            //     mObj.transform.SetParent(transPots);
+            //     mObj.transform.localPosition = GameUtil.TexasPots[0];
+            //     mObj.transform.localRotation = Quaternion.identity;
+            //     mObj.transform.localScale = Vector3.one;
+            //     mObj.name = $"Pot{0}";
 
-        // 	}
+            //     mPotInfo = new PotInfo(mObj.transform);
+            //     listPotInfo.Add(mPotInfo);
+            // }
+            // else {
 
-        // 	GameObject mObj = null;
-        // 	PotInfo mPotInfo = null;
-        // 	if (listPotInfo.Count == 0)
-        // 	{
+            //     mPotInfo = listPotInfo[0];
+            // }
 
-        // 		mObj = GameObject.Instantiate(transAllPot.gameObject);
-        // 		mObj.transform.SetParent(transPots);
-        // 		mObj.transform.localPosition = GameUtil.TexasPots[0];
-        // 		mObj.transform.localRotation = Quaternion.identity;
-        // 		mObj.transform.localScale = Vector3.one;
-        // 		mObj.name = $"Pot{0}";
+            // mPotInfo.textPot.text = StringHelper.GetLongString((long)allGroupBet);
+            // mPotInfo.trans.gameObject.SetActive(true);
+        }
 
-        // 		mPotInfo = new PotInfo(mObj.transform);
-        // 		listPotInfo.Add(mPotInfo);
-        // 	}
-        // 	else
-        // 	{
-
-        // 		mPotInfo = listPotInfo[0];
-        // 	}
-
-        // 	mPotInfo.textPot.text = StringHelper.GetLongString((long)allGroupBet);
-        // 	mPotInfo.trans.gameObject.SetActive(true);
-        // }
-
-        // // 从小盲位置开始发牌
+        // 从小盲位置开始发牌
         // Vector3 mStartPos = rc.transform.TransformPoint(Vector3.zero);
         // bool mIsFirst = true;
         // int mTmpIndex = 0;
         // for (int i = smallIndex, n = listSeat.Count; i < n; i++)
         // {
-        // 	mSeat = listSeat[i];
-        // 	if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
-        // 		continue;
+        //     mSeat = listSeat[i];
+        //     if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
+        //         continue;
 
-        // 	if (mIsFirst)
-        // 	{
-        // 		mIsFirst = false;
-        // 		sequencePlayDealAnimation.Append(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
-        // 											   : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
-        // 	}
-        // 	else
-        // 	{
-        // 		sequencePlayDealAnimation.Join(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
-        // 											   : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
-        // 	}
+        //     if (mIsFirst) {
+        //         mIsFirst = false;
+        //         sequencePlayDealAnimation.Append(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
+        //             : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
+        //     }
+        //     else {
+        //         sequencePlayDealAnimation.Join(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
+        //             : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
+        //     }
 
-        // 	mTmpIndex++;    // 发牌时间间隔
+        //     mTmpIndex++;    // 发牌时间间隔
         // }
 
         // for (int i = 0, n = smallIndex; i < n; i++)
         // {
-        // 	mSeat = listSeat[i];
-        // 	if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
-        // 		continue;
+        //     mSeat = listSeat[i];
+        //     if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
+        //         continue;
 
-        // 	sequencePlayDealAnimation.Join(listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
+        //     sequencePlayDealAnimation.Join(listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
 
-        // 	mTmpIndex++;    // 发牌时间间隔
+        //     mTmpIndex++;    // 发牌时间间隔
         // }
 
         // if (null != tweenCallback)
-        // 	// sequencePlayDealAnimation.AppendCallback(tweenCallback);
-        // 	sequencePlayDealAnimation.OnComplete(tweenCallback);
+        //     // sequencePlayDealAnimation.AppendCallback(tweenCallback);
+        //     sequencePlayDealAnimation.OnComplete(tweenCallback);
 
         // sequencePlayDealAnimation.Play();
     }
 
 
 
-
+    /// <summary>
+    /// 回收筹码位置的世界坐标
+    /// </summary>
+    /// <returns></returns>
+    public GetRecyclingChipPosV3(): cc.Vec3 {
+        //return rc.transform.TransformPoint(this.gameUI.textAlreadAnte.transform.localPosition);
+        return this.gameUI.node.convertToWorldSpaceAR(this.gameUI.textAlreadAnte.node.position);
+    }
 
 
 

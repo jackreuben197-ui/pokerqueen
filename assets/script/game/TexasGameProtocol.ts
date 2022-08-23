@@ -293,73 +293,73 @@ export default class TexasGameProtocol {
         }
         else {
             //（短牌没有小盲注位置）当小盲位小于零，算出小盲位置，用于首位发牌人座位。
-            //this.game.smallIndex = this.game.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds,this.game.bigIndex);
+            this.game.smallIndex = this.game.utils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
         }
         if (this.game.bigIndex >= 0) {
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_SECOND);
         }
         // 发牌动画
-    //     this.game.PlayDealAnimation(() => {
-    //         UpdateAlreadAnte();
-    //             Seat mSeat0 = null;
-    //         for (int i = 0, n = responseData.Players.Count; i < n; i++)
-    //     {
-    //         mSeat0 = listSeat[GetLocalSeatID(responseData.Players[i].SeatId)];
+        //     this.game.PlayDealAnimation(() => {
+        //         UpdateAlreadAnte();
+        //             Seat mSeat0 = null;
+        //         for (int i = 0, n = responseData.Players.Count; i < n; i++)
+        //     {
+        //         mSeat0 = listSeat[GetLocalSeatID(responseData.Players[i].SeatId)];
 
-    //         if (null == mSeat0 || null == mSeat0.Player) {
-    //             continue;
-    //         }
+        //         if (null == mSeat0 || null == mSeat0.Player) {
+        //             continue;
+        //         }
 
-    //         mSeat0.FsmLogicComponent.SM.ChangeState(SeatStartToPlaying<Entity>.Instance);
+        //         mSeat0.FsmLogicComponent.SM.ChangeState(SeatStartToPlaying<Entity>.Instance);
 
-    //         if (operationID == mSeat0.seatID) {
-    //             mSeat0.FsmLogicComponent.SM.ChangeState(SeatOperation<Entity>.Instance);
-    //         }
-    //         else {
-    //             mSeat0.FsmLogicComponent.SM.ChangeState(SeatWaitOther<Entity>.Instance);
-    //         }
-    //     }
+        //         if (operationID == mSeat0.seatID) {
+        //             mSeat0.FsmLogicComponent.SM.ChangeState(SeatOperation<Entity>.Instance);
+        //         }
+        //         else {
+        //             mSeat0.FsmLogicComponent.SM.ChangeState(SeatWaitOther<Entity>.Instance);
+        //         }
+        //     }
 
-    //     mSeat0 = GetSeatByLocalSeatID(operationID);
-    //             Seat mMySeat = GetSeatByLocalSeatID(mainPlayer.seatID);
+        //     mSeat0 = GetSeatByLocalSeatID(operationID);
+        //             Seat mMySeat = GetSeatByLocalSeatID(mainPlayer.seatID);
 
-    //     if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
+        //     if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
 
-    //         // 到自己操作
-    //         HideAutoOperationPanel();
-    //         if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-    //             ShowOperationPanel(new UIOperationComponent.OperationData()
-    //                     {
-    //                     actionLimits = responseData.NextOperator.Actions,
-    //                     Shortcuts = responseData.NextOperator.Shortcuts
-    //                 });
-    //         }
-    //     }
-    //     else {
-    //         // 其他人操作
-    //         HideOperationPanel();
-    //         if (null != mMySeat && mMySeat.Player.isParticipateInTheGame) {
-    //             // 自己参与游戏
-    //             // 非弃牌 && 非ALLIN && 非托管
-    //             if (mMySeat.Player.actionStatus != Def.Types.Action.Fold && mMySeat.Player.actionStatus != Def.Types.Action.Allin && mMySeat.Player.actionStatus != Def.Types.Action.None && !mMySeat.Player.IsAutoOp) {
-    //                 UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-    //                         {
-    //                         callAmount = getAutoOperationCallAmount(responseData.HandInfo.RoundBet)
-    //                     });
-    //             }
-    //             else {
-    //                 HideAutoOperationPanel();
-    //             }
-    //         }
-    //         else {
-    //             // 观众
-    //             HideAutoOperationPanel();
-    //         }
-    //     }
-    // });
+        //         // 到自己操作
+        //         HideAutoOperationPanel();
+        //         if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
+        //             ShowOperationPanel(new UIOperationComponent.OperationData()
+        //                     {
+        //                     actionLimits = responseData.NextOperator.Actions,
+        //                     Shortcuts = responseData.NextOperator.Shortcuts
+        //                 });
+        //         }
+        //     }
+        //     else {
+        //         // 其他人操作
+        //         HideOperationPanel();
+        //         if (null != mMySeat && mMySeat.Player.isParticipateInTheGame) {
+        //             // 自己参与游戏
+        //             // 非弃牌 && 非ALLIN && 非托管
+        //             if (mMySeat.Player.actionStatus != Def.Types.Action.Fold && mMySeat.Player.actionStatus != Def.Types.Action.Allin && mMySeat.Player.actionStatus != Def.Types.Action.None && !mMySeat.Player.IsAutoOp) {
+        //                 UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
+        //                         {
+        //                         callAmount = getAutoOperationCallAmount(responseData.HandInfo.RoundBet)
+        //                     });
+        //             }
+        //             else {
+        //                 HideAutoOperationPanel();
+        //             }
+        //         }
+        //         else {
+        //             // 观众
+        //             HideAutoOperationPanel();
+        //         }
+        //     }
+        // });
 
 
-}
+    }
 
 
 

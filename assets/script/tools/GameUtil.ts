@@ -1046,4 +1046,30 @@ export default class GameUtil {
     static get isInGameplay() {
         return GameCache.Instance.CurrentRoomID != 0;
     }
+
+    public static GetCardNameByNum(cardNum: number): string {
+        if (cardNum <= 0) {
+            return "poker_88";
+        }
+        if (cardNum < 10) {
+            return `poker_dz_0${cardNum}`;
+        }
+        else {
+            return `poker_dz_${cardNum}`;
+        }
+    }
+
+    /// <summary>
+    /// 源变换本地坐标转化为目标变换本地坐标
+    /// </summary>
+    /// <param name="sourceLocalPos">源本地坐标</param>
+    /// <param name="sourceTransform">源变换</param>
+    /// <param name="targetTransform">目标变换</param>
+    /// <returns>目标本地坐标</returns>
+    public static ChangeToLocalPos(sourceLocalPos: cc.Vec3, sourceTransform: cc.Node, targetTransform: cc.Node): cc.Vec3 {
+        let w = sourceTransform.convertToWorldSpaceAR(sourceLocalPos);
+        let l = targetTransform.convertToNodeSpaceAR(w);
+        return l;
+        //return targetTransform.InverseTransformPoint(sourceTransform.TransformPoint(sourceLocalPos));
+    }
 }

@@ -11,9 +11,9 @@ export class CardUIInfo {
     public imageEye: cc.Sprite;
 
     constructor(public imageCard: cc.Node) {
-        this.imageSelect = imageCard.getChildByName("Image_SmallSelectCard").getComponent(cc.Sprite);
-        this.imageBack = imageCard.getChildByName("Image_EyeCard").getComponent(cc.Sprite);
-        this.imageEye = imageCard.getChildByName("Image_CardBack").getComponent(cc.Sprite);
+        this.imageSelect = imageCard.getChildByName("Image_SelectCard")?.getComponent(cc.Sprite);
+        this.imageBack = imageCard.getChildByName("Image_EyeCard")?.getComponent(cc.Sprite);
+        this.imageEye = imageCard.getChildByName("Image_CardBack")?.getComponent(cc.Sprite);
     }
 }
 
@@ -40,7 +40,12 @@ export default class SeatUIRC extends UIBase {
     imageIconChip: cc.Sprite = null;
     textCurRoundHaveBet: cc.Label = null;
 
+    transSmallCardBacks:cc.Node = null;
+    imageBanker:cc.Node = null;
+
     public listCardUIInfos: CardUIInfo[] = null;
+    public listSmallCardUIInfos: CardUIInfo[] = null;
+    public listImageSmallCardBack: cc.Sprite[] = null;
 
     imageCard0: cc.Node = null;
     imageCard1: cc.Node = null;
@@ -48,6 +53,21 @@ export default class SeatUIRC extends UIBase {
     imageCard3: cc.Node = null;
     imageCard4: cc.Node = null;
     imageCard5: cc.Node = null;
+
+
+    imageSmallCard0: cc.Node = null;
+    imageSmallCard1: cc.Node = null;
+    imageSmallCard2: cc.Node = null;
+    imageSmallCard3: cc.Node = null;
+    imageSmallCard4: cc.Node = null;
+    imageSmallCard5: cc.Node = null;
+
+    imageSmallCardBack0: cc.Sprite = null;
+    imageSmallCardBack1: cc.Sprite = null;
+    imageSmallCardBack2: cc.Sprite = null;
+    imageSmallCardBack3: cc.Sprite = null;
+    imageSmallCardBack4: cc.Sprite = null;
+    imageSmallCardBack5: cc.Sprite = null;
 
     ///////////////////////////////////
 
@@ -72,6 +92,9 @@ export default class SeatUIRC extends UIBase {
         this.imageIconChip = this.getChildNodeOrComponent("Image_IconChip", cc.Sprite);
         this.textCurRoundHaveBet = this.getChildNodeOrComponent("Text_CurRoundHaveBet", cc.Label);
 
+        this.transSmallCardBacks = this.getChildNodeOrComponent("SmallCardBacks");
+        this.imageBanker = this.getChildNodeOrComponent("Image_Banker");
+
         this.imageCard0 = this.getChildNodeOrComponent("Image_Card0");
         this.imageCard1 = this.getChildNodeOrComponent("Image_Card1");
         this.imageCard2 = this.getChildNodeOrComponent("Image_Card2");
@@ -79,14 +102,37 @@ export default class SeatUIRC extends UIBase {
         this.imageCard4 = this.getChildNodeOrComponent("Image_Card4");
         this.imageCard5 = this.getChildNodeOrComponent("Image_Card5");
 
-        if (null == this.listCardUIInfos) {
-            this.listCardUIInfos = [];
-        }
-        if (this.listCardUIInfos.length > 0) this.listCardUIInfos = [];
-        //listCardUIInfos.Clear();
+        this.imageSmallCard0 = this.getChildNodeOrComponent("Image_SmallCard0");
+        this.imageSmallCard1 = this.getChildNodeOrComponent("Image_SmallCard1");
+        this.imageSmallCard2 = this.getChildNodeOrComponent("Image_SmallCard2");
+        this.imageSmallCard3 = this.getChildNodeOrComponent("Image_SmallCard3");
+        this.imageSmallCard4 = this.getChildNodeOrComponent("Image_SmallCard4");
+        this.imageSmallCard5 = this.getChildNodeOrComponent("Image_SmallCard5");
+
+
+        this.imageSmallCardBack0 = this.getChildNodeOrComponent("imageSmallCardBack0", cc.Sprite);
+        this.imageSmallCardBack1 = this.getChildNodeOrComponent("imageSmallCardBack1", cc.Sprite);
+        this.imageSmallCardBack2 = this.getChildNodeOrComponent("imageSmallCardBack2", cc.Sprite);
+        this.imageSmallCardBack3 = this.getChildNodeOrComponent("imageSmallCardBack3", cc.Sprite);
+        this.imageSmallCardBack4 = this.getChildNodeOrComponent("imageSmallCardBack4", cc.Sprite);
+        this.imageSmallCardBack5 = this.getChildNodeOrComponent("imageSmallCardBack5", cc.Sprite);
+
+
+        if (null == this.listCardUIInfos || this.listCardUIInfos.length > 0) this.listCardUIInfos = [];
         this.listCardUIInfos.push(new CardUIInfo(this.imageCard0));
         this.listCardUIInfos.push(new CardUIInfo(this.imageCard1));
 
+
+        if (null == this.listSmallCardUIInfos || this.listSmallCardUIInfos.length > 0) this.listSmallCardUIInfos = [];
+        this.listSmallCardUIInfos.push(new CardUIInfo(this.imageSmallCard0));
+        this.listSmallCardUIInfos.push(new CardUIInfo(this.imageSmallCard1));
+
+
+
+        if (null == this.listImageSmallCardBack || this.listImageSmallCardBack.length > 0) this.listImageSmallCardBack = [];
+        if (null == this.listImageSmallCardBack || this.listImageSmallCardBack.length > 0) this.listImageSmallCardBack = [];
+        this.listImageSmallCardBack.push(this.imageSmallCardBack0);
+        this.listImageSmallCardBack.push(this.imageSmallCardBack1);
 
 
         for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {

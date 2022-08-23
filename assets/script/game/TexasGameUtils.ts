@@ -80,4 +80,26 @@ export default class TexasGameUtils {
         // HideWaitBlindBtn();
         // HideCancelTrustBtn();
     }
+    /// <summary>
+    /// 获取小盲注位置，通过当前参与牌局玩家座位号
+    /// </summary>
+    /// <param name="SeatIds"></param>
+    /// <param name="BigSeatId"></param>
+    /// <returns></returns>
+    public GetSmallSeatIdByPlayingSeatIds(SeatIds: number[], BigSeatId: number): number {
+        let SmallSeatId: number = -1;
+        SeatIds.sort((a, b) => a - b);
+        for (let i = 0; i < SeatIds.length; i++) {
+            if (BigSeatId == SeatIds[i]) {
+                if (i - 1 >= 0) {
+                    SmallSeatId = SeatIds[i - 1];
+                }
+                else {
+                    SmallSeatId = SeatIds[SeatIds.length - 1];
+                }
+                break;
+            }
+        }
+        return SmallSeatId;
+    }
 }
