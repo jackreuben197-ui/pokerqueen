@@ -3,12 +3,12 @@
  */
 
 import { UIDefine } from "../define/UIDefine";
-import GameCache from "../manager/GameCache";
 import UIManager from "../manager/UIManager";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
+import GameCache from "./GameCache";
 import TexasGame from "./TexasGame";
 import { TexasGameState } from "./TexasGameState";
 

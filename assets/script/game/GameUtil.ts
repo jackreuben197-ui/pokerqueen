@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import { SeatUIInfo } from "../game/Seat";
 import TexasGame from "../game/TexasGame";
-import GameCache from "../manager/GameCache";
+import GameCache from "./GameCache";
 
 export default class GameUtil {
     private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
@@ -1042,6 +1042,20 @@ export default class GameUtil {
         return game;
 
     }
+    /// <summary>
+    /// 牌局分池位置
+    /// </summary>
+    public static readonly TexasPots: cc.Vec3[] = [
+        cc.v3(-71.8, 103),
+        cc.v3(-332, -130),
+        cc.v3(-65, -62.3),
+        cc.v3(295, -130),
+        cc.v3(-332, -130),
+        cc.v3(-65, -146.4),
+        cc.v3(295, -130),
+        cc.v3(-332, -230.8),
+        cc.v3(-65, -230.8),
+    ];
 
     static get isInGameplay() {
         return GameCache.Instance.CurrentRoomID != 0;

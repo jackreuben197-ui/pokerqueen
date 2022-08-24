@@ -5,16 +5,37 @@ import { StringHelper } from "../helper/StringHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
-
-import GameCache from "../manager/GameCache";
 import ToastManager from "../manager/ToastManager";
 
 import { RoomInfo } from "../protobuf/holdem/define_pb";
 import GlobalSession from "../session/GlobalSession";
 import BaseScene from "../ui/scene/BaseScene";
+import GameCache from "./GameCache";
 
 import TexasGame from "./TexasGame";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
+
+
+export class PotInfo {
+    public pot: number;
+    public textPot: cc.Label;
+    public imagePot: cc.Sprite;
+    public imagePotFrame: cc.Sprite;
+    public imagePotText: cc.Label;
+
+    constructor(public trans: cc.Node) {
+        if (null != trans) {
+            this.imagePotFrame = trans.getChildByName("Image_PotFrame").getComponent(cc.Sprite);
+            this.imagePot = trans.getChildByName("Image_Pot").getComponent(cc.Sprite);
+            this.textPot = trans.getChildByName("Text_Pot").getComponent(cc.Label);
+            this.imagePotText = this.imagePot.node.getChildByName("Image_PotText").getComponent(cc.Label);
+        }
+    }
+}
+
+
+
+
 
 const { ccclass, property } = cc._decorator;
 
@@ -58,10 +79,21 @@ export default class TexasScene extends BaseScene {
 
     textAlreadAnte: cc.Label = null;
 
+
+
+
+
+    public transPots: cc.Node = null;
+    public transPot: cc.Node = null;
+    public transAllPot: cc.Node = null;
+
+
     ///////////////////////////////////
     /**
      * 声明内容
      */
+
+    listPotInfo: PotInfo[] = null;
 
     IMenuButton_Type: {
         node: cc.Node;
@@ -177,10 +209,22 @@ export default class TexasScene extends BaseScene {
         this.textTotalBean = this.getChildNodeOrComponent("Text_TotalBean", cc.Label);
         this.textStoreBean = this.getChildNodeOrComponent("Text_StoreBean", cc.Label);
 
-        this.textAlreadAnte =  this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
+        this.textAlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
 
         this.Menu_Buttons = this.getChildNodeOrComponent("Menu_Buttons");
         this.Menu_Button = this.getChildNodeOrComponent("Menu_Button");
+
+
+        this.transPots = this.getChildNodeOrComponent("Pots");
+        this.transPot = this.getChildNodeOrComponent("Pot");
+        this.transAllPot = this.getChildNodeOrComponent("AllPot");
+
+
+
+
+        // 分池UI
+        if (null == this.listPotInfo) this.listPotInfo = [];
+
 
         this.buildMenuButtons();
         //GameCache.Instance.room_type
@@ -192,7 +236,7 @@ export default class TexasScene extends BaseScene {
 
         this.game = GameCache.Instance.CurGame;
 
-        this.game.gameUI = this;
+        this.game.uirc = this;
 
         window["TexasScene"] = this;
 

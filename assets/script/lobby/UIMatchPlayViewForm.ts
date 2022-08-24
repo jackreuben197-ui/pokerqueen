@@ -7,8 +7,8 @@ import { i18nLabel } from "../../script/i18n/i18nLabel";
 import LobbySession from "../../script/session/LobbySession";
 import ProcedureManager from "../../script/manager/ProcedureManager";
 import { ProcedureEnum } from "../../script/define/EIDefine";
-import GameCache from "../manager/GameCache";
 import { i18nMgr } from "../i18n/i18nMgr";
+import GameCache from "../game/GameCache";
 enum EnumLoadType {
     "Init" = 1,
     "Refresh" = 2,

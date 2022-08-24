@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
-import GameCache from "../manager/GameCache";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
+import GameCache from "./GameCache";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";

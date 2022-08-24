@@ -1,6 +1,7 @@
 
+import GameCache from "../game/GameCache";
 import { TexasGameState } from "../game/TexasGameState";
-import GameCache from "../manager/GameCache";
+
 import ProcedureBase from "./ProcedureBase";
 
 /**

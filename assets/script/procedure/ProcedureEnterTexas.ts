@@ -1,7 +1,6 @@
 
 import { Bundle, ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
-import GameCache from "../manager/GameCache";
 import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
 import UIManager from "../manager/UIManager";

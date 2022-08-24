@@ -1,6 +1,5 @@
 import Dispatcher from "../event/Dispatcher";
 import { LanguageCode } from "../i18n/LanguageCode";
-import GameCache from "../manager/GameCache";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
@@ -9,6 +8,7 @@ import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { CPlayer } from "./CPlayer";
+import GameCache from "./GameCache";
 import Seat from "./Seat";
 import { SeatSitAnimation, SeatStart, SeatStraddle, SeatWaitBlind, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
@@ -237,7 +237,7 @@ export default class TexasGameProtocol {
         this.game.gamestatus = 1;
         GameCache.Instance.GameStatus = this.game.gamestatus;
         this.game.cacheRound = Def.Round.PREFLOP;
-        this.game.gameUI.imageWaitForStartTips.active = false;
+        this.game.uirc.imageWaitForStartTips.active = false;
         this.game.fuck4thPCardByInsuranceState = 0;
         this.game.isAllinGetPlayerCards = false;
         this.game.lastBankerIndex = this.game.bankerIndex;
