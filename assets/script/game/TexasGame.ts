@@ -31,8 +31,6 @@ import TexasScene from "./TexasScene";
 import TexasSMAgency from "./TexasSMAgency";
 import { UITexasModel } from "./UITexasModel";
 
-
-
 export default class TexasGame {
     //座位UI节点缓存池
     private seatUI_pool: cc.Node[] = [];
