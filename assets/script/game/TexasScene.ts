@@ -78,7 +78,8 @@ export default class TexasScene extends BaseScene {
     UIAddChips: UIAddChipsComponent = null;
 
     textAlreadAnte: cc.Label = null;
-
+    //个性设置界面
+    UITexasSetting: cc.Node = null;
 
 
 
@@ -220,7 +221,7 @@ export default class TexasScene extends BaseScene {
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
 
 
-
+        this.UITexasSetting = this.getChildNodeOrComponent("UITexasSetting");
 
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
@@ -438,7 +439,8 @@ export default class TexasScene extends BaseScene {
 
     }
     Click_Button_Setting() {
-
+        this.hideMenu();
+        this.UITexasSetting.active = true;
     }
     Click_Button_Rule() {
 

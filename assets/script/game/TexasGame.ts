@@ -1263,7 +1263,7 @@ export default class TexasGame {
                 // sequencePlayDealAnimation.Join(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
                 //     : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
                 sequencePlayDealAnimation[sequencePlayDealAnimation.length - 1].sequence.push();
-                
+
             }
 
             mTmpIndex++;    // 发牌时间间隔
@@ -1280,8 +1280,8 @@ export default class TexasGame {
         }
 
         //if (null != tweenCallback)
-            // sequencePlayDealAnimation.AppendCallback(tweenCallback);
-            //sequencePlayDealAnimation.OnComplete(tweenCallback);
+        // sequencePlayDealAnimation.AppendCallback(tweenCallback);
+        //sequencePlayDealAnimation.OnComplete(tweenCallback);
 
         //sequencePlayDealAnimation.Play();
     }
