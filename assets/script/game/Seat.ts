@@ -818,7 +818,7 @@ export default class Seat {
     /// 播放庄家动画
     /// </summary>
     /// <returns></returns>
-    public PlayBankerAnimation(): { sequence: (cc.Tween | Function)[], time: number } {
+    public PlayBankerAnimation(): { type: number, spawn: (cc.Tween | Function)[], time: number } {
         if (GameCache.Instance.CurGame.lastBankerIndex == -1 || this.seatID == GameCache.Instance.CurGame.lastBankerIndex)
             return null;
 
@@ -829,7 +829,11 @@ export default class Seat {
         mSeat.uirc.imageBanker.setPosition(GameUtil.ChangeToLocalPos(mSeat.seatUIInfo.BankerPos, mSeat.ui, this.ui));
         mSeat.uirc.imageBanker.active = true;
         //return imageBanker.transform.DOLocalMove(seatUIInfo.BankerPos, 0.3f);
-        return { sequence: [cc.tween(mSeat.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos })], time: .3 };
+        return {
+            type: 1, spawn: [() => {
+                cc.tween(mSeat.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos })
+            }], time: .3
+        };
     }
 
 
@@ -916,7 +920,7 @@ export default class Seat {
     /// <summary>
     /// 播放发牌动画
     /// </summary> virtual Sequence 
-    public PlayDealAnimation(targetPos: cc.Vec3): { sequence: (cc.Tween | Function)[], time: number } {
+    public PlayDealAnimation(targetPos: cc.Vec3): { type: number, spawn?: (cc.Tween | Function)[], time: number } {
         for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
             this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
         }
@@ -924,7 +928,7 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
-        let sequencePlayDealAnimation: { sequence: (cc.Tween | Function)[], time: number } = null;
+        let sequencePlayDealAnimation: { type: number, spawn?: (cc.Tween | Function)[], time: number } = null;
 
         if (GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
             // 其他玩家发牌动画
@@ -935,13 +939,17 @@ export default class Seat {
                 this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
                 let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
                 if (i == 0) {
+
                     sequencePlayDealAnimation = {
-                        sequence: [
+                        type: 1,
+                        spawn: [
                             () => {
                                 mTmpObj.active = true;
                                 //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
                             },
-                            cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) })
+                            () => {
+                                cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
+                            }
                         ], time: 0.4
                     };
                 }
@@ -957,7 +965,6 @@ export default class Seat {
                     );
                 }
             }
-
             sequencePlayDealAnimation.sequence.unshift(
                 () => {
                     this.uirc.transSmallCardBacks.active = true;

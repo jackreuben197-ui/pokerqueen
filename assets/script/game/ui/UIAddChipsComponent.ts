@@ -3,9 +3,9 @@
  */
 
 import { StringHelper } from "../../helper/StringHelper";
-import GameCache from "../../manager/GameCache";
 import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
+import GameCache from "../GameCache";
 
 const { ccclass, property } = cc._decorator;
 

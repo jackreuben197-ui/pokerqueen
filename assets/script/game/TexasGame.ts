@@ -1168,7 +1168,7 @@ export default class TexasGame {
     public GetPokerSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
         return AssetContext.getAsset(spriteName);
     }
-
+    
     /// <summary>
     /// 播放发牌动画
     /// </summary>
@@ -1183,13 +1183,12 @@ export default class TexasGame {
         // 庄家标志动画
         mSeat = this.GetSeatByLocalSeatID(this.bankerIndex);
         if (null != mSeat) {
-            let mTweener: { sequence: (cc.Tween | Function)[], time: number } = mSeat.PlayBankerAnimation();
+            let mTweener: { type: number, sequence: (cc.Tween | Function)[], time: number } = mSeat.PlayBankerAnimation();
             if (null != mTweener) {
                 sequencePlayDealAnimation.push(mTweener);
-                sequencePlayDealAnimation.push(0.2);
+                sequencePlayDealAnimation.push({ type: 0, time: 0.2 });
             }
         }
-
         // 前注
         if (this.groupBet > 0) {
 
@@ -1263,7 +1262,7 @@ export default class TexasGame {
                 // sequencePlayDealAnimation.Join(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
                 //     : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
                 sequencePlayDealAnimation[sequencePlayDealAnimation.length - 1].sequence.push();
-                
+
             }
 
             mTmpIndex++;    // 发牌时间间隔
@@ -1280,8 +1279,8 @@ export default class TexasGame {
         }
 
         //if (null != tweenCallback)
-            // sequencePlayDealAnimation.AppendCallback(tweenCallback);
-            //sequencePlayDealAnimation.OnComplete(tweenCallback);
+        // sequencePlayDealAnimation.AppendCallback(tweenCallback);
+        //sequencePlayDealAnimation.OnComplete(tweenCallback);
 
         //sequencePlayDealAnimation.Play();
     }
