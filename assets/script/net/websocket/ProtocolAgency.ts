@@ -2,7 +2,7 @@
 
 import { LogStyle } from "../../config/GameConfig";
 import Dispatcher from "../../event/Dispatcher";
-import GameCache from "../../manager/GameCache";
+import GameCache from "../../game/GameCache";
 import { ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import LobbySession from "../../session/LobbySession";
 import LoginSession from "../../session/LoginSession";

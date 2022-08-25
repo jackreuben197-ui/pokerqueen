@@ -6,7 +6,7 @@ import Singleton from "../common/Singleton";
 import Dispatcher from "../event/Dispatcher";
 import { i18nMgr } from "../i18n/i18nMgr";
 import Main from "../Main";
-import AssetContext from "../ui/component/AssetContext";
+import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import Toast from "../ui/toast/Toast";
 
 
@@ -142,7 +142,7 @@ export default class ToastManager extends Singleton {
      */
     getToast() {
         if (this.toast_pool.length) return this.toast_pool.shift();
-        let toast_pb: cc.Prefab = AssetContext.getAsset<cc.Prefab>("Toast");
+        let toast_pb: cc.Prefab = AssetContext.getAsset<cc.Prefab>("Toast", AssetFold.resources_prefab_component);
         return toast_pb && cc.instantiate(toast_pb) || null;
     }
 }
