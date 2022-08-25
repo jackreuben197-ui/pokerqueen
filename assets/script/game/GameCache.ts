@@ -1,6 +1,7 @@
 
 import TexasGame from "../game/TexasGame";
-import GameUtil from "../tools/GameUtil";
+import GameUtil from "./GameUtil";
+
 
 const { ccclass, property } = cc._decorator;
 

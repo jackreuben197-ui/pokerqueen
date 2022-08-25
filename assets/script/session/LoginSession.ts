@@ -3,7 +3,7 @@
  */
 import { GameConfig } from "../config/GameConfig";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
-import GameCache from "../manager/GameCache";
+import GameCache from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Channel, Web_Login, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";

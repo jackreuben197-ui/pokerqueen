@@ -1,6 +1,7 @@
-import GameCache from "../manager/GameCache";
+
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_User_Info, Web_User_Room } from "../net/https/WebRequest";
+import GameCache from "./GameCache";
 
 export class UITexasModel {
     private static instance: UITexasModel;

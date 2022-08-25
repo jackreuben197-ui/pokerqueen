@@ -1,4 +1,5 @@
-import GameCache from "../manager/GameCache";
+
+import GameCache from "../game/GameCache";
 import ToastManager from "../manager/ToastManager";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_User_Info } from "../net/https/WebRequest";

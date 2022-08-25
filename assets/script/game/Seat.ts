@@ -3,30 +3,49 @@ import UpdateComponent from "../funcomponent/UpdateComponent";
 import WebImageHelper from "../helper/WebImageHelper";
 import { LanguageCode } from "../i18n/LanguageCode";
 import { UIMineModel } from "../lobby/UIMineModel";
-import GameCache from "../manager/GameCache";
 import { Def } from "../protobuf/holdem/define_pb";
-import LobbySession from "../session/LobbySession";
-import { StateHandler } from "../statemachine/StateHandler";
-import GameUtil from "../tools/GameUtil";
 import { CacheDataManager } from "./CacheDataManager";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
+import GameCache from "./GameCache";
+import GameUtil from "./GameUtil";
 import { SeatFSM } from "./SeatFSM";
 import { SeatEmpty, SeatSit } from "./SeatStateHandler";
-import SeatUIRC from "./SeatUIRC";
+import SeatUIRC, { CardUIInfo } from "./SeatUIRC";
 
 export default class Seat {
 
     public fsm: SeatFSM = null;
 
-    // ui
-    protected imageBanker: cc.Sprite = null;
-    //protected imageIconChip: cc.Sprite = null;
-    protected transSmallCardBacks: cc.Node = null;
-    //protected transCurRoundHaveBet: cc.Node = null;
-    protected armatureVoice: cc.Node = null;
+    /// <summary>
+    /// 自己手牌位置
+    /// </summary>
+    protected static myCardsPos: cc.Vec3[] = [];
+    /// <summary>
+    /// 自己手牌旋转
+    /// </summary>
+    protected static myCardsRot: cc.Vec3[] = [];
 
-    protected defaultIconChipLocalPos: cc.Vec2;
+    /// <summary>
+    /// 小手牌
+    /// </summary>
+    protected static backSmallCardPos: cc.Vec3[] = [];
+    /// <summary>
+    /// 小手牌
+    /// </summary>
+    protected static backSmallCardRot: cc.Vec3[] = [];
+
+    /// <summary>
+    /// 输赢时显示的手牌位置
+    /// </summary>
+    protected static smallCardPos: cc.Vec3[] = [];
+    /// <summary>
+    /// 自己牌型位置
+    /// </summary>
+    protected static myCardTypePos: cc.Vec3[] = [];
+
+
+    protected defaultIconChipLocalPos: cc.Vec3;
 
 
     public FsmLogicComponent: FSMLogicComponent;//状态机
@@ -50,6 +69,7 @@ export default class Seat {
     //private Transform OriginalVoiceObj;
 
 
+
     public seatUIInfo: SeatUIInfo;
 
     protected PlayerCount: number;//最大人数
@@ -62,9 +82,13 @@ export default class Seat {
 
         this.uirc = ui.getComponent(SeatUIRC);
 
+        this.uirc.seat = this;
+
         UpdateComponent.Add(this.FsmLogicComponent = new FSMLogicComponent(), this.fsm);
 
         this.RegiterTouchEvents();
+
+        this.InitUIStaticData();
 
     }
 
@@ -87,6 +111,45 @@ export default class Seat {
     UnRegiterTouchEvents() {
         this.uirc.imageEmpty.node.off("click", this.onClickEmpty, this);
         this.uirc.rawimageHead.node.off("click", this.onClickEmpty, this);
+    }
+
+
+    InitUIStaticData() {
+        if (Seat.myCardsPos.length != 2) {
+            Seat.myCardsPos = [];
+            Seat.myCardsPos.push(cc.v3(-20, 0));
+            Seat.myCardsPos.push(cc.v3(160, 0));
+        }
+        if (Seat.myCardTypePos.length != 1) {
+            Seat.myCardTypePos = [];
+            Seat.myCardTypePos.push(cc.v3(-80, -243));
+        }
+        if (Seat.myCardsRot.length != 2) {
+            Seat.myCardsRot = [];
+            Seat.myCardsRot.push(cc.v3(0, 0));
+            Seat.myCardsRot.push(cc.v3(0, 0, -8));
+        }
+
+        if (Seat.backSmallCardPos.length != 4) {
+            Seat.backSmallCardPos = [];
+            Seat.backSmallCardPos.push(cc.v3(0, 14.5));
+            Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
+
+            Seat.backSmallCardPos.push(cc.v3(0, 14.5));
+            Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
+        }
+
+        if (Seat.backSmallCardRot.length != 2) {
+            Seat.backSmallCardRot = [];
+            Seat.backSmallCardRot.push(cc.v3(0, 0, -15));
+            Seat.backSmallCardRot.push(cc.v3(0, 0, 0));
+        }
+
+        if (Seat.smallCardPos.length != 2) {
+            Seat.smallCardPos = [];
+            Seat.smallCardPos.push(cc.v3(-29, 14.5));
+            Seat.smallCardPos.push(cc.v3(35, 14.5));
+        }
     }
 
 
@@ -123,22 +186,21 @@ export default class Seat {
         this.PlayerCount = usercount;
         this.ClientSeatId = + this.ui.name.substring(this.ui.name.length - 1);
         this.seatUIInfo = info;
-        //Trans.localPosition = info.Pos;
+        this.ui.setPosition(info.Pos);
 
-        // this.imageBanker.node.setPosition(info.BankerPos);
-        // this.transSmallCardBacks.setPosition(info.CardBackPos);
-        // this.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
-
-
-        // if (this.ui.x > 0) {
-        //     this.armatureVoice.setPosition(-90, 50, 0);
-        // }
-        // else {
-        //     this.armatureVoice.setPosition(90, 50, 0);
-        // }
+        this.uirc.imageBanker.setPosition(info.BankerPos);
+        this.uirc.transSmallCardBacks.setPosition(info.CardBackPos);
+        this.uirc.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
 
 
-        // 	RectTransform mRectTransform = imageBubble.rectTransform;
+        if (this.ui.x > 0) {
+            //this.armatureVoice.setPosition(-90, 50, 0);
+        }
+        else {
+            //this.armatureVoice.setPosition(90, 50, 0);
+        }
+
+        // RectTransform mRectTransform = imageBubble.rectTransform;
         // mRectTransform.SetParent(transBubble);
         // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
@@ -155,10 +217,12 @@ export default class Seat {
         // mRectTransform.SetParent(transBubble);
         // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode()) {
+        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
+        // {
         //     mRectTransform.localPosition = info.AoMaHaInsurancePos;
         // }
-        // else {
+        // else
+        // {
         //     mRectTransform.localPosition = info.InsurancePos;
         // }
         // //
@@ -166,10 +230,12 @@ export default class Seat {
         // mRectTransform.SetParent(transBubble);
         // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode()) {
+        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
+        // {
         //     mRectTransform.localPosition = info.AoMaHaInsurancebubaoPos;
         // }
-        // else {
+        // else
+        // {
         //     mRectTransform.localPosition = info.InsurancebubaoPos;
         // }
         // //
@@ -177,20 +243,25 @@ export default class Seat {
         // mRectTransform.SetParent(transBubble);
         // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode()) {
+        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
+        // {
         //     mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
         // }
-        // else {
+        // else
+        // {
         //     mRectTransform.localPosition = info.InsurancetoubaoPos;
         // }
-        // if (IsMySeat) {
+        // if (IsMySeat)
+        // {
         //     WaitforthenextmoveTips.GetComponent<Text>().text = $"{CPErrorCode.LanguageDescription(20090)}";
         //     WaitforthenextmoveTips.localPosition = new Vector3(0, -416);
         // }
-        // else {
+        // else
+        // {
         //     WaitforthenextmoveTips.GetComponent<Text>().text = $"{CPErrorCode.LanguageDescription(20091)}";
         //     WaitforthenextmoveTips.localPosition = new Vector3(0, -240);
         // }
+
     }
 
     /// <summary>
@@ -538,10 +609,449 @@ export default class Seat {
 
         this.uirc.textCurRoundHaveBet.node.active = true;
 
-
-        this.defaultIconChipLocalPos = this.uirc.imageIconChip.node.getPosition();
+        this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
         this.uirc.imageIconChip.node.active = true;
         this.uirc.transCurRoundHaveBet.active = true;
+    }
+
+    /// <summary>
+    /// 隐藏手牌
+    /// </summary>
+    public HideCards(list: CardUIInfo[]): void {
+        for (let i = 0, n = list.length; i < n; i++) {
+            list[i].imageCard.active = false;
+        }
+    }
+    /// <summary>
+    /// 隐藏手牌背面
+    /// </summary>
+    public HideCardBack(): void {
+        this.uirc.transSmallCardBacks.active = false;
+    }
+
+    /// <summary>
+    /// 刷新庄家标识
+    /// </summary>
+    public UpdateBanker(): void {
+        this.uirc.imageBanker.active = this.isBank;
+    }
+
+
+    /// <summary>
+    /// 刷新手牌
+    /// </summary>
+    public UpdateCards(isAllin: boolean = false): void {
+        if (this.IsMySeat) {
+
+            this.HideCards(this.uirc.listSmallCardUIInfos);
+            this.HideCardBack();
+            if (this.Player?.cards != null) {
+
+                if (isAllin) {
+                    this.UpdateImageBackActive();
+                }
+
+                let hadCard: boolean = false;
+                if (this.Player.cards.length > 0 && this.Player.cards[0] > 0) {
+                    //有牌必定显示
+                    hadCard = true;
+                }
+                if (hadCard || this.Player.isPlaying) {
+
+                    for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
+                        this.uirc.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
+                    }
+                    this.ShowCards(this.uirc.listCardUIInfos);
+                }
+                else {
+                    this.HideCards(this.uirc.listCardUIInfos);
+                }
+            }
+            else {
+                this.HideCards(this.uirc.listCardUIInfos);
+            }
+        }
+        else {
+
+            this.HideCards(this.uirc.listCardUIInfos);
+            if (this.Player?.cards != null) {
+                let mShow: boolean = false;
+                for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                    if (this.Player.cards[i] > 0) {
+                        mShow = true;
+                        break;
+                    }
+                }
+
+                if (this.Player.cards.length > 0 && mShow) {
+                    this.ShowCards(this.uirc.listSmallCardUIInfos);
+                    // tweenerHideBubble = imageBubble.transform.DOScale(new Vector3(0, 0, 1), 0.2f).SetDelay(1f).OnComplete(() => {
+                    //     imageBubble.gameObject.SetActive(false);
+
+
+                    // });
+
+                    this.HideCardBack();
+                }
+                else {
+                    this.HideCards(this.uirc.listSmallCardUIInfos);
+                    if (this.Player.isPlaying) {
+                        this.ShowCardBack();
+                    }
+                    else {
+                        this.HideCardBack();
+                    }
+                }
+            }
+            else {
+                this.HideCards(this.uirc.listSmallCardUIInfos);
+                this.HideCardBack();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 显示手牌
+    /// </summary>
+    protected ShowCards(list: CardUIInfo[]): void {
+
+        let mUpdateStart = 0;
+        let mUpdateEnd = 0;
+        let mHideStart = 0;
+        let mHideEnd = 0;
+
+        if (this.Player?.cards != null) {
+            if (this.Player.cards.length > list.length) {
+                mUpdateStart = 0;
+                mUpdateEnd = list.length;
+            }
+            else if (this.Player.cards.length < list.length) {
+                mUpdateStart = 0;
+                mUpdateEnd = this.Player.cards.length;
+
+                mHideStart = mUpdateEnd + 1;
+                mHideEnd = list.length;
+            }
+            else {
+                mUpdateStart = 0;
+                mUpdateEnd = this.Player.cards.length;
+            }
+        }
+
+        try {
+            for (let i = mUpdateStart; i < mUpdateEnd; i++) {
+                if (this.IsMySeat) {
+
+                    list[i].imageCard.setPosition(Seat.myCardsPos[i]);
+                    //list[i].imageCard.transform.localRotation = Quaternion.Euler(myCardsRot[i]);
+                }
+                else {
+                    list[i].imageCard.color = cc.Color.WHITE;
+                    list[i].imageCard.setPosition(Seat.smallCardPos[i]);
+                }
+                let mCard = this.Player.cards[i];
+                list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mCard));
+                list[i].imageCard.active = true;
+            }
+        }
+        catch (Exception) {
+
+            // System.Text.StringBuilder logContent = new System.Text.StringBuilder();
+            // if (Player == null) {
+            //     logContent.Append(string.Format("Player == null:= {0},", "Player == null"));
+            // }
+            // if (Player.cards == null) {
+            //     logContent.Append(string.Format("Player.cards == null:= {0},", "Player.cards == null"));
+            // }
+            // if (Player != null && Player.cards != null) {
+            //     logContent.Append(string.Format("ShowCards:= {0},", Player.cards.Count));
+            //     logContent.Append(string.Format("mUpdateStart:= {0},", mUpdateStart));
+            //     logContent.Append(string.Format("mUpdateEnd:= {0},", mUpdateEnd));
+            //     for (int i = 0; i < Player.cards.Count; i++)
+            //     {
+            //         logContent.Append(string.Format("Player.cards:= {0},", Player.cards[i]));
+            //     }
+            // }
+            // Log.write(UnityEngine.LogType.Log, logContent.ToString());
+
+        }
+
+
+        for (let i = mHideStart; i < mHideEnd; i++) {
+            list[i].imageCard.active = false;
+        }
+    }
+
+
+    /// <summary>
+    /// 显示手牌背面
+    /// </summary>
+    public ShowCardBack(): void {
+        for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+            this.uirc.listImageSmallCardBack[i].node.active = true;
+            this.uirc.listImageSmallCardBack[i].node.setPosition(this.GetBackSmallCardPos(i));
+            //listImageSmallCardBack[i].transform.localRotation = Quaternion.Euler(GetBackSmallCardRot(i));
+        }
+
+        this.uirc.transSmallCardBacks.setPosition(this.seatUIInfo.CardBackPos);
+        this.uirc.transSmallCardBacks.active = true;
+    }
+    /// <summary>
+    /// 播放下注动画
+    /// </summary>
+    public PlayBetAnimation(): cc.Tween {
+        let pos = cc.v3();
+        this.uirc.imageEmpty.node.getPosition(pos);
+        this.uirc.imageIconChip.node.setPosition(GameUtil.ChangeToLocalPos(pos, this.ui, this.uirc.transCurRoundHaveBet));
+        // tweenerPlayBetAnimation = imageIconChip.transform.DOLocalMove(defaultIconChipLocalPos, 0.2f).OnStart(() => {
+        //     SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_POST_RAISE);
+        // });
+
+        this.uirc.imageIconChip.node.active = true;
+
+        return cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos });
+
+    }
+
+
+    /// <summary>
+    /// 播放庄家动画
+    /// </summary>
+    /// <returns></returns>
+    public PlayBankerAnimation(): { sequence: (cc.Tween | Function)[], time: number } {
+        if (GameCache.Instance.CurGame.lastBankerIndex == -1 || this.seatID == GameCache.Instance.CurGame.lastBankerIndex)
+            return null;
+
+        let mSeat: Seat = GameCache.Instance.CurGame.GetSeatByLocalSeatID(GameCache.Instance.CurGame.lastBankerIndex);
+        if (null == mSeat) return null;
+
+        mSeat.uirc.imageBanker.active = false;
+        mSeat.uirc.imageBanker.setPosition(GameUtil.ChangeToLocalPos(mSeat.seatUIInfo.BankerPos, mSeat.ui, this.ui));
+        mSeat.uirc.imageBanker.active = true;
+        //return imageBanker.transform.DOLocalMove(seatUIInfo.BankerPos, 0.3f);
+        return { sequence: [cc.tween(mSeat.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos })], time: .3 };
+    }
+
+
+    /// <summary>
+    /// 播放回收筹码动画
+    /// </summary>
+    public PlayRecyclingChipAnimation(): cc.Tween {
+        //sequencePlayRecyclingChipAnimation = DOTween.Sequence();
+        let tween = null;
+        if (this.uirc.imageIconChip.node.activeInHierarchy) {
+            this.uirc.textCurRoundHaveBet.node.active = false;
+            //sequencePlayRecyclingChipAnimation.Append(DOTween.To(val => imageCurRoundHaveBetFrame.rectTransform.sizeDelta = new Vector2(val, imageCurRoundHaveBetFrame.rectTransform.sizeDelta.y), imageCurRoundHaveBetFrame.rectTransform.sizeDelta.x, 0, 0.5f));
+
+            let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
+
+            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_MOVE_CHIPS);
+
+            tween = cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
+                this.uirc.imageIconChip.node.active = false;
+            })
+        }
+
+        return tween;
+    }
+
+
+
+
+    /// <summary>
+    /// 刷新前注
+    /// </summary>
+    public UpdateGroupBet(): void {
+
+        let mOffset = 10;
+
+        this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+
+        let str: string = `${GameCache.Instance.CurGame.groupBet / 100}`;
+        ////是整数不保留小数，不是整数保留一位小数
+        let num: number = +str;
+
+        if (num != (num ^ 0)) {
+            str = num.toFixed(1);
+        }
+
+        this.uirc.textCurRoundHaveBet.string = str;
+
+        //textCurRoundHaveBet.text = string.Format("{0:N0}", GameCache.Instance.CurGame.groupBet / 100D); //StringHelper.GetLongString(GameCache.Instance.CurGame.groupBet);
+        this.uirc.textCurRoundHaveBet.node.active = true;
+        //RectTransform mRectTransform = imageCurRoundHaveBetFrame.transform as RectTransform;
+        //mRectTransform.sizeDelta = new Vector2(textCurRoundHaveBet.preferredWidth + imageIconChip.rectTransform.sizeDelta.x, mRectTransform.sizeDelta.y);
+
+        let mTmpV3: cc.Vec2 = this.ui.getPosition();
+        if (mTmpV3.x <= 0) {
+            //textCurRoundHaveBet.alignment = TextAnchor.MiddleRight;
+        }
+        else {
+            //textCurRoundHaveBet.alignment = TextAnchor.MiddleLeft;
+        }
+        if (mTmpV3.y > GameUtil.SeatPosV3[0].y && mTmpV3.y < GameUtil.SeatPosV3[7].y) {
+            if (mTmpV3.x < 0) {
+                // 左
+                //mRectTransform.pivot = new Vector2(0, 0.5f);
+                //mRectTransform.localPosition = new Vector3(-mOffset, 0);
+            }
+            else if (mTmpV3.x > 0) {
+                // 右
+                //mRectTransform.pivot = new Vector2(1f, 0.5f);
+                //mRectTransform.localPosition = new Vector3(mOffset, 0);
+            }
+            this.uirc.imageIconChip.node.setPosition(cc.Vec2.ZERO);
+        }
+        else {
+            //mRectTransform.pivot = new Vector2(0, 0.5f);
+            //mRectTransform.localPosition = new Vector3(-mRectTransform.sizeDelta.x / 2f - mOffset, mRectTransform.localPosition.y);
+            this.uirc.imageIconChip.node.setPosition(cc.Vec2.ZERO);
+        }
+
+        this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
+        this.uirc.imageIconChip.node.active = true;
+        this.uirc.transCurRoundHaveBet.active = true;
+    }
+
+    /// <summary>
+    /// 播放发牌动画
+    /// </summary> virtual Sequence 
+    public PlayDealAnimation(targetPos: cc.Vec3): { sequence: (cc.Tween | Function)[], time: number } {
+        for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
+            this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+        }
+        for (let i = 0, n = this.uirc.listSmallCardUIInfos.length; i < n; i++) {
+            this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
+        }
+
+        let sequencePlayDealAnimation: { sequence: (cc.Tween | Function)[], time: number } = null;
+
+        if (GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
+            // 其他玩家发牌动画
+            //sequencePlayDealAnimation = DOTween.Sequence();
+            //let sequencePlayDealAnimation: { sequence: {}[], time }[] = [];
+            let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
+            for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+                this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
+                let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
+                if (i == 0) {
+                    sequencePlayDealAnimation = {
+                        sequence: [
+                            () => {
+                                mTmpObj.active = true;
+                                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                            },
+                            cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) })
+                        ], time: 0.4
+                    };
+                }
+                else {
+                    // sequencePlayDealAnimation.Join(listImageSmallCardBack[i].transform.DOLocalMove(GetBackSmallCardPos(i), 0.4f).OnStart(() => {
+                    //     mTmpObj.gameObject.SetActive(true);
+                    // }));
+                    sequencePlayDealAnimation.sequence.push(
+                        () => {
+                            mTmpObj.active = true;
+                        },
+                        cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) })
+                    );
+                }
+            }
+
+            sequencePlayDealAnimation.sequence.unshift(
+                () => {
+                    this.uirc.transSmallCardBacks.active = true;
+                }
+            );
+            return sequencePlayDealAnimation;
+        }
+        else {
+            //sequencePlayDealAnimation = DOTween.Sequence();
+            try {
+                for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                    this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
+                    this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
+                    this.uirc.listCardUIInfos[i].imageBack.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
+                    this.uirc.listCardUIInfos[i].imageBack.node.color = cc.Color.WHITE;
+                    this.uirc.listCardUIInfos[i].imageBack.node.active = true;
+                    this.uirc.listCardUIInfos[i].imageCard.setScale(cc.v3(0.5, 0.5));
+                    //listCardUIInfos[i].imageCard.rectTransform.localRotation = Quaternion.Euler(0, 0, 0);
+                    this.uirc.listCardUIInfos[i].imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
+                    this.uirc.listCardUIInfos[i].imageCard.active = true;
+                    if (i == 0) {
+                        sequencePlayDealAnimation = {
+                            sequence: [
+                                () => {
+                                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                                },
+                                cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] })
+                            ], time: 0.4
+                        };
+                    }
+                    else {
+                        sequencePlayDealAnimation.sequence.push(
+                            cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] })
+                        );
+                    }
+
+                    let tmp = i;
+                    //
+                    if (!GameCache.Instance.CurlimitDelaySeeCard) {
+                        sequencePlayDealAnimation.sequence.push(
+                            cc.tween(this.uirc.listCardUIInfos[i].imageBack.node).to(0.25, { opacity: 0 }).call(() => {
+                                this.uirc.listCardUIInfos[tmp].imageBack.node.active = false;
+                            })
+                        );
+                    }
+                    sequencePlayDealAnimation.sequence.push(
+                        cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { scaleX: 1.5, scaleY: 1.3 })
+                    );
+
+                }
+            }
+            catch (Exception) {
+                // System.Text.StringBuilder logContent = new System.Text.StringBuilder();
+                // if (Player == null) {
+                //     logContent.Append(string.Format("Player == null:= {0},", "Player == null"));
+                // }
+                // if (Player.cards == null) {
+                //     logContent.Append(string.Format("Player.cards == null:= {0},", "Player.cards == null"));
+                // }
+                // if (Player != null && Player.cards != null) {
+                //     logContent.Append(string.Format("ShowCards:= {0},", Player.cards.Count));
+
+                //     for (int i = 0; i < Player.cards.Count; i++)
+                //     {
+                //         logContent.Append(string.Format("Player.cards:= {0},", Player.cards[i]));
+                //     }
+                // }
+                // Log.write(UnityEngine.LogType.Log, logContent.ToString());
+            }
+            // sequencePlayDealAnimation.OnStart(() => {
+
+            // });
+            return sequencePlayDealAnimation;
+        }
+    }
+
+
+
+
+    public UpdateImageBackActive(istrue: boolean = false): void {
+        for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+            //if (listCardUIInfos[i].imageBack.gameObject.activeInHierarchy)
+            //{
+            this.uirc.listCardUIInfos[i].imageBack.node.active = istrue;
+            //}
+        }
+    }
+
+    protected GetBackSmallCardPos(index: number): cc.Vec3 {
+        return Seat.backSmallCardPos[index];
+    }
+
+    protected GetBackSmallCardRot(index: number): cc.Vec3 {
+        return Seat.backSmallCardRot[index];
     }
 
     //刷新座位下的等待文本
@@ -576,10 +1086,25 @@ export default class Seat {
         if (null == this.Player) {
             return false;
         }
-
         return this.Player.userID == GameCache.Instance.CurGame.mainPlayer.userID && this.seatID == GameCache.Instance.CurGame.mainPlayer.seatID;
     }
 
+
+    public FoldHeadGray(active: boolean): void {
+        this.uirc.imageHeadGray.node.active = active;
+        if (this.IsMySeat) {
+            let mCardUiInfo: CardUIInfo = null;
+            for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
+                mCardUiInfo = this.uirc.listCardUIInfos[i];
+                if (null == mCardUiInfo)
+                    continue;
+
+                mCardUiInfo.imageSelect.node.active = false;
+
+                mCardUiInfo.imageCard.color = active ? cc.Color.GRAY : cc.Color.WHITE;
+            }
+        }
+    }
 }
 export interface SeatUIInfo {
     Pos: cc.Vec3;

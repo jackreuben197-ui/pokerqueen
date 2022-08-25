@@ -1,6 +1,20 @@
 
 
 import UIBase from "../ui/UIBase";
+import Seat from "./Seat";
+
+
+export class CardUIInfo {
+    public imageSelect: cc.Sprite;
+    public imageBack: cc.Sprite;
+    public imageEye: cc.Sprite;
+
+    constructor(public imageCard: cc.Node) {
+        this.imageSelect = imageCard.getChildByName("Image_SelectCard")?.getComponent(cc.Sprite);
+        this.imageBack = imageCard.getChildByName("Image_EyeCard")?.getComponent(cc.Sprite);
+        this.imageEye = imageCard.getChildByName("Image_CardBack")?.getComponent(cc.Sprite);
+    }
+}
 
 const { ccclass, property } = cc._decorator;
 
@@ -25,12 +39,42 @@ export default class SeatUIRC extends UIBase {
     imageIconChip: cc.Sprite = null;
     textCurRoundHaveBet: cc.Label = null;
 
+    transSmallCardBacks:cc.Node = null;
+    imageBanker:cc.Node = null;
+
+    public listCardUIInfos: CardUIInfo[] = null;
+    public listSmallCardUIInfos: CardUIInfo[] = null;
+    public listImageSmallCardBack: cc.Sprite[] = null;
+
+    imageCard0: cc.Node = null;
+    imageCard1: cc.Node = null;
+    imageCard2: cc.Node = null;
+    imageCard3: cc.Node = null;
+    imageCard4: cc.Node = null;
+    imageCard5: cc.Node = null;
+
+
+    imageSmallCard0: cc.Node = null;
+    imageSmallCard1: cc.Node = null;
+    imageSmallCard2: cc.Node = null;
+    imageSmallCard3: cc.Node = null;
+    imageSmallCard4: cc.Node = null;
+    imageSmallCard5: cc.Node = null;
+
+    imageSmallCardBack0: cc.Sprite = null;
+    imageSmallCardBack1: cc.Sprite = null;
+    imageSmallCardBack2: cc.Sprite = null;
+    imageSmallCardBack3: cc.Sprite = null;
+    imageSmallCardBack4: cc.Sprite = null;
+    imageSmallCardBack5: cc.Sprite = null;
+
     ///////////////////////////////////
 
     ///////////////////////////////////
     /**
      * 声明内容
      */
+    public seat: Seat = null;
     ///////////////////////////////////
     protected lateLoad(): void {
         super.lateLoad();
@@ -46,5 +90,87 @@ export default class SeatUIRC extends UIBase {
         this.transCurRoundHaveBet = this.getChildNodeOrComponent("CurRoundHaveBet");
         this.imageIconChip = this.getChildNodeOrComponent("Image_IconChip", cc.Sprite);
         this.textCurRoundHaveBet = this.getChildNodeOrComponent("Text_CurRoundHaveBet", cc.Label);
+
+        this.transSmallCardBacks = this.getChildNodeOrComponent("SmallCardBacks");
+        this.imageBanker = this.getChildNodeOrComponent("Image_Banker");
+
+        this.imageCard0 = this.getChildNodeOrComponent("Image_Card0");
+        this.imageCard1 = this.getChildNodeOrComponent("Image_Card1");
+        this.imageCard2 = this.getChildNodeOrComponent("Image_Card2");
+        this.imageCard3 = this.getChildNodeOrComponent("Image_Card3");
+        this.imageCard4 = this.getChildNodeOrComponent("Image_Card4");
+        this.imageCard5 = this.getChildNodeOrComponent("Image_Card5");
+
+        this.imageSmallCard0 = this.getChildNodeOrComponent("Image_SmallCard0");
+        this.imageSmallCard1 = this.getChildNodeOrComponent("Image_SmallCard1");
+        this.imageSmallCard2 = this.getChildNodeOrComponent("Image_SmallCard2");
+        this.imageSmallCard3 = this.getChildNodeOrComponent("Image_SmallCard3");
+        this.imageSmallCard4 = this.getChildNodeOrComponent("Image_SmallCard4");
+        this.imageSmallCard5 = this.getChildNodeOrComponent("Image_SmallCard5");
+
+
+        this.imageSmallCardBack0 = this.getChildNodeOrComponent("imageSmallCardBack0", cc.Sprite);
+        this.imageSmallCardBack1 = this.getChildNodeOrComponent("imageSmallCardBack1", cc.Sprite);
+        this.imageSmallCardBack2 = this.getChildNodeOrComponent("imageSmallCardBack2", cc.Sprite);
+        this.imageSmallCardBack3 = this.getChildNodeOrComponent("imageSmallCardBack3", cc.Sprite);
+        this.imageSmallCardBack4 = this.getChildNodeOrComponent("imageSmallCardBack4", cc.Sprite);
+        this.imageSmallCardBack5 = this.getChildNodeOrComponent("imageSmallCardBack5", cc.Sprite);
+
+
+        if (null == this.listCardUIInfos || this.listCardUIInfos.length > 0) this.listCardUIInfos = [];
+        this.listCardUIInfos.push(new CardUIInfo(this.imageCard0));
+        this.listCardUIInfos.push(new CardUIInfo(this.imageCard1));
+
+
+        if (null == this.listSmallCardUIInfos || this.listSmallCardUIInfos.length > 0) this.listSmallCardUIInfos = [];
+        this.listSmallCardUIInfos.push(new CardUIInfo(this.imageSmallCard0));
+        this.listSmallCardUIInfos.push(new CardUIInfo(this.imageSmallCard1));
+
+
+
+        if (null == this.listImageSmallCardBack || this.listImageSmallCardBack.length > 0) this.listImageSmallCardBack = [];
+        if (null == this.listImageSmallCardBack || this.listImageSmallCardBack.length > 0) this.listImageSmallCardBack = [];
+        this.listImageSmallCardBack.push(this.imageSmallCardBack0);
+        this.listImageSmallCardBack.push(this.imageSmallCardBack1);
+
+
+        for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
+            this.listCardUIInfos[i].imageCard.on("click", this.onClickCard, this);
+        }
     }
+    protected onClickCard(): void {
+        //         var mTmpSequencePlayDealAnimation = GameCache.Instance.CurGame.GetSequencePlayDealAnimation();
+        //         if (null != mTmpSequencePlayDealAnimation && mTmpSequencePlayDealAnimation.IsPlaying()) {
+        //             return;
+        //         }
+
+        //         // 亮牌   弃牌 , 未动作（没有开赛）
+        //         if (null == Player || Player.userID != GameCache.Instance.CurGame.MainPlayer.userID ||
+        //             seatID != GameCache.Instance.CurGame.MainPlayer.seatID || !Player.isParticipateInTheGame) {
+        //             return;
+        //         }
+
+        // 			string mTmp = go.name.Substring(go.name.Length - 1);
+        // 			int mCardIndex = -1;
+        //         if (int.TryParse(mTmp, out mCardIndex)) {
+        // 				bool mActive = listCardUIInfos[mCardIndex].imageEye.gameObject.activeInHierarchy;
+        //             listCardUIInfos[mCardIndex].imageEye.gameObject.SetActive(!mActive);
+
+        //             showCardsId[mCardIndex] = (!mActive) ? 1 : 0;
+        //             CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Showdown()
+        // 				{
+        //                     RoomID = (ulong)GameCache.Instance.room_id,
+        //                     MatchID = (ulong)GameCache.Instance.match_id,
+        //                     request = new ClientMessageShowdown()
+        // 					{
+        //                     Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
+        //                 ShowCards = showCardsId,
+        // 					}
+
+        //     });
+
+        // }
+    }
+
+
 }

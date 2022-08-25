@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import { SeatUIInfo } from "../game/Seat";
 import TexasGame from "../game/TexasGame";
-import GameCache from "../manager/GameCache";
+import GameCache from "./GameCache";
 
 export default class GameUtil {
     private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
@@ -1042,8 +1042,48 @@ export default class GameUtil {
         return game;
 
     }
+    /// <summary>
+    /// 牌局分池位置
+    /// </summary>
+    public static readonly TexasPots: cc.Vec3[] = [
+        cc.v3(-71.8, 103),
+        cc.v3(-332, -130),
+        cc.v3(-65, -62.3),
+        cc.v3(295, -130),
+        cc.v3(-332, -130),
+        cc.v3(-65, -146.4),
+        cc.v3(295, -130),
+        cc.v3(-332, -230.8),
+        cc.v3(-65, -230.8),
+    ];
 
     static get isInGameplay() {
         return GameCache.Instance.CurrentRoomID != 0;
+    }
+
+    public static GetCardNameByNum(cardNum: number): string {
+        if (cardNum <= 0) {
+            return "poker_88";
+        }
+        if (cardNum < 10) {
+            return `poker_dz_0${cardNum}`;
+        }
+        else {
+            return `poker_dz_${cardNum}`;
+        }
+    }
+
+    /// <summary>
+    /// 源变换本地坐标转化为目标变换本地坐标
+    /// </summary>
+    /// <param name="sourceLocalPos">源本地坐标</param>
+    /// <param name="sourceTransform">源变换</param>
+    /// <param name="targetTransform">目标变换</param>
+    /// <returns>目标本地坐标</returns>
+    public static ChangeToLocalPos(sourceLocalPos: cc.Vec3, sourceTransform: cc.Node, targetTransform: cc.Node): cc.Vec3 {
+        let w = sourceTransform.convertToWorldSpaceAR(sourceLocalPos);
+        let l = targetTransform.convertToNodeSpaceAR(w);
+        return l;
+        //return targetTransform.InverseTransformPoint(sourceTransform.TransformPoint(sourceLocalPos));
     }
 }

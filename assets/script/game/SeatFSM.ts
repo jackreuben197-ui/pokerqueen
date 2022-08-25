@@ -24,13 +24,13 @@ export class SeatFSM {
         this.seat.SetNickname("");
         this.seat.SetCoin("");
 
-        // imageBanker.gameObject.SetActive(false);
+        this.seat.uirc.imageBanker.active = false;
         // imageStraddle.gameObject.SetActive(false);
         this.seat.uirc.imageHeadFrame.node.active = false;
-        // transSmallCardBacks.gameObject.SetActive(false);
+        this.seat.uirc.transSmallCardBacks.active = false;
         // imageHolding.gameObject.SetActive(false);
-        // HideCards(listCardUIInfos);
-        // HideCards(listSmallCardUIInfos);
+        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
+        this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
         // imageTrust.gameObject.SetActive(false);
         // imageOffline.gameObject.SetActive(false);
         // imageReserveSeat.gameObject.SetActive(false);
@@ -79,16 +79,15 @@ export class SeatFSM {
         this.seat.UpdateNickname();
         this.seat.UpdateCoin();
         //this.seat.UpdateHolding();
-        // //UpdateShowCardsId(new List<sbyte>());
         this.seat.UpdateCurRoundHaveBet();
-        // this.seat.UpdateCards();
-        // this.seat.UpdateBanker();
+        this.seat.UpdateCards();
+        this.seat.UpdateBanker();
 
         // this.seat.StopAllinArmature();
         // this.seat.StopWinArmature();
 
-        //this.seat.imageHeadFrame.node.active(true);
-        //this.seat.imageEmpty.gameObject.SetActive(false);
+        this.seat.uirc.imageHeadFrame.node.active = true;
+        this.seat.uirc.imageEmpty.node.active = false;
     }
 
     public SitExecute(): void {
@@ -150,8 +149,8 @@ export class SeatFSM {
 
     //#region 站起
     public StandupEnter(): void {
-        //HideCards(listCardUIInfos);
-        //HideCards(listSmallCardUIInfos);
+        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
+        this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
         this.seat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
     }
 
@@ -175,6 +174,38 @@ export class SeatFSM {
     }
 
     public StandupAnimationExit(): void {
+
+    }
+    //#endregion
+
+    //#region 每手开始
+    public StartEnter(): void {
+        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
+        this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
+        this.seat.HideCardBack();
+        //this.seat.UpdateHolding(true);
+    }
+
+    public StartExecute(): void {
+
+    }
+
+    public StartExit(): void {
+
+    }
+    //#endregion
+
+
+    //#region straddle
+    public StraddleEnter(): void {
+        this.seat.UpdateBubble();
+    }
+
+    public StraddleExecute(): void {
+
+    }
+
+    public StraddleExit(): void {
 
     }
     //#endregion

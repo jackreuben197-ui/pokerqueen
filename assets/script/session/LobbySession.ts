@@ -6,12 +6,13 @@ import Dispatcher from "../event/Dispatcher";
 import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
-import GameCache from "../manager/GameCache";
+import GameCache from "../game/GameCache";
+import GameUtil from "../game/GameUtil";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_Register } from "../net/websocket/ProtocolHoldemMessages";
-import GameUtil from "../tools/GameUtil";
+
 import LoginSession from "./LoginSession";
 
 export default class LobbySession {
@@ -155,8 +156,6 @@ export default class LobbySession {
             });
         });
     }
-
-
     /**
     * 设置该房间保险赔率表
     */

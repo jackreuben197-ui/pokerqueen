@@ -1,15 +1,16 @@
 import Dispatcher from "../event/Dispatcher";
 import { LanguageCode } from "../i18n/LanguageCode";
-import GameCache from "../manager/GameCache";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { CPlayer } from "./CPlayer";
+import GameCache from "./GameCache";
 import Seat from "./Seat";
-import { SeatSitAnimation, SeatWaitBlind, SeatWaitStart } from "./SeatStateHandler";
+import { SeatSitAnimation, SeatStart, SeatStraddle, SeatWaitBlind, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
 
 const CanPlayStatus = Def.CanPlayStatus;
@@ -58,7 +59,7 @@ export default class TexasGameProtocol {
         console.log(`TexasGame : RemoveMsgHandler`);
 
         Dispatcher.off(ProtocolCode.Protocol_Holdem_Seated, this.HANDLER_REQ_GAME_SEND_MY_SEAT, this);//自己坐下
-        Dispatcher.off(ProtocolCode.Protocol_Holdem_SeatedOthers, this.HANDLER_REQ_GAME_RECV_SEAT_DOWN,this);  // 别人坐下
+        Dispatcher.off(ProtocolCode.Protocol_Holdem_SeatedOthers, this.HANDLER_REQ_GAME_RECV_SEAT_DOWN, this);  // 别人坐下
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Action, HANDLER_REQ_GAME_SEND_ACTION);  // 自己牌桌操作
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_ActionAll, HANDLER_REQ_GAME_RECV_ACTION);  // 收到牌桌操作
         // CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Showcards, HANDLER_REQ_GAME_PLAYER_CARDS);  // Allin下发玩家手牌
@@ -226,4 +227,141 @@ export default class TexasGameProtocol {
             }
         }
     }
+
+    /// <summary>
+    /// 本手开始
+    /// </summary>
+    /// <param name="responseData"></param>
+    /// <param name="obj"></param>
+    public handleRecvStartInfoCommon(responseData: ServerMessageStartInfo.AsObject, obj): void {
+        this.game.gamestatus = 1;
+        GameCache.Instance.GameStatus = this.game.gamestatus;
+        this.game.cacheRound = Def.Round.PREFLOP;
+        this.game.uirc.imageWaitForStartTips.active = false;
+        this.game.fuck4thPCardByInsuranceState = 0;
+        this.game.isAllinGetPlayerCards = false;
+        this.game.lastBankerIndex = this.game.bankerIndex;
+        this.game.bankerIndex = this.game.GetLocalSeatID(responseData.handInfo.buSeatId);
+        this.game.bigIndex = this.game.GetLocalSeatID(responseData.handInfo.bbSeatId);
+        this.game.smallIndex = this.game.GetLocalSeatID(responseData.handInfo.sbSeatId);
+        if (responseData.nextOperator != null) {
+            this.game.operationID = this.game.GetLocalSeatID(responseData.nextOperator.seatId);
+        }
+        this.game.mHandNum = responseData.handInfo.handNum;
+        this.game.UpdateRoomDes();
+        //this.game.ResetPublicCardsId();
+        //this.game.ClearPublicCardsUI();
+        this.game.HideWaitBlindBtn();
+        let Seat: Seat = null;
+        let SeverSeatIds: number[] = [];
+        for (let i = 0, n = responseData.playersList.length; i < n; i++) {
+            Seat = this.game.listSeat[this.game.GetLocalSeatID(responseData.playersList[i].seatId)];
+            if (null == Seat || null == Seat.Player) {
+                continue;
+            }
+            SeverSeatIds.push(this.game.GetLocalSeatID(responseData.playersList[i].seatId));
+            Seat.isBank = Seat.seatID == this.game.bankerIndex;
+            Seat.isBig = Seat.seatID == this.game.bigIndex;
+            Seat.isSmall = Seat.seatID == this.game.smallIndex;
+            Seat.isStraddle = responseData.playersList[i].action == Def.Action.STRADDLE;
+            Seat.Player.SetCards(this.game.GetHandCardsAtRecvStartInfo(responseData, i));
+            Seat.Player.chips = responseData.playersList[i].chip;
+            Seat.Player.cacheChips = responseData.playersList[i].chip + responseData.playersList[i].roundBet + responseData.playersList[i].ante;
+            Seat.Player.canPlayStatus = Def.CanPlayStatus.NORMAL;//数组里面有人即可打牌
+            Seat.Player.extraBlind = 0;//是否补盲，已在列表的玩家不需要补盲
+            Seat.Player.isFold = responseData.playersList[i].action == Def.Action.FOLD;
+            Seat.FoldHeadGray(Seat.Player.isFold);
+            Seat.Player.actionStatus = responseData.playersList[i].action;
+            Seat.Player.anteNumber = 0;
+            Seat.UpdateWaiteNextTips(false);
+            Seat.FsmLogicComponent.SM.ChangeState(SeatStart.Instance);
+            Seat.Player.anteNumber += responseData.playersList[i].roundBet;
+            if (Seat.isStraddle) {
+                Seat.FsmLogicComponent.SM.ChangeState(SeatStraddle.Instance);
+            }
+            if (responseData.playersList[i].ante >= 0) {
+                this.game.alreadAnte += responseData.playersList[i].ante;
+                this.game.alreadAnte += responseData.playersList[i].roundBet;
+            }
+            if (Seat.seatID == this.game.mainPlayer.seatID) {
+                this.game.HideWaitBlindBtn();
+            }
+
+        }
+        if (this.game.smallIndex >= 0) {
+            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_FIRST);
+        }
+        else {
+            //（短牌没有小盲注位置）当小盲位小于零，算出小盲位置，用于首位发牌人座位。
+            this.game.smallIndex = this.game.utils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
+        }
+        if (this.game.bigIndex >= 0) {
+            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_SECOND);
+        }
+        // 发牌动画
+        //     this.game.PlayDealAnimation(() => {
+        //         UpdateAlreadAnte();
+        //             Seat mSeat0 = null;
+        //         for (int i = 0, n = responseData.Players.Count; i < n; i++)
+        //     {
+        //         mSeat0 = listSeat[GetLocalSeatID(responseData.Players[i].SeatId)];
+
+        //         if (null == mSeat0 || null == mSeat0.Player) {
+        //             continue;
+        //         }
+
+        //         mSeat0.FsmLogicComponent.SM.ChangeState(SeatStartToPlaying<Entity>.Instance);
+
+        //         if (operationID == mSeat0.seatID) {
+        //             mSeat0.FsmLogicComponent.SM.ChangeState(SeatOperation<Entity>.Instance);
+        //         }
+        //         else {
+        //             mSeat0.FsmLogicComponent.SM.ChangeState(SeatWaitOther<Entity>.Instance);
+        //         }
+        //     }
+
+        //     mSeat0 = GetSeatByLocalSeatID(operationID);
+        //             Seat mMySeat = GetSeatByLocalSeatID(mainPlayer.seatID);
+
+        //     if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
+
+        //         // 到自己操作
+        //         HideAutoOperationPanel();
+        //         if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
+        //             ShowOperationPanel(new UIOperationComponent.OperationData()
+        //                     {
+        //                     actionLimits = responseData.NextOperator.Actions,
+        //                     Shortcuts = responseData.NextOperator.Shortcuts
+        //                 });
+        //         }
+        //     }
+        //     else {
+        //         // 其他人操作
+        //         HideOperationPanel();
+        //         if (null != mMySeat && mMySeat.Player.isParticipateInTheGame) {
+        //             // 自己参与游戏
+        //             // 非弃牌 && 非ALLIN && 非托管
+        //             if (mMySeat.Player.actionStatus != Def.Types.Action.Fold && mMySeat.Player.actionStatus != Def.Types.Action.Allin && mMySeat.Player.actionStatus != Def.Types.Action.None && !mMySeat.Player.IsAutoOp) {
+        //                 UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
+        //                         {
+        //                         callAmount = getAutoOperationCallAmount(responseData.HandInfo.RoundBet)
+        //                     });
+        //             }
+        //             else {
+        //                 HideAutoOperationPanel();
+        //             }
+        //         }
+        //         else {
+        //             // 观众
+        //             HideAutoOperationPanel();
+        //         }
+        //     }
+        // });
+
+
+    }
+
+
+
+
 }

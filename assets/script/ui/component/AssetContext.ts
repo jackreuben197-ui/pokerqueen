@@ -19,14 +19,14 @@ export default class AssetContext extends cc.Component {
             AssetContext.map[asset.name] = asset;
         }
     }
-
     /**
      * 通过索引名,获取资源
      * @param name 
      * @returns 
      */
-    static getAsset<T extends cc.Asset>(name: string): T {
+    public static getAsset<T extends cc.Asset>(name: string): T {
         return AssetContext.map[name] as T;
     }
 
 }
+(window as any).AssetContext = AssetContext;

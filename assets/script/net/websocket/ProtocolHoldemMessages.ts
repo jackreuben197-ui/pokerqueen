@@ -228,7 +228,7 @@ export class Protocol_Holdem_PostStatusChange extends BaseProtocol {
     }
 }
 /**
- * 补盲状态变化
+ * 开始一手
  */
  export class Protocol_Holdem_StartInfo extends BaseProtocol {
     public static Response_AsObject: ServerMessageStartInfo.AsObject = null;
@@ -237,6 +237,11 @@ export class Protocol_Holdem_PostStatusChange extends BaseProtocol {
         return result.toObject();
     }
 }
+
+
+
+
+
 
 
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
@@ -249,3 +254,4 @@ cc.js.setClassName("Protocol_Holdem_BringIn", Protocol_Holdem_BringIn);
 cc.js.setClassName("Protocol_Holdem_StandupActive", Protocol_Holdem_StandupActive);
 cc.js.setClassName("Protocol_Holdem_Standup", Protocol_Holdem_Standup);
 cc.js.setClassName("Protocol_Holdem_PostStatusChange", Protocol_Holdem_PostStatusChange);
+cc.js.setClassName("Protocol_Holdem_StartInfo", Protocol_Holdem_StartInfo);

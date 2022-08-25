@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
-import GameCache from "../manager/GameCache";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
+import GameCache from "./GameCache";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
@@ -79,5 +79,27 @@ export default class TexasGameUtils {
         // HideAutoOperationPanel();
         // HideWaitBlindBtn();
         // HideCancelTrustBtn();
+    }
+    /// <summary>
+    /// 获取小盲注位置，通过当前参与牌局玩家座位号
+    /// </summary>
+    /// <param name="SeatIds"></param>
+    /// <param name="BigSeatId"></param>
+    /// <returns></returns>
+    public GetSmallSeatIdByPlayingSeatIds(SeatIds: number[], BigSeatId: number): number {
+        let SmallSeatId: number = -1;
+        SeatIds.sort((a, b) => a - b);
+        for (let i = 0; i < SeatIds.length; i++) {
+            if (BigSeatId == SeatIds[i]) {
+                if (i - 1 >= 0) {
+                    SmallSeatId = SeatIds[i - 1];
+                }
+                else {
+                    SmallSeatId = SeatIds[SeatIds.length - 1];
+                }
+                break;
+            }
+        }
+        return SmallSeatId;
     }
 }
