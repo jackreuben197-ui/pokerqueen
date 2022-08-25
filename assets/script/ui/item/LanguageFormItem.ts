@@ -48,7 +48,7 @@ export default class LanguageFormItem extends UIBase {
         super.onShow(param);
         this.s_language_label.i18NString = param.s_language;
         this.language_label.string = param.language;
-        this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag, AssetFold.Texture_Flag);
+        this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag, AssetFold.texture_flag);
     }
     check() {
         this.toggle.check();

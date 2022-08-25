@@ -361,8 +361,8 @@ export default class TexasGame {
     //根据样式获取桌布资源
     getDeskSpriteFrames(index: number): cc.SpriteFrame[] {
         let c = this.deskTypeIndexs[index] || this.deskTypeIndexs[0]
-        let desk = AssetContext.getAsset("TexasDeskBg" + c[0], AssetFold.Texture_TexasUI) as cc.SpriteFrame;
-        let table = AssetContext.getAsset("TexasTableBg" + c[1], AssetFold.Texture_TexasUI) as cc.SpriteFrame;
+        let desk = AssetContext.getAsset("TexasDeskBg" + c[0], AssetFold.texture_TexasUI) as cc.SpriteFrame;
+        let table = AssetContext.getAsset("TexasTableBg" + c[1], AssetFold.texture_TexasUI) as cc.SpriteFrame;
         return [desk, table];
     }
 
@@ -1158,7 +1158,7 @@ export default class TexasGame {
     /// <param name="spriteName"></param>
     /// <returns></returns>
     public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName, AssetFold.Texture_TexasUI);
+        return AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
     }
 
     /// <summary>
@@ -1167,7 +1167,7 @@ export default class TexasGame {
     /// <param name="spriteName"></param>
     /// <returns></returns>
     public GetPokerSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName,AssetFold.Texture_Antcard);
+        return AssetContext.getAsset(spriteName,AssetFold.texture_Antcard);
     }
 
     /// <summary>

@@ -4,16 +4,16 @@
  */
 
 export enum AssetFold {
-    Texture_Common,
-    Texture_Antcard,
-    Texture_Flag,
-    Texture_Loading,
-    Texture_Login,
-    Texture_PanelUI,
-    Texture_TexasUI,
-    Texture_UIGameNiuZai,
-    Texture_Lobby_UIMine,
-    Texture_Lobby_UIMatch,
+    texture_common,
+    texture_Antcard,
+    texture_flag,
+    texture_loading,
+    texture_login,
+    texture_PanelUI,
+    texture_TexasUI,
+    texture_UIGameNiuZai,
+    texture_lobby_UIMine,
+    texture_lobby_UIMatch,
     resources_prefab_component,
 
 }
@@ -24,7 +24,7 @@ const { ccclass, property, executionOrder } = cc._decorator;
 export default class AssetContext extends cc.Component {
 
     @property({ type: cc.Enum(AssetFold) })
-    fold: AssetFold = AssetFold.Texture_Common;
+    fold: AssetFold = AssetFold.texture_common;
 
     @property([cc.Asset])
     assets: cc.Asset[] = [];
@@ -42,7 +42,7 @@ export default class AssetContext extends cc.Component {
      * @param name 
      * @returns 
      */
-    public static getAsset<T extends cc.Asset>(name: string, fold: AssetFold = AssetFold.Texture_Common): T {
+    public static getAsset<T extends cc.Asset>(name: string, fold: AssetFold = AssetFold.texture_common): T {
         let key = `${AssetFold[fold]}|${name}`;
         return AssetContext.map[key] as T;
     }

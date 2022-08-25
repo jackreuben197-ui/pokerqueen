@@ -54,8 +54,8 @@ export default class UIMine extends UIBase {
             let icon = item.getChildByName("Paipu_Icon")?.getComponent(cc.Sprite);
             let text = item.getChildByName("Paipu_Text")?.getComponent(i18nLabel);
 
-            light_bg && (light_bg.spriteFrame = AssetContext.getAsset(config.light_bg, AssetFold.Texture_Lobby_UIMine));
-            icon && (icon.spriteFrame = AssetContext.getAsset(config.icon, AssetFold.Texture_Lobby_UIMine));
+            light_bg && (light_bg.spriteFrame = AssetContext.getAsset(config.light_bg, AssetFold.texture_lobby_UIMine));
+            icon && (icon.spriteFrame = AssetContext.getAsset(config.icon, AssetFold.texture_lobby_UIMine));
             text && (text.i18NString = config.string);
             item.name = config.string;
             item.on("click", this.onItemClick, this);
