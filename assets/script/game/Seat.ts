@@ -799,18 +799,15 @@ export default class Seat {
     /// <summary>
     /// 播放下注动画
     /// </summary>
-    public PlayBetAnimation(): cc.Tween {
+    public PlayBetAnimation(): Function {
         let pos = cc.v3();
         this.uirc.imageEmpty.node.getPosition(pos);
         this.uirc.imageIconChip.node.setPosition(GameUtil.ChangeToLocalPos(pos, this.ui, this.uirc.transCurRoundHaveBet));
-        // tweenerPlayBetAnimation = imageIconChip.transform.DOLocalMove(defaultIconChipLocalPos, 0.2f).OnStart(() => {
-        //     SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_POST_RAISE);
-        // });
-
         this.uirc.imageIconChip.node.active = true;
-
-        return cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos });
-
+        return () => {
+            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_POST_RAISE);
+            cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos });
+        }
     }
 
 
@@ -818,7 +815,7 @@ export default class Seat {
     /// 播放庄家动画
     /// </summary>
     /// <returns></returns>
-    public PlayBankerAnimation(): { type: number, spawn: (cc.Tween | Function)[], time: number } {
+    public PlayBankerAnimation(): { type: number, spawn: Function[], time: number } {
         if (GameCache.Instance.CurGame.lastBankerIndex == -1 || this.seatID == GameCache.Instance.CurGame.lastBankerIndex)
             return null;
 
@@ -831,7 +828,7 @@ export default class Seat {
         //return imageBanker.transform.DOLocalMove(seatUIInfo.BankerPos, 0.3f);
         return {
             type: 1, spawn: [() => {
-                cc.tween(mSeat.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos })
+                cc.tween(mSeat.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).start();
             }], time: .3
         };
     }
@@ -840,23 +837,19 @@ export default class Seat {
     /// <summary>
     /// 播放回收筹码动画
     /// </summary>
-    public PlayRecyclingChipAnimation(): cc.Tween {
-        //sequencePlayRecyclingChipAnimation = DOTween.Sequence();
-        let tween = null;
+    public PlayRecyclingChipAnimation(): Function {
+        let func = null;
         if (this.uirc.imageIconChip.node.activeInHierarchy) {
             this.uirc.textCurRoundHaveBet.node.active = false;
-            //sequencePlayRecyclingChipAnimation.Append(DOTween.To(val => imageCurRoundHaveBetFrame.rectTransform.sizeDelta = new Vector2(val, imageCurRoundHaveBetFrame.rectTransform.sizeDelta.y), imageCurRoundHaveBetFrame.rectTransform.sizeDelta.x, 0, 0.5f));
-
             let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
-
-            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_MOVE_CHIPS);
-
-            tween = cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
-                this.uirc.imageIconChip.node.active = false;
-            })
+            func = () => {
+                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_MOVE_CHIPS);
+                cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
+                    this.uirc.imageIconChip.node.active = false;
+                }).start();
+            };
         }
-
-        return tween;
+        return func;
     }
 
 
@@ -920,7 +913,7 @@ export default class Seat {
     /// <summary>
     /// 播放发牌动画
     /// </summary> virtual Sequence 
-    public PlayDealAnimation(targetPos: cc.Vec3): { type: number, spawn?: (cc.Tween | Function)[], time: number } {
+    public PlayDealAnimation(targetPos: cc.Vec3): { type: number, spawn?: Function[], time: number } {
         for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
             this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
         }
@@ -928,7 +921,7 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
-        let sequencePlayDealAnimation: { type: number, spawn?: (cc.Tween | Function)[], time: number } = null;
+        let sequencePlayDealAnimation: { type: number, spawn?: Function[], time: number } = null;
 
         if (GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
             // 其他玩家发牌动画
@@ -944,10 +937,8 @@ export default class Seat {
                         type: 1,
                         spawn: [
                             () => {
-                                mTmpObj.active = true;
                                 //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                            },
-                            () => {
+                                mTmpObj.active = true;
                                 cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
                             }
                         ], time: 0.4
@@ -957,15 +948,15 @@ export default class Seat {
                     // sequencePlayDealAnimation.Join(listImageSmallCardBack[i].transform.DOLocalMove(GetBackSmallCardPos(i), 0.4f).OnStart(() => {
                     //     mTmpObj.gameObject.SetActive(true);
                     // }));
-                    sequencePlayDealAnimation.sequence.push(
+                    sequencePlayDealAnimation.spawn.push(
                         () => {
                             mTmpObj.active = true;
+                            cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
                         },
-                        cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) })
                     );
                 }
             }
-            sequencePlayDealAnimation.sequence.unshift(
+            sequencePlayDealAnimation.spawn.unshift(
                 () => {
                     this.uirc.transSmallCardBacks.active = true;
                 }
@@ -987,32 +978,38 @@ export default class Seat {
                     this.uirc.listCardUIInfos[i].imageCard.active = true;
                     if (i == 0) {
                         sequencePlayDealAnimation = {
-                            sequence: [
+                            type: 1,
+                            spawn: [
                                 () => {
                                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                                    cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] }).start()
                                 },
-                                cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] })
+
                             ], time: 0.4
                         };
                     }
                     else {
-                        sequencePlayDealAnimation.sequence.push(
-                            cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] })
+                        sequencePlayDealAnimation.spawn.push(
+                            () => {
+                                cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] }).start();
+                            }
                         );
                     }
 
                     let tmp = i;
                     //
                     if (!GameCache.Instance.CurlimitDelaySeeCard) {
-                        sequencePlayDealAnimation.sequence.push(
-                            cc.tween(this.uirc.listCardUIInfos[i].imageBack.node).to(0.25, { opacity: 0 }).call(() => {
-                                this.uirc.listCardUIInfos[tmp].imageBack.node.active = false;
-                            })
+                        sequencePlayDealAnimation.spawn.push(
+                            () => {
+                                cc.tween(this.uirc.listCardUIInfos[i].imageBack.node).to(0.25, { opacity: 0 }).call(() => {
+                                    this.uirc.listCardUIInfos[tmp].imageBack.node.active = false;
+                                }).start();
+                            }
                         );
                     }
-                    sequencePlayDealAnimation.sequence.push(
-                        cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { scaleX: 1.5, scaleY: 1.3 })
-                    );
+                    sequencePlayDealAnimation.spawn.push(() => {
+                        cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { scaleX: 1.5, scaleY: 1.3 }).start();
+                    });
 
                 }
             }

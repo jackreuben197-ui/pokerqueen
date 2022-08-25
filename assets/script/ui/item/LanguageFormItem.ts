@@ -1,6 +1,6 @@
 
 import { i18nLabel } from "../../i18n/i18nLabel";
-import AssetContext from "../component/AssetContext";
+import AssetContext, { AssetFold } from "../component/AssetContext";
 import GGToggleChild from "../component/GGToggleChild";
 import GGToggleContainer from "../component/GGToggleContainer";
 import { ILanguageFormItem } from "../form/LanguageForm";
@@ -48,7 +48,7 @@ export default class LanguageFormItem extends UIBase {
         super.onShow(param);
         this.s_language_label.i18NString = param.s_language;
         this.language_label.string = param.language;
-        this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag);
+        this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag, AssetFold.Texture_Flag);
     }
     check() {
         this.toggle.check();

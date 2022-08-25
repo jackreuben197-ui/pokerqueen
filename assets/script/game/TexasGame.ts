@@ -15,7 +15,7 @@ import { Def, RoomInfo } from "../protobuf/holdem/define_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../session/StorageKey";
-import AssetContext from "../ui/component/AssetContext";
+import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
@@ -29,6 +29,7 @@ import { TexasGameState } from "./TexasGameState";
 import TexasGameUtils from "./TexasGameUtils";
 import TexasScene, { PotInfo } from "./TexasScene";
 import TexasSMAgency from "./TexasSMAgency";
+import TweenSequence from "./TweenSequence";
 import { UITexasModel } from "./UITexasModel";
 //const PBTypes = Def.Types;
 
@@ -73,7 +74,7 @@ export default class TexasGame {
 
     public listSeat: Seat[];
 
-
+    PlayDeal_TweenSequence: TweenSequence = new TweenSequence;
 
     /// <summary>
     /// key:客户端seatId
@@ -360,8 +361,8 @@ export default class TexasGame {
     //根据样式获取桌布资源
     getDeskSpriteFrames(index: number): cc.SpriteFrame[] {
         let c = this.deskTypeIndexs[index] || this.deskTypeIndexs[0]
-        let desk = AssetContext.getAsset("TexasDeskBg" + c[0]) as cc.SpriteFrame;
-        let table = AssetContext.getAsset("TexasTableBg" + c[1]) as cc.SpriteFrame;
+        let desk = AssetContext.getAsset("TexasDeskBg" + c[0], AssetFold.Texture_TexasUI) as cc.SpriteFrame;
+        let table = AssetContext.getAsset("TexasTableBg" + c[1], AssetFold.Texture_TexasUI) as cc.SpriteFrame;
         return [desk, table];
     }
 
@@ -1157,7 +1158,7 @@ export default class TexasGame {
     /// <param name="spriteName"></param>
     /// <returns></returns>
     public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName);
+        return AssetContext.getAsset(spriteName, AssetFold.Texture_TexasUI);
     }
 
     /// <summary>
@@ -1166,9 +1167,9 @@ export default class TexasGame {
     /// <param name="spriteName"></param>
     /// <returns></returns>
     public GetPokerSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName);
+        return AssetContext.getAsset(spriteName,AssetFold.Texture_Antcard);
     }
-    
+
     /// <summary>
     /// 播放发牌动画
     /// </summary>
@@ -1176,17 +1177,16 @@ export default class TexasGame {
     public PlayDealAnimation(tweenCallback: Function) {
         // sequencePlayDealAnimation = DOTween.Sequence();
 
-        let sequencePlayDealAnimation = [];
+        this.PlayDeal_TweenSequence.Clear();
 
         let mSeat: Seat = null;
 
         // 庄家标志动画
         mSeat = this.GetSeatByLocalSeatID(this.bankerIndex);
         if (null != mSeat) {
-            let mTweener: { type: number, sequence: (cc.Tween | Function)[], time: number } = mSeat.PlayBankerAnimation();
+            let mTweener: { type: number, spawn: Function[], time: number, preDelay?: number } = mSeat.PlayBankerAnimation();
             if (null != mTweener) {
-                sequencePlayDealAnimation.push(mTweener);
-                sequencePlayDealAnimation.push({ type: 0, time: 0.2 });
+                this.PlayDeal_TweenSequence.Append(mTweener, { type: 0, time: 0.2 });
             }
         }
         // 前注
@@ -1200,7 +1200,7 @@ export default class TexasGame {
                     continue;
                 mSeat.UpdateGroupBet();
                 allGroupBet += this.groupBet;
-                mSeat.PlayBetAnimation()?.start();
+                mSeat.PlayBetAnimation()?.();
             }
 
             // mIsFirstGroupBet = true;
@@ -1209,7 +1209,7 @@ export default class TexasGame {
                 mSeat = this.listSeat[i];
                 if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
                     continue;
-                mSeat.PlayRecyclingChipAnimation()?.start();
+                mSeat.PlayRecyclingChipAnimation()?.();
             }
 
             let mObj: cc.Node = null;
@@ -1250,18 +1250,23 @@ export default class TexasGame {
                 mIsFirst = false;
                 // sequencePlayDealAnimation.Append(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
                 //     : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
-
                 if (i == this.smallIndex) {
-
-                    sequencePlayDealAnimation.push(this.listSeat[i].PlayDealAnimation(mStartPos));
+                    this.PlayDeal_TweenSequence.Append(this.listSeat[i].PlayDealAnimation(mStartPos));
                 } else {
-                    sequencePlayDealAnimation.push(0.2 * mTmpIndex, this.listSeat[i].PlayDealAnimation(mStartPos));
+                    this.PlayDeal_TweenSequence.Append({ type: 0, time: 0.2 * mTmpIndex }, this.listSeat[i].PlayDealAnimation(mStartPos));
                 }
             }
             else {
                 // sequencePlayDealAnimation.Join(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
                 //     : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
-                sequencePlayDealAnimation[sequencePlayDealAnimation.length - 1].sequence.push();
+                //sequencePlayDealAnimation[sequencePlayDealAnimation.length - 1].sequence.push();
+                //this.PlayDeal_TweenSequence.Join();
+
+                if (i == this.smallIndex) {
+                    this.PlayDeal_TweenSequence.Join(...this.listSeat[i].PlayDealAnimation(mStartPos).spawn);
+                } else {
+                    this.PlayDeal_TweenSequence.Join(() => { }, ...this.listSeat[i].PlayDealAnimation(mStartPos).spawn);
+                }
 
             }
 
