@@ -3,11 +3,12 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-26 11:59:22
+ * @LastEditTime: 2022-08-26 13:14:25
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
 import UIBase from "../ui/UIBase";
+import GameCache from "./GameCache";
 
 const { ccclass, property } = cc._decorator;
 
@@ -45,7 +46,8 @@ export default class UITexasSettingComponent extends UIBase {
      * @method  牌桌背景
      */
     initDeskClickListen() {
-        this._selectDesk = this.DeskGroup.children[0];
+        let index = GameCache.Instance.CurGame.deskType
+        this._selectDesk = this.DeskGroup.children[index];
         let Checkmark = cc.find('Background/Checkmark', this._selectDesk)
         Checkmark.active = true;
         for (let index = 0; index < this.DeskGroup.childrenCount; index++) {
@@ -62,6 +64,7 @@ export default class UITexasSettingComponent extends UIBase {
         this._selectDesk = event.node;
         let checkmark = cc.find('Background/Checkmark', this._selectDesk)
         checkmark.active = true;
+        GameCache.Instance.CurGame.setDeskType(this._selectDesk['index'])
     }
     /**
     * @method  牌的样式
