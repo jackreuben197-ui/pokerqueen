@@ -365,6 +365,11 @@ export default class TexasGame {
         let table = AssetContext.getAsset("TexasTableBg" + c[1], AssetFold.texture_TexasUI) as cc.SpriteFrame;
         return [desk, table];
     }
+    setDeskType(index: number) {
+        let sps = this.getDeskSpriteFrames(index);
+        this.uirc.desk_bg.spriteFrame = sps[0];
+        this.uirc.table_bg.spriteFrame = sps[1];
+    }
 
     public RegiterEnterRoom() {
         Dispatcher.on(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
@@ -1167,7 +1172,7 @@ export default class TexasGame {
     /// <param name="spriteName"></param>
     /// <returns></returns>
     public GetPokerSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName,AssetFold.texture_Antcard);
+        return AssetContext.getAsset(spriteName, AssetFold.texture_Antcard);
     }
 
     /// <summary>

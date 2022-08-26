@@ -125,3 +125,4 @@ export class ResManager {
     }
 }
 
+(window as any).ResManager = ResManager;
