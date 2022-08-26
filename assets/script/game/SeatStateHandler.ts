@@ -10,7 +10,10 @@ export class SeatEmpty extends StateHandler {
     private static _Instance: SeatEmpty = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatEmpty;
+        if (!this._Instance) {
+            this._Instance = new SeatEmpty();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -40,7 +43,10 @@ export class SeatIdle extends StateHandler {
     private static _Instance: SeatIdle = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatIdle;
+        if (!this._Instance) {
+            this._Instance = new SeatIdle();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -67,7 +73,10 @@ export class SeatSitAnimation extends StateHandler {
     private static _Instance: SeatSitAnimation = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatSitAnimation;
+        if (!this._Instance) {
+            this._Instance = new SeatSitAnimation();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -92,7 +101,10 @@ export class SeatSit extends StateHandler {
     private static _Instance: SeatSit = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatSit;
+        if (!this._Instance) {
+            this._Instance = new SeatSit();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -115,7 +127,10 @@ export class SeatWaitStart extends StateHandler {
     private static _Instance: SeatWaitStart = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatWaitStart;
+        if (!this._Instance) {
+            this._Instance = new SeatWaitStart();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -143,7 +158,10 @@ export class SeatWaitBlind extends StateHandler {
     private static _Instance: SeatWaitBlind = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatWaitBlind;
+        if (!this._Instance) {
+            this._Instance = new SeatWaitBlind();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -172,7 +190,10 @@ export class SeatStandupAnimation extends StateHandler {
     private static _Instance: SeatStandupAnimation = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatStandupAnimation;
+        if (!this._Instance) {
+            this._Instance = new SeatStandupAnimation();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -201,7 +222,10 @@ export class SeatStandup extends StateHandler {
     private static _Instance: SeatStandup = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatStandup;
+        if (!this._Instance) {
+            this._Instance = new SeatStandup();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -228,7 +252,10 @@ export class SeatStart extends StateHandler {
     private static _Instance: SeatStart = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatStart;
+        if (!this._Instance) {
+            this._Instance = new SeatStart();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -255,7 +282,10 @@ export class SeatStraddle extends StateHandler {
     private static _Instance: SeatStraddle = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatStraddle;
+        if (!this._Instance) {
+            this._Instance = new SeatStraddle();
+        }
+        return this._Instance;
     }
     public Enter(entity?: any) {
         super.Enter(entity);

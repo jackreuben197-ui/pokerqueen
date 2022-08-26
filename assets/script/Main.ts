@@ -25,8 +25,12 @@ export default class Main extends cc.Component {
     static Prompt: cc.Node;
     static Toast: cc.Node;
 
+    public static roomid:number = 0;;
+
     onLoad() {
 
+
+        
         console.log("游戏启动", cc.sys.os);
 
         Main.instance = this;

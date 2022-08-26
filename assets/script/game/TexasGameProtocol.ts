@@ -135,7 +135,7 @@ export default class TexasGameProtocol {
         }
         this.game.mainPlayer.chips = rec.chips;
         this.game.mainPlayer.leavelChips = rec.accountChips;
-        GameCache.Instance.gold = rec.accountChips;
+        GameCache.Instance().gold = rec.accountChips;
         this.game.mainPlayer.cacheStoreChips = rec.storeChips;
 
         this.game.mainPlayer.actionStatus = Def.Action.NONE;
@@ -179,17 +179,17 @@ export default class TexasGameProtocol {
         }
         //房间坐下时时添加firebase事件触发
         // Dictionary < string, string > paramMap = new Dictionary<string, string>();
-        // paramMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
-        // paramMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
-        // paramMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
-        // paramMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
+        // paramMap.Add("game_type", GameCache.Instance().game_type + "");//游戏类型
+        // paramMap.Add("roomId", GameCache.Instance().room_id + "");//房间id
+        // paramMap.Add("roomName", GameCache.Instance().roomName + "");//房间名称
+        // paramMap.Add("room_type", GameCache.Instance().room_type + "");//房间类型
         // GoogleFirebaseHelper.LevelStartEvent(paramMap);
         // //添加到appsFlyer统计进入金币房间消息
         // Dictionary < string, string > valuesMap = new Dictionary<string, string>();
-        // valuesMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
-        // valuesMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
-        // valuesMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
-        // valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
+        // valuesMap.Add("game_type", GameCache.Instance().game_type + "");//游戏类型
+        // valuesMap.Add("roomId", GameCache.Instance().room_id + "");//房间id
+        // valuesMap.Add("roomName", GameCache.Instance().roomName + "");//房间名称
+        // valuesMap.Add("room_type", GameCache.Instance().room_type + "");//房间类型
         // AppsFlyerHelper.GameEnterEvent(valuesMap);
     }
     /// <summary>
@@ -235,7 +235,7 @@ export default class TexasGameProtocol {
     /// <param name="obj"></param>
     public handleRecvStartInfoCommon(responseData: ServerMessageStartInfo.AsObject, obj): void {
         this.game.gamestatus = 1;
-        GameCache.Instance.GameStatus = this.game.gamestatus;
+        GameCache.Instance().GameStatus = this.game.gamestatus;
         this.game.cacheRound = Def.Round.PREFLOP;
         this.game.uirc.imageWaitForStartTips.active = false;
         this.game.fuck4thPCardByInsuranceState = 0;

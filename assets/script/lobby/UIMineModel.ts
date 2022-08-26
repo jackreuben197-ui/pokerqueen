@@ -9,7 +9,10 @@ export class UIMineModel {
     private static _instance: UIMineModel = null;
 
     public static get mInstance(): UIMineModel {
-        return UIMineModel._instance ||= new UIMineModel;
+        if (!this._instance) {
+            this._instance = new UIMineModel();
+        }
+        return this._instance;
     }
 
     public UserInfoDto: typeof Web_User_Info.ResponseData;
@@ -23,9 +26,9 @@ export class UIMineModel {
                 if (tDto.code == 0) {
                     this.UserInfoDto = tDto.data;
                     this.modifyHeadTime = tDto.data.user.mat;
-                    GameCache.Instance.modifyNickNum = tDto.data.user.mnt;
-                    GameCache.Instance.gold = tDto.data.user.gold;
-                    GameCache.Instance.isTestflight = tDto.data.user.province;
+                    GameCache.Instance().modifyNickNum = tDto.data.user.mnt;
+                    GameCache.Instance().gold = tDto.data.user.gold;
+                    GameCache.Instance().isTestflight = tDto.data.user.province;
                     this.UIRefreshGoldEvent();
                     if (pAct != null)
                         pAct(tDto.data);

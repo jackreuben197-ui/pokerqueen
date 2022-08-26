@@ -8,7 +8,8 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class GameCache {
 
-    private static _instance: GameCache;
+
+    static _instance: GameCache;
 
     CurrentRoomID: number = 0;
 
@@ -16,81 +17,81 @@ export default class GameCache {
     /// <summary>
     /// 用户登录手机
     /// </summary>
-    public strPhone: string;
+    public strPhone: string = null;
 
     /// <summary>
     /// 用户登录手机前缀(例"86")
     /// </summary>
-    public strPhoneFirst: string;
+    public strPhoneFirst: string = null;
 
     /// <summary>
     /// 用户登录密码
     /// </summary>
-    public strPwd: string;
+    public strPwd: string = null;
     /// <summary>
     /// 用户user id
     /// </summary>
-    public nUserId: number;
+    public nUserId: number = 0;
     /// <summary>
     /// 是否首次登录0、1
     /// </summary>
-    public isfirstLogin: number;
+    public isfirstLogin: number = 0;
     /// <summary>
     /// 登录res服务器的IP或域名
     /// </summary>
-    public resIP: string;
+    public resIP: string = "";
     /// <summary>
     /// 登录res服务器的端口
     /// </summary>
-    public resport: number;
+    public resport: number = 0;
     /// <summary>
     /// 登录game服务器的IP或域名
     /// </summary>
-    public roomIP: string;
+    public roomIP: string = "";
     /// <summary>
     /// 登录game服务器的端口
     /// </summary>
-    public roomPort: number;
+    public roomPort: number = 0;
     /// <summary>
     /// 0男,1女
     /// </summary>
-    public sex: number;
+    public sex: number = 0;
     /// <summary>
     /// 消息个数
     /// </summary>
-    public msg_count: number;
+    public msg_count: number = 0;
     /// <summary>
     /// 头像
     /// </summary>
-    public headPic: string;
+    public headPic: string = "";
     /// <summary>
     /// 昵称
     /// </summary>
-    public nick: string;
+    public nick: string = "";
     /// <summary>
     /// 修改昵称次数
     /// </summary>
-    public modifyNickNum: number;
+    public modifyNickNum: number = 0;
     /// <summary>
     /// 金豆余额
     /// </summary>
-    public gold: number;
+    public gold: number = 0;
     /// <summary>
     /// 玩家类型 1 普通用户; 2 支桌号; 3 牌局机器人; 4 牛仔机器人
     /// </summary>
-    public userType: number;
+    public userType: number = 0;
     /// <summary>
     /// 钻石余额
     /// </summary>
-    public idou: number;
+    public idou: number = 0;
     /// <summary>
     /// 会员等级,0普通玩家 1伯爵 2侯爵 3王公
     /// </summary>
-    public vipLevel: number;
+    public vipLevel: number = 0;
     /// <summary>
     /// 会员到期日
     /// </summary>
-    public vipEndDate: string;
+    public vipEndDate: string = "";
     /// <summary>
     /// 经度
     /// </summary>
@@ -106,27 +107,27 @@ export default class GameCache {
     /// <summary>
     /// 当前客户端的ip地址，在牌局内坐下带入时要用到
     /// </summary>
-    public client_ip: string;
+    public client_ip: string = "";
     /// <summary>
     /// 房间名称
     /// </summary>
-    public roomName: string;
+    public roomName: string = "";
     /// <summary>
     /// 房间类型 RoomType枚举
     /// </summary>
-    public room_type: number;
+    public room_type: number = 0;
     /// <summary>
     /// 游戏类型
     /// </summary>
-    public game_type: number;
+    public game_type: number = 0;
     /// <summary>
     /// 牌类型
     /// </summary>
-    public poker_type: number;
+    public poker_type: number = 0;
     /// <summary>
     /// 下注类型
     /// </summary>
-    public bet_type: number;
+    public bet_type: number = 0;
     /// <summary>
     /// MTT比赛id
     /// </summary>
@@ -138,71 +139,71 @@ export default class GameCache {
     /// <summary>
     /// 房间座位
     /// </summary>
-    public seat_count: number;
+    public seat_count: number = 0;
     /// <summary>
     /// MTT类型 6:6人桌，9：9人桌
     /// </summary>
-    public mtt_type: number;
+    public mtt_type: number = 0;
     /// <summary>
     /// 是否是猎人赛
     /// </summary>
-    public mtt_Hunter_game;
+    public mtt_Hunter_game = null;
     /// <summary>
     /// 重购的级别, 0为关
     /// </summary>
-    public mtt_rebuyLevel: number;
+    public mtt_rebuyLevel: number = 0;
     /// <summary>
     /// 重构再次买入级别（增购开启等级）
     /// </summary>
-    public mtt_addoprebuyLevel: number;
+    public mtt_addoprebuyLevel: number = 0;
     /// <summary>
     /// 当前盲注级别
     /// </summary>
-    public currLeve: number;
+    public currLeve: number = 0;
     /// <summary>
     /// 重构关闭等级（增购关闭等级）
     /// </summary>
-    public mtt_addclrebuyLevel: number;
+    public mtt_addclrebuyLevel: number = 0;
     /// <summary>
     /// 最小带入记分牌，如200
     /// </summary>
-    public carry_small: number;
+    public carry_small: number = 0;
     /// <summary>
     /// 是否开启Straddle 0 1
     /// </summary>
-    public straddle: number;
+    public straddle: number = 0;
     /// <summary>
     /// 是否开启保险，0 1
     /// </summary>
-    public insurance: boolean;
+    public insurance: boolean = false;
     /// <summary>
     /// 0 关闭 1 开启
     /// </summary>
-    public muck_switch: number;
+    public muck_switch: number = 0;
     /// <summary>
     /// 最短上桌时间（分钟）
     /// </summary>
-    public shortest_time: number;
+    public shortest_time: number = 0;
     /// <summary>
     /// 牌局类型,不需此条件，传值：-1 61 = 德州 91 = 奥马哈 51 = 大菠萝 41 = 必下场 31 = AOF 81 = SNG 71 = MTT
     /// </summary>
-    public rtype: number;
+    public rtype: number = 0;
     /// <summary>
     /// jackPot基金，如60824
     /// </summary>
-    public jackPot_fund: number;
+    public jackPot_fund: number = 0;
     /// <summary>
     /// 是否开启JackPot，0 1
     /// </summary>
-    public jackPot_on: number;
+    public jackPot_on: number = 0;
     /// <summary>
     /// JackPotID
     /// </summary>
-    public jackPot_id: number;
+    public jackPot_id: number = 0;
     /// <summary>
     /// 当前游戏对象
     /// </summary>
-    public CurGame: TexasGame;
+    public CurGame: TexasGame = null;
     // 牛仔游戏数据缓存
     //public NiuZaiGameData niuZaiGameData;
     /// <summary>
@@ -212,34 +213,35 @@ export default class GameCache {
     /// <summary>
     /// 牌局内 个人信息 默认页  德州=1,奥马哈=2
     /// </summary>
-    public CurInfoRoomPath: number;
+    public CurInfoRoomPath: number = 0;
     /// <summary>
     /// 0 = 无资格 1 = 调用首次登陆API 2 = 已有首充资格 3 = 待领取
     /// </summary>
-    public isActivity: number;
+    public isActivity: number = 0;
     /// <summary>
     /// 只显示一次活动
     /// </summary>
     public isFirstShowActivity: boolean = true;
-    public kDouNum: number;
 
-    public ClubID: number;
+    public kDouNum: number = 0;
+
+    public ClubID: number = 0;
     /// <summary>
     /// // 延迟看牌0否 1开启
     /// </summary>
-    public CurlimitDelaySeeCard: boolean;
+    public CurlimitDelaySeeCard: boolean = false;
     /// <summary>
     /// //房间状态
     /// </summary>
-    public GameStatus: number;
+    public GameStatus: number = 0;
 
     //public List<Web_User_Gs.TcpServiceInfo> tcpServiceInfo;
 
-    public serviceId: string;
+    public serviceId: string = null;
 
-    public ClubUserType: number; //1管理员；2贵宾；3玩家
+    public ClubUserType: number = 0; //1管理员；2贵宾；3玩家
 
-    public IsMTTbefor: number;//MTT比赛开始前
+    public IsMTTbefor: number = 0;//MTT比赛开始前
 
     public IsAllowOpenDanmu: boolean = true;
 
@@ -247,23 +249,23 @@ export default class GameCache {
 
     public IsAllowOpenShieldWord: boolean = false;//屏蔽字开关
 
-    public SimulatorName: string;  //模拟器名称
+    public SimulatorName: string = null;  //模拟器名称
 
-    public isMute: boolean;//是否禁言
+    public isMute: boolean = false;//是否禁言
 
-    public cacheMaxBet: number; //最大加注
+    public cacheMaxBet: number = 0; //最大加注
 
-    public cacheLeftRebuyTimes: number;//剩余重构次数，请求enter  api 更新
+    public cacheLeftRebuyTimes: number = 0;//剩余重构次数，请求enter  api 更新
 
     /// <summary>
     /// 绑定银行卡所留的姓名
     /// </summary>
-    public bank_UserName: string;
+    public bank_UserName: string = null;
 
     /// <summary>
     /// 银行账号
     /// </summary>
-    public bank_account: string;
+    public bank_account: string = null;
 
     public voiceprint_verify_on: number = 0;//声纹验证 0 关闭，1 开启。
 
@@ -276,13 +278,16 @@ export default class GameCache {
     public NormalReturnProfitSwitch: number = 2;//返水
     public AndroidMTTEntranceMode: number = 2;//androidMTT开关 1 开 ，2 关
     public AndroidPayMode: number = 2;//android内购开关 1 开 ，2 关
-    public isTestflight;//苹果testflight（暂时） "IsAppStore"
+    public isTestflight = null;//苹果testflight（暂时） "IsAppStore"
     //#endregion
     public FCMToken: string;
 
-
-    public static get Instance(): GameCache {
-        return this._instance ??= new GameCache();
+    public static Instance(): GameCache {
+        if (!GameCache._instance) {
+           
+            GameCache._instance = new GameCache();
+        }
+        return GameCache._instance;
     }
     constructor() {
         this.nUserId = 0;

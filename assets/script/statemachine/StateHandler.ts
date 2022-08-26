@@ -6,6 +6,7 @@ export abstract class StateHandler {
     public SourceData: any;
 
     public Enter(entity?: any) {
+        console.log("entity", entity);
         console.log(`>>> StateHandler->${this.Name}:${entity.id} is Enter`);
     }
     public Execute(entity?: any) {

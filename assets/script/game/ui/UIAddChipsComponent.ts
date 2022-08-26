@@ -66,12 +66,12 @@ export default class UIAddChipsComponent extends UIBase {
         this.animateDialog();
         if (null != addClipsData) {
             this.textBlind.string = `${StringHelper.getStringDiv100(addClipsData.smallBlind)}/${StringHelper.getStringDiv100(addClipsData.bigBlind)}`;
-            this.textCoin.string = `${GameCache.Instance.carry_small}`;
-            this.textNeedCoin.string = `${StringHelper.getStringDiv100(addClipsData.currentMinRate * GameCache.Instance.carry_small ^ 0)}`;
+            this.textCoin.string = `${GameCache.Instance().carry_small}`;
+            this.textNeedCoin.string = `${StringHelper.getStringDiv100(addClipsData.currentMinRate * GameCache.Instance().carry_small ^ 0)}`;
             this.textTotalCoin.string = `${StringHelper.getStringDiv100(addClipsData.totalCoin)}`;
 
-            let currentMaxBring: number = (addClipsData.currentMaxRate) * GameCache.Instance.carry_small - addClipsData.tableChips;
-            let maxRate: number = currentMaxBring / GameCache.Instance.carry_small;
+            let currentMaxBring: number = (addClipsData.currentMaxRate) * GameCache.Instance().carry_small - addClipsData.tableChips;
+            let maxRate: number = currentMaxBring / GameCache.Instance().carry_small;
             if (maxRate > addClipsData.currentMaxRate) {
                 maxRate = addClipsData.currentMaxRate;
             }
@@ -96,10 +96,10 @@ export default class UIAddChipsComponent extends UIBase {
      * 滑动条改变触发
      */
     onValueChangedSliderCoin(rate: number) {
-        this.textCoin.string = `${StringHelper.getStringDiv100(rate * GameCache.Instance.carry_small * 100 ^ 0)}`;
-        this.textNeedCoin.string = `${StringHelper.getStringDiv100(rate * GameCache.Instance.carry_small * 100 ^ 0)}`;
+        this.textCoin.string = `${StringHelper.getStringDiv100(rate * GameCache.Instance().carry_small * 100 ^ 0)}`;
+        this.textNeedCoin.string = `${StringHelper.getStringDiv100(rate * GameCache.Instance().carry_small * 100 ^ 0)}`;
 
-        if (rate * GameCache.Instance.carry_small * 100 > GameCache.Instance.gold) {
+        if (rate * GameCache.Instance().carry_small * 100 > GameCache.Instance().gold) {
             this.textNeedCoin.node.color = new cc.Color(184, 43, 48, 255);
         }
         else {
@@ -109,7 +109,7 @@ export default class UIAddChipsComponent extends UIBase {
     private onClickCommit() {
 
         let mAnteNumber = (+this.textCoin.string) * 100;
-        GameCache.Instance.CurGame.AddChips(mAnteNumber);
+        GameCache.Instance().CurGame.AddChips(mAnteNumber);
         this.hideUI();
     }
     /**

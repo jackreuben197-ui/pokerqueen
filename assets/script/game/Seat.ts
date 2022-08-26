@@ -45,34 +45,34 @@ export default class Seat {
     protected static myCardTypePos: cc.Vec3[] = [];
 
 
-    protected defaultIconChipLocalPos: cc.Vec3;
+    protected defaultIconChipLocalPos: cc.Vec3 = null;
 
 
-    public FsmLogicComponent: FSMLogicComponent;//状态机
+    public FsmLogicComponent: FSMLogicComponent = null;//状态机
 
 
-    public ClientSeatId: number;    // 客户端座位号
+    public ClientSeatId: number = 0;    // 客户端座位号
 
-    public seatID: number   // 服务器座位号
+    public seatID: number = 0;   // 服务器座位号
 
-    public Player: CPlayer;  // 玩家信息
+    public Player: CPlayer = null;  // 玩家信息
 
-    public isSmall: boolean; // 是否小盲
-    public isBig: boolean;    // 是否大盲
-    public isBank: boolean;  // 是否庄家
-    public isStraddle: boolean;// 是否Straddle
+    public isSmall: boolean = false; // 是否小盲
+    public isBig: boolean= false;    // 是否大盲
+    public isBank: boolean= false;  // 是否庄家
+    public isStraddle: boolean= false;// 是否Straddle
 
-    public keepSeatLeftTime: number;  // 留座剩余时间（s）
-    public ranking: number;   //玩家排名(mtt)
-    private voiceprintTime: number;
-    private OriginalVoicePos: cc.Vec3;
+    public keepSeatLeftTime: number = 0;  // 留座剩余时间（s）
+    public ranking: number = 0;   //玩家排名(mtt)
+    private voiceprintTime: number = 0;
+    private OriginalVoicePos: cc.Vec3 = null;
     //private Transform OriginalVoiceObj;
 
 
 
-    public seatUIInfo: SeatUIInfo;
+    public seatUIInfo: SeatUIInfo = null;
 
-    protected PlayerCount: number;//最大人数
+    protected PlayerCount: number = 0;//最大人数
 
     public uirc: SeatUIRC = null;
 
@@ -172,7 +172,7 @@ export default class Seat {
                 return;
             }
             else {
-                GameCache.Instance.CurGame.Sitdown(this.ClientSeatId, true);
+                GameCache.Instance().CurGame.Sitdown(this.ClientSeatId, true);
             }
         });
     }
@@ -217,7 +217,7 @@ export default class Seat {
         // mRectTransform.SetParent(transBubble);
         // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
+        // if (GameCache.Instance().room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance().room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
         // {
         //     mRectTransform.localPosition = info.AoMaHaInsurancePos;
         // }
@@ -230,7 +230,7 @@ export default class Seat {
         // mRectTransform.SetParent(transBubble);
         // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
+        // if (GameCache.Instance().room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance().room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
         // {
         //     mRectTransform.localPosition = info.AoMaHaInsurancebubaoPos;
         // }
@@ -243,7 +243,7 @@ export default class Seat {
         // mRectTransform.SetParent(transBubble);
         // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
+        // if (GameCache.Instance().room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance().room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
         // {
         //     mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
         // }
@@ -551,7 +551,7 @@ export default class Seat {
     /// 刷新离线
     /// </summary>
     public UpdateOnOrOffLine(): void {
-        let mEnumRoomType: RoomType = GameCache.Instance.room_type;
+        let mEnumRoomType: RoomType = GameCache.Instance().room_type;
         // if (mEnumRoomType == RoomType.MTTTexasHoldemStandardNoLimit) {
         //     this.imageOffline.gameObject.SetActive(false);
         //     return;
@@ -586,16 +586,16 @@ export default class Seat {
         }
 
 
-        if (this.isBig && GameCache.Instance.CurGame.cacheRound == Def.Round.PREFLOP) {
-            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_big_chip");
+        if (this.isBig && GameCache.Instance().CurGame.cacheRound == Def.Round.PREFLOP) {
+            this.uirc.imageIconChip.spriteFrame = GameCache.Instance().CurGame.GetChipSpriteBySpriteName("icon_image_big_chip");
             this.isBig = false;
         }
-        else if (this.isSmall && GameCache.Instance.CurGame.cacheRound == Def.Round.PREFLOP) {
+        else if (this.isSmall && GameCache.Instance().CurGame.cacheRound == Def.Round.PREFLOP) {
             this.isSmall = false;
-            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_small_chip");
+            this.uirc.imageIconChip.spriteFrame = GameCache.Instance().CurGame.GetChipSpriteBySpriteName("icon_image_small_chip");
         }
         else {
-            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+            this.uirc.imageIconChip.spriteFrame = GameCache.Instance().CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
         }
         let str: string = `${this.Player.anteNumber / 100}`;
@@ -750,7 +750,7 @@ export default class Seat {
                     list[i].imageCard.setPosition(Seat.smallCardPos[i]);
                 }
                 let mCard = this.Player.cards[i];
-                list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mCard));
+                list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance().CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mCard));
                 list[i].imageCard.active = true;
             }
         }
@@ -816,10 +816,10 @@ export default class Seat {
     /// </summary>
     /// <returns></returns>
     public PlayBankerAnimation(): { type: number, spawn: Function[], time: number } {
-        if (GameCache.Instance.CurGame.lastBankerIndex == -1 || this.seatID == GameCache.Instance.CurGame.lastBankerIndex)
+        if (GameCache.Instance().CurGame.lastBankerIndex == -1 || this.seatID == GameCache.Instance().CurGame.lastBankerIndex)
             return null;
 
-        let mSeat: Seat = GameCache.Instance.CurGame.GetSeatByLocalSeatID(GameCache.Instance.CurGame.lastBankerIndex);
+        let mSeat: Seat = GameCache.Instance().CurGame.GetSeatByLocalSeatID(GameCache.Instance().CurGame.lastBankerIndex);
         if (null == mSeat) return null;
 
         mSeat.uirc.imageBanker.active = false;
@@ -841,7 +841,7 @@ export default class Seat {
         let func = null;
         if (this.uirc.imageIconChip.node.activeInHierarchy) {
             this.uirc.textCurRoundHaveBet.node.active = false;
-            let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
+            let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance().CurGame.GetRecyclingChipPosV3());
             func = () => {
                 //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_MOVE_CHIPS);
                 cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
@@ -862,9 +862,9 @@ export default class Seat {
 
         let mOffset = 10;
 
-        this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+        this.uirc.imageIconChip.spriteFrame = GameCache.Instance().CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
-        let str: string = `${GameCache.Instance.CurGame.groupBet / 100}`;
+        let str: string = `${GameCache.Instance().CurGame.groupBet / 100}`;
         ////是整数不保留小数，不是整数保留一位小数
         let num: number = +str;
 
@@ -874,7 +874,7 @@ export default class Seat {
 
         this.uirc.textCurRoundHaveBet.string = str;
 
-        //textCurRoundHaveBet.text = string.Format("{0:N0}", GameCache.Instance.CurGame.groupBet / 100D); //StringHelper.GetLongString(GameCache.Instance.CurGame.groupBet);
+        //textCurRoundHaveBet.text = string.Format("{0:N0}", GameCache.Instance().CurGame.groupBet / 100D); //StringHelper.GetLongString(GameCache.Instance().CurGame.groupBet);
         this.uirc.textCurRoundHaveBet.node.active = true;
         //RectTransform mRectTransform = imageCurRoundHaveBetFrame.transform as RectTransform;
         //mRectTransform.sizeDelta = new Vector2(textCurRoundHaveBet.preferredWidth + imageIconChip.rectTransform.sizeDelta.x, mRectTransform.sizeDelta.y);
@@ -923,7 +923,7 @@ export default class Seat {
 
         let sequencePlayDealAnimation: { type: number, spawn?: Function[], time: number } = null;
 
-        if (GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
+        if (GameCache.Instance().CurGame.mainPlayer.seatID != this.seatID) {
             // 其他玩家发牌动画
             //sequencePlayDealAnimation = DOTween.Sequence();
             //let sequencePlayDealAnimation: { sequence: {}[], time }[] = [];
@@ -967,9 +967,9 @@ export default class Seat {
             //sequencePlayDealAnimation = DOTween.Sequence();
             try {
                 for (let i = 0, n = this.Player.cards.length; i < n; i++) {
-                    this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
+                    this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance().CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                     this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
-                    this.uirc.listCardUIInfos[i].imageBack.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
+                    this.uirc.listCardUIInfos[i].imageBack.spriteFrame = GameCache.Instance().CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
                     this.uirc.listCardUIInfos[i].imageBack.node.color = cc.Color.WHITE;
                     this.uirc.listCardUIInfos[i].imageBack.node.active = true;
                     this.uirc.listCardUIInfos[i].imageCard.setScale(cc.v3(0.5, 0.5));
@@ -998,7 +998,7 @@ export default class Seat {
 
                     let tmp = i;
                     //
-                    if (!GameCache.Instance.CurlimitDelaySeeCard) {
+                    if (!GameCache.Instance().CurlimitDelaySeeCard) {
                         sequencePlayDealAnimation.spawn.push(
                             () => {
                                 cc.tween(this.uirc.listCardUIInfos[i].imageBack.node).to(0.25, { opacity: 0 }).call(() => {
@@ -1068,7 +1068,7 @@ export default class Seat {
             this.uirc.WaitforthenextmoveTips.string = `${LanguageCode.LanguageDescription(20091)}`;
             this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
         }
-        if (GameCache.Instance.GameStatus == 1) {
+        if (GameCache.Instance().GameStatus == 1) {
             this.uirc.WaitforthenextmoveTips.node.active = ishow;
         }
     }
@@ -1090,7 +1090,7 @@ export default class Seat {
         if (null == this.Player) {
             return false;
         }
-        return this.Player.userID == GameCache.Instance.CurGame.mainPlayer.userID && this.seatID == GameCache.Instance.CurGame.mainPlayer.seatID;
+        return this.Player.userID == GameCache.Instance().CurGame.mainPlayer.userID && this.seatID == GameCache.Instance().CurGame.mainPlayer.seatID;
     }
 
 

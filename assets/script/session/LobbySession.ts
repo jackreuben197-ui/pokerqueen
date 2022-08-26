@@ -8,6 +8,7 @@ import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import GameCache from "../game/GameCache";
 import GameUtil from "../game/GameUtil";
+import Main from "../Main";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -159,10 +160,12 @@ export default class LobbySession {
     /**
     * 设置该房间保险赔率表
     */
-    static APIWebUserRoominsur() {
+    static APIWebUserRoominsur(room_id: number) {
+
         return new Promise((resolve, reject) => {
+
             HttpRequest.Send({
-                api: Web_User_Room_insur.API.replace("{id}", GameCache.Instance.room_id.toString()),
+                api: Web_User_Room_insur.API.replace("{id}", Main.roomid.toString()),
                 request: Web_User_Room_insur,
                 onSuccess: function () {
                     //TODO 广播刷新
@@ -208,7 +211,7 @@ export default class LobbySession {
     // public void APIWebUserRoominsur(Action<Web_User_Room_insur.ResponseData> pAct)
     // {
     // 	var paramas = new Web_User_Room_insur.RequestData() { };
-    // 	HttpRequestComponent.Instance.Send(StringHelper.GetWebUrlString(Web_User_Room_insur.API, GameCache.Instance.room_id.ToString()), Web_User_Room_insur.Request(paramas), RequestData =>
+    // 	HttpRequestComponent.Instance.Send(StringHelper.GetWebUrlString(Web_User_Room_insur.API, GameCache.Instance().room_id.ToString()), Web_User_Room_insur.Request(paramas), RequestData =>
     // 	{
     // 		var tResp = Web_User_Room_insur.Response(RequestData);
 

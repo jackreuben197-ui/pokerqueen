@@ -9,6 +9,7 @@ import ProcedureManager from "../../script/manager/ProcedureManager";
 import { ProcedureEnum } from "../../script/define/EIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
 import GameCache from "../game/GameCache";
+import Main from "../Main";
 enum EnumLoadType {
     "Init" = 1,
     "Refresh" = 2,
@@ -488,21 +489,25 @@ export default class UIMatchPlayViewForm extends BaseForm {
     //加入房间
     private async EnterRoomAPI(e: cc.Event.EventCustom) {
         let roominfo: typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
-        cc.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
-        GameCache.Instance.serviceId = roominfo.service_id;
-        GameCache.Instance.roomName = this.GetRoomNameByKey(roominfo.name);
-        GameCache.Instance.room_type = roominfo.room_type;
-        GameCache.Instance.game_type = roominfo.game_type;
-        GameCache.Instance.poker_type = roominfo.poker_type;
-        GameCache.Instance.bet_type = roominfo.limit_bet_type;
-        GameCache.Instance.room_id = roominfo.rid;
-        GameCache.Instance.seat_count = roominfo.seat_count;
-        GameCache.Instance.straddle = roominfo.straddle_on;
-        GameCache.Instance.insurance = roominfo.insurance_on > 0;
-        GameCache.Instance.muck_switch = roominfo.muck_on;
-        GameCache.Instance.voiceprint_verify_on = roominfo.voiceprint_verify_on;
-        GameCache.Instance.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
-        let response = await LobbySession.APIWebUserRoominsur().catch(() => { });
+        console.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
+        GameCache.Instance().serviceId = roominfo.service_id;
+        GameCache.Instance().roomName = this.GetRoomNameByKey(roominfo.name);
+        GameCache.Instance().room_type = roominfo.room_type;
+        GameCache.Instance().game_type = roominfo.game_type;
+        GameCache.Instance().poker_type = roominfo.poker_type;
+        GameCache.Instance().bet_type = roominfo.limit_bet_type;
+        GameCache.Instance().room_id = roominfo.rid;
+        GameCache.Instance().seat_count = roominfo.seat_count;
+        GameCache.Instance().straddle = roominfo.straddle_on;
+        GameCache.Instance().insurance = roominfo.insurance_on > 0;
+        GameCache.Instance().muck_switch = roominfo.muck_on;
+        GameCache.Instance().voiceprint_verify_on = roominfo.voiceprint_verify_on;
+        GameCache.Instance().voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
+
+        Main.roomid = roominfo.rid;
+
+        console.log("GameCache.Instance().room_id:", GameCache.Instance().room_id);
+        let response = await LobbySession.APIWebUserRoominsur(roominfo.rid).catch(() => { });
         if (response) {
             ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: this.UIDefine, lookOn: false });//[this.UIDefine, false, 0]
         }

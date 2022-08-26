@@ -32,11 +32,11 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
     public Name: string = "TexasGameStateHandlerLaunch";
 
     private _waitTimeoutThreshold: number = 20.0;
-    private _waitTimeoutTime: number;
-    private _checkFlag: boolean;
+    private _waitTimeoutTime: number = 0;
+    private _checkFlag: boolean = false;
 
     private _checkInterval: number = 1.0;
-    private _lastCheckTime: number;
+    private _lastCheckTime: number = 0;
 
     public Enter(entity?: any) {
 
@@ -44,11 +44,13 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
 
         let game: TexasGame = entity as TexasGame;
 
+        console.log("Enter game", game);
+
         if (!game) return;
 
         game.RegiterEnterRoom();
 
-        game.EnterRoom();
+        game.EnterRoom(GameCache.Instance().room_id);
 
         this._waitTimeoutTime = GlobalSession.NowTimeS + this._waitTimeoutThreshold;
 
@@ -85,9 +87,9 @@ export class TexasGameStateHandlerInit extends StateHandler {
 
         UIManager.close(UIDefine.TexasPreLoad);
 
-        GameCache.Instance.CurrentRoomID = GameCache.Instance.room_id;
-        GameCache.Instance.CurGame.RegisterMsgHandler();
-        GameCache.Instance.CurGame.UpdateRoom(source);
+        GameCache.Instance().CurrentRoomID = GameCache.Instance().room_id;
+        GameCache.Instance().CurGame.RegisterMsgHandler();
+        GameCache.Instance().CurGame.UpdateRoom(source);
     }
 
     public Execute(entity?: any) {

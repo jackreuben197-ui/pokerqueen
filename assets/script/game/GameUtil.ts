@@ -927,6 +927,9 @@ export default class GameUtil {
 
         let game: TexasGame = null;
 
+
+        console.log("InstantiateTexasGame GameCache.Instance().CurGame ", GameCache.Instance().CurGame);
+
         switch (roomType) {
             case RoomType.TexasHoldemStandardNoLimit: // 普通
             case RoomType.TexasHoldemStandardPotLimit: // 普通底池限注
@@ -934,8 +937,14 @@ export default class GameUtil {
             case RoomType.TexasHoldemSixPlusFixedPotLimit: // 普通短牌底池限注
                 {
 
-                    (game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
+                    //(game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
                     //ComponentFactory.CreateWithId<TexasGame, Component>((int)roomType, component, fromPool);
+                    game = GameUtil.TexasGameDic.get(roomType);
+                    console.log(game);
+                    if (!game) {
+                        game = new TexasGame();
+                        GameUtil.TexasGameDic.set(roomType, game);
+                    }
                 }
                 break;
 
@@ -1058,7 +1067,7 @@ export default class GameUtil {
     ];
 
     static get isInGameplay() {
-        return GameCache.Instance.CurrentRoomID != 0;
+        return GameCache.Instance().CurrentRoomID != 0;
     }
 
     public static GetCardNameByNum(cardNum: number): string {

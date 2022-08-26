@@ -139,14 +139,14 @@ export default class SeatUIRC extends UIBase {
         }
     }
     protected onClickCard(): void {
-        //         var mTmpSequencePlayDealAnimation = GameCache.Instance.CurGame.GetSequencePlayDealAnimation();
+        //         var mTmpSequencePlayDealAnimation = GameCache.Instance().CurGame.GetSequencePlayDealAnimation();
         //         if (null != mTmpSequencePlayDealAnimation && mTmpSequencePlayDealAnimation.IsPlaying()) {
         //             return;
         //         }
 
         //         // 亮牌   弃牌 , 未动作（没有开赛）
-        //         if (null == Player || Player.userID != GameCache.Instance.CurGame.MainPlayer.userID ||
-        //             seatID != GameCache.Instance.CurGame.MainPlayer.seatID || !Player.isParticipateInTheGame) {
+        //         if (null == Player || Player.userID != GameCache.Instance().CurGame.MainPlayer.userID ||
+        //             seatID != GameCache.Instance().CurGame.MainPlayer.seatID || !Player.isParticipateInTheGame) {
         //             return;
         //         }
 
@@ -159,11 +159,11 @@ export default class SeatUIRC extends UIBase {
         //             showCardsId[mCardIndex] = (!mActive) ? 1 : 0;
         //             CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Showdown()
         // 				{
-        //                     RoomID = (ulong)GameCache.Instance.room_id,
-        //                     MatchID = (ulong)GameCache.Instance.match_id,
+        //                     RoomID = (ulong)GameCache.Instance().room_id,
+        //                     MatchID = (ulong)GameCache.Instance().match_id,
         //                     request = new ClientMessageShowdown()
         // 					{
-        //                     Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
+        //                     Room = new Room() { RoomId = (uint)GameCache.Instance().room_id, MatchId = (uint)GameCache.Instance().match_id },
         //                 ShowCards = showCardsId,
         // 					}
 

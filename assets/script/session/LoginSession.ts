@@ -190,14 +190,14 @@ export default class LoginSession {
     //缓存用户信息
     public static CacheUserInfo(info: typeof Web_User_Info.UserInfo) {
 
-        GameCache.Instance.nUserId = info.un_id;
-        GameCache.Instance.gold = info.gold;
-        GameCache.Instance.strPhone = info.phone;
-        GameCache.Instance.kDouNum = 0;
-        GameCache.Instance.sex = info.sex;
-        GameCache.Instance.nick = info.nickname;
-        GameCache.Instance.headPic = info.avatar;
-        GameCache.Instance.userType = info.ut;
+        GameCache.Instance().nUserId = info.un_id;
+        GameCache.Instance().gold = info.gold;
+        GameCache.Instance().strPhone = info.phone;
+        GameCache.Instance().kDouNum = 0;
+        GameCache.Instance().sex = info.sex;
+        GameCache.Instance().nick = info.nickname;
+        GameCache.Instance().headPic = info.avatar;
+        GameCache.Instance().userType = info.ut;
 
         localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
         localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);

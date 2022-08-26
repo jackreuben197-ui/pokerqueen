@@ -126,13 +126,15 @@ export default class TexasGameMessageHandler {
         let isMtt: boolean = false;
         //this.game instanceof TexasGame;
 
+        console.log("response:",response);
+
         if (response.status == 0) {
 
             if (isMtt) {
                 // 缓存房间id
-                GameCache.Instance.room_id = response.mttRoom.roomId;
+                GameCache.Instance().room_id = response.mttRoom.roomId;
 
-                console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
+                console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance().room_id}`);
             }
 
             if (ProcedureManager.currProcedure.id == ProcedureEnum.Texas) {

@@ -3,7 +3,11 @@ export class CacheDataManager extends cc.Component {
 
     private static instance: CacheDataManager;
     public static get mInstance(): CacheDataManager {
-        return this.instance ??= new CacheDataManager();
+
+        if (!this.instance) {
+            this.instance = new CacheDataManager();
+        }
+        return this.instance;
     }
 
     //Dictionary<string, DtoSNS> mDicRandomIdSNS:Map<string>;
