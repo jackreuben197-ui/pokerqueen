@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-08-22 00:32:52
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-08-26 15:14:26
+ * @FilePath: /pokerqueen/assets/script/session/StorageKey.ts
+ */
 
 export default class StorageKey {
 
@@ -16,8 +24,13 @@ export default class StorageKey {
     static KEY_PHONE = "KEY_PHONE";
     static KEY_PHONE_FIRST = "KEY_PHONE_FIRST";
 
-    
+
+
     //=======================设置相关========================
     //桌布类型
     static SettingDeskType = "SettingDeskType";
+    static kQuickActionIndexKEY = "kQuickActionIndexKEY"; //自定义加注
+    static kQuickActionIndexValueKEY = "kQuickActionIndexValueKEY";
+    static togglesCardType = 'togglesCardType'; // 牌面
+
 }
