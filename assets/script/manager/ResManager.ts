@@ -9,7 +9,7 @@ export class ResManager {
 
         let bundle = bundleName == null ? cc.resources : this.bundleMap[bundleName];
 
-        if (bundle) return bundle.get(assetPath);
+        return bundle?.get(assetPath);
 
     }
 
@@ -125,3 +125,4 @@ export class ResManager {
     }
 }
 
+(window as any).ResManager = ResManager;

@@ -272,11 +272,7 @@ export default class TexasScene extends BaseScene {
         this.imageMenuMask.on("click", this.hideMenu, this);
 
     }
-    setDeskType(index: number) {
-        let sps = GameCache.Instance.CurGame.getDeskSpriteFrames(index);
-        this.desk_bg.spriteFrame = sps[0];
-        this.table_bg.spriteFrame = sps[1];
-    }
+
 
     Enter(param: { fromUI: IUIDefine, lookOn: boolean }): void {
 
@@ -288,7 +284,7 @@ export default class TexasScene extends BaseScene {
             //param?.fromUI && UIManager.close(param.fromUI);
         }
 
-        this.setDeskType(this.game.deskType);
+        this.game.setDeskType(this.game.deskType);
 
     }
     Exit(param) {
