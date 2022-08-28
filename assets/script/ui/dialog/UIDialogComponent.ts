@@ -26,8 +26,8 @@ export default class UIDialogComponent extends BaseTouchBoard {
     //顶部block遮挡
     top_block: cc.Node = null;
 
-    protected mainFadeInIsComplete: boolean;
-    protected maskFadeInIsComplete: boolean;
+    protected mainFadeInIsComplete: boolean = false;
+    protected maskFadeInIsComplete: boolean = false;
 
 
 

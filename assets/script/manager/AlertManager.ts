@@ -8,7 +8,7 @@ const { ccclass } = cc._decorator;
 export default class AlertManager extends FormManager {
 
     static Name:string = "AlertManager";
-    static ins: AlertManager;
+    static ins: AlertManager = null;
     protected lateLoad() {
         this.UILayer = Main.Alert;
         this.CacheUILayer = Main.Cache_UI;

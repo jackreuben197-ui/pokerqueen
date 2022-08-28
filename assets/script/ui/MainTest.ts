@@ -37,7 +37,7 @@ export default class MainTest extends UIBase {
                 UIManager.open(UIDefine.RegisterForm);
                 break;
             case "提示弹板":
-                UIManager.open(UIDefine.BaseAlert, {
+                UIManager.open(UIDefine.UIDialogComponent, {
                     data: {
                         title: "大大的标题", content: "无限的能量", confirm: "Sure", cancel: "Cancel", confirmCallback: () => {
                             ToastManager.ins.createToast("面板 确认 回调");

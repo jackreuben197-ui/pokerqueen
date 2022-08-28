@@ -23,14 +23,14 @@ export class CPlayer {
     public cardType: number = 0;// 赢牌类型 1皇家同花 2同花顺 3四条 4葫芦 5同花 6顺子 7三条 8两对 9一对 10高牌
     public IsAutoOp: boolean = false;// 托管标志
     public isOffLine: number = 0;//离线，0否，1是
-    public playerStatus_insurance: boolean;// 保险人状态（true 正在保险操作）
+    public playerStatus_insurance: boolean = false;// 保险人状态（true 正在保险操作）
     public timeLeft_insurance: number = 0;// 保险人剩余时间(单位：秒，对应所有可购买的人，状态不是正在购买的，值为0)
     public totalInsuredAmount: number = 0; // 保险人投保额
     public autoInsuredAmount: number = 0; // 保险人背保额
     public claimInsuredAmount: number = 0; // 保险赔付额
     public delayTimes: number = 0;//已加时次数
     public recyclingChip: number = 0;// 收筹码数量
-    public isWin: boolean; // 收筹码玩家是否是赢家 0是 1否
+    public isWin: boolean = false; // 收筹码玩家是否是赢家 0是 1否
     public winChips: number = 0; // 赢家赢的筹码数
     public isMaxcard: number = 0; // 是否是最大手牌 0是 1不是 未使用
     public huterKill: number = 0;//人头

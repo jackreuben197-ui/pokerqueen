@@ -18,14 +18,14 @@ export default class SpriteAnimationHelper extends cc.Component {
 
     toPlay: boolean = false;
     //间隔时间
-    stepDuration: number;
+    stepDuration: number = 0;
 
-    passTime: number;
+    passTime: number = 0;
 
-    frameIndex: number;
+    frameIndex: number = 0;
 
     //完成回调
-    callback: Function;
+    callback: Function = null;
 
     onLoad() {
         this.stepDuration = this.FPS / cc.game.getFrameRate();

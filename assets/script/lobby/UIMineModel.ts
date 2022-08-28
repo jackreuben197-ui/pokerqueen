@@ -1,5 +1,6 @@
 
-import GameCache from "../game/GameCache";
+
+import { GameCache } from "../game/GameCache";
 import ToastManager from "../manager/ToastManager";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_User_Info } from "../net/https/WebRequest";
@@ -15,9 +16,9 @@ export class UIMineModel {
         return this._instance;
     }
 
-    public UserInfoDto: typeof Web_User_Info.ResponseData;
+    public UserInfoDto: typeof Web_User_Info.ResponseData = null;
 
-    public modifyHeadTime: number;
+    public modifyHeadTime: number = null;
 
     //#region  自已的个人信息
     public ObtainUserInfo(pAct) {
@@ -26,9 +27,9 @@ export class UIMineModel {
                 if (tDto.code == 0) {
                     this.UserInfoDto = tDto.data;
                     this.modifyHeadTime = tDto.data.user.mat;
-                    GameCache.Instance().modifyNickNum = tDto.data.user.mnt;
-                    GameCache.Instance().gold = tDto.data.user.gold;
-                    GameCache.Instance().isTestflight = tDto.data.user.province;
+                    GameCache.Instance.modifyNickNum = tDto.data.user.mnt;
+                    GameCache.Instance.gold = tDto.data.user.gold;
+                    GameCache.Instance.isTestflight = tDto.data.user.province;
                     this.UIRefreshGoldEvent();
                     if (pAct != null)
                         pAct(tDto.data);

@@ -10,7 +10,7 @@ import ToastManager from "../manager/ToastManager";
 import { RoomInfo } from "../protobuf/holdem/define_pb";
 import GlobalSession from "../session/GlobalSession";
 import BaseScene from "../ui/scene/BaseScene";
-import GameCache from "./GameCache";
+import {GameCache} from "./GameCache";
 
 import TexasGame from "./TexasGame";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
@@ -227,14 +227,14 @@ export default class TexasScene extends BaseScene {
 
 
         this.buildMenuButtons();
-        //GameCache.Instance().room_type
-        //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance().room_type, this);
+        //GameCache.Instance.room_type
+        //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
 
         this.UIAddChips.node.active = false;
 
         this.Seat.active = false;
 
-        this.game = GameCache.Instance().CurGame;
+        this.game = GameCache.Instance.CurGame;
 
         this.game.uirc = this;
 
@@ -324,7 +324,7 @@ export default class TexasScene extends BaseScene {
 
     protected UpdateMenu(): void {
         UIMineModel.mInstance.ObtainUserInfo(pDto => {
-            this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance().gold);
+            this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
         });
         // //更新金豆
 
@@ -345,7 +345,7 @@ export default class TexasScene extends BaseScene {
             this.MenuButtons_Dic.Button_Standup.node.active = true;
             this.MenuButtons_Dic.Button_AddChips.node.active = true;
 
-            if (this.game.mainPlayer.chips >= GameCache.Instance().carry_small * (this.game.currentMaxRate + 1)) {
+            if (this.game.mainPlayer.chips >= GameCache.Instance.carry_small * (this.game.currentMaxRate + 1)) {
                 //已带入最大值,不可点击
                 this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = false;
             }
@@ -483,4 +483,5 @@ export default class TexasScene extends BaseScene {
     public CallbackExit() {
         //this.game.utils.LeaveRoom();
     }
+   
 }

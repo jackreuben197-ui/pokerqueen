@@ -19,7 +19,7 @@ export default class TexasPreLoad extends UIBase {
     //bundle内部资源尝试次数
     bundleDir_tryContentCount: number = 3;
 
-    bundleName: string;
+    bundleName: string = null;
 
     protected lateLoad() {
         super.lateLoad();

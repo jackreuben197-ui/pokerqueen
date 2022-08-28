@@ -3,7 +3,7 @@
  */
 import { GameConfig } from "../config/GameConfig";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
-import GameCache from "../game/GameCache";
+import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Channel, Web_Login, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
@@ -15,11 +15,11 @@ export default class LoginSession {
     static _token: string = null;
     static _tokenExpireAt: number = 0;
     //当前区号
-    static _areaCode: string;
+    static _areaCode: string = null;
     //手机号
-    static _phone: string;
+    static _phone: string = null;
 
-    static tokenRefreshComponent: TokenRefreshComponent;
+    static tokenRefreshComponent: TokenRefreshComponent = null;
 
     static Init() {
         this._areaCode = localStorage.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
@@ -190,14 +190,14 @@ export default class LoginSession {
     //缓存用户信息
     public static CacheUserInfo(info: typeof Web_User_Info.UserInfo) {
 
-        GameCache.Instance().nUserId = info.un_id;
-        GameCache.Instance().gold = info.gold;
-        GameCache.Instance().strPhone = info.phone;
-        GameCache.Instance().kDouNum = 0;
-        GameCache.Instance().sex = info.sex;
-        GameCache.Instance().nick = info.nickname;
-        GameCache.Instance().headPic = info.avatar;
-        GameCache.Instance().userType = info.ut;
+        GameCache.Instance.nUserId = info.un_id;
+        GameCache.Instance.gold = info.gold;
+        GameCache.Instance.strPhone = info.phone;
+        GameCache.Instance.kDouNum = 0;
+        GameCache.Instance.sex = info.sex;
+        GameCache.Instance.nick = info.nickname;
+        GameCache.Instance.headPic = info.avatar;
+        GameCache.Instance.userType = info.ut;
 
         localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
         localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);
@@ -271,6 +271,7 @@ export default class LoginSession {
         localStorage.removeItem(StorageKey.TOKEN);
         localStorage.removeItem(StorageKey.TOKEN_EXPIREAT);
     }
+
 }
 
 (window as any).LoginSession = LoginSession;

@@ -2,6 +2,7 @@
  * 入口函数
  */
 import { GameConfig } from "./config/GameConfig";
+import { GameCache } from "./game/GameCache";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
 
@@ -12,25 +13,23 @@ console.log("游戏入口函数");
 @ccclass
 export default class Main extends cc.Component {
 
-    static instance: Main;
+    static instance: Main = null;
 
-    static Cache_UI: cc.Node;
+    static Cache_UI: cc.Node = null;
 
-    static Scene: cc.Node;
-    static Form: cc.Node;
-    static Board: cc.Node;
-    static Dialog: cc.Node;
-    static Alert: cc.Node;
-    static Block: cc.Node;
-    static Prompt: cc.Node;
-    static Toast: cc.Node;
-
-    public static roomid:number = 0;;
+    static Scene: cc.Node = null;
+    static Form: cc.Node = null;
+    static Board: cc.Node = null;
+    static Dialog: cc.Node = null;
+    static Alert: cc.Node = null;
+    static Block: cc.Node = null;
+    static Prompt: cc.Node = null;
+    static Toast: cc.Node = null;
 
     onLoad() {
 
 
-        
+
         console.log("游戏启动", cc.sys.os);
 
         Main.instance = this;
@@ -58,4 +57,5 @@ export default class Main extends cc.Component {
     start() {
         ProcedureManager.Init();
     }
+
 }

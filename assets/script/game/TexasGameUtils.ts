@@ -2,7 +2,7 @@ import { RoomType } from "../define/EIDefine";
 import Main from "../Main";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
-import GameCache from "./GameCache";
+import { GameCache } from "./GameCache";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
@@ -18,21 +18,21 @@ export default class TexasGameUtils {
      */
     public EnterRoom(id) {
 
-        console.log("EnterRoom GameCache.Instance().CurGame: ", GameCache.Instance().CurGame);
+        console.log("EnterRoom GameCache.Instance.CurGame: ", GameCache.Instance.CurGame);
 
-        let roomType = GameCache.Instance().room_type;
+        let roomType = GameCache.Instance.room_type;
         if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {
             //MTT
         } else {
-            console.log(" ProtocolAgency.Send: ", id, Main.roomid, GameCache.Instance().match_id);
+            console.log(" ProtocolAgency.Send: ", GameCache.Instance.room_id, GameCache.Instance.match_id);
             ProtocolAgency.Send({
                 protocol: Protocol_Holdem_EnterRoom,
-                RoomID: Main.roomid,
-                MatchID: GameCache.Instance().match_id,
+                RoomID: GameCache.Instance.room_id,
+                MatchID: GameCache.Instance.match_id,
                 body: Protocol_Holdem_EnterRoom.Request(
                     {
-                        room: { roomId: Main.roomid, matchId: GameCache.Instance().match_id },
-                        gps: { longitude: GameCache.Instance().longitude, latitude: GameCache.Instance().latitude },
+                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                        gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
                         mttPartialBringIn: 0,
                         observer: false,
                     }),
@@ -45,13 +45,13 @@ export default class TexasGameUtils {
     // static LeaveRoom() {
     //     ProtocolAgency.Send({
     //         protocol: Protocol_Holdem_Leave,
-    //         RoomID: GameCache.Instance().room_id,
-    //         MatchID: GameCache.Instance().match_id,
+    //         RoomID: GameCache.Instance.room_id,
+    //         MatchID: GameCache.Instance.match_id,
     //         body: Protocol_Holdem_Leave.Request(
     //             {
     //                 room: {
-    //                     roomId: GameCache.Instance().room_id,
-    //                     matchId: GameCache.Instance().match_id,
+    //                     roomId: GameCache.Instance.room_id,
+    //                     matchId: GameCache.Instance.match_id,
     //                 }
     //             }),
     //     });

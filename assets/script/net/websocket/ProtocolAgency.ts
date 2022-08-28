@@ -2,7 +2,7 @@
 
 import { LogStyle } from "../../config/GameConfig";
 import Dispatcher from "../../event/Dispatcher";
-import GameCache from "../../game/GameCache";
+import {GameCache} from "../../game/GameCache";
 import { ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import LobbySession from "../../session/LobbySession";
 import LoginSession from "../../session/LoginSession";
@@ -119,11 +119,11 @@ export default class ProtocolAgency extends cc.Component {
         // RoomID or MatchID 和当前不匹配,请求离开房间
         if (code != ProtocolCode.Protocol_Holdem_Leave
             && code != ProtocolCode.Protocol_Holdem_EnterRoom) {
-            let isRubbish = (roomid != 0 && roomid != GameCache.Instance().room_id)
-                || (matchid != 0 && matchid != GameCache.Instance().match_id);
+            let isRubbish = (roomid != 0 && roomid != GameCache.Instance.room_id)
+                || (matchid != 0 && matchid != GameCache.Instance.match_id);
             if (isRubbish) {
                 console.log("%c%s", LogStyle.ws_response, `roomid or matchid is no match
-                cache:{RoomID:${GameCache.Instance().room_id},MatchID:${GameCache.Instance().match_id} 
+                cache:{RoomID:${GameCache.Instance.room_id},MatchID:${GameCache.Instance.match_id} 
                 receive:{RoomID:${roomid},MatchID:${matchid}`);
                 ProtocolAgency.Send({
                     protocol: Protocol_Holdem_Leave,

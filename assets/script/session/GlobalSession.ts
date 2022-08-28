@@ -1,5 +1,6 @@
 import { ProcedureEnum } from "../define/EIDefine";
 import UpdateComponent from "../funcomponent/UpdateComponent";
+import { GameCache } from "../game/GameCache";
 import ProcedureManager from "../manager/ProcedureManager";
 import UIManager from "../manager/UIManager";
 import WebSocketClient from "../net/websocket/WebSocketClient";
@@ -22,4 +23,5 @@ export default class GlobalSession {
         UpdateComponent.RemoveAll();
         ProcedureManager.StartProcedure(ProcedureEnum.Login);
     }
+
 }

@@ -2,16 +2,12 @@
 import TexasGame from "../game/TexasGame";
 import GameUtil from "./GameUtil";
 
-
-const { ccclass, property } = cc._decorator;
-
-@ccclass
-export default class GameCache {
+export class GameCache {
 
 
-    static _instance: GameCache;
 
-    CurrentRoomID: number = 0;
+
+    public CurrentRoomID: number = 0;
 
 
     /// <summary>
@@ -135,7 +131,8 @@ export default class GameCache {
     /// <summary>
     /// 房间号
     /// </summary>
-    public room_id: number = 0;
+    public room_id: number = 999;
+
     /// <summary>
     /// 房间座位
     /// </summary>
@@ -280,18 +277,16 @@ export default class GameCache {
     public AndroidPayMode: number = 2;//android内购开关 1 开 ，2 关
     public isTestflight = null;//苹果testflight（暂时） "IsAppStore"
     //#endregion
-    public FCMToken: string;
+    public FCMToken: string = null;
 
-    public static Instance(): GameCache {
-        if (!GameCache._instance) {
-           
-            GameCache._instance = new GameCache();
-        }
-        return GameCache._instance;
+
+    private static _Instance: GameCache = null;
+
+    public static get Instance() {
+        return this._Instance ||= new GameCache();
     }
-    constructor() {
-        this.nUserId = 0;
-    }
+
+    static aaa = Math.random();
 
     initTexasGame() {
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);

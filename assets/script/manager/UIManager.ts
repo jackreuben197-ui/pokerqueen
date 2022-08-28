@@ -15,7 +15,7 @@ export default class UIManager extends Singleton {
 
     static Name: string = "UIManager";
 
-    static ins: UIManager;
+    static ins: UIManager = null;
 
     static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null) {
         if (!UIDefine) return;

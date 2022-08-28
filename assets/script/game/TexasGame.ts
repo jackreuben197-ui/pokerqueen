@@ -19,7 +19,7 @@ import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
-import GameCache from "./GameCache";
+import {GameCache} from "./GameCache";
 import GameUtil from "./GameUtil";
 import Seat, { SeatUIInfo } from "./Seat";
 import { SeatEmpty, SeatIdle } from "./SeatStateHandler";
@@ -388,20 +388,22 @@ export default class TexasGame {
 
     }
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
+        
         this.ClearAllData();
         this.ClearAllPlayers();  // 清空玩家数据
         if (this.listSeat?.length) {
 
         } else {
-            this.InitSeatByCount(GameCache.Instance().seat_count);
+            console.log("GameCache.Instance.seat_count",GameCache.Instance.seat_count)
+            this.InitSeatByCount(GameCache.Instance.seat_count);
         }
 
-        this.mainPlayer = new CPlayer(GameCache.Instance().nUserId);
-        //ComponentFactory.CreateWithId<Player>(GameCache.Instance().nUserId);
-        this.mainPlayer.sex = GameCache.Instance().sex;
-        this.mainPlayer.headPic = GameCache.Instance().headPic;
-        this.mainPlayer.nick = GameCache.Instance().nick;
-        this.mainPlayer.userID = GameCache.Instance().nUserId;
+        this.mainPlayer = new CPlayer(GameCache.Instance.nUserId);
+        //ComponentFactory.CreateWithId<Player>(GameCache.Instance.nUserId);
+        this.mainPlayer.sex = GameCache.Instance.sex;
+        this.mainPlayer.headPic = GameCache.Instance.headPic;
+        this.mainPlayer.nick = GameCache.Instance.nick;
+        this.mainPlayer.userID = GameCache.Instance.nUserId;
         this.mainPlayer.SetCards(this.GetEmptyHandCards());
         if (rec.myInfo != null) {
             this.mainPlayer.seatID = this.GetLocalSeatID(rec.myInfo.seatId);
@@ -412,9 +414,8 @@ export default class TexasGame {
         this.cacheUniqueId = rec.roomInfo.uniqueId;
         this.gamestatus = rec.gameStatus;
 
-
         this.smallBlind = rec.roomInfo.smallBlind;
-        GameCache.Instance().carry_small = rec.roomInfo.smallBlind * 2;
+        GameCache.Instance.carry_small = rec.roomInfo.smallBlind * 2;
         this.bigBlind = rec.roomInfo.smallBlind * 2;
         this.alreadAnte = rec.handInfo.allBet;
         this.maxPlayTime = rec.roomInfo.schedulePlayDuration;
@@ -423,7 +424,7 @@ export default class TexasGame {
         this.CurlimitOutChip = rec.roomInfo.retainType;
         this.CurrentMinRate = rec.roomInfo.limitRetainMinRate * rec.roomInfo.currentMinRate;
         this.mHandNum = rec.handInfo.handNum;
-        GameCache.Instance().CurlimitDelaySeeCard = rec.roomInfo.delaySeeCard;
+        GameCache.Instance.CurlimitDelaySeeCard = rec.roomInfo.delaySeeCard;
         this.CurStraddle = rec.roomInfo.straddle;
 
         this.opTime = rec.roomInfo.opDuration;
@@ -432,7 +433,7 @@ export default class TexasGame {
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
 
-        GameCache.Instance().insurance = this.insurance;
+        GameCache.Instance.insurance = this.insurance;
         let mPots: number[] = [];
         for (let i = 0; i < rec.handInfo.potsList.length; i++) {
             mPots.push(rec.handInfo.potsList[i].amount);
@@ -453,7 +454,7 @@ export default class TexasGame {
 
         let mSeat: Seat = null;
         //客户端赋值本地座位号。座位空人也设置
-        for (let i = 0, n = GameCache.Instance().seat_count; i < n; i++) {
+        for (let i = 0, n = GameCache.Instance.seat_count; i < n; i++) {
             mSeat = this.listSeat[i];
             mSeat.seatID = i;
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
@@ -463,6 +464,7 @@ export default class TexasGame {
         }
         for (let i = 0, n = rec.playersList.length; i < n; i++) {
             mSeat = this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
+            console.log("mSeat >>>> ", this.listSeat);
             mSeat.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
 
@@ -520,6 +522,9 @@ export default class TexasGame {
         }
         for (let i = 0, n = rec.playersList.length; i < n; i++) {
             mSeat = this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
+
+
+
             mSeat.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
 
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
@@ -746,9 +751,9 @@ export default class TexasGame {
     UpdateRoomDes() {
 
         let info: string = ``;
-        info += `\n${GameCache.Instance().roomName}`;
+        info += `\n${GameCache.Instance.roomName}`;
         info += `\n${this.GetRoomTypeDes()}`;
-        info += `\n${GameCache.Instance().room_id}-${this.mHandNum}`;
+        info += `\n${GameCache.Instance.room_id}-${this.mHandNum}`;
         let straddleStr: string = "";
         if (this.groupBet > 0) {
             info += `\n${LanguageCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)}(${StringHelper.getStringDiv100(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
@@ -758,27 +763,27 @@ export default class TexasGame {
         }
         //带出，最小带入倍数 RT_MANUAL手动的
         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL) {
-            info += `\n${LanguageCode.LanguageDescription(20087)}:${(GameCache.Instance().carry_small * this.CurrentMinRate) / 100}`;
+            info += `\n${LanguageCode.LanguageDescription(20087)}:${(GameCache.Instance.carry_small * this.CurrentMinRate) / 100}`;
         }
 
         let insuranceStr = "";
         if (this.isGPSRestrictions && this.isIpRestrictions) {
             // "GPS  IP限制";
-            info += `\n${insuranceStr = ((GameCache.Instance().insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS  IP${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS  IP${LanguageCode.LanguageDescription(20008)}`;
         }
         else if (this.isGPSRestrictions && !this.isIpRestrictions) {
             //"GPS限制";
-            info += `\n${insuranceStr = ((GameCache.Instance().insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS${LanguageCode.LanguageDescription(20008)}`;
 
         }
         else if (!this.isGPSRestrictions && this.isIpRestrictions) {
             // "IP限制;
-            info += `\n${insuranceStr = ((GameCache.Instance().insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}IP${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}IP${LanguageCode.LanguageDescription(20008)}`;
         }
-        else if (GameCache.Instance().insurance) {
+        else if (GameCache.Instance.insurance) {
             info += `\n${LanguageCode.LanguageDescription(10021)}`;
         }
-        if (GameCache.Instance().CurlimitDelaySeeCard) {
+        if (GameCache.Instance.CurlimitDelaySeeCard) {
             info += `\n${LanguageCode.LanguageDescription(20088)}`;
         }
         info += "\n\n";
@@ -787,9 +792,9 @@ export default class TexasGame {
 
 
     protected GetRoomTypeDes(): string {
-        let gameTypeStr: string = i18nMgr.Get("GameType_" + GameCache.Instance().game_type);
-        let pokerTypeStr: string = i18nMgr.Get("PokerType_" + GameCache.Instance().poker_type);
-        let betTypeStr: string = i18nMgr.Get("BetType_" + GameCache.Instance().bet_type);
+        let gameTypeStr: string = i18nMgr.Get("GameType_" + GameCache.Instance.game_type);
+        let pokerTypeStr: string = i18nMgr.Get("PokerType_" + GameCache.Instance.poker_type);
+        let betTypeStr: string = i18nMgr.Get("BetType_" + GameCache.Instance.bet_type);
         return gameTypeStr + "-" + pokerTypeStr + "-" + betTypeStr;
     }
 
@@ -937,11 +942,11 @@ export default class TexasGame {
                     if (tResp.data.last_bring_out.to_wallet <= tResp.data.wallet.gold) {
                         ProtocolAgency.Send({
                             protocol: Protocol_Holdem_Seated,
-                            RoomID: GameCache.Instance().room_id,
-                            MatchID: GameCache.Instance().match_id,
+                            RoomID: GameCache.Instance.room_id,
+                            MatchID: GameCache.Instance.match_id,
                             body: Protocol_Holdem_Seated.Request(
                                 {
-                                    room: { roomId: GameCache.Instance().room_id, matchId: GameCache.Instance().match_id },
+                                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                                     seatId: this.GetRemoteSeatID(mSeat.seatID),
                                     bringIn: bring_out + fee,
                                     autoOnTable: 0,
@@ -1015,7 +1020,7 @@ export default class TexasGame {
     /// </summary>
     /// <param name="anteNumber"></param>
     public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false) {
-        if (GameCache.Instance().gold < anteNumber) {
+        if (GameCache.Instance.gold < anteNumber) {
             UIManager.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
@@ -1044,7 +1049,7 @@ export default class TexasGame {
         }
         if (this.mainPlayer == null || this.mainPlayer.seatID == -1) {
             //声纹认证开启判断
-            if (GameCache.Instance().voiceprint_verify_on == 1) {
+            if (GameCache.Instance.voiceprint_verify_on == 1) {
                 //             UITexasModel.mInstance.APIUserVoiceprint(0, 0, Act => {
                 //                 if (Act.code == 0) {
                 //                     if (Act.data == null) {
@@ -1060,11 +1065,11 @@ export default class TexasGame {
                 //                     else {
                 //                         CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Seated()
                 //     								{
-                //                                 RoomID = (ulong)GameCache.Instance().room_id,
-                //                                 MatchID = (ulong)GameCache.Instance().match_id,
+                //                                 RoomID = (ulong)GameCache.Instance.room_id,
+                //                                 MatchID = (ulong)GameCache.Instance.match_id,
                 //                                 request = new ClientMessageSeated()
                 //     									{
-                //                                 Room = new Room() { RoomId = (uint)GameCache.Instance().room_id, MatchId = (uint)GameCache.Instance().match_id },
+                //                                 Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
                 //                             SeatId = GetRemoteSeatID((sbyte)cacheSitdownSeatId),
                 //                             BringIn = (ulong)anteNumber,//rec.Chips
                 //                             AutoOnTable = autoOnTable,
@@ -1081,11 +1086,11 @@ export default class TexasGame {
 
                 ProtocolAgency.Send({
                     protocol: Protocol_Holdem_Seated,
-                    RoomID: GameCache.Instance().room_id,
-                    MatchID: GameCache.Instance().match_id,
+                    RoomID: GameCache.Instance.room_id,
+                    MatchID: GameCache.Instance.match_id,
                     body: Protocol_Holdem_Seated.Request(
                         {
-                            room: { roomId: GameCache.Instance().room_id, matchId: GameCache.Instance().match_id },
+                            room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                             seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
                             bringIn: anteNumber,//rec.Chips
                             autoOnTable: autoOnTable,
@@ -1105,11 +1110,11 @@ export default class TexasGame {
         }
         ProtocolAgency.Send({
             protocol: Protocol_Holdem_BringIn,
-            RoomID: GameCache.Instance().room_id,
-            MatchID: GameCache.Instance().match_id,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
             body: Protocol_Holdem_BringIn.Request(
                 {
-                    room: { roomId: GameCache.Instance().room_id, matchId: GameCache.Instance().match_id },
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                     bringIn: anteNumber,
                     useWallet: IsUseWallet
                 }),
@@ -1133,11 +1138,11 @@ export default class TexasGame {
 
         ProtocolAgency.Send({
             protocol: Protocol_Holdem_StandupActive,
-            RoomID: GameCache.Instance().room_id,
-            MatchID: GameCache.Instance().match_id,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
             body: Protocol_Holdem_StandupActive.Request(
                 {
-                    room: { roomId: GameCache.Instance().room_id, matchId: GameCache.Instance().match_id },
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                 }),
         })
     }
@@ -1318,7 +1323,7 @@ export default class TexasGame {
             smallBlind: this.smallBlind,
             currentMinRate: this.currentMinRate,
             currentMaxRate: this.currentMaxRate,
-            totalCoin: GameCache.Instance().gold,
+            totalCoin: GameCache.Instance.gold,
             tableChips: this.mainPlayer.chips
         });
     }

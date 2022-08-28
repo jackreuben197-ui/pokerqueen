@@ -8,7 +8,7 @@ import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
-import GameCache from "./GameCache";
+import {GameCache} from "./GameCache";
 import TexasGame from "./TexasGame";
 import { TexasGameState } from "./TexasGameState";
 
@@ -50,7 +50,7 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
 
         game.RegiterEnterRoom();
 
-        game.EnterRoom(GameCache.Instance().room_id);
+        game.EnterRoom(GameCache.Instance.room_id);
 
         this._waitTimeoutTime = GlobalSession.NowTimeS + this._waitTimeoutThreshold;
 
@@ -87,9 +87,9 @@ export class TexasGameStateHandlerInit extends StateHandler {
 
         UIManager.close(UIDefine.TexasPreLoad);
 
-        GameCache.Instance().CurrentRoomID = GameCache.Instance().room_id;
-        GameCache.Instance().CurGame.RegisterMsgHandler();
-        GameCache.Instance().CurGame.UpdateRoom(source);
+        GameCache.Instance.CurrentRoomID = GameCache.Instance.room_id;
+        GameCache.Instance.CurGame.RegisterMsgHandler();
+        GameCache.Instance.CurGame.UpdateRoom(source);
     }
 
     public Execute(entity?: any) {

@@ -10,8 +10,6 @@ export default class FSMLogicComponent implements IUpdate {
 
     allowUpdate: boolean = false;
 
-    public entity: any;
-
     protected _sm: StateMachine = null;
 
     public awake(entity: any) {

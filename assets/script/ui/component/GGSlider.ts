@@ -18,19 +18,19 @@ export default class GGSlider extends cc.Component {
     @property({ range: [0, 50], step: 1 })
     max: number = 3;
 
-    curValue: number;
+    curValue: number = 0;
 
-    step_count: number;
+    step_count: number = 0;
 
-    press: boolean;
+    press: boolean = false;
 
-    step_dis: number;
+    step_dis: number = 0;
 
     //倍数
-    private _rate: number;
-    private _param: any;
+    private _rate: number = 0;
+    private _param: any = null;
 
-    private _onChange: Function;
+    private _onChange: Function = null;
 
     onLoad() {
         this.bar.on(cc.Node.EventType.TOUCH_START, this.onBarTouchStart, this);

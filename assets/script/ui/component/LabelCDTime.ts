@@ -7,11 +7,11 @@ export default class LabelCDTime extends cc.Component {
 
     passtime: number = 0;
 
-    unit: string;
+    unit: string = null;
 
-    complete: boolean;
+    complete: boolean = false;
 
-    call: Function;
+    call: Function = null;
 
     protected onLoad(): void {
         this.label = this.node.getComponent(cc.Label);

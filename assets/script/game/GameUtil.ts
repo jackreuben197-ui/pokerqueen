@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import { SeatUIInfo } from "../game/Seat";
 import TexasGame from "../game/TexasGame";
-import GameCache from "./GameCache";
+import {GameCache} from "./GameCache";
 
 export default class GameUtil {
     private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
@@ -928,7 +928,7 @@ export default class GameUtil {
         let game: TexasGame = null;
 
 
-        console.log("InstantiateTexasGame GameCache.Instance().CurGame ", GameCache.Instance().CurGame);
+        console.log("InstantiateTexasGame GameCache.Instance.CurGame ", GameCache.Instance.CurGame);
 
         switch (roomType) {
             case RoomType.TexasHoldemStandardNoLimit: // 普通
@@ -1067,7 +1067,7 @@ export default class GameUtil {
     ];
 
     static get isInGameplay() {
-        return GameCache.Instance().CurrentRoomID != 0;
+        return GameCache.Instance.CurrentRoomID != 0;
     }
 
     public static GetCardNameByNum(cardNum: number): string {

@@ -19,7 +19,7 @@ import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { ServerMessageStandupActive } from "../protobuf/holdem/req_stand_up_active_pb";
-import GameCache from "./GameCache";
+import {GameCache} from "./GameCache";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
@@ -132,9 +132,9 @@ export default class TexasGameMessageHandler {
 
             if (isMtt) {
                 // 缓存房间id
-                GameCache.Instance().room_id = response.mttRoom.roomId;
+                GameCache.Instance.room_id = response.mttRoom.roomId;
 
-                console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance().room_id}`);
+                console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
             }
 
             if (ProcedureManager.currProcedure.id == ProcedureEnum.Texas) {
