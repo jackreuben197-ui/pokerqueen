@@ -28,10 +28,6 @@ export class SeatEmpty extends StateHandler {
 
 }
 
-
-
-
-
 export class SeatIdle extends StateHandler {
 
     public Name: string = "SeatIdle";

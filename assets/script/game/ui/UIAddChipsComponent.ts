@@ -119,7 +119,7 @@ export default class UIAddChipsComponent extends UIBase {
         this.hideUI();
     }
 
-    private hideUI() {
+    public hideUI() {
         this.node.active = false;
     }
 }
