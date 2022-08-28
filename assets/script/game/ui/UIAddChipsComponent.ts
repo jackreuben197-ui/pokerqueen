@@ -67,7 +67,7 @@ export default class UIAddChipsComponent extends UIBase {
         if (null != addClipsData) {
             this.textBlind.string = `${StringHelper.getStringDiv100(addClipsData.smallBlind)}/${StringHelper.getStringDiv100(addClipsData.bigBlind)}`;
             this.textCoin.string = `${GameCache.Instance.carry_small}`;
-            this.textNeedCoin.string = `${StringHelper.getStringDiv100(addClipsData.currentMinRate * GameCache.Instance.carry_small ^ 0)}`;
+            this.textNeedCoin.string = `${StringHelper.getStringDiv100(addClipsData.currentMinRate * GameCache.Instance.carry_small)}`;
             this.textTotalCoin.string = `${StringHelper.getStringDiv100(addClipsData.totalCoin)}`;
 
             let currentMaxBring: number = (addClipsData.currentMaxRate) * GameCache.Instance.carry_small - addClipsData.tableChips;
@@ -82,6 +82,7 @@ export default class UIAddChipsComponent extends UIBase {
             this.sliderCoin.maxValue = maxRate / 100;
             this.sliderCoin.minValue = addClipsData.currentMinRate / 100;
             this.sliderCoin.value = addClipsData.currentMinRate / 100;
+            console.log(" >>>>> ",addClipsData.currentMinRate / 100);
             this.onValueChangedSliderCoin(addClipsData.currentMinRate / 100);
             //this.sliderCoin.wholeNumbers = true;
 
