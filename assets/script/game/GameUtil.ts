@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import { SeatUIInfo } from "../game/Seat";
 import TexasGame from "../game/TexasGame";
-import GameCache from "./GameCache";
+import {GameCache} from "./GameCache";
 
 export default class GameUtil {
     private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
@@ -927,6 +927,9 @@ export default class GameUtil {
 
         let game: TexasGame = null;
 
+
+        console.log("InstantiateTexasGame GameCache.Instance.CurGame ", GameCache.Instance.CurGame);
+
         switch (roomType) {
             case RoomType.TexasHoldemStandardNoLimit: // 普通
             case RoomType.TexasHoldemStandardPotLimit: // 普通底池限注
@@ -934,8 +937,14 @@ export default class GameUtil {
             case RoomType.TexasHoldemSixPlusFixedPotLimit: // 普通短牌底池限注
                 {
 
-                    (game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
+                    //(game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
                     //ComponentFactory.CreateWithId<TexasGame, Component>((int)roomType, component, fromPool);
+                    game = GameUtil.TexasGameDic.get(roomType);
+                    console.log(game);
+                    if (!game) {
+                        game = new TexasGame();
+                        GameUtil.TexasGameDic.set(roomType, game);
+                    }
                 }
                 break;
 

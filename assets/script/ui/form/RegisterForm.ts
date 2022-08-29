@@ -3,7 +3,7 @@ import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
-import Dispatcher from "../../event/Dispatcher";
+import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
@@ -91,7 +91,7 @@ export default class RegisterForm extends BaseForm {
     }
 
     protected regiterDispatchEvent(): void {
-        Dispatcher.on(GGEvent.Change_AreaCode, this.onChangeAreaCode, this);
+        CPMessageDispatherComponent.Instance.RegisterHandler(GGEvent.Change_AreaCode, this.onChangeAreaCode, this);
     }
 
 

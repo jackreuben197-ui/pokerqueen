@@ -1,7 +1,8 @@
 import { RoomType } from "../define/EIDefine";
+import Main from "../Main";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { Protocol_Holdem_EnterRoom } from "../net/websocket/ProtocolHoldemMessages";
-import GameCache from "./GameCache";
+import { Protocol_Holdem_EnterRoom, Protocol_Holdem_Leave } from "../net/websocket/ProtocolHoldemMessages";
+import { GameCache } from "./GameCache";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
@@ -15,11 +16,15 @@ export default class TexasGameUtils {
     /**
      * 请求进入房间
      */
-    public EnterRoom() {
+    public EnterRoom(id) {
+
+        console.log("EnterRoom GameCache.Instance.CurGame: ", GameCache.Instance.CurGame);
+
         let roomType = GameCache.Instance.room_type;
         if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {
             //MTT
         } else {
+            console.log(" ProtocolAgency.Send: ", GameCache.Instance.room_id, GameCache.Instance.match_id);
             ProtocolAgency.Send({
                 protocol: Protocol_Holdem_EnterRoom,
                 RoomID: GameCache.Instance.room_id,
@@ -37,20 +42,20 @@ export default class TexasGameUtils {
     /**
      * 离开房间
      */
-    // static LeaveRoom() {
-    //     ProtocolAgency.Send({
-    //         protocol: Protocol_Holdem_Leave,
-    //         RoomID: GameCache.Instance.room_id,
-    //         MatchID: GameCache.Instance.match_id,
-    //         body: Protocol_Holdem_Leave.Request(
-    //             {
-    //                 room: {
-    //                     roomId: GameCache.Instance.room_id,
-    //                     matchId: GameCache.Instance.match_id,
-    //                 }
-    //             }),
-    //     });
-    // }
+    public LeaveRoom() {
+        ProtocolAgency.Send({
+            protocol: Protocol_Holdem_Leave,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            body: Protocol_Holdem_Leave.Request(
+                {
+                    room: {
+                        roomId: GameCache.Instance.room_id,
+                        matchId: GameCache.Instance.match_id,
+                    }
+                }),
+        });
+    }
 
 
     /// <summary>

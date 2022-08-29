@@ -7,7 +7,7 @@ const { ccclass, property } = cc._decorator;
 export default class PromptManager extends FormManager {
 
     static Name: string = "PromptManager";
-    static ins: PromptManager;
+    static ins: PromptManager = null;
     protected lateLoad() {
         this.UILayer = Main.Prompt;
         this.CacheUILayer = Main.Cache_UI;

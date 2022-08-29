@@ -4,7 +4,7 @@ import { AreaCodeConfig } from "../config/AreaCodeConfig";
 import { GameConfig } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
-import Dispatcher from "../event/Dispatcher";
+import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import Main from "../Main";
 import AlertManager from "../manager/AlertManager";
 import BoardManager from "../manager/BoardManager";
@@ -42,6 +42,7 @@ export default class ProcedureInit extends ProcedureBase {
         this.setToWin();
         this.setFit();
         this.bindManagers();
+        this.bindComponents();
         ProcedureManager.StartProcedure(ProcedureEnum.Preloading);
     }
     Leave() {
@@ -82,7 +83,6 @@ export default class ProcedureInit extends ProcedureBase {
             Main,
             ProcedureManager,
             AssetContext,
-            Dispatcher,
             GameConfig,
             HttpClient,
             AreaCodeConfig,
@@ -100,5 +100,9 @@ export default class ProcedureInit extends ProcedureBase {
             cc.log(`[window manager.name : ${name}]`);
             window[name] = manager;
         }
+
+    }
+    bindComponents() {
+        Main.instance.node.addComponent(CPMessageDispatherComponent);
     }
 }

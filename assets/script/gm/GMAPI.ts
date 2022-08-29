@@ -1,4 +1,5 @@
-import GameCache from "../manager/GameCache";
+
+import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
 
 export class GM {

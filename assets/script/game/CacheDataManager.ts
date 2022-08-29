@@ -1,9 +1,13 @@
 //const DtoSNS = WEB2_sns_batch_relations.DataElement;
 export class CacheDataManager extends cc.Component {
 
-    private static instance: CacheDataManager;
+    private static instance: CacheDataManager = null;
     public static get mInstance(): CacheDataManager {
-        return this.instance ??= new CacheDataManager();
+
+        if (!this.instance) {
+            this.instance = new CacheDataManager();
+        }
+        return this.instance;
     }
 
     //Dictionary<string, DtoSNS> mDicRandomIdSNS:Map<string>;

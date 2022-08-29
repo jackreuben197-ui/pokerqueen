@@ -1,5 +1,4 @@
 import { StateHandler } from "../statemachine/StateHandler";
-import Seat from "./Seat";
 import { SeatFSM } from "./SeatFSM";
 
 
@@ -10,7 +9,7 @@ export class SeatEmpty extends StateHandler {
     private static _Instance: SeatEmpty = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatEmpty;
+        return this._Instance ||= new SeatEmpty();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -29,10 +28,6 @@ export class SeatEmpty extends StateHandler {
 
 }
 
-
-
-
-
 export class SeatIdle extends StateHandler {
 
     public Name: string = "SeatIdle";
@@ -40,7 +35,7 @@ export class SeatIdle extends StateHandler {
     private static _Instance: SeatIdle = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatIdle;
+        return this._Instance ||= new SeatIdle();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -67,7 +62,7 @@ export class SeatSitAnimation extends StateHandler {
     private static _Instance: SeatSitAnimation = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatSitAnimation;
+        return this._Instance ||= new SeatSitAnimation();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -92,7 +87,7 @@ export class SeatSit extends StateHandler {
     private static _Instance: SeatSit = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatSit;
+        return this._Instance ||= new SeatSit();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -115,7 +110,7 @@ export class SeatWaitStart extends StateHandler {
     private static _Instance: SeatWaitStart = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatWaitStart;
+        return this._Instance ||= new SeatWaitStart();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -143,7 +138,7 @@ export class SeatWaitBlind extends StateHandler {
     private static _Instance: SeatWaitBlind = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatWaitBlind;
+        return this._Instance ||= new SeatWaitBlind();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -172,7 +167,7 @@ export class SeatStandupAnimation extends StateHandler {
     private static _Instance: SeatStandupAnimation = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatStandupAnimation;
+        return this._Instance ||= new SeatStandupAnimation();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -201,7 +196,7 @@ export class SeatStandup extends StateHandler {
     private static _Instance: SeatStandup = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatStandup;
+        return this._Instance ||= new SeatStandup();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -228,7 +223,7 @@ export class SeatStart extends StateHandler {
     private static _Instance: SeatStart = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatStart;
+        return this._Instance ||= new SeatStart();
     }
     public Enter(entity?: any) {
         super.Enter(entity);
@@ -255,7 +250,7 @@ export class SeatStraddle extends StateHandler {
     private static _Instance: SeatStraddle = null;
 
     public static get Instance() {
-        return this._Instance ??= new SeatStraddle;
+        return this._Instance ||= new SeatStraddle();
     }
     public Enter(entity?: any) {
         super.Enter(entity);

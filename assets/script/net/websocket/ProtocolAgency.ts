@@ -1,8 +1,8 @@
 
 
 import { LogStyle } from "../../config/GameConfig";
-import Dispatcher from "../../event/Dispatcher";
-import GameCache from "../../game/GameCache";
+import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import { GameCache } from "../../game/GameCache";
 import { ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import LobbySession from "../../session/LobbySession";
 import LoginSession from "../../session/LoginSession";
@@ -20,18 +20,16 @@ export default class ProtocolAgency extends cc.Component {
     static Send({ protocol = null, RoomID = 0, MatchID = 0, body = null }) {
 
         if (WebSocketClient.WS.readyState == WebSocket.OPEN) {
-            let code: number = this._getCodeByProtocolName(protocol.name);
+            let code: number = this._getCodeByProtocolName(protocol.Name);
             if (!code) {
-                cc.log("%c%s:%s\n%s", LogStyle.ws_request, "undefined code", protocol.name, JSON.stringify(arguments[0]));
+                console.log("%c%s:%s\n%s", LogStyle.ws_request, "undefined code", protocol.Name, JSON.stringify(arguments[0]));
                 return;
             }
 
             if (OpCodeHelper.NeedLog(code)) {
 
-                cc.log("%c%s\n%s", LogStyle.ws_request, `>>>>> protocol send : ${protocol.name}`, `RoomID:${RoomID},MatchID:${MatchID},body:${JSON.stringify(protocol.body)}`);
+                console.log("%c%s\n%s", LogStyle.ws_request, `>>>>> protocol send : ${protocol.Name}`, `RoomID:${RoomID},MatchID:${MatchID},body:${JSON.stringify(protocol.body)}`);
             }
-
-
             let bodyLength: number = body.byteLength;
             //数据长度(要写入前4个字节)
             let dataLength: number = PacketHead.FixHeadLength + bodyLength;
@@ -80,10 +78,12 @@ export default class ProtocolAgency extends cc.Component {
         }
     }
     static _writeString(dataView: DataView, offset: number, str: string) {
+
         for (let i = 0; i < str.length; i++) {
             let value: number = str.charCodeAt(i);
             dataView.setUint8(offset++, value);
         }
+
     }
     static _writeUint8Array(dataView: DataView, offset: number, uint8Array: Uint8Array) {
         for (let i = 0; i < uint8Array.length; i++) {
@@ -96,7 +96,7 @@ export default class ProtocolAgency extends cc.Component {
         let ua = new Uint8Array(data);
         for (let i = 0; i < PacketHead.CharsFlag.length; i++) {
             if (ua[i] != PacketHead.CharsFlag[i]) {
-                cc.log("%c%s", LogStyle.ws_response, "charsflag is no match");
+                console.log("%c%s", LogStyle.ws_response, "charsflag is no match");
                 return;
             }
         }
@@ -105,7 +105,7 @@ export default class ProtocolAgency extends cc.Component {
 
         let protocolName = this._getProtocolNameByCode(code);
         if (!protocolName) {
-            cc.log("%c%s", LogStyle.ws_response, "code is undefined " + code);
+            console.log("%c%s", LogStyle.ws_response, "code is undefined " + code);
             return;
         }
 
@@ -122,7 +122,7 @@ export default class ProtocolAgency extends cc.Component {
             let isRubbish = (roomid != 0 && roomid != GameCache.Instance.room_id)
                 || (matchid != 0 && matchid != GameCache.Instance.match_id);
             if (isRubbish) {
-                cc.log("%c%s", LogStyle.ws_response, `roomid or matchid is no match
+                console.log("%c%s", LogStyle.ws_response, `roomid or matchid is no match
                 cache:{RoomID:${GameCache.Instance.room_id},MatchID:${GameCache.Instance.match_id} 
                 receive:{RoomID:${roomid},MatchID:${matchid}`);
                 ProtocolAgency.Send({
@@ -142,18 +142,19 @@ export default class ProtocolAgency extends cc.Component {
 
         let protocol: any = cc.js.getClassByName(protocolName);
         if (!protocol) {
-            cc.log("%c%s", LogStyle.ws_response, "protocol is undefined or unregistered " + protocolName);
+            console.log("%c%s", LogStyle.ws_response, "protocol is undefined or unregistered " + protocolName);
             return;
         }
 
         let body_ua = data.slice(PacketHead.FixHeadLength);
 
         let body = protocol.Response(body_ua);
-        
-        if (OpCodeHelper.NeedLog(code))
-            cc.log("%c%s\n%s", LogStyle.ws_response, `>>>>> protocol receive : ${protocolName}`, `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`);
 
-        Dispatcher.emit(code, body);
+        if (OpCodeHelper.NeedLog(code))
+            console.log("%c%s\n%s", LogStyle.ws_response, `>>>>> protocol receive : ${protocolName}`, `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`);
+
+        //Dispatcher.emit(code, body);
+        CPMessageDispatherComponent.Instance.Handle(code, body);
 
     }
 

@@ -12,16 +12,16 @@ export default class SceneManager extends Singleton {
 
     static Name: string = "SceneManager";
 
-    static ins: SceneManager;
+    static ins: SceneManager = null;
 
     uiMap = {};
-    currUI: cc.Node;
+    currUI: cc.Node = null;
 
 
     //加载的UI层级
-    protected UILayer: cc.Node;
+    protected UILayer: cc.Node = null;
     //缓存的UI层级
-    protected CacheUILayer: cc.Node;
+    protected CacheUILayer: cc.Node = null;
 
     protected lateLoad() {
 

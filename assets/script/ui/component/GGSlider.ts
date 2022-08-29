@@ -18,19 +18,19 @@ export default class GGSlider extends cc.Component {
     @property({ range: [0, 50], step: 1 })
     max: number = 3;
 
-    curValue: number;
+    curValue: number = 0;
 
-    step_count: number;
+    step_count: number = 0;
 
-    press: boolean;
+    press: boolean = false;
 
-    step_dis: number;
+    step_dis: number = 0;
 
     //倍数
-    private _rate: number;
-    private _param: any;
+    private _rate: number = 0;
+    private _param: any = null;
 
-    private _onChange: Function;
+    private _onChange: Function = null;
 
     onLoad() {
         this.bar.on(cc.Node.EventType.TOUCH_START, this.onBarTouchStart, this);
@@ -58,6 +58,7 @@ export default class GGSlider extends cc.Component {
         this.press = true;
     }
     onTouchMove(e: cc.Event.EventTouch) {
+        if (this.step_count == 0) return;
         if (this.press) {
             let w_location = e.getLocation();
             let l_location = this.node.convertToNodeSpaceAR(w_location);
@@ -72,6 +73,7 @@ export default class GGSlider extends cc.Component {
     }
 
     onTrackTouchStart(e: cc.Event.EventTouch) {
+        if (this.step_count == 0) return;
         this.press = true;
         let w_location = e.getLocation();
         let l_location = this.node.convertToNodeSpaceAR(w_location);
@@ -85,7 +87,7 @@ export default class GGSlider extends cc.Component {
     setBarPos(rate: number) {
         this.rate = rate;
         let step = rate - this.min;
-        this.bar.x = step / this.step_count * this.node.width;
+        this.bar.x = step / this.step_count * this.node.width || 0;
         this.track_top.width = this.bar.x;
         //响应回调
         this._onChange?.(rate);

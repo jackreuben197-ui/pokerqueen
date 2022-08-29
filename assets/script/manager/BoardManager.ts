@@ -9,7 +9,7 @@ const { ccclass, property } = cc._decorator;
 export default class BoardManager extends FormManager {
 
     static Name:string = "BoardManager";
-    static ins: BoardManager;
+    static ins: BoardManager = null;
     protected lateLoad() {
         this.UILayer = Main.Board;
         this.CacheUILayer = Main.Cache_UI;

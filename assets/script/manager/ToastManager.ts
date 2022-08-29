@@ -17,7 +17,7 @@ export default class ToastManager extends Singleton {
 
     static Name: string = "ToastManager";
 
-    static ins: ToastManager;
+    static ins: ToastManager = null;
 
     config: any = {
         //容器起始位置

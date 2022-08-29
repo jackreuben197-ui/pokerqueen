@@ -1,7 +1,6 @@
 import TexasConfig from "../config/TexasConfig";
-import { RoomType } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
-import Dispatcher from "../event/Dispatcher";
+import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
@@ -19,7 +18,7 @@ import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
-import GameCache from "./GameCache";
+import { GameCache } from "./GameCache";
 import GameUtil from "./GameUtil";
 import Seat, { SeatUIInfo } from "./Seat";
 import { SeatEmpty, SeatIdle } from "./SeatStateHandler";
@@ -72,7 +71,7 @@ export default class TexasGame {
 
     public utils: TexasGameUtils = null;
 
-    public listSeat: Seat[];
+    public listSeat: Seat[] = null;
 
     PlayDeal_TweenSequence: TweenSequence = new TweenSequence;
 
@@ -84,19 +83,19 @@ export default class TexasGame {
     /// <summary>
     /// 当前游戏状态，0:倒计时中 1:游戏中 -2:等待开局 -1:其他状态
     /// </summary>
-    public gamestatus: number;
+    public gamestatus: number = 0;
     /// <summary>
     /// 大盲所在位置
     /// </summary>
-    public bigIndex: number;
+    public bigIndex: number = 0;
     /// <summary>
     /// 小盲所在位置
     /// </summary>
-    public smallIndex: number;
+    public smallIndex: number = 0;
     /// <summary>
     /// 庄家所在位置
     /// </summary>
-    public bankerIndex: number;
+    public bankerIndex: number = 0;
     /// <summary>
     /// 当前操作玩家所在位置
     /// </summary>
@@ -104,44 +103,44 @@ export default class TexasGame {
     /// <summary>
     /// 已发出公共牌
     /// </summary>
-    public cards: number[];
+    public cards: number[] = null;
     /// <summary>
     /// 已发出第二套公共牌
     /// </summary>
-    public secondCards: number[];
+    public secondCards: number[] = null;
 
     /// <summary>
     /// 大盲
     /// </summary>
-    public bigBlind: number;
+    public bigBlind: number = 0;
     /// <summary>
     /// 小盲
     /// </summary>
-    public smallBlind: number;
+    public smallBlind: number = 0;
     /// <summary>
     /// 底池数目
     /// </summary>
-    public alreadAnte: number;
+    public alreadAnte: number = 0;
     /// <summary>
     /// 房间的时间总长度（分钟）
     /// </summary>
-    public maxPlayTime: number;
+    public maxPlayTime: number = 0;
     /// <summary>
     /// 当前最小带入倍数
     /// </summary>
-    public currentMinRate: number;
+    public currentMinRate: number = 0;
     /// <summary>
     /// 当前最大带入倍数
     /// </summary>
-    public currentMaxRate: number;
+    public currentMaxRate: number = 0;
     /// <summary>
     /// 当前操作玩家剩余时间（s）
     /// </summary>
-    public leftOperateTime: number;
+    public leftOperateTime: number = 0;
     /// <summary>
     /// 玩家操作默认时间
     /// </summary>
-    public opTime: number;
+    public opTime: number = 0;
     /// <summary>
     /// 前注
     /// </summary>
@@ -149,66 +148,66 @@ export default class TexasGame {
     /// <summary>
     /// 各分池的筹码数
     /// </summary>
-    public pots: number[];
+    public pots: number[] = null;
     /// <summary>
     /// 当前最小可加注额，操作按钮上的加注额要用到
     /// </summary>
-    public minAnteNum: number;
+    public minAnteNum: number = 0;
     /// <summary>
     /// 是否可加注，与minAnteNum及剩余筹码联合判断是否显示加注按钮
     /// </summary>
-    public canRaise: number;
+    public canRaise: number = 0;
     /// <summary>
     /// 是否开启保险
     /// </summary>
-    public insurance: boolean;
+    public insurance: boolean = false;
     /// <summary>
     /// 1需要弹出选择补盲，0不需要弹出
     /// </summary>
-    public waitBlind: number;
+    public waitBlind: number = 0;
     /// <summary>
     /// 是否在其他房间被托管
     /// </summary>
-    public isTrusted: number;
+    public isTrusted: number = 0;
     /// <summary>
     /// 是否开启IP限制，1 开启 0关闭
     /// </summary>
-    public isIpRestrictions: boolean;
+    public isIpRestrictions: boolean = false;
     /// <summary>
     /// 是否开启GPS限制，1 开启 0关闭
     /// </summary>
-    public isGPSRestrictions: boolean;
+    public isGPSRestrictions: boolean = false;
     /// <summary>
     /// 同步到同盟的id 未同步时为0
     /// </summary>
-    public tribeId: number;
+    public tribeId: number = 0;
     /// APP的最新版本，如果当前app版本较小，则在牌桌中间显示升级提示
     /// </summary>
-    public ServerVersion: string;
+    public ServerVersion: string = null;
     /// <summary>
     /// 自动弃牌
     /// </summary>
-    public autoFold: boolean;
+    public autoFold: boolean = false;
     /// <summary>
     /// 自动跟注
     /// </summary>
-    public autoCall: boolean;
+    public autoCall: boolean = false;
     /// <summary>
     /// 自动ALLIN
     /// </summary>
-    public autoAllin: boolean;
+    public autoAllin: boolean = false;
     /// <summary>
     /// 自动看牌
     /// </summary>
-    public autoCheck: boolean;
+    public autoCheck: boolean = false;
     /// <summary>
     /// 当前手数
     /// </summary>
-    public mHandNum: number;
+    public mHandNum: number = 0;
     /// <summary>
     /// 当前玩家
     /// </summary>
-    public mainPlayer: CPlayer;
+    public mainPlayer: CPlayer = null;
     /// <summary>
     /// 本地座位号就是对应座位的下标
     /// </summary>
@@ -220,23 +219,23 @@ export default class TexasGame {
     /// <summary>
     /// 没有剩余操作时间
     /// </summary>
-    protected noLeftOperateTime: boolean;
+    protected noLeftOperateTime: boolean = false;
     /// <summary>
     /// 缓存玩家show牌
     /// </summary>
-    public cacheClinetShowDownCardId: number;
+    public cacheClinetShowDownCardId: number = 0;
     /// <summary>
     /// 操作延时次数
     /// </summary>
-    protected delayCount: number;
+    protected delayCount: number = 0;
     /// <summary>
     /// 公共牌位置
     /// </summary>
-    public listDefaultPublicCardsLPos: cc.Vec3[];
+    public listDefaultPublicCardsLPos: cc.Vec3[] = null;
     /// <summary>
     /// 第二套公共牌位置
     /// </summary>
-    public listDefaultSecondPublicCardsLPos: cc.Vec3[];
+    public listDefaultSecondPublicCardsLPos: cc.Vec3[] = null;
     /// <summary>
     /// 上一局庄家
     /// </summary>
@@ -244,15 +243,15 @@ export default class TexasGame {
     /// <summary>
     /// 缓存坐下SeatId
     /// </summary>
-    protected cacheSitdownSeatId: number;
+    protected cacheSitdownSeatId: number = 0;
     /// <summary>
     /// 等待GPS
     /// </summary>
-    public waittingGPSCallback: boolean;
+    public waittingGPSCallback: boolean = false;
     /// <summary>
     /// 已经Allin下发玩家手牌
     /// </summary>
-    public isAllinGetPlayerCards: boolean;
+    public isAllinGetPlayerCards: boolean = false;
     /// <summary>
     /// 保险模式，三张公共牌后，没有保险可买，马上来了第四张公共牌 0默认 1首次收筹码并位移
     /// </summary>
@@ -260,36 +259,36 @@ export default class TexasGame {
     /// <summary>
     /// 最低入池率 0不限制
     /// </summary>
-    private CurminPoolRate: number;
+    private CurminPoolRate: number = 0;
     /// <summary>
     /// // 最小保留记分牌倍数
     /// </summary>
-    private CurrentMinRate: number;
+    private CurrentMinRate: number = 0;
     /// <summary>
     /// // 允许带出记分牌0否 1 自动  2手动
     /// </summary>
-    public CurlimitOutChip: number;
+    public CurlimitOutChip: number = 0;
     /// <summary>
     /// 强制盲注
     /// </summary>
-    private CurStraddle: boolean;
+    private CurStraddle: boolean = false;
     /// <summary>
     /// 结束轮
     /// </summary>
-    public cacheRound: number;
+    public cacheRound: number = 0;
     /// <summary>
     /// 本手缓存
     /// </summary>
-    public cacheOutChips: number;
+    public cacheOutChips: number = 0;
     /// <summary>
     /// 缓存本手trun手牌
     /// </summary>
-    public cacheTrunOutsCards: Map<number/*座位号*/, number[]/*保险outs*/>;
+    public cacheTrunOutsCards: Map<number/*座位号*/, number[]/*保险outs*/> = null;
 
     /// <summary>
     /// 缓存购买量
     /// </summary>
-    public cacheBuyActiveAmount: number;
+    public cacheBuyActiveAmount: number = 0;
     /// <summary>
     /// 查看公共牌花费
     /// </summary>
@@ -301,7 +300,7 @@ export default class TexasGame {
     /// <summary>
     /// 缓存房间唯一标识
     /// </summary>
-    public cacheUniqueId: string;
+    public cacheUniqueId: string = null;
     /// <summary>
     /// 缓存广播信息
     /// </summary>
@@ -313,15 +312,15 @@ export default class TexasGame {
     /// <summary>
     /// 缓存是否是第二套牌
     /// </summary>
-    public IsSecondPsc: boolean;
+    public IsSecondPsc: boolean = false;
 
-    public cacheBuyInsurancePotUserCount: number;
+    public cacheBuyInsurancePotUserCount: number = 0;
     /// <summary>
     /// 缓存自己被验证信息
     /// </summary>
-    public cacheVoiceprintMsgId: number;
+    public cacheVoiceprintMsgId: number = 0;
 
-    public VoiceprintCountdown: number;
+    public VoiceprintCountdown: number = 0;
 
 
     constructor() {
@@ -372,14 +371,14 @@ export default class TexasGame {
     }
 
     public RegiterEnterRoom() {
-        Dispatcher.on(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
+        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
     }
     public UnRegiterEnterRoom() {
-        Dispatcher.off(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
+        CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
     }
 
-    public EnterRoom() {
-        this.utils.EnterRoom();
+    public EnterRoom(id) {
+        this.utils.EnterRoom(id);
     }
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
@@ -388,11 +387,13 @@ export default class TexasGame {
 
     }
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
+
         this.ClearAllData();
         this.ClearAllPlayers();  // 清空玩家数据
         if (this.listSeat?.length) {
 
         } else {
+            console.log("GameCache.Instance.seat_count", GameCache.Instance.seat_count)
             this.InitSeatByCount(GameCache.Instance.seat_count);
         }
 
@@ -411,7 +412,6 @@ export default class TexasGame {
 
         this.cacheUniqueId = rec.roomInfo.uniqueId;
         this.gamestatus = rec.gameStatus;
-
 
         this.smallBlind = rec.roomInfo.smallBlind;
         GameCache.Instance.carry_small = rec.roomInfo.smallBlind * 2;
@@ -463,6 +463,7 @@ export default class TexasGame {
         }
         for (let i = 0, n = rec.playersList.length; i < n; i++) {
             mSeat = this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
+            console.log("mSeat >>>> ", this.listSeat);
             mSeat.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
 
@@ -520,6 +521,9 @@ export default class TexasGame {
         }
         for (let i = 0, n = rec.playersList.length; i < n; i++) {
             mSeat = this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
+
+
+
             mSeat.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
 
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
@@ -1359,6 +1363,4 @@ export default class TexasGame {
     Exit() {
         this.UnRegisterMsgHandler()
     }
-
-
 }

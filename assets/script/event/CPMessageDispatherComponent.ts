@@ -1,24 +1,29 @@
 
-export default class Dispatcher {
+const { ccclass, property } = cc._decorator;
 
+@ccclass
+export default class CPMessageDispatherComponent extends cc.Component {
+    public static Instance: CPMessageDispatherComponent = null;
     /**
      * 事件池
      */
-    private static _handlers: {
+    private _handlers: {
         [key: string | number]: {
             caller: any,
             handler: Function
         }[]
     } = {};
-
+    onLoad() {
+        CPMessageDispatherComponent.Instance = this;
+    }
 
     /**
      * 派发事件
      * @param event 事件
      * @param params 参数
      */
-    public static emit(event: string | number, ...params: any[]) {
-        const list = Dispatcher._handlers[event];
+    public Handle(event: string | number, ...params: any[]): void {
+        const list = this._handlers[event];
         if (list?.length) {
             //这里需要倒查询，防止数组长度发生变化
             for (let i: number = list.length - 1; i >= 0; i--) {
@@ -26,34 +31,29 @@ export default class Dispatcher {
                 t.handler.call(t.caller, ...params);
             }
         }
-
     }
-
     /**
-     * 监听事件
+     * 注册事件
      * @param event 事件名称
      * @param handler 回调方法
      * @param caller 作用域
      */
-    public static on(event: string | number, handler: Function, caller?: any): void {
+    public RegisterHandler(event: string | number, handler: Function, caller?: any): void {
 
-        Dispatcher._handlers[event] || (Dispatcher._handlers[event] = []);
+        this._handlers[event] || (this._handlers[event] = []);
 
-        Dispatcher._handlers[event].push({ caller, handler });
+        this._handlers[event].push({ caller, handler });
     }
-
     /**
-     * 移除监听 
+     * 移除事件响应
      * @param event 事件名称
      * @param handler 回调方法(未定义则移除事件类型的所有监听)
      * @param caller 作用域
      */
-    public static off(event: string | number, handler?: Function, caller?: any): void {
-
+    public RemoveHandler(event: string | number, handler?: Function, caller?: any): void {
         if (handler) {
             //获取事件队列
-            const list = Dispatcher._handlers[event];
-
+            const list = this._handlers[event];
             if (list?.length) {
                 //遍历所有事件
                 for (let i = list.length - 1; i >= 0; i--) {
@@ -65,14 +65,16 @@ export default class Dispatcher {
                 }
             }
         } else {
-            Dispatcher._handlers[event] = [];
+            this._handlers[event] = [];
         }
     }
+
     /**
     * 移除所有事件
     */
-    public static removeAllListener() {
-        Dispatcher._handlers = {};
+    public RemoveAllListener() {
+        this._handlers = {};
     }
-
+    // update (dt) {}
 }
+(window as any).CPMessageDispatherComponent = CPMessageDispatherComponent;

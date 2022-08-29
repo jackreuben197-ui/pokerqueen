@@ -2,12 +2,14 @@
  * 大厅Session
  */
 
-import Dispatcher from "../event/Dispatcher";
+import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
-import GameCache from "../game/GameCache";
+import { GameCache } from "../game/GameCache";
 import GameUtil from "../game/GameUtil";
+import { SeatEmpty } from "../game/SeatStateHandler";
+import Main from "../Main";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -17,6 +19,9 @@ import LoginSession from "./LoginSession";
 
 export default class LobbySession {
 
+
+
+
     //房间名多语言配置
     static RoomLanguageDic_CN = {};
     static RoomLanguageDic_US = {};
@@ -24,8 +29,8 @@ export default class LobbySession {
     //开关数据
     static Switch: any = {};
 
-    public static tokenRefreshComponent: TokenRefreshComponent;
-    public static heartbeatComponent: HeartbeatComponent;
+    public static tokenRefreshComponent: TokenRefreshComponent = null;
+    public static heartbeatComponent: HeartbeatComponent = null;
 
     //只初始化一次
     static _initOnce: boolean = false;
@@ -43,7 +48,7 @@ export default class LobbySession {
     }
 
     static regiterEvents() {
-        Dispatcher.on(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
+        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
     }
 
     private static on_Protocol_Holdem_Register(body: typeof Protocol_Holdem_Register.Response_AsObject) {
@@ -159,7 +164,7 @@ export default class LobbySession {
     /**
     * 设置该房间保险赔率表
     */
-    static APIWebUserRoominsur() {
+    static APIWebUserRoominsur(room_id: number) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 api: Web_User_Room_insur.API.replace("{id}", GameCache.Instance.room_id.toString()),

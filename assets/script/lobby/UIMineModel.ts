@@ -1,5 +1,6 @@
 
-import GameCache from "../game/GameCache";
+
+import { GameCache } from "../game/GameCache";
 import ToastManager from "../manager/ToastManager";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_User_Info } from "../net/https/WebRequest";
@@ -9,12 +10,15 @@ export class UIMineModel {
     private static _instance: UIMineModel = null;
 
     public static get mInstance(): UIMineModel {
-        return UIMineModel._instance ||= new UIMineModel;
+        if (!this._instance) {
+            this._instance = new UIMineModel();
+        }
+        return this._instance;
     }
 
-    public UserInfoDto: typeof Web_User_Info.ResponseData;
+    public UserInfoDto: typeof Web_User_Info.ResponseData = null;
 
-    public modifyHeadTime: number;
+    public modifyHeadTime: number = null;
 
     //#region  自已的个人信息
     public ObtainUserInfo(pAct) {

@@ -1,12 +1,15 @@
 
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_User_Info, Web_User_Room } from "../net/https/WebRequest";
-import GameCache from "./GameCache";
+import {GameCache} from "./GameCache";
 
 export class UITexasModel {
-    private static instance: UITexasModel;
+    private static instance: UITexasModel = null;
     public static get mInstance(): UITexasModel {
-        return this.instance ||= new UITexasModel()
+        if (!this.instance) {
+            this.instance = new UITexasModel();
+        }
+        return this.instance;
     }
     /// <summary>
     /// 本房间带出信息

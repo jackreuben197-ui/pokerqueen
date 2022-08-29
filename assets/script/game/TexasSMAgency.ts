@@ -2,7 +2,7 @@
 import { StateHandler } from "../statemachine/StateHandler";
 import TexasGame from "./TexasGame";
 import { TexasGameState } from "./TexasGameState";
-import { TexasGameStateHandlerHandPreflop, TexasGameStateHandlerHandStarted, TexasGameStateHandlerInit, TexasGameStateHandlerLaunch, TexasGameStateHandlerNetworkException } from "./TexasGameStateHandler";
+import { TexasGameStateHandlerCancel, TexasGameStateHandlerComplete, TexasGameStateHandlerExchangeRoom, TexasGameStateHandlerExit, TexasGameStateHandlerHandEnd, TexasGameStateHandlerHandFlop, TexasGameStateHandlerHandPreflop, TexasGameStateHandlerHandRiver, TexasGameStateHandlerHandShowdown, TexasGameStateHandlerHandStarted, TexasGameStateHandlerHandTurn, TexasGameStateHandlerInit, TexasGameStateHandlerLaunch, TexasGameStateHandlerNetworkException, TexasGameStateHandlerNotStart, TexasGameStateHandlerUnknown, TexasGameStateHandlerWaitHandStart } from "./TexasGameStateHandler";
 
 /**
  * Texas 状态机注册
@@ -28,52 +28,34 @@ export default class TexasSMAgency {
 
             this.GameSMStates[TexasGameState.Init] = new TexasGameStateHandlerInit;
 
-            //this.GameSMStates[TexasGameState.Init] = new TexasGameStateInit;
-            // TexasGameStateInit<Entity>.Instance.Handler = TexasGameStateHandlerInit.Instance;
-            // this.GameSMStates[TexasGameState.Init] = TexasGameStateInit<Entity>.Instance;
+            this.GameSMStates[TexasGameState.Exit] = new TexasGameStateHandlerExit;
 
-            // TexasGameStateExit<Entity>.Instance.Handler = TexasGameStateHandlerExit.Instance;
-            // this.GameSMStates[TexasGameState.Exit] = TexasGameStateExit<Entity>.Instance;
+            this.GameSMStates[TexasGameState.ExchangeRoom] = new TexasGameStateHandlerExchangeRoom;
 
-            // TexasGameStateExchangeRoom<Entity>.Instance.Handler = TexasGameStateHandlerExchangeRoom.Instance;
-            // this.GameSMStates[TexasGameState.ExchangeRoom] = TexasGameStateExchangeRoom<Entity>.Instance;
+            this.GameSMStates[TexasGameState.NotStart] = new TexasGameStateHandlerNotStart;
 
-            // TexasGameStateNotStart<Entity>.Instance.Handler = TexasGameStateHandlerNotStart.Instance;
-            // this.GameSMStates[TexasGameState.NotStart] = TexasGameStateNotStart<Entity>.Instance;
+            this.GameSMStates[TexasGameState.WaitHandStart] = new TexasGameStateHandlerWaitHandStart;
 
-            // TexasGameStateWaitHandStart<Entity>.Instance.Handler = TexasGameStateHandlerWaitHandStart.Instance;
-            // this.GameSMStates[TexasGameState.WaitHandStart] = TexasGameStateWaitHandStart<Entity>.Instance;
-
-            // TexasGameStateHandStarted<Entity>.Instance.Handler = TexasGameStateHandlerHandStarted.Instance;
             this.GameSMStates[TexasGameState.HandStarted] = new TexasGameStateHandlerHandStarted;
 
-            // TexasGameStateHandPreflop<Entity>.Instance.Handler = TexasGameStateHandlerHandPreflop.Instance;
-            // this.GameSMStates[TexasGameState.HandPreflop] = TexasGameStateHandPreflop<Entity>.Instance;
             this.GameSMStates[TexasGameState.HandPreflop] = new TexasGameStateHandlerHandPreflop;
 
-            // TexasGameStateHandFlop<Entity>.Instance.Handler = TexasGameStateHandlerHandFlop.Instance;
-            // this.GameSMStates[TexasGameState.HandFlop] = TexasGameStateHandFlop<Entity>.Instance;
+            this.GameSMStates[TexasGameState.HandFlop] = new TexasGameStateHandlerHandFlop;
 
-            // TexasGameStateHandTurn<Entity>.Instance.Handler = TexasGameStateHandlerHandTurn.Instance;
-            // this.GameSMStates[TexasGameState.HandTurn] = TexasGameStateHandTurn<Entity>.Instance;
+            this.GameSMStates[TexasGameState.HandTurn] = new TexasGameStateHandlerHandTurn;
 
-            // TexasGameStateHandRiver<Entity>.Instance.Handler = TexasGameStateHandlerHandRiver.Instance;
-            // this.GameSMStates[TexasGameState.HandRiver] = TexasGameStateHandRiver<Entity>.Instance;
+            this.GameSMStates[TexasGameState.HandRiver] = new TexasGameStateHandlerHandRiver;
 
-            // TexasGameStateHandShowdown<Entity>.Instance.Handler = TexasGameStateHandlerHandShowdown.Instance;
-            // this.GameSMStates[TexasGameState.HandShowdown] = TexasGameStateHandShowdown<Entity>.Instance;
+            this.GameSMStates[TexasGameState.HandShowdown] = new TexasGameStateHandlerHandShowdown;
 
-            // TexasGameStateHandEnd<Entity>.Instance.Handler = TexasGameStateHandlerHandEnd.Instance;
-            // this.GameSMStates[TexasGameState.HandEnd] = TexasGameStateHandEnd<Entity>.Instance;
+            this.GameSMStates[TexasGameState.HandEnd] = new TexasGameStateHandlerHandEnd;
 
-            // TexasGameStateComplete<Entity>.Instance.Handler = TexasGameStateHandlerComplete.Instance;
-            // this.GameSMStates[TexasGameState.Complete] = TexasGameStateComplete<Entity>.Instance;
+            this.GameSMStates[TexasGameState.Complete] = new TexasGameStateHandlerComplete;
 
-            // TexasGameStateCancel<Entity>.Instance.Handler = TexasGameStateHandlerCancel.Instance;
-            // this.GameSMStates[TexasGameState.Cancel] = TexasGameStateCancel<Entity>.Instance;
+            this.GameSMStates[TexasGameState.Cancel] = new TexasGameStateHandlerCancel;
 
-            // TexasGameStateUnknown<Entity>.Instance.Handler = TexasGameStateHandlerUnknown.Instance;
-            // this.GameSMStates[TexasGameState.Unknown] = TexasGameStateUnknown<Entity>.Instance;
+            this.GameSMStates[TexasGameState.Unknown] = new TexasGameStateHandlerUnknown;
+
         }
     }
 

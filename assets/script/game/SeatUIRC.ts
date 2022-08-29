@@ -5,9 +5,9 @@ import Seat from "./Seat";
 
 
 export class CardUIInfo {
-    public imageSelect: cc.Sprite;
-    public imageBack: cc.Sprite;
-    public imageEye: cc.Sprite;
+    public imageSelect: cc.Sprite = null;
+    public imageBack: cc.Sprite = null;
+    public imageEye: cc.Sprite = null;
 
     constructor(public imageCard: cc.Node) {
         this.imageSelect = imageCard.getChildByName("Image_SelectCard")?.getComponent(cc.Sprite);

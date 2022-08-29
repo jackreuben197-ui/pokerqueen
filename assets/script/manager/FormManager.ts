@@ -12,7 +12,7 @@ const { ccclass, property } = cc._decorator;
 export default class FormManager extends Singleton {
 
     static Name: string = "FormManager";
-    static ins: FormManager;
+    static ins: FormManager = null;
     uiMap = {};
 
     currUI: UIBase = null;
@@ -22,9 +22,9 @@ export default class FormManager extends Singleton {
 
 
     //加载的UI层级
-    protected UILayer: cc.Node;
+    protected UILayer: cc.Node = null;
     //缓存的UI层级
-    protected CacheUILayer: cc.Node;
+    protected CacheUILayer: cc.Node = null;
 
     protected lateLoad() {
 

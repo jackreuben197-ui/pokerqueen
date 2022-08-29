@@ -1,6 +1,6 @@
 
 import { AreaCodeConfig } from "../../config/AreaCodeConfig";
-import Dispatcher from "../../event/Dispatcher";
+import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import LoginSession from "../../session/LoginSession";
@@ -123,7 +123,7 @@ export default class AreaCodeForm extends BaseForm {
     onItemClick(button: cc.Button) {
         let code = button.node.getComponent(AreaCodeFormItem).param.code;
         LoginSession.AreaCode = code;
-        Dispatcher.emit(GGEvent.Change_AreaCode);
+        CPMessageDispatherComponent.Instance.Handle(GGEvent.Change_AreaCode);
         this.close();
     }
 

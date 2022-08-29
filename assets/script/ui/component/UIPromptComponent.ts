@@ -28,13 +28,13 @@ export default class UIPromptComponent extends UIBase {
     mask: cc.Node = null;
     loading: cc.Node = null;
 
-    waitShow: boolean;
-    isShow: boolean;
+    waitShow: boolean = false;
+    isShow: boolean = false;
 
-    showStartTime: number;
+    showStartTime: number = 0;
 
     //当前状态
-    status: number;
+    status: number = 0;
 
     protected lateLoad() {
         super.lateLoad();

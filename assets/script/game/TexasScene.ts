@@ -13,7 +13,7 @@ import { RoomInfo } from "../protobuf/holdem/define_pb";
 import GlobalSession from "../session/GlobalSession";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
-import GameCache from "./GameCache";
+import { GameCache } from "./GameCache";
 
 import TexasGame from "./TexasGame";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
@@ -319,9 +319,14 @@ export default class TexasScene extends BaseScene {
         if (null != this.imageMenuMask)
             this.imageMenuMask.active = true;
     }
-    protected hideMenu(): void {
-        if (null != this.transSubMenu)
-            cc.tween(this.transSubMenu).to(0.25, { x: -1320 }).start();
+    protected hideMenu(animation: boolean = true): void {
+        if (null != this.transSubMenu) {
+            if (animation) {
+                cc.tween(this.transSubMenu).to(0.25, { x: -1320 }).start();
+            } else {
+                this.transSubMenu.x = -1320;
+            }
+        }
         if (null != this.imageMenuMask)
             this.imageMenuMask.active = false;
     }
@@ -464,7 +469,7 @@ export default class TexasScene extends BaseScene {
 
     }
     Click_Button_Exit() {
-
+        this.CallbackExit();
     }
 
 
@@ -490,6 +495,8 @@ export default class TexasScene extends BaseScene {
      * 响应退出触发
      */
     public CallbackExit() {
-        //this.game.utils.LeaveRoom();
+        this.hideMenu(false);
+        this.game.utils.LeaveRoom();
     }
+
 }

@@ -4,10 +4,10 @@ import ButtonClickCD from "../../common/ButtonClickCD";
 import { GameConfig, LanguageList } from "../../config/GameConfig";
 import { DialogParam, ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
-import Dispatcher from "../../event/Dispatcher";
+import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import {LanguageCode} from "../../i18n/LanguageCode";
+import { LanguageCode } from "../../i18n/LanguageCode";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 
@@ -89,7 +89,7 @@ export default class LoginScene extends BaseScene {
     }
 
     protected regiterDispatchEvent(): void {
-        Dispatcher.on(GGEvent.Change_AreaCode, this.onChangeAreaCode, this);
+        CPMessageDispatherComponent.Instance.RegisterHandler(GGEvent.Change_AreaCode, this.onChangeAreaCode, this);
     }
 
     protected regiterTouchEvents() {

@@ -5,7 +5,7 @@ export class StringHelper {
 
     //返回缩小100倍字符串
     static getStringDiv100(num: number): string {
-        return `${num / 100}`;
+        return `${num / 100 ^ 0}`;
     }
 
 }

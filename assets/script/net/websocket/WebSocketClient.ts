@@ -11,8 +11,8 @@ export default class WebSocketClient {
 
     static Host_Port: string = null;
 
-    static Host: string;
-    static Port: number;
+    static Host: string = null;
+    static Port: number = 0;
 
 
     static WS: WebSocket = null;

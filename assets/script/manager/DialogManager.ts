@@ -8,7 +8,7 @@ const { ccclass } = cc._decorator;
 export default class DialogManager extends FormManager {
 
     static Name:string = "DialogManager";
-    static ins: DialogManager;
+    static ins: DialogManager = null;
     protected lateLoad() {
         this.UILayer = Main.Dialog;
         this.CacheUILayer = Main.Cache_UI;

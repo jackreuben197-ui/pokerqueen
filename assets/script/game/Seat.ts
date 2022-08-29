@@ -7,7 +7,7 @@ import { Def } from "../protobuf/holdem/define_pb";
 import { CacheDataManager } from "./CacheDataManager";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
-import GameCache from "./GameCache";
+import {GameCache} from "./GameCache";
 import GameUtil from "./GameUtil";
 import { SeatFSM } from "./SeatFSM";
 import { SeatEmpty, SeatSit } from "./SeatStateHandler";
@@ -45,34 +45,34 @@ export default class Seat {
     protected static myCardTypePos: cc.Vec3[] = [];
 
 
-    protected defaultIconChipLocalPos: cc.Vec3;
+    protected defaultIconChipLocalPos: cc.Vec3 = null;
 
 
-    public FsmLogicComponent: FSMLogicComponent;//状态机
+    public FsmLogicComponent: FSMLogicComponent = null;//状态机
 
 
-    public ClientSeatId: number;    // 客户端座位号
+    public ClientSeatId: number = 0;    // 客户端座位号
 
-    public seatID: number   // 服务器座位号
+    public seatID: number = 0;   // 服务器座位号
 
-    public Player: CPlayer;  // 玩家信息
+    public Player: CPlayer = null;  // 玩家信息
 
-    public isSmall: boolean; // 是否小盲
-    public isBig: boolean;    // 是否大盲
-    public isBank: boolean;  // 是否庄家
-    public isStraddle: boolean;// 是否Straddle
+    public isSmall: boolean = false; // 是否小盲
+    public isBig: boolean= false;    // 是否大盲
+    public isBank: boolean= false;  // 是否庄家
+    public isStraddle: boolean= false;// 是否Straddle
 
-    public keepSeatLeftTime: number;  // 留座剩余时间（s）
-    public ranking: number;   //玩家排名(mtt)
-    private voiceprintTime: number;
-    private OriginalVoicePos: cc.Vec3;
+    public keepSeatLeftTime: number = 0;  // 留座剩余时间（s）
+    public ranking: number = 0;   //玩家排名(mtt)
+    private voiceprintTime: number = 0;
+    private OriginalVoicePos: cc.Vec3 = null;
     //private Transform OriginalVoiceObj;
 
 
 
-    public seatUIInfo: SeatUIInfo;
+    public seatUIInfo: SeatUIInfo = null;
 
-    protected PlayerCount: number;//最大人数
+    protected PlayerCount: number = 0;//最大人数
 
     public uirc: SeatUIRC = null;
 

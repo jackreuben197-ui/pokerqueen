@@ -19,8 +19,8 @@ export default class UIMine extends UIBase {
 
     func_item: cc.Node = null;
     content: cc.Node = null;
-    nickname_lab: cc.Label;
-    userid_lab: cc.Label;
+    nickname_lab: cc.Label = null;
+    userid_lab: cc.Label = null;
 
     protected onLoad(): void {
         super.onLoad();

@@ -3,9 +3,10 @@ export abstract class StateHandler {
 
     public Name: string = "StateHandler";
 
-    public SourceData: any;
+    public SourceData: any = null;
 
     public Enter(entity?: any) {
+        console.log("entity", entity);
         console.log(`>>> StateHandler->${this.Name}:${entity.id} is Enter`);
     }
     public Execute(entity?: any) {

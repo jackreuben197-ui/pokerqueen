@@ -23,8 +23,8 @@ export default class BaseTouchBoard extends UIBase {
     //顶部block遮挡
     top_block: cc.Node = null;
 
-    protected mainFadeInIsComplete: boolean;
-    protected maskFadeInIsComplete: boolean;
+    protected mainFadeInIsComplete: boolean = false;
+    protected maskFadeInIsComplete: boolean = false;
 
     //面板渐入渐出样式
     protected defaultStyle: any = {
