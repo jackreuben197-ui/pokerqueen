@@ -2,7 +2,7 @@
  * 大厅Session
  */
 
-import Dispatcher from "../event/Dispatcher";
+import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
@@ -48,7 +48,7 @@ export default class LobbySession {
     }
 
     static regiterEvents() {
-        Dispatcher.on(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
+        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
     }
 
     private static on_Protocol_Holdem_Register(body: typeof Protocol_Holdem_Register.Response_AsObject) {

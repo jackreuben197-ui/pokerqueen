@@ -8,7 +8,7 @@ import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
-import {GameCache} from "./GameCache";
+import { GameCache } from "./GameCache";
 import TexasGame from "./TexasGame";
 import { TexasGameState } from "./TexasGameState";
 
@@ -17,14 +17,16 @@ export class TexasGameStateHandlerNetworkException extends StateHandler {
 
     public Name: string = "TexasGameStateHandlerNetworkException";
 
-    public Enter(param?: any) {
+    public Enter(entity?: any) {
+        super.Enter(entity);
     }
 
-    public Execute(param?: any) {
+    public Execute(entity?: any) {
     }
 
-    public Exit(param?: any) {
+    public Exit(entity?: any) {
 
+        super.Exit(entity);
     }
 }
 export class TexasGameStateHandlerLaunch extends StateHandler {
@@ -57,10 +59,12 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
         this._checkFlag = true;
     }
 
-    public Execute(entity?: TexasGame) {
+    public Execute(entity?: any) {
     }
 
-    public Exit(entity?: TexasGame) {
+    public Exit(entity?: any) {
+
+        super.Exit(entity);
 
     }
 
@@ -97,6 +101,7 @@ export class TexasGameStateHandlerInit extends StateHandler {
 
     public Exit(entity?: any) {
 
+        super.Exit(entity);
     }
 
 }
@@ -105,6 +110,8 @@ export class TexasGameStateHandlerHandStarted extends StateHandler {
     public Name: string = "TexasGameStateHandlerHandStarted";
 
     public Enter(entity?: any): void {
+
+        super.Enter(entity);
 
         let game: TexasGame = entity as TexasGame;
 
@@ -118,11 +125,7 @@ export class TexasGameStateHandlerHandStarted extends StateHandler {
 
     public Exit(entity?: any): void {
 
-        let game: TexasGame = entity as TexasGame;
-
-        if (!game) return;
-
-        super.Exit(game);
+        super.Exit(entity);
     }
 }
 
@@ -148,11 +151,260 @@ export class TexasGameStateHandlerHandPreflop extends StateHandler {
 
     public Exit(entity?: any): void {
 
+        super.Exit(entity);
+    }
+}
+
+
+export class TexasGameStateHandlerExit extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerExit";
+
+    public Enter(entity?: any): void {
+
+        super.Enter(entity);
+
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
 
-        super.Exit(game);
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerExchangeRoom extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerExchangeRoom";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerNotStart extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerNotStart";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerWaitHandStart extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerWaitHandStart";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerHandFlop extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerHandFlop";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerHandTurn extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerHandTurn";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerHandRiver extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerHandRiver";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+export class TexasGameStateHandlerHandShowdown extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerHandShowdown";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerHandEnd extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerHandEnd";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerComplete extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerComplete";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+export class TexasGameStateHandlerCancel extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerCancel";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
+    }
+}
+
+export class TexasGameStateHandlerUnknown extends StateHandler {
+
+    public Name: string = "TexasGameStateHandlerUnknown";
+
+    public Enter(entity?: any): void {
+
+        let game: TexasGame = entity as TexasGame;
+
+        if (!game) return;
+
+    }
+
+    public Execute(entity?: any): void {
+    }
+
+    public Exit(entity?: any): void {
+
+        super.Exit(entity);
     }
 }
 

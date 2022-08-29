@@ -1,8 +1,8 @@
 
 
 import { LogStyle } from "../../config/GameConfig";
-import Dispatcher from "../../event/Dispatcher";
-import {GameCache} from "../../game/GameCache";
+import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import { GameCache } from "../../game/GameCache";
 import { ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
 import LobbySession from "../../session/LobbySession";
 import LoginSession from "../../session/LoginSession";
@@ -153,7 +153,8 @@ export default class ProtocolAgency extends cc.Component {
         if (OpCodeHelper.NeedLog(code))
             console.log("%c%s\n%s", LogStyle.ws_response, `>>>>> protocol receive : ${protocolName}`, `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`);
 
-        Dispatcher.emit(code, body);
+        //Dispatcher.emit(code, body);
+        CPMessageDispatherComponent.Instance.Handle(code, body);
 
     }
 

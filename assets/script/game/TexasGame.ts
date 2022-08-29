@@ -1,7 +1,6 @@
 import TexasConfig from "../config/TexasConfig";
-import { RoomType } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
-import Dispatcher from "../event/Dispatcher";
+import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
@@ -19,7 +18,7 @@ import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
-import {GameCache} from "./GameCache";
+import { GameCache } from "./GameCache";
 import GameUtil from "./GameUtil";
 import Seat, { SeatUIInfo } from "./Seat";
 import { SeatEmpty, SeatIdle } from "./SeatStateHandler";
@@ -372,10 +371,10 @@ export default class TexasGame {
     }
 
     public RegiterEnterRoom() {
-        Dispatcher.on(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
+        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
     }
     public UnRegiterEnterRoom() {
-        Dispatcher.off(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
+        CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
     }
 
     public EnterRoom(id) {
@@ -388,13 +387,13 @@ export default class TexasGame {
 
     }
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
-        
+
         this.ClearAllData();
         this.ClearAllPlayers();  // 清空玩家数据
         if (this.listSeat?.length) {
 
         } else {
-            console.log("GameCache.Instance.seat_count",GameCache.Instance.seat_count)
+            console.log("GameCache.Instance.seat_count", GameCache.Instance.seat_count)
             this.InitSeatByCount(GameCache.Instance.seat_count);
         }
 
@@ -1364,6 +1363,4 @@ export default class TexasGame {
     Exit() {
         this.UnRegisterMsgHandler()
     }
-
-
 }

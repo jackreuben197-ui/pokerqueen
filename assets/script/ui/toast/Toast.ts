@@ -1,4 +1,4 @@
-import LabelI18N from "../../i18n_old/LabelI18N";
+
 
 const { ccclass, property } = cc._decorator;
 
