@@ -15,7 +15,7 @@ import UIManager from "../../manager/UIManager";
 import { Web_Login } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import StorageKey from "../../session/StorageKey";
-import AssetContext from "../component/AssetContext";
+import AssetContext, { AssetFold } from "../component/AssetContext";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -116,7 +116,7 @@ export default class LoginScene extends BaseScene {
             let lan_label = lan_item.getChildByName("lan_lab")?.getComponent(cc.Label);
             let flag_img = lan_item.getChildByName("flag_img")?.getComponent(cc.Sprite);
             lan_label && (lan_label.string = lan_obj.name);
-            flag_img && (flag_img.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${lan_obj.lan}`));
+            flag_img && (flag_img.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${lan_obj.lan}`, AssetFold.texture_flag));
             lan_item.name = lan_obj.lan;
             lan_item.on("click", this.onLanguageItemClick, this);
         }
@@ -144,7 +144,7 @@ export default class LoginScene extends BaseScene {
      * 刷新旗子
      */
     refreshLanguageFlag() {
-        this.lan_flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${i18nMgr.language}`);
+        this.lan_flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${i18nMgr.language}`, AssetFold.texture_flag);
     }
 
     ///////////////////////////////////按钮响应回调//////////////////////////////////////////
