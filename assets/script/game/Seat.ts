@@ -7,7 +7,7 @@ import { Def } from "../protobuf/holdem/define_pb";
 import { CacheDataManager } from "./CacheDataManager";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
-import {GameCache} from "./GameCache";
+import { GameCache } from "./GameCache";
 import GameUtil from "./GameUtil";
 import { SeatFSM } from "./SeatFSM";
 import { SeatEmpty, SeatSit } from "./SeatStateHandler";
@@ -58,9 +58,9 @@ export default class Seat {
     public Player: CPlayer = null;  // 玩家信息
 
     public isSmall: boolean = false; // 是否小盲
-    public isBig: boolean= false;    // 是否大盲
-    public isBank: boolean= false;  // 是否庄家
-    public isStraddle: boolean= false;// 是否Straddle
+    public isBig: boolean = false;    // 是否大盲
+    public isBank: boolean = false;  // 是否庄家
+    public isStraddle: boolean = false;// 是否Straddle
 
     public keepSeatLeftTime: number = 0;  // 留座剩余时间（s）
     public ranking: number = 0;   //玩家排名(mtt)
@@ -823,12 +823,12 @@ export default class Seat {
         if (null == mSeat) return null;
 
         mSeat.uirc.imageBanker.active = false;
-        mSeat.uirc.imageBanker.setPosition(GameUtil.ChangeToLocalPos(mSeat.seatUIInfo.BankerPos, mSeat.ui, this.ui));
-        mSeat.uirc.imageBanker.active = true;
+        this.uirc.imageBanker.setPosition(GameUtil.ChangeToLocalPos(mSeat.seatUIInfo.BankerPos, mSeat.ui, this.ui));
+        this.uirc.imageBanker.active = true;
         //return imageBanker.transform.DOLocalMove(seatUIInfo.BankerPos, 0.3f);
         return {
             type: 1, spawn: [() => {
-                cc.tween(mSeat.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).start();
+                cc.tween(this.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).start();
             }], time: .3
         };
     }
@@ -913,7 +913,7 @@ export default class Seat {
     /// <summary>
     /// 播放发牌动画
     /// </summary> virtual Sequence 
-    public PlayDealAnimation(targetPos: cc.Vec3): { type: number, spawn?: Function[], time: number } {
+    public PlayDealAnimation(targetPos: cc.Vec3): any[] {
         for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
             this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
         }
@@ -921,46 +921,62 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
-        let sequencePlayDealAnimation: { type: number, spawn?: Function[], time: number } = null;
+        let sequencePlayDealAnimation: any[] = [() => {
+            this.uirc.transSmallCardBacks.active = true;
+        }];
 
         if (GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
             // 其他玩家发牌动画
             //sequencePlayDealAnimation = DOTween.Sequence();
             //let sequencePlayDealAnimation: { sequence: {}[], time }[] = [];
+            sequencePlayDealAnimation.push();
+
+
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
             for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
                 this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
                 let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
                 if (i == 0) {
-
-                    sequencePlayDealAnimation = {
-                        type: 1,
-                        spawn: [
-                            () => {
-                                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                                mTmpObj.active = true;
-                                cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
-                            }
-                        ], time: 0.4
-                    };
+                    // sequencePlayDealAnimation = {
+                    //     type: 1,
+                    //     spawn: [
+                    //         () => {
+                    //             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                    //             mTmpObj.active = true;
+                    //             cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
+                    //         }
+                    //     ], time: 0.4
+                    // };
+                    sequencePlayDealAnimation.push(() => {
+                        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                        mTmpObj.active = true;
+                        cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
+                    });
+                    sequencePlayDealAnimation.push(0.4);
                 }
                 else {
                     // sequencePlayDealAnimation.Join(listImageSmallCardBack[i].transform.DOLocalMove(GetBackSmallCardPos(i), 0.4f).OnStart(() => {
                     //     mTmpObj.gameObject.SetActive(true);
                     // }));
-                    sequencePlayDealAnimation.spawn.push(
-                        () => {
-                            mTmpObj.active = true;
-                            cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
-                        },
-                    );
+                    // sequencePlayDealAnimation.spawn.push(
+                    //     () => {
+                    //         mTmpObj.active = true;
+                    //         cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
+                    //     },
+                    // );
+                    sequencePlayDealAnimation.push(() => {
+                        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                        mTmpObj.active = true;
+                        cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
+                    });
+                    sequencePlayDealAnimation.push(0.4);
                 }
             }
-            sequencePlayDealAnimation.spawn.unshift(
-                () => {
-                    this.uirc.transSmallCardBacks.active = true;
-                }
-            );
+            // sequencePlayDealAnimation.spawn.unshift(
+            //     () => {
+            //         this.uirc.transSmallCardBacks.active = true;
+            //     }
+            // );
             return sequencePlayDealAnimation;
         }
         else {
@@ -977,39 +993,39 @@ export default class Seat {
                     this.uirc.listCardUIInfos[i].imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
                     this.uirc.listCardUIInfos[i].imageCard.active = true;
                     if (i == 0) {
-                        sequencePlayDealAnimation = {
-                            type: 1,
-                            spawn: [
-                                () => {
-                                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                                    cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] }).start()
-                                },
+                        // sequencePlayDealAnimation = {
+                        //     type: 1,
+                        //     spawn: [
+                        //         () => {
+                        //             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                        //             cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] }).start()
+                        //         },
 
-                            ], time: 0.4
-                        };
+                        //     ], time: 0.4
+                        // };
                     }
                     else {
-                        sequencePlayDealAnimation.spawn.push(
-                            () => {
-                                cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] }).start();
-                            }
-                        );
+                        // sequencePlayDealAnimation.spawn.push(
+                        //     () => {
+                        //         cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] }).start();
+                        //     }
+                        // );
                     }
 
                     let tmp = i;
                     //
                     if (!GameCache.Instance.CurlimitDelaySeeCard) {
-                        sequencePlayDealAnimation.spawn.push(
-                            () => {
-                                cc.tween(this.uirc.listCardUIInfos[i].imageBack.node).to(0.25, { opacity: 0 }).call(() => {
-                                    this.uirc.listCardUIInfos[tmp].imageBack.node.active = false;
-                                }).start();
-                            }
-                        );
+                        // sequencePlayDealAnimation.spawn.push(
+                        //     () => {
+                        //         cc.tween(this.uirc.listCardUIInfos[i].imageBack.node).to(0.25, { opacity: 0 }).call(() => {
+                        //             this.uirc.listCardUIInfos[tmp].imageBack.node.active = false;
+                        //         }).start();
+                        //     }
+                        // );
                     }
-                    sequencePlayDealAnimation.spawn.push(() => {
-                        cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { scaleX: 1.5, scaleY: 1.3 }).start();
-                    });
+                    // sequencePlayDealAnimation.spawn.push(() => {
+                    //     cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { scaleX: 1.5, scaleY: 1.3 }).start();
+                    // });
 
                 }
             }
