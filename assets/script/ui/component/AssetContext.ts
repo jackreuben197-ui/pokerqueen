@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-08-25 18:30:36
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-08-25 18:36:14
+ * @FilePath: /pokerqueen/assets/script/ui/component/AssetContext.ts
+ */
 
 /**
  * 资源引用
@@ -15,6 +23,7 @@ export enum AssetFold {
     texture_lobby_UIMine,
     texture_lobby_UIMatch,
     resources_prefab_component,
+    texas_prefab_widgetLayer,
 
 }
 const { ccclass, property, executionOrder } = cc._decorator;

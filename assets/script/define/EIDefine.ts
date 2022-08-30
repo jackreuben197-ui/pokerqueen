@@ -9,6 +9,7 @@ export enum UIType {
     Alert,
     Prompt,
     TexasPreLoad,
+    TexasUISting,
 }
 /**
  * 流程

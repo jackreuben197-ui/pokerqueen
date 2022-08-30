@@ -155,6 +155,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/component/TexasPreLoad",
     },
+    UITexasSetting: {
+        UIType: UIType.TexasUISting,
+        Name: "UITexasSetting",
+        Bundle: 'texas',
+        Path: "prefab/widgetLayer/UITexasSetting",
+    },
 
 
 }

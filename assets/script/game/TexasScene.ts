@@ -1,14 +1,17 @@
 import { CommonDefine } from "../define/CommonDefine";
 import { IUIDefine } from "../define/EIDefine";
+import { UIDefine } from "../define/UIDefine";
 
 import { StringHelper } from "../helper/StringHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
+import { ResManager } from "../manager/ResManager";
 import ToastManager from "../manager/ToastManager";
 
 import { RoomInfo } from "../protobuf/holdem/define_pb";
 import GlobalSession from "../session/GlobalSession";
+import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
 import { GameCache } from "./GameCache";
 
@@ -78,7 +81,8 @@ export default class TexasScene extends BaseScene {
     UIAddChips: UIAddChipsComponent = null;
 
     textAlreadAnte: cc.Label = null;
-
+    //个性设置界面
+    UITexasSetting: cc.Node = null;
 
 
 
@@ -220,7 +224,7 @@ export default class TexasScene extends BaseScene {
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
 
 
-
+        this.UITexasSetting = this.getChildNodeOrComponent("UITexasSetting");
 
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
@@ -439,7 +443,12 @@ export default class TexasScene extends BaseScene {
 
     }
     Click_Button_Setting() {
-
+        this.hideMenu();
+        let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
+        // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        let UITexasSetting: any = cc.instantiate(prefab);
+        UITexasSetting.parent = this.node
+        UITexasSetting.active = true;
     }
     Click_Button_Rule() {
 
