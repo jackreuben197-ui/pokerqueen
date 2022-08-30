@@ -128,7 +128,6 @@ export class i18nMgr {
             one._resetValue();
         }
     }
-
     /**
      * 解析配置表
      */

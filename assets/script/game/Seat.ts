@@ -910,7 +910,7 @@ export default class Seat {
     /// <summary>
     /// 播放发牌动画
     /// </summary> virtual Sequence 
-    public PlayDealAnimation(targetPos: cc.Vec3): any[] {
+    public PlayDealAnimation(targetPos: cc.Vec3): cc.Tween {
         for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
             this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
         }
@@ -932,54 +932,20 @@ export default class Seat {
             }));
 
             //cc.spawn()
-            let spawns: cc.FiniteTimeAction[] = [];
+            let spawns: cc.Tween<cc.Node>[] = [];
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
             for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
                 this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
                 let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
-                spawns.push(
-                    cc.callFunc(() => {
-                        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                        mTmpObj.active = true;
-                    })
-                )
-                //spawns.push(cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) }));
+                let pos = this.GetBackSmallCardPos(i);
+                let tween_child = cc.tween(mTmpObj);
+                //cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) });
+                tween_child.sequence(cc.callFunc(() => {
+                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                    mTmpObj.active = true;
+                }), cc.moveTo(0.4, pos.x, pos.y))
+                spawns.push(tween_child);
 
-                // if (i == 0) {
-                //     // sequencePlayDealAnimation = {
-                //     //     type: 1,
-                //     //     spawn: [
-                //     //         () => {
-                //     //             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                //     //             mTmpObj.active = true;
-                //     //             cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
-                //     //         }
-                //     //     ], time: 0.4
-                //     // };
-                //     sequencePlayDealAnimation.push(() => {
-                //         //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                //         mTmpObj.active = true;
-                //         cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
-                //     });
-                //     sequencePlayDealAnimation.push(0.4);
-                // }
-                // else {
-                //     // sequencePlayDealAnimation.Join(listImageSmallCardBack[i].transform.DOLocalMove(GetBackSmallCardPos(i), 0.4f).OnStart(() => {
-                //     //     mTmpObj.gameObject.SetActive(true);
-                //     // }));
-                //     // sequencePlayDealAnimation.spawn.push(
-                //     //     () => {
-                //     //         mTmpObj.active = true;
-                //     //         cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
-                //     //     },
-                //     // );
-                //     sequencePlayDealAnimation.push(() => {
-                //         //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                //         mTmpObj.active = true;
-                //         cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.4, { position: this.GetBackSmallCardPos(i) }).start();
-                //     });
-                //     sequencePlayDealAnimation.push(0.4);
-                // }
             }
             // sequencePlayDealAnimation.spawn.unshift(
             //     () => {
@@ -988,9 +954,9 @@ export default class Seat {
             // );
 
             //sequence.push(cc.spawn(...spawns))
+            sequenceTween.sequence(cc.delayTime(0), sequence[0]).parallel.apply(this.ui, spawns);
 
-
-            return sequence;
+            return sequenceTween;
         }
         else {
             //sequencePlayDealAnimation = DOTween.Sequence();
@@ -1063,7 +1029,7 @@ export default class Seat {
             // sequencePlayDealAnimation.OnStart(() => {
 
             // });
-            return sequence;
+            return sequenceTween;
         }
     }
 

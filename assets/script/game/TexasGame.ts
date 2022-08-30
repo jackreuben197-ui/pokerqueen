@@ -1186,19 +1186,22 @@ export default class TexasGame {
     public PlayDealAnimation(tweenCallback: Function) {
         // sequencePlayDealAnimation = DOTween.Sequence();
 
-        let tweens = [];
+        let tween = cc.tween(this.uirc.node);
+
+        let sequence = [];
 
         let mSeat: Seat = null;
-    
+
         // 庄家标志动画
         mSeat = this.GetSeatByLocalSeatID(this.bankerIndex);
+
         if (null != mSeat) {
             let mTweener = mSeat.PlayBankerAnimation();
             if (null != mTweener) {
-                tweens.push(mTweener);
+                sequence.push(mTweener);
                 //this.PlayDeal_TweenSequence.Append(mTweener, { type: 0, time: 0.2 });
                 //PlayDeal_TweenSequence.push({ type: 1, time: 0.2 });
-                tweens.push(cc.delayTime(0.2));
+                sequence.push(cc.delayTime(0.2));
             }
         }
         // 前注
@@ -1251,58 +1254,16 @@ export default class TexasGame {
         let mIsFirst = true;
         let mTmpIndex = 0;
 
-
-        let spawnObj = { type: 2, spawn: [] };
+        let spawn = [];
 
         for (let i = this.smallIndex, n = i + GameCache.Instance.seat_count; i < n; i++) {
             i = i % GameCache.Instance.seat_count;
             mSeat = this.listSeat[i];
             if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame) continue;
             //this.PlayDeal_TweenSequence.Append({ type: 0, time: 0.2 * mTmpIndex }, this.listSeat[i].PlayDealAnimation(mStartPos));
+            this.listSeat[i].PlayDealAnimation(mStartPos)
             mTmpIndex++;
         }
-
-        // for (let i = this.smallIndex, n = this.listSeat.length; i < n; i++) {
-        //     mSeat = this.listSeat[i];
-        //     if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
-        //         continue;
-
-        //     if (mIsFirst) {
-        //         mIsFirst = false;
-        //         // sequencePlayDealAnimation.Append(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
-        //         //     : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
-        //         if (i == this.smallIndex) {
-        //             this.PlayDeal_TweenSequence.Append(this.listSeat[i].PlayDealAnimation(mStartPos));
-        //         } else {
-        //             this.PlayDeal_TweenSequence.Append({ type: 0, time: 0.2 * mTmpIndex }, this.listSeat[i].PlayDealAnimation(mStartPos));
-        //         }
-        //     }
-        //     else {
-        //         // sequencePlayDealAnimation.Join(i == smallIndex ? listSeat[i].PlayDealAnimation(mStartPos)
-        //         //     : listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
-        //         //sequencePlayDealAnimation[sequencePlayDealAnimation.length - 1].sequence.push();
-        //         //this.PlayDeal_TweenSequence.Join();
-
-        //         if (i == this.smallIndex) {
-        //             this.PlayDeal_TweenSequence.Join(...this.listSeat[i].PlayDealAnimation(mStartPos).spawn);
-        //         } else {
-        //             this.PlayDeal_TweenSequence.Join(() => { }, ...this.listSeat[i].PlayDealAnimation(mStartPos).spawn);
-        //         }
-
-        //     }
-
-        //     mTmpIndex++;    // 发牌时间间隔
-        // }
-
-        // for (let i = 0, n = this.smallIndex; i < n; i++) {
-        //     mSeat = this.listSeat[i];
-        //     if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
-        //         continue;
-
-        //     //sequencePlayDealAnimation.Join(listSeat[i].PlayDealAnimation(mStartPos).SetDelay(0.2f * mTmpIndex));
-
-        //     mTmpIndex++;    // 发牌时间间隔
-        // }
 
         //if (null != tweenCallback)
         // sequencePlayDealAnimation.AppendCallback(tweenCallback);

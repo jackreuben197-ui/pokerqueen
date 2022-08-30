@@ -10,7 +10,8 @@
 import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
 import UIBase from "../ui/UIBase";
-import GameCache from "./GameCache";
+import { GameCache } from "./GameCache";
+
 
 const { ccclass, property } = cc._decorator;
 
@@ -84,7 +85,7 @@ export default class UITexasSettingComponent extends UIBase {
     }
     setCheckmarkState(event): void {
         if (this._selectDesk) {
-            let checkmark = cc.find('Background/Checkmark', this._selectDesk)
+            let checkmark = cc.find('Background/Checkmark', this._selectDesk);
             checkmark.active = false;
         }
         this._selectDesk = event.node;
