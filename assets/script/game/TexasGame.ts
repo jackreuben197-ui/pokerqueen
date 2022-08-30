@@ -1186,16 +1186,19 @@ export default class TexasGame {
     public PlayDealAnimation(tweenCallback: Function) {
         // sequencePlayDealAnimation = DOTween.Sequence();
 
-        this.PlayDeal_TweenSequence.Clear();
+        let tweens = [];
 
         let mSeat: Seat = null;
-
+    
         // 庄家标志动画
         mSeat = this.GetSeatByLocalSeatID(this.bankerIndex);
         if (null != mSeat) {
-            let mTweener: { type: number, spawn: Function[], time: number, preDelay?: number } = mSeat.PlayBankerAnimation();
+            let mTweener = mSeat.PlayBankerAnimation();
             if (null != mTweener) {
-                this.PlayDeal_TweenSequence.Append(mTweener, { type: 0, time: 0.2 });
+                tweens.push(mTweener);
+                //this.PlayDeal_TweenSequence.Append(mTweener, { type: 0, time: 0.2 });
+                //PlayDeal_TweenSequence.push({ type: 1, time: 0.2 });
+                tweens.push(cc.delayTime(0.2));
             }
         }
         // 前注
@@ -1247,6 +1250,9 @@ export default class TexasGame {
 
         let mIsFirst = true;
         let mTmpIndex = 0;
+
+
+        let spawnObj = { type: 2, spawn: [] };
 
         for (let i = this.smallIndex, n = i + GameCache.Instance.seat_count; i < n; i++) {
             i = i % GameCache.Instance.seat_count;
