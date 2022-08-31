@@ -10,6 +10,7 @@ export enum UIType {
     Prompt,
     TexasPreLoad,
     TexasUISting,
+    UITexasRule,
 }
 /**
  * 流程

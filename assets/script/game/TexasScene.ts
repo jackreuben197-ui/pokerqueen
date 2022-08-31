@@ -444,14 +444,31 @@ export default class TexasScene extends BaseScene {
     }
     Click_Button_Setting() {
         this.hideMenu();
-        let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
-        // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-        let UITexasSetting: any = cc.instantiate(prefab);
-        UITexasSetting.parent = this.node
-        UITexasSetting.active = true;
+        let UITexasSetting = this.node.getChildByName('UITexasSetting')
+        if (!UITexasSetting) {
+            let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
+            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+            let UITexasSetting: any = cc.instantiate(prefab);
+            UITexasSetting.parent = this.node
+            UITexasSetting.active = true;
+        } else {
+            UITexasSetting.active = true;
+        }
+
+
     }
     Click_Button_Rule() {
-
+        this.hideMenu();
+        let UITexasRule = this.node.getChildByName('UITexasRule')
+        if (!UITexasRule) {
+            let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
+            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+            let UITexasRule: any = cc.instantiate(prefab);
+            UITexasRule.parent = this.node
+            UITexasRule.active = true;
+        } else {
+            UITexasRule.active = true;
+        }
     }
     Click_Button_SetAutoOnTable() {
 

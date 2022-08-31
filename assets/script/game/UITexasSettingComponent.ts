@@ -3,14 +3,14 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-26 16:17:43
+ * @LastEditTime: 2022-08-30 17:21:43
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
 import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
 import UIBase from "../ui/UIBase";
-import GameCache from "./GameCache";
+import { GameCache } from "./GameCache";
 
 const { ccclass, property } = cc._decorator;
 
@@ -90,6 +90,7 @@ export default class UITexasSettingComponent extends UIBase {
         this._selectDesk = event.node;
         let checkmark = cc.find('Background/Checkmark', this._selectDesk)
         checkmark.active = true;
+        localStorage.setItem(StorageKey.SettingDeskType, this._selectDesk['index'])
         GameCache.Instance.CurGame.setDeskType(this._selectDesk['index'])
     }
     /**
