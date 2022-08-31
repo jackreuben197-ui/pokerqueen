@@ -3,7 +3,7 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-30 17:21:43
+ * @LastEditTime: 2022-08-31 10:57:41
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
@@ -84,7 +84,7 @@ export default class UITexasSettingComponent extends UIBase {
     }
     setCheckmarkState(event): void {
         if (this._selectDesk) {
-            let checkmark = cc.find('Background/Checkmark', this._selectDesk)
+            let checkmark = cc.find('Background/Checkmark', this._selectDesk);
             checkmark.active = false;
         }
         this._selectDesk = event.node;

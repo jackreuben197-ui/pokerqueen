@@ -35,3 +35,4 @@ export default class StorageKey {
     static soundIsOpen = 'soundIsOpen'; // 声音
 
 }
+(window as any).StorageKey = StorageKey;
