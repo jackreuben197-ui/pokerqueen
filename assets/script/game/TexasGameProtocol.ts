@@ -294,6 +294,7 @@ export default class TexasGameProtocol {
         if (this.game.bigIndex >= 0) {
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_SECOND);
         }
+        this.game.PlayDealAnimation(null);
         // 发牌动画
         //     this.game.PlayDealAnimation(() => {
         //         UpdateAlreadAnte();
