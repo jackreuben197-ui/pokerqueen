@@ -3,6 +3,7 @@ import UpdateComponent from "../funcomponent/UpdateComponent";
 import WebImageHelper from "../helper/WebImageHelper";
 import { LanguageCode } from "../i18n/LanguageCode";
 import { UIMineModel } from "../lobby/UIMineModel";
+import { Web_Config_Global_Config } from "../net/https/WebRequest";
 import { Def } from "../protobuf/holdem/define_pb";
 import { CacheDataManager } from "./CacheDataManager";
 import { CPlayer } from "./CPlayer";
@@ -983,9 +984,6 @@ export default class Seat {
 
                 for (let i = 0, n = this.Player.cards.length; i < n; i++) {
 
-                    cc.log("this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame", this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame);
-                    cc.log(" GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]))", GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i])));
-
 
                     this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                     this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
@@ -1021,6 +1019,7 @@ export default class Seat {
 
                     tween_card_sequence.sequence(
                         cc.callFunc(() => {
+                            cc.log("tween_card.start")
                             tween_card.start()
                         }),
                         cc.delayTime(0.4)
@@ -1037,7 +1036,7 @@ export default class Seat {
                     sequenceTween.sequence.apply(sequenceTween, sequence.concat(cc.delayTime(0)));
                 }
                 if (spawns.length) {
-                    cc.log(".....do spawns")
+                    cc.log(".....do spawns", spawns)
                     sequenceTween.parallel.apply(sequenceTween, spawns.concat(cc.delayTime(0)));
                 }
             }

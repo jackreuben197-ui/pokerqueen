@@ -94,6 +94,7 @@ export default class ProtocolAgency extends cc.Component {
     static Receive(data: ArrayBuffer) {
         if (!data) return;
         let ua = new Uint8Array(data);
+
         for (let i = 0; i < PacketHead.CharsFlag.length; i++) {
             if (ua[i] != PacketHead.CharsFlag[i]) {
                 console.log("%c%s", LogStyle.ws_response, "charsflag is no match");
