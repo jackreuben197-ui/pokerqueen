@@ -1202,6 +1202,7 @@ export default class TexasGame {
                 //this.PlayDeal_TweenSequence.Append(mTweener, { type: 0, time: 0.2 });
                 //PlayDeal_TweenSequence.push({ type: 1, time: 0.2 });
                 sequence.push(cc.delayTime(0.2));
+
             }
         }
         // 前注
@@ -1257,14 +1258,27 @@ export default class TexasGame {
         let spawn = [];
 
         for (let i = this.smallIndex, n = i + GameCache.Instance.seat_count; i < n; i++) {
-            i = i % GameCache.Instance.seat_count;
+            let index = i % GameCache.Instance.seat_count;
             mSeat = this.listSeat[i];
             if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame) continue;
-            //this.PlayDeal_TweenSequence.Append({ type: 0, time: 0.2 * mTmpIndex }, this.listSeat[i].PlayDealAnimation(mStartPos));
-            this.listSeat[i].PlayDealAnimation(mStartPos)
+            spawn.push(cc.tween().sequence(cc.delayTime(0.2 * mTmpIndex), this.listSeat[index].PlayDealAnimation(mStartPos)));
             mTmpIndex++;
         }
 
+        if (sequence.length > 0) {
+            tween.sequence.apply(tween, sequence.concat(cc.delayTime(0)));
+        }
+
+        if (spawn.length > 0) {
+            tween.parallel.apply(tween, spawn.concat(cc.delayTime(0)));
+        }
+
+        //cc.log("spawn.length :1111 >>  ", sequence.length, spawn.length);
+
+        tween.call(() => {
+            cc.log("成功！！！！！");
+        });
+        tween.start();
         //if (null != tweenCallback)
         // sequencePlayDealAnimation.AppendCallback(tweenCallback);
         //sequencePlayDealAnimation.OnComplete(tweenCallback);

@@ -109,12 +109,12 @@ export default class SeatUIRC extends UIBase {
         this.imageSmallCard5 = this.getChildNodeOrComponent("Image_SmallCard5");
 
 
-        this.imageSmallCardBack0 = this.getChildNodeOrComponent("imageSmallCardBack0", cc.Sprite);
-        this.imageSmallCardBack1 = this.getChildNodeOrComponent("imageSmallCardBack1", cc.Sprite);
-        this.imageSmallCardBack2 = this.getChildNodeOrComponent("imageSmallCardBack2", cc.Sprite);
-        this.imageSmallCardBack3 = this.getChildNodeOrComponent("imageSmallCardBack3", cc.Sprite);
-        this.imageSmallCardBack4 = this.getChildNodeOrComponent("imageSmallCardBack4", cc.Sprite);
-        this.imageSmallCardBack5 = this.getChildNodeOrComponent("imageSmallCardBack5", cc.Sprite);
+        this.imageSmallCardBack0 = this.getChildNodeOrComponent("Image_SmallCardBack0", cc.Sprite);
+        this.imageSmallCardBack1 = this.getChildNodeOrComponent("Image_SmallCardBack1", cc.Sprite);
+        this.imageSmallCardBack2 = this.getChildNodeOrComponent("Image_SmallCardBack2", cc.Sprite);
+        this.imageSmallCardBack3 = this.getChildNodeOrComponent("Image_SmallCardBack3", cc.Sprite);
+        this.imageSmallCardBack4 = this.getChildNodeOrComponent("Image_SmallCardBack4", cc.Sprite);
+        this.imageSmallCardBack5 = this.getChildNodeOrComponent("Image_SmallCardBack5", cc.Sprite);
 
 
         if (null == this.listCardUIInfos || this.listCardUIInfos.length > 0) this.listCardUIInfos = [];

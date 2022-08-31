@@ -825,9 +825,12 @@ export default class Seat {
         mSeat.uirc.imageBanker.active = false;
         this.uirc.imageBanker.setPosition(GameUtil.ChangeToLocalPos(mSeat.seatUIInfo.BankerPos, mSeat.ui, this.ui));
         this.uirc.imageBanker.active = true;
-        //return imageBanker.transform.DOLocalMove(seatUIInfo.BankerPos, 0.3f);
-        let tween = cc.tween(this.uirc.imageBanker);
-        return tween.to(.3, { position: this.seatUIInfo.BankerPos });
+
+        let tween = cc.tween();
+        tween.sequence(cc.callFunc(() => {
+            cc.tween(this.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).call(() => { cc.log("运动结束") }).start();
+        }), cc.delayTime(.3));
+        return tween;
     }
 
 
@@ -911,6 +914,9 @@ export default class Seat {
     /// 播放发牌动画
     /// </summary> virtual Sequence 
     public PlayDealAnimation(targetPos: cc.Vec3): cc.Tween {
+
+        cc.log("seat PlayDealAnimation");
+
         for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
             this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
         }
@@ -918,11 +924,14 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
-        let sequenceTween = cc.tween(this.ui);
+        let sequenceTween = cc.tween();
 
-        let sequence: any[] = [];
+        let sequence: cc.ActionInstant[] = [];
+
+        let spawns: (cc.ActionInterval | cc.Tween)[] = [];
 
         if (GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
+
             // 其他玩家发牌动画
             //sequencePlayDealAnimation = DOTween.Sequence();
             //let sequencePlayDealAnimation: { sequence: {}[], time }[] = [];
@@ -931,8 +940,6 @@ export default class Seat {
                 this.uirc.transSmallCardBacks.active = true;
             }));
 
-            //cc.spawn()
-            let spawns: cc.Tween<cc.Node>[] = [];
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
             for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
                 this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
@@ -944,24 +951,42 @@ export default class Seat {
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
                     mTmpObj.active = true;
                 }), cc.moveTo(0.4, pos.x, pos.y))
-                spawns.push(tween_child);
+
+                let tween_sequence = cc.tween();
+                tween_sequence.sequence(cc.callFunc(() => {
+                    tween_child.start();
+                }), cc.delayTime(0.4));
+                spawns.push(tween_sequence);
 
             }
-            // sequencePlayDealAnimation.spawn.unshift(
-            //     () => {
-            //         this.uirc.transSmallCardBacks.active = true;
-            //     }
-            // );
-
-            //sequence.push(cc.spawn(...spawns))
-            sequenceTween.sequence(cc.delayTime(0), sequence[0]).parallel.apply(this.ui, spawns);
+            if (sequence.length) {
+                sequenceTween.sequence.apply(sequenceTween, sequence.concat(cc.delayTime(0)));
+            }
+            if (spawns.length) {
+                sequenceTween.parallel.apply(sequenceTween, spawns.concat(cc.delayTime(0)));
+            }
+            cc.log("其他玩家发牌动画", sequenceTween);
 
             return sequenceTween;
         }
         else {
+
             //sequencePlayDealAnimation = DOTween.Sequence();
             try {
+
+
+                sequence.push(cc.callFunc(() => {
+                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                }));
+
+                cc.log("this.Player.cards.length >> ", this.Player.cards.length);
+
                 for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+
+                    cc.log("this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame", this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame);
+                    cc.log(" GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]))", GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i])));
+
+
                     this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                     this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
                     this.uirc.listCardUIInfos[i].imageBack.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
@@ -971,44 +996,56 @@ export default class Seat {
                     //listCardUIInfos[i].imageCard.rectTransform.localRotation = Quaternion.Euler(0, 0, 0);
                     this.uirc.listCardUIInfos[i].imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
                     this.uirc.listCardUIInfos[i].imageCard.active = true;
-                    if (i == 0) {
-                        // sequencePlayDealAnimation = {
-                        //     type: 1,
-                        //     spawn: [
-                        //         () => {
-                        //             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                        //             cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] }).start()
-                        //         },
+                    let tween_card = cc.tween(this.uirc.listCardUIInfos[i].imageCard);
+                    let tween_back = cc.tween(this.uirc.listCardUIInfos[i].imageBack.node);
 
-                        //     ], time: 0.4
-                        // };
-                    }
-                    else {
-                        // sequencePlayDealAnimation.spawn.push(
-                        //     () => {
-                        //         cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { position: Seat.myCardsPos[i] }).start();
-                        //     }
-                        // );
-                    }
-
+                    //tween_card.to(0.4, { position: Seat.myCardsPos[i] })
+                    let tween_card_sequence = cc.tween();
                     let tmp = i;
                     //
                     if (!GameCache.Instance.CurlimitDelaySeeCard) {
-                        // sequencePlayDealAnimation.spawn.push(
-                        //     () => {
-                        //         cc.tween(this.uirc.listCardUIInfos[i].imageBack.node).to(0.25, { opacity: 0 }).call(() => {
-                        //             this.uirc.listCardUIInfos[tmp].imageBack.node.active = false;
-                        //         }).start();
-                        //     }
-                        // );
+                        let tween_back_sequence = cc.tween();
+                        tween_back.to(0.25, { opacity: 0 }).call(() => {
+                            this.uirc.listCardUIInfos[tmp].imageBack.node.active = false;
+                        });
+                        tween_back_sequence.sequence(
+                            cc.callFunc(() => {
+                                tween_back.start();
+                            }),
+                            cc.delayTime(0.25)
+                        );
+                        spawns.push(tween_back_sequence);
+
                     }
+                    tween_card.to(0.4, { scaleX: 1.5, scaleY: 1.3, position: Seat.myCardsPos[i] });
+
+                    tween_card_sequence.sequence(
+                        cc.callFunc(() => {
+                            tween_card.start()
+                        }),
+                        cc.delayTime(0.4)
+                    );
+                    spawns.push(tween_card_sequence);
                     // sequencePlayDealAnimation.spawn.push(() => {
                     //     cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { scaleX: 1.5, scaleY: 1.3 }).start();
                     // });
 
                 }
+
+                if (sequence.length) {
+                    cc.log(".....do sequence")
+                    sequenceTween.sequence.apply(sequenceTween, sequence.concat(cc.delayTime(0)));
+                }
+                if (spawns.length) {
+                    cc.log(".....do spawns")
+                    sequenceTween.parallel.apply(sequenceTween, spawns.concat(cc.delayTime(0)));
+                }
             }
             catch (Exception) {
+
+
+                cc.log("Exception Error ");
+
                 // System.Text.StringBuilder logContent = new System.Text.StringBuilder();
                 // if (Player == null) {
                 //     logContent.Append(string.Format("Player == null:= {0},", "Player == null"));
@@ -1029,6 +1066,8 @@ export default class Seat {
             // sequencePlayDealAnimation.OnStart(() => {
 
             // });
+            cc.log("自己发牌动画", sequenceTween);
+
             return sequenceTween;
         }
     }

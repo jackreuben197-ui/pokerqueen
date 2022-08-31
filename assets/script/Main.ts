@@ -8,8 +8,6 @@ import CCTools from "./tools/CCTools";
 
 const { ccclass, property } = cc._decorator;
 
-console.log("游戏入口函数");
-
 @ccclass
 export default class Main extends cc.Component {
 
@@ -27,8 +25,6 @@ export default class Main extends cc.Component {
     static Toast: cc.Node = null;
 
     onLoad() {
-
-
 
         console.log("游戏启动", cc.sys.os);
 
