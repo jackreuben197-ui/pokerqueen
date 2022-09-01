@@ -113,7 +113,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 203.08,
+      "width": 0,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -219,7 +219,6 @@
     },
     "_enabled": true,
     "i18n_string": "",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -484,7 +483,7 @@
     "_enabled": true,
     "alignMode": 1,
     "_target": null,
-    "_alignFlags": 9,
+    "_alignFlags": 1,
     "_left": 18.826999999999998,
     "_right": 0,
     "_top": 91.5,
