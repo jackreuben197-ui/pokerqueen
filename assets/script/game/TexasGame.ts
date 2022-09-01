@@ -10,7 +10,7 @@ import { Web_User_Room } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
-import { Def, RoomInfo } from "../protobuf/holdem/define_pb";
+import { Def, RoomInfo, Operator } from "../protobuf/holdem/define_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../session/StorageKey";
@@ -21,7 +21,7 @@ import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
 import GameUtil from "./GameUtil";
 import Seat, { SeatUIInfo } from "./Seat";
-import { SeatEmpty, SeatIdle } from "./SeatStateHandler";
+import { SeatEmpty, SeatIdle, SeatInsuranc } from "./SeatStateHandler";
 import TexasGameMessageHandler from "./TexasGameMessageHandler";
 import TexasGameProtocol from "./TexasGameProtocol";
 import { TexasGameState } from "./TexasGameState";
@@ -535,6 +535,33 @@ export default class TexasGame {
             }
             mSeat.UpdateFSMbyStatus(true);
         }
+
+        let LeftOpTime = 0;
+        //RepeatedField<ActionLimit> actionLimits = null;
+        //RepeatedField<ActionShortcutLimit> actionShortcutLimits = null;
+        let actionLimits = null;
+        let actionShortcutLimits = null;
+        if (rec.operatorList != null && rec.operatorList.length > 0) {
+            for (let i = 0; i < rec.operatorList.length; i++) {
+                this.operationID = this.GetLocalSeatID(rec.operatorList[i].seatId);
+                LeftOpTime = rec.operatorList[i].leftOpTime;
+                if (this.GetLocalSeatID(rec.operatorList[i].seatId) == this.mainPlayer.seatID) {
+                    actionLimits = rec.operatorList[i].actionsList;
+                    actionShortcutLimits = rec.operatorList[i].shortcutsList;
+                    this.HandlerInsueranceData(rec.operatorList);//重进房间保险处理
+                }
+            }
+        }
+        if (this.operationID > -1 && this.operationID < 9) {
+            this.leftOperateTime = LeftOpTime;
+            this.noLeftOperateTime = false;
+        }
+        else {
+            this.noLeftOperateTime = true;
+        }
+
+
+
         this.UpdatePots();
         // 切换游戏状态机
         switch (rec.gameStatus) {
@@ -586,6 +613,114 @@ export default class TexasGame {
         }
     }
 
+    /// <summary>
+    /// 保险数据处理
+    /// </summary>
+    /// <param name="operators"></param> RepeatedField<Operator>
+    protected HandlerInsueranceData(operators: Operator.AsObject[]): void {
+        //显示玩家买保险动画，及如果有自己，缓存操作数据。
+        let CanInsurance: boolean = false;
+        let Seat: Seat = null;
+        let mOperator: Operator.AsObject = null;
+
+        operators.forEach((itemOperator: Operator.AsObject) => {
+            Seat = this.GetSeatByLocalSeatID(this.GetLocalSeatID(itemOperator.seatId));
+            if (null == Seat || null == Seat.Player) {
+                //continue;
+            }
+            Seat.Player.playerStatus_insurance = itemOperator.isInsurance;
+            Seat.Player.timeLeft_insurance = itemOperator.leftOpTime;
+            Seat.Player.delayTimes = itemOperator.delayTimes;
+            if (Seat.Player.userID == this.mainPlayer.userID && Seat.Player.playerStatus_insurance) {
+                mOperator = itemOperator;
+                CanInsurance = true;
+            }
+
+            if (Seat.Player.playerStatus_insurance) {
+                Seat.FsmLogicComponent.SM.ChangeState(SeatInsuranc.Instance);
+            }
+        })
+
+
+
+        //     TweenCallback mTweenCallback = () => {
+        //     if (!CanInsurance || mOperator == null) // 如果可购买保险用户中没有自己，不用往下执行
+        //         return;
+
+        //     List < UIInsuranceComponent.WrapTriggedInsuranceData > wrapTriggedInsuranceDatas = new List<UIInsuranceComponent.WrapTriggedInsuranceData>();
+        //     UIInsuranceComponent.WrapTriggedInsuranceData mWrapTriggedInsuranceData = null;
+
+
+
+        //     foreach(InsurancePotLimit insurancePotLimit in mOperator.InsuranceLimit)
+        //     {
+        //         mWrapTriggedInsuranceData = new UIInsuranceComponent.WrapTriggedInsuranceData();
+        //         mWrapTriggedInsuranceData.outsPerUser = new List<int>();
+        //         mWrapTriggedInsuranceData.userNames = new List<string>();
+        //         mWrapTriggedInsuranceData.playerCards = new List<List<sbyte>>();
+        //         mWrapTriggedInsuranceData.outsCards = new List<RepeatedField<OutsCard>>();
+        //         //赋值保险池等数据，
+        //         mWrapTriggedInsuranceData.subPot = (sbyte)insurancePotLimit.PotId;
+        //         mWrapTriggedInsuranceData.pot = (long)insurancePotLimit.PotAmount;
+        //         mWrapTriggedInsuranceData.potTotalCost = (long)insurancePotLimit.Bet;
+        //         mWrapTriggedInsuranceData.leastAmount = (long)insurancePotLimit.Min;
+        //         mWrapTriggedInsuranceData.mostAmount = (long)insurancePotLimit.Max;
+        //         mWrapTriggedInsuranceData.PotUserCount = insurancePotLimit.PotUserCount;
+        //         mWrapTriggedInsuranceData.PotLeaderCount = insurancePotLimit.PotLeaderCount;
+        //         mWrapTriggedInsuranceData.potAllowOutSelection = insurancePotLimit.Insuranced > 0 ? (sbyte)0 : (sbyte)1;
+
+        //         foreach(UserOuts userOuts in insurancePotLimit.OutsDetail)
+        //         {
+        //                 Seat ins_Seat = GetSeatByLocalSeatID(GetLocalSeatID(userOuts.SeatId));
+        //             if (ins_Seat == null) {
+        //                 Log.Error("---------------------Insurance others player is null");
+        //                 continue;
+        //             }
+        //             //有哪些玩家得outs
+
+        //             //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
+        //             mWrapTriggedInsuranceData.userNames.Add(ins_Seat.Player.nick);
+        //             mWrapTriggedInsuranceData.playerCards.Add(ins_Seat.Player.cards);
+        //             //各个玩家
+        //             mWrapTriggedInsuranceData.outsPerUser.Add((int)userOuts.OutsCards.count);
+
+        //             //添加所有玩家outs ，在保险界面处理是否平分outs
+        //             mWrapTriggedInsuranceData.outsCards.Add(userOuts.OutsCards);
+        //         }
+
+        //         wrapTriggedInsuranceDatas.Add(mWrapTriggedInsuranceData);
+        //     }
+        //     //暂注释，第一次买保险前得动画
+        //     //if (Image_InsuranceTips.gameObject.activeInHierarchy)
+        //     //{
+        //     //    Image_InsuranceTips.gameObject.SetActive(false);
+        //     //}
+        //     UIComponent.Instance.ShowNoAnimation(UIType.UIInsurance, new UIInsuranceComponent.InsuranceData()
+        //         {
+        //             publicCards = cards,
+        //             triggedDatas = wrapTriggedInsuranceDatas,
+        //             timeLeft = (int)mainPlayer.timeLeft_insurance,
+
+        //             delayTimes = mainPlayer.delayTimes
+        //         });
+
+        //     //#if (UNITY_EDITOR || UNITY_STANDALONE_WIN) && !ILRuntime
+        //     //                // 用于压测，放在UIInsurance启动之后调用
+        //     //                RoomHelper.onReqInsuranceTrigged(rec);
+        //     //#endif
+        // };
+        // //暂注释，第一次买保险前得动画
+        // //if (rec.count <= 1)
+        // //{
+        // //    // 当前触发保险次数，如果<=1，则先显示“保险模式”动画，再弹出保险框
+        // //    PlayFirstInsurance(mTweenCallback);
+        // //    // await WaitGameAnimation(GameAnimation.PlayFirstInsurance);
+        // //}
+        // //else
+        // //{
+        // mTweenCallback();
+        // //}
+    }
 
 
     /// <summary>
@@ -737,7 +872,7 @@ export default class TexasGame {
     /// <summary>
     /// 刷新底池
     /// </summary>
-    protected UpdateAlreadAnte(): void {
+    public UpdateAlreadAnte(): void {
         // textAlreadAnte.text = $"底池:{alreadAnte}";
         this.uirc.textAlreadAnte.node.active = (this.gamestatus >= 1 && this.gamestatus < 7);
         this.uirc.textAlreadAnte.string = `${LanguageCode.LanguageDescription(20005)}:${(this.alreadAnte / 100)}`;
@@ -1184,7 +1319,7 @@ export default class TexasGame {
     /// </summary>
     //public PlayDealAnimation(TweenCallback tweenCallback:Function) {
     public PlayDealAnimation(tweenCallback: Function) {
-        // sequencePlayDealAnimation = DOTween.Sequence();
+
 
         let tween = cc.tween(this.uirc.node);
 
@@ -1199,8 +1334,6 @@ export default class TexasGame {
             let mTweener = mSeat.PlayBankerAnimation();
             if (null != mTweener) {
                 sequence.push(mTweener);
-                //this.PlayDeal_TweenSequence.Append(mTweener, { type: 0, time: 0.2 });
-                //PlayDeal_TweenSequence.push({ type: 1, time: 0.2 });
                 sequence.push(cc.delayTime(0.2));
 
             }
@@ -1273,18 +1406,61 @@ export default class TexasGame {
             tween.parallel.apply(tween, spawn.concat(cc.delayTime(0)));
         }
 
-        //cc.log("spawn.length :1111 >>  ", sequence.length, spawn.length);
-
-        tween.call(() => {
-            cc.log("成功！！！！！");
-        });
+        if (null != tweenCallback) {
+            cc.log("运动完成");
+            tween.call(tweenCallback);
+        }
         tween.start();
-        //if (null != tweenCallback)
-        // sequencePlayDealAnimation.AppendCallback(tweenCallback);
-        //sequencePlayDealAnimation.OnComplete(tweenCallback);
-
-        //sequencePlayDealAnimation.Play();
     }
+
+    /// <summary>
+    /// 操作时间
+    /// </summary>
+    /// <returns></returns>
+    public GetOpTime(): number {
+        if (this.noLeftOperateTime == false && this.leftOperateTime > 0) {
+            this.noLeftOperateTime = true;
+            return this.leftOperateTime;
+        }
+        return this.opTime;
+    }
+
+    /// <summary>
+    /// 隐藏自动操作面板
+    /// </summary>
+    public HideAutoOperationPanel(): void {
+        // if (UIComponent.Instance.Get(UIType.UIAutoOperation).GameObject.activeInHierarchy) {
+        //     UIComponent.Instance.HideNoAnimation(UIType.UIAutoOperation);
+        // }
+    }
+
+
+    /// <summary>
+    /// 展示操作面板
+    /// </summary>
+    /// <param name="operationData"></param>
+    /// <param name="delay"></param> UIOperationComponent.OperationData
+    public ShowOperationPanel(operationData, delay: number = 0): void {
+        if (operationData.actionLimits == null || operationData.actionLimits.count <= 0) {
+            return;
+        }
+        // if (mainPlayer != null) {
+        // 		Seat mSeat = null;
+        //     for (int i = 0; i < listSeat.Count; i++)
+        //     {
+        //         mSeat = listSeat[i];
+        //         if (mainPlayer.seatID == mSeat.seatID) {
+        //             mSeat.SetOperationHeadActive(false);
+        //         }
+
+        //     }
+        // }
+        // buttonDelay.gameObject.SetActive(true);
+        // delayCount = delay;
+        // UpdateDelayBtn();
+        // UIComponent.Instance.ShowNoAnimation(UIType.UIOperation, operationData);
+    }
+
 
 
 
@@ -1296,8 +1472,12 @@ export default class TexasGame {
         //return rc.transform.TransformPoint(this.gameUI.textAlreadAnte.transform.localPosition);
         return this.uirc.node.convertToWorldSpaceAR(this.uirc.textAlreadAnte.node.position);
     }
-
-
+    /// <summary>
+    /// 当前玩法的手牌数量
+    /// </summary>
+    public get HandCards(): number {
+        return 2;
+    }
 
     /**
      * 显示手动设置面板 

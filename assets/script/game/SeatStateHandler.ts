@@ -269,3 +269,116 @@ export class SeatStraddle extends StateHandler {
         if (entity instanceof SeatFSM) entity.StraddleExit();
     }
 }
+//开始转游戏中
+export class SeatStartToPlaying extends StateHandler {
+
+    public Name: string = "SeatStartToPlaying";
+
+    private static _Instance: SeatStartToPlaying = null;
+
+    public static get Instance() {
+        return this._Instance ||= new SeatStartToPlaying();
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.StartToPlayingEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.StartToPlayingExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.StartToPlayingExit();
+    }
+}
+
+//操作中
+export class SeatOperation extends StateHandler {
+
+    public Name: string = "SeatOperation";
+
+    private static _Instance: SeatOperation = null;
+
+    public static get Instance() {
+        return this._Instance ||= new SeatOperation();
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.OperationEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.OperationExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.OperationExit();
+    }
+}
+
+
+//
+export class SeatInsuranc extends StateHandler {
+
+    public Name: string = "SeatInsuranc";
+
+    private static _Instance: SeatInsuranc = null;
+
+    public static get Instance() {
+        return this._Instance ||= new SeatInsuranc();
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.InsuranceEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.InsuranceExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.InsuranceExit();
+    }
+}
+
+
+//
+export class SeatWaitOther extends StateHandler {
+
+    public Name: string = "SeatWaitOther";
+
+    private static _Instance: SeatWaitOther = null;
+
+    public static get Instance() {
+        return this._Instance ||= new SeatWaitOther();
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.WaitOtherEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.WaitOtherExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.WaitOtherExit();
+    }
+}

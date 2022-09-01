@@ -69,7 +69,9 @@ export default class Seat {
     private OriginalVoicePos: cc.Vec3 = null;
     //private Transform OriginalVoiceObj;
 
-
+    public optCurTime: number = 0;
+    public optTotalTime: number = 0;
+    public isCountDown: boolean = false;
 
     public seatUIInfo: SeatUIInfo = null;
 
@@ -1032,11 +1034,11 @@ export default class Seat {
                 }
 
                 if (sequence.length) {
-                    cc.log(".....do sequence")
+
                     sequenceTween.sequence.apply(sequenceTween, sequence.concat(cc.delayTime(0)));
                 }
                 if (spawns.length) {
-                    cc.log(".....do spawns", spawns)
+
                     sequenceTween.parallel.apply(sequenceTween, spawns.concat(cc.delayTime(0)));
                 }
             }
@@ -1071,8 +1073,73 @@ export default class Seat {
         }
     }
 
+    /// <summary>
+    /// 刷新亮牌眼睛
+    /// </summary>
+    public UpdateShowCardsId(): void {
+        if (null == this.Player || null == GameCache.Instance.CurGame.mainPlayer || GameCache.Instance.CurGame.mainPlayer.userID != this.Player.userID ||
+            GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
+            return;
+        }
 
+        for (let i = 0; i < this.uirc.showCardsId.length; i++) {
+            this.uirc.listCardUIInfos[i].imageEye.node.active = this.uirc.showCardsId[i] == 1;
+        }
+    }
 
+    /// <summary>
+    /// 停止allin动画
+    /// </summary>
+    public StopAllinArmature(): void {
+        // if (null != this.armatureAllin.dragonAnimation && armatureAllin.dragonAnimation.isPlaying)
+        //     armatureAllin.dragonAnimation.Stop();
+        // armatureAllin.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 停止赢牌头像动画
+    /// </summary>
+    public StopWinArmature(): void {
+        // armatureYouWin.gameObject.SetActive(false);
+        // transWinner.gameObject.SetActive(false);
+        // Image_OtherWinnerCardType.gameObject.SetActive(false);
+        // Image_OtherWinner.gameObject.SetActive(false);
+        // imageWinner.gameObject.SetActive(false);
+
+    }
+    /// <summary>
+    /// 开始倒计时
+    /// </summary>
+    /// <param name="countDown"></param>
+    public StartCountDown(countDown: number, isInsruance: boolean = false): void {
+        this.optCurTime = countDown;
+
+        let defaultOpTime: number = GameCache.Instance.CurGame.GetOpTime();
+        if (isInsruance)
+            defaultOpTime = 30;
+        if (countDown > defaultOpTime) {
+            defaultOpTime = countDown;
+        }
+        this.optTotalTime = defaultOpTime;
+        this.isCountDown = true;
+        // imageCountDown.fillAmount = optCurTime / defaultOpTime;
+        // imageCountDown.gameObject.SetActive(true);
+        // Image_CountDownbg.gameObject.SetActive(true);
+        // image_CountDownTime.text = ((int)optCurTime).ToString();
+        // StopLightArmature();
+    }
+
+    /// <summary>
+    /// 停止倒计时
+    /// </summary>
+    public StopCountDown(): void {
+        if (this.isCountDown) {
+            this.isCountDown = false;
+            //imageCountDown.gameObject.SetActive(false);
+            //Image_CountDownbg.gameObject.SetActive(false);
+        }
+        //this.StopLightArmature();
+    }
 
     public UpdateImageBackActive(istrue: boolean = false): void {
         for (let i = 0, n = this.Player.cards.length; i < n; i++) {

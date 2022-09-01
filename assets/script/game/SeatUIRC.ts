@@ -1,6 +1,7 @@
 
 
 import UIBase from "../ui/UIBase";
+import { GameCache } from "./GameCache";
 import Seat from "./Seat";
 
 
@@ -11,8 +12,8 @@ export class CardUIInfo {
 
     constructor(public imageCard: cc.Node) {
         this.imageSelect = imageCard.getChildByName("Image_SelectCard")?.getComponent(cc.Sprite);
-        this.imageBack = imageCard.getChildByName("Image_EyeCard")?.getComponent(cc.Sprite);
-        this.imageEye = imageCard.getChildByName("Image_CardBack")?.getComponent(cc.Sprite);
+        this.imageBack = imageCard.getChildByName("Image_CardBack")?.getComponent(cc.Sprite);
+        this.imageEye = imageCard.getChildByName("Image_EyeCard")?.getComponent(cc.Sprite);
     }
 }
 
@@ -39,8 +40,8 @@ export default class SeatUIRC extends UIBase {
     imageIconChip: cc.Sprite = null;
     textCurRoundHaveBet: cc.Label = null;
 
-    transSmallCardBacks:cc.Node = null;
-    imageBanker:cc.Node = null;
+    transSmallCardBacks: cc.Node = null;
+    imageBanker: cc.Node = null;
 
     public listCardUIInfos: CardUIInfo[] = null;
     public listSmallCardUIInfos: CardUIInfo[] = null;
@@ -75,6 +76,10 @@ export default class SeatUIRC extends UIBase {
      * 声明内容
      */
     public seat: Seat = null;
+    /// <summary>
+    /// 亮牌数据
+    /// </summary>
+    public showCardsId: number[] = null;
     ///////////////////////////////////
     protected lateLoad(): void {
         super.lateLoad();
@@ -132,7 +137,7 @@ export default class SeatUIRC extends UIBase {
         if (null == this.listImageSmallCardBack || this.listImageSmallCardBack.length > 0) this.listImageSmallCardBack = [];
         this.listImageSmallCardBack.push(this.imageSmallCardBack0);
         this.listImageSmallCardBack.push(this.imageSmallCardBack1);
-
+        this.ResetShowCardsId();
 
         for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
             this.listCardUIInfos[i].imageCard.on("click", this.onClickCard, this);
@@ -172,5 +177,16 @@ export default class SeatUIRC extends UIBase {
         // }
     }
 
+    public ResetShowCardsId(): void {
+        if (this.showCardsId == null) {
+            this.showCardsId = [];
+        }
+        else {
+            this.showCardsId.length = 0;
+        }
+        for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
+            this.showCardsId.push(0);
+        }
 
+    }
 }
