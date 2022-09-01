@@ -1087,6 +1087,23 @@ export default class Seat {
         }
     }
 
+
+    /// <summary>
+    /// 轮到自己操作隐藏头像名字
+    /// </summary>
+    public SetOperationHeadActive(istrue: boolean): void {
+        if (istrue) {
+            this.uirc.imageBanker.active = this.isBank;
+        }
+        else {
+            //imageBanker.gameObject.SetActive(false);
+        }
+        this.uirc.imageHeadFrame.node.active = istrue;
+        this.uirc.textNickname.node.active = !this.IsMySeat;
+    }
+
+
+
     /// <summary>
     /// 停止allin动画
     /// </summary>

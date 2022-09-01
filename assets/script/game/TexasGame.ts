@@ -16,6 +16,7 @@ import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../session/StorageKey";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
+import UIBase from "../ui/UIBase";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
@@ -29,6 +30,7 @@ import TexasGameUtils from "./TexasGameUtils";
 import TexasScene, { PotInfo } from "./TexasScene";
 import TexasSMAgency from "./TexasSMAgency";
 import TweenSequence from "./TweenSequence";
+import UIOperationComponent from "./ui/UIOperationComponent";
 import { UITexasModel } from "./UITexasModel";
 //const PBTypes = Def.Types;
 
@@ -1441,26 +1443,44 @@ export default class TexasGame {
     /// <param name="operationData"></param>
     /// <param name="delay"></param> UIOperationComponent.OperationData
     public ShowOperationPanel(operationData, delay: number = 0): void {
-        if (operationData.actionLimits == null || operationData.actionLimits.count <= 0) {
+        if (operationData?.actionLimits == null || operationData?.actionLimits.count <= 0) {
             return;
         }
-        // if (mainPlayer != null) {
-        // 		Seat mSeat = null;
-        //     for (int i = 0; i < listSeat.Count; i++)
-        //     {
-        //         mSeat = listSeat[i];
-        //         if (mainPlayer.seatID == mSeat.seatID) {
-        //             mSeat.SetOperationHeadActive(false);
-        //         }
+        if (this.mainPlayer != null) {
+            let mSeat: Seat = null;
+            for (let i = 0; i < this.listSeat.length; i++) {
+                mSeat = this.listSeat[i];
+                if (this.mainPlayer.seatID == mSeat.seatID) {
+                    mSeat.SetOperationHeadActive(false);
+                }
 
-        //     }
-        // }
-        // buttonDelay.gameObject.SetActive(true);
-        // delayCount = delay;
-        // UpdateDelayBtn();
-        // UIComponent.Instance.ShowNoAnimation(UIType.UIOperation, operationData);
+            }
+        }
+        //buttonDelay.gameObject.SetActive(true);
+        this.delayCount = delay;
+        //UpdateDelayBtn();
+        //UIComponent.Instance.ShowNoAnimation(UIType.UIOperation, operationData);
+        this.ShowUI(this.uirc.UIOperation, UIOperationComponent, operationData);
     }
+    /// <summary>
+    /// 隐藏操作面板
+    /// </summary>
+    public HideOperationPanel(): void {
+        if (this.mainPlayer != null) {
+            let mSeat: Seat = null;
+            for (let i = 0; i < this.listSeat.length; i++) {
+                mSeat = this.listSeat[i];
+                if (this.mainPlayer.seatID == mSeat.seatID) {
+                    mSeat.SetOperationHeadActive(true);
+                }
 
+            }
+        }
+        //buttonDelay.gameObject.SetActive(false);
+        if (this.uirc.UIOperation.activeInHierarchy) {
+            this.HideUI(this.uirc.UIOperation);
+        }
+    }
 
 
 
@@ -1515,6 +1535,27 @@ export default class TexasGame {
         }
 
     }
+
+    /**
+     * 展示UI
+     * @param node 
+     * @param component 
+     * @param param 
+     */
+    ShowUI<T>(node: cc.Node, component: { new(): T }, param?: any) {
+        node.active = true;
+        let ui_component: UIBase = node.getComponent(component);
+        ui_component.onShow(param);
+    }
+    /**
+     * 隐藏UI
+     * @param node
+     */
+    HideUI(node: cc.Node) {
+        node.active = false;
+    }
+
+
     getSeatUI() {
         if (this.seatUI_pool.length) return this.seatUI_pool.pop();
         return cc.instantiate(this.uirc.Seat);
