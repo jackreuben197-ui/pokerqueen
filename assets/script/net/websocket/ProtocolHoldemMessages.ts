@@ -8,6 +8,7 @@ import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/h
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
 import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
+import { ClientMessageRoomers, ServerMessageRoomers } from "../../protobuf/holdem/req_roomers_pb";
 import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
 
@@ -242,6 +243,28 @@ export class Protocol_Holdem_StartInfo extends BaseProtocol {
 
 
 
+/**
+ * 牌桌回顾
+ */
+export class Protocol_Holdem_Roomers extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Roomers";
+    static _request: ClientMessageRoomers = null;
+    public static Request_AsObject: ClientMessageRoomers.AsObject = null;
+    public static Response_AsObject: ServerMessageRoomers.AsObject = null;
+
+    static Request(body?: ClientMessageRoomers.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessageRoomers());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessageRoomers.AsObject {
+        let result: ServerMessageRoomers = ServerMessageRoomers.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
+
 
 
 
@@ -257,3 +280,4 @@ cc.js.setClassName("Protocol_Holdem_StandupActive", Protocol_Holdem_StandupActiv
 cc.js.setClassName("Protocol_Holdem_Standup", Protocol_Holdem_Standup);
 cc.js.setClassName("Protocol_Holdem_PostStatusChange", Protocol_Holdem_PostStatusChange);
 cc.js.setClassName("Protocol_Holdem_StartInfo", Protocol_Holdem_StartInfo);
+cc.js.setClassName("Protocol_Holdem_Roomers", Protocol_Holdem_Roomers);

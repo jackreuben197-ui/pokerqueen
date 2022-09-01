@@ -11,6 +11,7 @@ export enum UIType {
     TexasPreLoad,
     TexasUISting,
     UITexasRule,
+    UITexasReport,
 }
 /**
  * 流程

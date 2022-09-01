@@ -301,6 +301,7 @@ export default class TexasScene extends BaseScene {
                 this.showMenu();
                 break;
             case this.report_btn://报告按钮
+                this.Click_Report_Btn();
                 cc.log("report_btn is clicked");
                 break;
             case this.cursituation_btn://状况按钮
@@ -444,11 +445,11 @@ export default class TexasScene extends BaseScene {
     }
     Click_Button_Setting() {
         this.hideMenu();
-        let UITexasSetting = this.node.getChildByName('UITexasSetting')
+        let UITexasSetting: any = this.node.getChildByName('UITexasSetting')
         if (!UITexasSetting) {
             let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
             // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            let UITexasSetting: any = cc.instantiate(prefab);
+            UITexasSetting = cc.instantiate(prefab);
             UITexasSetting.parent = this.node
             UITexasSetting.active = true;
         } else {
@@ -459,11 +460,11 @@ export default class TexasScene extends BaseScene {
     }
     Click_Button_Rule() {
         this.hideMenu();
-        let UITexasRule = this.node.getChildByName('UITexasRule')
+        let UITexasRule: any = this.node.getChildByName('UITexasRule')
         if (!UITexasRule) {
             let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
             // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            let UITexasRule: any = cc.instantiate(prefab);
+            UITexasRule = cc.instantiate(prefab);
             UITexasRule.parent = this.node
             UITexasRule.active = true;
         } else {
@@ -487,6 +488,18 @@ export default class TexasScene extends BaseScene {
     }
     Click_Button_Exit() {
         this.CallbackExit();
+    }
+    Click_Report_Btn() {
+        let UITexasReport: any = this.node.getChildByName('UITexasReport')
+        if (!UITexasReport) {
+            let prefab = ResManager.LoadAsset(UIDefine.UITexasReport.Bundle, UIDefine.UITexasReport.Path)
+            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+            UITexasReport = cc.instantiate(prefab);
+            UITexasReport.parent = this.node
+            UITexasReport.active = true;
+        } else {
+            UITexasReport.active = true;
+        }
     }
 
 

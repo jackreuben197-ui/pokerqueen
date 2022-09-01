@@ -8,7 +8,7 @@ import { GameCache } from "./GameCache";
  * @Date: 2022-08-30 17:02:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-31 10:01:18
+ * @LastEditTime: 2022-09-01 10:39:02
  * @FilePath: /pokerqueen/assets/script/game/UITexasRule.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -46,12 +46,13 @@ export default class UITexasRule extends UIBase {
     titleClick(event) {
         for (let index = 0; index < this.titelGroup.childrenCount; index++) {
             const element = this.titelGroup.children[index];
-            let Checkmark = element.getChildByName('Checkmark');
-            Checkmark.active = false;
+
             let text = element.getChildByName('text');
             text.color = new cc.Color().fromHEX("#C6C6C6");
+            let Checkmark = text.getChildByName('Checkmark');
+            Checkmark.active = false;
         }
-        event.node.getChildByName('Checkmark').active = true
+        event.node.getChildByName('text').getChildByName('Checkmark').active = true
         event.node.getChildByName('text').color = new cc.Color().fromHEX("#FFFFFF");
         this.setWidgetState(event.node['index'])
     }
@@ -79,7 +80,7 @@ export default class UITexasRule extends UIBase {
             rulerStr = rulerStr.replace(/\\n/g, '<br/>')
             this.RulerText.string = rulerStr;
 
-        } else {
+        } else if (index == 1) {
             this.CardType.active = true;
         }
 
