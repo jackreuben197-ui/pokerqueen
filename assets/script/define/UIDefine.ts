@@ -161,6 +161,18 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasSetting",
     },
+    UITexasRule: {
+        UIType: UIType.UITexasRule,
+        Name: "UITexasRule",
+        Bundle: 'texas',
+        Path: "prefab/widgetLayer/UITexasRule",
+    },
+    UITexasReport: {
+        UIType: UIType.UITexasReport,
+        Name: "UITexasReport",
+        Bundle: 'texas',
+        Path: "prefab/widgetLayer/UITexasReport",
+    },
 
 
 }

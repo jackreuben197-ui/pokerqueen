@@ -28,10 +28,13 @@
     "_components": [
       {
         "__id__": 411
+      },
+      {
+        "__id__": 412
       }
     ],
     "_prefab": {
-      "__id__": 412
+      "__id__": 413
     },
     "_opacity": 255,
     "_color": {
@@ -16373,6 +16376,16 @@
   },
   {
     "__type__": "46144qt+HVDcr70dkTz84fJ",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.BlockInputEvents",
     "_name": "",
     "_objFlags": 0,
     "node": {

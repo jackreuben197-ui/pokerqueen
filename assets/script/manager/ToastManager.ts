@@ -3,7 +3,7 @@
  */
 
 import Singleton from "../common/Singleton";
-import Dispatcher from "../event/Dispatcher";
+// import Dispatcher from "../event/Dispatcher";
 import { i18nMgr } from "../i18n/i18nMgr";
 import Main from "../Main";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
@@ -55,6 +55,7 @@ export default class ToastManager extends Singleton {
     }
     //重置队列容器位置
     resetSCPosition() {
+
         this.sequenceContent.y = this.config.contentStartPosition;
     }
 
