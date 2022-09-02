@@ -1,5 +1,10 @@
 import { UIDefine } from "../define/UIDefine";
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
+import { StringHelper } from "../helper/StringHelper";
+import WebImageHelper from "../helper/WebImageHelper";
+import { i18nLabel } from "../i18n/i18nLabel";
+import { i18nMgr } from "../i18n/i18nMgr";
+import { LanguageCode } from "../i18n/LanguageCode";
 import { ResManager } from "../manager/ResManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -19,10 +24,6 @@ import { GameCache } from "./GameCache";
  * @FilePath: /pokerqueen/assets/script/game/UITexasReportComponent.ts
  */
 const { ccclass, property } = cc._decorator;
-
-@ccclass
-
-
 export class ReportPlayer {
     public userId;
     public nickName;
@@ -32,10 +33,12 @@ export class ReportPlayer {
     public outChip;//带出
 }
 
+@ccclass
 export default class UITexasReportComponent extends UIBase {
 
     btnShowProblem: cc.Node = null;
     imageMaskClose: cc.Node = null;
+    content: cc.Node = null;
     tInfo_0 = []
     tInfo_1 = []
     protected lateLoad(): void {
@@ -74,12 +77,14 @@ export default class UITexasReportComponent extends UIBase {
 
     UpdateViewList(RoomersData) {
 
+        //玩家 
+        this.content = this.getChildNodeOrComponent('content')
         let text_Insnum = this.getChildNodeOrComponent('Text_Insnum').getComponent(cc.Label);
-        text_Insnum.string = RoomersData.insurance + '';
-        let textTitle = this.getChildNodeOrComponent('Title').getComponent(cc.Label);
-        textTitle.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum
+        text_Insnum.string = RoomersData.insurance != 0 ? StringHelper.getStringDiv100(RoomersData.insurance) : 0 + "";
+        let textTitle = this.getChildNodeOrComponent('Title').getComponent(cc.RichText);
+        textTitle.string = "<color=\"#E9BF80FF\">" + GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum + "</color>";
         let tAllNum = 0;
-
+        let totalLen = 0;
         for (let i = 0; i < RoomersData.playersList.length; i++) {
             let tSignPlayer = new ReportPlayer();
             tSignPlayer.userId = RoomersData.playersList[i].userRid;
@@ -108,7 +113,81 @@ export default class UITexasReportComponent extends UIBase {
 
         }
 
+        let OnLine = this.getChildNodeOrComponent('OnLine')
+        for (let index = 0; index < this.tInfo_0.length; index++) {
+            const element: any = cc.instantiate(OnLine);
+            element.parent = this.content;
+            this.setInfos(element, this.tInfo_0[index], true);
+            element.active = true;
+        }
+        for (let index1 = 0; index1 < this.tInfo_1.length; index1++) {
+            const element: any = cc.instantiate(OnLine);
+            element.parent = this.content;
+            this.setInfos(element, this.tInfo_1[index1], false);
+            element.active = true;
+        }
+        totalLen = totalLen + 100 * (this.tInfo_0.length + this.tInfo_1.length);
+        //观众
+        let title_viewer: cc.Node = this.getChildNodeOrComponent('title_viewer');
+        let element: cc.Node = cc.instantiate(title_viewer);
+        element.parent = this.content;
+        element.active = true;
+        let text_ReportViewer = cc.find('Image/Text_ReportViewer', element)
+        text_ReportViewer.getComponent(cc.Label).string = i18nMgr.Get(`adaptation${20052}`) + '(' + RoomersData.observersList.length + ')';
+        //Viewer_List
+        let viewer_List: cc.Node = this.getChildNodeOrComponent('Viewer_List');
+        let item = viewer_List.getChildByName('item');
+        viewer_List.parent = this.content;
 
+        for (let index = 1; index < RoomersData.observersList.length; index++) {
+            const element = cc.instantiate(item);
+            element.parent = viewer_List
+        }
+        for (let index = 0; index < RoomersData.observersList.length; index++) {
+            let tItem: cc.Node = viewer_List.children[index]
+            tItem.getChildByName('Text').getComponent(cc.Label).string = RoomersData.observersList[index].name;
+            if (RoomersData.observersList[index].avatar != "") {
+                let icon = cc.find('image/mask/icon', tItem);
+                WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
+            }
+            tItem.active = true;
+            tItem.getChildByName("ImageGray").active = (RoomersData.observersList[index].sex == 1);
+
+            let watcherId = RoomersData.observersList[index].userRid;
+            // UIEventListener.Get(tItem).onClick = (go) => {
+            //     UIComponent.Instance.ShowNoAnimation(UIType.UITexasPlayerInfo, new object[] { watcherId, true });
+            // };
+        }
+
+
+    }
+    setInfos(objTemp, pDto, onLine) {
+        objTemp.getChildByName('Text_Name').getComponent(cc.RichText).string = this.colorText(onLine, pDto.nickName)
+        objTemp.getChildByName('Text_Num').getComponent(cc.RichText).string = this.colorText(onLine, pDto.hand + '')
+        objTemp.getChildByName('Text_All').getComponent(cc.RichText).string = this.colorText(onLine, StringHelper.getStringDiv100(pDto.bringIn))
+        objTemp.getChildByName('Text_All').getChildByName('Text_outChip').getComponent(cc.RichText).string = pDto.outChip != 0 ? StringHelper.getStringDiv100(pDto.outChip) : 0;
+        objTemp.getChildByName('Text_Count').getComponent(cc.RichText).string = StringHelper.getStringDiv100(pDto.score);
+
+        if (pDto.userId == GameCache.Instance.nUserId) {
+            objTemp.getChildByName('SelfGo').active = true;
+        } else {
+            let a = onLine ? 255 : 125;
+            if (pDto.score > 0) {
+                objTemp.getChildByName('Text_Count').color = cc.color(184, 43, 48, a);
+            }
+            else if (pDto.score < 0)
+                objTemp.getChildByName('Text_Count').color = cc.color(66, 200, 113, a);
+        }
+    }
+    colorText(onLine, str) {
+        let tt = "";
+        if (onLine) {
+            tt = "<color=\"#E9BF80FF\">" + str + "</color>";
+        }
+        else {
+            tt = "<color=\"#E9BF807D\">" + str + "</color>";
+        }
+        return tt;
     }
 
     initUI() {
