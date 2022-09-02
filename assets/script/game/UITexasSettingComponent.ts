@@ -3,7 +3,7 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-31 10:57:41
+ * @LastEditTime: 2022-09-02 15:26:50
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
@@ -131,7 +131,7 @@ export default class UITexasSettingComponent extends UIBase {
             element.on("click", this.setQuickActionState, this);
             element['index'] = index
             let textCallPot = element.getChildByName('Text_CallPot').getComponent(cc.Label);
-            let numStr = this.getCurQuickActionNum(index)
+            let numStr = UITexasSettingComponent.GetCurQuickActionNum(index)
             if (numStr == "0") {
                 numStr = "+";
                 textCallPot.fontSize = 70;
@@ -167,7 +167,7 @@ export default class UITexasSettingComponent extends UIBase {
             let textCallPot = cc.find('Text_CallPot', element).getComponent(cc.Label);
             let numStr = this.getNumToggleString(index)
             if (numStr == selectTextCallPot.string) {
-                // if (numStr == this.getCurQuickActionNum(this.curQuickActionIndex)) {
+                // if (numStr == this.GetCurQuickActionNum(this.curQuickActionIndex)) {
                 checkmark.active = true;
                 // SelectNumToggle(numToggle.gameObject, i);
             }
@@ -185,7 +185,7 @@ export default class UITexasSettingComponent extends UIBase {
      * @param index 
      * @returns 
      */
-    getCurQuickActionNum(index) {
+    public static GetCurQuickActionNum(index) {
         let defaultActionNums = ["0", "1/2", "2/3", "1x", "0"];
         let numStr = localStorage.getItem(StorageKey.kQuickActionIndexKEY + index) || defaultActionNums[index];
         return numStr;
@@ -209,6 +209,8 @@ export default class UITexasSettingComponent extends UIBase {
         }
         textCallPot.string = numStr;
         localStorage.setItem(StorageKey.kQuickActionIndexKEY + this._selectQuickAction['index'], numStr)
+        localStorage.setItem(StorageKey.kQuickActionIndexValueKEY + this._selectQuickAction['index'], numStr)
+
     }
 
     /**
@@ -240,11 +242,11 @@ export default class UITexasSettingComponent extends UIBase {
         localStorage.setItem(StorageKey.soundIsOpen, this.soundIsOpen ? 1 + "" : 0 + "")
     }
 
-    // public static GetCurQuickActionNumValue(index) {
-    //     let defaultActionNums = [0f, 1.0f / 2, 2.0f / 3, 1.0f, 0f];
-    //         float numValue = PlayerPrefs.GetFloat(kQuickActionIndexValueKEY + $"{index}", defaultActionNums[index]);
-    //     return numValue;
-    // }
+    public static GetCurQuickActionNumValue(index) {
+        let defaultActionNums = [0, 1.0 / 2, 2.0 / 3, 1.0, 0];
+        let numStr = localStorage.getItem(StorageKey.kQuickActionIndexValueKEY + index) || defaultActionNums[index];
+        return numStr;
+    }
 
 
 }
