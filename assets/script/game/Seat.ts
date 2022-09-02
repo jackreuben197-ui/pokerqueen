@@ -1027,9 +1027,6 @@ export default class Seat {
                         cc.delayTime(0.4)
                     );
                     spawns.push(tween_card_sequence);
-                    // sequencePlayDealAnimation.spawn.push(() => {
-                    //     cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { scaleX: 1.5, scaleY: 1.3 }).start();
-                    // });
 
                 }
 

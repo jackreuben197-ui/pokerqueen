@@ -11649,7 +11649,7 @@
         "__id__": 323
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 488
@@ -12162,7 +12162,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text",
+    "_name": "Text_Pot",
     "_objFlags": 0,
     "_parent": {
       "__id__": 324
@@ -12300,7 +12300,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallTitle0",
+    "_name": "Text_CallTitle",
     "_objFlags": 0,
     "_parent": {
       "__id__": 324
@@ -12408,7 +12408,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallPotValueLeft",
+    "_name": "Text_CallPotValue",
     "_objFlags": 0,
     "_parent": {
       "__id__": 324
@@ -12704,7 +12704,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Button_Call_left",
+    "_name": "Button_Call0",
     "_objFlags": 0,
     "_parent": {
       "__id__": 323
@@ -12781,7 +12781,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text",
+    "_name": "Text_Pot",
     "_objFlags": 0,
     "_parent": {
       "__id__": 340
@@ -12919,7 +12919,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallTitle0",
+    "_name": "Text_CallTitle",
     "_objFlags": 0,
     "_parent": {
       "__id__": 340
@@ -13027,7 +13027,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallPotValueLeft",
+    "_name": "Text_CallPotValue",
     "_objFlags": 0,
     "_parent": {
       "__id__": 340
@@ -13323,7 +13323,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Button_Call_left",
+    "_name": "Button_Call1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 323
@@ -13400,7 +13400,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text",
+    "_name": "Text_Pot",
     "_objFlags": 0,
     "_parent": {
       "__id__": 356
@@ -13538,7 +13538,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallTitle0",
+    "_name": "Text_CallTitle",
     "_objFlags": 0,
     "_parent": {
       "__id__": 356
@@ -13646,7 +13646,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallPotValueLeft",
+    "_name": "Text_CallPotValue",
     "_objFlags": 0,
     "_parent": {
       "__id__": 356
@@ -13942,7 +13942,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Button_Call_left",
+    "_name": "Button_Call2",
     "_objFlags": 0,
     "_parent": {
       "__id__": 323
@@ -14019,7 +14019,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text",
+    "_name": "Text_Pot",
     "_objFlags": 0,
     "_parent": {
       "__id__": 372
@@ -14157,7 +14157,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallTitle0",
+    "_name": "Text_CallTitle",
     "_objFlags": 0,
     "_parent": {
       "__id__": 372
@@ -14265,7 +14265,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallPotValueLeft",
+    "_name": "Text_CallPotValue",
     "_objFlags": 0,
     "_parent": {
       "__id__": 372
@@ -14561,7 +14561,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Button_Call_left",
+    "_name": "Button_Call_right",
     "_objFlags": 0,
     "_parent": {
       "__id__": 323
@@ -14638,7 +14638,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text",
+    "_name": "Text_Pot",
     "_objFlags": 0,
     "_parent": {
       "__id__": 388
@@ -14776,7 +14776,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_CallTitle0",
+    "_name": "Text_CallTitle",
     "_objFlags": 0,
     "_parent": {
       "__id__": 388

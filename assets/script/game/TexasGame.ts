@@ -524,8 +524,6 @@ export default class TexasGame {
         for (let i = 0, n = rec.playersList.length; i < n; i++) {
             mSeat = this.listSeat[this.GetLocalSeatID(rec.playersList[i].seatId)];
 
-
-
             mSeat.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
 
             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
@@ -625,10 +623,11 @@ export default class TexasGame {
         let Seat: Seat = null;
         let mOperator: Operator.AsObject = null;
 
-        operators.forEach((itemOperator: Operator.AsObject) => {
+
+        for (let itemOperator of operators) {
             Seat = this.GetSeatByLocalSeatID(this.GetLocalSeatID(itemOperator.seatId));
             if (null == Seat || null == Seat.Player) {
-                //continue;
+                continue;
             }
             Seat.Player.playerStatus_insurance = itemOperator.isInsurance;
             Seat.Player.timeLeft_insurance = itemOperator.leftOpTime;
@@ -641,7 +640,9 @@ export default class TexasGame {
             if (Seat.Player.playerStatus_insurance) {
                 Seat.FsmLogicComponent.SM.ChangeState(SeatInsuranc.Instance);
             }
-        })
+        }
+
+
 
 
 
