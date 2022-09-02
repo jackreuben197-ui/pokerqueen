@@ -72,6 +72,8 @@ export default class TexasScene extends BaseScene {
     Menu_Button: cc.Node = null;
 
 
+    UIOperation: cc.Node = null;
+
     imageWaitForStartTips: cc.Node = null;
 
     //座位节点
@@ -82,7 +84,7 @@ export default class TexasScene extends BaseScene {
 
     textAlreadAnte: cc.Label = null;
     //个性设置界面
-    UITexasSetting: cc.Node = null;
+    //UITexasSetting: cc.Node = null;
 
 
 
@@ -224,7 +226,9 @@ export default class TexasScene extends BaseScene {
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
 
 
-        this.UITexasSetting = this.getChildNodeOrComponent("UITexasSetting");
+        //this.UITexasSetting = this.getChildNodeOrComponent("UITexasSetting");
+
+        this.UIOperation = this.getChildNodeOrComponent("UIOperation");
 
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];

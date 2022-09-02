@@ -11,7 +11,7 @@ import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
 import Seat from "./Seat";
-import { SeatSitAnimation, SeatStart, SeatStraddle, SeatWaitBlind, SeatWaitStart } from "./SeatStateHandler";
+import { SeatOperation, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
 
 const CanPlayStatus = Def.CanPlayStatus;
@@ -294,66 +294,64 @@ export default class TexasGameProtocol {
         if (this.game.bigIndex >= 0) {
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_SECOND);
         }
-        this.game.PlayDealAnimation(null);
-        // 发牌动画
-        //     this.game.PlayDealAnimation(() => {
-        //         UpdateAlreadAnte();
-        //             Seat mSeat0 = null;
-        //         for (int i = 0, n = responseData.Players.Count; i < n; i++)
-        //     {
-        //         mSeat0 = listSeat[GetLocalSeatID(responseData.Players[i].SeatId)];
+        // 发牌动画和结束响应
+        this.game.PlayDealAnimation(() => {
+            this.game.UpdateAlreadAnte();
+            let mSeat0: Seat = null;
+            for (let i = 0, n = responseData.playersList.length; i < n; i++) {
+                mSeat0 = this.game.listSeat[this.game.GetLocalSeatID(responseData.playersList[i].seatId)];
+                if (null == mSeat0 || null == mSeat0.Player) {
+                    continue;
+                }
 
-        //         if (null == mSeat0 || null == mSeat0.Player) {
-        //             continue;
-        //         }
+                mSeat0.FsmLogicComponent.SM.ChangeState(SeatStartToPlaying.Instance);
 
-        //         mSeat0.FsmLogicComponent.SM.ChangeState(SeatStartToPlaying<Entity>.Instance);
+                if (this.game.operationID == mSeat0.seatID) {
+                    mSeat0.FsmLogicComponent.SM.ChangeState(SeatOperation.Instance);
+                }
+                else {
+                    mSeat0.FsmLogicComponent.SM.ChangeState(SeatWaitOther.Instance);
+                }
+            }
 
-        //         if (operationID == mSeat0.seatID) {
-        //             mSeat0.FsmLogicComponent.SM.ChangeState(SeatOperation<Entity>.Instance);
-        //         }
-        //         else {
-        //             mSeat0.FsmLogicComponent.SM.ChangeState(SeatWaitOther<Entity>.Instance);
-        //         }
-        //     }
+            mSeat0 = this.game.GetSeatByLocalSeatID(this.game.operationID);
+            let mMySeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
 
-        //     mSeat0 = GetSeatByLocalSeatID(operationID);
-        //             Seat mMySeat = GetSeatByLocalSeatID(mainPlayer.seatID);
+            if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
 
-        //     if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
-
-        //         // 到自己操作
-        //         HideAutoOperationPanel();
-        //         if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-        //             ShowOperationPanel(new UIOperationComponent.OperationData()
-        //                     {
-        //                     actionLimits = responseData.NextOperator.Actions,
-        //                     Shortcuts = responseData.NextOperator.Shortcuts
-        //                 });
-        //         }
-        //     }
-        //     else {
-        //         // 其他人操作
-        //         HideOperationPanel();
-        //         if (null != mMySeat && mMySeat.Player.isParticipateInTheGame) {
-        //             // 自己参与游戏
-        //             // 非弃牌 && 非ALLIN && 非托管
-        //             if (mMySeat.Player.actionStatus != Def.Types.Action.Fold && mMySeat.Player.actionStatus != Def.Types.Action.Allin && mMySeat.Player.actionStatus != Def.Types.Action.None && !mMySeat.Player.IsAutoOp) {
-        //                 UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-        //                         {
-        //                         callAmount = getAutoOperationCallAmount(responseData.HandInfo.RoundBet)
-        //                     });
-        //             }
-        //             else {
-        //                 HideAutoOperationPanel();
-        //             }
-        //         }
-        //         else {
-        //             // 观众
-        //             HideAutoOperationPanel();
-        //         }
-        //     }
-        // });
+                // 到自己操作
+                this.game.HideAutoOperationPanel();
+                if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
+                    // this.game.ShowOperationPanel(new UIOperationComponent.OperationData()
+                    //         {
+                    //         actionLimits = responseData.NextOperator.Actions,
+                    //         Shortcuts = responseData.NextOperator.Shortcuts
+                    //     });
+                    this.game.ShowOperationPanel(null);
+                }
+            }
+            else {
+                // 其他人操作
+                this.game.HideOperationPanel();
+                if (null != mMySeat && mMySeat.Player.isParticipateInTheGame) {
+                    // 自己参与游戏
+                    // 非弃牌 && 非ALLIN && 非托管
+                    if (mMySeat.Player.actionStatus != Def.Action.FOLD && mMySeat.Player.actionStatus != Def.Action.ALLIN && mMySeat.Player.actionStatus != Def.Action.NONE && !mMySeat.Player.IsAutoOp) {
+                        // UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
+                        //         {
+                        //         callAmount = getAutoOperationCallAmount(responseData.HandInfo.RoundBet)
+                        //     });
+                    }
+                    else {
+                        this.game.HideAutoOperationPanel();
+                    }
+                }
+                else {
+                    // 观众
+                    this.game.HideAutoOperationPanel();
+                }
+            }
+        });
 
 
     }

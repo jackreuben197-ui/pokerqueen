@@ -1,4 +1,5 @@
 import FSMLogicComponent from "./FSMLogicComponent";
+import { GameCache } from "./GameCache";
 import Seat from "./Seat";
 import { SeatEmpty, SeatSit, SeatStandup, SeatWaitStart } from "./SeatStateHandler";
 
@@ -210,6 +211,113 @@ export class SeatFSM {
     }
     //#endregion
 
+    //#region 开始转游戏中
+    public StartToPlayingEnter(): void {
+        this.seat.UpdateBanker();
+        this.seat.UpdateCoin();
+        this.seat.UpdateCards();
+        this.seat.UpdateCurRoundHaveBet();
+        this.seat.UpdateShowCardsId();
+
+        this.seat.StopAllinArmature();
+        this.seat.StopWinArmature();
+    }
+
+    public StartToPlayingExecute(): void {
+
+    }
+
+    public StartToPlayingExit(): void {
+
+    }
+    //#endregion
+
+
+    //#region 操作中
+    public OperationEnter(): void {
+        if (this.seat.IsMySeat) {
+            if (GameCache.Instance.voiceprint_verify_on == 1) {
+                //this.seat.VoiceMoveToOhter();
+            }
+            this.seat.UpdateImageBackActive();
+            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_PLAYER_TURN);
+            return;
+        }
+        this.seat.StartCountDown(GameCache.Instance.CurGame.GetOpTime());
+    }
+
+    public OperationExecute(): void {
+        if (!this.seat.isCountDown)
+            return;
+
+        // imageCountDown.fillAmount = (optCurTime -= Time.deltaTime) / optTotalTime;
+        // image_CountDownTime.text = ((int)optCurTime).ToString();
+        // if (imageCountDown.fillAmount <= 0) {
+        //     isCountDown = false;
+        //     imageCountDown.gameObject.SetActive(false);
+        //     Image_CountDownbg.gameObject.SetActive(false);
+        //     PlayLightArmature();
+        // }
+    }
+
+    public OperationExit(): void {
+        if (this.seat.IsMySeat) {
+            if (GameCache.Instance.voiceprint_verify_on == 1) {
+                //VoiceMoveToDefault();
+            }
+        }
+        this.seat.StopCountDown();
+    }
+    //#endregion
+
+
+    //#region 购买保险
+    public InsuranceEnter(): void {
+        this.seat.StartCountDown(this.seat.Player.timeLeft_insurance, true);
+        //this.ShowBubbleInsuranceCountDown();
+    }
+
+    public InsuranceExecute(): void {
+        if (!this.seat.isCountDown)
+            return;
+
+        // imageCountDown.fillAmount = (optCurTime -= Time.deltaTime) / optTotalTime;
+        // image_CountDownTime.text = ((int)optCurTime).ToString();
+        // if (imageCountDown.fillAmount <= 0) {
+        //     isCountDown = false;
+        //     imageCountDown.gameObject.SetActive(false);
+        //     Image_CountDownbg.gameObject.SetActive(false);
+        //     this.seat.PlayLightArmature();
+        // }
+
+        if (this.seat.Player.userID != GameCache.Instance.CurGame.mainPlayer.userID) {
+            let leftTime = Math.ceil(this.seat.optCurTime);
+            if (leftTime < 0)
+                leftTime = 0;
+            //textBubbleInsuranceCountDown.text = CPErrorCode.LanguageDescription(20062, new List<object>() { leftTime });
+        }
+    }
+
+    public InsuranceExit(): void {
+        this.seat.StopCountDown();
+        //this.seat.HideBubbleInsuranceCountDown();
+    }
+    //#endregion
+
+
+    //#region 等待其他玩家操作
+    public WaitOtherEnter(): void {
+
+    }
+
+    public WaitOtherExecute(): void {
+
+    }
+
+    public WaitOtherExit(): void {
+
+    }
+    //#endregion
 
 
 }

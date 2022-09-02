@@ -152,6 +152,7 @@ export default class ProtocolAgency extends cc.Component {
         let body = protocol.Response(body_ua);
 
         if (OpCodeHelper.NeedLog(code))
+
             console.log("%c%s\n%s", LogStyle.ws_response, `>>>>> protocol receive : ${protocolName}`, `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`);
 
         //Dispatcher.emit(code, body);
@@ -162,7 +163,9 @@ export default class ProtocolAgency extends cc.Component {
     static _readNumber(ua: Uint8Array, offset, size): number {
         let hex: string = "0x";
         for (let i = 0; i < size; i++) {
-            hex += ua[offset + i].toString(16);
+            let n_16 = ua[offset + i].toString(16);
+            n_16.length > 1 || (n_16 = "0" + n_16);
+            hex += n_16;
         }
         return parseInt(hex);
     }
