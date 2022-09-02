@@ -1546,7 +1546,7 @@ export default class TexasGame {
     ShowUI<T>(node: cc.Node, component: { new(): T }, param?: any) {
         node.active = true;
         let ui_component: UIBase = node.getComponent(component);
-        ui_component.onShow(param);
+        ui_component?.onShow(param);
     }
     /**
      * 隐藏UI

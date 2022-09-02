@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import { SeatUIInfo } from "../game/Seat";
 import TexasGame from "../game/TexasGame";
-import {GameCache} from "./GameCache";
+import { GameCache } from "./GameCache";
 
 export default class GameUtil {
     private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
@@ -1080,6 +1080,71 @@ export default class GameUtil {
         else {
             return `poker_dz_${cardNum}`;
         }
+    }
+
+
+    /// <summary>
+    /// 判断是否是底池限注
+    /// </summary>
+    /// <param name="roomType"></param>
+    /// <returns></returns>
+    public static JudgeIsPotLimitRoomPath(roomType: RoomType): boolean {
+        let isPotLimit: boolean = false;
+        switch (roomType) {
+            case RoomType.MTTOmaha4SixPlusFixedPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.MTTOmaha4StandardPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.MTTOmaha5SixPlusFixedPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.MTTOmaha5StandardPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.MTTOmaha6SixPlusFixedPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.MTTOmaha6StandardPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.MTTTexasHoldemSixPlusFixedPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.MTTTexasHoldemStandardPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.Omaha4SixPlusFixedPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.Omaha4StandardPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.Omaha5SixPlusFixedPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.Omaha5StandardPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.Omaha6SixPlusFixedPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.Omaha6StandardPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.TexasHoldemSixPlusFixedPotLimit:
+                isPotLimit = true;
+                break;
+            case RoomType.TexasHoldemStandardPotLimit:
+                isPotLimit = true;
+                break;
+            default:
+                isPotLimit = false;
+                break;
+        }
+
+        return isPotLimit;
     }
 
     /// <summary>

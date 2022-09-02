@@ -4,6 +4,7 @@ import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/def
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
+import GameUtil from "../GameUtil";
 import UITexasSettingComponent from "../UITexasSettingComponent";
 
 
@@ -17,7 +18,7 @@ class ActionDataInfo {
     // public ulong StraddleAmount;
     // public ulong AllInAmount;
     // public ActionLimit actionLimit;//只用于raise 或 bet
-    public constructor(public CallAmount = 0, public StraddleAmount = 0, public AllInAmount = 0, public actionLimit = null) {
+    public constructor(public CallAmount: number = 0, public StraddleAmount: number = 0, public AllInAmount: number = 0, public actionLimit: ActionLimit.AsObject = null) {
         // CallAmount = 0;
         // StraddleAmount = 0;
         // AllInAmount = 0;
@@ -65,6 +66,11 @@ export default class UIOperationComponent extends UIBase {
     textCallPotValue2: cc.Label = null;
     textCallPotValueLeft: cc.Label = null;
     textCallPotValueRight: cc.Label = null;
+
+    textFreeCall: cc.Label = null;
+    textFreeCallMax: cc.Label = null;
+
+    textCall: cc.Label = null;
     /**
      * 声明
      */
@@ -77,21 +83,25 @@ export default class UIOperationComponent extends UIBase {
     private chipScale: number = 100;
 
 
-    private callValue0: number;
-    private callValue1: number;
-    private callValue2: number;
-    private callValueLeft: number;
-    private callValueRight: number;
+    private callValue0: number = 0;
+    private callValue1: number = 0;
+    private callValue2: number = 0;
+    private callValueLeft: number = 0;
+    private callValueRight: number = 0;
 
     /// <summary>
     /// 数据缓存
     /// </summary>
-    private operationData: OperationData;
-    private actionDataInfo: ActionDataInfo;
+    private operationData: OperationData = null;
+    private actionDataInfo: ActionDataInfo = null;
+
+    private _isCheckCountDown: boolean = false;
+    private _isFoldCountDown: boolean = false;
 
 
 
     protected lateLoad(): void {
+        super.lateLoad();
         this.buttonAllin = this.getChildNodeOrComponent("Button_Allin");
         this.Button_Straddle = this.getChildNodeOrComponent("Button_Straddle");
         this.buttonCall = this.getChildNodeOrComponent("Button_Call");
@@ -102,7 +112,7 @@ export default class UIOperationComponent extends UIBase {
         this.buttonCallRight = this.getChildNodeOrComponent("Button_Call_right");
         this.buttonCheck = this.getChildNodeOrComponent("Button_Check");
         this.buttonFold = this.getChildNodeOrComponent("Button_Fold");
-        //this.buttonFreeCall = this.getChildNodeOrComponent("Button_Allin");
+        this.buttonFreeCall = this.getChildNodeOrComponent("Button_FreeCall");
         this.buttonFreeCallConfirm = this.getChildNodeOrComponent("Button_FreeCall_Confirm");
 
 
@@ -129,6 +139,11 @@ export default class UIOperationComponent extends UIBase {
         this.textCallPotValue2 = this.buttonCall2.getChildByName("Text_CallPotValue").getComponent(cc.Label);
         this.textCallPotValueLeft = this.buttonCallLeft.getChildByName("Text_CallPotValue").getComponent(cc.Label);
         this.textCallPotValueRight = this.buttonCallRight.getChildByName("Text_CallPotValue").getComponent(cc.Label);
+
+        this.textCall = this.buttonCall.getChildByName("Text_Call").getComponent(cc.Label);
+
+        //this.textFreeCall = rc.Get<GameObject>("Text_FreeCall").GetComponent<Text>();
+        //this.textFreeCallMax = rc.Get<GameObject>("Text_FreeCall_Max").GetComponent<Text>();
     }
 
 
@@ -199,10 +214,10 @@ export default class UIOperationComponent extends UIBase {
                     break;
                 case Def.Action.ALLIN:
 
-                    if (this.getActionLimitByAction(pbt.Action.Bet) == null && this.getActionLimitByAction(pbt.Action.Raise) == null && this.getActionLimitByAction(pbt.Action.Call) != null) {
+                    if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CALL) != null) {
                         this.showAllInRaise(actionLimit);
                     }
-                    else if (getActionLimitByAction(pbt.Action.Bet) == null && this.getActionLimitByAction(pbt.Action.Raise) == null && this.getActionLimitByAction(pbt.Action.Check) != null) {
+                    else if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CHECK) != null) {
                         this.showAllInRaise(actionLimit);
                     }
                     else {
@@ -262,6 +277,36 @@ export default class UIOperationComponent extends UIBase {
             this.buttonFreeCall.active = true;
         }
     }
+
+
+    private showCall(actionLimit: ActionLimit.AsObject): void {
+        cc.log("+ showCall");
+        this.actionDataInfo.CallAmount = actionLimit.min;
+        this.buttonCall.active = true;
+        this.textCall.string = StringHelper.getStringDiv100(actionLimit.min);
+    }
+
+    private showFold(actionLimit: ActionLimit.AsObject): void {
+        cc.log("+ showFold");
+        this.buttonFold.active = true;
+        if (this.getActionLimitByAction(Def.Action.CHECK) != null) {
+            return;
+        }
+        // this.imageFoldCountDown.gameObject.SetActive(true);
+        // this.imageFoldCountDown.fillAmount = 1f;
+        this._isFoldCountDown = true;
+    }
+
+    private showCheck(AactionLimit: ActionLimit.AsObject): void {
+        cc.log("+ showCheck");
+        this.buttonCheck.active = true;
+        // this.imageCheckCountDown.gameObject.SetActive(true);
+        // this.imageCheckCountDown.fillAmount = 1;
+        this._isCheckCountDown = true;
+    }
+
+
+
     /// <summary>
     /// 设置 n/m底池加注按钮
     /// </summary>
@@ -294,76 +339,133 @@ export default class UIOperationComponent extends UIBase {
         this.textCallPotRight.string = UITexasSettingComponent.GetCurQuickActionNum(4);
         //}
 
-       this. textCallPotValue0.text = callValue0 <= 0 ? string.Empty : (callValue0 < totalChips ? StringHelper.GetLongString((long)callValue0) : "All in");
-       this. textCallPotValue1.text = callValue1 <= 0 ? string.Empty : (callValue1 < totalChips ? StringHelper.GetLongString((long)callValue1) : "All in");
-       this. textCallPotValue2.text = callValue2 <= 0 ? string.Empty : (callValue2 < totalChips ? StringHelper.GetLongString((long)callValue2) : "All in");
-       this. textCallPotValueLeft.text = callValueLeft <= 0 ? string.Empty : (callValueLeft < totalChips ? StringHelper.GetLongString((long)callValueLeft) : "All in");
-       this.textCallPotValueRight.text = callValueRight <= 0 ? string.Empty : (callValueRight < totalChips ? StringHelper.GetLongString((long)callValueRight) : "All in");
+        this.textCallPotValue0.string = this.callValue0 <= 0 ? "" : (this.callValue0 < totalChips ? StringHelper.getStringDiv100(this.callValue0) : "All in");
+        this.textCallPotValue1.string = this.callValue1 <= 0 ? "" : (this.callValue1 < totalChips ? StringHelper.getStringDiv100(this.callValue1) : "All in");
+        this.textCallPotValue2.string = this.callValue2 <= 0 ? "" : (this.callValue2 < totalChips ? StringHelper.getStringDiv100(this.callValue2) : "All in");
+        this.textCallPotValueLeft.string = this.callValueLeft <= 0 ? "" : (this.callValueLeft < totalChips ? StringHelper.getStringDiv100(this.callValueLeft) : "All in");
+        this.textCallPotValueRight.string = this.callValueRight <= 0 ? "" : (this.callValueRight < totalChips ? StringHelper.getStringDiv100(this.callValueRight) : "All in");
 
         //展示加注按钮和自由加注按钮
         this.showRaiseButton();
     }
+
+
+    /// <summary>
+    /// 展示加注按钮和自由加注按钮
+    /// </summary>
+    private showRaiseButton(): void {
+        this.buttonCall0.active = true;
+        this.buttonCall1.active = true;
+        this.buttonCall2.active = true;
+
+        this.buttonCallLeft.active = UITexasSettingComponent.GetCurQuickActionNum(0) != "0";
+
+        this.buttonCallRight.active = UITexasSettingComponent.GetCurQuickActionNum(4) != "0";
+
+        this.buttonFreeCall.active = true;
+    }
+
+
+    private showAllInRaise(actionLimit: ActionLimit.AsObject): void {
+        this.actionDataInfo.AllInAmount = actionLimit.min;
+        this.actionDataInfo.actionLimit = actionLimit;
+        // this.sliderFreeCall.maxValue = (float)Math.Ceiling((actionLimit.Max) / calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+        // this.sliderFreeCall.minValue = sliderFreeCall.maxValue;
+        // this.sliderFreeCall.value = sliderFreeCall.maxValue;
+        //this.textFreeCall.string = `ALL IN`;
+        //this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
+        this.setTopCallButtons();
+        this.buttonFreeCall.active = true;
+        cc.log("+ showRaise");
+    }
+
+    private showAllin(actionLimit: ActionLimit.AsObject) {
+        cc.log("+ showAllin");
+        this.actionDataInfo.AllInAmount = actionLimit.min;
+        this.buttonAllin.active = true;
+    }
+
+
 
     /// <summary>
     /// 获取快捷面板底池加注值
     /// </summary>
     /// <param name="quickActionStr"></param>
     /// <returns></returns>
-    private getPotMutiplierByQuickAction(float times): number {
-            ulong valueTmp = actionDataInfo.actionLimit.Min;
-        if (actionDataInfo.actionLimit.Action == pbt.Action.Allin) {
-            Log.Debug("Allin");
-            valueTmp = GameCache.Instance.CurGame.MainPlayer.chips;
+    private getPotMutiplierByQuickAction(times: number): number {
+        let valueTmp: number = this.actionDataInfo.actionLimit.min;
+        if (this.actionDataInfo.actionLimit.action == Def.Action.ALLIN) {
+            cc.log("Allin");
+            valueTmp = GameCache.Instance.CurGame.mainPlayer.chips;
         }
         else {
-            if (GameUtil.JudgeIsPotLimitRoomPath((RoomType)GameCache.Instance.room_type)) {
-                Log.Debug("IsPotLimit");
-                if (potMutiplier(times) >= GameCache.Instance.CurGame.MainPlayer.chips && potMutiplier(times) <= actionDataInfo.actionLimit.Max) {
-                    valueTmp = GameCache.Instance.CurGame.MainPlayer.chips;
+            if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
+                cc.log("IsPotLimit");
+                if (this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips && this.potMutiplier(times) <= this.actionDataInfo.actionLimit.max) {
+                    valueTmp = GameCache.Instance.CurGame.mainPlayer.chips;
                 }
                 else {
-                    if (potMutiplier(times) >= actionDataInfo.actionLimit.Max) {
-                        valueTmp = actionDataInfo.actionLimit.Max;
+                    if (this.potMutiplier(times) >= this.actionDataInfo.actionLimit.max) {
+                        valueTmp = this.actionDataInfo.actionLimit.max;
                     }
-                    else if (potMutiplier(times) <= actionDataInfo.actionLimit.Min) {
-                        valueTmp = actionDataInfo.actionLimit.Min;
+                    else if (this.potMutiplier(times) <= this.actionDataInfo.actionLimit.min) {
+                        valueTmp = this.actionDataInfo.actionLimit.min;
                     }
                     else {
-                        valueTmp = potMutiplier(times);
+                        valueTmp = this.potMutiplier(times);
                     }
                 }
             }
             else {
-                if (potMutiplier(times) >= GameCache.Instance.CurGame.MainPlayer.chips) {
-                    valueTmp = GameCache.Instance.CurGame.MainPlayer.chips;
+                if (this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips) {
+                    valueTmp = GameCache.Instance.CurGame.mainPlayer.chips;
                 }
                 else {
-                    if (potMutiplier(times) > actionDataInfo.actionLimit.Min) {
-                        valueTmp = potMutiplier(times);
+                    if (this.potMutiplier(times) > this.actionDataInfo.actionLimit.min) {
+                        valueTmp = this.potMutiplier(times);
                     }
                     else {
-                        valueTmp = actionDataInfo.actionLimit.Min;
+                        valueTmp = this.actionDataInfo.actionLimit.min;
                     }
                 }
-                Log.Debug("not IsPotLimit");
-                valueTmp = potMutiplier(times) >= GameCache.Instance.CurGame.MainPlayer.chips ? GameCache.Instance.CurGame.MainPlayer.chips : (potMutiplier(times) >= actionDataInfo.actionLimit.Min ? potMutiplier(times) : actionDataInfo.actionLimit.Min);
+                cc.log("not IsPotLimit");
+                valueTmp = this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips ? GameCache.Instance.CurGame.mainPlayer.chips : (this.potMutiplier(times) >= this.actionDataInfo.actionLimit.min ? this.potMutiplier(times) : this.actionDataInfo.actionLimit.min);
             }
         }
-        if (valueTmp < GameCache.Instance.CurGame.MainPlayer.chips) {
-            if (Math.Ceiling(valueTmp / calibrationWeight) * calibrationWeight >= actionDataInfo.actionLimit.Max) {
-                valueTmp = (ulong)(Math.Floor(actionDataInfo.actionLimit.Max / calibrationWeight) * calibrationWeight);
+        if (valueTmp < GameCache.Instance.CurGame.mainPlayer.chips) {
+            if (Math.ceil(valueTmp / this.calibrationWeight) * this.calibrationWeight >= this.actionDataInfo.actionLimit.max) {
+                valueTmp = Math.floor(this.actionDataInfo.actionLimit.max / this.calibrationWeight) * this.calibrationWeight;
             }
             else {
-                valueTmp = (ulong)(Math.Ceiling(valueTmp / calibrationWeight) * calibrationWeight);
+                valueTmp = Math.ceil(valueTmp / this.calibrationWeight) * this.calibrationWeight;
             }
         }
-        Log.Debug("times:" + times + "  valueTmp:" + valueTmp + "  potMutiplier(times):" + potMutiplier(times));
+        cc.log("times:" + times + "  valueTmp:" + valueTmp + "  potMutiplier(times):" + this.potMutiplier(times));
 
         return valueTmp;
     }
 
-
-
+    /// <summary>
+    /// 通过Action 取得ActionLimit
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    private getActionLimitByAction(action: Def.ActionMap[keyof Def.ActionMap]): ActionLimit.AsObject {
+        for (let actionLimit of this.operationData.actionLimits) {
+            if (actionLimit.action == action) {
+                return actionLimit;
+            }
+        }
+        return null;
+    }
+    /// <summary>
+    /// 计算 n/m池加注 数值
+    /// </summary>
+    /// <param name="times"></param>
+    /// <returns></returns>
+    private potMutiplier(times: number): number {
+        return this.actionDataInfo.CallAmount + (GameCache.Instance.CurGame.alreadAnte + this.actionDataInfo.CallAmount) * times;
+    }
 
 
     private SetCalibrationWeight(): void {
