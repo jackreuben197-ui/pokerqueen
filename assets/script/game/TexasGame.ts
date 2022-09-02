@@ -22,7 +22,7 @@ import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
 import GameUtil from "./GameUtil";
 import Seat, { SeatUIInfo } from "./Seat";
-import { SeatEmpty, SeatIdle, SeatInsuranc } from "./SeatStateHandler";
+import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation } from "./SeatStateHandler";
 import TexasGameMessageHandler from "./TexasGameMessageHandler";
 import TexasGameProtocol from "./TexasGameProtocol";
 import { TexasGameState } from "./TexasGameState";
@@ -559,7 +559,47 @@ export default class TexasGame {
         else {
             this.noLeftOperateTime = true;
         }
-
+        // 如果有让牌操作的时候点弃牌会出现弹框，先隐藏
+        // UI mTmpDialog = UIComponent.Instance.Get(UIType.UIDialog);
+        //         if (null != mTmpDialog && mTmpDialog.GameObject.activeInHierarchy) {
+        //             UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+        //         }
+        //当前操作人
+        if (this.operationID != -1) {
+            mSeat = this.GetSeatByLocalSeatID(this.operationID);
+            if (null != mSeat && null != mSeat.Player) {
+                if (mSeat.seatID == this.mainPlayer.seatID && mSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isPlaying) {
+                    //自己操作中
+                    this.HideAutoOperationPanel();   // 隐藏预操作
+                    this.ShowOperationPanel(UIOperationComponent.GetOperationData(actionLimits, actionShortcutLimits));
+                }
+                else {
+                    // 下一个操作不是自己
+                    this.HideOperationPanel();
+                    if (this.mainPlayer.isPlaying) {
+                        // 自己有参与游戏,但allin弃牌不显示
+                        if ((this.mainPlayer.actionStatus != Def.Action.FOLD && this.mainPlayer.actionStatus != Def.Action.ALLIN && this.mainPlayer.actionStatus != Def.Action.NONE) && !this.mainPlayer.IsAutoOp) {
+                            //         UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
+                            // {
+                            //                 callAmount = getAutoOperationCallAmount(rec.HandInfo.RoundBet)
+                            //             });
+                        }
+                        else {
+                            this.HideAutoOperationPanel();
+                        }
+                    }
+                    else {
+                        // 观众
+                        this.HideAutoOperationPanel();
+                    }
+                }
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatOperation.Instance);
+            }
+        }
+        else {
+            this.HideOperationPanel();
+            this.HideAutoOperationPanel();
+        }
 
 
         this.UpdatePots();
@@ -1474,13 +1514,13 @@ export default class TexasGame {
                 if (this.mainPlayer.seatID == mSeat.seatID) {
                     mSeat.SetOperationHeadActive(true);
                 }
-
             }
         }
         //buttonDelay.gameObject.SetActive(false);
         if (this.uirc.UIOperation.activeInHierarchy) {
             this.HideUI(this.uirc.UIOperation);
         }
+        cc.log("隐藏操作界面");
     }
 
 

@@ -49,13 +49,12 @@ export default class StateMachine {
     /**
      * 状态机刷新
      */
-    public UpdateStateMachine() {
-
+    public UpdateStateMachine(dt: number) {
         if (this.globalState) {
-            this.globalState.Execute(this.owner);
+            this.globalState.Execute(this.owner, dt);
         } else {
             if (this.currentState) {
-                this.currentState.Execute(this.owner);
+                this.currentState.Execute(this.owner, dt);
             }
         }
     }

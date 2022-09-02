@@ -71,6 +71,10 @@ export default class UIOperationComponent extends UIBase {
     textFreeCallMax: cc.Label = null;
 
     textCall: cc.Label = null;
+
+
+    imageCheckCountDown: cc.Sprite = null;
+    imageFoldCountDown: cc.Sprite = null;
     /**
      * 声明
      */
@@ -116,6 +120,8 @@ export default class UIOperationComponent extends UIBase {
         this.buttonFreeCallConfirm = this.getChildNodeOrComponent("Button_FreeCall_Confirm");
 
 
+        this.imageCheckCountDown = this.getChildNodeOrComponent("Image_CheckCountDown", cc.Sprite);
+        this.imageFoldCountDown = this.getChildNodeOrComponent("Image_FoldCountDown", cc.Sprite);
 
 
         this.Text_Straddle = this.Button_Straddle.getChildByName("Text").getComponent(cc.Label);
@@ -144,6 +150,9 @@ export default class UIOperationComponent extends UIBase {
 
         //this.textFreeCall = rc.Get<GameObject>("Text_FreeCall").GetComponent<Text>();
         //this.textFreeCallMax = rc.Get<GameObject>("Text_FreeCall_Max").GetComponent<Text>();
+
+
+
     }
 
 
@@ -292,21 +301,18 @@ export default class UIOperationComponent extends UIBase {
         if (this.getActionLimitByAction(Def.Action.CHECK) != null) {
             return;
         }
-        // this.imageFoldCountDown.gameObject.SetActive(true);
-        // this.imageFoldCountDown.fillAmount = 1f;
+        this.imageFoldCountDown.node.active = true;
+        this.imageFoldCountDown.fillRange = 1;
         this._isFoldCountDown = true;
     }
 
     private showCheck(AactionLimit: ActionLimit.AsObject): void {
         cc.log("+ showCheck");
         this.buttonCheck.active = true;
-        // this.imageCheckCountDown.gameObject.SetActive(true);
-        // this.imageCheckCountDown.fillAmount = 1;
+        this.imageCheckCountDown.node.active = true;
+        this.imageCheckCountDown.fillRange = 1;
         this._isCheckCountDown = true;
     }
-
-
-
     /// <summary>
     /// 设置 n/m底池加注按钮
     /// </summary>
@@ -478,10 +484,57 @@ export default class UIOperationComponent extends UIBase {
 
     }
 
-    static GetOperationData(responseData: ServerMessageStartInfo.AsObject): OperationData {
+    static GetOperationData(actionsList, shortcutsList): OperationData {
         return {
-            actionLimits: responseData.nextOperator.actionsList,
-            Shortcuts: responseData.nextOperator.shortcutsList
+            actionLimits: actionsList,
+            Shortcuts: shortcutsList
+        }
+    }
+
+    protected update(dt: number): void {
+        if (!this._isCheckCountDown && !this._isFoldCountDown) {
+            return;
+        }
+
+        if (this._isCheckCountDown) {
+            this.imageCheckCountDown.fillRange = (this.optCurTime -= dt) / this.optTotalTime;
+
+            if (this.imageCheckCountDown.fillRange <= 0.02) {
+                //GameCache.Instance.CurGame.HideBtnDelay(false);
+            }
+            if (this.imageCheckCountDown.fillRange <= 0) {
+                this.isCountDown = false;
+                this.imageCheckCountDown.node.active = false;
+                if (this.isShowingDialog)
+                    //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+                    this.isShowingDialog = false;
+                //如需客户端倒计时结束发送让牌，在这里做
+                GameCache.Instance.CurGame.HideOperationPanel();
+
+            }
+        }
+
+        if (this._isFoldCountDown) {
+            this.imageFoldCountDown.fillRange = (this.optCurTime -= dt) / this.optTotalTime;
+            if (this.imageFoldCountDown.fillRange <= 0.02) {
+                //GameCache.Instance.CurGame.HideBtnDelay(false);
+            }
+            if (this.imageFoldCountDown.fillRange <= 0) {
+                this.isCountDown = false;
+                this.imageFoldCountDown.node.active = false;
+                if (this.isShowingDialog)
+                    //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+                    this.isShowingDialog = false;
+                //如需客户端倒计时结束发送弃牌，在这里做
+                GameCache.Instance.CurGame.HideOperationPanel();
+            }
+        }
+
+        if (this.optCurTime < 6.1 && this.optCurTime > 6 && !this.hadAlertSound) {
+            //剩余5秒音效
+            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_ACTION_ALERT);
+            this.hadAlertSound = true;
+            //this.DelayPlayBarrage();
         }
     }
 }

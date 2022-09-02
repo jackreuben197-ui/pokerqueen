@@ -323,7 +323,7 @@ export default class TexasGameProtocol {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData));
+                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData.nextOperator.actionsList,responseData.nextOperator.shortcutsList));
                 }
             }
             else {

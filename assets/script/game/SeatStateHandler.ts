@@ -313,9 +313,9 @@ export class SeatOperation extends StateHandler {
 
     }
 
-    public Execute(entity?: any) {
+    public Execute(entity?: any, dt?: number) {
         super.Execute(entity);
-        if (entity instanceof SeatFSM) entity.OperationExecute();
+        if (entity instanceof SeatFSM) entity.OperationExecute(dt);
 
     }
 
