@@ -161,13 +161,13 @@ export default class ProtocolAgency extends cc.Component {
     }
 
     static _readNumber(ua: Uint8Array, offset, size): number {
-        let hex: string = "0x";
+        let result: number = 0;
         for (let i = 0; i < size; i++) {
-            let n_16 = ua[offset + i].toString(16);
-            n_16.length > 1 || (n_16 = "0" + n_16);
-            hex += n_16;
+            let num = ua[offset + i];
+            let op = size - i - 1;
+            result |= num << (op * 8);
         }
-        return parseInt(hex);
+        return result;
     }
 
     static _getProtocolNameByCode(code): string {
