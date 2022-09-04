@@ -1,8 +1,6 @@
 /**
  * toast管理器 队列上行显示
  */
-
-import Singleton from "../common/Singleton";
 // import Dispatcher from "../event/Dispatcher";
 import { i18nMgr } from "../i18n/i18nMgr";
 import Main from "../Main";
@@ -13,11 +11,7 @@ import Toast from "../ui/toast/Toast";
 const { ccclass } = cc._decorator;
 
 @ccclass
-export default class ToastManager extends Singleton {
-
-    static Name: string = "ToastManager";
-
-    static ins: ToastManager = null;
+export default class ToastManager {
 
     config: any = {
         //容器起始位置
@@ -47,7 +41,10 @@ export default class ToastManager extends Singleton {
 
     fadeDuration: number;
 
-    protected lateLoad() {
+    static get Instance(): ToastManager {
+        return (<any>this).instance ??= new ToastManager();
+    }
+    constructor() {
         this.sequenceContent = new cc.Node("sequenceContent");
         this.sequenceContent.parent = Main.Toast;
         this.fadeDuration = this.config.bufferDuration + this.config.fadeInDuration + this.config.stayDuration + this.config.fadeOutDuration;
@@ -55,7 +52,6 @@ export default class ToastManager extends Singleton {
     }
     //重置队列容器位置
     resetSCPosition() {
-
         this.sequenceContent.y = this.config.contentStartPosition;
     }
 

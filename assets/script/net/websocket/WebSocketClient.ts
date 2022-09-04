@@ -32,7 +32,7 @@ export default class WebSocketClient {
             this.WS.onmessage = this.onmessage.bind(this);
             this.WS.onclose = this.onclose.bind(this);
         } else {
-            ToastManager.ins.createToast("host or port is error!");
+            ToastManager.Instance.createToast("host or port is error!");
         }
     }
     private static onopen(this: WebSocket, ev: Event) {

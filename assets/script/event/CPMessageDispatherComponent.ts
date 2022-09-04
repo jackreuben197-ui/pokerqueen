@@ -2,8 +2,7 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class CPMessageDispatherComponent extends cc.Component {
-    public static Instance: CPMessageDispatherComponent = null;
+export default class CPMessageDispatherComponent {
     /**
      * 事件池
      */
@@ -13,8 +12,9 @@ export default class CPMessageDispatherComponent extends cc.Component {
             handler: Function
         }[]
     } = {};
-    onLoad() {
-        CPMessageDispatherComponent.Instance = this;
+
+    static get Instance(): CPMessageDispatherComponent {
+        return (<any>this).instance ??= new CPMessageDispatherComponent();
     }
 
     /**

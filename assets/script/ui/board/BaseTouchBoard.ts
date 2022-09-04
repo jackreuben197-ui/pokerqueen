@@ -1,9 +1,8 @@
 /**
  *  触摸板基类
  */
-
-import UIManager from "../../manager/UIManager";
 import UIBase from "../UIBase";
+import UIComponent from "../UIComponent";
 
 const { ccclass } = cc._decorator;
 
@@ -106,6 +105,6 @@ export default class BaseTouchBoard extends UIBase {
         this.main.stopAllActions();
     }
     protected goClose() {
-        UIManager.close(this.UIDefine);
+        UIComponent.close(this.UIDefine);
     }
 }

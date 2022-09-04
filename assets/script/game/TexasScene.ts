@@ -285,7 +285,7 @@ export default class TexasScene extends BaseScene {
         if (param != null) { // { fromUI: this.UIDefine, lookOn: false }
 
             this.game.IsLookOn = param?.lookOn || false;
-            //param?.fromUI && UIManager.close(param.fromUI);
+            //param?.fromUI && UIComponent.close(param.fromUI);
         }
 
         this.game.setDeskType(this.game.deskType);
@@ -434,7 +434,7 @@ export default class TexasScene extends BaseScene {
     onClickStandup() {
         this.hideMenu();
         if (null == this.game.mainPlayer) {
-            ToastManager.ins.createToast(i18nMgr.Get("Good_luck"));
+            ToastManager.Instance.createToast(i18nMgr.Get("Good_luck"));
             //需要进行错误重连
             //Game.EventSystem.Run(EventIdType.GameErrorReconnect);
             return;

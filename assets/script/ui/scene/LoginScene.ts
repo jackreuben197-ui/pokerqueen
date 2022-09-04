@@ -10,12 +10,11 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { LanguageCode } from "../../i18n/LanguageCode";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
-
-import UIManager from "../../manager/UIManager";
 import { Web_Login } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../component/AssetContext";
+import UIComponent from "../UIComponent";
 import BaseScene from "./BaseScene";
 
 const { ccclass, property } = cc._decorator;
@@ -173,11 +172,11 @@ export default class LoginScene extends BaseScene {
         cc.log("account:", phone, "password:", password);
 
         if (phone == "") {
-            return ToastManager.ins.createToast(LanguageCode.LanguageDescription(10329));
+            return ToastManager.Instance.createToast(LanguageCode.LanguageDescription(10329));
 
         }
         if (password.length < 6) {
-            return ToastManager.ins.createToast(LanguageCode.LanguageDescription(10330));
+            return ToastManager.Instance.createToast(LanguageCode.LanguageDescription(10330));
         }
 
         let param: typeof Web_Login.RequestParams = {
@@ -193,7 +192,7 @@ export default class LoginScene extends BaseScene {
      */
     onForgotClick() {
         cc.log("onForgotClick");
-        UIManager.open(UIDefine.ResetPassForm);
+        UIComponent.open(UIDefine.ResetPassForm);
     }
 
     /**
@@ -201,14 +200,14 @@ export default class LoginScene extends BaseScene {
      */
     onRegisterClick() {
         cc.log("onRegisterClick");
-        UIManager.open(UIDefine.RegisterForm);
+        UIComponent.open(UIDefine.RegisterForm);
     }
 
     /**
      * 区号点击
      */
     onCodeClick() {
-        UIManager.open(UIDefine.AreaCodeForm);
+        UIComponent.open(UIDefine.AreaCodeForm);
     }
     /**
      * 区号改变
@@ -223,7 +222,7 @@ export default class LoginScene extends BaseScene {
         cc.log("onLanguageClick");
         //I18NManager.ins.languageType = (I18NManager.ins.languageType + 1) % 2;
         //I18NManager.ins.transLanguage(I18NManager.ins.languageType);
-        //UIManager.open(UIDefine.LanguageForm, { language_id: 0 });
+        //UIComponent.open(UIDefine.LanguageForm, { language_id: 0 });
         this.setLanLayerActive(!this.language_layer.active);
     }
     /**

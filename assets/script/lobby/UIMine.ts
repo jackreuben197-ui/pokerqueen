@@ -2,9 +2,9 @@ const { ccclass, property } = cc._decorator;
 import UIBase from "../../../assets/script/ui/UIBase";
 import { UIDefine } from "../define/UIDefine";
 import { i18nLabel } from "../i18n/i18nLabel";
-import UIManager from "../manager/UIManager";
 import { Web_User_Info } from "../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
+import UIComponent from "../ui/UIComponent";
 @ccclass
 export default class UIMine extends UIBase {
     private pageData: any = null;
@@ -90,7 +90,7 @@ export default class UIMine extends UIBase {
             case "UIMine_btn_paipu"://牌谱收藏
                 break;
             case "UIMine_btn_setting"://设置
-                UIManager.open(UIDefine.SettingsForm);
+                UIComponent.open(UIDefine.SettingsForm);
                 break;
         }
     }

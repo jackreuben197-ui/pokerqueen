@@ -5,7 +5,6 @@ import UpdateComponent from "../funcomponent/UpdateComponent";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { LanguageCode } from "../i18n/LanguageCode";
-import UIManager from "../manager/UIManager";
 import { Web_User_Room } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -17,6 +16,7 @@ import StorageKey from "../session/StorageKey";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import UIBase from "../ui/UIBase";
+import UIComponent from "../ui/UIComponent";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
@@ -339,7 +339,7 @@ export default class TexasGame {
         UpdateComponent.Add(this.FsmLogicComponent, this);
         this.FsmLogicComponent.start();
         this.SMAgency.LoadGameStateConf();
-        //SceneManager.ins.switchScene(UIDefine.TexasScene);
+        //SceneManager.Instance.switchScene(UIDefine.TexasScene);
     }
 
     RegisterMsgHandler() {
@@ -1198,7 +1198,7 @@ export default class TexasGame {
     /// <param name="anteNumber"></param>
     public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false) {
         if (GameCache.Instance.gold < anteNumber) {
-            UIManager.open(UIDefine.UIDialogComponent,
+            UIComponent.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
                     // title = $"余额不足",
@@ -1219,7 +1219,6 @@ export default class TexasGame {
                         //     }
                         // });
                     },
-                    actionCancel: null,
                     noAnimation: true,
                 });
             return;

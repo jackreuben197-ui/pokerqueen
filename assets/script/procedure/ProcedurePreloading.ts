@@ -10,7 +10,7 @@ export default class ProcedurePreloading extends ProcedureBase {
 
     protected lateEnter(param?: any) {
         super.lateEnter(param);
-        SceneManager.ins.switchScene(UIDefine.PreloadingScene);
+        SceneManager.Instance.switchScene(UIDefine.PreloadingScene);
     }
     Leave() {
         super.Leave();

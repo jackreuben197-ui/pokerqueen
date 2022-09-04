@@ -1,11 +1,8 @@
 
-import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
-import ProcedureManager from "../../manager/ProcedureManager";
-import UIManager from "../../manager/UIManager";
-import WebSocketClient from "../../net/websocket/WebSocketClient";
 import GlobalSession from "../../session/GlobalSession";
 import SettingsFormItem from "../item/SettingsFormItem";
+import UIComponent from "../UIComponent";
 import BaseForm from "./BaseForm";
 
 const { ccclass, property } = cc._decorator;
@@ -95,28 +92,28 @@ export default class SettingsForm extends BaseForm {
 
         switch (item.param.id) {
             case "netwrok"://网络
-                UIManager.open(UIDefine.BaseForm);
+                UIComponent.open(UIDefine.BaseForm);
                 break;
             case "language"://语言
-                UIManager.open(UIDefine.LanguageForm);
+                UIComponent.open(UIDefine.LanguageForm);
                 break;
             case "gamesounds"://声音
-                UIManager.open(UIDefine.BaseForm);
+                UIComponent.open(UIDefine.BaseForm);
                 break;
             case "accountmanagement":
-                UIManager.open(UIDefine.BaseForm);
+                UIComponent.open(UIDefine.BaseForm);
                 break;
             case "report":
-                UIManager.open(UIDefine.BaseForm);
+                UIComponent.open(UIDefine.BaseForm);
                 break;
             case "about"://关于
-                UIManager.open(UIDefine.BaseForm);
+                UIComponent.open(UIDefine.BaseForm);
                 break;
             case "useragreement":
-                UIManager.open(UIDefine.BaseForm);
+                UIComponent.open(UIDefine.BaseForm);
                 break;
             case "version"://版本
-                UIManager.open(UIDefine.BaseForm);
+                UIComponent.open(UIDefine.BaseForm);
                 break;
 
         }

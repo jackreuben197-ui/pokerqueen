@@ -1,4 +1,4 @@
-import Singleton from "../common/Singleton";
+
 import { IUIDefine } from "../define/EIDefine";
 import Main from "../Main";
 import BaseScene from "../ui/scene/BaseScene";
@@ -8,29 +8,23 @@ import { ResManager } from "./ResManager";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class SceneManager extends Singleton {
-
-    static Name: string = "SceneManager";
-
-    static ins: SceneManager = null;
+export default class SceneManager {
 
     uiMap = {};
     currUI: cc.Node = null;
-
 
     //加载的UI层级
     protected UILayer: cc.Node = null;
     //缓存的UI层级
     protected CacheUILayer: cc.Node = null;
 
-    protected lateLoad() {
-
-        this.UILayer = Main.Scene;
-
-        this.CacheUILayer = Main.Cache_UI;
-
+    static get Instance(): SceneManager {
+        return (<any>this).instance ??= new SceneManager();
     }
-
+    constructor() {
+        this.UILayer = Main.Scene;
+        this.CacheUILayer = Main.Cache_UI;
+    }
 
     /**
      * 场景切换

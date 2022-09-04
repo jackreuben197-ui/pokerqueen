@@ -6,7 +6,6 @@ import { LanguageCode } from "../i18n/LanguageCode";
 import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
 import ToastManager from "../manager/ToastManager";
-import UIManager from "../manager/UIManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
@@ -17,6 +16,7 @@ import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { ServerMessageStandupActive } from "../protobuf/holdem/req_stand_up_active_pb";
+import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
@@ -138,11 +138,11 @@ export default class TexasGameMessageHandler {
 
                 let fromUI = ProcedureManager.currProcedure.param?.fromUI;
 
-                if (fromUI) UIManager.close(fromUI);
+                if (fromUI) UIComponent.close(fromUI);
 
             }
 
-            SceneManager.ins.switchScene(UIDefine.TexasScene, null, ProcedureManager.currProcedure.param);
+            SceneManager.Instance.switchScene(UIDefine.TexasScene, null, ProcedureManager.currProcedure.param);
 
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 
@@ -153,7 +153,7 @@ export default class TexasGameMessageHandler {
             this.game.SMAgency.ChangeGameState(TexasGameState.ExchangeRoom, null);
         }
         else {
-            ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(response.status));
+            ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(response.status));
             // 进入房间失败
             this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
         }
@@ -207,11 +207,11 @@ export default class TexasGameMessageHandler {
         }
         if (response.status == 0) {
             if (this.game.mainPlayer != null && this.game.mainPlayer.isPlaying) {
-                ToastManager.ins.createToast(i18nMgr.Get("Over_folded"));
+                ToastManager.Instance.createToast(i18nMgr.Get("Over_folded"));
             }
         }
         else {
-            ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(response.status));
+            ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(response.status));
         }
     }
 

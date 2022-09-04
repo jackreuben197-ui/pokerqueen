@@ -1,11 +1,10 @@
-import { GameConfig, LogStyle } from "../../config/GameConfig";
+import { LogStyle } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LanguageCode } from "../../i18n/LanguageCode";
 import ToastManager from "../../manager/ToastManager";
-import UIManager from "../../manager/UIManager";
 import LoginSession from "../../session/LoginSession";
-import { HttpErrorCode } from "./HttpErrorCode";
+import UIComponent from "../../ui/UIComponent";
 
 /**
  * Http端
@@ -20,9 +19,9 @@ export default class HttpClient {
     static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
         body = JSON.stringify(body);
         console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
-        needJuhua && UIManager.open(UIDefine.UIPromptComponent);
+        needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "POST", body, headers);
-        needJuhua && UIManager.close(UIDefine.UIPromptComponent);
+        needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
     }
@@ -32,9 +31,9 @@ export default class HttpClient {
     static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
         body = JSON.stringify(body);
         console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
-        needJuhua && UIManager.open(UIDefine.UIPromptComponent);
+        needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, "GET", body, headers);
-        needJuhua && UIManager.close(UIDefine.UIPromptComponent);
+        needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
     }
@@ -42,11 +41,11 @@ export default class HttpClient {
     static __response(response, onFailure, onSuccess) {
         switch (response) {
             case "timeout":
-                ToastManager.ins.createToast(LanguageCode.LanguageDescription(10126));
+                ToastManager.Instance.createToast(LanguageCode.LanguageDescription(10126));
                 onFailure && onFailure(response);
                 break;
             case "error":
-                ToastManager.ins.createToast(i18nMgr.Get("errorDefault"));
+                ToastManager.Instance.createToast(i18nMgr.Get("errorDefault"));
                 onFailure && onFailure(response);
                 break;
             default:
@@ -55,7 +54,7 @@ export default class HttpClient {
                     response_json = JSON.parse(response);
                 } catch (e) {
                     //json 解析异常
-                    ToastManager.ins.createToast(i18nMgr.Get("json_exception"));
+                    ToastManager.Instance.createToast(i18nMgr.Get("json_exception"));
                     onFailure && onFailure(null);
                     return;
                 }
@@ -64,7 +63,7 @@ export default class HttpClient {
                     onSuccess && onSuccess(response_json);
                 } else {
                     //错误码提示
-                    ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(response_json.code));
+                    ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(response_json.code));
                     onFailure && onFailure(response_json.code);
                 }
                 break;

@@ -127,7 +127,7 @@ export default class TexasGameProtocol {
             return;
         }
         if (rec.status != 0) {
-            ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(rec.status));
+            ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(rec.status));
             return;
         }
         this.game.mainPlayer.chips = rec.chips;

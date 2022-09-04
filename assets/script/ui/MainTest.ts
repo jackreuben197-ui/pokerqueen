@@ -30,20 +30,20 @@ export default class MainTest extends UIBase {
     private testClick(e) {
         switch (e.name) {
             case "右入面板":
-                UIManager.open(UIDefine.RightTouchBoard);
+                UIComponent.open(UIDefine.RightTouchBoard);
                 break;
             case "多层标题面板":
-                UIManager.open(UIDefine.LanguageForm);
-                UIManager.open(UIDefine.RegisterForm);
+                UIComponent.open(UIDefine.LanguageForm);
+                UIComponent.open(UIDefine.RegisterForm);
                 break;
             case "提示弹板":
-                UIManager.open(UIDefine.UIDialogComponent, {
+                UIComponent.open(UIDefine.UIDialogComponent, {
                     data: {
                         title: "大大的标题", content: "无限的能量", confirm: "Sure", cancel: "Cancel", confirmCallback: () => {
-                            ToastManager.ins.createToast("面板 确认 回调");
+                            ToastManager.Instance.createToast("面板 确认 回调");
                         },
                         cancelCallback: () => {
-                            ToastManager.ins.createToast("面板 取消 回调");
+                            ToastManager.Instance.createToast("面板 取消 回调");
                         }
                     }
                 });
@@ -67,13 +67,13 @@ export default class MainTest extends UIBase {
                     str = a + "\n" + b;
                 }
 
-                ToastManager.ins.createToast(str);
+                ToastManager.Instance.createToast(str);
                 break;
             case "下入面板":
-                UIManager.open(UIDefine.BottomTouchBoard);
+                UIComponent.open(UIDefine.BottomTouchBoard);
                 break;
             case "loading":
-                UIManager.open(UIDefine.UIPromptComponent);
+                UIComponent.open(UIDefine.UIPromptComponent);
                 break;
             case "判断this":
                 break;
