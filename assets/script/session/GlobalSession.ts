@@ -2,8 +2,8 @@ import { ProcedureEnum } from "../define/EIDefine";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import ProcedureManager from "../manager/ProcedureManager";
-import UIManager from "../manager/UIManager";
 import WebSocketClient from "../net/websocket/WebSocketClient";
+import UIComponent from "../ui/UIComponent";
 
 export default class GlobalSession {
     //单位秒
@@ -18,7 +18,7 @@ export default class GlobalSession {
     static Logout() {
         cc.log("-------------游戏登出--------------");
         //清理面板
-        UIManager.closeAll();
+        UIComponent.closeAll();
         WebSocketClient.Close();
         UpdateComponent.RemoveAll();
         ProcedureManager.StartProcedure(ProcedureEnum.Login);

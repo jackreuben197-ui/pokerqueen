@@ -2,7 +2,6 @@
  * 入口函数
  */
 import { GameConfig } from "./config/GameConfig";
-import { GameCache } from "./game/GameCache";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
 

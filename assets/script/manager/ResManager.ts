@@ -12,8 +12,6 @@ export class ResManager {
         return bundle?.get(assetPath);
 
     }
-
-
     static Load(bundleName: string, ...args: any[]) {
         //默认读取内置包 resources 资源
         if (bundleName == null) {

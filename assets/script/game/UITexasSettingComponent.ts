@@ -245,7 +245,7 @@ export default class UITexasSettingComponent extends UIBase {
     public static GetCurQuickActionNumValue(index) {
         let defaultActionNums = [0, 1.0 / 2, 2.0 / 3, 1.0, 0];
         let numStr = localStorage.getItem(StorageKey.kQuickActionIndexValueKEY + index) || defaultActionNums[index];
-        return numStr;
+        return +numStr;
     }
 
 

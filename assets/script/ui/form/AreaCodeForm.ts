@@ -4,7 +4,6 @@ import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import LoginSession from "../../session/LoginSession";
-import GGToggleContainer from "../component/GGToggleContainer";
 import AreaCodeFormItem from "../item/AreaCodeFormItem";
 import BaseForm from "./BaseForm";
 

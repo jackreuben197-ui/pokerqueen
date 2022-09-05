@@ -21,7 +21,7 @@ export default class ProcedureLogin extends ProcedureBase {
             ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby);
         } else {
             //展示登录界面
-            SceneManager.ins.switchScene(UIDefine.LoginScene);
+            SceneManager.Instance.switchScene(UIDefine.LoginScene);
         }
     }
     Leave() {

@@ -33,7 +33,7 @@ export default class ProcedureEnterLobby extends ProcedureBase {
     /////////////////////////////////////////////
     _catchHandler(code: number) {
         cc.log("login error code", code);
-        // if (SceneManager.ins.getCurrUIDefine() == UIDefine.PreloadingScene) {
+        // if (SceneManager.Instance.getCurrUIDefine() == UIDefine.PreloadingScene) {
         //     //Token失败,这里清理Token，重新进入登录界面
         //     LoginSession.LoginOut();
         //     ProcedureManager.StartProcedure(ProcedureEnum.Login);

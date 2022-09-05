@@ -20,13 +20,13 @@ export default class FSMLogicComponent implements IUpdate {
 
     private readonly TimeThreshold: number = 1 / 60;
 
-    public update() {
+    public update(dt: number) {
 
         if (this.allowUpdate) {
 
             // float startTime = Time.realtimeSinceStartup;
 
-            // this._sm.UpdateStateMachine();
+            this._sm.UpdateStateMachine(dt);
 
             // float timeDiff = Time.realtimeSinceStartup - startTime;
             // if (timeDiff > this.TimeThreshold)

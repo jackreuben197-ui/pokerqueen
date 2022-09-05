@@ -2,9 +2,8 @@
  * loadng 菊花|文字 效果组件 延迟显示
  */
 
-import ToastManager from "../../manager/ToastManager";
-import UIManager from "../../manager/UIManager";
 import UIBase from "../UIBase";
+import UIComponent from "../UIComponent";
 
 const { ccclass, property } = cc._decorator;
 
@@ -56,7 +55,7 @@ export default class UIPromptComponent extends UIBase {
             //return;
             case this.statusType.Showing:
                 if ((new Date().getTime() - this.showStartTime) / 1000 > this.timeout) {
-                    //ToastManager.ins.createToast("adaptation10126");
+                    //ToastManager.Instance.createToast("adaptation10126");
                     this.goClose();
                 }
                 break;
@@ -71,7 +70,7 @@ export default class UIPromptComponent extends UIBase {
         this.translateStatus(this.statusType.Idle);
     }
     goClose() {
-        UIManager.close(this.UIDefine);
+        UIComponent.close(this.UIDefine);
     }
     //切换状态
     translateStatus(status: number) {

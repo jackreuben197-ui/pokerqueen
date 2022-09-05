@@ -34,7 +34,7 @@ export class UIMineModel {
                     if (pAct != null)
                         pAct(tDto.data);
                 } else {
-                    ToastManager.ins.createToast("" + tDto.code);
+                    ToastManager.Instance.createToast("" + tDto.code);
                 }
             })
 

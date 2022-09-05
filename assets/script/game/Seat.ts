@@ -89,6 +89,8 @@ export default class Seat {
 
         UpdateComponent.Add(this.FsmLogicComponent = new FSMLogicComponent(), this.fsm);
 
+        this.FsmLogicComponent.start();
+
         this.RegiterTouchEvents();
 
         this.InitUIStaticData();
@@ -1027,9 +1029,6 @@ export default class Seat {
                         cc.delayTime(0.4)
                     );
                     spawns.push(tween_card_sequence);
-                    // sequencePlayDealAnimation.spawn.push(() => {
-                    //     cc.tween(this.uirc.listCardUIInfos[i].imageCard).to(0.4, { scaleX: 1.5, scaleY: 1.3 }).start();
-                    // });
 
                 }
 
@@ -1139,11 +1138,11 @@ export default class Seat {
         }
         this.optTotalTime = defaultOpTime;
         this.isCountDown = true;
-        // imageCountDown.fillAmount = optCurTime / defaultOpTime;
-        // imageCountDown.gameObject.SetActive(true);
-        // Image_CountDownbg.gameObject.SetActive(true);
-        // image_CountDownTime.text = ((int)optCurTime).ToString();
-        // StopLightArmature();
+        this.uirc.imageCountDown.fillRange = this.optCurTime / defaultOpTime;
+        this.uirc.imageCountDown.node.active = true;
+        this.uirc.Image_CountDownbg.node.active = true;
+        this.uirc.image_CountDownTime.string = `${this.optCurTime}`;
+        //this.StopLightArmature();
     }
 
     /// <summary>
@@ -1152,8 +1151,8 @@ export default class Seat {
     public StopCountDown(): void {
         if (this.isCountDown) {
             this.isCountDown = false;
-            //imageCountDown.gameObject.SetActive(false);
-            //Image_CountDownbg.gameObject.SetActive(false);
+            this.uirc.imageCountDown.node.active = false;
+            this.uirc.Image_CountDownbg.node.active = false;
         }
         //this.StopLightArmature();
     }

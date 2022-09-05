@@ -1,7 +1,6 @@
 import { i18nLabel } from "../../i18n/i18nLabel";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import UIManager from "../../manager/UIManager";
 import UIBase from "../UIBase";
+import UIComponent from "../UIComponent";
 
 
 const { ccclass, property } = cc._decorator;
@@ -76,7 +75,7 @@ export default class BaseForm extends UIBase {
 
     //关闭界面
     close() {
-        UIManager.close(this.UIDefine);
+        UIComponent.close(this.UIDefine);
     }
 
     mainFadeIn(style: any) {

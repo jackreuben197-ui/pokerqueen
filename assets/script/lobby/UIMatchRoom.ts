@@ -1,9 +1,8 @@
 const { ccclass } = cc._decorator;
 import UIBase from "../../../assets/script/ui/UIBase";
 import { Web_Room_Center_Groups } from "../../../assets/script/net/https/WebRequest";
-
-import UIManager from "../../script/manager/UIManager";
 import { UIDefine } from "../../script/define/UIDefine";
+import UIComponent from "../ui/UIComponent";
 @ccclass
 export default class UIMatchRoom extends UIBase {
     public static instance: UIMatchRoom = null;
@@ -129,7 +128,7 @@ export default class UIMatchRoom extends UIBase {
             index: parseInt(e.target.index),
             len: this.roomLen,
         }
-        UIManager.open(UIDefine.UIMatchPlayViewForm, sendDate);
+        UIComponent.open(UIDefine.UIMatchPlayViewForm, sendDate);
     }
 }
 

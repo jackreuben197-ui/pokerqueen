@@ -2,9 +2,6 @@
 /**
  * 基础小弹窗类
  */
-
-import { DialogParam } from "../../define/EIDefine";
-import { LanguageCode } from "../../i18n/LanguageCode";
 import BaseTouchBoard from "../board/BaseTouchBoard";
 
 const { ccclass } = cc._decorator;

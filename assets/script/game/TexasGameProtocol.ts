@@ -13,6 +13,7 @@ import { GameCache } from "./GameCache";
 import Seat from "./Seat";
 import { SeatOperation, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
+import UIOperationComponent from "./ui/UIOperationComponent";
 
 const CanPlayStatus = Def.CanPlayStatus;
 
@@ -126,7 +127,7 @@ export default class TexasGameProtocol {
             return;
         }
         if (rec.status != 0) {
-            ToastManager.ins.createToast(LanguageCode.ServerErrorDescription(rec.status));
+            ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(rec.status));
             return;
         }
         this.game.mainPlayer.chips = rec.chips;
@@ -322,12 +323,7 @@ export default class TexasGameProtocol {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-                    // this.game.ShowOperationPanel(new UIOperationComponent.OperationData()
-                    //         {
-                    //         actionLimits = responseData.NextOperator.Actions,
-                    //         Shortcuts = responseData.NextOperator.Shortcuts
-                    //     });
-                    this.game.ShowOperationPanel(null);
+                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData.nextOperator.actionsList,responseData.nextOperator.shortcutsList));
                 }
             }
             else {

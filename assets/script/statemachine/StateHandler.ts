@@ -9,7 +9,7 @@ export abstract class StateHandler {
         console.log("entity", entity);
         console.log(`>>> StateHandler->${this.Name}:${entity.id} is Enter`);
     }
-    public Execute(entity?: any) {
+    public Execute(entity?: any, dt?: number) {
     }
 
     public Exit(entity?: any) {
