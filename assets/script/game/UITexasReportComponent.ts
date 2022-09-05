@@ -202,7 +202,7 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     btnShowProblemClick() {
-        this.node.active = false;
+        this.node.destroy();
         let UITexasRule = this.node.getChildByName('UITexasRule')
         if (!UITexasRule) {
             let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
@@ -215,7 +215,7 @@ export default class UITexasReportComponent extends UIBase {
         }
     }
     imageMaskCloseClick() {
-        this.node.active = false;
+        this.node.destroy();
     }
 
 }

@@ -495,15 +495,22 @@ export default class TexasScene extends BaseScene {
     }
     Click_Report_Btn() {
         let UITexasReport: any = this.node.getChildByName('UITexasReport')
-        if (!UITexasReport) {
-            let prefab = ResManager.LoadAsset(UIDefine.UITexasReport.Bundle, UIDefine.UITexasReport.Path)
-            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            UITexasReport = cc.instantiate(prefab);
-            UITexasReport.parent = this.node
-            UITexasReport.active = true;
-        } else {
-            UITexasReport.active = true;
-        }
+        let prefab = ResManager.LoadAsset(UIDefine.UITexasReport.Bundle, UIDefine.UITexasReport.Path)
+        // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        UITexasReport = cc.instantiate(prefab);
+        UITexasReport.parent = this.node
+        UITexasReport.active = true;
+
+        // let UITexasReport: any = this.node.getChildByName('UITexasReport')
+        // if (!UITexasReport) {
+        //     let prefab = ResManager.LoadAsset(UIDefine.UITexasReport.Bundle, UIDefine.UITexasReport.Path)
+        //     // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        //     UITexasReport = cc.instantiate(prefab);
+        //     UITexasReport.parent = this.node
+        //     UITexasReport.active = true;
+        // } else {
+        //     UITexasReport.active = true;
+        // }
     }
 
 
