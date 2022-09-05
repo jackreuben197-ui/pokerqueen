@@ -8,7 +8,7 @@ import { LanguageCode } from "../i18n/LanguageCode";
 import { Web_User_Room } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
+import { Protocol_Holdem_Action, Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
 import { Def, RoomInfo, Operator } from "../protobuf/holdem/define_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
@@ -597,7 +597,7 @@ export default class TexasGame {
             }
         }
         else {
-            this.HideOperationPanel();
+            //this.HideOperationPanel();
             this.HideAutoOperationPanel();
         }
 
@@ -1453,6 +1453,28 @@ export default class TexasGame {
             tween.call(tweenCallback);
         }
         tween.start();
+    }
+
+    /// <summary>
+    /// 操作
+    /// </summary>
+    /// <param name="action"></param>
+    /// <param name="anteNumber"></param>
+    public OptAction(action: Def.ActionMap[keyof Def.ActionMap], anteNumber: number): void {
+
+        ProtocolAgency.Send(
+            {
+                protocol: Protocol_Holdem_Action,
+                RoomID: GameCache.Instance.room_id,
+                MatchID: GameCache.Instance.match_id,
+                body: Protocol_Holdem_Action.Request(
+                    {
+                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                        action: action,
+                        amount: anteNumber
+
+                    })
+            });
     }
 
     /// <summary>

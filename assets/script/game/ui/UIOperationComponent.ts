@@ -150,10 +150,130 @@ export default class UIOperationComponent extends UIBase {
 
         //this.textFreeCall = rc.Get<GameObject>("Text_FreeCall").GetComponent<Text>();
         //this.textFreeCallMax = rc.Get<GameObject>("Text_FreeCall_Max").GetComponent<Text>();
+    }
 
+    protected regiterTouchEvents(): void {
+        this.buttonCall.getChildByName("BtnArea").on("click", this.onClickCall, this);
+        this.buttonCheck.on("click", this.onClickCheck, this);
+        this.buttonCall0.getChildByName("BtnArea").on("click", this.onClickCall0, this);
+        this.buttonCall1.getChildByName("BtnArea").on("click", this.onClickCall1, this);
+        this.buttonCall2.getChildByName("BtnArea").on("click", this.onClickCall2, this);
+        this.buttonCallLeft.getChildByName("BtnArea").on("click", this.onClickCallLeft, this);
+        this.buttonCallRight.getChildByName("BtnArea").on("click", this.onClickCallRight, this);
+        this.buttonFreeCall.getChildByName("BtnArea").on("click", this.onClickCall, this);
+        // UIEventListener.Get(buttonCall.gameObject).onClick = onClickCall;
+        // UIEventListener.Get(buttonCheck.gameObject).onClick = onClickCheck;
+        // UIEventListener.Get(buttonCall0.gameObject).onClick = onClickCall0;
+        // UIEventListener.Get(buttonCall1.gameObject).onClick = onClickCall1;
+        // UIEventListener.Get(buttonCall2.gameObject).onClick = onClickCall2;
+        // UIEventListener.Get(buttonCallLeft.gameObject).onClick = onClickCallLeft;
+        // UIEventListener.Get(buttonCallRight.gameObject).onClick = onClickCallRight;
+        // UIEventListener.Get(buttonAllin.gameObject).onClick = onClickAllin;
+        // UIEventListener.Get(Button_Straddle.gameObject).onClick = onClickStraddle;
+        // UIEventListener.Get(buttonFold.gameObject).onClick = onClickFold;
+        // UIEventListener.Get(buttonFreeCall.gameObject).onClick = onClickFreeCall;
+        // UIEventListener.Get(buttonFreeCallConfirm.gameObject).onClick = onClickSliderHandle;
+        // UIEventListener.Get(imageFreeCallMask.gameObject).onClick = onClickFreeCallMask;
+        // UIEventListener.Get(buttonSliderHandle.gameObject).onClick = onClickSliderHandle;
 
 
     }
+    private onClickCall2(): void {
+        //callValue = callValue2;
+        //CheckOpt();
+    }
+
+    private onClickCall1(): void {
+        // callValue = callValue1;
+        // CheckOpt();
+    }
+
+    private onClickCall0(): void {
+        // callValue = callValue0;
+        // CheckOpt();
+    }
+
+    private onClickCallLeft(): void {
+        // callValue = callValueLeft;
+        //CheckOpt();
+    }
+
+    private onClickCallRight(): void {
+        //callValue = callValueRight;
+        // CheckOpt();
+    }
+    private onClickAllin(): void {
+        GameCache.Instance.CurGame.OptAction(Def.Action.ALLIN, this.actionDataInfo.AllInAmount);
+    }
+    private onClickStraddle(): void {
+        GameCache.Instance.CurGame.OptAction(Def.Action.STRADDLE, this.actionDataInfo.StraddleAmount);
+    }
+    private onClickCall(): void {
+        GameCache.Instance.CurGame.OptAction(Def.Action.CALL, this.actionDataInfo.CallAmount);
+    }
+    private onClickCheck(): void {
+        GameCache.Instance.CurGame.OptAction(Def.Action.CHECK, 0);
+        this.isCountDown = false;
+    }
+    private onClickFreeCall(): void {
+        this.showFreeCall(true);
+    }
+
+    private onClickFold(): void {
+        if (this.buttonCheck.activeInHierarchy) {
+            //如果可以让牌，需要弹窗询问弃牌还是让牌
+            this.isShowingDialog = true;
+            // UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
+            // {
+            //         type = UIDialogComponent.DialogData.DialogType.CommitCancel,
+            //         // title = $"确定弃牌？",
+            //         title = CPErrorCode.LanguageDescription(20037),
+            //         // content = $"你可以让牌而不需要任何记分牌",
+            //         content = CPErrorCode.LanguageDescription(20038),
+            //         // contentCommit = "弃牌",
+            //         contentCommit = CPErrorCode.LanguageDescription(10047),
+            //         // contentCancel = "让牌",
+            //         contentCancel = CPErrorCode.LanguageDescription(10315),
+            //         actionCommit = () => {
+            //             GameCache.Instance.CurGame.OptAction(pbt.Action.Fold, 0);
+            //             isCountDown = false;
+            //         },
+            //         actionCancel = () => {
+            //             GameCache.Instance.CurGame.OptAction(pbt.Action.Check, 0);
+            //             isCountDown = false;
+            //         }
+            //     });
+            return;
+        }
+        GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
+    }
+
+    /// <summary>
+    /// 展示自由加注按钮
+    /// </summary>
+    /// <param name="show"></param>
+    private showFreeCall(show: boolean): void {
+        //sliderFreeCall.value = sliderFreeCall.minValue;
+        if (show) {
+            // this.imageFreeCallMask.gameObject.SetActive(true);
+            // this.sliderFreeCall.gameObject.SetActive(true);
+            // this.buttonFreeCallConfirm.gameObject.SetActive(true);
+            // this.buttonFreeCall.gameObject.SetActive(false);
+            // this.buttonCall0.gameObject.SetActive(false);
+            // this.buttonCall1.gameObject.SetActive(false);
+            // this.buttonCall2.gameObject.SetActive(false);
+            // this.buttonCallLeft.gameObject.SetActive(false);
+            // this.buttonCallRight.gameObject.SetActive(false);
+        }
+        else {
+            // this.imageFreeCallMask.gameObject.SetActive(false);
+            // this.sliderFreeCall.gameObject.SetActive(false);
+            // this.buttonFreeCallConfirm.gameObject.SetActive(false);
+            // this.buttonFreeCall.gameObject.SetActive(true);
+            this.showRaiseButton();
+        }
+    }
+
 
 
     onShow(obj?: any): void {
@@ -190,6 +310,7 @@ export default class UIOperationComponent extends UIBase {
     private show(actionLimits: ActionLimit.AsObject[]): void {
         actionLimits.forEach(actionLimit => {
             switch (actionLimit.action) {
+
                 case Def.Action.STRADDLE:
 
                     this.showStraddle(actionLimit);
@@ -201,7 +322,6 @@ export default class UIOperationComponent extends UIBase {
 
                     break;
                 case Def.Action.CALL:
-
 
                     this.showCall(actionLimit);
 
@@ -233,7 +353,6 @@ export default class UIOperationComponent extends UIBase {
                         this.showAllin(actionLimit);
                     }
 
-
                     break;
                 default:
 
@@ -250,8 +369,9 @@ export default class UIOperationComponent extends UIBase {
         cc.log("+ showStraddle");
         this.actionDataInfo.StraddleAmount = actionLimit.min;
         this.Button_Straddle.active = true;
-        this.Button_Straddle.getChildByName("Text").getComponent(cc.Label).string = StringHelper.getStringDiv100(actionLimit.min);
+        this.Text_Straddle.string = StringHelper.getStringDiv100(actionLimit.min);
     }
+
 
     private showBet(actionLimit: ActionLimit.AsObject): void {
         cc.log("+ showBet");
@@ -290,6 +410,7 @@ export default class UIOperationComponent extends UIBase {
 
     private showCall(actionLimit: ActionLimit.AsObject): void {
         cc.log("+ showCall");
+        cc.log("showCall actionLimit:", actionLimit);
         this.actionDataInfo.CallAmount = actionLimit.min;
         this.buttonCall.active = true;
         this.textCall.string = StringHelper.getStringDiv100(actionLimit.min);

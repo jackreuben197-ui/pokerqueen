@@ -7,7 +7,9 @@ import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
+import UIComponent from "../ui/UIComponent";
 import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
 import Seat from "./Seat";
@@ -323,7 +325,7 @@ export default class TexasGameProtocol {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData.nextOperator.actionsList,responseData.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData.nextOperator.actionsList, responseData.nextOperator.shortcutsList));
                 }
             }
             else {
@@ -351,6 +353,9 @@ export default class TexasGameProtocol {
 
 
     }
+
+
+
 
     Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {
         throw new Error("Method not implemented.");
@@ -421,11 +426,24 @@ export default class TexasGameProtocol {
     HANDLER_REQ_GAME_RECV_ACTION(Protocol_Holdem_ActionAll: ProtocolCode, HANDLER_REQ_GAME_RECV_ACTION: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    HANDLER_REQ_GAME_SEND_ACTION(Protocol_Holdem_Action: ProtocolCode, HANDLER_REQ_GAME_SEND_ACTION: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 自己动作
+    /// </summary>
+    /// <param name="response"></param>
+    HANDLER_REQ_GAME_SEND_ACTION(rec: ServerMessageAction.AsObject) {
+        //throw new Error("Method not implemented.");
+        if (rec == null) {
+            return;
+        }
+        this.game.autoFold = false;
+        this.game.autoCall = false;
+        this.game.autoAllin = false;
+        this.game.autoCheck = false;
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(LanguageCode.ServerErrorDescription(rec.status));
+            return;
+        }
+        this.game.HideOperationPanel();
     }
-
-
-
 
 }

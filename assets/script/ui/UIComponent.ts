@@ -1,5 +1,6 @@
 
 import { IUIDefine, UIType } from "../define/EIDefine";
+import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
 
@@ -7,6 +8,15 @@ const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIComponent {
+
+    static get Instance(): UIComponent {
+        return (<any>this).instance ??= new UIComponent;
+    }
+
+
+    Toast(content: string) {
+        ToastManager.Instance.createToast(content);
+    }
 
     static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null) {
         if (!UIDefine) return;

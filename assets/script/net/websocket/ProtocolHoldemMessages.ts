@@ -3,6 +3,7 @@ import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_s
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import { ClientMessageAction, ServerMessageAction } from "../../protobuf/holdem/req_action_pb";
 import { ClientMessageBringIn, ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
@@ -263,8 +264,25 @@ export class Protocol_Holdem_Roomers extends BaseProtocol {
     }
 }
 
+/**
+ * 
+ */
+export class Protocol_Holdem_Action extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Action";
+    static _request: ClientMessageAction = null;
+    public static Request_AsObject: ClientMessageAction.AsObject = null;
+    public static Response_AsObject: ServerMessageAction.AsObject = null;
 
-
+    static Request(body?: ClientMessageAction.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessageAction());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessageAction.AsObject {
+        let result: ServerMessageAction = ServerMessageAction.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 
 
 
@@ -281,3 +299,4 @@ cc.js.setClassName("Protocol_Holdem_Standup", Protocol_Holdem_Standup);
 cc.js.setClassName("Protocol_Holdem_PostStatusChange", Protocol_Holdem_PostStatusChange);
 cc.js.setClassName("Protocol_Holdem_StartInfo", Protocol_Holdem_StartInfo);
 cc.js.setClassName("Protocol_Holdem_Roomers", Protocol_Holdem_Roomers);
+cc.js.setClassName("Protocol_Holdem_Action", Protocol_Holdem_Action);
