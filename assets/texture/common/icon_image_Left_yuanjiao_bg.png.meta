@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "7410062e-43a4-4220-af50-97df5660069b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 99,
+  "height": 174,
+  "platformSettings": {},
+  "subMetas": {
+    "icon_image_Left_yuanjiao_bg": {
+      "ver": "1.0.6",
+      "uuid": "c7889476-5be0-4686-af96-edc90fb21476",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "7410062e-43a4-4220-af50-97df5660069b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 99,
+      "height": 174,
+      "rawWidth": 99,
+      "rawHeight": 174,
+      "borderTop": 86,
+      "borderBottom": 68,
+      "borderLeft": 51,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

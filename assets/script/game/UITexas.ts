@@ -17,6 +17,7 @@ import { GameCache } from "./GameCache";
 
 import TexasGame from "./TexasGame";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
+import { HistoryInfoData } from "./UITexasHistoryComponent";
 
 
 export class PotInfo {
@@ -43,9 +44,6 @@ export class PublicCardInfo {
         this.imageSelect = trans.getChildByName("Image_SelectPublicCard").getComponent(cc.Sprite);
     }
 }
-
-
-
 
 const { ccclass, property } = cc._decorator;
 
@@ -394,6 +392,7 @@ export default class UITexas extends BaseScene {
                 cc.log("report_btn is clicked");
                 break;
             case this.cursituation_btn://状况按钮
+                this.Click_Cursituation_btn();
                 cc.log("cursituation_btn is clicked");
                 break;
             case this.chat_btn://聊天按钮
@@ -580,15 +579,39 @@ export default class UITexas extends BaseScene {
     }
     Click_Report_Btn() {
         let UITexasReport: any = this.node.getChildByName('UITexasReport')
-        if (!UITexasReport) {
-            let prefab = ResManager.LoadAsset(UIDefine.UITexasReport.Bundle, UIDefine.UITexasReport.Path)
-            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            UITexasReport = cc.instantiate(prefab);
-            UITexasReport.parent = this.node
-            UITexasReport.active = true;
-        } else {
-            UITexasReport.active = true;
-        }
+        let prefab = ResManager.LoadAsset(UIDefine.UITexasReport.Bundle, UIDefine.UITexasReport.Path)
+        // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        UITexasReport = cc.instantiate(prefab);
+        UITexasReport.parent = this.node
+        UITexasReport.active = true;
+
+        // let UITexasReport: any = this.node.getChildByName('UITexasReport')
+        // if (!UITexasReport) {
+        //     let prefab = ResManager.LoadAsset(UIDefine.UITexasReport.Bundle, UIDefine.UITexasReport.Path)
+        //     // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        //     UITexasReport = cc.instantiate(prefab);
+        //     UITexasReport.parent = this.node
+        //     UITexasReport.active = true;
+        // } else {
+        //     UITexasReport.active = true;
+        // }
+    }
+    Click_Cursituation_btn() {
+        let UITexasHistory: any = this.node.getChildByName('UITexasHistory')
+        let prefab = ResManager.LoadAsset(UIDefine.UITexasHistory.Bundle, UIDefine.UITexasHistory.Path)
+        // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        UITexasHistory = cc.instantiate(prefab);
+        UITexasHistory.parent = this.node
+        UITexasHistory.active = true;
+        let historyInfoData = new HistoryInfoData()
+
+        historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
+        historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
+        historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
+        historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
+        // historyInfoData.rcPokerSprite = rcHistoryPokerSprite,
+        historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
+        UITexasHistory.getComponent('UITexasHistoryComponent').onShow(historyInfoData);
     }
 
 

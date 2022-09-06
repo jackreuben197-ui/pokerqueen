@@ -5,6 +5,7 @@ import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { LanguageCode } from "../i18n/LanguageCode";
+import LobbyScene from "../lobby/LobbyScene";
 import { ResManager } from "../manager/ResManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -14,6 +15,8 @@ import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import { ServerMessageRoomers } from "../protobuf/holdem/req_roomers_pb";
 import UIBase from "../ui/UIBase";
 import { GameCache } from "./GameCache";
+import { Web_Room_Center_Rooms, } from "../../../assets/script/net/https/WebRequest";
+import TimeHelper from "../helper/TimeHelper";
 
 /*
  * @Author: xfj
@@ -39,6 +42,9 @@ export default class UITexasReportComponent extends UIBase {
     btnShowProblem: cc.Node = null;
     imageMaskClose: cc.Node = null;
     content: cc.Node = null;
+    mRoomLeaveTime: any = null;
+    IntervalId = null;
+    isLoad = true;
     tInfo_0 = []
     tInfo_1 = []
     protected lateLoad(): void {
@@ -49,6 +55,13 @@ export default class UITexasReportComponent extends UIBase {
     }
     private registerHandler() {
         CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
+    }
+    protected onDestroy(): void {
+        if (this.IntervalId) {
+            clearInterval(this.IntervalId)
+        }
+        this.removeHandler();
+        this.isLoad = false;
     }
 
     private removeHandler() {
@@ -75,7 +88,7 @@ export default class UITexasReportComponent extends UIBase {
         }
     }
 
-    UpdateViewList(RoomersData) {
+    async UpdateViewList(RoomersData) {
 
         //玩家 
         this.content = this.getChildNodeOrComponent('content')
@@ -158,8 +171,40 @@ export default class UITexasReportComponent extends UIBase {
             //     UIComponent.Instance.ShowNoAnimation(UIType.UITexasPlayerInfo, new object[] { watcherId, true });
             // };
         }
+        let param = Web_Room_Center_Rooms.RequestParams
+        param.room_ids = [GameCache.Instance.room_id];
+        let roomsInfoData: any = await LobbyScene.instance.APIWebRoomCenterRooms(param)
+        cc.log('roomsInfoData====', roomsInfoData);
+        roomsInfoData.data.records.forEach(item => {
+            if (item.rid == GameCache.Instance.room_id) {
+                if (item.start_time == null) {
+                    return;
+                }
+                let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(item.start_time)
+                let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000
+                if (roomLeftTime > 0) {
+                    this.mRoomLeaveTime = roomLeftTime;
+                    let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.RichText);
+                    textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
+                    this.ShowLeaveTimer(textTitle);
+                }
+            }
+        });
 
-
+    }
+    ShowLeaveTimer(textTitle) {
+        // TimerComponent mTC = Game.Scene.ModelScene.GetComponent<TimerComponent>();
+        this.IntervalId = setInterval(() => {
+            if (this.mRoomLeaveTime >= 0 && this.isLoad && this.node.isValid) {
+                this.mRoomLeaveTime--;
+                if (textTitle != null)
+                    textTitle.string = textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
+            } else {
+                if (textTitle != null && !cc.isValid(this.node, true)) {
+                    textTitle.string = "00:00";
+                }
+            }
+        }, 1000)
     }
     setInfos(objTemp, pDto, onLine) {
         objTemp.getChildByName('Text_Name').getComponent(cc.RichText).string = this.colorText(onLine, pDto.nickName)
@@ -202,7 +247,9 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     btnShowProblemClick() {
-        this.node.active = false;
+        new Date().getUTCDate()
+
+        this.node.destroy();
         let UITexasRule = this.node.getChildByName('UITexasRule')
         if (!UITexasRule) {
             let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
@@ -215,7 +262,7 @@ export default class UITexasReportComponent extends UIBase {
         }
     }
     imageMaskCloseClick() {
-        this.node.active = false;
+        this.node.destroy();
     }
 
 }
