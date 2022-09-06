@@ -60,6 +60,7 @@ export default class UITexasReportComponent extends UIBase {
         if (this.IntervalId) {
             clearInterval(this.IntervalId)
         }
+        this.removeHandler();
         this.isLoad = false;
     }
 

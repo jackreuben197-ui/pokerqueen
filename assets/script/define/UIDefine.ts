@@ -173,6 +173,12 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasReport",
     },
+    UITexasHistory: {
+        UIType: UIType.UITexasHistory,
+        Name: "UITexasHistory",
+        Bundle: 'texas',
+        Path: "prefab/widgetLayer/UITexasHistory",
+    },
 
 
 }
