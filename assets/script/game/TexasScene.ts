@@ -35,7 +35,14 @@ export class PotInfo {
         }
     }
 }
-
+export class PublicCardInfo {
+    public imageCard: cc.Sprite;
+    public imageSelect: cc.Sprite;
+    constructor(public cardId: number, public trans: cc.Node) {
+        this.imageCard = trans.getComponent(cc.Sprite);
+        this.imageSelect = trans.getChildByName("Image_SelectPublicCard").getComponent(cc.Sprite);
+    }
+}
 
 
 
@@ -87,18 +94,32 @@ export default class TexasScene extends BaseScene {
     //UITexasSetting: cc.Node = null;
 
 
-
-
     public transPots: cc.Node = null;
     public transPot: cc.Node = null;
     public transAllPot: cc.Node = null;
+
+
+
+    imagePublicCard0: cc.Node = null;
+    imagePublicCard1: cc.Node = null;
+    imagePublicCard2: cc.Node = null;
+    imagePublicCard3: cc.Node = null;
+    imagePublicCard4: cc.Node = null;
+
+    imageSecondPublicCard0: cc.Node = null;
+    imageSecondPublicCard1: cc.Node = null;
+    imageSecondPublicCard2: cc.Node = null;
+    imageSecondPublicCard3: cc.Node = null;
+    imageSecondPublicCard4: cc.Node = null;
+
 
 
     ///////////////////////////////////
     /**
      * 声明内容
      */
-
+    listCards: PublicCardInfo[] = null;
+    listSecondCards: PublicCardInfo[] = null;
     listPotInfo: PotInfo[] = null;
 
     IMenuButton_Type: {
@@ -197,6 +218,10 @@ export default class TexasScene extends BaseScene {
     protected lateLoad(): void {
 
         super.lateLoad();
+
+
+
+
         this.desk_bg = this.getChildNodeOrComponent("desk_bg", cc.Sprite);
         this.table_bg = this.getChildNodeOrComponent("table_bg", cc.Sprite);
 
@@ -225,10 +250,76 @@ export default class TexasScene extends BaseScene {
         this.transPot = this.getChildNodeOrComponent("Pot");
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
 
+        this.imagePublicCard0 = this.getChildNodeOrComponent("Image_PublicCard0");
+        this.imagePublicCard1 = this.getChildNodeOrComponent("Image_PublicCard1");
+        this.imagePublicCard2 = this.getChildNodeOrComponent("Image_PublicCard2");
+        this.imagePublicCard3 = this.getChildNodeOrComponent("Image_PublicCard3");
+        this.imagePublicCard4 = this.getChildNodeOrComponent("Image_PublicCard4");
+
+        this.imageSecondPublicCard0 = this.getChildNodeOrComponent("Image_SecondPublicCard0");
+        this.imageSecondPublicCard1 = this.getChildNodeOrComponent("Image_SecondPublicCard1");
+        this.imageSecondPublicCard2 = this.getChildNodeOrComponent("Image_SecondPublicCard2");
+        this.imageSecondPublicCard3 = this.getChildNodeOrComponent("Image_SecondPublicCard3");
+        this.imageSecondPublicCard4 = this.getChildNodeOrComponent("Image_SecondPublicCard4");
 
         //this.UITexasSetting = this.getChildNodeOrComponent("UITexasSetting");
 
         this.UIOperation = this.getChildNodeOrComponent("UIOperation");
+
+
+        this.game = GameCache.Instance.CurGame;
+
+        this.game.uirc = this;
+
+        //#region 公共牌数据(UI、Id)
+        if (null == this.listCards)
+            this.listCards = [];
+        if (this.listCards.length > 0)
+            this.listCards = [];
+        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard0))
+        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard1))
+        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard2))
+        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard3))
+        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard4))
+
+
+        //#endregion
+        //#region 第二套公共牌数据
+        if (null == this.listSecondCards)
+            this.listSecondCards = [];
+        if (this.listSecondCards.length > 0)
+            this.listSecondCards = [];
+
+
+        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard0));
+        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard1));
+        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard2));
+        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard3));
+        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard4));
+
+        //#endregion
+        // 公共牌默认位置
+        if (null == this.game.listDefaultPublicCardsLPos)
+            this.game.listDefaultPublicCardsLPos = [];
+        if (this.game.listDefaultPublicCardsLPos.length > 0)
+            this.game.listDefaultPublicCardsLPos = [];
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard0.getPosition());
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard1.getPosition());
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard2.getPosition());
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard3.getPosition());
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard4.getPosition());
+
+        // 第二套公共牌默认位置
+        if (null == this.game.listDefaultSecondPublicCardsLPos)
+            this.game.listDefaultSecondPublicCardsLPos = [];
+        if (this.game.listDefaultSecondPublicCardsLPos.length > 0)
+            this.game.listDefaultSecondPublicCardsLPos = [];
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard0.getPosition());
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard1.getPosition());
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard2.getPosition());
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard3.getPosition());
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.getPosition());
+
 
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
@@ -241,10 +332,6 @@ export default class TexasScene extends BaseScene {
         this.UIAddChips.node.active = false;
 
         this.Seat.active = false;
-
-        this.game = GameCache.Instance.CurGame;
-
-        this.game.uirc = this;
 
         window["TexasScene"] = this;
 

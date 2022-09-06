@@ -75,7 +75,11 @@ export default class TexasGame {
 
     public listSeat: Seat[] = null;
 
-    PlayDeal_TweenSequence: TweenSequence = new TweenSequence;
+
+
+
+
+    //PlayDeal_TweenSequence: TweenSequence = new TweenSequence;
 
     /// <summary>
     /// key:客户端seatId
@@ -233,11 +237,11 @@ export default class TexasGame {
     /// <summary>
     /// 公共牌位置
     /// </summary>
-    public listDefaultPublicCardsLPos: cc.Vec3[] = null;
+    public listDefaultPublicCardsLPos: cc.Vec2[] = null;
     /// <summary>
     /// 第二套公共牌位置
     /// </summary>
-    public listDefaultSecondPublicCardsLPos: cc.Vec3[] = null;
+    public listDefaultSecondPublicCardsLPos: cc.Vec2[] = null;
     /// <summary>
     /// 上一局庄家
     /// </summary>
@@ -323,6 +327,25 @@ export default class TexasGame {
     public cacheVoiceprintMsgId: number = 0;
 
     public VoiceprintCountdown: number = 0;
+
+
+    //////////////TexasGameUI的内容先放到这里
+    /// <summary>
+    /// 马上完成公共牌动画
+    /// </summary>
+    public stopUpdatePublicCardsAnimation: boolean = false;
+
+    /// <summary>
+    /// 等待翻牌结束，播放赢家牌型
+    /// </summary>
+    public waittingUpdatePublicCardsAnimation: boolean = false;
+
+    /// <summary>
+    /// 是否正在播放大牌动画
+    /// </summary>
+    public isPlayingBigWinAnimation: boolean = false;
+    //////////////////////////////////////
+
 
 
     constructor() {
@@ -597,7 +620,7 @@ export default class TexasGame {
             }
         }
         else {
-            //this.HideOperationPanel();
+            this.HideOperationPanel();
             this.HideAutoOperationPanel();
         }
 
@@ -769,7 +792,7 @@ export default class TexasGame {
     /// <summary>
     /// 刷新分池
     /// </summary>
-    protected UpdatePots(): void {
+    public UpdatePots(): void {
         let mNewStart = 0, mNewEnd = 0;
         let mUpdateStart = 0, mUpdateEnd = 0;
         let mHideStart = 0, mHideEnd = 0;
@@ -1391,7 +1414,7 @@ export default class TexasGame {
                     continue;
                 mSeat.UpdateGroupBet();
                 allGroupBet += this.groupBet;
-                mSeat.PlayBetAnimation()?.();
+                mSeat.PlayBetAnimation();
             }
 
             // mIsFirstGroupBet = true;
@@ -1559,6 +1582,41 @@ export default class TexasGame {
     /// </summary>
     public get HandCards(): number {
         return 2;
+    }
+
+
+    /// <summary>
+    /// 获取当前已发公共牌数量
+    /// </summary>
+    /// <returns></returns>
+    public GetCurPublicCardsCount(): number {
+        if (null == this.cards)
+            this.ResetPublicCardsId();
+
+        for (let i = 0, n = this.cards.length; i < n; i++) {
+            if (this.cards[i] == -1)
+                return i;
+        }
+        // 最多5张
+        return 5;
+    }
+    /// <summary>
+    /// 重置公共牌Id
+    /// </summary>
+    protected ResetPublicCardsId(): void {
+        if (null == this.cards)
+            this.cards = [];
+        if (this.cards.length == this.uirc.listCards.length) {
+            for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+                this.cards[i] = -1;
+            }
+        }
+        else {
+            this.cards = [];
+            for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+                this.cards.push(-1);
+            }
+        }
     }
 
     /**

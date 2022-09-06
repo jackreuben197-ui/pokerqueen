@@ -1,7 +1,7 @@
 import { UIDefine } from "../define/UIDefine";
 import ToastManager from "../manager/ToastManager";
-import UIManager from "../manager/UIManager";
 import UIBase from "./UIBase";
+import UIComponent from "./UIComponent";
 
 
 const { ccclass, property } = cc._decorator;

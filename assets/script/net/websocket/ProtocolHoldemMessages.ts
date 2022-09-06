@@ -1,6 +1,8 @@
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
+import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageSidePots } from "../../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
 import { ClientMessageAction, ServerMessageAction } from "../../protobuf/holdem/req_action_pb";
@@ -265,7 +267,7 @@ export class Protocol_Holdem_Roomers extends BaseProtocol {
 }
 
 /**
- * 
+ * 主动行为
  */
 export class Protocol_Holdem_Action extends BaseProtocol {
     static Name: string = "Protocol_Holdem_Action";
@@ -284,6 +286,31 @@ export class Protocol_Holdem_Action extends BaseProtocol {
     }
 }
 
+/**
+ * 所有人收到主动/自动行为（包括自己）
+ */
+export class Protocol_Holdem_ActionAll extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_ActionAll";
+    public static Response_AsObject: ServerMessageActionAll.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageActionAll.AsObject {
+        let result: ServerMessageActionAll = ServerMessageActionAll.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+/**
+ * 边池信息
+ */
+export class Protocol_Holdem_SidePots extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_SidePots";
+    public static Response_AsObject: ServerMessageSidePots.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageSidePots.AsObject {
+        let result: ServerMessageSidePots = ServerMessageSidePots.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
 
 
 
@@ -300,3 +327,5 @@ cc.js.setClassName("Protocol_Holdem_PostStatusChange", Protocol_Holdem_PostStatu
 cc.js.setClassName("Protocol_Holdem_StartInfo", Protocol_Holdem_StartInfo);
 cc.js.setClassName("Protocol_Holdem_Roomers", Protocol_Holdem_Roomers);
 cc.js.setClassName("Protocol_Holdem_Action", Protocol_Holdem_Action);
+cc.js.setClassName("Protocol_Holdem_ActionAll", Protocol_Holdem_ActionAll);
+cc.js.setClassName("Protocol_Holdem_SidePots", Protocol_Holdem_SidePots);

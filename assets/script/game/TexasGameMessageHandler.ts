@@ -307,14 +307,23 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_KeepSeat_Handler(Protocol_Holdem_KeepSeat: ProtocolCode, Protocol_Holdem_KeepSeat_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    Protocol_Holdem_ActionAll_Handler(Protocol_Holdem_ActionAll: ProtocolCode, Protocol_Holdem_ActionAll_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 所有人收到主动/自动行为（包括自己） 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_ActionAll_Handler(response): void {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_ActionAll_Handler`);
     }
     Protocol_Holdem_ChipsChange_Handler(Protocol_Holdem_ChipsChange: ProtocolCode, Protocol_Holdem_ChipsChange_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    Protocol_Holdem_SidePots_Handler(Protocol_Holdem_SidePots: ProtocolCode, Protocol_Holdem_SidePots_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+
+    /// <summary>
+    /// 边池信息 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_SidePots_Handler(response): void {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_SidePots_Handler`);
     }
     Protocol_Holdem_PublicCards_Handler(Protocol_Holdem_PublicCards: ProtocolCode, Protocol_Holdem_PublicCards_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
@@ -349,7 +358,7 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_SetAutoOnTable_Handler(Protocol_Holdem_SetAutoOnTable: ProtocolCode, Protocol_Holdem_SetAutoOnTable_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    Protocol_Holdem_Action_Handler(Protocol_Holdem_Action: ProtocolCode, Protocol_Holdem_Action_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    Protocol_Holdem_Action_Handler(response) {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_Action_Handler`);
     }
 }

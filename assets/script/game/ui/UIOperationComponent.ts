@@ -1,8 +1,12 @@
 
+import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import { LanguageCode } from "../../i18n/LanguageCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
-import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import GameUtil from "../GameUtil";
 import UITexasSettingComponent from "../UITexasSettingComponent";
@@ -33,6 +37,7 @@ export default class UIOperationComponent extends UIBase {
     /**
      * 组件绑定
      */
+    imageFreeCallMask: cc.Node = null;
     buttonAllin: cc.Node = null;
     Button_Straddle: cc.Node = null;
     buttonCall: cc.Node = null;
@@ -93,6 +98,8 @@ export default class UIOperationComponent extends UIBase {
     private callValueLeft: number = 0;
     private callValueRight: number = 0;
 
+    private callValue: number = 0;
+
     /// <summary>
     /// 数据缓存
     /// </summary>
@@ -106,6 +113,7 @@ export default class UIOperationComponent extends UIBase {
 
     protected lateLoad(): void {
         super.lateLoad();
+        this.imageFreeCallMask = this.getChildNodeOrComponent("Image_FreeCallMask");
         this.buttonAllin = this.getChildNodeOrComponent("Button_Allin");
         this.Button_Straddle = this.getChildNodeOrComponent("Button_Straddle");
         this.buttonCall = this.getChildNodeOrComponent("Button_Call");
@@ -160,47 +168,44 @@ export default class UIOperationComponent extends UIBase {
         this.buttonCall2.getChildByName("BtnArea").on("click", this.onClickCall2, this);
         this.buttonCallLeft.getChildByName("BtnArea").on("click", this.onClickCallLeft, this);
         this.buttonCallRight.getChildByName("BtnArea").on("click", this.onClickCallRight, this);
-        this.buttonFreeCall.getChildByName("BtnArea").on("click", this.onClickCall, this);
-        // UIEventListener.Get(buttonCall.gameObject).onClick = onClickCall;
-        // UIEventListener.Get(buttonCheck.gameObject).onClick = onClickCheck;
-        // UIEventListener.Get(buttonCall0.gameObject).onClick = onClickCall0;
-        // UIEventListener.Get(buttonCall1.gameObject).onClick = onClickCall1;
-        // UIEventListener.Get(buttonCall2.gameObject).onClick = onClickCall2;
-        // UIEventListener.Get(buttonCallLeft.gameObject).onClick = onClickCallLeft;
-        // UIEventListener.Get(buttonCallRight.gameObject).onClick = onClickCallRight;
-        // UIEventListener.Get(buttonAllin.gameObject).onClick = onClickAllin;
-        // UIEventListener.Get(Button_Straddle.gameObject).onClick = onClickStraddle;
-        // UIEventListener.Get(buttonFold.gameObject).onClick = onClickFold;
-        // UIEventListener.Get(buttonFreeCall.gameObject).onClick = onClickFreeCall;
-        // UIEventListener.Get(buttonFreeCallConfirm.gameObject).onClick = onClickSliderHandle;
-        // UIEventListener.Get(imageFreeCallMask.gameObject).onClick = onClickFreeCallMask;
+        this.buttonFreeCall.getChildByName("BtnArea").on("click", this.onClickFreeCall, this);
+        this.buttonAllin.getChildByName("BtnArea").on("click", this.onClickAllin, this);
+        this.Button_Straddle.getChildByName("BtnArea").on("click", this.onClickStraddle, this);
+        this.buttonFreeCallConfirm.getChildByName("BtnArea").on("click", this.onClickFreeCall, this);
+        this.imageFreeCallMask.on("click", this.onClickFreeCallMask, this);
+        this.buttonFold.on("click", this.onClickFold, this);
         // UIEventListener.Get(buttonSliderHandle.gameObject).onClick = onClickSliderHandle;
 
+    }
+    private onClickFreeCallMask(): void {
+        this.imageFreeCallMask.active = false;
+        //隐藏自由加注
+        this.showFreeCall(false);
 
     }
     private onClickCall2(): void {
-        //callValue = callValue2;
-        //CheckOpt();
+        this.callValue = this.callValue2;
+        this.CheckOpt();
     }
 
     private onClickCall1(): void {
-        // callValue = callValue1;
-        // CheckOpt();
+        this.callValue = this.callValue1;
+        this.CheckOpt();
     }
 
     private onClickCall0(): void {
-        // callValue = callValue0;
-        // CheckOpt();
+        this.callValue = this.callValue0;
+        this.CheckOpt();
     }
 
     private onClickCallLeft(): void {
-        // callValue = callValueLeft;
-        //CheckOpt();
+        this.callValue = this.callValueLeft;
+        this.CheckOpt();
     }
 
     private onClickCallRight(): void {
-        //callValue = callValueRight;
-        // CheckOpt();
+        this.callValue = this.callValueRight;
+        this.CheckOpt();
     }
     private onClickAllin(): void {
         GameCache.Instance.CurGame.OptAction(Def.Action.ALLIN, this.actionDataInfo.AllInAmount);
@@ -223,29 +228,69 @@ export default class UIOperationComponent extends UIBase {
         if (this.buttonCheck.activeInHierarchy) {
             //如果可以让牌，需要弹窗询问弃牌还是让牌
             this.isShowingDialog = true;
-            // UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
-            // {
-            //         type = UIDialogComponent.DialogData.DialogType.CommitCancel,
-            //         // title = $"确定弃牌？",
-            //         title = CPErrorCode.LanguageDescription(20037),
-            //         // content = $"你可以让牌而不需要任何记分牌",
-            //         content = CPErrorCode.LanguageDescription(20038),
-            //         // contentCommit = "弃牌",
-            //         contentCommit = CPErrorCode.LanguageDescription(10047),
-            //         // contentCancel = "让牌",
-            //         contentCancel = CPErrorCode.LanguageDescription(10315),
-            //         actionCommit = () => {
-            //             GameCache.Instance.CurGame.OptAction(pbt.Action.Fold, 0);
-            //             isCountDown = false;
-            //         },
-            //         actionCancel = () => {
-            //             GameCache.Instance.CurGame.OptAction(pbt.Action.Check, 0);
-            //             isCountDown = false;
-            //         }
-            //     });
+            UIComponent.open(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.CommitCancel,
+                    // title = $"确定弃牌？",
+                    title: LanguageCode.LanguageDescription(20037),
+                    // content = $"你可以让牌而不需要任何记分牌",
+                    content: LanguageCode.LanguageDescription(20038),
+                    // contentCommit = "弃牌",
+                    contentCommit: LanguageCode.LanguageDescription(10047),
+                    // contentCancel = "让牌",
+                    contentCancel: LanguageCode.LanguageDescription(10315),
+                    actionCommit: () => {
+                        GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
+                        this.isCountDown = false;
+                    },
+                    actionCancel: () => {
+                        GameCache.Instance.CurGame.OptAction(Def.Action.CHECK, 0);
+                        this.isCountDown = false;
+                    },
+                    noAnimation: true,
+                });
             return;
         }
         GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
+    }
+
+    /// <summary>
+    /// 自由加注
+    /// </summary>
+    private CheckOpt(): void {
+        if (this.callValue <= 0) {
+            return;
+        }
+
+        if (this.callValue >= GameCache.Instance.CurGame.mainPlayer.chips) {
+            if (this.actionDataInfo.AllInAmount == 0) {
+                if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
+                    UIComponent.Instance.Toast(i18nMgr.Get("UIOperationComponentTips001"));
+                }
+                else {
+                    UIComponent.Instance.Toast(i18nMgr.Get("UIOperationComponentTips002"));
+                }
+                return;
+            }
+            GameCache.Instance.CurGame.OptAction(Def.Action.ALLIN, this.actionDataInfo.AllInAmount);
+            return;
+        }
+        else if (this.callValue >= this.actionDataInfo.actionLimit.max) {
+            if (this.getActionLimitByAction(Def.Action.BET) != null) {
+                GameCache.Instance.CurGame.OptAction(Def.Action.BET, this.actionDataInfo.actionLimit.max);
+            }
+            else {
+                GameCache.Instance.CurGame.OptAction(Def.Action.RAISE, this.actionDataInfo.actionLimit.max);
+            }
+            return;
+        }
+        if (this.getActionLimitByAction(Def.Action.BET) != null) {
+            GameCache.Instance.CurGame.OptAction(Def.Action.BET, this.callValue);
+        }
+        else {
+            GameCache.Instance.CurGame.OptAction(Def.Action.RAISE, this.callValue);
+        }
+        this.isCountDown = false;
     }
 
     /// <summary>

@@ -355,3 +355,158 @@ export class SeatWaitOther extends StateHandler {
         if (entity instanceof SeatFSM) entity.WaitOtherExit();
     }
 }
+
+
+export class SeatPutChip extends StateHandler {
+
+    public Name: string = "SeatPutChip";
+
+    static get Instance(): SeatPutChip {
+        return (this as any).instance ??= new SeatPutChip;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.PutChipEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.PutChipExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.PutChipExit();
+    }
+}
+
+
+export class SeatCall extends StateHandler {
+
+    public Name: string = "SeatCall";
+
+    static get Instance(): SeatCall {
+        return (this as any).instance ??= new SeatCall;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.CallEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.CallExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.CallExit();
+    }
+}
+
+export class SeatRaise extends StateHandler {
+
+    public Name: string = "SeatRaise";
+
+    static get Instance(): SeatRaise {
+        return (this as any).instance ??= new SeatRaise;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.RaiseEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.RaiseExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.RaiseExit();
+    }
+}
+
+
+export class SeatAllin extends StateHandler {
+
+    public Name: string = "SeatAllin";
+
+    static get Instance(): SeatAllin {
+        return (this as any).instance ??= new SeatAllin;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.AllinEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.AllinExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.AllinExit();
+    }
+}
+
+
+
+export class SeatCheck extends StateHandler {
+
+    public Name: string = "SeatCheck";
+
+    static get Instance(): SeatCheck {
+        return (this as any).instance ??= new SeatCheck;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.CheckEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.CheckExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.CheckExit();
+    }
+}
+
+export class SeatFold extends StateHandler {
+
+    public Name: string = "SeatFold";
+
+    static get Instance(): SeatFold {
+        return (this as any).instance ??= new SeatFold;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.FoldEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.FoldExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.FoldExit();
+    }
+}

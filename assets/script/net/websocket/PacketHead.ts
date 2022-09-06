@@ -2,6 +2,17 @@
  * 头部包体结构
  */
 export default class PacketHead {
+
+
+/*
+包格式（表头：字节长度)
+|       4        |      2      |     2     |            32            |      8      |      8      |         1          |          0-n          |
+| :------------: | :---------: | :-------: | :----------------------: | :---------: | :---------: | :----------------: | :-------------------: |
+| 数据段的总长度  |  固定标记    | 消息类型   |     用户标记(Token)       |   roomID    |   matchID  | 数据段结构的版本号   |      各异数据段       |
+|   120(int32)   | YM(char[2]) | 1(uint16) | asdffdsaasdffdsa(string) |             |             |      2 (int8)      | 数据marshal后数据byte |
+*/
+
+
     //固定标记
     static CharsFlag: Uint8Array = new Uint8Array([0x59/*Y*/, 0x4D/*M*/]);
 
