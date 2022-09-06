@@ -50,7 +50,7 @@ export class PublicCardInfo {
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class TexasScene extends BaseScene {
+export default class UITexas extends BaseScene {
 
     /**
      * 节点|组件 定义
@@ -332,8 +332,6 @@ export default class TexasScene extends BaseScene {
         this.UIAddChips.node.active = false;
 
         this.Seat.active = false;
-
-        window["TexasScene"] = this;
 
     }
     private buildMenuButtons() {

@@ -27,10 +27,9 @@ import TexasGameMessageHandler from "./TexasGameMessageHandler";
 import TexasGameProtocol from "./TexasGameProtocol";
 import { TexasGameState } from "./TexasGameState";
 import TexasGameUtils from "./TexasGameUtils";
-import TexasScene, { PotInfo } from "./TexasScene";
 import TexasSMAgency from "./TexasSMAgency";
-import TweenSequence from "./TweenSequence";
 import UIOperationComponent from "./ui/UIOperationComponent";
+import UITexas, { PotInfo } from "./UITexas";
 import { UITexasModel } from "./UITexasModel";
 //const PBTypes = Def.Types;
 
@@ -61,7 +60,7 @@ export default class TexasGame {
     public IsLookOn: boolean = false;
 
     //ui界面类的引用
-    public uirc: TexasScene = null;
+    public uirc: UITexas = null;
 
     public messageHandler: TexasGameMessageHandler = null;
 
@@ -362,7 +361,6 @@ export default class TexasGame {
         UpdateComponent.Add(this.FsmLogicComponent, this);
         this.FsmLogicComponent.start();
         this.SMAgency.LoadGameStateConf();
-        //SceneManager.Instance.switchScene(UIDefine.TexasScene);
     }
 
     RegisterMsgHandler() {

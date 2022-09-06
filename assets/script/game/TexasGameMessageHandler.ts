@@ -142,7 +142,7 @@ export default class TexasGameMessageHandler {
 
             }
 
-            SceneManager.Instance.switchScene(UIDefine.TexasScene, null, ProcedureManager.currProcedure.param);
+            SceneManager.Instance.switchScene(UIDefine.UITexas, null, ProcedureManager.currProcedure.param);
 
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 
