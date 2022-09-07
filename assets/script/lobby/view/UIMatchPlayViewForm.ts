@@ -1,19 +1,20 @@
 const { ccclass, property } = cc._decorator;
-import BaseForm from "../../script/ui/form/BaseForm";
-import LobbyScene from "./LobbyScene";
+import BaseForm from "../../ui/form/BaseForm";
+import LobbyScene from "../LobbyScene";
 import UIMatchRoom from "./UIMatchRoom";
-import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Config_Multi_Language_Template } from "../../../assets/script/net/https/WebRequest";
-import { i18nLabel } from "../../script/i18n/i18nLabel";
-import LobbySession from "../../script/session/LobbySession";
-import ProcedureManager from "../../script/manager/ProcedureManager";
-import { ProcedureEnum } from "../../script/define/EIDefine";
-import { i18nMgr } from "../i18n/i18nMgr";
-import { GameCache } from "../game/GameCache";
-import Main from "../Main";
-import { SeatEmpty } from "../game/SeatStateHandler";
-import LoginScene from "../ui/scene/LoginScene";
-import LoginSession from "../session/LoginSession";
-import GlobalSession from "../session/GlobalSession";
+import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Config_Multi_Language_Template } from "../../net/https/WebRequest";
+import { i18nLabel } from "../../i18n/i18nLabel";
+import LobbySession from "../../session/LobbySession";
+import ProcedureManager from "../../manager/ProcedureManager";
+import { ProcedureEnum } from "../../define/EIDefine";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import { GameCache } from "../../game/GameCache";
+import Main from "../../Main";
+import { SeatEmpty } from "../../game/SeatStateHandler";
+import LoginScene from "../../ui/scene/LoginScene";
+import LoginSession from "../../session/LoginSession";
+import GlobalSession from "../../session/GlobalSession";
+import { LobbyControl } from "../control/LobbyControl";
 enum EnumLoadType {
     "Init" = 1,
     "Refresh" = 2,
@@ -189,7 +190,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         //请求group信息
         let typeViewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
         let typesScrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewType", cc.ScrollView);
-        let groupData: any = await LobbyScene.instance.RequestListSummary({})
+        let groupData: any = await LobbyControl.getInstance().RequestListSummary({})
         this.RoomTypesInfos = UIMatchRoom.instance.handleData(groupData.data, typeViewContent);
         this.RoomInfo = this.RoomTypesInfos[param.index];
         this.removeTypeEvent();
@@ -199,7 +200,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     //获取语言信息
     async sendLanguageGetData() {
         //{"template_id":"MTT202206181655521398625081","cn_name":"阿斯顿gggg","us_name":"111fffffffff11呆呆呆呆呆","br_name":"22222dddccc"}
-        let languageInfo: any = await LobbyScene.instance.APIConfig_Multi_Language_Template({});
+        let languageInfo: any = await LobbyControl.getInstance().APIConfig_Multi_Language_Template({});
         if (languageInfo?.data) {
             this.LocalDicRoomName.clear();
             let data: typeof Web_Config_Multi_Language_Template.ResponseData[] = languageInfo.data;
@@ -229,7 +230,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
             game_type: param.game_type,
             poker_type: param.poker_type
         }
-        let blindData: any = await LobbyScene.instance.RequestSbList(blind);
+        let blindData: any = await LobbyControl.getInstance().RequestSbList(blind);
         //通过blindData生成mangBar
         this.setMangBar(blindData);
         //await this.DragRequestData_Room(EnumLoadType.Init);
@@ -268,7 +269,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
             "order": ["sb_asc"]
         }
         //let roomsInfoData: any = { "code": 0, "data": { "limit": 20, "offset": 0, "records": [{ "rid": 97995898, "name": "ROOM202206181655523126304847-2", "room_type": 0, "game_type": 0, "poker_type": 0, "limit_bet_type": 0, "status": 1, "ante": 0, "sb": 1000, "op_duration": 120, "no_user_wait_duration": 2, "keep_seat_duration": 180, "total_bring_in": 0, "total_bring_out": 0, "total_chip": 0, "min_rate": 100, "max_rate": 400, "min_players": 2, "autostart_min_players": 2, "straddle_on": 0, "straddle_max": 0, "insurance_on": 0, "insurance_op_duration": 0, "second_pcs_on": 0, "second_pcs_op_duration": 0, "second_pcs_user_limit": 0, "delay_view_card_on": 0, "post_on": 0, "muck_on": 0, "limit_ip_on": 0, "limit_gps_on": 0, "limit_gps_distance": 0, "limit_delay_times": 2, "limit_auto_check_times": 2, "limit_auto_fold_times": 2, "seat_count": 6, "empty_seat": 6, "roomers": 0, "enter_time": "2022-07-25T04:08:30Z", "play_duration": 1800, "no_user_close_duration": 0, "retain_type": 0, "retain_min_rate": 0, "schedule_start_time": null, "start_time": null, "end_time": null, "settlement_type": 1, "hand_num": 0, "tribe_id": 1, "end_reason": "", "hc_total_hand_lv": 0, "hc_total_hand": 0, "hc_pool_rate_lv": 0, "hc_pool_rate": 0, "service_id": "grpc-throom-1", "create_time": "2022-07-25T04:08:31Z", "update_time": "2022-07-25T04:08:52Z", "voiceprint_verify_on": 1, "voiceprint_verify_limit_times": 10, "voiceprint_verify_duration": 120, "voiceprint_verify_interval_duration": 600, "participation_status": 0 }], "total": 1 } }
-        let roomsInfoData: any = await LobbyScene.instance.APIWebRoomCenterRooms(roomsInfo);
+        let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms(roomsInfo);
         if (this.cacheResponseData == null) {
             this.UICareerRecordViewCall(loadType, roomsInfoData);
         } else {

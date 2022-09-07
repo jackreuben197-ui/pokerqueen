@@ -6,8 +6,8 @@
  */
 // 语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
 const { ccclass, property } = cc._decorator;
-import UIBase from "../../../assets/script/ui/UIBase";
-import { Web_Misc_Banner_List } from "../../../assets/script/net/https/WebRequest";
+import UIBase from "../../ui/UIBase";
+import { Web_Misc_Banner_List } from "../../net/https/WebRequest";
 @ccclass
 export default class UIMatchBanner extends UIBase {
     private curNum: number = 0;

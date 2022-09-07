@@ -1,6 +1,6 @@
 const { ccclass, property } = cc._decorator;
-import UIBase from "../../../assets/script/ui/UIBase";
-import { i18nSprite } from "../i18n/i18nSprite";
+import UIBase from "../../ui/UIBase";
+import { i18nSprite } from "../../i18n/i18nSprite";
 @ccclass
 export default class UILobby extends UIBase {
 

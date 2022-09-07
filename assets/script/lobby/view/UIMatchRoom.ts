@@ -1,8 +1,8 @@
 const { ccclass } = cc._decorator;
-import UIBase from "../../../assets/script/ui/UIBase";
-import { Web_Room_Center_Groups } from "../../../assets/script/net/https/WebRequest";
-import { UIDefine } from "../../script/define/UIDefine";
-import UIComponent from "../ui/UIComponent";
+import UIBase from "../../ui/UIBase";
+import { Web_Room_Center_Groups } from "../../net/https/WebRequest";
+import { UIDefine } from "../../define/UIDefine";
+import UIComponent from "../../ui/UIComponent";
 @ccclass
 export default class UIMatchRoom extends UIBase {
     public static instance: UIMatchRoom = null;

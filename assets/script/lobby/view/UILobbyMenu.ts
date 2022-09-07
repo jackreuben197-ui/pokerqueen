@@ -1,6 +1,6 @@
 const { ccclass, property } = cc._decorator;
-import UIBase from "../ui/UIBase";
-import LobbyScene from "./LobbyScene";
+import UIBase from "../../ui/UIBase";
+import LobbyScene from "../LobbyScene";
 @ccclass
 export default class UILobbyMenu extends UIBase {
     //public view = {};
