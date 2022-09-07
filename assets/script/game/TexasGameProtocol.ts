@@ -6,6 +6,7 @@ import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
+import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
@@ -619,5 +620,8 @@ export default class TexasGameProtocol {
         }
         this.game.HideOperationPanel();
     }
+
+    
+
 
 }

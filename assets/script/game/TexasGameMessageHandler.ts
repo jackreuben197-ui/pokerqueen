@@ -9,6 +9,7 @@ import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
+import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageStandup } from "../protobuf/holdem/recv_stand_up_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
@@ -325,9 +326,45 @@ export default class TexasGameMessageHandler {
     private Protocol_Holdem_SidePots_Handler(response): void {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_SidePots_Handler`);
     }
-    Protocol_Holdem_PublicCards_Handler(Protocol_Holdem_PublicCards: ProtocolCode, Protocol_Holdem_PublicCards_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+
+    /// <summary>
+    /// 所有人收到公共牌 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_PublicCards_Handler(response: ServerMessagePublicCards.AsObject): void {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_PublicCards_Handler`);
+        if (response == null) {
+            return;
+        }
+        //let nextState: TexasGameState;// = TexasGameState.None;
+
+        // switch (response.Rnd) {
+        //     case PBTypes.Round.Flop:
+        //         {
+        //             nextState = TexasGameState.HandFlop;
+        //         }
+        //         break;
+        //     case PBTypes.Round.Turn:
+        //         {
+        //             nextState = TexasGameState.HandTurn;
+        //         }
+        //         break;
+        //     case PBTypes.Round.River:
+        //         {
+        //             nextState = TexasGameState.HandRiver;
+        //         }
+        //         break;
+        // }
+
+        let nextState: TexasGameState = TexasGameState.HandTurn;
+
+        this.game.SMAgency.ChangeGameState(nextState, response);
     }
+
+
+
+
+
     Protocol_Holdem_Showcards_Handler(Protocol_Holdem_Showcards: ProtocolCode, Protocol_Holdem_Showcards_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }

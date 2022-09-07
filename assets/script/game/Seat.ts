@@ -888,22 +888,17 @@ export default class Seat {
     /// <summary>
     /// 播放回收筹码动画
     /// </summary>
-    public PlayRecyclingChipAnimation(): Function {
+    public PlayRecyclingChipAnimation(): cc.Tween {
         let func = null;
         if (this.uirc.imageIconChip.node.activeInHierarchy) {
             this.uirc.textCurRoundHaveBet.node.active = false;
             let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
-            func = () => {
-                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_MOVE_CHIPS);
-                cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
-                    this.uirc.imageIconChip.node.active = false;
-                }).start();
-            };
+            return cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
+                this.uirc.imageIconChip.node.active = false;
+            }).start();
         }
         return func;
     }
-
-
 
 
     /// <summary>
