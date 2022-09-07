@@ -1,6 +1,6 @@
 const { ccclass, property } = cc._decorator;
 import BaseForm from "../../ui/form/BaseForm";
-import LobbyScene from "../LobbyScene";
+import LobbyScene from "./LobbyScene";
 import UIMatchRoom from "./UIMatchRoom";
 import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Config_Multi_Language_Template } from "../../net/https/WebRequest";
 import { i18nLabel } from "../../i18n/i18nLabel";

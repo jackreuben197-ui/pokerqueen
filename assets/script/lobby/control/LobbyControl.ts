@@ -1,21 +1,77 @@
+import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
 import { Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds } from "../../net/https/WebRequest";
+import UIBase from "../../ui/UIBase";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     大厅逻辑控制器
-        1.网络交互
-            1.1 
-        2.
+        1.大厅数据（全局）
+        2.UI处理
+        3.网络交互
  ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ༺༒༻ ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
 
+
 export class LobbyControl {
+    /********************************* 1.大厅数据（全局） ***********************************/
+    /** 当前大厅中间显示的UI */
+    private curShowUI;
+    /** 存放中间显示ui 已经加载过存储 没有存储的需要动态加载 */
+    private uiMap = {};
+    /** ui父节点 创建出来的中间预制体需要挂在此节点上 */
+    private Layer;
 
-    
 
-    /********************************* 1.网络交互 ***********************************/
+    /********************************* 2.UI处理 ***********************************/
 
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
-        1.1 请求banner数据
+        2.1 点击主界面下方4个按钮 切换中间不同显示
+            name: UILobby UIChat UICareer UIMine
+    ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+    setLobbyInfo(param) {
+        this.curShowUI = param.curShowUI;
+        this.Layer = param.Layer;
+    }
+
+    /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
+        2.1 点击主界面下方4个按钮 切换中间不同显示
+            name: UILobby UIChat UICareer UIMine
+    ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+     public async switchContent(name: string) {
+
+        if (this.curShowUI && name === this.curShowUI.name) {
+            return;
+        }
+
+        return new Promise((resolve, reject) => {
+            let newUI = this.uiMap[name];
+            if (newUI) {
+                if (this.curShowUI) this.curShowUI.active = false;
+                newUI.active = true;
+                this.curShowUI = newUI;
+                this.curShowUI.getComponent(UIBase)?.onShow();
+                resolve(newUI);
+            } else {
+                ResManager.Load(null, "lobby/prefab/" + name, cc.Prefab, (err, asset: cc.Prefab) => {
+                    if (err) {
+                        return;
+                    }
+                    if (this.curShowUI) this.curShowUI.active = false;
+                    newUI = cc.instantiate(asset);
+                    this.Layer.addChild(newUI);
+                    this.curShowUI = newUI;
+                    this.uiMap[name] = newUI;
+                    newUI.active = true;
+                    this.curShowUI.getComponent(UIBase)?.onShow();
+                    resolve(newUI);
+                });
+            }
+        })
+    }
+
+    /********************************* 3.网络交互 ***********************************/
+
+    /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
+        3.1 请求banner数据
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
     async GetBannerList(param: typeof Web_Misc_Banner_List.RequestParams) {
         return new Promise((resolve, reject) => {
@@ -23,10 +79,10 @@ export class LobbyControl {
                 request: Web_Misc_Banner_List,
                 body: Web_Misc_Banner_List.Request(
                     {
-                        lang: param.lang,        // 语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
-                        type: param.type,        // 1-大厅Banner,2-发现页(工会)Banner
-                        limit: param.limit,        // unity 默认10
-                        offset: param.offset,        // 开始下标。例子（offset=0，limit=10，0-9。)默认0
+                        lang: param.lang,               // 语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
+                        type: param.type,               // 1-大厅Banner,2-发现页(工会)Banner
+                        limit: param.limit,             // unity 默认10
+                        offset: param.offset,           // 开始下标。例子（offset=0，limit=10，0-9。)默认0
                     }),
                 onSuccess: function () {
                     resolve(Web_Misc_Banner_List.Response);
@@ -113,9 +169,9 @@ export class LobbyControl {
 
 
 
-    /********************************* 网络交互 ***********************************/
+    /********************************* 其他 ***********************************/
 
-    /********************************* 网络交互 ***********************************/
+    /********************************* 清除 ***********************************/
 
 
 

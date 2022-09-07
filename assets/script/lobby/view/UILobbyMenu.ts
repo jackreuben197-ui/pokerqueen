@@ -1,6 +1,7 @@
 const { ccclass, property } = cc._decorator;
 import UIBase from "../../ui/UIBase";
-import LobbyScene from "../LobbyScene";
+import { LobbyControl } from "../control/LobbyControl";
+import LobbyScene from "./LobbyScene";
 @ccclass
 export default class UILobbyMenu extends UIBase {
     //public view = {};
@@ -57,19 +58,19 @@ export default class UILobbyMenu extends UIBase {
     }
     lobby_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        LobbyScene.instance.switchContent("UILobby")
+        LobbyControl.getInstance().switchContent("UILobby")
     }
     world_chat_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        LobbyScene.instance.switchContent("UIChat")
+        LobbyControl.getInstance().switchContent("UIChat")
     }
     career_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        LobbyScene.instance.switchContent("UICareer")
+        LobbyControl.getInstance().switchContent("UICareer")
     }
     my_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        LobbyScene.instance.switchContent("UIMine")
+        LobbyControl.getInstance().switchContent("UIMine")
     }
     //显示btn的状态
     changeBtn(btn: cc.Node) {

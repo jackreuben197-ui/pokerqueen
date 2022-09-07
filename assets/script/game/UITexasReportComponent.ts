@@ -5,7 +5,7 @@ import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { LanguageCode } from "../i18n/LanguageCode";
-import LobbyScene from "../lobby/LobbyScene";
+import LobbyScene from "../lobby/view/LobbyScene";
 import { ResManager } from "../manager/ResManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -17,6 +17,7 @@ import UIBase from "../ui/UIBase";
 import { GameCache } from "./GameCache";
 import { Web_Room_Center_Rooms, } from "../../../assets/script/net/https/WebRequest";
 import TimeHelper from "../helper/TimeHelper";
+import { LobbyControl } from "../lobby/control/LobbyControl";
 
 /*
  * @Author: xfj
@@ -173,7 +174,7 @@ export default class UITexasReportComponent extends UIBase {
         }
         let param = Web_Room_Center_Rooms.RequestParams
         param.room_ids = [GameCache.Instance.room_id];
-        let roomsInfoData: any = await LobbyScene.instance.APIWebRoomCenterRooms(param)
+        let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms(param)
         cc.log('roomsInfoData====', roomsInfoData);
         roomsInfoData.data.records.forEach(item => {
             if (item.rid == GameCache.Instance.room_id) {

@@ -1548,7 +1548,6 @@
     },
     "_enabled": true,
     "i18n_string": "UIMatch_GtO8YEcc",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -2706,7 +2705,7 @@
     "sync": false
   },
   {
-    "__type__": "65208bO23RDPbdNQNrfJYN7",
+    "__type__": "8d89fuJsV5D2ZvwAAWWcCFq",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -3168,7 +3167,6 @@
     },
     "_enabled": true,
     "i18n_string": "UIMTTList_mtt",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -6647,7 +6645,7 @@
     "_id": ""
   },
   {
-    "__type__": "0671e2J0CdDuYLsH1BDPw6O",
+    "__type__": "09256CMnMlNv66rNV7CNt49",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -6931,16 +6929,6 @@
     "sync": false
   },
   {
-    "__type__": "17b9cNnG8xGibJbAJJZS2pb",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "_id": ""
-  },
-  {
     "__type__": "cc.Widget",
     "_name": "",
     "_objFlags": 0,
@@ -6965,6 +6953,16 @@
     "_isAbsVerticalCenter": true,
     "_originalWidth": 1242,
     "_originalHeight": 2475,
+    "_id": ""
+  },
+  {
+    "__type__": "24cd0GthVNJkaB3iVB+K7a1",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
     "_id": ""
   },
   {
