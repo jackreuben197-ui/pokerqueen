@@ -4,6 +4,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LanguageCode } from "../../i18n/LanguageCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
+import GGSlider from "../../ui/component/GGSlider";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -18,19 +19,14 @@ export type OperationData = {
     Shortcuts?: ActionShortcutLimit.AsObject[],
 }
 class ActionDataInfo {
-    // public ulong CallAmount;
-    // public ulong StraddleAmount;
-    // public ulong AllInAmount;
+
     // public ActionLimit actionLimit;//只用于raise 或 bet
     public constructor(public CallAmount: number = 0, public StraddleAmount: number = 0, public AllInAmount: number = 0, public actionLimit: ActionLimit.AsObject = null) {
-        // CallAmount = 0;
-        // StraddleAmount = 0;
-        // AllInAmount = 0;
-        // actionLimit = null;
+
     }
 }
 
-const { ccclass, property } = cc._decorator;
+const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIOperationComponent extends UIBase {
@@ -76,6 +72,8 @@ export default class UIOperationComponent extends UIBase {
     textFreeCallMax: cc.Label = null;
 
     textCall: cc.Label = null;
+
+    sliderFreeCall: GGSlider = null;
 
 
     imageCheckCountDown: cc.Sprite = null;
@@ -131,6 +129,10 @@ export default class UIOperationComponent extends UIBase {
         this.imageCheckCountDown = this.getChildNodeOrComponent("Image_CheckCountDown", cc.Sprite);
         this.imageFoldCountDown = this.getChildNodeOrComponent("Image_FoldCountDown", cc.Sprite);
 
+        this.sliderFreeCall = this.getChildNodeOrComponent("Slider_FreeCall", GGSlider);
+
+        this.textFreeCall = this.getChildNodeOrComponent("Text_FreeCall", cc.Label);
+        this.textFreeCallMax = this.getChildNodeOrComponent("Text_FreeCall_Max", cc.Label);
 
         this.Text_Straddle = this.Button_Straddle.getChildByName("Text").getComponent(cc.Label);
 
@@ -156,8 +158,8 @@ export default class UIOperationComponent extends UIBase {
 
         this.textCall = this.buttonCall.getChildByName("Text_Call").getComponent(cc.Label);
 
-        //this.textFreeCall = rc.Get<GameObject>("Text_FreeCall").GetComponent<Text>();
-        //this.textFreeCallMax = rc.Get<GameObject>("Text_FreeCall_Max").GetComponent<Text>();
+
+
     }
 
     protected regiterTouchEvents(): void {
@@ -168,15 +170,28 @@ export default class UIOperationComponent extends UIBase {
         this.buttonCall2.getChildByName("BtnArea").on("click", this.onClickCall2, this);
         this.buttonCallLeft.getChildByName("BtnArea").on("click", this.onClickCallLeft, this);
         this.buttonCallRight.getChildByName("BtnArea").on("click", this.onClickCallRight, this);
-        this.buttonFreeCall.getChildByName("BtnArea").on("click", this.onClickFreeCall, this);
         this.buttonAllin.getChildByName("BtnArea").on("click", this.onClickAllin, this);
         this.Button_Straddle.getChildByName("BtnArea").on("click", this.onClickStraddle, this);
-        this.buttonFreeCallConfirm.getChildByName("BtnArea").on("click", this.onClickFreeCall, this);
+
+        this.buttonFreeCall.getChildByName("BtnArea").on("click", this.onClickFreeCall, this);
+        this.buttonFreeCallConfirm.getChildByName("BtnArea").on("click", this.onClickSliderHandle, this);
+
         this.imageFreeCallMask.on("click", this.onClickFreeCallMask, this);
         this.buttonFold.on("click", this.onClickFold, this);
         // UIEventListener.Get(buttonSliderHandle.gameObject).onClick = onClickSliderHandle;
 
     }
+
+    //点击自由加注滑块按钮
+    private onClickSliderHandle(): void {
+
+        //this.callValue = (ulong)Convert.ToInt64(sliderFreeCall.value * this.calibrationWeight);
+        this.CheckOpt();
+        this.showFreeCall(false);
+    }
+
+
+
     private onClickFreeCallMask(): void {
         this.imageFreeCallMask.active = false;
         //隐藏自由加注
@@ -298,28 +313,28 @@ export default class UIOperationComponent extends UIBase {
     /// </summary>
     /// <param name="show"></param>
     private showFreeCall(show: boolean): void {
-        //sliderFreeCall.value = sliderFreeCall.minValue;
+        this.sliderFreeCall.value = this.sliderFreeCall.minValue;
         if (show) {
-            // this.imageFreeCallMask.gameObject.SetActive(true);
-            // this.sliderFreeCall.gameObject.SetActive(true);
-            // this.buttonFreeCallConfirm.gameObject.SetActive(true);
-            // this.buttonFreeCall.gameObject.SetActive(false);
-            // this.buttonCall0.gameObject.SetActive(false);
-            // this.buttonCall1.gameObject.SetActive(false);
-            // this.buttonCall2.gameObject.SetActive(false);
-            // this.buttonCallLeft.gameObject.SetActive(false);
-            // this.buttonCallRight.gameObject.SetActive(false);
+            this.imageFreeCallMask.active = true;
+            this.sliderFreeCall.node.active = true;
+            this.buttonFreeCallConfirm.active = true;
+            this.buttonFreeCall.active = false;
+            this.buttonCall0.active = false;
+            this.buttonCall1.active = false;
+            this.buttonCall2.active = false;
+            this.buttonCallLeft.active = false;
+            this.buttonCallRight.active = false;
         }
         else {
-            // this.imageFreeCallMask.gameObject.SetActive(false);
-            // this.sliderFreeCall.gameObject.SetActive(false);
-            // this.buttonFreeCallConfirm.gameObject.SetActive(false);
-            // this.buttonFreeCall.gameObject.SetActive(true);
+            this.imageFreeCallMask.active = false;
+            this.sliderFreeCall.node.active = false;
+            this.buttonFreeCallConfirm.active = false;
+            this.buttonFreeCall.active = true;
             this.showRaiseButton();
         }
     }
 
-
+    ParamType
 
     onShow(obj?: any): void {
         super.onShow(obj);
@@ -336,6 +351,7 @@ export default class UIOperationComponent extends UIBase {
         this.SetCalibrationWeight();
         if (this.isShowingDialog) {
             //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+            UIComponent.close(UIDefine.UIDialogComponent);
         }
         this.isShowingDialog = false;
         this.actionDataInfo = new ActionDataInfo();
@@ -423,36 +439,33 @@ export default class UIOperationComponent extends UIBase {
         this.actionDataInfo.actionLimit = actionLimit;
 
         if (actionLimit.max == actionLimit.min) {
-            // sliderFreeCall.maxValue = (float)Math.Ceiling((actionLimit.Max) / calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-            // sliderFreeCall.minValue = sliderFreeCall.maxValue;
-            // sliderFreeCall.value = sliderFreeCall.maxValue;
-            // textFreeCall.text = $"ALL IN";
-            // textFreeCallMax.text = $"{(actionLimit.Max) / chipScale }";
+            this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+            this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
+            this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+            this.textFreeCall.string = `ALL IN`;
+            this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         }
         else {
-            //             sliderFreeCall.maxValue = GameUtil.JudgeIsPotLimitRoomPath((RoomType)GameCache.Instance.room_type) ? (float)Math.Ceiling((actionLimit.Max) / calibrationWeight) : (float)Math.Ceiling((actionLimit.Max + 1) / calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-            //             if ((float)Math.Ceiling(actionLimit.Min / calibrationWeight) >= sliderFreeCall.maxValue)
-            //             {
-            //                 Log.Debug("sliderFreeCall.minValue > sliderFreeCall.maxValue");
-            //                 sliderFreeCall.minValue = sliderFreeCall.maxValue;
-            //                 sliderFreeCall.value = sliderFreeCall.maxValue;
-            //                 textFreeCall.text = $"ALL IN";
-            //             }
-            //                 else
-            //                 {
-            //     sliderFreeCall.minValue = (float)Math.Ceiling(actionLimit.Min / calibrationWeight);
-            //     sliderFreeCall.value = sliderFreeCall.minValue;
-            //     textFreeCall.text = $"{actionLimit.Min/ chipScale}";
-            // }
-            //                 ulong actionLimitMax = GameUtil.JudgeIsPotLimitRoomPath((RoomType)GameCache.Instance.room_type) ? (actionLimit.Max) : (actionLimit.Max + 1);
-            // textFreeCallMax.text = $"{(actionLimitMax) / chipScale }";
-            //             }
-            this.setTopCallButtons();
-            this.buttonFreeCall.active = true;
+            this.sliderFreeCall.maxValue = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)
+                ? Math.ceil(actionLimit.max / this.calibrationWeight)
+                : Math.ceil((actionLimit.max + 1) / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+            if (Math.ceil(actionLimit.min / this.calibrationWeight) >= this.sliderFreeCall.maxValue) {
+                cc.log("sliderFreeCall.minValue > sliderFreeCall.maxValue");
+                this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
+                this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+                this.textFreeCall.string = `ALL IN`;
+            }
+            else {
+                this.sliderFreeCall.minValue = Math.ceil(actionLimit.min / this.calibrationWeight);
+                this.sliderFreeCall.value = this.sliderFreeCall.minValue;
+                this.textFreeCall.string = `${actionLimit.min / this.chipScale}`;
+            }
+            let actionLimitMax: number = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) ? (actionLimit.max) : (actionLimit.max + 1);
+            this.textFreeCallMax.string = `${actionLimitMax / this.chipScale}`;
         }
+        this.setTopCallButtons();
+        this.buttonFreeCall.active = true;
     }
-
-
     private showCall(actionLimit: ActionLimit.AsObject): void {
         cc.log("+ showCall");
         cc.log("showCall actionLimit:", actionLimit);
@@ -537,15 +550,14 @@ export default class UIOperationComponent extends UIBase {
         this.buttonFreeCall.active = true;
     }
 
-
     private showAllInRaise(actionLimit: ActionLimit.AsObject): void {
         this.actionDataInfo.AllInAmount = actionLimit.min;
         this.actionDataInfo.actionLimit = actionLimit;
-        // this.sliderFreeCall.maxValue = (float)Math.Ceiling((actionLimit.Max) / calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-        // this.sliderFreeCall.minValue = sliderFreeCall.maxValue;
-        // this.sliderFreeCall.value = sliderFreeCall.maxValue;
-        //this.textFreeCall.string = `ALL IN`;
-        //this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
+        this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+        this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
+        this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+        this.textFreeCall.string = `ALL IN`;
+        this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         this.setTopCallButtons();
         this.buttonFreeCall.active = true;
         cc.log("+ showRaise");
@@ -666,14 +678,15 @@ export default class UIOperationComponent extends UIBase {
             this.imageCheckCountDown.fillRange = (this.optCurTime -= dt) / this.optTotalTime;
 
             if (this.imageCheckCountDown.fillRange <= 0.02) {
-                //GameCache.Instance.CurGame.HideBtnDelay(false);
+                GameCache.Instance.CurGame.HideBtnDelay(false);
             }
             if (this.imageCheckCountDown.fillRange <= 0) {
                 this.isCountDown = false;
                 this.imageCheckCountDown.node.active = false;
                 if (this.isShowingDialog)
                     //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
-                    this.isShowingDialog = false;
+                    UIComponent.close(UIDefine.UIDialogComponent);
+                this.isShowingDialog = false;
                 //如需客户端倒计时结束发送让牌，在这里做
                 GameCache.Instance.CurGame.HideOperationPanel();
 
@@ -690,7 +703,8 @@ export default class UIOperationComponent extends UIBase {
                 this.imageFoldCountDown.node.active = false;
                 if (this.isShowingDialog)
                     //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
-                    this.isShowingDialog = false;
+                    UIComponent.close(UIDefine.UIDialogComponent);
+                this.isShowingDialog = false;
                 //如需客户端倒计时结束发送弃牌，在这里做
                 GameCache.Instance.CurGame.HideOperationPanel();
             }

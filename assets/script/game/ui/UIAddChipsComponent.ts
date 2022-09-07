@@ -5,9 +5,9 @@
 import { StringHelper } from "../../helper/StringHelper";
 import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
-import {GameCache} from "../GameCache";
+import { GameCache } from "../GameCache";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIAddChipsComponent extends UIBase {
@@ -30,8 +30,8 @@ export default class UIAddChipsComponent extends UIBase {
     sliderCoin: GGSlider = null;
     imageDialog: cc.Node = null;
 
-    //数据接口
-    AddClipsData: {
+    //参数类型
+    ParamType: {
         bigBlind: number,// 大盲
         smallBlind: number, // 小盲
         currentMinRate: number, // 当前最小带入倍数
@@ -61,7 +61,7 @@ export default class UIAddChipsComponent extends UIBase {
         this.Image_Mask.on("click", this.onClickClose, this);
         this.Button_Commit.on("click", this.onClickCommit, this);
     }
-    onShow(addClipsData?: typeof this.AddClipsData): void {
+    onShow(addClipsData?: typeof this.ParamType): void {
         super.onShow(addClipsData);
         this.animateDialog();
         if (null != addClipsData) {
@@ -79,13 +79,14 @@ export default class UIAddChipsComponent extends UIBase {
                 maxRate = addClipsData.currentMinRate;
             }
 
+
+
             this.sliderCoin.maxValue = maxRate / 100;
             this.sliderCoin.minValue = addClipsData.currentMinRate / 100;
             this.sliderCoin.value = addClipsData.currentMinRate / 100;
-            console.log(" >>>>> ",addClipsData.currentMinRate / 100);
             this.onValueChangedSliderCoin(addClipsData.currentMinRate / 100);
             //this.sliderCoin.wholeNumbers = true;
-
+            cc.log("min/max : ", this.sliderCoin.min, this.sliderCoin.max);
         }
         this.textTotalCoin.string = `${StringHelper.getStringDiv100(addClipsData.totalCoin)}`;
     }

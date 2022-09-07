@@ -1,4 +1,5 @@
 import TexasConfig from "../config/TexasConfig";
+import { Param } from "../define/Types";
 import { UIDefine } from "../define/UIDefine";
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
@@ -28,6 +29,7 @@ import TexasGameProtocol from "./TexasGameProtocol";
 import { TexasGameState } from "./TexasGameState";
 import TexasGameUtils from "./TexasGameUtils";
 import TexasSMAgency from "./TexasSMAgency";
+import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UITexas, { PotInfo } from "./UITexas";
 import { UITexasModel } from "./UITexasModel";
@@ -1564,6 +1566,9 @@ export default class TexasGame {
         }
         cc.log("隐藏操作界面");
     }
+    public HideBtnDelay(isActive: boolean): void {
+        //buttonDelay.gameObject.SetActive(isActive);
+    }
 
 
 
@@ -1621,15 +1626,24 @@ export default class TexasGame {
      * 显示手动设置面板 
      */
     private ShowAddChips(): void {
-        this.uirc.UIAddChips.node.active = true;
-        this.uirc.UIAddChips.onShow({
-            bigBlind: this.bigBlind,
-            smallBlind: this.smallBlind,
-            currentMinRate: this.currentMinRate,
-            currentMaxRate: this.currentMaxRate,
-            totalCoin: GameCache.Instance.gold,
-            tableChips: this.mainPlayer.chips
-        });
+        // this.uirc.UIAddChips.node.active = true;
+        // this.uirc.UIAddChips.onShow({
+        //     bigBlind: this.bigBlind,
+        //     smallBlind: this.smallBlind,
+        //     currentMinRate: this.currentMinRate,
+        //     currentMaxRate: this.currentMaxRate,
+        //     totalCoin: GameCache.Instance.gold,
+        //     tableChips: this.mainPlayer.chips
+        // });
+        this.ShowUI(this.uirc.UIAddChips.node, UIAddChipsComponent,
+            {
+                bigBlind: this.bigBlind,
+                smallBlind: this.smallBlind,
+                currentMinRate: this.currentMinRate,
+                currentMaxRate: this.currentMaxRate,
+                totalCoin: GameCache.Instance.gold,
+                tableChips: this.mainPlayer.chips
+            });
     }
     ClearAllData() {
         cc.log("清理所有数据");
@@ -1660,7 +1674,7 @@ export default class TexasGame {
      * @param component 
      * @param param 
      */
-    ShowUI<T>(node: cc.Node, component: { new(): T }, param?: any) {
+    ShowUI<T>(node: cc.Node, component: { new(): T }, param?: Param<T, "ParamType">) {
         node.active = true;
         let ui_component: UIBase = node.getComponent(component);
         ui_component?.onShow(param);

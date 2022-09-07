@@ -1,8 +1,16 @@
 
 const { ccclass, property } = cc._decorator;
 
+export enum Direction {
+    Left_To_Right,
+    Bottom_To_Top,
+}
+
 @ccclass
 export default class GGSlider extends cc.Component {
+
+    @property({ type: cc.Enum(Direction) })
+    direction: Direction = Direction.Left_To_Right;
 
     @property(cc.Node)
     track_back: cc.Node = null;
@@ -62,9 +70,9 @@ export default class GGSlider extends cc.Component {
         if (this.press) {
             let w_location = e.getLocation();
             let l_location = this.node.convertToNodeSpaceAR(w_location);
-            let x = l_location.x;
-            if (l_location.x < 0) x = Math.max(l_location.x, 0);
-            if (l_location.x > this.node.width) x = Math.min(l_location.x, this.node.width);
+            let x = l_location[this.trans("x")];
+            if (l_location[this.trans("x")] < 0) x = Math.max(l_location[this.trans("x")], 0);
+            if (l_location[this.trans("x")] > this.node[this.trans("width")]) x = Math.min(l_location[this.trans("x")], this.node[this.trans("width")]);
             this.setBarPos(this.min + this.postion2pos(x));
         }
     }
@@ -77,8 +85,11 @@ export default class GGSlider extends cc.Component {
         this.press = true;
         let w_location = e.getLocation();
         let l_location = this.node.convertToNodeSpaceAR(w_location);
-        this.setBarPos(this.min + this.postion2pos(l_location.x));
+        this.setBarPos(this.min + this.postion2pos(l_location[this.trans("x")]))
     }
+
+
+
 
     postion2pos(postion: number) {
         return Math.ceil((postion - this.step_dis / 2) / this.step_dis);
@@ -87,8 +98,8 @@ export default class GGSlider extends cc.Component {
     setBarPos(rate: number) {
         this.rate = rate;
         let step = rate - this.min;
-        this.bar.x = step / this.step_count * this.node.width || 0;
-        this.track_top.width = this.bar.x;
+        this.bar[this.trans("x")] = step / this.step_count * this.node[this.trans("width")] || 0;
+        this.track_top[this.trans("width")] = this.bar[this.trans("x")];
         //响应回调
         this._onChange?.(rate);
     }
@@ -117,6 +128,18 @@ export default class GGSlider extends cc.Component {
     }
     public updateBase() {
         this.step_count = this.max - this.min;
-        this.step_dis = this.node.width / this.step_count;
+        this.step_dis = this.node[this.trans("width")] / this.step_count;
+    }
+
+    private trans(prop: string): string {
+        switch (this.direction) {
+            case Direction.Left_To_Right:
+                break;
+            case Direction.Bottom_To_Top:
+                if (prop == "x") prop = "y";
+                if (prop == "width") prop = "height";
+                break;
+        }
+        return prop;
     }
 }
