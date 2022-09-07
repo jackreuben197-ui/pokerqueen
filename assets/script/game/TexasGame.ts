@@ -30,7 +30,7 @@ import { TexasGameState } from "./TexasGameState";
 import TexasGameUtils from "./TexasGameUtils";
 import TexasSMAgency from "./TexasSMAgency";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
-import UIOperationComponent from "./ui/UIOperationComponent";
+import UIOperationComponent, { OperationData } from "./ui/UIOperationComponent";
 import UITexas, { PotInfo } from "./UITexas";
 import { UITexasModel } from "./UITexasModel";
 //const PBTypes = Def.Types;
@@ -1527,8 +1527,8 @@ export default class TexasGame {
     /// </summary>
     /// <param name="operationData"></param>
     /// <param name="delay"></param> UIOperationComponent.OperationData
-    public ShowOperationPanel(operationData, delay: number = 0): void {
-        if (operationData?.actionLimits == null || operationData?.actionLimits.count <= 0) {
+    public ShowOperationPanel(operationData: OperationData, delay: number = 0): void {
+        if (operationData?.actionLimits == null || operationData?.actionLimits.length <= 0) {
             return;
         }
         if (this.mainPlayer != null) {
@@ -1626,15 +1626,7 @@ export default class TexasGame {
      * 显示手动设置面板 
      */
     private ShowAddChips(): void {
-        // this.uirc.UIAddChips.node.active = true;
-        // this.uirc.UIAddChips.onShow({
-        //     bigBlind: this.bigBlind,
-        //     smallBlind: this.smallBlind,
-        //     currentMinRate: this.currentMinRate,
-        //     currentMaxRate: this.currentMaxRate,
-        //     totalCoin: GameCache.Instance.gold,
-        //     tableChips: this.mainPlayer.chips
-        // });
+
         this.ShowUI(this.uirc.UIAddChips.node, UIAddChipsComponent,
             {
                 bigBlind: this.bigBlind,

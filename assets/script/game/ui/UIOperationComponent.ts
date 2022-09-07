@@ -108,6 +108,7 @@ export default class UIOperationComponent extends UIBase {
     private _isFoldCountDown: boolean = false;
 
 
+    public ParamType: OperationData;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -334,9 +335,8 @@ export default class UIOperationComponent extends UIBase {
         }
     }
 
-    ParamType
+    onShow(obj?: OperationData): void {
 
-    onShow(obj?: any): void {
         super.onShow(obj);
 
         if (null == obj) {
@@ -344,7 +344,8 @@ export default class UIOperationComponent extends UIBase {
         }
         GameCache.Instance.IsAllowOpenDanmu = false;
 
-        this.operationData = obj as OperationData;
+        this.operationData = obj;
+
         if (null == this.operationData || null == this.operationData.actionLimits) {
             return;
         }

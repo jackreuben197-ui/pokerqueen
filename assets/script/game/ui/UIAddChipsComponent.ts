@@ -7,6 +7,16 @@ import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
 
+
+type AddClipsData = {
+    bigBlind: number,// 大盲
+    smallBlind: number, // 小盲
+    currentMinRate: number, // 当前最小带入倍数
+    currentMaxRate: number, // 当前最大带入倍数
+    totalCoin: number, // 总金豆
+    tableChips: number, // 玩家剩余记分牌
+}
+
 const { ccclass } = cc._decorator;
 
 @ccclass
@@ -31,14 +41,7 @@ export default class UIAddChipsComponent extends UIBase {
     imageDialog: cc.Node = null;
 
     //参数类型
-    ParamType: {
-        bigBlind: number,// 大盲
-        smallBlind: number, // 小盲
-        currentMinRate: number, // 当前最小带入倍数
-        currentMaxRate: number, // 当前最大带入倍数
-        totalCoin: number, // 总金豆
-        tableChips: number, // 玩家剩余记分牌
-    } = null;
+    ParamType: AddClipsData;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -61,7 +64,7 @@ export default class UIAddChipsComponent extends UIBase {
         this.Image_Mask.on("click", this.onClickClose, this);
         this.Button_Commit.on("click", this.onClickCommit, this);
     }
-    onShow(addClipsData?: typeof this.ParamType): void {
+    onShow(addClipsData?: AddClipsData): void {
         super.onShow(addClipsData);
         this.animateDialog();
         if (null != addClipsData) {
@@ -78,9 +81,6 @@ export default class UIAddChipsComponent extends UIBase {
             if (maxRate < addClipsData.currentMinRate) {
                 maxRate = addClipsData.currentMinRate;
             }
-
-
-
             this.sliderCoin.maxValue = maxRate / 100;
             this.sliderCoin.minValue = addClipsData.currentMinRate / 100;
             this.sliderCoin.value = addClipsData.currentMinRate / 100;
