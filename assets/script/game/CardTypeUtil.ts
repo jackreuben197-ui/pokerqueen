@@ -1,6 +1,9 @@
 
 /// <summary>
 /// 普通牌型
+
+import { LanguageCode } from "../i18n/LanguageCode";
+
 /// </summary>
 export enum CardType {
     HighCard = 1,        // 高牌
@@ -47,6 +50,7 @@ export enum CardSuit {
 
 export class CardTypeUtil {
 
+    private static weightValue: number = 15;
     //获取普通局牌型
     public static GetCardType(cards: number[], highlightCards: number[], isSixPlus: boolean = false): CardType {
         let mCards = cards;
@@ -73,7 +77,7 @@ export class CardTypeUtil {
                         card[3] = mCards[b];
                         for (let c = b + 1; c < 7; c++) {
                             card[4] = mCards[c];
-                            //CardTypeUtil.CompareCardType(card, ref carTypeNum, ref lastMin, ref highlightCards, isSixPlus);
+                            CardTypeUtil.CompareCardType(card, carTypeNum, lastMin, highlightCards, isSixPlus);
                         }
                     }
                 }
@@ -81,6 +85,33 @@ export class CardTypeUtil {
         }
         return carTypeNum;
     }
+
+
+    /// <summary>
+    /// 用于判断哪个牌型大。短牌同花比葫芦大，转换一下，在做对比（只转换比大小，不参与牌型运算）
+    /// </summary>
+    /// <param name="isSixPlus"></param>
+    /// <param name="carTypeNum"></param>
+    /// <returns></returns>
+    public static CarTypeNumConversionToSixPlusCardType(isSixPlus: boolean, carTypeNum: number): number {
+        let cardType = 10;
+        if (isSixPlus) {
+            if (carTypeNum == CardType.FullHouse) {
+                cardType = CardType.Flush;
+            }
+            else if (carTypeNum == CardType.Flush) {
+                cardType = CardType.FullHouse;
+            }
+            else {
+                cardType = carTypeNum;
+            }
+        }
+        else {
+            cardType = carTypeNum;
+        }
+        return cardType;
+    }
+
 
     /// <summary>
     /// 比较牌型大小
@@ -91,332 +122,483 @@ export class CardTypeUtil {
     /// <param name="highlightCards"></param>
     /// <param name="isSixPlus"></param>
     public static CompareCardType(card: number[], carTypeNum: number, lastMin: number, highlightCards: number[], isSixPlus: boolean = false) {
-        // let cardType: CardType = CardTypeUtil.GetExactCardType(card, isSixPlus);
-        //     int num = (int)cardType;
-        // if (CarTypeNumConversionToSixPlusCardType(isSixPlus, num) > CarTypeNumConversionToSixPlusCardType(isSixPlus, carTypeNum)) {
-        //     carTypeNum = num;
-        //     lastMin = 100;
+        let cardType: CardType = CardTypeUtil.GetExactCardType(card, isSixPlus);
+        let num = cardType;
+        if (this.CarTypeNumConversionToSixPlusCardType(isSixPlus, num) > this.CarTypeNumConversionToSixPlusCardType(isSixPlus, carTypeNum)) {
+            carTypeNum = num;
+            lastMin = 100;
 
-        //     //记录不同牌型需要记录的来比较
-        //     if (num == (int)CardType.StraightFlush || num == (int)CardType.Straight)
-        //     {
-        //         //同花顺或者顺子
-        //         for (int i = 0; i < 5; i++)
-        //         {
-        //             if ((card[i] % weightValue) < lastMin) {
-        //                 //取牌型最小一张
-        //                 lastMin = card[i] % weightValue;
-        //             }
-        //         }
-        //         if (lastMin == (int)CardNum.Two)
-        //         {
-        //             //有2要判断是否有A，因为A到5最小
-        //             for (int i = 0; i < 5; i++)
-        //             {
-        //                 if ((card[i] % weightValue) == (int)CardNum.A)
-        //                 {
-        //                     //1到5
-        //                     lastMin = -1;
-        //                 }
-        //             }
-        //         }
-        //     }
-        //         else if (num == (int)CardType.FourOfAKind)
-        //     {
-        //         //四条
-        //         for (int i = 0; i < 4; i++)
-        //         {//四条不可能遍历完
-        //             if ((card[i] % weightValue) == (card[i + 1] % weightValue)) {
-        //                 //取四条牌型
-        //                 lastMin = card[i] % weightValue;
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //         else if (num == (int)CardType.FullHouse)
-        //     {
-        //         //葫芦
-        //         lastMin = card[0] % weightValue + card[1] % weightValue + card[2] % weightValue + card[3] % weightValue + card[4] % weightValue;
-        //     }
-        //         else if (num == (int)CardType.Flush)
-        //     {
-        //         //同花
-        //         lastMin = 0;
-        //         for (int i = 0; i < 5; i++)
-        //         {
-        //             lastMin += (card[i] % weightValue);
-        //         }
-        //     }
-        //         else if (num == (int)CardType.ThreeOfAKind || num == (int)CardType.OnePair)
-        //     {
-        //         //三条或者一对(手牌两对才可能平行变三条或者一对)
-        //         for (int i = 0; i < 4; i++)
-        //         {
-        //             for (int j = i + 1; j < 5; j++)
-        //             {
-        //                 if ((card[i] % weightValue) == (card[j] % weightValue)) {
-        //                     //取牌型
-        //                     lastMin = card[i] % weightValue;
-        //                 }
-        //             }
-        //         }
-        //     }
-        //         else if (num == (int)CardType.TwoPair)
-        //     {
-        //             //两对
-        //             int first = -1;
-        //             int second = -1;
-        //         for (int i = 0; i < 4; i++)
-        //         {
-        //             for (int j = i + 1; j < 5; j++)
-        //             {
-        //                 if ((card[i] % weightValue) == (card[j] % weightValue)) {
-        //                     //取两个对子牌型
-        //                     if (first == -1) {
-        //                         first = card[i] % weightValue;
-        //                     }
-        //                     else {
-        //                         second = card[i] % weightValue;
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //             int maxOne = Mathf.Max(first, second);
-        //             int minOne = Mathf.Min(first, second);
-        //         //两对判断大小，以大牌的大小优先，所以乘一个加权
-        //         lastMin = maxOne * 20 + minOne;
-        //     }
-        //     highlightCards = CardTypeUtil.GetHighlightCard(card, (CardType)num);
-        // }
-        // else if (num == carTypeNum) {
-        //     //牌型相同时候部分牌型需要比较大小
-        //     if (num == (int)CardType.StraightFlush || num == (int)CardType.Straight)
-        //     {
-        //             //同花顺或者顺子
-        //             bool bigger = true;
-        //         for (int i = 0; i < 5; i++)
-        //         {
-        //             if ((card[i] % weightValue) < lastMin) {
-        //                 //有一张小于就是小于
-        //                 bigger = false;
-        //             }
-        //         }
-        //         if (bigger) {
-        //             lastMin = 100;
-        //             for (int i = 0; i < 5; i++)
-        //             {
-        //                 if ((card[i] % weightValue) < lastMin) {
-        //                     //取新的牌型最小一张
-        //                     lastMin = card[i] % weightValue;
-        //                 }
-        //             }
-        //             if (lastMin == (int)CardNum.Two)
-        //             {
-        //                 //有2要判断是否有1，因为1到5最小
-        //                 for (int i = 0; i < 5; i++)
-        //                 {
-        //                     if ((card[i] % weightValue) == (int)CardNum.A)
-        //                     {
-        //                         //1到5
-        //                         lastMin = -1;
-        //                     }
-        //                 }
-        //             }
-        //             //显示更大
-        //             highlightCards = CardTypeUtil.GetHighlightCard(card, (CardType)num);
-        //         }
-        //     }
-        //         else if (num == (int)CardType.FourOfAKind)
-        //     {
-        //             //四条
-        //             int currentMin = 0;
-        //         for (int i = 0; i < 4; i++)
-        //         {//四条不可能遍历完
-        //             if ((card[i] % weightValue) == (card[i + 1] % weightValue)) {
-        //                 //取四条牌型
-        //                 currentMin = card[i] % weightValue;
-        //                 break;
-        //             }
-        //         }
-        //         if (currentMin > lastMin) {
-        //             lastMin = currentMin;
-        //             //显示更大
-        //             highlightCards = CardTypeUtil.GetHighlightCard(card, (CardType)num);
-        //         }
-        //     }
-        //         else if (num == (int)CardType.FullHouse)
-        //     {
-        //             //葫芦
-        //             int newNum = card[0] % weightValue + card[1] % weightValue + card[2] % weightValue + card[3] % weightValue + card[4] % weightValue;
-        //         if (lastMin < newNum) {
-        //             lastMin = newNum;
-        //             //显示更大
-        //             highlightCards = CardTypeUtil.GetHighlightCard(card, (CardType)num);
-        //         }
-        //     }
-        //         else if (num == (int)CardType.Flush)
-        //     {
-        //             //同花
-        //             int currentMin = 0;
-        //         for (int i = 0; i < 5; i++)
-        //         {
-        //             currentMin += (card[i] % weightValue);
-        //         }
-        //         if (currentMin > lastMin) {
-        //             lastMin = currentMin;
-        //             //显示更大
-        //             highlightCards = CardTypeUtil.GetHighlightCard(card, (CardType)num);
-        //         }
-        //     }
-        //         else if (num == (int)CardType.ThreeOfAKind || num == (int)CardType.OnePair)
-        //     {
-        //             //三条或者一对
-        //             int currentMin = 0;
-        //         for (int i = 0; i < 4; i++)
-        //         {
-        //             for (int j = i + 1; j < 5; j++)
-        //             {
-        //                 if ((card[i] % weightValue) == (card[j] % weightValue)) {
-        //                     //取牌型
-        //                     currentMin = card[i] % weightValue;
-        //                 }
-        //             }
-        //         }
-        //         if (currentMin > lastMin) {
-        //             lastMin = currentMin;
-        //             //显示更大
-        //             highlightCards = CardTypeUtil.GetHighlightCard(card, (CardType)num);
-        //         }
-        //     }
-        //         else if (num == (int)CardType.TwoPair)
-        //     {
-        //             //两对
-        //             int first = -1;
-        //             int second = -1;
-        //             int currentMin = 0;
-        //         for (int i = 0; i < 4; i++)
-        //         {
-        //             for (int j = i + 1; j < 5; j++)
-        //             {
-        //                 if ((card[i] % weightValue) == (card[j] % weightValue)) {
-        //                     //取两个对子牌型
-        //                     if (first == -1) {
-        //                         first = card[i] % weightValue;
-        //                     }
-        //                     else {
-        //                         second = card[i] % weightValue;
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //             int maxOne = Mathf.Max(first, second);
-        //             int minOne = Mathf.Min(first, second);
-        //         //两对判断大小，以大牌的大小优先，所以乘一个加权
-        //         currentMin = maxOne * 20 + minOne;
-        //         if (currentMin > lastMin) {
-        //             lastMin = currentMin;
-        //             //显示更大
-        //             highlightCards = CardTypeUtil.GetHighlightCard(card, (CardType)num);
-        //         }
-        //     }
-        // }
+            //记录不同牌型需要记录的来比较
+            if (num == CardType.StraightFlush || num == CardType.Straight) {
+                //同花顺或者顺子
+                for (let i = 0; i < 5; i++) {
+                    if ((card[i] % this.weightValue) < lastMin) {
+                        //取牌型最小一张
+                        lastMin = card[i] % this.weightValue;
+                    }
+                }
+                if (lastMin == CardNum.Two) {
+                    //有2要判断是否有A，因为A到5最小
+                    for (let i = 0; i < 5; i++) {
+                        if ((card[i] % this.weightValue) == CardNum.A) {
+                            //1到5
+                            lastMin = -1;
+                        }
+                    }
+                }
+            }
+            else if (num == CardType.FourOfAKind) {
+                //四条
+                for (let i = 0; i < 4; i++) {//四条不可能遍历完
+                    if ((card[i] % this.weightValue) == (card[i + 1] % this.weightValue)) {
+                        //取四条牌型
+                        lastMin = card[i] % this.weightValue;
+                        break;
+                    }
+                }
+            }
+            else if (num == CardType.FullHouse) {
+                //葫芦
+                lastMin = card[0] % this.weightValue + card[1] % this.weightValue + card[2] % this.weightValue + card[3] % this.weightValue + card[4] % this.weightValue;
+            }
+            else if (num == CardType.Flush) {
+                //同花
+                lastMin = 0;
+                for (let i = 0; i < 5; i++) {
+                    lastMin += (card[i] % this.weightValue);
+                }
+            }
+            else if (num == CardType.ThreeOfAKind || num == CardType.OnePair) {
+                //三条或者一对(手牌两对才可能平行变三条或者一对)
+                for (let i = 0; i < 4; i++) {
+                    for (let j = i + 1; j < 5; j++) {
+                        if ((card[i] % this.weightValue) == (card[j] % this.weightValue)) {
+                            //取牌型
+                            lastMin = card[i] % this.weightValue;
+                        }
+                    }
+                }
+            }
+            else if (num == CardType.TwoPair) {
+                //两对
+                let first = -1;
+                let second = -1;
+                for (let i = 0; i < 4; i++) {
+                    for (let j = i + 1; j < 5; j++) {
+                        if ((card[i] % this.weightValue) == (card[j] % this.weightValue)) {
+                            //取两个对子牌型
+                            if (first == -1) {
+                                first = card[i] % this.weightValue;
+                            }
+                            else {
+                                second = card[i] % this.weightValue;
+                            }
+                        }
+                    }
+                }
+                let maxOne = Math.max(first, second);
+                let minOne = Math.min(first, second);
+                //两对判断大小，以大牌的大小优先，所以乘一个加权
+                lastMin = maxOne * 20 + minOne;
+            }
+            highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+        }
+        else if (num == carTypeNum) {
+            //牌型相同时候部分牌型需要比较大小
+            if (num == CardType.StraightFlush || num == CardType.Straight) {
+                //同花顺或者顺子
+                let bigger: boolean = true;
+                for (let i = 0; i < 5; i++) {
+                    if ((card[i] % this.weightValue) < lastMin) {
+                        //有一张小于就是小于
+                        bigger = false;
+                    }
+                }
+                if (bigger) {
+                    lastMin = 100;
+                    for (let i = 0; i < 5; i++) {
+                        if ((card[i] % this.weightValue) < lastMin) {
+                            //取新的牌型最小一张
+                            lastMin = card[i] % this.weightValue;
+                        }
+                    }
+                    if (lastMin == CardNum.Two) {
+                        //有2要判断是否有1，因为1到5最小
+                        for (let i = 0; i < 5; i++) {
+                            if ((card[i] % this.weightValue) == CardNum.A) {
+                                //1到5
+                                lastMin = -1;
+                            }
+                        }
+                    }
+                    //显示更大
+                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                }
+            }
+            else if (num == CardType.FourOfAKind) {
+                //四条
+                let currentMin = 0;
+                for (let i = 0; i < 4; i++) {//四条不可能遍历完
+                    if ((card[i] % this.weightValue) == (card[i + 1] % this.weightValue)) {
+                        //取四条牌型
+                        currentMin = card[i] % this.weightValue;
+                        break;
+                    }
+                }
+                if (currentMin > lastMin) {
+                    lastMin = currentMin;
+                    //显示更大
+                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                }
+            }
+            else if (num == CardType.FullHouse) {
+                //葫芦
+                let newNum = card[0] % this.weightValue + card[1] % this.weightValue + card[2] % this.weightValue + card[3] % this.weightValue + card[4] % this.weightValue;
+                if (lastMin < newNum) {
+                    lastMin = newNum;
+                    //显示更大
+                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                }
+            }
+            else if (num == CardType.Flush) {
+                //同花
+                let currentMin = 0;
+                for (let i = 0; i < 5; i++) {
+                    currentMin += (card[i] % this.weightValue);
+                }
+                if (currentMin > lastMin) {
+                    lastMin = currentMin;
+                    //显示更大
+                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                }
+            }
+            else if (num == CardType.ThreeOfAKind || num == CardType.OnePair) {
+                //三条或者一对
+                let currentMin = 0;
+                for (let i = 0; i < 4; i++) {
+                    for (let j = i + 1; j < 5; j++) {
+                        if ((card[i] % this.weightValue) == (card[j] % this.weightValue)) {
+                            //取牌型
+                            currentMin = card[i] % this.weightValue;
+                        }
+                    }
+                }
+                if (currentMin > lastMin) {
+                    lastMin = currentMin;
+                    //显示更大
+                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                }
+            }
+            else if (num == CardType.TwoPair) {
+                //两对
+                let first = -1;
+                let second = -1;
+                let currentMin = 0;
+                for (let i = 0; i < 4; i++) {
+                    for (let j = i + 1; j < 5; j++) {
+                        if ((card[i] % this.weightValue) == (card[j] % this.weightValue)) {
+                            //取两个对子牌型
+                            if (first == -1) {
+                                first = card[i] % this.weightValue;
+                            }
+                            else {
+                                second = card[i] % this.weightValue;
+                            }
+                        }
+                    }
+                }
+                let maxOne = Math.max(first, second);
+                let minOne = Math.min(first, second);
+                //两对判断大小，以大牌的大小优先，所以乘一个加权
+                currentMin = maxOne * 20 + minOne;
+                if (currentMin > lastMin) {
+                    lastMin = currentMin;
+                    //显示更大
+                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                }
+            }
+        }
     }
+
+
 
     //5张确定牌
     private static GetExactCardType(cards: number[], isSixPlus: boolean = false): CardType {
         if (cards.length < 5) {
             return CardType.HighCard;
         }
-        // CardType cardType = CardType.HighCard;
-        // List < sbyte > CardColor = new List<sbyte>(new sbyte[5]);
-        // List < sbyte > CardNumber = new List<sbyte>(new sbyte[5]);
-        // List < sbyte > array = new List<sbyte>(new sbyte[5]);
-        // for (int i = 0; i < 5; i++)
-        // {
-        //     if (cards[i] == -1) {
-        //         //空的公共牌处理
-        //         return CardType.HighCard;
-        //     }
-        //     CardColor[i] = (sbyte)(cards[i] / weightValue);
-        //     CardNumber[i] = (sbyte)(cards[i] % weightValue);
-        // }
+        let cardType: CardType = CardType.HighCard;
+        let CardColor: number[] = [];
+        let CardNumber: number[] = [];
+        let array: number[] = [];
+        for (let i = 0; i < 5; i++) {
+            if (cards[i] == -1) {
+                //空的公共牌处理
+                return CardType.HighCard;
+            }
+            CardColor[i] = (cards[i] / this.weightValue);
+            CardNumber[i] = (cards[i] % this.weightValue);
+        }
 
-        // bool bsameColorOverFive = false;
-        // bsameColorOverFive = true;
-        // for (int i = 0, n = 4; i < n; i++)
-        // {
-        //     if (CardColor[i] != CardColor[i + 1]) {
-        //         bsameColorOverFive = false;
-        //         break;
-        //     }
-        // }
+        let bsameColorOverFive = false;
+        bsameColorOverFive = true;
+        for (let i = 0, n = 4; i < n; i++) {
+            if (CardColor[i] != CardColor[i + 1]) {
+                bsameColorOverFive = false;
+                break;
+            }
+        }
 
-        // if (bsameColorOverFive) {
-        //     for (int i = 0, n = array.Count; i < n; i++)
-        //     {
-        //         array[i] = CardNumber[i];
-        //     }
-        // }
+        if (bsameColorOverFive) {
+            for (let i = 0, n = array.length; i < n; i++) {
+                array[i] = CardNumber[i];
+            }
+        }
 
-        // if (bsameColorOverFive) {
-        //     List < sbyte > arraySorted = new List<sbyte>(array.ToArray());
-        //     arraySorted.Sort();
-        //     if (CardTypeUtil.isStraight(arraySorted, array, isSixPlus)) {
-        //         if (array.Contains((int)CardNum.A) && array.Contains((int)CardNum.K)) {
-        //             cardType = CardType.RoyalFlush;
-        //         }
-        //         else {
-        //             cardType = CardType.StraightFlush;
-        //         }
-        //     }
-        //     else {
-        //         cardType = CardType.Flush;
-        //     }
+        if (bsameColorOverFive) {
+            let arraySorted: number[] = [...array];
+            arraySorted.sort((a, b) => a - b);
+            if (CardTypeUtil.isStraight(arraySorted, array, isSixPlus)) {
+                if (array.includes(CardNum.A) && array.includes(CardNum.K)) {
+                    cardType = CardType.RoyalFlush;
+                }
+                else {
+                    cardType = CardType.StraightFlush;
+                }
+            }
+            else {
+                cardType = CardType.Flush;
+            }
 
-        // }
-        // else {
+        }
+        else {
 
-        //     array.Clear();
-        //     for (int i = 0; i < 5; i++)
-        //     {
-        //         array.Add(CardNumber[i]);
-        //     }
-        //     List < sbyte > arrInput = new List<sbyte>(array.ToArray());
-        //     arrInput.Sort();
-        //     if (CardTypeUtil.isStraight(arrInput, null, isSixPlus)) {
-        //         cardType = CardType.Straight;
-        //     }
-        //     else {
-        //         int type = CardTypeUtil.getTempCardType(array);
-        //         if (type != -1) {
-        //             // 0  hulu  1 duizi 2  santiao  3 liangdui  -1 gaopai  4 sitiao
-        //             switch (type) {
-        //                 case 0:
-        //                     cardType = CardType.FullHouse;
-        //                     break;
-        //                 case 1:
-        //                     cardType = CardType.OnePair;
-        //                     break;
-        //                 case 2:
-        //                     cardType = CardType.ThreeOfAKind;
-        //                     break;
-        //                 case 3:
-        //                     cardType = CardType.TwoPair;
-        //                     break;
-        //                 case 4:
-        //                     cardType = CardType.FourOfAKind;
-        //                     break;
-        //                 default:
-        //                     break;
-        //             }
-        //         }
-        //         else {
-        //             cardType = CardType.HighCard;
-        //         }
-        //     }
-        // }
+            array = [];
+            for (let i = 0; i < 5; i++) {
+                array.push(CardNumber[i]);
+            }
+            let arrInput: number[] = [...array];
+            arrInput.sort((a, b) => a - b);
+            if (CardTypeUtil.isStraight(arrInput, null, isSixPlus)) {
+                cardType = CardType.Straight;
+            }
+            else {
+                let type = CardTypeUtil.getTempCardType(array);
+                if (type != -1) {
+                    // 0  hulu  1 duizi 2  santiao  3 liangdui  -1 gaopai  4 sitiao
+                    switch (type) {
+                        case 0:
+                            cardType = CardType.FullHouse;
+                            break;
+                        case 1:
+                            cardType = CardType.OnePair;
+                            break;
+                        case 2:
+                            cardType = CardType.ThreeOfAKind;
+                            break;
+                        case 3:
+                            cardType = CardType.TwoPair;
+                            break;
+                        case 4:
+                            cardType = CardType.FourOfAKind;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else {
+                    cardType = CardType.HighCard;
+                }
+            }
+        }
 
-        // return cardType;
+        return cardType;
+    }
+
+
+    private static getTempCardType(array: number[]): number {
+        let arrInfo: number[] = [...array];
+        let countOfDuiZi = 0;
+        let countOfThree = 0;
+        let countOfFour = 0;
+        for (let i = 0; i < arrInfo.length; i++) {
+            let count = 0;
+            let value = arrInfo[i];
+            for (let j = 0; j < arrInfo.length; j++) {
+                if (i == j) {
+                    continue;
+                }
+
+                if (value == arrInfo[j]) {
+                    count++;
+                    arrInfo.splice(j, 1)
+                    j--;
+                    if (arrInfo.length <= 1) {
+                        break;
+                    }
+                }
+            }
+            arrInfo.splice(i, 1)
+            i--;
+            if (count == 2) {
+                countOfThree++;
+            }
+            if (count == 1) {
+                countOfDuiZi++;
+            }
+            if (count == 3) {
+                countOfFour++;
+            }
+            if (arrInfo.length <= 1) {
+                break;
+            }
+        }
+
+        if (countOfFour >= 1) {
+            return 4;
+        }
+        if ((countOfDuiZi >= 1 && countOfThree >= 1) || countOfThree == 2) {
+            return 0;
+        }
+        if (countOfThree >= 1) {
+            return 2;
+        }
+        if (countOfDuiZi >= 2) {
+            return 3;
+        }
+        if (countOfDuiZi == 1) {
+            return 1;
+        }
+
+        return -1;
+
+    }
+
+
+
+    private static isStraight(array: number[], arrayStoreStraight: number[], isSixPlus = false): boolean {
+        let count = 0;
+        if (arrayStoreStraight == null) {
+            arrayStoreStraight = [];
+        }
+        arrayStoreStraight = [];
+        for (let i = array.length - 1; i > 0; i--) {
+            if (array[i] - 1 == array[i - 1]) {
+                count++;
+                arrayStoreStraight.push(array[i]);
+            }
+            else {
+                count = 0;
+                arrayStoreStraight = [];
+            }
+            if (i == 1 && count == 3) {
+                arrayStoreStraight.push(array[i - 1]);
+            }
+            if (count >= 4) {
+                arrayStoreStraight.push(array[i - 1]);
+                return true;
+            }
+        }
+        if (count == 3) {
+            arrayStoreStraight.sort((a, b) => a - b);
+            if (isSixPlus)//短牌，判断最小是否是6，如果是6 A可以当5也可以组成顺子
+            {
+                if (arrayStoreStraight[0] == CardNum.Six) {
+
+                    array.forEach(number => {
+                        if (number == CardNum.A) {
+                            return true;
+                        }
+                    })
+                }
+            }
+            else {
+                if (arrayStoreStraight[0] == CardNum.Two) {
+                    array.forEach(number => {
+                        if (number == CardNum.A) {
+                            return true;
+                        }
+                    })
+                }
+            }
+
+        }
+        return false;
+    }
+
+    private static GetHighlightCard(cards: number[], cardType: CardType): number[] {
+        let highlightCard: number[] = [];
+        if (cardType == CardType.RoyalFlush
+            || cardType == CardType.StraightFlush
+            || cardType == CardType.FullHouse
+            || cardType == CardType.Flush
+            || cardType == CardType.Straight) {
+            //5张都高亮
+            highlightCard.push(...cards);
+        }
+        else {
+            //找相同牌高亮
+            let arrInfo: number[] = [...cards];
+            //new List<sbyte>(cards.ToArray());
+            for (let i = 0; i < arrInfo.length; i++) {
+                let valueCard: number = arrInfo[i];
+                let valueCardNum: number = valueCard % this.weightValue;
+                for (let j = 0; j < arrInfo.length; j++) {
+                    if (i == j) {
+                        continue;
+                    }
+                    let comparedCard = arrInfo[j];
+                    let comparedCardNum = comparedCard % this.weightValue;
+                    if (valueCardNum == comparedCardNum && valueCardNum != -1) {
+                        if (!highlightCard.includes(valueCard)) {
+                            highlightCard.push(valueCard);
+                        }
+                        if (!highlightCard.includes(comparedCard)) {
+                            highlightCard.push(comparedCard);
+                        }
+                        arrInfo.splice(j, 1);
+                        j--;
+                        if (arrInfo.length <= 1) {
+                            break;
+                        }
+                    }
+                }
+                arrInfo.splice(i, 1);
+                i--;
+                if (arrInfo.length <= 1) {
+                    break;
+                }
+            }
+        }
+
+        return highlightCard;
+    }
+
+    public static GetCardTypeName(cardType: CardType): string {
+        switch (cardType) {
+            case CardType.RoyalFlush:
+                return LanguageCode.LanguageDescription(10053);
+            case CardType.StraightFlush:
+                return LanguageCode.LanguageDescription(10054);
+            case CardType.FourOfAKind:
+                return LanguageCode.LanguageDescription(10055);
+            case CardType.FullHouse:
+                return LanguageCode.LanguageDescription(10056);
+            case CardType.Flush:
+                return LanguageCode.LanguageDescription(10057);
+            case CardType.Straight:
+                return LanguageCode.LanguageDescription(10058);
+            case CardType.ThreeOfAKind:
+                return LanguageCode.LanguageDescription(10059);
+            case CardType.TwoPair:
+                return LanguageCode.LanguageDescription(10060);
+            case CardType.OnePair:
+                return LanguageCode.LanguageDescription(10061);
+            case CardType.HighCard:
+                return LanguageCode.LanguageDescription(10062);
+            default:
+                return "";
+        }
     }
 
 }

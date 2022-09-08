@@ -296,7 +296,7 @@ export default class TexasGameProtocol {
         }
         else {
             //（短牌没有小盲注位置）当小盲位小于零，算出小盲位置，用于首位发牌人座位。
-            this.game.smallIndex = this.game.utils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
+            this.game.smallIndex = this.game.TexasGameUtils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
         }
         if (this.game.bigIndex >= 0) {
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_SECOND);
@@ -556,7 +556,7 @@ export default class TexasGameProtocol {
                 this.game.HideAutoOperationPanel();
                 if ((this.game.autoFold || this.game.autoCheck || (this.game.autoCall && rec.action != Def.Action.RAISE && rec.action != Def.Action.ALLIN) || this.game.autoAllin)) {
                     this.game.HideOperationPanel();
-                    if (this.game.utils.AutoOperationHandle(rec.nextOperator.actionsList)) {
+                    if (this.game.TexasGameUtils.AutoOperationHandle(rec.nextOperator.actionsList)) {
                         this.game.HideOperationPanel();
                     }
                     else {
@@ -621,7 +621,7 @@ export default class TexasGameProtocol {
         this.game.HideOperationPanel();
     }
 
-    
+
 
 
 }

@@ -6,6 +6,7 @@ import { UIMineModel } from "../lobby/UIMineModel";
 import { Web_Config_Global_Config } from "../net/https/WebRequest";
 import { Def } from "../protobuf/holdem/define_pb";
 import { CacheDataManager } from "./CacheDataManager";
+import { CardType, CardTypeUtil } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
@@ -47,6 +48,7 @@ export default class Seat {
 
 
     protected defaultIconChipLocalPos: cc.Vec3 = cc.v3();
+
 
 
     public FsmLogicComponent: FSMLogicComponent = null;//状态机
@@ -889,15 +891,16 @@ export default class Seat {
     /// 播放回收筹码动画
     /// </summary>
     public PlayRecyclingChipAnimation(): cc.Tween {
-        let func = null;
+        let tween = cc.tween(this.ui);
         if (this.uirc.imageIconChip.node.activeInHierarchy) {
             this.uirc.textCurRoundHaveBet.node.active = false;
             let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
-            return cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
+            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_MOVE_CHIPS);
+            cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
                 this.uirc.imageIconChip.node.active = false;
             }).start();
         }
-        return func;
+        return tween;
     }
 
 
@@ -1204,6 +1207,90 @@ export default class Seat {
             //}
         }
     }
+
+    /// <summary>
+    /// 刷新手牌牌型高亮
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="hightCards"></param>
+    public UpdateCardType(type: CardType, hightCards: number[], isGameend = false): void {
+        if (this.Player == null || GameCache.Instance.CurGame.GetCurPublicCardsCount() == 0 || this.CardsCount() == 0) {
+            this.uirc.imageCardType.node.active = false;
+            this.uirc.imageSmallCardType.node.active = false;
+            for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+            }
+            return;
+        }
+
+        if (this.IsMySeat) {
+            this.uirc.imageSmallCardType.node.active = false;
+            this.uirc.textCardType.string = CardTypeUtil.GetCardTypeName(type);
+
+            this.uirc.imageCardType.node.active = true;
+            this.uirc.imageCardType.node.setPosition(Seat.myCardTypePos[0]);
+            for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+                if (isGameend) {
+                    this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.GRAY;
+                }
+
+                for (let j = 0, m = hightCards.length; j < m; j++) {
+                    if (this.Player.cards[i] == hightCards[j]) {
+                        if (isGameend) {
+                            this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
+                            this.uirc.listCardUIInfos[i].imageCard.setPosition(cc.v3(this.uirc.listCardUIInfos[i].imageCard.position.x, this.uirc.listCardUIInfos[i].imageCard.position.y));//+40奥马哈两个手牌上移
+                            this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+                        }
+                        else {
+                            this.uirc.listCardUIInfos[i].imageSelect.node.active = true;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            this.uirc.imageCardType.node.active = false;
+            this.uirc.textSmallCardType.string = CardTypeUtil.GetCardTypeName(type);
+
+
+            for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+                this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
+
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// 隐藏手牌牌型高亮
+    /// </summary>
+    public HideCardType(): void {
+        if (null == this.Player || null == this.Player.cards)
+            return;
+
+        for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+            this.uirc.listSmallCardUIInfos[i].imageCard.color = cc.Color.WHITE;
+            this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+        }
+        this.uirc.imageSmallCardType.node.active = false;
+        this.uirc.imageCardType.node.active = false;
+    }
+
+    /// <summary>
+    /// 可见手牌数量
+    /// </summary>
+    public CardsCount(): number {
+        let iCount = 0;
+        for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+            if (this.Player.cards[i] != -1) {
+                iCount++;
+            }
+        }
+        return iCount;
+    }
+
 
     protected GetBackSmallCardPos(index: number): cc.Vec3 {
         return Seat.backSmallCardPos[index];
