@@ -1,13 +1,19 @@
+import { json } from "stream/consumers";
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
+import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
+import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageSidePots } from "../../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import { ClientMessageAction, ServerMessageAction } from "../../protobuf/holdem/req_action_pb";
 import { ClientMessageBringIn, ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
 import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
+// import { ServerMessagePublicReplay } from "../../protobuf/holdem/req_replay_pb";
 import { ClientMessageRoomers, ServerMessageRoomers } from "../../protobuf/holdem/req_roomers_pb";
 import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
@@ -41,6 +47,7 @@ export class BaseProtocol {
     }
     static SetBody(request: any, body: any = null, cls?: any) {
         this.body = body;
+        console.log("send body:", body);
         this._SetBody(request, body, cls);
     }
 
@@ -265,6 +272,7 @@ export class Protocol_Holdem_Roomers extends BaseProtocol {
 }
 
 /**
+<<<<<<< HEAD
  * 牌局战况
  */
 export class Protocol_Holdem_PublicReplay extends BaseProtocol {
@@ -285,9 +293,56 @@ export class Protocol_Holdem_PublicReplay extends BaseProtocol {
 }
 
 
+export class Protocol_Holdem_Action extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Action";
+    static _request: ClientMessageAction = null;
+    public static Request_AsObject: ClientMessageAction.AsObject = null;
+    public static Response_AsObject: ServerMessageAction.AsObject = null;
+
+    static Request(body?: ClientMessageAction.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessageAction());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessageAction.AsObject {
+        let result: ServerMessageAction = ServerMessageAction.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 
 
+/**
+ * 所有人收到主动/自动行为（包括自己）
+ */
+export class Protocol_Holdem_ActionAll extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_ActionAll";
+    public static Response_AsObject: ServerMessageActionAll.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageActionAll.AsObject {
+        let result: ServerMessageActionAll = ServerMessageActionAll.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 
+/**
+ * 边池信息
+ */
+export class Protocol_Holdem_SidePots extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_SidePots";
+    public static Response_AsObject: ServerMessageSidePots.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageSidePots.AsObject {
+        let result: ServerMessageSidePots = ServerMessageSidePots.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+export class Protocol_Holdem_PublicCards extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_PublicCards";
+    public static Response_AsObject: ServerMessagePublicCards.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessagePublicCards.AsObject {
+        let result: ServerMessagePublicCards = ServerMessagePublicCards.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 
 
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
@@ -302,4 +357,11 @@ cc.js.setClassName("Protocol_Holdem_Standup", Protocol_Holdem_Standup);
 cc.js.setClassName("Protocol_Holdem_PostStatusChange", Protocol_Holdem_PostStatusChange);
 cc.js.setClassName("Protocol_Holdem_StartInfo", Protocol_Holdem_StartInfo);
 cc.js.setClassName("Protocol_Holdem_Roomers", Protocol_Holdem_Roomers);
+
 cc.js.setClassName("Protocol_Holdem_PublicReplay", Protocol_Holdem_PublicReplay);
+
+cc.js.setClassName("Protocol_Holdem_Action", Protocol_Holdem_Action);
+cc.js.setClassName("Protocol_Holdem_ActionAll", Protocol_Holdem_ActionAll);
+cc.js.setClassName("Protocol_Holdem_SidePots", Protocol_Holdem_SidePots);
+cc.js.setClassName("Protocol_Holdem_PublicCards", Protocol_Holdem_PublicCards);
+

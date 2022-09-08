@@ -12,8 +12,6 @@ export default class TexasSMAgency {
 
     GameSMStates: Map<TexasGameState, any> = null;
 
-    GameState: TexasGameState = null;
-
     constructor(public game: TexasGame) { };
 
     public LoadGameStateConf() {
@@ -60,7 +58,7 @@ export default class TexasSMAgency {
     }
 
     public ChangeGameState(state: TexasGameState, sourceData?: any) {
-        if (this.GameState == state) {
+        if (this.game.GameState == state) {
             // 状态未变更
             return;
         }
@@ -69,7 +67,7 @@ export default class TexasSMAgency {
             console.log(`ChangeGameState: unrecognized state: ${TexasGameState[state]}`);
             return;
         }
-        this.GameState = state;
+        this.game.GameState = state;
         stateHandler.SourceData = sourceData;
         this.game.FsmLogicComponent.SM.ChangeState(stateHandler);
     }

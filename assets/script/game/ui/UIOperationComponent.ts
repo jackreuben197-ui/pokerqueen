@@ -1,12 +1,16 @@
 
+import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import { LanguageCode } from "../../i18n/LanguageCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
-import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import GGSlider from "../../ui/component/GGSlider";
+import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import GameUtil from "../GameUtil";
 import UITexasSettingComponent from "../UITexasSettingComponent";
-
 
 
 export type OperationData = {
@@ -14,25 +18,21 @@ export type OperationData = {
     Shortcuts?: ActionShortcutLimit.AsObject[],
 }
 class ActionDataInfo {
-    // public ulong CallAmount;
-    // public ulong StraddleAmount;
-    // public ulong AllInAmount;
+
     // public ActionLimit actionLimit;//只用于raise 或 bet
     public constructor(public CallAmount: number = 0, public StraddleAmount: number = 0, public AllInAmount: number = 0, public actionLimit: ActionLimit.AsObject = null) {
-        // CallAmount = 0;
-        // StraddleAmount = 0;
-        // AllInAmount = 0;
-        // actionLimit = null;
+
     }
 }
 
-const { ccclass, property } = cc._decorator;
+const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIOperationComponent extends UIBase {
     /**
      * 组件绑定
      */
+    imageFreeCallMask: cc.Node = null;
     buttonAllin: cc.Node = null;
     Button_Straddle: cc.Node = null;
     buttonCall: cc.Node = null;
@@ -72,6 +72,8 @@ export default class UIOperationComponent extends UIBase {
 
     textCall: cc.Label = null;
 
+    sliderFreeCall: GGSlider = null;
+    buttonSliderHandle: cc.Node = null;
 
     imageCheckCountDown: cc.Sprite = null;
     imageFoldCountDown: cc.Sprite = null;
@@ -93,6 +95,8 @@ export default class UIOperationComponent extends UIBase {
     private callValueLeft: number = 0;
     private callValueRight: number = 0;
 
+    private callValue: number = 0;
+
     /// <summary>
     /// 数据缓存
     /// </summary>
@@ -103,9 +107,11 @@ export default class UIOperationComponent extends UIBase {
     private _isFoldCountDown: boolean = false;
 
 
+    public ParamType: OperationData;
 
     protected lateLoad(): void {
         super.lateLoad();
+        this.imageFreeCallMask = this.getChildNodeOrComponent("Image_FreeCallMask");
         this.buttonAllin = this.getChildNodeOrComponent("Button_Allin");
         this.Button_Straddle = this.getChildNodeOrComponent("Button_Straddle");
         this.buttonCall = this.getChildNodeOrComponent("Button_Call");
@@ -123,6 +129,10 @@ export default class UIOperationComponent extends UIBase {
         this.imageCheckCountDown = this.getChildNodeOrComponent("Image_CheckCountDown", cc.Sprite);
         this.imageFoldCountDown = this.getChildNodeOrComponent("Image_FoldCountDown", cc.Sprite);
 
+        this.sliderFreeCall = this.getChildNodeOrComponent("Slider_FreeCall", GGSlider);
+
+        this.textFreeCall = this.getChildNodeOrComponent("Text_FreeCall", cc.Label);
+        this.textFreeCallMax = this.getChildNodeOrComponent("Text_FreeCall_Max", cc.Label);
 
         this.Text_Straddle = this.Button_Straddle.getChildByName("Text").getComponent(cc.Label);
 
@@ -148,15 +158,220 @@ export default class UIOperationComponent extends UIBase {
 
         this.textCall = this.buttonCall.getChildByName("Text_Call").getComponent(cc.Label);
 
-        //this.textFreeCall = rc.Get<GameObject>("Text_FreeCall").GetComponent<Text>();
-        //this.textFreeCallMax = rc.Get<GameObject>("Text_FreeCall_Max").GetComponent<Text>();
-
-
+        this.buttonSliderHandle = this.sliderFreeCall.node.getChildByName("bar");
 
     }
 
+    protected regiterTouchEvents(): void {
+        this.buttonCall.getChildByName("BtnArea").on("click", this.onClickCall, this);
+        this.buttonCheck.on("click", this.onClickCheck, this);
+        this.buttonCall0.getChildByName("BtnArea").on("click", this.onClickCall0, this);
+        this.buttonCall1.getChildByName("BtnArea").on("click", this.onClickCall1, this);
+        this.buttonCall2.getChildByName("BtnArea").on("click", this.onClickCall2, this);
+        this.buttonCallLeft.getChildByName("BtnArea").on("click", this.onClickCallLeft, this);
+        this.buttonCallRight.getChildByName("BtnArea").on("click", this.onClickCallRight, this);
+        this.buttonAllin.getChildByName("BtnArea").on("click", this.onClickAllin, this);
+        this.Button_Straddle.getChildByName("BtnArea").on("click", this.onClickStraddle, this);
 
-    onShow(obj?: any): void {
+        this.buttonFreeCall.getChildByName("BtnArea").on("click", this.onClickFreeCall, this);
+        this.buttonFreeCallConfirm.getChildByName("BtnArea").on("click", this.onClickSliderHandle, this);
+
+        this.imageFreeCallMask.on("click", this.onClickFreeCallMask, this);
+        this.buttonFold.on("click", this.onClickFold, this);
+        this.buttonSliderHandle.on("click", this.onClickSliderHandle, this);
+        this.sliderFreeCall.onChange(this.onValueChangeFreeCall.bind(this));
+    }
+
+    //点击自由加注滑块按钮
+    private onClickSliderHandle(): void {
+        if (this.sliderFreeCall.moved) {
+            this.sliderFreeCall.moved = false;
+            return;
+        }
+        this.callValue = this.sliderFreeCall.value * this.calibrationWeight;
+        this.CheckOpt();
+        this.showFreeCall(false);
+    }
+
+
+    /// <summary>
+    /// 自由加注slider值变化监听
+    /// </summary>
+    /// <param name="arg0"></param>
+    private onValueChangeFreeCall(arg0: number): void {
+
+        if (arg0 >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
+            this.textFreeCall.string = `ALL IN`;
+            this.textFreeCall.node.color = cc.Color.WHITE;
+            this.textFreeCall.fontSize = 60;
+            //this.buttonSliderHandle.GetComponent<Image>().color = new cc.Color(225, 181, 141, 0);
+            this.buttonSliderHandle.getChildByName("Image").active = true;
+            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("image_orthogon_c");
+        }
+        else if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) && arg0 >= this.actionDataInfo.actionLimit.max / this.calibrationWeight) {
+            this.textFreeCall.string = `${this.actionDataInfo.actionLimit.max / this.chipScale ^ 0}`;
+            this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
+            this.textFreeCall.fontSize = 45;
+            //this.buttonSliderHandle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            this.buttonSliderHandle.getChildByName("Image").active = false;
+            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_FreeCall_handle_bg");
+        }
+        else {
+            this.textFreeCall.string = `${arg0 * this.calibrationWeight / this.chipScale ^ 0}`;
+            this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
+            this.textFreeCall.fontSize = 45;
+            //this.buttonSliderHandle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            this.buttonSliderHandle.getChildByName("Image").active = false;
+            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_FreeCall_handle_bg");
+        }
+
+    }
+
+    private onClickFreeCallMask(): void {
+        this.imageFreeCallMask.active = false;
+        //隐藏自由加注
+        this.showFreeCall(false);
+
+    }
+    private onClickCall2(): void {
+        this.callValue = this.callValue2;
+        this.CheckOpt();
+    }
+
+    private onClickCall1(): void {
+        this.callValue = this.callValue1;
+        this.CheckOpt();
+    }
+
+    private onClickCall0(): void {
+        this.callValue = this.callValue0;
+        this.CheckOpt();
+    }
+
+    private onClickCallLeft(): void {
+        this.callValue = this.callValueLeft;
+        this.CheckOpt();
+    }
+
+    private onClickCallRight(): void {
+        this.callValue = this.callValueRight;
+        this.CheckOpt();
+    }
+    private onClickAllin(): void {
+        GameCache.Instance.CurGame.OptAction(Def.Action.ALLIN, this.actionDataInfo.AllInAmount);
+    }
+    private onClickStraddle(): void {
+        GameCache.Instance.CurGame.OptAction(Def.Action.STRADDLE, this.actionDataInfo.StraddleAmount);
+    }
+    private onClickCall(): void {
+        GameCache.Instance.CurGame.OptAction(Def.Action.CALL, this.actionDataInfo.CallAmount);
+    }
+    private onClickCheck(): void {
+        GameCache.Instance.CurGame.OptAction(Def.Action.CHECK, 0);
+        this.isCountDown = false;
+    }
+    private onClickFreeCall(): void {
+        this.showFreeCall(true);
+    }
+
+    private onClickFold(): void {
+        if (this.buttonCheck.activeInHierarchy) {
+            //如果可以让牌，需要弹窗询问弃牌还是让牌
+            this.isShowingDialog = true;
+            UIComponent.open(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.CommitCancel,
+                    // title = $"确定弃牌？",
+                    title: LanguageCode.LanguageDescription(20037),
+                    // content = $"你可以让牌而不需要任何记分牌",
+                    content: LanguageCode.LanguageDescription(20038),
+                    // contentCommit = "弃牌",
+                    contentCommit: LanguageCode.LanguageDescription(10047),
+                    // contentCancel = "让牌",
+                    contentCancel: LanguageCode.LanguageDescription(10315),
+                    actionCommit: () => {
+                        GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
+                        this.isCountDown = false;
+                    },
+                    actionCancel: () => {
+                        GameCache.Instance.CurGame.OptAction(Def.Action.CHECK, 0);
+                        this.isCountDown = false;
+                    },
+                    noAnimation: true,
+                });
+            return;
+        }
+        GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
+    }
+
+    /// <summary>
+    /// 自由加注
+    /// </summary>
+    private CheckOpt(): void {
+        if (this.callValue <= 0) {
+            return;
+        }
+
+        if (this.callValue >= GameCache.Instance.CurGame.mainPlayer.chips) {
+            if (this.actionDataInfo.AllInAmount == 0) {
+                if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
+                    UIComponent.Instance.Toast(i18nMgr.Get("UIOperationComponentTips001"));
+                }
+                else {
+                    UIComponent.Instance.Toast(i18nMgr.Get("UIOperationComponentTips002"));
+                }
+                return;
+            }
+            GameCache.Instance.CurGame.OptAction(Def.Action.ALLIN, this.actionDataInfo.AllInAmount);
+            return;
+        }
+        else if (this.callValue >= this.actionDataInfo.actionLimit.max) {
+            if (this.getActionLimitByAction(Def.Action.BET) != null) {
+                GameCache.Instance.CurGame.OptAction(Def.Action.BET, this.actionDataInfo.actionLimit.max);
+            }
+            else {
+                GameCache.Instance.CurGame.OptAction(Def.Action.RAISE, this.actionDataInfo.actionLimit.max);
+            }
+            return;
+        }
+        if (this.getActionLimitByAction(Def.Action.BET) != null) {
+            GameCache.Instance.CurGame.OptAction(Def.Action.BET, this.callValue);
+        }
+        else {
+            GameCache.Instance.CurGame.OptAction(Def.Action.RAISE, this.callValue);
+        }
+        this.isCountDown = false;
+    }
+
+    /// <summary>
+    /// 展示自由加注按钮
+    /// </summary>
+    /// <param name="show"></param>
+    private showFreeCall(show: boolean): void {
+        this.sliderFreeCall.value = this.sliderFreeCall.minValue;
+        if (show) {
+            this.imageFreeCallMask.active = true;
+            this.sliderFreeCall.node.active = true;
+            this.buttonFreeCallConfirm.active = true;
+            this.buttonFreeCall.active = false;
+            this.buttonCall0.active = false;
+            this.buttonCall1.active = false;
+            this.buttonCall2.active = false;
+            this.buttonCallLeft.active = false;
+            this.buttonCallRight.active = false;
+        }
+        else {
+            cc.log("关闭控制台");
+            this.imageFreeCallMask.active = false;
+            this.sliderFreeCall.node.active = false;
+            this.buttonFreeCallConfirm.active = false;
+            this.buttonFreeCall.active = true;
+            this.showRaiseButton();
+        }
+    }
+
+    onShow(obj?: OperationData): void {
+
         super.onShow(obj);
 
         if (null == obj) {
@@ -164,13 +379,15 @@ export default class UIOperationComponent extends UIBase {
         }
         GameCache.Instance.IsAllowOpenDanmu = false;
 
-        this.operationData = obj as OperationData;
+        this.operationData = obj;
+
         if (null == this.operationData || null == this.operationData.actionLimits) {
             return;
         }
         this.SetCalibrationWeight();
         if (this.isShowingDialog) {
             //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+            UIComponent.close(UIDefine.UIDialogComponent);
         }
         this.isShowingDialog = false;
         this.actionDataInfo = new ActionDataInfo();
@@ -190,6 +407,7 @@ export default class UIOperationComponent extends UIBase {
     private show(actionLimits: ActionLimit.AsObject[]): void {
         actionLimits.forEach(actionLimit => {
             switch (actionLimit.action) {
+
                 case Def.Action.STRADDLE:
 
                     this.showStraddle(actionLimit);
@@ -201,7 +419,6 @@ export default class UIOperationComponent extends UIBase {
 
                     break;
                 case Def.Action.CALL:
-
 
                     this.showCall(actionLimit);
 
@@ -233,7 +450,6 @@ export default class UIOperationComponent extends UIBase {
                         this.showAllin(actionLimit);
                     }
 
-
                     break;
                 default:
 
@@ -250,46 +466,45 @@ export default class UIOperationComponent extends UIBase {
         cc.log("+ showStraddle");
         this.actionDataInfo.StraddleAmount = actionLimit.min;
         this.Button_Straddle.active = true;
-        this.Button_Straddle.getChildByName("Text").getComponent(cc.Label).string = StringHelper.getStringDiv100(actionLimit.min);
+        this.Text_Straddle.string = StringHelper.getStringDiv100(actionLimit.min);
     }
+
 
     private showBet(actionLimit: ActionLimit.AsObject): void {
         cc.log("+ showBet");
         this.actionDataInfo.actionLimit = actionLimit;
 
         if (actionLimit.max == actionLimit.min) {
-            // sliderFreeCall.maxValue = (float)Math.Ceiling((actionLimit.Max) / calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-            // sliderFreeCall.minValue = sliderFreeCall.maxValue;
-            // sliderFreeCall.value = sliderFreeCall.maxValue;
-            // textFreeCall.text = $"ALL IN";
-            // textFreeCallMax.text = $"{(actionLimit.Max) / chipScale }";
+            this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+            this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
+            this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+            this.textFreeCall.string = `ALL IN`;
+            this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         }
         else {
-            //             sliderFreeCall.maxValue = GameUtil.JudgeIsPotLimitRoomPath((RoomType)GameCache.Instance.room_type) ? (float)Math.Ceiling((actionLimit.Max) / calibrationWeight) : (float)Math.Ceiling((actionLimit.Max + 1) / calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-            //             if ((float)Math.Ceiling(actionLimit.Min / calibrationWeight) >= sliderFreeCall.maxValue)
-            //             {
-            //                 Log.Debug("sliderFreeCall.minValue > sliderFreeCall.maxValue");
-            //                 sliderFreeCall.minValue = sliderFreeCall.maxValue;
-            //                 sliderFreeCall.value = sliderFreeCall.maxValue;
-            //                 textFreeCall.text = $"ALL IN";
-            //             }
-            //                 else
-            //                 {
-            //     sliderFreeCall.minValue = (float)Math.Ceiling(actionLimit.Min / calibrationWeight);
-            //     sliderFreeCall.value = sliderFreeCall.minValue;
-            //     textFreeCall.text = $"{actionLimit.Min/ chipScale}";
-            // }
-            //                 ulong actionLimitMax = GameUtil.JudgeIsPotLimitRoomPath((RoomType)GameCache.Instance.room_type) ? (actionLimit.Max) : (actionLimit.Max + 1);
-            // textFreeCallMax.text = $"{(actionLimitMax) / chipScale }";
-            //             }
-            this.setTopCallButtons();
-            this.buttonFreeCall.active = true;
+            this.sliderFreeCall.maxValue = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)
+                ? Math.ceil(actionLimit.max / this.calibrationWeight)
+                : Math.ceil((actionLimit.max + 1) / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+            if (Math.ceil(actionLimit.min / this.calibrationWeight) >= this.sliderFreeCall.maxValue) {
+                cc.log("sliderFreeCall.minValue > sliderFreeCall.maxValue");
+                this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
+                this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+                this.textFreeCall.string = `ALL IN`;
+            }
+            else {
+                this.sliderFreeCall.minValue = Math.ceil(actionLimit.min / this.calibrationWeight);
+                this.sliderFreeCall.value = this.sliderFreeCall.minValue;
+                this.textFreeCall.string = `${actionLimit.min / this.chipScale}`;
+            }
+            let actionLimitMax: number = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) ? (actionLimit.max) : (actionLimit.max + 1);
+            this.textFreeCallMax.string = `${actionLimitMax / this.chipScale}`;
         }
+        this.setTopCallButtons();
+        this.buttonFreeCall.active = true;
     }
-
-
     private showCall(actionLimit: ActionLimit.AsObject): void {
         cc.log("+ showCall");
+        cc.log("showCall actionLimit:", actionLimit);
         this.actionDataInfo.CallAmount = actionLimit.min;
         this.buttonCall.active = true;
         this.textCall.string = StringHelper.getStringDiv100(actionLimit.min);
@@ -371,15 +586,14 @@ export default class UIOperationComponent extends UIBase {
         this.buttonFreeCall.active = true;
     }
 
-
     private showAllInRaise(actionLimit: ActionLimit.AsObject): void {
         this.actionDataInfo.AllInAmount = actionLimit.min;
         this.actionDataInfo.actionLimit = actionLimit;
-        // this.sliderFreeCall.maxValue = (float)Math.Ceiling((actionLimit.Max) / calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-        // this.sliderFreeCall.minValue = sliderFreeCall.maxValue;
-        // this.sliderFreeCall.value = sliderFreeCall.maxValue;
-        //this.textFreeCall.string = `ALL IN`;
-        //this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
+        this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+        this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
+        this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+        this.textFreeCall.string = `ALL IN`;
+        this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         this.setTopCallButtons();
         this.buttonFreeCall.active = true;
         cc.log("+ showRaise");
@@ -500,14 +714,15 @@ export default class UIOperationComponent extends UIBase {
             this.imageCheckCountDown.fillRange = (this.optCurTime -= dt) / this.optTotalTime;
 
             if (this.imageCheckCountDown.fillRange <= 0.02) {
-                //GameCache.Instance.CurGame.HideBtnDelay(false);
+                GameCache.Instance.CurGame.HideBtnDelay(false);
             }
             if (this.imageCheckCountDown.fillRange <= 0) {
                 this.isCountDown = false;
                 this.imageCheckCountDown.node.active = false;
                 if (this.isShowingDialog)
                     //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
-                    this.isShowingDialog = false;
+                    UIComponent.close(UIDefine.UIDialogComponent);
+                this.isShowingDialog = false;
                 //如需客户端倒计时结束发送让牌，在这里做
                 GameCache.Instance.CurGame.HideOperationPanel();
 
@@ -524,7 +739,8 @@ export default class UIOperationComponent extends UIBase {
                 this.imageFoldCountDown.node.active = false;
                 if (this.isShowingDialog)
                     //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
-                    this.isShowingDialog = false;
+                    UIComponent.close(UIDefine.UIDialogComponent);
+                this.isShowingDialog = false;
                 //如需客户端倒计时结束发送弃牌，在这里做
                 GameCache.Instance.CurGame.HideOperationPanel();
             }

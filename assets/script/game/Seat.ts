@@ -46,7 +46,7 @@ export default class Seat {
     protected static myCardTypePos: cc.Vec3[] = [];
 
 
-    protected defaultIconChipLocalPos: cc.Vec3 = null;
+    protected defaultIconChipLocalPos: cc.Vec3 = cc.v3();
 
 
     public FsmLogicComponent: FSMLogicComponent = null;//状态机
@@ -78,6 +78,11 @@ export default class Seat {
     protected PlayerCount: number = 0;//最大人数
 
     public uirc: SeatUIRC = null;
+
+
+    protected sequencePlayFoldAnimation: cc.Tween;
+
+
 
     constructor(public id: number, public ui: cc.Node) {
 
@@ -614,7 +619,11 @@ export default class Seat {
 
         this.uirc.textCurRoundHaveBet.node.active = true;
 
+
+        this.uirc.imageIconChip.node.setPosition(cc.Vec3.ZERO);
+
         this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
+        //this.defaultIconChipLocalPos = this.uirc.imageIconChip.node.position.clone();
         this.uirc.imageIconChip.node.active = true;
         this.uirc.transCurRoundHaveBet.active = true;
     }
@@ -804,14 +813,51 @@ export default class Seat {
     /// <summary>
     /// 播放下注动画
     /// </summary>
-    public PlayBetAnimation(): Function {
+    public PlayBetAnimation(): cc.Tween {
         let pos = cc.v3();
         this.uirc.imageEmpty.node.getPosition(pos);
         this.uirc.imageIconChip.node.setPosition(GameUtil.ChangeToLocalPos(pos, this.ui, this.uirc.transCurRoundHaveBet));
         this.uirc.imageIconChip.node.active = true;
-        return () => {
-            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_POST_RAISE);
-            cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos }).start();
+        return cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos }).start();
+    }
+    /// <summary>
+    /// 播放弃牌动画
+    /// </summary>
+    public PlayFoldAnimation(): void {
+        //sequencePlayFoldAnimation = DOTween.Sequence();
+        this.sequencePlayFoldAnimation = cc.tween(this.ui);
+        if (!this.IsMySeat) {
+            // 其他玩家弃牌
+            //this.sequencePlayFoldAnimation.sequence();
+            //InverseTransformPoint 世界转局部
+            let tween = cc.tween();
+            let sequence = [];
+            let pos = this.uirc.transSmallCardBacks.parent.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
+            sequence.push(
+                cc.callFunc(() => {
+                    cc.tween(this.uirc.transSmallCardBacks).to(.5, { position: pos }).start();
+                },
+                ));
+            for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+                //sequencePlayFoldAnimation.Join(listImageSmallCardBack[i].DOFade(0, 0.3f));
+                sequence.push(
+                    cc.callFunc(() => {
+                        cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.3, { opacity: 0 }).start();
+                    })
+                );
+            }
+            sequence.push(cc.delayTime(.5));
+
+            this.sequencePlayFoldAnimation.sequence.apply(this.sequencePlayFoldAnimation, sequence).call(() => {
+                this.uirc.transSmallCardBacks.position = this.seatUIInfo.CardBackPos;
+                for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+                    this.uirc.listImageSmallCardBack[i].node.color = cc.Color.WHITE;
+                }
+                this.uirc.transSmallCardBacks.active = false;
+            }).start();
+        }
+        else {
+
         }
     }
 
@@ -842,22 +888,17 @@ export default class Seat {
     /// <summary>
     /// 播放回收筹码动画
     /// </summary>
-    public PlayRecyclingChipAnimation(): Function {
+    public PlayRecyclingChipAnimation(): cc.Tween {
         let func = null;
         if (this.uirc.imageIconChip.node.activeInHierarchy) {
             this.uirc.textCurRoundHaveBet.node.active = false;
             let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
-            func = () => {
-                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_MOVE_CHIPS);
-                cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
-                    this.uirc.imageIconChip.node.active = false;
-                }).start();
-            };
+            return cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
+                this.uirc.imageIconChip.node.active = false;
+            }).start();
         }
         return func;
     }
-
-
 
 
     /// <summary>
@@ -939,8 +980,6 @@ export default class Seat {
 
             // 其他玩家发牌动画
             //sequencePlayDealAnimation = DOTween.Sequence();
-            //let sequencePlayDealAnimation: { sequence: {}[], time }[] = [];
-
             sequence.push(cc.callFunc(() => {
                 this.uirc.transSmallCardBacks.active = true;
             }));

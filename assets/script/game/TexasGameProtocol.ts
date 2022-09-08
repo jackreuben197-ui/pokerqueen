@@ -4,15 +4,21 @@ import { LanguageCode } from "../i18n/LanguageCode";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
+import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
+import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
+import UIComponent from "../ui/UIComponent";
 import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
 import Seat from "./Seat";
-import { SeatOperation, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
+import { SeatAllin, SeatCall, SeatCheck, SeatFold, SeatOperation, SeatPutChip, SeatRaise, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
+import { TexasGameState } from "./TexasGameState";
 import UIOperationComponent from "./ui/UIOperationComponent";
 
 const CanPlayStatus = Def.CanPlayStatus;
@@ -323,7 +329,7 @@ export default class TexasGameProtocol {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData.nextOperator.actionsList,responseData.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData.nextOperator.actionsList, responseData.nextOperator.shortcutsList));
                 }
             }
             else {
@@ -351,6 +357,9 @@ export default class TexasGameProtocol {
 
 
     }
+
+
+
 
     Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {
         throw new Error("Method not implemented.");
@@ -397,8 +406,27 @@ export default class TexasGameProtocol {
     HANDLER_REQ_INSURANCE_TRIGGED(Protocol_Holdem_InsuranceTrigged: ProtocolCode, HANDLER_REQ_INSURANCE_TRIGGED: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    HANDLER_REQ_SHOW_SIDE_POTS(Protocol_Holdem_SidePots: ProtocolCode, HANDLER_REQ_SHOW_SIDE_POTS: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 底池筹码（分池，主池）
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_SHOW_SIDE_POTS(rec: ServerMessageSidePots.AsObject): void {
+        if (rec == null) {
+            return;
+        }
+        let m_pots: number[] = [];
+        for (let i = 0; i < rec.potsList.length; i++) {
+            m_pots.push(rec.potsList[i].amount);
+        }
+        if (rec.secondPotsList != null) {
+            for (let i = 0; i < rec.secondPotsList.length; i++) {
+                m_pots[i] += rec.secondPotsList[i].amount;
+            }
+        }
+        this.game.pots = m_pots;
+        // 播放首次收筹码到底池动画是不需要显示Pots
+        if (this.game.GetCurPublicCardsCount() > 0)
+            this.game.UpdatePots();
     }
     HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER(Protocol_Holdem_ShowPublicCardsOthers: ProtocolCode, HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER: any, arg2: this) {
         throw new Error("Method not implemented.");
@@ -418,14 +446,182 @@ export default class TexasGameProtocol {
     HANDLER_REQ_GAME_PLAYER_CARDS(Protocol_Holdem_Showcards: ProtocolCode, HANDLER_REQ_GAME_PLAYER_CARDS: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    HANDLER_REQ_GAME_RECV_ACTION(Protocol_Holdem_ActionAll: ProtocolCode, HANDLER_REQ_GAME_RECV_ACTION: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    HANDLER_REQ_GAME_SEND_ACTION(Protocol_Holdem_Action: ProtocolCode, HANDLER_REQ_GAME_SEND_ACTION: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    // HANDLER_REQ_GAME_RECV_ACTION(Protocol_Holdem_ActionAll: ProtocolCode, HANDLER_REQ_GAME_RECV_ACTION: any, arg2: this) {
+    //     throw new Error("Method not implemented.");
+    // }
+
+
+    /// <summary>
+    /// 当前玩家操作结果和下一位操作者
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_GAME_RECV_ACTION(rec: ServerMessageActionAll.AsObject): void {
+
+        if (rec == null) {
+            return;
+        }
+
+        let Seat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.operatorSeatId));
+        if (null == Seat) {
+            cc.warn("Seat is null");
+            GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.NetworkException, null);
+            return;
+        }
+
+        this.game.stopUpdatePublicCardsAnimation = false;
+        // if (null != this.game.sequencePlayFirstRecyclingChipAnimation && sequencePlayFirstRecyclingChipAnimation.IsPlaying()) {
+        //     stopUpdatePublicCardsAnimation = true;
+        //     sequencePlayFirstRecyclingChipAnimation.Complete(true);
+
+        // }
+        // if (null != sequencePlayRecyclingChipAnimation && sequencePlayRecyclingChipAnimation.IsPlaying()) {
+        //     stopUpdatePublicCardsAnimation = true;
+        //     sequencePlayRecyclingChipAnimation.Complete(true);
+
+        // }
+        // if (null != sequenceUpdatePublicCards && sequenceUpdatePublicCards.IsPlaying()) {
+        //     sequenceUpdatePublicCards.Complete(true);
+        // }
+
+        if (rec.nextOperator != null) {
+            this.game.operationID = this.game.GetLocalSeatID(rec.nextOperator.seatId);
+        }
+        else {
+            this.game.operationID = -1;
+        }
+        this.game.alreadAnte = rec.allBet;
+
+        this.game.UpdateAlreadAnte();
+
+        if (Seat != null && Seat.Player != null) {
+            Seat.Player.actionStatus = rec.action;
+            Seat.Player.chips -= rec.amount;
+            Seat.Player.anteNumber += rec.amount;
+
+            // 下注putchip = 1,跟注call = 2,加注raise = 3,全下allin = 4,让牌check = 5,弃牌fold = 6,超时timeout = 7
+            switch (rec.action) {
+                case Def.Action.BET:
+                    Seat.Player.isOffLine = 0;
+                    Seat.FsmLogicComponent.SM.ChangeState(SeatPutChip.Instance);
+                    break;
+                case Def.Action.CALL:
+                    Seat.Player.isOffLine = 0;
+                    Seat.FsmLogicComponent.SM.ChangeState(SeatCall.Instance);
+                    break;
+                case Def.Action.RAISE:
+                    Seat.Player.isOffLine = 0;
+                    Seat.FsmLogicComponent.SM.ChangeState(SeatRaise.Instance);
+                    break;
+                case Def.Action.ALLIN:
+                    Seat.Player.isOffLine = 0;
+                    Seat.FsmLogicComponent.SM.ChangeState(SeatAllin.Instance);
+                    break;
+                case Def.Action.CHECK:
+                    // 其他玩家托管状态，发一牌就check
+                    // if (null != sequencePlayDealAnimation && sequencePlayDealAnimation.IsPlaying()) {
+                    //     sequencePlayDealAnimation.Complete(true);
+                    // }
+                    Seat.FsmLogicComponent.SM.ChangeState(SeatCheck.Instance);
+                    break;
+                case Def.Action.FOLD:
+                    // 其他玩家托管状态，发一牌就弃牌
+                    Seat.Player.isFold = true;
+                    // if (null != sequencePlayDealAnimation && sequencePlayDealAnimation.IsPlaying()) {
+                    //     sequencePlayDealAnimation.Complete(true);
+                    // }
+                    Seat.FsmLogicComponent.SM.ChangeState(SeatFold.Instance);
+                    break;
+                case Def.Action.STRADDLE:
+                    Seat.Player.isOffLine = 0;
+                    Seat.FsmLogicComponent.SM.ChangeState(SeatPutChip.Instance);
+                    break;
+            }
+            Seat.FsmLogicComponent.SM.ChangeState(SeatWaitOther.Instance);
+
+        }
+        else {
+            console.log("Error mSeat is null or mSeat.Player is null");
+        }
+
+        if (this.game.operationID != -1) {
+            Seat = this.game.GetSeatByLocalSeatID(this.game.operationID);
+            if (null == Seat || null == Seat.Player) {
+                console.warn("Seat is null");
+                GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.NetworkException, null);
+                return;
+            }
+            if (Seat.seatID == this.game.mainPlayer.seatID && Seat.Player.userID == this.game.mainPlayer.userID && this.game.mainPlayer.isPlaying) {
+                // 到自己操作
+                // 自动
+                this.game.HideAutoOperationPanel();
+                if ((this.game.autoFold || this.game.autoCheck || (this.game.autoCall && rec.action != Def.Action.RAISE && rec.action != Def.Action.ALLIN) || this.game.autoAllin)) {
+                    this.game.HideOperationPanel();
+                    if (this.game.utils.AutoOperationHandle(rec.nextOperator.actionsList)) {
+                        this.game.HideOperationPanel();
+                    }
+                    else {
+                        this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+
+                    }
+                }
+                else {
+                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                }
+            }
+            else {
+                // 下一个操作不是自己
+                this.game.HideOperationPanel();
+
+                if (this.game.mainPlayer.isParticipateInTheGame) {
+                    // 自己有参与游戏
+                    if ((this.game.mainPlayer.actionStatus != Def.Action.FOLD && this.game.mainPlayer.actionStatus != Def.Action.ALLIN && this.game.mainPlayer.actionStatus != Def.Action.NONE) && !this.game.mainPlayer.IsAutoOp) {
+                        // UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
+                        //     {
+                        //         callAmount = getAutoOperationCallAmount(rec.RoundBet)
+                        //     });
+                    }
+                    else {
+                        this.game.HideAutoOperationPanel();
+                    }
+                }
+                else {
+                    // 观众
+                    this.game.HideAutoOperationPanel();
+                }
+            }
+
+            Seat.FsmLogicComponent.SM.ChangeState(SeatOperation.Instance);
+        }
+        else {
+            this.game.HideOperationPanel();
+            //UIComponent.Instance.HideNoAnimation(UIType.UIAutoOperation);
+        }
     }
 
 
+
+
+    /// <summary>
+    /// 自己动作
+    /// </summary>
+    /// <param name="response"></param>
+    HANDLER_REQ_GAME_SEND_ACTION(rec: ServerMessageAction.AsObject) {
+        //throw new Error("Method not implemented.");
+        if (rec == null) {
+            return;
+        }
+        this.game.autoFold = false;
+        this.game.autoCall = false;
+        this.game.autoAllin = false;
+        this.game.autoCheck = false;
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(LanguageCode.ServerErrorDescription(rec.status));
+            return;
+        }
+        this.game.HideOperationPanel();
+    }
+
+    
 
 
 }

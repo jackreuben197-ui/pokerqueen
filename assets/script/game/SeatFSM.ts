@@ -320,4 +320,111 @@ export class SeatFSM {
     //#endregion
 
 
+    //#region 下注
+    public PutChipEnter(): void {
+        this.seat.UpdateCoin();
+        this.seat.UpdateCurRoundHaveBet();
+        this.seat.UpdateBubble();
+
+        this.seat.PlayBetAnimation();
+    }
+
+    public PutChipExecute(): void {
+    }
+
+    public PutChipExit(): void {
+    }
+    //#endregion
+
+
+    //#region 跟注
+    public CallEnter(): void {
+        this.seat.UpdateCoin();
+        this.seat.UpdateCurRoundHaveBet();
+        this.seat.UpdateBubble();
+        this.seat.UpdateOnOrOffLine();
+        this.seat.PlayBetAnimation();
+    }
+
+    public CallExecute(): void {
+
+    }
+
+    public CallExit(): void {
+
+    }
+    //#endregion
+
+    //#region 加注
+    public RaiseEnter(): void {
+        this.seat.UpdateCoin();
+        this.seat.UpdateCurRoundHaveBet();
+        this.seat.UpdateBubble();
+        this.seat.UpdateOnOrOffLine();
+        this.seat.PlayBetAnimation();
+    }
+
+    public RaiseExecute(): void {
+
+    }
+
+    public RaiseExit(): void {
+
+    }
+    // #endregion
+
+
+    //#region 全下
+    public AllinEnter(): void {
+        this.seat.UpdateCoin();
+        this.seat.UpdateCurRoundHaveBet();
+        this.seat.UpdateBubble(true);
+        this.seat.UpdateOnOrOffLine();
+        this.seat.PlayBetAnimation();
+    }
+
+    public AllinExecute(): void {
+
+    }
+
+    public AllinExit(): void {
+
+    }
+    //#endregion
+
+    //#region 让牌
+    public CheckEnter(): void {
+        this.seat.UpdateBubble();
+
+        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_PLAYER_CHECK);
+    }
+
+    public CheckExecute(): void {
+
+    }
+
+    public CheckExit(): void {
+
+    }
+    //#endregion
+
+    //#region 弃牌
+    public FoldEnter(): void {
+        this.seat.UpdateBubble();
+        if (null == this.seat.Player)
+            return;
+
+        this.seat.FoldHeadGray(this.seat.Player.isFold);
+        this.seat.PlayFoldAnimation();
+        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_PLAYER_FOLD);
+    }
+
+    public FoldExecute(): void {
+
+    }
+
+    public FoldExit(): void {
+
+    }
+    //#endregion
 }

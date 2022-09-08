@@ -23,8 +23,8 @@ export class ServerMessagePublicCards extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessagePublicCards.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessagePublicCards): ServerMessagePublicCards.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
+  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
   static serializeBinaryToWriter(message: ServerMessagePublicCards, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ServerMessagePublicCards;
   static deserializeBinaryFromReader(message: ServerMessagePublicCards, reader: jspb.BinaryReader): ServerMessagePublicCards;

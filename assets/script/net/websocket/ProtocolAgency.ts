@@ -1,6 +1,7 @@
 
 
 import { LogStyle } from "../../config/GameConfig";
+import { Param } from "../../define/Types";
 import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import { GameCache } from "../../game/GameCache";
 import { ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
@@ -27,7 +28,6 @@ export default class ProtocolAgency extends cc.Component {
             }
 
             if (OpCodeHelper.NeedLog(code)) {
-
                 console.log("%c%s\n%s", LogStyle.ws_request, `>>>>> protocol send : ${protocol.Name}`, `RoomID:${RoomID},MatchID:${MatchID},body:${JSON.stringify(protocol.body)}`);
             }
             let bodyLength: number = body.byteLength;
