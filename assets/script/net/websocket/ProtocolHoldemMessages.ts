@@ -11,6 +11,7 @@ import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/hol
 import { ClientMessageRoomers, ServerMessageRoomers } from "../../protobuf/holdem/req_roomers_pb";
 import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
+import { ClientMessagePublicReplay, ServerMessagePublicReplay } from "../../protobuf/holdem/req_replay_pb";
 
 export class BaseProtocol {
     //RoomID: number;
@@ -263,6 +264,26 @@ export class Protocol_Holdem_Roomers extends BaseProtocol {
     }
 }
 
+/**
+ * 牌局战况
+ */
+export class Protocol_Holdem_PublicReplay extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_PublicReplay";
+    static _request: ClientMessagePublicReplay = null;
+    public static Request_AsObject: ClientMessagePublicReplay.AsObject = null;
+    public static Response_AsObject: ServerMessagePublicReplay.AsObject = null;
+
+    static Request(body?: ClientMessagePublicReplay.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessagePublicReplay());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessagePublicReplay.AsObject {
+        let result: ServerMessagePublicReplay = ServerMessagePublicReplay.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
 
 
 
@@ -281,3 +302,4 @@ cc.js.setClassName("Protocol_Holdem_Standup", Protocol_Holdem_Standup);
 cc.js.setClassName("Protocol_Holdem_PostStatusChange", Protocol_Holdem_PostStatusChange);
 cc.js.setClassName("Protocol_Holdem_StartInfo", Protocol_Holdem_StartInfo);
 cc.js.setClassName("Protocol_Holdem_Roomers", Protocol_Holdem_Roomers);
+cc.js.setClassName("Protocol_Holdem_PublicReplay", Protocol_Holdem_PublicReplay);
