@@ -6,7 +6,7 @@ import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import {CPErrorCode} from "../i18n/CPErrorCode";
+import { CPErrorCode } from "../i18n/CPErrorCode";
 import { Web_User_Room } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -1603,8 +1603,10 @@ export default class TexasGame {
     /// <param name="list"></param>
     protected AddPublicCards(list: number[]): void {
         // 判断一下cards的合法性
-        if (null == this.cards)
-            this.cards = [];
+        if (null == this.cards) this.cards = [];
+
+        cc.log(this.cards.length, this.uirc.listCards.length);
+
         if (this.cards.length < this.uirc.listCards.length) {
             for (let i = 0, n = this.uirc.listCards.length - this.cards.length; i < n; i++) {
                 this.cards.push(-1);
@@ -1631,6 +1633,7 @@ export default class TexasGame {
         for (let i = 0, n = list.length; i < n; i++) {
             this.cards[i + mStartIndex] = list[i];
         }
+        cc.log("this.cards : ", this.cards);
     }
 
 
@@ -2448,6 +2451,7 @@ export default class TexasGame {
     /// 清空公共牌UI
     /// </summary>
     protected ClearPublicCardsUI() {
+        cc.log("ClearPublicCardsUI");
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listCards[i];

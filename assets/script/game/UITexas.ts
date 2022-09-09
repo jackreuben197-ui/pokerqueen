@@ -548,7 +548,7 @@ export default class UITexas extends BaseScene {
         } else {
             UITexasSetting.active = true;
         }
-
+        UIComponent.open(UIDefine.UITexasRule, null, this.node);
 
     }
     Click_Button_Rule() {

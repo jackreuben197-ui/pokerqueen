@@ -279,14 +279,17 @@ export class TexasGameStateHandlerHandTurn extends StateHandler {
 
     public Enter(entity?: any): void {
 
+        var source = this.SourceData as ServerMessagePublicCards.AsObject;
+
+        if (source == null) {
+            return;
+        }
+
+
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
 
-        var source = this.SourceData as ServerMessagePublicCards.AsObject;
-        if (source == null) {
-            return;
-        }
 
         game.HandleGetPublicCards(source);
 
