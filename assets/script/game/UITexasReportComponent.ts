@@ -4,7 +4,7 @@ import { StringHelper } from "../helper/StringHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
-import {CPErrorCode} from "../i18n/CPErrorCode";
+import { CPErrorCode } from "../i18n/CPErrorCode";
 import LobbyScene from "../lobby/LobbyScene";
 import { ResManager } from "../manager/ResManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
@@ -17,6 +17,7 @@ import UIBase from "../ui/UIBase";
 import { GameCache } from "./GameCache";
 import { Web_Room_Center_Rooms, } from "../../../assets/script/net/https/WebRequest";
 import TimeHelper from "../helper/TimeHelper";
+import UIComponent from "../ui/UIComponent";
 
 /*
  * @Author: xfj
@@ -56,18 +57,16 @@ export default class UITexasReportComponent extends UIBase {
     private registerHandler() {
         CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
     }
-    protected onDestroy(): void {
+    protected onClose(param?: any): void {
         if (this.IntervalId) {
             clearInterval(this.IntervalId)
         }
         this.removeHandler();
         this.isLoad = false;
     }
-
     private removeHandler() {
         CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
     }
-
     RequestRoomers() {
         ProtocolAgency.Send({
             protocol: Protocol_Holdem_Roomers,
@@ -247,22 +246,12 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     btnShowProblemClick() {
-        new Date().getUTCDate()
-
-        this.node.destroy();
-        let UITexasRule = this.node.getChildByName('UITexasRule')
-        if (!UITexasRule) {
-            let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
-            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            let UITexasRule: any = cc.instantiate(prefab);
-            UITexasRule.parent = this.node
-            UITexasRule.active = true;
-        } else {
-            UITexasRule.active = true;
-        }
+        UIComponent.close(this.UIDefine);
+        UIComponent.open(UIDefine.UITexasRule, null, this.node.parent);
     }
     imageMaskCloseClick() {
-        this.node.destroy();
+        UIComponent.close(this.UIDefine);
+
     }
 
 }

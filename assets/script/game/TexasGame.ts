@@ -6,7 +6,7 @@ import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import {CPErrorCode} from "../i18n/CPErrorCode";
+import { CPErrorCode } from "../i18n/CPErrorCode";
 import { Web_User_Room } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";

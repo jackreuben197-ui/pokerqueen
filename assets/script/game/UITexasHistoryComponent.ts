@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-09 10:07:31
+ * @LastEditTime: 2022-09-09 17:53:14
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -18,6 +18,7 @@ import GameUtil from "./GameUtil";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import { AnyARecord } from "dns";
 import { CardTypeUtil } from "./CardTypeUtil";
+import UIComponent from "../ui/UIComponent";
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -1387,11 +1388,9 @@ export default class UITexasHistoryComponent extends UIBase {
     }
 
     imageMaskCloseClick() {
-        this.node.destroy();
+        UIComponent.close(this.UIDefine);
     }
-    protected onDestroy(): void {
-        this.removeHandler();
-    }
+
 
 
 }

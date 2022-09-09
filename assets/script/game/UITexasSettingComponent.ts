@@ -3,13 +3,14 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-02 15:26:50
+ * @LastEditTime: 2022-09-09 17:51:03
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
 import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
 import UIBase from "../ui/UIBase";
+import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 
 const { ccclass, property } = cc._decorator;
@@ -42,7 +43,7 @@ export default class UITexasSettingComponent extends UIBase {
         this.Toggle_Voice.on("click", this.onValueChangedVoice, this);
 
         this.Button_Close.on("click", () => {
-            this.node.active = false;
+            UIComponent.close(this.UIDefine);
         }, this);
 
         let image0 = cc.find('Background/Image0', this.Toggle_Voice);
