@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-08 14:48:58
+ * @LastEditTime: 2022-09-08 18:33:30
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -17,6 +17,7 @@ import { Protocol_Holdem_PublicReplay } from "../net/websocket/ProtocolHoldemMes
 import GameUtil from "./GameUtil";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import { AnyARecord } from "dns";
+import { CardTypeUtil } from "./CardTypeUtil";
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -105,6 +106,11 @@ export default class UITexasHistoryComponent extends UIBase {
     AllPlayerCardsInfosRiver = []
     AllPlayerCardsInfoswinner = []
 
+    buttonFirstPage: cc.Button = null;
+    buttonLastPage: cc.Button = null;
+    buttonPrePage: cc.Button = null;
+    buttonNextPage: cc.Button = null;
+    Text_num: cc.Label = null;
     m_winUserId = 0;
 
     /// 0 庄家，1 小盲注，2 大盲注，3 枪口，4 枪口+1，5 中位1，6 中位2，7 劫位，8 关位
@@ -163,7 +169,7 @@ export default class UITexasHistoryComponent extends UIBase {
         this.Preflop = this.getChildNodeOrComponent('Preflop')
 
         this.PreflopInfoObj = this.Preflop.getChildByName('player_info')
-
+        this.PreflopInfoObj.active = false;
         this.FlopInfoList = this.getChildNodeOrComponent('FlopInfoList')
         this.TurnNum = this.getChildNodeOrComponent('TurnNum')
         this.TurnInfoList = this.getChildNodeOrComponent('TurnInfoList')
@@ -195,7 +201,58 @@ export default class UITexasHistoryComponent extends UIBase {
         }
         PlayerNumText.string = "0";
         RoomIDText.string = GameCache.Instance.room_id + "-" + 0;
+        //按钮
+        this.buttonFirstPage = this.getChildNodeOrComponent('Button_FirstPage', cc.Button);
+        this.buttonFirstPage.node.on('click', this.onClickFirstPage, this)
+
+        this.buttonLastPage = this.getChildNodeOrComponent('Button_LastPage', cc.Button);
+        this.buttonLastPage.node.on('click', this.onClickLastPage, this)
+
+        this.buttonPrePage = this.getChildNodeOrComponent('Button_PrePage', cc.Button);
+        this.buttonPrePage.node.on('click', this.onClickPrePage, this)
+
+        this.buttonNextPage = this.getChildNodeOrComponent('Button_NextPage', cc.Button);
+        this.buttonNextPage.node.on('click', this.onClickNextPage, this)
+        let ScrollBar: cc.Node = this.getChildNodeOrComponent('ScrollBar');
+        this.Text_num = ScrollBar.getChildByName("Text_num").getComponent(cc.Label)
         // scrollview_Content.gameObject.SetActive(false);
+    }
+    setBtnState() {
+        this.buttonFirstPage.interactable = false;
+        this.buttonLastPage.interactable = false;
+        this.buttonPrePage.interactable = false;
+        this.buttonNextPage.interactable = false;
+    }
+    onClickFirstPage(event) {
+        if (this.buttonFirstPage.interactable == false)
+            return;
+        this.currentPage = 1;
+        this.RefreshData(this.currentPage);
+    }
+    onClickPrePage(event) {
+        if (this.buttonPrePage.interactable == false)
+            return;
+        this.currentPage--;
+        this.RefreshData(this.currentPage);
+    }
+    onClickNextPage(event) {
+        if (this.buttonNextPage.interactable == false)
+            return;
+        this.currentPage++;
+        this.RefreshData(this.currentPage);
+    }
+    onClickLastPage(event) {
+        if (this.buttonLastPage.interactable == false)
+            return;
+        this.currentPage = this.totalPage;
+        this.RefreshData(this.currentPage);
+    }
+    RefreshPageButton() {
+        this.buttonFirstPage.interactable = this.currentPage > 1;
+        this.buttonLastPage.interactable = this.currentPage < this.totalPage;
+        this.buttonPrePage.interactable = this.currentPage > 1;
+        this.buttonNextPage.interactable = this.currentPage < this.totalPage;
+        this.Text_num.string = `${this.currentPage}/${this.totalPage}`;
     }
 
 
@@ -204,8 +261,10 @@ export default class UITexasHistoryComponent extends UIBase {
             return;
         this.historyInfoData = param as HistoryInfoData;
         // rcPokerSprite = this.historyInfoData.rcPokerSprite;
+
         this.currentPage = 0;
         this.InitRoomInfo();
+        this.setBtnState()
         this.totalPage = this.historyInfoData.handNum == 0 ? this.historyInfoData.handNum : this.historyInfoData.handNum - 1;
         if (this.totalPage == 0) {
             //第一手没打完不请求
@@ -214,10 +273,48 @@ export default class UITexasHistoryComponent extends UIBase {
         this.RefreshData(this.totalPage);
 
     }
+    resetData() {
+        for (let index = 0; index < this.AllPlayerCardsInfos.length; index++) {
+            const element: cc.Node = this.AllPlayerCardsInfos[index];
+            element.destroy();
+        }
+        this.AllPlayerCardsInfos = []
+        for (let index = 0; index < this.AllPlayerCardsInfosPreFlop.length; index++) {
+            const element: cc.Node = this.AllPlayerCardsInfosPreFlop[index];
+            element.destroy();
+        }
+        this.AllPlayerCardsInfosPreFlop = []
+        for (let index = 0; index < this.AllPlayerCardsInfosFlop.length; index++) {
+            const element: cc.Node = this.AllPlayerCardsInfosFlop[index];
+            element.destroy();
+        }
+        this.AllPlayerCardsInfosFlop = []
+        for (let index = 0; index < this.AllPlayerCardsInfosTurn.length; index++) {
+            const element: cc.Node = this.AllPlayerCardsInfosTurn[index];
+            element.destroy();
+        }
+        this.AllPlayerCardsInfosTurn = []
+        for (let index = 0; index < this.AllPlayerCardsInfosRiver.length; index++) {
+            const element: cc.Node = this.AllPlayerCardsInfosRiver[index];
+            element.destroy();
+        }
+        this.AllPlayerCardsInfosRiver = []
+        for (let index = 0; index < this.AllPlayerCardsInfoswinner.length; index++) {
+            const element: cc.Node = this.AllPlayerCardsInfoswinner[index];
+            element.destroy();
+        }
+        this.AllPlayerCardsInfoswinner = []
+
+        this.playerInfos = []
+        this.playerInfosPreFlop = []
+        this.playerInfosFlop = []
+        this.playerInfosTurn = []
+        this.playerInfosRiver = []
+        this.playerInfosWinner = []
+    }
     RefreshData(_currentPage) {
         this.currentPage = _currentPage;
-        // RefreshPageButton();
-
+        this.RefreshPageButton();
         this.SendClientMessagePublicReplay(this.currentPage);
     }
     SendClientMessagePublicReplay(handNum) {
@@ -301,12 +398,7 @@ export default class UITexasHistoryComponent extends UIBase {
                 }
             }
         }
-        this.playerInfos = []
-        this.playerInfosPreFlop = []
-        this.playerInfosFlop = []
-        this.playerInfosTurn = []
-        this.playerInfosRiver = []
-        this.playerInfosWinner = []
+        this.resetData();
 
         this.tableSeatIds = [];//本手参与玩家座位号
         let banerSeatId = ResponseData.s.table.btn;//庄位
@@ -376,6 +468,7 @@ export default class UITexasHistoryComponent extends UIBase {
             }
         }
         //endregion
+
         //PreFlop
         this.Preflop.active = (ResponseData.s.procedure.preflop.pl.length > 0);
         this.PreflopInfoList.active = (ResponseData.s.procedure.preflop.pl.length > 0);
@@ -422,6 +515,196 @@ export default class UITexasHistoryComponent extends UIBase {
         if (ResponseData.s.procedure.preflop.pl == null || ResponseData.s.procedure.preflop.pl.length <= 0) {
             this.PreflopInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
         }
+
+        //Flop
+        this.FlopInfoList.active = (ResponseData.s.procedure.flop.pl.length > 0);
+        this.FlopNum.active = (ResponseData.s.procedure.flop.pl.length > 0);
+        if (ResponseData.s.procedure.flop.pl.length > 0) {
+            for (let i = 0; i < 3; i++) {
+                let publicCard = this.FlopInfoList.getChildByName("PublicCard" + i).getComponent(cc.Sprite);
+
+                if (this.PublicCards[i] == 0) {
+                    //没发完的公共牌不显示
+                    publicCard.node.active = (false);
+
+                }
+                else {
+                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                    publicCard.node.active = (true);
+
+                }
+            }
+        }
+        this.FlopInfoList.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.procedure.flop.pl.length.toString();
+
+
+
+        times = 0;
+        for (let i = 0; i < ResponseData.s.procedure.flop.pl.length; i++) {
+            let seatID = ResponseData.s.procedure.flop.pl[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+
+                continue;
+            }
+            let player: PlayerActionDataInfo = new PlayerActionDataInfo();
+            player.nickNameStr = playerInfo.userName;
+            player.headStr = playerInfo.headPic;
+            if (ResponseData.s.procedure.flop.pl[i].act == "bet" || ResponseData.s.procedure.flop.pl[i].act == "raise") {
+                times++;
+                player.raiseTimes = times;
+
+            }
+            player.playerPosition = this.getPositionNumByBaner(this.tableSeatIds, banerSeatId, ResponseData.s.procedure.flop.pl[i].sn);
+
+            player.actList = this.getActionNumByName(ResponseData.s.procedure.flop.pl[i].act);
+            player.actChipList = ResponseData.s.procedure.flop.pl[i].act_amt;
+            playerInfo.handBet += ResponseData.s.procedure.flop.pl[i].act_amt;//统计本手下注筹码
+
+            player.leftChips = ResponseData.s.procedure.flop.pl[i].c;
+            player.playerId = playerInfo.playerId;
+            if (player.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
+
+            }
+            else {
+                player.isMine = false;
+            }
+            if (ResponseData.s.procedure.flop.pl[i].pot_out > 0) {
+                mPool = ResponseData.s.procedure.flop.pl[i].pot_out;
+            }
+            this.playerInfosFlop.push(player);
+
+        }
+        if (ResponseData.s.procedure.flop.pl != null && ResponseData.s.procedure.flop.pl.length > 0) {
+            this.FlopInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
+        }
+
+
+        //Turn
+        this.TurnNum.active = (ResponseData.s.procedure.turn.pl.length > 0);
+        this.TurnInfoList.active = (ResponseData.s.procedure.turn.pl.length > 0);
+        if (ResponseData.s.procedure.turn.pl.length > 0) {
+            for (let i = 0; i < 4; i++) {
+                let publicCard = this.TurnInfoList.getChildByName("PublicCard" + i).getComponent(cc.Sprite);
+
+                if (this.PublicCards[i] == 0) {
+                    //没发完的公共牌不显示
+                    publicCard.node.active = false;
+                }
+                else {
+
+                    publicCard.node.active = true;
+                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+
+                }
+            }
+        }
+        this.TurnInfoList.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.procedure.turn.pl.length.toString();
+
+        times = 0;
+        for (let i = 0; i < ResponseData.s.procedure.turn.pl.length; i++) {
+            let seatID = ResponseData.s.procedure.turn.pl[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+
+                continue;
+            }
+            let player: PlayerActionDataInfo = new PlayerActionDataInfo();
+            player.nickNameStr = playerInfo.userName;
+            player.headStr = playerInfo.headPic;
+            player.playerPosition = this.getPositionNumByBaner(this.tableSeatIds, banerSeatId, ResponseData.s.procedure.turn.pl[i].sn);
+
+            player.actList = this.getActionNumByName(ResponseData.s.procedure.turn.pl[i].act);
+            player.actChipList = ResponseData.s.procedure.turn.pl[i].act_amt;
+            playerInfo.handBet += ResponseData.s.procedure.turn.pl[i].act_amt;//统计本手下注筹码
+
+            player.playerId = playerInfo.playerId;
+            if (ResponseData.s.procedure.turn.pl[i].act == "bet" || ResponseData.s.procedure.turn.pl[i].act == "raise") {
+                times++;
+                player.raiseTimes = times;
+
+            }
+            if (player.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
+
+            }
+            else {
+                player.isMine = false;
+            }
+            player.leftChips = ResponseData.s.procedure.turn.pl[i].c;
+            if (ResponseData.s.procedure.turn.pl[i].pot_out > 0) {
+                mPool = ResponseData.s.procedure.turn.pl[i].pot_out;
+            }
+            this.playerInfosTurn.push(player);
+
+        }
+        if (ResponseData.s.procedure.turn.pl != null && ResponseData.s.procedure.turn.pl.length > 0) {
+            this.TurnInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
+        }
+
+        //River
+        this.RiverNum.active = (ResponseData.s.procedure.river.pl.length > 0);
+        this.RiverInfoList.active = (ResponseData.s.procedure.river.pl.length > 0);
+        if (ResponseData.s.procedure.river.pl.length > 0) {
+            for (let i = 0; i < 5; i++) {
+                let publicCard = this.RiverInfoList.getChildByName('PublicCard' + i).getComponent(cc.Sprite)
+                if (this.PublicCards[i] == 0) {
+                    //没发完的公共牌不显示
+                    publicCard.node.active = (false);
+
+                }
+                else {
+
+                    publicCard.node.active = (true);
+                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+
+                }
+            }
+        }
+        this.RiverInfoList.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.procedure.river.pl.length.toString();
+
+        times = 0;
+        for (let i = 0; i < ResponseData.s.procedure.river.pl.length; i++) {
+            let seatID = ResponseData.s.procedure.river.pl[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+
+                continue;
+            }
+            let player: PlayerActionDataInfo = new PlayerActionDataInfo();
+            player.nickNameStr = playerInfo.userName;
+            player.headStr = playerInfo.headPic;
+            player.playerPosition = this.getPositionNumByBaner(this.tableSeatIds, banerSeatId, ResponseData.s.procedure.river.pl[i].sn);
+            player.actList = this.getActionNumByName(ResponseData.s.procedure.river.pl[i].act);
+            player.actChipList = ResponseData.s.procedure.river.pl[i].act_amt;
+            playerInfo.handBet += ResponseData.s.procedure.river.pl[i].act_amt;//统计本手下注筹码
+
+            player.leftChips = ResponseData.s.procedure.river.pl[i].c;
+            player.playerId = playerInfo.playerId;
+            if (ResponseData.s.procedure.river.pl[i].act == "bet" || ResponseData.s.procedure.river.pl[i].act == "raise") {
+                times++;
+                player.raiseTimes = times;
+
+            }
+            if (playerInfo.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
+
+            }
+            else {
+                player.isMine = false;
+            }
+            if (ResponseData.s.procedure.river.pl[i].pot_out > 0) {
+                mPool = ResponseData.s.procedure.river.pl[i].pot_out;
+            }
+            this.playerInfosRiver.push(player);
+
+        }
+        if (ResponseData.s.procedure.river.pl != null && ResponseData.s.procedure.river.pl.length > 0) {
+            this.RiverInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
+        }
+
+
         //Winner
         for (let i = 0; i < ResponseData.s.result.length; i++) {
             let seatID = ResponseData.s.result[i].sn;
@@ -446,7 +729,7 @@ export default class UITexasHistoryComponent extends UIBase {
         if (this.HaveSecondCard) {
             //赢牌底池
             this.ShowdownInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool / 2);
-            this.ShowdownInfoList2.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.result.length.ToString();
+            this.ShowdownInfoList2.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.result.length.toString();
             //赢牌底池
             this.ShowdownInfoList2.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool / 2);
         }
@@ -531,6 +814,7 @@ export default class UITexasHistoryComponent extends UIBase {
 
             // ContentHeight += 180;
         }
+
         for (let i = 0; i < this.playerInfosPreFlop.length; i++) {
             let go = this.GetCreatePrefab(this.PreflopInfoObj, this.Preflop);
             this.AllPlayerCardsInfosPreFlop.push(go);
@@ -545,6 +829,7 @@ export default class UITexasHistoryComponent extends UIBase {
             this.SetPlayerItem(go, this.playerInfosFlop[i]);
             // ContentHeight += 80;
         }
+
         for (let i = 0; i < this.playerInfosTurn.length; i++) {
             let go = this.GetCreatePrefab(this.PreflopInfoObj, this.TurnNum);
             this.AllPlayerCardsInfosTurn.push(go);
@@ -552,6 +837,7 @@ export default class UITexasHistoryComponent extends UIBase {
             this.SetPlayerItem(go, this.playerInfosTurn[i]);
             // ContentHeight += 80;
         }
+
         for (let i = 0; i < this.playerInfosRiver.length; i++) {
             let go = this.GetCreatePrefab(this.PreflopInfoObj, this.RiverNum);
             this.AllPlayerCardsInfosRiver.push(go);
@@ -587,7 +873,7 @@ export default class UITexasHistoryComponent extends UIBase {
         this.ShowdownNum.getChildByName("Image_Insurance").active = (mInsurancePool != 0);
         // this.ShowdownNum.getChildByName("Image_Insurance").SetAsLastSibling();
         cc.find('Image_Insurance/Text_insuranceValue', this.AllPlayerPaiPu).getComponent(cc.Label).string = StringHelper.getStringDiv100(mInsurancePool);
-        // this.ShowdownNum.Find("Image_Insurance/Text_insuranceValue").GetComponent<Text>().text = StringHelper.GetSignedLongString(mInsurancePool);
+        cc.find("Image_Insurance/Text_insuranceValue", this.ShowdownNum).getComponent(cc.Label).string = StringHelper.getStringDiv100(mInsurancePool);
         // if (ContentHeight < 2108) {
         //     ContentHeight = 2108;
         // }
@@ -645,8 +931,8 @@ export default class UITexasHistoryComponent extends UIBase {
             cc.find('PositionImageChipBg/PositionChipText', go).getComponent(cc.Label).string = this.PlayerActionStr[element.actList];
         }
         //
-        cc.find('PositionImageChipBg/PositionChipText', go).getComponent(cc.Label).string = "" + StringHelper.getStringDiv100(element.actChipList);//下注数
-        let chipbg = go.getChildByName("PositionImageChipBg").getComponent(cc.Sprite);
+        cc.find('PositionImageChipBg/Text', go).getComponent(cc.Label).string = "" + StringHelper.getStringDiv100(element.actChipList);//下注数
+        let chipbg = go.getChildByName("PositionImageChipBg")
         if (element.actList > 0 && element.actList < 5) {
             chipbg.color = cc.color(86, 181, 87, 255);//绿
         }
@@ -833,7 +1119,7 @@ export default class UITexasHistoryComponent extends UIBase {
                 for (let i = 0; i < publicCards.length; i++) {
                     publicCards[i].node.color = cc.color(127, 127, 127, 255);
                 }
-                for (let i = 0; i < element.maxCardIndex.Count; i++) {
+                for (let i = 0; i < element.maxCardIndex.length; i++) {
                     if (element.maxCardIndex[i] >= 5) {
                         handcards[element.maxCardIndex[i] - 5].node.color = cc.color(255, 255, 255, 255);
                     }
