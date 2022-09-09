@@ -1,6 +1,6 @@
 import { i18nMgr } from "./i18nMgr";
 
-export class LanguageCode {
+export class CPErrorCode {
 
     // static LanguageDescription(code: number): string {
     //     return `adaptation${code}`;

@@ -1,6 +1,6 @@
 
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
-import { LanguageCode } from "../i18n/LanguageCode";
+import {CPErrorCode} from "../i18n/CPErrorCode";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
@@ -133,7 +133,7 @@ export default class TexasGameProtocol {
             return;
         }
         if (rec.status != 0) {
-            ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(rec.status));
+            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(rec.status));
             return;
         }
         this.game.mainPlayer.chips = rec.chips;
@@ -615,7 +615,7 @@ export default class TexasGameProtocol {
         this.game.autoAllin = false;
         this.game.autoCheck = false;
         if (rec.status != 0) {
-            UIComponent.Instance.Toast(LanguageCode.ServerErrorDescription(rec.status));
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
             return;
         }
         this.game.HideOperationPanel();
