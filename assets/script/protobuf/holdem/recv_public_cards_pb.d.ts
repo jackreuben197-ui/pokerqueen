@@ -20,11 +20,14 @@ export class ServerMessagePublicCards extends jspb.Message {
   setExtPublicCardsArrayList(value: Array<number>): void;
   addExtPublicCardsArray(value: number, index?: number): number;
 
+  getRnd(): protobuf_holdem_define_pb.Def.RoundMap[keyof protobuf_holdem_define_pb.Def.RoundMap];
+  setRnd(value: protobuf_holdem_define_pb.Def.RoundMap[keyof protobuf_holdem_define_pb.Def.RoundMap]): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessagePublicCards.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessagePublicCards): ServerMessagePublicCards.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ServerMessagePublicCards, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ServerMessagePublicCards;
   static deserializeBinaryFromReader(message: ServerMessagePublicCards, reader: jspb.BinaryReader): ServerMessagePublicCards;
@@ -35,6 +38,7 @@ export namespace ServerMessagePublicCards {
     publicCardsArrayList: Array<number>,
     nextOperator?: protobuf_holdem_define_pb.Operator.AsObject,
     extPublicCardsArrayList: Array<number>,
+    rnd: protobuf_holdem_define_pb.Def.RoundMap[keyof protobuf_holdem_define_pb.Def.RoundMap],
   }
 }
 

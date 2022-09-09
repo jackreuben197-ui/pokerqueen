@@ -8,6 +8,7 @@ import SceneManager from "../manager/SceneManager";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
+import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageError } from "../protobuf/holdem/recv_error_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
@@ -18,6 +19,7 @@ import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { ServerMessageStandupActive } from "../protobuf/holdem/req_stand_up_active_pb";
+import GlobalSession from "../session/GlobalSession";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 import Seat from "./Seat";
@@ -337,27 +339,25 @@ export default class TexasGameMessageHandler {
         if (response == null) {
             return;
         }
-        //let nextState: TexasGameState;// = TexasGameState.None;
+        let nextState: TexasGameState = TexasGameState.None;
 
-        // switch (response.Rnd) {
-        //     case PBTypes.Round.Flop:
-        //         {
-        //             nextState = TexasGameState.HandFlop;
-        //         }
-        //         break;
-        //     case PBTypes.Round.Turn:
-        //         {
-        //             nextState = TexasGameState.HandTurn;
-        //         }
-        //         break;
-        //     case PBTypes.Round.River:
-        //         {
-        //             nextState = TexasGameState.HandRiver;
-        //         }
-        //         break;
-        // }
-
-        let nextState: TexasGameState = TexasGameState.HandTurn;
+        switch (response.rnd) {
+            case Def.Round.FLOP:
+                {
+                    nextState = TexasGameState.HandFlop;
+                }
+                break;
+            case Def.Round.TURN:
+                {
+                    nextState = TexasGameState.HandTurn;
+                }
+                break;
+            case Def.Round.RIVER:
+                {
+                    nextState = TexasGameState.HandRiver;
+                }
+                break;
+        }
 
         this.game.SMAgency.ChangeGameState(nextState, response);
     }
@@ -409,5 +409,6 @@ export default class TexasGameMessageHandler {
         }
         //CPLoginSessionComponent.Instance.Logout();
         UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.status));
+        GlobalSession.Logout();
     }
 }

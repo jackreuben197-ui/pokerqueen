@@ -56,8 +56,6 @@ export default class UIAddChipsComponent extends UIBase {
 
         this.sliderCoin = this.getChildNodeOrComponent("Slider_Coin", GGSlider);
         this.sliderCoin.onChange(this.onValueChangedSliderCoin.bind(this));
-
-
     }
     protected regiterTouchEvents(): void {
         this.Button_Close.on("click", this.onClickClose, this);

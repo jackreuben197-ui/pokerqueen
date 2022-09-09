@@ -1,8 +1,9 @@
 
+import { Tracing } from "trace_events";
 import { IUIDefine, UIType } from "../define/EIDefine";
 import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
-import { UIBoardMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
+import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
 
 const { ccclass } = cc._decorator;
 
@@ -15,10 +16,11 @@ export default class UIComponent {
 
 
     Toast(content: string) {
+
         ToastManager.Instance.createToast(content);
     }
 
-    static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null) {
+    static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null, parent: cc.Node = null) {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
@@ -33,6 +35,9 @@ export default class UIComponent {
             case UIType.Prompt:
             case UIType.TexasPreLoad:
                 UIPromptMgr.Instance.open(UIDefine, param);
+                break;
+            case UIType.CommonUI:
+                UICommonMgr.Instance.open(UIDefine, param, parent);
                 break;
         }
     }
@@ -52,6 +57,9 @@ export default class UIComponent {
             case UIType.Prompt:
             case UIType.TexasPreLoad:
                 UIPromptMgr.Instance.close(UIDefine, param);
+                break;
+            case UIType.CommonUI:
+                UICommonMgr.Instance.close(UIDefine, param);
                 break;
         }
     }
@@ -87,3 +95,4 @@ export default class UIComponent {
         UIPromptMgr.Instance.closeAll();
     }
 }
+(window as any).UIComponent = UIComponent;

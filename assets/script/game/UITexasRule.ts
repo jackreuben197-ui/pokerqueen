@@ -1,6 +1,7 @@
 import { GameType, PokerType } from "../define/EIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
 import UIBase from "../ui/UIBase";
+import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 
 /*
@@ -28,7 +29,8 @@ export default class UITexasRule extends UIBase {
         this.RulerText = this.getChildNodeOrComponent('RulerText').getComponent(cc.RichText);
         this.ImageMaskClose = this.getChildNodeOrComponent('ImageMaskClose')
         this.ImageMaskClose.on("click", () => {
-            this.node.active = false
+            //this.node.active = false
+            UIComponent.close(this.UIDefine);
         }, this)
         this.titelGroup = this.getChildNodeOrComponent('ToggleGroup')
         this.initTitle();

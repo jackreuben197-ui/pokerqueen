@@ -13,6 +13,7 @@ export enum UIType {
     UITexasRule,
     UITexasReport,
     UITexasHistory,
+    CommonUI,//普通UI
 }
 /**
  * 流程
