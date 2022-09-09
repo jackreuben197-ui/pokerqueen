@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-08 18:33:30
+ * @LastEditTime: 2022-09-09 10:07:31
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -961,7 +961,7 @@ export default class UITexasHistoryComponent extends UIBase {
         }
     }
     GetShowCardType(cardType) {
-        // return CardTypeUtil.GetCardTypeEnglishName(cardType);
+        return CardTypeUtil.GetCardTypeEnglishName(cardType);
     }
     SetPlayerCardItem(go, element, isSecond = false, SpcsIndex = 0) {
         go.getChildByName("Text_name").getComponent(cc.Label).string = element.userName;//名字
