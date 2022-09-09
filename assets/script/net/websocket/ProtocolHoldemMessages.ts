@@ -47,7 +47,6 @@ export class BaseProtocol {
     }
     static SetBody(request: any, body: any = null, cls?: any) {
         this.body = body;
-        console.log("send body:", body);
         this._SetBody(request, body, cls);
     }
 

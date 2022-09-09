@@ -111,6 +111,7 @@ export default class UITexas extends BaseScene {
     imageSecondPublicCard4: cc.Node = null;
 
 
+    buttonDelay: cc.Node = null;
 
     ///////////////////////////////////
     /**
@@ -264,6 +265,9 @@ export default class UITexas extends BaseScene {
 
         this.UIOperation = this.getChildNodeOrComponent("UIOperation");
 
+        this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
+
+
 
         this.game = GameCache.Instance.CurGame;
 
@@ -301,22 +305,22 @@ export default class UITexas extends BaseScene {
             this.game.listDefaultPublicCardsLPos = [];
         if (this.game.listDefaultPublicCardsLPos.length > 0)
             this.game.listDefaultPublicCardsLPos = [];
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard0.getPosition());
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard1.getPosition());
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard2.getPosition());
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard3.getPosition());
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard4.getPosition());
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard0.position);
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard1.position);
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard2.position);
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard3.position);
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard4.position);
 
         // 第二套公共牌默认位置
         if (null == this.game.listDefaultSecondPublicCardsLPos)
             this.game.listDefaultSecondPublicCardsLPos = [];
         if (this.game.listDefaultSecondPublicCardsLPos.length > 0)
             this.game.listDefaultSecondPublicCardsLPos = [];
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard0.getPosition());
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard1.getPosition());
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard2.getPosition());
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard3.getPosition());
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.getPosition());
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard0.position);
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard1.position);
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard2.position);
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard3.position);
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.position);
 
 
         // 分池UI
@@ -638,7 +642,7 @@ export default class UITexas extends BaseScene {
      */
     public CallbackExit() {
         this.hideMenu(false);
-        this.game.utils.LeaveRoom();
+        this.game.TexasGameUtils.LeaveRoom();
     }
 
 }
