@@ -2,7 +2,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import {CPErrorCode} from "../../i18n/CPErrorCode";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
 import GGSlider from "../../ui/component/GGSlider";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";

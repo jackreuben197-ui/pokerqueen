@@ -13,6 +13,7 @@ import { RoomInfo } from "../protobuf/holdem/define_pb";
 import GlobalSession from "../session/GlobalSession";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
+import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 
 import TexasGame from "./TexasGame";
@@ -552,16 +553,17 @@ export default class UITexas extends BaseScene {
     }
     Click_Button_Rule() {
         this.hideMenu();
-        let UITexasRule: any = this.node.getChildByName('UITexasRule')
-        if (!UITexasRule) {
-            let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
-            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            UITexasRule = cc.instantiate(prefab);
-            UITexasRule.parent = this.node
-            UITexasRule.active = true;
-        } else {
-            UITexasRule.active = true;
-        }
+        // let UITexasRule: any = this.node.getChildByName('UITexasRule')
+        // if (!UITexasRule) {
+        //     let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
+        //     // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        //     UITexasRule = cc.instantiate(prefab);
+        //     UITexasRule.parent = this.node
+        //     UITexasRule.active = true;
+        // } else {
+        //     UITexasRule.active = true;
+        // }
+        UIComponent.open(UIDefine.UITexasRule, null, this.node);
     }
     Click_Button_SetAutoOnTable() {
 

@@ -69,7 +69,8 @@ proto.holdem.pb.ServerMessageSeatedOthers.toObject = function(includeInstance, m
     hunterKill: jspb.Message.getFieldWithDefault(msg, 8, 0),
     hunterKillAward: jspb.Message.getFieldWithDefault(msg, 9, 0),
     hunterKillAwardOther: jspb.Message.getFieldWithDefault(msg, 10, 0),
-    hunterHeadValue: jspb.Message.getFieldWithDefault(msg, 11, 0)
+    hunterHeadValue: jspb.Message.getFieldWithDefault(msg, 11, 0),
+    vip: jspb.Message.getFieldWithDefault(msg, 12, 0)
   };
 
   if (includeInstance) {
@@ -149,6 +150,10 @@ proto.holdem.pb.ServerMessageSeatedOthers.deserializeBinaryFromReader = function
     case 11:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setHunterHeadValue(value);
+      break;
+    case 12:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setVip(value);
       break;
     default:
       reader.skipField();
@@ -253,6 +258,13 @@ proto.holdem.pb.ServerMessageSeatedOthers.serializeBinaryToWriter = function(mes
   if (f !== 0) {
     writer.writeUint64(
       11,
+      f
+    );
+  }
+  f = message.getVip();
+  if (f !== 0) {
+    writer.writeInt32(
+      12,
       f
     );
   }
@@ -421,6 +433,21 @@ proto.holdem.pb.ServerMessageSeatedOthers.prototype.getHunterHeadValue = functio
 /** @param {number} value */
 proto.holdem.pb.ServerMessageSeatedOthers.prototype.setHunterHeadValue = function(value) {
   jspb.Message.setField(this, 11, value);
+};
+
+
+/**
+ * optional int32 vip = 12;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageSeatedOthers.prototype.getVip = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageSeatedOthers.prototype.setVip = function(value) {
+  jspb.Message.setField(this, 12, value);
 };
 
 

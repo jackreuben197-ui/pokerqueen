@@ -1,3 +1,4 @@
+import { IUIDefine } from "../define/EIDefine";
 import Main from "../Main";
 import { ResManager } from "../manager/ResManager";
 import BaseForm from "./form/BaseForm";
@@ -156,5 +157,45 @@ export class UIPromptMgr extends UIFormMgr {
         super();
         this.UILayer = Main.Prompt;
         this.CacheUILayer = Main.Cache_UI;
+    }
+}
+
+
+export class UICommonMgr {
+
+    protected Name: string = "UICommonMgr";
+
+    private uiMap = new Map<IUIDefine, cc.Node>();
+
+    static get Instance(): UICommonMgr {
+        return (<any>this).instance ??= new UICommonMgr();
+    }
+    constructor() {
+
+    }
+    open(uiDefine: IUIDefine, param: any = null, parent: cc.Node = null) {
+        let node: cc.Node = this.uiMap.get(uiDefine);
+        if (!node) {
+            let bundle = cc.assetManager.getBundle(uiDefine.Bundle);
+            let prefab: cc.Prefab = (bundle || cc.resources).get(uiDefine.Path, cc.Prefab);
+            if (!prefab) {
+                cc.warn("缺少预制体资源:", uiDefine.Path);
+                return;
+            }
+            node = cc.instantiate(prefab);
+            this.uiMap.set(uiDefine, node);
+        }
+        if (node.activeInHierarchy) {
+            return cc.log("ui已经开启");
+        }
+        node.parent = parent;
+        node.getComponent(UIBase)?.onShow(param);
+    }
+    close(uiDefine: IUIDefine, param: any = null) {
+        let node: cc.Node = this.uiMap.get(uiDefine);
+        if (node && node.activeInHierarchy) {
+            node.getComponent(UIBase)?.onClose(param);
+            node.parent = null;
+        }
     }
 }
