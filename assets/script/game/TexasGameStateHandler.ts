@@ -2,6 +2,7 @@
  * TexasGameStateHandler
  */
 import { UIDefine } from "../define/UIDefine";
+import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
@@ -247,9 +248,19 @@ export class TexasGameStateHandlerHandFlop extends StateHandler {
 
     public Enter(entity?: any): void {
 
+
+        var source = this.SourceData as ServerMessagePublicCards.AsObject;
+
+        if (source == null) {
+
+            return;
+        }
+
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
+
+        game.HandleGetPublicCards(source);
 
     }
 
@@ -271,6 +282,13 @@ export class TexasGameStateHandlerHandTurn extends StateHandler {
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
+
+        var source = this.SourceData as ServerMessagePublicCards.AsObject;
+        if (source == null) {
+            return;
+        }
+
+        game.HandleGetPublicCards(source);
 
     }
 

@@ -918,7 +918,93 @@ export default class GameUtil {
         ],
     };
 
+    /// <summary>
+    /// 判断是否是短牌
+    /// </summary>
+    /// <param name="roomType"></param>
+    /// <returns></returns>
+    public static JudgeIsSixPlusRoomPath(roomType: RoomType): boolean {
+        let isSixPlus = false;
+        switch (roomType) {
+            case RoomType.TexasHoldemSixPlusFixedNoLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.TexasHoldemSixPlusFixedPotLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.TexasHoldemSixPlusFixedAof:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha4SixPlusFixedNoLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha4SixPlusFixedPotLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha4SixPlusFixedAof:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha5SixPlusFixedNoLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha5SixPlusFixedPotLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha5SixPlusFixedAof:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha6SixPlusFixedNoLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha6SixPlusFixedPotLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.Omaha6SixPlusFixedAof:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTTexasHoldemSixPlusFixedNoLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTTexasHoldemSixPlusFixedPotLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTTexasHoldemSixPlusFixedAof:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha4SixPlusFixedNoLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha4SixPlusFixedPotLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha4SixPlusFixedAof:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha5SixPlusFixedNoLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha5SixPlusFixedPotLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha5SixPlusFixedAof:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha6SixPlusFixedNoLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha6SixPlusFixedPotLimit:
+                isSixPlus = true;
+                break;
+            case RoomType.MTTOmaha6SixPlusFixedAof:
+                isSixPlus = true;
+                break;
+            default:
+                isSixPlus = false;
+                break;
+        }
 
+        return isSixPlus;
+    }
 
 
 

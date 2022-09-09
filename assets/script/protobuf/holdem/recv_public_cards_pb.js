@@ -69,7 +69,8 @@ proto.holdem.pb.ServerMessagePublicCards.toObject = function(includeInstance, ms
   var f, obj = {
     publicCardsArrayList: jspb.Message.getRepeatedField(msg, 1),
     nextOperator: (f = msg.getNextOperator()) && protobuf_holdem_define_pb.Operator.toObject(includeInstance, f),
-    extPublicCardsArrayList: jspb.Message.getRepeatedField(msg, 3)
+    extPublicCardsArrayList: jspb.Message.getRepeatedField(msg, 3),
+    rnd: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -119,6 +120,10 @@ proto.holdem.pb.ServerMessagePublicCards.deserializeBinaryFromReader = function(
       var value = /** @type {!Array.<number>} */ (reader.readPackedInt32());
       msg.setExtPublicCardsArrayList(value);
       break;
+    case 4:
+      var value = /** @type {!proto.holdem.pb.Def.Round} */ (reader.readEnum());
+      msg.setRnd(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -167,6 +172,13 @@ proto.holdem.pb.ServerMessagePublicCards.serializeBinaryToWriter = function(mess
   if (f.length > 0) {
     writer.writePackedInt32(
       3,
+      f
+    );
+  }
+  f = message.getRnd();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      4,
       f
     );
   }
@@ -258,6 +270,21 @@ proto.holdem.pb.ServerMessagePublicCards.prototype.addExtPublicCardsArray = func
 
 proto.holdem.pb.ServerMessagePublicCards.prototype.clearExtPublicCardsArrayList = function() {
   this.setExtPublicCardsArrayList([]);
+};
+
+
+/**
+ * optional Def.Round rnd = 4;
+ * @return {!proto.holdem.pb.Def.Round}
+ */
+proto.holdem.pb.ServerMessagePublicCards.prototype.getRnd = function() {
+  return /** @type {!proto.holdem.pb.Def.Round} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {!proto.holdem.pb.Def.Round} value */
+proto.holdem.pb.ServerMessagePublicCards.prototype.setRnd = function(value) {
+  jspb.Message.setField(this, 4, value);
 };
 
 

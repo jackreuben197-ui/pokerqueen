@@ -26,12 +26,19 @@ goog.exportSymbol('proto.holdem.pb.ServerMessageCbPlay', null, global);
  * @constructor
  */
 proto.holdem.pb.ClientMessageCbPlay = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.holdem.pb.ClientMessageCbPlay.repeatedFields_, null);
 };
 goog.inherits(proto.holdem.pb.ClientMessageCbPlay, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   proto.holdem.pb.ClientMessageCbPlay.displayName = 'proto.holdem.pb.ClientMessageCbPlay';
 }
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.holdem.pb.ClientMessageCbPlay.repeatedFields_ = [5];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -62,9 +69,9 @@ proto.holdem.pb.ClientMessageCbPlay.prototype.toObject = function(opt_includeIns
 proto.holdem.pb.ClientMessageCbPlay.toObject = function(includeInstance, msg) {
   var f, obj = {
     gameNum: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    slot: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    amount: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    roomId: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    roomId: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    slotsList: jspb.Message.toObjectList(msg.getSlotsList(),
+    protobuf_holdem_define_cb_pb.CBPlaySummary.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -105,17 +112,14 @@ proto.holdem.pb.ClientMessageCbPlay.deserializeBinaryFromReader = function(msg, 
       var value = /** @type {number} */ (reader.readUint32());
       msg.setGameNum(value);
       break;
-    case 2:
-      var value = /** @type {!proto.holdem.pb.DefCB.PlaySlot} */ (reader.readEnum());
-      msg.setSlot(value);
-      break;
-    case 3:
-      var value = /** @type {number} */ (reader.readUint64());
-      msg.setAmount(value);
-      break;
     case 4:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setRoomId(value);
+      break;
+    case 5:
+      var value = new protobuf_holdem_define_cb_pb.CBPlaySummary;
+      reader.readMessage(value,protobuf_holdem_define_cb_pb.CBPlaySummary.deserializeBinaryFromReader);
+      msg.addSlots(value);
       break;
     default:
       reader.skipField();
@@ -153,25 +157,19 @@ proto.holdem.pb.ClientMessageCbPlay.serializeBinaryToWriter = function(message, 
       f
     );
   }
-  f = message.getSlot();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      2,
-      f
-    );
-  }
-  f = message.getAmount();
-  if (f !== 0) {
-    writer.writeUint64(
-      3,
-      f
-    );
-  }
   f = message.getRoomId();
   if (f !== 0) {
     writer.writeUint64(
       4,
       f
+    );
+  }
+  f = message.getSlotsList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      5,
+      f,
+      protobuf_holdem_define_cb_pb.CBPlaySummary.serializeBinaryToWriter
     );
   }
 };
@@ -193,36 +191,6 @@ proto.holdem.pb.ClientMessageCbPlay.prototype.setGameNum = function(value) {
 
 
 /**
- * optional DefCB.PlaySlot slot = 2;
- * @return {!proto.holdem.pb.DefCB.PlaySlot}
- */
-proto.holdem.pb.ClientMessageCbPlay.prototype.getSlot = function() {
-  return /** @type {!proto.holdem.pb.DefCB.PlaySlot} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
-};
-
-
-/** @param {!proto.holdem.pb.DefCB.PlaySlot} value */
-proto.holdem.pb.ClientMessageCbPlay.prototype.setSlot = function(value) {
-  jspb.Message.setField(this, 2, value);
-};
-
-
-/**
- * optional uint64 amount = 3;
- * @return {number}
- */
-proto.holdem.pb.ClientMessageCbPlay.prototype.getAmount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
-};
-
-
-/** @param {number} value */
-proto.holdem.pb.ClientMessageCbPlay.prototype.setAmount = function(value) {
-  jspb.Message.setField(this, 3, value);
-};
-
-
-/**
  * optional uint64 room_id = 4;
  * @return {number}
  */
@@ -234,6 +202,37 @@ proto.holdem.pb.ClientMessageCbPlay.prototype.getRoomId = function() {
 /** @param {number} value */
 proto.holdem.pb.ClientMessageCbPlay.prototype.setRoomId = function(value) {
   jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * repeated CBPlaySummary slots = 5;
+ * @return {!Array.<!proto.holdem.pb.CBPlaySummary>}
+ */
+proto.holdem.pb.ClientMessageCbPlay.prototype.getSlotsList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.CBPlaySummary>} */ (
+    jspb.Message.getRepeatedWrapperField(this, protobuf_holdem_define_cb_pb.CBPlaySummary, 5));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.CBPlaySummary>} value */
+proto.holdem.pb.ClientMessageCbPlay.prototype.setSlotsList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 5, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.CBPlaySummary=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.CBPlaySummary}
+ */
+proto.holdem.pb.ClientMessageCbPlay.prototype.addSlots = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.holdem.pb.CBPlaySummary, opt_index);
+};
+
+
+proto.holdem.pb.ClientMessageCbPlay.prototype.clearSlotsList = function() {
+  this.setSlotsList([]);
 };
 
 

@@ -26,11 +26,12 @@ export default class GGSlider extends cc.Component {
     @property({ range: [0, 50], step: 1 })
     max: number = 3;
 
-    curValue: number = 0;
+    private _curValue: number = 0;
 
     step_count: number = 0;
 
     press: boolean = false;
+    moved: boolean = false;
 
     step_dis: number = 0;
 
@@ -64,6 +65,7 @@ export default class GGSlider extends cc.Component {
 
     onBarTouchStart(e: cc.Event.EventTouch) {
         this.press = true;
+        this.moved = false;
     }
     onTouchMove(e: cc.Event.EventTouch) {
         if (this.step_count == 0) return;
@@ -74,6 +76,7 @@ export default class GGSlider extends cc.Component {
             if (l_location[this.trans("x")] < 0) x = Math.max(l_location[this.trans("x")], 0);
             if (l_location[this.trans("x")] > this.node[this.trans("width")]) x = Math.min(l_location[this.trans("x")], this.node[this.trans("width")]);
             this.setBarPos(this.min + this.postion2pos(x));
+            this.moved = true;
         }
     }
     onTouchEnd() {
@@ -123,9 +126,15 @@ export default class GGSlider extends cc.Component {
         this.updateBase();
     }
     public set value(value: number) {
-        this.curValue = value;
-        this.setBarPos(this.curValue);
+        this._curValue = value;
+        this.setBarPos(this._curValue);
     }
+
+
+    public get value(): number {
+        return this._curValue;
+    }
+
     public updateBase() {
         this.step_count = this.max - this.min;
         this.step_dis = this.node[this.trans("width")] / this.step_count;

@@ -2,7 +2,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { LanguageCode } from "../../i18n/LanguageCode";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
 import GGSlider from "../../ui/component/GGSlider";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
@@ -11,7 +11,6 @@ import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import GameUtil from "../GameUtil";
 import UITexasSettingComponent from "../UITexasSettingComponent";
-
 
 
 export type OperationData = {
@@ -74,7 +73,7 @@ export default class UIOperationComponent extends UIBase {
     textCall: cc.Label = null;
 
     sliderFreeCall: GGSlider = null;
-
+    buttonSliderHandle: cc.Node = null;
 
     imageCheckCountDown: cc.Sprite = null;
     imageFoldCountDown: cc.Sprite = null;
@@ -159,7 +158,7 @@ export default class UIOperationComponent extends UIBase {
 
         this.textCall = this.buttonCall.getChildByName("Text_Call").getComponent(cc.Label);
 
-
+        this.buttonSliderHandle = this.sliderFreeCall.node.getChildByName("bar");
 
     }
 
@@ -179,19 +178,54 @@ export default class UIOperationComponent extends UIBase {
 
         this.imageFreeCallMask.on("click", this.onClickFreeCallMask, this);
         this.buttonFold.on("click", this.onClickFold, this);
-        // UIEventListener.Get(buttonSliderHandle.gameObject).onClick = onClickSliderHandle;
-
+        this.buttonSliderHandle.on("click", this.onClickSliderHandle, this);
+        this.sliderFreeCall.onChange(this.onValueChangeFreeCall.bind(this));
     }
 
     //点击自由加注滑块按钮
     private onClickSliderHandle(): void {
-
-        //this.callValue = (ulong)Convert.ToInt64(sliderFreeCall.value * this.calibrationWeight);
+        if (this.sliderFreeCall.moved) {
+            this.sliderFreeCall.moved = false;
+            return;
+        }
+        this.callValue = this.sliderFreeCall.value * this.calibrationWeight;
         this.CheckOpt();
         this.showFreeCall(false);
     }
 
 
+    /// <summary>
+    /// 自由加注slider值变化监听
+    /// </summary>
+    /// <param name="arg0"></param>
+    private onValueChangeFreeCall(arg0: number): void {
+
+        if (arg0 >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
+            this.textFreeCall.string = `ALL IN`;
+            this.textFreeCall.node.color = cc.Color.WHITE;
+            this.textFreeCall.fontSize = 60;
+            //this.buttonSliderHandle.GetComponent<Image>().color = new cc.Color(225, 181, 141, 0);
+            this.buttonSliderHandle.getChildByName("Image").active = true;
+            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("image_orthogon_c");
+        }
+        else if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) && arg0 >= this.actionDataInfo.actionLimit.max / this.calibrationWeight) {
+            this.textFreeCall.string = `${this.actionDataInfo.actionLimit.max / this.chipScale ^ 0}`;
+            this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
+            this.textFreeCall.fontSize = 45;
+            //this.buttonSliderHandle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            this.buttonSliderHandle.getChildByName("Image").active = false;
+            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_FreeCall_handle_bg");
+        }
+        else {
+            this.textFreeCall.string = `${arg0 * this.calibrationWeight / this.chipScale ^ 0}`;
+            this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
+            this.textFreeCall.fontSize = 45;
+            //this.buttonSliderHandle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            this.buttonSliderHandle.getChildByName("Image").active = false;
+            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_FreeCall_handle_bg");
+        }
+
+    }
 
     private onClickFreeCallMask(): void {
         this.imageFreeCallMask.active = false;
@@ -248,13 +282,13 @@ export default class UIOperationComponent extends UIBase {
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
                     // title = $"确定弃牌？",
-                    title: LanguageCode.LanguageDescription(20037),
+                    title: CPErrorCode.LanguageDescription(20037),
                     // content = $"你可以让牌而不需要任何记分牌",
-                    content: LanguageCode.LanguageDescription(20038),
+                    content: CPErrorCode.LanguageDescription(20038),
                     // contentCommit = "弃牌",
-                    contentCommit: LanguageCode.LanguageDescription(10047),
+                    contentCommit: CPErrorCode.LanguageDescription(10047),
                     // contentCancel = "让牌",
-                    contentCancel: LanguageCode.LanguageDescription(10315),
+                    contentCancel: CPErrorCode.LanguageDescription(10315),
                     actionCommit: () => {
                         GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
                         this.isCountDown = false;
@@ -327,6 +361,7 @@ export default class UIOperationComponent extends UIBase {
             this.buttonCallRight.active = false;
         }
         else {
+            cc.log("关闭控制台");
             this.imageFreeCallMask.active = false;
             this.sliderFreeCall.node.active = false;
             this.buttonFreeCallConfirm.active = false;

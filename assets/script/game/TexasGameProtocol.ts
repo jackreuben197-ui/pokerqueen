@@ -1,11 +1,12 @@
 
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
-import { LanguageCode } from "../i18n/LanguageCode";
+import {CPErrorCode} from "../i18n/CPErrorCode";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
+import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
@@ -132,7 +133,7 @@ export default class TexasGameProtocol {
             return;
         }
         if (rec.status != 0) {
-            ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(rec.status));
+            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(rec.status));
             return;
         }
         this.game.mainPlayer.chips = rec.chips;
@@ -295,7 +296,7 @@ export default class TexasGameProtocol {
         }
         else {
             //（短牌没有小盲注位置）当小盲位小于零，算出小盲位置，用于首位发牌人座位。
-            this.game.smallIndex = this.game.utils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
+            this.game.smallIndex = this.game.TexasGameUtils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
         }
         if (this.game.bigIndex >= 0) {
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_SECOND);
@@ -555,7 +556,7 @@ export default class TexasGameProtocol {
                 this.game.HideAutoOperationPanel();
                 if ((this.game.autoFold || this.game.autoCheck || (this.game.autoCall && rec.action != Def.Action.RAISE && rec.action != Def.Action.ALLIN) || this.game.autoAllin)) {
                     this.game.HideOperationPanel();
-                    if (this.game.utils.AutoOperationHandle(rec.nextOperator.actionsList)) {
+                    if (this.game.TexasGameUtils.AutoOperationHandle(rec.nextOperator.actionsList)) {
                         this.game.HideOperationPanel();
                     }
                     else {
@@ -614,10 +615,13 @@ export default class TexasGameProtocol {
         this.game.autoAllin = false;
         this.game.autoCheck = false;
         if (rec.status != 0) {
-            UIComponent.Instance.Toast(LanguageCode.ServerErrorDescription(rec.status));
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
             return;
         }
         this.game.HideOperationPanel();
     }
+
+
+
 
 }

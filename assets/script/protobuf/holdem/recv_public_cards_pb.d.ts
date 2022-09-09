@@ -20,6 +20,9 @@ export class ServerMessagePublicCards extends jspb.Message {
   setExtPublicCardsArrayList(value: Array<number>): void;
   addExtPublicCardsArray(value: number, index?: number): number;
 
+  getRnd(): protobuf_holdem_define_pb.Def.RoundMap[keyof protobuf_holdem_define_pb.Def.RoundMap];
+  setRnd(value: protobuf_holdem_define_pb.Def.RoundMap[keyof protobuf_holdem_define_pb.Def.RoundMap]): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessagePublicCards.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessagePublicCards): ServerMessagePublicCards.AsObject;
@@ -35,6 +38,7 @@ export namespace ServerMessagePublicCards {
     publicCardsArrayList: Array<number>,
     nextOperator?: protobuf_holdem_define_pb.Operator.AsObject,
     extPublicCardsArrayList: Array<number>,
+    rnd: protobuf_holdem_define_pb.Def.RoundMap[keyof protobuf_holdem_define_pb.Def.RoundMap],
   }
 }
 

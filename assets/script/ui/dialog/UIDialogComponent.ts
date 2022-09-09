@@ -41,7 +41,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
     Text_Cancel: cc.Label = null;
 
 
-    private ParamData: {
+    public ParamData: {
         type?: number,
         title?: string,
         content?: string,

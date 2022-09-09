@@ -1,7 +1,7 @@
 import { LogStyle } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { LanguageCode } from "../../i18n/LanguageCode";
+import {CPErrorCode} from "../../i18n/CPErrorCode";
 import ToastManager from "../../manager/ToastManager";
 import LoginSession from "../../session/LoginSession";
 import UIComponent from "../../ui/UIComponent";
@@ -41,7 +41,7 @@ export default class HttpClient {
     static __response(response, onFailure, onSuccess) {
         switch (response) {
             case "timeout":
-                ToastManager.Instance.createToast(LanguageCode.LanguageDescription(10126));
+                ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10126));
                 onFailure && onFailure(response);
                 break;
             case "error":
@@ -63,7 +63,7 @@ export default class HttpClient {
                     onSuccess && onSuccess(response_json);
                 } else {
                     //错误码提示
-                    ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(response_json.code));
+                    ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response_json.code));
                     onFailure && onFailure(response_json.code);
                 }
                 break;

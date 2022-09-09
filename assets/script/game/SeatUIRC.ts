@@ -72,6 +72,14 @@ export default class SeatUIRC extends UIBase {
     imageCountDown: cc.Sprite = null;
     Image_CountDownbg: cc.Sprite = null;
     image_CountDownTime: cc.Label = null;
+
+
+
+    imageCardType: cc.Sprite = null;
+    textCardType: cc.Label = null;
+    imageSmallCardType: cc.Sprite = null;
+    textSmallCardType: cc.Label = null;
+
     ///////////////////////////////////
 
     ///////////////////////////////////
@@ -128,6 +136,16 @@ export default class SeatUIRC extends UIBase {
         this.imageCountDown = this.getChildNodeOrComponent("Image_CountDown", cc.Sprite);
         this.Image_CountDownbg = this.getChildNodeOrComponent("Image_CountDownbg", cc.Sprite);
         this.image_CountDownTime = this.Image_CountDownbg.node.getChildByName("Text").getComponent(cc.Label);
+
+        this.imageCardType = this.getChildNodeOrComponent("Image_CardType", cc.Sprite);
+        this.textCardType = this.getChildNodeOrComponent("Text_CardType", cc.Label);
+
+        this.imageSmallCardType = this.getChildNodeOrComponent("Image_SmallCardType", cc.Sprite);
+        this.textSmallCardType = this.getChildNodeOrComponent("Text_SmallCardType", cc.Label);
+
+
+
+
 
 
         if (null == this.listCardUIInfos || this.listCardUIInfos.length > 0) this.listCardUIInfos = [];

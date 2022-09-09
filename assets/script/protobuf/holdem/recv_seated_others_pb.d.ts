@@ -37,6 +37,9 @@ export class ServerMessageSeatedOthers extends jspb.Message {
   getHunterHeadValue(): number;
   setHunterHeadValue(value: number): void;
 
+  getVip(): number;
+  setVip(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageSeatedOthers.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageSeatedOthers): ServerMessageSeatedOthers.AsObject;
@@ -60,6 +63,7 @@ export namespace ServerMessageSeatedOthers {
     hunterKillAward: number,
     hunterKillAwardOther: number,
     hunterHeadValue: number,
+    vip: number,
   }
 }
 

@@ -162,7 +162,7 @@ export const UIDefine = {
         Path: "prefab/widgetLayer/UITexasSetting",
     },
     UITexasRule: {
-        UIType: UIType.UITexasRule,
+        UIType: UIType.CommonUI,
         Name: "UITexasRule",
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasRule",
@@ -189,3 +189,5 @@ cc.game.on(cc.game.EVENT_GAME_INITED, () => {
         if (constructor) constructor['UIDefine'] = UIDefine[key];
     }
 });
+
+(window as any).UIDefine = UIDefine;

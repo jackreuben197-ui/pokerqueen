@@ -1,6 +1,8 @@
+import { json } from "stream/consumers";
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
+import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageSidePots } from "../../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
@@ -11,6 +13,7 @@ import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/h
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
 import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
+import { ServerMessagePublicReplay } from "../../protobuf/holdem/req_replay_pb";
 import { ClientMessageRoomers, ServerMessageRoomers } from "../../protobuf/holdem/req_roomers_pb";
 import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
@@ -310,8 +313,14 @@ export class Protocol_Holdem_SidePots extends BaseProtocol {
     }
 }
 
-
-
+export class Protocol_Holdem_PublicCards extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_PublicCards";
+    public static Response_AsObject: ServerMessagePublicCards.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessagePublicCards.AsObject {
+        let result: ServerMessagePublicCards = ServerMessagePublicCards.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 
 
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
@@ -329,3 +338,4 @@ cc.js.setClassName("Protocol_Holdem_Roomers", Protocol_Holdem_Roomers);
 cc.js.setClassName("Protocol_Holdem_Action", Protocol_Holdem_Action);
 cc.js.setClassName("Protocol_Holdem_ActionAll", Protocol_Holdem_ActionAll);
 cc.js.setClassName("Protocol_Holdem_SidePots", Protocol_Holdem_SidePots);
+cc.js.setClassName("Protocol_Holdem_PublicCards", Protocol_Holdem_PublicCards);

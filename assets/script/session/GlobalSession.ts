@@ -25,3 +25,4 @@ export default class GlobalSession {
     }
 
 }
+(window as any).GlobalSession = GlobalSession;

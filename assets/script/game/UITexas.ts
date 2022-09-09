@@ -13,6 +13,7 @@ import { RoomInfo } from "../protobuf/holdem/define_pb";
 import GlobalSession from "../session/GlobalSession";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
+import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 
 import TexasGame from "./TexasGame";
@@ -111,6 +112,7 @@ export default class UITexas extends BaseScene {
     imageSecondPublicCard4: cc.Node = null;
 
 
+    buttonDelay: cc.Node = null;
 
     ///////////////////////////////////
     /**
@@ -264,6 +266,9 @@ export default class UITexas extends BaseScene {
 
         this.UIOperation = this.getChildNodeOrComponent("UIOperation");
 
+        this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
+
+
 
         this.game = GameCache.Instance.CurGame;
 
@@ -301,22 +306,22 @@ export default class UITexas extends BaseScene {
             this.game.listDefaultPublicCardsLPos = [];
         if (this.game.listDefaultPublicCardsLPos.length > 0)
             this.game.listDefaultPublicCardsLPos = [];
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard0.getPosition());
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard1.getPosition());
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard2.getPosition());
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard3.getPosition());
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard4.getPosition());
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard0.position);
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard1.position);
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard2.position);
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard3.position);
+        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard4.position);
 
         // 第二套公共牌默认位置
         if (null == this.game.listDefaultSecondPublicCardsLPos)
             this.game.listDefaultSecondPublicCardsLPos = [];
         if (this.game.listDefaultSecondPublicCardsLPos.length > 0)
             this.game.listDefaultSecondPublicCardsLPos = [];
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard0.getPosition());
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard1.getPosition());
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard2.getPosition());
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard3.getPosition());
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.getPosition());
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard0.position);
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard1.position);
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard2.position);
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard3.position);
+        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.position);
 
 
         // 分池UI
@@ -548,16 +553,17 @@ export default class UITexas extends BaseScene {
     }
     Click_Button_Rule() {
         this.hideMenu();
-        let UITexasRule: any = this.node.getChildByName('UITexasRule')
-        if (!UITexasRule) {
-            let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
-            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            UITexasRule = cc.instantiate(prefab);
-            UITexasRule.parent = this.node
-            UITexasRule.active = true;
-        } else {
-            UITexasRule.active = true;
-        }
+        // let UITexasRule: any = this.node.getChildByName('UITexasRule')
+        // if (!UITexasRule) {
+        //     let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
+        //     // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        //     UITexasRule = cc.instantiate(prefab);
+        //     UITexasRule.parent = this.node
+        //     UITexasRule.active = true;
+        // } else {
+        //     UITexasRule.active = true;
+        // }
+        UIComponent.open(UIDefine.UITexasRule, null, this.node);
     }
     Click_Button_SetAutoOnTable() {
 
@@ -638,7 +644,7 @@ export default class UITexas extends BaseScene {
      */
     public CallbackExit() {
         this.hideMenu(false);
-        this.game.utils.LeaveRoom();
+        this.game.TexasGameUtils.LeaveRoom();
     }
 
 }

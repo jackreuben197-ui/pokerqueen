@@ -8,14 +8,13 @@ export class ClientMessageCbPlay extends jspb.Message {
   getGameNum(): number;
   setGameNum(value: number): void;
 
-  getSlot(): protobuf_holdem_define_cb_pb.DefCB.PlaySlotMap[keyof protobuf_holdem_define_cb_pb.DefCB.PlaySlotMap];
-  setSlot(value: protobuf_holdem_define_cb_pb.DefCB.PlaySlotMap[keyof protobuf_holdem_define_cb_pb.DefCB.PlaySlotMap]): void;
-
-  getAmount(): number;
-  setAmount(value: number): void;
-
   getRoomId(): number;
   setRoomId(value: number): void;
+
+  clearSlotsList(): void;
+  getSlotsList(): Array<protobuf_holdem_define_cb_pb.CBPlaySummary>;
+  setSlotsList(value: Array<protobuf_holdem_define_cb_pb.CBPlaySummary>): void;
+  addSlots(value?: protobuf_holdem_define_cb_pb.CBPlaySummary, index?: number): protobuf_holdem_define_cb_pb.CBPlaySummary;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ClientMessageCbPlay.AsObject;
@@ -30,9 +29,8 @@ export class ClientMessageCbPlay extends jspb.Message {
 export namespace ClientMessageCbPlay {
   export type AsObject = {
     gameNum: number,
-    slot: protobuf_holdem_define_cb_pb.DefCB.PlaySlotMap[keyof protobuf_holdem_define_cb_pb.DefCB.PlaySlotMap],
-    amount: number,
     roomId: number,
+    slotsList: Array<protobuf_holdem_define_cb_pb.CBPlaySummary.AsObject>,
   }
 }
 
