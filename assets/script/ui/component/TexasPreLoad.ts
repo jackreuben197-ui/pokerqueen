@@ -1,5 +1,5 @@
 
-import { LanguageCode } from "../../i18n/LanguageCode";
+import {CPErrorCode} from "../../i18n/CPErrorCode";
 import { ResManager } from "../../manager/ResManager";
 import ToastManager from "../../manager/ToastManager";
 import UIBase from "../UIBase";
@@ -38,7 +38,7 @@ export default class TexasPreLoad extends UIBase {
                 console.log(`bundle => ${this.bundleName} 包体资源加载完成`);
                 param.completeHandler();
             } else {
-                ToastManager.Instance.createToast(LanguageCode.LanguageDescription(10050))
+                ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10050))
                 param.errorHandler();
             }
         } else {

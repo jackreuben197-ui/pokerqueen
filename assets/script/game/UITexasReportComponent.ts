@@ -4,7 +4,7 @@ import { StringHelper } from "../helper/StringHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { LanguageCode } from "../i18n/LanguageCode";
+import {CPErrorCode} from "../i18n/CPErrorCode";
 import LobbyScene from "../lobby/LobbyScene";
 import { ResManager } from "../manager/ResManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";

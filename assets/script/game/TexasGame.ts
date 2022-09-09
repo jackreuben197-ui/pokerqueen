@@ -6,7 +6,7 @@ import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { LanguageCode } from "../i18n/LanguageCode";
+import {CPErrorCode} from "../i18n/CPErrorCode";
 import { Web_User_Room } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -956,7 +956,7 @@ export default class TexasGame {
     public UpdateAlreadAnte(): void {
         // textAlreadAnte.text = $"底池:{alreadAnte}";
         this.uirc.textAlreadAnte.node.active = (this.gamestatus >= 1 && this.gamestatus < 7);
-        this.uirc.textAlreadAnte.string = `${LanguageCode.LanguageDescription(20005)}:${(this.alreadAnte / 100)}`;
+        this.uirc.textAlreadAnte.string = `${CPErrorCode.LanguageDescription(20005)}:${(this.alreadAnte / 100)}`;
     }
 
 
@@ -971,35 +971,35 @@ export default class TexasGame {
         info += `\n${GameCache.Instance.room_id}-${this.mHandNum}`;
         let straddleStr: string = "";
         if (this.groupBet > 0) {
-            info += `\n${LanguageCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)}(${StringHelper.getStringDiv100(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
+            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)}(${StringHelper.getStringDiv100(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
         }
         else {
-            info += `\n${LanguageCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)} ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
+            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)} ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
         }
         //带出，最小带入倍数 RT_MANUAL手动的
         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL) {
-            info += `\n${LanguageCode.LanguageDescription(20087)}:${(GameCache.Instance.carry_small * this.CurrentMinRate) / 100}`;
+            info += `\n${CPErrorCode.LanguageDescription(20087)}:${(GameCache.Instance.carry_small * this.CurrentMinRate) / 100}`;
         }
 
         let insuranceStr = "";
         if (this.isGPSRestrictions && this.isIpRestrictions) {
             // "GPS  IP限制";
-            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS  IP${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? CPErrorCode.LanguageDescription(10021) + " " : "")}GPS  IP${CPErrorCode.LanguageDescription(20008)}`;
         }
         else if (this.isGPSRestrictions && !this.isIpRestrictions) {
             //"GPS限制";
-            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}GPS${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? CPErrorCode.LanguageDescription(10021) + " " : "")}GPS${CPErrorCode.LanguageDescription(20008)}`;
 
         }
         else if (!this.isGPSRestrictions && this.isIpRestrictions) {
             // "IP限制;
-            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? LanguageCode.LanguageDescription(10021) + " " : "")}IP${LanguageCode.LanguageDescription(20008)}`;
+            info += `\n${insuranceStr = ((GameCache.Instance.insurance) ? CPErrorCode.LanguageDescription(10021) + " " : "")}IP${CPErrorCode.LanguageDescription(20008)}`;
         }
         else if (GameCache.Instance.insurance) {
-            info += `\n${LanguageCode.LanguageDescription(10021)}`;
+            info += `\n${CPErrorCode.LanguageDescription(10021)}`;
         }
         if (GameCache.Instance.CurlimitDelaySeeCard) {
-            info += `\n${LanguageCode.LanguageDescription(20088)}`;
+            info += `\n${CPErrorCode.LanguageDescription(20088)}`;
         }
         info += "\n\n";
         this.uirc.textRoomInfo.string = info;
@@ -1240,13 +1240,13 @@ export default class TexasGame {
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
                     // title = $"余额不足",
-                    title: LanguageCode.LanguageDescription(10025),
+                    title: CPErrorCode.LanguageDescription(10025),
                     // content = $"金豆余额不足，请先充值",
-                    content: LanguageCode.LanguageDescription(20010),
+                    content: CPErrorCode.LanguageDescription(20010),
                     // contentCommit = "去充豆",
-                    contentCommit: LanguageCode.LanguageDescription(10026),
+                    contentCommit: CPErrorCode.LanguageDescription(10026),
                     // contentCancel = "取消",
-                    contentCancel: LanguageCode.LanguageDescription(10013),
+                    contentCancel: CPErrorCode.LanguageDescription(10013),
                     actionCommit: () => {
                         // UIMineModel.mInstance.APIGetClubId(tDtoHasClub => {
                         //     if (tDtoHasClub) {

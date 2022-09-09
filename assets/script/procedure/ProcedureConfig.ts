@@ -66,8 +66,8 @@ export default class ProcedureConfig extends ProcedureBase {
                 //network.HTTP = "13.215.246.46";
                 network.WebHost = `http://${network.HTTP}`;
                 //network.LoginHost = "152.70.234.14"; 
-                //network.LoginHost = "13.215.246.46";
-                network.LoginHost = "13.215.128.42";
+                network.LoginHost = "13.214.17.211";
+    
                 //Dns.GetHostEntry("dev.k8s.awanptesting.com").AddressList[0].ToString(); //PlayerPrefsMgr.mInstance.GetString(sckKey, networkConf.LoginHostIP);
                 keys.forEach(item => {
                     network[item] = NetWorkBase[item];

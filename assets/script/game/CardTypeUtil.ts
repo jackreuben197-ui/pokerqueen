@@ -2,7 +2,7 @@
 /// <summary>
 /// 普通牌型
 
-import { LanguageCode } from "../i18n/LanguageCode";
+import {CPErrorCode} from "../i18n/CPErrorCode";
 
 /// </summary>
 export enum CardType {
@@ -577,25 +577,25 @@ export class CardTypeUtil {
     public static GetCardTypeName(cardType: CardType): string {
         switch (cardType) {
             case CardType.RoyalFlush:
-                return LanguageCode.LanguageDescription(10053);
+                return CPErrorCode.LanguageDescription(10053);
             case CardType.StraightFlush:
-                return LanguageCode.LanguageDescription(10054);
+                return CPErrorCode.LanguageDescription(10054);
             case CardType.FourOfAKind:
-                return LanguageCode.LanguageDescription(10055);
+                return CPErrorCode.LanguageDescription(10055);
             case CardType.FullHouse:
-                return LanguageCode.LanguageDescription(10056);
+                return CPErrorCode.LanguageDescription(10056);
             case CardType.Flush:
-                return LanguageCode.LanguageDescription(10057);
+                return CPErrorCode.LanguageDescription(10057);
             case CardType.Straight:
-                return LanguageCode.LanguageDescription(10058);
+                return CPErrorCode.LanguageDescription(10058);
             case CardType.ThreeOfAKind:
-                return LanguageCode.LanguageDescription(10059);
+                return CPErrorCode.LanguageDescription(10059);
             case CardType.TwoPair:
-                return LanguageCode.LanguageDescription(10060);
+                return CPErrorCode.LanguageDescription(10060);
             case CardType.OnePair:
-                return LanguageCode.LanguageDescription(10061);
+                return CPErrorCode.LanguageDescription(10061);
             case CardType.HighCard:
-                return LanguageCode.LanguageDescription(10062);
+                return CPErrorCode.LanguageDescription(10062);
             default:
                 return "";
         }

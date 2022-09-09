@@ -1,13 +1,14 @@
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
+import { CPErrorCode } from "../i18n/CPErrorCode";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { LanguageCode } from "../i18n/LanguageCode";
 import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
+import { ServerMessageError } from "../protobuf/holdem/recv_error_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
@@ -154,7 +155,7 @@ export default class TexasGameMessageHandler {
             this.game.SMAgency.ChangeGameState(TexasGameState.ExchangeRoom, null);
         }
         else {
-            ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(response.status));
+            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response.status));
             // 进入房间失败
             this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
         }
@@ -174,7 +175,7 @@ export default class TexasGameMessageHandler {
 
             ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
         } else {
-            cc.warn(LanguageCode.ServerErrorDescription(response.status));
+            cc.warn(CPErrorCode.ServerErrorDescription(response.status));
         }
 
     }
@@ -212,7 +213,7 @@ export default class TexasGameMessageHandler {
             }
         }
         else {
-            ToastManager.Instance.createToast(LanguageCode.ServerErrorDescription(response.status));
+            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response.status));
         }
     }
 
@@ -239,7 +240,7 @@ export default class TexasGameMessageHandler {
             // HideOperationPanel();
             // HideAutoOperationPanel();
             // HideSeeMorePublic();
-            this.game.utils.doStandUp(localSeatID);
+            this.game.TexasGameUtils.doStandUp(localSeatID);
         }
         else {
             //     UI uiTexasPlayerInfo = UIComponent.Instance.Get(UIType.UITexasPlayerInfo);
@@ -281,9 +282,9 @@ export default class TexasGameMessageHandler {
     public Protocol_Holdem_BringIn_Handler(): void {
 
     }
-    Protocol_Holdem_Error_Handler(Protocol_Holdem_Error: ProtocolCode, Protocol_Holdem_Error_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+    // Protocol_Holdem_Error_Handler(Protocol_Holdem_Error: ProtocolCode, Protocol_Holdem_Error_Handler: any, arg2: this) {
+    //     throw new Error("Method not implemented.");
+    // }
     Protocol_Holdem_UpBlind_Handler(Protocol_Holdem_UpBlind: ProtocolCode, Protocol_Holdem_UpBlind_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
@@ -362,9 +363,6 @@ export default class TexasGameMessageHandler {
     }
 
 
-
-
-
     Protocol_Holdem_Showcards_Handler(Protocol_Holdem_Showcards: ProtocolCode, Protocol_Holdem_Showcards_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
@@ -397,5 +395,19 @@ export default class TexasGameMessageHandler {
     }
     Protocol_Holdem_Action_Handler(response) {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_Action_Handler`);
+    }
+
+
+    /// <summary>
+    /// 异常错误 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_Error_Handler(response: ServerMessageError.AsObject): void {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_Error_Handler`);
+        if (response == null) {
+            return;
+        }
+        //CPLoginSessionComponent.Instance.Logout();
+        UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.status));
     }
 }

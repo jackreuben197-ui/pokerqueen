@@ -1,7 +1,7 @@
 import { RoomType } from "../define/EIDefine";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import WebImageHelper from "../helper/WebImageHelper";
-import { LanguageCode } from "../i18n/LanguageCode";
+import {CPErrorCode} from "../i18n/CPErrorCode";
 import { UIMineModel } from "../lobby/UIMineModel";
 import { Web_Config_Global_Config } from "../net/https/WebRequest";
 import { Def } from "../protobuf/holdem/define_pb";
@@ -1303,11 +1303,11 @@ export default class Seat {
     //刷新座位下的等待文本
     public UpdateWaiteNextTips(ishow: boolean): void {
         if (this.IsMySeat) {
-            this.uirc.WaitforthenextmoveTips.string = `${LanguageCode.LanguageDescription(20090)}`;
+            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
             this.uirc.WaitforthenextmoveTips.node.setPosition(0, -416);
         }
         else {
-            this.uirc.WaitforthenextmoveTips.string = `${LanguageCode.LanguageDescription(20091)}`;
+            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
             this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
         }
         if (GameCache.Instance.GameStatus == 1) {

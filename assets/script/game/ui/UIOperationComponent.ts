@@ -2,7 +2,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { LanguageCode } from "../../i18n/LanguageCode";
+import {CPErrorCode} from "../../i18n/CPErrorCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
 import GGSlider from "../../ui/component/GGSlider";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
@@ -282,13 +282,13 @@ export default class UIOperationComponent extends UIBase {
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
                     // title = $"确定弃牌？",
-                    title: LanguageCode.LanguageDescription(20037),
+                    title: CPErrorCode.LanguageDescription(20037),
                     // content = $"你可以让牌而不需要任何记分牌",
-                    content: LanguageCode.LanguageDescription(20038),
+                    content: CPErrorCode.LanguageDescription(20038),
                     // contentCommit = "弃牌",
-                    contentCommit: LanguageCode.LanguageDescription(10047),
+                    contentCommit: CPErrorCode.LanguageDescription(10047),
                     // contentCancel = "让牌",
-                    contentCancel: LanguageCode.LanguageDescription(10315),
+                    contentCancel: CPErrorCode.LanguageDescription(10315),
                     actionCommit: () => {
                         GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
                         this.isCountDown = false;
