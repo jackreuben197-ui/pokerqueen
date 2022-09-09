@@ -538,17 +538,7 @@ export default class UITexas extends BaseScene {
     }
     Click_Button_Setting() {
         this.hideMenu();
-        UIComponent.open(UIDefine.UITexasSetting, null, this.node);
-        // let UITexasSetting: any = this.node.getChildByName('UITexasSetting')
-        // if (!UITexasSetting) {
-        //     let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
-        //     // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-        //     UITexasSetting = cc.instantiate(prefab);
-        //     UITexasSetting.parent = this.node
-        //     UITexasSetting.active = true;
-        // } else {
-        //     UITexasSetting.active = true;
-        // }
+        UIComponent.open(UIDefine.UITexasSettingComponent, null, this.node);
     }
     Click_Button_Rule() {
         this.hideMenu();
@@ -573,7 +563,7 @@ export default class UITexas extends BaseScene {
         this.CallbackExit();
     }
     Click_Report_Btn() {
-        UIComponent.open(UIDefine.UITexasReport, null, this.node);
+        UIComponent.open(UIDefine.UITexasReportComponent, null, this.node);
     }
     Click_Cursituation_btn() {
         let historyInfoData = new HistoryInfoData()
@@ -581,17 +571,8 @@ export default class UITexas extends BaseScene {
         historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
         historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
         historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
-        // historyInfoData.rcPokerSprite = rcHistoryPokerSprite,
         historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
-        UIComponent.open(UIDefine.UITexasHistory, historyInfoData, this.node);
-        // let UITexasHistory: any = this.node.getChildByName('UITexasHistory')
-        // let prefab = ResManager.LoadAsset(UIDefine.UITexasHistory.Bundle, UIDefine.UITexasHistory.Path)
-        // // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-        // UITexasHistory = cc.instantiate(prefab);
-        // UITexasHistory.parent = this.node
-        // UITexasHistory.active = true;
-
-        // UITexasHistory.getComponent('UITexasHistoryComponent').onShow(historyInfoData);
+        UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, this.node);
     }
 
 

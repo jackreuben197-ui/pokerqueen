@@ -155,7 +155,7 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/component/TexasPreLoad",
     },
-    UITexasSetting: {
+    UITexasSettingComponent: {
         UIType: UIType.CommonUI,
         Name: "UITexasSetting",
         Bundle: 'texas',
@@ -167,13 +167,13 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasRule",
     },
-    UITexasReport: {
+    UITexasReportComponent: {
         UIType: UIType.CommonUI,
         Name: "UITexasReport",
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasReport",
     },
-    UITexasHistory: {
+    UITexasHistoryComponent: {
         UIType: UIType.CommonUI,
         Name: "UITexasHistory",
         Bundle: 'texas',

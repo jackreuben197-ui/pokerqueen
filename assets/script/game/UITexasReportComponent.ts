@@ -57,7 +57,8 @@ export default class UITexasReportComponent extends UIBase {
     private registerHandler() {
         CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
     }
-    protected onClose(param?: any): void {
+    onClose(param?: any): void {
+        super.onClose();
         if (this.IntervalId) {
             clearInterval(this.IntervalId)
         }
