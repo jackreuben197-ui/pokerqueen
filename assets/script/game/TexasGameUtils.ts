@@ -1,9 +1,9 @@
-import { RoomType } from "../define/EIDefine";
-import Main from "../Main";
+
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom, Protocol_Holdem_Leave } from "../net/websocket/ProtocolHoldemMessages";
 import { ActionLimit, Def } from "../protobuf/holdem/define_pb";
 import { GameCache } from "./GameCache";
+import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";

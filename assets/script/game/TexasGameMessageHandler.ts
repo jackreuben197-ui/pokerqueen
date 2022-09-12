@@ -1,3 +1,4 @@
+
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
@@ -10,6 +11,7 @@ import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageError } from "../protobuf/holdem/recv_error_pb";
+import { ServerMessageLeaveNotification } from "../protobuf/holdem/recv_leave_notification_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
@@ -22,6 +24,7 @@ import { ServerMessageStandupActive } from "../protobuf/holdem/req_stand_up_acti
 import GlobalSession from "../session/GlobalSession";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
+import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
@@ -275,9 +278,67 @@ export default class TexasGameMessageHandler {
         this.game.SMAgency.ChangeGameState(TexasGameState.HandStarted, response);
     }
 
-    public Protocol_Holdem_LeaveNotification_Handler(): void {
 
+    /// <summary>
+    /// 通知本人离开房间 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    public Protocol_Holdem_LeaveNotification_Handler(response: ServerMessageLeaveNotification.AsObject): void {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_LeaveNotification_Handler`);
+
+        if (response == null) {
+            return;
+        }
+
+        switch (response.reason) {
+            case Def.LeaveReason.LR_ACTIVE: // 主动退出
+                {
+                    // 主动退出已由别处处处理
+                }
+                break;
+            case Def.LeaveReason.LR_AUTO_EXCEED_MAX_TIMES: // 超过最大自动操作次数限制
+                {
+                    this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
+                }
+                break;
+            case Def.LeaveReason.LR_GAME_END: // 游戏结束
+                {
+                    // if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
+                    //     UIComponent.Instance.ShowNoAnimation(UIType.UITexasGameEnd, new UITexasGameEndComponent.RecordDetailForNormalData()
+                    //         {
+                    //             roomID = GameCache.Instance.room_id.ToString(),
+                    //             blind = (int)GameCache.Instance.CurGame.smallBlind,
+                    //             roomName = GameCache.Instance.roomName,
+                    //             game_type = GameCache.Instance.game_type,
+                    //             bet_type = GameCache.Instance.bet_type,
+                    //             poker_type = GameCache.Instance.poker_type,
+                    //         });
+                    // }
+                    this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
+                }
+                break;
+            case Def.LeaveReason.LR_FORCE: // 强制退出
+                {
+                    this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
+                }
+                break;
+            case Def.LeaveReason.LR_OFFLINE: // 离线
+                {
+                    this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
+                }
+                break;
+            default:
+                {
+                    this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
+                }
+                break;
+        }
+        UIComponent.Instance.Toast(i18nMgr.Get(`LeaveReason${response.reason}`));
     }
+
+
+
+
     public Protocol_Holdem_AddOn_Handler(): void {
 
     }

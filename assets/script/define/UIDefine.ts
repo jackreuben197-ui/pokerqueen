@@ -155,7 +155,7 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/component/TexasPreLoad",
     },
-    UITexasSetting: {
+    UITexasSettingComponent: {
         UIType: UIType.CommonUI,
         Name: "UITexasSetting",
         Bundle: 'texas',

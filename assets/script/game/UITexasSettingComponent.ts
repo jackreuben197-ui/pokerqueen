@@ -49,7 +49,7 @@ export default class UITexasSettingComponent extends UIBase {
 
         this.Button_Close.on("click", () => {
             //this.node.active = false;
-            UIComponent.close(UIDefine.UITexasSetting);
+            UIComponent.close(this.UIDefine);
         }, this);
 
         let image0 = cc.find('Background/Image0', this.Toggle_Voice);

@@ -538,17 +538,17 @@ export default class UITexas extends BaseScene {
     }
     Click_Button_Setting() {
         this.hideMenu();
-        let UITexasSetting: any = this.node.getChildByName('UITexasSetting')
-        if (!UITexasSetting) {
-            let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
-            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            UITexasSetting = cc.instantiate(prefab);
-            UITexasSetting.parent = this.node
-            UITexasSetting.active = true;
-        } else {
-            UITexasSetting.active = true;
-        }
-        UIComponent.open(UIDefine.UITexasRule, null, this.node);
+        // let UITexasSetting: any = this.node.getChildByName('UITexasSetting')
+        // if (!UITexasSetting) {
+        //     let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
+        //     // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        //     UITexasSetting = cc.instantiate(prefab);
+        //     UITexasSetting.parent = this.node
+        //     UITexasSetting.active = true;
+        // } else {
+        //     UITexasSetting.active = true;
+        // }
+        UIComponent.open(UIDefine.UITexasSettingComponent, null, this.node);
 
     }
     Click_Button_Rule() {
