@@ -51,7 +51,7 @@ export default class UIMatchRoom extends UIBase {
         // }
         for (let i = 0; i < roomContent.childrenCount; i++) {
             let btn = roomContent.children[i];
-            btn.active = this.RoomTypesInfos[i].roomCount > 0
+            // btn.active = this.RoomTypesInfos[i].roomCount > 0
             if (btn.active) {
                 this.roomLen++;
             }
@@ -92,8 +92,8 @@ export default class UIMatchRoom extends UIBase {
     public SetRoomListBtnInfo(room: cc.Node): void {
         this.RoomTypesInfos.forEach((info, index) => {
             let roomChild: cc.Node = room.children[index];
-            let player: cc.Label = roomChild.getChildByName("TextPlayer_" + (index + 1)).getComponent(cc.Label);
-            let desk: cc.Label = roomChild.getChildByName("TextDesk_" + (index + 1)).getComponent(cc.Label);
+            let player: cc.Label = roomChild.getChildByName("lbl_bottom_left").getComponent(cc.Label);
+            let desk: cc.Label = roomChild.getChildByName("lbl_bottom_right").getComponent(cc.Label);
             player.string = info.playerCount;
             desk.string = info.roomCount;
         })

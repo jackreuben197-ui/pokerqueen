@@ -157,14 +157,14 @@ export default class UIMatchBanner extends UIBase {
     // 返回首页
     onJumpHome(): void {
         // 第二个参数为滚动所需时间，默认值为 0.3 秒
-        this.layout.x = -1863;
+        this.layout.x = 0;
         this.pageView.getComponent(cc.PageView).setCurrentPageIndex(1);
         let index = this.pageView.getComponent(cc.PageView).getCurrentPageIndex();
         this.setDots(false);
     }
     //跳到尾页
     onJumpEnd(): void {
-        this.layout.x = -621 - 1242 * this.curNum;
+        this.layout.x = 0 - 1158 * this.curNum;
         this.pageView.getComponent(cc.PageView).setCurrentPageIndex(this.curNum);
         this.setDots(false);
     }
@@ -174,17 +174,16 @@ export default class UIMatchBanner extends UIBase {
         if (isInit) {
             curPage = 1;
         }
-        let Dots: cc.Node = this.getChildNodeOrComponent("Dots");
+        let Dots: cc.Node = this.getChildNodeOrComponent("Dots_show");
         for (let i = 1; i <= 5; i++) {
             let dot = Dots.children[i - 1];
             if (i <= this.curNum) {
                 dot.active = true;
-                dot.opacity = 120;
             } else {
                 dot.active = false;
             }
             if (i === curPage) {
-                dot.opacity = 255;
+                dot.active = true;
             }
         }
     }
