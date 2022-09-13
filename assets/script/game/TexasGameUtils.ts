@@ -1,12 +1,17 @@
 
+import { ProcedureEnum } from "../define/EIDefine";
+import ProcedureManager from "../manager/ProcedureManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom, Protocol_Holdem_Leave } from "../net/websocket/ProtocolHoldemMessages";
 import { ActionLimit, Def } from "../protobuf/holdem/define_pb";
+import UIComponent from "../ui/UIComponent";
+import { CardType } from "./CardTypeUtil";
 import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./TexasGame";
+import { PublicCardInfo } from "./UITexas";
 
 export default class TexasGameUtils {
 
@@ -166,5 +171,67 @@ export default class TexasGameUtils {
 
     public GetOpDelayConsumeType(): Def.ConsumeTypeMap[keyof Def.ConsumeTypeMap] {
         return this.game.delayCount == 0 ? Def.ConsumeType.CT_DELAY_2 : Def.ConsumeType.CT_DELAY_3;
+    }
+
+
+    /// <summary>
+    /// 当有第二套牌时设置高亮手牌和公共牌
+    /// </summary>
+    /// <param name="publicCardInfos"></param>
+    private SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], _cards: number[]): void {
+        let highlightCards = [];
+        let cardType: CardType = this.game.GetCardType(highlightCards, _cards);
+
+        for (let i = 0, n = publicCardInfos.length; i < n; i++) {
+            publicCardInfos[i].imageSelect.node.active = false;
+            for (let j = 0, m = highlightCards.length; j < m; j++) {
+                if (publicCardInfos[i].cardId == highlightCards[j]) {
+                    publicCardInfos[i].imageSelect.node.active = true;
+                    break;
+                }
+            }
+        }
+
+        let Seat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+        if (null != Seat) {
+            if (this.game.mainPlayer.cards.length > 3) {
+                Seat.UpdateCardType(cardType, highlightCards, true);
+            }
+        }
+    }
+
+
+
+
+
+    /// <summary>
+    /// 退出房间
+    /// </summary>
+    public ExitRoom(): void {
+        // UIComponent.Instance.Remove(UIType.UITexas);
+        // UIComponent.Instance.Remove(UIType.UIInsurance);
+        // UIComponent.Instance.Remove(UIType.UITexasHistory);
+        // UIComponent.Instance.Remove(UIType.UITexasDanMuAndExpression);
+        // UIComponent.Instance.Remove(UIType.UITexasReport);
+        // UIComponent.Instance.Remove(UIType.UITexasPlayerInfo);
+        // UIComponent.Instance.Remove(UIType.UITexasRule);
+        // UIComponent.Instance.Remove(UIType.UITexasSetting);
+        // UIComponent.Instance.Remove(UIType.UITexasReportMTT);
+        // UIComponent.Instance.Remove(UIType.UITexasHumanVerification);
+        // UIComponent.Instance.Remove(UIType.UITexasHumanVote);
+        // UIComponent.Instance.Remove(UIType.UITexasHumanYZ);
+        // UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
+        ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
+        //#region 关键属性最后置空
+        GameCache.Instance.CurrentRoomID = 0;
+        GameCache.Instance.room_id = 0;
+        GameCache.Instance.match_id = 0;
+        GameCache.Instance.room_type = 0;
+        GameCache.Instance.voiceprint_verify_on = 0;
+        GameCache.Instance.voiceprint_verify_duration = 0;
+        GameCache.Instance.game_type = 0;
+        GameCache.Instance.poker_type = 0;
+        GameCache.Instance.bet_type = 0;
+        //#endregion
     }
 }

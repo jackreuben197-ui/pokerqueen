@@ -4,6 +4,7 @@ import { UIDefine } from "../define/UIDefine";
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { i18nMgr } from "../i18n/i18nMgr";
+import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import SceneManager from "../manager/SceneManager";
 import ToastManager from "../manager/ToastManager";
@@ -17,6 +18,7 @@ import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_p
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageStandup } from "../protobuf/holdem/recv_stand_up_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
@@ -177,8 +179,8 @@ export default class TexasGameMessageHandler {
         if (response == null) return;
 
         if (response.status == 0) {
-
-            ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
+            //ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
+            this.game.TexasGameUtils.ExitRoom();
         } else {
             cc.warn(CPErrorCode.ServerErrorDescription(response.status));
         }
@@ -303,17 +305,26 @@ export default class TexasGameMessageHandler {
                 break;
             case Def.LeaveReason.LR_GAME_END: // 游戏结束
                 {
-                    // if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
-                    //     UIComponent.Instance.ShowNoAnimation(UIType.UITexasGameEnd, new UITexasGameEndComponent.RecordDetailForNormalData()
-                    //         {
-                    //             roomID = GameCache.Instance.room_id.ToString(),
-                    //             blind = (int)GameCache.Instance.CurGame.smallBlind,
-                    //             roomName = GameCache.Instance.roomName,
-                    //             game_type = GameCache.Instance.game_type,
-                    //             bet_type = GameCache.Instance.bet_type,
-                    //             poker_type = GameCache.Instance.poker_type,
-                    //         });
-                    // }
+                    if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
+                        // UIComponent.Instance.ShowNoAnimation(UIType.UITexasGameEnd, new UITexasGameEndComponent.RecordDetailForNormalData()
+                        //     {
+                        //         roomID = GameCache.Instance.room_id.ToString(),
+                        //         blind = (int)GameCache.Instance.CurGame.smallBlind,
+                        //         roomName = GameCache.Instance.roomName,
+                        //         game_type = GameCache.Instance.game_type,
+                        //         bet_type = GameCache.Instance.bet_type,
+                        //         poker_type = GameCache.Instance.poker_type,
+                        //     });
+                        UIComponent.open(UIDefine.UITexasGameEndComponent, {
+                            roomID: GameCache.Instance.room_id.toString(),
+                            blind: GameCache.Instance.CurGame.smallBlind,
+                            roomName: GameCache.Instance.roomName,
+                            game_type: GameCache.Instance.game_type,
+                            bet_type: GameCache.Instance.bet_type,
+                            poker_type: GameCache.Instance.poker_type,
+                        }, Main.Dialog
+                        )
+                    }
                     this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
                 }
                 break;
@@ -366,8 +377,18 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_AddTimeOthers_Handler(Protocol_Holdem_AddTimeOthers: ProtocolCode, Protocol_Holdem_AddTimeOthers_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    Protocol_Holdem_Winner_Handler(Protocol_Holdem_Winner: ProtocolCode, Protocol_Holdem_Winner_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+
+    /// <summary>
+    /// 结果通知 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_Winner_Handler(response: ServerMessageWinner.AsObject): void {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_Winner_Handler`);
+
+        if (response == null) {
+            return;
+        }
+        this.game.SMAgency.ChangeGameState(TexasGameState.HandShowdown, response);
     }
     Protocol_Holdem_KeepSeat_Handler(Protocol_Holdem_KeepSeat: ProtocolCode, Protocol_Holdem_KeepSeat_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");

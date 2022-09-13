@@ -4,6 +4,7 @@
 import { UIDefine } from "../define/UIDefine";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
@@ -167,6 +168,13 @@ export class TexasGameStateHandlerExit extends StateHandler {
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
+
+        // if (game.IsUILoadingActive()) {
+        //     UIComponent.Instance.HideNoAnimation(UIType.UIMatch_Loading);
+        // }
+        UIComponent.close(UIDefine.TexasPreLoad);
+
+        game.TexasGameUtils.ExitRoom();
 
     }
 
@@ -340,9 +348,16 @@ export class TexasGameStateHandlerHandShowdown extends StateHandler {
 
     public Enter(entity?: any): void {
 
+        var source = this.SourceData as ServerMessageWinner.AsObject;
+
+        if (source == null) {
+            return;
+        }
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
+
+        game.texasGameProtocol.handleWinnerInfoCommon(source, source);
 
     }
 

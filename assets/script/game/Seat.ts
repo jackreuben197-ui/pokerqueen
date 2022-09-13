@@ -1346,6 +1346,60 @@ export default class Seat {
             }
         }
     }
+
+
+    /// <summary>
+    /// 播放赢牌头像特效
+    /// </summary>
+    public PlayWinArmature(): void {
+        // UpdateWinCoin();
+
+        // if (!Player.isWin) {
+        //     return;
+        // }
+        // transWinner.gameObject.SetActive(true);
+        // if (IsMySeat) {
+        //     armatureYouWin.gameObject.SetActive(true);
+        // }
+        // else {
+        //     armatureYouWin.gameObject.SetActive(false);
+        // }
+    }
+
+    /// <summary>
+    /// 刷新回收赢的筹码
+    /// </summary>
+    public UpdateRecyclingWinChip(): void {
+        //this.uirc.imageRecyclingWinChip.sprite = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+    }
+
+    /// <summary>
+    /// 隐藏气泡
+    /// </summary>
+    public HideBubble(): void {
+        // if (imageBubble.gameObject.activeInHierarchy) {
+        //     if (null == sequenceUpdateBubble || !sequenceUpdateBubble.IsPlaying()) {
+        //         imageBubble.color = Color.white;
+        //         imageBubble.transform.localScale = Vector3.one;
+        //     }
+        // }
+        // tweenerHideBubble = imageBubble.transform.DOScale(new Vector3(0, 0, 1), 0.2f).SetDelay(1f).OnComplete(() => {
+        //     imageBubble.gameObject.SetActive(false);
+
+        //     UpdateNickname();
+        // });
+        // if (Image_BubbleInsuranceNum.gameObject.activeInHierarchy) {
+        //     Image_BubbleInsuranceNum.gameObject.SetActive(false);
+        // }
+        // if (Image_BubbleInsuranceToubao.gameObject.activeInHierarchy) {
+        //     Image_BubbleInsuranceToubao.gameObject.SetActive(false);
+        // }
+        // HideBubbleInsurance();
+        // HideBubbleInsuranceCountDown();
+    }
+
+
+
 }
 export interface SeatUIInfo {
     Pos: cc.Vec3;

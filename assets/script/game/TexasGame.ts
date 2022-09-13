@@ -36,6 +36,7 @@ import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 import UIOperationComponent, { OperationData } from "./ui/UIOperationComponent";
 import UITexas, { PotInfo, PublicCardInfo } from "./UITexas";
 import { UITexasModel } from "./UITexasModel";
+import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 //const PBTypes = Def.Types;
 
 
@@ -316,7 +317,7 @@ export default class TexasGame {
     /// <summary>
     /// 缓存赢牌信息
     /// </summary>
-    //public ServerMessageWinner MessageWinnerData;
+    public MessageWinnerData: ServerMessageWinner.AsObject = null;
     /// <summary>
     /// 缓存是否是第二套牌
     /// </summary>
@@ -2412,6 +2413,110 @@ export default class TexasGame {
             tweenCallback?.();
         }
     }
+
+
+
+
+    /// <summary>
+    /// 播放本轮结束公共牌动画
+    /// </summary>
+    public PlayEndPublicCardsAnimation(rec: ServerMessageWinner.AsObject): void {
+        // Log.Msg(rec);
+
+        let mCacheWinnerSeatIds = null; // 赢家座位
+        let mCacheWinnerCardTypes = null; // 赢家牌型
+
+        for (let i = 0, n = rec.resultsList.length; i < n; i++) {
+            // 找到赢家
+            if (rec.resultsList[i].win > 0) {
+                if (null == mCacheWinnerSeatIds)
+                    mCacheWinnerSeatIds = [];
+                mCacheWinnerSeatIds.push(this.GetLocalSeatID(rec.resultsList[i].seatId));
+                if (null == mCacheWinnerCardTypes)
+                    mCacheWinnerCardTypes = [];
+                mCacheWinnerCardTypes.Add(rec.resultsList[i].handValueType);
+            }
+        }
+
+        // rec.cardSort会五个五个一组，对应赢家数量
+        let mTmpCardSorts = [];
+        //int mGroup = rec.cardSort.Count / 5;
+        for (let i = 0, n = rec.resultsList.length; i < n; i++) {
+            let mTmpCards = [];
+            for (let j = 0, m = rec.resultsList[i].winCardsList.length; j < m; j++) {
+                mTmpCards.push(rec.resultsList[i].winCardsList[j].card);
+            }
+            mTmpCardSorts.push(mTmpCards);
+        }
+
+        let mHaveCardSort = true;
+
+
+        if (null == mCacheWinnerSeatIds || mCacheWinnerSeatIds.Count == 0 || !mHaveCardSort) {
+            // 没有赢家
+            return;
+        }
+
+
+        let mWinnerIndex = 0;
+        for (let i = 0, n = mCacheWinnerSeatIds.Count; i < n; i++) {
+            if (this.mainPlayer.isPlaying && this.mainPlayer.seatID == mCacheWinnerSeatIds[i]) {
+                mWinnerIndex = i;
+                break;
+            }
+        }
+
+
+
+        let mIsFirst = true;
+        let mCacheCardIds = [];
+        for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+            for (let j = 0, m = mTmpCardSorts[mWinnerIndex].Count; j < m; j++) {
+                if (mCacheCardIds.includes(this.uirc.listCards[i].cardId))
+                    continue;
+                if (mTmpCardSorts[mWinnerIndex][j] > 4 || mTmpCardSorts[mWinnerIndex][j] < 0)
+                    continue;
+
+                if (this.uirc.listCards[i].cardId == GameCache.Instance.CurGame.cards[mTmpCardSorts[mWinnerIndex][j]]) {
+                    mCacheCardIds.push(this.uirc.listCards[i].cardId);
+                    if (mIsFirst) {
+                        mIsFirst = false;
+                        //公共牌向上移
+                        //sequencePlayEndPublicCardsAnimation.Append(listCards[i].trans.DOLocalMoveY(40, 0.3f));
+                    }
+                    else {    //公共牌向上移
+                        //sequencePlayEndPublicCardsAnimation.Join(listCards[i].trans.DOLocalMoveY(40, 0.3f));
+                    }
+
+                    //sequencePlayEndPublicCardsAnimation.Join(listCards[i].imageCard.DOColor(Color.white, 0.2f));
+                    break;
+                }
+            }
+        }
+
+        if (this.waittingUpdatePublicCardsAnimation) {
+
+            //sequencePlayEndPublicCardsAnimation.SetDelay(0.5f);
+        }
+        else {
+
+        }
+    }
+    /// <summary>
+    /// 获取本手结算手牌
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public GetHandCardsAtRecvWinner(rec: ServerMessageWinner.AsObject, index: number): number[] {
+
+        let result = rec.resultsList[index];
+
+        return [result.myCardsList?.[0] || 0, result.myCardsList?.[1] || 0];
+    }
+
+
+
     /// <summary>
     /// 计算牌型
     /// </summary>
@@ -2476,6 +2581,67 @@ export default class TexasGame {
     }
     public HideBtnDelay(isActive: boolean): void {
         this.uirc.buttonDelay.active = isActive;
+    }
+
+
+
+
+    /// <summary>
+    /// 设置公共牌Id
+    /// </summary>
+    public SetPublicCardInfosId(): void {
+        let mPublicCardInfo: PublicCardInfo = null;
+        for (let i = 0, n = this.cards.length; i < n; i++) {
+            mPublicCardInfo = this.uirc.listCards[i];
+            mPublicCardInfo.cardId = this.cards[i];
+        }
+    }
+
+    /// <summary>
+    /// 显示查看更多公共牌
+    /// </summary>
+    public ShowSeeMorePublic(): void {
+        if (!this.mainPlayer.isParticipateInTheGame)
+            return;
+
+        if (this.GetCurPublicCardsCount() == 5)
+            return;
+
+        // let mCost = GameUtil.GetSeeMoreCost(smallBlind / 100);
+        // textSeeMorePublicGold.text = $"{StringHelper.GetDoubleString(mCost)}";
+
+        // if (GetCurPublicCardsCount() == 0) {
+        //     // textSeeMorePublic.text = $"查看翻牌";
+        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10018);
+        // }
+        // else if (GetCurPublicCardsCount() == 3) {
+        //     // textSeeMorePublic.text = $"查看转牌";
+        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10019);
+        // }
+        // else {
+        //     // textSeeMorePublic.text = $"查看河牌";
+        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10020);
+        // }
+
+        // if (GameCache.Instance.room_type < (int)RoomType.MTTTexasHoldemStandardNoLimit)//MTT没有查看翻牌
+        // {
+        //     buttonSeeMorePublic.interactable = true;
+        //     buttonSeeMorePublic.gameObject.SetActive(true);
+        // }
+    }
+
+
+    /// <summary>
+    /// 清空气泡
+    /// </summary>
+    public ClearSeatBubble(isRoundFinish: boolean): void {
+        let mSeat: Seat = null;
+        for (let i = 0, n = this.listSeat.length; i < n; i++) {
+            mSeat = this.listSeat[i];
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+            mSeat.HideBubble();
+        }
     }
 
 
