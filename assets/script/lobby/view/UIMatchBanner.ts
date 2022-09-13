@@ -103,7 +103,7 @@ export default class UIMatchBanner extends UIBase {
         this.pageView.getComponent(cc.PageView).pageEvents.push(pageViewEventHandler);
         this.scheduleOnce(() => {
             let curPage = this.pageView.getComponent(cc.PageView).getCurrentPageIndex();
-            this.onJumpHome();
+            // this.onJumpHome();
         })
     }
     /**
@@ -137,9 +137,9 @@ export default class UIMatchBanner extends UIBase {
                 }
             }
             if (pageView.getCurrentPageIndex() === this.curNum + 1) {
-                this.onJumpHome();
+                // this.onJumpHome();
             } else if (pageView.getCurrentPageIndex() === 0) {
-                this.onJumpEnd();
+                // this.onJumpEnd();
             } else {
                 this.setDots(false);
             }
@@ -164,7 +164,7 @@ export default class UIMatchBanner extends UIBase {
     }
     //跳到尾页
     onJumpEnd(): void {
-        this.layout.x = 0 - 1158 * this.curNum;
+        this.layout.x = 0 - (1158) * this.curNum;
         this.pageView.getComponent(cc.PageView).setCurrentPageIndex(this.curNum);
         this.setDots(false);
     }
@@ -189,8 +189,8 @@ export default class UIMatchBanner extends UIBase {
     }
     autoScrollPage(): void {
         //看看 自动滚动是否会触发pageEvent;
-        let pageview = this.pageView.getComponent(cc.PageView);
-        let index = pageview.getCurrentPageIndex();
-        pageview.scrollToPage(index + 1, 0.3);
+        // let pageview = this.pageView.getComponent(cc.PageView);
+        // let index = pageview.getCurrentPageIndex();
+        // pageview.scrollToPage(index + 1, 0.3);
     }
 }
