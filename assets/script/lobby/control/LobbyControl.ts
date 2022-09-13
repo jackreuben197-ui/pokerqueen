@@ -1,6 +1,11 @@
+import { ProcedureEnum } from "../../define/EIDefine";
+import { GameCache } from "../../game/GameCache";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
 import { Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds } from "../../net/https/WebRequest";
+import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
@@ -20,12 +25,13 @@ export class LobbyControl {
     /** ui父节点 创建出来的中间预制体需要挂在此节点上 */
     private Layer;
 
+    private LocalDicRoomName: Map<string, { [key: string]: string }> = new Map();
+
 
     /********************************* 2.UI处理 ***********************************/
 
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
-        2.1 点击主界面下方4个按钮 切换中间不同显示
-            name: UILobby UIChat UICareer UIMine
+        2.1 设置大厅数据 存放控制器
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
     setLobbyInfo(param) {
         this.curShowUI = param.curShowUI;
@@ -33,10 +39,10 @@ export class LobbyControl {
     }
 
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
-        2.1 点击主界面下方4个按钮 切换中间不同显示
+        2.2 点击主界面下方4个按钮 切换中间不同显示
             name: UILobby UIChat UICareer UIMine
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-     public async switchContent(name: string) {
+    public async switchContent(name: string) {
 
         if (this.curShowUI && name === this.curShowUI.name) {
             return;
@@ -169,8 +175,7 @@ export class LobbyControl {
 
 
 
-    /********************************* 其他 ***********************************/
-
+    /********************************* 流程控制 ***********************************/
     /********************************* 清除 ***********************************/
 
 

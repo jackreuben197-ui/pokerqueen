@@ -1,19 +1,15 @@
 const { ccclass, property } = cc._decorator;
 import BaseScene from "../../ui/scene/BaseScene";
-import { ResManager } from "../../manager/ResManager";
 import { Web_Misc_Banner_List } from "../../net/https/WebRequest";
 import UIMatchBanner from "./UIMatchBanner";
 import UIMatchRoom from "./UIMatchRoom";
 import UILobbyMenu from "./UILobbyMenu";
-import UIBase from "../../ui/UIBase";
 import { LobbyControl } from "../control/LobbyControl";
 
 @ccclass
 export default class LobbyScene extends BaseScene {
-    // public static instance: LobbyScene = null;
     private currUI: cc.Node = null;
     private Layer: cc.Node = null;
-
 
     UILobby_Menu: UILobbyMenu = null;
 
@@ -29,15 +25,8 @@ export default class LobbyScene extends BaseScene {
             curShowUI: this.currUI,
             Layer: this.Layer
         })
-        // if (LobbyScene.instance === null) {
-        //     LobbyScene.instance = this;
-        // } else {
-        //     this.destroy();
-        //     return;
-        // }
     }
     protected lateEnter() {
-
         this.UILobby_Menu.onShow();
         this.setLooby();
     }
