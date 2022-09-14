@@ -80,6 +80,9 @@ export default class SeatUIRC extends UIBase {
     imageSmallCardType: cc.Sprite = null;
     textSmallCardType: cc.Label = null;
 
+
+    imageRecyclingWinChip:cc.Sprite = null;
+
     ///////////////////////////////////
 
     ///////////////////////////////////
@@ -143,6 +146,8 @@ export default class SeatUIRC extends UIBase {
         this.imageSmallCardType = this.getChildNodeOrComponent("Image_SmallCardType", cc.Sprite);
         this.textSmallCardType = this.getChildNodeOrComponent("Text_SmallCardType", cc.Label);
 
+
+        this.imageRecyclingWinChip = this.getChildNodeOrComponent("Image_RecyclingWinChip", cc.Sprite);
 
 
 

@@ -117,5 +117,11 @@ export interface IUpdate {
 export var Bundle = {
     Texas: "texas",
 }
+/**
+ * ITweenDelay接口，注入delay延时字段
+ */
+export interface ITweenDuration {
+    duration: number;
+}
 
 ///////////////////////////////////////////////////

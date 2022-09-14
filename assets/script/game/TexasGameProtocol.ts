@@ -1,4 +1,5 @@
 
+import { ITweenDuration } from "../define/EIDefine";
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import ToastManager from "../manager/ToastManager";
@@ -629,7 +630,7 @@ export default class TexasGameProtocol {
     /// 处理第一，二套公共牌赢牌动画
     /// </summary>
     private async HandleMessageSecondPcsWinnerData() {
-        await (1.5);
+        //await (1.5);
         //Game.Scene.ModelScene.GetComponent<TimerComponent>().WaitAsync(1500);
         let mSeat: Seat = null;
         for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
@@ -716,14 +717,14 @@ export default class TexasGameProtocol {
 
         }
 
-        //sequencePlayEndPublicCardsAnimation = DOTween.Sequence();
+
 
         let mCount = this.game.GetCurPublicCardsCount();
         let mCanPlayEndPublicCardsAnimation = mCount == 5 && !mOtherAllFold;
         if (mCanPlayEndPublicCardsAnimation) {
-            let highlightCards: number[];
-            let cardType: CardType = this.game.GetCardType(highlightCards, this.game.cards);
-
+            let highlightCards_ref = { highlightCards: null };
+            let cardType: CardType = this.game.GetCardType(highlightCards_ref, this.game.cards);
+            let highlightCards = highlightCards_ref.highlightCards;
             for (let i = 0, n = this.game.uirc.listCards.length; i < n; i++) {
                 this.game.uirc.listCards[i].imageSelect.node.active = false;
                 for (let j = 0, m = highlightCards.length; j < m; j++) {
@@ -740,13 +741,12 @@ export default class TexasGameProtocol {
                 }
             }
         }
-
-        let mSeatId = -1;
-        //Sequence mSequence = null;
+        this.game.sequencePlayEndPublicCardsAnimation = { tween: cc.tween(this.game.uirc.node), IsPlaying: true };
+        let tween: cc.Tween = null;
         if (mCanPlayEndPublicCardsAnimation) {
-            //mSequence = sequencePlayEndPublicCardsAnimation;
+            tween = this.game.sequencePlayEndPublicCardsAnimation.tween;
         }
-
+        let mSeatId = -1;
         let mIsFirst: boolean = true;
         for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
 
@@ -767,28 +767,30 @@ export default class TexasGameProtocol {
 
             mSeat.UpdateCoin();
 
-            // if (mCanPlayEndPublicCardsAnimation) {
-            //     if (mSeat.CanPlayRecyclingWinChipAnimation) {
-            //         if (mIsFirst) {
-            //             mIsFirst = false;
-            //             mSequence.Append(mSeat.PlayRecyclingChipAnimation());
-            //         }
-            //         else {
-            //             mSequence.Join(mSeat.PlayRecyclingChipAnimation());
-            //         }
-            //     }
-            // }
-            // else {
-            //     if (mSeat.CanPlayRecyclingWinChipAnimation)
-            //         mSequence = mSeat.PlayRecyclingChipAnimation();
-            // }
+            if (mCanPlayEndPublicCardsAnimation) {
+                if (mSeat.CanPlayRecyclingWinChipAnimation) {
+                    // if (mIsFirst) {
+                    //     mIsFirst = false;
+                    //     tween.Append(mSeat.PlayRecyclingChipAnimation());
+                    // }
+                    // else {
+                    //     tween.Join(mSeat.PlayRecyclingChipAnimation());
+                    // }
+                    mSeat.PlayRecyclingChipAnimation();
+                }
+            }
+            else {
+                if (mSeat.CanPlayRecyclingWinChipAnimation)
+                    //tween = mSeat.PlayRecyclingChipAnimation();
+                    mSeat.PlayRecyclingChipAnimation();
+            }
         }
 
-        // if (null == mSequence)
-        //     mSequence = DOTween.Sequence();
+        if (null == tween)
+            tween = this.game.sequencePlayEndPublicCardsAnimation.tween;
 
 
-        mIsFirst = true;
+        //mIsFirst = true;
         // let isHaveWiner = false;
         // for (let i = 0; i < this.game.MessageWinnerData.resultsList.length; i++) {
         //     if (this.game.MessageWinnerData.resultsList[i].win > this.game.MessageWinnerData.resultsList[i].handBet) {
@@ -827,26 +829,21 @@ export default class TexasGameProtocol {
             // {
             //     mSeat.UpdateHunterAward();
             // }
-            if (mCanPlayEndPublicCardsAnimation) {
-                if (mIsFirst) {
-                    mIsFirst = false;
-                    //mSequence.Append(mSeat.PlayRecyclingWinChipAnimation(rc.transform.TransformPoint(textAlreadAnte.transform.localPosition)));
-                }
-                else {
-                    //mSequence.Join(mSeat.PlayRecyclingWinChipAnimation(rc.transform.TransformPoint(textAlreadAnte.transform.localPosition)));
-                }
-            }
-            else {
-                if (mIsFirst) {
-                    mIsFirst = false;
-                    //mSequence.Append(mSeat.PlayRecyclingWinChipAnimation(rc.transform.TransformPoint(textAlreadAnte.transform.localPosition)));
-                }
-                else {
-                    //mSequence.Join(mSeat.PlayRecyclingWinChipAnimation(rc.transform.TransformPoint(textAlreadAnte.transform.localPosition)));
-                }
+            let PlayRecyclingWinChipAnimation_Tween: cc.Tween = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.textAlreadAnte.node.position));
 
+            tween.then(cc.callFunc(() => {
+                PlayRecyclingWinChipAnimation_Tween.start();
+            }));
+
+            if (i == n - 1) {
+                let duration: number = (PlayRecyclingWinChipAnimation_Tween as any).duration;
+                if (duration) {
+                    tween.delay(duration);
+                }
             }
         }
+
+        tween.start();
 
         let mCacheWinnerSeatIds: number[] = null; // 赢家座位
         let mCacheWinnerCardTypes: number[] = null; // 赢家牌型
@@ -897,7 +894,7 @@ export default class TexasGameProtocol {
         }
 
         if (mCanPlayEndPublicCardsAnimation) {
-            //this.game.PlayEndPublicCardsAnimation(this.game.MessageWinnerData);
+            this.game.PlayEndPublicCardsAnimation(this.game.MessageWinnerData);
         }
         for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
             mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(this.game.MessageWinnerData.resultsList[i].seatId));

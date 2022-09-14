@@ -359,7 +359,7 @@ export default class TexasGame {
     sequencePlayRecyclingChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequenceUpdatePublicCards: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequenceSecondUpdatePublicCards: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
-
+    sequencePlayEndPublicCardsAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
 
 
     constructor() {
@@ -2004,9 +2004,10 @@ export default class TexasGame {
         if (null != mClientSeat.Player && mClientSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isParticipateInTheGame) {
             if (null != tweenCallback) {
                 tween.call(() => {
-                    let highlightCards: number[] = [];;
-                    let cardType: CardType = this.GetCardType(highlightCards, this.cards);
 
+                    let highlightCards_ref = { highlightCards: null };
+                    let cardType: CardType = this.GetCardType(highlightCards_ref, this.cards);
+                    let highlightCards = highlightCards_ref.highlightCards;
                     for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
                         this.uirc.listCards[i].imageSelect.node.active = false;
                         for (let j = 0, m = highlightCards.length; j < m; j++) {
@@ -2033,8 +2034,10 @@ export default class TexasGame {
             }
             else {
                 tween.call(() => {
-                    let highlightCards = [];
-                    let cardType: CardType = this.GetCardType(highlightCards, this.cards);
+
+                    let highlightCards_ref = { highlightCards: null };
+                    let cardType: CardType = this.GetCardType(highlightCards_ref, this.cards);
+                    let highlightCards = highlightCards_ref.highlightCards;
 
                     for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
                         this.uirc.listCards[i].imageSelect.node.active = false;
@@ -2285,8 +2288,14 @@ export default class TexasGame {
     protected UpdateSecondPublicCardsCardType(secondPublicCards: number[]): void {
         // 参与了牌局，才能看到牌型提示
         if (null != this.mainPlayer && this.mainPlayer.cards.length > 0) {
-            let highlightCards: number[] = [];
-            let cardType: CardType = this.GetCardType(highlightCards, secondPublicCards);
+
+            let highlightCards_ref = { highlightCards: null };
+            let cardType: CardType = this.GetCardType(highlightCards_ref, secondPublicCards);
+            let highlightCards = highlightCards_ref.highlightCards;
+
+
+
+
             for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
                 this.uirc.listSecondCards[i].imageSelect.node.active = false;
                 for (let j = 0, m = highlightCards.length; j < m; j++) {
@@ -2522,9 +2531,9 @@ export default class TexasGame {
     /// </summary>
     /// <param name="highlightCards"></param>
     /// <returns></returns>
-    public GetCardType(highlightCards: number[], publicCards: number[]): CardType {
+    public GetCardType(highlightCards_ref: { highlightCards: number[] }, publicCards: number[]): CardType {
         let mCards: number[] = [...publicCards, ...this.mainPlayer.cards];
-        return CardTypeUtil.GetCardType(mCards, highlightCards, GameUtil.JudgeIsSixPlusRoomPath(GameCache.Instance.room_type));
+        return CardTypeUtil.GetCardType(mCards, highlightCards_ref, GameUtil.JudgeIsSixPlusRoomPath(GameCache.Instance.room_type));
     }
 
     private PlayFirstRecyclingChipSubAnimation(tweenCallback?: Function): void {

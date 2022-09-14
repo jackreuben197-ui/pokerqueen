@@ -3,7 +3,6 @@ import UpdateComponent from "../funcomponent/UpdateComponent";
 import WebImageHelper from "../helper/WebImageHelper";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { UIMineModel } from "../lobby/UIMineModel";
-import { Web_Config_Global_Config } from "../net/https/WebRequest";
 import { Def } from "../protobuf/holdem/define_pb";
 import { CacheDataManager } from "./CacheDataManager";
 import { CardType, CardTypeUtil } from "./CardTypeUtil";
@@ -84,7 +83,8 @@ export default class Seat {
 
     protected sequencePlayFoldAnimation: cc.Tween;
 
-
+    tweenerPlayRecyclingWinChipAnimation: cc.Tween = null;
+    //cc.Tween = null;
 
     constructor(public id: number, public ui: cc.Node) {
 
@@ -1399,7 +1399,45 @@ export default class Seat {
     }
 
 
+    /// <summary>
+    /// 播放赢了回收筹码动画
+    /// </summary>
+    public get CanPlayRecyclingWinChipAnimation(): boolean {
+        return this.uirc.imageIconChip.node.activeInHierarchy;
+    }
 
+    /// <summary>
+    /// 播放赢了回收筹码动画
+    /// </summary>
+    /// <returns></returns> Tweener
+    public PlayRecyclingWinChipAnimation(sourcePos: cc.Vec3): cc.Tween {
+
+        if (this.Player.recyclingChip > 0)//回收筹码大于零时，执行动画
+        {
+
+            let imageRecyclingWinChip = this.uirc.imageRecyclingWinChip;
+
+            imageRecyclingWinChip.node.setPosition(imageRecyclingWinChip.node.parent.convertToNodeSpaceAR(sourcePos));
+
+
+            this.tweenerPlayRecyclingWinChipAnimation = cc.tween(imageRecyclingWinChip.node);
+
+            this.tweenerPlayRecyclingWinChipAnimation.then(cc.callFunc(() => {
+                imageRecyclingWinChip.node.active = true;
+            }));
+
+            let pos = GameUtil.ChangeToLocalPos(this.uirc.imageHeadFrame.node.position, this.uirc.imageHeadFrame.node.parent, this.ui);
+
+            this.tweenerPlayRecyclingWinChipAnimation.to(.5, { position: pos });
+            this.tweenerPlayRecyclingWinChipAnimation.call(() => {
+                imageRecyclingWinChip.node.active = false;
+            });
+
+            (this.tweenerPlayRecyclingWinChipAnimation as any).duration = 0.5;
+        }
+        return this.tweenerPlayRecyclingWinChipAnimation;
+
+    }
 }
 export interface SeatUIInfo {
     Pos: cc.Vec3;
