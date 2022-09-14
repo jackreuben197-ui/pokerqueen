@@ -20,6 +20,7 @@ export default class UIMatchRoom extends UIBase {
     onShow(param?: any): void {
         super.onShow();
         this.handleData(param.data, this.node);
+        this.SetRoomListBtnInfo(this.node);
     }
     public handleData(data: any, roomContent: cc.Node): any[] {
         this.RoomTypesInfos = [];
@@ -56,7 +57,6 @@ export default class UIMatchRoom extends UIBase {
                 this.roomLen++;
             }
         }
-        this.SetRoomListBtnInfo(roomContent);
         return this.RoomTypesInfos;
     }
     public SetSixPlusData(data: typeof Web_Room_Center_Groups.ResponseData): void {

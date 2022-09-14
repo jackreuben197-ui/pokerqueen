@@ -41,18 +41,17 @@ export default class UIMatchPlayViewForm extends BaseForm {
     private type_List = ["NLH", "PLO4", "PLO5", "PLO6"];
     private six_List = ["6+NLH", "6+PLO4", "6+PLO5", "6+PLO6"];
     private LocalDicRoomName: Map<string, { [key: string]: string }> = new Map();
-    private mLoopListView: cc.Node = null;
+    private mLoopListView: any = null;
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.mLoopListView = this.getChildNodeOrComponent("ViewRoomLayout");
-        console.log("UIMatchPlayViewForm load");
+        this.mLoopListView = this.getChildNodeOrComponent("sv_content");
     }
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         最上层listview遍历 添加点击事件  
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
     private registerTypeEvent(): void {
-        let viewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
+        let viewContent: cc.Node = this.getChildNodeOrComponent("c_middle");
         viewContent.children.forEach((item, index) => {
             cc.log(`registerTypeEvent----item-${index}`);
             item["index"] = index;
@@ -60,7 +59,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         })
     }
     private removeTypeEvent(): void {
-        let viewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
+        let viewContent: cc.Node = this.getChildNodeOrComponent("c_middle");
         viewContent.children.forEach((item, index) => {
             cc.log(`removeTypeEvent---item-${index}`);
             item.off(cc.Node.EventType.TOUCH_END, this.TypeBtn, this)
@@ -70,7 +69,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         中间listview遍历 添加点击事件  0/0  1/2
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
     private registerBlindsEvent(): void {
-        let viewBilndContent: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
+        let viewBilndContent: cc.Node = this.getChildNodeOrComponent("c_bottom");
         viewBilndContent.children.forEach((item, index) => {
             cc.log(`registerBlindsEvent---item-${index}`);
             item["index"] = index;
@@ -78,7 +77,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         })
     }
     private removeBlindsEvent(): void {
-        let viewBilndContent: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
+        let viewBilndContent: cc.Node = this.getChildNodeOrComponent("c_bottom");
         viewBilndContent.children.forEach((item, index) => {
             cc.log(`removeBlindsEvent---item-${index}`);
             item.off(cc.Node.EventType.TOUCH_END, this.BlindBtn, this)
@@ -115,10 +114,10 @@ export default class UIMatchPlayViewForm extends BaseForm {
     private BlindBtn(e: cc.Event.EventTouch): void {
         let target = e.target;
         let index = target["index"];
-        let scrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewBlind", cc.ScrollView);
+        // let scrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewBlind", cc.ScrollView);
         this.MangInfo = this.MangList[index];
         this.DragRequestData_Room(EnumLoadType.Refresh);
-        this.BlindScroll(parseInt(index), scrollView, e.target);
+        // this.BlindScroll(parseInt(index), scrollView, e.target);
     }
     // 写一个方法 可以点击按钮的时候自动滑动到
     private TypeScroll(index: number, scrollView: cc.ScrollView, target: cc.Node): void {
@@ -331,23 +330,23 @@ export default class UIMatchPlayViewForm extends BaseForm {
             }
         }
         //空座筛选
-        if (this.isSelectEmptySeat) {
-            let list = [];
-            let sb = "";
-            let content: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
-            for (let i = 0; i < content.childrenCount; i++) {
-                if (content.children[i].getChildByName("Select").active) {
-                    sb = content.children[i].name;
-                }
-            }
-            for (let i = 0; i < this.mNormalData.length; i++) {
-                if (this.mNormalData[i].empty_seat != 0 && this.GetLongString(this.mNormalData[i].sb) == sb) {
-                    list.push(this.mNormalData[i]);
-                }
-            }
-            list.push(typeof Web_Room_Center_Rooms.DataElement);
-            this.mNormalData = list.length > 1 ? list : this.mNormalData;
-        }
+        // if (this.isSelectEmptySeat) {
+        //     let list = [];
+        //     let sb = "";
+        //     let content: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
+        //     for (let i = 0; i < content.childrenCount; i++) {
+        //         if (content.children[i].getChildByName("Select").active) {
+        //             sb = content.children[i].name;
+        //         }
+        //     }
+        //     for (let i = 0; i < this.mNormalData.length; i++) {
+        //         if (this.mNormalData[i].empty_seat != 0 && this.GetLongString(this.mNormalData[i].sb) == sb) {
+        //             list.push(this.mNormalData[i]);
+        //         }
+        //     }
+        //     list.push(typeof Web_Room_Center_Rooms.DataElement);
+        //     this.mNormalData = list.length > 1 ? list : this.mNormalData;
+        // }
         if (loadType === EnumLoadType.LoadMore) {
             this.mNormalData.splice(this.mNormalData.length - 1, 1);
             this.mNormalData.concat(roomData.records);
@@ -373,7 +372,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
                         item = this.mLoopListView.children[i];
                         this.SetItemDataInfo(item, this.mNormalData[i], i);
                     } else {
-                        let prefab: cc.Node = this.getChildNodeOrComponent("RoomInfo");
+                        let prefab: cc.Node = this.getChildNodeOrComponent("panel_item");
                         item = cc.instantiate(prefab);
                         this.mLoopListView.addChild(item);
                         this.SetItemDataInfo(item, this.mNormalData[i], i);
@@ -381,13 +380,13 @@ export default class UIMatchPlayViewForm extends BaseForm {
                 }
                 if (this.mLoopListView.childrenCount > this.mNormalData.length) {
                     for (let i = this.mNormalData.length; i < this.mLoopListView.childrenCount; i++) {
-                        this.mLoopListView.children[i].active = false;
+                        // this.mLoopListView.children[i].active = false;
                     }
                 }
             }
         }
-        let NonShowed: cc.Node = this.getChildNodeOrComponent("NonShowed");
-        NonShowed.active = this.mNormalData.length === 0;
+        // let NonShowed: cc.Node = this.getChildNodeOrComponent("NonShowed");
+        // NonShowed.active = this.mNormalData.length === 0;
     }
     async OnDataSourceLoadMoreFinished(pLength: boolean) {
 
@@ -405,55 +404,57 @@ export default class UIMatchPlayViewForm extends BaseForm {
     }
     //设置mangbar
     private setMangBar(blindData: any) {
-        let content: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
-        let blindItem: cc.Node = this.getChildNodeOrComponent("ViewBlindItem");
+        let c_bottom: cc.Node = this.getChildNodeOrComponent("c_bottom");
+
+        // let content: cc.Node = this.getChildNodeOrComponent("ViewBlindContent");
         this.MangList = this.SortSB_Data(blindData.data.records);
         this.MangInfo = this.MangList[0];
         let item: cc.Node;
-        if (content.childrenCount > 0) {
-            for (let i = 0; i < content.childrenCount; i++) {
-                let ch: cc.Node = content.children[i];
+        if (c_bottom.childrenCount > 0) {
+            for (let i = 0; i < c_bottom.childrenCount; i++) {
+                let ch: cc.Node = c_bottom.children[i];
                 ch.active = false;
             }
         }
         for (let i = 0; i < this.MangList.length; i++) {
             let data = this.MangList[i];
-            if (content.children[i]) {
-                item = content.children[i];
+            if (c_bottom.children[i]) {
+                item = c_bottom.children[i];
                 item.active = true;
             } else {
-                item = cc.instantiate(blindItem);
-                item.active = true;
-                content.addChild(item);
+                // item = cc.instantiate(blindItem);
+                // item.active = true;
+                // content.addChild(item);
+                return;
             }
             item.name = this.GetLongString(data);
 
-            let Select: cc.Node = item.getChildByName("Select");
-            let ViewBlindLabel: cc.Node = item.getChildByName("ViewBlindLabel");
-            let Select_Text_Node: cc.Node = item.getChildByName("Select").getChildByName("Select_Text");
+            // let Select: cc.Node = item.getChildByName("Select");
+            let ViewBlindLabel: cc.Node = item.getChildByName("lbl");
+            // let Select_Text_Node: cc.Node = item.getChildByName("Select").getChildByName("Select_Text");
 
-            Select.active = false;
+            // Select.active = false;
             ViewBlindLabel.active = true;
-            Select_Text_Node.active = false;
+            // Select_Text_Node.active = false;
 
             let a: string = this.GetLongString(data);
             let b: string = this.GetLongString(data * 2);
             ViewBlindLabel.getComponent(cc.Label).string = a + "/" + b;
-            let SelectText: cc.Label = Select_Text_Node.getComponent(cc.Label);
-            SelectText.string = a + "/" + b;
+            // let SelectText: cc.Label = Select_Text_Node.getComponent(cc.Label);
+            // SelectText.string = a + "/" + b;
             if (i === 0) {
                 if (!cc.isValid(ViewBlindLabel.getComponent("i18nLabel"))) {
                     ViewBlindLabel.addComponent(i18nLabel);
                 }
-                if (!cc.isValid(SelectText.getComponent("i18nLabel"))) {
-                    SelectText.addComponent(i18nLabel);
-                }
+                // if (!cc.isValid(SelectText.getComponent("i18nLabel"))) {
+                //     SelectText.addComponent(i18nLabel);
+                // }
                 ViewBlindLabel.getComponent("i18nLabel").string = "UIMatch_GtO8YEdb";
-                SelectText.getComponent("i18nLabel").string = "UIMatch_GtO8YEdb";
-                item.name = SelectText.getComponent("i18nLabel").string;
-                Select.active = true;
+                // SelectText.getComponent("i18nLabel").string = "UIMatch_GtO8YEdb";
+                // item.name = SelectText.getComponent("i18nLabel").string;
+                // Select.active = true;
                 ViewBlindLabel.active = true;
-                Select_Text_Node.active = true;
+                // Select_Text_Node.active = true;
                 this.CurListBtn = item;
             }
         }
@@ -487,26 +488,36 @@ export default class UIMatchPlayViewForm extends BaseForm {
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
     private SetItemDataInfo(item: cc.Node, roomInfo: typeof Web_Room_Center_Rooms.DataElement, index: number) {
         item.active = true;
-        item.getChildByName("Text_Mang").getComponent(cc.Label).string = `${this.GetLongString(roomInfo.sb)}/${this.GetLongString(roomInfo.sb * 2)}${this.GetLongString(roomInfo.ante)}`;
-        item.getChildByName("Text_Type").getComponent(cc.Label).string = roomInfo.poker_type == 2 ? this.six_List[roomInfo.game_type] : this.type_List[roomInfo.game_type];
-        let layout: cc.Node = item.getChildByName("Text_Icon_Layout");
+        item.x=0;
+        item.y=0;
+        item.getChildByName("lbl_center_left").getComponent(cc.Label).string = `${this.GetLongString(roomInfo.sb)}/${this.GetLongString(roomInfo.sb * 2)}${this.GetLongString(roomInfo.ante)}`;
+        // item.getChildByName("Text_Type").getComponent(cc.Label).string = roomInfo.poker_type == 2 ? this.six_List[roomInfo.game_type] : this.type_List[roomInfo.game_type];
+        // let layout: cc.Node = item.getChildByName("Text_Icon_Layout");
         if (roomInfo.play_duration == 0) {
-            layout.getChildByName("Text_Icon_Time").active = false;
-            layout.getChildByName("Text_Icon_Time_node").active = true;
+            item.getChildByName("item_choose").active = false;
+            item.getChildByName("item_normal").active = true;
+        //     layout.getChildByName("Text_Icon_Time").active = false;
+        //     layout.getChildByName("Text_Icon_Time_node").active = true;
         } else {
-            layout.getChildByName("Text_Icon_Time").active = true;
-            layout.getChildByName("Text_Icon_Time_node").active = false;
+            item.getChildByName("item_choose").active = true;
+            item.getChildByName("item_normal").active = false;
+        //     layout.getChildByName("Text_Icon_Time").active = true;
+        //     layout.getChildByName("Text_Icon_Time_node").active = false;
             //值取小数点后一位
             let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600) * 10) / 10
-            layout.getChildByName("Text_Icon_Time").getComponent(cc.Label).string = `${duration}h/${duration}h`
+            item.getChildByName("lbl_time").getComponent(cc.Label).string = `${duration}h/${duration}h`
         }
-        item.getChildByName("Text_Name").getComponent(cc.Label).string = this.GetRoomNameByKey(roomInfo.name);
+        item.getChildByName("lbl_deskName").getComponent(cc.Label).string = this.GetRoomNameByKey(roomInfo.name);
 
-        let peopleNum1: cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_1").getComponent(cc.Label);
-        let peopleNum2: cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_2").getComponent(cc.Label);
-        peopleNum1.string = `${roomInfo.seat_count - roomInfo.empty_seat}/`;
-        peopleNum2.string = `${roomInfo.seat_count}`
+
+        item.getChildByName("item_choose").active = false;
+            item.getChildByName("item_normal").active = true;
+        // let peopleNum1: cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_1").getComponent(cc.Label);
+        // let peopleNum2: cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_2").getComponent(cc.Label);
+        // peopleNum1.string = `${roomInfo.seat_count - roomInfo.empty_seat}/`;
+        // peopleNum2.string = `${roomInfo.seat_count}`
         item["roomInfo"] = roomInfo;
+        item.getChildByName("lbl_num").getComponent(cc.Label).string = `${roomInfo.seat_count - roomInfo.empty_seat}/${roomInfo.seat_count}`;
         item.off(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
         item.on(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
     }

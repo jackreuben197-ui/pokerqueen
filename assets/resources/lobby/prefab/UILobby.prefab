@@ -1136,7 +1136,7 @@
     "node": {
       "__id__": 22
     },
-    "_enabled": true,
+    "_enabled": false,
     "_materials": [
       {
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
@@ -7612,7 +7612,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1162,
+      "width": 1320,
       "height": 533
     },
     "_anchorPoint": {
@@ -8868,8 +8868,8 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 300,
-      "height": 200
+      "width": 1320,
+      "height": 533
     },
     "_resize": 0,
     "_N$layoutType": 1,
