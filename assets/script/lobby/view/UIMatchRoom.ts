@@ -39,10 +39,11 @@ export default class UIMatchRoom extends UIBase {
                 this.RoomTypesInfos.push(obj)
             }
         }
+        let self = this;
         data.forEach((element) => {
-            this.RoomTypesInfos[element.game_type].playerCount = element.player_count;
-            this.RoomTypesInfos[element.game_type].roomCount = element.count;
-            this.SetSixPlusData(element);
+            self.RoomTypesInfos[element.game_type].playerCount = element.player_count;
+            self.RoomTypesInfos[element.game_type].roomCount = element.count;
+            self.SetSixPlusData(element);
         })
         // for (let key in data) {
         //     let element = data[key];

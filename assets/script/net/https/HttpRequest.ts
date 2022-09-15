@@ -24,8 +24,14 @@ export default class HttpRequest {
     }
     //代理转换
     public static handleUrl(url: string): string {
-        if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
-            return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
+        if (GameConfig.IsNewArea) {
+            if (GameConfig.useProxy && url.indexOf("https://dev1.awanptesting.com/api/") > -1) {
+                return url.replace("https://dev1.awanptesting.com/api/", "http://localhost:8080/")
+            }
+        } else {
+            if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
+                return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
+            }
         }
         return url;
     }

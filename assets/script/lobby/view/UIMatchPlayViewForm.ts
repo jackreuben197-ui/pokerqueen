@@ -102,11 +102,13 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this.TypeScroll(index, scrollView, target);
 
         this.RoomInfo = this.RoomTypesInfos[index];
-        let sendDate = {
-            game_type: this.RoomInfo.gameType,
-            poker_type: this.RoomInfo.pokerType,
+        if (this.RoomInfo && this.RoomInfo.gameType) {
+            let sendDate = {
+                game_type: this.RoomInfo.gameType,
+                poker_type: this.RoomInfo.pokerType,
+            }
+            this.sendBlindsGetData(sendDate);
         }
-        this.sendBlindsGetData(sendDate);
     }
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         点击中间列表调用此处
@@ -163,16 +165,16 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this.scrollMove(index, scrollView)
     }
     private scrollMove(index: number, scrollView: cc.ScrollView) {
-        let len: number = this.TypeContentLength;
-        let middle = Math.floor(len / 2);
-        // let scrollView:cc.ScrollView = this.getChildNodeOrComponent("ScrollViewType",cc.ScrollView);
-        if (index === middle) {
-            scrollView.scrollToPercentHorizontal(0.5, 0.1);
-        } else if (index < middle) {
-            scrollView.scrollToLeft(0.1)
-        } else {
-            scrollView.scrollToRight(0.1)
-        }
+        // let len: number = this.TypeContentLength;
+        // let middle = Math.floor(len / 2);
+        // // let scrollView:cc.ScrollView = this.getChildNodeOrComponent("ScrollViewType",cc.ScrollView);
+        // if (index === middle) {
+        //     scrollView.scrollToPercentHorizontal(0.5, 0.1);
+        // } else if (index < middle) {
+        //     scrollView.scrollToLeft(0.1)
+        // } else {
+        //     scrollView.scrollToRight(0.1)
+        // }
     }
     /**
      * @description: 
@@ -200,14 +202,14 @@ export default class UIMatchPlayViewForm extends BaseForm {
     //获取group消息
     async sendGroupGetData(param?: any) {
         //请求group信息
-        let typeViewContent: cc.Node = this.getChildNodeOrComponent("ViewTypeContent");
-        let typesScrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewType", cc.ScrollView);
+        let typeViewContent: cc.Node = this.getChildNodeOrComponent("sv_content");
+        let typesScrollView: cc.ScrollView = this.getChildNodeOrComponent("sv_list", cc.ScrollView);
         let groupData: any = await LobbyControl.getInstance().RequestListSummary({})
         this.RoomTypesInfos = UIMatchRoom.instance.handleData(groupData.data, typeViewContent);
         this.RoomInfo = this.RoomTypesInfos[param.index];
         this.removeTypeEvent();
         this.registerTypeEvent();
-        this.TypeScroll(param.index, typesScrollView, typeViewContent.children[param.index]);
+        // this.TypeScroll(param.index, typesScrollView, typeViewContent.children[param.index]);
     }
     //获取语言信息
     async sendLanguageGetData() {
@@ -493,7 +495,9 @@ export default class UIMatchPlayViewForm extends BaseForm {
         item.getChildByName("lbl_center_left").getComponent(cc.Label).string = `${this.GetLongString(roomInfo.sb)}/${this.GetLongString(roomInfo.sb * 2)}${this.GetLongString(roomInfo.ante)}`;
         // item.getChildByName("Text_Type").getComponent(cc.Label).string = roomInfo.poker_type == 2 ? this.six_List[roomInfo.game_type] : this.type_List[roomInfo.game_type];
         // let layout: cc.Node = item.getChildByName("Text_Icon_Layout");
-        if (roomInfo.play_duration == 0) {
+        // if (roomInfo.play_duration == 0) {
+        // status 0:待创建 1:已创建未开始 2:已开始 3:已结束
+        if (roomInfo.status < 2) {
             item.getChildByName("item_choose").active = false;
             item.getChildByName("item_normal").active = true;
         //     layout.getChildByName("Text_Icon_Time").active = false;

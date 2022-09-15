@@ -45,7 +45,9 @@ export default class BaseForm extends UIBase {
         this.back_click = this.getChildNodeOrComponent("back_click");
         this.content = this.getChildNodeOrComponent("content - 内容填充");
         this.top_block = this.getChildNodeOrComponent("top_block");
-        this.title_label.i18NString = this.UIDefine?.Title || "";
+        if (this.title_label) {
+            this.title_label.i18NString = this.UIDefine?.Title || "";
+        }
         //设置尺寸
         this.main.setContentSize(this.node.getContentSize());
     }
@@ -87,7 +89,11 @@ export default class BaseForm extends UIBase {
             let duration = style?.main_fadeIn_duration || this.defaultStyle.main_fadeIn_duration;
             let ease = style?.main_fadeIn_ease || this.defaultStyle.main_fadeIn_ease;
             this.main.x = this.node.width;
-            cc.tween(this.main).to(duration, { x: 0 }, ease).call(this.fadeInComplete, this).start();
+            // this.node.active = true;
+            cc.tween(this.main)
+                .to(duration, { x: 0 }, ease)
+                .call(this.fadeInComplete, this)
+                .start();
         }
     }
 

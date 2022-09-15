@@ -4856,7 +4856,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 83.42,
+      "width": 27.81,
       "height": 63
     },
     "_anchorPoint": {
@@ -4908,8 +4908,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "0",
+    "_N$string": "0",
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,
@@ -5071,7 +5071,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 83.42,
+      "width": 27.81,
       "height": 63
     },
     "_anchorPoint": {
@@ -5123,8 +5123,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "0",
+    "_N$string": "0",
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,
@@ -5882,7 +5882,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 83.42,
+      "width": 27.81,
       "height": 63
     },
     "_anchorPoint": {
@@ -5934,8 +5934,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "0",
+    "_N$string": "0",
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,
@@ -6097,7 +6097,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 83.42,
+      "width": 27.81,
       "height": 63
     },
     "_anchorPoint": {
@@ -6149,8 +6149,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "0",
+    "_N$string": "0",
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,
@@ -6908,7 +6908,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 83.42,
+      "width": 27.81,
       "height": 63
     },
     "_anchorPoint": {
@@ -6960,8 +6960,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "0",
+    "_N$string": "0",
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,
@@ -7123,7 +7123,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 83.42,
+      "width": 27.81,
       "height": 63
     },
     "_anchorPoint": {
@@ -7175,8 +7175,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "0",
+    "_N$string": "0",
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,
