@@ -11,7 +11,6 @@ import ToastManager from "../manager/ToastManager";
 
 import { RoomInfo } from "../protobuf/holdem/define_pb";
 import GlobalSession from "../session/GlobalSession";
-import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";

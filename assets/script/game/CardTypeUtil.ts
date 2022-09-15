@@ -2,7 +2,7 @@
 /// <summary>
 /// 普通牌型
 
-import {CPErrorCode} from "../i18n/CPErrorCode";
+import { CPErrorCode } from "../i18n/CPErrorCode";
 
 /// </summary>
 export enum CardType {
@@ -52,7 +52,7 @@ export class CardTypeUtil {
 
     private static weightValue: number = 15;
     //获取普通局牌型
-    public static GetCardType(cards: number[], highlightCards: number[], isSixPlus: boolean = false): CardType {
+    public static GetCardType(cards: number[], highlightCards_ref: { highlightCards: number[] }, isSixPlus: boolean = false): CardType {
         let mCards = cards;
 
         if (mCards.length < 7) {
@@ -61,7 +61,7 @@ export class CardTypeUtil {
                 mCards.push(-1);
             }
         }
-        highlightCards = [];
+        highlightCards_ref.highlightCards = [];
         let carTypeNum = 0;
         let lastMin = 100;
         //List < sbyte > card = new List<sbyte>(new sbyte[5]);
@@ -77,7 +77,7 @@ export class CardTypeUtil {
                         card[3] = mCards[b];
                         for (let c = b + 1; c < 7; c++) {
                             card[4] = mCards[c];
-                            CardTypeUtil.CompareCardType(card, carTypeNum, lastMin, highlightCards, isSixPlus);
+                            CardTypeUtil.CompareCardType(card, carTypeNum, lastMin, highlightCards_ref, isSixPlus);
                         }
                     }
                 }
@@ -121,7 +121,7 @@ export class CardTypeUtil {
     /// <param name="lastMin"></param>
     /// <param name="highlightCards"></param>
     /// <param name="isSixPlus"></param>
-    public static CompareCardType(card: number[], carTypeNum: number, lastMin: number, highlightCards: number[], isSixPlus: boolean = false) {
+    public static CompareCardType(card: number[], carTypeNum: number, lastMin: number, highlightCards_ref: { highlightCards: number[] }, isSixPlus: boolean = false) {
         let cardType: CardType = CardTypeUtil.GetExactCardType(card, isSixPlus);
         let num = cardType;
         if (this.CarTypeNumConversionToSixPlusCardType(isSixPlus, num) > this.CarTypeNumConversionToSixPlusCardType(isSixPlus, carTypeNum)) {
@@ -201,7 +201,7 @@ export class CardTypeUtil {
                 //两对判断大小，以大牌的大小优先，所以乘一个加权
                 lastMin = maxOne * 20 + minOne;
             }
-            highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+            highlightCards_ref.highlightCards = CardTypeUtil.GetHighlightCard(card, num);
         }
         else if (num == carTypeNum) {
             //牌型相同时候部分牌型需要比较大小
@@ -232,7 +232,7 @@ export class CardTypeUtil {
                         }
                     }
                     //显示更大
-                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                    highlightCards_ref.highlightCards = CardTypeUtil.GetHighlightCard(card, num);
                 }
             }
             else if (num == CardType.FourOfAKind) {
@@ -248,7 +248,7 @@ export class CardTypeUtil {
                 if (currentMin > lastMin) {
                     lastMin = currentMin;
                     //显示更大
-                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                    highlightCards_ref.highlightCards = CardTypeUtil.GetHighlightCard(card, num);
                 }
             }
             else if (num == CardType.FullHouse) {
@@ -257,7 +257,7 @@ export class CardTypeUtil {
                 if (lastMin < newNum) {
                     lastMin = newNum;
                     //显示更大
-                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                    highlightCards_ref.highlightCards = CardTypeUtil.GetHighlightCard(card, num);
                 }
             }
             else if (num == CardType.Flush) {
@@ -269,7 +269,7 @@ export class CardTypeUtil {
                 if (currentMin > lastMin) {
                     lastMin = currentMin;
                     //显示更大
-                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                    highlightCards_ref.highlightCards = CardTypeUtil.GetHighlightCard(card, num);
                 }
             }
             else if (num == CardType.ThreeOfAKind || num == CardType.OnePair) {
@@ -286,7 +286,7 @@ export class CardTypeUtil {
                 if (currentMin > lastMin) {
                     lastMin = currentMin;
                     //显示更大
-                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                    highlightCards_ref.highlightCards = CardTypeUtil.GetHighlightCard(card, num);
                 }
             }
             else if (num == CardType.TwoPair) {
@@ -314,7 +314,7 @@ export class CardTypeUtil {
                 if (currentMin > lastMin) {
                     lastMin = currentMin;
                     //显示更大
-                    highlightCards = CardTypeUtil.GetHighlightCard(card, num);
+                    highlightCards_ref.highlightCards = CardTypeUtil.GetHighlightCard(card, num);
                 }
             }
         }

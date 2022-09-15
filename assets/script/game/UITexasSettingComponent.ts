@@ -3,14 +3,19 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-09 18:16:06
+ * @LastEditTime: 2022-09-15 15:23:05
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
+import { UIDefine } from "../define/UIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
+<<<<<<< HEAD
+=======
+import { UICommonMgr } from "../ui/UIMgr";
+>>>>>>> 52e91e61c05d6c06646a047ee28ccb10a6a91088
 import { GameCache } from "./GameCache";
 
 const { ccclass, property } = cc._decorator;
@@ -40,6 +45,9 @@ export default class UITexasSettingComponent extends UIBase {
         this.QuickActionNumGroup = this.getChildNodeOrComponent('QuickActionNumGroup')
         this.Button_Close = this.getChildNodeOrComponent("Button_Close");
         this.Toggle_Voice = this.getChildNodeOrComponent("Toggle_Voice");
+
+        cc.log("lateLoad ", this.UIDefine);
+
         this.Toggle_Voice.on("click", this.onValueChangedVoice, this);
 
         this.Button_Close.on("click", () => {
@@ -248,7 +256,6 @@ export default class UITexasSettingComponent extends UIBase {
         let numStr = localStorage.getItem(StorageKey.kQuickActionIndexValueKEY + index) || defaultActionNums[index];
         return +numStr;
     }
-
 
 }
 

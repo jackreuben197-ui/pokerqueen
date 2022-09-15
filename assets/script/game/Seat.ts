@@ -1,16 +1,15 @@
-import { RoomType } from "../define/EIDefine";
+
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import WebImageHelper from "../helper/WebImageHelper";
-import {CPErrorCode} from "../i18n/CPErrorCode";
+import { CPErrorCode } from "../i18n/CPErrorCode";
 import { UIMineModel } from "../lobby/UIMineModel";
-import { Web_Config_Global_Config } from "../net/https/WebRequest";
 import { Def } from "../protobuf/holdem/define_pb";
 import { CacheDataManager } from "./CacheDataManager";
 import { CardType, CardTypeUtil } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
 import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
-import GameUtil from "./GameUtil";
+import GameUtil, { RoomType } from "./GameUtil";
 import { SeatFSM } from "./SeatFSM";
 import { SeatEmpty, SeatSit } from "./SeatStateHandler";
 import SeatUIRC, { CardUIInfo } from "./SeatUIRC";
@@ -84,7 +83,8 @@ export default class Seat {
 
     protected sequencePlayFoldAnimation: cc.Tween;
 
-
+    tweenerPlayRecyclingWinChipAnimation: cc.Tween = null;
+    //cc.Tween = null;
 
     constructor(public id: number, public ui: cc.Node) {
 
@@ -315,6 +315,9 @@ export default class Seat {
         }
         this.uirc.textCoinBg.node.active = !(coin == "");
         let mTmpWidth: number = 0;
+
+
+
         // if (textCoin.preferredWidth > 0 && textCoin.preferredWidth < textCoin.rectTransform.sizeDelta.x)
         //     mTmpWidth = textCoin.preferredWidth + 36;
         // else if (textCoin.preferredWidth >= textCoin.rectTransform.sizeDelta.x)
@@ -868,7 +871,7 @@ export default class Seat {
     /// 播放庄家动画
     /// </summary>
     /// <returns></returns>
-    public PlayBankerAnimation(): cc.Tween {
+    public PlayBankerAnimation(tween?: cc.Tween): cc.Tween {
         if (GameCache.Instance.CurGame.lastBankerIndex == -1 || this.seatID == GameCache.Instance.CurGame.lastBankerIndex)
             return null;
 
@@ -879,10 +882,17 @@ export default class Seat {
         this.uirc.imageBanker.setPosition(GameUtil.ChangeToLocalPos(mSeat.seatUIInfo.BankerPos, mSeat.ui, this.ui));
         this.uirc.imageBanker.active = true;
 
-        let tween = cc.tween();
-        tween.sequence(cc.callFunc(() => {
-            cc.tween(this.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).call(() => { cc.log("运动结束") }).start();
-        }), cc.delayTime(.3));
+        if (tween) {
+            tween.then(cc.callFunc(() => {
+                cc.tween(this.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).call(() => { cc.log("运动结束") }).start();
+            }))
+            tween.delay(.3);
+        } else {
+            tween = cc.tween();
+            tween.sequence(cc.callFunc(() => {
+                cc.tween(this.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).call(() => { cc.log("运动结束") }).start();
+            }), cc.delayTime(.3));
+        }
         return tween;
     }
 
@@ -962,7 +972,7 @@ export default class Seat {
     /// <summary>
     /// 播放发牌动画
     /// </summary> virtual Sequence 
-    public PlayDealAnimation(targetPos: cc.Vec3): cc.Tween {
+    public PlayDealAnimation(delay: number, targetPos: cc.Vec3): cc.Tween {
 
         cc.log("seat PlayDealAnimation");
 
@@ -973,17 +983,19 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
-        let sequenceTween = cc.tween();
+        let tween = cc.tween(this.uirc.node);
 
-        let sequence: cc.ActionInstant[] = [];
+        tween.delay(delay);
 
-        let spawns: (cc.ActionInterval | cc.Tween)[] = [];
+        //let sequence: cc.ActionInstant[] = [];
+
+        //let spawns: (cc.ActionInterval | cc.Tween)[] = [];
 
         if (GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
 
             // 其他玩家发牌动画
             //sequencePlayDealAnimation = DOTween.Sequence();
-            sequence.push(cc.callFunc(() => {
+            tween.then(cc.callFunc(() => {
                 this.uirc.transSmallCardBacks.active = true;
             }));
 
@@ -992,29 +1004,35 @@ export default class Seat {
                 this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
                 let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
                 let pos = this.GetBackSmallCardPos(i);
-                let tween_child = cc.tween(mTmpObj);
-                //cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) });
-                tween_child.sequence(cc.callFunc(() => {
+                // let tween_child = cc.tween(mTmpObj);
+                // //cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) });
+                // tween_child.sequence(cc.callFunc(() => {
+                //     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                //     mTmpObj.active = true;
+                // }), cc.moveTo(0.4, pos.x, pos.y))
+
+                // let tween_sequence = cc.tween();
+                // tween_sequence.sequence(cc.callFunc(() => {
+                //     tween_child.start();
+                // }), cc.delayTime(0.4));
+                // spawns.push(tween_sequence);
+
+                tween.then(cc.callFunc(() => {
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
                     mTmpObj.active = true;
-                }), cc.moveTo(0.4, pos.x, pos.y))
-
-                let tween_sequence = cc.tween();
-                tween_sequence.sequence(cc.callFunc(() => {
-                    tween_child.start();
-                }), cc.delayTime(0.4));
-                spawns.push(tween_sequence);
-
+                    cc.tween(mTmpObj).to(.4, { position: pos }).start();
+                }))
             }
-            if (sequence.length) {
-                sequenceTween.sequence.apply(sequenceTween, sequence.concat(cc.delayTime(0)));
-            }
-            if (spawns.length) {
-                sequenceTween.parallel.apply(sequenceTween, spawns.concat(cc.delayTime(0)));
-            }
-            cc.log("其他玩家发牌动画", sequenceTween);
+            tween.delay(0.4);
+            // if (sequence.length) {
+            //     sequenceTween.sequence.apply(sequenceTween, sequence.concat(cc.delayTime(0)));
+            // }
+            // if (spawns.length) {
+            //     sequenceTween.parallel.apply(sequenceTween, spawns.concat(cc.delayTime(0)));
+            // }
+            cc.log("其他玩家发牌动画", tween);
 
-            return sequenceTween;
+            return tween;
         }
         else {
 
@@ -1022,14 +1040,13 @@ export default class Seat {
             try {
 
 
-                sequence.push(cc.callFunc(() => {
+                tween.then(cc.callFunc(() => {
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
                 }));
 
                 cc.log("this.Player.cards.length >> ", this.Player.cards.length);
 
                 for (let i = 0, n = this.Player.cards.length; i < n; i++) {
-
 
                     this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                     this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
@@ -1046,42 +1063,20 @@ export default class Seat {
                     //tween_card.to(0.4, { position: Seat.myCardsPos[i] })
                     let tween_card_sequence = cc.tween();
                     let tmp = i;
-                    //
+                    let cardInfo = this.uirc.listCardUIInfos[i];
+
+                    tween.then(cc.callFunc(() => {
+                        tween_card.to(0.4, { scaleX: 1.5, scaleY: 1.3, position: Seat.myCardsPos[i] }).start();
+                    }))
                     if (!GameCache.Instance.CurlimitDelaySeeCard) {
-                        let tween_back_sequence = cc.tween();
-                        tween_back.to(0.25, { opacity: 0 }).call(() => {
-                            this.uirc.listCardUIInfos[tmp].imageBack.node.active = false;
-                        });
-                        tween_back_sequence.sequence(
-                            cc.callFunc(() => {
-                                tween_back.start();
-                            }),
-                            cc.delayTime(0.25)
-                        );
-                        spawns.push(tween_back_sequence);
-
+                        tween.then(cc.callFunc(() => {
+                            tween_back.to(0.25, { opacity: 0 }).call(() => {
+                                cardInfo.imageBack.node.active = false;
+                            });
+                        }))
                     }
-                    tween_card.to(0.4, { scaleX: 1.5, scaleY: 1.3, position: Seat.myCardsPos[i] });
-
-                    tween_card_sequence.sequence(
-                        cc.callFunc(() => {
-                            cc.log("tween_card.start")
-                            tween_card.start()
-                        }),
-                        cc.delayTime(0.4)
-                    );
-                    spawns.push(tween_card_sequence);
-
                 }
-
-                if (sequence.length) {
-
-                    sequenceTween.sequence.apply(sequenceTween, sequence.concat(cc.delayTime(0)));
-                }
-                if (spawns.length) {
-
-                    sequenceTween.parallel.apply(sequenceTween, spawns.concat(cc.delayTime(0)));
-                }
+                tween.delay(0.4);
             }
             catch (Exception) {
 
@@ -1108,9 +1103,9 @@ export default class Seat {
             // sequencePlayDealAnimation.OnStart(() => {
 
             // });
-            cc.log("自己发牌动画", sequenceTween);
+            cc.log("自己发牌动画", tween);
 
-            return sequenceTween;
+            return tween;
         }
     }
 
@@ -1350,6 +1345,98 @@ export default class Seat {
                 mCardUiInfo.imageCard.color = active ? cc.Color.GRAY : cc.Color.WHITE;
             }
         }
+    }
+
+
+    /// <summary>
+    /// 播放赢牌头像特效
+    /// </summary>
+    public PlayWinArmature(): void {
+        // UpdateWinCoin();
+
+        // if (!Player.isWin) {
+        //     return;
+        // }
+        // transWinner.gameObject.SetActive(true);
+        // if (IsMySeat) {
+        //     armatureYouWin.gameObject.SetActive(true);
+        // }
+        // else {
+        //     armatureYouWin.gameObject.SetActive(false);
+        // }
+    }
+
+    /// <summary>
+    /// 刷新回收赢的筹码
+    /// </summary>
+    public UpdateRecyclingWinChip(): void {
+        //this.uirc.imageRecyclingWinChip.sprite = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+    }
+
+    /// <summary>
+    /// 隐藏气泡
+    /// </summary>
+    public HideBubble(): void {
+        // if (imageBubble.gameObject.activeInHierarchy) {
+        //     if (null == sequenceUpdateBubble || !sequenceUpdateBubble.IsPlaying()) {
+        //         imageBubble.color = Color.white;
+        //         imageBubble.transform.localScale = Vector3.one;
+        //     }
+        // }
+        // tweenerHideBubble = imageBubble.transform.DOScale(new Vector3(0, 0, 1), 0.2f).SetDelay(1f).OnComplete(() => {
+        //     imageBubble.gameObject.SetActive(false);
+
+        //     UpdateNickname();
+        // });
+        // if (Image_BubbleInsuranceNum.gameObject.activeInHierarchy) {
+        //     Image_BubbleInsuranceNum.gameObject.SetActive(false);
+        // }
+        // if (Image_BubbleInsuranceToubao.gameObject.activeInHierarchy) {
+        //     Image_BubbleInsuranceToubao.gameObject.SetActive(false);
+        // }
+        // HideBubbleInsurance();
+        // HideBubbleInsuranceCountDown();
+    }
+
+
+    /// <summary>
+    /// 播放赢了回收筹码动画
+    /// </summary>
+    public get CanPlayRecyclingWinChipAnimation(): boolean {
+        return this.uirc.imageIconChip.node.activeInHierarchy;
+    }
+
+    /// <summary>
+    /// 播放赢了回收筹码动画
+    /// </summary>
+    /// <returns></returns> Tweener
+    public PlayRecyclingWinChipAnimation(sourcePos: cc.Vec3): cc.Tween {
+
+        if (this.Player.recyclingChip > 0)//回收筹码大于零时，执行动画
+        {
+
+            let imageRecyclingWinChip = this.uirc.imageRecyclingWinChip;
+
+            imageRecyclingWinChip.node.setPosition(imageRecyclingWinChip.node.parent.convertToNodeSpaceAR(sourcePos));
+
+
+            this.tweenerPlayRecyclingWinChipAnimation = cc.tween(imageRecyclingWinChip.node);
+
+            this.tweenerPlayRecyclingWinChipAnimation.then(cc.callFunc(() => {
+                imageRecyclingWinChip.node.active = true;
+            }));
+
+            let pos = GameUtil.ChangeToLocalPos(this.uirc.imageHeadFrame.node.position, this.uirc.imageHeadFrame.node.parent, this.ui);
+
+            this.tweenerPlayRecyclingWinChipAnimation.to(.5, { position: pos });
+            this.tweenerPlayRecyclingWinChipAnimation.call(() => {
+                imageRecyclingWinChip.node.active = false;
+            });
+
+            (this.tweenerPlayRecyclingWinChipAnimation as any).duration = 0.5;
+        }
+        return this.tweenerPlayRecyclingWinChipAnimation;
+
     }
 }
 export interface SeatUIInfo {
