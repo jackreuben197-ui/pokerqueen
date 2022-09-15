@@ -1,7 +1,8 @@
 
 import { SeatUIInfo } from "../game/Seat";
-import TexasGame from "../game/TexasGame";
 import { GameCache } from "./GameCache";
+import TexasAofGame from "./texas/TexasAofGame";
+import TexasGame from "./texas/TexasGame";
 
 /**
  * 游戏类型
@@ -1097,7 +1098,6 @@ export default class GameUtil {
 
         let game: TexasGame = null;
 
-
         console.log("InstantiateTexasGame GameCache.Instance.CurGame ", GameCache.Instance.CurGame);
 
         switch (roomType) {
@@ -1110,7 +1110,6 @@ export default class GameUtil {
                     //(game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
                     //ComponentFactory.CreateWithId<TexasGame, Component>((int)roomType, component, fromPool);
                     game = GameUtil.TexasGameDic.get(roomType);
-                    console.log(game);
                     if (!game) {
                         game = new TexasGame();
                         GameUtil.TexasGameDic.set(roomType, game);
@@ -1122,6 +1121,11 @@ export default class GameUtil {
             case RoomType.TexasHoldemSixPlusFixedAof: // 普通短牌AOF
                 {
                     //game = ComponentFactory.CreateWithId<TexasAofGame, Component>((int)roomType, component, fromPool);
+                    game = GameUtil.TexasGameDic.get(roomType);
+                    if (!game) {
+                        game = new TexasAofGame();
+                        GameUtil.TexasGameDic.set(roomType, game);
+                    }
                 }
                 break;
 

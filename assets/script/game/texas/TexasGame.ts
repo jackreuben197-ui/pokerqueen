@@ -1,42 +1,43 @@
-import TexasConfig from "../config/TexasConfig";
-import { Param } from "../define/Types";
-import { UIDefine } from "../define/UIDefine";
-import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
-import UpdateComponent from "../funcomponent/UpdateComponent";
-import { StringHelper } from "../helper/StringHelper";
-import { i18nMgr } from "../i18n/i18nMgr";
-import { CPErrorCode } from "../i18n/CPErrorCode";
-import { Web_User_Room } from "../net/https/WebRequest";
-import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Protocol_Holdem_Action, Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
-import { Def, RoomInfo, Operator } from "../protobuf/holdem/define_pb";
-import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
-import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
-import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
-import StorageKey from "../session/StorageKey";
-import AssetContext, { AssetFold } from "../ui/component/AssetContext";
-import UIDialogComponent from "../ui/dialog/UIDialogComponent";
-import UIBase from "../ui/UIBase";
-import UIComponent from "../ui/UIComponent";
-import { CardType, CardTypeUtil } from "./CardTypeUtil";
-import { CPlayer } from "./CPlayer";
-import FSMLogicComponent from "./FSMLogicComponent";
-import { GameCache } from "./GameCache";
+import TexasConfig from "../../config/TexasConfig";
+import { Param } from "../../define/Types";
+import { UIDefine } from "../../define/UIDefine";
+import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import UpdateComponent from "../../funcomponent/UpdateComponent";
+import { StringHelper } from "../../helper/StringHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { Web_User_Room } from "../../net/https/WebRequest";
+import ProtocolAgency from "../../net/websocket/ProtocolAgency";
+import { ProtocolCode } from "../../net/websocket/ProtocolCode";
+import { Protocol_Holdem_Action, Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../../net/websocket/ProtocolHoldemMessages";
+import { Def, RoomInfo, Operator } from "../../protobuf/holdem/define_pb";
+import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
+import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
+import StorageKey from "../../session/StorageKey";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
+import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
+import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
+import { CardType, CardTypeUtil } from "./../CardTypeUtil";
+import { CPlayer } from "./../CPlayer";
+import FSMLogicComponent from "./../FSMLogicComponent";
+import { GameCache } from "./../GameCache";
 
-import GameUtil, { RoomType } from "./GameUtil";
-import Seat, { SeatUIInfo } from "./Seat";
-import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation, SeatWaitOther } from "./SeatStateHandler";
-import TexasGameMessageHandler from "./TexasGameMessageHandler";
-import TexasGameProtocol from "./TexasGameProtocol";
-import { TexasGameState } from "./TexasGameState";
-import TexasGameUtils from "./TexasGameUtils";
-import TexasSMAgency from "./TexasSMAgency";
-import UIAddChipsComponent from "./ui/UIAddChipsComponent";
-import UIOperationComponent, { OperationData } from "./ui/UIOperationComponent";
-import UITexas, { PotInfo, PublicCardInfo } from "./UITexas";
-import { UITexasModel } from "./UITexasModel";
-import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
+import GameUtil, { RoomType } from "./../GameUtil";
+import Seat, { SeatUIInfo } from "./../Seat";
+import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation, SeatWaitOther } from "./../SeatStateHandler";
+import TexasGameMessageHandler from "./../TexasGameMessageHandler";
+import TexasGameProtocol from "./../TexasGameProtocol";
+import { TexasGameState } from "./../TexasGameState";
+import TexasGameUtils from "./../TexasGameUtils";
+import TexasSMAgency from "./../TexasSMAgency";
+import UIAddChipsComponent from "./../ui/UIAddChipsComponent";
+import UIOperationComponent, { OperationData } from "./../ui/UIOperationComponent";
+import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
+import { UITexasModel } from "./../UITexasModel";
+import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
+import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 //const PBTypes = Def.Types;
 
 
@@ -72,7 +73,7 @@ export default class TexasGame {
 
     public texasGameProtocol: TexasGameProtocol = null;
 
-    public FsmLogicComponent: FSMLogicComponent = null;
+    public GameLogicSMComponent: FSMLogicComponent = null;
 
     public SMAgency: TexasSMAgency = null;
 
@@ -362,19 +363,21 @@ export default class TexasGame {
     sequencePlayEndPublicCardsAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
 
 
+    IsDispose: boolean = false;
+
     constructor() {
         this.messageHandler = new TexasGameMessageHandler(this);
         this.texasGameProtocol = new TexasGameProtocol(this);
-        this.FsmLogicComponent = new FSMLogicComponent();
+        this.GameLogicSMComponent = new FSMLogicComponent();
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
         this.listSeat = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
     }
 
-    Start() {
-        UpdateComponent.Add(this.FsmLogicComponent, this);
-        this.FsmLogicComponent.start();
+    Enter() {
+        UpdateComponent.Add(this.GameLogicSMComponent, this);
+        this.GameLogicSMComponent.start();
         this.SMAgency.LoadGameStateConf();
     }
 
@@ -382,7 +385,7 @@ export default class TexasGame {
         this.messageHandler.RegisterMessageHandler();
         this.texasGameProtocol.RegisterMsgHandler();
     }
-    UnRegisterMsgHandler() {
+    RemoveMsgHandler() {
         this.messageHandler.RemoveMessageHandler();
         this.texasGameProtocol.RemoveMsgHandler();
     }
@@ -616,7 +619,7 @@ export default class TexasGame {
                 if (mSeat.seatID == this.mainPlayer.seatID && mSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isPlaying) {
                     //自己操作中
                     this.HideAutoOperationPanel();   // 隐藏预操作
-                    this.ShowOperationPanel(UIOperationComponent.GetOperationData(actionLimits, actionShortcutLimits));
+                    this.ShowOperationPanel(UIOperationComponent.OperationData(actionLimits, actionShortcutLimits));
                 }
                 else {
                     // 下一个操作不是自己
@@ -624,10 +627,9 @@ export default class TexasGame {
                     if (this.mainPlayer.isPlaying) {
                         // 自己有参与游戏,但allin弃牌不显示
                         if ((this.mainPlayer.actionStatus != Def.Action.FOLD && this.mainPlayer.actionStatus != Def.Action.ALLIN && this.mainPlayer.actionStatus != Def.Action.NONE) && !this.mainPlayer.IsAutoOp) {
-                            //         UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-                            // {
-                            //                 callAmount = getAutoOperationCallAmount(rec.HandInfo.RoundBet)
-                            //             });
+
+                            this.ShowUI(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
+
                         }
                         else {
                             this.HideAutoOperationPanel();
@@ -1537,9 +1539,7 @@ export default class TexasGame {
     /// 隐藏自动操作面板
     /// </summary>
     public HideAutoOperationPanel(): void {
-        // if (UIComponent.Instance.Get(UIType.UIAutoOperation).GameObject.activeInHierarchy) {
-        //     UIComponent.Instance.HideNoAnimation(UIType.UIAutoOperation);
-        // }
+        this.HideUI(this.uirc.UIAutoOperation);
     }
     /// <summary>
     /// 展示操作面板
@@ -1557,13 +1557,11 @@ export default class TexasGame {
                 if (this.mainPlayer.seatID == mSeat.seatID) {
                     mSeat.SetOperationHeadActive(false);
                 }
-
             }
         }
-        //buttonDelay.gameObject.SetActive(true);
+        this.uirc.buttonDelay.active = true;
         this.delayCount = delay;
-        //UpdateDelayBtn();
-        //UIComponent.Instance.ShowNoAnimation(UIType.UIOperation, operationData);
+        this.UpdateDelayBtn();
         this.ShowUI(this.uirc.UIOperation, UIOperationComponent, operationData);
     }
     /// <summary>
@@ -1579,11 +1577,10 @@ export default class TexasGame {
                 }
             }
         }
-        //buttonDelay.gameObject.SetActive(false);
+        this.uirc.buttonDelay.active = false;
         if (this.uirc.UIOperation.activeInHierarchy) {
             this.HideUI(this.uirc.UIOperation);
         }
-        cc.log("隐藏操作界面");
     }
 
 
@@ -1790,7 +1787,7 @@ export default class TexasGame {
 
                 // 非托管
                 if (!this.mainPlayer.IsAutoOp) {
-                    this.ShowOperationPanel(UIOperationComponent.GetOperationData(source.nextOperator.actionsList, source.nextOperator.shortcutsList));
+                    this.ShowOperationPanel(UIOperationComponent.OperationData(source.nextOperator.actionsList, source.nextOperator.shortcutsList));
                 }
             }
             else {
@@ -1799,10 +1796,7 @@ export default class TexasGame {
                 // 非弃牌、非ALL IN、非空闲等待下一局、非托管
                 if (this.mainPlayer.isPlaying && !this.mainPlayer.IsAutoOp) {
                     // 预操作UI
-                    // UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-                    // 	{
-                    //         callAmount = getAutoOperationCallAmount(0)
-                    //     });
+                    this.ShowUI(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(0)));
                 }
                 else {
                     // 无预操作UI
@@ -2754,10 +2748,72 @@ export default class TexasGame {
         seatUI && this.seatUI_pool.push(seatUI);
     }
 
+
     /**
      * 退出
      */
-    Exit() {
-        this.UnRegisterMsgHandler()
+    Dispose() {
+
+        if (this.IsDispose) {
+            return;
+        }
+
+        this.RemoveMsgHandler();
+
+        this.ClearAllData();
+
+        //this.KillAllTweener();
+
+        // 清空公共牌
+        if (null != this.uirc.listCards)
+            this.uirc.listCards = [];
+
+        // 清空座位
+        if (null != this.listSeat) {
+            for (let i = 0; i < this.listSeat.length; i++) {
+                if (null != this.listSeat[i]) {
+                    this.listSeat[i].Dispose();
+                }
+            }
+            this.listSeat = null;
+        }
+
+        // 清空座位(客户端标记)
+        if (null != this.dicSeatOnlyClient) {
+            this.dicSeatOnlyClient.clear();
+            this.dicSeatOnlyClient = null;
+        }
+
+        // 清空分池
+        if (null != this.uirc.listPotInfo) {
+            this.uirc.listPotInfo = null;
+        }
+
+        // 清空玩家自己
+        if (null != this.mainPlayer) {
+            this.mainPlayer.Dispose();
+            this.mainPlayer = null;
+        }
+
+        // 卸载牌局内已加载过的ab
+        // if (null != settingAbnames && settingAbnames.Count > 0) {
+        //     ResourcesComponent mResourcesComponent = Game.Scene.ModelScene.GetComponent<ResourcesComponent>();
+        //     for (int i = 0, n = settingAbnames.Count; i < n; i++)
+        //     {
+        //         mResourcesComponent.UnloadBundle(settingAbnames[i]);
+        //     }
+        //     settingAbnames.Clear();
+        //     settingAbnames = null;
+        // }
+
+        if (this.GameLogicSMComponent != null) {
+            this.GameLogicSMComponent.stop();
+        }
+
+        //GameStatusRestoreHandler = null;
+
+        //this.IsExit = true;
     }
+
+
 }

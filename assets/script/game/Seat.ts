@@ -49,7 +49,6 @@ export default class Seat {
     protected defaultIconChipLocalPos: cc.Vec3 = cc.v3();
 
 
-
     public FsmLogicComponent: FSMLogicComponent = null;//状态机
 
 
@@ -85,6 +84,8 @@ export default class Seat {
 
     tweenerPlayRecyclingWinChipAnimation: cc.Tween = null;
     //cc.Tween = null;
+
+    IsDisposed: boolean = false;
 
     constructor(public id: number, public ui: cc.Node) {
 
@@ -1436,6 +1437,21 @@ export default class Seat {
             (this.tweenerPlayRecyclingWinChipAnimation as any).duration = 0.5;
         }
         return this.tweenerPlayRecyclingWinChipAnimation;
+
+    }
+    Dispose() {
+        if (this.IsDisposed) {
+            return;
+        }
+
+        //this.KillAllTweener();
+
+        if (null != this.FsmLogicComponent) {
+            this.FsmLogicComponent.stop();
+        }
+
+        // ClearUI();
+        // ClearData();
 
     }
 }

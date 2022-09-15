@@ -21,8 +21,9 @@ import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
 import { SeatAllin, SeatCall, SeatCheck, SeatFold, SeatOperation, SeatPutChip, SeatRaise, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
-import TexasGame from "./TexasGame";
+import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
+import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 
 const CanPlayStatus = Def.CanPlayStatus;
@@ -333,7 +334,7 @@ export default class TexasGameProtocol {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData.nextOperator.actionsList, responseData.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(responseData.nextOperator.actionsList, responseData.nextOperator.shortcutsList));
                 }
             }
             else {
@@ -343,10 +344,8 @@ export default class TexasGameProtocol {
                     // 自己参与游戏
                     // 非弃牌 && 非ALLIN && 非托管
                     if (mMySeat.Player.actionStatus != Def.Action.FOLD && mMySeat.Player.actionStatus != Def.Action.ALLIN && mMySeat.Player.actionStatus != Def.Action.NONE && !mMySeat.Player.IsAutoOp) {
-                        // UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-                        //         {
-                        //         callAmount = getAutoOperationCallAmount(responseData.HandInfo.RoundBet)
-                        //     });
+
+                        this.game.ShowUI(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -564,12 +563,12 @@ export default class TexasGameProtocol {
                         this.game.HideOperationPanel();
                     }
                     else {
-                        this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                        this.game.ShowOperationPanel(UIOperationComponent.OperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
 
                     }
                 }
                 else {
-                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
                 }
             }
             else {
@@ -579,10 +578,9 @@ export default class TexasGameProtocol {
                 if (this.game.mainPlayer.isParticipateInTheGame) {
                     // 自己有参与游戏
                     if ((this.game.mainPlayer.actionStatus != Def.Action.FOLD && this.game.mainPlayer.actionStatus != Def.Action.ALLIN && this.game.mainPlayer.actionStatus != Def.Action.NONE) && !this.game.mainPlayer.IsAutoOp) {
-                        // UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-                        //     {
-                        //         callAmount = getAutoOperationCallAmount(rec.RoundBet)
-                        //     });
+
+                        this.game.ShowUI(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
+
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -930,10 +928,8 @@ export default class TexasGameProtocol {
         this.game.gamestatus = -1;
         this.game.cacheRound = rec.round;
         GameCache.Instance.GameStatus = this.game.gamestatus;
-        // if (UIComponent.Instance.Get(UIType.UIAutoOperation).GameObject.activeInHierarchy)
-        //     UIComponent.Instance.HideNoAnimation(UIType.UIAutoOperation);
-        // if (UIComponent.Instance.Get(UIType.UIOperation).GameObject.activeInHierarchy)
-        //     UIComponent.Instance.HideNoAnimation(UIType.UIOperation);
+
+        this.game.HideUI(this.game.uirc.UIAutoOperation);
         this.game.HideUI(this.game.uirc.UIOperation);
 
         let mSeat: Seat = null;

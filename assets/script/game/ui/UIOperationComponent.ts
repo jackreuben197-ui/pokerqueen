@@ -698,7 +698,7 @@ export default class UIOperationComponent extends UIBase {
 
     }
 
-    static GetOperationData(actionsList, shortcutsList): OperationData {
+    static OperationData(actionsList, shortcutsList): OperationData {
         return {
             actionLimits: actionsList,
             Shortcuts: shortcutsList

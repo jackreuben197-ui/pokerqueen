@@ -10,7 +10,7 @@ import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
-import TexasGame from "./TexasGame";
+import TexasGame from "./texas/TexasGame";
 import { PublicCardInfo } from "./UITexas";
 
 export default class TexasGameUtils {
@@ -179,9 +179,9 @@ export default class TexasGameUtils {
     /// </summary>
     /// <param name="publicCardInfos"></param>
     private SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], _cards: number[]): void {
-        let highlightCards = [];
-        let cardType: CardType = this.game.GetCardType(highlightCards, _cards);
-
+        let highlightCards_ref = { highlightCards: null };
+        let cardType: CardType = this.game.GetCardType(highlightCards_ref, _cards);
+        let highlightCards = highlightCards_ref.highlightCards;
         for (let i = 0, n = publicCardInfos.length; i < n; i++) {
             publicCardInfos[i].imageSelect.node.active = false;
             for (let j = 0, m = highlightCards.length; j < m; j++) {
@@ -200,7 +200,17 @@ export default class TexasGameUtils {
         }
     }
 
-
+    /// <summary>
+    /// 获取自己跟住额，显示自动操作面板按钮用到
+    /// </summary>
+    /// <param name="roundBet"></param>
+    /// <returns></returns>
+    public getAutoOperationCallAmount(roundBet: number): number {
+        if (roundBet - this.game.mainPlayer.anteNumber < 0) {
+            return 0;
+        }
+        return roundBet - this.game.mainPlayer.anteNumber;
+    }
 
 
 
@@ -221,6 +231,7 @@ export default class TexasGameUtils {
         // UIComponent.Instance.Remove(UIType.UITexasHumanVote);
         // UIComponent.Instance.Remove(UIType.UITexasHumanYZ);
         // UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
+        
         ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
         //#region 关键属性最后置空
         GameCache.Instance.CurrentRoomID = 0;

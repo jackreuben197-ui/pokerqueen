@@ -1628,7 +1628,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_InputMoblie",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -1959,7 +1958,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_GetCode",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -2723,7 +2721,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_Code",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -3490,7 +3487,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_InputPW",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -4715,7 +4711,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILogin_USER101",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -4771,7 +4766,7 @@
     "_enabled": true,
     "alignMode": 1,
     "_target": null,
-    "_alignFlags": 9,
+    "_alignFlags": 1,
     "_left": 34,
     "_right": 0,
     "_top": 872.556,
@@ -4982,7 +4977,6 @@
     },
     "_enabled": true,
     "i18n_string": "CommitOK",
-    "i18n_params": [],
     "_id": ""
   },
   {
