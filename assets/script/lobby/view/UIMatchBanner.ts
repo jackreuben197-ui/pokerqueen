@@ -30,14 +30,14 @@ export default class UIMatchBanner extends UIBase {
         this.layout = this.getChildNodeOrComponent("Banner_Layout");
         this.pageView = this.getChildNodeOrComponent("ScrollView_TopCards");
         this.pageData = param;
+        this.initPageBanner();
+        this.schedule(this.autoScrollPage, 5)
+    }
+
+    initPageBanner(): void {
         let list: Array<any> = this.pageData.data.list;
         if(list.length>0){
-            let beginData = list[0];
-            let endData = list[list.length - 1];
-            //处理一下list在开始和结束分别添加一个数据
             this.curNum = list.length;
-            list.push(beginData);
-            list.unshift(endData);
             let bannerPrefab = this.getChildNodeOrComponent("Banner_Prefab");
             //添加banner
             for (let i = 0; i < list.length; i++) {
@@ -57,7 +57,6 @@ export default class UIMatchBanner extends UIBase {
             }
             this.addPageEvent();
             this.setDots(true);
-            this.schedule(this.autoScrollPage, 5)
         }
     }
     /**
@@ -103,7 +102,7 @@ export default class UIMatchBanner extends UIBase {
         this.pageView.getComponent(cc.PageView).pageEvents.push(pageViewEventHandler);
         this.scheduleOnce(() => {
             let curPage = this.pageView.getComponent(cc.PageView).getCurrentPageIndex();
-            // this.onJumpHome();
+            this.onJumpHome();
         })
     }
     /**
@@ -137,9 +136,9 @@ export default class UIMatchBanner extends UIBase {
                 }
             }
             if (pageView.getCurrentPageIndex() === this.curNum + 1) {
-                // this.onJumpHome();
+                this.onJumpHome();
             } else if (pageView.getCurrentPageIndex() === 0) {
-                // this.onJumpEnd();
+                this.onJumpEnd();
             } else {
                 this.setDots(false);
             }
@@ -172,9 +171,10 @@ export default class UIMatchBanner extends UIBase {
     setDots(isInit: boolean): void {
         let curPage = this.pageView.getComponent(cc.PageView).getCurrentPageIndex();
         if (isInit) {
-            curPage = 1;
+            curPage = 0;
         }
-        let Dots: cc.Node = this.getChildNodeOrComponent("Dots_show");
+        let Dots: cc.Node = this.getChildNodeOrComponent("Dots");
+        let Dots_show: cc.Node = this.getChildNodeOrComponent("Dots_show");
         for (let i = 1; i <= 5; i++) {
             let dot = Dots.children[i - 1];
             if (i <= this.curNum) {
@@ -182,15 +182,22 @@ export default class UIMatchBanner extends UIBase {
             } else {
                 dot.active = false;
             }
-            if (i === curPage) {
-                dot.active = true;
+
+            let dot_show = Dots_show.children[i - 1];
+            if (i === curPage + 1) {
+                dot_show.active = true;
+            } else {
+                dot_show.active = false;
             }
         }
     }
     autoScrollPage(): void {
         //看看 自动滚动是否会触发pageEvent;
-        // let pageview = this.pageView.getComponent(cc.PageView);
-        // let index = pageview.getCurrentPageIndex();
-        // pageview.scrollToPage(index + 1, 0.3);
+        let pageview = this.pageView.getComponent(cc.PageView);
+        let index = pageview.getCurrentPageIndex();
+        if (index == 2) {
+            index = -1;
+        }
+        pageview.scrollToPage(index + 1, 0.3);
     }
 }
