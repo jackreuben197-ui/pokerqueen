@@ -21073,7 +21073,7 @@
         "__id__": 566
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 569
@@ -23695,7 +23695,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -335,
+        -326,
         0,
         0,
         0,
@@ -25289,7 +25289,7 @@
         "__id__": 694
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 697
@@ -26044,7 +26044,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_AutoCall",
+    "_name": "Text_AutoAllin",
     "_objFlags": 0,
     "_parent": {
       "__id__": 675
@@ -26121,8 +26121,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "1",
-    "_N$string": "1",
+    "_string": "All in",
+    "_N$string": "All in",
     "_fontSize": 56,
     "_lineHeight": 56,
     "_enableWrapText": true,
@@ -26225,7 +26225,7 @@
         "__id__": 709
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 713
@@ -26830,8 +26830,8 @@
     "_alignFlags": 5,
     "_left": 621,
     "_right": 621,
-    "_top": 335,
-    "_bottom": -335,
+    "_top": 326,
+    "_bottom": -326,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,

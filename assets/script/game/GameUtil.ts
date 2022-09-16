@@ -315,7 +315,7 @@ export default class GameUtil {
             AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
         },
         ],
-        [3]: [{
+        3: [{
 
             Pos: GameUtil.SeatPosV3[0],
             BankerPos: GameUtil.BankerLRV3[0],

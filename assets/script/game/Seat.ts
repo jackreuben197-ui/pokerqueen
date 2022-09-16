@@ -1005,18 +1005,6 @@ export default class Seat {
                 this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
                 let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
                 let pos = this.GetBackSmallCardPos(i);
-                // let tween_child = cc.tween(mTmpObj);
-                // //cc.tween(mTmpObj).to(0.4, { position: this.GetBackSmallCardPos(i) });
-                // tween_child.sequence(cc.callFunc(() => {
-                //     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                //     mTmpObj.active = true;
-                // }), cc.moveTo(0.4, pos.x, pos.y))
-
-                // let tween_sequence = cc.tween();
-                // tween_sequence.sequence(cc.callFunc(() => {
-                //     tween_child.start();
-                // }), cc.delayTime(0.4));
-                // spawns.push(tween_sequence);
 
                 tween.then(cc.callFunc(() => {
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
@@ -1025,19 +1013,13 @@ export default class Seat {
                 }))
             }
             tween.delay(0.4);
-            // if (sequence.length) {
-            //     sequenceTween.sequence.apply(sequenceTween, sequence.concat(cc.delayTime(0)));
-            // }
-            // if (spawns.length) {
-            //     sequenceTween.parallel.apply(sequenceTween, spawns.concat(cc.delayTime(0)));
-            // }
+
             cc.log("其他玩家发牌动画", tween);
 
             return tween;
         }
         else {
 
-            //sequencePlayDealAnimation = DOTween.Sequence();
             try {
 
 
@@ -1061,9 +1043,6 @@ export default class Seat {
                     let tween_card = cc.tween(this.uirc.listCardUIInfos[i].imageCard);
                     let tween_back = cc.tween(this.uirc.listCardUIInfos[i].imageBack.node);
 
-                    //tween_card.to(0.4, { position: Seat.myCardsPos[i] })
-                    let tween_card_sequence = cc.tween();
-                    let tmp = i;
                     let cardInfo = this.uirc.listCardUIInfos[i];
 
                     tween.then(cc.callFunc(() => {

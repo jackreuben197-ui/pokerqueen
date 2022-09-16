@@ -6,6 +6,7 @@ import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def, Result } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
+import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
@@ -829,14 +830,17 @@ export default class TexasGameProtocol {
             // }
             let PlayRecyclingWinChipAnimation_Tween: cc.Tween = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.textAlreadAnte.node.position));
 
-            tween.then(cc.callFunc(() => {
-                PlayRecyclingWinChipAnimation_Tween.start();
-            }));
+            if (PlayRecyclingWinChipAnimation_Tween) {
 
-            if (i == n - 1) {
-                let duration: number = (PlayRecyclingWinChipAnimation_Tween as any).duration;
-                if (duration) {
-                    tween.delay(duration);
+                tween.then(cc.callFunc(() => {
+                    PlayRecyclingWinChipAnimation_Tween.start();
+                }));
+
+                if (i == n - 1) {
+                    let duration: number = (PlayRecyclingWinChipAnimation_Tween as any).duration;
+                    if (duration) {
+                        tween.delay(duration);
+                    }
                 }
             }
         }
@@ -959,6 +963,63 @@ export default class TexasGameProtocol {
 
     }
 
+    /// <summary>
+    /// 本手结束清理桌面
+    /// </summary>
+    /// <param name="source"></param>
+    public HandleRoundFinish(source: ServerMessageHandClear.AsObject): void {
+        this.game.gamestatus = -1;
+        GameCache.Instance.GameStatus = this.game.gamestatus;
+        //每手清理缓存购买池子人数
+        this.game.cacheBuyInsurancePotUserCount = 0;
+        this.game.IsSecondPsc = false;
+        //this.game.HideSeeMorePublic();
+        // this.game.HideSeeMorePublicTips();
 
+        this.game.HideWaitBlindBtn();
+        this.game.HideOperationPanel();
+        //防止大牌动画未消失
+        if (this.game.isPlayingBigWinAnimation) {
+            //UIComponent.Instance.HideNoAnimation(UIType.UIBigWinAnimation);
+        }
 
+        // 刷新底池
+        this.game.alreadAnte = 0;
+        this.game.UpdateAlreadAnte();
+        // 刷新分池
+        this.game.pots = [];
+        this.game.UpdatePots();
+
+        // 刷新公共牌
+        //this.game.ResetPublicCardsId();
+        //this.game.ResetPublicCardsImage();
+
+        //刷新第二套公共牌
+        //this.game.ResetSecondPublicCardsId();
+        //this.game.ResetSecondPublicCardsImage();
+        // UpdatePublicCards(0, null);
+        if (null != this.game.cacheTrunOutsCards) {
+            this.game.cacheTrunOutsCards.clear();
+            this.game.cacheTrunOutsCards = null;
+        }
+        let mSeat: Seat = null;
+        for (let i = 0, n = this.game.listSeat.length; i < n; i++) {
+            mSeat = this.game.listSeat[i];
+            if (mSeat != null && null == mSeat.Player) {
+
+                //mSeat.EmptyEnter();
+            }
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+
+            mSeat.Player.actionStatus = Def.Action.NONE;
+            //mSeat.FsmLogicComponent.SM.ChangeState(SeatRoundEnd.Instance);
+            if (mSeat.Player.canPlayStatus == Def.CanPlayStatus.KEEP_SEAT) {
+                //mSeat.FsmLogicComponent.SM.ChangeState(SeatKeep.Instance);
+            }
+            else {
+                mSeat.Player.canPlayStatus = Def.CanPlayStatus.DISABLE;
+            }
+        }
+    }
 }

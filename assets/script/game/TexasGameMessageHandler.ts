@@ -12,6 +12,7 @@ import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageError } from "../protobuf/holdem/recv_error_pb";
+import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessageLeaveNotification } from "../protobuf/holdem/recv_leave_notification_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
@@ -362,8 +363,17 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_UpBlind_Handler(Protocol_Holdem_UpBlind: ProtocolCode, Protocol_Holdem_UpBlind_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    Protocol_Holdem_HandClear_Handler(Protocol_Holdem_HandClear: ProtocolCode, Protocol_Holdem_HandClear_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 一手结束清理桌面 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_HandClear_Handler(response: ServerMessageHandClear.AsObject): void {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_HandClear_Handler`);
+
+        if (response == null) {
+            return;
+        }
+        this.game.SMAgency.ChangeGameState(TexasGameState.HandEnd, response);
     }
     Protocol_Holdem_BringInOrStoreFail_Handler(Protocol_Holdem_BringInOrStoreFail: ProtocolCode, Protocol_Holdem_BringInOrStoreFail_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");

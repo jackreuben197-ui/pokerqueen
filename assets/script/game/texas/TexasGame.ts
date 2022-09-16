@@ -371,12 +371,12 @@ export default class TexasGame {
         this.GameLogicSMComponent = new FSMLogicComponent();
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
-        this.listSeat = [];
-        this.dicSeatOnlyClient = new Map<number, Seat>();
     }
 
     Enter() {
         UpdateComponent.Add(this.GameLogicSMComponent, this);
+        this.listSeat = [];
+        this.dicSeatOnlyClient = new Map<number, Seat>();
         this.GameLogicSMComponent.start();
         this.SMAgency.LoadGameStateConf();
     }
@@ -2426,8 +2426,8 @@ export default class TexasGame {
     public PlayEndPublicCardsAnimation(rec: ServerMessageWinner.AsObject): void {
         // Log.Msg(rec);
 
-        let mCacheWinnerSeatIds = null; // 赢家座位
-        let mCacheWinnerCardTypes = null; // 赢家牌型
+        let mCacheWinnerSeatIds: number[] = null; // 赢家座位
+        let mCacheWinnerCardTypes: number[] = null; // 赢家牌型
 
         for (let i = 0, n = rec.resultsList.length; i < n; i++) {
             // 找到赢家
@@ -2437,7 +2437,7 @@ export default class TexasGame {
                 mCacheWinnerSeatIds.push(this.GetLocalSeatID(rec.resultsList[i].seatId));
                 if (null == mCacheWinnerCardTypes)
                     mCacheWinnerCardTypes = [];
-                mCacheWinnerCardTypes.Add(rec.resultsList[i].handValueType);
+                mCacheWinnerCardTypes.push(rec.resultsList[i].handValueType);
             }
         }
 
@@ -2455,14 +2455,14 @@ export default class TexasGame {
         let mHaveCardSort = true;
 
 
-        if (null == mCacheWinnerSeatIds || mCacheWinnerSeatIds.Count == 0 || !mHaveCardSort) {
+        if (null == mCacheWinnerSeatIds || mCacheWinnerSeatIds.length == 0 || !mHaveCardSort) {
             // 没有赢家
             return;
         }
 
 
         let mWinnerIndex = 0;
-        for (let i = 0, n = mCacheWinnerSeatIds.Count; i < n; i++) {
+        for (let i = 0, n = mCacheWinnerSeatIds.length; i < n; i++) {
             if (this.mainPlayer.isPlaying && this.mainPlayer.seatID == mCacheWinnerSeatIds[i]) {
                 mWinnerIndex = i;
                 break;
@@ -2708,16 +2708,17 @@ export default class TexasGame {
             this.mainPlayer.Dispose();
             this.mainPlayer = null;
         }
-        while (this.listSeat.length) {
-            let mSeat: Seat = this.listSeat.pop();
-            if (mSeat?.Player) {
-                mSeat.Player.Dispose();
-                mSeat.Player = null;
+        if (this.listSeat) {
+            while (this.listSeat.length) {
+                let mSeat: Seat = this.listSeat.pop();
+                if (mSeat?.Player) {
+                    mSeat.Player.Dispose();
+                    mSeat.Player = null;
+                }
+                this.returnSeatUIPool(mSeat?.ui);
+                mSeat?.Clear();
             }
-            this.returnSeatUIPool(mSeat?.ui);
-            mSeat?.Clear();
         }
-
     }
 
     /**
@@ -2775,7 +2776,7 @@ export default class TexasGame {
                     this.listSeat[i].Dispose();
                 }
             }
-            this.listSeat = null;
+            this.listSeat = null
         }
 
         // 清空座位(客户端标记)

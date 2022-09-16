@@ -376,10 +376,16 @@ export class TexasGameStateHandlerHandEnd extends StateHandler {
 
     public Enter(entity?: any): void {
 
+        var source = this.SourceData as ServerMessageWinner.AsObject;
+
+        if (source == null) {
+            return;
+        }
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
 
+        game.texasGameProtocol.HandleRoundFinish(source);
     }
 
     public Execute(entity?: any): void {

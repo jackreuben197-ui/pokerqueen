@@ -325,10 +325,6 @@ export default class UITexas extends BaseScene {
         this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.position);
 
 
-        // 分池UI
-        if (null == this.listPotInfo) this.listPotInfo = [];
-
-
         this.buildMenuButtons();
         //GameCache.Instance.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
@@ -378,6 +374,8 @@ export default class UITexas extends BaseScene {
         }
 
         this.game.setDeskType(this.game.deskType);
+        // 分池UI
+        if (null == this.listPotInfo) this.listPotInfo = [];
 
     }
     Exit(param) {

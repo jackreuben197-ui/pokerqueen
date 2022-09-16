@@ -14,18 +14,6 @@ import UITexasSettingComponent from "../UITexasSettingComponent";
 import ToggleButton from "../../ui/component/ToggleButton";
 
 
-// export type OperationData = {
-//     actionLimits?: ActionLimit.AsObject[],
-//     Shortcuts?: ActionShortcutLimit.AsObject[],
-// }
-// class ActionDataInfo {
-
-//     // public ActionLimit actionLimit;//只用于raise 或 bet
-//     public constructor(public CallAmount: number = 0, public StraddleAmount: number = 0, public AllInAmount: number = 0, public actionLimit: ActionLimit.AsObject = null) {
-
-//     }
-// }
-
 
 export type AutoOperationData = {
     callAmount?: number
@@ -102,7 +90,10 @@ export default class UIAutoOperationComponent extends UIBase {
     }
 
     protected regiterTouchEvents(): void {
-
+        this.toggleAutoFold.onValueChanged(this.onValueChangeAutoFold.bind(this));
+        this.toggleAutoCall.onValueChanged(this.onValueChangeAutoCall.bind(this));
+        this.toggleAutoAllin.onValueChanged(this.onValueChangeAutoAllin.bind(this));
+        this.toggleAutoCheck.onValueChanged(this.onValueChangeAutoCheck.bind(this));
     }
 
     static AutoOperationData(callAmount: number): AutoOperationData {
@@ -111,5 +102,36 @@ export default class UIAutoOperationComponent extends UIBase {
         }
     }
 
-
+    onValueChangeAutoFold(boo: boolean) {
+        GameCache.Instance.CurGame.autoFold = boo;
+        if (boo) {
+            this.toggleAutoCall.isOn = false;
+            this.toggleAutoAllin.isOn = false;
+            this.toggleAutoCheck.isOn = false;
+        }
+    }
+    onValueChangeAutoCall(boo: boolean) {
+        GameCache.Instance.CurGame.autoCall = boo;
+        if (boo) {
+            this.toggleAutoFold.isOn = false;
+            this.toggleAutoAllin.isOn = false;
+            this.toggleAutoCheck.isOn = false;
+        }
+    }
+    onValueChangeAutoAllin(boo: boolean) {
+        GameCache.Instance.CurGame.autoAllin = boo;
+        if (boo) {
+            this.toggleAutoCall.isOn = false;
+            this.toggleAutoFold.isOn = false;
+            this.toggleAutoCheck.isOn = false;
+        }
+    }
+    onValueChangeAutoCheck(boo: boolean) {
+        GameCache.Instance.CurGame.autoCheck = boo;
+        if (boo) {
+            this.toggleAutoCall.isOn = false;
+            this.toggleAutoAllin.isOn = false;
+            this.toggleAutoFold.isOn = false;
+        }
+    }
 }
