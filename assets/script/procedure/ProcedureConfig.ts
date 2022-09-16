@@ -62,20 +62,27 @@ export default class ProcedureConfig extends ProcedureBase {
                 })
                 break;
             case 2://开发服
-                network.HTTP = "dev.k8s.awanptesting.com";////PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
-                //network.HTTP = "13.215.246.46";
-                network.WebHost = `http://${network.HTTP}`;
-                //network.LoginHost = "152.70.234.14"; 
-                network.LoginHost = "13.214.17.211";
-    
+                if (GameConfig.IsNewArea) {
+                    network.HTTP = "dev1.awanptesting.com";
+                    network.WebHost = `https://${network.HTTP}`;
+                    network.LoginHost = "dev1.awanptesting.com";
+                    keys.forEach(item => {
+                        network[item] = NetWorkBase[item];
+                    })
+                    network.APIPort = "443";
+                } else {
+                    network.HTTP = "dev.k8s.awanptesting.com";////PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
+                    network.WebHost = `http://${network.HTTP}`;
+                    network.LoginHost = "dev.k8s.awanptesting.com";
+                    keys.forEach(item => {
+                        network[item] = NetWorkBase[item];
+                    })
+                    network.APIPort = "80";
+                }
                 //Dns.GetHostEntry("dev.k8s.awanptesting.com").AddressList[0].ToString(); //PlayerPrefsMgr.mInstance.GetString(sckKey, networkConf.LoginHostIP);
-                keys.forEach(item => {
-                    network[item] = NetWorkBase[item];
-                })
-                network.APIPort = "80";
                 break;
         }
-        network.WebURL = `${network.WebHost}:${network.APIPort}`;
+        network.WebURL = `${network.WebHost}`//:${network.APIPort}`;
         network.PayURL = `${network.WebHost}:${network.PayPort}`;
         network.HeadUrl = `${network.WebHost}:${network.HeadPort}`;
         network.BannerImageUrl = `${network.WebHost}:${network.HeadPort}`;

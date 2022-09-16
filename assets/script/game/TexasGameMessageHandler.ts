@@ -29,7 +29,7 @@ import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
-import TexasGame from "./TexasGame";
+import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
 
 export default class TexasGameMessageHandler {

@@ -1,6 +1,6 @@
 
-import TexasGame from "../game/TexasGame";
 import GameUtil from "./GameUtil";
+import TexasGame from "./texas/TexasGame";
 
 export class GameCache {
 
@@ -289,7 +289,9 @@ export class GameCache {
     static aaa = Math.random();
 
     initTexasGame() {
+
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);
+
     }
 
 }

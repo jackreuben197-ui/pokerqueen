@@ -1,5 +1,5 @@
 import { GameConfig } from "../config/GameConfig";
-import LobbyScene from "../lobby/LobbyScene";
+import LobbyScene from "../lobby/view/LobbyScene";
 import GlobalSession from "../session/GlobalSession";
 import AssetContext from "../ui/component/AssetContext";
 

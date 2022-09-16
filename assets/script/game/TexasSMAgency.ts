@@ -1,6 +1,6 @@
 
 import { StateHandler } from "../statemachine/StateHandler";
-import TexasGame from "./TexasGame";
+import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
 import { TexasGameStateHandlerCancel, TexasGameStateHandlerComplete, TexasGameStateHandlerExchangeRoom, TexasGameStateHandlerExit, TexasGameStateHandlerHandEnd, TexasGameStateHandlerHandFlop, TexasGameStateHandlerHandPreflop, TexasGameStateHandlerHandRiver, TexasGameStateHandlerHandShowdown, TexasGameStateHandlerHandStarted, TexasGameStateHandlerHandTurn, TexasGameStateHandlerInit, TexasGameStateHandlerLaunch, TexasGameStateHandlerNetworkException, TexasGameStateHandlerNotStart, TexasGameStateHandlerUnknown, TexasGameStateHandlerWaitHandStart } from "./TexasGameStateHandler";
 
@@ -69,7 +69,7 @@ export default class TexasSMAgency {
         }
         this.game.GameState = state;
         stateHandler.SourceData = sourceData;
-        this.game.FsmLogicComponent.SM.ChangeState(stateHandler);
+        this.game.GameLogicSMComponent.SM.ChangeState(stateHandler);
     }
 
 }

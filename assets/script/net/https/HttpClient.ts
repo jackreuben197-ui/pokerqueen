@@ -87,7 +87,7 @@ export default class HttpClient {
                     resolve(response);
                 }
             };
-            xhr.onerror = function () {
+            xhr.onerror = function (err) {
                 if (isTimeout) return;//请求已经超时，忽略
                 clearTimeout(timer);//取消等待的超时
                 resolve("error");

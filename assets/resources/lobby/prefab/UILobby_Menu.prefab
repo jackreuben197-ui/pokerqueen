@@ -800,7 +800,6 @@
     },
     "_enabled": true,
     "i18n_string": "UIMatch_GtO8YEcc",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -1290,7 +1289,6 @@
     },
     "_enabled": true,
     "i18n_string": "UIChat_message",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -1780,7 +1778,6 @@
     },
     "_enabled": true,
     "i18n_string": "UIMine_VIP_dataAll",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -2270,7 +2267,6 @@
     },
     "_enabled": true,
     "i18n_string": "UILobby_Menu_menu_btn_my",
-    "i18n_params": [],
     "_id": ""
   },
   {
@@ -2502,7 +2498,7 @@
     "_id": ""
   },
   {
-    "__type__": "c6821QhdbBGNKrWf/CJqgwL",
+    "__type__": "0d0begrxj9GWI2RsKa7FTyx",
     "_name": "",
     "_objFlags": 0,
     "node": {

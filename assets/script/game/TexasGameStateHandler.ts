@@ -10,7 +10,7 @@ import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
-import TexasGame from "./TexasGame";
+import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
 
 

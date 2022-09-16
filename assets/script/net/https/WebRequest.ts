@@ -519,7 +519,8 @@ export class Web_Room_Center_Rooms {
         voiceprint_verify_on: number,//开启声纹验证 0 关闭，1 开启。	
         voiceprint_verify_limit_times: number,//该房间次数限制 
         voiceprint_verify_duration: number,//被验证倒计时	
-        voiceprint_verify_interval_duration: number//被验证间隔时间
+        voiceprint_verify_interval_duration: number,//被验证间隔时间
+        participation_status: number,//参与状态:0 未参与 1: 参与中
     } = null;
 
     public static Request(param: typeof Web_Room_Center_Rooms.RequestParams) {
