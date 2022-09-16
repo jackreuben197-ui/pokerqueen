@@ -191,6 +191,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         //根据点击的显示
         //获取groups信息刷新 typeScrollView
         this.TypeContentLength = param.len;
+        this.initUI()
         //获取roominfo
         await this.sendGroupGetData(param);
         //获取LocalDicRoomName
@@ -200,6 +201,14 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
         this.DragRequestData_Room(EnumLoadType.Init);
     }
+
+    private initUI(): void {
+        let lbl_glod : cc.Label = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
+        lbl_glod.string = GameCache.Instance.gold.toString();
+        let lbl_name : cc.Label = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+        lbl_name.string = GameCache.Instance.nick.toString();
+    }
+
     //获取group消息
     async sendGroupGetData(param?: any) {
         //请求group信息

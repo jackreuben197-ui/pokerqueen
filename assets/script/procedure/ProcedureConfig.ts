@@ -64,12 +64,12 @@ export default class ProcedureConfig extends ProcedureBase {
             case 2://开发服
                 if (GameConfig.IsNewArea) {
                     network.HTTP = "dev1.awanptesting.com";
-                    network.WebHost = `https://${network.HTTP}`;
+                    network.WebHost = `http://${network.HTTP}`;
                     network.LoginHost = "dev1.awanptesting.com";
                     keys.forEach(item => {
                         network[item] = NetWorkBase[item];
                     })
-                    network.APIPort = "443";
+                    network.APIPort = "80";
                 } else {
                     network.HTTP = "dev.k8s.awanptesting.com";////PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
                     network.WebHost = `http://${network.HTTP}`;
