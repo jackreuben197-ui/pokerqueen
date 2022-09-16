@@ -84,6 +84,46 @@ export default class UIMatchPlayViewForm extends BaseForm {
             item.off(cc.Node.EventType.TOUCH_END, this.BlindBtn, this)
         })
     }
+
+    private registerClickEvent(): void {
+        let c_top: cc.Node = this.getChildNodeOrComponent("c_top");
+        c_top.children.forEach((item, index) => {
+            item["index"] = index;
+            item.on(cc.Node.EventType.TOUCH_END, this.onClickCTTop, this)
+        })
+    }
+
+    private onClickCTTop(e: cc.Event.EventTouch): void {
+        let target: cc.Node = e.target;
+        let index = target["index"];
+        let c_middle : cc.Node = this.getChildNodeOrComponent("c_middle");
+        let c_bottom : cc.Node = this.getChildNodeOrComponent("c_bottom");
+        let panel_bottom : cc.Node = this.getChildNodeOrComponent("panel_bottom");
+        if (index == 0) {
+            c_middle.active = true;
+            c_bottom.active = true;
+            panel_bottom.active = true;
+        } else {
+            c_middle.active = false;
+            c_bottom.active = false;
+            panel_bottom.active = false;
+        }
+
+        let c_top: cc.Node = this.getChildNodeOrComponent("c_top");
+        c_top.children.forEach((item, i) => {
+            let choose = item.getChildByName("choose");
+            let normal = item.getChildByName("normal");
+            if (index == i) {
+                choose.active = true;
+                normal.active = false;
+            } else {
+                choose.active = false;
+                normal.active = true;
+            }
+        })
+    }
+
+
     /**
      * @description: 
      * @param {string} CustomEventData:0-4分别为"Texas","Plo4","Plo5","Plo6","SixPlus"
@@ -96,6 +136,19 @@ export default class UIMatchPlayViewForm extends BaseForm {
     private TypeBtn(e: cc.Event.EventTouch): void {
         let target: cc.Node = e.target;
         let index = target["index"];
+
+        let viewContent: cc.Node = this.getChildNodeOrComponent("c_middle");
+        viewContent.children.forEach((item, i) => {
+            let lbl = item.getChildByName("lbl").getComponent(cc.Label);
+            if (index == i) {
+                item.opacity = 255;
+                lbl.fontSize = 45;
+            } else {
+                item.opacity = 76.5;
+                lbl.fontSize = 42;
+            }
+        })
+
         // if(this.CurTypeBtn.name === target.name){
         //     return;
         // }
@@ -188,6 +241,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
      */
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
+        this.registerClickEvent()
         //根据点击的显示
         //获取groups信息刷新 typeScrollView
         this.TypeContentLength = param.len;
@@ -441,33 +495,33 @@ export default class UIMatchPlayViewForm extends BaseForm {
             }
             item.name = this.GetLongString(data);
 
-            // let Select: cc.Node = item.getChildByName("Select");
-            let ViewBlindLabel: cc.Node = item.getChildByName("lbl");
-            // let Select_Text_Node: cc.Node = item.getChildByName("Select").getChildByName("Select_Text");
-
-            // Select.active = false;
-            ViewBlindLabel.active = true;
-            // Select_Text_Node.active = false;
-
-            let a: string = this.GetLongString(data);
-            let b: string = this.GetLongString(data * 2);
-            ViewBlindLabel.getComponent(cc.Label).string = a + "/" + b;
-            // let SelectText: cc.Label = Select_Text_Node.getComponent(cc.Label);
-            // SelectText.string = a + "/" + b;
+            
             if (i === 0) {
-                if (!cc.isValid(ViewBlindLabel.getComponent("i18nLabel"))) {
-                    ViewBlindLabel.addComponent(i18nLabel);
-                }
+                let i18nLabel = item.getChildByName("lbl");
                 // if (!cc.isValid(SelectText.getComponent("i18nLabel"))) {
                 //     SelectText.addComponent(i18nLabel);
                 // }
-                ViewBlindLabel.getComponent("i18nLabel").string = "UIMatch_GtO8YEdb";
+                i18nLabel.getComponent("i18nLabel").i18NString = "UIMatch_GtO8YEdb";
                 // SelectText.getComponent("i18nLabel").string = "UIMatch_GtO8YEdb";
                 // item.name = SelectText.getComponent("i18nLabel").string;
                 // Select.active = true;
-                ViewBlindLabel.active = true;
+                i18nLabel.active = true;
                 // Select_Text_Node.active = true;
                 this.CurListBtn = item;
+            } else {
+                // let Select: cc.Node = item.getChildByName("Select");
+                let ViewBlindLabel: cc.Node = item.getChildByName("lbl");
+                // let Select_Text_Node: cc.Node = item.getChildByName("Select").getChildByName("Select_Text");
+
+                // Select.active = false;
+                ViewBlindLabel.active = true;
+                // Select_Text_Node.active = false;
+
+                let a: string = this.GetLongString(data);
+                let b: string = this.GetLongString(data * 2);
+                ViewBlindLabel.getComponent(cc.Label).string = a + "/" + b;
+                // let SelectText: cc.Label = Select_Text_Node.getComponent(cc.Label);
+                // SelectText.string = a + "/" + b;
             }
         }
     }
