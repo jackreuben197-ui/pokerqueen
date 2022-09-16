@@ -1,24 +1,29 @@
 
+import { ITweenDuration } from "../define/EIDefine";
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
-import {CPErrorCode} from "../i18n/CPErrorCode";
+import { CPErrorCode } from "../i18n/CPErrorCode";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Def } from "../protobuf/holdem/define_pb";
+import { Def, Result } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import UIComponent from "../ui/UIComponent";
+import { CardType } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
+import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
 import { SeatAllin, SeatCall, SeatCheck, SeatFold, SeatOperation, SeatPutChip, SeatRaise, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
-import TexasGame from "./TexasGame";
+import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
+import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 
 const CanPlayStatus = Def.CanPlayStatus;
@@ -329,7 +334,7 @@ export default class TexasGameProtocol {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(responseData.nextOperator.actionsList, responseData.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(responseData.nextOperator.actionsList, responseData.nextOperator.shortcutsList));
                 }
             }
             else {
@@ -339,10 +344,8 @@ export default class TexasGameProtocol {
                     // 自己参与游戏
                     // 非弃牌 && 非ALLIN && 非托管
                     if (mMySeat.Player.actionStatus != Def.Action.FOLD && mMySeat.Player.actionStatus != Def.Action.ALLIN && mMySeat.Player.actionStatus != Def.Action.NONE && !mMySeat.Player.IsAutoOp) {
-                        // UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-                        //         {
-                        //         callAmount = getAutoOperationCallAmount(responseData.HandInfo.RoundBet)
-                        //     });
+
+                        this.game.ShowUI(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -560,12 +563,12 @@ export default class TexasGameProtocol {
                         this.game.HideOperationPanel();
                     }
                     else {
-                        this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                        this.game.ShowOperationPanel(UIOperationComponent.OperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
 
                     }
                 }
                 else {
-                    this.game.ShowOperationPanel(UIOperationComponent.GetOperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
                 }
             }
             else {
@@ -575,10 +578,9 @@ export default class TexasGameProtocol {
                 if (this.game.mainPlayer.isParticipateInTheGame) {
                     // 自己有参与游戏
                     if ((this.game.mainPlayer.actionStatus != Def.Action.FOLD && this.game.mainPlayer.actionStatus != Def.Action.ALLIN && this.game.mainPlayer.actionStatus != Def.Action.NONE) && !this.game.mainPlayer.IsAutoOp) {
-                        // UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-                        //     {
-                        //         callAmount = getAutoOperationCallAmount(rec.RoundBet)
-                        //     });
+
+                        this.game.ShowUI(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
+
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -621,6 +623,341 @@ export default class TexasGameProtocol {
         this.game.HideOperationPanel();
     }
 
+
+    /// <summary>
+    /// 处理第一，二套公共牌赢牌动画
+    /// </summary>
+    private async HandleMessageSecondPcsWinnerData() {
+        //await (1.5);
+        //Game.Scene.ModelScene.GetComponent<TimerComponent>().WaitAsync(1500);
+        let mSeat: Seat = null;
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+            mSeat = this.game.listSeat[this.game.GetLocalSeatID(this.game.MessageWinnerData.resultsList[i].seatId)];
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+            if (!mSeat.IsMySeat) {
+                //自己的牌不用更新
+                mSeat.Player.SetCards(this.game.GetHandCardsAtRecvWinner(this.game.MessageWinnerData, i));
+                mSeat.UpdateCards();
+            }
+            if (mSeat.IsMySeat) {
+                GameCache.Instance.CurGame.mainPlayer.chips = this.game.MessageWinnerData.resultsList[i].chip;
+                mSeat.UpdateImageBackActive();
+            }
+        }
+        // this.game.TexasGameUtils.SetWinnerCardsHight(listCards, cards);
+        // //第一套牌
+        // SetSecondPublicCardImageColor(Color.grey);
+        // HandleTwoWinnerAnimation(true);
+        // await Game.Scene.ModelScene.GetComponent<TimerComponent>().WaitAsync(3000);
+
+        // //等待3秒，处理第二套牌动画
+
+        // SetSecondPublicCardImageColor(Color.white);
+        // SetPublicCardsImageColor(Color.grey);
+        // SetWinnerCardsHight(listSecondCards, secondCards);
+        // HandleTwoWinnerAnimation(false);
+    }
+    /// <summary>
+    /// 处理仅有一套公共牌
+    /// </summary>
+    private HandleMessageWinnerData(): void {
+        let mSeat: Seat = null;
+        // 1.发完5张公共牌
+        // 2.有发生比牌
+        let mOtherAllFold: boolean = true;
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+            let result: Result.AsObject = this.game.MessageWinnerData.resultsList[i];
+            mSeat = this.game.listSeat[this.game.GetLocalSeatID(result.seatId)];
+            if (null != mSeat && null != mSeat.Player && mSeat.Player.isParticipateInTheGame && mSeat.Player.isFold == false) {
+                mOtherAllFold = false;
+            }
+            if (null != mSeat && null != mSeat.Player && mSeat.Player.actionStatus == Def.Action.NONE) {
+                cc.log("not is Participate In The Game");
+                continue;
+            }
+            //先更新手牌，方便后面做大牌动画
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+            if (result.chip == 0) {
+                mSeat.Player.MttHunterKillAwardOtherPlus = 0;
+                mSeat.Player.HunterKillAwardOther = 0;
+                mSeat.Player.HunterHeadValue = 0;
+            }
+            else {
+                mSeat.Player.MttHunterKillAwardOtherPlus += result.mttHunterKillAwardOtherPlus;
+            }
+
+
+            if (!mSeat.IsMySeat) {
+
+                //自己的牌不用更新
+                mSeat.Player.SetCards(this.game.GetHandCardsAtRecvWinner(this.game.MessageWinnerData, i));
+            }
+            if (mSeat.IsMySeat) {
+                GameCache.Instance.CurGame.mainPlayer.chips = result.chip;
+                mSeat.UpdateImageBackActive();
+            }
+            let mShow = false;
+            for (let j = 0, k = mSeat.Player.cards.length; j < k; j++) {
+                if (mSeat.Player.cards[j] != -1) {
+                    mShow = true;
+                    break;
+                }
+            }
+            if (!mShow) {
+                if (!mSeat.Player.isFold)
+                    mSeat.UpdateCards();
+            }
+            else {
+                mSeat.UpdateCards();
+            }
+
+        }
+
+
+
+        let mCount = this.game.GetCurPublicCardsCount();
+        let mCanPlayEndPublicCardsAnimation = mCount == 5 && !mOtherAllFold;
+        if (mCanPlayEndPublicCardsAnimation) {
+            let highlightCards_ref = { highlightCards: null };
+            let cardType: CardType = this.game.GetCardType(highlightCards_ref, this.game.cards);
+            let highlightCards = highlightCards_ref.highlightCards;
+            for (let i = 0, n = this.game.uirc.listCards.length; i < n; i++) {
+                this.game.uirc.listCards[i].imageSelect.node.active = false;
+                for (let j = 0, m = highlightCards.length; j < m; j++) {
+                    if (this.game.uirc.listCards[i].cardId == highlightCards[j]) {
+                        this.game.uirc.listCards[i].imageSelect.node.active = true;
+                        break;
+                    }
+                }
+            }
+            let mSeatmy: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+            if (null != mSeatmy) {
+                if (this.game.mainPlayer.cards.length > 3) {
+                    mSeatmy.UpdateCardType(cardType, highlightCards, true);
+                }
+            }
+        }
+        this.game.sequencePlayEndPublicCardsAnimation = { tween: cc.tween(this.game.uirc.node), IsPlaying: true };
+        let tween: cc.Tween = null;
+        if (mCanPlayEndPublicCardsAnimation) {
+            tween = this.game.sequencePlayEndPublicCardsAnimation.tween;
+        }
+        let mSeatId = -1;
+        let mIsFirst: boolean = true;
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+
+            mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(this.game.MessageWinnerData.resultsList[i].seatId));
+
+            if (null != mSeat && null != mSeat.Player && mSeat.Player.actionStatus == Def.Action.NONE) {
+                cc.log("not is Participate In The Game");
+                continue;
+            }
+
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+            if (mSeat.Player.muckStatus == 1) {
+                //盖牌
+                mSeat.Player.actionStatus = Def.Action.FOLD;
+                mSeat.UpdateBubble();
+            }
+
+            mSeat.UpdateCoin();
+
+            if (mCanPlayEndPublicCardsAnimation) {
+                if (mSeat.CanPlayRecyclingWinChipAnimation) {
+                    // if (mIsFirst) {
+                    //     mIsFirst = false;
+                    //     tween.Append(mSeat.PlayRecyclingChipAnimation());
+                    // }
+                    // else {
+                    //     tween.Join(mSeat.PlayRecyclingChipAnimation());
+                    // }
+                    mSeat.PlayRecyclingChipAnimation();
+                }
+            }
+            else {
+                if (mSeat.CanPlayRecyclingWinChipAnimation)
+                    //tween = mSeat.PlayRecyclingChipAnimation();
+                    mSeat.PlayRecyclingChipAnimation();
+            }
+        }
+
+        if (null == tween)
+            tween = this.game.sequencePlayEndPublicCardsAnimation.tween;
+
+
+        //mIsFirst = true;
+        // let isHaveWiner = false;
+        // for (let i = 0; i < this.game.MessageWinnerData.resultsList.length; i++) {
+        //     if (this.game.MessageWinnerData.resultsList[i].win > this.game.MessageWinnerData.resultsList[i].handBet) {
+        //         isHaveWiner = true;
+        //     }
+        // }
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+
+            let result = this.game.MessageWinnerData.resultsList[i];
+
+            mSeatId = this.game.GetLocalSeatID(result.seatId);
+
+            mSeat = this.game.GetSeatByLocalSeatID(mSeatId);
+
+            if (null != mSeat && null != mSeat.Player && mSeat.Player.actionStatus == Def.Action.NONE) {
+                cc.log("not is Participate In The Game");
+                continue;
+            }
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+
+            if (result.win > result.handBet) {
+                mSeat.Player.winChips = result.win + result.insuranceWin - result.insurance - result.handBet - result.fee;
+            }
+            else {
+                mSeat.Player.winChips = result.insuranceWin;
+            }
+            mSeat.Player.recyclingChip = result.win;
+            mSeat.Player.cardType = result.handValueType;
+            mSeat.Player.isWin = result.win > result.handBet;
+            mSeat.StopAllinArmature();
+            mSeat.PlayWinArmature();
+            mSeat.UpdateRecyclingWinChip();
+            //猎人赛人头奖励刷新
+            // if (GameCache.Instance.room_type > RoomType.Omaha6SixPlusFixedAof && (GameCache.Instance.CurGame as MTTGame).huntMode)
+            // {
+            //     mSeat.UpdateHunterAward();
+            // }
+            let PlayRecyclingWinChipAnimation_Tween: cc.Tween = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.textAlreadAnte.node.position));
+
+            tween.then(cc.callFunc(() => {
+                PlayRecyclingWinChipAnimation_Tween.start();
+            }));
+
+            if (i == n - 1) {
+                let duration: number = (PlayRecyclingWinChipAnimation_Tween as any).duration;
+                if (duration) {
+                    tween.delay(duration);
+                }
+            }
+        }
+
+        tween.start();
+
+        let mCacheWinnerSeatIds: number[] = null; // 赢家座位
+        let mCacheWinnerCardTypes: number[] = null; // 赢家牌型
+
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+            let result = this.game.MessageWinnerData.resultsList[i];
+            // 找到赢家
+            if (result.win > 0) {
+                if (null == mCacheWinnerSeatIds)
+                    mCacheWinnerSeatIds = [];
+                mCacheWinnerSeatIds.push(this.game.GetLocalSeatID(result.seatId));
+                if (null == mCacheWinnerCardTypes)
+                    mCacheWinnerCardTypes = [];
+                mCacheWinnerCardTypes.push(result.handValueType);
+            }
+        }
+
+        let mTmpCardSorts = [];
+
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+            let mTmpCards = [];
+            for (let j = 0, m = this.game.MessageWinnerData.resultsList[i].winCardsList.length; j < m; j++) {
+                mTmpCards.push(this.game.MessageWinnerData.resultsList[i].winCardsList[j].card);
+            }
+            mTmpCardSorts.push(mTmpCards);
+        }
+
+        let mHaveCardSort = true;
+
+        if (mHaveCardSort && null != mCacheWinnerSeatIds && mCacheWinnerSeatIds.length != 0) {
+
+            for (let i = 0; i < mCacheWinnerSeatIds.length; i++) {
+                mSeatId = mCacheWinnerSeatIds[i];
+
+                mSeat = this.game.GetSeatByLocalSeatID(mSeatId);
+
+                if (null == mSeat || null == mSeat.Player)
+                    continue;
+
+                if (mTmpCardSorts.length > i) {
+                    if (mSeat.Player.userID != GameCache.Instance.CurGame.mainPlayer.userID) {
+                        mSeat.UpdateCardType(mSeat.Player.cardType, mTmpCardSorts[i], true);
+                    }
+
+                }
+
+            }
+        }
+
+        if (mCanPlayEndPublicCardsAnimation) {
+            this.game.PlayEndPublicCardsAnimation(this.game.MessageWinnerData);
+        }
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+            mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(this.game.MessageWinnerData.resultsList[i].seatId));
+
+            if (null != mSeat && null != mSeat.Player && mSeat.Player.actionStatus == Def.Action.NONE) {
+                cc.log("not is Participate In The Game");
+                continue;
+            }
+
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+
+            mSeat.Player.chips = this.game.MessageWinnerData.resultsList[i].chip;
+            mSeat.UpdateCoin();
+        }
+    }
+
+
+
+
+    /// <summary>
+    /// 本手结算
+    /// </summary>
+    /// <param name="MessageWinnerData"></param>
+    /// <param name="obj"></param>
+    public handleWinnerInfoCommon(rec: ServerMessageWinner.AsObject, obj: any): void {
+        this.game.autoFold = false;
+        this.game.autoCall = false;
+        this.game.autoAllin = false;
+        this.game.autoCheck = false;
+
+        //GameendDelayClear();
+        this.game.gamestatus = -1;
+        this.game.cacheRound = rec.round;
+        GameCache.Instance.GameStatus = this.game.gamestatus;
+
+        this.game.HideUI(this.game.uirc.UIAutoOperation);
+        this.game.HideUI(this.game.uirc.UIOperation);
+
+        let mSeat: Seat = null;
+        for (let i = 0, n = rec.resultsList.length; i < n; i++) {
+            mSeat = this.game.listSeat[this.game.GetLocalSeatID(rec.resultsList[i].seatId)];
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+
+            if (mSeat.IsMySeat) {
+                if (!rec.resultsList[i].standUp) {
+                    this.game.ShowSeeMorePublic();
+                }
+            }
+        }
+
+        this.game.ClearSeatBubble(true);
+        this.game.SetPublicCardInfosId();
+        this.game.MessageWinnerData = rec;
+
+        if (this.game.IsSecondPsc) {
+            cc.log("is second public cards ");
+            this.HandleMessageSecondPcsWinnerData();
+        }
+        else {
+            this.HandleMessageWinnerData();
+        }
+
+    }
 
 
 

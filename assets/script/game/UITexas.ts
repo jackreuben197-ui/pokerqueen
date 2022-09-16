@@ -11,12 +11,11 @@ import ToastManager from "../manager/ToastManager";
 
 import { RoomInfo } from "../protobuf/holdem/define_pb";
 import GlobalSession from "../session/GlobalSession";
-import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 
-import TexasGame from "./TexasGame";
+import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 import { HistoryInfoData } from "./UITexasHistoryComponent";
 
@@ -79,6 +78,7 @@ export default class UITexas extends BaseScene {
 
 
     UIOperation: cc.Node = null;
+    UIAutoOperation: cc.Node = null;
 
     imageWaitForStartTips: cc.Node = null;
 
@@ -265,13 +265,14 @@ export default class UITexas extends BaseScene {
         //this.UITexasSetting = this.getChildNodeOrComponent("UITexasSetting");
 
         this.UIOperation = this.getChildNodeOrComponent("UIOperation");
+        this.UIAutoOperation = this.getChildNodeOrComponent("UIAutoOperation");
 
         this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
 
 
 
         this.game = GameCache.Instance.CurGame;
-
+        //this.game.Reset();
         this.game.uirc = this;
 
         //#region 公共牌数据(UI、Id)
@@ -538,17 +539,17 @@ export default class UITexas extends BaseScene {
     }
     Click_Button_Setting() {
         this.hideMenu();
-        let UITexasSetting: any = this.node.getChildByName('UITexasSetting')
-        if (!UITexasSetting) {
-            let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
-            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            UITexasSetting = cc.instantiate(prefab);
-            UITexasSetting.parent = this.node
-            UITexasSetting.active = true;
-        } else {
-            UITexasSetting.active = true;
-        }
-
+        // let UITexasSetting: any = this.node.getChildByName('UITexasSetting')
+        // if (!UITexasSetting) {
+        //     let prefab = ResManager.LoadAsset(UIDefine.UITexasSetting.Bundle, UIDefine.UITexasSetting.Path)
+        //     // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
+        //     UITexasSetting = cc.instantiate(prefab);
+        //     UITexasSetting.parent = this.node
+        //     UITexasSetting.active = true;
+        // } else {
+        //     UITexasSetting.active = true;
+        // }
+        UIComponent.open(UIDefine.UITexasSettingComponent, null, this.node);
 
     }
     Click_Button_Rule() {

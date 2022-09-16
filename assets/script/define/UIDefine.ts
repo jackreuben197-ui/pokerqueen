@@ -155,8 +155,8 @@ export const UIDefine = {
         Bundle: null,
         Path: "prefab/component/TexasPreLoad",
     },
-    UITexasSetting: {
-        UIType: UIType.TexasUISting,
+    UITexasSettingComponent: {
+        UIType: UIType.CommonUI,
         Name: "UITexasSetting",
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasSetting",
@@ -179,8 +179,12 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasHistory",
     },
-
-
+    UITexasGameEndComponent: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasGameEnd",
+        Bundle: 'texas',
+        Path: "prefab/ui/UITexasGameEnd",
+    }
 }
 //批量设置
 cc.game.on(cc.game.EVENT_GAME_INITED, () => {

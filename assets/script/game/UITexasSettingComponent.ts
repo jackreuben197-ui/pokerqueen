@@ -7,9 +7,12 @@
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
+import { UIDefine } from "../define/UIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
 import UIBase from "../ui/UIBase";
+import UIComponent from "../ui/UIComponent";
+import { UICommonMgr } from "../ui/UIMgr";
 import { GameCache } from "./GameCache";
 
 const { ccclass, property } = cc._decorator;
@@ -39,10 +42,14 @@ export default class UITexasSettingComponent extends UIBase {
         this.QuickActionNumGroup = this.getChildNodeOrComponent('QuickActionNumGroup')
         this.Button_Close = this.getChildNodeOrComponent("Button_Close");
         this.Toggle_Voice = this.getChildNodeOrComponent("Toggle_Voice");
+
+        cc.log("lateLoad ", this.UIDefine);
+
         this.Toggle_Voice.on("click", this.onValueChangedVoice, this);
 
         this.Button_Close.on("click", () => {
-            this.node.active = false;
+            //this.node.active = false;
+            UIComponent.close(this.UIDefine);
         }, this);
 
         let image0 = cc.find('Background/Image0', this.Toggle_Voice);
@@ -247,7 +254,6 @@ export default class UITexasSettingComponent extends UIBase {
         let numStr = localStorage.getItem(StorageKey.kQuickActionIndexValueKEY + index) || defaultActionNums[index];
         return +numStr;
     }
-
 
 }
 

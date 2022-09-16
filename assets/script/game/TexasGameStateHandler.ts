@@ -4,12 +4,13 @@
 import { UIDefine } from "../define/UIDefine";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import GlobalSession from "../session/GlobalSession";
 import { StateHandler } from "../statemachine/StateHandler";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
-import TexasGame from "./TexasGame";
+import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
 
 
@@ -168,6 +169,13 @@ export class TexasGameStateHandlerExit extends StateHandler {
 
         if (!game) return;
 
+        // if (game.IsUILoadingActive()) {
+        //     UIComponent.Instance.HideNoAnimation(UIType.UIMatch_Loading);
+        // }
+        UIComponent.close(UIDefine.TexasPreLoad);
+
+        game.TexasGameUtils.ExitRoom();
+
     }
 
     public Execute(entity?: any): void {
@@ -279,14 +287,17 @@ export class TexasGameStateHandlerHandTurn extends StateHandler {
 
     public Enter(entity?: any): void {
 
+        var source = this.SourceData as ServerMessagePublicCards.AsObject;
+
+        if (source == null) {
+            return;
+        }
+
+
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
 
-        var source = this.SourceData as ServerMessagePublicCards.AsObject;
-        if (source == null) {
-            return;
-        }
 
         game.HandleGetPublicCards(source);
 
@@ -307,9 +318,19 @@ export class TexasGameStateHandlerHandRiver extends StateHandler {
 
     public Enter(entity?: any): void {
 
+        var source = this.SourceData as ServerMessagePublicCards.AsObject;
+
+        if (source == null) {
+            return;
+        }
+
+
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
+
+
+        game.HandleGetPublicCards(source);
 
     }
 
@@ -327,9 +348,16 @@ export class TexasGameStateHandlerHandShowdown extends StateHandler {
 
     public Enter(entity?: any): void {
 
+        var source = this.SourceData as ServerMessageWinner.AsObject;
+
+        if (source == null) {
+            return;
+        }
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
+
+        game.texasGameProtocol.handleWinnerInfoCommon(source, source);
 
     }
 

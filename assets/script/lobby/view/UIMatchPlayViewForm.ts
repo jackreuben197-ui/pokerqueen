@@ -10,6 +10,7 @@ import { ProcedureEnum } from "../../define/EIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { GameCache } from "../../game/GameCache";
 import { LobbyControl } from "../control/LobbyControl";
+import WebSocketClient from "../../net/websocket/WebSocketClient";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -544,10 +545,14 @@ export default class UIMatchPlayViewForm extends BaseForm {
         GameCache.Instance.voiceprint_verify_on = roominfo.voiceprint_verify_on;
         GameCache.Instance.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
 
+        if (WebSocketClient.WS.readyState == WebSocket.OPEN) {
 
-        let response = LobbySession.APIWebUserRoominsur(roominfo.rid).catch(() => { });
-        if (response) {
-            ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: this.UIDefine, lookOn: false });//[this.UIDefine, false, 0]
+            let response = LobbySession.APIWebUserRoominsur(roominfo.rid).catch(() => { });
+            if (response) {
+                ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: this.UIDefine, lookOn: false });//[this.UIDefine, false, 0]
+            }
+        } else {
+            cc.warn("websocket还没有连接上:", WebSocketClient.WS.readyState);
         }
     }
 

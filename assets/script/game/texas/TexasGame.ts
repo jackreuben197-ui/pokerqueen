@@ -1,42 +1,43 @@
-import TexasConfig from "../config/TexasConfig";
-import { RoomType } from "../define/EIDefine";
-import { Param } from "../define/Types";
-import { UIDefine } from "../define/UIDefine";
-import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
-import UpdateComponent from "../funcomponent/UpdateComponent";
-import { StringHelper } from "../helper/StringHelper";
-import { i18nMgr } from "../i18n/i18nMgr";
-import {CPErrorCode} from "../i18n/CPErrorCode";
-import { Web_User_Room } from "../net/https/WebRequest";
-import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Protocol_Holdem_Action, Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../net/websocket/ProtocolHoldemMessages";
-import { Def, RoomInfo, Operator } from "../protobuf/holdem/define_pb";
-import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
-import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
-import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
-import StorageKey from "../session/StorageKey";
-import AssetContext, { AssetFold } from "../ui/component/AssetContext";
-import UIDialogComponent from "../ui/dialog/UIDialogComponent";
-import UIBase from "../ui/UIBase";
-import UIComponent from "../ui/UIComponent";
-import { CardType, CardTypeUtil } from "./CardTypeUtil";
-import { CPlayer } from "./CPlayer";
-import FSMLogicComponent from "./FSMLogicComponent";
-import { GameCache } from "./GameCache";
+import TexasConfig from "../../config/TexasConfig";
+import { Param } from "../../define/Types";
+import { UIDefine } from "../../define/UIDefine";
+import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import UpdateComponent from "../../funcomponent/UpdateComponent";
+import { StringHelper } from "../../helper/StringHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { Web_User_Room } from "../../net/https/WebRequest";
+import ProtocolAgency from "../../net/websocket/ProtocolAgency";
+import { ProtocolCode } from "../../net/websocket/ProtocolCode";
+import { Protocol_Holdem_Action, Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../../net/websocket/ProtocolHoldemMessages";
+import { Def, RoomInfo, Operator } from "../../protobuf/holdem/define_pb";
+import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
+import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
+import StorageKey from "../../session/StorageKey";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
+import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
+import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
+import { CardType, CardTypeUtil } from "./../CardTypeUtil";
+import { CPlayer } from "./../CPlayer";
+import FSMLogicComponent from "./../FSMLogicComponent";
+import { GameCache } from "./../GameCache";
 
-import GameUtil from "./GameUtil";
-import Seat, { SeatUIInfo } from "./Seat";
-import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation, SeatWaitOther } from "./SeatStateHandler";
-import TexasGameMessageHandler from "./TexasGameMessageHandler";
-import TexasGameProtocol from "./TexasGameProtocol";
-import { TexasGameState } from "./TexasGameState";
-import TexasGameUtils from "./TexasGameUtils";
-import TexasSMAgency from "./TexasSMAgency";
-import UIAddChipsComponent from "./ui/UIAddChipsComponent";
-import UIOperationComponent, { OperationData } from "./ui/UIOperationComponent";
-import UITexas, { PotInfo, PublicCardInfo } from "./UITexas";
-import { UITexasModel } from "./UITexasModel";
+import GameUtil, { RoomType } from "./../GameUtil";
+import Seat, { SeatUIInfo } from "./../Seat";
+import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation, SeatWaitOther } from "./../SeatStateHandler";
+import TexasGameMessageHandler from "./../TexasGameMessageHandler";
+import TexasGameProtocol from "./../TexasGameProtocol";
+import { TexasGameState } from "./../TexasGameState";
+import TexasGameUtils from "./../TexasGameUtils";
+import TexasSMAgency from "./../TexasSMAgency";
+import UIAddChipsComponent from "./../ui/UIAddChipsComponent";
+import UIOperationComponent, { OperationData } from "./../ui/UIOperationComponent";
+import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
+import { UITexasModel } from "./../UITexasModel";
+import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
+import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 //const PBTypes = Def.Types;
 
 
@@ -72,7 +73,7 @@ export default class TexasGame {
 
     public texasGameProtocol: TexasGameProtocol = null;
 
-    public FsmLogicComponent: FSMLogicComponent = null;
+    public GameLogicSMComponent: FSMLogicComponent = null;
 
     public SMAgency: TexasSMAgency = null;
 
@@ -317,7 +318,7 @@ export default class TexasGame {
     /// <summary>
     /// 缓存赢牌信息
     /// </summary>
-    //public ServerMessageWinner MessageWinnerData;
+    public MessageWinnerData: ServerMessageWinner.AsObject = null;
     /// <summary>
     /// 缓存是否是第二套牌
     /// </summary>
@@ -349,25 +350,34 @@ export default class TexasGame {
     public isPlayingBigWinAnimation: boolean = false;
     //////////////////////////////////////
 
+    //发牌动画
+    sequencePlayDealAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
+
+
+
     sequencePlayFirstRecyclingChipSubAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequencePlayFirstRecyclingChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
+    sequencePlayRecyclingChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequenceUpdatePublicCards: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequenceSecondUpdatePublicCards: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
+    sequencePlayEndPublicCardsAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
 
+
+    IsDispose: boolean = false;
 
     constructor() {
         this.messageHandler = new TexasGameMessageHandler(this);
         this.texasGameProtocol = new TexasGameProtocol(this);
-        this.FsmLogicComponent = new FSMLogicComponent();
+        this.GameLogicSMComponent = new FSMLogicComponent();
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
         this.listSeat = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
     }
 
-    Start() {
-        UpdateComponent.Add(this.FsmLogicComponent, this);
-        this.FsmLogicComponent.start();
+    Enter() {
+        UpdateComponent.Add(this.GameLogicSMComponent, this);
+        this.GameLogicSMComponent.start();
         this.SMAgency.LoadGameStateConf();
     }
 
@@ -375,7 +385,7 @@ export default class TexasGame {
         this.messageHandler.RegisterMessageHandler();
         this.texasGameProtocol.RegisterMsgHandler();
     }
-    UnRegisterMsgHandler() {
+    RemoveMsgHandler() {
         this.messageHandler.RemoveMessageHandler();
         this.texasGameProtocol.RemoveMsgHandler();
     }
@@ -609,7 +619,7 @@ export default class TexasGame {
                 if (mSeat.seatID == this.mainPlayer.seatID && mSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isPlaying) {
                     //自己操作中
                     this.HideAutoOperationPanel();   // 隐藏预操作
-                    this.ShowOperationPanel(UIOperationComponent.GetOperationData(actionLimits, actionShortcutLimits));
+                    this.ShowOperationPanel(UIOperationComponent.OperationData(actionLimits, actionShortcutLimits));
                 }
                 else {
                     // 下一个操作不是自己
@@ -617,10 +627,9 @@ export default class TexasGame {
                     if (this.mainPlayer.isPlaying) {
                         // 自己有参与游戏,但allin弃牌不显示
                         if ((this.mainPlayer.actionStatus != Def.Action.FOLD && this.mainPlayer.actionStatus != Def.Action.ALLIN && this.mainPlayer.actionStatus != Def.Action.NONE) && !this.mainPlayer.IsAutoOp) {
-                            //         UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-                            // {
-                            //                 callAmount = getAutoOperationCallAmount(rec.HandInfo.RoundBet)
-                            //             });
+
+                            this.ShowUI(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
+
                         }
                         else {
                             this.HideAutoOperationPanel();
@@ -954,7 +963,7 @@ export default class TexasGame {
     /// 刷新底池
     /// </summary>
     public UpdateAlreadAnte(): void {
-        // textAlreadAnte.text = $"底池:{alreadAnte}";
+        //textAlreadAnte.text = $"底池:{alreadAnte}";
         this.uirc.textAlreadAnte.node.active = (this.gamestatus >= 1 && this.gamestatus < 7);
         this.uirc.textAlreadAnte.string = `${CPErrorCode.LanguageDescription(20005)}:${(this.alreadAnte / 100)}`;
     }
@@ -1401,9 +1410,11 @@ export default class TexasGame {
     public PlayDealAnimation(tweenCallback: Function) {
 
 
-        let tween = cc.tween(this.uirc.node);
+        this.sequencePlayDealAnimation = { tween: cc.tween(this.uirc.node), IsPlaying: true };
 
-        let sequence = [];
+        let tween = this.sequencePlayDealAnimation.tween;
+
+        //let sequence = [];
 
         let mSeat: Seat = null;
 
@@ -1411,12 +1422,8 @@ export default class TexasGame {
         mSeat = this.GetSeatByLocalSeatID(this.bankerIndex);
 
         if (null != mSeat) {
-            let mTweener = mSeat.PlayBankerAnimation();
-            if (null != mTweener) {
-                sequence.push(mTweener);
-                sequence.push(cc.delayTime(0.2));
-
-            }
+            let rtween = mSeat.PlayBankerAnimation(tween);
+            rtween?.delay(0.2);
         }
         // 前注
         if (this.groupBet > 0) {
@@ -1473,16 +1480,18 @@ export default class TexasGame {
             let index = i % GameCache.Instance.seat_count;
             mSeat = this.listSeat[i];
             if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame) continue;
-            spawn.push(cc.tween().sequence(cc.delayTime(0.2 * mTmpIndex), this.listSeat[index].PlayDealAnimation(mStartPos)));
+            //spawn.push(cc.tween().sequence(cc.delayTime(0.2 * mTmpIndex), this.listSeat[index].PlayDealAnimation(mStartPos)));
+            this.listSeat[index].PlayDealAnimation(0.2 * mTmpIndex, mStartPos);
+
+            tween.then(cc.callFunc(() => {
+                let ctween = this.listSeat[index].PlayDealAnimation(0.2 * mTmpIndex, mStartPos);
+                ctween.start();
+            }));
+
+            if (i == n - 1) {
+                tween.delay(0.2 * mTmpIndex + 0.4);
+            }
             mTmpIndex++;
-        }
-
-        if (sequence.length > 0) {
-            tween.sequence.apply(tween, sequence.concat(cc.delayTime(0)));
-        }
-
-        if (spawn.length > 0) {
-            tween.parallel.apply(tween, spawn.concat(cc.delayTime(0)));
         }
 
         if (null != tweenCallback) {
@@ -1530,9 +1539,7 @@ export default class TexasGame {
     /// 隐藏自动操作面板
     /// </summary>
     public HideAutoOperationPanel(): void {
-        // if (UIComponent.Instance.Get(UIType.UIAutoOperation).GameObject.activeInHierarchy) {
-        //     UIComponent.Instance.HideNoAnimation(UIType.UIAutoOperation);
-        // }
+        this.HideUI(this.uirc.UIAutoOperation);
     }
     /// <summary>
     /// 展示操作面板
@@ -1550,13 +1557,11 @@ export default class TexasGame {
                 if (this.mainPlayer.seatID == mSeat.seatID) {
                     mSeat.SetOperationHeadActive(false);
                 }
-
             }
         }
-        //buttonDelay.gameObject.SetActive(true);
+        this.uirc.buttonDelay.active = true;
         this.delayCount = delay;
-        //UpdateDelayBtn();
-        //UIComponent.Instance.ShowNoAnimation(UIType.UIOperation, operationData);
+        this.UpdateDelayBtn();
         this.ShowUI(this.uirc.UIOperation, UIOperationComponent, operationData);
     }
     /// <summary>
@@ -1572,11 +1577,10 @@ export default class TexasGame {
                 }
             }
         }
-        //buttonDelay.gameObject.SetActive(false);
+        this.uirc.buttonDelay.active = false;
         if (this.uirc.UIOperation.activeInHierarchy) {
             this.HideUI(this.uirc.UIOperation);
         }
-        cc.log("隐藏操作界面");
     }
 
 
@@ -1603,8 +1607,10 @@ export default class TexasGame {
     /// <param name="list"></param>
     protected AddPublicCards(list: number[]): void {
         // 判断一下cards的合法性
-        if (null == this.cards)
-            this.cards = [];
+        if (null == this.cards) this.cards = [];
+
+        cc.log(this.cards.length, this.uirc.listCards.length);
+
         if (this.cards.length < this.uirc.listCards.length) {
             for (let i = 0, n = this.uirc.listCards.length - this.cards.length; i < n; i++) {
                 this.cards.push(-1);
@@ -1631,6 +1637,7 @@ export default class TexasGame {
         for (let i = 0, n = list.length; i < n; i++) {
             this.cards[i + mStartIndex] = list[i];
         }
+        cc.log("this.cards : ", this.cards);
     }
 
 
@@ -1707,6 +1714,7 @@ export default class TexasGame {
 
 
 
+
     /// <summary>
     /// 公共牌
     /// </summary>
@@ -1779,7 +1787,7 @@ export default class TexasGame {
 
                 // 非托管
                 if (!this.mainPlayer.IsAutoOp) {
-                    this.ShowOperationPanel(UIOperationComponent.GetOperationData(source.nextOperator.actionsList, source.nextOperator.shortcutsList));
+                    this.ShowOperationPanel(UIOperationComponent.OperationData(source.nextOperator.actionsList, source.nextOperator.shortcutsList));
                 }
             }
             else {
@@ -1788,10 +1796,7 @@ export default class TexasGame {
                 // 非弃牌、非ALL IN、非空闲等待下一局、非托管
                 if (this.mainPlayer.isPlaying && !this.mainPlayer.IsAutoOp) {
                     // 预操作UI
-                    // UIComponent.Instance.ShowNoAnimation(UIType.UIAutoOperation, new UIAutoOperationComponent.AutoOperationData()
-                    // 	{
-                    //         callAmount = getAutoOperationCallAmount(0)
-                    //     });
+                    this.ShowUI(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(0)));
                 }
                 else {
                     // 无预操作UI
@@ -1817,6 +1822,8 @@ export default class TexasGame {
         };
         this.stopUpdatePublicCardsAnimation = false;
 
+        console.log("当前开始翻牌:", iCount);
+
         if (iCount == 0) {
 
             this.PlayFirstRecyclingChipAnimation(() => {
@@ -1824,14 +1831,14 @@ export default class TexasGame {
                 this.PlayFirstRecyclingChipSubAnimation(() => {
                     this.UpdatePublicCards(iCount, mTweenCallback, SecondTweenCallback);
                     if (this.stopUpdatePublicCardsAnimation && null != this.sequenceUpdatePublicCards) {
-                        //this.sequenceUpdatePublicCards.Complete(true);
+                        this.sequenceUpdatePublicCards.complete(true);
                     }
 
                     this.stopUpdatePublicCardsAnimation = false;
                 });
                 if (this.stopUpdatePublicCardsAnimation && null != this.sequencePlayFirstRecyclingChipSubAnimation &&
                     this.sequencePlayFirstRecyclingChipSubAnimation.IsPlaying) {
-                    //this.sequencePlayFirstRecyclingChipSubAnimation.Complete(true);
+                    this.sequencePlayFirstRecyclingChipSubAnimation.complete(true);
                 }
             });
         }
@@ -1839,21 +1846,20 @@ export default class TexasGame {
             if (this.isAllinGetPlayerCards && this.insurance) {
                 // 保险就是多事，特殊处理一下。来了三张公共牌，动画播放中，没有保险可买，马上又来了一张公共牌。
                 this.UpdatePublicCards(iCount, mTweenCallback, SecondTweenCallback);
-                // if (this.stopUpdatePublicCardsAnimation && null != this.sequenceUpdatePublicCards && this.sequenceUpdatePublicCards.IsPlaying) {
-                //     this.sequenceUpdatePublicCards.Complete(true);
-                // }
+                if (this.stopUpdatePublicCardsAnimation && null != this.sequenceUpdatePublicCards && this.sequenceUpdatePublicCards.IsPlaying) {
+                    this.sequenceUpdatePublicCards.complete(true);
+                }
 
                 this.stopUpdatePublicCardsAnimation = false;
             }
             else {
-                // this.PlayRecyclingChipAnimation(() => {
-                //     this.UpdatePublicCards(iCount, mTweenCallback, SecondTweenCallback);
-                //     if (this.stopUpdatePublicCardsAnimation && null != this.sequenceUpdatePublicCards && this.sequenceUpdatePublicCards.IsPlaying) {
-                //         this.sequenceUpdatePublicCards.Complete(true);
-                //     }
-
-                //     this.stopUpdatePublicCardsAnimation = false;
-                // });
+                this.PlayRecyclingChipAnimation(() => {
+                    this.UpdatePublicCards(iCount, mTweenCallback, SecondTweenCallback);
+                    if (this.stopUpdatePublicCardsAnimation && null != this.sequenceUpdatePublicCards && this.sequenceUpdatePublicCards.IsPlaying) {
+                        this.sequenceUpdatePublicCards.complete();
+                    }
+                    this.stopUpdatePublicCardsAnimation = false;
+                });
             }
         }
     }
@@ -1879,26 +1885,20 @@ export default class TexasGame {
 
         this.fuck4thPCardByInsuranceState = 0;
 
-        //let sequence = [];
-
         if (startIndex == 0) {
-            let PublicCardInfo: PublicCardInfo = null;
-
-            PublicCardInfo = this.uirc.listCards[startIndex + 2];
+            //第0张牌，设定第1,2张牌位置都在0号位置
+            let index = 2;
+            let PublicCardInfo: PublicCardInfo = this.uirc.listCards[index];
+            PublicCardInfo.cardId = this.cards[index];
             PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-
-            PublicCardInfo.cardId = this.cards[startIndex + 2];
             PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
             PublicCardInfo.trans.setPosition(this.listDefaultPublicCardsLPos[0]);
             PublicCardInfo.trans.setScale(cc.Vec3.ONE);
             PublicCardInfo.trans.active = true;
-            let CacheCardId: number = PublicCardInfo.cardId;
-            let CacheImage: cc.Sprite = PublicCardInfo.imageCard;
-
             tween.then(
                 cc.callFunc(() => {
                     cc.tween(PublicCardInfo.trans).to(.1, { scaleX: 0 }).call(() => {
-                        CacheImage.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(CacheCardId));
+                        PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
                     }).start();
                 })
             );
@@ -1907,67 +1907,52 @@ export default class TexasGame {
                 //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
             }));
             tween.then(cc.callFunc(() => {
-                cc.tween(PublicCardInfo.trans).to(0.1, { scaleX: 1 }).call(() => {
-                    let mPublicCardInfo0: PublicCardInfo = this.uirc.listCards[0];
-                    mPublicCardInfo0.imageCard.node.color = cc.Color.WHITE;
-                    mPublicCardInfo0.cardId = this.cards[0];
-                    mPublicCardInfo0.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mPublicCardInfo0.cardId));
-                    mPublicCardInfo0.trans.setPosition(this.listDefaultPublicCardsLPos[0]);
-                    mPublicCardInfo0.trans.setScale(cc.Vec3.ONE);
-                    mPublicCardInfo0.trans.active = true;
-                }).start();
-            }))
+                cc.tween(PublicCardInfo.trans).to(0.1, { scaleX: 1 }).start();
+            }));
             tween.delay(0.1);
             tween.delay(0.4);
 
-            let mTmpStartIndex: number = startIndex + 1;
-
-
-            for (let i = mTmpStartIndex; i < 3; i++) {
-
+            for (let i = 0; i < 3; i++) {
                 PublicCardInfo = this.uirc.listCards[i];
-                PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                PublicCardInfo.cardId = this.cards[i];
-                if (i != 2) {
-                    PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
-                }
-                PublicCardInfo.trans.setPosition(this.listDefaultPublicCardsLPos[0]);
-                let mCacheTrans = PublicCardInfo.trans;
-
+                let trans = PublicCardInfo.trans;
+                let imageCard = PublicCardInfo.imageCard;
+                let cardId = this.cards[i];
+                imageCard.node.color = cc.Color.WHITE;
+                imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId));
+                trans.setPosition(this.listDefaultPublicCardsLPos[0]);
+                trans.setScale(cc.Vec3.ONE);
+                let move_pos = this.listDefaultPublicCardsLPos[i];
                 tween.then(cc.callFunc(() => {
-                    mCacheTrans.active = true;
-                    cc.tween(PublicCardInfo.trans).to(.4, { position: this.listDefaultPublicCardsLPos[i] }).start();
+                    trans.active = true;
+                    cc.log(`${i}张牌`, cardId, trans, move_pos.toString());
+                    cc.tween(trans).to(.4, { position: move_pos }).start();
                 }))
-
                 if (i == 2) {
                     tween.delay(0.4);
                 }
-
             }
-
             if (mCacheCount == 5) {
                 // 一下下发5张
                 for (let i = 3; i < mCacheCount; i++) {
                     PublicCardInfo = this.uirc.listCards[i];
-                    PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                    PublicCardInfo.cardId = this.cards[i];
-                    PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
-                    PublicCardInfo.trans.setPosition(this.listDefaultPublicCardsLPos[i]);
-                    let mCacheTrans = PublicCardInfo.trans;
-                    let mCacheCardId1 = PublicCardInfo.cardId;
-                    let mCacheImage1 = PublicCardInfo.imageCard;
-
+                    let trans = PublicCardInfo.trans;
+                    let imageCard = PublicCardInfo.imageCard;
+                    let cardId = this.cards[i];
+                    PublicCardInfo.cardId = cardId;
+                    imageCard.node.color = cc.Color.WHITE;
+                    imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
+                    trans.setPosition(this.listDefaultPublicCardsLPos[i]);
                     tween.then(cc.callFunc(() => {
-                        mCacheTrans.active = true;
-                        cc.tween(PublicCardInfo.trans).to(.2, { scaleX: 0 }).call(() => {
-                            mCacheImage1.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mCacheCardId1));
+                        trans.active = true;
+                        cc.tween(trans).to(.2, { scaleX: 0 }).call(() => {
+                            imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId));
                         }).start();
                     }))
                     tween.delay(.2);
 
                     tween.then(cc.callFunc(() => {
                         //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
-                        cc.tween(PublicCardInfo.trans).to(.2, { scaleX: 1 }).start();
+                        cc.tween(trans).to(.2, { scaleX: 1 }).start();
                     }));
                     tween.delay(.2);
                 }
@@ -1975,27 +1960,27 @@ export default class TexasGame {
         }
         else {
             for (let i = startIndex, n = mCacheCount; i < n; i++) {
-                let mPublicCardInfo: PublicCardInfo = this.uirc.listCards[i];
-                mPublicCardInfo.cardId = this.cards[i];
-                mPublicCardInfo.trans.setPosition(this.listDefaultPublicCardsLPos[i]);
-                mPublicCardInfo.trans.setScale(cc.Vec3.ONE);
-                mPublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                mPublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
-                let mCacheCardId: number = mPublicCardInfo.cardId;
-                let mCacheImage: cc.Sprite = mPublicCardInfo.imageCard;
-                let mCacheTrans = mPublicCardInfo.trans;
+                let PublicCardInfo: PublicCardInfo = this.uirc.listCards[i];
+
+                let trans = PublicCardInfo.trans;
+                let imageCard = PublicCardInfo.imageCard;
+                let cardId = this.cards[i];
+                PublicCardInfo.cardId = cardId;
+                trans.setPosition(this.listDefaultPublicCardsLPos[i]);
+                trans.setScale(cc.Vec3.ONE);
+                imageCard.node.color = cc.Color.WHITE;
+                imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
                 tween.then(cc.callFunc(() => {
-                    mCacheTrans.active = true;
-                    cc.tween(mPublicCardInfo.trans).to(.2, { scaleX: 0 }).call(() => {
-                        mCacheImage.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mCacheCardId));
+                    trans.active = true;
+                    cc.tween(trans).to(.2, { scaleX: 0 }).call(() => {
+                        imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId));
                     }).start();
                 }));
                 tween.delay(.2);
 
-
                 tween.then(cc.callFunc(() => {
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
-                    cc.tween(mPublicCardInfo.trans).to(.2, { scaleX: 1 }).start();
+                    cc.tween(trans).to(.2, { scaleX: 1 }).start();
                 }));
                 tween.delay(.2);
             }
@@ -2013,9 +1998,10 @@ export default class TexasGame {
         if (null != mClientSeat.Player && mClientSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isParticipateInTheGame) {
             if (null != tweenCallback) {
                 tween.call(() => {
-                    let highlightCards: number[] = [];;
-                    let cardType: CardType = this.GetCardType(highlightCards, this.cards);
 
+                    let highlightCards_ref = { highlightCards: null };
+                    let cardType: CardType = this.GetCardType(highlightCards_ref, this.cards);
+                    let highlightCards = highlightCards_ref.highlightCards;
                     for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
                         this.uirc.listCards[i].imageSelect.node.active = false;
                         for (let j = 0, m = highlightCards.length; j < m; j++) {
@@ -2034,12 +2020,18 @@ export default class TexasGame {
                     tweenCallback();
 
                     this.waittingUpdatePublicCardsAnimation = false;
+
+
+                    this.sequenceUpdatePublicCards.IsPlaying = false;
+
                 });
             }
             else {
                 tween.call(() => {
-                    let highlightCards = [];
-                    let cardType: CardType = this.GetCardType(highlightCards, this.cards);
+
+                    let highlightCards_ref = { highlightCards: null };
+                    let cardType: CardType = this.GetCardType(highlightCards_ref, this.cards);
+                    let highlightCards = highlightCards_ref.highlightCards;
 
                     for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
                         this.uirc.listCards[i].imageSelect.node.active = false;
@@ -2057,6 +2049,8 @@ export default class TexasGame {
                     }
 
                     this.waittingUpdatePublicCardsAnimation = false;
+
+                    this.sequenceUpdatePublicCards.IsPlaying = false;
                 });
             }
         }
@@ -2065,10 +2059,14 @@ export default class TexasGame {
                 tween.call(() => {
                     tweenCallback();
                     this.waittingUpdatePublicCardsAnimation = false;
+                    this.sequenceUpdatePublicCards.IsPlaying = false;
                 });
             }
             else {
-                tween.call(() => { this.waittingUpdatePublicCardsAnimation = false; });
+                tween.call(() => {
+                    this.waittingUpdatePublicCardsAnimation = false;
+                    this.sequenceUpdatePublicCards.IsPlaying = false;
+                });
 
             }
         }
@@ -2077,13 +2075,11 @@ export default class TexasGame {
             tween.delay(0.5);
             tween.call(() => {
                 SecondtweenCallback();
+                this.sequenceUpdatePublicCards.IsPlaying = false;
             });
         }
         tween.start();
     }
-
-
-
 
     /// <summary>
     /// 刷新公共牌 第二套
@@ -2102,8 +2098,6 @@ export default class TexasGame {
         //this.sequenceSecondUpdatePublicCards = DOTween.Sequence();
         this.sequenceSecondUpdatePublicCards = { tween: cc.tween(this.uirc.node), IsPlaying: true };
         let tween: cc.Tween = this.sequenceSecondUpdatePublicCards.tween;
-
-
         //第二套牌为五张牌时
         if (secondCardsCount == 5) {
             //#region 第三张牌翻牌动画
@@ -2117,9 +2111,9 @@ export default class TexasGame {
             PublicCardInfo.trans.active = true;
             let CacheCardId = PublicCardInfo.cardId;
             let CacheImage: cc.Sprite = PublicCardInfo.imageCard;
-
+            let CacheTrans = PublicCardInfo.trans;
             tween.then(cc.callFunc(() => {
-                cc.tween(PublicCardInfo.trans).to(.1, { scaleX: 0 }).then(cc.callFunc(() => {
+                cc.tween(CacheTrans).to(.1, { scaleX: 0 }).then(cc.callFunc(() => {
                     CacheImage.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(CacheCardId));
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
                 })).to(.1, { scaleX: 1 }).call(() => {
@@ -2155,7 +2149,7 @@ export default class TexasGame {
 
                     tween.then(cc.callFunc(() => {
                         mCacheTrans.active = true;
-                        cc.tween(PublicCardInfo.trans).to(.4, { position: this.listDefaultSecondPublicCardsLPos[i] }).start();
+                        cc.tween(mCacheTrans).to(.4, { position: this.listDefaultSecondPublicCardsLPos[i] }).start();
                     }))
 
                 }
@@ -2163,7 +2157,7 @@ export default class TexasGame {
 
                     tween.then(cc.callFunc(() => {
                         mCacheTrans.active = true;
-                        cc.tween(PublicCardInfo.trans).to(.4, { position: this.listDefaultSecondPublicCardsLPos[i] }).call(() => {
+                        cc.tween(mCacheTrans).to(.4, { position: this.listDefaultSecondPublicCardsLPos[i] }).call(() => {
                             if (cardTypeIndex == 2) {
                                 let sCards: number[] = [];
                                 sCards.push(...this.secondCards);
@@ -2191,7 +2185,7 @@ export default class TexasGame {
 
                 tween.then(cc.callFunc(() => {
                     mCacheTrans.active = true;
-                    cc.tween(PublicCardInfo.trans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
+                    cc.tween(mCacheTrans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
                         mCacheImage1.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mCacheCardId1));
                         //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
                     })).to(.2, { scaleX: 1 }).call(() => {
@@ -2224,10 +2218,9 @@ export default class TexasGame {
                 let mCacheTrans = PublicCardInfo.trans;
                 let CacheDefaultPublicCardsLPos = cc.v2(this.listDefaultSecondPublicCardsLPos[i].x, this.listDefaultSecondPublicCardsLPos[i].y);
                 mCacheTrans.active = true;
-
                 tween.then(cc.callFunc(() => {
 
-                    cc.tween(PublicCardInfo.trans).to(.2, { scaleX: 1.2 }).then(cc.callFunc(() => {
+                    cc.tween(mCacheTrans).to(.2, { scaleX: 1.2 }).then(cc.callFunc(() => {
                         //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
                     })).parallel(cc.scaleTo(.2, 1), cc.moveTo(0.4, CacheDefaultPublicCardsLPos)).then(cc.callFunc(() => {
                         if (cardTypeIndex == 2) {
@@ -2255,10 +2248,9 @@ export default class TexasGame {
                 let mCacheImage = PublicCardInfo.imageCard;
                 let mCacheTrans = PublicCardInfo.trans;
 
-
                 tween.then(cc.callFunc(() => {
                     mCacheTrans.active = true;
-                    cc.tween(PublicCardInfo.trans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
+                    cc.tween(mCacheTrans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
                         mCacheImage.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mCacheCardId));
                         //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
                     })).to(.2, { scaleX: 1 }).call(() => {
@@ -2277,6 +2269,9 @@ export default class TexasGame {
                 tween.delay(0.4);
             }
         }
+        tween.call(() => {
+            this.sequenceSecondUpdatePublicCards.IsPlaying = false;
+        });
         tween.start();
     }
 
@@ -2287,8 +2282,14 @@ export default class TexasGame {
     protected UpdateSecondPublicCardsCardType(secondPublicCards: number[]): void {
         // 参与了牌局，才能看到牌型提示
         if (null != this.mainPlayer && this.mainPlayer.cards.length > 0) {
-            let highlightCards: number[] = [];
-            let cardType: CardType = this.GetCardType(highlightCards, secondPublicCards);
+
+            let highlightCards_ref = { highlightCards: null };
+            let cardType: CardType = this.GetCardType(highlightCards_ref, secondPublicCards);
+            let highlightCards = highlightCards_ref.highlightCards;
+
+
+
+
             for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
                 this.uirc.listSecondCards[i].imageSelect.node.active = false;
                 for (let j = 0, m = highlightCards.length; j < m; j++) {
@@ -2366,7 +2367,7 @@ export default class TexasGame {
 
             this.sequencePlayFirstRecyclingChipAnimation.complete = () => {
                 this.sequencePlayFirstRecyclingChipAnimation.IsPlaying = false;
-                tweenCallback();
+                tweenCallback?.();
             }
             this.sequencePlayFirstRecyclingChipAnimation.IsPlaying = true;
             tween.call(this.sequencePlayFirstRecyclingChipAnimation.complete);
@@ -2378,13 +2379,155 @@ export default class TexasGame {
         return this.sequencePlayFirstRecyclingChipAnimation;
     }
     /// <summary>
+    /// 播放收筹码到底池动画
+    /// </summary>
+    private PlayRecyclingChipAnimation(tweenCallback: Function): void {
+        let mSeat: Seat = null;
+        this.sequencePlayRecyclingChipAnimation = {};
+        for (let i = 0, n = this.listSeat.length; i < n; i++) {
+            mSeat = this.listSeat[i];
+            if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame)
+                continue;
+            this.sequencePlayRecyclingChipAnimation.tween = mSeat.PlayRecyclingChipAnimation();
+        }
+        let tween = this.sequencePlayRecyclingChipAnimation.tween;
+        if (null != tween) {
+            if (null != tweenCallback) {
+
+                this.sequencePlayRecyclingChipAnimation.complete = () => {
+                    this.sequencePlayRecyclingChipAnimation.IsPlaying = false;
+                    this.UpdatePots();
+                    tweenCallback?.();
+                }
+            }
+            else {
+                //sequencePlayRecyclingChipAnimation.OnComplete(UpdatePots);
+                this.sequencePlayRecyclingChipAnimation.complete = () => {
+                    this.sequencePlayRecyclingChipAnimation.IsPlaying = false;
+                    this.UpdatePots();
+                }
+            }
+            this.sequencePlayRecyclingChipAnimation.IsPlaying = true;
+            tween.call(this.sequencePlayRecyclingChipAnimation.complete);
+            tween.start();
+        }
+        else {
+            this.UpdatePots();
+            tweenCallback?.();
+        }
+    }
+
+
+
+
+    /// <summary>
+    /// 播放本轮结束公共牌动画
+    /// </summary>
+    public PlayEndPublicCardsAnimation(rec: ServerMessageWinner.AsObject): void {
+        // Log.Msg(rec);
+
+        let mCacheWinnerSeatIds = null; // 赢家座位
+        let mCacheWinnerCardTypes = null; // 赢家牌型
+
+        for (let i = 0, n = rec.resultsList.length; i < n; i++) {
+            // 找到赢家
+            if (rec.resultsList[i].win > 0) {
+                if (null == mCacheWinnerSeatIds)
+                    mCacheWinnerSeatIds = [];
+                mCacheWinnerSeatIds.push(this.GetLocalSeatID(rec.resultsList[i].seatId));
+                if (null == mCacheWinnerCardTypes)
+                    mCacheWinnerCardTypes = [];
+                mCacheWinnerCardTypes.Add(rec.resultsList[i].handValueType);
+            }
+        }
+
+        // rec.cardSort会五个五个一组，对应赢家数量
+        let mTmpCardSorts = [];
+        //int mGroup = rec.cardSort.Count / 5;
+        for (let i = 0, n = rec.resultsList.length; i < n; i++) {
+            let mTmpCards = [];
+            for (let j = 0, m = rec.resultsList[i].winCardsList.length; j < m; j++) {
+                mTmpCards.push(rec.resultsList[i].winCardsList[j].card);
+            }
+            mTmpCardSorts.push(mTmpCards);
+        }
+
+        let mHaveCardSort = true;
+
+
+        if (null == mCacheWinnerSeatIds || mCacheWinnerSeatIds.Count == 0 || !mHaveCardSort) {
+            // 没有赢家
+            return;
+        }
+
+
+        let mWinnerIndex = 0;
+        for (let i = 0, n = mCacheWinnerSeatIds.Count; i < n; i++) {
+            if (this.mainPlayer.isPlaying && this.mainPlayer.seatID == mCacheWinnerSeatIds[i]) {
+                mWinnerIndex = i;
+                break;
+            }
+        }
+
+
+
+        let mIsFirst = true;
+        let mCacheCardIds = [];
+        for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+            for (let j = 0, m = mTmpCardSorts[mWinnerIndex].Count; j < m; j++) {
+                if (mCacheCardIds.includes(this.uirc.listCards[i].cardId))
+                    continue;
+                if (mTmpCardSorts[mWinnerIndex][j] > 4 || mTmpCardSorts[mWinnerIndex][j] < 0)
+                    continue;
+
+                if (this.uirc.listCards[i].cardId == GameCache.Instance.CurGame.cards[mTmpCardSorts[mWinnerIndex][j]]) {
+                    mCacheCardIds.push(this.uirc.listCards[i].cardId);
+                    if (mIsFirst) {
+                        mIsFirst = false;
+                        //公共牌向上移
+                        //sequencePlayEndPublicCardsAnimation.Append(listCards[i].trans.DOLocalMoveY(40, 0.3f));
+                    }
+                    else {    //公共牌向上移
+                        //sequencePlayEndPublicCardsAnimation.Join(listCards[i].trans.DOLocalMoveY(40, 0.3f));
+                    }
+
+                    //sequencePlayEndPublicCardsAnimation.Join(listCards[i].imageCard.DOColor(Color.white, 0.2f));
+                    break;
+                }
+            }
+        }
+
+        if (this.waittingUpdatePublicCardsAnimation) {
+
+            //sequencePlayEndPublicCardsAnimation.SetDelay(0.5f);
+        }
+        else {
+
+        }
+    }
+    /// <summary>
+    /// 获取本手结算手牌
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public GetHandCardsAtRecvWinner(rec: ServerMessageWinner.AsObject, index: number): number[] {
+
+        let result = rec.resultsList[index];
+
+        return [result.myCardsList?.[0] || 0, result.myCardsList?.[1] || 0];
+    }
+
+
+
+    /// <summary>
     /// 计算牌型
     /// </summary>
     /// <param name="highlightCards"></param>
     /// <returns></returns>
-    public GetCardType(highlightCards: number[], publicCards: number[]): CardType {
+    public GetCardType(highlightCards_ref: { highlightCards: number[] }, publicCards: number[]): CardType {
         let mCards: number[] = [...publicCards, ...this.mainPlayer.cards];
-        return CardTypeUtil.GetCardType(mCards, highlightCards, GameUtil.JudgeIsSixPlusRoomPath(GameCache.Instance.room_type));
+        return CardTypeUtil.GetCardType(mCards, highlightCards_ref, GameUtil.JudgeIsSixPlusRoomPath(GameCache.Instance.room_type));
     }
 
     private PlayFirstRecyclingChipSubAnimation(tweenCallback?: Function): void {
@@ -2444,10 +2587,72 @@ export default class TexasGame {
     }
 
 
+
+
+    /// <summary>
+    /// 设置公共牌Id
+    /// </summary>
+    public SetPublicCardInfosId(): void {
+        let mPublicCardInfo: PublicCardInfo = null;
+        for (let i = 0, n = this.cards.length; i < n; i++) {
+            mPublicCardInfo = this.uirc.listCards[i];
+            mPublicCardInfo.cardId = this.cards[i];
+        }
+    }
+
+    /// <summary>
+    /// 显示查看更多公共牌
+    /// </summary>
+    public ShowSeeMorePublic(): void {
+        if (!this.mainPlayer.isParticipateInTheGame)
+            return;
+
+        if (this.GetCurPublicCardsCount() == 5)
+            return;
+
+        // let mCost = GameUtil.GetSeeMoreCost(smallBlind / 100);
+        // textSeeMorePublicGold.text = $"{StringHelper.GetDoubleString(mCost)}";
+
+        // if (GetCurPublicCardsCount() == 0) {
+        //     // textSeeMorePublic.text = $"查看翻牌";
+        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10018);
+        // }
+        // else if (GetCurPublicCardsCount() == 3) {
+        //     // textSeeMorePublic.text = $"查看转牌";
+        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10019);
+        // }
+        // else {
+        //     // textSeeMorePublic.text = $"查看河牌";
+        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10020);
+        // }
+
+        // if (GameCache.Instance.room_type < (int)RoomType.MTTTexasHoldemStandardNoLimit)//MTT没有查看翻牌
+        // {
+        //     buttonSeeMorePublic.interactable = true;
+        //     buttonSeeMorePublic.gameObject.SetActive(true);
+        // }
+    }
+
+
+    /// <summary>
+    /// 清空气泡
+    /// </summary>
+    public ClearSeatBubble(isRoundFinish: boolean): void {
+        let mSeat: Seat = null;
+        for (let i = 0, n = this.listSeat.length; i < n; i++) {
+            mSeat = this.listSeat[i];
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+            mSeat.HideBubble();
+        }
+    }
+
+
     /// <summary>
     /// 清空公共牌UI
     /// </summary>
     protected ClearPublicCardsUI() {
+        cc.log("ClearPublicCardsUI");
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listCards[i];
@@ -2543,10 +2748,72 @@ export default class TexasGame {
         seatUI && this.seatUI_pool.push(seatUI);
     }
 
+
     /**
      * 退出
      */
-    Exit() {
-        this.UnRegisterMsgHandler()
+    Dispose() {
+
+        if (this.IsDispose) {
+            return;
+        }
+
+        this.RemoveMsgHandler();
+
+        this.ClearAllData();
+
+        //this.KillAllTweener();
+
+        // 清空公共牌
+        if (null != this.uirc.listCards)
+            this.uirc.listCards = [];
+
+        // 清空座位
+        if (null != this.listSeat) {
+            for (let i = 0; i < this.listSeat.length; i++) {
+                if (null != this.listSeat[i]) {
+                    this.listSeat[i].Dispose();
+                }
+            }
+            this.listSeat = null;
+        }
+
+        // 清空座位(客户端标记)
+        if (null != this.dicSeatOnlyClient) {
+            this.dicSeatOnlyClient.clear();
+            this.dicSeatOnlyClient = null;
+        }
+
+        // 清空分池
+        if (null != this.uirc.listPotInfo) {
+            this.uirc.listPotInfo = null;
+        }
+
+        // 清空玩家自己
+        if (null != this.mainPlayer) {
+            this.mainPlayer.Dispose();
+            this.mainPlayer = null;
+        }
+
+        // 卸载牌局内已加载过的ab
+        // if (null != settingAbnames && settingAbnames.Count > 0) {
+        //     ResourcesComponent mResourcesComponent = Game.Scene.ModelScene.GetComponent<ResourcesComponent>();
+        //     for (int i = 0, n = settingAbnames.Count; i < n; i++)
+        //     {
+        //         mResourcesComponent.UnloadBundle(settingAbnames[i]);
+        //     }
+        //     settingAbnames.Clear();
+        //     settingAbnames = null;
+        // }
+
+        if (this.GameLogicSMComponent != null) {
+            this.GameLogicSMComponent.stop();
+        }
+
+        //GameStatusRestoreHandler = null;
+
+        //this.IsExit = true;
     }
+
+
 }

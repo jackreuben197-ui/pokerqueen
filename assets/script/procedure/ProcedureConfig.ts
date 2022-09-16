@@ -82,7 +82,7 @@ export default class ProcedureConfig extends ProcedureBase {
                 //Dns.GetHostEntry("dev.k8s.awanptesting.com").AddressList[0].ToString(); //PlayerPrefsMgr.mInstance.GetString(sckKey, networkConf.LoginHostIP);
                 break;
         }
-        network.WebURL = `${network.WebHost}:${network.APIPort}`;
+        network.WebURL = `${network.WebHost}`//:${network.APIPort}`;
         network.PayURL = `${network.WebHost}:${network.PayPort}`;
         network.HeadUrl = `${network.WebHost}:${network.HeadPort}`;
         network.BannerImageUrl = `${network.WebHost}:${network.HeadPort}`;
