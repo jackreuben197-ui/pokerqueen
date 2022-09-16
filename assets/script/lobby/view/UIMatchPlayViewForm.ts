@@ -497,7 +497,8 @@ export default class UIMatchPlayViewForm extends BaseForm {
         // let layout: cc.Node = item.getChildByName("Text_Icon_Layout");
         // if (roomInfo.play_duration == 0) {
         // status 0:待创建 1:已创建未开始 2:已开始 3:已结束
-        if (roomInfo.status < 2) {
+        // participation_status 参与状态:0 未参与 1: 参与中
+        if (roomInfo.participation_status == 0) {
             item.getChildByName("item_choose").active = false;
             item.getChildByName("item_normal").active = true;
         //     layout.getChildByName("Text_Icon_Time").active = false;

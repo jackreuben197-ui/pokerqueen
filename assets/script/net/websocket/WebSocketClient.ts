@@ -25,7 +25,7 @@ export default class WebSocketClient {
         if (this.Host && this.Port) {
             if (GameConfig.IsNewArea) {
                 this.Host_Port = `ws://${this.Host}:${this.Port}`;
-                this.Host_Port = `ws://10.20.10.149:15000`;
+                // this.Host_Port = `ws://10.20.10.149:15000`;
             } else {
                 this.Host_Port = `ws://${this.Host}:${this.Port}`;
             }

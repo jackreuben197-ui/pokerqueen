@@ -197,6 +197,7 @@ export default class UIMatchBanner extends UIBase {
         let index = pageview.getCurrentPageIndex();
         if (index == 2) {
             index = -1;
+            // this.layout.x = 1158;
         }
         pageview.scrollToPage(index + 1, 0.3);
     }

@@ -95,7 +95,7 @@ export class UIFormMgr {
             ui.node.parent = this.UILayer
             if (ui instanceof BaseForm) {
                 ui.onShow(param, this.currUI as BaseForm);
-                cc.log("ui.main.x onShow >> ", ui.main.x);
+                cc.log("ui.main.x onShow >> ", ui.node.x);
             } else {
                 ui.onShow(param);
             }
