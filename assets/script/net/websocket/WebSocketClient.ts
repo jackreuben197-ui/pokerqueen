@@ -23,12 +23,7 @@ export default class WebSocketClient {
         this.Host = GameConfig.Network?.LoginHost;
         this.Port = Web_WS.Response?.data?.port;
         if (this.Host && this.Port) {
-            if (GameConfig.IsNewArea) {
-                this.Host_Port = `ws://${this.Host}:${this.Port}`;
-                // this.Host_Port = `ws://10.20.10.149:15000`;
-            } else {
-                this.Host_Port = `ws://${this.Host}:${this.Port}`;
-            }
+            this.Host_Port = `ws://${this.Host}:${this.Port}`;
             this.WS = new WebSocket(this.Host_Port);
             console.log("%c%s", LogStyle.ws_request, ">>>>> websocket connect:" + WebSocketClient.Host_Port);
             this.WS.binaryType = "arraybuffer";

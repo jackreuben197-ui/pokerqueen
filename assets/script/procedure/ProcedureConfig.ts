@@ -62,14 +62,14 @@ export default class ProcedureConfig extends ProcedureBase {
                 })
                 break;
             case 2://开发服
-                network.HTTP = "dev.k8s.awanptesting.com";////PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
-                //network.HTTP = "dev1.awanptesting.com";
+                if (GameConfig.IsNewArea) {
+                    network.HTTP = "dev1.awanptesting.com";
+                    network.LoginHost = "dev1.awanptesting.com";
+                } else {
+                    network.HTTP = "dev.k8s.awanptesting.com";
+                    network.LoginHost = "dev.k8s.awanptesting.com"; 
+                }
                 network.WebHost = `http://${network.HTTP}`;
-                //network.LoginHost = "152.70.234.14"; 
-                //network.LoginHost = "18.138.78.56";
-                
-                network.LoginHost = "dev.k8s.awanptesting.com"
-                //Dns.GetHostEntry("dev.k8s.awanptesting.com").AddressList[0].ToString(); //PlayerPrefsMgr.mInstance.GetString(sckKey, networkConf.LoginHostIP);
                 keys.forEach(item => {
                     network[item] = NetWorkBase[item];
                 })
