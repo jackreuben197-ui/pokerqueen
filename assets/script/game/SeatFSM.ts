@@ -1,6 +1,6 @@
 import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
-import Seat from "./Seat";
+import Seat, { VoiceprintState } from "./Seat";
 import { SeatEmpty, SeatSit, SeatStandup, SeatWaitStart } from "./SeatStateHandler";
 
 export class SeatFSM {
@@ -61,7 +61,7 @@ export class SeatFSM {
         // StopLightArmature();
 
         this.seat.uirc.imageEmpty.node.active = true;
-        // UpdateVoiceprintState(VoiceprintState.None);
+        this.seat.UpdateVoiceprintState(VoiceprintState.None);
     }
 
     public EmptyExecute(): void {

@@ -181,10 +181,21 @@ export const UIDefine = {
     },
     UITexasGameEndComponent: {
         UIType: UIType.CommonUI,
-        Name: "UITexasGameEnd",
+        Name: "UITexasGameEndComponent",
         Bundle: 'texas',
         Path: "prefab/ui/UITexasGameEnd",
+    },
+
+    UITexasPlayerInfoComponent: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasPlayerInfo",
+        Bundle: 'texas',
+        Path: "prefab/ui/UITexasPlayerInfo",
     }
+
+
+
+
 }
 //批量设置
 cc.game.on(cc.game.EVENT_GAME_INITED, () => {

@@ -4,6 +4,7 @@ import WebImageHelper from "../helper/WebImageHelper";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { UIMineModel } from "../lobby/UIMineModel";
 import { Def } from "../protobuf/holdem/define_pb";
+import UIComponent from "../ui/UIComponent";
 import { CacheDataManager } from "./CacheDataManager";
 import { CardType, CardTypeUtil } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
@@ -13,6 +14,19 @@ import GameUtil, { RoomType } from "./GameUtil";
 import { SeatFSM } from "./SeatFSM";
 import { SeatEmpty, SeatSit } from "./SeatStateHandler";
 import SeatUIRC, { CardUIInfo } from "./SeatUIRC";
+
+/// <summary>
+/// 声纹状态
+/// </summary>
+export enum VoiceprintState {
+    None,
+    Start,//发起验证
+    Recording,//录入中
+    Voting,//投票中
+    Checking,//等待审核
+    Robot,//被验证是机器人
+    Real//被验证是真人
+}
 
 export default class Seat {
 
@@ -83,7 +97,10 @@ export default class Seat {
     protected sequencePlayFoldAnimation: cc.Tween;
 
     tweenerPlayRecyclingWinChipAnimation: cc.Tween = null;
-    //cc.Tween = null;
+
+    public SeatVoiceprintState: VoiceprintState = VoiceprintState.None;
+
+    private isStartHide: boolean = false;
 
     IsDisposed: boolean = false;
 
@@ -99,8 +116,6 @@ export default class Seat {
 
         this.FsmLogicComponent.start();
 
-        this.RegiterTouchEvents();
-
         this.InitUIStaticData();
 
     }
@@ -111,20 +126,11 @@ export default class Seat {
 
         this.fsm = null;
 
-        this.UnRegiterTouchEvents();
-
         UpdateComponent.Remove(this.FsmLogicComponent);
 
     }
 
-    RegiterTouchEvents() {
-        this.uirc.imageEmpty.node.on("click", this.onClickEmpty, this);
-        this.uirc.rawimageHead.node.on("click", this.onClickEmpty, this);
-    }
-    UnRegiterTouchEvents() {
-        this.uirc.imageEmpty.node.off("click", this.onClickEmpty, this);
-        this.uirc.rawimageHead.node.off("click", this.onClickEmpty, this);
-    }
+
 
 
     InitUIStaticData() {
@@ -166,31 +172,63 @@ export default class Seat {
     }
 
 
-    onClickEmpty() {
 
-        UIMineModel.mInstance.ObtainUserInfo(pDto => {
-            if (pDto.user.forbid_bring_in == 1) {
-                // UIComponent.Instance.ShowNoAnimation(UIType.UIDialog,
-                //     new UIDialogComponent.DialogData()
-                // 				{
-                //         type = UIDialogComponent.DialogData.DialogType.Commit,
-                //         title = "",
 
-                //         content = LanguageManager.Get("UIForbidBringInTips"),
-                //         // contentCommit = "确定",
-                //         contentCommit = CPErrorCode.LanguageDescription(10012),
-                //         actionCommit = () => { },
-                //         actionCancel = null
-                //     });
-                return;
-            }
-            else {
-                GameCache.Instance.CurGame.Sitdown(this.ClientSeatId, true);
-            }
-        });
+
+    public UpdateVoiceprintState(voiceprintState: VoiceprintState, time: number = 0): void {
+        this.SeatVoiceprintState = voiceprintState;
+        switch (voiceprintState) {
+            case VoiceprintState.None:
+                this.HideAllVoiceprintState();
+                break;
+            case VoiceprintState.Start:
+                if (time > 0) {
+                    this.voiceprintTime = time;
+                }
+                this.ShowVoiceprintState(0);
+                break;
+            case VoiceprintState.Recording:
+                if (time > 0) {
+                    this.voiceprintTime = time;
+                }
+                this.ShowVoiceprintState(1);
+                break;
+            case VoiceprintState.Checking:
+                this.ShowVoiceprintState(2);
+                break;
+            case VoiceprintState.Robot:
+                this.ShowVoiceprintState(3);
+                this.isStartHide = true;
+                break;
+            case VoiceprintState.Real:
+                this.ShowVoiceprintState(4);
+                this.isStartHide = true;
+                break;
+            case VoiceprintState.Voting:
+                if (time >= 0 && this.Player != null) {
+                    this.Player.UpdateStateTime = time;
+                }
+                this.ShowVoiceprintState(5);
+                break;
+            default:
+                break;
+        }
     }
 
-
+    private ShowVoiceprintState(num: number): void {
+        for (let i = 0; i < this.uirc.voiceprintList.length; i++) {
+            this.uirc.voiceprintList[i].active = (num == i);
+        }
+    }
+    private HideAllVoiceprintState(): void {
+        if (this.uirc.voiceprintList?.length) {
+            for (let i = 0; i < this.uirc.voiceprintList.length; i++) {
+                if (this.uirc.voiceprintList[i] != null) {
+                    this.uirc.voiceprintList[i].active = false;
+                }
+            }
+        }
+    }
     /// <summary>
     /// 初始化SeatUI元素
     /// </summary>
@@ -426,23 +464,23 @@ export default class Seat {
                 imageBubble.gameObject.SetActive(false);
             return;
         }
-
+    
         if (isReconect && !Player.RoundActioned) {
             return;
         }
         // SetNickname(string.Empty); // 气泡时，不显示昵称，避免重叠
-
+    
         switch (Player.actionStatus) {
             case Def.Types.Action.Call:
                 if (!GetRorL()) {
-
+    
                     imageBubble.sprite = rc.Get<Sprite>("icon_image_game_genzhu_r");
                 }
                 else {
-
+    
                     imageBubble.sprite = rc.Get<Sprite>("match_icon_genzhu");
                 }
-
+    
                 // textBubble.text = "跟注";
                 textBubble.text = CPErrorCode.LanguageDescription(10044);
                 textBubble.gameObject.SetActive(true);
@@ -455,9 +493,9 @@ export default class Seat {
                 }
                 else {
                     imageBubble.sprite = rc.Get<Sprite>("match_icon_jiazhu");
-
+    
                 }
-
+    
                 // textBubble.text = "加注";
                 textBubble.text = CPErrorCode.LanguageDescription(10045);
                 textBubble.gameObject.SetActive(true);
@@ -470,7 +508,7 @@ export default class Seat {
                 else {
                     imageBubble.sprite = rc.Get<Sprite>("match_icon_allin");
                 }
-
+    
                 textBubble.text = "All in";
                 textBubble.gameObject.SetActive(true);
                 PlayAllinArmature(isAllinShowVioce);
@@ -482,7 +520,7 @@ export default class Seat {
                 else {
                     imageBubble.sprite = rc.Get<Sprite>("match_icon_kanpai");
                 }
-
+    
                 // textBubble.text = "看牌";
                 textBubble.text = CPErrorCode.LanguageDescription(10046);
                 textBubble.gameObject.SetActive(true);
@@ -495,7 +533,7 @@ export default class Seat {
                 else {
                     imageBubble.sprite = rc.Get<Sprite>("match_icon_qipai");
                 }
-
+    
                 // textBubble.text = "弃牌";
                 textBubble.text = CPErrorCode.LanguageDescription(10047);
                 textBubble.gameObject.SetActive(true);
@@ -504,12 +542,12 @@ export default class Seat {
             case Def.Types.Action.Straddle:
                 if (!GetRorL()) {
                     imageBubble.sprite = rc.Get<Sprite>("match_icon_straddle");
-
+    
                 }
                 else {
                     imageBubble.sprite = rc.Get<Sprite>("icon_image_game_straddle_r");
                 }
-
+    
                 textBubble.text = "Straddle";
                 textBubble.gameObject.SetActive(false);
                 StopAllinArmature();
@@ -518,7 +556,7 @@ export default class Seat {
             //    if (!GetRorL())
             //    {
             //        imageBubble.sprite = rc.Get<Sprite>("icon_image_game_genzhu_r");
-
+    
             //    }
             //    else
             //    {
@@ -535,8 +573,8 @@ export default class Seat {
                 StopAllinArmature();
                 break;
         }
-
-
+    
+    
         if (null == imageBubble.sprite) {
             imageBubble.color = Color.white;
             imageBubble.transform.localScale = new Vector3(1, 1, 1);
@@ -554,7 +592,7 @@ export default class Seat {
             else {
                 if (null != sequenceUpdateBubble && sequenceUpdateBubble.IsPlaying())
                     sequenceUpdateBubble.Kill(true);
-
+    
                 imageBubble.color = Color.white;
                 imageBubble.transform.localScale = new Vector3(1, 1, 1);
                 imageBubble.gameObject.SetActive(false);

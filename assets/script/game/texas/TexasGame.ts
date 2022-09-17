@@ -10,7 +10,7 @@ import { Web_User_Room } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Protocol_Holdem_Action, Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../../net/websocket/ProtocolHoldemMessages";
-import { Def, RoomInfo, Operator } from "../../protobuf/holdem/define_pb";
+import { Def, RoomInfo, Operator, Player } from "../../protobuf/holdem/define_pb";
 import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
@@ -38,6 +38,7 @@ import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
 import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
+import Main from "../../Main";
 //const PBTypes = Def.Types;
 
 
@@ -1065,6 +1066,29 @@ export default class TexasGame {
             mSeat = this.listSeat[localSeatID];
         return mSeat;
     }
+
+
+
+    /// <summary>
+    /// 通过UserId获取位置对象
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public GetSeatByUserId(userId: number): Seat {
+        if (userId <= 0)
+            return null;
+
+        let mSeat: Seat = null;
+        for (let i = 0, n = this.listSeat.length; i < n; i++) {
+            mSeat = this.listSeat[i];
+            if (null != mSeat && null != mSeat.Player && mSeat.Player.userID == userId) {
+                return mSeat;
+            }
+        }
+        return null;
+    }
+
+
     /// <summary>
     /// 获取默认手牌背面
     /// </summary>
@@ -2697,6 +2721,15 @@ export default class TexasGame {
                 tableChips: this.mainPlayer.chips
             });
     }
+
+    /// <summary>
+    /// 牌桌玩家信息
+    /// </summary>
+    /// <param name="userId"></param>
+    public CheckPlayerInfo(userId: number, play: CPlayer = null): void {
+        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, play], Main.Marquee);
+    }
+
     ClearAllData() {
         cc.log("清理所有数据");
     }
