@@ -1797,7 +1797,7 @@ export default class TexasGame {
             //爆牌动画
             //this.ShowBustCardAnimation();
         }
-        //this.ClearSeatBubble(false);
+        this.ClearSeatBubble(false);
         let mCacheSeat: Seat = null;
         for (let i = 0, n = this.listSeat.length; i < n; i++) {
             mCacheSeat = this.listSeat[i];
@@ -2709,7 +2709,6 @@ export default class TexasGame {
         }
     }
 
-
     /// <summary>
     /// 清空公共牌UI
     /// </summary>
@@ -2740,7 +2739,6 @@ export default class TexasGame {
             PublicCardInfo.trans.active = false;
         }
     }
-
 
 
 

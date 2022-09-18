@@ -544,7 +544,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         let roominfo: typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
 
         //判断websocket是否已经连接上
-        if (WebSocketClient.WS.readyState != WebSocket.OPEN) {
+        if (WebSocketClient.WS?.readyState != WebSocket.OPEN) {
             console.warn("websocket is not open");
             return;
         }
@@ -566,7 +566,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         GameCache.Instance.muck_switch = roominfo.muck_on;
         GameCache.Instance.voiceprint_verify_on = roominfo.voiceprint_verify_on;
         GameCache.Instance.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
-        if (WebSocketClient.WS.readyState == WebSocket.OPEN) {
+        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
 
             let response = LobbySession.APIWebUserRoominsur(roominfo.rid).catch(() => { });
             if (response) {

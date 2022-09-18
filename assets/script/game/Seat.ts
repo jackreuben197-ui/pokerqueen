@@ -110,8 +110,9 @@ export default class Seat {
     public bKeepSeatCounting: boolean = false;
     public keepSeatDeltaTime: number = 0;
 
-    tweenerPlayRecyclingWinChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = {};
+    tweenerPlayRecyclingWinChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
     sequenceUpdateBubble: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
+    tweenerHideBubble: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
 
     IsDisposed: boolean = false;
 
@@ -1456,25 +1457,31 @@ export default class Seat {
     /// 隐藏气泡
     /// </summary>
     public HideBubble(): void {
-        // if (imageBubble.gameObject.activeInHierarchy) {
-        //     if (null == sequenceUpdateBubble || !sequenceUpdateBubble.IsPlaying()) {
-        //         imageBubble.color = Color.white;
-        //         imageBubble.transform.localScale = Vector3.one;
-        //     }
+        if (this.uirc.imageBubble.node.activeInHierarchy) {
+            if (null == this.sequenceUpdateBubble || !this.sequenceUpdateBubble.IsPlaying) {
+                this.uirc.imageBubble.node.color = cc.Color.WHITE;
+                this.uirc.imageBubble.node.setScale(1, 1);
+            }
+        }
+        cc.log(">>>>>>>> 隐藏气泡");
+        this.tweenerHideBubble = { tween: cc.tween(this.uirc.imageBubble.node), IsPlaying: true }
+        let tween = this.tweenerHideBubble.tween;
+        tween.to(.2, { scale: 0 })
+        tween.delay(1);
+        tween.call(() => {
+            this.uirc.imageBubble.node.active = false;
+            this.UpdateNickname();
+            this.tweenerHideBubble.IsPlaying = false;
+        });
+        tween.start();
+        // if (this.uirc.Image_BubbleInsuranceNum.gameObject.activeInHierarchy) {
+        //     this.uirc.Image_BubbleInsuranceNum.gameObject.SetActive(false);
         // }
-        // tweenerHideBubble = imageBubble.transform.DOScale(new Vector3(0, 0, 1), 0.2f).SetDelay(1f).OnComplete(() => {
-        //     imageBubble.gameObject.SetActive(false);
-
-        //     UpdateNickname();
-        // });
-        // if (Image_BubbleInsuranceNum.gameObject.activeInHierarchy) {
-        //     Image_BubbleInsuranceNum.gameObject.SetActive(false);
+        // if (this.uirc.Image_BubbleInsuranceToubao.gameObject.activeInHierarchy) {
+        //     this.uirc.Image_BubbleInsuranceToubao.gameObject.SetActive(false);
         // }
-        // if (Image_BubbleInsuranceToubao.gameObject.activeInHierarchy) {
-        //     Image_BubbleInsuranceToubao.gameObject.SetActive(false);
-        // }
-        // HideBubbleInsurance();
-        // HideBubbleInsuranceCountDown();
+        this.HideBubbleInsurance();
+        this.HideBubbleInsuranceCountDown();
     }
 
 
