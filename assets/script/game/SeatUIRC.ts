@@ -84,6 +84,20 @@ export default class SeatUIRC extends UIBase {
 
     imageRecyclingWinChip: cc.Sprite = null;
 
+    buttonCancelReserveSeat: cc.Node = null;
+    textCancelReserveSeat: cc.Label = null;
+
+
+    imageReserveSeat: cc.Node = null;
+
+    m_ReserveTime: cc.Label = null;
+
+    imageOffline: cc.Node = null;
+
+    imageBubble: cc.Sprite = null;
+    textBubble: cc.Label = null;
+
+
     ///////////////////////////////////
 
     ///////////////////////////////////
@@ -153,6 +167,17 @@ export default class SeatUIRC extends UIBase {
         this.imageRecyclingWinChip = this.getChildNodeOrComponent("Image_RecyclingWinChip", cc.Sprite);
 
 
+        this.buttonCancelReserveSeat = this.getChildNodeOrComponent("Button_CancelReserveSeat");
+        this.textCancelReserveSeat = this.getChildNodeOrComponent("Text_CancelReserveSeat", cc.Label);
+        this.imageReserveSeat = this.getChildNodeOrComponent("Image_ReserveSeat");
+        this.m_ReserveTime = this.getChildNodeOrComponent("time", cc.Label);
+
+        this.imageOffline = this.getChildNodeOrComponent("imageOffline");
+
+
+        this.imageBubble = this.getChildNodeOrComponent("Image_Bubble", cc.Sprite);
+        this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
+
         this.voiceprintList = [];
         // this.voiceprintList.Add(VoiceprintStart);
         // this.voiceprintList.Add(VoiceprintEntering);
@@ -178,8 +203,6 @@ export default class SeatUIRC extends UIBase {
         this.listImageSmallCardBack.push(this.imageSmallCardBack0);
         this.listImageSmallCardBack.push(this.imageSmallCardBack1);
         this.ResetShowCardsId();
-
-
     }
 
 

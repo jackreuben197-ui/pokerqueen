@@ -113,6 +113,12 @@ export default class UITexas extends BaseScene {
 
 
     buttonDelay: cc.Node = null;
+    buttonSeeMorePublic: cc.Node = null;
+    imageSeeMorePublicTips: cc.Node = null;
+
+
+    textSeeMorePublic: cc.Label = null;
+    textSeeMorePublicGold: cc.Label = null;
 
     ///////////////////////////////////
     /**
@@ -268,6 +274,12 @@ export default class UITexas extends BaseScene {
         this.UIAutoOperation = this.getChildNodeOrComponent("UIAutoOperation");
 
         this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
+        this.buttonSeeMorePublic = this.getChildNodeOrComponent("Button_SeeMorePublic");
+        this.imageSeeMorePublicTips = this.getChildNodeOrComponent("Image_SeeMorePublicTips");
+
+
+        this.textSeeMorePublic = this.getChildNodeOrComponent("Text_SeeMorePublic", cc.Label);
+        this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
 
 
 

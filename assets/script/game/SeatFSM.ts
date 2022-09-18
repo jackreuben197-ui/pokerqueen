@@ -1,3 +1,5 @@
+import { CPErrorCode } from "../i18n/CPErrorCode";
+import GlobalSession from "../session/GlobalSession";
 import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./Seat";
@@ -425,6 +427,57 @@ export class SeatFSM {
 
     public FoldExit(): void {
 
+    }
+    //#endregion
+
+
+    //#region 本轮结束
+    public RoundEndEnter(): void {
+        this.seat.ClearRoundEndData();
+        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
+        this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
+        this.seat.HideCardBack();
+        this.seat.ClearCurRoundHaveBet();
+        this.seat.uirc.ResetShowCardsId();
+        this.seat.UpdateShowCardsId();
+        this.seat.HideBubbleInsurance();
+        this.seat.uirc.imageCardType.node.active = false;
+        this.seat.StopAllinArmature();
+        this.seat.StopWinArmature();
+        this.seat.FoldHeadGray(this.seat.Player.isFold);
+    }
+
+    public RoundEndExecute(): void {
+
+    }
+
+    public RoundEndExit(): void {
+
+    }
+    //#endregion
+
+
+    //#region 留座离桌
+    public KeepEnter(): void {
+        this.seat.ShowReturnGame();
+    }
+
+    public KeepExecute(): void {
+        if (GlobalSession.NowTimeS - this.seat.keepSeatDeltaTime > 1) {
+            this.seat.keepSeatDeltaTime = GlobalSession.NowTimeS;
+            this.seat.keepSeatLeftTime -= 1;
+            if (this.seat.keepSeatLeftTime <= 0) {
+                this.seat.bKeepSeatCounting = false;
+            }
+            else {
+                this.seat.uirc.textCancelReserveSeat.string = `${CPErrorCode.LanguageDescription(10011)}(${this.seat.keepSeatLeftTime}s)`;
+                this.seat.uirc.m_ReserveTime.string = `${this.seat.keepSeatLeftTime}s`;
+            }
+        }
+    }
+
+    public KeepExit(): void {
+        this.seat.HideReturnGame();
     }
     //#endregion
 }

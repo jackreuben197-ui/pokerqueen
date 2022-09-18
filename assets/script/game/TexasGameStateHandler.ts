@@ -2,6 +2,7 @@
  * TexasGameStateHandler
  */
 import { UIDefine } from "../define/UIDefine";
+import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
@@ -376,7 +377,7 @@ export class TexasGameStateHandlerHandEnd extends StateHandler {
 
     public Enter(entity?: any): void {
 
-        var source = this.SourceData as ServerMessageWinner.AsObject;
+        var source = this.SourceData as ServerMessageHandClear.AsObject;
 
         if (source == null) {
             return;

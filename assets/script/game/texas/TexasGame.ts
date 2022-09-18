@@ -1027,7 +1027,7 @@ export default class TexasGame {
     public InitSeatByCount(seatCount: number) {
         let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
         for (let i = 0; i < seatCount; i++) {
-            let seatUI = this.getSeatUI();
+            let seatUI = this.createSeatUI();
             seatUI.getComponent(cc.Widget).enabled = false;
             seatUI.active = true;
             seatUI.parent = this.uirc.Seat.parent;
@@ -1409,6 +1409,9 @@ export default class TexasGame {
         return [mFirstCard, mSecondCard];
     }
 
+
+
+
     /// <summary>
     /// 获取筹码Sprite
     /// </summary>
@@ -1417,6 +1420,12 @@ export default class TexasGame {
     public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
         return AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
     }
+
+    //获取气泡相关的spriteframe
+    public GetBubbleSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
+        return AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
+    }
+
 
     /// <summary>
     /// 获取扑克牌Sprite
@@ -1684,7 +1693,7 @@ export default class TexasGame {
     /// <summary>
     /// 重置公共牌Id
     /// </summary>
-    protected ResetPublicCardsId(): void {
+    public ResetPublicCardsId(): void {
         if (null == this.cards)
             this.cards = [];
         if (this.cards.length == this.uirc.listCards.length) {
@@ -1699,6 +1708,30 @@ export default class TexasGame {
             }
         }
     }
+
+    /// <summary>
+    /// 重置公共牌Id
+    /// </summary>
+    public ResetSecondPublicCardsId(): void {
+        if (null == this.secondCards)
+            this.secondCards = [];
+
+        if (this.secondCards.length == this.uirc.listSecondCards.length) {
+            for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
+                this.secondCards[i] = -1;
+            }
+        }
+        else {
+            this.secondCards = [];
+            for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
+                {
+                    this.secondCards.push(-1);
+                }
+            }
+        }
+    }
+
+
     /// <summary>
     /// 获取当前已发公共牌数量 第二套
     /// </summary>
@@ -1716,25 +1749,6 @@ export default class TexasGame {
         return 5;
     }
 
-    /// <summary>
-    /// 重置公共牌Id
-    /// </summary>
-    protected ResetSecondPublicCardsId(): void {
-        if (null == this.secondCards)
-            this.secondCards = [];
-
-        if (this.secondCards.length == this.uirc.listSecondCards.length) {
-            for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
-                this.secondCards[i] = -1;
-            }
-        }
-        else {
-            this.secondCards = [];
-            for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
-                this.secondCards.push(-1);
-            }
-        }
-    }
 
 
 
@@ -2634,29 +2648,53 @@ export default class TexasGame {
         if (this.GetCurPublicCardsCount() == 5)
             return;
 
-        // let mCost = GameUtil.GetSeeMoreCost(smallBlind / 100);
-        // textSeeMorePublicGold.text = $"{StringHelper.GetDoubleString(mCost)}";
+        let mCost = GameUtil.GetSeeMoreCost(this.smallBlind / 100 ^ 0);
+        this.uirc.textSeeMorePublicGold.string = `${StringHelper.getStringDiv100(mCost)}`;
 
-        // if (GetCurPublicCardsCount() == 0) {
-        //     // textSeeMorePublic.text = $"查看翻牌";
-        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10018);
-        // }
-        // else if (GetCurPublicCardsCount() == 3) {
-        //     // textSeeMorePublic.text = $"查看转牌";
-        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10019);
-        // }
-        // else {
-        //     // textSeeMorePublic.text = $"查看河牌";
-        //     textSeeMorePublic.text = CPErrorCode.LanguageDescription(10020);
-        // }
-
-        // if (GameCache.Instance.room_type < (int)RoomType.MTTTexasHoldemStandardNoLimit)//MTT没有查看翻牌
-        // {
-        //     buttonSeeMorePublic.interactable = true;
-        //     buttonSeeMorePublic.gameObject.SetActive(true);
-        // }
+        if (this.GetCurPublicCardsCount() == 0) {
+            // textSeeMorePublic.text = $"查看翻牌";
+            this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10018);
+        }
+        else if (this.GetCurPublicCardsCount() == 3) {
+            // textSeeMorePublic.text = $"查看转牌";
+            this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10019);
+        }
+        else {
+            // textSeeMorePublic.text = $"查看河牌";
+            this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10020);
+        }
+        if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit)//MTT没有查看翻牌
+        {
+            //this.uirc.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
+            this.uirc.buttonSeeMorePublic.active = true;
+        }
     }
 
+    /// <summary>
+    /// 重置公共牌Image
+    /// </summary>
+    public ResetPublicCardsImage(): void {
+        this.__ResetPublicCardsImage(this.uirc.listCards, this.listDefaultPublicCardsLPos);
+    }
+    /// <summary>
+    /// 重置公共牌Image
+    /// </summary>
+    public ResetSecondPublicCardsImage(): void {
+        this.__ResetPublicCardsImage(this.uirc.listSecondCards, this.listDefaultSecondPublicCardsLPos);
+    }
+    private __ResetPublicCardsImage(listCards: PublicCardInfo[], listDefaultPublicCardsLPos: cc.Vec3[]) {
+        let PublicCardInfo: PublicCardInfo = null;
+        for (let i = 0, n = listCards.length; i < n; i++) {
+            PublicCardInfo = listCards[i];
+            PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
+            PublicCardInfo.cardId = -1;
+            PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
+            PublicCardInfo.imageSelect.node.active = false;
+            PublicCardInfo.trans.setPosition(listDefaultPublicCardsLPos[i]);
+            PublicCardInfo.trans.setScale(cc.Vec3.ONE);
+            PublicCardInfo.trans.active = false;
+        }
+    }
 
     /// <summary>
     /// 清空气泡
@@ -2730,6 +2768,15 @@ export default class TexasGame {
         UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, play], Main.Marquee);
     }
 
+    public HideSeeMorePublic(): void {
+        this.uirc.buttonSeeMorePublic.active = false;
+    }
+
+    public HideSeeMorePublicTips(): void {
+        this.uirc.imageSeeMorePublicTips.active = false;
+    }
+
+
     ClearAllData() {
         cc.log("清理所有数据");
     }
@@ -2748,7 +2795,7 @@ export default class TexasGame {
                     mSeat.Player.Dispose();
                     mSeat.Player = null;
                 }
-                this.returnSeatUIPool(mSeat?.ui);
+                this.removeSeatUI(mSeat?.ui);
                 mSeat?.Clear();
             }
         }
@@ -2773,13 +2820,16 @@ export default class TexasGame {
         node.active = false;
     }
 
-
-    getSeatUI() {
+    //创建座位UI
+    createSeatUI() {
         if (this.seatUI_pool.length) return this.seatUI_pool.pop();
         return cc.instantiate(this.uirc.Seat);
     }
-    returnSeatUIPool(seatUI: cc.Node) {
+    //移除座位UI
+    removeSeatUI(seatUI: cc.Node) {
+        seatUI && (seatUI.parent = null);
         seatUI && this.seatUI_pool.push(seatUI);
+        cc.log("移除 seatUI ", seatUI);
     }
 
 
@@ -2796,6 +2846,8 @@ export default class TexasGame {
 
         this.ClearAllData();
 
+        this.ClearAllPlayers();
+
         //this.KillAllTweener();
 
         // 清空公共牌
@@ -2805,11 +2857,9 @@ export default class TexasGame {
         // 清空座位
         if (null != this.listSeat) {
             for (let i = 0; i < this.listSeat.length; i++) {
-                if (null != this.listSeat[i]) {
-                    this.listSeat[i].Dispose();
-                }
+                this.listSeat[i]?.Dispose();
             }
-            this.listSeat = null
+            this.listSeat = null;
         }
 
         // 清空座位(客户端标记)

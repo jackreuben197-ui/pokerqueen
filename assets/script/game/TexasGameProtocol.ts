@@ -21,7 +21,7 @@ import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
-import { SeatAllin, SeatCall, SeatCheck, SeatFold, SeatOperation, SeatPutChip, SeatRaise, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
+import { SeatAllin, SeatCall, SeatCheck, SeatFold, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
@@ -828,12 +828,14 @@ export default class TexasGameProtocol {
             // {
             //     mSeat.UpdateHunterAward();
             // }
-            let PlayRecyclingWinChipAnimation_Tween: cc.Tween = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.textAlreadAnte.node.position));
+            let PlayRecyclingWinChipAnimation_Tween: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function }
+                = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.textAlreadAnte.node.position));
 
             if (PlayRecyclingWinChipAnimation_Tween) {
 
                 tween.then(cc.callFunc(() => {
-                    PlayRecyclingWinChipAnimation_Tween.start();
+                    PlayRecyclingWinChipAnimation_Tween.IsPlaying = true;
+                    PlayRecyclingWinChipAnimation_Tween.tween.start();
                 }));
 
                 if (i == n - 1) {
@@ -948,7 +950,6 @@ export default class TexasGameProtocol {
                 }
             }
         }
-
         this.game.ClearSeatBubble(true);
         this.game.SetPublicCardInfosId();
         this.game.MessageWinnerData = rec;
@@ -960,7 +961,6 @@ export default class TexasGameProtocol {
         else {
             this.HandleMessageWinnerData();
         }
-
     }
 
     /// <summary>
@@ -973,8 +973,8 @@ export default class TexasGameProtocol {
         //每手清理缓存购买池子人数
         this.game.cacheBuyInsurancePotUserCount = 0;
         this.game.IsSecondPsc = false;
-        //this.game.HideSeeMorePublic();
-        // this.game.HideSeeMorePublicTips();
+        this.game.HideSeeMorePublic();
+        this.game.HideSeeMorePublicTips();
 
         this.game.HideWaitBlindBtn();
         this.game.HideOperationPanel();
@@ -991,13 +991,13 @@ export default class TexasGameProtocol {
         this.game.UpdatePots();
 
         // 刷新公共牌
-        //this.game.ResetPublicCardsId();
-        //this.game.ResetPublicCardsImage();
+        this.game.ResetPublicCardsId();
+        this.game.ResetPublicCardsImage();
 
         //刷新第二套公共牌
-        //this.game.ResetSecondPublicCardsId();
-        //this.game.ResetSecondPublicCardsImage();
-        // UpdatePublicCards(0, null);
+        this.game.ResetSecondPublicCardsId();
+        this.game.ResetSecondPublicCardsImage();
+
         if (null != this.game.cacheTrunOutsCards) {
             this.game.cacheTrunOutsCards.clear();
             this.game.cacheTrunOutsCards = null;
@@ -1006,16 +1006,15 @@ export default class TexasGameProtocol {
         for (let i = 0, n = this.game.listSeat.length; i < n; i++) {
             mSeat = this.game.listSeat[i];
             if (mSeat != null && null == mSeat.Player) {
-
-                //mSeat.EmptyEnter();
+                mSeat.SeatFSM.EmptyEnter();
             }
             if (null == mSeat || null == mSeat.Player)
                 continue;
 
             mSeat.Player.actionStatus = Def.Action.NONE;
-            //mSeat.FsmLogicComponent.SM.ChangeState(SeatRoundEnd.Instance);
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatRoundEnd.Instance);
             if (mSeat.Player.canPlayStatus == Def.CanPlayStatus.KEEP_SEAT) {
-                //mSeat.FsmLogicComponent.SM.ChangeState(SeatKeep.Instance);
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatKeep.Instance);
             }
             else {
                 mSeat.Player.canPlayStatus = Def.CanPlayStatus.DISABLE;

@@ -1334,4 +1334,13 @@ export default class GameUtil {
         return l;
         //return targetTransform.InverseTransformPoint(sourceTransform.TransformPoint(sourceLocalPos));
     }
+
+    /// <summary>
+    /// 查看公共牌花费
+    /// </summary>
+    /// <param name="small"></param>
+    /// <returns></returns>
+    public static GetSeeMoreCost(small: number): number {
+        return 50;
+    }
 }
