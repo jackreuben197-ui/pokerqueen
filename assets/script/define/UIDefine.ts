@@ -184,7 +184,26 @@ export const UIDefine = {
         Name: "UITexasGameEnd",
         Bundle: 'texas',
         Path: "prefab/ui/UITexasGameEnd",
-    }
+    },
+    UICreatelabor: {
+        UIType: UIType.Form,
+        Name: "UICreatelabor",
+        Bundle: null,
+        Path: "lobby/prefab/UICreatelabor",
+    },
+    UIlaborJoin: {
+        UIType: UIType.Form,
+        Name: "UIlaborJoin",
+        Bundle: null,
+        Path: "lobby/prefab/UIlaborJoin",
+    },
+    //房间模版
+    UILaborPlayViewForm: {
+        UIType: UIType.CommonUI,
+        Name: "UILaborPlayViewForm",
+        Bundle: null,
+        Path: "lobby/prefab/UILaborPlayViewForm"
+    },
 }
 //批量设置
 cc.game.on(cc.game.EVENT_GAME_INITED, () => {

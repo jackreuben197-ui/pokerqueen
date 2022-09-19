@@ -1,7 +1,5 @@
 const { ccclass, property } = cc._decorator;
 import BaseForm from "../../ui/form/BaseForm";
-import LobbyScene from "./LobbyScene";
-import UIMatchRoom from "./UIMatchRoom";
 import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Config_Multi_Language_Template } from "../../net/https/WebRequest";
 import { i18nLabel } from "../../i18n/i18nLabel";
 import LobbySession from "../../session/LobbySession";
@@ -11,6 +9,8 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { GameCache } from "../../game/GameCache";
 import { LobbyControl } from "../control/LobbyControl";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
+import UIBase from "../../ui/UIBase";
+import UIMatchRoom from "../view/UIMatchRoom";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -27,7 +27,7 @@ enum PokerType {
 }
 
 @ccclass
-export default class UIMatchPlayViewForm extends BaseForm {
+export default class UILabarPlayViewForm extends UIBase {
     //public static instance: UIMatchPlayViewForm = null;
     private TypeContentLength: number = 0;
     private CurTypeBtn: cc.Node = null;
@@ -184,13 +184,13 @@ export default class UIMatchPlayViewForm extends BaseForm {
      * poker_type:roomInfo.poker_type,
      * index:parseInt(CustomEventData),
      * len:len,
-     * @return {*}
+     * @return {*
      */
-    async onShow(param?: any, fromUI?: BaseForm) {
-        super.onShow(param, fromUI);
+    async onShow(param?: any) {
+        super.onShow(param);
         //根据点击的显示
         //获取groups信息刷新 typeScrollView
-        this.TypeContentLength = param.len;
+        // this.TypeContentLength = param.len;
         //获取roominfo
         await this.sendGroupGetData(param);
         //获取LocalDicRoomName
@@ -207,7 +207,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         let typesScrollView: cc.ScrollView = this.getChildNodeOrComponent("sv_list", cc.ScrollView);
         let groupData: any = await LobbyControl.getInstance().RequestListSummary({})
         this.RoomTypesInfos = UIMatchRoom.instance.handleData(groupData.data, typeViewContent);
-        this.RoomInfo = this.RoomTypesInfos[param.index];
+        this.RoomInfo = this.RoomTypesInfos[param ? param.index : 0];
         this.removeTypeEvent();
         this.registerTypeEvent();
         // this.TypeScroll(param.index, typesScrollView, typeViewContent.children[param.index]);

@@ -66,7 +66,9 @@ export default class UILobbyMenu extends UIBase {
     }
     career_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        LobbyControl.getInstance().switchContent("UICareer")
+        //打开公会  //进入工会还是加入界面
+        // LobbyControl.getInstance().switchContent("UIlabor")
+        LobbyControl.getInstance().switchContent("UILabarPlayViewForm")
     }
     my_click(btn: cc.Button) {
         this.changeBtn(btn.node);
