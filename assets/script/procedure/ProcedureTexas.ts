@@ -14,12 +14,7 @@ export default class ProcedureTexas extends ProcedureBase {
 
     lateEnter(param?: any) {
         super.lateEnter(param);
-        GameCache.Instance.initTexasGame();
-        console.log("lateEnter GameCache.Instance.CurGame", GameCache.Instance.CurGame);
-        if (!GameCache.Instance.CurGame) {
-            cc.warn("房间类型未解析:", GameCache.Instance.room_type);
-            return;
-        }
+        GameCache.Instance.initTexasGame();    
         GameCache.Instance.CurGame.Enter();
         GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.Launch);
     }

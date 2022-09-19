@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "e7a0fded-7a3e-4974-9ac8-fa909e2df187",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 114,
+  "height": 54,
+  "platformSettings": {},
+  "subMetas": {
+    "icon_image_game_rangpai_r": {
+      "ver": "1.0.6",
+      "uuid": "ddf2f516-7b42-4ce6-918e-8f61cfaa7c03",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "e7a0fded-7a3e-4974-9ac8-fa909e2df187",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 114,
+      "height": 54,
+      "rawWidth": 114,
+      "rawHeight": 54,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

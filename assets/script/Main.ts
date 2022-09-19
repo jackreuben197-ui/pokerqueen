@@ -17,6 +17,7 @@ export default class Main extends cc.Component {
     static Cache_UI: cc.Node = null;
 
     static Scene: cc.Node = null;
+    static Marquee: cc.Node = null;
     static Form: cc.Node = null;
     static Board: cc.Node = null;
     static Dialog: cc.Node = null;
@@ -37,6 +38,7 @@ export default class Main extends cc.Component {
         Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - UI缓存");
 
         Main.Scene = this.node.parent.getChildByName("Scene - 场景");
+        Main.Marquee = this.node.parent.getChildByName("Marquee - 场景上层");
         Main.Form = this.node.parent.getChildByName("Form - 窗体层");
         Main.Board = this.node.parent.getChildByName("Board - 遮挡浮窗层");
         Main.Dialog = this.node.parent.getChildByName("Dialog - 弹窗层");

@@ -16,62 +16,86 @@ export default class WebSocketClient {
 
 
     static WS: WebSocket = null;
-    //判断连接上(处理首次发送注册消息)
-    static _onConnent: boolean = false;
 
-    static Connect() {
+    //主动关闭
+    static ToClose: boolean = false;
+    //尝试重连总次数
+    static ReconnectMaxTime: number = 3;
+
+    static _reconnectTime: number = 0;
+
+    public static Connect() {
         this.Host = GameConfig.Network?.LoginHost;
         this.Port = Web_WS.Response?.data?.port;
+        this.Host_Port = `ws://${this.Host}:${this.Port}`;
         if (this.Host && this.Port) {
-            if (GameConfig.IsNewArea) {
-                this.Host_Port = `ws://${this.Host}:${this.Port}`;
-                // this.Host_Port = `ws://10.20.10.149:15000`;
-            } else {
-                this.Host_Port = `ws://${this.Host}:${this.Port}`;
-            }
-            this.WS = new WebSocket(this.Host_Port);
-            console.log("%c%s", LogStyle.ws_request, ">>>>> websocket connect:" + WebSocketClient.Host_Port);
-            this.WS.binaryType = "arraybuffer";
-            this.WS.onopen = this.onopen.bind(this);
-            this.WS.onerror = this.onerror.bind(this);
-            this.WS.onmessage = this.onmessage.bind(this);
-            this.WS.onclose = this.onclose.bind(this);
+            this.__connect();
         } else {
             ToastManager.Instance.createToast("host or port is error!");
         }
     }
-    private static onopen(this: WebSocket, ev: Event) {
-        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket connect success:" + WebSocketClient.Host_Port);
-        if (!WebSocketClient._onConnent) {
-            WebSocketClient._onConnent = true;
-            //发送握手后的注册
-            ProtocolAgency.Send({
-                protocol: Protocol_Holdem_Register,
-                RoomID: 0,
-                MatchID: 0,
-                body: Protocol_Holdem_Register.Request(),
-            });
-        } else {
-
-        }
+    private static __connect() {
+        this.WS = new WebSocket(this.Host_Port);
+        console.log("%c%s", LogStyle.ws_request, ">>>>> websocket connect:" + WebSocketClient.Host_Port);
+        this.WS.binaryType = "arraybuffer";
+        this.WS.onopen = this.onopen;
+        this.WS.onerror = this.onerror;
+        this.WS.onmessage = this.onmessage;
+        this.WS.onclose = this.onclose;
     }
-    private static onerror(this: WebSocket, ev: Event) {
+    private static onopen(ev: Event) {
+        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket connect success:" + WebSocketClient.Host_Port);
+        WebSocketClient._reconnectTime = 0;
+        //发送握手后的注册
+        ProtocolAgency.Send({
+            protocol: Protocol_Holdem_Register,
+            RoomID: 0,
+            MatchID: 0,
+            body: Protocol_Holdem_Register.Request(),
+        });
+    }
+    private static onerror(ev: Event) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onerror:" + WebSocketClient.Host_Port);
     }
-    private static onmessage(this: WebSocket, ev: MessageEvent) {
+    private static onmessage(ev: MessageEvent) {
         //console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onmessage:", ev?.data);
         ProtocolAgency.Receive(ev?.data);
     }
-    private static onclose(this: WebSocket, ev: CloseEvent) {
+    private static onclose(ev: CloseEvent) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);
         console.log("close reason : > ", ev.reason);
-        WebSocketClient._onConnent = false;
+        WebSocketClient.CleanWS();
+        if (WebSocketClient.ToClose) {
+            WebSocketClient.ToClose = false;
+        } else {
+            //尝试重连
+            WebSocketClient.Reconnect();
+        }
+    }
+
+    private static Reconnect() {
+        if (WebSocketClient._reconnectTime < WebSocketClient.ReconnectMaxTime) {
+            WebSocketClient._reconnectTime++;
+            console.log("%c%s", LogStyle.ws_request, `reconnect:${WebSocketClient._reconnectTime} ${WebSocketClient.Host_Port}`);
+            this.__connect();
+        } else {
+            console.log("重连次数结束");
+        }
     }
     //主动关闭
     static Close() {
-        if (this.WS && WebSocketClient._onConnent) {
+        if (this.WS) {
             this.WS.close();
+            this.ToClose = true;
         }
+    }
+    //清理ws
+    static CleanWS() {
+        this.WS.onopen = null;
+        this.WS.onerror = null;
+        this.WS.onmessage = null;
+        this.WS.onclose = null;
+        this.WS = null;
     }
 }
 (window as any).WebSocketClient = WebSocketClient;

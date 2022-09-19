@@ -510,3 +510,53 @@ export class SeatFold extends StateHandler {
         if (entity instanceof SeatFSM) entity.FoldExit();
     }
 }
+export class SeatRoundEnd extends StateHandler {
+
+    public Name: string = "SeatRoundEnd";
+
+    static get Instance(): SeatRoundEnd {
+        return (this as any).instance ??= new SeatRoundEnd;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.RoundEndEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.RoundEndExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.RoundEndExit();
+    }
+}
+export class SeatKeep extends StateHandler {
+
+    public Name: string = "SeatKeep";
+
+    static get Instance(): SeatKeep {
+        return (this as any).instance ??= new SeatKeep;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.KeepEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.KeepExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.KeepExit();
+    }
+}
+
+

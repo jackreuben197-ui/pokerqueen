@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "59a1be9d-c95b-4d6f-a203-8a9e647f103a",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 192,
+  "height": 117,
+  "platformSettings": {},
+  "subMetas": {
+    "icon_image_game_head_reserve_seat": {
+      "ver": "1.0.6",
+      "uuid": "4d2ed47c-6566-48fe-9159-68d0e4606893",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "59a1be9d-c95b-4d6f-a203-8a9e647f103a",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -1,
+      "offsetY": 0.5,
+      "trimX": 11,
+      "trimY": 9,
+      "width": 168,
+      "height": 98,
+      "rawWidth": 192,
+      "rawHeight": 117,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

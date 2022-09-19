@@ -315,7 +315,7 @@ export default class GameUtil {
             AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
         },
         ],
-        [3]: [{
+        3: [{
 
             Pos: GameUtil.SeatPosV3[0],
             BankerPos: GameUtil.BankerLRV3[0],
@@ -1333,5 +1333,14 @@ export default class GameUtil {
         let l = targetTransform.convertToNodeSpaceAR(w);
         return l;
         //return targetTransform.InverseTransformPoint(sourceTransform.TransformPoint(sourceLocalPos));
+    }
+
+    /// <summary>
+    /// 查看公共牌花费
+    /// </summary>
+    /// <param name="small"></param>
+    /// <returns></returns>
+    public static GetSeeMoreCost(small: number): number {
+        return 50;
     }
 }

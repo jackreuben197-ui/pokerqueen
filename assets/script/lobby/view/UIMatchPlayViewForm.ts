@@ -11,6 +11,9 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { GameCache } from "../../game/GameCache";
 import { LobbyControl } from "../control/LobbyControl";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
+import { RoomType } from "../../game/GameUtil";
+import { UICommonMgr } from "../../ui/UIMgr";
+import UIComponent from "../../ui/UIComponent";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -257,9 +260,9 @@ export default class UIMatchPlayViewForm extends BaseForm {
     }
 
     private initUI(): void {
-        let lbl_glod : cc.Label = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
+        let lbl_glod: cc.Label = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
         lbl_glod.string = GameCache.Instance.gold.toString();
-        let lbl_name : cc.Label = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+        let lbl_name: cc.Label = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
         lbl_name.string = GameCache.Instance.nick.toString();
     }
 
@@ -554,8 +557,8 @@ export default class UIMatchPlayViewForm extends BaseForm {
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
     private SetItemDataInfo(item: cc.Node, roomInfo: typeof Web_Room_Center_Rooms.DataElement, index: number) {
         item.active = true;
-        item.x=0;
-        item.y=0;
+        item.x = 0;
+        item.y = 0;
         item.getChildByName("lbl_center_left").getComponent(cc.Label).string = `${this.GetLongString(roomInfo.sb)}/${this.GetLongString(roomInfo.sb * 2)}${this.GetLongString(roomInfo.ante)}`;
         // item.getChildByName("Text_Type").getComponent(cc.Label).string = roomInfo.poker_type == 2 ? this.six_List[roomInfo.game_type] : this.type_List[roomInfo.game_type];
         // let layout: cc.Node = item.getChildByName("Text_Icon_Layout");
@@ -565,13 +568,13 @@ export default class UIMatchPlayViewForm extends BaseForm {
         if (roomInfo.participation_status == 0) {
             item.getChildByName("item_choose").active = false;
             item.getChildByName("item_normal").active = true;
-        //     layout.getChildByName("Text_Icon_Time").active = false;
-        //     layout.getChildByName("Text_Icon_Time_node").active = true;
+            //     layout.getChildByName("Text_Icon_Time").active = false;
+            //     layout.getChildByName("Text_Icon_Time_node").active = true;
         } else {
             item.getChildByName("item_choose").active = true;
             item.getChildByName("item_normal").active = false;
-        //     layout.getChildByName("Text_Icon_Time").active = true;
-        //     layout.getChildByName("Text_Icon_Time_node").active = false;
+            //     layout.getChildByName("Text_Icon_Time").active = true;
+            //     layout.getChildByName("Text_Icon_Time_node").active = false;
             //值取小数点后一位
             let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600) * 10) / 10
             item.getChildByName("lbl_time").getComponent(cc.Label).string = `${duration}h/${duration}h`
@@ -580,7 +583,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
 
         item.getChildByName("item_choose").active = false;
-            item.getChildByName("item_normal").active = true;
+        item.getChildByName("item_normal").active = true;
         // let peopleNum1: cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_1").getComponent(cc.Label);
         // let peopleNum2: cc.Label = item.getChildByName("Text_Number").getChildByName("Text_Number_2").getComponent(cc.Label);
         // peopleNum1.string = `${roomInfo.seat_count - roomInfo.empty_seat}/`;
@@ -590,10 +593,20 @@ export default class UIMatchPlayViewForm extends BaseForm {
         item.off(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
         item.on(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
     }
-    
+
     private async EnterRoomAPI(e: cc.Event.EventCustom) {
         let roominfo: typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
-        console.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
+
+        //判断websocket是否已经连接上
+        if (WebSocketClient.WS?.readyState != WebSocket.OPEN) {
+            console.warn("websocket is not open");
+            return;
+        }
+        if (!RoomType[roominfo.room_type]) {
+            console.warn("房间类型未解析:", roominfo.room_type);
+            UIComponent.Instance.Toast(`room_type:${roominfo.room_type} is error`);
+            return;
+        }
         GameCache.Instance.serviceId = roominfo.service_id;
         GameCache.Instance.roomName = this.GetRoomNameByKey(roominfo.name);
         GameCache.Instance.room_type = roominfo.room_type;
@@ -607,8 +620,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         GameCache.Instance.muck_switch = roominfo.muck_on;
         GameCache.Instance.voiceprint_verify_on = roominfo.voiceprint_verify_on;
         GameCache.Instance.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
-
-        if (WebSocketClient.WS.readyState == WebSocket.OPEN) {
+        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
 
             let response = LobbySession.APIWebUserRoominsur(roominfo.rid).catch(() => { });
             if (response) {

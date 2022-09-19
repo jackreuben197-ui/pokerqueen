@@ -108,6 +108,31 @@ export class CPlayer {
         this.userID = 0;
         this.chips = 0;
     }
+    /// <summary>
+    /// 本轮结束，清理数据。（不是全部数据清空，只需要缓存一手的数据清空）
+    /// </summary>
+    public ClearRoundEndData(): void {
+        this.actionStatus = Action.NONE;
+        this.ante = 0;
+        this.anteNumber = 0;
+        this.cards && (this.cards = []);
+        this.extraBlind = 0;
+        this.initialBets = 0;
+        this.muckStatus = 0;
+        this.cardType = 0;
+        this.playerStatus_insurance = false;
+        this.timeLeft_insurance = 0;
+        this.totalInsuredAmount = 0;
+        this.autoInsuredAmount = 0;
+        this.claimInsuredAmount = 0;
+        this.recyclingChip = 0;
+        this.isWin = false;
+        this.winChips = 0;
+        this.isMaxcard = 0;
+        this.isFold = false;
+        this.cacheChips = 0;
+        this.usedAddon = false;
+    }
 
     /// <summary>
     /// 清空游戏数据

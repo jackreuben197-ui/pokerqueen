@@ -113,6 +113,12 @@ export default class UITexas extends BaseScene {
 
 
     buttonDelay: cc.Node = null;
+    buttonSeeMorePublic: cc.Node = null;
+    imageSeeMorePublicTips: cc.Node = null;
+
+
+    textSeeMorePublic: cc.Label = null;
+    textSeeMorePublicGold: cc.Label = null;
 
     ///////////////////////////////////
     /**
@@ -268,6 +274,12 @@ export default class UITexas extends BaseScene {
         this.UIAutoOperation = this.getChildNodeOrComponent("UIAutoOperation");
 
         this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
+        this.buttonSeeMorePublic = this.getChildNodeOrComponent("Button_SeeMorePublic");
+        this.imageSeeMorePublicTips = this.getChildNodeOrComponent("Image_SeeMorePublicTips");
+
+
+        this.textSeeMorePublic = this.getChildNodeOrComponent("Text_SeeMorePublic", cc.Label);
+        this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
 
 
 
@@ -325,10 +337,6 @@ export default class UITexas extends BaseScene {
         this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.position);
 
 
-        // 分池UI
-        if (null == this.listPotInfo) this.listPotInfo = [];
-
-
         this.buildMenuButtons();
         //GameCache.Instance.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
@@ -378,6 +386,8 @@ export default class UITexas extends BaseScene {
         }
 
         this.game.setDeskType(this.game.deskType);
+        // 分池UI
+        if (null == this.listPotInfo) this.listPotInfo = [];
 
     }
     Exit(param) {
