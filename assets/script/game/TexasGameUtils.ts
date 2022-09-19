@@ -1,5 +1,6 @@
 
 import { ProcedureEnum } from "../define/EIDefine";
+import { UIDefine } from "../define/UIDefine";
 import ProcedureManager from "../manager/ProcedureManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom, Protocol_Holdem_Leave } from "../net/websocket/ProtocolHoldemMessages";
@@ -62,8 +63,6 @@ export default class TexasGameUtils {
                 }),
         });
     }
-
-
     /// <summary>
     /// 站起
     /// </summary>
@@ -75,16 +74,8 @@ export default class TexasGameUtils {
             mSeat.Player = null;
             mSeat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
         }
-
-        // 	UI mUIAddChips = UIComponent.Instance.Get(UIType.UIAddChips);
-        // if (null != mUIAddChips && mUIAddChips.GameObject.activeInHierarchy) {
-        //     UIComponent.Instance.HideNoAnimation(UIType.UIAddChips);
-        // }
-
-        // 	UI mUIUITexasPlayerInfo = UIComponent.Instance.Get(UIType.UITexasPlayerInfo);
-        // if (null != mUIUITexasPlayerInfo && mUIUITexasPlayerInfo.GameObject.activeInHierarchy) {
-        //     UIComponent.Instance.Remove(UIType.UITexasPlayerInfo);
-        // }
+        UIComponent.Instance.HideNoAnimation(this.game.uirc.UIAddChips.node);
+        UIComponent.close(UIDefine.UITexasPlayerInfoComponent);
 
         // HideOperationPanel();
         // HideAutoOperationPanel();
@@ -231,7 +222,7 @@ export default class TexasGameUtils {
         // UIComponent.Instance.Remove(UIType.UITexasHumanVote);
         // UIComponent.Instance.Remove(UIType.UITexasHumanYZ);
         // UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
-        
+
         ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
         //#region 关键属性最后置空
         GameCache.Instance.CurrentRoomID = 0;

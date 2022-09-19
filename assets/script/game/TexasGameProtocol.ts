@@ -346,7 +346,7 @@ export default class TexasGameProtocol {
                     // 非弃牌 && 非ALLIN && 非托管
                     if (mMySeat.Player.actionStatus != Def.Action.FOLD && mMySeat.Player.actionStatus != Def.Action.ALLIN && mMySeat.Player.actionStatus != Def.Action.NONE && !mMySeat.Player.IsAutoOp) {
 
-                        this.game.ShowUI(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
+                        UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -361,8 +361,6 @@ export default class TexasGameProtocol {
 
 
     }
-
-
 
 
     Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {
@@ -580,7 +578,7 @@ export default class TexasGameProtocol {
                     // 自己有参与游戏
                     if ((this.game.mainPlayer.actionStatus != Def.Action.FOLD && this.game.mainPlayer.actionStatus != Def.Action.ALLIN && this.game.mainPlayer.actionStatus != Def.Action.NONE) && !this.game.mainPlayer.IsAutoOp) {
 
-                        this.game.ShowUI(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
+                        UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
 
                     }
                     else {
@@ -935,8 +933,8 @@ export default class TexasGameProtocol {
         this.game.cacheRound = rec.round;
         GameCache.Instance.GameStatus = this.game.gamestatus;
 
-        this.game.HideUI(this.game.uirc.UIAutoOperation);
-        this.game.HideUI(this.game.uirc.UIOperation);
+        UIComponent.Instance.HideNoAnimation(this.game.uirc.UIAutoOperation);
+        UIComponent.Instance.HideNoAnimation(this.game.uirc.UIOperation);
 
         let mSeat: Seat = null;
         for (let i = 0, n = rec.resultsList.length; i < n; i++) {

@@ -180,10 +180,10 @@ export default class TexasGameMessageHandler {
         if (response == null) return;
 
         if (response.status == 0) {
-            //ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
+
             this.game.TexasGameUtils.ExitRoom();
         } else {
-            cc.warn(CPErrorCode.ServerErrorDescription(response.status));
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.status));
         }
 
     }
@@ -357,9 +357,7 @@ export default class TexasGameMessageHandler {
     public Protocol_Holdem_BringIn_Handler(): void {
 
     }
-    // Protocol_Holdem_Error_Handler(Protocol_Holdem_Error: ProtocolCode, Protocol_Holdem_Error_Handler: any, arg2: this) {
-    //     throw new Error("Method not implemented.");
-    // }
+
     Protocol_Holdem_UpBlind_Handler(Protocol_Holdem_UpBlind: ProtocolCode, Protocol_Holdem_UpBlind_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }

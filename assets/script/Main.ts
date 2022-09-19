@@ -1,5 +1,3 @@
-var dns = require("dns");
-console.log("dns:", dns);
 /**
  * 入口函数
  */

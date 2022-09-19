@@ -120,6 +120,8 @@ export default class UITexas extends BaseScene {
     textSeeMorePublic: cc.Label = null;
     textSeeMorePublicGold: cc.Label = null;
 
+    buttonCancelTrust: cc.Node = null;
+
     ///////////////////////////////////
     /**
      * 声明内容
@@ -281,7 +283,7 @@ export default class UITexas extends BaseScene {
         this.textSeeMorePublic = this.getChildNodeOrComponent("Text_SeeMorePublic", cc.Label);
         this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
 
-
+        this.buttonCancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
 
         this.game = GameCache.Instance.CurGame;
         //this.game.Reset();

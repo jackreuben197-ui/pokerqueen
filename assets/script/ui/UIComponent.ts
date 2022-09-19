@@ -1,6 +1,7 @@
 
 import { Tracing } from "trace_events";
 import { IUIDefine, UIType } from "../define/EIDefine";
+import { Param } from "../define/Types";
 import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
@@ -18,6 +19,15 @@ export default class UIComponent {
     Toast(content: string) {
 
         ToastManager.Instance.createToast(content);
+    }
+
+    ShowNoAnimation<T>(node: cc.Node, component: { new(): T }, param?: Param<T, "ParamType">) {
+        node.active = true;
+        let ui_component: UIBase = node.getComponent(component);
+        ui_component?.onShow(param);
+    }
+    HideNoAnimation(node: cc.Node) {
+        node.active = false;
     }
 
     static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null, parent: cc.Node = null) {

@@ -629,7 +629,7 @@ export default class TexasGame {
                         // 自己有参与游戏,但allin弃牌不显示
                         if ((this.mainPlayer.actionStatus != Def.Action.FOLD && this.mainPlayer.actionStatus != Def.Action.ALLIN && this.mainPlayer.actionStatus != Def.Action.NONE) && !this.mainPlayer.IsAutoOp) {
 
-                            this.ShowUI(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
+                            UIComponent.Instance.ShowNoAnimation(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
 
                         }
                         else {
@@ -1572,7 +1572,7 @@ export default class TexasGame {
     /// 隐藏自动操作面板
     /// </summary>
     public HideAutoOperationPanel(): void {
-        this.HideUI(this.uirc.UIAutoOperation);
+        UIComponent.Instance.HideNoAnimation(this.uirc.UIAutoOperation);
     }
     /// <summary>
     /// 展示操作面板
@@ -1595,7 +1595,7 @@ export default class TexasGame {
         this.uirc.buttonDelay.active = true;
         this.delayCount = delay;
         this.UpdateDelayBtn();
-        this.ShowUI(this.uirc.UIOperation, UIOperationComponent, operationData);
+        UIComponent.Instance.ShowNoAnimation(this.uirc.UIOperation, UIOperationComponent, operationData);
     }
     /// <summary>
     /// 隐藏操作面板
@@ -1612,10 +1612,17 @@ export default class TexasGame {
         }
         this.uirc.buttonDelay.active = false;
         if (this.uirc.UIOperation.activeInHierarchy) {
-            this.HideUI(this.uirc.UIOperation);
+            UIComponent.Instance.HideNoAnimation(this.uirc.UIOperation);
         }
     }
-
+    /// <summary>
+    /// 隐藏返回游戏按钮
+    /// </summary>
+    public HideCancelTrustBtn(): void {
+        if (this.uirc.buttonCancelTrust.activeInHierarchy) {
+            this.uirc.buttonCancelTrust.active = false;
+        }
+    }
 
 
 
@@ -1834,7 +1841,7 @@ export default class TexasGame {
                 // 非弃牌、非ALL IN、非空闲等待下一局、非托管
                 if (this.mainPlayer.isPlaying && !this.mainPlayer.IsAutoOp) {
                     // 预操作UI
-                    this.ShowUI(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(0)));
+                    UIComponent.Instance.ShowNoAnimation(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(0)));
                 }
                 else {
                     // 无预操作UI
@@ -2746,16 +2753,14 @@ export default class TexasGame {
      * 显示手动设置面板 
      */
     private ShowAddChips(): void {
-
-        this.ShowUI(this.uirc.UIAddChips.node, UIAddChipsComponent,
-            {
-                bigBlind: this.bigBlind,
-                smallBlind: this.smallBlind,
-                currentMinRate: this.currentMinRate,
-                currentMaxRate: this.currentMaxRate,
-                totalCoin: GameCache.Instance.gold,
-                tableChips: this.mainPlayer.chips
-            });
+        UIComponent.Instance.ShowNoAnimation(this.uirc.UIAddChips.node, UIAddChipsComponent, {
+            bigBlind: this.bigBlind,
+            smallBlind: this.smallBlind,
+            currentMinRate: this.currentMinRate,
+            currentMaxRate: this.currentMaxRate,
+            totalCoin: GameCache.Instance.gold,
+            tableChips: this.mainPlayer.chips
+        });
     }
 
     /// <summary>
@@ -2799,24 +2804,24 @@ export default class TexasGame {
         }
     }
 
-    /**
-     * 展示UI
-     * @param node 
-     * @param component 
-     * @param param 
-     */
-    ShowUI<T>(node: cc.Node, component: { new(): T }, param?: Param<T, "ParamType">) {
-        node.active = true;
-        let ui_component: UIBase = node.getComponent(component);
-        ui_component?.onShow(param);
-    }
-    /**
-     * 隐藏UI
-     * @param node
-     */
-    HideUI(node: cc.Node) {
-        node.active = false;
-    }
+    // /**
+    //  * 展示UI
+    //  * @param node 
+    //  * @param component 
+    //  * @param param 
+    //  */
+    // ShowUI<T>(node: cc.Node, component: { new(): T }, param?: Param<T, "ParamType">) {
+    //     node.active = true;
+    //     let ui_component: UIBase = node.getComponent(component);
+    //     ui_component?.onShow(param);
+    // }
+    // /**
+    //  * 隐藏UI
+    //  * @param node
+    //  */
+    // HideUI(node: cc.Node) {
+    //     node.active = false;
+    // }
 
     //创建座位UI
     createSeatUI() {
