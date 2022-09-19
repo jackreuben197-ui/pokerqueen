@@ -1,6 +1,7 @@
 const { ccclass, property } = cc._decorator;
 import UIBase from "../../ui/UIBase";
 import { i18nSprite } from "../../i18n/i18nSprite";
+import { GameCache } from "../../game/GameCache";
 @ccclass
 export default class UILobby extends UIBase {
 
@@ -13,6 +14,14 @@ export default class UILobby extends UIBase {
         super.lateLoad();
         this.setMTTImage();
         this.setScrollTop();
+        this.initUI()
+    }
+
+    private initUI(): void {
+        let lbl_glod : cc.Label = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
+        lbl_glod.string = GameCache.Instance.gold.toString();
+        let lbl_name : cc.Label = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+        lbl_name.string = GameCache.Instance.nick.toString();
     }
 
     private setMTTImage() {

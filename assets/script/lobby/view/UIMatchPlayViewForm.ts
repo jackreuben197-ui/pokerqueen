@@ -11,6 +11,9 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { GameCache } from "../../game/GameCache";
 import { LobbyControl } from "../control/LobbyControl";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
+import { RoomType } from "../../game/GameUtil";
+import { UICommonMgr } from "../../ui/UIMgr";
+import UIComponent from "../../ui/UIComponent";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -191,6 +194,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         //根据点击的显示
         //获取groups信息刷新 typeScrollView
         this.TypeContentLength = param.len;
+        this.initUI()
         //获取roominfo
         await this.sendGroupGetData(param);
         //获取LocalDicRoomName
@@ -200,6 +204,14 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
         this.DragRequestData_Room(EnumLoadType.Init);
     }
+
+    private initUI(): void {
+        let lbl_glod: cc.Label = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
+        lbl_glod.string = GameCache.Instance.gold.toString();
+        let lbl_name: cc.Label = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+        lbl_name.string = GameCache.Instance.nick.toString();
+    }
+
     //获取group消息
     async sendGroupGetData(param?: any) {
         //请求group信息
@@ -530,7 +542,17 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
     private async EnterRoomAPI(e: cc.Event.EventCustom) {
         let roominfo: typeof Web_Room_Center_Rooms.DataElement = e.target.roomInfo;
-        console.log(`EnterRoomAPI=${JSON.stringify(roominfo)}`)
+
+        //判断websocket是否已经连接上
+        if (WebSocketClient.WS?.readyState != WebSocket.OPEN) {
+            console.warn("websocket is not open");
+            return;
+        }
+        if (!RoomType[roominfo.room_type]) {
+            console.warn("房间类型未解析:", roominfo.room_type);
+            UIComponent.Instance.Toast(`room_type:${roominfo.room_type} is error`);
+            return;
+        }
         GameCache.Instance.serviceId = roominfo.service_id;
         GameCache.Instance.roomName = this.GetRoomNameByKey(roominfo.name);
         GameCache.Instance.room_type = roominfo.room_type;
@@ -544,8 +566,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         GameCache.Instance.muck_switch = roominfo.muck_on;
         GameCache.Instance.voiceprint_verify_on = roominfo.voiceprint_verify_on;
         GameCache.Instance.voiceprint_verify_duration = roominfo.voiceprint_verify_duration;
-
-        if (WebSocketClient.WS.readyState == WebSocket.OPEN) {
+        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
 
             let response = LobbySession.APIWebUserRoominsur(roominfo.rid).catch(() => { });
             if (response) {

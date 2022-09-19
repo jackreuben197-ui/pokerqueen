@@ -1,12 +1,15 @@
 import { json } from "stream/consumers";
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
+import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
+import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_leave_notification_pb";
 import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageSidePots } from "../../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
 import { ClientMessageAction, ServerMessageAction } from "../../protobuf/holdem/req_action_pb";
 import { ClientMessageBringIn, ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
@@ -343,6 +346,35 @@ export class Protocol_Holdem_PublicCards extends BaseProtocol {
     }
 }
 
+export class Protocol_Holdem_Winner extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Winner";
+    public static Response_AsObject: ServerMessageWinner.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageWinner.AsObject {
+        let result: ServerMessageWinner = ServerMessageWinner.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+export class Protocol_Holdem_LeaveNotification extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Winner";
+    public static Response_AsObject: ServerMessageLeaveNotification.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageLeaveNotification.AsObject {
+        let result: ServerMessageLeaveNotification = ServerMessageLeaveNotification.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
+export class Protocol_Holdem_HandClear extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Winner";
+    public static Response_AsObject: ServerMessageHandClear.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageHandClear.AsObject {
+        let result: ServerMessageHandClear = ServerMessageHandClear.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
 
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
 cc.js.setClassName("Protocol_Holdem_Register", Protocol_Holdem_Register);
@@ -363,4 +395,9 @@ cc.js.setClassName("Protocol_Holdem_Action", Protocol_Holdem_Action);
 cc.js.setClassName("Protocol_Holdem_ActionAll", Protocol_Holdem_ActionAll);
 cc.js.setClassName("Protocol_Holdem_SidePots", Protocol_Holdem_SidePots);
 cc.js.setClassName("Protocol_Holdem_PublicCards", Protocol_Holdem_PublicCards);
+
+
+cc.js.setClassName("Protocol_Holdem_Winner", Protocol_Holdem_Winner);
+cc.js.setClassName("Protocol_Holdem_LeaveNotification", Protocol_Holdem_LeaveNotification);
+cc.js.setClassName("Protocol_Holdem_HandClear", Protocol_Holdem_HandClear);
 

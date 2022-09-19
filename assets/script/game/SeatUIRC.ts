@@ -1,8 +1,9 @@
 
 
+import { UIMineModel } from "../lobby/UIMineModel";
 import UIBase from "../ui/UIBase";
 import { GameCache } from "./GameCache";
-import Seat from "./Seat";
+import Seat, { VoiceprintState } from "./Seat";
 
 
 export class CardUIInfo {
@@ -81,7 +82,21 @@ export default class SeatUIRC extends UIBase {
     textSmallCardType: cc.Label = null;
 
 
-    imageRecyclingWinChip:cc.Sprite = null;
+    imageRecyclingWinChip: cc.Sprite = null;
+
+    buttonCancelReserveSeat: cc.Node = null;
+    textCancelReserveSeat: cc.Label = null;
+
+
+    imageReserveSeat: cc.Node = null;
+
+    m_ReserveTime: cc.Label = null;
+
+    imageOffline: cc.Node = null;
+
+    imageBubble: cc.Sprite = null;
+    textBubble: cc.Label = null;
+
 
     ///////////////////////////////////
 
@@ -94,6 +109,8 @@ export default class SeatUIRC extends UIBase {
     /// 亮牌数据
     /// </summary>
     public showCardsId: number[] = null;
+
+    public voiceprintList: cc.Node[];
     ///////////////////////////////////
     protected lateLoad(): void {
         super.lateLoad();
@@ -150,7 +167,24 @@ export default class SeatUIRC extends UIBase {
         this.imageRecyclingWinChip = this.getChildNodeOrComponent("Image_RecyclingWinChip", cc.Sprite);
 
 
+        this.buttonCancelReserveSeat = this.getChildNodeOrComponent("Button_CancelReserveSeat");
+        this.textCancelReserveSeat = this.getChildNodeOrComponent("Text_CancelReserveSeat", cc.Label);
+        this.imageReserveSeat = this.getChildNodeOrComponent("Image_ReserveSeat");
+        this.m_ReserveTime = this.getChildNodeOrComponent("time", cc.Label);
 
+        this.imageOffline = this.getChildNodeOrComponent("imageOffline");
+
+
+        this.imageBubble = this.getChildNodeOrComponent("Image_Bubble", cc.Sprite);
+        this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
+
+        this.voiceprintList = [];
+        // this.voiceprintList.Add(VoiceprintStart);
+        // this.voiceprintList.Add(VoiceprintEntering);
+        // this.voiceprintList.Add(VoiceprintEnd);
+        // this.voiceprintList.Add(VoiceprintRobot);
+        // this.voiceprintList.Add(VoiceprintReal);
+        // this.voiceprintList.Add(VoiceprintVoting);
 
 
         if (null == this.listCardUIInfos || this.listCardUIInfos.length > 0) this.listCardUIInfos = [];
@@ -169,11 +203,123 @@ export default class SeatUIRC extends UIBase {
         this.listImageSmallCardBack.push(this.imageSmallCardBack0);
         this.listImageSmallCardBack.push(this.imageSmallCardBack1);
         this.ResetShowCardsId();
+    }
+
+
+    protected regiterTouchEvents(): void {
 
         for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
             this.listCardUIInfos[i].imageCard.on("click", this.onClickCard, this);
         }
+        this.imageEmpty.node.on("click", this.onClickEmpty, this);
+        this.rawimageHead.node.on("click", this.onClickHead, this);
     }
+
+    onClickEmpty() {
+
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+            if (pDto.user.forbid_bring_in == 1) {
+                // UIComponent.Instance.ShowNoAnimation(UIType.UIDialog,
+                //     new UIDialogComponent.DialogData()
+                // 				{
+                //         type = UIDialogComponent.DialogData.DialogType.Commit,
+                //         title = "",
+
+                //         content = LanguageManager.Get("UIForbidBringInTips"),
+                //         // contentCommit = "确定",
+                //         contentCommit = CPErrorCode.LanguageDescription(10012),
+                //         actionCommit = () => { },
+                //         actionCancel = null
+                //     });
+                return;
+            }
+            else {
+                GameCache.Instance.CurGame.Sitdown(this.seat.ClientSeatId, true);
+            }
+        });
+    }
+    /// <summary>
+    /// 查看玩家信息
+    /// </summary>
+    /// <param name="go"></param>
+    protected onClickHead(): void {
+        switch (this.seat.SeatVoiceprintState) {
+            case VoiceprintState.Start:
+            case VoiceprintState.Recording:
+                //             UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
+                // 				{
+                //                     type = UIDialogComponent.DialogData.DialogType.CommitCancel,
+                //                     title = LanguageManager.Get("UiVoiceprint_10001"),
+                //                     content = string.Format(LanguageManager.Get("UiVoiceprint_10046"), Player.nick),
+                //                     contentCancel = LanguageManager.Get("UiVoiceprint_10030"),
+                //                     contentCommit = LanguageManager.Get("UIBackDiolg_Konw_01"),
+                //                     actionCancel = () => {
+                //                         UIComponent.Instance.ShowNoAnimation(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
+                //     }
+                // });
+                break;
+            case VoiceprintState.Checking:
+            case VoiceprintState.None:
+            case VoiceprintState.Robot:
+            case VoiceprintState.Real:
+                // 查看个人信息
+                GameCache.Instance.CurGame.CheckPlayerInfo(this.seat.Player.userID, this.seat.Player);
+                break;
+            case VoiceprintState.Voting:
+                if (this.seat.Player.userID == GameCache.Instance.CurGame.mainPlayer.userID) {
+                    GameCache.Instance.CurGame.CheckPlayerInfo(this.seat.Player.userID, this.seat.Player);
+                }
+                else {
+                    let seat: Seat = GameCache.Instance.CurGame.GetSeatByUserId(GameCache.Instance.CurGame.mainPlayer.userID);
+                    if (seat != null) {
+                        if (seat.Player.seatID >= 0) {
+                            // UIComponent.Instance.ShowNoAnimation(UIType.UITexasHumanVote, new UITexasHumanVoteComponent.VoteDataInfo()
+                            // 	{
+                            //         verify_id = this.Player.VoiceprintId,
+                            //         name = this.Player.nick,
+                            //         updateTime = this.Player.UpdateStateTime,
+                            //         userId = this.Player.userID
+                            //     });
+                        }
+                        else {
+                            //         UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
+                            // 			{
+                            //                 type = UIDialogComponent.DialogData.DialogType.CommitCancel,
+                            //                 title = "",
+                            //                 contentCommit = LanguageManager.Get("adaptation10024"),//知道了
+                            //                 contentCancel = LanguageManager.Get("UiVoiceprint_10030"),//验证记录
+                            //                 content = LanguageManager.Get("UiVoiceprint_10027"),//上桌后可参与该玩家真人验证投票
+                            //                 actionCommit = () => { UIComponent.Instance.Remove(UIType.UIDialog); },
+                            //                 actionCancel = () => {
+                            //                     UIComponent.Instance.ShowNoAnimation(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
+                            //     }
+                            // });
+                        }
+                    }
+                    else {
+                        //         UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
+                        // 			{
+                        //                 type = UIDialogComponent.DialogData.DialogType.CommitCancel,
+                        //                 title = "",
+                        //                 contentCommit = LanguageManager.Get("adaptation10024"),//知道了
+                        //                 contentCancel = LanguageManager.Get("UiVoiceprint_10030"),//验证记录
+                        //                 content = LanguageManager.Get("UiVoiceprint_10027"),//上桌后可参与该玩家真人验证投票
+                        //                 actionCommit = () => { UIComponent.Instance.Remove(UIType.UIDialog); },
+                        //                 actionCancel = () => {
+                        //                     UIComponent.Instance.ShowNoAnimation(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
+                        //     }
+                        // });
+                    }
+
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
+
+
     protected onClickCard(): void {
         //         var mTmpSequencePlayDealAnimation = GameCache.Instance.CurGame.GetSequencePlayDealAnimation();
         //         if (null != mTmpSequencePlayDealAnimation && mTmpSequencePlayDealAnimation.IsPlaying()) {
