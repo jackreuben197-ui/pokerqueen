@@ -1231,6 +1231,10 @@ export default class Seat {
     /// </summary>
     /// <param name="countDown"></param>
     public StartCountDown(countDown: number, isInsruance: boolean = false): void {
+
+
+        console.log("StartCountDown :: ", countDown);
+
         this.optCurTime = countDown;
 
         let defaultOpTime: number = GameCache.Instance.CurGame.GetOpTime();

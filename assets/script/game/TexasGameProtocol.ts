@@ -1,6 +1,7 @@
 
 import { ITweenDuration } from "../define/EIDefine";
 import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
+import TimeHelper from "../helper/TimeHelper";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -258,8 +259,8 @@ export default class TexasGameProtocol {
         }
         this.game.mHandNum = responseData.handInfo.handNum;
         this.game.UpdateRoomDes();
-        //this.game.ResetPublicCardsId();
-        //this.game.ClearPublicCardsUI();
+        this.game.ResetPublicCardsId();
+        this.game.ClearPublicCardsUI();
         this.game.HideWaitBlindBtn();
         let Seat: Seat = null;
         let SeverSeatIds: number[] = [];
@@ -346,7 +347,7 @@ export default class TexasGameProtocol {
                     // 非弃牌 && 非ALLIN && 非托管
                     if (mMySeat.Player.actionStatus != Def.Action.FOLD && mMySeat.Player.actionStatus != Def.Action.ALLIN && mMySeat.Player.actionStatus != Def.Action.NONE && !mMySeat.Player.IsAutoOp) {
 
-                        UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
+                        UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -578,7 +579,7 @@ export default class TexasGameProtocol {
                     // 自己有参与游戏
                     if ((this.game.mainPlayer.actionStatus != Def.Action.FOLD && this.game.mainPlayer.actionStatus != Def.Action.ALLIN && this.game.mainPlayer.actionStatus != Def.Action.NONE) && !this.game.mainPlayer.IsAutoOp) {
 
-                        UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
+                        UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
 
                     }
                     else {
@@ -627,8 +628,7 @@ export default class TexasGameProtocol {
     /// 处理第一，二套公共牌赢牌动画
     /// </summary>
     private async HandleMessageSecondPcsWinnerData() {
-        //await (1.5);
-        //Game.Scene.ModelScene.GetComponent<TimerComponent>().WaitAsync(1500);
+        await TimeHelper.Sleep(1500);
         let mSeat: Seat = null;
         for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
             mSeat = this.game.listSeat[this.game.GetLocalSeatID(this.game.MessageWinnerData.resultsList[i].seatId)];
@@ -644,18 +644,116 @@ export default class TexasGameProtocol {
                 mSeat.UpdateImageBackActive();
             }
         }
-        // this.game.TexasGameUtils.SetWinnerCardsHight(listCards, cards);
-        // //第一套牌
-        // SetSecondPublicCardImageColor(Color.grey);
-        // HandleTwoWinnerAnimation(true);
-        // await Game.Scene.ModelScene.GetComponent<TimerComponent>().WaitAsync(3000);
+        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listCards, this.game.cards);
+        //第一套牌
+        this.game.SetSecondPublicCardImageColor(cc.Color.GRAY);
+        this.HandleTwoWinnerAnimation(true);
 
-        // //等待3秒，处理第二套牌动画
+        await TimeHelper.Sleep(3000);
 
-        // SetSecondPublicCardImageColor(Color.white);
-        // SetPublicCardsImageColor(Color.grey);
-        // SetWinnerCardsHight(listSecondCards, secondCards);
-        // HandleTwoWinnerAnimation(false);
+        //等待3秒，处理第二套牌动画
+
+        this.game.SetSecondPublicCardImageColor(cc.Color.WHITE);
+        this.game.SetPublicCardsImageColor(cc.Color.GRAY);
+        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listSecondCards, this.game.secondCards);
+        this.HandleTwoWinnerAnimation(false);
+    }
+    /// <summary>
+    /// 处理两套公共牌
+    /// </summary>
+    /// <param name="isFirst"></param>
+    private HandleTwoWinnerAnimation(isFirst: boolean): void {
+        //Sequence Sequence = null;
+        let Sequence = { tween: cc.tween() };
+        let tween = Sequence.tween;
+        let SeatId = 0;
+        let Seat: Seat = null;
+        let mainSeatHightCards: number[] = [];
+
+
+        for (let i = 0, n = this.game.MessageWinnerData.resultsList.length; i < n; i++) {
+            let Result = this.game.MessageWinnerData.resultsList[i]
+            SeatId = this.game.GetLocalSeatID(Result.seatId);
+            Seat = this.game.GetSeatByLocalSeatID(SeatId);
+            if (null != Seat && null != Seat.Player && Seat.Player.actionStatus == Def.Action.NONE) {
+                console.log("not is Participate In The Game");
+                continue;
+            }
+            if (null == Seat || null == Seat.Player)
+                continue;
+
+            let isWin1: boolean = Result.splitResultsList[0].isWinner;
+            let isWin2: boolean = Result.splitResultsList[1].isWinner;
+            let win1: number = Result.splitResultsList[0].win;
+            let win2: number = Result.splitResultsList[1].win;
+            let fee: number = Result.fee;
+            let fee1: number = 0;
+            let fee2: number = 0;
+
+            if (isWin1 && isWin2) {
+                if (fee != 0) {
+                    fee1 = win1 * fee / (win1 + win2);
+                    fee2 = fee - fee1;
+                }
+            }
+            else {
+                fee1 = isWin1 ? fee : 0;
+                fee2 = isWin2 ? fee : 0;
+            }
+            let handBet1: number = Result.handBet / 2 ^ 0;
+            let handBet2: number = Result.handBet - handBet1;
+
+            Seat.Player.winChips = isFirst ? Result.splitResultsList[0].win - handBet1 - fee1 : Result.splitResultsList[1].win - handBet2 - fee2;
+
+
+            if (Seat.Player.winChips <= 0) {
+                Seat.Player.winChips = 0;
+            }
+            Seat.Player.recyclingChip = isFirst ? Result.splitResultsList[0].win : Result.splitResultsList[1].win;
+            Seat.Player.cardType = isFirst ? Result.handValueType : Result.handValueType2;
+            Seat.Player.isWin = isFirst ? Result.splitResultsList[0].isWinner : Result.splitResultsList[1].isWinner;
+
+            Seat.StopAllinArmature();
+            Seat.StopWinArmature();
+            Seat.PlayWinArmature();
+            Seat.UpdateRecyclingWinChip();
+
+            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.textAlreadAnte.node.position));
+
+            if (PlayRecyclingWinChipAnimation_Tween) {
+
+                tween.then(cc.callFunc(() => {
+                    PlayRecyclingWinChipAnimation_Tween.IsPlaying = true;
+                    PlayRecyclingWinChipAnimation_Tween.tween.start();
+                }));
+            }
+            if (SeatId == this.game.mainPlayer.seatID) {
+                if (isFirst) {
+
+                    Result.winCardsList.forEach(winCard => {
+                        mainSeatHightCards.push(winCard.card);
+                    })
+                }
+                else {
+                    Result.winCards2List.forEach(winCard => {
+                        mainSeatHightCards.push(winCard.card);
+                    })
+                }
+            }
+            Seat.Player.chips = isFirst ? Result.chip + Result.fee - Result.splitResultsList[1].win - fee1 : Result.chip;
+            Seat.UpdateCoin();
+        }
+        tween.start();
+        let mainSeat: Seat = null;
+        mainSeat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+        if (mainSeat != null) {
+            let cacheCards: number[] = isFirst ? this.game.cards : this.game.secondCards;
+
+            let highlightCards_ref = { highlightCards: null };
+            let cardType: CardType = this.game.GetCardType(highlightCards_ref, cacheCards);
+            //let highlightCards = highlightCards_ref.highlightCards;
+            mainSeat.UpdateCardType(cardType, mainSeatHightCards, true);
+        }
     }
     /// <summary>
     /// 处理仅有一套公共牌

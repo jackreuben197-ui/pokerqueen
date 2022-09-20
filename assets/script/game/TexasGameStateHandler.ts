@@ -260,8 +260,7 @@ export class TexasGameStateHandlerHandFlop extends StateHandler {
 
         var source = this.SourceData as ServerMessagePublicCards.AsObject;
 
-        if (source == null) {
-
+        if (!source.publicCardsArrayList) {
             return;
         }
 
@@ -290,15 +289,13 @@ export class TexasGameStateHandlerHandTurn extends StateHandler {
 
         var source = this.SourceData as ServerMessagePublicCards.AsObject;
 
-        if (source == null) {
+        if (!source.publicCardsArrayList) {
             return;
         }
-
 
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
-
 
         game.HandleGetPublicCards(source);
 
@@ -321,7 +318,7 @@ export class TexasGameStateHandlerHandRiver extends StateHandler {
 
         var source = this.SourceData as ServerMessagePublicCards.AsObject;
 
-        if (source == null) {
+        if (!source.publicCardsArrayList) {
             return;
         }
 
