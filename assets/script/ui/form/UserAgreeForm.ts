@@ -1,10 +1,14 @@
 
+import { i18nMgr } from "../../i18n/i18nMgr";
 import BaseForm from "./BaseForm";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class $name extends BaseForm {
+
+    webview: cc.WebView = null;
+
     /**
      * 节点|组件 定义
      */
@@ -20,6 +24,7 @@ export default class $name extends BaseForm {
      */
     protected lateLoad() {
         super.lateLoad();
+        this.webview = this.getChildNodeOrComponent("webview").getComponent(cc.WebView);
     }
     /**
      * 关闭需要处理的内容
@@ -32,6 +37,7 @@ export default class $name extends BaseForm {
      */
      onShow(param?: any, fromUI?: BaseForm): void {
         super.onShow(param, fromUI);
+        this.webview.url = i18nMgr.Get("UIWebViewURL");
     }
     /**
      * 注册触摸事件
@@ -50,5 +56,20 @@ export default class $name extends BaseForm {
      */
     protected stopAllThings() {
 
+    }
+
+    mainFadeIn(style: any) {
+        this.content.active = false;
+        super.mainFadeIn(style);
+    }
+
+    async mainFadeOut(style: any) {
+        this.content.active = false;
+        super.mainFadeOut(style);
+    }
+
+    fadeInComplete() {
+        super.fadeInComplete();
+        this.content.active = true;
     }
 }
