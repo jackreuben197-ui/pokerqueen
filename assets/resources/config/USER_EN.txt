@@ -2008,7 +2008,7 @@ UITexasRule_detail22=#VALUE!
 UITexasRule_detail23=·
 UITexasRule_detail24=#VALUE!
 UITexasRule_dezhou=#VALUE!
-UILogin_USER101=Read and agree to <color=#DCBA82>《User Agreement》</color>
+UILogin_USER101=Read and agree to <color=#35A3B3>《User Agreement》</color>
 WalletStop101=Your wallet function has been used up, please contact customer service
 UIMine_RecordItemsNormal=Details
 UIUserRemarks_A3WNZg2C=Remark mark

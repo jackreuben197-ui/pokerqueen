@@ -5,6 +5,7 @@
 const { ccclass } = cc._decorator;
 import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import LoginSession from "../../session/LoginSession";
 import LabelCDTime from "../component/LabelCDTime";
@@ -24,15 +25,15 @@ export default class ResetPassForm extends RegisterForm {
         let code = this.tcode_editbox.string.trim();
         let area = this.area_label.string.substring(1);
         if (phone == "") {
-            ToastManager.Instance.createToast("UILogin_1001");//("请输入手机号");
+            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1001"));//("请输入手机号");
             return;
         }
         if (password.length < 6) {
-            ToastManager.Instance.createToast("UILogin_1002");//("密码不得少于6个字符");
+            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1002"));//("密码不得少于6个字符");
             return;
         }
         if (code == "") {
-            ToastManager.Instance.createToast("UILogin_1008");//("请输入验证码");
+            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1008"));//("请输入验证码");
             return;
         }
         password = Md5.hashStr(password);
@@ -44,7 +45,7 @@ export default class ResetPassForm extends RegisterForm {
             password
         }).catch(() => { })
         if (result) {
-            ToastManager.Instance.createToast("UILogin_1009");//("更改密码成功");
+            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1009"));//("更改密码成功");
             this.close();
         }
     }
@@ -61,11 +62,11 @@ export default class ResetPassForm extends RegisterForm {
 
 
         if (phone == "") {
-            ToastManager.Instance.createToast("UILogin_1004");//请输入手机号
+            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1004"));//请输入手机号
             return;
         }
         if (!this.tcode_canclick) {
-            ToastManager.Instance.createToast("UILogin_1005");//("请稍等再发");
+            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1005"));//("请稍等再发");
             return;
         }
 
@@ -75,7 +76,7 @@ export default class ResetPassForm extends RegisterForm {
 
         if (result == undefined) return;
 
-        ToastManager.Instance.createToast("UILogin_1007");//("验证码已发送");
+        ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1007"));//("验证码已发送");
 
         this.getcode_button.getComponent(LabelCDTime).show(5, this.resetGetCodeLabel.bind(this));
     }
