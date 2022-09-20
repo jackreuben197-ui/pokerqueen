@@ -2904,25 +2904,6 @@ export default class TexasGame {
         }
     }
 
-    // /**
-    //  * 展示UI
-    //  * @param node 
-    //  * @param component 
-    //  * @param param 
-    //  */
-    // ShowUI<T>(node: cc.Node, component: { new(): T }, param?: Param<T, "ParamType">) {
-    //     node.active = true;
-    //     let ui_component: UIBase = node.getComponent(component);
-    //     ui_component?.onShow(param);
-    // }
-    // /**
-    //  * 隐藏UI
-    //  * @param node
-    //  */
-    // HideUI(node: cc.Node) {
-    //     node.active = false;
-    // }
-
     //创建座位UI
     createSeatUI() {
         if (this.seatUI_pool.length) return this.seatUI_pool.pop();
@@ -2936,6 +2917,66 @@ export default class TexasGame {
     }
 
 
+    /// <summary>
+    /// 杀死所有DoTweener动画
+    /// </summary>
+    /// <param name="complete"></param>
+    protected KillAllTweener(complete = false): void {
+        // if (null != tweenerResetSeatUIInfo && tweenerResetSeatUIInfo.IsPlaying()) {
+        //     tweenerResetSeatUIInfo.Kill(complete);
+        // }
+
+        // tweenerResetSeatUIInfo = null;
+
+        // if (null != sequencePlayDealAnimation && sequencePlayDealAnimation.IsPlaying()) {
+        //     sequencePlayDealAnimation.Kill(complete);
+        // }
+
+        // sequencePlayDealAnimation = null;
+
+        // if (null != sequencePlayRecyclingChipAnimation && sequencePlayRecyclingChipAnimation.IsPlaying()) {
+        //     sequencePlayRecyclingChipAnimation.Kill(complete);
+        // }
+
+        // sequencePlayRecyclingChipAnimation = null;
+
+        // if (null != sequencePlayFirstRecyclingChipAnimation && sequencePlayFirstRecyclingChipAnimation.IsPlaying()) {
+        //     sequencePlayFirstRecyclingChipAnimation.Kill(complete);
+        // }
+
+        // sequencePlayFirstRecyclingChipAnimation = null;
+
+        // if (null != sequencePlayFirstRecyclingChipSubAnimation && sequencePlayFirstRecyclingChipSubAnimation.IsPlaying()) {
+        //     sequencePlayFirstRecyclingChipSubAnimation.Kill(complete);
+        // }
+
+        // sequencePlayFirstRecyclingChipSubAnimation = null;
+
+        // if (null != sequencePlayFirstInsurance && sequencePlayFirstInsurance.IsPlaying()) {
+        //     sequencePlayFirstInsurance.Kill(complete);
+        // }
+
+        // sequencePlayFirstInsurance = null;
+
+        // if (null != sequenceUpdatePublicCards && sequenceUpdatePublicCards.IsPlaying()) {
+        //     sequenceUpdatePublicCards.Kill(complete);
+        // }
+
+        // sequenceUpdatePublicCards = null;
+
+        // if (null != sequenceSecondUpdatePublicCards && sequenceSecondUpdatePublicCards.IsPlaying()) {
+        //     sequenceSecondUpdatePublicCards.Kill(complete);
+        // }
+
+        // sequenceSecondUpdatePublicCards = null;
+
+        // if (null != sequencePlayEndPublicCardsAnimation && sequencePlayEndPublicCardsAnimation.IsPlaying()) {
+        //     sequencePlayEndPublicCardsAnimation.Kill(complete);
+        // }
+
+        // sequencePlayEndPublicCardsAnimation = null;
+    }
+
     /**
      * 退出
      */
@@ -2948,7 +2989,7 @@ export default class TexasGame {
 
         this.ClearAllPlayers();
 
-        //this.KillAllTweener();
+        this.KillAllTweener();
 
         // 清空公共牌
         if (null != this.uirc?.listCards)
