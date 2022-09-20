@@ -41,4 +41,12 @@ export default class TimeHelper {
         }
         return "";
     }
+
+    /**
+    * 定义延时函数
+    * delaytime 延时时长，单位毫秒
+    */
+    public static Sleep(delaytime = 1000) {
+        return new Promise(resolve => setTimeout(resolve, delaytime))
+    }
 }

@@ -20,14 +20,17 @@ export default class UIComponent {
 
         ToastManager.Instance.createToast(content);
     }
-
-    ShowNoAnimation<T>(node: cc.Node, component: { new(): T }, param?: Param<T, "ParamType">) {
+    //界面内UIBase的显示
+    ShowNoAnimation<T>(node: cc.Node, param?: T) {
         node.active = true;
-        let ui_component: UIBase = node.getComponent(component);
+        let ui_component: UIBase = node.getComponent(UIBase);
         ui_component?.onShow(param);
     }
-    HideNoAnimation(node: cc.Node) {
+    //界面内UI的隐藏
+    HideNoAnimation<T>(node: cc.Node, param?: T) {
         node.active = false;
+        let ui_component: UIBase = node.getComponent(UIBase);
+        ui_component?.onClose(param);
     }
 
     static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null, parent: cc.Node = null) {

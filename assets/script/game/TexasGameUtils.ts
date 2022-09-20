@@ -77,10 +77,10 @@ export default class TexasGameUtils {
         UIComponent.Instance.HideNoAnimation(this.game.uirc.UIAddChips.node);
         UIComponent.close(UIDefine.UITexasPlayerInfoComponent);
 
-        // HideOperationPanel();
-        // HideAutoOperationPanel();
-        // HideWaitBlindBtn();
-        // HideCancelTrustBtn();
+        this.game.HideOperationPanel();
+        this.game.HideAutoOperationPanel();
+        this.game.HideWaitBlindBtn();
+        this.game.HideCancelTrustBtn();
     }
     /// <summary>
     /// 获取小盲注位置，通过当前参与牌局玩家座位号
@@ -169,7 +169,7 @@ export default class TexasGameUtils {
     /// 当有第二套牌时设置高亮手牌和公共牌
     /// </summary>
     /// <param name="publicCardInfos"></param>
-    private SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], _cards: number[]): void {
+    public SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], _cards: number[]): void {
         let highlightCards_ref = { highlightCards: null };
         let cardType: CardType = this.game.GetCardType(highlightCards_ref, _cards);
         let highlightCards = highlightCards_ref.highlightCards;
@@ -202,6 +202,7 @@ export default class TexasGameUtils {
         }
         return roundBet - this.game.mainPlayer.anteNumber;
     }
+
 
 
 

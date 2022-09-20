@@ -32,7 +32,7 @@ import TexasGameProtocol from "./../TexasGameProtocol";
 import { TexasGameState } from "./../TexasGameState";
 import TexasGameUtils from "./../TexasGameUtils";
 import TexasSMAgency from "./../TexasSMAgency";
-import UIAddChipsComponent from "./../ui/UIAddChipsComponent";
+import UIAddChipsComponent, { AddClipsData } from "./../ui/UIAddChipsComponent";
 import UIOperationComponent, { OperationData } from "./../ui/UIOperationComponent";
 import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
@@ -629,7 +629,7 @@ export default class TexasGame {
                         // 自己有参与游戏,但allin弃牌不显示
                         if ((this.mainPlayer.actionStatus != Def.Action.FOLD && this.mainPlayer.actionStatus != Def.Action.ALLIN && this.mainPlayer.actionStatus != Def.Action.NONE) && !this.mainPlayer.IsAutoOp) {
 
-                            UIComponent.Instance.ShowNoAnimation(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
+                            UIComponent.Instance.ShowNoAnimation(this.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
 
                         }
                         else {
@@ -1595,7 +1595,7 @@ export default class TexasGame {
         this.uirc.buttonDelay.active = true;
         this.delayCount = delay;
         this.UpdateDelayBtn();
-        UIComponent.Instance.ShowNoAnimation(this.uirc.UIOperation, UIOperationComponent, operationData);
+        UIComponent.Instance.ShowNoAnimation(this.uirc.UIOperation, operationData);
     }
     /// <summary>
     /// 隐藏操作面板
@@ -1841,7 +1841,7 @@ export default class TexasGame {
                 // 非弃牌、非ALL IN、非空闲等待下一局、非托管
                 if (this.mainPlayer.isPlaying && !this.mainPlayer.IsAutoOp) {
                     // 预操作UI
-                    UIComponent.Instance.ShowNoAnimation(this.uirc.UIAutoOperation, UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(0)));
+                    UIComponent.Instance.ShowNoAnimation(this.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(0)));
                 }
                 else {
                     // 无预操作UI
@@ -2702,6 +2702,28 @@ export default class TexasGame {
             PublicCardInfo.trans.active = false;
         }
     }
+    /// <summary>
+    /// 设置第一套公共牌颜色
+    /// </summary>
+    public SetPublicCardsImageColor(color): void {
+        let PublicCardInfo: PublicCardInfo = null;
+        for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+            PublicCardInfo = this.uirc.listCards[i];
+            PublicCardInfo.imageCard.node.color = color;
+            PublicCardInfo.imageSelect.node.active = false;
+        }
+    }
+    public SetSecondPublicCardImageColor(color): void {
+        let SecondPublicCardInfo: PublicCardInfo = null;
+        for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
+            SecondPublicCardInfo = this.uirc.listSecondCards[i];
+            SecondPublicCardInfo.imageCard.node.color = color;
+            SecondPublicCardInfo.imageSelect.node.active = false;
+        }
+    }
+
+
+
 
     /// <summary>
     /// 清空气泡
@@ -2719,7 +2741,7 @@ export default class TexasGame {
     /// <summary>
     /// 清空公共牌UI
     /// </summary>
-    protected ClearPublicCardsUI() {
+    public ClearPublicCardsUI() {
         cc.log("ClearPublicCardsUI");
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
@@ -2735,7 +2757,7 @@ export default class TexasGame {
     /// <summary>
     /// 清空公共牌UI
     /// </summary>
-    protected ClearSecondPublicCardsUI(): void {
+    public ClearSecondPublicCardsUI(): void {
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listSecondCards[i];
@@ -2753,7 +2775,7 @@ export default class TexasGame {
      * 显示手动设置面板 
      */
     private ShowAddChips(): void {
-        UIComponent.Instance.ShowNoAnimation(this.uirc.UIAddChips.node, UIAddChipsComponent, {
+        UIComponent.Instance.ShowNoAnimation<AddClipsData>(this.uirc.UIAddChips.node, {
             bigBlind: this.bigBlind,
             smallBlind: this.smallBlind,
             currentMinRate: this.currentMinRate,
@@ -2782,6 +2804,84 @@ export default class TexasGame {
 
     ClearAllData() {
         cc.log("清理所有数据");
+
+        this.gamestatus = -1;
+        GameCache.Instance.GameStatus = this.gamestatus;
+        this.bigIndex = 0;
+        this.smallIndex = 0;
+        this.bankerIndex = 0;
+        this.operationID = -1;
+        if (null != this.cards) {
+            this.cards = []
+            this.cards = null;
+        }
+        if (null != this.secondCards) {
+            this.secondCards = []
+            this.secondCards = null;
+        }
+        this.bigBlind = 0;
+        this.smallBlind = 0;
+        this.alreadAnte = 0;
+        this.maxPlayTime = 0;
+        this.currentMinRate = 0;
+        this.currentMaxRate = 0;
+        this.leftOperateTime = 0;
+        this.opTime = 0;
+        this.groupBet = 0;
+        this.cacheRound = Def.Round.UNDEFINED;
+        this.MessageWinnerData = null;
+        this.IsSecondPsc = false;
+        if (null != this.pots) {
+            this.pots = null;
+        }
+        this.minAnteNum = 0;
+        this.canRaise = 0;
+        this.insurance = false;
+        this.waitBlind = 0;
+        this.isIpRestrictions = false;
+        this.isGPSRestrictions = false;
+        this.tribeId = 0;
+        this.ServerVersion = "";
+        this.autoFold = false;
+        this.autoCall = false;
+        this.autoAllin = false;
+        this.autoCheck = false;
+        this.cacheOutChips = 0;
+        this.CurlimitOutChip = 0;
+        this.cacheBuyActiveAmount = 0;
+        this.cacheCancelKeepSeat = false;
+        if (null != this.cacheTrunOutsCards) {
+            this.cacheTrunOutsCards = null;
+        }
+        if (null != this.mainPlayer) {
+            this.mainPlayer.Dispose();
+            this.mainPlayer = null;
+        }
+
+        if (null != this.listSeat) {
+            for (let i = 0, n = this.listSeat.length; i < n; i++) {
+                if (null != this.listSeat[i] && null != this.listSeat[i].Player) {
+                    this.listSeat[i].Player.Dispose();
+                    this.listSeat[i].Player = null;
+                }
+            }
+        }
+        this.noLeftOperateTime = false;
+        this.delayCount = 0;
+        this.lastBankerIndex = 0;
+        this.cacheSitdownSeatId = 0;
+        this.waittingGPSCallback = false;
+        this.stopUpdatePublicCardsAnimation = false;
+        this.waittingUpdatePublicCardsAnimation = false;
+        this.isAllinGetPlayerCards = false;
+        // this.barrageRecordList = []
+        // this.barrageCountDown = -1;
+        // this.barrageAnimationSequence = DOTween.Sequence();
+        // GameCache.Instance.IsAllowOpenDanmu = true;
+        // this.cacheBuyInsurancePotUserCount = 0;
+        // this.VIPTipsStatus = TipsStatus.isStop;
+        // this.VipTipslist.Clear();
+
     }
     ClearAllPlayers() {
 
@@ -2841,9 +2941,6 @@ export default class TexasGame {
      */
     Dispose() {
 
-        if (this.IsDispose) {
-            return;
-        }
 
         this.RemoveMsgHandler();
 
@@ -2854,7 +2951,7 @@ export default class TexasGame {
         //this.KillAllTweener();
 
         // 清空公共牌
-        if (null != this.uirc.listCards)
+        if (null != this.uirc?.listCards)
             this.uirc.listCards = [];
 
         // 清空座位
@@ -2872,7 +2969,7 @@ export default class TexasGame {
         }
 
         // 清空分池
-        if (null != this.uirc.listPotInfo) {
+        if (null != this.uirc?.listPotInfo) {
             this.uirc.listPotInfo = null;
         }
 
