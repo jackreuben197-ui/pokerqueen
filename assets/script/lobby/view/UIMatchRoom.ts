@@ -7,6 +7,7 @@ import UIComponent from "../../ui/UIComponent";
 export default class UIMatchRoom extends UIBase {
     public static instance: UIMatchRoom = null;
     private roomLen: number = 0;
+    // 存放三种类型  德州   6+  奥马哈  顺序对应预制体 不能错
     public RoomTypesInfos = [];
     protected lateLoad(): void {
         super.lateLoad();
@@ -22,6 +23,7 @@ export default class UIMatchRoom extends UIBase {
         this.handleData(param.data, this.node);
         this.SetRoomListBtnInfo(this.node);
     }
+    //gameType 游戏类型 0-德州 1-OMAHA4 2-OMAHA5 3-OMAHA6
     public handleData(data: any, roomContent: cc.Node): any[] {
         this.RoomTypesInfos = [];
         for (let i = 0; i < this.node.childrenCount; i++) {
@@ -31,64 +33,39 @@ export default class UIMatchRoom extends UIBase {
                 playerCount: 0,
                 roomCount: 0,
             }
-            if (i <= 3) {
-                obj.gameType = i;
-                this.RoomTypesInfos.push(obj)
-            } else {
-                obj.pokerType = 2;
-                this.RoomTypesInfos.push(obj)
-            }
+            obj.gameType = i;
+            this.RoomTypesInfos.push(obj)
         }
         let self = this;
         data.forEach((element) => {
-            self.RoomTypesInfos[element.game_type].playerCount = element.player_count;
-            self.RoomTypesInfos[element.game_type].roomCount = element.count;
-            self.SetSixPlusData(element);
+            if (element.game_type == 0) {
+                let sub_group = element.sub_group;
+                if (sub_group) {
+                    sub_group.forEach((subInfo) => {
+                        if (subInfo.poker_type == 2) {
+                            // 6+
+                            self.RoomTypesInfos[1].roomCount += subInfo.count;
+                            self.RoomTypesInfos[1].playerCount += subInfo.player_count;
+                        } else {
+                            // 德州
+                            self.RoomTypesInfos[0].roomCount += subInfo.count;
+                            self.RoomTypesInfos[0].playerCount += subInfo.player_count;
+                        } 
+                    })
+                }
+            } else {
+                //奥马哈
+                self.RoomTypesInfos[2].roomCount += element.count;
+                self.RoomTypesInfos[2].playerCount += element.player_count;
+            }
         })
-        // for (let key in data) {
-        //     let element = data[key];
-        //     this.RoomTypesInfos[element.game_type].playerCount = element.player_count;
-        //     this.RoomTypesInfos[element.game_type].roomCount = element.count;
-        //     this.SetSixPlusData(element);
-        // }
         for (let i = 0; i < roomContent.childrenCount; i++) {
             let btn = roomContent.children[i];
-            // btn.active = this.RoomTypesInfos[i].roomCount > 0
             if (btn.active) {
                 this.roomLen++;
             }
         }
         return this.RoomTypesInfos;
-    }
-    public SetSixPlusData(data: typeof Web_Room_Center_Groups.ResponseData): void {
-        let SixPlus = []
-        if (data.sub_group == null) {
-            return;
-        }
-        data.sub_group.forEach((item) => {
-            if (item.poker_type == 2) {
-                SixPlus.push(item);
-            }
-        })
-        // for (let element in data.sub_group) {
-        //     let item = data.sub_group[element];
-        //     if (item.poker_type == 2) {
-        //         SixPlus.push(item);
-        //     }
-        // }
-        SixPlus.forEach((item) => {
-            this.RoomTypesInfos[this.RoomTypesInfos.length - 1].playerCount += item.player_count;
-            this.RoomTypesInfos[this.RoomTypesInfos.length - 1].roomCount += item.count;
-            this.RoomTypesInfos[data.game_type].playerCount -= item.player_count;
-            this.RoomTypesInfos[data.game_type].roomCount -= item.count;
-        })
-        // for (let element in SixPlus) {
-        //     let item = SixPlus[element];
-        //     this.RoomTypesInfos[this.RoomTypesInfos.length - 1].playerCount += item.player_count;
-        //     this.RoomTypesInfos[this.RoomTypesInfos.length - 1].roomCount += item.count;
-        //     this.RoomTypesInfos[data.game_type].playerCount -= item.player_count;
-        //     this.RoomTypesInfos[data.game_type].roomCount -= item.count;
-        // }
     }
     public SetRoomListBtnInfo(room: cc.Node): void {
         this.RoomTypesInfos.forEach((info, index) => {
@@ -98,19 +75,10 @@ export default class UIMatchRoom extends UIBase {
             player.string = info.playerCount;
             desk.string = info.roomCount;
         })
-        // for(let element in this.RoomTypesInfos){
-        //     let info = this.RoomTypesInfos[element];
-        //     let roomChild:cc.Node = room.children[element];
-        //     let player:cc.Label = roomChild.getChildByName("TextPlayer_"+(parseInt(element)+1)).getComponent(cc.Label);
-        //     let desk:cc.Label = roomChild.getChildByName("TextDesk_"+(parseInt(element)+1)).getComponent(cc.Label);
-        //     player.string = info.playerCount;
-        //     desk.string = info.roomCount;
-        // }
     }
     protected regiterTouchEvents(): void {
         let roomList: cc.Node = this.node;
         roomList.children.forEach((item, index) => {
-            cc.log(`UIMatchRoom-----item-${index}`)
             item["index"] = index;
             item.on(cc.Node.EventType.TOUCH_END, this.clickRoom, this)
         })

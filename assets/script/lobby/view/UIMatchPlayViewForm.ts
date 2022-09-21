@@ -50,6 +50,10 @@ export default class UIMatchPlayViewForm extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
         this.mLoopListView = this.getChildNodeOrComponent("sv_content");
+        let viewBilndContent: cc.Node = this.getChildNodeOrComponent("c_bottom");
+        viewBilndContent.children.forEach((item, index) => {
+            item.active = false;
+        })
     }
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         最上层listview遍历 添加点击事件  
@@ -452,6 +456,10 @@ export default class UIMatchPlayViewForm extends BaseForm {
                         // this.mLoopListView.children[i].active = false;
                     }
                 }
+            } else {
+                this.mLoopListView.children.forEach((item, index) => {
+                    item.active = false;
+                })
             }
         }
         // let NonShowed: cc.Node = this.getChildNodeOrComponent("NonShowed");
@@ -463,6 +471,13 @@ export default class UIMatchPlayViewForm extends BaseForm {
     async onClose(param: any = null) {
         cc.log("UIMatchPlayView onClose");
         super.onClose();
+        this.mLoopListView.children.forEach((item, index) => {
+            item.active = false;
+        })
+        let viewBilndContent: cc.Node = this.getChildNodeOrComponent("c_bottom");
+        viewBilndContent.children.forEach((item, index) => {
+            item.active = false;
+        })
     }
     private OnClickEmptySet(isOn: boolean) {
         this.isSelectEmptySeat = false;
