@@ -34,7 +34,6 @@ export default class Main extends cc.Component {
 
         // UI 节点缓存
         Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - UI缓存");
-
         Main.Scene = this.node.parent.getChildByName("Scene - 场景");
         Main.Marquee = this.node.parent.getChildByName("Marquee - 场景上层");
         Main.Form = this.node.parent.getChildByName("Form - 窗体层");
@@ -48,13 +47,9 @@ export default class Main extends cc.Component {
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
-        }, 1)
-
+        }, 1);
     }
     start() {
         ProcedureManager.Init();
     }
-
-
-
 }
