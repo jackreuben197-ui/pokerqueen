@@ -11,6 +11,8 @@ import { LobbyControl } from "../control/LobbyControl";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
 import UIBase from "../../ui/UIBase";
 import UIMatchRoom from "../view/UIMatchRoom";
+import UIComponent from "../../ui/UIComponent";
+import { UIDefine } from "../../define/UIDefine";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -44,6 +46,9 @@ export default class UILabarPlayViewForm extends UIBase {
     private LocalDicRoomName: Map<string, { [key: string]: string }> = new Map();
     private mLoopListView: any = null;
 
+    /********************************** */
+    @property(cc.Node)
+    tabNode: cc.Node = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.mLoopListView = this.getChildNodeOrComponent("sv_content");
@@ -192,6 +197,12 @@ export default class UILabarPlayViewForm extends UIBase {
         //获取groups信息刷新 typeScrollView
         // this.TypeContentLength = param.len;
         //获取roominfo
+        param = {
+            game_type: 0,
+            poker_type: 0,
+            index: 0,
+            len: 0,
+        }
         await this.sendGroupGetData(param);
         //获取LocalDicRoomName
         await this.sendBlindsGetData(param);
@@ -554,6 +565,16 @@ export default class UILabarPlayViewForm extends UIBase {
         } else {
             cc.warn("websocket还没有连接上:", WebSocketClient.WS.readyState);
         }
+    }
+    /***************************************自己界面的数据处理 */
+    tostBtnClick() {
+        this.tabNode.active = !this.tabNode.active;
+    }
+    playerLookLaber() {
+        UIComponent.open(UIDefine.UIPlayerLookLabor);
+    }
+    managerLookLaber() {
+        UIComponent.open(UIDefine.UIManageLabor);
     }
 
 }

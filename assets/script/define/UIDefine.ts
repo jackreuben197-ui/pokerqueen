@@ -210,7 +210,20 @@ export const UIDefine = {
         Name: "UITexasPlayerInfo",
         Bundle: 'texas',
         Path: "prefab/ui/UITexasPlayerInfo",
-    }
+    },
+
+    UIPlayerLookLabor: {
+        UIType: UIType.Form,
+        Name: "UIPlayerLookLabor",
+        Bundle: null,
+        Path: "lobby/prefab/UIPlayerLookLabor",
+    },
+    UIManageLabor: {
+        UIType: UIType.Form,
+        Name: "UIManageLabor ",
+        Bundle: null,
+        Path: "lobby/prefab/UIManageLabor ",
+    },
 
 
 

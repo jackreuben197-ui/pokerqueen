@@ -3,7 +3,7 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-15 15:23:05
+ * @LastEditTime: 2022-09-20 16:20:04
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
@@ -12,12 +12,7 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
-<<<<<<< HEAD
-=======
-import { UICommonMgr } from "../ui/UIMgr";
->>>>>>> 52e91e61c05d6c06646a047ee28ccb10a6a91088
 import { GameCache } from "./GameCache";
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
