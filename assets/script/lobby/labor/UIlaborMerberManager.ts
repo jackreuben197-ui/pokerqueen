@@ -1,21 +1,20 @@
 /*
  * @Author: xfj
- * @Date: 2022-09-19 18:39:47
+ * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 14:00:09
- * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
+ * @LastEditTime: 2022-09-21 14:40:38
+ * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
 import { UIDefine } from "../../define/UIDefine";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class UIPlayerLookLabor extends BaseForm {
+export default class UIlaborMerberManager extends BaseForm {
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -24,4 +23,7 @@ export default class UIPlayerLookLabor extends BaseForm {
         super.onShow(param, fromUI);
     }
 
+    examination() {
+        UIComponent.open(UIDefine.UIlaborExaminatMerber);
+    }
 }

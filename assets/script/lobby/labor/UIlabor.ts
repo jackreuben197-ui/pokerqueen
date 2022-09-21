@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:06
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-19 14:30:35
+ * @LastEditTime: 2022-09-21 14:37:47
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlabor.ts
  */
 
@@ -27,7 +27,7 @@ export default class UIlabor extends UIBase {
 
     }
     createrBtnClick() {
-        UIComponent
+
         UIComponent.open(UIDefine.UICreatelabor);
 
     }

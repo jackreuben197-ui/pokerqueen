@@ -571,9 +571,11 @@ export default class UILabarPlayViewForm extends UIBase {
         this.tabNode.active = !this.tabNode.active;
     }
     playerLookLaber() {
+        this.tabNode.active = false;
         UIComponent.open(UIDefine.UIPlayerLookLabor);
     }
     managerLookLaber() {
+        this.tabNode.active = false;
         UIComponent.open(UIDefine.UIManageLabor);
     }
 

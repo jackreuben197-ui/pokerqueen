@@ -224,6 +224,18 @@ export const UIDefine = {
         Bundle: null,
         Path: "lobby/prefab/UIManageLabor ",
     },
+    UIlaborMerberManager: {
+        UIType: UIType.Form,
+        Name: "UIlaborMerberManager",
+        Bundle: null,
+        Path: "lobby/prefab/UIlaborMerberManager",
+    },
+    UIlaborExaminatMerber: {
+        UIType: UIType.Form,
+        Name: "UIlaborExaminatMerber",
+        Bundle: null,
+        Path: "lobby/prefab/UIlaborExaminatMerber",
+    },
 
 
 
