@@ -10,8 +10,8 @@ export class ResManager {
         let bundle = bundleName == null ? cc.resources : this.bundleMap[bundleName];
 
         return bundle?.get(assetPath);
-
     }
+
     static Load(bundleName: string, ...args: any[]) {
         //默认读取内置包 resources 资源
         if (bundleName == null) {
@@ -71,7 +71,7 @@ export class ResManager {
 
             return cc.resources.get(assetPath);
         }
-
+        
         let bundle: cc.AssetManager.Bundle = this.bundleMap[bundleName];
 
         if (!bundle) {

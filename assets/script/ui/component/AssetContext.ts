@@ -24,6 +24,7 @@ export enum AssetFold {
     texture_lobby_UIMatch,
     resources_prefab_component,
     texas_prefab_widgetLayer,
+    texture_match_view,
 
 }
 const { ccclass, property, executionOrder } = cc._decorator;

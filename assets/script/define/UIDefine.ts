@@ -1,4 +1,13 @@
+import { type } from "os";
 import { UIType } from "./EIDefine";
+
+export type UIDefineType = {
+    UIType?: UIType,
+    Name?: string,
+    Bundle?: string,
+    Path?: string,
+    Title?: string,
+}
 
 export const UIDefine = {
     /**
@@ -104,7 +113,35 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIMatchPlayViewForm",
         Bundle: null,
-        Path: "lobby/prefab/UIMatchPlayViewForm"
+        Path: "lobby/prefab/matchView/UIMatchPlayViewForm"
+    },
+
+    UIMatchChessView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchChessView",
+        Bundle: null,
+        Path: "lobby/prefab/matchView/UIMatchChessView"
+    },
+
+    UIMatchSportsView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchSportsView",
+        Bundle: null,
+        Path: "lobby/prefab/matchView/UIMatchSportsView"
+    },
+
+    UIMatchGameView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchGameView",
+        Bundle: null,
+        Path: "lobby/prefab/matchView/UIMatchGameView"
+    },
+
+    UIMatchRealityView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchRealityView",
+        Bundle: null,
+        Path: "lobby/prefab/matchView/UIMatchRealityView"
     },
 
     /**
@@ -192,8 +229,6 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/ui/UITexasPlayerInfo",
     }
-
-
 
 
 }
