@@ -14,6 +14,7 @@ import WebSocketClient from "../../net/websocket/WebSocketClient";
 import { RoomType } from "../../game/GameUtil";
 import { UICommonMgr } from "../../ui/UIMgr";
 import UIComponent from "../../ui/UIComponent";
+import PlayViewItem from "./PlayViewItem";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -50,6 +51,10 @@ export default class UIMatchPlayViewForm extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
         this.mLoopListView = this.getChildNodeOrComponent("sv_content");
+        let viewBilndContent: cc.Node = this.getChildNodeOrComponent("c_bottom");
+        viewBilndContent.children.forEach((item, index) => {
+            item.active = false;
+        })
     }
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         最上层listview遍历 添加点击事件  
@@ -452,6 +457,10 @@ export default class UIMatchPlayViewForm extends BaseForm {
                         // this.mLoopListView.children[i].active = false;
                     }
                 }
+            } else {
+                this.mLoopListView.children.forEach((item, index) => {
+                    item.active = false;
+                })
             }
         }
         // let NonShowed: cc.Node = this.getChildNodeOrComponent("NonShowed");
@@ -463,6 +472,13 @@ export default class UIMatchPlayViewForm extends BaseForm {
     async onClose(param: any = null) {
         cc.log("UIMatchPlayView onClose");
         super.onClose();
+        this.mLoopListView.children.forEach((item, index) => {
+            item.active = false;
+        })
+        let viewBilndContent: cc.Node = this.getChildNodeOrComponent("c_bottom");
+        viewBilndContent.children.forEach((item, index) => {
+            item.active = false;
+        })
     }
     private OnClickEmptySet(isOn: boolean) {
         this.isSelectEmptySeat = false;
@@ -570,14 +586,16 @@ export default class UIMatchPlayViewForm extends BaseForm {
             item.getChildByName("item_normal").active = true;
             //     layout.getChildByName("Text_Icon_Time").active = false;
             //     layout.getChildByName("Text_Icon_Time_node").active = true;
+            // item.getChildByName("lbl_time").getComponent("PlayViewItem").updateItemInfo(roomInfo);
         } else {
             item.getChildByName("item_choose").active = true;
             item.getChildByName("item_normal").active = false;
             //     layout.getChildByName("Text_Icon_Time").active = true;
             //     layout.getChildByName("Text_Icon_Time_node").active = false;
             //值取小数点后一位
-            let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600) * 10) / 10
-            item.getChildByName("lbl_time").getComponent(cc.Label).string = `${duration}h/${duration}h`
+            // let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600) * 10) / 10
+            item.getChildByName("lbl_time").getComponent("PlayViewItem").updateItemInfo(roomInfo);
+            // .string = `${duration}h/${duration}h`
         }
         item.getChildByName("lbl_deskName").getComponent(cc.Label).string = this.GetRoomNameByKey(roomInfo.name);
 
