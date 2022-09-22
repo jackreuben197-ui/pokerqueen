@@ -57,8 +57,8 @@ export default class BaseForm extends UIBase {
         this.back_click.on("click", this.close, this);
     }
 
-    protected lateClose(param: any = null) {
-
+    lateClose(param: any = null) {
+        super.lateClose();
     }
 
     onShow(param?: any, fromUI?: BaseForm) {

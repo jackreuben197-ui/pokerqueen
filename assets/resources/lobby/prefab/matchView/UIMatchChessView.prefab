@@ -4178,7 +4178,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "sv_list",
+    "_name": "list",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -4458,7 +4458,7 @@
     "_enabled": true,
     "alignMode": 1,
     "_target": null,
-    "_alignFlags": 5,
+    "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
     "_top": 0,
@@ -4471,7 +4471,7 @@
     "_isAbsBottom": true,
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
-    "_originalWidth": 0,
+    "_originalWidth": 1242,
     "_originalHeight": 1964,
     "_id": ""
   },
@@ -4522,7 +4522,7 @@
     "_enabled": true,
     "alignMode": 1,
     "_target": null,
-    "_alignFlags": 5,
+    "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
     "_top": 288,
@@ -4535,7 +4535,7 @@
     "_isAbsBottom": true,
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
-    "_originalWidth": 0,
+    "_originalWidth": 1242,
     "_originalHeight": 1720,
     "_id": ""
   },
