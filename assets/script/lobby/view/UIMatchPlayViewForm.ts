@@ -14,6 +14,7 @@ import WebSocketClient from "../../net/websocket/WebSocketClient";
 import { RoomType } from "../../game/GameUtil";
 import { UICommonMgr } from "../../ui/UIMgr";
 import UIComponent from "../../ui/UIComponent";
+import PlayViewItem from "./PlayViewItem";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -592,7 +593,8 @@ export default class UIMatchPlayViewForm extends BaseForm {
             //     layout.getChildByName("Text_Icon_Time_node").active = false;
             //值取小数点后一位
             let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600) * 10) / 10
-            item.getChildByName("lbl_time").getComponent(cc.Label).string = `${duration}h/${duration}h`
+            item.getChildByName("lbl_time").getComponent("PlayViewItem").updateItemInfo(roomInfo);
+            // .string = `${duration}h/${duration}h`
         }
         item.getChildByName("lbl_deskName").getComponent(cc.Label).string = this.GetRoomNameByKey(roomInfo.name);
 
