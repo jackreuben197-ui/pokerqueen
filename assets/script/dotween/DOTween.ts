@@ -15,8 +15,21 @@ export class Sequence<T> {
 
     private _isPlaying: boolean = false;
 
+
+    private _mainTarget = null;
+
+    private _targets: any[] = [];
+
+    private _childCompletes: Function[] = [];
+
     constructor(target: T) {
-        this._tween = cc.tween(target);
+        this._tween = cc.tween(this._mainTarget = target);
+    }
+    AddTarget(target) {
+        if (!this._targets.includes(target)) this._targets.push(target);
+    }
+    AddChildComplete(cc: Function) {
+        this._childCompletes.push(cc);
     }
 
     Append(this: Sequence<T>, tFunc: Function, duration: number): Sequence<T> {
@@ -84,6 +97,21 @@ export class Sequence<T> {
     }
     get IsPlaying() {
         return this._isPlaying;
+    }
+    Complete(this: Sequence<T>, doCom: boolean = true) {
+        this.Kill();
+        while (this._childCompletes) {
+            let cc = this._childCompletes.shift();
+            cc();
+        }
+        doCom && this._completeFunc?.();
+    }
+    Kill() {
+        while (this._targets.length) {
+            let target = this._targets.shift();
+            cc.Tween.stopAllByTarget(target);
+        }
+        cc.Tween.stopAllByTarget(this._mainTarget);
     }
 }
 

@@ -1016,6 +1016,160 @@ export default class TexasGameProtocol {
 
 
     /// <summary>
+    /// 公共牌
+    /// </summary>
+    /// <param name="source"></param>
+    public HandleGetPublicCards(source: ServerMessagePublicCards.AsObject): void {
+        //UIComponent.Instance.HideNoAnimation(UIType.UIInsurance);
+        //UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
+        this.game.autoCall = false;
+        this.game.autoAllin = false;
+        this.game.autoCheck = false;
+        this.game.autoFold = false;
+        let iCount: number = this.game.GetCurPublicCardsCount();  // 要在更新公共牌前拿数量
+        if (this.game.GameState == TexasGameState.HandFlop && iCount == 0) {
+            this.game.AddPublicCards(source.publicCardsArrayList);
+        }
+        else if (this.game.GameState == TexasGameState.HandTurn && iCount == 3) {
+            this.game.AddPublicCards(source.publicCardsArrayList);
+        }
+        else if (this.game.GameState == TexasGameState.HandRiver && iCount == 4) {
+            this.game.AddPublicCards(source.publicCardsArrayList);
+        }
+        else {
+            cc.warn("public card error：" + this.game.GameState + " Cur Public Cards Count :" + iCount);
+        }
+
+        let lastPubicCard: number = source.publicCardsArrayList[source.publicCardsArrayList.length - 1];
+        this.game.IsSecondPsc = source.extPublicCardsArrayList != null && source.extPublicCardsArrayList.length > 0;
+        let bust: boolean = false;
+        let mRoomType: RoomType = GameCache.Instance.room_type;
+        if (this.game.cacheTrunOutsCards != null) {
+
+            this.game.cacheTrunOutsCards.forEach((value, key) => {
+                if (value.includes(lastPubicCard)) {
+                    bust = true;
+                }
+                if (this.game.GetLocalSeatID(key) == this.game.mainPlayer.seatID && value.includes(lastPubicCard) && this.game.cacheBuyActiveAmount > 0) {
+                    //this.ShowInsuranceTipJieSuan(GameUtil.GetOddsByPlayerNum(cacheBuyInsurancePotUserCount, item.Value.length) * cacheBuyActiveAmount);
+                }
+            })
+        }
+        if (bust) {
+            //爆牌动画
+            //this.ShowBustCardAnimation();
+        }
+        this.game.ClearSeatBubble(false);
+        let mCacheSeat: Seat = null;
+        for (let i = 0, n = this.game.listSeat.length; i < n; i++) {
+            mCacheSeat = this.game.listSeat[i];
+            if (null == mCacheSeat || null == mCacheSeat.Player || !mCacheSeat.Player.isPlaying)
+                continue;
+
+            mCacheSeat.Player.anteNumber = 0;
+            mCacheSeat.FsmLogicComponent.SM.ChangeState(SeatWaitOther.Instance);
+        }
+        let opSeatID: number = -1;
+        if (source.nextOperator != null) {
+            opSeatID = this.game.GetLocalSeatID(source.nextOperator.seatId);
+        }
+
+        //TweenCallback mTweenCallback = () => {
+        let mTweenCallback = () => {
+
+            let mSeat: Seat = this.game.GetSeatByLocalSeatID(opSeatID);
+            if (null == mSeat)
+                return;
+
+            if (mSeat.seatID == this.game.mainPlayer.seatID && mSeat.Player.userID == this.game.mainPlayer.userID && mSeat.Player.isPlaying) {
+                // 到自己操作
+                this.game.HideAutoOperationPanel();
+
+                // 非托管
+                if (!this.game.mainPlayer.IsAutoOp) {
+                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(source.nextOperator.actionsList, source.nextOperator.shortcutsList));
+                }
+            }
+            else {
+                // 下一个操作不是自己
+                this.game.HideOperationPanel();
+                // 非弃牌、非ALL IN、非空闲等待下一局、非托管
+                if (this.game.mainPlayer.isPlaying && !this.game.mainPlayer.IsAutoOp) {
+                    // 预操作UI
+                    UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(0)));
+                }
+                else {
+                    // 无预操作UI
+                    this.game.HideAutoOperationPanel();
+                }
+
+            }
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatOperation.Instance);
+        };
+
+        //TweenCallback SecondTweenCallback = () => {
+        let SecondTweenCallback = () => {
+            if (source.extPublicCardsArrayList != null && source.extPublicCardsArrayList.length > 0) {
+
+                this.game.AddSecondPublicCards(source.extPublicCardsArrayList);
+                //执行第二套牌动画
+                this.game.UpdateSecondPublicCards(iCount, source.extPublicCardsArrayList.length, null);
+
+            }
+            else {
+                this.game.IsSecondPsc = false;
+            }
+        };
+        this.game.stopUpdatePublicCardsAnimation = false;
+
+        console.log("当前开始翻牌:", iCount);
+
+        if (iCount == 0) {
+
+            this.game.PlayFirstRecyclingChipAnimation(() => {
+
+                this.game.PlayFirstRecyclingChipSubAnimation(() => {
+                    this.game.UpdatePublicCards(iCount, mTweenCallback, SecondTweenCallback);
+                    if (this.game.stopUpdatePublicCardsAnimation && null != this.game.sequenceUpdatePublicCards) {
+                        this.game.sequenceUpdatePublicCards.Complete(true);
+                    }
+
+                    this.game.stopUpdatePublicCardsAnimation = false;
+                });
+                if (this.game.stopUpdatePublicCardsAnimation && null != this.game.sequencePlayFirstRecyclingChipSubAnimation &&
+                    this.game.sequencePlayFirstRecyclingChipSubAnimation.IsPlaying) {
+                    this.game.sequencePlayFirstRecyclingChipSubAnimation.complete(true);
+                }
+            });
+        }
+        else {
+            if (this.game.isAllinGetPlayerCards && this.game.insurance) {
+                // 保险就是多事，特殊处理一下。来了三张公共牌，动画播放中，没有保险可买，马上又来了一张公共牌。
+                this.game.UpdatePublicCards(iCount, mTweenCallback, SecondTweenCallback);
+                if (this.game.stopUpdatePublicCardsAnimation && null != this.game.sequenceUpdatePublicCards && this.game.sequenceUpdatePublicCards.IsPlaying) {
+                    this.game.sequenceUpdatePublicCards.Complete(true);
+                }
+
+                this.game.stopUpdatePublicCardsAnimation = false;
+            }
+            else {
+                this.game.PlayRecyclingChipAnimation(() => {
+                    this.game.UpdatePublicCards(iCount, mTweenCallback, SecondTweenCallback);
+                    if (this.game.stopUpdatePublicCardsAnimation && null != this.game.sequenceUpdatePublicCards && this.game.sequenceUpdatePublicCards.IsPlaying) {
+                        this.game.sequenceUpdatePublicCards.Complete();
+                    }
+                    this.game.stopUpdatePublicCardsAnimation = false;
+                });
+            }
+        }
+    }
+
+
+
+
+
+
+    /// <summary>
     /// 本手结算
     /// </summary>
     /// <param name="MessageWinnerData"></param>

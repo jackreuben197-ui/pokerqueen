@@ -95,7 +95,6 @@ export default class BaseForm extends UIBase {
                 .start();
         }
     }
-
     mainFadeOut(style: any) {
         return new Promise((resolve, reject) => {
             if (style?.main_fadeOut_active == false) {
