@@ -1,5 +1,6 @@
 
 import { ProcedureEnum } from "../define/EIDefine";
+import { UIDefine } from "../define/UIDefine";
 import ProcedureManager from "../manager/ProcedureManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { Protocol_Holdem_EnterRoom, Protocol_Holdem_Leave } from "../net/websocket/ProtocolHoldemMessages";
@@ -62,8 +63,6 @@ export default class TexasGameUtils {
                 }),
         });
     }
-
-
     /// <summary>
     /// 站起
     /// </summary>
@@ -75,21 +74,13 @@ export default class TexasGameUtils {
             mSeat.Player = null;
             mSeat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
         }
+        UIComponent.Instance.HideNoAnimation(this.game.uirc.UIAddChips.node);
+        UIComponent.close(UIDefine.UITexasPlayerInfoComponent);
 
-        // 	UI mUIAddChips = UIComponent.Instance.Get(UIType.UIAddChips);
-        // if (null != mUIAddChips && mUIAddChips.GameObject.activeInHierarchy) {
-        //     UIComponent.Instance.HideNoAnimation(UIType.UIAddChips);
-        // }
-
-        // 	UI mUIUITexasPlayerInfo = UIComponent.Instance.Get(UIType.UITexasPlayerInfo);
-        // if (null != mUIUITexasPlayerInfo && mUIUITexasPlayerInfo.GameObject.activeInHierarchy) {
-        //     UIComponent.Instance.Remove(UIType.UITexasPlayerInfo);
-        // }
-
-        // HideOperationPanel();
-        // HideAutoOperationPanel();
-        // HideWaitBlindBtn();
-        // HideCancelTrustBtn();
+        this.game.HideOperationPanel();
+        this.game.HideAutoOperationPanel();
+        this.game.HideWaitBlindBtn();
+        this.game.HideCancelTrustBtn();
     }
     /// <summary>
     /// 获取小盲注位置，通过当前参与牌局玩家座位号
@@ -178,7 +169,7 @@ export default class TexasGameUtils {
     /// 当有第二套牌时设置高亮手牌和公共牌
     /// </summary>
     /// <param name="publicCardInfos"></param>
-    private SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], _cards: number[]): void {
+    public SetWinnerCardsHight(publicCardInfos: PublicCardInfo[], _cards: number[]): void {
         let highlightCards_ref = { highlightCards: null };
         let cardType: CardType = this.game.GetCardType(highlightCards_ref, _cards);
         let highlightCards = highlightCards_ref.highlightCards;
@@ -214,6 +205,7 @@ export default class TexasGameUtils {
 
 
 
+
     /// <summary>
     /// 退出房间
     /// </summary>
@@ -231,7 +223,7 @@ export default class TexasGameUtils {
         // UIComponent.Instance.Remove(UIType.UITexasHumanVote);
         // UIComponent.Instance.Remove(UIType.UITexasHumanYZ);
         // UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
-        
+
         ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { leaveRoom: true });
         //#region 关键属性最后置空
         GameCache.Instance.CurrentRoomID = 0;

@@ -1343,4 +1343,6 @@ export default class GameUtil {
     public static GetSeeMoreCost(small: number): number {
         return 50;
     }
+
+
 }

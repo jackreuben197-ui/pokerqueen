@@ -54,7 +54,9 @@ export default class LoginScene extends BaseScene {
 
     lan_item: cc.Node = null;
 
+    agree_toggle: cc.Toggle = null;
 
+    agreement_click: cc.Node = null;
 
     ///////////////////////////////////
     /**
@@ -81,6 +83,8 @@ export default class LoginScene extends BaseScene {
         this.language_panel = this.getChildNodeOrComponent("language_panel");
         this.lan_flag = this.getChildNodeOrComponent("lan_flag", cc.Sprite);
         this.lan_item = this.getChildNodeOrComponent("lan_item");
+        this.agree_toggle = this.getChildNodeOrComponent("agree_toggle", cc.Toggle);
+        this.agreement_click = this.getChildNodeOrComponent("agreement_click");
         this.setAreaAndPhone();
         this.setEyesOpen(false);
         this.setLanLayerActive(false);
@@ -99,6 +103,7 @@ export default class LoginScene extends BaseScene {
         this.code_button.on("click", this.onCodeClick, this);
         this.language_button.on("click", this.onLanguageClick, this);
         this.language_layer.on("click", this.onLanguageLayerClick, this);
+        this.agreement_click && this.agreement_click.on("click", this.onUserAgreeClick, this);
     }
     protected lateEnter() {
         this.refreshLanguageFlag();
@@ -168,6 +173,7 @@ export default class LoginScene extends BaseScene {
         let phone: string = this.phone_editbox.string;
         let password: string = this.pass_editbox.string;
         let area: string = this.area_label.string.substring(1);
+        let agree_checked = this.agree_toggle.isChecked;
         //判断用户名
         cc.log("account:", phone, "password:", password);
 
@@ -177,6 +183,11 @@ export default class LoginScene extends BaseScene {
         }
         if (password.length < 6) {
             return ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10330));
+        }
+
+        if (agree_checked == false) {
+            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_ReadOK"));//("阅读并同意用户协议");
+            return;
         }
 
         let param: typeof Web_Login.RequestParams = {
@@ -236,5 +247,12 @@ export default class LoginScene extends BaseScene {
         i18nMgr.setLanguage(lan);
         this.onLanguageLayerClick();
         this.refreshLanguageFlag();
+    }
+
+    /**
+     * 用戶注意事項
+     */
+     onUserAgreeClick() {
+        UIComponent.open(UIDefine.UserAgreeForm);
     }
 }

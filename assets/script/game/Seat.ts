@@ -1063,8 +1063,6 @@ export default class Seat {
     /// </summary> virtual Sequence 
     public PlayDealAnimation(delay: number, targetPos: cc.Vec3): cc.Tween {
 
-        cc.log("seat PlayDealAnimation");
-
         for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
             this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
         }
@@ -1233,6 +1231,10 @@ export default class Seat {
     /// </summary>
     /// <param name="countDown"></param>
     public StartCountDown(countDown: number, isInsruance: boolean = false): void {
+
+
+        console.log("StartCountDown :: ", countDown);
+
         this.optCurTime = countDown;
 
         let defaultOpTime: number = GameCache.Instance.CurGame.GetOpTime();

@@ -2003,7 +2003,7 @@ UITexasRule_detail22=Regras AOF: No estágio pré-flop, você só pode escolher 
 UITexasRule_detail23=1. Um total de quatro rodadas de apostas deve terminar; \n \n 2. Antes do flop: Cada pessoa receberá 2 cartas e, em seguida, a primeira rodada de apostas; \n \n 3. Rodada de apostas; \n \n 4. Turn: a terceira rodada de apostas após a 5ª carta ser distribuída; \n \n 5.River: a quarta rodada de apostas após a 5ª carta ser distribuída; \n \n 6. Após o término das apostas, todos os jogadores restantes comparam mãos, e o jogador com a maior ganha o pool. \n \n Comparação de tipo de carta: Royal Flush> Straight Flush> Four of a kind> Full House> Flush> Straight> Three of a kind> Dois pares> Um par> Carta alta \n \n Os pontos da carta de grande a pequeno são: A, K, Q, J, 10, 9, 8, 7, 6 , 5, 4, 3, 2, Cada naipe não tem distinção de tamanho \n Somente quando a sala é criada, o intervalo de seleção de pré-nota é maior do que o Texas normal
 UITexasRule_detail24=1. Com base no padrão original do Texas/Omaha, as 16 cartas de "2-5" são removidas, e apenas as cartas 9*4=36 de "6-A" são usadas, e o número de jogadores é limitado para 4~6 ;\n\n2. No início do jogo, 2 "cartas fechadas" serão distribuídas para cada jogador e 3, 1 e 1 (total de 5) cartas comunitárias serão distribuídas três vezes na mesa . Após quatro rodadas de "raise", "call" e "fold" e outras operações de apostas, se houver pelo menos dois jogadores que não desistiram no jogo, entre na fase "showdown" e coloque seus 2 Os 5- mais altos A combinação de cartas é selecionada a partir da carta de baixo e das 5 cartas comunitárias, e o vencedor é determinado de acordo com as regras do tamanho das cartas. O vencedor ganha todas as fichas do "pote";\n\n3. O tamanho do a carta é: Royal Flush > Straight Flush > Four of a kind > Flush > Full House > Three of a Kind > Straight > Two Pair > One Pair > High Card
 UITexasRule_dezhou=
-UILogin_USER101=Li e concordo <color=#DCBA82>《Contrato de Usuário》</color>
+UILogin_USER101=Li e concordo <color=#35A3B3>《Contrato de Usuário》</color>
 WalletStop101=Sua carteira foi desabilitada, por favor entre em contato com nosso suporte
 UIMine_RecordItemsNormal=Detalhes
 UIUserRemarks_A3WNZg2C=Observação
@@ -3157,7 +3157,7 @@ UIFormatError=Erro de formato, reentrar
 UIExchangeRatio=R$ 1=1 Ficha
 UIMine_CustomerService_Connect=Conectar
 UIMine_CustomerService=Atendimento ao Cliente
-
+UIWebViewURL=https://h5.olavamos.com/#/?lan=pt_BR
 
 
 

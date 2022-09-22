@@ -397,6 +397,8 @@ export default class UIOperationComponent extends UIBase {
         if (this.optTotalTime < GameCache.Instance.CurGame.opTime) {
             this.optTotalTime = GameCache.Instance.CurGame.opTime;
         }
+
+
         this.isCountDown = false;
 
         this.show(this.operationData.actionLimits);
@@ -709,7 +711,6 @@ export default class UIOperationComponent extends UIBase {
         if (!this._isCheckCountDown && !this._isFoldCountDown) {
             return;
         }
-
         if (this._isCheckCountDown) {
             this.imageCheckCountDown.fillRange = (this.optCurTime -= dt) / this.optTotalTime;
 
@@ -746,6 +747,8 @@ export default class UIOperationComponent extends UIBase {
             }
         }
 
+
+
         if (this.optCurTime < 6.1 && this.optCurTime > 6 && !this.hadAlertSound) {
             //剩余5秒音效
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_ACTION_ALERT);
@@ -753,4 +756,30 @@ export default class UIOperationComponent extends UIBase {
             //this.DelayPlayBarrage();
         }
     }
+    /// <summary>
+    /// 用于关闭操作面板时初始化按钮显示
+    /// </summary>
+    private hideAllOperationButton(): void {
+        this.buttonCall0.active = false;
+        this.buttonCall1.active = false;
+        this.buttonCall2.active = false;
+        this.buttonCallLeft.active = false;
+        this.buttonCallRight.active = false;
+        this.buttonFreeCall.active = false;
+        this.buttonCheck.active = false;
+        this.buttonCall.active = false;
+        this.buttonAllin.active = false;
+        this.sliderFreeCall.node.active = false;
+        this.buttonFreeCallConfirm.active = false;
+        this.Button_Straddle.active = false;
+    }
+    protected lateClose(param?: any): void {
+        this.isCountDown = false;
+        this._isCheckCountDown = false;
+        this._isFoldCountDown = false;
+        this.imageCheckCountDown.node.active = false;
+        this.imageFoldCountDown.node.active = false;
+        this.hideAllOperationButton();
+    }
+
 }

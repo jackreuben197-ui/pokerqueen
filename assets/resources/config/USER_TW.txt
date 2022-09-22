@@ -2001,7 +2001,7 @@ UITexasRule_detail22=AOF規則：翻牌前階段，只能選擇ALLIN or FOLD,\n�
 UITexasRule_detail23=1.必下場壹共四輪下註;\n\n2.翻牌前:每人發2張牌後進行第壹輪下註;\n\n3.翻牌:發3張公共牌後下第二輪註;\n\n4.轉牌圈:發第5張公共牌後下第三輪註;\n\n5.河牌圈:發第5張公共牌後下第四輪註;\n\n6.下註結束後所有剩余玩家進行比牌，最大者贏得底池。\n\n牌型對比:皇家同花順>同花順>四條>葫蘆>同花>順子>三條>兩對>壹對>高牌\n\n牌點從大到小為:A.K.Q.J.1.0.9.8.7.6.5.4.3.2各花色不分大小\n只是在創建房間的時候，前註選擇的範圍比普通德州局大
 UITexasRule_detail24=1.在原來標準德州/奧馬哈的基礎上，去掉“2-5”這16張牌，只是使用"6-A"這9*4=36張牌遊戲，遊戲玩家人數限制在4~6人;\n\n2.在牌局開始時,會給每個玩家發2張“底牌”,桌面上會分三次陸續發出3張、1張、1張（共5張）的公共牌,在經過四輪的“加註”、“跟注”和“棄牌”等押注圈操作後,若牌局存在至少兩名玩家仍然沒有棄牌的情況下,進入“攤牌”階段,把自己的2張底牌和5張公共牌力挑選出最大的5張組合,按照牌型大小規則分出勝負,贏家拿下“底池”全部籌碼;\n\n3.牌型大小為：皇家同花順>同花順>四條>同花>葫蘆>三條>順子>兩對>一對>高牌
 UITexasRule_dezhou=
-UILogin_USER101=閱讀並同意<color=#DCBA82>《用戶協議》</color>
+UILogin_USER101=閱讀並同意<color=#35A3B3>《用戶協議》</color>
 WalletStop101=您的錢包功能已停用，請聯系客服
 UIMine_RecordItemsNormal=詳情
 UIUserRemarks_A3WNZg2C=備註標記
@@ -3148,7 +3148,7 @@ UIFormatError=
 UIExchangeRatio=
 UIMine_CustomerService_Connect=
 UIMine_CustomerService=
-
+UIWebViewURL=https://h5.olavamos.com/#/
 
 
 

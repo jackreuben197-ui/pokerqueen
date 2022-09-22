@@ -14,7 +14,7 @@
 import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
-    static Default_Language: string = "pt";
+    static Default_Language: string = "en";
     //是否使用代理
     static useProxy: boolean = false;
     //是否使用新域名

@@ -8,7 +8,7 @@ import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
 
 
-type AddClipsData = {
+export type AddClipsData = {
     bigBlind: number,// 大盲
     smallBlind: number, // 小盲
     currentMinRate: number, // 当前最小带入倍数

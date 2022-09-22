@@ -1,6 +1,7 @@
 
 import { Tracing } from "trace_events";
 import { IUIDefine, UIType } from "../define/EIDefine";
+import { Param } from "../define/Types";
 import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
@@ -18,6 +19,18 @@ export default class UIComponent {
     Toast(content: string) {
 
         ToastManager.Instance.createToast(content);
+    }
+    //界面内UIBase的显示
+    ShowNoAnimation<T>(node: cc.Node, param?: T) {
+        node.active = true;
+        let ui_component: UIBase = node.getComponent(UIBase);
+        ui_component?.onShow(param);
+    }
+    //界面内UI的隐藏
+    HideNoAnimation<T>(node: cc.Node, param?: T) {
+        node.active = false;
+        let ui_component: UIBase = node.getComponent(UIBase);
+        ui_component?.onClose(param);
     }
 
     static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null, parent: cc.Node = null) {
