@@ -197,7 +197,7 @@ export default class UITexasReportComponent extends UIBase {
             if (this.mRoomLeaveTime >= 0 && this.isLoad && this.node.isValid) {
                 this.mRoomLeaveTime--;
                 if (textTitle != null)
-                    textTitle.string = textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
+                    textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
             } else {
                 if (textTitle != null && !cc.isValid(this.node, true)) {
                     textTitle.string = "00:00";
