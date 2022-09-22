@@ -18,7 +18,7 @@ enum SelectedType {
 
 @ccclass
 @disallowMultiple()
-@menu('自定义组件/List Item')
+@menu('脚本分组/common/ListItem')
 @executionOrder(-5001)          //先于List
 export default class ListItem extends cc.Component {
     //图标

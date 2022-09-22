@@ -10,8 +10,9 @@ import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/matchView/UIMatchChessItem')
 export default class UIMatchChessItem extends UIBase {
     private _data: typeof Web_Room_Center_Rooms.DataElement = null;
 

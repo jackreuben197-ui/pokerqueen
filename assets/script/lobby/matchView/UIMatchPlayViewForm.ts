@@ -1,4 +1,3 @@
-const { ccclass, property } = cc._decorator;
 import { UIDefine, UIDefineType } from "../../define/UIDefine";
 import { GameCache } from "../../game/GameCache";
 import { ResManager } from "../../manager/ResManager";
@@ -10,7 +9,9 @@ import { EMatchViewTabType } from "./MatchViewConfig";
 
 
 
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/matchView/UIMatchPlayViewForm')
 export default class UIMatchPlayViewForm extends BaseForm {
 
     private _tabBtnsParent: cc.Node = null;
@@ -24,7 +25,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     ]
 
     private _machPlayers: any = null;
-    private _tabViews: Map<EMatchViewTabType, cc.Node> = new Map();
+    private _tabViews: Map<EMatchViewTabType, UIBase> = new Map();
     private _tabViewLoadintState: Map<EMatchViewTabType, boolean> = new Map();
 
     private _curType: EMatchViewTabType = EMatchViewTabType.no;
@@ -75,6 +76,8 @@ export default class UIMatchPlayViewForm extends BaseForm {
             this._curType = type;
             this.switchTabState();
 
+
+            let parmas = type == EMatchViewTabType.chess ? this._machPlayers : null;
             if (!this._tabViewLoadintState.get(type) && !this._tabViews.get(type)) {
                 this._tabViewLoadintState.set(type, true)
                 let parent = this._tabViewParents[type];
@@ -87,12 +90,13 @@ export default class UIMatchPlayViewForm extends BaseForm {
                     let node = cc.instantiate(asset);
                     node.parent = parent;
                     let baseScript = node.getComponent(UIBase);
-                    baseScript.onShow(this._machPlayers);
-                    this._tabViews.set(type, node);
+                    baseScript.onShow(parmas);
+                    this._tabViews.set(type, baseScript);
                 });
+            } else if (this._tabViews.get(type)) {
+                this._tabViews.get(type).onShow(parmas);
             }
         }
-
     }
 
     switchTabState() {

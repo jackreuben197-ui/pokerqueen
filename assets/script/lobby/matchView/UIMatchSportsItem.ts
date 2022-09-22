@@ -3,8 +3,9 @@ import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
 import { TMatchSportsDataType } from "./MatchViewConfig";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/matchView/UIMatchSportsItem')
 export default class UIMatchSportsItem extends UIBase {
 
     private bgSp: cc.Sprite = null;
@@ -17,7 +18,7 @@ export default class UIMatchSportsItem extends UIBase {
         this.bgSp = this.node.getComponent(cc.Sprite);
         this.nameLab = this.getChildNodeOrComponent("name", cc.Label);
     }
-    
+
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.node.off(cc.Node.EventType.TOUCH_END, this.clickBg, this);

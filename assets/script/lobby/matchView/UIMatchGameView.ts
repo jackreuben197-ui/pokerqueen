@@ -3,8 +3,9 @@ import UIBase from "../../ui/UIBase";
 import { TMatchGameDataType } from "./MatchViewConfig";
 import UIMatchGameItam from "./UIMatchGameItem";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/matchView/UIMatchGameView')
 export default class UIMatchGameView extends UIBase {
     private searchEdit: cc.EditBox = null;
     private searchBtn: cc.Node = null;

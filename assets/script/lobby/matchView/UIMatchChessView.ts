@@ -1,19 +1,10 @@
 import List from "../../common/List";
-import { ProcedureEnum } from "../../define/EIDefine";
-import { GameCache } from "../../game/GameCache";
-import { RoomType } from "../../game/GameUtil";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import ProcedureManager from "../../manager/ProcedureManager";
 import { Web_Config_Multi_Language_Template, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds } from "../../net/https/WebRequest";
-import WebSocketClient from "../../net/websocket/WebSocketClient";
-import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
-import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
 import UIMatchRoom from "../view/UIMatchRoom";
 import UIMatchChessItem from "./UIMatchChessItem";
 
-const { ccclass, property } = cc._decorator;
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -29,7 +20,9 @@ enum PokerType {
     SixPlus = 2//短牌
 }
 
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/matchView/UIMatchChessView')
 export default class UIMatchChessView extends UIBase {
     private TypeContentLength: number = 0;
     private CurTypeBtn: cc.Node = null;

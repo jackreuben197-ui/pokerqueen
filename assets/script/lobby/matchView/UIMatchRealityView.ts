@@ -1,40 +1,37 @@
 import List from "../../common/List";
 import UIBase from "../../ui/UIBase";
 import { TMatchRealityDataType } from "./MatchViewConfig";
+import UIMatchRealityItam from "./UIMatchRealityItem";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/matchView/UIMatchRealityView')
 export default class UIMatchRealityView extends UIBase {
     private list: List = null;
 
     private _data: Array<TMatchRealityDataType> = [
-        { bgPath: "gameCardIcon_1", name: "大鲨鱼", url: "url:大鲨鱼" },
-        { bgPath: "gameCardIcon_2", name: "体育明星", url: "url:体育明星" },
-        { bgPath: "gameCardIcon_3", name: "Black J", url: "url:Black J" },
-        { bgPath: "gameCardIcon_4", name: "21点", url: "url:21点" },
-        { bgPath: "gameCardIcon_5", name: "炸金花", url: "url:炸金花" },
-        { bgPath: "gameCardIcon_6", name: "消消乐", url: "url:消消乐" },
-        { bgPath: "gameCardIcon_7", name: "老虎机", url: "url:老虎机" },
-        { bgPath: "gameCardIcon_1", name: "大鲨鱼2", url: "url:大鲨鱼2" },
-        { bgPath: "gameCardIcon_2", name: "体育明星2", url: "url:体育明星2" },
-        { bgPath: "gameCardIcon_3", name: "Black J2", url: "url:Black J2" },
-        { bgPath: "gameCardIcon_4", name: "21点2", url: "url:21点2" },
-        { bgPath: "gameCardIcon_5", name: "炸金花2", url: "url:炸金花2" },
-        { bgPath: "gameCardIcon_6", name: "消消乐2", url: "url:消消乐2" },
-        { bgPath: "gameCardIcon_7", name: "老虎机2", url: "url:老虎机2" },
+        { bgPath: "realityIcon_1", name: "炸金花", url: "url:炸金花" },
+        { bgPath: "realityIcon_2", name: "牛牛", url: "url:牛牛" },
+        { bgPath: "realityIcon_3", name: "三公", url: "url:三公" },
+        { bgPath: "realityIcon_4", name: "龙虎斗", url: "url:龙虎斗" },
+        { bgPath: "realityIcon_5", name: "21点", url: "url:21点" },
+        { bgPath: "realityIcon_6", name: "轮盘", url: "url:轮盘" },
+
     ]
 
-    private _searchData:Array<TMatchRealityDataType>
-    protected onLoad(): void {
-        super.onLoad();
-        this.initUI();
-    }
-
-    initUI() {
-
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.list = this.getChildNodeOrComponent("list", List);
     }
 
     onShow(param?: any): void {
         super.onShow(param);
+
+        this.list.numItems = this._data.length;
+    }
+
+    onRender(node: cc.Node, index: number) {
+        let item = node.getComponent(UIMatchRealityItam);
+        item.initData(this._data[index])
     }
 }

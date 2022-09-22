@@ -5,8 +5,8 @@ import { TMatchGameDataType } from "./MatchViewConfig";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
-@menu('脚本分组/matchView/UIMatchGameItam')
-export default class UIMatchGameItam extends UIBase {
+@menu('脚本分组/matchView/UIMatchRealityItam')
+export default class UIMatchRealityItam extends UIBase {
 
     private icon: cc.Sprite = null;
     private nameLab: cc.Label = null;

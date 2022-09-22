@@ -3,8 +3,9 @@ import UIBase from "../../ui/UIBase";
 import { TMatchSportsDataType } from "./MatchViewConfig";
 import UIMatchSportsItem from "./UIMatchSportsItem";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/matchView/UIMatchSportsView')
 export default class UIMatchSportsView extends UIBase {
 
     private list: List = null;
@@ -20,7 +21,7 @@ export default class UIMatchSportsView extends UIBase {
         super.lateLoad();
         this.list = this.getChildNodeOrComponent("list", List);
     }
-    
+
     onShow() {
         super.onShow();
 
