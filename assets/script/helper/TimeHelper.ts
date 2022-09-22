@@ -37,7 +37,7 @@ export default class TimeHelper {
 
         }
         else if (pNum < 60) {
-            return "00:00:" + pNum.ToString();
+            return "00:00:" + pNum.toString();
         }
         return "";
     }

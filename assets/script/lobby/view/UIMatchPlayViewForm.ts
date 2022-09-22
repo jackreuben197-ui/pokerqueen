@@ -586,13 +586,14 @@ export default class UIMatchPlayViewForm extends BaseForm {
             item.getChildByName("item_normal").active = true;
             //     layout.getChildByName("Text_Icon_Time").active = false;
             //     layout.getChildByName("Text_Icon_Time_node").active = true;
+            // item.getChildByName("lbl_time").getComponent("PlayViewItem").updateItemInfo(roomInfo);
         } else {
             item.getChildByName("item_choose").active = true;
             item.getChildByName("item_normal").active = false;
             //     layout.getChildByName("Text_Icon_Time").active = true;
             //     layout.getChildByName("Text_Icon_Time_node").active = false;
             //值取小数点后一位
-            let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600) * 10) / 10
+            // let duration = Math.floor((roomInfo.play_duration * 1.0 / 3600) * 10) / 10
             item.getChildByName("lbl_time").getComponent("PlayViewItem").updateItemInfo(roomInfo);
             // .string = `${duration}h/${duration}h`
         }
