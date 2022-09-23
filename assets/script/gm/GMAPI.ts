@@ -26,7 +26,13 @@ export class GM {
     }
 }
 (window as any).GM = GM;
-
+export var GM_Templete = {
+    Recharge:
+    `{
+        amount:5000000,
+        user_id:%1
+    }`
+}
 /**
  * GM 加钱接口
  */

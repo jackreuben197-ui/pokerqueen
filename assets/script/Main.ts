@@ -2,6 +2,7 @@
  * 入口函数
  */
 import { GameConfig } from "./config/GameConfig";
+import WebImageHelper from "./helper/WebImageHelper";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
 
@@ -50,6 +51,7 @@ export default class Main extends cc.Component {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
+
     }
     start() {
         ProcedureManager.Init();

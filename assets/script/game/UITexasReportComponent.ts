@@ -161,7 +161,7 @@ export default class UITexasReportComponent extends UIBase {
             tItem.getChildByName('Text').getComponent(cc.Label).string = RoomersData.observersList[index].name;
             if (RoomersData.observersList[index].avatar != "") {
                 let icon = cc.find('image/mask/icon', tItem);
-                WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
+                WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
             }
             tItem.active = true;
             tItem.getChildByName("ImageGray").active = (RoomersData.observersList[index].sex == 1);
