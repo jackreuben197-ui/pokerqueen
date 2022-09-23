@@ -41,6 +41,8 @@ export default class UIMatchChessView extends UIBase {
     private mLoopListView: any = null;
     private _initType: number = null; // 0 大厅左  1 大厅右上 2 大厅右下
     private list: List = null;
+    private curPoker_type = null;
+    private curGame_type = null;
 
     /**
     * @description: 
@@ -142,14 +144,20 @@ export default class UIMatchChessView extends UIBase {
         this.TypeScroll(index, scrollView, target);
 
         this.RoomInfo = this.RoomTypesInfos[index];
-        if (this.RoomInfo) {
-            let sendDate = {
-                game_type: this.RoomInfo.gameType,
-                poker_type: this.RoomInfo.pokerType,
-            }
-            this.sendBlindsGetData(sendDate);
-            this.DragRequestData_Room(EnumLoadType.Refresh, index);
+        // if (this.RoomInfo) {
+        let gtInfo = index;
+        let ptInfo = 0;
+        if (gtInfo > 3) {
+            gtInfo = 0;
+            ptInfo = 2;
         }
+        let sendDate = {
+            game_type: gtInfo,
+            poker_type: ptInfo,
+        }
+        this.sendBlindsGetData(sendDate);
+        this.DragRequestData_Room(EnumLoadType.Refresh, index);
+        // }
     }
 
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
@@ -273,8 +281,6 @@ export default class UIMatchChessView extends UIBase {
         let param = {
             "sb_min": this.MangInfo,
             "sb_max": this.MangInfo,
-            "game_type": this.RoomInfo.gameType,
-            "poker_type": this.RoomInfo.pokerType,
         }
         let offset: number = 0;
         let limit: number = 0;
@@ -302,8 +308,8 @@ export default class UIMatchChessView extends UIBase {
         } else {
             if (index == -2) {
                 // 盲注筛选
-                gtInfo = this.RoomInfo.gameType;
-                ptInfo = this.RoomInfo.pokerType;
+                gtInfo = this.curGame_type;
+                ptInfo = this.curPoker_type;
             } else {
                 // 初始化 全部显示
                 if (this._initType == 0) {
@@ -330,8 +336,8 @@ export default class UIMatchChessView extends UIBase {
                 }
             }
         }
-        this.RoomInfo.gameType = gtInfo;
-        this.RoomInfo.pokerType = ptInfo;
+        this.curGame_type = gtInfo;
+        this.curPoker_type = ptInfo;
         let roomsInfo: typeof Web_Room_Center_Rooms.RequestParams = {
             "limit": limit,
             "offset": offset,
