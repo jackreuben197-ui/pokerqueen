@@ -182,7 +182,16 @@ export default class UIMatchPlayViewForm extends BaseForm {
         let index = target["index"];
         // let scrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewBlind", cc.ScrollView);
         this.MangInfo = this.MangList[index];
-        // this.DragRequestData_Room(EnumLoadType.Refresh, index);
+        this.DragRequestData_Room(EnumLoadType.Refresh, -2);
+
+        let c_bottom: cc.Node = this.getChildNodeOrComponent("c_bottom");
+        c_bottom.children.forEach((item, i) => {
+            if (index == i) {
+                item.opacity = 255;
+            } else {
+                item.opacity = 76.5;
+            }
+        })
         // this.BlindScroll(parseInt(index), scrollView, e.target);
     }
     // 写一个方法 可以点击按钮的时候自动滑动到
@@ -356,30 +365,38 @@ export default class UIMatchPlayViewForm extends BaseForm {
                 pt
             ];
         } else {
-            // 初始化 全部显示
-            if (this._initType == 0) {
-                gtInfo = [
-                    0
-                ];
-                ptInfo = [
-                    0
-                ]
-            } else if (this._initType == 1) {
-                gtInfo = [
-                    0
-                ];
-                ptInfo = [
-                    2
-                ]
+            if (index == -2) {
+                // 盲注筛选
+                gtInfo = this.RoomInfo.gameType;
+                ptInfo = this.RoomInfo.pokerType;
             } else {
-                gtInfo = [
-                    1,2,3
-                ];
-                ptInfo = [
-                    0
-                ]
+                // 初始化 全部显示
+                if (this._initType == 0) {
+                    gtInfo = [
+                        0
+                    ];
+                    ptInfo = [
+                        0
+                    ]
+                } else if (this._initType == 1) {
+                    gtInfo = [
+                        0
+                    ];
+                    ptInfo = [
+                        2
+                    ]
+                } else {
+                    gtInfo = [
+                        1,2,3
+                    ];
+                    ptInfo = [
+                        0
+                    ]
+                }
             }
         }
+        this.RoomInfo.gameType = gtInfo;
+        this.RoomInfo.pokerType = ptInfo;
         let roomsInfo: typeof Web_Room_Center_Rooms.RequestParams = {
             "limit": limit,
             "offset": offset,
