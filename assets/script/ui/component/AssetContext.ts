@@ -3,7 +3,7 @@
  * @Date: 2022-08-25 18:30:36
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-07 15:48:08
+ * @LastEditTime: 2022-09-23 14:11:22
  * @FilePath: /pokerqueen/assets/script/ui/component/AssetContext.ts
  */
 
@@ -26,6 +26,7 @@ export enum AssetFold {
     texas_prefab_widgetLayer,
     texture_atlas_HistoryCard,
     texture_atlas_HistorySecondCard,
+    texture_match_view,
 
 }
 const { ccclass, property, executionOrder } = cc._decorator;

@@ -23,8 +23,8 @@ export enum ProcedureEnum {
     Idel = 0,
     //初始化
     Init = 1,
-    //预加载
-    Preloading = 2,
+    //预加载login
+    PrelLoadLogin = 2,
     //配置
     Config = 3,
     //登录

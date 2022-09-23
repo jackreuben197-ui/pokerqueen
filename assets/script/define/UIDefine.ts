@@ -1,29 +1,36 @@
+import { type } from "os";
 import { UIType } from "./EIDefine";
 
+export type UIDefineType = {
+    UIType?: UIType,
+    Name?: string,
+    Bundle?: string,
+    Path?: string,
+    Title?: string,
+}
+
 export const UIDefine = {
+
+    //预加载UI
+    UIPreloadingComponent: {
+
+    },
     /**
      *  场景
      */
-    //预加载
-    PreloadingScene: {
-        UIType: UIType.Scene,
-        Name: "PreloadingScene",
-        Bundle: null,
-        Path: "prefab/scene/PreloadingScene"
-    },
     //登录场景
     LoginScene: {
         UIType: UIType.Scene,
         Name: "LoginScene",
         Bundle: null,
-        Path: "prefab/scene/LoginScene"
+        Path: "login/scene/LoginScene"
     },
     //大厅场景
     LobbyScene: {
         UIType: UIType.Scene,
         Name: "LobbyScene",
         Bundle: null,
-        Path: "lobby/prefab/scene/LobbyScene"
+        Path: "main/lobby/prefab/scene/LobbyScene"
     },
     //基础牌桌
     UITexas: {
@@ -40,22 +47,15 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "BaseForm",
         Bundle: null,
-        Path: "prefab/form/BaseForm",
+        Path: "login/form/BaseForm",
         Title: "BaseForm",
-    },
-    SampleForm: {
-        UIType: UIType.Form,
-        Name: "SampleForm",
-        Bundle: null,
-        Path: "prefab/form/SampleForm",
-        Title: "Sample",
     },
     //重置密码
     ResetPassForm: {
         UIType: UIType.Form,
         Name: "ResetPassForm",
         Bundle: null,
-        Path: "prefab/form/ResetPassForm",
+        Path: "login/form/ResetPassForm",
         Title: "UILogin_Forget",
     },
     //注册账号
@@ -63,7 +63,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "RegisterForm",
         Bundle: null,
-        Path: "prefab/form/RegisterForm",
+        Path: "login/form/RegisterForm",
         Title: "UILogin_Register",
     },
     //语言
@@ -71,7 +71,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "LanguageForm",
         Bundle: null,
-        Path: "prefab/form/LanguageForm",
+        Path: "main/prefab/form/LanguageForm",
         Title: "UIMine_SettingLanguage",
     },
     //电话区号
@@ -79,7 +79,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "AreaCodeForm",
         Bundle: null,
-        Path: "prefab/form/AreaCodeForm",
+        Path: "login/form/AreaCodeForm",
         Title: "UILogin_Local",
     },
     //电话区号
@@ -87,7 +87,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UserAgreeForm",
         Bundle: null,
-        Path: "prefab/form/UserAgreeForm",
+        Path: "login/form/UserAgreeForm",
         Title: "tc_5E0V3qlb",
     },
     //设置
@@ -95,7 +95,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "SettingsForm",
         Bundle: null,
-        Path: "prefab/form/SettingsForm",
+        Path: "main/prefab/form/SettingsForm",
         Title: "UIMine_btn_setting",
     },
 
@@ -104,7 +104,35 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIMatchPlayViewForm",
         Bundle: null,
-        Path: "lobby/prefab/UIMatchPlayViewForm"
+        Path: "main/lobby/prefab/matchView/UIMatchPlayViewForm"
+    },
+
+    UIMatchChessView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchChessView",
+        Bundle: null,
+        Path: "main/lobby/prefab/matchView/UIMatchChessView"
+    },
+
+    UIMatchSportsView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchSportsView",
+        Bundle: null,
+        Path: "main/lobby/prefab/matchView/UIMatchSportsView"
+    },
+
+    UIMatchGameView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchGameView",
+        Bundle: null,
+        Path: "main/lobby/prefab/matchView/UIMatchGameView"
+    },
+
+    UIMatchRealityView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchRealityView",
+        Bundle: null,
+        Path: "main/lobby/prefab/matchView/UIMatchRealityView"
     },
 
     /**
@@ -115,14 +143,14 @@ export const UIDefine = {
         UIType: UIType.Board,
         Name: "BaseTouchBoard",
         Bundle: null,
-        Path: "prefab/board/BaseTouchBoard",
+        Path: "main/prefab/board/BaseTouchBoard",
 
     },
     RightTouchBoard: {
         UIType: UIType.Board,
         Name: "RightTouchBoard",
         Bundle: null,
-        Path: "prefab/board/RightTouchBoard",
+        Path: "main/prefab/board/RightTouchBoard",
 
     },
 
@@ -130,7 +158,7 @@ export const UIDefine = {
         UIType: UIType.Board,
         Name: "BottomTouchBoard",
         Bundle: null,
-        Path: "prefab/board/BottomTouchBoard",
+        Path: "main/prefab/board/BottomTouchBoard",
     },
 
     /**
@@ -140,20 +168,19 @@ export const UIDefine = {
         UIType: UIType.Dialog,
         Name: "UIDialogComponent",
         Bundle: null,
-        Path: "prefab/dialog/UIDialogComponent",
+        Path: "main/prefab/dialog/UIDialogComponent",
     },
-
     UIPromptComponent: {
         UIType: UIType.Prompt,
         Name: "UIPromptComponent",
         Bundle: null,
-        Path: "prefab/component/UIPromptComponent",
+        Path: "login/UIPromptComponent",
     },
     TexasPreLoad: {
         UIType: UIType.TexasPreLoad,
         Name: "TexasPreLoad",
         Bundle: null,
-        Path: "prefab/component/TexasPreLoad",
+        Path: "main/prefab/component/TexasPreLoad",
     },
     UITexasSettingComponent: {
         UIType: UIType.CommonUI,
@@ -236,8 +263,6 @@ export const UIDefine = {
         Bundle: null,
         Path: "lobby/prefab/UIlaborExaminatMerber",
     },
-
-
 
 
 }

@@ -47,7 +47,10 @@ export default class UIComponent {
                 break;
             case UIType.Prompt:
             case UIType.TexasPreLoad:
+
+                console.log("open Prompt");
                 UIPromptMgr.Instance.open(UIDefine, param);
+
                 break;
             case UIType.CommonUI:
                 UICommonMgr.Instance.open(UIDefine, param, parent);
@@ -69,6 +72,7 @@ export default class UIComponent {
                 break;
             case UIType.Prompt:
             case UIType.TexasPreLoad:
+                console.log("close Prompt");
                 UIPromptMgr.Instance.close(UIDefine, param);
                 break;
             case UIType.CommonUI:

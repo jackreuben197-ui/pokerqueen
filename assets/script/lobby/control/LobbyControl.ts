@@ -57,7 +57,7 @@ export class LobbyControl {
                 this.curShowUI.getComponent(UIBase)?.onShow();
                 resolve(newUI);
             } else {
-                ResManager.Load(null, "lobby/prefab/" + name, cc.Prefab, (err, asset: cc.Prefab) => {
+                ResManager.Load(null, "main/lobby/prefab/" + name, cc.Prefab, (err, asset: cc.Prefab) => {
                     if (err) {
                         return;
                     }
@@ -195,7 +195,7 @@ export class LobbyControl {
 
 
     private static instance: LobbyControl;
-    private constructor() {}
+    private constructor() { }
     static getInstance() {
         if (!this.instance) {
             this.instance = new LobbyControl();

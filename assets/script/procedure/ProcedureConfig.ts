@@ -2,8 +2,12 @@
 import { GameConfig, NetWorkBase } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
+
+import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
+import { Pre_Config_Define } from "../manager/ResManager";
 import LoginSession from "../session/LoginSession";
+import UIComponent from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 
 
@@ -16,20 +20,23 @@ export default class ProcedureConfig extends ProcedureBase {
 
     async lateEnter(param?: any) {
         super.lateEnter(param);
-        //设置 GlobalProto 配置
-        GameConfig.GlobalProto = this.getGlobalProto();
-        console.log("config :: GameConfig.GlobalProto : ", GameConfig.GlobalProto);
-        //解析 语言配置
-        i18nMgr.praseConfig();
-        i18nMgr.initLanguage();
-        console.log("config :: i18nMgr praseConfig");
-        //设置网络配置
-        GameConfig.Network = this.getNetwork();
-        console.log("config :: GameConfig.Network : ", GameConfig.Network);
 
-
-        let skipLogin: boolean = LoginSession.IsTokenVaild();
-        ProcedureManager.StartProcedure(ProcedureEnum.Login, { skipLogin: skipLogin });
+        UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, {
+            pre_define: Pre_Config_Define, complete: () => {
+                console.log("Config Set");
+                GameConfig.GlobalProto = this.getGlobalProto();
+                console.log("config :: GameConfig.GlobalProto : ", GameConfig.GlobalProto);
+                //解析 语言配置
+                i18nMgr.praseConfig();
+                i18nMgr.initLanguage();
+                console.log("config :: i18nMgr praseConfig");
+                //设置网络配置
+                GameConfig.Network = this.getNetwork();
+                console.log("config :: GameConfig.Network : ", GameConfig.Network);
+                let skipLogin: boolean = LoginSession.IsTokenVaild();
+                ProcedureManager.StartProcedure(ProcedureEnum.Login, { skipLogin: skipLogin });
+            }
+        })
     }
     Leave() {
         super.Leave();

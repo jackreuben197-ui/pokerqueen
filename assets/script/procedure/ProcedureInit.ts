@@ -13,7 +13,7 @@ export default class ProcedureInit extends ProcedureBase {
         super.lateEnter(param);
         this.setCCC();
         this.setFit();
-        ProcedureManager.StartProcedure(ProcedureEnum.Preloading);
+        ProcedureManager.StartProcedure(ProcedureEnum.Config);
     }
     Leave() {
         super.Leave();

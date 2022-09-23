@@ -1,12 +1,16 @@
 /**
  * 进入大厅流程
  */
+import { GameConfig } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
+import { Pre_Login_Define, Pre_Login_Main_Define, Pre_Main_Define } from "../manager/ResManager";
 import SceneManager from "../manager/SceneManager";
 import GlobalSession from "../session/GlobalSession";
 import LoginSession from "../session/LoginSession";
+import UIComponent from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureEnterLobby extends ProcedureBase {
@@ -18,6 +22,7 @@ export default class ProcedureEnterLobby extends ProcedureBase {
         super.lateEnter(param);
 
         if (param) {
+
             this.Login(param).then(() => this.SyncUserInfo()).then(() => this.SyncWS()).then(() => {
                 //准备进入大厅
                 this.enterLobby();
@@ -33,17 +38,12 @@ export default class ProcedureEnterLobby extends ProcedureBase {
     /////////////////////////////////////////////
     _catchHandler(code: number) {
         cc.log("login error code", code);
-        // if (SceneManager.Instance.getCurrUIDefine() == UIDefine.PreloadingScene) {
-        //     //Token失败,这里清理Token，重新进入登录界面
-        //     LoginSession.LoginOut();
-        //     ProcedureManager.StartProcedure(ProcedureEnum.Login);
-        // } else {
-        //     //ProcedureManager.StartProcedure(ProcedureEnum.Idel);
-        //     GlobalSession.Logout();
-        // }
-        GlobalSession.Logout();
+        UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, {
+            pre_define: Pre_Login_Define, complete: () => {
+                GlobalSession.Logout();
+            }
+        })
     }
-
     //1.登录请求,获取Token
     Login(param) {
         cc.log("登陆步骤1 ------>Login")
@@ -61,7 +61,13 @@ export default class ProcedureEnterLobby extends ProcedureBase {
     }
     //4.进入大厅
     enterLobby() {
-        cc.log("进入游戏大厅 ------>")
-        ProcedureManager.StartProcedure(ProcedureEnum.Lobby);
+        //进入大厅的资源加载
+        console.log("进入大厅资源加载");
+        UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, {
+            pre_define: Pre_Login_Main_Define, complete: () => {
+                UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
+                ProcedureManager.StartProcedure(ProcedureEnum.Lobby);
+            }
+        })
     }
 }
