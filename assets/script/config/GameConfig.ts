@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-09-19 17:20:26
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2022-09-22 14:35:38
+ * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
+ */
 /**
  * GameConfig
  * 游戏配置

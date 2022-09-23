@@ -598,6 +598,52 @@ export class Web_User_Room {
 
 }
 
+/// <summary>
+/// </summary>
+export class Web_Org_Club_Create {
+    //接口地址
+    public static API: string = "/api/org/club/create";
+
+
+    //字段声明
+    public static RequestParams: {
+        area_id: null,
+        club_name: null,
+        desc: null,
+        logo: null,
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof Web_Org_Club_Create.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
+
+}
+
+export class Web_Org_Club_Get {
+    //接口地址
+    public static API: string = "/api/org/club/user_club";
+
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof Web_Org_Club_Create.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
+
+}
+
 
 
 
@@ -614,3 +660,5 @@ export class Web_User_Room {
 (window as any).Web_Msg_Message_Unread = Web_Msg_Message_Unread;
 (window as any).Web_Room_Center_Rooms_Blinds = Web_Room_Center_Rooms_Blinds;
 (window as any).Web_Room_Center_Rooms = Web_Room_Center_Rooms;
+(window as any).Web_Org_Club_Create = Web_Org_Club_Create;
+(window as any).Web_Org_Club_Get = Web_Org_Club_Get;
