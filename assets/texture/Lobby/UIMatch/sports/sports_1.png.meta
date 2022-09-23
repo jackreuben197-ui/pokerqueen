@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "461640f9-7736-4276-a63e-93c93b96e761",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1024,
+  "height": 468,
+  "platformSettings": {},
+  "subMetas": {
+    "sports_1": {
+      "ver": "1.0.6",
+      "uuid": "81923753-f34c-48e7-8b1a-6e0468d0cc83",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "461640f9-7736-4276-a63e-93c93b96e761",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -0.5,
+      "offsetY": 0.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1023,
+      "height": 467,
+      "rawWidth": 1024,
+      "rawHeight": 468,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

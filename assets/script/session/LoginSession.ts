@@ -221,7 +221,6 @@ export default class LoginSession {
      * 登出
      */
     public static LoginOut() {
-        cc.log("game loginout");
         this.ClearToken();
     }
 

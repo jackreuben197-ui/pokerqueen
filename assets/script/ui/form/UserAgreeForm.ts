@@ -5,12 +5,12 @@ import BaseForm from "./BaseForm";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class $name extends BaseForm {
+export default class UserAgreeForm extends BaseForm {
 
     webview: cc.WebView = null;
 
     /**
-     * 节点|组件 定义
+     * 节点|组件 定义 
      */
 
     ///////////////////////////////////
@@ -29,13 +29,13 @@ export default class $name extends BaseForm {
     /**
      * 关闭需要处理的内容
      */
-    protected lateClose(param: any = null) {
+    protected lateClose(param?: any) {
         super.lateClose(param);
     }
     /**
      * 每次打开面板处理的内容
      */
-     onShow(param?: any, fromUI?: BaseForm): void {
+    onShow(param?: any, fromUI?: BaseForm): void {
         super.onShow(param, fromUI);
         this.webview.url = i18nMgr.Get("UIWebViewURL");
     }

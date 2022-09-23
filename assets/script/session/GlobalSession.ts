@@ -1,9 +1,12 @@
 import { ProcedureEnum } from "../define/EIDefine";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
+import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import WebSocketClient from "../net/websocket/WebSocketClient";
 import UIComponent from "../ui/UIComponent";
+import LobbySession from "./LobbySession";
+import LoginSession from "./LoginSession";
 
 export default class GlobalSession {
     //单位秒
@@ -19,9 +22,11 @@ export default class GlobalSession {
         cc.log("-------------游戏登出--------------");
         //清理面板
         UIComponent.closeAll();
+        LoginSession.LoginOut();
         WebSocketClient.Close();
         UpdateComponent.RemoveAll();
-        ProcedureManager.StartProcedure(ProcedureEnum.Login);
+        UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
+        ProcedureManager.StartProcedure(ProcedureEnum.Login, { logout: true });
     }
 
 }

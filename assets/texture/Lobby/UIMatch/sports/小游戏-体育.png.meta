@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "f0f671c1-7fcd-447e-825b-740bf18ad44f",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2689,
+  "platformSettings": {},
+  "subMetas": {
+    "小游戏-体育": {
+      "ver": "1.0.6",
+      "uuid": "7200c6d6-a380-4c2c-a434-872bbb0ab7cc",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "f0f671c1-7fcd-447e-825b-740bf18ad44f",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2689,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

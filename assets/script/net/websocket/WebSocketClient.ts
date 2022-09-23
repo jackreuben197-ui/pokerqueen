@@ -1,4 +1,5 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
+import TimeHelper from "../../helper/TimeHelper";
 import ToastManager from "../../manager/ToastManager";
 import { Web_WS } from "../https/WebRequest";
 import ProtocolAgency from "./ProtocolAgency";
@@ -21,8 +22,12 @@ export default class WebSocketClient {
     static ToClose: boolean = false;
     //尝试重连总次数
     static ReconnectMaxTime: number = 3;
+    //断开3秒重连
+    static ReconnectDelay: number = 3;
 
     static _reconnectTime: number = 0;
+
+
 
     public static Connect() {
         this.Host = GameConfig.Network?.LoginHost;
@@ -73,10 +78,11 @@ export default class WebSocketClient {
         }
     }
 
-    private static Reconnect() {
+    private static async Reconnect() {
         if (WebSocketClient._reconnectTime < WebSocketClient.ReconnectMaxTime) {
             WebSocketClient._reconnectTime++;
             console.log("%c%s", LogStyle.ws_request, `reconnect:${WebSocketClient._reconnectTime} ${WebSocketClient.Host_Port}`);
+            await TimeHelper.Sleep(this.ReconnectDelay);
             this.__connect();
         } else {
             console.log("重连次数结束");
@@ -84,7 +90,7 @@ export default class WebSocketClient {
     }
     //主动关闭
     static Close() {
-        if (this.WS) {
+        if (this.WS && this.WS.readyState == WebSocket.OPEN) {
             this.WS.close();
             this.ToClose = true;
         }

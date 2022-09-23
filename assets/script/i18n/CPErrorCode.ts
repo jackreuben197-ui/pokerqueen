@@ -10,7 +10,6 @@ export class CPErrorCode {
         let errDes = i18nMgr.Get(`ServerErrorCode_${errorCode}`);
         if (errDes == null) {
             errDes = `${i18nMgr.Get("adaptation10052")}(${errorCode})`;//提示未知错误:xxx
-            //`${i18nMgr.Get("errorDefault")}(${errorCode})`
         }
         return errDes;
     }

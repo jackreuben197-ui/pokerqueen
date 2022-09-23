@@ -1,0 +1,134 @@
+import { UIDefine, UIDefineType } from "../../define/UIDefine";
+import { GameCache } from "../../game/GameCache";
+import { ResManager } from "../../manager/ResManager";
+import BaseForm from "../../ui/form/BaseForm";
+import UIBase from "../../ui/UIBase";
+import { EMatchViewTabType } from "./MatchViewConfig";
+
+
+
+
+
+const { ccclass, property, menu } = cc._decorator;
+@ccclass
+@menu('脚本分组/matchView/UIMatchPlayViewForm')
+export default class UIMatchPlayViewForm extends BaseForm {
+    private lbl_glod: cc.Label = null;
+    private lbl_name: cc.Label = null;
+    private tabBtnsParent: cc.Node = null;
+    private tabViewParents: Array<cc.Node> = [];
+
+    private _tabViewData: Array<UIDefineType> = [
+        UIDefine.UIMatchChessView,
+        UIDefine.UIMatchSportsView,
+        UIDefine.UIMatchGameView,
+        UIDefine.UIMatchRealityView,
+
+    ]
+
+    private _machPlayers: Array<any> = [];
+    private _tabViews: Map<EMatchViewTabType, UIBase> = new Map();
+    private _tabViewLoadintState: Map<EMatchViewTabType, boolean> = new Map();
+
+    private _curType: EMatchViewTabType = EMatchViewTabType.no;
+    onLoad() {
+        super.onLoad();
+    }
+
+    protected lateLoad(): void {
+        super.lateLoad();
+
+        this.lbl_glod = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
+        this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+
+        this.tabBtnsParent = this.getChildNodeOrComponent("tabBtns");
+        let subView: cc.Node = this.getChildNodeOrComponent("subView");
+        this.tabViewParents = subView.children;
+    }
+
+    protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
+        this.tabBtnsParent.children.forEach((item, index) => {
+            item["index"] = index;
+            item.on(cc.Node.EventType.TOUCH_END, this.onClickTabBtns, this)
+        })
+    }
+
+    onShow(param?: any, fromUI?: BaseForm) {
+        super.onShow(param, fromUI);
+        this._machPlayers = param;
+        this._curType = EMatchViewTabType.no;
+
+        this.initTopUI();
+        this.switchTab(EMatchViewTabType.chess);
+    }
+
+    private initTopUI(): void {
+        this.lbl_glod.string = GameCache.Instance.gold.toString();
+        this.lbl_name.string = GameCache.Instance.nick.toString();
+    }
+
+    private onClickTabBtns(e: cc.Event.EventTouch): void {
+        let target: cc.Node = e.target;
+        let index = target["index"];
+
+        this.switchTab(index);
+    }
+
+
+    switchTab = (type: EMatchViewTabType) => {
+        if (this._curType != type) {
+            this._curType = type;
+            this.switchTabBtnState();
+
+            this.switchTabView(type);
+        }
+    }
+
+    switchTabBtnState() {
+        this.tabBtnsParent.children.forEach((item, index) => {
+            let choose = item.getChildByName("choose");
+            let normal = item.getChildByName("normal");
+            choose.active = this._curType == index;
+            normal.active = this._curType != index;
+        })
+
+        this.tabViewParents.forEach((parent, index) => {
+            parent.active = this._curType == index;
+        })
+    }
+
+    switchTabView(type: EMatchViewTabType) {
+        let parmas = type == EMatchViewTabType.chess ? this._machPlayers : null;
+        if (!this._tabViewLoadintState.get(type) && !this._tabViews.get(type)) {
+            this._tabViewLoadintState.set(type, true)
+            let parent = this.tabViewParents[type];
+            let uiDefine = this._tabViewData[type];
+            ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
+                this._tabViewLoadintState.set(type, false)
+                if (err) {
+                    return;
+                }
+                let node = cc.instantiate(asset);
+                node.parent = parent;
+                let baseScript = node.getComponent(UIBase);
+                baseScript.onShow(parmas);
+                this._tabViews.set(type, baseScript);
+            });
+        } else if (this._tabViews.get(type)) {
+            this._tabViews.get(type).onShow(parmas);
+        }
+    }
+
+    // async onClose(param: any = null) {
+    //     cc.log("UIMatchPlayView onClose");
+    //     super.onClose();
+    //     this._tabViews.forEach(view => view?.lateClose())
+    // }
+
+    lateClose(param?: any): void {
+        super.lateClose();
+        this._tabViews.forEach(view => view?.lateClose())
+    }
+
+}

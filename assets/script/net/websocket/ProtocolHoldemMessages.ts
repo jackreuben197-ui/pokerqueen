@@ -1,6 +1,7 @@
 import { json } from "stream/consumers";
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
+import { ServerMessageError } from "../../protobuf/holdem/recv_error_pb";
 import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_leave_notification_pb";
 import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
@@ -353,8 +354,14 @@ export class Protocol_Holdem_HandClear extends BaseProtocol {
     }
 }
 
-
-
+export class Protocol_Holdem_Error extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Error";
+    public static Response_AsObject: ServerMessageError.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageError.AsObject {
+        let result: ServerMessageError = ServerMessageError.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
 cc.js.setClassName("Protocol_Holdem_Register", Protocol_Holdem_Register);
 cc.js.setClassName("Protocol_Holdem_Leave", Protocol_Holdem_Leave);
@@ -374,3 +381,4 @@ cc.js.setClassName("Protocol_Holdem_PublicCards", Protocol_Holdem_PublicCards);
 cc.js.setClassName("Protocol_Holdem_Winner", Protocol_Holdem_Winner);
 cc.js.setClassName("Protocol_Holdem_LeaveNotification", Protocol_Holdem_LeaveNotification);
 cc.js.setClassName("Protocol_Holdem_HandClear", Protocol_Holdem_HandClear);
+cc.js.setClassName("Protocol_Holdem_Error", Protocol_Holdem_Error);

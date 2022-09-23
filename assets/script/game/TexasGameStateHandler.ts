@@ -268,7 +268,7 @@ export class TexasGameStateHandlerHandFlop extends StateHandler {
 
         if (!game) return;
 
-        game.HandleGetPublicCards(source);
+        game.texasGameProtocol.HandleGetPublicCards(source);
 
     }
 
@@ -297,7 +297,7 @@ export class TexasGameStateHandlerHandTurn extends StateHandler {
 
         if (!game) return;
 
-        game.HandleGetPublicCards(source);
+        game.texasGameProtocol.HandleGetPublicCards(source);
 
     }
 
@@ -322,13 +322,11 @@ export class TexasGameStateHandlerHandRiver extends StateHandler {
             return;
         }
 
-
         let game: TexasGame = entity as TexasGame;
 
         if (!game) return;
 
-
-        game.HandleGetPublicCards(source);
+        game.texasGameProtocol.HandleGetPublicCards(source);
 
     }
 
