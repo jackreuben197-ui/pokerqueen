@@ -26,12 +26,12 @@ export default class WebImageHelper {
             }
             rawImage.spriteFrame = this.defaultHead;
 
-            cc.assetManager.loadRemote(url, cc.SpriteFrame, (err, asset: cc.SpriteFrame) => {
+            cc.assetManager.loadRemote(url, (err, asset: cc.Texture2D) => {
 
                 if (err) {
 
                 } else {
-                    rawImage.spriteFrame = asset;
+                    rawImage.spriteFrame = new cc.SpriteFrame(asset);
                     this.mUrlTexture[url] = asset;
                 }
             })
@@ -54,12 +54,12 @@ export default class WebImageHelper {
 
             if (url == null || url == "" || url == "-1") return;
 
-            cc.assetManager.loadRemote(url, cc.SpriteFrame, (err, asset: cc.SpriteFrame) => {
+            cc.assetManager.loadRemote(url, (err, asset: cc.Texture2D) => {
 
                 if (err) {
 
                 } else {
-                    rawImage.spriteFrame = asset;
+                    rawImage.spriteFrame = new cc.SpriteFrame(asset);
                     this.mUrlTexture[url] = asset;
                 }
             })

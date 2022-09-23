@@ -13859,6 +13859,9 @@
       "__id__": 1
     },
     "_enabled": true,
+    "panel_right": {
+      "__id__": 21
+    },
     "tabNode": {
       "__id__": 68
     },

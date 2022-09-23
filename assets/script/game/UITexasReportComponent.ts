@@ -17,6 +17,7 @@ import { GameCache } from "./GameCache";
 import { Web_Room_Center_Rooms, } from "../../../assets/script/net/https/WebRequest";
 import TimeHelper from "../helper/TimeHelper";
 import { LobbyControl } from "../lobby/control/LobbyControl";
+import UIComponent from "../ui/UIComponent";
 
 /*
  * @Author: xfj

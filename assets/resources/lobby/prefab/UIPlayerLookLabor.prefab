@@ -1053,14 +1053,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 1,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -1.446,
+        90.335,
         -151.7,
         0,
         0,
@@ -1111,7 +1111,7 @@
     "_batchAsBitmap": false,
     "_styleFlags": 0,
     "_underlineHeight": 0,
-    "_N$horizontalAlign": 1,
+    "_N$horizontalAlign": 2,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 1,
@@ -1414,7 +1414,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "camera",
+    "_name": "icon",
     "_objFlags": 0,
     "_parent": {
       "__id__": 34
@@ -1589,7 +1589,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 800,
-      "height": 136.92
+      "height": 94.91999999999999
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1640,8 +1640,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
-    "_N$string": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+    "_string": "999999999999999999999999999999999999999999",
+    "_N$string": "999999999999999999999999999999999999999999",
     "_fontSize": 40,
     "_lineHeight": 42,
     "_enableWrapText": true,
@@ -1651,7 +1651,7 @@
     "_batchAsBitmap": false,
     "_styleFlags": 0,
     "_underlineHeight": 0,
-    "_N$horizontalAlign": 0,
+    "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 3,
@@ -1666,7 +1666,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "0b40gVfJdC1ZTk5xRfIIts",
+    "fileId": "57lSpNpplPXJ1Td3qO/R3j",
     "sync": false
   },
   {
@@ -1709,7 +1709,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        443.08000000000004,
+        485.08000000000004,
         0,
         0,
         0,
@@ -1826,7 +1826,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        366.08000000000004,
+        408.08000000000004,
         0,
         0,
         0,
@@ -2701,7 +2701,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        216.08000000000004,
+        258.08000000000004,
         0,
         0,
         0,
@@ -4291,7 +4291,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        66.08000000000004,
+        108.08000000000004,
         0,
         0,
         0,
@@ -4854,6 +4854,9 @@
       "__id__": 1
     },
     "_enabled": true,
+    "mask_group": {
+      "__id__": 18
+    },
     "_id": ""
   },
   {

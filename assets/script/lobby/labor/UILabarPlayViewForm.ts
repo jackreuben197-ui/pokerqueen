@@ -1,6 +1,6 @@
 const { ccclass, property } = cc._decorator;
 import BaseForm from "../../ui/form/BaseForm";
-import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Config_Multi_Language_Template } from "../../net/https/WebRequest";
+import { Web_Room_Center_Rooms_Blinds, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Config_Multi_Language_Template, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { i18nLabel } from "../../i18n/i18nLabel";
 import LobbySession from "../../session/LobbySession";
 import ProcedureManager from "../../manager/ProcedureManager";
@@ -13,6 +13,7 @@ import UIBase from "../../ui/UIBase";
 import UIMatchRoom from "../view/UIMatchRoom";
 import UIComponent from "../../ui/UIComponent";
 import { UIDefine } from "../../define/UIDefine";
+import WebImageHelper from "../../helper/WebImageHelper";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -30,6 +31,9 @@ enum PokerType {
 
 @ccclass
 export default class UILabarPlayViewForm extends UIBase {
+    @property(cc.Node)
+    panel_right: cc.Node = null;
+
     //public static instance: UIMatchPlayViewForm = null;
     private TypeContentLength: number = 0;
     private CurTypeBtn: cc.Node = null;
@@ -203,6 +207,7 @@ export default class UILabarPlayViewForm extends UIBase {
             index: 0,
             len: 0,
         }
+        this.initTop();
         await this.sendGroupGetData(param);
         //获取LocalDicRoomName
         await this.sendBlindsGetData(param);
@@ -567,6 +572,19 @@ export default class UILabarPlayViewForm extends UIBase {
         }
     }
     /***************************************自己界面的数据处理 */
+
+    initTop() {
+        let data: any = Web_Org_Club_Get.Response.data;
+        let name = this.panel_right.getChildByName('name').getComponent(cc.Label);
+        name.string = data.club_name
+        let id = this.panel_right.getChildByName('id').getComponent(cc.Label);
+        id.string = 'ID:' + data.random_id
+        let icon = cc.find('iconMask/icon', this.panel_right).getComponent(cc.Sprite);
+        WebImageHelper.SetUrlImage(icon, data.logo)
+
+        let lbl_glod = cc.find('img_right_bg/lbl_glod', this.panel_right).getComponent(cc.Label);
+
+    }
     tostBtnClick() {
         this.tabNode.active = !this.tabNode.active;
     }
