@@ -31,7 +31,7 @@ export default class SceneManager {
      * currExitParams 当前场景退出的参数
      * newEnterParams 新场景进入的参数
      */
-    switchScene(uiDefine: { Bundle: string, Path: string }, currExitParams: any = null, newEnterParams: any = null) {
+    switchScene<T>(uiDefine: { Bundle: string, Path: string }, currExitParams: any = null, newEnterParams: T = null) {
 
         let bundleName = uiDefine.Bundle + uiDefine.Path;
 

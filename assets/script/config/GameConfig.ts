@@ -4,6 +4,7 @@
  */
 
 import { INetWork } from "../define/EIDefine";
+import { i18nMgr } from "../i18n/i18nMgr";
 
 export class GameConfig {
     static Default_Language: string = "en";

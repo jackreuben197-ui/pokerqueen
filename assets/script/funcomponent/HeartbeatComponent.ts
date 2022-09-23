@@ -70,6 +70,7 @@ export default class HeartbeatComponent implements IUpdate {
     }
 
     start() {
+        console.log("启动心跳");
         this.allowUpdate = true;
         this.lastTime = GlobalSession.NowTimeS;
     }

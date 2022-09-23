@@ -14,6 +14,7 @@ import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Protocol_Holdem_Register } from "../net/websocket/ProtocolHoldemMessages";
+import GlobalSession from "./GlobalSession";
 
 import LoginSession from "./LoginSession";
 
@@ -42,6 +43,7 @@ export default class LobbySession {
             this.heartbeatComponent = new HeartbeatComponent;
             this.regiterEvents();
         }
+        cc.log("注册心跳");
         UpdateComponent.Add(this.tokenRefreshComponent);
         UpdateComponent.Add(this.heartbeatComponent);
         this.tokenRefreshComponent.start();
@@ -58,7 +60,7 @@ export default class LobbySession {
         if (body.status == 0) {
             this.heartbeatComponent.start();
         } else {
-            LoginSession.LoginOut();
+            GlobalSession.Logout();
         }
     }
     /**
