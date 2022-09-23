@@ -19,6 +19,24 @@ export default class UIBase extends cc.Component {
         this.lateLoad();
         this.regiterTouchEvents();
     }
+    protected lateLoad(): void {
+        super.lateLoad();
+
+        this.lbl_glod = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
+        this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+
+        this.tabBtnsParent = this.getChildNodeOrComponent("tabBtns");
+        let subView: cc.Node = this.getChildNodeOrComponent("subView");
+        this.tabViewParents = subView.children;
+    }
+
+    protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
+        this.tabBtnsParent.children.forEach((item, index) => {
+            item["index"] = index;
+            item.on(cc.Node.EventType.TOUCH_END, this.onClickTabBtns, this)
+        })
+    }
 
     onShow(param?: any) {
         this.param = param;

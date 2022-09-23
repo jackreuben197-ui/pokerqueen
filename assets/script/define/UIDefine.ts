@@ -198,14 +198,14 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasRule",
     },
-    UITexasReport: {
-        UIType: UIType.UITexasReport,
+    UITexasReportComponent: {
+        UIType: UIType.CommonUI,
         Name: "UITexasReport",
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasReport",
     },
-    UITexasHistory: {
-        UIType: UIType.UITexasHistory,
+    UITexasHistoryComponent: {
+        UIType: UIType.CommonUI,
         Name: "UITexasHistory",
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasHistory",
@@ -216,13 +216,57 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/ui/UITexasGameEnd",
     },
+    UICreatelabor: {
+        UIType: UIType.Form,
+        Name: "UICreatelabor",
+        Bundle: null,
+        Path: "lobby/prefab/UICreatelabor",
+    },
+    UIlaborJoin: {
+        UIType: UIType.Form,
+        Name: "UIlaborJoin",
+        Bundle: null,
+        Path: "lobby/prefab/UIlaborJoin",
+    },
+    //房间模版
+    UILaborPlayViewForm: {
+        UIType: UIType.CommonUI,
+        Name: "UILaborPlayViewForm",
+        Bundle: null,
+        Path: "lobby/prefab/UILaborPlayViewForm"
+    },
 
     UITexasPlayerInfoComponent: {
         UIType: UIType.CommonUI,
         Name: "UITexasPlayerInfo",
         Bundle: 'texas',
         Path: "prefab/ui/UITexasPlayerInfo",
-    }
+    },
+
+    UIPlayerLookLabor: {
+        UIType: UIType.Form,
+        Name: "UIPlayerLookLabor",
+        Bundle: null,
+        Path: "lobby/prefab/UIPlayerLookLabor",
+    },
+    UIManageLabor: {
+        UIType: UIType.Form,
+        Name: "UIManageLabor ",
+        Bundle: null,
+        Path: "lobby/prefab/UIManageLabor ",
+    },
+    UIlaborMerberManager: {
+        UIType: UIType.Form,
+        Name: "UIlaborMerberManager",
+        Bundle: null,
+        Path: "lobby/prefab/UIlaborMerberManager",
+    },
+    UIlaborExaminatMerber: {
+        UIType: UIType.Form,
+        Name: "UIlaborExaminatMerber",
+        Bundle: null,
+        Path: "lobby/prefab/UIlaborExaminatMerber",
+    },
 
 
 }

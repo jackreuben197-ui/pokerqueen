@@ -1,6 +1,7 @@
 const { ccclass, property } = cc._decorator;
 import UIBase from "../../ui/UIBase";
 import { LobbyControl } from "../control/LobbyControl";
+import { UIClubModel } from "../labor/UIClubModel";
 import LobbyScene from "./LobbyScene";
 @ccclass
 export default class UILobbyMenu extends UIBase {
@@ -64,9 +65,15 @@ export default class UILobbyMenu extends UIBase {
         this.changeBtn(btn.node);
         LobbyControl.getInstance().switchContent("UIChat")
     }
-    career_click(btn: cc.Button) {
+    async career_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        LobbyControl.getInstance().switchContent("UICareer")
+        let data: any = await UIClubModel.mInstance.APIOrgClubGet()
+        //打开公会  //进入工会还是加入界面
+        if (data.data) {
+            LobbyControl.getInstance().switchContent("UILabarPlayViewForm")
+        } else {
+            LobbyControl.getInstance().switchContent("UIlabor")
+        }
     }
     my_click(btn: cc.Button) {
         this.changeBtn(btn.node);
