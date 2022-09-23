@@ -6,19 +6,19 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UITexasPlayerInfoComponent extends UIBase {
 
-    Image_MenuMask: cc.Node = null;
+    btn_close: cc.Node = null;
 
     protected lateLoad(): void {
         super.lateLoad();
         //节点引用
-        this.Image_MenuMask = this.getChildNodeOrComponent("Image_MenuMask");
+        this.btn_close = this.getChildNodeOrComponent("btn_close");
     }
     onShow(param?: any): void {
         super.onShow(param);
     }
 
     protected regiterTouchEvents(): void {
-        this.Image_MenuMask.on("click", this.onClickClose, this);
+        this.btn_close.on("click", this.onClickClose, this);
     }
 
     private onClickClose(): void {

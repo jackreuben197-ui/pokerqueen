@@ -2,8 +2,12 @@ const { ccclass, property } = cc._decorator;
 import UIBase from "../../ui/UIBase";
 import { i18nSprite } from "../../i18n/i18nSprite";
 import { GameCache } from "../../game/GameCache";
+import { LobbyControl } from "../control/LobbyControl";
+import UIMatchRoom from "./UIMatchRoom";
 @ccclass
 export default class UILobby extends UIBase {
+
+    private isRefresh : boolean = false;
 
     protected onLoad(): void {
         super.onLoad();
@@ -48,13 +52,15 @@ export default class UILobby extends UIBase {
         scrollView.on('scrolling', (e) => {
             let y = content.y;
             if (y < -100) {
+                this.isRefresh = true;
                 ItemPrefab0.active = true;
                 root.getChildByName("arrow").active = true;
                 root.getChildByName("Text_1").active = true;
                 root.getChildByName("waiticon").active = false;
             }
             if (ItemPrefab0.active === true) {
-                if ((y ^ 0) === 0) {
+                if ((y ^ 0) === 0 && this.isRefresh) {
+                    this.isRefresh = false;
                     root.getChildByName("arrow").active = false;
                     root.getChildByName("Text_1").active = false;
                     root.getChildByName("waiticon").active = true;
@@ -63,6 +69,9 @@ export default class UILobby extends UIBase {
                         root.getChildByName("waiticon").stopAllActions();
                         ItemPrefab0.active = false;
                     }, 0.5)
+                    LobbyControl.getInstance().RequestListSummary({}).then((res) => {
+                        UIMatchRoom.instance.onShow(res);
+                    })
                 }
             }
         })
