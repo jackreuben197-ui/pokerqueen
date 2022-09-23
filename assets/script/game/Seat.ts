@@ -330,7 +330,7 @@ export default class Seat {
             this.uirc.imageHeadFrame.node.active = false;
         }
         else {
-            WebImageHelper.SetUrlImage(this.uirc.rawimageHead, this.Player.headPic);
+            WebImageHelper.SetHeadImage(this.uirc.rawimageHead, this.Player.headPic);
         }
     }
 

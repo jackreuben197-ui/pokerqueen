@@ -2,6 +2,7 @@
  * 入口函数
  */
 import { GameConfig } from "./config/GameConfig";
+import WebImageHelper from "./helper/WebImageHelper";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
 
@@ -23,6 +24,7 @@ export default class Main extends cc.Component {
     static Block: cc.Node = null;
     static Prompt: cc.Node = null;
     static Toast: cc.Node = null;
+    static UIPreloading: cc.Node = null;
 
     onLoad() {
 
@@ -43,11 +45,13 @@ export default class Main extends cc.Component {
         Main.Block = this.node.parent.getChildByName("Block - 遮挡");
         Main.Prompt = this.node.parent.getChildByName("Prompt - 网络菊花层");
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");
+        Main.UIPreloading = Main.Block.getChildByName("UIPreloading");
 
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
+
     }
     start() {
         ProcedureManager.Init();

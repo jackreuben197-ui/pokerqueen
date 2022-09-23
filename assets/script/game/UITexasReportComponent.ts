@@ -4,7 +4,7 @@ import { StringHelper } from "../helper/StringHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
-import {CPErrorCode} from "../i18n/CPErrorCode";
+import { CPErrorCode } from "../i18n/CPErrorCode";
 import { ResManager } from "../manager/ResManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -17,6 +17,7 @@ import { GameCache } from "./GameCache";
 import { Web_Room_Center_Rooms, } from "../../../assets/script/net/https/WebRequest";
 import TimeHelper from "../helper/TimeHelper";
 import { LobbyControl } from "../lobby/control/LobbyControl";
+import UIComponent from "../ui/UIComponent";
 
 /*
  * @Author: xfj
@@ -56,18 +57,17 @@ export default class UITexasReportComponent extends UIBase {
     private registerHandler() {
         CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
     }
-    protected onDestroy(): void {
+    onClose(param?: any): void {
+        super.onClose();
         if (this.IntervalId) {
             clearInterval(this.IntervalId)
         }
         this.removeHandler();
         this.isLoad = false;
     }
-
     private removeHandler() {
         CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
     }
-
     RequestRoomers() {
         ProtocolAgency.Send({
             protocol: Protocol_Holdem_Roomers,
@@ -161,7 +161,7 @@ export default class UITexasReportComponent extends UIBase {
             tItem.getChildByName('Text').getComponent(cc.Label).string = RoomersData.observersList[index].name;
             if (RoomersData.observersList[index].avatar != "") {
                 let icon = cc.find('image/mask/icon', tItem);
-                WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
+                WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
             }
             tItem.active = true;
             tItem.getChildByName("ImageGray").active = (RoomersData.observersList[index].sex == 1);
@@ -198,7 +198,7 @@ export default class UITexasReportComponent extends UIBase {
             if (this.mRoomLeaveTime >= 0 && this.isLoad && this.node.isValid) {
                 this.mRoomLeaveTime--;
                 if (textTitle != null)
-                    textTitle.string = textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
+                    textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
             } else {
                 if (textTitle != null && !cc.isValid(this.node, true)) {
                     textTitle.string = "00:00";
@@ -247,22 +247,12 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     btnShowProblemClick() {
-        new Date().getUTCDate()
-
-        this.node.destroy();
-        let UITexasRule = this.node.getChildByName('UITexasRule')
-        if (!UITexasRule) {
-            let prefab = ResManager.LoadAsset(UIDefine.UITexasRule.Bundle, UIDefine.UITexasRule.Path)
-            // let prefab = AssetContext.getAsset<cc.Prefab>('UITexasSetting', AssetFold.texas_prefab_widgetLayer)
-            let UITexasRule: any = cc.instantiate(prefab);
-            UITexasRule.parent = this.node
-            UITexasRule.active = true;
-        } else {
-            UITexasRule.active = true;
-        }
+        UIComponent.close(this.UIDefine);
+        UIComponent.open(UIDefine.UITexasRule, null, this.node.parent);
     }
     imageMaskCloseClick() {
-        this.node.destroy();
+        UIComponent.close(this.UIDefine);
+
     }
 
 }

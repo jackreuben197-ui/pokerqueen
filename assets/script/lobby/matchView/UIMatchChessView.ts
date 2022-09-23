@@ -39,6 +39,7 @@ export default class UIMatchChessView extends UIBase {
     private six_List = ["6+NLH", "6+PLO4", "6+PLO5", "6+PLO6"];
     private LocalDicRoomName: Map<string, { [key: string]: string }> = new Map();
     private mLoopListView: any = null;
+    private _initType: number = null; // 0 大厅左  1 大厅右上 2 大厅右下
     private list: List = null;
 
     /**
@@ -52,6 +53,7 @@ export default class UIMatchChessView extends UIBase {
     */
     async onShow(param?: any) {
         super.onShow(param);
+        this._initType = param.game_type;
         this.TypeContentLength = param.len;
 
         //获取roominfo
@@ -61,9 +63,8 @@ export default class UIMatchChessView extends UIBase {
 
         await this.sendLanguageGetData();
 
-        this.DragRequestData_Room(EnumLoadType.Init);
+        this.DragRequestData_Room(EnumLoadType.Init, -1);
     }
-
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -141,12 +142,13 @@ export default class UIMatchChessView extends UIBase {
         this.TypeScroll(index, scrollView, target);
 
         this.RoomInfo = this.RoomTypesInfos[index];
-        if (this.RoomInfo && this.RoomInfo.gameType) {
+        if (this.RoomInfo) {
             let sendDate = {
                 game_type: this.RoomInfo.gameType,
                 poker_type: this.RoomInfo.pokerType,
             }
             this.sendBlindsGetData(sendDate);
+            this.DragRequestData_Room(EnumLoadType.Refresh, index);
         }
     }
 
@@ -158,7 +160,16 @@ export default class UIMatchChessView extends UIBase {
         let index = target["index"];
         // let scrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewBlind", cc.ScrollView);
         this.MangInfo = this.MangList[index];
-        this.DragRequestData_Room(EnumLoadType.Refresh);
+        this.DragRequestData_Room(EnumLoadType.Refresh, -2);
+
+        let c_bottom: cc.Node = this.getChildNodeOrComponent("c_bottom");
+        c_bottom.children.forEach((item, i) => {
+            if (index == i) {
+                item.opacity = 255;
+            } else {
+                item.opacity = 76.5;
+            }
+        })
         // this.BlindScroll(parseInt(index), scrollView, e.target);
     }
 
@@ -218,7 +229,6 @@ export default class UIMatchChessView extends UIBase {
         // }
     }
 
-
     //获取group消息
     async sendGroupGetData(param?: any) {
         //请求group信息
@@ -255,11 +265,10 @@ export default class UIMatchChessView extends UIBase {
         let blindData: any = await LobbyControl.getInstance().RequestSbList(blind);
         //通过blindData生成mangBar
         this.setMangBar(blindData);
-        //await this.DragRequestData_Room(EnumLoadType.Init);
     }
 
     //获取房间消息
-    async DragRequestData_Room(loadType: EnumLoadType) {
+    async DragRequestData_Room(loadType: EnumLoadType, index) {
 
         let param = {
             "sb_min": this.MangInfo,
@@ -277,6 +286,52 @@ export default class UIMatchChessView extends UIBase {
         if (loadType === EnumLoadType.LoadMore && this.cacheResponseData != null) {
             limit = 10;
         }
+        let gtInfo = [];
+        let ptInfo = [];
+        if (index > -1) {
+            // 点击过来的 区分奥马哈456
+            let pt = 0;
+            if (index == 4) {
+                index = 1
+                pt = 2;
+            }
+            gtInfo = [index];
+            ptInfo = [
+                pt
+            ];
+        } else {
+            if (index == -2) {
+                // 盲注筛选
+                gtInfo = this.RoomInfo.gameType;
+                ptInfo = this.RoomInfo.pokerType;
+            } else {
+                // 初始化 全部显示
+                if (this._initType == 0) {
+                    gtInfo = [
+                        0
+                    ];
+                    ptInfo = [
+                        0
+                    ]
+                } else if (this._initType == 1) {
+                    gtInfo = [
+                        0
+                    ];
+                    ptInfo = [
+                        2
+                    ]
+                } else {
+                    gtInfo = [
+                        1,2,3
+                    ];
+                    ptInfo = [
+                        0
+                    ]
+                }
+            }
+        }
+        this.RoomInfo.gameType = gtInfo;
+        this.RoomInfo.pokerType = ptInfo;
         let roomsInfo: typeof Web_Room_Center_Rooms.RequestParams = {
             "limit": limit,
             "offset": offset,
@@ -286,8 +341,8 @@ export default class UIMatchChessView extends UIBase {
             //"ant_min": 0,
             //"ant_max": 0,
             //"room_ids": null,
-            "game_type": [+param.game_type],
-            "poker_type": [+param.poker_type],
+            "game_type": gtInfo,
+            "poker_type": ptInfo,
             //"limit_bet_type": null,
             "order": ["sb_asc"]
         }
@@ -348,15 +403,15 @@ export default class UIMatchChessView extends UIBase {
             this.mNormalData.splice(this.mNormalData.length - 1, 1);
             this.mNormalData.concat(roomData.records);
             this.OnDataSourceLoadMoreFinished(roomData.records.length > 0);
-        } else if (loadType === EnumLoadType.Refresh) {
-            //AddRange
-            this.mNormalData = tmpRooms.length > 0 ? tmpRooms : [];
-            if (this.mNormalData !== null && this.mNormalData.length > 0) {
-                this.mNormalData.push(typeof Web_Room_Center_Rooms.DataElement)
-            } else {
-                this.mNormalData = [];
-            }
-            this.OnDataSourceLoadMoreFinished(true);
+        // } else if (loadType === EnumLoadType.Refresh) {
+        //     //AddRange
+        //     this.mNormalData = tmpRooms.length > 0 ? tmpRooms : [];
+        //     if (this.mNormalData !== null && this.mNormalData.length > 0) {
+        //         this.mNormalData.push(typeof Web_Room_Center_Rooms.DataElement)
+        //     } else {
+        //         this.mNormalData = [];
+        //     }
+        //     this.OnDataSourceLoadMoreFinished(true);
         } else {
             this.mNormalData = tmpRooms.length > 0 ? tmpRooms : [];
             cc.log("this.mNormalData=", this.mNormalData);
@@ -395,7 +450,7 @@ export default class UIMatchChessView extends UIBase {
         this.isSelectEmptySeat = false;
         if (isOn) {
             this.isSelectEmptySeat = true;
-            this.DragRequestData_Room(EnumLoadType.Refresh);
+            this.DragRequestData_Room(EnumLoadType.Refresh, -1);
         }
     }
     //设置mangbar

@@ -600,5 +600,37 @@ export class CardTypeUtil {
                 return "";
         }
     }
+    // //根据牌型代号获取牌型英文名称
+    // public static GetCardTypeEnglishName(cardTypeNum) {
+    //     let cardType: CardType = cardTypeNum;
+    //     return GetCardTypeEnglishName(cardType);
+    // }
+
+    public static GetCardTypeEnglishName(cardType) {
+        switch (cardType) {
+            case CardType.RoyalFlush:
+                return "Royal Flush";
+            case CardType.StraightFlush:
+                return "Straight Flush";
+            case CardType.FourOfAKind:
+                return "Four of a kind";
+            case CardType.FullHouse:
+                return "Full House";
+            case CardType.Flush:
+                return "Flush";
+            case CardType.Straight:
+                return "Straight";
+            case CardType.ThreeOfAKind:
+                return "Three of a kind";
+            case CardType.TwoPair:
+                return "Two Pairs";
+            case CardType.OnePair:
+                return "One Pair";
+            case CardType.HighCard:
+                return "High Card";
+            default:
+                return "Fold";
+        }
+    }
 
 }

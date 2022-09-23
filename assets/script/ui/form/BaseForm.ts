@@ -57,7 +57,7 @@ export default class BaseForm extends UIBase {
         this.back_click.on("click", this.close, this);
     }
 
-    lateClose(param: any = null) {
+    protected lateClose(param: any = null) {
         super.lateClose();
     }
 
@@ -95,7 +95,6 @@ export default class BaseForm extends UIBase {
                 .start();
         }
     }
-
     mainFadeOut(style: any) {
         return new Promise((resolve, reject) => {
             if (style?.main_fadeOut_active == false) {

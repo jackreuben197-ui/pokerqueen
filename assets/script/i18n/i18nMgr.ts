@@ -110,7 +110,7 @@ export class i18nMgr {
 
     public static _getSprite(path: string, cb: (spriteFrame: cc.SpriteFrame) => void) {
 
-        cc.resources.load("i18n/sprite/" + this.language + "/" + path, cc.SpriteFrame, (err, spriteFrame: cc.SpriteFrame) => {
+        cc.resources.load("main/i18n/sprite/" + this.language + "/" + path, cc.SpriteFrame, (err, spriteFrame: cc.SpriteFrame) => {
             if (err) {
                 return cb(null);
             }

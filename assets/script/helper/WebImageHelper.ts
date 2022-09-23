@@ -1,43 +1,35 @@
-import { GameConfig } from "../config/GameConfig";
-import LobbyScene from "../lobby/view/LobbyScene";
-import GlobalSession from "../session/GlobalSession";
-import AssetContext from "../ui/component/AssetContext";
 
+import AssetContext from "../ui/component/AssetContext";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class WebImageHelper {
 
-    private static defaultHead: cc.SpriteFrame = null;
-
     private static mUrlTexture: Map<string, cc.SpriteFrame> = new Map();//key=后缀,value=SpriteFrame
 
-    public static SetHeadImage(rawImage: cc.Sprite, headID: string): void {
-        let url = `${GameConfig.Network.HeadUrl}${headID}`;
+    public static SetHeadImage(rawImage: cc.Sprite, url: string): void {
+
         let spriteFrame = this.mUrlTexture.get(url);
         if (spriteFrame) {
             rawImage.spriteFrame = spriteFrame;
         }
         else {
-            if (null == this.defaultHead) {
-                let default_avatar: cc.SpriteFrame = AssetContext.getAsset("image_default_head_ant");
-                this.defaultHead = default_avatar;
-            }
-            rawImage.spriteFrame = this.defaultHead;
+            rawImage.spriteFrame = AssetContext.getAsset("image_default_head_ant");
 
-            cc.assetManager.loadRemote(url, cc.SpriteFrame, (err, asset: cc.SpriteFrame) => {
+            cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
 
                 if (err) {
 
                 } else {
-                    rawImage.spriteFrame = asset;
-                    this.mUrlTexture[url] = asset;
+                    let spriteframe = new cc.SpriteFrame(asset);
+                    rawImage.spriteFrame = spriteframe;
+                    this.mUrlTexture.set(url, spriteframe);
                 }
             })
         }
     }
-    public static SetUrlImage(rawImage: cc.Sprite, url: string): void {
+    public static SetUrlImage(rawImage: cc.Sprite, url: string, defaultImage?: cc.SpriteFrame): void {
 
         let spriteFrame = this.mUrlTexture.get(url);
 
@@ -46,24 +38,20 @@ export default class WebImageHelper {
         }
         else {
 
-            if (null == this.defaultHead) {
-                let default_avatar: cc.SpriteFrame = AssetContext.getAsset("image_default_head_ant");
-                this.defaultHead = default_avatar;
-            }
-            rawImage.spriteFrame = this.defaultHead;
+            if (defaultImage) rawImage.spriteFrame = defaultImage;
 
             if (url == null || url == "" || url == "-1") return;
 
-            cc.assetManager.loadRemote(url, cc.SpriteFrame, (err, asset: cc.SpriteFrame) => {
+            cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
 
                 if (err) {
 
                 } else {
-                    rawImage.spriteFrame = asset;
-                    this.mUrlTexture[url] = asset;
+                    let spriteframe = new cc.SpriteFrame(asset);
+                    rawImage.spriteFrame = spriteframe;
+                    this.mUrlTexture.set(url, spriteframe);
                 }
             })
-
         }
     }
 }

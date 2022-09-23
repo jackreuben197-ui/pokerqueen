@@ -1,6 +1,7 @@
 import { json } from "stream/consumers";
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
+import { ServerMessageError } from "../../protobuf/holdem/recv_error_pb";
 import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_leave_notification_pb";
 import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
@@ -16,10 +17,11 @@ import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/h
 import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
 import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
-import { ServerMessagePublicReplay } from "../../protobuf/holdem/req_replay_pb";
+// import { ServerMessagePublicReplay } from "../../protobuf/holdem/req_replay_pb";
 import { ClientMessageRoomers, ServerMessageRoomers } from "../../protobuf/holdem/req_roomers_pb";
 import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
+import { ClientMessagePublicReplay, ServerMessagePublicReplay } from "../../protobuf/holdem/req_replay_pb";
 
 export class BaseProtocol {
     //RoomID: number;
@@ -273,8 +275,27 @@ export class Protocol_Holdem_Roomers extends BaseProtocol {
 }
 
 /**
- * 主动行为
+<<<<<<< HEAD
+ * 牌局战况
  */
+export class Protocol_Holdem_PublicReplay extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_PublicReplay";
+    static _request: ClientMessagePublicReplay = null;
+    public static Request_AsObject: ClientMessagePublicReplay.AsObject = null;
+    public static Response_AsObject: ServerMessagePublicReplay.AsObject = null;
+
+    static Request(body?: ClientMessagePublicReplay.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessagePublicReplay());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessagePublicReplay.AsObject {
+        let result: ServerMessagePublicReplay = ServerMessagePublicReplay.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
 export class Protocol_Holdem_Action extends BaseProtocol {
     static Name: string = "Protocol_Holdem_Action";
     static _request: ClientMessageAction = null;
@@ -291,6 +312,7 @@ export class Protocol_Holdem_Action extends BaseProtocol {
         return result.toObject();
     }
 }
+
 
 /**
  * 所有人收到主动/自动行为（包括自己）
@@ -353,8 +375,14 @@ export class Protocol_Holdem_HandClear extends BaseProtocol {
     }
 }
 
-
-
+export class Protocol_Holdem_Error extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Error";
+    public static Response_AsObject: ServerMessageError.AsObject = null;
+    static Response(bytes: Uint8Array): ServerMessageError.AsObject {
+        let result: ServerMessageError = ServerMessageError.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
 cc.js.setClassName("Protocol_Holdem_Register", Protocol_Holdem_Register);
 cc.js.setClassName("Protocol_Holdem_Leave", Protocol_Holdem_Leave);
@@ -367,10 +395,17 @@ cc.js.setClassName("Protocol_Holdem_Standup", Protocol_Holdem_Standup);
 cc.js.setClassName("Protocol_Holdem_PostStatusChange", Protocol_Holdem_PostStatusChange);
 cc.js.setClassName("Protocol_Holdem_StartInfo", Protocol_Holdem_StartInfo);
 cc.js.setClassName("Protocol_Holdem_Roomers", Protocol_Holdem_Roomers);
+
+cc.js.setClassName("Protocol_Holdem_PublicReplay", Protocol_Holdem_PublicReplay);
+
 cc.js.setClassName("Protocol_Holdem_Action", Protocol_Holdem_Action);
 cc.js.setClassName("Protocol_Holdem_ActionAll", Protocol_Holdem_ActionAll);
 cc.js.setClassName("Protocol_Holdem_SidePots", Protocol_Holdem_SidePots);
 cc.js.setClassName("Protocol_Holdem_PublicCards", Protocol_Holdem_PublicCards);
+
+
 cc.js.setClassName("Protocol_Holdem_Winner", Protocol_Holdem_Winner);
 cc.js.setClassName("Protocol_Holdem_LeaveNotification", Protocol_Holdem_LeaveNotification);
 cc.js.setClassName("Protocol_Holdem_HandClear", Protocol_Holdem_HandClear);
+
+cc.js.setClassName("Protocol_Holdem_Error", Protocol_Holdem_Error);
