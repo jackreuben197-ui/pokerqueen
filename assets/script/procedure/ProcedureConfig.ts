@@ -22,7 +22,7 @@ export default class ProcedureConfig extends ProcedureBase {
         super.lateEnter(param);
 
         UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, {
-            pre_define: Pre_Config_Define, complete: () => {
+            pre_define: Pre_Config_Define, stopProgress: true, complete: () => {
                 console.log("Config Set");
                 GameConfig.GlobalProto = this.getGlobalProto();
                 console.log("config :: GameConfig.GlobalProto : ", GameConfig.GlobalProto);

@@ -46,12 +46,12 @@ export default class UIPreloadingComponent extends UIBase {
     onShow(param?: Pre_Load): void {
         super.onShow(param);
         this.setProgress(0);
-        if (!param) return;
         let bundle = param.pre_define.bundle;
         let dir = param.pre_define.dir;
         if (bundle == Bundle_Resources) {
             cc.resources.loadDir(dir,
                 (finish: number, total: number) => {
+                    if (param.stopProgress) return;
                     let percent = finish / total;
                     //纠错，保证当前进度不会小于上次进度
                     percent = Math.max(percent, this.prevPercent);

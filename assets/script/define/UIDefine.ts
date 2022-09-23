@@ -15,6 +15,10 @@ export const UIDefine = {
     UIPreloadingComponent: {
 
     },
+    //GM界面
+    UIGMComponent: {
+
+    },
     /**
      *  场景
      */

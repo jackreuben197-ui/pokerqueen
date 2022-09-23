@@ -9,11 +9,11 @@ export const Bundle_Resources: string = "resources";
 export const Bundle_Texas: string = "texas";
 
 export type Pre_Define = { bundle: string, dir: string };
-export type Pre_Load = { pre_define: Pre_Define, complete?: Function };
+export type Pre_Load = { pre_define: Pre_Define, complete?: Function, stopProgress: boolean };
 
 export const Pre_Config_Define: Pre_Define = {
     bundle: Bundle_Resources,
-    dir: "config"
+    dir: "config",
 }
 export const Pre_Login_Define: Pre_Define = {
     bundle: Bundle_Resources,
