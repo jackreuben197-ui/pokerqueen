@@ -47,6 +47,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     private six_List = ["6+NLH", "6+PLO4", "6+PLO5", "6+PLO6"];
     private LocalDicRoomName: Map<string, { [key: string]: string }> = new Map();
     private mLoopListView: any = null;
+    private _initType: number = null; // 0 大厅左  1 大厅右上 2 大厅右下
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -164,12 +165,13 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this.TypeScroll(index, scrollView, target);
 
         this.RoomInfo = this.RoomTypesInfos[index];
-        if (this.RoomInfo && this.RoomInfo.gameType) {
+        if (this.RoomInfo) {
             let sendDate = {
                 game_type: this.RoomInfo.gameType,
                 poker_type: this.RoomInfo.pokerType,
             }
             this.sendBlindsGetData(sendDate);
+            this.DragRequestData_Room(EnumLoadType.Refresh, index);
         }
     }
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
@@ -180,7 +182,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         let index = target["index"];
         // let scrollView: cc.ScrollView = this.getChildNodeOrComponent("ScrollViewBlind", cc.ScrollView);
         this.MangInfo = this.MangList[index];
-        this.DragRequestData_Room(EnumLoadType.Refresh);
+        // this.DragRequestData_Room(EnumLoadType.Refresh, index);
         // this.BlindScroll(parseInt(index), scrollView, e.target);
     }
     // 写一个方法 可以点击按钮的时候自动滑动到
@@ -249,6 +251,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
      */
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
+        this._initType = param.game_type;
         this.registerClickEvent()
         //根据点击的显示
         //获取groups信息刷新 typeScrollView
@@ -261,7 +264,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
         await this.sendLanguageGetData();
 
-        this.DragRequestData_Room(EnumLoadType.Init);
+        this.DragRequestData_Room(EnumLoadType.Init, -1);
     }
 
     private initUI(): void {
@@ -319,10 +322,9 @@ export default class UIMatchPlayViewForm extends BaseForm {
         let blindData: any = await LobbyControl.getInstance().RequestSbList(blind);
         //通过blindData生成mangBar
         this.setMangBar(blindData);
-        //await this.DragRequestData_Room(EnumLoadType.Init);
     }
     //获取房间消息
-    async DragRequestData_Room(loadType: EnumLoadType) {
+    async DragRequestData_Room(loadType: EnumLoadType, index) {
 
         let param = {
             "sb_min": this.MangInfo,
@@ -340,6 +342,44 @@ export default class UIMatchPlayViewForm extends BaseForm {
         if (loadType === EnumLoadType.LoadMore && this.cacheResponseData != null) {
             limit = 10;
         }
+        let gtInfo = [];
+        let ptInfo = [];
+        if (index > -1) {
+            // 点击过来的 区分奥马哈456
+            let pt = 0;
+            if (index == 4) {
+                index = 1
+                pt = 2;
+            }
+            gtInfo = [index];
+            ptInfo = [
+                pt
+            ];
+        } else {
+            // 初始化 全部显示
+            if (this._initType == 0) {
+                gtInfo = [
+                    0
+                ];
+                ptInfo = [
+                    0
+                ]
+            } else if (this._initType == 1) {
+                gtInfo = [
+                    0
+                ];
+                ptInfo = [
+                    2
+                ]
+            } else {
+                gtInfo = [
+                    1,2,3
+                ];
+                ptInfo = [
+                    0
+                ]
+            }
+        }
         let roomsInfo: typeof Web_Room_Center_Rooms.RequestParams = {
             "limit": limit,
             "offset": offset,
@@ -349,8 +389,8 @@ export default class UIMatchPlayViewForm extends BaseForm {
             //"ant_min": 0,
             //"ant_max": 0,
             //"room_ids": null,
-            "game_type": [+param.game_type],
-            "poker_type": [+param.poker_type],
+            "game_type": gtInfo,
+            "poker_type": ptInfo,
             //"limit_bet_type": null,
             "order": ["sb_asc"]
         }
@@ -425,20 +465,23 @@ export default class UIMatchPlayViewForm extends BaseForm {
             this.mNormalData.splice(this.mNormalData.length - 1, 1);
             this.mNormalData.concat(roomData.records);
             this.OnDataSourceLoadMoreFinished(roomData.records.length > 0);
-        } else if (loadType === EnumLoadType.Refresh) {
-            //AddRange
-            this.mNormalData = tmpRooms.length > 0 ? tmpRooms : [];
-            if (this.mNormalData !== null && this.mNormalData.length > 0) {
-                this.mNormalData.push(typeof Web_Room_Center_Rooms.DataElement)
-            } else {
-                this.mNormalData = [];
-            }
-            this.OnDataSourceLoadMoreFinished(true);
+        // } else if (loadType === EnumLoadType.Refresh) {
+        //     //AddRange
+        //     this.mNormalData = tmpRooms.length > 0 ? tmpRooms : [];
+        //     if (this.mNormalData !== null && this.mNormalData.length > 0) {
+        //         this.mNormalData.push(typeof Web_Room_Center_Rooms.DataElement)
+        //     } else {
+        //         this.mNormalData = [];
+        //     }
+        //     this.OnDataSourceLoadMoreFinished(true);
         } else {
             this.mNormalData = tmpRooms.length > 0 ? tmpRooms : [];
             cc.log("this.mNormalData=", this.mNormalData);
             //在这里初始化房间列表
             //判断当前数组长度是否大于childrenCount
+            this.mLoopListView.children.forEach((item, index) => {
+                item.active = false;
+            })
             if (this.mNormalData.length > 0) {
                 for (let i = 0; i < this.mNormalData.length; i++) {
                     let item: cc.Node
@@ -457,10 +500,6 @@ export default class UIMatchPlayViewForm extends BaseForm {
                         // this.mLoopListView.children[i].active = false;
                     }
                 }
-            } else {
-                this.mLoopListView.children.forEach((item, index) => {
-                    item.active = false;
-                })
             }
         }
         // let NonShowed: cc.Node = this.getChildNodeOrComponent("NonShowed");
@@ -484,7 +523,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this.isSelectEmptySeat = false;
         if (isOn) {
             this.isSelectEmptySeat = true;
-            this.DragRequestData_Room(EnumLoadType.Refresh);
+            this.DragRequestData_Room(EnumLoadType.Refresh, -1);
         }
     }
     //设置mangbar

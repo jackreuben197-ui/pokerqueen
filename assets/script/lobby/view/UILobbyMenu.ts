@@ -109,15 +109,15 @@ export default class UILobbyMenu extends UIBase {
 
         if (this.curBtn) {
             this.curBtn.getChildByName("select").active = false;
-            this.curBtn.getChildByName("text").color = new cc.Color().fromHEX("#414144");
-            this.curBtn.scale = 1;
+            // this.curBtn.getChildByName("text").color = new cc.Color().fromHEX("#414144");
+            // this.curBtn.scale = 1;
         }
         //btn.scale = 1.2;
         btn.getChildByName("select").active = true;
-        btn.getChildByName("text").color = new cc.Color().fromHEX("#E5C29F");
-        btn.stopAllActions();
-        btn.scale = 0.7;
-        cc.tween(btn).to(0.1, { scale: 1.2 }).start()
+        // btn.getChildByName("text").color = new cc.Color().fromHEX("#E5C29F");
+        // btn.stopAllActions();
+        // btn.scale = 0.7;
+        // cc.tween(btn).to(0.1, { scale: 1.2 }).start()
         this.curBtn = btn;
     }
 }
