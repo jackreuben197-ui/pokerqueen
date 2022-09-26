@@ -1,8 +1,11 @@
 import ComFormTop from "../common/ComFormTop";
 import List from "../common/List";
+import { UIDefine } from "../define/UIDefine";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Org_Club_Create, Web_Recharge_Gold } from "../net/https/WebRequest";
+import { Web_Recharge_Gold } from "../net/https/WebRequest";
+import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import BaseForm from "../ui/form/BaseForm";
+import UIComponent from "../ui/UIComponent";
 import GoldOprationItem from "./GoldOprationItem";
 import { EWalletGoldOpration } from "./WalletConfig";
 
@@ -91,17 +94,37 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     clickSure() {
-        let num = Number(this.edit.string);
-        if (num) {
-            let paramas: any = {};
-            paramas.amount = Number(this.edit.string)
-            HttpRequest.Send({
-                request: Web_Recharge_Gold,
-                body: Web_Recharge_Gold.Request(paramas),
-                onSuccess: function (data) {
-                    console.log(data);
-                }.bind(this),
-            });
+        let goldNum = Number(this.edit.string);
+        if (goldNum) {
+            let price = Number(this.priceLab.string);
+            UIComponent.open(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.CommitCancel,
+                    title: "提示",
+                    content: this.getApplyContent(goldNum, price),
+                    contentCommit: "确定",
+                    contentCancel: "取消",
+                    actionCommit: () => {
+                        let paramas: any = {};
+                        paramas.amount = Number(this.edit.string)
+                        HttpRequest.Send({
+                            request: Web_Recharge_Gold,
+                            body: Web_Recharge_Gold.Request(paramas),
+                            onSuccess: function (data) {
+                                console.log(data);
+                            }.bind(this),
+                        });
+                    },
+                    noAnimation: true,
+                });
         }
+
+    }
+
+    getApplyContent(goldNum: number, price: number) {
+        if (this._type == EWalletGoldOpration.in) {
+            return `确定向${"xxx"}工会申请充值${goldNum}金豆。花费${price}`
+        }
+        return `确定向${"xxx"}工会申请提取${goldNum}金豆。折合${price}`
     }
 }
