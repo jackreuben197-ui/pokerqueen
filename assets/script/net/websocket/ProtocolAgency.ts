@@ -20,7 +20,7 @@ export default class ProtocolAgency extends cc.Component {
 
     static Send({ protocol = null, RoomID = 0, MatchID = 0, body = null }) {
 
-        if (WebSocketClient.WS.readyState == WebSocket.OPEN) {
+        if (WebSocketClient.WS && WebSocketClient.WS.readyState == WebSocket.OPEN) {
             let code: number = this._getCodeByProtocolName(protocol.Name);
             if (!code) {
                 console.log("%c%s:%s\n%s", LogStyle.ws_request, "undefined code", protocol.Name, JSON.stringify(arguments[0]));

@@ -1,4 +1,4 @@
-import { type } from "os";
+
 import { UIType } from "./EIDefine";
 
 export type UIDefineType = {
@@ -13,11 +13,11 @@ export const UIDefine = {
 
     //预加载UI
     UIPreloadingComponent: {
-
+        Name: "UIPreloadingComponent"
     },
     //GM界面
     UIGMComponent: {
-
+        Name: "UIGMComponent"
     },
     /**
      *  场景

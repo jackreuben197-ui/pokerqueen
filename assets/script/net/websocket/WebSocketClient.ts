@@ -1,6 +1,8 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
 import TimeHelper from "../../helper/TimeHelper";
 import ToastManager from "../../manager/ToastManager";
+import GlobalSession from "../../session/GlobalSession";
+import LoginSession from "../../session/LoginSession";
 import { Web_WS } from "../https/WebRequest";
 import ProtocolAgency from "./ProtocolAgency";
 import { Protocol_Holdem_Register } from "./ProtocolHoldemMessages";
@@ -23,16 +25,19 @@ export default class WebSocketClient {
     //尝试重连总次数
     static ReconnectMaxTime: number = 3;
     //断开3秒重连
-    static ReconnectDelay: number = 3;
+    static ReconnectDelay: number = 3000;
 
     static _reconnectTime: number = 0;
-
-
 
     public static Connect() {
         this.Host = GameConfig.Network?.LoginHost;
         this.Port = Web_WS.Response?.data?.port;
-        this.Host_Port = `ws://${this.Host}:${this.Port}`;
+
+        if (GameConfig.Network.WSS) {
+            this.Host_Port = GameConfig.Network.WSS;
+        } else {
+            this.Host_Port = `ws://${this.Host}:${this.Port}`;
+        }
         if (this.Host && this.Port) {
             this.__connect();
         } else {
@@ -63,18 +68,30 @@ export default class WebSocketClient {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onerror:" + WebSocketClient.Host_Port);
     }
     private static onmessage(ev: MessageEvent) {
-        //console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onmessage:", ev?.data);
+        //console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onmessage:", ev?.lastEventId);
         ProtocolAgency.Receive(ev?.data);
     }
     private static onclose(ev: CloseEvent) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);
-        console.log("close reason : > ", ev.reason);
+        console.log("close reason : > ", ev.code, ev.reason, ev.wasClean);
         WebSocketClient.CleanWS();
-        if (WebSocketClient.ToClose) {
-            WebSocketClient.ToClose = false;
-        } else {
-            //尝试重连
-            WebSocketClient.Reconnect();
+        //主动断开
+        if (ev.code == 1005) {
+
+        }
+        //服务器断开，请求Channel判断token是否无效
+        if (ev.code == 1006) {
+            LoginSession.SyncWS().then(
+                //成功
+                () => {
+                    //尝试重连
+                    WebSocketClient.Reconnect();
+                },
+                //失败
+                () => {
+                    GlobalSession.Logout();
+                }
+            )
         }
     }
 
@@ -92,7 +109,7 @@ export default class WebSocketClient {
     static Close() {
         if (this.WS && this.WS.readyState == WebSocket.OPEN) {
             this.WS.close();
-            this.ToClose = true;
+            //this.ToClose = true;
         }
     }
     //清理ws

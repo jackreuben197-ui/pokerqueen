@@ -781,6 +781,48 @@ export class APIOrgClubGetJoinlList {
     }
     public static Response: { code?: number, message?: string, data?: typeof APIOrgClubGetJoinlList.ResponseData };
 }
+/// <summary>
+/// 查询结算信息
+/// </summary>
+export class Web_User_Room_Settle_Detail {
+    //接口地址
+    public static API: string = "/api/user/room_settle/detail/{id}";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+        list: typeof Web_User_Room_Settle_Detail.UsersInfo[],
+        self_settle: typeof Web_User_Room_Settle_Detail.SelfSettle
+    } = null;
+
+    public static SelfSettle:
+        {
+            user_random_id: number,
+            nick_name: string,//昵称
+            avatar: string,//头像
+            user_hand_num: number,//手数
+            bring_in: number,//带入
+            bring_out: number//带出
+        } = null;
+    public static UsersInfo:
+        {
+            user_random_id: number,//user id
+            nick_name: string,//昵称
+            avatar: string,//头像
+            user_hand_num: number,//手数
+            bring_in: number,//带入
+            bring_out: number,//带出
+        }
+
+    public static Request(param: typeof Web_User_Room_Settle_Detail.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room_Settle_Detail.ResponseData };
+
+}
 
 
 
@@ -804,4 +846,5 @@ export class APIOrgClubGetJoinlList {
 (window as any).Web_Org_Club_Join = Web_Org_Club_Join;
 (window as any).APIOrgClubCancleJoinClub = APIOrgClubCancleJoinClub;
 (window as any).APIOrgClubIsManger = APIOrgClubIsManger;
+(window as any).Web_User_Room_Settle_Detail = Web_User_Room_Settle_Detail;
 
