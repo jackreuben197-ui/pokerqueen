@@ -268,6 +268,27 @@ export const UIDefine = {
         Path: "lobby/prefab/UIlaborExaminatMerber",
     },
 
+    MyWalletForm: {
+        UIType: UIType.Form,
+        Name: "MyWalletForm",
+        Bundle: null,
+        Path: "wallet/MyWalletForm",
+    },
+    
+    WalletJumpForm: {
+        UIType: UIType.Form,
+        Name: "WalletJumpForm",
+        Bundle: null,
+        Path: "wallet/WalletJumpForm",
+    },
+    
+    GoldOprationForm: {
+        UIType: UIType.Form,
+        Name: "GoldOprationForm",
+        Bundle: null,
+        Path: "wallet/GoldOprationForm",
+    },
+
 
 }
 //批量设置

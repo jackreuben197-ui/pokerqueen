@@ -54,10 +54,10 @@ export default class BaseForm extends UIBase {
 
     protected regiterTouchEvents(): void {
         //回退触发
-        this.back_click.on("click", this.close, this);
+        this.back_click && this.back_click.on("click", this.close, this);
     }
 
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose();
     }
 
