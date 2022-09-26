@@ -620,7 +620,7 @@ export class Web_Org_Club_Create {
         this.RequestParams = param;
         return param;
     }
-    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Create.ResponseData };
 
 }
 
@@ -782,6 +782,25 @@ export class APIOrgClubGetJoinlList {
     public static Response: { code?: number, message?: string, data?: typeof APIOrgClubGetJoinlList.ResponseData };
 }
 
+export class APIOrgClubQuit {
+    //接口地址
+    public static API: string = "/api/org/club/user/quit";
+
+
+    //字段声明
+    public static RequestParams: {
+        club_id: null;
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubQuit.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgClubQuit.ResponseData };
+}
 
 
 /**
@@ -803,5 +822,8 @@ export class APIOrgClubGetJoinlList {
 (window as any).Web_Org_Club_Search_By_Id = Web_Org_Club_Search_By_Id;
 (window as any).Web_Org_Club_Join = Web_Org_Club_Join;
 (window as any).APIOrgClubCancleJoinClub = APIOrgClubCancleJoinClub;
-(window as any).APIOrgClubIsManger = APIOrgClubIsManger;
+(window as any).APIOrgClubApprovalJoin = APIOrgClubApprovalJoin;
+(window as any).APIOrgClubGetJoinlList = APIOrgClubGetJoinlList;
+(window as any).APIOrgClubQuit = APIOrgClubQuit;
+
 

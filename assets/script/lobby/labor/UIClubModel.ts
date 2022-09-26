@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 14:00:59
+ * @LastEditTime: 2022-09-26 14:14:20
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin } from "../../net/https/WebRequest";
+import { Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit } from "../../net/https/WebRequest";
 
 export class UIClubModel {
     private static instance: UIClubModel = null;
@@ -160,6 +160,21 @@ export class UIClubModel {
                 body: APIOrgClubApprovalJoin.Request(paramas),
                 onSuccess: function () {
                     resolve(APIOrgClubApprovalJoin.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgClubQuit() {
+        let paramas: any = {};
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubQuit,
+                body: APIOrgClubQuit.Request(paramas),
+                onSuccess: function () {
+                    resolve(APIOrgClubQuit.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

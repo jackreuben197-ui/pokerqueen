@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 14:36:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 14:02:09
+ * @LastEditTime: 2022-09-26 14:12:10
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborExaminatMerber.ts
  */
 // Learn TypeScript:
@@ -66,7 +66,7 @@ export default class UIlaborExaminatMerber extends BaseForm {
     async initJoinList() {
         this.joinList.active = true;
         this.exitList.active = false;
-        // await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
+        await UIClubModel.mInstance.APIOrgClubGetJoinlList()
 
     }
 
