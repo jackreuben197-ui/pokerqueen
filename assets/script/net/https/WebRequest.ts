@@ -644,6 +644,46 @@ export class Web_Org_Club_Get {
 
 }
 
+export class Web_Recharge_Gold {
+    //接口地址
+    public static API: string = "/api/order/user/recharge";
+
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: { amount: number }) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
+
+}
+
+export class Web_Tiqu_Gold {
+    //接口地址
+    public static API: string = "/api/order/user/withdraw";
+
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: { amount: number }) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
+
+}
+
 
 
 

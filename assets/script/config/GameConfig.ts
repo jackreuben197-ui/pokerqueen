@@ -19,7 +19,7 @@ export class GameConfig {
     //是否使用代理
     static useProxy: boolean = false;
     //是否使用新域名
-    static IsNewArea: boolean = false;
+    static IsNewArea: boolean = true;
     //设计分辨率
     static DesignResolution = cc.size(1242, 2688);
     //fps
