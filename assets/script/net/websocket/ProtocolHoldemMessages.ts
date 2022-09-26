@@ -22,6 +22,7 @@ import { ClientMessageRoomers, ServerMessageRoomers } from "../../protobuf/holde
 import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
 import { ClientMessagePublicReplay, ServerMessagePublicReplay } from "../../protobuf/holdem/req_replay_pb";
+import { ClientMessageShowdown, ServerMessageShowdown } from "../../protobuf/holdem/req_showdown_pb";
 
 export class BaseProtocol {
     //RoomID: number;
@@ -383,6 +384,26 @@ export class Protocol_Holdem_Error extends BaseProtocol {
         return result.toObject();
     }
 }
+
+
+export class Protocol_Holdem_Showdown extends BaseProtocol {
+    static Name: string = "Protocol_Holdem_Showdown";
+    static _request: ClientMessageShowdown = null;
+    public static Request_AsObject: ClientMessageShowdown.AsObject = null;
+    public static Response_AsObject: ServerMessageShowdown.AsObject = null;
+
+    static Request(body?: ClientMessageShowdown.AsObject): Uint8Array {
+        this._request || (this._request = new ClientMessageShowdown());
+        this.SetBody(this._request, body, { room: Room });
+        return this._request.serializeBinary();
+    }
+    static Response(bytes: Uint8Array): ServerMessageShowdown.AsObject {
+        let result: ServerMessageShowdown = ServerMessageShowdown.deserializeBinary(bytes);
+        return result.toObject();
+    }
+}
+
+
 cc.js.setClassName("Protocol_Holdem_Heartbeat", Protocol_Holdem_Heartbeat);
 cc.js.setClassName("Protocol_Holdem_Register", Protocol_Holdem_Register);
 cc.js.setClassName("Protocol_Holdem_Leave", Protocol_Holdem_Leave);
@@ -409,3 +430,4 @@ cc.js.setClassName("Protocol_Holdem_LeaveNotification", Protocol_Holdem_LeaveNot
 cc.js.setClassName("Protocol_Holdem_HandClear", Protocol_Holdem_HandClear);
 
 cc.js.setClassName("Protocol_Holdem_Error", Protocol_Holdem_Error);
+cc.js.setClassName("Protocol_Holdem_Showdown", Protocol_Holdem_Showdown);

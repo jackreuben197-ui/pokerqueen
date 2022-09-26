@@ -398,6 +398,10 @@ export default class TexasGame {
     }
 
 
+    public GetSequencePlayDealAnimation() {
+        return this.sequencePlayDealAnimation;
+    }
+
     //获取桌面样式
     get deskType() {
 
@@ -1535,6 +1539,7 @@ export default class TexasGame {
 
         if (null != tweenCallback) {
             cc.log("运动完成");
+            this.sequencePlayDealAnimation.IsPlaying = false;
             tween.call(tweenCallback);
         }
         tween.start();

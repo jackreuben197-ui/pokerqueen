@@ -72,20 +72,20 @@ export class Sequence<T> {
             let obj: sequence_unit = null;
             if (spawn.length == 1) {
                 obj = spawn[0];
-                this._tween.then(cc.callFunc(() => {
+                obj.t && this._tween.then(cc.callFunc(() => {
                     obj.t();
                 }));
-                this._tween.delay(obj.duration);
+                obj.duration && this._tween.delay(obj.duration);
             } else {
                 let duration = 0;
                 for (let j = 0; j < spawn.length; j++) {
                     obj = spawn[j];
-                    this._tween.then(cc.callFunc(() => {
+                    obj.t && this._tween.then(cc.callFunc(() => {
                         obj.t();
                     }));
                     duration = Math.max(duration, obj.duration);
                 }
-                this._tween.delay(duration);
+                duration && this._tween.delay(duration);
             }
         }
         this._tween.call(() => {

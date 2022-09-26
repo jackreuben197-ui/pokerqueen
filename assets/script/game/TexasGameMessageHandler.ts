@@ -474,9 +474,7 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_ShowPublicCards_Handler(Protocol_Holdem_ShowPublicCards: ProtocolCode, Protocol_Holdem_ShowPublicCards_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    Protocol_Holdem_Showdown_Handler(Protocol_Holdem_Showdown: ProtocolCode, Protocol_Holdem_Showdown_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+
     Protocol_Holdem_KeepSeatActive_Handler(Protocol_Holdem_KeepSeatActive: ProtocolCode, Protocol_Holdem_KeepSeatActive_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
@@ -487,6 +485,14 @@ export default class TexasGameMessageHandler {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_Action_Handler`);
     }
 
+
+    /// <summary>
+    /// 主动展示底牌 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_Showdown_Handler(response) {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_Showdown_Handler`);
+    }
 
     /// <summary>
     /// 异常错误 消息回调

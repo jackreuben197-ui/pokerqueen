@@ -16,6 +16,7 @@ import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
+import { ServerMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import UIComponent from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
@@ -443,9 +444,7 @@ export default class TexasGameProtocol {
     HANDLER_REQ_ADD_TIME(Protocol_Holdem_AddTime: ProtocolCode, HANDLER_REQ_ADD_TIME: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    HANDLER_REQ_SHOWDOWN(Protocol_Holdem_Showdown: ProtocolCode, HANDLER_REQ_SHOWDOWN: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+
     HANDLER_REQ_GAME_PLAYER_CARDS(Protocol_Holdem_Showcards: ProtocolCode, HANDLER_REQ_GAME_PLAYER_CARDS: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
@@ -1211,6 +1210,25 @@ export default class TexasGameProtocol {
         else {
             this.HandleMessageWinnerData();
         }
+    }
+
+    /// <summary>
+    /// 结束后主动亮底牌操作
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_SHOWDOWN(rec: ServerMessageShowdown.AsObject): void {
+        if (rec == null) {
+            return;
+        }
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_SHOWDOWN, rec.Status)
+            return;
+        }
+
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+        if (null == mSeat)
+            return;
+        mSeat.UpdateShowCardsId();
     }
 
     /// <summary>
