@@ -1,6 +1,6 @@
 
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_User_Info, Web_User_Room, Web_User_Room_Settle_Detail } from "../net/https/WebRequest";
+import { Web_Stats_Other_User_Stats, Web_User_Info, Web_User_Room, Web_User_Room_Settle_Detail } from "../net/https/WebRequest";
 import { GameCache } from "./GameCache";
 
 export class UITexasModel {
@@ -44,6 +44,24 @@ export class UITexasModel {
                 request: Web_User_Room_Settle_Detail,
                 onSuccess: function () {
                     resolve(Web_User_Room_Settle_Detail.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /// 牌局内玩家战绩数据
+    /// </summary>
+    public getOtherUserStats(user_id) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                api: Web_Stats_Other_User_Stats.API.replace("{id}", GameCache.Instance.room_id.toString()),
+                body: Web_Stats_Other_User_Stats.Request(user_id),
+                request: Web_Stats_Other_User_Stats,
+                onSuccess: function () {
+                    resolve(Web_Stats_Other_User_Stats.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

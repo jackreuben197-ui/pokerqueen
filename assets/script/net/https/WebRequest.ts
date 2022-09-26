@@ -195,6 +195,55 @@ export class Web_User_Info {
 }
 
 /// <summary>
+/// 牌局内玩家战绩数据
+/// </summary>
+export class Web_Stats_Other_User_Stats {
+    //接口地址
+    public static API: string = "/api/stats/other_user_stats/{id}";
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+        data?: typeof Web_Stats_Other_User_Stats.Data,        // 用户信息
+    } = null;
+    public static MTTRoomData: {
+        user_id?: number,        
+        play_times?: number,        //参赛次数
+        win_times?: number,         //获奖次数
+        frist_times?: number,       //第一名次数
+        second_times?: number,      //第二名次数
+        third_times?: number,       //第三名次数
+    } = null;
+    public static RoomData: {
+        id?: number,        
+        user_id?: number,              
+        game_type?: number,             //游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6          
+        data_type?: number,             //数据类型 1--今日；2--7天；3--30天；4--生涯
+        total_game_cnt?: number,        //总局数
+        total_hand?: number,            //总手数
+        total_earn?: number,            //总盈亏
+        aveage_earn?: number,           //场均战绩
+        aveage_earn_hundred?: number,   //战绩/百手
+        vpip?: number,                  //入池率
+        wins?: number,                  //入池胜率
+        prf?: number,                   //翻牌前加注率
+        bet3?: number,                  //翻牌前再加注率
+        af?: number,                    //激进程度
+        cbet?: number,                  //4Flop持续下注率
+        wtsd?: number,                  //摊牌胜率
+        allinWins?: number,             //全下胜率
+    } = null;
+    public static Data: {
+        mtt_room_data?: typeof Web_Stats_Other_User_Stats.MTTRoomData[],        //mtt数据
+        room_data?: typeof Web_Stats_Other_User_Stats.RoomData[],        //普通牌局数据
+    } = null;
+    public static Request(param: typeof Web_Stats_Other_User_Stats.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Stats_Other_User_Stats.ResponseData };
+}
+
+/// <summary>
 /// socket channel info
 /// </summary>
 export class Web_Channel {
