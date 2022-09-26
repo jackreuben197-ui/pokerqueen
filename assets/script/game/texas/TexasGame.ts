@@ -1,5 +1,4 @@
 import TexasConfig from "../../config/TexasConfig";
-import { Param } from "../../define/Types";
 import { UIDefine } from "../../define/UIDefine";
 import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import UpdateComponent from "../../funcomponent/UpdateComponent";
@@ -9,21 +8,17 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { Web_User_Room } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { Protocol_Holdem_Action, Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../../net/websocket/ProtocolHoldemMessages";
 import { Def, RoomInfo, Operator, Player } from "../../protobuf/holdem/define_pb";
-import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
-import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
-
 import GameUtil, { RoomType } from "./../GameUtil";
 import Seat, { SeatUIInfo } from "./../Seat";
 import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation, SeatWaitOther } from "./../SeatStateHandler";
@@ -41,6 +36,11 @@ import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import Main from "../../Main";
 import { DOTween, Sequence } from "../../dotween/DOTween";
 import PublicHelper from "../../helper/PublicHelper";
+import { ClientMessageSeated } from "../../protobuf/holdem/req_seated_pb";
+import { ClientMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
+import { ClientMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
+import { ClientMessageAction } from "../../protobuf/holdem/req_action_pb";
+import { ClientMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
 //const PBTypes = Def.Types;
 
 
@@ -1198,20 +1198,19 @@ export default class TexasGame {
                 let bring_out: number = tResp.data.last_bring_out.to_wallet;
                 if (bring_out + fee > 0) {
                     if (tResp.data.last_bring_out.to_wallet <= tResp.data.wallet.gold) {
-                        ProtocolAgency.Send({
-                            protocol: Protocol_Holdem_Seated,
+                        ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                            Code: ProtocolCode.Protocol_Holdem_Seated,
                             RoomID: GameCache.Instance.room_id,
                             MatchID: GameCache.Instance.match_id,
-                            body: Protocol_Holdem_Seated.Request(
-                                {
-                                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                                    seatId: this.GetRemoteSeatID(mSeat.seatID),
-                                    bringIn: bring_out + fee,
-                                    autoOnTable: 0,
-                                    autoUseWallet: false,
-                                    returnOrNew: 0,
-                                    store: 0,
-                                }),
+                            Body: {
+                                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                                seatId: this.GetRemoteSeatID(mSeat.seatID),
+                                bringIn: bring_out + fee,
+                                autoOnTable: 0,
+                                autoUseWallet: false,
+                                returnOrNew: 0,
+                                store: 0,
+                            },
                         });
                     }
                 } else {
@@ -1341,20 +1340,19 @@ export default class TexasGame {
             }
             else {
 
-                ProtocolAgency.Send({
-                    protocol: Protocol_Holdem_Seated,
+                ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                    Code: ProtocolCode.Protocol_Holdem_Seated,
                     RoomID: GameCache.Instance.room_id,
                     MatchID: GameCache.Instance.match_id,
-                    body: Protocol_Holdem_Seated.Request(
-                        {
-                            room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                            seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
-                            bringIn: anteNumber,//rec.Chips
-                            autoOnTable: autoOnTable,
-                            autoUseWallet: autoUseWallet,
-                            returnOrNew: 0,
-                            store: 0,
-                        }),
+                    Body: {
+                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                        seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
+                        bringIn: anteNumber,//rec.Chips
+                        autoOnTable: autoOnTable,
+                        autoUseWallet: autoUseWallet,
+                        returnOrNew: 0,
+                        store: 0,
+                    },
                 });
 
             }
@@ -1365,16 +1363,15 @@ export default class TexasGame {
         if (this.mainPlayer.cacheStoreChips >= anteNumber) {
             IsUseWallet = false;
         }
-        ProtocolAgency.Send({
-            protocol: Protocol_Holdem_BringIn,
+        ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_BringIn,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            body: Protocol_Holdem_BringIn.Request(
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                    bringIn: anteNumber,
-                    useWallet: IsUseWallet
-                }),
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                bringIn: anteNumber,
+                useWallet: IsUseWallet
+            },
         });
 
     }
@@ -1393,14 +1390,13 @@ export default class TexasGame {
         if (null == mSeat)
             return;
 
-        ProtocolAgency.Send({
-            protocol: Protocol_Holdem_StandupActive,
+        ProtocolAgency.Send<ClientMessageStandupActive.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_StandupActive,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            body: Protocol_Holdem_StandupActive.Request(
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                }),
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+            },
         })
     }
     /// <summary>
@@ -1552,18 +1548,16 @@ export default class TexasGame {
     /// <param name="anteNumber"></param>
     public OptAction(action: Def.ActionMap[keyof Def.ActionMap], anteNumber: number): void {
 
-        ProtocolAgency.Send(
+        ProtocolAgency.Send<ClientMessageAction.AsObject>(
             {
-                protocol: Protocol_Holdem_Action,
+                Code: ProtocolCode.Protocol_Holdem_Action,
                 RoomID: GameCache.Instance.room_id,
                 MatchID: GameCache.Instance.match_id,
-                body: Protocol_Holdem_Action.Request(
-                    {
-                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                        action: action,
-                        amount: anteNumber
-
-                    })
+                Body: {
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                    action: action,
+                    amount: anteNumber
+                }
             });
     }
 
@@ -2558,7 +2552,21 @@ export default class TexasGame {
     }
 
 
-
+    /// <summary>
+    /// 留座离桌
+    /// </summary>
+    public SendReserveSeatAction(option: boolean): void {
+        ProtocolAgency.Send<ClientMessageKeepSeatActive.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_KeepSeatActive,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                keep: option,
+                duration: 120
+            },
+        });
+    }
 
     /// <summary>
     /// 清空气泡

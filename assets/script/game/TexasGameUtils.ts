@@ -1,10 +1,13 @@
 
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import TimeHelper from "../helper/TimeHelper";
 import ProcedureManager from "../manager/ProcedureManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { Protocol_Holdem_EnterRoom, Protocol_Holdem_Leave } from "../net/websocket/ProtocolHoldemMessages";
+import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ActionLimit, Def } from "../protobuf/holdem/define_pb";
+import { ClientMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
+import { ClientMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import UIComponent from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { GameCache } from "./GameCache";
@@ -32,17 +35,17 @@ export default class TexasGameUtils {
             //MTT
         } else {
             console.log(" ProtocolAgency.Send: ", GameCache.Instance.room_id, GameCache.Instance.match_id);
-            ProtocolAgency.Send({
-                protocol: Protocol_Holdem_EnterRoom,
+            ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
+                Code: ProtocolCode.Protocol_Holdem_EnterRoom,
                 RoomID: GameCache.Instance.room_id,
                 MatchID: GameCache.Instance.match_id,
-                body: Protocol_Holdem_EnterRoom.Request(
-                    {
-                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                        gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
-                        mttPartialBringIn: 0,
-                        observer: false,
-                    }),
+                Body:
+                {
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                    gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
+                    mttPartialBringIn: 0,
+                    observer: false,
+                },
             });
         }
     }
@@ -50,17 +53,16 @@ export default class TexasGameUtils {
      * 离开房间
      */
     public LeaveRoom() {
-        ProtocolAgency.Send({
-            protocol: Protocol_Holdem_Leave,
+        ProtocolAgency.Send<ClientMessageLeave.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_Leave,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            body: Protocol_Holdem_Leave.Request(
-                {
-                    room: {
-                        roomId: GameCache.Instance.room_id,
-                        matchId: GameCache.Instance.match_id,
-                    }
-                }),
+            Body: {
+                room: {
+                    roomId: GameCache.Instance.room_id,
+                    matchId: GameCache.Instance.match_id,
+                }
+            },
         });
     }
     /// <summary>
@@ -203,8 +205,15 @@ export default class TexasGameUtils {
         return roundBet - this.game.mainPlayer.anteNumber;
     }
 
-
-
+    /// <summary>
+    /// 多少毫秒后关闭
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="time"> 毫秒</param>
+    public async WaitFewSeconds(obj: cc.Node, time: number) {
+        await TimeHelper.Sleep(time);
+        obj.active = false;
+    }
 
     /// <summary>
     /// 退出房间

@@ -15,6 +15,7 @@ import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
+import { ServerMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { ServerMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import UIComponent from "../ui/UIComponent";
@@ -395,8 +396,20 @@ export default class TexasGameProtocol {
     HANDLER_REQ_WAIT_BLIND(Protocol_Holdem_AgreePost: ProtocolCode, HANDLER_REQ_WAIT_BLIND: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    HANDLER_REQ_GAME_MY_KEEP_SEAT(Protocol_Holdem_KeepSeatActive: ProtocolCode, HANDLER_REQ_GAME_MY_KEEP_SEAT: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 主动留座离桌
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_GAME_MY_KEEP_SEAT(rec: ServerMessageKeepSeatActive.AsObject): void {
+        if (rec == null) {
+            return;
+        }
+        if (rec.status != 0)
+            return;
+        if (!this.game.cacheCancelKeepSeat) {
+            this.game.uirc.imageReserveSeatTips.active = true;
+            this.game.TexasGameUtils.WaitFewSeconds(this.game.uirc.imageReserveSeatTips, 3000);
+        }
     }
     HANDLER_REQ_GAME_KEEP_SEAT(Protocol_Holdem_KeepSeat: ProtocolCode, HANDLER_REQ_GAME_KEEP_SEAT: any) {
         throw new Error("Method not implemented.");

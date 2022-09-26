@@ -5,7 +5,8 @@ import GlobalSession from "../../session/GlobalSession";
 import LoginSession from "../../session/LoginSession";
 import { Web_WS } from "../https/WebRequest";
 import ProtocolAgency from "./ProtocolAgency";
-import { Protocol_Holdem_Register } from "./ProtocolHoldemMessages";
+import { ProtocolCode } from "./ProtocolCode";
+import { ProtocolCommon } from "./ProtocolHoldemMessages";
 
 /**
  * WebSocket 客户端
@@ -58,10 +59,9 @@ export default class WebSocketClient {
         WebSocketClient._reconnectTime = 0;
         //发送握手后的注册
         ProtocolAgency.Send({
-            protocol: Protocol_Holdem_Register,
+            Code: ProtocolCode.Protocol_Holdem_Register,
             RoomID: 0,
             MatchID: 0,
-            body: Protocol_Holdem_Register.Request(),
         });
     }
     private static onerror(ev: Event) {

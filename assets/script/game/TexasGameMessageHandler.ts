@@ -148,7 +148,9 @@ export default class TexasGameMessageHandler {
 
                 let fromUI = ProcedureManager.currProcedure.param?.fromUI;
 
-                if (fromUI) UIComponent.close(fromUI);
+                if (fromUI) {
+                    UIComponent.Instance.CloseNoAnimation(fromUI);
+                }
 
             }
 
@@ -475,8 +477,13 @@ export default class TexasGameMessageHandler {
         throw new Error("Method not implemented.");
     }
 
-    Protocol_Holdem_KeepSeatActive_Handler(Protocol_Holdem_KeepSeatActive: ProtocolCode, Protocol_Holdem_KeepSeatActive_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+
+    /// <summary>
+    /// 主动留座 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    private Protocol_Holdem_KeepSeatActive_Handler(response): void {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_KeepSeatActive_Handler`);
     }
     Protocol_Holdem_SetAutoOnTable_Handler(Protocol_Holdem_SetAutoOnTable: ProtocolCode, Protocol_Holdem_SetAutoOnTable_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");

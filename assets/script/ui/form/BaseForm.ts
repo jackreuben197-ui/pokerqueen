@@ -29,7 +29,7 @@ export default class BaseForm extends UIBase {
         //内容顶层节点
         main_fadeIn_active: true,
         main_fadeIn_duration: .2,
-        main_fadeIn_ease: cc.easeElasticIn,
+        main_fadeIn_ease: null,
 
         main_fadeOut_active: true,
         main_fadeOut_duration: .2,
@@ -66,12 +66,11 @@ export default class BaseForm extends UIBase {
         cc.log(">>> formUI form :", fromUI?.UIDefine?.Name);
         super.onShow(param);
         this.mainFadeIn(param?.style);
-        // cc.log("ui.main.x onShow2 >> ", this.main.x);
     }
 
     async onClose(param?: any) {
         this.showFromUI();
-        await this.mainFadeOut(param?.style);
+        await this.mainFadeOut(param);
         super.onClose(param);
     }
 
@@ -80,14 +79,14 @@ export default class BaseForm extends UIBase {
         UIComponent.close(this.UIDefine);
     }
 
-    mainFadeIn(style: any) {
+    mainFadeIn(move: boolean = true) {
         this.top_block.active = true;
-        if (style?.main_fadeIn_active == false) {
+        if (move == false) {
             this.node.x = 0;
             this.fadeInComplete();
         } else {
-            let duration = style?.main_fadeIn_duration || this.defaultStyle.main_fadeIn_duration;
-            let ease = style?.main_fadeIn_ease || this.defaultStyle.main_fadeIn_ease;
+            let duration = this.defaultStyle.main_fadeIn_duration;
+            let ease = this.defaultStyle.main_fadeIn_ease;
             this.node.x = this.node.width;
             cc.tween(this.node)
                 .to(duration, { x: 0 }, ease)
@@ -95,14 +94,14 @@ export default class BaseForm extends UIBase {
                 .start();
         }
     }
-    mainFadeOut(style: any) {
+    mainFadeOut(param: any) {
         return new Promise((resolve, reject) => {
-            if (style?.main_fadeOut_active == false) {
+            if (this.close_animation == false) {
                 this.node.x = this.node.width;
                 this.fadeOutComplete(resolve);
             } else {
-                let duration = style?.main_fadeOut_duration || this.defaultStyle.main_fadeOut_duration;
-                let ease = style?.main_fadeOut_ease || this.defaultStyle.main_fadeOut_ease;
+                let duration = this.defaultStyle.main_fadeOut_duration;
+                let ease = this.defaultStyle.main_fadeOut_ease;
                 this.node.x = 0;
                 cc.tween(this.node).to(duration, { x: this.node.width }, ease).call(this.fadeOutComplete.bind(this, resolve)).start();
             }

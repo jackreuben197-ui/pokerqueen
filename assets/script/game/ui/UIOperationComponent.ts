@@ -11,6 +11,10 @@ import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import GameUtil from "../GameUtil";
 import UITexasSettingComponent from "../UITexasSettingComponent";
+import { ProtocolCode } from "../../net/websocket/ProtocolCode";
+import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import { ServerMessageAddOn } from "../../protobuf/holdem/req_add_on_pb";
+import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
 
 
 export type OperationData = {
@@ -403,7 +407,6 @@ export default class UIOperationComponent extends UIBase {
 
         this.show(this.operationData.actionLimits);
 
-
     }
 
     private show(actionLimits: ActionLimit.AsObject[]): void {
@@ -756,6 +759,34 @@ export default class UIOperationComponent extends UIBase {
             //this.DelayPlayBarrage();
         }
     }
+
+
+    protected regiterDispatchEvent(): void {
+        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME, this);  // 操作加时
+    }
+
+    protected unregiterDispatchEvent(): void {
+        CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME, this);  // 操作加时
+    }
+
+
+
+    protected HANDLER_REQ_ADD_TIME(rec: ServerMessageAddTime.AsObject): void {
+
+        if (rec == null) {
+            return;
+        }
+
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
+            return;
+        }
+        if (rec.status == 0) {
+            this.optCurTime += rec.duration;
+            this.optTotalTime = this.optCurTime;
+        }
+    }
+
     /// <summary>
     /// 用于关闭操作面板时初始化按钮显示
     /// </summary>
@@ -781,5 +812,4 @@ export default class UIOperationComponent extends UIBase {
         this.imageFoldCountDown.node.active = false;
         this.hideAllOperationButton();
     }
-
 }
