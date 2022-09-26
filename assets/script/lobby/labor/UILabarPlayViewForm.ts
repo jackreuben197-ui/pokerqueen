@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 13:08:47
+ * @LastEditTime: 2022-09-26 14:05:24
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;

@@ -2,7 +2,6 @@
  * 入口函数
  */
 import { GameConfig } from "./config/GameConfig";
-import WebImageHelper from "./helper/WebImageHelper";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
 
