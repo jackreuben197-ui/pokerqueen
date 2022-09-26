@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 14:45:30
+ * @LastEditTime: 2022-09-26 13:08:47
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -14,6 +14,9 @@ import { UIDefine, UIDefineType } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { EMatchViewTabType } from "../matchView/MatchViewConfig";
 import BaseForm from "../../ui/form/BaseForm";
+import { APIOrgClubIsManger, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { UIClubModel } from "./UIClubModel";
+
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
  ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ༺༒༻ ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
@@ -34,6 +37,7 @@ export default class UILabarPlayViewForm extends UIBase {
     panel_right: cc.Node = null;
     @property(cc.Node)
     tabNode: cc.Node = null;
+
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
 
@@ -136,7 +140,7 @@ export default class UILabarPlayViewForm extends UIBase {
 
     /***************************************自己界面的数据处理 */
 
-    initTop() {
+    async initTop() {
         let data: any = Web_Org_Club_Get.Response.data;
         let name = this.panel_right.getChildByName('name').getComponent(cc.Label);
         name.string = data.club_name
@@ -144,9 +148,14 @@ export default class UILabarPlayViewForm extends UIBase {
         id.string = 'ID:' + data.random_id
         let icon = cc.find('iconMask/icon', this.panel_right).getComponent(cc.Sprite);
         WebImageHelper.SetUrlImage(icon, data.logo)
-
         let lbl_glod = cc.find('img_right_bg/lbl_glod', this.panel_right).getComponent(cc.Label);
-
+        await UIClubModel.mInstance.APIOrgClubIsManger(data.club_id)
+        let isManger: any = APIOrgClubIsManger.Response.data
+        if (isManger) {
+            this.tabNode.getChildByName('ghgl').active = true;
+        } else {
+            this.tabNode.getChildByName('ckgh').active = true;
+        }
     }
     tostBtnClick() {
         this.tabNode.active = !this.tabNode.active;

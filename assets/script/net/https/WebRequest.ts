@@ -640,10 +640,147 @@ export class Web_Org_Club_Get {
         this.RequestParams = param;
         return param;
     }
-    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
 
 }
 
+export class Web_Org_Club_Player_Apply_List {
+    //接口地址
+    public static API: string = "/api/org/club/user/join/list";
+
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof Web_Org_Club_Player_Apply_List.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Player_Apply_List.ResponseData };
+
+}
+export class Web_Org_Club_Search_By_Id {
+    //接口地址
+    public static API: string = "/api/org/club/info";
+
+
+    //字段声明
+    public static RequestParams: {
+        club_random_id: null;
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof Web_Org_Club_Search_By_Id.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Search_By_Id.ResponseData };
+
+}
+
+export class Web_Org_Club_Join {
+    //接口地址
+    public static API: string = "/api/org/club/user/join/apply";
+
+
+    //字段声明
+    public static RequestParams: {
+        club_id: null;
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof Web_Org_Club_Join.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Join.ResponseData };
+
+}
+export class APIOrgClubCancleJoinClub {
+    //接口地址
+    public static API: string = "/api/org/club/user/join/cancel";
+
+
+    //字段声明
+    public static RequestParams: {
+        apply_id: null;
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubCancleJoinClub.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgClubCancleJoinClub.ResponseData };
+
+}
+export class APIOrgClubIsManger {
+    //接口地址
+    public static API: string = "/api/org/club/admin/has";
+
+
+    //字段声明
+    public static RequestParams: {
+        club_id: null;
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubIsManger.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgClubIsManger.ResponseData };
+
+}
+export class APIOrgClubApprovalJoin {
+    //接口地址
+    public static API: string = "/api/org/club/user/join/audit";
+
+    //字段声明
+    public static RequestParams: {
+        apply_id: null;
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubApprovalJoin.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgClubApprovalJoin.ResponseData };
+}
+export class APIOrgClubGetJoinlList {
+    //接口地址
+    public static API: string = "/api/umgr/club/99777674/member/list";
+
+
+    //字段声明
+    public static RequestParams: {
+        club_id: null;
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubGetJoinlList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgClubGetJoinlList.ResponseData };
+}
 
 
 
@@ -662,3 +799,9 @@ export class Web_Org_Club_Get {
 (window as any).Web_Room_Center_Rooms = Web_Room_Center_Rooms;
 (window as any).Web_Org_Club_Create = Web_Org_Club_Create;
 (window as any).Web_Org_Club_Get = Web_Org_Club_Get;
+(window as any).Web_Org_Club_Player_Apply_List = Web_Org_Club_Player_Apply_List;
+(window as any).Web_Org_Club_Search_By_Id = Web_Org_Club_Search_By_Id;
+(window as any).Web_Org_Club_Join = Web_Org_Club_Join;
+(window as any).APIOrgClubCancleJoinClub = APIOrgClubCancleJoinClub;
+(window as any).APIOrgClubIsManger = APIOrgClubIsManger;
+

@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 10:11:49
+ * @LastEditTime: 2022-09-26 14:00:59
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Org_Club_Create, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin } from "../../net/https/WebRequest";
 
 export class UIClubModel {
     private static instance: UIClubModel = null;
@@ -40,6 +40,10 @@ export class UIClubModel {
             });
         });
     };
+    /**
+     * @method  俱乐部信息
+     * @returns 
+     */
     public APIOrgClubGet() {
         let paramas: any = {};
         return new Promise((resolve, reject) => {
@@ -55,6 +59,113 @@ export class UIClubModel {
             });
         });
     };
+    APIOrgClubPlayerApplyList() {
+        let paramas: any = {};
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Org_Club_Player_Apply_List,
+                body: Web_Org_Club_Player_Apply_List.Request(paramas),
+                onSuccess: function () {
+                    resolve(Web_Org_Club_Player_Apply_List.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgClubSearchByID(id) {
+        let paramas: any = { club_random_id: id };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Org_Club_Search_By_Id,
+                body: Web_Org_Club_Search_By_Id.Request(paramas),
+                onSuccess: function () {
+                    resolve(Web_Org_Club_Search_By_Id.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgClubJoinClub(id) {
+        let paramas: any = { club_id: id };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Org_Club_Join,
+                body: Web_Org_Club_Join.Request(paramas),
+                onSuccess: function () {
+                    resolve(Web_Org_Club_Join.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgClubCancleJoinClub(id) {
+        let paramas: any = { apply_id: id };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubCancleJoinClub,
+                body: APIOrgClubCancleJoinClub.Request(paramas),
+                onSuccess: function () {
+                    resolve(APIOrgClubCancleJoinClub.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
 
+    APIOrgClubIsManger(id) {
+        let paramas: any = { club_id: id };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubIsManger,
+                body: APIOrgClubIsManger.Request(paramas),
+                onSuccess: function () {
+                    resolve(APIOrgClubIsManger.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubGetJoinlList(id) {
+        let paramas: any = { club_id: id };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubGetJoinlList,
+                body: APIOrgClubGetJoinlList.Request(paramas),
+                onSuccess: function () {
+                    resolve(APIOrgClubGetJoinlList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubApprovalJoin(id) {
+        let paramas: any = { apply_id: id };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubApprovalJoin,
+                body: APIOrgClubApprovalJoin.Request(paramas),
+                onSuccess: function () {
+                    resolve(APIOrgClubApprovalJoin.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
 
 }
