@@ -1,6 +1,7 @@
 import { Web_Stats_Other_User_Stats } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
+import { GameCache } from "../GameCache";
 import { UITexasModel } from "../UITexasModel";
 
 const { ccclass, property } = cc._decorator;
@@ -10,6 +11,7 @@ export default class UITexasPlayerInfoComponent extends UIBase {
 
     openInfo: any = null;
     respInfo: any = null;
+    isShowDown: boolean = null;
 
     btn_close: cc.Node = null;
 
@@ -20,16 +22,18 @@ export default class UITexasPlayerInfoComponent extends UIBase {
     }
     onShow(param?: any): void {
         super.onShow(param);
+        this.isShowDown = param[0] != GameCache.Instance.nUserId;
         this.openInfo = param;
         UITexasModel.mInstance.getOtherUserStats(param[0]).then(
             (tResp: typeof Web_Stats_Other_User_Stats.Response) => {
             if (tResp.code == 0) {
-                this.refreshDownInfo();
+                this.refreshCenterInfo();
             }
         }, (tResp: typeof Web_Stats_Other_User_Stats.Response) => {
         })
         this.refreshUpInfo();
-        this.resetDownInfo();
+        this.resetCenterInfo();
+        this.refreshDownInfo();
     }
 
     refreshUpInfo() {
@@ -40,7 +44,7 @@ export default class UITexasPlayerInfoComponent extends UIBase {
         lbl_gold.string = leavelChips.toString();
     }
 
-    resetDownInfo() {
+    resetCenterInfo() {
         let panel_bottom: cc.Node = this.getChildNodeOrComponent("panel_bottom");
         panel_bottom.children.forEach(element => {
             let lbl = element.getComponent(cc.Label);
@@ -48,12 +52,31 @@ export default class UITexasPlayerInfoComponent extends UIBase {
         });
     }
 
-    refreshDownInfo() {
+    refreshCenterInfo() {
         let panel_bottom: cc.Node = this.getChildNodeOrComponent("panel_bottom");
         panel_bottom.children.forEach(element => {
             let lbl = element.getComponent(cc.Label);
             // lbl.string = "";
         });
+    }
+
+    refreshDownInfo() {
+        let panel_down: cc.Node = this.getChildNodeOrComponent("panel_down");
+        let img_bg1: cc.Node = this.getChildNodeOrComponent("img_bg1");
+        let img_bg0: cc.Node = this.getChildNodeOrComponent("img_bg0");
+        let btn_close: cc.Node = this.getChildNodeOrComponent("btn_close");
+        if (this.isShowDown == false) {
+            panel_down.active = false;
+            img_bg1.active = false;
+            img_bg0.active = true;
+            btn_close.y = -600;
+            return;
+        }
+        panel_down.active = true;
+        img_bg1.active = true;
+        img_bg0.active = false;
+        btn_close.y = -1055;
+
     }
 
     protected regiterTouchEvents(): void {
