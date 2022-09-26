@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 12:04:37
+ * @LastEditTime: 2022-09-26 13:23:18
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 // Learn TypeScript:
@@ -20,6 +20,7 @@ import UIComponent from "../../ui/UIComponent";
 const { ccclass, property } = cc._decorator;
 import { Web_Org_Club_Get } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
+import UIBase from "../../ui/UIBase";
 @ccclass
 export default class UIManageLabor extends BaseForm {
 
@@ -46,9 +47,11 @@ export default class UIManageLabor extends BaseForm {
 
         let icon = cc.find('iconMask/icon', this.mask_group);
         WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.logo)
+    }
+    initClubData() {
 
     }
     managementMember() {
-        UIComponent.open(UIDefine.UIlaborExaminatMerber);
+        UIComponent.open(UIDefine.UIlaborMerberManager);
     }
 }

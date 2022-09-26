@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-21 14:40:38
+ * @LastEditTime: 2022-09-26 13:31:46
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -15,6 +15,7 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIlaborMerberManager extends BaseForm {
+
 
     protected lateLoad(): void {
         super.lateLoad();
