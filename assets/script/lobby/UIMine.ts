@@ -1,6 +1,7 @@
 const { ccclass, property } = cc._decorator;
 import UIBase from "../../../assets/script/ui/UIBase";
 import { UIDefine } from "../define/UIDefine";
+import PublicHelper from "../helper/PublicHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { Web_User_Info } from "../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
@@ -21,6 +22,7 @@ export default class UIMine extends UIBase {
     content: cc.Node = null;
     nickname_lab: cc.Label = null;
     userid_lab: cc.Label = null;
+    btn_copy: cc.Node = null;
 
     protected onLoad(): void {
         super.onLoad();
@@ -33,13 +35,15 @@ export default class UIMine extends UIBase {
         this.content = this.getChildNodeOrComponent("content");
         this.nickname_lab = this.getChildNodeOrComponent("nickname_lab", cc.Label);
         this.userid_lab = this.getChildNodeOrComponent("userid_lab", cc.Label);
+        this.btn_copy = this.getChildNodeOrComponent("btn_copy");
+        this.btn_copy.on("click", this.onClickCopy, this);
         this.setMine();
     }
 
     public onShow(param?: any): void {
         super.onShow(param);
         this.nickname_lab.string = Web_User_Info.Response.data.user.nickname;
-        this.userid_lab.string = `${Web_User_Info.Response.data.user.un_id}`;
+        this.userid_lab.string = `ID : ${Web_User_Info.Response.data.user.un_id}`;
     }
 
     setMine(): void {
@@ -93,5 +97,9 @@ export default class UIMine extends UIBase {
                 UIComponent.open(UIDefine.SettingsForm);
                 break;
         }
+    }
+
+    onClickCopy() {
+        PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
     }
 }

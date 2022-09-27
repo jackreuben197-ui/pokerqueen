@@ -27,7 +27,7 @@ export default class UITexasPlayerInfoComponent extends UIBase {
         UITexasModel.mInstance.getOtherUserStats(param[0]).then(
             (tResp: typeof Web_Stats_Other_User_Stats.Response) => {
             if (tResp.code == 0) {
-                this.refreshCenterInfo();
+                this.refreshCenterInfo(tResp);
             }
         }, (tResp: typeof Web_Stats_Other_User_Stats.Response) => {
         })
@@ -52,11 +52,24 @@ export default class UITexasPlayerInfoComponent extends UIBase {
         });
     }
 
-    refreshCenterInfo() {
+    refreshCenterInfo(info: any) {
+        let room_data = info.data.room_data;
         let panel_bottom: cc.Node = this.getChildNodeOrComponent("panel_bottom");
-        panel_bottom.children.forEach(element => {
+        panel_bottom.children.forEach((element, index) => {
             let lbl = element.getComponent(cc.Label);
-            // lbl.string = "";
+            if (index == 0) {
+                lbl.string = room_data.total_game_cnt.toString();
+            } else if (index == 1) {
+                lbl.string = room_data.vpip.toString() + "%";
+            } else if (index == 2) {
+                lbl.string = room_data.prf.toString() + "%";
+            } else if (index == 3) {
+                lbl.string = room_data.total_hand.toString();
+            } else if (index == 4) {
+                lbl.string = room_data.wins.toString() + "%";
+            } else if (index == 5) {
+                lbl.string = (room_data.aveage_earn_hundred / 100).toString();
+            }
         });
     }
 
