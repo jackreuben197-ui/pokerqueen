@@ -1790,27 +1790,28 @@ export default class TexasGame {
         this.fuck4thPCardByInsuranceState = 0;
 
         let PublicCardInfo: PublicCardInfo = null;
+        let cardId = null;
 
         if (startIndex == 0) {
             //第0张牌，设定第1,2张牌位置都在0号位置
             let index = 2;
             PublicCardInfo = this.uirc.listCards[index];
             PublicCardInfo.cardId = this.cards[index];
+            cardId = this.cards[index];
             PublicHelper.InitSprite(PublicCardInfo.imageCard, GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1)));
             PublicHelper.InitNode(PublicCardInfo.trans, this.listDefaultPublicCardsLPos[0]);
-
-
 
             this.sequenceUpdatePublicCards.Append(() => {
                 cc.tween(PublicCardInfo.trans).to(.1, { scaleX: 0 }).start();
             }, .1)
             this.sequenceUpdatePublicCards.Append(() => {
                 //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
-                PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
+                PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId));
                 cc.tween(PublicCardInfo.trans).to(0.1, { scaleX: 1 }).start();
             }, .1);
 
             this.sequenceUpdatePublicCards.AppendInterval(0.4);
+
             //全体归位到0号位置并且显示
             for (let i = 0; i < 3; i++) {
                 PublicCardInfo = this.uirc.listCards[i];
@@ -1819,16 +1820,21 @@ export default class TexasGame {
                 let cardId = this.cards[i];
                 let move_pos = this.listDefaultPublicCardsLPos[i];
                 PublicCardInfo.cardId = cardId;
-                PublicHelper.InitSprite(imageCard, GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId)));
-                PublicHelper.InitNode(trans, this.listDefaultPublicCardsLPos[0]);
-                let func = () => {
-                    cc.log(`${i}张牌`, cardId);
-                    cc.tween(trans).to(.4, { position: move_pos }).start();
-                }
+                trans.setPosition(this.listDefaultPublicCardsLPos[0]);
                 if (i == 0) {
-                    this.sequenceUpdatePublicCards.Append(func, .4);
+                    this.sequenceUpdatePublicCards.Append(() => {
+                        trans.active = true;
+                        trans.setScale(1, 1);
+                        PublicHelper.InitSprite(imageCard, GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId)));
+                        cc.tween(trans).to(.4, { position: move_pos }).start();
+                    }, .4);
                 } else {
-                    this.sequenceUpdatePublicCards.Join(func, .4);
+                    this.sequenceUpdatePublicCards.Join(() => {
+                        trans.active = true;
+                        trans.setScale(1, 1);
+                        PublicHelper.InitSprite(imageCard, GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId)));
+                        cc.tween(trans).to(.4, { position: move_pos }).start();
+                    }, .4);
                 }
                 //添加目标和目标结果
                 this.sequenceUpdatePublicCards.AddTarget(trans);

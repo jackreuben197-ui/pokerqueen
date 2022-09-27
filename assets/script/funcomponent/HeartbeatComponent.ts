@@ -7,7 +7,6 @@ import { IUpdate } from "../define/EIDefine";
 import GameUtil from "../game/GameUtil";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Protocol_Holdem_Heartbeat } from "../net/websocket/ProtocolHoldemMessages";
 import GlobalSession from "../session/GlobalSession";
 
 

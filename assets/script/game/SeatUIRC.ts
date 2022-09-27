@@ -2,7 +2,8 @@
 
 import { UIMineModel } from "../lobby/UIMineModel";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { Protocol_Holdem_Showdown } from "../net/websocket/ProtocolHoldemMessages";
+import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { ClientMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import UIBase from "../ui/UIBase";
 import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./Seat";
@@ -340,15 +341,15 @@ export default class SeatUIRC extends UIBase {
         let mActive: boolean = this.listCardUIInfos[mCardIndex].imageEye.node.activeInHierarchy;
         this.listCardUIInfos[mCardIndex].imageEye.node.active = !mActive;
         this.showCardsId[mCardIndex] = (!mActive) ? 1 : 0;
-        ProtocolAgency.Send({
-            protocol: Protocol_Holdem_Showdown,
+        ProtocolAgency.Send<ClientMessageShowdown.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_Showdown,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            body: Protocol_Holdem_Showdown.Request(
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                    showCardsList: this.showCardsId
-                }),
+            Body:
+            {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                showCardsList: this.showCardsId
+            },
         })
     }
 

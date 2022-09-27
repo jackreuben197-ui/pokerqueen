@@ -50,8 +50,6 @@ export default class Main extends cc.Component {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
-
-        console.log(cc.assetManager.assets.get("ff0e91c7-55c6-4086-a39f-cb6e457b8c3b"));
     }
     start() {
         console.log("start");
