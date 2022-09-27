@@ -930,6 +930,26 @@ export class APIOrgClubQuit {
     public static Response: { code?: number, message?: string, data?: typeof APIOrgClubQuit.ResponseData };
 }
 
+export class APIOrgClubUploadIcon {
+    //接口地址
+    public static API: string = "/api/oss/upload/avatar";
+
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUploadIcon.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgClubUploadIcon.ResponseData };
+}
+
 
 /**
  * 注册全局访问

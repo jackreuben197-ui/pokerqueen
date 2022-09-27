@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 17:29:01
+ * @LastEditTime: 2022-09-27 16:58:00
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -11,6 +11,7 @@ import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
+import upLoadIcon from "../upLoadIcon";
 import { UIClubModel } from "./UIClubModel";
 
 
@@ -67,6 +68,11 @@ export default class UICreatelabor extends BaseForm {
         else {
             UIComponent.Instance.Toast(data.code);
         }
+    }
+    async uploadIcon() {
+        let _data = await upLoadIcon.openFile(this.camera);
+
+        console.log('uploadIcon_OpenImageFile===', _data);
     }
 
     // update (dt) {}

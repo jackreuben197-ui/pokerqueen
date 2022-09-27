@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 15:31:56
+ * @LastEditTime: 2022-09-27 16:13:34
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -71,11 +71,9 @@ export default class UIPlayerLookLabor extends BaseForm {
                 contentCommit: "确定",
                 contentCancel: "取消",
                 actionCommit: async () => {
-                    // await UIClubModel.mInstance.APIOrgClubQuit();
-                    setTimeout(() => {
-                        this.close();
-                        LobbyControl.getInstance().switchContent("UIlabor");
-                    }, 500)
+                    await UIClubModel.mInstance.APIOrgClubQuit();
+                    this.close();
+                    LobbyControl.getInstance().switchContent("UIlabor");
                 },
                 noAnimation: true,
             });
