@@ -60,7 +60,7 @@ export default class UIBase extends cc.Component {
         this.load_all_object(this.node);
     }
 
-    protected lateClose(param?: any) {
+    public lateClose(param?: any) {
 
     }
 

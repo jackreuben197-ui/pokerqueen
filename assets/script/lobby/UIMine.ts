@@ -100,6 +100,7 @@ export default class UIMine extends UIBase {
     }
 
     onClickCopy() {
-        PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
+        PublicHelper.ossUploadImage();
+        // PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
     }
 }
