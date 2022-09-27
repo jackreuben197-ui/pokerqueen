@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 17:49:26
+ * @LastEditTime: 2022-09-27 18:32:58
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 
 export class UIClubModel {
     private static instance: UIClubModel = null;
@@ -191,14 +191,56 @@ export class UIClubModel {
     }
 
     APIOrgClubUploadIcon(buffer) {
-        let data = new FormData();
-        data.append("file", buffer, "bnt.jpg");
+        let data = new FormData()
+        data.append('file', buffer)
         return new Promise((resolve, reject) => {
             HttpRequest.Send2({
                 request: APIOrgClubUploadIcon,
                 body: APIOrgClubUploadIcon.Request(data),
                 onSuccess: function () {
                     resolve(APIOrgClubUploadIcon.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                //headers: [['Content-Type:', 'image/jpeg']]
+            });
+        });
+    }
+
+    APIOrgMangerList(id) {
+        let params: any = {
+            club_random_id: id,
+            "limit": 5,
+            "offset": 0
+        };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgMangerList,
+                body: APIOrgMangerList.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgMangerList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                //headers: [['Content-Type:', 'image/jpeg']]
+            });
+        });
+    }
+
+    APIOrgMemberList(id) {
+        let params: any = {
+            club_random_id: id,
+            "limit": 5,
+            "offset": 0
+        };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgMemberList,
+                body: APIOrgMemberList.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgMemberList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

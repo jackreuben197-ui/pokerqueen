@@ -3,24 +3,20 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 14:56:45
+ * @LastEditTime: 2022-09-27 18:40:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
+
 
 import { UIDefine } from "../../define/UIDefine";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, property } = cc._decorator;
-import { Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
 import UIBase from "../../ui/UIBase";
+import { UIClubModel } from "./UIClubModel";
 @ccclass
 export default class UIManageLabor extends BaseForm {
 
@@ -30,6 +26,11 @@ export default class UIManageLabor extends BaseForm {
     EditBox: cc.EditBox = null;
     @property(cc.Node)
     contentNode: cc.Node = null;
+    @property(cc.Node)
+    iconNodeMan: cc.Node = null;
+    @property(cc.Node)
+    iconNodeMer: cc.Node = null;
+
     @property(cc.Label)
     lbl_glod: cc.Label = null;
     protected lateLoad(): void {
@@ -38,6 +39,8 @@ export default class UIManageLabor extends BaseForm {
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
         this.initTop();
+        this.initMangerList();
+        this.initMemberList();
     }
     initTop() {
         let data: any = Web_Org_Club_Get.Response.data;
@@ -68,6 +71,28 @@ export default class UIManageLabor extends BaseForm {
         chsj.getChildByName('time').getComponent(cc.Label).string = data.create_time
 
 
+    }
+    async initMangerList() {
+        let data: any = Web_Org_Club_Get.Response.data;
+        await UIClubModel.mInstance.APIOrgMangerList(data.random_id);
+        data = APIOrgMangerList.Response.data
+        for (let index = 0; index < data?.data.length; index++) {
+
+            const element = this.iconNodeMan.children[index].getChildByName('icon').getComponent(cc.Sprite);
+            WebImageHelper.SetUrlImage(element, data?.data[index].avatar)
+            this.iconNodeMan.children[index].active = true;
+        }
+    }
+    async initMemberList() {
+        let data: any = Web_Org_Club_Get.Response.data;
+        await UIClubModel.mInstance.APIOrgMemberList(data.random_id)
+        data = APIOrgMemberList.Response.data;
+        for (let index = 0; index < data?.data.length; index++) {
+
+            const element = this.iconNodeMer.children[index].getChildByName('icon').getComponent(cc.Sprite);
+            WebImageHelper.SetUrlImage(element, data?.data[index].avatar)
+            this.iconNodeMer.children[index].active = true;
+        }
     }
     managementMember() {
         UIComponent.open(UIDefine.UIlaborMerberManager);
