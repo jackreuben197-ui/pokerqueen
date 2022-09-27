@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 14:37:56
+ * @LastEditTime: 2022-09-27 15:31:56
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -63,7 +63,7 @@ export default class UIPlayerLookLabor extends BaseForm {
 
     }
     exitClub() {
-        UIComponent.open(UIDefine.UIDialogComponent,
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
                 title: "提示",
@@ -81,7 +81,7 @@ export default class UIPlayerLookLabor extends BaseForm {
             });
     }
     exitClubSure() {
-        UIComponent.open(UIDefine.UIDialogComponent,
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
                 title: "退出公会",
@@ -89,10 +89,7 @@ export default class UIPlayerLookLabor extends BaseForm {
                 contentCommit: "确定",
                 contentCancel: "取消",
                 actionCommit: () => {
-                    setTimeout(() => {
-                        this.exitClub()
-                    }, 500)
-
+                    this.exitClub()
                 },
                 noAnimation: true,
             });

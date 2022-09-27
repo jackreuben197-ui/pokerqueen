@@ -109,6 +109,9 @@ export default class UIComponent {
             case UIType.Form:
                 UIFormMgr.Instance.open(UIDefine, param, false);
                 break;
+            case UIType.Dialog:
+                UIDialogMgr.Instance.open(UIDefine, param, false);
+                break;
         }
     }
     //无动画关闭UI
@@ -117,6 +120,9 @@ export default class UIComponent {
         switch (UIDefine.UIType) {
             case UIType.Form:
                 UIFormMgr.Instance.close(UIDefine, param, false);
+                break;
+            case UIType.Dialog:
+                UIDialogMgr.Instance.close(UIDefine, param, false);
                 break;
         }
     }
