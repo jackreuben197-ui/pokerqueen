@@ -66,7 +66,7 @@ export default class UIPromptComponent extends UIBase {
                 break;
         }
     }
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         this.translateStatus(this.statusType.Idle);
     }
     goClose() {

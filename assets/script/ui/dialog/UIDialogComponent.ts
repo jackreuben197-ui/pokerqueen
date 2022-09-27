@@ -123,7 +123,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
     }
 
 
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose(param);
     }
 

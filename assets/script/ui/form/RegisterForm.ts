@@ -78,7 +78,7 @@ export default class RegisterForm extends BaseForm {
         //this.resetAgreeCheck();
     }
 
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose(param);
     }
     protected regiterTouchEvents() {

@@ -46,7 +46,7 @@ export default class AreaCodeForm extends BaseForm {
 
     }
 
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose(param);
     }
 

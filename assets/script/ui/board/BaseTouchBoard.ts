@@ -94,7 +94,7 @@ export default class BaseTouchBoard extends UIBase {
             cc.log("面板动画完成");
         }
     }
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose(param);
     }
     protected stopAllThings(): void {
