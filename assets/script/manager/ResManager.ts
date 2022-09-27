@@ -1,3 +1,4 @@
+import { bundleRes, bundleSpriteRes } from "../config/PathConfig";
 import MyLog from "../tools/MyLog";
 
 export const Bundle_Resources: string = "resources";
@@ -28,6 +29,13 @@ export const Pre_Texas_Define: Pre_Define = {
 }
 
 export class ResManager {
+    private static _instance: ResManager = null;
+    public static get instance() {
+        if (!ResManager._instance) {
+            ResManager._instance = new ResManager();
+        }
+        return ResManager._instance;
+    }
 
     static bundleMap: { [key: string]: cc.AssetManager.Bundle } = {};
 
@@ -247,7 +255,7 @@ export class ResManager {
     /***
      * nameOrUrl: 传入包名  或者url路径（如果是复用其他项目的包，则只能使用url）
      ***/
-     loadBundle(nameOrUrl: string, callBack?: Function, errorCb: Function = null) {
+    loadBundle(nameOrUrl: string, callBack?: Function, errorCb: Function = null) {
         let bundle = cc.assetManager.getBundle(nameOrUrl);
         if (bundle) {
             callBack && callBack(bundle)

@@ -24,10 +24,10 @@ export const enum AudioPath {
 
 export const bundleRes = {
     // 资源名称 ：包名
-    UIPlantDetailsView: 'skill', //植物详情界面
+    // UIPlantDetailsView: 'skill', //植物详情界面
 }
 
 export const bundleSpriteRes = {
     // 动态加载的资源包名 
-    ani: 1,
+    // ani: 1,
 }

@@ -1,4 +1,6 @@
-import { Base } from "./base";
+import { AudioPath } from "../../config/PathConfig";
+import GC from "../GameControl";
+import { Base } from "./Base";
 
 
 export default class BaseComponent extends Base {
@@ -43,7 +45,7 @@ export default class BaseComponent extends Base {
             stopPro && event.stopPropagation()
             scaleAni && node.stopAllActions()
             scaleAni && cc.tween(node).to(0.1, { scale: scale }).start();
-            // GC.audio.playSound(AudioPath.btnClick);
+            GC.audio.playSound(AudioPath.btnClick);
             !start && callBack(event, data)
         }, this);
         if (this._clickNodes.indexOf(node) == -1) {

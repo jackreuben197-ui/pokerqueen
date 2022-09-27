@@ -30,6 +30,11 @@ export default class AudioManager {
     private _pasume = false;
 
     private _playingMap: Map<string, number> = new Map();
+
+    constructor() {
+        this.init();
+    }
+
     init() {
 
         let v = GC.localStore.getItem(this._volumeKey)
@@ -215,10 +220,15 @@ export default class AudioManager {
     }
 
     private loadAudioRes(path: string, loop: boolean, callBack?: Function) {
-        GC.res.loadResFromBundleName("audios", path, cc.AudioClip, (clip: cc.AudioClip) => {
+        // GC.res.loadResFromBundleName("audios", path, cc.AudioClip, (clip: cc.AudioClip) => {
+        //     this._cache.set(path, clip);
+        //     this.play(clip, loop, callBack)
+        // });
+
+        GC.res.loadRes(AudioPath.rootPath + path, (clip: cc.AudioClip) => {
             this._cache.set(path, clip);
             this.play(clip, loop, callBack)
-        });
+        }, cc.AudioClip);
     }
 
     private play(clip: cc.AudioClip, loop: boolean, callBack?: Function) {
