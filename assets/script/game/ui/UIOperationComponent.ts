@@ -804,7 +804,8 @@ export default class UIOperationComponent extends UIBase {
         this.buttonFreeCallConfirm.active = false;
         this.Button_Straddle.active = false;
     }
-    protected lateClose(param?: any): void {
+    lateClose(param?: any): void {
+        super.lateClose();
         this.isCountDown = false;
         this._isCheckCountDown = false;
         this._isFoldCountDown = false;

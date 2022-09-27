@@ -29,7 +29,7 @@ export default class UserAgreeForm extends BaseForm {
     /**
      * 关闭需要处理的内容
      */
-    protected lateClose(param?: any) {
+    lateClose(param?: any) {
         super.lateClose(param);
     }
     /**

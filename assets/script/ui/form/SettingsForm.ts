@@ -44,7 +44,7 @@ export default class SettingsForm extends BaseForm {
     /**
      * 关闭需要处理的内容
      */
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose(param);
     }
     /**
