@@ -43,10 +43,8 @@ export default class GoldOprationForm extends BaseForm {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.ruleBtn.off(cc.Node.EventType.TOUCH_END, this.clickRuleBtn, this);
-        this.ruleBtn.on(cc.Node.EventType.TOUCH_END, this.clickRuleBtn, this);
-        this.tipNode.off(cc.Node.EventType.TOUCH_END, this.clickTipNode, this);
-        this.tipNode.on(cc.Node.EventType.TOUCH_END, this.clickTipNode, this);
+        this.bindClick(this.ruleBtn, this.clickRuleBtn);
+        this.bindClick(this.tipNode, this.clickTipNode);
     }
 
     onShow(type: EWalletGoldOpration): void {
@@ -57,7 +55,7 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     initView() {
-        let title = this._type == EWalletGoldOpration.in ? "充豆" : "提豆";
+        let title = this._type == EWalletGoldOpration.in ? "Text_Add" : "Text_Getchips";
         this.comFormTitle.initData(title, this);
 
         this.edit.string = "";
@@ -79,12 +77,12 @@ export default class GoldOprationForm extends BaseForm {
         item.initData(this._data[index], this.clickItem);
     }
 
-    clickRuleBtn() {
+    clickRuleBtn = () => {
         this.tipNode.active = true;
-        this.tipLab.string = "汇率：1:1"
+        this.setText(this.tipLab, "汇率：1:1");
     }
 
-    clickTipNode() {
+    clickTipNode = () => {
         this.tipNode.active = false;
     }
 
@@ -100,10 +98,10 @@ export default class GoldOprationForm extends BaseForm {
             UIComponent.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
-                    title: "提示",
+                    title: "adaptation10007",
                     content: this.getApplyContent(goldNum, price),
-                    contentCommit: "确定",
-                    contentCancel: "取消",
+                    contentCommit: "adaptation10012",
+                    contentCancel: "adaptation10013",
                     actionCommit: () => {
                         let paramas: any = {};
                         paramas.amount = Number(this.edit.string)

@@ -1,14 +1,27 @@
 import { AudioPath } from "../../config/PathConfig";
+import { IUIDefine } from "../../define/EIDefine";
+import AdapterComponent from "../../funcomponent/AdapterComponent";
 import GC from "../GameControl";
 import { Base } from "./Base";
 
 
 export default class BaseComponent extends Base {
+    private _param: any = null;;
     private _path: string = "";
     private _clickNodes: Array<cc.Node> = [];
-
+    private _view: any = {};
     onLoad() {
         super.onLoad();
+        this.lateLoad();
+        this.regiterTouchEvents();
+
+        !this.UIDefine || this.UIDefine.DisAdaptScreen || this.node.addComponent(AdapterComponent);
+        if (this.UIDefine) window[this.UIDefine.Name] = this;
+    }
+
+    onShow(param?: any) {
+        this._param = param;
+        this.UIDefine && cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);
     }
 
     start() {
@@ -26,15 +39,51 @@ export default class BaseComponent extends Base {
         this._path = p;
     }
 
+    get param() {
+        return this._param;
+    }
+
+    get UIDefine(): IUIDefine {
+        return this.constructor["UIDefine"];
+    }
+
+    protected lateLoad() {
+        this.load_all_object(this.node);
+    }
+    /**
+     * 保证节点名字在根节点下唯一性 最好不要取名view
+     * @param root 
+     * @param path 
+     * @param 获取节点下的组件的方式 root.$Sprite--->root.$Button---直接获取
+     */
+    protected load_all_object(root: cc.Node): void {
+        root.children.forEach(child => {
+            this._view[child.name] = child;
+            this.load_all_object(child);
+        })
+    }
+
+    /**
+     * 通过节点名字获取节点 或者 通过 节点名字 + 组件类型 获取节点上的组件
+     * @param name 
+     * @component 组件类型
+     * @returns 
+     */
+    protected getChildNodeOrComponent<T extends cc.Component | cc.Node>(name: string, component?: { prototype: T }): T {
+        let node = this._view[name];
+        return component ? (node?.getComponent(component)) : node;
+    }
+
     protected bindClick(com: cc.Node | cc.Component, callBack: Function, data?: any, scaleAni: boolean = false, start: boolean = false, stopPro: boolean = true) {
         let node: cc.Node = (com instanceof cc.Component ? com.node : com);
         let scale = node.scale;
         node.targetOff(this)
+        let self = this;
         node.on(cc.Node.EventType.TOUCH_START, (event: cc.Event.EventTouch) => {
             stopPro && event.stopPropagation()
             scaleAni && node.stopAllActions()
             scaleAni && cc.tween(node).to(0.1, { scale: scale * 1.1 }).start();
-            start && callBack(event, data)
+            start && callBack.call(self, event, data)
         }, this);
         node.on(cc.Node.EventType.TOUCH_CANCEL, (event: cc.Event.EventTouch) => {
             stopPro && event.stopPropagation()
@@ -46,7 +95,7 @@ export default class BaseComponent extends Base {
             scaleAni && node.stopAllActions()
             scaleAni && cc.tween(node).to(0.1, { scale: scale }).start();
             GC.audio.playSound(AudioPath.btnClick);
-            !start && callBack(event, data)
+            !start && callBack.call(self, event, data)
         }, this);
         if (this._clickNodes.indexOf(node) == -1) {
             this._clickNodes.push(node);
@@ -119,6 +168,13 @@ export default class BaseComponent extends Base {
     // protected onTouchEnd(event: cc.Event.EventTouch) { }
     // protected onTouchCancel(event: cc.Event.EventTouch) { }
 
+    /**
+     * 注册触摸事件
+     */
+    protected regiterTouchEvents() {
+
+    }
+
     protected removeAllClickEvent() {
         this._clickNodes.forEach(node => {
             if (node && node.isValid) {
@@ -139,10 +195,28 @@ export default class BaseComponent extends Base {
     }
     /***  touches end */
 
+    onClose(param?: any) {
+        this.UIDefine && cc.log("::", this.UIDefine.Name, "onClose()");
+        this.stopAllThings();
+        this.unregiterAllDispatchEvent();
+        this.lateClose(param);
+    }
+
+    lateClose(param?: any) {
+
+    }
+
     // 销毁所有监听事件
-    protected unregisterAllListener() {
-        super.unregisterAllListener();
+    protected unregiterAllDispatchEvent() {
+        super.unregiterAllDispatchEvent();
         this.removeAllClickEvent();
+    }
+
+    /**
+    * 停止所有 动作，包括 tween ,update，等
+    */
+    protected stopAllThings() {
+        this.node.stopAllActions();
     }
 
     onDisable() {
@@ -153,9 +227,9 @@ export default class BaseComponent extends Base {
         // 停止所有注册
         this.unscheduleAllCallbacks();
         // 移除所有监听
-        this.unregisterAllListener();
+        this.unregiterAllDispatchEvent();
         // 停止所有动作
-        this.node.stopAllActions();
+        this.stopAllThings();
     }
 
 }

@@ -24,8 +24,9 @@ export default class ComFormTitle extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.rightTextBtn.node.off(cc.Node.EventType.TOUCH_END, this.clickRightTextBtn, this);
-        this.rightTextBtn.node.on(cc.Node.EventType.TOUCH_END, this.clickRightTextBtn, this);
+        this.bindClick(this.rightTextBtn, this.clickRightTextBtn);
+        // this.rightTextBtn.node.off(cc.Node.EventType.TOUCH_END, this.clickRightTextBtn, this);
+        // this.rightTextBtn.node.on(cc.Node.EventType.TOUCH_END, this.clickRightTextBtn, this);
     }
 
     onShow(param?: any): void {
@@ -34,16 +35,16 @@ export default class ComFormTitle extends UIBase {
 
     initData(title: string, target: UIBase, rightTextStr: string = null, rightTextCallBack: Function = null) {
         this._target = target
-        this.title.string = title;
+        this.setText(this.title, title);
 
         this.rightTextBtn.node.active = Boolean(rightTextStr);
         if (this.rightTextBtn.node.active) {
             this._rightTextBtnCallBack = rightTextCallBack;
-            this.rightTextBtn.string = rightTextStr;
+            this.setText(this.rightTextBtn, rightTextStr);
         }
     }
 
-    clickRightTextBtn() {
+    clickRightTextBtn = () => {
         this._rightTextBtnCallBack && this._rightTextBtnCallBack();
     }
 
