@@ -67,12 +67,6 @@ export default class BaseForm extends UIBase {
         super.onShow(param);
         this.mainFadeIn(this.show_animation);
     }
-
-    async asyncOnClose(param?: any) {
-        this.showFromUI();
-        await this.mainFadeOut(param);
-        super.onClose(param);
-    }
     async onClose(param?: any) {
         this.showFromUI();
         this.close_animation ? await this.mainFadeOut(param) : this.fadeOutComplete();

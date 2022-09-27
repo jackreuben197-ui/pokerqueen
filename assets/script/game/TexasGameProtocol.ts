@@ -7,6 +7,7 @@ import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def, Result } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
+import { ServerMessageAddTimeOthers } from "../protobuf/holdem/recv_add_time_others_pb";
 import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
@@ -452,9 +453,7 @@ export default class TexasGameProtocol {
     HANDLER_REQ_SEE_MORE_PUBLIC_ACTION(Protocol_Holdem_ShowPublicCards: ProtocolCode, HANDLER_REQ_SEE_MORE_PUBLIC_ACTION: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    HANDLER_REQ_ADD_TIME_OTHERS(Protocol_Holdem_AddTimeOthers: ProtocolCode, HANDLER_REQ_ADD_TIME_OTHERS: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+
 
 
     HANDLER_REQ_GAME_PLAYER_CARDS(Protocol_Holdem_Showcards: ProtocolCode, HANDLER_REQ_GAME_PLAYER_CARDS: any, arg2: this) {
@@ -488,7 +487,19 @@ export default class TexasGameProtocol {
         this.game.ClickAddTime = false;
     }
 
-
+    /// <summary>
+    /// 其他人操作加时（不包含自己）
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_ADD_TIME_OTHERS(rec: ServerMessageAddTimeOthers.AsObject) {
+        if (rec == null) {
+            return;
+        }
+        //他人延时
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
+        if (null == mSeat) return;
+        mSeat.AddOperationTime(rec.duration);
+    }
 
 
 

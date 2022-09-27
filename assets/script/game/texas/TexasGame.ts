@@ -2311,9 +2311,6 @@ export default class TexasGame {
         }
     }
 
-
-
-
     /// <summary>
     /// 播放本轮结束公共牌动画
     /// </summary>
@@ -2362,8 +2359,6 @@ export default class TexasGame {
                 break;
             }
         }
-
-
 
         let mIsFirst = true;
         let mCacheCardIds = [];

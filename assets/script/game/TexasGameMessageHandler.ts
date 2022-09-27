@@ -350,9 +350,6 @@ export default class TexasGameMessageHandler {
         UIComponent.Instance.Toast(i18nMgr.Get(`LeaveReason${response.reason}`));
     }
 
-
-
-
     public Protocol_Holdem_AddOn_Handler(): void {
 
     }
@@ -384,10 +381,10 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_InsuranceTrigged_Handler(Protocol_Holdem_InsuranceTrigged: ProtocolCode, Protocol_Holdem_InsuranceTrigged_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    Protocol_Holdem_AddTimeOthers_Handler(Protocol_Holdem_AddTimeOthers: ProtocolCode, Protocol_Holdem_AddTimeOthers_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
 
+    Protocol_Holdem_AddTimeOthers_Handler(response) {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_AddTimeOthers_Handler`);
+    }
     /// <summary>
     /// 结果通知 消息回调
     /// </summary>

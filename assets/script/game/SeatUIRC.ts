@@ -1,10 +1,16 @@
 
 
+import { DialogParam } from "../define/EIDefine";
+import { UIDefine } from "../define/UIDefine";
+import { CPErrorCode } from "../i18n/CPErrorCode";
+import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ClientMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
+import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent";
 import UIBase from "../ui/UIBase";
+import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./Seat";
 
@@ -181,6 +187,7 @@ export default class SeatUIRC extends UIBase {
         this.imageBubble = this.getChildNodeOrComponent("Image_Bubble", cc.Sprite);
         this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
 
+        //声纹
         this.voiceprintList = [];
         // this.voiceprintList.Add(VoiceprintStart);
         // this.voiceprintList.Add(VoiceprintEntering);
@@ -208,7 +215,6 @@ export default class SeatUIRC extends UIBase {
         this.ResetShowCardsId();
     }
 
-
     protected regiterTouchEvents(): void {
 
         for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
@@ -222,18 +228,12 @@ export default class SeatUIRC extends UIBase {
 
         UIMineModel.mInstance.ObtainUserInfo(pDto => {
             if (pDto.user.forbid_bring_in == 1) {
-                // UIComponent.Instance.ShowNoAnimation(UIType.UIDialog,
-                //     new UIDialogComponent.DialogData()
-                // 				{
-                //         type = UIDialogComponent.DialogData.DialogType.Commit,
-                //         title = "",
-
-                //         content = LanguageManager.Get("UIForbidBringInTips"),
-                //         // contentCommit = "确定",
-                //         contentCommit = CPErrorCode.LanguageDescription(10012),
-                //         actionCommit = () => { },
-                //         actionCancel = null
-                //     });
+                UIComponent.open<UIDialogParam>(UIDefine.UIDialogComponent, {
+                    title: "",
+                    type: UIDialogComponent.DialogType.Commit,
+                    content: i18nMgr.Get("UIForbidBringInTips"),
+                    contentCommit: CPErrorCode.LanguageDescription(10012),
+                })
                 return;
             }
             else {

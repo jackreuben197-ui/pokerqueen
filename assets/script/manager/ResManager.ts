@@ -74,12 +74,10 @@ export class ResManager {
                     reject(0);
                 } else {
                     bundle.loadDir("/",
-                        (finish: number, total: number) => {
+                        (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
                             let percent = finish / total;
                             if (progressHandler) progressHandler(percent);
                         }, (error: Error, assets) => {
-                            //cc.log("预加载资源加载完成");
-                            //ProcedureManager.StartProcedure(ProcedureEnum.Config);
                             if (error) {
                                 cc.log("load dir error:", error);
                                 reject(0);
