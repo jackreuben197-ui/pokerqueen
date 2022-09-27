@@ -2,8 +2,8 @@
  * @Author: xfj
  * @Date: 2022-09-19 17:20:26
  * @description: 
- * @LastEditors: 
- * @LastEditTime: 2022-09-22 14:35:38
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-27 15:33:37
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -22,7 +22,7 @@ export class GameConfig {
     //是否使用代理
     static useProxy: boolean = false;
     //是否使用新域名
-    static IsNewArea: boolean = false;
+    static IsNewArea: boolean = true;
     //设计分辨率
     static DesignResolution = cc.size(1242, 2688);
     //fps

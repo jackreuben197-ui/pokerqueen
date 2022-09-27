@@ -102,6 +102,11 @@ export default class BaseTouchBoard extends UIBase {
         this.main.stopAllActions();
     }
     protected goClose() {
-        UIComponent.close(this.UIDefine);
+        if (this.param.noAnimation) {
+            UIComponent.Instance.CloseNoAnimation(this.UIDefine);
+        } else {
+            UIComponent.close(this.UIDefine);
+
+        }
     }
 }

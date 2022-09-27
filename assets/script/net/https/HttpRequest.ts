@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-09-27 11:48:16
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2022-09-27 17:49:20
+ * @FilePath: /pokerqueen/assets/script/net/https/HttpRequest.ts
+ */
 import { GameConfig } from "../../config/GameConfig";
 import HttpClient from "./HttpClient";
 import WebHelper from "./WebHelper";
@@ -39,7 +47,7 @@ export default class HttpRequest {
     // 用于单独一个接口 需要https写死测试服务器用到
     static async Send2({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null }) {
 
-        let host = "https://dev1.awanptesting.com";
+        let host = "http://dev.awanptesting.com";
         let url = host + (api || request.API);
         url = this.handleUrl2(url);
         let needJuhua = WebHelper.NeedJuhua(request.API);
@@ -55,8 +63,8 @@ export default class HttpRequest {
     //代理转换
     public static handleUrl2(url: string): string {
         if (GameConfig.IsNewArea) {
-            if (GameConfig.useProxy && url.indexOf("https://dev1.awanptesting.com/api/") > -1) {
-                return url.replace("https://dev1.awanptesting.com/api/", "http://localhost:8080/")
+            if (GameConfig.useProxy && url.indexOf("http://dev.awanptesting.com/api/") > -1) {
+                return url.replace("http://dev.awanptesting.com/api/", "http://localhost:8080/")
             }
         } else {
             if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {

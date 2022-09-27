@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 11:57:03
+ * @LastEditTime: 2022-09-27 16:13:34
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -13,6 +13,8 @@ import UIComponent from "../../ui/UIComponent";
 import { Web_Org_Club_Get } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
+import { UIClubModel } from "./UIClubModel";
+import { LobbyControl } from "../control/LobbyControl";
 
 const { ccclass, property } = cc._decorator;
 
@@ -61,15 +63,31 @@ export default class UIPlayerLookLabor extends BaseForm {
 
     }
     exitClub() {
-        UIComponent.open(UIDefine.UIDialogComponent,
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
                 title: "提示",
                 content: '您的账户内剩余金豆XXXX，如减持退出，系统将清空您的所有剩余金豆，是否继续？',
                 contentCommit: "确定",
                 contentCancel: "取消",
+                actionCommit: async () => {
+                    await UIClubModel.mInstance.APIOrgClubQuit();
+                    this.close();
+                    LobbyControl.getInstance().switchContent("UIlabor");
+                },
+                noAnimation: true,
+            });
+    }
+    exitClubSure() {
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+            {
+                type: UIDialogComponent.DialogType.CommitCancel,
+                title: "退出公会",
+                content: '退出后无法参与游戏，是否继续推出？',
+                contentCommit: "确定",
+                contentCancel: "取消",
                 actionCommit: () => {
-
+                    this.exitClub()
                 },
                 noAnimation: true,
             });

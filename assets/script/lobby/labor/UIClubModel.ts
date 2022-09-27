@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 18:47:47
+ * @LastEditTime: 2022-09-27 17:49:26
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit } from "../../net/https/WebRequest";
+import { Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 
 export class UIClubModel {
     private static instance: UIClubModel = null;
@@ -186,6 +186,24 @@ export class UIClubModel {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubUploadIcon(buffer) {
+        let data = new FormData();
+        data.append("file", buffer, "bnt.jpg");
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send2({
+                request: APIOrgClubUploadIcon,
+                body: APIOrgClubUploadIcon.Request(data),
+                onSuccess: function () {
+                    resolve(APIOrgClubUploadIcon.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                //headers: [['Content-Type:', 'image/jpeg']]
             });
         });
     }

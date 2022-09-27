@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 10:52:46
+ * @LastEditTime: 2022-09-27 14:56:45
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 // Learn TypeScript:
@@ -71,5 +71,10 @@ export default class UIManageLabor extends BaseForm {
     }
     managementMember() {
         UIComponent.open(UIDefine.UIlaborMerberManager);
+    }
+    joinUnion() {
+        if (true) {
+            UIComponent.open(UIDefine.UIJoinUnion);
+        }
     }
 }

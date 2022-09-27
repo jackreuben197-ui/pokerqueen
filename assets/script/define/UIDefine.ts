@@ -253,7 +253,13 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIManageLabor ",
         Bundle: null,
-        Path: "main/club/UIManageLabor ",
+        Path: "main/club/UIManageLabor",
+    },
+    UIJoinUnion: {
+        UIType: UIType.Form,
+        Name: "UIJoinUnion ",
+        Bundle: null,
+        Path: "main/club/UIJoinUnion",
     },
     UIlaborMerberManager: {
         UIType: UIType.Form,

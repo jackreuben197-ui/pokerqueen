@@ -128,17 +128,19 @@ export default class UIDialogComponent extends BaseTouchBoard {
     }
 
     protected onCommitClick() {
+        super.goClose();
+
         if (this._actionCommit) {
             this._actionCommit();
         }
-        super.goClose();
     }
 
     protected onCancelClick() {
+        super.goClose();
+
         if (this._actionCancel) {
             this._actionCancel();
         }
-        super.goClose();
     }
 
     // maskFadeIn(style: any) {
