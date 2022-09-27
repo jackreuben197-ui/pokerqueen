@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 14:36:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 14:02:09
+ * @LastEditTime: 2022-09-26 18:50:24
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborExaminatMerber.ts
  */
 // Learn TypeScript:
@@ -15,6 +15,8 @@
 
 import BaseForm from "../../ui/form/BaseForm";
 import { UIClubModel } from "./UIClubModel";
+import { Web_Org_Club_Get, APIOrgClubGetJoinlList, } from "../../net/https/WebRequest";
+import WebImageHelper from "../../helper/WebImageHelper";
 
 const { ccclass, property } = cc._decorator;
 
@@ -32,6 +34,19 @@ export default class UIlaborExaminatMerber extends BaseForm {
     @property(cc.Node)
     exitList: cc.Node = null
 
+    @property(cc.Node)
+    joinContent: cc.Node = null
+
+    @property(cc.Node)
+    exitContent: cc.Node = null
+
+    @property(cc.Node)
+    item: cc.Node = null
+
+    @property(cc.Node)
+    itemAgree: cc.Node = null
+
+
     topBtnTye = ''
     protected lateLoad(): void {
         super.lateLoad();
@@ -40,8 +55,10 @@ export default class UIlaborExaminatMerber extends BaseForm {
         super.onShow(param, fromUI);
         this.topBtnClick(null, 'join')
     }
+
     topBtnClick(event, customData) {
         if (this.topBtnTye == customData) return
+        this.topBtnTye = customData
         let joinLabel = this.join.getChildByName('TEXT_LABEL');
         let joinRectangle = this.join.getChildByName('Rectangle 14');
         let exitLabel = this.exit.getChildByName('TEXT_LABEL');
@@ -59,14 +76,38 @@ export default class UIlaborExaminatMerber extends BaseForm {
             joinRectangle.active = false;
             this.exitJoinList()
         }
-        this.topBtnTye = customData
+
 
     }
 
     async initJoinList() {
         this.joinList.active = true;
         this.exitList.active = false;
-        // await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
+        this.joinContent.removeAllChildren();
+        await UIClubModel.mInstance.APIOrgClubGetJoinlList()
+        let data: any = APIOrgClubGetJoinlList.Response.data
+        for (let index = 0; index < data?.data.length; index++) {
+            const element = data?.data[index];
+            let item = cc.instantiate(this.itemAgree);
+            item.parent = this.joinContent;
+            item.getChildByName('name').getComponent(cc.Label).string = element.nickname
+            item.getChildByName('id').getComponent(cc.Label).string = element.user_random_id
+            let icon = cc.find('iconMask/icon', item);
+            // WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), element.avatar)
+            let refuse = cc.find('btnNode/refuse', item)
+            refuse.on(cc.Node.EventType.TOUCH_END, () => {
+                UIClubModel.mInstance.APIOrgClubApprovalJoin(element.id, 3);
+                item.active = false
+            }, this)
+
+            let agree = cc.find('btnNode/agree', item)
+            agree.on(cc.Node.EventType.TOUCH_END, () => {
+                UIClubModel.mInstance.APIOrgClubApprovalJoin(element.id, 2);
+                item.active = false
+            }, this)
+            item.active = true
+
+        }
 
     }
 

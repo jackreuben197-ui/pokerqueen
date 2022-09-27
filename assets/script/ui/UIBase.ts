@@ -13,6 +13,10 @@ export default class UIBase extends cc.Component {
 
     static load_all_objects_duration: number = 0;
 
+    show_animation: boolean = false;
+
+    close_animation: boolean = false;
+
     protected onLoad() {
         !this.UIDefine || this.UIDefine.DisAdaptScreen || this.node.addComponent(AdapterComponent);
         if (this.UIDefine) window[this.UIDefine.Name] = this;
@@ -89,6 +93,10 @@ export default class UIBase extends cc.Component {
      * @param 获取节点下的组件的方式 root.$Sprite--->root.$Button---直接获取
      */
     load_all_object(root: cc.Node): void {
+        // root.children.forEach(child => {
+        //     this.view[child.name] = child;
+        //     this.load_all_object(child);
+        // })
         for (let i = 0; i < root.childrenCount; i++) {
             let child: cc.Node = root.children[i];
             //console.log("child", child);

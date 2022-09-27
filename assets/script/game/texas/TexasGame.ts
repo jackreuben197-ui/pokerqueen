@@ -1,5 +1,4 @@
 import TexasConfig from "../../config/TexasConfig";
-import { Param } from "../../define/Types";
 import { UIDefine } from "../../define/UIDefine";
 import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import UpdateComponent from "../../funcomponent/UpdateComponent";
@@ -9,21 +8,17 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { Web_User_Room } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { Protocol_Holdem_Action, Protocol_Holdem_BringIn, Protocol_Holdem_Seated, Protocol_Holdem_StandupActive } from "../../net/websocket/ProtocolHoldemMessages";
 import { Def, RoomInfo, Operator, Player } from "../../protobuf/holdem/define_pb";
-import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
-import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
-
 import GameUtil, { RoomType } from "./../GameUtil";
 import Seat, { SeatUIInfo } from "./../Seat";
 import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation, SeatWaitOther } from "./../SeatStateHandler";
@@ -41,6 +36,11 @@ import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import Main from "../../Main";
 import { DOTween, Sequence } from "../../dotween/DOTween";
 import PublicHelper from "../../helper/PublicHelper";
+import { ClientMessageSeated } from "../../protobuf/holdem/req_seated_pb";
+import { ClientMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
+import { ClientMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
+import { ClientMessageAction } from "../../protobuf/holdem/req_action_pb";
+import { ClientMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
 //const PBTypes = Def.Types;
 
 
@@ -336,6 +336,20 @@ export default class TexasGame {
     public VoiceprintCountdown: number = 0;
 
 
+    /// <summary>
+    /// 点击加时，用于判断是否关闭操作面板
+    /// </summary>
+    public ClickAddTime: boolean = false;
+    /// <summary>
+    /// 记录接收公共牌上次时间戳
+    /// </summary>
+    public ResponsePubCardLastTime: number = 0;
+    /// <summary>
+    /// 记录接收公共牌 差值 转秒
+    /// </summary>
+    public PubCardDiffTime: boolean = false;
+
+
     //////////////TexasGameUI的内容先放到这里
     /// <summary>
     /// 马上完成公共牌动画
@@ -397,6 +411,10 @@ export default class TexasGame {
         this.texasGameProtocol.RemoveMsgHandler();
     }
 
+
+    public GetSequencePlayDealAnimation() {
+        return this.sequencePlayDealAnimation;
+    }
 
     //获取桌面样式
     get deskType() {
@@ -1194,20 +1212,19 @@ export default class TexasGame {
                 let bring_out: number = tResp.data.last_bring_out.to_wallet;
                 if (bring_out + fee > 0) {
                     if (tResp.data.last_bring_out.to_wallet <= tResp.data.wallet.gold) {
-                        ProtocolAgency.Send({
-                            protocol: Protocol_Holdem_Seated,
+                        ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                            Code: ProtocolCode.Protocol_Holdem_Seated,
                             RoomID: GameCache.Instance.room_id,
                             MatchID: GameCache.Instance.match_id,
-                            body: Protocol_Holdem_Seated.Request(
-                                {
-                                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                                    seatId: this.GetRemoteSeatID(mSeat.seatID),
-                                    bringIn: bring_out + fee,
-                                    autoOnTable: 0,
-                                    autoUseWallet: false,
-                                    returnOrNew: 0,
-                                    store: 0,
-                                }),
+                            Body: {
+                                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                                seatId: this.GetRemoteSeatID(mSeat.seatID),
+                                bringIn: bring_out + fee,
+                                autoOnTable: 0,
+                                autoUseWallet: false,
+                                returnOrNew: 0,
+                                store: 0,
+                            },
                         });
                     }
                 } else {
@@ -1337,20 +1354,19 @@ export default class TexasGame {
             }
             else {
 
-                ProtocolAgency.Send({
-                    protocol: Protocol_Holdem_Seated,
+                ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                    Code: ProtocolCode.Protocol_Holdem_Seated,
                     RoomID: GameCache.Instance.room_id,
                     MatchID: GameCache.Instance.match_id,
-                    body: Protocol_Holdem_Seated.Request(
-                        {
-                            room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                            seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
-                            bringIn: anteNumber,//rec.Chips
-                            autoOnTable: autoOnTable,
-                            autoUseWallet: autoUseWallet,
-                            returnOrNew: 0,
-                            store: 0,
-                        }),
+                    Body: {
+                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                        seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
+                        bringIn: anteNumber,//rec.Chips
+                        autoOnTable: autoOnTable,
+                        autoUseWallet: autoUseWallet,
+                        returnOrNew: 0,
+                        store: 0,
+                    },
                 });
 
             }
@@ -1361,16 +1377,15 @@ export default class TexasGame {
         if (this.mainPlayer.cacheStoreChips >= anteNumber) {
             IsUseWallet = false;
         }
-        ProtocolAgency.Send({
-            protocol: Protocol_Holdem_BringIn,
+        ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_BringIn,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            body: Protocol_Holdem_BringIn.Request(
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                    bringIn: anteNumber,
-                    useWallet: IsUseWallet
-                }),
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                bringIn: anteNumber,
+                useWallet: IsUseWallet
+            },
         });
 
     }
@@ -1389,14 +1404,13 @@ export default class TexasGame {
         if (null == mSeat)
             return;
 
-        ProtocolAgency.Send({
-            protocol: Protocol_Holdem_StandupActive,
+        ProtocolAgency.Send<ClientMessageStandupActive.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_StandupActive,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            body: Protocol_Holdem_StandupActive.Request(
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                }),
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+            },
         })
     }
     /// <summary>
@@ -1535,6 +1549,7 @@ export default class TexasGame {
 
         if (null != tweenCallback) {
             cc.log("运动完成");
+            this.sequencePlayDealAnimation.IsPlaying = false;
             tween.call(tweenCallback);
         }
         tween.start();
@@ -1547,18 +1562,16 @@ export default class TexasGame {
     /// <param name="anteNumber"></param>
     public OptAction(action: Def.ActionMap[keyof Def.ActionMap], anteNumber: number): void {
 
-        ProtocolAgency.Send(
+        ProtocolAgency.Send<ClientMessageAction.AsObject>(
             {
-                protocol: Protocol_Holdem_Action,
+                Code: ProtocolCode.Protocol_Holdem_Action,
                 RoomID: GameCache.Instance.room_id,
                 MatchID: GameCache.Instance.match_id,
-                body: Protocol_Holdem_Action.Request(
-                    {
-                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                        action: action,
-                        amount: anteNumber
-
-                    })
+                Body: {
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                    action: action,
+                    amount: anteNumber
+                }
             });
     }
 
@@ -1791,27 +1804,28 @@ export default class TexasGame {
         this.fuck4thPCardByInsuranceState = 0;
 
         let PublicCardInfo: PublicCardInfo = null;
+        let cardId = null;
 
         if (startIndex == 0) {
             //第0张牌，设定第1,2张牌位置都在0号位置
             let index = 2;
             PublicCardInfo = this.uirc.listCards[index];
             PublicCardInfo.cardId = this.cards[index];
+            cardId = this.cards[index];
             PublicHelper.InitSprite(PublicCardInfo.imageCard, GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1)));
             PublicHelper.InitNode(PublicCardInfo.trans, this.listDefaultPublicCardsLPos[0]);
-
-
 
             this.sequenceUpdatePublicCards.Append(() => {
                 cc.tween(PublicCardInfo.trans).to(.1, { scaleX: 0 }).start();
             }, .1)
             this.sequenceUpdatePublicCards.Append(() => {
                 //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
-                PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
+                PublicCardInfo.imageCard.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId));
                 cc.tween(PublicCardInfo.trans).to(0.1, { scaleX: 1 }).start();
             }, .1);
 
             this.sequenceUpdatePublicCards.AppendInterval(0.4);
+
             //全体归位到0号位置并且显示
             for (let i = 0; i < 3; i++) {
                 PublicCardInfo = this.uirc.listCards[i];
@@ -1820,16 +1834,21 @@ export default class TexasGame {
                 let cardId = this.cards[i];
                 let move_pos = this.listDefaultPublicCardsLPos[i];
                 PublicCardInfo.cardId = cardId;
-                PublicHelper.InitSprite(imageCard, GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId)));
-                PublicHelper.InitNode(trans, this.listDefaultPublicCardsLPos[0]);
-                let func = () => {
-                    cc.log(`${i}张牌`, cardId);
-                    cc.tween(trans).to(.4, { position: move_pos }).start();
-                }
+                trans.setPosition(this.listDefaultPublicCardsLPos[0]);
                 if (i == 0) {
-                    this.sequenceUpdatePublicCards.Append(func, .4);
+                    this.sequenceUpdatePublicCards.Append(() => {
+                        trans.active = true;
+                        trans.setScale(1, 1);
+                        PublicHelper.InitSprite(imageCard, GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId)));
+                        cc.tween(trans).to(.4, { position: move_pos }).start();
+                    }, .4);
                 } else {
-                    this.sequenceUpdatePublicCards.Join(func, .4);
+                    this.sequenceUpdatePublicCards.Join(() => {
+                        trans.active = true;
+                        trans.setScale(1, 1);
+                        PublicHelper.InitSprite(imageCard, GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(cardId)));
+                        cc.tween(trans).to(.4, { position: move_pos }).start();
+                    }, .4);
                 }
                 //添加目标和目标结果
                 this.sequenceUpdatePublicCards.AddTarget(trans);
@@ -2445,14 +2464,17 @@ export default class TexasGame {
         if (this.delayCount >= 2) {
             this.uirc.buttonDelay.getChildByName("BtnArea").getComponent(cc.Button).interactable = false;
             this.uirc.buttonDelay.getChildByName("timetext").getComponent(cc.Label).string = "0";
-            this.uirc.buttonDelay.getChildByName("timetext").color = new cc.Color(255, 255, 255, 178.5);
-            this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = new cc.Color(255, 255, 255, 178.5);
+            this.uirc.buttonDelay.getChildByName("timetext").color = cc.Color.WHITE;
+            this.uirc.buttonDelay.getChildByName("timetext").opacity = 178.5;
+            this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = cc.Color.WHITE;
+            this.uirc.buttonDelay.getChildByName("Text_DelayTip").opacity = 178.5;
         }
         else {
             this.uirc.buttonDelay.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
-            //buttonDelay.gameObject.transform.Find("Image_DelayGold").gameObject.SetActive(true);
             this.uirc.buttonDelay.getChildByName("timetext").color = new cc.Color(86, 53, 29, 255);
+            this.uirc.buttonDelay.getChildByName("timetext").opacity = 255;
             this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = new cc.Color(221, 186, 130, 255);
+
             this.uirc.buttonDelay.getChildByName("Text_DelayTip").getComponent(cc.Label).string = `${StringHelper.getStringDiv100(this.TexasGameUtils.AddTimeCost())}`;
             this.uirc.buttonDelay.getChildByName("timetext").getComponent(cc.Label).string = this.delayCount > 0 ? "20" : "30";
         }
@@ -2553,7 +2575,21 @@ export default class TexasGame {
     }
 
 
-
+    /// <summary>
+    /// 留座离桌
+    /// </summary>
+    public SendReserveSeatAction(option: boolean): void {
+        ProtocolAgency.Send<ClientMessageKeepSeatActive.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_KeepSeatActive,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                keep: option,
+                duration: 120
+            },
+        });
+    }
 
     /// <summary>
     /// 清空气泡

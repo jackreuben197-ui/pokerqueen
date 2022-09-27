@@ -31,7 +31,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
     main_block: cc.BlockInputEvents = null;
 
     Text_Title: cc.Label = null;
-    Text_Content: cc.Label = null;
+    Text_Content: cc.RichText = null;
 
 
     Button_Commit: cc.Node = null;
@@ -88,7 +88,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
         super.lateLoad();
 
         this.Text_Title = this.getChildNodeOrComponent("Text_Title", cc.Label);
-        this.Text_Content = this.getChildNodeOrComponent("Text_Content", cc.Label);
+        this.Text_Content = this.getChildNodeOrComponent("Text_Content", cc.RichText);
 
         this.Button_Commit = this.getChildNodeOrComponent("Button_Commit");
         this.Text_Commit = this.getChildNodeOrComponent("Text_Commit", cc.Label);

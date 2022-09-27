@@ -15,9 +15,7 @@ export default class UIComponent {
         return (<any>this).instance ??= new UIComponent;
     }
 
-
     Toast(content: string) {
-
         ToastManager.Instance.createToast(content);
     }
     //界面内UIBase的显示
@@ -48,7 +46,6 @@ export default class UIComponent {
             case UIType.Prompt:
             case UIType.TexasPreLoad:
 
-                console.log("open Prompt");
                 UIPromptMgr.Instance.open(UIDefine, param);
 
                 break;
@@ -72,7 +69,7 @@ export default class UIComponent {
                 break;
             case UIType.Prompt:
             case UIType.TexasPreLoad:
-                console.log("close Prompt");
+
                 UIPromptMgr.Instance.close(UIDefine, param);
                 break;
             case UIType.CommonUI:
@@ -103,6 +100,25 @@ export default class UIComponent {
                 break;
         }
         return ui;
+    }
+
+    //无动画开启UI(暂未处理)
+    OpenNoAnimation(UIDefine: IUIDefine, param: any = null, parent: cc.Node = null) {
+        if (!UIDefine) return;
+        switch (UIDefine.UIType) {
+            case UIType.Form:
+                UIFormMgr.Instance.open(UIDefine, param, false);
+                break;
+        }
+    }
+    //无动画关闭UI
+    CloseNoAnimation(UIDefine: IUIDefine, param: any = null) {
+        if (!UIDefine) return;
+        switch (UIDefine.UIType) {
+            case UIType.Form:
+                UIFormMgr.Instance.close(UIDefine, param, false);
+                break;
+        }
     }
 
     static closeAll() {

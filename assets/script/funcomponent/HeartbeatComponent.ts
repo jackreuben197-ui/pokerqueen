@@ -6,7 +6,7 @@
 import { IUpdate } from "../define/EIDefine";
 import GameUtil from "../game/GameUtil";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { Protocol_Holdem_Heartbeat } from "../net/websocket/ProtocolHoldemMessages";
+import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import GlobalSession from "../session/GlobalSession";
 
 
@@ -53,10 +53,9 @@ export default class HeartbeatComponent implements IUpdate {
         this.sendTime += 1;
 
         ProtocolAgency.Send({
-            protocol: Protocol_Holdem_Heartbeat,
+            Code: ProtocolCode.Protocol_Holdem_Heartbeat,
             RoomID: 0,
             MatchID: 0,
-            body: Protocol_Holdem_Heartbeat.Request(),
         });
     }
 

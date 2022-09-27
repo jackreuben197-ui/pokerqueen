@@ -206,7 +206,7 @@ export class Web_Stats_Other_User_Stats {
         data?: typeof Web_Stats_Other_User_Stats.Data,        // 用户信息
     } = null;
     public static MTTRoomData: {
-        user_id?: number,        
+        user_id?: number,
         play_times?: number,        //参赛次数
         win_times?: number,         //获奖次数
         frist_times?: number,       //第一名次数
@@ -214,8 +214,8 @@ export class Web_Stats_Other_User_Stats {
         third_times?: number,       //第三名次数
     } = null;
     public static RoomData: {
-        id?: number,        
-        user_id?: number,              
+        id?: number,
+        user_id?: number,
         game_type?: number,             //游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6          
         data_type?: number,             //数据类型 1--今日；2--7天；3--30天；4--生涯
         total_game_cnt?: number,        //总局数
@@ -669,7 +669,7 @@ export class Web_Org_Club_Create {
         this.RequestParams = param;
         return param;
     }
-    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Create.ResponseData };
 
 }
 
@@ -686,6 +686,43 @@ export class Web_Org_Club_Get {
 
     } = null;
     public static Request(param: typeof Web_Org_Club_Create.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+
+}
+
+export class Web_Recharge_Gold {
+    //接口地址
+    public static API: string = "/api/order/user/recharge";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: { amount: number }) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+
+}
+export class Web_Tiqu_Gold {
+    //接口地址
+    public static API: string = "/api/order/user/withdraw";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: { amount: number }) {
         this.RequestParams = param;
         return param;
     }
@@ -799,7 +836,8 @@ export class APIOrgClubApprovalJoin {
 
     //字段声明
     public static RequestParams: {
-        apply_id: null;
+        "apply_id": ''
+        "audit_op": ''
     } = null;
 
     public static ResponseData: {
@@ -813,12 +851,11 @@ export class APIOrgClubApprovalJoin {
 }
 export class APIOrgClubGetJoinlList {
     //接口地址
-    public static API: string = "/api/umgr/club/99777674/member/list";
+    public static API: string = "/api/org/club/join/list";
 
 
     //字段声明
     public static RequestParams: {
-        club_id: null;
     } = null;
 
     public static ResponseData: {
@@ -873,6 +910,25 @@ export class Web_User_Room_Settle_Detail {
 
 }
 
+export class APIOrgClubQuit {
+    //接口地址
+    public static API: string = "/api/org/club/user/quit";
+
+
+    //字段声明
+    public static RequestParams: {
+        club_id: null;
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubQuit.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgClubQuit.ResponseData };
+}
 
 
 /**
@@ -894,6 +950,10 @@ export class Web_User_Room_Settle_Detail {
 (window as any).Web_Org_Club_Search_By_Id = Web_Org_Club_Search_By_Id;
 (window as any).Web_Org_Club_Join = Web_Org_Club_Join;
 (window as any).APIOrgClubCancleJoinClub = APIOrgClubCancleJoinClub;
+(window as any).APIOrgClubApprovalJoin = APIOrgClubApprovalJoin;
+(window as any).APIOrgClubGetJoinlList = APIOrgClubGetJoinlList;
+(window as any).APIOrgClubQuit = APIOrgClubQuit;
+
 (window as any).APIOrgClubIsManger = APIOrgClubIsManger;
 (window as any).Web_User_Room_Settle_Detail = Web_User_Room_Settle_Detail;
 

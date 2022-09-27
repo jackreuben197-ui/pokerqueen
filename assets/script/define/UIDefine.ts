@@ -220,20 +220,20 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UICreatelabor",
         Bundle: null,
-        Path: "lobby/prefab/UICreatelabor",
+        Path: "main/club/UICreatelabor",
     },
     UIlaborJoin: {
         UIType: UIType.Form,
         Name: "UIlaborJoin",
         Bundle: null,
-        Path: "lobby/prefab/UIlaborJoin",
+        Path: "main/club/UIlaborJoin",
     },
     //房间模版
     UILaborPlayViewForm: {
         UIType: UIType.CommonUI,
         Name: "UILaborPlayViewForm",
         Bundle: null,
-        Path: "lobby/prefab/UILaborPlayViewForm"
+        Path: "main/prefab/UILaborPlayViewForm"
     },
 
     UITexasPlayerInfoComponent: {
@@ -247,25 +247,46 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIPlayerLookLabor",
         Bundle: null,
-        Path: "lobby/prefab/UIPlayerLookLabor",
+        Path: "main/club/UIPlayerLookLabor",
     },
     UIManageLabor: {
         UIType: UIType.Form,
         Name: "UIManageLabor ",
         Bundle: null,
-        Path: "lobby/prefab/UIManageLabor ",
+        Path: "main/club/UIManageLabor ",
     },
     UIlaborMerberManager: {
         UIType: UIType.Form,
         Name: "UIlaborMerberManager",
         Bundle: null,
-        Path: "lobby/prefab/UIlaborMerberManager",
+        Path: "main/club/UIlaborMerberManager",
     },
     UIlaborExaminatMerber: {
         UIType: UIType.Form,
         Name: "UIlaborExaminatMerber",
         Bundle: null,
-        Path: "lobby/prefab/UIlaborExaminatMerber",
+        Path: "main/club/UIlaborExaminatMerber",
+    },
+
+    MyWalletForm: {
+        UIType: UIType.Form,
+        Name: "MyWalletForm",
+        Bundle: null,
+        Path: "main/wallet/MyWalletForm",
+    },
+
+    WalletJumpForm: {
+        UIType: UIType.Form,
+        Name: "WalletJumpForm",
+        Bundle: null,
+        Path: "main/wallet/WalletJumpForm",
+    },
+
+    GoldOprationForm: {
+        UIType: UIType.Form,
+        Name: "GoldOprationForm",
+        Bundle: null,
+        Path: "main/wallet/GoldOprationForm",
     },
 
 

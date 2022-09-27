@@ -4,35 +4,59 @@ import { i18nSprite } from "../../i18n/i18nSprite";
 import { GameCache } from "../../game/GameCache";
 import { LobbyControl } from "../control/LobbyControl";
 import UIMatchRoom from "./UIMatchRoom";
+import UIComponent from "../../ui/UIComponent";
+import { UIDefine } from "../../define/UIDefine";
 @ccclass
 export default class UILobby extends UIBase {
+    private lbl_name: cc.Label = null;
+    private lbl_glod: cc.Label = null;
+    private Button_MTT: cc.Node = null;
 
-    private isRefresh : boolean = false;
+    private beanBg: cc.Node = null;
 
+    private isRefresh: boolean = false;
     protected onLoad(): void {
         super.onLoad();
-        let widget: cc.Widget = this.node.getComponent(cc.Widget);
-        widget.target = cc.find("Canvas");
+
+        this.initView();
+
     }
     protected lateLoad(): void {
         super.lateLoad();
-        this.setMTTImage();
+
+        this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+        this.lbl_glod = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
+        this.Button_MTT = this.getChildNodeOrComponent("Button_MTT");
+        this.beanBg = this.getChildNodeOrComponent("beanBg");
+    }
+
+    protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
+
+        this.beanBg.off(cc.Node.EventType.TOUCH_END, this.clickBean, this);
+        this.beanBg.on(cc.Node.EventType.TOUCH_END, this.clickBean, this);
+    }
+
+    private initView(): void {
+        let widget: cc.Widget = this.node.getComponent(cc.Widget);
+        widget.target = cc.find("Canvas");
+
+        this.lbl_name.string = GameCache.Instance.nick.toString();
+        this.Button_MTT.getComponent(i18nSprite).string = "image_match_mtt";
+        this.updateBean();
+
         this.setScrollTop();
-        this.initUI()
     }
 
-    private initUI(): void {
-        let lbl_glod : cc.Label = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
-        lbl_glod.string = GameCache.Instance.gold.toString();
-        let lbl_name : cc.Label = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
-        lbl_name.string = GameCache.Instance.nick.toString();
+    updateBean() {
+        this.lbl_glod.string = GameCache.Instance.gold.toString();
     }
 
-    private setMTTImage() {
-        let Button_MTT:cc.Node = this.getChildNodeOrComponent("Button_MTT");
-        Button_MTT.getComponent(i18nSprite).string = "image_match_mtt";
+    clickBean() {
+        UIComponent.open(UIDefine.MyWalletForm)
     }
-   
+
+
     /**
       * @description: 主要用来设置 下拉刷新--
       * @return {void}

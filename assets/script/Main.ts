@@ -25,7 +25,7 @@ export default class Main extends cc.Component {
     static Toast: cc.Node = null;
     static UIPreloading: cc.Node = null;
 
-    onLoad() {
+    async onLoad() {
 
         console.log("游戏启动", cc.sys.os);
 
@@ -50,9 +50,9 @@ export default class Main extends cc.Component {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
-
     }
     start() {
+        console.log("start");
         ProcedureManager.Init();
     }
 }

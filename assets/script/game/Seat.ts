@@ -1189,7 +1189,6 @@ export default class Seat {
         }
     }
 
-
     /// <summary>
     /// 轮到自己操作隐藏头像名字
     /// </summary>
@@ -1452,7 +1451,39 @@ export default class Seat {
     /// 刷新回收赢的筹码
     /// </summary>
     public UpdateRecyclingWinChip(): void {
-        //this.uirc.imageRecyclingWinChip.sprite = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+        this.uirc.imageRecyclingWinChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+    }
+
+
+    /// <summary>
+    /// 操作延时
+    /// </summary>
+    public AddOperationTime(addTime: number): void {
+        this.optCurTime += addTime;
+        this.optTotalTime = this.optCurTime;
+        if (!this.isCountDown && !this.IsMySeat) {
+            this.AddCountDown(addTime);
+        }
+    }
+    /// <summary>
+    /// 增加倒计时时间
+    /// </summary>
+    /// <param name="addValue"></param>
+    public AddCountDown(addValue: number): void {
+        this.isCountDown = true;
+        this.uirc.imageCountDown.fillRange = 1;
+        this.uirc.imageCountDown.node.active = true;
+        this.uirc.Image_CountDownbg.node.active = true;
+        this.uirc.image_CountDownTime.string = `${addValue}`;
+        this.StopLightArmature();
+    }
+    /// <summary>
+    /// 停止关点动画
+    /// </summary>
+    public StopLightArmature(): void {
+        // if (null != armatureLight.dragonAnimation && armatureLight.dragonAnimation.isPlaying)
+        //     armatureLight.dragonAnimation.Stop();
+        // armatureLight.gameObject.SetActive(false);
     }
 
     /// <summary>

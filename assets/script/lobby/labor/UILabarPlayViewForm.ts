@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 14:05:24
+ * @LastEditTime: 2022-09-27 10:41:15
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -153,7 +153,9 @@ export default class UILabarPlayViewForm extends UIBase {
         let isManger: any = APIOrgClubIsManger.Response.data
         if (isManger) {
             this.tabNode.getChildByName('ghgl').active = true;
+            this.tabNode.getChildByName('ckgh').active = false;
         } else {
+            this.tabNode.getChildByName('ghgl').active = false;
             this.tabNode.getChildByName('ckgh').active = true;
         }
     }

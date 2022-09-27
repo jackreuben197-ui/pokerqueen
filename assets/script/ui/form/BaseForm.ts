@@ -29,7 +29,7 @@ export default class BaseForm extends UIBase {
         //内容顶层节点
         main_fadeIn_active: true,
         main_fadeIn_duration: .2,
-        main_fadeIn_ease: cc.easeElasticIn,
+        main_fadeIn_ease: null,
 
         main_fadeOut_active: true,
         main_fadeOut_duration: .2,
@@ -54,7 +54,7 @@ export default class BaseForm extends UIBase {
 
     protected regiterTouchEvents(): void {
         //回退触发
-        this.back_click.on("click", this.close, this);
+        this.back_click && this.back_click.on("click", this.close, this);
     }
 
     protected lateClose(param: any = null) {
@@ -65,29 +65,32 @@ export default class BaseForm extends UIBase {
         this.fromUI = fromUI;
         cc.log(">>> formUI form :", fromUI?.UIDefine?.Name);
         super.onShow(param);
-        this.mainFadeIn(param?.style);
-        // cc.log("ui.main.x onShow2 >> ", this.main.x);
+        this.mainFadeIn(this.show_animation);
     }
 
-    async onClose(param?: any) {
+    async asyncOnClose(param?: any) {
         this.showFromUI();
-        await this.mainFadeOut(param?.style);
+        await this.mainFadeOut(param);
         super.onClose(param);
     }
-
+    async onClose(param?: any) {
+        this.showFromUI();
+        this.close_animation ? await this.mainFadeOut(param) : this.fadeOutComplete();
+        super.onClose(param);
+    }
     //关闭界面
     close() {
         UIComponent.close(this.UIDefine);
     }
 
-    mainFadeIn(style: any) {
+    mainFadeIn(show_animation: boolean = true) {
         this.top_block.active = true;
-        if (style?.main_fadeIn_active == false) {
+        if (show_animation == false) {
             this.node.x = 0;
             this.fadeInComplete();
         } else {
-            let duration = style?.main_fadeIn_duration || this.defaultStyle.main_fadeIn_duration;
-            let ease = style?.main_fadeIn_ease || this.defaultStyle.main_fadeIn_ease;
+            let duration = this.defaultStyle.main_fadeIn_duration;
+            let ease = this.defaultStyle.main_fadeIn_ease;
             this.node.x = this.node.width;
             cc.tween(this.node)
                 .to(duration, { x: 0 }, ease)
@@ -95,17 +98,12 @@ export default class BaseForm extends UIBase {
                 .start();
         }
     }
-    mainFadeOut(style: any) {
+    mainFadeOut(param: any) {
         return new Promise((resolve, reject) => {
-            if (style?.main_fadeOut_active == false) {
-                this.node.x = this.node.width;
-                this.fadeOutComplete(resolve);
-            } else {
-                let duration = style?.main_fadeOut_duration || this.defaultStyle.main_fadeOut_duration;
-                let ease = style?.main_fadeOut_ease || this.defaultStyle.main_fadeOut_ease;
-                this.node.x = 0;
-                cc.tween(this.node).to(duration, { x: this.node.width }, ease).call(this.fadeOutComplete.bind(this, resolve)).start();
-            }
+            let duration = this.defaultStyle.main_fadeOut_duration;
+            let ease = this.defaultStyle.main_fadeOut_ease;
+            this.node.x = 0;
+            cc.tween(this.node).to(duration, { x: this.node.width }, ease).call(this.fadeOutComplete.bind(this, resolve)).start();
         })
     }
 
@@ -114,10 +112,10 @@ export default class BaseForm extends UIBase {
         this.hideFromUI();
     }
 
-    fadeOutComplete(resolve) {
-        resolve(0);
+    fadeOutComplete(resolve?) {
+        resolve?.(0);
+        this.node.x = this.node.width;
     }
-
     /**
      * 显示隐藏来源界面
      */

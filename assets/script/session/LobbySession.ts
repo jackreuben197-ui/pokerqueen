@@ -13,7 +13,8 @@ import Main from "../Main";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Protocol_Holdem_Register } from "../net/websocket/ProtocolHoldemMessages";
+import { ClientMessageRegister, ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
+
 import GlobalSession from "./GlobalSession";
 
 import LoginSession from "./LoginSession";
@@ -53,7 +54,7 @@ export default class LobbySession {
         CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
     }
 
-    private static on_Protocol_Holdem_Register(body: typeof Protocol_Holdem_Register.Response_AsObject) {
+    private static on_Protocol_Holdem_Register(body: ServerMessageRegister.AsObject) {
         if (!body) {
             return;
         }
