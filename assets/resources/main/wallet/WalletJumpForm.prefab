@@ -95,7 +95,7 @@
     "_prefab": {
       "__id__": 3
     },
-    "_name": "comFormTop",
+    "_name": "comFormTitle",
     "_active": true,
     "_trs": {
       "__type__": "TypedArray",

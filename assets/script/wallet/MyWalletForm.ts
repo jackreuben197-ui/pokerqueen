@@ -1,4 +1,4 @@
-import ComFormTop from "../common/ComFormTop";
+import ComFormTitle from "../common/ComFormTitle";
 import { UIDefine } from "../define/UIDefine";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
@@ -9,13 +9,13 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('脚本分组/wallet/MyWalletForm')
 export default class MyWalletForm extends BaseForm {
 
-    private comFormTop: ComFormTop = null;
+    private comFormTitle: ComFormTitle = null;
     private beanNum: cc.Label = null;
 
 
     lateLoad() {
         super.lateLoad();
-        this.comFormTop = this.getChildNodeOrComponent("comFormTop", ComFormTop);
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.beanNum = this.getChildNodeOrComponent("beanNum", cc.Label);
     }
 
@@ -33,7 +33,7 @@ export default class MyWalletForm extends BaseForm {
     }
 
     initView() {
-        this.comFormTop.initData("我的钱包", this);
+        this.comFormTitle.initData("我的钱包", this);
         this.updateBeanNum();
     }
 

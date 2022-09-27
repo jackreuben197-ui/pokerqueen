@@ -1,4 +1,4 @@
-import ComFormTop from "../common/ComFormTop";
+import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
 import { UIDefine } from "../define/UIDefine";
 import BaseForm from "../ui/form/BaseForm";
@@ -9,7 +9,7 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/wallet/WalletJumpForm')
 export default class WalletJumpForm extends BaseForm {
-    private comFormTop: ComFormTop = null;
+    private comFormTitle: ComFormTitle = null;
     private list: List = null;
 
     private _configData: Map<EWalletGoldOpration, Array<TWalletGoldOpration>> = new Map();
@@ -22,7 +22,7 @@ export default class WalletJumpForm extends BaseForm {
     }
     lateLoad() {
         super.lateLoad();
-        this.comFormTop = this.getChildNodeOrComponent("comFormTop", ComFormTop);
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.list = this.getChildNodeOrComponent("list", List);
     }
 
@@ -44,7 +44,7 @@ export default class WalletJumpForm extends BaseForm {
 
     initView() {
         let title = this._type == EWalletGoldOpration.in ? "充豆" : "提豆";
-        this.comFormTop.initData(title, this);
+        this.comFormTitle.initData(title, this);
 
 
         this.list.numItems = this._data.length;

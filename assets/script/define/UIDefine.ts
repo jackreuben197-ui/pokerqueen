@@ -272,21 +272,21 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "MyWalletForm",
         Bundle: null,
-        Path: "wallet/MyWalletForm",
+        Path: "main/wallet/MyWalletForm",
     },
-    
+
     WalletJumpForm: {
         UIType: UIType.Form,
         Name: "WalletJumpForm",
         Bundle: null,
-        Path: "wallet/WalletJumpForm",
+        Path: "main/wallet/WalletJumpForm",
     },
-    
+
     GoldOprationForm: {
         UIType: UIType.Form,
         Name: "GoldOprationForm",
         Bundle: null,
-        Path: "wallet/GoldOprationForm",
+        Path: "main/wallet/GoldOprationForm",
     },
 
 

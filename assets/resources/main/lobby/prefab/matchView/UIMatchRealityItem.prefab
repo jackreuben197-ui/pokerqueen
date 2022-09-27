@@ -217,7 +217,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 90,
+      "width": 29.97,
       "height": 63
     },
     "_anchorPoint": {
@@ -269,8 +269,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "牛牛",
-    "_N$string": "牛牛",
+    "_string": "--",
+    "_N$string": "--",
     "_fontSize": 45,
     "_lineHeight": 50,
     "_enableWrapText": true,
