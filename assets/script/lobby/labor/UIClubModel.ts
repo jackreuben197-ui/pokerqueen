@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 17:01:18
+ * @LastEditTime: 2022-09-27 17:49:26
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -190,19 +190,20 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubUploadIcon() {
-        let paramas: any = {};
+    APIOrgClubUploadIcon(buffer) {
+        let data = new FormData();
+        data.append("file", buffer, "bnt.jpg");
         return new Promise((resolve, reject) => {
-            HttpRequest.Send({
+            HttpRequest.Send2({
                 request: APIOrgClubUploadIcon,
-                body: APIOrgClubUploadIcon.Request(paramas),
+                body: APIOrgClubUploadIcon.Request(data),
                 onSuccess: function () {
                     resolve(APIOrgClubUploadIcon.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                headers: [['Content-Type:', 'image/jpeg'], ['Content-Disposition', 'form-data'], ['name', "file"], ['filename', "bnt.jpg"]]
+                //headers: [['Content-Type:', 'image/jpeg']]
             });
         });
     }
