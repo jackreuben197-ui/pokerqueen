@@ -1,4 +1,4 @@
-import ComFormTop from "../common/ComFormTop";
+import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
 import { UIDefine } from "../define/UIDefine";
 import HttpRequest from "../net/https/HttpRequest";
@@ -13,7 +13,7 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/wallet/GoldOprationForm')
 export default class GoldOprationForm extends BaseForm {
-    private comFormTop: ComFormTop = null;
+    private comFormTitle: ComFormTitle = null;
     private list: List = null;
     private edit: cc.EditBox = null;
     private priceLab: cc.Label = null;
@@ -25,7 +25,7 @@ export default class GoldOprationForm extends BaseForm {
     private _data: Array<number> = [300, 500, 800, 1000, 2000, 3000]
     lateLoad() {
         super.lateLoad();
-        this.comFormTop = this.getChildNodeOrComponent("comFormTop", ComFormTop);
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.list = this.getChildNodeOrComponent("list", List);
         this.edit = this.getChildNodeOrComponent("editBox", cc.EditBox);
         this.priceLab = this.getChildNodeOrComponent("priceLab", cc.Label);
@@ -58,7 +58,7 @@ export default class GoldOprationForm extends BaseForm {
 
     initView() {
         let title = this._type == EWalletGoldOpration.in ? "充豆" : "提豆";
-        this.comFormTop.initData(title, this);
+        this.comFormTitle.initData(title, this);
 
         this.edit.string = "";
         this.updatePrice();

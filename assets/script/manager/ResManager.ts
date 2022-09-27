@@ -1,3 +1,4 @@
+import MyLog from "../tools/MyLog";
 
 export class ResConfig {
     //登录资源
@@ -63,11 +64,10 @@ export class ResManager {
             }
         }
     }
+
     //读取整个bundle包内资源
     static LoadABs(bundleName: string, progressHandler?: Function) {
-
         return new Promise((resolve, reject) => {
-
             cc.assetManager.loadBundle(bundleName, (err, bundle) => {
                 if (err) {
                     cc.log("load bundle error:", bundleName);
@@ -151,6 +151,180 @@ export class ResManager {
                 }
             });
         })
+    }
+
+
+
+    /// ****   xyh   ***** ///
+    //获取加载过的资源
+    getRes(path: string, asset_type?: typeof cc.Asset) {
+        let res: any = cc.resources.get(path, asset_type);
+        return res;
+    }
+
+    // 在网络断获取资源
+    loadUrl(url: string, type: typeof cc.Asset, cb: Function) {
+        let res = this.getRes(url);
+        if (res) {
+            cb && cb(res);
+            return;
+        }
+
+        let endStr = this.getUrlEnd(url, type);
+        cc.assetManager.loadRemote(url, { ext: endStr }, (err: Error, res: any) => {
+            if (err) {
+                MyLog.worn("ResourceMgr load error : ", url, err);
+                return;
+            }
+            try {
+                cb && cb(res);
+            } catch (e) {
+                MyLog.worn(e.stack);
+            }
+        });
+    }
+
+    private getUrlEnd(url: string, type: typeof cc.Asset) {
+        let end = type == cc.Texture2D ? ".png" : (type == cc.AudioClip ? ".mp3" : ".txt");
+        end = url.match(".jpg") ? ".jpg" : (url.match(".jpeg") ? ".jpeg" : end);
+        end = url.match(".wav") ? ".wav" : end;
+        return end;
+    }
+
+    loadPrefab(path: string, cb: Function, errorCb: Function = null) {
+        let nameStrs = path.split('/');
+        let prefabName = nameStrs[nameStrs.length - 1];
+        if (bundleRes[prefabName]) {
+            //有依赖的分包资源
+            this.loadBundle(bundleRes[prefabName], () => {
+                this.loadRes(path, (res1: any, res2: any) => {
+                    cb && cb(res1, res2);
+                }, cc.Prefab, errorCb);
+            }, errorCb);
+        } else {
+            this.loadRes(path, (res1: any, res2: any) => {
+                cb && cb(res1, res2);
+            }, cc.Prefab, errorCb);
+        }
+
+    }
+
+    //加载本地资源
+    loadRes(path: string, cb: Function = null, asset_type: typeof cc.Asset = cc.SpriteFrame, errorCb: Function = null): void {
+        let isPrefab = asset_type == cc.Prefab;
+
+        if (!isPrefab) {
+            let index = path.indexOf('/');
+            let bundleName = path.substring(0, index);
+            let urlName = path.substring(index + 1);
+            if (bundleSpriteRes[bundleName]) {
+                //读取的分包资源
+                this.loadResFromBundleName(bundleName, urlName, asset_type, (instance: any) => {
+                    cb && cb(instance);
+                }, errorCb);
+                return;
+            }
+        }
+
+        let res: any = cc.resources.get(path, asset_type);
+        if (res) {
+            this.checkAssetIsPrefab(path, res, asset_type, cb, false);
+            return;
+        }
+
+        cc.resources.load(path, asset_type, (err: Error, res: any): void => {
+            if (err) {
+                MyLog.worn("ResourceMgr loadRes error : ", path, err);
+                errorCb && errorCb();
+                return;
+            }
+            try {
+                this.checkAssetIsPrefab(path, res, asset_type, cb, true);
+            } catch (e) {
+                MyLog.worn(e.stack);
+            }
+        });
+    }
+
+    /***  
+     * Asset Bundle
+     * 加载分包资源 
+     ***/
+    /***
+     * nameOrUrl: 传入包名  或者url路径（如果是复用其他项目的包，则只能使用url）
+     ***/
+     loadBundle(nameOrUrl: string, callBack?: Function, errorCb: Function = null) {
+        let bundle = cc.assetManager.getBundle(nameOrUrl);
+        if (bundle) {
+            callBack && callBack(bundle)
+            return;
+        }
+        cc.assetManager.loadBundle(nameOrUrl, null, (err: Error, bundle: cc.AssetManager.Bundle) => {
+            if (err) {
+                MyLog.worn("ResourceMgr loadBundle error : ", nameOrUrl, err);
+                errorCb && errorCb();
+                return;
+            }
+            callBack && callBack(bundle)
+        })
+    }
+
+    loadResFromBundleName(bundleName: string, path: string, asset: typeof cc.Asset, callBack?: Function, errorCb: Function = null) {
+        this.loadBundle(bundleName, (bundle: cc.AssetManager.Bundle) => {
+            this.loadResFromBundle(bundle, path, asset, callBack, errorCb);
+        }, errorCb)
+    }
+
+    loadResFromBundle(bundle: cc.AssetManager.Bundle, path: string, asset: typeof cc.Asset, callBack?: Function, errorCb: Function = null) {
+        let res = bundle.get(path, asset);
+        if (res) {
+            this.checkAssetIsPrefab(path, res, asset, callBack, false);
+            callBack && callBack(res);
+            return
+        }
+
+        bundle.load(path, asset, (error: Error, res: any) => {
+            if (error) {
+                MyLog.worn("ResourceMgr loadResFromBundle error : ", error);
+                errorCb && errorCb();
+                return;
+            }
+            this.checkAssetIsPrefab(path, res, asset, callBack, true);
+        })
+    }
+
+    releaseBundleByName(name: string) {
+        let bundle = cc.assetManager.getBundle(name);
+        this.releaseBundle(bundle);
+    }
+
+    releaseBundle(bundle: cc.AssetManager.Bundle) {
+        if (bundle) {
+            cc.assetManager.removeBundle(bundle);
+        }
+    }
+
+    private checkAssetIsPrefab(path, res, asset_type, cb, isLoad) {
+        let isPrefab = asset_type == cc.Prefab;
+        isLoad && res.addRef();
+        if (isPrefab) {
+            this.setPrefab(path, res, cb)
+        } else {
+            cb && cb(res);
+        }
+    }
+
+    private setPrefab(path: string, res: cc.Prefab, cb: Function) {
+        let node = cc.instantiate(res);
+        node.setPosition(cc.Vec2.ZERO);
+        let prefab = node.getComponent(BasePrefab);
+        if (!Boolean(prefab)) {
+            prefab = node.addComponent(BasePrefab);
+        }
+        if (!Boolean(prefab.path)) {
+            prefab.path = path;
+        }
+        cb && cb(node, res);
     }
 }
 

@@ -3,8 +3,8 @@ import UIComponent from "../ui/UIComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
-@menu('脚本分组/common/comFormTop')
-export default class ComFormTop extends UIBase {
+@menu('common/comFormTitle')
+export default class ComFormTitle extends UIBase {
 
     private title: cc.Label = null;
     private rightTextBtn: cc.Label = null;

@@ -2,10 +2,10 @@ import { i18nMgr } from "./i18nMgr";
 
 //@executeInEditMode()
 //@requireComponent(cc.Label)
-const { ccclass, property, disallowMultiple } = cc._decorator;
+const { ccclass, property, disallowMultiple, menu } = cc._decorator;
 @ccclass
-
 @disallowMultiple
+@menu("common/i18nLabel")
 export class i18nLabel extends cc.Component {
     @property
     private i18n_string: string = "";
