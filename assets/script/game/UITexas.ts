@@ -382,7 +382,7 @@ export default class UITexas extends BaseScene {
 
         this.imageMenuMask.on("click", this.hideMenu, this);
 
-        this.buttonDelay.on("click", this.onClickDelay, this);
+        this.buttonDelay.getChildByName("BtnArea").on("click", this.onClickDelay, this);
 
     }
 
@@ -611,7 +611,6 @@ export default class UITexas extends BaseScene {
         target.getChildByName("Text").color = cc.Color.WHITE;
         target.getChildByName("Arrow").color = cc.Color.WHITE;
     }
-
 
     protected onClickDelay(): void {
         if (this.CanClick() == false)

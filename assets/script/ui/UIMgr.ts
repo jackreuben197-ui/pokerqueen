@@ -72,7 +72,11 @@ export class UIFormMgr {
                 let ui = this.showUIs[i];
                 if (ui.UIDefine.Name == uiDefine.Name) {
                     ui.close_animation = animation;
-                    await this.currUI.onClose(param);
+                    if (animation) {
+                        await this.currUI.onClose(param);
+                    } else {
+                        this.currUI.onClose(param);
+                    }
                     ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
                     this.currUI = this.showUIs[this.showUIs.length - 1];
@@ -90,6 +94,12 @@ export class UIFormMgr {
             }
         }
     }
+
+
+
+
+
+
     protected lateOpen(ui: UIBase, param: any = null, animation: boolean = true) {
         if (ui) {
             ui.node.parent = this.UILayer;

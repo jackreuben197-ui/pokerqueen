@@ -15,6 +15,7 @@ import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
+import { ServerMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
 import { ServerMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { ServerMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
@@ -454,9 +455,7 @@ export default class TexasGameProtocol {
     HANDLER_REQ_ADD_TIME_OTHERS(Protocol_Holdem_AddTimeOthers: ProtocolCode, HANDLER_REQ_ADD_TIME_OTHERS: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    HANDLER_REQ_ADD_TIME(Protocol_Holdem_AddTime: ProtocolCode, HANDLER_REQ_ADD_TIME: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+
 
     HANDLER_REQ_GAME_PLAYER_CARDS(Protocol_Holdem_Showcards: ProtocolCode, HANDLER_REQ_GAME_PLAYER_CARDS: any, arg2: this) {
         throw new Error("Method not implemented.");
@@ -464,6 +463,33 @@ export default class TexasGameProtocol {
     // HANDLER_REQ_GAME_RECV_ACTION(Protocol_Holdem_ActionAll: ProtocolCode, HANDLER_REQ_GAME_RECV_ACTION: any, arg2: this) {
     //     throw new Error("Method not implemented.");
     // }
+
+
+
+    /// <summary>
+    /// 主动操作加时
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_ADD_TIME(rec: ServerMessageAddTime.AsObject): void {
+
+        if (rec == null) {
+            return;
+        }
+        if (rec.status != 0) {
+            this.game.ClickAddTime = false;
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
+            return;
+        }
+        this.game.delayCount = rec.times;
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+        if (null == mSeat) return;
+        mSeat.AddOperationTime(rec.duration);
+        this.game.UpdateDelayBtn();
+        this.game.ClickAddTime = false;
+    }
+
+
+
 
 
     /// <summary>

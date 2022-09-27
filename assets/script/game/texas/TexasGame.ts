@@ -336,6 +336,20 @@ export default class TexasGame {
     public VoiceprintCountdown: number = 0;
 
 
+    /// <summary>
+    /// 点击加时，用于判断是否关闭操作面板
+    /// </summary>
+    public ClickAddTime: boolean = false;
+    /// <summary>
+    /// 记录接收公共牌上次时间戳
+    /// </summary>
+    public ResponsePubCardLastTime: number = 0;
+    /// <summary>
+    /// 记录接收公共牌 差值 转秒
+    /// </summary>
+    public PubCardDiffTime: boolean = false;
+
+
     //////////////TexasGameUI的内容先放到这里
     /// <summary>
     /// 马上完成公共牌动画
@@ -2450,14 +2464,17 @@ export default class TexasGame {
         if (this.delayCount >= 2) {
             this.uirc.buttonDelay.getChildByName("BtnArea").getComponent(cc.Button).interactable = false;
             this.uirc.buttonDelay.getChildByName("timetext").getComponent(cc.Label).string = "0";
-            this.uirc.buttonDelay.getChildByName("timetext").color = new cc.Color(255, 255, 255, 178.5);
-            this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = new cc.Color(255, 255, 255, 178.5);
+            this.uirc.buttonDelay.getChildByName("timetext").color = cc.Color.WHITE;
+            this.uirc.buttonDelay.getChildByName("timetext").opacity = 178.5;
+            this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = cc.Color.WHITE;
+            this.uirc.buttonDelay.getChildByName("Text_DelayTip").opacity = 178.5;
         }
         else {
             this.uirc.buttonDelay.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
-            //buttonDelay.gameObject.transform.Find("Image_DelayGold").gameObject.SetActive(true);
             this.uirc.buttonDelay.getChildByName("timetext").color = new cc.Color(86, 53, 29, 255);
+            this.uirc.buttonDelay.getChildByName("timetext").opacity = 255;
             this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = new cc.Color(221, 186, 130, 255);
+
             this.uirc.buttonDelay.getChildByName("Text_DelayTip").getComponent(cc.Label).string = `${StringHelper.getStringDiv100(this.TexasGameUtils.AddTimeCost())}`;
             this.uirc.buttonDelay.getChildByName("timetext").getComponent(cc.Label).string = this.delayCount > 0 ? "20" : "30";
         }

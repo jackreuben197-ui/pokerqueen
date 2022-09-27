@@ -102,7 +102,6 @@ export default class UIComponent {
         return ui;
     }
 
-
     //无动画开启UI(暂未处理)
     OpenNoAnimation(UIDefine: IUIDefine, param: any = null, parent: cc.Node = null) {
         if (!UIDefine) return;

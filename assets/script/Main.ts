@@ -25,7 +25,7 @@ export default class Main extends cc.Component {
     static Toast: cc.Node = null;
     static UIPreloading: cc.Node = null;
 
-    onLoad() {
+    async onLoad() {
 
         console.log("游戏启动", cc.sys.os);
 

@@ -65,23 +65,27 @@ export default class BaseForm extends UIBase {
         this.fromUI = fromUI;
         cc.log(">>> formUI form :", fromUI?.UIDefine?.Name);
         super.onShow(param);
-        this.mainFadeIn(param?.style);
+        this.mainFadeIn(this.show_animation);
     }
 
-    async onClose(param?: any) {
+    async asyncOnClose(param?: any) {
         this.showFromUI();
         await this.mainFadeOut(param);
         super.onClose(param);
     }
-
+    async onClose(param?: any) {
+        this.showFromUI();
+        this.close_animation ? await this.mainFadeOut(param) : this.fadeOutComplete();
+        super.onClose(param);
+    }
     //关闭界面
     close() {
         UIComponent.close(this.UIDefine);
     }
 
-    mainFadeIn(move: boolean = true) {
+    mainFadeIn(show_animation: boolean = true) {
         this.top_block.active = true;
-        if (move == false) {
+        if (show_animation == false) {
             this.node.x = 0;
             this.fadeInComplete();
         } else {
@@ -96,15 +100,10 @@ export default class BaseForm extends UIBase {
     }
     mainFadeOut(param: any) {
         return new Promise((resolve, reject) => {
-            if (this.close_animation == false) {
-                this.node.x = this.node.width;
-                this.fadeOutComplete(resolve);
-            } else {
-                let duration = this.defaultStyle.main_fadeOut_duration;
-                let ease = this.defaultStyle.main_fadeOut_ease;
-                this.node.x = 0;
-                cc.tween(this.node).to(duration, { x: this.node.width }, ease).call(this.fadeOutComplete.bind(this, resolve)).start();
-            }
+            let duration = this.defaultStyle.main_fadeOut_duration;
+            let ease = this.defaultStyle.main_fadeOut_ease;
+            this.node.x = 0;
+            cc.tween(this.node).to(duration, { x: this.node.width }, ease).call(this.fadeOutComplete.bind(this, resolve)).start();
         })
     }
 
@@ -113,10 +112,10 @@ export default class BaseForm extends UIBase {
         this.hideFromUI();
     }
 
-    fadeOutComplete(resolve) {
-        resolve(0);
+    fadeOutComplete(resolve?) {
+        resolve?.(0);
+        this.node.x = this.node.width;
     }
-
     /**
      * 显示隐藏来源界面
      */
