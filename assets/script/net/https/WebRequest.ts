@@ -195,6 +195,55 @@ export class Web_User_Info {
 }
 
 /// <summary>
+/// 牌局内玩家战绩数据
+/// </summary>
+export class Web_Stats_Other_User_Stats {
+    //接口地址
+    public static API: string = "/api/stats/other_user_stats/{id}";
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+        data?: typeof Web_Stats_Other_User_Stats.Data,        // 用户信息
+    } = null;
+    public static MTTRoomData: {
+        user_id?: number,
+        play_times?: number,        //参赛次数
+        win_times?: number,         //获奖次数
+        frist_times?: number,       //第一名次数
+        second_times?: number,      //第二名次数
+        third_times?: number,       //第三名次数
+    } = null;
+    public static RoomData: {
+        id?: number,
+        user_id?: number,
+        game_type?: number,             //游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6          
+        data_type?: number,             //数据类型 1--今日；2--7天；3--30天；4--生涯
+        total_game_cnt?: number,        //总局数
+        total_hand?: number,            //总手数
+        total_earn?: number,            //总盈亏
+        aveage_earn?: number,           //场均战绩
+        aveage_earn_hundred?: number,   //战绩/百手
+        vpip?: number,                  //入池率
+        wins?: number,                  //入池胜率
+        prf?: number,                   //翻牌前加注率
+        bet3?: number,                  //翻牌前再加注率
+        af?: number,                    //激进程度
+        cbet?: number,                  //4Flop持续下注率
+        wtsd?: number,                  //摊牌胜率
+        allinWins?: number,             //全下胜率
+    } = null;
+    public static Data: {
+        mtt_room_data?: typeof Web_Stats_Other_User_Stats.MTTRoomData[],        //mtt数据
+        room_data?: typeof Web_Stats_Other_User_Stats.RoomData[],        //普通牌局数据
+    } = null;
+    public static Request(param: typeof Web_Stats_Other_User_Stats.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Stats_Other_User_Stats.ResponseData };
+}
+
+/// <summary>
 /// socket channel info
 /// </summary>
 export class Web_Channel {
@@ -644,6 +693,43 @@ export class Web_Org_Club_Get {
 
 }
 
+export class Web_Recharge_Gold {
+    //接口地址
+    public static API: string = "/api/order/user/recharge";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: { amount: number }) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+
+}
+export class Web_Tiqu_Gold {
+    //接口地址
+    public static API: string = "/api/order/user/withdraw";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: { amount: number }) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+
+}
+
 export class Web_Org_Club_Player_Apply_List {
     //接口地址
     public static API: string = "/api/org/club/user/join/list";
@@ -781,6 +867,48 @@ export class APIOrgClubGetJoinlList {
     }
     public static Response: { code?: number, message?: string, data?: typeof APIOrgClubGetJoinlList.ResponseData };
 }
+/// <summary>
+/// 查询结算信息
+/// </summary>
+export class Web_User_Room_Settle_Detail {
+    //接口地址
+    public static API: string = "/api/user/room_settle/detail/{id}";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+        list: typeof Web_User_Room_Settle_Detail.UsersInfo[],
+        self_settle: typeof Web_User_Room_Settle_Detail.SelfSettle
+    } = null;
+
+    public static SelfSettle:
+        {
+            user_random_id: number,
+            nick_name: string,//昵称
+            avatar: string,//头像
+            user_hand_num: number,//手数
+            bring_in: number,//带入
+            bring_out: number//带出
+        } = null;
+    public static UsersInfo:
+        {
+            user_random_id: number,//user id
+            nick_name: string,//昵称
+            avatar: string,//头像
+            user_hand_num: number,//手数
+            bring_in: number,//带入
+            bring_out: number,//带出
+        }
+
+    public static Request(param: typeof Web_User_Room_Settle_Detail.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Room_Settle_Detail.ResponseData };
+
+}
 
 export class APIOrgClubQuit {
     //接口地址
@@ -826,4 +954,6 @@ export class APIOrgClubQuit {
 (window as any).APIOrgClubGetJoinlList = APIOrgClubGetJoinlList;
 (window as any).APIOrgClubQuit = APIOrgClubQuit;
 
+(window as any).APIOrgClubIsManger = APIOrgClubIsManger;
+(window as any).Web_User_Room_Settle_Detail = Web_User_Room_Settle_Detail;
 

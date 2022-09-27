@@ -99,6 +99,7 @@ export interface INetWork {
     BannerImageUrl: string;
     UploadURL: string;
     PaipuBaseUrl: string;
+    WSS: string;
 
 }
 /**

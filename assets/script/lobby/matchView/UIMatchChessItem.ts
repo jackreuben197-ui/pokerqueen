@@ -90,8 +90,8 @@ export default class UIMatchChessItem extends UIBase {
 
             let response = LobbySession.APIWebUserRoominsur(roominfo.rid).catch(() => { });
             if (response) {
-                UIComponent.close(UIDefine.UIMatchPlayViewForm);
-                ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: this.UIDefine, lookOn: false });//[this.UIDefine, false, 0]
+                //UIComponent.close(UIDefine.UIMatchPlayViewForm);
+                ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: UIDefine.UIMatchPlayViewForm, lookOn: false });//[this.UIDefine, false, 0]
             }
         } else {
             cc.warn("websocket还没有连接上:", WebSocketClient.WS.readyState);

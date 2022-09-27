@@ -1,4 +1,4 @@
-import { type } from "os";
+
 import { UIType } from "./EIDefine";
 
 export type UIDefineType = {
@@ -13,11 +13,11 @@ export const UIDefine = {
 
     //预加载UI
     UIPreloadingComponent: {
-
+        Name: "UIPreloadingComponent"
     },
     //GM界面
     UIGMComponent: {
-
+        Name: "UIGMComponent"
     },
     /**
      *  场景
@@ -266,6 +266,27 @@ export const UIDefine = {
         Name: "UIlaborExaminatMerber",
         Bundle: null,
         Path: "main/club/UIlaborExaminatMerber",
+    },
+
+    MyWalletForm: {
+        UIType: UIType.Form,
+        Name: "MyWalletForm",
+        Bundle: null,
+        Path: "wallet/MyWalletForm",
+    },
+    
+    WalletJumpForm: {
+        UIType: UIType.Form,
+        Name: "WalletJumpForm",
+        Bundle: null,
+        Path: "wallet/WalletJumpForm",
+    },
+    
+    GoldOprationForm: {
+        UIType: UIType.Form,
+        Name: "GoldOprationForm",
+        Bundle: null,
+        Path: "wallet/GoldOprationForm",
     },
 
 

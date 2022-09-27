@@ -1,6 +1,9 @@
 
 
 import { UIMineModel } from "../lobby/UIMineModel";
+import ProtocolAgency from "../net/websocket/ProtocolAgency";
+import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { ClientMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import UIBase from "../ui/UIBase";
 import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./Seat";
@@ -318,40 +321,36 @@ export default class SeatUIRC extends UIBase {
         }
 
     }
+    protected onClickCard(button: cc.Button): void {
+        let mTmpSequencePlayDealAnimation = GameCache.Instance.CurGame.GetSequencePlayDealAnimation();
+        if (null != mTmpSequencePlayDealAnimation && mTmpSequencePlayDealAnimation.IsPlaying) {
+            return;
+        }
+        // 亮牌   弃牌 , 未动作（没有开赛）
+        if (null == this.seat.Player || this.seat.Player.userID != GameCache.Instance.CurGame.mainPlayer.userID ||
+            this.seat.seatID != GameCache.Instance.CurGame.mainPlayer.seatID || !this.seat.Player.isParticipateInTheGame) {
+            return;
+        }
+
+        let go = button.node;
+
+        let mTmp: string = go.name.substring(go.name.length - 1);
+        let mCardIndex: number = +mTmp;
 
 
-    protected onClickCard(): void {
-        //         var mTmpSequencePlayDealAnimation = GameCache.Instance.CurGame.GetSequencePlayDealAnimation();
-        //         if (null != mTmpSequencePlayDealAnimation && mTmpSequencePlayDealAnimation.IsPlaying()) {
-        //             return;
-        //         }
-
-        //         // 亮牌   弃牌 , 未动作（没有开赛）
-        //         if (null == Player || Player.userID != GameCache.Instance.CurGame.MainPlayer.userID ||
-        //             seatID != GameCache.Instance.CurGame.MainPlayer.seatID || !Player.isParticipateInTheGame) {
-        //             return;
-        //         }
-
-        // 			string mTmp = go.name.Substring(go.name.Length - 1);
-        // 			int mCardIndex = -1;
-        //         if (int.TryParse(mTmp, out mCardIndex)) {
-        // 				bool mActive = listCardUIInfos[mCardIndex].imageEye.gameObject.activeInHierarchy;
-        //             listCardUIInfos[mCardIndex].imageEye.gameObject.SetActive(!mActive);
-
-        //             showCardsId[mCardIndex] = (!mActive) ? 1 : 0;
-        //             CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Showdown()
-        // 				{
-        //                     RoomID = (ulong)GameCache.Instance.room_id,
-        //                     MatchID = (ulong)GameCache.Instance.match_id,
-        //                     request = new ClientMessageShowdown()
-        // 					{
-        //                     Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
-        //                 ShowCards = showCardsId,
-        // 					}
-
-        //     });
-
-        // }
+        let mActive: boolean = this.listCardUIInfos[mCardIndex].imageEye.node.activeInHierarchy;
+        this.listCardUIInfos[mCardIndex].imageEye.node.active = !mActive;
+        this.showCardsId[mCardIndex] = (!mActive) ? 1 : 0;
+        ProtocolAgency.Send<ClientMessageShowdown.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_Showdown,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body:
+            {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                showCardsList: this.showCardsId
+            },
+        })
     }
 
     public ResetShowCardsId(): void {

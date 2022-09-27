@@ -14,6 +14,15 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class TimeHelper {
+    //当前毫秒
+    public static Now() {
+        return new Date().getTime();
+    }
+    //当前秒
+    public static NowS() {
+        return (new Date().getTime() / 1000) ^ 0;
+    }
+
     public static RFC3339TimeConvertToUTCTime(rfc3339Time) {
         let t = Date.parse(rfc3339Time)    //   DateTime.Parse(rfc3339Time).ToUniversalTime();
         return t;
@@ -49,4 +58,26 @@ export default class TimeHelper {
     public static Sleep(delaytime = 1000) {
         return new Promise(resolve => setTimeout(resolve, delaytime))
     }
+
+    /**
+     * 获取格式化时间  MM/dd HH:mm
+     */
+    public static TimeToString(time: number, format: string) {
+        let date = new Date(time);
+        let MM = this._zeroNum(date.getMonth() + 1);
+        let dd = this._zeroNum(date.getDate());
+        let HH = this._zeroNum(date.getHours());
+        let mm = this._zeroNum(date.getMinutes());
+        let result = format;
+        result = result.replace("MM", MM);
+        result = result.replace("dd", dd);
+        result = result.replace("HH", HH);
+        result = result.replace("mm", mm);
+        return result;
+    }
+
+    private static _zeroNum(num: number): string {
+        return `${num < 10 ? 0 : ""}${num}`;
+    }
 }
+(window as any).TimeHelper = TimeHelper;

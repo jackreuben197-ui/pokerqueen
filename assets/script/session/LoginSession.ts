@@ -23,7 +23,7 @@ export default class LoginSession {
 
     static Init() {
         this._areaCode = localStorage.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
-        this._phone = localStorage.getItem(StorageKey.PHONE) || "";
+        this._phone = localStorage.getItem(StorageKey.KEY_PHONE) || "";
     }
     /**
      * 登录请求
@@ -258,7 +258,7 @@ export default class LoginSession {
 
     static set Phone(value: string) {
         this._phone = value;
-        localStorage.setItem(StorageKey.PHONE, value);
+        localStorage.setItem(StorageKey.KEY_PHONE, value);
     }
     static get Phone(): string {
         return this._phone;

@@ -3,7 +3,7 @@ export class DOTween {
         return new Sequence(target);
     }
 }
-export type sequence_unit = { t?: Function, duration?: number };
+export type sequence_unit = { t?: Function, duration?: number, args?: any };
 export class Sequence<T> {
 
     private _tween: cc.Tween = null;
@@ -34,9 +34,11 @@ export class Sequence<T> {
 
     Append(this: Sequence<T>, tFunc: Function, duration: number): Sequence<T> {
         this._sequence.push([{ t: tFunc, duration: duration }]);
+
         return this;
     }
     Join(this: Sequence<T>, tFunc: Function, duration: number): Sequence<T> {
+
         let last = this._sequence[this._sequence.length - 1];
         if (last) {
             last.push({ t: tFunc, duration: duration });
@@ -69,23 +71,23 @@ export class Sequence<T> {
         this._startFunc?.();
         for (let i = 0; i < this._sequence.length; i++) {
             let spawn = this._sequence[i];
-            let obj: sequence_unit = null;
+            let a_obj: sequence_unit = null;
             if (spawn.length == 1) {
-                obj = spawn[0];
-                this._tween.then(cc.callFunc(() => {
-                    obj.t();
+                a_obj = spawn[0];
+                a_obj.t && this._tween.then(cc.callFunc(() => {
+                    a_obj.t();
                 }));
-                this._tween.delay(obj.duration);
+                a_obj.duration && this._tween.delay(a_obj.duration);
             } else {
                 let duration = 0;
                 for (let j = 0; j < spawn.length; j++) {
-                    obj = spawn[j];
-                    this._tween.then(cc.callFunc(() => {
-                        obj.t();
+                    let b_obj = spawn[j];
+                    b_obj.t && this._tween.then(cc.callFunc(() => {
+                        b_obj.t();
                     }));
-                    duration = Math.max(duration, obj.duration);
+                    duration = Math.max(duration, b_obj.duration);
                 }
-                this._tween.delay(duration);
+                duration && this._tween.delay(duration);
             }
         }
         this._tween.call(() => {

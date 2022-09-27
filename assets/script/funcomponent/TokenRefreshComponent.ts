@@ -28,6 +28,7 @@ export default class TokenRefreshComponent implements IUpdate {
         this.lasttime = nowTime;
         let timeDiff = LoginSession.TokenExpireAt - GlobalSession.NowTimeS;
         if (timeDiff < this.threshold) {
+            cc.log("token过期,重新拉取token");
             this.isRefreshRequesting = true;
             await LoginSession.SyncRefreshToken();
             this.isRefreshRequesting = false;

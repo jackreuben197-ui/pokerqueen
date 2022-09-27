@@ -38,7 +38,7 @@ export class UIFormMgr {
      * @param param 携带的参数
      */
 
-    open(uiDefine: { Name: string, Bundle: string, Path: string }, param: any = null) {
+    open(uiDefine: { Name: string, Bundle: string, Path: string }, param: any = null, animation: boolean = true) {
 
         if (this.currUI?.UIDefine.Name == uiDefine.Name) {
             cc.log("当前面板已经存在:", uiDefine.Name);
@@ -49,7 +49,7 @@ export class UIFormMgr {
 
         if (newUI) {
 
-            this.lateOpen(newUI, param);
+            this.lateOpen(newUI, param, animation);
 
         } else {
 
@@ -61,17 +61,17 @@ export class UIFormMgr {
                 let ui_node = cc.instantiate(asset);
                 newUI = ui_node.getComponent(UIBase);
                 this.uiMap[uiDefine.Name] = newUI;
-                this.lateOpen(newUI, param);
+                this.lateOpen(newUI, param, animation);
             });
         }
     }
 
-    async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null) {
-
+    async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null, animation: boolean = true) {
         if (uiDefine) {
             for (let i = this.showUIs.length - 1; i >= 0; i--) {
                 let ui = this.showUIs[i];
                 if (ui.UIDefine.Name == uiDefine.Name) {
+                    ui.close_animation = animation;
                     await this.currUI.onClose(param);
                     ui.node.parent = this.CacheUILayer;
                     this.showUIs.splice(i, 1);
@@ -82,6 +82,7 @@ export class UIFormMgr {
             }
         } else {
             if (this.currUI) {
+                this.currUI.close_animation = animation;
                 this.currUI.onClose(param);
                 this.currUI.node.parent = this.CacheUILayer;
                 this.showUIs.pop();
@@ -89,13 +90,12 @@ export class UIFormMgr {
             }
         }
     }
-    protected lateOpen(ui: UIBase, param: any = null) {
+    protected lateOpen(ui: UIBase, param: any = null, animation: boolean = true) {
         if (ui) {
-            //ui.node.active = true;
-            ui.node.parent = this.UILayer
+            ui.node.parent = this.UILayer;
+            ui.show_animation = animation;
             if (ui instanceof BaseForm) {
                 ui.onShow(param, this.currUI as BaseForm);
-                cc.log("ui.main.x onShow >> ", ui.node.x);
             } else {
                 ui.onShow(param);
             }
@@ -173,7 +173,7 @@ export class UICommonMgr {
     constructor() {
 
     }
-    open(uiDefine: IUIDefine, param: any = null, parent: cc.Node = null) {
+    open(uiDefine: IUIDefine, param: any = null, parent: cc.Node = null, animation: boolean = true) {
         let node: cc.Node = this.uiMap.get(uiDefine);
         if (!node) {
             let bundle = cc.assetManager.getBundle(uiDefine.Bundle);
@@ -189,12 +189,20 @@ export class UICommonMgr {
             return cc.log("ui已经开启");
         }
         node.parent = parent;
-        node.getComponent(UIBase)?.onShow(param);
+        let ui = node.getComponent(UIBase);
+        if (ui) {
+            ui.show_animation = animation;
+            ui.onShow(param);
+        }
     }
-    close(uiDefine: IUIDefine, param: any = null) {
+    close(uiDefine: IUIDefine, param: any = null, animation: boolean = true) {
         let node: cc.Node = this.uiMap.get(uiDefine);
         if (node && node.activeInHierarchy) {
-            node.getComponent(UIBase)?.onClose(param);
+            let ui = node.getComponent(UIBase);
+            if (ui) {
+                ui.close_animation = animation;
+                ui.onClose(param);
+            }
             node.parent = null;
         }
     }

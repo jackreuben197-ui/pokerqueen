@@ -2,33 +2,61 @@ const { ccclass, property } = cc._decorator;
 import UIBase from "../../ui/UIBase";
 import { i18nSprite } from "../../i18n/i18nSprite";
 import { GameCache } from "../../game/GameCache";
+import { LobbyControl } from "../control/LobbyControl";
+import UIMatchRoom from "./UIMatchRoom";
+import UIComponent from "../../ui/UIComponent";
+import { UIDefine } from "../../define/UIDefine";
 @ccclass
 export default class UILobby extends UIBase {
+    private lbl_name: cc.Label = null;
+    private lbl_glod: cc.Label = null;
+    private Button_MTT: cc.Node = null;
 
+    private beanBg: cc.Node = null;
+
+    private isRefresh: boolean = false;
     protected onLoad(): void {
         super.onLoad();
-        let widget: cc.Widget = this.node.getComponent(cc.Widget);
-        widget.target = cc.find("Canvas");
+
+        this.initView();
+
     }
     protected lateLoad(): void {
         super.lateLoad();
-        this.setMTTImage();
+
+        this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+        this.lbl_glod = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
+        this.Button_MTT = this.getChildNodeOrComponent("Button_MTT");
+        this.beanBg = this.getChildNodeOrComponent("beanBg");
+    }
+
+    protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
+
+        this.beanBg.off(cc.Node.EventType.TOUCH_END, this.clickBean, this);
+        this.beanBg.on(cc.Node.EventType.TOUCH_END, this.clickBean, this);
+    }
+
+    private initView(): void {
+        let widget: cc.Widget = this.node.getComponent(cc.Widget);
+        widget.target = cc.find("Canvas");
+
+        this.lbl_name.string = GameCache.Instance.nick.toString();
+        this.Button_MTT.getComponent(i18nSprite).string = "image_match_mtt";
+        this.updateBean();
+
         this.setScrollTop();
-        this.initUI()
     }
 
-    private initUI(): void {
-        let lbl_glod : cc.Label = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
-        lbl_glod.string = GameCache.Instance.gold.toString();
-        let lbl_name : cc.Label = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
-        lbl_name.string = GameCache.Instance.nick.toString();
+    updateBean() {
+        this.lbl_glod.string = GameCache.Instance.gold.toString();
     }
 
-    private setMTTImage() {
-        let Button_MTT:cc.Node = this.getChildNodeOrComponent("Button_MTT");
-        Button_MTT.getComponent(i18nSprite).string = "image_match_mtt";
+    clickBean() {
+        UIComponent.open(UIDefine.MyWalletForm)
     }
-   
+
+
     /**
       * @description: 主要用来设置 下拉刷新--
       * @return {void}
@@ -48,13 +76,15 @@ export default class UILobby extends UIBase {
         scrollView.on('scrolling', (e) => {
             let y = content.y;
             if (y < -100) {
+                this.isRefresh = true;
                 ItemPrefab0.active = true;
                 root.getChildByName("arrow").active = true;
                 root.getChildByName("Text_1").active = true;
                 root.getChildByName("waiticon").active = false;
             }
             if (ItemPrefab0.active === true) {
-                if ((y ^ 0) === 0) {
+                if ((y ^ 0) === 0 && this.isRefresh) {
+                    this.isRefresh = false;
                     root.getChildByName("arrow").active = false;
                     root.getChildByName("Text_1").active = false;
                     root.getChildByName("waiticon").active = true;
@@ -63,6 +93,9 @@ export default class UILobby extends UIBase {
                         root.getChildByName("waiticon").stopAllActions();
                         ItemPrefab0.active = false;
                     }, 0.5)
+                    LobbyControl.getInstance().RequestListSummary({}).then((res) => {
+                        UIMatchRoom.instance.onShow(res);
+                    })
                 }
             }
         })

@@ -72,7 +72,8 @@ export default class ProcedureConfig extends ProcedureBase {
                 if (GameConfig.IsNewArea) {
                     network.HTTP = "dev1.awanptesting.com";
                     network.LoginHost = "dev1.awanptesting.com";
-                    network.WebHost = `http://${network.HTTP}`;
+                    network.WebHost = `https://${network.HTTP}`;
+                    network.WSS = `wss://${network.HTTP}/api/channel/`
                 } else {
                     network.HTTP = "dev.k8s.awanptesting.com";
                     network.LoginHost = "dev.k8s.awanptesting.com";

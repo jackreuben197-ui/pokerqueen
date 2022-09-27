@@ -35,4 +35,34 @@ export default class HttpRequest {
         }
         return url;
     }
+
+    // 用于单独一个接口 需要https写死测试服务器用到
+    static async Send2({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null }) {
+
+        let host = "https://dev1.awanptesting.com";
+        let url = host + (api || request.API);
+        url = this.handleUrl2(url);
+        let needJuhua = WebHelper.NeedJuhua(request.API);
+        await HttpClient.post({
+            url: url, body, onFailure, onSuccess: HttpRequest.onSuccess2.bind(HttpRequest, request, onSuccess),
+            headers: headers, needJuhua
+        });
+    }
+    private static onSuccess2(request, onSuccess, response) {
+        request.Response = response;
+        onSuccess && onSuccess(response);
+    }
+    //代理转换
+    public static handleUrl2(url: string): string {
+        if (GameConfig.IsNewArea) {
+            if (GameConfig.useProxy && url.indexOf("https://dev1.awanptesting.com/api/") > -1) {
+                return url.replace("https://dev1.awanptesting.com/api/", "http://localhost:8080/")
+            }
+        } else {
+            if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
+                return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
+            }
+        }
+        return url;
+    }
 }

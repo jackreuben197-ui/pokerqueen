@@ -120,12 +120,6 @@ export default class UIMatchPlayViewForm extends BaseForm {
         }
     }
 
-    // async onClose(param: any = null) {
-    //     cc.log("UIMatchPlayView onClose");
-    //     super.onClose();
-    //     this._tabViews.forEach(view => view?.lateClose())
-    // }
-
     lateClose(param?: any): void {
         super.lateClose();
         this._tabViews.forEach(view => view?.lateClose())
