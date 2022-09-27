@@ -13,7 +13,6 @@ import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { GameCache } from "./GameCache";
 import { StringHelper } from "../helper/StringHelper";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { Protocol_Holdem_PublicReplay } from "../net/websocket/ProtocolHoldemMessages";
 import GameUtil from "./GameUtil";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import { AnyARecord } from "dns";
@@ -320,15 +319,14 @@ export default class UITexasHistoryComponent extends UIBase {
     }
     SendClientMessagePublicReplay(handNum) {
         ProtocolAgency.Send({
-            protocol: Protocol_Holdem_PublicReplay,
+            Code: ProtocolCode.Protocol_Holdem_PublicReplay,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            body: Protocol_Holdem_PublicReplay.Request(
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                    handNum: handNum,
-                    uniqueId: GameCache.Instance.CurGame.cacheUniqueId,
-                }),
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                handNum: handNum,
+                uniqueId: GameCache.Instance.CurGame.cacheUniqueId,
+            },
         }
         );
     }

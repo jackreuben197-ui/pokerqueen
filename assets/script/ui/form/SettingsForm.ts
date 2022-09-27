@@ -1,4 +1,5 @@
 
+import { GameConfig } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import GlobalSession from "../../session/GlobalSession";
 import SettingsFormItem from "../item/SettingsFormItem";
@@ -27,7 +28,7 @@ export default class SettingsForm extends BaseForm {
         { type: 1, id: "report", left_string: "tc_wV5t3xsr", right_string: "" },
         { type: 1, id: "about", left_string: "tc_YQAGnw3p", right_string: "" },
         { type: 1, id: "useragreement", left_string: "tc_5E0V3qlb", right_string: "" },
-        { type: 1, id: "version", left_string: "tc_NO5NT6aa", right_string: "" },
+        { type: 1, id: "version", left_string: "tc_NO5NT6aa", right_string: GameConfig.Version },
     ];
     ///////////////////////////////////
     /**

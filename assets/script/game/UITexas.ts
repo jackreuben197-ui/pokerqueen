@@ -8,8 +8,12 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
 import { ResManager } from "../manager/ResManager";
 import ToastManager from "../manager/ToastManager";
+import ProtocolAgency from "../net/websocket/ProtocolAgency";
+import { ProtocolCode } from "../net/websocket/ProtocolCode";
+
 
 import { RoomInfo } from "../protobuf/holdem/define_pb";
+import { ClientMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
 import GlobalSession from "../session/GlobalSession";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent from "../ui/UIComponent";
@@ -81,6 +85,7 @@ export default class UITexas extends BaseScene {
     UIAutoOperation: cc.Node = null;
 
     imageWaitForStartTips: cc.Node = null;
+    imageReserveSeatTips: cc.Node = null;
 
     //座位节点
     Seat: cc.Node = null;
@@ -239,6 +244,9 @@ export default class UITexas extends BaseScene {
         this.chat_btn = this.getChildNodeOrComponent("chat_btn");
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
         this.imageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
+        this.imageReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
+
+
         this.Seat = this.getChildNodeOrComponent("Seat");
         this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
@@ -374,6 +382,8 @@ export default class UITexas extends BaseScene {
 
         this.imageMenuMask.on("click", this.hideMenu, this);
 
+        this.buttonDelay.on("click", this.onClickDelay, this);
+
     }
 
 
@@ -382,9 +392,7 @@ export default class UITexas extends BaseScene {
         super.Enter(param);
 
         if (param != null) { // { fromUI: this.UIDefine, lookOn: false }
-
             this.game.IsLookOn = param?.lookOn || false;
-            //param?.fromUI && UIComponent.close(param.fromUI);
         }
 
         this.game.setDeskType(this.game.deskType);
@@ -569,8 +577,11 @@ export default class UITexas extends BaseScene {
     Click_Button_Trust() {
 
     }
+    //留座离桌
     Click_Button_LeaveDesk() {
 
+        this.hideMenu();
+        this.game.SendReserveSeatAction(true);
     }
     Click_Button_Exit() {
         this.CallbackExit();
@@ -599,6 +610,29 @@ export default class UITexas extends BaseScene {
         let target: cc.Node = e.currentTarget;
         target.getChildByName("Text").color = cc.Color.WHITE;
         target.getChildByName("Arrow").color = cc.Color.WHITE;
+    }
+
+
+    protected onClickDelay(): void {
+        if (this.CanClick() == false)
+            return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+        if (this.game.delayCount >= 2)
+            return;
+
+        if (!this.UIOperation.activeInHierarchy) {
+            UIComponent.Instance.Toast(i18nMgr.Get("ServerErrorCode_31045"));
+            return;
+        }
+        ProtocolAgency.Send<ClientMessageAddTime.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AddTime,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                consume: this.game.TexasGameUtils.GetOpDelayConsumeType(),
+            },
+        });
     }
 
     CanClick(): boolean {

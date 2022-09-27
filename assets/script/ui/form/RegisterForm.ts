@@ -156,7 +156,6 @@ export default class RegisterForm extends BaseForm {
         }).catch(() => { });
 
         if (result == undefined) return;
-        Web_Login
         //关闭当前页面
         this.close();
         //进入登录流程

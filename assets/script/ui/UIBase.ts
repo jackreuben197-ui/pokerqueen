@@ -13,6 +13,10 @@ export default class UIBase extends cc.Component {
 
     static load_all_objects_duration: number = 0;
 
+    show_animation: boolean = false;
+
+    close_animation: boolean = false;
+
     protected onLoad() {
         !this.UIDefine || this.UIDefine.DisAdaptScreen || this.node.addComponent(AdapterComponent);
         if (this.UIDefine) window[this.UIDefine.Name] = this;
@@ -56,7 +60,7 @@ export default class UIBase extends cc.Component {
         this.load_all_object(this.node);
     }
 
-    lateClose(param?: any) {
+    protected lateClose(param?: any) {
 
     }
 

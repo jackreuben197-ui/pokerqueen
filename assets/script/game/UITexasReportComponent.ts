@@ -8,10 +8,9 @@ import { CPErrorCode } from "../i18n/CPErrorCode";
 import { ResManager } from "../manager/ResManager";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Protocol_Holdem_BringIn, Protocol_Holdem_Roomers } from "../net/websocket/ProtocolHoldemMessages";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
-import { ServerMessageRoomers } from "../protobuf/holdem/req_roomers_pb";
+import { ClientMessageRoomers, ServerMessageRoomers } from "../protobuf/holdem/req_roomers_pb";
 import UIBase from "../ui/UIBase";
 import { GameCache } from "./GameCache";
 import { Web_Room_Center_Rooms, } from "../../../assets/script/net/https/WebRequest";
@@ -69,14 +68,13 @@ export default class UITexasReportComponent extends UIBase {
         CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
     }
     RequestRoomers() {
-        ProtocolAgency.Send({
-            protocol: Protocol_Holdem_Roomers,
+        ProtocolAgency.Send<ClientMessageRoomers.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_Roomers,
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
-            body: Protocol_Holdem_Roomers.Request(
-                {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                }),
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+            },
         })
     }
     ProtocolHoldemRoomersHandler(response: ServerMessageLeave.AsObject) {

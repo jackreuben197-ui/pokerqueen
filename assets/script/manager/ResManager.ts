@@ -1,11 +1,5 @@
 import MyLog from "../tools/MyLog";
 
-export class ResConfig {
-    //登录资源
-    static LoginDir = "login";
-    //主资源
-    static MainDir = "main";
-}
 export const Bundle_Resources: string = "resources";
 export const Bundle_Texas: string = "texas";
 

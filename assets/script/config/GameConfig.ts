@@ -12,14 +12,17 @@
  */
 
 import { INetWork } from "../define/EIDefine";
-import { i18nMgr } from "../i18n/i18nMgr";
 
 export class GameConfig {
+
+    //版本号
+    static Version: string = "20220927";
+
     static Default_Language: string = "en";
     //是否使用代理
     static useProxy: boolean = false;
     //是否使用新域名
-    static IsNewArea: boolean = true;
+    static IsNewArea: boolean = false;
     //设计分辨率
     static DesignResolution = cc.size(1242, 2688);
     //fps

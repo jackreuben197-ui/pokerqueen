@@ -1189,7 +1189,6 @@ export default class Seat {
         }
     }
 
-
     /// <summary>
     /// 轮到自己操作隐藏头像名字
     /// </summary>
