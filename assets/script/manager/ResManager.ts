@@ -1,5 +1,6 @@
 import { bundleRes, bundleSpriteRes } from "../config/PathConfig";
 import MyLog from "../tools/MyLog";
+import UIBase from "../ui/UIBase";
 
 export const Bundle_Resources: string = "resources";
 export const Bundle_Texas: string = "texas";
@@ -37,12 +38,10 @@ export class ResManager {
         return ResManager._instance;
     }
 
-    static bundleMap: { [key: string]: cc.AssetManager.Bundle } = {};
+    // static bundleMap: { [key: string]: cc.AssetManager.Bundle } = {};
 
     static LoadAsset(bundleName: string, assetPath: string) {
-
-        let bundle = bundleName == null ? cc.resources : this.bundleMap[bundleName];
-
+        let bundle = bundleName == null ? cc.resources : cc.assetManager.getBundle(bundleName);
         return bundle?.get(assetPath);
     }
 
@@ -51,14 +50,13 @@ export class ResManager {
         if (bundleName == null) {
             cc.resources.load.apply(cc.resources, args);
         } else {
-            let bundle = this.bundleMap[bundleName];
+            let bundle = cc.assetManager.getBundle(bundleName);
             if (bundle == undefined) {
                 cc.assetManager.loadBundle(bundleName, (err: Error, bundle: cc.AssetManager.Bundle) => {
                     if (err) {
                         cc.log("bundle load error:", bundleName);
                         return;
                     }
-                    this.bundleMap[bundleName] = bundle;
                     bundle.load.apply(bundle, args);
                 })
             } else {
@@ -75,9 +73,6 @@ export class ResManager {
                     cc.log("load bundle error:", bundleName);
                     reject(0);
                 } else {
-
-                    this.bundleMap[bundleName] = bundle;
-
                     bundle.loadDir("/",
                         (finish: number, total: number) => {
                             let percent = finish / total;
@@ -101,28 +96,21 @@ export class ResManager {
         let asset;
         //读取内置包 resources
         if (bundleName == null) {
-
             return cc.resources.get(assetPath);
         }
 
-        let bundle: cc.AssetManager.Bundle = this.bundleMap[bundleName];
-
+        let bundle: cc.AssetManager.Bundle = cc.assetManager.getBundle(bundleName);
         if (!bundle) {
-
             bundle = await this.LoadBundle(bundleName).catch(() => { }) as cc.AssetManager.Bundle;
         }
+
         if (bundle) {
-
             let asset = bundle.get(assetPath);
-
             if (asset) return asset;
 
             await this.LoadBundleAssets(bundle);
-
             return bundle.get(assetPath);
-
         } else {
-
             return null;
         }
 
@@ -308,7 +296,7 @@ export class ResManager {
 
     private checkAssetIsPrefab(path, res, asset_type, cb, isLoad) {
         let isPrefab = asset_type == cc.Prefab;
-        isLoad && res.addRef();
+        // isLoad && res.addRef();
         if (isPrefab) {
             this.setPrefab(path, res, cb)
         } else {
@@ -319,9 +307,9 @@ export class ResManager {
     private setPrefab(path: string, res: cc.Prefab, cb: Function) {
         let node = cc.instantiate(res);
         node.setPosition(cc.Vec2.ZERO);
-        let prefab = node.getComponent(BasePrefab);
+        let prefab = node.getComponent(UIBase);
         if (!Boolean(prefab)) {
-            prefab = node.addComponent(BasePrefab);
+            prefab = node.addComponent(UIBase);
         }
         if (!Boolean(prefab.path)) {
             prefab.path = path;

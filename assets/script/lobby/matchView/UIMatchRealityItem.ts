@@ -21,18 +21,17 @@ export default class UIMatchRealityItam extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.node.off(cc.Node.EventType.TOUCH_END, this.clickBg, this);
-        this.node.on(cc.Node.EventType.TOUCH_END, this.clickBg, this);
+        this.bindClick(this.node, this.clickBg);
     }
 
     initData(data: TMatchGameDataType) {
         this._data = data;
 
         this.icon.spriteFrame = AssetContext.getAsset(this._data.bgPath, AssetFold.texture_match_view);
-        this.nameLab.string = this._data.name;
+        this.setText(this.nameLab, this._data.name);
     }
 
-    clickBg() {
+    clickBg = () => {
         ToastManager.Instance.createToast(this._data.url);
     }
 }

@@ -17,8 +17,8 @@ export default class WalletJumpForm extends BaseForm {
     private _data: Array<TWalletGoldOpration> = [];
     onLoad() {
         super.onLoad();
-        this._configData.set(EWalletGoldOpration.in, [{ title: "充豆", goto: UIDefine.GoldOprationForm }])
-        this._configData.set(EWalletGoldOpration.out, [{ title: "提豆", goto: UIDefine.GoldOprationForm }])
+        this._configData.set(EWalletGoldOpration.in, [{ title: "Text_Add", goto: UIDefine.GoldOprationForm }])
+        this._configData.set(EWalletGoldOpration.out, [{ title: "Text_Getchips", goto: UIDefine.GoldOprationForm }])
     }
     lateLoad() {
         super.lateLoad();
@@ -43,7 +43,7 @@ export default class WalletJumpForm extends BaseForm {
     }
 
     initView() {
-        let title = this._type == EWalletGoldOpration.in ? "充豆" : "提豆";
+        let title = this._type == EWalletGoldOpration.in ? "Text_Add" : "Text_Getchips";
         this.comFormTitle.initData(title, this);
 
 
@@ -51,7 +51,9 @@ export default class WalletJumpForm extends BaseForm {
     }
 
     onRender(node: cc.Node, index: number) {
+        let data = this._data[index]
+        data.param = this._type;
         let item = node.getComponent(WalletJumpItem);
-        item.initData(this._data[index]);
+        item.initData(data);
     }
 }

@@ -34,7 +34,7 @@ export default class WalletJumpItem extends UIBase {
 
         }
 
-        this.title.string = this._data.title;
+        this.setText(this.title, this._data.title);
     }
 
     clickItem() {

@@ -14,7 +14,7 @@ export default class BaseScene extends UIBase {
     Exit(param: any = null) {
         console.log("::", this.UIDefine.Name, "Exit()", "param:", param);
         this.stopAllThings();
-        this.unregiterDispatchEvent();
+        this.unregiterAllDispatchEvent();
         this.lateExit();
     }
 
