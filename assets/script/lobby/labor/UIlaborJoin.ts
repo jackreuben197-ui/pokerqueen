@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 11:40:46
+ * @LastEditTime: 2022-09-26 17:28:29
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
@@ -47,8 +47,8 @@ export default class UIlaborJoin extends BaseForm {
         let data: any = Web_Org_Club_Search_By_Id.Response.data
         if (data) {
             this.initItem(this.searchNode, data, async () => {
-                await UIClubModel.mInstance.APIOrgClubJoinClub(data.club_id);
                 this.hideSearchNode();
+                await UIClubModel.mInstance.APIOrgClubJoinClub(data.club_id);
                 this.initApplyList();
             })
         }

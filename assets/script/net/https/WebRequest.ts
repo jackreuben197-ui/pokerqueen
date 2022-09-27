@@ -750,7 +750,8 @@ export class APIOrgClubApprovalJoin {
 
     //字段声明
     public static RequestParams: {
-        apply_id: null;
+        "apply_id": ''
+        "audit_op": ''
     } = null;
 
     public static ResponseData: {
@@ -764,12 +765,11 @@ export class APIOrgClubApprovalJoin {
 }
 export class APIOrgClubGetJoinlList {
     //接口地址
-    public static API: string = "/api/umgr/club/99777674/member/list";
+    public static API: string = "/api/org/club/join/list";
 
 
     //字段声明
     public static RequestParams: {
-        club_id: null;
     } = null;
 
     public static ResponseData: {

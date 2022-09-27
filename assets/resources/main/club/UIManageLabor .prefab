@@ -2560,7 +2560,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "label",
+    "_name": "pName",
     "_objFlags": 0,
     "_parent": {
       "__id__": 59
@@ -3616,7 +3616,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        181.32600000000002,
+        325.09899999999993,
         0,
         0,
         0,
@@ -3685,7 +3685,7 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 8,
-    "_left": 702.326,
+    "_left": 846.0989999999999,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -14656,6 +14656,9 @@
     },
     "EditBox": {
       "__id__": 51
+    },
+    "contentNode": {
+      "__id__": 58
     },
     "lbl_glod": null,
     "_id": ""

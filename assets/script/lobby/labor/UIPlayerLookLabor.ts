@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 11:07:38
+ * @LastEditTime: 2022-09-27 11:41:09
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -19,6 +19,9 @@ const { ccclass, property } = cc._decorator;
 export default class UIPlayerLookLabor extends BaseForm {
     @property(cc.Node)
     mask_group: cc.Node = null;
+
+    @property(cc.Node)
+    contentNode: cc.Node = null;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -38,7 +41,35 @@ export default class UIPlayerLookLabor extends BaseForm {
 
         let icon = cc.find('iconMask/icon', this.mask_group).getComponent(cc.Sprite);
         WebImageHelper.SetUrlImage(icon, data.logo)
-        let lbl_glod = cc.find('img_right_bg/lbl_glod', this.mask_group).getComponent(cc.Label);
+        // let lbl_glod = cc.find('img_right_bg/lbl_glod', this.mask_group).getComponent(cc.Label);
+        this.initClubData()
+    }
+    initClubData() {
+        let data: any = Web_Org_Club_Get.Response.data;
 
+        //初始化创始人
+        let csr = this.contentNode.getChildByName('csr')
+        // csr.getChildByName('pName').getComponent(cc.Label).string = data.club_creator_nickname
+        let panel_right = csr.getChildByName('panel_right')
+        panel_right.getChildByName('name').getComponent(cc.Label).string = data.club_creator_nickname
+        let icon = cc.find('iconMask/icon', panel_right);
+        WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.club_creator_avatar)
+        //创建时间
+        let chsj = this.contentNode.getChildByName('chsj')
+        chsj.getChildByName('time').getComponent(cc.Label).string = data.create_time
+
+    }
+    exitClub() {
+        //tip
+        UIComponent.open(UIDefine.UIDialogComponent, {
+            data: {
+                title: "提示", content: "您的账户内剩余金豆XXXX，如减持退出，系统将清空您的所有剩余金豆，是否继续？", confirm: "确认", cancel: "取消", confirmCallback: () => {
+
+                },
+                cancelCallback: () => {
+
+                }
+            }
+        });
     }
 }
