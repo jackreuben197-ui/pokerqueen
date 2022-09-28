@@ -2,6 +2,7 @@
  * TexasGameStateHandler
  */
 import { UIDefine } from "../define/UIDefine";
+import Main from "../Main";
 import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
@@ -91,8 +92,8 @@ export class TexasGameStateHandlerInit extends StateHandler {
             return;
         }
 
-        UIComponent.close(UIDefine.TexasPreLoad);
-
+        UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
+        
         GameCache.Instance.CurrentRoomID = GameCache.Instance.room_id;
         GameCache.Instance.CurGame.RegisterMsgHandler();
         GameCache.Instance.CurGame.UpdateRoom(source);
@@ -173,7 +174,8 @@ export class TexasGameStateHandlerExit extends StateHandler {
         // if (game.IsUILoadingActive()) {
         //     UIComponent.Instance.HideNoAnimation(UIType.UIMatch_Loading);
         // }
-        UIComponent.close(UIDefine.TexasPreLoad);
+
+        UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
 
         game.TexasGameUtils.ExitRoom();
 

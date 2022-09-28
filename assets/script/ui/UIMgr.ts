@@ -119,7 +119,7 @@ export class UIFormMgr {
 
         while (this.showUIs.length) {
             let ui = this.showUIs[this.showUIs.length - 1];
-            await this.close(ui.UIDefine, { style: { main_fadeOut_active: false } })
+            await this.close(ui.UIDefine, null, false)
         }
 
         this.showUIs = [];

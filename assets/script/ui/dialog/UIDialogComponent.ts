@@ -4,6 +4,17 @@
  */
 import BaseTouchBoard from "../board/BaseTouchBoard";
 
+
+export type UIDialogParam = {
+    type?: number,
+    title?: string,
+    content?: string,
+    contentCommit?: string,
+    contentCancel?: string,
+    actionCommit?: Function,
+    actionCancel?: Function,
+    noAnimation?: boolean,
+}
 const { ccclass } = cc._decorator;
 
 @ccclass
@@ -41,16 +52,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
     Text_Cancel: cc.Label = null;
 
 
-    public ParamData: {
-        type?: number,
-        title?: string,
-        content?: string,
-        contentCommit?: string,
-        contentCancel?: string,
-        actionCommit?: Function,
-        actionCancel?: Function,
-        noAnimation?: boolean,
-    } = null;
+
 
 
     private _actionCommit: Function = null;
@@ -104,7 +106,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
         this.Button_Cancel?.on("click", this.onCancelClick, this);
     }
 
-    protected lateShow(param?: typeof this.ParamData) {
+    protected lateShow(param?: UIDialogParam) {
 
         super.lateShow(param);
 

@@ -59,6 +59,7 @@ export default class ToastManager {
         let toast: cc.Node = this.getToast();
         if (toast) {
             let toast_script: Toast = toast.getComponent(Toast);
+            toast.active = true;
             toast.parent = this.sequenceContent;
             toast.opacity = 0;
             //toast_script.setLabel(i18nMgr._getLabel(content));
@@ -139,7 +140,7 @@ export default class ToastManager {
      */
     getToast() {
         if (this.toast_pool.length) return this.toast_pool.shift();
-        let toast_pb: cc.Prefab = AssetContext.getAsset<cc.Prefab>("Toast", AssetFold.resources_prefab_component);
+        let toast_pb: cc.Node = Main.Toast_Node;
         return toast_pb && cc.instantiate(toast_pb) || null;
     }
 }
