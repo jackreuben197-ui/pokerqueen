@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 12:30:10
+ * @LastEditTime: 2022-09-28 13:52:59
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 
 export class UIClubModel {
     private static instance: UIClubModel = null;
@@ -202,7 +202,7 @@ export class UIClubModel {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                headers: [["Content-Type", "multipart/form-data"], ["Content-Type", " boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"]]
+                // headers: [["Content-Type", "multipart/form-data"], ["Content-Type", " boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"]]
             });
         });
     }
@@ -240,6 +240,24 @@ export class UIClubModel {
                 body: APIOrgMemberList.Request(params),
                 onSuccess: function () {
                     resolve(APIOrgMemberList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                //headers: [['Content-Type:', 'image/jpeg']]
+            });
+        });
+    }
+    APIOrgClubGold(id) {
+        let params: any = {
+            club_random_id: id,
+        };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubGold,
+                body: APIOrgClubGold.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubGold.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
