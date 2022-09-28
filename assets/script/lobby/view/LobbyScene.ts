@@ -1,10 +1,10 @@
 const { ccclass, property } = cc._decorator;
-import BaseScene from "../../ui/scene/BaseScene";
 import { Web_Misc_Banner_List } from "../../net/https/WebRequest";
+import BaseScene from "../../ui/scene/BaseScene";
+import { LobbyControl } from "../control/LobbyControl";
+import UILobbyMenu from "./UILobbyMenu";
 import UIMatchBanner from "./UIMatchBanner";
 import UIMatchRoom from "./UIMatchRoom";
-import UILobbyMenu from "./UILobbyMenu";
-import { LobbyControl } from "../control/LobbyControl";
 
 @ccclass
 export default class LobbyScene extends BaseScene {
@@ -13,7 +13,7 @@ export default class LobbyScene extends BaseScene {
 
     UILobby_Menu: UILobbyMenu = null;
 
-    protected onLoad(): void {
+    onLoad(): void {
         super.onLoad();
         this.UILobby_Menu = this.getChildNodeOrComponent("UILobby_Menu", UILobbyMenu);
         this.Layer = this.getChildNodeOrComponent("Layer");
@@ -41,7 +41,7 @@ export default class LobbyScene extends BaseScene {
         //刷新房间的数据
         this.refreshRoom();
     }
-    
+
     //刷新banner
     public refreshBanner(): void {
         let language = cc.sys.localStorage.getItem("language");

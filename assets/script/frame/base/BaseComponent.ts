@@ -74,99 +74,87 @@ export default class BaseComponent extends Base {
         return component ? (node?.getComponent(component)) : node;
     }
 
-    protected bindClick(com: cc.Node | cc.Component, callBack: Function, data?: any, scaleAni: boolean = false, start: boolean = false, stopPro: boolean = true) {
+    protected bindClick(com: cc.Node | cc.Component, callBack: Function, data?: any, scaleAni: boolean = false) {
         let node: cc.Node = (com instanceof cc.Component ? com.node : com);
         let scale = node.scale;
         node.targetOff(this)
         let self = this;
         node.on(cc.Node.EventType.TOUCH_START, (event: cc.Event.EventTouch) => {
-            stopPro && event.stopPropagation()
             scaleAni && node.stopAllActions()
             scaleAni && cc.tween(node).to(0.1, { scale: scale * 1.1 }).start();
-            start && callBack.call(self, event, data)
         }, this);
         node.on(cc.Node.EventType.TOUCH_CANCEL, (event: cc.Event.EventTouch) => {
-            stopPro && event.stopPropagation()
             scaleAni && node.stopAllActions()
             scaleAni && cc.tween(node).to(0.1, { scale: scale }).start();
         }, this);
         node.on(cc.Node.EventType.TOUCH_END, (event: cc.Event.EventTouch) => {
-            stopPro && event.stopPropagation()
             scaleAni && node.stopAllActions()
             scaleAni && cc.tween(node).to(0.1, { scale: scale }).start();
             GC.audio.playSound(AudioPath.btnClick);
-            !start && callBack.call(self, event, data)
+            callBack.call(self, data, event)
         }, this);
         if (this._clickNodes.indexOf(node) == -1) {
             this._clickNodes.push(node);
         }
     }
     /***  touches start */
-    // protected bindTouchs(com: cc.Node | cc.Component, start: boolean = true, move: boolean = true, end: boolean = true, cancle: boolean = true) {
-    //     let node: cc.Node = (com instanceof cc.Component ? com.node : com);
-    //     node.targetOff(this)
-    //     start && node.on(cc.Node.EventType.TOUCH_START, this.touchStart, this);
-    //     move && node.on(cc.Node.EventType.TOUCH_MOVE, this.touchMove, this);
-    //     end && node.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this);
-    //     cancle && node.on(cc.Node.EventType.TOUCH_CANCEL, this.touchCancel, this);
-    //     if (this._clickNodes.indexOf(node) == -1) {
-    //         this._clickNodes.push(node);
-    //     }
-    // }
+    protected bindTouchs(com: cc.Node | cc.Component, start: boolean = true, move: boolean = true, end: boolean = true, cancle: boolean = true) {
+        let node: cc.Node = (com instanceof cc.Component ? com.node : com);
+        node.targetOff(this)
+        start && node.on(cc.Node.EventType.TOUCH_START, this.touchStart, this);
+        move && node.on(cc.Node.EventType.TOUCH_MOVE, this.touchMove, this);
+        end && node.on(cc.Node.EventType.TOUCH_END, this.touchEnd, this);
+        cancle && node.on(cc.Node.EventType.TOUCH_CANCEL, this.touchCancel, this);
+        if (this._clickNodes.indexOf(node) == -1) {
+            this._clickNodes.push(node);
+        }
+    }
 
-    // protected bindTouch(com: cc.Node | cc.Component, type: string, callback: Function) {
-    //     let node: cc.Node = (com instanceof cc.Component ? com.node : com);
-    //     node.targetOff(this)
-    //     node.on(type, callback, this);
-    //     if (this._clickNodes.indexOf(node) == -1) {
-    //         this._clickNodes.push(node);
-    //     }
-    // }
+    protected bindTouch(com: cc.Node | cc.Component, type: string, callback: Function) {
+        let node: cc.Node = (com instanceof cc.Component ? com.node : com);
+        node.targetOff(this)
+        node.on(type, callback, this);
+        if (this._clickNodes.indexOf(node) == -1) {
+            this._clickNodes.push(node);
+        }
+    }
 
-    // protected touchStart = (event: cc.Event.EventTouch) => {
-    //     event.stopPropagation()
-    //     let curId = event.touch.getID();
-    //     if (GC.config.global.touchId == -1) {
-    //         GC.config.global.touchId = curId;
-    //     }
-    //     if (curId == GC.config.global.touchId) {
-    //         this.onTouchStart && this.onTouchStart(event);
-    //     }
-    // }
+    protected touchStart = (event: cc.Event.EventTouch) => {
+        event.stopPropagation()
+        if (this.touchEndIsNotMulti(event)) {
+            this.onTouchStart && this.onTouchStart(event);
+        }
+    }
 
-    // protected touchMove = (event: cc.Event.EventTouch) => {
-    //     event.stopPropagation()
-    //     if (event.touch.getID() == GC.config.global.touchId) {
-    //         this.onTouchMove && this.onTouchMove(event);
-    //     }
-    // }
+    protected touchMove = (event: cc.Event.EventTouch) => {
+        event.stopPropagation()
+        if (this.touchEndIsNotMulti(event)) {
+            this.onTouchMove && this.onTouchMove(event);
+        }
+    }
 
-    // protected touchEnd = (event: cc.Event.EventTouch) => {
-    //     event.stopPropagation()
-    //     if (this.touchEndIsNotMulti(event)) {
-    //         this.onTouchEnd && this.onTouchEnd(event);
-    //     }
-    // }
+    protected touchEnd = (event: cc.Event.EventTouch) => {
+        event.stopPropagation()
+        if (this.touchEndIsNotMulti(event)) {
+            this.onTouchEnd && this.onTouchEnd(event);
+        }
+    }
 
-    // protected touchCancel = (event: cc.Event.EventTouch) => {
-    //     event.stopPropagation()
-    //     if (this.touchEndIsNotMulti(event)) {
-    //         this.onTouchCancel && this.onTouchCancel(event);
-    //     }
-    // }
+    protected touchCancel = (event: cc.Event.EventTouch) => {
+        event.stopPropagation()
+        if (this.touchEndIsNotMulti(event)) {
+            this.onTouchCancel && this.onTouchCancel(event);
+        }
+    }
 
-    // private touchEndIsNotMulti(event: cc.Event.EventTouch) {
-    //     let curId = event.touch.getID();
-    //     let isNotMulti = curId == GC.config.global.touchId;
-    //     if (isNotMulti) {
-    //         GC.config.global.touchId = -1;
-    //     }
-    //     return isNotMulti;
-    // }
-    // protected onTouchStart(event: cc.Event.EventTouch) { }
-    // protected onTouchMove(event: cc.Event.EventTouch) { }
-    // protected onTouchEnd(event: cc.Event.EventTouch) { }
-    // protected onTouchCancel(event: cc.Event.EventTouch) { }
+    private touchEndIsNotMulti(event: cc.Event.EventTouch) {
+        let firstTouchId = event.getTouches()[0].getID();
+        return firstTouchId != event.touch.getID();
+    }
+    protected onTouchStart(event: cc.Event.EventTouch) { }
+    protected onTouchMove(event: cc.Event.EventTouch) { }
+    protected onTouchEnd(event: cc.Event.EventTouch) { }
+    protected onTouchCancel(event: cc.Event.EventTouch) { }
 
     /**
      * 注册触摸事件

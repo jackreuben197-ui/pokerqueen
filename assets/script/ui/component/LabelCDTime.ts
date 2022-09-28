@@ -13,7 +13,7 @@ export default class LabelCDTime extends cc.Component {
 
     call: Function = null;
 
-    protected onLoad(): void {
+    onLoad(): void {
         this.label = this.node.getComponent(cc.Label);
     }
 
