@@ -7,7 +7,7 @@ export const Bundle_Resources: string = "resources";
 export const Bundle_Texas: string = "texas";
 
 export type Pre_Define = { bundle: string, dir: string };
-export type Pre_Load = { pre_define: Pre_Define, complete?: Function, stopProgress: boolean };
+export type Pre_Load = { pre_define: Pre_Define, complete?: Function, stopProgress: boolean, error?: Function };
 
 export const Pre_Config_Define: Pre_Define = {
     bundle: Bundle_Resources,
@@ -68,6 +68,7 @@ export class ResManager {
 
     //读取整个bundle包内资源
     static LoadABs(bundleName: string, progressHandler?: Function) {
+        let percent = 0;
         return new Promise((resolve, reject) => {
             cc.assetManager.loadBundle(bundleName, (err, bundle) => {
                 if (err) {
@@ -75,15 +76,14 @@ export class ResManager {
                     reject(0);
                 } else {
                     bundle.loadDir("/",
-                        (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
-                            let percent = finish / total;
+                        (finish: number, total: number) => {
+                            percent = Math.max(percent, finish / total);
                             if (progressHandler) progressHandler(percent);
                         }, (error: Error, assets) => {
                             if (error) {
                                 cc.log("load dir error:", error);
                                 reject(0);
                             } else {
-
                                 assets.forEach((item) => {
                                     if (item instanceof cc.Prefab) {
                                         let ac = item.data?.getComponent(AssetContext);

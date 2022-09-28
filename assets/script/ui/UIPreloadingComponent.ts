@@ -1,5 +1,7 @@
+import { CPErrorCode } from "../i18n/CPErrorCode";
 import Main from "../Main";
-import { Bundle_Resources, Pre_Load } from "../manager/ResManager";
+import { Bundle_Resources, Bundle_Texas, Pre_Load, ResManager } from "../manager/ResManager";
+import ToastManager from "../manager/ToastManager";
 import AssetContext from "./component/AssetContext";
 import UIBase from "./UIBase";
 import UIComponent from "./UIComponent";
@@ -46,7 +48,7 @@ export default class UIPreloadingComponent extends UIBase {
     setDesc(content: string) {
         this.progress_desc.string = content;
     }
-    onShow(param?: Pre_Load): void {
+    async onShow(param?: Pre_Load) {
         super.onShow(param);
         this.setProgress(0);
         let bundle = param.pre_define.bundle;
@@ -87,6 +89,16 @@ export default class UIPreloadingComponent extends UIBase {
                         param?.complete();
                     }
                 })
+        } else {
+            let loadBundle_result = await ResManager.LoadABs(bundle, this.setProgress.bind(this)).catch(() => { });
+            if (loadBundle_result) {
+                console.log(`bundle => ${bundle} 包体资源加载完成`);
+                param?.complete();
+            } else {
+                ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10050))
+                param?.error();
+            }
+
         }
     }
 }

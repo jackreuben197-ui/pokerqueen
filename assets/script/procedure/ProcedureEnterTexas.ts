@@ -1,7 +1,9 @@
 
 import { Bundle, ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
+import { Pre_Texas_Define } from "../manager/ResManager";
 import UIComponent from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 
@@ -15,19 +17,18 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     lateEnter(param?: any) {
         super.lateEnter(param);
         //显示房间进入loading
-        UIComponent.open(UIDefine.TexasPreLoad, { bundleName: Bundle.Texas, completeHandler: this.completeHandler.bind(this), errorHandler: this.errorHandler.bind(this) });
+        UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, { pre_define: Pre_Texas_Define, complete: this.onComplete.bind(this), error: this.errorHandler.bind(this) });
 
     }
     Leave() {
         super.Leave();
     }
 
-    completeHandler() {
-        //UIComponent.close(this.param?.[0]);
+    onComplete() {
         ProcedureManager.StartProcedure(ProcedureEnum.Texas, this.param);
     }
     errorHandler() {
-        UIComponent.close(UIDefine.TexasPreLoad);
+        UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
         ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { ignoreEnter: true });
     }
 }
