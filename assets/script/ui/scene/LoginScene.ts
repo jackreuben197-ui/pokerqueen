@@ -1,18 +1,16 @@
 
 import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
-import { GameConfig, LanguageList } from "../../config/GameConfig";
-import { DialogParam, ProcedureEnum } from "../../define/EIDefine";
+import { LanguageList } from "../../config/GameConfig";
+import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
-import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import GGEvent from "../../event/GGEvent";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import {CPErrorCode} from "../../i18n/CPErrorCode";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 import { Web_Login } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
-import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../component/AssetContext";
 import UIComponent from "../UIComponent";
 import BaseScene from "./BaseScene";
@@ -92,7 +90,8 @@ export default class LoginScene extends BaseScene {
     }
 
     protected regiterDispatchEvent(): void {
-        CPMessageDispatherComponent.Instance.RegisterHandler(GGEvent.Change_AreaCode, this.onChangeAreaCode, this);
+        super.regiterDispatchEvent();
+        this.listen(GGEvent.Change_AreaCode, this.onChangeAreaCode);
     }
 
     protected regiterTouchEvents() {
@@ -252,7 +251,7 @@ export default class LoginScene extends BaseScene {
     /**
      * 用戶注意事項
      */
-     onUserAgreeClick() {
+    onUserAgreeClick() {
         UIComponent.open(UIDefine.UserAgreeForm);
     }
 }

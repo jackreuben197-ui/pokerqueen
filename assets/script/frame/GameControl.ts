@@ -2,7 +2,7 @@ import { ResManager } from "../manager/ResManager";
 import AudioManager from "./manager/AudioManager";
 import LanguageManager from "./manager/LanguageManager";
 import LocalStoreManager from "./manager/LocalStoreManager";
-import NotifyManager from "./manager/NotifyManager";
+import { NotifyManager } from "./manager/NotifyManager";
 
 class GameControl {
     private static _instance: GameControl = null;

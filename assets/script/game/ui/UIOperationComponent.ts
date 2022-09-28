@@ -1,9 +1,11 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
-import { i18nMgr } from "../../i18n/i18nMgr";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
+import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
 import GGSlider from "../../ui/component/GGSlider";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIBase from "../../ui/UIBase";
@@ -11,10 +13,6 @@ import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import GameUtil from "../GameUtil";
 import UITexasSettingComponent from "../UITexasSettingComponent";
-import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
-import { ServerMessageAddOn } from "../../protobuf/holdem/req_add_on_pb";
-import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
 
 
 export type OperationData = {
@@ -761,13 +759,15 @@ export default class UIOperationComponent extends UIBase {
     }
 
 
+
     protected regiterDispatchEvent(): void {
-        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME, this);  // 操作加时
+        super.regiterDispatchEvent();
+        this.listen(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME);  // 操作加时
     }
 
-    protected unregiterDispatchEvent(): void {
-        CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME, this);  // 操作加时
-    }
+    // protected unregiterDispatchEvent(): void {
+    //     CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME, this);  // 操作加时
+    // }
 
 
 

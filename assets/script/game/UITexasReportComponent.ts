@@ -1,22 +1,18 @@
+import { Web_Room_Center_Rooms } from "../../../assets/script/net/https/WebRequest";
 import { UIDefine } from "../define/UIDefine";
-import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
 import { StringHelper } from "../helper/StringHelper";
+import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
-import { i18nLabel } from "../i18n/i18nLabel";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { CPErrorCode } from "../i18n/CPErrorCode";
-import { ResManager } from "../manager/ResManager";
+import { LobbyControl } from "../lobby/control/LobbyControl";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
-import { ClientMessageRoomers, ServerMessageRoomers } from "../protobuf/holdem/req_roomers_pb";
+import { ClientMessageRoomers } from "../protobuf/holdem/req_roomers_pb";
 import UIBase from "../ui/UIBase";
-import { GameCache } from "./GameCache";
-import { Web_Room_Center_Rooms, } from "../../../assets/script/net/https/WebRequest";
-import TimeHelper from "../helper/TimeHelper";
-import { LobbyControl } from "../lobby/control/LobbyControl";
 import UIComponent from "../ui/UIComponent";
+import { GameCache } from "./GameCache";
 
 /*
  * @Author: xfj
@@ -49,24 +45,32 @@ export default class UITexasReportComponent extends UIBase {
     tInfo_1 = []
     protected lateLoad(): void {
         super.lateLoad();
-        this.registerHandler();
+        // this.registerHandler();
         this.initUI();
         this.RequestRoomers();
     }
-    private registerHandler() {
-        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
+
+    // private registerHandler() {
+    //     CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
+    // }
+
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler)
     }
+
     onClose(param?: any): void {
         super.onClose();
         if (this.IntervalId) {
             clearInterval(this.IntervalId)
         }
-        this.removeHandler();
+        // this.removeHandler();
         this.isLoad = false;
     }
-    private removeHandler() {
-        CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
-    }
+
+    // private removeHandler() {
+    //     CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
+    // }
     RequestRoomers() {
         ProtocolAgency.Send<ClientMessageRoomers.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_Roomers,

@@ -1,46 +1,46 @@
 import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
-import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import { DOTween, Sequence } from "../../dotween/DOTween";
+import GC from "../../frame/GameControl";
 import UpdateComponent from "../../funcomponent/UpdateComponent";
+import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
-import { i18nMgr } from "../../i18n/i18nMgr";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import Main from "../../Main";
 import { Web_User_Room } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { Def, RoomInfo, Operator, Player } from "../../protobuf/holdem/define_pb";
+import { Def, Operator, RoomInfo } from "../../protobuf/holdem/define_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
+import { ClientMessageAction } from "../../protobuf/holdem/req_action_pb";
+import { ClientMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
+import { ClientMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
+import { ClientMessageSeated } from "../../protobuf/holdem/req_seated_pb";
+import { ClientMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIComponent from "../../ui/UIComponent";
+import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
 import GameUtil, { RoomType } from "./../GameUtil";
 import Seat, { SeatUIInfo } from "./../Seat";
-import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation, SeatWaitOther } from "./../SeatStateHandler";
+import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation } from "./../SeatStateHandler";
 import TexasGameMessageHandler from "./../TexasGameMessageHandler";
 import TexasGameProtocol from "./../TexasGameProtocol";
 import { TexasGameState } from "./../TexasGameState";
 import TexasGameUtils from "./../TexasGameUtils";
 import TexasSMAgency from "./../TexasSMAgency";
-import UIAddChipsComponent, { AddClipsData } from "./../ui/UIAddChipsComponent";
+import { AddClipsData } from "./../ui/UIAddChipsComponent";
 import UIOperationComponent, { OperationData } from "./../ui/UIOperationComponent";
 import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
-import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
-import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
-import Main from "../../Main";
-import { DOTween, Sequence } from "../../dotween/DOTween";
-import PublicHelper from "../../helper/PublicHelper";
-import { ClientMessageSeated } from "../../protobuf/holdem/req_seated_pb";
-import { ClientMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
-import { ClientMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
-import { ClientMessageAction } from "../../protobuf/holdem/req_action_pb";
-import { ClientMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
 //const PBTypes = Def.Types;
 
 
@@ -437,10 +437,10 @@ export default class TexasGame {
     }
 
     public RegiterEnterRoom() {
-        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
+        GC.notify.register(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
     }
     public UnRegiterEnterRoom() {
-        CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
     }
 
     public EnterRoom(id) {

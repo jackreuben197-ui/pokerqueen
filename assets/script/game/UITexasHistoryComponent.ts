@@ -7,17 +7,15 @@
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
-import UIBase from "../ui/UIBase";
-import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
-import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { GameCache } from "./GameCache";
 import { StringHelper } from "../helper/StringHelper";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import GameUtil from "./GameUtil";
+import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
-import { AnyARecord } from "dns";
-import { CardTypeUtil } from "./CardTypeUtil";
+import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
+import { CardTypeUtil } from "./CardTypeUtil";
+import { GameCache } from "./GameCache";
+import GameUtil from "./GameUtil";
 
 export class HistoryInfoData {
     public bInsurance: boolean;
@@ -130,18 +128,23 @@ export default class UITexasHistoryComponent extends UIBase {
         this.playerInfosRiver = []
         this.playerInfosWinner = []
 
-        this.registerHandler();
+        // this.registerHandler();
         let Image_MenuMask: any = this.getChildNodeOrComponent('Image_MenuMask');
         Image_MenuMask.on('click', this.imageMaskCloseClick, this)
     }
 
-    private registerHandler() {
-        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler)
     }
+    // registerHandler() {
+    //     CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
+    // }
 
-    private removeHandler() {
-        CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
-    }
+    // private removeHandler() {
+    //     CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
+    // }
+
     Protocol_Holdem_PublicReplay_Handler(response) {
 
         // let ResponseData = (response as Protocol_Holdem_PublicReplay)?.response;
