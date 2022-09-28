@@ -397,8 +397,12 @@ export default class TexasGameMessageHandler {
         }
         this.game.SMAgency.ChangeGameState(TexasGameState.HandShowdown, response);
     }
-    Protocol_Holdem_KeepSeat_Handler(Protocol_Holdem_KeepSeat: ProtocolCode, Protocol_Holdem_KeepSeat_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 本人/所有人都收到的消息（本人主动留座收不到，被动会收到）消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    Protocol_Holdem_KeepSeat_Handler(response) {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_KeepSeat_Handler`);
     }
     /// <summary>
     /// 所有人收到主动/自动行为（包括自己） 消息回调

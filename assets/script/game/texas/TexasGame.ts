@@ -1438,12 +1438,16 @@ export default class TexasGame {
     /// <param name="spriteName"></param>
     /// <returns></returns>
     public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
+        let sf: cc.SpriteFrame = AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
+        if (!sf) console.log("素材获取失败:", spriteName);
+        return sf;
     }
 
     //获取气泡相关的spriteframe
     public GetBubbleSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        return AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
+        let sf: cc.SpriteFrame = AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
+        if (!sf) console.log("素材获取失败:", spriteName);
+        return sf;
     }
 
 
@@ -2394,6 +2398,24 @@ export default class TexasGame {
 
         }
     }
+
+
+    /// <summary>
+    /// 把座位设为能不能接收语音验证状态 true是不能 false能接收
+    /// </summary>
+    public SetIsEixt(can: boolean): void {
+        if (GameCache.Instance.voiceprint_verify_on == 1) {
+            //TODO
+            let seat: Seat = GameCache.Instance.CurGame.GetSeatByUserId(GameCache.Instance.CurGame.mainPlayer.userID);
+            if (seat != null) {
+                seat.IsExit = can;
+            }
+        }
+    }
+
+
+
+
     /// <summary>
     /// 获取本手结算手牌
     /// </summary>
@@ -2466,9 +2488,10 @@ export default class TexasGame {
         }
         else {
             this.uirc.buttonDelay.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
-            this.uirc.buttonDelay.getChildByName("timetext").color = new cc.Color(86, 53, 29, 255);
+            this.uirc.buttonDelay.getChildByName("timetext").color = new cc.Color(86, 53, 29);
             this.uirc.buttonDelay.getChildByName("timetext").opacity = 255;
-            this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = new cc.Color(221, 186, 130, 255);
+            this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = new cc.Color(221, 186, 130);
+            this.uirc.buttonDelay.getChildByName("Text_DelayTip").opacity = 255;
 
             this.uirc.buttonDelay.getChildByName("Text_DelayTip").getComponent(cc.Label).string = `${StringHelper.getStringDiv100(this.TexasGameUtils.AddTimeCost())}`;
             this.uirc.buttonDelay.getChildByName("timetext").getComponent(cc.Label).string = this.delayCount > 0 ? "20" : "30";

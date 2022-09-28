@@ -764,13 +764,7 @@ export default class UIOperationComponent extends UIBase {
         super.regiterDispatchEvent();
         this.listen(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME);  // 操作加时
     }
-
-    // protected unregiterDispatchEvent(): void {
-    //     CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME, this);  // 操作加时
-    // }
-
-
-
+    
     protected HANDLER_REQ_ADD_TIME(rec: ServerMessageAddTime.AsObject): void {
 
         if (rec == null) {

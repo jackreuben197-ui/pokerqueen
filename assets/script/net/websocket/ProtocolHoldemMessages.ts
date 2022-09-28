@@ -28,6 +28,7 @@ import { ClientMessageAddTime, ServerMessageAddTime } from "../../protobuf/holde
 import { ProtocolCode } from "./ProtocolCode";
 import { ClientMessageShowdown, ServerMessageShowdown } from "../../protobuf/holdem/req_showdown_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
+import { ServerMessageKeepSeat } from "../../protobuf/holdem/recv_keep_seat_pb";
 
 export class ProtocolCommon {
 
@@ -179,5 +180,12 @@ export const ProtocolMap = {
         Client: ClientMessageShowdown,
         Server: ServerMessageShowdown,
     },
+    [ProtocolCode.Protocol_Holdem_KeepSeat]: {
+        Server: ServerMessageKeepSeat,
+    },
+    [ProtocolCode.Protocol_Holdem_KeepSeatActive]: {
+        Client: ClientMessageKeepSeatActive,
+        Server: ServerMessageKeepSeatActive,
+    }
 }
 

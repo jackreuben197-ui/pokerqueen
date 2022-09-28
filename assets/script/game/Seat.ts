@@ -109,6 +109,7 @@ export default class Seat {
     /// </summary>
     public bKeepSeatCounting: boolean = false;
     public keepSeatDeltaTime: number = 0;
+    public IsExit: boolean = false;
 
     tweenerPlayRecyclingWinChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
     sequenceUpdateBubble: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
@@ -141,9 +142,6 @@ export default class Seat {
         UpdateComponent.Remove(this.FsmLogicComponent);
 
     }
-
-
-
 
     InitUIStaticData() {
         if (Seat.myCardsPos.length != 2) {

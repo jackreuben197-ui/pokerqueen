@@ -22,6 +22,7 @@ export default class BaseComponent extends Base {
     onShow(param?: any) {
         this._param = param;
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);
+        this.regiterDispatchEvent();
     }
 
     start() {

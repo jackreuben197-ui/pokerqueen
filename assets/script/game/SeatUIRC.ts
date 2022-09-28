@@ -7,12 +7,14 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { ClientMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
 import { ClientMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./Seat";
+import { AddClipsData } from "./ui/UIAddChipsComponent";
 
 
 export class CardUIInfo {
@@ -222,7 +224,44 @@ export default class SeatUIRC extends UIBase {
         }
         this.imageEmpty.node.on("click", this.onClickEmpty, this);
         this.rawimageHead.node.on("click", this.onClickHead, this);
+        this.buttonCancelReserveSeat.on("click", this.onClickCancelReserveSeat, this);
     }
+
+
+    private onClickCancelReserveSeat(): void {
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+            UIMineModel.mInstance.UIRefreshGoldEvent();//更新完金币ui
+            this.ClickCancelReserveSeat();
+        });//更新用户金币数量
+    }
+
+    private ClickCancelReserveSeat(): void {
+        if (this.seat.IsMySeat && this.seat.Player.chips <= 0) {
+            UIComponent.Instance.ShowNoAnimation<AddClipsData>(GameCache.Instance.CurGame.uirc.UIAddChips.node,
+                {
+                    bigBlind: GameCache.Instance.CurGame.bigBlind,
+                    smallBlind: GameCache.Instance.CurGame.smallBlind,
+                    currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                    currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                    totalCoin: GameCache.Instance.gold,
+                    tableChips: this.seat.Player.chips
+                });
+        }
+        else {
+            ProtocolAgency.Send<ClientMessageKeepSeatActive.AsObject>({
+                Code: ProtocolCode.Protocol_Holdem_KeepSeatActive,
+                RoomID: GameCache.Instance.room_id,
+                MatchID: GameCache.Instance.match_id,
+                Body: {
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                    keep: false,
+                    duration: 0
+                },
+            });
+            GameCache.Instance.CurGame.cacheCancelKeepSeat = true;
+        }
+    }
+
 
     onClickEmpty() {
 

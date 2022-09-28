@@ -8,6 +8,7 @@ import { Def, Result } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../protobuf/holdem/recv_add_time_others_pb";
 import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
+import { ServerMessageKeepSeat } from "../protobuf/holdem/recv_keep_seat_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
@@ -412,9 +413,7 @@ export default class TexasGameProtocol {
             this.game.TexasGameUtils.WaitFewSeconds(this.game.uirc.imageReserveSeatTips, 3000);
         }
     }
-    HANDLER_REQ_GAME_KEEP_SEAT(Protocol_Holdem_KeepSeat: ProtocolCode, HANDLER_REQ_GAME_KEEP_SEAT: any) {
-        throw new Error("Method not implemented.");
-    }
+
     HANDLER_REQ_BUY_INSURANCE(Protocol_Holdem_BuyInsuranceActive: ProtocolCode, HANDLER_REQ_BUY_INSURANCE: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
@@ -423,6 +422,48 @@ export default class TexasGameProtocol {
     }
     HANDLER_REQ_INSURANCE_TRIGGED(Protocol_Holdem_InsuranceTrigged: ProtocolCode, HANDLER_REQ_INSURANCE_TRIGGED: any, arg2: this) {
         throw new Error("Method not implemented.");
+    }
+    /// <summary>
+    /// 留座离桌
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_GAME_KEEP_SEAT(rec: ServerMessageKeepSeat.AsObject): void {
+
+        if (rec == null) {
+            return;
+        }
+        //留座离桌
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
+        if (null == mSeat) {
+            return;
+        }
+        if (rec.keep) {
+            mSeat.keepSeatLeftTime = rec.leftTime - 5;//由于留座消息下发时间是每手结束，需要在清理桌面时才显示留座，中间间隔五秒。
+            mSeat.Player.canPlayStatus = Def.CanPlayStatus.KEEP_SEAT;
+            this.game.SetIsEixt(true);
+        }
+        else {
+            this.game.cacheCancelKeepSeat = false;
+            mSeat.Player.canPlayStatus = rec.postStatus;
+            if (!mSeat.Player.isParticipateInTheGame) {
+                mSeat.UpdateWaiteNextTips(true);
+            }
+            this.game.HideWaitBlindBtn();
+            if (mSeat.seatID == this.game.mainPlayer.seatID) {
+                if (this.game.mainPlayer.canPlayStatus == Def.CanPlayStatus.NEED_POST) {
+                    // 需要补盲
+                    this.game.ShowWaitBlindBtn();
+                    mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind.Instance);
+                }
+                else {
+                    mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+                }
+            }
+            else {
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+            }
+            this.game.SetIsEixt(false);
+        }
     }
     /// <summary>
     /// 底池筹码（分池，主池）

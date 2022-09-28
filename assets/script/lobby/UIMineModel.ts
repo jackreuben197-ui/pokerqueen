@@ -1,5 +1,7 @@
 
 
+import GGEvent from "../event/GGEvent";
+import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
 import ToastManager from "../manager/ToastManager";
 import HttpRequest from "../net/https/HttpRequest";
@@ -63,6 +65,7 @@ export class UIMineModel {
     /// 刷新各个UI金币显示 
     /// </summary>
     public UIRefreshGoldEvent() {
-        //Game.EventSystem.Run(EventIdType.UIMine_GoldText);
+        //Game.EventSystem.Run(EventIdType.UIMine_GoldText);\
+        GC.notify.post(GGEvent.Refresh_UserInfo);
     }
 }

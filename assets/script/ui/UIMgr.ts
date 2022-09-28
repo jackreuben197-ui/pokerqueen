@@ -95,11 +95,6 @@ export class UIFormMgr {
         }
     }
 
-
-
-
-
-
     protected lateOpen(ui: UIBase, param: any = null, animation: boolean = true) {
         if (ui) {
             ui.node.parent = this.UILayer;

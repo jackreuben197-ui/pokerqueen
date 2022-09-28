@@ -30,7 +30,6 @@ export default class UIBase extends BaseComponent {
             }
         }, cc.SpriteFrame);
     }
-
     protected setSpriteShowGray(sp: cc.Sprite | cc.Node | cc.Button | cc.Label | dragonBones.ArmatureDisplay, showGray: boolean = true) {
         if (this.nodeIsValid(sp)) {
             let material = null;
