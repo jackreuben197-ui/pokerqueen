@@ -1,4 +1,5 @@
 
+import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import GGToggleContainer from "../component/GGToggleContainer";
 import LanguageFormItem from "../item/LanguageFormItem";
@@ -100,6 +101,7 @@ export default class LanguageForm extends BaseForm {
             this._prevItem = item;
             i18nMgr.setLanguage(item.param.id)
         }
+        this.post(GGEvent.CHANGE_LAUNCH);
     }
 }
 export interface ILanguageFormItem {
