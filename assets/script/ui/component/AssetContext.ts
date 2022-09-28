@@ -14,16 +14,10 @@
 export enum AssetFold {
     texture_common,
     texture_Antcard,
+    texture_AntSecondCard,
     texture_flag,
-    texture_loading,
-    texture_login,
-    texture_PanelUI,
     texture_TexasUI,
-    texture_UIGameNiuZai,
     texture_lobby_UIMine,
-    texture_lobby_UIMatch,
-    resources_prefab_component,
-    texas_prefab_widgetLayer,
     texture_atlas_HistoryCard,
     texture_atlas_HistorySecondCard,
     texture_match_view,
@@ -38,17 +32,23 @@ export default class AssetContext extends cc.Component {
     @property({ type: cc.Enum(AssetFold) })
     fold: AssetFold = AssetFold.texture_common;
 
-    @property([cc.Asset])
-    assets: cc.Asset[] = [];
+    // @property([cc.Asset])
+    // assets: cc.Asset[] = [];
 
     static map: { [name: string]: cc.Asset } = {};
 
-    onLoad() {
-        for (let asset of this.assets) {
-            let key = `${AssetFold[this.fold]}|${asset.name}`;
-            AssetContext.map[key] = asset;
-        }
+    // onLoad() {
+    //     // for (let asset of this.assets) {
+    //     //     let key = `${AssetFold[this.fold]}|${asset.name}`;
+    //     //     AssetContext.map[key] = asset;
+    //     // }
+    // }
+
+    public static setAsset<T extends cc.Asset>(fold: AssetFold, name: string, asset: T) {
+        let key = `${AssetFold[fold]}|${asset.name}`;
+        AssetContext.map[key] = asset;
     }
+
     /**
      * 通过索引名,获取资源
      * @param name 

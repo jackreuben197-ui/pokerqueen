@@ -24,6 +24,8 @@ export default class Main extends cc.Component {
     static Prompt: cc.Node = null;
     static Toast: cc.Node = null;
     static UIPreloading: cc.Node = null;
+    static Toast_Node: cc.Node = null;
+
 
     async onLoad() {
 
@@ -45,6 +47,7 @@ export default class Main extends cc.Component {
         Main.Prompt = this.node.parent.getChildByName("Prompt - 网络菊花层");
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");
         Main.UIPreloading = Main.Block.getChildByName("UIPreloading");
+        Main.Toast_Node = Main.Toast.getChildByName("Toast_Node");
 
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
