@@ -23,14 +23,14 @@ export default class UIMineSetting extends BaseForm {
      */
     protected regiterTouchEvents() {
         cc.log("UIMineSetting - regiterTouchEvents")
-        let backBtn: cc.Node = this.getChildNodeOrComponent("Back_Btn");
-        backBtn.on(cc.Node.EventType.TOUCH_END, this.touchBackBtn, this);
+        // let backBtn: cc.Node = this.getChildNodeOrComponent("Back_Btn");
+        // backBtn.on(cc.Node.EventType.TOUCH_END, this.touchBackBtn, this);
 
-        let childs = this.getChildNodeOrComponent<cc.Node>("Layout").children;
-        childs.forEach((element: cc.Node) => {
-            element.on(cc.Node.EventType.TOUCH_START, this.itemTouchStart, this);
-            element.on(cc.Node.EventType.TOUCH_END, this.itemTouchEnd, this);
-        })
+        // let childs = this.getChildNodeOrComponent<cc.Node>("Layout").children;
+        // childs.forEach((element: cc.Node) => {
+        //     element.on(cc.Node.EventType.TOUCH_START, this.itemTouchStart, this);
+        //     element.on(cc.Node.EventType.TOUCH_END, this.itemTouchEnd, this);
+        // })
     }
 
     // private registerEvent(): void {
