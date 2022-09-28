@@ -1,7 +1,7 @@
 import { LogStyle } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import {CPErrorCode} from "../../i18n/CPErrorCode";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
 import ToastManager from "../../manager/ToastManager";
 import LoginSession from "../../session/LoginSession";
 import UIComponent from "../../ui/UIComponent";
@@ -16,11 +16,13 @@ export default class HttpClient {
      * post 请求
      * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
-    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
-        body = JSON.stringify(body);
+    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true }) {
+        if (isJson) {
+            body = JSON.stringify(body);
+        }
         console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
-        let response: string = <string>await this.__request(url, "POST", body, headers);
+        let response: string = <string>await this.__request(url, "POST", body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
@@ -70,7 +72,7 @@ export default class HttpClient {
         }
     }
 
-    static async __request(url, type = "POST", body = null, headers = null) {
+    static async __request(url, type = "POST", body = null, headers = null, isJson = true) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             var isTimeout = false;//是否超时
@@ -99,7 +101,9 @@ export default class HttpClient {
             };
             xhr.open(type, url);
             xhr.timeout = HttpClient.TimeOut;
-            xhr.setRequestHeader("Content-Type", "application/json");
+            if (isJson) {
+                xhr.setRequestHeader("Content-Type", "application/json");
+            }
             //xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
             xhr.setRequestHeader("md5at", LoginSession.Token);
             if (headers) {

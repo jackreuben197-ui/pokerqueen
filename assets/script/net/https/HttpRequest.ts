@@ -2,8 +2,8 @@
  * @Author: xfj
  * @Date: 2022-09-27 11:48:16
  * @description: 
- * @LastEditors: 
- * @LastEditTime: 2022-09-27 17:49:20
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-09-28 18:14:54
  * @FilePath: /pokerqueen/assets/script/net/https/HttpRequest.ts
  */
 import { GameConfig } from "../../config/GameConfig";
@@ -15,7 +15,7 @@ import WebHelper from "./WebHelper";
 
 export default class HttpRequest {
 
-    static async Send({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null }) {
+    static async Send({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null, isJson = true }) {
 
         let host = cuscomHost || GameConfig.Network.WebURL;
         let url = host + (api || request.API);
@@ -23,7 +23,7 @@ export default class HttpRequest {
         let needJuhua = WebHelper.NeedJuhua(request.API);
         await HttpClient.post({
             url: url, body, onFailure, onSuccess: HttpRequest.onSuccess.bind(HttpRequest, request, onSuccess),
-            headers: headers, needJuhua
+            headers: headers, needJuhua, isJson
         });
     }
     private static onSuccess(request, onSuccess, response) {

@@ -3,7 +3,7 @@
  * @Date: 2022-09-27 15:57:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 15:07:00
+ * @LastEditTime: 2022-09-28 18:38:51
  * @FilePath: /pokerqueen/assets/script/lobby/upLoadIcon.ts
  */
 //index.html  里边加入这个
@@ -14,7 +14,7 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class upLoadIcon extends cc.Component {
-    static openFile(sp) {
+    static openFile() {
         return new Promise((resolve, reject) => {
             let input_imageFile = document.getElementById('OpenImageFile');
             if (input_imageFile == null) return;

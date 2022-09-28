@@ -3,12 +3,13 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 13:52:59
+ * @LastEditTime: 2022-09-28 18:38:24
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
     private static instance: UIClubModel = null;
@@ -190,19 +191,21 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubUploadIcon(buffer) {
-
+    async APIOrgClubUploadIcon() {
+        let _data: any = await upLoadIcon.openFile();
+        let data = new FormData()
+        data.append("file", _data, _data.name)
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgClubUploadIcon,
-                body: APIOrgClubUploadIcon.Request(buffer),
+                body: APIOrgClubUploadIcon.Request(data),
                 onSuccess: function () {
                     resolve(APIOrgClubUploadIcon.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                // headers: [["Content-Type", "multipart/form-data"], ["Content-Type", " boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"]]
+                isJson: false,
             });
         });
     }
@@ -262,7 +265,23 @@ export class UIClubModel {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
+
                 //headers: [['Content-Type:', 'image/jpeg']]
+            });
+        });
+    }
+    APIOrgTribeSearchByID(id) {
+        let paramas: any = { tribe_random_id: id };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgTribeSearchByID,
+                body: APIOrgTribeSearchByID.Request(paramas),
+                onSuccess: function () {
+                    resolve(APIOrgTribeSearchByID.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
             });
         });
     }

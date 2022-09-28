@@ -1006,6 +1006,26 @@ export class APIOrgClubGold {
     }
     public static Response: { code?: number, message?: string, data?: typeof APIOrgClubGold.ResponseData };
 }
+export class APIOrgTribeSearchByID {
+    //接口地址
+    public static API: string = "/api/org/tribe/info";
+
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgTribeSearchByID.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgTribeSearchByID.ResponseData };
+}
+
 
 
 /**
