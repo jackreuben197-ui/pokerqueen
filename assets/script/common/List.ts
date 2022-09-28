@@ -373,9 +373,9 @@ export default class List extends cc.Component {
     private _allItemSizeNoEdge: number;
 
     private _scrollItem: any;//当前控制 ScrollView 滚动的 Item
-    private _dropDownRefresh: Function = null;
-    set dropDownRefresh(fun: Function) {
-        this._dropDownRefresh = fun;
+    private _scrollingCB: Function = null;
+    set scrollingCB(fun: Function) {
+        this._scrollingCB = fun;
     }
     //----------------------------------------------------------------------------
 
@@ -977,6 +977,8 @@ export default class List extends cc.Component {
             }
             this._calcNearestItem();
         }
+
+        this._scrollingCB && this._scrollingCB();
     }
     //计算可视范围
     _calcViewPos() {
@@ -1320,10 +1322,6 @@ export default class List extends cc.Component {
             }
         }
 
-        // 下拉刷新
-        if (this._scrollView.content.y < 0 && this._dropDownRefresh) {
-            this._dropDownRefresh();
-        }
         this._scrollItem = null;
     }
 

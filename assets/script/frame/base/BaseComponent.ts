@@ -164,7 +164,7 @@ export default class BaseComponent extends Base {
 
     }
 
-    protected removeAllClickEvent() {
+    protected removeAllTouchEvents() {
         this._clickNodes.forEach(node => {
             if (node && node.isValid) {
                 node.targetOff(this);
@@ -173,7 +173,7 @@ export default class BaseComponent extends Base {
         this._clickNodes.length = 0
     }
 
-    protected removeClickEvent(node) {
+    protected removeTouchEvent(node) {
         if (node && node.isValid) {
             node.targetOff(this);
             let index = this._clickNodes.findIndex(item => item == node);
@@ -195,11 +195,6 @@ export default class BaseComponent extends Base {
 
     }
 
-    // 销毁所有监听事件
-    protected unregiterAllDispatchEvent() {
-        super.unregiterAllDispatchEvent();
-        this.removeAllClickEvent();
-    }
 
     /**
     * 停止所有 动作，包括 tween ,update，等
@@ -217,6 +212,8 @@ export default class BaseComponent extends Base {
         this.unscheduleAllCallbacks();
         // 移除所有监听
         this.unregiterAllDispatchEvent();
+        //移除所有点击事件
+        this.removeAllTouchEvents();
         // 停止所有动作
         this.stopAllThings();
     }

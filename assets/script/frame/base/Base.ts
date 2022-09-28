@@ -11,7 +11,7 @@ export class Base extends cc.Component {
     }
 
     onLoad() {
-        //this.regiterDispatchEvent()
+        
     }
 
     start() {
