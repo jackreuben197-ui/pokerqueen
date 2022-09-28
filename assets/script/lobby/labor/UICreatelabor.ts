@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 12:36:52
+ * @LastEditTime: 2022-09-28 13:25:46
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -73,9 +73,9 @@ export default class UICreatelabor extends BaseForm {
     async uploadIcon() {
         // let _data: any = await upLoadIcon.openFile(this.camera);
         let data = new FormData()
+        // let parm = { file: 111, filename: 222 };
         data.set('file', '111')
         data.set('filename', '22222')
-        this.__request('data')
         UIClubModel.mInstance.APIOrgClubUploadIcon(data);
         // let _data2 = this.base64to2(_data)
         // console.log('uploadIcon_OpenImageFile===', _data2);
@@ -108,42 +108,5 @@ export default class UICreatelabor extends BaseForm {
         }
         return int8
     }
-    async __request(body = null) {
-        return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
-            var isTimeout = false;//是否超时
-            var timer = setTimeout(function () {
-                isTimeout = true;
-                xhr.abort();//请求中止
-                resolve("timeout");
-            }, 3000);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && (xhr.status >= 200 && xhr.status < 400)) {
-                    var response = xhr.responseText;
-                    if (isTimeout) return;//请求已经超时，忽略
-                    clearTimeout(timer);//取消等待的超时                 
-                    resolve(response);
-                }
-            };
-            xhr.onerror = function (err) {
-                if (isTimeout) return;//请求已经超时，忽略
-                clearTimeout(timer);//取消等待的超时
-                resolve("error");
-            };
-            xhr.ontimeout = function () {
-                if (isTimeout) return;//请求已经超时，忽略
-                clearTimeout(timer);//取消等待的超时
-                resolve("timeout");
-            };
-            xhr.open('POST', 'http://dev1.awanptesting.com/api/oss/upload/avatar');
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.setRequestHeader("md5at", LoginSession.Token);
-            xhr.setRequestHeader("Content-Type", "multipart/form-data");
-            xhr.setRequestHeader("Content-Type", "boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
-            xhr.send(body ? body : null);
-
-        })
-    }
-
     // update (dt) {}
 }
