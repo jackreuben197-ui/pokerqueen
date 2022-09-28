@@ -1,5 +1,6 @@
 import ComFormTitle from "../common/ComFormTitle";
 import { UIDefine } from "../define/UIDefine";
+import { GameCache } from "../game/GameCache";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
 import { EWalletGoldOpration } from "./WalletConfig";
@@ -38,7 +39,7 @@ export default class MyWalletForm extends BaseForm {
     }
 
     updateBeanNum() {
-        this.setText(this.beanNum, 0);
+        this.setText(this.beanNum, GameCache.Instance.gold);
     }
 
     // 点击充豆
