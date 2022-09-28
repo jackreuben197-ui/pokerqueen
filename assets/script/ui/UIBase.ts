@@ -91,6 +91,16 @@ export default class UIBase extends BaseComponent {
         }
     }
 
+    protected setActive(node: cc.Node | cc.Component, act: any) {
+        if (this.nodeIsValid(node)) {
+            if (node instanceof cc.Node) {
+                node.active = Boolean(act);
+            } else if (node instanceof cc.Component) {
+                node.node.active = Boolean(act);
+            }
+        }
+    }
+
     protected nodeIsValid(node: cc.Node | cc.Component) {
         if (Boolean(this) && Boolean(node)) {
             if (node instanceof cc.Node) {

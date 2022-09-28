@@ -24,14 +24,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 254
+        "__id__": 258
       },
       {
-        "__id__": 255
+        "__id__": 259
       }
     ],
     "_prefab": {
-      "__id__": 256
+      "__id__": 260
     },
     "_opacity": 255,
     "_color": {
@@ -99,10 +99,13 @@
       },
       {
         "__id__": 252
+      },
+      {
+        "__id__": 253
       }
     ],
     "_prefab": {
-      "__id__": 253
+      "__id__": 257
     },
     "_opacity": 255,
     "_color": {
@@ -328,7 +331,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "ItemPrefab0",
+    "_name": "dropDownFlag",
     "_objFlags": 0,
     "_parent": {
       "__id__": 4
@@ -9385,6 +9388,62 @@
     "_originalWidth": 1125,
     "_originalHeight": 2436,
     "_id": ""
+  },
+  {
+    "__type__": "4157evWj+lHc69uy2el6Mk2",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "templateType": 2,
+    "tmpNode": null,
+    "tmpPrefab": null,
+    "_slideMode": 1,
+    "pageDistance": 0.3,
+    "pageChangeEvent": {
+      "__id__": 254
+    },
+    "_virtual": true,
+    "cyclic": false,
+    "lackCenter": false,
+    "lackSlide": false,
+    "_updateRate": 0,
+    "frameByFrameRenderNum": 0,
+    "renderEvent": {
+      "__id__": 255
+    },
+    "selectedMode": 0,
+    "repeatEventSingle": false,
+    "selectedEvent": {
+      "__id__": 256
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.ClickEvent",
+    "target": null,
+    "component": "",
+    "_componentId": "",
+    "handler": "",
+    "customEventData": ""
+  },
+  {
+    "__type__": "cc.ClickEvent",
+    "target": null,
+    "component": "",
+    "_componentId": "",
+    "handler": "",
+    "customEventData": ""
+  },
+  {
+    "__type__": "cc.ClickEvent",
+    "target": null,
+    "component": "",
+    "_componentId": "",
+    "handler": "",
+    "customEventData": ""
   },
   {
     "__type__": "cc.PrefabInfo",
