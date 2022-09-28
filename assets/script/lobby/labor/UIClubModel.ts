@@ -3,12 +3,13 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 17:49:26
+ * @LastEditTime: 2022-09-28 18:38:24
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
     private static instance: UIClubModel = null;
@@ -190,11 +191,12 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubUploadIcon(buffer) {
-        let data = new FormData();
-        data.append("file", buffer, "bnt.jpg");
+    async APIOrgClubUploadIcon() {
+        let _data: any = await upLoadIcon.openFile();
+        let data = new FormData()
+        data.append("file", _data, _data.name)
         return new Promise((resolve, reject) => {
-            HttpRequest.Send2({
+            HttpRequest.Send({
                 request: APIOrgClubUploadIcon,
                 body: APIOrgClubUploadIcon.Request(data),
                 onSuccess: function () {
@@ -203,7 +205,83 @@ export class UIClubModel {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
+                isJson: false,
+            });
+        });
+    }
+
+    APIOrgMangerList(id) {
+        let params: any = {
+            club_random_id: id,
+            "limit": 5,
+            "offset": 0
+        };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgMangerList,
+                body: APIOrgMangerList.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgMangerList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
                 //headers: [['Content-Type:', 'image/jpeg']]
+            });
+        });
+    }
+
+    APIOrgMemberList(id) {
+        let params: any = {
+            club_random_id: id,
+            "limit": 5,
+            "offset": 0
+        };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgMemberList,
+                body: APIOrgMemberList.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgMemberList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                //headers: [['Content-Type:', 'image/jpeg']]
+            });
+        });
+    }
+    APIOrgClubGold(id) {
+        let params: any = {
+            club_random_id: id,
+        };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubGold,
+                body: APIOrgClubGold.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubGold.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+
+                //headers: [['Content-Type:', 'image/jpeg']]
+            });
+        });
+    }
+    APIOrgTribeSearchByID(id) {
+        let paramas: any = { tribe_random_id: id };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgTribeSearchByID,
+                body: APIOrgTribeSearchByID.Request(paramas),
+                onSuccess: function () {
+                    resolve(APIOrgTribeSearchByID.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
             });
         });
     }

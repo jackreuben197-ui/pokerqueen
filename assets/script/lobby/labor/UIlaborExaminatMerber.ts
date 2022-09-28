@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 14:36:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 18:50:24
+ * @LastEditTime: 2022-09-28 10:40:49
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborExaminatMerber.ts
  */
 // Learn TypeScript:
@@ -84,7 +84,7 @@ export default class UIlaborExaminatMerber extends BaseForm {
         this.joinList.active = true;
         this.exitList.active = false;
         this.joinContent.removeAllChildren();
-        await UIClubModel.mInstance.APIOrgClubGetJoinlList()
+
         let data: any = APIOrgClubGetJoinlList.Response.data
         for (let index = 0; index < data?.data.length; index++) {
             const element = data?.data[index];

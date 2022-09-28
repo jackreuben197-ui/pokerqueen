@@ -1916,7 +1916,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "05526tf7J5FdqaSzcruD4ST",
+    "_componentId": "ceca2VGV8lGe49rUukBArSu",
     "handler": "sousuoBtn",
     "customEventData": ""
   },
@@ -2048,8 +2048,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "未查询到公会信息",
-    "_N$string": "未查询到公会信息",
+    "_string": "未查询到联盟信息",
+    "_N$string": "未查询到联盟信息",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -3511,7 +3511,7 @@
         "__id__": 102
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 105
@@ -3939,7 +3939,7 @@
         "__id__": 108
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 116
@@ -3977,7 +3977,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -214.40000000000043,
+        -114.40000000000043,
         0,
         0,
         0,
@@ -4336,8 +4336,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 614.4000000000001,
-    "_bottom": 185.59999999999923,
+    "_top": 514.4000000000001,
+    "_bottom": 285.5999999999992,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -5876,6 +5876,9 @@
     },
     "contentList": {
       "__id__": 109
+    },
+    "lb": {
+      "__id__": 54
     },
     "_id": ""
   },
