@@ -50,7 +50,7 @@ export default class UIMatchRoom extends UIBase {
                             // 德州
                             self.RoomTypesInfos[0].roomCount += subInfo.count;
                             self.RoomTypesInfos[0].playerCount += subInfo.player_count;
-                        } 
+                        }
                     })
                 }
             } else {
@@ -77,24 +77,19 @@ export default class UIMatchRoom extends UIBase {
         })
     }
     protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
         let roomList: cc.Node = this.node;
         roomList.children.forEach((item, index) => {
-            item["index"] = index;
-            item.on(cc.Node.EventType.TOUCH_END, this.clickRoom, this)
+            this.bindClick(item, this.clickRoom, index, true)
         })
     }
-    protected removeTouchEvents(): void {
-        let roomList: cc.Node = this.node;
-        roomList.children.forEach((item, index) => {
-            item.off(cc.Node.EventType.TOUCH_END, this.clickRoom, this)
-        })
-    }
-    private clickRoom(e: cc.Event.EventTouch) {
-        let roomInfo = this.RoomTypesInfos[e.target.index];
+
+    private clickRoom(index: number) {
+        let roomInfo = this.RoomTypesInfos[index];
         let sendDate = {
             game_type: roomInfo.gameType,
             poker_type: roomInfo.pokerType,
-            index: parseInt(e.target.index),
+            index: index,
             len: this.roomLen,
         }
         UIComponent.open(UIDefine.UIMatchPlayViewForm, sendDate);

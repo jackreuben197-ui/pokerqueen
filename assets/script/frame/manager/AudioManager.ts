@@ -50,7 +50,7 @@ export default class AudioManager {
     }
 
     addBtnSound() {
-        cc.Button.prototype._onTouchEnded = function (event) {
+        cc.Button.prototype["_onTouchEnded"] = function (event) {
             if (this.interactable && this.enabledInHierarchy) {
                 GC.audio.playSound(AudioPath.btnClick);//播放按钮Button音频
                 if (this._pressed) {
