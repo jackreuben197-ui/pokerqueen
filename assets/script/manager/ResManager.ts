@@ -1,5 +1,6 @@
 import { bundleRes, bundleSpriteRes } from "../config/PathConfig";
 import MyLog from "../tools/MyLog";
+import AssetContext from "../ui/component/AssetContext";
 import UIBase from "../ui/UIBase";
 
 export const Bundle_Resources: string = "resources";
@@ -82,6 +83,21 @@ export class ResManager {
                                 cc.log("load dir error:", error);
                                 reject(0);
                             } else {
+
+                                assets.forEach((item) => {
+                                    if (item instanceof cc.Prefab) {
+                                        let ac = item.data?.getComponent(AssetContext);
+                                        if (ac) {
+                                            item.data.children.forEach((item) => {
+                                                let sprite = item.getComponent(cc.Sprite);
+                                                if (sprite) {
+                                                    AssetContext.setAsset(ac.fold, item.name, sprite.spriteFrame);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }
+                                )
                                 resolve(1);
                             }
                         })

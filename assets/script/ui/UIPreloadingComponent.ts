@@ -1,5 +1,6 @@
 import Main from "../Main";
 import { Bundle_Resources, Pre_Load } from "../manager/ResManager";
+import AssetContext from "./component/AssetContext";
 import UIBase from "./UIBase";
 import UIComponent from "./UIComponent";
 
@@ -21,6 +22,8 @@ export default class UIPreloadingComponent extends UIBase {
      */
     //上一次进度
     private prevPercent: number = 0;
+
+    private asset_count: number = 0;
     ///////////////////////////////////
     protected lateLoad(): void {
 
@@ -48,6 +51,7 @@ export default class UIPreloadingComponent extends UIBase {
         this.setProgress(0);
         let bundle = param.pre_define.bundle;
         let dir = param.pre_define.dir;
+        this.asset_count = 0;
         if (bundle == Bundle_Resources) {
             cc.resources.loadDir(dir,
                 (finish: number, total: number) => {
@@ -62,6 +66,24 @@ export default class UIPreloadingComponent extends UIBase {
                         UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
                     } else {
                         console.log(`资源加载完成:${bundle}/${dir}`);
+
+                        assets.forEach((item) => {
+                            if (item instanceof cc.Prefab) {
+                                let ac = item.data?.getComponent(AssetContext);
+                                if (ac) {
+                                    this.asset_count++;
+                                    console.log("解析:", item, this.asset_count);
+                                    //AssetContext.setAsset();
+                                    item.data.children.forEach((item) => {
+                                        let sprite = item.getComponent(cc.Sprite);
+                                        if (sprite) {
+                                            AssetContext.setAsset(ac.fold, item.name, sprite.spriteFrame);
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        )
                         param?.complete();
                     }
                 })

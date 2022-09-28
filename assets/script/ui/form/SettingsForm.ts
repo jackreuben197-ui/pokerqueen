@@ -15,7 +15,7 @@ export default class SettingsForm extends BaseForm {
      */
     func_item: cc.Node = null;
     content: cc.Node = null;
-    logout_btn: cc.Node = null;
+    Button_logout: cc.Node = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -36,10 +36,10 @@ export default class SettingsForm extends BaseForm {
      */
     protected lateLoad() {
         super.lateLoad();
-        this.func_item = this.getChildNodeOrComponent("func_item");
-        this.content = this.getChildNodeOrComponent("content");
-        this.logout_btn = this.getChildNodeOrComponent("logout_btn");
-        this.setItems();
+        // this.func_item = this.getChildNodeOrComponent("func_item");
+        // this.content = this.getChildNodeOrComponent("content");
+        this.Button_logout = this.getChildNodeOrComponent("Button_logout");
+        // this.setItems();
     }
     /**
      * 关闭需要处理的内容
@@ -58,7 +58,7 @@ export default class SettingsForm extends BaseForm {
      */
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
-        this.logout_btn.on("click", this.onLogoutClick, this);
+        this.Button_logout.on(cc.Node.EventType.TOUCH_END, this.onLogoutClick, this)
     }
     /**
      * 注册广播事件
