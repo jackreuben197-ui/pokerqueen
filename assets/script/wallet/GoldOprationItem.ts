@@ -16,15 +16,14 @@ export default class GoldOprationItem extends UIBase {
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
 
-        this.node.off(cc.Node.EventType.TOUCH_END, this.clickItem, this);
-        this.node.on(cc.Node.EventType.TOUCH_END, this.clickItem, this);
+        this.bindClick(this.node, this.clickItem);
     }
 
     initData(data: number, callBack: Function) {
         this._data = data;
         this._callBack = callBack;
 
-        this.numLab.string = String(data);
+        this.setText(this.numLab, data);
     }
 
     clickItem() {

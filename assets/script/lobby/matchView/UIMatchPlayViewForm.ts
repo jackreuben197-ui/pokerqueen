@@ -104,25 +104,18 @@ export default class UIMatchPlayViewForm extends BaseForm {
             this._tabViewLoadintState.set(type, true)
             let parent = this.tabViewParents[type];
             let uiDefine = this._tabViewData[type];
-            ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
+            this.loadPrefab(uiDefine.Path, (node: cc.Node) => {
                 this._tabViewLoadintState.set(type, false)
-                if (err) {
-                    return;
-                }
-                let node = cc.instantiate(asset);
+
                 node.parent = parent;
                 let baseScript = node.getComponent(UIBase);
                 baseScript.onShow(parmas);
                 this._tabViews.set(type, baseScript);
-            });
+            }, () => {
+                this._tabViewLoadintState.set(type, false)
+            })
         } else if (this._tabViews.get(type)) {
             this._tabViews.get(type).onShow(parmas);
         }
     }
-
-    lateClose(param?: any): void {
-        super.lateClose();
-        this._tabViews.forEach(view => view?.lateClose())
-    }
-
 }

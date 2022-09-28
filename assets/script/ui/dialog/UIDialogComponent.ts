@@ -110,20 +110,17 @@ export default class UIDialogComponent extends BaseTouchBoard {
 
         this.Button_Cancel.active = param?.type == UIDialogComponent.DialogType.CommitCancel;
 
-        this.Text_Title.string = param?.title || "";
-
-        this.Text_Content.string = param?.content || "";
-
-        this.Text_Commit.string = param?.contentCommit || "ok";
-
-        this.Text_Cancel.string = param?.contentCancel || "cancel";
+        this.setText(this.Text_Title, param?.title || "")
+        this.setText(this.Text_Content, param?.content || "")
+        this.setText(this.Text_Commit, param?.contentCommit || "ok")
+        this.setText(this.Text_Cancel, param?.contentCancel || "cancel")
 
         this._actionCommit = param?.actionCommit || null;
         this._actionCancel = param?.actionCancel || null;
     }
 
 
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose(param);
     }
 

@@ -36,7 +36,6 @@ export default class AudioManager {
     }
 
     init() {
-
         let v = GC.localStore.getItem(this._volumeKey)
         this.volume = CCTools.isNull(v) ? 1 : v;
 

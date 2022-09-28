@@ -1,8 +1,9 @@
 import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
 import { UIDefine } from "../define/UIDefine";
+import GC from "../frame/GameControl";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Recharge_Gold } from "../net/https/WebRequest";
+import { Web_Recharge_Gold, Web_Tiqu_Gold } from "../net/https/WebRequest";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
@@ -43,10 +44,8 @@ export default class GoldOprationForm extends BaseForm {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.ruleBtn.off(cc.Node.EventType.TOUCH_END, this.clickRuleBtn, this);
-        this.ruleBtn.on(cc.Node.EventType.TOUCH_END, this.clickRuleBtn, this);
-        this.tipNode.off(cc.Node.EventType.TOUCH_END, this.clickTipNode, this);
-        this.tipNode.on(cc.Node.EventType.TOUCH_END, this.clickTipNode, this);
+        this.bindClick(this.ruleBtn, this.clickRuleBtn);
+        this.bindClick(this.tipNode, this.clickTipNode);
     }
 
     onShow(type: EWalletGoldOpration): void {
@@ -57,7 +56,7 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     initView() {
-        let title = this._type == EWalletGoldOpration.in ? "充豆" : "提豆";
+        let title = this._type == EWalletGoldOpration.in ? "Text_Add" : "Text_Getchips";
         this.comFormTitle.initData(title, this);
 
         this.edit.string = "";
@@ -79,12 +78,12 @@ export default class GoldOprationForm extends BaseForm {
         item.initData(this._data[index], this.clickItem);
     }
 
-    clickRuleBtn() {
+    clickRuleBtn = () => {
         this.tipNode.active = true;
-        this.tipLab.string = "汇率：1:1"
+        this.setText(this.tipLab, "汇率：1:1");
     }
 
-    clickTipNode() {
+    clickTipNode = () => {
         this.tipNode.active = false;
     }
 
@@ -97,34 +96,54 @@ export default class GoldOprationForm extends BaseForm {
         let goldNum = Number(this.edit.string);
         if (goldNum) {
             let price = Number(this.priceLab.string);
+            let procolType = this._type == EWalletGoldOpration.in ? Web_Recharge_Gold : Web_Tiqu_Gold;
             UIComponent.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
-                    title: "提示",
+                    title: "adaptation10007",
                     content: this.getApplyContent(goldNum, price),
-                    contentCommit: "确定",
-                    contentCancel: "取消",
+                    contentCommit: "adaptation10012",
+                    contentCancel: "adaptation10013",
                     actionCommit: () => {
                         let paramas: any = {};
                         paramas.amount = Number(this.edit.string)
                         HttpRequest.Send({
-                            request: Web_Recharge_Gold,
-                            body: Web_Recharge_Gold.Request(paramas),
+                            request: procolType,
+                            body: procolType.Request(paramas),
                             onSuccess: function (data) {
-                                console.log(data);
+                                this.applySucTip(goldNum, price);
                             }.bind(this),
                         });
                     },
                     noAnimation: true,
                 });
         }
+    }
 
+    applySucTip(goldNum: number, price: number) {
+        UIComponent.open(UIDefine.UIDialogComponent,
+            {
+                type: UIDialogComponent.DialogType.Commit,
+                title: "adaptation10007",
+                content: this.getApplySucContent(goldNum, price),
+                contentCommit: "adaptation10012",
+                contentCancel: "adaptation10013",
+                noAnimation: true,
+            });
     }
 
     getApplyContent(goldNum: number, price: number) {
         if (this._type == EWalletGoldOpration.in) {
-            return `确定向${"xxx"}工会申请充值${goldNum}金豆。花费${price}`
+            return GC.language.getLocal("Tips_UIClub_FundRecharge_RechargeConfirm", goldNum);
         }
-        return `确定向${"xxx"}工会申请提取${goldNum}金豆。折合${price}`
+        return GC.language.getLocal("Tips_UIClub_FundRecharge_WithdrawConfirm", goldNum);
+    }
+
+    getApplySucContent(goldNum: number, price: number) {
+        return "roomError171_5";
+        if (this._type == EWalletGoldOpration.in) {
+            return GC.language.getLocal("MsgInfo_3000", goldNum);
+        }
+        return GC.language.getLocal("MsgInfo_3001", goldNum);
     }
 }

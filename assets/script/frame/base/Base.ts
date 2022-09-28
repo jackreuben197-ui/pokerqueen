@@ -11,7 +11,7 @@ export class Base extends cc.Component {
     }
 
     onLoad() {
-        this.initEvents()
+        this.regiterDispatchEvent()
     }
 
     start() {
@@ -22,7 +22,7 @@ export class Base extends cc.Component {
 
     }
 
-    initEvents() {
+    protected regiterDispatchEvent() {
         this.listen(EventName.serverResponse, this.notify);
     }
 
@@ -43,24 +43,24 @@ export class Base extends cc.Component {
     //     GC.dialog.closeAll(without);
     // }
 
-    protected listen(eventType: string, callback: Function) {
+    protected listen(eventType: string | number, callback: Function) {
         if (GC.notify.register(eventType, callback, this)) {
             let event: TEventType = { eventType: eventType, callback: callback, context: this };
             this._listensArr.push(event);
         }
     }
-    protected unregisterListener(eventType: string) {
+    protected unregiterDispatchEvent(eventType: string | number) {
         let index = this._listensArr.findIndex((event) => event.eventType == eventType && event.context == this);
         if (index >= 0) {
             let event = this._listensArr.splice(index, 1)[0];
-            GC.notify.removeListener(event.eventType, event.callback, event.context);
+            GC.notify.remove(event.eventType, event.callback, event.context);
         }
     }
 
     // 销毁所有监听事件
-    protected unregisterAllListener() {
+    protected unregiterAllDispatchEvent() {
         this._listensArr.forEach(event => {
-            GC.notify.removeListener(event.eventType, event.callback, event.context);
+            GC.notify.remove(event.eventType, event.callback, event.context);
         });
         this._listensArr.length = 0;
     }

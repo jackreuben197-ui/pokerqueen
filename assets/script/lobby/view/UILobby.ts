@@ -15,12 +15,12 @@ export default class UILobby extends UIBase {
     private beanBg: cc.Node = null;
 
     private isRefresh: boolean = false;
-    protected onLoad(): void {
+    onLoad(): void {
         super.onLoad();
 
         this.initView();
-
     }
+
     protected lateLoad(): void {
         super.lateLoad();
 

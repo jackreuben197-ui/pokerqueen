@@ -42,7 +42,7 @@ export default class LanguageForm extends BaseForm {
         //this.toggleContainer = this.getChildNodeOrComponent("toggleContainer", GGToggleContainer);
     }
 
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose(param);
     }
 

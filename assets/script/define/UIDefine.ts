@@ -99,7 +99,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "SettingsForm",
         Bundle: null,
-        Path: "main/prefab/form/SettingsForm",
+        Path: "main/lobby/prefab/UIMine_Setting",
         Title: "UIMine_btn_setting",
     },
 

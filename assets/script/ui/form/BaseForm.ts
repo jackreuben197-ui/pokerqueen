@@ -57,7 +57,7 @@ export default class BaseForm extends UIBase {
         this.back_click && this.back_click.on("click", this.close, this);
     }
 
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose();
     }
 
@@ -66,12 +66,6 @@ export default class BaseForm extends UIBase {
         cc.log(">>> formUI form :", fromUI?.UIDefine?.Name);
         super.onShow(param);
         this.mainFadeIn(this.show_animation);
-    }
-
-    async asyncOnClose(param?: any) {
-        this.showFromUI();
-        await this.mainFadeOut(param);
-        super.onClose(param);
     }
     async onClose(param?: any) {
         this.showFromUI();

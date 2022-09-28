@@ -23,8 +23,9 @@ export default class UIMine extends UIBase {
     nickname_lab: cc.Label = null;
     userid_lab: cc.Label = null;
     btn_copy: cc.Node = null;
+    panel_bottom: cc.Node = null;
 
-    protected onLoad(): void {
+    onLoad(): void {
         super.onLoad();
         let widget: cc.Widget = this.node.getComponent(cc.Widget);
         widget.target = cc.find("Canvas");
@@ -37,6 +38,7 @@ export default class UIMine extends UIBase {
         this.userid_lab = this.getChildNodeOrComponent("userid_lab", cc.Label);
         this.btn_copy = this.getChildNodeOrComponent("btn_copy");
         this.btn_copy.on("click", this.onClickCopy, this);
+        this.panel_bottom = this.getChildNodeOrComponent("panel_bottom");
         this.setMine();
     }
 
@@ -49,21 +51,26 @@ export default class UIMine extends UIBase {
     setMine(): void {
 
         this.func_item.active = false;
-        for (let i = 0; i < this.items_config.length; i++) {
-            let item = cc.instantiate(this.func_item);
-            let config = this.items_config[i];
-            item.active = true;
-            item.parent = this.content;
-            let light_bg = cc.find("Bg_Group/Light", item)?.getComponent(cc.Sprite);
-            let icon = item.getChildByName("Paipu_Icon")?.getComponent(cc.Sprite);
-            let text = item.getChildByName("Paipu_Text")?.getComponent(i18nLabel);
+        // for (let i = 0; i < this.items_config.length; i++) {
+        //     let item = cc.instantiate(this.func_item);
+        //     let config = this.items_config[i];
+        //     item.active = true;
+        //     item.parent = this.content;
+        //     let light_bg = cc.find("Bg_Group/Light", item)?.getComponent(cc.Sprite);
+        //     let icon = item.getChildByName("Paipu_Icon")?.getComponent(cc.Sprite);
+        //     let text = item.getChildByName("Paipu_Text")?.getComponent(i18nLabel);
 
-            light_bg && (light_bg.spriteFrame = AssetContext.getAsset(config.light_bg, AssetFold.texture_lobby_UIMine));
-            icon && (icon.spriteFrame = AssetContext.getAsset(config.icon, AssetFold.texture_lobby_UIMine));
-            text && (text.i18NString = config.string);
-            item.name = config.string;
-            item.on("click", this.onItemClick, this);
-        }
+        //     light_bg && (light_bg.spriteFrame = AssetContext.getAsset(config.light_bg, AssetFold.texture_lobby_UIMine));
+        //     icon && (icon.spriteFrame = AssetContext.getAsset(config.icon, AssetFold.texture_lobby_UIMine));
+        //     text && (text.i18NString = config.string);
+        //     item.name = config.string;
+        //     item.on("click", this.onItemClick, this);
+        // }
+        this.panel_bottom.children.forEach((item, i) => {
+            item["index"] = i;
+            item.on(cc.Node.EventType.TOUCH_END, this.onItemClick, this)
+        });
+
     }
     /**
    * @description: 
@@ -85,21 +92,16 @@ export default class UIMine extends UIBase {
         })
     }
 
-    private onItemClick(button: cc.Button) {
-        switch (button.node.name) {
-            case "UIMine_btn_MyWallet"://我的钱包
-                break;
-            case "UIMine_Backpack"://我的背包
-                break;
-            case "UIMine_btn_paipu"://牌谱收藏
-                break;
-            case "UIMine_btn_setting"://设置
-                UIComponent.open(UIDefine.SettingsForm);
-                break;
+    private onItemClick(e: cc.Event.EventTouch): void {
+        let target: cc.Node = e.target;
+        let index = target["index"];
+        if (index == 3) {
+            UIComponent.open(UIDefine.SettingsForm);
         }
     }
 
     onClickCopy() {
-        PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
+        PublicHelper.ossUploadImage();
+        // PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
     }
 }

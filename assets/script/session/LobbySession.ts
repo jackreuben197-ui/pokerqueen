@@ -2,22 +2,19 @@
  * 大厅Session
  */
 
-import CPMessageDispatherComponent from "../event/CPMessageDispatherComponent";
+import GC from "../frame/GameControl";
 import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import GameUtil from "../game/GameUtil";
-import { SeatEmpty } from "../game/SeatStateHandler";
-import Main from "../Main";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { ClientMessageRegister, ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
+import { ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
 
 import GlobalSession from "./GlobalSession";
 
-import LoginSession from "./LoginSession";
 
 export default class LobbySession {
 
@@ -51,7 +48,7 @@ export default class LobbySession {
     }
 
     static regiterEvents() {
-        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
+        GC.notify.register(ProtocolCode.Protocol_Holdem_Register, this.on_Protocol_Holdem_Register, this);
     }
 
     private static on_Protocol_Holdem_Register(body: ServerMessageRegister.AsObject) {

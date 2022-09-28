@@ -39,4 +39,25 @@ export default class PublicHelper {
             }
         }
     }
+
+    static ossUploadImage() {
+        // WARNING: For POST requests, body is set to null by browsers.
+        var data = new FormData();
+        data.append("file", "", "bnt.jpg");
+        
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function() {
+        if(this.readyState === 4) {
+            console.log(this.responseText);
+        }
+        });
+
+        xhr.open("POST", "http://dev.k8s.awanptesting.com/api/oss/upload/image");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("md5at", "d7126b25afd37362092b0aa7852095cc");
+
+        xhr.send(data);
+    }
 }

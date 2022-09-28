@@ -38,8 +38,7 @@ export default class UIMatchGameView extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.searchBtn.off(cc.Node.EventType.TOUCH_END, this.clickSearch, this);
-        this.searchBtn.on(cc.Node.EventType.TOUCH_END, this.clickSearch, this);
+        this.bindClick(this.searchBtn, this.clickSearch);
     }
 
     onShow(param?: any): void {

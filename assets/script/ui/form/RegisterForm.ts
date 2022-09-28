@@ -3,12 +3,10 @@ import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
-import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
-import { Web_Login, Web_User_Register } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import LabelCDTime from "../component/LabelCDTime";
 import UIComponent from "../UIComponent";
@@ -78,7 +76,7 @@ export default class RegisterForm extends BaseForm {
         //this.resetAgreeCheck();
     }
 
-    protected lateClose(param: any = null) {
+    lateClose(param: any = null) {
         super.lateClose(param);
     }
     protected regiterTouchEvents() {
@@ -91,7 +89,8 @@ export default class RegisterForm extends BaseForm {
     }
 
     protected regiterDispatchEvent(): void {
-        CPMessageDispatherComponent.Instance.RegisterHandler(GGEvent.Change_AreaCode, this.onChangeAreaCode, this);
+        super.regiterDispatchEvent();
+        this.listen(GGEvent.Change_AreaCode, this.onChangeAreaCode);
     }
 
 

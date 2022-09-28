@@ -21,8 +21,7 @@ export default class UIMatchGameItam extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.node.off(cc.Node.EventType.TOUCH_END, this.clickBg, this);
-        this.node.on(cc.Node.EventType.TOUCH_END, this.clickBg, this);
+        this.bindClick(this.node, this.clickBg);
     }
 
     initData(data: TMatchGameDataType) {

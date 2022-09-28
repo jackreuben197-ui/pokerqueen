@@ -1,7 +1,7 @@
 
 
 import { LogStyle } from "../../config/GameConfig";
-import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import { ClientMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import LoginSession from "../../session/LoginSession";
@@ -164,7 +164,7 @@ export default class ProtocolAgency extends cc.Component {
 
             console.log("%c%s\n%s", LogStyle.ws_response, `>>>>> protocol receive : ${protocol_name}`, `RoomID:${roomid},MatchID:${matchid},body:${JSON.stringify(body)}`);
 
-        CPMessageDispatherComponent.Instance.Handle(code, body);
+        GC.notify.post(code, body);
 
     }
 
