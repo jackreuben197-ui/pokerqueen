@@ -39,6 +39,8 @@ export default class UIMine extends UIBase {
         this.btn_copy = this.getChildNodeOrComponent("btn_copy");
         this.btn_copy.on("click", this.onClickCopy, this);
         this.panel_bottom = this.getChildNodeOrComponent("panel_bottom");
+        let UIHead: cc.Node = this.getChildNodeOrComponent("UIHead");
+        UIHead.on(cc.Node.EventType.TOUCH_END, this.onClickMyInfo, this)
         this.setMine();
     }
 
@@ -101,7 +103,11 @@ export default class UIMine extends UIBase {
     }
 
     onClickCopy() {
-        PublicHelper.ossUploadImage();
-        // PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
+        // PublicHelper.ossUploadImage();
+        PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
+    }
+
+    onClickMyInfo() {
+        UIComponent.open(UIDefine.MyPlayInfo);
     }
 }

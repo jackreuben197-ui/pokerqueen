@@ -102,6 +102,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_Setting",
         Title: "UIMine_btn_setting",
     },
+    //设置
+    MyPlayInfo: {
+        UIType: UIType.Form,
+        Name: "MyPlayInfo",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMine_PlayInfo",
+        Title: "",
+    },
 
     //房间模版
     UIMatchPlayViewForm: {
