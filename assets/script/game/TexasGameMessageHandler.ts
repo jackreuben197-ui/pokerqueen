@@ -347,12 +347,19 @@ export default class TexasGameMessageHandler {
         }
         UIComponent.Instance.Toast(i18nMgr.Get(`LeaveReason${response.reason}`));
     }
-
+    /// <summary>
+    /// MTT AddOn 消息回调
+    /// </summary>
+    /// <param name="response"></param>
     public Protocol_Holdem_AddOn_Handler(): void {
-
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_AddOn_Handler`);
     }
+    /// <summary>
+    /// 桌子上额外买入(非MTT) 消息回调
+    /// </summary>
+    /// <param name="response"></param>
     public Protocol_Holdem_BringIn_Handler(): void {
-
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_BringIn_Handler`);
     }
 
     Protocol_Holdem_UpBlind_Handler(Protocol_Holdem_UpBlind: ProtocolCode, Protocol_Holdem_UpBlind_Handler: any, arg2: this) {
@@ -379,9 +386,12 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_InsuranceTrigged_Handler(Protocol_Holdem_InsuranceTrigged: ProtocolCode, Protocol_Holdem_InsuranceTrigged_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-
+    /// <summary>
+    /// 加时（其他人接收）消息回调
+    /// </summary>
+    /// <param name="response"></param>
     Protocol_Holdem_AddTimeOthers_Handler(response) {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_AddTimeOthers_Handler`);
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_AddTimeOthers_Handler`);
     }
     /// <summary>
     /// 结果通知 消息回调
@@ -483,14 +493,26 @@ export default class TexasGameMessageHandler {
     private Protocol_Holdem_KeepSeatActive_Handler(response): void {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_KeepSeatActive_Handler`);
     }
-    Protocol_Holdem_SetAutoOnTable_Handler(Protocol_Holdem_SetAutoOnTable: ProtocolCode, Protocol_Holdem_SetAutoOnTable_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 设置自动带入额度(自动每手带入） 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    Protocol_Holdem_SetAutoOnTable_Handler(response) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_SetAutoOnTable_Handler`);
     }
+    /// <summary>
+    /// 主动行为 消息回调
+    /// </summary>
+    /// <param name="response"></param>
     Protocol_Holdem_Action_Handler(response) {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_Action_Handler`);
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_Action_Handler`);
     }
+    /// <summary>
+    /// 加时 消息回调
+    /// </summary>
+    /// <param name="response"></param>
     Protocol_Holdem_AddTime_Handler(response) {
-        cc.log(`# MSG_CALLBACK: Protocol_Holdem_AddTime_Handler`);
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_AddTime_Handler`);
     }
 
     /// <summary>

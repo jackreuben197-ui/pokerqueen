@@ -383,14 +383,14 @@ export default class TexasGameProtocol {
     /// 设置自动上桌筹码
     /// </summary>
     /// <param name="response"></param>
-    protected  ProtocolHoldemSetAutoOnTableHandler(rec: ServerMessageSetAutoOnTable.AsObject) {
-        // var responsedata = (response as Protocol_Holdem_SetAutoOnTable)?.response;
-        // if (responsedata == null) {
-        //     return;
-        // }
-        // if (responsedata.Status != 0) {
-        //     UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(responsedata.Status));
-        // }
+    protected ProtocolHoldemSetAutoOnTableHandler(rec: ServerMessageSetAutoOnTable.AsObject) {
+
+        if (rec == null) {
+            return;
+        }
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
+        }
     }
     ProtocolHoldemGetMsgHandler(Protocol_Holdem_GetMsg: ProtocolCode, ProtocolHoldemGetMsgHandler: any, arg2: this) {
         throw new Error("Method not implemented.");
