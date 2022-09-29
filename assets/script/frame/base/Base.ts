@@ -1,6 +1,5 @@
 import { EventName } from "../../config/EventName";
-import GC from "../GameControl";
-import { TEventType } from "../manager/NotifyManager";
+import { NotifyManager, TEventType } from "../manager/NotifyManager";
 
 
 
@@ -11,7 +10,7 @@ export class Base extends cc.Component {
     }
 
     onLoad() {
-        
+
     }
 
     start() {
@@ -44,7 +43,7 @@ export class Base extends cc.Component {
     // }
 
     protected listen(eventType: string | number, callback: Function) {
-        if (GC.notify.register(eventType, callback, this)) {
+        if (NotifyManager.instance.register(eventType, callback, this)) {
             let event: TEventType = { eventType: eventType, callback: callback, context: this };
             this._listensArr.push(event);
         }
@@ -53,44 +52,23 @@ export class Base extends cc.Component {
         let index = this._listensArr.findIndex((event) => event.eventType == eventType && event.context == this);
         if (index >= 0) {
             let event = this._listensArr.splice(index, 1)[0];
-            GC.notify.remove(event.eventType, event.callback, event.context);
+            NotifyManager.instance.remove(event.eventType, event.callback, event.context);
         }
     }
 
     // 销毁所有监听事件
     protected unregiterAllDispatchEvent() {
         this._listensArr.forEach(event => {
-            GC.notify.remove(event.eventType, event.callback, event.context);
+            NotifyManager.instance.remove(event.eventType, event.callback, event.context);
         });
         this._listensArr.length = 0;
     }
 
     protected post(name: string, ...args: any[]) {
-        GC.notify.post(name, ...args)
+        NotifyManager.instance.post(name, ...args)
     }
 
     protected notify(id: any, msg: any) {
 
     }
-
-    // reqServeGet(msgId: any, data: any = null, showLoading: boolean = true, isShowBg: boolean = false) {
-    //     this.reqServe(GC.config.game.httpUrl, msgId, data, showLoading, isShowBg, true);
-    // }
-
-    // reqServePost(msgId: any, data: any = null, showLoading: boolean = true, isShowBg: boolean = false) {
-    //     this.reqServe(GC.config.game.httpUrl, msgId, data, showLoading, isShowBg, false);
-    // }
-
-    // reqServe(url: string, msgId: any, data: any, showLoading: boolean, isShowBg: boolean, isGet: boolean) {
-    //     if(msgId == HttpCmdId.LOGIN) {
-    //         //请求登陆
-    //         GC.sdk.clickStat(EStatType.login,"1")
-    //     }
-    //     GC.net.http.reqServe(url, msgId, data, showLoading, isShowBg, isGet);
-    // }
-
-    // sendMsg(cfg: TProtoType, data: any = {}) {
-    //     GC.net.socket.sendMsg(cfg, data);
-    // }
-
 }

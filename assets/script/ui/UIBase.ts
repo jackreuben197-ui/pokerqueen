@@ -1,6 +1,7 @@
 
 import BaseComponent from "../frame/base/BaseComponent";
-import GC from "../frame/GameControl";
+import LanguageManager from "../frame/manager/LanguageManager";
+import { ResManager } from "../manager/ResManager";
 import CCTools from "../tools/CCTools";
 const { ccclass, property } = cc._decorator;
 
@@ -75,7 +76,7 @@ export default class UIBase extends BaseComponent {
                 label.string = "";
                 return
             }
-            let text = GC.language.getLocal(msg, ...params);
+            let text = LanguageManager.instance.getLocal(msg, ...params);
             if (!text.startsWith("缺少字段")) {
                 msg = text;
             }
@@ -120,25 +121,25 @@ export default class UIBase extends BaseComponent {
     protected loadAsset(url: string, cb: Function, asset_type: typeof cc.Asset, errorCb: Function = null) {
         switch (asset_type) {
             case cc.Prefab: {
-                GC.res.loadPrefab(url, (instance: cc.Node, res: cc.Prefab) => {
+                ResManager.instance.loadPrefab(url, (instance: cc.Node, res: cc.Prefab) => {
                     this._prefabs.set(url, instance.getComponent(UIBase));
                     cb && cb(instance, res);
                 }, errorCb)
             } break;
             case dragonBones.DragonBonesAsset: {
-                GC.res.loadRes(url + "_ske", (asset: dragonBones.DragonBonesAsset) => {
-                    GC.res.loadRes(url + "_tex", (atlas: dragonBones.DragonBonesAtlasAsset) => {
+                ResManager.instance.loadRes(url + "_ske", (asset: dragonBones.DragonBonesAsset) => {
+                    ResManager.instance.loadRes(url + "_tex", (atlas: dragonBones.DragonBonesAtlasAsset) => {
                         cb && cb(asset, atlas)
                     }, dragonBones.DragonBonesAtlasAsset);
                 }, dragonBones.DragonBonesAsset);
             } break;
             case cc.Texture2D: {
-                GC.res.loadUrl(url, asset_type, (instance: cc.Texture2D) => {
+                ResManager.instance.loadUrl(url, asset_type, (instance: cc.Texture2D) => {
                     cb && cb(new cc.SpriteFrame(instance))
                 })
             } break;
             default: {
-                GC.res.loadRes(url, (instance: any) => {
+                ResManager.instance.loadRes(url, (instance: any) => {
                     cb && cb(instance);
                 }, asset_type);
             } break;

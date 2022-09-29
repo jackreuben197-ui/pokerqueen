@@ -1,6 +1,7 @@
 import { AudioPath } from "../../config/PathConfig";
+import { ResManager } from "../../manager/ResManager";
 import CCTools from "../../tools/CCTools";
-import GC from "../GameControl";
+import LocalStoreManager from "./LocalStoreManager";
 
 
 export default class AudioManager {
@@ -36,13 +37,13 @@ export default class AudioManager {
     }
 
     init() {
-        let v = GC.localStore.getItem(this._volumeKey)
+        let v = LocalStoreManager.instance.getItem(this._volumeKey)
         this.volume = CCTools.isNull(v) ? 1 : v;
 
-        let sound = GC.localStore.getItem(this._soundKey)
+        let sound = LocalStoreManager.instance.getItem(this._soundKey)
         this.sound = CCTools.isNull(sound) ? true : sound;
 
-        let music = GC.localStore.getItem(this._musicKey)
+        let music = LocalStoreManager.instance.getItem(this._musicKey)
         this.music = CCTools.isNull(music) ? true : music;
 
         this.addBtnSound();
@@ -52,7 +53,7 @@ export default class AudioManager {
     addBtnSound() {
         cc.Button.prototype["_onTouchEnded"] = function (event) {
             if (this.interactable && this.enabledInHierarchy) {
-                GC.audio.playSound(AudioPath.btnClick);//播放按钮Button音频
+                AudioManager.instance.playSound(AudioPath.btnClick);//播放按钮Button音频
                 if (this._pressed) {
                     cc.Component.EventHandler.emitEvents(this.clickEvents, event);
                     this.node.emit("click", this);
@@ -73,7 +74,7 @@ export default class AudioManager {
         this._volume = v;
         cc.audioEngine.setMusicVolume(v);
         cc.audioEngine.setEffectsVolume(v);
-        GC.localStore.setItem(this._volumeKey, v);
+        LocalStoreManager.instance.setItem(this._volumeKey, v);
     }
 
     get pause() {
@@ -92,14 +93,14 @@ export default class AudioManager {
     }
     set sound(v) {
         this._sound = Boolean(v);
-        GC.localStore.setItem(this._soundKey, v);
+        LocalStoreManager.instance.setItem(this._soundKey, v);
         if (!this._sound) {
             this.stopAllSound();
         }
     }
     set music(v) {
         this._music = Boolean(v);
-        GC.localStore.setItem(this._musicKey, v);
+        LocalStoreManager.instance.setItem(this._musicKey, v);
         if (this._music) {
             this._musicClip && this.play(this._musicClip, true);
         } else {
@@ -224,7 +225,7 @@ export default class AudioManager {
         //     this.play(clip, loop, callBack)
         // });
 
-        GC.res.loadRes(AudioPath.rootPath + path, (clip: cc.AudioClip) => {
+        ResManager.instance.loadRes(AudioPath.rootPath + path, (clip: cc.AudioClip) => {
             this._cache.set(path, clip);
             this.play(clip, loop, callBack)
         }, cc.AudioClip);
