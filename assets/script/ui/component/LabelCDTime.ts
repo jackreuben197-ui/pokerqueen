@@ -1,3 +1,5 @@
+import TimeHelper from "../../helper/TimeHelper";
+import StorageKey from "../../session/StorageKey";
 
 export default class LabelCDTime extends cc.Component {
 
@@ -5,13 +7,19 @@ export default class LabelCDTime extends cc.Component {
 
     duration: number = 0;
 
+    difTime: number = 0;
+
     passtime: number = 0;
+
+    sendTime: number = 0;
 
     unit: string = null;
 
     complete: boolean = false;
 
     call: Function = null;
+
+    _scheTime: any = null;
 
     protected onLoad(): void {
         this.label = this.node.getComponent(cc.Label);
@@ -24,18 +32,32 @@ export default class LabelCDTime extends cc.Component {
     show(duration: number = 60, call: Function = null, unit: string = "S") {
         this.call = call;
         this.unit = unit;
+        this.sendTime = TimeHelper.NowS();
         this.duration = duration;
         this.passtime = 0;
         this.complete = false;
         this.updateLabel(duration);
     }
+
+    resetUI(sendTime, call: Function = null) {
+        this.call = call;
+        this.unit = "S";
+        this.sendTime = sendTime;
+        this.duration = 60;
+        this.passtime = 0;
+        this.complete = false;
+        this.difTime = TimeHelper.NowS() - this.sendTime;
+        this.updateLabel(this.duration - this.difTime);
+    }
+
     private fixUpdate() {
-        if (this.duration == 0) {
+        this.difTime = TimeHelper.NowS() - this.sendTime;
+        if (this.duration <= this.difTime) {
             this.end();
             return;
         }
-        this.duration--;
-        this.updateLabel(this.duration);
+        // this.duration--;
+        this.updateLabel(this.duration - this.difTime);
     }
     protected update(dt: number): void {
         if (this.complete) return;

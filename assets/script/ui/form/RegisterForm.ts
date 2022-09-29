@@ -4,10 +4,12 @@ import ButtonClickCD from "../../common/ButtonClickCD";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
+import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
 import LoginSession from "../../session/LoginSession";
+import StorageKey from "../../session/StorageKey";
 import LabelCDTime from "../component/LabelCDTime";
 import UIComponent from "../UIComponent";
 import BaseForm from "./BaseForm";
@@ -31,7 +33,7 @@ export default class RegisterForm extends BaseForm {
 
     getcode_button: cc.Node = null;
 
-
+    lbl_code: cc.Node = null;
     area_label: cc.Label = null;
 
     phone_editbox: cc.EditBox = null;
@@ -64,8 +66,9 @@ export default class RegisterForm extends BaseForm {
         this.confirm_button = this.getChildNodeOrComponent("confirm_button");
         this.code_button = this.getChildNodeOrComponent("code_button");
         this.getcode_button = this.getChildNodeOrComponent("getcode_button");
+        this.lbl_code = this.getChildNodeOrComponent("lbl_code");
         this.agreement_click = this.getChildNodeOrComponent("agreement_click");
-        this.getcode_button.addComponent(LabelCDTime);
+        this.lbl_code.addComponent(LabelCDTime);
         this.setEyesOpen(false);
     }
 
@@ -74,6 +77,19 @@ export default class RegisterForm extends BaseForm {
         this.setArea();
         //this.setEyesOpen(false);
         //this.resetAgreeCheck();
+        this.phone_editbox.string = "";
+        this.tcode_editbox.string = "";
+        this.pass_editbox.string = "";
+        // this.resetGetCodeLabel()
+        // this.lbl_code.getComponent(LabelCDTime).duration = 0;
+        this.resetCDTime();
+    }
+
+    resetCDTime() {
+        let codeTime = localStorage.getItem(StorageKey.CODE_TIME_REGIST);
+        if (codeTime != null && codeTime != "") {
+            this.lbl_code.getComponent(LabelCDTime).resetUI(+codeTime, this.resetGetCodeLabel.bind(this));
+        }
     }
 
     lateClose(param: any = null) {
@@ -132,12 +148,24 @@ export default class RegisterForm extends BaseForm {
             ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1001"));//("请输入手机号");
             return;
         }
-        if (password.length < 6) {
-            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1002"));//("密码不得少于6个字符");
+        if (phone.length < 6 || phone.length > 20) {
+            ToastManager.Instance.createToast("手机号必须在6到20位之间");//请输入手机号
+            return;
+        }
+        if (this.tcode_canclick) {
+            ToastManager.Instance.createToast("请获取验证码");
             return;
         }
         if (code == "") {
             ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1008"));//("请输入验证码");
+            return;
+        }
+        if (code.length != 4) {
+            ToastManager.Instance.createToast("验证码只能是4位数");//("请输入验证码");
+            return;
+        }
+        if (password.length < 6) {
+            ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1002"));//("密码不得少于6个字符");
             return;
         }
         if (agree_checked == false) {
@@ -182,6 +210,10 @@ export default class RegisterForm extends BaseForm {
             ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1004"));//请输入手机号
             return;
         }
+        if (phone.length < 6 || phone.length > 20) {
+            ToastManager.Instance.createToast("手机号必须在6到20位之间");//请输入手机号
+            return;
+        }
         if (!this.tcode_canclick) {
             ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1005"));//("请稍等再发");
             return;
@@ -203,14 +235,17 @@ export default class RegisterForm extends BaseForm {
 
         ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1007"));//("验证码已发送");
 
-        this.getcode_button.getComponent(LabelCDTime).show(5, this.resetGetCodeLabel.bind(this));
+        this.lbl_code.getComponent(LabelCDTime).show(60, this.resetGetCodeLabel.bind(this));
+        let NowTimeS = TimeHelper.NowS();
+        localStorage.setItem(StorageKey.CODE_TIME_REGIST, NowTimeS.toString());
     }
     /**
      * 重置getcode文本
      */
     resetGetCodeLabel() {
         this.tcode_canclick = true;
-        this.getcode_button.getComponent(cc.Label).string = i18nMgr._getLabel("UILogin_GetCode");
+        this.lbl_code.getComponent(cc.Label).string = i18nMgr._getLabel("UILogin_GetCode");
+        localStorage.setItem(StorageKey.CODE_TIME_REGIST, "");
     }
     /**
      * 区号点击

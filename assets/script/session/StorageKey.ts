@@ -24,6 +24,11 @@ export default class StorageKey {
     static KEY_PHONE = "KEY_PHONE";
     static KEY_PHONE_FIRST = "KEY_PHONE_FIRST";
 
+    //验证码时间 忘记密码
+    static CODE_TIME_RESET = "CODE_TIME_RESET";
+    //验证码时间 注册
+    static CODE_TIME_REGIST = "CODE_TIME_REGIST";
+
 
 
     //=======================设置相关========================
