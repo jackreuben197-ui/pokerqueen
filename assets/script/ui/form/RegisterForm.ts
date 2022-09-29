@@ -267,4 +267,5 @@ export default class RegisterForm extends BaseForm {
     onUserAgreeClick() {
         UIComponent.open(UIDefine.UserAgreeForm);
     }
+
 }

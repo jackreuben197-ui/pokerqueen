@@ -35,11 +35,11 @@ export class SeatFSM {
         this.seat.HideCards(this.seat.uirc.listCardUIInfos);
         this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
         // imageTrust.gameObject.SetActive(false);
-        // imageOffline.gameObject.SetActive(false);
-        // imageReserveSeat.gameObject.SetActive(false);
-        // imageCountDown.gameObject.SetActive(false);
-        // Image_CountDownbg.gameObject.SetActive(false);
-        // imageBubble.gameObject.SetActive(false);
+        this.seat.uirc.imageOffline.active = false;
+        this.seat.uirc.imageReserveSeat.active = false;
+        this.seat.uirc.imageCountDown.node.active = false;
+        this.seat.uirc.Image_CountDownbg.node.active = false;
+        this.seat.uirc.imageBubble.node.active = false;
         // Image_BubbleInsuranceNum.gameObject.SetActive(false);
         // Image_BubbleInsuranceToubao.gameObject.SetActive(false);
         // transCurRoundHaveBet.gameObject.SetActive(false);
@@ -48,19 +48,19 @@ export class SeatFSM {
         // m_ImageRanking.gameObject.SetActive(false);
         // Image_OtherWinnerCardType.gameObject.SetActive(false);
         // imageBubbleBackDesk.gameObject.SetActive(false);
-        // imageCardType.gameObject.SetActive(false);
-        // imageRecyclingWinChip.gameObject.SetActive(false);
+        this.seat.uirc.imageCardType.node.active = false;
+        this.seat.uirc.imageRecyclingWinChip.node.active = false;
         // Image_OtherWinner.gameObject.SetActive(false);
-        // WaitforthenextmoveTips.gameObject.SetActive(false);
-        // FoldHeadGray(false);
+        this.seat.uirc.WaitforthenextmoveTips.node.active = false;
+        this.seat.FoldHeadGray(false);
 
         // if (null != armatureVoice.dragonAnimation && armatureVoice.dragonAnimation.isPlaying)
         //     armatureVoice.dragonAnimation.Stop();
         // armatureVoice.gameObject.SetActive(false);
 
-        // StopAllinArmature();
-        // StopWinArmature();
-        // StopLightArmature();
+        this.seat.StopAllinArmature();
+        this.seat.StopWinArmature();
+        this.seat.StopLightArmature();
 
         this.seat.uirc.imageEmpty.node.active = true;
         this.seat.UpdateVoiceprintState(VoiceprintState.None);

@@ -637,6 +637,7 @@ export default class TexasGame {
         //         if (null != mTmpDialog && mTmpDialog.GameObject.activeInHierarchy) {
         //             UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
         //         }
+        UIComponent.close(UIDefine.UIDialogComponent);
         //当前操作人
         if (this.operationID != -1) {
             mSeat = this.GetSeatByLocalSeatID(this.operationID);
@@ -672,8 +673,6 @@ export default class TexasGame {
             this.HideOperationPanel();
             this.HideAutoOperationPanel();
         }
-
-
         this.UpdatePots();
         // 切换游戏状态机
         switch (rec.gameStatus) {

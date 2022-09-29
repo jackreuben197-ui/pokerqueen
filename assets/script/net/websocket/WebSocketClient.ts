@@ -1,8 +1,10 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
 import TimeHelper from "../../helper/TimeHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import GlobalSession from "../../session/GlobalSession";
 import LoginSession from "../../session/LoginSession";
+import UIComponent from "../../ui/UIComponent";
 import { Web_WS } from "../https/WebRequest";
 import ProtocolAgency from "./ProtocolAgency";
 import { ProtocolCode } from "./ProtocolCode";
@@ -89,7 +91,9 @@ export default class WebSocketClient {
                 },
                 //失败
                 () => {
+                    UIComponent.Instance.Toast("Request Channel Fail");
                     GlobalSession.Logout();
+                    UIComponent.Instance.Toast(i18nMgr.Get("clientInt_anormal"));
                 }
             )
         }

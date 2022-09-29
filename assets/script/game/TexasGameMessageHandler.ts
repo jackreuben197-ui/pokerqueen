@@ -133,8 +133,6 @@ export default class TexasGameMessageHandler {
         let isMtt: boolean = false;
         //this.game instanceof TexasGame;
 
-        console.log("response:", response);
-
         if (response.status == 0) {
 
             if (isMtt) {
