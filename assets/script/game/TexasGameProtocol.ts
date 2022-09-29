@@ -12,6 +12,7 @@ import { ServerMessageKeepSeat } from "../protobuf/holdem/recv_keep_seat_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageShowcards } from "../protobuf/holdem/recv_showcards_pb";
 import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
@@ -19,6 +20,7 @@ import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
 import { ServerMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
 import { ServerMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
+import { ServerMessageSetAutoOnTable } from "../protobuf/holdem/req_set_auto_on_table_pb";
 import { ServerMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import UIComponent from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
@@ -377,8 +379,18 @@ export default class TexasGameProtocol {
     ProtocolHoldemAgreeSecondPcsActiveHandler(Protocol_Holdem_AgreeSecondPcsActive: ProtocolCode, ProtocolHoldemAgreeSecondPcsActiveHandler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    ProtocolHoldemSetAutoOnTableHandler(Protocol_Holdem_SetAutoOnTable: ProtocolCode, ProtocolHoldemSetAutoOnTableHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 设置自动上桌筹码
+    /// </summary>
+    /// <param name="response"></param>
+    protected  ProtocolHoldemSetAutoOnTableHandler(rec: ServerMessageSetAutoOnTable.AsObject) {
+        // var responsedata = (response as Protocol_Holdem_SetAutoOnTable)?.response;
+        // if (responsedata == null) {
+        //     return;
+        // }
+        // if (responsedata.Status != 0) {
+        //     UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(responsedata.Status));
+        // }
     }
     ProtocolHoldemGetMsgHandler(Protocol_Holdem_GetMsg: ProtocolCode, ProtocolHoldemGetMsgHandler: any, arg2: this) {
         throw new Error("Method not implemented.");
@@ -496,13 +508,47 @@ export default class TexasGameProtocol {
 
 
 
-    HANDLER_REQ_GAME_PLAYER_CARDS(Protocol_Holdem_Showcards: ProtocolCode, HANDLER_REQ_GAME_PLAYER_CARDS: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    // HANDLER_REQ_GAME_RECV_ACTION(Protocol_Holdem_ActionAll: ProtocolCode, HANDLER_REQ_GAME_RECV_ACTION: any, arg2: this) {
-    //     throw new Error("Method not implemented.");
-    // }
 
+    /// <summary>
+    /// 展示底牌
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_GAME_PLAYER_CARDS(rec: ServerMessageShowcards.AsObject) {
+        if (rec == null) {
+            return;
+        }
+        this.game.isAllinGetPlayerCards = true;
+        // 保险模式，allin后要收筹码，不用等收到公共牌再收。
+        if (this.game.insurance && this.game.GetCurPublicCardsCount() > 0) {
+            this.game.PlayRecyclingChipAnimation(null);
+        }
+        let mSeat: Seat = null;
+        for (let i = 0, n = rec.playerCardsList.length; i < n; i++) {
+            if (rec.playerCardsList[i].seatId == 0)
+                continue;
+
+            mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.playerCardsList[i].seatId));
+            if (null == mSeat)
+                return;
+            if (rec.playerCardsList[i].cardsList != null && rec.playerCardsList[i].cardsList[0] == 0 && rec.playerCardsList[i].cardsList[1] == 0) {
+                console.log("player allin card =null");
+                return;
+            }
+            let allinCards: number[] = [];
+            for (let j = 0; j < rec.playerCardsList[i].cardsList.length; j++) {
+                allinCards.push(rec.playerCardsList[i].cardsList[j]);
+            }
+            mSeat.Player.SetCards(allinCards);
+            if (this.game.mainPlayer.seatID == mSeat.seatID && !rec.isAll) {
+                return;
+            }
+            mSeat.UpdateCards(rec.isAll);
+            //allin后显示自己头像
+            if (this.game.mainPlayer.seatID == mSeat.seatID) {
+                mSeat.SetOperationHeadActive(true);
+            }
+        }
+    }
 
 
     /// <summary>

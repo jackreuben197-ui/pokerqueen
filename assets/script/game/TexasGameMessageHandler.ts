@@ -453,9 +453,12 @@ export default class TexasGameMessageHandler {
         this.game.SMAgency.ChangeGameState(nextState, response);
     }
 
-
-    Protocol_Holdem_Showcards_Handler(Protocol_Holdem_Showcards: ProtocolCode, Protocol_Holdem_Showcards_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 亮牌 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    Protocol_Holdem_Showcards_Handler(response) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_Showcards_Handler`);
     }
     Protocol_Holdem_ShowPublicCardsOthers_Handler(Protocol_Holdem_ShowPublicCardsOthers: ProtocolCode, Protocol_Holdem_ShowPublicCardsOthers_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
