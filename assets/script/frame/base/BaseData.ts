@@ -12,6 +12,9 @@ export class BaseData {
 
     protected notify(id: any, msg: any) { }
 
+    protected post(name: string, ...args: any[]) {
+        NotifyManager.instance.post(name, ...args)
+    }
 
     reqServeGet(api: any, data: any = {}) {
         this.reqServe(api, data, true);

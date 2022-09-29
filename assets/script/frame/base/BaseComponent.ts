@@ -1,7 +1,7 @@
 import { AudioPath } from "../../config/PathConfig";
 import { IUIDefine } from "../../define/EIDefine";
 import AdapterComponent from "../../funcomponent/AdapterComponent";
-import GC from "../GameControl";
+import AudioManager from "../manager/AudioManager";
 import { Base } from "./Base";
 
 
@@ -91,7 +91,7 @@ export default class BaseComponent extends Base {
         node.on(cc.Node.EventType.TOUCH_END, (event: cc.Event.EventTouch) => {
             scaleAni && node.stopAllActions()
             scaleAni && cc.tween(node).to(0.1, { scale: scale }).start();
-            GC.audio.playSound(AudioPath.btnClick);
+            AudioManager.instance.playSound(AudioPath.btnClick);
             callBack.call(self, data, event)
         }, this);
         if (this._clickNodes.indexOf(node) == -1) {
