@@ -3,13 +3,13 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 17:04:54
+ * @LastEditTime: 2022-09-29 11:43:33
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { APIOrgTribeSearchByID, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
+import { Web_Org_Club_Get, APIOrgTribeSearchByID, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
@@ -34,11 +34,21 @@ export default class UIJoinUnion extends BaseForm {
     @property(cc.Node)
     lb: cc.Node = null;
 
+    @property(cc.Node)
+    UIDialogComponent: cc.Node = null;
+
+    @property(cc.RichText)
+    Text_Content: cc.RichText = null;
+
+    @property(cc.EditBox)
+    contentEdit: cc.EditBox = null;
+
     protected lateLoad(): void {
         super.lateLoad();
     }
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
+        this.UIDialogComponent.active = false
     }
     async sousuoBtn() {
         let string = this.EditBox.string
@@ -52,8 +62,10 @@ export default class UIJoinUnion extends BaseForm {
             this.lb.active = false
             this.initItem(this.searchNode, data, async () => {
                 this.hideSearchNode();
-                // await UIClubModel.mInstance.APIOrgClubJoinClub(data.club_id);
-                // this.initApplyList();
+                this.UIDialogComponent.active = true;
+                let club_data: any = Web_Org_Club_Get.Response.data;
+                this.Text_Content.string = club_data.club_name + '公会确认加入' + data.name + "联盟<br/>" + '填写您的联系方式';
+
             })
         } else {
             this.lb.active = true
@@ -61,16 +73,16 @@ export default class UIJoinUnion extends BaseForm {
     }
     initItem(node, data, cb) {
         let name = node.getChildByName('name').getComponent(cc.Label)
-        name.string = data.club_name
+        name.string = data.name
         let id = node.getChildByName('id').getComponent(cc.Label)
         id.string = data.random_id
 
         let icon = cc.find("iconMask/icon", node).getComponent(cc.Sprite)
         WebImageHelper.SetUrlImage(icon, data.logo)
         let current = cc.find("number/current", node).getComponent(cc.Label)
-        current.string = data.club_members
+        current.string = data.club_count
         let total = cc.find("number/total", node).getComponent(cc.Label)
-        total.string = data.upper_limit;
+        total.string = data.club_limit;
         node.active = true;
         let join = node.getChildByName('join')
         join.on(cc.Node.EventType.TOUCH_END, cb, this)
@@ -78,6 +90,14 @@ export default class UIJoinUnion extends BaseForm {
     hideSearchNode() {
         this.searchNode.active = false;
         this.lb.active = false
+    }
+    cancel() {
+        this.UIDialogComponent.active = false
+    }
+    sure() {
+        let data: any = APIOrgTribeSearchByID.Response.data
+        UIClubModel.mInstance.APIOrgJoinTrip(data.random_id, this.contentEdit.string)
+        this.UIDialogComponent.active = false
     }
     // update (dt) {}
 }

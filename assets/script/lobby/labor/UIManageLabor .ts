@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 18:40:28
+ * @LastEditTime: 2022-09-29 11:57:26
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -13,7 +13,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, property } = cc._decorator;
-import { APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { APIOrgClubGold, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
 import UIBase from "../../ui/UIBase";
 import { UIClubModel } from "./UIClubModel";
@@ -48,7 +48,7 @@ export default class UIManageLabor extends BaseForm {
         name.string = data.club_name
         let id = this.mask_group.getChildByName('id').getComponent(cc.Label);
         id.string = 'ID:' + data.random_id
-        this.EditBox.string = data.desc
+        this.EditBox.string = data.desc || '暂无工会说明'
 
         let icon = cc.find('iconMask/icon', this.mask_group);
         WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.logo)
@@ -70,7 +70,15 @@ export default class UIManageLabor extends BaseForm {
         let chsj = this.contentNode.getChildByName('chsj')
         chsj.getChildByName('time').getComponent(cc.Label).string = data.create_time
 
+        //基金
+        let _data: any = APIOrgClubGold.Response.data
 
+        let jj = this.contentNode.getChildByName('jj')
+        cc.find('img_right_bg/lbl_glod', jj).getComponent(cc.Label).string = _data.gold;
+        //联盟
+        let lm = this.contentNode.getChildByName('lm')
+        let lm_panel_right = lm.getChildByName('panel_right')
+        lm_panel_right.getChildByName('name').getComponent(cc.Label).string = data.tribe_name || ''
     }
     async initMangerList() {
         let data: any = Web_Org_Club_Get.Response.data;
@@ -98,8 +106,13 @@ export default class UIManageLabor extends BaseForm {
         UIComponent.open(UIDefine.UIlaborMerberManager);
     }
     joinUnion() {
-        if (true) {
+        let data: any = Web_Org_Club_Get.Response.data;
+        if (!data.tribe_name) {
             UIComponent.open(UIDefine.UIJoinUnion);
         }
+    }
+    changeClubData() {
+        Web_Org_Club_Get.Response.data['desc'] = this.EditBox.string
+        UIClubModel.mInstance.APIOrgChangeClubData({ desc: this.EditBox.string })
     }
 }

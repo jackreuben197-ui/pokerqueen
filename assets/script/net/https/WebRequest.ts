@@ -1026,7 +1026,48 @@ export class APIOrgTribeSearchByID {
     public static Response: { code?: number, message?: string, data?: typeof APIOrgTribeSearchByID.ResponseData };
 }
 
+export class APIOrgJoinTrip {
+    //接口地址
+    public static API: string = "/api/org/tribe/club/join/apply";
 
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgJoinTrip.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof APIOrgJoinTrip.ResponseData };
+}
+
+
+export class APIOrgChangeClubData {
+    //接口地址
+    public static API: string = "/api/org/club/modify/club_info";
+
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgChangeClubData.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgChangeClubData.ResponseData
+    };
+}
 
 /**
  * 注册全局访问

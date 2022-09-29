@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 10:43:32
+ * @LastEditTime: 2022-09-29 10:42:56
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -47,9 +47,10 @@ export default class UIlaborMerberManager extends BaseForm {
         this.initTop()
         this.initMemberList();
         await UIClubModel.mInstance.APIOrgClubGetJoinlList()
-        this.initAudit()
+        // this.initAudit()
     }
     initAudit() {
+        //为了显示审批的红点
         let data: any = APIOrgClubGetJoinlList.Response.data
         if (data?.data.length > 0) {
 
@@ -67,6 +68,7 @@ export default class UIlaborMerberManager extends BaseForm {
         total.string = data.upper_limit + ')';
     }
     async initMemberList() {
+        this.contentNode.removeAllChildren();
         let data: any = APIOrgMemberList.Response.data;
         for (let index = 0; index < data?.data.length; index++) {
             let _item = cc.instantiate(this.item);

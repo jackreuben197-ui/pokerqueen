@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 18:38:24
+ * @LastEditTime: 2022-09-29 11:52:03
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -278,6 +278,35 @@ export class UIClubModel {
                 body: APIOrgTribeSearchByID.Request(paramas),
                 onSuccess: function () {
                     resolve(APIOrgTribeSearchByID.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgJoinTrip(id, contact) {
+        let paramas: any = { tribe_random_id: id, contact: contact };
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgJoinTrip,
+                body: APIOrgJoinTrip.Request(paramas),
+                onSuccess: function () {
+                    resolve(APIOrgJoinTrip.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgChangeClubData(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgChangeClubData,
+                body: APIOrgChangeClubData.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgChangeClubData.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
