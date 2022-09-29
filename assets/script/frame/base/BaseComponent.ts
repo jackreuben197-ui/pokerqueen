@@ -2,7 +2,7 @@ import { AudioPath } from "../../config/PathConfig";
 import { IUIDefine } from "../../define/EIDefine";
 import AdapterComponent from "../../funcomponent/AdapterComponent";
 import GC from "../GameControl";
-import { Base } from "./Basexxx";
+import { Base } from "./Base";
 
 
 export default class BaseComponent extends Base {
