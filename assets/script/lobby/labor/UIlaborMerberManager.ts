@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 10:42:56
+ * @LastEditTime: 2022-09-29 17:23:06
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -13,6 +13,7 @@ import UIComponent from "../../ui/UIComponent";
 import { Web_Org_Club_Get, APIOrgClubGetJoinlList, APIOrgMemberList } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { UIClubModel } from "./UIClubModel";
+import TimeHelper from "../../helper/TimeHelper";
 
 const { ccclass, property } = cc._decorator;
 
@@ -75,6 +76,8 @@ export default class UIlaborMerberManager extends BaseForm {
             _item.parent = this.contentNode
             _item.getChildByName('name').getComponent(cc.Label).string = data?.data[index].nick_name
             _item.getChildByName('id').getComponent(cc.Label).string = data?.data[index].random_num
+            _item.getChildByName('data').getComponent(cc.Label).string = TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - data?.data[index].last_login_time))
+            _item['last_login_time'] = data?.data[index].last_login_time
             let icon = cc.find('iconMask/icon', _item);
             WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data?.data[index].avatar)
             _item.active = true;
@@ -118,7 +121,7 @@ export default class UIlaborMerberManager extends BaseForm {
                 element.opacity = 80
             }
         }
-        this.nickNameSort();
+        this.sort('name');
 
     }
     setDateBtn(event) {
@@ -131,14 +134,36 @@ export default class UIlaborMerberManager extends BaseForm {
                 element.opacity = 80
             }
         }
-        this.dateSort();
-
+        this.sort('time');
     }
-    nickNameSort() {
+    sort(type) {
+        let data: any = APIOrgMemberList.Response.data;
+        let sortData = data.data.sort((a, b) => {
+            if (type == 'name') {
+                if (this.nickNameSortType == 'up') {
+                    return a.nick_name.localeCompare(b.nick_name, 'zh')
+                } else {
+                    return b.nick_name.localeCompare(a.nick_name, 'zh')
+                }
+            } else {
+                if (this.timeSortType == 'up') {
+                    return a.last_login_time - b.last_login_time
+                } else {
+                    return b.last_login_time - a.last_login_time
+                }
+            }
 
-    }
-    dateSort() {
-
+        })
+        for (let index = 0; index < sortData.length; index++) {
+            let _item = this.contentNode.children[index];
+            _item.parent = this.contentNode
+            _item.getChildByName('name').getComponent(cc.Label).string = sortData[index].nick_name
+            _item.getChildByName('id').getComponent(cc.Label).string = sortData[index].random_num
+            _item.getChildByName('data').getComponent(cc.Label).string = TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - data?.data[index].last_login_time)) + '前'
+            let icon = cc.find('iconMask/icon', _item);
+            _item.active = true;
+            WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), sortData[index].avatar)
+        }
     }
 
 }

@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 16:13:34
+ * @LastEditTime: 2022-09-29 15:47:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -15,6 +15,7 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { UIClubModel } from "./UIClubModel";
 import { LobbyControl } from "../control/LobbyControl";
+import { GameCache } from "../../game/GameCache";
 
 const { ccclass, property } = cc._decorator;
 
@@ -60,14 +61,17 @@ export default class UIPlayerLookLabor extends BaseForm {
         //创建时间
         let chsj = this.contentNode.getChildByName('chsj')
         chsj.getChildByName('time').getComponent(cc.Label).string = data.create_time
-
+        //联盟
+        let lm = this.contentNode.getChildByName('lm')
+        let lm_panel_right = lm.getChildByName('panel_right')
+        lm_panel_right.getChildByName('name').getComponent(cc.Label).string = data.tribe_name || ''
     }
     exitClub() {
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
                 title: "提示",
-                content: '您的账户内剩余金豆XXXX，如减持退出，系统将清空您的所有剩余金豆，是否继续？',
+                content: `您的账户内剩余金豆${GameCache.Instance.gold}，如减持退出，系统将清空您的所有剩余金豆，是否继续？`,
                 contentCommit: "确定",
                 contentCancel: "取消",
                 actionCommit: async () => {
