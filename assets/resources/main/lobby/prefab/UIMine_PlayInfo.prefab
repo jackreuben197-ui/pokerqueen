@@ -1494,7 +1494,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Button_logout",
+    "_name": "btn_save",
     "_objFlags": 0,
     "_parent": {
       "__id__": 9
@@ -1846,9 +1846,7 @@
     "_N$hoverSprite": null,
     "hoverSprite": null,
     "_N$disabledSprite": null,
-    "_N$target": {
-      "__id__": 39
-    },
+    "_N$target": null,
     "_id": ""
   },
   {
