@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 16:56:22
+ * @LastEditTime: 2022-09-29 17:23:06
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -159,7 +159,7 @@ export default class UIlaborMerberManager extends BaseForm {
             _item.parent = this.contentNode
             _item.getChildByName('name').getComponent(cc.Label).string = sortData[index].nick_name
             _item.getChildByName('id').getComponent(cc.Label).string = sortData[index].random_num
-            _item.getChildByName('data').getComponent(cc.Label).string = TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - data?.data[index].last_login_time))
+            _item.getChildByName('data').getComponent(cc.Label).string = TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - data?.data[index].last_login_time)) + '前'
             let icon = cc.find('iconMask/icon', _item);
             _item.active = true;
             WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), sortData[index].avatar)
