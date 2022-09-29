@@ -130,6 +130,56 @@ export class Web_User_Modify_Password {
 }
 
 /// <summary>
+/// 修改个人信息
+/// </summary>
+export class Web_User_Modify_User_Info {
+    //接口地址
+    public static API: string = "/api/user/modify/user_info";
+    //字段声明
+    public static RequestParams: {
+        sex?: number,  // 性别
+        nick_name?: string, // 名字
+        avatar?: string,  // 头像
+    } = null;
+
+    public static ResponseData: {
+        data?: typeof Web_User_Modify_User_Info.Data,
+    } = null;
+    public static Data: {
+    } = null;
+
+    public static Request(param: typeof Web_User_Modify_User_Info.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Modify_User_Info.ResponseData };
+}
+
+/// <summary>
+/// 验证用户昵称
+/// </summary>
+export class Web_User_Check_Nickname {
+    //接口地址
+    public static API: string = "/api/user/check_nickname";
+    //字段声明
+    public static RequestParams: {
+        nickname?: string, // 名字
+    } = null;
+
+    public static ResponseData: {
+        data?: typeof Web_User_Modify_User_Info.Data,
+    } = null;
+    public static Data: {
+    } = null;
+
+    public static Request(param: typeof Web_User_Check_Nickname.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_User_Check_Nickname.ResponseData };
+}
+
+/// <summary>
 /// 手机号注册
 /// </summary>
 export class Web_User_Register {

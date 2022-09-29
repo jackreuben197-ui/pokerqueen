@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds } from "../../net/https/WebRequest";
+import { Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -173,7 +173,41 @@ export class LobbyControl {
         });
     }
 
+    /**
+     * 验证用户昵称
+     */
+     async CheckNickName(param: typeof Web_User_Check_Nickname.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_User_Check_Nickname,
+                body: Web_User_Check_Nickname.Request(param),
+                onSuccess: function () {
+                    resolve(Web_User_Check_Nickname.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
 
+    /**
+     * 修改个人信息
+     */
+     async fixUserInfo(param: typeof Web_User_Modify_User_Info.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_User_Modify_User_Info,
+                body: Web_User_Modify_User_Info.Request(param),
+                onSuccess: function () {
+                    resolve(Web_User_Modify_User_Info.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
 
     /********************************* 流程控制 ***********************************/
     /********************************* 清除 ***********************************/
