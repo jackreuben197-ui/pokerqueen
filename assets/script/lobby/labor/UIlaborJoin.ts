@@ -3,11 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
-<<<<<<< HEAD
- * @LastEditTime: 2022-09-30 16:16:07
-=======
- * @LastEditTime: 2022-09-30 16:50:22
->>>>>>> xfj_dev
+ * @LastEditTime: 2022-09-30 18:30:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
