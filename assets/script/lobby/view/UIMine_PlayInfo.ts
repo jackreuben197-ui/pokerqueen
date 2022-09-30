@@ -16,8 +16,6 @@ export default class UIMine_PlayInfo extends BaseForm {
 
     ebx_name: cc.EditBox = null;
 
-    img_head: cc.Sprite = null;
-
     isFixHead: boolean = false;
     isFixName: boolean = false;
     isCanFix: boolean = false;
@@ -58,8 +56,6 @@ export default class UIMine_PlayInfo extends BaseForm {
         let img_right: cc.Node = this.getChildNodeOrComponent("img_right")
         img_right.on(cc.Node.EventType.TOUCH_END, this.onClickFix, this);
 
-        this.refreshInputColor();
-
         this.isCanFix = false;
         this.refreshInputColor();
     }
@@ -99,6 +95,7 @@ export default class UIMine_PlayInfo extends BaseForm {
         }
         
         let headStr: any = "";
+        let isCheckName: boolean = false;
         if (this.isFixHead) {
             if (APIOrgClubUploadIcon.Response && APIOrgClubUploadIcon.Response.data) {
                 headStr = APIOrgClubUploadIcon.Response.data;
@@ -109,9 +106,11 @@ export default class UIMine_PlayInfo extends BaseForm {
                     nick_name: this.ebx_name.string,
                     avatar: headStr
                 }
+                isCheckName = true;
             } else {
                 // 修改头像
                 reqParames = {
+                    nick_name: Web_User_Info.Response.data.user.nickname,
                     avatar: headStr
                 }
             }
@@ -120,7 +119,9 @@ export default class UIMine_PlayInfo extends BaseForm {
                 // 修改昵称
                 reqParames = {
                     nick_name: this.ebx_name.string,
+                    avatar: GameCache.Instance.headPic
                 }
+                isCheckName = true;
             } else {
                 ToastManager.Instance.createToast("请设置头像或者修改昵称");
                 return;
@@ -129,30 +130,41 @@ export default class UIMine_PlayInfo extends BaseForm {
         let info = {
             nickname: this.ebx_name.string
         }
-        
-        LobbyControl.getInstance().CheckNickName(info).then((res) => {
+        if (isCheckName) {
+            LobbyControl.getInstance().CheckNickName(info).then((res) => {
+                LobbyControl.getInstance().fixUserInfo(reqParames).then((res) => {
+                    this.close()
+                    if (this.isFixHead) {
+                        GameCache.Instance.headPic = headStr;
+                        this.post(GGEvent.Refresh_UserHead);
+                    }
+                    if (this.isFixName) {
+                        Web_User_Info.Response.data.user.nickname = this.ebx_name.string;
+                        this.post(GGEvent.Refresh_UserName);
+                    }
+    
+                },)
+            }, (res) => {
+                // 用户名违规
+            })
+        } else {
             LobbyControl.getInstance().fixUserInfo(reqParames).then((res) => {
                 this.close()
                 if (this.isFixHead) {
                     GameCache.Instance.headPic = headStr;
                     this.post(GGEvent.Refresh_UserHead);
                 }
-                if (this.isFixName) {
-                    Web_User_Info.Response.data.user.nickname = this.ebx_name.string;
-                    this.post(GGEvent.Refresh_UserName);
-                }
-
             },)
-        }, (res) => {
-            // 用户名违规
-        })
+        }
+        
     }
 
     async onClickHead() {
         await UIClubModel.mInstance.APIOrgClubUploadIcon();
         let icon: any = APIOrgClubUploadIcon.Response.data
         if (icon) {
-            WebImageHelper.SetUrlImage(this.img_head, icon);
+            let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
+            WebImageHelper.SetUrlImage(img_head, icon);
             this.isFixHead = true;
         }
     }

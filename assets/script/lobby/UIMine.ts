@@ -35,6 +35,11 @@ export default class UIMine extends UIBase {
     }
     protected lateLoad(): void {
         super.lateLoad();
+        
+    }
+
+    public onShow(param?: any): void {
+        super.onShow(param);
         this.func_item = this.getChildNodeOrComponent("func_item");
         this.content = this.getChildNodeOrComponent("content");
         this.nickname_lab = this.getChildNodeOrComponent("nickname_lab", cc.Label);
@@ -46,10 +51,6 @@ export default class UIMine extends UIBase {
         UIHead.on(cc.Node.EventType.TOUCH_END, this.onClickMyInfo, this)
         this.refreshHeadImg();
         this.setMine();
-    }
-
-    public onShow(param?: any): void {
-        super.onShow(param);
         this.refreshUserName();
         this.userid_lab.string = `ID : ${Web_User_Info.Response.data.user.un_id}`;
     }
