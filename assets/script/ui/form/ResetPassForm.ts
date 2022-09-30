@@ -66,6 +66,7 @@ export default class ResetPassForm extends RegisterForm {
             password
         }).catch(() => { })
         if (result) {
+            this.resetGetCodeLabel();
             ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1009"));//("更改密码成功");
             this.close();
         }
@@ -116,6 +117,7 @@ export default class ResetPassForm extends RegisterForm {
         this.tcode_canclick = true;
         this.lbl_code.getComponent(cc.Label).string = i18nMgr._getLabel("UILogin_GetCode");
         localStorage.setItem(StorageKey.CODE_TIME_RESET, "");
+        this.lbl_code.getComponent(LabelCDTime).stop();
     }
 
 }

@@ -1,7 +1,10 @@
 const { ccclass, property } = cc._decorator;
 import UIBase from "../../../assets/script/ui/UIBase";
 import { UIDefine } from "../define/UIDefine";
+import GGEvent from "../event/GGEvent";
+import { GameCache } from "../game/GameCache";
 import PublicHelper from "../helper/PublicHelper";
+import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { Web_User_Info } from "../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
@@ -41,6 +44,7 @@ export default class UIMine extends UIBase {
         this.panel_bottom = this.getChildNodeOrComponent("panel_bottom");
         let UIHead: cc.Node = this.getChildNodeOrComponent("UIHead");
         UIHead.on(cc.Node.EventType.TOUCH_END, this.onClickMyInfo, this)
+        this.refreshHeadImg();
         this.setMine();
     }
 
@@ -48,6 +52,21 @@ export default class UIMine extends UIBase {
         super.onShow(param);
         this.nickname_lab.string = Web_User_Info.Response.data.user.nickname;
         this.userid_lab.string = `ID : ${Web_User_Info.Response.data.user.un_id}`;
+    }
+
+    refreshHeadImg() {
+        let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
+        img_head.node.active =false;
+        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(()=>{
+            img_head.node.active =true;
+        });
+    }
+
+    /**
+     * 注册广播事件
+     */
+     protected regiterDispatchEvent() {
+        this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
     }
 
     setMine(): void {
