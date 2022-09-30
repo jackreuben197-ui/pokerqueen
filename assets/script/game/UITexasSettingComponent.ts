@@ -3,7 +3,7 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-20 16:20:04
+ * @LastEditTime: 2022-09-30 15:05:53
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
