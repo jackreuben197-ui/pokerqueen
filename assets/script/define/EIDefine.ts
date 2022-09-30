@@ -79,27 +79,27 @@ export interface DialogParam {
 }
 
 export interface INetWork {
-    HTTP: string;
-    WebHost: string;
-    LoginHost: string;
-    APIPort: string;
-    PayPort: string;
-    LoginPort: string;
-    HeadPort: string;
-    PaipuPort: string; //牌谱
-    UploadPort: string; //头像上传
-    UseDNS: string;
-    AboutWeURL: string;
-    UserAgentURL: string;
-    DataAnalysURL: string;
+    //HTTP: string;
+    WebHost?: string;
+    // LoginHost: string;
+    // APIPort: string;
+    // PayPort: string;
+    // LoginPort: string;
+    // HeadPort: string;
+    // PaipuPort: string; //牌谱
+    // UploadPort: string; //头像上传
+    // UseDNS: string;
+    // AboutWeURL: string;
+    // UserAgentURL: string;
+    // DataAnalysURL: string;
 
-    WebURL: string;
-    PayURL: string;
-    HeadUrl: string;
-    BannerImageUrl: string;
-    UploadURL: string;
-    PaipuBaseUrl: string;
-    WSS: string;
+    // WebURL: string;
+    // PayURL: string;
+    // HeadUrl: string;
+    // BannerImageUrl: string;
+    // UploadURL: string;
+    // PaipuBaseUrl: string;
+    WSS?: string;
 
 }
 /**

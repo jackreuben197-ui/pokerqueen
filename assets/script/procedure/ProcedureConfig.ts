@@ -31,8 +31,12 @@ export default class ProcedureConfig extends ProcedureBase {
                 i18nMgr.initLanguage();
                 console.log("config :: i18nMgr praseConfig");
                 //设置网络配置
-                GameConfig.Network = this.getNetwork();
+                this.setNetwork();
                 console.log("config :: GameConfig.Network : ", GameConfig.Network);
+                if (GameConfig.Network == null) {
+                    console.warn("本地网络配置有误 GameConfig.BuildType:" + GameConfig.BuildType);
+                    return;
+                }
                 let skipLogin: boolean = LoginSession.IsTokenVaild();
                 ProcedureManager.StartProcedure(ProcedureEnum.Login, { skipLogin: skipLogin });
             }
@@ -43,56 +47,92 @@ export default class ProcedureConfig extends ProcedureBase {
     }
 
     //初始化网络配置
-    private getNetwork() {
-        let keys =
-            [
-                "APIPort",
-                "PayPort",
-                "LoginPort",
-                "HeadPort",
-                "PaipuPort",
-                "UploadPort",
-                "UseDNS",
-                "AboutWeURL",
-                "UserAgentURL",
-                "DataAnalysisURL"
-            ];
-        let network: any = {};
-        switch (GameConfig.Server_Type) {
-            case 1://测试服
-                network.HTTP = cc.sys.localStorage.getItem("");
-                //PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
-                network.WebHost = `http://${network.HTTP}`;
-                network.LoginHost = cc.sys.localStorage.getItem("");
-                keys.forEach(item => {
-                    network[item] = NetWorkBase[item];
-                })
-                break;
-            case 2://开发服
-                if (GameConfig.IsNewArea) {
-                    network.HTTP = "dev1.awanptesting.com";
-                    network.LoginHost = "dev1.awanptesting.com";
-                    network.WebHost = `https://${network.HTTP}`;
-                    network.WSS = `wss://${network.HTTP}/api/channel/`
-                } else {
-                    network.HTTP = "dev.k8s.awanptesting.com";
-                    network.LoginHost = "dev.k8s.awanptesting.com";
-                    network.WebHost = `http://${network.HTTP}`;
-                }
+    private setNetwork() {
 
-                keys.forEach(item => {
-                    network[item] = NetWorkBase[item];
-                })
-                network.APIPort = "80";
+        switch (GameConfig.BuildType) {
+            case 0:
+                GameConfig.Network = {
+                    WebHost: `http://${GameConfig.Web_Host_Dev}`,
+                    WSS: `ws://${GameConfig.Web_Host_Dev}{0}`
+                };
+                break;
+            case 1:
+
+                GameConfig.Network = {
+                    WebHost: `http://${GameConfig.Web_Host_Test1}`,
+                    WSS: `ws://${GameConfig.Web_Host_Test1}/api/channel/`
+                };
+                break;
+            case 2:
+                GameConfig.Network = {
+                    WebHost: `http://${GameConfig.Web_Host_Dev1}`,
+                    WSS: `ws://${GameConfig.Web_Host_Dev1}/api/channel/`
+                };
+                break;
+            case 3:
+                GameConfig.Network = {
+                    WebHost: `https://${GameConfig.Web_Host_Test1}`,
+                    WSS: `wss://${GameConfig.Web_Host_Test1}/api/channel/`
+                };
+
+                break;
+            case 4:
+                GameConfig.Network = {
+                    WebHost: `https://${GameConfig.Web_Host_Dev1}`,
+                    WSS: `wss://${GameConfig.Web_Host_Dev1}/api/channel/`
+                };
                 break;
         }
-        network.WebURL = `${network.WebHost}`//:${network.APIPort}`;
-        network.PayURL = `${network.WebHost}:${network.PayPort}`;
-        network.HeadUrl = `${network.WebHost}:${network.HeadPort}`;
-        network.BannerImageUrl = `${network.WebHost}:${network.HeadPort}`;
-        network.UploadURL = `${network.WebHost}:${network.UploadPort}`;
-        network.PaipuBaseUrl = `${network.WebHost}:${network.PaipuPort}?lan=zh&info_id=`;
-        return network;
+
+        // let keys =
+        //     [
+        //         "APIPort",
+        //         "PayPort",
+        //         "LoginPort",
+        //         "HeadPort",
+        //         "PaipuPort",
+        //         "UploadPort",
+        //         "UseDNS",
+        //         "AboutWeURL",
+        //         "UserAgentURL",
+        //         "DataAnalysisURL"
+        //     ];
+        // let network: any = {};
+        // switch (GameConfig.Server_Type) {
+        //     case 1://测试服
+        //         network.HTTP = cc.sys.localStorage.getItem("");
+        //         //PlayerPrefsMgr.mInstance.GetString(httpKey, networkConf.WebHostIP);
+        //         network.WebHost = `http://${network.HTTP}`;
+        //         network.LoginHost = cc.sys.localStorage.getItem("");
+        //         keys.forEach(item => {
+        //             network[item] = NetWorkBase[item];
+        //         })
+        //         break;
+        //     case 2://开发服
+        //         if (GameConfig.IsNewArea) {
+        //             network.HTTP = "dev1.awanptesting.com";
+        //             network.LoginHost = "dev1.awanptesting.com";
+        //             network.WebHost = `https://${network.HTTP}`;
+        //             network.WSS = `wss://${network.HTTP}/api/channel/`
+        //         } else {
+        //             network.HTTP = "dev.k8s.awanptesting.com";
+        //             network.LoginHost = "dev.k8s.awanptesting.com";
+        //             network.WebHost = `http://${network.HTTP}`;
+        //         }
+
+        //         keys.forEach(item => {
+        //             network[item] = NetWorkBase[item];
+        //         })
+        //         network.APIPort = "80";
+        //         break;
+        // }
+        // network.WebURL = `${network.WebHost}`//:${network.APIPort}`;
+        // network.PayURL = `${network.WebHost}:${network.PayPort}`;
+        // network.HeadUrl = `${network.WebHost}:${network.HeadPort}`;
+        // network.BannerImageUrl = `${network.WebHost}:${network.HeadPort}`;
+        // network.UploadURL = `${network.WebHost}:${network.UploadPort}`;
+        // network.PaipuBaseUrl = `${network.WebHost}:${network.PaipuPort}?lan=zh&info_id=`;
+        // return network;
     }
 
     private getGlobalProto() {

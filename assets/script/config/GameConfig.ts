@@ -11,9 +11,21 @@
  * 游戏配置
  */
 
+
 import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
+
+    static Web_Host_Test1 = "test1.awanptesting.com";
+    static Web_Host_Dev1 = "dev1.awanptesting.com";
+    static Web_Host_Dev = "dev.k8s.awanptesting.com";
+
+    //0: http://dev.k8s.awanptesting.com 
+    //1: http://test1.awanptesting.com  
+    //2: http://dev1.awanptesting.com 
+    //3: https://test1.awanptesting.com  
+    //4: https://dev1.awanptesting.com 
+    static BuildType: number = 3;
 
     //版本号
     static Version: string = "20220927";
@@ -22,7 +34,7 @@ export class GameConfig {
     //是否使用代理
     static useProxy: boolean = false;
     //是否使用新域名
-    static IsNewArea: boolean = true;
+    //static IsNewArea: boolean = false;
     //设计分辨率
     static DesignResolution = cc.size(1242, 2688);
     //fps

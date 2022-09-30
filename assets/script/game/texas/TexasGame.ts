@@ -1699,7 +1699,7 @@ export default class TexasGame {
         for (let i = 0, n = list.length; i < n; i++) {
             this.cards[i + mStartIndex] = list[i];
         }
-        cc.log("this.cards : ", this.cards);
+        
     }
 
 

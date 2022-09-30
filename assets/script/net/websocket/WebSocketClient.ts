@@ -17,7 +17,7 @@ export default class WebSocketClient {
 
     static Host_Port: string = null;
 
-    static Host: string = null;
+    //static Host: string = null;
     static Port: number = 0;
 
 
@@ -33,15 +33,10 @@ export default class WebSocketClient {
     static _reconnectTime: number = 0;
 
     public static Connect() {
-        this.Host = GameConfig.Network?.LoginHost;
         this.Port = Web_WS.Response?.data?.port;
 
-        if (GameConfig.Network.WSS) {
-            this.Host_Port = GameConfig.Network.WSS;
-        } else {
-            this.Host_Port = `ws://${this.Host}:${this.Port}`;
-        }
-        if (this.Host && this.Port) {
+        if (GameConfig.Network?.WSS) {
+            this.Host_Port = GameConfig.Network.WSS.replace("{0}", `:${this.Port}`);
             this.__connect();
         } else {
             ToastManager.Instance.createToast("host or port is error!");

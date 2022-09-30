@@ -19,7 +19,7 @@ import WebHelper from "./WebHelper";
 export default class HttpRequest {
 
     static async Send({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null, isJson = true, isGet = false }) {
-        let host = cuscomHost || GameConfig.Network.WebURL;
+        let host = cuscomHost || GameConfig.Network.WebHost;
         api = api || request.API
         let url = host + api;
         url = this.handleUrl(url);
@@ -41,15 +41,15 @@ export default class HttpRequest {
     }
     //代理转换
     public static handleUrl(url: string): string {
-        if (GameConfig.IsNewArea) {
-            if (GameConfig.useProxy && url.indexOf("http://dev1.awanptesting.com/api/") > -1) {
-                return url.replace("http://dev1.awanptesting.com/api/", "http://localhost:8080/")
-            }
-        } else {
-            if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
-                return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
-            }
-        }
+        // if (GameConfig.IsNewArea) {
+        //     if (GameConfig.useProxy && url.indexOf("http://dev1.awanptesting.com/api/") > -1) {
+        //         return url.replace("http://dev1.awanptesting.com/api/", "http://localhost:8080/")
+        //     }
+        // } else {
+        //     if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
+        //         return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
+        //     }
+        // }
         return url;
     }
 
@@ -71,15 +71,15 @@ export default class HttpRequest {
     }
     //代理转换
     public static handleUrl2(url: string): string {
-        if (GameConfig.IsNewArea) {
-            if (GameConfig.useProxy && url.indexOf("http://dev.awanptesting.com/api/") > -1) {
-                return url.replace("http://dev.awanptesting.com/api/", "http://localhost:8080/")
-            }
-        } else {
-            if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
-                return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
-            }
-        }
+        // if (GameConfig.IsNewArea) {
+        //     if (GameConfig.useProxy && url.indexOf("http://dev.awanptesting.com/api/") > -1) {
+        //         return url.replace("http://dev.awanptesting.com/api/", "http://localhost:8080/")
+        //     }
+        // } else {
+        //     if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {
+        //         return url.replace("http://dev.k8s.awanptesting.com:80/api/", "http://localhost:8080/")
+        //     }
+        // }
         return url;
     }
 }
