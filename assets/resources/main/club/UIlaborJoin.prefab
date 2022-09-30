@@ -1245,15 +1245,15 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
+      "x": 0,
+      "y": 1
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        2,
+        -348.732,
+        39.701,
         0,
         0,
         0,
@@ -1297,7 +1297,7 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
@@ -1360,15 +1360,15 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
+      "x": 0,
+      "y": 1
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        2,
+        -348.732,
+        39.701,
         0,
         0,
         0,
@@ -1416,7 +1416,7 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_styleFlags": 0,
+    "_styleFlags": 1,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
@@ -1465,8 +1465,8 @@
     "_N$background": {
       "__id__": 28
     },
-    "_N$inputFlag": 2,
-    "_N$inputMode": 6,
+    "_N$inputFlag": 5,
+    "_N$inputMode": 3,
     "_N$stayOnTop": false,
     "_id": ""
   },
