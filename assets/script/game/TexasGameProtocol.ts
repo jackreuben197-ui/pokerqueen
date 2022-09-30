@@ -23,6 +23,7 @@ import { ServerMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_ac
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { ServerMessageSetAutoOnTable } from "../protobuf/holdem/req_set_auto_on_table_pb";
 import { ServerMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
+import { ServerMessageShowPublicCards } from "../protobuf/holdem/req_show_public_cards_pb";
 import UIComponent from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
@@ -500,11 +501,29 @@ export default class TexasGameProtocol {
         if (this.game.GetCurPublicCardsCount() > 0)
             this.game.UpdatePots();
     }
-    // HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER(Protocol_Holdem_ShowPublicCardsOthers: ProtocolCode, HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER: any, arg2: this) {
-    //     throw new Error("Method not implemented.");
-    // }
-    HANDLER_REQ_SEE_MORE_PUBLIC_ACTION(Protocol_Holdem_ShowPublicCards: ProtocolCode, HANDLER_REQ_SEE_MORE_PUBLIC_ACTION: any, arg2: this) {
-        throw new Error("Method not implemented.");
+
+    /// <summary>
+    /// 查看公共牌
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_SEE_MORE_PUBLIC_ACTION(rec: ServerMessageShowPublicCards.AsObject) {
+
+        if (rec == null) {
+            return;
+        }
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_SEE_MORE_PUBLIC_ACTION, rec.Status)
+            return;
+        }
+        GameCache.Instance.gold -= this.game.checkPublicCardsCost;
+        this.game.cacheRound = rec.round;
+        this.game.AddPublicCards(rec.publicCardsList);
+        this.game.uirc.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
+        // 花费查看未发公共牌
+        if (this.game.GetCurPublicCardsCount() == 5) {
+            this.game.HideSeeMorePublic();
+        }
+        this.game.UpdatePublicCardsNoAnim();
     }
     /// <summary>
     /// 其他人查看公共牌后提示
@@ -520,15 +539,15 @@ export default class TexasGameProtocol {
         if (mSeat != null && mSeat.Player != null && mSeat.Player.nick?.length) {
             if (rec.round < 3) {
                 //查看翻牌圈的牌;
-                //ShowSeeMorePublicTips($"{mSeat.Player.nick}{CPErrorCode.LanguageDescription(20025)}");
+                this.game.ShowSeeMorePublicTips(`${mSeat.Player.nick}${CPErrorCode.LanguageDescription(20025)}`);
             }
             else if (rec.round == 3) {
                 //查看转牌圈的牌;
-                //ShowSeeMorePublicTips($"{mSeat.Player.nick}{CPErrorCode.LanguageDescription(20026)}");
+                this.game.ShowSeeMorePublicTips(`${mSeat.Player.nick}${CPErrorCode.LanguageDescription(20026)}`);
             }
             else if (rec.round == 4) {
                 //查看河牌圈的牌;
-                //ShowSeeMorePublicTips($"{mSeat.Player.nick}{CPErrorCode.LanguageDescription(20027)}");
+                this.game.ShowSeeMorePublicTips(`${mSeat.Player.nick}${CPErrorCode.LanguageDescription(20027)}`);
             }
         }
     }

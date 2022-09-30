@@ -288,7 +288,7 @@ export default class TexasGame {
     /// <summary>
     /// 结束轮
     /// </summary>
-    public cacheRound: number = 0;
+    public cacheRound: 0 | 1 | 2 | 3 | 4 = 0;
     /// <summary>
     /// 本手缓存
     /// </summary>
@@ -1141,7 +1141,7 @@ export default class TexasGame {
     /// </summary>
     /// <param name="content"></param>
     public ShowSeeMorePublicTips(content: string) {
-        //this.uirc.textSeeMorePublicTips.text = content;
+        this.uirc.textSeeMorePublicTips.string = content;
         this.uirc.imageSeeMorePublicTips.active = true;
     }
 
@@ -2604,6 +2604,67 @@ export default class TexasGame {
         }
     }
 
+
+    //#region 第一套公共牌
+    /// <summary>
+    /// 刷新公共牌(不带动画）
+    /// </summary>
+    public UpdatePublicCardsNoAnim(): void {
+        let mPublicCardInfo: PublicCardInfo;
+        for (let i = 0, n = this.GetCurPublicCardsCount(); i < n; i++) {
+            mPublicCardInfo = this.uirc.listCards[i];
+            mPublicCardInfo.cardId = this.cards[i];
+            // mPublicCardInfo.trans.localPosition = listDefaultPublicCardsLPos[i];
+            // mPublicCardInfo.trans.gameObject.SetActive(true);
+            // mPublicCardInfo.imageCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum(mPublicCardInfo.cardId));
+            // mPublicCardInfo.imageCard.color = new Color(1, 1, 1, 1);
+        }
+
+        for (let i = this.GetCurPublicCardsCount(), n = this.uirc.listCards.length; i < n; i++) {
+            mPublicCardInfo = this.uirc.listCards[i];
+            mPublicCardInfo.cardId = -1;
+            // mPublicCardInfo.trans.localPosition = listDefaultPublicCardsLPos[i];
+            // mPublicCardInfo.imageCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum(mPublicCardInfo.cardId));
+            // mPublicCardInfo.trans.gameObject.SetActive(false);
+        }
+
+        // 参与了牌局，才能看到牌型提示
+        if (null != this.mainPlayer && this.mainPlayer.isPlaying) {
+            let highlightCards_ref = { highlightCards: null };
+
+            let cardType: CardType = this.GetCardType(highlightCards_ref, this.cards);
+
+            let highlightCards = highlightCards_ref.highlightCards;
+
+            for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+                this.uirc.listCards[i].imageSelect.node.active = false;
+                for (let j = 0, m = highlightCards.Count; j < m; j++) {
+                    if (this.uirc.listCards[i].cardId == highlightCards[j]) {
+                        this.uirc.listCards[i].imageSelect.node.active = true;
+                        break;
+                    }
+                }
+            }
+
+            let mSeat: Seat = this.GetSeatByLocalSeatID(this.mainPlayer.seatID);
+            if (null != mSeat) {
+                mSeat.UpdateCardType(cardType, highlightCards);
+            }
+        }
+        else {
+            //清空牌型提示
+            for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+                this.uirc.listCards[i].imageSelect.node.active = false;
+            }
+            if (this.mainPlayer != null) {
+                let mSeat: Seat = this.GetSeatByLocalSeatID(this.mainPlayer.seatID);
+                if (null != mSeat) {
+                    mSeat.HideCardType();
+                }
+            }
+
+        }
+    }
 
     /// <summary>
     /// 留座离桌

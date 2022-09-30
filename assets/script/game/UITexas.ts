@@ -12,8 +12,9 @@ import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 
 
-import { RoomInfo } from "../protobuf/holdem/define_pb";
+import { Def, RoomInfo } from "../protobuf/holdem/define_pb";
 import { ClientMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
+import { ClientMessageShowPublicCards } from "../protobuf/holdem/req_show_public_cards_pb";
 import GlobalSession from "../session/GlobalSession";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent from "../ui/UIComponent";
@@ -120,7 +121,7 @@ export default class UITexas extends BaseScene {
     buttonDelay: cc.Node = null;
     buttonSeeMorePublic: cc.Node = null;
     imageSeeMorePublicTips: cc.Node = null;
-
+    textSeeMorePublicTips: cc.Label = null;
 
     textSeeMorePublic: cc.Label = null;
     textSeeMorePublicGold: cc.Label = null;
@@ -286,7 +287,7 @@ export default class UITexas extends BaseScene {
         this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
         this.buttonSeeMorePublic = this.getChildNodeOrComponent("Button_SeeMorePublic");
         this.imageSeeMorePublicTips = this.getChildNodeOrComponent("Image_SeeMorePublicTips");
-
+        this.textSeeMorePublicTips = this.getChildNodeOrComponent("Text_SeeMorePublicTips", cc.Label);
 
         this.textSeeMorePublic = this.getChildNodeOrComponent("Text_SeeMorePublic", cc.Label);
         this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
@@ -384,6 +385,8 @@ export default class UITexas extends BaseScene {
 
         this.buttonDelay.getChildByName("BtnArea").on("click", this.onClickDelay, this);
 
+        this.buttonSeeMorePublic.getChildByName("BtnArea").on("click", this.onClickSeeMorePublic, this);
+
     }
 
 
@@ -403,7 +406,37 @@ export default class UITexas extends BaseScene {
     Exit(param) {
         super.Exit(param);
     }
+    // CanClick(): boolean {
+    //     if (GetNowTime() - lastClickTime > 500) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
+    private onClickSeeMorePublic() {
+        if (this.CanClick() == false)
+            return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+
+        let button = this.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button);
+
+        if (button.interactable == false) {
+            return;
+        }
+        button.interactable = false;
+
+        ProtocolAgency.Send<ClientMessageShowPublicCards.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_ShowPublicCards,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                round: this.game.cacheRound,
+                consume: Def.ConsumeType.CT_VC_2,
+            },
+        });
+
+    }
     private sideClick(e: cc.Button) {
         switch (e.node) {
             case this.menu_btn://菜单按钮
