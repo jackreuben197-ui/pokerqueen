@@ -1,4 +1,3 @@
-import { ResManager } from "../manager/ResManager";
 import AudioManager from "./manager/AudioManager";
 import LanguageManager from "./manager/LanguageManager";
 import LocalStoreManager from "./manager/LocalStoreManager";
@@ -29,9 +28,8 @@ class GameControl {
         return AudioManager.instance;
     }
 
-    get res() {
-        return ResManager.instance;
-    }
+
+
 }
 
 let GC = GameControl.instance;

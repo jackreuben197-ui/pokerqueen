@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-09-26 17:25:47
  * @FilePath: /pokerqueen/assets/script/net/https/WebHelper.ts
  */
-import { APIOrgClubQuit, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubCancleJoinClub, Web_Org_Club_Join, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Config_Global_Config, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_Org_Club_Create, Web_Org_Club_Get } from "./WebRequest";
+import { APIOrgClubApprovalJoin, APIOrgClubCancleJoinClub, APIOrgClubGetJoinlList, APIOrgClubQuit, Web_Config_Global_Config, Web_Msg_Message_Unread, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Join, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Room_Center_Groups } from "./WebRequest";
 
 export default class WebHelper {
 
@@ -21,7 +21,7 @@ export default class WebHelper {
         Web_Config_Global_Config.API,
         Web_Msg_Message_Unread.API,
         Web_Room_Center_Groups.API,
-        Web_Misc_Banner_List.API,
+        // Web_Misc_Banner_List.API,
         Web_Org_Club_Create.API,
         Web_Org_Club_Get.API,
         Web_Org_Club_Player_Apply_List.API,

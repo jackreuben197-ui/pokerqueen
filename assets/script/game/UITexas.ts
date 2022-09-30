@@ -20,7 +20,7 @@ import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 
 import TexasGame from "./texas/TexasGame";
-import UIAddChipsComponent from "./ui/UIAddChipsComponent";
+import UIAddChipsComponent, { AddClipsData } from "./ui/UIAddChipsComponent";
 import { HistoryInfoData } from "./UITexasHistoryComponent";
 
 
@@ -569,7 +569,20 @@ export default class UITexas extends BaseScene {
 
     }
     Click_Button_AddChips() {
-
+        if (null == this.MenuButtons_Dic.Button_AddChips || !this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable) {
+            return;
+        }
+        this.hideMenu();
+        // 弹代入框
+        UIComponent.Instance.ShowNoAnimation<AddClipsData>(GameCache.Instance.CurGame.uirc.UIAddChips.node,
+            {
+                bigBlind: GameCache.Instance.CurGame.bigBlind,
+                smallBlind: GameCache.Instance.CurGame.smallBlind,
+                currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                totalCoin: GameCache.Instance.gold,
+                tableChips: GameCache.Instance.CurGame.mainPlayer.chips
+            });
     }
     Click_Button_TakeOut() {
 

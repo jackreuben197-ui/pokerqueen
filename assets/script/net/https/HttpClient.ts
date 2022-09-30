@@ -1,9 +1,10 @@
 import { LogStyle } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
-import { i18nMgr } from "../../i18n/i18nMgr";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import LoginSession from "../../session/LoginSession";
+import CCTools from "../../tools/CCTools";
 import UIComponent from "../../ui/UIComponent";
 
 /**
@@ -22,7 +23,7 @@ export default class HttpClient {
         }
         console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
-        let response: string = <string>await this.__request(url, "POST", body, headers, isJson);
+        let response: string = <string>await this.__request(url, false, body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
@@ -30,11 +31,11 @@ export default class HttpClient {
     /**
      * get 请求
      */
-    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true }) {
+    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true }) {
         body = JSON.stringify(body);
         console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
-        let response: string = <string>await this.__request(url, "GET", body, headers);
+        let response: string = <string>await this.__request(url, true, body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
         console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
@@ -72,7 +73,7 @@ export default class HttpClient {
         }
     }
 
-    static async __request(url, type = "POST", body = null, headers = null, isJson = true) {
+    static async __request(url, isGet = false, body = null, headers = null, isJson = true) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             var isTimeout = false;//是否超时
@@ -99,7 +100,9 @@ export default class HttpClient {
                 clearTimeout(timer);//取消等待的超时
                 resolve("timeout");
             };
-            xhr.open(type, url);
+
+            let reqUrl = this.checkGetUrl(url, body, isGet);
+            xhr.open(isGet ? "GET" : "POST", reqUrl);
             xhr.timeout = HttpClient.TimeOut;
             if (isJson) {
                 xhr.setRequestHeader("Content-Type", "application/json");
@@ -113,5 +116,24 @@ export default class HttpClient {
             }
             xhr.send(body ? body : null);
         })
+    }
+
+    static checkGetUrl(reqUrl: string, body: any, isGet: boolean) {
+        if (isGet) {
+            reqUrl = this.getUrlParams(reqUrl, body);
+        }
+        return reqUrl;
+    }
+
+    static getUrlParams(url: string, param: any = null) {
+        if (!CCTools.isNull(param)) {
+            let paramStr: string = "";
+            for (let key in param) {
+                paramStr += `&{${key}}={${param[key]}}`;
+            }
+
+            url += "?" + paramStr.slice(1);
+        }
+        return url;
     }
 }

@@ -6,29 +6,38 @@
  * @LastEditTime: 2022-09-28 18:14:54
  * @FilePath: /pokerqueen/assets/script/net/https/HttpRequest.ts
  */
+import { EventName } from "../../config/EventName";
 import { GameConfig } from "../../config/GameConfig";
+import { NotifyManager } from "../../frame/manager/NotifyManager";
 import HttpClient from "./HttpClient";
 import WebHelper from "./WebHelper";
 /**
  * HttpRequest 在HttpClient基础上包装一层
  */
 
+
 export default class HttpRequest {
 
-    static async Send({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null, isJson = true }) {
-
+    static async Send({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null, isJson = true, isGet = false }) {
         let host = cuscomHost || GameConfig.Network.WebURL;
-        let url = host + (api || request.API);
+        api = api || request.API
+        let url = host + api;
         url = this.handleUrl(url);
-        let needJuhua = WebHelper.NeedJuhua(request.API);
-        await HttpClient.post({
-            url: url, body, onFailure, onSuccess: HttpRequest.onSuccess.bind(HttpRequest, request, onSuccess),
-            headers: headers, needJuhua, isJson
+        let needJuhua = WebHelper.NeedJuhua(api);
+        await HttpClient[`${isGet ? "get" : "post"}`]({
+            url: url,
+            body: body,
+            onFailure: onFailure,
+            onSuccess: HttpRequest.onSuccess.bind(HttpRequest, api, request, body, onSuccess),
+            headers: headers,
+            needJuhua: needJuhua,
+            isJson: isJson
         });
     }
-    private static onSuccess(request, onSuccess, response) {
-        request.Response = response;
+    private static onSuccess(api, request, body, onSuccess, response) {
+        request && (request.Response = response);
         onSuccess && onSuccess(response);
+        NotifyManager.instance.post(EventName.serverResponse, api, response.data, body);
     }
     //代理转换
     public static handleUrl(url: string): string {
