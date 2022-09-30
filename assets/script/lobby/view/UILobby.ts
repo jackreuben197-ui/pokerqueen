@@ -17,7 +17,7 @@ export default class UILobby extends UIBase {
 
     private beanBg: cc.Node = null;
 
-    private isRefresh: boolean = false;
+    private _waitRefresh: boolean = false;
     onLoad(): void {
         super.onLoad();
 
@@ -55,6 +55,7 @@ export default class UILobby extends UIBase {
 
         this.bindClick(this.beanBg, this.clickBean);
         this.scrollView.node.on("scrolling", this.onScrolling, this);
+        this.scrollView.node.on("scroll-ended", this.onScrollEnd, this);
 
     }
 
@@ -74,20 +75,25 @@ export default class UILobby extends UIBase {
     }
 
     onScrolling() {
-        if (this.scrollView.content.y <= -this.dropDownFlag.height - 1 && !this.isRefresh) {
+        if (this.scrollView.content.y <= -this.dropDownFlag.height - 1 && !this._waitRefresh) {
             this.setActive(this.dropDownFlag, true);
 
             this.scrollView.content.y = 0;
-            this.isRefresh = true;
+            this._waitRefresh = true;
+        }
 
+        if (this._waitRefresh) {
+            this.scrollView.content.y = 0;
+        }
+    }
+
+    onScrollEnd() {
+        if (this._waitRefresh) {
             LobbyControl.getInstance().RequestListSummary({}).then((res) => {
-                this.isRefresh = false;
+                this._waitRefresh = false;
                 UIMatchRoom.instance.onShow(res);
                 this.setActive(this.dropDownFlag, false);
             })
-        }
-        if (this.isRefresh) {
-            this.scrollView.content.y = 0;
         }
     }
 
