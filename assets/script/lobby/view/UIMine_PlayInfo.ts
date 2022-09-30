@@ -1,6 +1,7 @@
 import GGEvent from "../../event/GGEvent";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
+import ToastManager from "../../manager/ToastManager";
 import { APIOrgClubUploadIcon, Web_User_Info } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import { LobbyControl } from "../control/LobbyControl";
@@ -23,6 +24,20 @@ export default class UIMine_PlayInfo extends BaseForm {
 
     protected lateLoad() {
         super.lateLoad();
+    }
+
+
+    lateClose(param: any = null) {
+        super.lateClose(param);
+        this.isFixHead = false;
+        this.isFixName = false;
+        this.isCanFix = false;
+    }
+    /**
+     * 每次打开面板处理的内容
+     */
+    onShow(param?: any, fromUI?: BaseForm): void {
+        super.onShow(param, fromUI);
         let PLACEHOLDER_LABEL = this.getChildNodeOrComponent("PLACEHOLDER_LABEL", cc.Label);
         PLACEHOLDER_LABEL.string = Web_User_Info.Response.data.user.nickname;
 
@@ -38,28 +53,25 @@ export default class UIMine_PlayInfo extends BaseForm {
         let UIHead: cc.Node = this.getChildNodeOrComponent("UIHead")
         UIHead.on(cc.Node.EventType.TOUCH_END, this.onClickHead, this);
 
-        this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
-        WebImageHelper.SetUrlImage(this.img_head, GameCache.Instance.headPic);
+        this.refreshHeadImg();
 
         let img_right: cc.Node = this.getChildNodeOrComponent("img_right")
         img_right.on(cc.Node.EventType.TOUCH_END, this.onClickFix, this);
 
         this.refreshInputColor();
-    }
 
-
-    lateClose(param: any = null) {
-        super.lateClose(param);
-        this.isFixHead = false;
-        this.isFixName = false;
         this.isCanFix = false;
+        this.refreshInputColor();
     }
-    /**
-     * 每次打开面板处理的内容
-     */
-    onShow(param?: any, fromUI?: BaseForm): void {
-        super.onShow(param, fromUI);
+
+    refreshHeadImg() {
+        let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
+        img_head.node.active =false;
+        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(()=>{
+            img_head.node.active =true;
+        });
     }
+
     /**
      * 注册触摸事件
      */
@@ -77,31 +89,59 @@ export default class UIMine_PlayInfo extends BaseForm {
      * 20009 用户钱包被冻结
      */
     onClickSave () {
+
+        let reqParames = {};
+
+        if (this.ebx_name.string != "" && this.ebx_name.string != Web_User_Info.Response.data.user.nickname) {
+            this.isFixName = true;
+        } else {
+            this.isFixName = false;
+        }
+        
+        let headStr: any = "";
         if (this.isFixHead) {
+            if (APIOrgClubUploadIcon.Response && APIOrgClubUploadIcon.Response.data) {
+                headStr = APIOrgClubUploadIcon.Response.data;
+            }   
             if (this.isFixName) {
                 // 修改昵称和头像
-
+                reqParames = {
+                    nick_name: this.ebx_name.string,
+                    avatar: headStr
+                }
             } else {
                 // 修改头像
-
+                reqParames = {
+                    avatar: headStr
+                }
             }
         } else {
-            // 修改昵称
+            if (this.isFixName) {
+                // 修改昵称
+                reqParames = {
+                    nick_name: this.ebx_name.string,
+                }
+            } else {
+                ToastManager.Instance.createToast("请设置头像或者修改昵称");
+                return;
+            }
         }
         let info = {
             nickname: this.ebx_name.string
         }
-        let headStr: any = "";
-        if (APIOrgClubUploadIcon.Response && APIOrgClubUploadIcon.Response.data) {
-            headStr = APIOrgClubUploadIcon.Response.data;
-        }
+        
         LobbyControl.getInstance().CheckNickName(info).then((res) => {
-            LobbyControl.getInstance().fixUserInfo({
-                sex: 0,
-                nick_name: this.ebx_name.string,
-                avatar: headStr
-            }).then((res) => {
+            LobbyControl.getInstance().fixUserInfo(reqParames).then((res) => {
                 this.close()
+                if (this.isFixHead) {
+                    GameCache.Instance.headPic = headStr;
+                    this.post(GGEvent.Refresh_UserHead);
+                }
+                if (this.isFixName) {
+                    Web_User_Info.Response.data.user.nickname = this.ebx_name.string;
+                    this.post(GGEvent.Refresh_UserName);
+                }
+
             },)
         }, (res) => {
             // 用户名违规
@@ -113,7 +153,6 @@ export default class UIMine_PlayInfo extends BaseForm {
         let icon: any = APIOrgClubUploadIcon.Response.data
         if (icon) {
             WebImageHelper.SetUrlImage(this.img_head, icon);
-            this.post(GGEvent.Refresh_UserHead);
             this.isFixHead = true;
         }
     }

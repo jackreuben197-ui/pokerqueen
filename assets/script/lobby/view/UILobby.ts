@@ -1,7 +1,10 @@
 const { ccclass, property } = cc._decorator;
 import { UIDefine } from "../../define/UIDefine";
+import GGEvent from "../../event/GGEvent";
 import { GameCache } from "../../game/GameCache";
+import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nSprite } from "../../i18n/i18nSprite";
+import { Web_User_Info } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
@@ -9,7 +12,6 @@ import UIMatchRoom from "./UIMatchRoom";
 
 @ccclass
 export default class UILobby extends UIBase {
-    private lbl_name: cc.Label = null;
     private lbl_glod: cc.Label = null;
     private Button_MTT: cc.Node = null;
     private scrollView: cc.ScrollView = null;
@@ -21,13 +23,12 @@ export default class UILobby extends UIBase {
     onLoad(): void {
         super.onLoad();
 
-        this.initView();
     }
 
     protected lateLoad(): void {
         super.lateLoad();
 
-        this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
+        // this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
         this.lbl_glod = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
         this.Button_MTT = this.getChildNodeOrComponent("Button_MTT");
         this.beanBg = this.getChildNodeOrComponent("beanBg");
@@ -48,6 +49,7 @@ export default class UILobby extends UIBase {
                 })
         ).start();
 
+        this.initView();
     }
 
     protected regiterTouchEvents(): void {
@@ -59,10 +61,31 @@ export default class UILobby extends UIBase {
     }
 
     private initView(): void {
-        this.lbl_name.string = GameCache.Instance.nick.toString();
-        this.setText(this.lbl_name, GameCache.Instance.nick)
         this.Button_MTT.getComponent(i18nSprite).string = "image_match_mtt";
         this.updateBean();
+        this.refreshHeadImg();
+        this.refreshUserName();
+    }
+
+    /**
+     * 注册广播事件
+     */
+     protected regiterDispatchEvent() {
+        this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
+        this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
+    }
+
+    refreshHeadImg() {
+        let img_head: cc.Sprite = this.getChildNodeOrComponent("user_icon", cc.Sprite);
+        img_head.node.active =false;
+        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(()=>{
+            img_head.node.active =true;
+        });
+    }
+
+    refreshUserName() {
+        let lbl_nickname = this.getChildNodeOrComponent("lbl_nickname", cc.Label);
+        lbl_nickname.string = Web_User_Info.Response.data.user.nickname;
     }
 
     updateBean() {

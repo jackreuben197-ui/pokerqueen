@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "ca2d6505-00a1-4a8d-955a-0d744743d0dd",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 687,
+  "height": 69,
+  "platformSettings": {},
+  "subMetas": {
+    "POKER QUEEN": {
+      "ver": "1.0.6",
+      "uuid": "ed13b307-17b6-4a56-823b-6573127238a2",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ca2d6505-00a1-4a8d-955a-0d744743d0dd",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 1.5,
+      "offsetY": 0,
+      "trimX": 3,
+      "trimY": 0,
+      "width": 684,
+      "height": 69,
+      "rawWidth": 687,
+      "rawHeight": 69,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

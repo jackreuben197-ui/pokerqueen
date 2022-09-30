@@ -4,6 +4,7 @@ import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import GlobalSession from "../../session/GlobalSession";
+import UIDialogComponent from "../dialog/UIDialogComponent";
 import SettingsFormItem from "../item/SettingsFormItem";
 import UIComponent from "../UIComponent";
 import BaseForm from "./BaseForm";
@@ -40,14 +41,7 @@ export default class SettingsForm extends BaseForm {
         super.lateLoad();
         // this.func_item = this.getChildNodeOrComponent("func_item");
         // this.content = this.getChildNodeOrComponent("content");
-        this.Button_logout = this.getChildNodeOrComponent("Button_logout");
-        let Layout: cc.Node = this.getChildNodeOrComponent("Layout");
-        Layout.children.forEach((item, i) => {
-            item["index"] = i;
-            item.on(cc.Node.EventType.TOUCH_END, this.onItemClick, this)
-        });
-        // this.setItems();
-        this.updateLaunch();
+        
     }
     /**
      * 关闭需要处理的内容
@@ -60,13 +54,23 @@ export default class SettingsForm extends BaseForm {
      */
     onShow(param?: any, fromUI?: BaseForm): void {
         super.onShow(param, fromUI);
+        this.Button_logout = this.getChildNodeOrComponent("Button_logout");
+        this.Button_logout.on(cc.Node.EventType.TOUCH_END, this.onLogoutClick, this)
+        let Layout: cc.Node = this.getChildNodeOrComponent("Layout");
+        Layout.children.forEach((item, i) => {
+            item["index"] = i;
+            item.on(cc.Node.EventType.TOUCH_END, this.onItemClick, this)
+        });
+        // this.setItems();
+        this.updateLaunch();
+        let version_Text = this.getChildNodeOrComponent("Text_Right", cc.Label);
+        version_Text.string = GameConfig.Version;
     }
     /**
      * 注册触摸事件
      */
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
-        this.Button_logout.on(cc.Node.EventType.TOUCH_END, this.onLogoutClick, this)
     }
     /**
      * 注册广播事件
@@ -112,7 +116,9 @@ export default class SettingsForm extends BaseForm {
         } else if (index == 6) {
             this.changeSwitchStyle(target.getChildByName("btn_switch"));
         } else if (index == 7) {
-            UIComponent.open(UIDefine.BaseForm);
+            UIComponent.open(UIDefine.UIMine_About);
+        } else if (index == 8) {
+            UIComponent.open(UIDefine.UIMine_SettingVersion);
         }
     }
 
@@ -174,6 +180,16 @@ export default class SettingsForm extends BaseForm {
      * 退出点击
      */
     onLogoutClick() {
-        GlobalSession.Logout();
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent, {
+            type: UIDialogComponent.DialogType.CommitCancel,
+            title: "退出登录",
+            content: '是否退出登录?',
+            contentCommit: "确定",
+            contentCancel: "取消",
+            actionCommit: () => {
+                GlobalSession.Logout();
+            },
+            noAnimation: true,
+        });
     }
 }
