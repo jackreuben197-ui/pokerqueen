@@ -42,8 +42,8 @@ export default class HttpRequest {
     //代理转换
     public static handleUrl(url: string): string {
         if (GameConfig.IsNewArea) {
-            if (GameConfig.useProxy && url.indexOf("http://dev1.awanptesting.com/api/") > -1) {
-                return url.replace("http://dev1.awanptesting.com/api/", "http://localhost:8080/")
+            if (GameConfig.useProxy && url.indexOf("http://test1.awanptesting.com/api/") > -1) {
+                return url.replace("http://test1.awanptesting.com/api/", "http://localhost:8080/")
             }
         } else {
             if (GameConfig.useProxy && url.indexOf("http://dev.k8s.awanptesting.com:80/api/") > -1) {

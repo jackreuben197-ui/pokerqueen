@@ -50,7 +50,7 @@ export default class UIMine extends UIBase {
 
     public onShow(param?: any): void {
         super.onShow(param);
-        this.nickname_lab.string = Web_User_Info.Response.data.user.nickname;
+        this.refreshUserName();
         this.userid_lab.string = `ID : ${Web_User_Info.Response.data.user.un_id}`;
     }
 
@@ -62,11 +62,16 @@ export default class UIMine extends UIBase {
         });
     }
 
+    refreshUserName() {
+        this.nickname_lab.string = Web_User_Info.Response.data.user.nickname;
+    }
+
     /**
      * 注册广播事件
      */
      protected regiterDispatchEvent() {
         this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
+        this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
     }
 
     setMine(): void {

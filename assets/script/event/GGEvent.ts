@@ -15,4 +15,7 @@ export default class GGEvent {
     //刷新个人头像
     static Refresh_UserHead:string = "Refresh_UserHead";
 
+    //刷新个人昵称
+    static Refresh_UserName:string = "Refresh_UserName";
+
 }

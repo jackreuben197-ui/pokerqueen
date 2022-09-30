@@ -66,7 +66,11 @@ export default class HttpClient {
                     onSuccess && onSuccess(response_json);
                 } else {
                     //错误码提示
-                    ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response_json.code));
+                    if (response_json.code == 90003) {
+                        ToastManager.Instance.createToast(response_json.message);
+                    } else {
+                        ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response_json.code));
+                    }
                     onFailure && onFailure(response_json.code);
                 }
                 break;
