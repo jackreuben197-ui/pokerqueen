@@ -13,6 +13,7 @@ import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_stat
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
 import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
 import { ServerMessageShowcards } from "../protobuf/holdem/recv_showcards_pb";
+import { ServerMessageShowPublicCardsOthers } from "../protobuf/holdem/recv_show_public_cards_others_pb";
 import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
 import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
@@ -499,13 +500,38 @@ export default class TexasGameProtocol {
         if (this.game.GetCurPublicCardsCount() > 0)
             this.game.UpdatePots();
     }
-    HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER(Protocol_Holdem_ShowPublicCardsOthers: ProtocolCode, HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+    // HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER(Protocol_Holdem_ShowPublicCardsOthers: ProtocolCode, HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER: any, arg2: this) {
+    //     throw new Error("Method not implemented.");
+    // }
     HANDLER_REQ_SEE_MORE_PUBLIC_ACTION(Protocol_Holdem_ShowPublicCards: ProtocolCode, HANDLER_REQ_SEE_MORE_PUBLIC_ACTION: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
+    /// <summary>
+    /// 其他人查看公共牌后提示
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_SEE_MORE_PUBLIC_ACTION_OTHER(rec: ServerMessageShowPublicCardsOthers.AsObject) {
 
+        if (rec == null) {
+            return;
+        }
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
+        //花费查看未发公共牌
+        if (mSeat != null && mSeat.Player != null && mSeat.Player.nick?.length) {
+            if (rec.round < 3) {
+                //查看翻牌圈的牌;
+                //ShowSeeMorePublicTips($"{mSeat.Player.nick}{CPErrorCode.LanguageDescription(20025)}");
+            }
+            else if (rec.round == 3) {
+                //查看转牌圈的牌;
+                //ShowSeeMorePublicTips($"{mSeat.Player.nick}{CPErrorCode.LanguageDescription(20026)}");
+            }
+            else if (rec.round == 4) {
+                //查看河牌圈的牌;
+                //ShowSeeMorePublicTips($"{mSeat.Player.nick}{CPErrorCode.LanguageDescription(20027)}");
+            }
+        }
+    }
 
 
 

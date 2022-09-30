@@ -1135,6 +1135,19 @@ export default class TexasGame {
         return [mFirstCard, mSecondCard];
     }
 
+
+    /// <summary>
+    /// 显示花费查看公共牌提示
+    /// </summary>
+    /// <param name="content"></param>
+    public ShowSeeMorePublicTips(content: string) {
+        //this.uirc.textSeeMorePublicTips.text = content;
+        this.uirc.imageSeeMorePublicTips.active = true;
+    }
+
+
+
+
     // 重置位置信息
     public ResetSeatUIInfo(clientSeatId: number): void {
         if (clientSeatId == 0)
@@ -1699,7 +1712,7 @@ export default class TexasGame {
         for (let i = 0, n = list.length; i < n; i++) {
             this.cards[i + mStartIndex] = list[i];
         }
-        
+
     }
 
 
