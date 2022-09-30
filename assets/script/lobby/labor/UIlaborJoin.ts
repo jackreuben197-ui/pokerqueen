@@ -3,7 +3,11 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
+<<<<<<< HEAD
  * @LastEditTime: 2022-09-30 16:16:07
+=======
+ * @LastEditTime: 2022-09-30 16:50:22
+>>>>>>> xfj_dev
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
@@ -47,12 +51,14 @@ export default class UIlaborJoin extends BaseForm {
         await UIClubModel.mInstance.APIOrgClubSearchByID(Number(string));
         let data: any = Web_Org_Club_Search_By_Id.Response.data
         if (data) {
-            this.initItem(this.searchNode, data, async () => {
-                this.hideSearchNode();
-                await UIClubModel.mInstance.APIOrgClubJoinClub(data.club_id);
-                this.initApplyList();
-            })
+            this.initItem(this.searchNode, data, this.joinCb)
         }
+    }
+    async joinCb() {
+        let data: any = Web_Org_Club_Search_By_Id.Response.data
+        this.hideSearchNode();
+        await UIClubModel.mInstance.APIOrgClubJoinClub(data.club_id);
+        this.initApplyList();
     }
     initItem(node, data, cb) {
         let name = node.getChildByName('name').getComponent(cc.Label)
