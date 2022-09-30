@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 17:28:29
+ * @LastEditTime: 2022-09-30 16:16:07
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
@@ -37,6 +37,7 @@ export default class UIlaborJoin extends BaseForm {
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
         this.initApplyList();
+        this.EditBox.string = '';
     }
     async sousuoBtn() {
         let string = this.EditBox.string
