@@ -72,6 +72,12 @@ export default class LabelCDTime extends cc.Component {
         this.label.string = time + this.unit;
     }
 
+    stop() {
+        this.complete = true;
+        this.passtime = 0;
+        this.sendTime = 0;
+    }
+
 
     //结束 是否处理回调
     public end(call: boolean = true) {

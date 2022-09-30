@@ -29,8 +29,8 @@ export default class WebImageHelper {
             })
         }
     }
-    public static SetUrlImage(rawImage: cc.Sprite, url: string, defaultImage?: cc.SpriteFrame): void {
-
+    public static SetUrlImage(rawImage: cc.Sprite, url: string, defaultImage?: cc.SpriteFrame) {
+     return   new Promise<void>((resolve, reject) => {
         let spriteFrame = this.mUrlTexture.get(url);
 
         if (spriteFrame) {
@@ -50,8 +50,11 @@ export default class WebImageHelper {
                     let spriteframe = new cc.SpriteFrame(asset);
                     rawImage.spriteFrame = spriteframe;
                     this.mUrlTexture.set(url, spriteframe);
+                    resolve();
                 }
             })
         }
+
+      })
     }
 }

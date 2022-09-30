@@ -94,6 +94,7 @@ export default class RegisterForm extends BaseForm {
 
     lateClose(param: any = null) {
         super.lateClose(param);
+        this.resetAgreeCheck();
     }
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
@@ -186,6 +187,8 @@ export default class RegisterForm extends BaseForm {
         //关闭当前页面
         this.close();
         //进入登录流程
+        this.resetGetCodeLabel();
+        this.resetAgreeCheck();
         ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
             phone,
             password,
@@ -246,6 +249,7 @@ export default class RegisterForm extends BaseForm {
         this.tcode_canclick = true;
         this.lbl_code.getComponent(cc.Label).string = i18nMgr._getLabel("UILogin_GetCode");
         localStorage.setItem(StorageKey.CODE_TIME_REGIST, "");
+        this.lbl_code.getComponent(LabelCDTime).stop();
     }
     /**
      * 区号点击
