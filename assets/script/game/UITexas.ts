@@ -1,6 +1,7 @@
 import { CommonDefine } from "../define/CommonDefine";
 import { IUIDefine } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import { DOTween, Sequence } from "../dotween/DOTween";
 
 import { StringHelper } from "../helper/StringHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
@@ -16,15 +17,23 @@ import { Def, RoomInfo } from "../protobuf/holdem/define_pb";
 import { ClientMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
 import { ClientMessageShowPublicCards } from "../protobuf/holdem/req_show_public_cards_pb";
 import GlobalSession from "../session/GlobalSession";
+import StorageKey from "../session/StorageKey";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 
 import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent, { AddClipsData } from "./ui/UIAddChipsComponent";
+import UIOutChipsComponent, { OutClipsData } from "./ui/UIOutChipsComponent";
 import { HistoryInfoData } from "./UITexasHistoryComponent";
 
 
+export class PlayerBarrageRecord {
+    public name: string;
+    public time: number;
+    public msg: string;
+
+}
 export class PotInfo {
     public pot: number;
     public textPot: cc.Label;
@@ -93,6 +102,7 @@ export default class UITexas extends BaseScene {
 
 
     UIAddChips: UIAddChipsComponent = null;
+    UIOutChips: UIOutChipsComponent = null;
 
     textAlreadAnte: cc.Label = null;
     //个性设置界面
@@ -228,6 +238,26 @@ export default class UITexas extends BaseScene {
         }
     game: TexasGame = null;
     lastClickTime: number = 0;
+
+
+    //#region 弹幕界面
+    /// <summary>
+    /// 弹幕界面
+    /// </summary>
+    private barragePanel: cc.Node = null;
+    private barrageItemOrdinary: cc.Node = null;
+    private barrageItemCool: cc.Node = null;
+    private barrageItemColorful: cc.Node = null;
+    private barrageParenPos: cc.Node[] = null;
+    private barrageIndex: number = 0;
+    public barrageRecordList: PlayerBarrageRecord[] = [];
+    public barrageCountDown: number = 0;
+    private barrageAnimationSequence_obj = {};
+    private barrageAnimationSequence: Sequence<{}> = null;
+    //#endregion
+
+
+
     ///////////////////////////////////
     protected lateLoad(): void {
 
@@ -250,6 +280,7 @@ export default class UITexas extends BaseScene {
 
         this.Seat = this.getChildNodeOrComponent("Seat");
         this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
+        this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
 
         this.transSubMenu = this.getChildNodeOrComponent("SubMenu");
@@ -467,7 +498,7 @@ export default class UITexas extends BaseScene {
         if (null != this.imageMenuMask)
             this.imageMenuMask.active = true;
     }
-    protected hideMenu(animation: boolean = true): void {
+    public hideMenu(animation: boolean = true): void {
         if (null != this.transSubMenu) {
             if (animation) {
                 cc.tween(this.transSubMenu).to(0.25, { x: -1320 }).start();
@@ -504,49 +535,36 @@ export default class UITexas extends BaseScene {
 
             if (this.game.mainPlayer.chips >= GameCache.Instance.carry_small * (this.game.currentMaxRate + 1)) {
                 //已带入最大值,不可点击
-                this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = false;
+                //this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = false;
+                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_AddChips.node, false);
             }
             else {
-                this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = true;
+                //this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = true;
+                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_AddChips.node, true);
             }
 
-            let buttonoutChips: cc.Node = this.MenuButtons_Dic.Button_TakeOut.node;
 
             if (this.game.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL && this.game.gamestatus >= 1 && this.game.gamestatus < 7) {
-                buttonoutChips.active = true;
-                buttonoutChips.getComponent(cc.Button).interactable = true;
-                buttonoutChips.getChildByName("Text").color = cc.Color.WHITE;
-                buttonoutChips.getChildByName("Text").opacity = 255;
-                buttonoutChips.getChildByName("Arrow").active = true;
+                this.MenuButtons_Dic.Button_TakeOut.node.active = true;
+                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_TakeOut.node, true);
             }
             else if (this.game.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL && this.game.gamestatus != 1 && this.game.gamestatus < 7) {
-                buttonoutChips.active = true;
-                buttonoutChips.getComponent(cc.Button).interactable = false;
-                buttonoutChips.getChildByName("Text").color = cc.Color.WHITE;
-                buttonoutChips.getChildByName("Text").opacity = 120;
-                buttonoutChips.getChildByName("Arrow").active = false;
+                this.MenuButtons_Dic.Button_TakeOut.node.active = true;
+                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_TakeOut.node, false);
             }
             else {
-                buttonoutChips.active = false;
-                buttonoutChips.getComponent(cc.Button).interactable = false;
+                this.MenuButtons_Dic.Button_TakeOut.node.active = false;
+                this.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable = false;
             }
 
-            let Button_LeaveDesk: cc.Node = this.MenuButtons_Dic.Button_LeaveDesk.node;
-
-            Button_LeaveDesk.active = true;
+            this.MenuButtons_Dic.Button_LeaveDesk.node.active = true;
 
             if (this.game.gamestatus != 1)//游戏没开始的时候，座离桌按钮显示不可点击状态   !HasStarted()
             {
-                Button_LeaveDesk.getChildByName("Text").color = cc.Color.WHITE;
-                Button_LeaveDesk.getChildByName("Text").opacity = 120;
-                Button_LeaveDesk.getComponent(cc.Button).interactable = false;
-                Button_LeaveDesk.getChildByName("Arrow").active = false;
+                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_LeaveDesk.node, false);
             }
             else {
-                Button_LeaveDesk.getChildByName("Text").color = cc.Color.WHITE;
-                Button_LeaveDesk.getChildByName("Text").opacity = 255;
-                Button_LeaveDesk.getComponent(cc.Button).interactable = true;
-                Button_LeaveDesk.getChildByName("Arrow").active = true;
+                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_LeaveDesk.node, true);
             }
             if (this.game.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
                 this.MenuButtons_Dic.Button_SetAutoOnTable.node.active = true;
@@ -569,6 +587,13 @@ export default class UITexas extends BaseScene {
         // 	RectTransform mRectTransform = transSubMenu as RectTransform;
         // if (null != mRectTransform)
         //     mRectTransform.sizeDelta = new Vector2(mRectTransform.sizeDelta.x, menuHeight);
+    }
+
+    __MenuButtonInteractable(node: cc.Node, interactable: boolean) {
+        node.getChildByName("Text").color = cc.Color.WHITE;
+        node.getChildByName("Text").opacity = interactable ? 255 : 120;
+        node.getComponent(cc.Button).interactable = interactable;
+        node.getChildByName("Arrow").active = interactable;
     }
 
 
@@ -607,7 +632,7 @@ export default class UITexas extends BaseScene {
         }
         this.hideMenu();
         // 弹代入框
-        UIComponent.Instance.ShowNoAnimation<AddClipsData>(GameCache.Instance.CurGame.uirc.UIAddChips.node,
+        UIComponent.Instance.ShowNoAnimation<AddClipsData>(this.UIAddChips.node,
             {
                 bigBlind: GameCache.Instance.CurGame.bigBlind,
                 smallBlind: GameCache.Instance.CurGame.smallBlind,
@@ -619,6 +644,17 @@ export default class UITexas extends BaseScene {
     }
     Click_Button_TakeOut() {
 
+        if (null == this.MenuButtons_Dic.Button_TakeOut || !this.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable) {
+            return;
+        }
+        this.hideMenu();
+        // 弹代入框CurretainMinRate
+        UIComponent.Instance.ShowNoAnimation<OutClipsData>(this.UIOutChips.node,
+            {
+                currentMinRate: this.game.currentMinRate,
+                tableChips: this.game.mainPlayer.chips,
+            }
+        )
     }
     Click_Button_Trust() {
 
@@ -686,6 +722,14 @@ export default class UITexas extends BaseScene {
         }
         return false;
     }
+
+    public UpdateBarragePanelActive(): void {
+        //this.barrageAnimationSequence = DOTween.Sequence(this.barrageAnimationSequence_obj);
+        let OpenBarrage: number = + localStorage.getItem(StorageKey.OpenBarrage);
+        this.barragePanel && (this.barragePanel.active = (OpenBarrage != 2));
+        this.barrageIndex = 0;
+    }
+
     /**
      * 响应退出触发
      */

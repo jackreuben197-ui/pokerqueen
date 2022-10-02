@@ -1,12 +1,16 @@
 
+import { stringify } from "querystring";
 import GC from "../frame/GameControl";
+import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
 import { CPErrorCode } from "../i18n/CPErrorCode";
+import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Def, Result } from "../protobuf/holdem/define_pb";
+import { Def, PlayerChipChange, Result } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../protobuf/holdem/recv_add_time_others_pb";
+import { ServerMessageChipsChange } from "../protobuf/holdem/recv_chips_change_pb";
 import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessageKeepSeat } from "../protobuf/holdem/recv_keep_seat_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
@@ -19,18 +23,20 @@ import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
 import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
 import { ServerMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
+import { ServerMessageBringIn } from "../protobuf/holdem/req_bring_in_pb";
 import { ServerMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
 import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
 import { ServerMessageSetAutoOnTable } from "../protobuf/holdem/req_set_auto_on_table_pb";
 import { ServerMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import { ServerMessageShowPublicCards } from "../protobuf/holdem/req_show_public_cards_pb";
+import { ClientMessageStoreChips, ServerMessageStoreChips } from "../protobuf/holdem/req_store_chips_pb";
 import UIComponent from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
 import Seat from "./Seat";
-import { SeatAllin, SeatCall, SeatCheck, SeatFold, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
+import { SeatAddChips, SeatAllin, SeatCall, SeatCheck, SeatFold, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
@@ -372,15 +378,7 @@ export default class TexasGameProtocol {
     }
 
 
-    Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    Protocol_Holdem_AgreeSecondPcsTriggedHandler(Protocol_Holdem_AgreeSecondPcsTrigged: ProtocolCode, Protocol_Holdem_AgreeSecondPcsTriggedHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    ProtocolHoldemAgreeSecondPcsActiveHandler(Protocol_Holdem_AgreeSecondPcsActive: ProtocolCode, ProtocolHoldemAgreeSecondPcsActiveHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+
     /// <summary>
     /// 设置自动上桌筹码
     /// </summary>
@@ -394,24 +392,7 @@ export default class TexasGameProtocol {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
         }
     }
-    ProtocolHoldemGetMsgHandler(Protocol_Holdem_GetMsg: ProtocolCode, ProtocolHoldemGetMsgHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    ProtocolHoldemBroadcastMsgHandler(Protocol_Holdem_BroadcastMsg: ProtocolCode, ProtocolHoldemBroadcastMsgHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    HANDLER_REQ_GAME_CHANGE_CHIPS(Protocol_Holdem_ChipsChange: ProtocolCode, HANDLER_REQ_GAME_CHANGE_CHIPS: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    HANDLER_REQ_GAME_OUT_CHIPS(Protocol_Holdem_StoreChips: ProtocolCode, HANDLER_REQ_GAME_OUT_CHIPS: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    HANDLER_REQ_GAME_ADD_CHIPS(Protocol_Holdem_BringIn: ProtocolCode, HANDLER_REQ_GAME_ADD_CHIPS: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    HANDLER_REQ_WAIT_BLIND(Protocol_Holdem_AgreePost: ProtocolCode, HANDLER_REQ_WAIT_BLIND: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+
     /// <summary>
     /// 主动留座离桌
     /// </summary>
@@ -426,16 +407,6 @@ export default class TexasGameProtocol {
             this.game.uirc.imageReserveSeatTips.active = true;
             this.game.TexasGameUtils.WaitFewSeconds(this.game.uirc.imageReserveSeatTips, 3000);
         }
-    }
-
-    HANDLER_REQ_BUY_INSURANCE(Protocol_Holdem_BuyInsuranceActive: ProtocolCode, HANDLER_REQ_BUY_INSURANCE: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    HANDLER_REQ_CLAIM_INSURANCE(Protocol_Holdem_BuyInsurance: ProtocolCode, HANDLER_REQ_CLAIM_INSURANCE: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    HANDLER_REQ_INSURANCE_TRIGGED(Protocol_Holdem_InsuranceTrigged: ProtocolCode, HANDLER_REQ_INSURANCE_TRIGGED: any, arg2: this) {
-        throw new Error("Method not implemented.");
     }
     /// <summary>
     /// 留座离桌
@@ -1207,6 +1178,10 @@ export default class TexasGameProtocol {
         this.game.autoCheck = false;
         this.game.autoFold = false;
         let iCount: number = this.game.GetCurPublicCardsCount();  // 要在更新公共牌前拿数量
+
+        console.log("HandleGetPublicCards : ", this.game.GameState, iCount);
+        console.log("this.game.cards>>>>>", this.game.cards);
+
         if (this.game.GameState == TexasGameState.HandFlop && iCount == 0) {
             this.game.AddPublicCards(source.publicCardsArrayList);
         }
@@ -1469,5 +1444,111 @@ export default class TexasGameProtocol {
                 mSeat.Player.canPlayStatus = Def.CanPlayStatus.DISABLE;
             }
         }
+    }
+    ProtocolHoldemGetMsgHandler(Protocol_Holdem_GetMsg: ProtocolCode, ProtocolHoldemGetMsgHandler: any, arg2: this) {
+        throw new Error("Method not implemented.");
+    }
+    ProtocolHoldemBroadcastMsgHandler(Protocol_Holdem_BroadcastMsg: ProtocolCode, ProtocolHoldemBroadcastMsgHandler: any, arg2: this) {
+        throw new Error("Method not implemented.");
+    }
+
+    /// <summary>
+    /// 所有玩家筹码变动
+    /// </summary>
+    /// <param name="response"></param>
+    HANDLER_REQ_GAME_CHANGE_CHIPS(rec: ServerMessageChipsChange.AsObject) {
+
+        if (rec == null) {
+            return;
+        }
+        rec.changesList.forEach((playerChipChange: PlayerChipChange.AsObject) => {
+            let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(playerChipChange.seatId));
+            if (null == mSeat) return;
+            mSeat.Player.chips = playerChipChange.chips;
+            mSeat.Player.MttHunterKillAwardOtherPlus += playerChipChange.mttHunterHeadPlus;
+            if (this.game.mainPlayer.seatID == this.game.GetLocalSeatID(playerChipChange.seatId)) {
+                if (playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE1 || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE2) {
+                    UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get("Addondz"), StringHelper.GetSignedLongString(playerChipChange.change)));
+                }
+                UIComponent.Instance.HideNoAnimation(GameCache.Instance.CurGame.uirc.UIOutChips.node);
+                this.game.mainPlayer.cacheStoreChips = playerChipChange.storeChips;
+            }
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
+        })
+
+    }
+    /// <summary>
+    /// 带出
+    /// </summary>
+    /// <param name="response"></param>
+    HANDLER_REQ_GAME_OUT_CHIPS(rec: ServerMessageStoreChips.AsObject) {
+
+        if (rec == null) {
+            return;
+        }
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
+            return;
+        }
+        // UIComponent.Instance.Show(UIType.UIOutChipsTip,
+        //     new UIOutChipsTipComponent.OutClipstipData()
+        //                   {
+
+        //         state = rec.Status,
+
+        //         tableChips = (int)cacheOutChips,
+        //     });
+        this.game.cacheOutChips = 0;
+        UIComponent.Instance.HideNoAnimation(GameCache.Instance.CurGame.uirc.UIOutChips.node);
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+        if (null == mSeat) return;
+        mSeat.Player.chips = rec.chips;
+        mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
+    }
+    /// <summary>
+    /// 带入
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_GAME_ADD_CHIPS(rec: ServerMessageBringIn.AsObject) {
+
+        if (rec == null) {
+            return;
+        }
+
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_GAME_ADD_CHIPS, rec.Status)
+            return;
+        }
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+        if (null == mSeat) {
+
+            return;
+        }
+        mSeat.Player.chips = rec.chips;
+        UIComponent.Instance.HideNoAnimation(GameCache.Instance.CurGame.uirc.UIAddChips.node);
+        mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
+        mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+    }
+
+    HANDLER_REQ_WAIT_BLIND(Protocol_Holdem_AgreePost: ProtocolCode, HANDLER_REQ_WAIT_BLIND: any, arg2: this) {
+        throw new Error("Method not implemented.");
+    }
+    HANDLER_REQ_BUY_INSURANCE(Protocol_Holdem_BuyInsuranceActive: ProtocolCode, HANDLER_REQ_BUY_INSURANCE: any, arg2: this) {
+        throw new Error("Method not implemented.");
+    }
+    HANDLER_REQ_CLAIM_INSURANCE(Protocol_Holdem_BuyInsurance: ProtocolCode, HANDLER_REQ_CLAIM_INSURANCE: any, arg2: this) {
+        throw new Error("Method not implemented.");
+    }
+    HANDLER_REQ_INSURANCE_TRIGGED(Protocol_Holdem_InsuranceTrigged: ProtocolCode, HANDLER_REQ_INSURANCE_TRIGGED: any, arg2: this) {
+        throw new Error("Method not implemented.");
+    }
+    Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {
+        throw new Error("Method not implemented.");
+    }
+    Protocol_Holdem_AgreeSecondPcsTriggedHandler(Protocol_Holdem_AgreeSecondPcsTrigged: ProtocolCode, Protocol_Holdem_AgreeSecondPcsTriggedHandler: any, arg2: this) {
+        throw new Error("Method not implemented.");
+    }
+    ProtocolHoldemAgreeSecondPcsActiveHandler(Protocol_Holdem_AgreeSecondPcsActive: ProtocolCode, ProtocolHoldemAgreeSecondPcsActiveHandler: any, arg2: this) {
+        throw new Error("Method not implemented.");
     }
 }

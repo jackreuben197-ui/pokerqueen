@@ -155,7 +155,7 @@ export default class ProtocolAgency extends cc.Component {
         let server = ProtocolMap[code]?.Server;
 
         if (!server) {
-            console.log("%c%s", LogStyle.ws_response, "protocol unregistered in ProtocolMap" + protocol_name);
+            console.log("%c%s", LogStyle.ws_response, "protocol unregistered in ProtocolMap " + protocol_name);
             return;
         }
         let body = ProtocolCommon.Instance.Response(body_ua, server);

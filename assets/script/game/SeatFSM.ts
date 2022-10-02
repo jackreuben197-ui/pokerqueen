@@ -480,4 +480,16 @@ export class SeatFSM {
         this.seat.HideReturnGame();
     }
     //#endregion
+
+    //#region 带入
+    public AddChipsEnter(): void {
+        this.seat.UpdateCoin();
+        //this.seat.UpdateHolding();
+    }
+    public AddChipsExecute(): void {
+    }
+
+    public AddChipsExit(): void {
+    }
+    //#endregion
 }

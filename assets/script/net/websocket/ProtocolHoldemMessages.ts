@@ -29,6 +29,11 @@ import { ProtocolCode } from "./ProtocolCode";
 import { ClientMessageShowdown, ServerMessageShowdown } from "../../protobuf/holdem/req_showdown_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
 import { ServerMessageKeepSeat } from "../../protobuf/holdem/recv_keep_seat_pb";
+import { ClientMessageShowPublicCards, ServerMessageShowPublicCards } from "../../protobuf/holdem/req_show_public_cards_pb";
+import { ServerMessageShowPublicCardsOthers } from "../../protobuf/holdem/recv_show_public_cards_others_pb";
+import { ClientMessageSetAutoOnTable, ServerMessageSetAutoOnTable } from "../../protobuf/holdem/req_set_auto_on_table_pb";
+import { ClientMessageStoreChips, ServerMessageStoreChips } from "../../protobuf/holdem/req_store_chips_pb";
+import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
 
 export class ProtocolCommon {
 
@@ -165,10 +170,6 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_Error]: {
         Server: ServerMessageError,
     },
-    [ProtocolCode.Protocol_Holdem_KeepSeatActive]: {
-        Client: ClientMessageKeepSeatActive,
-        Server: ServerMessageKeepSeatActive,
-    },
     [ProtocolCode.Protocol_Holdem_AddTime]: {
         Client: ClientMessageAddTime,
         Server: ServerMessageAddTime,
@@ -186,6 +187,25 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_KeepSeatActive]: {
         Client: ClientMessageKeepSeatActive,
         Server: ServerMessageKeepSeatActive,
+    },
+    [ProtocolCode.Protocol_Holdem_ShowPublicCards]: {
+        Client: ClientMessageShowPublicCards,
+        Server: ServerMessageShowPublicCards,
+    },
+    [ProtocolCode.Protocol_Holdem_ShowPublicCardsOthers]: {
+        Server: ServerMessageShowPublicCardsOthers,
+    },
+    [ProtocolCode.Protocol_Holdem_SetAutoOnTable]: {
+        Client: ClientMessageSetAutoOnTable,
+        Server: ServerMessageSetAutoOnTable,
+    },
+    [ProtocolCode.Protocol_Holdem_StoreChips]: {
+        Client: ClientMessageStoreChips,
+        Server: ServerMessageStoreChips,
+    },
+    [ProtocolCode.Protocol_Holdem_ChipsChange]: {
+        Server: ServerMessageChipsChange,
     }
+
 }
 
