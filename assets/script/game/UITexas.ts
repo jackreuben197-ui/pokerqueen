@@ -434,7 +434,13 @@ export default class UITexas extends BaseScene {
         if (null == this.listPotInfo) this.listPotInfo = [];
 
     }
+    ClearUI() {
+        UIComponent.Instance.HideNoAnimation(this.UIAddChips.node);
+        UIComponent.Instance.HideNoAnimation(this.UIOutChips.node);
+        this.hideMenu(false);
+    }
     Exit(param) {
+        this.ClearUI();
         super.Exit(param);
     }
     // CanClick(): boolean {

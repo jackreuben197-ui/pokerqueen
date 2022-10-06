@@ -6,7 +6,7 @@ import { Base } from "./Base";
 
 
 export default class BaseComponent extends Base {
-    private _param: any = null;;
+    protected _param : any = null;;
     private _path: string = "";
     private _clickNodes: Array<cc.Node> = [];
     private _view: any = {};
