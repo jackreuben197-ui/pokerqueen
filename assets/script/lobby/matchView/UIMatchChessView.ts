@@ -2,7 +2,7 @@ import List from "../../common/List";
 import LobbyRoomListModel from "../../frame/data/lobby/LobbyRoomListModel";
 import GC from "../../frame/GameControl";
 import { GameType, PokerType } from "../../game/GameUtil";
-import { Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds } from "../../net/https/WebRequest";
+import { Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIMatchChessItem from "./UIMatchChessItem";
 
@@ -26,10 +26,13 @@ export default class UIMatchChessView extends UIBase {
     private _gameTypeName = ["NLH", "PL4", "PL5", "PL6", "6+"];
     private _curGameType: GameType = null;
     private _roomList: LobbyRoomListModel = null;
-    async onShow(type?: GameType) {
-        super.onShow(type);
+    private _isClub: boolean = false;
+    async onShow(type?: GameType, isClub: boolean = false) {
+        super.onShow(type, isClub);
+        this._isClub = isClub;
 
         this._roomList = GC.data.lobby.roomList;
+        this._curGameType = null;
         this.clickGameType(type);
     }
 
@@ -55,17 +58,31 @@ export default class UIMatchChessView extends UIBase {
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
             case Web_Room_Center_Rooms_Blinds.API: {
-                this.updateSBTabs();
+                if (!this._isClub) {
+                    this.updateSBTabs();
+                }
+            } break;
+            case Web_Room_Center_Rooms_Blinds_CLUB.API: {
+                if (this._isClub) {
+                    this.updateSBTabs();
+                }
             } break;
             case Web_Room_Center_Rooms.API: {
-                this.updateList();
+                if (!this._isClub) {
+                    this.updateList();
+                }
+            } break;
+            case Web_Room_Center_Rooms_CLUB.API: {
+                if (this._isClub) {
+                    this.updateList();
+                }
             } break;
         }
     }
 
     updateSBTabs() {
         let sbNodes = this.sbNode.children;
-        let sbs = GC.data.lobby.roomBlinds.sbs;
+        let sbs = GC.data.lobby.roomBlinds.getSbs(this._isClub);
         sbs.forEach((sb, index) => {
             let sbNode = null;
             if (index < sbNodes.length) {
@@ -98,12 +115,12 @@ export default class UIMatchChessView extends UIBase {
     }
 
     updateList() {
-        this.list.numItems = this._roomList.list.length;
+        this.list.numItems = this._roomList.getList(this._isClub).length;
     }
 
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(UIMatchChessItem);
-        item.initData(this._roomList.list[index]);
+        item.initData(this._roomList.getList(this._isClub)[index]);
     }
 
     scrollingCB = (scrollView: cc.ScrollView) => {
@@ -112,7 +129,7 @@ export default class UIMatchChessView extends UIBase {
             let max = scrollView.getMaxScrollOffset()
             let isDown = cur.y >= max.y;
             if (isDown && this._roomList.canReq) {
-                this._roomList.dropDownReq();
+                this._roomList.dropDownReq(true, this._isClub);
             }
         }
     }
@@ -124,7 +141,7 @@ export default class UIMatchChessView extends UIBase {
 
             let gt = gameType == GameType.Plus6 ? GameType.Holdem : gameType;
             let pt = gameType == GameType.Plus6 ? PokerType.SixPlus : PokerType.Normal;
-            this._roomList.switchTypeTab(gt, pt);
+            this._roomList.switchTypeTab(gt, pt, this._isClub);
         }
     }
 
@@ -138,7 +155,7 @@ export default class UIMatchChessView extends UIBase {
 
     clickSB(index) {
         this.switchSBTabState(index);
-        this._roomList.switchSBTab(index);
+        this._roomList.switchSBTab(index, true, this._isClub);
     }
 
     switchSBTabState(selectIndex) {

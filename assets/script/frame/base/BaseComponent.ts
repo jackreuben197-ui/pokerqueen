@@ -20,8 +20,8 @@ export default class BaseComponent extends Base {
         if (this.UIDefine) window[this.UIDefine.Name] = this;
     }
 
-    onShow(param?: any) {
-        this._param = param;
+    onShow(...param: any) {
+        this._param = param && param[0];
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);
         // this.regiterDispatchEvent();
     }

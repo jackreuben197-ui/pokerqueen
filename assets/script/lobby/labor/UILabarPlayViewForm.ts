@@ -16,6 +16,7 @@ import { EMatchViewTabType } from "../matchView/MatchViewConfig";
 import BaseForm from "../../ui/form/BaseForm";
 import { APIOrgClubGold, APIOrgClubIsManger, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { UIClubModel } from "./UIClubModel";
+import { GameType } from "../../game/GameUtil";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -49,11 +50,9 @@ export default class UILabarPlayViewForm extends UIBase {
 
     ]
 
-    private _machPlayers: Array<any> = [];
-    private _tabViews: Map<EMatchViewTabType, UIBase> = new Map();
-    private _tabViewLoadintState: Map<EMatchViewTabType, boolean> = new Map();
+    private _chessView: UIBase = null;
+    private _loadingChessBiew: boolean = false;
 
-    private _curType: EMatchViewTabType = EMatchViewTabType.no;
     onLoad() {
         super.onLoad();
     }
@@ -67,10 +66,7 @@ export default class UILabarPlayViewForm extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.tabBtnsParent.children.forEach((item, index) => {
-            item["index"] = index;
-            item.on(cc.Node.EventType.TOUCH_END, this.onClickTabBtns, this)
-        })
+
     }
     onShow(param?: any, fromUI?: BaseForm) {
         param = {
@@ -80,63 +76,25 @@ export default class UILabarPlayViewForm extends UIBase {
             len: 0,
         }
         super.onShow(param);
-        this._machPlayers = param;
-        this._curType = EMatchViewTabType.no;
 
         this.initTop();
-        this.switchTab(EMatchViewTabType.chess);
+        this.initChessView();
     }
 
-    private onClickTabBtns(e: cc.Event.EventTouch): void {
-        let target: cc.Node = e.target;
-        let index = target["index"];
-
-        this.switchTab(index);
-    }
-    switchTab = (type: EMatchViewTabType) => {
-        if (this._curType != type) {
-            this._curType = type;
-            this.switchTabBtnState();
-
-            this.switchTabView(type);
-        }
-    }
-
-    switchTabBtnState() {
-        this.tabBtnsParent.children.forEach((item, index) => {
-            let choose = item.getChildByName("choose");
-            let normal = item.getChildByName("normal");
-            choose.active = this._curType == index;
-            normal.active = this._curType != index;
-        })
-
-        this.tabViewParents.forEach((parent, index) => {
-            parent.active = this._curType == index;
-        })
-    }
-
-    switchTabView(type: EMatchViewTabType) {
-        let parmas = type == EMatchViewTabType.chess ? this._machPlayers : null;
-        if (!this._tabViewLoadintState.get(type) && !this._tabViews.get(type)) {
-            this._tabViewLoadintState.set(type, true)
-            let parent = this.tabViewParents[type];
-            let uiDefine = this._tabViewData[type];
-            ResManager.Load(uiDefine.Bundle, uiDefine.Path, cc.Prefab, (err, asset: cc.Prefab) => {
-                this._tabViewLoadintState.set(type, false)
-                if (err) {
-                    return;
-                }
-                let node = cc.instantiate(asset);
-                node.parent = parent;
+    initChessView() {
+        if (!this._chessView && !this._loadingChessBiew) {
+            this._loadingChessBiew = true;
+            this.loadPrefab(UIDefine.UIMatchChessView.Path, (node: cc.Node) => {
+                this._loadingChessBiew = false;
+                node.parent = this.tabViewParents[0];
                 let baseScript = node.getComponent(UIBase);
-                baseScript.onShow(parmas);
-                this._tabViews.set(type, baseScript);
-            });
-        } else if (this._tabViews.get(type)) {
-            this._tabViews.get(type).onShow(parmas);
+                this._chessView = baseScript;
+                this._chessView.onShow(GameType.Holdem, true);
+            })
+        } else if (this._chessView) {
+            this._chessView.onShow(GameType.Holdem, true);
         }
     }
-
 
     /***************************************自己界面的数据处理 */
 

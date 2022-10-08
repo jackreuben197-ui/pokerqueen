@@ -109,13 +109,24 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
                 node.parent = parent;
                 let baseScript = node.getComponent(UIBase);
-                baseScript.onShow(parmas);
                 this._tabViews.set(type, baseScript);
+                this.updateTabView(baseScript, type);
+                // baseScript.onShow(parmas);
             }, () => {
                 this._tabViewLoadintState.set(type, false)
             })
         } else if (this._tabViews.get(type)) {
-            this._tabViews.get(type).onShow(parmas);
+            let baseScript = this._tabViews.get(type);
+            // this._tabViews.get(type).onShow(parmas);
+            this.updateTabView(baseScript, type);
+        }
+    }
+
+    updateTabView(baseScript: UIBase, type: EMatchViewTabType) {
+        if (type == EMatchViewTabType.chess) {
+            baseScript.onShow(this._defultGameType, false);
+        } else {
+            baseScript.onShow();
         }
     }
 }

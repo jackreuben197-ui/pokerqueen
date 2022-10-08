@@ -2,17 +2,19 @@ import { TRoomBlinds } from "../../../config/TTypeConfig";
 
 export default class LobbyRoomBlindsModel {
     private _sbs: Array<number> = [0];
-    updateData(msgs: Array<TRoomBlinds>) {
-        this._sbs.length = 1;
+    private _sbs_club: Array<number> = [0];
+    updateData(msgs: Array<TRoomBlinds>, isClub) {
+        let sbs = isClub ? this._sbs_club : this._sbs;
+        sbs.length = 1;
         msgs.forEach(msg => {
-            if (this._sbs.every(sb => sb != msg.sb)) {
-                this._sbs.push(msg.sb)
+            if (sbs.every(sb => sb != msg.sb)) {
+                sbs.push(msg.sb)
             }
         })
-        this._sbs.sort((a, b) => a - b);
+        sbs.sort((a, b) => a - b);
     }
 
-    get sbs() {
-        return this._sbs;
+    getSbs(isClub) {
+        return isClub ? this._sbs_club : this._sbs;
     }
 }

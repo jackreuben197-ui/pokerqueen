@@ -13,6 +13,7 @@ export default class LobbyRoomListModel {
     private _offset: number = 0;
 
     private _list: Array<LobbyRoomListItem> = [];
+    private _list_club: Array<LobbyRoomListItem> = [];
     private _selected: LobbyRoomListItem = null;
 
     get selected() {
@@ -22,51 +23,54 @@ export default class LobbyRoomListModel {
         this._selected = v;
     }
 
-    get list() {
-        return this._list;
+    getList(isClub) {
+        return isClub ? this._list_club : this._list;
     }
 
     get canReq() {
         return !this._reqEnd && !this._reqing;
     }
 
-    switchTypeTab(gameType, pokerType) {
+    switchTypeTab(gameType, pokerType, isClub: boolean = false) {
         this._curGameType = gameType;
         this._curPokerType = pokerType;
 
-        this.switchSBTab(0, false);
+        this.switchSBTab(0, false, isClub);
     }
 
-    switchSBTab(index, isSB: boolean = true) {
-        let sb = GC.data.lobby.roomBlinds.sbs[index];
+    switchSBTab(index, isSB: boolean = true, isClub: boolean = false) {
+        let sb = GC.data.lobby.roomBlinds.getSbs(isClub)[index];
         this._curSB = sb;
         this._reqing = false;
         this._reqEnd = false;
         this._offset = 0;
-        this._list.length = 0;
 
-        this.dropDownReq(isSB);
+        let list = isClub ? this._list_club : this._list;
+        list.length = 0;
+
+        this.dropDownReq(isSB, isClub);
     }
 
-    dropDownReq(isSB: boolean = true) {
+    dropDownReq(isSB: boolean = true, isClub: boolean = false) {
         if (!this._reqing && !this._reqEnd) {
             this._reqing = true;
             if (isSB) {
-                GC.data.lobby.reqRoomListSB(this._offset, this._curSB, this._curSB, this._curGameType, this._curPokerType);
+                GC.data.lobby.reqRoomListSB(this._offset, this._curSB, this._curSB, this._curGameType, this._curPokerType, isClub);
             } else {
-                GC.data.lobby.reqRoomList(this._offset, this._curSB, this._curSB, this._curGameType, this._curPokerType);
+                GC.data.lobby.reqRoomList(this._offset, this._curSB, this._curSB, this._curGameType, this._curPokerType, isClub);
             }
         }
     }
 
-    updateData(msg: TRoomList) {
+    updateData(msg: TRoomList, isClub: boolean) {
         this._reqing = false;
 
+        let list = isClub ? this._list_club : this._list;
         msg.records.forEach(record => {
-            this._list.push(new LobbyRoomListItem(record))
+            list.push(new LobbyRoomListItem(record))
         })
 
-        this._offset = this._list.length
-        this._reqEnd = this._list.length >= msg.total;
+        this._offset = list.length
+        this._reqEnd = list.length >= msg.total;
     }
 }

@@ -1,5 +1,5 @@
 import { TDeskNameTemp, TRoomList } from "../../../config/TTypeConfig";
-import { Web_Config_Multi_Language_Template, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds } from "../../../net/https/WebRequest";
+import { Web_Config_Multi_Language_Template, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
 import DeskNameTempModel from "./DeskNameTempModel";
 import LobbyGroupModel from "./LobbyGroupModel";
@@ -14,7 +14,10 @@ export default class LobbyData extends BaseData {
     protected notify(api: any, msg: any, sendInfo?: any): void {
         switch (api) {
             case Web_Room_Center_Rooms_Blinds.API: {
-                this.respRoomBlinds(msg, sendInfo);
+                this.respRoomBlinds(msg, sendInfo, false);
+            } break;
+            case Web_Room_Center_Rooms_Blinds_CLUB.API: {
+                this.respRoomBlinds(msg, sendInfo, true);
             } break;
             case Web_Room_Center_Groups.API: {
                 this.respLobbyBaseData(msg, sendInfo);
@@ -23,7 +26,10 @@ export default class LobbyData extends BaseData {
                 this.respDeskNameTemp(msg, sendInfo);
             } break;
             case Web_Room_Center_Rooms.API: {
-                this.respRoomList(msg, sendInfo);
+                this.respRoomList(msg, sendInfo, false);
+            } break;
+            case Web_Room_Center_Rooms_CLUB.API: {
+                this.respRoomList(msg, sendInfo, true);
             } break;
         }
     }
@@ -61,21 +67,22 @@ export default class LobbyData extends BaseData {
         this.lobbyGroup.updataData(msg);
     }
 
-    respRoomBlinds(msg, sendInfo) {
-        this.roomBlinds.updateData(msg.records);
+    respRoomBlinds(msg, sendInfo, isClub) {
+        this.roomBlinds.updateData(msg.records, isClub);
     }
 
     respDeskNameTemp(msg: Array<TDeskNameTemp>, sendInfo) {
         this.nameTemp.updateData(msg);
     }
 
-    respRoomList(msg: TRoomList, sendInfo) {
-        this.roomList.updateData(msg);
+    respRoomList(msg: TRoomList, sendInfo, isClub) {
+        this.roomList.updateData(msg, isClub);
     }
 
     //请求盲注信息
-    reqRoomBlinds(game_type: number, poker_type: number, onSuccess?: Function) {
-        this.reqServePost(Web_Room_Center_Rooms_Blinds.API, { game_type: game_type, poker_type: poker_type }, onSuccess);
+    reqRoomBlinds(game_type: number, poker_type: number, isClub: boolean = false, onSuccess?: Function) {
+        let url = isClub ? Web_Room_Center_Rooms_Blinds_CLUB.API : Web_Room_Center_Rooms_Blinds.API;
+        this.reqServePost(url, { game_type: game_type, poker_type: poker_type }, onSuccess);
     }
 
     //请求桌子名字模版
@@ -89,16 +96,17 @@ export default class LobbyData extends BaseData {
     }
 
     //请求房间牌桌列表   大标签
-    reqRoomList(offset: number, sb_min: number, sb_max: number, game_type: number, poker_type: number, limit = 7, order = ["sb_asc"]) {
-        this.reqRoomBlinds(game_type, poker_type, () => {
-            this.reqRoomListSB(offset, sb_min, sb_max, game_type, poker_type, limit, order);
+    reqRoomList(offset: number, sb_min: number, sb_max: number, game_type: number, poker_type: number, isClub = false, limit = 7) {
+        this.reqRoomBlinds(game_type, poker_type, isClub, () => {
+            this.reqRoomListSB(offset, sb_min, sb_max, game_type, poker_type, isClub, limit);
         })
     }
 
     //请求房间牌桌列表   小标签
-    reqRoomListSB(offset: number, sb_min: number, sb_max: number, game_type: number, poker_type: number, limit = 7, order = ["sb_asc"]) {
+    reqRoomListSB(offset: number, sb_min: number, sb_max: number, game_type: number, poker_type: number, isClub = false, limit = 7) {
         this.reqDeskNameTemp(() => {
-            this.reqServePost(Web_Room_Center_Rooms.API, {
+            let url = isClub ? Web_Room_Center_Rooms_CLUB.API : Web_Room_Center_Rooms.API;
+            this.reqServePost(url, {
                 name: "",
                 ante_min: 0,
                 ante_max: 0,
