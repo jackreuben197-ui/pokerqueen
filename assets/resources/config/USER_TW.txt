@@ -3149,6 +3149,7 @@ UIExchangeRatio=
 UIMine_CustomerService_Connect=
 UIMine_CustomerService=
 UIWebViewURL=https://h5.olavamos.com/#/
+UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
 

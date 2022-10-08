@@ -3150,7 +3150,7 @@ UIExchangeRatio=R$ 1=1金豆
 UIMine_CustomerService_Connect=联系
 UIMine_CustomerService=客户服务
 UIWebViewURL=https://h5.olavamos.com/#/
-
+UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
 
