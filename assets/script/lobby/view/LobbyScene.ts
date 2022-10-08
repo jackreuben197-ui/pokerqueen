@@ -1,4 +1,5 @@
 const { ccclass, property } = cc._decorator;
+import GC from "../../frame/GameControl";
 import { Web_Misc_Banner_List } from "../../net/https/WebRequest";
 import BaseScene from "../../ui/scene/BaseScene";
 import { LobbyControl } from "../control/LobbyControl";
@@ -57,8 +58,9 @@ export default class LobbyScene extends BaseScene {
     }
     //刷新room
     public refreshRoom(): void {
-        LobbyControl.getInstance().RequestListSummary({}).then((res) => {
-            UIMatchRoom.instance.onShow(res);
-        })
+        GC.data.lobby.reqLobbyGroupData();
+        // LobbyControl.getInstance().RequestListSummary({}).then((res) => {
+        //     UIMatchRoom.instance.onShow(res);
+        // })
     }
 }

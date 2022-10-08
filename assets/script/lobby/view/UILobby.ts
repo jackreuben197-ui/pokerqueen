@@ -1,5 +1,6 @@
 const { ccclass, property } = cc._decorator;
 import { UIDefine } from "../../define/UIDefine";
+import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import { i18nSprite } from "../../i18n/i18nSprite";
 import UIBase from "../../ui/UIBase";
@@ -89,11 +90,16 @@ export default class UILobby extends UIBase {
 
     onScrollEnd() {
         if (this._waitRefresh) {
-            LobbyControl.getInstance().RequestListSummary({}).then((res) => {
+            GC.data.lobby.reqLobbyGroupData(() => {
                 this._waitRefresh = false;
-                UIMatchRoom.instance.onShow(res);
                 this.setActive(this.dropDownFlag, false);
-            })
+
+            });
+            // LobbyControl.getInstance().RequestListSummary({}).then((res) => {
+            //     this._waitRefresh = false;
+            //     UIMatchRoom.instance.onShow(res);
+            //     this.setActive(this.dropDownFlag, false);
+            // })
         }
     }
 

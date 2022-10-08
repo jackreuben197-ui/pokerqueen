@@ -1,6 +1,6 @@
 import { UIDefine, UIDefineType } from "../../define/UIDefine";
 import { GameCache } from "../../game/GameCache";
-import { ResManager } from "../../manager/ResManager";
+import { GameType } from "../../game/GameUtil";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
 import { EMatchViewTabType } from "./MatchViewConfig";
@@ -26,7 +26,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
     ]
 
-    private _machPlayers: Array<any> = [];
+    private _defultGameType: GameType = null;
     private _tabViews: Map<EMatchViewTabType, UIBase> = new Map();
     private _tabViewLoadintState: Map<EMatchViewTabType, boolean> = new Map();
 
@@ -54,9 +54,9 @@ export default class UIMatchPlayViewForm extends BaseForm {
         })
     }
 
-    onShow(param?: any, fromUI?: BaseForm) {
-        super.onShow(param, fromUI);
-        this._machPlayers = param;
+    onShow(gameType?: GameType, fromUI?: BaseForm) {
+        super.onShow(gameType, fromUI);
+        this._defultGameType = gameType;
         this._curType = EMatchViewTabType.no;
 
         this.initTopUI();
@@ -99,7 +99,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     }
 
     switchTabView(type: EMatchViewTabType) {
-        let parmas = type == EMatchViewTabType.chess ? this._machPlayers : null;
+        let parmas = type == EMatchViewTabType.chess ? this._defultGameType : null;
         if (!this._tabViewLoadintState.get(type) && !this._tabViews.get(type)) {
             this._tabViewLoadintState.set(type, true)
             let parent = this.tabViewParents[type];
