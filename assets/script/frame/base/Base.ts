@@ -10,7 +10,7 @@ export class Base extends cc.Component {
     }
 
     onLoad() {
-
+        
     }
 
     start() {
@@ -68,7 +68,5 @@ export class Base extends cc.Component {
         NotifyManager.instance.post(name, ...args)
     }
 
-    protected notify(id: any, msg: any) {
-
-    }
+    protected notify(id: any, msg: any, sendInfo?: any) { }
 }

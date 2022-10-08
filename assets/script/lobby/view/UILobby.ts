@@ -1,14 +1,13 @@
 const { ccclass, property } = cc._decorator;
 import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
+import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nSprite } from "../../i18n/i18nSprite";
 import { Web_User_Info } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
-import { LobbyControl } from "../control/LobbyControl";
-import UIMatchRoom from "./UIMatchRoom";
 
 @ccclass
 export default class UILobby extends UIBase {
@@ -19,7 +18,7 @@ export default class UILobby extends UIBase {
 
     private beanBg: cc.Node = null;
 
-    private isRefresh: boolean = false;
+    private _waitRefresh: boolean = false;
     onLoad(): void {
         super.onLoad();
 
@@ -57,6 +56,7 @@ export default class UILobby extends UIBase {
 
         this.bindClick(this.beanBg, this.clickBean);
         this.scrollView.node.on("scrolling", this.onScrolling, this);
+        this.scrollView.node.on("scroll-ended", this.onScrollEnd, this);
 
     }
 
@@ -70,16 +70,16 @@ export default class UILobby extends UIBase {
     /**
      * 注册广播事件
      */
-     protected regiterDispatchEvent() {
+    protected regiterDispatchEvent() {
         this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
         this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
     }
 
     refreshHeadImg() {
         let img_head: cc.Sprite = this.getChildNodeOrComponent("user_icon", cc.Sprite);
-        img_head.node.active =false;
-        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(()=>{
-            img_head.node.active =true;
+        img_head.node.active = false;
+        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(() => {
+            img_head.node.active = true;
         });
     }
 
@@ -97,20 +97,30 @@ export default class UILobby extends UIBase {
     }
 
     onScrolling() {
-        if (this.scrollView.content.y <= -this.dropDownFlag.height - 1 && !this.isRefresh) {
+        if (this.scrollView.content.y <= -this.dropDownFlag.height - 1 && !this._waitRefresh) {
             this.setActive(this.dropDownFlag, true);
 
             this.scrollView.content.y = 0;
-            this.isRefresh = true;
-
-            LobbyControl.getInstance().RequestListSummary({}).then((res) => {
-                this.isRefresh = false;
-                UIMatchRoom.instance.onShow(res);
-                this.setActive(this.dropDownFlag, false);
-            })
+            this._waitRefresh = true;
         }
-        if (this.isRefresh) {
+
+        if (this._waitRefresh) {
             this.scrollView.content.y = 0;
+        }
+    }
+
+    onScrollEnd() {
+        if (this._waitRefresh) {
+            GC.data.lobby.reqLobbyGroupData(() => {
+                this._waitRefresh = false;
+                this.setActive(this.dropDownFlag, false);
+
+            });
+            // LobbyControl.getInstance().RequestListSummary({}).then((res) => {
+            //     this._waitRefresh = false;
+            //     UIMatchRoom.instance.onShow(res);
+            //     this.setActive(this.dropDownFlag, false);
+            // })
         }
     }
 

@@ -629,6 +629,16 @@ export class Web_Room_Center_Rooms {
     public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Rooms.ResponseData) };
 }
 
+export class Web_Room_Center_Rooms_Blinds_CLUB {
+    //接口地址
+    public static API: string = "/api/roomcenter/club/room_blinds";
+}
+
+export class Web_Room_Center_Rooms_CLUB {
+    //接口地址
+    public static API: string = "/api/roomcenter/club/rooms";
+}
+
 /// <summary>
 /// 查询在该房间保险赔率表
 /// </summary>

@@ -1,4 +1,5 @@
 import AudioManager from "./manager/AudioManager";
+import DataManager from "./manager/DataManager";
 import LanguageManager from "./manager/LanguageManager";
 import LocalStoreManager from "./manager/LocalStoreManager";
 import { NotifyManager } from "./manager/NotifyManager";
@@ -28,7 +29,13 @@ class GameControl {
         return AudioManager.instance;
     }
 
+    get data() {
+        return DataManager.instance;
+    }
 
+    init() {
+        this.data.init();
+    }
 
 }
 

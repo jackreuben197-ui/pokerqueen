@@ -14,15 +14,16 @@ export default class BaseComponent extends Base {
         super.onLoad();
         this.lateLoad();
         this.regiterTouchEvents();
+        this.regiterDispatchEvent();
 
         !this.UIDefine || this.UIDefine.DisAdaptScreen || this.node.addComponent(AdapterComponent);
         if (this.UIDefine) window[this.UIDefine.Name] = this;
     }
 
-    onShow(param?: any) {
-        this._param = param;
+    onShow(...param: any) {
+        this._param = param && param[0];
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onShow()", "param:", param);
-        this.regiterDispatchEvent();
+        // this.regiterDispatchEvent();
     }
 
     start() {
@@ -187,7 +188,7 @@ export default class BaseComponent extends Base {
     onClose(param?: any) {
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onClose()");
         this.stopAllThings();
-        this.unregiterAllDispatchEvent();
+        // this.unregiterAllDispatchEvent();
         this.lateClose(param);
     }
 

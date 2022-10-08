@@ -10,21 +10,21 @@ export class BaseData {
         NotifyManager.instance.register(EventName.serverResponse, this.notify, this);
     }
 
-    protected notify(id: any, msg: any) { }
+    protected notify(id: any, msg: any, sendInfo?: any) { }
 
     protected post(name: string, ...args: any[]) {
         NotifyManager.instance.post(name, ...args)
     }
 
-    reqServeGet(api: any, data: any = {}) {
-        this.reqServe(api, data, true);
+    reqServeGet(api: any, data: any = {}, onSuccess?: Function) {
+        this.reqServe(api, data, true, onSuccess);
     }
 
-    reqServePost(api: any, data: any = {}) {
-        this.reqServe(api, data, false);
+    reqServePost(api: any, data: any = {}, onSuccess?: Function) {
+        this.reqServe(api, data, false, onSuccess);
     }
 
-    reqServe(api: any, data: any, isGet: boolean, url?: string) {
+    reqServe(api: any, data: any, isGet: boolean, onSuccess?: Function, url?: string) {
         let msgId = null;
         let request = null;
 
@@ -40,7 +40,8 @@ export class BaseData {
             api: msgId,
             request: request,
             body: data,
-            isGet: isGet
+            isGet: isGet,
+            onSuccess: onSuccess
         }
 
         HttpLink.instance.reqServe(sendInfo);

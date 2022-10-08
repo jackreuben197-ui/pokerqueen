@@ -978,7 +978,7 @@ export default class List extends cc.Component {
             this._calcNearestItem();
         }
 
-        this._scrollingCB && this._scrollingCB();
+        this._scrollingCB && this._scrollingCB(ev);
     }
     //计算可视范围
     _calcViewPos() {
