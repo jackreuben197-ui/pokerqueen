@@ -1,9 +1,11 @@
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
+import WebImageHelper from "../../helper/WebImageHelper";
 import { Web_User_Room, Web_User_Room_Settle_Detail } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
+import { GameCache } from "../GameCache";
 import { UITexasModel } from "../UITexasModel";
 
 
@@ -30,6 +32,12 @@ export default class UITexasGameEndComponent extends UIBase {
     UserInfoView: cc.Node = null;
     TopLookPai: cc.Node = null;
     DetailImage: cc.Node = null;
+
+    m_ZongShou: cc.Label = null;
+
+    img_head: cc.Sprite = null;
+
+
     private mRoomId: string = null;
 
     protected lateLoad(): void {
@@ -41,20 +49,21 @@ export default class UITexasGameEndComponent extends UIBase {
         this.gameObject = this.getChildNodeOrComponent("GameObject");
         this.tips = this.getChildNodeOrComponent("tips");
 
+        this.m_ZongShou = this.getChildNodeOrComponent("ZongShou", cc.Label);
+        this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
     }
     protected regiterTouchEvents(): void {
         this.Button_back.getChildByName("BtnArea").on("click", this.onBackClick, this);
     }
 
 
-    onShow(param?: any): void {
+    onShow(param?: RecordDetailForNormalData): void {
         super.onShow(param);
-        let gameData: RecordDetailForNormalData = param;
-        this.mRoomId = gameData.roomID;
+        this.mRoomId = param.roomID;
         this.SetFindLabelText("TitleNameTxt", param.roomName);
         this.SetFindLabelText("TitleIDTxt", "ID:" + this.mRoomId);
         this.SetFindLabelText("LeaveTxt", TimeHelper.TimeToString(TimeHelper.Now(), "MM/dd HH:mm"));
-        this.SetFindLabelText("Text_Type", StringHelper.GetRoomTypeNameByType(gameData.game_type, gameData.poker_type, gameData.bet_type));
+        this.SetFindLabelText("Text_Type", StringHelper.GetRoomTypeNameByType(param.game_type, param.poker_type, param.bet_type));
         this.GetGameEndData();
     }
 
@@ -67,7 +76,7 @@ export default class UITexasGameEndComponent extends UIBase {
         this.ShowEndTips(true);
         await TimeHelper.Sleep(2000);
         this.ShowEndTips(false);
-        let response: typeof Web_User_Room_Settle_Detail.Response = await UITexasModel.mInstance.APIUserRoomSettleDetail();
+        let response: typeof Web_User_Room_Settle_Detail.Response = await UITexasModel.mInstance.APIUserRoomSettleDetail(this.mRoomId);
         if (response) {
             this.InitSuperView(response);
             if (response.data.self_settle == null) {
@@ -83,9 +92,9 @@ export default class UITexasGameEndComponent extends UIBase {
     }
     private SetMyData(score: number, hand: number): void {
         // m_ZhanJi.text = string.Format("{0:N0}", StringHelper.GetLongString(score));
-        // m_ZongShou.text = string.Format("{0:N0}", hand);
-        // WebImageHelper.SetUrlImage(m_Mask_head, GameCache.Instance.headPic);
-        // m_Mask_head.transform.parent.gameObject.SetActive(true);
+        this.m_ZongShou.string = StringHelper.FormatToString("{0:N0}", hand);
+        WebImageHelper.SetUrlImage(this.img_head, GameCache.Instance.headPic);
+        this.img_head.node.parent.active = true;
     }
 
     private InitSuperView(response: typeof Web_User_Room_Settle_Detail.Response): void {

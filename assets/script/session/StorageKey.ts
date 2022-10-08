@@ -29,7 +29,7 @@ export default class StorageKey {
     //验证码时间 注册
     static CODE_TIME_REGIST = "CODE_TIME_REGIST";
 
-
+    static OpenBarrage: string = "OpenBarrage";//是否打开弹幕 1 关闭，0 打开
 
     //=======================设置相关========================
     //桌布类型

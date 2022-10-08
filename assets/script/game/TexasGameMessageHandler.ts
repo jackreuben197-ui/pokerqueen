@@ -323,7 +323,8 @@ export default class TexasGameMessageHandler {
                             game_type: GameCache.Instance.game_type,
                             bet_type: GameCache.Instance.bet_type,
                             poker_type: GameCache.Instance.poker_type,
-                        }, Main.Dialog
+                        },
+                            Main.Dialog
                         )
                     }
                     this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);
@@ -419,8 +420,13 @@ export default class TexasGameMessageHandler {
     private Protocol_Holdem_ActionAll_Handler(response): void {
         cc.log(`# MSG_CALLBACK: Protocol_Holdem_ActionAll_Handler`);
     }
-    Protocol_Holdem_ChipsChange_Handler(Protocol_Holdem_ChipsChange: ProtocolCode, Protocol_Holdem_ChipsChange_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+
+    /// <summary>
+    /// 桌上筹码带入变动（上桌的筹码变动) 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    Protocol_Holdem_ChipsChange_Handler(response) {
+        cc.log(`# MSG_CALLBACK: Protocol_Holdem_ChipsChange_Handler`);
     }
 
     /// <summary>
@@ -470,11 +476,13 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_Showcards_Handler(response) {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_Showcards_Handler`);
     }
-    Protocol_Holdem_ShowPublicCardsOthers_Handler(Protocol_Holdem_ShowPublicCardsOthers: ProtocolCode, Protocol_Holdem_ShowPublicCardsOthers_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
-    Protocol_Holdem_StoreChips_Handler(Protocol_Holdem_StoreChips: ProtocolCode, Protocol_Holdem_StoreChips_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+
+    /// <summary>
+    /// 主动存筹码 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    Protocol_Holdem_StoreChips_Handler(response) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_StoreChips_Handler`);
     }
     Protocol_Holdem_AgreePost_Handler(Protocol_Holdem_AgreePost: ProtocolCode, Protocol_Holdem_AgreePost_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
@@ -482,8 +490,19 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_BuyInsuranceActive_Handler(Protocol_Holdem_BuyInsuranceActive: ProtocolCode, Protocol_Holdem_BuyInsuranceActive_Handler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    Protocol_Holdem_ShowPublicCards_Handler(Protocol_Holdem_ShowPublicCards: ProtocolCode, Protocol_Holdem_ShowPublicCards_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    /// <summary>
+    /// 要求亮明未使用的公共牌 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    Protocol_Holdem_ShowPublicCards_Handler(response) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_ShowPublicCards_Handler`);
+    }
+    /// <summary>
+    /// 其他人收到有人看公共牌 消息回调
+    /// </summary>
+    /// <param name="response"></param>
+    Protocol_Holdem_ShowPublicCardsOthers_Handler(response) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_ShowPublicCardsOthers_Handler`);
     }
 
     /// <summary>

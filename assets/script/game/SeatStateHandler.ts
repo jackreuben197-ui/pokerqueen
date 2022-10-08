@@ -558,5 +558,32 @@ export class SeatKeep extends StateHandler {
         if (entity instanceof SeatFSM) entity.KeepExit();
     }
 }
+export class SeatAddChips extends StateHandler {
+
+    public Name: string = "SeatAddChips";
+
+    static get Instance(): SeatAddChips {
+        return (this as any).instance ??= new SeatAddChips;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.AddChipsEnter();
+
+    }
+
+    public Execute(entity?: any) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.AddChipsExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.AddChipsExit();
+    }
+}
+
+
+
 
 

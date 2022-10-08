@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 18:38:53
+ * @LastEditTime: 2022-09-30 16:25:30
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -46,6 +46,7 @@ export default class UICreatelabor extends BaseForm {
 
     }
     async commitClick() {
+        this.editName.string = this.editName.string.trim()
         if (this.editName.string == '') {
             UIComponent.Instance.Toast(i18nMgr.Get('UIClub_Creat_4vH7wQnp'))
             return
@@ -55,7 +56,7 @@ export default class UICreatelabor extends BaseForm {
             return
         }
         if (this.xinxi.string == '') {
-            UIComponent.Instance.Toast(i18nMgr.Get('club_creat_7'))
+            UIComponent.Instance.Toast('请填写联系方式：如微信/199999')//i18nMgr.Get('club_creat_7')
             return
         }
 

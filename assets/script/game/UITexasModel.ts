@@ -37,10 +37,10 @@ export class UITexasModel {
     /// 获取结算信息
     /// </summary>
     /// <param name="Act"></param>
-    public APIUserRoomSettleDetail() {
+    public APIUserRoomSettleDetail(roomId: string) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_User_Room_Settle_Detail.API.replace("{id}", GameCache.Instance.room_id.toString()),
+                api: Web_User_Room_Settle_Detail.API.replace("{id}", roomId),
                 request: Web_User_Room_Settle_Detail,
                 onSuccess: function () {
                     resolve(Web_User_Room_Settle_Detail.Response);
