@@ -2876,6 +2876,10 @@ ServerErrorCode_20018=带入小于最小限制
 ServerErrorCode_20019=您已被禁止提豆，如有疑问请联系客服
 ServerErrorCode_20020=登录失败
 ServerErrorCode_20021=您有多笔充值订单未支付，请去记录中查看
+
+ServerErrorCode_20031=用户已有公会
+ServerErrorCode_20032=用户已申请创建公会
+
 ServerErrorCode_31001=减少筹码
 ServerErrorCode_31002=不在投注时间
 ServerErrorCode_31003=占座
