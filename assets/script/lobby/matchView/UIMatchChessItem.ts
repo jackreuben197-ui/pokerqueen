@@ -22,7 +22,7 @@ export default class UIMatchChessItem extends UIBase {
 
     initView() {
         let sb = this._data.sb / 100;
-        this.node.getChildByName("lbl_center_left").getComponent(cc.Label).string = `${sb}/${sb * 2}${this._data.ante}`;
+        this.node.getChildByName("lbl_center_left").getComponent(cc.Label).string = `${sb}/${sb * 2}(${this._data.ante})`;
 
         this.node.getChildByName("item_choose").active = this._data.participation_status != 0;
         this.node.getChildByName("item_normal").active = this._data.participation_status == 0;
@@ -32,10 +32,6 @@ export default class UIMatchChessItem extends UIBase {
             this.node.getChildByName("lbl_time").getComponent(cc.Label).string = `${duration}h/${duration}h`
         }
         this.node.getChildByName("lbl_deskName").getComponent(cc.Label).string = this._data.name;
-
-
-        // this.node.getChildByName("item_choose").active = false;
-        // this.node.getChildByName("item_normal").active = true;
 
         this.node.getChildByName("lbl_num").getComponent(cc.Label).string = `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`;
         this.node.off(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);

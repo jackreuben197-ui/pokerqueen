@@ -15,6 +15,16 @@ export default class DeskNameTempModel {
     getName(nameKey: string) {
         let [key, _] = nameKey.split("-")
         let msg = this._data.get(key);
-        return msg[`${i18nMgr.language}_name`];
+        if (msg) {
+            return msg[`${this.languageFlag}_name`];
+        }
+        return nameKey;
+    }
+
+    get languageFlag() {
+        if (i18nMgr.language == "en") return "us";
+        if (i18nMgr.language == "pt") return "br";
+        return i18nMgr.language
+
     }
 }
