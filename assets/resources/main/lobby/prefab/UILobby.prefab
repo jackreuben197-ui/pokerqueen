@@ -4030,7 +4030,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "room_left",
+    "_name": "room_NLH",
     "_objFlags": 0,
     "_parent": {
       "__id__": 104
@@ -4984,7 +4984,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "room_up",
+    "_name": "room_Plus6",
     "_objFlags": 0,
     "_parent": {
       "__id__": 104
@@ -5938,7 +5938,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "room_down",
+    "_name": "room_456",
     "_objFlags": 0,
     "_parent": {
       "__id__": 104

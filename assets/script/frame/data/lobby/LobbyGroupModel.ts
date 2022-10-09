@@ -41,10 +41,14 @@ export default class LobbyGroupModel {
     }
 
     getGroupByType(type: GameType) {
-        return this._data.get(type);
+        let group = this._data.get(type);
+        if (!group) {
+            group = { game_type: type, count: 0, player_count: 0, poker_type: type == GameType.Plus6 ? PokerType.SixPlus : PokerType.Normal }
+        }
+        return group;
     }
 
-    get omahaGroup():TLobbyGroup {
+    get omahaGroup(): TLobbyGroup {
         let v4 = this.getGroupByType(GameType.Omaha4);
         let v5 = this.getGroupByType(GameType.Omaha5);
         let v6 = this.getGroupByType(GameType.Omaha6);

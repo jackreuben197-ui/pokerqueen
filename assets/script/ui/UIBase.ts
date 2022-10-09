@@ -54,10 +54,15 @@ export default class UIBase extends BaseComponent {
             sp.spriteFrame = null;
             return;
         }
+
+        let flagId = CCTools.onceNotRepeatNum;
+        sp.node["flagId"] = flagId;
         this.loadAsset(url, (spriteframe) => {
             if (this.nodeIsValid(sp)) {
-                sp.spriteFrame = spriteframe;
-                Boolean(cb) && cb(spriteframe);
+                if (sp.node["flagId"] && sp.node["flagId"] == flagId) {
+                    sp.spriteFrame = spriteframe;
+                    Boolean(cb) && cb(spriteframe);
+                }
             }
         }, cc.Texture2D);
     }

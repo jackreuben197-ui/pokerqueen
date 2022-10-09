@@ -30,31 +30,31 @@ export default class WebImageHelper {
         }
     }
     public static SetUrlImage(rawImage: cc.Sprite, url: string, defaultImage?: cc.SpriteFrame) {
-     return   new Promise<void>((resolve, reject) => {
-        let fixUrl = url.replace("http:", "https:");
-        let spriteFrame = this.mUrlTexture.get(fixUrl);
+        return new Promise<void>((resolve, reject) => {
+            let fixUrl = url.replace("http:", "https:");
+            let spriteFrame = this.mUrlTexture.get(fixUrl);
 
-        if (spriteFrame) {
-            rawImage.spriteFrame = spriteFrame;
-        }
-        else {
+            if (spriteFrame) {
+                rawImage.spriteFrame = spriteFrame;
+            }
+            else {
 
-            if (defaultImage) rawImage.spriteFrame = defaultImage;
+                if (defaultImage) rawImage.spriteFrame = defaultImage;
 
-            if (url == null || url == "" || url == "-1") return;
+                if (url == null || url == "" || url == "-1") return;
 
-            cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
-                if (err) {
+                cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
+                    if (err) {
 
-                } else {
-                    let spriteframe = new cc.SpriteFrame(asset);
-                    rawImage.spriteFrame = spriteframe;
-                    this.mUrlTexture.set(url, spriteframe);
-                    resolve();
-                }
-            })
-        }
+                    } else {
+                        let spriteframe = new cc.SpriteFrame(asset);
+                        rawImage.spriteFrame = spriteframe;
+                        this.mUrlTexture.set(url, spriteframe);
+                        resolve();
+                    }
+                })
+            }
 
-      })
+        })
     }
 }
