@@ -19,10 +19,10 @@ export class StringHelper {
             return "0";
         }
         if (num > 0) {
-            return `+${num / 100 ^ 0}`;
+            return `+${num / 100 }`;
         }
         else {
-            return `${num / 100^ 0}`;
+            return `${num / 100}`;
         }
     }
     /**
