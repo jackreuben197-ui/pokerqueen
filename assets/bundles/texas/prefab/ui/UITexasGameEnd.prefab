@@ -33,23 +33,23 @@
         "__id__": 74
       },
       {
-        "__id__": 162
+        "__id__": 163
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 168
-      },
-      {
         "__id__": 169
       },
       {
         "__id__": 170
+      },
+      {
+        "__id__": 171
       }
     ],
     "_prefab": {
-      "__id__": 171
+      "__id__": 172
     },
     "_opacity": 255,
     "_color": {
@@ -1035,7 +1035,7 @@
         "__id__": 33
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [],
     "_prefab": {
       "__id__": 36
@@ -1198,7 +1198,7 @@
       "__id__": 28
     },
     "_enabled": true,
-    "i18n_string": "UITexasGameEnding_allhand",
+    "i18n_string": "UICareerRecord",
     "_id": ""
   },
   {
@@ -1241,7 +1241,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text",
+    "_name": "m_ZhanJi",
     "_objFlags": 0,
     "_parent": {
       "__id__": 27
@@ -1320,9 +1320,9 @@
     "_dstBlendFactor": 771,
     "_string": "Label",
     "_N$string": "Label",
-    "_fontSize": 40,
-    "_lineHeight": 40,
-    "_enableWrapText": true,
+    "_fontSize": 54,
+    "_lineHeight": 54,
+    "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -1332,7 +1332,7 @@
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 1,
+    "_N$overflow": 2,
     "_N$cacheMode": 0,
     "_id": ""
   },
@@ -1579,7 +1579,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text",
+    "_name": "m_ZongShou",
     "_objFlags": 0,
     "_parent": {
       "__id__": 37
@@ -1658,9 +1658,9 @@
     "_dstBlendFactor": 771,
     "_string": "Label",
     "_N$string": "Label",
-    "_fontSize": 40,
-    "_lineHeight": 40,
-    "_enableWrapText": true,
+    "_fontSize": 54,
+    "_lineHeight": 54,
+    "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -1670,7 +1670,7 @@
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 1,
+    "_N$overflow": 2,
     "_N$cacheMode": 0,
     "_id": ""
   },
@@ -2632,17 +2632,17 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 159
+        "__id__": 160
       },
       {
         "__id__": 80
       },
       {
-        "__id__": 160
+        "__id__": 161
       }
     ],
     "_prefab": {
-      "__id__": 161
+      "__id__": 162
     },
     "_opacity": 255,
     "_color": {
@@ -2709,14 +2709,14 @@
         "__id__": 79
       },
       {
-        "__id__": 156
+        "__id__": 157
       },
       {
-        "__id__": 157
+        "__id__": 158
       }
     ],
     "_prefab": {
-      "__id__": 158
+      "__id__": 159
     },
     "_opacity": 255,
     "_color": {
@@ -2936,11 +2936,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 154
+        "__id__": 155
       }
     ],
     "_prefab": {
-      "__id__": 155
+      "__id__": 156
     },
     "_opacity": 255,
     "_color": {
@@ -3120,7 +3120,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "ItemInfo",
+    "_name": "UserInfoItem",
     "_objFlags": 0,
     "_parent": {
       "__id__": 81
@@ -3164,9 +3164,13 @@
       }
     ],
     "_active": true,
-    "_components": [],
+    "_components": [
+      {
+        "__id__": 153
+      }
+    ],
     "_prefab": {
-      "__id__": 153
+      "__id__": 154
     },
     "_opacity": 255,
     "_color": {
@@ -3563,7 +3567,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Sprite(Splash)",
+    "_name": "MemberIcon",
     "_objFlags": 0,
     "_parent": {
       "__id__": 95
@@ -4837,7 +4841,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Image_rankicon",
+    "_name": "Image_rankicon1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 86
@@ -5055,7 +5059,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Image_rankiconsecond",
+    "_name": "Image_rankicon2",
     "_objFlags": 0,
     "_parent": {
       "__id__": 86
@@ -5274,7 +5278,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Image_rankiconthird",
+    "_name": "Image_rankicon3",
     "_objFlags": 0,
     "_parent": {
       "__id__": 86
@@ -5492,6 +5496,16 @@
     "sync": false
   },
   {
+    "__type__": "f3da4upq+lOeq30IBDT/69q",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 86
+    },
+    "_enabled": true,
+    "_id": ""
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -5622,7 +5636,7 @@
     "node": {
       "__id__": 74
     },
-    "_enabled": true,
+    "_enabled": false,
     "_materials": [
       {
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
@@ -5694,13 +5708,13 @@
     },
     "_children": [
       {
-        "__id__": 163
+        "__id__": 164
       }
     ],
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 167
+      "__id__": 168
     },
     "_opacity": 255,
     "_color": {
@@ -5754,20 +5768,20 @@
     "_name": "Text",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 162
+      "__id__": 163
     },
     "_children": [],
     "_active": true,
     "_components": [
       {
-        "__id__": 164
+        "__id__": 165
       },
       {
-        "__id__": 165
+        "__id__": 166
       }
     ],
     "_prefab": {
-      "__id__": 166
+      "__id__": 167
     },
     "_opacity": 255,
     "_color": {
@@ -5821,7 +5835,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 163
+      "__id__": 164
     },
     "_enabled": true,
     "_materials": [
@@ -5854,7 +5868,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 163
+      "__id__": 164
     },
     "_enabled": true,
     "i18n_string": "UIGameEndTips",

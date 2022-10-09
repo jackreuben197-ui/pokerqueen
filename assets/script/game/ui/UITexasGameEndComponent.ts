@@ -7,6 +7,7 @@ import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import { UITexasModel } from "../UITexasModel";
+import UITexasGameEndItem from "./UITexasGameEndItem";
 
 
 
@@ -24,6 +25,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UITexasGameEndComponent extends UIBase {
 
+    
 
     Button_back: cc.Node = null;
 
@@ -37,8 +39,19 @@ export default class UITexasGameEndComponent extends UIBase {
 
     img_head: cc.Sprite = null;
 
+    m_ZhanJi:cc.Label = null;
+
+    UserInfoItem:UITexasGameEndItem = null;
+
+    UserInfoPool:cc.Node[]= [];
+
+    content:cc.Node = null;
+
+    UserInfoItems : cc.Node[]= [];
 
     private mRoomId: string = null;
+
+    
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -49,14 +62,25 @@ export default class UITexasGameEndComponent extends UIBase {
         this.gameObject = this.getChildNodeOrComponent("GameObject");
         this.tips = this.getChildNodeOrComponent("tips");
 
-        this.m_ZongShou = this.getChildNodeOrComponent("ZongShou", cc.Label);
+        this.m_ZongShou = this.getChildNodeOrComponent("m_ZongShou", cc.Label);
         this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
+        this.m_ZhanJi = this.getChildNodeOrComponent("m_ZhanJi", cc.Label);
+
+        this.content = this.getChildNodeOrComponent("content");
+
+        this.UserInfoItem = this.getChildNodeOrComponent("UserInfoItem", UITexasGameEndItem);
+
+        this.UserInfoItem.node.active = false;
     }
     protected regiterTouchEvents(): void {
         this.Button_back.getChildByName("BtnArea").on("click", this.onBackClick, this);
     }
-
-
+    lateClose(params?: any): void {
+        super.lateClose(params);
+        while(this.UserInfoItems.length){
+            this.removeUserInfoItem(this.UserInfoItems.shift());
+        }
+    }
     onShow(param?: RecordDetailForNormalData): void {
         super.onShow(param);
         this.mRoomId = param.roomID;
@@ -91,18 +115,23 @@ export default class UITexasGameEndComponent extends UIBase {
         }
     }
     private SetMyData(score: number, hand: number): void {
-        // m_ZhanJi.text = string.Format("{0:N0}", StringHelper.GetLongString(score));
+        this.m_ZhanJi.string = StringHelper.FormatToString("{0:N0}", StringHelper.GetLongString(score));
         this.m_ZongShou.string = StringHelper.FormatToString("{0:N0}", hand);
         WebImageHelper.SetUrlImage(this.img_head, GameCache.Instance.headPic);
         this.img_head.node.parent.active = true;
     }
-
     private InitSuperView(response: typeof Web_User_Room_Settle_Detail.Response): void {
-        //this.mLoopListView = rc.Get<GameObject>("UserInfoView").GetComponent<LoopListView2>();
-        //mLoopListView.mOnEndDragAction = OnEndDrag;
-        //mLoopListView.mOnDragingAction = OnDownMoreDragAction;
-        //this.UICareerRecordViewCall(EnumLoadType.Init, pAct);
-        //this.isFirstClickView = true;
+        let list:typeof Web_User_Room_Settle_Detail.UsersInfo[] = response.data.list;
+        for(let i = 0 ; i < list.length;i++){
+            let info = list[i];
+            let userInfoNode :cc.Node = this.getUserInfoItem();
+            let userInfoItem:UITexasGameEndItem = userInfoNode.getComponent(UITexasGameEndItem);
+            userInfoItem.index = i+1;
+            userInfoItem.node.active = true;
+            userInfoItem.node.parent = this.content;
+            userInfoItem.onShow(info);
+            this.UserInfoItems.push(userInfoItem.node);
+        }
     }
     private ShowEndTips(isTrue: boolean): void {
         this.tips.active = isTrue;
@@ -111,10 +140,17 @@ export default class UITexasGameEndComponent extends UIBase {
         this.gameObject.active = !isTrue;
         this.DetailImage.active = !isTrue;
     }
-
-
     private onBackClick() {
         UIComponent.close(UIDefine.UITexasGameEndComponent);
+    }
+
+    private getUserInfoItem():cc.Node{
+        if(this.UserInfoPool.length) return this.UserInfoPool.shift();
+        return cc.instantiate(this.UserInfoItem.node);
+    }
+    private removeUserInfoItem(node:cc.Node){
+        node.parent = null;
+        this.UserInfoPool.push(node);
     }
 
 }
