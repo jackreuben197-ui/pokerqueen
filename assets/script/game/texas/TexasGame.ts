@@ -1783,19 +1783,24 @@ export default class TexasGame {
     /// 重置公共牌Id
     /// </summary>
     public ResetPublicCardsId(): void {
-        if (null == this.cards)
-            this.cards = [];
-        if (this.cards.length == this.uirc.listCards.length) {
-            for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
-                this.cards[i] = -1;
-            }
+        // if (null == this.cards)
+        //     this.cards = [];
+        // if (this.cards.length == this.uirc.listCards.length) {
+        //     for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+        //         this.cards[i] = -1;
+        //     }
+        // }
+        // else {
+        //     this.cards = [];
+        //     for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+        //         this.cards.push(-1);
+        //     }
+        // }
+        this.cards = [];
+        for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
+            this.cards.push(-1);
         }
-        else {
-            this.cards = [];
-            for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
-                this.cards.push(-1);
-            }
-        }
+
     }
 
     /// <summary>
@@ -2841,6 +2846,7 @@ export default class TexasGame {
         if (null != this.cards) {
             this.cards = []
             this.cards = null;
+            console.log(">>>>>>>>>>>>> cards = null");
         }
         if (null != this.secondCards) {
             this.secondCards = []
@@ -2905,7 +2911,7 @@ export default class TexasGame {
         // this.barrageCountDown = -1;
         // this.barrageAnimationSequence = DOTween.Sequence();
         // GameCache.Instance.IsAllowOpenDanmu = true;
-        // this.cacheBuyInsurancePotUserCount = 0;
+        this.cacheBuyInsurancePotUserCount = 0;
         // this.VIPTipsStatus = TipsStatus.isStop;
         // this.VipTipslist.Clear();
 
@@ -3004,19 +3010,13 @@ export default class TexasGame {
         // sequencePlayEndPublicCardsAnimation = null;
     }
 
-    ClearUI() {
-        UIComponent.Instance.HideNoAnimation(this.uirc.UIAddChips.node);
-        UIComponent.Instance.HideNoAnimation(this.uirc.UIOutChips.node);
-        this.uirc.hideMenu(false);
-    }
+   
     /**
      * 退出
      */
     Dispose() {
 
         console.log("TexasGame Dispose");
-
-        this.ClearUI();
 
         this.RemoveMsgHandler();
 
@@ -3027,8 +3027,8 @@ export default class TexasGame {
         this.KillAllTweener();
 
         // 清空公共牌
-        if (null != this.uirc?.listCards)
-            this.uirc.listCards = [];
+        // if (null != this.uirc?.listCards)
+        //     this.uirc.listCards = [];
 
         // 清空座位
         if (null != this.listSeat) {

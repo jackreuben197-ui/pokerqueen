@@ -9,16 +9,20 @@ export class StringHelper {
     static getStringDiv100(num: number): string {
         return `${num / 100 ^ 0}`;
     }
+    static GetLongString(num:number):string{
+
+        return `${num / 100}`;
+    }
 
     static GetSignedLongString(num: number): string {
         if (num == 0) {
             return "0";
         }
         if (num > 0) {
-            return `+${num / 100}`;
+            return `+${num / 100 ^ 0}`;
         }
         else {
-            return `${num / 100}`;
+            return `${num / 100^ 0}`;
         }
     }
     /**
@@ -49,14 +53,19 @@ export class StringHelper {
      * @param num 
      * @returns 
      */
-    public static FormatToString(format: string = null, num: number = 0) {
+    public static FormatToString(format: string = null, num: number|string = 0) {
         let str = num.toString();
+        let op = "";
+        if(str[0] == "-") {
+            op = "-";
+            str = str.substring(1);
+        }
         switch (format) {
             case "{0:N0}"://转换成 1,000,000 格式
                 str = this.__N0(str);
                 break;
         }
-        return str;
+        return op + str;
     }
     private static __N0(str: string) {
         let len = str.length;

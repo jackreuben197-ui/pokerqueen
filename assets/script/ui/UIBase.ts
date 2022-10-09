@@ -7,9 +7,11 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIBase extends BaseComponent {
-    static load_all_objects_duration: number = 0;
-    show_animation: boolean = false;
-    close_animation: boolean = false;
+    // 索引
+    public index:number = 0;
+
+    public show_animation: boolean = false;
+    public lose_animation: boolean = false;
 
     private _prefabs: Map<string, UIBase> = new Map();
 
