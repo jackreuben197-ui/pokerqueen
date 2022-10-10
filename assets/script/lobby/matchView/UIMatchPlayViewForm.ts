@@ -1,6 +1,9 @@
 import { UIDefine, UIDefineType } from "../../define/UIDefine";
+import GGEvent from "../../event/GGEvent";
 import { GameCache } from "../../game/GameCache";
 import { GameType } from "../../game/GameUtil";
+import WebImageHelper from "../../helper/WebImageHelper";
+import { Web_User_Info } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -64,7 +67,30 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this._curType = EMatchViewTabType.no;
 
         this.initTopUI();
+        this.refreshHeadImg();
+        this.refreshUserName();
         this.switchTab(EMatchViewTabType.chess);
+    }
+
+    /**
+     * 注册广播事件
+     */
+     protected regiterDispatchEvent() {
+        this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
+        this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
+    }
+
+    refreshHeadImg() {
+        let img_head: cc.Sprite = this.getChildNodeOrComponent("user_icon", cc.Sprite);
+        img_head.node.active = false;
+        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(() => {
+            img_head.node.active = true;
+        });
+    }
+
+    refreshUserName() {
+        let lbl_nickname = this.getChildNodeOrComponent("Text_LeftTop", cc.Label);
+        lbl_nickname.string = Web_User_Info.Response.data.user.nickname;
     }
 
     private initTopUI(): void {
