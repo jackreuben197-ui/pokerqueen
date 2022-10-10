@@ -124,7 +124,7 @@ export const UIDefine = {
         Name: "UIMine_About",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_About",
-        Title: "",
+        Title: "UIMine_SettingAboutus",
     },
     
     //房间模版

@@ -3158,6 +3158,7 @@ UIExchangeRatio=R$ 1=1 Ficha
 UIMine_CustomerService_Connect=Conectar
 UIMine_CustomerService=Atendimento ao Cliente
 UIWebViewURL=https://h5.olavamos.com/#/?lan=pt_BR
+UIAboutURL=https://h5.olavamos.com/#/introduce?lan=pt_BR
 
 
 

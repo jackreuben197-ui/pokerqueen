@@ -3157,6 +3157,7 @@ UIExchangeRatio=R$ 1=1 Chip
 UIMine_CustomerService_Connect=Connect
 UIMine_CustomerService=Customer Service
 UIWebViewURL=https://h5.olavamos.com/#/
+UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
 
