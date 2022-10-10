@@ -3,6 +3,7 @@ import { GameCache } from "../../game/GameCache";
 import { GameType } from "../../game/GameUtil";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
 import { EMatchViewTabType } from "./MatchViewConfig";
 
 
@@ -13,6 +14,7 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/matchView/UIMatchPlayViewForm')
 export default class UIMatchPlayViewForm extends BaseForm {
+    private gold_Bg: cc.Node = null;
     private lbl_glod: cc.Label = null;
     private lbl_name: cc.Label = null;
     private tabBtnsParent: cc.Node = null;
@@ -38,6 +40,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
 
+        this.gold_Bg = this.getChildNodeOrComponent("gold_bg");
         this.lbl_glod = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
         this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
 
@@ -49,9 +52,10 @@ export default class UIMatchPlayViewForm extends BaseForm {
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.tabBtnsParent.children.forEach((item, index) => {
-            item["index"] = index;
-            item.on(cc.Node.EventType.TOUCH_END, this.onClickTabBtns, this)
+            this.bindClick(item, this.onClickTabBtns, index);
         })
+
+        this.bindClick(this.gold_Bg, this.clickGoldBg);
     }
 
     onShow(gameType?: GameType, fromUI?: BaseForm) {
@@ -68,11 +72,12 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this.lbl_name.string = GameCache.Instance.nick.toString();
     }
 
-    private onClickTabBtns(e: cc.Event.EventTouch): void {
-        let target: cc.Node = e.target;
-        let index = target["index"];
-
+    private onClickTabBtns(index: number): void {
         this.switchTab(index);
+    }
+
+    private clickGoldBg() {
+        UIComponent.open(UIDefine.MyWalletForm)
     }
 
 
