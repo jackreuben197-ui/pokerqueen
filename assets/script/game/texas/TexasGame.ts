@@ -1140,7 +1140,6 @@ export default class TexasGame {
         return [mFirstCard, mSecondCard];
     }
 
-
     /// <summary>
     /// 显示花费查看公共牌提示
     /// </summary>
@@ -1149,10 +1148,6 @@ export default class TexasGame {
         this.uirc.textSeeMorePublicTips.string = content;
         this.uirc.imageSeeMorePublicTips.active = true;
     }
-
-
-
-
     // 重置位置信息
     public ResetSeatUIInfo(clientSeatId: number): void {
         if (clientSeatId == 0)
@@ -1169,19 +1164,12 @@ export default class TexasGame {
             mSeat.ui.name = `Seat${tmp}`;
 
             this.dicSeatOnlyClient.set(tmp, mSeat);
-            // tweenerResetSeatUIInfo = mSeat.Trans.DOLocalMove(mInfos[tmp].Pos, 0.3f).OnComplete(() => {
-            //     mSeat.InitSeatUIInfo(mInfos[tmp], listSeat.length);
-            // });
+            //座位位移
             cc.tween(mSeat.ui).to(0.3, { position: mInfos[tmp].Pos }).call(() => {
                 mSeat.InitSeatUIInfo(mInfos[tmp], this.listSeat.length);
             }).start();
 
         }
-
-        // PlayGameAnimation(GameAnimation.ResetSeatUIInfo);
-        // tweenerResetSeatUIInfo.onComplete += () => {
-        //     // StopGameAnimation(GameAnimation.ResetSeatUIInfo);
-        // };
     }
     /// <summary>
     /// 通过客户端位置获取位置对象
@@ -1517,8 +1505,6 @@ export default class TexasGame {
         return false;
     }
 
-
-
     /// <summary>
     /// 播放发牌动画
     /// </summary>
@@ -1538,8 +1524,9 @@ export default class TexasGame {
         mSeat = this.GetSeatByLocalSeatID(this.bankerIndex);
 
         if (null != mSeat) {
-            let rtween = mSeat.PlayBankerAnimation(tween);
-            rtween?.delay(0.2);
+            //let rtween = mSeat.PlayBankerAnimation(tween);
+            //rtween?.delay(0.2);
+            tween.delay(mSeat.PlayBankerAnimation() + 0.2);
         }
         // 前注
         if (this.groupBet > 0) {
@@ -3010,7 +2997,7 @@ export default class TexasGame {
         // sequencePlayEndPublicCardsAnimation = null;
     }
 
-   
+
     /**
      * 退出
      */

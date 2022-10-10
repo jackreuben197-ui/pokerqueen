@@ -957,30 +957,31 @@ export default class Seat {
     /// <summary>
     /// 播放庄家动画
     /// </summary>
-    /// <returns></returns>
-    public PlayBankerAnimation(tween?: cc.Tween): cc.Tween {
-        if (GameCache.Instance.CurGame.lastBankerIndex == -1 || this.seatID == GameCache.Instance.CurGame.lastBankerIndex)
-            return null;
+    /// <returns>返回庄家标志运动时间</returns> 
+    public PlayBankerAnimation(): number {
 
-        let mSeat: Seat = GameCache.Instance.CurGame.GetSeatByLocalSeatID(GameCache.Instance.CurGame.lastBankerIndex);
-        if (null == mSeat) return null;
 
-        mSeat.uirc.imageBanker.active = false;
-        this.uirc.imageBanker.setPosition(GameUtil.ChangeToLocalPos(mSeat.seatUIInfo.BankerPos, mSeat.ui, this.ui));
-        this.uirc.imageBanker.active = true;
+        let lastBankerIndex = GameCache.Instance.CurGame.lastBankerIndex;
 
-        if (tween) {
-            tween.then(cc.callFunc(() => {
-                cc.tween(this.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).call(() => { cc.log("运动结束") }).start();
-            }))
-            tween.delay(.3);
-        } else {
-            tween = cc.tween();
-            tween.sequence(cc.callFunc(() => {
-                cc.tween(this.uirc.imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).call(() => { cc.log("运动结束") }).start();
-            }), cc.delayTime(.3));
+        let lastBankerSeat = GameCache.Instance.CurGame.GetSeatByLocalSeatID(lastBankerIndex);
+
+        if (lastBankerIndex == -1 || lastBankerIndex == this.seatID || lastBankerSeat == null) {
+            return 0;
         }
-        return tween;
+        lastBankerSeat.uirc.imageBanker.active = false;
+
+        //设置banker位置为上把庄家位置在当前节点内的相对位置，做运动准备
+
+        let imageBanker: cc.Node = this.uirc.imageBanker;
+
+        imageBanker.setPosition(GameUtil.ChangeToLocalPos(lastBankerSeat.seatUIInfo.BankerPos, lastBankerSeat.ui, this.ui));
+
+        imageBanker.active = true;
+
+        cc.tween(imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).start();
+
+        return 0.3;
+
     }
 
 
