@@ -49,20 +49,20 @@ export default class UITexasSettingComponent extends UIBase {
             UIComponent.close(this.UIDefine);
         }, this);
 
-        let image0 = cc.find('Background/Image0', this.Toggle_Voice);
-        let image1 = cc.find('Background/Image1', this.Toggle_Voice);
+        let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
+        let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
         if (!localStorage.getItem(StorageKey.soundIsOpen)) {
             this.soundIsOpen = true;
-            image0.active = false
-            image1.active = true;
+            closeVoice.active = false
+            openVoice.active = true;
         }
         else if (localStorage.getItem(StorageKey.soundIsOpen) == 1 + '') {
-            image0.active = false
-            image1.active = true;
+            closeVoice.active = false
+            openVoice.active = true;
             this.soundIsOpen = true;
         } else {
-            image0.active = true
-            image1.active = false;
+            closeVoice.active = true
+            openVoice.active = false;
             this.soundIsOpen = false;
         }
 
@@ -233,15 +233,15 @@ export default class UITexasSettingComponent extends UIBase {
     }
 
     onValueChangedVoice() {
-        let image0 = cc.find('Background/Image0', this.Toggle_Voice);
-        let image1 = cc.find('Background/Image1', this.Toggle_Voice);
+        let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
+        let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
         this.soundIsOpen = !this.soundIsOpen
         if (this.soundIsOpen) {
-            image0.active = false
-            image1.active = true;
+            closeVoice.active = false
+            openVoice.active = true;
         } else {
-            image0.active = true
-            image1.active = false;
+            closeVoice.active = true
+            openVoice.active = false;
         }
         localStorage.setItem(StorageKey.soundIsOpen, this.soundIsOpen ? 1 + "" : 0 + "")
     }
