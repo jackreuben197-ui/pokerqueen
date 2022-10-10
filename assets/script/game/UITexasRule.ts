@@ -51,19 +51,19 @@ export default class UITexasRule extends UIBase {
             const element = this.titelGroup.children[index];
 
             let text = element.getChildByName('text');
-            text.color = new cc.Color().fromHEX("#C6C6C6");
+            text.color = new cc.Color().fromHEX("#FFFFFF");
             let Checkmark = text.getChildByName('Checkmark');
             Checkmark.active = false;
         }
         event.node.getChildByName('text').getChildByName('Checkmark').active = true
-        event.node.getChildByName('text').color = new cc.Color().fromHEX("#FFFFFF");
+        event.node.getChildByName('text').color = new cc.Color().fromHEX("#35A3B3");
         this.setWidgetState(event.node['index'])
     }
     setWidgetState(index = 0) {
-        this.ScrollView.active = false;
+        this.RulerText.node.active = false;
         this.CardType.active = false;
         if (index == 0) {
-            this.ScrollView.active = true;
+            this.RulerText.node.active = true;
             let rulerStr = "";
             if (GameCache.Instance.game_type == GameType.Holdem) {
                 rulerStr = i18nMgr.Get("UITexasRule_Introduce");
