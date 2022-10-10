@@ -34,10 +34,10 @@ export default class WebImageHelper {
             let fixUrl = url.replace("http:", "https:");
             let spriteFrame = this.mUrlTexture.get(fixUrl);
 
-            if (spriteFrame) {
-                rawImage.spriteFrame = spriteFrame;
-            }
-            else {
+            // if (spriteFrame) {
+                // rawImage.spriteFrame = spriteFrame;
+            // }
+            // else {
 
                 if (defaultImage) rawImage.spriteFrame = defaultImage;
 
@@ -53,7 +53,7 @@ export default class WebImageHelper {
                         resolve();
                     }
                 })
-            }
+            // }
 
         })
     }
