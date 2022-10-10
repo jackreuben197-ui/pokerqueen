@@ -23,7 +23,7 @@ export default class UIMatchChessView extends UIBase {
     private sbTab: cc.Node = null;
 
 
-    private _gameTypeName = ["NLH", "PL4", "PL5", "PL6", "6+"];
+    private _gameTypeName = ["NLH", "PLO4", "PLO5", "PLO6", "6+"];
     private _curGameType: GameType = null;
     private _roomList: LobbyRoomListModel = null;
     private _isClub: boolean = false;
