@@ -38,6 +38,27 @@ export default class UIMatchChessItem extends UIBase {
         this.node.on(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
 
         this.bindClick(this.node, this.EnterRoomAPI)
+
+        let str = "";
+        if (this._data.game_type == 0) {
+            if (this._data.poker_type == 0) {
+                str = "NLH";
+            } else if (this._data.poker_type == 2) {
+                str = "6+";
+            }
+        } else {
+            if (this._data.game_type == 1) {
+                str = "PLO4";
+            } else if (this._data.game_type == 2) {
+                str = "PLO5";
+            } else if (this._data.game_type == 3) {
+                str = "PLO6";
+            }
+        }
+        let lbl_choose = this.node.getChildByName("item_choose").getChildByName("lbl_choose");
+        lbl_choose.getComponent(cc.Label).string = str;
+        let lbl_normal = this.node.getChildByName("item_normal").getChildByName("lbl_normal");
+        lbl_normal.getComponent(cc.Label).string = str;
     }
 
 
