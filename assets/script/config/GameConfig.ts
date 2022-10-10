@@ -23,10 +23,10 @@ export class GameConfig {
     //2: http://dev1.awanptesting.com 
     //3: https://test1.awanptesting.com  
     //4: https://dev1.awanptesting.com 
-    static BuildType: number = 0;
+    static BuildType: number = 3;
 
     //版本号
-    static Version: string = "20220927";
+    static Version: string = "20221010_1830";
 
     static Default_Language: string = "en";
     //是否使用代理

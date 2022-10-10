@@ -1574,25 +1574,24 @@ export default class TexasGame {
         //从小盲位置开始发牌
         let mStartPos: cc.Vec3 = this.uirc.node.convertToWorldSpaceAR(cc.Vec3.ZERO);
 
-        let mIsFirst = true;
-        let mTmpIndex = 0;
 
-        let spawn = [];
+        let mTmpIndex = 0;
 
         for (let i = this.smallIndex, n = i + GameCache.Instance.seat_count; i < n; i++) {
             let index = i % GameCache.Instance.seat_count;
-            mSeat = this.listSeat[i];
+            let mSeat = this.listSeat[index];
+            //mSeat = this.listSeat[index];
             if (null == mSeat || null == mSeat.Player || !mSeat.Player.isParticipateInTheGame) continue;
             //spawn.push(cc.tween().sequence(cc.delayTime(0.2 * mTmpIndex), this.listSeat[index].PlayDealAnimation(mStartPos)));
-            this.listSeat[index].PlayDealAnimation(0.2 * mTmpIndex, mStartPos);
-
+            //this.listSeat[index].PlayDealAnimation(0.2 * mTmpIndex, mStartPos);
+            //间隔时间
+            let delayTime: number = 0.2 * mTmpIndex;
             tween.then(cc.callFunc(() => {
-                let ctween = this.listSeat[index].PlayDealAnimation(0.2 * mTmpIndex, mStartPos);
-                ctween.start();
+                mSeat.PlayDealAnimation(delayTime, mStartPos).start();
             }));
 
             if (i == n - 1) {
-                tween.delay(0.2 * mTmpIndex + 0.4);
+                tween.delay(delayTime + 0.4);
             }
             mTmpIndex++;
         }

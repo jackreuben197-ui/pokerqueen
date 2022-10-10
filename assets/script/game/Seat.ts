@@ -1094,6 +1094,7 @@ export default class Seat {
                 tween.then(cc.callFunc(() => {
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
                     mTmpObj.active = true;
+                    
                     cc.tween(mTmpObj).to(.4, { position: pos }).start();
                 }))
             }
