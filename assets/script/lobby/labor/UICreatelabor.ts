@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 16:25:30
+ * @LastEditTime: 2022-10-11 18:00:31
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -31,7 +31,8 @@ export default class UICreatelabor extends BaseForm {
 
     @property(cc.EditBox)
     xinxi: cc.EditBox = null;
-
+    @property(cc.Label)
+    labelNum: cc.Label = null;
     @property(cc.Sprite)
     camera: cc.Sprite = null;
     iconUrl = null;
@@ -73,6 +74,9 @@ export default class UICreatelabor extends BaseForm {
         else {
             UIComponent.Instance.Toast(data.code);
         }
+    }
+    changeIntroduce() {
+        this.labelNum.string = this.editjieshao.string.length + '/50'
     }
     async uploadIcon() {
         await UIClubModel.mInstance.APIOrgClubUploadIcon();
