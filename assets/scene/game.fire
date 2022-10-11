@@ -6010,19 +6010,19 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 2000,
+      "width": 4000,
       "height": 4000
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 1,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -1621,
+        -621,
         0,
         0,
         0,
@@ -6117,19 +6117,19 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 2000,
+      "width": 4000,
       "height": 4000
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        1621,
+        621,
         0,
         0,
         0,
