@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 11:11:18
+ * @LastEditTime: 2022-10-11 14:23:37
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -99,7 +99,7 @@ export default class UIManageLabor extends BaseForm {
             const element = this.iconNodeMer.children[index];
             element.active = false
         }
-        for (let index = 0; index < data?.data.length; index++) {
+        for (let index = 0; index < data?.data?.length; index++) {
 
             const element = this.iconNodeMer.children[index].getChildByName('icon').getComponent(cc.Sprite);
             WebImageHelper.SetUrlImage(element, data?.data[index].avatar)

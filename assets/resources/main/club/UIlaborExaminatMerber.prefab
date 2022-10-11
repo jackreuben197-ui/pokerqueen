@@ -4989,7 +4989,7 @@
       "__uuid__": "77cc046f-291d-49dd-951a-77c53d0ea2f8"
     },
     "_type": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
