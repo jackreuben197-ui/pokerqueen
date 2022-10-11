@@ -1069,7 +1069,7 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
-        let tween = cc.tween(this.uirc.node);
+        let tween = cc.tween({});
 
         tween.delay(delay);
 
@@ -1087,15 +1087,18 @@ export default class Seat {
 
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
             for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
-                this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
+
                 let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
                 let pos = this.GetBackSmallCardPos(i);
+                mTmpObj.setPosition(mLocalPos);
+
+                cc.log("卡牌运动", mLocalPos.toString(), pos.toString());
 
                 tween.then(cc.callFunc(() => {
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
                     mTmpObj.active = true;
-                    
-                    cc.tween(mTmpObj).to(.4, { position: pos }).start();
+                    cc.log("卡牌运动完成");
+                    cc.tween(mTmpObj).to(0.4, { position: pos }).start();
                 }))
             }
             tween.delay(0.4);

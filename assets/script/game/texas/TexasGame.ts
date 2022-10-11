@@ -390,6 +390,11 @@ export default class TexasGame {
 
     IsDispose: boolean = false;
 
+
+    //记录座位运动状态,发牌函数和开局消息
+    SeatPlayRecord = null;
+
+
     constructor() {
         this.messageHandler = new TexasGameMessageHandler(this);
         this.texasGameProtocol = new TexasGameProtocol(this);
@@ -1150,9 +1155,7 @@ export default class TexasGame {
     }
     // 重置位置信息
     public ResetSeatUIInfo(clientSeatId: number): void {
-        if (clientSeatId == 0)
-            return;
-
+        if (clientSeatId == 0) return;
         this.dicSeatOnlyClient.clear();
         let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[this.listSeat.length];
         for (let i = 0, n = mInfos.length; i < n; i++) {
@@ -1167,9 +1170,11 @@ export default class TexasGame {
             //座位位移
             cc.tween(mSeat.ui).to(0.3, { position: mInfos[tmp].Pos }).call(() => {
                 mSeat.InitSeatUIInfo(mInfos[tmp], this.listSeat.length);
+                this.SeatPlayRecord.SeatMove = false;
+                this.SeatPlayRecord.PlayDealFunc?.(this.SeatPlayRecord.StartInfo);
             }).start();
-
         }
+        this.SeatPlayRecord.SeatMove = true;
     }
     /// <summary>
     /// 通过客户端位置获取位置对象
@@ -1576,7 +1581,7 @@ export default class TexasGame {
 
 
         let mTmpIndex = 0;
-
+        let endTime = 0;
         for (let i = this.smallIndex, n = i + GameCache.Instance.seat_count; i < n; i++) {
             let index = i % GameCache.Instance.seat_count;
             let mSeat = this.listSeat[index];
@@ -1586,18 +1591,15 @@ export default class TexasGame {
             //this.listSeat[index].PlayDealAnimation(0.2 * mTmpIndex, mStartPos);
             //间隔时间
             let delayTime: number = 0.2 * mTmpIndex;
+            endTime = delayTime;
             tween.then(cc.callFunc(() => {
                 mSeat.PlayDealAnimation(delayTime, mStartPos).start();
             }));
-
-            if (i == n - 1) {
-                tween.delay(delayTime + 0.4);
-            }
             mTmpIndex++;
         }
+        tween.delay(endTime + 0.4);
 
         if (null != tweenCallback) {
-            cc.log("运动完成");
             this.sequencePlayDealAnimation.IsPlaying = false;
             tween.call(tweenCallback);
         }
@@ -2819,10 +2821,17 @@ export default class TexasGame {
         this.uirc.imageSeeMorePublicTips.active = false;
     }
 
+    //重置座位运动和发牌动画记录
+    public ResetSeatPlayRecord() {
+        this.SeatPlayRecord = {
+            SeatMove: false,
+            PlayDealFunc: null,
+            StartInfo: null,
+        }
+    }
 
     ClearAllData() {
         cc.log("清理所有数据");
-
         this.gamestatus = -1;
         GameCache.Instance.GameStatus = this.gamestatus;
         this.bigIndex = 0;
@@ -2900,6 +2909,7 @@ export default class TexasGame {
         this.cacheBuyInsurancePotUserCount = 0;
         // this.VIPTipsStatus = TipsStatus.isStop;
         // this.VipTipslist.Clear();
+        this.ResetSeatPlayRecord();
 
     }
     ClearAllPlayers() {
