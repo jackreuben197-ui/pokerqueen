@@ -16,6 +16,7 @@ import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { UIClubModel } from "./UIClubModel";
 import { LobbyControl } from "../control/LobbyControl";
 import { GameCache } from "../../game/GameCache";
+import GC from "../../frame/GameControl";
 
 const { ccclass, property } = cc._decorator;
 
@@ -71,7 +72,8 @@ export default class UIPlayerLookLabor extends BaseForm {
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
                 title: "提示",
-                content: `您的账户内剩余金豆${GameCache.Instance.gold}，如减持退出，系统将清空您的所有剩余金豆，是否继续？`,
+                // content: `您的账户内剩余金豆${GameCache.Instance.gold}，如减持退出，系统将清空您的所有剩余金豆，是否继续？`,
+                content: `您的账户内剩余金豆${GC.data.user.info.displayGold}，如减持退出，系统将清空您的所有剩余金豆，是否继续？`,
                 contentCommit: "确定",
                 contentCancel: "取消",
                 actionCommit: async () => {

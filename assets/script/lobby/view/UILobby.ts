@@ -89,7 +89,8 @@ export default class UILobby extends UIBase {
     }
 
     updateBean() {
-        this.lbl_glod.string = GameCache.Instance.gold.toString();
+        this.setText(this.lbl_glod, GC.data.user.info.displayGold)
+        // this.lbl_glod.string = GameCache.Instance.gold.toString();
     }
 
     clickBean() {

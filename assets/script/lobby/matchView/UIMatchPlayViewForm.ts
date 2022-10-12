@@ -1,5 +1,6 @@
 import { UIDefine, UIDefineType } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
+import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import { GameType } from "../../game/GameUtil";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -94,8 +95,10 @@ export default class UIMatchPlayViewForm extends BaseForm {
     }
 
     private initTopUI(): void {
-        this.lbl_glod.string = GameCache.Instance.gold.toString();
-        this.lbl_name.string = GameCache.Instance.nick.toString();
+        this.setText(this.lbl_glod, GC.data.user.info.displayGold)
+        this.setText(this.lbl_name, GC.data.user.info.nickname);
+        // this.lbl_glod.string = GameCache.Instance.gold.toString();
+        // this.lbl_name.string = GameCache.Instance.nick.toString();
     }
 
     private onClickTabBtns(index: number): void {

@@ -2,6 +2,7 @@
  * 登录内容
  */
 import { GameConfig } from "../config/GameConfig";
+import GC from "../frame/GameControl";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
@@ -191,7 +192,8 @@ export default class LoginSession {
     public static CacheUserInfo(info: typeof Web_User_Info.UserInfo) {
 
         GameCache.Instance.nUserId = info.un_id;
-        GameCache.Instance.gold = info.gold;
+        // GameCache.Instance.gold = info.gold;
+        GC.data.user.info.gold = info.gold;
         GameCache.Instance.strPhone = info.phone;
         GameCache.Instance.kDouNum = 0;
         GameCache.Instance.sex = info.sex;

@@ -1,4 +1,5 @@
 import LobbyData from "../data/lobby/LobbyData";
+import UserInfoData from "../data/user/UserInfoData";
 
 export default class DataManager {
     private static _instance: DataManager = null;
@@ -10,7 +11,9 @@ export default class DataManager {
     }
 
     lobby: LobbyData = null;
+    user: UserInfoData = null;
     init() {
         this.lobby = new LobbyData();
+        this.user = new UserInfoData();
     }
 }

@@ -147,12 +147,13 @@ export default class UITexasReportComponent extends UIBase {
         let element: cc.Node = cc.instantiate(title_viewer);
         element.parent = this.content;
         element.active = true;
-        let text_ReportViewer = cc.find('Image/Text_ReportViewer', element)
+        let text_ReportViewer = cc.find('Text_ReportViewer', element)
         text_ReportViewer.getComponent(cc.Label).string = i18nMgr.Get(`adaptation${20052}`) + '(' + RoomersData.observersList.length + ')';
         //Viewer_List
         let viewer_List: cc.Node = this.getChildNodeOrComponent('Viewer_List');
         let item = viewer_List.getChildByName('item');
         viewer_List.parent = this.content;
+        viewer_List.active = true;
 
         for (let index = 1; index < RoomersData.observersList.length; index++) {
             const element = cc.instantiate(item);
@@ -162,20 +163,22 @@ export default class UITexasReportComponent extends UIBase {
             let tItem: cc.Node = viewer_List.children[index]
             tItem.getChildByName('Text').getComponent(cc.Label).string = RoomersData.observersList[index].name;
             if (RoomersData.observersList[index].avatar != "") {
-                let icon = cc.find('image/mask/icon', tItem);
+                let icon = cc.find('mask/icon', tItem);
                 WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
             }
             tItem.active = true;
-            tItem.getChildByName("ImageGray").active = (RoomersData.observersList[index].sex == 1);
+            cc.find("mask/ImageGray", tItem).active = (RoomersData.observersList[index].sex == 1);
+            // tItem.getChildByName("ImageGray").active = (RoomersData.observersList[index].sex == 1);
 
             let watcherId = RoomersData.observersList[index].userRid;
             // UIEventListener.Get(tItem).onClick = (go) => {
             //     UIComponent.Instance.ShowNoAnimation(UIType.UITexasPlayerInfo, new object[] { watcherId, true });
             // };
         }
-        let param = Web_Room_Center_Rooms.RequestParams
-        param.room_ids = [GameCache.Instance.room_id];
-        let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms(param)
+        // let param = Web_Room_Center_Rooms.RequestParams
+        // param.room_ids = [GameCache.Instance.room_id];
+        // let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms(param)
+        let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms({ room_ids: [GameCache.Instance.room_id] })
         cc.log('roomsInfoData====', roomsInfoData);
         roomsInfoData.data.records.forEach(item => {
             if (item.rid == GameCache.Instance.room_id) {
