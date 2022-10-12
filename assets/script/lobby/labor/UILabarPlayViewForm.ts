@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-12 14:51:53
+ * @LastEditTime: 2022-10-12 17:45:05
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -38,6 +38,8 @@ export default class UILabarPlayViewForm extends UIBase {
     panel_right: cc.Node = null;
     @property(cc.Node)
     tabNode: cc.Node = null;
+    @property(cc.Node)
+    chongzhi: cc.Node = null;
 
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
@@ -118,13 +120,18 @@ export default class UILabarPlayViewForm extends UIBase {
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {
             let isManger: any = APIOrgClubIsManger.Response.data
             if (isManger) {
+                this.chongzhi.active = true;
                 this.tabNode.getChildByName('ghgl').active = true;
                 this.tabNode.getChildByName('ckgh').active = false;
             } else {
+                this.chongzhi.active = false;
                 this.tabNode.getChildByName('ghgl').active = false;
                 this.tabNode.getChildByName('ckgh').active = true;
             }
         })
+
+    }
+    addCoin() {
 
     }
     tostBtnClick() {
