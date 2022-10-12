@@ -3,7 +3,7 @@ import List from "../common/List";
 import { UIDefine } from "../define/UIDefine";
 import GC from "../frame/GameControl";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Recharge_Gold, Web_Tiqu_Gold } from "../net/https/WebRequest";
+import { Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../net/https/WebRequest";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
@@ -23,6 +23,7 @@ export default class GoldOprationForm extends BaseForm {
     private tipLab: cc.Label = null;
 
     private _type: EWalletGoldOpration = EWalletGoldOpration.in;
+    private _isClub: boolean = false;
     private _data: Array<number> = [300, 500, 800, 1000, 2000, 3000]
     lateLoad() {
         super.lateLoad();
@@ -48,9 +49,10 @@ export default class GoldOprationForm extends BaseForm {
         this.bindClick(this.tipNode, this.clickTipNode);
     }
 
-    onShow(type: EWalletGoldOpration): void {
-        super.onShow(type);
-        this._type = type;
+    onShow(data: { type: EWalletGoldOpration, isClub: boolean }): void {
+        super.onShow(data);
+        this._type = data.type;
+        this._isClub = data.isClub;
 
         this.initView();
     }
@@ -97,6 +99,9 @@ export default class GoldOprationForm extends BaseForm {
         if (goldNum) {
             let price = Number(this.priceLab.string);
             let procolType = this._type == EWalletGoldOpration.in ? Web_Recharge_Gold : Web_Tiqu_Gold;
+            if (this._isClub) {
+                procolType = this._type == EWalletGoldOpration.in ? Web_Recharge_Gold_Club : Web_Tiqu_Gold_Club;
+            }
             UIComponent.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
