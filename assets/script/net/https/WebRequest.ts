@@ -769,11 +769,46 @@ export class Web_Recharge_Gold {
         return param;
     }
     public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
-
 }
 export class Web_Tiqu_Gold {
     //接口地址
     public static API: string = "/api/order/user/withdraw";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: { amount: number }) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+
+}
+
+export class Web_Recharge_Gold_Club {
+    //接口地址
+    public static API: string = "/api/order/club/recharge";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: { amount: number }) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+}
+export class Web_Tiqu_Gold_Club {
+    //接口地址
+    public static API: string = "/api/order/club/withdraw";
 
     //字段声明
     public static RequestParams: {

@@ -10,6 +10,7 @@ export default class WalletJumpItem extends UIBase {
     private title: cc.Label = null;
 
     private _data: TWalletGoldOpration = null;
+    private _isClub: boolean = false;
     lateLoad() {
         super.lateLoad();
         this.icon = this.getChildNodeOrComponent("icon", cc.Sprite);
@@ -27,8 +28,9 @@ export default class WalletJumpItem extends UIBase {
     }
 
 
-    initData(data: TWalletGoldOpration) {
+    initData(data: TWalletGoldOpration, isClub: boolean = false) {
         this._data = data;
+        this._isClub = isClub;
 
         if (this._data.icon) {
 
@@ -38,7 +40,7 @@ export default class WalletJumpItem extends UIBase {
     }
 
     clickItem() {
-        UIComponent.open(this._data.goto, this._data.param);
+        UIComponent.open(this._data.goto, { type: this._data.param, isClub: this._isClub });
     }
 
 }
