@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 13:37:38
+ * @LastEditTime: 2022-10-12 14:51:53
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -112,7 +112,7 @@ export default class UILabarPlayViewForm extends UIBase {
 
         UIClubModel.mInstance.APIOrgClubGold(data.random_id).then(() => {
             let data: any = APIOrgClubGold.Response.data
-            lbl_glod.string = data.gold;
+            lbl_glod.string = data.gold / 100 + "";
         })
 
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {

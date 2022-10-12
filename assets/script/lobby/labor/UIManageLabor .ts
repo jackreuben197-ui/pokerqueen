@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-11 14:23:37
+ * @LastEditTime: 2022-10-12 14:52:43
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -74,7 +74,7 @@ export default class UIManageLabor extends BaseForm {
         let _data: any = APIOrgClubGold.Response.data
 
         let jj = this.contentNode.getChildByName('jj')
-        cc.find('img_right_bg/lbl_glod', jj).getComponent(cc.Label).string = _data.gold;
+        cc.find('img_right_bg/lbl_glod', jj).getComponent(cc.Label).string = _data.gold / 100 + '';
         //联盟
         let lm = this.contentNode.getChildByName('lm')
         let lm_panel_right = lm.getChildByName('panel_right')
