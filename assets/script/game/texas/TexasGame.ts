@@ -1296,7 +1296,8 @@ export default class TexasGame {
     /// </summary>
     /// <param name="anteNumber"></param>
     public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false) {
-        if (GameCache.Instance.gold < anteNumber) {
+        // if (GameCache.Instance.gold < anteNumber) {
+        if (GC.data.user.info.gold < anteNumber) {
             UIComponent.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
@@ -2798,7 +2799,8 @@ export default class TexasGame {
             smallBlind: this.smallBlind,
             currentMinRate: this.currentMinRate,
             currentMaxRate: this.currentMaxRate,
-            totalCoin: GameCache.Instance.gold,
+            // totalCoin: GameCache.Instance.gold,
+            totalCoin: GC.data.user.info.gold,
             tableChips: this.mainPlayer.chips
         });
     }

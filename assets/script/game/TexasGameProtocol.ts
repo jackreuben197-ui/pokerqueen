@@ -159,7 +159,8 @@ export default class TexasGameProtocol {
         }
         this.game.mainPlayer.chips = rec.chips;
         this.game.mainPlayer.leavelChips = rec.accountChips;
-        GameCache.Instance.gold = rec.accountChips;
+        // GameCache.Instance.gold = rec.accountChips;
+        GC.data.user.info.gold = rec.accountChips;
         this.game.mainPlayer.cacheStoreChips = rec.storeChips;
 
         this.game.mainPlayer.actionStatus = Def.Action.NONE;
@@ -486,7 +487,8 @@ export default class TexasGameProtocol {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_SEE_MORE_PUBLIC_ACTION, rec.Status)
             return;
         }
-        GameCache.Instance.gold -= this.game.checkPublicCardsCost;
+        // GameCache.Instance.gold -= this.game.checkPublicCardsCost;
+        GC.data.user.info.gold -= this.game.checkPublicCardsCost;
         this.game.cacheRound = rec.round;
         this.game.AddPublicCards(rec.publicCardsList);
         this.game.uirc.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;

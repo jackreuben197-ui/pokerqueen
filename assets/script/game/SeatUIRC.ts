@@ -2,6 +2,7 @@
 
 import { DialogParam } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import GC from "../frame/GameControl";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
@@ -243,7 +244,8 @@ export default class SeatUIRC extends UIBase {
                     smallBlind: GameCache.Instance.CurGame.smallBlind,
                     currentMinRate: GameCache.Instance.CurGame.currentMinRate,
                     currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                    totalCoin: GameCache.Instance.gold,
+                    // totalCoin: GameCache.Instance.gold,
+                    totalCoin: GC.data.user.info.gold,
                     tableChips: this.seat.Player.chips
                 });
         }
