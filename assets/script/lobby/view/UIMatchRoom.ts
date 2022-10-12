@@ -52,7 +52,9 @@ export default class UIMatchRoom extends UIBase {
 
 
     private clickRoom(type: GameType) {
-        UIComponent.open(UIDefine.UIMatchPlayViewForm, type);
+        UIComponent.open(UIDefine.UIMatchPlayViewForm, {
+            type: type,
+            page: 0});
     }
 }
 

@@ -62,15 +62,16 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this.bindClick(this.gold_Bg, this.clickGoldBg);
     }
 
-    onShow(gameType?: GameType, fromUI?: BaseForm) {
-        super.onShow(gameType, fromUI);
-        this._defultGameType = gameType;
+    onShow(data?: any, fromUI?: BaseForm) {
+        super.onShow(data, fromUI);
+        this._defultGameType = data.type;
         this._curType = EMatchViewTabType.no;
+        this.switchTab(data.page);
 
         this.initTopUI();
         this.refreshHeadImg();
         this.refreshUserName();
-        this.switchTab(EMatchViewTabType.chess);
+        // this.switchTab(EMatchViewTabType.chess);
     }
 
     /**
