@@ -392,8 +392,7 @@ export default class TexasGame {
 
 
     //记录座位运动状态,发牌函数和开局消息
-    SeatPlayRecord = null;
-
+    SeatPlayRecord: any = null;
 
     constructor() {
         this.messageHandler = new TexasGameMessageHandler(this);
@@ -470,6 +469,7 @@ export default class TexasGame {
         } else {
             console.log("GameCache.Instance.seat_count", GameCache.Instance.seat_count)
             this.InitSeatByCount(GameCache.Instance.seat_count);
+            this.InitOperationPos();
         }
 
         this.mainPlayer = new CPlayer(GameCache.Instance.nUserId);
@@ -1061,7 +1061,7 @@ export default class TexasGame {
         let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
         for (let i = 0; i < seatCount; i++) {
             let seatUI = this.createSeatUI();
-            //seatUI.getComponent(cc.Widget).enabled = false;
+            seatUI.getComponent(cc.Widget).enabled = false;
             seatUI.active = true;
             seatUI.parent = this.uirc.Seat.parent;
             seatUI.name = `Seat${i}`;
@@ -1076,6 +1076,13 @@ export default class TexasGame {
             this.listSeat.push(mSeat);
             this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
         }
+    }
+    //初始化操作面板的位置
+    InitOperationPos() {
+        let Seat0: Seat = this.listSeat[0];
+        let Operation_Pos = this.uirc.node.convertToNodeSpaceAR(Seat0.ui.convertToWorldSpaceAR(Seat0.uirc.Operation_Pos_Mark.getPosition()));
+        this.uirc.UIOperation.setPosition(Operation_Pos);
+        this.uirc.UIAutoOperation.setPosition(Operation_Pos);
     }
 
     /// <summary>
@@ -1362,6 +1369,7 @@ export default class TexasGame {
                 //         return;
                 //     }
                 // });
+                UIComponent.Instance.Toast("声纹认证暂未开启");
             }
             else {
 
