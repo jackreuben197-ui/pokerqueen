@@ -1,4 +1,7 @@
-import { Web_Stats_Other_User_Stats } from "../../net/https/WebRequest";
+import GGEvent from "../../event/GGEvent";
+import GC from "../../frame/GameControl";
+import WebImageHelper from "../../helper/WebImageHelper";
+import { Web_Stats_Other_User_Stats, Web_User_Info } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -22,7 +25,8 @@ export default class UITexasPlayerInfoComponent extends UIBase {
     }
     onShow(param?: any): void {
         super.onShow(param);
-        this.isShowDown = param[0] != GameCache.Instance.nUserId;
+        // this.isShowDown = param[0] != GameCache.Instance.nUserId;
+        this.isShowDown = false;
         this.openInfo = param;
         UITexasModel.mInstance.getOtherUserStats(param[0]).then(
             (tResp: typeof Web_Stats_Other_User_Stats.Response) => {
@@ -41,7 +45,30 @@ export default class UITexasPlayerInfoComponent extends UIBase {
         lbl_id.string = this.openInfo[0].toString();
         let leavelChips = this.openInfo[2].leavelChips ?? 0;
         let lbl_gold = this.getChildNodeOrComponent("lbl_gold", cc.Label);
-        lbl_gold.string = leavelChips.toString();
+        lbl_gold.string = GC.data.user.info.displayGold.toString();
+        this.refreshHeadImg();
+        this.refreshUserName();
+    }
+
+    /**
+     * 注册广播事件
+     */
+     protected regiterDispatchEvent() {
+        this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
+        this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
+    }
+
+    refreshHeadImg() {
+        let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
+        img_head.node.active = false;
+        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(() => {
+            img_head.node.active = true;
+        });
+    }
+
+    refreshUserName() {
+        let lbl_nickname = this.getChildNodeOrComponent("lbl_name", cc.Label);
+        lbl_nickname.string = Web_User_Info.Response.data.user.nickname;
     }
 
     resetCenterInfo() {
