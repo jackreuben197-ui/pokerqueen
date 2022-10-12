@@ -13,7 +13,28 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/matchView/UIMatchChessItem')
 export default class UIMatchChessItem extends UIBase {
+    private lbl_center_left: cc.Label = null;
+    private item_choose: cc.Node = null;
+    private item_normal: cc.Node = null;
+    private lbl_time: cc.Label = null;
+    private lbl_deskName: cc.Label = null;
+    private lbl_num: cc.Label = null;
+
     private _data: LobbyRoomListItem = null;
+    lateLoad() {
+        super.lateLoad();
+        this.lbl_center_left = this.getChildNodeOrComponent("lbl_center_left", cc.Label);
+        this.item_choose = this.getChildNodeOrComponent("lbl_center_left");
+        this.item_normal = this.getChildNodeOrComponent("lbl_center_left");
+        this.lbl_time = this.getChildNodeOrComponent("lbl_center_left", cc.Label);
+        this.lbl_deskName = this.getChildNodeOrComponent("lbl_center_left", cc.Label);
+        this.lbl_num = this.getChildNodeOrComponent("lbl_center_left", cc.Label);
+    }
+
+    protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
+        this.bindClick(this.node, this.EnterRoomAPI);
+    }
 
     initData(data: LobbyRoomListItem) {
         this._data = data;
@@ -22,43 +43,20 @@ export default class UIMatchChessItem extends UIBase {
 
     initView() {
         let sb = this._data.sb / 100;
-        this.node.getChildByName("lbl_center_left").getComponent(cc.Label).string = `${sb}/${sb * 2}(${this._data.ante})`;
+        this.setText(this.lbl_center_left, `${sb}/${sb * 2}(${this._data.ante})`)
+        this.setText(this.lbl_deskName, this._data.name)
+        this.setText(this.lbl_num, `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`);
 
-        this.node.getChildByName("item_choose").active = this._data.participation_status != 0;
-        this.node.getChildByName("item_normal").active = this._data.participation_status == 0;
+        this.item_choose.active = this._data.participation_status != 0;
+        this.item_normal.active = this._data.participation_status == 0;
         if (this._data.participation_status != 0) {
             //值取小数点后一位
             let duration = Math.floor((this._data.play_duration * 1.0 / 3600) * 10) / 10
-            this.node.getChildByName("lbl_time").getComponent(cc.Label).string = `${duration}h/${duration}h`
+            this.setText(this.lbl_time, `${duration}h/${duration}h`)
         }
-        this.node.getChildByName("lbl_deskName").getComponent(cc.Label).string = this._data.name;
 
-        this.node.getChildByName("lbl_num").getComponent(cc.Label).string = `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`;
-        this.node.off(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
-        this.node.on(cc.Node.EventType.TOUCH_END, this.EnterRoomAPI, this);
-
-        this.bindClick(this.node, this.EnterRoomAPI)
-
-        let str = "";
-        if (this._data.game_type == 0) {
-            if (this._data.poker_type == 0) {
-                str = "NLH";
-            } else if (this._data.poker_type == 2) {
-                str = "6+";
-            }
-        } else {
-            if (this._data.game_type == 1) {
-                str = "PLO4";
-            } else if (this._data.game_type == 2) {
-                str = "PLO5";
-            } else if (this._data.game_type == 3) {
-                str = "PLO6";
-            }
-        }
-        let lbl_choose = this.node.getChildByName("item_choose").getChildByName("lbl_choose");
-        lbl_choose.getComponent(cc.Label).string = str;
-        let lbl_normal = this.node.getChildByName("item_normal").getChildByName("lbl_normal");
-        lbl_normal.getComponent(cc.Label).string = str;
+        this.item_choose.getComponent(cc.Label).string = this.gameTypeName;
+        this.item_normal.getComponent(cc.Label).string = this.gameTypeName;
     }
 
 
@@ -96,6 +94,21 @@ export default class UIMatchChessItem extends UIBase {
         } else {
             cc.warn("websocket还没有连接上:", WebSocketClient.WS.readyState);
         }
+    }
+
+
+    get gameTypeName() {
+        let str = "NLH";
+        if (this._data.game_type == 1) {
+            str = "PLO4";
+        } else if (this._data.game_type == 2) {
+            str = "PLO5";
+        } else if (this._data.game_type == 3) {
+            str = "PLO6";
+        } else if (this._data.poker_type == 2) {
+            str = "6+";
+        }
+        return str;
     }
 
 }
