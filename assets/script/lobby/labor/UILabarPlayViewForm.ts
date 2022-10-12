@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-12 17:45:05
+ * @LastEditTime: 2022-10-12 18:03:23
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -17,6 +17,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import { APIOrgClubGold, APIOrgClubIsManger, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { UIClubModel } from "./UIClubModel";
 import { GameType } from "../../game/GameUtil";
+import { EWalletGoldOpration } from "../../wallet/WalletConfig";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -120,7 +121,7 @@ export default class UILabarPlayViewForm extends UIBase {
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {
             let isManger: any = APIOrgClubIsManger.Response.data
             if (isManger) {
-                this.chongzhi.active = true;
+                this.chongzhi.active = false;
                 this.tabNode.getChildByName('ghgl').active = true;
                 this.tabNode.getChildByName('ckgh').active = false;
             } else {
@@ -132,7 +133,7 @@ export default class UILabarPlayViewForm extends UIBase {
 
     }
     addCoin() {
-
+        UIComponent.open(UIDefine.GoldOprationForm, { type: EWalletGoldOpration.in, isClub: true });
     }
     tostBtnClick() {
         this.tabNode.active = !this.tabNode.active;
