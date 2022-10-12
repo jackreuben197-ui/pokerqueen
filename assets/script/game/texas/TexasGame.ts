@@ -1061,7 +1061,7 @@ export default class TexasGame {
         let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
         for (let i = 0; i < seatCount; i++) {
             let seatUI = this.createSeatUI();
-            seatUI.getComponent(cc.Widget).enabled = false;
+            //seatUI.getComponent(cc.Widget).enabled = false;
             seatUI.active = true;
             seatUI.parent = this.uirc.Seat.parent;
             seatUI.name = `Seat${i}`;
@@ -1590,7 +1590,7 @@ export default class TexasGame {
             //spawn.push(cc.tween().sequence(cc.delayTime(0.2 * mTmpIndex), this.listSeat[index].PlayDealAnimation(mStartPos)));
             //this.listSeat[index].PlayDealAnimation(0.2 * mTmpIndex, mStartPos);
             //间隔时间
-            let delayTime: number = 0.2 * mTmpIndex;
+            let delayTime: number = .2 * mTmpIndex;
             endTime = delayTime;
             tween.then(cc.callFunc(() => {
                 mSeat.PlayDealAnimation(delayTime, mStartPos).start();

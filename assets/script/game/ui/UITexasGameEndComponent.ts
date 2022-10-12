@@ -25,7 +25,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UITexasGameEndComponent extends UIBase {
 
-    
+
 
     Button_back: cc.Node = null;
 
@@ -39,19 +39,19 @@ export default class UITexasGameEndComponent extends UIBase {
 
     img_head: cc.Sprite = null;
 
-    m_ZhanJi:cc.Label = null;
+    m_ZhanJi: cc.Label = null;
 
-    UserInfoItem:UITexasGameEndItem = null;
+    UserInfoItem: UITexasGameEndItem = null;
 
-    UserInfoPool:cc.Node[]= [];
+    UserInfoPool: cc.Node[] = [];
 
-    content:cc.Node = null;
+    content: cc.Node = null;
 
-    UserInfoItems : cc.Node[]= [];
+    UserInfoItems: cc.Node[] = [];
 
     private mRoomId: string = null;
 
-    
+
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -77,7 +77,7 @@ export default class UITexasGameEndComponent extends UIBase {
     }
     lateClose(params?: any): void {
         super.lateClose(params);
-        while(this.UserInfoItems.length){
+        while (this.UserInfoItems.length) {
             this.removeUserInfoItem(this.UserInfoItems.shift());
         }
     }
@@ -102,6 +102,7 @@ export default class UITexasGameEndComponent extends UIBase {
         this.ShowEndTips(false);
         let response: typeof Web_User_Room_Settle_Detail.Response = await UITexasModel.mInstance.APIUserRoomSettleDetail(this.mRoomId);
         if (response) {
+            if (!this.node.active) return;
             this.InitSuperView(response);
             if (response.data.self_settle == null) {
                 this.TopLookPai.active = false;
@@ -121,12 +122,12 @@ export default class UITexasGameEndComponent extends UIBase {
         this.img_head.node.parent.active = true;
     }
     private InitSuperView(response: typeof Web_User_Room_Settle_Detail.Response): void {
-        let list:typeof Web_User_Room_Settle_Detail.UsersInfo[] = response.data.list;
-        for(let i = 0 ; i < list.length;i++){
+        let list: typeof Web_User_Room_Settle_Detail.UsersInfo[] = response.data.list;
+        for (let i = 0; i < list.length; i++) {
             let info = list[i];
-            let userInfoNode :cc.Node = this.getUserInfoItem();
-            let userInfoItem:UITexasGameEndItem = userInfoNode.getComponent(UITexasGameEndItem);
-            userInfoItem.index = i+1;
+            let userInfoNode: cc.Node = this.getUserInfoItem();
+            let userInfoItem: UITexasGameEndItem = userInfoNode.getComponent(UITexasGameEndItem);
+            userInfoItem.index = i + 1;
             userInfoItem.node.active = true;
             userInfoItem.node.parent = this.content;
             userInfoItem.onShow(info);
@@ -144,11 +145,11 @@ export default class UITexasGameEndComponent extends UIBase {
         UIComponent.close(UIDefine.UITexasGameEndComponent);
     }
 
-    private getUserInfoItem():cc.Node{
-        if(this.UserInfoPool.length) return this.UserInfoPool.shift();
+    private getUserInfoItem(): cc.Node {
+        if (this.UserInfoPool.length) return this.UserInfoPool.shift();
         return cc.instantiate(this.UserInfoItem.node);
     }
-    private removeUserInfoItem(node:cc.Node){
+    private removeUserInfoItem(node: cc.Node) {
         node.parent = null;
         this.UserInfoPool.push(node);
     }

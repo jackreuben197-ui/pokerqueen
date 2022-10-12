@@ -105,7 +105,7 @@ export class SeatFSM {
     //#region 坐下动画
     SitAnimationEnter() {
 
-        cc.tween(this.seat.ui).sequence(cc.scaleTo(0.15, 0, 1), cc.callFunc(() => {
+        cc.tween(this.seat.uirc.Head).sequence(cc.scaleTo(0.15, 0, 1), cc.callFunc(() => {
             this.seat.FsmLogicComponent.SM.ChangeState(SeatSit.Instance);
             this.seat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
         }), cc.scaleTo(0.15, 1, 1)).start();
