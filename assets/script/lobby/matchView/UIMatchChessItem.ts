@@ -59,6 +59,11 @@ export default class UIMatchChessItem extends UIBase {
         lbl_choose.getComponent(cc.Label).string = str;
         let lbl_normal = this.node.getChildByName("item_normal").getChildByName("lbl_normal");
         lbl_normal.getComponent(cc.Label).string = str;
+
+        let lbl_unionName = this.node.getChildByName("lbl_unionName");
+        lbl_unionName.active = false;
+        let img_head = this.node.getChildByName("img_head");
+        img_head.active = false;
     }
 
 
