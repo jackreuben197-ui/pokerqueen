@@ -105,8 +105,9 @@ export default class GoldOprationForm extends BaseForm {
                     contentCommit: "adaptation10012",
                     contentCancel: "adaptation10013",
                     actionCommit: () => {
-                        let paramas: any = {};
-                        paramas.amount = Number(this.edit.string)
+                        //后端需要真实数据的100倍
+                        let sendNum = Number(this.edit.string) * 100;
+                        let paramas: { amount: number } = { amount: sendNum };
                         HttpRequest.Send({
                             request: procolType,
                             body: procolType.Request(paramas),

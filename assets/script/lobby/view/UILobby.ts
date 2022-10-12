@@ -65,6 +65,19 @@ export default class UILobby extends UIBase {
         this.updateBean();
         this.refreshHeadImg();
         this.refreshUserName();
+        for (let i=1; i<4; i++) {
+            let item: cc.Node = this.getChildNodeOrComponent("item_0" + i);
+            item["index"] = i;
+            item.on(cc.Node.EventType.TOUCH_END, this.onClickGame, this)
+        }
+    }
+
+    onClickGame(event) {
+        let node = event.target;
+        let index = node.index;
+        UIComponent.open(UIDefine.UIMatchPlayViewForm, {
+            type: 1,
+            page: index});
     }
 
     /**
@@ -89,7 +102,8 @@ export default class UILobby extends UIBase {
     }
 
     updateBean() {
-        this.lbl_glod.string = GameCache.Instance.gold.toString();
+        this.setText(this.lbl_glod, GC.data.user.info.displayGold)
+        // this.lbl_glod.string = GameCache.Instance.gold.toString();
     }
 
     clickBean() {

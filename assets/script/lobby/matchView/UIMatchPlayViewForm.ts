@@ -1,5 +1,6 @@
 import { UIDefine, UIDefineType } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
+import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import { GameType } from "../../game/GameUtil";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -61,15 +62,16 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this.bindClick(this.gold_Bg, this.clickGoldBg);
     }
 
-    onShow(gameType?: GameType, fromUI?: BaseForm) {
-        super.onShow(gameType, fromUI);
-        this._defultGameType = gameType;
+    onShow(data?: any, fromUI?: BaseForm) {
+        super.onShow(data, fromUI);
+        this._defultGameType = data.type;
         this._curType = EMatchViewTabType.no;
+        this.switchTab(data.page);
 
         this.initTopUI();
         this.refreshHeadImg();
         this.refreshUserName();
-        this.switchTab(EMatchViewTabType.chess);
+        // this.switchTab(EMatchViewTabType.chess);
     }
 
     /**
@@ -94,8 +96,10 @@ export default class UIMatchPlayViewForm extends BaseForm {
     }
 
     private initTopUI(): void {
-        this.lbl_glod.string = GameCache.Instance.gold.toString();
-        this.lbl_name.string = GameCache.Instance.nick.toString();
+        this.setText(this.lbl_glod, GC.data.user.info.displayGold)
+        this.setText(this.lbl_name, GC.data.user.info.nickname);
+        // this.lbl_glod.string = GameCache.Instance.gold.toString();
+        // this.lbl_name.string = GameCache.Instance.nick.toString();
     }
 
     private onClickTabBtns(index: number): void {

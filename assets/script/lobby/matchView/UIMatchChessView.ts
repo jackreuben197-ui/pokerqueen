@@ -165,7 +165,7 @@ export default class UIMatchChessView extends UIBase {
     }
 
     lateClose(params?: any): void {
-        super.lateClose();
+        super.lateClose(); 
         this._curGameType = null;
     }
 

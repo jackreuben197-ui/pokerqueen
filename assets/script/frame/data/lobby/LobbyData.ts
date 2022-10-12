@@ -121,8 +121,25 @@ export default class LobbyData extends BaseData {
                 poker_type: [poker_type],
                 limit_bet_type: [],
                 limit: limit,
-                offset: offset
+                offset: offset,
+                order: ["sb_asc"]
             })
+
+            // {
+            //     "limit": limit,
+            //     "offset": offset,
+            //     //"types": null,
+            //     "sb_min": param.sb_min,
+            //     "sb_max": param.sb_max,
+            //     //"ant_min": 0,
+            //     //"ant_max": 0,
+            //     //"room_ids": null,
+            //     "game_type": gtInfo,
+            //     "poker_type": ptInfo,
+            //     //"limit_bet_type": null,
+            //     "order": ["sb_asc"]
+            // }
+
         })
     }
 }

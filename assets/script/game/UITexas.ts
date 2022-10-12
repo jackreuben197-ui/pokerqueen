@@ -2,6 +2,7 @@ import { CommonDefine } from "../define/CommonDefine";
 import { IUIDefine } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import { DOTween, Sequence } from "../dotween/DOTween";
+import GC from "../frame/GameControl";
 
 import { StringHelper } from "../helper/StringHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
@@ -518,7 +519,8 @@ export default class UITexas extends BaseScene {
 
     protected UpdateMenu(): void {
         UIMineModel.mInstance.ObtainUserInfo(pDto => {
-            this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
+            // this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
+            this.setText(this.textTotalBean, GC.data.user.info.displayGold);
         });
         // //更新金豆
 
@@ -644,7 +646,8 @@ export default class UITexas extends BaseScene {
                 smallBlind: GameCache.Instance.CurGame.smallBlind,
                 currentMinRate: GameCache.Instance.CurGame.currentMinRate,
                 currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                totalCoin: GameCache.Instance.gold,
+                // totalCoin: GameCache.Instance.gold,
+                totalCoin: GC.data.user.info.gold,
                 tableChips: GameCache.Instance.CurGame.mainPlayer.chips
             });
     }

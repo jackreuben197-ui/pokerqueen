@@ -21,9 +21,9 @@ export class UITexasModel {
                 api: Web_User_Room.API.replace("{id}", GameCache.Instance.room_id.toString()),
                 request: Web_User_Room,
                 onSuccess: function () {
-                    if (Web_User_Room.Response.code == 0) {
-                        GameCache.Instance.gold = Web_User_Room.Response.data.wallet.gold;
-                    }
+                    // if (Web_User_Room.Response.code == 0) {
+                    //     GameCache.Instance.gold = Web_User_Room.Response.data.wallet.gold;
+                    // }
                     resolve(Web_User_Room.Response);
                 }.bind(this),
                 onFailure: function (content) {

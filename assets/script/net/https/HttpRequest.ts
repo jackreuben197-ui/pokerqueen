@@ -35,9 +35,9 @@ export default class HttpRequest {
         });
     }
     private static onSuccess(api, request, body, onSuccess, response) {
+        NotifyManager.instance.post(EventName.serverResponse, api, response.data, body);
         request && (request.Response = response);
         onSuccess && onSuccess(response);
-        NotifyManager.instance.post(EventName.serverResponse, api, response.data, body);
     }
     //代理转换
     public static handleUrl(url: string): string {

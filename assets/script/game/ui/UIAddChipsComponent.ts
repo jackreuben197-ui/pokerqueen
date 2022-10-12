@@ -2,6 +2,7 @@
  * 坐下弹出面板
  */
 
+import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
@@ -99,7 +100,8 @@ export default class UIAddChipsComponent extends UIBase {
         this.textCoin.string = `${StringHelper.getStringDiv100(rate * GameCache.Instance.carry_small * 100 ^ 0)}`;
         this.textNeedCoin.string = `${StringHelper.getStringDiv100(rate * GameCache.Instance.carry_small * 100 ^ 0)}`;
 
-        if (rate * GameCache.Instance.carry_small * 100 > GameCache.Instance.gold) {
+        // if (rate * GameCache.Instance.carry_small * 100 > GameCache.Instance.gold) {
+        if (rate * GameCache.Instance.carry_small * 100 > GC.data.user.info.gold) {
             this.textNeedCoin.node.color = new cc.Color(184, 43, 48, 255);
         }
         else {
