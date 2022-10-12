@@ -24,11 +24,11 @@ export default class UIMatchChessItem extends UIBase {
     lateLoad() {
         super.lateLoad();
         this.lbl_center_left = this.getChildNodeOrComponent("lbl_center_left", cc.Label);
-        this.item_choose = this.getChildNodeOrComponent("lbl_center_left");
-        this.item_normal = this.getChildNodeOrComponent("lbl_center_left");
-        this.lbl_time = this.getChildNodeOrComponent("lbl_center_left", cc.Label);
-        this.lbl_deskName = this.getChildNodeOrComponent("lbl_center_left", cc.Label);
-        this.lbl_num = this.getChildNodeOrComponent("lbl_center_left", cc.Label);
+        this.item_choose = this.getChildNodeOrComponent("item_choose");
+        this.item_normal = this.getChildNodeOrComponent("item_normal");
+        this.lbl_time = this.getChildNodeOrComponent("lbl_time", cc.Label);
+        this.lbl_deskName = this.getChildNodeOrComponent("lbl_deskName", cc.Label);
+        this.lbl_num = this.getChildNodeOrComponent("lbl_num", cc.Label);
     }
 
     protected regiterTouchEvents(): void {
@@ -55,8 +55,8 @@ export default class UIMatchChessItem extends UIBase {
             this.setText(this.lbl_time, `${duration}h/${duration}h`)
         }
 
-        this.item_choose.getComponent(cc.Label).string = this.gameTypeName;
-        this.item_normal.getComponent(cc.Label).string = this.gameTypeName;
+        let displayNode = this._data.participation_status == 0 ? this.item_normal : this.item_choose;
+        displayNode.getChildByName("lbl_gameType").getComponent(cc.Label).string = this.gameTypeName;
     }
 
 
