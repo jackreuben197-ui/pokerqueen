@@ -322,8 +322,21 @@ export default class TexasGameProtocol {
         if (this.game.bigIndex >= 0) {
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_SECOND);
         }
-        // 发牌动画和结束响应
+
+        //判断座位是否运动中,做延迟处理
+        if (this.game.SeatPlayRecord.SeatMove) {
+            this.game.SeatPlayRecord.StartInfo = responseData;
+            this.game.SeatPlayRecord.PlayDealFunc = this.__PlayDealAnimation.bind(this);
+            cc.log("————————>延迟执行发牌");
+        } else {
+            this.__PlayDealAnimation(responseData);
+            cc.log("————————>立刻执行发牌");
+        }
+    }
+    private __PlayDealAnimation(responseData) {
+        this.game.ResetSeatPlayRecord();
         this.game.PlayDealAnimation(() => {
+            cc.log("发牌结束");
             this.game.UpdateAlreadAnte();
             let mSeat0: Seat = null;
             for (let i = 0, n = responseData.playersList.length; i < n; i++) {
@@ -373,10 +386,7 @@ export default class TexasGameProtocol {
                 }
             }
         });
-
-
     }
-
 
 
     /// <summary>
@@ -1444,6 +1454,9 @@ export default class TexasGameProtocol {
                 mSeat.Player.canPlayStatus = Def.CanPlayStatus.DISABLE;
             }
         }
+
+        this.game.ResetSeatPlayRecord();
+
     }
     ProtocolHoldemGetMsgHandler(Protocol_Holdem_GetMsg: ProtocolCode, ProtocolHoldemGetMsgHandler: any, arg2: this) {
         throw new Error("Method not implemented.");

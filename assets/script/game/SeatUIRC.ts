@@ -38,6 +38,7 @@ export default class SeatUIRC extends UIBase {
     /**
      * 节点|组件 定义
      */
+    Head: cc.Node = null;
     imageHeadFrame: cc.Sprite = null;
     imageHeadGray: cc.Sprite = null;
     imageEmpty: cc.Sprite = null;
@@ -109,6 +110,8 @@ export default class SeatUIRC extends UIBase {
     textBubble: cc.Label = null;
 
 
+    SmallCardBacks_Mark: cc.Node = null;
+
     ///////////////////////////////////
 
     ///////////////////////////////////
@@ -125,6 +128,7 @@ export default class SeatUIRC extends UIBase {
     ///////////////////////////////////
     protected lateLoad(): void {
         super.lateLoad();
+        this.Head = this.getChildNodeOrComponent("Head");
         this.imageHeadFrame = this.getChildNodeOrComponent("Image_HeadFrame", cc.Sprite);
         this.imageHeadGray = this.getChildNodeOrComponent("Image_HeadGray", cc.Sprite);
         this.imageEmpty = this.getChildNodeOrComponent("Image_Empty", cc.Sprite);
@@ -188,6 +192,8 @@ export default class SeatUIRC extends UIBase {
 
         this.imageBubble = this.getChildNodeOrComponent("Image_Bubble", cc.Sprite);
         this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
+
+        this.SmallCardBacks_Mark = this.getChildNodeOrComponent("SmallCardBacks_Mark");
 
         //声纹
         this.voiceprintList = [];

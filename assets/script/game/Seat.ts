@@ -133,6 +133,133 @@ export default class Seat {
 
     }
 
+    /// <summary>
+    /// 播放发牌动画
+    /// </summary> virtual Sequence 
+    public PlayDealAnimation(delay: number, targetPos: cc.Vec3): cc.Tween {
+
+        for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
+            this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+        }
+        for (let i = 0, n = this.uirc.listSmallCardUIInfos.length; i < n; i++) {
+            this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
+        }
+
+        let tween = cc.tween({});
+
+        tween.delay(delay);
+
+        //自己发牌运动
+        if (this.IsMySeat) {
+
+            tween.then(cc.callFunc(() => {
+                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+            }));
+
+            for (let i = 0, n = this.Player.cards.length; i < n; i++) {
+
+
+                let cardInfo = this.uirc.listCardUIInfos[i];
+
+                cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
+                cardInfo.imageCard.color = cc.Color.WHITE;
+                cardInfo.imageCard.setScale(cc.v3(0.5, 0.5));
+                cardInfo.imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
+                cardInfo.imageCard.active = true;
+
+
+                cardInfo.imageBack.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
+                cardInfo.imageBack.node.color = cc.Color.WHITE;
+                cardInfo.imageBack.node.active = true;
+                cardInfo.imageBack.node.opacity = 255;
+
+                //listCardUIInfos[i].imageCard.rectTransform.localRotation = Quaternion.Euler(0, 0, 0);
+
+                let tween_card = cc.tween(cardInfo.imageCard);
+                let tween_back = cc.tween(cardInfo.imageBack.node);
+
+
+                tween.then(cc.callFunc(() => {
+                    tween_card.to(0.4, { scaleX: 1.5, scaleY: 1.3, position: Seat.myCardsPos[i] }, cc.easeSineOut()).start();
+                }))
+                if (!GameCache.Instance.CurlimitDelaySeeCard) {
+                    tween.then(cc.callFunc(() => {
+                        tween_back.to(0.25, { opacity: 0 }).call(() => {
+                            cardInfo.imageBack.node.active = false;
+                        }).start();
+                    }))
+                }
+            }
+            tween.delay(0.4);
+
+        } else {
+            // 其他玩家发牌动画
+            tween.then(cc.callFunc(() => {
+                this.uirc.transSmallCardBacks.active = true;
+                this.uirc.transSmallCardBacks.stopAllActions();
+            }));
+
+            let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
+
+            for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+
+                let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
+                let pos = this.GetBackSmallCardPos(i);
+                mTmpObj.setPosition(mLocalPos);
+                tween.then(cc.callFunc(() => {
+                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                    mTmpObj.active = true;
+                    cc.tween(mTmpObj).to(0.4, { position: pos }, cc.easeSineOut()).start();
+                }))
+            }
+            tween.delay(0.4);
+        }
+        return tween;
+    }
+
+    /// <summary>
+    /// 播放弃牌动画
+    /// </summary>
+    public PlayFoldAnimation(): void {
+        //sequencePlayFoldAnimation = DOTween.Sequence();
+        this.sequencePlayFoldAnimation = cc.tween(this.ui);
+        if (!this.IsMySeat) {
+            // 其他玩家弃牌
+            //this.sequencePlayFoldAnimation.sequence();
+            //InverseTransformPoint 世界转局部
+            let sequence = [];
+            let pos = this.uirc.transSmallCardBacks.parent.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
+            sequence.push(
+                cc.callFunc(() => {
+                    cc.tween(this.uirc.transSmallCardBacks).to(.5, { position: pos }).start();
+                },
+                ));
+            for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+                //sequencePlayFoldAnimation.Join(listImageSmallCardBack[i].DOFade(0, 0.3f));
+                sequence.push(
+                    cc.callFunc(() => {
+                        cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.3, { opacity: 0 }).start();
+                    })
+                );
+            }
+            sequence.push(cc.delayTime(.5));
+
+            this.sequencePlayFoldAnimation.sequence.apply(this.sequencePlayFoldAnimation, sequence).call(() => {
+                this.uirc.transSmallCardBacks.position = this.seatUIInfo.CardBackPos;
+                for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+                    this.uirc.listImageSmallCardBack[i].node.color = cc.Color.WHITE;
+                    this.uirc.listImageSmallCardBack[i].node.opacity = 255;
+                }
+                this.uirc.transSmallCardBacks.active = false;
+
+            }).start();
+        }
+        else {
+
+        }
+    }
+
+
     public Clear() {
 
         this.ui = null;
@@ -912,46 +1039,7 @@ export default class Seat {
         this.uirc.imageIconChip.node.active = true;
         return cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos }).start();
     }
-    /// <summary>
-    /// 播放弃牌动画
-    /// </summary>
-    public PlayFoldAnimation(): void {
-        //sequencePlayFoldAnimation = DOTween.Sequence();
-        this.sequencePlayFoldAnimation = cc.tween(this.ui);
-        if (!this.IsMySeat) {
-            // 其他玩家弃牌
-            //this.sequencePlayFoldAnimation.sequence();
-            //InverseTransformPoint 世界转局部
-            let tween = cc.tween();
-            let sequence = [];
-            let pos = this.uirc.transSmallCardBacks.parent.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
-            sequence.push(
-                cc.callFunc(() => {
-                    cc.tween(this.uirc.transSmallCardBacks).to(.5, { position: pos }).start();
-                },
-                ));
-            for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
-                //sequencePlayFoldAnimation.Join(listImageSmallCardBack[i].DOFade(0, 0.3f));
-                sequence.push(
-                    cc.callFunc(() => {
-                        cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.3, { opacity: 0 }).start();
-                    })
-                );
-            }
-            sequence.push(cc.delayTime(.5));
 
-            this.sequencePlayFoldAnimation.sequence.apply(this.sequencePlayFoldAnimation, sequence).call(() => {
-                this.uirc.transSmallCardBacks.position = this.seatUIInfo.CardBackPos;
-                for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
-                    this.uirc.listImageSmallCardBack[i].node.color = cc.Color.WHITE;
-                }
-                this.uirc.transSmallCardBacks.active = false;
-            }).start();
-        }
-        else {
-
-        }
-    }
 
 
     /// <summary>
@@ -1057,123 +1145,7 @@ export default class Seat {
         this.uirc.transCurRoundHaveBet.active = true;
     }
 
-    /// <summary>
-    /// 播放发牌动画
-    /// </summary> virtual Sequence 
-    public PlayDealAnimation(delay: number, targetPos: cc.Vec3): cc.Tween {
 
-        for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
-            this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
-        }
-        for (let i = 0, n = this.uirc.listSmallCardUIInfos.length; i < n; i++) {
-            this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
-        }
-
-        let tween = cc.tween(this.uirc.node);
-
-        tween.delay(delay);
-
-        //let sequence: cc.ActionInstant[] = [];
-
-        //let spawns: (cc.ActionInterval | cc.Tween)[] = [];
-
-        if (GameCache.Instance.CurGame.mainPlayer.seatID != this.seatID) {
-
-            // 其他玩家发牌动画
-            //sequencePlayDealAnimation = DOTween.Sequence();
-            tween.then(cc.callFunc(() => {
-                this.uirc.transSmallCardBacks.active = true;
-            }));
-
-            let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
-            for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
-                this.uirc.listImageSmallCardBack[i].node.setPosition(mLocalPos);
-                let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
-                let pos = this.GetBackSmallCardPos(i);
-
-                tween.then(cc.callFunc(() => {
-                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                    mTmpObj.active = true;
-                    
-                    cc.tween(mTmpObj).to(.4, { position: pos }).start();
-                }))
-            }
-            tween.delay(0.4);
-
-            cc.log("其他玩家发牌动画", tween);
-
-            return tween;
-        }
-        else {
-
-            try {
-
-
-                tween.then(cc.callFunc(() => {
-                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
-                }));
-
-                cc.log("this.Player.cards.length >> ", this.Player.cards.length);
-
-                for (let i = 0, n = this.Player.cards.length; i < n; i++) {
-
-                    this.uirc.listCardUIInfos[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
-                    this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
-                    this.uirc.listCardUIInfos[i].imageBack.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
-                    this.uirc.listCardUIInfos[i].imageBack.node.color = cc.Color.WHITE;
-                    this.uirc.listCardUIInfos[i].imageBack.node.active = true;
-                    this.uirc.listCardUIInfos[i].imageCard.setScale(cc.v3(0.5, 0.5));
-                    //listCardUIInfos[i].imageCard.rectTransform.localRotation = Quaternion.Euler(0, 0, 0);
-                    this.uirc.listCardUIInfos[i].imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
-                    this.uirc.listCardUIInfos[i].imageCard.active = true;
-                    let tween_card = cc.tween(this.uirc.listCardUIInfos[i].imageCard);
-                    let tween_back = cc.tween(this.uirc.listCardUIInfos[i].imageBack.node);
-
-                    let cardInfo = this.uirc.listCardUIInfos[i];
-
-                    tween.then(cc.callFunc(() => {
-                        tween_card.to(0.4, { scaleX: 1.5, scaleY: 1.3, position: Seat.myCardsPos[i] }).start();
-                    }))
-                    if (!GameCache.Instance.CurlimitDelaySeeCard) {
-                        tween.then(cc.callFunc(() => {
-                            tween_back.to(0.25, { opacity: 0 }).call(() => {
-                                cardInfo.imageBack.node.active = false;
-                            });
-                        }))
-                    }
-                }
-                tween.delay(0.4);
-            }
-            catch (Exception) {
-
-
-                cc.log("Exception Error ");
-
-                // System.Text.StringBuilder logContent = new System.Text.StringBuilder();
-                // if (Player == null) {
-                //     logContent.Append(string.Format("Player == null:= {0},", "Player == null"));
-                // }
-                // if (Player.cards == null) {
-                //     logContent.Append(string.Format("Player.cards == null:= {0},", "Player.cards == null"));
-                // }
-                // if (Player != null && Player.cards != null) {
-                //     logContent.Append(string.Format("ShowCards:= {0},", Player.cards.Count));
-
-                //     for (int i = 0; i < Player.cards.Count; i++)
-                //     {
-                //         logContent.Append(string.Format("Player.cards:= {0},", Player.cards[i]));
-                //     }
-                // }
-                // Log.write(UnityEngine.LogType.Log, logContent.ToString());
-            }
-            // sequencePlayDealAnimation.OnStart(() => {
-
-            // });
-            cc.log("自己发牌动画", tween);
-
-            return tween;
-        }
-    }
 
     /// <summary>
     /// 刷新亮牌眼睛
