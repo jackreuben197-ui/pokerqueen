@@ -95,7 +95,7 @@ export default class UITexasSettingComponent extends UIBase {
         let checkmark = cc.find('Background/Checkmark', this._selectDesk)
         checkmark.active = true;
         localStorage.setItem(StorageKey.SettingDeskType, this._selectDesk['index'])
-        GameCache.Instance.CurGame.setDeskType(this._selectDesk['index'])
+        GameCache.Instance.CurGame.SetDeskType(this._selectDesk['index'])
     }
     /**
     * @method  牌的样式

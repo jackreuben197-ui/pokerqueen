@@ -434,7 +434,7 @@ export default class UITexas extends BaseScene {
             this.game.IsLookOn = param?.lookOn || false;
         }
 
-        this.game.setDeskType(this.game.deskType);
+        this.game.SetDeskType(this.game.deskType);
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
 
