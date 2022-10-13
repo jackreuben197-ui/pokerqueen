@@ -68,12 +68,12 @@ export default class UIMatchChessView extends UIBase {
                 }
             } break;
             case Web_Room_Center_Rooms.API: {
-                if (!this._isClub) {
+                if (sendInfo.limit && !this._isClub) {
                     this.updateList();
                 }
             } break;
             case Web_Room_Center_Rooms_CLUB.API: {
-                if (this._isClub) {
+                if (sendInfo.limit && this._isClub) {
                     this.updateList();
                 }
             } break;
@@ -165,7 +165,7 @@ export default class UIMatchChessView extends UIBase {
     }
 
     lateClose(params?: any): void {
-        super.lateClose(); 
+        super.lateClose();
         this._curGameType = null;
     }
 

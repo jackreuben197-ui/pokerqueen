@@ -140,20 +140,20 @@ export class LobbyControl {
      * @description: 请求rooms信息
      * @return {Web_Room_Center_Rooms.Response}
      */
-    async APIWebRoomCenterRooms(param: typeof Web_Room_Center_Rooms.RequestParams) {
-        return new Promise((resolve, reject) => {
-            HttpRequest.Send({
-                request: Web_Room_Center_Rooms,
-                body: Web_Room_Center_Rooms.Request(param),
-                onSuccess: function () {
-                    resolve(Web_Room_Center_Rooms.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this)
-            });
-        });
-    }
+    // async APIWebRoomCenterRooms(param: typeof Web_Room_Center_Rooms.RequestParams) {
+    //     return new Promise((resolve, reject) => {
+    //         HttpRequest.Send({
+    //             request: Web_Room_Center_Rooms,
+    //             body: Web_Room_Center_Rooms.Request(param),
+    //             onSuccess: function () {
+    //                 resolve(Web_Room_Center_Rooms.Response);
+    //             }.bind(this),
+    //             onFailure: function (content) {
+    //                 reject(content);
+    //             }.bind(this)
+    //         });
+    //     });
+    // }
     /**
     * @description: 请求rooms信息
     * @return {Web_Config_Multi_Language_Template.Response}

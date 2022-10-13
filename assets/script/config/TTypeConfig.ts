@@ -1,4 +1,3 @@
-import { type } from "os"
 import { BetType, GameType, PokerType } from "../game/GameUtil"
 
 
@@ -65,7 +64,7 @@ export type TRoomListItem = {
     straddle_max: number,
     insurance_on: number,       //1 开 0 关
     insurance_op_duration: number,   //保险操作时间
-    second_pcs_on: number,   
+    second_pcs_on: number,
     second_pcs_op_duration: number,
     second_pcs_user_limit: number,
     delay_view_card_on: number,  //延迟看牌开关
@@ -143,3 +142,4 @@ export type TUserInfo = {
     vip: number,
     vip_endtime: number
 }
+

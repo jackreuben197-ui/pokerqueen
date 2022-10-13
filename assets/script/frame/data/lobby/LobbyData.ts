@@ -7,10 +7,10 @@ import LobbyRoomBlindsModel from "./LobbyRoomBlindsModel";
 import LobbyRoomListModel from "./LobbyRoomListModel";
 
 export default class LobbyData extends BaseData {
-    private _roomBlinds: LobbyRoomBlindsModel = null;
-    private _nameTemp: DeskNameTempModel = null;
-    private _lobbyGroup: LobbyGroupModel = null;
-    private _roomList: LobbyRoomListModel = null;
+    roomBlinds: LobbyRoomBlindsModel = new LobbyRoomBlindsModel();
+    nameTemp: DeskNameTempModel = new DeskNameTempModel();
+    lobbyGroup: LobbyGroupModel = new LobbyGroupModel();
+    roomList: LobbyRoomListModel = new LobbyRoomListModel();
     protected notify(api: any, msg: any, sendInfo?: any): void {
         switch (api) {
             case Web_Room_Center_Rooms_Blinds.API: {
@@ -26,40 +26,12 @@ export default class LobbyData extends BaseData {
                 this.respDeskNameTemp(msg, sendInfo);
             } break;
             case Web_Room_Center_Rooms.API: {
-                this.respRoomList(msg, sendInfo, false);
+                sendInfo.limit && this.respRoomList(msg, sendInfo, false);
             } break;
             case Web_Room_Center_Rooms_CLUB.API: {
-                this.respRoomList(msg, sendInfo, true);
+                sendInfo.limit && this.respRoomList(msg, sendInfo, true);
             } break;
         }
-    }
-
-    get nameTemp() {
-        if (!this._nameTemp) {
-            this._nameTemp = new DeskNameTempModel();
-        }
-        return this._nameTemp;
-    }
-
-    get lobbyGroup() {
-        if (!this._lobbyGroup) {
-            this._lobbyGroup = new LobbyGroupModel();
-        }
-        return this._lobbyGroup;
-    }
-
-    get roomBlinds() {
-        if (!this._roomBlinds) {
-            this._roomBlinds = new LobbyRoomBlindsModel();
-        }
-        return this._roomBlinds;
-    }
-
-    get roomList() {
-        if (!this._roomList) {
-            this._roomList = new LobbyRoomListModel();
-        }
-        return this._roomList;
     }
 
 
@@ -124,22 +96,14 @@ export default class LobbyData extends BaseData {
                 offset: offset,
                 order: ["sb_asc"]
             })
-
-            // {
-            //     "limit": limit,
-            //     "offset": offset,
-            //     //"types": null,
-            //     "sb_min": param.sb_min,
-            //     "sb_max": param.sb_max,
-            //     //"ant_min": 0,
-            //     //"ant_max": 0,
-            //     //"room_ids": null,
-            //     "game_type": gtInfo,
-            //     "poker_type": ptInfo,
-            //     //"limit_bet_type": null,
-            //     "order": ["sb_asc"]
-            // }
-
         })
+    }
+
+    reqRoomByIds(ids: Array<number>, callBack?: Function, isClub = false) {
+        let url = isClub ? Web_Room_Center_Rooms_CLUB.API : Web_Room_Center_Rooms.API;
+        this.reqServePost(url, {
+            room_ids: ids,
+            order: ["sb_asc"]
+        }, callBack)
     }
 }
