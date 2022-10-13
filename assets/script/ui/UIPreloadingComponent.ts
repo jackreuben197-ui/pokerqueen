@@ -71,10 +71,11 @@ export default class UIPreloadingComponent extends UIBase {
 
                         assets.forEach((item) => {
                             if (item instanceof cc.Prefab) {
+                                AssetContext.setAsset(Bundle_Resources, item.name, item);
                                 let ac = item.data?.getComponent(AssetContext);
                                 if (ac) {
                                     this.asset_count++;
-                                    console.log("解析:", item, this.asset_count);
+                                    //console.log("解析:", item, this.asset_count);
                                     item.data.children.forEach((item) => {
                                         let sprite = item.getComponent(cc.Sprite);
                                         if (sprite) {

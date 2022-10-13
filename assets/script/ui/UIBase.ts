@@ -8,7 +8,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UIBase extends BaseComponent {
     // 索引
-    public index:number = 0;
+    public index: number = 0;
 
     public show_animation: boolean = false;
     public lose_animation: boolean = false;
@@ -118,7 +118,10 @@ export default class UIBase extends BaseComponent {
         }
         return false;
     }
-
+    //设置按钮点击
+    protected setButtonClick(button: cc.Node, clickHandler: Function) {
+        button.on("click", clickHandler, this);
+    }
     /**
     * 生成对象
     * @param url
