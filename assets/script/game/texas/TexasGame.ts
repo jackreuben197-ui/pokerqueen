@@ -425,23 +425,26 @@ export default class TexasGame {
     }
 
     //获取桌面样式
-    get deskType() {
+    public get deskType() {
 
-        (this.setting.deskType == null) && (this.setting.deskType = +localStorage.getItem(StorageKey.SettingDeskType) || TexasConfig.DefaultDeskType);
+        (this.setting.deskType == null) && (this.setting.deskType = +(localStorage.getItem(StorageKey.SettingDeskType) ?? TexasConfig.DefaultDeskType));
 
         return this.setting.deskType;
     }
     //根据样式获取桌布资源
-    getDeskSpriteFrames(index: number): cc.SpriteFrame[] {
-        let c = this.DeskTypeIndexs[index] || this.DeskTypeIndexs[0]
-        let desk = AssetContext.getAsset("TexasDeskBg" + c[0], AssetFold.texture_TexasUI) as cc.SpriteFrame;
-        let table = AssetContext.getAsset("TexasTableBg" + c[1], AssetFold.texture_TexasUI) as cc.SpriteFrame;
-        return [desk, table];
-    }
+    // getDeskAsset(index: number): cc.SpriteFrame {
+    //     // let c = this.DeskTypeIndexs[index] || this.DeskTypeIndexs[0]
+    //     // let desk = AssetContext.getAsset("TexasDeskBg" + c[0], AssetFold.texture_TexasUI) as cc.SpriteFrame;
+    //     // let table = AssetContext.getAsset("TexasTableBg" + c[1], AssetFold.texture_TexasUI) as cc.SpriteFrame;
+    //     // return [desk, table];
+    //     return AssetContext.getAsset("desk" + index, AssetFold.texture_TexasUI) as cc.SpriteFrame;
+    // }
     setDeskType(index: number) {
-        let sps = this.getDeskSpriteFrames(index);
-        this.uirc.desk_bg.spriteFrame = sps[0];
-        this.uirc.table_bg.spriteFrame = sps[1];
+        // let sps = this.getDeskSpriteFrames(index);
+        // this.uirc.desk_bg.spriteFrame = sps[0];
+        // this.uirc.table_bg.spriteFrame = sps[1];
+        this.setting.deskType = index;
+        this.uirc.Desk.spriteFrame = AssetContext.getAsset("desk" + index, AssetFold.texture_TexasUINew_desk);
     }
 
     public RegiterEnterRoom() {
