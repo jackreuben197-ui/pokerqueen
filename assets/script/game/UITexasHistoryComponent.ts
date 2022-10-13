@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-09 17:53:14
+ * @LastEditTime: 2022-10-13 10:42:43
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -730,9 +730,12 @@ export default class UITexasHistoryComponent extends UIBase {
         //本手结束时底池
         if (this.HaveSecondCard) {
             //赢牌底池
+            this.ShowdownInfoList.getChildByName("ChipNumText").active = true
             this.ShowdownInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool / 2);
             this.ShowdownInfoList2.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.result.length.toString();
+            this.ShowdownInfoList2.getChildByName("PlayerNumText").active = true
             //赢牌底池
+            this.ShowdownInfoList2.getChildByName("ChipNumText").active = true
             this.ShowdownInfoList2.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool / 2);
         }
         this.InfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
