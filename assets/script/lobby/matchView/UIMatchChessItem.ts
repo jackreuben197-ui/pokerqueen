@@ -20,6 +20,9 @@ export default class UIMatchChessItem extends UIBase {
     private lbl_deskName: cc.Label = null;
     private lbl_num: cc.Label = null;
 
+    private img_head: cc.Sprite = null;
+    private lbl_unionName: cc.Label = null;
+
     private _data: LobbyRoomListItem = null;
     lateLoad() {
         super.lateLoad();
@@ -29,6 +32,12 @@ export default class UIMatchChessItem extends UIBase {
         this.lbl_time = this.getChildNodeOrComponent("lbl_time", cc.Label);
         this.lbl_deskName = this.getChildNodeOrComponent("lbl_deskName", cc.Label);
         this.lbl_num = this.getChildNodeOrComponent("lbl_num", cc.Label);
+
+        this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
+        this.lbl_unionName = this.getChildNodeOrComponent("lbl_unionName", cc.Label);
+
+        this.setActive(this.img_head, false)
+        this.setActive(this.lbl_unionName, false)
     }
 
     protected regiterTouchEvents(): void {
