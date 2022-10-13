@@ -161,14 +161,14 @@ export default class Seat {
 
                 let cardInfo = this.uirc.listCardUIInfos[i];
 
-                cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(this.Player.cards[i]));
+                cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                 cardInfo.imageCard.color = cc.Color.WHITE;
                 cardInfo.imageCard.setScale(cc.v3(0.5, 0.5));
                 cardInfo.imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
                 cardInfo.imageCard.active = true;
 
 
-                cardInfo.imageBack.spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(-1));
+                cardInfo.imageBack.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
                 cardInfo.imageBack.node.color = cc.Color.WHITE;
                 cardInfo.imageBack.node.active = true;
                 cardInfo.imageBack.node.opacity = 255;
@@ -983,7 +983,7 @@ export default class Seat {
                     list[i].imageCard.setPosition(Seat.smallCardPos[i]);
                 }
                 let mCard = this.Player.cards[i];
-                list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetPokerSpriteBySpriteName(GameUtil.GetCardNameByNum(mCard));
+                list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(mCard));
                 list[i].imageCard.active = true;
             }
         }

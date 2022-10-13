@@ -41,3 +41,5 @@ class GameControl {
 
 let GC = GameControl.instance;
 export default GC;
+
+(window as any).GC = GC;

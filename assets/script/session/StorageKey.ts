@@ -32,8 +32,12 @@ export default class StorageKey {
     static OpenBarrage: string = "OpenBarrage";//是否打开弹幕 1 关闭，0 打开
 
     //=======================设置相关========================
-    //桌布类型
+    //桌布样式
     static SettingDeskType = "SettingDeskType";
+    //扑克牌样式
+    static SettingPokerType = "SettingPokerType";
+
+
     static kQuickActionIndexKEY = "kQuickActionIndexKEY"; //自定义加注
     static kQuickActionIndexValueKEY = "kQuickActionIndexValueKEY";
     static togglesCardType = 'togglesCardType'; // 牌面
