@@ -467,8 +467,8 @@ export default class TexasGame {
         this.setting.pokerType = type;
 
         //所有扑克刷新,需要提前注册
-
         
+
     }
     /////////////////////////////////////////////////
 
@@ -1884,7 +1884,7 @@ export default class TexasGame {
                     this.sequenceUpdatePublicCards.Append(() => {
                         trans.active = true;
                         trans.setScale(1, 1);
-                        PublicHelper.InitSprite(imageCard,this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId)));
+                        PublicHelper.InitSprite(imageCard, this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId)));
                         cc.tween(trans).to(.4, { position: move_pos }).start();
                     }, .4);
                 } else {
