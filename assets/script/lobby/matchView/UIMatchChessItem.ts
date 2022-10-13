@@ -51,8 +51,12 @@ export default class UIMatchChessItem extends UIBase {
         this.item_normal.active = this._data.participation_status == 0;
         if (this._data.participation_status != 0) {
             //值取小数点后一位
-            let duration = Math.floor((this._data.play_duration * 1.0 / 3600) * 10) / 10
-            this.setText(this.lbl_time, `${duration}h/${duration}h`)
+            // let duration = Math.floor((this._data.play_duration * 1.0 / 3600) * 10) / 10
+            // this.node.getChildByName("lbl_time").getComponent(cc.Label).string = `${duration}h/${duration}h`
+            this.node.getChildByName("lbl_time").getComponent("PlayViewItem").updateItemInfo(this._data);
+        } else {
+            // let duration = Math.floor((this._data.play_duration * 1.0 / 3600) * 10) / 10
+            this.node.getChildByName("lbl_time").getComponent("PlayViewItem").updateNormalItem(this._data.play_duration);
         }
 
         let displayNode = this._data.participation_status == 0 ? this.item_normal : this.item_choose;

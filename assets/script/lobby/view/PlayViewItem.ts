@@ -13,7 +13,7 @@ export default class PlayViewItem extends UIBase {
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         最下方列表中item的UI接入数据 点击事件等
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-    private updateItemInfo(roomInfo: typeof Web_Room_Center_Rooms.DataElement) {
+    updateItemInfo(roomInfo: typeof Web_Room_Center_Rooms.DataElement) {
         let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(roomInfo.start_time)
         let roomLeftTime = deadLineTime / 1000 + roomInfo.play_duration - new Date().getTime() / 1000
         if (roomLeftTime > 0) {
@@ -32,14 +32,21 @@ export default class PlayViewItem extends UIBase {
                 if (textTitle != null)
                     textTitle.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
             } else {
-                if (textTitle != null && !cc.isValid(this.node, true)) {
+                if (textTitle != null && cc.isValid(this.node, true)) {
                     textTitle.string = "00:00";
                 }
             }
         }, 1000)
     }
 
-    private getTime(pNum: number)
+    updateNormalItem(data) {
+        let textTitle = this.getComponent(cc.Label);
+        if (textTitle != null && cc.isValid(this.node, true)) {
+            textTitle.string = `${this.getTime(data)}/${this.getTime(data)}`
+        }
+    }
+
+    getTime(pNum: number)
     {
         if (pNum >= 3600)
         {
