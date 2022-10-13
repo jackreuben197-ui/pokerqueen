@@ -7,7 +7,6 @@
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
-import { UIDefine } from "../define/UIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
 import UIBase from "../ui/UIBase";
@@ -101,7 +100,9 @@ export default class UITexasSettingComponent extends UIBase {
     * @method  牌的样式
     */
     initCardClickListen() {
-        this._selectCardType = this.CardGroup.children[localStorage.getItem(StorageKey.togglesCardType) || 0];
+
+        let index = Number(GameCache.Instance.CurGame.pokerType);
+        this._selectCardType = this.CardGroup.children[index];
         let Checkmark = cc.find('Background/Checkmark', this._selectCardType)
         Checkmark.active = false;
         for (let index = 0; index < this.CardGroup.childrenCount; index++) {
@@ -120,7 +121,10 @@ export default class UITexasSettingComponent extends UIBase {
         }
         let checkmark = cc.find('Background/Checkmark', this._selectCardType)
         checkmark.active = false;
-        localStorage.setItem(StorageKey.togglesCardType, this._selectCardType['index']);
+
+        let index = this._selectCardType['index'];
+        localStorage.setItem(StorageKey.SettingPokerType, String(index))
+        GameCache.Instance.CurGame.SetCardType(index);
     }
 
     /**

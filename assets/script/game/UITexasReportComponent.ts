@@ -1,5 +1,6 @@
 import { Web_Room_Center_Rooms } from "../../../assets/script/net/https/WebRequest";
 import { UIDefine } from "../define/UIDefine";
+import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
@@ -178,23 +179,25 @@ export default class UITexasReportComponent extends UIBase {
         // let param = Web_Room_Center_Rooms.RequestParams
         // param.room_ids = [GameCache.Instance.room_id];
         // let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms(param)
-        let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms({ room_ids: [GameCache.Instance.room_id] })
-        cc.log('roomsInfoData====', roomsInfoData);
-        roomsInfoData.data.records.forEach(item => {
-            if (item.rid == GameCache.Instance.room_id) {
-                if (item.start_time == null) {
-                    return;
+        // let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms({ room_ids: [GameCache.Instance.room_id] })
+        GC.data.lobby.reqRoomByIds([GameCache.Instance.room_id], (roomsInfoData) => {
+            cc.log('roomsInfoData====', roomsInfoData);
+            roomsInfoData.data.records.forEach(item => {
+                if (item.rid == GameCache.Instance.room_id) {
+                    if (item.start_time == null) {
+                        return;
+                    }
+                    let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(item.start_time)
+                    let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000
+                    if (roomLeftTime > 0) {
+                        this.mRoomLeaveTime = roomLeftTime;
+                        let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.RichText);
+                        textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
+                        this.ShowLeaveTimer(textTitle);
+                    }
                 }
-                let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(item.start_time)
-                let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000
-                if (roomLeftTime > 0) {
-                    this.mRoomLeaveTime = roomLeftTime;
-                    let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.RichText);
-                    textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
-                    this.ShowLeaveTimer(textTitle);
-                }
-            }
-        });
+            });
+        })
 
     }
     ShowLeaveTimer(textTitle) {
