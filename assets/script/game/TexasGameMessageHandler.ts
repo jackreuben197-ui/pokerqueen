@@ -245,9 +245,9 @@ export default class TexasGameMessageHandler {
         let isMainPlayer: boolean = seat.Player.userID == this.game.mainPlayer.userID;
         if (isMainPlayer) {
             this.game.mainPlayer.cacheStoreChips = response.storeChips;
-            // HideOperationPanel();
-            // HideAutoOperationPanel();
-            // HideSeeMorePublic();
+            this.game.HideOperationPanel();
+            this.game.HideAutoOperationPanel();
+            this.game.HideSeeMorePublic();
             this.game.TexasGameUtils.doStandUp(localSeatID);
         }
         else {
@@ -256,7 +256,7 @@ export default class TexasGameMessageHandler {
             //         UITexasPlayerInfoComponent uiComponent = uiTexasPlayerInfo.GetComponent<UITexasPlayerInfoComponent>();
             //     uiComponent.PlayerStandUp((int)seat.Player.userID);
             // }
-            //seat.HideFold();
+            seat.HideFold();
             seat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
         }
     }

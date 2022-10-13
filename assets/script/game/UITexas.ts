@@ -68,8 +68,9 @@ export default class UITexas extends BaseScene {
     /**
      * 节点|组件 定义
      */
-    desk_bg: cc.Sprite = null;
-    table_bg: cc.Sprite = null;
+    //desk_bg: cc.Sprite = null;
+    //table_bg: cc.Sprite = null;
+    Desk: cc.Sprite = null;
 
     menu_btn: cc.Node = null;
     report_btn: cc.Node = null;
@@ -267,8 +268,9 @@ export default class UITexas extends BaseScene {
 
 
 
-        this.desk_bg = this.getChildNodeOrComponent("desk_bg", cc.Sprite);
-        this.table_bg = this.getChildNodeOrComponent("table_bg", cc.Sprite);
+        //this.desk_bg = this.getChildNodeOrComponent("desk_bg", cc.Sprite);
+        //this.table_bg = this.getChildNodeOrComponent("table_bg", cc.Sprite);
+        this.Desk = this.getChildNodeOrComponent("Desk", cc.Sprite);
 
         this.menu_btn = this.getChildNodeOrComponent("menu_btn");
         this.report_btn = this.getChildNodeOrComponent("report_btn");
@@ -381,12 +383,14 @@ export default class UITexas extends BaseScene {
 
 
         this.buildMenuButtons();
+
         //GameCache.Instance.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
 
         this.UIAddChips.node.active = false;
 
         this.Seat.active = false;
+
 
     }
     private buildMenuButtons() {

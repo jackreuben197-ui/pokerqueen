@@ -1584,7 +1584,9 @@ export default class Seat {
         //  imageBubbleInsurance.gameObject.SetActive(false);
         //}
     }
-
+    public HideFold() {
+        this.uirc.imageBubble.node.active = false;
+    }
 
     /// <summary>
     /// 本轮结束，清理数据。（不是全部数据清空，只需要缓存一手的数据清空）

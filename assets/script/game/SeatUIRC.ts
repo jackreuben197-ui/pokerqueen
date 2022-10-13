@@ -110,9 +110,8 @@ export default class SeatUIRC extends UIBase {
     imageBubble: cc.Sprite = null;
     textBubble: cc.Label = null;
 
-
-    SmallCardBacks_Mark: cc.Node = null;
-
+    //用来设置操作面板的位置
+    Operation_Pos_Mark: cc.Node = null;
     ///////////////////////////////////
 
     ///////////////////////////////////
@@ -194,7 +193,8 @@ export default class SeatUIRC extends UIBase {
         this.imageBubble = this.getChildNodeOrComponent("Image_Bubble", cc.Sprite);
         this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
 
-        this.SmallCardBacks_Mark = this.getChildNodeOrComponent("SmallCardBacks_Mark");
+
+        this.Operation_Pos_Mark = this.getChildNodeOrComponent("Operation_Pos_Mark");
 
         //声纹
         this.voiceprintList = [];
