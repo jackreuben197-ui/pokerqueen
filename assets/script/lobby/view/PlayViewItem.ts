@@ -1,5 +1,5 @@
+import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import TimeHelper from "../../helper/TimeHelper";
-import { Web_Room_Center_Rooms } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 
 const { ccclass, property } = cc._decorator;
@@ -13,7 +13,7 @@ export default class PlayViewItem extends UIBase {
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         最下方列表中item的UI接入数据 点击事件等
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-    updateItemInfo(roomInfo: typeof Web_Room_Center_Rooms.DataElement) {
+    updateItemInfo(roomInfo: LobbyRoomListItem) {
         let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(roomInfo.start_time)
         let roomLeftTime = deadLineTime / 1000 + roomInfo.play_duration - new Date().getTime() / 1000
         if (roomLeftTime > 0) {
@@ -46,10 +46,8 @@ export default class PlayViewItem extends UIBase {
         }
     }
 
-    getTime(pNum: number)
-    {
-        if (pNum >= 3600)
-        {
+    getTime(pNum: number) {
+        if (pNum >= 3600) {
             let h = (pNum / 3600);
             let m = pNum % 3600 / 3600;
             let mRound = Math.round(m);

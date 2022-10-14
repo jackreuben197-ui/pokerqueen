@@ -4,7 +4,7 @@ import { GameCache } from "../game/GameCache";
 import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import WebSocketClient from "../net/websocket/WebSocketClient";
-import UIComponent from "../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import LobbySession from "./LobbySession";
 import LoginSession from "./LoginSession";
 
@@ -25,7 +25,7 @@ export default class GlobalSession {
         LoginSession.LoginOut();
         WebSocketClient.Close();
         UpdateComponent.RemoveAll();
-        UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
+        UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
         ProcedureManager.StartProcedure(ProcedureEnum.Login, { logout: true });
     }
 

@@ -24,7 +24,7 @@ import { ClientMessageStoreChips } from "../../protobuf/holdem/req_store_chips_p
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
-import UIComponent from "../../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
@@ -467,7 +467,7 @@ export default class TexasGame {
         this.setting.pokerType = type;
 
         //所有扑克刷新,需要提前注册
-        
+
 
     }
     /////////////////////////////////////////////////
@@ -669,7 +669,7 @@ export default class TexasGame {
         // 如果有让牌操作的时候点弃牌会出现弹框，先隐藏
         // UI mTmpDialog = UIComponent.Instance.Get(UIType.UIDialog);
         //         if (null != mTmpDialog && mTmpDialog.GameObject.activeInHierarchy) {
-        //             UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+        //             UIComponent.Instance.HideUI(UIType.UIDialog);
         //         }
         UIComponent.close(UIDefine.UIDialogComponent);
         //当前操作人
@@ -688,7 +688,7 @@ export default class TexasGame {
                         // 自己有参与游戏,但allin弃牌不显示
                         if ((this.mainPlayer.actionStatus != Def.Action.FOLD && this.mainPlayer.actionStatus != Def.Action.ALLIN && this.mainPlayer.actionStatus != Def.Action.NONE) && !this.mainPlayer.IsAutoOp) {
 
-                            UIComponent.Instance.ShowNoAnimation(this.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
+                            UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
 
                         }
                         else {
@@ -843,7 +843,7 @@ export default class TexasGame {
         //     //{
         //     //    Image_InsuranceTips.gameObject.SetActive(false);
         //     //}
-        //     UIComponent.Instance.ShowNoAnimation(UIType.UIInsurance, new UIInsuranceComponent.InsuranceData()
+        //     UIComponent.Instance.ShowUI(UIType.UIInsurance, new UIInsuranceComponent.InsuranceData()
         //         {
         //             publicCards = cards,
         //             triggedDatas = wrapTriggedInsuranceDatas,
@@ -1348,7 +1348,7 @@ export default class TexasGame {
                     actionCommit: () => {
                         // UIMineModel.mInstance.APIGetClubId(tDtoHasClub => {
                         //     if (tDtoHasClub) {
-                        //         UIComponent.Instance.ShowNoAnimation(UIType.UIMine_WalletAddBeansList, null);
+                        //         UIComponent.Instance.ShowUI(UIType.UIMine_WalletAddBeansList, null);
                         //     }
                         //     else {
                         //         UIComponent.Instance.ToastLanguage("WalletMy11");
@@ -1368,7 +1368,7 @@ export default class TexasGame {
                 //                         if (!MicrophoneHelper.IsMicrophonePermissionAllowed()) {
                 //                             return;
                 //                         }
-                //                         Game.Scene.GetComponent<UIComponent>().ShowNoAnimation(UIType.UITexasHumanYZ, new UITexasHumanYZComponent.VerificationDataInfo()
+                //                         Game.Scene.GetComponent<UIComponent>().PrefabUI(UIType.UITexasHumanYZ, new UITexasHumanYZComponent.VerificationDataInfo()
                 //     								{
                 //                                 cacheVoiceprint = VoiceprintRoomType.Hall,
                 //                                 isHaveVoice = true
@@ -1627,7 +1627,7 @@ export default class TexasGame {
     /// 隐藏自动操作面板
     /// </summary>
     public HideAutoOperationPanel(): void {
-        UIComponent.Instance.HideNoAnimation(this.uirc.UIAutoOperation);
+        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperation);
     }
     /// <summary>
     /// 展示操作面板
@@ -1650,7 +1650,7 @@ export default class TexasGame {
         this.uirc.buttonDelay.active = true;
         this.delayCount = delay;
         this.UpdateDelayBtn();
-        UIComponent.Instance.ShowNoAnimation(this.uirc.UIOperation, operationData);
+        UIComponent.Instance.ShowUI(PrefabUI.UIOperation, operationData);
     }
     /// <summary>
     /// 隐藏操作面板
@@ -1667,7 +1667,7 @@ export default class TexasGame {
         }
         this.uirc.buttonDelay.active = false;
         if (this.uirc.UIOperation.activeInHierarchy) {
-            UIComponent.Instance.HideNoAnimation(this.uirc.UIOperation);
+            UIComponent.Instance.HideUI(PrefabUI.UIOperation);
         }
     }
     /// <summary>
@@ -2780,7 +2780,7 @@ export default class TexasGame {
      * 显示手动设置面板 
      */
     private ShowAddChips(): void {
-        UIComponent.Instance.ShowNoAnimation<AddClipsData>(this.uirc.UIAddChips.node, {
+        UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent, {
             bigBlind: this.bigBlind,
             smallBlind: this.smallBlind,
             currentMinRate: this.currentMinRate,

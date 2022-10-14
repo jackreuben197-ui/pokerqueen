@@ -12,7 +12,7 @@ import { ClientMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_ac
 import { ClientMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent";
 import UIBase from "../ui/UIBase";
-import UIComponent from "../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./Seat";
 import { AddClipsData } from "./ui/UIAddChipsComponent";
@@ -244,7 +244,7 @@ export default class SeatUIRC extends UIBase {
 
     private ClickCancelReserveSeat(): void {
         if (this.seat.IsMySeat && this.seat.Player.chips <= 0) {
-            UIComponent.Instance.ShowNoAnimation<AddClipsData>(GameCache.Instance.CurGame.uirc.UIAddChips.node,
+            UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent,
                 {
                     bigBlind: GameCache.Instance.CurGame.bigBlind,
                     smallBlind: GameCache.Instance.CurGame.smallBlind,
@@ -296,7 +296,7 @@ export default class SeatUIRC extends UIBase {
         switch (this.seat.SeatVoiceprintState) {
             case VoiceprintState.Start:
             case VoiceprintState.Recording:
-                //             UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
+                //             UIComponent.Instance.ShowUI(UIType.UIDialog, new UIDialogComponent.DialogData()
                 // 				{
                 //                     type = UIDialogComponent.DialogData.DialogType.CommitCancel,
                 //                     title = LanguageManager.Get("UiVoiceprint_10001"),
@@ -304,7 +304,7 @@ export default class SeatUIRC extends UIBase {
                 //                     contentCancel = LanguageManager.Get("UiVoiceprint_10030"),
                 //                     contentCommit = LanguageManager.Get("UIBackDiolg_Konw_01"),
                 //                     actionCancel = () => {
-                //                         UIComponent.Instance.ShowNoAnimation(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
+                //                         UIComponent.Instance.ShowUI(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
                 //     }
                 // });
                 break;
@@ -323,7 +323,7 @@ export default class SeatUIRC extends UIBase {
                     let seat: Seat = GameCache.Instance.CurGame.GetSeatByUserId(GameCache.Instance.CurGame.mainPlayer.userID);
                     if (seat != null) {
                         if (seat.Player.seatID >= 0) {
-                            // UIComponent.Instance.ShowNoAnimation(UIType.UITexasHumanVote, new UITexasHumanVoteComponent.VoteDataInfo()
+                            // UIComponent.Instance.ShowUI(UIType.UITexasHumanVote, new UITexasHumanVoteComponent.VoteDataInfo()
                             // 	{
                             //         verify_id = this.Player.VoiceprintId,
                             //         name = this.Player.nick,
@@ -332,7 +332,7 @@ export default class SeatUIRC extends UIBase {
                             //     });
                         }
                         else {
-                            //         UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
+                            //         UIComponent.Instance.ShowUI(UIType.UIDialog, new UIDialogComponent.DialogData()
                             // 			{
                             //                 type = UIDialogComponent.DialogData.DialogType.CommitCancel,
                             //                 title = "",
@@ -341,13 +341,13 @@ export default class SeatUIRC extends UIBase {
                             //                 content = LanguageManager.Get("UiVoiceprint_10027"),//上桌后可参与该玩家真人验证投票
                             //                 actionCommit = () => { UIComponent.Instance.Remove(UIType.UIDialog); },
                             //                 actionCancel = () => {
-                            //                     UIComponent.Instance.ShowNoAnimation(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
+                            //                     UIComponent.Instance.ShowUI(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
                             //     }
                             // });
                         }
                     }
                     else {
-                        //         UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
+                        //         UIComponent.Instance.ShowUI(UIType.UIDialog, new UIDialogComponent.DialogData()
                         // 			{
                         //                 type = UIDialogComponent.DialogData.DialogType.CommitCancel,
                         //                 title = "",
@@ -356,7 +356,7 @@ export default class SeatUIRC extends UIBase {
                         //                 content = LanguageManager.Get("UiVoiceprint_10027"),//上桌后可参与该玩家真人验证投票
                         //                 actionCommit = () => { UIComponent.Instance.Remove(UIType.UIDialog); },
                         //                 actionCancel = () => {
-                        //                     UIComponent.Instance.ShowNoAnimation(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
+                        //                     UIComponent.Instance.ShowUI(UIType.UITexasHumanVerification, new object[] { GameCache.Instance.room_id, (int)Player.userID, Player.nick });
                         //     }
                         // });
                     }

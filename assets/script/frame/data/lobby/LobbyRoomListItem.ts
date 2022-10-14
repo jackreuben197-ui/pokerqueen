@@ -1,4 +1,5 @@
 import { TRoomListItem } from "../../../config/TTypeConfig";
+import { RoomType } from "../../../game/GameUtil";
 import GC from "../../GameControl";
 
 export default class LobbyRoomListItem {
@@ -17,6 +18,10 @@ export default class LobbyRoomListItem {
     get room_type() {
         return this._data.room_type;
     }
+    get room_type_is_legal() {
+        return RoomType[this.room_type];
+    }
+
     get game_type() {
         return this._data.game_type;
     }
@@ -67,6 +72,10 @@ export default class LobbyRoomListItem {
     }
     get tablecloth_tag() {
         return this._data.tablecloth_tag;
+    }
+
+    get start_time() {
+        return this._data.start_time;
     }
 
 

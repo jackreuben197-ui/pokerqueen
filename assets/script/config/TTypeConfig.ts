@@ -41,71 +41,73 @@ export type TRoomList = {
 }
 
 export type TRoomListItem = {
-    rid: number,
-    name: string,
-    room_type: number,
-    game_type: number,      // 游戏类型 0-德州 1-OMAHA4 2-OMAHA5 3-OMAHA6
-    poker_type: number,     // 牌类型 0-长牌 2-短牌
-    limit_bet_type: number, // 下注类型 0-无底池限制 1-底池限制 2-AOF
-    status: number,         //0:待创建 1:已创建未开始 2:已开始 3:已结束
-    ante: number,
-    sb: number,
-    op_duration: number,             //操作时间
-    no_user_wait_duration: number,   //用户不足等待开局间隔
-    keep_seat_duration: number,      //无筹码留坐站起时间
-    total_bring_in: number,          //房间内总共带入多少
-    total_bring_out: number,
-    total_chip: number,      //当前筹码数量
-    min_rate: number,        //最小带入倍率(BB的倍数)
-    max_rate: number,        //最大带入倍率
-    min_players: number,     //最小游戏人数
-    autostart_min_players: number,   //自动开始最小人数 <2 非自动开始 >= 2 自动开始
-    straddle_on: number,        //1 开 0 关
-    straddle_max: number,
-    insurance_on: number,       //1 开 0 关
-    insurance_op_duration: number,   //保险操作时间
+    rid: number,//房间id
+    name: string,//房间名称
+    room_type: number,//room path 房间类型
+    game_type: number,//游戏类型
+    poker_type: number,//牌类型
+    limit_bet_type: number,//底池限注类型
+    status: number,//房间状态  0 未真是创建，1  已创建 未开始，2 进行中，3 强制关闭，4 即将关闭，5 房间关闭 。 RoomStatus
+    ante: number,//前注
+    sb: number,//小盲
+    op_duration: number,//操作时间
+    no_user_wait_duration: number,//无用户等待时间
+    keep_seat_duration: number,//留座离桌时间
+    total_bring_in: number,//总带入
+    total_bring_out: number,//总带出	
+    total_chip: number,//总记分牌
+    min_rate: number,//最小带入倍率
+    max_rate: number,//最大带入倍率
+    min_players: number,//最小人数
+    autostart_min_players: number,//最小人数自动开桌
+    straddle_on: number,//强制盲注开启。1：开启，0：关闭
+    straddle_max: number,//强制盲注最大人数
+    insurance_on: number,//保险开启。1：开启，0：关闭
+    insurance_op_duration: number,//保险操作时间
+    delay_view_card_on: number,//延迟看牌。1：开启，0，关闭	
+    post_on: number,//补盲开关，1：开启，0，关闭
+    muck_on: number,//是否开启盖牌
+    limit_ip_on: number,//IP开启
+    limit_gps_on: number,//gps开启
+    limit_gps_distance: number,//gps 距离
+    limit_delay_times: number,//操作延迟次数
+    limit_auto_check_times: number,//自动过牌次数
+    limit_auto_fold_times: number,//自动弃牌次数
+    seat_count: number,//房间座位数量
+    empty_seat: number,//剩余空座位
+    roomers: number,//房间内人数
+    enter_time: string,//允许进入时间	
+    play_duration: number,//游戏时长
+    retain_type: number,//藏钱类型
+    retain_min_rate: number,//最小倍率	
+    schedule_start_time: string,//	
+    start_time: string,//开始时间
+    end_time: string,//结束时间	
+    hand_num: number,//手数
+    tribe_id: number,//联盟id	
+    end_reason: string,//结束原因	
+    hc_total_hand_lv: number,//限制总手数胜率
+    hc_total_hand: number,//限制总手数	
+    hc_pool_rate_lv: number,//限制入池率	
+    hc_pool_rate: number,//限制入池数	
+    service_id: string,//用于查询IP列表IP Port
+    create_time: string,//创建时间	
+    update_time: string,//	
+    voiceprint_verify_on: number,//开启声纹验证 0 关闭，1 开启。	
+    voiceprint_verify_limit_times: number,//该房间次数限制 
+    voiceprint_verify_duration: number,//被验证倒计时	
+    voiceprint_verify_interval_duration: number,//被验证间隔时间
+    participation_status: number,//参与状态:0 未参与 1: 参与中
+
     second_pcs_on: number,
     second_pcs_op_duration: number,
     second_pcs_user_limit: number,
-    delay_view_card_on: number,  //延迟看牌开关
-    post_on: number,     //1 开 0 关 补盲开关
-    muck_on: number,        //1 开 0 关 （是否盖牌翻牌)
-    limit_ip_on: number,
-    limit_gps_on: number,
-    limit_gps_distance: number,
-    limit_delay_times: number,
-    limit_auto_check_times: number,  //可以超时几次自动Check
-    limit_auto_fold_times: number,   //可以超时几次C自动Fold
-    seat_count: number,
-    empty_seat: number,
-    roomers: number,    //房间内人数
-    enter_time: string,
-    play_duration: number,
     no_user_close_duration: number,
-    retain_type: number,
-    retain_min_rate: number,    //最小倍率
-    schedule_start_time: number,
-    start_time: number,
-    end_time: number,
     settlement_type: number,
-    hand_num: number,
-    tribe_id: number,        //联盟ID
-    end_reason: string,
-    hc_total_hand_lv: number,
-    hc_total_hand: number,
-    hc_pool_rate_lv: number,
-    hc_pool_rate: number,
-    service_id: string,
-    create_time: string,
-    update_time: string,
-    voiceprint_verify_on: number,   // 声纹验证是否开启 1 开 0 关
-    voiceprint_verify_limit_times: number,   // 声纹验证限制次数
-    voiceprint_verify_duration: number, // 声纹验证时长(超时),单位秒
-    voiceprint_verify_interval_duration: number, // 声纹验证间隔时间(超时),单位秒
-    participation_status: number,  //参与状态:0 未参与 1: 参与中
     tablecloth_tag: string, // 桌布
     club_id: number, // 公会ID
     origin_type: number,    // 创建来源 1 平台，2 联盟，3 公会
+
 }
 
 export type TUserInfo = {

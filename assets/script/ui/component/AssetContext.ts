@@ -49,8 +49,15 @@ export default class AssetContext extends cc.Component {
     //     // }
     // }
 
-    public static setAsset<T extends cc.Asset>(fold: AssetFold, name: string, asset: T) {
-        let key = `${AssetFold[fold]}|${asset.name}`;
+    public static setAsset<T extends cc.Asset>(key: AssetFold | string, name: string, asset: T) {
+
+        if (key in AssetFold) {
+
+            key = `${AssetFold[key]}|${asset.name}`;
+        } else {
+
+            key = `${key}|${asset.name}`;
+        }
         AssetContext.map[key] = asset;
     }
 
@@ -59,8 +66,13 @@ export default class AssetContext extends cc.Component {
      * @param name 
      * @returns 
      */
-    public static getAsset<T extends cc.Asset>(name: string, fold: AssetFold = AssetFold.texture_common): T {
-        let key = `${AssetFold[fold]}|${name}`;
+    public static getAsset<T extends cc.Asset>(name: string, key: AssetFold | string = AssetFold.texture_common): T {
+
+        if (key in AssetFold) {
+            key = `${AssetFold[key]}|${name}`;
+        } else {
+            key = `${key}|${name}`;
+        }
         return AssetContext.map[key] as T;
     }
 

@@ -4,7 +4,7 @@ import { UIDefine } from "../define/UIDefine";
 import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import { Pre_Texas_Define } from "../manager/ResManager";
-import UIComponent from "../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 
 /**
@@ -17,7 +17,7 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     lateEnter(param?: any) {
         super.lateEnter(param);
         //显示房间进入loading
-        UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, { pre_define: Pre_Texas_Define, complete: this.onComplete.bind(this), error: this.errorHandler.bind(this) });
+        UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, { pre_define: Pre_Texas_Define, complete: this.onComplete.bind(this), error: this.errorHandler.bind(this) });
 
     }
     Leave() {
@@ -28,7 +28,7 @@ export default class ProcedureEnterTexas extends ProcedureBase {
         ProcedureManager.StartProcedure(ProcedureEnum.Texas, this.param);
     }
     errorHandler() {
-        UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
+        UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
         ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { ignoreEnter: true });
     }
 }

@@ -30,6 +30,9 @@ export const Pre_Texas_Define: Pre_Define = {
     dir: "/"
 }
 
+
+
+
 export class ResManager {
     private static _instance: ResManager = null;
     public static get instance() {
@@ -38,8 +41,19 @@ export class ResManager {
         }
         return ResManager._instance;
     }
+    // PrefabMap: any = {};
+    // // static bundleMap: { [key: string]: cc.AssetManager.Bundle } = {};
 
-    // static bundleMap: { [key: string]: cc.AssetManager.Bundle } = {};
+    // //关联预制体
+    // SetPrefab(bundle: string, prefab: cc.Prefab) {
+    //     this.PrefabMap[bundle] || (this.PrefabMap[bundle] = {});
+    //     this.PrefabMap[bundle][prefab.name] = prefab;
+    // }
+    // GetPrefab(bundle: string, prefab_name: string) {
+    //     return this.PrefabMap[bundle][prefab_name];
+    // }
+
+
 
     static LoadAsset(bundleName: string, assetPath: string) {
         let bundle = bundleName == null ? cc.resources : cc.assetManager.getBundle(bundleName);
@@ -86,6 +100,7 @@ export class ResManager {
                             } else {
                                 assets.forEach((item) => {
                                     if (item instanceof cc.Prefab) {
+                                        AssetContext.setAsset(bundleName, item.name, item);
                                         let ac = item.data?.getComponent(AssetContext);
                                         if (ac) {
                                             item.data.children.forEach((item) => {

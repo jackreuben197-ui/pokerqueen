@@ -167,7 +167,7 @@ export default class LobbySession {
     static APIWebUserRoominsur(room_id: number) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_User_Room_insur.API.replace("{id}", GameCache.Instance.room_id.toString()),
+                api: Web_User_Room_insur.API.replace("{id}", room_id.toString()),
                 request: Web_User_Room_insur,
                 onSuccess: function () {
                     //TODO 广播刷新

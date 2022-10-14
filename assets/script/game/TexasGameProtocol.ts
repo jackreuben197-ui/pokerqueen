@@ -30,7 +30,7 @@ import { ServerMessageSetAutoOnTable } from "../protobuf/holdem/req_set_auto_on_
 import { ServerMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import { ServerMessageShowPublicCards } from "../protobuf/holdem/req_show_public_cards_pb";
 import { ClientMessageStoreChips, ServerMessageStoreChips } from "../protobuf/holdem/req_store_chips_pb";
-import UIComponent from "../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
@@ -375,7 +375,7 @@ export default class TexasGameProtocol {
                     // 非弃牌 && 非ALLIN && 非托管
                     if (mMySeat.Player.actionStatus != Def.Action.FOLD && mMySeat.Player.actionStatus != Def.Action.ALLIN && mMySeat.Player.actionStatus != Def.Action.NONE && !mMySeat.Player.IsAutoOp) {
 
-                        UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
+                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -742,7 +742,7 @@ export default class TexasGameProtocol {
                     // 自己有参与游戏
                     if ((this.game.mainPlayer.actionStatus != Def.Action.FOLD && this.game.mainPlayer.actionStatus != Def.Action.ALLIN && this.game.mainPlayer.actionStatus != Def.Action.NONE) && !this.game.mainPlayer.IsAutoOp) {
 
-                        UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
+                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
 
                     }
                     else {
@@ -759,7 +759,7 @@ export default class TexasGameProtocol {
         }
         else {
             this.game.HideOperationPanel();
-            //UIComponent.Instance.HideNoAnimation(UIType.UIAutoOperation);
+            //UIComponent.Instance.HideUI(UIType.UIAutoOperation);
         }
     }
 
@@ -1183,7 +1183,7 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="source"></param>
     public HandleGetPublicCards(source: ServerMessagePublicCards.AsObject): void {
-        //UIComponent.Instance.HideNoAnimation(UIType.UIInsurance);
+        //UIComponent.Instance.HideUI(UIType.UIInsurance);
         //UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
         this.game.autoCall = false;
         this.game.autoAllin = false;
@@ -1263,7 +1263,7 @@ export default class TexasGameProtocol {
                 // 非弃牌、非ALL IN、非空闲等待下一局、非托管
                 if (this.game.mainPlayer.isPlaying && !this.game.mainPlayer.IsAutoOp) {
                     // 预操作UI
-                    UIComponent.Instance.ShowNoAnimation(this.game.uirc.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(0)));
+                    UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(0)));
                 }
                 else {
                     // 无预操作UI
@@ -1352,8 +1352,8 @@ export default class TexasGameProtocol {
         this.game.cacheRound = rec.round;
         GameCache.Instance.GameStatus = this.game.gamestatus;
 
-        UIComponent.Instance.HideNoAnimation(this.game.uirc.UIAutoOperation);
-        UIComponent.Instance.HideNoAnimation(this.game.uirc.UIOperation);
+        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperation);
+        UIComponent.Instance.HideUI(PrefabUI.UIOperation);
 
         let mSeat: Seat = null;
         for (let i = 0, n = rec.resultsList.length; i < n; i++) {
@@ -1416,7 +1416,7 @@ export default class TexasGameProtocol {
         this.game.HideOperationPanel();
         //防止大牌动画未消失
         if (this.game.isPlayingBigWinAnimation) {
-            //UIComponent.Instance.HideNoAnimation(UIType.UIBigWinAnimation);
+            //UIComponent.Instance.HideUI(UIType.UIBigWinAnimation);
         }
 
         // 刷新底池
@@ -1485,7 +1485,7 @@ export default class TexasGameProtocol {
                 if (playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE1 || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE2) {
                     UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get("Addondz"), StringHelper.GetSignedLongString(playerChipChange.change)));
                 }
-                UIComponent.Instance.HideNoAnimation(GameCache.Instance.CurGame.uirc.UIOutChips.node);
+                UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
                 this.game.mainPlayer.cacheStoreChips = playerChipChange.storeChips;
             }
             mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
@@ -1514,7 +1514,7 @@ export default class TexasGameProtocol {
         //         tableChips = (int)cacheOutChips,
         //     });
         this.game.cacheOutChips = 0;
-        UIComponent.Instance.HideNoAnimation(GameCache.Instance.CurGame.uirc.UIOutChips.node);
+        UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
         let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
         if (null == mSeat) return;
         mSeat.Player.chips = rec.chips;
@@ -1540,7 +1540,7 @@ export default class TexasGameProtocol {
             return;
         }
         mSeat.Player.chips = rec.chips;
-        UIComponent.Instance.HideNoAnimation(GameCache.Instance.CurGame.uirc.UIAddChips.node);
+        UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
     }

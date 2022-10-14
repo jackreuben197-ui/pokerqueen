@@ -1,4 +1,5 @@
 import { TRoomList } from "../../../config/TTypeConfig";
+import { GameCache } from "../../../game/GameCache";
 import { GameType, PokerType } from "../../../game/GameUtil";
 import GC from "../../GameControl";
 import LobbyRoomListItem from "./LobbyRoomListItem";
@@ -21,6 +22,19 @@ export default class LobbyRoomListModel {
     }
     set selected(v) {
         this._selected = v;
+        GameCache.Instance.serviceId = v.service_id;
+        GameCache.Instance.roomName = v.name;
+        GameCache.Instance.room_type = v.room_type;
+        GameCache.Instance.game_type = v.game_type;
+        GameCache.Instance.poker_type = v.poker_type;
+        GameCache.Instance.bet_type = v.limit_bet_type;
+        GameCache.Instance.room_id = v.rid;
+        GameCache.Instance.seat_count = v.seat_count;
+        GameCache.Instance.straddle = v.straddle_on;
+        GameCache.Instance.insurance = v.insurance_on > 0;
+        GameCache.Instance.muck_switch = v.muck_on;
+        GameCache.Instance.voiceprint_verify_on = v.voiceprint_verify_on;
+        GameCache.Instance.voiceprint_verify_duration = v.voiceprint_verify_duration;
     }
 
     getList(isClub) {

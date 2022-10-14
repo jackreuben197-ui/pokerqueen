@@ -165,22 +165,24 @@ export default class UIOperationComponent extends UIBase {
     }
 
     protected regiterTouchEvents(): void {
-        this.buttonCall.getChildByName("BtnArea").on("click", this.onClickCall, this);
-        this.buttonCheck.on("click", this.onClickCheck, this);
-        this.buttonCall0.getChildByName("BtnArea").on("click", this.onClickCall0, this);
-        this.buttonCall1.getChildByName("BtnArea").on("click", this.onClickCall1, this);
-        this.buttonCall2.getChildByName("BtnArea").on("click", this.onClickCall2, this);
-        this.buttonCallLeft.getChildByName("BtnArea").on("click", this.onClickCallLeft, this);
-        this.buttonCallRight.getChildByName("BtnArea").on("click", this.onClickCallRight, this);
-        this.buttonAllin.getChildByName("BtnArea").on("click", this.onClickAllin, this);
-        this.Button_Straddle.getChildByName("BtnArea").on("click", this.onClickStraddle, this);
 
-        this.buttonFreeCall.getChildByName("BtnArea").on("click", this.onClickFreeCall, this);
-        this.buttonFreeCallConfirm.getChildByName("BtnArea").on("click", this.onClickSliderHandle, this);
+        this.setButtonClick(this.buttonCall, this.onClickCall);
+        this.setButtonClick(this.buttonCheck, this.onClickCheck);
+        this.setButtonClick(this.buttonCall0, this.onClickCall0);
+        this.setButtonClick(this.buttonCall1, this.onClickCall1);
+        this.setButtonClick(this.buttonCall2, this.onClickCall2);
+        this.setButtonClick(this.buttonCallLeft, this.onClickCallLeft);
+        this.setButtonClick(this.buttonCallRight, this.onClickCallRight);
+        this.setButtonClick(this.buttonAllin, this.onClickAllin);
+        this.setButtonClick(this.Button_Straddle, this.onClickStraddle);
 
-        this.imageFreeCallMask.on("click", this.onClickFreeCallMask, this);
-        this.buttonFold.on("click", this.onClickFold, this);
-        this.buttonSliderHandle.on("click", this.onClickSliderHandle, this);
+
+        this.setButtonClick(this.buttonFreeCall, this.onClickFreeCall);
+        this.setButtonClick(this.buttonFreeCallConfirm, this.onClickSliderHandle);
+        this.setButtonClick(this.imageFreeCallMask, this.onClickFreeCallMask);
+        this.setButtonClick(this.buttonFold, this.onClickFold);
+        this.setButtonClick(this.buttonSliderHandle, this.onClickSliderHandle);
+
         this.sliderFreeCall.onChange(this.onValueChangeFreeCall.bind(this));
     }
 
@@ -388,7 +390,7 @@ export default class UIOperationComponent extends UIBase {
         }
         this.SetCalibrationWeight();
         if (this.isShowingDialog) {
-            //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+            //UIComponent.Instance.HideUI(UIType.UIDialog);
             UIComponent.close(UIDefine.UIDialogComponent);
         }
         this.isShowingDialog = false;
@@ -722,7 +724,7 @@ export default class UIOperationComponent extends UIBase {
                 this.isCountDown = false;
                 this.imageCheckCountDown.node.active = false;
                 if (this.isShowingDialog)
-                    //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+                    //UIComponent.Instance.HideUI(UIType.UIDialog);
                     UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送让牌，在这里做
@@ -740,7 +742,7 @@ export default class UIOperationComponent extends UIBase {
                 this.isCountDown = false;
                 this.imageFoldCountDown.node.active = false;
                 if (this.isShowingDialog)
-                    //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+                    //UIComponent.Instance.HideUI(UIType.UIDialog);
                     UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送弃牌，在这里做
@@ -764,7 +766,7 @@ export default class UIOperationComponent extends UIBase {
         super.regiterDispatchEvent();
         this.listen(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_ADD_TIME);  // 操作加时
     }
-    
+
     protected HANDLER_REQ_ADD_TIME(rec: ServerMessageAddTime.AsObject): void {
 
         if (rec == null) {

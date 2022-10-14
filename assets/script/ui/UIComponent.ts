@@ -6,30 +6,70 @@ import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
 
+
+
+
+
 const { ccclass } = cc._decorator;
+
+export enum PrefabUI {
+    UIPreloading = "UIPreloading",
+    UITexasMenuComponent = "UITexasMenuComponent",
+    UIAddChipsComponent = "UIAddChipsComponent",
+    UIOutChipsComponent = "UIOutChipsComponent",
+    UIAutoOperation = "UIAutoOperation",
+    UIOperation = "UIOperation",
+}
+
 
 @ccclass
 export default class UIComponent {
 
+    prefab_node_map = new Map;
+
     static get Instance(): UIComponent {
         return (<any>this).instance ??= new UIComponent;
     }
+    /**
+     存储预制体节点
+     */
+    SetPrefabNode(prefab_name: string, node: cc.Node): void {
+        this.prefab_node_map.set(prefab_name, node);
+    }
+    /**
+     获取预制体节点
+     */
+    GetPrefabNode(prefab_name: string): cc.Node {
+        return this.prefab_node_map.get(prefab_name);
+    }
+
 
     Toast(content: string) {
         ToastManager.Instance.createToast(content);
     }
-    //界面内UIBase的显示
-    ShowNoAnimation<T>(node: cc.Node, param?: T) {
-        node.active = true;
-        let ui_component: UIBase = node.getComponent(UIBase);
-        ui_component?.onShow(param);
+
+    //显示节点
+    ShowUI<T>(com: PrefabUI, param?: T) {
+        let node = this.GetPrefabNode(com);
+        if (node) {
+            node.active = true;
+            let ui_component: UIBase = node.getComponent(UIBase);
+            ui_component?.onShow(param);
+            cc.log("PrefabUI_node", node);
+        }
+
     }
-    //界面内UI的隐藏
-    HideNoAnimation<T>(node: cc.Node, param?: T) {
-        node.active = false;
-        let ui_component: UIBase = node.getComponent(UIBase);
-        ui_component?.onClose(param);
+    //隐藏节点
+    HideUI<T>(com: PrefabUI, param?: T) {
+        let node = this.GetPrefabNode(com);
+        if (node) {
+            node.active = false;
+            let ui_component: UIBase = node.getComponent(UIBase);
+            ui_component?.onClose(param);
+            cc.log("HideUI", com);
+        }
     }
+
 
     static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null, parent: cc.Node = null) {
         if (!UIDefine) return;

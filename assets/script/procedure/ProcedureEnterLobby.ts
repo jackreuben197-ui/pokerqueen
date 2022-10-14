@@ -10,7 +10,7 @@ import { Pre_Login_Define, Pre_Login_Main_Define, Pre_Main_Define } from "../man
 import SceneManager from "../manager/SceneManager";
 import GlobalSession from "../session/GlobalSession";
 import LoginSession from "../session/LoginSession";
-import UIComponent from "../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 
 export default class ProcedureEnterLobby extends ProcedureBase {
@@ -38,7 +38,7 @@ export default class ProcedureEnterLobby extends ProcedureBase {
     /////////////////////////////////////////////
     _catchHandler(code: number) {
         cc.log("login error code", code);
-        UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, {
+        UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, {
             pre_define: Pre_Login_Define, complete: () => {
                 GlobalSession.Logout();
             }
@@ -63,9 +63,9 @@ export default class ProcedureEnterLobby extends ProcedureBase {
     enterLobby() {
         //进入大厅的资源加载
         console.log("进入大厅资源加载");
-        UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, {
+        UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, {
             pre_define: Pre_Login_Main_Define, complete: () => {
-                UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
+                UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                 ProcedureManager.StartProcedure(ProcedureEnum.Lobby);
             }
         })
