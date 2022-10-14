@@ -1,4 +1,3 @@
-import TexasConfig from "../../config/TexasConfig";
 import { CommonDefine } from "../../define/CommonDefine";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
@@ -26,8 +25,6 @@ export default class UITexasMenuComponent extends UIBase {
     imageMenuMask: cc.Node = null;
     textTotalBean: cc.Label = null;
     Menu_Buttons: cc.Node = null;
-
-    textStoreBean: cc.Label = null;
 
     //按钮模板节点
     Menu_Button: cc.Node = null;
@@ -127,7 +124,6 @@ export default class UITexasMenuComponent extends UIBase {
         this.transSubMenu = this.getChildNodeOrComponent("SubMenu");
         this.imageMenuMask = this.getChildNodeOrComponent("Image_MenuMask");
         this.textTotalBean = this.getChildNodeOrComponent("Text_TotalBean", cc.Label);
-        this.textStoreBean = this.getChildNodeOrComponent("Text_StoreBean", cc.Label);
         this.Menu_Buttons = this.getChildNodeOrComponent("Menu_Buttons");
         this.Menu_Button = this.getChildNodeOrComponent("Menu_Button");
         this.buildMenuButtons();
@@ -168,7 +164,6 @@ export default class UITexasMenuComponent extends UIBase {
             button.active = false;
             button.getChildByName("Text").getComponent(cc.Label).string = item.text;
             button.getChildByName("Text").getComponent(i18nLabel).i18NString = item.i18n_string;
-            button.getChildByName("Line").active = !item.hideLine;
             button.on("click", item.onClick, this);
             button.on(cc.Node.EventType.TOUCH_START, this.onMenuButtonTouchStart, this);
             button.on(cc.Node.EventType.TOUCH_END, this.onMenuButtonTouchEnd, this);
@@ -177,15 +172,13 @@ export default class UITexasMenuComponent extends UIBase {
         }
         this.Menu_Button.active = false;
     }
+
     public UpdateMenu(): void {
         UIMineModel.mInstance.ObtainUserInfo(pDto => {
             // this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
             this.setText(this.textTotalBean, GC.data.user.info.displayGold);
         });
         // //更新金豆
-
-        this.textStoreBean.string = StringHelper.getStringDiv100(this.game.mainPlayer.cacheStoreChips);
-        this.textStoreBean.node.parent.active = (this.game.mainPlayer.cacheStoreChips > 0);
 
         let UserSitdown = this.game.UserSitdown();
 
