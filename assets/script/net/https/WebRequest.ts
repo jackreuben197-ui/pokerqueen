@@ -1093,7 +1093,10 @@ export class APIOrgClubGold {
     } = null;
 
     public static ResponseData: {
-
+        org_id: number, // 公会ID
+        gold: number, // 公会金豆数
+        gold_lock: number, // 公会被锁定的金豆数
+        forbidden: boolean // 是否冻结 true已冻结，false未冻结
     } = null;
     public static Request(param: typeof APIOrgClubGold.RequestParams) {
         this.RequestParams = param;
