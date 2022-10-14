@@ -12,7 +12,7 @@
   "height": 159,
   "platformSettings": {},
   "subMetas": {
-    "lightArrow": {
+    "arrow_light": {
       "ver": "1.0.6",
       "uuid": "1542226e-2aac-4ef6-bb8c-d930390e64ff",
       "importer": "sprite-frame",
