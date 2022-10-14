@@ -239,7 +239,7 @@ export default class RegisterForm extends BaseForm {
         ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1007"));//("验证码已发送");
 
         this.lbl_code.getComponent(LabelCDTime).show(60, this.resetGetCodeLabel.bind(this));
-        let NowTimeS = TimeHelper.NowS();
+        let NowTimeS = TimeHelper.NowS;
         localStorage.setItem(StorageKey.CODE_TIME_REGIST, NowTimeS.toString());
     }
     /**

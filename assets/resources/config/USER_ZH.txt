@@ -3161,6 +3161,12 @@ UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
 
+UILookRate=查看汇率
+UIAppay=申请
+
+UIText_today=今天
+UIText_yesterday=昨天
+
 
 
 

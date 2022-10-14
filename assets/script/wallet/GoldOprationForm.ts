@@ -2,6 +2,7 @@ import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
 import { UIDefine } from "../define/UIDefine";
 import GC from "../frame/GameControl";
+import ToastManager from "../manager/ToastManager";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../net/https/WebRequest";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
@@ -59,7 +60,7 @@ export default class GoldOprationForm extends BaseForm {
 
     initView() {
         let title = this._type == EWalletGoldOpration.in ? "Text_Add" : "Text_Getchips";
-        this.comFormTitle.initData(title, this);
+        this.comFormTitle.initData(title, this, "UILookRate", this.clickLookRate);
 
         this.edit.string = "";
         this.updatePrice();
@@ -134,8 +135,16 @@ export default class GoldOprationForm extends BaseForm {
                 content: this.getApplySucContent(goldNum, price),
                 contentCommit: "adaptation10012",
                 contentCancel: "adaptation10013",
+                actionCommit: this.backToWallet,
+                actionClose: this.backToWallet,
                 noAnimation: true,
             });
+    }
+
+    backToWallet = () => {
+        UIComponent.close(UIDefine.GoldOprationForm);
+        UIComponent.close(UIDefine.WalletJumpForm);
+        
     }
 
     getApplyContent(goldNum: number, price: number) {
@@ -151,5 +160,10 @@ export default class GoldOprationForm extends BaseForm {
             return GC.language.getLocal("MsgInfo_3000", goldNum);
         }
         return GC.language.getLocal("MsgInfo_3001", goldNum);
+    }
+
+    //点击记录
+    clickLookRate() {
+        ToastManager.Instance.createToast("adaptation10105");
     }
 }

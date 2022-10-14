@@ -1,12 +1,13 @@
 import ComFormTitle from "../common/ComFormTitle";
+import List from "../common/List";
 import { UIDefine } from "../define/UIDefine";
 import GC from "../frame/GameControl";
-import { GameCache } from "../game/GameCache";
-import { StringHelper } from "../helper/StringHelper";
 import ToastManager from "../manager/ToastManager";
-import { APIOrgClubGold, Web_Org_Club_Get } from "../net/https/WebRequest";
+import { APIOrgClubGold } from "../net/https/WebRequest";
+import CCTools from "../tools/CCTools";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
+import GoldChangeRecordItem from "./GoldChangeRecordItem";
 import { EWalletGoldOpration } from "./WalletConfig";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -16,12 +17,23 @@ export default class MyWalletForm extends BaseForm {
 
     private comFormTitle: ComFormTitle = null;
     private beanNum: cc.Label = null;
+    private myNode: cc.Node = null;
+    private clubNode: cc.Node = null;
+    private applyBtn: cc.Node = null;
+
+    private list: List = null;
 
     private _isClub: boolean = false;
     lateLoad() {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.beanNum = this.getChildNodeOrComponent("beanNum", cc.Label);
+
+        this.myNode = this.getChildNodeOrComponent("myNode");
+        this.clubNode = this.getChildNodeOrComponent("clubNode");
+        this.applyBtn = this.getChildNodeOrComponent("applyBtn");
+
+        this.list = this.getChildNodeOrComponent("list", List);
     }
 
     protected regiterDispatchEvent(): void {
@@ -30,6 +42,7 @@ export default class MyWalletForm extends BaseForm {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
+        this.bindClick(this.applyBtn, this.clickApply);
     }
 
     onShow(isClub?: boolean): void {
@@ -39,17 +52,35 @@ export default class MyWalletForm extends BaseForm {
     }
 
     initView() {
-        this.comFormTitle.initData("UIMine_btn_MyWallet", this, "Text_RecordLine", this.clickRecord);
+        let title = this._isClub ? "UIClub_FundDetail" : "UIMine_WalletMy";
+        this.comFormTitle.initData(title, this, "Text_RecordLine", this.clickRecord);
         this.updateBeanNum();
+
+        this.setActive(this.myNode, !this._isClub)
+        this.setActive(this.clubNode, this._isClub)
+
+        // this.list.numItems = 10;
+        // this.list.content.getComponent(cc.Layout).updateLayout();
     }
 
     updateBeanNum() {
-        // this.setText(this.beanNum, GameCache.Instance.gold);
         let gold = GC.data.user.info.displayGold;
         if (this._isClub) {
             gold = Math.floor(APIOrgClubGold.Response.data.gold) / 100
         }
         this.setText(this.beanNum, gold);
+    }
+
+    onRender(node: cc.Node, index: number) {
+        let item = node.getComponent(GoldChangeRecordItem);
+
+        let data = {}
+        if (CCTools.random(1, 10) >= 8) {
+            data = 1665734608 - CCTools.random(1, 24 * 60 * 60 * 100);
+        }
+
+        item.initData(data)
+        // this.list.content.getComponent(cc.Layout).updateLayout();
     }
 
     // 点击充豆
@@ -62,7 +93,17 @@ export default class MyWalletForm extends BaseForm {
         UIComponent.open(UIDefine.WalletJumpForm, EWalletGoldOpration.out);
     }
 
-    //点击记录
+    // 点击发放
+    clickIssue() {
+
+    }
+
+    // 点击查看申请几率
+    clickApply() {
+
+    }
+
+    // 点击记录
     clickRecord() {
         ToastManager.Instance.createToast("adaptation10105");
     }
