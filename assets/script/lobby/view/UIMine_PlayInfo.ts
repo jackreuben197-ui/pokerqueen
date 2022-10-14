@@ -164,7 +164,8 @@ export default class UIMine_PlayInfo extends BaseForm {
         let icon: any = APIOrgClubUploadIcon.Response.data
         if (icon) {
             let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
-            WebImageHelper.SetUrlImage(img_head, icon);
+            await WebImageHelper.SetUrlImage(img_head, icon);
+            img_head.node.active =true;
             this.isFixHead = true;
         }
     }
