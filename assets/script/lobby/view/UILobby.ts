@@ -24,9 +24,8 @@ export default class UILobby extends UIBase {
 
     }
 
-    protected lateLoad(): void {
-        super.lateLoad();
-
+    public onShow(param?: any): void {
+        super.onShow(param);
         // this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
         this.lbl_glod = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
         this.Button_MTT = this.getChildNodeOrComponent("Button_MTT");
@@ -49,6 +48,12 @@ export default class UILobby extends UIBase {
         ).start();
 
         this.initView();
+    }
+
+    protected lateLoad(): void {
+        super.lateLoad();
+
+        
     }
 
     protected regiterTouchEvents(): void {
