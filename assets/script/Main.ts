@@ -5,6 +5,7 @@ import { GameConfig } from "./config/GameConfig";
 import GC from "./frame/GameControl";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
+import UIComponent, { PrefabUI } from "./ui/UIComponent";
 
 const { ccclass, property } = cc._decorator;
 
@@ -50,6 +51,8 @@ export default class Main extends cc.Component {
         Main.Toast = this.node.parent.getChildByName("Toast - 提示层");
         Main.UIPreloading = Main.Block.getChildByName("UIPreloading");
         Main.Toast_Node = Main.Toast.getChildByName("Toast_Node");
+
+        UIComponent.Instance.SetPrefabNode(PrefabUI.UIPreloading, Main.UIPreloading);
 
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());

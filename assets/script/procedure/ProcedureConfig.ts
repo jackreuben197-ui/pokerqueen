@@ -7,7 +7,7 @@ import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import { Pre_Config_Define } from "../manager/ResManager";
 import LoginSession from "../session/LoginSession";
-import UIComponent from "../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 
 
@@ -21,7 +21,7 @@ export default class ProcedureConfig extends ProcedureBase {
     async lateEnter(param?: any) {
         super.lateEnter(param);
 
-        UIComponent.Instance.ShowNoAnimation(Main.UIPreloading, {
+        UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, {
             pre_define: Pre_Config_Define, stopProgress: true, complete: () => {
                 console.log("Config Set");
                 GameConfig.GlobalProto = this.getGlobalProto();

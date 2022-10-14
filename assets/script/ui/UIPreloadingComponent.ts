@@ -4,7 +4,7 @@ import { Bundle_Resources, Bundle_Texas, Pre_Load, ResManager } from "../manager
 import ToastManager from "../manager/ToastManager";
 import AssetContext from "./component/AssetContext";
 import UIBase from "./UIBase";
-import UIComponent from "./UIComponent";
+import UIComponent, { PrefabUI } from "./UIComponent";
 
 
 const { ccclass, property } = cc._decorator;
@@ -65,7 +65,7 @@ export default class UIPreloadingComponent extends UIBase {
                 }, (error: Error, assets) => {
                     if (error) {
                         console.warn(`资源加载失败:${bundle}/${dir}`);
-                        UIComponent.Instance.HideNoAnimation(Main.UIPreloading);
+                        UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                     } else {
                         console.log(`资源加载完成:${bundle}/${dir}`);
 

@@ -390,7 +390,7 @@ export default class UIOperationComponent extends UIBase {
         }
         this.SetCalibrationWeight();
         if (this.isShowingDialog) {
-            //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+            //UIComponent.Instance.HideUI(UIType.UIDialog);
             UIComponent.close(UIDefine.UIDialogComponent);
         }
         this.isShowingDialog = false;
@@ -724,7 +724,7 @@ export default class UIOperationComponent extends UIBase {
                 this.isCountDown = false;
                 this.imageCheckCountDown.node.active = false;
                 if (this.isShowingDialog)
-                    //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+                    //UIComponent.Instance.HideUI(UIType.UIDialog);
                     UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送让牌，在这里做
@@ -742,7 +742,7 @@ export default class UIOperationComponent extends UIBase {
                 this.isCountDown = false;
                 this.imageFoldCountDown.node.active = false;
                 if (this.isShowingDialog)
-                    //UIComponent.Instance.HideNoAnimation(UIType.UIDialog);
+                    //UIComponent.Instance.HideUI(UIType.UIDialog);
                     UIComponent.close(UIDefine.UIDialogComponent);
                 this.isShowingDialog = false;
                 //如需客户端倒计时结束发送弃牌，在这里做

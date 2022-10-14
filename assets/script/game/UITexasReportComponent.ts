@@ -173,7 +173,7 @@ export default class UITexasReportComponent extends UIBase {
 
             let watcherId = RoomersData.observersList[index].userRid;
             // UIEventListener.Get(tItem).onClick = (go) => {
-            //     UIComponent.Instance.ShowNoAnimation(UIType.UITexasPlayerInfo, new object[] { watcherId, true });
+            //     UIComponent.Instance.ShowUI(UIType.UITexasPlayerInfo, new object[] { watcherId, true });
             // };
         }
         // let param = Web_Room_Center_Rooms.RequestParams

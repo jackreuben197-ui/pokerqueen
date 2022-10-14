@@ -52,7 +52,7 @@ export default class GGSlider extends cc.Component {
         this.track_back.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.track_back.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
 
-        this.reset();
+        //this.reset();
     }
 
     reset(): void {
@@ -90,9 +90,6 @@ export default class GGSlider extends cc.Component {
         let l_location = this.node.convertToNodeSpaceAR(w_location);
         this.setBarPos(this.min + this.postion2pos(l_location[this.trans("x")]))
     }
-
-
-
 
     postion2pos(postion: number) {
         return Math.ceil((postion - this.step_dis / 2) / this.step_dis);

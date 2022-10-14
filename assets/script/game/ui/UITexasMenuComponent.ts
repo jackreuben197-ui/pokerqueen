@@ -9,7 +9,7 @@ import { UIMineModel } from "../../lobby/UIMineModel";
 import ToastManager from "../../manager/ToastManager";
 import { RoomInfo } from "../../protobuf/holdem/define_pb";
 import UIBase from "../../ui/UIBase";
-import UIComponent from "../../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import TexasGame from "../texas/TexasGame";
 import { AddClipsData } from "./UIAddChipsComponent";
@@ -309,7 +309,7 @@ export default class UITexasMenuComponent extends UIBase {
         }
         this.game.uirc.HideMenu();
         // 弹代入框
-        UIComponent.Instance.ShowNoAnimation<AddClipsData>(this.game.uirc.UIAddChips.node,
+        UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent,
             {
                 bigBlind: GameCache.Instance.CurGame.bigBlind,
                 smallBlind: GameCache.Instance.CurGame.smallBlind,
@@ -327,7 +327,7 @@ export default class UITexasMenuComponent extends UIBase {
         }
         this.game.uirc.HideMenu();
         // 弹代入框CurretainMinRate
-        UIComponent.Instance.ShowNoAnimation<OutClipsData>(this.game.uirc.UIOutChips.node,
+        UIComponent.Instance.ShowUI<OutClipsData>(PrefabUI.UIOutChipsComponent,
             {
                 currentMinRate: this.game.currentMinRate,
                 tableChips: this.game.mainPlayer.chips,

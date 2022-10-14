@@ -8,7 +8,7 @@ import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ActionLimit, Def } from "../protobuf/holdem/define_pb";
 import { ClientMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageLeave } from "../protobuf/holdem/req_leave_pb";
-import UIComponent from "../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
@@ -76,7 +76,7 @@ export default class TexasGameUtils {
             mSeat.Player = null;
             mSeat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
         }
-        UIComponent.Instance.HideNoAnimation(this.game.uirc.UIAddChips.node);
+        UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
         UIComponent.close(UIDefine.UITexasPlayerInfoComponent);
 
         this.game.HideOperationPanel();

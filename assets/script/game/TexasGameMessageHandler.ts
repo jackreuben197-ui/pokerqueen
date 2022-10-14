@@ -307,7 +307,7 @@ export default class TexasGameMessageHandler {
             case Def.LeaveReason.LR_GAME_END: // 游戏结束
                 {
                     if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
-                        // UIComponent.Instance.ShowNoAnimation(UIType.UITexasGameEnd, new UITexasGameEndComponent.RecordDetailForNormalData()
+                        // UIComponent.Instance.ShowUI(UIType.UITexasGameEnd, new UITexasGameEndComponent.RecordDetailForNormalData()
                         //     {
                         //         roomID = GameCache.Instance.room_id.ToString(),
                         //         blind = (int)GameCache.Instance.CurGame.smallBlind,

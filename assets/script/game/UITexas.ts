@@ -21,7 +21,7 @@ import GlobalSession from "../session/GlobalSession";
 import StorageKey from "../session/StorageKey";
 import AssetContext from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
-import UIComponent from "../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 
 import TexasGame from "./texas/TexasGame";
@@ -84,10 +84,6 @@ export default class UITexas extends BaseScene {
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
 
-    //左侧菜单容器
-    UITexasMenu_Con: cc.Node = null;
-    UITexasMenu_Com: UITexasMenuComponent = null;
-
     UIOperation: cc.Node = null;
     UIAutoOperation: cc.Node = null;
 
@@ -98,7 +94,7 @@ export default class UITexas extends BaseScene {
     Seat: cc.Node = null;
 
 
-    UIAddChips: UIAddChipsComponent = null;
+    //UIAddChips: UIAddChipsComponent = null;
     UIOutChips: UIOutChipsComponent = null;
 
     textAlreadAnte: cc.Label = null;
@@ -134,6 +130,16 @@ export default class UITexas extends BaseScene {
     textSeeMorePublicGold: cc.Label = null;
 
     buttonCancelTrust: cc.Node = null;
+
+
+
+    //左侧菜单容器
+    UITexasMenu_Con: cc.Node = null;
+    UITexasMenu_Com: UITexasMenuComponent = null;
+
+    UIChips_Con: cc.Node = null;
+    UIAddChips_Com: UIAddChipsComponent = null;
+    UIOutChips_Com: UIOutChipsComponent = null;
 
     ///////////////////////////////////
     /**
@@ -189,13 +195,12 @@ export default class UITexas extends BaseScene {
 
 
         this.Seat = this.getChildNodeOrComponent("Seat");
-        this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
+        //this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
         this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
 
         this.textAlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
 
-        this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
 
         this.transPots = this.getChildNodeOrComponent("Pots");
         this.transPot = this.getChildNodeOrComponent("Pot");
@@ -227,6 +232,12 @@ export default class UITexas extends BaseScene {
         this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
 
         this.buttonCancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
+
+
+
+
+
+
 
         this.game = GameCache.Instance.CurGame;
         //this.game.Reset();
@@ -282,24 +293,39 @@ export default class UITexas extends BaseScene {
         this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.position);
 
 
-        this.AddUITexasMenu();
         //GameCache.Instance.room_type
         //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
 
-        this.UIAddChips.node.active = false;
+        //this.UIAddChips.node.active = false;
 
         this.Seat.active = false;
 
-    }
 
-    AddUITexasMenu() {
-        let menu_prefab: cc.Prefab = AssetContext.getAsset("UITexasMenuComponent", Bundle_Texas);
-        if (menu_prefab) {
-            this.UITexasMenu_Com = cc.instantiate(menu_prefab).getComponent(UITexasMenuComponent);
-            this.UITexasMenu_Com && (this.UITexasMenu_Com.node.parent = this.UITexasMenu_Con);
+        UIComponent.Instance.SetPrefabNode(PrefabUI.UIOperation, this.UIOperation);
+        UIComponent.Instance.SetPrefabNode(PrefabUI.UIAutoOperation, this.UIAutoOperation);
+        //////////////////装载容器
+        //1.菜单
+        this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
+        this.UITexasMenu_Com = this.AddComponents(PrefabUI.UITexasMenuComponent, this.UITexasMenu_Con, true);
+        //2.带入面板 带出面板
+        this.UIChips_Con = this.getChildNodeOrComponent("UIChips_Con");
+        this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
+        this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
+    }
+    //从预制体添加到容器
+    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false) {
+        let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, Bundle_Texas);
+        let com = null;
+        if (prefab) {
+            com = cc.instantiate(prefab).getComponent(prefab_name);
+            if (com) {
+                UIComponent.Instance.SetPrefabNode(prefab_name, com.node);
+                com.node.parent = parent;
+                com.node.active = show;
+            }
         }
+        return com;
     }
-
     protected regiterTouchEvents(): void {
         this.menu_btn.on("click", this.sideClick, this);
         this.report_btn.on("click", this.sideClick, this);
@@ -327,8 +353,8 @@ export default class UITexas extends BaseScene {
 
     }
     ClearUI() {
-        UIComponent.Instance.HideNoAnimation(this.UIAddChips.node);
-        UIComponent.Instance.HideNoAnimation(this.UIOutChips.node);
+        UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
         this.HideMenu(false);
     }
     Exit(param) {
@@ -390,11 +416,10 @@ export default class UITexas extends BaseScene {
     }
 
     public ShowMenu(): void {
-
-        this.UITexasMenu_Com.onShow();
+        this.UITexasMenu_Com?.onShow();
     }
     public HideMenu(animation: boolean = true): void {
-        this.UITexasMenu_Com.onClose();
+        this.UITexasMenu_Com?.onClose(animation);
     }
 
 
