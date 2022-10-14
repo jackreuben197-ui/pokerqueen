@@ -31,6 +31,12 @@ export enum BetType {
     PotLimit = 1,//底池限注
     Aof = 2,//aof
 }
+/**
+ * 开放的房间类型
+ */
+export var OpenRoomType = [];
+
+
 
 
 export enum RoomType {
@@ -94,6 +100,20 @@ export default class GameUtil {
     private static readonly omahaOuts: number[] = [0, 24, 12, 8, 6, 4.5, 4, 3.2, 2.7, 2.3, 2, 1.7, 1.5, 1.3, 1.2, 1.1, 1, 0.8, 0.7, 0.6, 0.5];
     public static OutsList = new Map<number, number[]>();
     public static TexasGameDic = new Map<RoomType, TexasGame>();
+
+    //已经开放的房间类型
+    private static readonly OpenRoomType = [
+        RoomType.TexasHoldemStandardNoLimit,// 普通
+        RoomType.TexasHoldemStandardPotLimit, // 普通底池限注
+        RoomType.TexasHoldemSixPlusFixedNoLimit,// 普通短牌
+        RoomType.TexasHoldemSixPlusFixedPotLimit, // 普通短牌底池限注
+        RoomType.TexasHoldemStandardAof, // 普通AOF
+        RoomType.TexasHoldemSixPlusFixedAof, // 普通短牌AOF
+    ]
+    public static IsOpenRoomType(roomType: number): boolean {
+        return roomType in this.OpenRoomType;
+    }
+
 
     //#region 牌局内座位UI信息   
     // 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
@@ -1098,8 +1118,6 @@ export default class GameUtil {
     public static InstantiateTexasGame(roomType: RoomType) {
 
         let game: TexasGame = null;
-
-        console.log("InstantiateTexasGame GameCache.Instance.CurGame ", GameCache.Instance.CurGame);
 
         switch (roomType) {
             case RoomType.TexasHoldemStandardNoLimit: // 普通

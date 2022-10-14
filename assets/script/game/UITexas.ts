@@ -154,6 +154,8 @@ export default class UITexas extends BaseScene {
 
     lastClickTime: number = 0;
 
+    //记录扑克节点,方便管理所有扑克样式
+    PokerMap = [];
 
     //#region 弹幕界面
     /// <summary>
@@ -254,7 +256,6 @@ export default class UITexas extends BaseScene {
         this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard3))
         this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard4))
 
-
         //#endregion
         //#region 第二套公共牌数据
         if (null == this.listSecondCards)
@@ -291,6 +292,10 @@ export default class UITexas extends BaseScene {
         this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard2.position);
         this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard3.position);
         this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.position);
+
+
+
+
 
 
         //GameCache.Instance.room_type
@@ -395,7 +400,6 @@ export default class UITexas extends BaseScene {
     private sideClick(e: cc.Button) {
         switch (e.node) {
             case this.menu_btn://菜单按钮
-                cc.log("menu_btn is clicked");
                 //this.CallbackExit();
                 if (this.CanClick() == false) return;
                 this.lastClickTime = GlobalSession.NowTimeMS;
@@ -403,14 +407,13 @@ export default class UITexas extends BaseScene {
                 break;
             case this.report_btn://报告按钮
                 this.Click_Report_Btn();
-                cc.log("report_btn is clicked");
                 break;
             case this.cursituation_btn://状况按钮
                 this.Click_Cursituation_btn();
-                cc.log("cursituation_btn is clicked");
                 break;
             case this.chat_btn://聊天按钮
-                cc.log("chat_btn is clicked");
+            
+                UIComponent.Instance.Toast();
                 break;
         }
     }
@@ -438,9 +441,6 @@ export default class UITexas extends BaseScene {
         historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
         UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, this.node);
     }
-
-
-
 
 
     protected onClickDelay(): void {

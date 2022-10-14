@@ -388,9 +388,7 @@ export default class TexasGame {
     sequenceSecondUpdatePublicCards: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequencePlayEndPublicCardsAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
 
-
     IsDispose: boolean = false;
-
 
     //记录座位运动状态,发牌函数和开局消息
     SeatPlayRecord: any = null;
@@ -402,7 +400,6 @@ export default class TexasGame {
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
     }
-
     Enter() {
         UpdateComponent.Add(this.GameLogicSMComponent, this);
         this.listSeat = [];
@@ -432,7 +429,7 @@ export default class TexasGame {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
     }
 
-    //获取桌面样式
+    /////////////////////////////////获取桌面样式/////////////////////////////////
     public get deskType() {
 
         (this.setting.deskType == null) && (this.setting.deskType = +(localStorage.getItem(StorageKey.SettingDeskType) ?? TexasConfig.DefaultDeskType));
@@ -462,11 +459,15 @@ export default class TexasGame {
     }
 
     // 设置扑克牌样式 0 - 1
-    public SetCardType(type: number) {
+    public SetPokerType(type: number) {
 
         this.setting.pokerType = type;
 
-        //所有扑克刷新,需要提前注册
+        //遍历所有扑克牌刷新
+
+        this.uirc.listCards.forEach(item => {
+            this.GetBigPokerSP(GameUtil.GetCardNameByNum(item.cardId));
+        })
 
 
     }

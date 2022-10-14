@@ -124,7 +124,7 @@ export default class UITexasSettingComponent extends UIBase {
 
         let index = this._selectCardType['index'];
         localStorage.setItem(StorageKey.SettingPokerType, String(index))
-        GameCache.Instance.CurGame.SetCardType(index);
+        GameCache.Instance.CurGame.SetPokerType(index);
     }
 
     /**

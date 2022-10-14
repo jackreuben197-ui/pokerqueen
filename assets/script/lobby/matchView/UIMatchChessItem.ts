@@ -2,6 +2,8 @@ import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GC from "../../frame/GameControl";
+import GameUtil from "../../game/GameUtil";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
 import LobbySession from "../../session/LobbySession";
@@ -75,6 +77,12 @@ export default class UIMatchChessItem extends UIBase {
     private async EnterRoomAPI() {
         if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
             if (this._data.room_type_is_legal) {
+                //未开放房间类型
+                if (!GameUtil.IsOpenRoomType(this._data.room_type)) {
+                    //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
+                    UIComponent.Instance.Toast();
+                    return;
+                }
                 let response = LobbySession.APIWebUserRoominsur(this._data.rid).catch(() => { });
                 if (response) {
                     GC.data.lobby.roomList.selected = this._data;

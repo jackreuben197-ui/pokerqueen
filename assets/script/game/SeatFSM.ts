@@ -14,6 +14,7 @@ export class SeatFSM {
     public IdleEnter(): void {
         //设置座位节点激活显示
         this.seat.ui.active = true;
+        
     }
     public IdleExecute(): void {
     }
@@ -53,6 +54,8 @@ export class SeatFSM {
         // Image_OtherWinner.gameObject.SetActive(false);
         this.seat.uirc.WaitforthenextmoveTips.node.active = false;
         this.seat.FoldHeadGray(false);
+
+        this.seat.ui.stopAllActions();
 
         // if (null != armatureVoice.dragonAnimation && armatureVoice.dragonAnimation.isPlaying)
         //     armatureVoice.dragonAnimation.Stop();

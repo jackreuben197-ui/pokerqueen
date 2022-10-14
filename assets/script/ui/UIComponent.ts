@@ -2,6 +2,7 @@
 import { Tracing } from "trace_events";
 import { IUIDefine, UIType } from "../define/EIDefine";
 import { Param } from "../define/Types";
+import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
@@ -44,8 +45,13 @@ export default class UIComponent {
     }
 
 
-    Toast(content: string) {
-        ToastManager.Instance.createToast(content);
+    Toast(content?: string) {
+        if (content) {
+            ToastManager.Instance.createToast(content);
+        } else {
+            //提示暂未开放
+            ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"));
+        }
     }
 
     //显示节点
