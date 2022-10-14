@@ -1,9 +1,10 @@
+import UIBase from "../UIBase";
 
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class Toast extends cc.Component {
+export default class Toast extends UIBase {
 
     label: cc.Label;
 
@@ -11,14 +12,16 @@ export default class Toast extends cc.Component {
     //记录渐入浅出起始时间
     markFadeOriTime: number;
 
-    onLoad() {
-        this.label = this.node.getChildByName("label").getComponent(cc.Label);
+    lateLoad() {
+        super.lateLoad();
+        this.label = this.getChildNodeOrComponent("label", cc.Label);
     }
 
     setLabel(content: string) {
-        this.label.getComponent(cc.Label).string = content;
+        // this.label.getComponent(cc.Label).string = content;
+        this.setText(this.label, content);
         //@ts-ignore
-        this.label.getComponent(cc.Label)._forceUpdateRenderData();
+        this.label._forceUpdateRenderData();
         let layout = this.node.getComponent(cc.Layout);
         layout.resizeMode = cc.Layout.ResizeMode.CONTAINER;
         layout.updateLayout();
