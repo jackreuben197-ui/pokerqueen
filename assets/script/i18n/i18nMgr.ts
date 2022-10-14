@@ -34,6 +34,9 @@ export class i18nMgr {
     private static LanguageObject: { [key: string]: string } = {};   // 文字配置
     private static spriteArr: i18nSprite.i18nSprite[] = [];       // i18nSprite 列表
 
+    public static isCN() {
+        return this.language == "cn";
+    }
 
     public static initLanguage() {
         this.language = localStorage.getItem(StorageKey.Language) || GameConfig.Default_Language;

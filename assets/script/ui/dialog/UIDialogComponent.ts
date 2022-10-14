@@ -13,6 +13,7 @@ export type UIDialogParam = {
     contentCancel?: string,
     actionCommit?: Function,
     actionCancel?: Function,
+    actionClose?: Function,
     noAnimation?: boolean,
 }
 const { ccclass } = cc._decorator;
@@ -57,6 +58,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
 
     private _actionCommit: Function = null;
     private _actionCancel: Function = null;
+    private _actionClose: Function = null;
 
 
     //面板渐入渐出样式
@@ -85,7 +87,6 @@ export default class UIDialogComponent extends BaseTouchBoard {
 
     }
 
-
     protected lateLoad(): void {
         super.lateLoad();
 
@@ -101,9 +102,14 @@ export default class UIDialogComponent extends BaseTouchBoard {
 
 
     protected regiterTouchEvents(): void {
-        super.regiterTouchEvents();
+        // super.regiterTouchEvents();
         this.Button_Commit?.on("click", this.onCommitClick, this);
         this.Button_Cancel?.on("click", this.onCancelClick, this);
+
+        this.mask.on("click", () => {
+            this.goClose();
+            this._actionClose && this._actionClose();
+        }, this);
     }
 
     protected lateShow(param?: UIDialogParam) {
@@ -119,6 +125,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
 
         this._actionCommit = param?.actionCommit || null;
         this._actionCancel = param?.actionCancel || null;
+        this._actionClose = param?.actionClose || null;
     }
 
 

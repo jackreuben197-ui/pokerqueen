@@ -86,7 +86,7 @@ export default class UITexasGameEndComponent extends UIBase {
         this.mRoomId = param.roomID;
         this.SetFindLabelText("TitleNameTxt", param.roomName);
         this.SetFindLabelText("TitleIDTxt", "ID:" + this.mRoomId);
-        this.SetFindLabelText("LeaveTxt", TimeHelper.TimeToString(TimeHelper.Now(), "MM/dd HH:mm"));
+        this.SetFindLabelText("LeaveTxt", TimeHelper.TimeToString(TimeHelper.Now, "MM/dd HH:mm"));
         this.SetFindLabelText("Text_Type", StringHelper.GetRoomTypeNameByType(param.game_type, param.poker_type, param.bet_type));
         this.GetGameEndData();
     }

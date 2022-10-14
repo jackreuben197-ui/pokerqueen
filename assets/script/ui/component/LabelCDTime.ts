@@ -32,7 +32,7 @@ export default class LabelCDTime extends cc.Component {
     show(duration: number = 60, call: Function = null, unit: string = "S") {
         this.call = call;
         this.unit = unit;
-        this.sendTime = TimeHelper.NowS();
+        this.sendTime = TimeHelper.NowS;
         this.duration = duration;
         this.passtime = 0;
         this.complete = false;
@@ -46,12 +46,12 @@ export default class LabelCDTime extends cc.Component {
         this.duration = 60;
         this.passtime = 0;
         this.complete = false;
-        this.difTime = TimeHelper.NowS() - this.sendTime;
+        this.difTime = TimeHelper.NowS - this.sendTime;
         this.updateLabel(this.duration - this.difTime);
     }
 
     private fixUpdate() {
-        this.difTime = TimeHelper.NowS() - this.sendTime;
+        this.difTime = TimeHelper.NowS - this.sendTime;
         if (this.duration <= this.difTime) {
             this.end();
             return;
