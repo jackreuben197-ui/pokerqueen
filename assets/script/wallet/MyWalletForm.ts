@@ -2,6 +2,9 @@ import ComFormTitle from "../common/ComFormTitle";
 import { UIDefine } from "../define/UIDefine";
 import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
+import { StringHelper } from "../helper/StringHelper";
+import ToastManager from "../manager/ToastManager";
+import { APIOrgClubGold, Web_Org_Club_Get } from "../net/https/WebRequest";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
 import { EWalletGoldOpration } from "./WalletConfig";
@@ -14,7 +17,7 @@ export default class MyWalletForm extends BaseForm {
     private comFormTitle: ComFormTitle = null;
     private beanNum: cc.Label = null;
 
-
+    private _isClub: boolean = false;
     lateLoad() {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -29,19 +32,24 @@ export default class MyWalletForm extends BaseForm {
         super.regiterTouchEvents();
     }
 
-    onShow(param?: any): void {
-        super.onShow(param);
+    onShow(isClub?: boolean): void {
+        super.onShow(isClub);
+        this._isClub = isClub;
         this.initView();
     }
 
     initView() {
-        this.comFormTitle.initData("UIMine_btn_MyWallet", this);
+        this.comFormTitle.initData("UIMine_btn_MyWallet", this, "Text_RecordLine", this.clickRecord);
         this.updateBeanNum();
     }
 
     updateBeanNum() {
         // this.setText(this.beanNum, GameCache.Instance.gold);
-        this.setText(this.beanNum, GC.data.user.info.displayGold);
+        let gold = GC.data.user.info.displayGold;
+        if (this._isClub) {
+            gold = Math.floor(APIOrgClubGold.Response.data.gold) / 100
+        }
+        this.setText(this.beanNum, gold);
     }
 
     // 点击充豆
@@ -52,5 +60,10 @@ export default class MyWalletForm extends BaseForm {
     // 点击提豆
     clickTiDou() {
         UIComponent.open(UIDefine.WalletJumpForm, EWalletGoldOpration.out);
+    }
+
+    //点击记录
+    clickRecord() {
+        ToastManager.Instance.createToast("adaptation10105");
     }
 }
