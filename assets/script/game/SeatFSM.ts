@@ -14,6 +14,7 @@ export class SeatFSM {
     public IdleEnter(): void {
         //设置座位节点激活显示
         this.seat.ui.active = true;
+        
     }
     public IdleExecute(): void {
     }
@@ -26,7 +27,7 @@ export class SeatFSM {
         this.seat.Player = null;
         this.seat.SetNickname("");
         this.seat.SetCoin("");
-
+        this.seat.uirc.Head.scale = 1;
         this.seat.uirc.imageBanker.active = false;
         // imageStraddle.gameObject.SetActive(false);
         this.seat.uirc.imageHeadFrame.node.active = false;
@@ -53,6 +54,8 @@ export class SeatFSM {
         // Image_OtherWinner.gameObject.SetActive(false);
         this.seat.uirc.WaitforthenextmoveTips.node.active = false;
         this.seat.FoldHeadGray(false);
+
+        this.seat.ui.stopAllActions();
 
         // if (null != armatureVoice.dragonAnimation && armatureVoice.dragonAnimation.isPlaying)
         //     armatureVoice.dragonAnimation.Stop();

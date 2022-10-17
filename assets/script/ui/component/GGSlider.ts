@@ -101,6 +101,7 @@ export default class GGSlider extends cc.Component {
         this.bar[this.trans("x")] = step / this.step_count * this.node[this.trans("width")] || 0;
         this.track_top[this.trans("width")] = this.bar[this.trans("x")];
         //响应回调
+        this._curValue = rate;
         this._onChange?.(rate);
     }
     get rate(): number {
@@ -122,6 +123,17 @@ export default class GGSlider extends cc.Component {
         this.min = value;
         this.updateBase();
     }
+
+    public get maxValue() {
+        return this.max;
+    }
+    public get minValue() {
+        return this.min;
+    }
+
+
+
+
     public set value(value: number) {
         this._curValue = value;
         this.setBarPos(this._curValue);

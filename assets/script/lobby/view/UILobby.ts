@@ -19,13 +19,14 @@ export default class UILobby extends UIBase {
     private beanBg: cc.Node = null;
 
     private _waitRefresh: boolean = false;
-    onLoad(): void {
-        super.onLoad();
-
-    }
-
     public onShow(param?: any): void {
         super.onShow(param);
+        this.initView();
+    }
+
+    protected lateLoad(): void {
+        super.lateLoad();
+
         // this.lbl_name = this.getChildNodeOrComponent("Text_LeftTop").getComponent(cc.Label);
         this.lbl_glod = this.getChildNodeOrComponent("lbl_glod").getComponent(cc.Label);
         this.Button_MTT = this.getChildNodeOrComponent("Button_MTT");
@@ -46,14 +47,6 @@ export default class UILobby extends UIBase {
                     waiticon.angle = 0;
                 })
         ).start();
-
-        this.initView();
-    }
-
-    protected lateLoad(): void {
-        super.lateLoad();
-
-        
     }
 
     protected regiterTouchEvents(): void {
@@ -70,7 +63,7 @@ export default class UILobby extends UIBase {
         this.updateBean();
         this.refreshHeadImg();
         this.refreshUserName();
-        for (let i=1; i<4; i++) {
+        for (let i = 1; i < 4; i++) {
             let item: cc.Node = this.getChildNodeOrComponent("item_0" + i);
             item["index"] = i;
             item.on(cc.Node.EventType.TOUCH_END, this.onClickGame, this)
@@ -82,7 +75,8 @@ export default class UILobby extends UIBase {
         let index = node.index;
         UIComponent.open(UIDefine.UIMatchPlayViewForm, {
             type: 1,
-            page: index});
+            page: index
+        });
     }
 
     /**

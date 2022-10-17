@@ -375,7 +375,7 @@ export default class TexasGameProtocol {
                     // 非弃牌 && 非ALLIN && 非托管
                     if (mMySeat.Player.actionStatus != Def.Action.FOLD && mMySeat.Player.actionStatus != Def.Action.ALLIN && mMySeat.Player.actionStatus != Def.Action.NONE && !mMySeat.Player.IsAutoOp) {
 
-                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
+                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -742,7 +742,7 @@ export default class TexasGameProtocol {
                     // 自己有参与游戏
                     if ((this.game.mainPlayer.actionStatus != Def.Action.FOLD && this.game.mainPlayer.actionStatus != Def.Action.ALLIN && this.game.mainPlayer.actionStatus != Def.Action.NONE) && !this.game.mainPlayer.IsAutoOp) {
 
-                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
+                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
 
                     }
                     else {
@@ -1263,7 +1263,7 @@ export default class TexasGameProtocol {
                 // 非弃牌、非ALL IN、非空闲等待下一局、非托管
                 if (this.game.mainPlayer.isPlaying && !this.game.mainPlayer.IsAutoOp) {
                     // 预操作UI
-                    UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(0)));
+                    UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(0)));
                 }
                 else {
                     // 无预操作UI
@@ -1352,8 +1352,8 @@ export default class TexasGameProtocol {
         this.game.cacheRound = rec.round;
         GameCache.Instance.GameStatus = this.game.gamestatus;
 
-        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperation);
-        UIComponent.Instance.HideUI(PrefabUI.UIOperation);
+        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperationComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
 
         let mSeat: Seat = null;
         for (let i = 0, n = rec.resultsList.length; i < n; i++) {

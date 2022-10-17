@@ -32,6 +32,7 @@ export default class UIAutoOperationComponent extends UIBase {
     toggleAutoAllin: ToggleButton = null;
     toggleAutoCheck: ToggleButton = null;
     textAutoCall: cc.Label = null;
+    UI: cc.Node = null;
     /**
      * 声明
      */
@@ -44,6 +45,7 @@ export default class UIAutoOperationComponent extends UIBase {
         this.toggleAutoAllin = this.getChildNodeOrComponent("Toggle_AutoAllin", ToggleButton);
         this.toggleAutoCheck = this.getChildNodeOrComponent("Toggle_AutoCheck", ToggleButton);
         this.textAutoCall = this.getChildNodeOrComponent("Text_AutoCall", cc.Label);
+        this.UI = this.getChildNodeOrComponent("UI");
     }
 
     onShow(param?: any): void {
@@ -101,6 +103,12 @@ export default class UIAutoOperationComponent extends UIBase {
             callAmount: callAmount
         }
     }
+
+    //设置UI位置
+    public SetUIPos(pos: cc.Vec2) {
+        this.UI.setPosition(pos);
+    }
+
 
     onValueChangeAutoFold(boo: boolean) {
         GameCache.Instance.CurGame.autoFold = boo;

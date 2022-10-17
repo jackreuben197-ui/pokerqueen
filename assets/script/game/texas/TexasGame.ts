@@ -388,9 +388,7 @@ export default class TexasGame {
     sequenceSecondUpdatePublicCards: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequencePlayEndPublicCardsAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
 
-
     IsDispose: boolean = false;
-
 
     //记录座位运动状态,发牌函数和开局消息
     SeatPlayRecord: any = null;
@@ -402,7 +400,6 @@ export default class TexasGame {
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
     }
-
     Enter() {
         UpdateComponent.Add(this.GameLogicSMComponent, this);
         this.listSeat = [];
@@ -432,7 +429,7 @@ export default class TexasGame {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
     }
 
-    //获取桌面样式
+    /////////////////////////////////获取桌面样式/////////////////////////////////
     public get deskType() {
 
         (this.setting.deskType == null) && (this.setting.deskType = +(localStorage.getItem(StorageKey.SettingDeskType) ?? TexasConfig.DefaultDeskType));
@@ -462,11 +459,15 @@ export default class TexasGame {
     }
 
     // 设置扑克牌样式 0 - 1
-    public SetCardType(type: number) {
+    public SetPokerType(type: number) {
 
         this.setting.pokerType = type;
 
-        //所有扑克刷新,需要提前注册
+        //遍历所有扑克牌刷新
+
+        this.uirc.listCards.forEach(item => {
+            this.GetBigPokerSP(GameUtil.GetCardNameByNum(item.cardId));
+        })
 
 
     }
@@ -485,13 +486,12 @@ export default class TexasGame {
 
     }
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
-
+        cc.log("UpdateRoomCommon");
         this.ClearAllData();
         this.ClearAllPlayers();  // 清空玩家数据
         if (this.listSeat?.length) {
 
         } else {
-            console.log("GameCache.Instance.seat_count", GameCache.Instance.seat_count)
             this.InitSeatByCount(GameCache.Instance.seat_count);
             this.InitOperationPos();
         }
@@ -688,7 +688,7 @@ export default class TexasGame {
                         // 自己有参与游戏,但allin弃牌不显示
                         if ((this.mainPlayer.actionStatus != Def.Action.FOLD && this.mainPlayer.actionStatus != Def.Action.ALLIN && this.mainPlayer.actionStatus != Def.Action.NONE) && !this.mainPlayer.IsAutoOp) {
 
-                            UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
+                            UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.TexasGameUtils.getAutoOperationCallAmount(rec.handInfo.roundBet)));
 
                         }
                         else {
@@ -1104,9 +1104,9 @@ export default class TexasGame {
     //初始化操作面板的位置
     InitOperationPos() {
         let Seat0: Seat = this.listSeat[0];
-        let Operation_Pos = this.uirc.node.convertToNodeSpaceAR(Seat0.ui.convertToWorldSpaceAR(Seat0.uirc.Operation_Pos_Mark.getPosition()));
-        this.uirc.UIOperation.setPosition(Operation_Pos);
-        this.uirc.UIAutoOperation.setPosition(Operation_Pos);
+        let Operation_Pos = this.uirc.UIOperation_Con.convertToNodeSpaceAR(Seat0.ui.convertToWorldSpaceAR(Seat0.uirc.Operation_Pos_Mark.getPosition()));
+        this.uirc.UIOperation_Com.SetUIPos(Operation_Pos);
+        this.uirc.UIAutoOperation_Com.SetUIPos(Operation_Pos);
     }
 
     /// <summary>
@@ -1627,7 +1627,7 @@ export default class TexasGame {
     /// 隐藏自动操作面板
     /// </summary>
     public HideAutoOperationPanel(): void {
-        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperation);
+        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperationComponent);
     }
     /// <summary>
     /// 展示操作面板
@@ -1650,7 +1650,7 @@ export default class TexasGame {
         this.uirc.buttonDelay.active = true;
         this.delayCount = delay;
         this.UpdateDelayBtn();
-        UIComponent.Instance.ShowUI(PrefabUI.UIOperation, operationData);
+        UIComponent.Instance.ShowUI(PrefabUI.UIOperationComponent, operationData);
     }
     /// <summary>
     /// 隐藏操作面板
@@ -1666,9 +1666,8 @@ export default class TexasGame {
             }
         }
         this.uirc.buttonDelay.active = false;
-        if (this.uirc.UIOperation.activeInHierarchy) {
-            UIComponent.Instance.HideUI(PrefabUI.UIOperation);
-        }
+        UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
+
     }
     /// <summary>
     /// 隐藏返回游戏按钮
@@ -2519,23 +2518,15 @@ export default class TexasGame {
     /// </summary>
     public UpdateDelayBtn(): void {
         this.HideBtnDelay(true);
+        //使用次数
         if (this.delayCount >= 2) {
-            this.uirc.buttonDelay.getChildByName("BtnArea").getComponent(cc.Button).interactable = false;
-            this.uirc.buttonDelay.getChildByName("timetext").getComponent(cc.Label).string = "0";
-            this.uirc.buttonDelay.getChildByName("timetext").color = cc.Color.WHITE;
-            this.uirc.buttonDelay.getChildByName("timetext").opacity = 178.5;
-            this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = cc.Color.WHITE;
-            this.uirc.buttonDelay.getChildByName("Text_DelayTip").opacity = 178.5;
+            this.uirc.buttonDelay.getComponent(cc.Button).interactable = false;
+            this.uirc.buttonDelay.getChildByName("Text_Time").getComponent(cc.Label).string = "0";
         }
         else {
-            this.uirc.buttonDelay.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
-            this.uirc.buttonDelay.getChildByName("timetext").color = new cc.Color(86, 53, 29);
-            this.uirc.buttonDelay.getChildByName("timetext").opacity = 255;
-            this.uirc.buttonDelay.getChildByName("Text_DelayTip").color = new cc.Color(221, 186, 130);
-            this.uirc.buttonDelay.getChildByName("Text_DelayTip").opacity = 255;
-
-            this.uirc.buttonDelay.getChildByName("Text_DelayTip").getComponent(cc.Label).string = `${StringHelper.getStringDiv100(this.TexasGameUtils.AddTimeCost())}`;
-            this.uirc.buttonDelay.getChildByName("timetext").getComponent(cc.Label).string = this.delayCount > 0 ? "20" : "30";
+            this.uirc.buttonDelay.getComponent(cc.Button).interactable = true;
+            this.uirc.buttonDelay.getChildByName("Text_Coin").getComponent(cc.Label).string = `${StringHelper.getStringDiv100(this.TexasGameUtils.AddTimeCost())}`;
+            this.uirc.buttonDelay.getChildByName("Text_Time").getComponent(cc.Label).string = this.delayCount > 0 ? "+20s" : "+30s";
         }
     }
     public HideBtnDelay(isActive: boolean): void {
