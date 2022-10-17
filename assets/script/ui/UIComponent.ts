@@ -18,10 +18,9 @@ export enum PrefabUI {
     UITexasMenuComponent = "UITexasMenuComponent",
     UIAddChipsComponent = "UIAddChipsComponent",
     UIOutChipsComponent = "UIOutChipsComponent",
-    UIAutoOperation = "UIAutoOperation",
-    UIOperation = "UIOperation",
+    UIOperationComponent = "UIOperationComponent",
+    UIAutoOperationComponent = "UIAutoOperationComponent",
 }
-
 
 @ccclass
 export default class UIComponent {
@@ -62,8 +61,9 @@ export default class UIComponent {
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onShow(param);
             cc.log("PrefabUI_node", node);
+        } else {
+            cc.log("ShowUI ::: > 缺少相关的节点", com);
         }
-
     }
     //隐藏节点
     HideUI<T>(com: PrefabUI, param?: T) {

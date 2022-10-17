@@ -27,7 +27,7 @@ export class SeatFSM {
         this.seat.Player = null;
         this.seat.SetNickname("");
         this.seat.SetCoin("");
-
+        this.seat.uirc.Head.scale = 1;
         this.seat.uirc.imageBanker.active = false;
         // imageStraddle.gameObject.SetActive(false);
         this.seat.uirc.imageHeadFrame.node.active = false;

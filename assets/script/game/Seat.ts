@@ -480,31 +480,14 @@ export default class Seat {
     }
     public SetCoin(coin: string): void {
         this.uirc.textCoin.string = coin;
-        if (coin != "") {
-            cc.log(" player coins:" + coin);
-        }
-        this.uirc.textCoinBg.node.active = !(coin == "");
-        let mTmpWidth: number = 0;
-
-
-
-        // if (textCoin.preferredWidth > 0 && textCoin.preferredWidth < textCoin.rectTransform.sizeDelta.x)
-        //     mTmpWidth = textCoin.preferredWidth + 36;
-        // else if (textCoin.preferredWidth >= textCoin.rectTransform.sizeDelta.x)
-        //     mTmpWidth = textCoin.rectTransform.sizeDelta.x;
-        //imageCoinShadow.rectTransform.sizeDelta = new Vector2(mTmpWidth, textCoin.fontSize + 4);
-        // if (mTmpWidth == 0) {
-        //     imageCoinIcon.gameObject.SetActive(false);
+        this.uirc.textCoin.node.active = !(coin == "");
+        //TODO
+        // if (this.IsMySeat) {
+        //     this.uirc.tex.node.setPosition(0, -174);
         // }
         // else {
-        //     imageCoinIcon.gameObject.SetActive(true);
+        //     this.uirc.textCoinBg.node.setPosition(0, -125);
         // }
-        if (this.IsMySeat) {
-            this.uirc.textCoinBg.node.setPosition(0, -174);
-        }
-        else {
-            this.uirc.textCoinBg.node.setPosition(0, -125);
-        }
     }
 
     /// <summary>

@@ -108,8 +108,9 @@ export default class UIOperationComponent extends UIBase {
     private _isCheckCountDown: boolean = false;
     private _isFoldCountDown: boolean = false;
 
-
     public ParamType: OperationData;
+
+    private UI: cc.Node = null;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -162,6 +163,8 @@ export default class UIOperationComponent extends UIBase {
 
         this.buttonSliderHandle = this.sliderFreeCall.node.getChildByName("bar");
 
+        this.UI = this.getChildNodeOrComponent("UI");
+
     }
 
     protected regiterTouchEvents(): void {
@@ -186,6 +189,11 @@ export default class UIOperationComponent extends UIBase {
         this.sliderFreeCall.onChange(this.onValueChangeFreeCall.bind(this));
     }
 
+    //设置UI位置
+    public SetUIPos(pos: cc.Vec2) {
+        this.UI.setPosition(pos);
+    }
+
     //点击自由加注滑块按钮
     private onClickSliderHandle(): void {
         if (this.sliderFreeCall.moved) {
@@ -203,6 +211,8 @@ export default class UIOperationComponent extends UIBase {
     /// </summary>
     /// <param name="arg0"></param>
     private onValueChangeFreeCall(arg0: number): void {
+
+        console.log("onValueChangeFreeCall", arg0, this.sliderFreeCall.value);
 
         if (arg0 >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
             this.textFreeCall.string = `ALL IN`;
@@ -491,7 +501,6 @@ export default class UIOperationComponent extends UIBase {
                 ? Math.ceil(actionLimit.max / this.calibrationWeight)
                 : Math.ceil((actionLimit.max + 1) / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
             if (Math.ceil(actionLimit.min / this.calibrationWeight) >= this.sliderFreeCall.maxValue) {
-                cc.log("sliderFreeCall.minValue > sliderFreeCall.maxValue");
                 this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
                 this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
                 this.textFreeCall.string = `ALL IN`;

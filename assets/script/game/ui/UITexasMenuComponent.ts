@@ -259,8 +259,8 @@ export default class UITexasMenuComponent extends UIBase {
 
     onMenuButtonTouchStart(e: cc.Event.EventTouch) {
         let target: cc.Node = e.currentTarget;
-        target.getChildByName("Text").color = CommonDefine.Color_Yellow;
-        target.getChildByName("Arrow").color = CommonDefine.Color_Yellow;
+        target.getChildByName("Text").color = CommonDefine.Color_Green;
+        target.getChildByName("Arrow").color = CommonDefine.Color_Green;
     }
     onMenuButtonTouchEnd(e: cc.Event.EventTouch) {
         let target: cc.Node = e.currentTarget;
