@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-17 10:14:26
+ * @LastEditTime: 2022-10-17 11:36:31
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -147,6 +147,10 @@ export default class UILabarPlayViewForm extends UIBase {
     managerLookLaber() {
         this.tabNode.active = false;
         UIComponent.open(UIDefine.UIManageLabor);
+    }
+    createMatch() {
+        this.tabNode.active = false;
+        UIComponent.open(UIDefine.UICreateMatchHome);
     }
 
 }

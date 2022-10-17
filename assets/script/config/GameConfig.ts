@@ -23,7 +23,7 @@ export class GameConfig {
     //2: http://dev1.awanptesting.com 
     //3: https://test1.awanptesting.com  
     //4: https://dev1.awanptesting.com 
-    static BuildType: number = 0;
+    static BuildType: number = 3;
 
     //版本号
     static Version: string = "20221014_1920";

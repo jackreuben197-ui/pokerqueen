@@ -126,7 +126,7 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_About",
         Title: "UIMine_SettingAboutus",
     },
-    
+
     //房间模版
     UIMatchPlayViewForm: {
         UIType: UIType.Form,
@@ -317,6 +317,13 @@ export const UIDefine = {
         Name: "GoldOprationForm",
         Bundle: null,
         Path: "main/wallet/GoldOprationForm",
+    },
+
+    UICreateMatchHome: {
+        UIType: UIType.Form,
+        Name: "UICreateMatchHome",
+        Bundle: null,
+        Path: "main/club/UICreateMatchHome",
     },
 
 
