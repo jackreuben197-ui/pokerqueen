@@ -28,17 +28,19 @@ export default class GoldChangeLogItem {
         return this._base.src_match_id;
     }
     get name() {
-        let str = "";
-        if (this.src_type == 0) {
-            let key = this.gold_change > 0 ? "Text_Add" : "Text_Getchips";
-            return GC.language.getLocal(key);
-        } else {
-            let key = ["UITexasInfo_Texas", "UITexasInfo_mtt", "UIData_YGvXd5iXr_011"][this.src_type - 1];
-            str = GC.language.getLocal(key);
-            if (this._base.name) {
-                str += "_"
-                str += GC.data.languageTemp.temp.getName(this._base.name)
-            }
+        let key = ["UITexasInfo_Texas", "UITexasInfo_mtt", "UIData_YGvXd5iXr_011"][this.src_type - 1];
+        let str = GC.language.getLocal(key);
+        if (this._base.name) {
+            str += "·"
+            str += GC.data.languageTemp.temp.getName(this._base.name)
+        }
+
+        return str;
+    }
+    get opName() {
+        let str = GC.language.getLocal(`OpCodeString_${this.op_code}`);
+        if (this.src_type != 0) {
+            str += ` ${this.name}`
         }
         return str;
     }
@@ -49,25 +51,29 @@ export default class GoldChangeLogItem {
         return this._base.op_code;
     }
     get gold_before() {
-        return this._base.gold_before;
+        return Math.floor(this._base.gold_before) / 100;
     }
     get gold_change() {
-        return this._base.gold_change;
+        return Math.floor(this._base.gold_change) / 100;
     }
     get gold_after() {
-        return this._base.gold_after;
+        return Math.floor(this._base.gold_after) / 100;
     }
     get gold_lock_before() {
-        return this._base.gold_lock_before;
+        return Math.floor(this._base.gold_lock_before) / 100;
     }
     get gold_lock_change() {
-        return this._base.gold_lock_change;
+        return Math.floor(this._base.gold_lock_change) / 100;
     }
     get gold_lock_after() {
-        return this._base.gold_lock_after;
+        return Math.floor(this._base.gold_lock_after) / 100;
     }
     get create_time() {
         return new Date(this._base.create_time).getTime() / 1000;
+    }
+
+    get changeNum() {
+        return this.gold_change || this.gold_lock_change;
     }
 
 

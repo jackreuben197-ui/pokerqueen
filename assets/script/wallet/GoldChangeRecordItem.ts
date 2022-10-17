@@ -64,9 +64,10 @@ export default class GoldChangeRecordItem extends ListItem {
         this.setActive(this.infoNode, true);
         // this.node.height = this.infoNode.height;
 
-        this.setText(this.title, data.name);
+        this.setText(this.title, data.opName);
         this.setText(this.goldNum, data.gold_after);
         this.setText(this.time, TimeHelper.getHM(data.create_time, ":"));
-        this.setText(this.changeNum, data.gold_change);
+        this.setText(this.changeNum, data.changeNum);
+        this.setTextColor(this.changeNum, data.changeNum > 0 ? "#3BE1F5" : "#FFCC00");
     }
 }

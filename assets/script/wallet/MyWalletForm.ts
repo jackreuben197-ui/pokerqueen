@@ -118,12 +118,12 @@ export default class MyWalletForm extends BaseForm {
 
     // 点击充豆
     clickChongDou() {
-        UIComponent.open(UIDefine.WalletJumpForm, EWalletGoldOpration.in);
+        UIComponent.open(UIDefine.WalletJumpForm, { type: EWalletGoldOpration.in, isClub: this._isClub });
     }
 
     // 点击提豆
     clickTiDou() {
-        UIComponent.open(UIDefine.WalletJumpForm, EWalletGoldOpration.out);
+        UIComponent.open(UIDefine.WalletJumpForm, { type: EWalletGoldOpration.out, isClub: this._isClub });
     }
 
     // 点击发放
@@ -139,5 +139,10 @@ export default class MyWalletForm extends BaseForm {
     // 点击记录
     clickRecord() {
         ToastManager.Instance.createToast("adaptation10105");
+    }
+
+    lateClose(param?: any): void {
+        super.lateClose();
+        this.list.numItems = 0;
     }
 }

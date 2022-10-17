@@ -21,11 +21,11 @@ export default class WalletData extends BaseData {
 
 
 
-    reqUserGoldChangeLog(offset: number = 0, limit: number = 10) {
+    reqUserGoldChangeLog(offset: number = 0, limit: number = 5) {
         this.reqServePost(Web_User_Gold_Change_Log.API, { limit: limit, offset: offset })
     }
 
-    reqClubGoldChangeLog(offset: number = 0, limit: number = 10) {
+    reqClubGoldChangeLog(offset: number = 0, limit: number = 5) {
         this.reqServePost(Web_Club_Gold_Change_Log.API, { limit: limit, offset: offset, club_random_id: Web_Org_Club_Get.Response.data.random_id })
     }
 }
