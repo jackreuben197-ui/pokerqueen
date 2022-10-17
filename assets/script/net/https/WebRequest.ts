@@ -629,6 +629,7 @@ export class Web_Room_Center_Rooms {
     public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Rooms.ResponseData) };
 }
 
+// xyh start
 export class Web_Room_Center_Rooms_Blinds_CLUB {
     //接口地址
     public static API: string = "/api/roomcenter/club/room_blinds";
@@ -638,6 +639,14 @@ export class Web_Room_Center_Rooms_CLUB {
     //接口地址
     public static API: string = "/api/roomcenter/club/rooms";
 }
+
+export class Web_User_Gold_Change_Log {
+    public static API: string = "/api/user/gold_change/log"
+}
+export class Web_Club_Gold_Change_Log {
+    public static API: string = "/api/org/club/fund/gold_change/log"
+}
+// xyh end
 
 /// <summary>
 /// 查询在该房间保险赔率表
@@ -743,7 +752,7 @@ export class Web_Org_Club_Get {
     } = null;
 
     public static ResponseData: {
-
+        random_id: number,
     } = null;
     public static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;

@@ -1,9 +1,10 @@
 import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
 import { UIDefine } from "../define/UIDefine";
+import GoldChangeLogModel from "../frame/data/wallet/goldChangeLog/GoldChangeLogModel";
 import GC from "../frame/GameControl";
 import ToastManager from "../manager/ToastManager";
-import { APIOrgClubGold } from "../net/https/WebRequest";
+import { APIOrgClubGold, Web_Club_Gold_Change_Log, Web_User_Gold_Change_Log } from "../net/https/WebRequest";
 import CCTools from "../tools/CCTools";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
@@ -24,6 +25,13 @@ export default class MyWalletForm extends BaseForm {
     private list: List = null;
 
     private _isClub: boolean = false;
+
+    private _goldChangeLogs: GoldChangeLogModel = null;
+    onLoad() {
+        super.onLoad();
+        this._goldChangeLogs = GC.data.wallet.goldChangeLogs;
+    }
+
     lateLoad() {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -38,6 +46,7 @@ export default class MyWalletForm extends BaseForm {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
+        this.list.scrollingCB = this.scrollingCB;
     }
 
     protected regiterTouchEvents(): void {
@@ -48,7 +57,21 @@ export default class MyWalletForm extends BaseForm {
     onShow(isClub?: boolean): void {
         super.onShow(isClub);
         this._isClub = isClub;
+        this._goldChangeLogs.reqLog(isClub);
+
         this.initView();
+    }
+
+    protected notify(id: any, msg: any, sendInfo?: any): void {
+        switch (id) {
+            case Web_Club_Gold_Change_Log.API: {
+                this._isClub && this.updateList();
+            } break;
+            case Web_User_Gold_Change_Log.API: {
+                !this._isClub && this.updateList();
+
+            } break;
+        }
     }
 
     initView() {
@@ -58,10 +81,8 @@ export default class MyWalletForm extends BaseForm {
 
         this.setActive(this.myNode, !this._isClub)
         this.setActive(this.clubNode, this._isClub)
-
-        // this.list.numItems = 10;
-        // this.list.content.getComponent(cc.Layout).updateLayout();
     }
+
 
     updateBeanNum() {
         let gold = GC.data.user.info.displayGold;
@@ -71,16 +92,28 @@ export default class MyWalletForm extends BaseForm {
         this.setText(this.beanNum, gold);
     }
 
+
+    scrollingCB = (scrollView: cc.ScrollView) => {
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset()
+            let isDown = cur.y >= max.y;
+            if (isDown && this._goldChangeLogs.canReq) {
+                this._goldChangeLogs.dropDownReq(this._isClub);
+            }
+        }
+    }
+
+    updateList() {
+        this.list.numItems = this._goldChangeLogs.getList(this._isClub).length;;
+    }
+
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(GoldChangeRecordItem);
 
-        let data = {}
-        if (CCTools.random(1, 10) >= 8) {
-            data = 1665734608 - CCTools.random(1, 24 * 60 * 60 * 100);
-        }
-
-        item.initData(data)
-        // this.list.content.getComponent(cc.Layout).updateLayout();
+        let data = this._goldChangeLogs.getList(this._isClub)[index];
+        item.initData(data);
+        node.getComponent(cc.Layout).updateLayout();
     }
 
     // 点击充豆

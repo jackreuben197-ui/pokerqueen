@@ -1,10 +1,11 @@
+import ListItem from "../common/ListItem";
+import GoldChangeLogItem from "../frame/data/wallet/goldChangeLog/GoldChangeLogItem";
 import TimeHelper from "../helper/TimeHelper";
-import UIBase from "../ui/UIBase";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/wallet/GoldChangeRecordItem')
-export default class GoldChangeRecordItem extends UIBase {
+export default class GoldChangeRecordItem extends ListItem {
     private timeNode: cc.Node = null;
     private timeTip: cc.Label = null;
 
@@ -36,19 +37,19 @@ export default class GoldChangeRecordItem extends UIBase {
         super.regiterTouchEvents();
     }
 
-    initData(data: number | Object) {
+    initData(data: GoldChangeLogItem) {
         this.setActive(this.timeNode, false);
         this.setActive(this.infoNode, false);
-        if (typeof data == "number") {
-            this.initTimeNode(data);
-        } else {
-            this.initInfoNode(data);
+        if (data.displayTime) {
+            this.initTimeNode(data.create_time);
         }
+        this.initInfoNode(data);
+
     }
 
     initTimeNode(time: number) {
         this.setActive(this.timeNode, true);
-        this.node.height = this.timeNode.height;
+        // this.node.height = this.timeNode.height + this.infoNode.height;
 
         if (TimeHelper.isToday(time)) {
             this.setText(this.timeTip, "UIText_today")
@@ -59,13 +60,13 @@ export default class GoldChangeRecordItem extends UIBase {
         }
     }
 
-    initInfoNode(data: any) {
-        this.node.height = this.infoNode.height;
+    initInfoNode(data: GoldChangeLogItem) {
         this.setActive(this.infoNode, true);
+        // this.node.height = this.infoNode.height;
 
-        this.setText(this.title, "xxx");
-        this.setText(this.goldNum, "xxx");
-        this.setText(this.time, "xxx");
-        this.setText(this.changeNum, "xxx");
+        this.setText(this.title, data.name);
+        this.setText(this.goldNum, data.gold_after);
+        this.setText(this.time, TimeHelper.getHM(data.create_time, ":"));
+        this.setText(this.changeNum, data.gold_change);
     }
 }
