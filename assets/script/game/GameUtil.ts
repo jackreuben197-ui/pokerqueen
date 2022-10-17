@@ -197,7 +197,7 @@ export default class GameUtil {
     // 本手已下注坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
     public static readonly CurRoundHaveBetPosLRV3 =
         [
-            cc.v3(374, -12.5),
+            cc.v3(374, 0),//cc.v3(374, -12.5),
             cc.v3(-200, -10),
             cc.v3(-200, -10),
             cc.v3(-200, -10),

@@ -86,6 +86,7 @@ export default class UITexas extends BaseScene {
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
 
+    imageSelectSeatTips:cc.Node = null;
     imageWaitForStartTips: cc.Node = null;
     imageReserveSeatTips: cc.Node = null;
 
@@ -194,6 +195,7 @@ export default class UITexas extends BaseScene {
         this.cursituation_btn = this.getChildNodeOrComponent("cursituation_btn");
         this.chat_btn = this.getChildNodeOrComponent("chat_btn");
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
+        this.imageSelectSeatTips = this.getChildNodeOrComponent("Image_SelectSeatTips");
         this.imageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.imageReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
 
@@ -323,15 +325,15 @@ export default class UITexas extends BaseScene {
         return com;
     }
     protected regiterTouchEvents(): void {
-        this.menu_btn.on("click", this.sideClick, this);
-        this.report_btn.on("click", this.sideClick, this);
-        this.cursituation_btn.on("click", this.sideClick, this);
-        this.chat_btn.on("click", this.sideClick, this);
 
-        this.buttonDelay.on("click", this.onClickDelay, this);
+        this.setButtonClick(this.menu_btn, this.sideClick);
+        this.setButtonClick(this.report_btn, this.sideClick);
+        this.setButtonClick(this.cursituation_btn, this.sideClick);
+        this.setButtonClick(this.chat_btn, this.sideClick);
 
-        this.buttonSeeMorePublic.getChildByName("BtnArea").on("click", this.onClickSeeMorePublic, this);
 
+        this.setButtonClick(this.buttonDelay, this.onClickDelay);
+        this.setButtonClick(this.buttonSeeMorePublic, this.onClickSeeMorePublic);
     }
 
     Enter(param: { fromUI: IUIDefine, lookOn: boolean }): void {
@@ -364,7 +366,7 @@ export default class UITexas extends BaseScene {
             return;
         this.lastClickTime = GlobalSession.NowTimeMS;
 
-        let button = this.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button);
+        let button = this.buttonSeeMorePublic.getChildByName("click").getComponent(cc.Button);
 
         if (button.interactable == false) {
             return;
