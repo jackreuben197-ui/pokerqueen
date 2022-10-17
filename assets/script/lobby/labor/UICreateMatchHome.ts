@@ -3,11 +3,13 @@
  * @Date: 2022-10-17 11:27:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-17 11:41:12
+ * @LastEditTime: 2022-10-17 14:03:37
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchHome.ts
  */
 
+import { UIDefine } from "../../define/UIDefine";
 import BaseForm from "../../ui/form/BaseForm";
+import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, property } = cc._decorator;
 
@@ -36,6 +38,7 @@ export default class UICreateMatchHome extends BaseForm {
         }
     }
     createMatch() {
+        UIComponent.open(UIDefine.UICreateMatch);
 
     }
 }

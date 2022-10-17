@@ -326,6 +326,13 @@ export const UIDefine = {
         Path: "main/club/UICreateMatchHome",
     },
 
+    UICreateMatch: {
+        UIType: UIType.Form,
+        Name: "UICreateMatch",
+        Bundle: null,
+        Path: "main/club/UICreateMatch",
+    },
+
 
 }
 //批量设置
