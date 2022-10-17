@@ -1,4 +1,6 @@
+import { EventName } from "../../../config/EventName";
 import { TUserInfo } from "../../../config/TTypeConfig";
+import GC from "../../GameControl";
 
 export default class UserInfoModel {
     private _msg: TUserInfo = null;
@@ -112,6 +114,7 @@ export default class UserInfoModel {
     }
     set gold(g) {
         this._msg.gold = g;
+        GC.notify.post(EventName.myGoldChange);
     }
 
 }

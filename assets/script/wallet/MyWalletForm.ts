@@ -1,5 +1,6 @@
 import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
+import { EventName } from "../config/EventName";
 import { UIDefine } from "../define/UIDefine";
 import GoldChangeLogModel from "../frame/data/wallet/goldChangeLog/GoldChangeLogModel";
 import GC from "../frame/GameControl";
@@ -47,6 +48,8 @@ export default class MyWalletForm extends BaseForm {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.list.scrollingCB = this.scrollingCB;
+
+        this.listen(EventName.myGoldChange, this.updateBeanNum);
     }
 
     protected regiterTouchEvents(): void {
