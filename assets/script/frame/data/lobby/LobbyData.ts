@@ -1,14 +1,13 @@
-import { TDeskNameTemp, TRoomList } from "../../../config/TTypeConfig";
+import { TRoomList } from "../../../config/TTypeConfig";
 import { Web_Config_Multi_Language_Template, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
-import DeskNameTempModel from "./DeskNameTempModel";
+import GC from "../../GameControl";
 import LobbyGroupModel from "./LobbyGroupModel";
 import LobbyRoomBlindsModel from "./LobbyRoomBlindsModel";
 import LobbyRoomListModel from "./LobbyRoomListModel";
 
 export default class LobbyData extends BaseData {
     roomBlinds: LobbyRoomBlindsModel = new LobbyRoomBlindsModel();
-    nameTemp: DeskNameTempModel = new DeskNameTempModel();
     lobbyGroup: LobbyGroupModel = new LobbyGroupModel();
     roomList: LobbyRoomListModel = new LobbyRoomListModel();
     protected notify(api: any, msg: any, sendInfo?: any): void {
@@ -22,9 +21,9 @@ export default class LobbyData extends BaseData {
             case Web_Room_Center_Groups.API: {
                 this.respLobbyBaseData(msg, sendInfo);
             } break;
-            case Web_Config_Multi_Language_Template.API: {
-                this.respDeskNameTemp(msg, sendInfo);
-            } break;
+            // case Web_Config_Multi_Language_Template.API: {
+            //     this.respDeskNameTemp(msg, sendInfo);
+            // } break;
             case Web_Room_Center_Rooms.API: {
                 sendInfo.limit && this.respRoomList(msg, sendInfo, false);
             } break;
@@ -43,9 +42,9 @@ export default class LobbyData extends BaseData {
         this.roomBlinds.updateData(msg.records, isClub);
     }
 
-    respDeskNameTemp(msg: Array<TDeskNameTemp>, sendInfo) {
-        this.nameTemp.updateData(msg);
-    }
+    // respDeskNameTemp(msg: Array<TDeskNameTemp>, sendInfo) {
+    //     this.nameTemp.updateData(msg);
+    // }
 
     respRoomList(msg: TRoomList, sendInfo, isClub) {
         this.roomList.updateData(msg, isClub);
@@ -58,9 +57,9 @@ export default class LobbyData extends BaseData {
     }
 
     //请求桌子名字模版
-    reqDeskNameTemp(onSuccess?: Function): void {
-        this.reqServePost(Web_Config_Multi_Language_Template.API, null, onSuccess)
-    }
+    // reqDeskNameTemp(onSuccess?: Function): void {
+    //     this.reqServePost(Web_Config_Multi_Language_Template.API, null, onSuccess)
+    // }
 
     //请求大厅基础数据
     reqLobbyGroupData(onSuccess?: Function) {
@@ -76,7 +75,7 @@ export default class LobbyData extends BaseData {
 
     //请求房间牌桌列表   小标签
     reqRoomListSB(offset: number, sb_min: number, sb_max: number, game_type: number, poker_type: number, isClub = false, limit = 7) {
-        this.reqDeskNameTemp(() => {
+        GC.data.languageTemp.reqLanguageTemp(() => {
             let url = isClub ? Web_Room_Center_Rooms_CLUB.API : Web_Room_Center_Rooms.API;
             this.reqServePost(url, {
                 name: "",

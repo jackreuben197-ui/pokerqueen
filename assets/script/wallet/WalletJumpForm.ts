@@ -15,6 +15,7 @@ export default class WalletJumpForm extends BaseForm {
     private _configData: Map<EWalletGoldOpration, Array<TWalletGoldOpration>> = new Map();
     private _type: EWalletGoldOpration = EWalletGoldOpration.in;
     private _data: Array<TWalletGoldOpration> = [];
+    private _isClub: boolean = false;
     onLoad() {
         super.onLoad();
         this._configData.set(EWalletGoldOpration.in, [{ title: "Text_Add", goto: UIDefine.GoldOprationForm }])
@@ -34,9 +35,10 @@ export default class WalletJumpForm extends BaseForm {
         super.regiterTouchEvents();
     }
 
-    onShow(type: EWalletGoldOpration): void {
-        super.onShow(type);
-        this._type = type;
+    onShow(data: { type: EWalletGoldOpration, isClub: boolean }): void {
+        super.onShow(data);
+        this._type = data.type;
+        this._isClub = data.isClub;
         this._data = this._configData.get(this._type);
 
         this.initView();
@@ -46,7 +48,6 @@ export default class WalletJumpForm extends BaseForm {
         let title = this._type == EWalletGoldOpration.in ? "Text_Add" : "Text_Getchips";
         this.comFormTitle.initData(title, this);
 
-
         this.list.numItems = this._data.length;
     }
 
@@ -54,6 +55,6 @@ export default class WalletJumpForm extends BaseForm {
         let data = this._data[index]
         data.param = this._type;
         let item = node.getComponent(WalletJumpItem);
-        item.initData(data);
+        item.initData(data, this._isClub);
     }
 }

@@ -1,14 +1,11 @@
-import { TDeskNameTemp } from "../../../config/TTypeConfig";
+import { TLanguageTemp } from "../../../config/TTypeConfig";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 
-export default class DeskNameTempModel {
-    private _data: Map<string, TDeskNameTemp> = new Map();
-    updateData(msgs: Array<TDeskNameTemp>) {
-        this._data.clear();
+export default class LanguageTempModel {
+    private _data: Map<string, TLanguageTemp> = new Map();
+    updateData(msgs: Array<TLanguageTemp>) {
         msgs.forEach(msg => {
-            if (!this._data.get(msg.template_id)) {
-                this._data.set(msg.template_id, msg);
-            }
+            this._data.set(msg.template_id, msg);
         })
     }
 

@@ -119,4 +119,8 @@ export default class UIManageLabor extends BaseForm {
         Web_Org_Club_Get.Response.data['desc'] = this.EditBox.string
         UIClubModel.mInstance.APIOrgChangeClubData({ desc: this.EditBox.string })
     }
+
+    clickJijin() {
+        UIComponent.open(UIDefine.MyWalletForm, true)
+    }
 }
