@@ -22,14 +22,8 @@ export default class UITexasGameEndItem extends UIBase {
 
     MemberIcon: cc.Sprite = null;
 
-    Image_rankicon1: cc.Node = null;
-    Image_rankicon2: cc.Node = null;
-    Image_rankicon3: cc.Node = null;
 
-    Image_rankicons: cc.Node[] = [];
-
-    Image_rank: cc.Node = null;
-
+    Image_BaseBg: cc.Node = null;
     Image_MyBg: cc.Node = null;
 
 
@@ -41,16 +35,9 @@ export default class UITexasGameEndItem extends UIBase {
         this.MemberComeTxt = this.getChildNodeOrComponent("MemberComeTxt", cc.Label);
         this.MemberHandleTxt = this.getChildNodeOrComponent("MemberHandleTxt", cc.Label);
         this.MemberScoreTxt = this.getChildNodeOrComponent("MemberScoreTxt", cc.Label);
-
         this.MemberIcon = this.getChildNodeOrComponent("MemberIcon", cc.Sprite);
-
-        this.Image_rank = this.getChildNodeOrComponent("Image_rank");
-
-        this.Image_rankicon1 = this.getChildNodeOrComponent("Image_rankicon1");
-        this.Image_rankicon2 = this.getChildNodeOrComponent("Image_rankicon2");
-        this.Image_rankicon3 = this.getChildNodeOrComponent("Image_rankicon3");
-        this.Image_rankicons.push(this.Image_rankicon1, this.Image_rankicon2, this.Image_rankicon3);
         this.Image_MyBg = this.getChildNodeOrComponent("Image_MyBg");
+        this.Image_BaseBg = this.getChildNodeOrComponent("Image_BaseBg");
 
     }
     onShow(param?: typeof Web_User_Room_Settle_Detail.UsersInfo): void {
@@ -63,28 +50,21 @@ export default class UITexasGameEndItem extends UIBase {
         this.MemberScoreTxt.string = `${StringHelper.GetSignedLongString(param.bring_out - param.bring_in)}`;
         WebImageHelper.SetHeadImage(this.MemberIcon, param.avatar);
         this.setScoreColor();
-        this.setRankShow();
         this.setBg();
     }
 
     setBg() {
-
-        this.Image_MyBg.active = this.param.user_random_id == GameCache.Instance.nUserId;
+        if (this.param.user_random_id == GameCache.Instance.nUserId) {
+            this.Image_MyBg.active = true;
+            this.Image_BaseBg.active = false;
+        } else {
+            this.Image_MyBg.active = false;
+            this.Image_BaseBg.active = true;
+        }
     }
     setScoreColor() {
         let value = + this.MemberScoreTxt.string;
-        this.MemberScoreTxt.node.color = value >= 0 ? CommonDefine.Text_Yellow_Color : CommonDefine.Text_Green_Color;
-    }
-    setRankShow() {
-        this.Image_rankicons.forEach(node => {
-            node.active = false;
-        });
-        //皇冠标显示
-        this.Image_rank.active = this.index == 1;
-        //排名123标签显示
-        let rank = this.Image_rankicons[this.index - 1];
-        rank && (rank.active = true);
-
+        this.MemberScoreTxt.node.color = value < 0 ? CommonDefine.Text_Yellow_Color : CommonDefine.Text_Green_Color;
     }
     get param(): typeof Web_User_Room_Settle_Detail.UsersInfo {
         return this._param;

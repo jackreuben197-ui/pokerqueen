@@ -35,6 +35,7 @@ export default class UITexasGameEndComponent extends UIBase {
 
     m_ZongShou: cc.Label = null;
 
+    Head: cc.Node = null;
     img_head: cc.Sprite = null;
 
     m_ZhanJi: cc.Label = null;
@@ -58,10 +59,13 @@ export default class UITexasGameEndComponent extends UIBase {
         this.TopLook_Con = this.getChildNodeOrComponent("TopLook_Con");
         this.Detail_Con = this.getChildNodeOrComponent("Detail_Con");
 
+        this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
+        this.Head = this.getChildNodeOrComponent("Head");
+
         this.tips = this.getChildNodeOrComponent("tips");
 
         this.m_ZongShou = this.getChildNodeOrComponent("m_ZongShou", cc.Label);
-        this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
+
         this.m_ZhanJi = this.getChildNodeOrComponent("m_ZhanJi", cc.Label);
 
         this.content = this.getChildNodeOrComponent("content");
@@ -86,6 +90,7 @@ export default class UITexasGameEndComponent extends UIBase {
         this.SetFindLabelText("TitleIDTxt", "ID:" + this.mRoomId);
         this.SetFindLabelText("LeaveTxt", TimeHelper.TimeToString(TimeHelper.Now, "MM/dd HH:mm"));
         this.SetFindLabelText("Text_Type", StringHelper.GetRoomTypeNameByType(param.game_type, param.poker_type, param.bet_type));
+        this.Head.active = false;
         this.GetGameEndData();
     }
 
@@ -118,7 +123,8 @@ export default class UITexasGameEndComponent extends UIBase {
         this.m_ZhanJi.string = StringHelper.FormatToString("{0:N0}", StringHelper.GetLongString(score));
         this.m_ZongShou.string = StringHelper.FormatToString("{0:N0}", hand);
         WebImageHelper.SetUrlImage(this.img_head, GameCache.Instance.headPic);
-        this.img_head.node.parent.active = true;
+        //this.img_head.node.parent.active = true;
+        this.Head.active = true;
     }
     private InitSuperView(response: typeof Web_User_Room_Settle_Detail.Response): void {
         let list: typeof Web_User_Room_Settle_Detail.UsersInfo[] = response.data.list;
