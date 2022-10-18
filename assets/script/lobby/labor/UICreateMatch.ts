@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-17 18:02:38
+ * @LastEditTime: 2022-10-18 10:45:53
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -13,6 +13,9 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UICreateMatch extends BaseForm {
+    @property(cc.ScrollView)
+    ScrollView: cc.ScrollView = null;
+
     _curType = 0;
     tabBtnsParent: cc.Node = null;
     matchType: cc.Node = null;
@@ -35,6 +38,13 @@ export default class UICreateMatch extends BaseForm {
     bm: cc.Node = null;
     Straddle: cc.Node = null;
     select: cc.Node = null;
+    ipState = false;
+    gpsState = false;
+    bmState = false;
+    matchTypeNum = 0;
+    jfpNum = 0;
+    xzlxNum = 0;
+    fwfbNum = 0;
     itemData = {
         zwsl: [2, 3, 4, 5, 6, 7, 8, 9],
         zdks: [2, 3, 4, 5, 6, 7, 8, 9],
@@ -85,6 +95,8 @@ export default class UICreateMatch extends BaseForm {
 
             this.switchTabView(type);
         }
+        cc.find('ToggleContainer/toggle2', this.matchType).active = this._curType >= 2 ? false : true
+
     }
     switchTabBtnState() {
         this.tabBtnsParent.children.forEach((item, index) => {
@@ -106,31 +118,83 @@ export default class UICreateMatch extends BaseForm {
         //
         let zwslItem: any = cc.find('item/Rectangle', this.zwsl).getComponent('slidewidght');
         zwslItem.initUi(this.itemData.zwsl)
+        zwslItem._targetDe = this;
 
         let zdksItem: any = cc.find('item/Rectangle', this.zdks).getComponent('slidewidght');
         zdksItem.initUi(this.itemData.zdks)
+        zdksItem._targetDe = this;
 
         let qwszItem: any = cc.find('item/Rectangle', this.qwsz).getComponent('slidewidght');
         qwszItem.initUi(this.itemData.qwsz)
+        qwszItem._targetDe = this;
 
         let pjscItem: any = cc.find('item/Rectangle', this.pjsc).getComponent('slidewidght');
         pjscItem.initUi(this.itemData.pjsc)
+        pjscItem._targetDe = this;
 
         let jfpbsItem: any = cc.find('item/Rectangle', this.jfpbs).getComponent('slidewidght');
         jfpbsItem.initUi(this.itemData.jfpbs)
+        jfpbsItem._targetDe = this;
 
         let zdclItem: any = cc.find('item/Rectangle', this.zdcl).getComponent('slidewidght');
         zdclItem.initUi(this.itemData.zdcl)
+        zdclItem._targetDe = this;
 
         let zxbljfItem: any = cc.find('item/Rectangle', this.zxbljf).getComponent('slidewidght');
         zxbljfItem.initUi(this.itemData.zxbljf)
+        zxbljfItem._targetDe = this;
 
         let zssItem: any = cc.find('item/Rectangle', this.zss).getComponent('slidewidght');
         zssItem.initUi(this.itemData.zss)
+        zssItem._targetDe = this;
 
         let sksjItem: any = cc.find('item/Rectangle', this.sksj).getComponent('slidewidght');
         sksjItem.initUi(this.itemData.sksj)
+        sksjItem._targetDe = this;
+
+        cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
+        cc.find('btn_switch/close', this.ipdzxz).active = !this.ipState;
+        cc.find('btn_switch/open', this.gpszx).active = this.gpsState;
+        cc.find('btn_switch/close', this.gpszx).active = !this.gpsState;
+        cc.find('btn_switch/open', this.bm).active = this.bmState;
+        cc.find('btn_switch/close', this.bm).active = !this.bmState;
+
     }
+    ipCilck() {
+        this.ipState = !this.ipState
+        cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
+        cc.find('btn_switch/close', this.ipdzxz).active = !this.ipState;
+    }
+    gpsCilck() {
+        this.gpsState = !this.gpsState
+        cc.find('btn_switch/open', this.gpszx).active = this.gpsState;
+        cc.find('btn_switch/close', this.gpszx).active = !this.gpsState;
+    }
+    bmCilck() {
+        this.bmState = !this.bmState
+        cc.find('btn_switch/open', this.bm).active = this.bmState;
+        cc.find('btn_switch/close', this.bm).active = !this.bmState;
+    }
+    matchTypeClick(event, customData) {
+        this.matchTypeNum = customData;
+        cc.log('matchTypeClick===', customData)
+    }
+    jfpClick(event, customData) {
+        this.jfpNum = customData;
+        cc.log('jfpClick===', customData)
+    }
+    xzlxClick(event, customData) {
+        this.xzlxNum = customData;
+        cc.log('xzlxClick===', customData)
+    }
+    fwfblClick(event, customData) {
+        this.fwfbNum = customData;
+        cc.log('fwfblClick===', customData)
+        this.fwfbl.getChildByName('fddm').active = this.fwfbNum == 0 ? true : false
+        this.fwfbl.height = this.fwfbNum == 0 ? 400 : 300;
+        // cc.find('fddm/lblNum', this.fwfbl).active = 
+    }
+
     saveModel() {
 
     }

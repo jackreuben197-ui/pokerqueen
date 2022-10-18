@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-17 18:14:28
+ * @LastEditTime: 2022-10-18 10:02:00
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
  */
 
@@ -22,10 +22,11 @@ export default class slidewidght extends cc.Component {
 
     _targetDe = null;
     _selectIndex = 0;
+    _itemData = null;
     onLoad() {
         this.itemNode = this.node.getChildByName('itemNode')
         this.nomalItem = this.itemNode.getChildByName('nomalItem')
-        this.selectNum = this.node.getChildByName('nomalItem')
+        this.selectNum = this.node.getChildByName('selectNum')
         this.selectNum.on(cc.Node.EventType.TOUCH_START, this.drogTouchStart, this);
         this.selectNum.on(cc.Node.EventType.TOUCH_MOVE, this.drogTouchMove, this);
         this.selectNum.on(cc.Node.EventType.TOUCH_END, this.drogTouchEnd, this);
@@ -33,6 +34,7 @@ export default class slidewidght extends cc.Component {
     }
     initUi(data, selectIndex = 0) {
         let _x = 937 / (data.length - 1)
+        this._itemData = data
         for (let index = 1; index < data.length; index++) {
             let node = cc.instantiate(this.nomalItem);
             node.parent = this.itemNode;
@@ -47,17 +49,20 @@ export default class slidewidght extends cc.Component {
             _nomalItem.on(cc.Node.EventType.TOUCH_END, this.nomalItemClick, this);
         }
         this._selectIndex = selectIndex;
-
+        this.selectNum.x = this.itemNode.children[this._selectIndex].x
+        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = data[this._selectIndex];
     }
     /**
    * @method 拖拽开始
    */
     drogTouchStart(event, customData) {
+        this._targetDe.ScrollView.enabled = false
         let node = event.target;
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
-        if (pos.x < 0 || pos > 937) return
-        node['pos'] = node.position.x;
-        node.position.x = pos.x;
+        if (pos.x >= 0 && pos.x <= 937) {
+            node.x = pos.x;
+        }
+
 
     }
     /**
@@ -66,9 +71,15 @@ export default class slidewidght extends cc.Component {
     drogTouchMove(event, customData) {
         let node = event.target;
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
-        if (pos.x < 0 || pos > 937) return
-        node['pos'] = node.position.x;
-        node.position.x = pos.x;
+        if (pos.x >= 0 && pos.x <= 937) {
+            node.x = pos.x;
+            for (let index = 0; index < this.itemNode.childrenCount; index++) {
+                const element = this.itemNode.children[index];
+                if (element.x < this.selectNum.x) {
+                    this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[index];
+                }
+            }
+        }
 
     }
 
@@ -76,6 +87,7 @@ export default class slidewidght extends cc.Component {
      * @method 拖拽结束
      */
     drogTouchEnd(event, customData) {
+        this._targetDe.ScrollView.enabled = true
         let _index = 0;
         for (let index = 0; index < this.itemNode.childrenCount; index++) {
             const element = this.itemNode.children[index];
@@ -102,6 +114,7 @@ export default class slidewidght extends cc.Component {
 
             this.selectNum.x = 0
         }
+        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
 
     }
 
@@ -109,6 +122,8 @@ export default class slidewidght extends cc.Component {
         let node = event.target;
         this._selectIndex = node['clickIndex'];
         this.selectNum.x = node.x
+        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
+
     }
 
     start() {
