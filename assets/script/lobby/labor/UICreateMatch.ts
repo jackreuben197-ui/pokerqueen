@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 15:42:32
+ * @LastEditTime: 2022-10-18 16:46:11
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -45,12 +45,14 @@ export default class UICreateMatch extends BaseForm {
     sksj: cc.Node = null;
     ipdzxz: cc.Node = null;
     gpszx: cc.Node = null;
+    yckp: cc.Node = null;
     bm: cc.Node = null;
     Straddle: cc.Node = null;
     select: cc.Node = null;
     ipState = false;
     gpsState = false;
     bmState = false;
+    yckpState = false;
     smallAndBigM = [];
     matchTypeNum = 0;
     jfpNum = 0;
@@ -91,6 +93,8 @@ export default class UICreateMatch extends BaseForm {
         this.sksj = this.getChildNodeOrComponent('sksj')
         this.ipdzxz = this.getChildNodeOrComponent('ipdzxz')
         this.gpszx = this.getChildNodeOrComponent('gpszx')
+        this.yckp = this.getChildNodeOrComponent('yckp')
+
         this.bm = this.getChildNodeOrComponent('bm')
         this.Straddle = this.getChildNodeOrComponent('Straddle')
         this.select = this.getChildNodeOrComponent('select')
@@ -196,6 +200,11 @@ export default class UICreateMatch extends BaseForm {
         this.gpsState = !this.gpsState
         cc.find('btn_switch/open', this.gpszx).active = this.gpsState;
         cc.find('btn_switch/close', this.gpszx).active = !this.gpsState;
+    }
+    yckpCilck() {
+        this.yckpState = !this.yckpState
+        cc.find('btn_switch/open', this.yckp).active = this.yckpState;
+        cc.find('btn_switch/close', this.yckp).active = !this.yckpState;
     }
     bmCilck() {
         this.bmState = !this.bmState
