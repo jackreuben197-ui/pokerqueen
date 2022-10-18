@@ -391,7 +391,7 @@ export default class TexasGame {
     IsDispose: boolean = false;
 
     //记录座位运动状态,发牌函数和开局消息
-    SeatPlayRecord: any = null;
+    SeatPlayRecord: { SeatMove?, PlayDealFunc?, StartInfo } = null;
 
     constructor() {
         this.messageHandler = new TexasGameMessageHandler(this);
@@ -481,10 +481,21 @@ export default class TexasGame {
     }
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
-
         this.UpdateRoomCommon(obj);
-
     }
+
+
+    protected HideWaitForStartTips() {
+        if (this.uirc.imageWaitForStartTips.activeInHierarchy) {
+            this.uirc.imageWaitForStartTips.active = false;
+        }
+    }
+    protected HideSelectSeatTips() {
+        if (this.uirc.imageSelectSeatTips.activeInHierarchy) {
+            this.uirc.imageSelectSeatTips.active = false;
+        }
+    }
+
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
         cc.log("UpdateRoomCommon");
         this.ClearAllData();
@@ -492,6 +503,15 @@ export default class TexasGame {
         if (this.listSeat?.length) {
 
         } else {
+
+            this.KillAllTweener(true);// 清掉所有动画，避免极端条件下，动画结束的操作覆盖重置后的方法
+            this.HideCancelTrustBtn();
+            this.HideSeeMorePublic();
+            this.HideSelectSeatTips();
+            this.HideWaitForStartTips();
+            this.HideOperationPanel();
+            this.HideWaitBlindBtn();
+
             this.InitSeatByCount(GameCache.Instance.seat_count);
             this.InitOperationPos();
         }
@@ -932,15 +952,9 @@ export default class TexasGame {
                 this.uirc.listPotInfo.push(mPotInfo);
 
                 //mPotInfo.imagePot.sprite = rcChipSprite.Get<Sprite>(GameUtil.GetChipSpriteName(pots[i]));
-                let str = `${this.pots[i] / 100}`;
 
-                //是整数不保留小数，不是整数保留一位小数
+                let str = StringHelper.FormatIntOrFloat1(this.pots[i] / 100);
 
-                let num: number = +str;
-
-                if (num != (num ^ 0)) {
-                    str = num.toFixed(1);
-                }
                 mPotInfo.textPot.string = str;
 
                 mPotInfo.imagePotText.string = `${i}`;
@@ -980,14 +994,13 @@ export default class TexasGame {
             mObj = this.uirc.listPotInfo[i].trans;
 
             //mPotInfo.imagePot.sprite = rcChipSprite.Get<Sprite>(GameUtil.GetChipSpriteName(pots[i]));
-            let str = `${this.pots[i] / 100}`;
 
-            let num: number = +str;
 
-            if (num != (num ^ 0)) {
-                str = num.toFixed(1);
-            }
+            let str = StringHelper.FormatIntOrFloat1(this.pots[i] / 100);
+
+
             mPotInfo.textPot.string = str;
+
 
             mPotInfo.imagePotText.string = `${i}`;
             //float mFrameWidth = mPotInfo.textPot.preferredWidth + mPotInfo.imagePot.rectTransform.sizeDelta.x + 10f;
@@ -2520,12 +2533,12 @@ export default class TexasGame {
         this.HideBtnDelay(true);
         //使用次数
         if (this.delayCount >= 2) {
-            this.uirc.buttonDelay.getComponent(cc.Button).interactable = false;
+            this.uirc.buttonDelay.getChildByName("click").getComponent(cc.Button).interactable = false;
             this.uirc.buttonDelay.getChildByName("Text_Time").getComponent(cc.Label).string = "0";
         }
         else {
-            this.uirc.buttonDelay.getComponent(cc.Button).interactable = true;
-            this.uirc.buttonDelay.getChildByName("Text_Coin").getComponent(cc.Label).string = `${StringHelper.getStringDiv100(this.TexasGameUtils.AddTimeCost())}`;
+            this.uirc.buttonDelay.getChildByName("click").getComponent(cc.Button).interactable = true;
+            this.uirc.buttonDelay.getChildByName("Text_Coin").getComponent(cc.Label).string = `${StringHelper.GetSignedLongString(this.TexasGameUtils.AddTimeCost())}`;
             this.uirc.buttonDelay.getChildByName("Text_Time").getComponent(cc.Label).string = this.delayCount > 0 ? "+20s" : "+30s";
         }
     }
@@ -2577,7 +2590,7 @@ export default class TexasGame {
             return;
 
         let mCost = GameUtil.GetSeeMoreCost(this.smallBlind / 100 ^ 0);
-        this.uirc.textSeeMorePublicGold.string = `${StringHelper.getStringDiv100(mCost)}`;
+        this.uirc.textSeeMorePublicGold.string = `${StringHelper.GetLongString(mCost)}`;
 
         if (this.GetCurPublicCardsCount() == 0) {
             // textSeeMorePublic.text = $"查看翻牌";

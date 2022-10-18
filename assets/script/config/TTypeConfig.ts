@@ -18,7 +18,7 @@ export type TRoomBlinds = {
     cnt: number
 }
 
-export type TDeskNameTemp = {
+export type TLanguageTemp = {
     template_id: string,
     cn_name: string,
     us_name: string,
@@ -145,3 +145,64 @@ export type TUserInfo = {
     vip_endtime: number
 }
 
+export type TUserGoldChangeLogs = {
+    limit: number,
+    offset: number,
+    list: Array<TUserGoldChangeLogItem>,
+    total: number
+}
+
+export type TUserGoldChangeLogItem = {
+    hand: number,                              //手数
+    hand_win: number,                          //每手盈亏筹码
+    hand_bet: number,                          //每手下注筹码
+    insurance: number,                         //保险
+
+    user_id: number,                           //用户ID
+    src_type: number,                          //来源 0-普通非游戏，1-来源德州玩法房间，2-来源MTT，3-来源牛仔
+    src_room_id: number,                       //游戏roomID
+    src_match_id: number,                       //mtt赛事ID
+    name: string,                             //来源名称为了标识
+
+    op_id: number,                             //操作人ID
+    op_code: string,                   //操作类型
+    gold_before: number,                    //资金变动前金币
+    gold_change: number,                       //资金变动金币
+    gold_after: number,                     //资金变动后金币
+    gold_lock_before: number,                //锁定金币变动前金币
+    gold_lock_change: number,               //锁定金币变动金币
+    gold_lock_after: number,                   //锁定金币变动后金币
+    create_time: string
+}
+
+export type TClubGoldChangeLogs = {
+    limit: number,
+    offset: number,
+    list: Array<TClubGoldChangeLogItem>,
+    total: number
+}
+
+export type TClubGoldChangeLogItem = {
+    id: number,
+    room_name: string,
+    desc: string
+    org_Id: number,
+    org_account_id: number,
+    org_account_type: number,
+
+    user_id: number,
+    src_type: number,
+    src_room_id: number,
+    src_match_id: number,
+    name: string,
+
+    op_id: number,
+    op_code: string, //类型,工会收回玩，家提现的金币
+    gold_before: number, //资金变动前
+    gold_change: number, //资金变动
+    gold_after: number, //资金变动后
+    gold_lock_before: number, //锁定金币变动前
+    gold_lock_change: number, //锁定金币变动
+    gold_lock_after: number, //锁定金币变动后
+    create_time: string,
+}

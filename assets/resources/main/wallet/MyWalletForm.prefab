@@ -2196,7 +2196,7 @@
       "__id__": 54
     },
     "_enabled": true,
-    "i18n_string": "Text_Getchips",
+    "i18n_string": "UIClub_FundGive",
     "_id": ""
   },
   {
@@ -2907,7 +2907,7 @@
     "cyclic": false,
     "lackCenter": false,
     "lackSlide": false,
-    "_updateRate": 1,
+    "_updateRate": 2,
     "frameByFrameRenderNum": 0,
     "renderEvent": {
       "__id__": 81

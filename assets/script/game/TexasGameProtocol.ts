@@ -312,6 +312,14 @@ export default class TexasGameProtocol {
                 this.game.HideWaitBlindBtn();
             }
 
+            //设置卡牌隐藏
+            for (let i = 0, n = Seat.uirc.listCardUIInfos.length; i < n; i++) {
+                Seat.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+            }
+            for (let i = 0, n = Seat.uirc.listSmallCardUIInfos.length; i < n; i++) {
+                Seat.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
+            }
+
         }
         if (this.game.smallIndex >= 0) {
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_FIRST);

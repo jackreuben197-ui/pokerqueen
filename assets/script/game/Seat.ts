@@ -1,5 +1,6 @@
 
 import UpdateComponent from "../funcomponent/UpdateComponent";
+import { StringHelper } from "../helper/StringHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { UIMineModel } from "../lobby/UIMineModel";
@@ -145,6 +146,7 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
+
         let tween = cc.tween({});
 
         tween.delay(delay);
@@ -289,10 +291,10 @@ export default class Seat {
         if (Seat.backSmallCardPos.length != 4) {
             Seat.backSmallCardPos = [];
             Seat.backSmallCardPos.push(cc.v3(0, 14.5));
-            Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
-
-            Seat.backSmallCardPos.push(cc.v3(0, 14.5));
-            Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
+            Seat.backSmallCardPos.push(cc.v3(-20, 14.5));
+            //Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
+            // Seat.backSmallCardPos.push(cc.v3(0, 14.5));
+            // Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
         }
 
         if (Seat.backSmallCardRot.length != 2) {
@@ -810,13 +812,9 @@ export default class Seat {
             this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
         }
-        let str: string = `${this.Player.anteNumber / 100}`;
 
-        let num: number = +str;
+        let str = StringHelper.FormatIntOrFloat1(this.Player.anteNumber / 100);
 
-        if (num != (num ^ 0)) {
-            str = num.toFixed(1);
-        }
         this.uirc.textCurRoundHaveBet.string = str;
 
         this.uirc.textCurRoundHaveBet.node.active = true;
@@ -827,7 +825,11 @@ export default class Seat {
         this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
         //this.defaultIconChipLocalPos = this.uirc.imageIconChip.node.position.clone();
         this.uirc.imageIconChip.node.active = true;
-        this.uirc.transCurRoundHaveBet.active = true;
+
+        //座位运动中不显示
+        if (!GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
+            this.uirc.transCurRoundHaveBet.active = true;
+        }
     }
 
     /// <summary>
@@ -872,7 +874,8 @@ export default class Seat {
                     //有牌必定显示
                     hadCard = true;
                 }
-                if (hadCard || this.Player.isPlaying) {
+                //主位位移中显示卡牌
+                if ((hadCard || this.Player.isPlaying) && !GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
 
                     for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
                         this.uirc.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
@@ -1023,8 +1026,6 @@ export default class Seat {
         return cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos }).start();
     }
 
-
-
     /// <summary>
     /// 播放庄家动画
     /// </summary>
@@ -1082,13 +1083,9 @@ export default class Seat {
 
         this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
-        let str: string = `${GameCache.Instance.CurGame.groupBet / 100}`;
-        ////是整数不保留小数，不是整数保留一位小数
-        let num: number = +str;
 
-        if (num != (num ^ 0)) {
-            str = num.toFixed(1);
-        }
+        let str = StringHelper.FormatIntOrFloat1(GameCache.Instance.CurGame.groupBet / 100);
+
 
         this.uirc.textCurRoundHaveBet.string = str;
 

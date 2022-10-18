@@ -293,7 +293,7 @@ export default class TimeHelper {
 
     static isSameDay(milTime1: number, milTime2: number, isMil: boolean = false) {
         let day1 = new Date(milTime1 * (isMil ? 1 : 1000));
-        let day2 = new Date(milTime2);
+        let day2 = new Date(milTime2 * (isMil ? 1 : 1000));
         return (day1.getFullYear() == day2.getFullYear() && day1.getMonth() == day2.getMonth() && day1.getDate() == day2.getDate());
     }
 

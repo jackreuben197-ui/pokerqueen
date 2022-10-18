@@ -9,17 +9,19 @@ export class StringHelper {
     static getStringDiv100(num: number): string {
         return `${num / 100 ^ 0}`;
     }
-    static GetLongString(num:number):string{
+    static GetLongString(num: number): string {
 
         return `${num / 100}`;
     }
+
+
 
     static GetSignedLongString(num: number): string {
         if (num == 0) {
             return "0";
         }
         if (num > 0) {
-            return `+${num / 100 }`;
+            return `+${num / 100}`;
         }
         else {
             return `${num / 100}`;
@@ -49,25 +51,37 @@ export class StringHelper {
     }
     /**
      * 格式化数字字符串
+     * 转换成 1,000,000 格式
      * @param format 
      * @param num 
      * @returns 
      */
-    public static FormatToString(format: string = null, num: number|string = 0) {
-        let str = num.toString();
-        let op = "";
-        if(str[0] == "-") {
-            op = "-";
-            str = str.substring(1);
-        }
+    public static FormatToString(format: string = null, num: number | string = 0) {
+
+        let _num = +num;
+        let _num_str = "";
+        //符号部分
+        let op = _num < 0 ? "-" : "";
         switch (format) {
-            case "{0:N0}"://转换成 1,000,000 格式
-                str = this.__N0(str);
+            case "{0:N0}":
+                _num_str = _num.toFixed(0);
                 break;
+            case "{0:N1}":
+                _num_str = _num.toFixed(1);
+                break;
+            case "{0:N2}":
+                _num_str = _num.toFixed(2);
+                break;
+            default:
+                return num.toString();
         }
-        return op + str;
-    }
-    private static __N0(str: string) {
+        //小数部分
+        let d_num = "";
+        let dot_index = _num_str.indexOf(".");
+        if (~dot_index) {
+            d_num = _num_str.substring(dot_index);
+        }
+        let str = (+_num_str ^ 0).toString();
         let len = str.length;
         let end = len;
         let start = end - 3;
@@ -78,6 +92,22 @@ export class StringHelper {
             start = end - 3;
         }
         arr.unshift(str.substring(start, end));
-        return arr.join(",").toString();
+        let base = arr.join(",").toString();
+        return op + base + d_num;
     }
+
+    /**
+     * 判断整数不变，小数保留1位
+     */
+    public static FormatIntOrFloat1(num: string | number): string {
+        let numStr = num.toString();
+        if (~numStr.indexOf(".")) {
+            return this.FormatToString("{0:N1}", numStr);
+        }
+        return numStr;
+    }
+
+
+
 }
+(window as any).StringHelper = StringHelper;

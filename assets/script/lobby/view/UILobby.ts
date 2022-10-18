@@ -1,4 +1,5 @@
 const { ccclass, property } = cc._decorator;
+import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
@@ -85,6 +86,7 @@ export default class UILobby extends UIBase {
     protected regiterDispatchEvent() {
         this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
         this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
+        this.listen(EventName.myGoldChange, this.updateBean);
     }
 
     refreshHeadImg() {
@@ -106,7 +108,7 @@ export default class UILobby extends UIBase {
     }
 
     clickBean() {
-        UIComponent.open(UIDefine.MyWalletForm)
+        UIComponent.open(UIDefine.MyWalletForm, false)
     }
 
     onScrolling() {

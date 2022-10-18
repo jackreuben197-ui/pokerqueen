@@ -14,7 +14,7 @@ export class SeatFSM {
     public IdleEnter(): void {
         //设置座位节点激活显示
         this.seat.ui.active = true;
-        
+
     }
     public IdleExecute(): void {
     }
@@ -43,7 +43,7 @@ export class SeatFSM {
         this.seat.uirc.imageBubble.node.active = false;
         // Image_BubbleInsuranceNum.gameObject.SetActive(false);
         // Image_BubbleInsuranceToubao.gameObject.SetActive(false);
-        // transCurRoundHaveBet.gameObject.SetActive(false);
+        this.seat.uirc.transCurRoundHaveBet.active = false;
         // imageWinner.gameObject.SetActive(false);
         // imageCoinShadow.gameObject.SetActive(false);
         // m_ImageRanking.gameObject.SetActive(false);

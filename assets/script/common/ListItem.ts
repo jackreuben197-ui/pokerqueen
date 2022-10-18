@@ -8,6 +8,7 @@
  ******************************************/
 const { ccclass, property, disallowMultiple, menu, executionOrder } = cc._decorator;
 
+import UIBase from '../ui/UIBase';
 import List from './List';
 
 enum SelectedType {
@@ -20,13 +21,7 @@ enum SelectedType {
 @disallowMultiple()
 @menu('common/ListItem')
 @executionOrder(-5001)          //先于List
-export default class ListItem extends cc.Component {
-    //图标
-    @property({ type: cc.Sprite, tooltip: CC_DEV && '图标' })
-    icon: cc.Sprite = null;
-    //标题
-    @property({ type: cc.Node, tooltip: CC_DEV && '标题' })
-    title: cc.Node = null;
+export default class ListItem extends UIBase {
     //选择模式
     @property({
         type: cc.Enum(SelectedType),
@@ -88,6 +83,7 @@ export default class ListItem extends cc.Component {
     public listId: number;
 
     onLoad() {
+        super.onLoad();
         // //没有按钮组件的话，selectedFlag无效
         // if (!this.btnCom)
         //     this.selectedMode == SelectedType.NONE;
@@ -99,6 +95,7 @@ export default class ListItem extends cc.Component {
     }
 
     onDestroy() {
+        super.onDestroy();
         this.node.off(cc.Node.EventType.SIZE_CHANGED, this._onSizeChange, this);
     }
 
