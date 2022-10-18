@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 15:30:27
+ * @LastEditTime: 2022-10-18 15:42:32
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -175,6 +175,17 @@ export default class UICreateMatch extends BaseForm {
         cc.find('btn_switch/open', this.bm).active = this.bmState;
         cc.find('btn_switch/close', this.bm).active = !this.bmState;
 
+        let select = this.Straddle.getChildByName('select');
+        let num = cc.find('Rectangle/num', this.Straddle).getComponent(cc.Label)
+        for (let index = 0; index < select.childrenCount; index++) {
+            const element = select.children[index];
+            element.on(cc.Node.EventType.TOUCH_END, () => {
+                num.string = element.name;
+                select.active = false;
+                // this.Straddle.height = 200;
+            }, this)
+        }
+
     }
     ipCilck() {
         this.ipState = !this.ipState
@@ -237,6 +248,20 @@ export default class UICreateMatch extends BaseForm {
         cc.log('modelName==', modelName);
         this.close();
     }
+    straddleTip() {
+
+    }
+    straddleSelect() {
+        let select = this.Straddle.getChildByName('select');
+        select.active = !select.active;
+        // if (select.active) {
+        //     this.Straddle.height = 590
+        // } else {
+        //     this.Straddle.height = 200
+        // }
+
+    }
+
 
 
     baganGame() {
