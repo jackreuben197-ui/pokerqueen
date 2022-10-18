@@ -3,11 +3,14 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 14:53:56
+ * @LastEditTime: 2022-10-18 15:30:27
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
+import { UIDefine } from "../../define/UIDefine";
+import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../ui/form/BaseForm";
+import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, property } = cc._decorator;
 
@@ -18,6 +21,10 @@ export default class UICreateMatch extends BaseForm {
 
     @property(cc.Prefab)
     setSmallBig: cc.Prefab = null;
+
+    @property(cc.Prefab)
+    UISaveModel: cc.Prefab = null;
+
 
     _curType = 0;
     tabBtnsParent: cc.Node = null;
@@ -221,8 +228,16 @@ export default class UICreateMatch extends BaseForm {
     }
 
     saveModel() {
-
+        let _UISaveModel = cc.instantiate(this.UISaveModel);
+        _UISaveModel.parent = this.node
+        _UISaveModel.position = cc.v3(0, 0);
+        _UISaveModel.getComponent('UISaveModel').delagate = this;
     }
+    upLoadData(modelName) {
+        cc.log('modelName==', modelName);
+        this.close();
+    }
+
 
     baganGame() {
 
