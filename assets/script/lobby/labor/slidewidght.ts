@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 10:02:00
+ * @LastEditTime: 2022-10-18 14:59:30
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
  */
 
@@ -35,6 +35,10 @@ export default class slidewidght extends cc.Component {
     initUi(data, selectIndex = 0) {
         let _x = 937 / (data.length - 1)
         this._itemData = data
+        for (let index = this.itemNode.childrenCount - 1; index > 0; index--) {
+            this.itemNode.children[index].removeFromParent();
+        }
+
         for (let index = 1; index < data.length; index++) {
             let node = cc.instantiate(this.nomalItem);
             node.parent = this.itemNode;
@@ -50,8 +54,13 @@ export default class slidewidght extends cc.Component {
         }
         this._selectIndex = selectIndex;
         this.selectNum.x = this.itemNode.children[this._selectIndex].x
-        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = data[this._selectIndex];
+        if (this.node.parent.parent.name == 'fdxm') {
+            this.setFdxmUi();
+        } else {
+            this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = data[this._selectIndex];
+        }
     }
+
     /**
    * @method 拖拽开始
    */
@@ -76,7 +85,14 @@ export default class slidewidght extends cc.Component {
             for (let index = 0; index < this.itemNode.childrenCount; index++) {
                 const element = this.itemNode.children[index];
                 if (element.x < this.selectNum.x) {
-                    this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[index];
+                    this._selectIndex = index
+                    if (this.node.parent.parent.name == 'fdxm') {
+                        this.setFdxmUi();
+
+                    } else {
+                        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[index];
+                    }
+
                 }
             }
         }
@@ -114,16 +130,30 @@ export default class slidewidght extends cc.Component {
 
             this.selectNum.x = 0
         }
-        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
-
+        if (this.node.parent.parent.name == 'fdxm') {
+            this.setFdxmUi();
+            // this.node.parent.parent.getChildByName('dmlbl').getComponent(cc.Label).string = this._itemData[this._selectIndex];
+            // let a = this._itemData[this._selectIndex].substring(this._itemData[this._selectIndex].length - 1, this._itemData[this._selectIndex].length);
+            // this.node.parent.parent.getChildByName('jfplbl').getComponent(cc.Label).string = Number(a) * 100 + '';
+        } else {
+            this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
+        }
     }
 
     nomalItemClick(event) {
         let node = event.target;
         this._selectIndex = node['clickIndex'];
         this.selectNum.x = node.x
-        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
+        if (this.node.parent.parent.name == 'fdxm') {
+            this.setFdxmUi();
+        } else {
+            this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
+        }
 
+    }
+    setFdxmUi() {
+        this.node.parent.parent.getChildByName('dmlbl').getComponent(cc.Label).string = this._itemData[this._selectIndex] + "/" + this._itemData[this._selectIndex] * 2;
+        this.node.parent.parent.getChildByName('jfplbl').getComponent(cc.Label).string = this._itemData[this._selectIndex] * 200 + '';
     }
 
     start() {

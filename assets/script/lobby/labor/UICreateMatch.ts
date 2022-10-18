@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 10:45:53
+ * @LastEditTime: 2022-10-18 14:53:56
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -15,6 +15,9 @@ const { ccclass, property } = cc._decorator;
 export default class UICreateMatch extends BaseForm {
     @property(cc.ScrollView)
     ScrollView: cc.ScrollView = null;
+
+    @property(cc.Prefab)
+    setSmallBig: cc.Prefab = null;
 
     _curType = 0;
     tabBtnsParent: cc.Node = null;
@@ -41,11 +44,13 @@ export default class UICreateMatch extends BaseForm {
     ipState = false;
     gpsState = false;
     bmState = false;
+    smallAndBigM = [];
     matchTypeNum = 0;
     jfpNum = 0;
     xzlxNum = 0;
     fwfbNum = 0;
     itemData = {
+        fdxm: [0.1, 0.2],
         zwsl: [2, 3, 4, 5, 6, 7, 8, 9],
         zdks: [2, 3, 4, 5, 6, 7, 8, 9],
         qwsz: [0, 1, 2, 4, 8, 18, 20, 30],
@@ -116,6 +121,10 @@ export default class UICreateMatch extends BaseForm {
     }
     initUI() {
         //
+        let fdxmItem: any = cc.find('item/Rectangle', this.fdxm).getComponent('slidewidght');
+        fdxmItem.initUi(this.itemData.fdxm)
+        fdxmItem._targetDe = this;
+
         let zwslItem: any = cc.find('item/Rectangle', this.zwsl).getComponent('slidewidght');
         zwslItem.initUi(this.itemData.zwsl)
         zwslItem._targetDe = this;
@@ -149,7 +158,7 @@ export default class UICreateMatch extends BaseForm {
         zssItem._targetDe = this;
 
         let sksjItem: any = cc.find('item/Rectangle', this.sksj).getComponent('slidewidght');
-        sksjItem.initUi(this.itemData.sksj)
+        sksjItem.initUi(this.itemData.sksj, 2)
         sksjItem._targetDe = this;
 
         cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
@@ -193,6 +202,22 @@ export default class UICreateMatch extends BaseForm {
         this.fwfbl.getChildByName('fddm').active = this.fwfbNum == 0 ? true : false
         this.fwfbl.height = this.fwfbNum == 0 ? 400 : 300;
         // cc.find('fddm/lblNum', this.fwfbl).active = 
+    }
+    setttingClick() {
+        if (this.node.getChildByName('UISetSmallM')) {
+            this.node.getChildByName('UISetSmallM').active = true;
+        } else {
+            let _prefab = cc.instantiate(this.setSmallBig)
+            _prefab.parent = this.node;
+            _prefab.position = cc.v3(0, 0);
+            _prefab.getComponent('UISetSmallM').delagate = this;
+        }
+
+    }
+    setSmallM(data) {
+        this.smallAndBigM = data;
+        let fdxmItem: any = cc.find('item/Rectangle', this.fdxm).getComponent('slidewidght');
+        fdxmItem.initUi(this.smallAndBigM)
     }
 
     saveModel() {
