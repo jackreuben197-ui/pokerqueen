@@ -56,11 +56,47 @@ export class StringHelper {
      * @param num 
      * @returns 
      */
+    /**
+     * 金钱表达式 1,000,000 格式 正负数
+     * fix 保留几位小数
+     */
+    // public static MoneyExpress(value: number | string, fix: number = 0) {
+    //     if (isNaN(+value)) return value.toString();
+    //     let str = value.toString();
+    //     let arr = str.split("-");
+    //     let op = arr.length > 1 ? "-" : "";
+    //     let nop_str = arr[arr.length - 1];
+    //     let dot_index = nop_str.indexOf(".");
+    //     let base_str = nop_str.substring(0, dot_index);
+    //     let fix_str = nop_str.substring(dot_index);
+
+    //     let len = base_str.length;
+    //     if (len > 3) {
+    //         let start = len - 3;
+    //         while (start > 0) {
+    //             arr.unshift(str.substring(start, end));
+    //             end = start;
+    //             start = end - 3;
+    //         }
+    //     }
+
+
+
+    // let len = _str.length;
+    // let end = len;
+    // let start = end - 3;
+    // let arr: string[] = [];
+    // while (start > 0) {
+    //     arr.unshift(str.substring(start, end));
+    //     end = start;
+    //     start = end - 3;
+    // }
+    // arr.unshift(str.substring(start, end));
+    // let base = arr.join(",").toString();
+
     public static FormatToString(format: string = null, num: number | string = 0) {
 
         let _num = +num;
-
-        //if (isNaN(_num)) return num;
 
         let _num_str = "";
         //符号部分

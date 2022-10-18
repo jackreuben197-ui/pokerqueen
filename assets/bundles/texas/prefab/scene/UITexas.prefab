@@ -15346,7 +15346,7 @@
       "__id__": 403
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 405
@@ -15462,10 +15462,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "95a710a3-51b2-4d3f-909e-36e1f901ca5a"
+      "__uuid__": "1dfd82db-af30-4313-976d-684b38928a09"
     },
     "_type": 0,
-    "_sizeMode": 2,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",

@@ -2695,6 +2695,8 @@ export default class TexasGame {
 
         if (this.uirc.listCards.length == 0) return;
 
+        console.log("显示公共牌");
+
         let mPublicCardInfo: PublicCardInfo;
         for (let i = 0, n = this.GetCurPublicCardsCount(); i < n; i++) {
             mPublicCardInfo = this.uirc.listCards[i];
