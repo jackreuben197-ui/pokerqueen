@@ -50,7 +50,7 @@ export class StringHelper {
         return name;
     }
     /**
-     * 格式化数字字符串
+     * 格式化数字字符串 支持正负数
      * 转换成 1,000,000 格式
      * @param format 
      * @param num 
@@ -59,9 +59,16 @@ export class StringHelper {
     public static FormatToString(format: string = null, num: number | string = 0) {
 
         let _num = +num;
+
+        //if (isNaN(_num)) return num;
+
         let _num_str = "";
         //符号部分
-        let op = _num < 0 ? "-" : "";
+        let op = "";
+        if (_num < 0) {
+            op = "-";
+            _num = -_num;
+        }
         switch (format) {
             case "{0:N0}":
                 _num_str = _num.toFixed(0);

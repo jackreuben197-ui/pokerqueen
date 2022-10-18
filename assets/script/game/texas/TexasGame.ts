@@ -460,16 +460,24 @@ export default class TexasGame {
 
     // 设置扑克牌样式 0 - 1
     public SetPokerType(type: number) {
-
         this.setting.pokerType = type;
-
         //遍历所有扑克牌刷新
-
         this.uirc.listCards.forEach(item => {
-            this.GetBigPokerSP(GameUtil.GetCardNameByNum(item.cardId));
+
+            item.UpdateSpriteFrame();
         })
-
-
+        this.uirc.listSecondCards.forEach(item => {
+        
+            item.UpdateSpriteFrame();
+        })
+        this.listSeat.forEach(seat => {
+            seat.uirc.listCardUIInfos.forEach(item => {
+                item.UpdateSpriteFrame();
+            })
+            seat.uirc.listSmallCardUIInfos.forEach(item => {
+                item.UpdateSpriteFrame();
+            })
+        })
     }
     /////////////////////////////////////////////////
 
@@ -1859,25 +1867,24 @@ export default class TexasGame {
         let PublicCardInfo: PublicCardInfo = null;
         let cardId = null;
 
-
-
-
-
         if (startIndex == 0) {
             //第0张牌，设定第1,2张牌位置都在0号位置
             let index = 2;
             PublicCardInfo = this.uirc.listCards[index];
-            PublicCardInfo.cardId = this.cards[index];
+            //PublicCardInfo.cardId = this.cards[index];
             cardId = this.cards[index];
-            PublicHelper.InitSprite(PublicCardInfo.imageCard, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
+            PublicHelper.InitSprite(PublicCardInfo.imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
             PublicHelper.InitNode(PublicCardInfo.trans, this.listDefaultPublicCardsLPos[0]);
+            PublicCardInfo.SetSpriteFrame(-1);
 
             this.sequenceUpdatePublicCards.Append(() => {
                 cc.tween(PublicCardInfo.trans).to(.1, { scaleX: 0 }).start();
             }, .1)
             this.sequenceUpdatePublicCards.Append(() => {
                 //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
-                PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                PublicCardInfo.SetSpriteFrame(cardId);
+
                 cc.tween(PublicCardInfo.trans).to(0.1, { scaleX: 1 }).start();
             }, .1);
 
@@ -1885,25 +1892,27 @@ export default class TexasGame {
 
             //全体归位到0号位置并且显示
             for (let i = 0; i < 3; i++) {
-                PublicCardInfo = this.uirc.listCards[i];
+                let PublicCardInfo = this.uirc.listCards[i];
                 let trans = PublicCardInfo.trans;
                 let imageCard = PublicCardInfo.imageCard;
                 let cardId = this.cards[i];
                 let move_pos = this.listDefaultPublicCardsLPos[i];
-                PublicCardInfo.cardId = cardId;
+                //PublicCardInfo.cardId = cardId;
                 trans.setPosition(this.listDefaultPublicCardsLPos[0]);
                 if (i == 0) {
                     this.sequenceUpdatePublicCards.Append(() => {
                         trans.active = true;
                         trans.setScale(1, 1);
-                        PublicHelper.InitSprite(imageCard, this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId)));
+                        PublicHelper.InitSprite(imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId)));
+                        PublicCardInfo.SetSpriteFrame(cardId);
                         cc.tween(trans).to(.4, { position: move_pos }).start();
                     }, .4);
                 } else {
                     this.sequenceUpdatePublicCards.Join(() => {
                         trans.active = true;
                         trans.setScale(1, 1);
-                        PublicHelper.InitSprite(imageCard, this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId)));
+                        PublicHelper.InitSprite(imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId)));
+                        PublicCardInfo.SetSpriteFrame(cardId);
                         cc.tween(trans).to(.4, { position: move_pos }).start();
                     }, .4);
                 }
@@ -1913,25 +1922,28 @@ export default class TexasGame {
                     trans.active = true;
                     trans.setPosition(move_pos);
                     trans.setScale(1, 1);
-                    imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                    //imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                    PublicCardInfo.SetSpriteFrame(cardId);
                 });
 
             }
             if (mCacheCount == 5) {
                 // 一下下发5张
                 for (let i = 3; i < mCacheCount; i++) {
-                    PublicCardInfo = this.uirc.listCards[i];
+                    let PublicCardInfo = this.uirc.listCards[i];
                     let trans = PublicCardInfo.trans;
                     let imageCard = PublicCardInfo.imageCard;
                     let cardId = this.cards[i];
-                    PublicCardInfo.cardId = cardId;
-                    PublicHelper.InitSprite(imageCard, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
+                    //PublicCardInfo.cardId = cardId;
+                    PublicHelper.InitSprite(imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
                     PublicHelper.InitNode(trans, this.listDefaultPublicCardsLPos[i], false);
+                    PublicCardInfo.SetSpriteFrame(-1);
                     this.sequenceUpdatePublicCards.Append(
                         () => {
                             trans.active = true;
                             cc.tween(trans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
-                                imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                                //imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                                PublicCardInfo.SetSpriteFrame(cardId);
                                 //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
                             })).to(.2, { scaleX: 1 }).start();
                         },
@@ -1942,7 +1954,8 @@ export default class TexasGame {
                     this.sequenceUpdatePublicCards.AddChildComplete(() => {
                         trans.active = true;
                         trans.setScale(1, 1);
-                        imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                        //imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                        PublicCardInfo.SetSpriteFrame(cardId);
                     });
 
                 }
@@ -1950,20 +1963,22 @@ export default class TexasGame {
         }
         else {
             for (let i = startIndex, n = mCacheCount; i < n; i++) {
-                PublicCardInfo = this.uirc.listCards[i];
+                let PublicCardInfo = this.uirc.listCards[i];
                 let trans = PublicCardInfo.trans;
                 let imageCard = PublicCardInfo.imageCard;
                 let cardId = this.cards[i];
                 let move_pos = this.listDefaultPublicCardsLPos[i];
-                PublicCardInfo.cardId = cardId;
-                PublicHelper.InitSprite(imageCard, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
+                //PublicCardInfo.cardId = cardId;
+                PublicHelper.InitSprite(imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
                 PublicHelper.InitNode(trans, move_pos, false);
+                PublicCardInfo.SetSpriteFrame(-1);
 
                 this.sequenceUpdatePublicCards.Append(
                     () => {
                         trans.active = true;
                         cc.tween(trans).to(.2, { scaleX: 0 }).call(() => {
-                            imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                            //imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                            PublicCardInfo.SetSpriteFrame(cardId);
                         }).to(.2, { scaleX: 1 }).start();
                     },
                     .4);
@@ -1974,13 +1989,14 @@ export default class TexasGame {
                     trans.active = true;
                     trans.setPosition(move_pos);
                     trans.setScale(1, 1);
-                    imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                    //imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+                    PublicCardInfo.SetSpriteFrame(cardId);
                 });
 
             }
             for (let i = mCacheCount, n = this.uirc.listCards.length; i < n; i++) {
                 PublicCardInfo = this.uirc.listCards[i];
-                PublicCardInfo.cardId = -1;
+                //PublicCardInfo.cardId = -1;
                 PublicCardInfo.trans.active = false;
             }
         }
@@ -2055,23 +2071,27 @@ export default class TexasGame {
             let PublicCardInfo: PublicCardInfo = null;
             PublicCardInfo = this.uirc.listSecondCards[2];//三张一起发，从第三张显示翻牌动画
             PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-            PublicCardInfo.cardId = this.secondCards[2];
-            PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
+            //PublicCardInfo.cardId = this.secondCards[2];
+            //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
+            PublicCardInfo.SetSpriteFrame(-1);
             PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[0]);
             PublicCardInfo.trans.setScale(cc.Vec3.ONE);
             PublicCardInfo.trans.active = true;
-            let CacheCardId = PublicCardInfo.cardId;
-            let CacheImage: cc.Sprite = PublicCardInfo.imageCard;
+            let CacheCardId = this.secondCards[2];
+            //PublicCardInfo.cardId;
+            //let CacheImage: cc.Sprite = PublicCardInfo.imageCard;
             let CacheTrans = PublicCardInfo.trans;
             tween.then(cc.callFunc(() => {
                 cc.tween(CacheTrans).to(.1, { scaleX: 0 }).then(cc.callFunc(() => {
-                    CacheImage.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(CacheCardId));
+                    //CacheImage.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(CacheCardId));
+                    PublicCardInfo.SetSpriteFrame(CacheCardId);
                     //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
                 })).to(.1, { scaleX: 1 }).call(() => {
                     let mPublicCardInfo0: PublicCardInfo = this.uirc.listSecondCards[0];
                     mPublicCardInfo0.imageCard.node.color = cc.Color.WHITE;
-                    mPublicCardInfo0.cardId = this.secondCards[0];
-                    mPublicCardInfo0.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mPublicCardInfo0.cardId));
+                    //mPublicCardInfo0.cardId = this.secondCards[0];
+                    //mPublicCardInfo0.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mPublicCardInfo0.cardId));
+                    mPublicCardInfo0.SetSpriteFrame(this.secondCards[0]);
                     mPublicCardInfo0.trans.setPosition(this.listDefaultSecondPublicCardsLPos[0]);
                     mPublicCardInfo0.trans.setScale(cc.Vec3.ONE);
                     mPublicCardInfo0.trans.active = true;
@@ -2088,11 +2108,13 @@ export default class TexasGame {
             let mTmpStartIndex = 1;
             for (let i = mTmpStartIndex; i < 3; i++) {
                 let cardTypeIndex = i;
-                PublicCardInfo = this.uirc.listSecondCards[i];
+                let PublicCardInfo = this.uirc.listSecondCards[i];
+                let PublicCardInfo_card = this.secondCards[i];
                 PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                PublicCardInfo.cardId = this.secondCards[i];
+                //PublicCardInfo.cardId = this.secondCards[i];
                 if (i != 2) {
-                    PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
+                    //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
+                    PublicCardInfo.SetSpriteFrame(PublicCardInfo_card);
                 }
                 PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[0]);
                 let mCacheTrans = PublicCardInfo.trans;
@@ -2125,19 +2147,22 @@ export default class TexasGame {
             //#region 后两张牌翻牌动画
             for (let i = 3; i < secondCardsCount; i++) {
                 let cardTypeIndex = i;
-                PublicCardInfo = this.uirc.listSecondCards[i];
+                let PublicCardInfo = this.uirc.listSecondCards[i];
                 PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                PublicCardInfo.cardId = this.secondCards[i];
-                PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
+                //PublicCardInfo.cardId = this.secondCards[i];
+                //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
+                PublicCardInfo.SetSpriteFrame(-1);
                 PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[i]);
                 let mCacheTrans = PublicCardInfo.trans;
-                let mCacheCardId1 = PublicCardInfo.cardId;
+                let mCacheCardId1 = this.secondCards[i];
+                //PublicCardInfo.cardId;
                 let mCacheImage1 = PublicCardInfo.imageCard;
 
                 tween.then(cc.callFunc(() => {
                     mCacheTrans.active = true;
                     cc.tween(mCacheTrans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
-                        mCacheImage1.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mCacheCardId1));
+                        //mCacheImage1.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mCacheCardId1));
+                        PublicCardInfo.SetSpriteFrame(mCacheCardId1);
                         //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
                     })).to(.2, { scaleX: 1 }).call(() => {
                         if (cardTypeIndex == 3) {
@@ -2159,13 +2184,14 @@ export default class TexasGame {
             for (let i = 0; i < CacheCount - secondCardsCount; i++) {
                 let cardTypeIndex = i;
                 let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
-                PublicCardInfo.cardId = this.secondCards[i];
+                //PublicCardInfo.cardId = this.secondCards[i];
                 PublicCardInfo.trans.setPosition(this.listDefaultPublicCardsLPos[i]);
                 PublicCardInfo.trans.setScale(cc.Vec3.ONE);
                 PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(this.secondCards[i]));
-                let mCacheCardId = PublicCardInfo.cardId;
-                let mCacheImage = PublicCardInfo.imageCard;
+                PublicCardInfo.SetSpriteFrame(this.secondCards[i]);
+                //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(this.secondCards[i]));
+                //let mCacheCardId = PublicCardInfo.cardId;
+                //let mCacheImage = PublicCardInfo.imageCard;
                 let mCacheTrans = PublicCardInfo.trans;
                 let CacheDefaultPublicCardsLPos = cc.v2(this.listDefaultSecondPublicCardsLPos[i].x, this.listDefaultSecondPublicCardsLPos[i].y);
                 mCacheTrans.active = true;
@@ -2190,19 +2216,22 @@ export default class TexasGame {
             for (let i = CacheCount - secondCardsCount, n = CacheCount; i < n; i++) {
                 let cardTypeIndex = i;
                 let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
-                PublicCardInfo.cardId = this.secondCards[i];
+                //PublicCardInfo.cardId = this.secondCards[i];
                 PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[i]);
                 PublicCardInfo.trans.setScale(cc.Vec3.ONE);
                 PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
-                let mCacheCardId = PublicCardInfo.cardId;
+                //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
+                PublicCardInfo.SetSpriteFrame(-1);
+                let mCacheCardId = this.secondCards[i];
+                //PublicCardInfo.cardId;
                 let mCacheImage = PublicCardInfo.imageCard;
                 let mCacheTrans = PublicCardInfo.trans;
 
                 tween.then(cc.callFunc(() => {
                     mCacheTrans.active = true;
                     cc.tween(mCacheTrans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
-                        mCacheImage.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mCacheCardId));
+                        PublicCardInfo.SetSpriteFrame(mCacheCardId);
+                        //mCacheImage.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mCacheCardId));
                         //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
                     })).to(.2, { scaleX: 1 }).call(() => {
                         if (cardTypeIndex == 3) {
@@ -2628,8 +2657,9 @@ export default class TexasGame {
         for (let i = 0, n = listCards.length; i < n; i++) {
             PublicCardInfo = listCards[i];
             PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-            PublicCardInfo.cardId = -1;
-            PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
+            PublicCardInfo.SetSpriteFrame(-1);
+            // PublicCardInfo.cardId = -1;
+            // PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
             PublicCardInfo.imageSelect.node.active = false;
             PublicCardInfo.trans.setPosition(listDefaultPublicCardsLPos[i]);
             PublicCardInfo.trans.setScale(cc.Vec3.ONE);
@@ -2668,16 +2698,18 @@ export default class TexasGame {
         let mPublicCardInfo: PublicCardInfo;
         for (let i = 0, n = this.GetCurPublicCardsCount(); i < n; i++) {
             mPublicCardInfo = this.uirc.listCards[i];
-            mPublicCardInfo.cardId = this.cards[i];
+            //mPublicCardInfo.cardId = this.cards[i];
             PublicHelper.InitNode(mPublicCardInfo.trans, this.listDefaultPublicCardsLPos[i], true);
-            PublicHelper.InitSprite(mPublicCardInfo.imageCard, this.GetBigPokerSP(GameUtil.GetCardNameByNum(mPublicCardInfo.cardId)));
+            PublicHelper.InitSprite(mPublicCardInfo.imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(mPublicCardInfo.cardId)));
+            mPublicCardInfo.SetSpriteFrame(this.cards[i]);
         }
 
         for (let i = this.GetCurPublicCardsCount(), n = this.uirc.listCards.length; i < n; i++) {
             mPublicCardInfo = this.uirc.listCards[i];
-            mPublicCardInfo.cardId = -1;
+            //mPublicCardInfo.cardId = -1;
             PublicHelper.InitNode(mPublicCardInfo.trans, this.listDefaultPublicCardsLPos[i], false);
-            PublicHelper.InitSprite(mPublicCardInfo.imageCard, this.GetBigPokerSP(GameUtil.GetCardNameByNum(mPublicCardInfo.cardId)));
+            PublicHelper.InitSprite(mPublicCardInfo.imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(mPublicCardInfo.cardId)));
+            mPublicCardInfo.SetSpriteFrame(-1);
         }
 
         // 参与了牌局，才能看到牌型提示

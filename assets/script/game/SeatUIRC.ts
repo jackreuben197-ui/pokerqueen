@@ -14,6 +14,7 @@ import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent
 import UIBase from "../ui/UIBase";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
+import GameUtil from "./GameUtil";
 import Seat, { VoiceprintState } from "./Seat";
 import { AddClipsData } from "./ui/UIAddChipsComponent";
 
@@ -22,11 +23,18 @@ export class CardUIInfo {
     public imageSelect: cc.Sprite = null;
     public imageBack: cc.Sprite = null;
     public imageEye: cc.Sprite = null;
-
+    public cardId: number;
     constructor(public imageCard: cc.Node) {
         this.imageSelect = imageCard.getChildByName("Image_SelectCard")?.getComponent(cc.Sprite);
         this.imageBack = imageCard.getChildByName("Image_CardBack")?.getComponent(cc.Sprite);
         this.imageEye = imageCard.getChildByName("Image_EyeCard")?.getComponent(cc.Sprite);
+    }
+    SetSpriteFrame(cardId: number) {
+        this.cardId = cardId;
+        this.UpdateSpriteFrame();
+    }
+    UpdateSpriteFrame() {
+        this.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.cardId));
     }
 }
 
@@ -231,7 +239,8 @@ export default class SeatUIRC extends UIBase {
         }
         this.imageEmpty.node.on("click", this.onClickEmpty, this);
         this.rawimageHead.node.on("click", this.onClickHead, this);
-        this.buttonCancelReserveSeat.on("click", this.onClickCancelReserveSeat, this);
+        //this.buttonCancelReserveSeat.on("click", this.onClickCancelReserveSeat, this);
+        this.setButtonClick(this.buttonCancelReserveSeat, this.onClickCancelReserveSeat);
     }
 
 

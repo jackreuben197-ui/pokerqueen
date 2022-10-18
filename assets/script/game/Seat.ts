@@ -112,6 +112,8 @@ export default class Seat {
     public keepSeatDeltaTime: number = 0;
     public IsExit: boolean = false;
 
+    deal_sequence_obj: any = {};
+
     tweenerPlayRecyclingWinChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
     sequenceUpdateBubble: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
     tweenerHideBubble: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
@@ -146,8 +148,7 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
-
-        let tween = cc.tween({});
+        let tween = cc.tween(this.deal_sequence_obj);
 
         tween.delay(delay);
 
@@ -162,8 +163,8 @@ export default class Seat {
 
 
                 let cardInfo = this.uirc.listCardUIInfos[i];
-
-                cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.Player.cards[i]));
+                cardInfo.SetSpriteFrame(this.Player.cards[i]);
+                //cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                 cardInfo.imageCard.color = cc.Color.WHITE;
                 cardInfo.imageCard.setScale(cc.v3(0.5, 0.5));
                 cardInfo.imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
@@ -382,6 +383,12 @@ export default class Seat {
         this.uirc.transSmallCardBacks.setPosition(info.CardBackPos);
         this.uirc.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
 
+        //是自己座位设置筹码数量位置
+        if (this.IsMySeat) {//this.ClientSeatId == 0 && 
+            this.uirc.textCoin.node.setPosition(0, -130);
+        } else {
+            this.uirc.textCoin.node.setPosition(0, -90);
+        }
 
         if (this.ui.x > 0) {
             //this.uirc.armatureVoice.setPosition(-90, 50, 0);
@@ -960,7 +967,6 @@ export default class Seat {
         try {
             for (let i = mUpdateStart; i < mUpdateEnd; i++) {
                 if (this.IsMySeat) {
-
                     list[i].imageCard.setPosition(Seat.myCardsPos[i]);
                     //list[i].imageCard.transform.localRotation = Quaternion.Euler(myCardsRot[i]);
                 }
@@ -969,7 +975,8 @@ export default class Seat {
                     list[i].imageCard.setPosition(Seat.smallCardPos[i]);
                 }
                 let mCard = this.Player.cards[i];
-                list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(mCard));
+                //list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(mCard));
+                list[i].SetSpriteFrame(mCard);
                 list[i].imageCard.active = true;
             }
         }

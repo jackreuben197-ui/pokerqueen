@@ -23,6 +23,7 @@ import AssetContext from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
+import GameUtil from "./GameUtil";
 
 import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent, { AddClipsData } from "./ui/UIAddChipsComponent";
@@ -62,6 +63,16 @@ export class PublicCardInfo {
         this.imageCard = trans.getComponent(cc.Sprite);
         this.imageSelect = trans.getChildByName("Image_SelectPublicCard").getComponent(cc.Sprite);
     }
+    //设置卡牌id并且刷新显示
+    SetSpriteFrame(cardId: number) {
+        this.cardId = cardId;
+        //this.imageCard.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+        this.UpdateSpriteFrame();
+    }
+    //刷新显示
+    UpdateSpriteFrame() {
+        this.imageCard.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.cardId));
+    }
 }
 
 const { ccclass, property } = cc._decorator;
@@ -86,7 +97,7 @@ export default class UITexas extends BaseScene {
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
 
-    imageSelectSeatTips:cc.Node = null;
+    imageSelectSeatTips: cc.Node = null;
     imageWaitForStartTips: cc.Node = null;
     imageReserveSeatTips: cc.Node = null;
 

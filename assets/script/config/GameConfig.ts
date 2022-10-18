@@ -26,7 +26,7 @@ export class GameConfig {
     static BuildType: number = 3;
 
     //版本号
-    static Version: string = "20221014_1920";
+    static Version: string = "20221018_1850";
 
     static Default_Language: string = "en";
     //是否使用代理
