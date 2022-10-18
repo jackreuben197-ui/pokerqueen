@@ -193,7 +193,7 @@ export class UICommonMgr {
         if (node.activeInHierarchy) {
             return cc.log("ui已经开启");
         }
-        node.parent = parent;
+        node.parent = parent || Main.Dialog;
         let ui = node.getComponent(UIBase);
         if (ui) {
             ui.show_animation = animation;

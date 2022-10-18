@@ -333,6 +333,13 @@ export const UIDefine = {
         Path: "main/club/UICreateMatch",
     },
 
+    LookRateListDlg: {
+        UIType: UIType.CommonUI,
+        Name: "LookRateListDlg",
+        Bundle: null,
+        Path: "main/wallet/rate/LookRateListDlg",
+    },
+
 
 }
 //批量设置

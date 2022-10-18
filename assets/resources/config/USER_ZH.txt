@@ -3162,10 +3162,14 @@ UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
 UILookRate=查看汇率
+UINoRateTip=暂无汇率
+UIRate_x_x=汇率:1-{0}
 UIAppay=申请
 
 UIText_today=今天
 UIText_yesterday=昨天
+
+UIRateInstructions=此页面由公会会长配置，仅供参考，如有疑问 请与公会会长联系。
 
 
 

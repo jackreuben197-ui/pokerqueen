@@ -1,14 +1,17 @@
 import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
+import { EventName } from "../config/EventName";
 import { UIDefine } from "../define/UIDefine";
 import GC from "../frame/GameControl";
 import ToastManager from "../manager/ToastManager";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../net/https/WebRequest";
+import { Web_Rate_Api, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../net/https/WebRequest";
+import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
 import GoldOprationItem from "./GoldOprationItem";
+import SelectRateTypeNode from "./rate/SelectRateTypeNode";
 import { EWalletGoldOpration } from "./WalletConfig";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -22,6 +25,15 @@ export default class GoldOprationForm extends BaseForm {
     private ruleBtn: cc.Node = null;
     private tipNode: cc.Node = null;
     private tipLab: cc.Label = null;
+    private typeNode: cc.Node = null;
+    private typeIcon: cc.Sprite = null;
+    private typeLab: cc.Label = null;
+    private priceNode: cc.Node = null;
+
+    private typeBg: cc.Node = null;
+    private lightArrow: cc.Node = null;
+
+    private selectRateTypeNode: SelectRateTypeNode = null;
 
     private _type: EWalletGoldOpration = EWalletGoldOpration.in;
     private _isClub: boolean = false;
@@ -37,17 +49,43 @@ export default class GoldOprationForm extends BaseForm {
         this.tipNode = this.getChildNodeOrComponent("tipNode");
         this.tipLab = this.getChildNodeOrComponent("tipLab", cc.Label);
 
+        this.typeBg = this.getChildNodeOrComponent("typeBg");
+        this.lightArrow = this.getChildNodeOrComponent("lightArrow");
+
+        this.typeNode = this.getChildNodeOrComponent("typeNode");
+        this.typeIcon = this.getChildNodeOrComponent("typeIcon", cc.Sprite);
+        this.typeLab = this.getChildNodeOrComponent("typeLab", cc.Label);
+        this.priceNode = this.getChildNodeOrComponent("priceNode");
+
+        this.selectRateTypeNode = this.getChildNodeOrComponent("selectRateTypeNode", SelectRateTypeNode);
+
         this.tipNode.active = false;
+        this.selectRateTypeNode.node.active = false;
     }
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
+        this.listen(EventName.curSelectRateChange, this.curSelectRateChange)
     }
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.bindClick(this.ruleBtn, this.clickRuleBtn);
         this.bindClick(this.tipNode, this.clickTipNode);
+        this.bindClick(this.typeBg, this.clickSelectRate);
+    }
+
+    protected notify(id: any, msg: any, sendInfo?: any): void {
+        switch (id) {
+            case Web_Rate_Api.CLUB_RATE_LIST: {
+                !this._isClub && this.updateRate();
+            } break;
+            case Web_Rate_Api.UNION_RATE_LIST: {
+                this._isClub && this.updateRate();
+            } break;
+            default:
+                break;
+        }
     }
 
     onShow(data: { type: EWalletGoldOpration, isClub: boolean }): void {
@@ -56,6 +94,7 @@ export default class GoldOprationForm extends BaseForm {
         this._isClub = data.isClub;
 
         this.initView();
+        GC.data.rate.reqRateList(this._isClub);
     }
 
     initView() {
@@ -63,8 +102,10 @@ export default class GoldOprationForm extends BaseForm {
         this.comFormTitle.initData(title, this, "UILookRate", this.clickLookRate);
 
         this.edit.string = "";
-        this.updatePrice();
         this.list.numItems = this._data.length;
+
+        this.setActive(this.typeNode, false);
+        this.setActive(this.priceNode, false)
     }
 
     textChanged(str: string, edit: cc.EditBox) {
@@ -72,8 +113,11 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     updatePrice() {
-        let num = Number(this.edit.string);
-        this.priceLab.string = String(num || 0);
+        let curRate = GC.data.rate.getCurRate(this._isClub);
+        if (curRate) {
+            let num = Number(this.edit.string);
+            this.setText(this.priceLab, curRate.changeToNum(num));
+        }
     }
 
     onRender(node: cc.Node, index: number) {
@@ -81,9 +125,33 @@ export default class GoldOprationForm extends BaseForm {
         item.initData(this._data[index], this.clickItem);
     }
 
+    curSelectRateChange() {
+        this.selectRateTypeNode.close(true);
+        this.updateRate();
+    }
+
+    updateRate() {
+        let list = GC.data.rate.getList(this._isClub);
+        if (list.length) {
+            this.setActive(this.typeNode, true);
+            this.setActive(this.priceNode, true);
+
+            let curRate = GC.data.rate.getCurRate(this._isClub);
+            this.typeIcon.spriteFrame = AssetContext.getAsset(curRate.path, AssetFold.texture_flag);
+            this.setText(this.typeLab, curRate.flag);
+            this.updatePrice();
+        }
+    }
+
+    clickSelectRate() {
+        this.selectRateTypeNode.open(this._isClub)
+    }
+
+
     clickRuleBtn = () => {
         this.tipNode.active = true;
-        this.setText(this.tipLab, "汇率：1:1");
+        let curRate = GC.data.rate.getCurRate(this._isClub);
+        this.setText(this.tipLab, "UIRate_x_x", curRate.rate);
     }
 
     clickTipNode = () => {
@@ -144,7 +212,6 @@ export default class GoldOprationForm extends BaseForm {
     backToWallet = () => {
         UIComponent.close(UIDefine.GoldOprationForm);
         UIComponent.close(UIDefine.WalletJumpForm);
-        
     }
 
     getApplyContent(goldNum: number, price: number) {
@@ -164,6 +231,13 @@ export default class GoldOprationForm extends BaseForm {
 
     //点击记录
     clickLookRate() {
-        ToastManager.Instance.createToast("adaptation10105");
+        // ToastManager.Instance.createToast("adaptation10105");
+        UIComponent.open(UIDefine.LookRateListDlg, GC.data.rate.getList(this._isClub));
+    }
+
+    lateClose(param?: any): void {
+        super.lateClose();
+        this.tipNode.active = false;
+        this.selectRateTypeNode.close(false);
     }
 }

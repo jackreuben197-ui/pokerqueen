@@ -640,12 +640,18 @@ export class Web_Room_Center_Rooms_CLUB {
     public static API: string = "/api/roomcenter/club/rooms";
 }
 
-export class Web_User_Gold_Change_Log {
-    public static API: string = "/api/user/gold_change/log"
+export class Web_Gold_Change_Log {
+    public static User: string = "/api/user/gold_change/log";  //金豆变动记录
+    public static Club: string = "/api/org/club/fund/gold_change/log";  //联盟金豆变动记录
 }
-export class Web_Club_Gold_Change_Log {
-    public static API: string = "/api/org/club/fund/gold_change/log"
+
+//汇率相关接口
+export class Web_Rate_Api {
+    public static GET_RATE_LIST = "/api/cmsext/exchange/list";       //汇率列表
+    public static SET_CLUB_RATE = "/api/cmsext/exchange/set";       //设置工会汇率
+    public static DELETE_CLUB_RATE = "/api/cmsext/exchange/delete";       //删除工会汇率
 }
+
 // xyh end
 
 /// <summary>
