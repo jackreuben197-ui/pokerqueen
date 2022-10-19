@@ -79,7 +79,7 @@ export default class RateModel {
             let list = this.getList(isUnion);
             if (list.length) {
                 rate = list[0];
-                this.setCurRate(rate, isUnion);
+                this.setCurRate(rate.country, isUnion);
             }
         }
 
