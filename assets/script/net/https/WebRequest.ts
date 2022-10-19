@@ -1176,6 +1176,48 @@ export class APIOrgChangeClubData {
     };
 }
 
+export class APIOrgCreateTemplate {
+    //接口地址
+    public static API: string = "/cmsext/room/template/create";
+
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgCreateTemplate.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgCreateTemplate.ResponseData
+    };
+}
+export class APIOrgGetTemplate {
+    //接口地址
+    public static API: string = "/cmsext/room/template/list";
+
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgGetTemplate.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgGetTemplate.ResponseData
+    };
+}
 /**
  * 注册全局访问
  */

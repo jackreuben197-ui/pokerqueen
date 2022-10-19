@@ -5095,7 +5095,7 @@
     "component": "",
     "_componentId": "d06fadDP1FOEr/mILtxL0tf",
     "handler": "matchTypeClick",
-    "customEventData": "1"
+    "customEventData": "2"
   },
   {
     "__type__": "cc.PrefabInfo",

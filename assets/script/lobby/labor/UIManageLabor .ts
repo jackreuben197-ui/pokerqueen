@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 16:02:59
+ * @LastEditTime: 2022-10-19 11:45:47
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -39,6 +39,7 @@ export default class UIManageLabor extends BaseForm {
     }
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
+        await UIClubModel.mInstance.APIOrgClubGet()
         this.initTop();
         this.initMangerList();
         this.initMemberList();
