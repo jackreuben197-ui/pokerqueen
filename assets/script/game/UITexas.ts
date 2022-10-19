@@ -1,3 +1,4 @@
+import SimpleNodePool from "../common/MyNodePool";
 import { CommonDefine } from "../define/CommonDefine";
 import { IUIDefine } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
@@ -168,8 +169,9 @@ export default class UITexas extends BaseScene {
 
     lastClickTime: number = 0;
 
-    //记录扑克节点,方便管理所有扑克样式
-    PokerMap = [];
+
+    TransPot_Pool: SimpleNodePool = null;
+
 
     //#region 弹幕界面
     /// <summary>
@@ -307,6 +309,10 @@ export default class UITexas extends BaseScene {
         //this.UIAddChips.node.active = false;
 
         this.Seat.active = false;
+
+
+        this.TransPot_Pool = new SimpleNodePool(this.transPot);
+
 
         //////////////////装载容器
         //1.菜单
