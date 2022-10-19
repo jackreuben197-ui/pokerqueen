@@ -3,11 +3,13 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 11:28:12
+ * @LastEditTime: 2022-10-19 19:05:49
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
+import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
+import { Web_Org_Club_Get } from "../../net/https/WebRequest";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
@@ -27,7 +29,7 @@ export default class UICreateMatch extends BaseForm {
     UISaveModel: cc.Prefab = null;
 
 
-    _curType = 0;
+
     tabBtnsParent: cc.Node = null;
     matchType: cc.Node = null;
     jfp: cc.Node = null;
@@ -50,6 +52,8 @@ export default class UICreateMatch extends BaseForm {
     bm: cc.Node = null;
     Straddle: cc.Node = null;
     select: cc.Node = null;
+
+    _curType = 0;
     ipState = false;
     gpsState = false;
     bmState = false;
@@ -58,19 +62,36 @@ export default class UICreateMatch extends BaseForm {
     matchTypeNum = 0;
     jfpNum = 0;
     xzlxNum = 0;
-    fwfbNum = 0;
+    fwfbNum = 1;
+    straddleNum = 0;
     itemData = {
-        fdxm: [0.1, 0.2],
+        fdxm: [0.1, 1, 2, 5, 10, 20, 25, 50, 100, 200, 300],
         zwsl: [2, 3, 4, 5, 6, 7, 8, 9],
         zdks: [2, 3, 4, 5, 6, 7, 8, 9],
         qwsz: [0, 1, 2, 4, 8, 18, 20, 30],
         pjsc: [0.5, 1, 2, 3, 4, 5, 6],
         jfpbs: [1, 2, 3, 4, 5, 6, 7, 8],
+        jfpbs1: [1, 2, 3, 4, 5, 6, 7, 8],
         zdcl: ['不限', 25, 30, 35, 40, 45],
         zxbljf: [1, 2, 3, 4],
         zss: ['不限', 50, 100, 300, 1000],
         sksj: [10, 12, 15, 18, 20, 25, 30],
     }
+    itemDataIndex = {
+        fdxm: 0,
+        zwsl: 0,
+        zdks: 0,
+        qwsz: 0,
+        pjsc: 0,
+        jfpbs: 0,
+        jfpbs1: 3,
+        zdcl: 0,
+        zxbljf: 0,
+        zss: 0,
+        sksj: 2,
+    }
+    _editModelData = null;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.tabBtnsParent = this.getChildNodeOrComponent("tabBtns");
@@ -100,7 +121,7 @@ export default class UICreateMatch extends BaseForm {
         this.Straddle = this.getChildNodeOrComponent('Straddle')
         this.select = this.getChildNodeOrComponent('select')
 
-        this.initUI()
+
     }
     private onClickTabBtns(index: number): void {
         this.switchTab(index);
@@ -112,7 +133,7 @@ export default class UICreateMatch extends BaseForm {
 
             this.switchTabView(type);
         }
-        cc.find('ToggleContainer/toggle2', this.matchType).active = this._curType >= 2 ? false : true
+        cc.find('ToggleContainer/toggle3', this.matchType).active = this._curType >= 2 ? false : true
 
     }
     switchTabBtnState() {
@@ -130,47 +151,106 @@ export default class UICreateMatch extends BaseForm {
 
     onShow(data?: any, fromUI?: BaseForm) {
         super.onShow(data, fromUI);
+        if (data) {
+            this.editModel(data);
+        } else {
+            this._editModelData = null;
+        }
+        this.initUI();
+
+    }
+    editModel(data) {
+        this._editModelData = data;
+        this.switchTabView(data.game_type);
+
+        this.ipState = data.limit_ip;
+        this.gpsState = data.limit_gps_distance > 0 ? true : false;
+        this.bmState = data.post;
+        this.yckpState = data.delay_view_card;
+
+        this.matchTypeNum = data.poker_type;;
+        this.jfpNum = data.retain_type;
+        this.xzlxNum = data.limit_bet_type;
+        this.fwfbNum = data.settlement_type;;
+
+        this.calculateIndex('fdxm', data.sb / 100)
+        this.calculateIndex('zwsl', data.seat_count)
+        this.calculateIndex('zdks', data.autostart_min_players)
+        this.calculateIndex('qwsz', data.ante)
+        this.calculateIndex('pjsc', data.play_duration / 3600)
+        this.calculateIndex('jfpbs', data.min_rate)
+        this.calculateIndex('jfpbs1', data.max_rate)
+
+        if (data.limit_hc_total_hands == 0) {
+            this.calculateIndex('zss', '不限')
+        } else {
+            this.calculateIndex('zss', data.limit_hc_total_hands)
+        }
+
+        if (data.limit_hc_pool_rate == 0) {
+            this.calculateIndex('zdcl', '不限')
+        } else {
+            this.calculateIndex('zdcl', data.limit_hc_pool_rate)
+        }
+        this.calculateIndex('zxbljf', data.retain_min_rate)
+        this.calculateIndex('sksj', data.op_duration)
+        this.straddleNum = data.straddle_max
+    }
+    calculateIndex(key, value) {
+        this.itemData[key].forEach((item, index) => {
+            if (item == value) {
+                this.itemDataIndex[key] = index
+            }
+        })
     }
     initUI() {
-        //
+        //复选框
+
+        cc.find(`ToggleContainer/toggle${this.matchTypeNum + 1}`, this.matchType).getComponent(cc.Toggle).isChecked = true;
+        cc.find(`ToggleContainer/toggle${this.jfpNum + 1}`, this.jfp).getComponent(cc.Toggle).isChecked = true;
+        cc.find(`ToggleContainer/toggle${this.xzlxNum + 1}`, this.xzlx).getComponent(cc.Toggle).isChecked = true;
+        cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
+
+        this.Straddle.getChildByName('Rectangle').getChildByName('num').getComponent(cc.Label).string = this.straddleNum + ""
+        //滑动
         let fdxmItem: any = cc.find('item/Rectangle', this.fdxm).getComponent('slidewidght');
-        fdxmItem.initUi(this.itemData.fdxm)
+        fdxmItem.initUi(this.itemData.fdxm, this.itemDataIndex.fdxm)
         fdxmItem._targetDe = this;
 
         let zwslItem: any = cc.find('item/Rectangle', this.zwsl).getComponent('slidewidght');
-        zwslItem.initUi(this.itemData.zwsl)
+        zwslItem.initUi(this.itemData.zwsl, this.itemDataIndex.zwsl)
         zwslItem._targetDe = this;
 
         let zdksItem: any = cc.find('item/Rectangle', this.zdks).getComponent('slidewidght');
-        zdksItem.initUi(this.itemData.zdks)
+        zdksItem.initUi(this.itemData.zdks, this.itemDataIndex.zdks)
         zdksItem._targetDe = this;
 
         let qwszItem: any = cc.find('item/Rectangle', this.qwsz).getComponent('slidewidght');
-        qwszItem.initUi(this.itemData.qwsz)
+        qwszItem.initUi(this.itemData.qwsz, this.itemDataIndex.qwsz)
         qwszItem._targetDe = this;
 
         let pjscItem: any = cc.find('item/Rectangle', this.pjsc).getComponent('slidewidght');
-        pjscItem.initUi(this.itemData.pjsc)
+        pjscItem.initUi(this.itemData.pjsc, this.itemDataIndex.pjsc)
         pjscItem._targetDe = this;
 
-        let jfpbsItem: any = cc.find('item/Rectangle', this.jfpbs).getComponent('slidewidght');
-        jfpbsItem.initUi(this.itemData.jfpbs)
+        let jfpbsItem: any = cc.find('item/Rectangle', this.jfpbs).getComponent('slidewidght1');
+        jfpbsItem.initUi(this.itemData.jfpbs, this.itemDataIndex.jfpbs, this.itemDataIndex.jfpbs1)
         jfpbsItem._targetDe = this;
 
         let zdclItem: any = cc.find('item/Rectangle', this.zdcl).getComponent('slidewidght');
-        zdclItem.initUi(this.itemData.zdcl)
+        zdclItem.initUi(this.itemData.zdcl, this.itemDataIndex.zdcl)
         zdclItem._targetDe = this;
 
         let zxbljfItem: any = cc.find('item/Rectangle', this.zxbljf).getComponent('slidewidght');
-        zxbljfItem.initUi(this.itemData.zxbljf)
+        zxbljfItem.initUi(this.itemData.zxbljf, this.itemDataIndex.zxbljf)
         zxbljfItem._targetDe = this;
 
         let zssItem: any = cc.find('item/Rectangle', this.zss).getComponent('slidewidght');
-        zssItem.initUi(this.itemData.zss)
+        zssItem.initUi(this.itemData.zss, this.itemDataIndex.zss)
         zssItem._targetDe = this;
 
         let sksjItem: any = cc.find('item/Rectangle', this.sksj).getComponent('slidewidght');
-        sksjItem.initUi(this.itemData.sksj, 2)
+        sksjItem.initUi(this.itemData.sksj, this.itemDataIndex.sksj)
         sksjItem._targetDe = this;
 
         cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
@@ -252,6 +332,10 @@ export default class UICreateMatch extends BaseForm {
     }
 
     saveModel() {
+        if (this._editModelData) {
+            this.upLoadData(this._editModelData.name)
+            return;
+        }
         let _UISaveModel = cc.instantiate(this.UISaveModel);
         _UISaveModel.parent = this.node
         _UISaveModel.position = cc.v3(0, 0);
@@ -260,18 +344,17 @@ export default class UICreateMatch extends BaseForm {
     async upLoadData(modelName) {
         cc.log('modelName==', modelName);
         let room_config: any = {}
-
         room_config.game_type = this._curType         //游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6 ,必填
-        room_config.poker_type = this.matchTypeNum    //牌类型：0-标准,长牌，2-短牌,必填
-        room_config.limit_bet_type = this.xzlxNum     //底池限制类型：0-无底池限制，1-底池限制，2-AOF,必填
-        room_config.settlement_type = this.fwfbNum    //0-每局结算 per game，1-每手结算 per hand,必填
-
+        room_config.poker_type = Number(this.matchTypeNum)    //牌类型：0-标准,长牌，2-短牌,必填
+        room_config.limit_bet_type = Number(this.xzlxNum)      //底池限制类型：0-无底池限制，1-底池限制，2-AOF,必填
+        room_config.settlement_type = Number(this.fwfbNum)    //0-每局结算 per game，1-每手结算 per hand,必填
+        room_config.retain_type = Number(this.jfpNum)
         room_config.ante = Number(this.qwsz.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //前注筹码,必填
 
-        room_config.sb = Number(this.fdxm.getChildByName('jfplbl').getComponent(cc.Label).string) / 200 //小盲注,必填
+        room_config.sb = Number(this.fdxm.getChildByName('jfplbl').getComponent(cc.Label).string) / 2 //小盲注,必填
         room_config.op_duration = Number(this.sksj.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string)//操作时间 15s
         room_config.min_rate = Number(this.jfpbs.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //最小带入倍率(BB的倍数),必填
-        // room_config.max_rate = ''//最大带入倍率,必填
+        room_config.max_rate = Number(this.jfpbs.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) //最小带入倍率(BB的倍数),必填//最大带入倍率,必填
         // room_config.min_players = '' //最小游戏人数
 
         if (this.zss.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
@@ -285,7 +368,7 @@ export default class UICreateMatch extends BaseForm {
             room_config.limit_hc_pool_rate = Number(this.zdcl.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string)           //最低入池率 
         }
 
-        room_config.play_duration = Number(this.pjsc.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 7200    //房间有效时长 秒,必填
+        room_config.play_duration = Number(this.pjsc.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 3600    //房间有效时长 秒,必填
         room_config.autostart_min_players = Number(this.zdks.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string)//自动开始最小人数 <2 非自动开始 >= 2 自动开始,必填  是开桌的最小人数
         room_config.seat_count = Number(this.zwsl.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string)   //座位数量,必填
         room_config.retain_min_rate = Number(this.zxbljf.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //最小倍率 最小保留记分牌倍数
@@ -296,13 +379,26 @@ export default class UICreateMatch extends BaseForm {
         room_config.limit_ip = this.ipState   //是否开启ip限制
         room_config.limit_gps = this.gpsState //是否开启gps限制
 
-        let params = { name: modelName, room_config: room_config }
+        room_config.hc_pool_rate_lv = true;
+        room_config.hc_total_hands_lv = true;
+        let data: any = Web_Org_Club_Get.Response.data;
+        room_config.club_id = data.random_id
+
+        let params: any = { name: modelName, room_config: room_config }
         console.log('params===', params)
-        await UIClubModel.mInstance.APIOrgCreateTemplate(params)
+        if (this._editModelData) {
+            params.id = this._editModelData.id
+            await UIClubModel.mInstance.APIOrgUpdateTemplate(params);
+        } else {
+            await UIClubModel.mInstance.APIOrgCreateTemplate(params);
+        }
+        this.post(EventName.matchModelChange)
+        this._editModelData = null;
         this.close();
+
     }
     straddleTip() {
-
+        this.Straddle.getChildByName('Group').active = !this.Straddle.getChildByName('Group').active
     }
     straddleSelect() {
         let select = this.Straddle.getChildByName('select');
@@ -314,7 +410,6 @@ export default class UICreateMatch extends BaseForm {
         // }
 
     }
-
 
 
     baganGame() {

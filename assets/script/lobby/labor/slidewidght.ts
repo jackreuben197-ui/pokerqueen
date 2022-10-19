@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 14:59:30
+ * @LastEditTime: 2022-10-19 17:30:40
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
  */
 
@@ -11,28 +11,29 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class slidewidght extends cc.Component {
-    @property(cc.Node)
+    // @property(cc.Node)
     nomalItem: cc.Node = null;
 
-    @property(cc.Node)
+    // @property(cc.Node)
     itemNode: cc.Node = null;
 
-    @property(cc.Node)
+    // @property(cc.Node)
     selectNum: cc.Node = null;
 
     _targetDe = null;
     _selectIndex = 0;
     _itemData = null;
-    onLoad() {
-        this.itemNode = this.node.getChildByName('itemNode')
-        this.nomalItem = this.itemNode.getChildByName('nomalItem')
-        this.selectNum = this.node.getChildByName('selectNum')
+    start() {
+
         this.selectNum.on(cc.Node.EventType.TOUCH_START, this.drogTouchStart, this);
         this.selectNum.on(cc.Node.EventType.TOUCH_MOVE, this.drogTouchMove, this);
         this.selectNum.on(cc.Node.EventType.TOUCH_END, this.drogTouchEnd, this);
         this.selectNum.on(cc.Node.EventType.TOUCH_CANCEL, this.drogTouchEnd, this);
     }
     initUi(data, selectIndex = 0) {
+        this.itemNode = this.node.getChildByName('itemNode')
+        this.nomalItem = this.itemNode.getChildByName('nomalItem')
+        this.selectNum = this.node.getChildByName('selectNum')
         let _x = 937 / (data.length - 1)
         this._itemData = data
         for (let index = this.itemNode.childrenCount - 1; index > 0; index--) {
@@ -54,6 +55,7 @@ export default class slidewidght extends cc.Component {
         }
         this._selectIndex = selectIndex;
         this.selectNum.x = this.itemNode.children[this._selectIndex].x
+
         if (this.node.parent.parent.name == 'fdxm') {
             this.setFdxmUi();
         } else {
@@ -103,32 +105,34 @@ export default class slidewidght extends cc.Component {
      * @method 拖拽结束
      */
     drogTouchEnd(event, customData) {
+        let node = event.target;
         this._targetDe.ScrollView.enabled = true
         let _index = 0;
         for (let index = 0; index < this.itemNode.childrenCount; index++) {
             const element = this.itemNode.children[index];
-            if (element.x > this.selectNum.x) {
+            if (element.x > node.x) {
                 _index = index;
                 break;
             }
         }
-        let _x1 = this.itemNode.children[_index].x - this.selectNum.x;
-        let _x2 = this.selectNum.x - this.itemNode.children[_index - 1].x;
+        let _x1 = this.itemNode.children[_index].x - node.x;
+        let _x2 = node.x - this.itemNode.children[_index - 1].x;
         if (_x1 > _x2) {
-            this._selectIndex = _index - 1;
-            this.selectNum.x = this.itemNode.children[_index - 1].x
+            _index = _index - 1
+            this._selectIndex = _index
         } else {
-            this._selectIndex = _index;
-            this.selectNum.x = this.itemNode.children[_index].x
+            this._selectIndex = _index
         }
+
+        node.x = this.itemNode.children[this._selectIndex].x
+
         if (this.selectNum.x > 937) {
             this._selectIndex = this.itemNode.childrenCount;
-            this.selectNum.x = 937
+            node.x = 937
         }
         if (this.selectNum.x < 0) {
             this._selectIndex = 0;
-
-            this.selectNum.x = 0
+            node.x = 0
         }
         if (this.node.parent.parent.name == 'fdxm') {
             this.setFdxmUi();
@@ -156,9 +160,7 @@ export default class slidewidght extends cc.Component {
         this.node.parent.parent.getChildByName('jfplbl').getComponent(cc.Label).string = this._itemData[this._selectIndex] * 200 + '';
     }
 
-    start() {
 
-    }
 
     // update (dt) {}
 }
