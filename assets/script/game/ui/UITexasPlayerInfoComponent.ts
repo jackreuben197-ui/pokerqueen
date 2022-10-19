@@ -121,6 +121,8 @@ export default class UITexasPlayerInfoComponent extends UIBase {
 
     protected regiterTouchEvents(): void {
         this.btn_close.on("click", this.onClickClose, this);
+        let panel_click: cc.Node = this.getChildNodeOrComponent("panel_click");
+        panel_click.on("click", this.onClickClose, this);
     }
 
     private onClickClose(): void {
