@@ -69,5 +69,5 @@ export default class UITexasGameEndItem extends UIBase {
     get param(): typeof Web_User_Room_Settle_Detail.UsersInfo {
         return this._param;
     }
-    // update (dt) {}
+    
 }
