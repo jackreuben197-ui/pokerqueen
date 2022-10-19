@@ -3160,12 +3160,30 @@ UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
 
-
+UITitle_RateSet=汇率设置
+UITitle_addRate=新增汇率
+UITitle_setRate=编辑汇率
+UIBtnLab_add=添加
+UIEditRateTip=请输入汇率
 UILookRate=查看汇率
+UINoRateTip=暂无汇率
+UIRate_x_x=汇率:1-{0}
 UIAppay=申请
+UIRateSetEditIsNullTip=请先补全信息
+
+
+UI_BIANJI=编辑
+UI_SHANCHU=删除
+
 
 UIText_today=今天
 UIText_yesterday=昨天
+
+UIRateAddTip=点击右上角“+”,开始配置
+UIRateInstructions=此页面由公会会长配置，仅供参考，如有疑问 请与公会会长联系。
+UIRateManagerListTip=汇率由公会会长设置，向公会所有会员展示，用于工会会员充值和提现时计算转账金额。
+UIDeletRateTostTip=确定将{0}/{1}汇率从表格中移除
+UISetRateTostTip=确定修改{0}{1}/{2}{3}汇率<br/>{4}
 
 
 

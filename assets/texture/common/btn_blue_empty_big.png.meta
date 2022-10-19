@@ -12,7 +12,7 @@
   "height": 137,
   "platformSettings": {},
   "subMetas": {
-    "btn_blue_empty": {
+    "btn_blue_empty_big": {
       "ver": "1.0.6",
       "uuid": "c29ba3be-d831-41e0-a6f3-209af78074a2",
       "importer": "sprite-frame",

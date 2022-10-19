@@ -206,3 +206,20 @@ export type TClubGoldChangeLogItem = {
     gold_lock_after: number, //锁定金币变动后
     create_time: string,
 }
+
+
+////rate
+export type TRateConfig = {
+    country: string,
+    flag: string,
+    path: string,
+    desc: string
+}
+
+export type TRateItem = {
+    id?: number, // ID
+    from_currency?: string, // 第一币种
+    from_rate?: number, // 第一币种比例值
+    to_currency?: string, // 第二币种
+    to_rate?: number, // 第二币种比例值
+}

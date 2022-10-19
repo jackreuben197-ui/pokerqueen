@@ -2,4 +2,6 @@ export const enum EventName {
     serverResponse = "serverResponse",
 
     myGoldChange = "myGoldChange",
+    curSelectRateChange = "curSelectRateChange",
+    addRateItem = "addRateItem",
 }
