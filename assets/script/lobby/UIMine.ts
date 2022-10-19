@@ -49,6 +49,12 @@ export default class UIMine extends UIBase {
         this.panel_bottom = this.getChildNodeOrComponent("panel_bottom");
         let UIHead: cc.Node = this.getChildNodeOrComponent("UIHead");
         UIHead.on(cc.Node.EventType.TOUCH_END, this.onClickMyInfo, this)
+        let pc_1: cc.Node = this.getChildNodeOrComponent("pc_1");
+        pc_1.on(cc.Node.EventType.TOUCH_END, this.onClickRecord, this)
+        let pc_2: cc.Node = this.getChildNodeOrComponent("pc_2");
+        pc_2.on(cc.Node.EventType.TOUCH_END, this.onClickCardScore, this)
+        let pc_3: cc.Node = this.getChildNodeOrComponent("pc_3");
+        pc_3.on(cc.Node.EventType.TOUCH_END, this.onClickAchieve, this)
         this.refreshHeadImg();
         this.setMine();
         this.refreshUserName();
@@ -134,5 +140,17 @@ export default class UIMine extends UIBase {
 
     onClickMyInfo() {
         UIComponent.open(UIDefine.MyPlayInfo);
+    }
+
+    onClickRecord() {
+        UIComponent.open(UIDefine.UIRecord);
+    }
+
+    onClickCardScore() {
+        // UIComponent.open(UIDefine.UIRecord);
+    }
+
+    onClickAchieve() {
+        // UIComponent.open(UIDefine.UIRecord);
     }
 }

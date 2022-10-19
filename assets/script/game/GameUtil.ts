@@ -101,6 +101,7 @@ export default class GameUtil {
     public static OutsList = new Map<number, number[]>();
     public static TexasGameDic = new Map<RoomType, TexasGame>();
 
+
     //已经开放的房间类型
     private static readonly OpenRoomType = [
         RoomType.TexasHoldemStandardNoLimit,// 普通
@@ -138,7 +139,7 @@ export default class GameUtil {
     // Dealer标识坐标 0左、1右
     public static readonly BankerLRV3: cc.Vec3[] = [
 
-        cc.v3(138, -175),
+        cc.v3(0, -180),//cc.v3(138, -175),
         cc.v3(0, -180),
     ];
 

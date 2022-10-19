@@ -509,7 +509,8 @@ export default class TexasGameProtocol {
         GC.data.user.info.gold -= this.game.checkPublicCardsCost;
         this.game.cacheRound = rec.round;
         this.game.AddPublicCards(rec.publicCardsList);
-        this.game.uirc.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
+        //启用按钮
+        this.game.uirc.buttonSeeMorePublic.getChildByName("click").getComponent(cc.Button).interactable = true;
         // 花费查看未发公共牌
         if (this.game.GetCurPublicCardsCount() == 5) {
             this.game.HideSeeMorePublic();

@@ -3,9 +3,9 @@ import ToastManager from "../manager/ToastManager";
 
 export default class PublicHelper {
 
-    static InitSprite(sprite: cc.Sprite, spriteFrame?: cc.SpriteFrame) {
+    static InitSprite(sprite: cc.Sprite) {
         sprite.node.color = cc.Color.WHITE;
-        sprite.spriteFrame = spriteFrame;
+        //sprite.spriteFrame = spriteFrame;
     }
     static InitNode(node: cc.Node, position?: cc.Vec3, active: boolean = true) {
         node.setPosition(position);
