@@ -1,9 +1,8 @@
 
 
 export const RateConfig = [
-    { type: 1, country: "CNY", flag: "￥", path: "flag_cn" },
-    { type: 2, country: "USD", flag: "$", path: "flag_en" },
-    { type: 3, country: "GBP", flag: "£", path: "flag_pt" },
-    { type: 4, country: "BIF", flag: "Fr", path: "flag_pt" },
-    { type: 5, country: "EUR", flag: "€", path: "flag_pt" },
+    { country: "USD", flag: "$", path: "rate_USD", desc: "美元" },
+    { country: "CNY", flag: "￥", path: "rate_CNY", desc: "人民币" },
+    { country: "VND", flag: "₫", path: "rate_VND", desc: "越南盾" },
+    { country: "THB", flag: "฿", path: "rate_THB", desc: "泰铢" },
 ]

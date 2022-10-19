@@ -45,7 +45,7 @@ export default class ComFormTitle extends UIBase {
     }
 
     clickRightTextBtn = () => {
-        this._rightTextBtnCallBack && this._rightTextBtnCallBack();
+        this._rightTextBtnCallBack && this._rightTextBtnCallBack.call(this._target);
     }
 
     clickBack() {

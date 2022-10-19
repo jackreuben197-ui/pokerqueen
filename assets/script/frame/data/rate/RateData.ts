@@ -1,8 +1,5 @@
-import { ERateType } from "../../../config/EEnumConfig";
-import { EventName } from "../../../config/EventName";
 import { Web_Rate_Api } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
-import RateItemModel from "./RateItemModel";
 import RateModel from "./RateModel";
 
 export default class RateData extends BaseData {
@@ -11,7 +8,7 @@ export default class RateData extends BaseData {
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
             case Web_Rate_Api.GET_RATE_LIST: {
-                this.rate.updateList(msg, sendInfo.config_type == 1);
+                this.rate.updateList(msg.data, sendInfo.config_type == 1);
             } break;
             case Web_Rate_Api.SET_CLUB_RATE: {
                 this.rate.setRate(msg, sendInfo, false);

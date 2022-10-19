@@ -30,7 +30,7 @@ export default class LookRateListItem extends UIBase {
         this._data = data;
 
         this.icon.spriteFrame = AssetContext.getAsset(this._data.path, AssetFold.texture_flag);
-        this.setText(this.flag, this._data.flag);
+        this.setText(this.flag, this._data.country);
         this.setText(this.rate, `1-${this._data.rate}`);
     }
 }

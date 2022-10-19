@@ -1,5 +1,3 @@
-import RateItemModel from "../../frame/data/rate/RateItemModel";
-import GC from "../../frame/GameControl";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
 
@@ -10,8 +8,8 @@ export default class SelectRateTypeItem extends UIBase {
     private icon: cc.Sprite = null;
     private flag: cc.Label = null;
 
-    private _data: RateItemModel = null;
-    private _isClub: boolean = false;
+    private _data: { country: string, path: string } = null;
+    private _selectItem: Function = null;
     lateLoad() {
         super.lateLoad();
         this.icon = this.getChildNodeOrComponent("icon", cc.Sprite);
@@ -27,15 +25,16 @@ export default class SelectRateTypeItem extends UIBase {
         this.bindClick(this.node, this.clickItem);
     }
 
-    initData(data: RateItemModel, isClub: boolean) {
+    initData(data: { country: string, path: string }, selectItem: Function) {
         this._data = data;
-        this._isClub = isClub;
+        this._selectItem = selectItem;
 
         this.icon.spriteFrame = AssetContext.getAsset(this._data.path, AssetFold.texture_flag);
-        this.setText(this.flag, this._data.flag);
+        this.setText(this.flag, this._data.country);
     }
 
     clickItem() {
-        GC.data.rate.setCureRate(this._data, this._isClub);
+        this._selectItem && this._selectItem(this._data.country);
+        // GC.data.rate.rate.setCurRate(this._data, this._isClub);
     }
 }

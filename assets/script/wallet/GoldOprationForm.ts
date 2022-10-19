@@ -2,6 +2,7 @@ import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
 import { EventName } from "../config/EventName";
 import { UIDefine } from "../define/UIDefine";
+import RateModel from "../frame/data/rate/RateModel";
 import GC from "../frame/GameControl";
 import ToastManager from "../manager/ToastManager";
 import HttpRequest from "../net/https/HttpRequest";
@@ -37,7 +38,12 @@ export default class GoldOprationForm extends BaseForm {
 
     private _type: EWalletGoldOpration = EWalletGoldOpration.in;
     private _isClub: boolean = false;
-    private _data: Array<number> = [300, 500, 800, 1000, 2000, 3000]
+    private _data: Array<number> = [300, 500, 800, 1000, 2000, 3000];
+    private _rate: RateModel = null;
+    onLoad() {
+        super.onLoad();
+        this._rate = GC.data.rate.rate;
+    }
     lateLoad() {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -77,11 +83,8 @@ export default class GoldOprationForm extends BaseForm {
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
-            case Web_Rate_Api.CLUB_RATE_LIST: {
-                !this._isClub && this.updateRate();
-            } break;
-            case Web_Rate_Api.UNION_RATE_LIST: {
-                this._isClub && this.updateRate();
+            case Web_Rate_Api.GET_RATE_LIST: {
+                this.updateRate();
             } break;
             default:
                 break;
@@ -113,7 +116,7 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     updatePrice() {
-        let curRate = GC.data.rate.getCurRate(this._isClub);
+        let curRate = this._rate.getCurRate(this._isClub);
         if (curRate) {
             let num = Number(this.edit.string);
             this.setText(this.priceLab, curRate.changeToNum(num));
@@ -131,26 +134,34 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     updateRate() {
-        let list = GC.data.rate.getList(this._isClub);
+        let list = this._rate.getList(this._isClub);
         if (list.length) {
             this.setActive(this.typeNode, true);
             this.setActive(this.priceNode, true);
 
-            let curRate = GC.data.rate.getCurRate(this._isClub);
+            let curRate = this._rate.getCurRate(this._isClub);
             this.typeIcon.spriteFrame = AssetContext.getAsset(curRate.path, AssetFold.texture_flag);
-            this.setText(this.typeLab, curRate.flag);
+            this.setText(this.typeLab, curRate.country);
             this.updatePrice();
         }
     }
 
     clickSelectRate() {
-        this.selectRateTypeNode.open(this._isClub)
+        this.setActive(this.selectRateTypeNode, true);
+        let data = this._rate.getList(this._isClub).map(item => {
+            return { country: item.country, path: item.path }
+        })
+        this.selectRateTypeNode.open(data, this.selectItem)
+    }
+
+    selectItem = (data: string) => {
+        this._rate.setCurRate(data, this._isClub)
     }
 
 
     clickRuleBtn = () => {
         this.tipNode.active = true;
-        let curRate = GC.data.rate.getCurRate(this._isClub);
+        let curRate = this._rate.getCurRate(this._isClub);
         this.setText(this.tipLab, "UIRate_x_x", curRate.rate);
     }
 
@@ -232,7 +243,7 @@ export default class GoldOprationForm extends BaseForm {
     //点击记录
     clickLookRate() {
         // ToastManager.Instance.createToast("adaptation10105");
-        UIComponent.open(UIDefine.LookRateListDlg, GC.data.rate.getList(this._isClub));
+        UIComponent.open(UIDefine.LookRateListDlg, this._rate.getList(this._isClub));
     }
 
     lateClose(param?: any): void {

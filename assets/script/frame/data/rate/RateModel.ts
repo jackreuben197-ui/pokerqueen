@@ -1,4 +1,3 @@
-import { ERateType } from "../../../config/EEnumConfig";
 import { EventName } from "../../../config/EventName";
 import { TRateConfig } from "../../../config/TTypeConfig";
 import GC from "../../GameControl";
@@ -41,11 +40,16 @@ export default class RateModel {
         let list = this.getList(isUnion);
         let item = list.find(item => item.country == msg.to_currency)
         if (!item) {
-            item = new RateItemModel(sendInfo);
-            list.push(item)
+            this.addRate(sendInfo, list)
         } else {
             item.updateRate(sendInfo);
         }
+    }
+
+    addRate(sendInfo: any, list) {
+        let item = new RateItemModel(sendInfo);
+        list.push(item)
+        GC.notify.post(EventName.addRateItem);
     }
     deletRate(msg: any, sendInfo: any, isUnion: boolean = false) {
         let list = this.getList(isUnion);
@@ -89,7 +93,8 @@ export default class RateModel {
     getCurRate(isUnion: boolean) {
         return isUnion ? this.curUnion : this.curClub;
     }
-    setCurRate(item: RateItemModel, isUnion: boolean) {
+    setCurRate(country: string, isUnion: boolean) {
+        let item = this.getRate(country, isUnion);
         GC.localStore.setItem(this.getCurRateLocalKey(isUnion), item.country);
 
         if (isUnion) {

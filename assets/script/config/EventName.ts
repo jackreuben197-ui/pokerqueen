@@ -3,4 +3,5 @@ export const enum EventName {
 
     myGoldChange = "myGoldChange",
     curSelectRateChange = "curSelectRateChange",
+    addRateItem = "addRateItem",
 }

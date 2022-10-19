@@ -1,7 +1,4 @@
 import List from "../../common/List";
-import { EventName } from "../../config/EventName";
-import RateItemModel from "../../frame/data/rate/RateItemModel";
-import GC from "../../frame/GameControl";
 import UIBase from "../../ui/UIBase";
 import SelectRateTypeItem from "./SelectRateTypeItem";
 
@@ -12,9 +9,9 @@ export default class SelectRateTypeNode extends UIBase {
     private rateTypeBg: cc.Node = null;
     private list: List = null;
 
-    private _data: Array<RateItemModel> = [];
+    private _data: Array<{ country: string, path: string }> = [];
     private _aniing: boolean = false;
-    private _isClub: boolean = false;
+    private _selectItem: Function = null;
     lateLoad() {
         super.lateLoad();
 
@@ -24,7 +21,7 @@ export default class SelectRateTypeNode extends UIBase {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        
+
     }
 
     protected regiterTouchEvents(): void {
@@ -33,37 +30,35 @@ export default class SelectRateTypeNode extends UIBase {
         this.bindClick(this.node, this.clickBg);
     }
 
-    open(isClub: boolean = false, ani: boolean = true) {
-        this._isClub = isClub;
-        this._data = GC.data.rate.getList(this._isClub);
+    open(data: Array<{ country: string, path: string }>, selectItem: Function) {
+        this._data = data;
+        this._selectItem = selectItem;
 
-        this.setActive(this.node, true);
-        this.node.scale = 0;
+        this.rateTypeBg.scale = 0;
+
+        this._aniing = true;
+        cc.Tween.stopAllByTarget(this.rateTypeBg);
+        cc.tween(this.rateTypeBg)
+            .to(0.1, { scale: 1 })
+            .call(() => { this._aniing = false })
+            .start();
+
         this.list.numItems = this._data.length;
-
-        if (ani) {
-            this._aniing = true;
-            cc.Tween.stopAllByTarget(this.rateTypeBg);
-            cc.tween(this.rateTypeBg)
-                .to(0.2, { scale: 1 })
-                .call(() => { this._aniing = false })
-                .start();
-        }
     }
 
     close(ani: boolean = true) {
-        if (this.node.active){
+        if (this.node.active) {
             if (ani) {
                 this._aniing = false;
                 cc.Tween.stopAllByTarget(this.rateTypeBg);
                 cc.tween(this.rateTypeBg)
-                    .to(0.2, { scale: 0 })
+                    .to(0.1, { scale: 0 })
                     .call(() => {
                         this._aniing = false;
                         this.setActive(this.node, false)
                     }).start();
             } else {
-                this.node.scale = 0;
+                this.rateTypeBg.scale = 0;
                 this.setActive(this.node, false);
             }
         }
@@ -77,6 +72,6 @@ export default class SelectRateTypeNode extends UIBase {
 
     onRender(node: cc.Node, index) {
         let item = node.getComponent(SelectRateTypeItem);
-        item.initData(this._data[index], this._isClub)
+        item.initData(this._data[index], this._selectItem);
     }
 }

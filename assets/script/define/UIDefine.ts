@@ -339,6 +339,18 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/wallet/rate/LookRateListDlg",
     },
+    RateManagerListForm: {
+        UIType: UIType.Form,
+        Name: "RateManagerListForm",
+        Bundle: null,
+        Path: "main/wallet/rate/RateManagerListForm",
+    },
+    EditRateForm: {
+        UIType: UIType.Form,
+        Name: "EditRateForm",
+        Bundle: null,
+        Path: "main/wallet/rate/EditRateForm",
+    },
 
 
 }
