@@ -6,6 +6,7 @@ import RateItemModel from "../../frame/data/rate/RateItemModel";
 import RateModel from "../../frame/data/rate/RateModel";
 import GC from "../../frame/GameControl";
 import ToastManager from "../../manager/ToastManager";
+import { Web_Rate_Api } from "../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../ui/form/BaseForm";
@@ -72,9 +73,18 @@ export default class EditRateForm extends BaseForm {
         this.bindClick(this.selectBtn, this.clickSelect);
     }
 
+    protected notify(id: any, msg: any, sendInfo?: any): void {
+        switch (id) {
+            case Web_Rate_Api.SET_CLUB_RATE: {
+                UIComponent.close(UIDefine.EditRateForm);
+            } break;
+        }
+    }
+
     onShow(type?: string): void {
         super.onShow(type);
 
+        this.setActive(this.selectBtn, !type);
         this.selectCountry(type);
     }
 

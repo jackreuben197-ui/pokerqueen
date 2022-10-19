@@ -3157,8 +3157,12 @@ UIWebViewURL=https://h5.olavamos.com/#/
 UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
-
-
+UIChessItemStatus_0=待创建
+UIChessItemStatus_1=已创建未开始
+UIChessItemStatus_2=已开始
+UIChessItemStatus_3=已结束
+UIChessItemStatus_4=即将关闭
+UIChessItemStatus_5=房间关闭
 
 UITitle_RateSet=汇率设置
 UITitle_addRate=新增汇率

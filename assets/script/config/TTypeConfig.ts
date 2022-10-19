@@ -47,7 +47,7 @@ export type TRoomListItem = {
     game_type: number,//游戏类型
     poker_type: number,//牌类型
     limit_bet_type: number,//底池限注类型
-    status: number,//房间状态  0 未真是创建，1  已创建 未开始，2 进行中，3 强制关闭，4 即将关闭，5 房间关闭 。 RoomStatus
+    status: number,//房间状态  0 待创建，1  已创建 未开始，2 进行中|已开始，3 强制关闭|已结束，4 即将关闭，5 房间关闭 。 RoomStatus
     ante: number,//前注
     sb: number,//小盲
     op_duration: number,//操作时间

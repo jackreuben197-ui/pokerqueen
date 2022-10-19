@@ -6,6 +6,7 @@ export default class UserInfoModel {
     private _msg: TUserInfo = null;
     updateData(msg: TUserInfo) {
         this._msg = msg;
+        GC.notify.post(EventName.myGoldChange);
     }
 
 
