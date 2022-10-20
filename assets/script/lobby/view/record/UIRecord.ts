@@ -27,6 +27,7 @@ export default class UIRecord extends BaseForm {
     onShow(param?: any, fromUI?: BaseForm): void {
         super.onShow(param, fromUI);
       
+        this.resetUI();
 
         for (let i=1; i<6; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
@@ -66,7 +67,7 @@ export default class UIRecord extends BaseForm {
         }
         let info = {
             group_by: group_by,      //1 room 2 mtt 3 mttroom
-            limit: 10,         //条目
+            limit: 100,         //条目
             offset: 0,        //开始下标。例子（offset=0，limit=10，0-9。）
             game_type: this.lastGameType,     //游戏类型，对应客户端 枚举 GameType
         }
@@ -123,6 +124,15 @@ export default class UIRecord extends BaseForm {
         this.refreshChooseDate(index);
         this.lastTimeType = index;
         this.reqUpInfo(this.lastGameType, index);
+    }
+
+    resetUI() {
+        this.lastGameType = 1;
+        this.lastTimeType = 1;
+        this.refreshChooseNLH(1);
+        this.refreshChooseDate(1);
+        let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
+        scrollView.content.removeAllChildren();
     }
 
     refreshUpUI(data) {
@@ -189,26 +199,32 @@ export default class UIRecord extends BaseForm {
     refreshListView(data) {
         let records = data.data.records;
         let lbl_noshow: cc.Node = this.getChildNodeOrComponent("lbl_notShow");
-        // if (records.length == 0) {
-        //     lbl_noshow.active = true;
-        // } else {
+        if (records.length == 0) {
+            lbl_noshow.active = true;
+        } else {
             lbl_noshow.active = false;
             // 有数据 刷新列表
-            let sv_down: cc.Node = this.getChildNodeOrComponent("sv_down");
             let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
             let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
-            let len = 5;
+            let len = records.length;
             scrollView.content.removeAllChildren();
-            for (let i=1; i<len; i++) {
+            for (let i=0; i<len; i++) {
+                let info = records[i];
                 let _cloneNode = cc.instantiate(panel_item);
                 _cloneNode.x = 0;
-                _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i-1);
+                _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
                 _cloneNode.parent = scrollView.content;
 
-                _cloneNode.getChildByName("lbl_score").getComponent(cc.Label).string = i.toString();
+                _cloneNode.getChildByName("lbl_score").getComponent(cc.Label).string = info.Change.toString();
+                _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = info.Name;
+                _cloneNode.getChildByName("lbl_sb").getComponent(cc.Label).string = info.RoomID.toString();
+                _cloneNode.getChildByName("lbl_total").getComponent(cc.Label).string = info.Count.toString();
+                _cloneNode.getChildByName("lbl_time").getComponent(cc.Label).string = info.Time;
+                _cloneNode.getChildByName("img_dian_now").active = true;
+                _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = "今天";
             }
             scrollView.content.height = panel_item.height * len;
-        // }
+        }
     }
 
 }
