@@ -56,7 +56,7 @@ export default class UILobby extends UIBase {
         this.bindClick(this.beanBg, this.clickBean);
         this.scrollView.node.on("scrolling", this.onScrolling, this);
         this.scrollView.node.on("scroll-ended", this.onScrollEnd, this);
-
+        this.setButtonClick(this.Button_MTT, this.onClickMTTGame);
     }
 
     private initView(): void {
@@ -78,6 +78,10 @@ export default class UILobby extends UIBase {
             type: 1,
             page: index
         });
+    }
+
+    onClickMTTGame() {
+        http://dev.k8s.awanptesting.com:80/api/roomcenter/mtt/list
     }
 
     /**

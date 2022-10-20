@@ -957,9 +957,7 @@ export default class TexasGameProtocol {
                 mSeat.Player.MttHunterKillAwardOtherPlus += result.mttHunterKillAwardOtherPlus;
             }
 
-
             if (!mSeat.IsMySeat) {
-
                 //自己的牌不用更新
                 mSeat.Player.SetCards(this.game.GetHandCardsAtRecvWinner(this.game.MessageWinnerData, i));
             }
