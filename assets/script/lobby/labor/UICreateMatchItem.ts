@@ -3,13 +3,18 @@
  * @Date: 2022-10-17 11:45:09
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 18:51:01
+ * @LastEditTime: 2022-10-20 14:30:14
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchItem.ts
  */
 
-import { eventNames } from "process";
 import { EventName } from "../../config/EventName";
+import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
+import GC from "../../frame/GameControl";
+import GameUtil, { RoomType } from "../../game/GameUtil";
+import ProcedureManager from "../../manager/ProcedureManager";
+import WebSocketClient from "../../net/websocket/WebSocketClient";
+import LobbySession from "../../session/LobbySession";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -94,6 +99,7 @@ export default class UICreateMatchItem extends UIBase {
                 contentCommit: "确定",
                 contentCancel: "取消",
                 actionCommit: async () => {
+                    this.began();
                 },
                 noAnimation: true,
             });
@@ -116,7 +122,9 @@ export default class UICreateMatchItem extends UIBase {
                 noAnimation: true,
             });
     }
+    async began() {
+        await UIClubModel.mInstance.APIOrgRoomCreate(this._data.id);
 
+    }
 
-    // update (dt) {}
 }

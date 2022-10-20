@@ -1260,6 +1260,27 @@ export class APIOrgUpdateTemplate {
         code?: number, message?: string, data?: typeof APIOrgUpdateTemplate.ResponseData
     };
 }
+export class APIOrgRoomCreate {
+    //接口地址
+    public static API: string = "/api/cmsext/room/create";
+
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgRoomCreate.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgRoomCreate.ResponseData
+    };
+}
 /**
  * 注册全局访问
  */
