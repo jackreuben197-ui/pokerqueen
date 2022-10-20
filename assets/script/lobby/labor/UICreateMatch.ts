@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 15:58:35
+ * @LastEditTime: 2022-10-20 18:01:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -25,6 +25,8 @@ export default class UICreateMatch extends BaseForm {
     @property(cc.Prefab)
     UISaveModel: cc.Prefab = null;
 
+    @property(cc.Node)
+    save: cc.Node = null;
 
 
     tabBtnsParent: cc.Node = null;
@@ -50,16 +52,22 @@ export default class UICreateMatch extends BaseForm {
     Straddle: cc.Node = null;
     select: cc.Node = null;
 
+    jslx: cc.Node = null;
+    fddmHd: cc.Node = null;
+    kzwjdr: cc.Node = null;
+
     _curType = 0;
     ipState = false;
     gpsState = false;
     bmState = false;
     yckpState = false;
+    kzwjdrState = false;
     // smallAndBigM = [];
     matchTypeNum = 0;
     jfpNum = 0;
     xzlxNum = 0;
     fwfbNum = 1;
+    jslxNum = 1;
     straddleNum = 0;
     _btnType = 0;
     _fromUI = null;
@@ -75,6 +83,9 @@ export default class UICreateMatch extends BaseForm {
         zxbljf: [1, 2, 3, 4],
         zss: ['不限', 50, 100, 300, 1000],
         sksj: [10, 12, 15, 18, 20, 25, 30],
+        jslx: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5],
+        fddmHd: [0.5, 1, 2, 3, 5, 10, '不限']
+
     }
     itemDataIndex = {
         fdxm: 0,
@@ -88,6 +99,8 @@ export default class UICreateMatch extends BaseForm {
         zxbljf: 0,
         zss: 0,
         sksj: 2,
+        jslx: 0,
+        fddmHd: 0,
     }
     qzshData = {
         '0.1': [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 3, 4, 6, 8, 15, 30],
@@ -144,6 +157,9 @@ export default class UICreateMatch extends BaseForm {
         this.Straddle = this.getChildNodeOrComponent('Straddle')
         this.select = this.getChildNodeOrComponent('select')
 
+        this.jslx = this.getChildNodeOrComponent('jslx')
+        this.fddmHd = this.getChildNodeOrComponent('fddmHd')
+        this.kzwjdr = this.getChildNodeOrComponent('kzwjdr')
 
     }
     onShow(data?: any, fromUI?: BaseForm) {
@@ -254,9 +270,25 @@ export default class UICreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this.jfpNum + 1}`, this.jfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.xzlxNum + 1}`, this.xzlx).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
-        let fwfConfig: any = APIOrgGetRoomConfig.Response.data;
-        this.fwfbl.getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.fee_permillage + '%'
-        this.fwfbl.getChildByName('fddm').getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.max_per_hand
+        cc.find(`ToggleContainer/toggle${this.jslxNum + 1}`, this.jslx).getComponent(cc.Toggle).isChecked = true;
+
+        if (this._fromUI == 'UICreateMatchHome') {
+            this.save.active = true;
+            this.fwfbl.active = true;
+            this.jslx.active = false;
+            this.fddmHd.active = false
+            this.kzwjdr.active = false
+            let fwfConfig: any = APIOrgGetRoomConfig.Response.data;
+            this.fwfbl.getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.fee_permillage + '%'
+            this.fwfbl.getChildByName('fddm').getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.max_per_hand
+        } else {
+            this.jslx.active = true;
+            this.fddmHd.active = true
+            this.kzwjdr.active = true
+            this.fwfbl.active = false;
+            this.save.active = false;
+        }
+
 
         this.Straddle.getChildByName('Rectangle').getChildByName('num').getComponent(cc.Label).string = this.straddleNum + ""
         //滑动
@@ -307,8 +339,15 @@ export default class UICreateMatch extends BaseForm {
 
         let sksjItem: any = cc.find('item/Rectangle', this.sksj).getComponent('slidewidght');
         sksjItem._targetDe = this;
-
         sksjItem.initUi(this.itemData.sksj, this.itemDataIndex.sksj)
+
+        let jslxItem: any = cc.find('item/Rectangle', this.jslx).getComponent('slidewidght');
+        jslxItem._targetDe = this;
+        jslxItem.initUi(this.itemData.jslx, this.itemDataIndex.jslx)
+
+        let fddmHdItem: any = cc.find('item/Rectangle', this.fddmHd).getComponent('slidewidght');
+        fddmHdItem._targetDe = this;
+        fddmHdItem.initUi(this.itemData.fddmHd, this.itemDataIndex.fddmHd)
 
         cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
         cc.find('btn_switch/close', this.ipdzxz).active = !this.ipState;
@@ -342,6 +381,11 @@ export default class UICreateMatch extends BaseForm {
         cc.find('btn_switch/open', this.gpszx).active = this.gpsState;
         cc.find('btn_switch/close', this.gpszx).active = !this.gpsState;
     }
+    kzwjdrCilck() {
+        this.kzwjdrState = !this.kzwjdrState
+        cc.find('btn_switch/open', this.kzwjdr).active = this.kzwjdrState;
+        cc.find('btn_switch/close', this.kzwjdr).active = !this.kzwjdrState;
+    }
     yckpCilck() {
         this.yckpState = !this.yckpState
         cc.find('btn_switch/open', this.yckp).active = this.yckpState;
@@ -371,6 +415,12 @@ export default class UICreateMatch extends BaseForm {
         this.fwfbl.height = this.fwfbNum == 0 ? 400 : 300;
         // cc.find('fddm/lblNum', this.fwfbl).active = 
     }
+
+    jslxClick(event, customData) {
+        this.jslxNum = customData;
+    }
+
+
     setttingClick() {
         if (this.node.getChildByName('UISetSmallM')) {
             this.node.getChildByName('UISetSmallM').active = true;
@@ -453,7 +503,7 @@ export default class UICreateMatch extends BaseForm {
 
         let data: any = Web_Org_Club_Get.Response.data;
         room_config.club_id = data.random_id
-
+        room_config.tribe_id = data.random_id;
         let params: any = { name: modelName, room_config: room_config }
         console.log('params===', params)
 
@@ -473,8 +523,17 @@ export default class UICreateMatch extends BaseForm {
 
             }
             else {
+                if (this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
+                    room_config.max_per_hand = 0 //服务费比例(0-100)
+
+                } else {
+                    room_config.max_per_hand = Number(this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
+                }
+
+
+                room_config.fee_permillage = Number(this.jslx.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
                 room_config.limit_friend_table = true;
-                room_config.limit_bring_in = true;
+                room_config.limit_bring_in = this.kzwjdrState;
                 await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
             }
         }
