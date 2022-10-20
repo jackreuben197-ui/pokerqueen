@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:27:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 15:20:07
+ * @LastEditTime: 2022-10-20 15:00:44
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchHome.ts
  */
 
@@ -30,6 +30,7 @@ export default class UICreateMatchHome extends BaseForm {
 
     protected lateLoad(): void {
         super.lateLoad();
+        UIClubModel.mInstance.APIOrgGetRoomConfig()
     }
     regiterDispatchEvent() {
         super.regiterDispatchEvent();

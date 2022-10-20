@@ -3,12 +3,12 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 14:09:45
+ * @LastEditTime: 2022-10-20 15:18:45
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
 import { EventName } from "../../config/EventName";
-import { Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import { UIClubModel } from "./UIClubModel";
 
@@ -61,6 +61,7 @@ export default class UICreateMatch extends BaseForm {
     xzlxNum = 0;
     fwfbNum = 1;
     straddleNum = 0;
+    _btnType = 0;
     itemData = {
         fdxm: [0.1, 1, 2, 5, 10, 20, 25, 50, 100, 200, 300],
         zwsl: [2, 3, 4, 5, 6, 7, 8, 9],
@@ -249,6 +250,9 @@ export default class UICreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this.jfpNum + 1}`, this.jfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.xzlxNum + 1}`, this.xzlx).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
+        let fwfConfig: any = APIOrgGetRoomConfig.Response.data;
+        this.fwfbl.getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.fee_permillage + '%'
+        this.fwfbl.getChildByName('fddm').getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.max_per_hand
 
         this.Straddle.getChildByName('Rectangle').getChildByName('num').getComponent(cc.Label).string = this.straddleNum + ""
         //滑动
@@ -385,6 +389,10 @@ export default class UICreateMatch extends BaseForm {
     }
 
     saveModel() {
+        this._btnType = 0;
+        this.fillName();
+    }
+    fillName() {
         if (this._editModelData) {
             this.upLoadData(this._editModelData.name)
             return;
@@ -444,12 +452,18 @@ export default class UICreateMatch extends BaseForm {
 
         let params: any = { name: modelName, room_config: room_config }
         console.log('params===', params)
-        if (this._editModelData) {
-            params.id = this._editModelData.id
-            await UIClubModel.mInstance.APIOrgUpdateTemplate(params);
-        } else {
+
+        if (this._btnType == 0) {
+            if (this._editModelData) {
+                params.id = this._editModelData.id
+                await UIClubModel.mInstance.APIOrgUpdateTemplate(params);
+            } else {
+                await UIClubModel.mInstance.APIOrgCreateTemplate(params);
+            }
+        } else if (this._btnType == 0) {
             await UIClubModel.mInstance.APIOrgCreateTemplate(params);
         }
+
         this.post(EventName.matchModelChange)
         this._editModelData = null;
         this.close();
@@ -475,9 +489,9 @@ export default class UICreateMatch extends BaseForm {
         qwszItem.initUi(this.itemData.qwsz, 0)
     }
 
-
     baganGame() {
-
+        this._btnType = 1;
+        this.fillName();
     }
 
 }

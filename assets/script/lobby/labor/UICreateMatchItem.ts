@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:45:09
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 14:30:14
+ * @LastEditTime: 2022-10-20 14:52:53
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchItem.ts
  */
 
@@ -124,6 +124,7 @@ export default class UICreateMatchItem extends UIBase {
     }
     async began() {
         await UIClubModel.mInstance.APIOrgRoomCreate(this._data.id);
+        this.post(EventName.updateChessView);
 
     }
 
