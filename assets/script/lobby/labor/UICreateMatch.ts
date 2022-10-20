@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 19:05:49
+ * @LastEditTime: 2022-10-20 13:57:45
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -58,7 +58,7 @@ export default class UICreateMatch extends BaseForm {
     gpsState = false;
     bmState = false;
     yckpState = false;
-    smallAndBigM = [];
+    // smallAndBigM = [];
     matchTypeNum = 0;
     jfpNum = 0;
     xzlxNum = 0;
@@ -89,6 +89,30 @@ export default class UICreateMatch extends BaseForm {
         zxbljf: 0,
         zss: 0,
         sksj: 2,
+    }
+    qzshData = {
+        '0.1': [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 3, 4, 6, 8, 15, 30],
+        '0.2': [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 3, 4, 6, 8, 15, 30],
+        '0.3': [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 3, 4, 6, 8, 15, 30],
+        '0.4': [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 3, 4, 6, 8, 15, 30],
+        '0.5': [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 3, 4, 6, 8, 15, 30],
+        '1': [0, 2, 3, 4, 5, 6, 7, 8, 9],
+        '2': [0, 1, 2, 4, 8, 16, 32, 40, 60],
+        '3': [0, 1, 3, 6, 9, 15, 20, 30, 60],
+        '4': [0, 1, 2, 4, 8, 16, 32, 40, 60],
+        '5': [0, 1, 2, 5, 10, 20, 40, 80, 100, 150],
+        '10': [0, 2, 5, 10, 20, 40, 80, 160, 200, 300],
+        '15': [0, 5, 10, 15, 30, 40, 60, 90, 120, 150, 300],
+        '20': [0, 5, 10, 20, 40, 80, 160, 320, 400, 600],
+        '25': [0, 5, 10, 25, 50, 100, 200, 400, 500, 750],
+        '30': [0, 5, 10, 25, 30, 50, 100, 200, 400, 500, 750],
+        '50': [0, 10, 25, 50, 100, 200, 400, 800, 1000, 1500],
+        '100': [0, 25, 50, 100, 200, 400, 800, 1600, 2000, 3000],
+        '200': [0, 50, 100, 200, 400, 800, 1600, 3200, 4000, 6000],
+        '300': [0, 75, 150, 300, 600, 1200, 2400, 4800, 6000, 9000],
+        '500': [0, 125, 250, 500, 1000, 2000, 4000, 8000, 10000, 15000],
+        '1000': [0, 250, 500, 1000, 2000, 4000, 8000, 16000, 20000, 30000],
+
     }
     _editModelData = null;
 
@@ -171,9 +195,12 @@ export default class UICreateMatch extends BaseForm {
         this.matchTypeNum = data.poker_type;;
         this.jfpNum = data.retain_type;
         this.xzlxNum = data.limit_bet_type;
-        this.fwfbNum = data.settlement_type;;
+        this.fwfbNum = data.settlement_type;
+
 
         this.calculateIndex('fdxm', data.sb / 100)
+        let _data: any = this.qzshData[data.sb / 100]
+        this.itemData.qwsz = _data
         this.calculateIndex('zwsl', data.seat_count)
         this.calculateIndex('zdks', data.autostart_min_players)
         this.calculateIndex('qwsz', data.ante)
@@ -197,11 +224,22 @@ export default class UICreateMatch extends BaseForm {
         this.straddleNum = data.straddle_max
     }
     calculateIndex(key, value) {
+        let flag = false;
         this.itemData[key].forEach((item, index) => {
             if (item == value) {
+                flag = true
                 this.itemDataIndex[key] = index
             }
         })
+        if (!flag && key == 'fdxm') {
+            this.itemData[key].push(value);
+            this.itemData[key].sort((a, b) => a - b)
+            this.itemData[key].forEach((item, index) => {
+                if (item == value) {
+                    this.itemDataIndex[key] = index
+                }
+            })
+        }
     }
     initUI() {
         //复选框
@@ -214,44 +252,54 @@ export default class UICreateMatch extends BaseForm {
         this.Straddle.getChildByName('Rectangle').getChildByName('num').getComponent(cc.Label).string = this.straddleNum + ""
         //滑动
         let fdxmItem: any = cc.find('item/Rectangle', this.fdxm).getComponent('slidewidght');
-        fdxmItem.initUi(this.itemData.fdxm, this.itemDataIndex.fdxm)
         fdxmItem._targetDe = this;
 
+        fdxmItem.initUi(this.itemData.fdxm, this.itemDataIndex.fdxm)
+
         let zwslItem: any = cc.find('item/Rectangle', this.zwsl).getComponent('slidewidght');
-        zwslItem.initUi(this.itemData.zwsl, this.itemDataIndex.zwsl)
         zwslItem._targetDe = this;
+        zwslItem.initUi(this.itemData.zwsl, this.itemDataIndex.zwsl)
+
 
         let zdksItem: any = cc.find('item/Rectangle', this.zdks).getComponent('slidewidght');
-        zdksItem.initUi(this.itemData.zdks, this.itemDataIndex.zdks)
         zdksItem._targetDe = this;
+        zdksItem.initUi(this.itemData.zdks, this.itemDataIndex.zdks)
+
 
         let qwszItem: any = cc.find('item/Rectangle', this.qwsz).getComponent('slidewidght');
-        qwszItem.initUi(this.itemData.qwsz, this.itemDataIndex.qwsz)
         qwszItem._targetDe = this;
+        qwszItem.initUi(this.itemData.qwsz, this.itemDataIndex.qwsz)
+
 
         let pjscItem: any = cc.find('item/Rectangle', this.pjsc).getComponent('slidewidght');
-        pjscItem.initUi(this.itemData.pjsc, this.itemDataIndex.pjsc)
         pjscItem._targetDe = this;
 
+        pjscItem.initUi(this.itemData.pjsc, this.itemDataIndex.pjsc)
+
         let jfpbsItem: any = cc.find('item/Rectangle', this.jfpbs).getComponent('slidewidght1');
-        jfpbsItem.initUi(this.itemData.jfpbs, this.itemDataIndex.jfpbs, this.itemDataIndex.jfpbs1)
         jfpbsItem._targetDe = this;
 
+        jfpbsItem.initUi(this.itemData.jfpbs, this.itemDataIndex.jfpbs, this.itemDataIndex.jfpbs1)
+
         let zdclItem: any = cc.find('item/Rectangle', this.zdcl).getComponent('slidewidght');
-        zdclItem.initUi(this.itemData.zdcl, this.itemDataIndex.zdcl)
         zdclItem._targetDe = this;
 
+        zdclItem.initUi(this.itemData.zdcl, this.itemDataIndex.zdcl)
+
         let zxbljfItem: any = cc.find('item/Rectangle', this.zxbljf).getComponent('slidewidght');
-        zxbljfItem.initUi(this.itemData.zxbljf, this.itemDataIndex.zxbljf)
         zxbljfItem._targetDe = this;
 
+        zxbljfItem.initUi(this.itemData.zxbljf, this.itemDataIndex.zxbljf)
+
         let zssItem: any = cc.find('item/Rectangle', this.zss).getComponent('slidewidght');
-        zssItem.initUi(this.itemData.zss, this.itemDataIndex.zss)
         zssItem._targetDe = this;
 
+        zssItem.initUi(this.itemData.zss, this.itemDataIndex.zss)
+
         let sksjItem: any = cc.find('item/Rectangle', this.sksj).getComponent('slidewidght');
-        sksjItem.initUi(this.itemData.sksj, this.itemDataIndex.sksj)
         sksjItem._targetDe = this;
+
+        sksjItem.initUi(this.itemData.sksj, this.itemDataIndex.sksj)
 
         cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
         cc.find('btn_switch/close', this.ipdzxz).active = !this.ipState;
@@ -317,18 +365,22 @@ export default class UICreateMatch extends BaseForm {
     setttingClick() {
         if (this.node.getChildByName('UISetSmallM')) {
             this.node.getChildByName('UISetSmallM').active = true;
+            this.node.getChildByName('UISetSmallM').getComponent('UISetSmallM').setSetSmallM(this.itemData.fdxm)
         } else {
             let _prefab = cc.instantiate(this.setSmallBig)
             _prefab.parent = this.node;
             _prefab.position = cc.v3(0, 0);
             _prefab.getComponent('UISetSmallM').delagate = this;
+            _prefab.getComponent('UISetSmallM').setSetSmallM(this.itemData.fdxm)
+
         }
 
     }
     setSmallM(data) {
-        this.smallAndBigM = data;
+        this.itemData.fdxm = data;
         let fdxmItem: any = cc.find('item/Rectangle', this.fdxm).getComponent('slidewidght');
-        fdxmItem.initUi(this.smallAndBigM)
+        fdxmItem.initUi(this.itemData.fdxm)
+        this.changeQzsh(this.itemData.fdxm[0])
     }
 
     saveModel() {
@@ -357,14 +409,20 @@ export default class UICreateMatch extends BaseForm {
         room_config.max_rate = Number(this.jfpbs.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) //最小带入倍率(BB的倍数),必填//最大带入倍率,必填
         // room_config.min_players = '' //最小游戏人数
 
+
         if (this.zss.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
             room_config.limit_hc_total_hands = 0;      //总手数限制 手数
+            room_config.hc_total_hands_lv = false;
         } else {
+            room_config.hc_total_hands_lv = true;
             room_config.limit_hc_total_hands = Number(this.zss.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string)          //总手数限制 手数
         }
+
         if (this.zdcl.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
             room_config.limit_hc_pool_rate = 0;      //总手数限制 手数
+            room_config.hc_pool_rate_lv = false;
         } else {
+            room_config.hc_pool_rate_lv = true;
             room_config.limit_hc_pool_rate = Number(this.zdcl.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string)           //最低入池率 
         }
 
@@ -379,8 +437,7 @@ export default class UICreateMatch extends BaseForm {
         room_config.limit_ip = this.ipState   //是否开启ip限制
         room_config.limit_gps = this.gpsState //是否开启gps限制
 
-        room_config.hc_pool_rate_lv = true;
-        room_config.hc_total_hands_lv = true;
+
         let data: any = Web_Org_Club_Get.Response.data;
         room_config.club_id = data.random_id
 
@@ -409,6 +466,12 @@ export default class UICreateMatch extends BaseForm {
         //     this.Straddle.height = 200
         // }
 
+    }
+    changeQzsh(num) {
+        let _data: any = this.qzshData[num]
+        this.itemData.qwsz = _data
+        let qwszItem: any = cc.find('item/Rectangle', this.qwsz).getComponent('slidewidght');
+        qwszItem.initUi(this.itemData.qwsz, 0)
     }
 
 

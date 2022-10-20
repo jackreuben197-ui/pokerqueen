@@ -3,7 +3,7 @@
  * @Date: 2022-10-18 11:25:01
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 14:56:01
+ * @LastEditTime: 2022-10-20 13:55:17
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UISetSmallM.ts
  */
 
@@ -22,7 +22,7 @@ export default class UISetSmallM extends cc.Component {
         for (let index = 0; index < this.Group.childrenCount; index++) {
             const element = this.Group.children[index];
             let rectangle = element.getChildByName('Rectangle');
-            rectangle.getChildByName('select').active = index >= 2 ? false : true;
+            rectangle.getChildByName('select').active = false;
             rectangle['_data'] = this.itemData[index]
             rectangle.on(cc.Node.EventType.TOUCH_END, () => {
                 rectangle.getChildByName('select').active = !rectangle.getChildByName('select').active;
@@ -57,7 +57,19 @@ export default class UISetSmallM extends cc.Component {
 
         }
 
+    }
+    setSetSmallM(data) {
+        for (let index = 0; index < this.Group.childrenCount; index++) {
+            const element = this.Group.children[index];
+            let rectangle = element.getChildByName('Rectangle');
+            for (let index1 = 0; index1 < data.length; index1++) {
+                if (rectangle['_data'] == data[index1]) {
+                    rectangle.getChildByName('select').active = true;
+                    break;
+                }
+            }
 
+        }
     }
 
     // update (dt) {}

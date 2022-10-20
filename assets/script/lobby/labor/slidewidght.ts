@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 17:30:40
+ * @LastEditTime: 2022-10-20 13:31:55
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
  */
 
@@ -90,7 +90,6 @@ export default class slidewidght extends cc.Component {
                     this._selectIndex = index
                     if (this.node.parent.parent.name == 'fdxm') {
                         this.setFdxmUi();
-
                     } else {
                         this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[index];
                     }
@@ -136,6 +135,8 @@ export default class slidewidght extends cc.Component {
         }
         if (this.node.parent.parent.name == 'fdxm') {
             this.setFdxmUi();
+            this._targetDe.changeQzsh(this._itemData[this._selectIndex]);
+
             // this.node.parent.parent.getChildByName('dmlbl').getComponent(cc.Label).string = this._itemData[this._selectIndex];
             // let a = this._itemData[this._selectIndex].substring(this._itemData[this._selectIndex].length - 1, this._itemData[this._selectIndex].length);
             // this.node.parent.parent.getChildByName('jfplbl').getComponent(cc.Label).string = Number(a) * 100 + '';
@@ -150,6 +151,8 @@ export default class slidewidght extends cc.Component {
         this.selectNum.x = node.x
         if (this.node.parent.parent.name == 'fdxm') {
             this.setFdxmUi();
+            this._targetDe.changeQzsh(this._itemData[this._selectIndex]);
+
         } else {
             this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
         }
