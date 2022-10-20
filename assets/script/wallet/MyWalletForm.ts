@@ -130,12 +130,12 @@ export default class MyWalletForm extends BaseForm {
 
     // 点击发放
     clickIssue() {
-
+        UIComponent.open(UIDefine.GoldIssueListForm);
     }
 
     // 点击查看申请几率
     clickApply() {
-
+        ToastManager.Instance.createToast("adaptation10105");
     }
 
     // 点击记录

@@ -1,12 +1,15 @@
 import { EOrderRecordType } from "../../../config/EEnumConfig";
-import { Web_Gold_Change_Log, Web_Order_Rcords, Web_Org_Club_Get } from "../../../net/https/WebRequest";
+import { Web_Club_Issue_Gold, Web_Gold_Change_Log, Web_Order_Rcords, Web_Org_Club_Get, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../../../net/https/WebRequest";
+import { EWalletGoldOpration } from "../../../wallet/WalletConfig";
 import { BaseData } from "../../base/BaseData";
 import GoldChangeLogModel from "./goldChangeLog/GoldChangeLogModel";
+import GoldIssueModel from "./issue/GoldIssueModel";
 import OrderRecordModel from "./record/OrderRecordModel";
 
 export default class WalletData extends BaseData {
     goldChangeLogs: GoldChangeLogModel = new GoldChangeLogModel();
-    orderRecord: OrderRecordModel = new OrderRecordModel();;
+    orderRecord: OrderRecordModel = new OrderRecordModel();
+    issue: GoldIssueModel = new GoldIssueModel();
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
@@ -16,11 +19,12 @@ export default class WalletData extends BaseData {
             case Web_Gold_Change_Log.Club: {
                 this.goldChangeLogs.updateData(msg, true);
             } break;
-            case Web_Order_Rcords.USER_RECORD: {
+            case Web_Order_Rcords.USER_RECORD:
+            case Web_Order_Rcords.CLUB_RECORD: {
                 this.orderRecord.updateData(msg, sendInfo.order_type);
             } break;
-            case Web_Order_Rcords.CLUB_RECORD: {
-
+            case Web_Club_Issue_Gold.USER_LIST: {
+                this.issue.updateData(msg);
             } break;
             default:
                 break;
@@ -28,6 +32,17 @@ export default class WalletData extends BaseData {
     }
 
 
+    reqOprationGold(type: EWalletGoldOpration, goldNum: number, isClub?: boolean, userId?: number) {
+        if (type == EWalletGoldOpration.issue) {
+            this.reqServePost(Web_Club_Issue_Gold.ISSUE, { user_id: userId, gold_num: goldNum * 100 })
+        } else {
+            let api = isClub ? Web_Recharge_Gold_Club.API : Web_Recharge_Gold.API
+            if (type == EWalletGoldOpration.out) {
+                api = isClub ? Web_Tiqu_Gold_Club.API : Web_Tiqu_Gold.API
+            }
+            this.reqServePost(api, { amount: goldNum * 100 })
+        }
+    }
 
 
     reqUserGoldChangeLog(offset: number = 0, limit: number = 10) {
@@ -45,5 +60,12 @@ export default class WalletData extends BaseData {
         }
         let api = isClub ? Web_Order_Rcords.CLUB_RECORD : Web_Order_Rcords.USER_RECORD;
         this.reqServePost(api, sendData);
+    }
+
+    reqIssueList(offset: number = 0, limit: number = 10) {
+        this.reqServePost(Web_Club_Issue_Gold.USER_LIST, { limit: limit, offset: offset });
+    }
+    reqIssueSearchUser(search) {
+        this.reqServePost(Web_Club_Issue_Gold.USER_LIST, { search: search });
     }
 }

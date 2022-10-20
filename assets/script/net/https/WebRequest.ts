@@ -662,8 +662,8 @@ export class Web_Order_Rcords {
 export class Web_Club_Issue_Gold {
     // 参数：user_id（用户ID），gold_num（金豆数量）
     public static ISSUE = "/api/order/club/grant";
-    public static USER_LIST = "";
-    public static SEARCH_USER = "";
+    // 参数：search：成员昵称或ID
+    public static USER_LIST = "/api/order/club/user_list";
 }
 
 // xyh end
@@ -773,6 +773,7 @@ export class Web_Org_Club_Get {
 
     public static ResponseData: {
         random_id: number,
+        club_name: string
     } = null;
     public static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;
@@ -1125,7 +1126,8 @@ export class APIOrgClubGold {
         org_id: number, // 公会ID
         gold: number, // 公会金豆数
         gold_lock: number, // 公会被锁定的金豆数
-        forbidden: boolean // 是否冻结 true已冻结，false未冻结
+        forbidden: boolean, // 是否冻结 true已冻结，false未冻结
+        club_name: string,   //工会名字
     } = null;
     public static Request(param: typeof APIOrgClubGold.RequestParams) {
         this.RequestParams = param;

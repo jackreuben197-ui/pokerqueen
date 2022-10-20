@@ -199,6 +199,24 @@ export default class TimeHelper {
     }
 
 
+    static getTimeBefore(t: number, isMil: boolean = false) {
+        let subTime = this.NowS - t / (isMil ? 1000 : 1);
+        if (subTime < 60) {
+            return i18nMgr.isCN ? `${subTime}秒前` : `${subTime}s ago`;
+        }
+        if (subTime < 60 * 60) {
+            return i18nMgr.isCN ? `${Math.floor(subTime / 60)}分钟前` : `${subTime}min ago`;
+        }
+
+        if (subTime < 60 * 60 * 24) {
+            return i18nMgr.isCN ? `${Math.floor(subTime / 60 / 60)}小时前` : `${subTime}h ago`;
+        }
+        if (subTime < 60 * 60 * 24 * 365) {
+            return i18nMgr.isCN ? `${Math.floor(subTime / 60 / 60 * 24)}天前` : `${subTime}day ago`;
+        }
+        return i18nMgr.isCN ? `${Math.floor(subTime / 60 / 60 * 24 * 365)}年前` : `${subTime}year ago`;
+    }
+
     static getSubTimeHMS(subTime: number, flag: string = null, isMil: boolean = false) {
         let data = this.getSubDateStructHMS(subTime, isMil);
         if (flag) {

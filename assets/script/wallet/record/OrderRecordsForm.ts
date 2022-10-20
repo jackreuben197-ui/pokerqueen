@@ -15,6 +15,8 @@ export default class OrderRecordsForm extends BaseForm {
     private tabToggles: TextTabToggles = null;
     private list: List = null;
 
+    private titleNodes: Map<EOrderRecordType, cc.Node> = new Map();
+
     private _isClub: boolean = false;
     private _curType: EOrderRecordType = EOrderRecordType.chongzhi;
     lateLoad() {
@@ -22,6 +24,10 @@ export default class OrderRecordsForm extends BaseForm {
         this.list = this.getChildNodeOrComponent("list", List);
         this.tabToggles = this.getChildNodeOrComponent("tabToggles", TextTabToggles);
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+        this.titleNodes.set(EOrderRecordType.chongzhi, this.getChildNodeOrComponent("titleNode1"));
+        this.titleNodes.set(EOrderRecordType.tiqu, this.getChildNodeOrComponent("titleNode2"));
+        this.titleNodes.set(EOrderRecordType.fafang, this.getChildNodeOrComponent("titleNode3"));
     }
 
     protected regiterDispatchEvent(): void {
@@ -65,6 +71,10 @@ export default class OrderRecordsForm extends BaseForm {
 
     onToggle = (index: number, type: EOrderRecordType) => {
         this._curType = type;
+        this.titleNodes.forEach((node, type) => {
+            this.setActive(node, this._curType == type)
+        })
+
         if (GC.data.wallet.orderRecord.getList(this._curType).length) {
             this.updateList();
         } else {

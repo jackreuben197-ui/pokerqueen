@@ -3178,7 +3178,8 @@ UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
 
-
+UIEditDefultTip1=输入玩家昵称或ID
+UIEditDefultTip2=搜索您喜欢的游戏
 
 UIChessItemStatus_0=待创建
 UIChessItemStatus_1=已创建未开始
@@ -3187,9 +3188,11 @@ UIChessItemStatus_3=已结束
 UIChessItemStatus_4=即将关闭
 UIChessItemStatus_5=房间关闭
 
-UITitle_RateSet=汇率设置
-UITitle_addRate=新增汇率
-UITitle_setRate=编辑汇率
+UIOrder_Record_Status_1=申请中
+UIOrder_Record_Status_2=同意
+UIOrder_Record_Status_3=拒绝
+UIOrder_Record_Status_4=取消申请
+
 UIBtnLab_add=添加
 UIEditRateTip=请输入汇率
 UILookRate=查看汇率
@@ -3198,10 +3201,8 @@ UIRate_x_x=汇率:1-{0}
 UIAppay=申请
 UIRateSetEditIsNullTip=请先补全信息
 
-
 UI_BIANJI=编辑
 UI_SHANCHU=删除
-
 
 UIText_today=今天
 UIText_yesterday=昨天
@@ -3212,7 +3213,24 @@ UIRateManagerListTip=汇率由公会会长设置，向公会所有会员展示�
 UIDeletRateTostTip=确定将{0}/{1}汇率从表格中移除
 UISetRateTostTip=确定修改{0}{1}/{2}{3}汇率<br/>{4}
 
+UITitle_issue_order=发放订单
+UITitle_issue_num=发放数量
+UITitle_issue_time=发放时间
+UITitle_jijin_fafang=基金发放
+
+UITitle_RateSet=汇率设置
+UITitle_addRate=新增汇率
+UITitle_setRate=编辑汇率
+
 UITitle_fafang_jilu=发放记录
+UITitle_zongjijin=总基金
+
+UITips_GoldOpration_0=确定向{0}工会申请充值{1}金豆？<br/>付款金额{2}
+UITips_GoldOpration_1=确定向{0}工会申请提取{1}金豆？<br/>收款金额{2}
+UITips_GoldOpration_2=确定向{0}发放{1}金豆？<br/>收款金额{1}
+UITips_GoldOpration_suc_0=申请充豆成功！<br/>如有疑问请联系客服，联系方式{0}
+UITips_GoldOpration_suc_1=申请提豆成功！<br/>如有疑问请联系客服，联系方式{0}
+UITips_GoldOpration_suc_2=金豆发放成功！<br/>如有疑问请联系客服，联系方式{0}
 
 
 
