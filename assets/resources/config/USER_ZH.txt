@@ -3157,6 +3157,29 @@ UIWebViewURL=https://h5.olavamos.com/#/
 UIAboutURL=https://h5.olavamos.com/#/introduce
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 UIChessItemStatus_0=待创建
 UIChessItemStatus_1=已创建未开始
 UIChessItemStatus_2=已开始
@@ -3189,7 +3212,7 @@ UIRateManagerListTip=汇率由公会会长设置，向公会所有会员展示�
 UIDeletRateTostTip=确定将{0}/{1}汇率从表格中移除
 UISetRateTostTip=确定修改{0}{1}/{2}{3}汇率<br/>{4}
 
-
+UITitle_fafang_jilu=发放记录
 
 
 

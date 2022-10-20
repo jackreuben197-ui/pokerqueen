@@ -140,7 +140,8 @@ export default class MyWalletForm extends BaseForm {
 
     // 点击记录
     clickRecord() {
-        ToastManager.Instance.createToast("adaptation10105");
+        // ToastManager.Instance.createToast("adaptation10105");
+        UIComponent.open(UIDefine.OrderRecordsForm, this._isClub);
     }
 
     lateClose(param?: any): void {
