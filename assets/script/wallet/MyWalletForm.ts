@@ -5,8 +5,7 @@ import { UIDefine } from "../define/UIDefine";
 import GoldChangeLogModel from "../frame/data/wallet/goldChangeLog/GoldChangeLogModel";
 import GC from "../frame/GameControl";
 import ToastManager from "../manager/ToastManager";
-import { APIOrgClubGold, Web_Club_Gold_Change_Log, Web_User_Gold_Change_Log } from "../net/https/WebRequest";
-import CCTools from "../tools/CCTools";
+import { APIOrgClubGold, Web_Gold_Change_Log } from "../net/https/WebRequest";
 import BaseForm from "../ui/form/BaseForm";
 import UIComponent from "../ui/UIComponent";
 import GoldChangeRecordItem from "./GoldChangeRecordItem";
@@ -67,10 +66,10 @@ export default class MyWalletForm extends BaseForm {
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
-            case Web_Club_Gold_Change_Log.API: {
+            case Web_Gold_Change_Log.Club: {
                 this._isClub && this.updateList();
             } break;
-            case Web_User_Gold_Change_Log.API: {
+            case Web_Gold_Change_Log.User: {
                 !this._isClub && this.updateList();
 
             } break;
@@ -141,7 +140,8 @@ export default class MyWalletForm extends BaseForm {
 
     // 点击记录
     clickRecord() {
-        ToastManager.Instance.createToast("adaptation10105");
+        // ToastManager.Instance.createToast("adaptation10105");
+        UIComponent.open(UIDefine.OrderRecordsForm, this._isClub);
     }
 
     lateClose(param?: any): void {

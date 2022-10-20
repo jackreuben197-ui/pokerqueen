@@ -340,6 +340,31 @@ export const UIDefine = {
         Path: "main/club/UICreateMatch",
     },
 
+    LookRateListDlg: {
+        UIType: UIType.CommonUI,
+        Name: "LookRateListDlg",
+        Bundle: null,
+        Path: "main/wallet/rate/LookRateListDlg",
+    },
+    RateManagerListForm: {
+        UIType: UIType.Form,
+        Name: "RateManagerListForm",
+        Bundle: null,
+        Path: "main/wallet/rate/RateManagerListForm",
+    },
+    EditRateForm: {
+        UIType: UIType.Form,
+        Name: "EditRateForm",
+        Bundle: null,
+        Path: "main/wallet/rate/EditRateForm",
+    },
+    OrderRecordsForm: {
+        UIType: UIType.Form,
+        Name: "OrderRecordsForm",
+        Bundle: null,
+        Path: "main/wallet/record/OrderRecordsForm",
+    },
+
 
 }
 //批量设置

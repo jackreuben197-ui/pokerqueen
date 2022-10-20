@@ -126,4 +126,8 @@ export default class UIManageLabor extends BaseForm {
     clickJijin() {
         UIComponent.open(UIDefine.MyWalletForm, true)
     }
+
+    clickRate() {
+        UIComponent.open(UIDefine.RateManagerListForm)
+    }
 }

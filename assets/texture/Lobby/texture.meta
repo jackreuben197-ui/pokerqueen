@@ -1,6 +1,10 @@
 {
   "ver": "1.1.3",
+<<<<<<< HEAD:assets/texture/Lobby/texture.meta
   "uuid": "6f97380c-4ed6-43cc-aebf-8ee862b33ee0",
+=======
+  "uuid": "5aaec664-3978-4b20-8208-ae2a0974a8a9",
+>>>>>>> main:assets/resources/main/wallet/rate.meta
   "importer": "folder",
   "isBundle": false,
   "bundleName": "",

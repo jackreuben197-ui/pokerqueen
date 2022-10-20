@@ -47,7 +47,7 @@ export type TRoomListItem = {
     game_type: number,//游戏类型
     poker_type: number,//牌类型
     limit_bet_type: number,//底池限注类型
-    status: number,//房间状态  0 未真是创建，1  已创建 未开始，2 进行中，3 强制关闭，4 即将关闭，5 房间关闭 。 RoomStatus
+    status: number,//房间状态  0 待创建，1  已创建 未开始，2 进行中|已开始，3 强制关闭|已结束，4 即将关闭，5 房间关闭 。 RoomStatus
     ante: number,//前注
     sb: number,//小盲
     op_duration: number,//操作时间
@@ -205,4 +205,62 @@ export type TClubGoldChangeLogItem = {
     gold_lock_change: number, //锁定金币变动
     gold_lock_after: number, //锁定金币变动后
     create_time: string,
+}
+
+
+////rate
+export type TRateConfig = {
+    country: string,
+    flag: string,
+    path: string,
+    desc: string
+}
+
+export type TRateItem = {
+    id?: number, // ID
+    from_currency?: string, // 第一币种
+    from_rate?: number, // 第一币种比例值
+    to_currency?: string, // 第二币种
+    to_rate?: number, // 第二币种比例值
+}
+
+export type TListStepReq = {
+    reqing: boolean,
+    reqEnd: boolean,
+    offset: number
+}
+
+
+export type TOrderRecords = {
+    limit: number,
+    offset: number,
+    list: Array<TOrderRecordItem>,
+    total: number
+}
+
+export type TOrderRecordItem = {
+    id: number,
+    user_id: number,
+    user_type: number,
+    club_id: number,
+    tribe_id: number,
+    order_no: string
+    order_type: number,
+    gold_num: number,
+    amount: number,
+    status: number,
+    audit_time: string
+    audit_user_id: number,
+    audit_type: number,
+    create_time: string
+    update_time: string
+    change_id: number,
+    desc: "",
+    user_random_id: number,
+    nickname: "Player",
+    avatar: string
+    club_random_id: number,
+    club_name: string
+    tribe_random_id: number,
+    tribe_name: string
 }

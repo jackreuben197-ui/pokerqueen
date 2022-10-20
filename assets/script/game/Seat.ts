@@ -135,6 +135,20 @@ export default class Seat {
         this.InitUIStaticData();
 
     }
+    //停止所有动作
+    public stopAllActions() {
+        this.uirc.imageIconChip.node.active = true;
+        this.uirc.imageIconChip.node.stopAllActions();
+        this.uirc.Head.stopAllActions();
+        this.uirc.Head.scale = 1;
+        this.uirc.transSmallCardBacks.stopAllActions();
+        this.uirc.listImageSmallCardBack.forEach(item => {
+            item.node.opacity = 255;
+            item.node.stopAllActions();
+        })
+
+
+    }
 
     /// <summary>
     /// 播放发牌动画
@@ -999,10 +1013,7 @@ export default class Seat {
             //     }
             // }
             // Log.write(UnityEngine.LogType.Log, logContent.ToString());
-
         }
-
-
         for (let i = mHideStart; i < mHideEnd; i++) {
             list[i].imageCard.active = false;
         }
@@ -1088,7 +1099,7 @@ export default class Seat {
 
         let mOffset = 10;
 
-        //this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+        this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
 
         let str = StringHelper.FormatIntOrFloat1(GameCache.Instance.CurGame.groupBet / 100);
@@ -1214,11 +1225,12 @@ export default class Seat {
     /// 停止倒计时
     /// </summary>
     public StopCountDown(): void {
-        if (this.isCountDown) {
-            this.isCountDown = false;
-            this.uirc.imageCountDown.node.active = false;
-            this.uirc.Image_CountDownbg.node.active = false;
-        }
+        //if (this.isCountDown) {
+        this.isCountDown = false;
+        this.uirc.imageCountDown.node.active = false;
+        this.uirc.Image_CountDownbg.node.active = false;
+        cc.log("停止D");
+        //}
         //this.StopLightArmature();
     }
 
@@ -1588,7 +1600,8 @@ export default class Seat {
         this.isStraddle = false;
         this.optCurTime = 0;
         this.optTotalTime = 0;
-        this.isCountDown = false;
+        //this.isCountDown = false;
+        this.StopCountDown();
         this.defaultIconChipLocalPos = cc.Vec3.ZERO;
     }
 
@@ -1617,7 +1630,8 @@ export default class Seat {
 
         this.optCurTime = 0;
         this.optTotalTime = 0;
-        this.isCountDown = false;
+        //this.isCountDown = false;
+        this.StopCountDown();
         this.defaultIconChipLocalPos = cc.Vec3.ZERO;
         this.bKeepSeatCounting = false;
         this.keepSeatDeltaTime = 0;
@@ -1699,16 +1713,12 @@ export default class Seat {
         if (this.IsDisposed) {
             return;
         }
-
         this.KillAllTweener();
 
         if (null != this.FsmLogicComponent) {
             this.FsmLogicComponent.stop();
         }
-
-        //this.ClearUI();
         this.ClearData();
-
     }
 }
 export interface SeatUIInfo {

@@ -640,12 +640,32 @@ export class Web_Room_Center_Rooms_CLUB {
     public static API: string = "/api/roomcenter/club/rooms";
 }
 
-export class Web_User_Gold_Change_Log {
-    public static API: string = "/api/user/gold_change/log"
+export class Web_Gold_Change_Log {
+    public static User: string = "/api/user/gold_change/log";  //金豆变动记录
+    public static Club: string = "/api/org/club/fund/gold_change/log";  //联盟金豆变动记录
 }
-export class Web_Club_Gold_Change_Log {
-    public static API: string = "/api/org/club/fund/gold_change/log"
+
+//汇率相关接口
+export class Web_Rate_Api {
+    public static GET_RATE_LIST = "/api/cmsext/exchange/list";       //汇率列表
+    public static SET_CLUB_RATE = "/api/cmsext/exchange/set";       //设置工会汇率
+    public static DELETE_CLUB_RATE = "/api/cmsext/exchange/delete";       //删除工会汇率
 }
+
+export class Web_Order_Rcords {
+    // 参数：order_type（订单类型(order_type):1-充豆;2-提豆;3-发豆）
+    public static CLUB_RECORD = "/api/order/club/grant_log";  //工会冲提记录
+    // user_type（0-未知,1-普通用户,2-支桌号,3-牌局机器人,4-牛仔机器人）
+    public static USER_RECORD = "/api/order/user/order_records";  //工会冲提记录
+}
+
+export class Web_Club_Issue_Gold {
+    // 参数：user_id（用户ID），gold_num（金豆数量）
+    public static ISSUE = "/api/order/club/grant";
+    public static USER_LIST = "";
+    public static SEARCH_USER = "";
+}
+
 // xyh end
 
 /// <summary>

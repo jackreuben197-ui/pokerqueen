@@ -27,11 +27,12 @@ export class SeatFSM {
         this.seat.Player = null;
         this.seat.SetNickname("");
         this.seat.SetCoin("");
-        this.seat.uirc.Head.scale = 1;
+        this.seat.stopAllActions();
         this.seat.uirc.imageBanker.active = false;
         // imageStraddle.gameObject.SetActive(false);
         this.seat.uirc.imageHeadFrame.node.active = false;
-        this.seat.uirc.transSmallCardBacks.active = false;
+        //this.seat.uirc.transSmallCardBacks.active = false;
+        this.seat.HideCardBack();
         // imageHolding.gameObject.SetActive(false);
         this.seat.HideCards(this.seat.uirc.listCardUIInfos);
         this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
@@ -172,7 +173,7 @@ export class SeatFSM {
     //#region 站起动画
     public StandupAnimationEnter(): void {
         this.seat.FsmLogicComponent.SM.ChangeState(SeatStandup.Instance);
-        cc.tween(this.seat.ui).sequence(cc.scaleTo(0.15, 0, 1), cc.scaleTo(0.15, 1, 1)).start();
+        cc.tween(this.seat.uirc.Head).sequence(cc.scaleTo(0.15, 0, 1), cc.scaleTo(0.15, 1, 1)).start();
     }
 
     public StandupAnimationExecute(): void {

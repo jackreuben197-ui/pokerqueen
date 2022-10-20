@@ -1,3 +1,4 @@
+import SimpleNodePool from "../../common/MyNodePool";
 import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { DOTween, Sequence } from "../../dotween/DOTween";
@@ -372,10 +373,14 @@ export default class TexasGame {
     public isPlayingBigWinAnimation: boolean = false;
     //////////////////////////////////////
 
+
+    //分池节点对象池
+    TransPot_Pool: SimpleNodePool = null;
+
+
+
     //发牌动画
     sequencePlayDealAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
-
-
 
     sequenceUpdatePublicCards_obj = {};
 
@@ -467,7 +472,7 @@ export default class TexasGame {
             item.UpdateSpriteFrame();
         })
         this.uirc.listSecondCards.forEach(item => {
-        
+
             item.UpdateSpriteFrame();
         })
         this.listSeat.forEach(seat => {
@@ -504,6 +509,14 @@ export default class TexasGame {
         }
     }
 
+    //清理所有Pots
+    public HideAllPots() {
+        if (this.uirc.listPotInfo) {
+            this.uirc.listPotInfo.forEach(pot => {
+                pot.trans.active = false;
+            })
+        }
+    }
     UpdateRoomCommon(rec: ServerMessageEnterRoom.AsObject) {
         cc.log("UpdateRoomCommon");
         this.ClearAllData();
@@ -519,9 +532,10 @@ export default class TexasGame {
             this.HideWaitForStartTips();
             this.HideOperationPanel();
             this.HideWaitBlindBtn();
-
             this.InitSeatByCount(GameCache.Instance.seat_count);
             this.InitOperationPos();
+
+            this.HideAllPots();
         }
 
         this.mainPlayer = new CPlayer(GameCache.Instance.nUserId);
@@ -567,11 +581,11 @@ export default class TexasGame {
         this.isGPSRestrictions = rec.roomInfo.limitGps;
 
         GameCache.Instance.insurance = this.insurance;
-        let mPots: number[] = [];
+        this.pots = [];
         for (let i = 0; i < rec.handInfo.potsList.length; i++) {
-            mPots.push(rec.handInfo.potsList[i].amount);
+            this.pots.push(rec.handInfo.potsList[i].amount);
+            cc.log("排池子数据:", this.pots);
         }
-        this.pots = mPots;
         if (this.waitBlind == 1) {
             this.ShowWaitBlindBtn();
         }
@@ -931,6 +945,7 @@ export default class TexasGame {
         for (let i = mHideStart; i < mHideEnd; i++) {
 
             mObj = this.uirc.listPotInfo[i].trans;//.gameObject;
+
             mObj.active = false;
         }
 
@@ -938,7 +953,8 @@ export default class TexasGame {
 
             if (i == 0) {
 
-                mObj = cc.instantiate(this.uirc.transAllPot);
+                mObj = this.uirc.transAllPot;
+                //cc.instantiate(this.uirc.transAllPot);
                 mObj.setParent(this.uirc.transPots);
                 mObj.setPosition(GameUtil.TexasPots[0]);
                 //mObj.transform.localRotation = Quaternion.identity;
@@ -950,7 +966,8 @@ export default class TexasGame {
                 mObj.active = this.pots[i] > 0;
             }
             else {
-                mObj = cc.instantiate(this.uirc.transPot);
+                mObj = this.uirc.TransPot_Pool.GetNode();
+                //cc.instantiate(this.uirc.transPot);
                 mObj.setParent(this.uirc.transPots);
 
                 mObj.setScale(cc.Vec3.ONE);
@@ -2535,7 +2552,7 @@ export default class TexasGame {
             mObj.setPosition(GameUtil.TexasPots[0]);
             //mObj.transform.localRotation = Quaternion.identity;
             mObj.setScale(cc.Vec3.ONE);
-            mObj.name = `"Pot${0}`;
+            mObj.name = `Pot${0}`;
 
             mPotInfo = new PotInfo(mObj);
             this.uirc.listPotInfo.push(mPotInfo);
@@ -2854,6 +2871,80 @@ export default class TexasGame {
         }
     }
 
+
+
+    //创建座位UI
+    createSeatUI() {
+        if (this.seatUI_pool.length) return this.seatUI_pool.pop();
+        return cc.instantiate(this.uirc.Seat);
+    }
+    //移除座位UI
+    removeSeatUI(seatUI: cc.Node) {
+        seatUI && (seatUI.parent = null);
+        seatUI && this.seatUI_pool.push(seatUI);
+        cc.log("移除 seatUI ", seatUI);
+    }
+
+
+    /// <summary>
+    /// 杀死所有DoTweener动画
+    /// </summary>
+    /// <param name="complete"></param>
+    protected KillAllTweener(complete = false): void {
+        // if (null != tweenerResetSeatUIInfo && tweenerResetSeatUIInfo.IsPlaying()) {
+        //     tweenerResetSeatUIInfo.Kill(complete);
+        // }
+
+        // tweenerResetSeatUIInfo = null;
+
+        // if (null != sequencePlayDealAnimation && sequencePlayDealAnimation.IsPlaying()) {
+        //     sequencePlayDealAnimation.Kill(complete);
+        // }
+
+        // sequencePlayDealAnimation = null;
+
+        // if (null != sequencePlayRecyclingChipAnimation && sequencePlayRecyclingChipAnimation.IsPlaying()) {
+        //     sequencePlayRecyclingChipAnimation.Kill(complete);
+        // }
+
+        // sequencePlayRecyclingChipAnimation = null;
+
+        // if (null != sequencePlayFirstRecyclingChipAnimation && sequencePlayFirstRecyclingChipAnimation.IsPlaying()) {
+        //     sequencePlayFirstRecyclingChipAnimation.Kill(complete);
+        // }
+
+        // sequencePlayFirstRecyclingChipAnimation = null;
+
+        // if (null != sequencePlayFirstRecyclingChipSubAnimation && sequencePlayFirstRecyclingChipSubAnimation.IsPlaying()) {
+        //     sequencePlayFirstRecyclingChipSubAnimation.Kill(complete);
+        // }
+
+        // sequencePlayFirstRecyclingChipSubAnimation = null;
+
+        // if (null != sequencePlayFirstInsurance && sequencePlayFirstInsurance.IsPlaying()) {
+        //     sequencePlayFirstInsurance.Kill(complete);
+        // }
+
+        // sequencePlayFirstInsurance = null;
+
+        // if (null != sequenceUpdatePublicCards && sequenceUpdatePublicCards.IsPlaying()) {
+        //     sequenceUpdatePublicCards.Kill(complete);
+        // }
+
+        // sequenceUpdatePublicCards = null;
+
+        // if (null != sequenceSecondUpdatePublicCards && sequenceSecondUpdatePublicCards.IsPlaying()) {
+        //     sequenceSecondUpdatePublicCards.Kill(complete);
+        // }
+
+        // sequenceSecondUpdatePublicCards = null;
+
+        // if (null != sequencePlayEndPublicCardsAnimation && sequencePlayEndPublicCardsAnimation.IsPlaying()) {
+        //     sequencePlayEndPublicCardsAnimation.Kill(complete);
+        // }
+
+        // sequencePlayEndPublicCardsAnimation = null;
+    }
     ClearAllData() {
         cc.log("清理所有数据");
         this.gamestatus = -1;
@@ -2953,83 +3044,11 @@ export default class TexasGame {
                 }
                 this.removeSeatUI(mSeat?.ui);
                 mSeat?.Clear();
+                mSeat?.Dispose();
             }
         }
+
     }
-
-    //创建座位UI
-    createSeatUI() {
-        if (this.seatUI_pool.length) return this.seatUI_pool.pop();
-        return cc.instantiate(this.uirc.Seat);
-    }
-    //移除座位UI
-    removeSeatUI(seatUI: cc.Node) {
-        seatUI && (seatUI.parent = null);
-        seatUI && this.seatUI_pool.push(seatUI);
-        cc.log("移除 seatUI ", seatUI);
-    }
-
-
-    /// <summary>
-    /// 杀死所有DoTweener动画
-    /// </summary>
-    /// <param name="complete"></param>
-    protected KillAllTweener(complete = false): void {
-        // if (null != tweenerResetSeatUIInfo && tweenerResetSeatUIInfo.IsPlaying()) {
-        //     tweenerResetSeatUIInfo.Kill(complete);
-        // }
-
-        // tweenerResetSeatUIInfo = null;
-
-        // if (null != sequencePlayDealAnimation && sequencePlayDealAnimation.IsPlaying()) {
-        //     sequencePlayDealAnimation.Kill(complete);
-        // }
-
-        // sequencePlayDealAnimation = null;
-
-        // if (null != sequencePlayRecyclingChipAnimation && sequencePlayRecyclingChipAnimation.IsPlaying()) {
-        //     sequencePlayRecyclingChipAnimation.Kill(complete);
-        // }
-
-        // sequencePlayRecyclingChipAnimation = null;
-
-        // if (null != sequencePlayFirstRecyclingChipAnimation && sequencePlayFirstRecyclingChipAnimation.IsPlaying()) {
-        //     sequencePlayFirstRecyclingChipAnimation.Kill(complete);
-        // }
-
-        // sequencePlayFirstRecyclingChipAnimation = null;
-
-        // if (null != sequencePlayFirstRecyclingChipSubAnimation && sequencePlayFirstRecyclingChipSubAnimation.IsPlaying()) {
-        //     sequencePlayFirstRecyclingChipSubAnimation.Kill(complete);
-        // }
-
-        // sequencePlayFirstRecyclingChipSubAnimation = null;
-
-        // if (null != sequencePlayFirstInsurance && sequencePlayFirstInsurance.IsPlaying()) {
-        //     sequencePlayFirstInsurance.Kill(complete);
-        // }
-
-        // sequencePlayFirstInsurance = null;
-
-        // if (null != sequenceUpdatePublicCards && sequenceUpdatePublicCards.IsPlaying()) {
-        //     sequenceUpdatePublicCards.Kill(complete);
-        // }
-
-        // sequenceUpdatePublicCards = null;
-
-        // if (null != sequenceSecondUpdatePublicCards && sequenceSecondUpdatePublicCards.IsPlaying()) {
-        //     sequenceSecondUpdatePublicCards.Kill(complete);
-        // }
-
-        // sequenceSecondUpdatePublicCards = null;
-
-        // if (null != sequencePlayEndPublicCardsAnimation && sequencePlayEndPublicCardsAnimation.IsPlaying()) {
-        //     sequencePlayEndPublicCardsAnimation.Kill(complete);
-        // }
-
-        // sequencePlayEndPublicCardsAnimation = null;
-    }
-
 
     /**
      * 退出
@@ -3051,22 +3070,25 @@ export default class TexasGame {
         //     this.uirc.listCards = [];
 
         // 清空座位
-        if (null != this.listSeat) {
-            for (let i = 0; i < this.listSeat.length; i++) {
-                this.listSeat[i]?.Dispose();
-            }
-            this.listSeat = null;
-        }
+        // if (null != this.listSeat) {
+        //     for (let i = 0; i < this.listSeat.length; i++) {
+        //         this.listSeat[i]?.Dispose();
+        //     }
+        //     this.listSeat = null;
+        // }
 
         // 清空座位(客户端标记)
         if (null != this.dicSeatOnlyClient) {
             this.dicSeatOnlyClient.clear();
             this.dicSeatOnlyClient = null;
         }
-
         // 清空分池
         if (null != this.uirc?.listPotInfo) {
-            this.uirc.listPotInfo = null;
+            while (this.uirc.listPotInfo.length) {
+                let potInfo = this.uirc.listPotInfo.shift();
+                potInfo.trans.active = false;
+                this.uirc.TransPot_Pool.BackNode(potInfo.trans);
+            }
         }
 
         // 清空玩家自己
