@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 15:18:45
+ * @LastEditTime: 2022-10-20 15:58:35
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -62,6 +62,7 @@ export default class UICreateMatch extends BaseForm {
     fwfbNum = 1;
     straddleNum = 0;
     _btnType = 0;
+    _fromUI = null;
     itemData = {
         fdxm: [0.1, 1, 2, 5, 10, 20, 25, 50, 100, 200, 300],
         zwsl: [2, 3, 4, 5, 6, 7, 8, 9],
@@ -145,6 +146,19 @@ export default class UICreateMatch extends BaseForm {
 
 
     }
+    onShow(data?: any, fromUI?: BaseForm) {
+        super.onShow(data, fromUI);
+        this._fromUI = fromUI?.UIDefine?.Name
+        cc.log(' this._fromUI ===', fromUI?.UIDefine?.Name)
+        if (data) {
+            this.editModel(data);
+        } else {
+            this._editModelData = null;
+        }
+        this.initUI();
+
+    }
+
     private onClickTabBtns(index: number): void {
         this.switchTab(index);
     }
@@ -175,16 +189,6 @@ export default class UICreateMatch extends BaseForm {
 
     }
 
-    onShow(data?: any, fromUI?: BaseForm) {
-        super.onShow(data, fromUI);
-        if (data) {
-            this.editModel(data);
-        } else {
-            this._editModelData = null;
-        }
-        this.initUI();
-
-    }
     editModel(data) {
         this._editModelData = data;
         this.onClickTabBtns(data.game_type);
@@ -460,11 +464,20 @@ export default class UICreateMatch extends BaseForm {
             } else {
                 await UIClubModel.mInstance.APIOrgCreateTemplate(params);
             }
-        } else if (this._btnType == 0) {
-            await UIClubModel.mInstance.APIOrgCreateTemplate(params);
-        }
+            this.post(EventName.matchModelChange)
+        } else if (this._btnType == 1) {
+            if (this._fromUI == 'UICreateMatchHome') {
+                room_config.limit_friend_table = false
+                room_config.limit_bring_in = false
+                await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
 
-        this.post(EventName.matchModelChange)
+            }
+            else {
+                room_config.limit_friend_table = true;
+                room_config.limit_bring_in = true;
+                await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+            }
+        }
         this._editModelData = null;
         this.close();
 

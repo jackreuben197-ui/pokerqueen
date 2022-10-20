@@ -63,7 +63,8 @@ export default class UILobbyMenu extends UIBase {
     }
     world_chat_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        LobbyControl.getInstance().switchContent("UIChat")
+        // LobbyControl.getInstance().switchContent("UIChat")
+        LobbyControl.getInstance().switchContent("UICreateFriendMatchHome")
     }
     async career_click(btn: cc.Button) {
         this.changeBtn(btn.node);

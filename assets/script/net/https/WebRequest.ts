@@ -1321,6 +1321,26 @@ export class APIOrgGetRoomConfig {
         code?: number, message?: string, data?: typeof APIOrgGetRoomConfig.ResponseData
     };
 }
+export class APIOrgRoomConfigCreate {
+    //接口地址
+    public static API: string = "/api/cmsext/room/config/create";
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgRoomConfigCreate.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgRoomConfigCreate.ResponseData
+    };
+}
 /**
  * 注册全局访问
  */
