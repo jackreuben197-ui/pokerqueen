@@ -3,16 +3,13 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 13:57:45
+ * @LastEditTime: 2022-10-20 14:09:45
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
 import { EventName } from "../../config/EventName";
-import { UIDefine } from "../../define/UIDefine";
 import { Web_Org_Club_Get } from "../../net/https/WebRequest";
-import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
 
 const { ccclass, property } = cc._decorator;
@@ -158,6 +155,10 @@ export default class UICreateMatch extends BaseForm {
             this.switchTabView(type);
         }
         cc.find('ToggleContainer/toggle3', this.matchType).active = this._curType >= 2 ? false : true
+        if (this._curType >= 2) {
+            this.matchTypeNum = 0;
+            cc.find('ToggleContainer/toggle1', this.matchType).getComponent(cc.Toggle).isChecked = true
+        }
 
     }
     switchTabBtnState() {
@@ -185,7 +186,7 @@ export default class UICreateMatch extends BaseForm {
     }
     editModel(data) {
         this._editModelData = data;
-        this.switchTabView(data.game_type);
+        this.onClickTabBtns(data.game_type);
 
         this.ipState = data.limit_ip;
         this.gpsState = data.limit_gps_distance > 0 ? true : false;
