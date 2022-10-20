@@ -223,3 +223,44 @@ export type TRateItem = {
     to_currency?: string, // 第二币种
     to_rate?: number, // 第二币种比例值
 }
+
+export type TListStepReq = {
+    reqing: boolean,
+    reqEnd: boolean,
+    offset: number
+}
+
+
+export type TOrderRecords = {
+    limit: number,
+    offset: number,
+    list: Array<TOrderRecordItem>,
+    total: number
+}
+
+export type TOrderRecordItem = {
+    id: number,
+    user_id: number,
+    user_type: number,
+    club_id: number,
+    tribe_id: number,
+    order_no: string
+    order_type: number,
+    gold_num: number,
+    amount: number,
+    status: number,
+    audit_time: string
+    audit_user_id: number,
+    audit_type: number,
+    create_time: string
+    update_time: string
+    change_id: number,
+    desc: "",
+    user_random_id: number,
+    nickname: "Player",
+    avatar: string
+    club_random_id: number,
+    club_name: string
+    tribe_random_id: number,
+    tribe_name: string
+}

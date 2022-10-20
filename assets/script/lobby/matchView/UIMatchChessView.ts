@@ -1,4 +1,5 @@
 import List from "../../common/List";
+import { EventName } from "../../config/EventName";
 import LobbyRoomListModel from "../../frame/data/lobby/LobbyRoomListModel";
 import GC from "../../frame/GameControl";
 import { GameType, PokerType } from "../../game/GameUtil";
@@ -45,6 +46,11 @@ export default class UIMatchChessView extends UIBase {
         this.sbTab = this.sbNode.children[0];
 
         this.list.scrollingCB = this.scrollingCB;
+    }
+
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.updateChessView, this.reqDataAgain);
     }
 
     protected regiterTouchEvents(): void {
@@ -139,10 +145,15 @@ export default class UIMatchChessView extends UIBase {
             this._curGameType = gameType;
             this.switchGameTypeTabState()
 
-            let gt = gameType == GameType.Plus6 ? GameType.Holdem : gameType;
-            let pt = gameType == GameType.Plus6 ? PokerType.SixPlus : PokerType.Normal;
-            this._roomList.switchTypeTab(gt, pt, this._isClub);
+            this.reqDataAgain();
         }
+    }
+
+    //重新拉取数据
+    reqDataAgain() {
+        let gt = this._curGameType == GameType.Plus6 ? GameType.Holdem : this._curGameType;
+        let pt = this._curGameType == GameType.Plus6 ? PokerType.SixPlus : PokerType.Normal;
+        this._roomList.switchTypeTab(gt, pt, this._isClub);
     }
 
     switchGameTypeTabState() {

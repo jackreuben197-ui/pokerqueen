@@ -93,7 +93,7 @@ export default class BaseComponent extends Base {
             scaleAni && node.stopAllActions()
             scaleAni && cc.tween(node).to(0.1, { scale: scale }).start();
             // AudioManager.instance.playSound(AudioPath.btnClick);
-            callBack.call(self, data, event)
+            callBack.call(self, data)
         }, this);
         if (this._clickNodes.indexOf(node) == -1) {
             this._clickNodes.push(node);
