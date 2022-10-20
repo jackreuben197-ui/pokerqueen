@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 18:47:40
+ * @LastEditTime: 2022-10-20 20:04:57
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -25,6 +25,7 @@ export default class UICreateFriendMatchHome extends UIBase {
     }
     async onShow(param?: any) {
         super.onShow(param);
+        this.EditBox.string = ''
         for (let index = 0; index < this.numNode.childrenCount; index++) {
             const element = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
             element.string = '';
