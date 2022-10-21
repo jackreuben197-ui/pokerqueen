@@ -1,13 +1,13 @@
-import { EOrderRecordType } from "../../../../config/EEnumConfig";
+import { EOrderType } from "../../../../config/EEnumConfig";
 import { TListStepReq, TOrderRecords } from "../../../../config/TTypeConfig";
 import GC from "../../../GameControl";
 import OrderRecordItemModel from "./OrderRecordItemModel";
 
 export default class OrderRecordModel {
-    private _reccords: Map<EOrderRecordType, Array<OrderRecordItemModel>> = new Map();
-    private _status: Map<EOrderRecordType, TListStepReq> = new Map();
+    private _reccords: Map<EOrderType, Array<OrderRecordItemModel>> = new Map();
+    private _status: Map<EOrderType, TListStepReq> = new Map();
     private _isCLub: boolean = false;
-    getList(type: EOrderRecordType) {
+    getList(type: EOrderType) {
         let list = this._reccords.get(type);
         if (!list) {
             list = [];
@@ -16,7 +16,7 @@ export default class OrderRecordModel {
         return list;
     }
 
-    getStatus(type: EOrderRecordType) {
+    getStatus(type: EOrderType) {
         let status = this._status.get(type);
         if (!status) {
             status = { reqing: false, reqEnd: false, offset: 0 };
@@ -25,7 +25,7 @@ export default class OrderRecordModel {
         return status;
     }
 
-    canReq(type: EOrderRecordType) {
+    canReq(type: EOrderType) {
         let status = this.getStatus(type);
         return !status.reqEnd && !status.reqing;
     }
@@ -35,14 +35,14 @@ export default class OrderRecordModel {
         this._status.clear();
     }
 
-    dropDownReq(type: EOrderRecordType) {
+    dropDownReq(type: EOrderType) {
         let status = this.getStatus(type);
         if (!status.reqing && !status.reqEnd) {
             this.reqRecords(type);
         }
     }
 
-    reqRecords(type: EOrderRecordType, isClub: boolean = this._isCLub) {
+    reqRecords(type: EOrderType, isClub: boolean = this._isCLub) {
         let status = this.getStatus(type);
         status.reqing = true
         this._isCLub = isClub;
@@ -52,7 +52,7 @@ export default class OrderRecordModel {
         GC.data.wallet.reqOrderRecord(type, status.offset, this._isCLub);
     }
 
-    updateData(msg: TOrderRecords, type: EOrderRecordType) {
+    updateData(msg: TOrderRecords, type: EOrderType) {
         let status = this.getStatus(type);
         status.reqing = false;
 

@@ -4,9 +4,7 @@ import { EventName } from "../config/EventName";
 import { UIDefine } from "../define/UIDefine";
 import RateModel from "../frame/data/rate/RateModel";
 import GC from "../frame/GameControl";
-import ToastManager from "../manager/ToastManager";
-import HttpRequest from "../net/https/HttpRequest";
-import { Web_Rate_Api, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../net/https/WebRequest";
+import { Web_Club_Issue_Gold, Web_Org_Club_Get, Web_Rate_Api, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIDialogComponent from "../ui/dialog/UIDialogComponent";
 import BaseForm from "../ui/form/BaseForm";
@@ -36,10 +34,11 @@ export default class GoldOprationForm extends BaseForm {
 
     private selectRateTypeNode: SelectRateTypeNode = null;
 
-    private _type: EWalletGoldOpration = EWalletGoldOpration.in;
-    private _isClub: boolean = false;
-    private _data: Array<number> = [300, 500, 800, 1000, 2000, 3000];
+    private _cfg: Array<number> = [300, 500, 800, 1000, 2000, 3000];
     private _rate: RateModel = null;
+    private _userId: number = 0;
+
+    private _data: { type: EWalletGoldOpration, isClub: boolean, userId?: number, userName?: string } = null;
     onLoad() {
         super.onLoad();
         this._rate = GC.data.rate.rate;
@@ -86,26 +85,33 @@ export default class GoldOprationForm extends BaseForm {
             case Web_Rate_Api.GET_RATE_LIST: {
                 this.updateRate();
             } break;
+            case Web_Club_Issue_Gold.ISSUE:
+            case Web_Recharge_Gold_Club.API:
+            case Web_Recharge_Gold.API:
+            case Web_Tiqu_Gold_Club.API:
+            case Web_Tiqu_Gold.API: {
+                this.reqSuc(sendInfo);
+            } break;
             default:
                 break;
         }
     }
 
-    onShow(data: { type: EWalletGoldOpration, isClub: boolean }): void {
+    onShow(data: any): void {
         super.onShow(data);
-        this._type = data.type;
-        this._isClub = data.isClub;
+        this._data = data;
+        this._userId = data.userId;
 
         this.initView();
-        GC.data.rate.reqRateList(this._isClub);
+        GC.data.rate.reqRateList(this._data.isClub);
     }
 
     initView() {
-        let title = this._type == EWalletGoldOpration.in ? "Text_Add" : "Text_Getchips";
+        let title = this._data.type == EWalletGoldOpration.in ? "Text_Add" : "Text_Getchips";
         this.comFormTitle.initData(title, this, "UILookRate", this.clickLookRate);
 
         this.edit.string = "";
-        this.list.numItems = this._data.length;
+        this.list.numItems = this._cfg.length;
 
         this.setActive(this.typeNode, false);
         this.setActive(this.priceNode, false)
@@ -116,7 +122,7 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     updatePrice() {
-        let curRate = this._rate.getCurRate(this._isClub);
+        let curRate = this._rate.getCurRate(this._data.isClub);
         if (curRate) {
             let num = Number(this.edit.string);
             this.setText(this.priceLab, curRate.changeToNum(num));
@@ -125,7 +131,7 @@ export default class GoldOprationForm extends BaseForm {
 
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(GoldOprationItem);
-        item.initData(this._data[index], this.clickItem);
+        item.initData(this._cfg[index], this.clickItem);
     }
 
     curSelectRateChange() {
@@ -134,12 +140,12 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     updateRate() {
-        let list = this._rate.getList(this._isClub);
+        let list = this._rate.getList(this._data.isClub);
         if (list.length) {
             this.setActive(this.typeNode, true);
             this.setActive(this.priceNode, true);
 
-            let curRate = this._rate.getCurRate(this._isClub);
+            let curRate = this._rate.getCurRate(this._data.isClub);
             this.typeIcon.spriteFrame = AssetContext.getAsset(curRate.path, AssetFold.texture_flag);
             this.setText(this.typeLab, curRate.country);
             this.updatePrice();
@@ -148,20 +154,20 @@ export default class GoldOprationForm extends BaseForm {
 
     clickSelectRate() {
         this.setActive(this.selectRateTypeNode, true);
-        let data = this._rate.getList(this._isClub).map(item => {
+        let data = this._rate.getList(this._data.isClub).map(item => {
             return { country: item.country, path: item.path }
         })
         this.selectRateTypeNode.open(data, this.selectItem)
     }
 
     selectItem = (data: string) => {
-        this._rate.setCurRate(data, this._isClub)
+        this._rate.setCurRate(data, this._data.isClub)
     }
 
 
     clickRuleBtn = () => {
         this.tipNode.active = true;
-        let curRate = this._rate.getCurRate(this._isClub);
+        let curRate = this._rate.getCurRate(this._data.isClub);
         this.setText(this.tipLab, "UIRate_x_x", curRate.rate);
     }
 
@@ -177,47 +183,56 @@ export default class GoldOprationForm extends BaseForm {
     clickSure() {
         let goldNum = Number(this.edit.string);
         if (goldNum) {
-            let price = Number(this.priceLab.string);
-            let procolType = this._type == EWalletGoldOpration.in ? Web_Recharge_Gold : Web_Tiqu_Gold;
-            if (this._isClub) {
-                procolType = this._type == EWalletGoldOpration.in ? Web_Recharge_Gold_Club : Web_Tiqu_Gold_Club;
+            let key = `UITips_GoldOpration_${this._data.type}`;
+            let content = "";
+            let price = String(goldNum);
+            let curRate = this._rate.getCurRate(this._data.isClub);
+            if (curRate) {
+                price = String(curRate.changeToNum(goldNum)) + curRate.flag;
+            }
+            if (this._data.type == EWalletGoldOpration.issue) {
+                content = GC.language.getLocal(key, this._data.userName, goldNum, price);
+            } else {
+                content = GC.language.getLocal(key, Web_Org_Club_Get.Response.data.club_name, goldNum, price)
             }
             UIComponent.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
                     title: "adaptation10007",
-                    content: this.getApplyContent(goldNum, price),
+                    content: content,
                     contentCommit: "adaptation10012",
                     contentCancel: "adaptation10013",
                     actionCommit: () => {
                         //后端需要真实数据的100倍
-                        let sendNum = Number(this.edit.string) * 100;
-                        let paramas: { amount: number } = { amount: sendNum };
-                        HttpRequest.Send({
-                            request: procolType,
-                            body: procolType.Request(paramas),
-                            onSuccess: function (data) {
-                                this.applySucTip(goldNum, price);
-                            }.bind(this),
-                        });
+                        this.startReq(goldNum);
                     },
                     noAnimation: true,
                 });
         }
     }
 
-    applySucTip(goldNum: number, price: number) {
-        UIComponent.open(UIDefine.UIDialogComponent,
-            {
-                type: UIDialogComponent.DialogType.Commit,
-                title: "adaptation10007",
-                content: this.getApplySucContent(goldNum, price),
-                contentCommit: "adaptation10012",
-                contentCancel: "adaptation10013",
-                actionCommit: this.backToWallet,
-                actionClose: this.backToWallet,
-                noAnimation: true,
-            });
+    startReq(goldNum: number) {
+        GC.data.wallet.reqOprationGold(this._data.type, goldNum, this._data.isClub, this._data.userId);
+    }
+
+    reqSuc(sendInfo?: any) {
+        if (this._data.type == EWalletGoldOpration.issue) {
+            this.backToWallet();
+        } else {
+            let phone = this._data.isClub ? "还没有" : Web_Org_Club_Get.Response.data.more_contact;
+            let content = GC.language.getLocal(`UITips_GoldOpration_suc_${this._data.type}`, phone);
+            UIComponent.open(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.Commit,
+                    title: "adaptation10007",
+                    content: content,
+                    contentCommit: "adaptation10012",
+                    contentCancel: "adaptation10013",
+                    actionCommit: this.backToWallet,
+                    actionClose: this.backToWallet,
+                    noAnimation: true,
+                });
+        }
     }
 
     backToWallet = () => {
@@ -225,25 +240,10 @@ export default class GoldOprationForm extends BaseForm {
         UIComponent.close(UIDefine.WalletJumpForm);
     }
 
-    getApplyContent(goldNum: number, price: number) {
-        if (this._type == EWalletGoldOpration.in) {
-            return GC.language.getLocal("Tips_UIClub_FundRecharge_RechargeConfirm", goldNum);
-        }
-        return GC.language.getLocal("Tips_UIClub_FundRecharge_WithdrawConfirm", goldNum);
-    }
-
-    getApplySucContent(goldNum: number, price: number) {
-        return "roomError171_5";
-        if (this._type == EWalletGoldOpration.in) {
-            return GC.language.getLocal("MsgInfo_3000", goldNum);
-        }
-        return GC.language.getLocal("MsgInfo_3001", goldNum);
-    }
-
     //点击记录
     clickLookRate() {
         // ToastManager.Instance.createToast("adaptation10105");
-        UIComponent.open(UIDefine.LookRateListDlg, this._rate.getList(this._isClub));
+        UIComponent.open(UIDefine.LookRateListDlg, this._rate.getList(this._data.isClub));
     }
 
     lateClose(param?: any): void {
