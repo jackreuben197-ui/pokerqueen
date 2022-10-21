@@ -241,17 +241,17 @@ export type TOrderRecords = {
 export type TOrderRecordItem = {
     id: number,
     user_id: number,
-    user_type: number,
+    user_type: number,  // 1 普通用户; 2 支桌号; 3 牌局机器人; 4 牛仔机器人
     club_id: number,
     tribe_id: number,
     order_no: string
-    order_type: number,
+    order_type: number,// 订单类型 1 申请充豆；2申请提豆 3工会发豆
     gold_num: number,
     amount: number,
-    status: number,
+    status: number,     // 状态（1-申请中,2-同意,3-拒绝,4-取消申请）
     audit_time: string
     audit_user_id: number,
-    audit_type: number,
+    audit_type: number,// 审核来源：1 CMS; 2 app
     create_time: string
     update_time: string
     change_id: number,
@@ -261,6 +261,104 @@ export type TOrderRecordItem = {
     avatar: string
     club_random_id: number,
     club_name: string
+    tribe_random_id: number,
+    tribe_name: string
+}
+
+
+export type TIssueUserList = {
+    limit: number,
+    offset: number,
+    list: Array<TIssueUserItem>,
+    total: number
+}
+
+export type TIssueUserItem = {
+    user_id: number,
+    random_id: number,
+    nick_name: string,
+    mobile: string,
+    avatar: string,
+    member_type: number,
+    forbidden: false,
+    user_wallet: any,
+    user_org: any,
+    is_vip: false,
+    vip_members: number,
+    bring_in: number,
+    register_time: number,
+    login_time: number,
+    dz_service_profit: number,
+    dz_insurance_profit: number,
+    omaha_service_profit: number,
+    omaha_insurance_profit: number,
+    cowboy_profit: number,
+    mtt_profit: number,
+    up_table_times: number,
+    invitation_code: string,
+    logo: string,
+    user_type: number,
+    create_time: number,
+    source_type: number,
+    user_service_ratio: number,
+    user_service_ratio_status: number,
+    user_mtt_ratio: number,
+    user_mtt_ratio_status: number,
+    gender: number,
+    operator_id: number,
+    operator_random_id: number,
+    operator_nick_name: string,
+    description: string,
+    recharge_gold_total: number,
+    withdraw_gold_total: number,
+    recharge_withdraw_diff_gold_total: number,
+    forbid_bring_in: false,
+    forbid_withdraw_gold: false,
+    updated_time: number,
+    account_name: string,
+    account_password: string,
+    total_profit: number,
+    current_day_profit: number,
+    current_day_add_friend: number,
+    current_day_active_count: number,
+    vip_id: number,
+    vip_random_id: number,
+    vip_name: string,
+    match_active: number,
+    no_match_active: number,
+    buy_head_time: number,
+    hands_time: number,
+    register_to_recharge: number,
+    first_recharge_count: number,
+    two_recharge_count: number,
+    limit: number,
+    invitation_reward: null,
+    invitation_reward_string: string
+}
+
+export type TOrderApplyItem = {
+    id: number,
+    user_id: number,
+    user_type: number,
+    club_id: number,
+    tribe_id: number,
+    order_no: string,
+    order_type: number,
+    gold_num: number,
+    amount: number,
+    status: number,   // 状态（1-申请中,2-同意,3-拒绝,4-取消申请）
+    audit_time: number,
+    audit_user_id: number,
+    audit_type: number,
+    create_time: string,
+    update_time: string,
+    change_id: number,
+    desc: string,
+    user_random_id: number,
+    nickname: string,
+    avatar: string,
+    club_random_id: number,
+    club_name: string,
     tribe_random_id: number,
     tribe_name: string
 }

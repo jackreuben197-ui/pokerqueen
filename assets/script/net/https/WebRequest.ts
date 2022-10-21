@@ -659,11 +659,18 @@ export class Web_Order_Rcords {
     public static USER_RECORD = "/api/order/user/order_records";  //工会冲提记录
 }
 
+export class Web_Order_apply {
+    // 订单类型(order_type):1-充豆;2-提豆
+    public static APPLY_LIST = "/api/order/club/member_order/list";
+    // 订单号(order_no)   审计类型(audit_type):1-同意;2-拒绝
+    public static OPRATION_APPLY = "/api/order/club/audit/member_order";
+}
+
 export class Web_Club_Issue_Gold {
     // 参数：user_id（用户ID），gold_num（金豆数量）
     public static ISSUE = "/api/order/club/grant";
-    public static USER_LIST = "";
-    public static SEARCH_USER = "";
+    // 参数：search：成员昵称或ID
+    public static USER_LIST = "/api/order/club/user_list";
 }
 
 // xyh end
@@ -773,6 +780,8 @@ export class Web_Org_Club_Get {
 
     public static ResponseData: {
         random_id: number,
+        club_name: string,
+        more_contact: string
     } = null;
     public static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;
@@ -1125,7 +1134,8 @@ export class APIOrgClubGold {
         org_id: number, // 公会ID
         gold: number, // 公会金豆数
         gold_lock: number, // 公会被锁定的金豆数
-        forbidden: boolean // 是否冻结 true已冻结，false未冻结
+        forbidden: boolean, // 是否冻结 true已冻结，false未冻结
+        club_name: string,   //工会名字
     } = null;
     public static Request(param: typeof APIOrgClubGold.RequestParams) {
         this.RequestParams = param;
@@ -1177,7 +1187,6 @@ export class APIOrgJoinTrip {
 export class APIOrgChangeClubData {
     //接口地址
     public static API: string = "/api/org/club/modify/club_info";
-
 
     //字段声明
     public static RequestParams: {
@@ -1340,7 +1349,113 @@ export class APIOrgRoomConfigCreate {
     public static Response: {
         code?: number, message?: string, data?: typeof APIOrgRoomConfigCreate.ResponseData
     };
+
 }
+//#region MTT
+/// <summary>
+/// MTT 比赛列表
+///  </summary>
+export class Web_Room_Center_Mtt_list {
+    public static API: string = "/api/roomcenter/mtt/list";
+    //字段声明
+    public static RequestParams: {
+        limit: number,  // 页码
+        offset: number,  // 页大小
+        name: string,  //名字(name)
+        mine: boolean,  //是否只有我报名(mine)
+        types: number[], // 类型(types)
+        hunter: boolean, //猎人模式(hunter)
+        tribe_id: number, //联盟ID(tribe_id)
+        start_time_s: number, // 开始时间开始(start_time_s)
+        start_time_e: number, // 开始时间结束(start_time_e)
+        enter_time_s: number,  //进入时间开始(enter_time_s)
+        enter_time_e: number,  //进入时间开始(enter_time_e)
+        game_type: number[], //游戏类型(game_type)
+        poker_type: number[], // 牌类型(poker_type)
+        limit_bet_type: number[],  //下注类型(limit_bet_type)
+        order: string[], // 排序(order[id_asc,id_desc,start_xxx,enter_xxx])  //asc 正序   //desc 倒序
+        buyin_min: number, // 最低买入价格(buyin_min),不包括服务费,人头费
+        buyin_max: number // 最高买入价格(buyin_max),不包括服务费,人头费
+        status: number[]//0已创建 1正在进行 2已关闭
+    } = null;
+
+    public static ResponseData: {
+        limit: number,
+        offset: number,
+        total: number,
+        records: typeof Web_Room_Center_Mtt_list.RoomListElement[]  // mtt列表
+    } = null;
+
+    public static RoomListElement:
+        {
+            match_id: number,//比赛id
+            name: string,//比赛名称
+            type: number,//room path 房间类型
+            game_type: number,//游戏类型
+            poker_type: number,//牌类型
+            limit_bet_type: number,//底池限注类型
+            rank_type: number,//排名类型
+            enter_time: string,//进入时间
+            start_time: string,//开始时间
+            end_time: string,//结束时间
+            hunter_on: number,//是否猎人赛
+            hunter_bonus: number,//人头奖金
+            partial_on: number,//部分带入是否开启 1：开启，0：关闭
+            parital_return_bl: number,//部分带入返还升盲等级
+            straddle_on: number,//强制盲注是否打开，1：开启，0：关闭
+            straddle_max: number,//强制盲注最大次数
+            rooms: number,//总桌子
+            max_room_id: number,//最大房间id
+            delay_view_card_on: number,//延迟看牌。1：开启，0：关闭
+            limit_min: number,//参赛人数下限
+            limit_delay_times: number,//玩家操作加时次数限制
+            limit_auto_check_times: number,//最大check次数
+            limit_auto_fold_times: number,//最大fold次数
+            participants: number,//参赛人次
+            award_num: number,//奖金
+            money_sync: number,//奖励圈同步(截止无法买入以后才会开启)
+            status: number,//游戏状态
+            seat_count: number,//座位总数。9
+            final_seat_count: number,//最终座位数量
+            no_user_wait_duration: number,
+            initial_score: number,//初始记分牌
+            blindtable_type: number,//盲注表类型
+            upblind_interval: number,//升盲时间
+            apply_start_time: string,//报名时间
+            op_duration: number,//操作时间
+            max_delay_apply_bl: number,//关闭延迟报名，升盲等级
+            rebuy_times: number,//重构次数
+            max_rebuy_bl: number,//关闭重购，升盲等级
+            limit_total_buy_times: number,//最大重购次数
+            total_buy_times: number,//总报名次数
+            total_rebuy_times: number,//总重购次数
+            addon_begin_bl: number,//增购开始盲注等级
+            addon_end_bl: number,//增购结束盲注等级
+            addon_score: number,//增购记分牌
+            total_addon_times: number,//总增购次数
+            apply_fee_pool: number,//报名费
+            apply_fee_service: number,//服务费
+            apply_fee_hunter: number,//猎人赛人头费
+            prize_type: number,//奖励类型
+            prize_base_pool: number,//奖励数量
+            tribe_id: number,//联盟id
+            create_time: string,//创建时间
+            update_time: string,//
+            bought: number,// 0: 无法报名 , 1: 报名中 , 2: 参与中
+            alive: number,//存活人数
+            is_buy_in: boolean,//是否已经买入
+            prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
+        } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_list.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof Web_Room_Center_Mtt_list.ResponseData
+    };
+}
+
 /**
  * 注册全局访问
  */
@@ -1366,4 +1481,4 @@ export class APIOrgRoomConfigCreate {
 
 (window as any).APIOrgClubIsManger = APIOrgClubIsManger;
 (window as any).Web_User_Room_Settle_Detail = Web_User_Room_Settle_Detail;
-
+(window as any).Web_Room_Center_Mtt_list = Web_Room_Center_Mtt_list;

@@ -2,7 +2,8 @@ import { IUIDefine } from "../define/EIDefine"
 
 export enum EWalletGoldOpration {
     in = 0, //充值
-    out = 1 //提取
+    out = 1, //提取
+    issue = 2, //发放
 }
 
 

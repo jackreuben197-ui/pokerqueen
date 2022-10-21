@@ -1715,9 +1715,6 @@ export default class TexasGame {
             this.uirc.buttonCancelTrust.active = false;
         }
     }
-
-
-
     /// <summary>
     /// 回收筹码位置的世界坐标
     /// </summary>
@@ -2511,9 +2508,6 @@ export default class TexasGame {
             }
         }
     }
-
-
-
 
     /// <summary>
     /// 获取本手结算手牌

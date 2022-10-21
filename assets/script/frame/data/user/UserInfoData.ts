@@ -1,5 +1,6 @@
 import { TUserInfo } from "../../../config/TTypeConfig";
-import { Web_User_Info } from "../../../net/https/WebRequest";
+import { UIClubModel } from "../../../lobby/labor/UIClubModel";
+import { Web_Org_Club_Get, Web_User_Info } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
 import UserInfoModel from "./UserInfoModel";
 
@@ -16,5 +17,6 @@ export default class UserInfoData extends BaseData {
 
     rspUserInfo(msg: TUserInfo) {
         this.info.updateData(msg);
+        !Web_Org_Club_Get?.Response && UIClubModel.mInstance.APIOrgClubGet()
     }
 }

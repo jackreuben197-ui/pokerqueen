@@ -136,6 +136,7 @@ export default class UILabarPlayViewForm extends UIBase {
     }
     addCoin() {
         // UIComponent.open(UIDefine.GoldOprationForm, { type: EWalletGoldOpration.in, isClub: true });
+        UIComponent.open(UIDefine.OrderApplyForm);
     }
     tostBtnClick() {
         this.tabNode.active = !this.tabNode.active;
