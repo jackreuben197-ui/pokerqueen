@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 18:01:28
+ * @LastEditTime: 2022-10-21 16:13:15
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -214,10 +214,10 @@ export default class UICreateMatch extends BaseForm {
         this.bmState = data.post;
         this.yckpState = data.delay_view_card;
 
-        this.matchTypeNum = data.poker_type;;
-        this.jfpNum = data.retain_type;
-        this.xzlxNum = data.limit_bet_type;
-        this.fwfbNum = data.settlement_type;
+        this.matchTypeNum = Number(data.poker_type);
+        this.jfpNum = Number(data.retain_type)
+        this.xzlxNum = Number(data.limit_bet_type);
+        this.fwfbNum = Number(data.settlement_type);
 
 
         this.calculateIndex('fdxm', data.sb / 100)
@@ -269,7 +269,6 @@ export default class UICreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this.matchTypeNum + 1}`, this.matchType).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.jfpNum + 1}`, this.jfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.xzlxNum + 1}`, this.xzlx).getComponent(cc.Toggle).isChecked = true;
-        cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.jslxNum + 1}`, this.jslx).getComponent(cc.Toggle).isChecked = true;
 
         if (this._fromUI == 'UICreateMatchHome') {
@@ -278,9 +277,10 @@ export default class UICreateMatch extends BaseForm {
             this.jslx.active = false;
             this.fddmHd.active = false
             this.kzwjdr.active = false
-            let fwfConfig: any = APIOrgGetRoomConfig.Response.data;
-            this.fwfbl.getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.fee_permillage + '%'
-            this.fwfbl.getChildByName('fddm').getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.max_per_hand
+            cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
+            this.fwfbl.height = this.fwfbNum == 0 ? 300 : 200;
+            this.fddm.active = this.fwfbNum == 0 ? true : false;
+            this.fwfblLogic();
         } else {
             this.jslx.active = true;
             this.fddmHd.active = true
@@ -371,6 +371,36 @@ export default class UICreateMatch extends BaseForm {
         }
 
     }
+    fwfblLogic() {
+        let fwfConfig: any = APIOrgGetRoomConfig.Response.data;
+        this.fwfbl.getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.fee_permillage + '%'
+        this.fwfbl.getChildByName('fddm').getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.max_per_hand
+        let toggle1: cc.Toggle = cc.find(`ToggleContainer/toggle1`, this.fwfbl).getComponent(cc.Toggle)
+        let toggle2: cc.Toggle = cc.find(`ToggleContainer/toggle2`, this.fwfbl).getComponent(cc.Toggle)
+        toggle2.node['pos'] = toggle2.node.position;
+
+        if (fwfConfig.settlement_type == 0) {
+            toggle2.isChecked = true;
+            toggle2.node.active = true;
+            toggle2.node.position = toggle1.node.position;
+            toggle1.node.active = false;
+            toggle1.isChecked = false
+            this.fddm.active = false
+            this.fwfbl.height = 200;
+        }
+        else if (fwfConfig.settlement_type == 1) {
+            toggle1.node.active = true;
+            toggle1.isChecked = true
+            this.fddm.active = true
+            toggle2.isChecked = false;
+            toggle2.node.active = false;
+            toggle2.node.position = toggle2.node['pos']
+            this.fwfbNum == 300
+        }
+        else {
+
+        }
+    }
     ipCilck() {
         this.ipState = !this.ipState
         cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
@@ -397,27 +427,27 @@ export default class UICreateMatch extends BaseForm {
         cc.find('btn_switch/close', this.bm).active = !this.bmState;
     }
     matchTypeClick(event, customData) {
-        this.matchTypeNum = customData;
+        this.matchTypeNum = Number(customData);
         cc.log('matchTypeClick===', customData)
     }
     jfpClick(event, customData) {
-        this.jfpNum = customData;
+        this.jfpNum = Number(customData);
         cc.log('jfpClick===', customData)
     }
     xzlxClick(event, customData) {
-        this.xzlxNum = customData;
+        this.xzlxNum = Number(customData);
         cc.log('xzlxClick===', customData)
     }
     fwfblClick(event, customData) {
-        this.fwfbNum = customData;
+        this.fwfbNum = Number(customData);
         cc.log('fwfblClick===', customData)
         this.fwfbl.getChildByName('fddm').active = this.fwfbNum == 0 ? true : false
-        this.fwfbl.height = this.fwfbNum == 0 ? 400 : 300;
+        this.fwfbl.height = this.fwfbNum == 0 ? 300 : 200;
         // cc.find('fddm/lblNum', this.fwfbl).active = 
     }
 
     jslxClick(event, customData) {
-        this.jslxNum = customData;
+        this.jslxNum = Number(customData);
     }
 
 
@@ -502,8 +532,8 @@ export default class UICreateMatch extends BaseForm {
 
 
         let data: any = Web_Org_Club_Get.Response.data;
-        room_config.club_id = data.random_id
-        room_config.tribe_id = data.random_id;
+        // room_config.club_id = data.random_id
+        // room_config.tribe_id = data.random_id;
         let params: any = { name: modelName, room_config: room_config }
         console.log('params===', params)
 

@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:45:09
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 14:52:53
+ * @LastEditTime: 2022-10-21 16:33:10
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchItem.ts
  */
 
@@ -13,6 +13,7 @@ import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import GameUtil, { RoomType } from "../../game/GameUtil";
 import ProcedureManager from "../../manager/ProcedureManager";
+import { APIOrgRoomCreate } from "../../net/https/WebRequest";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
 import LobbySession from "../../session/LobbySession";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
@@ -124,6 +125,10 @@ export default class UICreateMatchItem extends UIBase {
     }
     async began() {
         await UIClubModel.mInstance.APIOrgRoomCreate(this._data.id);
+        let code = APIOrgRoomCreate.Response.code
+        if (code == 0) {
+            UIComponent.Instance.Toast('开局成功')
+        }
         this.post(EventName.updateChessView);
 
     }

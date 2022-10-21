@@ -1291,7 +1291,7 @@ export class APIOrgRoomCreate {
     } = null;
 
     public static ResponseData: {
-
+        room_id: null;
     } = null;
     public static Request(param: typeof APIOrgRoomCreate.RequestParams) {
         this.RequestParams = param;
