@@ -27,7 +27,6 @@ export default class UIRecordDetail extends BaseForm {
         super.onShow(param, fromUI);
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         Text_title.string = "牌桌名称+ID";
-        this.refreshListView();
         if (param && param.info) {
             this.reqInfo(param.info.RoomID);
         }
@@ -40,13 +39,35 @@ export default class UIRecordDetail extends BaseForm {
         }
         LobbyControl.getInstance().getRecordDetailInfo(roomId, info).then(
             (res) => {
+                this.refreshUpUI(res);
+                this.refreshListView(res);
             },
             (res) => {
             }
         )
     }
 
-    refreshListView() {
+    refreshUpUI(data) {
+        let roomData = data.data.room_data;
+        let user_list = roomData.user_list;
+        let ts = Date.parse(roomData.end_time);
+        let date = new Date(ts);
+        let dateStr = TimeHelper._zeroNum(date.getHours()) + ":" + TimeHelper._zeroNum(date.getMinutes());
+        let timeStr = `${date.getMonth() + 1}` + "/" + `${date.getDate()}` + " " + dateStr;
+        this.getChildNodeOrComponent("lbl_time", cc.Label).string = timeStr;
+        let sbStr = `${roomData.blind}/${roomData.blind * 2}`
+        this.getChildNodeOrComponent("lbl_sb", cc.Label).string = sbStr;
+        let longStr = LobbyControl.getInstance().getLongTimeStr(roomData.player_duration);
+        this.getChildNodeOrComponent("lbl_long", cc.Label).string = longStr;
+        let lbl_nickname: cc.Node = this.getChildNodeOrComponent("lbl_nickname")
+        lbl_nickname.active = false;
+        let lbl_club: cc.Node = this.getChildNodeOrComponent("lbl_club")
+        lbl_club.active = false;
+        let lbl_desk: cc.Node = this.getChildNodeOrComponent("lbl_desk")
+        lbl_desk.active = false;
+    }
+
+    refreshListView(data) {
         // 有数据 刷新列表
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);

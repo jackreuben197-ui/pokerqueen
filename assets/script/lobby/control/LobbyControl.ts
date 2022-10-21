@@ -282,6 +282,24 @@ export class LobbyControl {
         });
     }
 
+    getLongTimeStr(pNum) {//1小时3600秒      1天86400秒
+        if (pNum >= 3600)//>1小时
+        {
+            let tHour = Math.floor(pNum / 3600);
+            return tHour.toString().padStart(2, '0') + "小时局";
+        }
+        else if (pNum >= 60)//>1分钟
+        {
+            let tMinutes = Math.floor(pNum / 60);
+            return tMinutes.toString().padStart(2, '0') + "分钟局";
+
+        }
+        else if (pNum < 60) {
+            return pNum.toString() + '秒局';
+        }
+        return "";
+    }
+
 
     /********************************* 流程控制 ***********************************/
     /********************************* 清除 ***********************************/

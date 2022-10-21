@@ -6087,7 +6087,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_sb",
+    "_name": "lbl_bx",
     "_objFlags": 0,
     "_parent": {
       "__id__": 123

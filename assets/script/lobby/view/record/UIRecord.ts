@@ -1,5 +1,4 @@
 import { UIDefine } from "../../../define/UIDefine";
-import DeskNameTempModel from "../../../frame/data/lobby/DeskNameTempModel";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
 import TimeHelper from "../../../helper/TimeHelper";
@@ -55,7 +54,7 @@ export default class UIRecord extends BaseForm {
         let info = {
             game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
             time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
-            time_long: TimeHelper.Now(),      //客户端时间戳
+            time_long: new Date().getTime(),      //客户端时间戳
         }
         LobbyControl.getInstance().getUserStatsInfo(info).then(
             (res) => {
@@ -206,15 +205,15 @@ export default class UIRecord extends BaseForm {
         let records = data.data.records;
         let lbl_noshow: cc.Node = this.getChildNodeOrComponent("lbl_notShow");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
+        scrollView.content.removeAllChildren();
+        scrollView.scrollToTop();
         if (records.length == 0) {
-            scrollView.content.removeAllChildren();
             lbl_noshow.active = true;
         } else {
             lbl_noshow.active = false;
             // 有数据 刷新列表
             let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
             let len = records.length;
-            scrollView.content.removeAllChildren();
             this.oldDates = [];
             for (let i=0; i<len; i++) {
                 let info = records[i];
@@ -223,34 +222,77 @@ export default class UIRecord extends BaseForm {
                 _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
                 _cloneNode.parent = scrollView.content;
 
-                let nameStr = GC.data.lobby.nameTemp.getName(info.Name);
-                _cloneNode.getChildByName("lbl_score").getComponent(cc.Label).string = info.Change.toString();
+                let nameStr = GC.data.languageTemp.temp.getName(info.Name);
+                let scoreStr = info.Change.toString();
+                if (info.Change > 0) {
+                    scoreStr = "+" + scoreStr;
+                }
+                _cloneNode.getChildByName("lbl_score").getComponent(cc.Label).string = scoreStr;
                 _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
-                _cloneNode.getChildByName("lbl_sb").getComponent(cc.Label).string = info.RoomID.toString();
-                _cloneNode.getChildByName("lbl_total").getComponent(cc.Label).string = info.Count.toString();
+                let sbStr = `${info.small_blind}/${info.small_blind * 2}`
+                _cloneNode.getChildByName("lbl_sb").getComponent(cc.Label).string = sbStr;
+                _cloneNode.getChildByName("lbl_bx").active = info.insurance_on == 1;
+                let longStr = this.getLongTimeStr(info.play_duration);
+                _cloneNode.getChildByName("lbl_total").getComponent(cc.Label).string = longStr;
                 _cloneNode.getChildByName("img_dian_now").active = true;
-                _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = "今天";
-                let ts = TimeHelper.RFC3339TimeConvertToUTCTime(info.Time)
+                let ts = Date.parse(info.Time)
                 let date = new Date(ts)
                 let timeStr = TimeHelper._zeroNum(date.getHours()) + ":" + TimeHelper._zeroNum(date.getMinutes());
                 _cloneNode.getChildByName("lbl_time").getComponent(cc.Label).string = timeStr;
                 _cloneNode["info"] = info;
                 _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
                 let dateStr = this.cacluDate(ts);
-                if (dateStr == -1) {
+                if (dateStr == -2) {
+                    _cloneNode.getChildByName("img_kuang_now").active = false;
                     _cloneNode.getChildByName("img_dian_now").active = false;
                     _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = "";
                 } else {
-                    if (dateStr == "今天") {
+                    if (dateStr == "今天" || dateStr == -1) {
+                        _cloneNode.getChildByName("img_kuang_now").active = true;
                         _cloneNode.getChildByName("img_dian_now").active = true;
                     } else {
                         _cloneNode.getChildByName("img_dian_now").active = false;
+                        _cloneNode.getChildByName("img_kuang_now").active = false;
                     }
-                    _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = dateStr.toString();
+                    if (dateStr == -1) {
+                        _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = "";
+                    } else {
+                        _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = dateStr.toString();
+                    }
                 }
+
+                let typeStr = "";
+                if (info.origin_type == 1) {
+                    typeStr = "平台桌";
+                } else if (info.origin_type == 2) {
+                    typeStr = "联盟桌";
+                } else if (info.origin_type == 3) {
+                    typeStr = "工会桌";
+                } else if (info.origin_type == 4) {
+                    typeStr = "朋友桌";
+                }
+                _cloneNode.getChildByName("lbl_type").getComponent(cc.Label).string = typeStr;
             }
-            scrollView.content.height = panel_item.height * len;
+            scrollView.content.height = panel_item.height * (len + 1);
         }
+    }
+
+    getLongTimeStr(pNum) {//1小时3600秒      1天86400秒
+        if (pNum >= 3600)//>1小时
+        {
+            let tHour = Math.floor(pNum / 3600);
+            return tHour.toString().padStart(2, '0') + "小时局";
+        }
+        else if (pNum >= 60)//>1分钟
+        {
+            let tMinutes = Math.floor(pNum / 60);
+            return tMinutes.toString().padStart(2, '0') + "分钟局";
+
+        }
+        else if (pNum < 60) {
+            return pNum.toString() + '秒局';
+        }
+        return "";
     }
 
     isExistDate(date) {
@@ -263,51 +305,29 @@ export default class UIRecord extends BaseForm {
         return isExist;
     }
 
-    // 返回今天 昨天 或者 月.日 如果存在 返回 -1
+    // 返回今天 昨天 或者 月.日 如果存在 返回 -1 今天存在  -2 非今天存在
     cacluDate(ts) {
-        let date = new Date(ts)
-        let nowTs = TimeHelper.Now();
-        if (this.yesterday() > ts) {
-            // 昨天以前  前天等
-            let month = date.getMonth();
-            let day = date.getDate();
-            let str = month + "." + day;
-            if (this.isExistDate(str)) {
-                return -1;
-            }
-            this.oldDates.push(str);
-            return str;
+        let date = new Date(ts);
+        let str = "";
+        ts = (ts / 1000) ^ 0;
+        let code = -2;
+        if (TimeHelper.isToday(ts)) {
+            str = "今天";
+            code = -1;
         } else {
-            if (ts > nowTs) {
-                // 今天
-                if (this.isExistDate("今天")) {
-                    return -1;
-                }
-                this.oldDates.push("今天");
-                return "今天"
+            if (TimeHelper.isYesterday(ts)) {
+                str = "昨天";
             } else {
-                // 昨天
-                if (this.isExistDate("昨天")) {
-                    return -1;
-                }
-                this.oldDates.push("昨天");
-                return "昨天"
+                let month = date.getMonth() + 1;
+                let day = date.getDate();
+                str = month + "." + day;
             }
         }
-    }
-
-    //N天时间戳，时间戳指从1970-01-01 0点开始到某天的毫秒数
-    timestamp(days) {
-        return days * 24 * 60 * 60 * 1000
-    }
-    ​
-    //几天前，一般以现在的时间为基准，参数默认值老的浏览器可能不支持。
-    days_ago(day, base_time = Date.now()) {
-        return new Date(base_time - this.timestamp(day))
-    }
-    //最常用的今天、昨天、明天，返回时间戳
-    yesterday(){
-        return this.days_ago(1)
+        if (this.isExistDate(str)) {
+            return code;
+        }
+        this.oldDates.push(str);
+        return str;
     }
 
     onClickItem(event) {
