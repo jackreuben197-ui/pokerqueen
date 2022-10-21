@@ -26,13 +26,13 @@ import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
+import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
 import GameUtil, { RoomType } from "./../GameUtil";
-import Seat, { SeatUIInfo } from "./../Seat";
 import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation } from "./../SeatStateHandler";
 import TexasGameMessageHandler from "./../TexasGameMessageHandler";
 import TexasGameProtocol from "./../TexasGameProtocol";
@@ -47,6 +47,7 @@ import { UITexasModel } from "./../UITexasModel";
 
 
 export default class TexasGame {
+    protected Seat_Cls = Seat;
     //座位UI节点缓存池
     private seatUI_pool: cc.Node[] = [];
     ///////////////////////////////
@@ -476,10 +477,10 @@ export default class TexasGame {
             item.UpdateSpriteFrame();
         })
         this.listSeat.forEach(seat => {
-            seat.uirc.listCardUIInfos.forEach(item => {
+            seat.listCardUIInfos.forEach(item => {
                 item.UpdateSpriteFrame();
             })
-            seat.uirc.listSmallCardUIInfos.forEach(item => {
+            seat.listSmallCardUIInfos.forEach(item => {
                 item.UpdateSpriteFrame();
             })
         })
@@ -1118,27 +1119,6 @@ export default class TexasGame {
         return gameTypeStr + "-" + pokerTypeStr + "-" + betTypeStr;
     }
 
-    //初始化座位
-    public InitSeatByCount(seatCount: number) {
-        let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
-        for (let i = 0; i < seatCount; i++) {
-            let seatUI = this.createSeatUI();
-            seatUI.getComponent(cc.Widget).enabled = false;
-            seatUI.active = true;
-            seatUI.parent = this.uirc.Seat.parent;
-            seatUI.name = `Seat${i}`;
-            if (i == 0 && cc.view.getVisibleSize().height < 2688) {
-                mInfos[i].Pos = cc.v3(this.uirc.Seat.x, 454 - cc.view.getVisibleSize().height / 2, 0);
-            }
-            seatUI.setPosition(mInfos[i].Pos);
-            // mGo.transform.localRotation = Quaternion.identity;
-            // mGo.transform.localScale = Vector3.one;
-            let mSeat: Seat = new Seat(i, seatUI);
-            mSeat.InitSeatUIInfo(mInfos[i], seatCount);
-            this.listSeat.push(mSeat);
-            this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
-        }
-    }
     //初始化操作面板的位置
     InitOperationPos() {
         let Seat0: Seat = this.listSeat[0];
@@ -1190,29 +1170,6 @@ export default class TexasGame {
         return null;
     }
 
-
-    /// <summary>
-    /// 获取默认手牌背面
-    /// </summary>
-    /// <returns></returns>
-    public GetEmptyHandCards(): number[] {
-        return [0, 0];
-    }
-
-    /// <summary>
-    /// 获取进入房间手牌
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    protected GetHandCardsAtEnterRoom(rec: ServerMessageEnterRoom.AsObject, index: number): number[] {
-        if (rec.playersList[index].cardsList == null || rec.playersList[index].cardsList.length <= 0) {
-            return [0, 0];
-        }
-        let mFirstCard: number = rec.playersList[index].cardsList[0];
-        let mSecondCard: number = rec.playersList[index].cardsList[1];
-        return [mFirstCard, mSecondCard];
-    }
 
     /// <summary>
     /// 显示花费查看公共牌提示
@@ -1494,25 +1451,6 @@ export default class TexasGame {
             },
         })
     }
-    /// <summary>
-    /// 获取游戏开始手牌
-    /// </summary>
-    /// <param name="rec"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    public GetHandCardsAtRecvStartInfo(rec: ServerMessageStartInfo.AsObject, index: number): number[] {
-
-        if (rec.playersList[index].cardsList == null || rec.playersList[index].cardsList.length <= 0) {
-            return [0, 0];
-        }
-        let mFirstCard: number = rec.playersList[index].cardsList[0];
-        let mSecondCard: number = rec.playersList[index].cardsList[1];
-        return [mFirstCard, mSecondCard];
-    }
-
-
-
-
     /// <summary>
     /// 获取筹码Sprite
     /// </summary>
@@ -2509,18 +2447,6 @@ export default class TexasGame {
         }
     }
 
-    /// <summary>
-    /// 获取本手结算手牌
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    public GetHandCardsAtRecvWinner(rec: ServerMessageWinner.AsObject, index: number): number[] {
-
-        let result = rec.resultsList[index];
-
-        return [result.myCardsList?.[0] || 0, result.myCardsList?.[1] || 0];
-    }
 
 
 
@@ -3091,25 +3017,66 @@ export default class TexasGame {
             this.mainPlayer = null;
         }
 
-        // 卸载牌局内已加载过的ab
-        // if (null != settingAbnames && settingAbnames.Count > 0) {
-        //     ResourcesComponent mResourcesComponent = Game.Scene.ModelScene.GetComponent<ResourcesComponent>();
-        //     for (int i = 0, n = settingAbnames.Count; i < n; i++)
-        //     {
-        //         mResourcesComponent.UnloadBundle(settingAbnames[i]);
-        //     }
-        //     settingAbnames.Clear();
-        //     settingAbnames = null;
-        // }
-
         if (this.GameLogicSMComponent != null) {
             this.GameLogicSMComponent.stop();
         }
 
-        //GameStatusRestoreHandler = null;
-
-        //this.IsExit = true;
     }
 
+    //////////////////
+    public GetEmptyHandCards(): number[] {
+        let cards = [];
+        for (let i = 0; i < this.HandCards; i++) {
+            cards.push(-1);
+        }
+        return cards;
+    }
+    //获取进入房间手牌
+    public GetHandCardsAtEnterRoom(rec: ServerMessageEnterRoom.AsObject, index: number): number[] {
+        let result = rec.playersList[index];
+        let cards = [];
+        for (let i = 0; i < this.HandCards; i++) {
+            cards.push(result.cardsList?.[i] ?? 0);
+        }
+        return cards;
+    }
+    //获取本手结算手牌
+    public GetHandCardsAtRecvWinner(rec: ServerMessageWinner.AsObject, index: number): number[] {
+        let result = rec.resultsList[index];
 
+        let cards = [];
+        for (let i = 0; i < this.HandCards; i++) {
+            cards.push(result.myCardsList?.[i] ?? 0);
+        }
+        return cards;
+    }
+    //获取开始游戏手牌
+    public GetHandCardsAtRecvStartInfo(rec: ServerMessageStartInfo.AsObject, index: number) {
+        let result = rec.playersList[index];
+        let cards = [];
+        for (let i = 0; i < this.HandCards; i++) {
+            cards.push(result.cardsList?.[i] ?? 0);
+        }
+        return cards;
+    }
+    //初始化座位
+    public InitSeatByCount(seatCount: number) {
+        let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
+        for (let i = 0; i < seatCount; i++) {
+            let seatUI = this.createSeatUI();
+            seatUI.getComponent(cc.Widget).enabled = false;
+            seatUI.active = true;
+            seatUI.parent = this.uirc.Seat.parent;
+            seatUI.name = `Seat${i}`;
+            if (i == 0 && cc.view.getVisibleSize().height < 2688) {
+                mInfos[i].Pos = cc.v3(this.uirc.Seat.x, 454 - cc.view.getVisibleSize().height / 2, 0);
+            }
+            seatUI.setPosition(mInfos[i].Pos);
+            seatUI.scale = 1;
+            let mSeat: Seat = new Seat(i, seatUI);
+            mSeat.InitSeatUIInfo(mInfos[i], seatCount);
+            this.listSeat.push(mSeat);
+            this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
+        }
+    }
 }

@@ -78,14 +78,14 @@ export default class UIMatchChessItem extends UIBase {
 
 
     private async EnterRoomAPI() {
+        //未开放房间类型
+        if (!GameUtil.IsOpenRoomType(this._data.room_type)) {
+            //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
+            UIComponent.Instance.Toast();
+            return;
+        }
         if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
             if (this._data.room_type_is_legal) {
-                //未开放房间类型
-                if (!GameUtil.IsOpenRoomType(this._data.room_type)) {
-                    //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
-                    UIComponent.Instance.Toast();
-                    return;
-                }
                 let response = LobbySession.APIWebUserRoominsur(this._data.rid).catch(() => { });
                 if (response) {
                     GC.data.lobby.roomList.selected = this._data;

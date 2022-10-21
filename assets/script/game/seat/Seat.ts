@@ -1,24 +1,23 @@
 
-import UpdateComponent from "../funcomponent/UpdateComponent";
-import { StringHelper } from "../helper/StringHelper";
-import WebImageHelper from "../helper/WebImageHelper";
-import { CPErrorCode } from "../i18n/CPErrorCode";
-import { UIMineModel } from "../lobby/UIMineModel";
-import { Def } from "../protobuf/holdem/define_pb";
-import AssetContext, { AssetFold } from "../ui/component/AssetContext";
-import UIComponent from "../ui/UIComponent";
-import { CacheDataManager } from "./CacheDataManager";
-import { CardType, CardTypeUtil } from "./CardTypeUtil";
-import { CPlayer } from "./CPlayer";
-import FSMLogicComponent from "./FSMLogicComponent";
-import { GameCache } from "./GameCache";
-import GameUtil, { RoomType } from "./GameUtil";
-import { SeatFSM } from "./SeatFSM";
-import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
-import SeatUIRC, { CardUIInfo } from "./SeatUIRC";
 
 /// <summary>
 /// 声纹状态
+
+import UpdateComponent from "../../funcomponent/UpdateComponent";
+import { StringHelper } from "../../helper/StringHelper";
+import WebImageHelper from "../../helper/WebImageHelper";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { Def } from "../../protobuf/holdem/define_pb";
+import { CacheDataManager } from "../CacheDataManager";
+import { CardType, CardTypeUtil } from "../CardTypeUtil";
+import { CPlayer } from "../CPlayer";
+import FSMLogicComponent from "../FSMLogicComponent";
+import { GameCache } from "../GameCache";
+import GameUtil, { RoomType } from "../GameUtil";
+import { SeatFSM } from "../SeatFSM";
+import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from "../SeatStateHandler";
+import SeatUIRC, { CardUIInfo } from "../SeatUIRC";
+
 /// </summary>
 export enum VoiceprintState {
     None,
@@ -98,11 +97,122 @@ export default class Seat {
 
     protected sequencePlayFoldAnimation: cc.Tween;
 
-
-
     public SeatVoiceprintState: VoiceprintState = VoiceprintState.None;
 
     private isStartHide: boolean = false;
+
+    //亮牌数据
+    public showCardsId: number[] = null;
+
+    voiceStatePositon: cc.Vec3 = null;
+
+    public listCardUIInfos: CardUIInfo[] = null;
+    public listSmallCardUIInfos: CardUIInfo[] = null;
+    public listImageSmallCardBack: cc.Sprite[] = null;
+
+    private static Pos: {
+        [key: number]:
+        {
+            myCardsPos?: cc.Vec3[],
+            backSmallCardPos?: cc.Vec3[],
+            smallCardPos?: cc.Vec3[],
+            myCardTypePos?: cc.Vec3[],
+            voiceStatePositon?: cc.Vec3
+        }
+    } =
+        {
+            2: {
+                myCardsPos: [
+                    cc.v3(-20, 0),
+                    cc.v3(160, 0),
+                ],
+                backSmallCardPos: [
+                    cc.v3(0, 14.5),
+                    cc.v3(-10, 14.5),
+                ],
+                smallCardPos: [
+                    cc.v3(-29, 14.5),
+                    cc.v3(35, 14.5),
+                ],
+                myCardTypePos: [cc.v3(-80, -243)],
+                voiceStatePositon: cc.v3(284, -237, 0),
+            },
+            4: {
+                myCardsPos: [
+                    cc.v3(-63, 0),
+                    cc.v3(30, 0),
+                    cc.v3(123, 0),
+                    cc.v3(216, 0),
+                ],
+                backSmallCardPos: [
+                    cc.v3(0, 0),
+                    cc.v3(-10, 0),
+                    cc.v3(-20, 0),
+                    cc.v3(-30, 0),
+                ],
+                smallCardPos: [
+                    cc.v3(-60, 0),
+                    cc.v3(-17, 0),
+                    cc.v3(26, 0),
+                    cc.v3(70, 0),
+                ],
+                myCardTypePos: [cc.v3(-117, -243)],
+                voiceStatePositon: cc.v3(335.4, -232, 0),
+            },
+            5: {
+                myCardsPos: [
+                    cc.v3(-63, 0),
+                    cc.v3(30, 0),
+                    cc.v3(123, 0),
+                    cc.v3(216, 0),
+                    cc.v3(309, 0),
+                ],
+                backSmallCardPos: [
+                    cc.v3(0, 0),
+                    cc.v3(-10, 0),
+                    cc.v3(-20, 0),
+                    cc.v3(-30, 0),
+                    cc.v3(-40, 0),
+                ],
+                smallCardPos: [
+                    cc.v3(-60, 0),
+                    cc.v3(-27.5, 0),
+                    cc.v3(5, 0),
+                    cc.v3(37.5, 0),
+                    cc.v3(70, 0),
+                ],
+                myCardTypePos: [cc.v3(-117, -243)],
+                voiceStatePositon: cc.v3(446, -233, 0),
+            },
+            6: {
+                myCardsPos: [
+                    cc.v3(-63, 0),
+                    cc.v3(30, 0),
+                    cc.v3(123, 0),
+                    cc.v3(216, 0),
+                    cc.v3(309, 0),
+                    cc.v3(402, 0),
+                ],
+                backSmallCardPos: [
+                    cc.v3(0, 0),
+                    cc.v3(-10, 0),
+                    cc.v3(-20, 0),
+                    cc.v3(-30, 0),
+                    cc.v3(-40, 0),
+                    cc.v3(-50, 0),
+                ],
+                smallCardPos: [
+                    cc.v3(-60, 0),
+                    cc.v3(-34, 0),
+                    cc.v3(-8, 0),
+                    cc.v3(18, 0),
+                    cc.v3(44, 0),
+                    cc.v3(70, 0),
+                ],
+                myCardTypePos: [cc.v3(-117, -243)],
+                voiceStatePositon: cc.v3(515, -237, 0),
+            },
+        }
 
 
     /// <summary>
@@ -142,7 +252,8 @@ export default class Seat {
         this.uirc.Head.stopAllActions();
         this.uirc.Head.scale = 1;
         this.uirc.transSmallCardBacks.stopAllActions();
-        this.uirc.listImageSmallCardBack.forEach(item => {
+
+        this.listImageSmallCardBack.forEach(item => {
             item.node.opacity = 255;
             item.node.stopAllActions();
         })
@@ -155,11 +266,11 @@ export default class Seat {
     /// </summary> virtual Sequence 
     public PlayDealAnimation(delay: number, targetPos: cc.Vec3): cc.Tween {
 
-        for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
-            this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+        for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
+            this.listCardUIInfos[i].imageSelect.node.active = false;
         }
-        for (let i = 0, n = this.uirc.listSmallCardUIInfos.length; i < n; i++) {
-            this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
+        for (let i = 0, n = this.listSmallCardUIInfos.length; i < n; i++) {
+            this.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
         let tween = cc.tween(this.deal_sequence_obj);
@@ -176,12 +287,12 @@ export default class Seat {
             for (let i = 0, n = this.Player.cards.length; i < n; i++) {
 
 
-                let cardInfo = this.uirc.listCardUIInfos[i];
+                let cardInfo = this.listCardUIInfos[i];
                 cardInfo.SetSpriteFrame(this.Player.cards[i]);
                 //cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                 cardInfo.imageCard.color = cc.Color.WHITE;
                 cardInfo.imageCard.setScale(cc.v3(0.5, 0.5));
-                cardInfo.imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
+                cardInfo.imageCard.setPosition(this.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
                 cardInfo.imageCard.active = true;
 
 
@@ -218,9 +329,9 @@ export default class Seat {
 
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
 
-            for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+            for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
 
-                let mTmpObj: cc.Node = this.uirc.listImageSmallCardBack[i].node;
+                let mTmpObj: cc.Node = this.listImageSmallCardBack[i].node;
                 let pos = this.GetBackSmallCardPos(i);
                 mTmpObj.setPosition(mLocalPos);
                 tween.then(cc.callFunc(() => {
@@ -251,11 +362,11 @@ export default class Seat {
                     cc.tween(this.uirc.transSmallCardBacks).to(.5, { position: pos }).start();
                 },
                 ));
-            for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
+            for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
                 //sequencePlayFoldAnimation.Join(listImageSmallCardBack[i].DOFade(0, 0.3f));
                 sequence.push(
                     cc.callFunc(() => {
-                        cc.tween(this.uirc.listImageSmallCardBack[i].node).to(0.3, { opacity: 0 }).start();
+                        cc.tween(this.listImageSmallCardBack[i].node).to(0.3, { opacity: 0 }).start();
                     })
                 );
             }
@@ -263,9 +374,9 @@ export default class Seat {
 
             this.sequencePlayFoldAnimation.sequence.apply(this.sequencePlayFoldAnimation, sequence).call(() => {
                 this.uirc.transSmallCardBacks.position = this.seatUIInfo.CardBackPos;
-                for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
-                    this.uirc.listImageSmallCardBack[i].node.color = cc.Color.WHITE;
-                    this.uirc.listImageSmallCardBack[i].node.opacity = 255;
+                for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
+                    this.listImageSmallCardBack[i].node.color = cc.Color.WHITE;
+                    this.listImageSmallCardBack[i].node.opacity = 255;
                 }
                 this.uirc.transSmallCardBacks.active = false;
 
@@ -287,43 +398,7 @@ export default class Seat {
 
     }
 
-    InitUIStaticData() {
-        if (Seat.myCardsPos.length != 2) {
-            Seat.myCardsPos = [];
-            Seat.myCardsPos.push(cc.v3(-20, 0));
-            Seat.myCardsPos.push(cc.v3(160, 0));
-        }
-        if (Seat.myCardTypePos.length != 1) {
-            Seat.myCardTypePos = [];
-            Seat.myCardTypePos.push(cc.v3(-80, -243));
-        }
-        if (Seat.myCardsRot.length != 2) {
-            Seat.myCardsRot = [];
-            Seat.myCardsRot.push(cc.v3(0, 0));
-            Seat.myCardsRot.push(cc.v3(0, 0, -8));
-        }
 
-        if (Seat.backSmallCardPos.length != 4) {
-            Seat.backSmallCardPos = [];
-            Seat.backSmallCardPos.push(cc.v3(0, 14.5));
-            Seat.backSmallCardPos.push(cc.v3(-20, 14.5));
-            //Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
-            // Seat.backSmallCardPos.push(cc.v3(0, 14.5));
-            // Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
-        }
-
-        if (Seat.backSmallCardRot.length != 2) {
-            Seat.backSmallCardRot = [];
-            Seat.backSmallCardRot.push(cc.v3(0, 0, -15));
-            Seat.backSmallCardRot.push(cc.v3(0, 0, 0));
-        }
-
-        if (Seat.smallCardPos.length != 2) {
-            Seat.smallCardPos = [];
-            Seat.smallCardPos.push(cc.v3(-29, 14.5));
-            Seat.smallCardPos.push(cc.v3(35, 14.5));
-        }
-    }
 
 
 
@@ -882,7 +957,7 @@ export default class Seat {
     public UpdateCards(isAllin: boolean = false): void {
         if (this.IsMySeat) {
 
-            this.HideCards(this.uirc.listSmallCardUIInfos);
+            this.HideCards(this.listSmallCardUIInfos);
             this.HideCardBack();
             if (this.Player?.cards != null) {
 
@@ -898,22 +973,22 @@ export default class Seat {
                 //主位位移中显示卡牌
                 if ((hadCard || this.Player.isPlaying) && !GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
 
-                    for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
-                        this.uirc.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
+                    for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
+                        this.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
                     }
-                    this.ShowCards(this.uirc.listCardUIInfos);
+                    this.ShowCards(this.listCardUIInfos);
                 }
                 else {
-                    this.HideCards(this.uirc.listCardUIInfos);
+                    this.HideCards(this.listCardUIInfos);
                 }
             }
             else {
-                this.HideCards(this.uirc.listCardUIInfos);
+                this.HideCards(this.listCardUIInfos);
             }
         }
         else {
 
-            this.HideCards(this.uirc.listCardUIInfos);
+            this.HideCards(this.listCardUIInfos);
             if (this.Player?.cards != null) {
                 let mShow: boolean = false;
                 for (let i = 0, n = this.Player.cards.length; i < n; i++) {
@@ -924,7 +999,7 @@ export default class Seat {
                 }
 
                 if (this.Player.cards.length > 0 && mShow) {
-                    this.ShowCards(this.uirc.listSmallCardUIInfos);
+                    this.ShowCards(this.listSmallCardUIInfos);
                     // tweenerHideBubble = imageBubble.transform.DOScale(new Vector3(0, 0, 1), 0.2f).SetDelay(1f).OnComplete(() => {
                     //     imageBubble.gameObject.SetActive(false);
 
@@ -934,7 +1009,7 @@ export default class Seat {
                     this.HideCardBack();
                 }
                 else {
-                    this.HideCards(this.uirc.listSmallCardUIInfos);
+                    this.HideCards(this.listSmallCardUIInfos);
                     if (this.Player.isPlaying) {
                         this.ShowCardBack();
                     }
@@ -944,7 +1019,7 @@ export default class Seat {
                 }
             }
             else {
-                this.HideCards(this.uirc.listSmallCardUIInfos);
+                this.HideCards(this.listSmallCardUIInfos);
                 this.HideCardBack();
             }
         }
@@ -1024,9 +1099,9 @@ export default class Seat {
     /// 显示手牌背面
     /// </summary>
     public ShowCardBack(): void {
-        for (let i = 0, n = this.uirc.listImageSmallCardBack.length; i < n; i++) {
-            this.uirc.listImageSmallCardBack[i].node.active = true;
-            this.uirc.listImageSmallCardBack[i].node.setPosition(this.GetBackSmallCardPos(i));
+        for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
+            this.listImageSmallCardBack[i].node.active = true;
+            this.listImageSmallCardBack[i].node.setPosition(this.GetBackSmallCardPos(i));
             //listImageSmallCardBack[i].transform.localRotation = Quaternion.Euler(GetBackSmallCardRot(i));
         }
 
@@ -1154,8 +1229,8 @@ export default class Seat {
             return;
         }
 
-        for (let i = 0; i < this.uirc.showCardsId.length; i++) {
-            this.uirc.listCardUIInfos[i].imageEye.node.active = this.uirc.showCardsId[i] == 1;
+        for (let i = 0; i < this.showCardsId.length; i++) {
+            this.listCardUIInfos[i].imageEye.node.active = this.showCardsId[i] == 1;
         }
     }
 
@@ -1238,7 +1313,7 @@ export default class Seat {
         for (let i = 0, n = this.Player.cards.length; i < n; i++) {
             //if (listCardUIInfos[i].imageBack.gameObject.activeInHierarchy)
             //{
-            this.uirc.listCardUIInfos[i].imageBack.node.active = istrue;
+            this.listCardUIInfos[i].imageBack.node.active = istrue;
             //}
         }
     }
@@ -1253,7 +1328,7 @@ export default class Seat {
             this.uirc.imageCardType.node.active = false;
             this.uirc.imageSmallCardType.node.active = false;
             for (let i = 0, n = this.Player.cards.length; i < n; i++) {
-                this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+                this.listCardUIInfos[i].imageSelect.node.active = false;
             }
             return;
         }
@@ -1265,20 +1340,20 @@ export default class Seat {
             this.uirc.imageCardType.node.active = true;
             this.uirc.imageCardType.node.setPosition(Seat.myCardTypePos[0]);
             for (let i = 0, n = this.Player.cards.length; i < n; i++) {
-                this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+                this.listCardUIInfos[i].imageSelect.node.active = false;
                 if (isGameend) {
-                    this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.GRAY;
+                    this.listCardUIInfos[i].imageCard.color = cc.Color.GRAY;
                 }
 
                 for (let j = 0, m = hightCards.length; j < m; j++) {
                     if (this.Player.cards[i] == hightCards[j]) {
                         if (isGameend) {
-                            this.uirc.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
-                            this.uirc.listCardUIInfos[i].imageCard.setPosition(cc.v3(this.uirc.listCardUIInfos[i].imageCard.position.x, this.uirc.listCardUIInfos[i].imageCard.position.y));//+40奥马哈两个手牌上移
-                            this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+                            this.listCardUIInfos[i].imageCard.color = cc.Color.WHITE;
+                            this.listCardUIInfos[i].imageCard.setPosition(cc.v3(this.listCardUIInfos[i].imageCard.position.x, this.listCardUIInfos[i].imageCard.position.y));//+40奥马哈两个手牌上移
+                            this.listCardUIInfos[i].imageSelect.node.active = false;
                         }
                         else {
-                            this.uirc.listCardUIInfos[i].imageSelect.node.active = true;
+                            this.listCardUIInfos[i].imageSelect.node.active = true;
                         }
                         break;
                     }
@@ -1291,7 +1366,7 @@ export default class Seat {
 
 
             for (let i = 0, n = this.Player.cards.length; i < n; i++) {
-                this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
+                this.listSmallCardUIInfos[i].imageSelect.node.active = false;
 
             }
         }
@@ -1306,8 +1381,8 @@ export default class Seat {
             return;
 
         for (let i = 0, n = this.Player.cards.length; i < n; i++) {
-            this.uirc.listSmallCardUIInfos[i].imageCard.color = cc.Color.WHITE;
-            this.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+            this.listSmallCardUIInfos[i].imageCard.color = cc.Color.WHITE;
+            this.listCardUIInfos[i].imageSelect.node.active = false;
         }
         this.uirc.imageSmallCardType.node.active = false;
         this.uirc.imageCardType.node.active = false;
@@ -1375,8 +1450,8 @@ export default class Seat {
         this.uirc.imageHeadGray.node.active = active;
         if (this.IsMySeat) {
             let mCardUiInfo: CardUIInfo = null;
-            for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
-                mCardUiInfo = this.uirc.listCardUIInfos[i];
+            for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
+                mCardUiInfo = this.listCardUIInfos[i];
                 if (null == mCardUiInfo)
                     continue;
 
@@ -1719,6 +1794,46 @@ export default class Seat {
             this.FsmLogicComponent.stop();
         }
         this.ClearData();
+    }
+
+    /// <summary>
+    /// 设置声纹状态按钮要到达的位置
+    /// </summary>
+    public SetVoiceStatePositon() {
+        this.voiceStatePositon = Seat.Pos[GameCache.Instance.CurGame.HandCards].voiceStatePositon;
+    }
+
+    //////////////////////////////////////
+
+    public ResetShowCardsId(): void {
+        if (this.showCardsId == null) {
+            this.showCardsId = [];
+        }
+        else {
+            this.showCardsId.length = 0;
+        }
+        for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
+            this.showCardsId.push(0);
+        }
+
+    }
+    InitUIStaticData() {
+        let pos = Seat.Pos[GameCache.Instance.CurGame.HandCards];
+        Seat.myCardsPos = pos.myCardsPos;
+        Seat.backSmallCardPos = pos.backSmallCardPos;
+        Seat.smallCardPos = pos.smallCardPos;
+        Seat.myCardTypePos = pos.myCardTypePos;
+
+
+        this.listCardUIInfos = [];
+        this.listSmallCardUIInfos = [];
+        this.listImageSmallCardBack = [];
+        for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
+            this.listCardUIInfos.push(this.uirc.imageCards[i]);
+            this.listSmallCardUIInfos.push(this.uirc.imageSmallCards[i]);
+            this.listImageSmallCardBack.push(this.uirc.imageSmallCardBacks[i]);
+        }
+        this.ResetShowCardsId();
     }
 }
 export interface SeatUIInfo {

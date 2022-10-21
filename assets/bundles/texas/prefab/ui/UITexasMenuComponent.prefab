@@ -1109,7 +1109,7 @@
     "_prefab": {
       "__id__": 29
     },
-    "_opacity": 178.5,
+    "_opacity": 178,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -1171,8 +1171,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Sit out",
-    "_N$string": "Sit out",
+    "_string": "op",
+    "_N$string": "op",
     "_fontSize": 46.34,
     "_lineHeight": 46,
     "_enableWrapText": true,
