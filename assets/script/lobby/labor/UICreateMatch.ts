@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 16:13:15
+ * @LastEditTime: 2022-10-21 18:29:20
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -379,7 +379,7 @@ export default class UICreateMatch extends BaseForm {
         let toggle2: cc.Toggle = cc.find(`ToggleContainer/toggle2`, this.fwfbl).getComponent(cc.Toggle)
         toggle2.node['pos'] = toggle2.node.position;
 
-        if (fwfConfig.settlement_type == 0) {
+        if (fwfConfig?.data?.settlement_type == 0) {
             toggle2.isChecked = true;
             toggle2.node.active = true;
             toggle2.node.position = toggle1.node.position;
@@ -388,7 +388,7 @@ export default class UICreateMatch extends BaseForm {
             this.fddm.active = false
             this.fwfbl.height = 200;
         }
-        else if (fwfConfig.settlement_type == 1) {
+        else if (fwfConfig?.data?.settlement_type == 1) {
             toggle1.node.active = true;
             toggle1.isChecked = true
             this.fddm.active = true
