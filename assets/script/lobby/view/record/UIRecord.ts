@@ -1,6 +1,11 @@
+import { UIDefine } from "../../../define/UIDefine";
+import DeskNameTempModel from "../../../frame/data/lobby/DeskNameTempModel";
+import LobbyData from "../../../frame/data/lobby/LobbyData";
+import GC from "../../../frame/GameControl";
 import TimeHelper from "../../../helper/TimeHelper";
 import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
+import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
 
 
@@ -12,6 +17,7 @@ export default class UIRecord extends BaseForm {
 
     lastGameType: number = 1;
     lastTimeType: number = 1;
+    oldDates: Array<string> = [];
 
     protected lateLoad() {
         super.lateLoad();
@@ -69,7 +75,7 @@ export default class UIRecord extends BaseForm {
             group_by: group_by,      //1 room 2 mtt 3 mttroom
             limit: 100,         //条目
             offset: 0,        //开始下标。例子（offset=0，limit=10，0-9。）
-            game_type: this.lastGameType,     //游戏类型，对应客户端 枚举 GameType
+            game_type: this.lastGameType - 1,     //游戏类型，对应客户端 枚举 GameType
         }
         LobbyControl.getInstance().getHistoryInfo(info).then(
             (res) => {
@@ -199,15 +205,17 @@ export default class UIRecord extends BaseForm {
     refreshListView(data) {
         let records = data.data.records;
         let lbl_noshow: cc.Node = this.getChildNodeOrComponent("lbl_notShow");
+        let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         if (records.length == 0) {
+            scrollView.content.removeAllChildren();
             lbl_noshow.active = true;
         } else {
             lbl_noshow.active = false;
             // 有数据 刷新列表
             let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
-            let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
             let len = records.length;
             scrollView.content.removeAllChildren();
+            this.oldDates = [];
             for (let i=0; i<len; i++) {
                 let info = records[i];
                 let _cloneNode = cc.instantiate(panel_item);
@@ -215,16 +223,97 @@ export default class UIRecord extends BaseForm {
                 _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
                 _cloneNode.parent = scrollView.content;
 
+                let nameStr = GC.data.lobby.nameTemp.getName(info.Name);
                 _cloneNode.getChildByName("lbl_score").getComponent(cc.Label).string = info.Change.toString();
-                _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = info.Name;
+                _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
                 _cloneNode.getChildByName("lbl_sb").getComponent(cc.Label).string = info.RoomID.toString();
                 _cloneNode.getChildByName("lbl_total").getComponent(cc.Label).string = info.Count.toString();
-                _cloneNode.getChildByName("lbl_time").getComponent(cc.Label).string = info.Time;
                 _cloneNode.getChildByName("img_dian_now").active = true;
                 _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = "今天";
+                let ts = TimeHelper.RFC3339TimeConvertToUTCTime(info.Time)
+                let date = new Date(ts)
+                let timeStr = TimeHelper._zeroNum(date.getHours()) + ":" + TimeHelper._zeroNum(date.getMinutes());
+                _cloneNode.getChildByName("lbl_time").getComponent(cc.Label).string = timeStr;
+                _cloneNode["info"] = info;
+                _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
+                let dateStr = this.cacluDate(ts);
+                if (dateStr == -1) {
+                    _cloneNode.getChildByName("img_dian_now").active = false;
+                    _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = "";
+                } else {
+                    if (dateStr == "今天") {
+                        _cloneNode.getChildByName("img_dian_now").active = true;
+                    } else {
+                        _cloneNode.getChildByName("img_dian_now").active = false;
+                    }
+                    _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = dateStr.toString();
+                }
             }
             scrollView.content.height = panel_item.height * len;
         }
+    }
+
+    isExistDate(date) {
+        let isExist = false;
+        this.oldDates.forEach((v) => {
+            if (date == v) {
+                isExist = true;
+            }
+        });
+        return isExist;
+    }
+
+    // 返回今天 昨天 或者 月.日 如果存在 返回 -1
+    cacluDate(ts) {
+        let date = new Date(ts)
+        let nowTs = TimeHelper.Now();
+        if (this.yesterday() > ts) {
+            // 昨天以前  前天等
+            let month = date.getMonth();
+            let day = date.getDate();
+            let str = month + "." + day;
+            if (this.isExistDate(str)) {
+                return -1;
+            }
+            this.oldDates.push(str);
+            return str;
+        } else {
+            if (ts > nowTs) {
+                // 今天
+                if (this.isExistDate("今天")) {
+                    return -1;
+                }
+                this.oldDates.push("今天");
+                return "今天"
+            } else {
+                // 昨天
+                if (this.isExistDate("昨天")) {
+                    return -1;
+                }
+                this.oldDates.push("昨天");
+                return "昨天"
+            }
+        }
+    }
+
+    //N天时间戳，时间戳指从1970-01-01 0点开始到某天的毫秒数
+    timestamp(days) {
+        return days * 24 * 60 * 60 * 1000
+    }
+    ​
+    //几天前，一般以现在的时间为基准，参数默认值老的浏览器可能不支持。
+    days_ago(day, base_time = Date.now()) {
+        return new Date(base_time - this.timestamp(day))
+    }
+    //最常用的今天、昨天、明天，返回时间戳
+    yesterday(){
+        return this.days_ago(1)
+    }
+
+    onClickItem(event) {
+        let target = event.target;
+        let info = target.info;
+        UIComponent.open(UIDefine.UIRecordDetail, {info : info});
     }
 
 }
