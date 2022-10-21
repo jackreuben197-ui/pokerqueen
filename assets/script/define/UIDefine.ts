@@ -142,9 +142,6 @@ export const UIDefine = {
         Path: "main/lobby/prefab/record/UIRecordDetail",
         Title: "",
     },
-
-    
-    
     //房间模版
     UIMatchPlayViewForm: {
         UIType: UIType.Form,
@@ -335,6 +332,57 @@ export const UIDefine = {
         Name: "GoldOprationForm",
         Bundle: null,
         Path: "main/wallet/GoldOprationForm",
+    },
+
+    UICreateMatchHome: {
+        UIType: UIType.Form,
+        Name: "UICreateMatchHome",
+        Bundle: null,
+        Path: "main/club/UICreateMatchHome",
+    },
+
+    UICreateMatch: {
+        UIType: UIType.Form,
+        Name: "UICreateMatch",
+        Bundle: null,
+        Path: "main/club/UICreateMatch",
+    },
+
+    LookRateListDlg: {
+        UIType: UIType.CommonUI,
+        Name: "LookRateListDlg",
+        Bundle: null,
+        Path: "main/wallet/rate/LookRateListDlg",
+    },
+    RateManagerListForm: {
+        UIType: UIType.Form,
+        Name: "RateManagerListForm",
+        Bundle: null,
+        Path: "main/wallet/rate/RateManagerListForm",
+    },
+    EditRateForm: {
+        UIType: UIType.Form,
+        Name: "EditRateForm",
+        Bundle: null,
+        Path: "main/wallet/rate/EditRateForm",
+    },
+    OrderRecordsForm: {
+        UIType: UIType.Form,
+        Name: "OrderRecordsForm",
+        Bundle: null,
+        Path: "main/wallet/record/OrderRecordsForm",
+    },
+    GoldIssueListForm: {
+        UIType: UIType.Form,
+        Name: "GoldIssueListForm",
+        Bundle: null,
+        Path: "main/wallet/issue/GoldIssueListForm",
+    },
+    OrderApplyForm: {
+        UIType: UIType.Form,
+        Name: "OrderApplyForm",
+        Bundle: null,
+        Path: "main/wallet/apply/OrderApplyForm",
     },
 
 

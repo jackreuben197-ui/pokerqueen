@@ -13,7 +13,7 @@ export default class LobbyRoomListItem {
     }
     get name() {
         // return this._data.name;
-        return GC.data.lobby.nameTemp.getName(this._data.name);
+        return GC.data.languageTemp.temp.getName(this._data.name);
     }
     get room_type() {
         return this._data.room_type;

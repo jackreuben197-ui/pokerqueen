@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-12 18:03:23
+ * @LastEditTime: 2022-10-17 11:36:31
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -121,11 +121,13 @@ export default class UILabarPlayViewForm extends UIBase {
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {
             let isManger: any = APIOrgClubIsManger.Response.data
             if (isManger) {
-                this.chongzhi.active = false;
+                this.chongzhi.active = true;
+                this.tabNode.getChildByName('chpj').active = true;
                 this.tabNode.getChildByName('ghgl').active = true;
                 this.tabNode.getChildByName('ckgh').active = false;
             } else {
                 this.chongzhi.active = false;
+                this.tabNode.getChildByName('chpj').active = false;
                 this.tabNode.getChildByName('ghgl').active = false;
                 this.tabNode.getChildByName('ckgh').active = true;
             }
@@ -133,7 +135,8 @@ export default class UILabarPlayViewForm extends UIBase {
 
     }
     addCoin() {
-        UIComponent.open(UIDefine.GoldOprationForm, { type: EWalletGoldOpration.in, isClub: true });
+        // UIComponent.open(UIDefine.GoldOprationForm, { type: EWalletGoldOpration.in, isClub: true });
+        UIComponent.open(UIDefine.OrderApplyForm);
     }
     tostBtnClick() {
         this.tabNode.active = !this.tabNode.active;
@@ -145,6 +148,10 @@ export default class UILabarPlayViewForm extends UIBase {
     managerLookLaber() {
         this.tabNode.active = false;
         UIComponent.open(UIDefine.UIManageLabor);
+    }
+    createMatch() {
+        this.tabNode.active = false;
+        UIComponent.open(UIDefine.UICreateMatchHome);
     }
 
 }

@@ -31,6 +31,12 @@ export enum BetType {
     PotLimit = 1,//底池限注
     Aof = 2,//aof
 }
+/**
+ * 开放的房间类型
+ */
+export var OpenRoomType = [];
+
+
 
 
 export enum RoomType {
@@ -95,30 +101,45 @@ export default class GameUtil {
     public static OutsList = new Map<number, number[]>();
     public static TexasGameDic = new Map<RoomType, TexasGame>();
 
+
+    //已经开放的房间类型
+    private static readonly OpenRoomType = [
+        RoomType.TexasHoldemStandardNoLimit,// 普通
+        RoomType.TexasHoldemStandardPotLimit, // 普通底池限注
+        RoomType.TexasHoldemSixPlusFixedNoLimit,// 普通短牌
+        RoomType.TexasHoldemSixPlusFixedPotLimit, // 普通短牌底池限注
+        RoomType.TexasHoldemStandardAof, // 普通AOF
+        RoomType.TexasHoldemSixPlusFixedAof, // 普通短牌AOF
+    ]
+    public static IsOpenRoomType(roomType: number): boolean {
+        return roomType in this.OpenRoomType;
+    }
+
+
     //#region 牌局内座位UI信息   
     // 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
     public static readonly SeatPosV3: cc.Vec3[] = [
 
-        cc.v3(0, -841),
-        cc.v3(-516, -272),
-        cc.v3(-516, -95),
-        cc.v3(-516, 155),
-        cc.v3(-516, 495),
-        cc.v3(-516, 582),
-        cc.v3(-212, 987),
-        cc.v3(0, 987),
-        cc.v3(214, 987),
-        cc.v3(512, 582),
-        cc.v3(512, 495),
-        cc.v3(512, 155),
-        cc.v3(512, -95),
-        cc.v3(512, -272),
+        cc.v3(0, -841+19),//0
+        cc.v3(-502, -272+19),//1 -cc.v3(-516, -272)
+        cc.v3(-502, -300+19),//2 -cc.v3(-516, -95)
+        cc.v3(-502, 100+19),//3 -cc.v3(-516, 155) 
+        cc.v3(-502, 300+19),//4 -cc.v3(-516, 495),
+        cc.v3(-502, 474+19),//5 -cc.v3(-516, 582)
+        cc.v3(-212, 950),//6 -cc.v3(-212, 987)
+        cc.v3(0, 980),//7 -cc.v3(0, 987),
+        cc.v3(212, 950),//8 -cc.v3(214, 987)
+        cc.v3(502, 474+19),//9 -cc.v3(512, 582)
+        cc.v3(502, 300+19),//10 -cc.v3(512, 495),
+        cc.v3(502, 100+19),//11 -cc.v3(512, 155)
+        cc.v3(502, -300+19),//12 -cc.v3(502, -95)
+        cc.v3(502, -272+19),//13 -cc.v3(512, -272)
     ];
 
     // Dealer标识坐标 0左、1右
     public static readonly BankerLRV3: cc.Vec3[] = [
 
-        cc.v3(138, -175),
+        cc.v3(0, -180),//cc.v3(138, -175),
         cc.v3(0, -180),
     ];
 
@@ -177,7 +198,7 @@ export default class GameUtil {
     // 本手已下注坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
     public static readonly CurRoundHaveBetPosLRV3 =
         [
-            cc.v3(374, -12.5),
+            cc.v3(374, 0),//cc.v3(374, -12.5),
             cc.v3(-200, -10),
             cc.v3(-200, -10),
             cc.v3(-200, -10),
@@ -1098,8 +1119,6 @@ export default class GameUtil {
     public static InstantiateTexasGame(roomType: RoomType) {
 
         let game: TexasGame = null;
-
-        console.log("InstantiateTexasGame GameCache.Instance.CurGame ", GameCache.Instance.CurGame);
 
         switch (roomType) {
             case RoomType.TexasHoldemStandardNoLimit: // 普通

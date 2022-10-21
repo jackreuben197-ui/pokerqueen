@@ -2,6 +2,7 @@
 import { Tracing } from "trace_events";
 import { IUIDefine, UIType } from "../define/EIDefine";
 import { Param } from "../define/Types";
+import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
@@ -17,10 +18,9 @@ export enum PrefabUI {
     UITexasMenuComponent = "UITexasMenuComponent",
     UIAddChipsComponent = "UIAddChipsComponent",
     UIOutChipsComponent = "UIOutChipsComponent",
-    UIAutoOperation = "UIAutoOperation",
-    UIOperation = "UIOperation",
+    UIOperationComponent = "UIOperationComponent",
+    UIAutoOperationComponent = "UIAutoOperationComponent",
 }
-
 
 @ccclass
 export default class UIComponent {
@@ -44,8 +44,13 @@ export default class UIComponent {
     }
 
 
-    Toast(content: string) {
-        ToastManager.Instance.createToast(content);
+    Toast(content?: string) {
+        if (content) {
+            ToastManager.Instance.createToast(content);
+        } else {
+            //提示暂未开放
+            ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"));
+        }
     }
 
     //显示节点
@@ -56,8 +61,9 @@ export default class UIComponent {
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onShow(param);
             cc.log("PrefabUI_node", node);
+        } else {
+            cc.log("ShowUI ::: > 缺少相关的节点", com);
         }
-
     }
     //隐藏节点
     HideUI<T>(com: PrefabUI, param?: T) {

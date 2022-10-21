@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-12 14:52:43
+ * @LastEditTime: 2022-10-19 11:45:47
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -17,6 +17,7 @@ import { APIOrgClubGold, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get } 
 import WebImageHelper from "../../helper/WebImageHelper";
 import UIBase from "../../ui/UIBase";
 import { UIClubModel } from "./UIClubModel";
+import TimeHelper from "../../helper/TimeHelper";
 @ccclass
 export default class UIManageLabor extends BaseForm {
 
@@ -38,6 +39,7 @@ export default class UIManageLabor extends BaseForm {
     }
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
+        await UIClubModel.mInstance.APIOrgClubGet()
         this.initTop();
         this.initMangerList();
         this.initMemberList();
@@ -48,7 +50,7 @@ export default class UIManageLabor extends BaseForm {
         name.string = data.club_name
         let id = this.mask_group.getChildByName('id').getComponent(cc.Label);
         id.string = 'ID:' + data.random_id
-        this.EditBox.string = data.desc || '暂无工会说明'
+        this.EditBox.string = data.desc   //|| '暂无工会说明'
 
         let icon = cc.find('iconMask/icon', this.mask_group);
         WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.logo)
@@ -68,7 +70,7 @@ export default class UIManageLabor extends BaseForm {
         WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.club_creator_avatar)
         //创建时间
         let chsj = this.contentNode.getChildByName('chsj')
-        chsj.getChildByName('time').getComponent(cc.Label).string = data.create_time
+        chsj.getChildByName('time').getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(data.create_time)
 
         //基金
         let _data: any = APIOrgClubGold.Response.data
@@ -80,6 +82,7 @@ export default class UIManageLabor extends BaseForm {
         let lm_panel_right = lm.getChildByName('panel_right')
         lm_panel_right.getChildByName('name').getComponent(cc.Label).string = data.tribe_name || ''
     }
+
     async initMangerList() {
         let data: any = Web_Org_Club_Get.Response.data;
         await UIClubModel.mInstance.APIOrgMangerList(data.random_id);
@@ -118,5 +121,13 @@ export default class UIManageLabor extends BaseForm {
     changeClubData() {
         Web_Org_Club_Get.Response.data['desc'] = this.EditBox.string
         UIClubModel.mInstance.APIOrgChangeClubData({ desc: this.EditBox.string })
+    }
+
+    clickJijin() {
+        UIComponent.open(UIDefine.MyWalletForm, true)
+    }
+
+    clickRate() {
+        UIComponent.open(UIDefine.RateManagerListForm)
     }
 }

@@ -1,3 +1,4 @@
+import { EventName } from "../../config/EventName";
 import { CommonDefine } from "../../define/CommonDefine";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
@@ -133,6 +134,7 @@ export default class UITexasMenuComponent extends UIBase {
     onShow(param?: any) {
         super.onShow(param);
         this.UpdateMenu();
+        this.updateBean();
         if (null != this.transSubMenu)
             cc.tween(this.transSubMenu).to(0.25, { x: -621 }).start();
         if (null != this.imageMenuMask)
@@ -156,6 +158,11 @@ export default class UITexasMenuComponent extends UIBase {
         this.imageMenuMask.on("click", this.onClose, this);
     }
 
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.myGoldChange, this.updateBean);
+    }
+
     private buildMenuButtons() {
         for (let key in this.MenuButtons_Dic) {
             let item: typeof this.IMenuButton_Type = this.MenuButtons_Dic[key];
@@ -173,12 +180,16 @@ export default class UITexasMenuComponent extends UIBase {
         this.Menu_Button.active = false;
     }
 
+    //更新金豆
+    updateBean() {
+        this.setText(this.textTotalBean, GC.data.user.info.displayGold);
+    }
+
     public UpdateMenu(): void {
         UIMineModel.mInstance.ObtainUserInfo(pDto => {
             // this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
-            this.setText(this.textTotalBean, GC.data.user.info.displayGold);
+            // this.setText(this.textTotalBean, GC.data.user.info.displayGold);
         });
-        // //更新金豆
 
         let UserSitdown = this.game.UserSitdown();
 
@@ -259,8 +270,8 @@ export default class UITexasMenuComponent extends UIBase {
 
     onMenuButtonTouchStart(e: cc.Event.EventTouch) {
         let target: cc.Node = e.currentTarget;
-        target.getChildByName("Text").color = CommonDefine.Color_Yellow;
-        target.getChildByName("Arrow").color = CommonDefine.Color_Yellow;
+        target.getChildByName("Text").color = CommonDefine.Color_Green;
+        target.getChildByName("Arrow").color = CommonDefine.Color_Green;
     }
     onMenuButtonTouchEnd(e: cc.Event.EventTouch) {
         let target: cc.Node = e.currentTarget;

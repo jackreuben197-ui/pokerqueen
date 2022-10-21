@@ -1,3 +1,4 @@
+import SimpleNodePool from "../common/MyNodePool";
 import { CommonDefine } from "../define/CommonDefine";
 import { IUIDefine } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
@@ -23,9 +24,12 @@ import AssetContext from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
+import GameUtil from "./GameUtil";
 
 import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent, { AddClipsData } from "./ui/UIAddChipsComponent";
+import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
+import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsComponent, { OutClipsData } from "./ui/UIOutChipsComponent";
 import UITexasMenuComponent from "./ui/UITexasMenuComponent";
 import { HistoryInfoData } from "./UITexasHistoryComponent";
@@ -60,6 +64,16 @@ export class PublicCardInfo {
         this.imageCard = trans.getComponent(cc.Sprite);
         this.imageSelect = trans.getChildByName("Image_SelectPublicCard").getComponent(cc.Sprite);
     }
+    //设置卡牌id并且刷新显示
+    SetSpriteFrame(cardId: number) {
+        this.cardId = cardId;
+        //this.imageCard.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
+        this.UpdateSpriteFrame();
+    }
+    //刷新显示
+    UpdateSpriteFrame() {
+        this.imageCard.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.cardId));
+    }
 }
 
 const { ccclass, property } = cc._decorator;
@@ -84,9 +98,7 @@ export default class UITexas extends BaseScene {
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
 
-    UIOperation: cc.Node = null;
-    UIAutoOperation: cc.Node = null;
-
+    imageSelectSeatTips: cc.Node = null;
     imageWaitForStartTips: cc.Node = null;
     imageReserveSeatTips: cc.Node = null;
 
@@ -136,11 +148,14 @@ export default class UITexas extends BaseScene {
     //左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
     UITexasMenu_Com: UITexasMenuComponent = null;
-
+    //带入带出
     UIChips_Con: cc.Node = null;
     UIAddChips_Com: UIAddChipsComponent = null;
     UIOutChips_Com: UIOutChipsComponent = null;
-
+    //操作面板
+    UIOperation_Con: cc.Node = null;
+    UIOperation_Com: UIOperationComponent = null;
+    UIAutoOperation_Com: UIAutoOperationComponent = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -153,6 +168,9 @@ export default class UITexas extends BaseScene {
     game: TexasGame = null;
 
     lastClickTime: number = 0;
+
+
+    TransPot_Pool: SimpleNodePool = null;
 
 
     //#region 弹幕界面
@@ -190,6 +208,7 @@ export default class UITexas extends BaseScene {
         this.cursituation_btn = this.getChildNodeOrComponent("cursituation_btn");
         this.chat_btn = this.getChildNodeOrComponent("chat_btn");
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
+        this.imageSelectSeatTips = this.getChildNodeOrComponent("Image_SelectSeatTips");
         this.imageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.imageReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
 
@@ -220,8 +239,6 @@ export default class UITexas extends BaseScene {
 
         //this.UITexasSetting = this.getChildNodeOrComponent("UITexasSetting");
 
-        this.UIOperation = this.getChildNodeOrComponent("UIOperation");
-        this.UIAutoOperation = this.getChildNodeOrComponent("UIAutoOperation");
 
         this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
         this.buttonSeeMorePublic = this.getChildNodeOrComponent("Button_SeeMorePublic");
@@ -232,12 +249,6 @@ export default class UITexas extends BaseScene {
         this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
 
         this.buttonCancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
-
-
-
-
-
-
 
         this.game = GameCache.Instance.CurGame;
         //this.game.Reset();
@@ -253,7 +264,6 @@ export default class UITexas extends BaseScene {
         this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard2))
         this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard3))
         this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard4))
-
 
         //#endregion
         //#region 第二套公共牌数据
@@ -301,8 +311,9 @@ export default class UITexas extends BaseScene {
         this.Seat.active = false;
 
 
-        UIComponent.Instance.SetPrefabNode(PrefabUI.UIOperation, this.UIOperation);
-        UIComponent.Instance.SetPrefabNode(PrefabUI.UIAutoOperation, this.UIAutoOperation);
+        this.TransPot_Pool = new SimpleNodePool(this.transPot);
+
+
         //////////////////装载容器
         //1.菜单
         this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
@@ -311,6 +322,10 @@ export default class UITexas extends BaseScene {
         this.UIChips_Con = this.getChildNodeOrComponent("UIChips_Con");
         this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
         this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
+        //3.操作面板
+        this.UIOperation_Con = this.getChildNodeOrComponent("UIOperation_Con");
+        this.UIOperation_Com = this.AddComponents(PrefabUI.UIOperationComponent, this.UIOperation_Con);
+        this.UIAutoOperation_Com = this.AddComponents(PrefabUI.UIAutoOperationComponent, this.UIOperation_Con);
     }
     //从预制体添加到容器
     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false) {
@@ -327,30 +342,25 @@ export default class UITexas extends BaseScene {
         return com;
     }
     protected regiterTouchEvents(): void {
-        this.menu_btn.on("click", this.sideClick, this);
-        this.report_btn.on("click", this.sideClick, this);
-        this.cursituation_btn.on("click", this.sideClick, this);
-        this.chat_btn.on("click", this.sideClick, this);
 
-        this.buttonDelay.getChildByName("BtnArea").on("click", this.onClickDelay, this);
+        this.setButtonClick(this.menu_btn, this.sideClick);
+        this.setButtonClick(this.report_btn, this.sideClick);
+        this.setButtonClick(this.cursituation_btn, this.sideClick);
+        this.setButtonClick(this.chat_btn, this.sideClick);
 
-        this.buttonSeeMorePublic.getChildByName("BtnArea").on("click", this.onClickSeeMorePublic, this);
 
+        this.setButtonClick(this.buttonDelay, this.onClickDelay);
+        this.setButtonClick(this.buttonSeeMorePublic, this.onClickSeeMorePublic);
     }
 
-
     Enter(param: { fromUI: IUIDefine, lookOn: boolean }): void {
-
         super.Enter(param);
-
         if (param != null) { // { fromUI: this.UIDefine, lookOn: false }
             this.game.IsLookOn = param?.lookOn || false;
         }
-
         this.game.SetDeskType(this.game.deskType);
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
-
     }
     ClearUI() {
         UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
@@ -373,7 +383,7 @@ export default class UITexas extends BaseScene {
             return;
         this.lastClickTime = GlobalSession.NowTimeMS;
 
-        let button = this.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button);
+        let button = this.buttonSeeMorePublic.getChildByName("click").getComponent(cc.Button);
 
         if (button.interactable == false) {
             return;
@@ -395,7 +405,6 @@ export default class UITexas extends BaseScene {
     private sideClick(e: cc.Button) {
         switch (e.node) {
             case this.menu_btn://菜单按钮
-                cc.log("menu_btn is clicked");
                 //this.CallbackExit();
                 if (this.CanClick() == false) return;
                 this.lastClickTime = GlobalSession.NowTimeMS;
@@ -403,14 +412,13 @@ export default class UITexas extends BaseScene {
                 break;
             case this.report_btn://报告按钮
                 this.Click_Report_Btn();
-                cc.log("report_btn is clicked");
                 break;
             case this.cursituation_btn://状况按钮
                 this.Click_Cursituation_btn();
-                cc.log("cursituation_btn is clicked");
                 break;
             case this.chat_btn://聊天按钮
-                cc.log("chat_btn is clicked");
+
+                UIComponent.Instance.Toast();
                 break;
         }
     }
@@ -440,9 +448,6 @@ export default class UITexas extends BaseScene {
     }
 
 
-
-
-
     protected onClickDelay(): void {
         if (this.CanClick() == false)
             return;
@@ -450,7 +455,7 @@ export default class UITexas extends BaseScene {
         if (this.game.delayCount >= 2)
             return;
 
-        if (!this.UIOperation.activeInHierarchy) {
+        if (!this.UIOperation_Com.node.activeInHierarchy) {
             UIComponent.Instance.Toast(i18nMgr.Get("ServerErrorCode_31045"));
             return;
         }

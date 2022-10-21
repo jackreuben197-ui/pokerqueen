@@ -77,7 +77,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     /**
      * 注册广播事件
      */
-     protected regiterDispatchEvent() {
+    protected regiterDispatchEvent() {
         this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
         this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
     }

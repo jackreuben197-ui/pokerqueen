@@ -18,7 +18,7 @@ export type TRoomBlinds = {
     cnt: number
 }
 
-export type TDeskNameTemp = {
+export type TLanguageTemp = {
     template_id: string,
     cn_name: string,
     us_name: string,
@@ -47,7 +47,7 @@ export type TRoomListItem = {
     game_type: number,//游戏类型
     poker_type: number,//牌类型
     limit_bet_type: number,//底池限注类型
-    status: number,//房间状态  0 未真是创建，1  已创建 未开始，2 进行中，3 强制关闭，4 即将关闭，5 房间关闭 。 RoomStatus
+    status: number,//房间状态  0 待创建，1  已创建 未开始，2 进行中|已开始，3 强制关闭|已结束，4 即将关闭，5 房间关闭 。 RoomStatus
     ante: number,//前注
     sb: number,//小盲
     op_duration: number,//操作时间
@@ -145,3 +145,220 @@ export type TUserInfo = {
     vip_endtime: number
 }
 
+export type TUserGoldChangeLogs = {
+    limit: number,
+    offset: number,
+    list: Array<TUserGoldChangeLogItem>,
+    total: number
+}
+
+export type TUserGoldChangeLogItem = {
+    hand: number,                              //手数
+    hand_win: number,                          //每手盈亏筹码
+    hand_bet: number,                          //每手下注筹码
+    insurance: number,                         //保险
+
+    user_id: number,                           //用户ID
+    src_type: number,                          //来源 0-普通非游戏，1-来源德州玩法房间，2-来源MTT，3-来源牛仔
+    src_room_id: number,                       //游戏roomID
+    src_match_id: number,                       //mtt赛事ID
+    name: string,                             //来源名称为了标识
+
+    op_id: number,                             //操作人ID
+    op_code: string,                   //操作类型
+    gold_before: number,                    //资金变动前金币
+    gold_change: number,                       //资金变动金币
+    gold_after: number,                     //资金变动后金币
+    gold_lock_before: number,                //锁定金币变动前金币
+    gold_lock_change: number,               //锁定金币变动金币
+    gold_lock_after: number,                   //锁定金币变动后金币
+    create_time: string
+}
+
+export type TClubGoldChangeLogs = {
+    limit: number,
+    offset: number,
+    list: Array<TClubGoldChangeLogItem>,
+    total: number
+}
+
+export type TClubGoldChangeLogItem = {
+    id: number,
+    room_name: string,
+    desc: string
+    org_Id: number,
+    org_account_id: number,
+    org_account_type: number,
+
+    user_id: number,
+    src_type: number,
+    src_room_id: number,
+    src_match_id: number,
+    name: string,
+
+    op_id: number,
+    op_code: string, //类型,工会收回玩，家提现的金币
+    gold_before: number, //资金变动前
+    gold_change: number, //资金变动
+    gold_after: number, //资金变动后
+    gold_lock_before: number, //锁定金币变动前
+    gold_lock_change: number, //锁定金币变动
+    gold_lock_after: number, //锁定金币变动后
+    create_time: string,
+}
+
+
+////rate
+export type TRateConfig = {
+    country: string,
+    flag: string,
+    path: string,
+    desc: string
+}
+
+export type TRateItem = {
+    id?: number, // ID
+    from_currency?: string, // 第一币种
+    from_rate?: number, // 第一币种比例值
+    to_currency?: string, // 第二币种
+    to_rate?: number, // 第二币种比例值
+}
+
+export type TListStepReq = {
+    reqing: boolean,
+    reqEnd: boolean,
+    offset: number
+}
+
+
+export type TOrderRecords = {
+    limit: number,
+    offset: number,
+    list: Array<TOrderRecordItem>,
+    total: number
+}
+
+export type TOrderRecordItem = {
+    id: number,
+    user_id: number,
+    user_type: number,  // 1 普通用户; 2 支桌号; 3 牌局机器人; 4 牛仔机器人
+    club_id: number,
+    tribe_id: number,
+    order_no: string
+    order_type: number,// 订单类型 1 申请充豆；2申请提豆 3工会发豆
+    gold_num: number,
+    amount: number,
+    status: number,     // 状态（1-申请中,2-同意,3-拒绝,4-取消申请）
+    audit_time: string
+    audit_user_id: number,
+    audit_type: number,// 审核来源：1 CMS; 2 app
+    create_time: string
+    update_time: string
+    change_id: number,
+    desc: "",
+    user_random_id: number,
+    nickname: "Player",
+    avatar: string
+    club_random_id: number,
+    club_name: string
+    tribe_random_id: number,
+    tribe_name: string
+}
+
+
+export type TIssueUserList = {
+    limit: number,
+    offset: number,
+    list: Array<TIssueUserItem>,
+    total: number
+}
+
+export type TIssueUserItem = {
+    user_id: number,
+    random_id: number,
+    nick_name: string,
+    mobile: string,
+    avatar: string,
+    member_type: number,
+    forbidden: false,
+    user_wallet: any,
+    user_org: any,
+    is_vip: false,
+    vip_members: number,
+    bring_in: number,
+    register_time: number,
+    login_time: number,
+    dz_service_profit: number,
+    dz_insurance_profit: number,
+    omaha_service_profit: number,
+    omaha_insurance_profit: number,
+    cowboy_profit: number,
+    mtt_profit: number,
+    up_table_times: number,
+    invitation_code: string,
+    logo: string,
+    user_type: number,
+    create_time: number,
+    source_type: number,
+    user_service_ratio: number,
+    user_service_ratio_status: number,
+    user_mtt_ratio: number,
+    user_mtt_ratio_status: number,
+    gender: number,
+    operator_id: number,
+    operator_random_id: number,
+    operator_nick_name: string,
+    description: string,
+    recharge_gold_total: number,
+    withdraw_gold_total: number,
+    recharge_withdraw_diff_gold_total: number,
+    forbid_bring_in: false,
+    forbid_withdraw_gold: false,
+    updated_time: number,
+    account_name: string,
+    account_password: string,
+    total_profit: number,
+    current_day_profit: number,
+    current_day_add_friend: number,
+    current_day_active_count: number,
+    vip_id: number,
+    vip_random_id: number,
+    vip_name: string,
+    match_active: number,
+    no_match_active: number,
+    buy_head_time: number,
+    hands_time: number,
+    register_to_recharge: number,
+    first_recharge_count: number,
+    two_recharge_count: number,
+    limit: number,
+    invitation_reward: null,
+    invitation_reward_string: string
+}
+
+export type TOrderApplyItem = {
+    id: number,
+    user_id: number,
+    user_type: number,
+    club_id: number,
+    tribe_id: number,
+    order_no: string,
+    order_type: number,
+    gold_num: number,
+    amount: number,
+    status: number,   // 状态（1-申请中,2-同意,3-拒绝,4-取消申请）
+    audit_time: number,
+    audit_user_id: number,
+    audit_type: number,
+    create_time: string,
+    update_time: string,
+    change_id: number,
+    desc: string,
+    user_random_id: number,
+    nickname: string,
+    avatar: string,
+    club_random_id: number,
+    club_name: string,
+    tribe_random_id: number,
+    tribe_name: string
+}

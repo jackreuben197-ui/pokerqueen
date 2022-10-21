@@ -106,7 +106,7 @@ export default class ResetPassForm extends RegisterForm {
 
         this.lbl_code.getComponent(LabelCDTime).show(60, this.resetGetCodeLabel.bind(this));
 
-        let NowTimeS = TimeHelper.NowS();
+        let NowTimeS = TimeHelper.NowS;
         localStorage.setItem(StorageKey.CODE_TIME_RESET, NowTimeS.toString());
     }
 

@@ -1,5 +1,6 @@
 
 import UpdateComponent from "../funcomponent/UpdateComponent";
+import { StringHelper } from "../helper/StringHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { UIMineModel } from "../lobby/UIMineModel";
@@ -111,6 +112,8 @@ export default class Seat {
     public keepSeatDeltaTime: number = 0;
     public IsExit: boolean = false;
 
+    deal_sequence_obj: any = {};
+
     tweenerPlayRecyclingWinChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
     sequenceUpdateBubble: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
     tweenerHideBubble: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function } = null;
@@ -132,6 +135,20 @@ export default class Seat {
         this.InitUIStaticData();
 
     }
+    //停止所有动作
+    public stopAllActions() {
+        this.uirc.imageIconChip.node.active = true;
+        this.uirc.imageIconChip.node.stopAllActions();
+        this.uirc.Head.stopAllActions();
+        this.uirc.Head.scale = 1;
+        this.uirc.transSmallCardBacks.stopAllActions();
+        this.uirc.listImageSmallCardBack.forEach(item => {
+            item.node.opacity = 255;
+            item.node.stopAllActions();
+        })
+
+
+    }
 
     /// <summary>
     /// 播放发牌动画
@@ -145,7 +162,7 @@ export default class Seat {
             this.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
         }
 
-        let tween = cc.tween({});
+        let tween = cc.tween(this.deal_sequence_obj);
 
         tween.delay(delay);
 
@@ -160,8 +177,8 @@ export default class Seat {
 
 
                 let cardInfo = this.uirc.listCardUIInfos[i];
-
-                cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.Player.cards[i]));
+                cardInfo.SetSpriteFrame(this.Player.cards[i]);
+                //cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                 cardInfo.imageCard.color = cc.Color.WHITE;
                 cardInfo.imageCard.setScale(cc.v3(0.5, 0.5));
                 cardInfo.imageCard.setPosition(this.uirc.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
@@ -289,10 +306,10 @@ export default class Seat {
         if (Seat.backSmallCardPos.length != 4) {
             Seat.backSmallCardPos = [];
             Seat.backSmallCardPos.push(cc.v3(0, 14.5));
-            Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
-
-            Seat.backSmallCardPos.push(cc.v3(0, 14.5));
-            Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
+            Seat.backSmallCardPos.push(cc.v3(-20, 14.5));
+            //Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
+            // Seat.backSmallCardPos.push(cc.v3(0, 14.5));
+            // Seat.backSmallCardPos.push(cc.v3(-10, 14.5));
         }
 
         if (Seat.backSmallCardRot.length != 2) {
@@ -380,6 +397,12 @@ export default class Seat {
         this.uirc.transSmallCardBacks.setPosition(info.CardBackPos);
         this.uirc.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
 
+        //是自己座位设置筹码数量位置
+        if (this.IsMySeat) {//this.ClientSeatId == 0 && 
+            this.uirc.textCoin.node.setPosition(0, -130);
+        } else {
+            this.uirc.textCoin.node.setPosition(0, -90);
+        }
 
         if (this.ui.x > 0) {
             //this.uirc.armatureVoice.setPosition(-90, 50, 0);
@@ -480,31 +503,14 @@ export default class Seat {
     }
     public SetCoin(coin: string): void {
         this.uirc.textCoin.string = coin;
-        if (coin != "") {
-            cc.log(" player coins:" + coin);
-        }
-        this.uirc.textCoinBg.node.active = !(coin == "");
-        let mTmpWidth: number = 0;
-
-
-
-        // if (textCoin.preferredWidth > 0 && textCoin.preferredWidth < textCoin.rectTransform.sizeDelta.x)
-        //     mTmpWidth = textCoin.preferredWidth + 36;
-        // else if (textCoin.preferredWidth >= textCoin.rectTransform.sizeDelta.x)
-        //     mTmpWidth = textCoin.rectTransform.sizeDelta.x;
-        //imageCoinShadow.rectTransform.sizeDelta = new Vector2(mTmpWidth, textCoin.fontSize + 4);
-        // if (mTmpWidth == 0) {
-        //     imageCoinIcon.gameObject.SetActive(false);
+        this.uirc.textCoin.node.active = !(coin == "");
+        //TODO
+        // if (this.IsMySeat) {
+        //     this.uirc.tex.node.setPosition(0, -174);
         // }
         // else {
-        //     imageCoinIcon.gameObject.SetActive(true);
+        //     this.uirc.textCoinBg.node.setPosition(0, -125);
         // }
-        if (this.IsMySeat) {
-            this.uirc.textCoinBg.node.setPosition(0, -174);
-        }
-        else {
-            this.uirc.textCoinBg.node.setPosition(0, -125);
-        }
     }
 
     /// <summary>
@@ -816,24 +822,20 @@ export default class Seat {
 
 
         if (this.isBig && GameCache.Instance.CurGame.cacheRound == Def.Round.PREFLOP) {
-            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_big_chip");
+            //this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_big_chip");
             this.isBig = false;
         }
         else if (this.isSmall && GameCache.Instance.CurGame.cacheRound == Def.Round.PREFLOP) {
             this.isSmall = false;
-            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_small_chip");
+            //this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_small_chip");
         }
         else {
-            this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+            //this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
         }
-        let str: string = `${this.Player.anteNumber / 100}`;
 
-        let num: number = +str;
+        let str = StringHelper.FormatIntOrFloat1(this.Player.anteNumber / 100);
 
-        if (num != (num ^ 0)) {
-            str = num.toFixed(1);
-        }
         this.uirc.textCurRoundHaveBet.string = str;
 
         this.uirc.textCurRoundHaveBet.node.active = true;
@@ -844,7 +846,11 @@ export default class Seat {
         this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
         //this.defaultIconChipLocalPos = this.uirc.imageIconChip.node.position.clone();
         this.uirc.imageIconChip.node.active = true;
-        this.uirc.transCurRoundHaveBet.active = true;
+
+        //座位运动中不显示
+        if (!GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
+            this.uirc.transCurRoundHaveBet.active = true;
+        }
     }
 
     /// <summary>
@@ -889,7 +895,8 @@ export default class Seat {
                     //有牌必定显示
                     hadCard = true;
                 }
-                if (hadCard || this.Player.isPlaying) {
+                //主位位移中显示卡牌
+                if ((hadCard || this.Player.isPlaying) && !GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
 
                     for (let i = 0, n = this.uirc.listCardUIInfos.length; i < n; i++) {
                         this.uirc.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
@@ -974,7 +981,6 @@ export default class Seat {
         try {
             for (let i = mUpdateStart; i < mUpdateEnd; i++) {
                 if (this.IsMySeat) {
-
                     list[i].imageCard.setPosition(Seat.myCardsPos[i]);
                     //list[i].imageCard.transform.localRotation = Quaternion.Euler(myCardsRot[i]);
                 }
@@ -983,7 +989,8 @@ export default class Seat {
                     list[i].imageCard.setPosition(Seat.smallCardPos[i]);
                 }
                 let mCard = this.Player.cards[i];
-                list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(mCard));
+                //list[i].imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(mCard));
+                list[i].SetSpriteFrame(mCard);
                 list[i].imageCard.active = true;
             }
         }
@@ -1006,10 +1013,7 @@ export default class Seat {
             //     }
             // }
             // Log.write(UnityEngine.LogType.Log, logContent.ToString());
-
         }
-
-
         for (let i = mHideStart; i < mHideEnd; i++) {
             list[i].imageCard.active = false;
         }
@@ -1039,8 +1043,6 @@ export default class Seat {
         this.uirc.imageIconChip.node.active = true;
         return cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos }).start();
     }
-
-
 
     /// <summary>
     /// 播放庄家动画
@@ -1099,13 +1101,9 @@ export default class Seat {
 
         this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
-        let str: string = `${GameCache.Instance.CurGame.groupBet / 100}`;
-        ////是整数不保留小数，不是整数保留一位小数
-        let num: number = +str;
 
-        if (num != (num ^ 0)) {
-            str = num.toFixed(1);
-        }
+        let str = StringHelper.FormatIntOrFloat1(GameCache.Instance.CurGame.groupBet / 100);
+
 
         this.uirc.textCurRoundHaveBet.string = str;
 
@@ -1227,11 +1225,12 @@ export default class Seat {
     /// 停止倒计时
     /// </summary>
     public StopCountDown(): void {
-        if (this.isCountDown) {
-            this.isCountDown = false;
-            this.uirc.imageCountDown.node.active = false;
-            this.uirc.Image_CountDownbg.node.active = false;
-        }
+        //if (this.isCountDown) {
+        this.isCountDown = false;
+        this.uirc.imageCountDown.node.active = false;
+        this.uirc.Image_CountDownbg.node.active = false;
+        cc.log("停止D");
+        //}
         //this.StopLightArmature();
     }
 
@@ -1601,7 +1600,8 @@ export default class Seat {
         this.isStraddle = false;
         this.optCurTime = 0;
         this.optTotalTime = 0;
-        this.isCountDown = false;
+        //this.isCountDown = false;
+        this.StopCountDown();
         this.defaultIconChipLocalPos = cc.Vec3.ZERO;
     }
 
@@ -1630,7 +1630,8 @@ export default class Seat {
 
         this.optCurTime = 0;
         this.optTotalTime = 0;
-        this.isCountDown = false;
+        //this.isCountDown = false;
+        this.StopCountDown();
         this.defaultIconChipLocalPos = cc.Vec3.ZERO;
         this.bKeepSeatCounting = false;
         this.keepSeatDeltaTime = 0;
@@ -1712,16 +1713,12 @@ export default class Seat {
         if (this.IsDisposed) {
             return;
         }
-
         this.KillAllTweener();
 
         if (null != this.FsmLogicComponent) {
             this.FsmLogicComponent.stop();
         }
-
-        //this.ClearUI();
         this.ClearData();
-
     }
 }
 export interface SeatUIInfo {

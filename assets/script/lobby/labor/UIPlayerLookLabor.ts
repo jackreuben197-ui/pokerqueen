@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 15:47:16
+ * @LastEditTime: 2022-10-19 11:45:38
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -17,6 +17,7 @@ import { UIClubModel } from "./UIClubModel";
 import { LobbyControl } from "../control/LobbyControl";
 import { GameCache } from "../../game/GameCache";
 import GC from "../../frame/GameControl";
+import TimeHelper from "../../helper/TimeHelper";
 
 const { ccclass, property } = cc._decorator;
 
@@ -33,6 +34,7 @@ export default class UIPlayerLookLabor extends BaseForm {
     }
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
+        await UIClubModel.mInstance.APIOrgClubGet()
         this.initTop();
     }
     initTop() {
@@ -61,7 +63,7 @@ export default class UIPlayerLookLabor extends BaseForm {
         WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.club_creator_avatar)
         //创建时间
         let chsj = this.contentNode.getChildByName('chsj')
-        chsj.getChildByName('time').getComponent(cc.Label).string = data.create_time
+        chsj.getChildByName('time').getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(data.create_time)
         //联盟
         let lm = this.contentNode.getChildByName('lm')
         let lm_panel_right = lm.getChildByName('panel_right')
@@ -78,6 +80,7 @@ export default class UIPlayerLookLabor extends BaseForm {
                 contentCancel: "取消",
                 actionCommit: async () => {
                     await UIClubModel.mInstance.APIOrgClubQuit();
+                    GC.data.user.info.gold = 0;
                     this.close();
                     LobbyControl.getInstance().switchContent("UIlabor");
                 },

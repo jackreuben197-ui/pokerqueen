@@ -2,6 +2,8 @@ import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GC from "../../frame/GameControl";
+import GameUtil from "../../game/GameUtil";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
 import LobbySession from "../../session/LobbySession";
@@ -19,6 +21,7 @@ export default class UIMatchChessItem extends UIBase {
     private lbl_time: cc.Label = null;
     private lbl_deskName: cc.Label = null;
     private lbl_num: cc.Label = null;
+    private lbl_status: cc.Label = null;
 
     private img_head: cc.Sprite = null;
     private lbl_unionName: cc.Label = null;
@@ -32,6 +35,7 @@ export default class UIMatchChessItem extends UIBase {
         this.lbl_time = this.getChildNodeOrComponent("lbl_time", cc.Label);
         this.lbl_deskName = this.getChildNodeOrComponent("lbl_deskName", cc.Label);
         this.lbl_num = this.getChildNodeOrComponent("lbl_num", cc.Label);
+        this.lbl_status = this.getChildNodeOrComponent("lbl_status", cc.Label);
 
         this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
         this.lbl_unionName = this.getChildNodeOrComponent("lbl_unionName", cc.Label);
@@ -55,12 +59,13 @@ export default class UIMatchChessItem extends UIBase {
         this.setText(this.lbl_center_left, `${sb}/${sb * 2}(${this._data.ante})`)
         this.setText(this.lbl_deskName, this._data.name)
         this.setText(this.lbl_num, `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`);
+        this.setText(this.lbl_status, `UIChessItemStatus_${this._data.status}`);
 
         let isJoin = this._data.participation_status == 1;
         this.item_choose.active = isJoin;
         this.item_normal.active = !isJoin;
 
-        let displayNode = this._data.participation_status == 0 ? this.item_normal : this.item_choose;
+        let displayNode = isJoin ? this.item_choose : this.item_normal;
         displayNode.getChildByName("lbl_gameType").getComponent(cc.Label).string = this.gameTypeName;
 
         let playView = this.node.getChildByName("lbl_time").getComponent(PlayViewItem)
@@ -75,6 +80,12 @@ export default class UIMatchChessItem extends UIBase {
     private async EnterRoomAPI() {
         if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
             if (this._data.room_type_is_legal) {
+                //未开放房间类型
+                if (!GameUtil.IsOpenRoomType(this._data.room_type)) {
+                    //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
+                    UIComponent.Instance.Toast();
+                    return;
+                }
                 let response = LobbySession.APIWebUserRoominsur(this._data.rid).catch(() => { });
                 if (response) {
                     GC.data.lobby.roomList.selected = this._data;

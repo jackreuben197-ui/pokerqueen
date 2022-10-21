@@ -14,6 +14,7 @@ export class SeatFSM {
     public IdleEnter(): void {
         //设置座位节点激活显示
         this.seat.ui.active = true;
+
     }
     public IdleExecute(): void {
     }
@@ -26,11 +27,12 @@ export class SeatFSM {
         this.seat.Player = null;
         this.seat.SetNickname("");
         this.seat.SetCoin("");
-
+        this.seat.stopAllActions();
         this.seat.uirc.imageBanker.active = false;
         // imageStraddle.gameObject.SetActive(false);
         this.seat.uirc.imageHeadFrame.node.active = false;
-        this.seat.uirc.transSmallCardBacks.active = false;
+        //this.seat.uirc.transSmallCardBacks.active = false;
+        this.seat.HideCardBack();
         // imageHolding.gameObject.SetActive(false);
         this.seat.HideCards(this.seat.uirc.listCardUIInfos);
         this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
@@ -42,7 +44,7 @@ export class SeatFSM {
         this.seat.uirc.imageBubble.node.active = false;
         // Image_BubbleInsuranceNum.gameObject.SetActive(false);
         // Image_BubbleInsuranceToubao.gameObject.SetActive(false);
-        // transCurRoundHaveBet.gameObject.SetActive(false);
+        this.seat.uirc.transCurRoundHaveBet.active = false;
         // imageWinner.gameObject.SetActive(false);
         // imageCoinShadow.gameObject.SetActive(false);
         // m_ImageRanking.gameObject.SetActive(false);
@@ -53,6 +55,8 @@ export class SeatFSM {
         // Image_OtherWinner.gameObject.SetActive(false);
         this.seat.uirc.WaitforthenextmoveTips.node.active = false;
         this.seat.FoldHeadGray(false);
+
+        this.seat.ui.stopAllActions();
 
         // if (null != armatureVoice.dragonAnimation && armatureVoice.dragonAnimation.isPlaying)
         //     armatureVoice.dragonAnimation.Stop();
@@ -169,7 +173,7 @@ export class SeatFSM {
     //#region 站起动画
     public StandupAnimationEnter(): void {
         this.seat.FsmLogicComponent.SM.ChangeState(SeatStandup.Instance);
-        cc.tween(this.seat.ui).sequence(cc.scaleTo(0.15, 0, 1), cc.scaleTo(0.15, 1, 1)).start();
+        cc.tween(this.seat.uirc.Head).sequence(cc.scaleTo(0.15, 0, 1), cc.scaleTo(0.15, 1, 1)).start();
     }
 
     public StandupAnimationExecute(): void {

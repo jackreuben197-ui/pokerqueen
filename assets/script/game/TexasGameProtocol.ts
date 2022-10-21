@@ -312,6 +312,14 @@ export default class TexasGameProtocol {
                 this.game.HideWaitBlindBtn();
             }
 
+            //设置卡牌隐藏
+            for (let i = 0, n = Seat.uirc.listCardUIInfos.length; i < n; i++) {
+                Seat.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+            }
+            for (let i = 0, n = Seat.uirc.listSmallCardUIInfos.length; i < n; i++) {
+                Seat.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
+            }
+
         }
         if (this.game.smallIndex >= 0) {
             //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_FIRST);
@@ -375,7 +383,7 @@ export default class TexasGameProtocol {
                     // 非弃牌 && 非ALLIN && 非托管
                     if (mMySeat.Player.actionStatus != Def.Action.FOLD && mMySeat.Player.actionStatus != Def.Action.ALLIN && mMySeat.Player.actionStatus != Def.Action.NONE && !mMySeat.Player.IsAutoOp) {
 
-                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
+                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(responseData.handInfo.roundBet)));
                     }
                     else {
                         this.game.HideAutoOperationPanel();
@@ -501,7 +509,8 @@ export default class TexasGameProtocol {
         GC.data.user.info.gold -= this.game.checkPublicCardsCost;
         this.game.cacheRound = rec.round;
         this.game.AddPublicCards(rec.publicCardsList);
-        this.game.uirc.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
+        //启用按钮
+        this.game.uirc.buttonSeeMorePublic.getChildByName("click").getComponent(cc.Button).interactable = true;
         // 花费查看未发公共牌
         if (this.game.GetCurPublicCardsCount() == 5) {
             this.game.HideSeeMorePublic();
@@ -742,7 +751,7 @@ export default class TexasGameProtocol {
                     // 自己有参与游戏
                     if ((this.game.mainPlayer.actionStatus != Def.Action.FOLD && this.game.mainPlayer.actionStatus != Def.Action.ALLIN && this.game.mainPlayer.actionStatus != Def.Action.NONE) && !this.game.mainPlayer.IsAutoOp) {
 
-                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
+                        UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(rec.roundBet)));
 
                     }
                     else {
@@ -948,9 +957,7 @@ export default class TexasGameProtocol {
                 mSeat.Player.MttHunterKillAwardOtherPlus += result.mttHunterKillAwardOtherPlus;
             }
 
-
             if (!mSeat.IsMySeat) {
-
                 //自己的牌不用更新
                 mSeat.Player.SetCards(this.game.GetHandCardsAtRecvWinner(this.game.MessageWinnerData, i));
             }
@@ -1263,7 +1270,7 @@ export default class TexasGameProtocol {
                 // 非弃牌、非ALL IN、非空闲等待下一局、非托管
                 if (this.game.mainPlayer.isPlaying && !this.game.mainPlayer.IsAutoOp) {
                     // 预操作UI
-                    UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperation, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(0)));
+                    UIComponent.Instance.ShowUI(PrefabUI.UIAutoOperationComponent, UIAutoOperationComponent.AutoOperationData(this.game.TexasGameUtils.getAutoOperationCallAmount(0)));
                 }
                 else {
                     // 无预操作UI
@@ -1352,8 +1359,8 @@ export default class TexasGameProtocol {
         this.game.cacheRound = rec.round;
         GameCache.Instance.GameStatus = this.game.gamestatus;
 
-        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperation);
-        UIComponent.Instance.HideUI(PrefabUI.UIOperation);
+        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperationComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
 
         let mSeat: Seat = null;
         for (let i = 0, n = rec.resultsList.length; i < n; i++) {
