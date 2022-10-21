@@ -370,6 +370,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/wallet/issue/GoldIssueListForm",
     },
+    OrderApplyForm: {
+        UIType: UIType.Form,
+        Name: "OrderApplyForm",
+        Bundle: null,
+        Path: "main/wallet/apply/OrderApplyForm",
+    },
 
 
 }

@@ -1,7 +1,7 @@
 import ComFormTitle from "../../common/ComFormTitle";
 import List from "../../common/List";
-import TextTabToggles, { TTabToggleData } from "../../common/TextTabToggles";
-import { EOrderRecordType } from "../../config/EEnumConfig";
+import ComTabToggles, { ETabToggle, TTabToggleData } from "../../common/ComTabToggles";
+import { EOrderType } from "../../config/EEnumConfig";
 import GC from "../../frame/GameControl";
 import { Web_Order_Rcords } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
@@ -12,22 +12,22 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('脚本分组/wallet/record/OrderRcordsForm')
 export default class OrderRecordsForm extends BaseForm {
     private comFormTitle: ComFormTitle = null;
-    private tabToggles: TextTabToggles = null;
+    private tabToggles: ComTabToggles = null;
     private list: List = null;
 
-    private titleNodes: Map<EOrderRecordType, cc.Node> = new Map();
+    private titleNodes: Map<EOrderType, cc.Node> = new Map();
 
     private _isClub: boolean = false;
-    private _curType: EOrderRecordType = EOrderRecordType.chongzhi;
+    private _curType: EOrderType = EOrderType.chongzhi;
     lateLoad() {
         super.lateLoad();
         this.list = this.getChildNodeOrComponent("list", List);
-        this.tabToggles = this.getChildNodeOrComponent("tabToggles", TextTabToggles);
+        this.tabToggles = this.getChildNodeOrComponent("tabToggles", ComTabToggles);
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
 
-        this.titleNodes.set(EOrderRecordType.chongzhi, this.getChildNodeOrComponent("titleNode1"));
-        this.titleNodes.set(EOrderRecordType.tiqu, this.getChildNodeOrComponent("titleNode2"));
-        this.titleNodes.set(EOrderRecordType.fafang, this.getChildNodeOrComponent("titleNode3"));
+        this.titleNodes.set(EOrderType.chongzhi, this.getChildNodeOrComponent("titleNode1"));
+        this.titleNodes.set(EOrderType.tiqu, this.getChildNodeOrComponent("titleNode2"));
+        this.titleNodes.set(EOrderType.fafang, this.getChildNodeOrComponent("titleNode3"));
     }
 
     protected regiterDispatchEvent(): void {
@@ -58,18 +58,18 @@ export default class OrderRecordsForm extends BaseForm {
         GC.data.wallet.orderRecord.resetData();
 
         let data: TTabToggleData = {
-            data: [EOrderRecordType.chongzhi, EOrderRecordType.tiqu],
+            data: [EOrderType.chongzhi, EOrderType.tiqu],
             title: ["adaptation10252", "adaptation10254"]
         }
         if (isClub) {
-            data.data.push(EOrderRecordType.fafang);
+            data.data.push(EOrderType.fafang);
             data.title.push("UITitle_fafang_jilu");
         }
-        this.tabToggles.data = data;
+        this.tabToggles.initData(data, ETabToggle.text);
         this.tabToggles.clickTab(0, null, true);
     }
 
-    onToggle = (index: number, type: EOrderRecordType) => {
+    onToggle = (index: number, type: EOrderType) => {
         this._curType = type;
         this.titleNodes.forEach((node, type) => {
             this.setActive(node, this._curType == type)

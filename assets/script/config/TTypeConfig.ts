@@ -335,3 +335,30 @@ export type TIssueUserItem = {
     invitation_reward: null,
     invitation_reward_string: string
 }
+
+export type TOrderApplyItem = {
+    id: number,
+    user_id: number,
+    user_type: number,
+    club_id: number,
+    tribe_id: number,
+    order_no: string,
+    order_type: number,
+    gold_num: number,
+    amount: number,
+    status: number,   // 状态（1-申请中,2-同意,3-拒绝,4-取消申请）
+    audit_time: number,
+    audit_user_id: number,
+    audit_type: number,
+    create_time: string,
+    update_time: string,
+    change_id: number,
+    desc: string,
+    user_random_id: number,
+    nickname: string,
+    avatar: string,
+    club_random_id: number,
+    club_name: string,
+    tribe_random_id: number,
+    tribe_name: string
+}

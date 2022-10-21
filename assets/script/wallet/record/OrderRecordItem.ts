@@ -37,7 +37,7 @@ export default class OrderRecordItem extends ListItem {
     initView() {
         this.setText(this.order, GC.language.getStrByLen(this._data.order, 8));
         this.setText(this.num, this._data.goldNum)
-        this.setText(this.status, GC.language.getLocal(`UIOrder_Record_Status_${this._data.status}`));
+        this.setText(this.status, GC.language.getLocal(`UIOrder_Apply_Status_${this._data.status}`));
         this.setText(this.time, this._data.time)
     }
 }

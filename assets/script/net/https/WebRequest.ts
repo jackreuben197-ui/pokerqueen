@@ -659,6 +659,13 @@ export class Web_Order_Rcords {
     public static USER_RECORD = "/api/order/user/order_records";  //工会冲提记录
 }
 
+export class Web_Order_apply {
+    // 订单类型(order_type):1-充豆;2-提豆
+    public static APPLY_LIST = "/api/order/club/member_order/list";
+    // 订单号(order_no)   审计类型(audit_type):1-同意;2-拒绝
+    public static OPRATION_APPLY = "/api/order/club/audit/member_order";
+}
+
 export class Web_Club_Issue_Gold {
     // 参数：user_id（用户ID），gold_num（金豆数量）
     public static ISSUE = "/api/order/club/grant";
@@ -773,7 +780,8 @@ export class Web_Org_Club_Get {
 
     public static ResponseData: {
         random_id: number,
-        club_name: string
+        club_name: string,
+        more_contact: string
     } = null;
     public static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;

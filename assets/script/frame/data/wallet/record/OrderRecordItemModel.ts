@@ -1,3 +1,4 @@
+import { EApplyStatus } from "../../../../config/EEnumConfig";
 import { TOrderRecordItem } from "../../../../config/TTypeConfig";
 
 export default class OrderRecordItemModel {
@@ -17,7 +18,7 @@ export default class OrderRecordItemModel {
         return Math.floor(this._msg.gold_num)/100;
     }
 
-    get status() {
+    get status():EApplyStatus {
         return this._msg.status;
     }
 

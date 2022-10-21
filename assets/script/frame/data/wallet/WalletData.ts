@@ -1,7 +1,8 @@
-import { EOrderRecordType } from "../../../config/EEnumConfig";
-import { Web_Club_Issue_Gold, Web_Gold_Change_Log, Web_Order_Rcords, Web_Org_Club_Get, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../../../net/https/WebRequest";
+import { EOrderOprationStatus, EOrderType } from "../../../config/EEnumConfig";
+import { Web_Club_Issue_Gold, Web_Gold_Change_Log, Web_Order_apply, Web_Order_Rcords, Web_Org_Club_Get, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../../../net/https/WebRequest";
 import { EWalletGoldOpration } from "../../../wallet/WalletConfig";
 import { BaseData } from "../../base/BaseData";
+import OrderApplyModel from "./apply/OrderApplyModel";
 import GoldChangeLogModel from "./goldChangeLog/GoldChangeLogModel";
 import GoldIssueModel from "./issue/GoldIssueModel";
 import OrderRecordModel from "./record/OrderRecordModel";
@@ -10,6 +11,7 @@ export default class WalletData extends BaseData {
     goldChangeLogs: GoldChangeLogModel = new GoldChangeLogModel();
     orderRecord: OrderRecordModel = new OrderRecordModel();
     issue: GoldIssueModel = new GoldIssueModel();
+    apply: OrderApplyModel = new OrderApplyModel();
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
@@ -25,6 +27,12 @@ export default class WalletData extends BaseData {
             } break;
             case Web_Club_Issue_Gold.USER_LIST: {
                 this.issue.updateData(msg);
+            } break;
+            case Web_Order_apply.APPLY_LIST: {
+                this.apply.updateData(msg);
+            } break;
+            case Web_Order_apply.OPRATION_APPLY: {
+                this.apply.updateItem(msg);
             } break;
             default:
                 break;
@@ -53,7 +61,7 @@ export default class WalletData extends BaseData {
         this.reqServePost(Web_Gold_Change_Log.Club, { limit: limit, offset: offset, club_random_id: Web_Org_Club_Get.Response.data.random_id })
     }
 
-    reqOrderRecord(type: EOrderRecordType, offset: number = 0, isClub: boolean, limit: number = 25) {
+    reqOrderRecord(type: EOrderType, offset: number = 0, isClub: boolean, limit: number = 25) {
         let sendData: any = { limit: limit, offset: offset, order_type: type };
         if (!isClub) {
             sendData = { limit: limit, offset: offset, order_type: type, user_type: 1 };
@@ -67,5 +75,12 @@ export default class WalletData extends BaseData {
     }
     reqIssueSearchUser(search) {
         this.reqServePost(Web_Club_Issue_Gold.USER_LIST, { search: search });
+    }
+
+    reqOrderApplyList(type: EOrderType, offset: number = 0, limit: number = 10) {
+        this.reqServePost(Web_Order_apply.APPLY_LIST, { limit: limit, offset: offset, order_type: type })
+    }
+    reqOrderApplyOpration(order_no: string, audit_type: EOrderOprationStatus) {
+        this.reqServePost(Web_Order_apply.OPRATION_APPLY, { order_no: order_no, audit_type: audit_type })
     }
 }

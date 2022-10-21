@@ -216,18 +216,23 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     reqSuc(sendInfo?: any) {
-        let content = GC.language.getLocal(`UITips_GoldOpration_suc_${this._data.type}`);
-        UIComponent.open(UIDefine.UIDialogComponent,
-            {
-                type: UIDialogComponent.DialogType.Commit,
-                title: "adaptation10007",
-                content: content,
-                contentCommit: "adaptation10012",
-                contentCancel: "adaptation10013",
-                actionCommit: this.backToWallet,
-                actionClose: this.backToWallet,
-                noAnimation: true,
-            });
+        if (this._data.type == EWalletGoldOpration.issue) {
+            this.backToWallet();
+        } else {
+            let phone = this._data.isClub ? "还没有" : Web_Org_Club_Get.Response.data.more_contact;
+            let content = GC.language.getLocal(`UITips_GoldOpration_suc_${this._data.type}`, phone);
+            UIComponent.open(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.Commit,
+                    title: "adaptation10007",
+                    content: content,
+                    contentCommit: "adaptation10012",
+                    contentCancel: "adaptation10013",
+                    actionCommit: this.backToWallet,
+                    actionClose: this.backToWallet,
+                    noAnimation: true,
+                });
+        }
     }
 
     backToWallet = () => {

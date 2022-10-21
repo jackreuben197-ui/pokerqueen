@@ -3188,10 +3188,11 @@ UIChessItemStatus_3=已结束
 UIChessItemStatus_4=即将关闭
 UIChessItemStatus_5=房间关闭
 
-UIOrder_Record_Status_1=申请中
-UIOrder_Record_Status_2=同意
-UIOrder_Record_Status_3=拒绝
-UIOrder_Record_Status_4=取消申请
+UIOrder_Apply_Status_1=申请中
+UIOrder_Apply_Status_2=同意
+UIOrder_Apply_Status_3=拒绝
+UIOrder_Apply_Status_4=取消申请
+
 
 UIBtnLab_add=添加
 UIEditRateTip=请输入汇率
@@ -3224,6 +3225,11 @@ UITitle_setRate=编辑汇率
 
 UITitle_fafang_jilu=发放记录
 UITitle_zongjijin=总基金
+
+UITitle_apply_chongdou=充豆申请
+UITitle_apply_tidou=提豆申请
+
+UIUserDesc=玩家备注:{0}
 
 UITips_GoldOpration_0=确定向{0}工会申请充值{1}金豆？<br/>付款金额{2}
 UITips_GoldOpration_1=确定向{0}工会申请提取{1}金豆？<br/>收款金额{2}
