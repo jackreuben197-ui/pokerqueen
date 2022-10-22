@@ -377,6 +377,13 @@ export const UIDefine = {
         Path: "main/wallet/apply/OrderApplyForm",
     },
 
+    UIApplyJoin: {
+        UIType: UIType.Form,
+        Name: "UIApplyJoin",
+        Bundle: null,
+        Path: "main/club/UIApplyJoin",
+    },
+
 
 }
 //批量设置

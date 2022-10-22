@@ -1455,6 +1455,47 @@ export class Web_Room_Center_Mtt_list {
         code?: number, message?: string, data?: typeof Web_Room_Center_Mtt_list.ResponseData
     };
 }
+export class APIOrgInvitationRoom {
+    //接口地址
+    public static API: string = "/api/roomcenter/invitation/room";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgInvitationRoom.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgInvitationRoom.ResponseData
+    };
+
+}
+export class APIOrgFriendRoomList {
+    //接口地址
+    public static API: string = "/api/roomcenter/friend/rooms";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgFriendRoomList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgFriendRoomList.ResponseData
+    };
+
+}
+
 
 /**
  * 注册全局访问

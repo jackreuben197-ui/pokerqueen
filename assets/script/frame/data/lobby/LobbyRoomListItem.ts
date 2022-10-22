@@ -7,7 +7,9 @@ export default class LobbyRoomListItem {
     constructor(data) {
         this._data = data;
     }
-
+    set rid(rid) {
+        this._data.rid = rid
+    }
     get rid() {
         return this._data.rid;
     }

@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-09-23 15:02:45
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-22 13:54:19
+ * @FilePath: /pokerqueen/assets/script/manager/ProcedureManager.ts
+ */
 /**
  * 全局流程管理器
  */

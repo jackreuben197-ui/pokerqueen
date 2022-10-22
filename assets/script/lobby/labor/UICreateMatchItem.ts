@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:45:09
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 16:33:10
+ * @LastEditTime: 2022-10-21 19:51:51
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchItem.ts
  */
 
@@ -130,7 +130,6 @@ export default class UICreateMatchItem extends UIBase {
             UIComponent.Instance.Toast('开局成功')
         }
         this.post(EventName.updateChessView);
-
     }
 
 }

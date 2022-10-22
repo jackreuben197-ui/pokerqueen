@@ -3,13 +3,22 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 18:29:20
+ * @LastEditTime: 2022-10-22 16:16:11
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
 import { EventName } from "../../config/EventName";
+import { ProcedureEnum } from "../../define/EIDefine";
+import { UIDefine } from "../../define/UIDefine";
+import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
+import GC from "../../frame/GameControl";
+import GameUtil from "../../game/GameUtil";
+import ProcedureManager from "../../manager/ProcedureManager";
 import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import WebSocketClient from "../../net/websocket/WebSocketClient";
+import LobbySession from "../../session/LobbySession";
 import BaseForm from "../../ui/form/BaseForm";
+import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
 
 const { ccclass, property } = cc._decorator;
@@ -128,6 +137,7 @@ export default class UICreateMatch extends BaseForm {
     }
     _editModelData = null;
 
+    _data: LobbyRoomListItem = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.tabBtnsParent = this.getChildNodeOrComponent("tabBtns");
@@ -531,7 +541,7 @@ export default class UICreateMatch extends BaseForm {
         room_config.limit_gps = this.gpsState //是否开启gps限制
 
 
-        let data: any = Web_Org_Club_Get.Response.data;
+        // let data: any = Web_Org_Club_Get.Response.data;
         // room_config.club_id = data.random_id
         // room_config.tribe_id = data.random_id;
         let params: any = { name: modelName, room_config: room_config }
@@ -557,14 +567,18 @@ export default class UICreateMatch extends BaseForm {
                     room_config.max_per_hand = 0 //服务费比例(0-100)
 
                 } else {
-                    room_config.max_per_hand = Number(this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
+                    room_config.max_per_hand = Number(this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //服务费比例(0-100)
                 }
 
 
                 room_config.fee_permillage = Number(this.jslx.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
                 room_config.limit_friend_table = true;
                 room_config.limit_bring_in = this.kzwjdrState;
-                await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                this.post(EventName.updateFriendChessView)
+                this._data = new LobbyRoomListItem(data.data.room_config);
+                this._data.rid = data.data.room_id
+                this.EnterRoomAPI()
             }
         }
         this._editModelData = null;
@@ -595,5 +609,28 @@ export default class UICreateMatch extends BaseForm {
         this._btnType = 1;
         this.fillName();
     }
+    private async EnterRoomAPI() {
+        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
+            if (this._data.room_type_is_legal) {
+                //未开放房间类型
+                if (!GameUtil.IsOpenRoomType(this._data.room_type)) {
+                    //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
+                    UIComponent.Instance.Toast();
+                    return;
+                }
+                let response = LobbySession.APIWebUserRoominsur(this._data.rid).catch(() => { });
+                if (response) {
+                    GC.data.lobby.roomList.selected = this._data;
+                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: UIDefine.UICreateMatchHome, lookOn: false });//[this.UIDefine, false, 0]
+                }
+            } else {
+                console.warn("房间类型未解析:", this._data.room_type);
+                UIComponent.Instance.Toast(`room_type:${this._data.room_type} is error`);
+            }
+        } else {
+            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
+        }
+    }
+
 
 }

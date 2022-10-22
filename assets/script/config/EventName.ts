@@ -7,4 +7,5 @@ export const enum EventName {
     addRateItem = "addRateItem",    //添加汇率
 
     updateChessView = "updateChessView", //刷新牌桌列表
+    updateFriendChessView = "updateFriendChessView", //刷新朋友牌桌列表
 }
