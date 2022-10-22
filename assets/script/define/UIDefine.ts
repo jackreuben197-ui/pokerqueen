@@ -126,6 +126,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_About",
         Title: "UIMine_SettingAboutus",
     },
+    //工会-成员详细
+    UIMember: {
+        UIType: UIType.Form,
+        Name: "UIMember",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIMember",
+        Title: "",
+    },
     //战绩
     UIRecord: {
         UIType: UIType.Form,

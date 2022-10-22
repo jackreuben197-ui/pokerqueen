@@ -164,6 +164,9 @@ export default class UIRecordDetail extends BaseForm {
             let score = info.finally_game_results;
             let scLbl = _cloneNode.getChildByName("item_score").getComponent(cc.Label);
             LobbyControl.getInstance().setWinColor(scLbl, score);
+
+            let img_line = _cloneNode.getChildByName("img_line");
+            img_line.active = i != len - 1;
         }
         scrollView.content.height = panel_item.height * (len+2);
     }

@@ -12,7 +12,7 @@
   "height": 31,
   "platformSettings": {},
   "subMetas": {
-    "盲注": {
+    "coin": {
       "ver": "1.0.6",
       "uuid": "828dceba-a2fe-44e9-a7a4-dacf5e65d8b6",
       "importer": "sprite-frame",
