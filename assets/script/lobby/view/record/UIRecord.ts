@@ -232,7 +232,7 @@ export default class UIRecord extends BaseForm {
                 let sbStr = `${info.small_blind}/${info.small_blind * 2}`
                 _cloneNode.getChildByName("lbl_sb").getComponent(cc.Label).string = sbStr;
                 _cloneNode.getChildByName("lbl_bx").active = info.insurance_on == 1;
-                let longStr = this.getLongTimeStr(info.play_duration);
+                let longStr = LobbyControl.getInstance().getLongTimeStr(info.play_duration);
                 _cloneNode.getChildByName("lbl_total").getComponent(cc.Label).string = longStr;
                 _cloneNode.getChildByName("img_dian_now").active = true;
                 let ts = Date.parse(info.Time)
@@ -275,24 +275,6 @@ export default class UIRecord extends BaseForm {
             }
             scrollView.content.height = panel_item.height * (len + 1);
         }
-    }
-
-    getLongTimeStr(pNum) {//1小时3600秒      1天86400秒
-        if (pNum >= 3600)//>1小时
-        {
-            let tHour = Math.floor(pNum / 3600);
-            return tHour.toString().padStart(2, '0') + "小时局";
-        }
-        else if (pNum >= 60)//>1分钟
-        {
-            let tMinutes = Math.floor(pNum / 60);
-            return tMinutes.toString().padStart(2, '0') + "分钟局";
-
-        }
-        else if (pNum < 60) {
-            return pNum.toString() + '秒局';
-        }
-        return "";
     }
 
     isExistDate(date) {

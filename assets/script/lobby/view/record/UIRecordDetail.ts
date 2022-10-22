@@ -1,5 +1,6 @@
 import { GameCache } from "../../../game/GameCache";
 import TimeHelper from "../../../helper/TimeHelper";
+import WebImageHelper from "../../../helper/WebImageHelper";
 import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import { LobbyControl } from "../../control/LobbyControl";
@@ -65,22 +66,98 @@ export default class UIRecordDetail extends BaseForm {
         lbl_club.active = false;
         let lbl_desk: cc.Node = this.getChildNodeOrComponent("lbl_desk")
         lbl_desk.active = false;
+
+        let len = user_list.length;
+        let node1: cc.Node = this.getChildNodeOrComponent("node1")
+        let node2: cc.Node = this.getChildNodeOrComponent("node2")
+        let node3: cc.Node = this.getChildNodeOrComponent("node3")
+        let refreshHead = function(nodeInfo, node) {
+            let img_head = node.getChildByName("img_head");
+            let lbl_name = node.getChildByName("lbl_name");
+            WebImageHelper.SetHeadImage(img_head.getComponent(cc.Sprite), nodeInfo.avatar);
+            lbl_name.getComponent(cc.Label).string = nodeInfo.nick_name;
+        }
+        if (len == 1) {
+            node1.active = false;
+            node2.active = true;
+            node3.active = false;
+            refreshHead(user_list[0], node2);
+        } else if (len == 2) {
+            node1.active = true;
+            node2.active = true;
+            node3.active = false;
+            refreshHead(user_list[0], node2);
+            refreshHead(user_list[1], node1);
+        } else if (len >= 3) {
+            node1.active = true;
+            node2.active = true;
+            node3.active = true;
+            refreshHead(user_list[0], node2);
+            refreshHead(user_list[1], node1);
+            refreshHead(user_list[2], node3);
+        } else {
+            node1.active = false;
+            node2.active = false;
+            node3.active = false;
+        }
+
+        let score = 0;
+        let scoreStr = "";
+        user_list.forEach(element => {
+            if (element.user_random_id == GameCache.Instance.nUserId) {
+                score = element.finally_game_results;
+            }
+        });
+        scoreStr = score.toString();
+        if (score > 0) {
+            scoreStr = "+" + score.toString();
+        }
+        this.getChildNodeOrComponent("lbl_record_num", cc.Label).string = scoreStr;
+
+        this.getChildNodeOrComponent("lbl_total_num", cc.Label).string = roomData.room_total_hand_num.toString();
+
+        this.getChildNodeOrComponent("lbl_gold_num", cc.Label).string = roomData.all_bring_in.toString();
+    
+
+        let bx = roomData.insurance_total;
+        let bxStr = "";
+        bxStr = bx.toString();
+        if (bx > 0) {
+            bxStr = "+" + bx.toString();
+        }
+        this.getChildNodeOrComponent("lbl_bx_score", cc.Label).string = bxStr;
     }
 
     refreshListView(data) {
+        let roomData = data.data.room_data;
+        let user_list = roomData.user_list;
+        let len = user_list.length;
         // 有数据 刷新列表
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
-        for (let i=0; i<10; i++) {
+        for (let i=0; i<len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
             _cloneNode.x = 0;
             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
             _cloneNode.parent = scrollView.content;
 
-            _cloneNode.getChildByName("lbl_rank").getComponent(cc.Label).string = i.toString();
+            _cloneNode.getChildByName("lbl_rank").getComponent(cc.Label).string = (i+1).toString();
+        
+            let info = user_list[i];
+            let head = _cloneNode.getChildByName("img_head").getComponent(cc.Sprite);
+            WebImageHelper.SetHeadImage(head, info.avatar);
+            _cloneNode.getChildByName("item_name").getComponent(cc.Label).string = info.nick_name;
+            _cloneNode.getChildByName("item_gold").getComponent(cc.Label).string = info.bring_in;
+            let score = info.finally_game_results;
+            let scoreStr = "";
+            scoreStr = score.toString();
+            if (score > 0) {
+                scoreStr = "+" + score.toString();
+            }
+            _cloneNode.getChildByName("item_score").getComponent(cc.Label).string = scoreStr;
         }
-        scrollView.content.height = panel_item.height * 12;
+        scrollView.content.height = panel_item.height * (len+2);
     }
 
 }
