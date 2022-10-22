@@ -162,7 +162,7 @@ export default class UIRecord extends BaseForm {
                     label.string = mtt_room_data.frist_times;
                 } else if (i == 2) {
                     let total = mtt_room_data.frist_times + mtt_room_data.second_times + mtt_room_data.third_times;
-                    label.string = total;
+                    LobbyControl.getInstance().setWinColor(label, total);
                 } else if (i == 3) {
                     label.string = mtt_room_data.win_times;
                 } else if (i == 4) {
@@ -185,7 +185,7 @@ export default class UIRecord extends BaseForm {
                 if (i == 1) {
                     label.string = room_data.total_game_cnt;
                 } else if (i == 2) {
-                    label.string = room_data.total_earn;
+                    LobbyControl.getInstance().setWinColor(label, room_data.total_earn);
                 } else if (i == 3) {
                     label.string = room_data.total_hand;
                 } else if (i == 4) {
@@ -223,11 +223,9 @@ export default class UIRecord extends BaseForm {
                 _cloneNode.parent = scrollView.content;
 
                 let nameStr = GC.data.languageTemp.temp.getName(info.Name);
-                let scoreStr = info.Change.toString();
-                if (info.Change > 0) {
-                    scoreStr = "+" + scoreStr;
-                }
-                _cloneNode.getChildByName("lbl_score").getComponent(cc.Label).string = scoreStr;
+                // 分数
+                let lbl_bx_score = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
+                LobbyControl.getInstance().setWinColor(lbl_bx_score, info.Change);
                 _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
                 let sbStr = `${info.small_blind}/${info.small_blind * 2}`
                 _cloneNode.getChildByName("lbl_sb").getComponent(cc.Label).string = sbStr;

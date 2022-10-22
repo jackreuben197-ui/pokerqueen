@@ -142,6 +142,22 @@ export const UIDefine = {
         Path: "main/lobby/prefab/record/UIRecordDetail",
         Title: "",
     },
+    //本局牌谱
+    UIRecordScore: {
+        UIType: UIType.Form,
+        Name: "UIRecordScore",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIRecordScore",
+        Title: "UIMine_RecordDetailForNormal_FENSVUz3",
+    },
+    //带入申请
+    UIRecordInto: {
+        UIType: UIType.Form,
+        Name: "UIRecordInto",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIRecordInto",
+        Title: "",
+    },
     //房间模版
     UIMatchPlayViewForm: {
         UIType: UIType.Form,

@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_History_List, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -282,6 +282,25 @@ export class LobbyControl {
         });
     }
 
+    /**
+     * 手数列表  
+     */
+     async getRecordHandInfo(param: typeof Web_Room_Center_History_Hand.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Room_Center_History_Hand,
+                body: Web_Room_Center_History_Hand.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Room_Center_History_Hand.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+
     getLongTimeStr(pNum) {//1小时3600秒      1天86400秒
         if (pNum >= 3600)//>1小时
         {
@@ -298,6 +317,20 @@ export class LobbyControl {
             return pNum.toString() + '秒局';
         }
         return "";
+    }
+
+    setWinColor(lbl, num) {
+        let bxStr = "";
+        bxStr = num.toString();
+        if (num >= 0) {
+            if (num > 0) {
+                bxStr = "+" + num.toString();
+            }
+            lbl.node.color = cc.color(53, 163, 179)
+        } else {
+            lbl.node.color = cc.color(255, 204, 0)
+        }
+        lbl.string = bxStr;
     }
 
 
