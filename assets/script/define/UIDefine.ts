@@ -126,6 +126,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_About",
         Title: "UIMine_SettingAboutus",
     },
+    //工会-成员详细
+    UIMember: {
+        UIType: UIType.Form,
+        Name: "UIMember",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIMember",
+        Title: "",
+    },
     //战绩
     UIRecord: {
         UIType: UIType.Form,
@@ -140,6 +148,22 @@ export const UIDefine = {
         Name: "UIRecordDetail",
         Bundle: null,
         Path: "main/lobby/prefab/record/UIRecordDetail",
+        Title: "",
+    },
+    //本局牌谱
+    UIRecordScore: {
+        UIType: UIType.Form,
+        Name: "UIRecordScore",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIRecordScore",
+        Title: "UIMine_RecordDetailForNormal_FENSVUz3",
+    },
+    //带入申请
+    UIRecordInto: {
+        UIType: UIType.Form,
+        Name: "UIRecordInto",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIRecordInto",
         Title: "",
     },
     //房间模版

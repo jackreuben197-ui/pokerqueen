@@ -1,0 +1,145 @@
+import { UIDefine } from "../../../define/UIDefine";
+import LobbyData from "../../../frame/data/lobby/LobbyData";
+import GC from "../../../frame/GameControl";
+import TimeHelper from "../../../helper/TimeHelper";
+import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
+import BaseForm from "../../../ui/form/BaseForm";
+import UIComponent from "../../../ui/UIComponent";
+import { LobbyControl } from "../../control/LobbyControl";
+
+
+
+const { ccclass, property } = cc._decorator;
+
+@ccclass
+export default class UIMember extends BaseForm {
+
+    lastGameType: number = 1;
+    lastTimeType: number = 1;
+    oldDates: Array<string> = [];
+
+    protected lateLoad() {
+        super.lateLoad();
+    }
+
+
+    lateClose(param: any = null) {
+        super.lateClose(param);
+    }
+    /**
+     * 每次打开面板处理的内容
+     */
+    onShow(param?: any, fromUI?: BaseForm): void {
+        super.onShow(param, fromUI);
+      
+        this.resetUI();
+
+        for (let i=1; i<8; i++) {
+            let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
+            btn_pt_1["index"] = i;
+            btn_pt_1.on(cc.Node.EventType.TOUCH_END, this.onClickNLH, this)
+        }
+
+        for (let i=1; i<4; i++) {
+            let btn_pd_1: cc.Node = this.getChildNodeOrComponent("btn_pd_" + i);
+            btn_pd_1["index"] = i;
+            btn_pd_1.on(cc.Node.EventType.TOUCH_END, this.onClickDate, this)
+        }
+        
+        // this.reqUpInfo(this.lastGameType, this.lastTimeType);
+        // this.reqDownInfo();
+    }
+
+    reqUpInfo(gameType, timeType) {
+        let info = {
+            game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
+            time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+            time_long: new Date().getTime(),      //客户端时间戳
+        }
+        LobbyControl.getInstance().getUserStatsInfo(info).then(
+            (res) => {
+            },
+            (res) => {
+            }
+        )
+    }
+
+    reqDownInfo() {
+        let group_by = 1;
+        if (this.lastGameType == 5) {
+            group_by = 2;
+        }
+        let info = {
+            group_by: group_by,      //1 room 2 mtt 3 mttroom
+            limit: 100,         //条目
+            offset: 0,        //开始下标。例子（offset=0，limit=10，0-9。）
+            game_type: this.lastGameType - 1,     //游戏类型，对应客户端 枚举 GameType
+        }
+        LobbyControl.getInstance().getHistoryInfo(info).then(
+            (res) => {
+            },
+            (res) => {
+            }
+        )
+    }
+
+    refreshChooseNLH(index) {
+        for (let i=1; i<8; i++) {
+            let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
+            let label = btn_pt_1.getComponent(cc.Label);
+            if (i == index) {
+                label.fontSize = 46;
+                btn_pt_1.opacity = 255;
+            } else {
+                label.fontSize = 38;
+                btn_pt_1.opacity = 76.5;
+            }
+        }
+    }
+
+    refreshChooseDate(index) {
+        for (let i=1; i<4; i++) {
+            let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pd_" + i);
+            let label = btn_pt_1.getComponent(cc.Label);
+            let img_line = btn_pt_1.getChildByName("img_line");
+            if (i == index) {
+                btn_pt_1.color = cc.color(53, 163, 179, 255);
+                img_line.active = true;
+            } else {
+                btn_pt_1.color = cc.color(255, 255, 255, 255);
+                img_line.active = false;
+            }
+        }
+    }
+
+    onClickNLH(event) {
+        let node = event.target;
+        let index = node.index;
+        this.refreshChooseNLH(index);
+        this.lastGameType = index;
+        // this.reqUpInfo(index, this.lastTimeType);
+        // this.reqDownInfo();
+    }
+
+    onClickDate(event) {
+        let node = event.target;
+        let index = node.index;
+        this.refreshChooseDate(index);
+        this.lastTimeType = index;
+        // this.reqUpInfo(this.lastGameType, index);
+    }
+
+    resetUI() {
+        this.lastGameType = 1;
+        this.lastTimeType = 1;
+        this.refreshChooseNLH(1);
+        this.refreshChooseDate(1);
+    }
+
+    onClickItem(event) {
+        let target = event.target;
+        let info = target.info;
+        UIComponent.open(UIDefine.UIRecordDetail, {info : info});
+    }
+
+}

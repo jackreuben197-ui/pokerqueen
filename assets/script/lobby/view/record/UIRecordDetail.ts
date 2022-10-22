@@ -1,8 +1,10 @@
+import { UIDefine } from "../../../define/UIDefine";
 import { GameCache } from "../../../game/GameCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
+import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
 
 
@@ -12,6 +14,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UIRecordDetail extends BaseForm {
 
+    respInfo: any = null;
 
     protected lateLoad() {
         super.lateLoad();
@@ -31,6 +34,19 @@ export default class UIRecordDetail extends BaseForm {
         if (param && param.info) {
             this.reqInfo(param.info.RoomID);
         }
+        let panel_up1: cc.Node = this.getChildNodeOrComponent("panel_up1");
+        panel_up1.on(cc.Node.EventType.TOUCH_END, this.onClickScore, this)
+
+        let panel_up2: cc.Node = this.getChildNodeOrComponent("panel_up2");
+        panel_up2.on(cc.Node.EventType.TOUCH_END, this.onClickInto, this)
+    }
+
+    onClickScore() {
+        UIComponent.open(UIDefine.UIRecordScore, {info: this.respInfo});
+    }
+
+    onClickInto() {
+        UIComponent.open(UIDefine.UIRecordInto);
     }
 
     reqInfo(roomId) {
@@ -40,6 +56,7 @@ export default class UIRecordDetail extends BaseForm {
         }
         LobbyControl.getInstance().getRecordDetailInfo(roomId, info).then(
             (res) => {
+                this.respInfo = res;
                 this.refreshUpUI(res);
                 this.refreshListView(res);
             },
@@ -112,20 +129,15 @@ export default class UIRecordDetail extends BaseForm {
         if (score > 0) {
             scoreStr = "+" + score.toString();
         }
-        this.getChildNodeOrComponent("lbl_record_num", cc.Label).string = scoreStr;
+        LobbyControl.getInstance().setWinColor(this.getChildNodeOrComponent("lbl_record_num", cc.Label), score);
 
         this.getChildNodeOrComponent("lbl_total_num", cc.Label).string = roomData.room_total_hand_num.toString();
 
         this.getChildNodeOrComponent("lbl_gold_num", cc.Label).string = roomData.all_bring_in.toString();
     
 
-        let bx = roomData.insurance_total;
-        let bxStr = "";
-        bxStr = bx.toString();
-        if (bx > 0) {
-            bxStr = "+" + bx.toString();
-        }
-        this.getChildNodeOrComponent("lbl_bx_score", cc.Label).string = bxStr;
+        let lbl_bx_score = this.getChildNodeOrComponent("lbl_bx_score", cc.Label);
+        LobbyControl.getInstance().setWinColor(lbl_bx_score, roomData.insurance_total);
     }
 
     refreshListView(data) {
@@ -150,12 +162,11 @@ export default class UIRecordDetail extends BaseForm {
             _cloneNode.getChildByName("item_name").getComponent(cc.Label).string = info.nick_name;
             _cloneNode.getChildByName("item_gold").getComponent(cc.Label).string = info.bring_in;
             let score = info.finally_game_results;
-            let scoreStr = "";
-            scoreStr = score.toString();
-            if (score > 0) {
-                scoreStr = "+" + score.toString();
-            }
-            _cloneNode.getChildByName("item_score").getComponent(cc.Label).string = scoreStr;
+            let scLbl = _cloneNode.getChildByName("item_score").getComponent(cc.Label);
+            LobbyControl.getInstance().setWinColor(scLbl, score);
+
+            let img_line = _cloneNode.getChildByName("img_line");
+            img_line.active = i != len - 1;
         }
         scrollView.content.height = panel_item.height * (len+2);
     }

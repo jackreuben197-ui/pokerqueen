@@ -363,6 +363,54 @@ export class Web_Room_Center_History_List {
 }
 
 /// <summary>
+/// 手数列表
+/// </summary>
+export class Web_Room_Center_History_Hand {
+    //接口地址
+    public static API: string = "/api/roomcenter/history/hand";
+    //字段声明
+    public static RequestParams: {
+        room_id?: number,         
+        match_id?: number,     
+        limit?: number,   
+        offset?: number,   
+        type?: number,   
+        gametype?: number,     
+    } = null;
+
+    public static Record: {
+        id: number,                 //查询replay id
+        type: number,               //房间类型
+        room_id: number,            //房间id
+        match_id: number,           //比赛id
+        name: string,               //房间名字
+        user_id: number,            //玩家id
+        hand_num: number,           //本手手数
+        open: number,               //0：非公开
+        change: number,             //筹码变动
+        create_time: string,        //创建时间
+        room_unique_id: string,     //房间唯一id
+    } = null;
+
+    public static Data: {
+        limit: number,  
+        offset: number, 
+        total: number,              //总条数
+        records: typeof Web_Room_Center_History_Hand.Record,
+    } = null;
+
+    public static ResponseData: {
+        data?: typeof Web_Room_Center_History_Hand.Data,
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_History_Hand.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_History_Hand.ResponseData };
+}
+
+/// <summary>
 /// 战绩详情
 /// </summary>
 export class Web_Stats_Room_Detail {
