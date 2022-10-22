@@ -1,4 +1,5 @@
 import { table } from "console";
+import ClubData from "../data/club/ClubData";
 import LanguageTemplateData from "../data/languageTemplate/LanguageTemplateData";
 import LobbyData from "../data/lobby/LobbyData";
 import MttData from "../data/mtt/MttData";
@@ -21,6 +22,7 @@ export default class DataManager {
     languageTemp: LanguageTemplateData = null;
     rate: RateData = null;
     mtt: MttData = null;
+    club: ClubData = null;
     init() {
         this.lobby = new LobbyData();
         this.user = new UserInfoData();
@@ -28,5 +30,6 @@ export default class DataManager {
         this.languageTemp = new LanguageTemplateData();
         this.rate = new RateData();
         this.mtt = new MttData();
+        this.club = new ClubData();
     }
 }

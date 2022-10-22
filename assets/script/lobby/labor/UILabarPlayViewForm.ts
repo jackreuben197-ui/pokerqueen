@@ -18,6 +18,8 @@ import { APIOrgClubGold, APIOrgClubIsManger, Web_Org_Club_Get } from "../../net/
 import { UIClubModel } from "./UIClubModel";
 import { GameType } from "../../game/GameUtil";
 import { EWalletGoldOpration } from "../../wallet/WalletConfig";
+import GC from "../../frame/GameControl";
+import { EventName } from "../../config/EventName";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -69,8 +71,13 @@ export default class UILabarPlayViewForm extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-
     }
+
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.clubGoldChange, this.updateGold);
+    }
+
     onShow(param?: any, fromUI?: BaseForm) {
         param = {
             game_type: 0,
@@ -111,13 +118,8 @@ export default class UILabarPlayViewForm extends UIBase {
         WebImageHelper.SetUrlImage(icon, data.logo)
 
 
-        let lbl_glod = cc.find('img_right_bg/lbl_glod', this.panel_right).getComponent(cc.Label);
 
-        UIClubModel.mInstance.APIOrgClubGold(data.random_id).then(() => {
-            let data: any = APIOrgClubGold.Response.data
-            lbl_glod.string = data.gold / 100 + "";
-        })
-
+        UIClubModel.mInstance.APIOrgClubGold(data.random_id)
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {
             let isManger: any = APIOrgClubIsManger.Response.data
             if (isManger) {
@@ -132,7 +134,11 @@ export default class UILabarPlayViewForm extends UIBase {
                 this.tabNode.getChildByName('ckgh').active = true;
             }
         })
+    }
 
+    updateGold() {
+        let lbl_glod = cc.find('img_right_bg/lbl_glod', this.panel_right).getComponent(cc.Label);
+        this.setText(lbl_glod, GC.data.club.info.displayGold);
     }
     addCoin() {
         // UIComponent.open(UIDefine.GoldOprationForm, { type: EWalletGoldOpration.in, isClub: true });

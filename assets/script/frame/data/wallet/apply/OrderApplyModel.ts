@@ -1,4 +1,6 @@
 import { EOrderType } from "../../../../config/EEnumConfig";
+import { EventName } from "../../../../config/EventName";
+import { TOrderApplyItem } from "../../../../config/TTypeConfig";
 import GC from "../../../GameControl";
 import OrderApplyItemModel from "./OrderApplyItemModel";
 
@@ -41,7 +43,12 @@ export default class OrderApplyModel {
     }
 
     updateItem(msg: any) {
-
+        let item = this._list.find(data => data.id == msg?.user_info?.id)
+        if (item) {
+            item.updateData(msg.user_info);
+            GC.notify.post(EventName.orderApplyItemChange, item);
+        }
+        msg.club_info && GC.data.club.info.updateGold(msg.club_info);
     }
 
     updateData(msg: any) {
