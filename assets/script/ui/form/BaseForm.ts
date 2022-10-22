@@ -60,7 +60,6 @@ export default class BaseForm extends UIBase {
     lateClose(param: any = null) {
         super.lateClose();
     }
-
     onShow(param?: any, fromUI?: BaseForm) {
         this.fromUI = fromUI;
         cc.log(">>> formUI form :", fromUI?.UIDefine?.Name);

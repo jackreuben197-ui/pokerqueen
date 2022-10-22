@@ -111,12 +111,14 @@ export class UIFormMgr {
     }
 
     public async closeAll() {
-
+        // while (this.showUIs.length) {
+        //     let ui = this.showUIs[this.showUIs.length - 1];
+        //     await this.close(ui.UIDefine, null, false)
+        // }
         while (this.showUIs.length) {
-            let ui = this.showUIs[this.showUIs.length - 1];
-            await this.close(ui.UIDefine, null, false)
+            let ui = this.showUIs.shift();
+            ui.node.parent = this.CacheUILayer;
         }
-
         this.showUIs = [];
 
         this.currUI = null;

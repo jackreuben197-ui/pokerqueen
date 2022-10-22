@@ -77,7 +77,7 @@ export default class UIComponent {
     }
 
 
-    static open<TParam extends unknown>(UIDefine: IUIDefine, param: TParam = null, parent: cc.Node = null) {
+    static open<TParam extends unknown>(UIDefine: IUIDefine, param?: TParam, parent?: cc.Node ) {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:

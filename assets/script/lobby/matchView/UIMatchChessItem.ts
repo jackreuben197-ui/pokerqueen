@@ -40,8 +40,8 @@ export default class UIMatchChessItem extends UIBase {
         this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
         this.lbl_unionName = this.getChildNodeOrComponent("lbl_unionName", cc.Label);
 
-        this.setActive(this.img_head, false)
-        this.setActive(this.lbl_unionName, false)
+        this.setActive(this.img_head, false);
+        this.setActive(this.lbl_unionName, false);
     }
 
     protected regiterTouchEvents(): void {
