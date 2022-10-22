@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-22 16:16:11
+ * @LastEditTime: 2022-10-22 16:34:22
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -12,6 +12,7 @@ import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GC from "../../frame/GameControl";
+import { EnterRoomInfo, GameCache } from "../../game/GameCache";
 import GameUtil from "../../game/GameUtil";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
@@ -20,7 +21,6 @@ import LobbySession from "../../session/LobbySession";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -578,7 +578,7 @@ export default class UICreateMatch extends BaseForm {
                 this.post(EventName.updateFriendChessView)
                 this._data = new LobbyRoomListItem(data.data.room_config);
                 this._data.rid = data.data.room_id
-                this.EnterRoomAPI()
+                GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm);
             }
         }
         this._editModelData = null;
@@ -609,28 +609,5 @@ export default class UICreateMatch extends BaseForm {
         this._btnType = 1;
         this.fillName();
     }
-    private async EnterRoomAPI() {
-        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
-            if (this._data.room_type_is_legal) {
-                //未开放房间类型
-                if (!GameUtil.IsOpenRoomType(this._data.room_type)) {
-                    //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
-                    UIComponent.Instance.Toast();
-                    return;
-                }
-                let response = LobbySession.APIWebUserRoominsur(this._data.rid).catch(() => { });
-                if (response) {
-                    GC.data.lobby.roomList.selected = this._data;
-                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: UIDefine.UICreateMatchHome, lookOn: false });//[this.UIDefine, false, 0]
-                }
-            } else {
-                console.warn("房间类型未解析:", this._data.room_type);
-                UIComponent.Instance.Toast(`room_type:${this._data.room_type} is error`);
-            }
-        } else {
-            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
-        }
-    }
-
 
 }
