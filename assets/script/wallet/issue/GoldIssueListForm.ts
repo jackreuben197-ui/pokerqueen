@@ -1,5 +1,6 @@
 import ComFormTitle from "../../common/ComFormTitle";
 import List from "../../common/List";
+import { EventName } from "../../config/EventName";
 import GC from "../../frame/GameControl";
 import { APIOrgClubGold, Web_Club_Issue_Gold } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
@@ -27,6 +28,7 @@ export default class GoldIssueListForm extends BaseForm {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
+        this.listen(EventName.clubGoldChange, this.updateGold);
     }
 
     protected regiterTouchEvents(): void {
@@ -56,7 +58,7 @@ export default class GoldIssueListForm extends BaseForm {
     }
 
     updateGold() {
-        this.setText(this.goldNum, Math.floor(APIOrgClubGold.Response.data.gold) / 100)
+        this.setText(this.goldNum, GC.data.club.info.displayGold);
     }
 
     updateList() {

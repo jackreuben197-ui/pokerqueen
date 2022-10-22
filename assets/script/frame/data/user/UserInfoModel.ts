@@ -105,6 +105,9 @@ export default class UserInfoModel {
     get gold_lock() {
         return this._msg.gold_lock;
     }
+    set gold_lock(g) {
+        this._msg.gold_lock = g;
+    }
 
     //后端返回的金币，是*100后的值
     get displayGold() {
@@ -116,6 +119,12 @@ export default class UserInfoModel {
     set gold(g) {
         this._msg.gold = g;
         GC.notify.post(EventName.myGoldChange);
+    }
+
+    //{"flow_id":1835678,"wallet":{"gold":100,"gold_lock":200,"forbidden":false}}
+    goldTiquApplySuc(msg: any) {
+        this.gold = msg.wallet.gold;
+        this.gold_lock = msg.wallet.gold_lock;
     }
 
 }

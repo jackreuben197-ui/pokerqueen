@@ -435,8 +435,10 @@ export default class UITexas extends BaseScene {
 
 
     Click_Report_Btn() {
+        
         UIComponent.open(UIDefine.UITexasReportComponent, null, this.node);
     }
+
     Click_Cursituation_btn() {
         let historyInfoData = new HistoryInfoData()
         historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;

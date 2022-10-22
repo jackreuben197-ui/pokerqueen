@@ -49,6 +49,7 @@ export default class MyWalletForm extends BaseForm {
         this.list.scrollingCB = this.scrollingCB;
 
         this.listen(EventName.myGoldChange, this.updateBeanNum);
+        this.listen(EventName.clubGoldChange, this.updateBeanNum);
     }
 
     protected regiterTouchEvents(): void {
@@ -89,7 +90,7 @@ export default class MyWalletForm extends BaseForm {
     updateBeanNum() {
         let gold = GC.data.user.info.displayGold;
         if (this._isClub) {
-            gold = Math.floor(APIOrgClubGold.Response.data.gold) / 100
+            gold = GC.data.club.info.displayGold;
         }
         this.setText(this.beanNum, gold);
     }

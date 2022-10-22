@@ -4,9 +4,16 @@ import { TOrderApplyItem } from "../../../../config/TTypeConfig";
 export default class OrderApplyItemModel {
     private _msg: TOrderApplyItem = null;
     constructor(msg: TOrderApplyItem) {
+        this.updateData(msg);
+    }
+
+    updateData(msg: TOrderApplyItem) {
         this._msg = msg;
     }
 
+    get id() {
+        return this._msg.id;
+    }
 
     get user_id() {
         return this._msg.user_id;
@@ -18,7 +25,7 @@ export default class OrderApplyItemModel {
         return this._msg.order_type;
     }
     get gold_num() {
-        return Math.floor(this._msg.gold_num)/100;
+        return Math.floor(this._msg.gold_num) / 100;
     }
     get status(): EApplyStatus {
         return this._msg.status;
