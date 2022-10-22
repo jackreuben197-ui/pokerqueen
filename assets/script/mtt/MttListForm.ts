@@ -49,4 +49,9 @@ export default class MttListForm extends BaseForm {
         let item = node.getComponent(MttListItem);
         item.initData(GC.data.mtt.list.list[index]);
     }
+
+    lateClose(param?: any): void {
+        super.lateClose();
+        this.list.numItems = 0;
+    }
 }
