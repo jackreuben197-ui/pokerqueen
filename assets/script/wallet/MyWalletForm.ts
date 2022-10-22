@@ -57,8 +57,8 @@ export default class MyWalletForm extends BaseForm {
         this.bindClick(this.applyBtn, this.clickApply);
     }
 
-    onShow(isClub?: boolean): void {
-        super.onShow(isClub);
+    onShow(isClub?: boolean, fromUI?: any): void {
+        super.onShow(isClub, fromUI);
         this._isClub = isClub;
         this._goldChangeLogs.reqLog(isClub);
 

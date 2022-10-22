@@ -44,11 +44,12 @@ export default class GoldIssueListForm extends BaseForm {
         }
     }
 
-    onShow(param?: any): void {
-        super.onShow(param);
+    onShow(param?: any, fromUI?: any): void {
+        super.onShow(param, fromUI);
         this.comFormTitle.initData("UITitle_jijin_fafang", this);
 
         this.initView();
+        this.list.scrollingCB = this.scrollingCB;
         GC.data.wallet.issue.reqUsers();
     }
 
@@ -64,6 +65,17 @@ export default class GoldIssueListForm extends BaseForm {
     updateList() {
         this.list.numItems = GC.data.wallet.issue.list.length
     }
+
+    scrollingCB = (scrollView: cc.ScrollView) => {
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset();
+            let isDown = cur.y >= max.y;
+            if (isDown) {
+                GC.data.wallet.issue.dropDownReq();
+            }
+        }
+    };
 
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(GoldIssueListItem);

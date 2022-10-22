@@ -24,8 +24,8 @@ export default class MttDetailForm extends BaseForm {
         super.regiterTouchEvents();
     }
 
-    onShow(data?: MttListItemModel): void {
-        super.onShow(data);
+    onShow(data?: MttListItemModel, fromUI?: any): void {
+        super.onShow(data, fromUI);
 
         this.initView();
     }

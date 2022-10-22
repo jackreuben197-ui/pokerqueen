@@ -97,8 +97,8 @@ export default class GoldOprationForm extends BaseForm {
         }
     }
 
-    onShow(data: any): void {
-        super.onShow(data);
+    onShow(data: any, fromUI?: any): void {
+        super.onShow(data, fromUI);
         this._data = data;
         this._userId = data.userId;
 
