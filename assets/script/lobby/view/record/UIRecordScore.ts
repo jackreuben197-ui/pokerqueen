@@ -1,8 +1,12 @@
+import { UIDefine } from "../../../define/UIDefine";
 import { GameCache } from "../../../game/GameCache";
+import { HistoryInfoData } from "../../../game/UITexasHistoryComponent";
+import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
+import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
 
 
@@ -82,7 +86,14 @@ export default class UIRecordScore extends BaseForm {
     }
 
     onClickItem() {
-
+        // let historyInfoData = new HistoryInfoData()
+        // historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
+        // historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
+        // historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
+        // historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
+        // historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
+        // UIComponent.open(UIDefine.UITexasHistoryComponent);
+        // UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, this.node);
     }
 
 }
