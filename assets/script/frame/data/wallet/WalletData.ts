@@ -2,6 +2,7 @@ import { EOrderOprationStatus, EOrderType } from "../../../config/EEnumConfig";
 import { Web_Club_Issue_Gold, Web_Gold_Change_Log, Web_Order_apply, Web_Order_Rcords, Web_Org_Club_Get, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../../../net/https/WebRequest";
 import { EWalletGoldOpration } from "../../../wallet/WalletConfig";
 import { BaseData } from "../../base/BaseData";
+import GC from "../../GameControl";
 import OrderApplyModel from "./apply/OrderApplyModel";
 import GoldChangeLogModel from "./goldChangeLog/GoldChangeLogModel";
 import GoldIssueModel from "./issue/GoldIssueModel";
@@ -33,6 +34,15 @@ export default class WalletData extends BaseData {
             } break;
             case Web_Order_apply.OPRATION_APPLY: {
                 this.apply.updateItem(msg);
+            } break;
+            case Web_Tiqu_Gold.API: {
+                GC.data.user.info.goldTiquApplySuc(msg);
+            } break;
+            case Web_Tiqu_Gold_Club.API: {
+                GC.data.club.info.goldTiquApplySuc(msg);
+            } break;
+            case Web_Club_Issue_Gold.ISSUE: {
+                GC.data.club.info.goldIssueSuc(msg);
             } break;
             default:
                 break;

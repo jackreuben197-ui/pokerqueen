@@ -362,3 +362,133 @@ export type TOrderApplyItem = {
     tribe_random_id: number,
     tribe_name: string
 }
+
+export type TMttListItem = {
+    prize_pool: number,     //奖池
+    bought: number,        // 状态 0 无法报名 1: 报名中 2: 参与中
+    match_id: number,        //显示ID
+    name: string,       //比赛名称
+    type: number,       //throom.RoomType
+    game_type: number,      //游戏类型
+    poker_type: number,     //牌类型
+    limit_bet_type: number,         //下注类型
+    rank_type: number,      //排名属性
+    enter_time: string,     //提前进入的时间戳
+    start_time: number,     //比赛开始时间戳
+    end_time: number,       //结束时间
+    hunter_on: number,      //猎人模式
+    hunter_bonus: number,       //猎人赛滚雪球比例 0~100 0:杀白丁无收益 1～99 单次收益 100:不滚雪球
+    partial_on: number,     //部分带入
+    parital_return_bl: number,      //部分带入,合并筹码的等级
+    straddle_on: number,        //1 开 0 关
+    straddle_max: number,       //抓次数限制
+    muck_on: number,        //1 开 0 关 （是否盖牌翻牌)
+    rooms: number,      //当前房间数
+    max_room_id: number,        //最大房间号
+    delay_view_card_on: number,     //延迟看牌开关
+    limit_min: number,      //参赛人数下限
+    limit_delay_times: number,      //延时限制次数
+    limit_auto_check_times: number,     //可以超时几次自动Check
+    limit_auto_fold_times: number,      //可以超时几次C自动Fold
+    participants: number,       //参与人数(人数)
+    alive: number,      //玩家活跃数量                              
+    award_num: number,      //奖励人数
+    money_sync: number,     //奖励圈同步(截止无法买入以后才会开启)
+    status: number,     //当前状态 (0 创建，1 运行，2 结束，3 取消)
+    seat_count: number,     //最大座位数（每桌）
+    final_seat_count: number,       //最终座位数（每桌）
+    no_user_wait_duration: number,      //用户不足等待开局间隔
+    initial_score: number,      //初始带入
+    blindtable_type: number,        // 盲注类型 0-快速赛/1-锦标赛/2-豪克塞/3-免费赛/4-110滚雪球赛/5-每日票赛/6-特色赛事880滚雪球赛/7-最新免费赛/8-周1.2特色赛事/9-周3特色赛/10-周4.5特色赛事/11-周六特色赛事/12-周末特色赛事
+    upblind_interval: number,       //升盲间隔(s)
+    apply_start_time: string,       //报名开始时间戳
+    op_duration: number,        //操作等待时间(s)
+    max_delay_apply_bl: number,     //延迟报名最高盲注级别
+    rebuy_times: number,        //每人限制重购次数
+    max_rebuy_bl: number,       //重购最高盲注级别
+    limit_total_buy_times: number,      //最大报名次数（针对免费赛）
+    total_buy_times: number,        //总共购买次数(人次)
+    total_buyin_times: number,      //总共买入次数(人次)
+    total_rebuy_times: number,      //所有重购次数(人次)
+    addon_begin_bl: number,     //额外买入开始时间 0 代表没有额外买入
+    addon_end_bl: number,       //额外买入开始时间 0 代表没有额外买入
+    addon_score: number,        //额外买入算的计分牌
+    total_addon_times: number,      //所有AddOn次数(人次)
+    apply_fee_pool: number,     //报名费 进池
+    apply_fee_service: number,      //报名费 服务费
+    apply_fee_hunter: number,       //报名费 人头费
+    prize_type: number,     //奖励类型
+    prize_base_pool: number,        //保底奖金池
+    tribe_id: number,       //联盟ID
+    create_time: string,
+    update_time: string,
+    buy_prop_id: number,        // 替代买入/重构
+    prop_buy_type: number,      // 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
+    game_icon: string,      // 赛事icon图片url
+    voiceprint_verify_on: number,       // 声纹验证是否开启 1 开 0 关
+    voiceprint_verify_duration: number,     // 声纹验证时长(超时),单位秒
+
+    addonplus_m1_on: number,                          // 增购Plus开关(截止买入/重购前)
+    addonplus_m1_max_times: number,               // 最多增购plus次数(截止买入/重购前)
+    addonplus_m1_limit: number,                    // 可以购买的门槛百分比(0-100)(截止买入/重购前) 初始筹码为基准计算 initScore
+    total_addonplus_m1_times: number,        // 所有AddOnPlus截止买入/重购前)次数
+    addonplus_m2_on: number,                          // 增购Plus开关(截止买入/重购后)
+    addonplus_m2_max_times: number,               // 最多增购plus次数(截止买入/重购后)
+    addonplus_m2_max_bl: number,                  // 可以购买的截止等级(截止买入/重购后)
+    total_addonplus_m2_times: number,        // 所有AddOnPlus截止买入/重购后)次数
+    buy_ratio: number,                                      // 买入可选倍率最高(默认 1)
+    pre_buyin_bonus: number,                          // 提前报名额外奖励筹码 (0~n)
+    tablecloth_tag: number,                                                // 桌布tag
+    limit_tag: number,                                                     // 限制重复报名tag
+    bonustable_type: number,              // 奖励表类型
+    buyin_free_times: number,                   // 报名限免次数
+    rebuy_free_times: number,                   // 重构限免次数
+    multi_ratio_free_times: number,       // 多倍率买入限免次数
+    addon_free_times: number,                   // 增购限免次数（包含addon addonp1 addonp2）
+    buyin_free_incl_svr: number,             // 报名限免是否包含服务费，0不包含，1包含
+    rebuy_free_incl_svr: number,             // 重构限免是否包含服务费，0不包含，1包含
+    multi_ratio_free_incl_svr: number, // 多倍率买入限免是否包含服务费，0不包含，1包含
+    addon_free_incl_svr: number,             // 增购限免是否包含服务费，0不包含，1包含
+    award_replace_prop_id: number,         // 道具奖励代替ID
+    award_replace_prop_value: number,   // 道具奖励代替价值
+    award_extra_buy_times: number,         // 额外奖励条件：除报名外的总次数
+    award_extra_add_count: number,         // 额外奖励：人数
+    award_extra_prop_id: number,             // 额外奖励：道具ID
+    award_extra_gold_value: number,       // 额外奖励：金豆数量
+    award_extra_gold_buy: number,           // 额外奖励是否包含金豆买入，0不包含，1包含
+    award_extra_ticket_buy: number,       // 额外奖励是否包含门票买入，0不包含，1包含
+    award_extra_free_buy: number,           // 额外奖励是否包含限免买入，0不包含，1包含
+    break_base_pool: number,                     // 破保（在报名总金额小于保底时，除报名外的买入从保底奖池累加）设置，0不破保，1破保
+    total_extra_buy_times: number,         // 额外奖励买入次数
+    award_extra_prop_value: number,       // 额外奖励：道具价值
+}
+
+
+
+/////////////////////////////////////////////////////////////////////
+
+export type TClubInfo = {
+    club_id: number,
+    club_name: string,
+    logo: string,
+    random_id: number,
+    upper_limit: number,
+    club_members: number,
+    area_id: string,
+    club_type: number,
+    create_time: string,
+    is_official: number,
+    club_status: number,
+    desc: string,
+    contact_info: {},
+    member_type: number,
+    more_contact: string,
+    level: number,
+    search_switch: number,
+    auto_audit_switch: number,
+    show_contact_switch: number,
+    club_creator_random_id: number,
+    club_creator_avatar: string,
+    club_creator_nickname: string,
+    tribe_name: string
+}

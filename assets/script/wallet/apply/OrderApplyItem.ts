@@ -1,5 +1,6 @@
 import ListItem from "../../common/ListItem";
 import { EApplyStatus, EOrderOprationStatus } from "../../config/EEnumConfig";
+import { EventName } from "../../config/EventName";
 import OrderApplyItemModel from "../../frame/data/wallet/apply/OrderApplyItemModel";
 import GC from "../../frame/GameControl";
 import { Web_Order_apply } from "../../net/https/WebRequest";
@@ -41,20 +42,13 @@ export default class OrderApplyItem extends ListItem {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
+        this.listen(EventName.orderApplyItemChange, this.orderApplyItemChange);
     }
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.bindClick(this.sureBtn, this.clickSure);
         this.bindClick(this.cancelBtn, this.clickCancel);
-    }
-
-    protected notify(id: any, msg: any, sendInfo?: any): void {
-        switch (id) {
-            case Web_Order_apply.OPRATION_APPLY: {
-
-            } break;
-        }
     }
 
     initData(data: OrderApplyItemModel) {
@@ -69,6 +63,12 @@ export default class OrderApplyItem extends ListItem {
         let typeTip = GC.language.getLocal("UIAppay") + GC.language.getLocal(["Text_Add", "Text_Getchips", "Text_Trans"][this._data.order_type - 1]);
         this.setText(this.typeTip, typeTip);
         this.updateStatus();
+    }
+
+    orderApplyItemChange(data: OrderApplyItemModel) {
+        if (data.id == this._data.id) {
+            this.updateStatus();
+        }
     }
 
     updateStatus() {

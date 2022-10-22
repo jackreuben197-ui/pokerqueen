@@ -126,6 +126,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_About",
         Title: "UIMine_SettingAboutus",
     },
+    //工会-成员详细
+    UIMember: {
+        UIType: UIType.Form,
+        Name: "UIMember",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIMember",
+        Title: "",
+    },
     //战绩
     UIRecord: {
         UIType: UIType.Form,
@@ -133,6 +141,30 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/prefab/record/UIRecord",
         Title: "UICareerRecord",
+    },
+    //战绩详情
+    UIRecordDetail: {
+        UIType: UIType.Form,
+        Name: "UIRecordDetail",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIRecordDetail",
+        Title: "",
+    },
+    //本局牌谱
+    UIRecordScore: {
+        UIType: UIType.Form,
+        Name: "UIRecordScore",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIRecordScore",
+        Title: "UIMine_RecordDetailForNormal_FENSVUz3",
+    },
+    //带入申请
+    UIRecordInto: {
+        UIType: UIType.Form,
+        Name: "UIRecordInto",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIRecordInto",
+        Title: "",
     },
     //房间模版
     UIMatchPlayViewForm: {
@@ -377,12 +409,24 @@ export const UIDefine = {
         Path: "main/wallet/apply/OrderApplyForm",
     },
 
+    MttListForm: {
+        UIType: UIType.Form,
+        Name: "MttListForm",
+        Bundle: null,
+        Path: "main/mtt/MttListForm",
+    },
+    MttDetailForm: {
+        UIType: UIType.Form,
+        Name: "MttDetailForm",
+        Bundle: null,
+        Path: "main/mtt/detail/MttDetailForm",
+    },
     UIApplyJoin: {
         UIType: UIType.Form,
         Name: "UIApplyJoin",
         Bundle: null,
         Path: "main/club/UIApplyJoin",
-    },
+    }
 
 
 }

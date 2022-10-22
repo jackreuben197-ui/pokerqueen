@@ -3,7 +3,13 @@ import { i18nMgr } from "../../../i18n/i18nMgr";
 
 export default class LanguageTempModel {
     private _data: Map<string, TLanguageTemp> = new Map();
+    private _haveReq: boolean = false;
+    get haveReq() {
+        return this._haveReq;
+    }
+
     updateData(msgs: Array<TLanguageTemp>) {
+        this._haveReq = true;
         msgs.forEach(msg => {
             this._data.set(msg.template_id, msg);
         })

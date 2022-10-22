@@ -36,7 +36,6 @@ export default class OrderRecordsForm extends BaseForm {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.tabToggles.onToggle = this.onToggle;
         this.list.scrollingCB = this.scrollingCB;
     }
 
@@ -65,7 +64,7 @@ export default class OrderRecordsForm extends BaseForm {
             data.data.push(EOrderType.fafang);
             data.title.push("UITitle_fafang_jilu");
         }
-        this.tabToggles.initData(data, ETabToggle.text);
+        this.tabToggles.initData(this.onToggle, ETabToggle.text, data);
         this.tabToggles.clickTab(0, null, true);
     }
 

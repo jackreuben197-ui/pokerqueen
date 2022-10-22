@@ -1,5 +1,4 @@
 
-import { stringify } from "querystring";
 import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
@@ -35,7 +34,7 @@ import { CardType } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
-import Seat from "./Seat";
+import Seat from "./seat/Seat";
 import { SeatAddChips, SeatAllin, SeatCall, SeatCheck, SeatFold, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
@@ -313,11 +312,11 @@ export default class TexasGameProtocol {
             }
 
             //设置卡牌隐藏
-            for (let i = 0, n = Seat.uirc.listCardUIInfos.length; i < n; i++) {
-                Seat.uirc.listCardUIInfos[i].imageSelect.node.active = false;
+            for (let i = 0, n = Seat.listCardUIInfos.length; i < n; i++) {
+                Seat.listCardUIInfos[i].imageSelect.node.active = false;
             }
-            for (let i = 0, n = Seat.uirc.listSmallCardUIInfos.length; i < n; i++) {
-                Seat.uirc.listSmallCardUIInfos[i].imageSelect.node.active = false;
+            for (let i = 0, n = Seat.listSmallCardUIInfos.length; i < n; i++) {
+                Seat.listSmallCardUIInfos[i].imageSelect.node.active = false;
             }
 
         }

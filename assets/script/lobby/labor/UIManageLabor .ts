@@ -8,16 +8,17 @@
  */
 
 
+import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
+import GC from "../../frame/GameControl";
+import TimeHelper from "../../helper/TimeHelper";
+import WebImageHelper from "../../helper/WebImageHelper";
+import { APIOrgClubGold, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
+import { UIClubModel } from "./UIClubModel";
 
 const { ccclass, property } = cc._decorator;
-import { APIOrgClubGold, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get } from "../../net/https/WebRequest";
-import WebImageHelper from "../../helper/WebImageHelper";
-import UIBase from "../../ui/UIBase";
-import { UIClubModel } from "./UIClubModel";
-import TimeHelper from "../../helper/TimeHelper";
 @ccclass
 export default class UIManageLabor extends BaseForm {
 
@@ -44,6 +45,12 @@ export default class UIManageLabor extends BaseForm {
         this.initMangerList();
         this.initMemberList();
     }
+
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.clubGoldChange, this.updateGold);
+    }
+
     initTop() {
         let data: any = Web_Org_Club_Get.Response.data;
         let name = this.mask_group.getChildByName('name').getComponent(cc.Label);
@@ -75,12 +82,17 @@ export default class UIManageLabor extends BaseForm {
         //基金
         let _data: any = APIOrgClubGold.Response.data
 
-        let jj = this.contentNode.getChildByName('jj')
-        cc.find('img_right_bg/lbl_glod', jj).getComponent(cc.Label).string = _data.gold / 100 + '';
+        this.updateGold();
         //联盟
         let lm = this.contentNode.getChildByName('lm')
         let lm_panel_right = lm.getChildByName('panel_right')
         lm_panel_right.getChildByName('name').getComponent(cc.Label).string = data.tribe_name || ''
+    }
+
+    updateGold() {
+        let jj = this.contentNode.getChildByName('jj')
+        let lbl_gold = cc.find('img_right_bg/lbl_glod', jj).getComponent(cc.Label);
+        this.setText(lbl_gold, GC.data.club.info.displayGold);
     }
 
     async initMangerList() {

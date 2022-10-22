@@ -2193,7 +2193,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Seat",
+    "_name": "Seat_Temp",
     "_objFlags": 0,
     "_parent": {
       "__id__": 54
@@ -3543,8 +3543,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 100
+      "width": 0,
+      "height": 0
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -10705,7 +10705,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Image_SmallCard0",
+    "_name": "Image_SmallCard5",
     "_objFlags": 0,
     "_parent": {
       "__id__": 231
@@ -13653,9 +13653,9 @@
     "_enabled": true,
     "alignMode": 1,
     "_target": null,
-    "_alignFlags": 45,
-    "_left": 0,
-    "_right": 0,
+    "_alignFlags": 5,
+    "_left": 621,
+    "_right": 621,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,

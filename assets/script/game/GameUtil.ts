@@ -1,6 +1,16 @@
 
-import { SeatUIInfo } from "../game/Seat";
-import { GameCache } from "./GameCache";
+import { ProcedureEnum } from "../define/EIDefine";
+import { UIDefine, UIDefineType } from "../define/UIDefine";
+import GC from "../frame/GameControl";
+import ProcedureManager from "../manager/ProcedureManager";
+import WebSocketClient from "../net/websocket/WebSocketClient";
+import LobbySession from "../session/LobbySession";
+import UIComponent from "../ui/UIComponent";
+import { EnterRoomInfo, GameCache } from "./GameCache";
+import { SeatUIInfo } from "./seat/Seat";
+import OmahaGame4 from "./texas/OmahaGame4";
+import OmahaGame5 from "./texas/OmahaGame5";
+import OmahaGame6 from "./texas/OmahaGame6";
 import TexasAofGame from "./texas/TexasAofGame";
 import TexasGame from "./texas/TexasGame";
 
@@ -104,15 +114,33 @@ export default class GameUtil {
 
     //已经开放的房间类型
     private static readonly OpenRoomType = [
+
         RoomType.TexasHoldemStandardNoLimit,// 普通
         RoomType.TexasHoldemStandardPotLimit, // 普通底池限注
         RoomType.TexasHoldemSixPlusFixedNoLimit,// 普通短牌
         RoomType.TexasHoldemSixPlusFixedPotLimit, // 普通短牌底池限注
         RoomType.TexasHoldemStandardAof, // 普通AOF
         RoomType.TexasHoldemSixPlusFixedAof, // 普通短牌AOF
+
+        RoomType.Omaha4StandardNoLimit, // 奥马哈4张
+        RoomType.Omaha4StandardPotLimit, // 奥马哈4张底池限注
+        RoomType.Omaha4SixPlusFixedNoLimit, // 奥马哈4张短牌
+        RoomType.Omaha4SixPlusFixedPotLimit, // 奥马哈4张短牌, 底池限注
+
+        RoomType.Omaha5StandardNoLimit, // 奥马哈5张
+        RoomType.Omaha5StandardPotLimit, // 奥马哈5张底池限注
+        RoomType.Omaha5SixPlusFixedNoLimit, // 奥马哈5张短牌
+        RoomType.Omaha5SixPlusFixedPotLimit, // 奥马哈5张短牌, 底池限注
+
+
+        RoomType.Omaha6StandardNoLimit, // 奥马哈6张
+        RoomType.Omaha6StandardPotLimit, // 奥马哈6张底池限注
+        RoomType.Omaha6SixPlusFixedNoLimit, // 奥马哈6张短牌
+        RoomType.Omaha6SixPlusFixedPotLimit, // 奥马哈6张短牌, 底池限注
+
     ]
     public static IsOpenRoomType(roomType: number): boolean {
-        return roomType in this.OpenRoomType;
+        return this.OpenRoomType.indexOf(roomType) > -1;
     }
 
 
@@ -120,20 +148,20 @@ export default class GameUtil {
     // 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
     public static readonly SeatPosV3: cc.Vec3[] = [
 
-        cc.v3(0, -841+19),//0
-        cc.v3(-502, -272+19),//1 -cc.v3(-516, -272)
-        cc.v3(-502, -300+19),//2 -cc.v3(-516, -95)
-        cc.v3(-502, 100+19),//3 -cc.v3(-516, 155) 
-        cc.v3(-502, 300+19),//4 -cc.v3(-516, 495),
-        cc.v3(-502, 474+19),//5 -cc.v3(-516, 582)
+        cc.v3(0, -841 + 19),//0
+        cc.v3(-502, -272 + 19),//1 -cc.v3(-516, -272)
+        cc.v3(-502, -300 + 19),//2 -cc.v3(-516, -95)
+        cc.v3(-502, 100 + 19),//3 -cc.v3(-516, 155) 
+        cc.v3(-502, 300 + 19),//4 -cc.v3(-516, 495),
+        cc.v3(-502, 474 + 19),//5 -cc.v3(-516, 582)
         cc.v3(-212, 950),//6 -cc.v3(-212, 987)
         cc.v3(0, 980),//7 -cc.v3(0, 987),
         cc.v3(212, 950),//8 -cc.v3(214, 987)
-        cc.v3(502, 474+19),//9 -cc.v3(512, 582)
-        cc.v3(502, 300+19),//10 -cc.v3(512, 495),
-        cc.v3(502, 100+19),//11 -cc.v3(512, 155)
-        cc.v3(502, -300+19),//12 -cc.v3(502, -95)
-        cc.v3(502, -272+19),//13 -cc.v3(512, -272)
+        cc.v3(502, 474 + 19),//9 -cc.v3(512, 582)
+        cc.v3(502, 300 + 19),//10 -cc.v3(512, 495),
+        cc.v3(502, 100 + 19),//11 -cc.v3(512, 155)
+        cc.v3(502, -300 + 19),//12 -cc.v3(502, -95)
+        cc.v3(502, -272 + 19),//13 -cc.v3(512, -272)
     ];
 
     // Dealer标识坐标 0左、1右
@@ -1113,8 +1141,14 @@ export default class GameUtil {
         return isSixPlus;
     }
 
-
-
+    private static GetGame(roomType: RoomType, Game_Cls: any) {
+        let game = GameUtil.TexasGameDic.get(roomType);
+        if (!game) {
+            game = new Game_Cls();
+            GameUtil.TexasGameDic.set(roomType, game);
+        }
+        return game;
+    }
 
     public static InstantiateTexasGame(roomType: RoomType) {
 
@@ -1125,37 +1159,20 @@ export default class GameUtil {
             case RoomType.TexasHoldemStandardPotLimit: // 普通底池限注
             case RoomType.TexasHoldemSixPlusFixedNoLimit: // 普通短牌
             case RoomType.TexasHoldemSixPlusFixedPotLimit: // 普通短牌底池限注
-                {
-
-                    //(game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
-                    //ComponentFactory.CreateWithId<TexasGame, Component>((int)roomType, component, fromPool);
-                    game = GameUtil.TexasGameDic.get(roomType);
-                    if (!game) {
-                        game = new TexasGame();
-                        GameUtil.TexasGameDic.set(roomType, game);
-                    }
-                }
+                //(game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
+                //ComponentFactory.CreateWithId<TexasGame, Component>((int)roomType, component, fromPool);
+                game = this.GetGame(roomType, TexasGame);
                 break;
-
             case RoomType.TexasHoldemStandardAof: // 普通AOF
             case RoomType.TexasHoldemSixPlusFixedAof: // 普通短牌AOF
-                {
-                    //game = ComponentFactory.CreateWithId<TexasAofGame, Component>((int)roomType, component, fromPool);
-                    game = GameUtil.TexasGameDic.get(roomType);
-                    if (!game) {
-                        game = new TexasAofGame();
-                        GameUtil.TexasGameDic.set(roomType, game);
-                    }
-                }
+                game = this.GetGame(roomType, TexasAofGame);
                 break;
 
             case RoomType.Omaha4StandardNoLimit: // 奥马哈4张
             case RoomType.Omaha4StandardPotLimit: // 奥马哈4张底池限注
             case RoomType.Omaha4SixPlusFixedNoLimit: // 奥马哈4张短牌
             case RoomType.Omaha4SixPlusFixedPotLimit: // 奥马哈4张短牌, 底池限注
-                {
-                    // game = ComponentFactory.CreateWithId<OmahaGame, Component>((int)roomType, component, fromPool);
-                }
+                game = this.GetGame(roomType, OmahaGame4);
                 break;
 
             case RoomType.Omaha4StandardAof: // 奥马哈4张AOF
@@ -1169,9 +1186,7 @@ export default class GameUtil {
             case RoomType.Omaha5StandardPotLimit: // 奥马哈5张底池限注
             case RoomType.Omaha5SixPlusFixedNoLimit: // 奥马哈5张短牌
             case RoomType.Omaha5SixPlusFixedPotLimit: // 奥马哈5张短牌底池限注
-                {
-                    //game = ComponentFactory.CreateWithId<OmahaGameFive, Component>((int)roomType, component, fromPool);
-                }
+                game = this.GetGame(roomType, OmahaGame5);
                 break;
 
             case RoomType.Omaha5StandardAof: // 奥马哈5张aof
@@ -1185,9 +1200,7 @@ export default class GameUtil {
             case RoomType.Omaha6StandardPotLimit: // 奥马哈6张底池限注
             case RoomType.Omaha6SixPlusFixedNoLimit: // 奥马哈6张短牌
             case RoomType.Omaha6SixPlusFixedPotLimit: // 奥马哈6张短牌底池限注
-                {
-                    //game = ComponentFactory.CreateWithId<OmahaGameSix, Component>((int)roomType, component, fromPool);
-                }
+                game = this.GetGame(roomType, OmahaGame6);
                 break;
 
             case RoomType.Omaha6StandardAof: // 奥马哈6张aof
@@ -1286,50 +1299,20 @@ export default class GameUtil {
         let isPotLimit: boolean = false;
         switch (roomType) {
             case RoomType.MTTOmaha4SixPlusFixedPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.MTTOmaha4StandardPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.MTTOmaha5SixPlusFixedPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.MTTOmaha5StandardPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.MTTOmaha6SixPlusFixedPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.MTTOmaha6StandardPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.MTTTexasHoldemSixPlusFixedPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.MTTTexasHoldemStandardPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.Omaha4SixPlusFixedPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.Omaha4StandardPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.Omaha5SixPlusFixedPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.Omaha5StandardPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.Omaha6SixPlusFixedPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.Omaha6StandardPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.TexasHoldemSixPlusFixedPotLimit:
-                isPotLimit = true;
-                break;
             case RoomType.TexasHoldemStandardPotLimit:
                 isPotLimit = true;
                 break;
@@ -1337,7 +1320,6 @@ export default class GameUtil {
                 isPotLimit = false;
                 break;
         }
-
         return isPotLimit;
     }
 
@@ -1364,5 +1346,37 @@ export default class GameUtil {
         return 50;
     }
 
+    /**
+     * 
+     * @param enter_room_info 
+     * @param delay 进入延迟时间
+     * @param fromUI 
+     * @returns 
+     */
+    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUI?: UIDefineType) {
+        //未开放房间类型
+        if (!GameUtil.IsOpenRoomType(enter_room_info.room_type)) {
+            //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
+            UIComponent.Instance.Toast();
+            return;
+        }
+        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
+            if (RoomType[enter_room_info.room_type]) {
+                let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch(() => { });
+                
+                if (response) {
+                    //GC.data.lobby.roomList.selected = this._data;
 
+                    GameCache.Instance.InitEnterRoomInfo(enter_room_info);
+
+                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: fromUI });//[this.UIDefine, false, 0]
+                }
+            } else {
+                console.warn("房间类型未解析:", enter_room_info.room_type);
+                UIComponent.Instance.Toast(`room_type:${enter_room_info.room_type} is error`);
+            }
+        } else {
+            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
+        }
+    }
 }

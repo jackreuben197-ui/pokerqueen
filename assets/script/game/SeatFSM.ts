@@ -1,8 +1,7 @@
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import GlobalSession from "../session/GlobalSession";
-import FSMLogicComponent from "./FSMLogicComponent";
 import { GameCache } from "./GameCache";
-import Seat, { VoiceprintState } from "./Seat";
+import Seat, { VoiceprintState } from "./seat/Seat";
 import { SeatEmpty, SeatSit, SeatStandup, SeatWaitStart } from "./SeatStateHandler";
 
 export class SeatFSM {
@@ -34,8 +33,8 @@ export class SeatFSM {
         //this.seat.uirc.transSmallCardBacks.active = false;
         this.seat.HideCardBack();
         // imageHolding.gameObject.SetActive(false);
-        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
-        this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
+        this.seat.HideCards(this.seat.listCardUIInfos);
+        this.seat.HideCards(this.seat.listSmallCardUIInfos);
         // imageTrust.gameObject.SetActive(false);
         this.seat.uirc.imageOffline.active = false;
         this.seat.uirc.imageReserveSeat.active = false;
@@ -156,8 +155,8 @@ export class SeatFSM {
 
     //#region 站起
     public StandupEnter(): void {
-        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
-        this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
+        this.seat.HideCards(this.seat.listCardUIInfos);
+        this.seat.HideCards(this.seat.listSmallCardUIInfos);
         this.seat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
     }
 
@@ -187,8 +186,8 @@ export class SeatFSM {
 
     //#region 每手开始
     public StartEnter(): void {
-        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
-        this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
+        this.seat.HideCards(this.seat.listCardUIInfos);
+        this.seat.HideCards(this.seat.listSmallCardUIInfos);
         this.seat.HideCardBack();
         //this.seat.UpdateHolding(true);
     }
@@ -438,11 +437,11 @@ export class SeatFSM {
     //#region 本轮结束
     public RoundEndEnter(): void {
         this.seat.ClearRoundEndData();
-        this.seat.HideCards(this.seat.uirc.listCardUIInfos);
-        this.seat.HideCards(this.seat.uirc.listSmallCardUIInfos);
+        this.seat.HideCards(this.seat.listCardUIInfos);
+        this.seat.HideCards(this.seat.listSmallCardUIInfos);
         this.seat.HideCardBack();
         this.seat.ClearCurRoundHaveBet();
-        this.seat.uirc.ResetShowCardsId();
+        this.seat.ResetShowCardsId();
         this.seat.UpdateShowCardsId();
         this.seat.HideBubbleInsurance();
         this.seat.uirc.imageCardType.node.active = false;

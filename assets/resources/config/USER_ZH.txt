@@ -2615,8 +2615,8 @@ UIMTT_Listitemyc=延迟报名
 UIMTT_Liststartimeone=开始时间: 
 UIMTT_Listbuy=买入: {0}
 UIMTT_Listbonus=奖金: <color=#DCBA82>{0}</color>
-UIMTT_Listdistancestart=<size=30>距离开始</size>\n<size=45>{0}</size>
-UIMTT_Listdistancesclose=<size=30>距离关闭</size>\n<size=45>{0}</size>
+UIMTT_Listdistancestart=距离开始
+UIMTT_Listdistancesclose=距离关闭
 MTT_xq_buy=买入
 StrJanuary=一月^1
 StrFebruary=二月^2
@@ -2663,7 +2663,7 @@ MTT_State_Gamemtt=<color=#DCBA82>锦标赛</color>
 MTT_State_Freegame=<color=#DCBA82>免费赛</color>
 MTT_State_Huntergame=<color=#DCBA82>猎人赛</color>
 MTT_State_Satellite=<color=#DCBA82>卫星赛</color>
-UIMTTSignDialog_Rebuy=买入
+UIMTTSignDialog_Rebuy=买入:
 Uiclub_profile=请输入公会简介[最多50字]
 Uiclub_con1=加入公会畅想愉快游戏时光
 Uiclub_con2=创建公会，寻找志同道合朋友
@@ -3230,6 +3230,8 @@ UITitle_apply_chongdou=充豆申请
 UITitle_apply_tidou=提豆申请
 
 UIUserDesc=玩家备注:{0}
+
+UITip_jiangjin=奖金
 
 UITips_GoldOpration_0=确定向{0}工会申请充值{1}金豆？<br/>付款金额{2}
 UITips_GoldOpration_1=确定向{0}工会申请提取{1}金豆？<br/>收款金额{2}

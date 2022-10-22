@@ -1,6 +1,4 @@
 
-
-import { DialogParam } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import GC from "../frame/GameControl";
 import { CPErrorCode } from "../i18n/CPErrorCode";
@@ -15,7 +13,7 @@ import UIBase from "../ui/UIBase";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 import GameUtil from "./GameUtil";
-import Seat, { VoiceprintState } from "./Seat";
+import Seat, { VoiceprintState } from "./seat/Seat";
 import { AddClipsData } from "./ui/UIAddChipsComponent";
 
 
@@ -65,31 +63,6 @@ export default class SeatUIRC extends UIBase {
     transSmallCardBacks: cc.Node = null;
     imageBanker: cc.Node = null;
 
-    public listCardUIInfos: CardUIInfo[] = null;
-    public listSmallCardUIInfos: CardUIInfo[] = null;
-    public listImageSmallCardBack: cc.Sprite[] = null;
-
-    imageCard0: cc.Node = null;
-    imageCard1: cc.Node = null;
-    imageCard2: cc.Node = null;
-    imageCard3: cc.Node = null;
-    imageCard4: cc.Node = null;
-    imageCard5: cc.Node = null;
-
-
-    imageSmallCard0: cc.Node = null;
-    imageSmallCard1: cc.Node = null;
-    imageSmallCard2: cc.Node = null;
-    imageSmallCard3: cc.Node = null;
-    imageSmallCard4: cc.Node = null;
-    imageSmallCard5: cc.Node = null;
-
-    imageSmallCardBack0: cc.Sprite = null;
-    imageSmallCardBack1: cc.Sprite = null;
-    imageSmallCardBack2: cc.Sprite = null;
-    imageSmallCardBack3: cc.Sprite = null;
-    imageSmallCardBack4: cc.Sprite = null;
-    imageSmallCardBack5: cc.Sprite = null;
 
     imageCountDown: cc.Sprite = null;
     Image_CountDownbg: cc.Sprite = null;
@@ -127,12 +100,16 @@ export default class SeatUIRC extends UIBase {
      * 声明内容
      */
     public seat: Seat = null;
-    /// <summary>
-    /// 亮牌数据
-    /// </summary>
-    public showCardsId: number[] = null;
 
     public voiceprintList: cc.Node[];
+
+    //主玩家手牌节点列表
+    imageCards: CardUIInfo[];
+    imageSmallCards: CardUIInfo[];
+    imageSmallCardBacks: cc.Sprite[];
+
+
+
     ///////////////////////////////////
     protected lateLoad(): void {
         super.lateLoad();
@@ -153,27 +130,38 @@ export default class SeatUIRC extends UIBase {
         this.transSmallCardBacks = this.getChildNodeOrComponent("SmallCardBacks");
         this.imageBanker = this.getChildNodeOrComponent("Image_Banker");
 
-        this.imageCard0 = this.getChildNodeOrComponent("Image_Card0");
-        this.imageCard1 = this.getChildNodeOrComponent("Image_Card1");
-        this.imageCard2 = this.getChildNodeOrComponent("Image_Card2");
-        this.imageCard3 = this.getChildNodeOrComponent("Image_Card3");
-        this.imageCard4 = this.getChildNodeOrComponent("Image_Card4");
-        this.imageCard5 = this.getChildNodeOrComponent("Image_Card5");
-
-        this.imageSmallCard0 = this.getChildNodeOrComponent("Image_SmallCard0");
-        this.imageSmallCard1 = this.getChildNodeOrComponent("Image_SmallCard1");
-        this.imageSmallCard2 = this.getChildNodeOrComponent("Image_SmallCard2");
-        this.imageSmallCard3 = this.getChildNodeOrComponent("Image_SmallCard3");
-        this.imageSmallCard4 = this.getChildNodeOrComponent("Image_SmallCard4");
-        this.imageSmallCard5 = this.getChildNodeOrComponent("Image_SmallCard5");
+        //当前最大6张
+        this.imageCards = [];
+        this.imageSmallCards = [];
+        this.imageSmallCardBacks = [];
+        for (let i = 0; i < 6; i++) {
+            this.imageCards.push(new CardUIInfo(this.getChildNodeOrComponent(`Image_Card${i}`)));
+            this.imageSmallCards.push(new CardUIInfo(this.getChildNodeOrComponent(`Image_SmallCard${i}`)));
+            this.imageSmallCardBacks.push(this.getChildNodeOrComponent(`Image_SmallCardBack${i}`, cc.Sprite));
+        }
 
 
-        this.imageSmallCardBack0 = this.getChildNodeOrComponent("Image_SmallCardBack0", cc.Sprite);
-        this.imageSmallCardBack1 = this.getChildNodeOrComponent("Image_SmallCardBack1", cc.Sprite);
-        this.imageSmallCardBack2 = this.getChildNodeOrComponent("Image_SmallCardBack2", cc.Sprite);
-        this.imageSmallCardBack3 = this.getChildNodeOrComponent("Image_SmallCardBack3", cc.Sprite);
-        this.imageSmallCardBack4 = this.getChildNodeOrComponent("Image_SmallCardBack4", cc.Sprite);
-        this.imageSmallCardBack5 = this.getChildNodeOrComponent("Image_SmallCardBack5", cc.Sprite);
+        // this.imageCard0 = this.getChildNodeOrComponent("Image_Card0");
+        // this.imageCard1 = this.getChildNodeOrComponent("Image_Card1");
+        // this.imageCard2 = this.getChildNodeOrComponent("Image_Card2");
+        // this.imageCard3 = this.getChildNodeOrComponent("Image_Card3");
+        // this.imageCard4 = this.getChildNodeOrComponent("Image_Card4");
+        // this.imageCard5 = this.getChildNodeOrComponent("Image_Card5");
+
+        // this.imageSmallCard0 = this.getChildNodeOrComponent("Image_SmallCard0");
+        // this.imageSmallCard1 = this.getChildNodeOrComponent("Image_SmallCard1");
+        // this.imageSmallCard2 = this.getChildNodeOrComponent("Image_SmallCard2");
+        // this.imageSmallCard3 = this.getChildNodeOrComponent("Image_SmallCard3");
+        // this.imageSmallCard4 = this.getChildNodeOrComponent("Image_SmallCard4");
+        // this.imageSmallCard5 = this.getChildNodeOrComponent("Image_SmallCard5");
+
+
+        // this.imageSmallCardBack0 = this.getChildNodeOrComponent("Image_SmallCardBack0", cc.Sprite);
+        // this.imageSmallCardBack1 = this.getChildNodeOrComponent("Image_SmallCardBack1", cc.Sprite);
+        // this.imageSmallCardBack2 = this.getChildNodeOrComponent("Image_SmallCardBack2", cc.Sprite);
+        // this.imageSmallCardBack3 = this.getChildNodeOrComponent("Image_SmallCardBack3", cc.Sprite);
+        // this.imageSmallCardBack4 = this.getChildNodeOrComponent("Image_SmallCardBack4", cc.Sprite);
+        // this.imageSmallCardBack5 = this.getChildNodeOrComponent("Image_SmallCardBack5", cc.Sprite);
 
 
         this.imageCountDown = this.getChildNodeOrComponent("Image_CountDown", cc.Sprite);
@@ -213,32 +201,18 @@ export default class SeatUIRC extends UIBase {
         // this.voiceprintList.Add(VoiceprintReal);
         // this.voiceprintList.Add(VoiceprintVoting);
 
-
-        if (null == this.listCardUIInfos || this.listCardUIInfos.length > 0) this.listCardUIInfos = [];
-        this.listCardUIInfos.push(new CardUIInfo(this.imageCard0));
-        this.listCardUIInfos.push(new CardUIInfo(this.imageCard1));
-
-
-        if (null == this.listSmallCardUIInfos || this.listSmallCardUIInfos.length > 0) this.listSmallCardUIInfos = [];
-        this.listSmallCardUIInfos.push(new CardUIInfo(this.imageSmallCard0));
-        this.listSmallCardUIInfos.push(new CardUIInfo(this.imageSmallCard1));
-
-
-
-        if (null == this.listImageSmallCardBack || this.listImageSmallCardBack.length > 0) this.listImageSmallCardBack = [];
-        if (null == this.listImageSmallCardBack || this.listImageSmallCardBack.length > 0) this.listImageSmallCardBack = [];
-        this.listImageSmallCardBack.push(this.imageSmallCardBack0);
-        this.listImageSmallCardBack.push(this.imageSmallCardBack1);
-        this.ResetShowCardsId();
     }
 
     protected regiterTouchEvents(): void {
 
-        for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
-            this.listCardUIInfos[i].imageCard.on("click", this.onClickCard, this);
+        for (let i = 0; i < this.imageCards.length; i++) {
+            this.imageCards[i].imageCard.on("click", this.onClickCard, this);
         }
+
         this.imageEmpty.node.on("click", this.onClickEmpty, this);
         this.rawimageHead.node.on("click", this.onClickHead, this);
+
+
         //this.buttonCancelReserveSeat.on("click", this.onClickCancelReserveSeat, this);
         this.setButtonClick(this.buttonCancelReserveSeat, this.onClickCancelReserveSeat);
     }
@@ -394,9 +368,9 @@ export default class SeatUIRC extends UIBase {
         let mCardIndex: number = +mTmp;
 
 
-        let mActive: boolean = this.listCardUIInfos[mCardIndex].imageEye.node.activeInHierarchy;
-        this.listCardUIInfos[mCardIndex].imageEye.node.active = !mActive;
-        this.showCardsId[mCardIndex] = (!mActive) ? 1 : 0;
+        let mActive: boolean = this.seat.listCardUIInfos[mCardIndex].imageEye.node.activeInHierarchy;
+        this.seat.listCardUIInfos[mCardIndex].imageEye.node.active = !mActive;
+        this.seat.showCardsId[mCardIndex] = (!mActive) ? 1 : 0;
         ProtocolAgency.Send<ClientMessageShowdown.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_Showdown,
             RoomID: GameCache.Instance.room_id,
@@ -404,21 +378,8 @@ export default class SeatUIRC extends UIBase {
             Body:
             {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                showCardsList: this.showCardsId
+                showCardsList: this.seat.showCardsId
             },
         })
-    }
-
-    public ResetShowCardsId(): void {
-        if (this.showCardsId == null) {
-            this.showCardsId = [];
-        }
-        else {
-            this.showCardsId.length = 0;
-        }
-        for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
-            this.showCardsId.push(0);
-        }
-
     }
 }

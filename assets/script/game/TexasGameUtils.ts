@@ -12,7 +12,7 @@ import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
-import Seat from "./Seat";
+import Seat from "./seat/Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./texas/TexasGame";
 import { PublicCardInfo } from "./UITexas";

@@ -46,8 +46,8 @@ export default class UIlaborMerberManager extends BaseForm {
     async onShow(param?: any, fromUI?: BaseForm) {
         super.onShow(param, fromUI);
         this.initTop()
-        this.initMemberList();
         await UIClubModel.mInstance.APIOrgClubGetJoinlList()
+        this.initMemberList();
         // this.initAudit()
     }
     initAudit() {
@@ -71,6 +71,9 @@ export default class UIlaborMerberManager extends BaseForm {
     async initMemberList() {
         this.contentNode.removeAllChildren();
         let data: any = APIOrgMemberList.Response.data;
+        if (data == null) {
+            return;
+        }
         for (let index = 0; index < data?.data.length; index++) {
             let _item = cc.instantiate(this.item);
             _item.parent = this.contentNode
@@ -81,8 +84,17 @@ export default class UIlaborMerberManager extends BaseForm {
             let icon = cc.find('iconMask/icon', _item);
             WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data?.data[index].avatar)
             _item.active = true;
+            _item['info'] = data[index];
+            _item.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         }
     }
+
+    onClickItem(event) {
+        let target = event.target;
+        let info = target.info;
+        UIComponent.open(UIDefine.UIMember, {info : info});
+    }
+
     async sousuoBtn() {
         let string = this.EditBox.string
         if (string == '') {

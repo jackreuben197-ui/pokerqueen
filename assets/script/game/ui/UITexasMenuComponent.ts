@@ -20,6 +20,10 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UITexasMenuComponent extends UIBase {
 
+    //文字透明度
+    Text_Light_Alpha = 178;
+    Text_Dark_Alpha = 70;
+
     game: TexasGame = null;
 
     transSubMenu: cc.Node = null;
@@ -29,6 +33,8 @@ export default class UITexasMenuComponent extends UIBase {
 
     //按钮模板节点
     Menu_Button: cc.Node = null;
+
+
 
     IMenuButton_Type: {
         node: cc.Node;
@@ -167,10 +173,12 @@ export default class UITexasMenuComponent extends UIBase {
         for (let key in this.MenuButtons_Dic) {
             let item: typeof this.IMenuButton_Type = this.MenuButtons_Dic[key];
             let button = cc.instantiate(this.Menu_Button);
+            let label = button.getChildByName("Text");
             button.parent = this.Menu_Buttons;
             button.active = false;
-            button.getChildByName("Text").getComponent(cc.Label).string = item.text;
-            button.getChildByName("Text").getComponent(i18nLabel).i18NString = item.i18n_string;
+            label.opacity = this.Text_Light_Alpha;
+            label.getComponent(cc.Label).string = item.text;
+            label.getComponent(i18nLabel).i18NString = item.i18n_string;
             button.on("click", item.onClick, this);
             button.on(cc.Node.EventType.TOUCH_START, this.onMenuButtonTouchStart, this);
             button.on(cc.Node.EventType.TOUCH_END, this.onMenuButtonTouchEnd, this);
@@ -263,18 +271,20 @@ export default class UITexasMenuComponent extends UIBase {
 
     __MenuButtonInteractable(node: cc.Node, interactable: boolean) {
         node.getChildByName("Text").color = cc.Color.WHITE;
-        node.getChildByName("Text").opacity = interactable ? 255 : 120;
-        node.getComponent(cc.Button).interactable = interactable;
+        node.getChildByName("Text").opacity = interactable ? 178 : 70;
         node.getChildByName("Arrow").active = interactable;
+        node.getComponent(cc.Button).interactable = interactable;
     }
 
     onMenuButtonTouchStart(e: cc.Event.EventTouch) {
         let target: cc.Node = e.currentTarget;
+        if (!target.getComponent(cc.Button).interactable) return;
         target.getChildByName("Text").color = CommonDefine.Color_Green;
         target.getChildByName("Arrow").color = CommonDefine.Color_Green;
     }
     onMenuButtonTouchEnd(e: cc.Event.EventTouch) {
         let target: cc.Node = e.currentTarget;
+        if (!target.getComponent(cc.Button).interactable) return;
         target.getChildByName("Text").color = cc.Color.WHITE;
         target.getChildByName("Arrow").color = cc.Color.WHITE;
     }
