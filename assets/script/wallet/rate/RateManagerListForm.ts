@@ -53,8 +53,8 @@ export default class RateManagerListForm extends UIBase {
         }
     }
 
-    onShow(param?: any): void {
-        super.onShow(param);
+    onShow(param?: any, fromUI?: any): void {
+        super.onShow(param, fromUI);
 
         this.comFormTitle.initData("UITitle_RateSet", this);
         GC.data.rate.reqRateList(false);
