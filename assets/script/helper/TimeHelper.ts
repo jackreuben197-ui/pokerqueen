@@ -113,7 +113,7 @@ export default class TimeHelper {
         return result;
     }
 
-    private static _zeroNum(num: number): string {
+    public static _zeroNum(num: number): string {
         return `${num < 10 ? 0 : ""}${num}`;
     }
 

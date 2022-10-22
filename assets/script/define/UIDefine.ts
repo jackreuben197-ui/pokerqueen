@@ -134,6 +134,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/record/UIRecord",
         Title: "UICareerRecord",
     },
+    //战绩详情
+    UIRecordDetail: {
+        UIType: UIType.Form,
+        Name: "UIRecordDetail",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIRecordDetail",
+        Title: "",
+    },
     //房间模版
     UIMatchPlayViewForm: {
         UIType: UIType.Form,

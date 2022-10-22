@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_History_List, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -208,6 +208,98 @@ export class LobbyControl {
             });
         });
     }
+
+    /**
+     * 获取战绩数据 int group_by, int match_id, int limit, int offset, int type, sbyte game_type,
+     */
+     async getHistoryInfo(param: typeof Web_Room_Center_History_List.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Room_Center_History_List,
+                body: Web_Room_Center_History_List.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Room_Center_History_List.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 查询他人统计数据 - 【数据统计模块】
+     */
+     async getPersionInfo(param: typeof WEB2_data_stat_person.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: WEB2_data_stat_person,
+                body: WEB2_data_stat_person.Request(param),
+                onSuccess: function () {
+                    resolve(WEB2_data_stat_person.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 战绩7，30,生涯数据(MTT,Room)
+     */
+     async getUserStatsInfo(param: typeof Web_Stats_User_Stats.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Stats_User_Stats,
+                body: Web_Stats_User_Stats.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Stats_User_Stats.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 战绩详情  
+     */
+     async getRecordDetailInfo(roomId, param: typeof Web_Stats_Room_Detail.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                api: Web_Stats_Room_Detail.API.replace("{id}", roomId.toString()),
+                request: Web_Stats_Room_Detail,
+                body: Web_Stats_Room_Detail.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Stats_Room_Detail.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    getLongTimeStr(pNum) {//1小时3600秒      1天86400秒
+        if (pNum >= 3600)//>1小时
+        {
+            let tHour = Math.floor(pNum / 3600);
+            return tHour.toString().padStart(2, '0') + "小时局";
+        }
+        else if (pNum >= 60)//>1分钟
+        {
+            let tMinutes = Math.floor(pNum / 60);
+            return tMinutes.toString().padStart(2, '0') + "分钟局";
+
+        }
+        else if (pNum < 60) {
+            return pNum.toString() + '秒局';
+        }
+        return "";
+    }
+
 
     /********************************* 流程控制 ***********************************/
     /********************************* 清除 ***********************************/

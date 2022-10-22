@@ -206,6 +206,290 @@ export class Web_User_Register {
 }
 
 /// <summary>
+/// 查询他人统计数据 - 【数据统计模块】
+///
+/// 查询他人统计数据
+/// </summary>
+export class WEB2_data_stat_person {
+    //接口地址
+    public static API: string = "/api/data_stat/person";
+    //字段声明
+    public static RequestParams: {
+        breakRandomId?: number,      //1 room 2 mtt 3 mttroom
+        breakUserId?: number,         //条目
+        roomPath?: number,        //开始下标。例子（offset=0，limit=10，0-9。）
+        timeType?: number,     //游戏类型，对应客户端 枚举 GameType
+    } = null;
+
+    public static Data: {
+        breakPrice: string, // 破隐需要的金豆数
+        imageType: number,// 影像数据级别 1=生涯 ， 2=30天 ， 3=7天
+        totalHand: number,// omaha,普通局特有参数.总手数
+        CBet: number, // omaha,普通局特有参数.4Flop持续下注率 如20%返回20即可
+        AF: string,// omaha,普通局特有参数.激进程度
+        fantasy: number,// 大菠萝特有参数.进范率.如20%返回20即可
+        handAverage: number,// 大菠萝特有参数.手牌平均分
+        thirdTimes: number,// sng mtt特有参数.第三名次数
+        totalGameCnt: number,// omaha,普通局特有参数.总局数
+        totalEarn: number,// 总战绩
+        VPIP: number,// omaha,普通局特有参数.入池率 如20%返回20即可
+        breakStatus: number,// 能否有权限破隐 1401-无权破隐 1402-已破隐（只有已破隐), 1403-可破隐(未破隐)
+        threeBet: number,// omaha,普通局特有参数.翻牌前再加注率 如20%返回20即可
+        roomPath: number,// 牌局:61-普通局, 71-MTT, 81-SNG 91-奥马哈 51-大菠萝
+        PRF: number,// omaha,普通局特有参数.翻牌前加注率 如20%返回20即可
+        WTSD: number,// omaha,普通局特有参数.摊牌胜率.如20%返回20即可
+        Allin_Wins: number,// omaha,普通局特有参数.全下胜率.如20%返回20即可
+        papWins: number,// 大菠萝特有参数.胜率.如20%返回20即可
+        fantasyAverage: number,// 大菠萝特有参数.进范平均分
+        winTimes: number,// sng mtt特有参数.获奖次数
+        firstTimes: number,// sng mtt特有参数.第一名次数
+        secondTimes: number, // sng mtt特有参数.第二名次数
+        playTimes: number,// sng mtt特有参数.参赛次数
+        Wins: number,// omaha,普通局特有参数.入池胜率 如20%返回20即可
+    } = null;
+
+
+    public static ResponseData: {
+        status: number,
+        msg: string,
+        data?: typeof WEB2_data_stat_person.Data,
+    } = null;
+
+    public static Request(param: typeof WEB2_data_stat_person.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof WEB2_data_stat_person.ResponseData };
+}
+
+/// <summary>
+/// 战绩7，30,生涯数据(MTT,Room)
+/// </summary>
+export class Web_Stats_User_Stats {
+    //接口地址
+    public static API: string = "/api/stats/user_stats";
+    //字段声明
+    public static RequestParams: {
+        game_type?: number,      //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
+        time_type?: number,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+        time_long?: number,      //客户端时间戳
+    } = null;
+
+    public static MTTRoomData: {
+        user_id: string,
+        play_times: number,//参赛次数
+        win_times: number,//获奖次数
+        frist_times: number,//第一名次数
+        second_times: string,//第二名次数
+        third_times: number,//第三名次数    
+    } = null;
+
+    public static RoomData: {
+        id: string,
+        user_id: number,
+        game_type: number,//游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6   
+        data_type: number,//数据类型 1--今日；2--7天；3--30天；4--生涯
+        total_game_cnt: string,//总局数
+        total_hand: number, //总手数   
+        total_earn: number,//总盈亏
+        aveage_earn: number,//场均战绩
+        aveage_earn_hundred: number, //战绩/百手
+        vpip: number, //入池率 
+        wins: number, //入池胜率
+        prf: number,//翻牌前加注率
+        bet3: number,//翻牌前再加注率
+        af: number,//激进程度
+        cbet: number, //4Flop持续下注率
+        wtsd: number, //摊牌胜率
+        allinWins: number, //全下胜率
+    } = null;
+
+    public static Data: {
+        mtt_room_data: typeof Web_Stats_User_Stats.MTTRoomData,
+        room_data: typeof Web_Stats_User_Stats.RoomData,
+    } = null;
+
+    public static ResponseData: {
+        data?: typeof Web_Stats_User_Stats.Data,
+    } = null;
+
+    public static Request(param: typeof Web_Stats_User_Stats.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Stats_User_Stats.ResponseData };
+}
+
+/// <summary>
+/// 战绩
+/// </summary>
+export class Web_Room_Center_History_List {
+    //接口地址
+    public static API: string = "/api/stats/room/history/list";
+    //字段声明
+    public static RequestParams: {
+        group_by?: number,      //1 room 2 mtt 3 mttroom
+        limit?: number,         //条目
+        offset?: number,        //开始下标。例子（offset=0，limit=10，0-9。）
+        game_type?: number,     //游戏类型，对应客户端 枚举 GameType
+    } = null;
+
+    public static Records: {
+        Name: string,//房间名称
+        Type: number,//房间类型
+        MatchID: number,//比赛id
+        RoomID: number,//房间id
+        Time: string,//开始时间
+        Change: number,//筹码变动
+        Count: number,//总手数
+    } = null;
+
+    public static Data: {
+        limit: number,
+        offset: number,
+        total: number,// //总条数
+        records: typeof Web_Room_Center_History_List.Records,
+    } = null;
+
+    public static ResponseData: {
+        data?: typeof Web_Room_Center_History_List.Data,
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_History_List.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_History_List.ResponseData };
+}
+
+/// <summary>
+/// 战绩详情
+/// </summary>
+export class Web_Stats_Room_Detail {
+    //接口地址
+    public static API: string = "/api/stats/room_detail/{id}";
+    //字段声明
+    public static RequestParams: {
+        limit?: number,         //条目
+        offset?: number,        //开始下标。例子（offset=0，limit=10，0-9。）
+    } = null;
+
+    public static UserInfo: {
+        is_current_user: boolean,   //是否当前用户
+        user_id: number,            //玩家ID
+        user_random_id: number,     //玩家随机ID
+        nick_name: string,          //玩家昵称
+        avatar: string,             //玩家头像
+        bring_in: number,           //买入筹码
+        bring_out: number,          //带出筹码
+        user_room_hand_num: number, //玩家手数
+        original_results: number,   //原始战绩
+        gold_deduction: number,     //金豆扣减
+        finally_game_results: number,//最终战绩
+        insurance_buy_in: number,   //保险买入
+        insurance_profit: number,   //保险收入
+        insurance_sum: number,      //保险合计
+        insurance_original: number, //原始保险
+    } = null;
+
+    public static RoomData: {
+        limit: number,  
+        offset: number, 
+        total: number,              //总条数
+        game_type: number,          //牌局类型(玩法) 游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6
+        game_room_name: string,     //牌局名称
+        room_id: number,            //牌局ID
+        ante: number,               //前注
+        blind: number,              //盲注级别	small_blind
+        player_duration: number,    //牌局时长，单位秒
+        all_bring_in: number,       //总带入筹码
+        room_total_hand_num: number,//本局总手数
+        insurance_on: number,       //是否开启保险 0-close, 1- open
+        insurance_total: number,    //牌局保险总计
+        end_time: string,           //结束时间
+        user_list: typeof Web_Stats_Room_Detail.UserInfo,//玩家列表
+    } = null;
+
+    public static Data: {
+        room_data:typeof Web_Stats_Room_Detail.RoomData,
+    } = null;
+
+    public static ResponseData: {
+        data?: typeof Web_Stats_Room_Detail.Data,
+    } = null;
+
+    public static Request(param: typeof Web_Stats_Room_Detail.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Stats_Room_Detail.ResponseData };
+}
+
+/// <summary>
+/// MTT战绩详情
+/// </summary>
+export class Web_Stats_Mtt_Room_Detail {
+    //接口地址
+    public static API: string = "/api/stats/mtt_room_detail/{id}";
+    //字段声明
+    public static RequestParams: {
+        limit?: number,         //条目
+        offset?: number,        //开始下标。例子（offset=0，limit=10，0-9。）
+    } = null;
+
+    public static Goods: {
+        i: number,   //道具id
+        na: string,  //道具名称
+        v: number,   //价值等价货币
+        n: number,   //数量
+    } = null;
+
+    public static UserInfo: {
+        is_current_user: boolean,   //是否当前用户
+        user_id: number,            //玩家ID
+        user_random_id: number,     //玩家随机ID
+        nick_name: string,          //玩家昵称
+        avatar: string,             //玩家头像
+        rank: number,               //排名
+        hunter_rank: number,          //带出筹码
+        hunter_kill: number, //玩家手数
+        award: number,   //原始战绩
+        hunter_award: number,     //金豆扣减
+        buy_in_times: number,//最终战绩
+        goods_awrd: typeof Web_Stats_Mtt_Room_Detail.Goods,   //保险买入
+    } = null;
+
+    public static RoomData: {
+        game_type: number,          //牌局类型(玩法) 游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6
+        game_room_name: string,     //牌局名称
+        room_id: number,            //牌局ID
+        start_time: number,         //赛事开始时间
+        end_time: number,           //赛事结束时间
+        player_count: number,       //参与人数
+        buy_in_count: number,       //买入次数
+        limit: number,       
+        offset: number,    
+        total: string,              //总条数
+        user_list: typeof Web_Stats_Mtt_Room_Detail.UserInfo,//玩家列表
+    } = null;
+
+    public static Data: {
+        room_data:typeof Web_Stats_Mtt_Room_Detail.RoomData,
+    } = null;
+
+    public static ResponseData: {
+        data?: typeof Web_Stats_Mtt_Room_Detail.Data,
+    } = null;
+
+    public static Request(param: typeof Web_Stats_Mtt_Room_Detail.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: typeof Web_Stats_Mtt_Room_Detail.ResponseData };
+}
+
+
+/// <summary>
 /// 请求用户数据
 /// </summary>
 export class Web_User_Info {
