@@ -673,6 +673,10 @@ export class Web_Club_Issue_Gold {
     public static USER_LIST = "/api/order/club/user_list";
 }
 
+export class Web_Mtt {
+    public static LIST = "/api/roomcenter/mtt/list"
+}
+
 // xyh end
 
 /// <summary>
@@ -781,7 +785,8 @@ export class Web_Org_Club_Get {
     public static ResponseData: {
         random_id: number,
         club_name: string,
-        more_contact: string
+        more_contact: string,
+        club_id: number,
     } = null;
     public static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;

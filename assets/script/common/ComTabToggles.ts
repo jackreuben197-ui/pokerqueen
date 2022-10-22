@@ -33,9 +33,10 @@ export default class ComTabToggles extends UIBase {
             this.bindClick(node, this._onTabClick, index);
         })
     }
-    initData(data: TTabToggleData, type: ETabToggle) {
-        this._type = type;
+    initData(toggles: any, type: ETabToggle = ETabToggle.sprite, data?: TTabToggleData) {
+        this.type = type;
         this.data = data;
+        this.onToggle = toggles;
     }
 
     get toggles() {
@@ -50,6 +51,9 @@ export default class ComTabToggles extends UIBase {
     }
     set onToggle(t) {
         this._onToggle = t;
+    }
+    set type(t) {
+        this._type = t;
     }
     get data() {
         return this._data;
@@ -90,7 +94,7 @@ export default class ComTabToggles extends UIBase {
 
     private async _onTabClick(index: number, data?: any) {
         if (index != this._tabIndex) {
-            let param = data ? data : this._data?.data[index];
+            let param = data ? data : (this._data?.data ? this._data?.data[index] : null);
             let suc = await this._onToggle(index, param);
             if (suc || suc == undefined) {
                 this.setTabTo(index);

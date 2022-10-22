@@ -81,7 +81,8 @@ export default class UILobby extends UIBase {
     }
 
     onClickMTTGame() {
-        //http://dev.k8s.awanptesting.com:80/api/roomcenter/mtt/list
+        // http://dev.k8s.awanptesting.com:80/api/roomcenter/mtt/list
+        UIComponent.open(UIDefine.MttListForm)
     }
 
     /**

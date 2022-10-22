@@ -42,8 +42,7 @@ export default class OrderApplyForm extends BaseForm {
         super.onShow(param);
 
         this.comFormTitle.initData("UIAppay", this);
-        this.toggles.initData({ data: [EOrderType.chongzhi, EOrderType.tiqu] }, ETabToggle.sprite);
-        this.toggles.onToggle = this.onToggle;
+        this.toggles.initData(this.onToggle, ETabToggle.sprite, { data: [EOrderType.chongzhi, EOrderType.tiqu] });
         this.toggles.clickTab(0, null, true)
     }
 

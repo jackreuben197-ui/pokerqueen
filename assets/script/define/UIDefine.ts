@@ -377,6 +377,19 @@ export const UIDefine = {
         Path: "main/wallet/apply/OrderApplyForm",
     },
 
+    MttListForm: {
+        UIType: UIType.Form,
+        Name: "MttListForm",
+        Bundle: null,
+        Path: "main/mtt/MttListForm",
+    },
+    MttDetailForm: {
+        UIType: UIType.Form,
+        Name: "MttDetailForm",
+        Bundle: null,
+        Path: "main/mtt/detail/MttDetailForm",
+    },
+
 
 }
 //批量设置
