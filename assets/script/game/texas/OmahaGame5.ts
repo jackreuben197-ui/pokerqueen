@@ -9,7 +9,6 @@ import TexasGame from "./TexasGame";
  */
 export default class OmahaGame5 extends OmahaGame4 {
 
-
     public override get HandCards(): number {
         return 5;
     }

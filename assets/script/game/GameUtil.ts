@@ -1,5 +1,12 @@
 
-import { GameCache } from "./GameCache";
+import { ProcedureEnum } from "../define/EIDefine";
+import { UIDefine, UIDefineType } from "../define/UIDefine";
+import GC from "../frame/GameControl";
+import ProcedureManager from "../manager/ProcedureManager";
+import WebSocketClient from "../net/websocket/WebSocketClient";
+import LobbySession from "../session/LobbySession";
+import UIComponent from "../ui/UIComponent";
+import { EnterRoomInfo, GameCache } from "./GameCache";
 import { SeatUIInfo } from "./seat/Seat";
 import OmahaGame4 from "./texas/OmahaGame4";
 import OmahaGame5 from "./texas/OmahaGame5";
@@ -1143,7 +1150,6 @@ export default class GameUtil {
         return game;
     }
 
-
     public static InstantiateTexasGame(roomType: RoomType) {
 
         let game: TexasGame = null;
@@ -1338,5 +1344,39 @@ export default class GameUtil {
     /// <returns></returns>
     public static GetSeeMoreCost(small: number): number {
         return 50;
+    }
+
+    /**
+     * 
+     * @param enter_room_info 
+     * @param delay 进入延迟时间
+     * @param fromUI 
+     * @returns 
+     */
+    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUI?: UIDefineType) {
+        //未开放房间类型
+        if (!GameUtil.IsOpenRoomType(enter_room_info.room_type)) {
+            //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
+            UIComponent.Instance.Toast();
+            return;
+        }
+        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
+            if (RoomType[enter_room_info.room_type]) {
+                let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch(() => { });
+                
+                if (response) {
+                    //GC.data.lobby.roomList.selected = this._data;
+
+                    GameCache.Instance.InitEnterRoomInfo(enter_room_info);
+
+                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: fromUI });//[this.UIDefine, false, 0]
+                }
+            } else {
+                console.warn("房间类型未解析:", enter_room_info.room_type);
+                UIComponent.Instance.Toast(`room_type:${enter_room_info.room_type} is error`);
+            }
+        } else {
+            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
+        }
     }
 }

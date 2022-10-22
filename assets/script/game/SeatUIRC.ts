@@ -64,28 +64,6 @@ export default class SeatUIRC extends UIBase {
     imageBanker: cc.Node = null;
 
 
-    // imageCard0: cc.Node = null;
-    // imageCard1: cc.Node = null;
-    // imageCard2: cc.Node = null;
-    // imageCard3: cc.Node = null;
-    // imageCard4: cc.Node = null;
-    // imageCard5: cc.Node = null;
-
-
-    // imageSmallCard0: cc.Node = null;
-    // imageSmallCard1: cc.Node = null;
-    // imageSmallCard2: cc.Node = null;
-    // imageSmallCard3: cc.Node = null;
-    // imageSmallCard4: cc.Node = null;
-    // imageSmallCard5: cc.Node = null;
-
-    // imageSmallCardBack0: cc.Sprite = null;
-    // imageSmallCardBack1: cc.Sprite = null;
-    // imageSmallCardBack2: cc.Sprite = null;
-    // imageSmallCardBack3: cc.Sprite = null;
-    // imageSmallCardBack4: cc.Sprite = null;
-    // imageSmallCardBack5: cc.Sprite = null;
-
     imageCountDown: cc.Sprite = null;
     Image_CountDownbg: cc.Sprite = null;
     image_CountDownTime: cc.Label = null;
@@ -128,7 +106,7 @@ export default class SeatUIRC extends UIBase {
     //主玩家手牌节点列表
     imageCards: CardUIInfo[];
     imageSmallCards: CardUIInfo[];
-    imageSmallCardBacks: cc.Sprite[] = [];
+    imageSmallCardBacks: cc.Sprite[];
 
 
 
@@ -155,6 +133,7 @@ export default class SeatUIRC extends UIBase {
         //当前最大6张
         this.imageCards = [];
         this.imageSmallCards = [];
+        this.imageSmallCardBacks = [];
         for (let i = 0; i < 6; i++) {
             this.imageCards.push(new CardUIInfo(this.getChildNodeOrComponent(`Image_Card${i}`)));
             this.imageSmallCards.push(new CardUIInfo(this.getChildNodeOrComponent(`Image_SmallCard${i}`)));

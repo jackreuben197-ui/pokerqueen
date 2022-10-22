@@ -102,8 +102,10 @@ export default class UITexas extends BaseScene {
     imageWaitForStartTips: cc.Node = null;
     imageReserveSeatTips: cc.Node = null;
 
-    //座位节点
-    Seat: cc.Node = null;
+    //座位节点容器
+    Seats: cc.Node = null;
+    //座位模板
+    Seat_Temp: cc.Node = null;
 
 
     //UIAddChips: UIAddChipsComponent = null;
@@ -117,6 +119,7 @@ export default class UITexas extends BaseScene {
     public transPots: cc.Node = null;
     public transPot: cc.Node = null;
     public transAllPot: cc.Node = null;
+
 
 
 
@@ -169,7 +172,6 @@ export default class UITexas extends BaseScene {
 
     lastClickTime: number = 0;
 
-
     TransPot_Pool: SimpleNodePool = null;
 
 
@@ -196,9 +198,6 @@ export default class UITexas extends BaseScene {
 
         super.lateLoad();
 
-
-
-
         //this.desk_bg = this.getChildNodeOrComponent("desk_bg", cc.Sprite);
         //this.table_bg = this.getChildNodeOrComponent("table_bg", cc.Sprite);
         this.Desk = this.getChildNodeOrComponent("Desk", cc.Sprite);
@@ -212,8 +211,8 @@ export default class UITexas extends BaseScene {
         this.imageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.imageReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
 
-
-        this.Seat = this.getChildNodeOrComponent("Seat");
+        this.Seats = this.getChildNodeOrComponent("Seats");
+        this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
         //this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
         this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
@@ -250,10 +249,6 @@ export default class UITexas extends BaseScene {
 
         this.buttonCancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
 
-        this.game = GameCache.Instance.CurGame;
-        //this.game.Reset();
-        this.game.uirc = this;
-
         //#region 公共牌数据(UI、Id)
         if (null == this.listCards)
             this.listCards = [];
@@ -279,37 +274,7 @@ export default class UITexas extends BaseScene {
         this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard3));
         this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard4));
 
-        //#endregion
-        // 公共牌默认位置
-        if (null == this.game.listDefaultPublicCardsLPos)
-            this.game.listDefaultPublicCardsLPos = [];
-        if (this.game.listDefaultPublicCardsLPos.length > 0)
-            this.game.listDefaultPublicCardsLPos = [];
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard0.position);
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard1.position);
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard2.position);
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard3.position);
-        this.game.listDefaultPublicCardsLPos.push(this.imagePublicCard4.position);
-
-        // 第二套公共牌默认位置
-        if (null == this.game.listDefaultSecondPublicCardsLPos)
-            this.game.listDefaultSecondPublicCardsLPos = [];
-        if (this.game.listDefaultSecondPublicCardsLPos.length > 0)
-            this.game.listDefaultSecondPublicCardsLPos = [];
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard0.position);
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard1.position);
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard2.position);
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard3.position);
-        this.game.listDefaultSecondPublicCardsLPos.push(this.imageSecondPublicCard4.position);
-
-
-        //GameCache.Instance.room_type
-        //TexasGame game = GameUtil.InstantiateTexasGameplayObject((RoomType)GameCache.Instance.room_type, this);
-
-        //this.UIAddChips.node.active = false;
-
-        this.Seat.active = false;
-
+        this.Seat_Temp.active = false;
 
         this.TransPot_Pool = new SimpleNodePool(this.transPot);
 
@@ -354,10 +319,18 @@ export default class UITexas extends BaseScene {
     }
 
     Enter(param: { fromUI: IUIDefine, lookOn: boolean }): void {
+
         super.Enter(param);
-        if (param != null) { // { fromUI: this.UIDefine, lookOn: false }
-            this.game.IsLookOn = param?.lookOn || false;
-        }
+
+        this.game = GameCache.Instance.CurGame;
+
+        this.game.uirc = this;
+
+        this.game.InitPublicLocalPos();
+
+        // if (param != null) { // { fromUI: this.UIDefine, lookOn: false }
+        //     this.game.IsLookOn = param?.lookOn || false;
+        // }
         this.game.SetDeskType(this.game.deskType);
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];

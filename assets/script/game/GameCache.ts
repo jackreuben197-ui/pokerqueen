@@ -289,10 +289,38 @@ export class GameCache {
     static aaa = Math.random();
 
     initTexasGame() {
-
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);
-
     }
 
+    InitEnterRoomInfo(room_info: EnterRoomInfo) {
+        GameCache.Instance.serviceId = room_info.service_id;
+        GameCache.Instance.roomName = room_info.name;
+        GameCache.Instance.room_type = room_info.room_type;
+        GameCache.Instance.game_type = room_info.game_type;
+        GameCache.Instance.poker_type = room_info.poker_type;
+        GameCache.Instance.bet_type = room_info.limit_bet_type;
+        GameCache.Instance.room_id = room_info.rid;
+        GameCache.Instance.seat_count = room_info.seat_count;
+        GameCache.Instance.straddle = room_info.straddle_on;
+        GameCache.Instance.insurance = room_info.insurance_on > 0;
+        GameCache.Instance.muck_switch = room_info.muck_on;
+        GameCache.Instance.voiceprint_verify_on = room_info.voiceprint_verify_on;
+        GameCache.Instance.voiceprint_verify_duration = room_info.voiceprint_verify_duration;
+    }
+}
+export interface EnterRoomInfo {
+    service_id?;
+    name?;
+    room_type?;
+    game_type?;
+    poker_type?;
+    limit_bet_type?;
+    rid?;
+    seat_count?;
+    straddle_on?;
+    insurance_on?;
+    muck_on?;
+    voiceprint_verify_on?;
+    voiceprint_verify_duration?;
 }
 (window as any).GameCache = GameCache;

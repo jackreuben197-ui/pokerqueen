@@ -46,9 +46,10 @@ export default class UIMatchChessItem extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        this.bindClick(this.node, this.EnterRoomAPI);
+        this.bindClick(this.node, () => {
+            GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm);
+        })
     }
-
     initData(data: LobbyRoomListItem) {
         this._data = data;
         this.initView();
@@ -75,31 +76,6 @@ export default class UIMatchChessItem extends UIBase {
             playView.updateNormalItem(this._data.play_duration);
         }
     }
-
-
-    private async EnterRoomAPI() {
-        //未开放房间类型
-        if (!GameUtil.IsOpenRoomType(this._data.room_type)) {
-            //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
-            UIComponent.Instance.Toast();
-            return;
-        }
-        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
-            if (this._data.room_type_is_legal) {
-                let response = LobbySession.APIWebUserRoominsur(this._data.rid).catch(() => { });
-                if (response) {
-                    GC.data.lobby.roomList.selected = this._data;
-                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: UIDefine.UIMatchPlayViewForm, lookOn: false });//[this.UIDefine, false, 0]
-                }
-            } else {
-                console.warn("房间类型未解析:", this._data.room_type);
-                UIComponent.Instance.Toast(`room_type:${this._data.room_type} is error`);
-            }
-        } else {
-            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
-        }
-    }
-
 
     get gameTypeName() {
         let str = "NLH";

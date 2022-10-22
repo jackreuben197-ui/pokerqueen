@@ -2796,7 +2796,7 @@ export default class TexasGame {
     //创建座位UI
     createSeatUI() {
         if (this.seatUI_pool.length) return this.seatUI_pool.pop();
-        return cc.instantiate(this.uirc.Seat);
+        return cc.instantiate(this.uirc.Seat_Temp);
     }
     //移除座位UI
     removeSeatUI(seatUI: cc.Node) {
@@ -2806,6 +2806,27 @@ export default class TexasGame {
     }
 
 
+    public InitPublicLocalPos() {
+        //#endregion
+        // 第一套公共牌默认位置
+        if (this.listDefaultPublicCardsLPos == null) {
+            this.listDefaultPublicCardsLPos = [];
+            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard0.position);
+            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard1.position);
+            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard2.position);
+            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard3.position);
+            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard4.position);
+        }
+        // 第二套公共牌默认位置
+        if (this.listDefaultSecondPublicCardsLPos == null) {
+            this.listDefaultSecondPublicCardsLPos = [];
+            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard0.position);
+            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard1.position);
+            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard2.position);
+            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard3.position);
+            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard4.position);
+        }
+    }
     /// <summary>
     /// 杀死所有DoTweener动画
     /// </summary>
@@ -3066,10 +3087,10 @@ export default class TexasGame {
             let seatUI = this.createSeatUI();
             seatUI.getComponent(cc.Widget).enabled = false;
             seatUI.active = true;
-            seatUI.parent = this.uirc.Seat.parent;
+            seatUI.parent = this.uirc.Seats;;
             seatUI.name = `Seat${i}`;
             if (i == 0 && cc.view.getVisibleSize().height < 2688) {
-                mInfos[i].Pos = cc.v3(this.uirc.Seat.x, 454 - cc.view.getVisibleSize().height / 2, 0);
+                mInfos[i].Pos = cc.v3(this.uirc.Seat_Temp.x, 454 - cc.view.getVisibleSize().height / 2, 0);
             }
             seatUI.setPosition(mInfos[i].Pos);
             seatUI.scale = 1;
