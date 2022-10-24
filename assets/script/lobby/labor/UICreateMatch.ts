@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 20:15:13
+ * @LastEditTime: 2022-10-24 21:42:27
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -58,6 +58,7 @@ export default class UICreateMatch extends BaseForm {
     gpszx: cc.Node = null;
     yckp: cc.Node = null;
     bm: cc.Node = null;
+    bx: cc.Node = null;
     Straddle: cc.Node = null;
     select: cc.Node = null;
 
@@ -71,6 +72,7 @@ export default class UICreateMatch extends BaseForm {
     bmState = false;
     yckpState = false;
     kzwjdrState = false;
+    bxState = false;
     // smallAndBigM = [];
     matchTypeNum = 0;
     jfpNum = 0;
@@ -162,6 +164,7 @@ export default class UICreateMatch extends BaseForm {
         this.ipdzxz = this.getChildNodeOrComponent('ipdzxz')
         this.gpszx = this.getChildNodeOrComponent('gpszx')
         this.yckp = this.getChildNodeOrComponent('yckp')
+        this.bx = this.getChildNodeOrComponent('bx')
 
         this.bm = this.getChildNodeOrComponent('bm')
         this.Straddle = this.getChildNodeOrComponent('Straddle')
@@ -286,6 +289,7 @@ export default class UICreateMatch extends BaseForm {
             this.jslx.active = false;
             this.fddmHd.active = false
             this.kzwjdr.active = false
+            this.bx.active = false
             cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
             this.fwfbl.height = this.fwfbNum == 0 ? 300 : 200;
             this.fddm.active = this.fwfbNum == 0 ? true : false;
@@ -296,6 +300,7 @@ export default class UICreateMatch extends BaseForm {
             this.kzwjdr.active = true
             this.fwfbl.active = false;
             this.save.active = false;
+            this.bx.active = true
         }
 
 
@@ -424,6 +429,11 @@ export default class UICreateMatch extends BaseForm {
         this.kzwjdrState = !this.kzwjdrState
         cc.find('btn_switch/open', this.kzwjdr).active = this.kzwjdrState;
         cc.find('btn_switch/close', this.kzwjdr).active = !this.kzwjdrState;
+    }
+    bxrCilck() {
+        this.bxState = !this.bxState
+        cc.find('btn_switch/open', this.kzwjdr).active = this.bxState;
+        cc.find('btn_switch/close', this.kzwjdr).active = !this.bxState;
     }
     yckpCilck() {
         this.yckpState = !this.yckpState
@@ -571,7 +581,7 @@ export default class UICreateMatch extends BaseForm {
                     room_config.max_per_hand = Number(this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //服务费比例(0-100)
                 }
 
-
+                // room_config.bx = this.bxState //是否开启保险限制
                 room_config.fee_permillage = Number(this.jslx.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
                 room_config.limit_friend_table = true;
                 room_config.limit_bring_in = this.kzwjdrState;
@@ -604,6 +614,9 @@ export default class UICreateMatch extends BaseForm {
         this.itemData.qwsz = _data
         let qwszItem: any = cc.find('item/Rectangle', this.qwsz).getComponent('slidewidght');
         qwszItem.initUi(this.itemData.qwsz, 0)
+    }
+    bxTip() {
+
     }
 
     baganGame() {
