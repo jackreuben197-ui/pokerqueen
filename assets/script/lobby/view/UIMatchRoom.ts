@@ -6,6 +6,7 @@ import UIComponent from "../../ui/UIComponent";
 import GC from "../../frame/GameControl";
 import { GameType } from "../../game/GameUtil";
 import { TLobbyGroup } from "../../config/TTypeConfig";
+import SceneManager from "../../manager/SceneManager";
 @ccclass
 export default class UIMatchRoom extends UIBase {
     private room_NLH: cc.Node = null;
@@ -52,9 +53,14 @@ export default class UIMatchRoom extends UIBase {
 
 
     private clickRoom(type: GameType) {
-        UIComponent.open(UIDefine.UIMatchPlayViewForm, {
-            type: type,
-            page: 0});
+        UIComponent.open(
+            UIDefine.UIMatchPlayViewForm,
+            {
+                type: type,
+                page: 0
+            },
+            { SceneUI: SceneManager.Instance.currUI }
+        );
     }
 }
 

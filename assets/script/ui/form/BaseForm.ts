@@ -35,7 +35,8 @@ export default class BaseForm extends UIBase {
         main_fadeOut_duration: .2,
         main_fadeOut_ease: null,
     }
-    fromUI: BaseForm = null;
+    fromUI: cc.Node = null;
+    sceneUI: cc.Node = null;
     ////////////////////////////////////
     protected lateLoad() {
         super.lateLoad();
@@ -60,15 +61,16 @@ export default class BaseForm extends UIBase {
     lateClose(param: any = null) {
         super.lateClose();
     }
-
-    onShow(param?: any, fromUI?: BaseForm) {
+    onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         this.fromUI = fromUI;
-        cc.log(">>> formUI form :", fromUI?.UIDefine?.Name);
+        this.sceneUI = sceneUI;
+        cc.log(">>> formUI form :", fromUI?.name);
         super.onShow(param);
         this.mainFadeIn(this.show_animation);
     }
     async onClose(param?: any) {
         this.showFromUI();
+        this.showSceneUI();
         this.close_animation ? await this.mainFadeOut(param) : this.fadeOutComplete();
         super.onClose(param);
     }
@@ -104,6 +106,7 @@ export default class BaseForm extends UIBase {
     fadeInComplete() {
         this.top_block.active = false;
         this.hideFromUI();
+        this.hideSceneUI();
     }
 
     fadeOutComplete(resolve?) {
@@ -114,10 +117,20 @@ export default class BaseForm extends UIBase {
      * 显示隐藏来源界面
      */
     hideFromUI() {
-        if (this.fromUI) this.fromUI.node.active = false;
+        if (this.fromUI) this.fromUI.active = false;
     }
     showFromUI() {
-        if (this.fromUI) this.fromUI.node.active = true;
+        if (this.fromUI) this.fromUI.active = true;
+    }
+
+    /**
+     * 显示隐藏场景界面
+     */
+    hideSceneUI() {
+        if (this.sceneUI) this.sceneUI.active = false;
+    }
+    showSceneUI() {
+        if (this.sceneUI) this.sceneUI.active = true;
     }
 
 

@@ -162,10 +162,8 @@ export default class UICreateMatch extends BaseForm {
         this.kzwjdr = this.getChildNodeOrComponent('kzwjdr')
 
     }
-    onShow(data?: any, fromUI?: BaseForm) {
-        super.onShow(data, fromUI);
-        this._fromUI = fromUI?.UIDefine?.Name
-        cc.log(' this._fromUI ===', fromUI?.UIDefine?.Name)
+    onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(data, fromUI, sceneUI);
         if (data) {
             this.editModel(data);
         } else {

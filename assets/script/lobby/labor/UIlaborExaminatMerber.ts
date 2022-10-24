@@ -51,7 +51,7 @@ export default class UIlaborExaminatMerber extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any, fromUI?: BaseForm) {
+    async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
         this.topBtnClick(null, 'join')
     }

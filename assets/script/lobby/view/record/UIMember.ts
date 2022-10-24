@@ -29,7 +29,7 @@ export default class UIMember extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: BaseForm): void {
+    onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
       
         this.resetUI();

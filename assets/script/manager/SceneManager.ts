@@ -70,6 +70,7 @@ export default class SceneManager {
             this.currUI.getComponent(BaseScene)?.Exit(currExitParams);
         }
         if (newUI) {
+            newUI.active = true;
             newUI.parent = this.UILayer;
             newUI.getComponent(BaseScene)?.Enter(newEnterParams);
             this.currUI = newUI;
@@ -84,3 +85,4 @@ export default class SceneManager {
     }
 
 }
+(window as any).SceneManager = SceneManager;

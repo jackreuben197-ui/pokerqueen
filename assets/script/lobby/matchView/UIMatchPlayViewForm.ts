@@ -62,8 +62,8 @@ export default class UIMatchPlayViewForm extends BaseForm {
         this.bindClick(this.gold_Bg, this.clickGoldBg);
     }
 
-    onShow(data?: any, fromUI?: BaseForm) {
-        super.onShow(data, fromUI);
+    onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(data, fromUI, sceneUI);
         this._defultGameType = data.type;
         this._curType = EMatchViewTabType.no;
         this.switchTab(data.page);

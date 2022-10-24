@@ -308,11 +308,11 @@ export default class UITexasMenuComponent extends UIBase {
     }
     Click_Button_Setting() {
         this.game.uirc.HideMenu();
-        UIComponent.open(UIDefine.UITexasSettingComponent, null, this.node);
+        UIComponent.open(UIDefine.UITexasSettingComponent, null, { parentUI: this.node });
     }
     Click_Button_Rule() {
         this.game.uirc.HideMenu();
-        UIComponent.open(UIDefine.UITexasRule, null, this.node);
+        UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.node });
     }
     Click_Button_SetAutoOnTable() {
 

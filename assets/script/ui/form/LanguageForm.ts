@@ -47,7 +47,7 @@ export default class LanguageForm extends BaseForm {
         super.lateClose(param);
     }
 
-    onShow(param?: any, fromUI?: BaseForm) {
+    onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
         this.showLanguage(i18nMgr.language);
     }

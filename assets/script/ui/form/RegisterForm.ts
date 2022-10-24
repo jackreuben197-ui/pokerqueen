@@ -4,6 +4,7 @@ import ButtonClickCD from "../../common/ButtonClickCD";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
@@ -72,7 +73,7 @@ export default class RegisterForm extends BaseForm {
         this.setEyesOpen(false);
     }
 
-    onShow(param?: any, fromUI?: BaseForm): void {
+    onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         this.setArea();
         //this.setEyesOpen(false);
@@ -86,7 +87,7 @@ export default class RegisterForm extends BaseForm {
     }
 
     resetCDTime() {
-        let codeTime = localStorage.getItem(StorageKey.CODE_TIME_REGIST);
+        let codeTime = GC.localStore.getItem(StorageKey.CODE_TIME_REGIST);
         if (codeTime != null && codeTime != "") {
             this.lbl_code.getComponent(LabelCDTime).resetUI(+codeTime, this.resetGetCodeLabel.bind(this));
         }
@@ -240,7 +241,7 @@ export default class RegisterForm extends BaseForm {
 
         this.lbl_code.getComponent(LabelCDTime).show(60, this.resetGetCodeLabel.bind(this));
         let NowTimeS = TimeHelper.NowS;
-        localStorage.setItem(StorageKey.CODE_TIME_REGIST, NowTimeS.toString());
+        GC.localStore.setItem(StorageKey.CODE_TIME_REGIST, NowTimeS.toString());
     }
     /**
      * 重置getcode文本
@@ -248,7 +249,7 @@ export default class RegisterForm extends BaseForm {
     resetGetCodeLabel() {
         this.tcode_canclick = true;
         this.lbl_code.getComponent(cc.Label).string = i18nMgr._getLabel("UILogin_GetCode");
-        localStorage.setItem(StorageKey.CODE_TIME_REGIST, "");
+        GC.localStore.setItem(StorageKey.CODE_TIME_REGIST, "");
         this.lbl_code.getComponent(LabelCDTime).stop();
     }
     /**

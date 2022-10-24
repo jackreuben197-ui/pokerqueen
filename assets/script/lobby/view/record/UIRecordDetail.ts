@@ -27,7 +27,7 @@ export default class UIRecordDetail extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: BaseForm): void {
+    onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         Text_title.string = "牌桌名称+ID";
