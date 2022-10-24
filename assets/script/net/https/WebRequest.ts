@@ -370,12 +370,12 @@ export class Web_Room_Center_History_Hand {
     public static API: string = "/api/roomcenter/history/hand";
     //字段声明
     public static RequestParams: {
-        room_id?: number,         
-        match_id?: number,     
-        limit?: number,   
-        offset?: number,   
-        type?: number,   
-        gametype?: number,     
+        room_id?: number,
+        match_id?: number,
+        limit?: number,
+        offset?: number,
+        type?: number,
+        gametype?: number,
     } = null;
 
     public static Record: {
@@ -393,8 +393,8 @@ export class Web_Room_Center_History_Hand {
     } = null;
 
     public static Data: {
-        limit: number,  
-        offset: number, 
+        limit: number,
+        offset: number,
         total: number,              //总条数
         records: typeof Web_Room_Center_History_Hand.Record,
     } = null;
@@ -441,8 +441,8 @@ export class Web_Stats_Room_Detail {
     } = null;
 
     public static RoomData: {
-        limit: number,  
-        offset: number, 
+        limit: number,
+        offset: number,
         total: number,              //总条数
         game_type: number,          //牌局类型(玩法) 游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6
         game_room_name: string,     //牌局名称
@@ -459,7 +459,7 @@ export class Web_Stats_Room_Detail {
     } = null;
 
     public static Data: {
-        room_data:typeof Web_Stats_Room_Detail.RoomData,
+        room_data: typeof Web_Stats_Room_Detail.RoomData,
     } = null;
 
     public static ResponseData: {
@@ -515,14 +515,14 @@ export class Web_Stats_Mtt_Room_Detail {
         end_time: number,           //赛事结束时间
         player_count: number,       //参与人数
         buy_in_count: number,       //买入次数
-        limit: number,       
-        offset: number,    
+        limit: number,
+        offset: number,
         total: string,              //总条数
         user_list: typeof Web_Stats_Mtt_Room_Detail.UserInfo,//玩家列表
     } = null;
 
     public static Data: {
-        room_data:typeof Web_Stats_Mtt_Room_Detail.RoomData,
+        room_data: typeof Web_Stats_Mtt_Room_Detail.RoomData,
     } = null;
 
     public static ResponseData: {
@@ -1832,7 +1832,26 @@ export class APIOrgFriendRoomList {
     };
 
 }
+export class APIOrgFriendApplyList {
+    //接口地址’
+    public static API: string = "/api/roomcenter/friend/room/apply/list"
 
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgFriendApplyList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgFriendApplyList.ResponseData
+    };
+
+}
 
 /**
  * 注册全局访问
