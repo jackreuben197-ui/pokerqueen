@@ -5,6 +5,7 @@
 const { ccclass } = cc._decorator;
 import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
@@ -19,7 +20,7 @@ import RegisterForm from "./RegisterForm";
 export default class ResetPassForm extends RegisterForm {
 
     resetCDTime() {
-        let codeTime = localStorage.getItem(StorageKey.CODE_TIME_RESET);
+        let codeTime = GC.localStore.getItem(StorageKey.CODE_TIME_RESET);
         if (codeTime != null && codeTime != "") {
             this.lbl_code.getComponent(LabelCDTime).resetUI(+codeTime, this.resetGetCodeLabel.bind(this));
         }
@@ -107,7 +108,7 @@ export default class ResetPassForm extends RegisterForm {
         this.lbl_code.getComponent(LabelCDTime).show(60, this.resetGetCodeLabel.bind(this));
 
         let NowTimeS = TimeHelper.NowS;
-        localStorage.setItem(StorageKey.CODE_TIME_RESET, NowTimeS.toString());
+        GC.localStore.setItem(StorageKey.CODE_TIME_RESET, NowTimeS.toString());
     }
 
     /**
@@ -116,7 +117,7 @@ export default class ResetPassForm extends RegisterForm {
      resetGetCodeLabel() {
         this.tcode_canclick = true;
         this.lbl_code.getComponent(cc.Label).string = i18nMgr._getLabel("UILogin_GetCode");
-        localStorage.setItem(StorageKey.CODE_TIME_RESET, "");
+        GC.localStore.setItem(StorageKey.CODE_TIME_RESET, "");
         this.lbl_code.getComponent(LabelCDTime).stop();
     }
 

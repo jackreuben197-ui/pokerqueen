@@ -8,9 +8,6 @@ import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
 
 
-
-
-
 const { ccclass } = cc._decorator;
 
 export enum PrefabUI {
@@ -20,6 +17,16 @@ export enum PrefabUI {
     UIOutChipsComponent = "UIOutChipsComponent",
     UIOperationComponent = "UIOperationComponent",
     UIAutoOperationComponent = "UIAutoOperationComponent",
+}
+//打开面板追加参数
+export interface Open_Obj {
+    parentUI?: cc.Node;//父节点
+    SceneUI?: cc.Node;//场景节点
+    animation?: boolean;
+}
+//关闭面板追加参数
+export interface Close_Obj {
+    animation?: boolean;
 }
 
 @ccclass
@@ -76,50 +83,34 @@ export default class UIComponent {
         }
     }
 
-
-    static open<TParam extends unknown>(UIDefine: IUIDefine, param?: TParam, parent?: cc.Node ) {
+    static open<T>(UIDefine: IUIDefine, param?: T, obj?: Open_Obj) {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
-                UIFormMgr.Instance.open(UIDefine, param);
-                break;
             case UIType.Dialog:
-                UIDialogMgr.Instance.open(UIDefine, param);
-                break;
             case UIType.Board:
-                UIBoardMgr.Instance.open(UIDefine, param);
-                break;
             case UIType.Prompt:
             case UIType.TexasPreLoad:
-
-                UIPromptMgr.Instance.open(UIDefine, param);
-
+                UIFormMgr.Instance.open(UIDefine, param, obj);
                 break;
             case UIType.CommonUI:
-                UICommonMgr.Instance.open(UIDefine, param, parent);
+                UICommonMgr.Instance.open(UIDefine, param, obj);
                 break;
         }
     }
 
-    static close<TParam extends unknown>(UIDefine: IUIDefine = null, param: TParam = null) {
+    static close<T>(UIDefine: IUIDefine = null, param: T = null, obj?: Close_Obj) {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
-                UIFormMgr.Instance.close(UIDefine, param);
-                break;
             case UIType.Dialog:
-                UIDialogMgr.Instance.close(UIDefine, param);
-                break;
             case UIType.Board:
-                UIBoardMgr.Instance.close(UIDefine, param);
-                break;
             case UIType.Prompt:
             case UIType.TexasPreLoad:
-
-                UIPromptMgr.Instance.close(UIDefine, param);
+                UIPromptMgr.Instance.close(UIDefine, param, obj);
                 break;
             case UIType.CommonUI:
-                UICommonMgr.Instance.close(UIDefine, param);
+                UICommonMgr.Instance.close(UIDefine, param, obj);
                 break;
         }
     }
@@ -149,14 +140,14 @@ export default class UIComponent {
     }
 
     //无动画开启UI(暂未处理)
-    OpenNoAnimation(UIDefine: IUIDefine, param: any = null, parent: cc.Node = null) {
+    OpenNoAnimation(UIDefine: IUIDefine, param: any = null) {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
-                UIFormMgr.Instance.open(UIDefine, param, false);
+                UIFormMgr.Instance.open(UIDefine, param, { animation: false });
                 break;
             case UIType.Dialog:
-                UIDialogMgr.Instance.open(UIDefine, param, false);
+                UIDialogMgr.Instance.open(UIDefine, param, { animation: false });
                 break;
         }
     }
@@ -165,10 +156,10 @@ export default class UIComponent {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
-                UIFormMgr.Instance.close(UIDefine, param, false);
+                UIFormMgr.Instance.close(UIDefine, param, { animation: false });
                 break;
             case UIType.Dialog:
-                UIDialogMgr.Instance.close(UIDefine, param, false);
+                UIDialogMgr.Instance.close(UIDefine, param, { animation: false });
                 break;
         }
     }

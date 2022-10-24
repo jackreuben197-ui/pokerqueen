@@ -24,7 +24,7 @@ export default class UIMine_SettingVersion extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: BaseForm): void {
+    onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         let version_Text = this.getChildNodeOrComponent("Version_Text", cc.Label);
         version_Text.string = GameConfig.Version;

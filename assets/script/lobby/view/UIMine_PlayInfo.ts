@@ -34,7 +34,7 @@ export default class UIMine_PlayInfo extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: BaseForm): void {
+    onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         let PLACEHOLDER_LABEL = this.getChildNodeOrComponent("PLACEHOLDER_LABEL", cc.Label);
         PLACEHOLDER_LABEL.string = Web_User_Info.Response.data.user.nickname;
@@ -62,9 +62,9 @@ export default class UIMine_PlayInfo extends BaseForm {
 
     refreshHeadImg() {
         let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
-        img_head.node.active =false;
-        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(()=>{
-            img_head.node.active =true;
+        img_head.node.active = false;
+        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(() => {
+            img_head.node.active = true;
         });
     }
 
@@ -84,7 +84,7 @@ export default class UIMine_PlayInfo extends BaseForm {
      * 20004 用户钱包金额不足
      * 20009 用户钱包被冻结
      */
-    onClickSave () {
+    onClickSave() {
 
         let reqParames = {};
 
@@ -93,13 +93,13 @@ export default class UIMine_PlayInfo extends BaseForm {
         } else {
             this.isFixName = false;
         }
-        
+
         let headStr: any = "";
         let isCheckName: boolean = false;
         if (this.isFixHead) {
             if (APIOrgClubUploadIcon.Response && APIOrgClubUploadIcon.Response.data) {
                 headStr = APIOrgClubUploadIcon.Response.data;
-            }   
+            }
             if (this.isFixName) {
                 // 修改昵称和头像
                 reqParames = {
@@ -142,8 +142,8 @@ export default class UIMine_PlayInfo extends BaseForm {
                         Web_User_Info.Response.data.user.nickname = this.ebx_name.string;
                         this.post(GGEvent.Refresh_UserName);
                     }
-    
-                },)
+
+                })
             }, (res) => {
                 // 用户名违规
             })
@@ -154,9 +154,9 @@ export default class UIMine_PlayInfo extends BaseForm {
                     GameCache.Instance.headPic = headStr;
                     this.post(GGEvent.Refresh_UserHead);
                 }
-            },)
+            })
         }
-        
+
     }
 
     async onClickHead() {
@@ -165,7 +165,7 @@ export default class UIMine_PlayInfo extends BaseForm {
         if (icon) {
             let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
             await WebImageHelper.SetUrlImage(img_head, icon);
-            img_head.node.active =true;
+            img_head.node.active = true;
             this.isFixHead = true;
         }
     }
@@ -180,7 +180,7 @@ export default class UIMine_PlayInfo extends BaseForm {
             ebx_name.active = false;
             lbl_name.active = true;
         }
-        
+
     }
 
     onClickFix() {

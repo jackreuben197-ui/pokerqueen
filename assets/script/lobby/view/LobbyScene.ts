@@ -45,7 +45,7 @@ export default class LobbyScene extends BaseScene {
 
     //刷新banner
     public refreshBanner(): void {
-        let language = cc.sys.localStorage.getItem("language");
+        let language = GC.localStore.getItem("language");
         let data: typeof Web_Misc_Banner_List.RequestParams = {};
         // data.lang = language||cc.sys.language;
         data.lang = "zh_CN";

@@ -78,7 +78,7 @@ export default class UILabarPlayViewForm extends UIBase {
         this.listen(EventName.clubGoldChange, this.updateGold);
     }
 
-    onShow(param?: any, fromUI?: BaseForm) {
+    onShow(param?: any, fromUI?: cc.Node) {
         param = {
             game_type: 0,
             poker_type: 0,

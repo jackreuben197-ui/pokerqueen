@@ -52,7 +52,7 @@ export default class SettingsForm extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: BaseForm): void {
+    onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         this.Button_logout = this.getChildNodeOrComponent("Button_logout");
         this.Button_logout.on(cc.Node.EventType.TOUCH_END, this.onLogoutClick, this)

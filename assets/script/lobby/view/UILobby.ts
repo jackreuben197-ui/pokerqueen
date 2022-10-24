@@ -6,6 +6,7 @@ import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nSprite } from "../../i18n/i18nSprite";
+import SceneManager from "../../manager/SceneManager";
 import { Web_User_Info } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -74,15 +75,19 @@ export default class UILobby extends UIBase {
     onClickGame(event) {
         let node = event.target;
         let index = node.index;
-        UIComponent.open(UIDefine.UIMatchPlayViewForm, {
-            type: 1,
-            page: index
-        });
+        UIComponent.open(
+            UIDefine.UIMatchPlayViewForm,
+            {
+                type: 1,
+                page: index
+            },
+            { SceneUI: SceneManager.Instance.currUI }
+        );
     }
 
     onClickMTTGame() {
         // http://dev.k8s.awanptesting.com:80/api/roomcenter/mtt/list
-        UIComponent.open(UIDefine.MttListForm)
+        UIComponent.open(UIDefine.MttListForm, null, { SceneUI: SceneManager.Instance.currUI })
     }
 
     /**

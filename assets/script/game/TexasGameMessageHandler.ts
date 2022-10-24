@@ -180,12 +180,10 @@ export default class TexasGameMessageHandler {
 
         if (response == null) return;
 
-        if (response.status == 0) {
-
-            this.game.TexasGameUtils.ExitRoom();
-        } else {
+        if (response.status != 0) {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.status));
         }
+        this.game.TexasGameUtils.ExitRoom();
 
     }
 
@@ -308,15 +306,6 @@ export default class TexasGameMessageHandler {
             case Def.LeaveReason.LR_GAME_END: // 游戏结束
                 {
                     if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
-                        // UIComponent.Instance.ShowUI(UIType.UITexasGameEnd, new UITexasGameEndComponent.RecordDetailForNormalData()
-                        //     {
-                        //         roomID = GameCache.Instance.room_id.ToString(),
-                        //         blind = (int)GameCache.Instance.CurGame.smallBlind,
-                        //         roomName = GameCache.Instance.roomName,
-                        //         game_type = GameCache.Instance.game_type,
-                        //         bet_type = GameCache.Instance.bet_type,
-                        //         poker_type = GameCache.Instance.poker_type,
-                        //     });
                         UIComponent.open(UIDefine.UITexasGameEndComponent, {
                             roomID: GameCache.Instance.room_id.toString(),
                             blind: GameCache.Instance.CurGame.smallBlind,
@@ -325,7 +314,7 @@ export default class TexasGameMessageHandler {
                             bet_type: GameCache.Instance.bet_type,
                             poker_type: GameCache.Instance.poker_type,
                         },
-                            Main.Dialog
+                            { parentUI: Main.Dialog }
                         )
                     }
                     this.game.SMAgency.ChangeGameState(TexasGameState.Exit, response);

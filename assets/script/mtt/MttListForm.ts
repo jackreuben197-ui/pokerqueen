@@ -33,8 +33,8 @@ export default class MttListForm extends BaseForm {
         }
     }
 
-    onShow(param?: any, fromUI?: any): void {
-        super.onShow(param, fromUI);
+    onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node): void {
+        super.onShow(param, fromUI, sceneUI);
 
         this.comFormTitle.initData("UIMTTList_mtt", this);
         this.list.scrollingCB = this.scrollingCB;

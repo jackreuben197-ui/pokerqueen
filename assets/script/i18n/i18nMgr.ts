@@ -1,5 +1,6 @@
 
 import { GameConfig } from "../config/GameConfig";
+import GC from "../frame/GameControl";
 import StorageKey from "../session/StorageKey";
 import * as i18nLabel from "./i18nLabel";
 import * as i18nSprite from "./i18nSprite";
@@ -39,7 +40,7 @@ export class i18nMgr {
     }
 
     public static initLanguage() {
-        this.language = localStorage.getItem(StorageKey.Language) || GameConfig.Default_Language;
+        this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
         this.LanguageObject = LanguageAllObject[this.language];
     }
 
@@ -51,7 +52,7 @@ export class i18nMgr {
             return;
         }
         this.language = language;
-        localStorage.setItem(StorageKey.Language, this.language);
+        GC.localStore.setItem(StorageKey.Language, this.language);
         this.LanguageObject = LanguageAllObject[this.language];
         this.refreshAllLabel();
         this.reloadSprite();

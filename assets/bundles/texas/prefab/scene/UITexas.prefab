@@ -8584,7 +8584,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_Coin_Bg",
+    "_name": "Nick_Coin",
     "_objFlags": 0,
     "_parent": {
       "__id__": 55
@@ -8651,7 +8651,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_Nickname",
+    "_name": "Text_NickName",
     "_objFlags": 0,
     "_parent": {
       "__id__": 220
