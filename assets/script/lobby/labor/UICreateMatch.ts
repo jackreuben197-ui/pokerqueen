@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-22 18:14:28
+ * @LastEditTime: 2022-10-24 20:15:13
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -174,6 +174,7 @@ export default class UICreateMatch extends BaseForm {
     }
     onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
+        this._fromUI = fromUI?.name;
         if (data) {
             this.editModel(data);
         } else {
@@ -544,7 +545,7 @@ export default class UICreateMatch extends BaseForm {
         // room_config.tribe_id = data.random_id;
         let params: any = { name: modelName, room_config: room_config }
         console.log('params===', params)
-
+        //0 是模版
         if (this._btnType == 0) {
             if (this._editModelData) {
                 params.id = this._editModelData.id
@@ -553,12 +554,14 @@ export default class UICreateMatch extends BaseForm {
                 await UIClubModel.mInstance.APIOrgCreateTemplate(params);
             }
             this.post(EventName.matchModelChange)
+
         } else if (this._btnType == 1) {
+            //工会牌桌
             if (this._fromUI == 'UICreateMatchHome') {
                 room_config.limit_friend_table = false
                 room_config.limit_bring_in = false
                 await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
-
+                this.post(EventName.updateChessView);
             }
             else {
                 if (this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
@@ -576,7 +579,7 @@ export default class UICreateMatch extends BaseForm {
                 this.post(EventName.updateFriendChessView)
                 this._data = new LobbyRoomListItem(data.data.room_config);
                 this._data.rid = data.data.room_id
-                GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm, UIDefine.UICreateMatch);
+                GameUtil.EnterRoomAPI(this._data, UIDefine.UICreateMatch);
             }
         }
         this._editModelData = null;
