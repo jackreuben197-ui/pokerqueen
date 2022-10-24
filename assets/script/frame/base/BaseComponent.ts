@@ -1,12 +1,11 @@
-import { AudioPath } from "../../config/PathConfig";
 import { IUIDefine } from "../../define/EIDefine";
 import AdapterComponent from "../../funcomponent/AdapterComponent";
-import AudioManager from "../manager/AudioManager";
+import UIComponent from "../../ui/UIComponent";
 import { Base } from "./Base";
 
 
 export default class BaseComponent extends Base {
-    protected _param : any = null;;
+    protected _param: any = null;;
     private _path: string = "";
     private _clickNodes: Array<cc.Node> = [];
     private _view: any = {};
@@ -184,6 +183,8 @@ export default class BaseComponent extends Base {
         }
     }
     /***  touches end */
+
+
 
     onClose(param?: any) {
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onClose()");

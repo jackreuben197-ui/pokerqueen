@@ -1,4 +1,5 @@
 import ListItem from "../../common/ListItem";
+import MttRealTimeItemModel from "../../frame/data/mtt/realTime/MttRealTimeItemModel";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -8,6 +9,8 @@ export default class MttRealTimeRankItem extends ListItem {
     private rank: cc.Label = null;
     private desk: cc.Label = null;
     private score: cc.Label = null;
+
+    private _data: MttRealTimeItemModel = null;
     lateLoad() {
         super.lateLoad();
         this.myselfFlag = this.getChildNodeOrComponent("myselfFlag");
@@ -24,7 +27,12 @@ export default class MttRealTimeRankItem extends ListItem {
         super.regiterTouchEvents();
     }
 
-    initData(data: any) {
+    initData(data: MttRealTimeItemModel) {
+        this._data = data;
 
+        this.setActive(this.myselfFlag, this._data.isMySelf);
+        this.setText(this.rank, `${this._data.rank} ${this._data.name}`);
+        this.setText(this.desk, this._data.rid);
+        this.setText(this.score, this._data.chip);
     }
 }

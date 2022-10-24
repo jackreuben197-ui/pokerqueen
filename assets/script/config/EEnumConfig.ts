@@ -23,6 +23,12 @@ export enum EMttItemStatus {
     run = 1,// 运行，
     end = 2,// 结束，
     cancel = 3,// 取消
+}
 
-    // 游戏状态 0 = 可报名 1 = 等待开赛 2 = 延迟报名 3 = 进行中 4 = 立即进入 5 = 报名截止 6 = 等待审批 7 = 重购条件不足
+
+export enum EMttRealTimeTabType {
+    sk = 0,
+    pz = 1,
+    jl = 2,
+    mz = 3
 }

@@ -421,6 +421,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/mtt/detail/MttDetailForm",
     },
+    MttRealTime: {
+        UIType: UIType.CommonUI,
+        Name: "MttRealTime",
+        Bundle: null,
+        Path: "main/mtt/realTime/MttRealTime",
+    },
 
 
 }

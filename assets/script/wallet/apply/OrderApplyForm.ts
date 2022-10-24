@@ -38,8 +38,8 @@ export default class OrderApplyForm extends BaseForm {
         }
     }
 
-    onShow(param?: any, fromUI?: any): void {
-        super.onShow(param, fromUI);
+    onShow(param?: any, fromUI?: any, sceneUI?: cc.Node): void {
+        super.onShow(param, fromUI, sceneUI);
 
         this.comFormTitle.initData("UIAppay", this);
         this.toggles.initData(this.onToggle, ETabToggle.sprite, { data: [EOrderType.chongzhi, EOrderType.tiqu] });
