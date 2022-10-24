@@ -438,7 +438,7 @@ export default class TexasGame {
     /////////////////////////////////获取桌面样式/////////////////////////////////
     public get deskType() {
 
-        (this.setting.deskType == null) && (this.setting.deskType = +(localStorage.getItem(StorageKey.SettingDeskType) ?? TexasConfig.DefaultDeskType));
+        (this.setting.deskType == null) && (this.setting.deskType = +(GC.localStore.getItem(StorageKey.SettingDeskType) ?? TexasConfig.DefaultDeskType));
 
         return this.setting.deskType;
     }
@@ -449,7 +449,7 @@ export default class TexasGame {
     //获取扑克样式
     public get pokerType() {
 
-        (this.setting.pokerType == null) && (this.setting.pokerType = +(localStorage.getItem(StorageKey.SettingPokerType) ?? TexasConfig.DefaultDeskType));
+        (this.setting.pokerType == null) && (this.setting.pokerType = +(GC.localStore.getItem(StorageKey.SettingPokerType) ?? TexasConfig.DefaultDeskType));
 
         return this.setting.pokerType;
     }
@@ -2766,12 +2766,9 @@ export default class TexasGame {
         });
     }
 
-    /// <summary>
-    /// 牌桌玩家信息
-    /// </summary>
-    /// <param name="userId"></param>
+    // 牌桌玩家信息
     public CheckPlayerInfo(userId: number, play: CPlayer = null): void {
-        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, play], Main.Marquee);
+        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, play], { parentUI: Main.Marquee });
     }
 
     public HideSeeMorePublic(): void {
@@ -2790,9 +2787,6 @@ export default class TexasGame {
             StartInfo: null,
         }
     }
-
-
-
     //创建座位UI
     createSeatUI() {
         if (this.seatUI_pool.length) return this.seatUI_pool.pop();
@@ -2804,8 +2798,6 @@ export default class TexasGame {
         seatUI && this.seatUI_pool.push(seatUI);
         cc.log("移除 seatUI ", seatUI);
     }
-
-
     public InitPublicLocalPos() {
         //#endregion
         // 第一套公共牌默认位置

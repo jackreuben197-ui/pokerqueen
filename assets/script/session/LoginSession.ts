@@ -3,6 +3,7 @@
  */
 import { GameConfig } from "../config/GameConfig";
 import GC from "../frame/GameControl";
+import LocalStoreManager from "../frame/manager/LocalStoreManager";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
@@ -22,9 +23,13 @@ export default class LoginSession {
 
     static tokenRefreshComponent: TokenRefreshComponent = null;
 
+
     static Init() {
-        this._areaCode = localStorage.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
-        this._phone = localStorage.getItem(StorageKey.KEY_PHONE) || "";
+
+        // this._areaCode = localStorage.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
+        // this._phone = localStorage.getItem(StorageKey.KEY_PHONE) || "";
+        this._areaCode = GC.localStore.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
+        this._phone = GC.localStore.getItem(StorageKey.KEY_PHONE) || "";
     }
     /**
      * 登录请求
@@ -201,10 +206,10 @@ export default class LoginSession {
         GameCache.Instance.headPic = info.avatar;
         GameCache.Instance.userType = info.ut;
 
-        localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
-        localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);
+        //localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
+        //localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);
         //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, info.area.replace("+", ""));
-        localStorage.setItem(StorageKey.KEY_PHONE_FIRST, `${info.area}`);
+        //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, `${info.area}`);
 
     }
 
@@ -236,23 +241,23 @@ export default class LoginSession {
 
     static set Token(value: string) {
         this._token = value;
-        localStorage.setItem(StorageKey.TOKEN, value);
+        GC.localStore.setItem(StorageKey.TOKEN, value);
     }
     static get Token() {
-        return this._token || localStorage.getItem(StorageKey.TOKEN);
+        return this._token || GC.localStore.getItem(StorageKey.TOKEN);
     }
 
     static set TokenExpireAt(value: number) {
         this._tokenExpireAt = value;
-        localStorage.setItem(StorageKey.TOKEN_EXPIREAT, value.toString());
+        GC.localStore.setItem(StorageKey.TOKEN_EXPIREAT, value.toString());
     }
     static get TokenExpireAt(): number {
-        return +(this._tokenExpireAt || localStorage.getItem(StorageKey.TOKEN_EXPIREAT));
+        return +(this._tokenExpireAt || GC.localStore.getItem(StorageKey.TOKEN_EXPIREAT));
     }
 
     static set AreaCode(value: string) {
         this._areaCode = value;
-        localStorage.setItem(StorageKey.AERA_CODE, value);
+        GC.localStore.setItem(StorageKey.AERA_CODE, value);
     }
     static get AreaCode(): string {
         return this._areaCode;
@@ -260,17 +265,18 @@ export default class LoginSession {
 
     static set Phone(value: string) {
         this._phone = value;
-        localStorage.setItem(StorageKey.KEY_PHONE, value);
+        GC.localStore.setItem(StorageKey.KEY_PHONE, value);
     }
     static get Phone(): string {
         return this._phone;
     }
+
     /**
      * 清理本地存储的token和token时效
      */
     static clearToken() {
-        localStorage.removeItem(StorageKey.TOKEN);
-        localStorage.removeItem(StorageKey.TOKEN_EXPIREAT);
+        GC.localStore.removeItem(StorageKey.TOKEN);
+        GC.localStore.removeItem(StorageKey.TOKEN_EXPIREAT);
     }
 
 }

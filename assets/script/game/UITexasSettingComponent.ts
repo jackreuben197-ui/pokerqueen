@@ -7,6 +7,7 @@
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
+import GC from "../frame/GameControl";
 import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
 import UIBase from "../ui/UIBase";
@@ -50,12 +51,12 @@ export default class UITexasSettingComponent extends UIBase {
 
         let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
         let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
-        if (!localStorage.getItem(StorageKey.soundIsOpen)) {
+        if (!GC.localStore.getItem(StorageKey.soundIsOpen)) {
             this.soundIsOpen = true;
             closeVoice.active = false
             openVoice.active = true;
         }
-        else if (localStorage.getItem(StorageKey.soundIsOpen) == 1 + '') {
+        else if (GC.localStore.getItem(StorageKey.soundIsOpen) == 1 + '') {
             closeVoice.active = false
             openVoice.active = true;
             this.soundIsOpen = true;
@@ -93,7 +94,7 @@ export default class UITexasSettingComponent extends UIBase {
         this._selectDesk = event.node;
         let checkmark = cc.find('Background/Checkmark', this._selectDesk)
         checkmark.active = true;
-        localStorage.setItem(StorageKey.SettingDeskType, this._selectDesk['index'])
+        GC.localStore.setItem(StorageKey.SettingDeskType, this._selectDesk['index'])
         GameCache.Instance.CurGame.SetDeskType(this._selectDesk['index'])
     }
     /**
@@ -123,7 +124,7 @@ export default class UITexasSettingComponent extends UIBase {
         checkmark.active = false;
 
         let index = this._selectCardType['index'];
-        localStorage.setItem(StorageKey.SettingPokerType, String(index))
+        GC.localStore.setItem(StorageKey.SettingPokerType, String(index))
         GameCache.Instance.CurGame.SetPokerType(index);
     }
 
@@ -195,7 +196,7 @@ export default class UITexasSettingComponent extends UIBase {
      */
     public static GetCurQuickActionNum(index) {
         let defaultActionNums = ["0", "1/2", "2/3", "1x", "0"];
-        let numStr = localStorage.getItem(StorageKey.kQuickActionIndexKEY + index) || defaultActionNums[index];
+        let numStr = GC.localStore.getItem(StorageKey.kQuickActionIndexKEY + index) || defaultActionNums[index];
         return numStr;
     }
     setUpQuickActionNumState(event) {
@@ -216,8 +217,8 @@ export default class UITexasSettingComponent extends UIBase {
             textCallPot.fontSize = 40;
         }
         textCallPot.string = numStr;
-        localStorage.setItem(StorageKey.kQuickActionIndexKEY + this._selectQuickAction['index'], numStr)
-        localStorage.setItem(StorageKey.kQuickActionIndexValueKEY + this._selectQuickAction['index'], numStr)
+        GC.localStore.setItem(StorageKey.kQuickActionIndexKEY + this._selectQuickAction['index'], numStr)
+        GC.localStore.setItem(StorageKey.kQuickActionIndexValueKEY + this._selectQuickAction['index'], numStr)
 
     }
 
@@ -247,12 +248,12 @@ export default class UITexasSettingComponent extends UIBase {
             closeVoice.active = true
             openVoice.active = false;
         }
-        localStorage.setItem(StorageKey.soundIsOpen, this.soundIsOpen ? 1 + "" : 0 + "")
+        GC.localStore.setItem(StorageKey.soundIsOpen, this.soundIsOpen ? 1 + "" : 0 + "")
     }
 
     public static GetCurQuickActionNumValue(index) {
         let defaultActionNums = [0, 1.0 / 2, 2.0 / 3, 1.0, 0];
-        let numStr = localStorage.getItem(StorageKey.kQuickActionIndexValueKEY + index) || defaultActionNums[index];
+        let numStr = GC.localStore.getItem(StorageKey.kQuickActionIndexValueKEY + index) || defaultActionNums[index];
         return +numStr;
     }
 

@@ -24,7 +24,7 @@ export class SeatFSM {
     //#region 空座位
     public EmptyEnter(): void {
         this.seat.Player = null;
-        this.seat.SetNickname("");
+        this.seat.SetNickName("");
         this.seat.SetCoin("");
         this.seat.stopAllActions();
         this.seat.uirc.imageBanker.active = false;
@@ -82,7 +82,7 @@ export class SeatFSM {
     public SitEnter(): void {
         // this.seat.SetClient0BubblePos();
         this.seat.UpdateHead();
-        this.seat.UpdateNickname();
+        this.seat.UpdateNickName();
         this.seat.UpdateCoin();
         //this.seat.UpdateHolding();
         this.seat.UpdateCurRoundHaveBet();
@@ -107,11 +107,15 @@ export class SeatFSM {
 
     //#region 坐下动画
     SitAnimationEnter() {
-
-        cc.tween(this.seat.uirc.Head).sequence(cc.scaleTo(0.15, 0, 1), cc.callFunc(() => {
+        cc.tween(this.seat.uirc.Head).to(.15, { scaleX: 0 }).then(cc.callFunc(() => {
             this.seat.FsmLogicComponent.SM.ChangeState(SeatSit.Instance);
             this.seat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
-        }), cc.scaleTo(0.15, 1, 1)).start();
+        })).to(.15, { scaleX: 1 }).start();
+
+        // cc.tween(this.seat.uirc.Head).sequence(cc.scaleTo(0.15, 0, 1), cc.callFunc(() => {
+        //     this.seat.FsmLogicComponent.SM.ChangeState(SeatSit.Instance);
+        //     this.seat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+        // }), cc.scaleTo(0.15, 1, 1)).start();
 
     }
     SitAnimationExecute() {

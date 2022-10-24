@@ -38,17 +38,30 @@ export default class OrderApplyForm extends BaseForm {
         }
     }
 
-    onShow(param?: any): void {
-        super.onShow(param);
+    onShow(param?: any, fromUI?: any): void {
+        super.onShow(param, fromUI);
 
         this.comFormTitle.initData("UIAppay", this);
         this.toggles.initData(this.onToggle, ETabToggle.sprite, { data: [EOrderType.chongzhi, EOrderType.tiqu] });
         this.toggles.clickTab(0, null, true)
+
+        this.list.scrollingCB = this.scrollingCB;
     }
 
     onToggle = (index, type) => {
         GC.data.wallet.apply.reqList(0, type);
     }
+
+    scrollingCB = (scrollView: cc.ScrollView) => {
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset();
+            let isDown = cur.y >= max.y;
+            if (isDown) {
+                GC.data.wallet.apply.dropDownReq();
+            }
+        }
+    };
 
     updateList() {
         this.list.numItems = GC.data.wallet.apply.list.length;

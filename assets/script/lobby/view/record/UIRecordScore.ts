@@ -1,4 +1,5 @@
 import { UIDefine } from "../../../define/UIDefine";
+import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
 import { HistoryInfoData } from "../../../game/UITexasHistoryComponent";
 import { StringHelper } from "../../../helper/StringHelper";
@@ -28,7 +29,7 @@ export default class UIRecordScore extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: BaseForm): void {
+    onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         if (param && param.info) {
             this.reqInfo(param.info);
@@ -73,7 +74,8 @@ export default class UIRecordScore extends BaseForm {
 
             let info = records[i];
 
-            _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = info.name;
+            let nameStr = GC.data.languageTemp.temp.getName(info.name);
+            _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
             _cloneNode.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
             let score = info.change;
             let scLbl = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);

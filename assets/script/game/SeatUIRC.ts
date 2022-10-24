@@ -50,9 +50,16 @@ export default class SeatUIRC extends UIBase {
     imageHeadGray: cc.Sprite = null;
     imageEmpty: cc.Sprite = null;
     rawimageHead: cc.Sprite = null;
-    textCoin: cc.Label = null;
-    //textCoinBg: cc.Sprite = null;
-    textNickname: cc.Label = null;
+
+
+    //座位上下名字和筹码
+    Nick_Coin: cc.Node = null;
+    Text_Coin: cc.Label = null;
+    Text_NickName: cc.Label = null;
+
+
+
+
     WaitforthenextmoveTips: cc.Label = null;
 
 
@@ -118,9 +125,10 @@ export default class SeatUIRC extends UIBase {
         this.imageHeadGray = this.getChildNodeOrComponent("Image_HeadGray", cc.Sprite);
         this.imageEmpty = this.getChildNodeOrComponent("Image_Empty", cc.Sprite);
         this.rawimageHead = this.getChildNodeOrComponent("RawImage_Head", cc.Sprite);
-        this.textCoin = this.getChildNodeOrComponent("Text_Coin", cc.Label);
-        //this.textCoinBg = this.getChildNodeOrComponent("Text_Coin_Bg", cc.Sprite);
-        this.textNickname = this.getChildNodeOrComponent("Text_Nickname", cc.Label);
+
+        this.Text_Coin = this.getChildNodeOrComponent("Text_Coin", cc.Label);
+        this.Text_NickName = this.getChildNodeOrComponent("Text_NickName", cc.Label);
+
         this.WaitforthenextmoveTips = this.getChildNodeOrComponent("WaitforthenextmoveTips", cc.Label);
 
         this.transCurRoundHaveBet = this.getChildNodeOrComponent("CurRoundHaveBet");

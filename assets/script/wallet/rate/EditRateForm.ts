@@ -81,8 +81,8 @@ export default class EditRateForm extends BaseForm {
         }
     }
 
-    onShow(type?: string): void {
-        super.onShow(type);
+    onShow(type?: string, fromUI?: any): void {
+        super.onShow(type, fromUI);
 
         this.setActive(this.selectBtn, !type);
         this.selectCountry(type);

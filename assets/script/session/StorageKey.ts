@@ -1,3 +1,5 @@
+import LocalStoreManager from "../frame/manager/LocalStoreManager";
+
 /*
  * @Author: xfj
  * @Date: 2022-08-22 00:32:52
@@ -6,9 +8,9 @@
  * @LastEditTime: 2022-08-26 15:51:56
  * @FilePath: /pokerqueen/assets/script/session/StorageKey.ts
  */
-
 export default class StorageKey {
-
+    //登录数据
+    static LOGIN_DATA:string = "LOGIN_DATA";
     //token字符串
     static TOKEN: string = "TOKEN";
     //token有效期
@@ -17,6 +19,7 @@ export default class StorageKey {
     static AERA_CODE = "AERA_CODE";
     //手机号
     static PHONE = "PHONE";
+    /////////////////////////////////////////
     //语言
     static Language = "Language";
 
@@ -44,4 +47,5 @@ export default class StorageKey {
     static soundIsOpen = 'soundIsOpen'; // 声音
 
 }
+
 (window as any).StorageKey = StorageKey;

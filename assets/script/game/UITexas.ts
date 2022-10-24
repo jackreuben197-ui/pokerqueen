@@ -403,13 +403,9 @@ export default class UITexas extends BaseScene {
         this.UITexasMenu_Com?.onClose(animation);
     }
 
-
-
-
-
     Click_Report_Btn() {
-        
-        UIComponent.open(UIDefine.UITexasReportComponent, null, this.node);
+
+        UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.node });
     }
 
     Click_Cursituation_btn() {
@@ -419,10 +415,8 @@ export default class UITexas extends BaseScene {
         historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
         historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
         historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
-        UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, this.node);
+        UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.node })
     }
-
-
     protected onClickDelay(): void {
         if (this.CanClick() == false)
             return;
@@ -454,7 +448,7 @@ export default class UITexas extends BaseScene {
 
     public UpdateBarragePanelActive(): void {
         //this.barrageAnimationSequence = DOTween.Sequence(this.barrageAnimationSequence_obj);
-        let OpenBarrage: number = + localStorage.getItem(StorageKey.OpenBarrage);
+        let OpenBarrage: number = + GC.localStore.getItem(StorageKey.OpenBarrage);
         this.barragePanel && (this.barragePanel.active = (OpenBarrage != 2));
         this.barrageIndex = 0;
     }

@@ -35,8 +35,8 @@ export default class WalletJumpForm extends BaseForm {
         super.regiterTouchEvents();
     }
 
-    onShow(data: { type: EWalletGoldOpration, isClub: boolean }): void {
-        super.onShow(data);
+    onShow(data: { type: EWalletGoldOpration, isClub: boolean }, fromUI?: any): void {
+        super.onShow(data, fromUI);
         this._type = data.type;
         this._isClub = data.isClub;
         this._data = this._configData.get(this._type);

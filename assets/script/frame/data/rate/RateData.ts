@@ -27,8 +27,8 @@ export default class RateData extends BaseData {
     reqRateList(isUnion: boolean = false) {
         this.reqServePost(Web_Rate_Api.GET_RATE_LIST, {
             config_type: isUnion ? 1 : 2,
-            limit: 10,
-            offset: 0
+            // limit: 10,
+            // offset: 0
         })
 
         // this.post(EventName.serverResponse, Web_Rate_Api.CLUB_RATE_LIST, [{ type: 1, rate: 0.005 }, { type: 2, rate: 0.8 }]);

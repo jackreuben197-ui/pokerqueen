@@ -50,8 +50,8 @@ export default class OrderRecordsForm extends BaseForm {
         }
     }
 
-    onShow(isClub?: boolean): void {
-        super.onShow(isClub);
+    onShow(isClub?: boolean, fromUI?: any): void {
+        super.onShow(isClub, fromUI);
         this._isClub = isClub;
         this.comFormTitle.initData("Text_RecordLine", this);
         GC.data.wallet.orderRecord.resetData();
@@ -81,7 +81,7 @@ export default class OrderRecordsForm extends BaseForm {
         }
     }
 
-    private _scrollingCB = (scrollView: cc.ScrollView) => {
+    scrollingCB = (scrollView: cc.ScrollView) => {
         if (scrollView) {
             let cur = scrollView.getScrollOffset();
             let max = scrollView.getMaxScrollOffset();
@@ -91,12 +91,6 @@ export default class OrderRecordsForm extends BaseForm {
                 GC.data.wallet.orderRecord.dropDownReq(this._curType);
             }
         }
-    };
-    public get scrollingCB() {
-        return this._scrollingCB;
-    }
-    public set scrollingCB(value) {
-        this._scrollingCB = value;
     }
 
     updateList() {

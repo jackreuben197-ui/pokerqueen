@@ -49,7 +49,7 @@ export default class AreaCodeForm extends BaseForm {
         super.lateClose(param);
     }
 
-    onShow(param?: any, fromUI?: BaseForm) {
+    onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
         this.clearSearch();
         this.map = this.getAreaMap();

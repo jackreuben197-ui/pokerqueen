@@ -257,8 +257,6 @@ export default class Seat {
             item.node.opacity = 255;
             item.node.stopAllActions();
         })
-
-
     }
 
     /// <summary>
@@ -473,11 +471,11 @@ export default class Seat {
         this.uirc.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
 
         //是自己座位设置筹码数量位置
-        if (this.IsMySeat) {//this.ClientSeatId == 0 && 
-            this.uirc.textCoin.node.setPosition(0, -130);
-        } else {
-            this.uirc.textCoin.node.setPosition(0, -90);
-        }
+        // if (this.IsMySeat) {//this.ClientSeatId == 0 && 
+        //     this.uirc.textCoin.node.setPosition(0, -130);
+        // } else {
+        //     this.uirc.textCoin.node.setPosition(0, -90);
+        // }
 
         if (this.ui.x > 0) {
             //this.uirc.armatureVoice.setPosition(-90, 50, 0);
@@ -557,37 +555,30 @@ export default class Seat {
         }
     }
 
-    /// <summary>
-    /// 刷新筹码
-    /// </summary>
+
+    //刷新座位下方筹码数
     public UpdateCoin(): void {
 
-        if (null == this.Player) {
-            this.SetCoin("");
-            // textCoin.text = string.Empty;
-        }
-        else {
-            if (this.Player.chips < 0) {
-                this.SetCoin("");
-            }
-            else {
-                this.SetCoin(`${this.Player.chips / 100 ^ 0}`);
-            }
-            // textCoin.text = StringHelper.GetShortString(Player.chips);
-        }
-    }
-    public SetCoin(coin: string): void {
-        this.uirc.textCoin.string = coin;
-        this.uirc.textCoin.node.active = !(coin == "");
-        //TODO
-        // if (this.IsMySeat) {
-        //     this.uirc.tex.node.setPosition(0, -174);
-        // }
-        // else {
-        //     this.uirc.textCoinBg.node.setPosition(0, -125);
-        // }
-    }
+        this.SetCoin(this.Player?.chips >= 0 ? StringHelper.getStringDiv100(this.Player.chips) : "");
 
+        if (this.IsMySeat) {
+            this.uirc.Text_Coin.node.setPosition(0, -130);
+        } else {
+            this.uirc.Text_Coin.node.setPosition(0, -90);
+        }
+    }
+    //刷新昵称
+    public UpdateNickName(): void {
+        this.SetNickName(this.Player?.nick || "");
+    }
+    public SetNickName(name: string): void {
+        this.uirc.Text_NickName.node.active = true;
+        this.uirc.Text_NickName.string = name;
+    }
+    public SetCoin(coin: string) {
+        this.uirc.Text_Coin.node.active = true;
+        this.uirc.Text_Coin.string = coin;
+    }
     /// <summary>
     /// 刷新状态机，主要用户刷新冒泡
     /// </summary>
@@ -770,7 +761,7 @@ export default class Seat {
             this.uirc.imageBubble.node.setScale(cc.Vec3.ONE);
             this.uirc.imageBubble.node.active = false;
             this.sequenceUpdateBubble = null;
-            this.UpdateNickname();
+            this.UpdateNickName();
         }
         else {
 
@@ -874,16 +865,7 @@ export default class Seat {
         }
     }
 
-    /// <summary>
-    /// 刷新昵称
-    /// </summary>
-    public UpdateNickname(): void {
-        this.SetNickname(null == this.Player ? "" : CacheDataManager.mInstance.GetRemarkName(this.Player.userID, this.Player.nick));
-        // textNickname.text = null == Player ? string.Empty : CacheDataManager.mInstance.GetRemarkName(Player.userID, Player.nick);
-        if (null != this.Player) {
-            this.uirc.textNickname.node.color = cc.Color.WHITE;
-        }
-    }
+
     /// <summary>
     /// 刷新本手下注筹码
     /// </summary>
@@ -1241,11 +1223,11 @@ export default class Seat {
         if (istrue) {
             this.uirc.imageBanker.active = this.isBank;
         }
-        else {
-            //imageBanker.gameObject.SetActive(false);
-        }
+
+        // this.uirc.imageHeadFrame.node.active = istrue;
+        // this.uirc.Text_NickName.node.active = !this.IsMySeat;
         this.uirc.imageHeadFrame.node.active = istrue;
-        this.uirc.textNickname.node.active = !this.IsMySeat;
+        this.uirc.Text_NickName.node.active = istrue;
     }
 
 
@@ -1427,17 +1409,6 @@ export default class Seat {
 
 
 
-    public SetNickname(name: string): void {
-        this.uirc.textNickname.node.active = !this.IsMySeat;
-        this.uirc.textNickname.string = name;
-        // let mTmpWidth: number = 0;
-        // if (this.uirc.textNickname.preferredWidth > 0 && this.uirc.textNickname.preferredWidth < this.uirc.textNickname.rectTransform.sizeDelta.x)
-        //     mTmpWidth = textNickname.preferredWidth + 36;
-        // else if (textNickname.preferredWidth >= textNickname.rectTransform.sizeDelta.x)
-        //     mTmpWidth = textNickname.rectTransform.sizeDelta.x;
-        //imageNicknameShadow.rectTransform.sizeDelta = new Vector2(mTmpWidth, textNickname.fontSize );
-    }
-
     public get IsMySeat(): boolean {
         if (null == this.Player) {
             return false;
@@ -1542,14 +1513,13 @@ export default class Seat {
                 this.uirc.imageBubble.node.setScale(1, 1);
             }
         }
-        cc.log(">>>>>>>> 隐藏气泡");
         this.tweenerHideBubble = { tween: cc.tween(this.uirc.imageBubble.node), IsPlaying: true }
         let tween = this.tweenerHideBubble.tween;
         tween.to(.2, { scale: 0 })
         tween.delay(1);
         tween.call(() => {
             this.uirc.imageBubble.node.active = false;
-            this.UpdateNickname();
+            this.UpdateNickName();
             this.tweenerHideBubble.IsPlaying = false;
         });
         tween.start();
@@ -1719,7 +1689,7 @@ export default class Seat {
     /// <param name="complete">true马上设置为结束值</param>
     public KillAllTweener(complete = false): void {
         if (null != this.tweenerPlayRecyclingWinChipAnimation && this.tweenerPlayRecyclingWinChipAnimation.IsPlaying) {
-            this.tweenerPlayRecyclingWinChipAnimation.Kill(complete);
+            this.tweenerPlayRecyclingWinChipAnimation.Kill?.(complete);
         }
         this.tweenerPlayRecyclingWinChipAnimation = null;
 

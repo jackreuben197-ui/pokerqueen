@@ -13,6 +13,9 @@ export default class LocalStoreManager {
     get keyPre() {
         return `${this._keyPre}`;
     }
+    set keyPre(value: string) {
+        value && (this._keyPre = value);
+    }
     setItem(key: string, value: any) {
         if (CCTools.isNull(value)) {
             value = null;

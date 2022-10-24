@@ -32,7 +32,10 @@ export default class Main extends cc.Component {
     async onLoad() {
 
         console.log("游戏启动", cc.sys.os);
+
         GC.init();
+
+        GC.localStore.keyPre = CCTools.getQueryString("player");
 
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)

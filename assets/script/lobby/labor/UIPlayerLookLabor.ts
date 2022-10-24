@@ -32,7 +32,7 @@ export default class UIPlayerLookLabor extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any, fromUI?: BaseForm) {
+    async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
         await UIClubModel.mInstance.APIOrgClubGet()
         this.initTop();

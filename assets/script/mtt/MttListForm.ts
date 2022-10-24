@@ -33,13 +33,25 @@ export default class MttListForm extends BaseForm {
         }
     }
 
-    onShow(param?: any): void {
-        super.onShow(param);
+    onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node): void {
+        super.onShow(param, fromUI, sceneUI);
 
         this.comFormTitle.initData("UIMTTList_mtt", this);
+        this.list.scrollingCB = this.scrollingCB;
         GC.data.mtt.list.reqList();
 
     }
+
+    scrollingCB = (scrollView: cc.ScrollView) => {
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset();
+            let isDown = cur.y >= max.y;
+            if (isDown) {
+                GC.data.mtt.list.dropDownReq();
+            }
+        }
+    };
 
     updateList() {
         this.list.numItems = GC.data.mtt.list.list.length;

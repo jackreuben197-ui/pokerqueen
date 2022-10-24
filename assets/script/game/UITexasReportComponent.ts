@@ -256,7 +256,7 @@ export default class UITexasReportComponent extends UIBase {
 
     btnShowProblemClick() {
         UIComponent.close(this.UIDefine);
-        UIComponent.open(UIDefine.UITexasRule, null, this.node.parent);
+        UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.node.parent });
     }
     imageMaskCloseClick() {
         UIComponent.close(this.UIDefine);
