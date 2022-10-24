@@ -370,12 +370,12 @@ export class Web_Room_Center_History_Hand {
     public static API: string = "/api/roomcenter/history/hand";
     //字段声明
     public static RequestParams: {
-        room_id?: number,         
-        match_id?: number,     
-        limit?: number,   
-        offset?: number,   
-        type?: number,   
-        gametype?: number,     
+        room_id?: number,
+        match_id?: number,
+        limit?: number,
+        offset?: number,
+        type?: number,
+        gametype?: number,
     } = null;
 
     public static Record: {
@@ -393,8 +393,8 @@ export class Web_Room_Center_History_Hand {
     } = null;
 
     public static Data: {
-        limit: number,  
-        offset: number, 
+        limit: number,
+        offset: number,
         total: number,              //总条数
         records: typeof Web_Room_Center_History_Hand.Record,
     } = null;
@@ -441,8 +441,8 @@ export class Web_Stats_Room_Detail {
     } = null;
 
     public static RoomData: {
-        limit: number,  
-        offset: number, 
+        limit: number,
+        offset: number,
         total: number,              //总条数
         game_type: number,          //牌局类型(玩法) 游戏类型： 0-常规桌，1-OMAHA4，2-OMAHA5，3-OMAHA6
         game_room_name: string,     //牌局名称
@@ -459,7 +459,7 @@ export class Web_Stats_Room_Detail {
     } = null;
 
     public static Data: {
-        room_data:typeof Web_Stats_Room_Detail.RoomData,
+        room_data: typeof Web_Stats_Room_Detail.RoomData,
     } = null;
 
     public static ResponseData: {
@@ -515,14 +515,14 @@ export class Web_Stats_Mtt_Room_Detail {
         end_time: number,           //赛事结束时间
         player_count: number,       //参与人数
         buy_in_count: number,       //买入次数
-        limit: number,       
-        offset: number,    
+        limit: number,
+        offset: number,
         total: string,              //总条数
         user_list: typeof Web_Stats_Mtt_Room_Detail.UserInfo,//玩家列表
     } = null;
 
     public static Data: {
-        room_data:typeof Web_Stats_Mtt_Room_Detail.RoomData,
+        room_data: typeof Web_Stats_Mtt_Room_Detail.RoomData,
     } = null;
 
     public static ResponseData: {
@@ -1006,7 +1006,19 @@ export class Web_Club_Issue_Gold {
 }
 
 export class Web_Mtt {
-    public static LIST = "/api/roomcenter/mtt/list"
+    public static LIST = "/api/roomcenter/mtt/list";  //入口裂变
+    public static DETAIL = "/api/roomcenter/mtt/{0}";  /// MTT 比赛列表详情
+    public static ROOMS = "/api/roomcenter/mtt/{0}/rooms";/// MTT 牌桌信息
+    public static RANKS = "/api/roomcenter/mtt/{0}/ranks";/// MTT 该比赛玩家排名信息
+    public static HRANKS = "/api/roomcenter/mtt/{0}/hranks";/// MTT 猎人赛排名信息
+    public static REAL_PRIZE = "/api/roomcenter/mtt/{0}/real_prize";/// MTT 奖励
+    public static MYAWARD = "/api/roomcenter/mtt/{0}/myaward";/// MTT 我的奖励
+
+    public static BUYIN = "/api/roomcenter/mtt/{0}/buyin";/// MTT 报名
+    public static REBUY = "/api/roomcenter/mtt/{0}/rebuy";/// MTT 重购
+    public static AWARDS = "/api/roomcenter/mtt/{0}/awards";
+    public static MYINFO = "/api/roomcenter/mtt/{0}/myinfo";
+    public static FREE_REMAIN = "/api/roomcenter/mtt/{0}/free_remain";
 }
 
 // xyh end
