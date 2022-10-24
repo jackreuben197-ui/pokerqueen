@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-22 16:34:22
+ * @LastEditTime: 2022-10-22 18:14:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -578,7 +578,7 @@ export default class UICreateMatch extends BaseForm {
                 this.post(EventName.updateFriendChessView)
                 this._data = new LobbyRoomListItem(data.data.room_config);
                 this._data.rid = data.data.room_id
-                GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm);
+                GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm, UIDefine.UICreateMatch);
             }
         }
         this._editModelData = null;
