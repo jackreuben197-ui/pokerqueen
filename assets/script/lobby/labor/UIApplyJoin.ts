@@ -69,16 +69,16 @@ export default class UIApplyJoin extends BaseForm {
     async dealData() {
         this._reqing = true
         await UIClubModel.mInstance.APIOrgFriendApplyList(this._offset);
-        // let _data: any = APIOrgFriendApplyList.Response.data
-        // this._reqing = false
-        // _data.data.forEach(element => {
-        //     this._list.push(element);
-        // });
-        // this.lb.active = this._list.length == 0;
-        // this.list.numItems = this._list.length;
-        // this._total = _data.total
-        // this._offset = this._list.length;
-        // this._reqEnd = this._list.length == this._total;
+        let _data: any = APIOrgFriendApplyList.Response.data
+        this._reqing = false
+        _data.data.forEach(element => {
+            this._list.push(element);
+        });
+        this.lb.active = this._list.length == 0;
+        this.list.numItems = this._list.length;
+        this._total = _data.total
+        this._offset = this._list.length;
+        this._reqEnd = this._list.length == this._total;
     }
 
 }
