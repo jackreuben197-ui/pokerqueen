@@ -3,13 +3,14 @@
  * @Date: 2022-10-21 21:48:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 15:48:22
+ * @LastEditTime: 2022-10-24 18:08:55
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIApplyJoin.ts
  */
 
 
 import { timeStamp } from "console";
 import List from "../../common/List";
+import { EventName } from "../../config/EventName";
 import { APIOrgFriendApplyList } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import JoinitemNode from "./JoinitemNode";
@@ -42,6 +43,10 @@ export default class UIApplyJoin extends BaseForm {
         this.list.scrollingCB = this.scrollingCB;
 
     }
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.updateFrendApplyList, this.dealData);
+    }
     async reqDataAgain() {
         this._offset = 0;
         this._total = 0;
@@ -70,15 +75,18 @@ export default class UIApplyJoin extends BaseForm {
         this._reqing = true
         await UIClubModel.mInstance.APIOrgFriendApplyList(this._offset);
         let _data: any = APIOrgFriendApplyList.Response.data
+
         this._reqing = false
-        _data.data.forEach(element => {
-            this._list.push(element);
-        });
+        // _data.data.forEach(element => {
+        //     this._list.push(element);
+        // });  //分页的时候使用的
+        this.list = _data.data;
         this.lb.active = this._list.length == 0;
         this.list.numItems = this._list.length;
         this._total = _data.total
         this._offset = this._list.length;
         this._reqEnd = this._list.length == this._total;
     }
+
 
 }

@@ -279,6 +279,8 @@ export class GameCache {
     //#endregion
     public FCMToken: string = null;
 
+    public origin_type: number = null;   // 4 是朋友桌
+    public limit_bring_in: number = null  //是否开启带入  0/1
 
     private static _Instance: GameCache = null;
 
@@ -306,6 +308,8 @@ export class GameCache {
         GameCache.Instance.muck_switch = room_info.muck_on;
         GameCache.Instance.voiceprint_verify_on = room_info.voiceprint_verify_on;
         GameCache.Instance.voiceprint_verify_duration = room_info.voiceprint_verify_duration;
+        GameCache.Instance.origin_type = room_info.origin_type || null
+        GameCache.Instance.limit_bring_in = room_info.limit_bring_in || 0
     }
 }
 export interface EnterRoomInfo {
@@ -322,5 +326,7 @@ export interface EnterRoomInfo {
     muck_on?;
     voiceprint_verify_on?;
     voiceprint_verify_duration?;
+    origin_type?;
+    limit_bring_in?;
 }
 (window as any).GameCache = GameCache;

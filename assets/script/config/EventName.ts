@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 16:03:27
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2022-10-24 17:44:15
+ * @FilePath: /pokerqueen/assets/script/config/EventName.ts
+ */
 export const enum EventName {
     serverResponse = "serverResponse",
 
@@ -12,4 +20,5 @@ export const enum EventName {
     updateFriendChessView = "updateFriendChessView", //刷新朋友牌桌列表
 
     orderApplyItemChange = "orderApplyItemChange", //订单申请变化
+    updateFrendApplyList = "updateFrendApplyList", //更新申请列表
 }

@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 15:30:26
+ * @LastEditTime: 2022-10-24 17:26:14
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -450,13 +450,31 @@ export class UIClubModel {
         });
     }
     APIOrgFriendApplyList(offset = 0, limit = 10) {
-        let params = { offset: offset, limit: limit }
+        let params = {}//offset: offset, limit: limit
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgFriendApplyList,
                 body: APIOrgFriendApplyList.Request(params),
                 onSuccess: function () {
                     resolve(APIOrgFriendApplyList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgFriendApplyDeal(apply_id, audit_op) {
+        let params = {
+            apply_id: apply_id,
+            audit_op: audit_op,
+        }//offset: offset, limit: limit
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgFriendApplyDeal,
+                body: APIOrgFriendApplyDeal.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgFriendApplyDeal.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

@@ -1852,6 +1852,27 @@ export class APIOrgFriendApplyList {
     };
 
 }
+export class APIOrgFriendApplyDeal {
+    //接口地址’
+    public static API: string = "/api/roomcenter/friend/room/apply/audit"
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgFriendApplyDeal.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgFriendApplyDeal.ResponseData
+    };
+
+}
 
 /**
  * 注册全局访问
