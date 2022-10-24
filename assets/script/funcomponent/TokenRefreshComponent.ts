@@ -26,8 +26,6 @@ export default class TokenRefreshComponent implements IUpdate {
         let nowTime = GlobalSession.NowTimeS;
         if (nowTime - this.lasttime < this.interval) return;
         
-        console.log("检测token");
-
         this.lasttime = nowTime;
         let timeDiff = LoginSession.TokenExpireAt - GlobalSession.NowTimeS;
         if (timeDiff < this.threshold) {

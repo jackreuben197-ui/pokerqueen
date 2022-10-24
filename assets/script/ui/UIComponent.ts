@@ -87,11 +87,17 @@ export default class UIComponent {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
+                UIFormMgr.Instance.open(UIDefine, param, obj);
+                break;
             case UIType.Dialog:
+                UIDialogMgr.Instance.open(UIDefine, param, obj);
+                break;
             case UIType.Board:
+                UIBoardMgr.Instance.open(UIDefine, param, obj);
+                break;
             case UIType.Prompt:
             case UIType.TexasPreLoad:
-                UIFormMgr.Instance.open(UIDefine, param, obj);
+                UIPromptMgr.Instance.open(UIDefine, param, obj);
                 break;
             case UIType.CommonUI:
                 UICommonMgr.Instance.open(UIDefine, param, obj);
@@ -103,8 +109,14 @@ export default class UIComponent {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {
             case UIType.Form:
+                UIFormMgr.Instance.close(UIDefine, param, obj);
+                break;
             case UIType.Dialog:
+                UIDialogMgr.Instance.close(UIDefine, param, obj);
+                break;
             case UIType.Board:
+                UIBoardMgr.Instance.close(UIDefine, param, obj);
+                break;
             case UIType.Prompt:
             case UIType.TexasPreLoad:
                 UIPromptMgr.Instance.close(UIDefine, param, obj);
@@ -172,3 +184,4 @@ export default class UIComponent {
     }
 }
 (window as any).UIComponent = UIComponent;
+(window as any).UIFormMgr = UIFormMgr;

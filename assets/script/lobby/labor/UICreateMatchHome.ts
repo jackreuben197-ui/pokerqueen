@@ -53,8 +53,8 @@ export default class UICreateMatchHome extends BaseForm {
         }
     }
 
-    async onShow(param?: any, fromUI?: cc.Node) {
-        super.onShow(param, fromUI);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.refreshModel();
     }
     createMatch() {
