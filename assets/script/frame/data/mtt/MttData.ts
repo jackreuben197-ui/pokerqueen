@@ -21,6 +21,12 @@ export default class MttData extends BaseData {
             case Web_Mtt.DETAIL: {
                 this.detail.updateData(msg);
             } break;
+            case Web_Mtt.REAL_PRIZE: {
+                this.realTime.updateRealPrize(msg);
+            } break;
+            case Web_Mtt.ROOMS: {
+                this.realTime.updateRooms(msg);
+            } break;
         }
     }
 
@@ -36,5 +42,15 @@ export default class MttData extends BaseData {
     reqRealTimeRankList(offset: number = 0, limit: number = 10) {
         let api = GC.language.formatString(Web_Mtt.RANKS, this.list.select.match_id);
         this.reqServePost(api, { limit: limit, offset: offset });
+    }
+
+    reqRealTimeRooms(offset: number = 0, limit: number = 10) {
+        let api = GC.language.formatString(Web_Mtt.ROOMS, this.list.select.match_id);
+        this.reqServePost(api, { limit: limit, offset: offset });
+    }
+
+    reqRealTimeRealPrize() {
+        let api = GC.language.formatString(Web_Mtt.REAL_PRIZE, this.list.select.match_id);
+        this.reqServePost(api);
     }
 }

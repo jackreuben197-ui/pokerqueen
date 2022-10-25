@@ -13,10 +13,11 @@ const { ccclass } = cc._decorator;
 export enum PrefabUI {
     UIPreloading = "UIPreloading",
     UITexasMenuComponent = "UITexasMenuComponent",
-    UIAddChipsComponent = "UIAddChipsComponent",
+    UIAddChipsComponent = "UIAddChipsComponenst",
     UIOutChipsComponent = "UIOutChipsComponent",
     UIOperationComponent = "UIOperationComponent",
     UIAutoOperationComponent = "UIAutoOperationComponent",
+    UIInsuranceComponent = "UIInsuranceComponent"
 }
 //打开面板追加参数
 export interface Open_Obj {
@@ -49,8 +50,6 @@ export default class UIComponent {
     GetPrefabNode(prefab_name: string): cc.Node {
         return this.prefab_node_map.get(prefab_name);
     }
-
-
     Toast(content?: string) {
         if (content) {
             ToastManager.Instance.createToast(content);
@@ -59,7 +58,6 @@ export default class UIComponent {
             ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"));
         }
     }
-
     //显示节点
     ShowUI<T>(com: PrefabUI, param?: T) {
         let node = this.GetPrefabNode(com);
@@ -82,7 +80,6 @@ export default class UIComponent {
             cc.log("HideUI", com);
         }
     }
-
     static open<T>(UIDefine: IUIDefine, param?: T, obj?: Open_Obj) {
         if (!UIDefine) return;
         switch (UIDefine.UIType) {

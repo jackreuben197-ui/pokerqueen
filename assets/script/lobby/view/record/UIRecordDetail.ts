@@ -24,6 +24,12 @@ export default class UIRecordDetail extends BaseForm {
     lateClose(param: any = null) {
         super.lateClose(param);
     }
+
+    protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
+        let panel_bx = this.getChildNodeOrComponent("panel_bx");
+        this.bindClick(panel_bx, this.clickBx)
+    }
     /**
      * 每次打开面板处理的内容
      */
@@ -42,11 +48,15 @@ export default class UIRecordDetail extends BaseForm {
     }
 
     onClickScore() {
-        UIComponent.open(UIDefine.UIRecordScore, {info: this.respInfo});
+        UIComponent.open(UIDefine.UIRecordScore, { info: this.respInfo });
     }
 
     onClickInto() {
         UIComponent.open(UIDefine.UIRecordInto);
+    }
+
+    clickBx() {
+        UIComponent.open(UIDefine.MttRecordBXListForm)
     }
 
     reqInfo(roomId) {
@@ -88,7 +98,7 @@ export default class UIRecordDetail extends BaseForm {
         let node1: cc.Node = this.getChildNodeOrComponent("node1")
         let node2: cc.Node = this.getChildNodeOrComponent("node2")
         let node3: cc.Node = this.getChildNodeOrComponent("node3")
-        let refreshHead = function(nodeInfo, node) {
+        let refreshHead = function (nodeInfo, node) {
             let img_head = node.getChildByName("img_head");
             let lbl_name = node.getChildByName("lbl_name");
             WebImageHelper.SetHeadImage(img_head.getComponent(cc.Sprite), nodeInfo.avatar);
@@ -134,7 +144,7 @@ export default class UIRecordDetail extends BaseForm {
         this.getChildNodeOrComponent("lbl_total_num", cc.Label).string = roomData.room_total_hand_num.toString();
 
         this.getChildNodeOrComponent("lbl_gold_num", cc.Label).string = roomData.all_bring_in.toString();
-    
+
 
         let lbl_bx_score = this.getChildNodeOrComponent("lbl_bx_score", cc.Label);
         LobbyControl.getInstance().setWinColor(lbl_bx_score, roomData.insurance_total);
@@ -148,14 +158,14 @@ export default class UIRecordDetail extends BaseForm {
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
-        for (let i=0; i<len; i++) {
+        for (let i = 0; i < len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
             _cloneNode.x = 0;
             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
             _cloneNode.parent = scrollView.content;
 
-            _cloneNode.getChildByName("lbl_rank").getComponent(cc.Label).string = (i+1).toString();
-        
+            _cloneNode.getChildByName("lbl_rank").getComponent(cc.Label).string = (i + 1).toString();
+
             let info = user_list[i];
             let head = _cloneNode.getChildByName("img_head").getComponent(cc.Sprite);
             WebImageHelper.SetHeadImage(head, info.avatar);
@@ -168,7 +178,7 @@ export default class UIRecordDetail extends BaseForm {
             let img_line = _cloneNode.getChildByName("img_line");
             img_line.active = i != len - 1;
         }
-        scrollView.content.height = panel_item.height * (len+2);
+        scrollView.content.height = panel_item.height * (len + 2);
     }
 
 }

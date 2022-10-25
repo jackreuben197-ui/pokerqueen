@@ -286,18 +286,20 @@ export class SeatFSM {
         //this.ShowBubbleInsuranceCountDown();
     }
 
-    public InsuranceExecute(): void {
+    public InsuranceExecute(dt: number): void {
         if (!this.seat.isCountDown)
             return;
 
-        // imageCountDown.fillAmount = (optCurTime -= Time.deltaTime) / optTotalTime;
-        // image_CountDownTime.text = ((int)optCurTime).ToString();
-        // if (imageCountDown.fillAmount <= 0) {
-        //     isCountDown = false;
-        //     imageCountDown.gameObject.SetActive(false);
-        //     Image_CountDownbg.gameObject.SetActive(false);
-        //     this.seat.PlayLightArmature();
-        // }
+        this.seat.uirc.imageCountDown.fillRange = (this.seat.optCurTime -= dt) / this.seat.optTotalTime;
+
+        this.seat.uirc.image_CountDownTime.string = `${this.seat.optCurTime}`;
+
+        if (this.seat.uirc.imageCountDown.fillRange <= 0) {
+            this.seat.isCountDown = false;
+            this.seat.uirc.imageCountDown.node.active = false;
+            this.seat.uirc.Image_CountDownbg.node.active = false;
+            //this.seat.PlayLightArmature();
+        }
 
         if (this.seat.Player.userID != GameCache.Instance.CurGame.mainPlayer.userID) {
             let leftTime = Math.ceil(this.seat.optCurTime);
@@ -306,7 +308,6 @@ export class SeatFSM {
             //textBubbleInsuranceCountDown.text = CPErrorCode.LanguageDescription(20062, new List<object>() { leftTime });
         }
     }
-
     public InsuranceExit(): void {
         this.seat.StopCountDown();
         //this.seat.HideBubbleInsuranceCountDown();

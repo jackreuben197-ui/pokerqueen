@@ -1,6 +1,5 @@
 import { IUIDefine } from "../../define/EIDefine";
 import AdapterComponent from "../../funcomponent/AdapterComponent";
-import UIComponent from "../../ui/UIComponent";
 import { Base } from "./Base";
 
 

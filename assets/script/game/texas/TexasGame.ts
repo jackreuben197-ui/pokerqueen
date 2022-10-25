@@ -33,7 +33,7 @@ import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
 import GameUtil, { RoomType } from "./../GameUtil";
-import { SeatEmpty, SeatIdle, SeatInsuranc, SeatOperation } from "./../SeatStateHandler";
+import { SeatEmpty, SeatIdle, SeatInsurance, SeatOperation } from "./../SeatStateHandler";
 import TexasGameMessageHandler from "./../TexasGameMessageHandler";
 import TexasGameProtocol from "./../TexasGameProtocol";
 import { TexasGameState } from "./../TexasGameState";
@@ -698,7 +698,7 @@ export default class TexasGame {
                 if (this.GetLocalSeatID(rec.operatorList[i].seatId) == this.mainPlayer.seatID) {
                     actionLimits = rec.operatorList[i].actionsList;
                     actionShortcutLimits = rec.operatorList[i].shortcutsList;
-                    this.HandlerInsueranceData(rec.operatorList);//重进房间保险处理
+                    this.texasGameProtocol.HandlerInsueranceData(rec.operatorList);//重进房间保险处理
                 }
             }
         }
@@ -801,117 +801,7 @@ export default class TexasGame {
         }
     }
 
-    /// <summary>
-    /// 保险数据处理
-    /// </summary>
-    /// <param name="operators"></param> RepeatedField<Operator>
-    protected HandlerInsueranceData(operators: Operator.AsObject[]): void {
-        //显示玩家买保险动画，及如果有自己，缓存操作数据。
-        let CanInsurance: boolean = false;
-        let Seat: Seat = null;
-        let mOperator: Operator.AsObject = null;
-
-
-        for (let itemOperator of operators) {
-            Seat = this.GetSeatByLocalSeatID(this.GetLocalSeatID(itemOperator.seatId));
-            if (null == Seat || null == Seat.Player) {
-                continue;
-            }
-            Seat.Player.playerStatus_insurance = itemOperator.isInsurance;
-            Seat.Player.timeLeft_insurance = itemOperator.leftOpTime;
-            Seat.Player.delayTimes = itemOperator.delayTimes;
-            if (Seat.Player.userID == this.mainPlayer.userID && Seat.Player.playerStatus_insurance) {
-                mOperator = itemOperator;
-                CanInsurance = true;
-            }
-
-            if (Seat.Player.playerStatus_insurance) {
-                Seat.FsmLogicComponent.SM.ChangeState(SeatInsuranc.Instance);
-            }
-        }
-
-
-
-
-
-        //     TweenCallback mTweenCallback = () => {
-        //     if (!CanInsurance || mOperator == null) // 如果可购买保险用户中没有自己，不用往下执行
-        //         return;
-
-        //     List < UIInsuranceComponent.WrapTriggedInsuranceData > wrapTriggedInsuranceDatas = new List<UIInsuranceComponent.WrapTriggedInsuranceData>();
-        //     UIInsuranceComponent.WrapTriggedInsuranceData mWrapTriggedInsuranceData = null;
-
-
-
-        //     foreach(InsurancePotLimit insurancePotLimit in mOperator.InsuranceLimit)
-        //     {
-        //         mWrapTriggedInsuranceData = new UIInsuranceComponent.WrapTriggedInsuranceData();
-        //         mWrapTriggedInsuranceData.outsPerUser = new List<int>();
-        //         mWrapTriggedInsuranceData.userNames = new List<string>();
-        //         mWrapTriggedInsuranceData.playerCards = new List<List<sbyte>>();
-        //         mWrapTriggedInsuranceData.outsCards = new List<RepeatedField<OutsCard>>();
-        //         //赋值保险池等数据，
-        //         mWrapTriggedInsuranceData.subPot = (sbyte)insurancePotLimit.PotId;
-        //         mWrapTriggedInsuranceData.pot = (long)insurancePotLimit.PotAmount;
-        //         mWrapTriggedInsuranceData.potTotalCost = (long)insurancePotLimit.Bet;
-        //         mWrapTriggedInsuranceData.leastAmount = (long)insurancePotLimit.Min;
-        //         mWrapTriggedInsuranceData.mostAmount = (long)insurancePotLimit.Max;
-        //         mWrapTriggedInsuranceData.PotUserCount = insurancePotLimit.PotUserCount;
-        //         mWrapTriggedInsuranceData.PotLeaderCount = insurancePotLimit.PotLeaderCount;
-        //         mWrapTriggedInsuranceData.potAllowOutSelection = insurancePotLimit.Insuranced > 0 ? (sbyte)0 : (sbyte)1;
-
-        //         foreach(UserOuts userOuts in insurancePotLimit.OutsDetail)
-        //         {
-        //                 Seat ins_Seat = GetSeatByLocalSeatID(GetLocalSeatID(userOuts.SeatId));
-        //             if (ins_Seat == null) {
-        //                 Log.Error("---------------------Insurance others player is null");
-        //                 continue;
-        //             }
-        //             //有哪些玩家得outs
-
-        //             //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
-        //             mWrapTriggedInsuranceData.userNames.Add(ins_Seat.Player.nick);
-        //             mWrapTriggedInsuranceData.playerCards.Add(ins_Seat.Player.cards);
-        //             //各个玩家
-        //             mWrapTriggedInsuranceData.outsPerUser.Add((int)userOuts.OutsCards.length);
-
-        //             //添加所有玩家outs ，在保险界面处理是否平分outs
-        //             mWrapTriggedInsuranceData.outsCards.Add(userOuts.OutsCards);
-        //         }
-
-        //         wrapTriggedInsuranceDatas.Add(mWrapTriggedInsuranceData);
-        //     }
-        //     //暂注释，第一次买保险前得动画
-        //     //if (Image_InsuranceTips.gameObject.activeInHierarchy)
-        //     //{
-        //     //    Image_InsuranceTips.gameObject.SetActive(false);
-        //     //}
-        //     UIComponent.Instance.ShowUI(UIType.UIInsurance, new UIInsuranceComponent.InsuranceData()
-        //         {
-        //             publicCards = cards,
-        //             triggedDatas = wrapTriggedInsuranceDatas,
-        //             timeLeft = (int)mainPlayer.timeLeft_insurance,
-
-        //             delayTimes = mainPlayer.delayTimes
-        //         });
-
-        //     //#if (UNITY_EDITOR || UNITY_STANDALONE_WIN) && !ILRuntime
-        //     //                // 用于压测，放在UIInsurance启动之后调用
-        //     //                RoomHelper.onReqInsuranceTrigged(rec);
-        //     //#endif
-        // };
-        // //暂注释，第一次买保险前得动画
-        // //if (rec.length <= 1)
-        // //{
-        // //    // 当前触发保险次数，如果<=1，则先显示“保险模式”动画，再弹出保险框
-        // //    PlayFirstInsurance(mTweenCallback);
-        // //    // await WaitGameAnimation(GameAnimation.PlayFirstInsurance);
-        // //}
-        // //else
-        // //{
-        // mTweenCallback();
-        // //}
-    }
+    
 
 
     /// <summary>

@@ -1,9 +1,9 @@
-import { EMttItemStatus } from "../../../config/EEnumConfig";
+import { EMTTGameType, EMttItemStatus } from "../../../config/EEnumConfig";
 import { TMttListItem } from "../../../config/TTypeConfig";
 import GC from "../../GameControl";
 
 export default class MttListItemModel {
-    private _msg: TMttListItem = null;
+    _msg: TMttListItem = null;
     private _startTime: number = 0;
     private _upblindInterval: number = 0;
     private _maxDelayApplyBl: number = 0;
@@ -42,6 +42,11 @@ export default class MttListItemModel {
     // 状态 0 无法报名 1: 报名中 2: 参与中
     get bought() {
         return this._msg.bought;
+    }
+
+    // 盲注类型 0-快速赛/1-锦标赛/2-豪克塞/3-免费赛/4-110滚雪球赛/5-每日票赛/6-特色赛事880滚雪球赛/7-最新免费赛/8-周1.2特色赛事/9-周3特色赛/10-周4.5特色赛事/11-周六特色赛事/12-周末特色赛事
+    get blindtable_type(): EMTTGameType {
+        return this._msg.blindtable_type;
     }
 
 

@@ -29,6 +29,7 @@ import GameUtil from "./GameUtil";
 import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent, { AddClipsData } from "./ui/UIAddChipsComponent";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
+import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsComponent, { OutClipsData } from "./ui/UIOutChipsComponent";
 import UITexasMenuComponent from "./ui/UITexasMenuComponent";
@@ -148,17 +149,20 @@ export default class UITexas extends BaseScene {
 
 
 
-    //左侧菜单容器
+    //1.左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
     UITexasMenu_Com: UITexasMenuComponent = null;
-    //带入带出
+    //2.带入带出
     UIChips_Con: cc.Node = null;
     UIAddChips_Com: UIAddChipsComponent = null;
     UIOutChips_Com: UIOutChipsComponent = null;
-    //操作面板
+    //3.操作面板
     UIOperation_Con: cc.Node = null;
     UIOperation_Com: UIOperationComponent = null;
     UIAutoOperation_Com: UIAutoOperationComponent = null;
+    //4.保险面板
+    UIInsurance_Con: cc.Node = null;
+    UIInsurance_Com: UIInsuranceComponent = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -278,7 +282,6 @@ export default class UITexas extends BaseScene {
 
         this.TransPot_Pool = new SimpleNodePool(this.transPot);
 
-
         //////////////////装载容器
         //1.菜单
         this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
@@ -291,7 +294,16 @@ export default class UITexas extends BaseScene {
         this.UIOperation_Con = this.getChildNodeOrComponent("UIOperation_Con");
         this.UIOperation_Com = this.AddComponents(PrefabUI.UIOperationComponent, this.UIOperation_Con);
         this.UIAutoOperation_Com = this.AddComponents(PrefabUI.UIAutoOperationComponent, this.UIOperation_Con);
+        //4.保险面板
+        this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
+        this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
+        
     }
+
+    
+
+
+
     //从预制体添加到容器
     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, Bundle_Texas);
