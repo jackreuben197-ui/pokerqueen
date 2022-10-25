@@ -41,7 +41,7 @@ export default class SettingsForm extends BaseForm {
         super.lateLoad();
         // this.func_item = this.getChildNodeOrComponent("func_item");
         // this.content = this.getChildNodeOrComponent("content");
-        
+
     }
     /**
      * 关闭需要处理的内容
@@ -64,7 +64,7 @@ export default class SettingsForm extends BaseForm {
         // this.setItems();
         this.updateLaunch();
         let version_Text = this.getChildNodeOrComponent("Text_Right", cc.Label);
-        version_Text.string = GameConfig.Version;
+        version_Text.string = GameConfig.Version + "||" + GameConfig.BuildType;
     }
     /**
      * 注册触摸事件
@@ -141,7 +141,7 @@ export default class SettingsForm extends BaseForm {
             Text_Right.string = i18nMgr.Get("sl_K8cPNvxU");
         } else if (i18nMgr.language == "pt") {
             Text_Right.string = i18nMgr.Get("sl_ptyyPutao");
-        } 
+        }
     }
 
     // private onItemClick(button: cc.Button) {
