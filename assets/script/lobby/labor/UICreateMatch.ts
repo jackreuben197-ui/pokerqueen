@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 18:11:39
+ * @LastEditTime: 2022-10-25 21:12:57
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -233,7 +233,6 @@ export default class UICreateMatch extends BaseForm {
         this.jfpNum = Number(data.retain_type)
         this.xzlxNum = Number(data.limit_bet_type);
         this.fwfbNum = Number(data.settlement_type);
-
 
         this.calculateIndex('fdxm', data.sb / 100)
         let _data: any = this.qzshData[data.sb / 100]
