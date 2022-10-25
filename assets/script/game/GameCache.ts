@@ -281,6 +281,7 @@ export class GameCache {
 
     public origin_type: number = null;   // 4 是朋友桌
     public limit_bring_in: number = null  //是否开启带入  0/1
+    public invitation_code: number = null  //邀请码  
 
     private static _Instance: GameCache = null;
 
@@ -310,6 +311,7 @@ export class GameCache {
         GameCache.Instance.voiceprint_verify_duration = room_info.voiceprint_verify_duration;
         GameCache.Instance.origin_type = room_info.origin_type || null
         GameCache.Instance.limit_bring_in = room_info.limit_bring_in || 0
+        GameCache.Instance.invitation_code = room_info.invitation_code
     }
 }
 export interface EnterRoomInfo {
@@ -328,5 +330,6 @@ export interface EnterRoomInfo {
     voiceprint_verify_duration?;
     origin_type?;
     limit_bring_in?;
+    invitation_code?;
 }
 (window as any).GameCache = GameCache;

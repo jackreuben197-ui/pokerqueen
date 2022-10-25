@@ -1363,7 +1363,7 @@ export default class GameUtil {
         if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
             if (RoomType[enter_room_info.room_type]) {
                 let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch(() => { });
-                
+
                 if (response) {
                     //GC.data.lobby.roomList.selected = this._data;
 

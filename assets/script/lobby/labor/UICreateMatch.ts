@@ -3,23 +3,16 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 11:06:25
+ * @LastEditTime: 2022-10-25 16:49:44
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
 import { EventName } from "../../config/EventName";
-import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
-import GC from "../../frame/GameControl";
-import { EnterRoomInfo, GameCache } from "../../game/GameCache";
 import GameUtil from "../../game/GameUtil";
-import ProcedureManager from "../../manager/ProcedureManager";
 import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
-import WebSocketClient from "../../net/websocket/WebSocketClient";
-import LobbySession from "../../session/LobbySession";
 import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
 const { ccclass, property } = cc._decorator;
 
@@ -68,6 +61,8 @@ export default class UICreateMatch extends BaseForm {
     jslx: cc.Node = null;
     fddmHd: cc.Node = null;
     kzwjdr: cc.Node = null;
+    etp: cc.Node = null;
+
 
     _curType = 0;
     ipState = false;
@@ -76,6 +71,7 @@ export default class UICreateMatch extends BaseForm {
     yckpState = false;
     kzwjdrState = false;
     bxState = false;
+    etpState = false;
     // smallAndBigM = [];
     matchTypeNum = 0;
     jfpNum = 0;
@@ -176,7 +172,7 @@ export default class UICreateMatch extends BaseForm {
         this.jslx = this.getChildNodeOrComponent('jslx')
         this.fddmHd = this.getChildNodeOrComponent('fddmHd')
         this.kzwjdr = this.getChildNodeOrComponent('kzwjdr')
-
+        this.etp = this.getChildNodeOrComponent('etp')
     }
     onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
@@ -228,6 +224,9 @@ export default class UICreateMatch extends BaseForm {
         this.gpsState = data.limit_gps_distance > 0 ? true : false;
         this.bmState = data.post;
         this.yckpState = data.delay_view_card;
+
+        this.bxState = data.insurance
+        this.etpState = data.second_public_cards
 
         this.matchTypeNum = Number(data.poker_type);
         this.jfpNum = Number(data.retain_type)
@@ -366,18 +365,7 @@ export default class UICreateMatch extends BaseForm {
         fddmHdItem._targetDe = this;
         fddmHdItem.initUi(this.itemData.fddmHd, this.itemDataIndex.fddmHd)
 
-        cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
-        cc.find('btn_switch/close', this.ipdzxz).active = !this.ipState;
-        cc.find('btn_switch/open', this.gpszx).active = this.gpsState;
-        cc.find('btn_switch/close', this.gpszx).active = !this.gpsState;
-        cc.find('btn_switch/open', this.bm).active = this.bmState;
-        cc.find('btn_switch/close', this.bm).active = !this.bmState;
-
-        cc.find('btn_switch/open', this.yckp).active = this.yckpState;
-        cc.find('btn_switch/close', this.yckp).active = !this.yckpState;
-
-        cc.find('btn_switch/open', this.bx).active = this.bxState;
-        cc.find('btn_switch/close', this.bx).active = !this.bxState;
+        this.singleClick();
 
         let select = this.Straddle.getChildByName('select');
         let num = cc.find('Rectangle/num', this.Straddle).getComponent(cc.Label)
@@ -390,6 +378,25 @@ export default class UICreateMatch extends BaseForm {
             }, this)
         }
 
+    }
+    singleClick() {
+        cc.find('btn_switch/open', this.ipdzxz).active = this.ipState;
+        cc.find('btn_switch/close', this.ipdzxz).active = !this.ipState;
+        cc.find('btn_switch/open', this.gpszx).active = this.gpsState;
+        cc.find('btn_switch/close', this.gpszx).active = !this.gpsState;
+        cc.find('btn_switch/open', this.bm).active = this.bmState;
+        cc.find('btn_switch/close', this.bm).active = !this.bmState;
+
+        cc.find('btn_switch/open', this.yckp).active = this.yckpState;
+        cc.find('btn_switch/close', this.yckp).active = !this.yckpState;
+
+        cc.find('btn_switch/open', this.bx).active = this.bxState;
+        cc.find('btn_switch/close', this.bx).active = !this.bxState;
+        cc.find('btn_switch/open', this.kzwjdr).active = this.kzwjdrState;
+        cc.find('btn_switch/close', this.kzwjdr).active = !this.kzwjdrState;
+
+        cc.find('btn_switch/open', this.etp).active = this.etpState;
+        cc.find('btn_switch/close', this.etp).active = !this.etpState;
     }
     fwfblLogic() {
         let fwfConfig: any = APIOrgGetRoomConfig.Response.data;
@@ -450,6 +457,11 @@ export default class UICreateMatch extends BaseForm {
         this.bmState = !this.bmState
         cc.find('btn_switch/open', this.bm).active = this.bmState;
         cc.find('btn_switch/close', this.bm).active = !this.bmState;
+    }
+    etpCilck() {
+        this.etpState = !this.etpState
+        cc.find('btn_switch/open', this.etp).active = this.etpState;
+        cc.find('btn_switch/close', this.etp).active = !this.etpState;
     }
     matchTypeClick(event, customData) {
         this.matchTypeNum = Number(customData);
@@ -554,11 +566,8 @@ export default class UICreateMatch extends BaseForm {
         room_config.post = this.bmState   //是否补盲
         room_config.limit_ip = this.ipState   //是否开启ip限制
         room_config.limit_gps = this.gpsState //是否开启gps限制
+        room_config.second_public_cards = this.etpState  //是否开启第二套牌
 
-
-        // let data: any = Web_Org_Club_Get.Response.data;
-        // room_config.club_id = data.random_id
-        // room_config.tribe_id = data.random_id;
         let params: any = { name: modelName, room_config: room_config }
         console.log('params===', params)
         //0 是模版
@@ -587,7 +596,7 @@ export default class UICreateMatch extends BaseForm {
                     room_config.max_per_hand = Number(this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //服务费比例(0-100)
                 }
 
-                // room_config.bx = this.bxState //是否开启保险限制
+                room_config.insurance = this.bxState
                 room_config.fee_permillage = Number(this.jslx.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
                 room_config.limit_friend_table = true;
                 room_config.limit_bring_in = this.kzwjdrState;
