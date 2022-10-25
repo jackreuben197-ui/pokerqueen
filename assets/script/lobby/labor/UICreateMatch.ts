@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 21:42:27
+ * @LastEditTime: 2022-10-25 11:06:25
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -33,6 +33,9 @@ export default class UICreateMatch extends BaseForm {
 
     @property(cc.Prefab)
     UISaveModel: cc.Prefab = null;
+
+    @property(cc.Node)
+    bxTipnNode: cc.Node = null;
 
     @property(cc.Node)
     save: cc.Node = null;
@@ -289,7 +292,7 @@ export default class UICreateMatch extends BaseForm {
             this.jslx.active = false;
             this.fddmHd.active = false
             this.kzwjdr.active = false
-            this.bx.active = false
+            this.bx.active = true
             cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
             this.fwfbl.height = this.fwfbNum == 0 ? 300 : 200;
             this.fddm.active = this.fwfbNum == 0 ? true : false;
@@ -300,7 +303,7 @@ export default class UICreateMatch extends BaseForm {
             this.kzwjdr.active = true
             this.fwfbl.active = false;
             this.save.active = false;
-            this.bx.active = true
+            this.bx.active = false
         }
 
 
@@ -373,6 +376,9 @@ export default class UICreateMatch extends BaseForm {
         cc.find('btn_switch/open', this.yckp).active = this.yckpState;
         cc.find('btn_switch/close', this.yckp).active = !this.yckpState;
 
+        cc.find('btn_switch/open', this.bx).active = this.bxState;
+        cc.find('btn_switch/close', this.bx).active = !this.bxState;
+
         let select = this.Straddle.getChildByName('select');
         let num = cc.find('Rectangle/num', this.Straddle).getComponent(cc.Label)
         for (let index = 0; index < select.childrenCount; index++) {
@@ -430,10 +436,10 @@ export default class UICreateMatch extends BaseForm {
         cc.find('btn_switch/open', this.kzwjdr).active = this.kzwjdrState;
         cc.find('btn_switch/close', this.kzwjdr).active = !this.kzwjdrState;
     }
-    bxrCilck() {
+    bxCilck() {
         this.bxState = !this.bxState
-        cc.find('btn_switch/open', this.kzwjdr).active = this.bxState;
-        cc.find('btn_switch/close', this.kzwjdr).active = !this.bxState;
+        cc.find('btn_switch/open', this.bx).active = this.bxState;
+        cc.find('btn_switch/close', this.bx).active = !this.bxState;
     }
     yckpCilck() {
         this.yckpState = !this.yckpState
@@ -615,9 +621,11 @@ export default class UICreateMatch extends BaseForm {
         let qwszItem: any = cc.find('item/Rectangle', this.qwsz).getComponent('slidewidght');
         qwszItem.initUi(this.itemData.qwsz, 0)
     }
-    bxTip() {
 
+    bxTip() {
+        this.bxTipnNode.active = !this.bxTipnNode.active
     }
+
 
     baganGame() {
         this._btnType = 1;
