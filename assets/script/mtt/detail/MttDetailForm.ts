@@ -40,6 +40,10 @@ export default class MttDetailForm extends BaseForm {
         let panel_2_top: cc.Node = this.getChildNodeOrComponent("panel_2_top");
         let panel_3_top: cc.Node = this.getChildNodeOrComponent("panel_3_top");
         let panel_4_top: cc.Node = this.getChildNodeOrComponent("panel_4_top");
+        let sv_down1: cc.Node = this.getChildNodeOrComponent("sv_down1");
+        let sv_down2: cc.Node = this.getChildNodeOrComponent("sv_down2");
+        let sv_down3: cc.Node = this.getChildNodeOrComponent("sv_down3");
+        let sv_down4: cc.Node = this.getChildNodeOrComponent("sv_down4");
         if (this.curType == 0) {
             panel_0.active = true;
             panel_1.active = false;
@@ -63,7 +67,11 @@ export default class MttDetailForm extends BaseForm {
             panel_2_top.active = false;
             panel_3_top.active = false;
             panel_4_top.active = false;
-            this.refreshListView("panel_item");
+            sv_down1.active = true;
+            sv_down2.active = false;
+            sv_down3.active = false;
+            sv_down4.active = false;
+            this.refreshListView("panel_item", "sv_down1");
         } else if (this.curType == 2) {
             panel_0.active = false;
             panel_1.active = true;
@@ -71,7 +79,11 @@ export default class MttDetailForm extends BaseForm {
             panel_2_top.active = true;
             panel_3_top.active = false;
             panel_4_top.active = false;
-            this.refreshListView("panel_item3");
+            sv_down1.active = false;
+            sv_down2.active = true;
+            sv_down3.active = false;
+            sv_down4.active = false;
+            this.refreshListView("panel_item3", "sv_down2");
         } else if (this.curType == 3) {
             panel_0.active = false;
             panel_1.active = true;
@@ -79,7 +91,11 @@ export default class MttDetailForm extends BaseForm {
             panel_2_top.active = false;
             panel_3_top.active = true;
             panel_4_top.active = false;
-            this.refreshListView("panel_item4");
+            sv_down1.active = false;
+            sv_down2.active = false;
+            sv_down3.active = true;
+            sv_down4.active = false;
+            this.refreshListView("panel_item4", "sv_down3");
         } else if (this.curType == 4) {
             panel_0.active = false;
             panel_1.active = true;
@@ -87,18 +103,22 @@ export default class MttDetailForm extends BaseForm {
             panel_2_top.active = false;
             panel_3_top.active = false;
             panel_4_top.active = true;
-            this.refreshListView("panel_item5");
+            sv_down1.active = false;
+            sv_down2.active = false;
+            sv_down3.active = false;
+            sv_down4.active = true;
+            this.refreshListView("panel_item5", "sv_down4");
         }
         
         this.refreshTopUI(this.curType);
     }
     
     // sv需要拆出来
-    refreshListView(panelName) {
+    refreshListView(panelName, svName) {
         // 有数据 刷新列表
         let len = 50;
         let panel_item: cc.Node = this.getChildNodeOrComponent(panelName);
-        let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
+        let scrollView = this.getChildNodeOrComponent(svName, cc.ScrollView);
         scrollView.scrollToTop();
         scrollView.content.removeAllChildren();
         for (let i=0; i<len; i++) {

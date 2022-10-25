@@ -1012,6 +1012,399 @@ export class Web_Mtt {
 // xyh end
 
 /// <summary>
+/// MTT 比赛列表详情
+/// </summary>
+export class Web_Room_Center_Mtt_Details {
+    //接口地址
+    public static API: string = "/api/roomcenter/mtt/{id}";
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+        data: typeof Web_Room_Center_Mtt_Details.Data[],
+    } = null;
+
+    public static Data: {
+        alive: number,//存活人数
+        state_code: number//当前玩家的状态 MTTPlayerStatus定义
+        mtt: typeof Web_Room_Center_Mtt_Details.MttDetails[],//比赛细节信息
+        state: typeof Web_Room_Center_Mtt_Details.PlayerState[],//玩家筹码状态信息
+        more: typeof Web_Room_Center_Mtt_Details.More[],//盲注等级和奖励池
+        top: number,//最大记分牌
+    } = null;
+
+    public static MttDetails: {
+        match_id: number,// 比赛id
+        name: string,// 比赛名字
+        type: number,// 房间类型
+        game_type: number,// 游戏类型
+        poker_type: number,// 牌类型
+        limit_bet_type: number,// 底池限注类型
+        rank_type: number,// 排名类型
+        enter_time: string,// 进入时间
+        start_time: string,// 开始时间
+        end_time: string,// 结束时间
+        hunter_on: number,// 猎人赛开启  1：开启，0关闭
+        hunter_bonus: number,//0-100  //猎人赛滚雪球比例 0~100 0:杀白丁无收益 1～99 单次收益 100:不滚雪球
+        partial_on: number,//部分带入开启  1：开启，0：关闭
+        parital_return_bl: number,// 部分带入返还金币盲注等级
+        straddle_on: number,//强制盲注开启 1：开启，0：关闭
+        straddle_max: number,// 强制盲注数量
+        rooms: number,// 房间数量
+        max_room_id: number,// 最大房间id
+        delay_view_card_on: number,// 延迟看牌  1：开启，0：关闭
+        limit_min: number,// 最低参赛人数下限
+        limit_delay_times: number,// 操作加时次数限制
+        limit_auto_check_times: number,// 自动过牌次数
+        limit_auto_fold_times: number,// 自动弃牌次数
+        participants: number,// 参赛人数
+        award_num: number,// 奖金
+        money_sync: number,// 奖励圈同步(截止无法买入以后才会开启)
+        status: number,// 游戏状态
+        seat_count: number,// 在座人数
+        final_seat_count: number,// 最终座位人数
+        no_user_wait_duration: number,// 
+        initial_score: number,// 初始化记分牌
+        blindtable_type: number,// 盲注表类型
+        upblind_interval: number,// 升盲时间间隔
+        apply_start_time: string,// 报名开始时间
+        op_duration: number,// 操作时间
+        max_delay_apply_bl: number,// 延迟报名升盲等级
+        rebuy_times: number,// 重构次数
+        max_rebuy_bl: number,// 重购升盲等级
+        limit_total_buy_times: number,// 最大买入次数上限
+        total_buy_times: number,// 总买入次数
+        total_rebuy_times: number,// 总重购次数
+        addon_begin_bl: number,// 增购开启 升盲等级
+        addon_end_bl: number,// 增购关闭 升盲等级
+        addon_score: number,// 增购 记分牌
+        total_addon_times: number,// 增购次数
+        apply_fee_pool: number,// 报名费
+        apply_fee_service: number,// 服务费
+        apply_fee_hunter: number,// 猎人赛费用
+        prize_type: number,// 奖励类型
+        tribe_id: number,// 联盟id
+        create_time: string,// 创建房间时间
+        update_time: string,// 
+        game_icon: string,// 
+        prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
+        voiceprint_verify_on: number,// 是否开启验证声纹 0 关闭，1 开启。
+        voiceprint_verify_duration: number,// 验证声纹时长
+        buy_prop_id: number,// 道具id
+        addonplus_m1_on: number,// 增购plus 模式一 0 关闭，1 开启
+        addonplus_m1_max_times: number,// 增购最大次数
+        addonplus_m1_limit: number,// 增购限制筹码
+        total_addonplus_m1_times: number,// 总增购次数
+        addonplus_m2_on: number,// 增购模式2 0 关闭，1 开启
+        addonplus_m2_max_times: number,// 增购限制最大次数
+        addonplus_m2_max_bl: number,// 增购 截止盲注
+        total_addonplus_m2_times: number,// 增购总次数
+        buy_ratio: number,// 买入倍率
+        pre_buyin_bonus: number,// 赛前报名多得记分牌
+        tablecloth_tag: string,// 桌布id
+        limit_tag: string,// 相同比赛检测tag
+    } = null;
+
+    public static PlayerState: {
+        left_rebuy_times: number,//剩余重购次数
+        chip: number//桌上记分牌
+        store: number//存储记分牌
+        init_score: number//初始化记分牌
+        partial_enable: boolean//是否允许部分带入
+    } = null;
+
+    public static More: {
+        ante: number,//当前前注
+        nante: number//下一前注
+        bl: number//当前盲注等级
+        nbl: number//下一盲注等级
+        sb: number//当前小盲
+        nsb: number//下一小盲
+        prize_pool: number//奖池
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_Details.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Details.ResponseData)[] };
+}
+
+/// <summary>
+/// MTT 报名
+/// </summary>
+export class Web_Room_Center_Mtt_Buyin {
+    //接口地址
+    public static API: string = "/api/roomcenter/mtt/{id}/buyin";
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+        ticket: boolean,//几人池
+        ratio: number,
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_Buyin.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Buyin.ResponseData)[] };
+}
+
+/// <summary>
+/// MTT 重购
+/// </summary>
+export class Web_Room_Center_Mtt_Rebuy {
+    //接口地址
+    public static API: string = "/api/roomcenter/mtt/{id}/rebuy";
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+        ticket: boolean,//几人池
+        ratio: number,
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_Rebuy.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Rebuy.ResponseData)[] };
+}
+
+/// <summary>
+/// MTT 该比赛玩家排名信息
+/// </summary>
+export class Web_Room_Center_Mtt_Ranks {
+    //接口地址
+    public static API: string = "/api/roomcenter/mtt/{id}/ranks";
+
+    //字段声明
+    public static RequestParams: {
+        limit: number,//几人池
+        offset: number,
+    } = null;
+
+    public static ResponseData: {
+        data: typeof Web_Room_Center_Mtt_Ranks.Data[],
+    } = null;
+
+    public static Data: {
+        limit: number,//条目
+        offset: number//开始下标。例子（offset=0，limit=10，0-9。）
+        alive: number,//存活人数
+        total: number,//总人数
+        records: typeof Web_Room_Center_Mtt_Ranks.PlayerListElement[],// 玩家列表
+    } = null;
+
+    public static PlayerListElement: {
+        rank: number,//排名
+        chip: number//记分牌
+        alive: number,//是否被淘汰
+        rid: number,//桌号
+        urid: number,//玩家随机id
+        seat: number,//座位号
+        rebuy: number,//重构次数
+        addon: number,//是否重构
+        name: number,//名字
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_Ranks.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Ranks.ResponseData)[] };
+}
+
+/// <summary>
+/// MTT 猎人赛排名信息
+/// </summary>
+export class Web_Room_Center_Mtt_Hranks {
+    //接口地址
+    public static API: string = "/api/roomcenter/room/{id}/hranks";
+
+    //字段声明
+    public static RequestParams: {
+        limit: number,//几人池
+        offset: number,
+    } = null;
+
+    public static ResponseData: {
+        data: typeof Web_Room_Center_Mtt_Hranks.Data[],
+    } = null;
+
+    public static Data: {
+        limit: number,//条目
+        offset: number//开始下标。例子（offset=0，limit=10，0-9。）
+        alive: number,//存活人数
+        total: number,//总人数
+        records: typeof Web_Room_Center_Mtt_Hranks.PlayerListElement[],
+    } = null;
+
+    public static PlayerListElement: {
+        uid: number,//玩家id
+        rank: number,//排名
+        h: number//猎头
+        award: number,//赏金
+        rid: number,//桌号
+        seat: number,//座位号
+        name: string,//名字
+        avatar: string,//头像
+        urid: number,//随机id
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_Hranks.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Hranks.ResponseData)[] };
+}
+
+/// <summary>
+/// MTT 牌桌信息
+/// </summary>
+export class Web_Room_Center_Mtt_Rooms {
+    //接口地址
+    public static API: string = "/api/roomcenter/room/{id}/rooms";
+
+    //字段声明
+    public static RequestParams: {
+        limit: number,//几人池
+        offset: number,
+    } = null;
+
+    public static ResponseData: {
+        data: typeof Web_Room_Center_Mtt_Rooms.Data[],
+    } = null;
+
+    public static Data: {
+        limit: number,//条目
+        offset: number//开始下标。例子（offset=0，limit=10，0-9。）
+        total: number,//总人数
+        records: typeof Web_Room_Center_Mtt_Rooms.DeskListElement[],
+    } = null;
+
+    public static players: {
+        uid: number,//玩家id
+        chip: number//玩家筹码
+        seat: number,//玩家座位号
+    } = null;
+
+    public static DeskListElement: {
+  
+        rid: number,//桌号
+        service_id: number,//用于查询IP列表IP Port
+        roomers: typeof Web_Room_Center_Mtt_Rooms.players[],
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_Rooms.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Rooms.ResponseData)[] };
+}
+
+/// <summary>
+/// MTT 奖励
+/// </summary>
+export class Web_Room_Center_Mtt_Real_Prize {
+    //接口地址
+    public static API: string = "/api/roomcenter/room/{id}/real_prize";
+
+    //字段声明
+    public static RequestParams: {
+        limit: number,//几人池
+        offset: number,
+    } = null;
+
+    public static ResponseData: {
+        data: typeof Web_Room_Center_Mtt_Real_Prize.Data[],
+    } = null;
+
+    public static Data: {
+        dynamic: boolean,//是否是动态
+        award: boolean//总奖池
+        award_type: number,//奖励类型
+        award_num: number,//奖励圈人数
+        participants: number,//参与人数
+        next_award_count: number,//1. 如果是动态奖池 其实是下一等级参与人数, 会影响奖励人数  2. 如果是静态奖池 是下一个等级的买入人次, 会影响奖励人数
+        prizes: typeof Web_Room_Center_Mtt_Real_Prize.Prize[],
+    } = null;
+
+    public static Prize: {
+        min: number,//最小名次
+        max: number//最大名次
+        award: number,//奖励
+        goods: typeof Web_Room_Center_Mtt_Real_Prize.Goods[],
+    } = null;
+
+    public static Goods: {
+        i: number,//道具id
+        na: string//道具名称
+        v: number,//价值等价货币
+        n: number,//数量
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_Real_Prize.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Real_Prize.ResponseData)[] };
+}
+
+/// <summary>
+/// MTT 我的奖励
+/// </summary>
+export class Web_Room_Center_Mtt_Myaward {
+    //接口地址
+    public static API: string = "/api/roomcenter/room/{id}/myaward";
+
+    //字段声明
+    public static RequestParams: {
+    } = null;
+
+    public static ResponseData: {
+        data: typeof Web_Room_Center_Mtt_Myaward.Data[],
+    } = null;
+
+    public static Data: {
+        uid: number//开始下标。例子（offset=0，limit=10，0-9。）
+        rank: number,//存活人数
+        award_gold: number,//总人数
+        award_goods: typeof Web_Room_Center_Mtt_Myaward.AwardGoods[],
+        hunter_award: number,//
+        hunter_rank: number,//
+        hunter_kill: number,//
+        is_final: boolean,//
+        awarded: boolean,//
+        username: string,//
+        avatar: string,//
+    } = null;
+
+    public static AwardGoods: {
+        i: number,//道具ID
+        na: string,//道具名字
+        v: number//道具价值
+        n: number,//道具数量
+    } = null;
+
+    public static Request(param: typeof Web_Room_Center_Mtt_Myaward.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Myaward.ResponseData)[] };
+}
+
+/// <summary>
 /// 查询在该房间保险赔率表
 /// </summary>
 export class Web_User_Room_insur {
