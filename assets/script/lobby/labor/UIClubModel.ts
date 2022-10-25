@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 17:26:14
+ * @LastEditTime: 2022-10-25 18:02:14
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -475,6 +475,23 @@ export class UIClubModel {
                 body: APIOrgFriendApplyDeal.Request(params),
                 onSuccess: function () {
                     resolve(APIOrgFriendApplyDeal.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgFriendRoomInfo(room_id) {
+        let params = {
+            room_id: room_id,
+        }//offset: offset, limit: limit
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgFriendRoomInfo,
+                body: APIOrgFriendRoomInfo.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgFriendRoomInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

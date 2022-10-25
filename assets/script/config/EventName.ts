@@ -2,8 +2,8 @@
  * @Author: xfj
  * @Date: 2022-10-24 16:03:27
  * @description: 
- * @LastEditors: 
- * @LastEditTime: 2022-10-24 17:44:15
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-25 17:47:37
  * @FilePath: /pokerqueen/assets/script/config/EventName.ts
  */
 export const enum EventName {
@@ -21,4 +21,5 @@ export const enum EventName {
 
     orderApplyItemChange = "orderApplyItemChange", //订单申请变化
     updateFrendApplyList = "updateFrendApplyList", //更新申请列表
+    bringInApply = 'bringInApply',//带入申请
 }

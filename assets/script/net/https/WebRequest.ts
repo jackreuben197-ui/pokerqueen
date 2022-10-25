@@ -1312,7 +1312,7 @@ export class Web_Room_Center_Mtt_Rooms {
     } = null;
 
     public static DeskListElement: {
-  
+
         rid: number,//桌号
         service_id: number,//用于查询IP列表IP Port
         roomers: typeof Web_Room_Center_Mtt_Rooms.players[],
@@ -2278,6 +2278,28 @@ export class APIOrgFriendApplyDeal {
     };
 
 }
+export class APIOrgFriendRoomInfo {
+    //接口地址’
+    public static API: string = "/api/roomcenter/room/info"
+
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgFriendRoomInfo.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgFriendRoomInfo.ResponseData
+    };
+
+}
+
 
 /**
  * 注册全局访问

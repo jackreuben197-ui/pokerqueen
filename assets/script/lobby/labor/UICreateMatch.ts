@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 16:49:44
+ * @LastEditTime: 2022-10-25 18:11:39
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -11,6 +11,7 @@ import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil from "../../game/GameUtil";
+import TimeHelper from "../../helper/TimeHelper";
 import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import { UIClubModel } from "./UIClubModel";
@@ -589,6 +590,7 @@ export default class UICreateMatch extends BaseForm {
                 this.post(EventName.updateChessView);
             }
             else {
+                //朋友桌
                 if (this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
                     room_config.max_per_hand = 0 //服务费比例(0-100)
 
@@ -601,9 +603,12 @@ export default class UICreateMatch extends BaseForm {
                 room_config.limit_friend_table = true;
                 room_config.limit_bring_in = this.kzwjdrState;
                 let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                this.top_block.active = true;
+                await TimeHelper.Sleep(1000);
+                data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
                 this.post(EventName.updateFriendChessView)
-                this._data = new LobbyRoomListItem(data.data.room_config);
-                this._data.rid = data.data.room_id
+                this.top_block.active = false;
+                this._data = new LobbyRoomListItem(data.data.data);
                 GameUtil.EnterRoomAPI(this._data, UIDefine.UICreateMatch);
             }
         }

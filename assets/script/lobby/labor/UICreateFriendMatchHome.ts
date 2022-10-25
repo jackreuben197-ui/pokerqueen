@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 17:25:18
+ * @LastEditTime: 2022-10-25 17:46:40
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -27,6 +27,9 @@ export default class UICreateFriendMatchHome extends UIBase {
 
     @property(cc.Node)
     numNode: cc.Node = null;
+
+    @property(cc.Node)
+    redTip: cc.Node = null;
 
     @property(List)
     list: List = null;
@@ -52,6 +55,7 @@ export default class UICreateFriendMatchHome extends UIBase {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.updateFriendChessView, this.reqDataAgain);
+        this.listen(EventName.bringInApply, this.setRedTip);
     }
     async reqDataAgain() {
         await UIClubModel.mInstance.APIOrgFriendRoomList();
@@ -76,6 +80,7 @@ export default class UICreateFriendMatchHome extends UIBase {
         }
     }
     applyJoin() {
+        this.redTip.active = false;
         UIComponent.open(UIDefine.UIApplyJoin)
     }
     async joinMatch() {
@@ -84,9 +89,18 @@ export default class UICreateFriendMatchHome extends UIBase {
             return;
         }
         let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string);
-        _data = new LobbyRoomListItem(_data.data.data);
-        GameUtil.EnterRoomAPI(_data, UIDefine.UICreateMatch);
+        if (_data?.data?.data) {
+            _data = new LobbyRoomListItem(_data?.data?.data);
+            GameUtil.EnterRoomAPI(_data, UIDefine.UICreateMatch);
+        }
+        else {
+            UIComponent.Instance.Toast('房间信息错误')
+        }
     }
+    setRedTip() {
+        this.redTip.active = true;
+    }
+
 
     // update (dt) {}
 }
