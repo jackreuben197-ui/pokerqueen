@@ -576,7 +576,8 @@ export default class UICreateMatch extends BaseForm {
                 this.post(EventName.updateFriendChessView)
                 this._data = new LobbyRoomListItem(data.data.room_config);
                 this._data.rid = data.data.room_id
-                GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm, UIDefine.UICreateMatch);
+                //GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm, UIDefine.UICreateMatch);
+                GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm);
             }
         }
         this._editModelData = null;

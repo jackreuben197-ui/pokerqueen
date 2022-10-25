@@ -302,34 +302,6 @@ export class SeatOperation extends StateHandler {
     }
 }
 
-
-//
-export class SeatInsuranc extends StateHandler {
-
-    public Name: string = "SeatInsuranc";
-
-    static get Instance(): SeatInsuranc {
-        return (this as any).instance ??= new SeatInsuranc;
-    }
-    public Enter(entity?: any) {
-        super.Enter(entity);
-        if (entity instanceof SeatFSM) entity.InsuranceEnter();
-
-    }
-
-    public Execute(entity?: any) {
-        super.Execute(entity);
-        if (entity instanceof SeatFSM) entity.InsuranceExecute();
-
-    }
-
-    public Exit(entity?: any) {
-        super.Exit(entity);
-        if (entity instanceof SeatFSM) entity.InsuranceExit();
-    }
-}
-
-
 //
 export class SeatWaitOther extends StateHandler {
 
@@ -531,7 +503,7 @@ export class SeatRoundEnd extends StateHandler {
 
     public Exit(entity?: any) {
         super.Exit(entity);
-        if (entity instanceof SeatFSM) entity.RoundEndExit();
+        if (entity instanceof SeatFSM) entity.InsuranceExit();
     }
 }
 export class SeatKeep extends StateHandler {
@@ -574,6 +546,32 @@ export class SeatAddChips extends StateHandler {
     public Execute(entity?: any) {
         super.Execute(entity);
         if (entity instanceof SeatFSM) entity.AddChipsExecute();
+
+    }
+
+    public Exit(entity?: any) {
+        super.Exit(entity);
+        if (entity instanceof SeatFSM) entity.AddChipsExit();
+    }
+}
+
+
+export class SeatInsurance extends StateHandler {
+
+    public Name: string = "SeatInsurance";
+
+    static get Instance(): SeatInsurance {
+        return (this as any).instance ??= new SeatInsurance;
+    }
+    public Enter(entity?: any) {
+        super.Enter(entity);
+        if (entity instanceof SeatFSM) entity.InsuranceEnter();
+
+    }
+
+    public Execute(entity?: any, dt?: number) {
+        super.Execute(entity);
+        if (entity instanceof SeatFSM) entity.InsuranceExecute(dt);
 
     }
 

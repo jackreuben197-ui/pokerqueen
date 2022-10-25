@@ -1,15 +1,16 @@
 
+import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
 
 export class GM {
     /**
      * 用户信息请求
      */
-    static async Web_GMC_Recharge(param: any) {
-        // let param: typeof Web_GMC_Recharge.RequestParams = {
-        //     amount: 5000000,
-        //     user_id: GameCache.Instance.nUserId
-        // }
+    static async Web_GMC_Recharge() {
+        let param: typeof Web_GMC_Recharge.RequestParams = {
+            amount: 5000000,
+            user_id: GameCache.Instance.nUserId
+        }
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_GMC_Recharge,

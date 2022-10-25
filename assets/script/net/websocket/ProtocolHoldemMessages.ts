@@ -34,6 +34,7 @@ import { ServerMessageShowPublicCardsOthers } from "../../protobuf/holdem/recv_s
 import { ClientMessageSetAutoOnTable, ServerMessageSetAutoOnTable } from "../../protobuf/holdem/req_set_auto_on_table_pb";
 import { ClientMessageStoreChips, ServerMessageStoreChips } from "../../protobuf/holdem/req_store_chips_pb";
 import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
+import { ServerMessageInsuranceTrigged } from "../../protobuf/holdem/recv_insurance_trigged_pb";
 
 export class ProtocolCommon {
 
@@ -205,7 +206,10 @@ export const ProtocolMap = {
     },
     [ProtocolCode.Protocol_Holdem_ChipsChange]: {
         Server: ServerMessageChipsChange,
-    }
+    },
+    [ProtocolCode.Protocol_Holdem_InsuranceTrigged]: {
+        Server: ServerMessageInsuranceTrigged,
+    },
 
 }
 

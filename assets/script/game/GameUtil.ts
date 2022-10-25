@@ -174,15 +174,15 @@ export default class GameUtil {
     // 牌背面坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
     public static readonly CardBackLRV3 =
         [
-            cc.v3(51, -57),
-            cc.v3(51, -57),
-            cc.v3(51, -57),
-            cc.v3(51, -57),
-            cc.v3(51, -57),
-            cc.v3(51, -57),
-            cc.v3(51, -57),
-            cc.v3(51, -57),
-            cc.v3(51, -57),
+            cc.v3(51, -42),
+            cc.v3(51, -42),
+            cc.v3(51, -42),
+            cc.v3(51, -42),
+            cc.v3(51, -42),
+            cc.v3(51, -42),
+            cc.v3(51, -42),
+            cc.v3(51, -42),
+            cc.v3(51, -42),
         ];
 
     // 牌背面旋转 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
@@ -1346,6 +1346,117 @@ export default class GameUtil {
         return 50;
     }
 
+
+    /**
+     * 座位上元素的位置
+     */
+    public static Seat_ElementPos: {
+        [key: number]:
+        {
+            myCardsPos?: cc.Vec3[],
+            backSmallCardPos?: cc.Vec3[],
+            smallCardPos?: cc.Vec3[],
+            myCardTypePos?: cc.Vec3[],
+            voiceStatePositon?: cc.Vec3
+        }
+    } =
+        {
+            2: {
+                myCardsPos: [
+                    cc.v3(-20, 0),
+                    cc.v3(160, 0),
+                ],
+                backSmallCardPos: [
+                    cc.v3(0, 0),
+                    cc.v3(-20, 0),
+                ],
+                smallCardPos: [
+                    cc.v3(-29, 0),
+                    cc.v3(35, 0),
+                ],
+                myCardTypePos: [cc.v3(-80, -243)],
+                voiceStatePositon: cc.v3(284, -237, 0),
+            },
+            4: {
+                myCardsPos: [
+                    cc.v3(-63, 0),
+                    cc.v3(30, 0),
+                    cc.v3(123, 0),
+                    cc.v3(216, 0),
+                ],
+                backSmallCardPos: [
+                    cc.v3(0, 0),
+                    cc.v3(-20, 0),
+                    cc.v3(-40, 0),
+                    cc.v3(-60, 0),
+                ],
+                smallCardPos: [
+                    cc.v3(-60, 0),
+                    cc.v3(-17, 0),
+                    cc.v3(26, 0),
+                    cc.v3(70, 0),
+                ],
+                myCardTypePos: [cc.v3(-117, -243)],
+                voiceStatePositon: cc.v3(335.4, -232, 0),
+            },
+            5: {
+                myCardsPos: [
+                    cc.v3(-63, 0),
+                    cc.v3(30, 0),
+                    cc.v3(123, 0),
+                    cc.v3(216, 0),
+                    cc.v3(309, 0),
+                ],
+                backSmallCardPos: [
+                    cc.v3(0, 0),
+                    cc.v3(-20, 0),
+                    cc.v3(-40, 0),
+                    cc.v3(-60, 0),
+                    cc.v3(-80, 0),
+                ],
+                smallCardPos: [
+                    cc.v3(-60, 0),
+                    cc.v3(-27.5, 0),
+                    cc.v3(5, 0),
+                    cc.v3(37.5, 0),
+                    cc.v3(70, 0),
+                ],
+                myCardTypePos: [cc.v3(-117, -243)],
+                voiceStatePositon: cc.v3(446, -233, 0),
+            },
+            6: {
+                myCardsPos: [
+                    cc.v3(-63, 0),
+                    cc.v3(30, 0),
+                    cc.v3(123, 0),
+                    cc.v3(216, 0),
+                    cc.v3(309, 0),
+                    cc.v3(402, 0),
+                ],
+                backSmallCardPos: [
+                    cc.v3(0, 0),
+                    cc.v3(-20, 0),
+                    cc.v3(-40, 0),
+                    cc.v3(-60, 0),
+                    cc.v3(-80, 0),
+                    cc.v3(-100, 0),
+                ],
+                smallCardPos: [
+                    cc.v3(-60, 0),
+                    cc.v3(-34, 0),
+                    cc.v3(-8, 0),
+                    cc.v3(18, 0),
+                    cc.v3(44, 0),
+                    cc.v3(70, 0),
+                ],
+                myCardTypePos: [cc.v3(-117, -243)],
+                voiceStatePositon: cc.v3(515, -237, 0),
+            },
+        }
+
+
+
+
     /**
      * 
      * @param enter_room_info 
@@ -1363,7 +1474,7 @@ export default class GameUtil {
         if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
             if (RoomType[enter_room_info.room_type]) {
                 let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch(() => { });
-                
+
                 if (response) {
                     //GC.data.lobby.roomList.selected = this._data;
 

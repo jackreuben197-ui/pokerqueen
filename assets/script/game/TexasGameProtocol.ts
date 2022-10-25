@@ -1,4 +1,5 @@
 
+import { UIType } from "../define/EIDefine";
 import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
@@ -6,11 +7,12 @@ import { CPErrorCode } from "../i18n/CPErrorCode";
 import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Def, PlayerChipChange, Result } from "../protobuf/holdem/define_pb";
+import { Def, Operator, PlayerChipChange, Result } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../protobuf/holdem/recv_add_time_others_pb";
 import { ServerMessageChipsChange } from "../protobuf/holdem/recv_chips_change_pb";
 import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
+import { ServerMessageInsuranceTrigged } from "../protobuf/holdem/recv_insurance_trigged_pb";
 import { ServerMessageKeepSeat } from "../protobuf/holdem/recv_keep_seat_pb";
 import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
 import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
@@ -35,10 +37,11 @@ import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
 import { RoomType } from "./GameUtil";
 import Seat from "./seat/Seat";
-import { SeatAddChips, SeatAllin, SeatCall, SeatCheck, SeatFold, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
+import { SeatAddChips, SeatAllin, SeatCall, SeatCheck, SeatFold, SeatInsurance, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
+import UIInsuranceComponent, { InsuranceData, WrapTriggedInsuranceData } from "./ui/UIInsuranceComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 
 const CanPlayStatus = Def.CanPlayStatus;
@@ -1551,6 +1554,111 @@ export default class TexasGameProtocol {
         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
     }
 
+
+    /// <summary>
+    /// 保险触发
+    /// </summary>
+    /// <param name="response"></param>
+    protected HANDLER_REQ_INSURANCE_TRIGGED(rec: ServerMessageInsuranceTrigged.AsObject) {
+
+        if (rec == null) {
+            return;
+        }
+
+        GameCache.Instance.CurGame.cacheRound = rec.round;
+
+        if (rec.operatorList == null || rec.operatorList.length == 0) {
+            UIComponent.Instance.Toast(i18nMgr.Get("Purchase_insurance"));
+            return;
+        }
+        this.HandlerInsueranceData(rec.operatorList);
+    }
+    /// <summary>
+    /// 保险数据处理
+    /// </summary>
+    /// <param name="operators"></param>
+    public HandlerInsueranceData(operators: Operator.AsObject[]) {
+        //显示玩家买保险动画，及如果有自己，缓存操作数据。
+        let CanInsurance = false;
+        let Seat: Seat = null;
+        let mOperator: Operator.AsObject = null;
+
+        for (let itemOperator of operators) {
+            Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(itemOperator.seatId));
+            if (null == Seat || null == Seat.Player) {
+                continue;
+            }
+            Seat.Player.playerStatus_insurance = itemOperator.isInsurance;
+            Seat.Player.timeLeft_insurance = itemOperator.leftOpTime;
+            Seat.Player.delayTimes = itemOperator.delayTimes;
+            if (Seat.Player.userID == this.game.mainPlayer.userID && Seat.Player.playerStatus_insurance) {
+                mOperator = itemOperator;
+                CanInsurance = true;
+            }
+
+            if (Seat.Player.playerStatus_insurance) {
+                Seat.FsmLogicComponent.SM.ChangeState(SeatInsurance.Instance);
+            }
+        }
+
+
+        let mTweenCallback = () => {
+            if (!CanInsurance || mOperator == null) // 如果可购买保险用户中没有自己，不用往下执行
+                return;
+
+            //List < UIInsuranceComponent.WrapTriggedInsuranceData > wrapTriggedInsuranceDatas = new List<UIInsuranceComponent.WrapTriggedInsuranceData>();
+            let wrapTriggedInsuranceDatas = [];
+
+            //UIInsuranceComponent.WrapTriggedInsuranceData mWrapTriggedInsuranceData = null;
+            let mWrapTriggedInsuranceData: WrapTriggedInsuranceData = null;
+
+            mOperator.insuranceLimitList.forEach(insurancePotLimit => {
+                mWrapTriggedInsuranceData = new WrapTriggedInsuranceData;
+                mWrapTriggedInsuranceData.outsPerUser = [];
+                mWrapTriggedInsuranceData.userNames = [];
+                mWrapTriggedInsuranceData.playerCards = [];
+                mWrapTriggedInsuranceData.outsCards = [];
+                //赋值保险池等数据，
+                mWrapTriggedInsuranceData.subPot = insurancePotLimit.potId;
+                mWrapTriggedInsuranceData.pot = insurancePotLimit.potAmount;
+                mWrapTriggedInsuranceData.potTotalCost = insurancePotLimit.bet;
+                mWrapTriggedInsuranceData.leastAmount = insurancePotLimit.min;
+                mWrapTriggedInsuranceData.mostAmount = insurancePotLimit.max;
+                mWrapTriggedInsuranceData.PotUserCount = insurancePotLimit.potUserCount;
+                mWrapTriggedInsuranceData.PotLeaderCount = insurancePotLimit.potLeaderCount;
+                mWrapTriggedInsuranceData.potAllowOutSelection = insurancePotLimit.insuranced > 0 ? 0 : 1;
+
+
+                for (let userOuts of insurancePotLimit.outsDetailList) {
+                    let ins_Seat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(userOuts.seatId));
+                    if (ins_Seat == null) {
+                        console.log("---------------------Insurance others player is null");
+                        continue;
+                    }
+                    //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
+                    mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
+                    mWrapTriggedInsuranceData.playerCards.push(...ins_Seat.Player.cards);
+                    //各个玩家
+                    mWrapTriggedInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
+                    //添加所有玩家outs ，在保险界面处理是否平分outs
+                    mWrapTriggedInsuranceData.outsCards.push(...userOuts.outsCardsList);
+                }
+
+                wrapTriggedInsuranceDatas.push(mWrapTriggedInsuranceData);
+
+            });
+
+            let data: InsuranceData = new InsuranceData;
+            data.publicCards = this.game.cards;
+            data.triggedDatas = wrapTriggedInsuranceDatas;
+            data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
+            data.delayTimes = this.game.mainPlayer.delayTimes;
+            UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceComponent, data);
+        };
+        mTweenCallback();
+    }
+
+
     HANDLER_REQ_WAIT_BLIND(Protocol_Holdem_AgreePost: ProtocolCode, HANDLER_REQ_WAIT_BLIND: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
@@ -1560,9 +1668,7 @@ export default class TexasGameProtocol {
     HANDLER_REQ_CLAIM_INSURANCE(Protocol_Holdem_BuyInsurance: ProtocolCode, HANDLER_REQ_CLAIM_INSURANCE: any, arg2: this) {
         throw new Error("Method not implemented.");
     }
-    HANDLER_REQ_INSURANCE_TRIGGED(Protocol_Holdem_InsuranceTrigged: ProtocolCode, HANDLER_REQ_INSURANCE_TRIGGED: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+
     Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {
         throw new Error("Method not implemented.");
     }

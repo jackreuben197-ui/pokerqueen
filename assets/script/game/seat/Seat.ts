@@ -110,109 +110,109 @@ export default class Seat {
     public listSmallCardUIInfos: CardUIInfo[] = null;
     public listImageSmallCardBack: cc.Sprite[] = null;
 
-    private static Pos: {
-        [key: number]:
-        {
-            myCardsPos?: cc.Vec3[],
-            backSmallCardPos?: cc.Vec3[],
-            smallCardPos?: cc.Vec3[],
-            myCardTypePos?: cc.Vec3[],
-            voiceStatePositon?: cc.Vec3
-        }
-    } =
-        {
-            2: {
-                myCardsPos: [
-                    cc.v3(-20, 0),
-                    cc.v3(160, 0),
-                ],
-                backSmallCardPos: [
-                    cc.v3(0, 14.5),
-                    cc.v3(-10, 14.5),
-                ],
-                smallCardPos: [
-                    cc.v3(-29, 14.5),
-                    cc.v3(35, 14.5),
-                ],
-                myCardTypePos: [cc.v3(-80, -243)],
-                voiceStatePositon: cc.v3(284, -237, 0),
-            },
-            4: {
-                myCardsPos: [
-                    cc.v3(-63, 0),
-                    cc.v3(30, 0),
-                    cc.v3(123, 0),
-                    cc.v3(216, 0),
-                ],
-                backSmallCardPos: [
-                    cc.v3(0, 0),
-                    cc.v3(-10, 0),
-                    cc.v3(-20, 0),
-                    cc.v3(-30, 0),
-                ],
-                smallCardPos: [
-                    cc.v3(-60, 0),
-                    cc.v3(-17, 0),
-                    cc.v3(26, 0),
-                    cc.v3(70, 0),
-                ],
-                myCardTypePos: [cc.v3(-117, -243)],
-                voiceStatePositon: cc.v3(335.4, -232, 0),
-            },
-            5: {
-                myCardsPos: [
-                    cc.v3(-63, 0),
-                    cc.v3(30, 0),
-                    cc.v3(123, 0),
-                    cc.v3(216, 0),
-                    cc.v3(309, 0),
-                ],
-                backSmallCardPos: [
-                    cc.v3(0, 0),
-                    cc.v3(-10, 0),
-                    cc.v3(-20, 0),
-                    cc.v3(-30, 0),
-                    cc.v3(-40, 0),
-                ],
-                smallCardPos: [
-                    cc.v3(-60, 0),
-                    cc.v3(-27.5, 0),
-                    cc.v3(5, 0),
-                    cc.v3(37.5, 0),
-                    cc.v3(70, 0),
-                ],
-                myCardTypePos: [cc.v3(-117, -243)],
-                voiceStatePositon: cc.v3(446, -233, 0),
-            },
-            6: {
-                myCardsPos: [
-                    cc.v3(-63, 0),
-                    cc.v3(30, 0),
-                    cc.v3(123, 0),
-                    cc.v3(216, 0),
-                    cc.v3(309, 0),
-                    cc.v3(402, 0),
-                ],
-                backSmallCardPos: [
-                    cc.v3(0, 0),
-                    cc.v3(-10, 0),
-                    cc.v3(-20, 0),
-                    cc.v3(-30, 0),
-                    cc.v3(-40, 0),
-                    cc.v3(-50, 0),
-                ],
-                smallCardPos: [
-                    cc.v3(-60, 0),
-                    cc.v3(-34, 0),
-                    cc.v3(-8, 0),
-                    cc.v3(18, 0),
-                    cc.v3(44, 0),
-                    cc.v3(70, 0),
-                ],
-                myCardTypePos: [cc.v3(-117, -243)],
-                voiceStatePositon: cc.v3(515, -237, 0),
-            },
-        }
+    // private static Pos: {
+    //     [key: number]:
+    //     {
+    //         myCardsPos?: cc.Vec3[],
+    //         backSmallCardPos?: cc.Vec3[],
+    //         smallCardPos?: cc.Vec3[],
+    //         myCardTypePos?: cc.Vec3[],
+    //         voiceStatePositon?: cc.Vec3
+    //     }
+    // } =
+    //     {
+    //         2: {
+    //             myCardsPos: [
+    //                 cc.v3(-20, 0),
+    //                 cc.v3(160, 0),
+    //             ],
+    //             backSmallCardPos: [
+    //                 cc.v3(0, 0),
+    //                 cc.v3(-20, 0),
+    //             ],
+    //             smallCardPos: [
+    //                 cc.v3(-29, 0),
+    //                 cc.v3(35, 0),
+    //             ],
+    //             myCardTypePos: [cc.v3(-80, -243)],
+    //             voiceStatePositon: cc.v3(284, -237, 0),
+    //         },
+    //         4: {
+    //             myCardsPos: [
+    //                 cc.v3(-63, 0),
+    //                 cc.v3(30, 0),
+    //                 cc.v3(123, 0),
+    //                 cc.v3(216, 0),
+    //             ],
+    //             backSmallCardPos: [
+    //                 cc.v3(0, 0),
+    //                 cc.v3(-20, 0),
+    //                 cc.v3(-40, 0),
+    //                 cc.v3(-60, 0),
+    //             ],
+    //             smallCardPos: [
+    //                 cc.v3(-60, 0),
+    //                 cc.v3(-17, 0),
+    //                 cc.v3(26, 0),
+    //                 cc.v3(70, 0),
+    //             ],
+    //             myCardTypePos: [cc.v3(-117, -243)],
+    //             voiceStatePositon: cc.v3(335.4, -232, 0),
+    //         },
+    //         5: {
+    //             myCardsPos: [
+    //                 cc.v3(-63, 0),
+    //                 cc.v3(30, 0),
+    //                 cc.v3(123, 0),
+    //                 cc.v3(216, 0),
+    //                 cc.v3(309, 0),
+    //             ],
+    //             backSmallCardPos: [
+    //                 cc.v3(0, 0),
+    //                 cc.v3(-20, 0),
+    //                 cc.v3(-40, 0),
+    //                 cc.v3(-60, 0),
+    //                 cc.v3(-80, 0),
+    //             ],
+    //             smallCardPos: [
+    //                 cc.v3(-60, 0),
+    //                 cc.v3(-27.5, 0),
+    //                 cc.v3(5, 0),
+    //                 cc.v3(37.5, 0),
+    //                 cc.v3(70, 0),
+    //             ],
+    //             myCardTypePos: [cc.v3(-117, -243)],
+    //             voiceStatePositon: cc.v3(446, -233, 0),
+    //         },
+    //         6: {
+    //             myCardsPos: [
+    //                 cc.v3(-63, 0),
+    //                 cc.v3(30, 0),
+    //                 cc.v3(123, 0),
+    //                 cc.v3(216, 0),
+    //                 cc.v3(309, 0),
+    //                 cc.v3(402, 0),
+    //             ],
+    //             backSmallCardPos: [
+    //                 cc.v3(0, 0),
+    //                 cc.v3(-20, 0),
+    //                 cc.v3(-40, 0),
+    //                 cc.v3(-60, 0),
+    //                 cc.v3(-80, 0),
+    //                 cc.v3(-100, 0),
+    //             ],
+    //             smallCardPos: [
+    //                 cc.v3(-60, 0),
+    //                 cc.v3(-34, 0),
+    //                 cc.v3(-8, 0),
+    //                 cc.v3(18, 0),
+    //                 cc.v3(44, 0),
+    //                 cc.v3(70, 0),
+    //             ],
+    //             myCardTypePos: [cc.v3(-117, -243)],
+    //             voiceStatePositon: cc.v3(515, -237, 0),
+    //         },
+    //     }
 
 
     /// <summary>
@@ -257,6 +257,7 @@ export default class Seat {
             item.node.opacity = 255;
             item.node.stopAllActions();
         })
+        this.uirc.imageRecyclingWinChip.node.stopAllActions();
     }
 
     /// <summary>
@@ -326,6 +327,8 @@ export default class Seat {
             }));
 
             let mLocalPos: cc.Vec3 = this.uirc.transSmallCardBacks.convertToNodeSpaceAR(targetPos);
+
+            console.log("this.listImageSmallCardBack.length >> ", this.listImageSmallCardBack.length);
 
             for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
 
@@ -1770,7 +1773,7 @@ export default class Seat {
     /// 设置声纹状态按钮要到达的位置
     /// </summary>
     public SetVoiceStatePositon() {
-        this.voiceStatePositon = Seat.Pos[GameCache.Instance.CurGame.HandCards].voiceStatePositon;
+        this.voiceStatePositon = GameUtil.Seat_ElementPos[GameCache.Instance.CurGame.HandCards].voiceStatePositon;
     }
 
     //////////////////////////////////////
@@ -1788,7 +1791,7 @@ export default class Seat {
 
     }
     InitUIStaticData() {
-        let pos = Seat.Pos[GameCache.Instance.CurGame.HandCards];
+        let pos = GameUtil.Seat_ElementPos[GameCache.Instance.CurGame.HandCards];
         Seat.myCardsPos = pos.myCardsPos;
         Seat.backSmallCardPos = pos.backSmallCardPos;
         Seat.smallCardPos = pos.smallCardPos;
