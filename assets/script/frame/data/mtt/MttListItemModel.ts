@@ -3,7 +3,7 @@ import { TMttListItem } from "../../../config/TTypeConfig";
 import GC from "../../GameControl";
 
 export default class MttListItemModel {
-    private _msg: TMttListItem = null;
+    _msg: TMttListItem = null;
     private _startTime: number = 0;
     private _upblindInterval: number = 0;
     private _maxDelayApplyBl: number = 0;
