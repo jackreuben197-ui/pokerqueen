@@ -36,7 +36,7 @@ export default class MttRealTimeRewardNode extends UIBase {
     }
 
     initData() {
-        GC.data.mtt.reqMttDetail();
+        GC.data.mtt.reqRealTimeRealPrize();
     }
 
     updateView() {
@@ -47,7 +47,7 @@ export default class MttRealTimeRewardNode extends UIBase {
 
 
         this.rewardList.numItems = info.prizes.length;
-        
+
     }
 
     onRender(node: cc.Node, index: number) {

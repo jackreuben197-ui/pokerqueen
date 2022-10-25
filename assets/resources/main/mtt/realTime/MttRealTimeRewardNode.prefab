@@ -28,19 +28,16 @@
       },
       {
         "__id__": 26
-      },
-      {
-        "__id__": 28
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 44
+        "__id__": 42
       }
     ],
     "_prefab": {
-      "__id__": 45
+      "__id__": 43
     },
     "_opacity": 255,
     "_color": {
@@ -123,7 +120,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 132.54,
+      "width": 172.10999999999999,
       "height": 40
     },
     "_anchorPoint": {
@@ -190,7 +187,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66.27,
+      "width": 158.88,
       "height": 40
     },
     "_anchorPoint": {
@@ -242,8 +239,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "总奖池：",
+    "_N$string": "总奖池：",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -309,7 +306,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66.27,
+      "width": 13.23,
       "height": 40
     },
     "_anchorPoint": {
@@ -321,7 +318,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        66.27,
+        158.88,
         0,
         0,
         0,
@@ -361,8 +358,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "-",
+    "_N$string": "-",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -400,7 +397,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 132.54,
+      "width": 172.10999999999999,
       "height": 40
     },
     "_resize": 1,
@@ -467,7 +464,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 132.54,
+      "width": 172.10999999999999,
       "height": 40
     },
     "_anchorPoint": {
@@ -534,7 +531,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66.27,
+      "width": 158.88,
       "height": 40
     },
     "_anchorPoint": {
@@ -586,8 +583,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "奖励圈：",
+    "_N$string": "奖励圈：",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -653,7 +650,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66.27,
+      "width": 13.23,
       "height": 40
     },
     "_anchorPoint": {
@@ -665,7 +662,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        66.27,
+        158.88,
         0,
         0,
         0,
@@ -705,8 +702,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "-",
+    "_N$string": "-",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -744,7 +741,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 132.54,
+      "width": 172.10999999999999,
       "height": 40
     },
     "_resize": 1,
@@ -807,7 +804,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66.27,
+      "width": 238.32,
       "height": 40
     },
     "_anchorPoint": {
@@ -859,8 +856,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "下一奖励圈：",
+    "_N$string": "下一奖励圈：",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -901,77 +898,6 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Node",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 1
-    },
-    "_children": [],
-    "_active": true,
-    "_components": [],
-    "_prefab": {
-      "__id__": 27
-    },
-    "_opacity": 255,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 1080,
-      "height": 60
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        103.494,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_skewX": 0,
-    "_skewY": 0,
-    "_is3DNode": false,
-    "_groupIndex": 0,
-    "groupIndex": 0,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.PrefabInfo",
-    "root": {
-      "__id__": 1
-    },
-    "asset": {
-      "__id__": 0
-    },
-    "fileId": "a67UGHtHVMpI4SRY0FMlJL",
-    "sync": false
-  },
-  {
-    "__type__": "cc.Node",
     "_name": "rewardList",
     "_objFlags": 0,
     "_parent": {
@@ -979,23 +905,23 @@
     },
     "_children": [
       {
-        "__id__": 29
+        "__id__": 27
       }
     ],
     "_active": true,
     "_components": [
       {
+        "__id__": 35
+      },
+      {
+        "__id__": 36
+      },
+      {
         "__id__": 37
-      },
-      {
-        "__id__": 38
-      },
-      {
-        "__id__": 39
       }
     ],
     "_prefab": {
-      "__id__": 43
+      "__id__": 41
     },
     "_opacity": 255,
     "_color": {
@@ -1049,24 +975,24 @@
     "_name": "view",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 28
+      "__id__": 26
     },
     "_children": [
       {
-        "__id__": 30
+        "__id__": 28
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 34
+        "__id__": 32
       },
       {
-        "__id__": 35
+        "__id__": 33
       }
     ],
     "_prefab": {
-      "__id__": 36
+      "__id__": 34
     },
     "_opacity": 255,
     "_color": {
@@ -1120,20 +1046,20 @@
     "_name": "content",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 29
+      "__id__": 27
     },
     "_children": [],
     "_active": true,
     "_components": [
       {
-        "__id__": 31
+        "__id__": 29
       },
       {
-        "__id__": 32
+        "__id__": 30
       }
     ],
     "_prefab": {
-      "__id__": 33
+      "__id__": 31
     },
     "_opacity": 255,
     "_color": {
@@ -1187,7 +1113,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 30
+      "__id__": 28
     },
     "_enabled": true,
     "_layoutSize": {
@@ -1219,7 +1145,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 30
+      "__id__": 28
     },
     "_enabled": true,
     "alignMode": 1,
@@ -1257,7 +1183,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 29
+      "__id__": 27
     },
     "_enabled": true,
     "_materials": [
@@ -1277,7 +1203,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 29
+      "__id__": 27
     },
     "_enabled": true,
     "alignMode": 1,
@@ -1315,7 +1241,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 28
+      "__id__": 26
     },
     "_enabled": true,
     "horizontal": false,
@@ -1327,10 +1253,10 @@
     "scrollEvents": [],
     "cancelInnerEvents": true,
     "_N$content": {
-      "__id__": 30
+      "__id__": 28
     },
     "content": {
-      "__id__": 30
+      "__id__": 28
     },
     "_N$horizontalScrollBar": null,
     "_N$verticalScrollBar": null,
@@ -1341,7 +1267,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 28
+      "__id__": 26
     },
     "_enabled": true,
     "alignMode": 1,
@@ -1368,7 +1294,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 28
+      "__id__": 26
     },
     "_enabled": true,
     "templateType": 2,
@@ -1379,7 +1305,7 @@
     "_slideMode": 1,
     "pageDistance": 0.3,
     "pageChangeEvent": {
-      "__id__": 40
+      "__id__": 38
     },
     "_virtual": true,
     "cyclic": false,
@@ -1388,12 +1314,12 @@
     "_updateRate": 0,
     "frameByFrameRenderNum": 0,
     "renderEvent": {
-      "__id__": 41
+      "__id__": 39
     },
     "selectedMode": 0,
     "repeatEventSingle": false,
     "selectedEvent": {
-      "__id__": 42
+      "__id__": 40
     },
     "_id": ""
   },

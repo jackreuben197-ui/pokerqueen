@@ -223,7 +223,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 158.88,
+      "width": 13.23,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -275,8 +275,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "实时排名",
-    "_N$string": "实时排名",
+    "_string": "-",
+    "_N$string": "-",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -345,7 +345,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 79.44,
+      "width": 13.23,
       "height": 40
     },
     "_anchorPoint": {
@@ -397,8 +397,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "桌号",
-    "_N$string": "桌号",
+    "_string": "-",
+    "_N$string": "-",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -467,7 +467,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 119.16,
+      "width": 13.23,
       "height": 40
     },
     "_anchorPoint": {
@@ -519,8 +519,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "记分牌",
-    "_N$string": "记分牌",
+    "_string": "-",
+    "_N$string": "-",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,

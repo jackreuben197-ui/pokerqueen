@@ -16,7 +16,13 @@ export default class MttRealTimeActionNode extends UIBase {
 
     lateLoad() {
         super.lateLoad();
-
+        this.time = this.getChildNodeOrComponent("time", cc.Label);
+        this.reward = this.getChildNodeOrComponent("reward", cc.Label);
+        this.max = this.getChildNodeOrComponent("max", cc.Label);
+        this.buy = this.getChildNodeOrComponent("buy", cc.Label);
+        this.cur = this.getChildNodeOrComponent("cur", cc.Label);
+        this.next = this.getChildNodeOrComponent("next", cc.Label);
+        this.nextTime = this.getChildNodeOrComponent("nextTime", cc.Label);
     }
 
     protected regiterDispatchEvent(): void {

@@ -116,7 +116,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66.27,
+      "width": 79.44,
       "height": 40
     },
     "_anchorPoint": {
@@ -168,8 +168,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "桌号",
+    "_N$string": "桌号",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -238,7 +238,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66.27,
+      "width": 79.44,
       "height": 40
     },
     "_anchorPoint": {
@@ -290,8 +290,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "人数",
+    "_N$string": "人数",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -360,7 +360,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66.27,
+      "width": 119.16,
       "height": 40
     },
     "_anchorPoint": {
@@ -412,8 +412,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "300",
-    "_N$string": "300",
+    "_string": "记分牌",
+    "_N$string": "记分牌",
     "_fontSize": 39.72,
     "_lineHeight": 40,
     "_enableWrapText": true,

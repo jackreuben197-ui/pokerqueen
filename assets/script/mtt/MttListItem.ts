@@ -134,8 +134,8 @@ export default class MttListItem extends ListItem {
     clickItem() {
         if (Web_Org_Club_Get.Response.data.club_id > 0) {
             GC.data.mtt.list.select = this._data;
-            // UIComponent.open(UIDefine.MttDetailForm, this._data);
-            UIComponent.open(UIDefine.MttRealTime, this._data);
+            UIComponent.open(UIDefine.MttDetailForm, this._data);
+            // UIComponent.open(UIDefine.MttRealTime, this._data);
         } else {
             ToastManager.Instance.createToast("PleaseJoinAUnionFirs");
         }
