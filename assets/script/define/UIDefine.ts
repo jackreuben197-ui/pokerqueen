@@ -166,6 +166,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/record/UIRecordInto",
         Title: "",
     },
+    //保险详情
+    MttRecordBXListForm: {
+        UIType: UIType.Form,
+        Name: "MttRecordBXListForm",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/MttRecordBXListForm",
+        Title: "",
+    },
     //房间模版
     UIMatchPlayViewForm: {
         UIType: UIType.Form,
