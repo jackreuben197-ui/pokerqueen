@@ -20,6 +20,7 @@ import { GameType } from "../../game/GameUtil";
 import { EWalletGoldOpration } from "../../wallet/WalletConfig";
 import GC from "../../frame/GameControl";
 import { EventName } from "../../config/EventName";
+import SceneManager from "../../manager/SceneManager";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -142,7 +143,7 @@ export default class UILabarPlayViewForm extends UIBase {
     }
     addCoin() {
         // UIComponent.open(UIDefine.GoldOprationForm, { type: EWalletGoldOpration.in, isClub: true });
-        UIComponent.open(UIDefine.OrderApplyForm);
+        UIComponent.open(UIDefine.OrderApplyForm, null, { SceneUI: SceneManager.Instance.currUI });
     }
     tostBtnClick() {
         this.tabNode.active = !this.tabNode.active;

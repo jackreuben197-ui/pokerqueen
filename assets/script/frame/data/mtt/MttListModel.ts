@@ -8,6 +8,13 @@ export default class MttListModel {
     private _offset: number = 0;
 
     private _list: Array<MttListItemModel> = [];
+    private _select: MttListItemModel = null;
+    get select() {
+        return this._select;
+    }
+    set select(s) {
+        this._select = s;
+    }
     get list() {
         return this._list;
     }

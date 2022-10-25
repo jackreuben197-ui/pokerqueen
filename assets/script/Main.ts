@@ -35,7 +35,7 @@ export default class Main extends cc.Component {
 
         GC.init();
 
-        GC.localStore.keyPre = CCTools.getQueryString("player");
+        GC.localStore.keyPre = CCTools.getQueryString("player") || "";
 
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)

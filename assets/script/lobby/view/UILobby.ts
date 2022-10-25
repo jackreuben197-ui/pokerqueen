@@ -118,7 +118,7 @@ export default class UILobby extends UIBase {
     }
 
     clickBean() {
-        UIComponent.open(UIDefine.MyWalletForm, false)
+        UIComponent.open(UIDefine.MyWalletForm, false, { SceneUI: SceneManager.Instance.currUI });
     }
 
     onScrolling() {

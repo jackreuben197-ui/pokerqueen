@@ -94,7 +94,7 @@ export default class MttListItem extends ListItem {
             this.setText(this.status, "UIMTT_Listdistancesclose")
             this.setTextColor(this.statusDes, "#F75447");
             this.setTime(this._data.delayApplyEndTime);
-        } else if (this._data.status == EMttItemStatus.end) {
+        } else {
             //运行
             this.setText(this.status, "UIMTT_Listitemyx")
             this.setTextColor(this.statusDes, "#3BF5B2");
@@ -133,7 +133,9 @@ export default class MttListItem extends ListItem {
 
     clickItem() {
         if (Web_Org_Club_Get.Response.data.club_id > 0) {
-            UIComponent.open(UIDefine.MttDetailForm, this._data);
+            GC.data.mtt.list.select = this._data;
+            // UIComponent.open(UIDefine.MttDetailForm, this._data);
+            UIComponent.open(UIDefine.MttRealTime, this._data);
         } else {
             ToastManager.Instance.createToast("PleaseJoinAUnionFirs");
         }
