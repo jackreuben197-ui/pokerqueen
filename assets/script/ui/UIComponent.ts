@@ -13,7 +13,7 @@ const { ccclass } = cc._decorator;
 export enum PrefabUI {
     UIPreloading = "UIPreloading",
     UITexasMenuComponent = "UITexasMenuComponent",
-    UIAddChipsComponent = "UIAddChipsComponenst",
+    UIAddChipsComponent = "UIAddChipsComponent",
     UIOutChipsComponent = "UIOutChipsComponent",
     UIOperationComponent = "UIOperationComponent",
     UIAutoOperationComponent = "UIAutoOperationComponent",
@@ -50,6 +50,13 @@ export default class UIComponent {
     GetPrefabNode(prefab_name: string): cc.Node {
         return this.prefab_node_map.get(prefab_name);
     }
+    /**
+     * 获取预制体节点绑定的类
+     */
+    GetPrefabNodeCom(prefab_name: string): any {
+        this.prefab_node_map.get(prefab_name)?.getComponent(prefab_name);
+    }
+
     Toast(content?: string) {
         if (content) {
             ToastManager.Instance.createToast(content);

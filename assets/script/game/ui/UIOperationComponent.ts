@@ -362,7 +362,7 @@ export default class UIOperationComponent extends UIBase {
     /// </summary>
     /// <param name="show"></param>
     private showFreeCall(show: boolean): void {
-        this.sliderFreeCall.value = this.sliderFreeCall.minValue;
+        //this.sliderFreeCall.value = this.sliderFreeCall.minValue;
         if (show) {
             this.imageFreeCallMask.active = true;
             this.sliderFreeCall.node.active = true;
@@ -492,7 +492,7 @@ export default class UIOperationComponent extends UIBase {
         if (actionLimit.max == actionLimit.min) {
             this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
             this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
-            this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+            //this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
             this.textFreeCall.string = `ALL IN`;
             this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         }
@@ -502,12 +502,12 @@ export default class UIOperationComponent extends UIBase {
                 : Math.ceil((actionLimit.max + 1) / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
             if (Math.ceil(actionLimit.min / this.calibrationWeight) >= this.sliderFreeCall.maxValue) {
                 this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
-                this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+                //this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
                 this.textFreeCall.string = `ALL IN`;
             }
             else {
                 this.sliderFreeCall.minValue = Math.ceil(actionLimit.min / this.calibrationWeight);
-                this.sliderFreeCall.value = this.sliderFreeCall.minValue;
+                //this.sliderFreeCall.value = this.sliderFreeCall.minValue;
                 this.textFreeCall.string = `${actionLimit.min / this.chipScale}`;
             }
             let actionLimitMax: number = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) ? (actionLimit.max) : (actionLimit.max + 1);
@@ -605,7 +605,7 @@ export default class UIOperationComponent extends UIBase {
         this.actionDataInfo.actionLimit = actionLimit;
         this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
         this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
-        this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+        //this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
         this.textFreeCall.string = `ALL IN`;
         this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         this.setTopCallButtons();

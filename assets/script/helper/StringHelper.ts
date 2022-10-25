@@ -149,8 +149,16 @@ export class StringHelper {
         }
         return numStr;
     }
-
-
-
+    /**
+     * 除100并且判断整数不变，小数保留1位
+     */
+    public static Div100Float1(num: number, div100: boolean = true) {
+        let num_str = div100 ? this.GetLongString(num) : num.toString();
+        let dot_index = num_str.indexOf(".");
+        if (~dot_index) {
+            return num_str.substring(0, dot_index + 2);
+        }
+        return num_str;
+    }
 }
 (window as any).StringHelper = StringHelper;
