@@ -1,7 +1,7 @@
 import { TMttRankItem } from "../../../../config/TTypeConfig";
 import GC from "../../../GameControl";
 
-export default class MttRealTimeItemModel {
+export default class MttRealTimeRankItemModel {
     private _msg: TMttRankItem = null;
     constructor(msg: TMttRankItem) {
         this._msg = msg;

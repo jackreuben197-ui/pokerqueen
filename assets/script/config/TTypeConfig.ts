@@ -638,3 +638,22 @@ export type TMttRealPrize = {
     v: number,//价值等价货币
     n: number,//数量
 }
+
+
+
+export type TMttRoomsData = {
+    limit: number,//条目
+    offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    total: number,//总人数
+    records: Array<TMttRoomsDeskItem>,  // 玩家列表
+}
+export type TMttRoomsDeskItem = {
+    rid: number,//进入MTT房间id
+    service_id: string,//用于查询IP列表IP Port
+    roomers: Array<TMttRoomsDeskPlayer>,//玩家列表
+}
+export type TMttRoomsDeskPlayer = {
+    uid: number,//玩家id
+    chip: number,//玩家筹码
+    seat: number,//玩家座位号
+}

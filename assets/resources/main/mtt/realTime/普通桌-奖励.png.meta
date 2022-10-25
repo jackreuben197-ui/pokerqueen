@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "d4f15b2c-018a-472c-bd92-bc7e80bcce2c",
+  "uuid": "05a40966-15c3-442d-bc92-68d64b1b209d",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -12,11 +12,11 @@
   "height": 2688,
   "platformSettings": {},
   "subMetas": {
-    "普通桌-实时战况1": {
+    "普通桌-奖励": {
       "ver": "1.0.6",
-      "uuid": "b2271791-9718-43c7-b1b8-d3fd5c778829",
+      "uuid": "28766d6c-a153-42b6-9f42-bb8890bcef52",
       "importer": "sprite-frame",
-      "rawTextureUuid": "d4f15b2c-018a-472c-bd92-bc7e80bcce2c",
+      "rawTextureUuid": "05a40966-15c3-442d-bc92-68d64b1b209d",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

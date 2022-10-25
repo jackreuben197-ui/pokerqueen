@@ -579,7 +579,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "rankList",
+    "_name": "list",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1

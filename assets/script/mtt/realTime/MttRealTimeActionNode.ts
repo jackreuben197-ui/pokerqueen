@@ -1,5 +1,4 @@
 import GC from "../../frame/GameControl";
-import TimeHelper from "../../helper/TimeHelper";
 import { Web_Mtt } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 
@@ -52,7 +51,6 @@ export default class MttRealTimeActionNode extends UIBase {
         this.setText(this.nextTime, "UITexasReport_Text_MatchZmsysj", info.upblind_interval / 60);
 
         // 进入游戏时才能拿到
-        // this.setText(this.time, ((MTTGame)GameCache.Instance.CurGame).upBlindTime / 60f)
         // this.textMatchZmsysj.text = TimeHelper.ShowRemainingSemicolonPure(raiseBlindTime);
     }
 }

@@ -1,5 +1,5 @@
 import ListItem from "../../common/ListItem";
-import MttRealTimeItemModel from "../../frame/data/mtt/realTime/MttRealTimeItemModel";
+import MttRealTimeRankItemModel from "../../frame/data/mtt/realTime/MttRealTimeRankItemModel";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -10,7 +10,7 @@ export default class MttRealTimeRankItem extends ListItem {
     private desk: cc.Label = null;
     private score: cc.Label = null;
 
-    private _data: MttRealTimeItemModel = null;
+    private _data: MttRealTimeRankItemModel = null;
     lateLoad() {
         super.lateLoad();
         this.myselfFlag = this.getChildNodeOrComponent("myselfFlag");
@@ -27,7 +27,7 @@ export default class MttRealTimeRankItem extends ListItem {
         super.regiterTouchEvents();
     }
 
-    initData(data: MttRealTimeItemModel) {
+    initData(data: MttRealTimeRankItemModel) {
         this._data = data;
 
         this.setActive(this.myselfFlag, this._data.isMySelf);
