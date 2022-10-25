@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 19:11:41
+ * @LastEditTime: 2022-10-25 17:25:18
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -11,7 +11,7 @@ import List from "../../common/List";
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
-import { GameType } from "../../game/GameUtil";
+import GameUtil, { GameType } from "../../game/GameUtil";
 import { APIOrgFriendRoomList } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -78,13 +78,14 @@ export default class UICreateFriendMatchHome extends UIBase {
     applyJoin() {
         UIComponent.open(UIDefine.UIApplyJoin)
     }
-    joinMatch() {
+    async joinMatch() {
         this.EditBox.string.trim();
         if (this.EditBox.string.length != 6) {
             return;
         }
-        let code = Number(this.EditBox.string)
-        UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string)
+        let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string);
+        _data = new LobbyRoomListItem(_data.data.data);
+        GameUtil.EnterRoomAPI(_data, UIDefine.UICreateMatch);
     }
 
     // update (dt) {}
