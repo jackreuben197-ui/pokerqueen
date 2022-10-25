@@ -351,6 +351,18 @@ export class LobbyControl {
             });
         });
     }
+
+    formatString(localValue: string, ...params): string {
+        if (params.length) {
+            params.forEach((value, index) => {
+                let paramStr: string = String(value);
+
+                let reg = new RegExp(`\\{${index}\\}`, "g");
+                localValue = localValue.replace(reg, paramStr);
+            })
+        }
+        return localValue;
+    }
     
 
 

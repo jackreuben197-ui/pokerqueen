@@ -3240,8 +3240,11 @@ UITips_GoldOpration_suc_0=申请充豆成功！<br/>如有疑问请联系客服�
 UITips_GoldOpration_suc_1=申请提豆成功！<br/>如有疑问请联系客服，联系方式{0}
 UITips_GoldOpration_suc_2=金豆发放成功！<br/>如有疑问请联系客服，联系方式{0}
 
-
-
+UIMTT_StateHuntChampionships=悬赏金锦标赛
+UIMTT_StateHuntChampionshipsDetail=每淘汰一名玩家，至少得<color=#DDBA82>{0}</color>赏金。
+UIMTT_StateHuntChampionshipsDialogDetail=每淘汰一名玩家，可从被淘汰玩家的当前悬赏金获得{0}%，剩下的{1}%将累积到自己的赏金。
+UIMTT_StateUnLimitRebuy=无限重进
+UIMTT_StateReward=赏金:
 
 
 
