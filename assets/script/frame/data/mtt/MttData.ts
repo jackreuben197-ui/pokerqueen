@@ -1,18 +1,40 @@
 import { Web_Mtt } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
+import GC from "../../GameControl";
+import MttDetailModel from "./MttDetailModel";
 import MttListModel from "./MttListModel";
+import MttRealTimeModel from "./realTime/MttRealTimeModel";
 
 export default class MttData extends BaseData {
     list: MttListModel = new MttListModel();
-    protected notify(id: any, msg: any, sendInfo?: any): void {
+    realTime: MttRealTimeModel = new MttRealTimeModel();
+    detail: MttDetailModel = new MttDetailModel();
+    protected notify(id: string, msg: any, sendInfo?: any): void {
+        id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
         switch (id) {
             case Web_Mtt.LIST: {
                 this.list.updateData(msg);
+            } break;
+            case Web_Mtt.RANKS: {
+                this.realTime.updateRankList(msg);
+            } break;
+            case Web_Mtt.DETAIL: {
+                this.detail.updateData(msg);
             } break;
         }
     }
 
     reqMttList(offset: number = 0, limit: number = 10) {
         this.reqServePost(Web_Mtt.LIST, { limit: limit, offset: offset });
+    }
+
+    reqMttDetail() {
+        let api = GC.language.formatString(Web_Mtt.DETAIL, this.list.select.match_id);
+        this.reqServePost(api);
+    }
+
+    reqRealTimeRankList(offset: number = 0, limit: number = 10) {
+        let api = GC.language.formatString(Web_Mtt.RANKS, this.list.select.match_id);
+        this.reqServePost(api, { limit: limit, offset: offset });
     }
 }

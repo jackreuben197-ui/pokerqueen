@@ -1,4 +1,5 @@
 import CCTools from "../../tools/CCTools";
+import GC from "../GameControl";
 
 export default class LocalStoreManager {
     private static _instance: LocalStoreManager = null;
@@ -11,11 +12,14 @@ export default class LocalStoreManager {
 
     private _keyPre = 'dzpk_'
     get keyPre() {
-        return `${this._keyPre}`;
+        // let userId = GC?.data?.user?.info?.user_id || "";
+        let userId = "";
+        return `${this._keyPre}${userId}`;
     }
     set keyPre(value: string) {
         value && (this._keyPre = value);
     }
+
     setItem(key: string, value: any) {
         if (CCTools.isNull(value)) {
             value = null;

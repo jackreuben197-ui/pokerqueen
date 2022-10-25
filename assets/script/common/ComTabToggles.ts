@@ -82,7 +82,7 @@ export default class ComTabToggles extends UIBase {
 
     }
 
-    clickTab(index: number, data: any = null, farce: boolean = false) {
+    clickTab(index: number = 0, data: any = null, farce: boolean = false) {
         farce && (this._tabIndex = -1);
         this._onTabClick(index, data);
     }

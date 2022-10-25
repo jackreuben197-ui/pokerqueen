@@ -17,6 +17,9 @@ export default class MttListItemModel {
     get mttName() {
         return GC.data.languageTemp.temp.getName(this._msg.name);
     }
+    get match_id() {
+        return this._msg.match_id;
+    }
     get type() {
         return this._msg.type;
     }

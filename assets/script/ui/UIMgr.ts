@@ -198,13 +198,14 @@ export class UICommonMgr {
         if (node.activeInHierarchy) {
             return cc.log("ui已经开启");
         }
-        node.parent = obj.parentUI || Main.Dialog;
+        node.parent = obj?.parentUI || Main.Dialog;
         let ui = node.getComponent(UIBase);
         if (ui) {
             ui.show_animation = obj?.animation == null ? true : obj?.animation;
             ui.onShow(param);
         }
     }
+
     close(uiDefine: IUIDefine, param: any = null, obj: Close_Obj) {
         let node: cc.Node = this.uiMap.get(uiDefine);
         if (node && node.activeInHierarchy) {
