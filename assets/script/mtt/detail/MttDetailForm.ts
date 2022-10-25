@@ -2,6 +2,8 @@ import ComFormTitle from "../../common/ComFormTitle";
 import ComTabToggles, { ETabToggle } from "../../common/ComTabToggles";
 import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
 import GC from "../../frame/GameControl";
+import WebImageHelper from "../../helper/WebImageHelper";
+import { LobbyControl } from "../../lobby/control/LobbyControl";
 import BaseForm from "../../ui/form/BaseForm";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -9,6 +11,7 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('脚本分组/mtt/detail/MttDetailForm')
 export default class MttDetailForm extends BaseForm {
     curType: number = 0;   // 0 - 4 对应上方5种类型
+    _data: any = null;
     lateLoad() {
         super.lateLoad();
     }
@@ -28,6 +31,17 @@ export default class MttDetailForm extends BaseForm {
 
     onShow(data?: MttListItemModel): void {
         super.onShow(data);
+
+        this._data = data;
+
+        let tabToggles: cc.Node = this.getChildNodeOrComponent("tabToggles");
+        for (let i=1; i<6; i++) {
+            let btn_pt_1: cc.Node = tabToggles.children[i-1];
+            btn_pt_1["index"] = i - 1;
+            btn_pt_1.on(cc.Node.EventType.TOUCH_END, this.onClickTop, this)
+        }
+
+        
 
         this.updateUI();
     }
@@ -54,12 +68,23 @@ export default class MttDetailForm extends BaseForm {
             panel_item2.x = 0;
             panel_item2.y = 0;
             panel_item2.parent = sv_status.content;
-            let tabToggles: cc.Node = this.getChildNodeOrComponent("tabToggles");
-            for (let i=1; i<6; i++) {
-                let btn_pt_1: cc.Node = tabToggles.children[i-1];
-                btn_pt_1["index"] = i - 1;
-                btn_pt_1.on(cc.Node.EventType.TOUCH_END, this.onClickTop, this)
+
+            if (this._data && this._data._msg.match_id) {
+                LobbyControl.getInstance().reqMTTDetailInfo(this._data._msg.match_id, {}).then(
+                    (res) => {
+                        let img_av: cc.Sprite = panel_item2.getChildByName("img_av").getComponent(cc.Sprite);
+                        // WebImageHelper.SetUrlImage(this.img_head, GameCache.Instance.headPic);
+                        for (let i=1; i<5; i++) {
+                            let btn_pt_1: cc.Node = panel_item2.getChildByName("node" + i);
+                            let lbl_gold = btn_pt_1.getChildByName("lbl_gold").getComponent(cc.Label);
+                            lbl_gold.string = "";
+                        }
+                    },
+                    (res) => {
+                    }
+                )
             }
+            
         } else if (this.curType == 1) {
             panel_0.active = false;
             panel_1.active = true;

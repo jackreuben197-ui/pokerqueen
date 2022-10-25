@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -332,6 +332,26 @@ export class LobbyControl {
         }
         lbl.string = bxStr;
     }
+
+    /**
+     * MTT 比赛列表详情  
+     */
+     async reqMTTDetailInfo(matchID, param: typeof Web_Room_Center_Mtt_Details.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                api: Web_Room_Center_Mtt_Details.API.replace("{id}", matchID.toString()),
+                request: Web_Room_Center_Mtt_Details,
+                body: Web_Room_Center_Mtt_Details.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Room_Center_Mtt_Details.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    
 
 
     /********************************* 流程控制 ***********************************/
