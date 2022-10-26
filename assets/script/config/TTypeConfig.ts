@@ -107,6 +107,8 @@ export type TRoomListItem = {
     tablecloth_tag: string, // 桌布
     club_id: number, // 公会ID
     origin_type: number,    // 创建来源 1 平台，2 联盟，3 公会
+    invitation_code: string
+    limit_bring_in: number
 
 }
 

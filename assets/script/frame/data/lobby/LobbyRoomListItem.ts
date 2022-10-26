@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 16:03:27
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-26 11:25:53
+ * @FilePath: /pokerqueen/assets/script/frame/data/lobby/LobbyRoomListItem.ts
+ */
 import { TRoomListItem } from "../../../config/TTypeConfig";
 import { RoomType } from "../../../game/GameUtil";
 import GC from "../../GameControl";
@@ -79,6 +87,14 @@ export default class LobbyRoomListItem {
     get start_time() {
         return this._data.start_time;
     }
-
+    get limit_bring_in() {
+        return this._data.limit_bring_in;
+    }
+    get origin_type() {
+        return this._data.origin_type;
+    }
+    get invitation_code() {
+        return this._data.invitation_code;
+    }
 
 }
