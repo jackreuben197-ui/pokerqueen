@@ -7,6 +7,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
+import { UITexasModel } from "../UITexasModel";
 
 
 export type AddClipsData = {
@@ -122,7 +123,6 @@ export default class UIAddChipsComponent extends UIBase {
         }
     }
     private onClickCommit() {
-
         GameCache.Instance.CurGame.AddChips(this.currValue);
         this.hideUI();
     }

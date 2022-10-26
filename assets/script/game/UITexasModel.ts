@@ -1,6 +1,6 @@
 
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Stats_Other_User_Stats, Web_User_Info, Web_User_Room, Web_User_Room_Settle_Detail } from "../net/https/WebRequest";
+import { APIOrgFriendBringIn, Web_Stats_Other_User_Stats, Web_User_Info, Web_User_Room, Web_User_Room_Settle_Detail } from "../net/https/WebRequest";
 import { GameCache } from "./GameCache";
 
 export class UITexasModel {
@@ -62,6 +62,21 @@ export class UITexasModel {
                 request: Web_Stats_Other_User_Stats,
                 onSuccess: function () {
                     resolve(Web_Stats_Other_User_Stats.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    //带入申请
+    public APIFriendBringIn(param: typeof APIOrgFriendBringIn.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                body: APIOrgFriendBringIn.Request(param),
+                request: APIOrgFriendBringIn,
+                onSuccess: function () {
+                    resolve(APIOrgFriendBringIn.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
