@@ -1518,11 +1518,10 @@ export default class TexasGameProtocol {
                 // }
                 break;
             case BroadcastCode.VerifyDoNotCan://朋友桌申请结果
-
                 let bringInData = ServerMessageRoomBringInApply.Response(data);
-
-                console.log("bringInData", bringInData);
-
+                if (bringInData.status == 1) {
+                    UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
+                }
                 break;
             default:
                 break;
