@@ -3,7 +3,7 @@
  * @Date: 2022-10-21 21:48:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 16:14:03
+ * @LastEditTime: 2022-10-26 17:23:22
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIApplyJoin.ts
  */
 
@@ -86,6 +86,11 @@ export default class UIApplyJoin extends BaseForm {
         this._total = _data.total
         this._offset = this._list.length;
         this._reqEnd = this._list.length == this._total;
+        let flag = false
+        flag = this._list.some((value) => {
+            return value.status == 1
+        })
+        this.post(EventName.reFreshApplyState, flag)
     }
 
 

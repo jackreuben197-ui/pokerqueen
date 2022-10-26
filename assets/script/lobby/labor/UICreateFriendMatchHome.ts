@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 16:17:33
+ * @LastEditTime: 2022-10-26 17:12:27
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -32,7 +32,7 @@ export default class UICreateFriendMatchHome extends UIBase {
     numNode: cc.Node = null;
 
     @property(cc.Node)
-    redTip: cc.Node = null;
+    dr: cc.Node = null;
 
     @property(List)
     list: List = null;
@@ -58,8 +58,9 @@ export default class UICreateFriendMatchHome extends UIBase {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.updateFriendChessView, this.reqDataAgain);
-        this.listen(ProtocolCode.Protocol_Holdem_GetMsg, this.setRedTip);  // 广播表情
-
+    }
+    reFreshApplyState(parms) {
+        this.dr.active = parms[0];
     }
     async reqDataAgain() {
         await UIClubModel.mInstance.APIOrgFriendRoomList();
@@ -84,7 +85,6 @@ export default class UICreateFriendMatchHome extends UIBase {
         }
     }
     applyJoin() {
-        this.redTip.active = false;
         UIComponent.open(UIDefine.UIApplyJoin)
     }
     async joinMatch() {
@@ -101,25 +101,7 @@ export default class UICreateFriendMatchHome extends UIBase {
             UIComponent.Instance.Toast('房间信息错误')
         }
     }
-    setRedTip(rec: ServerMessageGetMsg.AsObject) {
-        if (rec == null) {
-            return;
-        }
-        let json = Buffer.from(rec.extra.toString(), 'base64').toString();
-        let responseData = Broadcast.Response(json);
-        let code: number = responseData.code;
-        let data: string = responseData.data;
-        switch (code) {
-            case BroadcastCode.VerifyDoNotCan://朋友桌
-                let bringInData = ServerMessageRoomBringInApply.Response(data);
-                if (bringInData.status == 1) {
-                    this.redTip.active = true;
-                }
-            default:
-                break;
-        }
 
-    }
 
 
     // update (dt) {}

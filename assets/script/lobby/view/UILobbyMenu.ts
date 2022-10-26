@@ -1,4 +1,8 @@
 const { ccclass, property } = cc._decorator;
+import { EventName } from "../../config/EventName";
+import { ProtocolCode } from "../../net/websocket/ProtocolCode";
+import { Broadcast, BroadcastCode, ServerMessageRoomBringInApply } from "../../net/websocket/ProtocolHoldemMessages";
+import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
 import UIBase from "../../ui/UIBase";
 import { LobbyControl } from "../control/LobbyControl";
 import { UIClubModel } from "../labor/UIClubModel";
@@ -13,7 +17,7 @@ export default class UILobbyMenu extends UIBase {
     menu_btn_world_chat: cc.Node = null;
     menu_btn_career: cc.Node = null;
     menu_btn_my: cc.Node = null;
-
+    redTip: cc.Node = null;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -21,6 +25,7 @@ export default class UILobbyMenu extends UIBase {
         this.menu_btn_world_chat = this.getChildNodeOrComponent("menu_btn_world_chat");
         this.menu_btn_career = this.getChildNodeOrComponent("menu_btn_career");
         this.menu_btn_my = this.getChildNodeOrComponent("menu_btn_my");
+        this.redTip = this.getChildNodeOrComponent("redTip");
     }
 
     onShow() {
@@ -39,6 +44,12 @@ export default class UILobbyMenu extends UIBase {
         this.menu_btn_world_chat.on("click", this.world_chat_click, this);
         this.menu_btn_career.on("click", this.career_click, this);
         this.menu_btn_my.on("click", this.my_click, this);
+
+    }
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(ProtocolCode.Protocol_Holdem_GetMsg, this.setRedTip);  // 
+        this.listen(EventName.reFreshApplyState, this.setRedState);
     }
     // }() {
     //     // let btns = ["lobby", "world_chat", "career", "my"];
@@ -127,5 +138,26 @@ export default class UILobbyMenu extends UIBase {
         // btn.scale = 0.7;
         // cc.tween(btn).to(0.1, { scale: 1.2 }).start()
         this.curBtn = btn;
+    }
+    setRedTip(rec: ServerMessageGetMsg.AsObject) {
+        if (rec == null) {
+            return;
+        }
+        let json = Buffer.from(rec.extra.toString(), 'base64').toString();
+        let responseData = Broadcast.Response(json);
+        let code: number = responseData.code;
+        let data: string = responseData.data;
+        switch (code) {
+            case BroadcastCode.VerifyDoNotCan://朋友桌
+                let bringInData = ServerMessageRoomBringInApply.Response(data);
+                if (bringInData.status == 1) {
+                    this.redTip.active = true
+                }
+            default:
+                break;
+        }
+    }
+    setRedState(parms) {
+        this.redTip.active = parms
     }
 }
