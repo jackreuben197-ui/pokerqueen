@@ -567,8 +567,15 @@ export default class TexasGame {
         this.bigBlind = rec.roomInfo.smallBlind * 2;
         this.alreadAnte = rec.handInfo.allBet;
         this.maxPlayTime = rec.roomInfo.schedulePlayDuration;
-        this.currentMinRate = rec.roomInfo.currentMinRate;
-        this.currentMaxRate = rec.roomInfo.currentMaxRate;
+        //记分牌倍数特殊处理下(可能传过来的倍数乘过100),倍数1-8
+        if (rec.roomInfo.currentMinRate < 100) {
+            this.currentMinRate = rec.roomInfo.currentMinRate * 100;
+            this.currentMaxRate = rec.roomInfo.currentMaxRate * 100;
+        } else {
+            this.currentMinRate = rec.roomInfo.currentMinRate;
+            this.currentMaxRate = rec.roomInfo.currentMaxRate;
+        }
+
         this.CurlimitOutChip = rec.roomInfo.retainType;
         this.CurrentMinRate = rec.roomInfo.limitRetainMinRate * rec.roomInfo.currentMinRate;
         this.mHandNum = rec.handInfo.handNum;
@@ -801,7 +808,7 @@ export default class TexasGame {
         }
     }
 
-    
+
 
 
     /// <summary>
@@ -2638,8 +2645,6 @@ export default class TexasGame {
             PublicCardInfo.trans.active = false;
         }
     }
-
-
 
     /**
      * 显示手动设置面板 

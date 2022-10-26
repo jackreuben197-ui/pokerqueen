@@ -200,7 +200,7 @@ export default class UIOperationComponent extends UIBase {
             this.sliderFreeCall.moved = false;
             return;
         }
-        this.callValue = this.sliderFreeCall.value * this.calibrationWeight;
+        this.callValue = this.sliderFreeCall.Index * this.calibrationWeight;
         this.CheckOpt();
         this.showFreeCall(false);
     }
@@ -212,7 +212,7 @@ export default class UIOperationComponent extends UIBase {
     /// <param name="arg0"></param>
     private onValueChangeFreeCall(arg0: number): void {
 
-        console.log("onValueChangeFreeCall", arg0, this.sliderFreeCall.value);
+        //console.log("onValueChangeFreeCall", arg0, this.sliderFreeCall.value);
 
         if (arg0 >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
             this.textFreeCall.string = `ALL IN`;
@@ -488,28 +488,30 @@ export default class UIOperationComponent extends UIBase {
     private showBet(actionLimit: ActionLimit.AsObject): void {
         cc.log("+ showBet");
         this.actionDataInfo.actionLimit = actionLimit;
-
+        let max, min;
         if (actionLimit.max == actionLimit.min) {
-            this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-            this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
-            //this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+            max = Math.ceil(actionLimit.max / this.calibrationWeight);
+            min = max;
+            //this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+            //this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
+            this.sliderFreeCall.SetMinMax(min, max);
             this.textFreeCall.string = `ALL IN`;
             this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         }
         else {
-            this.sliderFreeCall.maxValue = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)
+            max = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)
                 ? Math.ceil(actionLimit.max / this.calibrationWeight)
                 : Math.ceil((actionLimit.max + 1) / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-            if (Math.ceil(actionLimit.min / this.calibrationWeight) >= this.sliderFreeCall.maxValue) {
-                this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
-                //this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+            if (Math.ceil(actionLimit.min / this.calibrationWeight) >= max) {
+                min = max;
                 this.textFreeCall.string = `ALL IN`;
             }
             else {
-                this.sliderFreeCall.minValue = Math.ceil(actionLimit.min / this.calibrationWeight);
+                min = Math.ceil(actionLimit.min / this.calibrationWeight);
                 //this.sliderFreeCall.value = this.sliderFreeCall.minValue;
                 this.textFreeCall.string = `${actionLimit.min / this.chipScale}`;
             }
+            this.sliderFreeCall.SetMinMax(min, max);
             let actionLimitMax: number = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) ? (actionLimit.max) : (actionLimit.max + 1);
             this.textFreeCallMax.string = `${actionLimitMax / this.chipScale}`;
         }
@@ -603,9 +605,9 @@ export default class UIOperationComponent extends UIBase {
     private showAllInRaise(actionLimit: ActionLimit.AsObject): void {
         this.actionDataInfo.AllInAmount = actionLimit.min;
         this.actionDataInfo.actionLimit = actionLimit;
-        this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-        this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
-        //this.sliderFreeCall.value = this.sliderFreeCall.maxValue;
+        let max = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+        let min = max;
+        this.sliderFreeCall.SetMinMax(min, max);
         this.textFreeCall.string = `ALL IN`;
         this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         this.setTopCallButtons();

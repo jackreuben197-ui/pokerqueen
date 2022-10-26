@@ -42,7 +42,11 @@ export default class UIAddChipsComponent extends UIBase {
     imageDialog: cc.Node = null;
 
     //参数类型
-    ParamType: AddClipsData;
+    protected _param: AddClipsData;
+    //开始倍数
+    private startRate: number = 0;
+
+    private currValue: number = 0;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -68,41 +72,32 @@ export default class UIAddChipsComponent extends UIBase {
         this.animateDialog();
         if (null != addClipsData) {
             //小盲值/100
-            let smallBlind_d100: number = addClipsData.smallBlind / 100;
-            let bigBlind_d100: number = smallBlind_d100 * 2;
-
-            this.textBlind.string = `${smallBlind_d100}/${bigBlind_d100}`;//SB/BB
-            this.textCoin.string = `${bigBlind_d100}`; // Buy-in
-            this.textNeedCoin.string = `${bigBlind_d100}`;//Require
-            this.textTotalCoin.string = `${addClipsData.totalCoin / 100}`;//Balance
-
-            // let currentMaxBring: number = (addClipsData.currentMaxRate) * GameCache.Instance.carry_small - addClipsData.tableChips;
-            // let maxRate: number = currentMaxBring / GameCache.Instance.carry_small;
-            // if (maxRate > addClipsData.currentMaxRate) {
-            //     maxRate = addClipsData.currentMaxRate;
-            // }
-            // if (maxRate < addClipsData.currentMinRate) {
-            //     maxRate = addClipsData.currentMinRate;
-            // }
-
-            this.sliderCoin.SetMinMax(addClipsData.currentMinRate, addClipsData.currentMaxRate);
-            // this.sliderCoin.maxValue = maxRate / 100;
-            // this.sliderCoin.minValue = addClipsData.currentMinRate / 100;
-            //this.sliderCoin.minValue = addClipsData.currentMinRate;
-            //this.sliderCoin.maxValue = addClipsData.currentMaxRate;
-            //this.sliderCoin.value = unit;
-            //this.sliderCoin.part = addClipsData.currentMaxRate - addClipsData.currentMinRate;
-            //this.sliderCoin.unit = addClipsData.bigBlind;
-            //this.sliderCoin.index = 0;
-            //this.onValueChangedSliderCoin(addClipsData.currentMinRate / 100);
-            //this.sliderCoin.wholeNumbers = true;
-            //cc.log("min/max : ", this.sliderCoin.min, this.sliderCoin.max);
+            this.textBlind.string = `${addClipsData.smallBlind / 100}/${addClipsData.bigBlind / 100}`;//SB/BB
+            this.textCoin.string = `${addClipsData.bigBlind}`; // Buy-in
+            this.textNeedCoin.string = `${addClipsData.bigBlind}`;//Require
+            this.textTotalCoin.string = `${addClipsData.totalCoin / 100}`;
+            //当前最大带入
+            let currMaxBring = addClipsData.currentMaxRate * addClipsData.bigBlind - addClipsData.tableChips;
+            let maxRate = currMaxBring / addClipsData.bigBlind ^ 0;
+            //边界
+            if (maxRate > addClipsData.currentMaxRate) {
+                maxRate = addClipsData.currentMaxRate;
+            }
+            if (maxRate < addClipsData.currentMinRate) {
+                maxRate = addClipsData.currentMinRate;
+            }
+            let min = addClipsData.currentMinRate / 100 ^ 0;
+            let max = maxRate / 100 ^ 0;
+            this.startRate = min;
+            this.sliderCoin.SetMinMax(min, max);
+            this.sliderCoin.onShow({ index: 0 });
+            this.onValueChangedSliderCoin(0);
+            //`${addClipsData.totalCoin / 100}`;//Balance
+            //this.sliderCoin.SetMinMax(addClipsData.currentMinRate, addClipsData.currentMaxRate);
+            //this.sliderCoin.onShow({ index: 0 });
         }
-        this.textTotalCoin.string = `${StringHelper.Div100Float1(addClipsData.totalCoin)}`;
+
     }
-
-
-
 
     animateDialog() {
         this.imageDialog.scale = 0;
@@ -113,18 +108,13 @@ export default class UIAddChipsComponent extends UIBase {
      */
     onValueChangedSliderCoin(rate: number) {
 
-        this.textCoin.string = this.textNeedCoin.string = `${rate}`;
-        //`${StringHelper.Div100Float1(rate * GameCache.Instance.carry_small * 100 ^ 0)}`;
-        //this.textNeedCoin.string = `${StringHelper.Div100Float1(rate * GameCache.Instance.carry_small * 100 ^ 0)}`;
+        let showValue = (this.startRate + rate) * this._param.bigBlind;
 
-        // if (rate * GameCache.Instance.carry_small * 100 > GameCache.Instance.gold) {
-        // if (rate * GameCache.Instance.carry_small * 100 > GC.data.user.info.gold) {
-        //     this.textNeedCoin.node.color = new cc.Color(184, 43, 48, 255);
-        // }
-        // else {
-        //     this.textNeedCoin.node.color = new cc.Color(255, 255, 255, 255);
-        // }
-        if (+this.textCoin.string > GC.data.user.info.gold) {
+        this.currValue = showValue * 100;
+
+        this.textCoin.string = this.textNeedCoin.string = `${showValue}`;
+
+        if (this.currValue > GC.data.user.info.gold) {
             this.textNeedCoin.node.color = new cc.Color(184, 43, 48, 255);
         }
         else {
@@ -133,8 +123,7 @@ export default class UIAddChipsComponent extends UIBase {
     }
     private onClickCommit() {
 
-        let mAnteNumber = (+this.textCoin.string) * 100;
-        GameCache.Instance.CurGame.AddChips(mAnteNumber);
+        GameCache.Instance.CurGame.AddChips(this.currValue);
         this.hideUI();
     }
     /**
