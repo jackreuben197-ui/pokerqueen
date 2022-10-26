@@ -546,7 +546,6 @@ export class SeatAddChips extends StateHandler {
     public Execute(entity?: any) {
         super.Execute(entity);
         if (entity instanceof SeatFSM) entity.AddChipsExecute();
-
     }
 
     public Exit(entity?: any) {

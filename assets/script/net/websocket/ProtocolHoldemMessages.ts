@@ -1,4 +1,4 @@
-import { json } from "stream/consumers";
+
 import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageError } from "../../protobuf/holdem/recv_error_pb";
@@ -35,6 +35,7 @@ import { ClientMessageSetAutoOnTable, ServerMessageSetAutoOnTable } from "../../
 import { ClientMessageStoreChips, ServerMessageStoreChips } from "../../protobuf/holdem/req_store_chips_pb";
 import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
 import { ServerMessageInsuranceTrigged } from "../../protobuf/holdem/recv_insurance_trigged_pb";
+import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
 
 export class ProtocolCommon {
 
@@ -91,6 +92,91 @@ export class ProtocolCommon {
     }
 
 
+}
+
+export enum BroadcastCode {
+    BroadcastMsg = 1000,
+    BroadcastVoiceprint = 1001,
+    VerifyCan = 1002,//用户可以被验证
+    VerifyDoNotCan = 1003,//用户不能被验证
+    VerifyTickets = 1004,//验证门票
+    Super1_PMD = 1005,//一元购开奖中奖_跑马灯消息
+    Super1_TC = 1006,//一元购开奖中奖_弹窗消息
+    Friend_BringIn = 2001 // 朋友桌带入申请
+
+}
+
+export class Broadcast {
+
+    public static RequestData:
+        {
+            code: number,//BroadcastCode
+            data: string // json 
+        } = null;
+
+    public static ResponseData:
+        {
+            code: number,//BroadcastCode
+            data: string // json 
+        } = null;
+    public static Request(data: typeof Broadcast.RequestData): string {
+        return JSON.stringify(data);
+    }
+    public static Response(json: string): typeof Broadcast.ResponseData {
+        return JSON.parse(json);
+    }
+}
+
+//广播管理消息自定义
+export class BroadcastMessage {
+    public static ResponseData: {
+        pt_msg: string,//葡语
+        en_msg: string,//英语
+        rotate_times: number,//次数
+    } = null;
+
+    public static Response(json: string): typeof BroadcastMessage.ResponseData {
+        return JSON.parse(json);
+    }
+}
+
+//表情弹幕自定义数据结构
+export class BroadcastMsg {
+    public static RequestData: {
+        name: string,//名字
+        type: number,//类型
+        user_id: number,//当前玩家id
+        target_user_id: number,//目标玩家id
+        message: string//文本消息
+    } = null;
+
+    public static ResponseData: {
+        name: string,//名字
+        type: number,//类型
+        user_id: number,//当前玩家id
+        target_user_id: number,//目标玩家id
+        message: string,//文本消息
+    } = null;
+
+    public static Request(data: typeof BroadcastMsg.RequestData): string {
+        return JSON.stringify(data);
+    }
+
+    public static Response(json: string): typeof BroadcastMsg.ResponseData {
+        return JSON.parse(json);
+    }
+}
+//朋友桌带入申请返回结构
+export class ServerMessageRoomBringInApply {
+    public static ResponseData: {
+        room_id: number,//房间ID
+        user_id: number,//用户ID
+        bring_in: number,//带入筹码
+        status: number,// 状态 1 待审批，2通过，3拒绝，4取消
+    } = null;
+    public static Response(json: string): typeof ServerMessageRoomBringInApply.ResponseData {
+        return JSON.parse(json);
+    }
 }
 
 export const ProtocolMap = {
@@ -210,6 +296,8 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_InsuranceTrigged]: {
         Server: ServerMessageInsuranceTrigged,
     },
-
+    [ProtocolCode.Protocol_Holdem_GetMsg]: {
+        Server: ServerMessageGetMsg,
+    },
 }
 

@@ -2297,8 +2297,32 @@ export class APIOrgFriendRoomInfo {
     public static Response: {
         code?: number, message?: string, data?: typeof APIOrgFriendRoomInfo.ResponseData
     };
-
 }
+/**
+ * 朋友桌带入申请
+ */
+export class APIOrgFriendBringIn {
+    public static API: string = "/api/roomcenter/friend/room/apply/bring_in";
+    //字段声明
+    public static RequestParams: {
+        room_id: number,  // 房间id
+        bring_in: number // 带入值
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgFriendBringIn.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgFriendBringIn.ResponseData
+    };
+}
+
+
+
+
 
 
 /**
