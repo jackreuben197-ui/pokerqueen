@@ -1,6 +1,7 @@
 import { stringify } from "querystring";
 import ComFormTitle from "../../common/ComFormTitle";
 import ComTabToggles, { ETabToggle } from "../../common/ComTabToggles";
+import { UIDefine } from "../../define/UIDefine";
 import MTTGameUtil from "../../frame/data/mtt/MttGameUtils";
 import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
 import GC from "../../frame/GameControl";
@@ -9,6 +10,8 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
 import BaseForm from "../../ui/form/BaseForm";
+import UIBase from "../../ui/UIBase";
+import UIMttSignDialogComponent from "./UIMttSignDialogComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -16,6 +19,8 @@ const { ccclass, property, menu } = cc._decorator;
 export default class MttDetailForm extends BaseForm {
     curType: number = 0;   // 0 - 4 对应上方5种类型
     _data: any = null;
+    panel_dialog: cc.Node = null;
+    panel_dialog2: UIMttSignDialogComponent = null;
     lateLoad() {
         super.lateLoad();
     }
@@ -45,7 +50,19 @@ export default class MttDetailForm extends BaseForm {
             btn_pt_1.on(cc.Node.EventType.TOUCH_END, this.onClickTop, this)
         }
 
-        
+        this.panel_dialog = this.getChildNodeOrComponent("panel_dialog");
+        let panel_root: cc.Node = this.getChildNodeOrComponent("panel_root");
+        this.panel_dialog.active = false;   
+        this.loadPrefab(UIDefine.UIMttSignDialogComponent.Path, (node: cc.Node) => {
+            node.parent = panel_root;
+            let baseScript = node.getComponent(UIMttSignDialogComponent);
+            this.panel_dialog2 = baseScript;
+            baseScript.onShow();
+            this.panel_dialog2.setVisible(false);
+        })
+  
+        let btn_addMtt: cc.Node = this.getChildNodeOrComponent("btn_addMtt");
+        btn_addMtt.on(cc.Node.EventType.TOUCH_END, this.onClickAddMtt, this)
 
         this.updateUI();
     }
@@ -79,6 +96,9 @@ export default class MttDetailForm extends BaseForm {
                         let mttDetails = res.data;
                         let img_av: cc.Sprite = panel_item2.getChildByName("img_av").getComponent(cc.Sprite);
                         WebImageHelper.SetUrlImage(img_av, mttDetails.mtt.game_icon);
+                        let dialogStr = i18nMgr.Get("UIMTT_StateHuntChampionshipsDialogDetail");
+                        let msg = LobbyControl.getInstance().formatString(dialogStr, mttDetails.mtt.hunter_bonus, 100- mttDetails.mtt.hunter_bonus);
+                        this.updateDialogUI(msg);
                         for (let i=1; i<5; i++) {
                             let btn_pt_1: cc.Node = panel_item2.getChildByName("node" + i);
                             let lbl_gold = btn_pt_1.getChildByName("lbl_gold").getComponent(cc.Label);
@@ -274,7 +294,26 @@ export default class MttDetailForm extends BaseForm {
     }
 
     onClickOpen(event) {
+        this.panel_dialog.active = true;
+    }
 
+    updateDialogUI(msg) {
+        let btn_ok = this.panel_dialog.getChildByName("btn_ok");
+        let btn_cancle = this.panel_dialog.getChildByName("btn_cancle");
+        let panel_click = this.panel_dialog.getChildByName("panel_click");
+        btn_ok.on(cc.Node.EventType.TOUCH_END, this.onClickOk, this)
+        btn_cancle.on(cc.Node.EventType.TOUCH_END, this.onClickCancle, this)
+        panel_click.on(cc.Node.EventType.TOUCH_END, this.onClickCancle, this)
+        let rt_dialog = this.panel_dialog.getChildByName("rt_dialog").getComponent(cc.RichText);
+        rt_dialog.string = msg;
+    }
+
+    onClickOk() {
+        this.panel_dialog.active = false;
+    }
+
+    onClickCancle() {
+        this.panel_dialog.active = false;
     }
 
     onClickTop(event) {
@@ -283,4 +322,9 @@ export default class MttDetailForm extends BaseForm {
         this.curType = index;
         this.updateUI();
     }
+
+    onClickAddMtt() {
+        this.panel_dialog2.setVisible(true);
+    }
+
 }
