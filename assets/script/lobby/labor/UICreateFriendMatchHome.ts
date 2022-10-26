@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 17:46:40
+ * @LastEditTime: 2022-10-26 15:51:35
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -13,6 +13,9 @@ import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil, { GameType } from "../../game/GameUtil";
 import { APIOrgFriendRoomList } from "../../net/https/WebRequest";
+import { ProtocolCode } from "../../net/websocket/ProtocolCode";
+import { Broadcast, BroadcastCode, BroadcastMsg } from "../../net/websocket/ProtocolHoldemMessages";
+import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import UIMatchChessItem from "../matchView/UIMatchChessItem";
@@ -55,7 +58,8 @@ export default class UICreateFriendMatchHome extends UIBase {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.updateFriendChessView, this.reqDataAgain);
-        this.listen(EventName.bringInApply, this.setRedTip);
+        this.listen(ProtocolCode.Protocol_Holdem_GetMsg, this.setRedTip);  // 广播表情
+
     }
     async reqDataAgain() {
         await UIClubModel.mInstance.APIOrgFriendRoomList();
@@ -97,8 +101,21 @@ export default class UICreateFriendMatchHome extends UIBase {
             UIComponent.Instance.Toast('房间信息错误')
         }
     }
-    setRedTip() {
-        this.redTip.active = true;
+    setRedTip(rec: ServerMessageGetMsg.AsObject) {
+        if (rec == null) {
+            return;
+        }
+        let json = Buffer.from(rec.extra.toString(), 'base64').toString();
+        let responseData = Broadcast.Response(json);
+        let code: number = responseData.code;
+        let data: string = responseData.data;
+        switch (code) {
+            case BroadcastCode.VerifyDoNotCan://朋友桌
+                this.redTip.active = true;
+            default:
+                break;
+        }
+
     }
 
 
