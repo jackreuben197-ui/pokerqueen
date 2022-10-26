@@ -1289,47 +1289,47 @@ export default class TexasGame {
             }
             else {
 
-                ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                    Code: ProtocolCode.Protocol_Holdem_Seated,
-                    RoomID: GameCache.Instance.room_id,
-                    MatchID: GameCache.Instance.match_id,
-                    Body: {
-                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                        seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
-                        bringIn: anteNumber,//rec.Chips
-                        autoOnTable: autoOnTable,
-                        autoUseWallet: autoUseWallet,
-                        returnOrNew: 0,
-                        store: 0,
-                    },
-                });
+                //判断是否需要带入申请 （朋友桌）
+                if (GameCache.Instance.limit_bring_in == 1 && GameCache.Instance.origin_type == 4) {
+                    UITexasModel.mInstance.APIFriendBringIn({
+                        room_id: GameCache.Instance.room_id,
+                        bring_in: anteNumber
+                    })
+                } else {
+                    ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                        Code: ProtocolCode.Protocol_Holdem_Seated,
+                        RoomID: GameCache.Instance.room_id,
+                        MatchID: GameCache.Instance.match_id,
+                        Body: {
+                            room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                            seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
+                            bringIn: anteNumber,//rec.Chips
+                            autoOnTable: autoOnTable,
+                            autoUseWallet: autoUseWallet,
+                            returnOrNew: 0,
+                            store: 0,
+                        },
+                    });
 
+                }
             }
             return;
         }
-
-        //判断是否需要带入申请 （朋友桌）
-        if (GameCache.Instance.limit_bring_in == 1 && GameCache.Instance.origin_type == 4) {
-            UITexasModel.mInstance.APIFriendBringIn({
-                room_id: GameCache.Instance.room_id,
-                bring_in: anteNumber
-            })
-        } else {
-            let IsUseWallet = true;
-            if (this.mainPlayer.cacheStoreChips >= anteNumber) {
-                IsUseWallet = false;
-            }
-            ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
-                Code: ProtocolCode.Protocol_Holdem_BringIn,
-                RoomID: GameCache.Instance.room_id,
-                MatchID: GameCache.Instance.match_id,
-                Body: {
-                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                    bringIn: anteNumber,
-                    useWallet: IsUseWallet
-                },
-            });
+        let IsUseWallet = true;
+        if (this.mainPlayer.cacheStoreChips >= anteNumber) {
+            IsUseWallet = false;
         }
+        ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_BringIn,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                bringIn: anteNumber,
+                useWallet: IsUseWallet
+            },
+        });
+
     }
     /// <summary>
     /// 站起

@@ -7,10 +7,13 @@ import { CPErrorCode } from "../i18n/CPErrorCode";
 import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply } from "../net/websocket/ProtocolHoldemMessages";
+import { DefCB } from "../protobuf/holdem/define_cb_pb";
 import { Def, Operator, PlayerChipChange, Result } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../protobuf/holdem/recv_add_time_others_pb";
 import { ServerMessageChipsChange } from "../protobuf/holdem/recv_chips_change_pb";
+import { ServerMessageGetMsg } from "../protobuf/holdem/recv_get_msg_pb";
 import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessageInsuranceTrigged } from "../protobuf/holdem/recv_insurance_trigged_pb";
 import { ServerMessageKeepSeat } from "../protobuf/holdem/recv_keep_seat_pb";
@@ -1469,11 +1472,61 @@ export default class TexasGameProtocol {
         this.game.ResetSeatPlayRecord();
 
     }
-    ProtocolHoldemGetMsgHandler(Protocol_Holdem_GetMsg: ProtocolCode, ProtocolHoldemGetMsgHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
-    }
+
     ProtocolHoldemBroadcastMsgHandler(Protocol_Holdem_BroadcastMsg: ProtocolCode, ProtocolHoldemBroadcastMsgHandler: any, arg2: this) {
         throw new Error("Method not implemented.");
+    }
+    protected ProtocolHoldemGetMsgHandler(rec: ServerMessageGetMsg.AsObject) {
+
+        if (rec == null) {
+            return;
+        }
+
+        let json = Buffer.from(rec.extra.toString(), 'base64').toString();
+        let responseData = Broadcast.Response(json);
+        let code: number = responseData.code;
+        let data: string = responseData.data;
+
+        switch (code) {
+            case BroadcastCode.BroadcastMsg:
+                var broadcastMsg = BroadcastMsg.Response(data);
+                //ShowBarrage((PropsID)broadcastMsg.type, responsedata.Message, broadcastMsg.name, (uint)broadcastMsg.user_id, (uint)broadcastMsg.target_user_id);
+                //缓存记录，本地
+                //SetPlayerBarrageRecord(responsedata.Message, broadcastMsg.name);
+                break;
+            case BroadcastCode.BroadcastVoiceprint:
+                // var VoiceprintData = VoiceprintMsg.Response(responseData.data);
+                // 	Seat mSeat = GameCache.Instance.CurGame.GetSeatByUserId((uint)VoiceprintData.suspect_rid);
+                // if (mSeat != null) {
+                //     mSeat.Player.VoiceprintId = VoiceprintData.verify_id;
+                // }
+
+                // switch (VoiceprintData.msg_type) {
+                //     case 1:
+                //         //1 - 发给嫌疑人,
+                //         if (mainPlayer.seatID > -1 && mainPlayer.userID == VoiceprintData.suspect_rid) {
+                //             cacheVoiceprintMsgId = VoiceprintData.verify_id;
+                //             HandleVerifiedStatus(VoiceprintData);
+                //         }
+                //         break;
+                //     case 2:
+                //         //2 - 发给房间内所有人
+                //         ShowVoiceprintMsgObj(VoiceprintData);
+                //         break;
+                //     default:
+                //         break;
+                // }
+                break;
+            case BroadcastCode.VerifyDoNotCan://朋友桌申请结果
+
+                let bringInData = ServerMessageRoomBringInApply.Response(data);
+
+                console.log("bringInData", bringInData);
+
+                break;
+            default:
+                break;
+        }
     }
 
     /// <summary>

@@ -2302,7 +2302,7 @@ export class APIOrgFriendRoomInfo {
  * 朋友桌带入申请
  */
 export class APIOrgFriendBringIn {
-    public static API: string = "api/roomcenter/friend/room/apply/bring_in";
+    public static API: string = "/api/roomcenter/friend/room/apply/bring_in";
     //字段声明
     public static RequestParams: {
         room_id: number,  // 房间id
