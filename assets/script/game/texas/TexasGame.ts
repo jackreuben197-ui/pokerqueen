@@ -974,10 +974,10 @@ export default class TexasGame {
         info += `\n${GameCache.Instance.room_id}-${this.mHandNum}`;
         let straddleStr: string = "";
         if (this.groupBet > 0) {
-            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)}(${StringHelper.getStringDiv100(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
+            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.GetLongString(this.smallBlind)}/${StringHelper.GetLongString(this.bigBlind)}(${StringHelper.GetLongString(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
         }
         else {
-            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)} ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
+            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.GetLongString(this.smallBlind)}/${StringHelper.GetLongString(this.bigBlind)} ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
         }
         //带出，最小带入倍数 RT_MANUAL手动的
         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL) {
@@ -1139,8 +1139,10 @@ export default class TexasGame {
         this.cacheSitdownSeatId = mSeat.seatID;
 
         UITexasModel.mInstance.APIUserRoom().then((tResp: typeof Web_User_Room.Response) => {
+
+            if (tResp.code != 0) return;
             //last_bring_out 有数据
-            if (tResp.code == 0 && tResp.data.last_bring_out != null) {
+            if (tResp.data.last_bring_out != null) {
                 let fee: number = tResp.data.last_bring_out.fee;
                 let bring_out: number = tResp.data.last_bring_out.to_wallet;
                 if (bring_out + fee > 0) {
@@ -1163,7 +1165,13 @@ export default class TexasGame {
                 } else {
 
                 }
-            } else {
+            }
+            else {
+                //判断朋友桌带入是否审核通过
+                if (tResp.data) {
+
+                }
+
                 if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
                     //this.ShowSetAutoAddChips();
                 }

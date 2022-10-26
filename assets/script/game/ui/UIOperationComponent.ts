@@ -112,6 +112,8 @@ export default class UIOperationComponent extends UIBase {
 
     private UI: cc.Node = null;
 
+    startRate: number = 0;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.imageFreeCallMask = this.getChildNodeOrComponent("Image_FreeCallMask");
@@ -200,7 +202,7 @@ export default class UIOperationComponent extends UIBase {
             this.sliderFreeCall.moved = false;
             return;
         }
-        this.callValue = this.sliderFreeCall.Index * this.calibrationWeight;
+        this.callValue = (this.startRate + this.sliderFreeCall.Index) * this.calibrationWeight;
         this.CheckOpt();
         this.showFreeCall(false);
     }
@@ -212,9 +214,11 @@ export default class UIOperationComponent extends UIBase {
     /// <param name="arg0"></param>
     private onValueChangeFreeCall(arg0: number): void {
 
-        //console.log("onValueChangeFreeCall", arg0, this.sliderFreeCall.value);
+        console.log("onValueChangeFreeCall", arg0, GameCache.Instance.CurGame.mainPlayer.chips, this.calibrationWeight);
 
-        if (arg0 >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
+        let curr = this.startRate + arg0;
+
+        if (curr >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
             this.textFreeCall.string = `ALL IN`;
             this.textFreeCall.node.color = cc.Color.WHITE;
             this.textFreeCall.fontSize = 60;
@@ -222,7 +226,7 @@ export default class UIOperationComponent extends UIBase {
             this.buttonSliderHandle.getChildByName("Image").active = true;
             //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("image_orthogon_c");
         }
-        else if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) && arg0 >= this.actionDataInfo.actionLimit.max / this.calibrationWeight) {
+        else if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) && curr >= this.actionDataInfo.actionLimit.max / this.calibrationWeight) {
             this.textFreeCall.string = `${this.actionDataInfo.actionLimit.max / this.chipScale ^ 0}`;
             this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
             this.textFreeCall.fontSize = 45;
@@ -231,7 +235,7 @@ export default class UIOperationComponent extends UIBase {
             //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_FreeCall_handle_bg");
         }
         else {
-            this.textFreeCall.string = `${arg0 * this.calibrationWeight / this.chipScale ^ 0}`;
+            this.textFreeCall.string = `${curr * this.calibrationWeight / this.chipScale}`;
             this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
             this.textFreeCall.fontSize = 45;
             //this.buttonSliderHandle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
@@ -448,7 +452,7 @@ export default class UIOperationComponent extends UIBase {
                     this.showCheck(actionLimit);
 
                     break;
-                case Def.Action.RAISE:
+                case Def.Action.RAISE: // 筹码条上下拖动
 
                     this.showBet(actionLimit);
 
@@ -486,17 +490,15 @@ export default class UIOperationComponent extends UIBase {
 
 
     private showBet(actionLimit: ActionLimit.AsObject): void {
-        cc.log("+ showBet");
+
         this.actionDataInfo.actionLimit = actionLimit;
         let max, min;
         if (actionLimit.max == actionLimit.min) {
             max = Math.ceil(actionLimit.max / this.calibrationWeight);
             min = max;
-            //this.sliderFreeCall.maxValue = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-            //this.sliderFreeCall.minValue = this.sliderFreeCall.maxValue;
             this.sliderFreeCall.SetMinMax(min, max);
             this.textFreeCall.string = `ALL IN`;
-            this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
+            this.textFreeCallMax.string = `${actionLimit.max / this.chipScale}`;
         }
         else {
             max = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)
@@ -510,12 +512,17 @@ export default class UIOperationComponent extends UIBase {
                 min = Math.ceil(actionLimit.min / this.calibrationWeight);
                 //this.sliderFreeCall.value = this.sliderFreeCall.minValue;
                 this.textFreeCall.string = `${actionLimit.min / this.chipScale}`;
+
+                this.startRate = min;
             }
             this.sliderFreeCall.SetMinMax(min, max);
             let actionLimitMax: number = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) ? (actionLimit.max) : (actionLimit.max + 1);
             this.textFreeCallMax.string = `${actionLimitMax / this.chipScale}`;
         }
+        console.log("min max", min, max);
         this.setTopCallButtons();
+        this.onValueChangeFreeCall(0);
+        this.sliderFreeCall.onShow({ index: 0 });
         this.buttonFreeCall.active = true;
     }
     private showCall(actionLimit: ActionLimit.AsObject): void {
@@ -523,7 +530,7 @@ export default class UIOperationComponent extends UIBase {
         cc.log("showCall actionLimit:", actionLimit);
         this.actionDataInfo.CallAmount = actionLimit.min;
         this.buttonCall.active = true;
-        this.textCall.string = StringHelper.getStringDiv100(actionLimit.min);
+        this.textCall.string = StringHelper.GetLongString(actionLimit.min);
     }
 
     private showFold(actionLimit: ActionLimit.AsObject): void {
@@ -611,6 +618,7 @@ export default class UIOperationComponent extends UIBase {
         this.textFreeCall.string = `ALL IN`;
         this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         this.setTopCallButtons();
+        this.sliderFreeCall.onShow({ index: 0 });
         this.buttonFreeCall.active = true;
         cc.log("+ showRaise");
     }
@@ -711,7 +719,7 @@ export default class UIOperationComponent extends UIBase {
         else {
             this.calibrationWeight = 100;
         }
-
+        console.log("SetCalibrationWeight", this.calibrationWeight);
     }
 
     static OperationData(actionsList, shortcutsList): OperationData {
