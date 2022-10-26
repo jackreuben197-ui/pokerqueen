@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 17:57:59
+ * @LastEditTime: 2022-10-26 18:12:10
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -44,7 +44,7 @@ enum memberType {
 export class ClubAdmin {
     _data = null
     constructor(data) {
-        this._data = data.info;
+        this._data = data;
     }
     get club_id() {
         return this._data.club_id
@@ -153,30 +153,38 @@ export default class UILabarPlayViewForm extends UIBase {
         UIClubModel.mInstance.APIOrgClubGold(data.random_id)
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {
             let isManger: any = APIOrgClubIsManger.Response.data
-            let _data = new ClubAdmin(isManger)
-            switch (_data.level) {
-                case memberType.own:
-                    this.chongzhi.active = true;
-                    this.tabNode.getChildByName('chpj').active = true;   //创建牌桌
-                    this.tabNode.getChildByName('ghgl').active = true;   //工会管理
-                    this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active;  //查看公会
-                    break;
-                case memberType.admin:
-                    this.chongzhi.active = false;
-                    this.tabNode.getChildByName('chpj').active = _data.create_room == 1;
-                    this.tabNode.getChildByName('ghgl').active = false;
-                    this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
-                    break;
+            if (isManger.info) {
+                let _data = new ClubAdmin(isManger.info)
+                switch (_data.level) {
+                    case memberType.own:
+                        this.chongzhi.active = true;
+                        this.tabNode.getChildByName('chpj').active = true;   //创建牌桌
+                        this.tabNode.getChildByName('ghgl').active = true;   //工会管理
+                        this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active;  //查看公会
+                        break;
+                    case memberType.member:
+                        this.chongzhi.active = false;
+                        this.tabNode.getChildByName('chpj').active = _data.create_room == 1;
+                        this.tabNode.getChildByName('ghgl').active = false;
+                        this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
+                        break;
 
-                case memberType.member:
-                    this.chongzhi.active = false;
-                    this.tabNode.getChildByName('chpj').active = false;
-                    this.tabNode.getChildByName('ghgl').active = false;
-                    this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
-                    break;
-                default:
-                    break;
+                    case memberType.admin:
+                        // this.chongzhi.active = false;
+                        // this.tabNode.getChildByName('chpj').active = false;
+                        // this.tabNode.getChildByName('ghgl').active = false;
+                        // this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                this.chongzhi.active = false;
+                this.tabNode.getChildByName('chpj').active = false;
+                this.tabNode.getChildByName('ghgl').active = false;
+                this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
             }
+
         })
     }
 

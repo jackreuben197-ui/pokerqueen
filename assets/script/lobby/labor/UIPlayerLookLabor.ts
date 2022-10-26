@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 11:45:38
+ * @LastEditTime: 2022-10-26 18:14:03
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -44,7 +44,7 @@ export default class UIPlayerLookLabor extends BaseForm {
         let id = this.mask_group.getChildByName('id').getComponent(cc.Label);
         id.string = 'ID:' + data.random_id
         let dec = this.mask_group.parent.getChildByName('TEXT_LABEL').getComponent(cc.Label);
-        dec.string = data.desc
+        dec.string = data.desc || ''
 
         let icon = cc.find('iconMask/icon', this.mask_group).getComponent(cc.Sprite);
         WebImageHelper.SetUrlImage(icon, data.logo)
