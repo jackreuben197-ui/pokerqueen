@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-17 11:36:31
+ * @LastEditTime: 2022-10-26 17:57:59
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -34,6 +34,39 @@ enum EnumLoadType {
 enum PokerType {
     Normal = 0,//普通
     SixPlus = 2//短牌
+
+}
+enum memberType {
+    own = 1,
+    admin,
+    member
+}
+export class ClubAdmin {
+    _data = null
+    constructor(data) {
+        this._data = data.info;
+    }
+    get club_id() {
+        return this._data.club_id
+    }
+    get create_room() {
+        return this._data.create_room
+    }
+    get id() {
+        return this._data.id
+    }
+    get level() {
+        return this._data.level
+    }
+    get op_id() {
+        return this._data.op_id
+    }
+    get status() {
+        return this._data.status
+    }
+    get user_id() {
+        return this._data.user_id
+    }
 }
 
 @ccclass
@@ -117,22 +150,32 @@ export default class UILabarPlayViewForm extends UIBase {
         id.string = 'ID:' + data.random_id
         let icon = cc.find('iconMask/icon', this.panel_right).getComponent(cc.Sprite);
         WebImageHelper.SetUrlImage(icon, data.logo)
-
-
-
         UIClubModel.mInstance.APIOrgClubGold(data.random_id)
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {
             let isManger: any = APIOrgClubIsManger.Response.data
-            if (isManger) {
-                this.chongzhi.active = true;
-                this.tabNode.getChildByName('chpj').active = true;
-                this.tabNode.getChildByName('ghgl').active = true;
-                this.tabNode.getChildByName('ckgh').active = false;
-            } else {
-                this.chongzhi.active = false;
-                this.tabNode.getChildByName('chpj').active = false;
-                this.tabNode.getChildByName('ghgl').active = false;
-                this.tabNode.getChildByName('ckgh').active = true;
+            let _data = new ClubAdmin(isManger)
+            switch (_data.level) {
+                case memberType.own:
+                    this.chongzhi.active = true;
+                    this.tabNode.getChildByName('chpj').active = true;   //创建牌桌
+                    this.tabNode.getChildByName('ghgl').active = true;   //工会管理
+                    this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active;  //查看公会
+                    break;
+                case memberType.admin:
+                    this.chongzhi.active = false;
+                    this.tabNode.getChildByName('chpj').active = _data.create_room == 1;
+                    this.tabNode.getChildByName('ghgl').active = false;
+                    this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
+                    break;
+
+                case memberType.member:
+                    this.chongzhi.active = false;
+                    this.tabNode.getChildByName('chpj').active = false;
+                    this.tabNode.getChildByName('ghgl').active = false;
+                    this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
+                    break;
+                default:
+                    break;
             }
         })
     }

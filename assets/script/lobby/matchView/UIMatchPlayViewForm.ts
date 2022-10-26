@@ -14,6 +14,7 @@ import { EMatchViewTabType } from "./MatchViewConfig";
 
 
 
+
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/matchView/UIMatchPlayViewForm')
