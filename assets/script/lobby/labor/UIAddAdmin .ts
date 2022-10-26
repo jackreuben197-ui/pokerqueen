@@ -3,18 +3,15 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 14:52:50
- * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAuditAdmin.ts
+ * @LastEditTime: 2022-10-26 14:52:46
+ * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAddAdmin .ts
  */
 
 import List from "../../common/List";
 import { EventName } from "../../config/EventName";
-import { UIDefine } from "../../define/UIDefine";
 import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
-import UIAdmin from "./UIAdmin";
+import UIClubMamber from "./UIClubMamber";
 import { UIClubModel } from "./UIClubModel";
-import { APIOrgChangeClubData, APIOrgMangerList, Web_Org_Club_Get } from "../../net/https/WebRequest";
 
 
 const { ccclass, property } = cc._decorator;
@@ -51,7 +48,7 @@ export default class UIAuditAdmin extends BaseForm {
         this.dealData()
     }
     onRender(node: cc.Node, index: number) {
-        let item = node.getComponent(UIAdmin);
+        let item = node.getComponent(UIClubMamber);
         item.initData(this._list[index]);
     }
     scrollingCB = async (scrollView: cc.ScrollView) => {
@@ -66,25 +63,9 @@ export default class UIAuditAdmin extends BaseForm {
     }
 
     async dealData() {
-        this._reqing = true
-        let data: any = Web_Org_Club_Get.Response.data;
-        await UIClubModel.mInstance.APIOrgMangerList(data.random_id, 10, this._offset);
-        let _data: any = APIOrgMangerList.Response.data
-        this._reqing = false
-        _data.data.forEach(element => {
-            this._list.push(element);
-        });  //分页的时候使用的
-        this._total = _data.total
 
-        this.list.numItems = this._list.length;
-        this._offset = this._list.length;
-        this._reqEnd = this._list.length == this._total;
-
-        this.list.numItems = this._list.length;
-        this._offset = this._list.length;
-        this._reqEnd = this._list.length == this._total;
     }
     addAdminBtn() {
-        UIComponent.open(UIDefine.UIAddAdmin)
+
     }
 }

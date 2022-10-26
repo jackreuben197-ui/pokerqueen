@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 18:02:14
+ * @LastEditTime: 2022-10-26 14:48:38
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -210,11 +210,11 @@ export class UIClubModel {
         });
     }
 
-    APIOrgMangerList(id) {
+    APIOrgMangerList(id, limit = 5, offset = 0) {
         let params: any = {
             club_random_id: id,
-            "limit": 5,
-            "offset": 0
+            "limit": limit,
+            "offset": offset,
         };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
