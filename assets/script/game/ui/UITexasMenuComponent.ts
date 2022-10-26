@@ -2,7 +2,6 @@ import { EventName } from "../../config/EventName";
 import { CommonDefine } from "../../define/CommonDefine";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
-import { StringHelper } from "../../helper/StringHelper";
 import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIMineModel } from "../../lobby/UIMineModel";
@@ -19,7 +18,6 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UITexasMenuComponent extends UIBase {
-
     //文字透明度
     Text_Light_Alpha = 178;
     Text_Dark_Alpha = 70;
@@ -43,6 +41,7 @@ export default class UITexasMenuComponent extends UIBase {
         hideLine?: boolean;
         onClick?: Function;
     };
+
     MenuButtons_Dic: Record<
         "Button_Standup" |
         "Button_Rebuy" |
@@ -314,26 +313,37 @@ export default class UITexasMenuComponent extends UIBase {
         this.game.uirc.HideMenu();
         UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.node });
     }
-    Click_Button_SetAutoOnTable() {
 
+    //自动带入带出
+    Click_Button_SetAutoOnTable() {
+        if (null == this.MenuButtons_Dic.Button_SetAutoOnTable || !this.MenuButtons_Dic.Button_SetAutoOnTable.node.getComponent(cc.Button).interactable) {
+            return;
+        }
+        this.game.uirc.HideMenu();
+        // 弹代入框
+        UIComponent.Instance.ShowUI(PrefabUI.UIAutoChipsComponent, true);
     }
+
+    //手动带入
     Click_Button_AddChips() {
         if (null == this.MenuButtons_Dic.Button_AddChips || !this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable) {
             return;
         }
         this.game.uirc.HideMenu();
         // 弹代入框
-        UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent,
-            {
-                bigBlind: GameCache.Instance.CurGame.bigBlind,
-                smallBlind: GameCache.Instance.CurGame.smallBlind,
-                currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                // totalCoin: GameCache.Instance.gold,
-                totalCoin: GC.data.user.info.gold,
-                tableChips: GameCache.Instance.CurGame.mainPlayer.chips
-            });
+        UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent, {
+            bigBlind: GameCache.Instance.CurGame.bigBlind,
+            smallBlind: GameCache.Instance.CurGame.smallBlind,
+            currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+            currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+            // totalCoin: GameCache.Instance.gold,
+            totalCoin: GC.data.user.info.gold,
+            tableChips: GameCache.Instance.CurGame.mainPlayer.chips
+        });
+
     }
+
+    //手动带出
     Click_Button_TakeOut() {
 
         if (null == this.MenuButtons_Dic.Button_TakeOut || !this.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable) {
@@ -341,13 +351,12 @@ export default class UITexasMenuComponent extends UIBase {
         }
         this.game.uirc.HideMenu();
         // 弹代入框CurretainMinRate
-        UIComponent.Instance.ShowUI<OutClipsData>(PrefabUI.UIOutChipsComponent,
-            {
-                currentMinRate: this.game.currentMinRate,
-                tableChips: this.game.mainPlayer.chips,
-            }
-        )
+        UIComponent.Instance.ShowUI<OutClipsData>(PrefabUI.UIOutChipsComponent, {
+            currentMinRate: this.game.currentMinRate,
+            tableChips: this.game.mainPlayer.chips,
+        })
     }
+
     Click_Button_Trust() {
 
     }

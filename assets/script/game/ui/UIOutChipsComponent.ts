@@ -77,26 +77,22 @@ export default class UIOutChipsComponent extends UIBase {
             if (currentMaxBring > 10 && currentMaxBring < 1000) {
                 maxRate = currentMaxBring / 10 ^ 0;
                 this.Curmultiple = 10;
-                this.Button_Commit.enabled = true;
-                this.Button_Commit.node.color = new cc.Color(225, 181, 141);
+                this.Button_Commit.interactable = true;
             }
             else if (currentMaxBring > 1000 && currentMaxBring < 10000) {
                 maxRate = currentMaxBring / 100 ^ 0;
                 this.Curmultiple = 100;
-                this.Button_Commit.enabled = true;
-                this.Button_Commit.node.color = new cc.Color(225, 181, 141);
+                this.Button_Commit.interactable = true;
             }
             else if (currentMaxBring > 10000) {
                 maxRate = currentMaxBring / 1000 ^ 0;
                 this.Curmultiple = 1000;
-                this.Button_Commit.enabled = true;
-                this.Button_Commit.node.color = new cc.Color(225, 181, 141);
+                this.Button_Commit.interactable = true;
             }
             else {
                 maxRate = 0;
                 this.CurMinOutBeans = 0;
-                this.Button_Commit.enabled = false;
-                this.Button_Commit.node.color = cc.Color.GRAY;
+                this.Button_Commit.interactable = false;
                 this.textCoin.string = "0";
             }
             //if (maxRate > addClipsData.currentMaxRate)
@@ -108,9 +104,12 @@ export default class UIOutChipsComponent extends UIBase {
             //    maxRate = addClipsData.currentMinRate;
             //}
             this.MaxRate = maxRate;
-            this.sliderCoin.maxValue = maxRate;
-            this.sliderCoin.minValue = 0;
-            this.sliderCoin.value = 0;
+            this.sliderCoin.SetMinMax(0, maxRate)
+            this.sliderCoin.onShow({ index: 0 });
+            this.onValueChangedSliderCoin(0);
+            // this.sliderCoin.maxValue = maxRate;
+            // this.sliderCoin.minValue = 0;
+            // this.sliderCoin.value = 0;
         }
     }
     animateDialog() {

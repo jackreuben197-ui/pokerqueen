@@ -17,7 +17,8 @@ export enum PrefabUI {
     UIOutChipsComponent = "UIOutChipsComponent",
     UIOperationComponent = "UIOperationComponent",
     UIAutoOperationComponent = "UIAutoOperationComponent",
-    UIInsuranceComponent = "UIInsuranceComponent"
+    UIInsuranceComponent = "UIInsuranceComponent",
+    UIAutoChipsComponent = "UIAutoChipsComponent",
 }
 //打开面板追加参数
 export interface Open_Obj {

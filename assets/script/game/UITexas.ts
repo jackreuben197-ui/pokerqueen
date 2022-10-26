@@ -28,6 +28,7 @@ import GameUtil from "./GameUtil";
 
 import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent, { AddClipsData } from "./ui/UIAddChipsComponent";
+import UIAutoChipsComponent from "./ui/UIAutoChipsComponent";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
@@ -156,6 +157,7 @@ export default class UITexas extends BaseScene {
     UIChips_Con: cc.Node = null;
     UIAddChips_Com: UIAddChipsComponent = null;
     UIOutChips_Com: UIOutChipsComponent = null;
+    UIAutoChips_Com: UIAutoChipsComponent = null;
     //3.操作面板
     UIOperation_Con: cc.Node = null;
     UIOperation_Com: UIOperationComponent = null;
@@ -290,6 +292,7 @@ export default class UITexas extends BaseScene {
         this.UIChips_Con = this.getChildNodeOrComponent("UIChips_Con");
         this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
         this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
+        this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
         //3.操作面板
         this.UIOperation_Con = this.getChildNodeOrComponent("UIOperation_Con");
         this.UIOperation_Com = this.AddComponents(PrefabUI.UIOperationComponent, this.UIOperation_Con);
@@ -297,10 +300,9 @@ export default class UITexas extends BaseScene {
         //4.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
         this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
-        
     }
 
-    
+
 
 
 
