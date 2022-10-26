@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 15:51:35
+ * @LastEditTime: 2022-10-26 16:17:33
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -14,7 +14,7 @@ import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil, { GameType } from "../../game/GameUtil";
 import { APIOrgFriendRoomList } from "../../net/https/WebRequest";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { Broadcast, BroadcastCode, BroadcastMsg } from "../../net/websocket/ProtocolHoldemMessages";
+import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply } from "../../net/websocket/ProtocolHoldemMessages";
 import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -111,7 +111,10 @@ export default class UICreateFriendMatchHome extends UIBase {
         let data: string = responseData.data;
         switch (code) {
             case BroadcastCode.VerifyDoNotCan://朋友桌
-                this.redTip.active = true;
+                let bringInData = ServerMessageRoomBringInApply.Response(data);
+                if (bringInData.status == 1) {
+                    this.redTip.active = true;
+                }
             default:
                 break;
         }

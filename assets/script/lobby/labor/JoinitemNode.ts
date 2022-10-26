@@ -3,7 +3,7 @@
  * @Date: 2022-10-24 13:42:49
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 17:44:57
+ * @LastEditTime: 2022-10-26 16:12:59
  * @FilePath: /pokerqueen/assets/script/lobby/labor/JoinitemNode.ts
  */
 
@@ -97,7 +97,7 @@ export default class JoinitemNode extends UIBase {
     }
 
     async btnClick(event, customData) {
-        // await UIClubModel.mInstance.APIOrgFriendApplyDeal(this._data.id, Number(customData))
+        await UIClubModel.mInstance.APIOrgFriendApplyDeal(this._data.id, Number(customData))
         this.post(EventName.updateFrendApplyList)
     }
 

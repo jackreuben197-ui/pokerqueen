@@ -3,7 +3,7 @@
  * @Date: 2022-10-21 21:48:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 18:08:55
+ * @LastEditTime: 2022-10-26 16:14:03
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIApplyJoin.ts
  */
 
@@ -45,7 +45,7 @@ export default class UIApplyJoin extends BaseForm {
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(EventName.updateFrendApplyList, this.dealData);
+        this.listen(EventName.updateFrendApplyList, this.reqDataAgain);
     }
     async reqDataAgain() {
         this._offset = 0;
@@ -77,10 +77,10 @@ export default class UIApplyJoin extends BaseForm {
         let _data: any = APIOrgFriendApplyList.Response.data
 
         this._reqing = false
-        // _data.data.forEach(element => {
-        //     this._list.push(element);
-        // });  //分页的时候使用的
-        this.list = _data.data;
+        _data.data.forEach(element => {
+            this._list.push(element);
+        });  //分页的时候使用的
+        // this.list = _data.data;
         this.lb.active = this._list.length == 0;
         this.list.numItems = this._list.length;
         this._total = _data.total

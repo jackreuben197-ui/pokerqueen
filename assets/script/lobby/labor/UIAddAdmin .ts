@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 14:52:46
+ * @LastEditTime: 2022-10-26 16:13:43
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAddAdmin .ts
  */
 
@@ -37,7 +37,7 @@ export default class UIAuditAdmin extends BaseForm {
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(EventName.updateFrendApplyList, this.dealData);
+        // this.listen(EventName.updateFrendApplyList, this.dealData);
     }
     async reqDataAgain() {
         this._offset = 0;
