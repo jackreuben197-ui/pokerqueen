@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-19 11:45:47
+ * @LastEditTime: 2022-10-26 14:15:38
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -49,6 +49,7 @@ export default class UIManageLabor extends BaseForm {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.clubGoldChange, this.updateGold);
+        this.listen(EventName.adminChange, this.initMangerList);
     }
 
     initTop() {
@@ -94,11 +95,18 @@ export default class UIManageLabor extends BaseForm {
         let lbl_gold = cc.find('img_right_bg/lbl_glod', jj).getComponent(cc.Label);
         this.setText(lbl_gold, GC.data.club.info.displayGold);
     }
+    clickAdmin() {
+        UIComponent.open(UIDefine.UIAuditAdmin)
+    }
 
     async initMangerList() {
         let data: any = Web_Org_Club_Get.Response.data;
         await UIClubModel.mInstance.APIOrgMangerList(data.random_id);
         data = APIOrgMangerList.Response.data
+        for (let index = 0; index < this.iconNodeMan.childrenCount; index++) {
+            const element = this.iconNodeMan.children[index];
+            element.active = false;
+        }
         for (let index = 0; index < data?.data.length; index++) {
 
             const element = this.iconNodeMan.children[index].getChildByName('icon').getComponent(cc.Sprite);

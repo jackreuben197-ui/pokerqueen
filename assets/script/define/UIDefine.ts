@@ -440,6 +440,12 @@ export const UIDefine = {
         Name: "UIApplyJoin",
         Bundle: null,
         Path: "main/club/UIApplyJoin",
+    },
+    UIAuditAdmin: {
+        UIType: UIType.Form,
+        Name: "UIAuditAdmin",
+        Bundle: null,
+        Path: "main/club/UIAuditAdmin",
     }
 
 
