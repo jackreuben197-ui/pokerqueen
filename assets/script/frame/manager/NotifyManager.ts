@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-09-28 13:10:55
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-27 20:31:45
+ * @FilePath: /pokerqueen/assets/script/frame/manager/NotifyManager.ts
+ */
 import CCTools from "../../tools/CCTools";
 
 export type TEventType = {
