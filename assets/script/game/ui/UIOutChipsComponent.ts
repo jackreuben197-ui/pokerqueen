@@ -108,9 +108,12 @@ export default class UIOutChipsComponent extends UIBase {
             //    maxRate = addClipsData.currentMinRate;
             //}
             this.MaxRate = maxRate;
-            this.sliderCoin.maxValue = maxRate;
-            this.sliderCoin.minValue = 0;
-            this.sliderCoin.value = 0;
+            // this.sliderCoin.maxValue = maxRate;
+            // this.sliderCoin.minValue = 0;
+            // this.sliderCoin.value = 0;
+            this.sliderCoin.SetMinMax(0, maxRate);
+            this.sliderCoin.onShow({ index: 0 });
+            this.onValueChangedSliderCoin(0);
         }
     }
     animateDialog() {

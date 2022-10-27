@@ -11,8 +11,8 @@ import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
-import GameUtil from "../GameUtil";
 import UITexasSettingComponent from "../UITexasSettingComponent";
+import GameUtil from "../util/GameUtil";
 
 
 export type OperationData = {

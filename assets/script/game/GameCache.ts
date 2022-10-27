@@ -1,6 +1,7 @@
 
-import GameUtil from "./GameUtil";
+
 import TexasGame from "./texas/TexasGame";
+import GameUtil from "./util/GameUtil";
 
 export class GameCache {
 

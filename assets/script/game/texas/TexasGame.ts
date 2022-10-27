@@ -28,11 +28,11 @@ import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
+import GameUtil, { RoomType } from "../util/GameUtil";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
-import GameUtil, { RoomType } from "./../GameUtil";
 import { SeatEmpty, SeatIdle, SeatInsurance, SeatOperation } from "./../SeatStateHandler";
 import TexasGameMessageHandler from "./../TexasGameMessageHandler";
 import TexasGameProtocol from "./../TexasGameProtocol";
@@ -2799,7 +2799,6 @@ export default class TexasGame {
         if (null != this.cards) {
             this.cards = []
             this.cards = null;
-            console.log(">>>>>>>>>>>>> cards = null");
         }
         if (null != this.secondCards) {
             this.secondCards = []

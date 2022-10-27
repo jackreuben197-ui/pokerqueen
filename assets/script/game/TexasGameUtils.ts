@@ -11,11 +11,11 @@ import { ClientMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { GameCache } from "./GameCache";
-import { RoomType } from "./GameUtil";
 import Seat from "./seat/Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./texas/TexasGame";
 import { PublicCardInfo } from "./UITexas";
+import { RoomType } from "./util/GameUtil";
 
 export default class TexasGameUtils {
 

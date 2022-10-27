@@ -12,9 +12,9 @@ import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent
 import UIBase from "../ui/UIBase";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
-import GameUtil from "./GameUtil";
 import Seat, { VoiceprintState } from "./seat/Seat";
 import { AddClipsData } from "./ui/UIAddChipsComponent";
+import GameUtil from "./util/GameUtil";
 
 
 export class CardUIInfo {

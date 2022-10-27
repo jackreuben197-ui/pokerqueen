@@ -1,18 +1,18 @@
+import { ProcedureEnum } from "../../define/EIDefine";
+import { UIDefineType } from "../../define/UIDefine";
+import ProcedureManager from "../../manager/ProcedureManager";
+import WebSocketClient from "../../net/websocket/WebSocketClient";
+import LobbySession from "../../session/LobbySession";
+import UIComponent from "../../ui/UIComponent";
+import { EnterRoomInfo, GameCache } from "../GameCache";
+import { SeatUIInfo } from "../seat/Seat";
+import MTTGame from "../texas/MTTGame";
+import OmahaGame4 from "../texas/OmahaGame4";
+import OmahaGame5 from "../texas/OmahaGame5";
+import OmahaGame6 from "../texas/OmahaGame6";
+import TexasAofGame from "../texas/TexasAofGame";
+import TexasGame from "../texas/TexasGame";
 
-import { ProcedureEnum } from "../define/EIDefine";
-import { UIDefine, UIDefineType } from "../define/UIDefine";
-import GC from "../frame/GameControl";
-import ProcedureManager from "../manager/ProcedureManager";
-import WebSocketClient from "../net/websocket/WebSocketClient";
-import LobbySession from "../session/LobbySession";
-import UIComponent from "../ui/UIComponent";
-import { EnterRoomInfo, GameCache } from "./GameCache";
-import { SeatUIInfo } from "./seat/Seat";
-import OmahaGame4 from "./texas/OmahaGame4";
-import OmahaGame5 from "./texas/OmahaGame5";
-import OmahaGame6 from "./texas/OmahaGame6";
-import TexasAofGame from "./texas/TexasAofGame";
-import TexasGame from "./texas/TexasGame";
 
 /**
  * 游戏类型
@@ -1159,8 +1159,7 @@ export default class GameUtil {
             case RoomType.TexasHoldemStandardPotLimit: // 普通底池限注
             case RoomType.TexasHoldemSixPlusFixedNoLimit: // 普通短牌
             case RoomType.TexasHoldemSixPlusFixedPotLimit: // 普通短牌底池限注
-                //(game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
-                //ComponentFactory.CreateWithId<TexasGame, Component>((int)roomType, component, fromPool);
+
                 game = this.GetGame(roomType, TexasGame);
                 break;
             case RoomType.TexasHoldemStandardAof: // 普通AOF
@@ -1216,9 +1215,9 @@ export default class GameUtil {
             case RoomType.MTTTexasHoldemSixPlusFixedNoLimit:
             case RoomType.MTTTexasHoldemSixPlusFixedPotLimit:
             case RoomType.MTTTexasHoldemSixPlusFixedAof:
-                {
-                    //game = ComponentFactory.CreateWithId<MTTGame, Component>((int)roomType, component, fromPool);
-                }
+
+                game = this.GetGame(roomType, MTTGame);
+                //ComponentFactory.CreateWithId<MTTGame, Component>((int)roomType, component, fromPool);
                 break;
 
             case RoomType.MTTOmaha4StandardNoLimit:

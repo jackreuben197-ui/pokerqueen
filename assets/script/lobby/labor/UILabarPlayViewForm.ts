@@ -16,7 +16,7 @@ import { EMatchViewTabType } from "../matchView/MatchViewConfig";
 import BaseForm from "../../ui/form/BaseForm";
 import { APIOrgClubGold, APIOrgClubIsManger, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { UIClubModel } from "./UIClubModel";
-import { GameType } from "../../game/GameUtil";
+import { GameType } from "../../game/util/GameUtil";
 import { EWalletGoldOpration } from "../../wallet/WalletConfig";
 import GC from "../../frame/GameControl";
 import { EventName } from "../../config/EventName";

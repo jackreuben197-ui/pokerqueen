@@ -7,7 +7,7 @@
  * @FilePath: /pokerqueen/assets/script/frame/data/lobby/LobbyRoomListItem.ts
  */
 import { TRoomListItem } from "../../../config/TTypeConfig";
-import { RoomType } from "../../../game/GameUtil";
+import { RoomType } from "../../../game/util/GameUtil";
 import GC from "../../GameControl";
 
 export default class LobbyRoomListItem {

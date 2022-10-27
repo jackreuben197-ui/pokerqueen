@@ -11,7 +11,7 @@ import { EventName } from "../../config/EventName";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
-import GameUtil, { RoomType } from "../../game/GameUtil";
+import GameUtil, { RoomType } from "../../game/util/GameUtil";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { APIOrgRoomCreate } from "../../net/https/WebRequest";
 import WebSocketClient from "../../net/websocket/WebSocketClient";

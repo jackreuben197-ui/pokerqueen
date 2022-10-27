@@ -1,7 +1,6 @@
 import { CardType, CardTypeUtil } from "../CardTypeUtil";
 import { GameCache } from "../GameCache";
-import GameUtil from "../GameUtil";
-
+import GameUtil from "../util/GameUtil";
 import TexasGame from "./TexasGame";
 /**
  * 奥马哈 +4 玩法

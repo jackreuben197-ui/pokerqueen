@@ -2,7 +2,7 @@ import List from "../../common/List";
 import { EventName } from "../../config/EventName";
 import LobbyRoomListModel from "../../frame/data/lobby/LobbyRoomListModel";
 import GC from "../../frame/GameControl";
-import { GameType, PokerType } from "../../game/GameUtil";
+import { GameType, PokerType } from "../../game/util/GameUtil";
 import { Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIMatchChessItem from "./UIMatchChessItem";
