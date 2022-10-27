@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:46:24
+ * @LastEditTime: 2022-10-27 16:57:33
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -101,13 +101,16 @@ export default class UIManageLabor extends BaseForm {
 
     async initMangerList() {
         let data: any = Web_Org_Club_Get.Response.data;
-        await UIClubModel.mInstance.APIOrgMangerList(data.random_id);
+        // await UIClubModel.mInstance.APIOrgMangerList(data.random_id);
+        // data = APIOrgMangerList.Response.data
+
+        await UIClubModel.mInstance.APIOrgMangerList(data.random_id, 5, 0);
         data = APIOrgMangerList.Response.data
         for (let index = 0; index < this.iconNodeMan.childrenCount; index++) {
             const element = this.iconNodeMan.children[index];
             element.active = false;
         }
-        for (let index = 0; index < data?.data.length; index++) {
+        for (let index = 0; index < data?.data?.length; index++) {
 
             const element = this.iconNodeMan.children[index].getChildByName('icon').getComponent(cc.Sprite);
             WebImageHelper.SetHeadImage(element, data?.data[index].avatar)
@@ -116,7 +119,7 @@ export default class UIManageLabor extends BaseForm {
     }
     async initMemberList() {
         let data: any = Web_Org_Club_Get.Response.data;
-        await UIClubModel.mInstance.APIOrgMemberList(data.random_id)
+        await UIClubModel.mInstance.APIOrgMemberList(data.random_id);
         data = APIOrgMemberList.Response.data;
         for (let index = 0; index < this.iconNodeMer.childrenCount; index++) {
             const element = this.iconNodeMer.children[index];
