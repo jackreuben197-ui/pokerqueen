@@ -1,6 +1,6 @@
 import { TRoomList } from "../../../config/TTypeConfig";
 import { GameCache } from "../../../game/GameCache";
-import { GameType, PokerType } from "../../../game/GameUtil";
+import { GameType, PokerType } from "../../../game/util/GameUtil";
 import GC from "../../GameControl";
 import LobbyRoomListItem from "./LobbyRoomListItem";
 

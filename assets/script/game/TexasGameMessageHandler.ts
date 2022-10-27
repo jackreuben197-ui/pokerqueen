@@ -27,12 +27,12 @@ import { ServerMessageStandupActive } from "../protobuf/holdem/req_stand_up_acti
 import GlobalSession from "../session/GlobalSession";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
-import { RoomType } from "./GameUtil";
 import Seat from "./seat/Seat";
 
 import { SeatStandupAnimation } from "./SeatStateHandler";
 import TexasGame from "./texas/TexasGame";
 import { TexasGameState } from "./TexasGameState";
+import { RoomType } from "./util/GameUtil";
 
 export default class TexasGameMessageHandler {
 

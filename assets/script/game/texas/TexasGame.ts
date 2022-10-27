@@ -20,6 +20,7 @@ import { ClientMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
 import { ClientMessageSeated } from "../../protobuf/holdem/req_seated_pb";
+import { ClientMessageSetAutoOnTable } from "../../protobuf/holdem/req_set_auto_on_table_pb";
 import { ClientMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
 import { ClientMessageStoreChips } from "../../protobuf/holdem/req_store_chips_pb";
 import StorageKey from "../../session/StorageKey";
@@ -28,11 +29,11 @@ import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
+import GameUtil, { RoomType } from "../util/GameUtil";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
-import GameUtil, { RoomType } from "./../GameUtil";
 import { SeatEmpty, SeatIdle, SeatInsurance, SeatOperation } from "./../SeatStateHandler";
 import TexasGameMessageHandler from "./../TexasGameMessageHandler";
 import TexasGameProtocol from "./../TexasGameProtocol";
@@ -974,10 +975,10 @@ export default class TexasGame {
         info += `\n${GameCache.Instance.room_id}-${this.mHandNum}`;
         let straddleStr: string = "";
         if (this.groupBet > 0) {
-            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)}(${StringHelper.getStringDiv100(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
+            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.GetLongString(this.smallBlind)}/${StringHelper.GetLongString(this.bigBlind)}(${StringHelper.GetLongString(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
         }
         else {
-            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.getStringDiv100(this.smallBlind)}/${StringHelper.getStringDiv100(this.bigBlind)} ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
+            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.GetLongString(this.smallBlind)}/${StringHelper.GetLongString(this.bigBlind)} ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
         }
         //带出，最小带入倍数 RT_MANUAL手动的
         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL) {
@@ -1139,8 +1140,10 @@ export default class TexasGame {
         this.cacheSitdownSeatId = mSeat.seatID;
 
         UITexasModel.mInstance.APIUserRoom().then((tResp: typeof Web_User_Room.Response) => {
+
+            if (tResp.code != 0) return;
             //last_bring_out 有数据
-            if (tResp.code == 0 && tResp.data.last_bring_out != null) {
+            if (tResp.data.last_bring_out != null) {
                 let fee: number = tResp.data.last_bring_out.fee;
                 let bring_out: number = tResp.data.last_bring_out.to_wallet;
                 if (bring_out + fee > 0) {
@@ -1163,9 +1166,15 @@ export default class TexasGame {
                 } else {
 
                 }
-            } else {
+            }
+            else {
+                //判断朋友桌带入是否审核通过
+                if (tResp.data) {
+
+                }
+
                 if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                    //this.ShowSetAutoAddChips();
+                    this.ShowSetAutoAddChips();
                 }
                 else {
                     //弹出设置
@@ -1330,6 +1339,19 @@ export default class TexasGame {
             },
         });
 
+    }
+
+    SetAutoOnTableChips(autoOnTable: number = 0, autoUseWallet: boolean = false) {
+        ProtocolAgency.Send<ClientMessageSetAutoOnTable.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_SetAutoOnTable,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                autoOnTable: autoOnTable,//自动带入值
+                autoUseWallet: autoUseWallet,//是否账户带入
+            },
+        });
     }
     /// <summary>
     /// 站起
@@ -2668,6 +2690,10 @@ export default class TexasGame {
         });
     }
 
+    ShowSetAutoAddChips() {
+        UIComponent.Instance.ShowUI(PrefabUI.UIAutoChipsComponent, false);
+    }
+
     // 牌桌玩家信息
     public CheckPlayerInfo(userId: number, play: CPlayer = null): void {
         UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, play], { parentUI: Main.Marquee });
@@ -2791,7 +2817,6 @@ export default class TexasGame {
         if (null != this.cards) {
             this.cards = []
             this.cards = null;
-            console.log(">>>>>>>>>>>>> cards = null");
         }
         if (null != this.secondCards) {
             this.secondCards = []

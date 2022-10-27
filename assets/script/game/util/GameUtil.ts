@@ -1,18 +1,18 @@
+import { ProcedureEnum } from "../../define/EIDefine";
+import { UIDefineType } from "../../define/UIDefine";
+import ProcedureManager from "../../manager/ProcedureManager";
+import WebSocketClient from "../../net/websocket/WebSocketClient";
+import LobbySession from "../../session/LobbySession";
+import UIComponent from "../../ui/UIComponent";
+import { EnterRoomInfo, GameCache } from "../GameCache";
+import { SeatUIInfo } from "../seat/Seat";
+import MTTGame from "../texas/MTTGame";
+import OmahaGame4 from "../texas/OmahaGame4";
+import OmahaGame5 from "../texas/OmahaGame5";
+import OmahaGame6 from "../texas/OmahaGame6";
+import TexasAofGame from "../texas/TexasAofGame";
+import TexasGame from "../texas/TexasGame";
 
-import { ProcedureEnum } from "../define/EIDefine";
-import { UIDefine, UIDefineType } from "../define/UIDefine";
-import GC from "../frame/GameControl";
-import ProcedureManager from "../manager/ProcedureManager";
-import WebSocketClient from "../net/websocket/WebSocketClient";
-import LobbySession from "../session/LobbySession";
-import UIComponent from "../ui/UIComponent";
-import { EnterRoomInfo, GameCache } from "./GameCache";
-import { SeatUIInfo } from "./seat/Seat";
-import OmahaGame4 from "./texas/OmahaGame4";
-import OmahaGame5 from "./texas/OmahaGame5";
-import OmahaGame6 from "./texas/OmahaGame6";
-import TexasAofGame from "./texas/TexasAofGame";
-import TexasGame from "./texas/TexasGame";
 
 /**
  * 游戏类型
@@ -103,46 +103,103 @@ export enum RoomType {
 }
 
 
-
-
 export default class GameUtil {
     private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
     private static readonly omahaOuts: number[] = [0, 24, 12, 8, 6, 4.5, 4, 3.2, 2.7, 2.3, 2, 1.7, 1.5, 1.3, 1.2, 1.1, 1, 0.8, 0.7, 0.6, 0.5];
     public static OutsList = new Map<number, number[]>();
-    public static TexasGameDic = new Map<RoomType, TexasGame>();
+    //游戏实例Map
+    public static GameInstanceMap = new Map<RoomType, TexasGame>();
+    //游戏类型映射游戏类
+    public static GameMap: Map<RoomType, any> = null;
 
+    //初始化 roomtype映射Game
+    private static _SetGameMap() {
 
-    //已经开放的房间类型
-    private static readonly OpenRoomType = [
+        if (this.GameMap) return;
 
-        RoomType.TexasHoldemStandardNoLimit,// 普通
-        RoomType.TexasHoldemStandardPotLimit, // 普通底池限注
-        RoomType.TexasHoldemSixPlusFixedNoLimit,// 普通短牌
-        RoomType.TexasHoldemSixPlusFixedPotLimit, // 普通短牌底池限注
-        RoomType.TexasHoldemStandardAof, // 普通AOF
-        RoomType.TexasHoldemSixPlusFixedAof, // 普通短牌AOF
+        this.GameMap = new Map();
+        //1.TexasGame基础
+        this.GameMap.set(RoomType.TexasHoldemStandardNoLimit, TexasGame);// 普通
+        this.GameMap.set(RoomType.TexasHoldemStandardPotLimit, TexasGame);// 普通底池限注
+        this.GameMap.set(RoomType.TexasHoldemSixPlusFixedNoLimit, TexasGame);// 普通短牌
+        this.GameMap.set(RoomType.TexasHoldemSixPlusFixedPotLimit, TexasGame);// 普通短牌底池限注
+        //2.TexasAofGame
+        this.GameMap.set(RoomType.TexasHoldemStandardAof, TexasAofGame);// 普通AOF
+        this.GameMap.set(RoomType.TexasHoldemSixPlusFixedAof, TexasAofGame);// 普通短牌AOF
+        //3.OmahaGame4
+        this.GameMap.set(RoomType.Omaha4StandardNoLimit, OmahaGame4);// 奥马哈4张
+        this.GameMap.set(RoomType.Omaha4StandardPotLimit, OmahaGame4);// 奥马哈4张底池限注
+        this.GameMap.set(RoomType.Omaha4SixPlusFixedNoLimit, OmahaGame4);// 奥马哈4张短牌
+        this.GameMap.set(RoomType.Omaha4SixPlusFixedPotLimit, OmahaGame4);// 奥马哈4张短牌, 底池限注
+        //4.OmahaAofGame4
+        this.GameMap.set(RoomType.Omaha4StandardAof, null);// 奥马哈4张AOF
+        this.GameMap.set(RoomType.Omaha4SixPlusFixedAof, null);// 奥马哈4张短牌AOF
+        //5.OmahaGame5
+        this.GameMap.set(RoomType.Omaha5StandardNoLimit, OmahaGame5);// 奥马哈5张
+        this.GameMap.set(RoomType.Omaha5StandardPotLimit, OmahaGame5);// 奥马哈5张底池限注
+        this.GameMap.set(RoomType.Omaha5SixPlusFixedNoLimit, OmahaGame5);// 奥马哈5张短牌
+        this.GameMap.set(RoomType.Omaha5SixPlusFixedPotLimit, OmahaGame5);// 奥马哈5张短牌, 底池限注
+        //6.OmahaGameFiveAof
+        this.GameMap.set(RoomType.Omaha5StandardAof, null);// 奥马哈5张aof
+        this.GameMap.set(RoomType.Omaha5SixPlusFixedAof, null);// 奥马哈5张短牌aof
+        //7.OmahaGame6
+        this.GameMap.set(RoomType.Omaha6StandardNoLimit, OmahaGame6);// 奥马哈6张
+        this.GameMap.set(RoomType.Omaha6StandardPotLimit, OmahaGame6);// 奥马哈6张底池限注
+        this.GameMap.set(RoomType.Omaha6SixPlusFixedNoLimit, OmahaGame6);// 奥马哈6张短牌
+        this.GameMap.set(RoomType.Omaha6SixPlusFixedPotLimit, OmahaGame6);// 奥马哈6张短牌, 底池限注
+        //8.OmahaGameSixAof
+        this.GameMap.set(RoomType.Omaha6StandardAof, null);// 奥马哈6张aof
+        this.GameMap.set(RoomType.Omaha6SixPlusFixedAof, null);// 奥马哈6张aof
+        //9.MTT基础
+        this.GameMap.set(RoomType.MTTTexasHoldemStandardNoLimit, MTTGame);// MTT
+        this.GameMap.set(RoomType.MTTTexasHoldemStandardPotLimit, MTTGame);// 
+        this.GameMap.set(RoomType.MTTTexasHoldemStandardAof, MTTGame);// 
+        this.GameMap.set(RoomType.MTTTexasHoldemSixPlusFixedNoLimit, MTTGame);// 
+        this.GameMap.set(RoomType.MTTTexasHoldemSixPlusFixedPotLimit, MTTGame);// 
+        this.GameMap.set(RoomType.MTTTexasHoldemSixPlusFixedAof, MTTGame);// 
+        //10.MTTOmahaGameFour
+        this.GameMap.set(RoomType.MTTOmaha4StandardNoLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4StandardPotLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4StandardAof, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedNoLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedPotLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedAof, null);// MTT
 
-        RoomType.Omaha4StandardNoLimit, // 奥马哈4张
-        RoomType.Omaha4StandardPotLimit, // 奥马哈4张底池限注
-        RoomType.Omaha4SixPlusFixedNoLimit, // 奥马哈4张短牌
-        RoomType.Omaha4SixPlusFixedPotLimit, // 奥马哈4张短牌, 底池限注
+        //11.MTTOmahaGameFive
 
-        RoomType.Omaha5StandardNoLimit, // 奥马哈5张
-        RoomType.Omaha5StandardPotLimit, // 奥马哈5张底池限注
-        RoomType.Omaha5SixPlusFixedNoLimit, // 奥马哈5张短牌
-        RoomType.Omaha5SixPlusFixedPotLimit, // 奥马哈5张短牌, 底池限注
+        this.GameMap.set(RoomType.MTTOmaha5StandardNoLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5StandardPotLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5StandardAof, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedNoLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedPotLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedAof, null);// MTT
 
-
-        RoomType.Omaha6StandardNoLimit, // 奥马哈6张
-        RoomType.Omaha6StandardPotLimit, // 奥马哈6张底池限注
-        RoomType.Omaha6SixPlusFixedNoLimit, // 奥马哈6张短牌
-        RoomType.Omaha6SixPlusFixedPotLimit, // 奥马哈6张短牌, 底池限注
-
-    ]
-    public static IsOpenRoomType(roomType: number): boolean {
-        return this.OpenRoomType.indexOf(roomType) > -1;
+        //12.MTTOmahaGameSix
+        this.GameMap.set(RoomType.MTTOmaha6StandardNoLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6StandardPotLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6StandardAof, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedNoLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedPotLimit, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedAof, null);// MTT
     }
-
+    //是否开放的房间类型
+    public static IsOpenRoomType(roomType: number): boolean {
+        this._SetGameMap();
+        return !!this.GameMap.get(roomType);
+    }
+    private static GetGame(roomType: RoomType, Game_Cls: any) {
+        if (!Game_Cls) return null;
+        let game = GameUtil.GameInstanceMap.get(roomType);
+        if (!game) {
+            game = new Game_Cls();
+            GameUtil.GameInstanceMap.set(roomType, game);
+        }
+        return game;
+    }
+    //实例游戏类(从缓存Map中拿去)
+    public static InstantiateTexasGame(roomType: RoomType) {
+        return this.GetGame(roomType, this.GameMap.get(roomType));;
+    }
 
     //#region 牌局内座位UI信息   
     // 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
@@ -1141,123 +1198,9 @@ export default class GameUtil {
         return isSixPlus;
     }
 
-    private static GetGame(roomType: RoomType, Game_Cls: any) {
-        let game = GameUtil.TexasGameDic.get(roomType);
-        if (!game) {
-            game = new Game_Cls();
-            GameUtil.TexasGameDic.set(roomType, game);
-        }
-        return game;
-    }
 
-    public static InstantiateTexasGame(roomType: RoomType) {
 
-        let game: TexasGame = null;
 
-        switch (roomType) {
-            case RoomType.TexasHoldemStandardNoLimit: // 普通
-            case RoomType.TexasHoldemStandardPotLimit: // 普通底池限注
-            case RoomType.TexasHoldemSixPlusFixedNoLimit: // 普通短牌
-            case RoomType.TexasHoldemSixPlusFixedPotLimit: // 普通短牌底池限注
-                //(game = GameUtil.TexasGameDic.get(roomType)) || GameUtil.TexasGameDic.set(roomType, game = new TexasGame);
-                //ComponentFactory.CreateWithId<TexasGame, Component>((int)roomType, component, fromPool);
-                game = this.GetGame(roomType, TexasGame);
-                break;
-            case RoomType.TexasHoldemStandardAof: // 普通AOF
-            case RoomType.TexasHoldemSixPlusFixedAof: // 普通短牌AOF
-                game = this.GetGame(roomType, TexasAofGame);
-                break;
-
-            case RoomType.Omaha4StandardNoLimit: // 奥马哈4张
-            case RoomType.Omaha4StandardPotLimit: // 奥马哈4张底池限注
-            case RoomType.Omaha4SixPlusFixedNoLimit: // 奥马哈4张短牌
-            case RoomType.Omaha4SixPlusFixedPotLimit: // 奥马哈4张短牌, 底池限注
-                game = this.GetGame(roomType, OmahaGame4);
-                break;
-
-            case RoomType.Omaha4StandardAof: // 奥马哈4张AOF
-            case RoomType.Omaha4SixPlusFixedAof: // 奥马哈4张短牌AOF
-                {
-                    // game = ComponentFactory.CreateWithId<OmahaAofGame, Component>((int)roomType, component, fromPool);
-                }
-                break;
-
-            case RoomType.Omaha5StandardNoLimit: // 奥马哈5张
-            case RoomType.Omaha5StandardPotLimit: // 奥马哈5张底池限注
-            case RoomType.Omaha5SixPlusFixedNoLimit: // 奥马哈5张短牌
-            case RoomType.Omaha5SixPlusFixedPotLimit: // 奥马哈5张短牌底池限注
-                game = this.GetGame(roomType, OmahaGame5);
-                break;
-
-            case RoomType.Omaha5StandardAof: // 奥马哈5张aof
-            case RoomType.Omaha5SixPlusFixedAof: // 奥马哈5张短牌aof
-                {
-                    //game = ComponentFactory.CreateWithId<OmahaGameFiveAof, Component>((int)roomType, component, fromPool);
-                }
-                break;
-
-            case RoomType.Omaha6StandardNoLimit: // 奥马哈6张
-            case RoomType.Omaha6StandardPotLimit: // 奥马哈6张底池限注
-            case RoomType.Omaha6SixPlusFixedNoLimit: // 奥马哈6张短牌
-            case RoomType.Omaha6SixPlusFixedPotLimit: // 奥马哈6张短牌底池限注
-                game = this.GetGame(roomType, OmahaGame6);
-                break;
-
-            case RoomType.Omaha6StandardAof: // 奥马哈6张aof
-            case RoomType.Omaha6SixPlusFixedAof: // 奥马哈6张短牌aof
-                {
-                    //game = ComponentFactory.CreateWithId<OmahaGameSixAof, Component>((int)roomType, component, fromPool);
-                }
-                break;
-
-            case RoomType.MTTTexasHoldemStandardNoLimit:
-            case RoomType.MTTTexasHoldemStandardPotLimit:
-            case RoomType.MTTTexasHoldemStandardAof:
-            case RoomType.MTTTexasHoldemSixPlusFixedNoLimit:
-            case RoomType.MTTTexasHoldemSixPlusFixedPotLimit:
-            case RoomType.MTTTexasHoldemSixPlusFixedAof:
-                {
-                    //game = ComponentFactory.CreateWithId<MTTGame, Component>((int)roomType, component, fromPool);
-                }
-                break;
-
-            case RoomType.MTTOmaha4StandardNoLimit:
-            case RoomType.MTTOmaha4StandardPotLimit:
-            case RoomType.MTTOmaha4StandardAof:
-            case RoomType.MTTOmaha4SixPlusFixedNoLimit:
-            case RoomType.MTTOmaha4SixPlusFixedPotLimit:
-            case RoomType.MTTOmaha4SixPlusFixedAof:
-                {
-                    //game = ComponentFactory.CreateWithId<MTTOmahaGameFour, Component>((int)roomType, component, fromPool);
-                }
-                break;
-
-            case RoomType.MTTOmaha5StandardNoLimit:
-            case RoomType.MTTOmaha5StandardPotLimit:
-            case RoomType.MTTOmaha5StandardAof:
-            case RoomType.MTTOmaha5SixPlusFixedNoLimit:
-            case RoomType.MTTOmaha5SixPlusFixedPotLimit:
-            case RoomType.MTTOmaha5SixPlusFixedAof:
-                {
-                    //game = ComponentFactory.CreateWithId<MTTOmahaGameFive, Component>((int)roomType, component, fromPool);
-                }
-                break;
-
-            case RoomType.MTTOmaha6StandardNoLimit:
-            case RoomType.MTTOmaha6StandardPotLimit:
-            case RoomType.MTTOmaha6StandardAof:
-            case RoomType.MTTOmaha6SixPlusFixedNoLimit:
-            case RoomType.MTTOmaha6SixPlusFixedPotLimit:
-            case RoomType.MTTOmaha6SixPlusFixedAof:
-                {
-                    //game = ComponentFactory.CreateWithId<MTTOmahaGameSix, Component>((int)roomType, component, fromPool);
-                }
-                break;
-        }
-
-        return game;
-
-    }
     /// <summary>
     /// 牌局分池位置
     /// </summary>

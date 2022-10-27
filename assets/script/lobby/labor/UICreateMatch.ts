@@ -10,7 +10,7 @@
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
-import GameUtil from "../../game/GameUtil";
+import GameUtil from "../../game/util/GameUtil";
 import TimeHelper from "../../helper/TimeHelper";
 import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";

@@ -1,4 +1,4 @@
-import { BetType, GameType, PokerType } from "../game/GameUtil"
+import { BetType, GameType, PokerType } from "../game/util/GameUtil"
 
 
 export type TSendInfo = {

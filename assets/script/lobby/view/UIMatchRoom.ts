@@ -4,7 +4,7 @@ import { Web_Room_Center_Groups } from "../../net/https/WebRequest";
 import { UIDefine } from "../../define/UIDefine";
 import UIComponent from "../../ui/UIComponent";
 import GC from "../../frame/GameControl";
-import { GameType } from "../../game/GameUtil";
+import { GameType } from "../../game/util/GameUtil";
 import { TLobbyGroup } from "../../config/TTypeConfig";
 import SceneManager from "../../manager/SceneManager";
 @ccclass

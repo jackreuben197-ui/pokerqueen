@@ -2,7 +2,7 @@ import { UIDefine, UIDefineType } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
-import { GameType } from "../../game/GameUtil";
+import { GameType } from "../../game/util/GameUtil";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { Web_User_Info } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";

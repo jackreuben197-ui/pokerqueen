@@ -8,15 +8,14 @@ import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { Def } from "../../protobuf/holdem/define_pb";
-import { CacheDataManager } from "../CacheDataManager";
 import { CardType, CardTypeUtil } from "../CardTypeUtil";
 import { CPlayer } from "../CPlayer";
 import FSMLogicComponent from "../FSMLogicComponent";
 import { GameCache } from "../GameCache";
-import GameUtil, { RoomType } from "../GameUtil";
 import { SeatFSM } from "../SeatFSM";
 import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from "../SeatStateHandler";
 import SeatUIRC, { CardUIInfo } from "../SeatUIRC";
+import GameUtil, { RoomType } from "../util/GameUtil";
 
 /// </summary>
 export enum VoiceprintState {

@@ -1,6 +1,6 @@
 
 import { GameCache } from "../game/GameCache";
-import { RoomType } from "../game/GameUtil";
+import { RoomType } from "../game/util/GameUtil";
 import { TexasGameState } from "../game/TexasGameState";
 
 import ProcedureBase from "./ProcedureBase";

@@ -120,8 +120,8 @@ export default class UITexasGameEndComponent extends UIBase {
     }
     private SetMyData(score: number, hand: number): void {
         this.m_ZhanJi.node.color = score >= 0 ? CommonDefine.Text_Green_Color : CommonDefine.Text_Yellow_Color;
-        this.m_ZhanJi.string = StringHelper.FormatToString("{0:N0}", StringHelper.GetLongString(score));
-        this.m_ZongShou.string = StringHelper.FormatToString("{0:N0}", hand);
+        this.m_ZhanJi.string = StringHelper.GetLongString(score);
+        this.m_ZongShou.string = `${hand}`;
         WebImageHelper.SetUrlImage(this.img_head, GameCache.Instance.headPic);
         //this.img_head.node.parent.active = true;
         this.Head.active = true;

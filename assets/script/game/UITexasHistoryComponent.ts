@@ -15,7 +15,8 @@ import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
 import { CardTypeUtil } from "./CardTypeUtil";
 import { GameCache } from "./GameCache";
-import GameUtil from "./GameUtil";
+import GameUtil from "./util/GameUtil";
+
 
 export class HistoryInfoData {
     public bInsurance: boolean;

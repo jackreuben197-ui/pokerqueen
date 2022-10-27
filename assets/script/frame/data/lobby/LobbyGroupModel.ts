@@ -1,5 +1,5 @@
 import { TLobbyGroup } from "../../../config/TTypeConfig";
-import { GameType, PokerType } from "../../../game/GameUtil";
+import { GameType, PokerType } from "../../../game/util/GameUtil";
 import CCTools from "../../../tools/CCTools";
 
 export default class LobbyGroupModel {

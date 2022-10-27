@@ -236,8 +236,8 @@ export default class GoldOprationForm extends BaseForm {
     }
 
     backToWallet = () => {
-        UIComponent.close(UIDefine.GoldOprationForm);
-        UIComponent.close(UIDefine.WalletJumpForm);
+        UIComponent.close(UIDefine.GoldOprationForm, null, { animation: false });
+        UIComponent.close(UIDefine.WalletJumpForm, null, { animation: false });
     }
 
     //点击记录

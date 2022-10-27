@@ -1,8 +1,5 @@
 import { IUpdate } from "../define/EIDefine";
-import UpdateComponent from "../funcomponent/UpdateComponent";
 import StateMachine from "../statemachine/StateMachine";
-import TexasGame from "./texas/TexasGame";
-
 /**
  * 状态机刷新组件
  */

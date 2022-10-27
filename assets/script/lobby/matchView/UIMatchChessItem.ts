@@ -1,14 +1,10 @@
-import { ProcedureEnum } from "../../define/EIDefine";
+
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
-import GC from "../../frame/GameControl";
-import GameUtil from "../../game/GameUtil";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import ProcedureManager from "../../manager/ProcedureManager";
-import WebSocketClient from "../../net/websocket/WebSocketClient";
-import LobbySession from "../../session/LobbySession";
+import GameUtil from "../../game/util/GameUtil";
+
 import UIBase from "../../ui/UIBase";
-import UIComponent from "../../ui/UIComponent";
+
 import PlayViewItem from "../view/PlayViewItem";
 
 const { ccclass, property, menu } = cc._decorator;

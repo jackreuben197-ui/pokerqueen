@@ -1,5 +1,5 @@
 
-import { OutsCard, UserOuts } from "../../protobuf/holdem/define_pb";
+import { OutsCard } from "../../protobuf/holdem/define_pb";
 import UIBase from "../../ui/UIBase";
 
 const { ccclass, property } = cc._decorator;

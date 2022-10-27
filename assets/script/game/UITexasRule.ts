@@ -3,7 +3,7 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
-import { GameType, PokerType } from "./GameUtil";
+import { GameType, PokerType } from "./util/GameUtil";
 
 /*
  * @Author: xfj

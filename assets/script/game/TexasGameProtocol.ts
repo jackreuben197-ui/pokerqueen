@@ -1,5 +1,4 @@
 
-import { UIType } from "../define/EIDefine";
 import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
@@ -8,7 +7,6 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply } from "../net/websocket/ProtocolHoldemMessages";
-import { DefCB } from "../protobuf/holdem/define_cb_pb";
 import { Def, Operator, PlayerChipChange, Result } from "../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../protobuf/holdem/recv_add_time_others_pb";
@@ -38,7 +36,6 @@ import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
 import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
-import { RoomType } from "./GameUtil";
 import Seat from "./seat/Seat";
 import { SeatAddChips, SeatAllin, SeatCall, SeatCheck, SeatFold, SeatInsurance, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
 import TexasGame from "./texas/TexasGame";
@@ -46,6 +43,7 @@ import { TexasGameState } from "./TexasGameState";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIInsuranceComponent, { InsuranceData, WrapTriggedInsuranceData } from "./ui/UIInsuranceComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
+import { RoomType } from "./util/GameUtil";
 
 const CanPlayStatus = Def.CanPlayStatus;
 
@@ -1519,8 +1517,13 @@ export default class TexasGameProtocol {
                 break;
             case BroadcastCode.VerifyDoNotCan://朋友桌申请结果
                 let bringInData = ServerMessageRoomBringInApply.Response(data);
-                if (bringInData.status == 1) {
-                    UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
+                switch (bringInData.status) {
+                    case 1:
+                        UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
+                        break;
+                    case 2:
+                        console.log("朋友桌带入申请通过");
+                        break;
                 }
                 break;
             default:
