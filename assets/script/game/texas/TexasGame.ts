@@ -3033,4 +3033,6 @@ export default class TexasGame {
     public HideBringIn() {
         this.uirc.Button_BringIn.active = false;
     }
+    //子类覆盖
+    public onClickAddOn() { }
 }
