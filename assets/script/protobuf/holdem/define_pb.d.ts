@@ -373,9 +373,9 @@ export namespace RoomInfo {
   }
 
   export interface RetainTypeMap {
-    RT_DISABLE: 0;
-    RT_AUTO: 1;
-    RT_MANUAL: 2;
+    RT_DISABLE: 0;  //不支持
+    RT_AUTO: 1;     //自动
+    RT_MANUAL: 2;   //手动
   }
 
   export const RetainType: RetainTypeMap;

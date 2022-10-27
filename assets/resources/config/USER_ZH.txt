@@ -3232,6 +3232,7 @@ UITitle_apply_tidou=提豆申请
 UIUserDesc=玩家备注:{0}
 
 UITip_jiangjin=奖金
+UIOutChipsTip=存储：
 
 UITips_GoldOpration_0=确定向{0}工会申请充值{1}金豆？<br/>付款金额{2}
 UITips_GoldOpration_1=确定向{0}工会申请提取{1}金豆？<br/>收款金额{2}
