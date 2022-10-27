@@ -2320,6 +2320,77 @@ export class APIOrgFriendBringIn {
     };
 }
 
+export class APIOrgClubDelAdmin {
+    public static API: string = "/api/org/club/admin/del_admin";
+    //字段声明
+    public static RequestParams: {
+        user_id: number,  //
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubDelAdmin.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubDelAdmin.ResponseData
+    };
+}
+
+export class APIOrgClubCreateRoomChange {
+    public static API: string = "/api/org/club/admin/create_room_switch";
+    //字段声明
+    public static RequestParams: {
+        user_id: number,  //
+        create_room: number //
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubCreateRoomChange.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubCreateRoomChange.ResponseData
+    };
+}
+export class APIOrgClubAddAdmin {
+    public static API: string = "/api/org/club/admin/add_admin";
+    //字段声明
+    public static RequestParams: {
+        user_id: number,  //
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubAddAdmin.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubAddAdmin.ResponseData
+    };
+}
+export class APIOrgClubMember {
+    public static API: string = "/api/org/club/member/ordinary_list";
+    //字段声明
+    public static RequestParams: {
+        club_random_id: number,  //
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubMember.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubMember.ResponseData
+    };
+}
+
 
 
 

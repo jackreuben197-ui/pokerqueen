@@ -3,7 +3,7 @@
  * @Date: 2022-10-24 13:42:49
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 16:12:59
+ * @LastEditTime: 2022-10-27 16:30:20
  * @FilePath: /pokerqueen/assets/script/lobby/labor/JoinitemNode.ts
  */
 
@@ -66,7 +66,7 @@ export default class JoinitemNode extends UIBase {
         this.setText(this.lbl_creatTime, TimeHelper.convertUTCTimeToLocalTime(this._data.create_time))
         this.setText(this.lbl_result, this.gameDealType)
 
-        WebImageHelper.SetUrlImage(this.img_head, this._data.avatar);
+        WebImageHelper.SetHeadImage(this.img_head, this._data.avatar);
         this.btnNode.active = this._data.status == 1;
         this.lbNode.active = !this.btnNode.active;
 

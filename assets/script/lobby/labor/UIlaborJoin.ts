@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 18:30:16
+ * @LastEditTime: 2022-10-27 16:30:14
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
@@ -63,7 +63,7 @@ export default class UIlaborJoin extends BaseForm {
         id.string = data.random_id
 
         let icon = cc.find("iconMask/icon", node).getComponent(cc.Sprite)
-        WebImageHelper.SetUrlImage(icon, data.logo)
+        WebImageHelper.SetHeadImage(icon, data.logo)
         let current = cc.find("number/current", node).getComponent(cc.Label)
         current.string = data.club_members
         let total = cc.find("number/total", node).getComponent(cc.Label)

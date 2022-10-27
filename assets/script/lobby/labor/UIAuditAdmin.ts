@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 14:52:50
+ * @LastEditTime: 2022-10-27 16:22:59
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAuditAdmin.ts
  */
 
@@ -40,7 +40,7 @@ export default class UIAuditAdmin extends BaseForm {
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(EventName.updateFrendApplyList, this.dealData);
+        this.listen(EventName.refreshAdmin, this.reqDataAgain);
     }
     async reqDataAgain() {
         this._offset = 0;
@@ -71,6 +71,9 @@ export default class UIAuditAdmin extends BaseForm {
         await UIClubModel.mInstance.APIOrgMangerList(data.random_id, 10, this._offset);
         let _data: any = APIOrgMangerList.Response.data
         this._reqing = false
+        if (!_data.data) {
+            _data.data = [];
+        }
         _data.data.forEach(element => {
             this._list.push(element);
         });  //分页的时候使用的

@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-29 17:23:06
+ * @LastEditTime: 2022-10-27 16:30:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -74,7 +74,7 @@ export default class UIlaborMerberManager extends BaseForm {
         if (data == null) {
             return;
         }
-        for (let index = 0; index < data?.data.length; index++) {
+        for (let index = 0; index < data?.data?.length; index++) {
             let _item = cc.instantiate(this.item);
             _item.parent = this.contentNode
             _item.getChildByName('name').getComponent(cc.Label).string = data?.data[index].nick_name
@@ -82,7 +82,7 @@ export default class UIlaborMerberManager extends BaseForm {
             _item.getChildByName('data').getComponent(cc.Label).string = TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - data?.data[index].last_login_time))
             _item['last_login_time'] = data?.data[index].last_login_time
             let icon = cc.find('iconMask/icon', _item);
-            WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data?.data[index].avatar)
+            WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), data?.data[index].avatar)
             _item.active = true;
             _item['info'] = data[index];
             _item.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
@@ -92,7 +92,7 @@ export default class UIlaborMerberManager extends BaseForm {
     onClickItem(event) {
         let target = event.target;
         let info = target.info;
-        UIComponent.open(UIDefine.UIMember, {info : info});
+        UIComponent.open(UIDefine.UIMember, { info: info });
     }
 
     async sousuoBtn() {
@@ -174,7 +174,7 @@ export default class UIlaborMerberManager extends BaseForm {
             _item.getChildByName('data').getComponent(cc.Label).string = TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - data?.data[index].last_login_time)) + '前'
             let icon = cc.find('iconMask/icon', _item);
             _item.active = true;
-            WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), sortData[index].avatar)
+            WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), sortData[index].avatar)
         }
     }
 

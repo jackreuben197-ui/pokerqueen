@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 14:15:38
+ * @LastEditTime: 2022-10-27 16:46:24
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -49,7 +49,7 @@ export default class UIManageLabor extends BaseForm {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.clubGoldChange, this.updateGold);
-        this.listen(EventName.adminChange, this.initMangerList);
+        this.listen(EventName.refreshAdmin, this.initMangerList);
     }
 
     initTop() {
@@ -61,7 +61,7 @@ export default class UIManageLabor extends BaseForm {
         this.EditBox.string = data.desc   //|| '暂无工会说明'
 
         let icon = cc.find('iconMask/icon', this.mask_group);
-        WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.logo)
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), data.logo)
         this.initClubData();
     }
     initClubData() {
@@ -75,7 +75,7 @@ export default class UIManageLabor extends BaseForm {
         let panel_right = csr.getChildByName('panel_right')
         panel_right.getChildByName('name').getComponent(cc.Label).string = data.club_creator_nickname
         let icon = cc.find('iconMask/icon', panel_right);
-        WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.club_creator_avatar)
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), data.club_creator_avatar)
         //创建时间
         let chsj = this.contentNode.getChildByName('chsj')
         chsj.getChildByName('time').getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(data.create_time)
@@ -110,7 +110,7 @@ export default class UIManageLabor extends BaseForm {
         for (let index = 0; index < data?.data.length; index++) {
 
             const element = this.iconNodeMan.children[index].getChildByName('icon').getComponent(cc.Sprite);
-            WebImageHelper.SetUrlImage(element, data?.data[index].avatar)
+            WebImageHelper.SetHeadImage(element, data?.data[index].avatar)
             this.iconNodeMan.children[index].active = true;
         }
     }
@@ -125,7 +125,7 @@ export default class UIManageLabor extends BaseForm {
         for (let index = 0; index < data?.data?.length; index++) {
 
             const element = this.iconNodeMer.children[index].getChildByName('icon').getComponent(cc.Sprite);
-            WebImageHelper.SetUrlImage(element, data?.data[index].avatar)
+            WebImageHelper.SetHeadImage(element, data?.data[index].avatar)
             this.iconNodeMer.children[index].active = true;
         }
     }

@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 14:48:38
+ * @LastEditTime: 2022-10-27 15:32:27
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgClubCreateRoomAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -137,15 +137,15 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubGetJoinlList() {
-        let paramas: any = {
-            limit: 1000,
-            offset: 0
+    APIOrgClubGetJoinlList(limit = 1000, offset = 0) {
+        let parms: any = {
+            limit: limit,
+            offset: offset
         };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgClubGetJoinlList,
-                body: APIOrgClubGetJoinlList.Request(paramas),
+                body: APIOrgClubGetJoinlList.Request(parms),
                 onSuccess: function () {
                     resolve(APIOrgClubGetJoinlList.Response);
                 }.bind(this),
@@ -492,6 +492,80 @@ export class UIClubModel {
                 body: APIOrgFriendRoomInfo.Request(params),
                 onSuccess: function () {
                     resolve(APIOrgFriendRoomInfo.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubCreateRoomChange(user_id, create_room) {
+        let params = {
+            user_id: user_id,
+            create_room: create_room
+        }//offset: offset, limit: limit
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubCreateRoomChange,
+                body: APIOrgClubCreateRoomChange.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubCreateRoomChange.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubAddAdmin(user_id) {
+        let params = {
+            user_id: user_id,
+        }//offset: offset, limit: limit
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubAddAdmin,
+                body: APIOrgClubAddAdmin.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubAddAdmin.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubDelAdmin(user_id) {
+        let params = {
+            user_id: user_id,
+        }//offset: offset, limit: limit
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubDelAdmin,
+                body: APIOrgClubDelAdmin.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubDelAdmin.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgClubMember(club_random_id, offset = 0, limit = 10) {
+        let params = {
+            club_random_id: club_random_id,
+            "limit": 10,
+            "offset": 0
+        }//offset: offset, limit: limit
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubMember,
+                body: APIOrgClubMember.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubMember.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

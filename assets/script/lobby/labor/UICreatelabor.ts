@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-11 18:00:31
+ * @LastEditTime: 2022-10-27 16:29:07
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -83,7 +83,7 @@ export default class UICreatelabor extends BaseForm {
         let icon: any = APIOrgClubUploadIcon.Response.data
         if (icon) {
             this.iconUrl = icon
-            WebImageHelper.SetUrlImage(this.camera, icon);
+            WebImageHelper.SetHeadImage(this.camera, icon);
         }
     }
 }

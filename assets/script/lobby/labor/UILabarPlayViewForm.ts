@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 18:12:10
+ * @LastEditTime: 2022-10-27 16:30:18
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -149,7 +149,7 @@ export default class UILabarPlayViewForm extends UIBase {
         let id = this.panel_right.getChildByName('id').getComponent(cc.Label);
         id.string = 'ID:' + data.random_id
         let icon = cc.find('iconMask/icon', this.panel_right).getComponent(cc.Sprite);
-        WebImageHelper.SetUrlImage(icon, data.logo)
+        WebImageHelper.SetHeadImage(icon, data.logo)
         UIClubModel.mInstance.APIOrgClubGold(data.random_id)
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {
             let isManger: any = APIOrgClubIsManger.Response.data

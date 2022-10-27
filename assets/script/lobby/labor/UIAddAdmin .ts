@@ -3,21 +3,21 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 16:13:43
+ * @LastEditTime: 2022-10-27 16:21:27
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAddAdmin .ts
  */
 
 import List from "../../common/List";
-import { EventName } from "../../config/EventName";
 import BaseForm from "../../ui/form/BaseForm";
 import UIClubMamber from "./UIClubMamber";
 import { UIClubModel } from "./UIClubModel";
-
+import { APIOrgClubGetJoinlList, APIOrgClubMember, APIOrgMangerList, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { EventName } from "../../config/EventName";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class UIAuditAdmin extends BaseForm {
+export default class UIAddAdmin extends BaseForm {
     @property(List)
     list: List = null;
     private _offset: number = 0;
@@ -37,7 +37,7 @@ export default class UIAuditAdmin extends BaseForm {
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        // this.listen(EventName.updateFrendApplyList, this.dealData);
+        this.listen(EventName.refreshAdmin, this.reqDataAgain);
     }
     async reqDataAgain() {
         this._offset = 0;
@@ -63,9 +63,28 @@ export default class UIAuditAdmin extends BaseForm {
     }
 
     async dealData() {
+        this._reqing = true
 
-    }
-    addAdminBtn() {
+        let data: any = Web_Org_Club_Get.Response.data;
 
+        await UIClubModel.mInstance.APIOrgClubMember(data.random_id, this._offset);
+        let _data: any = APIOrgClubMember.Response.data
+        this._reqing = false
+        if (!_data.data) {
+            _data.data = [];
+        }
+
+        _data.data.forEach(element => {
+            this._list.push(element);
+        });  //分页的时候使用的
+        this._total = _data.total
+
+        this.list.numItems = this._list.length;
+        this._offset = this._list.length;
+        this._reqEnd = this._list.length == this._total;
+
+        this.list.numItems = this._list.length;
+        this._offset = this._list.length;
+        this._reqEnd = this._list.length == this._total;
     }
 }

@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 18:14:03
+ * @LastEditTime: 2022-10-27 16:30:13
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -47,7 +47,7 @@ export default class UIPlayerLookLabor extends BaseForm {
         dec.string = data.desc || ''
 
         let icon = cc.find('iconMask/icon', this.mask_group).getComponent(cc.Sprite);
-        WebImageHelper.SetUrlImage(icon, data.logo)
+        WebImageHelper.SetHeadImage(icon, data.logo)
         // let lbl_glod = cc.find('img_right_bg/lbl_glod', this.mask_group).getComponent(cc.Label);
         this.initClubData()
     }
@@ -60,7 +60,7 @@ export default class UIPlayerLookLabor extends BaseForm {
         let panel_right = csr.getChildByName('panel_right')
         panel_right.getChildByName('name').getComponent(cc.Label).string = data.club_creator_nickname
         let icon = cc.find('iconMask/icon', panel_right);
-        WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data.club_creator_avatar)
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), data.club_creator_avatar)
         //创建时间
         let chsj = this.contentNode.getChildByName('chsj')
         chsj.getChildByName('time').getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(data.create_time)
