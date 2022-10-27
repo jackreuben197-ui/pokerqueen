@@ -46,6 +46,16 @@ export enum ServerErrorCode {
     MTT_LoseCanRebuy,
     //ErrCodeMTTAwardIsNotReady ���ս�����������δ׼����
     MTT_AwardIsNotReady,
+    //ErrCodeMTTBuyRatioInvalid MTT买入倍率错误
+    MTT_BuyRatioInvalid,
+    //ErrCodeMTTAddOnInvalidTime 增购时间不对(addon/addonplus1/addonplus2)
+    MTT_AddOnInvalidTime,
+    //ErrCodeMTTAddOnMoreChip 筹码过多无法增购才10017
+    MTT_AddOnMoreChip,
+    //ErrCodeMTTAddOnPlusOverLimit 增购超过次数了 10018
+    MTT_AddOnPlusOverLimit,
+    //ErrCodeMTTSameTagLimit 须打完或被淘汰，才能报下一场相同tag的比赛 10019
+    MTT_SameTagLimit,
     //#endregion
 
     //#region room 20000+

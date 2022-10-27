@@ -4,8 +4,10 @@ import ComTabToggles, { ETabToggle } from "../../common/ComTabToggles";
 import { UIDefine } from "../../define/UIDefine";
 import MTTGameUtil from "../../frame/data/mtt/MttGameUtils";
 import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
+import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
 import LanguageManager from "../../frame/manager/LanguageManager";
+import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
@@ -21,6 +23,10 @@ export default class MttDetailForm extends BaseForm {
     _data: any = null;
     panel_dialog: cc.Node = null;
     panel_dialog2: UIMttSignDialogComponent = null;
+
+    NeedVoiceprintVerification: boolean = false;
+    _matchID: number = 0;
+
     lateLoad() {
         super.lateLoad();
     }
@@ -326,5 +332,269 @@ export default class MttDetailForm extends BaseForm {
     onClickAddMtt() {
         this.panel_dialog2.setVisible(true);
     }
+
+    RefreshMttDetails(callback = null)
+    {
+        // if (IsDisposed)
+        // {
+        //     return;
+        // }
+
+        UIMatchMttModel.getInstance().RequestMTTDetails(this._matchID, code =>
+        {				
+            if (code == 0)
+            {
+                // UpdateBtn();
+                //声纹获取麦克风权限
+                if (UIMatchMttModel.getInstance().MttInfo.mtt.voiceprint_verify_on == 1)
+                {
+                    // if (!MicrophoneHelper.IsMicrophonePermissionAllowed())
+                    // {
+                    //     return;
+                    // }
+
+                    // UITexasModel.mInstance.APIUserVoiceprint(0, 0, Act =>
+                    // {
+                    //     if (Act.code == 0)
+                    //     {
+                    //         if (Act.data == null)
+                    //         {
+                    //             NeedVoiceprintVerification = true;
+                    //         }
+                    //     }
+                    // });
+                }
+                ///免服务费逻辑
+                if (UIMatchMttModel.getInstance().MttInfo.mtt.buy_prop_id != 0)
+                {
+                    UIMatchMttModel.getInstance().APIPropUserCheckPropInfo(res =>
+                    {
+
+                        if (res.code == 0)
+                        {
+                            GameCache.Instance.gold = res.data.wallet_balance;
+                            if (res.data.prop_property_type == 2)//如果Type == 2  免服务费 
+                            {
+                                UIMatchMttModel.getInstance().MttInfo.mtt.prop_buy_type = 0;
+                            }
+                            // UI mUI = UIComponent.Instance.Get(UIType.UIMatch_MttDetailState);
+                            // if (null != mUI)
+                            // {
+                            //     UIMatch_MttDetailStateComponent mUIComponent = mUI.UiBaseComponent as UIMatch_MttDetailStateComponent;
+                            //     mUIComponent.UpdateInfo(UIMatchMttModel.getInstance().MttInfo);
+                            // }
+                        }
+                        else
+                        {
+                            // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res.code));
+                        }
+                    });
+                }
+                else
+                {
+                    // UI mUI = UIComponent.Instance.Get(UIType.UIMatch_MttDetailState);
+                    // if (null != mUI)
+                    // {
+                    //     UIMatch_MttDetailStateComponent mUIComponent = mUI.UiBaseComponent as UIMatch_MttDetailStateComponent;
+                    //     mUIComponent.UpdateInfo(UIMatchMttModel.getInstance().MttInfo);
+                    // }
+                }
+                //判断当前时间是否大于进入比赛时间
+                // isCurTimeOverEnterTime = DateTime.UtcNow >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMatchMttModel.getInstance().MttInfo.mtt.enter_time);
+                callback?.Invoke();
+            }
+            else
+            {
+                // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(code));
+            }
+        }, httpState =>
+        {
+            // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+        });
+    }
+
+    OnClickSignBtn(go)
+    {
+        let openMatchApply = GameCache.Instance.IsAllowOpenMatchApply;
+        openMatchApply = true; // 2.0后端暂不支持功能开关
+        if (!openMatchApply)
+        {
+            return;
+        }
+
+        // if (!btnSignUp.interactable)
+        // {
+        //     return;
+        // }
+        if (this.NeedVoiceprintVerification)
+        {
+            // if (!MicrophoneHelper.IsMicrophonePermissionAllowed())
+            // {
+            //     return;
+            // }
+            // Game.Scene.GetComponent<UIComponent>().ShowNoAnimation(UIType.UITexasHumanYZ, new UITexasHumanYZComponent.VerificationDataInfo()
+            // {
+            //     cacheVoiceprint = VoiceprintRoomType.Hall,
+            // });
+            return;
+        }
+        this.RefreshMttDetails(() =>
+        {
+            // if (!go.GetComponent<Button>().interactable)
+            // {
+            //     return;
+            // }
+
+            // switch ((MTTGame.MTTPlayerStatus)UIMatchMttModel.getInstance().MttInfo.state_code)
+            // {
+            //     case MTTGame.MTTPlayerStatus.CanApplyNotStart:
+            //     case MTTGame.MTTPlayerStatus.CanApplyDelay:
+            //         {
+            //             UIMatchMttModel.getInstance().HandleMTTJoinAction(UIMatchMTTModel.MTTJoinAction.Apply, code =>
+            //             {
+            //                 RefreshMttDetails();
+            //             }, httpState =>
+            //             {
+            //                 UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+            //             });
+            //         }
+            //         break;
+            //     case MTTGame.MTTPlayerStatus.CanJoin:
+            //         {
+            //             UIMatchMttModel.getInstance().HandleMTTJoinAction(UIMatchMTTModel.MTTJoinAction.PartialBringIn, bringInCode =>
+            //             {
+            //                 if (bringInCode == 0)
+            //                 {
+            //                     //进入MTT房间时添加firebase事件触发
+            //                     Dictionary<string, string> paramMap = new Dictionary<string, string>(); 
+            //                     paramMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
+            //                     paramMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
+            //                     paramMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
+            //                     paramMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
+            //                     paramMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
+            //                     GoogleFirebaseHelper.LevelStartEvent(paramMap);
+            //                     //添加到appsFlyer统计进入MTT房间消息
+            //                     Dictionary<string, string> valuesMap = new Dictionary<string, string>();
+            //                     valuesMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
+            //                     valuesMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
+            //                     valuesMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
+            //                     valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
+            //                     valuesMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
+            //                     AppsFlyerHelper.MTTGameEnterEvent(valuesMap);
+            //                     UIMatchMttModel.getInstance().ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
+            //                 }
+            //                 else
+            //                 {
+            //                     RefreshMttDetails();
+            //                     UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(bringInCode));
+            //                 }
+            //             }, httpState =>
+            //             {
+            //                 UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+            //             });
+            //         }
+            //         break;
+            //     case MTTGame.MTTPlayerStatus.LoseCanRebuy:
+            //         {
+            //             UIMatchMttModel.getInstance().HandleMTTJoinAction(UIMatchMTTModel.MTTJoinAction.Rebuy, rebuyCode =>
+            //             {
+            //                 if (rebuyCode == 0)
+            //                 {
+            //                     UIMatchMttModel.getInstance().ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
+            //                 }
+            //                 else
+            //                 {
+            //                     RefreshMttDetails();
+            //                     UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rebuyCode));
+            //                 }
+            //             }, httpState =>
+            //             {
+            //                 UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+            //             });
+            //         }
+            //         break;
+            // }
+        });
+    }
+
+    // private void UpdateBtn()
+	// 	{
+	// 		// 主按钮状态
+	// 		btnSignUp.interactable = false;
+	// 		switch ((MTTGame.MTTPlayerStatus)UIMatchMttModel.getInstance().MttInfo.state_code)
+	// 		{
+	// 			case MTTGame.MTTPlayerStatus.WaitingApply:
+	// 				{
+	// 					textBtn.text = LanguageManager.Get("mtt_btn_waiting_start");
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.CanApplyNotStart:
+	// 				{
+
+	// 					textBtn.text = LanguageManager.Get("MTT-Apply");
+	// 					btnSignUp.interactable = true;
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.CanApplyDelay:
+	// 				{
+	// 					textBtn.text = LanguageManager.Get("mtt_btn_delay");
+	// 					btnSignUp.interactable = true;
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.AppliedNotStart:
+	// 				{
+	// 					// TODO: 配置译文描述已报名但还不能进场状态
+	// 					textBtn.text = LanguageManager.Get("Mtt_AppliedNotStart");
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.CanJoin:
+	// 				{
+	// 					textBtn.text = LanguageManager.Get("mtt_btn_enter");
+	// 					btnSignUp.interactable = true;
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.CannotApplyStarted:
+	// 				{
+	// 					textBtn.text = LanguageManager.Get("mtt_btn_sign_up_deadline");
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.LoseCanRebuy:
+	// 				{
+	// 					textBtn.text = LanguageManager.Get("MTT_Rebuy");
+	// 					btnSignUp.interactable = true;
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.Lose:
+	// 				{
+	// 					if (UIMatchMttModel.getInstance().MttInfo.more.bl >= UIMatchMttModel.getInstance().MttInfo.mtt.max_rebuy_bl)
+	// 					{
+	// 						textBtn.text = LanguageManager.Get("mtt_btn_Stopbuying");
+	// 					}
+	// 					else
+	// 					{
+	// 						textBtn.text = LanguageManager.Get("MTT_Rebuy") + " " + UIMatchMttModel.getInstance().MttInfo.state.left_rebuy_times + "/" + UIMatchMttModel.getInstance().MttInfo.mtt.rebuy_times;
+	// 					}
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.JoinComplete:
+	// 			case MTTGame.MTTPlayerStatus.NotJoinComplete:
+	// 				{
+	// 					// TODO: 配置对应译文描述比赛已结束状态
+	// 					textBtn.text = LanguageManager.Get("Mtt_Complete");
+	// 				}
+	// 				break;
+	// 			case MTTGame.MTTPlayerStatus.CannotJoinOvertime:
+	// 				{
+	// 					// TODO: 配置对应译文描述超时停止进入
+	// 					textBtn.text = LanguageManager.Get("Mtt_CannotJoinOvertime");
+	// 				}
+	// 				break;
+	// 			default:
+	// 				{
+	// 					textBtn.text = "";
+	// 				}
+	// 				break;
+	// 		}
+	// 	}
 
 }
