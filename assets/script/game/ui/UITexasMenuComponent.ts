@@ -32,6 +32,8 @@ export default class UITexasMenuComponent extends UIBase {
     //按钮模板节点
     Menu_Button: cc.Node = null;
 
+    outTipNode: cc.Node = null;
+    outGold: cc.Label = null;
 
 
     IMenuButton_Type: {
@@ -132,6 +134,8 @@ export default class UITexasMenuComponent extends UIBase {
         this.textTotalBean = this.getChildNodeOrComponent("Text_TotalBean", cc.Label);
         this.Menu_Buttons = this.getChildNodeOrComponent("Menu_Buttons");
         this.Menu_Button = this.getChildNodeOrComponent("Menu_Button");
+        this.outTipNode = this.getChildNodeOrComponent("outTipNode");
+        this.outGold = this.getChildNodeOrComponent("outGold", cc.Label);
         this.buildMenuButtons();
         this.game = GameCache.Instance.CurGame;
     }
@@ -190,6 +194,12 @@ export default class UITexasMenuComponent extends UIBase {
     //更新金豆
     updateBean() {
         this.setText(this.textTotalBean, GC.data.user.info.displayGold);
+
+        let outGold = GameCache.Instance.CurGame.mainPlayer.cacheStoreChips;
+        this.setActive(this.outTipNode, GameCache.Instance.CurGame.mainPlayer.cacheStoreChips)
+        if (this.outTipNode.active) {
+            this.setText(this.outGold, outGold);
+        }
     }
 
     public UpdateMenu(): void {
