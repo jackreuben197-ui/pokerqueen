@@ -1246,15 +1246,10 @@ export default class TexasGame {
                     contentCommit: CPErrorCode.LanguageDescription(10026),
                     // contentCancel = "取消",
                     contentCancel: CPErrorCode.LanguageDescription(10013),
+
                     actionCommit: () => {
-                        // UIMineModel.mInstance.APIGetClubId(tDtoHasClub => {
-                        //     if (tDtoHasClub) {
-                        //         UIComponent.Instance.ShowUI(UIType.UIMine_WalletAddBeansList, null);
-                        //     }
-                        //     else {
-                        //         UIComponent.Instance.ToastLanguage("WalletMy11");
-                        //     }
-                        // });
+                        //跳转充豆
+                        UIComponent.open(UIDefine.MyWalletForm, false);
                     },
                     noAnimation: true,
                 });

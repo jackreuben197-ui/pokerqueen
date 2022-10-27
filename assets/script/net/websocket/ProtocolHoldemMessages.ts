@@ -36,6 +36,7 @@ import { ClientMessageStoreChips, ServerMessageStoreChips } from "../../protobuf
 import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
 import { ServerMessageInsuranceTrigged } from "../../protobuf/holdem/recv_insurance_trigged_pb";
 import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
+import { ClientMessageAddOn, ServerMessageAddOn } from "../../protobuf/holdem/req_add_on_pb";
 
 export class ProtocolCommon {
 
@@ -299,5 +300,9 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_GetMsg]: {
         Server: ServerMessageGetMsg,
     },
+    [ProtocolCode.Protocol_Holdem_AddOn]: {
+        Client: ClientMessageAddOn,
+        Server: ServerMessageAddOn,
+    }
 }
 
