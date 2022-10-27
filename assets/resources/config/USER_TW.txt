@@ -3151,8 +3151,11 @@ UIMine_CustomerService=
 UIWebViewURL=https://h5.olavamos.com/#/
 UIAboutURL=https://h5.olavamos.com/#/introduce
 
-
-
+UIMTT_StateHuntChampionships=
+UIMTT_StateHuntChampionshipsDetail=
+UIMTT_StateHuntChampionshipsDialogDetail=
+UIMTT_StateUnLimitRebuy=
+UIMTT_StateReward=獵頭/獎勵
 
 
 

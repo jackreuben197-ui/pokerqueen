@@ -3159,8 +3159,11 @@ UIMine_CustomerService=Customer Service
 UIWebViewURL=https://h5.olavamos.com/#/
 UIAboutURL=https://h5.olavamos.com/#/introduce
 
-
-
+UIMTT_StateHuntChampionships=Bounty Hunters
+UIMTT_StateHuntChampionshipsDetail=At least <color=#DDBA82>{0}</color> bounty for each player eliminated.
+UIMTT_StateHuntChampionshipsDialogDetail=For each player eliminated, <color=#DDBA82>{0}</color>% of the eliminated player's current bounty will be earned and the remaining <color=#DDBA82>{1}</color>% will accumulate to their own bounty.
+UIMTT_StateUnLimitRebuy=UnLimit Rebuy
+UIMTT_StateReward=Bounty:
 
 
 

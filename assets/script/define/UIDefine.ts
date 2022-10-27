@@ -210,6 +210,13 @@ export const UIDefine = {
         Path: "main/lobby/prefab/matchView/UIMatchRealityView"
     },
 
+    UIMttSignDialogComponent: {
+        UIType: UIType.CommonUI,
+        Name: "UIMttSignDialogComponent",
+        Bundle: null,
+        Path: "main/mtt/detail/UIMttSignDialogComponent"
+    },
+
     /**
      *  触摸板子（触摸黑色底板关闭）
      */
