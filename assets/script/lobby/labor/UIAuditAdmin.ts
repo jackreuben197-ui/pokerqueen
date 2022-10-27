@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:22:59
+ * @LastEditTime: 2022-10-27 17:30:12
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAuditAdmin.ts
  */
 
@@ -75,7 +75,9 @@ export default class UIAuditAdmin extends BaseForm {
             _data.data = [];
         }
         _data.data.forEach(element => {
-            this._list.push(element);
+            if (element.level != 1) {
+                this._list.push(element);
+            }
         });  //分页的时候使用的
         this._total = _data.total
 

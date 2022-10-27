@@ -2325,7 +2325,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1042,
-      "height": 1270
+      "height": 1590
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -8336,7 +8336,7 @@
         "__id__": 236
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 244
@@ -8713,7 +8713,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        434.107,
+        503,
         0,
         0,
         0,
@@ -8882,7 +8882,7 @@
     "node": {
       "__id__": 236
     },
-    "_enabled": true,
+    "_enabled": false,
     "_normalMaterial": null,
     "_grayMaterial": null,
     "duration": 0.1,
@@ -8969,7 +8969,7 @@
     "_target": null,
     "_alignFlags": 32,
     "_left": 1057.158,
-    "_right": 36.89299999999997,
+    "_right": -32,
     "_top": 25,
     "_bottom": 0,
     "_verticalCenter": 0,
@@ -9051,7 +9051,7 @@
         "__id__": 255
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 263
@@ -9083,7 +9083,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -715,
+        -875,
         0,
         0,
         0,
@@ -9428,7 +9428,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        434.107,
+        503,
         0,
         0,
         0,
@@ -9597,7 +9597,7 @@
     "node": {
       "__id__": 255
     },
-    "_enabled": true,
+    "_enabled": false,
     "_normalMaterial": null,
     "_grayMaterial": null,
     "duration": 0.1,
@@ -9684,7 +9684,7 @@
     "_target": null,
     "_alignFlags": 32,
     "_left": 1057.158,
-    "_right": 36.89299999999997,
+    "_right": -32,
     "_top": 25,
     "_bottom": 0,
     "_verticalCenter": 0,
@@ -9804,7 +9804,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -715,
+        -1035,
         0,
         0,
         0,
@@ -11093,7 +11093,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -875,
+        -1195,
         0,
         0,
         0,
@@ -13195,7 +13195,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -1035,
+        -1355,
         0,
         0,
         0,
@@ -15938,7 +15938,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -1195,
+        -1515,
         0,
         0,
         0,
@@ -16451,7 +16451,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 1042,
-      "height": 1270
+      "height": 1590
     },
     "_resize": 1,
     "_N$layoutType": 2,
