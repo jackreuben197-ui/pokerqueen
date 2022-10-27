@@ -20,6 +20,7 @@ import { ClientMessageShowPublicCards } from "../protobuf/holdem/req_show_public
 import GlobalSession from "../session/GlobalSession";
 import StorageKey from "../session/StorageKey";
 import AssetContext from "../ui/component/AssetContext";
+import LabelCDTime from "../ui/component/LabelCDTime";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
@@ -148,7 +149,19 @@ export default class UITexas extends BaseScene {
 
     buttonCancelTrust: cc.Node = null;
 
+    //MTT
+    protected buttonRebuy: cc.Node = null;
+    protected buttonAddOn: cc.Node = null;
+    protected transCountDownView: cc.Node = null;
+    public Image_RedistributionTips: cc.Node = null;
+    public Image_WaitForStartBathTips: cc.Node = null;
+    private pullDownText: cc.Label = null;
+    public BathText: cc.Label = null;
 
+
+
+    //带入申请按钮
+    Button_BringIn: cc.Node = null;
 
     //1.左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
@@ -255,6 +268,17 @@ export default class UITexas extends BaseScene {
 
         this.buttonCancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
 
+        //MTT
+        this.buttonAddOn = this.getChildNodeOrComponent("Button_AddOn");
+        this.Image_RedistributionTips = this.getChildNodeOrComponent("Image_RedistributionTips");
+        this.pullDownText = this.Image_RedistributionTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
+        //this.armatureRewardCircleZH = rc.Get<GameObject>("Armature_RewardCircle_zh").GetComponent<UnityArmatureComponent>();
+        //this.armatureRewardCircleEN = rc.Get<GameObject>("Armature_RewardCircle_en").GetComponent<UnityArmatureComponent>();
+        this.Image_WaitForStartBathTips = this.getChildNodeOrComponent("Image_WaitForStartBathTips");
+        this.BathText = this.Image_WaitForStartBathTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
+
+        this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
+
         //#region 公共牌数据(UI、Id)
         if (null == this.listCards)
             this.listCards = [];
@@ -272,7 +296,6 @@ export default class UITexas extends BaseScene {
             this.listSecondCards = [];
         if (this.listSecondCards.length > 0)
             this.listSecondCards = [];
-
 
         this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard0));
         this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard1));
@@ -330,6 +353,12 @@ export default class UITexas extends BaseScene {
 
         this.setButtonClick(this.buttonDelay, this.onClickDelay);
         this.setButtonClick(this.buttonSeeMorePublic, this.onClickSeeMorePublic);
+
+        this.setButtonClick(this.buttonAddOn, this.onClickAddOn);
+
+        this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
+
+
     }
 
     Enter(param: { fromUI: IUIDefine, lookOn: boolean }): void {
@@ -348,6 +377,7 @@ export default class UITexas extends BaseScene {
         this.game.SetDeskType(this.game.deskType);
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
+
     }
     ClearUI() {
         UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
@@ -473,6 +503,44 @@ export default class UITexas extends BaseScene {
     public CallbackExit() {
         this.HideMenu(false);
         this.game.TexasGameUtils.LeaveRoom();
+    }
+    onClickBringIn() {
+        UIComponent.open(UIDefine.UIApplyJoin);
+        this.game.HideBringIn();
+    }
+    onClickAddOn() {
+
+        if (!this.getButtonInteractable(this.buttonAddOn)) return;
+
+        this.setButtonInteractable(this.buttonAddOn, false);
+
+        // ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
+        //     Code: ProtocolCode.Protocol_Holdem_EnterRoom,
+        //     RoomID: GameCache.Instance.room_id,
+        //     MatchID: GameCache.Instance.match_id,
+        //     Body:
+        //     {
+        //         room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+        //         gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
+        //         mttPartialBringIn: 0,
+        //         observer: false,
+        //     },
+        // });
+
+        // CPGameSessionComponent.Instance.Send(new Protocol_Holdem_AddOn()
+        // {
+        //         RoomID = (ulong)GameCache.Instance.room_id,
+        //         MatchID = (ulong)GameCache.Instance.match_id,
+        //         request = new ClientMessageAddOn()
+        //     {
+        //         Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
+        //     Mode = addOnMode,
+        //     Ratio = 1,
+        //     UseProp = false,
+        //     }
+
+        // });
+        // CurrentOpAddOnMode = addOnMode;
     }
 
 }

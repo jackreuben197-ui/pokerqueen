@@ -13,9 +13,9 @@ export default class PublicHelper {
         node.active = active;
     }
 
-    static copyToClipBoard(str) :boolean {
+    static copyToClipBoard(str): boolean {
         if (cc.sys.isNative) {
-        //原生自己实现 手机浏览器打开走下面的 可以复制
+            //原生自己实现 手机浏览器打开走下面的 可以复制
         } else if (cc.sys.isBrowser) {
             var textarea = document.createElement("textarea");
             textarea.textContent = str;
@@ -26,10 +26,10 @@ export default class PublicHelper {
             try {
                 const flag = document.execCommand('copy');
                 document.body.removeChild(textarea);
-                if(flag){
+                if (flag) {
                     ToastManager.Instance.createToast("已经复制到剪贴板");
                     return true;
-                }else{
+                } else {
                     ToastManager.Instance.createToast("复制到剪贴板失败");
                     return false;
                 }
@@ -44,14 +44,14 @@ export default class PublicHelper {
         // WARNING: For POST requests, body is set to null by browsers.
         var data = new FormData();
         data.append("file", "", "bnt.jpg");
-        
+
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
 
-        xhr.addEventListener("readystatechange", function() {
-        if(this.readyState === 4) {
-            console.log(this.responseText);
-        }
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                console.log(this.responseText);
+            }
         });
 
         xhr.open("POST", "http://dev.k8s.awanptesting.com/api/oss/upload/image");
@@ -59,5 +59,9 @@ export default class PublicHelper {
         xhr.setRequestHeader("md5at", "d7126b25afd37362092b0aa7852095cc");
 
         xhr.send(data);
+    }
+    //min ,max 包括min/max取随机整数
+    static RandomIntRange(min: number, max: number): number {
+        return min + (Math.random() * (max - min + 1) ^ 0);
     }
 }

@@ -1,3 +1,6 @@
+import PublicHelper from "../../helper/PublicHelper";
+import i18nComponent from "../../i18n/i18nComponent";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { Def } from "../../protobuf/holdem/define_pb";
 import { MTT_GameType } from "../util/MTTGameUtil";
 import TexasGame from "./TexasGame";
@@ -81,13 +84,7 @@ export default class MTTGame extends TexasGame {
     static MTTPlayerStatus = MTTPlayerStatus;
     static AddOnModeDate = AddOnModeDate;
     ///////////////////////////////////////////
-    protected buttonRebuy: cc.Node = null;
-    protected buttonAddOn: cc.Node = null;
-    protected transCountDownView: cc.Node = null;
-    public imageRedistributionTips: cc.Sprite = null;
-    private pullDownText: cc.Label = null;
-    public Image_WaitForStartBathTips: cc.Node = null;
-    public BathText: cc.Label = null;
+    
     //////////////////////////////////////////
     private isSyncHand: boolean = false;
     //protected UnityArmatureComponent armatureRewardCircleZH;
@@ -176,4 +173,31 @@ export default class MTTGame extends TexasGame {
     //         }
     //     }
     // }
+
+    /// <summary>
+    /// 随机得到拆桌文案
+    /// </summary>
+    /// <returns></returns>
+    private GetPullDownTips(): string {
+        let tips: string = null;
+        let randomNum: number = this.minPullDownTipNum;
+        do {
+            randomNum = PublicHelper.RandomIntRange(this.minPullDownTipNum, this.maxPullDownTipsNum);
+        } while (randomNum == this.pullDownTipRandomNum);
+        this.pullDownTipRandomNum = randomNum;
+        tips = i18nMgr.Get("MTTroomNum_00" + randomNum);
+        return tips;
+    }
+
+    public override Dispose() {
+        this.BlindLevel = 0;
+        this.upBlindLeftTime = 0;
+        this.upBldCounting = false;
+        this.huntMode = false;
+        this.gameStarted = false;
+        this.NotLookPlayer = false;
+        this.addOnModeDate = null;
+        super.Dispose();
+    }
+    
 }

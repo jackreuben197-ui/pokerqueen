@@ -120,9 +120,27 @@ export default class UIBase extends BaseComponent {
     }
     //设置按钮点击
     protected setButtonClick(button: cc.Node, clickHandler: Function) {
+        if (!button) return;
         let button_com = button.getComponent(cc.Button) || button.getChildByName("BtnArea")?.getComponent(cc.Button) || button.getChildByName("click")?.getComponent(cc.Button);
         if (button_com) {
             button_com.node.on("click", clickHandler, this);
+        }
+    }
+    //获取按钮节点是否可交互
+    protected getButtonInteractable(button: cc.Node) {
+        if (!button) return;
+        let button_com = button.getComponent(cc.Button) || button.getChildByName("BtnArea")?.getComponent(cc.Button) || button.getChildByName("click")?.getComponent(cc.Button);
+        if (button_com) {
+            return button_com.interactable;
+        }
+        return false;
+    }
+    //设置按钮节点是否可交互
+    protected setButtonInteractable(button: cc.Node, boo: boolean) {
+        if (!button) return;
+        let button_com = button.getComponent(cc.Button) || button.getChildByName("BtnArea")?.getComponent(cc.Button) || button.getChildByName("click")?.getComponent(cc.Button);
+        if (button_com) {
+            button_com.interactable = boo;
         }
     }
     /**

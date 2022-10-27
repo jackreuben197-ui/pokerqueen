@@ -1515,11 +1515,12 @@ export default class TexasGameProtocol {
                 //         break;
                 // }
                 break;
-            case BroadcastCode.VerifyDoNotCan://朋友桌申请结果
+            case BroadcastCode.Friend_BringIn://朋友桌申请结果
                 let bringInData = ServerMessageRoomBringInApply.Response(data);
                 switch (bringInData.status) {
                     case 1:
                         UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
+                        GameCache.Instance.CurGame.ShowBringIn();
                         break;
                     case 2:
                         console.log("朋友桌带入申请通过");
