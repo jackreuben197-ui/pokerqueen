@@ -315,7 +315,7 @@ export default class TimeHelper {
         return (day1.getFullYear() == day2.getFullYear() && day1.getMonth() == day2.getMonth() && day1.getDate() == day2.getDate());
     }
 
-    private static getDateStructYMD(t, isMil: boolean = false) {
+    static getDateStructYMD(t, isMil: boolean = false) {
         let data = new Date(t * (isMil ? 1 : 1000));
         let year = this.toTimeFormat(data.getFullYear());
         let month = this.toTimeFormat(data.getMonth() + 1);

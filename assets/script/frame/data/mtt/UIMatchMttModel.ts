@@ -12,7 +12,7 @@ import UIComponent from "../../../ui/UIComponent";
 import GC from "../../GameControl";
 
 
-enum MTTJoinAction // 参与mtt玩法动作
+export enum MTTJoinAction // 参与mtt玩法动作
 {
     None,
     Apply,          // 报名
@@ -155,7 +155,9 @@ export class UIMatchMttModel {
                             // }
                         }
 
-                        resultCallback?.Invoke(response.code);
+                        if (resultCallback) {
+                            resultCallback(response.code);
+                        }
                     }.bind(this),
                     onFailure: function (content) {
                     }.bind(this)
@@ -408,7 +410,7 @@ export class UIMatchMttModel {
         let self = this;
 
         HttpRequest.Send({
-            api: Web_Room_Center_Mtt_Details.API.replace("{id}", matchID.ToString()),
+            api: Web_Room_Center_Mtt_Details.API.replace("{id}", matchID.toString()),
             request: Web_Room_Center_Mtt_Details,
             body: Web_Room_Center_Mtt_Details.Request(requestData),
             onSuccess: function () {
@@ -428,8 +430,9 @@ export class UIMatchMttModel {
                     GameCache.Instance.currLeve = self.MttInfo.more.bl;
                     // GameCache.Instance.TableClothTag = MttInfo.mtt.tablecloth_tag;//指定桌布
                 }
-
-                resultCallback?.Invoke(responseData.code);
+                if (resultCallback) {
+                    resultCallback(responseData.code);
+                }
             }.bind(this),
             onFailure: function (content) {
             }.bind(this)

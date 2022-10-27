@@ -1133,7 +1133,7 @@ export class Web_Room_Center_Mtt_Details {
         alive: number,//存活人数
         state_code: number,//当前玩家的状态 MTTPlayerStatus定义
         mtt: typeof Web_Room_Center_Mtt_Details.MttDetails,//比赛细节信息
-        state: typeof Web_Room_Center_Mtt_Details.PlayerState[],//玩家筹码状态信息
+        state: typeof Web_Room_Center_Mtt_Details.PlayerState,//玩家筹码状态信息
         more: typeof Web_Room_Center_Mtt_Details.More,//盲注等级和奖励池
         top: number,//最大记分牌
     } = null;

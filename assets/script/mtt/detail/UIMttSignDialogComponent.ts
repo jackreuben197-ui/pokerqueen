@@ -102,6 +102,10 @@ export default class UIMttSignDialogComponent extends UIBase {
         super.lateClose(param);
     }
 
+    lateOpen(param: any = null) {
+        this.panel_click2.active = true;   
+    }
+
     onShow(data?: DialogData): void {
         super.onShow(data);
 
@@ -109,6 +113,11 @@ export default class UIMttSignDialogComponent extends UIBase {
         this.panel_click2 = this.getChildNodeOrComponent("panel_click2");
         this.panel_click2.active = true;   
         this.panel_click2.on(cc.Node.EventType.TOUCH_END, this.onHideAddMtt, this)
+
+
+        let btn_confim: cc.Node = this.getChildNodeOrComponent("btn_confim");
+        btn_confim.on(cc.Node.EventType.TOUCH_END, this.onClickCommit, this)
+        
         
 
         if (null != data)

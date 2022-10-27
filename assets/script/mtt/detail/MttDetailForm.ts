@@ -4,13 +4,15 @@ import ComTabToggles, { ETabToggle } from "../../common/ComTabToggles";
 import { UIDefine } from "../../define/UIDefine";
 import MTTGameUtil from "../../frame/data/mtt/MttGameUtils";
 import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
-import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
+import { MTTJoinAction, UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
-import LanguageManager from "../../frame/manager/LanguageManager";
 import { GameCache } from "../../game/GameCache";
+import MTTGame from "../../game/texas/MTTGame";
+import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
+import ToastManager from "../../manager/ToastManager";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
 import UIMttSignDialogComponent from "./UIMttSignDialogComponent";
@@ -25,7 +27,10 @@ export default class MttDetailForm extends BaseForm {
     panel_dialog2: UIMttSignDialogComponent = null;
 
     NeedVoiceprintVerification: boolean = false;
+    isCurTimeOverEnterTime: boolean = false;
     _matchID: number = 0;
+    isCanClick: boolean = true;
+    isStar: boolean = false;
 
     lateLoad() {
         super.lateLoad();
@@ -68,9 +73,165 @@ export default class MttDetailForm extends BaseForm {
         })
   
         let btn_addMtt: cc.Node = this.getChildNodeOrComponent("btn_addMtt");
-        btn_addMtt.on(cc.Node.EventType.TOUCH_END, this.onClickAddMtt, this)
+        btn_addMtt.on(cc.Node.EventType.TOUCH_END, this.OnClickSignBtn, this);
+
+        
 
         this.updateUI();
+
+        this.RefreshMttDetails();
+    }
+
+    refreshStatusUI(res) {
+        let panel_item2: cc.Node = this.getChildNodeOrComponent("panel_item2");
+        let mttDetails = res;
+        let isStar = false;
+        // 根据比赛状态设置状态标签
+        switch (mttDetails.mtt.status)
+        {
+            case MTTGame.MTTMatchStatus.Created:
+                {
+                    isStar = false;
+                }
+                break;
+            case MTTGame.MTTMatchStatus.Running:
+                {
+                    isStar = true;
+                }
+                break;
+        }
+        
+        let img_av: cc.Sprite = panel_item2.getChildByName("img_av").getComponent(cc.Sprite);
+        WebImageHelper.SetUrlImage(img_av, mttDetails.mtt.game_icon);
+        let dialogStr = i18nMgr.Get("UIMTT_StateHuntChampionshipsDialogDetail");
+        let msg = LobbyControl.getInstance().formatString(dialogStr, mttDetails.mtt.hunter_bonus, 100- mttDetails.mtt.hunter_bonus);
+        this.updateDialogUI(msg);
+        for (let i=1; i<5; i++) {
+            let btn_pt_1: cc.Node = panel_item2.getChildByName("node" + i);
+            let lbl_gold = btn_pt_1.getChildByName("lbl_gold").getComponent(cc.Label);
+            if (i == 1) {
+                lbl_gold.string = mttDetails.more.prize_pool.toString();
+            } else if (i == 2) {
+                lbl_gold.string = mttDetails.mtt.award_num.toString();
+            } else if (i == 3) {
+                lbl_gold.string = `${mttDetails.alive}` + "/" + `${mttDetails.mtt.participants}`;
+            } else if (i == 4) {
+                let singType = i18nMgr.Get("UIMatch_MttDetailState_ReyBuFerr").split(",");
+                if (mttDetails.mtt.prop_buy_type == 0)
+                {
+                    if (mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter <= 0)
+                    {
+                        lbl_gold.string = singType[0];
+                    }
+                    else
+                    {
+                        lbl_gold.string = `${mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter}`;
+                    }
+                }
+                else if (mttDetails.mtt.prop_buy_type == 1)
+                {
+                    lbl_gold.string = singType[1];
+                }
+                else
+                {
+                    if (mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter <= 0)
+                    {
+                        lbl_gold.string = singType[2];
+                    }
+                    else
+                    {
+                        lbl_gold.string = `${i18nMgr.Get("UIMatch_MttDetailState_ReyBuFerr02"), 
+                        mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter}`;
+                    }
+                }
+            }
+
+            if (!isStar)
+			{
+
+                let lbl_time: cc.Label = this.getChildNodeOrComponent("lbl_time_sign", cc.Label);
+                
+				let timespan = TimeHelper.RFC3339TimeConvertToUTCTime(mttDetails.mtt.start_time);
+				// let len = TimeHelper.NumberToChinese(TimeHelper.GetDateTimer(timespan).Month).Split('^').Length;
+
+				// let month = TimeHelper.NumberToChinese(int.Parse(TimeHelper.GetDateTimer(timespan).Month.ToString())).Replace("<size=40>", "");
+				// if (len > 1)
+				// {
+				// 	month = TimeHelper.NumberToChinese(int.Parse(TimeHelper.GetDateTimer(timespan).Month.ToString())).Split('^')[0];
+				// }
+				//textBeginTime.text = month.Replace("</size>", "") + " " + TimeHelper.GetDateTimer(timespan).Day.ToString() + "  " + TimeHelper.TimerDateMinStr(TimeHelper.GetTimestampByDateTime(TimeHelper.RFC3339TimeConvertToUTCTime(mttDetails.mtt.start_time)));
+				// lbl_time.string = TransitionNumAdd0(TimeHelper.GetDateTimer(timespan).Day) + "/" + 
+                // TransitionNumAdd0(TimeHelper.GetDateTimer(timespan).Month) + "/" + 
+                // TransitionNumAdd0(TimeHelper.GetDateTimer(timespan).Year) + " - " + 
+                // TimeHelper.TimerDateMinStr(TimeHelper.GetTimestampByDateTime(
+                //     TimeHelper.RFC3339TimeConvertToUTCTime(mttDetails.mtt.start_time)));
+                let date = new Date(timespan);
+                let ymd = TimeHelper.getDateStructYMD(timespan / 1000);
+                lbl_time.string = ymd.day + "/" + ymd.month + "/" + ymd.year + " - " + date.getHours().toString() + ":" + date.getMinutes().toString();
+			}
+            this.isStar = isStar;
+        }
+        
+        let type_List = ["NLH", "PLO4", "PLO5", "PLO6" ];
+        let six_List = ["NLH 6+", "PLO4 6+", "PLO5 6+", "PLO6 6+" ];
+        for (let i=1; i<10; i++) {
+            let baseNode: cc.Node = panel_item2.getChildByName("node_down").children[i-1];
+            let lbl_1 = baseNode.getChildByName("lbl_1").getComponent(cc.Label);
+            let lbl_2 = baseNode.getChildByName("lbl_2").getComponent(cc.Label);
+            if (i == 1) {
+                lbl_1.string = `${i18nMgr.Get("MTT_State_gametype")}`;
+                lbl_2.string = mttDetails.mtt.poker_type == 2 ? six_List[mttDetails.mtt.game_type] : type_List[mttDetails.mtt.game_type];
+            } else if (i == 2) {
+                lbl_1.string = i18nMgr.Get("MTT_State_Starting_Scoreboard");
+                lbl_2.string = `${mttDetails.mtt.initial_score}}` + `${(mttDetails.mtt.initial_score / (MTTGameUtil.BlindAtLevel(0, mttDetails.mtt.blindtable_type, 1) * 2))}` + " BB";
+            } else if (i == 3) {
+                let lbl_3 = baseNode.getChildByName("lbl_3").getComponent(cc.RichText);
+                let btn_open: cc.Node = baseNode.getChildByName("btn_open");
+                btn_open.on(cc.Node.EventType.TOUCH_END, this.onClickOpen, this)
+                lbl_1.string = i18nMgr.Get("UIMTT_StateReward");
+                lbl_2.string = `${mttDetails.alive}` + "/" + `${mttDetails.mtt.participants}`;
+                lbl_3.string = i18nMgr.Get("UIMTT_StateHuntChampionshipsDetail").replace("{0}", " " + (mttDetails.mtt.apply_fee_hunter/100).toString() + " ");  
+            } else if (i == 4) {//截止买入
+                lbl_1.string = `${i18nMgr.Get("MTT_State_ShangXian")}:`;
+                if (mttDetails.mtt.max_delay_apply_bl > mttDetails.more.bl)
+                {
+                    if (mttDetails.mtt.addon_begin_bl == 0 && mttDetails.mtt.addon_end_bl == 0)
+                    {
+                        lbl_2.string = LobbyControl.getInstance().formatString(i18nMgr.Get("MTT_State_DelayDetailNoAddOn"), mttDetails.mtt.limit_total_buy_times.toString(), mttDetails.mtt.max_delay_apply_bl);
+                    }
+                    else
+                    {
+                        lbl_2.string =  LobbyControl.getInstance().formatString(i18nMgr.Get("MTT_State_DelayDetail"), mttDetails.mtt.limit_total_buy_times.toString(), mttDetails.mtt.max_delay_apply_bl, mttDetails.mtt.addon_begin_bl, mttDetails.mtt.addon_end_bl);
+                    }
+                }
+                else
+                {
+                    lbl_2.string = i18nMgr.Get("MTT_State_CannotDelay");
+                }
+            } else if (i == 5) {//重构次数
+                lbl_1.string = `${i18nMgr.Get("MTT_State_RebuyTime")}:`;
+                if (mttDetails.state != null)
+                {
+                    lbl_2.string = `${mttDetails.state.left_rebuy_times}` + "/" + `${mttDetails.mtt.rebuy_times}`;
+                }
+                else
+                {
+                    lbl_2.string = `${i18nMgr.Get("UIMTT_StateUnLimitRebuy")}`;
+                }
+            } else if (i == 6) {//当前盲注
+                lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchCurrBlindTip")}:` + "-" + mttDetails.more.bl.toString();
+                lbl_2.string = mttDetails.more.sb.toString() + "/" + (mttDetails.more.sb * 2).toString() + "{" + mttDetails.more.ante.toString() + "}";
+            } else if (i == 7) {//下一盲注
+                lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:` + "-" + mttDetails.more.nbl.toString();
+                lbl_2.string = mttDetails.more.nsb.toString() + "/" + (mttDetails.more.nsb * 2).toString() + "{" + mttDetails.more.nante.toString() + "}";
+            } else if (i == 8) {//涨盲时间
+                lbl_1.string = `${i18nMgr.Get("MTT_State_UpBlindTime")}:`;
+                lbl_2.string = `${i18nMgr.Get("UITexasReport_Text_MatchZmsysj")}:`.replace("{0}", (mttDetails.mtt.upblind_interval / 60).toString());
+            } else if (i == 9) {//记分牌(只显示最大记分牌)
+                lbl_1.string = `${i18nMgr.Get("UITexasReport_Label_AllBarJL")}:`;
+                lbl_2.string = i18nMgr.Get("Maximum") + mttDetails.top.toString();
+            }
+        }
     }
 
     updateUI() {
@@ -97,120 +258,14 @@ export default class MttDetailForm extends BaseForm {
             panel_item2.parent = sv_status.content;
 
             if (this._data && this._data._msg.match_id) {
-                LobbyControl.getInstance().reqMTTDetailInfo(this._data._msg.match_id, {}).then(
-                    (res: any) => {
-                        let mttDetails = res.data;
-                        let img_av: cc.Sprite = panel_item2.getChildByName("img_av").getComponent(cc.Sprite);
-                        WebImageHelper.SetUrlImage(img_av, mttDetails.mtt.game_icon);
-                        let dialogStr = i18nMgr.Get("UIMTT_StateHuntChampionshipsDialogDetail");
-                        let msg = LobbyControl.getInstance().formatString(dialogStr, mttDetails.mtt.hunter_bonus, 100- mttDetails.mtt.hunter_bonus);
-                        this.updateDialogUI(msg);
-                        for (let i=1; i<5; i++) {
-                            let btn_pt_1: cc.Node = panel_item2.getChildByName("node" + i);
-                            let lbl_gold = btn_pt_1.getChildByName("lbl_gold").getComponent(cc.Label);
-                            if (i == 1) {
-                                lbl_gold.string = mttDetails.more.prize_pool.toString();
-                            } else if (i == 2) {
-                                lbl_gold.string = mttDetails.mtt.award_num.toString();
-                            } else if (i == 3) {
-                                lbl_gold.string = `${mttDetails.alive}` + "/" + `${mttDetails.mtt.participants}`;
-                            } else if (i == 4) {
-                                let singType = i18nMgr.Get("UIMatch_MttDetailState_ReyBuFerr").split(",");
-                                if (mttDetails.mtt.prop_buy_type == 0)
-                                {
-                                    if (mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter <= 0)
-                                    {
-                                        lbl_gold.string = singType[0];
-                                    }
-                                    else
-                                    {
-                                        lbl_gold.string = `${mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter}`;
-                                    }
-                                }
-                                else if (mttDetails.mtt.prop_buy_type == 1)
-                                {
-                                    lbl_gold.string = singType[1];
-                                }
-                                else
-                                {
-                                    if (mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter <= 0)
-                                    {
-                                        lbl_gold.string = singType[2];
-                                    }
-                                    else
-                                    {
-                                        lbl_gold.string = `${i18nMgr.Get("UIMatch_MttDetailState_ReyBuFerr02"), 
-                                        mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter}`;
-                                    }
-                                }
-                            }
-                        }
-                        
-                        let type_List = ["NLH", "PLO4", "PLO5", "PLO6" ];
-                        let six_List = ["NLH 6+", "PLO4 6+", "PLO5 6+", "PLO6 6+" ];
-                        for (let i=1; i<10; i++) {
-                            let baseNode: cc.Node = panel_item2.getChildByName("node_down").children[i-1];
-                            let lbl_1 = baseNode.getChildByName("lbl_1").getComponent(cc.Label);
-                            let lbl_2 = baseNode.getChildByName("lbl_2").getComponent(cc.Label);
-                            if (i == 1) {
-                                lbl_1.string = `${i18nMgr.Get("MTT_State_gametype")}`;
-                                lbl_2.string = mttDetails.mtt.poker_type == 2 ? six_List[mttDetails.mtt.game_type] : type_List[mttDetails.mtt.game_type];
-                            } else if (i == 2) {
-                                lbl_1.string = i18nMgr.Get("MTT_State_Starting_Scoreboard");
-                                lbl_2.string = `${mttDetails.mtt.initial_score}}` + `${(mttDetails.mtt.initial_score / (MTTGameUtil.BlindAtLevel(0, mttDetails.mtt.blindtable_type, 1) * 2))}` + " BB";
-                            } else if (i == 3) {
-                                let lbl_3 = baseNode.getChildByName("lbl_3").getComponent(cc.RichText);
-                                let btn_open: cc.Node = baseNode.getChildByName("btn_open");
-                                btn_open.on(cc.Node.EventType.TOUCH_END, this.onClickOpen, this)
-                                lbl_1.string = i18nMgr.Get("UIMTT_StateReward");
-                                lbl_2.string = `${mttDetails.alive}` + "/" + `${mttDetails.mtt.participants}`;
-                                lbl_3.string = i18nMgr.Get("UIMTT_StateHuntChampionshipsDetail").replace("{0}", " " + (mttDetails.mtt.apply_fee_hunter/100).toString() + " ");  
-                            } else if (i == 4) {//截止买入
-                                lbl_1.string = `${i18nMgr.Get("MTT_State_ShangXian")}:`;
-                                if (mttDetails.mtt.max_delay_apply_bl > mttDetails.more.bl)
-                                {
-                                    if (mttDetails.mtt.addon_begin_bl == 0 && mttDetails.mtt.addon_end_bl == 0)
-                                    {
-                                        lbl_2.string = LobbyControl.getInstance().formatString(i18nMgr.Get("MTT_State_DelayDetailNoAddOn"), mttDetails.mtt.limit_total_buy_times.toString(), mttDetails.mtt.max_delay_apply_bl);
-                                    }
-                                    else
-                                    {
-                                        lbl_2.string =  LobbyControl.getInstance().formatString(i18nMgr.Get("MTT_State_DelayDetail"), mttDetails.mtt.limit_total_buy_times.toString(), mttDetails.mtt.max_delay_apply_bl, mttDetails.mtt.addon_begin_bl, mttDetails.mtt.addon_end_bl);
-                                    }
-                                }
-                                else
-                                {
-                                    lbl_2.string = i18nMgr.Get("MTT_State_CannotDelay");
-                                }
-                            } else if (i == 5) {//重构次数
-                                lbl_1.string = `${i18nMgr.Get("MTT_State_RebuyTime")}:`;
-                                if (mttDetails.state != null)
-                                {
-                                    lbl_2.string = `${mttDetails.state.left_rebuy_times}` + "/" + `${mttDetails.mtt.rebuy_times}`;
-                                }
-                                else
-                                {
-                                    lbl_2.string = `${i18nMgr.Get("UIMTT_StateUnLimitRebuy")}`;
-                                }
-                            } else if (i == 6) {//当前盲注
-                                lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchCurrBlindTip")}:` + "-" + mttDetails.more.bl.toString();
-                                lbl_2.string = mttDetails.more.sb.toString() + "/" + (mttDetails.more.sb * 2).toString() + "{" + mttDetails.more.ante.toString() + "}";
-                            } else if (i == 7) {//下一盲注
-                                lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:` + "-" + mttDetails.more.nbl.toString();
-                                lbl_2.string = mttDetails.more.nsb.toString() + "/" + (mttDetails.more.nsb * 2).toString() + "{" + mttDetails.more.nante.toString() + "}";
-                            } else if (i == 8) {//涨盲时间
-                                lbl_1.string = `${i18nMgr.Get("MTT_State_UpBlindTime")}:`;
-                                lbl_2.string = `${i18nMgr.Get("UITexasReport_Text_MatchZmsysj")}:`.replace("{0}", (mttDetails.mtt.upblind_interval / 60).toString());
-                            } else if (i == 9) {//记分牌(只显示最大记分牌)
-                                lbl_1.string = `${i18nMgr.Get("UITexasReport_Label_AllBarJL")}:`;
-                                lbl_2.string = i18nMgr.Get("Maximum") + mttDetails.top.toString();
-                            }
-                        }
-                        
-                    },
-                    (res) => {
-                    }
-                )
+                // LobbyControl.getInstance().reqMTTDetailInfo(this._data._msg.match_id, {}).then(
+                //     (res: any) => {
+                //         this.refreshStatusUI(res);
+                //     },
+                //     (res) => {
+                //     }
+                // )
+                this.RefreshMttDetails();
             }
             
         } else if (this.curType == 1) {
@@ -340,11 +395,12 @@ export default class MttDetailForm extends BaseForm {
         //     return;
         // }
 
-        UIMatchMttModel.getInstance().RequestMTTDetails(this._matchID, code =>
+        UIMatchMttModel.getInstance().RequestMTTDetails(this._data._msg.match_id, code =>
         {				
             if (code == 0)
             {
-                // UpdateBtn();
+                this.UpdateBtn();
+                this.refreshStatusUI(UIMatchMttModel.getInstance().MttInfo)
                 //声纹获取麦克风权限
                 if (UIMatchMttModel.getInstance().MttInfo.mtt.voiceprint_verify_on == 1)
                 {
@@ -400,8 +456,10 @@ export default class MttDetailForm extends BaseForm {
                     // }
                 }
                 //判断当前时间是否大于进入比赛时间
-                // isCurTimeOverEnterTime = DateTime.UtcNow >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMatchMttModel.getInstance().MttInfo.mtt.enter_time);
-                callback?.Invoke();
+                this.isCurTimeOverEnterTime = TimeHelper.Now >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMatchMttModel.getInstance().MttInfo.mtt.enter_time);
+                if (callback) {
+                    callback();
+                }
             }
             else
             {
@@ -413,8 +471,26 @@ export default class MttDetailForm extends BaseForm {
         });
     }
 
+    Update()
+    {
+        if (UIMatchMttModel.getInstance().MttInfo == null || this.isCurTimeOverEnterTime)
+        {
+            return;
+        }
+        if (TimeHelper.Now >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMatchMttModel.getInstance().MttInfo.mtt.enter_time))
+        {
+            this.RefreshMttDetails();
+            this.isCurTimeOverEnterTime = true;
+        }
+
+    }
+
     OnClickSignBtn(go)
     {
+        if (!this.isCanClick) {
+            return;
+        }
+
         let openMatchApply = GameCache.Instance.IsAllowOpenMatchApply;
         openMatchApply = true; // 2.0后端暂不支持功能开关
         if (!openMatchApply)
@@ -444,157 +520,173 @@ export default class MttDetailForm extends BaseForm {
             // {
             //     return;
             // }
-
-            // switch ((MTTGame.MTTPlayerStatus)UIMatchMttModel.getInstance().MttInfo.state_code)
-            // {
-            //     case MTTGame.MTTPlayerStatus.CanApplyNotStart:
-            //     case MTTGame.MTTPlayerStatus.CanApplyDelay:
-            //         {
-            //             UIMatchMttModel.getInstance().HandleMTTJoinAction(UIMatchMTTModel.MTTJoinAction.Apply, code =>
-            //             {
-            //                 RefreshMttDetails();
-            //             }, httpState =>
-            //             {
-            //                 UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
-            //             });
-            //         }
-            //         break;
-            //     case MTTGame.MTTPlayerStatus.CanJoin:
-            //         {
-            //             UIMatchMttModel.getInstance().HandleMTTJoinAction(UIMatchMTTModel.MTTJoinAction.PartialBringIn, bringInCode =>
-            //             {
-            //                 if (bringInCode == 0)
-            //                 {
-            //                     //进入MTT房间时添加firebase事件触发
-            //                     Dictionary<string, string> paramMap = new Dictionary<string, string>(); 
-            //                     paramMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
-            //                     paramMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
-            //                     paramMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
-            //                     paramMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
-            //                     paramMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
-            //                     GoogleFirebaseHelper.LevelStartEvent(paramMap);
-            //                     //添加到appsFlyer统计进入MTT房间消息
-            //                     Dictionary<string, string> valuesMap = new Dictionary<string, string>();
-            //                     valuesMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
-            //                     valuesMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
-            //                     valuesMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
-            //                     valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
-            //                     valuesMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
-            //                     AppsFlyerHelper.MTTGameEnterEvent(valuesMap);
-            //                     UIMatchMttModel.getInstance().ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
-            //                 }
-            //                 else
-            //                 {
-            //                     RefreshMttDetails();
-            //                     UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(bringInCode));
-            //                 }
-            //             }, httpState =>
-            //             {
-            //                 UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
-            //             });
-            //         }
-            //         break;
-            //     case MTTGame.MTTPlayerStatus.LoseCanRebuy:
-            //         {
-            //             UIMatchMttModel.getInstance().HandleMTTJoinAction(UIMatchMTTModel.MTTJoinAction.Rebuy, rebuyCode =>
-            //             {
-            //                 if (rebuyCode == 0)
-            //                 {
-            //                     UIMatchMttModel.getInstance().ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
-            //                 }
-            //                 else
-            //                 {
-            //                     RefreshMttDetails();
-            //                     UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rebuyCode));
-            //                 }
-            //             }, httpState =>
-            //             {
-            //                 UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
-            //             });
-            //         }
-            //         break;
-            // }
+            let mttInfo = UIMatchMttModel.getInstance().MttInfo;
+            switch (mttInfo.state_code)
+            {
+                case MTTGame.MTTPlayerStatus.CanApplyNotStart:
+                case MTTGame.MTTPlayerStatus.CanApplyDelay:
+                    {
+                        UIMatchMttModel.getInstance().HandleMTTJoinAction(MTTJoinAction.Apply, code =>
+                        {
+                            this.RefreshMttDetails();
+                        }, httpState =>
+                        {
+                            // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+                        });
+                    }
+                    break;
+                case MTTGame.MTTPlayerStatus.CanJoin:
+                    {
+                        UIMatchMttModel.getInstance().HandleMTTJoinAction(MTTJoinAction.PartialBringIn, bringInCode =>
+                        {
+                            if (bringInCode == 0)
+                            {
+                                //进入MTT房间时添加firebase事件触发
+                                let paramMap: any = [];
+                                paramMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
+                                paramMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
+                                paramMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
+                                paramMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
+                                paramMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
+                                // GoogleFirebaseHelper.LevelStartEvent(paramMap);
+                                //添加到appsFlyer统计进入MTT房间消息
+                                let valuesMap: any = [];
+                                valuesMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
+                                valuesMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
+                                valuesMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
+                                valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
+                                valuesMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
+                                // AppsFlyerHelper.MTTGameEnterEvent(valuesMap);
+                                // UIMatchMttModel.getInstance().ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
+                            }
+                            else
+                            {
+                                this.RefreshMttDetails();
+                                // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(bringInCode));
+                            }
+                        }, httpState =>
+                        {
+                            // ToastManager.Instance.createToast($"{nameof(HTTPRequestStates)}: {httpState}");
+                        });
+                    }
+                    break;
+                case MTTGame.MTTPlayerStatus.LoseCanRebuy:
+                    {
+                        UIMatchMttModel.getInstance().HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode =>
+                        {
+                            if (rebuyCode == 0)
+                            {
+                                // UIMatchMttModel.getInstance().ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
+                            }
+                            else
+                            {
+                                this.RefreshMttDetails();
+                                // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rebuyCode));
+                            }
+                        }, httpState =>
+                        {
+                            // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+                        });
+                    }
+                    break;
+            }
         });
     }
 
-    // private void UpdateBtn()
-	// 	{
-	// 		// 主按钮状态
-	// 		btnSignUp.interactable = false;
-	// 		switch ((MTTGame.MTTPlayerStatus)UIMatchMttModel.getInstance().MttInfo.state_code)
-	// 		{
-	// 			case MTTGame.MTTPlayerStatus.WaitingApply:
-	// 				{
-	// 					textBtn.text = LanguageManager.Get("mtt_btn_waiting_start");
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.CanApplyNotStart:
-	// 				{
+    UpdateBtn()
+    {
+        // 主按钮状态
+        let lbl_signUp = this.getChildNodeOrComponent("lbl_signUp").getComponent(cc.Label);
+        let btn_addMtt: cc.Node = this.getChildNodeOrComponent("btn_addMtt");
+        let btnSignUp = btn_addMtt.getComponent(cc.Button);
+        let img_can = btn_addMtt.getChildByName("img_can");
+        let img_no = btn_addMtt.getChildByName("img_no");
+        btnSignUp.interactable = false;
+        img_can.active = false;
+        img_no.active = true;
+        switch (UIMatchMttModel.getInstance().MttInfo.state_code)
+        {
+            case MTTGame.MTTPlayerStatus.WaitingApply:
+                {
+                    lbl_signUp.string = i18nMgr.Get("mtt_btn_waiting_start");
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.CanApplyNotStart:
+                {
 
-	// 					textBtn.text = LanguageManager.Get("MTT-Apply");
-	// 					btnSignUp.interactable = true;
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.CanApplyDelay:
-	// 				{
-	// 					textBtn.text = LanguageManager.Get("mtt_btn_delay");
-	// 					btnSignUp.interactable = true;
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.AppliedNotStart:
-	// 				{
-	// 					// TODO: 配置译文描述已报名但还不能进场状态
-	// 					textBtn.text = LanguageManager.Get("Mtt_AppliedNotStart");
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.CanJoin:
-	// 				{
-	// 					textBtn.text = LanguageManager.Get("mtt_btn_enter");
-	// 					btnSignUp.interactable = true;
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.CannotApplyStarted:
-	// 				{
-	// 					textBtn.text = LanguageManager.Get("mtt_btn_sign_up_deadline");
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.LoseCanRebuy:
-	// 				{
-	// 					textBtn.text = LanguageManager.Get("MTT_Rebuy");
-	// 					btnSignUp.interactable = true;
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.Lose:
-	// 				{
-	// 					if (UIMatchMttModel.getInstance().MttInfo.more.bl >= UIMatchMttModel.getInstance().MttInfo.mtt.max_rebuy_bl)
-	// 					{
-	// 						textBtn.text = LanguageManager.Get("mtt_btn_Stopbuying");
-	// 					}
-	// 					else
-	// 					{
-	// 						textBtn.text = LanguageManager.Get("MTT_Rebuy") + " " + UIMatchMttModel.getInstance().MttInfo.state.left_rebuy_times + "/" + UIMatchMttModel.getInstance().MttInfo.mtt.rebuy_times;
-	// 					}
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.JoinComplete:
-	// 			case MTTGame.MTTPlayerStatus.NotJoinComplete:
-	// 				{
-	// 					// TODO: 配置对应译文描述比赛已结束状态
-	// 					textBtn.text = LanguageManager.Get("Mtt_Complete");
-	// 				}
-	// 				break;
-	// 			case MTTGame.MTTPlayerStatus.CannotJoinOvertime:
-	// 				{
-	// 					// TODO: 配置对应译文描述超时停止进入
-	// 					textBtn.text = LanguageManager.Get("Mtt_CannotJoinOvertime");
-	// 				}
-	// 				break;
-	// 			default:
-	// 				{
-	// 					textBtn.text = "";
-	// 				}
-	// 				break;
-	// 		}
-	// 	}
+                    lbl_signUp.string = i18nMgr.Get("MTT-Apply");
+                    btnSignUp.interactable = true;
+                    img_can.active = true;
+                    img_no.active = false;
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.CanApplyDelay:
+                {
+                    lbl_signUp.string = i18nMgr.Get("mtt_btn_delay");
+                    btnSignUp.interactable = true;
+                    img_can.active = true;
+                    img_no.active = false;
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.AppliedNotStart:
+                {
+                    // TODO: 配置译文描述已报名但还不能进场状态
+                    lbl_signUp.string = i18nMgr.Get("Mtt_AppliedNotStart");
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.CanJoin:
+                {
+                    lbl_signUp.string = i18nMgr.Get("mtt_btn_enter");
+                    btnSignUp.interactable = true;
+                    img_can.active = true;
+                    img_no.active = false;
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.CannotApplyStarted:
+                {
+                    lbl_signUp.string = i18nMgr.Get("mtt_btn_sign_up_deadline");
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.LoseCanRebuy:
+                {
+                    lbl_signUp.string = i18nMgr.Get("MTT_Rebuy");
+                    btnSignUp.interactable = true;
+                    img_can.active = true;
+                    img_no.active = false;
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.Lose:
+                {
+                    if (UIMatchMttModel.getInstance().MttInfo.more.bl >= UIMatchMttModel.getInstance().MttInfo.mtt.max_rebuy_bl)
+                    {
+                        lbl_signUp.string = i18nMgr.Get("mtt_btn_Stopbuying");
+                    }
+                    else
+                    {
+                        lbl_signUp.string = i18nMgr.Get("MTT_Rebuy") + " " + UIMatchMttModel.getInstance().MttInfo.state.left_rebuy_times + "/" + UIMatchMttModel.getInstance().MttInfo.mtt.rebuy_times;
+                    }
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.JoinComplete:
+            case MTTGame.MTTPlayerStatus.NotJoinComplete:
+                {
+                    // TODO: 配置对应译文描述比赛已结束状态
+                    lbl_signUp.string = i18nMgr.Get("Mtt_Complete");
+                }
+                break;
+            case MTTGame.MTTPlayerStatus.CannotJoinOvertime:
+                {
+                    // TODO: 配置对应译文描述超时停止进入
+                    lbl_signUp.string = i18nMgr.Get("Mtt_CannotJoinOvertime");
+                }
+                break;
+            default:
+                {
+                    lbl_signUp.string = "";
+                }
+                break;
+        }
+        this.isCanClick = btnSignUp.interactable;
+    }
 
 }
