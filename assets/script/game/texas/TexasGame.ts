@@ -9,7 +9,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import Main from "../../Main";
-import { Web_User_Room } from "../../net/https/WebRequest";
+import { APIOrgFriendBringIn, Web_User_Room } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Def, Operator, RoomInfo } from "../../protobuf/holdem/define_pb";
@@ -536,8 +536,8 @@ export default class TexasGame {
             this.HideWaitBlindBtn();
             this.InitSeatByCount(GameCache.Instance.seat_count);
             this.InitOperationPos();
-
             this.HideAllPots();
+            this.HideBringIn();
         }
 
         this.mainPlayer = new CPlayer(GameCache.Instance.nUserId);
@@ -1169,8 +1169,12 @@ export default class TexasGame {
             }
             else {
                 //判断朋友桌带入是否审核通过
-                if (tResp.data) {
-
+                if (tResp.data.bring_in_apply) {
+                    GameCache.Instance.friendBringInStatus = tResp.data.bring_in_apply.status;
+                    if (tResp.data.bring_in_apply.status == 2) {
+                        GameCache.Instance.CurGame.AddChips(tResp.data.bring_in_apply.bring_in);
+                        return;
+                    }
                 }
 
                 if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
@@ -1294,10 +1298,18 @@ export default class TexasGame {
             else {
 
                 //判断是否需要带入申请 （朋友桌）
-                if (GameCache.Instance.limit_bring_in == 1 && GameCache.Instance.origin_type == 4) {
+                if (GameCache.Instance.limit_bring_in == 1 && GameCache.Instance.origin_type == 4 && GameCache.Instance.friendBringInStatus != 2) {
                     UITexasModel.mInstance.APIFriendBringIn({
                         room_id: GameCache.Instance.room_id,
                         bring_in: anteNumber
+                    }).then((rec: typeof APIOrgFriendBringIn.ResponseData) => {
+                        if (rec.data?.status == 1) {
+                            UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
+                        }
+                    }).catch(obj => {
+                        if (obj.code == 90001) {
+                            UIComponent.Instance.Toast(obj.message);
+                        }
                     })
                 } else {
                     ProtocolAgency.Send<ClientMessageSeated.AsObject>({
@@ -3013,5 +3025,12 @@ export default class TexasGame {
             this.listSeat.push(mSeat);
             this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
         }
+    }
+    //申请带入按钮显示和隐藏
+    public ShowBringIn() {
+        this.uirc.Button_BringIn.active = true;
+    }
+    public HideBringIn() {
+        this.uirc.Button_BringIn.active = false;
     }
 }

@@ -783,7 +783,7 @@ export class Web_Prop_User_Check_Prop_Info {
     static ResponseData: {
         data: typeof Web_Prop_User_Check_Prop_Info.Data[]
     } = null;
-    
+
     static Data: {
         is_free_service_charge: number,//是否免服务费
         prop_balance: string,//道具余量
@@ -813,7 +813,7 @@ export class Web_Room_Center_Mtt_GetDiscounts {
     static ResponseData: {
         data: typeof Web_Room_Center_Mtt_GetDiscounts.Data[]
     } = null;
-    
+
     static Data: {
         is_free_service_charge: number,//是否免服务费
         prop_balance: string,//道具余量
@@ -845,9 +845,9 @@ export class Web_Prop_User_Buy_Prop {
     static ResponseData: {
         data: typeof Web_Prop_User_Buy_Prop.Data[]
     } = null;
-    
+
     static Data: {
-        
+
     } = null;
 
     static Request(param: typeof Web_Prop_User_Buy_Prop.RequestParams) {
@@ -1559,6 +1559,7 @@ export class Web_User_Room {
     static ResponseData: {
         last_bring_out: typeof Web_User_Room.BringOut,
         wallet: typeof Web_User_Room.Wallet,
+        bring_in_apply: typeof Web_User_Room.BringIn,
     } = null;
 
     static BringOut: {
@@ -1571,6 +1572,13 @@ export class Web_User_Room {
         gold: number,//钱包金额
         gold_lock: number,//被锁定金额
         wallet_status: number,//钱包状态
+    } = null;
+
+    static BringIn: {
+        room_id: number,//房间ID
+        user_id: number,//用户ID
+        bring_in: number,//带入筹码
+        status: number,// 状态 1 待审批，2通过，3拒绝，4取消
     } = null;
 
     static Request(param: typeof Web_User_Room.RequestParams) {
@@ -2406,7 +2414,16 @@ export class APIOrgFriendBringIn {
         bring_in: number // 带入值
     } = null;
     public static ResponseData: {
-
+        data: typeof APIOrgFriendBringIn.Data
+    } = null;
+    public static Data: {
+        id: number,
+        room_creator_id: number,
+        bring_in: number,
+        status: number,
+        op_id: number,
+        create_time: string,
+        update_time: string,
     } = null;
     public static Request(param: typeof APIOrgFriendBringIn.RequestParams) {
         this.RequestParams = param;

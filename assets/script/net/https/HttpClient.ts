@@ -65,13 +65,16 @@ export default class HttpClient {
                 if (response_json?.code == 0) {
                     onSuccess && onSuccess(response_json);
                 } else {
-                    //错误码提示
-                    if (response_json.code == 90003) {
-                        ToastManager.Instance.createToast(response_json.message);
-                    } else {
-                        ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response_json.code));
+                    //错误码提示 friend room bringin applied
+                    switch (response_json.code) {
+                        case 90003:
+                            ToastManager.Instance.createToast(response_json.message);
+                            break;
+                        default:
+                            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response_json.code));
+                            break;
                     }
-                    onFailure && onFailure(response_json.code);
+                    onFailure && onFailure(response_json);
                 }
                 break;
         }

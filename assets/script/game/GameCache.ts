@@ -279,6 +279,7 @@ export class GameCache {
     public origin_type: number = null;   // 4 是朋友桌
     public limit_bring_in: number = null  //是否开启带入  0/1
     public invitation_code: number = null  //邀请码  
+    public friendBringInStatus: number = 0; // 朋友桌带入申请的状态
 
     private static _Instance: GameCache = null;
 

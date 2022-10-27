@@ -160,7 +160,8 @@ export default class UITexas extends BaseScene {
 
 
 
-
+    //带入申请按钮
+    Button_BringIn: cc.Node = null;
 
     //1.左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
@@ -276,6 +277,8 @@ export default class UITexas extends BaseScene {
         this.Image_WaitForStartBathTips = this.getChildNodeOrComponent("Image_WaitForStartBathTips");
         this.BathText = this.Image_WaitForStartBathTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
 
+        this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
+
         //#region 公共牌数据(UI、Id)
         if (null == this.listCards)
             this.listCards = [];
@@ -353,6 +356,9 @@ export default class UITexas extends BaseScene {
 
         this.setButtonClick(this.buttonAddOn, this.onClickAddOn);
 
+        this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
+
+
     }
 
     Enter(param: { fromUI: IUIDefine, lookOn: boolean }): void {
@@ -371,6 +377,7 @@ export default class UITexas extends BaseScene {
         this.game.SetDeskType(this.game.deskType);
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
+
     }
     ClearUI() {
         UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
@@ -497,7 +504,10 @@ export default class UITexas extends BaseScene {
         this.HideMenu(false);
         this.game.TexasGameUtils.LeaveRoom();
     }
-
+    onClickBringIn() {
+        UIComponent.open(UIDefine.UIApplyJoin);
+        this.game.HideBringIn();
+    }
     onClickAddOn() {
 
         if (!this.getButtonInteractable(this.buttonAddOn)) return;
