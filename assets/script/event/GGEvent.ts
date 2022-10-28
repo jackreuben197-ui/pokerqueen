@@ -18,4 +18,7 @@ export default class GGEvent {
     //刷新个人昵称
     static Refresh_UserName:string = "Refresh_UserName";
 
+    //删除工会成员
+    static CLUB_DELE_USER:string = "CLUB_DELE_USER";
+
 }
