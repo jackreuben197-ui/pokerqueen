@@ -2680,10 +2680,23 @@ export class APIOrgClubActivityCreate {
     };
 }
 
+export class APIOrgClubActivityInfo {
+    public static API: string = "/api/cmsext/activity/club/info";
+    //字段声明
+    public static RequestParams: {
 
+    } = null;
+    public static ResponseData: {
 
-
-
+    } = null;
+    public static Request(param: typeof APIOrgClubActivityInfo.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubActivityInfo.ResponseData
+    };
+}
 
 /**
  * 注册全局访问
