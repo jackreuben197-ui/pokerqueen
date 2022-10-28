@@ -15,6 +15,7 @@ import { ProtocolCode } from "../net/websocket/ProtocolCode";
 
 
 import { Def, RoomInfo } from "../protobuf/holdem/define_pb";
+import { ClientMessageAddOn } from "../protobuf/holdem/req_add_on_pb";
 import { ClientMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
 import { ClientMessageShowPublicCards } from "../protobuf/holdem/req_show_public_cards_pb";
 import GlobalSession from "../session/GlobalSession";
@@ -70,7 +71,6 @@ export class PublicCardInfo {
     //设置卡牌id并且刷新显示
     SetSpriteFrame(cardId: number) {
         this.cardId = cardId;
-        //this.imageCard.spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
         this.UpdateSpriteFrame();
     }
     //刷新显示
@@ -143,19 +143,20 @@ export default class UITexas extends BaseScene {
     buttonSeeMorePublic: cc.Node = null;
     imageSeeMorePublicTips: cc.Node = null;
     textSeeMorePublicTips: cc.Label = null;
-
+    s
     textSeeMorePublic: cc.Label = null;
     textSeeMorePublicGold: cc.Label = null;
 
     buttonCancelTrust: cc.Node = null;
 
     //MTT
-    protected buttonRebuy: cc.Node = null;
-    protected buttonAddOn: cc.Node = null;
-    protected transCountDownView: cc.Node = null;
+    //public buttonRebuy: cc.Node = null;
+    public buttonAddOn: cc.Node = null;
+    public transCountDownView: cc.Node = null;
+    //拆并桌文本提示
     public Image_RedistributionTips: cc.Node = null;
     public Image_WaitForStartBathTips: cc.Node = null;
-    private pullDownText: cc.Label = null;
+    public pullDownText: cc.Label = null;
     public BathText: cc.Label = null;
 
 
@@ -271,7 +272,7 @@ export default class UITexas extends BaseScene {
         //MTT
         this.buttonAddOn = this.getChildNodeOrComponent("Button_AddOn");
         this.Image_RedistributionTips = this.getChildNodeOrComponent("Image_RedistributionTips");
-        this.pullDownText = this.Image_RedistributionTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
+        this.pullDownText = this.Image_RedistributionTips.getChildByName("Text_Tips")?.getComponent(cc.Label);
         //this.armatureRewardCircleZH = rc.Get<GameObject>("Armature_RewardCircle_zh").GetComponent<UnityArmatureComponent>();
         //this.armatureRewardCircleEN = rc.Get<GameObject>("Armature_RewardCircle_en").GetComponent<UnityArmatureComponent>();
         this.Image_WaitForStartBathTips = this.getChildNodeOrComponent("Image_WaitForStartBathTips");
@@ -508,39 +509,7 @@ export default class UITexas extends BaseScene {
         UIComponent.open(UIDefine.UIApplyJoin);
         this.game.HideBringIn();
     }
-    onClickAddOn() {
-
-        if (!this.getButtonInteractable(this.buttonAddOn)) return;
-
-        this.setButtonInteractable(this.buttonAddOn, false);
-
-        // ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
-        //     Code: ProtocolCode.Protocol_Holdem_EnterRoom,
-        //     RoomID: GameCache.Instance.room_id,
-        //     MatchID: GameCache.Instance.match_id,
-        //     Body:
-        //     {
-        //         room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-        //         gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
-        //         mttPartialBringIn: 0,
-        //         observer: false,
-        //     },
-        // });
-
-        // CPGameSessionComponent.Instance.Send(new Protocol_Holdem_AddOn()
-        // {
-        //         RoomID = (ulong)GameCache.Instance.room_id,
-        //         MatchID = (ulong)GameCache.Instance.match_id,
-        //         request = new ClientMessageAddOn()
-        //     {
-        //         Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
-        //     Mode = addOnMode,
-        //     Ratio = 1,
-        //     UseProp = false,
-        //     }
-
-        // });
-        // CurrentOpAddOnMode = addOnMode;
+    private onClickAddOn() {
+        this.game.onClickAddOn();
     }
-
 }
