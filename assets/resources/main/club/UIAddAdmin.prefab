@@ -2689,9 +2689,9 @@
     "_enabled": true,
     "alignMode": 1,
     "_target": null,
-    "_alignFlags": 45,
-    "_left": 0,
-    "_right": 0,
+    "_alignFlags": 5,
+    "_left": 621,
+    "_right": 621,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,
@@ -2716,8 +2716,8 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 300,
-      "height": 200
+      "width": 1242,
+      "height": 2688
     },
     "_resize": 0,
     "_N$layoutType": 2,

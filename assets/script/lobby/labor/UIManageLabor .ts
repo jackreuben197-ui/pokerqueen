@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:13:02
+ * @LastEditTime: 2022-10-28 16:45:08
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -143,12 +143,16 @@ export default class UIManageLabor extends BaseForm {
             UIComponent.open(UIDefine.UIJoinUnion);
         }
     }
+
     changeClubData() {
         Web_Org_Club_Get.Response.data['desc'] = this.EditBox.string
         UIClubModel.mInstance.APIOrgChangeClubData({ desc: this.EditBox.string })
     }
     clickActive() {
         UIComponent.open(UIDefine.UIActiveMange)
+    }
+    clickDateManage() {
+        UIComponent.open(UIDefine.UIClubDataMange)
     }
 
     clickJijin() {
