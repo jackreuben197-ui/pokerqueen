@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 20:50:37
+ * @LastEditTime: 2022-10-28 21:11:48
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -594,8 +594,8 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubActivityInfo(params) {
-
+    APIOrgClubActivityInfo() {
+        let params = {}
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgClubActivityInfo,

@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:30:18
+ * @LastEditTime: 2022-10-28 21:23:37
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -14,13 +14,14 @@ import { UIDefine, UIDefineType } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { EMatchViewTabType } from "../matchView/MatchViewConfig";
 import BaseForm from "../../ui/form/BaseForm";
-import { APIOrgClubGold, APIOrgClubIsManger, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { APIOrgClubActivityInfo, APIOrgClubGold, APIOrgClubIsManger, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { UIClubModel } from "./UIClubModel";
 import { GameType } from "../../game/util/GameUtil";
 import { EWalletGoldOpration } from "../../wallet/WalletConfig";
 import GC from "../../frame/GameControl";
 import { EventName } from "../../config/EventName";
 import SceneManager from "../../manager/SceneManager";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -78,6 +79,11 @@ export default class UILabarPlayViewForm extends UIBase {
     @property(cc.Node)
     chongzhi: cc.Node = null;
 
+    @property(cc.Sprite)
+    bar: cc.Sprite = null;
+    @property(cc.Label)
+    lbl_active: cc.Label = null;
+
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
 
@@ -105,6 +111,7 @@ export default class UILabarPlayViewForm extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
+        this.listen(EventName.refreshActive, this.initActive)
     }
 
     protected regiterDispatchEvent(): void {
@@ -123,6 +130,22 @@ export default class UILabarPlayViewForm extends UIBase {
 
         this.initTop();
         this.initChessView();
+        this.initActive()
+    }
+    async initActive() {
+        await UIClubModel.mInstance.APIOrgClubActivityInfo();
+        let data: any = APIOrgClubActivityInfo.Response.data
+        let url: string = data.info.img_url;
+        let index = url.indexOf('http')
+        if (index == -1) {
+            this.bar.spriteFrame = AssetContext.getAsset(url, AssetFold.texture_labor)
+            WebImageHelper.setImageSize(this.bar, 1110, 361)
+        }
+        else {
+            WebImageHelper.SetUrlImage(this.bar, url)
+        }
+        this.lbl_active.string = data.info.description
+
     }
 
     initChessView() {

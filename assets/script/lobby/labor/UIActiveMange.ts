@@ -3,13 +3,15 @@
  * @Date: 2022-10-28 11:00:04
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 20:15:28
+ * @LastEditTime: 2022-10-28 21:34:23
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIActiveMange.ts
  */
 
+import { EventName } from "../../config/EventName";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { APIOrgClubActivityCreate, APIOrgClubUploadIcon, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
+import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
 
 
@@ -25,9 +27,9 @@ export default class UIActiveMange extends BaseForm {
     @property(cc.Sprite)
     image: cc.Sprite = null;
 
-    iconUrl = 0 + "";
+    iconUrl = 'active0';
     activeType = 2;
-    picType = 1 + ''
+    picType = 'activeB1';
 
     async onShow(param?: any) {
         super.onShow(param);
@@ -42,7 +44,7 @@ export default class UIActiveMange extends BaseForm {
     }
 
     selectPicToggle(event, customData) {
-        this.picType = (customData)
+        this.picType = 'activeB' + (customData)
     }
 
     async uploadIcon() {
@@ -59,7 +61,7 @@ export default class UIActiveMange extends BaseForm {
         let param = {}
         let description = ''
         if (this.activeType == 1) {
-            description = ''
+            description = ' '
         }
         else if (this.activeType == 2) {
             this.iconUrl = this.picType
@@ -67,7 +69,10 @@ export default class UIActiveMange extends BaseForm {
         }
         let data: any = Web_Org_Club_Get.Response.data;
         param = { club_id: data.club_id, activity_type: this.activeType, description: description, img_url: this.iconUrl };
-        await UIClubModel.mInstance.APIOrgClubActivityCreate(param)
-
+        let _data: any = await UIClubModel.mInstance.APIOrgClubActivityCreate(param)
+        if (_data.code == 0) {
+            this.post(EventName.refreshActive);
+            UIComponent.Instance.Toast("发布成功")
+        }
     }
 }
