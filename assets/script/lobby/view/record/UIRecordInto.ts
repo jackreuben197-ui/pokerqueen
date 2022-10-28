@@ -44,8 +44,8 @@ export default class UIRecordInto extends BaseForm {
         let info = {
             limit: 100,
             offset: 0,
-            // room_id: room_data.room_id,
-            room_id: 90785674
+            room_id: room_data.room_id,
+            // room_id: 90785674
         }
         LobbyControl.getInstance().reqFriendAppleList(info).then(
             (res) => {
@@ -65,12 +65,13 @@ export default class UIRecordInto extends BaseForm {
         if (data == null || data.total == 0) {
             return;
         }
-        let records = data.data.records;
+        let records = data.data;
         
         // 有数据 刷新列表
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
+        let _gameTypeName = ["NLH", "PLO4", "PLO5", "PLO6", "6+"];
         for (let i=0; i<len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
             _cloneNode.x = 0;
@@ -79,15 +80,35 @@ export default class UIRecordInto extends BaseForm {
 
             let info = records[i];
 
-            let nameStr = GC.data.languageTemp.temp.getName(info.name);
-            _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
-            // _cloneNode.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
-            // let score = info.change;
-            // let scLbl = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
-            // LobbyControl.getInstance().setWinColor(scLbl, score);
+            _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = info.room_name;
 
-            // _cloneNode["index"] = i;
-            // _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
+            _cloneNode.getChildByName("lbl_nlh").getComponent(cc.Label).string = _gameTypeName[info.game_type];
+            
+
+            let img_head: cc.Sprite = _cloneNode.getChildByName("img_head").getComponent(cc.Sprite);
+            img_head.node.active =false;
+            WebImageHelper.SetUrlImage(img_head, info.avatar).then(()=>{
+                img_head.node.active =true;
+            });
+
+            _cloneNode.getChildByName("lbl_id").getComponent(cc.Label).string = "ID: " + info.user_random_id;
+
+            _cloneNode.getChildByName("lbl_time").getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(info.create_time);
+
+            let label = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label)
+            LobbyControl.getInstance().setWinColor(label, info.bring_in);
+
+            let str = "";
+            if (info.status == 1) {
+                str = "待审批";
+            } else if (info.status == 2) {
+                str = "已通过";
+            } else if (info.status == 3) {
+                str = "已拒绝";
+            } else if (info.status == 3) {
+                str = "已取消";
+            }
+            _cloneNode.getChildByName("lbl_status").getComponent(cc.Label).string = str;
         }
         scrollView.content.height = panel_item.height * (len+2);
     }

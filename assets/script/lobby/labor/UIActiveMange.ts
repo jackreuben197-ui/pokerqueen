@@ -3,12 +3,12 @@
  * @Date: 2022-10-28 11:00:04
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:45:07
+ * @LastEditTime: 2022-10-28 20:15:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIActiveMange.ts
  */
 
 import WebImageHelper from "../../helper/WebImageHelper";
-import { APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgClubActivityCreate, APIOrgClubUploadIcon, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import { UIClubModel } from "./UIClubModel";
 
@@ -25,9 +25,10 @@ export default class UIActiveMange extends BaseForm {
     @property(cc.Sprite)
     image: cc.Sprite = null;
 
-    iconUrl = null;
-    activeType = 1;
-    picType = 1
+    iconUrl = 0 + "";
+    activeType = 2;
+    picType = 1 + ''
+
     async onShow(param?: any) {
         super.onShow(param);
 
@@ -41,10 +42,11 @@ export default class UIActiveMange extends BaseForm {
     }
 
     selectPicToggle(event, customData) {
-        this.picType = Number(customData)
+        this.picType = (customData)
     }
 
     async uploadIcon() {
+
         await UIClubModel.mInstance.APIOrgClubUploadIcon();
         let icon: any = APIOrgClubUploadIcon.Response.data
         if (icon) {
@@ -53,13 +55,19 @@ export default class UIActiveMange extends BaseForm {
             WebImageHelper.setImageSize(this.image, 779, 308)
         }
     }
-    buttonCommitClick() {
+    async buttonCommitClick() {
+        let param = {}
+        let description = ''
         if (this.activeType == 1) {
-            this.iconUrl
+            description = ''
         }
         else if (this.activeType == 2) {
-            this.picType
-            this.editBox.string = '';
+            this.iconUrl = this.picType
+            description = this.editBox.string;
         }
+        let data: any = Web_Org_Club_Get.Response.data;
+        param = { club_id: data.club_id, activity_type: this.activeType, description: description, img_url: this.iconUrl };
+        await UIClubModel.mInstance.APIOrgClubActivityCreate(param)
+
     }
 }
