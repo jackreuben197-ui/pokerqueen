@@ -1959,6 +1959,138 @@ export class APIOrgMangerList {
     }
     static Response: { code?: number, message?: string, data?: typeof APIOrgMangerList.ResponseData };
 }
+
+
+// 6.玩家申请加入公会列表
+export class APIClubJoinList {
+    //接口地址
+    static API: string = "/api/org/club/user/join/list";
+
+    //字段声明
+    static RequestParams: {
+        "limit": number,
+        "offset": number
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APIClubJoinList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIClubJoinList.ResponseData };
+}
+
+// 17.公会管理员冻结公会成员
+export class APILockUser {
+    //接口地址
+    static API: string = "/api/org/club/admin/lock/user";
+
+
+    //字段声明
+    static RequestParams: {
+        user_id: number;
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APILockUser.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APILockUser.ResponseData };
+}
+
+// 18.公会管理员解冻公会成员
+export class APIUnlockUser {
+    //接口地址
+    static API: string = "/api/org/club/admin/unlock/user";
+
+
+    //字段声明
+    static RequestParams: {
+        user_id: number;
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APIUnlockUser.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIUnlockUser.ResponseData };
+}
+
+// 19.公会管理员删除公会成员
+export class APIDeleleUser {
+    //接口地址
+    static API: string = "/api/org/club/admin/delele/user";
+
+
+    //字段声明
+    static RequestParams: {
+        user_id: number;
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APIDeleleUser.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIDeleleUser.ResponseData };
+}
+
+// 22.管理员查看玩家退会记录
+export class APIClubQuitList {
+    //接口地址
+    static API: string = "/api/org/club/user/quit/log";
+
+
+    //字段声明
+    static RequestParams: {
+        "limit": number,
+        "offset": number
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APIClubQuitList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIClubQuitList.ResponseData };
+}
+
+// 查看成员战绩
+export class APIClubStandings {
+    //接口地址
+    static API: string = "/api/stats/user/standings";
+
+
+    //字段声明
+    static RequestParams: {
+        "user_id": number,
+        "game_type": number,
+        "time_type": number,
+        "time_long": number
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APIClubStandings.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIClubStandings.ResponseData };
+}
+
 export class APIOrgClubGold {
     //接口地址
     static API: string = "/api/org/club/fund/detail";

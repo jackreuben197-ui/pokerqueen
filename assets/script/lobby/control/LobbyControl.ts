@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APILockUser, APIUnlockUser, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -363,6 +363,117 @@ export class LobbyControl {
         }
         return localValue;
     }
+
+    /**
+     * 玩家申请加入公会列表
+     */
+     async reqClubJoinList(param: typeof APIClubJoinList.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIClubJoinList,
+                body: APIClubJoinList.Request(param),
+                onSuccess: function () {
+                    resolve(APIClubJoinList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 公会管理员冻结公会成员
+     */
+     async reqClubLockUser(param: typeof APILockUser.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APILockUser,
+                body: APILockUser.Request(param),
+                onSuccess: function () {
+                    resolve(APILockUser.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 公会管理员解冻公会成员
+     */
+     async reqClubUnlockUser(param: typeof APIUnlockUser.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIUnlockUser,
+                body: APIUnlockUser.Request(param),
+                onSuccess: function () {
+                    resolve(APIUnlockUser.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 公会管理员删除公会成员
+     */
+     async reqClubDeleleUser(param: typeof APIDeleleUser.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIDeleleUser,
+                body: APIDeleleUser.Request(param),
+                onSuccess: function () {
+                    resolve(APIDeleleUser.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 管理员查看玩家退会记录
+     */
+     async reqClubQuitList(param: typeof APIClubQuitList.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIClubQuitList,
+                body: APIClubQuitList.Request(param),
+                onSuccess: function () {
+                    resolve(APIClubQuitList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 查看成员战绩
+     */
+     async reqClubStandings(param: typeof APIClubStandings.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIClubStandings,
+                body: APIClubStandings.Request(param),
+                onSuccess: function () {
+                    resolve(APIClubStandings.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+
+    
     
 
 

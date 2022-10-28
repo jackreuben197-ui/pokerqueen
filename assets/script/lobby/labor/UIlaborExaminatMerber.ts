@@ -17,6 +17,8 @@ import BaseForm from "../../ui/form/BaseForm";
 import { UIClubModel } from "./UIClubModel";
 import { Web_Org_Club_Get, APIOrgClubGetJoinlList, } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
+import { LobbyControl } from "../control/LobbyControl";
+import GGEvent from "../../event/GGEvent";
 
 const { ccclass, property } = cc._decorator;
 
@@ -104,6 +106,7 @@ export default class UIlaborExaminatMerber extends BaseForm {
             agree.on(cc.Node.EventType.TOUCH_END, () => {
                 UIClubModel.mInstance.APIOrgClubApprovalJoin(element.id, 2);
                 item.active = false
+                this.post(GGEvent.CLUB_DELE_USER);
             }, this)
             item.active = true
 
@@ -111,9 +114,53 @@ export default class UIlaborExaminatMerber extends BaseForm {
 
     }
 
-    exitJoinList() {
+    async exitJoinList() {
         this.joinList.active = false;
         this.exitList.active = true;
+
+        this.joinContent.removeAllChildren();
+
+        let info = {
+            limit: 100,   
+            offset: 0,
+        }
+        LobbyControl.getInstance().reqClubQuitList(info).then(
+            (event: any) => {
+                if (event.data == null) {
+                    return;
+                }
+                let data = event.data.data;
+                if (data == null) {
+                    return;
+                }
+                for (let index = 0; index < data.length; index++) {
+                    const element = data[index];
+                    let item = cc.instantiate(this.itemAgree);
+                    item.parent = this.joinContent;
+                    item.getChildByName('name').getComponent(cc.Label).string = element.nickname
+                    item.getChildByName('id').getComponent(cc.Label).string = element.user_random_id
+                    let icon = cc.find('iconMask/icon', item);
+                    WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), element.avatar)
+                    let refuse = cc.find('btnNode/refuse', item)
+                    refuse.on(cc.Node.EventType.TOUCH_END, () => {
+                        UIClubModel.mInstance.APIOrgClubApprovalJoin(element.id, 3);
+                        item.active = false
+                    }, this)
+        
+                    let agree = cc.find('btnNode/agree', item)
+                    agree.on(cc.Node.EventType.TOUCH_END, () => {
+                        UIClubModel.mInstance.APIOrgClubApprovalJoin(element.id, 2);
+                        item.active = false
+                        this.post(GGEvent.CLUB_DELE_USER);
+                    }, this)
+                    item.active = true
+        
+                }
+            },
+            (res) => {
+            }
+        )
+        
 
     }
 

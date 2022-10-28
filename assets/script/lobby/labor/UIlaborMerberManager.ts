@@ -14,6 +14,7 @@ import { Web_Org_Club_Get, APIOrgClubGetJoinlList, APIOrgMemberList } from "../.
 import WebImageHelper from "../../helper/WebImageHelper";
 import { UIClubModel } from "./UIClubModel";
 import TimeHelper from "../../helper/TimeHelper";
+import GGEvent from "../../event/GGEvent";
 
 const { ccclass, property } = cc._decorator;
 
@@ -47,9 +48,15 @@ export default class UIlaborMerberManager extends BaseForm {
         super.onShow(param, fromUI);
         this.initTop()
         await UIClubModel.mInstance.APIOrgClubGetJoinlList()
-        this.initMemberList();
+        this.reqClubGetJoin();
         // this.initAudit()
     }
+
+    async reqClubGetJoin() {
+        await UIClubModel.mInstance.APIOrgClubGet()
+        this.initMemberList();
+    }
+
     initAudit() {
         //为了显示审批的红点
         let data: any = APIOrgClubGetJoinlList.Response.data
@@ -71,7 +78,7 @@ export default class UIlaborMerberManager extends BaseForm {
     async initMemberList() {
         this.contentNode.removeAllChildren();
         let data: any = APIOrgMemberList.Response.data;
-        if (data == null) {
+        if (data == null || data.data == null) {
             return;
         }
         for (let index = 0; index < data?.data.length; index++) {
@@ -84,9 +91,16 @@ export default class UIlaborMerberManager extends BaseForm {
             let icon = cc.find('iconMask/icon', _item);
             WebImageHelper.SetUrlImage(icon.getComponent(cc.Sprite), data?.data[index].avatar)
             _item.active = true;
-            _item['info'] = data[index];
+            _item['info'] = data.data[index];
             _item.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         }
+    }
+
+    /**
+     * 注册广播事件
+     */
+     protected regiterDispatchEvent() {
+        this.listen(GGEvent.CLUB_DELE_USER, this.reqClubGetJoin);
     }
 
     onClickItem(event) {
