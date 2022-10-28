@@ -2636,6 +2636,26 @@ export class APIOrgClubMember {
         code?: number, message?: string, data?: typeof APIOrgClubMember.ResponseData
     };
 }
+export class APIOrgClubActivityCreate {
+    public static API: string = "/api/cmsext/activity/club/create";
+    //字段声明
+    public static RequestParams: {
+        club_id: number,  //
+        activity_type: number,  //
+        description: string,
+        img_url: string,
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubActivityCreate.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubActivityCreate.ResponseData
+    };
+}
 
 
 

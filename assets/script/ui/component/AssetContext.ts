@@ -3,7 +3,7 @@
  * @Date: 2022-08-25 18:30:36
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-23 14:11:22
+ * @LastEditTime: 2022-10-28 19:59:06
  * @FilePath: /pokerqueen/assets/script/ui/component/AssetContext.ts
  */
 
@@ -28,6 +28,7 @@ export enum AssetFold {
     texture_SmallCard0,
     texture_SmallCard1,
     texture_mtt,
+    texture_labor
 }
 const { ccclass, property, executionOrder } = cc._decorator;
 

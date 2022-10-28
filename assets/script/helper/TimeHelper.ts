@@ -3,7 +3,7 @@
  * @Date: 2022-09-05 15:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 16:02:20
+ * @LastEditTime: 2022-10-28 19:02:03
  * @FilePath: /pokerqueen/assets/script/helper/TimeHelper.ts
  */
 
@@ -83,7 +83,7 @@ export default class TimeHelper {
 
         }
         else if (pNum < 60) {
-            return pNum.toString() + '秒';
+            return Math.ceil(pNum).toString() + '秒';
         }
         return "";
     }
