@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 14:36:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:08:44
+ * @LastEditTime: 2022-10-28 15:31:33
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborExaminatMerber.ts
  */
 // Learn TypeScript:
@@ -80,7 +80,6 @@ export default class UIlaborExaminatMerber extends BaseForm {
 
 
     }
-
     async initJoinList() {
         this.joinList.active = true;
         this.exitList.active = false;
@@ -94,7 +93,7 @@ export default class UIlaborExaminatMerber extends BaseForm {
             item.getChildByName('name').getComponent(cc.Label).string = element.nickname
             item.getChildByName('id').getComponent(cc.Label).string = element.user_random_id
             let icon = cc.find('iconMask/icon', item);
-            // WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), element.avatar)
+            WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), element.avatar)
             let refuse = cc.find('btnNode/refuse', item)
             refuse.on(cc.Node.EventType.TOUCH_END, () => {
                 UIClubModel.mInstance.APIOrgClubApprovalJoin(element.id, 3);

@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:21:27
+ * @LastEditTime: 2022-10-28 16:14:33
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAddAdmin .ts
  */
 
@@ -19,22 +19,30 @@ const { ccclass, property, menu } = cc._decorator;
 
 @menu('脚本分组/labor/UIAddAdmin')
 export default class UIAddAdmin extends BaseForm {
+    @property(cc.EditBox)
+    EditBox: cc.EditBox = null;
+    @property(cc.Node)
+    contentNode: cc.Node = null;
     @property(List)
     list: List = null;
+    private _search = null;
     private _offset: number = 0;
     private _reqing: boolean = false;
     private _reqEnd: boolean = false;
     private _list: Array<any> = [];
     private _total: number = 0
+
     protected lateLoad(): void {
         super.lateLoad();
     }
 
     async onShow(param?: any) {
+
         super.onShow(param);
         this.reqDataAgain();
         this.list.scrollingCB = this.scrollingCB;
-
+        this.EditBox.string = null;
+        this._search = null;
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
@@ -68,7 +76,7 @@ export default class UIAddAdmin extends BaseForm {
 
         let data: any = Web_Org_Club_Get.Response.data;
 
-        await UIClubModel.mInstance.APIOrgClubMember(data.random_id, this._offset);
+        await UIClubModel.mInstance.APIOrgClubMember(data.random_id, this._offset, 10, this._search);
         let _data: any = APIOrgClubMember.Response.data
         this._reqing = false
         if (!_data.data) {
@@ -87,5 +95,23 @@ export default class UIAddAdmin extends BaseForm {
         this.list.numItems = this._list.length;
         this._offset = this._list.length;
         this._reqEnd = this._list.length == this._total;
+    }
+
+    async sousuoBtn() {
+        let string = this.EditBox.string
+        string.trim();
+        if (string == '') {
+            return;
+        }
+        this._search = string;
+        this.reqDataAgain();
+    }
+
+    hideSearchNode() {
+        let string = this.EditBox.string
+        if (string == '') {
+            this._search = null;
+            this.reqDataAgain();
+        }
     }
 }

@@ -1414,7 +1414,7 @@
       "__id__": 27
     },
     "_N$inputFlag": 5,
-    "_N$inputMode": 3,
+    "_N$inputMode": 6,
     "_N$stayOnTop": false,
     "_id": ""
   },
@@ -1424,7 +1424,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "c986e37egdO1YmiqIaJUPrI",
+    "_componentId": "cb9448dMN5IUb+EPN7FiDv8",
     "handler": "hideSearchNode",
     "customEventData": ""
   },
@@ -1864,7 +1864,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "c986e37egdO1YmiqIaJUPrI",
+    "_componentId": "cb9448dMN5IUb+EPN7FiDv8",
     "handler": "sousuoBtn",
     "customEventData": ""
   },
@@ -2767,6 +2767,12 @@
       "__id__": 1
     },
     "_enabled": true,
+    "EditBox": {
+      "__id__": 36
+    },
+    "contentNode": {
+      "__id__": 63
+    },
     "list": {
       "__id__": 71
     },
