@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:09:08
+ * @LastEditTime: 2022-10-28 17:12:57
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -48,22 +48,12 @@ export default class UIlaborMerberManager extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
         this.initTop()
-        await UIClubModel.mInstance.APIOrgClubGetJoinlList()
         this.reqClubGetJoin();
-        // this.initAudit()
     }
-
     async reqClubGetJoin() {
-        await UIClubModel.mInstance.APIOrgClubGet()
+        let data: any = Web_Org_Club_Get.Response.data;
+        await UIClubModel.mInstance.APIOrgMemberList(data.random_id);
         this.initMemberList();
-    }
-
-    initAudit() {
-        //为了显示审批的红点
-        let data: any = APIOrgClubGetJoinlList.Response.data
-        if (data?.data.length > 0) {
-
-        }
     }
 
     examination() {
@@ -100,7 +90,7 @@ export default class UIlaborMerberManager extends BaseForm {
     /**
      * 注册广播事件
      */
-     protected regiterDispatchEvent() {
+    protected regiterDispatchEvent() {
         this.listen(GGEvent.CLUB_DELE_USER, this.reqClubGetJoin);
     }
 

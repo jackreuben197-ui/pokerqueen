@@ -3,13 +3,14 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 16:45:08
+ * @LastEditTime: 2022-10-28 17:42:37
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
 
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
+import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -42,16 +43,19 @@ export default class UIManageLabor extends BaseForm {
     }
     async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
-        await UIClubModel.mInstance.APIOrgClubGet()
         this.initTop();
         this.initMangerList();
+
         this.initMemberList();
+
     }
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.clubGoldChange, this.updateGold);
         this.listen(EventName.refreshAdmin, this.initMangerList);
+        this.listen(GGEvent.CLUB_DELE_USER, this.initMemberList);
+
     }
 
     initTop() {
