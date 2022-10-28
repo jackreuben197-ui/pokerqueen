@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 21:23:37
+ * @LastEditTime: 2022-10-28 21:37:32
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -135,6 +135,7 @@ export default class UILabarPlayViewForm extends UIBase {
     async initActive() {
         await UIClubModel.mInstance.APIOrgClubActivityInfo();
         let data: any = APIOrgClubActivityInfo.Response.data
+        if (!data.info) return;
         let url: string = data.info.img_url;
         let index = url.indexOf('http')
         if (index == -1) {
