@@ -192,7 +192,7 @@ export default class LoginScene extends BaseScene {
         this.vcodeEdit.string = "";
         this.passwordEdit.string = "";
 
-        this.phoneEdit.inputMode = this._loginType==ELoginType.phone ?cc.EditBox.InputMode.PHONE_NUMBER:cc.EditBox.InputMode.EMAIL_ADDR;
+        this.phoneEdit.inputMode = this._loginType == ELoginType.phone ? cc.EditBox.InputMode.PHONE_NUMBER : cc.EditBox.InputMode.EMAIL_ADDR;
         this.setActive(this.vcodeNode, this._loginProcess != ELoginProcess.login || this._isQuiklyLogin)
         this.setActive(this.passwordNode, true)
         this.setActive(this.forgotBtn, this._loginProcess == ELoginProcess.login && !(this._loginType == ELoginType.phone && this._isQuiklyLogin));
@@ -474,9 +474,9 @@ export default class LoginScene extends BaseScene {
             //找回手机密码
             let result = await LoginSession.APISendModifyPW({
                 phone: account,
-                area,
+                area: area,
                 code: vcode,
-                password
+                password: password
             }).catch(() => { })
             if (result) {
                 this.resetVCodeTime();
@@ -578,8 +578,8 @@ export default class LoginScene extends BaseScene {
             password = Md5.hashStr(password);
             let result = await LoginSession.APISendRegister({
                 phone: account,
-                password,
-                area,
+                password: password,
+                area: area,
                 code: vcode,
                 platform: 5,
             }).catch(() => { });
@@ -596,10 +596,11 @@ export default class LoginScene extends BaseScene {
 
     //尝试进入游戏
     tryEnterGame(area, account, password) {
+        password = Md5.hashStr(password);
         ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
             phone: account,
-            password,
-            area,
+            password: password,
+            area: area,
             is_simulator: false
         });
     }
