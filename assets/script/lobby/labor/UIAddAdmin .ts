@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 16:14:33
+ * @LastEditTime: 2022-10-28 18:02:22
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAddAdmin .ts
  */
 
@@ -21,8 +21,8 @@ const { ccclass, property, menu } = cc._decorator;
 export default class UIAddAdmin extends BaseForm {
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;
-    @property(cc.Node)
-    contentNode: cc.Node = null;
+    // @property(cc.Node)
+    // contentNode: cc.Node = null;
     @property(List)
     list: List = null;
     private _search = null;

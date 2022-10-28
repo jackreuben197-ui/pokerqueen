@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 17:12:57
+ * @LastEditTime: 2022-10-28 18:19:52
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -15,6 +15,8 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { UIClubModel } from "./UIClubModel";
 import TimeHelper from "../../helper/TimeHelper";
 import GGEvent from "../../event/GGEvent";
+import memberItem from "./memberItem";
+import List from "../../common/List";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -39,6 +41,15 @@ export default class UIlaborMerberManager extends BaseForm {
     @property(cc.Node)
     timeNode: cc.Node = null;
 
+    @property(List)
+    list: List = null;
+    private _search = null;
+    private _offset: number = 0;
+    private _reqing: boolean = false;
+    private _reqEnd: boolean = false;
+    private _list: Array<any> = [];
+    private _total: number = 0
+
 
     nickNameSortType: 'up';
     timeSortType: 'up';
@@ -47,86 +58,100 @@ export default class UIlaborMerberManager extends BaseForm {
     }
     async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
-        this.initTop()
-        this.reqClubGetJoin();
+        this.reqDataAgain();
     }
-    async reqClubGetJoin() {
+
+    async reqDataAgain() {
+        this._offset = 0;
+        this._total = 0;
+        this._list.length = 0;
+        this._reqing = false;
+        this._reqEnd = false;
+        this.dealData()
+    }
+    onRender(node: cc.Node, index: number) {
+        let item = node.getComponent(memberItem);
+        item.initData(this._list[index]);
+    }
+    /**
+    * 注册广播事件
+    */
+    protected regiterDispatchEvent() {
+        this.listen(GGEvent.CLUB_DELE_USER, this.reqDataAgain);
+
+    }
+    scrollingCB = async (scrollView: cc.ScrollView) => {
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset()
+            let isDown = cur.y >= max.y;
+            if (isDown && !this._reqing && !this._reqEnd) {
+                this.dealData()
+            }
+        }
+    }
+
+    async dealData() {
+        this._reqing = true
+
         let data: any = Web_Org_Club_Get.Response.data;
-        await UIClubModel.mInstance.APIOrgMemberList(data.random_id);
-        this.initMemberList();
+        await UIClubModel.mInstance.APIOrgMemberList(data.random_id, this._offset, 10, this._search);
+        let _data: any = APIOrgMemberList.Response.data
+        this.initTop()
+
+        this._reqing = false
+        if (!_data.data) {
+            _data.data = [];
+        }
+
+        _data.data.forEach(element => {
+            this._list.push(element);
+        });  //分页的时候使用的
+        this._total = _data.total
+
+        this.list.numItems = this._list.length;
+        this._offset = this._list.length;
+        this._reqEnd = this._list.length == this._total;
+
+        this.list.numItems = this._list.length;
+        this._offset = this._list.length;
+        this._reqEnd = this._list.length == this._total;
+    }
+
+    async sousuoBtn() {
+        let string = this.EditBox.string
+        string.trim();
+        if (string == '') {
+            return;
+        }
+        this._search = string;
+        this.reqDataAgain();
+    }
+
+    hideSearchNode() {
+        let string = this.EditBox.string
+        if (string == '') {
+            this._search = null;
+            this.reqDataAgain();
+        }
     }
 
     examination() {
         UIComponent.open(UIDefine.UIlaborExaminatMerber);
     }
+
     async initTop() {
         let data: any = Web_Org_Club_Get.Response.data;
         let current = this.topLabel.getChildByName('current').getComponent(cc.Label)
         let total = this.topLabel.getChildByName('total').getComponent(cc.Label)
-        current.string = '(' + data.club_members
+        let _data: any = APIOrgMemberList.Response.data
+        if (!_data.data) {
+            _data.data = [];
+        }
+        current.string = '(' + (_data.data ? 1 : data.data.length)
         total.string = data.upper_limit + ')';
     }
-    async initMemberList() {
-        this.contentNode.removeAllChildren();
-        let data: any = APIOrgMemberList.Response.data;
-        if (data == null || data.data == null) {
-            return;
-        }
-        for (let index = 0; index < data?.data?.length; index++) {
-            let _item = cc.instantiate(this.item);
-            _item.parent = this.contentNode
-            _item.getChildByName('name').getComponent(cc.Label).string = data?.data[index].nick_name
-            _item.getChildByName('id').getComponent(cc.Label).string = data?.data[index].random_num
-            _item.getChildByName('data').getComponent(cc.Label).string = TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - data?.data[index].last_login_time))
-            _item['last_login_time'] = data?.data[index].last_login_time
-            let icon = cc.find('iconMask/icon', _item);
-            WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), data?.data[index].avatar)
-            _item.active = true;
-            _item['info'] = data.data[index];
-            _item.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
-        }
-    }
 
-    /**
-     * 注册广播事件
-     */
-    protected regiterDispatchEvent() {
-        this.listen(GGEvent.CLUB_DELE_USER, this.reqClubGetJoin);
-    }
-
-    onClickItem(event) {
-        let target = event.target;
-        let info = target.info;
-        UIComponent.open(UIDefine.UIMember, { info: info });
-    }
-
-    async sousuoBtn() {
-        let string = this.EditBox.string
-        if (string == '') {
-            // UIComponent.Instance.Toast(i18nMgr.Get('club_creat_7'))
-        }
-        for (let index = 0; index < this.contentNode.childrenCount; index++) {
-            const element = this.contentNode.children[index];
-            let str = element.getChildByName('id').getComponent(cc.Label).string
-            if (str != string) {
-                element.active = false;
-            } else {
-                element.active = true;
-            }
-        }
-    }
-
-
-
-    hideSearchNode() {
-        let string = this.EditBox.string
-        if (string == '') {
-            for (let index = 0; index < this.contentNode.childrenCount; index++) {
-                const element = this.contentNode.children[index];
-                element.active = true;
-            }
-        }
-    }
 
     setNickNameBtn(event) {
         this.nickNameSortType = event.target.name
