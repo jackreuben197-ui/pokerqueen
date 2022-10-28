@@ -34,7 +34,7 @@ export default class MainTest extends UIBase {
                 break;
             case "多层标题面板":
                 UIComponent.open(UIDefine.LanguageForm);
-                UIComponent.open(UIDefine.RegisterForm);
+                // UIComponent.open(UIDefine.RegisterForm);
                 break;
             case "提示弹板":
                 UIComponent.open(UIDefine.UIDialogComponent, {

@@ -242,6 +242,7 @@ export default class UIMember extends BaseForm {
                     LobbyControl.getInstance().reqClubLockUser(info).then(
                         (res) => {
                             //冻结
+                            this.post(GGEvent.CLUB_DELE_USER);
                             btn_1.active = false;
                             btn_2.active = true;
                         },
@@ -256,6 +257,7 @@ export default class UIMember extends BaseForm {
                     LobbyControl.getInstance().reqClubUnlockUser(info).then(
                         (res) => {
                             //解冻
+                            this.post(GGEvent.CLUB_DELE_USER);
                             btn_1.active = true;
                             btn_2.active = false;
                         },

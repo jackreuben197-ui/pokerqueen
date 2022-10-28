@@ -52,7 +52,7 @@ export default class UIRecordDetail extends BaseForm {
     }
 
     onClickInto() {
-        UIComponent.open(UIDefine.UIRecordInto);
+        UIComponent.open(UIDefine.UIRecordInto, { info: this.respInfo });
     }
 
     clickBx() {
