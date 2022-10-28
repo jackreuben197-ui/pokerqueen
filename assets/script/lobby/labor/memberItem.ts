@@ -33,6 +33,7 @@ export default class memberItem extends UIBase {
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.avatar)
         this.node['info'] = this._data;
         this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
+        this.node.getChildByName('img_lock').active = this._data.forbidden;
     }
 
     onClickItem(event) {
