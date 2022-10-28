@@ -4,7 +4,7 @@ const { ccclass, property, menu } = cc._decorator;
 
 export type TTabToggleData = {
     title?: Array<string>,
-    data?: Array<any>
+    params?: Array<any>
 }
 
 export enum ETabToggle {
@@ -20,8 +20,8 @@ export default class ComTabToggles extends UIBase {
 
     private _onToggle: (index, data) => boolean = null;
     private _tabIndex: number = -1;
-    private _data: TTabToggleData = null;
     private _type: ETabToggle = ETabToggle.sprite;
+    private _params: Array<any> = null;
     onLoad() {
         super.onLoad();
         this.initView();
@@ -55,31 +55,35 @@ export default class ComTabToggles extends UIBase {
     set type(t) {
         this._type = t;
     }
-    get data() {
-        return this._data;
-    }
 
     set data(data: TTabToggleData) {
-        this._data = data;
         if (data) {
+            this.setParams(data.params);
+            this.setTitles(data.title);
+        }
+    }
+
+    setParams(params: Array<any>) {
+        this._params = params || null;
+    }
+
+    setTitles(titles: Array<string>) {
+        if (titles) {
             this.tabToggles.forEach((node, index) => {
-                if (data?.title && index < data.title.length) {
+                this.setActive(node, index < titles.length);
+                if (node.active) {
                     if (this._type == ETabToggle.text) {
                         let text = node.getChildByName("text").getComponent(cc.Label);
-                        text && this.setText(text, this._data.title[index]);
+                        text && this.setText(text, titles[index]);
                     } else {
                         let textNormal = node.getChildByName('normal').getChildByName("text").getComponent(cc.Label);
                         let textSelected = node.getChildByName('selected').getChildByName("text").getComponent(cc.Label);
-                        textNormal && this.setText(textNormal, this._data.title[index]);
-                        textSelected && this.setText(textNormal, this._data.title[index]);
+                        textNormal && this.setText(textNormal, titles[index]);
+                        textSelected && this.setText(textNormal, titles[index]);
                     }
-                }
-                if (data?.data?.length) {
-                    this.setActive(node, index < data.data.length);
                 }
             })
         }
-
     }
 
     clickTab(index: number = 0, data: any = null, farce: boolean = false) {
@@ -94,7 +98,7 @@ export default class ComTabToggles extends UIBase {
 
     private async _onTabClick(index: number, data?: any) {
         if (index != this._tabIndex) {
-            let param = data ? data : (this._data?.data ? this._data?.data[index] : null);
+            let param = data ? data : (this._params ? this._params[index] : null);
             let suc = await this._onToggle(index, param);
             if (suc || suc == undefined) {
                 this.setTabTo(index);

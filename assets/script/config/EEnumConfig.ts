@@ -1,5 +1,16 @@
 
 
+export enum ELoginType {
+    phone,  //手机号登录
+    mail,   //邮箱登录
+}
+
+export enum ELoginProcess {
+    login,  //登录
+    register,   //注册
+    reset,  //重置密码
+}
+
 export enum EOrderType {
     chongzhi = 1,
     tiqu = 2,
