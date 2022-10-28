@@ -70,6 +70,17 @@ export default class UILobby extends UIBase {
             item["index"] = i;
             item.on(cc.Node.EventType.TOUCH_END, this.onClickGame, this)
         }
+
+
+        // google.accounts.id.initialize({
+        //     client_id: '381824986181-cg3676e7rlg4ofv9r5pbsad35jtcqv9s.apps.googleusercontent.com',
+        //     callback: (msg) => { console.log("google login : ", msg) }
+        // });
+
+        // google.accounts.id.renderButton(
+        //     this.beanBg.getComponent(cc.Sprite).spriteFrame.getTexture().getHtmlElementObj(),
+        //     { type: "icon" }
+        // )
     }
 
     onClickGame(event) {

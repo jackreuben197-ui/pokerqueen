@@ -10,7 +10,7 @@ import LocalStoreManager from "../frame/manager/LocalStoreManager";
  */
 export default class StorageKey {
     //登录数据
-    static LOGIN_DATA:string = "LOGIN_DATA";
+    static LOGIN_DATA: string = "LOGIN_DATA";
     //token字符串
     static TOKEN: string = "TOKEN";
     //token有效期
@@ -28,9 +28,13 @@ export default class StorageKey {
     static KEY_PHONE_FIRST = "KEY_PHONE_FIRST";
 
     //验证码时间 忘记密码
-    static CODE_TIME_RESET = "CODE_TIME_RESET";
+    static CODE_TIME_RESET_PHONE = "CODE_TIME_RESET_PHONE";
+    static CODE_TIME_RESET_MAIL = "CODE_TIME_RESET_MAIL";
     //验证码时间 注册
-    static CODE_TIME_REGIST = "CODE_TIME_REGIST";
+    static CODE_TIME_REGIST_PHONE = "CODE_TIME_REGIST_PHONE";
+    static CODE_TIME_REGIST_MAIL = "CODE_TIME_REGIST_MAIL";
+    ////验证码时间 快速登录
+    static CODE_TIME_QUIKLY_LOGIN_PHONE = "CODE_TIME_QUIKLY_LOGIN_PHONE";
 
     static OpenBarrage: string = "OpenBarrage";//是否打开弹幕 1 关闭，0 打开
 

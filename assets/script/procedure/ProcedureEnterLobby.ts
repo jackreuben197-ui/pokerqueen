@@ -22,7 +22,6 @@ export default class ProcedureEnterLobby extends ProcedureBase {
         super.lateEnter(param);
 
         if (param) {
-
             this.Login(param).then(() => this.SyncUserInfo()).then(() => this.SyncWS()).then(() => {
                 //准备进入大厅
                 this.enterLobby();

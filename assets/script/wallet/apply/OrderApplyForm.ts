@@ -42,7 +42,7 @@ export default class OrderApplyForm extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
 
         this.comFormTitle.initData("UIAppay", this);
-        this.toggles.initData(this.onToggle, ETabToggle.sprite, { data: [EOrderType.chongzhi, EOrderType.tiqu] });
+        this.toggles.initData(this.onToggle, ETabToggle.sprite, { params: [EOrderType.chongzhi, EOrderType.tiqu] });
         this.toggles.clickTab(0, null, true)
 
         this.list.scrollingCB = this.scrollingCB;

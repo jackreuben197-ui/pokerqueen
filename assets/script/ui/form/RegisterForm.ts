@@ -163,7 +163,7 @@ export default class RegisterForm extends BaseForm {
             return;
         }
         if (code.length != 4) {
-            ToastManager.Instance.createToast("验证码只能是4位数");//("请输入验证码");
+            ToastManager.Instance.createToast("UILogin_vcode_len_limit_tip");//验证码只能是4位数
             return;
         }
         if (password.length < 6) {
@@ -175,7 +175,6 @@ export default class RegisterForm extends BaseForm {
             return;
         }
         password = Md5.hashStr(password);
-
         let result = await LoginSession.APISendRegister({
             phone,
             password,

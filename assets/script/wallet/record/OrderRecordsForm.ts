@@ -57,11 +57,11 @@ export default class OrderRecordsForm extends BaseForm {
         GC.data.wallet.orderRecord.resetData();
 
         let data: TTabToggleData = {
-            data: [EOrderType.chongzhi, EOrderType.tiqu],
+            params: [EOrderType.chongzhi, EOrderType.tiqu],
             title: ["adaptation10252", "adaptation10254"]
         }
         if (isClub) {
-            data.data.push(EOrderType.fafang);
+            data.params.push(EOrderType.fafang);
             data.title.push("UITitle_fafang_jilu");
         }
         this.tabToggles.initData(this.onToggle, ETabToggle.text, data);

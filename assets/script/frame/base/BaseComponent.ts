@@ -14,7 +14,7 @@ export default class BaseComponent extends Base {
         this.regiterTouchEvents();
         this.regiterDispatchEvent();
 
-        !this.UIDefine || this.UIDefine.DisAdaptScreen || this.node.addComponent(AdapterComponent);
+        this.UIDefine && !this.UIDefine.DisAdaptScreen && this.node.addComponent(AdapterComponent);
         if (this.UIDefine) window[this.UIDefine.Name] = this;
     }
 

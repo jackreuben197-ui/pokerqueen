@@ -77,7 +77,7 @@ export default class MttRealTime extends UIBase {
         GC.data.mtt.realTime.reqRankList();
         this.tabToggles.initData(this.onToggle, ETabToggle.sprite, {
             title: ["UITexasReport_Label_AllBarSK", "UITexasReport_Label_AllBarPZ", "UITexasReport_Label_AllBarJL", "UITexasReport_Label_AllBarMZ"],
-            data: [EMttRealTimeTabType.sk, EMttRealTimeTabType.pz, EMttRealTimeTabType.jl, EMttRealTimeTabType.mz]
+            params: [EMttRealTimeTabType.sk, EMttRealTimeTabType.pz, EMttRealTimeTabType.jl, EMttRealTimeTabType.mz]
         });
         this.tabToggles.clickTab(0);
     }
