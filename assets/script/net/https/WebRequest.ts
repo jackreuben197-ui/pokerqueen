@@ -411,6 +411,29 @@ export class Web_Room_Center_History_Hand {
 }
 
 /// <summary>
+/// 7.玩家查看带入申请列表
+/// </summary>
+export class APIFriendApplyList {
+    //接口地址
+    static API: string = "/api/roomcenter/friend/room/apply/user/list";
+    //字段声明
+    static RequestParams: {
+        limit: number,
+        offset: number,
+        room_id: number,
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APIFriendApplyList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIFriendApplyList.ResponseData };
+}
+
+/// <summary>
 /// 战绩详情
 /// </summary>
 export class Web_Stats_Room_Detail {
