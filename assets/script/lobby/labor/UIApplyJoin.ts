@@ -3,7 +3,7 @@
  * @Date: 2022-10-21 21:48:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 17:23:22
+ * @LastEditTime: 2022-10-28 11:06:13
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIApplyJoin.ts
  */
 
@@ -16,9 +16,10 @@ import BaseForm from "../../ui/form/BaseForm";
 import JoinitemNode from "./JoinitemNode";
 import { UIClubModel } from "./UIClubModel";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIApplyJoin')
 export default class UIApplyJoin extends BaseForm {
 
     @property(List)

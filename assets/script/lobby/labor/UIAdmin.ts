@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 14:02:25
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:34:17
+ * @LastEditTime: 2022-10-28 11:05:54
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAdmin.ts
  */
 
@@ -17,9 +17,10 @@ import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIAdmin')
 export default class UIAdmin extends UIBase {
     @property(cc.Node)
     btn_audit: cc.Node = null;

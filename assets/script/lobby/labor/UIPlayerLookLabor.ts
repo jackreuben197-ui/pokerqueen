@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:30:13
+ * @LastEditTime: 2022-10-28 11:09:37
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -19,9 +19,10 @@ import { GameCache } from "../../game/GameCache";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIPlayerLookLabor')
 export default class UIPlayerLookLabor extends BaseForm {
     @property(cc.Node)
     mask_group: cc.Node = null;

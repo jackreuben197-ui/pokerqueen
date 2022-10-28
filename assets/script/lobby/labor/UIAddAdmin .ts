@@ -14,9 +14,10 @@ import { UIClubModel } from "./UIClubModel";
 import { APIOrgClubGetJoinlList, APIOrgClubMember, APIOrgMangerList, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { EventName } from "../../config/EventName";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIAddAdmin')
 export default class UIAddAdmin extends BaseForm {
     @property(List)
     list: List = null;

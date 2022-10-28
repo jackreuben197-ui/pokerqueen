@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:30:16
+ * @LastEditTime: 2022-10-28 11:09:08
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -15,9 +15,10 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { UIClubModel } from "./UIClubModel";
 import TimeHelper from "../../helper/TimeHelper";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIlaborMerberManager')
 export default class UIlaborMerberManager extends BaseForm {
     @property(cc.Node)
     topLabel: cc.Node = null;

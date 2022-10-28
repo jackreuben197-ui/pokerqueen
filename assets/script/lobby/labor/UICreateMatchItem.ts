@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:45:09
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 19:51:51
+ * @LastEditTime: 2022-10-28 11:08:09
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchItem.ts
  */
 
@@ -22,9 +22,10 @@ import UIComponent from "../../ui/UIComponent";
 import PlayViewItem from "../view/PlayViewItem";
 import { UIClubModel } from "./UIClubModel";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UICreateMatchItem')
 export default class UICreateMatchItem extends UIBase {
     private lbl_center_left: cc.Label = null;
     private item_choose: cc.Node = null;

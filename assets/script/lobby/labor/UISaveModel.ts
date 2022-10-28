@@ -3,15 +3,16 @@
  * @Date: 2022-10-18 15:16:01
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 15:23:38
+ * @LastEditTime: 2022-10-28 11:10:00
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UISaveModel.ts
  */
 
 import UIComponent from "../../ui/UIComponent";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UISaveModel')
 export default class UISaveModel extends cc.Component {
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;

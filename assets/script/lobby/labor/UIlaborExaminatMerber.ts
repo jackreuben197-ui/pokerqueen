@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 14:36:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-28 10:40:49
+ * @LastEditTime: 2022-10-28 11:08:44
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborExaminatMerber.ts
  */
 // Learn TypeScript:
@@ -18,9 +18,10 @@ import { UIClubModel } from "./UIClubModel";
 import { Web_Org_Club_Get, APIOrgClubGetJoinlList, } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIlaborExaminatMerber')
 export default class UIlaborExaminatMerber extends BaseForm {
 
     @property(cc.Node)

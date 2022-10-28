@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:57:33
+ * @LastEditTime: 2022-10-28 11:13:02
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -18,8 +18,10 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIManageLabor')
 export default class UIManageLabor extends BaseForm {
 
     @property(cc.Node)
@@ -144,6 +146,9 @@ export default class UIManageLabor extends BaseForm {
     changeClubData() {
         Web_Org_Club_Get.Response.data['desc'] = this.EditBox.string
         UIClubModel.mInstance.APIOrgChangeClubData({ desc: this.EditBox.string })
+    }
+    clickActive() {
+        UIComponent.open(UIDefine.UIActiveMange)
     }
 
     clickJijin() {

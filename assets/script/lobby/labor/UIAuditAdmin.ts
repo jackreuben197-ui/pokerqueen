@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 17:30:12
+ * @LastEditTime: 2022-10-28 11:06:35
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAuditAdmin.ts
  */
 
@@ -17,9 +17,10 @@ import { UIClubModel } from "./UIClubModel";
 import { APIOrgChangeClubData, APIOrgMangerList, Web_Org_Club_Get } from "../../net/https/WebRequest";
 
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIAuditAdmin')
 export default class UIAuditAdmin extends BaseForm {
     @property(List)
     list: List = null;

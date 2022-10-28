@@ -459,6 +459,12 @@ export const UIDefine = {
         Name: "UIAddAdmin",
         Bundle: null,
         Path: "main/club/UIAddAdmin",
+    },
+    UIActiveMange: {
+        UIType: UIType.Form,
+        Name: "UIActiveMange",
+        Bundle: null,
+        Path: "main/club/UIActiveMange",
     }
 
 

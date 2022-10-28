@@ -3,13 +3,13 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-20 13:31:55
+ * @LastEditTime: 2022-10-28 11:04:31
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
  */
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/labor/slidewidght')
 export default class slidewidght extends cc.Component {
     // @property(cc.Node)
     nomalItem: cc.Node = null;

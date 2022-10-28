@@ -9,9 +9,10 @@
 
 import UIComponent from "../../ui/UIComponent";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UISetSmallM')
 export default class UISetSmallM extends cc.Component {
     @property(cc.Node)
     Group: cc.Node = null;

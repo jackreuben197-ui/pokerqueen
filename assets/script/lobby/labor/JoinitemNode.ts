@@ -3,7 +3,7 @@
  * @Date: 2022-10-24 13:42:49
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:30:20
+ * @LastEditTime: 2022-10-28 11:05:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/JoinitemNode.ts
  */
 
@@ -15,9 +15,9 @@ import UIBase from "../../ui/UIBase";
 import { UIClubModel } from "./UIClubModel";
 
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+@menu('脚本分组/labor/JoinitemNode')
 export default class JoinitemNode extends UIBase {
 
     private lb_gameType: cc.Label = null;

@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-26 17:12:27
+ * @LastEditTime: 2022-10-28 11:07:20
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -18,9 +18,10 @@ import UIComponent from "../../ui/UIComponent";
 import UIMatchChessItem from "../matchView/UIMatchChessItem";
 import { UIClubModel } from "./UIClubModel";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UICreateFriendMatchHome')
 export default class UICreateFriendMatchHome extends UIBase {
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;

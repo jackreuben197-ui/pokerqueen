@@ -57,4 +57,32 @@ export default class WebImageHelper {
 
         })
     }
+    public static loadRemoteSprite(url: string, sprite: cc.Sprite) {
+        return new Promise((relove, reject) => {
+            cc.assetManager.loadRemote(url, cc.Texture2D, (error, texture: any) => {
+                if (error || !texture) {
+                    if (error) {
+                        console.log('loadRemoteSprite', error);
+                        reject();
+                        return
+                    }
+                    // console.log("loadRemote ===> " + error ? error.stack : "no texture!")
+                    reject(error)
+                }
+                let spriteFrame = new cc.SpriteFrame(texture);
+                sprite.spriteFrame = spriteFrame;
+                relove('')
+            })
+        });
+    }
+    /**
+   * @method 设置图片合适大小 取大
+   */
+    public static setImageSize(iamge: cc.Sprite, max_w: number, max_h: number): void {
+        let size = iamge.node.getContentSize();
+        let scale_w = max_w / size.width;
+        let scale_h = max_h / size.height;
+        let scale = scale_w < scale_h ? scale_h : scale_w;
+        iamge.node.scale = scale;
+    }
 }

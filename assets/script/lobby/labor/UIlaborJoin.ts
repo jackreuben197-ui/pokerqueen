@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:30:14
+ * @LastEditTime: 2022-10-28 11:08:56
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
@@ -15,9 +15,10 @@ import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
 
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIlaborJoin')
 export default class UIlaborJoin extends BaseForm {
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;

@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:29:07
+ * @LastEditTime: 2022-10-28 11:07:29
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -19,9 +19,10 @@ import { UIClubModel } from "./UIClubModel";
 
 
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UICreatelabor')
 export default class UICreatelabor extends BaseForm {
     @property(cc.EditBox)
     editName: cc.EditBox = null;

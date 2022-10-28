@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-25 21:12:57
+ * @LastEditTime: 2022-10-28 11:07:47
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -15,9 +15,10 @@ import TimeHelper from "../../helper/TimeHelper";
 import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import { UIClubModel } from "./UIClubModel";
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UICreateMatch')
 export default class UICreateMatch extends BaseForm {
     @property(cc.ScrollView)
     ScrollView: cc.ScrollView = null;

@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 14:02:25
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-27 16:28:16
+ * @LastEditTime: 2022-10-28 11:06:49
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubMamber.ts
  */
 
@@ -16,9 +16,10 @@ import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
 
-const { ccclass, property } = cc._decorator;
-
+const { ccclass, property, menu } = cc._decorator;
 @ccclass
+
+@menu('脚本分组/labor/UIClubMamber')
 export default class UIClubMamber extends UIBase {
     private lbl_Name: cc.Label = null;
     private img_head: cc.Sprite = null;
