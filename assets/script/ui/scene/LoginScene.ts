@@ -292,7 +292,6 @@ export default class LoginScene extends BaseScene {
      */
     clickForgot() {
         cc.log("clickForgot");
-        // UIComponent.open(UIDefine.ResetPassForm);
         this._loginProcess = ELoginProcess.reset;
         this.updateViewStatus();
     }
@@ -302,7 +301,6 @@ export default class LoginScene extends BaseScene {
      */
     clickRegister() {
         cc.log("clickRegister");
-        // UIComponent.open(UIDefine.RegisterForm);
         this._loginProcess = ELoginProcess.register;
         this.updateViewStatus();
     }

@@ -54,22 +54,6 @@ export const UIDefine = {
         Path: "login/form/BaseForm",
         Title: "BaseForm",
     },
-    //重置密码
-    ResetPassForm: {
-        UIType: UIType.Form,
-        Name: "ResetPassForm",
-        Bundle: null,
-        Path: "login/form/ResetPassForm",
-        Title: "UILogin_Forget",
-    },
-    //注册账号
-    RegisterForm: {
-        UIType: UIType.Form,
-        Name: "RegisterForm",
-        Bundle: null,
-        Path: "login/form/RegisterForm",
-        Title: "UILogin_Register",
-    },
     //语言
     LanguageForm: {
         UIType: UIType.Form,
