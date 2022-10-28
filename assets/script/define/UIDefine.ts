@@ -465,8 +465,13 @@ export const UIDefine = {
         Name: "UIActiveMange",
         Bundle: null,
         Path: "main/club/UIActiveMange",
+    },
+    UIClubDataMange: {
+        UIType: UIType.Form,
+        Name: "UIClubDataMange",
+        Bundle: null,
+        Path: "main/club/UIClubDataMange",
     }
-
 
 }
 //批量设置
