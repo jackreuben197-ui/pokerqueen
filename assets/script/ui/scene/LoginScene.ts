@@ -472,6 +472,7 @@ export default class LoginScene extends BaseScene {
     async checkResetPwd(area, account, password, vcode) {
         if (this._loginType == ELoginType.phone) {
             //找回手机密码
+            password = Md5.hashStr(password);
             let result = await LoginSession.APISendModifyPW({
                 phone: account,
                 area: area,
