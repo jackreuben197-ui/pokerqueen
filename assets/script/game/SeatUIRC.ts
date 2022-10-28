@@ -148,30 +148,6 @@ export default class SeatUIRC extends UIBase {
             this.imageSmallCardBacks.push(this.getChildNodeOrComponent(`Image_SmallCardBack${i}`, cc.Sprite));
         }
 
-
-        // this.imageCard0 = this.getChildNodeOrComponent("Image_Card0");
-        // this.imageCard1 = this.getChildNodeOrComponent("Image_Card1");
-        // this.imageCard2 = this.getChildNodeOrComponent("Image_Card2");
-        // this.imageCard3 = this.getChildNodeOrComponent("Image_Card3");
-        // this.imageCard4 = this.getChildNodeOrComponent("Image_Card4");
-        // this.imageCard5 = this.getChildNodeOrComponent("Image_Card5");
-
-        // this.imageSmallCard0 = this.getChildNodeOrComponent("Image_SmallCard0");
-        // this.imageSmallCard1 = this.getChildNodeOrComponent("Image_SmallCard1");
-        // this.imageSmallCard2 = this.getChildNodeOrComponent("Image_SmallCard2");
-        // this.imageSmallCard3 = this.getChildNodeOrComponent("Image_SmallCard3");
-        // this.imageSmallCard4 = this.getChildNodeOrComponent("Image_SmallCard4");
-        // this.imageSmallCard5 = this.getChildNodeOrComponent("Image_SmallCard5");
-
-
-        // this.imageSmallCardBack0 = this.getChildNodeOrComponent("Image_SmallCardBack0", cc.Sprite);
-        // this.imageSmallCardBack1 = this.getChildNodeOrComponent("Image_SmallCardBack1", cc.Sprite);
-        // this.imageSmallCardBack2 = this.getChildNodeOrComponent("Image_SmallCardBack2", cc.Sprite);
-        // this.imageSmallCardBack3 = this.getChildNodeOrComponent("Image_SmallCardBack3", cc.Sprite);
-        // this.imageSmallCardBack4 = this.getChildNodeOrComponent("Image_SmallCardBack4", cc.Sprite);
-        // this.imageSmallCardBack5 = this.getChildNodeOrComponent("Image_SmallCardBack5", cc.Sprite);
-
-
         this.imageCountDown = this.getChildNodeOrComponent("Image_CountDown", cc.Sprite);
         this.Image_CountDownbg = this.getChildNodeOrComponent("Image_CountDownbg", cc.Sprite);
         this.image_CountDownTime = this.Image_CountDownbg.node.getChildByName("Text").getComponent(cc.Label);
@@ -212,19 +188,13 @@ export default class SeatUIRC extends UIBase {
     }
 
     protected regiterTouchEvents(): void {
-
         for (let i = 0; i < this.imageCards.length; i++) {
-            this.imageCards[i].imageCard.on("click", this.onClickCard, this);
+            this.setButtonClick(this.imageCards[i].imageCard, this.onClickEmpty);
         }
-
-        this.imageEmpty.node.on("click", this.onClickEmpty, this);
-        this.rawimageHead.node.on("click", this.onClickHead, this);
-
-
-        //this.buttonCancelReserveSeat.on("click", this.onClickCancelReserveSeat, this);
+        this.setButtonClick(this.imageEmpty.node, this.onClickEmpty);
+        this.setButtonClick(this.rawimageHead.node, this.onClickHead);
         this.setButtonClick(this.buttonCancelReserveSeat, this.onClickCancelReserveSeat);
     }
-
 
     private onClickCancelReserveSeat(): void {
         UIMineModel.mInstance.ObtainUserInfo(pDto => {
@@ -260,8 +230,6 @@ export default class SeatUIRC extends UIBase {
             GameCache.Instance.CurGame.cacheCancelKeepSeat = true;
         }
     }
-
-
     onClickEmpty() {
 
         UIMineModel.mInstance.ObtainUserInfo(pDto => {

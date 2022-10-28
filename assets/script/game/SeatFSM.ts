@@ -27,6 +27,7 @@ export class SeatFSM {
         this.seat.SetNickName("");
         this.seat.SetCoin("");
         this.seat.stopAllActions();
+        this.seat.uirc.Text_NickName.node.active = true;
         this.seat.uirc.imageBanker.active = false;
         // imageStraddle.gameObject.SetActive(false);
         this.seat.uirc.imageHeadFrame.node.active = false;

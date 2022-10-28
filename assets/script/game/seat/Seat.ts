@@ -574,11 +574,9 @@ export default class Seat {
         this.SetNickName(this.Player?.nick || "");
     }
     public SetNickName(name: string): void {
-        this.uirc.Text_NickName.node.active = true;
         this.uirc.Text_NickName.string = name;
     }
     public SetCoin(coin: string) {
-        this.uirc.Text_Coin.node.active = true;
         this.uirc.Text_Coin.string = coin;
     }
     /// <summary>
@@ -1222,14 +1220,15 @@ export default class Seat {
     /// 轮到自己操作隐藏头像名字
     /// </summary>
     public SetOperationHeadActive(istrue: boolean): void {
-        if (istrue) {
-            this.uirc.imageBanker.active = this.isBank;
-        }
-
+        // if (istrue) {
+        //     this.uirc.imageBanker.active = this.isBank;
+        // }
         // this.uirc.imageHeadFrame.node.active = istrue;
         // this.uirc.Text_NickName.node.active = !this.IsMySeat;
         this.uirc.imageHeadFrame.node.active = istrue;
         this.uirc.Text_NickName.node.active = istrue;
+
+        console.log("隐藏头像", istrue);
     }
 
 

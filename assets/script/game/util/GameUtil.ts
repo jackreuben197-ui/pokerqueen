@@ -1,3 +1,4 @@
+import { GameConfig } from "../../config/GameConfig";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefineType } from "../../define/UIDefine";
 import ProcedureManager from "../../manager/ProcedureManager";
@@ -203,8 +204,7 @@ export default class GameUtil {
 
     //#region 牌局内座位UI信息   
     // 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly SeatPosV3: cc.Vec3[] = [
-
+    public static SeatPosV3: cc.Vec3[] = [
         cc.v3(0, -841 + 19),//0
         cc.v3(-502, -272 + 19),//1 -cc.v3(-516, -272)
         cc.v3(-502, -300 + 19),//2 -cc.v3(-516, -95)
@@ -212,7 +212,7 @@ export default class GameUtil {
         cc.v3(-502, 300 + 19),//4 -cc.v3(-516, 495),
         cc.v3(-502, 474 + 19),//5 -cc.v3(-516, 582)
         cc.v3(-212, 950),//6 -cc.v3(-212, 987)
-        cc.v3(0, 980),//7 -cc.v3(0, 987),
+        cc.v3(0, 1000),//7 -cc.v3(0, 987),
         cc.v3(212, 950),//8 -cc.v3(214, 987)
         cc.v3(502, 474 + 19),//9 -cc.v3(512, 582)
         cc.v3(502, 300 + 19),//10 -cc.v3(512, 495),
@@ -220,6 +220,19 @@ export default class GameUtil {
         cc.v3(502, -300 + 19),//12 -cc.v3(502, -95)
         cc.v3(502, -272 + 19),//13 -cc.v3(512, -272)
     ];
+
+    //上下座位 适配位置
+    public static SeatAdapterPos() {
+
+        if (cc.view.getVisibleSize().height < GameConfig.DesignResolution.height) {
+            this.SeatPosV3[0] = cc.v3(0, 454 - cc.view.getVisibleSize().height / 2);
+        }
+        if (cc.view.getVisibleSize().height < 2400) {
+            this.SeatPosV3[7] = cc.v3(0, cc.view.getVisibleSize().height / 2 - 344);
+        }
+    }
+
+
 
     // Dealer标识坐标 0左、1右
     public static readonly BankerLRV3: cc.Vec3[] = [
@@ -1291,7 +1304,7 @@ export default class GameUtil {
 
 
     /**
-     * 座位上元素的位置
+     * 座位上元素的位置 2,4,5,6 张牌
      */
     public static Seat_ElementPos: {
         [key: number]:
@@ -1396,7 +1409,6 @@ export default class GameUtil {
                 voiceStatePositon: cc.v3(515, -237, 0),
             },
         }
-
 
 
 

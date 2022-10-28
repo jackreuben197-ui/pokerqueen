@@ -1,6 +1,7 @@
 
 import { GameConfig, NetWorkBase } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
+import GameUtil from "../game/util/GameUtil";
 import { i18nMgr } from "../i18n/i18nMgr";
 
 import Main from "../Main";
@@ -37,6 +38,8 @@ export default class ProcedureConfig extends ProcedureBase {
                     console.warn("本地网络配置有误 GameConfig.BuildType:" + GameConfig.BuildType);
                     return;
                 }
+                //适配座位位置坐标
+                GameUtil.SeatAdapterPos();
                 let skipLogin: boolean = LoginSession.IsTokenVaild();
                 ProcedureManager.StartProcedure(ProcedureEnum.Login, { skipLogin: skipLogin });
             }

@@ -1520,7 +1520,7 @@ export default class TexasGameProtocol {
                 switch (bringInData.status) {
                     case 1:
                         UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
-                        GameCache.Instance.CurGame.ShowBringIn();
+                        GameCache.Instance.CurGame.uirc.ShowBringIn();
                         break;
                     case 2:
                         console.log("朋友桌带入申请通过");

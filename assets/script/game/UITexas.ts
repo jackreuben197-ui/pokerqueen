@@ -1,49 +1,32 @@
 import SimpleNodePool from "../common/MyNodePool";
 import { IUIDefine } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
-import { DOTween, Sequence } from "../dotween/DOTween";
+import { Sequence } from "../dotween/DOTween";
 import GC from "../frame/GameControl";
 
-import { StringHelper } from "../helper/StringHelper";
 
-import { i18nMgr } from "../i18n/i18nMgr";
+import { Bundle_Texas } from "../manager/ResManager";
 
-import { Bundle_Texas, ResManager } from "../manager/ResManager";
-
-import ProtocolAgency from "../net/websocket/ProtocolAgency";
-import { ProtocolCode } from "../net/websocket/ProtocolCode";
-
-
-import { Def, RoomInfo } from "../protobuf/holdem/define_pb";
-import { ClientMessageAddOn } from "../protobuf/holdem/req_add_on_pb";
-import { ClientMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
-import { ClientMessageShowPublicCards } from "../protobuf/holdem/req_show_public_cards_pb";
 import GlobalSession from "../session/GlobalSession";
 import StorageKey from "../session/StorageKey";
 import AssetContext from "../ui/component/AssetContext";
-import LabelCDTime from "../ui/component/LabelCDTime";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
-
-
 import TexasGame from "./texas/TexasGame";
-import UIAddChipsComponent, { AddClipsData } from "./ui/UIAddChipsComponent";
+import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 import UIAutoChipsComponent from "./ui/UIAutoChipsComponent";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
-import UIOutChipsComponent, { OutClipsData } from "./ui/UIOutChipsComponent";
+import UIOutChipsComponent from "./ui/UIOutChipsComponent";
 import UITexasMenuComponent from "./ui/UITexasMenuComponent";
-import { HistoryInfoData } from "./UITexasHistoryComponent";
 import GameUtil from "./util/GameUtil";
-
 
 export class PlayerBarrageRecord {
     public name: string;
     public time: number;
     public msg: string;
-
 }
 export class PotInfo {
     public pot: number;
@@ -143,7 +126,7 @@ export default class UITexas extends BaseScene {
     buttonSeeMorePublic: cc.Node = null;
     imageSeeMorePublicTips: cc.Node = null;
     textSeeMorePublicTips: cc.Label = null;
-    s
+
     textSeeMorePublic: cc.Label = null;
     textSeeMorePublicGold: cc.Label = null;
 
@@ -151,7 +134,7 @@ export default class UITexas extends BaseScene {
 
     //MTT
     //public buttonRebuy: cc.Node = null;
-    public buttonAddOn: cc.Node = null;
+    public Button_AddOn: cc.Node = null;
     public transCountDownView: cc.Node = null;
     //拆并桌文本提示
     public Image_RedistributionTips: cc.Node = null;
@@ -163,6 +146,8 @@ export default class UITexas extends BaseScene {
 
     //带入申请按钮
     Button_BringIn: cc.Node = null;
+    //朋友桌邀请码
+    Text_InvateCode: cc.Label = null;
 
     //1.左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
@@ -270,7 +255,7 @@ export default class UITexas extends BaseScene {
         this.buttonCancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
 
         //MTT
-        this.buttonAddOn = this.getChildNodeOrComponent("Button_AddOn");
+        this.Button_AddOn = this.getChildNodeOrComponent("Button_AddOn");
         this.Image_RedistributionTips = this.getChildNodeOrComponent("Image_RedistributionTips");
         this.pullDownText = this.Image_RedistributionTips.getChildByName("Text_Tips")?.getComponent(cc.Label);
         //this.armatureRewardCircleZH = rc.Get<GameObject>("Armature_RewardCircle_zh").GetComponent<UnityArmatureComponent>();
@@ -279,6 +264,7 @@ export default class UITexas extends BaseScene {
         this.BathText = this.Image_WaitForStartBathTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
 
         this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
+        this.Text_InvateCode = this.getChildNodeOrComponent("Text_InvateCode", cc.Label);
 
         //#region 公共牌数据(UI、Id)
         if (null == this.listCards)
@@ -324,11 +310,9 @@ export default class UITexas extends BaseScene {
         //4.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
         this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
+
+        
     }
-
-
-
-
 
     //从预制体添加到容器
     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false) {
@@ -355,7 +339,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.buttonDelay, this.onClickDelay);
         this.setButtonClick(this.buttonSeeMorePublic, this.onClickSeeMorePublic);
 
-        this.setButtonClick(this.buttonAddOn, this.onClickAddOn);
+        this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
 
         this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
 
@@ -379,15 +363,34 @@ export default class UITexas extends BaseScene {
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
 
+        this.EnterInitUI();
     }
-    ClearUI() {
+
+    //进入初始UI
+    EnterInitUI() {
+        this.ShowInvateCode();
+        this.setActive(this.Button_BringIn, false);
+        this.setActive(this.Button_AddOn, false);
+    }
+    //清理UI
+    CleanUI() {
         UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
         this.HideMenu(false);
     }
     Exit(param) {
-        this.ClearUI();
+        this.CleanUI();
         super.Exit(param);
+    }
+
+    //显示邀请码
+    public ShowInvateCode() {
+        if (GameCache.Instance.origin_type == 4 && GameCache.Instance.invitation_code) {
+            this.Text_InvateCode.node.active = true;
+            this.Text_InvateCode.string = `牌局邀请码:${GameCache.Instance.invitation_code}`;
+        } else {
+            this.Text_InvateCode.node.active = false;
+        }
     }
     // CanClick(): boolean {
     //     if (GetNowTime() - lastClickTime > 500) {
@@ -395,36 +398,11 @@ export default class UITexas extends BaseScene {
     //     }
     //     return false;
     // }
-
-    private onClickSeeMorePublic() {
-        if (this.CanClick() == false)
-            return;
-        this.lastClickTime = GlobalSession.NowTimeMS;
-
-        let button = this.buttonSeeMorePublic.getChildByName("click").getComponent(cc.Button);
-
-        if (button.interactable == false) {
-            return;
-        }
-        button.interactable = false;
-
-        ProtocolAgency.Send<ClientMessageShowPublicCards.AsObject>({
-            Code: ProtocolCode.Protocol_Holdem_ShowPublicCards,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
-            Body: {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                round: this.game.cacheRound,
-                consume: Def.ConsumeType.CT_VC_2,
-            },
-        });
-
-    }
     private sideClick(e: cc.Button) {
         switch (e.node) {
             case this.menu_btn://菜单按钮
                 //this.CallbackExit();
-                if (this.CanClick() == false) return;
+                if (this.game.CanClick() == false) return;
                 this.lastClickTime = GlobalSession.NowTimeMS;
                 this.ShowMenu();
                 break;
@@ -435,10 +413,13 @@ export default class UITexas extends BaseScene {
                 this.Click_Cursituation_btn();
                 break;
             case this.chat_btn://聊天按钮
-
                 UIComponent.Instance.Toast();
                 break;
         }
+    }
+
+    public ShowBringIn() {
+        this.setActive(this.Button_BringIn, true);
     }
 
     public ShowMenu(): void {
@@ -449,46 +430,11 @@ export default class UITexas extends BaseScene {
     }
 
     Click_Report_Btn() {
-
-        UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.node });
+        this.game.onClickReport();
     }
 
     Click_Cursituation_btn() {
-        let historyInfoData = new HistoryInfoData()
-        historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
-        historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
-        historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
-        historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
-        historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
-        UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.node })
-    }
-    protected onClickDelay(): void {
-        if (this.CanClick() == false)
-            return;
-        this.lastClickTime = GlobalSession.NowTimeMS;
-        if (this.game.delayCount >= 2)
-            return;
-
-        if (!this.UIOperation_Com.node.activeInHierarchy) {
-            UIComponent.Instance.Toast(i18nMgr.Get("ServerErrorCode_31045"));
-            return;
-        }
-        ProtocolAgency.Send<ClientMessageAddTime.AsObject>({
-            Code: ProtocolCode.Protocol_Holdem_AddTime,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
-            Body: {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                consume: this.game.TexasGameUtils.GetOpDelayConsumeType(),
-            },
-        });
-    }
-
-    CanClick(): boolean {
-        if (GlobalSession.NowTimeMS - this.lastClickTime > 500) {
-            return true;
-        }
-        return false;
+        this.game.onClickCurSituation();
     }
 
     public UpdateBarragePanelActive(): void {
@@ -498,18 +444,17 @@ export default class UITexas extends BaseScene {
         this.barrageIndex = 0;
     }
 
-    /**
-     * 响应退出触发
-     */
-    public CallbackExit() {
-        this.HideMenu(false);
-        this.game.TexasGameUtils.LeaveRoom();
-    }
     onClickBringIn() {
         UIComponent.open(UIDefine.UIApplyJoin);
-        this.game.HideBringIn();
+        this.setActive(this.Button_BringIn, false);
     }
     private onClickAddOn() {
         this.game.onClickAddOn();
+    }
+    private onClickDelay() {
+        this.game.onClickDelay();
+    }
+    private onClickSeeMorePublic() {
+        this.game.onClickSeeMorePublic();
     }
 }

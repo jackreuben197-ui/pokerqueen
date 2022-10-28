@@ -367,5 +367,36 @@ export default class TimeHelper {
             "December",
         ][m - 1];
     }
+
+
+    //格式:余下----5:22:10  小时:分钟:秒</summary>
+    public static ShowRemainingSemicolonPure(pNum: number): string {//1小时3600秒      1天86400秒
+
+        let tHour, tMinutes, tseconds;
+
+        if (pNum >= 3600)//>1小时
+        {
+            tHour = pNum / 3600 ^ 0;
+            tMinutes = (pNum % 3600 / 60) ^ 0;
+            tseconds = pNum % 3600 % 60;
+            return `${this.__PadZero(tHour)}:${this.__PadZero(tMinutes)}:${this.__PadZero(tseconds)}`;
+        }
+        else if (pNum >= 60)//>1分钟
+        {
+            tMinutes = pNum / 60 ^ 0;
+            tseconds = pNum % 60;
+            return `${this.__PadZero(tMinutes)}:${this.__PadZero(tseconds)}`;
+
+        }
+        else if (pNum < 60) {
+            return `00:${this.__PadZero(pNum)}`
+        }
+        return "";
+    }
+    //小于10,前补0
+    private static __PadZero(num: number) {
+        return num < 10 ? "0" + num : num;
+    }
+
 }
 (window as any).TimeHelper = TimeHelper;
