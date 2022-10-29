@@ -133,7 +133,10 @@ export default class UIMine extends UIBase {
         } else if (index == 0) {
             // 请先绑定手机号
             UIComponent.open(UIDefine.MyService);
+        } else if (index == 1) {
+            UIComponent.open(UIDefine.UIMine_Message);
         }
+        
     }
 
     onClickCopy() {
