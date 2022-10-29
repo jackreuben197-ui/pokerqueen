@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 11:00:04
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 21:34:23
+ * @LastEditTime: 2022-10-29 11:06:14
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIActiveMange.ts
  */
 
@@ -26,6 +26,8 @@ export default class UIActiveMange extends BaseForm {
 
     @property(cc.Sprite)
     image: cc.Sprite = null;
+    @property(cc.Node)
+    tipNode: cc.Node = null;
 
     iconUrl = 'active0';
     activeType = 2;
@@ -74,5 +76,8 @@ export default class UIActiveMange extends BaseForm {
             this.post(EventName.refreshActive);
             UIComponent.Instance.Toast("发布成功")
         }
+    }
+    tipNodeClick() {
+        this.tipNode.active = !this.tipNode.active
     }
 }
