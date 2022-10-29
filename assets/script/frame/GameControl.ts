@@ -3,6 +3,7 @@ import DataManager from "./manager/DataManager";
 import LanguageManager from "./manager/LanguageManager";
 import LocalStoreManager from "./manager/LocalStoreManager";
 import { NotifyManager } from "./manager/NotifyManager";
+import SDKManager from "./manager/SDKManager";
 
 class GameControl {
     private static _instance: GameControl = null;
@@ -33,8 +34,13 @@ class GameControl {
         return DataManager.instance;
     }
 
+    get sdk() {
+        return SDKManager.instance;
+    }
+
     init() {
         this.data.init();
+        this.sdk.init();
     }
 
 }

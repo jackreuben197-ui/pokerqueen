@@ -1,4 +1,5 @@
 
+import { EventName } from "../config/EventName";
 import { GameConfig } from "../config/GameConfig";
 import GC from "../frame/GameControl";
 import StorageKey from "../session/StorageKey";
@@ -131,6 +132,7 @@ export class i18nMgr {
         for (let one of this.labelArr) {
             one._resetValue();
         }
+        GC.notify.post(EventName.switchLanguages)
     }
     /**
      * 解析配置表
