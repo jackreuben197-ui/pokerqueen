@@ -1,7 +1,7 @@
 /*
  * @Author: xfj
  * @Date: 2021-03-25 11:06:20
- * @LastEditTime: 2022-10-29 14:06:34
+ * @LastEditTime: 2022-10-29 15:35:57
  * @LastEditors: Please set LastEditors
  * @Description: 日
  * @FilePath: /pokerqueen/assets/script/lobby/labor/script/Day.ts
@@ -24,12 +24,11 @@ export default class Day extends cc.Component {
     }
 
     // 显示背景
-    showBackground(color: cc.Color = cc.Color.WHITE) {
-        this.background.active = true;
-        this.background.color = color;
+    showBackground(bool = false) {
+        this.background.active = bool;
     }
     // 显示字体
-    showDay(color: cc.Color = cc.Color.BLACK) {
+    showDay(color: cc.Color = cc.Color.WHITE) {
         this.day.active = true;
         this.day.color = color;
     }

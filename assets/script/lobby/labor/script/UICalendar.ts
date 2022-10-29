@@ -1,7 +1,7 @@
 /*
  * @Author: xfj
  * @Date: 2021-03-26 13:56:23
- * @LastEditTime: 2022-10-29 14:07:00
+ * @LastEditTime: 2022-10-29 15:19:21
  * @LastEditors: Please set LastEditors
  * @Description: 入口
  * @FilePath: /pokerqueen/assets/script/lobby/labor/script/UICalendar.ts
@@ -180,4 +180,5 @@ export default class UICalendar extends UIBase {
         this.show();
 
     }
+
 }

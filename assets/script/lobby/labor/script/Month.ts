@@ -44,7 +44,7 @@ export default class Month extends cc.Component {
                             for (const day of this.list) {
                                 day.getComponent(Day).showBackground();
                             }
-                            day.getComponent(Day).showBackground(cc.Color.YELLOW);
+                            day.getComponent(Day).showBackground(true);
                         },
                         this,
                     );
@@ -90,7 +90,7 @@ export default class Month extends cc.Component {
             }
 
             if (Data.getInstance().isSel(year, month, index)) {
-                day.getComponent(Day).showBackground(cc.Color.YELLOW);
+                day.getComponent(Day).showBackground(true);
             }
 
             if (isTouch) {
@@ -100,7 +100,7 @@ export default class Month extends cc.Component {
                         for (const day of this.list) {
                             day.getComponent(Day).showBackground();
                         }
-                        day.getComponent(Day).showBackground(cc.Color.YELLOW);
+                        day.getComponent(Day).showBackground(true);
                         Data.getInstance().selDate = new Date(year, month, index);
                         console.log(Data.getInstance().selDate);
                         cc.director.emit('title');
@@ -137,7 +137,7 @@ export default class Month extends cc.Component {
                             for (const day of this.list) {
                                 day.getComponent(Day).showBackground();
                             }
-                            day.getComponent(Day).showBackground(cc.Color.YELLOW);
+                            day.getComponent(Day).showBackground(true);
                         },
                         this,
                     );
