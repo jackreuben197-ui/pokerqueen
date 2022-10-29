@@ -1,5 +1,7 @@
+
+import MTTGameUtil from "../../../../game/util/MTTGameUtil";
 import GC from "../../../GameControl";
-import MTTGameUtil from "../MttGameUtils"
+
 
 export default class MttRealTimeBlindsModel {
     get list() {

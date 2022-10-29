@@ -1,10 +1,9 @@
 import PublicHelper from "../../helper/PublicHelper";
 import TimeHelper from "../../helper/TimeHelper";
-import i18nComponent from "../../i18n/i18nComponent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { Def, MTTInfo, Player } from "../../protobuf/holdem/define_pb";
+import { Def, Player } from "../../protobuf/holdem/define_pb";
 import { ClientMessageAddOn } from "../../protobuf/holdem/req_add_on_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { GameCache } from "../GameCache";
@@ -13,7 +12,6 @@ import { SeatEmpty, SeatIdle } from "../SeatStateHandler";
 import { MTT_GameType } from "../util/MTTGameUtil";
 import TexasGame from "./TexasGame";
 import { CPlayer } from "../CPlayer";
-import { ClientMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import { TexasGameState } from "../TexasGameState";
 import UIComponent from "../../ui/UIComponent";
 import { ClientMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
@@ -23,8 +21,9 @@ import { UIMineModel } from "../../lobby/UIMineModel";
 import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { ClientMessageAutoOpActive } from "../../protobuf/holdem/req_auto_op_active_pb";
-import { CardType, CardTypeUtil } from "../CardTypeUtil";
-import MTTGameProtocol from "../MTTGameProtocol";
+import MTTGameProtocol from "../protocol/MTTGameProtocol";
+import MTTGameMessageHandler from "../messageHandler/MTTGameMessageHandler";
+
 
 enum MTTMatchStatus // mtt比赛状态
 {
@@ -172,6 +171,7 @@ export default class MTTGame extends TexasGame {
 
     protected override RCInit() {
         this.texasGameProtocol = new MTTGameProtocol(this);
+        this.messageHandler = new MTTGameMessageHandler(this);
     }
 
     // public override void Update() {
@@ -357,7 +357,7 @@ export default class MTTGame extends TexasGame {
         this.uirc.BathText.string = i18nMgr.Get("UIBathTip00" + index);
     }
 
-    private async ClearRoundDate(time: number) {
+    public async ClearRoundDate(time: number) {
         await TimeHelper.Sleep(time);
         this.texasGameProtocol.HandleRoundFinish(null);
         this.isSyncHand = true;

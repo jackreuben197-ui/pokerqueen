@@ -98,6 +98,9 @@ export default class SeatUIRC extends UIBase {
     imageBubble: cc.Sprite = null;
     textBubble: cc.Label = null;
 
+    //猎人头奖励
+    Image_CoinShadow: cc.Node = null;
+
     //用来设置操作面板的位置
     Operation_Pos_Mark: cc.Node = null;
     ///////////////////////////////////
@@ -174,8 +177,11 @@ export default class SeatUIRC extends UIBase {
         this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
 
 
+        this.Image_CoinShadow = this.getChildNodeOrComponent("Image_CoinShadow");
+
         this.Operation_Pos_Mark = this.getChildNodeOrComponent("Operation_Pos_Mark");
 
+        
         //声纹
         this.voiceprintList = [];
         // this.voiceprintList.Add(VoiceprintStart);

@@ -1,5 +1,4 @@
 import SimpleNodePool from "../../common/MyNodePool";
-import { GameConfig } from "../../config/GameConfig";
 import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { DOTween, Sequence } from "../../dotween/DOTween";
@@ -32,19 +31,21 @@ import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
+import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
+import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { HistoryInfoData } from "../UITexasHistoryComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
+import TexasGameUtils from "../util/TexasGameUtils";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
 import { SeatEmpty, SeatIdle, SeatInsurance, SeatOperation } from "./../SeatStateHandler";
-import TexasGameMessageHandler from "./../TexasGameMessageHandler";
-import TexasGameProtocol from "./../TexasGameProtocol";
+
 import { TexasGameState } from "./../TexasGameState";
-import TexasGameUtils from "./../TexasGameUtils";
+
 import TexasSMAgency from "./../TexasSMAgency";
 import { AddClipsData } from "./../ui/UIAddChipsComponent";
 import UIOperationComponent, { OperationData } from "./../ui/UIOperationComponent";
@@ -407,7 +408,6 @@ export default class TexasGame {
     SeatPlayRecord: { SeatMove?, PlayDealFunc?, StartInfo } = null;
 
     constructor() {
-        this.messageHandler = new TexasGameMessageHandler(this);
         this.GameLogicSMComponent = new FSMLogicComponent();
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
@@ -415,6 +415,7 @@ export default class TexasGame {
     }
 
     protected RCInit() {
+        this.messageHandler = new TexasGameMessageHandler(this);
         this.texasGameProtocol = new TexasGameProtocol(this);
     }
 
@@ -1034,28 +1035,24 @@ export default class TexasGame {
         this.uirc.UIAutoOperation_Com.SetUIPos(Operation_Pos);
     }
 
-    /// <summary>
-    /// 转换远端座位号到本地座位号 服务器下发位置从  1开始，0为默认值，客户端-1为默认值(所以需要减一下，暂时不大改客户端)
-    /// </summary>
-    /// <param name="remoteSeatID"></param>
-    /// <returns></returns>
+
+    // 转换远端座位号到本地座位号 服务器下发位置从  1开始，0为默认值，客户端-1为默认值(所以需要减一下，暂时不大改客户端)
     public GetLocalSeatID(remoteSeatID: number): number {
         let id: number = remoteSeatID - 1;
         if (id < -1) return -1;
         return id;
     }
-    /// <summary>
-    /// 通过本地座位号获取位置对象
-    /// </summary>
-    /// <param name="localSeatID"></param>
-    /// <returns></returns>
+    // 通过本地座位号获取位置对象
     public GetSeatByLocalSeatID(localSeatID: number): Seat {
         let mSeat: Seat = null;
         if (localSeatID >= 0 && localSeatID < this.listSeat.length)
             mSeat = this.listSeat[localSeatID];
         return mSeat;
     }
-
+    //通过服务器座位id返回seat
+    public GetSeatByServerSeatID(serverSeadID: number): Seat {
+        return this.GetSeatByLocalSeatID(this.GetLocalSeatID(serverSeadID));
+    }
 
 
     /// <summary>
@@ -3023,11 +3020,12 @@ export default class TexasGame {
             seatUI.active = true;
             seatUI.parent = this.uirc.Seats;
             seatUI.name = `Seat${i}`;
-            if (i == 0 && cc.view.getVisibleSize().height < 2688) {
-                mInfos[i].Pos = cc.v3(this.uirc.Seat_Temp.x, 454 - cc.view.getVisibleSize().height / 2, 0);
-                console.log("适配最下方座位");
-            }
+            // if (i == 0 && cc.view.getVisibleSize().height < 2688) {
+            //     mInfos[i].Pos = cc.v3(this.uirc.Seat_Temp.x, 454 - cc.view.getVisibleSize().height / 2, 0);
+            //     console.log("适配最下方座位");
+            // }
             seatUI.setPosition(mInfos[i].Pos);
+            console.log(mInfos[i].Pos.toString());
             seatUI.scale = 1;
             let mSeat: Seat = new Seat(i, seatUI);
             mSeat.InitSeatUIInfo(mInfos[i], seatCount);

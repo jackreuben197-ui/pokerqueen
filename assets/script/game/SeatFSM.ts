@@ -29,6 +29,7 @@ export class SeatFSM {
         this.seat.stopAllActions();
         this.seat.uirc.Text_NickName.node.active = true;
         this.seat.uirc.imageBanker.active = false;
+        this.seat.uirc.Image_CoinShadow.active = false;
         // imageStraddle.gameObject.SetActive(false);
         this.seat.uirc.imageHeadFrame.node.active = false;
         //this.seat.uirc.transSmallCardBacks.active = false;

@@ -23,7 +23,6 @@ export default class LoginSession {
 
     static tokenRefreshComponent: TokenRefreshComponent = null;
 
-
     static Init() {
 
         // this._areaCode = localStorage.getItem(StorageKey.AERA_CODE) || GameConfig.DefaultAreaCode;
