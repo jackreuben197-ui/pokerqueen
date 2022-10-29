@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:08:17
+ * @LastEditTime: 2022-10-29 17:50:19
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -79,7 +79,9 @@ export default class UIJoinUnion extends BaseForm {
         id.string = data.random_id
 
         let icon = cc.find("iconMask/icon", node).getComponent(cc.Sprite)
-        WebImageHelper.SetHeadImage(icon, data.logo)
+        if (data.logo) {
+            WebImageHelper.SetHeadImage(icon, data.logo)
+        }
         let current = cc.find("number/current", node).getComponent(cc.Label)
         current.string = data.club_count
         let total = cc.find("number/total", node).getComponent(cc.Label)
@@ -95,9 +97,12 @@ export default class UIJoinUnion extends BaseForm {
     cancel() {
         this.UIDialogComponent.active = false
     }
-    sure() {
+    async sure() {
         let data: any = APIOrgTribeSearchByID.Response.data
-        UIClubModel.mInstance.APIOrgJoinTrip(data.random_id, this.contentEdit.string)
+        let _data: any = await UIClubModel.mInstance.APIOrgJoinTrip(data.random_id, this.contentEdit.string)
+        if (_data.code = 90004) {
+            UIComponent.Instance.Toast('club already join tribe apply')
+        }
         this.UIDialogComponent.active = false
     }
     // update (dt) {}
