@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 21:37:32
+ * @LastEditTime: 2022-10-29 16:46:21
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -140,10 +140,11 @@ export default class UILabarPlayViewForm extends UIBase {
         let index = url.indexOf('http')
         if (index == -1) {
             this.bar.spriteFrame = AssetContext.getAsset(url, AssetFold.texture_labor)
-            WebImageHelper.setImageSize(this.bar, 1110, 361)
+            WebImageHelper.setImageSize(this.bar, 1100, 361)
         }
         else {
-            WebImageHelper.SetUrlImage(this.bar, url)
+            await WebImageHelper.SetUrlImage(this.bar, url)
+            WebImageHelper.setImageSize(this.bar, 1100, 361)
         }
         this.lbl_active.string = data.info.description
 

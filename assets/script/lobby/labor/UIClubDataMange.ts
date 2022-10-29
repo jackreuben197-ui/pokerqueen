@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 16:36:05
+ * @LastEditTime: 2022-10-29 17:16:46
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
@@ -30,14 +30,12 @@ export default class UIClubDataMange extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         // this._info = param;
         // if (this._info == null) {
         //     return;
         // }
-        return;
         this.resetUI();
 
         for (let i = 1; i < 6; i++) {
@@ -75,7 +73,6 @@ export default class UIClubDataMange extends BaseForm {
     chaneData() {
         this._clickDataItem.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', false)
     }
-
 
     onClickDate(event) {
         let node = event.target;
