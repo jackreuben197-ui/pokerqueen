@@ -34,6 +34,18 @@ export default class UIMine_Service extends BaseForm {
 
         let btn_photo: cc.Node = this.getChildNodeOrComponent("btn_photo")
         btn_photo.on(cc.Node.EventType.TOUCH_END, this.onClickPhoto, this);
+
+        let btn_down: cc.Node = this.getChildNodeOrComponent("btn_down")
+        btn_down.on(cc.Node.EventType.TOUCH_END, this.onClickDown, this);
+        
+        let panel_click :cc.Node = this.getChildNodeOrComponent("panel_click");
+        panel_click.on(cc.Node.EventType.TOUCH_END, this.onClickHide, this);
+
+        for (let i=1; i<4; i++) {
+            let pc1 :cc.Node = this.getChildNodeOrComponent("pc_" + i);
+            pc1["index"] = i;
+            pc1.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this);
+        }
     }
 
     resetUI() {
@@ -49,6 +61,15 @@ export default class UIMine_Service extends BaseForm {
         lbl_hide1.active = true;
         img_show1.getComponent(cc.Sprite).spriteFrame = null;
         img_show2.getComponent(cc.Sprite).spriteFrame = null;
+
+        let ebx_3 :cc.EditBox = this.getChildNodeOrComponent("ebx_3", cc.EditBox);
+        let lbl_max : cc.Label = this.getChildNodeOrComponent("lbl_max", cc.Label);
+        ebx_3.string = "";
+        lbl_max.string = 0 + " / 200";
+
+        let lbl_choose : cc.Label = this.getChildNodeOrComponent("lbl_choose", cc.Label);
+        lbl_choose.string = "问题描述";
+        lbl_choose.node.opacity = 75.5;
     }
 
     async onClickPhoto() {
@@ -77,5 +98,41 @@ export default class UIMine_Service extends BaseForm {
         }
     }
 
+    onChangeText(param) {
+        let ebx_3 :cc.EditBox = this.getChildNodeOrComponent("ebx_3", cc.EditBox);
+        let lbl_max : cc.Label = this.getChildNodeOrComponent("lbl_max", cc.Label);
+        lbl_max.string = ebx_3.string.length + " / 200";
+    }
 
+    onClickDown() {
+        let panel_choose :cc.Node = this.getChildNodeOrComponent("panel_choose");
+        let panel_click :cc.Node = this.getChildNodeOrComponent("panel_click");
+        panel_click.active = true;
+        panel_choose.active = true;
+    }
+
+    onClickHide() {
+        let panel_choose :cc.Node = this.getChildNodeOrComponent("panel_choose");
+        panel_choose.active = false;
+        let panel_click :cc.Node = this.getChildNodeOrComponent("panel_click");
+        panel_click.active = false;
+    }
+
+    onClickItem(event) {
+        let target = event.target;
+        let index = target.index;
+        let str = target.getChildByName("lbl").getComponent(cc.Label).string;
+        if (index == 1) {
+
+        } else if (index == 2) {
+
+        } else if (index == 3) {
+
+        }
+
+        let lbl_choose : cc.Label = this.getChildNodeOrComponent("lbl_choose", cc.Label);
+        lbl_choose.string = str;
+        lbl_choose.node.opacity = 255;
+        this.onClickHide();
+    }
 }
