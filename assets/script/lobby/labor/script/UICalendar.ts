@@ -1,7 +1,7 @@
 /*
  * @Author: xfj
  * @Date: 2021-03-26 13:56:23
- * @LastEditTime: 2022-10-29 15:19:21
+ * @LastEditTime: 2022-10-29 16:18:13
  * @LastEditors: Please set LastEditors
  * @Description: 入口
  * @FilePath: /pokerqueen/assets/script/lobby/labor/script/UICalendar.ts
@@ -17,6 +17,8 @@ import CCPoolManager from '../plug-in/Pool/CCPoolManager';
 // import ComboBox from '../plug-in/ComboBox/comboBox/ComboBox';
 import ComboBox from './ComboBox';
 import UIBase from '../../../ui/UIBase';
+import UIComponent from '../../../ui/UIComponent';
+import { EventName } from '../../../config/EventName';
 
 const { ccclass, property } = cc._decorator;
 @ccclass
@@ -42,19 +44,24 @@ export default class UICalendar extends UIBase {
         CCPoolManager.getInstance().init('month', this.pMonth, 12);
         CCPoolManager.getInstance().init('year', this.pYear, 1);
     }
+    onShow() {
+        super.onShow();
+        this.show();
+    }
 
     start() {
-        this.show();
+
     }
 
     onEnable() {
         let self = this;
-        cc.director.on('title', function () {
+        cc.director.on('title', () => {
+            console.log('======', Data.getInstance().selDate);
+            this.post(EventName.refresh_Btn_Data)
             self.combo.getComponent(ComboBox).setIndex();
             self.combo.getComponent(ComboBox).updateItems();
         });
-
-        cc.director.on('show', function () {
+        cc.director.on('show', () => {
             self.show();
         });
     }
@@ -169,7 +176,6 @@ export default class UICalendar extends UIBase {
                 let last1 = Util.lastYear(date, type);
                 Data.getInstance().selDate = Util.cloneDate(last1);
                 break;
-                break;
             case 'next1':
                 let next1 = Util.nextYear(date, type);
                 Data.getInstance().selDate = Util.cloneDate(next1);
@@ -179,6 +185,9 @@ export default class UICalendar extends UIBase {
         }
         this.show();
 
+    }
+    close() {
+        UIComponent.close(this.UIDefine);
     }
 
 }

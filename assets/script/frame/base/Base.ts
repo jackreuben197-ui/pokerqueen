@@ -10,7 +10,7 @@ export class Base extends cc.Component {
     }
 
     onLoad() {
-        
+
     }
 
     start() {

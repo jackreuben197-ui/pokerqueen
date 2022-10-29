@@ -1,7 +1,7 @@
 /*
  * @Author: xfj
  * @Date: 2021-03-26 13:27:45
- * @LastEditTime: 2022-10-29 14:06:52
+ * @LastEditTime: 2022-10-29 16:11:32
  * @LastEditors: Please set LastEditors
  * @Description: 接口
  * @FilePath: /pokerqueen/assets/script/lobby/labor/script/Interface.ts

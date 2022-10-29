@@ -3,16 +3,18 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 13:47:02
+ * @LastEditTime: 2022-10-29 16:36:05
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
+import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
+import Data from "./script/Data";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -24,19 +26,18 @@ export default class UIClubDataMange extends BaseForm {
     lastTimeType: number = 1;
     oldDates: Array<string> = [];
     _info: any = null;
-
+    _clickDataItem = null;
     protected lateLoad(): void {
         super.lateLoad();
     }
 
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-
         // this._info = param;
         // if (this._info == null) {
         //     return;
         // }
-
+        return;
         this.resetUI();
 
         for (let i = 1; i < 6; i++) {
@@ -53,15 +54,29 @@ export default class UIClubDataMange extends BaseForm {
         for (let i = 4; i < 6; i++) {
             let btn_pd_1: cc.Node = this.getChildNodeOrComponent("btn_pd_" + i);
             btn_pd_1["index"] = i;
+            btn_pd_1.getComponent(cc.Label).string = i == 4 ? '开始时间' : '结束时间'
             btn_pd_1.on(cc.Node.EventType.TOUCH_END, this.openCalendar, this)
         }
 
         // this.reqUpInfo(0, 1);
         // this.reqDownInfo();
     }
-    openCalendar() {
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.refresh_Btn_Data, this.chaneData)
+    }
+    onDisable() {
+        cc.director.off('show');
+    }
+    openCalendar(event, customData) {
+        this._clickDataItem = event.target
         UIComponent.open(UIDefine.UICalendar)
     }
+    chaneData() {
+        this._clickDataItem.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', false)
+    }
+
+
     onClickDate(event) {
         let node = event.target;
         let index = node.index;
@@ -100,9 +115,7 @@ export default class UIClubDataMange extends BaseForm {
         // this.reqDownInfo();
     }
 
-    protected regiterDispatchEvent(): void {
-        super.regiterDispatchEvent();
-    }
+
     refreshChooseNLH(index) {
         for (let i = 1; i < 6; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
