@@ -130,6 +130,9 @@ export default class UIMine extends UIBase {
         let index = target["index"];
         if (index == 3) {
             UIComponent.open(UIDefine.SettingsForm);
+        } else if (index == 0) {
+            // 请先绑定手机号
+            UIComponent.open(UIDefine.MyService);
         }
     }
 
