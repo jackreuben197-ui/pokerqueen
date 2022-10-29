@@ -86,6 +86,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_Setting",
         Title: "UIMine_btn_setting",
     },
+    //设置-客服
+    MyService: {
+        UIType: UIType.Form,
+        Name: "MyService",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMine_Service",
+        Title: "UIMineMain01",
+    },
     //设置-玩家信息
     MyPlayInfo: {
         UIType: UIType.Form,
