@@ -3,13 +3,15 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 10:22:07
+ * @LastEditTime: 2022-10-29 13:47:02
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
+import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import BaseForm from "../../ui/form/BaseForm";
+import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
 
 
@@ -48,9 +50,17 @@ export default class UIClubDataMange extends BaseForm {
             btn_pd_1["index"] = i;
             btn_pd_1.on(cc.Node.EventType.TOUCH_END, this.onClickDate, this)
         }
+        for (let i = 4; i < 6; i++) {
+            let btn_pd_1: cc.Node = this.getChildNodeOrComponent("btn_pd_" + i);
+            btn_pd_1["index"] = i;
+            btn_pd_1.on(cc.Node.EventType.TOUCH_END, this.openCalendar, this)
+        }
 
-        this.reqUpInfo(0, 1);
-        this.reqDownInfo();
+        // this.reqUpInfo(0, 1);
+        // this.reqDownInfo();
+    }
+    openCalendar() {
+        UIComponent.open(UIDefine.UICalendar)
     }
     onClickDate(event) {
         let node = event.target;
