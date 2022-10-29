@@ -14,6 +14,23 @@ export class StringHelper {
         return `${num / 100}`;
     }
 
+    public static GetLongStringUnit(num: number): string {
+        if (num == 0) {
+            return "0";
+        }
+        if (num < 100000) {
+            return `${num / 100}`;
+        }
+        else if (num < 100000000) {
+            return `${this.DivFloat(num, 100000)}K`;
+        }
+        else {
+            return `${this.DivFloat(num, 100000000)}M`;
+        }
+    }
+
+
+
 
 
     static GetSignedLongString(num: number): string {
@@ -150,15 +167,17 @@ export class StringHelper {
         return numStr;
     }
     /**
-     * 除100并且判断整数不变，小数保留1位
+     * 除法
+     * 结果 整数不变,小数保留N位
      */
-    public static Div100Float1(num: number, div100: boolean = true) {
-        let num_str = div100 ? this.GetLongString(num) : num.toString();
+    public static DivFloat(num: number, div: number = 100, float_bit: number = 1) {
+        let num_str = div ? this.GetLongString(num) : num.toString();
         let dot_index = num_str.indexOf(".");
         if (~dot_index) {
-            return num_str.substring(0, dot_index + 2);
+            return num_str.substring(0, dot_index + float_bit + 1);
         }
         return num_str;
     }
+
 }
 (window as any).StringHelper = StringHelper;

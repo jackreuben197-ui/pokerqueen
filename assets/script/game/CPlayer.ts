@@ -88,8 +88,7 @@ export class CPlayer {
 
 
     public SetCards(list: number[]): void {
-        if (null == this.cards) this.cards = [];
-        if (this.cards.length > 0) this.cards.length = 0;
+        this.cards = [];
         //cards.AddRange(list);
         this.cards = this.cards.concat(list);
     }

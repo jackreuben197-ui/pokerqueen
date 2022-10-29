@@ -1,4 +1,5 @@
 import PublicHelper from "../../helper/PublicHelper";
+import TimeHelper from "../../helper/TimeHelper";
 import i18nComponent from "../../i18n/i18nComponent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
@@ -8,8 +9,22 @@ import { ClientMessageAddOn } from "../../protobuf/holdem/req_add_on_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { GameCache } from "../GameCache";
 import Seat from "../seat/Seat";
+import { SeatEmpty, SeatIdle } from "../SeatStateHandler";
 import { MTT_GameType } from "../util/MTTGameUtil";
 import TexasGame from "./TexasGame";
+import { CPlayer } from "../CPlayer";
+import { ClientMessageLeave } from "../../protobuf/holdem/req_leave_pb";
+import { TexasGameState } from "../TexasGameState";
+import UIComponent from "../../ui/UIComponent";
+import { ClientMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
+import { UIDefine } from "../../define/UIDefine";
+import Main from "../../Main";
+import { UIMineModel } from "../../lobby/UIMineModel";
+import { StringHelper } from "../../helper/StringHelper";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { ClientMessageAutoOpActive } from "../../protobuf/holdem/req_auto_op_active_pb";
+import { CardType, CardTypeUtil } from "../CardTypeUtil";
+import MTTGameProtocol from "../MTTGameProtocol";
 
 enum MTTMatchStatus // mtt比赛状态
 {
@@ -146,12 +161,18 @@ export default class MTTGame extends TexasGame {
     private CurrentOpAddOnMode: Def.AddOnModeMap[keyof Def.AddOnModeMap];;
     private SyncHandTime: number = 0;
     private BathTipsTimes: number = 1;
-    private isStartShowPullDown: boolean;//是否开始展示拆桌提示
+    public isStartShowPullDown: boolean;//是否开始展示拆桌提示
     private showPullDownTime: number = 0;//拆桌提示计时
     private pullDownTipRandomNum: number = -1;//随机到的数
     private readonly minPullDownTipNum: number = 1;//最小的随机数
     private readonly maxPullDownTipsNum: number = 7;//最大的随机数
     private readonly intervelTime: number = 4;//随机间隔时间
+
+    IsMTT: boolean = true;
+
+    protected override RCInit() {
+        this.texasGameProtocol = new MTTGameProtocol(this);
+    }
 
     // public override void Update() {
     //     base.Update();
@@ -215,23 +236,7 @@ export default class MTTGame extends TexasGame {
         super.Dispose();
     }
 
-    public override onClickAddOn() {
-        if (!this.uirc.getButtonInteractable(this.uirc.buttonAddOn)) return;
-        this.uirc.setButtonInteractable(this.uirc.buttonAddOn, false);
-        ProtocolAgency.Send<ClientMessageAddOn.AsObject>({
-            Code: ProtocolCode.Protocol_Holdem_EnterRoom,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
-            Body:
-            {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                mode: this.addOnMode,
-                ratio: 0,
-                useProp: false,
-            },
-        });
-        this.CurrentOpAddOnMode = this.addOnMode;
-    }
+
     public override UpdateRoom(rec: ServerMessageEnterRoom.AsObject) {
 
         if (null == rec)
@@ -319,7 +324,7 @@ export default class MTTGame extends TexasGame {
         }
         this.HideWaitForStartTips();
         if (rec.mttProgress.isBubbleWait) {
-            //this.ClearRoundDate(0);
+            this.ClearRoundDate(0);
         }
         if (rec.mttProgress.startCountDown > 0) {
             this.hadRequestEnterRoom = false;
@@ -337,523 +342,336 @@ export default class MTTGame extends TexasGame {
         }
         this.UpdateRoomDes();
         //#region addon 按钮显示
-        this.uirc.buttonAddOn.active = (this.addOnMode != Def.AddOnMode.ADDON_NONE && this.gameStarted);
+        this.uirc.Button_AddOn.active = (this.addOnMode != Def.AddOnMode.ADDON_NONE && this.gameStarted);
         //this.ShowAddOnBtn();
         //#endregion
     }
 
 
-    //     protected ClearAllData() {
-    //         NotLookPlayer = false;
-    //         base.ClearAllData();
-    //     }
+    protected ClearAllData() {
+        this.NotLookPlayer = false;
+        super.ClearAllData();
+    }
 
-    //     private showImage_WaitForStartBathTips(int index) {
-    //         BathText.text = LanguageManager.Get("UIBathTip00" + index);
-    //     }
+    private showImage_WaitForStartBathTips(index: number) {
+        this.uirc.BathText.string = i18nMgr.Get("UIBathTip00" + index);
+    }
 
-    //     private async ClearRoundDate(long time) {
-    //         await Game.Scene.ModelScene.GetComponent<TimerComponent>().WaitAsync(time);
-    //         base.HandleRoundFinish(null);
-    //         isSyncHand = true;
-    //         Image_WaitForStartBathTips.SetActive(true);
-    //     }
-    //     public ObtainMTTCountDown(isTimeOut: boolean = false) {
+    private async ClearRoundDate(time: number) {
+        await TimeHelper.Sleep(time);
+        this.texasGameProtocol.HandleRoundFinish(null);
+        this.isSyncHand = true;
+        this.uirc.Image_WaitForStartBathTips.active = true;
+    }
+    public ObtainMTTCountDown(isTimeOut: boolean = false) {
 
-    //     }
+    }
 
-    //     private InitMttFakeSeat() {
-    //         this.InitSeatByCount(GameCache.Instance.seat_count);
-    // 			Seat mSeat = null;
-    //         for (int i = 0, n = listSeat.Count; i < n; i++)
-    //         {
-    //             mSeat = listSeat[i];
-    //             mSeat.seatID = (sbyte)i;
+    private InitMttFakeSeat() {
+        this.InitSeatByCount(GameCache.Instance.seat_count);
+        let mSeat: Seat = null;
+        for (let i = 0, n = this.listSeat.length; i < n; i++) {
+            mSeat = this.listSeat[i];
+            mSeat.seatID = i;
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
 
-    //             mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle<Entity>.Instance);
+            if (i == 0) {
+                let mPlayer: CPlayer = new CPlayer(GameCache.Instance.nUserId);
+                //ComponentFactory.CreateWithId<Player>(GameCache.Instance.nUserId);
+                mPlayer.seatID = 0;
+                mPlayer.headPic = GameCache.Instance.headPic;
+                mPlayer.nick = GameCache.Instance.nick;
+                mPlayer.userID = GameCache.Instance.nUserId;
+                mPlayer.chips = 0;
+                mPlayer.canPlayStatus = Def.CanPlayStatus.DISABLE;
+                mPlayer.actionStatus = Def.Action.NONE;
+                mPlayer.ante = 0;
+                mPlayer.anteNumber = 0;
+                mPlayer.SetCards(this.GetEmptyHandCards());
+                mSeat.Player = mPlayer;
 
-    //             if (i == 0) {
-    // 					Player mPlayer = ComponentFactory.CreateWithId<Player>(GameCache.Instance.nUserId);
-    //                 mPlayer.seatID = 0;
-    //                 mPlayer.headPic = GameCache.Instance.headPic;
-    //                 mPlayer.nick = GameCache.Instance.nick;
-    //                 mPlayer.userID = GameCache.Instance.nUserId;
-    //                 mPlayer.chips = 0;
-    //                 mPlayer.canPlayStatus = Def.Types.CanPlayStatus.Disable;
-    //                 mPlayer.actionStatus = Def.Types.Action.None;
-    //                 mPlayer.ante = 0;
-    //                 mPlayer.anteNumber = 0;
-    //                 mPlayer.SetCards(GetEmptyHandCards());
-    //                 mSeat.Player = mPlayer;
+                if (null != this.mainPlayer) {
+                    this.mainPlayer.Dispose();
+                    this.mainPlayer = null;
+                }
+                this.mainPlayer = mSeat.Player;
 
-    //                 if (null != mainPlayer) {
-    //                     mainPlayer.Dispose();
-    //                     mainPlayer = null;
-    //                 }
-    //                 mainPlayer = mSeat.Player;
+                mSeat.UpdateFSMbyStatus();
+            }
+            else {
+                mSeat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
+            }
+        }
+    }
 
-    //                 mSeat.UpdateFSMbyStatus();
-    //             }
-    //             else {
-    //                 mSeat.FsmLogicComponent.SM.ChangeState(SeatEmpty<Entity>.Instance);
-    //             }
-    //         }
-    //     }
+    public countDownTo30Second() {
+        if (!this.hadRequestEnterRoom) {
+            this.hadRequestEnterRoom = true;
+        }
+    }
 
-    //     public countDownTo30Second() {
-    //         if (!hadRequestEnterRoom) {
-    //             hadRequestEnterRoom = true;
-    //         }
-    //     }
-
-    //     protected ShowArmatureRewardCircle() {
-    // 			UnityArmatureComponent armatureRewardCircle;
-    //         if (LanguageManager.mInstance.mCurLanguage == 0 || LanguageManager.mInstance.mCurLanguage == 2) {
-    //             armatureRewardCircle = this.armatureRewardCircleZH;
-    //         }
-    //         else {
-    //             armatureRewardCircle = this.armatureRewardCircleEN;
-    //         }
-    //         if (null != armatureRewardCircle.dragonAnimation) {
-    //             armatureRewardCircle.dragonAnimation.Reset();
-    //             armatureRewardCircle.dragonAnimation.Play("newAnimation", 1);
-    //             armatureRewardCircle.AddEventListener(DragonBones.EventObject.COMPLETE, (key, go) => {
-    //                 armatureRewardCircle.gameObject.SetActive(false);
-    //             });
-    //         }
-    //     }
-    //     /// <summary>
-    //     /// 
-    //     /// </summary>
-    //     /// <param name="go"></param>
-    //     public OnClickAddOn(GameObject go) {
-    //         if (!buttonAddOn.interactable) {
-    //             return;
-    //         }
-    //         buttonAddOn.interactable = false;
-    //         CPGameSessionComponent.Instance.Send(new Protocol_Holdem_AddOn()
-    // 			{
-    //                 RoomID = (ulong)GameCache.Instance.room_id,
-    //                 MatchID = (ulong)GameCache.Instance.match_id,
-    //                 request = new ClientMessageAddOn()
-    // 				{
-    //                 Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
-    //             Mode = addOnMode,
-    //             Ratio = 1,
-    //             UseProp = false,
-    // 				}
-
-    // });
-    // CurrentOpAddOnMode = addOnMode;
-    // 		}
-    // 		// 重购
-    // 		private onClickRebuy(GameObject go)
-    // {
-    //     if (isGPSRestrictions) {
-    //         //开启GPS，先获取定位
-    //         waittingGPSCallback = true;
-    //         NativeManager.PermissionState permissionState = NativeManager.LocalGetLocationPermissionState();
-    //         if (permissionState == NativeManager.PermissionState.WaitAsk) {
-
-    //         }
-    //         else if (permissionState == NativeManager.PermissionState.Allow) {
-    //             NativeManager.GetGPSLocation();
-    //             waittingGPSCallback = true;
-    //         }
-    //         else {
-    //             waittingGPSCallback = false;
-    //             UIComponent.Instance.ShowNoAnimation(UIType.UIDialog,
-    //                 new UIDialogComponent.DialogData()
-    // 									   {
-    //                     type = UIDialogComponent.DialogData.DialogType.CommitCancel,
-    //                     title = "",
-
-    //                     content = LanguageManager.Get("UIAskOpenSetting"),
-    //                     // contentCommit = "确定",
-    //                     contentCommit = CPErrorCode.LanguageDescription(10012),
-    //                     // contentCancel = "取消",
-    //                     contentCancel = CPErrorCode.LanguageDescription(10013),
-    //                     actionCommit = () => { NativeManager.LocalOpenAppSettings(); },
-    //                     actionCancel = null
-    //                 });
-    //         }
-    //         if (Application.platform != RuntimePlatform.WindowsEditor && Application.platform != RuntimePlatform.OSXEditor) {
-    //             return;
-    //         }
-    //     }
-    //     waittingGPSCallback = false;
-
-    //     Web_Room_Center_Mtt_Rebuy.RequestData req = new Web_Room_Center_Mtt_Rebuy.RequestData()
-    //     {
-
-    //     };
-
-    //     HttpRequestComponent.Instance.Send(
-    //         StringHelper.GetWebUrlString(Web_Room_Center_Mtt_Rebuy.API, GameCache.Instance.match_id.ToString()),
-    //         Web_Room_Center_Mtt_Rebuy.Request(req),
-    //         json => {
-    //             var response = Web_Room_Center_Mtt_Rebuy.Response(json);
-    //             if (response.code == 0) {
-    //                 UIComponent.Instance.Toast(LanguageManager.Get("Repurchase_successful"));
-
-    //             }
-    //             else {
-    //                 //TODO-多语言
-    //                 UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.code));
-    //             }
-    //         },
-    //         null,
-    //         () => {
-    //             UIComponent.Instance.Toast(LanguageManager.Get("request_failed"));
-    //         }
-    //     );
-    // }
-
-    // 		/// <summary>
-    // 		/// 坐下 
-    // 		/// </summary>
-    // 		/// <param name="clientSeatId"></param>
-    // 		public override  Sitdown(int clientSeatId, bool isclick = false)
-    // {
-    //     return;
-    // }
-
-    // 		public override  CallbackExit()
-    // {
-    //     CPGameSessionComponent.Instance.Send(new Protocol_Holdem_Leave()
-    // 			{
-    //             RoomID = (ulong)GameCache.Instance.room_id,
-    //             MatchID = (ulong)GameCache.Instance.match_id,
-    //             request = new ClientMessageLeave()
-    // 				{
-    //             Room = new Room()
-    // 					{
-
-    //             RoomId = (uint)GameCache.Instance.room_id,
-    //             MatchId = (uint)GameCache.Instance.match_id
-    //         }
-    // 				}
-    // 			});
-    // 		}
-    // 		/// <summary>
-    // 		/// 带入
-    // 		/// </summary>
-    // 		/// <param name="anteNumber"></param>
-    // 		/// <param name="addChip"></param>
-    // 		/// <param name="storeChip"></param>
-    // 		/// <param name="isAutoAddChips"></param>
-    // 		public override  AddChips(int anteNumber, ulong addChip = 0, bool isAutoAddChips = false)
-    // {
-    //     CPGameSessionComponent.Instance.Send(new Protocol_Holdem_AddOn()
-    // 			{
-    //             RoomID = (ulong)GameCache.Instance.room_id,
-    //             MatchID = (ulong)GameCache.Instance.match_id,
-    //             request = new ClientMessageAddOn()
-    // 				{
-    //             Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
+    protected ShowArmatureRewardCircle() {
+        // 		UnityArmatureComponent armatureRewardCircle;
+        // if (LanguageManager.mInstance.mCurLanguage == 0 || LanguageManager.mInstance.mCurLanguage == 2) {
+        //     armatureRewardCircle = this.armatureRewardCircleZH;
+        // }
+        // else {
+        //     armatureRewardCircle = this.armatureRewardCircleEN;
+        // }
+        // if (null != armatureRewardCircle.dragonAnimation) {
+        //     armatureRewardCircle.dragonAnimation.Reset();
+        //     armatureRewardCircle.dragonAnimation.Play("newAnimation", 1);
+        //     armatureRewardCircle.AddEventListener(DragonBones.EventObject.COMPLETE, (key, go) => {
+        //         armatureRewardCircle.gameObject.SetActive(false);
+        //     });
+        // }
+    }
 
 
-    // 				}
 
-    // 			});
-    // 		}
-    // 		public override  GPSCallback_Sitdown()
-    // {
+    /// <summary>
+    /// 坐下 
+    /// </summary>
+    /// <param name="clientSeatId"></param>
+    public override Sitdown(clientSeatId: number, isclick: boolean = false) {
+        return;
+    }
+    public override onClickAddOn() {
+        if (!this.uirc.getButtonInteractable(this.uirc.Button_AddOn)) return;
+        this.uirc.setButtonInteractable(this.uirc.Button_AddOn, false);
+        ProtocolAgency.Send<ClientMessageAddOn.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AddOn,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body:
+            {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                mode: this.addOnMode,
+                ratio: 1,
+                useProp: false,
+            },
+        });
+        this.CurrentOpAddOnMode = this.addOnMode;
+    }
+
+    // 退出房间 -MTT直接退出房间断开socket
+    public override onClickExit() {
+        this.uirc.HideMenu(false);
+        this.CallbackExit();
+        this.SMAgency.ChangeGameState(TexasGameState.Exit, null);
+    }
+    public override CallbackExit() {
+        this.TexasGameUtils.LeaveRoom();
+    }
+    /// <summary>
+    /// 带入
+    /// </summary>
+    /// <param name="anteNumber"></param>
+    /// <param name="addChip"></param>
+    /// <param name="storeChip"></param>
+    /// <param name="isAutoAddChips"></param>
+    public override  AddChips(anteNumber: number, addChip: number = 0, isAutoAddChips: boolean = false) {
+        ProtocolAgency.Send<ClientMessageAddOn.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AddOn,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body:
+            {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                mode: this.addOnMode,
+                ratio: 1,
+                useProp: false,
+            },
+        });
+    }
+    // public override  GPSCallback_Sitdown() {
 
     // }
 
-    // 		// 取消重购
-    // 		private onClickRebuyCancel()
-    // {
-    //     this.ExitRoom();
 
-    // }
+    // 操作加时
+    public override onClickDelay() {
+        if (this.delayCount >= 2)
+            return;
+        if (!this.uirc.UIOperation_Com.node.activeInHierarchy) {
+            UIComponent.Instance.Toast(i18nMgr.Get("ServerErrorCode_31045"));
+            return;
+        }
+        this.ClickAddTime = true;
 
-    // 		// 退出房间 -MTT直接退出房间断开socket
-    // 		protected override  onClickExit(GameObject go)
-    // {
-    //     hideMenu();
-    //     CallbackExit();
-    //     ChangeGameState(TexasGameState.Exit, null);
-    // }
+        ProtocolAgency.Send<ClientMessageAddTime.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AddTime,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                consume: this.TexasGameUtils.GetOpDelayConsumeType(),
+            },
+        });
+    }
 
-    // 		public override void ExitRoom()
-    // {
-    //     base.ExitRoom();
+    public override CheckPlayerInfo(userId: number, player: CPlayer = null) {
+        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false], { parentUI: Main.Marquee });
+    }
 
+    // 实时战况
+    public override onClickReport() {
+        if (!this.hadRequestEnterRoom) return;
+        UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.uirc.node });
+        //UIComponent.Instance.ShowNoAnimation(UIType.UITexasReportMTT, new object[1] { true });
+    }
 
-    // }
+    public override onClickCurSituation() {
+        if (!this.hadRequestEnterRoom) return;
+        super.onClickCurSituation();
+    }
+    //刷新边菜单
+    public override UpdateMenu() {
+        //更新金豆
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
 
-    // 		// 操作延时
-    // 		protected override void onClickDelay(GameObject go)
-    // {
-    //     if (delayCount >= 2)
-    //         return;
-    //     if (!UIComponent.Instance.Get(UIType.UIOperation).GameObject.activeInHierarchy) {
-    //         UIComponent.Instance.Toast(LanguageManager.Get("ServerErrorCode_31045"));
-    //         return;
-    //     }
-    //     ClickAddTime = true;
-    //     CPGameSessionComponent.Instance.Send(new Protocol_Holdem_AddTime()
-    // 			{
-    //             RoomID = (ulong)GameCache.Instance.room_id,
-    //             MatchID = (ulong)GameCache.Instance.match_id,
-    //             request = new ClientMessageAddTime()
-    // 				{
-    //             Room = new Room() { RoomId = (uint)GameCache.Instance.room_id, MatchId = (uint)GameCache.Instance.match_id },
-    //         Consume = GetOpDelayConsumeType(),
-    // 				}
-    // 			});
-    // 		}
+        });
 
-    // 		public override void CheckPlayerInfo(int userId, Player player = null)
-    // {
-    //     UIComponent.Instance.ShowNoAnimation(UIType.UITexasPlayerInfo, new object[] { userId, false });
-    // }
+        let UserSitdown = this.UserSitdown();
 
-    // 		// 实时战况
-    // 		protected override void onClickReport(GameObject go)
-    // {
-    //     if (!hadRequestEnterRoom)
-    //         return;
-    //     UIComponent.Instance.ShowNoAnimation(UIType.UITexasReportMTT, new object[1] { true });
-    // }
+        let menu = this.uirc.UITexasMenu_Com;
 
-    // 		protected override void onClickCurSituation(GameObject go)
-    // {
-    //     if (!hadRequestEnterRoom)
-    //         return;
-    //     base.onClickCurSituation(go);
-    // }
+        menu.MenuButtons_Dic.Button_Standup.node.active = false;
+
+        menu.MenuButtons_Dic.Button_AddChips.node.active = false;
+
+        menu.MenuButtons_Dic.Button_LeaveDesk.node.active = false;
+
+        //this.MenuButtons_Dic.Button_Rule.node.getChildByName("Text").getComponent(cc.Label).string = i18nMgr.Get("UITexas_RuleOfTips");
 
 
-    // 		protected override void UpdateMenu()
-    // {
-    //     //更新金豆
-    //     UIMineModel.mInstance.ObtainUserInfo(pDto => {
-    //         textTotalBean.text = StringHelper.GetDoubleString(GameCache.Instance.gold);
-    //     });
+        if (UserSitdown) //已坐下
+        {
+            menu.MenuButtons_Dic.Button_Trust.node.active = true;
 
-    //     textStoreBean.transform.parent.gameObject.SetActive(mainPlayer.cacheStoreChips > 0);
-    // 			float menuHeight = 1800f;
+            this.uirc.setButtonInteractable(menu.MenuButtons_Dic.Button_Trust.node, !this.uirc.buttonCancelTrust.activeInHierarchy);
 
-    //     buttonStandup.gameObject.SetActive(false);
-    //     menuHeight -= 185;
+        }
+        else //未坐下
+        {
+            menu.MenuButtons_Dic.Button_Trust.node.active = false;
+        }
 
-    //     buttonAddChips.gameObject.SetActive(false);
-    //     menuHeight -= 185;
+        if (this.gameStarted) {
 
-    //     Button_LeaveDesk.gameObject.SetActive(false);
-    //     menuHeight -= 185;
+            this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_Trust.node, true);
+        }
+        else {
+            this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_Trust.node, false);
+        }
+        menu.MenuButtons_Dic.Button_Rule.node.active = false;
 
-    //     buttonRule.transform.Find("Text").GetComponent<Text>().text = LanguageManager.Get("UITexas_RuleOfTips");
+    }
 
-    //     if (UserSitdown()) //已坐下
-    //     {
-    //         buttonTrust.gameObject.SetActive(true);
-    //         buttonTrust.interactable = !buttonCancelTrust.gameObject.activeInHierarchy;
+    //更新addon 按钮状态
+    private ShowAddOnBtn() {
+        this.uirc.Button_AddOn.active = (this.addOnMode != Def.AddOnMode.ADDON_NONE && this.gameStarted);
+        this.uirc.setButtonInteractable(this.uirc.Button_AddOn, this.IsShowAddOnBtn());
 
-    //     }
-    //     else //未坐下
-    //     {
-    //         buttonTrust.gameObject.SetActive(false);
-    //         menuHeight -= 185;
-    //     }
-    //     if (gameStarted) {
+    }
+    private IsShowAddOnBtn(): boolean {
+        if (this.mainPlayer == null || this.addOnModeDate == null) {
+            return false;
+        }
+        switch (this.addOnMode) {
+            case Def.AddOnMode.ADDON_NONE:
+                return false;
+            case Def.AddOnMode.ADDON_NORMAL:
+                if (!this.mainPlayer.AddOn && this.startAddOnLevel < this.BlindLevel + 1 && this.endAddOnLevel > this.BlindLevel) {
+                    //cc.log("AddonNormal is true:" + startAddOnLevel + " " + BlindLevel + " " + endAddOnLevel);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            case Def.AddOnMode.PLUS_MODE1:
+                if (
+                    this.mainPlayer.seatID > -1 &&
+                    this.mainPlayer.canPlayStatus == Def.CanPlayStatus.NORMAL &&
+                    !this.mainPlayer.usedAddon &&
+                    this.mainPlayer.cacheChips < this.addOnModeDate.AddOnPlusMode1Limit &&
+                    this.mainPlayer.AddonPlusMode1Times < this.addOnModeDate.AddOnPlusMode1MaxTimes &&
+                    this.BlindLevel < this.MaxRebuyBlindLevel
+                ) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            case Def.AddOnMode.PLUS_MODE2:
+                if (
+                    this.mainPlayer.seatID > -1 &&
+                    !this.mainPlayer.usedAddon &&
+                    this.mainPlayer.AddonPlusMode2Times < this.addOnModeDate.AddOnPlusMode2MaxTimes &&
+                    this.BlindLevel >= this.MaxRebuyBlindLevel &&
+                    this.BlindLevel < this.addOnModeDate.AddOnPlusMode2EndBl
+                ) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
 
-    //         buttonTrust.transform.GetChild(0).GetComponent<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 245 / 255f);
-    //         buttonTrust.interactable = true;
-    //         buttonTrust.transform.GetChild(2).gameObject.SetActive(true);
-    //     }
-    //     else {
-    //         buttonTrust.transform.GetComponentInChildren<Text>().color = new Color(255 / 255f, 255 / 255f, 255 / 255f, 120 / 255f);
-    //         buttonTrust.interactable = false;
-    //         buttonTrust.transform.GetChild(2).gameObject.SetActive(false);
-    //     }
+            default:
+                return false;
 
-    //     menuHeight -= 185;
+        }
+    }
 
+    public override  UpdateRoomDes() {
+        //StringBuilder mStringBuilder = new StringBuilder();
+        let info: string = "";
+        if (GameCache.Instance.match_id > 0) {
+            //mStringBuilder.AppendLine($"{LanguageManager.Get("UITexasReport_Text_DeskNumTip")}:{GameCache.Instance.room_id}-{mHandNum}");
+            info += `\n${i18nMgr.Get("UITexasReport_Text_DeskNumTip")}:${GameCache.Instance.room_id}-${this.mHandNum}`;
+        }
 
+        info += GameCache.Instance.roomName;
+        info += `\n${this.GetRoomTypeDes()}-${GameCache.Instance.match_id}`;
+        info += `\n${i18nMgr.Get("UITexasReport_Text_MatchCurrBlindTip")}:${StringHelper.GetLongStringUnit(this.curBld)}/${StringHelper.GetLongStringUnit(this.curBld * 2)}(${StringHelper.GetLongStringUnit(this.curAnte)})`;
+        info += `\n${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:${StringHelper.GetLongStringUnit(this.nextBld)}/${StringHelper.GetLongStringUnit(this.nextBld * 2)}(${StringHelper.GetLongStringUnit(this.nextAnte)})`;
 
-    //     buttonRule.gameObject.SetActive(false);
-    //     menuHeight -= 185;
-    //     //线路
-    //     buttonNetline.transform.Find("Text").GetComponent<Text>().text = GlobalData.Instance.NameForServerID(GlobalData.Instance.CurrentUsingServerID());
-    //     buttonshare.gameObject.SetActive(false);
-    //             RectTransform mRectTransform = transSubMenu as RectTransform;
-    //     if (null != mRectTransform)
-    //         mRectTransform.sizeDelta = new Vector2(mRectTransform.sizeDelta.x, menuHeight);
-    // }
+        if (this.upBlindLeftTime < 0) {
+            info += `\n${i18nMgr.Get("MTT_RoomInfo_UpBlindTimeLeft")}${TimeHelper.ShowRemainingSemicolonPure(0)}`;
+        }
+        else {
+            info += `\n${i18nMgr.Get("MTT_RoomInfo_UpBlindTimeLeft")}${TimeHelper.ShowRemainingSemicolonPure(this.upBlindLeftTime)}`
+        }
+        if (this.isGPSRestrictions && this.isIpRestrictions) {
+            // --mStringBuilder.AppendLine("GPS  IP限制");
+            info += `\nGPS、IP ${CPErrorCode.LanguageDescription(20008)}`;
+        }
+        else if (this.isGPSRestrictions && !this.isIpRestrictions) {
+            // --mStringBuilder.AppendLine("GPS限制");
+            info += `\nGPS ${CPErrorCode.LanguageDescription(20008)}`;
+        }
+        else if (!this.isGPSRestrictions && this.isIpRestrictions) {
+            // --mStringBuilder.AppendLine("IP限制");
+            info += `\nIP ${CPErrorCode.LanguageDescription(20008)}`;
+        }
+        this.uirc.textRoomInfo.string = info;
+    }
+    // 托管相关
+    public override SendTrustAction(enable: boolean = false) {
+        ProtocolAgency.Send<ClientMessageAutoOpActive.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AutoOpActive,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                enable: enable,
+            },
+        });
+    }
 
-    // 		/// <summary>
-    // 		/// 更新addon 按钮状态
-    // 		/// </summary>
-    // 		private void ShowAddOnBtn()
-    // {
-    //     buttonAddOn.gameObject.SetActive(addOnMode != Def.Types.AddOnMode.AddonNone && gameStarted);
-    //     buttonAddOn.interactable = IsShowAddOnBtn();
-    // }
-    // 		private bool IsShowAddOnBtn()
-    // {
-    //     if (MainPlayer == null || addOnModeDate == null) {
-    //         return false;
-    //     }
-    //     switch (addOnMode) {
-    //         case Def.Types.AddOnMode.AddonNone:
-    //             return false;
-    //             break;
-    //         case Def.Types.AddOnMode.AddonNormal:
-    //             if (!mainPlayer.AddOn && startAddOnLevel < BlindLevel + 1 && endAddOnLevel > BlindLevel) {
-    //                 Log.Info("AddonNormal is true:" + startAddOnLevel + " " + BlindLevel + " " + endAddOnLevel);
-    //                 return true;
-    //             }
-    //             else {
-    //                 return false;
-    //             }
-    //             break;
-    //         case Def.Types.AddOnMode.PlusMode1:
-    //             if (MainPlayer.seatID > -1 && MainPlayer.canPlayStatus == Def.Types.CanPlayStatus.Normal && !MainPlayer.usedAddon && MainPlayer.cacheChips < addOnModeDate.AddOnPlusMode1Limit && (ulong)MainPlayer.AddonPlusMode1Times < addOnModeDate.AddOnPlusMode1MaxTimes && BlindLevel < MaxRebuyBlindLevel)
-    //             {
-    //                 Log.Info("PlusMode1 is true:" + MainPlayer.cacheChips + " " + addOnModeDate.AddOnPlusMode1Limit + " " + (ulong)MainPlayer.AddonPlusMode1Times + " " + addOnModeDate.AddOnPlusMode1MaxTimes + " " + BlindLevel + " " + MaxRebuyBlindLevel + "  MainPlayer.canPlayStatus :" + MainPlayer.canPlayStatus);
-    //                 return true;
-    //             }
-    //                     else
-    //             {
-    //                 return false;
-    //             }
-
-    //             break;
-    //         case Def.Types.AddOnMode.PlusMode2:
-    //             if (MainPlayer.seatID > -1 && !MainPlayer.usedAddon && (ulong)MainPlayer.AddonPlusMode2Times < addOnModeDate.AddOnPlusMode2MaxTimes && BlindLevel >= MaxRebuyBlindLevel && BlindLevel < addOnModeDate.AddOnPlusMode2EndBl)
-    //             {
-    //                 Log.Info("PlusMode2 is true:" + (ulong)MainPlayer.AddonPlusMode2Times + " " + addOnModeDate.AddOnPlusMode2MaxTimes + " " + BlindLevel + " " + MaxRebuyBlindLevel + " " + addOnModeDate.AddOnPlusMode2EndBl);
-    //                 return true;
-    //             }
-    // 					else
-    //             {
-    //                 return false;
-    //             }
-
-    //             break;
-    //         default:
-    //             return false;
-    //             break;
-    //     }
-    // }
-
-    // 		protected override void UpdateRoomDes()
-    // {
-    // 			StringBuilder mStringBuilder = new StringBuilder();
-    //     if (GameCache.Instance.match_id > 0) {
-    //         mStringBuilder.AppendLine($"{LanguageManager.Get("UITexasReport_Text_DeskNumTip")}:{GameCache.Instance.room_id}-{mHandNum}");
-    //     }
-
-    //     mStringBuilder.AppendLine(GameCache.Instance.roomName);
-    //     mStringBuilder.AppendLine($"{GetRoomTypeDes()}-{GameCache.Instance.match_id}");
-    //     mStringBuilder.AppendLine($"{LanguageManager.Get("UITexasReport_Text_MatchCurrBlindTip")}:{StringHelper.GetLongStringUnit(curBld)}/{StringHelper.GetLongStringUnit((long)curBld * 2)}({StringHelper.GetLongStringUnit((long)curAnte)})");
-    //     mStringBuilder.AppendLine($"{LanguageManager.Get("UITexasReport_Text_MatchNextBlindTip")}:{StringHelper.GetLongStringUnit((long)nextBld)}/{StringHelper.GetLongStringUnit((long)nextBld * 2)}({StringHelper.GetLongStringUnit((long)nextAnte)})");
-
-    //     if (upBlindLeftTime < 0) {
-    //         mStringBuilder.AppendLine(LanguageManager.Get("MTT_RoomInfo_UpBlindTimeLeft") + TimeHelper.ShowRemainingSemicolonPure(0));
-    //     }
-    //     else {
-    //         mStringBuilder.AppendLine(LanguageManager.Get("MTT_RoomInfo_UpBlindTimeLeft") + TimeHelper.ShowRemainingSemicolonPure(upBlindLeftTime));
-    //     }
-    //     if (isGPSRestrictions && isIpRestrictions) {
-    //         // --mStringBuilder.AppendLine("GPS  IP限制");
-    //         mStringBuilder.AppendLine($"GPS、IP {CPErrorCode.LanguageDescription(20008)}");
-    //     }
-    //     else if (isGPSRestrictions && !isIpRestrictions) {
-    //         // --mStringBuilder.AppendLine("GPS限制");
-    //         mStringBuilder.AppendLine($"GPS {CPErrorCode.LanguageDescription(20008)}");
-    //     }
-    //     else if (!isGPSRestrictions && isIpRestrictions) {
-    //         // --mStringBuilder.AppendLine("IP限制");
-    //         mStringBuilder.AppendLine($"IP {CPErrorCode.LanguageDescription(20008)}");
-    //     }
-
-    //     textRoomInfo.text = mStringBuilder.ToString();
-    // }
-
-
-    // 		// 托管相关
-    // 		protected override void SendTrustAction(bool enable)
-    // {
-    //     CPGameSessionComponent.Instance.Send(new Protocol_Holdem_AutoOpActive()
-    // 			{
-    //             RoomID = (ulong)GameCache.Instance.room_id,
-    //             MatchID = (ulong)GameCache.Instance.match_id,
-    //             request = new ClientMessageAutoOpActive()
-    // 				{
-    //             Enable = enable,
-    //             Room = new Room()
-    // 					{
-
-    //             RoomId = (uint)GameCache.Instance.room_id,
-    //             MatchId = (uint)GameCache.Instance.match_id
-    //         },
-    // 				}
-    // 			});
-    // 		}
-
-    // 		protected override CardType GetCardType(out List < sbyte > highlightCards, List < sbyte > publiccards)
-    // {
-    //     List < sbyte > mCards = new List<sbyte>();
-    //     mCards.AddRange(publiccards);
-    //     mCards.AddRange(mainPlayer.cards);
-    //     return CardTypeUtil.GetCardType(mCards, out highlightCards, GameUtil.JudgeIsSixPlusRoomPath((RoomType)GameCache.Instance.room_type));
-    // }
-    // 		protected override List < sbyte > GetHandCardsAtEnterRoom(object obj, int index)
-    // {
-    // 			ServerMessageEnterRoom rec = obj as ServerMessageEnterRoom;
-    //     if (rec.Players[index].Cards == null || rec.Players[index].Cards.count <= 0) {
-    //         return new List<sbyte>() { 0, 0 };
-    //     }
-    // 			sbyte mFirstCard = (sbyte)rec.Players[index].Cards[0];
-    // 			sbyte mSecondCard = (sbyte)rec.Players[index].Cards[1];
-    //     return new List<sbyte>() { mFirstCard, mSecondCard };
-    // }
-
-    // 		protected override List < sbyte > GetHandCardsAtRecvStartInfo(object obj, int index)
-    // {
-    // 			ServerMessageStartInfo rec = obj as ServerMessageStartInfo;
-    //     if (rec.Players[index].Cards == null || rec.Players[index].Cards.count <= 0) {
-    //         return new List<sbyte>() { 0, 0 };
-    //     }
-    // 			sbyte mFirstCard = (sbyte)rec.Players[index].Cards[0];
-    // 			sbyte mSecondCard = (sbyte)rec.Players[index].Cards[1];
-    //     return new List<sbyte>() { mFirstCard, mSecondCard };
-    // }
-
-    // 		public async override void HandleRoundFinish(ServerMessageHandClear source)
-    // {
-    //     base.HandleRoundFinish(source);
-    //     await Game.Scene.ModelScene.GetComponent<TimerComponent>().WaitAsync(4000);
-    //     if (IsDisposed) {
-    //         return;
-    //     }
-    //     JudgeHavePlayer();
-    // }
-
-    // 		/// <summary>
-    // 		/// 判断除了自己此时的房间的人数
-    // 		/// </summary>
-    // 		public void JudgeHavePlayer()
-    // {
-    //     var currentPlayers = GetCurrentPlayers();
-    //     if (currentPlayers.Count == 0) {
-    //         isStartShowPullDown = true;
-    //         imageRedistributionTips.gameObject.SetActive(true);
-    //     }
-    // }
-
-    // 		/// <summary>
-    // 		/// 隐藏拆桌提示
-    // 		/// </summary>
-    // 		public void HidePollDownTips()
-    // {
-    //     isStartShowPullDown = false;
-    //     imageRedistributionTips.gameObject.SetActive(false);
-    // }
-
+    // 隐藏拆桌提示
+    public HidePollDownTips() {
+        this.isStartShowPullDown = false;
+        this.uirc.Image_RedistributionTips.active = false;
+    }
 }

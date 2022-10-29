@@ -142,7 +142,7 @@ export default class UITexasMenuComponent extends UIBase {
 
     onShow(param?: any) {
         super.onShow(param);
-        this.UpdateMenu();
+        this.game.UpdateMenu();
         this.updateBean();
         if (null != this.transSubMenu)
             cc.tween(this.transSubMenu).to(0.25, { x: -621 }).start();
@@ -202,88 +202,6 @@ export default class UITexasMenuComponent extends UIBase {
         }
     }
 
-    public UpdateMenu(): void {
-        UIMineModel.mInstance.ObtainUserInfo(pDto => {
-            // this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
-            // this.setText(this.textTotalBean, GC.data.user.info.displayGold);
-        });
-
-        let UserSitdown = this.game.UserSitdown();
-
-        //let menuHeight = UserSitdown == true ? 1615 : 1800;
-
-        this.MenuButtons_Dic.Button_Setting.node.active = true;
-        this.MenuButtons_Dic.Button_Rule.node.active = true;
-        this.MenuButtons_Dic.Button_Exit.node.active = true;
-
-        if (UserSitdown) //已坐下
-        {
-
-            this.MenuButtons_Dic.Button_Standup.node.active = true;
-            this.MenuButtons_Dic.Button_AddChips.node.active = true;
-
-            if (this.game.mainPlayer.chips >= GameCache.Instance.carry_small * (this.game.currentMaxRate + 1)) {
-                //已带入最大值,不可点击
-                //this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = false;
-                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_AddChips.node, false);
-            }
-            else {
-                //this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = true;
-                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_AddChips.node, true);
-            }
-
-
-            if (this.game.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL && this.game.gamestatus >= 1 && this.game.gamestatus < 7) {
-                this.MenuButtons_Dic.Button_TakeOut.node.active = true;
-                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_TakeOut.node, true);
-            }
-            else if (this.game.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL && this.game.gamestatus != 1 && this.game.gamestatus < 7) {
-                this.MenuButtons_Dic.Button_TakeOut.node.active = true;
-                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_TakeOut.node, false);
-            }
-            else {
-                this.MenuButtons_Dic.Button_TakeOut.node.active = false;
-                this.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable = false;
-            }
-
-            this.MenuButtons_Dic.Button_LeaveDesk.node.active = true;
-
-            if (this.game.gamestatus != 1)//游戏没开始的时候，座离桌按钮显示不可点击状态   !HasStarted()
-            {
-                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_LeaveDesk.node, false);
-            }
-            else {
-                this.__MenuButtonInteractable(this.MenuButtons_Dic.Button_LeaveDesk.node, true);
-            }
-            if (this.game.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                this.MenuButtons_Dic.Button_SetAutoOnTable.node.active = true;
-            }
-
-        }
-        else //未坐下
-        {
-            this.MenuButtons_Dic.Button_Standup.node.active = false;
-            this.MenuButtons_Dic.Button_AddChips.node.active = false;
-            this.MenuButtons_Dic.Button_Trust.node.active = false;
-            this.MenuButtons_Dic.Button_TakeOut.node.active = false;
-            this.MenuButtons_Dic.Button_LeaveDesk.node.active = false;
-            this.MenuButtons_Dic.Button_SetAutoOnTable.node.active = false;
-        }
-
-        // //线路
-        // buttonNetline.transform.Find("Text").GetComponent<Text>().text = GlobalData.Instance.NameForServerID(GlobalData.Instance.CurrentUsingServerID());
-
-        // 	RectTransform mRectTransform = transSubMenu as RectTransform;
-        // if (null != mRectTransform)
-        //     mRectTransform.sizeDelta = new Vector2(mRectTransform.sizeDelta.x, menuHeight);
-    }
-
-    __MenuButtonInteractable(node: cc.Node, interactable: boolean) {
-        node.getChildByName("Text").color = cc.Color.WHITE;
-        node.getChildByName("Text").opacity = interactable ? 178 : 70;
-        node.getChildByName("Arrow").active = interactable;
-        node.getComponent(cc.Button).interactable = interactable;
-    }
 
     onMenuButtonTouchStart(e: cc.Event.EventTouch) {
         let target: cc.Node = e.currentTarget;
@@ -368,15 +286,28 @@ export default class UITexasMenuComponent extends UIBase {
     }
 
     Click_Button_Trust() {
+        if (!this.getButtonInteractable(this.MenuButtons_Dic.Button_Trust.node)) {
+            return;
+        }
+        this.game.uirc.HideMenu();
 
+        if (null == this.game.mainPlayer) {
+            UIComponent.Instance.Toast(i18nMgr.Get("Good_luck"));
+            //Game.EventSystem.Run(EventIdType.GameErrorReconnect);
+            return;
+        }
+
+        if (this.game.mainPlayer.IsAutoOp)
+            return;
+
+        this.game.SendTrustAction(true);
     }
     //留座离桌
     Click_Button_LeaveDesk() {
-
         this.game.uirc.HideMenu();
         this.game.SendReserveSeatAction(true);
     }
     Click_Button_Exit() {
-        this.game.uirc.CallbackExit();
+        this.game.onClickExit();
     }
 }

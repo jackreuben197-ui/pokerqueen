@@ -1,4 +1,5 @@
 import SimpleNodePool from "../../common/MyNodePool";
+import { GameConfig } from "../../config/GameConfig";
 import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { DOTween, Sequence } from "../../dotween/DOTween";
@@ -8,6 +9,7 @@ import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import { UIMineModel } from "../../lobby/UIMineModel";
 import Main from "../../Main";
 import { APIOrgFriendBringIn, Web_User_Room } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
@@ -16,19 +18,23 @@ import { Def, Operator, RoomInfo } from "../../protobuf/holdem/define_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
 import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
 import { ClientMessageAction } from "../../protobuf/holdem/req_action_pb";
+import { ClientMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
 import { ClientMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
 import { ClientMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 import { ClientMessageSetAutoOnTable } from "../../protobuf/holdem/req_set_auto_on_table_pb";
+import { ClientMessageShowPublicCards } from "../../protobuf/holdem/req_show_public_cards_pb";
 import { ClientMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
 import { ClientMessageStoreChips } from "../../protobuf/holdem/req_store_chips_pb";
+import GlobalSession from "../../session/GlobalSession";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
+import { HistoryInfoData } from "../UITexasHistoryComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
@@ -374,12 +380,12 @@ export default class TexasGame {
     /// </summary>
     public isPlayingBigWinAnimation: boolean = false;
     //////////////////////////////////////
-
+    lastClickTime: number = 0;
 
     //分池节点对象池
     TransPot_Pool: SimpleNodePool = null;
 
-
+    IsMTT: boolean = false;
 
     //发牌动画
     sequencePlayDealAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
@@ -402,11 +408,16 @@ export default class TexasGame {
 
     constructor() {
         this.messageHandler = new TexasGameMessageHandler(this);
-        this.texasGameProtocol = new TexasGameProtocol(this);
         this.GameLogicSMComponent = new FSMLogicComponent();
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
+        this.RCInit();
     }
+
+    protected RCInit() {
+        this.texasGameProtocol = new TexasGameProtocol(this);
+    }
+
     Enter() {
         UpdateComponent.Add(this.GameLogicSMComponent, this);
         this.listSeat = [];
@@ -526,7 +537,6 @@ export default class TexasGame {
         if (this.listSeat?.length) {
 
         } else {
-
             this.KillAllTweener(true);// 清掉所有动画，避免极端条件下，动画结束的操作覆盖重置后的方法
             this.HideCancelTrustBtn();
             this.HideSeeMorePublic();
@@ -537,7 +547,6 @@ export default class TexasGame {
             this.InitSeatByCount(GameCache.Instance.seat_count);
             this.InitOperationPos();
             this.HideAllPots();
-            this.HideBringIn();
         }
 
         this.mainPlayer = new CPlayer(GameCache.Instance.nUserId);
@@ -967,7 +976,7 @@ export default class TexasGame {
     /**
      * 刷新牌桌房间信息显示
      */
-    UpdateRoomDes() {
+    public UpdateRoomDes() {
 
         let info: string = ``;
         info += `\n${GameCache.Instance.roomName}`;
@@ -2702,8 +2711,8 @@ export default class TexasGame {
     }
 
     // 牌桌玩家信息
-    public CheckPlayerInfo(userId: number, play: CPlayer = null): void {
-        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, play], { parentUI: Main.Marquee });
+    public CheckPlayerInfo(userId: number, player: CPlayer = null): void {
+        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, player], { parentUI: Main.Marquee });
     }
 
     public HideSeeMorePublic(): void {
@@ -2813,7 +2822,7 @@ export default class TexasGame {
 
         // sequencePlayEndPublicCardsAnimation = null;
     }
-    ClearAllData() {
+    protected ClearAllData() {
         cc.log("清理所有数据");
         this.gamestatus = -1;
         GameCache.Instance.GameStatus = this.gamestatus;
@@ -2990,7 +2999,6 @@ export default class TexasGame {
     //获取本手结算手牌
     public GetHandCardsAtRecvWinner(rec: ServerMessageWinner.AsObject, index: number): number[] {
         let result = rec.resultsList[index];
-
         let cards = [];
         for (let i = 0; i < this.HandCards; i++) {
             cards.push(result.myCardsList?.[i] ?? 0);
@@ -3013,10 +3021,11 @@ export default class TexasGame {
             let seatUI = this.createSeatUI();
             seatUI.getComponent(cc.Widget).enabled = false;
             seatUI.active = true;
-            seatUI.parent = this.uirc.Seats;;
+            seatUI.parent = this.uirc.Seats;
             seatUI.name = `Seat${i}`;
             if (i == 0 && cc.view.getVisibleSize().height < 2688) {
                 mInfos[i].Pos = cc.v3(this.uirc.Seat_Temp.x, 454 - cc.view.getVisibleSize().height / 2, 0);
+                console.log("适配最下方座位");
             }
             seatUI.setPosition(mInfos[i].Pos);
             seatUI.scale = 1;
@@ -3026,13 +3035,183 @@ export default class TexasGame {
             this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
         }
     }
-    //申请带入按钮显示和隐藏
-    public ShowBringIn() {
-        this.uirc.Button_BringIn.active = true;
-    }
-    public HideBringIn() {
-        this.uirc.Button_BringIn.active = false;
-    }
-    //子类覆盖
+    /////////////////////////////////////////////////
+
+    //点击AddOn按钮响应,子类覆盖
     public onClickAddOn() { }
+    //点击退出按钮响应
+    public onClickExit() {
+        this.uirc.HideMenu(false);
+
+        if (this.mainPlayer.isPlaying) {
+
+            UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.CommitCancel,
+                    title: "",
+                    //"退出游戏，在这手牌结束后将自动站起",
+                    content: CPErrorCode.LanguageDescription(20003),
+                    contentCommit: CPErrorCode.LanguageDescription(10012),
+                    contentCancel: CPErrorCode.LanguageDescription(10013),
+                    actionCommit: () => {
+                        this.CallbackExit();
+                    },
+                    noAnimation: true,
+                });
+        } else {
+            this.CallbackExit();
+        }
+    }
+    /**
+     * 响应退出二次确认
+     */
+    public CallbackExit() {
+        GameCache.Instance.match_id = 0;
+        this.TexasGameUtils.LeaveRoom();
+    }
+    public onClickDelay() {
+        if (this.CanClick() == false)
+            return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+        if (this.delayCount >= 2)
+            return;
+
+        if (!this.uirc.UIOperation_Com.node.activeInHierarchy) {
+            UIComponent.Instance.Toast(i18nMgr.Get("ServerErrorCode_31045"));
+            return;
+        }
+        ProtocolAgency.Send<ClientMessageAddTime.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AddTime,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                consume: this.TexasGameUtils.GetOpDelayConsumeType(),
+            },
+        });
+    }
+    public onClickSeeMorePublic() {
+        if (this.CanClick() == false)
+            return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+
+        if (this.uirc.getButtonInteractable(this.uirc.buttonSeeMorePublic) == false) {
+            return;
+        }
+        this.uirc.setButtonInteractable(this.uirc.buttonSeeMorePublic, false);
+
+        ProtocolAgency.Send<ClientMessageShowPublicCards.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_ShowPublicCards,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                round: this.cacheRound,
+                consume: Def.ConsumeType.CT_VC_2,
+            },
+        });
+    }
+    public onClickReport() {
+        if (this.CanClick() == false) return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+        UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.uirc.node });
+    }
+    public onClickCurSituation() {
+        if (this.CanClick() == false) return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+        let historyInfoData = new HistoryInfoData()
+        historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
+        historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
+        historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
+        historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
+        historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
+        UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.uirc.node })
+    }
+
+    public UpdateMenu() {
+
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+            // this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
+            // this.setText(this.textTotalBean, GC.data.user.info.displayGold);
+        });
+
+        let UserSitdown = this.UserSitdown();
+        let menu = this.uirc.UITexasMenu_Com;
+
+        menu.MenuButtons_Dic.Button_Setting.node.active = true;
+        menu.MenuButtons_Dic.Button_Rule.node.active = true;
+        menu.MenuButtons_Dic.Button_Exit.node.active = true;
+
+        if (UserSitdown) //已坐下
+        {
+
+            menu.MenuButtons_Dic.Button_Standup.node.active = true;
+            menu.MenuButtons_Dic.Button_AddChips.node.active = true;
+
+            if (this.mainPlayer.chips >= GameCache.Instance.carry_small * (this.currentMaxRate + 1)) {
+                //已带入最大值,不可点击
+                //this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = false;
+                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_AddChips.node, false);
+            }
+            else {
+                //this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = true;
+                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_AddChips.node, true);
+            }
+
+
+            if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL && this.gamestatus >= 1 && this.gamestatus < 7) {
+                menu.MenuButtons_Dic.Button_TakeOut.node.active = true;
+                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_TakeOut.node, true);
+            }
+            else if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL && this.gamestatus != 1 && this.gamestatus < 7) {
+                menu.MenuButtons_Dic.Button_TakeOut.node.active = true;
+                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_TakeOut.node, false);
+            }
+            else {
+                menu.MenuButtons_Dic.Button_TakeOut.node.active = false;
+                menu.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable = false;
+            }
+
+            menu.MenuButtons_Dic.Button_LeaveDesk.node.active = true;
+
+            if (this.gamestatus != 1)//游戏没开始的时候，座离桌按钮显示不可点击状态   !HasStarted()
+            {
+                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, false);
+            }
+            else {
+                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, true);
+            }
+            if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+                menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = true;
+            }
+
+        }
+        else //未坐下
+        {
+            menu.MenuButtons_Dic.Button_Standup.node.active = false;
+            menu.MenuButtons_Dic.Button_AddChips.node.active = false;
+            menu.MenuButtons_Dic.Button_Trust.node.active = false;
+            menu.MenuButtons_Dic.Button_TakeOut.node.active = false;
+            menu.MenuButtons_Dic.Button_LeaveDesk.node.active = false;
+            menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = false;
+        }
+    }
+    protected __MenuButtonInteractable(node: cc.Node, interactable: boolean) {
+        node.getChildByName("Text").color = cc.Color.WHITE;
+        node.getChildByName("Text").opacity = interactable ? 178 : 70;
+        node.getChildByName("Arrow").active = interactable;
+        node.getComponent(cc.Button).interactable = interactable;
+    }
+
+    //托管相关
+    public SendTrustAction(enable: boolean = false) {
+
+    }
+
+    CanClick(): boolean {
+        if (GlobalSession.NowTimeMS - this.lastClickTime > 500) {
+            return true;
+        }
+        return false;
+    }
 }

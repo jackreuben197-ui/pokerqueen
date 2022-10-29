@@ -10,6 +10,7 @@ import { ClientMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { CardType } from "./CardTypeUtil";
+import { CPlayer } from "./CPlayer";
 import { GameCache } from "./GameCache";
 import Seat from "./seat/Seat";
 import { SeatStandupAnimation } from "./SeatStateHandler";
@@ -245,5 +246,21 @@ export default class TexasGameUtils {
         GameCache.Instance.poker_type = 0;
         GameCache.Instance.bet_type = 0;
         //#endregion
+    }
+
+
+    //得到 当前 在场玩家     不包括自己
+    public GetCurrentPlayers(): CPlayer[] {
+        var tCurPlayers = [];
+        let count = this.game.listSeat?.length || 0;
+        if (count) {
+            for (let i = 0; i < count; i++) {
+                let seat = this.game.listSeat[i];
+                if (seat.Player?.id > 0 && seat.Player.id != GameCache.Instance.nUserId) {
+                    tCurPlayers.push(seat.Player);
+                }
+            }
+        }
+        return tCurPlayers;
     }
 }
