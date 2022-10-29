@@ -205,6 +205,7 @@ UILogin_RetrievePWD=找回密码
 UILogin_China=中国
 UILogin_USA=美国
 UILogin_Canada=加拿大
+UILogin_Canada=加拿大
 UILogin_Singapore=新加坡
 UILogin_Britain=英国
 UILogin_France=菲律宾

@@ -9,6 +9,8 @@
 export const enum EventName {
     serverResponse = "serverResponse",
 
+    switchLanguages = "switchLanguages",
+
     matchModelChange = "matchModelChange",
     myGoldChange = "myGoldChange", // 更新个人金币
     curSelectRateChange = "curSelectRateChange", //点前选择的汇率变化

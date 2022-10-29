@@ -13,6 +13,7 @@
 import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
+    static debug: boolean = true;
 
     static Web_Host_Test1 = "test1.awanptesting.com";
     static Web_Host_Dev1 = "dev1.awanptesting.com";
@@ -74,9 +75,9 @@ export var NetWorkBase = {
  * 语言列表
  */
 export var LanguageList: { lan: string, name: string }[] = [
-    { lan: "en", name: "Englist" },
-    { lan: "pt", name: "Português" },
-    { lan: "cn", name: "Chinese" },
+    { lan: "en", name: "UILogin_USA"},
+    { lan: "pt", name: "sl_ptyyPutao" },
+    { lan: "cn", name: "UILogin_China" },
 ];
 /**
  * Log样式

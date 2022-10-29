@@ -3,6 +3,7 @@ import { Md5 } from "ts-md5";
 import ButtonClickCD from "../../common/ButtonClickCD";
 import ComTabToggles, { ETabToggle } from "../../common/ComTabToggles";
 import { ELoginProcess, ELoginType } from "../../config/EEnumConfig";
+import { EventName } from "../../config/EventName";
 import { LanguageList } from "../../config/GameConfig";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
@@ -10,6 +11,7 @@ import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
@@ -62,7 +64,7 @@ export default class LoginScene extends BaseScene {
     private backLoginBtn: cc.Node = null;
 
 
-    private faceBook: cc.Node = null;
+    private facebook: cc.Node = null;
     private google: cc.Node = null;
     private instagram: cc.Node = null;
 
@@ -112,7 +114,7 @@ export default class LoginScene extends BaseScene {
         this.changeLoginBtn = this.getChildNodeOrComponent("changeLoginBtn")
         this.registerBtn = this.getChildNodeOrComponent("registerBtn")
         this.backLoginBtn = this.getChildNodeOrComponent("backLoginBtn")
-        this.faceBook = this.getChildNodeOrComponent("faceBook")
+        this.facebook = this.getChildNodeOrComponent("facebook")
         this.google = this.getChildNodeOrComponent("google")
         this.instagram = this.getChildNodeOrComponent("instagram")
         this.btnAgreeNode = this.getChildNodeOrComponent("btnAgreeNode")
@@ -128,6 +130,7 @@ export default class LoginScene extends BaseScene {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(GGEvent.Change_AreaCode, this.onChangeAreaCode);
+        this.listen(EventName.switchLanguages, this.switchLanguages)
     }
 
     protected regiterTouchEvents() {
@@ -141,6 +144,9 @@ export default class LoginScene extends BaseScene {
         this.bindClick(this.agreeTip2, this.clickUserAgreeRule);
         this.bindClick(this.changeLoginBtn, this.clickChangeLoginBtn);
         this.bindClick(this.backLoginBtn, this.clickBackLoginBtn);
+        this.bindClick(this.facebook, this.clickFaceBook, null, true);
+        this.bindClick(this.google, this.clickGoogle, null, true);
+        this.bindClick(this.instagram, this.clickInstagram, null, true);
     }
 
     protected lateEnter() {
@@ -170,10 +176,14 @@ export default class LoginScene extends BaseScene {
             let line = item.getChildByName("line");
 
             flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${value.lan}`, AssetFold.texture_flag);
-            this.setText(lab, value.lan);
+            lab.node.getComponent(i18nLabel).i18NString = value.name;
             this.setActive(line, index < list.length - 1);
         })
         this.setLanLayerActive(false);
+    }
+
+    switchLanguages() {
+        this.updatePhonePlaceholder();
     }
 
     initToggles() {
@@ -218,7 +228,13 @@ export default class LoginScene extends BaseScene {
     setPhoneNodeStatus() {
         this.setActive(this.areaNode, this._loginType == ELoginType.phone);
         this.setActive(this.mailNode, this._loginType == ELoginType.mail);
-        this.phoneEdit.placeholder = this._loginType == ELoginType.phone ? "UILogin_InputMoblie" : "UILogin_InputMail";
+
+        this.updatePhonePlaceholder();
+    }
+
+    updatePhonePlaceholder() {
+        let key = this._loginType == ELoginType.phone ? "UILogin_InputMoblie" : "UILogin_InputMail";
+        this.phoneEdit.placeholder = GC.language.getLocal(key);
     }
 
     updateAgreeNodeStatus() {
@@ -228,10 +244,14 @@ export default class LoginScene extends BaseScene {
                 this.agreeNode.parent = this.downAgreeNode;
                 this.agreeNode.anchorX = 0.5;
                 this.agreeNode.setPosition(cc.v2(0, 0))
+                this.agreeTip1.fontSize = 12 * 3.31;
+                this.agreeTip2.fontSize = 12 * 3.31;
             } else if (this._loginProcess == ELoginProcess.register) {
                 this.agreeNode.parent = this.btnAgreeNode;
                 this.agreeNode.anchorX = 0;
-                this.agreeNode.setPosition(cc.v2(0, 0))
+                this.agreeNode.setPosition(cc.v2(0, 0));
+                this.agreeTip1.fontSize = 10 * 3.31;
+                this.agreeTip2.fontSize = 10 * 3.31;
             }
         }
     }
@@ -472,12 +492,11 @@ export default class LoginScene extends BaseScene {
     async checkResetPwd(area, account, password, vcode) {
         if (this._loginType == ELoginType.phone) {
             //找回手机密码
-            password = Md5.hashStr(password);
             let result = await LoginSession.APISendModifyPW({
                 phone: account,
                 area: area,
                 code: vcode,
-                password: password
+                password: Md5.hashStr(password)
             }).catch(() => { })
             if (result) {
                 this.resetVCodeTime();
@@ -576,10 +595,9 @@ export default class LoginScene extends BaseScene {
     protected async checkRegister(area, account, password, vcode) {
         if (this._loginType == ELoginType.phone) {
             //手机号注册
-            password = Md5.hashStr(password);
             let result = await LoginSession.APISendRegister({
                 phone: account,
-                password: password,
+                password: Md5.hashStr(password),
                 area: area,
                 code: vcode,
                 platform: 5,
@@ -597,13 +615,24 @@ export default class LoginScene extends BaseScene {
 
     //尝试进入游戏
     tryEnterGame(area, account, password) {
-        password = Md5.hashStr(password);
         ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
             phone: account,
-            password: password,
+            password: Md5.hashStr(password),
             area: area,
             is_simulator: false
         });
     }
 
+
+
+    /*** 第三方登录 ***/
+    clickGoogle() {
+        GC.sdk.googleLogin()
+    }
+    clickFaceBook() {
+        GC.sdk.faceBookLogin();
+    }
+    clickInstagram() {
+        GC.sdk.instagramLogin();
+    }
 }

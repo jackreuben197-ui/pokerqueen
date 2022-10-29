@@ -1,3 +1,5 @@
+import { EventName } from "../config/EventName";
+import { i18nLabel } from "../i18n/i18nLabel";
 import UIBase from "../ui/UIBase";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -22,9 +24,14 @@ export default class ComTabToggles extends UIBase {
     private _tabIndex: number = -1;
     private _type: ETabToggle = ETabToggle.sprite;
     private _params: Array<any> = null;
+    private _titles: Array<string> = [];
     onLoad() {
         super.onLoad();
         this.initView();
+    }
+
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
     }
 
     initView() {
@@ -33,6 +40,7 @@ export default class ComTabToggles extends UIBase {
             this.bindClick(node, this._onTabClick, index);
         })
     }
+
     initData(toggles: any, type: ETabToggle = ETabToggle.sprite, data?: TTabToggleData) {
         this.type = type;
         this.data = data;
@@ -69,20 +77,29 @@ export default class ComTabToggles extends UIBase {
 
     setTitles(titles: Array<string>) {
         if (titles) {
+            this._titles = titles;
             this.tabToggles.forEach((node, index) => {
                 this.setActive(node, index < titles.length);
                 if (node.active) {
                     if (this._type == ETabToggle.text) {
-                        let text = node.getChildByName("text").getComponent(cc.Label);
-                        text && this.setText(text, titles[index]);
+                        this.setTesti18(node.getChildByName("text"), titles[index])
                     } else {
-                        let textNormal = node.getChildByName('normal').getChildByName("text").getComponent(cc.Label);
-                        let textSelected = node.getChildByName('selected').getChildByName("text").getComponent(cc.Label);
-                        textNormal && this.setText(textNormal, titles[index]);
-                        textSelected && this.setText(textNormal, titles[index]);
+                        this.setTesti18(node.getChildByName('normal').getChildByName("text"), titles[index])
+                        this.setTesti18(node.getChildByName('selected').getChildByName("text"), titles[index])
                     }
                 }
             })
+        }
+    }
+
+    setTesti18(testNode: cc.Node, key) {
+        if (testNode) {
+            let i18 = testNode.getComponent(i18nLabel);
+            if (i18) {
+                i18.i18NString = key;
+            } else {
+                this.setText(testNode.getComponent(cc.Label), key)
+            }
         }
     }
 
