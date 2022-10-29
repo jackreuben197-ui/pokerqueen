@@ -2660,7 +2660,7 @@ export class APIOrgClubMember {
     };
 }
 export class APIOrgClubActivityCreate {
-    public static API: string = "/api/cmsext/activity/club/create";
+    public static API: string = "/api/cmsext/activity/club/update";
     //字段声明
     public static RequestParams: {
         club_id: number,  //
