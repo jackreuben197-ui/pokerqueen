@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 17:50:19
+ * @LastEditTime: 2022-10-29 17:56:34
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -99,10 +99,7 @@ export default class UIJoinUnion extends BaseForm {
     }
     async sure() {
         let data: any = APIOrgTribeSearchByID.Response.data
-        let _data: any = await UIClubModel.mInstance.APIOrgJoinTrip(data.random_id, this.contentEdit.string)
-        if (_data.code = 90004) {
-            UIComponent.Instance.Toast('club already join tribe apply')
-        }
+        UIClubModel.mInstance.APIOrgJoinTrip(data.random_id, this.contentEdit.string)
         this.UIDialogComponent.active = false
     }
     // update (dt) {}
