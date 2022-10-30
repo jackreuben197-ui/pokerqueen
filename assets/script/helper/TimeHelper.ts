@@ -104,10 +104,10 @@ export default class TimeHelper {
      */
     public static TimeToString(time: number, format: string) {
         let date = new Date(time);
-        let MM = this._zeroNum(date.getMonth() + 1);
-        let dd = this._zeroNum(date.getDate());
-        let HH = this._zeroNum(date.getHours());
-        let mm = this._zeroNum(date.getMinutes());
+        let MM = this.ZeroNum(date.getMonth() + 1);
+        let dd = this.ZeroNum(date.getDate());
+        let HH = this.ZeroNum(date.getHours());
+        let mm = this.ZeroNum(date.getMinutes());
         let result = format;
         result = result.replace("MM", MM);
         result = result.replace("dd", dd);
@@ -116,17 +116,9 @@ export default class TimeHelper {
         return result;
     }
 
-    public static _zeroNum(num: number): string {
+    public static ZeroNum(num: number): string {
         return `${num < 10 ? 0 : ""}${num}`;
     }
-
-
-
-
-
-
-
-
 
     static getYMD(t: number, flag: string = null, isMil: boolean = false) {
         let data = this.getDateStructYMD(t, isMil);

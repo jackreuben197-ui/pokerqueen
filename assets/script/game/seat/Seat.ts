@@ -1714,6 +1714,10 @@ export default class Seat {
         }
         this.ResetShowCardsId();
     }
+    // 刷新托管
+    public UpdateTrust() {
+        this.uirc.Image_Trust.active = this.Player.IsAutoOp;
+    }
 }
 export interface SeatUIInfo {
     Pos: cc.Vec3;

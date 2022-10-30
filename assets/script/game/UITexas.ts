@@ -18,6 +18,7 @@ import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 import UIAutoChipsComponent from "./ui/UIAutoChipsComponent";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIInsuranceComponent from "./ui/UIInsuranceComponent";
+import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsComponent from "./ui/UIOutChipsComponent";
 import UITexasMenuComponent from "./ui/UITexasMenuComponent";
@@ -130,7 +131,8 @@ export default class UITexas extends BaseScene {
     textSeeMorePublic: cc.Label = null;
     textSeeMorePublicGold: cc.Label = null;
 
-    buttonCancelTrust: cc.Node = null;
+    Button_CancelTrust: cc.Node = null;
+    Text_CancelTrust: cc.Label = null;
 
     //MTT
     //public buttonRebuy: cc.Node = null;
@@ -164,6 +166,9 @@ export default class UITexas extends BaseScene {
     //4.保险面板
     UIInsurance_Con: cc.Node = null;
     UIInsurance_Com: UIInsuranceComponent = null;
+    //5.MTT比赛倒计时
+    UIMTTTime_Con: cc.Node = null;
+    UIMTTTime_Com: UIMTTTimeComponent = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -252,8 +257,9 @@ export default class UITexas extends BaseScene {
         this.textSeeMorePublic = this.getChildNodeOrComponent("Text_SeeMorePublic", cc.Label);
         this.textSeeMorePublicGold = this.getChildNodeOrComponent("Text_SeeMorePublicGold", cc.Label);
 
-        this.buttonCancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
-
+        //托管
+        this.Button_CancelTrust = this.getChildNodeOrComponent("Button_CancelTrust");
+        this.Text_CancelTrust = this.getChildNodeOrComponent("Text_CancelTrust", cc.Label);
         //MTT
         this.Button_AddOn = this.getChildNodeOrComponent("Button_AddOn");
         this.Image_RedistributionTips = this.getChildNodeOrComponent("Image_RedistributionTips");
@@ -310,8 +316,9 @@ export default class UITexas extends BaseScene {
         //4.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
         this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
-
-        
+        //5.MTT比赛倒计时
+        this.UIMTTTime_Con = this.getChildNodeOrComponent("UIMTTTime_Con");
+        this.UIMTTTime_Com = this.AddComponents(PrefabUI.UIMTTTimeComponent, this.UIMTTTime_Con);
     }
 
     //从预制体添加到容器

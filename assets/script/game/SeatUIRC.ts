@@ -89,14 +89,17 @@ export default class SeatUIRC extends UIBase {
     textCancelReserveSeat: cc.Label = null;
 
 
-    imageReserveSeat: cc.Node = null;
-
-    m_ReserveTime: cc.Label = null;
-
     imageOffline: cc.Node = null;
 
     imageBubble: cc.Sprite = null;
     textBubble: cc.Label = null;
+
+    //返回座位
+    imageReserveSeat: cc.Node = null;
+    //返回座位时间
+    m_ReserveTime: cc.Label = null;
+    //托管
+    Image_Trust: cc.Node = null;
 
     //猎人头奖励
     Image_CoinShadow: cc.Node = null;
@@ -170,6 +173,9 @@ export default class SeatUIRC extends UIBase {
         this.imageReserveSeat = this.getChildNodeOrComponent("Image_ReserveSeat");
         this.m_ReserveTime = this.getChildNodeOrComponent("time", cc.Label);
 
+        this.Image_Trust = this.getChildNodeOrComponent("Image_Trust");
+
+
         this.imageOffline = this.getChildNodeOrComponent("imageOffline");
 
 
@@ -181,7 +187,7 @@ export default class SeatUIRC extends UIBase {
 
         this.Operation_Pos_Mark = this.getChildNodeOrComponent("Operation_Pos_Mark");
 
-        
+
         //声纹
         this.voiceprintList = [];
         // this.voiceprintList.Add(VoiceprintStart);

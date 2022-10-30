@@ -1588,8 +1588,8 @@ export default class TexasGame {
     /// 隐藏返回游戏按钮
     /// </summary>
     public HideCancelTrustBtn(): void {
-        if (this.uirc.buttonCancelTrust.activeInHierarchy) {
-            this.uirc.buttonCancelTrust.active = false;
+        if (this.uirc.Button_CancelTrust.activeInHierarchy) {
+            this.uirc.Button_CancelTrust.active = false;
         }
     }
     /// <summary>

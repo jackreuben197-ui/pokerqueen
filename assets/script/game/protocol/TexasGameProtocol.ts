@@ -261,7 +261,7 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="responseData"></param>
     /// <param name="obj"></param>
-    public handleRecvStartInfoCommon(responseData: ServerMessageStartInfo.AsObject, obj): void {
+    public handleRecvStartInfoCommon(rec: ServerMessageStartInfo.AsObject, obj): void {
         this.game.gamestatus = 1;
         GameCache.Instance.GameStatus = this.game.gamestatus;
         this.game.cacheRound = Def.Round.PREFLOP;
@@ -269,47 +269,47 @@ export default class TexasGameProtocol {
         this.game.fuck4thPCardByInsuranceState = 0;
         this.game.isAllinGetPlayerCards = false;
         this.game.lastBankerIndex = this.game.bankerIndex;
-        this.game.bankerIndex = this.game.GetLocalSeatID(responseData.handInfo.buSeatId);
-        this.game.bigIndex = this.game.GetLocalSeatID(responseData.handInfo.bbSeatId);
-        this.game.smallIndex = this.game.GetLocalSeatID(responseData.handInfo.sbSeatId);
-        if (responseData.nextOperator != null) {
-            this.game.operationID = this.game.GetLocalSeatID(responseData.nextOperator.seatId);
+        this.game.bankerIndex = this.game.GetLocalSeatID(rec.handInfo.buSeatId);
+        this.game.bigIndex = this.game.GetLocalSeatID(rec.handInfo.bbSeatId);
+        this.game.smallIndex = this.game.GetLocalSeatID(rec.handInfo.sbSeatId);
+        if (rec.nextOperator != null) {
+            this.game.operationID = this.game.GetLocalSeatID(rec.nextOperator.seatId);
         }
-        this.game.mHandNum = responseData.handInfo.handNum;
+        this.game.mHandNum = rec.handInfo.handNum;
         this.game.UpdateRoomDes();
         this.game.ResetPublicCardsId();
         this.game.ClearPublicCardsUI();
         this.game.HideWaitBlindBtn();
         let Seat: Seat = null;
         let SeverSeatIds: number[] = [];
-        for (let i = 0, n = responseData.playersList.length; i < n; i++) {
-            Seat = this.game.listSeat[this.game.GetLocalSeatID(responseData.playersList[i].seatId)];
+        for (let i = 0, n = rec.playersList.length; i < n; i++) {
+            Seat = this.game.listSeat[this.game.GetLocalSeatID(rec.playersList[i].seatId)];
             if (null == Seat || null == Seat.Player) {
                 continue;
             }
-            SeverSeatIds.push(this.game.GetLocalSeatID(responseData.playersList[i].seatId));
+            SeverSeatIds.push(this.game.GetLocalSeatID(rec.playersList[i].seatId));
             Seat.isBank = Seat.seatID == this.game.bankerIndex;
             Seat.isBig = Seat.seatID == this.game.bigIndex;
             Seat.isSmall = Seat.seatID == this.game.smallIndex;
-            Seat.isStraddle = responseData.playersList[i].action == Def.Action.STRADDLE;
-            Seat.Player.SetCards(this.game.GetHandCardsAtRecvStartInfo(responseData, i));
-            Seat.Player.chips = responseData.playersList[i].chip;
-            Seat.Player.cacheChips = responseData.playersList[i].chip + responseData.playersList[i].roundBet + responseData.playersList[i].ante;
+            Seat.isStraddle = rec.playersList[i].action == Def.Action.STRADDLE;
+            Seat.Player.SetCards(this.game.GetHandCardsAtRecvStartInfo(rec, i));
+            Seat.Player.chips = rec.playersList[i].chip;
+            Seat.Player.cacheChips = rec.playersList[i].chip + rec.playersList[i].roundBet + rec.playersList[i].ante;
             Seat.Player.canPlayStatus = Def.CanPlayStatus.NORMAL;//数组里面有人即可打牌
             Seat.Player.extraBlind = 0;//是否补盲，已在列表的玩家不需要补盲
-            Seat.Player.isFold = responseData.playersList[i].action == Def.Action.FOLD;
+            Seat.Player.isFold = rec.playersList[i].action == Def.Action.FOLD;
             Seat.FoldHeadGray(Seat.Player.isFold);
-            Seat.Player.actionStatus = responseData.playersList[i].action;
+            Seat.Player.actionStatus = rec.playersList[i].action;
             Seat.Player.anteNumber = 0;
             Seat.UpdateWaiteNextTips(false);
             Seat.FsmLogicComponent.SM.ChangeState(SeatStart.Instance);
-            Seat.Player.anteNumber += responseData.playersList[i].roundBet;
+            Seat.Player.anteNumber += rec.playersList[i].roundBet;
             if (Seat.isStraddle) {
                 Seat.FsmLogicComponent.SM.ChangeState(SeatStraddle.Instance);
             }
-            if (responseData.playersList[i].ante >= 0) {
-                this.game.alreadAnte += responseData.playersList[i].ante;
-                this.game.alreadAnte += responseData.playersList[i].roundBet;
+            if (rec.playersList[i].ante >= 0) {
+                this.game.alreadAnte += rec.playersList[i].ante;
+                this.game.alreadAnte += rec.playersList[i].roundBet;
             }
             if (Seat.seatID == this.game.mainPlayer.seatID) {
                 this.game.HideWaitBlindBtn();
@@ -337,11 +337,11 @@ export default class TexasGameProtocol {
 
         //判断座位是否运动中,做延迟处理
         if (this.game.SeatPlayRecord.SeatMove) {
-            this.game.SeatPlayRecord.StartInfo = responseData;
+            this.game.SeatPlayRecord.StartInfo = rec;
             this.game.SeatPlayRecord.PlayDealFunc = this.__PlayDealAnimation.bind(this);
             cc.log("————————>延迟执行发牌");
         } else {
-            this.__PlayDealAnimation(responseData);
+            this.__PlayDealAnimation(rec);
             cc.log("————————>立刻执行发牌");
         }
     }

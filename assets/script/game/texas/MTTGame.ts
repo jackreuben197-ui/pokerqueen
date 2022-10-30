@@ -13,7 +13,7 @@ import { MTT_GameType } from "../util/MTTGameUtil";
 import TexasGame from "./TexasGame";
 import { CPlayer } from "../CPlayer";
 import { TexasGameState } from "../TexasGameState";
-import UIComponent from "../../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { ClientMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
 import { UIDefine } from "../../define/UIDefine";
 import Main from "../../Main";
@@ -23,6 +23,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { ClientMessageAutoOpActive } from "../../protobuf/holdem/req_auto_op_active_pb";
 import MTTGameProtocol from "../protocol/MTTGameProtocol";
 import MTTGameMessageHandler from "../messageHandler/MTTGameMessageHandler";
+import UIMTTTimeComponent from "../ui/UIMTTTimeComponent";
 
 
 enum MTTMatchStatus // mtt比赛状态
@@ -115,11 +116,11 @@ export default class MTTGame extends TexasGame {
     ///////////////////////////////////////////
 
     //////////////////////////////////////////
-    private isSyncHand: boolean = false;
+    public isSyncHand: boolean = false;
     //protected UnityArmatureComponent armatureRewardCircleZH;
     //protected UnityArmatureComponent armatureRewardCircleEN;
 
-    private gameStarted: boolean = false; // 比赛是否已经开始
+    public gameStarted: boolean = false; // 比赛是否已经开始
     private hadRequestEnterRoom: boolean = false; //是否已请求进入房间接口
     public huntMode: boolean = false; //是否猎人模式
 
@@ -135,10 +136,10 @@ export default class MTTGame extends TexasGame {
     public upBlindLeftTime: number; //升盲剩余时间，秒
     private upBlindLeftTimeDeltaTime: number;
     public BlindLevel: number; // 盲注级别
-    private curBld: number;//当前盲注
-    private curAnte: number;//当前前注
-    private nextBld: number;//下一个盲注
-    private nextAnte: number;//下一个前注
+    public curBld: number;//当前盲注
+    public curAnte: number;//当前前注
+    public nextBld: number;//下一个盲注
+    public nextAnte: number;//下一个前注
     // 升盲倒计时
     public upBldCounting: boolean;
 
@@ -151,13 +152,13 @@ export default class MTTGame extends TexasGame {
     private rebuyCost: string;
     private inRewardCircle: boolean;//是否已进入奖励圈（+1）
     //addon 数据
-    private startAddOnLevel: number;//addon 开始级别
-    private cachePartialBringInReturnBlindLevel: number;//自动合并筹码等级
-    private endAddOnLevel: number;//addon 结束级别
+    public startAddOnLevel: number;//addon 开始级别
+    public cachePartialBringInReturnBlindLevel: number;//自动合并筹码等级
+    public endAddOnLevel: number;//addon 结束级别
     private addOnScore: number;//addon 分数
     private addOnModeDate: AddOnModeDate;
-    private addOnMode: Def.AddOnModeMap[keyof Def.AddOnModeMap];
-    private CurrentOpAddOnMode: Def.AddOnModeMap[keyof Def.AddOnModeMap];;
+    public addOnMode: Def.AddOnModeMap[keyof Def.AddOnModeMap];
+    public CurrentOpAddOnMode: Def.AddOnModeMap[keyof Def.AddOnModeMap];;
     private SyncHandTime: number = 0;
     private BathTipsTimes: number = 1;
     public isStartShowPullDown: boolean;//是否开始展示拆桌提示
@@ -246,7 +247,7 @@ export default class MTTGame extends TexasGame {
             // 游戏已开始
             this.gameStarted = true;
             // 隐藏倒计时界面
-            //UIComponent.Instance.HideNoAnimation(UIType.UIMTTTime);
+            UIComponent.Instance.HideUI(PrefabUI.UIMTTTimeComponent);
         }
         //是否猎人赛模式
         this.huntMode = rec.mttInfo.huntMode;
@@ -297,7 +298,7 @@ export default class MTTGame extends TexasGame {
 
         //还原自己托管按钮
         if (this.mainPlayer != null) {
-            this.uirc.buttonCancelTrust.active = this.mainPlayer.IsAutoOp;//托管标志
+            this.uirc.Button_CancelTrust.active = this.mainPlayer.IsAutoOp;//托管标志
         }
         //还原牌桌上所有玩家托管状态
         let seat: Seat = null;
@@ -328,12 +329,10 @@ export default class MTTGame extends TexasGame {
         }
         if (rec.mttProgress.startCountDown > 0) {
             this.hadRequestEnterRoom = false;
-            // UIComponent.Instance.ShowNoAnimation(UIType.UIMTTTime, new UIMTTTimeComponent.MTTTimeData()
-            // 	{
-            //         nickname = GameCache.Instance.roomName,
-            //         second = rec.mttProgress.startCountDown,
-
-            //     });
+            UIComponent.Instance.ShowUI(
+                PrefabUI.UIMTTTimeComponent,
+                new UIMTTTimeComponent.MTTTimeData(GameCache.Instance.roomName, rec.mttProgress.startCountDown)
+            );
             GameCache.Instance.IsMTTbefor = 1;
         }
         else {
@@ -343,7 +342,7 @@ export default class MTTGame extends TexasGame {
         this.UpdateRoomDes();
         //#region addon 按钮显示
         this.uirc.Button_AddOn.active = (this.addOnMode != Def.AddOnMode.ADDON_NONE && this.gameStarted);
-        //this.ShowAddOnBtn();
+        this.ShowAddOnBtn();
         //#endregion
     }
 
@@ -549,7 +548,7 @@ export default class MTTGame extends TexasGame {
         {
             menu.MenuButtons_Dic.Button_Trust.node.active = true;
 
-            this.uirc.setButtonInteractable(menu.MenuButtons_Dic.Button_Trust.node, !this.uirc.buttonCancelTrust.activeInHierarchy);
+            this.uirc.setButtonInteractable(menu.MenuButtons_Dic.Button_Trust.node, !this.uirc.Button_CancelTrust.activeInHierarchy);
 
         }
         else //未坐下
@@ -569,7 +568,7 @@ export default class MTTGame extends TexasGame {
     }
 
     //更新addon 按钮状态
-    private ShowAddOnBtn() {
+    public ShowAddOnBtn() {
         this.uirc.Button_AddOn.active = (this.addOnMode != Def.AddOnMode.ADDON_NONE && this.gameStarted);
         this.uirc.setButtonInteractable(this.uirc.Button_AddOn, this.IsShowAddOnBtn());
 
