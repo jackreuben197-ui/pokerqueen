@@ -57,9 +57,11 @@ export default class UIOutChipsComponent extends UIBase {
         this.sliderCoin.onChange(this.onValueChangedSliderCoin.bind(this));
     }
     protected regiterTouchEvents(): void {
-        this.Button_Close.on("click", this.onClickClose, this);
-        this.Image_Mask.on("click", this.onClickClose, this);
-        this.Button_Commit.node.on("click", this.onClickCommit, this);
+        
+        this.setButtonClick(this.Button_Close, this.onClickClose);
+        this.setButtonClick(this.Image_Mask, this.onClickClose);
+        this.setButtonClick(this.Button_Commit.node, this.onClickCommit);
+
     }
     onShow(outClipsData?: OutClipsData): void {
         super.onShow(outClipsData);

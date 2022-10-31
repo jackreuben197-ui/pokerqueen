@@ -46,6 +46,7 @@ import { TexasGameState } from "../TexasGameState";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
 import UIOperationComponent from "../ui/UIOperationComponent";
+import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 
 
@@ -1574,14 +1575,10 @@ export default class TexasGameProtocol {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
             return;
         }
-        // UIComponent.Instance.Show(UIType.UIOutChipsTip,
-        //     new UIOutChipsTipComponent.OutClipstipData()
-        //                   {
-
-        //         state = rec.Status,
-
-        //         tableChips = (int)cacheOutChips,
-        //     });
+        UIComponent.Instance.ShowUI(
+            PrefabUI.UIOutChipsTipComponent,
+            new UIOutChipsTipComponent.OutClipstipData(rec.status, this.game.cacheOutChips)
+        );
         this.game.cacheOutChips = 0;
         UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
         let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);

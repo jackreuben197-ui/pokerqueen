@@ -144,11 +144,12 @@ export default class UITexas extends BaseScene {
     //1.左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
     UITexasMenu_Com: UITexasMenuComponent = null;
-    //2.带入带出
+    //2.带入带出 OutChips提示
     UIChips_Con: cc.Node = null;
     UIAddChips_Com: UIAddChipsComponent = null;
     UIOutChips_Com: UIOutChipsComponent = null;
     UIAutoChips_Com: UIAutoChipsComponent = null;
+    UIOutChipsTipComponent = null;
     //3.操作面板
     UIOperation_Con: cc.Node = null;
     UIOperation_Com: UIOperationComponent = null;
