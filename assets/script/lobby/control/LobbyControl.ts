@@ -490,7 +490,10 @@ export class LobbyControl {
         });
     }
     
-    
+    GetMsg(pType) {
+        var tValue = i18nMgr.Get("MsgInfo_" + pType.ToString());
+        return tValue;
+    }
     
 
     /********************************* 流程控制 ***********************************/
