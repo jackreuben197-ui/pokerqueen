@@ -1933,6 +1933,48 @@ export class APIOrgClubQuit {
     static Response: { code?: number, message?: string, data?: typeof APIOrgClubQuit.ResponseData };
 }
 
+export class APIMsgMessageList {
+    //接口地址
+    static API: string = "/api/msg/message/list";
+
+
+    //字段声明
+    static RequestParams: {
+        msg_type: number,//消息类型
+        limit: number,//条目
+        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    } = null;
+
+    static ResponseData: {
+        data?: typeof APIMsgMessageList.Data,
+    } = null;
+    static Data: {
+        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+        total: number,//总条目数
+        list: typeof APIMsgMessageList.MsgInfo,
+    } = null;
+
+    static MsgInfo:
+    {
+        msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
+        num: number,//未读消息数量
+        msg_id: number,//消息ID
+        title: string,
+        content: string,
+        remark: string,
+        msg_type: number,//消息类型 MessageSubType
+        create_time: string,//创建时间
+        game_type: number,//游戏类型
+        multi_language_id: string,//房间名称key
+    }
+
+    static Request(param: typeof APIMsgMessageList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIMsgMessageList.ResponseData };
+}
+
 export class APIOrgClubUploadIcon {
     //接口地址
     static API: string = "/api/oss/upload/avatar";
