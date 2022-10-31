@@ -7,7 +7,7 @@ import LocalStoreManager from "../frame/manager/LocalStoreManager";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Channel, Web_Login, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
+import { Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -46,6 +46,23 @@ export default class LoginSession {
                 }.bind(this),
                 onFailure: function (content) {
                     this.Phone = param.phone;
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    
+    static async WebLoginThirdParty(param: typeof Web_Login_Third_Party.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Login_Third_Party,
+                body: Web_Login_Third_Party.Request(param),
+                onSuccess: function () {
+                    this.Token = Web_Login_Third_Party.Response.data.token;
+                    this.TokenExpireAt = Web_Login_Third_Party.Response.data.expire_at;
+                    resolve(Web_Login_Third_Party.Response);
+                }.bind(this),
+                onFailure: function (content) {
                     reject(content);
                 }.bind(this)
             });
