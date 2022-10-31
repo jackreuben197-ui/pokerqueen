@@ -3,6 +3,10 @@ import { IUIDefine } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import { Sequence } from "../dotween/DOTween";
 import GC from "../frame/GameControl";
+import { StringHelper } from "../helper/StringHelper";
+import TimeHelper from "../helper/TimeHelper";
+import { i18nMgr } from "../i18n/i18nMgr";
+import { i18nSprite } from "../i18n/i18nSprite";
 
 
 import { Bundle_Texas } from "../manager/ResManager";
@@ -88,6 +92,7 @@ export default class UITexas extends BaseScene {
     imageSelectSeatTips: cc.Node = null;
     imageWaitForStartTips: cc.Node = null;
     imageReserveSeatTips: cc.Node = null;
+    Image_InsuranceTips: cc.Node = null;
 
     //座位节点容器
     Seats: cc.Node = null;
@@ -106,21 +111,6 @@ export default class UITexas extends BaseScene {
     public transPots: cc.Node = null;
     public transPot: cc.Node = null;
     public transAllPot: cc.Node = null;
-
-
-
-
-    imagePublicCard0: cc.Node = null;
-    imagePublicCard1: cc.Node = null;
-    imagePublicCard2: cc.Node = null;
-    imagePublicCard3: cc.Node = null;
-    imagePublicCard4: cc.Node = null;
-
-    imageSecondPublicCard0: cc.Node = null;
-    imageSecondPublicCard1: cc.Node = null;
-    imageSecondPublicCard2: cc.Node = null;
-    imageSecondPublicCard3: cc.Node = null;
-    imageSecondPublicCard4: cc.Node = null;
 
 
     buttonDelay: cc.Node = null;
@@ -220,10 +210,11 @@ export default class UITexas extends BaseScene {
         this.imageSelectSeatTips = this.getChildNodeOrComponent("Image_SelectSeatTips");
         this.imageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.imageReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
+        this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
 
         this.Seats = this.getChildNodeOrComponent("Seats");
         this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
-        //this.UIAddChips = this.getChildNodeOrComponent("UIAddChips", UIAddChipsComponent);
+
         this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
 
@@ -233,20 +224,6 @@ export default class UITexas extends BaseScene {
         this.transPots = this.getChildNodeOrComponent("Pots");
         this.transPot = this.getChildNodeOrComponent("Pot");
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
-
-        this.imagePublicCard0 = this.getChildNodeOrComponent("Image_PublicCard0");
-        this.imagePublicCard1 = this.getChildNodeOrComponent("Image_PublicCard1");
-        this.imagePublicCard2 = this.getChildNodeOrComponent("Image_PublicCard2");
-        this.imagePublicCard3 = this.getChildNodeOrComponent("Image_PublicCard3");
-        this.imagePublicCard4 = this.getChildNodeOrComponent("Image_PublicCard4");
-
-        this.imageSecondPublicCard0 = this.getChildNodeOrComponent("Image_SecondPublicCard0");
-        this.imageSecondPublicCard1 = this.getChildNodeOrComponent("Image_SecondPublicCard1");
-        this.imageSecondPublicCard2 = this.getChildNodeOrComponent("Image_SecondPublicCard2");
-        this.imageSecondPublicCard3 = this.getChildNodeOrComponent("Image_SecondPublicCard3");
-        this.imageSecondPublicCard4 = this.getChildNodeOrComponent("Image_SecondPublicCard4");
-
-        //this.UITexasSetting = this.getChildNodeOrComponent("UITexasSetting");
 
 
         this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
@@ -270,36 +247,18 @@ export default class UITexas extends BaseScene {
         this.BathText = this.Image_WaitForStartBathTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
 
         this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
+        //朋友桌邀请码
         this.Text_InvateCode = this.getChildNodeOrComponent("Text_InvateCode", cc.Label);
 
-        //#region 公共牌数据(UI、Id)
-        if (null == this.listCards)
-            this.listCards = [];
-        if (this.listCards.length > 0)
-            this.listCards = [];
-        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard0))
-        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard1))
-        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard2))
-        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard3))
-        this.listCards.push(new PublicCardInfo(-1, this.imagePublicCard4))
 
-        //#endregion
-        //#region 第二套公共牌数据
-        if (null == this.listSecondCards)
-            this.listSecondCards = [];
-        if (this.listSecondCards.length > 0)
-            this.listSecondCards = [];
-
-        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard0));
-        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard1));
-        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard2));
-        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard3));
-        this.listSecondCards.push(new PublicCardInfo(-1, this.imageSecondPublicCard4));
-
-        this.Seat_Temp.active = false;
-
-        this.TransPot_Pool = new SimpleNodePool(this.transPot);
-
+        //////////////////公共牌数据（第一套和第二套 ui,id,每套牌5张）
+        this.listCards = [];
+        this.listSecondCards = [];
+        for (let i = 0; i < 5; i++) {
+            this.listCards.push(new PublicCardInfo(-1, this.getChildNodeOrComponent(`Image_PublicCard${i}`)));
+            this.listSecondCards.push(new PublicCardInfo(-1, this.getChildNodeOrComponent(`Image_SecondPublicCard${i}`)));
+        }
+        //////////////////////////////////////////////////////////////////////
         //////////////////装载容器
         //1.菜单
         this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
@@ -319,7 +278,14 @@ export default class UITexas extends BaseScene {
         //5.MTT比赛倒计时
         this.UIMTTTime_Con = this.getChildNodeOrComponent("UIMTTTime_Con");
         this.UIMTTTime_Com = this.AddComponents(PrefabUI.UIMTTTimeComponent, this.UIMTTTime_Con);
+        //////////////////////////////////////////////////////////////////////
+        //////////////////初始化杂类
+        //隐藏座位模板
+        this.Seat_Temp.active = false;
+        //Pot对象池
+        this.TransPot_Pool = new SimpleNodePool(this.transPot);
     }
+
 
     //从预制体添加到容器
     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false) {
@@ -389,6 +355,29 @@ export default class UITexas extends BaseScene {
         this.CleanUI();
         super.Exit(param);
     }
+
+
+
+    /// <param name="num"></param>几张
+    /// <param name="premium"></param>保费
+    /// <param name="paynum"></param>赔付金额
+    public async ShowInsuranceTip(num: number, premium: number, paynum: number) {
+        this.Image_InsuranceTips.active = true;
+        this.Image_InsuranceTips.getChildByName("Text").getComponent(cc.Label).string = `${i18nMgr.Get("UILobby_Menu_menu_btn_my")}......`;
+        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("UIInsurance_tips001"), [num.toString(), StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum)]);
+        await TimeHelper.Sleep(2000);
+        if (this.Image_InsuranceTips.activeInHierarchy) {
+            this.Image_InsuranceTips.active = false;
+        }
+        await TimeHelper.Sleep(1000);
+        if (this.Image_InsuranceTips.activeInHierarchy) {
+            this.Image_InsuranceTips.active = false;
+        }
+    }
+
+
+
+
 
     //显示邀请码
     public ShowInvateCode() {

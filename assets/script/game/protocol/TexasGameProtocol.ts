@@ -1,3 +1,4 @@
+import internal = require("stream");
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
@@ -9,6 +10,7 @@ import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply }
 import { Def, Operator, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
+import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_buy_insurance_pb";
 import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
 import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
 import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
@@ -24,7 +26,9 @@ import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb
 import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
 import { ServerMessageAction } from "../../protobuf/holdem/req_action_pb";
 import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
+import { ServerMessageAgreePost } from "../../protobuf/holdem/req_agree_post_pb";
 import { ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
+import { ServerMessageBuyInsuranceActive } from "../../protobuf/holdem/req_buy_insurance_active_pb";
 import { ServerMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
 import { ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
 import { ServerMessageSetAutoOnTable } from "../../protobuf/holdem/req_set_auto_on_table_pb";
@@ -42,7 +46,7 @@ import { TexasGameState } from "../TexasGameState";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
 import UIOperationComponent from "../ui/UIOperationComponent";
-import { RoomType } from "../util/GameUtil";
+import GameUtil, { RoomType } from "../util/GameUtil";
 
 
 const CanPlayStatus = Def.CanPlayStatus;
@@ -1548,7 +1552,7 @@ export default class TexasGameProtocol {
             mSeat.Player.MttHunterKillAwardOtherPlus += playerChipChange.mttHunterHeadPlus;
             if (this.game.mainPlayer.seatID == this.game.GetLocalSeatID(playerChipChange.seatId)) {
                 if (playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE1 || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE2) {
-                    UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get("Addondz"), StringHelper.GetSignedLongString(playerChipChange.change)));
+                    UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get("Addondz"), [StringHelper.GetSignedLongString(playerChipChange.change)]));
                 }
                 UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
                 this.game.mainPlayer.cacheStoreChips = playerChipChange.storeChips;
@@ -1714,15 +1718,61 @@ export default class TexasGameProtocol {
         mTweenCallback();
     }
 
+    //同意补盲
+    HANDLER_REQ_WAIT_BLIND(rec: ServerMessageAgreePost.AsObject) {
 
-    HANDLER_REQ_WAIT_BLIND(Protocol_Holdem_AgreePost: ProtocolCode, HANDLER_REQ_WAIT_BLIND: any, arg2: this) {
-        throw new Error("Method not implemented.");
+        if (rec == null) return;
+
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_WAIT_BLIND, rec.Status)
+            return;
+        }
+        this.game.HideWaitBlindBtn();
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+        UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(20021));
+        if (null != mSeat) {
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+        }
     }
-    HANDLER_REQ_BUY_INSURANCE(Protocol_Holdem_BuyInsuranceActive: ProtocolCode, HANDLER_REQ_BUY_INSURANCE: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    //主动购买保险
+    HANDLER_REQ_BUY_INSURANCE(rec: ServerMessageBuyInsuranceActive.AsObject) {
+        if (rec == null) return;
+        // if (rec.status != 0) {
+
+        // }
     }
-    HANDLER_REQ_CLAIM_INSURANCE(Protocol_Holdem_BuyInsurance: ProtocolCode, HANDLER_REQ_CLAIM_INSURANCE: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    //保险赔付
+    HANDLER_REQ_CLAIM_INSURANCE(rec: ServerMessageBuyInsurance.AsObject) {
+        if (rec == null) return;
+        this.game.cacheTrunOutsCards = new Map<number, number[]>();
+
+        rec.buyList.forEach(potInsuranceBuy => {
+            if (potInsuranceBuy.activeAmount > 0) {
+                let mSeat: Seat = this.game.GetSeatByServerSeatID(rec.seatId);
+                mSeat.Player.totalInsuredAmount = potInsuranceBuy.activeAmount;
+                mSeat.Player.autoInsuredAmount = potInsuranceBuy.passiveAmount;
+                mSeat.HideBubbleInsuranceCountDown();
+                mSeat.UpdateBubbleInsurance();
+                let mouts: number[] = [];
+                for (let j = 0; j < potInsuranceBuy.activeOutsList.length; j++) {
+                    mouts.push(potInsuranceBuy.activeOutsList[j]);
+                }
+                this.game.cacheTrunOutsCards.set(rec.seatId, mouts);
+                if (this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {
+                    this.game.cacheBuyActiveAmount = potInsuranceBuy.activeAmount;
+
+                    if (this.game.uirc.Image_InsuranceTips.activeInHierarchy) {
+                        this.game.uirc.Image_InsuranceTips.active = false;
+                    }
+                    this.game.uirc.ShowInsuranceTip(potInsuranceBuy.activeOutsList.length, potInsuranceBuy.activeAmount, GameUtil.GetOddsByPlayerNum(this.game.cacheBuyInsurancePotUserCount, potInsuranceBuy.activeOutsList.length) * potInsuranceBuy.activeAmount);
+                }
+            }
+
+            if (potInsuranceBuy.passiveAmount > 0 && this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {
+                UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(20053, [potInsuranceBuy.passiveAmount / 100]));
+            }
+        })
+
     }
 
     Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {

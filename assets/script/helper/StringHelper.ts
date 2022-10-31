@@ -47,9 +47,18 @@ export class StringHelper {
     /**
      * 替换{0}
      */
-    static Format(str: string, replace: string = ""): string {
-        return str.replace("{0}", replace);
+    // static Format(str: string, replace: string = ""): string {
+    //     return str.replace("{0}", replace);
+    // }
+    static Format(str: string, replaces: string[]): string {
+        for (let i = 0; i < replaces.length; i++) {
+            str = str.replace(`{${i}}`, replaces[i]);
+        }
+        return str;
+
     }
+
+
 
     /// <summary>
     /// 获取房间类型名称

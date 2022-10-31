@@ -1412,7 +1412,24 @@ export default class GameUtil {
             },
         }
 
+    public static GetOddsByPlayerNum(playerNum: number, selectOuts: number): number {
+        selectOuts -= 1;//从数组零下标开始
+        let outs: number[] = [];
+        //this.OutsList.TryGetValue(playerNum, out outs);
+        let value = this.OutsList.get(playerNum);
 
+        if (value) outs = value;
+
+        if (selectOuts > outs.length && selectOuts <= 30) {
+            return outs[outs.length - 1];
+        }
+        if (selectOuts > 30)
+            return 0;
+        if (selectOuts < 0) {
+            return 0;
+        }
+        return outs[selectOuts];
+    }
 
     /**
      * 

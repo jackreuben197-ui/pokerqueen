@@ -2740,24 +2740,14 @@ export default class TexasGame {
         cc.log("移除 seatUI ", seatUI);
     }
     public InitPublicLocalPos() {
-        //#endregion
-        // 第一套公共牌默认位置
+        // 第一套,第二套 公共牌默认位置
         if (this.listDefaultPublicCardsLPos == null) {
             this.listDefaultPublicCardsLPos = [];
-            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard0.position);
-            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard1.position);
-            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard2.position);
-            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard3.position);
-            this.listDefaultPublicCardsLPos.push(this.uirc.imagePublicCard4.position);
-        }
-        // 第二套公共牌默认位置
-        if (this.listDefaultSecondPublicCardsLPos == null) {
             this.listDefaultSecondPublicCardsLPos = [];
-            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard0.position);
-            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard1.position);
-            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard2.position);
-            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard3.position);
-            this.listDefaultSecondPublicCardsLPos.push(this.uirc.imageSecondPublicCard4.position);
+            for (let i = 0; i < 5; i++) {
+                this.listDefaultPublicCardsLPos.push(this.uirc.listCards[i].trans.position);
+                this.listDefaultSecondPublicCardsLPos.push(this.uirc.listSecondCards[i].trans.position);
+            }
         }
     }
     /// <summary>

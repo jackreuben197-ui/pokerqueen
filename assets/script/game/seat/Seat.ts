@@ -5,6 +5,7 @@
 
 import UpdateComponent from "../../funcomponent/UpdateComponent";
 import { StringHelper } from "../../helper/StringHelper";
+import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { Def } from "../../protobuf/holdem/define_pb";
@@ -1670,7 +1671,39 @@ export default class Seat {
     }
 
 
+    // 刷新购买保险数量
+    public UpdateBubbleInsurance() {
+        this.isCountDown = false;
+        this.uirc.imageCountDown.node.active = false;
+        this.uirc.Image_CountDownbg.node.active = false;
 
+
+        //不保
+        if (this.Player.totalInsuredAmount + this.Player.autoInsuredAmount == 0) {
+            this.uirc.Image_BubbleInsuranceNum.active = !this.IsMySeat;
+            this.uirc.Image_BubbleInsuranceNum.getChildByName("Text").getComponent(cc.Label).string = CPErrorCode.LanguageDescription(10049);
+        }
+        else {
+            this.uirc.Image_BubbleInsuranceToubao.active = !this.IsMySeat;
+            if (this.Player.autoInsuredAmount > 0) {
+                this.uirc.Image_BubbleInsuranceToubao.getChildByName("Text").getComponent(cc.Label).string = CPErrorCode.LanguageDescription(20058, [StringHelper.GetLongString(this.Player.totalInsuredAmount), StringHelper.GetLongString(this.Player.autoInsuredAmount)]);
+            }
+            else {
+                this.uirc.Image_BubbleInsuranceToubao.getChildByName("Text").getComponent(cc.Label).string = CPErrorCode.LanguageDescription(20059, [StringHelper.GetLongString(this.Player.totalInsuredAmount)]);
+            }
+        }
+        this.CloseInsuranceBaoBubaoBubble();
+
+    }
+    private async CloseInsuranceBaoBubaoBubble() {
+        await TimeHelper.Sleep(2000);
+        if (this.uirc.Image_BubbleInsuranceNum.activeInHierarchy) {
+            this.uirc.Image_BubbleInsuranceNum.active = false;
+        }
+        if (this.uirc.Image_BubbleInsuranceToubao.activeInHierarchy) {
+            this.uirc.Image_BubbleInsuranceToubao.active = false;
+        }
+    }
     //刷新猎人头奖励
     public UpdateHunterAward() {
         if (null == this.Player || this.IsMySeat) {

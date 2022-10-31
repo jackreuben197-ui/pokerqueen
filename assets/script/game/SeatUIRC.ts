@@ -94,6 +94,14 @@ export default class SeatUIRC extends UIBase {
     imageBubble: cc.Sprite = null;
     textBubble: cc.Label = null;
 
+    //保险
+    Image_BubbleInsuranceNum: cc.Node = null;
+
+    Image_BubbleInsuranceToubao: cc.Node = null;
+
+
+
+
     //返回座位
     imageReserveSeat: cc.Node = null;
     //返回座位时间
@@ -181,6 +189,9 @@ export default class SeatUIRC extends UIBase {
 
         this.imageBubble = this.getChildNodeOrComponent("Image_Bubble", cc.Sprite);
         this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
+
+        this.Image_BubbleInsuranceNum = this.getChildNodeOrComponent("Image_BubbleInsuranceNum");
+        this.Image_BubbleInsuranceToubao = this.getChildNodeOrComponent("Image_BubbleInsuranceToubao");
 
 
         this.Image_CoinShadow = this.getChildNodeOrComponent("Image_CoinShadow");
