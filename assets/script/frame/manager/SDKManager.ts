@@ -15,35 +15,23 @@ export default class SDKManager {
     }
 
     init() {
-        if (!GameConfig.debug) {
-            GoogleApi.init();
-        }
+        GoogleApi.init();
     }
 
     googleRenderBtn() {
-        if (!GameConfig.debug) {
-
-            GoogleApi.renderBtn();
-        }
+        GoogleApi.renderBtn();
     }
 
     googleLogin() {
-        if (!GameConfig.debug) {
-
-            GoogleApi.prompt();
-        }
+        GoogleApi.prompt();
     }
 
     faceBookLogin() {
-        if (!GameConfig.debug) {
-            FaceBookApi.login();
-        }
+        FaceBookApi.login();
     }
 
     instagramLogin() {
-        if (!GameConfig.debug) {
-            InstagramApi.login();
-        }
+        InstagramApi.login();
     }
 
 }

@@ -25,7 +25,7 @@ export type TFackBookLoginRspAuth = {
 export default class FaceBookApi {
     static rspData: TFackBookLoginRspAuth = null;
     static login() {
-        FB.getLoginStatus(function (response: TFackBookLoginCB) {
+        (window as any).FB && (window as any).FB.getLoginStatus(function (response: TFackBookLoginCB) {
             // {
             //     status: 'connected',
             //     authResponse: {
@@ -40,7 +40,7 @@ export default class FaceBookApi {
             if (response.status == 'connected') {
                 FaceBookApi.loginSuc(response.authResponse)
             } else {
-                FB.login(function (response) {
+                (window as any).FB && (window as any).FB.login(function (response) {
                     console.log("==========> facebook login : ", response)
                     if (response.status == 'connected') {
                         FaceBookApi.loginSuc(response.authResponse)
@@ -70,7 +70,7 @@ export default class FaceBookApi {
         //     userID: "110494705196690",
         // }
 
-        FB.api('/me', function (response) {
+        (window as any).FB && (window as any).FB.api('/me', function (response) {
             console.log('==========> facebook api : ', response);
         });
 

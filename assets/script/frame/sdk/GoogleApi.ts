@@ -7,7 +7,7 @@ export default class GoogleApi {
     static credential: string = '';
     static init() {
         console.log("================> google sdk init");
-        google.accounts.id.initialize({
+        (window as any).google && (window as any).google.accounts.id.initialize({
             client_id: this.client_id,
             cancel_on_tap_outside: false,
             callback: (msg) => GoogleApi.loginSuc(msg)
@@ -49,7 +49,7 @@ export default class GoogleApi {
 
     static renderBtn() {
         console.log("================> google sdk renderBtn");
-        google.accounts.id.renderButton(
+        (window as any).google && (window as any).google.accounts.id.renderButton(
             document.getElementById("button_div"),
             { type: "icon" }
         )
@@ -57,7 +57,7 @@ export default class GoogleApi {
 
     static prompt() {
         console.log("================> google sdk prompt");
-        google.accounts.id.prompt(notification => {
+        (window as any).google && (window as any).google.accounts.id.prompt(notification => {
             console.log("这个通知适用于显示时刻吗？ ==> ", notification.isDisplayMoment())
             console.log("此通知是针对某个显示时刻，还是显示了界面？ ==> ", notification.isDisplayed())
             console.log("这是针对显示时刻的通知，而界面未显示吗？ ==> ", notification.isNotDisplayed())
@@ -72,8 +72,8 @@ export default class GoogleApi {
 
 
     static initCodeClient() {
-        console.log("================> google initCodeClient : ")
-        google.accounts.oauth2.initCodeClient({
+        console.log("================> google initCodeClient : ");
+        (window as any).google && (window as any).google.accounts.oauth2.initCodeClient({
             client_id: this.client_id,
             ux_mode: 'popup',
             scope: "https://www.googleapis.com/auth/calendar.readonly",
@@ -82,8 +82,8 @@ export default class GoogleApi {
     }
 
     static initTokenClient() {
-        console.log("================> google initTokenClient : ")
-        google.accounts.oauth2.initTokenClient({
+        console.log("================> google initTokenClient : ");
+        (window as any).google && (window as any).google.accounts.oauth2.initTokenClient({
             client_id: this.client_id,
             ux_mode: 'popup',
             scope: "https://www.googleapis.com/auth/calendar.readonly",

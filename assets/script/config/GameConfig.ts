@@ -13,7 +13,6 @@
 import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
-    static debug: boolean = false;
 
     static Web_Host_Test1 = "test1.awanptesting.com";
     static Web_Host_Dev1 = "dev1.awanptesting.com";
