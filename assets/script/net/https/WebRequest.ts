@@ -35,6 +35,27 @@ export class Web_Login {
     static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
 }
 
+export class Web_Login_Third_Party {
+    static API: string = "/api/user/login_third_party";
+    static RequestParams: {
+        token: string,
+        source: string,
+        app_source: number
+    } = null;
+
+    static ResponseData: {
+        token?: string,        // 手机号
+        expire_at?: number,        // 密码MD5
+    } = null;
+
+
+    static Request(param: typeof Web_Login_Third_Party.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
+}
+
 /// <summary>
 /// 刷新token
 /// </summary>
