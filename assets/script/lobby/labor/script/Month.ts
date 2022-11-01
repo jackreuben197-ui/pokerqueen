@@ -85,7 +85,7 @@ export default class Month extends cc.Component {
 
             if (isNowMonth) {
                 if (Data.getInstance().isNowDay(index)) {
-                    day.getComponent(Day).showDay(cc.Color.GREEN);
+                    day.getComponent(Day).showDay(cc.Color.RED);
                 }
             }
 
