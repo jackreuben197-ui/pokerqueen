@@ -34,4 +34,8 @@ export default class SDKManager {
         InstagramApi.login();
     }
 
+    checkInstagranLoginSuc(code) {
+        InstagramApi.cleckLoginSuc(code)
+    }
+
 }

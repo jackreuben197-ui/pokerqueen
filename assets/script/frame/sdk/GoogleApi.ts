@@ -22,8 +22,11 @@ export default class GoogleApi {
 
 
         let str = Buffer.from(this.credential, 'base64').toString();
-        console.log("================> google login 解析  : ", str)
 
+        //普通解析只能解析出数据头
+        // {"alg":"RS256","kid":"77cc0ef4c7181cf4c0dcef7b60ae28cc9022c76b","typ":"JWT"}
+        console.log("================> google login 解析  : ", str)
+        // 解析后的数据 JWT
         // {
         //     "iss": "https://accounts.google.com",
         //     "nbf": 1667187318,
@@ -61,6 +64,9 @@ export default class GoogleApi {
             console.log("这个通知适用于显示时刻吗？ ==> ", notification.isDisplayMoment())
             console.log("此通知是针对某个显示时刻，还是显示了界面？ ==> ", notification.isDisplayed())
             console.log("这是针对显示时刻的通知，而界面未显示吗？ ==> ", notification.isNotDisplayed())
+
+            //如果拒绝过登陆，下次不会弹出，需要清缓存才可以
+            //如果网页没有已登录的账号，也不会弹出
             console.log("界面未显示的详细原因。以下是可能的值： ==> ", notification.getNotDisplayedReason())
             console.log("此通知是针对跳过的时刻吗？ ==> ", notification.isSkippedMoment())
             console.log("跳过时刻的详细原因。以下是可能的值： ==> ", notification.getSkippedReason())

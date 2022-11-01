@@ -78,7 +78,7 @@ export default class UIMember extends BaseForm {
         let ts = Date.parse(this._info.user_join_club_time)
         let date = new Date(ts)
         let timeStr = date.getFullYear() + "/" + (date.getMonth()+1).toString() + "/" + date.getDate() + "  " +
-        TimeHelper._zeroNum(date.getHours()) + ":" + TimeHelper._zeroNum(date.getMinutes());
+        TimeHelper.ZeroNum(date.getHours()) + ":" + TimeHelper.ZeroNum(date.getMinutes());
         lbl_addTime.string = "加入时间: " + timeStr;
 
         let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");

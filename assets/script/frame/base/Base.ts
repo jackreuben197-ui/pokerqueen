@@ -69,4 +69,6 @@ export class Base extends cc.Component {
     }
 
     protected notify(id: any, msg: any, sendInfo?: any) { }
+
+
 }

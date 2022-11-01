@@ -1155,6 +1155,11 @@ export class Web_Mtt {
     static FREE_REMAIN = "/api/roomcenter/mtt/{0}/free_remain";
 }
 
+
+export class Web_Gold_Change_Insure_Log {
+    static API: string = "/api/user/gold_insure_change_log"
+}
+
 // xyh end
 
 /// <summary>

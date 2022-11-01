@@ -56,7 +56,7 @@ export default class UIRecordDetail extends BaseForm {
     }
 
     clickBx() {
-        UIComponent.open(UIDefine.MttRecordBXListForm)
+        UIComponent.open(UIDefine.MttRecordBXListForm, { info: this.respInfo })
     }
 
     reqInfo(roomId) {
@@ -80,7 +80,7 @@ export default class UIRecordDetail extends BaseForm {
         let user_list = roomData.user_list;
         let ts = Date.parse(roomData.end_time);
         let date = new Date(ts);
-        let dateStr = TimeHelper._zeroNum(date.getHours()) + ":" + TimeHelper._zeroNum(date.getMinutes());
+        let dateStr = TimeHelper.ZeroNum(date.getHours()) + ":" + TimeHelper.ZeroNum(date.getMinutes());
         let timeStr = `${date.getMonth() + 1}` + "/" + `${date.getDate()}` + " " + dateStr;
         this.getChildNodeOrComponent("lbl_time", cc.Label).string = timeStr;
         let sbStr = `${roomData.blind}/${roomData.blind * 2}`

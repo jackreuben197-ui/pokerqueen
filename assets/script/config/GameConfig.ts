@@ -75,7 +75,7 @@ export var NetWorkBase = {
  * 语言列表
  */
 export var LanguageList: { lan: string, name: string }[] = [
-    { lan: "en", name: "UILogin_USA"},
+    { lan: "en", name: "UILogin_USA" },
     { lan: "pt", name: "sl_ptyyPutao" },
     { lan: "cn", name: "UILogin_China" },
 ];

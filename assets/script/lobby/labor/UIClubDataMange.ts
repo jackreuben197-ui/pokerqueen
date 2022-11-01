@@ -9,12 +9,10 @@
 
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
-import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import { Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
-import { LobbyControl } from "../control/LobbyControl";
 import Data from "./script/Data";
 import { UIClubModel } from "./UIClubModel";
 
