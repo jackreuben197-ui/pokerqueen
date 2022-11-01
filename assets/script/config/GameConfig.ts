@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 17:37:51
+ * @LastEditTime: 2022-11-01 16:02:36
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -24,7 +24,7 @@ export class GameConfig {
     //2: http://dev1.awanptesting.com 
     //3: https://test1.awanptesting.com  
     //4: https://dev1.awanptesting.com 
-    static BuildType: number = 0;
+    static BuildType: number = 3;
 
     //版本号
     static Version: string = "20221028_2230";
@@ -75,7 +75,7 @@ export var NetWorkBase = {
  * 语言列表
  */
 export var LanguageList: { lan: string, name: string }[] = [
-    { lan: "en", name: "UILogin_USA"},
+    { lan: "en", name: "UILogin_USA" },
     { lan: "pt", name: "sl_ptyyPutao" },
     { lan: "cn", name: "UILogin_China" },
 ];

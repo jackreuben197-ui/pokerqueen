@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-31 18:26:47
+ * @LastEditTime: 2022-11-01 16:05:41
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -569,12 +569,14 @@ export default class UICreateMatch extends BaseForm {
         room_config.limit_ip = this.ipState   //是否开启ip限制
         room_config.limit_gps = this.gpsState //是否开启gps限制
         room_config.second_public_cards = this.etpState  //是否开启第二套牌
-        room_config.insurance = this.bxState
+
         let params: any = { name: modelName, room_config: room_config }
         console.log('params===', params)
         //0 是模版
         if (this._btnType == 0) {
+            room_config.insurance = this.bxState
             if (this._editModelData) {
+
                 params.id = this._editModelData.id
                 await UIClubModel.mInstance.APIOrgUpdateTemplate(params);
             } else {
@@ -585,7 +587,7 @@ export default class UICreateMatch extends BaseForm {
         } else if (this._btnType == 1) {
             //工会牌桌
             if (this._fromUI == 'UICreateMatchHome') {
-
+                room_config.insurance = this.bxState
                 room_config.limit_friend_table = false
                 room_config.limit_bring_in = false
                 await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);

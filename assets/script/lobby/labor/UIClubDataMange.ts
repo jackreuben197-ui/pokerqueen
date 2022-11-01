@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-01 15:08:28
+ * @LastEditTime: 2022-11-01 15:48:52
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
@@ -242,7 +242,7 @@ export default class UIClubDataMange extends BaseForm {
                 lbl_num.string = (i + 1) + ''
 
                 let lbl_nickName = lbl_up.getChildByName('lbl_nickName').getComponent(cc.Label);
-                lbl_nickName.string = 'player'//GC.data.languageTemp.temp.getName(info.Name);
+                lbl_nickName.string = info.user_name;
 
                 let lbl_id = lbl_up.getChildByName('lbl_id').getComponent(cc.Label);
                 lbl_id.string = 'ID:' + info.user_id
