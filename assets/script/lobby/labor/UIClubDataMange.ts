@@ -3,14 +3,20 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 10:22:07
+ * @LastEditTime: 2022-11-01 15:08:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
+import { EventName } from "../../config/EventName";
+import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
+import { Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
+import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
+import Data from "./script/Data";
+import { UIClubModel } from "./UIClubModel";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -18,23 +24,25 @@ const { ccclass, property, menu } = cc._decorator;
 
 @menu('脚本分组/labor/UIClubDataMange')
 export default class UIClubDataMange extends BaseForm {
+    @property(cc.Label)
+    lbl_num: cc.Label = null;
+    @property(cc.Node)
+    sureBtn: cc.Node = null;
+
     lastGameType: number = 1;
     lastTimeType: number = 1;
     oldDates: Array<string> = [];
     _info: any = null;
-
+    _clickDataItem = null;
     protected lateLoad(): void {
         super.lateLoad();
     }
-
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-
         // this._info = param;
         // if (this._info == null) {
         //     return;
         // }
-
         this.resetUI();
 
         for (let i = 1; i < 6; i++) {
@@ -48,16 +56,39 @@ export default class UIClubDataMange extends BaseForm {
             btn_pd_1["index"] = i;
             btn_pd_1.on(cc.Node.EventType.TOUCH_END, this.onClickDate, this)
         }
+        for (let i = 4; i < 6; i++) {
+            let btn_pd_1: cc.Node = this.getChildNodeOrComponent("btn_pd_" + i);
+            btn_pd_1["index"] = i;
+            btn_pd_1.getComponent(cc.Label).string = i == 4 ? '开始时间' : '结束时间'
+            btn_pd_1.on(cc.Node.EventType.TOUCH_END, this.openCalendar, this)
+        }
+        this.sureBtn["index"] = 5;
 
         this.reqUpInfo(0, 1);
-        this.reqDownInfo();
+        this.reqDownInfo(0, 1);
     }
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.refresh_Btn_Data, this.chaneData)
+    }
+    onDisable() {
+        cc.director.off('show');
+    }
+    openCalendar(event, customData) {
+        this._clickDataItem = event.target
+        UIComponent.open(UIDefine.UICalendar)
+    }
+    chaneData() {
+        this._clickDataItem['_data'] = Data.getInstance().selDate;
+        this._clickDataItem.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', false)
+    }
+
     onClickDate(event) {
         let node = event.target;
         let index = node.index;
         this.refreshChooseDate(index);
         this.lastTimeType = index;
-        // this.reqUpInfo(this.lastGameType, index);
+        this.reqUpInfo(this.lastGameType, index);
     }
 
     resetUI() {
@@ -67,13 +98,30 @@ export default class UIClubDataMange extends BaseForm {
         this.refreshChooseDate(1);
     }
     reqUpInfo(gameType, timeType) {
-        let info = {
-            user_id: this._info.user_id,
+
+        let data: any = Web_Org_Club_Get.Response.data;
+        let info: any = {
+            club_id: data.club_id,
             game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
             time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
             time_long: new Date().getTime(),      //客户端时间戳
         }
-        LobbyControl.getInstance().reqClubStandings(info).then(
+        let btn_pd_4 = this.getChildNodeOrComponent("btn_pd_4", cc.Label);
+        let btn_pd_5 = this.getChildNodeOrComponent("btn_pd_5", cc.Label);
+
+        if (timeType == 5) {
+            if (btn_pd_4.string == '开始时间') {
+                UIComponent.Instance.Toast('请选择开始时间')
+                return;
+            }
+            if (btn_pd_5.string == '结束时间') {
+                UIComponent.Instance.Toast('请选择结束时间')
+                return;
+            }
+            info.start_time = btn_pd_4.node['_data'].getTime();
+            info.end_time = btn_pd_5.node['_data'].getTime();
+        }
+        UIClubModel.mInstance.APIOrgClubEarning(info).then(
             (res) => {
                 this.refreshUpUI(res);
             },
@@ -86,13 +134,11 @@ export default class UIClubDataMange extends BaseForm {
         let index = node.index;
         this.refreshChooseNLH(index);
         this.lastGameType = index;
-        // this.reqUpInfo(index, this.lastTimeType);
-        // this.reqDownInfo();
+        this.reqUpInfo(index, this.lastTimeType);
+        this.reqDownInfo(index, this.lastTimeType);
     }
 
-    protected regiterDispatchEvent(): void {
-        super.regiterDispatchEvent();
-    }
+
     refreshChooseNLH(index) {
         for (let i = 1; i < 6; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
@@ -111,27 +157,28 @@ export default class UIClubDataMange extends BaseForm {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("pi_" + i);
             let lbl = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
             let label = btn_pt_1.getComponent(cc.Label);
-            let room_data = data.data.room_data;
+            let room_data = data?.data?.data;
+            if (!room_data) return
             //普通
             if (i == 1) {
                 lbl.string = "总收益";
-                label.string = room_data.total_game_cnt;
+                label.string = room_data.total_profit;
             } else if (i == 2) {
                 lbl.string = "服务费";
-                LobbyControl.getInstance().setWinColor(label, room_data.total_earn);
+                label.string = room_data.service_profit
             } else if (i == 3) {
                 lbl.string = "道具分成";
-                label.string = room_data.total_hand;
+                label.string = room_data.prop_profit;
             }
             else if (i == 4) {
                 lbl.string = "手数/局数";
-                label.string = room_data.vpip + "%";
+                label.string = room_data.total_hand + ' / ' + room_data.total_game_cnt;
             } else if (i == 5) {
                 lbl.string = "新增";
-                label.string = room_data.prf + "%";
+                label.string = room_data.total_add_register_user_count;
             } else if (i == 6) {
                 lbl.string = "活跃";
-                label.string = room_data.allinWins + "%";
+                label.string = room_data.sum_match_active;
             }
         }
 
@@ -151,18 +198,15 @@ export default class UIClubDataMange extends BaseForm {
             }
         }
     }
-    reqDownInfo() {
-        let group_by = 1;
-        if (this.lastGameType == 5) {
-            group_by = 2;
-        }
+    reqDownInfo(gameType, timeType) {
+        let data: any = Web_Org_Club_Get.Response.data;
         let info = {
-            group_by: group_by,      //1 room 2 mtt 3 mttroom
-            limit: 100,         //条目
-            offset: 0,        //开始下标。例子（offset=0，limit=10，0-9。）
-            game_type: this.lastGameType - 1,     //游戏类型，对应客户端 枚举 GameType
+            club_id: data.club_id,
+            game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
+            time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+            time_long: new Date().getTime(),      //客户端时间戳
         }
-        LobbyControl.getInstance().getHistoryInfo(info).then(
+        UIClubModel.mInstance.APIOrgClubMemberEarning(info).then(
             (res) => {
                 this.refreshListView(res);
             },
@@ -172,11 +216,12 @@ export default class UIClubDataMange extends BaseForm {
     }
 
     refreshListView(data) {
-        let records = data.data.records;
+        let records = data.data.data;
         let lbl_noshow: cc.Node = this.getChildNodeOrComponent("lbl_notShow");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
         scrollView.scrollToTop();
+        this.lbl_num.string = '( ' + records.length + ' )'
         if (records.length == 0) {
             lbl_noshow.active = true;
         } else {
@@ -189,58 +234,30 @@ export default class UIClubDataMange extends BaseForm {
                 let info = records[i];
                 let _cloneNode = cc.instantiate(panel_item);
                 _cloneNode.x = 0;
-                _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
+                // _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
                 _cloneNode.parent = scrollView.content;
-                let nameStr = GC.data.languageTemp.temp.getName(info.Name);
-                // 分数
-                let lbl_bx_score = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
-                LobbyControl.getInstance().setWinColor(lbl_bx_score, info.Change);
-                _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
-                let sbStr = `${info.small_blind}/${info.small_blind * 2}`
-                _cloneNode.getChildByName("lbl_sb").getComponent(cc.Label).string = sbStr;
-                _cloneNode.getChildByName("lbl_bx").active = info.insurance_on == 1;
-                let longStr = LobbyControl.getInstance().getLongTimeStr(info.play_duration);
-                _cloneNode.getChildByName("lbl_total").getComponent(cc.Label).string = longStr;
-                _cloneNode.getChildByName("img_dian_now").active = true;
-                let ts = Date.parse(info.Time)
-                let date = new Date(ts)
-                let timeStr = TimeHelper._zeroNum(date.getHours()) + ":" + TimeHelper._zeroNum(date.getMinutes());
-                _cloneNode.getChildByName("lbl_time").getComponent(cc.Label).string = timeStr;
-                _cloneNode["info"] = info;
-                _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
-                let dateStr = this.cacluDate(ts);
-                if (dateStr == -2) {
-                    _cloneNode.getChildByName("img_kuang_now").active = false;
-                    _cloneNode.getChildByName("img_dian_now").active = false;
-                    _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = "";
-                } else {
-                    if (dateStr == "今天" || dateStr == -1) {
-                        _cloneNode.getChildByName("img_kuang_now").active = true;
-                        _cloneNode.getChildByName("img_dian_now").active = true;
-                    } else {
-                        _cloneNode.getChildByName("img_dian_now").active = false;
-                        _cloneNode.getChildByName("img_kuang_now").active = false;
-                    }
-                    if (dateStr == -1) {
-                        _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = "";
-                    } else {
-                        _cloneNode.getChildByName("lbl_date").getComponent(cc.Label).string = dateStr.toString();
-                    }
-                }
+                let lbl_up = _cloneNode.getChildByName('lbl_up')
 
-                let typeStr = "";
-                if (info.origin_type == 1) {
-                    typeStr = "平台桌";
-                } else if (info.origin_type == 2) {
-                    typeStr = "联盟桌";
-                } else if (info.origin_type == 3) {
-                    typeStr = "工会桌";
-                } else if (info.origin_type == 4) {
-                    typeStr = "朋友桌";
-                }
-                _cloneNode.getChildByName("lbl_type").getComponent(cc.Label).string = typeStr;
+                let lbl_num = lbl_up.getChildByName('lbl_num').getComponent(cc.Label);
+                lbl_num.string = (i + 1) + ''
+
+                let lbl_nickName = lbl_up.getChildByName('lbl_nickName').getComponent(cc.Label);
+                lbl_nickName.string = 'player'//GC.data.languageTemp.temp.getName(info.Name);
+
+                let lbl_id = lbl_up.getChildByName('lbl_id').getComponent(cc.Label);
+                lbl_id.string = 'ID:' + info.user_id
+
+                let lbl_down = _cloneNode.getChildByName('lbl_down')
+                let lbl1 = lbl_down.getChildByName('lbl_Node1').getChildByName('lbl_hand').getComponent(cc.Label);
+                let lbl2 = lbl_down.getChildByName('lbl_Node2').getChildByName('lbl_hand').getComponent(cc.Label);
+                let lbl3 = lbl_down.getChildByName('lbl_Node3').getChildByName('lbl_hand').getComponent(cc.Label);
+                let lbl4 = lbl_down.getChildByName('lbl_Node4').getChildByName('lbl_hand').getComponent(cc.Label);
+                lbl1.string = info.total_hand + ' / ' + info.total_game_cnt
+                lbl2.string = info.service_profit
+                lbl3.string = info.prop_profit
+                lbl4.string = info.total_earn
+
             }
-            scrollView.content.height = panel_item.height * (len + 1);
         }
     }
 

@@ -1,49 +1,54 @@
+import internal = require("stream");
+import GC from "../../frame/GameControl";
+import { StringHelper } from "../../helper/StringHelper";
+import TimeHelper from "../../helper/TimeHelper";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import ToastManager from "../../manager/ToastManager";
+import { ProtocolCode } from "../../net/websocket/ProtocolCode";
+import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply } from "../../net/websocket/ProtocolHoldemMessages";
+import { Def, Operator, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
+import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
+import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
+import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_buy_insurance_pb";
+import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
+import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
+import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
+import { ServerMessageInsuranceTrigged } from "../../protobuf/holdem/recv_insurance_trigged_pb";
+import { ServerMessageKeepSeat } from "../../protobuf/holdem/recv_keep_seat_pb";
+import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
+import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
+import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
+import { ServerMessageShowcards } from "../../protobuf/holdem/recv_showcards_pb";
+import { ServerMessageShowPublicCardsOthers } from "../../protobuf/holdem/recv_show_public_cards_others_pb";
+import { ServerMessageSidePots } from "../../protobuf/holdem/recv_side_pots_pb";
+import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
+import { ServerMessageAction } from "../../protobuf/holdem/req_action_pb";
+import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
+import { ServerMessageAgreePost } from "../../protobuf/holdem/req_agree_post_pb";
+import { ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
+import { ServerMessageBuyInsuranceActive } from "../../protobuf/holdem/req_buy_insurance_active_pb";
+import { ServerMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
+import { ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
+import { ServerMessageSetAutoOnTable } from "../../protobuf/holdem/req_set_auto_on_table_pb";
+import { ServerMessageShowdown } from "../../protobuf/holdem/req_showdown_pb";
+import { ServerMessageShowPublicCards } from "../../protobuf/holdem/req_show_public_cards_pb";
+import { ServerMessageStoreChips } from "../../protobuf/holdem/req_store_chips_pb";
+import UIComponent, { PrefabUI } from "../../ui/UIComponent";
+import { CardType } from "../CardTypeUtil";
+import { CPlayer } from "../CPlayer";
+import { GameCache } from "../GameCache";
+import Seat from "../seat/Seat";
+import { SeatAddChips, SeatAllin, SeatCall, SeatCheck, SeatFold, SeatInsurance, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "../SeatStateHandler";
+import TexasGame from "../texas/TexasGame";
+import { TexasGameState } from "../TexasGameState";
+import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
+import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
+import UIOperationComponent from "../ui/UIOperationComponent";
+import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
+import GameUtil, { RoomType } from "../util/GameUtil";
 
-import GC from "../frame/GameControl";
-import { StringHelper } from "../helper/StringHelper";
-import TimeHelper from "../helper/TimeHelper";
-import { CPErrorCode } from "../i18n/CPErrorCode";
-import { i18nMgr } from "../i18n/i18nMgr";
-import ToastManager from "../manager/ToastManager";
-import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply } from "../net/websocket/ProtocolHoldemMessages";
-import { Def, Operator, PlayerChipChange, Result } from "../protobuf/holdem/define_pb";
-import { ServerMessageActionAll } from "../protobuf/holdem/recv_action_all_pb";
-import { ServerMessageAddTimeOthers } from "../protobuf/holdem/recv_add_time_others_pb";
-import { ServerMessageChipsChange } from "../protobuf/holdem/recv_chips_change_pb";
-import { ServerMessageGetMsg } from "../protobuf/holdem/recv_get_msg_pb";
-import { ServerMessageHandClear } from "../protobuf/holdem/recv_hand_clear_pb";
-import { ServerMessageInsuranceTrigged } from "../protobuf/holdem/recv_insurance_trigged_pb";
-import { ServerMessageKeepSeat } from "../protobuf/holdem/recv_keep_seat_pb";
-import { ServerMessagePostStatusChange } from "../protobuf/holdem/recv_post_status_change_pb";
-import { ServerMessagePublicCards } from "../protobuf/holdem/recv_public_cards_pb";
-import { ServerMessageSeatedOthers } from "../protobuf/holdem/recv_seated_others_pb";
-import { ServerMessageShowcards } from "../protobuf/holdem/recv_showcards_pb";
-import { ServerMessageShowPublicCardsOthers } from "../protobuf/holdem/recv_show_public_cards_others_pb";
-import { ServerMessageSidePots } from "../protobuf/holdem/recv_side_pots_pb";
-import { ServerMessageStartInfo } from "../protobuf/holdem/recv_start_info_pb";
-import { ServerMessageWinner } from "../protobuf/holdem/recv_winner_pb";
-import { ServerMessageAction } from "../protobuf/holdem/req_action_pb";
-import { ServerMessageAddTime } from "../protobuf/holdem/req_add_time_pb";
-import { ServerMessageBringIn } from "../protobuf/holdem/req_bring_in_pb";
-import { ServerMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
-import { ServerMessageSeated } from "../protobuf/holdem/req_seated_pb";
-import { ServerMessageSetAutoOnTable } from "../protobuf/holdem/req_set_auto_on_table_pb";
-import { ServerMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
-import { ServerMessageShowPublicCards } from "../protobuf/holdem/req_show_public_cards_pb";
-import { ClientMessageStoreChips, ServerMessageStoreChips } from "../protobuf/holdem/req_store_chips_pb";
-import UIComponent, { PrefabUI } from "../ui/UIComponent";
-import { CardType } from "./CardTypeUtil";
-import { CPlayer } from "./CPlayer";
-import { GameCache } from "./GameCache";
-import Seat from "./seat/Seat";
-import { SeatAddChips, SeatAllin, SeatCall, SeatCheck, SeatFold, SeatInsurance, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "./SeatStateHandler";
-import TexasGame from "./texas/TexasGame";
-import { TexasGameState } from "./TexasGameState";
-import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
-import UIInsuranceComponent, { InsuranceData, WrapTriggedInsuranceData } from "./ui/UIInsuranceComponent";
-import UIOperationComponent from "./ui/UIOperationComponent";
-import { RoomType } from "./util/GameUtil";
 
 const CanPlayStatus = Def.CanPlayStatus;
 
@@ -157,7 +162,7 @@ export default class TexasGameProtocol {
             return;
         }
         if (rec.status != 0) {
-            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(rec.status));
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
             return;
         }
         this.game.mainPlayer.chips = rec.chips;
@@ -261,7 +266,7 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="responseData"></param>
     /// <param name="obj"></param>
-    public handleRecvStartInfoCommon(responseData: ServerMessageStartInfo.AsObject, obj): void {
+    public handleRecvStartInfoCommon(rec: ServerMessageStartInfo.AsObject, obj): void {
         this.game.gamestatus = 1;
         GameCache.Instance.GameStatus = this.game.gamestatus;
         this.game.cacheRound = Def.Round.PREFLOP;
@@ -269,47 +274,47 @@ export default class TexasGameProtocol {
         this.game.fuck4thPCardByInsuranceState = 0;
         this.game.isAllinGetPlayerCards = false;
         this.game.lastBankerIndex = this.game.bankerIndex;
-        this.game.bankerIndex = this.game.GetLocalSeatID(responseData.handInfo.buSeatId);
-        this.game.bigIndex = this.game.GetLocalSeatID(responseData.handInfo.bbSeatId);
-        this.game.smallIndex = this.game.GetLocalSeatID(responseData.handInfo.sbSeatId);
-        if (responseData.nextOperator != null) {
-            this.game.operationID = this.game.GetLocalSeatID(responseData.nextOperator.seatId);
+        this.game.bankerIndex = this.game.GetLocalSeatID(rec.handInfo.buSeatId);
+        this.game.bigIndex = this.game.GetLocalSeatID(rec.handInfo.bbSeatId);
+        this.game.smallIndex = this.game.GetLocalSeatID(rec.handInfo.sbSeatId);
+        if (rec.nextOperator != null) {
+            this.game.operationID = this.game.GetLocalSeatID(rec.nextOperator.seatId);
         }
-        this.game.mHandNum = responseData.handInfo.handNum;
+        this.game.mHandNum = rec.handInfo.handNum;
         this.game.UpdateRoomDes();
         this.game.ResetPublicCardsId();
         this.game.ClearPublicCardsUI();
         this.game.HideWaitBlindBtn();
         let Seat: Seat = null;
         let SeverSeatIds: number[] = [];
-        for (let i = 0, n = responseData.playersList.length; i < n; i++) {
-            Seat = this.game.listSeat[this.game.GetLocalSeatID(responseData.playersList[i].seatId)];
+        for (let i = 0, n = rec.playersList.length; i < n; i++) {
+            Seat = this.game.listSeat[this.game.GetLocalSeatID(rec.playersList[i].seatId)];
             if (null == Seat || null == Seat.Player) {
                 continue;
             }
-            SeverSeatIds.push(this.game.GetLocalSeatID(responseData.playersList[i].seatId));
+            SeverSeatIds.push(this.game.GetLocalSeatID(rec.playersList[i].seatId));
             Seat.isBank = Seat.seatID == this.game.bankerIndex;
             Seat.isBig = Seat.seatID == this.game.bigIndex;
             Seat.isSmall = Seat.seatID == this.game.smallIndex;
-            Seat.isStraddle = responseData.playersList[i].action == Def.Action.STRADDLE;
-            Seat.Player.SetCards(this.game.GetHandCardsAtRecvStartInfo(responseData, i));
-            Seat.Player.chips = responseData.playersList[i].chip;
-            Seat.Player.cacheChips = responseData.playersList[i].chip + responseData.playersList[i].roundBet + responseData.playersList[i].ante;
+            Seat.isStraddle = rec.playersList[i].action == Def.Action.STRADDLE;
+            Seat.Player.SetCards(this.game.GetHandCardsAtRecvStartInfo(rec, i));
+            Seat.Player.chips = rec.playersList[i].chip;
+            Seat.Player.cacheChips = rec.playersList[i].chip + rec.playersList[i].roundBet + rec.playersList[i].ante;
             Seat.Player.canPlayStatus = Def.CanPlayStatus.NORMAL;//数组里面有人即可打牌
             Seat.Player.extraBlind = 0;//是否补盲，已在列表的玩家不需要补盲
-            Seat.Player.isFold = responseData.playersList[i].action == Def.Action.FOLD;
+            Seat.Player.isFold = rec.playersList[i].action == Def.Action.FOLD;
             Seat.FoldHeadGray(Seat.Player.isFold);
-            Seat.Player.actionStatus = responseData.playersList[i].action;
+            Seat.Player.actionStatus = rec.playersList[i].action;
             Seat.Player.anteNumber = 0;
             Seat.UpdateWaiteNextTips(false);
             Seat.FsmLogicComponent.SM.ChangeState(SeatStart.Instance);
-            Seat.Player.anteNumber += responseData.playersList[i].roundBet;
+            Seat.Player.anteNumber += rec.playersList[i].roundBet;
             if (Seat.isStraddle) {
                 Seat.FsmLogicComponent.SM.ChangeState(SeatStraddle.Instance);
             }
-            if (responseData.playersList[i].ante >= 0) {
-                this.game.alreadAnte += responseData.playersList[i].ante;
-                this.game.alreadAnte += responseData.playersList[i].roundBet;
+            if (rec.playersList[i].ante >= 0) {
+                this.game.alreadAnte += rec.playersList[i].ante;
+                this.game.alreadAnte += rec.playersList[i].roundBet;
             }
             if (Seat.seatID == this.game.mainPlayer.seatID) {
                 this.game.HideWaitBlindBtn();
@@ -337,11 +342,11 @@ export default class TexasGameProtocol {
 
         //判断座位是否运动中,做延迟处理
         if (this.game.SeatPlayRecord.SeatMove) {
-            this.game.SeatPlayRecord.StartInfo = responseData;
+            this.game.SeatPlayRecord.StartInfo = rec;
             this.game.SeatPlayRecord.PlayDealFunc = this.__PlayDealAnimation.bind(this);
             cc.log("————————>延迟执行发牌");
         } else {
-            this.__PlayDealAnimation(responseData);
+            this.__PlayDealAnimation(rec);
             cc.log("————————>立刻执行发牌");
         }
     }
@@ -1548,7 +1553,7 @@ export default class TexasGameProtocol {
             mSeat.Player.MttHunterKillAwardOtherPlus += playerChipChange.mttHunterHeadPlus;
             if (this.game.mainPlayer.seatID == this.game.GetLocalSeatID(playerChipChange.seatId)) {
                 if (playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE1 || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE2) {
-                    UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get("Addondz"), StringHelper.GetSignedLongString(playerChipChange.change)));
+                    UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get("Addondz"), [StringHelper.GetSignedLongString(playerChipChange.change)]));
                 }
                 UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
                 this.game.mainPlayer.cacheStoreChips = playerChipChange.storeChips;
@@ -1570,14 +1575,10 @@ export default class TexasGameProtocol {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
             return;
         }
-        // UIComponent.Instance.Show(UIType.UIOutChipsTip,
-        //     new UIOutChipsTipComponent.OutClipstipData()
-        //                   {
-
-        //         state = rec.Status,
-
-        //         tableChips = (int)cacheOutChips,
-        //     });
+        UIComponent.Instance.ShowUI(
+            PrefabUI.UIOutChipsTipComponent,
+            new UIOutChipsTipComponent.OutClipstipData(rec.status, this.game.cacheOutChips)
+        );
         this.game.cacheOutChips = 0;
         UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
         let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
@@ -1714,15 +1715,61 @@ export default class TexasGameProtocol {
         mTweenCallback();
     }
 
+    //同意补盲
+    HANDLER_REQ_WAIT_BLIND(rec: ServerMessageAgreePost.AsObject) {
 
-    HANDLER_REQ_WAIT_BLIND(Protocol_Holdem_AgreePost: ProtocolCode, HANDLER_REQ_WAIT_BLIND: any, arg2: this) {
-        throw new Error("Method not implemented.");
+        if (rec == null) return;
+
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_WAIT_BLIND, rec.Status)
+            return;
+        }
+        this.game.HideWaitBlindBtn();
+        let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+        UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(20021));
+        if (null != mSeat) {
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+        }
     }
-    HANDLER_REQ_BUY_INSURANCE(Protocol_Holdem_BuyInsuranceActive: ProtocolCode, HANDLER_REQ_BUY_INSURANCE: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    //主动购买保险
+    HANDLER_REQ_BUY_INSURANCE(rec: ServerMessageBuyInsuranceActive.AsObject) {
+        if (rec == null) return;
+        // if (rec.status != 0) {
+
+        // }
     }
-    HANDLER_REQ_CLAIM_INSURANCE(Protocol_Holdem_BuyInsurance: ProtocolCode, HANDLER_REQ_CLAIM_INSURANCE: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    //保险赔付
+    HANDLER_REQ_CLAIM_INSURANCE(rec: ServerMessageBuyInsurance.AsObject) {
+        if (rec == null) return;
+        this.game.cacheTrunOutsCards = new Map<number, number[]>();
+
+        rec.buyList.forEach(potInsuranceBuy => {
+            if (potInsuranceBuy.activeAmount > 0) {
+                let mSeat: Seat = this.game.GetSeatByServerSeatID(rec.seatId);
+                mSeat.Player.totalInsuredAmount = potInsuranceBuy.activeAmount;
+                mSeat.Player.autoInsuredAmount = potInsuranceBuy.passiveAmount;
+                mSeat.HideBubbleInsuranceCountDown();
+                mSeat.UpdateBubbleInsurance();
+                let mouts: number[] = [];
+                for (let j = 0; j < potInsuranceBuy.activeOutsList.length; j++) {
+                    mouts.push(potInsuranceBuy.activeOutsList[j]);
+                }
+                this.game.cacheTrunOutsCards.set(rec.seatId, mouts);
+                if (this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {
+                    this.game.cacheBuyActiveAmount = potInsuranceBuy.activeAmount;
+
+                    if (this.game.uirc.Image_InsuranceTips.activeInHierarchy) {
+                        this.game.uirc.Image_InsuranceTips.active = false;
+                    }
+                    this.game.uirc.ShowInsuranceTip(potInsuranceBuy.activeOutsList.length, potInsuranceBuy.activeAmount, GameUtil.GetOddsByPlayerNum(this.game.cacheBuyInsurancePotUserCount, potInsuranceBuy.activeOutsList.length) * potInsuranceBuy.activeAmount);
+                }
+            }
+
+            if (potInsuranceBuy.passiveAmount > 0 && this.game.GetLocalSeatID(rec.seatId) == this.game.mainPlayer.seatID) {
+                UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(20053, [potInsuranceBuy.passiveAmount / 100]));
+            }
+        })
+
     }
 
     Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {

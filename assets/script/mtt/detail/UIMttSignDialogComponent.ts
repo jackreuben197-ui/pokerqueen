@@ -122,13 +122,13 @@ export default class UIMttSignDialogComponent extends UIBase {
 
         if (null != data)
 		{
-            this.SingType = UIMatchMttModel.getInstance().MttInfo.mtt.prop_buy_type;
+            this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
             this.curDialogData = data;
             if (null != this.curDialogData)
             {
-                if (UIMatchMttModel.getInstance().MttInfo.mtt.buy_prop_id != 0)
+                if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0)
                 {
-                    UIMatchMttModel.getInstance().APIPropUserCheckPropInfo(res =>
+                    UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res =>
                     {
                         if (res.code == 0)
                         {
@@ -166,7 +166,7 @@ export default class UIMttSignDialogComponent extends UIBase {
         //UpdateLimitFree();
         //SetMultLimitFreeName();
         // propInfos = new List<Web_Prop_User_Prop_List.Record>();
-        UIMatchMttModel.getInstance().APIMtt_GetDiscounts(pAct =>
+        UIMatchMttModel.Instance.APIMtt_GetDiscounts(pAct =>
         {
             if (pAct.code == 0)
             {
@@ -231,12 +231,12 @@ export default class UIMttSignDialogComponent extends UIBase {
         // Text_Ratio.text = string.Format(LanguageManager.Get("UIMTTbuyinDialog"), curDialogData.buyRatio);
         // AvailableTickets.text = string.Format(LanguageManager.Get("UIMTTSignDialogCanUseTickt"), cachePropBalance);
         //if (UIMatchMTTModel.Instance.MttInfo.mtt.total_rebuy_times > 0) {
-        this.totalRebuyTimes = UIMatchMttModel.getInstance().MttInfo.mtt.rebuy_times;
+        this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
         if (this.totalRebuyTimes < 10000)
         {
             //可重构次数   
             //!!!!!特别注意:当后台设置不限制重构次数时,rebuy_times为10000,而left_rebuy_times在后端传输时做了int8转换越界变为16了,但只是传到前端的转化了后端正常,故在此做特别处理!!!!!!
-            if (UIMatchMttModel.getInstance().MttInfo.state != null) {
+            if (UIMatchMttModel.Instance.MttInfo.state != null) {
                 // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), UIMatchMTTModel.Instance.MttInfo.state.left_rebuy_times);
             } else {
                 // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), totalRebuyTimes);
@@ -530,9 +530,9 @@ export default class UIMttSignDialogComponent extends UIBase {
 
     // 报名
     ApplyMatch() {
-        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this.curDialogData.buyRatio == 1 && UIMatchMttModel.getInstance().MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService)
+        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this.curDialogData.buyRatio == 1 && UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService)
         {
-            UIMatchMttModel.getInstance().APIPropUserBuyProp(response =>
+            UIMatchMttModel.Instance.APIPropUserBuyProp(response =>
             {
                 if (response.code == 0)
                 {

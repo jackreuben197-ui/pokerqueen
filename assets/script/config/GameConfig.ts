@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 20:35:41
+ * @LastEditTime: 2022-10-29 17:37:51
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -14,6 +14,7 @@ import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
 
+    static debug: boolean = true;
     static Web_Host_Test1 = "test1.awanptesting.com";
     static Web_Host_Dev1 = "dev1.awanptesting.com";
     static Web_Host_Dev = "dev.k8s.awanptesting.com";
@@ -23,10 +24,10 @@ export class GameConfig {
     //2: http://dev1.awanptesting.com 
     //3: https://test1.awanptesting.com  
     //4: https://dev1.awanptesting.com 
-    static BuildType: number = 4;
+    static BuildType: number = 0;
 
     //版本号
-    static Version: string = "20221021_1900";
+    static Version: string = "20221028_2230";
 
     static Default_Language: string = "en";
     //是否使用代理
@@ -74,9 +75,9 @@ export var NetWorkBase = {
  * 语言列表
  */
 export var LanguageList: { lan: string, name: string }[] = [
-    { lan: "en", name: "Englist" },
-    { lan: "pt", name: "Português" },
-    { lan: "cn", name: "Chinese" },
+    { lan: "en", name: "UILogin_USA"},
+    { lan: "pt", name: "sl_ptyyPutao" },
+    { lan: "cn", name: "UILogin_China" },
 ];
 /**
  * Log样式

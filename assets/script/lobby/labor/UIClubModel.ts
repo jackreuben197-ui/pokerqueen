@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 21:11:48
+ * @LastEditTime: 2022-11-01 11:23:13
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgClubCreateRoomAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgClubCreateRoomAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -609,6 +609,35 @@ export class UIClubModel {
             });
         });
     }
+    APIOrgClubEarning(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubEarning,
+                body: APIOrgClubEarning.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubEarning.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgClubMemberEarning(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubMemberEarning,
+                body: APIOrgClubMemberEarning.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubMemberEarning.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
 
 
 

@@ -2381,8 +2381,10 @@
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
-    "_spriteFrame": null,
-    "_type": 0,
+    "_spriteFrame": {
+      "__uuid__": "78eb4838-c9b9-45cf-83c2-4c4d9976226a"
+    },
+    "_type": 2,
     "_segments": 64,
     "_N$alphaThreshold": 0.1,
     "_N$inverted": false,

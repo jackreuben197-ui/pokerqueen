@@ -183,11 +183,6 @@ export default class GameUtil {
         this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedPotLimit, null);// MTT
         this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedAof, null);// MTT
     }
-    //是否开放的房间类型
-    public static IsOpenRoomType(roomType: number): boolean {
-        this._SetGameMap();
-        return !!this.GameMap.get(roomType);
-    }
     private static GetGame(roomType: RoomType, Game_Cls: any) {
         if (!Game_Cls) return null;
         let game = GameUtil.GameInstanceMap.get(roomType);
@@ -196,6 +191,11 @@ export default class GameUtil {
             GameUtil.GameInstanceMap.set(roomType, game);
         }
         return game;
+    }
+    //是否开放的房间类型
+    public static IsOpenRoomType(roomType: number): boolean {
+        this._SetGameMap();
+        return !!this.GameMap.get(roomType);
     }
     //实例游戏类(从缓存Map中拿去)
     public static InstantiateTexasGame(roomType: RoomType) {
@@ -225,10 +225,12 @@ export default class GameUtil {
     public static SeatAdapterPos() {
 
         if (cc.view.getVisibleSize().height < GameConfig.DesignResolution.height) {
-            this.SeatPosV3[0] = cc.v3(0, 454 - cc.view.getVisibleSize().height / 2);
+            this.SeatPosV3[0].y = 454 - cc.view.getVisibleSize().height / 2;
+            console.log("适配0位置:", this.SeatPosV3[0].toString());
         }
-        if (cc.view.getVisibleSize().height < 2400) {
-            this.SeatPosV3[7] = cc.v3(0, cc.view.getVisibleSize().height / 2 - 344);
+        if (cc.view.getVisibleSize().height < 2300) {
+            this.SeatPosV3[7].y = cc.view.getVisibleSize().height / 2 - 170;
+            console.log("适配7位置:", this.SeatPosV3[7].toString());
         }
     }
 
@@ -1410,7 +1412,24 @@ export default class GameUtil {
             },
         }
 
+    public static GetOddsByPlayerNum(playerNum: number, selectOuts: number): number {
+        selectOuts -= 1;//从数组零下标开始
+        let outs: number[] = [];
+        //this.OutsList.TryGetValue(playerNum, out outs);
+        let value = this.OutsList.get(playerNum);
 
+        if (value) outs = value;
+
+        if (selectOuts > outs.length && selectOuts <= 30) {
+            return outs[outs.length - 1];
+        }
+        if (selectOuts > 30)
+            return 0;
+        if (selectOuts < 0) {
+            return 0;
+        }
+        return outs[selectOuts];
+    }
 
     /**
      * 
@@ -1446,3 +1465,4 @@ export default class GameUtil {
         }
     }
 }
+(window as any).GameUtil = GameUtil;

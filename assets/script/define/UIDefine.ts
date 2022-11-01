@@ -471,6 +471,13 @@ export const UIDefine = {
         Name: "UIClubDataMange",
         Bundle: null,
         Path: "main/club/UIClubDataMange",
+    },
+
+    UICalendar: {
+        UIType: UIType.Board,
+        Name: "UICalendar",
+        Bundle: null,
+        Path: "main/club/prefab/UICalendar",
     }
 
 }

@@ -3,7 +3,7 @@
  * @Date: 2022-09-05 15:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 19:02:03
+ * @LastEditTime: 2022-10-29 16:23:42
  * @FilePath: /pokerqueen/assets/script/helper/TimeHelper.ts
  */
 
@@ -23,7 +23,7 @@ export default class TimeHelper {
     public static get NowS() {
         return (new Date().getTime() / 1000) ^ 0;
     }
-    public static convertUTCTimeToLocalTime(UTCDateString) {
+    public static convertUTCTimeToLocalTime(UTCDateString, separated = '-', isNeedMin = true) {
         let date2 = new Date(UTCDateString);     //这步是关键
         let year = date2.getFullYear();
         let formatFunc = (str) => {    //格式化显示
@@ -36,7 +36,10 @@ export default class TimeHelper {
         // hour = hour >= 12 ? hour - 12 : hour;
         hour = formatFunc(hour);
         let min = formatFunc(date2.getMinutes());
-        let dateStr = year + '-' + mon + '-' + day + ' ' + hour + ':' + min;
+        let dateStr = year + separated + mon + separated + day
+        if (isNeedMin) {
+            dateStr = dateStr + ' ' + hour + ':' + min;
+        }
         return dateStr;
     }
 
@@ -101,10 +104,10 @@ export default class TimeHelper {
      */
     public static TimeToString(time: number, format: string) {
         let date = new Date(time);
-        let MM = this._zeroNum(date.getMonth() + 1);
-        let dd = this._zeroNum(date.getDate());
-        let HH = this._zeroNum(date.getHours());
-        let mm = this._zeroNum(date.getMinutes());
+        let MM = this.ZeroNum(date.getMonth() + 1);
+        let dd = this.ZeroNum(date.getDate());
+        let HH = this.ZeroNum(date.getHours());
+        let mm = this.ZeroNum(date.getMinutes());
         let result = format;
         result = result.replace("MM", MM);
         result = result.replace("dd", dd);
@@ -113,17 +116,9 @@ export default class TimeHelper {
         return result;
     }
 
-    public static _zeroNum(num: number): string {
+    public static ZeroNum(num: number): string {
         return `${num < 10 ? 0 : ""}${num}`;
     }
-
-
-
-
-
-
-
-
 
     static getYMD(t: number, flag: string = null, isMil: boolean = false) {
         let data = this.getDateStructYMD(t, isMil);

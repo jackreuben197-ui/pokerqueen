@@ -35,6 +35,27 @@ export class Web_Login {
     static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
 }
 
+export class Web_Login_Third_Party {
+    static API: string = "/api/user/login_third_party";
+    static RequestParams: {
+        token: string,
+        source: string,
+        app_source: number
+    } = null;
+
+    static ResponseData: {
+        token?: string,        // 手机号
+        expire_at?: number,        // 密码MD5
+    } = null;
+
+
+    static Request(param: typeof Web_Login_Third_Party.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
+}
+
 /// <summary>
 /// 刷新token
 /// </summary>
@@ -2747,7 +2768,7 @@ export class APIOrgClubMember {
     };
 }
 export class APIOrgClubActivityCreate {
-    public static API: string = "/api/cmsext/activity/club/create";
+    public static API: string = "/api/cmsext/activity/club/update";
     //字段声明
     public static RequestParams: {
         club_id: number,  //
@@ -2782,6 +2803,40 @@ export class APIOrgClubActivityInfo {
     }
     public static Response: {
         code?: number, message?: string, data?: typeof APIOrgClubActivityInfo.ResponseData
+    };
+}
+export class APIOrgClubEarning {
+    public static API: string = "/api/stats/club/profit";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubEarning.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubEarning.ResponseData
+    };
+}
+export class APIOrgClubMemberEarning {
+    public static API: string = "/api/stats/club/user_profit";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubMemberEarning.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubMemberEarning.ResponseData
     };
 }
 

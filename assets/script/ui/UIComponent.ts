@@ -1,7 +1,5 @@
 
-import { Tracing } from "trace_events";
 import { IUIDefine, UIType } from "../define/EIDefine";
-import { Param } from "../define/Types";
 import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
@@ -19,6 +17,8 @@ export enum PrefabUI {
     UIAutoOperationComponent = "UIAutoOperationComponent",
     UIInsuranceComponent = "UIInsuranceComponent",
     UIAutoChipsComponent = "UIAutoChipsComponent",
+    UIMTTTimeComponent = "UIMTTTimeComponent",
+    UIOutChipsTipComponent = "UIOutChipsTipComponent",
 }
 //打开面板追加参数
 export interface Open_Obj {

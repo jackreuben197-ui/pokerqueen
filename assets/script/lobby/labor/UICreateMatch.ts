@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:07:47
+ * @LastEditTime: 2022-10-31 18:26:47
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -292,7 +292,7 @@ export default class UICreateMatch extends BaseForm {
             this.jslx.active = false;
             this.fddmHd.active = false
             this.kzwjdr.active = false
-            this.bx.active = true
+            // this.bx.active = true
             cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
             this.fwfbl.height = this.fwfbNum == 0 ? 300 : 200;
             this.fddm.active = this.fwfbNum == 0 ? true : false;
@@ -303,7 +303,7 @@ export default class UICreateMatch extends BaseForm {
             this.kzwjdr.active = true
             this.fwfbl.active = false;
             this.save.active = false;
-            this.bx.active = false
+            // this.bx.active = false
         }
 
 
@@ -400,7 +400,8 @@ export default class UICreateMatch extends BaseForm {
         cc.find('btn_switch/close', this.etp).active = !this.etpState;
     }
     fwfblLogic() {
-        let fwfConfig: any = APIOrgGetRoomConfig.Response.data;
+        let fwfConfig: any = APIOrgGetRoomConfig.Response?.data;
+        if (!fwfConfig) return;
         this.fwfbl.getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.fee_permillage + '%'
         this.fwfbl.getChildByName('fddm').getChildByName('lblNum').getComponent(cc.Label).string = fwfConfig?.data?.max_per_hand
         let toggle1: cc.Toggle = cc.find(`ToggleContainer/toggle1`, this.fwfbl).getComponent(cc.Toggle)
@@ -568,7 +569,7 @@ export default class UICreateMatch extends BaseForm {
         room_config.limit_ip = this.ipState   //是否开启ip限制
         room_config.limit_gps = this.gpsState //是否开启gps限制
         room_config.second_public_cards = this.etpState  //是否开启第二套牌
-
+        room_config.insurance = this.bxState
         let params: any = { name: modelName, room_config: room_config }
         console.log('params===', params)
         //0 是模版
@@ -584,6 +585,7 @@ export default class UICreateMatch extends BaseForm {
         } else if (this._btnType == 1) {
             //工会牌桌
             if (this._fromUI == 'UICreateMatchHome') {
+
                 room_config.limit_friend_table = false
                 room_config.limit_bring_in = false
                 await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
@@ -598,7 +600,7 @@ export default class UICreateMatch extends BaseForm {
                     room_config.max_per_hand = Number(this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //服务费比例(0-100)
                 }
 
-                room_config.insurance = this.bxState
+
                 room_config.fee_permillage = Number(this.jslx.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
                 room_config.limit_friend_table = true;
                 room_config.limit_bring_in = this.kzwjdrState;

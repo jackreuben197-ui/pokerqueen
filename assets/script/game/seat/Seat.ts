@@ -5,6 +5,7 @@
 
 import UpdateComponent from "../../funcomponent/UpdateComponent";
 import { StringHelper } from "../../helper/StringHelper";
+import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { Def } from "../../protobuf/holdem/define_pb";
@@ -108,111 +109,6 @@ export default class Seat {
     public listCardUIInfos: CardUIInfo[] = null;
     public listSmallCardUIInfos: CardUIInfo[] = null;
     public listImageSmallCardBack: cc.Sprite[] = null;
-
-    // private static Pos: {
-    //     [key: number]:
-    //     {
-    //         myCardsPos?: cc.Vec3[],
-    //         backSmallCardPos?: cc.Vec3[],
-    //         smallCardPos?: cc.Vec3[],
-    //         myCardTypePos?: cc.Vec3[],
-    //         voiceStatePositon?: cc.Vec3
-    //     }
-    // } =
-    //     {
-    //         2: {
-    //             myCardsPos: [
-    //                 cc.v3(-20, 0),
-    //                 cc.v3(160, 0),
-    //             ],
-    //             backSmallCardPos: [
-    //                 cc.v3(0, 0),
-    //                 cc.v3(-20, 0),
-    //             ],
-    //             smallCardPos: [
-    //                 cc.v3(-29, 0),
-    //                 cc.v3(35, 0),
-    //             ],
-    //             myCardTypePos: [cc.v3(-80, -243)],
-    //             voiceStatePositon: cc.v3(284, -237, 0),
-    //         },
-    //         4: {
-    //             myCardsPos: [
-    //                 cc.v3(-63, 0),
-    //                 cc.v3(30, 0),
-    //                 cc.v3(123, 0),
-    //                 cc.v3(216, 0),
-    //             ],
-    //             backSmallCardPos: [
-    //                 cc.v3(0, 0),
-    //                 cc.v3(-20, 0),
-    //                 cc.v3(-40, 0),
-    //                 cc.v3(-60, 0),
-    //             ],
-    //             smallCardPos: [
-    //                 cc.v3(-60, 0),
-    //                 cc.v3(-17, 0),
-    //                 cc.v3(26, 0),
-    //                 cc.v3(70, 0),
-    //             ],
-    //             myCardTypePos: [cc.v3(-117, -243)],
-    //             voiceStatePositon: cc.v3(335.4, -232, 0),
-    //         },
-    //         5: {
-    //             myCardsPos: [
-    //                 cc.v3(-63, 0),
-    //                 cc.v3(30, 0),
-    //                 cc.v3(123, 0),
-    //                 cc.v3(216, 0),
-    //                 cc.v3(309, 0),
-    //             ],
-    //             backSmallCardPos: [
-    //                 cc.v3(0, 0),
-    //                 cc.v3(-20, 0),
-    //                 cc.v3(-40, 0),
-    //                 cc.v3(-60, 0),
-    //                 cc.v3(-80, 0),
-    //             ],
-    //             smallCardPos: [
-    //                 cc.v3(-60, 0),
-    //                 cc.v3(-27.5, 0),
-    //                 cc.v3(5, 0),
-    //                 cc.v3(37.5, 0),
-    //                 cc.v3(70, 0),
-    //             ],
-    //             myCardTypePos: [cc.v3(-117, -243)],
-    //             voiceStatePositon: cc.v3(446, -233, 0),
-    //         },
-    //         6: {
-    //             myCardsPos: [
-    //                 cc.v3(-63, 0),
-    //                 cc.v3(30, 0),
-    //                 cc.v3(123, 0),
-    //                 cc.v3(216, 0),
-    //                 cc.v3(309, 0),
-    //                 cc.v3(402, 0),
-    //             ],
-    //             backSmallCardPos: [
-    //                 cc.v3(0, 0),
-    //                 cc.v3(-20, 0),
-    //                 cc.v3(-40, 0),
-    //                 cc.v3(-60, 0),
-    //                 cc.v3(-80, 0),
-    //                 cc.v3(-100, 0),
-    //             ],
-    //             smallCardPos: [
-    //                 cc.v3(-60, 0),
-    //                 cc.v3(-34, 0),
-    //                 cc.v3(-8, 0),
-    //                 cc.v3(18, 0),
-    //                 cc.v3(44, 0),
-    //                 cc.v3(70, 0),
-    //             ],
-    //             myCardTypePos: [cc.v3(-117, -243)],
-    //             voiceStatePositon: cc.v3(515, -237, 0),
-    //         },
-    //     }
-
 
     /// <summary>
     /// 是否留座离桌倒计时中
@@ -1774,6 +1670,51 @@ export default class Seat {
         this.voiceStatePositon = GameUtil.Seat_ElementPos[GameCache.Instance.CurGame.HandCards].voiceStatePositon;
     }
 
+
+    // 刷新购买保险数量
+    public UpdateBubbleInsurance() {
+        this.isCountDown = false;
+        this.uirc.imageCountDown.node.active = false;
+        this.uirc.Image_CountDownbg.node.active = false;
+
+
+        //不保
+        if (this.Player.totalInsuredAmount + this.Player.autoInsuredAmount == 0) {
+            this.uirc.Image_BubbleInsuranceNum.active = !this.IsMySeat;
+            this.uirc.Image_BubbleInsuranceNum.getChildByName("Text").getComponent(cc.Label).string = CPErrorCode.LanguageDescription(10049);
+        }
+        else {
+            this.uirc.Image_BubbleInsuranceToubao.active = !this.IsMySeat;
+            if (this.Player.autoInsuredAmount > 0) {
+                this.uirc.Image_BubbleInsuranceToubao.getChildByName("Text").getComponent(cc.Label).string = CPErrorCode.LanguageDescription(20058, [StringHelper.GetLongString(this.Player.totalInsuredAmount), StringHelper.GetLongString(this.Player.autoInsuredAmount)]);
+            }
+            else {
+                this.uirc.Image_BubbleInsuranceToubao.getChildByName("Text").getComponent(cc.Label).string = CPErrorCode.LanguageDescription(20059, [StringHelper.GetLongString(this.Player.totalInsuredAmount)]);
+            }
+        }
+        this.CloseInsuranceBaoBubaoBubble();
+
+    }
+    private async CloseInsuranceBaoBubaoBubble() {
+        await TimeHelper.Sleep(2000);
+        if (this.uirc.Image_BubbleInsuranceNum.activeInHierarchy) {
+            this.uirc.Image_BubbleInsuranceNum.active = false;
+        }
+        if (this.uirc.Image_BubbleInsuranceToubao.activeInHierarchy) {
+            this.uirc.Image_BubbleInsuranceToubao.active = false;
+        }
+    }
+    //刷新猎人头奖励
+    public UpdateHunterAward() {
+        if (null == this.Player || this.IsMySeat) {
+            this.uirc.Image_CoinShadow.active = false;
+            return;
+        }
+        let value = this.Player.HunterHeadValue + this.Player.HunterKillAwardOther + this.Player.MttHunterKillAwardOtherPlus;
+        this.uirc.Image_CoinShadow.active = value > 0;
+        this.uirc.Image_CoinShadow.getChildByName("Text").getComponent(cc.Label).string = StringHelper.GetLongString(value);
+    }
+
     //////////////////////////////////////
 
     public ResetShowCardsId(): void {
@@ -1805,6 +1746,10 @@ export default class Seat {
             this.listImageSmallCardBack.push(this.uirc.imageSmallCardBacks[i]);
         }
         this.ResetShowCardsId();
+    }
+    // 刷新托管
+    public UpdateTrust() {
+        this.uirc.Image_Trust.active = this.Player.IsAutoOp;
     }
 }
 export interface SeatUIInfo {

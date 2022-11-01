@@ -287,8 +287,6 @@ export class GameCache {
         return this._Instance ||= new GameCache();
     }
 
-    static aaa = Math.random();
-
     initTexasGame() {
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);
     }

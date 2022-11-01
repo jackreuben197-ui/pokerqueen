@@ -89,14 +89,28 @@ export default class SeatUIRC extends UIBase {
     textCancelReserveSeat: cc.Label = null;
 
 
-    imageReserveSeat: cc.Node = null;
-
-    m_ReserveTime: cc.Label = null;
-
     imageOffline: cc.Node = null;
 
     imageBubble: cc.Sprite = null;
     textBubble: cc.Label = null;
+
+    //保险
+    Image_BubbleInsuranceNum: cc.Node = null;
+
+    Image_BubbleInsuranceToubao: cc.Node = null;
+
+
+
+
+    //返回座位
+    imageReserveSeat: cc.Node = null;
+    //返回座位时间
+    m_ReserveTime: cc.Label = null;
+    //托管
+    Image_Trust: cc.Node = null;
+
+    //猎人头奖励
+    Image_CoinShadow: cc.Node = null;
 
     //用来设置操作面板的位置
     Operation_Pos_Mark: cc.Node = null;
@@ -167,14 +181,23 @@ export default class SeatUIRC extends UIBase {
         this.imageReserveSeat = this.getChildNodeOrComponent("Image_ReserveSeat");
         this.m_ReserveTime = this.getChildNodeOrComponent("time", cc.Label);
 
+        this.Image_Trust = this.getChildNodeOrComponent("Image_Trust");
+
+
         this.imageOffline = this.getChildNodeOrComponent("imageOffline");
 
 
         this.imageBubble = this.getChildNodeOrComponent("Image_Bubble", cc.Sprite);
         this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
 
+        this.Image_BubbleInsuranceNum = this.getChildNodeOrComponent("Image_BubbleInsuranceNum");
+        this.Image_BubbleInsuranceToubao = this.getChildNodeOrComponent("Image_BubbleInsuranceToubao");
+
+
+        this.Image_CoinShadow = this.getChildNodeOrComponent("Image_CoinShadow");
 
         this.Operation_Pos_Mark = this.getChildNodeOrComponent("Operation_Pos_Mark");
+
 
         //声纹
         this.voiceprintList = [];
