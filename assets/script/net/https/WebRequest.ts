@@ -1975,6 +1975,32 @@ export class APIMsgMessageList {
     static Response: { code?: number, message?: string, data?: typeof APIMsgMessageList.ResponseData };
 }
 
+export class APITicketCreate {
+    //接口地址
+    static API: string = "/api/cmsext/ticket/create";
+
+
+    //字段声明
+    static RequestParams: {
+        user_id: number,// 玩家ID
+        user_random_id: number,// 玩家randomID
+        phone: number,// 电话
+        email: string,// 邮箱
+        ticket_type: number,// 问题类型
+        description: string,//  问题描述
+        img_url: string,//  图片描述
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APITicketCreate.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APITicketCreate.ResponseData };
+}
+
 export class APIOrgClubUploadIcon {
     //接口地址
     static API: string = "/api/oss/upload/avatar";

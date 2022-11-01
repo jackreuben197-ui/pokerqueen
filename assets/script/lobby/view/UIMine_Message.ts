@@ -1,4 +1,5 @@
 import { MessageSubType } from "../../config/TTypeConfig";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { APIOrgClubUploadIcon } from "../../net/https/WebRequest";
@@ -151,26 +152,26 @@ export default class UIMine_Message extends BaseForm {
         if (tValue == null) {
             return;
         }
-        rt_msg.string = tValue;
-        var tContentColor = " <color=\"#E1B58D\"> " + pDto.content + " </color> ";
-        var tRemarkColor = " <color=\"#E1B58D\"> " + pDto.remark + " </color> ";
-        var tTitleColor = " <color=\"#E1B58D\"> " + pDto.title + " </color> ";
+        var tContentColor = " <color=#3BE1F5> " + pDto.content + " </color> ";
+        var tRemarkColor = " <color=#3BE1F5> " + pDto.remark + " </color> ";
+        var tTitleColor = pDto.title;
         if (pDto.msg_type == MessageSubType.MsgBagTypeGetTickets || pDto.msg_type == MessageSubType.MsgBagTypeUserTransferTicketsToSelf || pDto.msg_type == MessageSubType.MsgBagTypeUserTransferTicketsToOther
             || pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByEveryDayTask || pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByAchievementsTask || pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByVipInvitationReward)
         {
-            var str = pDto.title.Split('X');
+            var str = pDto.title.split('X');
             let num = " x" + str[str.Length - 1];
-            let prop = pDto.title.Substring(0, pDto.title.LastIndexOf('X'));
-            prop = prop.Trim();
-            // tTitleColor = " <color=\"#E1B58D\"> " + UILoginModel.mInstance.GetRoomNameByKey(prop) + num + " </color> ";
+            let prop = pDto.title.substring(0, pDto.title.lastIndexOf('X'));
+            prop = prop.trim();
+            // tTitleColor = " <color=\"#3BE1F5\"> " + UILoginModel.mInstance.GetRoomNameByKey(prop) + num + " </color> ";
+            tTitleColor = GC.data.languageTemp.temp.getName(prop) + num;
         }
         if (pDto.msg_type == MessageSubType.MsgBagTypeSignUpMatch || MessageSubType.MsgMoneyTypeMatchSignUp == pDto.msg_type)
         {
-            // tTitleColor = " <color=\"#FFFFFF\"> " + TimeHelper.GetDateTimer(long.Parse(pDto.title) * 1000).toString("yyyy-MM-dd HH:mm") + " </color> ";
+            tTitleColor = TimeHelper.convertUTCTimeToLocalTime((pDto.title) * 1000);
         }
 
         // var tTxt = go.transform.Find("Text_Title").GetComponent<Text>();
-        // string tTxtContent = "";
+        let tTxtContent = "";
 
         // ////var tTxt1 = go.transform.Find("Text_Title (1)").GetComponent<TMP_Text>();                
         // go.transform.Find("Text_Dot").gameObject.SetActive(tTxt.preferredHeight > 110);
@@ -187,7 +188,12 @@ export default class UIMine_Message extends BaseForm {
             // btnGoCheck.SetActive(true);
             // tTxt.gameObject.SetActive(true);
             // ////tTxt1.gameObject.SetActive(false);
-            // tTxtContent = string.Format(tValue, tContentColor, tRemarkColor, tTitleColor);
+            tTxtContent = tTxtContent = LobbyControl.getInstance().formatString(
+                tValue, 
+                tContentColor, 
+                tRemarkColor,
+                tTitleColor
+            );
             if (MessageSubType.MsgClubTypeRechargeRequest == pDto.msg_type)
             {
                 // Log.Error("类型 " + (MessageSubType)pDto.msg_type);
@@ -205,112 +211,58 @@ export default class UIMine_Message extends BaseForm {
             }
             else if (MessageSubType.MsgBagTypeSignUpMatch == pDto.msg_type || MessageSubType.MsgMoneyTypeMatchSignUp == pDto.msg_type)
             {
-                // UIEventListener.Get(btnGoCheck).onClick = (obj) =>
-                // {
-                //     //报名审核同意
-                //     var requestData = new WEB2_ApplyAgreed.RequestData()
-                //     {
-                //         msgId = pDto.msg_id.toString()
-                //     };
-                //     HttpRequestComponent.Instance.Send(
-                //         WEB2_ApplyAgreed.API,
-                //         WEB2_ApplyAgreed.Request(requestData), str =>
-                //         {
-                //             var tDto = WEB2_ApplyAgreed.Response(str);
-                //             if (tDto.status == 0)
-                //             {
-                //                 UIComponent.Instance.ToastLanguage("error0");
-
-                //                 UIMineModel.mInstance.APIMsgMessageList(mCurMsgType, limit, offset, mpDto =>
-                //                 {
-                //                     if (mpDto.code == 0)
-                //                     {
-                //                         offset = mpDto.data.offset + mpDto.data.limit;
-                //                         mDtoEles = GetNormalDate(mpDto.data.list) ?? new List<DtoElement>();
-                //                         NonShowed.SetActive(mDtoEles.Count == 0);
-                //                         mDtoEles.Add(new DtoElement());//因为上下都要菊花  给其追加一条空数据
-                //                         OnDataSourceLoadMoreFinished(true);
-                //                     }
-                //                     else
-                //                     {
-                //                         mDtoEles = new List<DtoElement>() { new DtoElement() };
-                //                         OnDataSourceLoadMoreFinished(false);
-                //                     }
-                //                 });
-                //             }
-                //             else
-                //             {
-                //                 UIComponent.Instance.ToastLanguage("roomError78_1");
-                //                 UIMineModel.mInstance.APIMsgMessageList(mCurMsgType, limit, offset, mpDto =>
-                //                 {
-                //                     if (mpDto.code == 0)
-                //                     {
-                //                         offset = mpDto.data.offset + mpDto.data.limit;
-                //                         mDtoEles = GetNormalDate(mpDto.data.list) ?? new List<DtoElement>();
-                //                         NonShowed.SetActive(mDtoEles.Count == 0);
-                //                         mDtoEles.Add(new DtoElement());//因为上下都要菊花  给其追加一条空数据
-                //                         OnDataSourceLoadMoreFinished(true);
-                //                     }
-                //                     else
-                //                     {
-                //                         mDtoEles = new List<DtoElement>() { new DtoElement() };
-                //                         OnDataSourceLoadMoreFinished(false);
-                //                     }
-                //                 });
-                //             }
-                //         }
-                //     );
-                // };
+                
             }
-            else if (pDto.msg_type == MessageSubType.MsgBagTypeUserTransferTicketsToSelf)
-            {
-                // btnGoCheck.SetActive(false);
-                // tTxt.gameObject.SetActive(true);
-                // tTxtContent = string.Format(tValue, $"{" <color=#E1B58D> "}{tTitleColor}{" </color> "}", $"{" <color=#E1B58D> "}{pDto.content}{" </color> "}");
-            }
-            else if (pDto.msg_type == MessageSubType.MsgBagTypeUserTransferTicketsToOther)
-            {
-                // btnGoCheck.SetActive(false);
-                // tTxt.gameObject.SetActive(true);
-                // tTxtContent = string.Format(tValue, $"{" <color=#E1B58D> "}{pDto.content}{" </color> "}", $"{" <color=#E1B58D> "}{tTitleColor}{" </color> "}");
-            }
-            else if (pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByEveryDayTask ||
-                pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByAchievementsTask ||
-                pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByVipInvitationReward)
-            {
-                // btnGoCheck.SetActive(false);
-                // tTxt.gameObject.SetActive(true);
-                // tTxtContent = string.Format(tValue, $"{" <color=#E1B58D>"}{pDto.remark}{" </color> "}", $"{" <color=#E1B58D> "}{tTitleColor}{" </color> "}");
-            }
-            else
-            {
-                // btnGoCheck.SetActive(false);
-                // tTxt.gameObject.SetActive(true);
-
-                // string typename = "";
-                // if (pDto.game_type > 0)
-                // {
-                //     typename = UILoginModel.mInstance.GetRoomNameByKey(pDto.multi_language_id);/*LanguageManager.Get("GameType_" + (pDto.game_type - 1));*/
-                // }
-                // tTxtContent = string.Format(tValue, $"{" <color=#E1B58D> "}{typename + pDto.content}{" </color> "}", $"{" <color=#E1B58D> "}{pDto.remark}{" </color> "}", $"{" <color=#E1B58D> "}{tTitleColor}{" </color> "}");
-            }
-            // tTxt.text = tTxtContent;
-            // if (AlineText(tTxt, tTxt.text))
-            // {
-            //     tTxt.raycastTarget = true;
-            //     tTxt.GetComponent<Button>().onClick.AddListener(() =>
-            //     {
-            //         UIComponent.Instance.ShowNoAnimation(UIType.UIMine_MsgSystemContent, tTxtContent);
-            //     });
-            // }
-            // else
-            // {
-            //     tTxt.raycastTarget = false;
-            // }
+        } else if (pDto.msg_type == MessageSubType.MsgBagTypeUserTransferTicketsToSelf)
+        {
+            // btnGoCheck.SetActive(false);
+            // tTxt.gameObject.SetActive(true);
+            tTxtContent = LobbyControl.getInstance().formatString(
+                tValue, 
+                "{<color=#3BE1F5> " + tTitleColor + " </color> }", 
+                "{ <color=#3BE1F5> " + pDto.content + " </color> }"
+            );
         }
+        else if (pDto.msg_type == MessageSubType.MsgBagTypeUserTransferTicketsToOther)
+        {
+            // btnGoCheck.SetActive(false);
+            // tTxt.gameObject.SetActive(true);
+            tTxtContent = LobbyControl.getInstance().formatString(
+                tValue, 
+                "{<color=#3BE1F5> " + pDto.content + " </color> }", 
+                "{ <color=#3BE1F5> " + tTitleColor + " </color> }"
+            );
+        }
+        else if (pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByEveryDayTask ||
+            pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByAchievementsTask ||
+            pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByVipInvitationReward)
+        {
+            // btnGoCheck.SetActive(false);
+            // tTxt.gameObject.SetActive(true);
+            tTxtContent = LobbyControl.getInstance().formatString(
+                tValue, 
+                "{<color=#3BE1F5> " + pDto.remark + " </color> }", 
+                "{ <color=#3BE1F5> " + tTitleColor + " </color> }"
+            );
+        }
+        else
+        {
+            // btnGoCheck.SetActive(false);
+            // tTxt.gameObject.SetActive(true);
 
-        // go.transform.Find("Text_Time").GetComponent<Text>().text = TimeHelper.GetDateTimer(TimeHelper.GetTimestampByDateTime(TimeHelper.RFC3339TimeConvertToUTCTime(pDto.create_time))).toString("dd/MM/yyyy HH:mm");
-
+            let typename = "";
+            if (pDto.game_type > 0)
+            {
+                typename = GC.data.languageTemp.temp.getName(pDto.multi_language_id);/*LanguageManager.Get("GameType_" + (pDto.game_type - 1));*/
+            }
+            tTxtContent = LobbyControl.getInstance().formatString(
+                tValue, 
+                "{<color=#3BE1F5> " + typename + pDto.content + " </color> }", 
+                "{ <color=#3BE1F5> " + pDto.remark + " </color> }",
+                "{ <color=#3BE1F5> " + tTitleColor + " </color> }"
+            );
+        }
+        rt_msg.string = tTxtContent;
     }
 
 }

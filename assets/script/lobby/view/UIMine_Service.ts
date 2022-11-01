@@ -1,6 +1,9 @@
+import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
+import ToastManager from "../../manager/ToastManager";
 import { APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
+import { LobbyControl } from "../control/LobbyControl";
 import { UIClubModel } from "../labor/UIClubModel";
 
 
@@ -14,6 +17,29 @@ export default class UIMine_Service extends BaseForm {
     ebx_name: cc.EditBox = null;
 
     showPhotoNum: number = 0;
+
+    _user_id: number = null;
+
+    _user_random_id: number = null;
+
+    _phone: number = null;
+
+    _email: string = null;
+
+    _ticket_type: number = 4;
+
+    _description: string = null;
+
+    _img_url1: string = null;
+
+    _img_url2: string = null;
+
+    progromList = [
+        "代理合作",
+        "充值问题",
+        "游戏反馈",
+        "其他"
+    ]
 
     protected lateLoad() {
         super.lateLoad();
@@ -41,11 +67,14 @@ export default class UIMine_Service extends BaseForm {
         let panel_click :cc.Node = this.getChildNodeOrComponent("panel_click");
         panel_click.on(cc.Node.EventType.TOUCH_END, this.onClickHide, this);
 
-        for (let i=1; i<4; i++) {
+        for (let i=1; i<5; i++) {
             let pc1 :cc.Node = this.getChildNodeOrComponent("pc_" + i);
             pc1["index"] = i;
             pc1.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this);
         }
+
+        let btn_submit :cc.Node = this.getChildNodeOrComponent("btn_submit");
+        btn_submit.on(cc.Node.EventType.TOUCH_END, this.onClickSend, this);
     }
 
     resetUI() {
@@ -62,14 +91,39 @@ export default class UIMine_Service extends BaseForm {
         img_show1.getComponent(cc.Sprite).spriteFrame = null;
         img_show2.getComponent(cc.Sprite).spriteFrame = null;
 
-        let ebx_3 :cc.EditBox = this.getChildNodeOrComponent("ebx_3", cc.EditBox);
+        let ebx_4 :cc.EditBox = this.getChildNodeOrComponent("ebx_4", cc.EditBox);
         let lbl_max : cc.Label = this.getChildNodeOrComponent("lbl_max", cc.Label);
-        ebx_3.string = "";
+        ebx_4.string = "";
         lbl_max.string = 0 + " / 200";
 
         let lbl_choose : cc.Label = this.getChildNodeOrComponent("lbl_choose", cc.Label);
-        lbl_choose.string = "问题描述";
-        lbl_choose.node.opacity = 75.5;
+        lbl_choose.string = "其他";
+        lbl_choose.node.opacity = 255;
+
+        let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
+        ebx_1.string = "";
+
+        let ebx_2 :cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
+        ebx_2.string = "";
+
+        let ebx_3 :cc.EditBox = this.getChildNodeOrComponent("ebx_3", cc.EditBox);
+        ebx_3.string = "";
+
+        this._user_id = null;
+
+        this._user_random_id = null;
+    
+        this._phone = null;
+    
+        this._email = null;
+    
+        this._ticket_type = 4;
+    
+        this._description = null;
+    
+        this._img_url1 = null;
+
+        this._img_url2 = null;
     }
 
     async onClickPhoto() {
@@ -87,6 +141,7 @@ export default class UIMine_Service extends BaseForm {
                 img_show1.active = true;
                 let img = img_show1.getComponent(cc.Sprite);
                 await WebImageHelper.SetUrlImage(img, icon);
+                this._img_url1 = icon;
             } else if (this.showPhotoNum == 2) {
                 let btn_photo: cc.Node = this.getChildNodeOrComponent("btn_photo")
                 btn_photo.active = false;
@@ -94,14 +149,15 @@ export default class UIMine_Service extends BaseForm {
                 lbl_hide1.active = false;
                 let img = img_show2.getComponent(cc.Sprite);
                 await WebImageHelper.SetUrlImage(img, icon);
+                this._img_url2 = icon;
             }
         }
     }
 
     onChangeText(param) {
-        let ebx_3 :cc.EditBox = this.getChildNodeOrComponent("ebx_3", cc.EditBox);
+        let ebx_4 :cc.EditBox = this.getChildNodeOrComponent("ebx_4", cc.EditBox);
         let lbl_max : cc.Label = this.getChildNodeOrComponent("lbl_max", cc.Label);
-        lbl_max.string = ebx_3.string.length + " / 200";
+        lbl_max.string = ebx_4.string.length + " / 200";
     }
 
     onClickDown() {
@@ -122,17 +178,73 @@ export default class UIMine_Service extends BaseForm {
         let target = event.target;
         let index = target.index;
         let str = target.getChildByName("lbl").getComponent(cc.Label).string;
-        if (index == 1) {
 
-        } else if (index == 2) {
-
-        } else if (index == 3) {
-
-        }
-
+        this._ticket_type = index;
         let lbl_choose : cc.Label = this.getChildNodeOrComponent("lbl_choose", cc.Label);
         lbl_choose.string = str;
         lbl_choose.node.opacity = 255;
         this.onClickHide();
     }
+
+    onClickSend() {
+
+        let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
+        this._user_id = Number(ebx_1.string);
+
+        let ebx_2 :cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
+        this._phone = Number(ebx_2.string);
+
+        let ebx_3 :cc.EditBox = this.getChildNodeOrComponent("ebx_3", cc.EditBox);
+        this._email = ebx_3.string;
+
+        let ebx_4 :cc.EditBox = this.getChildNodeOrComponent("ebx_4", cc.EditBox);
+        this._description = ebx_4.string;
+
+        if (this._user_id == null || this._user_id == 0) {
+            ToastManager.Instance.createToast("请输入玩家ID");
+            return;
+        }
+
+        if (this._phone == null || this._phone == 0) {
+            ToastManager.Instance.createToast("请输入电话号码");
+            return;
+        }
+
+        if (this._email == null || this._email == "") {
+            ToastManager.Instance.createToast("请输入电子邮箱");
+            return;
+        }
+
+        if (this._description == null || this._description == "") {
+            ToastManager.Instance.createToast("描述问题不能为空");
+            return;
+        }
+
+        let imgStr = "";
+        if (this._img_url1) {
+            imgStr = this._img_url1.toString();
+        }
+        if (this._img_url2) {
+            imgStr = this._img_url1.toString() + "," + this._img_url2.toString();
+        }
+
+        let info = {
+            user_id: this._user_id,// 玩家ID
+            user_random_id: GameCache.Instance.nUserId,// 玩家randomID
+            phone: this._phone,// 电话
+            email: this._email,// 邮箱
+            ticket_type: this._ticket_type,// 问题类型
+            description: this._description,//  问题描述
+            img_url: imgStr,//  图片描述
+        }
+        LobbyControl.getInstance().reqServiceInfo(info).then(
+            (res) => {
+                ToastManager.Instance.createToast("提交成功");
+                this.close()
+            },
+            (res) => {
+            }
+        )
+    }
+
 }
