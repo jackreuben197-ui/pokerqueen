@@ -11,6 +11,7 @@
  * 游戏配置
  */
 import { INetWork } from "../define/EIDefine";
+import CCTools from "../tools/CCTools";
 
 export class GameConfig {
 
@@ -23,7 +24,7 @@ export class GameConfig {
     //2: http://dev1.awanptesting.com 
     //3: https://test1.awanptesting.com  
     //4: https://dev1.awanptesting.com 
-    static BuildType: number = 4;
+    static BuildType: number = 3;
 
     //版本号
     static Version: string = "20221028_2230";
@@ -74,7 +75,7 @@ export var NetWorkBase = {
  * 语言列表
  */
 export var LanguageList: { lan: string, name: string }[] = [
-    { lan: "en", name: "UILogin_USA"},
+    { lan: "en", name: "UILogin_USA" },
     { lan: "pt", name: "sl_ptyyPutao" },
     { lan: "cn", name: "UILogin_China" },
 ];

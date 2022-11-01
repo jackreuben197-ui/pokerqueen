@@ -1,5 +1,7 @@
-import { TSendInfo } from "../../config/TTypeConfig";
-import { HttpLink } from "../../net/https/HttpLink";
+import { ProcedureEnum } from "../../define/EIDefine";
+import ProcedureManager from "../../manager/ProcedureManager";
+import LoginSession from "../../session/LoginSession";
+import CCTools from "../../tools/CCTools";
 
 
 
@@ -26,6 +28,14 @@ export default class InstagramApi {
 
         let url = `https://api.instagram.com/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`
         cc.sys.openURL(url)
+    }
+
+    static cleckLoginSuc(code: string) {
+        //instagramCode
+        if (!CCTools.isNull(code)) {
+            // cade = code.slice(0, code.length-2);
+            LoginSession.WebLoginThirdParty({ token: code, source: "instagram", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
+        }
     }
 
 }
