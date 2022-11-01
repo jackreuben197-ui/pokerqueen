@@ -1977,7 +1977,7 @@ export class APIMsgMessageList {
 
 export class APITicketCreate {
     //接口地址
-    static API: string = "/api/cmsext/ticket/create";
+    static API: string = "/api/cmsext/exchange/ticket/create";
 
 
     //字段声明
@@ -1999,6 +1999,25 @@ export class APITicketCreate {
         return param;
     }
     static Response: { code?: number, message?: string, data?: typeof APITicketCreate.ResponseData };
+}
+
+export class APIIsPhoneUser {
+    //接口地址
+    static API: string = "/api/user/isPhoneUser";
+
+
+    //字段声明
+    static RequestParams: {
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APIIsPhoneUser.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIIsPhoneUser.ResponseData };
 }
 
 export class APIOrgClubUploadIcon {

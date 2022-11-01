@@ -6,9 +6,11 @@ import { GameCache } from "../game/GameCache";
 import PublicHelper from "../helper/PublicHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
+import ToastManager from "../manager/ToastManager";
 import { Web_User_Info } from "../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIComponent from "../ui/UIComponent";
+import { LobbyControl } from "./control/LobbyControl";
 @ccclass
 export default class UIMine extends UIBase {
     private pageData: any = null;
@@ -131,8 +133,20 @@ export default class UIMine extends UIBase {
         if (index == 3) {
             UIComponent.open(UIDefine.SettingsForm);
         } else if (index == 0) {
-            // 请先绑定手机号
-            UIComponent.open(UIDefine.MyService);
+            let info = {
+                
+            }
+            LobbyControl.getInstance().reqIsPhoneUser(info).then(
+                (res: any) => {
+                    if (res.data.isPhoneUser) {
+                        UIComponent.open(UIDefine.MyService);
+                    } else {
+                        ToastManager.Instance.createToast("请先绑定手机号");
+                    }
+                },
+                (res) => {
+                }
+            )
         } else if (index == 1) {
             UIComponent.open(UIDefine.UIMine_Message);
         }
