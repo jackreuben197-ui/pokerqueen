@@ -94,6 +94,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_Service",
         Title: "UIMineMain01",
     },
+    //设置-消息
+    UIMine_Message: {
+        UIType: UIType.Form,
+        Name: "UIMine_Message",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMine_Message",
+        Title: "UIMine_Message",
+    },
     //设置-玩家信息
     MyPlayInfo: {
         UIType: UIType.Form,
