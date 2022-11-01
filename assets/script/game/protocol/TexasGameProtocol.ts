@@ -10,6 +10,8 @@ import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply }
 import { Def, Operator, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
+import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_agree_second_pcs_pb";
+import { ServerMessageAgreeSecondPcsTrigged } from "../../protobuf/holdem/recv_agree_second_pcs_trigged_pb";
 import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_buy_insurance_pb";
 import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
 import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
@@ -27,6 +29,7 @@ import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
 import { ServerMessageAction } from "../../protobuf/holdem/req_action_pb";
 import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
 import { ServerMessageAgreePost } from "../../protobuf/holdem/req_agree_post_pb";
+import { ServerMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_agree_second_pcs_active_pb";
 import { ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
 import { ServerMessageBuyInsuranceActive } from "../../protobuf/holdem/req_buy_insurance_active_pb";
 import { ServerMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
@@ -43,6 +46,7 @@ import Seat from "../seat/Seat";
 import { SeatAddChips, SeatAllin, SeatCall, SeatCheck, SeatFold, SeatInsurance, SeatKeep, SeatOperation, SeatPutChip, SeatRaise, SeatRoundEnd, SeatSitAnimation, SeatStart, SeatStartToPlaying, SeatStraddle, SeatWaitBlind, SeatWaitOther, SeatWaitStart } from "../SeatStateHandler";
 import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
+import UIAgreeSecondPcsComponent from "../ui/UIAgreeSecondPcsComponent";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
 import UIOperationComponent from "../ui/UIOperationComponent";
@@ -1772,13 +1776,41 @@ export default class TexasGameProtocol {
 
     }
 
-    Protocol_Holdem_AgreeSecondPcsHandler(Protocol_Holdem_AgreeSecondPcs: ProtocolCode, Protocol_Holdem_AgreeSecondPcsHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+
+    // 所有人收到有人是否允许的结果信息 (同意|拒绝发送第二套公共牌)
+    protected Protocol_Holdem_AgreeSecondPcsHandler(rec: ServerMessageAgreeSecondPcs.AsObject) {
+        if (rec == null) return;
+        let seatId: number = this.game.GetLocalSeatID(rec.seatId);
+        //Game.EventSystem.Run(EventIdType.AgreeSecondPcsRefresh, seatId, responsedata.Result);
     }
-    Protocol_Holdem_AgreeSecondPcsTriggedHandler(Protocol_Holdem_AgreeSecondPcsTrigged: ProtocolCode, Protocol_Holdem_AgreeSecondPcsTriggedHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    //是否允许第2套公共牌触发信息
+    Protocol_Holdem_AgreeSecondPcsTriggedHandler(rec: ServerMessageAgreeSecondPcsTrigged.AsObject) {
+
+        if (rec == null) return;
+
+        rec.operatorList.forEach((Operator: Operator.AsObject) => {
+            if (this.game.GetLocalSeatID(Operator.seatId) == this.game.mainPlayer.seatID && Operator.isAgreeSecondPc) {
+                let data = new UIAgreeSecondPcsComponent.AgreeSecondData;
+                data.title = i18nMgr.Get("UIAgreeSecondPcs_title");
+                data.content = i18nMgr.Get("UIAgreeSecondPcs_agree");
+                data.contentCommit = i18nMgr.Get("adaptation20085");
+                data.contentCancel = i18nMgr.Get("adaptation10334");
+                data.SecondPcsTime = Operator.leftOpTime;
+                data.actionCommit = () => {
+                    this.game.TexasGameUtils.RequestAgreeSecondPcsActive(true);
+                };
+                data.actionCancel = () => {
+                    this.game.TexasGameUtils.RequestAgreeSecondPcsActive(false);
+                };
+                UIComponent.Instance.ShowUI(PrefabUI.UIAgreeSecondPcsComponent, data);
+            }
+        })
     }
-    ProtocolHoldemAgreeSecondPcsActiveHandler(Protocol_Holdem_AgreeSecondPcsActive: ProtocolCode, ProtocolHoldemAgreeSecondPcsActiveHandler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    //当前玩家操作是否同意第二套公共牌返回结果
+    ProtocolHoldemAgreeSecondPcsActiveHandler(rec: ServerMessageAgreeSecondPcsActive.AsObject) {
+        if (rec == null) return;
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
+        }
     }
 }
