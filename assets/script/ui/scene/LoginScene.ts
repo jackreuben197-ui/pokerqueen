@@ -74,6 +74,7 @@ export default class LoginScene extends BaseScene {
     private agreeTip1: cc.Label = null;
     private agreeTip2: cc.Label = null;
 
+    private otherLoginNode: cc.Node = null;
 
     private _loginType: ELoginType = ELoginType.phone   //  手机  邮箱
     private _loginProcess: ELoginProcess = ELoginProcess.login; // 登录   注册    找回密码
@@ -122,7 +123,7 @@ export default class LoginScene extends BaseScene {
         this.agreeToggle = this.getChildNodeOrComponent("agreeToggle", cc.Toggle)
         this.agreeTip1 = this.getChildNodeOrComponent("agreeTip1", cc.Label)
         this.agreeTip2 = this.getChildNodeOrComponent("agreeTip2", cc.Label)
-
+        this.otherLoginNode = this.getChildNodeOrComponent('otherLoginNode')
         this.getVCDTime = this.getVLab.node.addComponent(LabelCDTime);
     }
 
@@ -240,22 +241,24 @@ export default class LoginScene extends BaseScene {
     }
 
     updateAgreeNodeStatus() {
-        this.setActive(this.agreeNode, this._loginProcess != ELoginProcess.reset);
-        if (this.agreeNode.active) {
-            if (this._loginProcess == ELoginProcess.login) {
-                this.agreeNode.parent = this.downAgreeNode;
-                this.agreeNode.anchorX = 0.5;
-                this.agreeNode.setPosition(cc.v2(0, 0))
-                this.agreeTip1.fontSize = 12 * 3.31;
-                this.agreeTip2.fontSize = 12 * 3.31;
-            } else if (this._loginProcess == ELoginProcess.register) {
-                this.agreeNode.parent = this.btnAgreeNode;
-                this.agreeNode.anchorX = 0;
-                this.agreeNode.setPosition(cc.v2(0, 0));
-                this.agreeTip1.fontSize = 10 * 3.31;
-                this.agreeTip2.fontSize = 10 * 3.31;
-            }
-        }
+        this.setActive(this.btnAgreeNode, this._loginProcess != ELoginProcess.reset);
+        this.setActive(this.otherLoginNode, this._loginProcess != ELoginProcess.reset)
+
+        // if (this.agreeNode.active) {
+        //     if (this._loginProcess == ELoginProcess.login) {
+        //         this.agreeNode.parent = this.downAgreeNode;
+        //         this.agreeNode.anchorX = 0.5;
+        //         this.agreeNode.setPosition(cc.v2(0, 0))
+        //         this.agreeTip1.fontSize = 12 * 3.31;
+        //         this.agreeTip2.fontSize = 12 * 3.31;
+        //     } else if (this._loginProcess == ELoginProcess.register) {
+        //         this.agreeNode.parent = this.btnAgreeNode;
+        //         this.agreeNode.anchorX = 0;
+        //         this.agreeNode.setPosition(cc.v2(0, 0));
+        //         this.agreeTip1.fontSize = 10 * 3.31;
+        //         this.agreeTip2.fontSize = 10 * 3.31;
+        //     }
+        // }
     }
 
     updateQuiklyLoginStatus() {
