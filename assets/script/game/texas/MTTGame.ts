@@ -516,7 +516,7 @@ export default class MTTGame extends TexasGame {
     // 实时战况
     public override onClickReport() {
         if (!this.hadRequestEnterRoom) return;
-        UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.uirc.node });
+        UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.uirc.Common_Con });
         //UIComponent.Instance.ShowNoAnimation(UIType.UITexasReportMTT, new object[1] { true });
     }
 

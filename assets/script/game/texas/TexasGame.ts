@@ -3113,7 +3113,7 @@ export default class TexasGame {
         historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
         historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
         historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
-        UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.uirc.node })
+        UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.uirc.Common_Con })
     }
 
     public UpdateMenu() {

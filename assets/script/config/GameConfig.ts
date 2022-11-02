@@ -18,7 +18,6 @@ export class GameConfig {
     static Web_Host_Test1 = "test1.awanptesting.com";
     static Web_Host_Dev1 = "dev1.awanptesting.com";
     static Web_Host_Dev = "dev.k8s.awanptesting.com";
-
     //0: http://dev.k8s.awanptesting.com 
     //1: http://test1.awanptesting.com  
     //2: http://dev1.awanptesting.com 
@@ -27,7 +26,7 @@ export class GameConfig {
     static BuildType: number = 3;
 
     //版本号
-    static Version: string = "20221028_2230";
+    static Version: string = "20221102_1400";
 
     static Default_Language: string = "en";
     //是否使用代理

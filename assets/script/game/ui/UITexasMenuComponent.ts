@@ -235,11 +235,13 @@ export default class UITexasMenuComponent extends UIBase {
     }
     Click_Button_Setting() {
         this.game.uirc.HideMenu();
-        UIComponent.open(UIDefine.UITexasSettingComponent, null, { parentUI: this.node });
+        //UIComponent.open(UIDefine.UITexasSettingComponent, null, { parentUI: this.node });
+        UIComponent.open(UIDefine.UITexasSettingComponent, null, { parentUI: this.game.uirc.Common_Con });
     }
     Click_Button_Rule() {
         this.game.uirc.HideMenu();
-        UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.node });
+        //UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.node });
+        UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.game.uirc.Common_Con });
     }
 
     //自动带入带出

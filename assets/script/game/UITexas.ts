@@ -135,31 +135,34 @@ export default class UITexas extends BaseScene {
     public BathText: cc.Label = null;
 
 
-
     //带入申请按钮
     Button_BringIn: cc.Node = null;
     //朋友桌邀请码
     Text_InvateCode: cc.Label = null;
 
-    //1.左侧菜单容器
+
+    //1.MTT比赛倒计时
+    UIMTTTime_Con: cc.Node = null;
+    UIMTTTime_Com: UIMTTTimeComponent = null;
+    //2.操作面板
+    UIOperation_Con: cc.Node = null;
+    UIOperation_Com: UIOperationComponent = null;
+    UIAutoOperation_Com: UIAutoOperationComponent = null;
+    //3.左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
     UITexasMenu_Com: UITexasMenuComponent = null;
-    //2.带入带出 OutChips提示
+    //4.通用容器 放置 桌面设置，实时战况，战绩
+    Common_Con: cc.Node = null;
+    //5.带入带出 OutChips提示
     UIChips_Con: cc.Node = null;
     UIAddChips_Com: UIAddChipsComponent = null;
     UIOutChips_Com: UIOutChipsComponent = null;
     UIAutoChips_Com: UIAutoChipsComponent = null;
     UIOutChipsTipComponent = null;
-    //3.操作面板
-    UIOperation_Con: cc.Node = null;
-    UIOperation_Com: UIOperationComponent = null;
-    UIAutoOperation_Com: UIAutoOperationComponent = null;
-    //4.保险面板
+    //6.保险面板
     UIInsurance_Con: cc.Node = null;
     UIInsurance_Com: UIInsuranceComponent = null;
-    //5.MTT比赛倒计时
-    UIMTTTime_Con: cc.Node = null;
-    UIMTTTime_Com: UIMTTTimeComponent = null;
+
     ///////////////////////////////////
     /**
      * 声明内容
@@ -246,7 +249,6 @@ export default class UITexas extends BaseScene {
         //this.armatureRewardCircleEN = rc.Get<GameObject>("Armature_RewardCircle_en").GetComponent<UnityArmatureComponent>();
         this.Image_WaitForStartBathTips = this.getChildNodeOrComponent("Image_WaitForStartBathTips");
         this.BathText = this.Image_WaitForStartBathTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
-
         this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
         //朋友桌邀请码
         this.Text_InvateCode = this.getChildNodeOrComponent("Text_InvateCode", cc.Label);
@@ -261,24 +263,27 @@ export default class UITexas extends BaseScene {
         }
         //////////////////////////////////////////////////////////////////////
         //////////////////装载容器
-        //1.菜单
+
+        //1.MTT比赛倒计时
+        this.UIMTTTime_Con = this.getChildNodeOrComponent("UIMTTTime_Con");
+        this.UIMTTTime_Com = this.AddComponents(PrefabUI.UIMTTTimeComponent, this.UIMTTTime_Con);
+        //2.操作面板
+        this.UIOperation_Con = this.getChildNodeOrComponent("UIOperation_Con");
+        this.UIOperation_Com = this.AddComponents(PrefabUI.UIOperationComponent, this.UIOperation_Con);
+        this.UIAutoOperation_Com = this.AddComponents(PrefabUI.UIAutoOperationComponent, this.UIOperation_Con);
+        //3.菜单
         this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
         this.UITexasMenu_Com = this.AddComponents(PrefabUI.UITexasMenuComponent, this.UITexasMenu_Con, true);
-        //2.带入面板 带出面板
+        //4.通用容器 放置 桌面设置，实时战况，战绩
+        this.Common_Con = this.getChildNodeOrComponent("Common_Con");
+        //5.带入面板 带出面板
         this.UIChips_Con = this.getChildNodeOrComponent("UIChips_Con");
         this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
         this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
         this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
-        //3.操作面板
-        this.UIOperation_Con = this.getChildNodeOrComponent("UIOperation_Con");
-        this.UIOperation_Com = this.AddComponents(PrefabUI.UIOperationComponent, this.UIOperation_Con);
-        this.UIAutoOperation_Com = this.AddComponents(PrefabUI.UIAutoOperationComponent, this.UIOperation_Con);
-        //4.保险面板
+        //6.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
         this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
-        //5.MTT比赛倒计时
-        this.UIMTTTime_Con = this.getChildNodeOrComponent("UIMTTTime_Con");
-        this.UIMTTTime_Com = this.AddComponents(PrefabUI.UIMTTTimeComponent, this.UIMTTTime_Con);
         //////////////////////////////////////////////////////////////////////
         //////////////////初始化杂类
         //隐藏座位模板

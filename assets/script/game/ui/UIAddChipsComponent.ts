@@ -37,6 +37,9 @@ export default class UIAddChipsComponent extends UIBase {
     private Button_Close: cc.Node = null;
     private Button_Commit: cc.Node = null;
     private Image_Mask: cc.Node = null;
+
+    //带入金豆和总金豆 节点（朋友桌不显示）
+    private Total_obj: cc.Node = null;
     ////////////////////////////////////////
 
     sliderCoin: GGSlider = null;
@@ -60,6 +63,9 @@ export default class UIAddChipsComponent extends UIBase {
         this.Image_Mask = this.getChildNodeOrComponent("Image_Mask");
         this.Button_Commit = this.getChildNodeOrComponent("Button_Commit");
 
+        this.Total_obj = this.getChildNodeOrComponent("Total_obj");
+
+
         this.sliderCoin = this.getChildNodeOrComponent("Slider_Coin", GGSlider);
         this.sliderCoin.onChange(this.onValueChangedSliderCoin.bind(this));
     }
@@ -71,6 +77,7 @@ export default class UIAddChipsComponent extends UIBase {
     onShow(addClipsData?: AddClipsData): void {
         super.onShow(addClipsData);
         this.animateDialog();
+        this.Total_obj.active = (GameCache.Instance.origin_type != 4);
         if (null != addClipsData) {
             //小盲值/100
             this.textBlind.string = `${addClipsData.smallBlind / 100}/${addClipsData.bigBlind / 100}`;//SB/BB
