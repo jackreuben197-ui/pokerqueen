@@ -167,7 +167,7 @@ export default class UIMine extends UIBase {
     }
 
     onClickCardScore() {
-       
+        UIComponent.open(UIDefine.UICollectScore);
     }
 
     onClickAchieve() {

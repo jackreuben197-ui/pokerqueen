@@ -86,7 +86,7 @@ export class LobbyControl {
                 body: Web_Misc_Banner_List.Request(
                     {
                         lang: param.lang,               // 语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
-                        type: param.type,               // 1-大厅Banner,2-发现页(工会)Banner
+                        type: param.type,               // 1-大厅Banner,2-发现页(公会)Banner
                         limit: param.limit,             // unity 默认10
                         offset: param.offset,           // 开始下标。例子（offset=0，limit=10，0-9。)默认0
                     }),

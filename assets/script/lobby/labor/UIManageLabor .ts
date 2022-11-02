@@ -64,7 +64,7 @@ export default class UIManageLabor extends BaseForm {
         name.string = data.club_name
         let id = this.mask_group.getChildByName('id').getComponent(cc.Label);
         id.string = 'ID:' + data.random_id
-        this.EditBox.string = data.desc   //|| '暂无工会说明'
+        this.EditBox.string = data.desc   //|| '暂无公会说明'
 
         let icon = cc.find('iconMask/icon', this.mask_group);
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), data.logo)

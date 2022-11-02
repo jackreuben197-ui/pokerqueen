@@ -3214,7 +3214,7 @@ UIText_yesterday=昨天
 
 UIRateAddTip=点击右上角“+”,开始配置
 UIRateInstructions=此页面由公会会长配置，仅供参考，如有疑问 请与公会会长联系。
-UIRateManagerListTip=汇率由公会会长设置，向公会所有会员展示，用于工会会员充值和提现时计算转账金额。
+UIRateManagerListTip=汇率由公会会长设置，向公会所有会员展示，用于公会会员充值和提现时计算转账金额。
 UIDeletRateTostTip=确定将{0}/{1}汇率从表格中移除
 UISetRateTostTip=确定修改{0}{1}/{2}{3}汇率<br/>{4}
 
@@ -3252,8 +3252,8 @@ UILogin_phone_vcode_l=用验证码登录
 UILogin_vcode_len_limit_tip=验证码只能是4位数
 UILogin_phone_len_limit_tip=手机号必须在6到20位之间
 
-UITips_GoldOpration_0=确定向{0}工会申请充值{1}金豆？<br/>付款金额{2}
-UITips_GoldOpration_1=确定向{0}工会申请提取{1}金豆？<br/>收款金额{2}
+UITips_GoldOpration_0=确定向{0}公会申请充值{1}金豆？<br/>付款金额{2}
+UITips_GoldOpration_1=确定向{0}公会申请提取{1}金豆？<br/>收款金额{2}
 UITips_GoldOpration_2=确定向{0}发放{1}金豆？<br/>收款金额{1}
 UITips_GoldOpration_suc_0=申请充豆成功！<br/>如有疑问请联系客服，联系方式{0}
 UITips_GoldOpration_suc_1=申请提豆成功！<br/>如有疑问请联系客服，联系方式{0}

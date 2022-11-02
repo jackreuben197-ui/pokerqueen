@@ -726,7 +726,7 @@ export class Web_Config_Global_Config {
     } = null;
 
     static ResponseData: {
-        operating_model?: number,//运营模式 1 直营模式 2 工会联盟模式
+        operating_model?: number,//运营模式 1 直营模式 2 公会联盟模式
         recharge_gold?: number,//直营模式下，充豆功能开关 1 开 2 关
         user_special_recharge?: number,//直营模式下 operating_model=1  支桌号功能开关 1 自动充值（平台充值） 2 手动充值（公会充值） ，3 全选
         user_ordinary_recharge?: number,//直营模式下 operating_model=1  普通用户功能开关 1 自动充值（平台充值） 2 手动充值（公会充值） ，3 全选
@@ -784,7 +784,7 @@ export class Web_Misc_Banner_List {
     //字段声明
     static RequestParams: {
         lang?: string,        //语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文
-        type?: number,        //1-大厅Banner,2-发现页(工会)Banner
+        type?: number,        //1-大厅Banner,2-发现页(公会)Banner
         limit?: number,        //条目
         offset?: number,        //开始下标。例子（offset=0，limit=10，0-9。）
     } = null;
@@ -798,7 +798,7 @@ export class Web_Misc_Banner_List {
     static BannerInfo: {
         id: number,//banner id
         lang: string,//语言
-        banner_type: number,//1-大厅Banner,2-发现页(工会)Banner
+        banner_type: number,//1-大厅Banner,2-发现页(公会)Banner
         image_url: string,//Banner图片连接
         redirect_url: string,//跳转连接
         description: string,//描述
@@ -1114,15 +1114,15 @@ export class Web_Gold_Change_Log {
 //汇率相关接口
 export class Web_Rate_Api {
     static GET_RATE_LIST = "/api/cmsext/exchange/list";       //汇率列表
-    static SET_CLUB_RATE = "/api/cmsext/exchange/set";       //设置工会汇率
-    static DELETE_CLUB_RATE = "/api/cmsext/exchange/delete";       //删除工会汇率
+    static SET_CLUB_RATE = "/api/cmsext/exchange/set";       //设置公会汇率
+    static DELETE_CLUB_RATE = "/api/cmsext/exchange/delete";       //删除公会汇率
 }
 
 export class Web_Order_Rcords {
     // 参数：order_type（订单类型(order_type):1-充豆;2-提豆;3-发豆）
-    static CLUB_RECORD = "/api/order/club/grant_log";  //工会冲提记录
+    static CLUB_RECORD = "/api/order/club/grant_log";  //公会冲提记录
     // user_type（0-未知,1-普通用户,2-支桌号,3-牌局机器人,4-牛仔机器人）
-    static USER_RECORD = "/api/order/user/order_records";  //工会冲提记录
+    static USER_RECORD = "/api/order/user/order_records";  //公会冲提记录
 }
 
 export class Web_Order_apply {
@@ -2250,7 +2250,7 @@ export class APIOrgClubGold {
         gold: number, // 公会金豆数
         gold_lock: number, // 公会被锁定的金豆数
         forbidden: boolean, // 是否冻结 true已冻结，false未冻结
-        club_name: string,   //工会名字
+        club_name: string,   //公会名字
     } = null;
     static Request(param: typeof APIOrgClubGold.RequestParams) {
         this.RequestParams = param;

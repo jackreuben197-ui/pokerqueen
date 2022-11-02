@@ -61,7 +61,7 @@ export default class UIOutChipsTipComponent extends UIBase {
                 this.Icon.spriteFrame = AssetContext.getAsset("icon_image_out_chips_tip_lose",AssetFold.texture_TexasUI);
                 break;
             case 17:
-                this.Text.string = "工会、联盟处于关闭状态时不允许带出！";
+                this.Text.string = "公会、联盟处于关闭状态时不允许带出！";
                 this.Icon.spriteFrame = AssetContext.getAsset("icon_image_out_chips_tip_lose",AssetFold.texture_TexasUI);
                 break;
             case 19:
