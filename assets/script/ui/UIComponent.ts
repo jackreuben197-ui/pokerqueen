@@ -19,6 +19,7 @@ export enum PrefabUI {
     UIAutoChipsComponent = "UIAutoChipsComponent",
     UIMTTTimeComponent = "UIMTTTimeComponent",
     UIOutChipsTipComponent = "UIOutChipsTipComponent",
+    UIAgreeSecondPcsComponent = "UIAgreeSecondPcsComponent",//第二套公共牌的同意拒绝面板
 }
 //打开面板追加参数
 export interface Open_Obj {

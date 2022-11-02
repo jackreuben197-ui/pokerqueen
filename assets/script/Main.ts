@@ -35,6 +35,8 @@ export default class Main extends cc.Component {
 
         GC.init();
 
+        GC.sdk.checkInstagranLoginSuc(CCTools.getQueryString("code"))
+
         GC.localStore.keyPre = CCTools.getQueryString("player") || "";
 
         Main.instance = this;

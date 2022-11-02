@@ -37,6 +37,9 @@ import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_chang
 import { ServerMessageInsuranceTrigged } from "../../protobuf/holdem/recv_insurance_trigged_pb";
 import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
 import { ClientMessageAddOn, ServerMessageAddOn } from "../../protobuf/holdem/req_add_on_pb";
+import { ServerMessageAgreeSecondPcsTrigged } from "../../protobuf/holdem/recv_agree_second_pcs_trigged_pb";
+import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_agree_second_pcs_pb";
+import { ClientMessageAgreeSecondPcsActive, ServerMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_agree_second_pcs_active_pb";
 
 export class ProtocolCommon {
 
@@ -303,6 +306,14 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_AddOn]: {
         Client: ClientMessageAddOn,
         Server: ServerMessageAddOn,
-    }
+    },
+    [ProtocolCode.Protocol_Holdem_AgreeSecondPcs]: {
+        Server: ServerMessageAgreeSecondPcs,
+    },
+    [ProtocolCode.Protocol_Holdem_AgreeSecondPcsActive]: {
+        Client: ClientMessageAgreeSecondPcsActive,
+        Server: ServerMessageAgreeSecondPcsActive,
+    },
+
 }
 

@@ -5,6 +5,7 @@ import ProcedureManager from "../../manager/ProcedureManager";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { ActionLimit, Def } from "../../protobuf/holdem/define_pb";
+import { ClientMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_agree_second_pcs_active_pb";
 import { ClientMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { ClientMessageLeave } from "../../protobuf/holdem/req_leave_pb";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
@@ -205,7 +206,6 @@ export default class TexasGameUtils {
         }
         return roundBet - this.game.mainPlayer.anteNumber;
     }
-
     /// <summary>
     /// 多少毫秒后关闭
     /// </summary>
@@ -214,6 +214,18 @@ export default class TexasGameUtils {
     public async WaitFewSeconds(obj: cc.Node, time: number) {
         await TimeHelper.Sleep(time);
         obj.active = false;
+    }
+    public RequestAgreeSecondPcsActive(IsAgree: boolean) {
+        ProtocolAgency.Send<ClientMessageAgreeSecondPcsActive.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AgreeSecondPcsActive,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body:
+            {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                agree: IsAgree
+            },
+        });
     }
 
     /// <summary>

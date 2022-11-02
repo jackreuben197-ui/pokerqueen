@@ -659,3 +659,56 @@ export type TMttRoomsDeskPlayer = {
     chip: number,//玩家筹码
     seat: number,//玩家座位号
 }
+
+/// <summary>
+/// 消息类型
+/// </summary>
+export enum MessageSubType
+{
+    MsgBagTypeGetTickets = 1000,                                    //获得门票
+    MsgBagTypeUserTransferTicketsToSelf,                            //玩家转让门票给其他玩家，自己接收消息
+    MsgBagTypeUserTransferTicketsToOther,                           //玩家转让门票给其他玩家，其他玩家接收消息
+    MsgBagTypeClubTransferTicketsToSelf,                            //工会转让门票给其他玩家，自己接收消息
+    MsgBagTypeClubTransferTicketsToOther,                           //工会转让门票给其他玩家，其他玩家接收消息
+    MsgBagTypeTribeGiveToClub,                                      //联盟发送道具到工会
+    MsgBagTypeUserUseProps,                                         //玩家使用道具
+    MsgBagTypeSignUpMatch,                                          //玩家用门票道具报名赛事
+    MsgBagTypeAwardPropsByEveryDayTask,                             //玩家完成每日任务获取奖励道具
+    MsgBagTypeAwardPropsByAchievementsTask,                         //玩家完成成就任务获取奖励道具
+    MsgBagTypeAwardPropsByVipInvitationReward,                      //贵宾邀请获取奖励道具
+    MsgClubTypeModifyProportion = 2000,                             //俱乐部占成比例修改
+    MsgClubTypeModifyTirbe,                                         //俱乐部所在联盟被更改
+    MsgClubTypeModifyID,                                            //俱乐部修改显性id
+    MsgClubTypeRechargeRequest,                                     //充豆申请
+    MsgClubTypeWithdrawRequest,                                     //提豆申请
+    MsgClubTypeRechargeRefuse,                                      //充豆申请被拒绝
+    MsgClubTypeWithdrawRefuse,                                      //提豆申请被拒绝
+    MsgMoneyTypeReleaseClubFunds = 3000,                            //俱乐部基金发放（可提）
+    MsgMoneyTypeWithdrawSuccess,                                    //提豆成功消息
+    MsgMoneyTypeMatchWin,                                           //mtt比赛结束赢取
+    MsgMoneyTypeMatchSignUp,                                        //mtt比赛报名
+    MsgMoneyTypeVipPumpProfit,                                      //vip抽水分润分成
+    MsgMoneyTypeVipInsuranceProfit,                                 //vip保险分润分成
+    MsgMoneyTypeVipPropProfit,                                      //vip道具分润分成
+    MsgMoneyTypeUserMttSelfProfit,                                  //个人mtt返水
+    MsgMoneyTypeUserRoomSelfProfit,                                 //个人普通桌返水
+    MsgMoneyTypeCowboyProfitSelf,                                   // 牛仔分润
+    MsgMoneyTypeCowboyProfit,                                       // 牛仔返水
+    MsgMoneyTypeMttVipServiceFeeProfit,                             //mtt赛事vip服务费分成
+    MsgMoneyTypeMttVipPropProfit,                                   //mtt赛事vip道具分润分成
+    MsgSystemTypeLock = 4000,                                       //冻结账号
+    MsgSystemTypeForbidden,                                         //被禁言
+    MsgSystemTypeNoticePhoneCard,                                   //比赛奖品电话卡发放通知
+    MsgSystemTypeNoticeShoppingCard,                                //比赛奖品购物卡发放通知
+    MsgSystemTypeNoticeGift,                                        //比赛奖品实物发放通知
+    MsgSystemTypeBanBringinOn,                                      //带入被禁
+    MsgSystemTypeBanBringinOff,                                     //带入解禁
+    MsgSystemTypeBanBeansOn,                                        //提豆被禁
+    MsgSystemTypeBanBeansOff,                                       //提豆解禁
+    MsgTirbeTypeCreateSuccess = 5000,                               //俱乐部创建成功
+    MsgTirbeTypeCreateFail,                                         //俱乐部创建失败
+    MsgTribeTypeNewClub,                                            //联盟加入新的俱乐部
+    MsgSuper1Winner = 6000,                                                //一元购中奖消息_中奖者
+    MsgSuper1WinNormal = 6001,                                             //一元购中奖消息_非中奖者
+    MsgSuper1WinTocken = 6002,                                             //一元购中奖消息_领奖
+}

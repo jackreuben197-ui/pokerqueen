@@ -1155,6 +1155,11 @@ export class Web_Mtt {
     static FREE_REMAIN = "/api/roomcenter/mtt/{0}/free_remain";
 }
 
+
+export class Web_Gold_Change_Insure_Log {
+    static API: string = "/api/user/gold_insure_change_log"
+}
+
 // xyh end
 
 /// <summary>
@@ -1952,6 +1957,93 @@ export class APIOrgClubQuit {
         return param;
     }
     static Response: { code?: number, message?: string, data?: typeof APIOrgClubQuit.ResponseData };
+}
+
+export class APIMsgMessageList {
+    //接口地址
+    static API: string = "/api/msg/message/list";
+
+
+    //字段声明
+    static RequestParams: {
+        msg_type: number,//消息类型
+        limit: number,//条目
+        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    } = null;
+
+    static ResponseData: {
+        data?: typeof APIMsgMessageList.Data,
+    } = null;
+    static Data: {
+        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+        total: number,//总条目数
+        list: typeof APIMsgMessageList.MsgInfo,
+    } = null;
+
+    static MsgInfo:
+    {
+        msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
+        num: number,//未读消息数量
+        msg_id: number,//消息ID
+        title: string,
+        content: string,
+        remark: string,
+        msg_type: number,//消息类型 MessageSubType
+        create_time: string,//创建时间
+        game_type: number,//游戏类型
+        multi_language_id: string,//房间名称key
+    }
+
+    static Request(param: typeof APIMsgMessageList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIMsgMessageList.ResponseData };
+}
+
+export class APITicketCreate {
+    //接口地址
+    static API: string = "/api/cmsext/exchange/ticket/create";
+
+
+    //字段声明
+    static RequestParams: {
+        user_id: number,// 玩家ID
+        user_random_id: number,// 玩家randomID
+        phone: number,// 电话
+        email: string,// 邮箱
+        ticket_type: number,// 问题类型
+        description: string,//  问题描述
+        img_url: string,//  图片描述
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APITicketCreate.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APITicketCreate.ResponseData };
+}
+
+export class APIIsPhoneUser {
+    //接口地址
+    static API: string = "/api/user/isPhoneUser";
+
+
+    //字段声明
+    static RequestParams: {
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof APIIsPhoneUser.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof APIIsPhoneUser.ResponseData };
 }
 
 export class APIOrgClubUploadIcon {

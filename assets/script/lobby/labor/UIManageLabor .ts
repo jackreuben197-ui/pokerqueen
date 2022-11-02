@@ -87,7 +87,7 @@ export default class UIManageLabor extends BaseForm {
         chsj.getChildByName('time').getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(data.create_time)
 
         //基金
-        let _data: any = APIOrgClubGold.Response.data
+        // let _data: any = APIOrgClubGold.Response.data
 
         this.updateGold();
         //联盟

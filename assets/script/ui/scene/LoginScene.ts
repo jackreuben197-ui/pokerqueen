@@ -15,7 +15,6 @@ import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ToastManager from "../../manager/ToastManager";
-import { Web_Login } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../component/AssetContext";
@@ -208,7 +207,7 @@ export default class LoginScene extends BaseScene {
         this.setActive(this.forgotBtn, this._loginProcess == ELoginProcess.login && !(this._loginType == ELoginType.phone && this._isQuiklyLogin));
         this.setActive(this.registerBtn, this._loginProcess == ELoginProcess.login);
         this.setActive(this.backLoginBtn, this._loginProcess != ELoginProcess.login);
-        this.setText(this.sureBtnLab, this._loginProcess == ELoginProcess.login ? "UILogin_BtnLogin" : "CommitOK");
+        this.sureBtnLab.node.getComponent(i18nLabel).i18NString = this._loginProcess == ELoginProcess.login ? "UILogin_BtnLogin" : "CommitOK";
 
         this.setToggleTitles();
         this.setPhoneNodeStatus();

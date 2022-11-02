@@ -235,7 +235,7 @@ export default class UIRecord extends BaseForm {
                 _cloneNode.getChildByName("img_dian_now").active = true;
                 let ts = Date.parse(info.Time)
                 let date = new Date(ts)
-                let timeStr = TimeHelper._zeroNum(date.getHours()) + ":" + TimeHelper._zeroNum(date.getMinutes());
+                let timeStr = TimeHelper.ZeroNum(date.getHours()) + ":" + TimeHelper.ZeroNum(date.getMinutes());
                 _cloneNode.getChildByName("lbl_time").getComponent(cc.Label).string = timeStr;
                 _cloneNode["info"] = info;
                 _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
