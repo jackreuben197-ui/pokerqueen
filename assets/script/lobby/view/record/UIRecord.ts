@@ -265,7 +265,7 @@ export default class UIRecord extends BaseForm {
                 } else if (info.origin_type == 2) {
                     typeStr = "联盟桌";
                 } else if (info.origin_type == 3) {
-                    typeStr = "工会桌";
+                    typeStr = "公会桌";
                 } else if (info.origin_type == 4) {
                     typeStr = "朋友桌";
                 }

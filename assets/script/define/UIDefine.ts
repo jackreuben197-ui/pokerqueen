@@ -126,7 +126,7 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_About",
         Title: "UIMine_SettingAboutus",
     },
-    //工会-成员详细
+    //公会-成员详细
     UIMember: {
         UIType: UIType.Form,
         Name: "UIMember",
@@ -157,6 +157,14 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/prefab/record/UIRecordScore",
         Title: "UIMine_RecordDetailForNormal_FENSVUz3",
+    },
+    //收藏牌谱
+    UICollectScore: {
+        UIType: UIType.Form,
+        Name: "UICollectScore",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UICollectScore",
+        Title: "",
     },
     //带入申请
     UIRecordInto: {

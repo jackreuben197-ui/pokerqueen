@@ -583,7 +583,7 @@ export default class UICreateMatch extends BaseForm {
             this.post(EventName.matchModelChange)
 
         } else if (this._btnType == 1) {
-            //工会牌桌
+            //公会牌桌
             if (this._fromUI == 'UICreateMatchHome') {
 
                 room_config.limit_friend_table = false

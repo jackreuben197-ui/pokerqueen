@@ -199,7 +199,7 @@ export type TClubGoldChangeLogItem = {
     name: string,
 
     op_id: number,
-    op_code: string, //类型,工会收回玩，家提现的金币
+    op_code: string, //类型,公会收回玩，家提现的金币
     gold_before: number, //资金变动前
     gold_change: number, //资金变动
     gold_after: number, //资金变动后
@@ -247,7 +247,7 @@ export type TOrderRecordItem = {
     club_id: number,
     tribe_id: number,
     order_no: string
-    order_type: number,// 订单类型 1 申请充豆；2申请提豆 3工会发豆
+    order_type: number,// 订单类型 1 申请充豆；2申请提豆 3公会发豆
     gold_num: number,
     amount: number,
     status: number,     // 状态（1-申请中,2-同意,3-拒绝,4-取消申请）
@@ -668,9 +668,9 @@ export enum MessageSubType
     MsgBagTypeGetTickets = 1000,                                    //获得门票
     MsgBagTypeUserTransferTicketsToSelf,                            //玩家转让门票给其他玩家，自己接收消息
     MsgBagTypeUserTransferTicketsToOther,                           //玩家转让门票给其他玩家，其他玩家接收消息
-    MsgBagTypeClubTransferTicketsToSelf,                            //工会转让门票给其他玩家，自己接收消息
-    MsgBagTypeClubTransferTicketsToOther,                           //工会转让门票给其他玩家，其他玩家接收消息
-    MsgBagTypeTribeGiveToClub,                                      //联盟发送道具到工会
+    MsgBagTypeClubTransferTicketsToSelf,                            //公会转让门票给其他玩家，自己接收消息
+    MsgBagTypeClubTransferTicketsToOther,                           //公会转让门票给其他玩家，其他玩家接收消息
+    MsgBagTypeTribeGiveToClub,                                      //联盟发送道具到公会
     MsgBagTypeUserUseProps,                                         //玩家使用道具
     MsgBagTypeSignUpMatch,                                          //玩家用门票道具报名赛事
     MsgBagTypeAwardPropsByEveryDayTask,                             //玩家完成每日任务获取奖励道具

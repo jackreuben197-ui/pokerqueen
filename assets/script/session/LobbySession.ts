@@ -97,7 +97,7 @@ export default class LobbySession {
     }
     /**
      * 
-     * @param type 1-大厅Banner,2-工会Banner
+     * @param type 1-大厅Banner,2-公会Banner
      * @param limit 条目
      * @param offset 开始下标
      */

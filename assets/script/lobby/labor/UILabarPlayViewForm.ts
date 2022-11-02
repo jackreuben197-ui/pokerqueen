@@ -184,7 +184,7 @@ export default class UILabarPlayViewForm extends UIBase {
                     case memberType.own:
                         this.chongzhi.active = true;
                         this.tabNode.getChildByName('chpj').active = true;   //创建牌桌
-                        this.tabNode.getChildByName('ghgl').active = true;   //工会管理
+                        this.tabNode.getChildByName('ghgl').active = true;   //公会管理
                         this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active;  //查看公会
                         break;
                     case memberType.member:
