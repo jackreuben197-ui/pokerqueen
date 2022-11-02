@@ -1,8 +1,10 @@
-import { UIType } from "../../../define/EIDefine";
+import { ProcedureEnum, UIType } from "../../../define/EIDefine";
 import { UIDefine } from "../../../define/UIDefine";
 import { GameCache } from "../../../game/GameCache";
+import GameUtil from "../../../game/util/GameUtil";
 import { CPErrorCode } from "../../../i18n/CPErrorCode";
 import { i18nMgr } from "../../../i18n/i18nMgr";
+import ProcedureManager from "../../../manager/ProcedureManager";
 import UIMttSignDialogComponent, { DialogData, DialogType } from "../../../mtt/detail/UIMttSignDialogComponent";
 import HttpRequest from "../../../net/https/HttpRequest";
 import { Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details } from "../../../net/https/WebRequest";
@@ -428,6 +430,20 @@ export class UIMatchMttModel {
     public get RebuyCost() {
         return this.MttInfo.mtt.apply_fee_pool + this.MttInfo.mtt.apply_fee_service;
     }
+
+
+    public ShowGameplayUI(fromUI: string, isLookOn: boolean, roomid: number = 0) {
+        // 参赛进入roomid置空，观众进入roomid置为对应房间id
+        GameCache.Instance.room_id = roomid;
+
+        // UIComponent.Instance.ShowNoAnimation(UIType.UIMatch_Loading);
+        // UIComponent.Instance.Remove(UIType.UIDialog);
+        // UIComponent.Instance.Remove(UIType.UIMatch_MttList);
+        // UIComponent.Instance.Remove(UIType.UIMatch_MttDetail);
+        // UIComponent.Instance.ShowNoAnimation(UIType.UITexas, new object[] { fromUI, isLookOn, PartialBringIn });
+        ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: fromUI, isLookOn: isLookOn })
+    }
+
 
     public static get Instance(): UIMatchMttModel {
         return (this as any).instance ??= new UIMatchMttModel;

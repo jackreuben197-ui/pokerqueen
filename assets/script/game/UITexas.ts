@@ -325,7 +325,7 @@ export default class UITexas extends BaseScene {
 
     }
 
-    Enter(param: { fromUI: IUIDefine, lookOn: boolean }): void {
+    Enter(param: { fromUI: IUIDefine, isLookOn: boolean }): void {
 
         super.Enter(param);
 
@@ -335,9 +335,8 @@ export default class UITexas extends BaseScene {
 
         this.game.InitPublicLocalPos();
 
-        // if (param != null) { // { fromUI: this.UIDefine, lookOn: false }
-        //     this.game.IsLookOn = param?.lookOn || false;
-        // }
+        this.game.IsLookOn = param?.isLookOn ?? false;
+
         this.game.SetDeskType(this.game.deskType);
         // 分池UI
         if (null == this.listPotInfo) this.listPotInfo = [];
@@ -355,15 +354,19 @@ export default class UITexas extends BaseScene {
     CleanUI() {
         UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperationComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsuranceComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIAutoChipsComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIMTTTimeComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIOutChipsTipComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
         this.HideMenu(false);
     }
     Exit(param) {
         this.CleanUI();
         super.Exit(param);
     }
-
-
-
     /// <param name="num"></param>几张
     /// <param name="premium"></param>保费
     /// <param name="paynum"></param>赔付金额
@@ -458,5 +461,14 @@ export default class UITexas extends BaseScene {
     }
     private onClickSeeMorePublic() {
         this.game.onClickSeeMorePublic();
+    }
+
+    public async ShowInsuranceTipJieSuan(paynum: number) {
+        this.Image_InsuranceTips.active = true;
+        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("UIInsurance_tips003"), [StringHelper.GetLongString(paynum)]);
+        await TimeHelper.Sleep(2000);
+        if (this.Image_InsuranceTips.activeInHierarchy) {
+            this.Image_InsuranceTips.active = false;
+        }
     }
 }

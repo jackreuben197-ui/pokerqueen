@@ -517,6 +517,7 @@ export default class MttDetailForm extends BaseForm {
                                 valuesMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
                                 // AppsFlyerHelper.MTTGameEnterEvent(valuesMap);
                                 // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
+                                UIMatchMttModel.Instance.ShowGameplayUI(null, false, 0);
                             }
                             else {
                                 this.RefreshMttDetails();

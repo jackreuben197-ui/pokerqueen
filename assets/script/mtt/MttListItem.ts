@@ -1,5 +1,6 @@
 import ListItem from "../common/ListItem";
 import { EMttItemStatus } from "../config/EEnumConfig";
+import { GameConfig } from "../config/GameConfig";
 import { UIDefine } from "../define/UIDefine";
 import MttListItemModel from "../frame/data/mtt/MttListItemModel";
 import GC from "../frame/GameControl";
@@ -130,14 +131,19 @@ export default class MttListItem extends ListItem {
             this.setTime();
         }
     }
-
     clickItem() {
-        if (Web_Org_Club_Get.Response.data.club_id > 0) {
+        //app端地址
+        if (GameConfig.BuildType == 0) {
             GC.data.mtt.list.select = this._data;
             UIComponent.open(UIDefine.MttDetailForm, this._data);
-            // UIComponent.open(UIDefine.MttRealTime, this._data);
         } else {
-            ToastManager.Instance.createToast("PleaseJoinAUnionFirs");
+            if (Web_Org_Club_Get.Response.data.club_id > 0) {
+                GC.data.mtt.list.select = this._data;
+                UIComponent.open(UIDefine.MttDetailForm, this._data);
+                // UIComponent.open(UIDefine.MttRealTime, this._data);
+            } else {
+                ToastManager.Instance.createToast("PleaseJoinAUnionFirs");
+            }
         }
     }
 }

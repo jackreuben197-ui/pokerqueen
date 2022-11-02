@@ -28,6 +28,7 @@ import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import Seat from "../seat/Seat";
 import { SeatStandupAnimation } from "../SeatStateHandler";
+import MTTGame from "../texas/MTTGame";
 import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
 import { RoomType } from "../util/GameUtil";
@@ -130,8 +131,9 @@ export default class TexasGameMessageHandler {
         // GameStatusRestoreHandler?.Invoke(responseData.Status);
         // GameStatusRestoreHandler = null;
 
-        let isMtt: boolean = false;
-        //this.game instanceof TexasGame;
+        let isMtt: boolean = this.game instanceof MTTGame;
+
+        console.log("当前游戏是比赛:", isMtt);
 
         if (response.status == 0) {
 
@@ -149,7 +151,6 @@ export default class TexasGameMessageHandler {
                 if (fromUI) {
                     UIComponent.Instance.CloseNoAnimation(fromUI);
                 }
-
             }
 
             SceneManager.Instance.switchScene(UIDefine.UITexas, null, ProcedureManager.currProcedure.param);

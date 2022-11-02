@@ -3191,7 +3191,6 @@ export default class TexasGame {
         node.getChildByName("Arrow").active = interactable;
         node.getComponent(cc.Button).interactable = interactable;
     }
-
     //托管相关
     public SendTrustAction(enable: boolean = false) {
 

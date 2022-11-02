@@ -48,7 +48,7 @@ import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
 import UIAgreeSecondPcsComponent from "../ui/UIAgreeSecondPcsComponent";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
-import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
+import UIInsuranceComponent, { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
 import UIOperationComponent from "../ui/UIOperationComponent";
 import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
@@ -1202,8 +1202,8 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="source"></param>
     public HandleGetPublicCards(source: ServerMessagePublicCards.AsObject): void {
-        //UIComponent.Instance.HideUI(UIType.UIInsurance);
-        //UIComponent.Instance.Remove(UIType.UIAgreeSecondPcs);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsuranceComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
         this.game.autoCall = false;
         this.game.autoAllin = false;
         this.game.autoCheck = false;
@@ -1237,7 +1237,7 @@ export default class TexasGameProtocol {
                     bust = true;
                 }
                 if (this.game.GetLocalSeatID(key) == this.game.mainPlayer.seatID && value.includes(lastPubicCard) && this.game.cacheBuyActiveAmount > 0) {
-                    //this.ShowInsuranceTipJieSuan(GameUtil.GetOddsByPlayerNum(cacheBuyInsurancePotUserCount, item.Value.length) * cacheBuyActiveAmount);
+                    this.game.uirc.ShowInsuranceTipJieSuan(GameUtil.GetOddsByPlayerNum(this.game.cacheBuyInsurancePotUserCount, value.length) * this.game.cacheBuyActiveAmount);
                 }
             })
         }
