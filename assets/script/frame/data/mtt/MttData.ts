@@ -10,7 +10,7 @@ export default class MttData extends BaseData {
     realTime: MttRealTimeModel = new MttRealTimeModel();
     detail: MttDetailModel = new MttDetailModel();
     protected notify(id: string, msg: any, sendInfo?: any): void {
-        id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
+        //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
         switch (id) {
             case Web_Mtt.LIST: {
                 this.list.updateData(msg);

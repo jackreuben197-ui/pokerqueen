@@ -3029,9 +3029,10 @@ export default class TexasGame {
     public onClickAddOn() { }
     //点击退出按钮响应
     public onClickExit() {
+
         this.uirc.HideMenu(false);
 
-        if (this.mainPlayer.isPlaying) {
+        if (this.mainPlayer?.isPlaying) {
 
             UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
                 {

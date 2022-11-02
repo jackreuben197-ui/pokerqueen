@@ -23,7 +23,7 @@ export default class MttRealTimeTablesNode extends UIBase {
     }
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
-        id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
+       //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
         switch (id) {
             case Web_Mtt.ROOMS: {
                 this.updateList();
