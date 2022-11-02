@@ -2928,6 +2928,7 @@ export default class TexasGame {
 
         this.KillAllTweener();
 
+        GameCache.Instance.CurGame = null;
         // 清空公共牌
         // if (null != this.uirc?.listCards)
         //     this.uirc.listCards = [];
