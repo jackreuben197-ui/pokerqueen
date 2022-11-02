@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:09:37
+ * @LastEditTime: 2022-11-02 14:31:10
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -70,13 +70,20 @@ export default class UIPlayerLookLabor extends BaseForm {
         let lm_panel_right = lm.getChildByName('panel_right')
         lm_panel_right.getChildByName('name').getComponent(cc.Label).string = data.tribe_name || ''
     }
-    exitClub() {
+    async exitClub() {
+        if (GC.data.user.info.displayGold == 0) {
+            await UIClubModel.mInstance.APIOrgClubQuit();
+            GC.data.user.info.gold = 0;
+            this.close();
+            LobbyControl.getInstance().switchContent("UIlabor");
+            return
+        }
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
                 title: "提示",
                 // content: `您的账户内剩余金豆${GameCache.Instance.gold}，如减持退出，系统将清空您的所有剩余金豆，是否继续？`,
-                content: `您的账户内剩余金豆${GC.data.user.info.displayGold}，如减持退出，系统将清空您的所有剩余金豆，是否继续？`,
+                content: `您的账户内剩余金豆 ${GC.data.user.info.displayGold} ，如减持退出，系统将清空您的所有剩余金豆，是否继续？`,
                 contentCommit: "确定",
                 contentCancel: "取消",
                 actionCommit: async () => {

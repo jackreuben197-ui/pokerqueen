@@ -3,8 +3,8 @@
  * @Date: 2022-01-10 22:29:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-13 17:48:02
- * @FilePath: /NewProject/build-templates/web-mobile/index.html
+ * @LastEditTime: 2022-11-02 15:17:00
+ * @FilePath: /pokerqueen/build-templates/web-mobile/index.html
 -->
 <!DOCTYPE html>
 <html>
@@ -85,8 +85,9 @@
             //       window.vConsole = new VConsole();
             //     }
             //   }
-
-
+            if (typeof VConsole !== 'undefined') {
+                window.vConsole = new VConsole();
+            }
 
             var debug = window._CCSettings.debug;
             var splash = document.getElementById('splash');
