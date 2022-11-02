@@ -1243,8 +1243,8 @@ export default class TexasGame {
     /// </summary>
     /// <param name="anteNumber"></param>
     public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false) {
-        // if (GameCache.Instance.gold < anteNumber) {
-        if (GC.data.user.info.gold < anteNumber) {
+        //朋友桌不需要判断金豆
+        if (GameCache.Instance.origin_type != 4 && GC.data.user.info.gold < anteNumber) {
             UIComponent.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
