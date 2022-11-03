@@ -8029,7 +8029,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "agreeToggle",
+    "_name": "agreeToggle1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 225
