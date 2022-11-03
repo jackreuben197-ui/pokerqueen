@@ -675,7 +675,6 @@ export default class TexasGame {
                 }
                 this.mainPlayer = mSeat.Player;
             }
-            //mSeat.UpdateFSMbyStatus(true);
             //更新玩家离线状态
             mSeat.UpdateOnOrOffLine();
         }

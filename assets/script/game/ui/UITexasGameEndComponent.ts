@@ -105,7 +105,7 @@ export default class UITexasGameEndComponent extends UIBase {
         this.ShowEndTips(false);
         let response: typeof Web_User_Room_Settle_Detail.Response = await UITexasModel.mInstance.APIUserRoomSettleDetail(this.mRoomId);
         if (response) {
-            if (!this.node.active) return;
+            if (!this.node.activeInHierarchy) return;
             this.InitSuperView(response);
             if (response.data.self_settle == null) {
                 this.TopLook_Con.active = false;

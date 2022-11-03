@@ -477,11 +477,11 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_StoreChips_Handler(response) {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_StoreChips_Handler`);
     }
-    Protocol_Holdem_AgreePost_Handler(Protocol_Holdem_AgreePost: ProtocolCode, Protocol_Holdem_AgreePost_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    Protocol_Holdem_AgreePost_Handler(response) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_AgreePost_Handler`);
     }
-    Protocol_Holdem_BuyInsuranceActive_Handler(Protocol_Holdem_BuyInsuranceActive: ProtocolCode, Protocol_Holdem_BuyInsuranceActive_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    Protocol_Holdem_BuyInsuranceActive_Handler(response) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_BuyInsuranceActive_Handler`);
     }
     /// <summary>
     /// 要求亮明未使用的公共牌 消息回调

@@ -7,7 +7,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply } from "../../net/websocket/ProtocolHoldemMessages";
-import { Def, Operator, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
+import { Def, Operator, PlayerCards, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
 import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_agree_second_pcs_pb";
@@ -573,19 +573,22 @@ export default class TexasGameProtocol {
         }
         let mSeat: Seat = null;
         for (let i = 0, n = rec.playerCardsList.length; i < n; i++) {
-            if (rec.playerCardsList[i].seatId == 0)
+
+            let playerCards: PlayerCards.AsObject = rec.playerCardsList[i];
+
+            if (playerCards.seatId == 0)
                 continue;
 
-            mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.playerCardsList[i].seatId));
+            mSeat = this.game.GetSeatByServerSeatID(playerCards.seatId);
             if (null == mSeat)
                 return;
-            if (rec.playerCardsList[i].cardsList != null && rec.playerCardsList[i].cardsList[0] == 0 && rec.playerCardsList[i].cardsList[1] == 0) {
-                console.log("player allin card =null");
+            if (playerCards?.cardsList?.[0] == 0 && playerCards?.cardsList?.[1] == 0) {
+                console.log("player allin card = 0,0");
                 return;
             }
             let allinCards: number[] = [];
-            for (let j = 0; j < rec.playerCardsList[i].cardsList.length; j++) {
-                allinCards.push(rec.playerCardsList[i].cardsList[j]);
+            for (let j = 0; j < playerCards.cardsList.length; j++) {
+                allinCards.push(playerCards.cardsList[j]);
             }
             mSeat.Player.SetCards(allinCards);
             if (this.game.mainPlayer.seatID == mSeat.seatID && !rec.isAll) {

@@ -91,21 +91,23 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
         if (GameCache.Instance.CurGame == null) return;
 
+        this.ClearAllHeads();
 
         this.PlayerActionToggleList = [];
 
-        // if (PlayerActionToggleList == null) {
-        //     PlayerActionToggleList = new List<GameObject>();
-        // }
-        // else {
-        //     ClearGameObjList(PlayerActionToggleList);
-        // }
-
+        //判断长度设置头像总容器的缩放值
+        let head_count = 0;
         for (let i = 0; i < GameCache.Instance.CurGame.listSeat.length; i++) {
             let seat: Seat = GameCache.Instance.CurGame.listSeat[i];
             if (seat.Player == null || seat.seatID == -1 || !seat.Player.isPlaying) {
                 continue;
             }
+            let head = this.Heads.children[head_count];
+
+            head.active = true;
+
+            head_count++;
+
             //this.PlayerActionToggleList.push(this.CreatGameObj(item_head.gameObject, this.PlayerAgreeAndRefuse, seat.seatID, seat.Player.headPic));
         }
     }
@@ -124,5 +126,11 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
         return go;
     }
 
+    private ClearAllHeads() {
+        for (let i = 0; i < this.Heads.children.length; i++) {
+            let head = this.Heads.children[i];
+            head.active = false;
+        }
+    }
 
 }
