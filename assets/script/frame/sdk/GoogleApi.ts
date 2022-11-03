@@ -44,7 +44,7 @@ export default class GoogleApi {
         //     "jti": "c23a9ecd742e9d239a32031d2a2679a643fa2f4b"
         //   }
 
-        LoginSession.WebLoginThirdParty({ token: this.credential, source: "google", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
+        LoginSession.WebLoginThirdParty({ id_token: this.credential, source: "google", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
 
 
         // this.initTokenClient();

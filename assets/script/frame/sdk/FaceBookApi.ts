@@ -64,7 +64,7 @@ export default class FaceBookApi {
         this.rspData = msg;
 
         LoginSession.WebLoginThirdParty({ token: this.rspData.accessToken, source: "facebook", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
-        
+
         (window as any).FB && (window as any).FB.api('/me', function (response) {
             console.log('==========> facebook api : ', response);
         });

@@ -51,8 +51,8 @@ export default class LoginSession {
             });
         });
     }
-    
-    static async WebLoginThirdParty(param: typeof Web_Login_Third_Party.RequestParams) {
+
+    static async WebLoginThirdParty(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Login_Third_Party,

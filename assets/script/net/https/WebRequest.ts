@@ -1981,18 +1981,18 @@ export class APIMsgMessageList {
     } = null;
 
     static MsgInfo:
-    {
-        msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
-        num: number,//未读消息数量
-        msg_id: number,//消息ID
-        title: string,
-        content: string,
-        remark: string,
-        msg_type: number,//消息类型 MessageSubType
-        create_time: string,//创建时间
-        game_type: number,//游戏类型
-        multi_language_id: string,//房间名称key
-    }
+        {
+            msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
+            num: number,//未读消息数量
+            msg_id: number,//消息ID
+            title: string,
+            content: string,
+            remark: string,
+            msg_type: number,//消息类型 MessageSubType
+            create_time: string,//创建时间
+            game_type: number,//游戏类型
+            multi_language_id: string,//房间名称key
+        }
 
     static Request(param: typeof APIMsgMessageList.RequestParams) {
         this.RequestParams = param;
