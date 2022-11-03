@@ -382,10 +382,10 @@ export default class UITexasHistoryComponent extends UIBase {
             }
             else {
                 publicCard.node.active = (true);
-                publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
 
                 publicCardDown.node.active = (true);
-                publicCardDown.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                publicCardDown.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             }
         }
         if (this.HaveSecondCard) {
@@ -397,7 +397,7 @@ export default class UITexasHistoryComponent extends UIBase {
                 }
                 else {
                     publicCardDown.node.active = (true);
-                    publicCardDown.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                    publicCardDown.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                 }
             }
         }
@@ -532,7 +532,7 @@ export default class UITexasHistoryComponent extends UIBase {
 
                 }
                 else {
-                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                     publicCard.node.active = (true);
 
                 }
@@ -598,7 +598,7 @@ export default class UITexasHistoryComponent extends UIBase {
                 else {
 
                     publicCard.node.active = true;
-                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
 
                 }
             }
@@ -660,7 +660,7 @@ export default class UITexasHistoryComponent extends UIBase {
                 else {
 
                     publicCard.node.active = (true);
-                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
 
                 }
             }
@@ -1021,12 +1021,12 @@ export default class UITexasHistoryComponent extends UIBase {
         }
         //手牌显示
         for (let i = 0; i < element.handCards.length; i++) {
-            handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+            handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             handcards[i].node.active = true;
         }
         if (element.handCards.length <= 0) {
             for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
-                handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[0]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[0]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                 handcards[i].active = true;
             }
         }
@@ -1073,7 +1073,7 @@ export default class UITexasHistoryComponent extends UIBase {
                 else {
 
                     publicCard.node.active = true;
-                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                 }
             }
         }
@@ -1087,7 +1087,7 @@ export default class UITexasHistoryComponent extends UIBase {
                 }
                 else {
                     publicCard.node.active = true;
-                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                 }
             }
         }
@@ -1207,12 +1207,12 @@ export default class UITexasHistoryComponent extends UIBase {
         }
         //手牌显示
         for (let i = 0; i < element.handCards.length; i++) {
-            handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+            handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             handcards[i].node.active = true;
         }
         if (element.handCards.length <= 0) {
             for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
-                handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[0]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[0]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                 handcards[i].active = true;
             }
         }
@@ -1249,9 +1249,9 @@ export default class UITexasHistoryComponent extends UIBase {
             }
             else {
                 sPublicCard.node.active = true;
-                sPublicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                sPublicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                 publicCard.node.active = true;
-                publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_atlas_HistorySecondCard) as cc.SpriteFrame;
+                publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             }
         }
 
