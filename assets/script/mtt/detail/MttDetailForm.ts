@@ -9,6 +9,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
+import ToastManager from "../../manager/ToastManager";
 
 import BaseForm from "../../ui/form/BaseForm";
 
@@ -532,6 +533,7 @@ export default class MttDetailForm extends BaseForm {
                     {
                         UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
                             if (rebuyCode == 0) {
+                                UIMatchMttModel.Instance.ShowGameplayUI(null, false, 0);
                                 // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
                             }
                             else {
