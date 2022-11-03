@@ -66,7 +66,6 @@ export class UIFormMgr {
             });
         }
     }
-
     async close(uiDefine: { Name: string, Bundle: string, Path: string } = null, param: any = null, obj: Close_Obj) {
         if (uiDefine) {
             for (let i = this.showUIs.length - 1; i >= 0; i--) {

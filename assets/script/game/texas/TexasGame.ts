@@ -1243,8 +1243,8 @@ export default class TexasGame {
     /// </summary>
     /// <param name="anteNumber"></param>
     public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false) {
-        // if (GameCache.Instance.gold < anteNumber) {
-        if (GC.data.user.info.gold < anteNumber) {
+        //朋友桌不需要判断金豆
+        if (GameCache.Instance.origin_type != 4 && GC.data.user.info.gold < anteNumber) {
             UIComponent.open(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
@@ -2928,6 +2928,7 @@ export default class TexasGame {
 
         this.KillAllTweener();
 
+        GameCache.Instance.CurGame = null;
         // 清空公共牌
         // if (null != this.uirc?.listCards)
         //     this.uirc.listCards = [];
@@ -3191,7 +3192,6 @@ export default class TexasGame {
         node.getChildByName("Arrow").active = interactable;
         node.getComponent(cc.Button).interactable = interactable;
     }
-
     //托管相关
     public SendTrustAction(enable: boolean = false) {
 

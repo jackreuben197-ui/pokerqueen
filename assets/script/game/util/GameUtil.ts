@@ -1,6 +1,7 @@
 import { GameConfig } from "../../config/GameConfig";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefineType } from "../../define/UIDefine";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
 import LobbySession from "../../session/LobbySession";
@@ -1441,8 +1442,7 @@ export default class GameUtil {
     public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUI?: UIDefineType) {
         //未开放房间类型
         if (!GameUtil.IsOpenRoomType(enter_room_info.room_type)) {
-            //UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
-            UIComponent.Instance.Toast();
+            UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
             return;
         }
         if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {

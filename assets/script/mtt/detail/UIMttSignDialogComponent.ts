@@ -9,8 +9,7 @@ import UIBase from "../../ui/UIBase";
 
 const { ccclass, property, menu } = cc._decorator;
 
-export enum DialogType
-{
+export enum DialogType {
     Commit,
     CommitCancel
 }
@@ -23,16 +22,14 @@ enum MTTJoinMode // 参与mtt玩法方式
     AddOn, // 增购
 }
 
-export class RebuyData
-{
+export class RebuyData {
     upblindInterval: number;//升盲间隔
     rebuyBlind: number;//最大重购等级
     starTime: string;//比赛开始时间
 }
 
-export class DialogData
-{
-    
+export class DialogData {
+
     type: DialogType;
     title: string;
     content: string;
@@ -47,7 +44,7 @@ export class DialogData
     hunterFee: number;//人头费
     Fee: number;//服务费
     buyRatio: number;
-    rebuyData : RebuyData;
+    rebuyData: RebuyData;
     isHunter: number;//1是猎人赛 0不是
     buyin_free_times: number;
     rebuy_free_times: number;
@@ -57,12 +54,12 @@ export class DialogData
     rebuy_free_incl_svr: number;
     multi_ratio_free_incl_svr: number;
     addon_free_incl_svr: number;
-    mTTJoinMode : MTTJoinMode;
+    mTTJoinMode: MTTJoinMode;
 };
 @ccclass
 export default class UIMttSignDialogComponent extends UIBase {
 
-    
+
 
     panel_click2: cc.Node = null;
     cachePropPropertyType: number = 0;
@@ -79,12 +76,12 @@ export default class UIMttSignDialogComponent extends UIBase {
     disCountType: any = null;
     MultLimitFree: any = null;
     rebuySecond: number = 0;
-    lastTime : number = 0;
-    IntervalTime : number = 1;
+    lastTime: number = 0;
+    IntervalTime: number = 1;
     totalRebuyTimes: number = 0;
-    used_prop_id: number  = 0;
-    prop_type : number = 0;
-    use_free : boolean = false;
+    used_prop_id: number = 0;
+    prop_type: number = 0;
+    use_free: boolean = false;
 
     lateLoad() {
         super.lateLoad();
@@ -103,7 +100,7 @@ export default class UIMttSignDialogComponent extends UIBase {
     }
 
     lateOpen(param: any = null) {
-        this.panel_click2.active = true;   
+        this.panel_click2.active = true;
     }
 
     onShow(data?: DialogData): void {
@@ -111,27 +108,22 @@ export default class UIMttSignDialogComponent extends UIBase {
 
 
         this.panel_click2 = this.getChildNodeOrComponent("panel_click2");
-        this.panel_click2.active = true;   
+        this.panel_click2.active = true;
         this.panel_click2.on(cc.Node.EventType.TOUCH_END, this.onHideAddMtt, this)
 
 
         let btn_confim: cc.Node = this.getChildNodeOrComponent("btn_confim");
         btn_confim.on(cc.Node.EventType.TOUCH_END, this.onClickCommit, this)
-        
-        
 
-        if (null != data)
-		{
+
+
+        if (null != data) {
             this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
             this.curDialogData = data;
-            if (null != this.curDialogData)
-            {
-                if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0)
-                {
-                    UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res =>
-                    {
-                        if (res.code == 0)
-                        {
+            if (null != this.curDialogData) {
+                if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
+                    UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
+                        if (res.code == 0) {
                             this.cachePropPropertyType = res.data.prop_property_type;
                             this.cachePropBalance = res.data.prop_balance;
                             this.cacheIsFreeServiceFee = res.data.is_free_service_charge;
@@ -139,20 +131,17 @@ export default class UIMttSignDialogComponent extends UIBase {
                             // FreeService.GetComponent<Toggle>().onValueChanged.AddListener(ClickFreeService);
                             // FreeService.transform.Find("name").GetComponent<Text>().text = LanguageManager.Get("UIMine_Backpack_FreeServiceVoucher");
                             GC.data.user.info.gold = res.data.wallet_balance;
-                            if (this.cachePropPropertyType == 2)
-                            {
+                            if (this.cachePropPropertyType == 2) {
                                 this.SingType = 0;
                             }
                             this.HandleDate();
                         }
-                        else
-                        {
+                        else {
                             // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res.code));
                         }
                     });
                 }
-                else
-                {
+                else {
                     this.HandleDate();
                 }
             }
@@ -166,16 +155,12 @@ export default class UIMttSignDialogComponent extends UIBase {
         //UpdateLimitFree();
         //SetMultLimitFreeName();
         // propInfos = new List<Web_Prop_User_Prop_List.Record>();
-        UIMatchMttModel.Instance.APIMtt_GetDiscounts(pAct =>
-        {
-            if (pAct.code == 0)
-            {
-                if (pAct.data.excludefee_list.Count > 0 && pAct.data.excludefee_list != null)
-                {
+        UIMatchMttModel.Instance.APIMtt_GetDiscounts(pAct => {
+            if (pAct.code == 0) {
+                if (pAct.data.excludefee_list.Count > 0 && pAct.data.excludefee_list != null) {
                     // propInfos.AddRange(pAct.data.excludefee_list);
                 }
-                if (pAct.data.includefee_list.Count > 0 && pAct.data.includefee_list != null)
-                {
+                if (pAct.data.includefee_list.Count > 0 && pAct.data.includefee_list != null) {
                     // propInfos.AddRange(pAct.data.includefee_list);
                 }
                 // int count = 0;
@@ -193,15 +178,15 @@ export default class UIMttSignDialogComponent extends UIBase {
                 // }
             }
         });
-      
+
     }
 
     setVisible(isShow) {
         this.node.active = isShow;
-        this.panel_click2.active = isShow; 
+        this.panel_click2.active = isShow;
     }
 
-    
+
     onHideAddMtt() {
         this.setVisible(false);
         this.panel_click2.active = false;
@@ -209,14 +194,13 @@ export default class UIMttSignDialogComponent extends UIBase {
 
     onClickCommit() {
         // if (!buttonCommit.interactable)
-		// 	{
-		// 		return;
-		// 	}
-		this.ApplyMatch();
+        // 	{
+        // 		return;
+        // 	}
+        this.ApplyMatch();
     }
 
-    HandleDate()
-    {
+    HandleDate() {
         this.UpdateGold();
         // coinBalance.text = curDialogData.coinBalance;
         //多倍买入时展示
@@ -232,8 +216,7 @@ export default class UIMttSignDialogComponent extends UIBase {
         // AvailableTickets.text = string.Format(LanguageManager.Get("UIMTTSignDialogCanUseTickt"), cachePropBalance);
         //if (UIMatchMTTModel.Instance.MttInfo.mtt.total_rebuy_times > 0) {
         this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
-        if (this.totalRebuyTimes < 10000)
-        {
+        if (this.totalRebuyTimes < 10000) {
             //可重构次数   
             //!!!!!特别注意:当后台设置不限制重构次数时,rebuy_times为10000,而left_rebuy_times在后端传输时做了int8转换越界变为16了,但只是传到前端的转化了后端正常,故在此做特别处理!!!!!!
             if (UIMatchMttModel.Instance.MttInfo.state != null) {
@@ -257,8 +240,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                 // ToggleTicket.interactable = false;
                 // buttonCommit.interactable = curDialogData.coinnum + curDialogData.Fee <= GameCache.Instance.gold;
                 // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
-                if (this.curDialogData.buyRatio > 1)
-                {
+                if (this.curDialogData.buyRatio > 1) {
                     // ToggleCoin1.isOn = true;
                     // ToggleCoin2.isOn = false;
                 }
@@ -271,8 +253,7 @@ export default class UIMttSignDialogComponent extends UIBase {
 
                 // buttonCommit.interactable = cachePropBalance > 0;
                 // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
-                if (this.curDialogData.buyRatio > 1)
-                {
+                if (this.curDialogData.buyRatio > 1) {
                     // ToggleTicket1.isOn = true;
                     // ToggleTicket2.isOn = false;
                 }
@@ -284,8 +265,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                 // ToggleTicket.isOn = false;
                 // buttonCommit.interactable = curDialogData.coinnum + curDialogData.Fee <= GameCache.Instance.gold;
                 // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
-                if (this.curDialogData.buyRatio > 1)
-                {
+                if (this.curDialogData.buyRatio > 1) {
                     // ToggleCoin1.isOn = true;
                     // ToggleCoin2.isOn = false;
 
@@ -300,24 +280,19 @@ export default class UIMttSignDialogComponent extends UIBase {
         }
         // Text_Ratio.gameObject.SetActive(!Text_ErroTips.gameObject.activeInHierarchy && curDialogData.buyRatio > 1);
         //textContent.gameObject.SetActive(!Text_ErroTips.gameObject.activeInHierarchy && cacheIsFreeServiceFee && curDialogData.buyRatio == 1);
-        if (this.curDialogData.rebuyData != null)
-        {
+        if (this.curDialogData.rebuyData != null) {
             let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(this.curDialogData.rebuyData.starTime) + (this.curDialogData.rebuyData.rebuyBlind - 1) * this.curDialogData.rebuyData.upblindInterval;
             this.rebuySecond = deadLineTime - TimeHelper.Now / 10000000;
-            if (this.rebuySecond > 15)
-            {
+            if (this.rebuySecond > 15) {
                 this.rebuySecond = 14;
                 // textCommit.text = CPErrorCode.LanguageDescription(10012) + "(15s)";
             }
-            else
-            {
+            else {
                 this.rebuySecond -= -1;
-                if (this.rebuySecond < 0)
-                {
+                if (this.rebuySecond < 0) {
                     // textCommit.text = CPErrorCode.LanguageDescription(10012) + "(" + 0 + "s)";
                 }
-                else
-                {
+                else {
                     // textCommit.text = CPErrorCode.LanguageDescription(10012) + "(" + rebuySecond + "s)";
                 }
             }
@@ -325,17 +300,15 @@ export default class UIMttSignDialogComponent extends UIBase {
     }
 
     //UIMTTApply_dialog_content  账户余额：{0} ， UIMTTSignDialogCanUseTickt 可用门票  ，  UIMTTSignDialogRemainingBuy  剩余买入
-   
 
-    Update()
-    {
+
+    Update() {
         // UI uiDialog = UIComponent.Instance.Get(UIType.UIMTTSignDialog);
         // if (null == uiDialog || !uiDialog.GameObject.activeInHierarchy)
         // {
         //     return;
         // }
-        if (this.curDialogData != null && this.curDialogData.rebuyData != null)
-        {
+        if (this.curDialogData != null && this.curDialogData.rebuyData != null) {
             // if (Time.time - lastTime < IntervalTime)
             // {
             //     return;
@@ -360,8 +333,7 @@ export default class UIMttSignDialogComponent extends UIBase {
 
     }
 
-    UpdateGold(discount = 0, DiscountType = 0)
-    {
+    UpdateGold(discount = 0, DiscountType = 0) {
         let buyRatio = 0;
         // if (ToggleCoin2.isOn)
         // {
@@ -371,10 +343,8 @@ export default class UIMttSignDialogComponent extends UIBase {
         // {
         // 	buyRatio = 1;
         // }
-        if (this.isUseLimitFree)
-        {
-            switch (this.curDialogData.mTTJoinMode)
-            {
+        if (this.isUseLimitFree) {
+            switch (this.curDialogData.mTTJoinMode) {
                 case MTTJoinMode.None:
                     break;
                 case MTTJoinMode.Apply:
@@ -382,8 +352,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     {
                         this.UseLimitFreeNoServer(buyRatio);
                     }
-                    else
-                    {
+                    else {
                         this.UseLimitFree(buyRatio);
                     }
                     break;
@@ -392,8 +361,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     {
                         this.UseLimitFreeNoServer(buyRatio);
                     }
-                    else
-                    {
+                    else {
                         this.UseLimitFree(buyRatio);
                     }
                     break;
@@ -402,8 +370,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     {
                         this.UseLimitFreeNoServer(buyRatio);
                     }
-                    else
-                    {
+                    else {
                         this.UseLimitFree(buyRatio);
                     }
                     break;
@@ -413,28 +380,23 @@ export default class UIMttSignDialogComponent extends UIBase {
             return;
         }
 
-        if (this.isUseFreeService)
-        {
-            if (this.curDialogData.isHunter == 0)
-            {
+        if (this.isUseFreeService) {
+            if (this.curDialogData.isHunter == 0) {
                 //猎人赛处于关闭
                 // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(0);
             }
-            else
-            {
+            else {
                 // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(0) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio);
             }
             return;
         }
 
-        if (this.isUseMultFree)
-        {
+        if (this.isUseMultFree) {
             if (this.curDialogData.multi_ratio_free_incl_svr == 0) //限免是否包含服务费，0不包含，1包含
             {
                 this.UseLimitFreeNoServer(buyRatio);
             }
-            else
-            {
+            else {
                 this.UseLimitFree(buyRatio);
             }
             return;
@@ -442,49 +404,37 @@ export default class UIMttSignDialogComponent extends UIBase {
 
         let discountResult = discount;
         let type = DiscountType;
-        if (discount == 0)
-        {
-            if (this.curDialogData.isHunter == 0)
-            {
+        if (discount == 0) {
+            if (this.curDialogData.isHunter == 0) {
                 //猎人赛处于关闭
                 // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio);
             }
-            else
-            {
+            else {
                 // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio);
             }
         }
-        else
-        {
+        else {
 
-            if (this.curDialogData.isHunter == 0)
-            {
-                if (DiscountType == 12)
-                {
-                    if (discountResult >= this.curDialogData.coinnum * buyRatio)
-                    {
+            if (this.curDialogData.isHunter == 0) {
+                if (DiscountType == 12) {
+                    if (discountResult >= this.curDialogData.coinnum * buyRatio) {
                         discountResult = this.curDialogData.coinnum * buyRatio;
                     }
                 }
-                else if (DiscountType == 13)
-                {
-                    if (discountResult >= this.curDialogData.coinnum * buyRatio + this.curDialogData.Fee * buyRatio)
-                    {
+                else if (DiscountType == 13) {
+                    if (discountResult >= this.curDialogData.coinnum * buyRatio + this.curDialogData.Fee * buyRatio) {
                         discountResult = this.curDialogData.coinnum * buyRatio + this.curDialogData.Fee * buyRatio;
                     }
                 }
                 //猎人赛处于关闭
                 // coinnum.text = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(discountResult);
             }
-            else
-            {
-                if (DiscountType == 12)
-                {
+            else {
+                if (DiscountType == 12) {
                     if (discountResult >= this.curDialogData.coinnum * buyRatio + this.curDialogData.hunterFee * buyRatio)
                         discountResult = this.curDialogData.coinnum * buyRatio + this.curDialogData.hunterFee * buyRatio;
                 }
-                else if (DiscountType == 13)
-                {
+                else if (DiscountType == 13) {
                     if (discountResult >= this.curDialogData.coinnum * buyRatio + this.curDialogData.hunterFee * buyRatio + this.curDialogData.Fee * buyRatio)
                         discountResult = this.curDialogData.coinnum * buyRatio + this.curDialogData.hunterFee * buyRatio + this.curDialogData.Fee * buyRatio;
                 }
@@ -499,15 +449,12 @@ export default class UIMttSignDialogComponent extends UIBase {
     /// <summary>
     /// 使用限免不包含服务费
     /// </summary>
-    UseLimitFreeNoServer(buyRatio)
-    {
-        if (this.curDialogData.isHunter == 0)
-        {
+    UseLimitFreeNoServer(buyRatio) {
+        if (this.curDialogData.isHunter == 0) {
             //猎人赛处于关闭
             // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(curDialogData.coinnum);
         }
-        else
-        {
+        else {
             // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(curDialogData.coinnum + curDialogData.hunterFee);
         }
     }
@@ -515,53 +462,42 @@ export default class UIMttSignDialogComponent extends UIBase {
     /// <summary>
     /// 使用限免包含服务费
     /// </summary>
-    UseLimitFree(buyRatio)
-    {
-        if (this.curDialogData.isHunter == 0)
-        {
+    UseLimitFree(buyRatio) {
+        if (this.curDialogData.isHunter == 0) {
             //猎人赛处于关闭
             // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(curDialogData.coinnum + curDialogData.Fee);
         }
-        else
-        {
+        else {
             // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(curDialogData.coinnum + curDialogData.hunterFee + curDialogData.Fee);
         }
     }
 
     // 报名
     ApplyMatch() {
-        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this.curDialogData.buyRatio == 1 && UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService)
-        {
-            UIMatchMttModel.Instance.APIPropUserBuyProp(response =>
-            {
-                if (response.code == 0)
-                {
-                    if (null != this.curDialogData && null != this.curDialogData.actionCommit)
-                    {
+        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this.curDialogData.buyRatio == 1 && UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService) {
+            UIMatchMttModel.Instance.APIPropUserBuyProp(response => {
+                if (response.code == 0) {
+                    if (null != this.curDialogData && null != this.curDialogData.actionCommit) {
                         this.curDialogData.actionCommit.Invoke(true, 1, this.used_prop_id, this.prop_type, this.use_free);
                     }
                     // UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
                 }
-                else
-                {
+                else {
                     // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.code));
                 }
             });
         }
         // else if (this.curDialogData.buyRatio > 1 && (ToggleCoin2.isOn || ToggleTicket2.isOn))
-        else if (this.curDialogData.buyRatio > 1)
-        {
-            if (null != this.curDialogData && null != this.curDialogData.actionCommit)
-            {
+        else if (this.curDialogData.buyRatio > 1) {
+            if (null != this.curDialogData && null != this.curDialogData.actionCommit) {
                 // curDialogData.actionCommit.Invoke(ToggleTicket2.isOn, curDialogData.buyRatio, used_prop_id, prop_type, use_free);
             }
             // UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
         }
-        else
-        {
-            if (null != this.curDialogData && null != this.curDialogData.actionCommit)
-            {
-                // this.curDialogData.actionCommit.Invoke(ToggleTicket.isOn, 1, used_prop_id, prop_type, use_free);
+        else {
+            if (null != this.curDialogData && null != this.curDialogData.actionCommit) {
+                //this.curDialogData.actionCommit(ToggleTicket.isOn, 1, used_prop_id, prop_type, use_free);
+                this.curDialogData.actionCommit(true, 1, this.used_prop_id, this.prop_type, this.use_free);
             }
             // UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
         }

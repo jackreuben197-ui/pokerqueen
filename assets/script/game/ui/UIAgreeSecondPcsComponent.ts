@@ -1,11 +1,8 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
+
 
 import UIBase from "../../ui/UIBase";
+import { GameCache } from "../GameCache";
+import Seat from "../seat/Seat";
 
 
 class AgreeSecondData {
@@ -40,6 +37,10 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
     time: number = 0;
 
+    PlayerActionToggleList: cc.Node[] = null;
+
+    Heads: cc.Node = null;
+
     protected lateLoad() {
         super.lateLoad();
         this.Text_Title = this.getChildNodeOrComponent("Text_Title", cc.Label);
@@ -49,6 +50,8 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
         this.Button_Reject = this.getChildNodeOrComponent("Button_Reject");
         this.Button_Agree = this.getChildNodeOrComponent("Button_Agree");
+
+        this.Heads = this.getChildNodeOrComponent("Heads");
     }
 
     onShow(param: AgreeSecondData): void {
@@ -63,7 +66,7 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
             this.Text_Title.string = param.title ?? "";
 
             this.time = param.SecondPcsTime;
-            //this.UpdateSecondPcsUI();
+            this.UpdateSecondPcsUI();
             //AgreeNumText.text = $"{0}/{PlayerActionToggleList.Count}\t" + LanguageManager.mInstance.GetLanguageForKey("UIAgreeSecondPcs_AgreeDtail");
         }
     }
@@ -83,4 +86,43 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
         this.setButtonInteractable(this.Button_Agree, false);
         this.curAgreeSecondData?.actionCommit?.();
     }
+
+    private UpdateSecondPcsUI(): void {
+
+        if (GameCache.Instance.CurGame == null) return;
+
+
+        this.PlayerActionToggleList = [];
+
+        // if (PlayerActionToggleList == null) {
+        //     PlayerActionToggleList = new List<GameObject>();
+        // }
+        // else {
+        //     ClearGameObjList(PlayerActionToggleList);
+        // }
+
+        for (let i = 0; i < GameCache.Instance.CurGame.listSeat.length; i++) {
+            let seat: Seat = GameCache.Instance.CurGame.listSeat[i];
+            if (seat.Player == null || seat.seatID == -1 || !seat.Player.isPlaying) {
+                continue;
+            }
+            //this.PlayerActionToggleList.push(this.CreatGameObj(item_head.gameObject, this.PlayerAgreeAndRefuse, seat.seatID, seat.Player.headPic));
+        }
+    }
+
+    private CreatGameObj(gameObject: cc.Node, parent: cc.Node, seatID: number, headPic: string): cc.Node {
+        let go = cc.instantiate(gameObject);
+        go.parent = parent;
+        //go = GameObject.Instantiate(gameObject, parent);
+        go.name = seatID.toString();
+        //WebImageHelper.SetUrlImage(go.transform.Find("Mask_head/img_head").GetComponent<RawImage>(), headPic);
+        // go.transform.localPosition = Vector3.zero;
+        // go.transform.localRotation = Quaternion.identity;
+        // go.transform.localScale = Vector3.one;
+        //go.gameObject.SetActive(true);
+        go.active = true;
+        return go;
+    }
+
+
 }

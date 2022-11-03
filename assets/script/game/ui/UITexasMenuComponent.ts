@@ -159,8 +159,7 @@ export default class UITexasMenuComponent extends UIBase {
                 this.transSubMenu.x = -1320;
             }
         }
-        if (null != this.imageMenuMask)
-            this.imageMenuMask.active = false;
+        this.imageMenuMask && (this.imageMenuMask.active = false);
     }
 
     regiterTouchEvents() {
