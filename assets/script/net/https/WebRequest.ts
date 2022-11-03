@@ -2258,6 +2258,265 @@ export class APIOrgClubGold {
     }
     static Response: { code?: number, message?: string, data?: typeof APIOrgClubGold.ResponseData };
 }
+
+/// <summary>
+/// 收藏牌普
+/// </summary>
+export class Web_Misc_Game_Record_Round
+{
+   //接口地址
+   static API: string = "/api/misc/game/record_round";
+
+   //字段声明
+   static RequestParams: {
+        id: number, // 牌普id
+        room_id: number, // 普通牌局，
+        match_id: number, // mtt赛事id
+        room_unique_id: string, // room唯一标识
+        name: string, // 
+        hand_num: number, // 手数
+        change: number, // 金币变动值
+        type: number, // 类型
+        open: number, // 是否公开
+   } = null;
+
+   static ResponseData: {
+   } = null;
+   static Request(param: typeof Web_Misc_Game_Record_Round.RequestParams) {
+       this.RequestParams = param;
+       return param;
+   }
+   static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Record_Round.ResponseData };
+}
+
+/// <summary>
+/// 查询牌普列表
+/// </summary>
+export class Web_Misc_Game_Round_List
+{
+    //接口地址
+   static API: string = "/api/misc/game/round/list";
+
+   //字段声明
+   static RequestParams: {
+        limit: number, 
+        offset: number, 
+   } = null;
+
+   static ResponseData: {
+   } = null;
+   static Request(param: typeof Web_Misc_Game_Round_List.RequestParams) {
+       this.RequestParams = param;
+       return param;
+   }
+   static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_List.ResponseData };
+}
+
+/// <summary>
+/// 查询牌普列表是否是状态
+/// </summary>
+export class Web_Misc_Game_Round_Status
+{
+    //接口地址
+   static API: string = "/api/misc/game/get_round_status";
+
+   //字段声明
+   static RequestParams: {
+        room_id: number, //普通牌局，
+        room_unique_id: string, // room唯一标识
+        hand_num: number, //手数
+   } = null;
+
+   static ResponseData: {
+   } = null;
+   static Request(param: typeof Web_Misc_Game_Round_Status.RequestParams) {
+       this.RequestParams = param;
+       return param;
+   }
+   static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_Status.ResponseData };
+}
+
+/// <summary>
+/// 取消收藏牌普
+/// </summary>
+export class Web_Misc_Game_Remove_Round
+{
+
+     //接口地址
+   static API: string = "/api/misc/game/remove_round";
+
+   //字段声明
+   static RequestParams: {
+        room_id: number, // 普通牌局，
+        room_unique_id: string, // room唯一标识
+        hand_num: number, // 手数
+   } = null;
+
+   static ResponseData: {
+   } = null;
+   static Request(param: typeof Web_Misc_Game_Remove_Round.RequestParams) {
+       this.RequestParams = param;
+       return param;
+   }
+   static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Remove_Round.ResponseData };
+}
+
+/// <summary>
+/// 单手回放信息 生涯（战绩，牌谱）
+/// </summary>
+export class Web_Room_Center_History_Replay
+{
+    static API: string = "/api/roomcenter/history/replay/{id}";
+
+    //字段声明
+    static RequestParams: {
+
+    } = null;
+
+
+    static ResponseData: {
+        org_id: number, // 公会ID
+        gold: number, // 公会金豆数
+        gold_lock: number, // 公会被锁定的金豆数
+        forbidden: boolean, // 是否冻结 true已冻结，false未冻结
+        club_name: string,   //公会名字
+    } = null;
+    static Request(param: typeof Web_Room_Center_History_Replay.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_History_Replay.ResponseData };
+
+    // public sealed class ResponseData : WebResponseDataBase
+    // {
+    //     public Data data { get; set; }
+    // }
+    // public sealed class Data
+    // {
+    //     public List<int> d { get; set; }//自己手牌
+    //     public S s { get; set; }
+    //     public int u { get; set; }//自己用户随机ID
+
+    // }
+
+    // public sealed class S
+    // {
+    //     public List<Result> result { get; set; }
+    //     public int etime { get; set; }//结束时间戳
+    //     public bool straddle { get; set; }//是否开启straddle
+    //     public int stime { get; set; }//开始时间戳
+    //     public int hand { get; set; }//手数
+    //     public Table table { get; set; }//参与牌局的所有人信息
+    //     public string name { get; set; }//房间名字
+    //     public int rid { get; set; }//房间id
+    //     public int mid { get; set; }//比赛id
+    //     public string unique { get; set; }//唯一id
+    //     public Procedure procedure { get; set; }
+    // }
+
+    // public sealed class Result
+    // {
+    //     public int sn { get; set; }//座位号
+    //     public long win { get; set; }//赢的筹码
+    //     public int ins { get; set; }//保险
+    //     public int fee { get; set; }//服务费
+    //     public bool active { get; set; }//是否存活
+    //     public List<int> maxcard_idx { get; set; }//最大牌型数组下标
+    //     public int card_type { get; set; }//最大牌型
+    //     public List<int> card { get; set; }//玩家手牌
+    //     public List<int> maxcard_idx2 { get; set; }//第二套牌，最大牌型数组下标
+    //     public int card_type2 { get; set; }//最大牌型
+    //     public List<SpDetail> sp_detail { get; set; }//第二套牌赢牌详情
+    // }
+
+    // public sealed class SpDetail
+    // {
+    //     public long win { get; set; }//赢得筹码
+    //     public bool is_winner { get; set; }//是否赢牌
+    // }
+
+    // public sealed class Table
+    // {
+    //     public long ante { get; set; }//前注
+    //     public List<Pl> pl { get; set; }
+    //     public SbAndBb sb { get; set; }//小盲注
+    //     public SbAndBb bb { get; set; }//大盲注
+    //     public bool straddle { get; set; }//强制盲注
+    //     public int btn { get; set; }//庄位
+    //     public int seatcount { get; set; }//最大座位号
+    // }
+    // public sealed class Procedure
+    // {
+    //     public Ante ante { get; set; }
+    //     public Preflop preflop { get; set; }
+    //     public Flop flop { get; set; }
+    //     public Turn turn { get; set; }
+    //     public Tiver river { get; set; }
+    // }
+
+    // public sealed class Ante
+    // {
+    //     public List<ProcedurePl> pl { get; set; }
+    // }
+
+    // public sealed class Pl
+    // {
+    //     public int sn { get; set; }//座位号
+    //     public long c { get; set; }//初始筹码
+    //     public string avatar { get; set; }//头像
+    //     public string name { get; set; }//名字
+    //     public int uid { get; set; }//随机id
+    // }
+    // public sealed class SbAndBb
+    // {
+    //     public int sn { get; set; }//座位号
+    //     public long bet { get; set; }//下注筹码
+    // }
+    // public sealed class Preflop
+    // {
+    //     public List<ProcedurePl> pl { get; set; }
+    // }
+    // public sealed class Flop
+    // {
+    //     public List<ProcedurePl> pl { get; set; }
+    //     public List<int> card { get; set; }//公共牌
+    //     public bool showcard { get; set; }//是否show牌
+
+    // }
+    // public sealed class Turn
+    // {
+    //     public List<ProcedurePl> pl { get; set; }
+    //     public List<int> card { get; set; }//公共牌
+    //     public bool showcard { get; set; }//是否show牌
+    // }
+    // public sealed class Tiver
+    // {
+    //     public List<ProcedurePl> pl { get; set; }
+    //     public List<int> card { get; set; }//公共牌
+    //     public bool showcard { get; set; }//是否show牌
+    //     public List<int> scard { get; set; }//第二套公共牌
+    // }
+    // public sealed class ProcedurePl
+    // {
+    //     public long c { get; set; }//剩余筹码
+    //     public long pot_out { get; set; }//池
+    //     public int sn { get; set; }//座位号
+    //     public string act { get; set; }//动作
+    //     public long act_amt { get; set; }//该动作筹码
+    //     public int ins { get; set; }//保险
+    // }
+
+    // public static string Request(RequestData data)
+    // {
+    //     return JsonHelper.ToJson(data);
+    // }
+
+    // public static ResponseData Response(string json)
+    // {
+    //     return JsonHelper.FromJson<ResponseData>(json);
+    // }
+}
+
 export class APIOrgTribeSearchByID {
     //接口地址
     static API: string = "/api/org/tribe/info";

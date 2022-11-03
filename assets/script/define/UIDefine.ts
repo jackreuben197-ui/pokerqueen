@@ -110,6 +110,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_PlayInfo",
         Title: "",
     },
+    //牌谱详情
+    UIMine_Poker: {
+        UIType: UIType.Form,
+        Name: "UIMine_Poker",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMine_Poker",
+        Title: "",
+    },
     //设置-版本
     UIMine_SettingVersion: {
         UIType: UIType.Form,

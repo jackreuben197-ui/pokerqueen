@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -549,7 +549,97 @@ export class LobbyControl {
         });
     }
 
+    /**
+     * 牌谱详情
+     */
+     async reqHistoryReplay(matchID, param: typeof Web_Room_Center_History_Replay.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                api: Web_Room_Center_History_Replay.API.replace("{id}", matchID.toString()),
+                request: Web_Room_Center_History_Replay,
+                body: Web_Room_Center_History_Replay.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Room_Center_History_Replay.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
 
+    /**
+     * 收藏
+     */
+     async reqRecordRound(param: typeof Web_Misc_Game_Record_Round.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Misc_Game_Record_Round,
+                body: Web_Misc_Game_Record_Round.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Misc_Game_Record_Round.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 取消收藏
+     */
+     async reqRemoveRound(param: typeof Web_Misc_Game_Remove_Round.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Misc_Game_Remove_Round,
+                body: Web_Misc_Game_Remove_Round.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Misc_Game_Remove_Round.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 收藏列表
+     */
+     async reqRoundList(param: typeof Web_Misc_Game_Round_List.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Misc_Game_Round_List,
+                body: Web_Misc_Game_Round_List.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Misc_Game_Round_List.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 查询牌普列表是否是状态
+     */
+     async reqRoundStrtus(param: typeof Web_Misc_Game_Round_Status.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Misc_Game_Round_Status,
+                body: Web_Misc_Game_Round_Status.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Misc_Game_Round_Status.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    
     /********************************* 流程控制 ***********************************/
     /********************************* 清除 ***********************************/
 
