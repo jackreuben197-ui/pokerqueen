@@ -275,8 +275,7 @@ export class UIMatchMttModel {
 
     }
 
-    CalcPartialBringInValue(baseVal, remainVal, ratio)
-    {
+    CalcPartialBringInValue(baseVal, remainVal, ratio) {
         let v = Math.ceil(baseVal * ratio);
         return v < remainVal ? v : 0;
     }
@@ -293,8 +292,7 @@ export class UIMatchMttModel {
             }
         };
 
-        if (storeChips != 0)
-        {
+        if (storeChips != 0) {
             // 用于玩法内部分带入处理
             let baseVal = this.MttInfo.mtt.initial_score;
             let remainVal = storeChips;
@@ -319,13 +317,10 @@ export class UIMatchMttModel {
             // 	action3 = () => { onClick(baseVal, remainVal, 1.0); }
             // });
         }
-        else
-        {
+        else {
             // 用于玩法外部分带入处理
-            this.RequestMTTDetails(this.MttInfo.mtt.match_id, code =>
-            {
-                if (code == 0)
-                {
+            this.RequestMTTDetails(this.MttInfo.mtt.match_id, code => {
+                if (code == 0) {
                     // if (IsNeedPartialBringIn)
                     // {
                     //     long baseVal = MttInfo.mtt.initial_score;
@@ -349,8 +344,7 @@ export class UIMatchMttModel {
                         }
                     // }
                 }
-                else
-                {
+                else {
                     if (resultCallback) {
                         resultCallback(code);
                     }
@@ -533,7 +527,7 @@ export class UIMatchMttModel {
         // UIComponent.Instance.Remove(UIType.UIMatch_MttList);
         // UIComponent.Instance.Remove(UIType.UIMatch_MttDetail);
         // UIComponent.Instance.ShowNoAnimation(UIType.UITexas, new object[] { fromUI, isLookOn, PartialBringIn });
-        ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: fromUI, isLookOn: isLookOn })
+        GameUtil.EnterMTTRoom({ fromUI: fromUI, isLookOn: isLookOn });
     }
 
 

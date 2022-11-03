@@ -1,5 +1,7 @@
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
+import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
@@ -30,11 +32,32 @@ export default class TexasGameUtils {
      */
     public EnterRoom(id) {
 
-        console.log("EnterRoom GameCache.Instance.CurGame: ", GameCache.Instance.CurGame);
-
         let roomType = GameCache.Instance.room_type;
+
         if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {
             //MTT
+
+            GameCache.Instance.match_id = UIMatchMttModel.Instance.MttInfo.mtt.match_id;
+            GameCache.Instance.seat_count = UIMatchMttModel.Instance.MttInfo.mtt.seat_count;
+            GameCache.Instance.mtt_Hunter_game = UIMatchMttModel.Instance.MttInfo.mtt.hunter_on > 0;
+            GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMatchMttModel.Instance.MttInfo.mtt.name);
+            //UILoginModel.mInstance.GetRoomNameByKey(UIMatchMttModel.Instance.MttInfo.mtt.name);
+
+            ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
+                Code: ProtocolCode.Protocol_Holdem_EnterRoom,
+                RoomID: GameCache.Instance.room_id,
+                MatchID: GameCache.Instance.match_id,
+                Body:
+                {
+                    room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                    gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
+                    mttPartialBringIn: UIMatchMttModel.Instance.PartialBringIn,
+                    observer: GameCache.Instance.CurGame.IsLookOn,
+                },
+            });
+
+            console.log(`EnterRoom : match_id - ${GameCache.Instance.match_id} room_id - ${GameCache.Instance.room_id}`);
+
         } else {
             console.log(" ProtocolAgency.Send: ", GameCache.Instance.room_id, GameCache.Instance.match_id);
             ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
