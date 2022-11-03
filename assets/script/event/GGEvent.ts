@@ -21,4 +21,7 @@ export default class GGEvent {
     //删除公会成员
     static CLUB_DELE_USER:string = "CLUB_DELE_USER";
 
+    //收藏牌谱更新
+    static UPD_CARD_SCORE:string = "UPD_CARD_SCORE";
+
 }

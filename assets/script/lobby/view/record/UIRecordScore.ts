@@ -82,20 +82,19 @@ export default class UIRecordScore extends BaseForm {
             LobbyControl.getInstance().setWinColor(scLbl, score);
 
             _cloneNode["index"] = i;
+            _cloneNode["info"] = {
+                data: data,
+                info: info
+            };
             _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         }
         scrollView.content.height = panel_item.height * (len+2);
     }
 
-    onClickItem() {
-        // let historyInfoData = new HistoryInfoData()
-        // historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
-        // historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
-        // historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
-        // historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
-        // historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
-        // UIComponent.open(UIDefine.UITexasHistoryComponent);
-        // UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, this.node);
+    onClickItem(event) {
+        let node = event.target;
+        let info = node.info;
+        UIComponent.open(UIDefine.UIMine_Poker, {info : info});
     }
 
 }

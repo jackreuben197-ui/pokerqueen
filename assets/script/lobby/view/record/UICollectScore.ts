@@ -1,4 +1,5 @@
 import { UIDefine } from "../../../define/UIDefine";
+import GGEvent from "../../../event/GGEvent";
 import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
 import { HistoryInfoData } from "../../../game/UITexasHistoryComponent";
@@ -33,27 +34,26 @@ export default class UICollectScore extends BaseForm {
         super.onShow(param, fromUI);
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         Text_title.string = "收藏牌谱";
-        if (param && param.info) {
-            this.reqInfo(param.info);
-        }
 
-        this.refreshListView(null);
-
-
+        this.reqInfo();
     }
 
-    reqInfo(data) {
-        let roomData = data.data.room_data;
+    
+    /**
+     * 注册广播事件
+     */
+    protected regiterDispatchEvent() {
+        this.listen(GGEvent.UPD_CARD_SCORE, this.reqInfo);
+    }
+
+    reqInfo() {
         let info = {
-            room_id: roomData.room_id,         
-            match_id: 0,     
-            limit: roomData.limit,   
-            offset: roomData.offset,
-            type: 0,   
-            gametype: roomData.game_type,   
+            limit: 100,   
+            offset: 0,
         }
-        LobbyControl.getInstance().getRecordHandInfo(info).then(
+        LobbyControl.getInstance().reqRoundList(info).then(
             (res) => {
+                this.refreshListView(res);
             },
             (res) => {
             }
@@ -61,9 +61,8 @@ export default class UICollectScore extends BaseForm {
     }
 
     refreshListView(data) {
-        // let records = data.data.records;
-        // let len = records.length;
-        let len = 3;
+        let records = data.data.records;
+        let len = records.length;
         let lbl_no : cc.Node = this.getChildNodeOrComponent("lbl_no");
         lbl_no.active = len == 0;
         // 有数据 刷新列表
@@ -72,35 +71,63 @@ export default class UICollectScore extends BaseForm {
         scrollView.content.removeAllChildren();
         for (let i=0; i<len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
-            _cloneNode.x = _cloneNode.width * 0.5;
+            _cloneNode.x = 0;
             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
             _cloneNode.parent = scrollView.content;
 
-            // let info = records[i];
+            let item_sv = _cloneNode.getChildByName("sv_item").getComponent(cc.ScrollView);
 
-            // let nameStr = GC.data.languageTemp.temp.getName(info.name);
-            // _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
-            // _cloneNode.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
-            // let score = info.change;
-            // let scLbl = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
-            // LobbyControl.getInstance().setWinColor(scLbl, score);
+            let info = records[i];
+
+            let nameStr = GC.data.languageTemp.temp.getName(info.name);
+            item_sv.content.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
+            item_sv.content.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
+            let score = info.change;
+            let scLbl = item_sv.content.getChildByName("lbl_score").getComponent(cc.Label);
+            LobbyControl.getInstance().setWinColor(scLbl, score);
 
             _cloneNode["index"] = i;
-            // _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
-            let item_sv = _cloneNode.getChildByName("sv_item").getComponent(cc.ScrollView);
+            // item_sv.content.width = 2000;
+            item_sv.content.x = 0;
+
+            // item_sv.node.on("scrolling", this.onScrolling, this);
+            let btn_dele = item_sv.content.getChildByName("btn_dele");
+
+            item_sv.content["info"] = info;
+            item_sv.content.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
+
+            btn_dele["data"] = info;
+            btn_dele.on(cc.Node.EventType.TOUCH_END, this.onClickCancle, this)
         }
         scrollView.content.height = panel_item.height * (len+2);
     }
 
-    onClickItem() {
-        // let historyInfoData = new HistoryInfoData()
-        // historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
-        // historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
-        // historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
-        // historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
-        // historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
-        // UIComponent.open(UIDefine.UITexasHistoryComponent);
-        // UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, this.node);
+    onScrolling(event) {
+
+    }
+
+    onClickCancle(event: any) {
+        let target: any = event.currentTarget;
+        let data = target.data;
+        let info = {
+            room_id: data.room_id, // 普通牌局，
+            room_unique_id: data.room_unique_id, // room唯一标识
+            hand_num: data.hand_num, // 手数
+        }
+        LobbyControl.getInstance().reqRemoveRound(info).then(
+            (res) => {
+                this.reqInfo();
+            },
+            (res) => {
+            }
+        )
+    }
+
+    onClickItem(event) {
+        let node = event.target;
+        let info = node.info;
+        let e = {info: info}
+        UIComponent.open(UIDefine.UIMine_Poker, {info : e});
     }
 
 }
