@@ -501,20 +501,20 @@ export default class MttDetailForm extends BaseForm {
                         UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.PartialBringIn, bringInCode => {
                             if (bringInCode == 0) {
                                 //进入MTT房间时添加firebase事件触发
-                                let paramMap: any = [];
-                                paramMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
-                                paramMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
-                                paramMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
-                                paramMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
-                                paramMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
+                                // let paramMap = [];
+                                // paramMap.push("game_type", GameCache.Instance.game_type + "");//游戏类型
+                                // paramMap.push("roomId", GameCache.Instance.room_id + "");//房间id
+                                // paramMap.push("roomName", GameCache.Instance.roomName + "");//房间名称
+                                // paramMap.push("room_type", GameCache.Instance.room_type + "");//房间类型
+                                // paramMap.push("match_id", GameCache.Instance.match_id + "");//比赛id
                                 // GoogleFirebaseHelper.LevelStartEvent(paramMap);
                                 //添加到appsFlyer统计进入MTT房间消息
-                                let valuesMap: any = [];
-                                valuesMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
-                                valuesMap.Add("roomId", GameCache.Instance.room_id + "");//房间id
-                                valuesMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
-                                valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
-                                valuesMap.Add("match_id", GameCache.Instance.match_id + "");//比赛id
+                                // let valuesMap = [];
+                                // valuesMap.push("game_type", GameCache.Instance.game_type + "");//游戏类型
+                                // valuesMap.push("roomId", GameCache.Instance.room_id + "");//房间id
+                                // valuesMap.push("roomName", GameCache.Instance.roomName + "");//房间名称
+                                // valuesMap.push("room_type", GameCache.Instance.room_type + "");//房间类型
+                                // valuesMap.push("match_id", GameCache.Instance.match_id + "");//比赛id
                                 // AppsFlyerHelper.MTTGameEnterEvent(valuesMap);
                                 // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
                                 UIMatchMttModel.Instance.ShowGameplayUI(null, false, 0);

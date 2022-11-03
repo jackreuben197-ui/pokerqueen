@@ -72,7 +72,7 @@ export class UIMatchMttModel {
                 break;
             case MTTJoinAction.PartialBringIn:
                 {
-                    // this.MTTPartialBringInActionHandler(resultCallback, exceptionCallback, args == null ? 0 : (int)args);
+                    this.MTTPartialBringInActionHandler(resultCallback, exceptionCallback, args == null ? 0 : args);
                 }
                 break;
         }
@@ -266,6 +266,89 @@ export class UIMatchMttModel {
 
     // 	}
 
+    CalcPartialBringInValue(baseVal, remainVal, ratio)
+    {
+        let v = Math.ceil(baseVal * ratio);
+        return v < remainVal ? v : 0;
+    }
+
+    MTTPartialBringInActionHandler(resultCallback, exceptionCallback, storeChips)
+    {
+        let PartialBringIn = 0;
+
+        let onClick = (baseValue, remainValue, ratioValue) =>
+        {
+            PartialBringIn = this.CalcPartialBringInValue(baseValue, remainValue, ratioValue);
+            if (resultCallback) {
+                resultCallback(0);
+            }
+        };
+
+        if (storeChips != 0)
+        {
+            // 用于玩法内部分带入处理
+            let baseVal = this.MttInfo.mtt.initial_score;
+            let remainVal = storeChips;
+            let upBlTime = this.MttInfo.mtt.upblind_interval;
+            let rebuyBl = this.MttInfo.mtt.max_rebuy_bl;
+            let starTime = this.MttInfo.mtt.start_time;
+            // UIComponent.Instance.ShowNoAnimation(UIType.UIDialogPartialAddOn, new UIDialogPartialAddOnComponent.DialogData()
+            // {
+            // 	mttDataInfo = new UIDialogPartialAddOnComponent.MTTDataInfo()
+            // 	{
+            // 		upblindInterval = upBlTime,
+            // 		rebuyBlind = rebuyBl,
+            // 		starTime = starTime,
+            // 		remainVal = remainVal,
+            // 		baseVal = baseVal
+            // 	},
+            // 	type = UIDialogPartialAddOnComponent.DialogData.DialogType.CommitCancel,
+            // 	title = "",
+            // 	content = "初始记分牌: " + baseVal + "  剩余记分牌: " + remainVal,
+            // 	action1 = () => { onClick(baseVal, remainVal, 1.0 / 3.0); },
+            // 	action2 = () => { onClick(baseVal, remainVal, 2.0 / 3.0); },
+            // 	action3 = () => { onClick(baseVal, remainVal, 1.0); }
+            // });
+        }
+        else
+        {
+            // 用于玩法外部分带入处理
+            this.RequestMTTDetails(this.MttInfo.mtt.match_id, code =>
+            {
+                if (code == 0)
+                {
+                    // if (IsNeedPartialBringIn)
+                    // {
+                    //     long baseVal = MttInfo.mtt.initial_score;
+                    //     long remainVal = MttInfo.state.store;
+                    //     UIComponent.Instance.ShowNoAnimation(UIType.UIDialogPartialAddOn, new UIDialogPartialAddOnComponent.DialogData()
+                    //     {
+                    //         type = UIDialogPartialAddOnComponent.DialogData.DialogType.CommitCancel,
+                    //         title = "",
+                    //         content = "初始记分牌: " + StringHelper.GetDoubleString(baseVal) + "  剩余记分牌: " + StringHelper.GetDoubleString(remainVal),
+                    //         action1 = () => { onClick(baseVal, remainVal, 1.0 / 3.0); },
+                    //         action2 = () => { onClick(baseVal, remainVal, 2.0 / 3.0); },
+                    //         action3 = () => { onClick(baseVal, remainVal, 1.0); }
+                    //     });
+                    // }
+                    // else
+                    // {
+                        // 全部带入
+                        PartialBringIn = 0;
+                        if (resultCallback) {
+                            resultCallback(0);
+                        }
+                    // }
+                }
+                else
+                {
+                    if (resultCallback) {
+                        resultCallback(code);
+                    }
+                }
+            }, exceptionCallback);
+        }
+    }
 
     // public void MTTAddOnActionHandler(Def.Types.AddOnMode addOnMode)
     // 	{

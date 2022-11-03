@@ -6,6 +6,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import { Web_Room_Center_Mtt_Details } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -497,8 +498,9 @@ export default class UIMttSignDialogComponent extends UIBase {
         else {
             if (null != this.curDialogData && null != this.curDialogData.actionCommit) {
                 //this.curDialogData.actionCommit(ToggleTicket.isOn, 1, used_prop_id, prop_type, use_free);
-                this.curDialogData.actionCommit(true, 1, this.used_prop_id, this.prop_type, this.use_free);
+                this.curDialogData.actionCommit(false, 1, this.used_prop_id, this.prop_type, this.use_free);
             }
+            UIComponent.close(this.UIDefine);
             // UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
         }
     }
