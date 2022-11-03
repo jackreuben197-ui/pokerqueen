@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-11-02 10:22:02
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2022-11-03 14:37:55
+ * @FilePath: /pokerqueen/assets/script/Main.ts
+ */
 /**
  * 入口函数
  */
@@ -35,7 +43,6 @@ export default class Main extends cc.Component {
 
         GC.init();
 
-        GC.sdk.checkInstagranLoginSuc(CCTools.getQueryString("code"))
 
         GC.localStore.keyPre = CCTools.getQueryString("player") || "";
 
@@ -63,6 +70,9 @@ export default class Main extends cc.Component {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
+
+        GC.sdk.checkInstagranLoginSuc(CCTools.getQueryString("code"))
+
     }
     start() {
         console.log("start");

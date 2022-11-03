@@ -22,7 +22,7 @@ export default class InstagramApi {
         // HttpLink.instance.reqServe(sendInfo);
 
         let client_id = 1886299741745933;
-        let redirect_uri = window.location.href;
+        let redirect_uri = 'https://test1-game.awanptesting.com/'   // window.location.href;
         let scope = "user_profile, user_media";
         let response_type = "code";
         let url = `https://api.instagram.com/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`
