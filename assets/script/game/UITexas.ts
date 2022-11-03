@@ -202,6 +202,9 @@ export default class UITexas extends BaseScene {
 
 
     ///////////////////////////////////
+    update(dt: number) {
+        this.game?.Update(dt);
+    }
     protected lateLoad(): void {
 
         super.lateLoad();

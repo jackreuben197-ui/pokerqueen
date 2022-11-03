@@ -146,10 +146,12 @@ export default class TexasGameMessageHandler {
 
             if (ProcedureManager.currProcedure.id == ProcedureEnum.Texas) {
 
-                let fromUI = ProcedureManager.currProcedure.param?.fromUI;
+                let fromUIs = ProcedureManager.currProcedure.param?.fromUIs;
 
-                if (fromUI) {
-                    UIComponent.Instance.CloseNoAnimation(fromUI);
+                if (fromUIs?.length) {
+                    for (let i = 0; i < fromUIs.length; i++) {
+                        UIComponent.Instance.CloseNoAnimation(fromUIs[i]);
+                    }
                 }
             }
 

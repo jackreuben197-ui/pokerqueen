@@ -1,5 +1,7 @@
 
 
+import { CipherCCM } from "crypto";
+import WebImageHelper from "../../helper/WebImageHelper";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
 import Seat from "../seat/Seat";
@@ -95,7 +97,7 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
         this.PlayerActionToggleList = [];
 
-        //判断长度设置头像总容器的缩放值
+
         let head_count = 0;
         for (let i = 0; i < GameCache.Instance.CurGame.listSeat.length; i++) {
             let seat: Seat = GameCache.Instance.CurGame.listSeat[i];
@@ -108,8 +110,16 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
             head_count++;
 
+            let head_icon: cc.Sprite = cc.find("Mask/Icon", head).getComponent(cc.Sprite);
+
+            WebImageHelper.SetHeadImage(head_icon, seat.Player.headPic);
+
             //this.PlayerActionToggleList.push(this.CreatGameObj(item_head.gameObject, this.PlayerAgreeAndRefuse, seat.seatID, seat.Player.headPic));
         }
+
+        //判断长度设置头像总容器的缩放值(5个头像以内保持1,>5 进行递减)
+        this.Heads.scale = (1 - (Math.max(0, head_count - 5)) * 0.1);
+
     }
 
     private CreatGameObj(gameObject: cc.Node, parent: cc.Node, seatID: number, headPic: string): cc.Node {

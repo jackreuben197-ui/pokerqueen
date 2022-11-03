@@ -419,6 +419,10 @@ export default class TexasGame {
         this.texasGameProtocol = new TexasGameProtocol(this);
     }
 
+    Update(dt: number) {
+
+    }
+
     Enter() {
         UpdateComponent.Add(this.GameLogicSMComponent, this);
         this.listSeat = [];

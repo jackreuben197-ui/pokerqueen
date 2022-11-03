@@ -1,5 +1,5 @@
 import { ProcedureEnum, UIType } from "../../../define/EIDefine";
-import { UIDefine } from "../../../define/UIDefine";
+import { UIDefine, UIDefineType } from "../../../define/UIDefine";
 import { GameCache } from "../../../game/GameCache";
 import MTTGame from "../../../game/texas/MTTGame";
 import GameUtil from "../../../game/util/GameUtil";
@@ -280,12 +280,10 @@ export class UIMatchMttModel {
         return v < remainVal ? v : 0;
     }
 
-    MTTPartialBringInActionHandler(resultCallback, exceptionCallback, storeChips)
-    {
+    MTTPartialBringInActionHandler(resultCallback, exceptionCallback, storeChips) {
         this.PartialBringIn = 0;
 
-        let onClick = (baseValue, remainValue, ratioValue) =>
-        {
+        let onClick = (baseValue, remainValue, ratioValue) => {
             this.PartialBringIn = this.CalcPartialBringInValue(baseValue, remainValue, ratioValue);
             if (resultCallback) {
                 resultCallback(0);
@@ -337,11 +335,11 @@ export class UIMatchMttModel {
                     // }
                     // else
                     // {
-                        // 全部带入
-                        this.PartialBringIn = 0;
-                        if (resultCallback) {
-                            resultCallback(0);
-                        }
+                    // 全部带入
+                    this.PartialBringIn = 0;
+                    if (resultCallback) {
+                        resultCallback(0);
+                    }
                     // }
                 }
                 else {
@@ -518,7 +516,7 @@ export class UIMatchMttModel {
     }
 
 
-    public ShowGameplayUI(fromUI: string, isLookOn: boolean, roomid: number = 0) {
+    public ShowGameplayUI(fromUIs: UIDefineType[], isLookOn: boolean, roomid: number = 0) {
         // 参赛进入roomid置空，观众进入roomid置为对应房间id
         GameCache.Instance.room_id = roomid;
 
@@ -527,7 +525,7 @@ export class UIMatchMttModel {
         // UIComponent.Instance.Remove(UIType.UIMatch_MttList);
         // UIComponent.Instance.Remove(UIType.UIMatch_MttDetail);
         // UIComponent.Instance.ShowNoAnimation(UIType.UITexas, new object[] { fromUI, isLookOn, PartialBringIn });
-        GameUtil.EnterMTTRoom({ fromUI: fromUI, isLookOn: isLookOn });
+        GameUtil.EnterMTTRoom({ fromUIs: fromUIs, isLookOn: isLookOn });
     }
 
 

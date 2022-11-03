@@ -1439,7 +1439,7 @@ export default class GameUtil {
      * @param fromUI 
      * @returns 
      */
-    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUI?: UIDefineType) {
+    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUIs?: UIDefineType[]) {
         //未开放房间类型
         if (!GameUtil.IsOpenRoomType(enter_room_info.room_type)) {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
@@ -1454,7 +1454,7 @@ export default class GameUtil {
 
                     GameCache.Instance.InitEnterRoomInfo(enter_room_info);
 
-                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: fromUI });//[this.UIDefine, false, 0]
+                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUIs: fromUIs });//[this.UIDefine, false, 0]
                 }
             } else {
                 console.warn("房间类型未解析:", enter_room_info.room_type);
@@ -1465,7 +1465,7 @@ export default class GameUtil {
         }
     }
 
-    public static EnterMTTRoom(param: { fromUI?: string, isLookOn?: boolean }) {
+    public static EnterMTTRoom(param: { fromUIs?: UIDefineType[], isLookOn?: boolean }) {
 
         let room_type: number = GameCache.Instance.room_type;
 

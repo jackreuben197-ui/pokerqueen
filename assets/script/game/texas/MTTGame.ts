@@ -175,41 +175,40 @@ export default class MTTGame extends TexasGame {
         this.messageHandler = new MTTGameMessageHandler(this);
     }
 
-    // public override void Update() {
-    //     base.Update();
-
-    //     if (upBldCounting) {
-    //         if (Time.time - upBlindLeftTimeDeltaTime > 1f)
-    //         {
-    //             upBlindLeftTimeDeltaTime = Time.time;
-    //             upBlindLeftTime -= 1;
-    //             if (upBlindLeftTime <= 0) {
-    //                 upBldCounting = false;
-    //             }
-    //             UpdateRoomDes();
-    //         }
-    //     }
-    //     if (isSyncHand && Image_WaitForStartBathTips.activeInHierarchy) {
-    //         if (Time.time - SyncHandTime > 2f)
-    //         {
-    //             SyncHandTime = Time.time;
-    //             showImage_WaitForStartBathTips(BathTipsTimes);
-    //             BathTipsTimes++;
-    //             if (BathTipsTimes == 4) {
-    //                 BathTipsTimes = 1;
-    //             }
-    //         }
-    //     }
-    //     if (isStartShowPullDown) {
-    //         //展示拆桌提示
-    //         if (imageRedistributionTips.gameObject.activeInHierarchy) {
-    //             if (Time.time - showPullDownTime > intervelTime) {
-    //                 showPullDownTime = Time.time;
-    //                 pullDownText.text = GetPullDownTips();
-    //             }
-    //         }
-    //     }
-    // }
+    public Update(dt: number) {
+        if (this.upBldCounting) {
+            let nowTime = new Date().getTime() / 1000;
+            if (nowTime - this.upBlindLeftTimeDeltaTime > 1) {
+                this.upBlindLeftTimeDeltaTime = nowTime;
+                this.upBlindLeftTime -= 1;
+                if (this.upBlindLeftTime <= 0) {
+                    this.upBldCounting = false;
+                }
+                this.UpdateRoomDes();
+            }
+        }
+        if (this.isSyncHand && this.uirc.Image_WaitForStartBathTips.activeInHierarchy) {
+            let nowTime = new Date().getTime() / 1000;
+            if (nowTime - this.SyncHandTime > 2) {
+                this.SyncHandTime = nowTime;
+                this.showImage_WaitForStartBathTips(this.BathTipsTimes);
+                this.BathTipsTimes++;
+                if (this.BathTipsTimes == 4) {
+                    this.BathTipsTimes = 1;
+                }
+            }
+        }
+        if (this.isStartShowPullDown) {
+            //展示拆桌提示
+            if (this.uirc.Image_RedistributionTips.activeInHierarchy) {
+                let nowTime = new Date().getTime() / 1000;
+                if (nowTime - this.showPullDownTime > this.intervelTime) {
+                    this.showPullDownTime = nowTime;
+                    this.uirc.pullDownText.string = this.GetPullDownTips();
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// 随机得到拆桌文案
@@ -345,10 +344,9 @@ export default class MTTGame extends TexasGame {
         this.ShowAddOnBtn();
         //#endregion
     }
-
-
     protected ClearAllData() {
         this.NotLookPlayer = false;
+        this.isSyncHand = false;
         super.ClearAllData();
     }
 
@@ -362,9 +360,9 @@ export default class MTTGame extends TexasGame {
         this.isSyncHand = true;
         this.uirc.Image_WaitForStartBathTips.active = true;
     }
-    public ObtainMTTCountDown(isTimeOut: boolean = false) {
+    // public ObtainMTTCountDown(isTimeOut: boolean = false) {
 
-    }
+    // }
 
     private InitMttFakeSeat() {
         this.InitSeatByCount(GameCache.Instance.seat_count);
@@ -667,7 +665,6 @@ export default class MTTGame extends TexasGame {
             },
         });
     }
-
     // 隐藏拆桌提示
     public HidePollDownTips() {
         this.isStartShowPullDown = false;
