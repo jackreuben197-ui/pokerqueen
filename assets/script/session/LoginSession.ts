@@ -53,6 +53,7 @@ export default class LoginSession {
     }
 
     static async WebLoginThirdParty(param) {
+        console.log('WebLoginThirdParty=====', param)
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Login_Third_Party,

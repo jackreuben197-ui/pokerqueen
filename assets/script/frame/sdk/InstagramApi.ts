@@ -34,7 +34,7 @@ export default class InstagramApi {
         // code = 'AQA76MVqRwgyA21sMUBoXQ7dRE0Yrecq4cRJ__JfRMUzSgC_TZb2SSiOb49QzsbWF75p1DxRPrOMKQvAUnhsC4m1stzvkcNvEWObF9W1zJJTUBM9cfYLQa0B_UheN0QHeRJk3TQpOvwkub76e_tGFzL2CNnCGx4y7Chw7YdCJIVFJSBT6e_ZJ0O9br2CEaORzT5CorvEprtwEaIhehEpaiEnJ3OtbC7GiVFUc54XMHoSbw#_';
         console.log('cleckLoginSuc=====', code)
         if (!CCTools.isNull(code)) {
-            LoginSession.WebLoginThirdParty({ token: code, source: "instagram", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
+            LoginSession.WebLoginThirdParty({ code: code, source: "instagram", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
         }
     }
 

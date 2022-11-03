@@ -1,6 +1,7 @@
 
 import { GameConfig, NetWorkBase } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
+import GC from "../frame/GameControl";
 import GameUtil from "../game/util/GameUtil";
 import { i18nMgr } from "../i18n/i18nMgr";
 
@@ -8,6 +9,7 @@ import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import { Pre_Config_Define } from "../manager/ResManager";
 import LoginSession from "../session/LoginSession";
+import CCTools from "../tools/CCTools";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 
@@ -42,6 +44,8 @@ export default class ProcedureConfig extends ProcedureBase {
                 GameUtil.SeatAdapterPos();
                 let skipLogin: boolean = LoginSession.IsTokenVaild();
                 ProcedureManager.StartProcedure(ProcedureEnum.Login, { skipLogin: skipLogin });
+                GC.sdk.checkInstagranLoginSuc(CCTools.getQueryString("code"))
+
             }
         })
     }

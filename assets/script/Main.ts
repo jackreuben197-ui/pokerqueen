@@ -2,8 +2,8 @@
  * @Author: xfj
  * @Date: 2022-11-02 10:22:02
  * @description: 
- * @LastEditors: 
- * @LastEditTime: 2022-11-03 14:37:55
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-03 15:59:34
  * @FilePath: /pokerqueen/assets/script/Main.ts
  */
 /**
@@ -71,11 +71,12 @@ export default class Main extends cc.Component {
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
 
-        GC.sdk.checkInstagranLoginSuc(CCTools.getQueryString("code"))
 
     }
     start() {
         console.log("start");
         ProcedureManager.Init();
+
+
     }
 }
