@@ -442,7 +442,7 @@ export default class MttDetailForm extends BaseForm {
         });
     }
 
-    Update() {
+    update() {
         if (UIMatchMttModel.Instance.MttInfo == null || this.isCurTimeOverEnterTime) {
             return;
         }

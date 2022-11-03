@@ -37,6 +37,7 @@ export class UIMatchMttModel {
     _args: any = null;
     _actionExceptionCallback: any = null;
     MttInfo: typeof Web_Room_Center_Mtt_Details.Data;
+    PartialBringIn: number = 0;
 
     public HandleMTTJoinAction(
         actionType: MTTJoinAction,
@@ -274,11 +275,11 @@ export class UIMatchMttModel {
 
     MTTPartialBringInActionHandler(resultCallback, exceptionCallback, storeChips)
     {
-        let PartialBringIn = 0;
+        this.PartialBringIn = 0;
 
         let onClick = (baseValue, remainValue, ratioValue) =>
         {
-            PartialBringIn = this.CalcPartialBringInValue(baseValue, remainValue, ratioValue);
+            this.PartialBringIn = this.CalcPartialBringInValue(baseValue, remainValue, ratioValue);
             if (resultCallback) {
                 resultCallback(0);
             }
@@ -334,7 +335,7 @@ export class UIMatchMttModel {
                     // else
                     // {
                         // 全部带入
-                        PartialBringIn = 0;
+                        this.PartialBringIn = 0;
                         if (resultCallback) {
                             resultCallback(0);
                         }
