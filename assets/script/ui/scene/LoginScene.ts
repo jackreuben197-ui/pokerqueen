@@ -81,6 +81,8 @@ export default class LoginScene extends BaseScene {
 
     private _isQuiklyLogin: boolean = false;    //快速登录
     private _vcodeBtnCanClick: boolean = true;
+
+    _curretnLanguage: Number = 0;
     onLoad() {
         super.onLoad();
         this.initView();
@@ -427,12 +429,27 @@ export default class LoginScene extends BaseScene {
             //验证获取验证码是否发送成功
             let result = await LoginSession.APISendCode({ phone: account, area }).catch(() => { });
             if (result == undefined) return;
+            this.startVCodeTime();
+        } else if (this._loginType == ELoginType.mail) {
 
+            //获取邮箱验证码
+            if (this._loginProcess == ELoginProcess.register) {
+                //验证邮箱是否已注册
+                let result: any = await LoginSession.APIEmailExist({ email: account }).catch((e) => { });
+                if (result == undefined) return;
+                if (result?.data) {
+                    ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1006"));//("此号码已注册");
+                    return;
+                }
+            }
+
+            //验证获取验证码是否发送成功
+            let lang = i18nMgr.getLanguage()
+            let result = await LoginSession.APISendEmailCode({ email: account, lang: lang }).catch(() => { });
+            if (result == undefined) return;
 
             this.startVCodeTime();
-        } else {
-            //获取邮箱验证码
-            ToastManager.Instance.createToast("获取邮箱验证码  还没有！！！");
+            // ToastManager.Instance.createToast("获取邮箱验证码  还没有！！！");
         }
     }
 
@@ -510,7 +527,18 @@ export default class LoginScene extends BaseScene {
             }
         } else {
             //找回邮箱密码
-            ToastManager.Instance.createToast("找回邮箱密码  还没有！！！");
+            let result = await LoginSession.APISendModifyPW({
+                email: account,
+                area: area,
+                code: vcode,
+                password: Md5.hashStr(password)
+            }).catch(() => { })
+            if (result) {
+                this.resetVCodeTime();
+                ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1009"));//("更改密码成功");
+                this.clickBackLoginBtn();
+            }
+            // ToastManager.Instance.createToast("找回邮箱密码  还没有！！！");
         }
     }
 
@@ -521,7 +549,7 @@ export default class LoginScene extends BaseScene {
         }
 
         // 没有勾选用户须知提示
-        if (this.agreeNode.active && !agree_checked) {
+        if (this.btnAgreeNode.active && !agree_checked) {
             ToastManager.Instance.createToast(i18nMgr.Get("UILogin_ReadOK"));//("阅读并同意用户协议");
             return true
         }
@@ -576,7 +604,7 @@ export default class LoginScene extends BaseScene {
         if (this._loginType == ELoginType.phone) {
             this.checkPhoneLogin(area, account, password, vcode);
         } else {
-            this.checkMailLogin(account, password);
+            this.checkMailLogin(account, password, area);
         }
     }
     // 手机号登录
@@ -591,9 +619,10 @@ export default class LoginScene extends BaseScene {
     }
 
     // 邮箱登录
-    checkMailLogin(account, password) {
+    checkMailLogin(account, password, area) {
         //邮件 密码登录
-        ToastManager.Instance.createToast("邮件 密码登录  还没有！！！");
+        this.tryEnterGame(area, account, password);
+        // ToastManager.Instance.createToast("邮件 密码登录  还没有！！！");
     }
 
     /*** Register ***/
@@ -613,19 +642,41 @@ export default class LoginScene extends BaseScene {
                 this.tryEnterGame(area, account, password);
             }
         } else {
-            //邮箱注册
-            ToastManager.Instance.createToast("邮箱注册  还没有！！！");
+            let result = await LoginSession.APISendRegister({
+                email: account,
+                password: Md5.hashStr(password),
+                area: area,
+                code: vcode,
+                platform: 5,
+            }).catch(() => { });
+
+            if (result) {
+                this.resetData();
+                this.tryEnterGame(area, account, password);
+            }
+            // ToastManager.Instance.createToast("邮箱注册  还没有！！！");
         }
     }
 
     //尝试进入游戏
     tryEnterGame(area, account, password) {
-        ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
-            phone: account,
-            password: Md5.hashStr(password),
-            area: area,
-            is_simulator: false
-        });
+
+        if (this._loginType == ELoginType.phone) {
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
+                phone: account,
+                password: Md5.hashStr(password),
+                area: area,
+                is_simulator: false
+            });
+        } else {
+            ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
+                email: account,
+                password: Md5.hashStr(password),
+                area: area,
+                is_simulator: false
+            });
+        }
+
     }
 
 

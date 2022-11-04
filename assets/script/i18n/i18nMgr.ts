@@ -44,6 +44,20 @@ export class i18nMgr {
         this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
         this.LanguageObject = LanguageAllObject[this.language];
     }
+    public static getLanguage() {
+        this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
+        switch (this.language) {
+            case 'cn':
+                return 0;
+            case 'pt':
+                return 3;
+            case 'en':
+                return 1;
+            default:
+                break;
+        }
+    }
+
 
     /**
      * 设置语言

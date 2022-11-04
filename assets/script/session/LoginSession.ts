@@ -7,7 +7,7 @@ import LocalStoreManager from "../frame/manager/LocalStoreManager";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
+import { APIEmailExist, APISendEmailCode, Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -173,6 +173,23 @@ export default class LoginSession {
         });
     }
     /**
+   * 验证手机号
+   */
+    static async APIEmailExist(param: typeof APIEmailExist.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIEmailExist,
+                body: APIEmailExist.Request(param),
+                onSuccess: function () {
+                    resolve(APIEmailExist.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    /**
      * 获取验证码
      */
     static async APISendCode(param: typeof Web_User_Send_Code.RequestParams) {
@@ -295,6 +312,25 @@ export default class LoginSession {
         GC.localStore.removeItem(StorageKey.TOKEN);
         GC.localStore.removeItem(StorageKey.TOKEN_EXPIREAT);
     }
+    /**
+         * 获取验证码
+         */
+    static async APISendEmailCode(param: typeof APISendEmailCode.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APISendEmailCode,
+                body: APISendEmailCode.Request(param),
+                onSuccess: function () {
+                    resolve(APISendEmailCode.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+
 
 }
 

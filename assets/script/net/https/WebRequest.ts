@@ -11,6 +11,7 @@ export class Web_Login {
     static API: string = "/api/user/login";
     //字段声明
     static RequestParams: {
+        email?: string,        // 邮箱
         phone?: string,        // 手机号
         password?: string,        // 密码MD5
         area?: string,        // 区号ProtocolCode
@@ -89,7 +90,7 @@ export class Web_User_Check_Phone {
     static RequestParams: {
         phone?: string,// 手机号码
         area?: string, // 国家代号
-
+        email?: string, // 邮箱
     } = null;
 
     static ResponseData: {
@@ -133,6 +134,7 @@ export class Web_User_Modify_Password {
     static API: string = "/api/user/modify/password";
     //字段声明
     static RequestParams: {
+        email?: string,
         phone?: string,  // 手机号码
         password?: string, // 密码
         area?: string,  // 国家代号
@@ -212,6 +214,7 @@ export class Web_User_Register {
         password?: string,  // 密码
         area?: string, // 国家代号
         code?: string,  // 验证码
+        email?: string,
         platform?: number,//平台(platform):1-IOS 2-Android 3-Windows 4-OSX 5-Web 6-MiniWeb 7-Linux
     } = null;
 
@@ -2262,13 +2265,12 @@ export class APIOrgClubGold {
 /// <summary>
 /// 收藏牌普
 /// </summary>
-export class Web_Misc_Game_Record_Round
-{
-   //接口地址
-   static API: string = "/api/misc/game/record_round";
+export class Web_Misc_Game_Record_Round {
+    //接口地址
+    static API: string = "/api/misc/game/record_round";
 
-   //字段声明
-   static RequestParams: {
+    //字段声明
+    static RequestParams: {
         id: number, // 牌普id
         room_id: number, // 普通牌局，
         match_id: number, // mtt赛事id
@@ -2278,94 +2280,90 @@ export class Web_Misc_Game_Record_Round
         change: number, // 金币变动值
         type: number, // 类型
         open: number, // 是否公开
-   } = null;
+    } = null;
 
-   static ResponseData: {
-   } = null;
-   static Request(param: typeof Web_Misc_Game_Record_Round.RequestParams) {
-       this.RequestParams = param;
-       return param;
-   }
-   static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Record_Round.ResponseData };
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof Web_Misc_Game_Record_Round.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Record_Round.ResponseData };
 }
 
 /// <summary>
 /// 查询牌普列表
 /// </summary>
-export class Web_Misc_Game_Round_List
-{
+export class Web_Misc_Game_Round_List {
     //接口地址
-   static API: string = "/api/misc/game/round/list";
+    static API: string = "/api/misc/game/round/list";
 
-   //字段声明
-   static RequestParams: {
-        limit: number, 
-        offset: number, 
-   } = null;
+    //字段声明
+    static RequestParams: {
+        limit: number,
+        offset: number,
+    } = null;
 
-   static ResponseData: {
-   } = null;
-   static Request(param: typeof Web_Misc_Game_Round_List.RequestParams) {
-       this.RequestParams = param;
-       return param;
-   }
-   static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_List.ResponseData };
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof Web_Misc_Game_Round_List.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_List.ResponseData };
 }
 
 /// <summary>
 /// 查询牌普列表是否是状态
 /// </summary>
-export class Web_Misc_Game_Round_Status
-{
+export class Web_Misc_Game_Round_Status {
     //接口地址
-   static API: string = "/api/misc/game/get_round_status";
+    static API: string = "/api/misc/game/get_round_status";
 
-   //字段声明
-   static RequestParams: {
+    //字段声明
+    static RequestParams: {
         room_id: number, //普通牌局，
         room_unique_id: string, // room唯一标识
         hand_num: number, //手数
-   } = null;
+    } = null;
 
-   static ResponseData: {
-   } = null;
-   static Request(param: typeof Web_Misc_Game_Round_Status.RequestParams) {
-       this.RequestParams = param;
-       return param;
-   }
-   static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_Status.ResponseData };
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof Web_Misc_Game_Round_Status.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_Status.ResponseData };
 }
 
 /// <summary>
 /// 取消收藏牌普
 /// </summary>
-export class Web_Misc_Game_Remove_Round
-{
+export class Web_Misc_Game_Remove_Round {
 
-     //接口地址
-   static API: string = "/api/misc/game/remove_round";
+    //接口地址
+    static API: string = "/api/misc/game/remove_round";
 
-   //字段声明
-   static RequestParams: {
+    //字段声明
+    static RequestParams: {
         room_id: number, // 普通牌局，
         room_unique_id: string, // room唯一标识
         hand_num: number, // 手数
-   } = null;
+    } = null;
 
-   static ResponseData: {
-   } = null;
-   static Request(param: typeof Web_Misc_Game_Remove_Round.RequestParams) {
-       this.RequestParams = param;
-       return param;
-   }
-   static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Remove_Round.ResponseData };
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof Web_Misc_Game_Remove_Round.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Remove_Round.ResponseData };
 }
 
 /// <summary>
 /// 单手回放信息 生涯（战绩，牌谱）
 /// </summary>
-export class Web_Room_Center_History_Replay
-{
+export class Web_Room_Center_History_Replay {
     static API: string = "/api/roomcenter/history/replay/{id}";
 
     //字段声明
@@ -3103,6 +3101,44 @@ export class APIOrgClubMemberEarning {
         code?: number, message?: string, data?: typeof APIOrgClubMemberEarning.ResponseData
     };
 }
+export class APISendEmailCode {
+    public static API: string = "/api/user/send_email_code";
+    //字段声明
+    public static RequestParams: {
+        lang: number,
+        email: string,
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APISendEmailCode.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APISendEmailCode.ResponseData
+    };
+}
+export class APIEmailExist {
+    public static API: string = "/api/user/check_email";
+    //字段声明
+    public static RequestParams: {
+        email: string,
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIEmailExist.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIEmailExist.ResponseData
+    };
+}
+
+
+
 
 /**
  * 注册全局访问

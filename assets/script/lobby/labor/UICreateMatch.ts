@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-01 16:05:41
+ * @LastEditTime: 2022-11-04 18:46:01
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -292,7 +292,7 @@ export default class UICreateMatch extends BaseForm {
             this.jslx.active = false;
             this.fddmHd.active = false
             this.kzwjdr.active = false
-            // this.bx.active = true
+            this.bx.active = true
             cc.find(`ToggleContainer/toggle${this.fwfbNum + 1}`, this.fwfbl).getComponent(cc.Toggle).isChecked = true;
             this.fwfbl.height = this.fwfbNum == 0 ? 300 : 200;
             this.fddm.active = this.fwfbNum == 0 ? true : false;
@@ -303,7 +303,7 @@ export default class UICreateMatch extends BaseForm {
             this.kzwjdr.active = true
             this.fwfbl.active = false;
             this.save.active = false;
-            // this.bx.active = false
+            this.bx.active = false
         }
 
 
@@ -590,7 +590,7 @@ export default class UICreateMatch extends BaseForm {
                 room_config.insurance = this.bxState
                 room_config.limit_friend_table = false
                 room_config.limit_bring_in = false
-                await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                let data = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
                 this.post(EventName.updateChessView);
             }
             else {
