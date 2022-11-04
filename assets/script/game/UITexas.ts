@@ -19,6 +19,7 @@ import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
+import UIAgreeSecondPcsComponent from "./ui/UIAgreeSecondPcsComponent";
 import UIAutoChipsComponent from "./ui/UIAutoChipsComponent";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIInsuranceComponent from "./ui/UIInsuranceComponent";
@@ -162,6 +163,9 @@ export default class UITexas extends BaseScene {
     //6.保险面板
     UIInsurance_Con: cc.Node = null;
     UIInsurance_Com: UIInsuranceComponent = null;
+    //7.二套牌投票面板
+    UIAgreeSecondPcs_Con: cc.Node = null;
+    UIAgreeSecondPcs_Com: UIAgreeSecondPcsComponent = null;
 
     ///////////////////////////////////
     /**
@@ -198,6 +202,9 @@ export default class UITexas extends BaseScene {
 
 
     ///////////////////////////////////
+    update(dt: number) {
+        this.game?.Update(dt);
+    }
     protected lateLoad(): void {
 
         super.lateLoad();
@@ -284,6 +291,9 @@ export default class UITexas extends BaseScene {
         //6.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
         this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
+        //7.二套牌投票面板
+        this.UIAgreeSecondPcs_Con = this.getChildNodeOrComponent("UIAgreeSecondPcs_Con");
+        this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
         //////////////////////////////////////////////////////////////////////
         //////////////////初始化杂类
         //隐藏座位模板

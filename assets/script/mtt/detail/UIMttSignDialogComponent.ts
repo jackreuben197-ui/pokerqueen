@@ -3,9 +3,12 @@ import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
 import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import ToastManager from "../../manager/ToastManager";
 import { Web_Room_Center_Mtt_Details } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -302,7 +305,7 @@ export default class UIMttSignDialogComponent extends UIBase {
     //UIMTTApply_dialog_content  账户余额：{0} ， UIMTTSignDialogCanUseTickt 可用门票  ，  UIMTTSignDialogRemainingBuy  剩余买入
 
 
-    Update() {
+    update() {
         // UI uiDialog = UIComponent.Instance.Get(UIType.UIMTTSignDialog);
         // if (null == uiDialog || !uiDialog.GameObject.activeInHierarchy)
         // {
@@ -480,10 +483,10 @@ export default class UIMttSignDialogComponent extends UIBase {
                     if (null != this.curDialogData && null != this.curDialogData.actionCommit) {
                         this.curDialogData.actionCommit.Invoke(true, 1, this.used_prop_id, this.prop_type, this.use_free);
                     }
-                    // UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
+                    UIComponent.close(this.UIDefine);
                 }
                 else {
-                    // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.code));
+                    ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response.code));
                 }
             });
         }
@@ -491,15 +494,16 @@ export default class UIMttSignDialogComponent extends UIBase {
         else if (this.curDialogData.buyRatio > 1) {
             if (null != this.curDialogData && null != this.curDialogData.actionCommit) {
                 // curDialogData.actionCommit.Invoke(ToggleTicket2.isOn, curDialogData.buyRatio, used_prop_id, prop_type, use_free);
+                this.curDialogData.actionCommit(false, 1, this.curDialogData.buyRatio, this.used_prop_id, this.prop_type, this.use_free);
             }
-            // UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
+            UIComponent.close(this.UIDefine);
         }
         else {
             if (null != this.curDialogData && null != this.curDialogData.actionCommit) {
                 //this.curDialogData.actionCommit(ToggleTicket.isOn, 1, used_prop_id, prop_type, use_free);
-                this.curDialogData.actionCommit(true, 1, this.used_prop_id, this.prop_type, this.use_free);
+                this.curDialogData.actionCommit(false, 1, this.used_prop_id, this.prop_type, this.use_free);
             }
-            // UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
+            UIComponent.close(this.UIDefine);
         }
     }
 

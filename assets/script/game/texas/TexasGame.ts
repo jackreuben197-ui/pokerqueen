@@ -419,6 +419,10 @@ export default class TexasGame {
         this.texasGameProtocol = new TexasGameProtocol(this);
     }
 
+    Update(dt: number) {
+
+    }
+
     Enter() {
         UpdateComponent.Add(this.GameLogicSMComponent, this);
         this.listSeat = [];
@@ -675,7 +679,6 @@ export default class TexasGame {
                 }
                 this.mainPlayer = mSeat.Player;
             }
-            //mSeat.UpdateFSMbyStatus(true);
             //更新玩家离线状态
             mSeat.UpdateOnOrOffLine();
         }

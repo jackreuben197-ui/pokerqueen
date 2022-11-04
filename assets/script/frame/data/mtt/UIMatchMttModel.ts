@@ -1,13 +1,15 @@
 import { ProcedureEnum, UIType } from "../../../define/EIDefine";
-import { UIDefine } from "../../../define/UIDefine";
+import { UIDefine, UIDefineType } from "../../../define/UIDefine";
 import { GameCache } from "../../../game/GameCache";
+import MTTGame from "../../../game/texas/MTTGame";
 import GameUtil from "../../../game/util/GameUtil";
 import { CPErrorCode } from "../../../i18n/CPErrorCode";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import ProcedureManager from "../../../manager/ProcedureManager";
-import UIMttSignDialogComponent, { DialogData, DialogType } from "../../../mtt/detail/UIMttSignDialogComponent";
+import ToastManager from "../../../manager/ToastManager";
+import UIMttSignDialogComponent, { DialogData, DialogType, RebuyData } from "../../../mtt/detail/UIMttSignDialogComponent";
 import HttpRequest from "../../../net/https/HttpRequest";
-import { Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details } from "../../../net/https/WebRequest";
+import { Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Rebuy } from "../../../net/https/WebRequest";
 import { ServerErrorCode } from "../../../net/websocket/ServerErrorCode";
 import { MTTInfo } from "../../../protobuf/holdem/define_pb";
 import UIComponent from "../../../ui/UIComponent";
@@ -37,6 +39,7 @@ export class UIMatchMttModel {
     _args: any = null;
     _actionExceptionCallback: any = null;
     MttInfo: typeof Web_Room_Center_Mtt_Details.Data;
+    PartialBringIn: number = 0;
 
     public HandleMTTJoinAction(
         actionType: MTTJoinAction,
@@ -67,12 +70,12 @@ export class UIMatchMttModel {
                 break;
             case MTTJoinAction.Rebuy:
                 {
-                    // this.MTTRebuyActionHandler(resultCallback, exceptionCallback);
+                    this.MTTRebuyActionHandler(resultCallback, exceptionCallback);
                 }
                 break;
             case MTTJoinAction.PartialBringIn:
                 {
-                    // this.MTTPartialBringInActionHandler(resultCallback, exceptionCallback, args == null ? 0 : (int)args);
+                    this.MTTPartialBringInActionHandler(resultCallback, exceptionCallback, args == null ? 0 : args);
                 }
                 break;
         }
@@ -164,108 +167,189 @@ export class UIMatchMttModel {
 
 
 
-    // MTTRebuyActionHandler(resultCallback, exceptionCallback)
-    // 	{
-    // 		MTTGame curGame = GameCache.Instance.CurGame as MTTGame;
-    // 		RequestMTTDetails(this.MttInfo.mtt.match_id, code =>
-    // 		{
-    // 			if (code == 0)
-    // 			{
-    // 				let cost : RebuyCost;
-    // 				let score = curGame == null ? this.MttInfo.mtt.initial_score : curGame.RebuyScore;
-    // 				let remain_count = curGame == null ? this.MttInfo.state.left_rebuy_times : curGame.RemainRebuyCount;
-    // 				let upBlTime = this.MttInfo.mtt.upblind_interval;
-    // 				let rebuyBl = this.MttInfo.mtt.max_rebuy_bl;
-    // 				let starTime = this.MttInfo.mtt.start_time;
+    MTTRebuyActionHandler(resultCallback, exceptionCallback)
+    {
+        let curGame = GameCache.Instance.CurGame as MTTGame;
+        this.RequestMTTDetails(this.MttInfo.mtt.match_id, code =>
+        {
+            if (code == 0)
+            {
+                let cost : any;
+                let score = curGame == null ? this.MttInfo.mtt.initial_score : curGame.RebuyScore;
+                let remain_count = curGame == null ? this.MttInfo.state.left_rebuy_times : curGame.RemainRebuyCount;
+                let upBlTime = this.MttInfo.mtt.upblind_interval;
+                let rebuyBl = this.MttInfo.mtt.max_rebuy_bl;
+                let starTime = this.MttInfo.mtt.start_time;
 
-    // 				let rebuyTimes = this.MttInfo.state.left_rebuy_times;
+                let rebuyTimes = this.MttInfo.state.left_rebuy_times;
 
-    // 				//string content = string.Format(LanguageManager.Get("MTT_Rebuy_Alert"), StringHelper.GetLongString(cost), StringHelper.GetLongString(score), remain_count);
-    // 				UIComponent.Instance.ShowNoAnimation(UIType.UIMTTSignDialog, new UIMTTSignDialogComponent.DialogData()
-    // 				{
-    // 					type = UIMTTSignDialogComponent.DialogData.DialogType.CommitCancel,
-    // 					title = LanguageManager.Get("UIMTTSignDialogReBuyTitle"),
-    // 					//content = content,
+                //string content = string.Format(LanguageManager.Get("MTT_Rebuy_Alert"), StringHelper.GetLongString(cost), StringHelper.GetLongString(score), remain_count);
+                let dialogData = 
+                {
+                    type :  DialogType.CommitCancel,
+                    title : i18nMgr.Get("UIMTTSignDialogReBuyTitle"),
+                    //content = content,
 
-    // 					coinnum = MttInfo.mtt.apply_fee_pool,
-    // 					hunterFee = MttInfo.mtt.apply_fee_hunter,
-    // 					Fee = MttInfo.mtt.apply_fee_service,
-    // 					isHunter = MttInfo.mtt.hunter_on,
-    // 					buyTimes = rebuyTimes,
-    // 					buyRatio = MttInfo.mtt.buy_ratio,
+                    coinnum : this.MttInfo.mtt.apply_fee_pool,
+                    hunterFee : this.MttInfo.mtt.apply_fee_hunter,
+                    Fee : this.MttInfo.mtt.apply_fee_service,
+                    isHunter : this.MttInfo.mtt.hunter_on,
+                    buyTimes : rebuyTimes,
+                    buyRatio : this.MttInfo.mtt.buy_ratio,
 
-    // 					buyin_free_times = MttInfo.mtt.buyin_free_times,
-    // 					rebuy_free_times = MttInfo.mtt.rebuy_free_times,
-    // 					multi_ratio_free_times = MttInfo.mtt.multi_ratio_free_times,
-    // 					addon_free_times = MttInfo.mtt.addon_free_times,
-    // 					buyin_free_incl_svr = MttInfo.mtt.buyin_free_incl_svr,
-    // 					rebuy_free_incl_svr = MttInfo.mtt.rebuy_free_incl_svr,
-    // 					multi_ratio_free_incl_svr = MttInfo.mtt.multi_ratio_free_incl_svr,
-    // 					addon_free_incl_svr = MttInfo.mtt.addon_free_incl_svr,
-    // 					mTTJoinMode = MTTJoinMode.Rebuy,
+                    buyin_free_times : this.MttInfo.mtt.buyin_free_times,
+                    rebuy_free_times : this.MttInfo.mtt.rebuy_free_times,
+                    multi_ratio_free_times : this.MttInfo.mtt.multi_ratio_free_times,
+                    addon_free_times : this.MttInfo.mtt.addon_free_times,
+                    buyin_free_incl_svr : this.MttInfo.mtt.buyin_free_incl_svr,
+                    rebuy_free_incl_svr : this.MttInfo.mtt.rebuy_free_incl_svr,
+                    multi_ratio_free_incl_svr : this.MttInfo.mtt.multi_ratio_free_incl_svr,
+                    addon_free_incl_svr : this.MttInfo.mtt.addon_free_incl_svr,
+                    mTTJoinMode : MTTJoinMode.Rebuy,
 
-    // 					coinBalance = string.Format(LanguageManager.Get("UIMTTApply_dialog_content"), StringHelper.GetDoubleString(GameCache.Instance.gold)),
-    // 					contentCommit = CPErrorCode.LanguageDescription(10012),
-    // 					contentCancel = CPErrorCode.LanguageDescription(10013),
-    // 					rebuyData = new UIMTTSignDialogComponent.RebuyData()
-    // 					{
-    // 						upblindInterval = upBlTime,
-    // 						rebuyBlind = rebuyBl,
-    // 						starTime = starTime
-    // 					},
-    // 					actionCommit = (isticket, buyRatio, used_prop_id, prop_type, use_free) =>
-    // 					{
-    // 						Web_Room_Center_Mtt_Rebuy.RequestData req = new Web_Room_Center_Mtt_Rebuy.RequestData() { ticket = isticket, ratio = buyRatio, used_prop_id = used_prop_id, prop_type = prop_type, use_free = use_free };
+                    coinBalance : i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", GameCache.Instance.gold.toString()),
+                    contentCommit : CPErrorCode.LanguageDescription(10012),
+                    contentCancel : CPErrorCode.LanguageDescription(10013),
+                    rebuyData :
+                    {
+                        upblindInterval : upBlTime,
+                        rebuyBlind : rebuyBl,
+                        starTime : starTime
+                    },
+                    actionCommit : (isticket, buyRatio, used_prop_id, prop_type, use_free) =>
+                    {
+                        let req = { 
+                            ticket : isticket, 
+                            ratio : buyRatio, 
+                            used_prop_id : used_prop_id, 
+                            prop_type : prop_type, 
+                            use_free : use_free 
+                        };
 
-    // 						HttpRequestComponent.Instance.Send(
-    // 							StringHelper.GetWebUrlString(Web_Room_Center_Mtt_Rebuy.API, MttInfo.mtt.match_id.ToString()),
-    // 							Web_Room_Center_Mtt_Rebuy.Request(req),
-    // 							json =>
-    // 							{
-    // 								var response = Web_Room_Center_Mtt_Rebuy.Response(json);
-    // 								if (response.code == 0)
-    // 								{
-    // 									UIComponent.Instance.Toast(LanguageManager.Get("Repurchase_successful"));
-    // 								}
-    // 								else
-    // 								{
-    // 									UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.code));
-    // 								}
-    // 								resultCallback?.Invoke(response.code);
-    // 							},
-    // 							null,
-    // 							null,
-    // 							(httpState) =>
-    // 							{
-    // 								exceptionCallback?.Invoke(httpState);
-    // 							},
-    // 							_httpConnectTimeoutThreshold,
-    // 							_httpRequestTimeoutThreshold
-    // 						);
-    // 					},
-    // 					actionCancel = () =>
-    // 					{
-    // 						if (curGame != null)
-    // 						{
-    // 							UIComponent.Instance.ShowNoAnimation(UIType.UIMTTMineRank, new UIMTTMineRankComponent.MineRankData()
-    // 							{
-    // 								matchId = GameCache.Instance.match_id,
-    // 								matchName = GameCache.Instance.roomName,
-    // 								isRebuy = true,
-    // 							});
-    // 							curGame.ChangeGameState(TexasGameState.Exit, null);
-    // 						}
-    // 					}
-    // 				});
-    // 			}
-    // 			else
-    // 			{
-    // 				UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(code));
-    // 			}
-    // 		}, null);
+                        let requestData =
+                        {
+                        };
+                        HttpRequest.Send({
+                            api: Web_Room_Center_Mtt_Rebuy.API.replace("{id}", this.MttInfo.mtt.match_id.toString()),
+                            request: Web_Room_Center_Mtt_Rebuy,
+                            body: Web_Room_Center_Mtt_Rebuy.Request(requestData),
+                            onSuccess: function () {
+                                var responseData = Web_Room_Center_Mtt_Rebuy.Response;
+                                if (responseData.code == 0) {
+                                    ToastManager.Instance.createToast(i18nMgr.Get("Repurchase_successful"));
+                                } else {
+                                    ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(responseData.code));
+                                }
+                                if (resultCallback) {
+                                    resultCallback(responseData.code);
+                                }
+                            }.bind(this),
+                            onFailure: function (content) {
+                                if (exceptionCallback) {
+                                    exceptionCallback(content);
+                                }
+                            }.bind(this)
+                        });
+                    },
+                    actionCancel : () =>
+                    {
+                        if (curGame != null)
+                        {
+                            // UIComponent.Instance.ShowNoAnimation(UIType.UIMTTMineRank, new UIMTTMineRankComponent.MineRankData()
+                            // {
+                            // 	matchId = GameCache.Instance.match_id,
+                            // 	matchName = GameCache.Instance.roomName,
+                            // 	isRebuy = true,
+                            // });
+                            // curGame.ChangeGameState(TexasGameState.Exit, null);
+                        }
+                    }
+                }
+                UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+            }
+            else
+            {
+                ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(code));
+            }
+        }, null);
 
-    // 	}
+    }
 
+    CalcPartialBringInValue(baseVal, remainVal, ratio) {
+        let v = Math.ceil(baseVal * ratio);
+        return v < remainVal ? v : 0;
+    }
+
+    MTTPartialBringInActionHandler(resultCallback, exceptionCallback, storeChips) {
+        this.PartialBringIn = 0;
+
+        let onClick = (baseValue, remainValue, ratioValue) => {
+            this.PartialBringIn = this.CalcPartialBringInValue(baseValue, remainValue, ratioValue);
+            if (resultCallback) {
+                resultCallback(0);
+            }
+        };
+
+        if (storeChips != 0) {
+            // 用于玩法内部分带入处理
+            let baseVal = this.MttInfo.mtt.initial_score;
+            let remainVal = storeChips;
+            let upBlTime = this.MttInfo.mtt.upblind_interval;
+            let rebuyBl = this.MttInfo.mtt.max_rebuy_bl;
+            let starTime = this.MttInfo.mtt.start_time;
+            // UIComponent.Instance.ShowNoAnimation(UIType.UIDialogPartialAddOn, new UIDialogPartialAddOnComponent.DialogData()
+            // {
+            // 	mttDataInfo = new UIDialogPartialAddOnComponent.MTTDataInfo()
+            // 	{
+            // 		upblindInterval = upBlTime,
+            // 		rebuyBlind = rebuyBl,
+            // 		starTime = starTime,
+            // 		remainVal = remainVal,
+            // 		baseVal = baseVal
+            // 	},
+            // 	type = UIDialogPartialAddOnComponent.DialogData.DialogType.CommitCancel,
+            // 	title = "",
+            // 	content = "初始记分牌: " + baseVal + "  剩余记分牌: " + remainVal,
+            // 	action1 = () => { onClick(baseVal, remainVal, 1.0 / 3.0); },
+            // 	action2 = () => { onClick(baseVal, remainVal, 2.0 / 3.0); },
+            // 	action3 = () => { onClick(baseVal, remainVal, 1.0); }
+            // });
+        }
+        else {
+            // 用于玩法外部分带入处理
+            this.RequestMTTDetails(this.MttInfo.mtt.match_id, code => {
+                if (code == 0) {
+                    // if (IsNeedPartialBringIn)
+                    // {
+                    //     long baseVal = MttInfo.mtt.initial_score;
+                    //     long remainVal = MttInfo.state.store;
+                    //     UIComponent.Instance.ShowNoAnimation(UIType.UIDialogPartialAddOn, new UIDialogPartialAddOnComponent.DialogData()
+                    //     {
+                    //         type = UIDialogPartialAddOnComponent.DialogData.DialogType.CommitCancel,
+                    //         title = "",
+                    //         content = "初始记分牌: " + StringHelper.GetDoubleString(baseVal) + "  剩余记分牌: " + StringHelper.GetDoubleString(remainVal),
+                    //         action1 = () => { onClick(baseVal, remainVal, 1.0 / 3.0); },
+                    //         action2 = () => { onClick(baseVal, remainVal, 2.0 / 3.0); },
+                    //         action3 = () => { onClick(baseVal, remainVal, 1.0); }
+                    //     });
+                    // }
+                    // else
+                    // {
+                    // 全部带入
+                    this.PartialBringIn = 0;
+                    if (resultCallback) {
+                        resultCallback(0);
+                    }
+                    // }
+                }
+                else {
+                    if (resultCallback) {
+                        resultCallback(code);
+                    }
+                }
+            }, exceptionCallback);
+        }
+    }
 
     // public void MTTAddOnActionHandler(Def.Types.AddOnMode addOnMode)
     // 	{
@@ -432,7 +516,7 @@ export class UIMatchMttModel {
     }
 
 
-    public ShowGameplayUI(fromUI: string, isLookOn: boolean, roomid: number = 0) {
+    public ShowGameplayUI(fromUIs: UIDefineType[], isLookOn: boolean, roomid: number = 0) {
         // 参赛进入roomid置空，观众进入roomid置为对应房间id
         GameCache.Instance.room_id = roomid;
 
@@ -441,7 +525,7 @@ export class UIMatchMttModel {
         // UIComponent.Instance.Remove(UIType.UIMatch_MttList);
         // UIComponent.Instance.Remove(UIType.UIMatch_MttDetail);
         // UIComponent.Instance.ShowNoAnimation(UIType.UITexas, new object[] { fromUI, isLookOn, PartialBringIn });
-        ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: fromUI, isLookOn: isLookOn })
+        GameUtil.EnterMTTRoom({ fromUIs: fromUIs, isLookOn: isLookOn });
     }
 
 
