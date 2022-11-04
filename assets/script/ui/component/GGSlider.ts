@@ -104,6 +104,7 @@ export default class GGSlider extends cc.Component {
 
 
     public SetMinMax(min: number, max: number) {
+        console.log("SetMinMax", min, max);
         this._min = min;
         this._max = max;
         this._count = max - min;
