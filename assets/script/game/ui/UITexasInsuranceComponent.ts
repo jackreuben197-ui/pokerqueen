@@ -8,8 +8,10 @@ import { Web_Stats_Other_User_Stats, Web_User_Info } from "../../net/https/WebRe
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Def, PotInsuranceBuy } from "../../protobuf/holdem/define_pb";
+import { ClientMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
 import { ClientMessageBuyInsuranceActive } from "../../protobuf/holdem/req_buy_insurance_active_pb";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
+import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -68,6 +70,31 @@ export default class UITexasInsuranceComponent extends UIBase {
     isChooseAll = false;
     changeTime = 0;
     scheTime = 0;
+    svList = null;
+    sliderCoin: GGSlider = null;
+    startRate = 0;
+    currValue = 0;
+
+    textPayValue = null;
+
+    textInsuranceValue = null;
+
+    lbl_left_1 = null;
+    lbl_left_2 = null;
+    lbl_left_3 = null;
+
+    lbl_btn_1 = null;
+    lbl_btn_2 = null;
+
+    lbl_choose_num = null;
+
+    lbl_pay_num = null;
+
+    textMainPut = null;
+
+    textOdds = null;
+
+    textPot = null;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -78,9 +105,34 @@ export default class UITexasInsuranceComponent extends UIBase {
         this.unschedule(this.timeDown);
 
         this.listCards = [];
+        this.svList = [];
         this.CountDownText.string = "";
         let progress_time = this.getChildNodeOrComponent("progress_time", cc.ProgressBar);
         progress_time.progress = 1;
+        this.refreshTwoBtn(true);
+    }
+
+    /**
+     * 滑动条改变触发
+     */
+     onValueChangedSliderCoin(rate: number) {
+
+        let showValue = (this.startRate + rate) * this._param.bigBlind;
+
+        this.currValue = showValue * 100;
+
+        this.sliderInsuranceValue = rate;
+
+        // this.textCoin.string = this.textNeedCoin.string = `${showValue}`;
+
+        if (this.currValue > GC.data.user.info.gold) {
+            // this.textNeedCoin.node.color = new cc.Color(184, 43, 48, 255);
+        }
+        else {
+            // this.textNeedCoin.node.color = new cc.Color(255, 255, 255, 255);
+        }
+
+        this.onValueChangedInsuranceValue(rate);
     }
 
     onShow(param?: any): void {
@@ -90,6 +142,12 @@ export default class UITexasInsuranceComponent extends UIBase {
             return;
         }
 
+        if (param.triggedDatas && param.triggedDatas.length > 0) {
+            this.myWrapTriggedInsuranceData = param.triggedDatas[0];
+        }
+
+      
+        this.svList = [];
         this.data = param;
         this.cacheInsuranceData = param;
 
@@ -121,6 +179,23 @@ export default class UITexasInsuranceComponent extends UIBase {
         let imagePublicCard4: cc.Node = this.getChildNodeOrComponent("img_public_5");
 
 
+        this.lbl_left_1 = this.getChildNodeOrComponent("lbl_left_1");
+        this.lbl_left_2 = this.getChildNodeOrComponent("lbl_left_2");
+        this.lbl_left_3 = this.getChildNodeOrComponent("lbl_left_3");
+
+        this.textPayValue = this.lbl_left_2.getComponent(cc.Label);
+        this.textInsuranceValue = this.lbl_left_3.getComponent(cc.Label);
+
+        this.textMainPut = this.lbl_left_1.getComponent(cc.Label);
+
+        this.lbl_btn_1 = this.getChildNodeOrComponent("lbl_btn_1");
+        this.lbl_btn_2 = this.getChildNodeOrComponent("lbl_btn_2");
+
+        this.lbl_choose_num = this.getChildNodeOrComponent("lbl_choose_num");
+
+        this.textOdds = this.getChildNodeOrComponent("lbl_pay_num").getComponent(cc.Label);
+        this.textPot = this.getChildNodeOrComponent("lbl_pay_num1").getComponent(cc.Label);
+
         if (null == this.listCards) {
             this.listCards = [];
         } 
@@ -141,6 +216,17 @@ export default class UITexasInsuranceComponent extends UIBase {
         // this.UpdatePublicCards();
         this.ShowCountDown();
         this.UpdateDelayButton();
+
+
+
+        this.sliderCoin = this.getChildNodeOrComponent("Slider_Coin", GGSlider);
+        this.sliderCoin.onChange(this.onValueChangedSliderCoin.bind(this));
+
+        this.sliderCoin.SetMinMax(0, 100);
+        this.sliderCoin.onShow({ index: 0 });
+        this.onValueChangedSliderCoin(0);
+
+        this.updateNameStr();
     }
 
     CurrentSecureAmount()
@@ -169,8 +255,8 @@ export default class UITexasInsuranceComponent extends UIBase {
         let mTmpOdd = this.SelectedOdd();
         if (GameCache.Instance.CurGame.smallBlind<100 || this.CurrentMostAmount() <= 100)
         {
-            // textPayValue.text = $"{(mTmpOdd * arg0*10)}";
-            // textInsuranceValue.text = $"{arg0/10f}";
+            this.textPayValue.string = (mTmpOdd * arg0*10);
+            this.textInsuranceValue.string = arg0/10;
             if (arg0 == Math.ceil((this.CurrentSecureAmount() / 10)))
             {
                 this.HighlightMinBtn();
@@ -187,8 +273,8 @@ export default class UITexasInsuranceComponent extends UIBase {
         else
         {
             
-            // textPayValue.text = $"{(mTmpOdd * arg0*100 )}";
-            // textInsuranceValue.text = $"{(long)arg0 }";
+            this.textPayValue.string = mTmpOdd * arg0*100;
+            this.textInsuranceValue.string = arg0;
             if (arg0 == Math.ceil((this.CurrentSecureAmount() / 100)))
             {
                 this.HighlightMinBtn();
@@ -249,9 +335,9 @@ export default class UITexasInsuranceComponent extends UIBase {
         {
             this.imageCards[i].node.active(false);
         }
-        this.getChildNodeOrComponent("lbl_41", cc.Label).string = nickName;
+        this.getChildNodeOrComponent("lbl_name2", cc.Label).string = nickName;
         // textOuts.text = outs >= 0? $"outs={outs}" : "购买保险中";
-        this.getChildNodeOrComponent("lbl_61", cc.Label).string = outs >= 0 ? 
+        this.getChildNodeOrComponent("lbl_outs", cc.Label).string = outs >= 0 ? 
         outs.toString() + i18nMgr.Get("UIInsurance_ge") + "outs" 
         : CPErrorCode.LanguageDescription(10298);
     }
@@ -354,6 +440,7 @@ export default class UITexasInsuranceComponent extends UIBase {
         this.changeTime ++;
         if (this.countDownTime < this.changeTime) {
             this.unschedule(this.timeDown);
+            this.onClickClose()
             return;
         }
         let progress_time = this.getChildNodeOrComponent("progress_time", cc.ProgressBar);
@@ -381,16 +468,20 @@ export default class UITexasInsuranceComponent extends UIBase {
             // buttonDelay.node.transform.Find("Text").GetComponent<Text>().text = $"{0}s";
             // buttonDelay.node.transform.Find("Text").GetComponent<Text>().color = Color.gray;
             // buttonDelay.node.transform.Find("Image_bean").node.active = false;
+            this.lbl_btn_1.getComponent(cc.Label).string = "0s";
+            this.lbl_btn_2.getComponent(cc.Label).string = "";
             return;
         }
-        // let fee = Convert.ToInt32(200 * Math.Pow(2, addTimeCount));
+        let fee =  200 * Math.pow(2, this.addTimeCount);
         // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = $"{StringHelper.GetDoubleString(fee)}";
+        this.lbl_btn_2.getComponent(cc.Label).string = fee;
         
         if (this.OnclickDelayButtonTimes==1)
         {
             this.DelayTimes = 20;
         }
         // buttonDelay.node.transform.Find("Text").GetComponent<Text>().text = $"+{DelayTimes}s";
+        this.lbl_btn_1.getComponent(cc.Label).string = this.DelayTimes.toString() + "s";
         // buttonDelay.node.transform.Find("Text").GetComponent<Text>().color = Color.white;
     }
 
@@ -445,25 +536,27 @@ export default class UITexasInsuranceComponent extends UIBase {
         }
 
         let mTmpOdd = this.SelectedOdd();
-        // textOdds.text = $"1:{mTmpOdd}";
-        // textPot.text = $"{myWrapTriggedInsuranceData.pot / (int)100}";
-        // textMainPut.text = $"{myWrapTriggedInsuranceData.potTotalCost / (int)100 }";
+        this.textOdds.string = "1:" + mTmpOdd;
+        this.textPot.string = this.myWrapTriggedInsuranceData.pot / 100;
+        this.textMainPut.string = this.myWrapTriggedInsuranceData.potTotalCost / 100;
         if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
         {
-            // textInsuranceValue.text = $"{(CurrentSecureAmount() / (int)10 * 10 / 100f)}";
+            this.textInsuranceValue.string = this.CurrentSecureAmount() / 100;
         }
         else
         {
-            // textInsuranceValue.text = $"{Math.Ceiling((CurrentSecureAmount() / 100f))}";
+            this.textInsuranceValue.string = Math.ceil((this.CurrentSecureAmount() / 100));
         }
 
         if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
         {
-            // textPayValue.text = $"{Math.Floor(mTmpOdd * CurrentSecureAmount() / (int)10 * 10 / (float)100)}";
+            // this.textPayValue.string = Math.floor(mTmpOdd * this.CurrentSecureAmount() / 100)};
+            this.textPayValue.string = Math.floor(mTmpOdd * this.CurrentSecureAmount() / 100);
         }
-        else
+        else 
         {
-            // textPayValue.text = $"{Math.Floor(mTmpOdd * Math.Ceiling(CurrentSecureAmount() / (float)100))}";
+            // this.textPayValue.string = Math.floor(mTmpOdd * Math.ceil(this.CurrentSecureAmount() / 100))};
+            this.textPayValue.string = Math.floor(mTmpOdd * Math.ceil(this.CurrentSecureAmount() / 100));
         }
     }
 
@@ -578,7 +671,9 @@ export default class UITexasInsuranceComponent extends UIBase {
 
     SelectedOdd()
     {
-        
+        if (this.myWrapTriggedInsuranceData == null || this.myWrapTriggedInsuranceData.PotUserCount == null) {
+            return 0;
+        }
         return GameUtil.GetOddsByPlayerNum(this.myWrapTriggedInsuranceData.PotUserCount, this.selectOuts);
         //RoomType mRoomType = (RoomType)GameCache.Instance.room_type;
         //if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
@@ -687,15 +782,15 @@ export default class UITexasInsuranceComponent extends UIBase {
 
     UpdateOuts()
     {
-        // textOuts.text = $"{selectOuts}{LanguageManager.Get("UIInsurance_zhang")}";
-        // textOdds.text = $"1:{SelectedOdd()}";
+        // this.textOuts.string = $"{selectOuts}{LanguageManager.Get("UIInsurance_zhang")}";
+        this.textOdds.string = "1:" + this.SelectedOdd();
         if (GameCache.Instance.CurGame.smallBlind<100 || this.CurrentMostAmount() <= 100)
         {
-            // textPayValue.text = $"{StringHelper.GetLongString((long)(SelectedOdd() * sliderInsuranceValue.value) * 10) }";
+            this.textPayValue.string = this.SelectedOdd() * this.sliderInsuranceValue * 10;
         }
         else
         {
-            // textPayValue.text = $"{StringHelper.GetLongString((long)(SelectedOdd() * sliderInsuranceValue.value) * 100) }";
+            this.textPayValue.string = this.SelectedOdd() * this.sliderInsuranceValue * 100;
         }
         
         if (this.myWrapTriggedInsuranceData.potAllowOutSelection == 1)
@@ -820,9 +915,10 @@ export default class UITexasInsuranceComponent extends UIBase {
             for (let i=0; i<len; i++) {
                 let _cloneNode = cc.instantiate(panel_item);
                 _cloneNode.parent = scrollView.content;
-                this.listCards.push(_cloneNode);
 
                 let info = publicCards[i];
+                _cloneNode["cardId"] = info.card;
+                this.svList.push(_cloneNode);
                 let card = info.card;
                 let cardStr = GameUtil.GetCardNameByNum(card);
                 let path = AssetContext.getAsset(
@@ -840,6 +936,17 @@ export default class UITexasInsuranceComponent extends UIBase {
             }
             // scrollView.content.height = panel_item.height * (len + 1);
         }
+        this.refreshItemNum();
+    }
+
+    refreshItemNum() {
+        let num = 0;
+        this.svList.forEach((v) => {
+            if (v.isChoose) {
+                num ++;
+            }
+        })
+        this.lbl_choose_num.getComponent(cc.Label).string = num;
     }
 
     onClickItem(event) {
@@ -856,7 +963,7 @@ export default class UITexasInsuranceComponent extends UIBase {
             kuang.active = true;
             hook.active = true;
         }
-        
+        this.refreshItemNum();
     }
 
     onClickChoose() {
@@ -864,23 +971,26 @@ export default class UITexasInsuranceComponent extends UIBase {
         let hook = btn_choose.getChildByName("hook");
         if (this.isChooseAll) {
             this.isChooseAll = false;
-            this.listCards.forEach((v) => {
+            this.svList.forEach((v) => {
                 let kuang = v.getChildByName("kuang");
                 let hook = v.getChildByName("hook");
                 kuang.active = false;
                 hook.active = false;
+                v.isChoose = false;
             })
             hook.active = false;
         } else {
             this.isChooseAll = true;
-            this.listCards.forEach((v) => {
+            this.svList.forEach((v) => {
                 let kuang = v.getChildByName("kuang");
                 let hook = v.getChildByName("hook");
                 kuang.active = true;
                 hook.active = true;
+                v.isChoose = true;
             })
             hook.active = true;
         }
+        this.refreshItemNum();
     }
 
     private onClicBtn(event): void {
@@ -888,8 +998,10 @@ export default class UITexasInsuranceComponent extends UIBase {
         let index = target.index;
         if (index == 1) {
             // 保本
+            this.onClickMin(target);
         } else if (index == 2) {
             // 满池
+            this.onClickAll(target);
         } 
     }
 
@@ -916,42 +1028,76 @@ export default class UITexasInsuranceComponent extends UIBase {
     {
         if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
         {
-            this.sliderInsuranceValue.value = this.CurrentMostAmount() / 10;
+            this.sliderCoin.onShow({ index: this.CurrentMostAmount() / 10 });
+            // this.sliderInsuranceValue.value = this.CurrentMostAmount() / 10;
         }
         else
         {
-            this.sliderInsuranceValue.value = this.CurrentMostAmount() / 100;
+            this.sliderCoin.onShow({ index: this.CurrentMostAmount() / 100 });
+            // this.sliderInsuranceValue.value = this.CurrentMostAmount() / 100;
         }
         this.HighlightAllBtn();
+
+        
     }
 
     onClickMin(go)
     {
         if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
         {
+            this.sliderCoin.onShow({ index: this.CurrentSecureAmount() / 10 });
             // sliderInsuranceValue.value = (float)(CurrentSecureAmount() / 10f) ;
         }
         else
         {
+            this.sliderCoin.onShow({ index: this.CurrentSecureAmount() / 100 });
             // sliderInsuranceValue.value = (float)Math.Ceiling((CurrentSecureAmount() / 100f));
         }
         this.HighlightMinBtn();
     }
 
+    refreshTwoBtn(isMax, isHide?) {
+        let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
+        let btn_2: cc.Node = this.getChildNodeOrComponent("btn_2");
+        let yes1: cc.Node = btn_1.getChildByName("yes");
+        let yes2: cc.Node = btn_2.getChildByName("yes");
+        let no1: cc.Node = btn_1.getChildByName("no");
+        let no2: cc.Node = btn_2.getChildByName("no");
+        let lbl1: cc.Node = btn_1.getChildByName("lbl");
+        let lbl2: cc.Node = btn_2.getChildByName("lbl");
+        yes1.active = isMax;
+        yes2.active = !isMax;
+        no1.active = !isMax;
+        no2.active = isMax;
+        lbl1.color = isMax ? cc.color(255,255,255) : cc.color(0,0,0);
+        lbl2.color = !isMax ? cc.color(255,255,255) : cc.color(0,0,0);
+        if (isHide) {
+            yes1.active = false;
+            yes2.active = false;
+            no1.active = true;
+            no2.active = true;
+            lbl1.color = cc.color(0,0,0);
+            lbl2.color = cc.color(0,0,0);
+        }
+    }
+
     HighlightMinBtn()
     {
+        this.refreshTwoBtn(true);
         // buttonAll.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insutance_dengli");
         // buttonMin.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insurance_baoben");
     }
 
     HighlightAllBtn()
     {
+        this.refreshTwoBtn(false);
         // buttonAll.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insurance_baoben");
         // buttonMin.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insutance_dengli");
     }
 
     UnHighlighTwoBtn()
     {
+        this.refreshTwoBtn(null, true);
         // buttonAll.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insutance_dengli");
         // buttonMin.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insutance_dengli");
     }
@@ -962,8 +1108,8 @@ export default class UITexasInsuranceComponent extends UIBase {
     /// <param name="go"></param>
     onClickCancel(go)
     {
-        if (this.sliderInsuranceValue.minValue > 0)
-        {
+        // if (this.sliderInsuranceValue.minValue > 0)
+        // {
             // List<int> mInsuredCards = new List<int>();
 
             // InsuranceCardItem mInsuranceCardItem = null;
@@ -980,7 +1126,7 @@ export default class UITexasInsuranceComponent extends UIBase {
             // }
             
             // ETHotfix.UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(20053, new List<object>(){ myWrapTriggedInsuranceData.leastAmount/100f }));
-        }
+        // }
         // GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = myWrapTriggedInsuranceData.PotUserCount;//缓存购买池子
         // CPGameSessionComponent.Instance.Send(new Protocol_Holdem_BuyInsuranceActive()
         // {
@@ -992,10 +1138,22 @@ export default class UITexasInsuranceComponent extends UIBase {
         //         Buy = new Google.Protobuf.Collections.RepeatedField<PotInsuranceBuy>() { }
         //     }
         // });
+
+        
+        ProtocolAgency.Send<ClientMessageBuyInsuranceActive.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_BuyInsuranceActive,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                buyList: []
+            },
+        });
+
         // UIComponent.Instance.HideNoAnimation(UIType.UIInsurance);
         
         this.pingfenOutsCount = 0;
-        this.onClose(null);
+        this.onClickClose();
     }
 
     onClickDelay(go)
@@ -1014,9 +1172,22 @@ export default class UITexasInsuranceComponent extends UIBase {
         //         Consume = addTimeCount == 0 ? Def.Types.ConsumeType.CtDelay2 : Def.Types.ConsumeType.CtDelay3,
         //     }
         // });
+
+        ProtocolAgency.Send<ClientMessageAddTime.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AddTime,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                consume: this.addTimeCount == 0 ? Def.ConsumeType.CT_DELAY_2 : Def.ConsumeType.CT_DELAY_3,
+            },
+        });
+
         this.OnclickDelayButtonTimes += 1;
         
         this.onChangeTime(30);
+
+        this.onClickClose();
     }
 
     /// <summary>
@@ -1040,9 +1211,9 @@ export default class UITexasInsuranceComponent extends UIBase {
         //     mInsuredCards.push(mInsuranceCardItem.CardId);
         // }
         
-        this.listCards.forEach(element => {
+        this.svList.forEach(element => {
             if (element.isChoose) {
-                mInsuredCards.push(element.CardId);
+                mInsuredCards.push(element.cardId);
             }
         });
 
@@ -1109,7 +1280,7 @@ export default class UITexasInsuranceComponent extends UIBase {
         }
         );
 
-        this.onClose(null);
+        this.onClickClose();
         // UIComponent.Instance.HideNoAnimation(UIType.UIInsurance);
     }
 
@@ -1215,7 +1386,74 @@ export default class UITexasInsuranceComponent extends UIBase {
 
 
 
+    updateNameStr() {
+        if (this.data.triggedDatas == null || this.data.triggedDatas.length == 0) {
+            return
+        }
+        let info = this.data.triggedDatas[0];
+        let userNames = info.userNames;
+        let nameStr1 = "";
+        let nameStr2 = "";
+        let nameLen = userNames.length;
+        if (nameLen == 1) {
+            nameStr1 = userNames[0];
+        } else if (nameLen > 1) {
+            nameStr1 = userNames[0];
+            nameStr2 = userNames[1];
+        }
 
+        let outs = info.outsPerUser;
+
+        this.getChildNodeOrComponent("lbl_name1", cc.Label).string = nameStr1;
+        this.getChildNodeOrComponent("lbl_name2", cc.Label).string = nameStr2;
+        // textOuts.text = outs >= 0? $"outs={outs}" : "购买保险中";
+        this.getChildNodeOrComponent("lbl_outs", cc.Label).string = outs >= 0 ? 
+        outs.toString() + i18nMgr.Get("UIInsurance_ge") + "outs" 
+        : CPErrorCode.LanguageDescription(10298);
+
+        let playerCards = info.playerCards;
+        let cardLen = playerCards.length;
+        let card1 = -1;
+        let card2 = -1;
+        if (cardLen == 1) {
+            card1 = playerCards[0];
+        } else if (cardLen > 1) {
+            card1 = playerCards[0];
+            card2 = playerCards[1];
+        }
+
+        let outsLen = outs.length;
+        let card3 = -1;
+        let card4 = -1;
+        if (outsLen == 1) {
+            card3 = outs[0];
+        } else if (outsLen > 1) {
+            card3 = outs[0];
+            card4 = outs[1];
+        }
+        for (let i=1; i<5; i++) {
+            let item = this.getChildNodeOrComponent("img_pk_" + i);
+            let card = card1;
+            if (i == 1 || i == 2) {
+                card = card1;
+                if (i == 2) {
+                    card = card2;
+                }
+            } else {
+                card = card3;
+                if (i == 4) {
+                    card = card4;
+                }
+            }
+            let cardStr = GameUtil.GetCardNameByNum(card);
+            let path = AssetContext.getAsset(
+                cardStr, 
+                AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+                item.getComponent(cc.Sprite).spriteFrame = path;
+        }
+
+        
+    }
 
 
 
