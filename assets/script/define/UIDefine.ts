@@ -494,6 +494,12 @@ export const UIDefine = {
         Name: "UICalendar",
         Bundle: null,
         Path: "main/club/prefab/UICalendar",
+    },
+    UIMine_SafeAdmin: {
+        UIType: UIType.Form,
+        Name: "UICalendar",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMine_SafeAdmin",
     }
 
 }

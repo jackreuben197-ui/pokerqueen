@@ -225,7 +225,7 @@ export default class LoginScene extends BaseScene {
             titles = ["UILogin_phone_register", "UILogin_mail_register"];
         }
         else if (this._loginProcess == ELoginProcess.reset) {
-
+            titles = ["UILogin_phone_reset", "UILogin_mail_reset"];
         }
         this.tabToggles.setTitles(titles);
     }

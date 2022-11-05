@@ -7,7 +7,7 @@ import LocalStoreManager from "../frame/manager/LocalStoreManager";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
-import { APIEmailExist, APISendEmailCode, Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
+import { APIGetBlindStatus, APIEmailExist, APISendEmailCode, Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -329,6 +329,26 @@ export default class LoginSession {
             });
         });
     }
+
+    /**
+    * 获取绑定信息
+    */
+    static async APIGetBlindStatus() {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIGetBlindStatus,
+                body: APIGetBlindStatus.Request({}),
+                onSuccess: function () {
+                    resolve(APIGetBlindStatus.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+
 
 
 
