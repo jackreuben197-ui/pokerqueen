@@ -15,29 +15,9 @@ export default class FSMLogicComponent implements IUpdate {
 
     }
 
-    private readonly TimeThreshold: number = 1 / 60;
-
     public update(dt: number) {
 
-        if (this.allowUpdate) {
-
-            // float startTime = Time.realtimeSinceStartup;
-
-            this._sm.UpdateStateMachine(dt);
-
-            // float timeDiff = Time.realtimeSinceStartup - startTime;
-            // if (timeDiff > this.TimeThreshold)
-            // {
-            //     if (this._sm.GlobalState != null)
-            //     {
-            //         Log.Warning($"Low Performance: {this._sm.GlobalState.GetType()}, time = {timeDiff * 1000} ms");
-            //     }
-            //     else
-            //     {
-            //         Log.Warning($"Low Performance: {this._sm.CurrentState.GetType()}, time = {timeDiff * 1000} ms");
-            //     }
-            // }
-        }
+        if (this.allowUpdate) this._sm.UpdateStateMachine(dt);
     }
 
     // public Reset(entity: any) {
