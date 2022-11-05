@@ -1,5 +1,7 @@
 import internal = require("stream");
+import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
+import { NotifyManager } from "../../frame/manager/NotifyManager";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
@@ -1784,7 +1786,7 @@ export default class TexasGameProtocol {
     protected Protocol_Holdem_AgreeSecondPcsHandler(rec: ServerMessageAgreeSecondPcs.AsObject) {
         if (rec == null) return;
         let seatId: number = this.game.GetLocalSeatID(rec.seatId);
-        //Game.EventSystem.Run(EventIdType.AgreeSecondPcsRefresh, seatId, responsedata.Result);
+        GC.notify.post(GGEvent.AgreeSecondPcsRefresh, seatId, rec.result)
     }
     //是否允许第2套公共牌触发信息
     Protocol_Holdem_AgreeSecondPcsTriggedHandler(rec: ServerMessageAgreeSecondPcsTrigged.AsObject) {

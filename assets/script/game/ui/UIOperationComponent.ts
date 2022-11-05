@@ -183,7 +183,7 @@ export default class UIOperationComponent extends UIBase {
 
 
         this.setButtonClick(this.buttonFreeCall, this.onClickFreeCall);
-        this.setButtonClick(this.buttonFreeCallConfirm, this.onClickSliderHandle);
+        this.setButtonClick(this.buttonFreeCallConfirm, this.onClickreeCallConfirm);
         this.setButtonClick(this.imageFreeCallMask, this.onClickFreeCallMask);
         this.setButtonClick(this.buttonFold, this.onClickFold);
         this.setButtonClick(this.buttonSliderHandle, this.onClickSliderHandle);
@@ -198,23 +198,22 @@ export default class UIOperationComponent extends UIBase {
 
     //点击自由加注滑块按钮
     private onClickSliderHandle(): void {
-        if (this.sliderFreeCall.moved) {
-            this.sliderFreeCall.moved = false;
-            return;
-        }
+        if (this.sliderFreeCall.moved) return;
+        this.onClickreeCallConfirm();
+    }
+
+    //点击确定按钮 
+    onClickreeCallConfirm() {
         this.callValue = (this.startRate + this.sliderFreeCall.Index) * this.calibrationWeight;
         this.CheckOpt();
         this.showFreeCall(false);
     }
-
 
     /// <summary>
     /// 自由加注slider值变化监听
     /// </summary>
     /// <param name="arg0"></param>
     private onValueChangeFreeCall(arg0: number): void {
-
-        console.log("onValueChangeFreeCall", arg0, GameCache.Instance.CurGame.mainPlayer.chips, this.calibrationWeight);
 
         let curr = this.startRate + arg0;
 
@@ -639,12 +638,11 @@ export default class UIOperationComponent extends UIBase {
     private getPotMutiplierByQuickAction(times: number): number {
         let valueTmp: number = this.actionDataInfo.actionLimit.min;
         if (this.actionDataInfo.actionLimit.action == Def.Action.ALLIN) {
-            cc.log("Allin");
             valueTmp = GameCache.Instance.CurGame.mainPlayer.chips;
         }
         else {
             if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
-                cc.log("IsPotLimit");
+
                 if (this.potMutiplier(times) >= GameCache.Instance.CurGame.mainPlayer.chips && this.potMutiplier(times) <= this.actionDataInfo.actionLimit.max) {
                     valueTmp = GameCache.Instance.CurGame.mainPlayer.chips;
                 }
@@ -712,13 +710,11 @@ export default class UIOperationComponent extends UIBase {
     }
 
 
+    //设置比例值
     private SetCalibrationWeight(): void {
-        if (GameCache.Instance.CurGame.smallBlind < 100) {
-            this.calibrationWeight = 10;
-        }
-        else {
-            this.calibrationWeight = 100;
-        }
+
+        this.calibrationWeight = GameCache.Instance.CurGame.smallBlind < 100 ? 10 : 100;
+
         console.log("SetCalibrationWeight", this.calibrationWeight);
     }
 

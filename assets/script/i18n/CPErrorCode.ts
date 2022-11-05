@@ -55,3 +55,4 @@ export class CPErrorCode {
 
     }
 }
+(window as any).CPErrorCode = CPErrorCode;

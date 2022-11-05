@@ -27,14 +27,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 133
+        "__id__": 132
       },
       {
-        "__id__": 134
+        "__id__": 133
       }
     ],
     "_prefab": {
-      "__id__": 135
+      "__id__": 134
     },
     "_opacity": 255,
     "_color": {
@@ -334,11 +334,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 131
+        "__id__": 130
       }
     ],
     "_prefab": {
-      "__id__": 132
+      "__id__": 131
     },
     "_opacity": 255,
     "_color": {
@@ -4555,7 +4555,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Text_Tips",
+    "_name": "Text_AgreeNum",
     "_objFlags": 0,
     "_parent": {
       "__id__": 8
@@ -4568,13 +4568,10 @@
       },
       {
         "__id__": 128
-      },
-      {
-        "__id__": 129
       }
     ],
     "_prefab": {
-      "__id__": 130
+      "__id__": 129
     },
     "_opacity": 255,
     "_color": {
@@ -4681,17 +4678,6 @@
     "_isAbsVerticalCenter": true,
     "_originalWidth": 0,
     "_originalHeight": 0,
-    "_id": ""
-  },
-  {
-    "__type__": "9bfc327oKRNEYZBVCrkUjhI",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 126
-    },
-    "_enabled": true,
-    "i18n_string": "UIAgreeSecondPcs_agree",
     "_id": ""
   },
   {
