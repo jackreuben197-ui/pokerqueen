@@ -47,8 +47,7 @@ import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_up_blind_pb";
 export class ProtocolCommon {
 
     private _request_map = new Map();
-    private _response_map = new Map();
-
+    
     private _body: any = null;
 
     public static get Instance(): ProtocolCommon {

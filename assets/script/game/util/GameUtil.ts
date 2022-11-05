@@ -114,6 +114,9 @@ export default class GameUtil {
     //游戏类型映射游戏类
     public static GameMap: Map<RoomType, any> = null;
 
+    //每套公共牌数量
+    public static PublicCardMaxCount: number = 5;
+
     //初始化 roomtype映射Game
     private static _SetGameMap() {
 

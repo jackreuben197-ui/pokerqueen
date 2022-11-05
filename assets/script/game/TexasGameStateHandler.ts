@@ -144,7 +144,7 @@ export class TexasGameStateHandlerHandPreflop extends StateHandler {
 
         let game: TexasGame = entity as TexasGame;
 
-        game.texasGameProtocol.handleRecvStartInfoCommon(source, source);
+        game.TexasGameProtocol.handleRecvStartInfoCommon(source);
     }
 
     public Execute(entity?: any): void {
@@ -268,7 +268,7 @@ export class TexasGameStateHandlerHandFlop extends StateHandler {
 
         if (!game) return;
 
-        game.texasGameProtocol.HandleGetPublicCards(source);
+        game.TexasGameProtocol.HandleGetPublicCards(source);
 
     }
 
@@ -297,7 +297,7 @@ export class TexasGameStateHandlerHandTurn extends StateHandler {
 
         if (!game) return;
 
-        game.texasGameProtocol.HandleGetPublicCards(source);
+        game.TexasGameProtocol.HandleGetPublicCards(source);
 
     }
 
@@ -326,7 +326,7 @@ export class TexasGameStateHandlerHandRiver extends StateHandler {
 
         if (!game) return;
 
-        game.texasGameProtocol.HandleGetPublicCards(source);
+        game.TexasGameProtocol.HandleGetPublicCards(source);
 
     }
 
@@ -353,7 +353,7 @@ export class TexasGameStateHandlerHandShowdown extends StateHandler {
 
         if (!game) return;
 
-        game.texasGameProtocol.handleWinnerInfoCommon(source, source);
+        game.TexasGameProtocol.handleWinnerInfoCommon(source, source);
 
     }
 
@@ -381,7 +381,7 @@ export class TexasGameStateHandlerHandEnd extends StateHandler {
 
         if (!game) return;
 
-        game.texasGameProtocol.HandleRoundFinish(source);
+        game.TexasGameProtocol.HandleRoundFinish(source);
     }
 
     public Execute(entity?: any): void {

@@ -84,7 +84,7 @@ export default class MTTGameProtocol extends TexasGameProtocol {
 
 
     // 本手开始 隐藏倒计时界面
-    public override handleRecvStartInfoCommon(rec: ServerMessageStartInfo.AsObject, obj) {
+    public override handleRecvStartInfoCommon(rec: ServerMessageStartInfo.AsObject) {
 
         let game: MTTGame = this.game as MTTGame;
 
@@ -96,7 +96,7 @@ export default class MTTGameProtocol extends TexasGameProtocol {
         game.gameStarted = true;
         game.isSyncHand = false;
         game.uirc.Image_WaitForStartBathTips.active = false;
-        super.handleRecvStartInfoCommon(rec, obj);
+        super.handleRecvStartInfoCommon(rec);
 
         game.ShowAddOnBtn();
     }

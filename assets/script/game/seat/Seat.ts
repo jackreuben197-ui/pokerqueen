@@ -1205,7 +1205,7 @@ export default class Seat {
     /// <param name="type"></param>
     /// <param name="hightCards"></param>
     public UpdateCardType(type: CardType, hightCards: number[], isGameend = false): void {
-        if (this.Player == null || GameCache.Instance.CurGame.GetCurPublicCardsCount() == 0 || this.CardsCount() == 0) {
+        if (this.Player == null || GameCache.Instance.CurGame.GetPublicCardsCount(1) == 0 || this.CardsCount() == 0) {
             this.uirc.imageCardType.node.active = false;
             this.uirc.imageSmallCardType.node.active = false;
             for (let i = 0, n = this.Player.cards.length; i < n; i++) {
