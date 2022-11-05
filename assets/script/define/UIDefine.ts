@@ -337,6 +337,13 @@ export const UIDefine = {
         Path: "prefab/ui/UITexasPlayerInfo",
     },
 
+    UITexasInsuranceComponent: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasInsuranceComponent",
+        Bundle: 'texas',
+        Path: "prefab/ui/UITexasInsurance",
+    },
+
     UIPlayerLookLabor: {
         UIType: UIType.Form,
         Name: "UIPlayerLookLabor",

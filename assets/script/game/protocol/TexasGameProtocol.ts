@@ -1,3 +1,5 @@
+import internal = require("stream");
+import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
@@ -1622,7 +1624,9 @@ export default class TexasGameProtocol {
     /// 保险触发
     /// </summary>
     /// <param name="response"></param>
-    protected HANDLER_REQ_INSURANCE_TRIGGED(rec: ServerMessageInsuranceTrigged.AsObject) {
+    public HANDLER_REQ_INSURANCE_TRIGGED(rec: ServerMessageInsuranceTrigged.AsObject) {
+
+        // rec = {"round":2,"operatorList":[{"seatId":1,"actionsList":[],"insuranceLimitList":[{"potId":0,"potAmount":400000,"bet":200000,"max":100000,"min":1,"insuranced":0,"outs":6,"outsDetailList":[{"seatId":2,"outsCardsList":[{"card":26,"isEqual":false},{"card":11,"isEqual":false},{"card":28,"isEqual":false},{"card":41,"isEqual":false},{"card":13,"isEqual":false},{"card":58,"isEqual":false}]}],"potUserCount":2,"potLeaderCount":1}],"leftOpTime":30,"delayTimes":0,"shortcutsList":[],"isInsurance":true,"isAgreeSecondPc":false,"opDeadline":1667618865}]};
 
         if (rec == null) {
             return;
@@ -1634,6 +1638,7 @@ export default class TexasGameProtocol {
             UIComponent.Instance.Toast(i18nMgr.Get("Purchase_insurance"));
             return;
         }
+        
         this.HandlerInsueranceData(rec.operatorList);
     }
     /// <summary>
@@ -1699,8 +1704,8 @@ export default class TexasGameProtocol {
                         continue;
                     }
                     //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
-                    mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
-                    mWrapTriggedInsuranceData.playerCards.push(...ins_Seat.Player.cards);
+                    // mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
+                    // mWrapTriggedInsuranceData.playerCards.push(...ins_Seat.Player.cards);
                     //各个玩家
                     mWrapTriggedInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
                     //添加所有玩家outs ，在保险界面处理是否平分outs
@@ -1716,7 +1721,9 @@ export default class TexasGameProtocol {
             data.triggedDatas = wrapTriggedInsuranceDatas;
             data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
             data.delayTimes = this.game.mainPlayer.delayTimes;
-            UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceComponent, data);
+            // UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceComponent, data);
+            UIComponent.open(UIDefine.UITexasInsuranceComponent, data);
+
         };
         mTweenCallback();
     }

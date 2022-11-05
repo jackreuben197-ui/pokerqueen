@@ -40,6 +40,7 @@ import { ClientMessageAddOn, ServerMessageAddOn } from "../../protobuf/holdem/re
 import { ServerMessageAgreeSecondPcsTrigged } from "../../protobuf/holdem/recv_agree_second_pcs_trigged_pb";
 import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_agree_second_pcs_pb";
 import { ClientMessageAgreeSecondPcsActive, ServerMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_agree_second_pcs_active_pb";
+import { ClientMessageBuyInsuranceActive, ServerMessageBuyInsuranceActive } from "../../protobuf/holdem/req_buy_insurance_active_pb";
 import { ServerMessageShowcards } from "../../protobuf/holdem/recv_showcards_pb";
 import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_up_blind_pb";
 
@@ -315,6 +316,10 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_AgreeSecondPcsActive]: {
         Client: ClientMessageAgreeSecondPcsActive,
         Server: ServerMessageAgreeSecondPcsActive,
+    },
+    [ProtocolCode.Protocol_Holdem_BuyInsuranceActive]: {
+        Client: ClientMessageBuyInsuranceActive,
+        Server: ServerMessageBuyInsuranceActive,
     },
     [ProtocolCode.Protocol_Holdem_Showcards]: {
         Server: ServerMessageShowcards,
