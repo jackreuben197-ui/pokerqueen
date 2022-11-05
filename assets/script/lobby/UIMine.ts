@@ -171,6 +171,6 @@ export default class UIMine extends UIBase {
     }
 
     onClickAchieve() {
-        // UIComponent.open(UIDefine.UIRecord);
+        
     }
 }
