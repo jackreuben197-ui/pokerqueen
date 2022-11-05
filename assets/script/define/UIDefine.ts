@@ -497,10 +497,34 @@ export const UIDefine = {
     },
     UIMine_SafeAdmin: {
         UIType: UIType.Form,
-        Name: "UICalendar",
+        Name: "UIMine_SafeAdmin",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_SafeAdmin",
+    },
+    UIMine_bindMess: {
+        UIType: UIType.Form,
+        Name: "UIMine_bindMess",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMine_bindMess",
+    },
+    UIMineChangeBind: {
+        UIType: UIType.Form,
+        Name: "UIMineChangeBind",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMineChangeBind",
+    },
+
+    UIMineThridBind: {
+        UIType: UIType.Form,
+        Name: "UIMineThridBind",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMineThridBind",
     }
+
+
+
+
+
 
 }
 //批量设置

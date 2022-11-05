@@ -22,16 +22,16 @@ export default class SDKManager {
         GoogleApi.renderBtn();
     }
 
-    googleLogin() {
-        GoogleApi.prompt();
+    googleLogin(type: Function = null) {
+        GoogleApi.prompt(type);
     }
 
-    faceBookLogin() {
-        FaceBookApi.login();
+    faceBookLogin(type: Function = null) {
+        FaceBookApi.login(type);
     }
 
-    instagramLogin() {
-        InstagramApi.login();
+    instagramLogin(type: Function = null) {
+        InstagramApi.login(type);
     }
 
     checkInstagranLoginSuc(code) {

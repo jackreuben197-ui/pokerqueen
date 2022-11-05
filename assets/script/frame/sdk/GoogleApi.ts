@@ -5,6 +5,7 @@ import LoginSession from "../../session/LoginSession";
 export default class GoogleApi {
     static client_id: string = '671936740901-7e3qu313i1tf6bkg0gdo39jekv085r48.apps.googleusercontent.com';
     static credential: string = '';
+    static func = null;
     static init() {
         console.log("================> google sdk init");
         (window as any).google && (window as any).google.accounts.id.initialize({
@@ -43,9 +44,11 @@ export default class GoogleApi {
         //     "exp": 1667191218,
         //     "jti": "c23a9ecd742e9d239a32031d2a2679a643fa2f4b"
         //   }
-
-        LoginSession.WebLoginThirdParty({ id_token: this.credential, source: "google", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
-
+        if (this.func && this.func instanceof Function) {
+            this.func({ id_token: this.credential, source: "google", app_source: 3 })
+        } else {
+            LoginSession.WebLoginThirdParty({ id_token: this.credential, source: "google", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
+        }
 
         // this.initTokenClient();
     }
@@ -58,7 +61,8 @@ export default class GoogleApi {
         )
     }
 
-    static prompt() {
+    static prompt(func) {
+        this.func = func
         console.log("================> google sdk prompt");
         (window as any).google && (window as any).google.accounts.id.prompt(notification => {
             console.log("这个通知适用于显示时刻吗？ ==> ", notification.isDisplayMoment())

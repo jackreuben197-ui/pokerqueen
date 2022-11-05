@@ -3153,6 +3153,64 @@ export class APIGetBlindStatus {
     };
 }
 
+export class APIBindEmail {
+    public static API: string = "/api/user/bind_email";
+    //字段声明
+    public static RequestParams: {
+        email: string,
+        code: string,
+        password: string,
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIBindEmail.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIBindEmail.ResponseData
+    };
+}
+export class APIBindPhone {
+    public static API: string = "/api/user/bind_phone";
+    //字段声明
+    public static RequestParams: {
+        phone: string,
+        code: string,
+        area: string,
+        password: string,
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIBindPhone.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIBindPhone.ResponseData
+    };
+}
+export class APIBindThrid {
+    public static API: string = "/api/user/bind_third_party";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIBindPhone.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIBindPhone.ResponseData
+    };
+}
+
+
 
 
 

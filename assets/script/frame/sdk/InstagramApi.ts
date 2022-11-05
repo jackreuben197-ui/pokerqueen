@@ -6,7 +6,9 @@ import CCTools from "../../tools/CCTools";
 
 
 export default class InstagramApi {
-    static login() {
+    static func
+    static login(func) {
+        this.func = func;
         console.log("==========> Instagram login : ")
         // let sendInfo: TSendInfo = {
         //     cuscomHost: "https://api.instagram.com",
@@ -29,12 +31,17 @@ export default class InstagramApi {
         window.location.href = url;
     }
 
-    static cleckLoginSuc(code: string) {
+    static async cleckLoginSuc(code: string) {
         //instagramCode
         // code = 'AQA76MVqRwgyA21sMUBoXQ7dRE0Yrecq4cRJ__JfRMUzSgC_TZb2SSiOb49QzsbWF75p1DxRPrOMKQvAUnhsC4m1stzvkcNvEWObF9W1zJJTUBM9cfYLQa0B_UheN0QHeRJk3TQpOvwkub76e_tGFzL2CNnCGx4y7Chw7YdCJIVFJSBT6e_ZJ0O9br2CEaORzT5CorvEprtwEaIhehEpaiEnJ3OtbC7GiVFUc54XMHoSbw#_';
         console.log('cleckLoginSuc=====', code)
+
         if (!CCTools.isNull(code)) {
+            if (this.func && this.func instanceof Function) {
+                // this.func({ code: code, source: "instagram", app_source: 3 });
+            }
             LoginSession.WebLoginThirdParty({ code: code, source: "instagram", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
+            LoginSession.APIBindThrid({ code: code, source: "instagram", app_source: 3 })
         }
     }
 

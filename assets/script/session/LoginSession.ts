@@ -7,7 +7,7 @@ import LocalStoreManager from "../frame/manager/LocalStoreManager";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
-import { APIGetBlindStatus, APIEmailExist, APISendEmailCode, Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
+import { APIBindThrid, APIBindPhone, APIBindEmail, APIGetBlindStatus, APIEmailExist, APISendEmailCode, Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -347,7 +347,58 @@ export default class LoginSession {
             });
         });
     }
+    /**
+   * 绑定Email
+   */
+    static async APIBindEmail(param: typeof APIBindEmail.RequestParams) {
 
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIBindEmail,
+                body: APIBindEmail.Request(param),
+                onSuccess: function () {
+                    resolve(APIBindEmail.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    /**
+       * 绑定Phone
+       */
+    static async APIBindPhone(param: typeof APIBindPhone.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIBindPhone,
+                body: APIBindPhone.Request(param),
+                onSuccess: function () {
+                    resolve(APIBindPhone.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    /**
+       * 绑定Phone
+       */
+    static async APIBindThrid(param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIBindThrid,
+                body: APIBindThrid.Request(param),
+                onSuccess: function () {
+                    resolve(APIBindThrid.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
 
 
 

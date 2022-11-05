@@ -5,7 +5,7 @@ import LocalStoreManager from "../frame/manager/LocalStoreManager";
  * @Date: 2022-08-22 00:32:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-26 15:51:56
+ * @LastEditTime: 2022-11-05 13:48:12
  * @FilePath: /pokerqueen/assets/script/session/StorageKey.ts
  */
 export default class StorageKey {
@@ -35,6 +35,9 @@ export default class StorageKey {
     static CODE_TIME_REGIST_MAIL = "CODE_TIME_REGIST_MAIL";
     ////验证码时间 快速登录
     static CODE_TIME_QUIKLY_LOGIN_PHONE = "CODE_TIME_QUIKLY_LOGIN_PHONE";
+
+    ////验证码时间 跟换绑定
+    static CODE_TIME_CHANGE_BLIND = "CODE_TIME_CHANGE_BLIND";
 
     static OpenBarrage: string = "OpenBarrage";//是否打开弹幕 1 关闭，0 打开
 
