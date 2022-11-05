@@ -43,7 +43,6 @@ export default class Main extends cc.Component {
 
         GC.init();
 
-
         GC.localStore.keyPre = CCTools.getQueryString("player") || "";
 
         Main.instance = this;
@@ -70,13 +69,10 @@ export default class Main extends cc.Component {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
-
-
     }
     start() {
         console.log("start");
+        window.Buffer = Buffer;
         ProcedureManager.Init();
-
-
     }
 }

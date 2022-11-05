@@ -2957,17 +2957,11 @@ export default class TexasGame {
                 this.uirc.TransPot_Pool.BackNode(potInfo.trans);
             }
         }
-
-        // 清空玩家自己
-        if (null != this.mainPlayer) {
-            this.mainPlayer.Dispose();
-            this.mainPlayer = null;
-        }
-
-        if (this.GameLogicSMComponent != null) {
-            this.GameLogicSMComponent.stop();
-        }
-
+        // 清空自己
+        this.mainPlayer?.Dispose();
+        this.mainPlayer = null;
+        //停止状态机刷新
+        this.GameLogicSMComponent?.stop();
     }
 
     //////////////////

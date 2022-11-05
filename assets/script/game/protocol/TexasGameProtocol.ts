@@ -1,12 +1,9 @@
-import internal = require("stream");
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
-import { NotifyManager } from "../../frame/manager/NotifyManager";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import ToastManager from "../../manager/ToastManager";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply } from "../../net/websocket/ProtocolHoldemMessages";
 import { Def, Operator, PlayerCards, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
@@ -56,7 +53,7 @@ import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 
 
-const CanPlayStatus = Def.CanPlayStatus;
+//const CanPlayStatus = Def.CanPlayStatus;
 
 export default class TexasGameProtocol {
 
@@ -198,7 +195,7 @@ export default class TexasGameProtocol {
         this.game.HideWaitBlindBtn();
 
         if (mSeat.Player.chips > this.game.GetMinPlayChips() && mSeat.seatID == this.game.mainPlayer.seatID) {
-            if (this.game.mainPlayer.canPlayStatus == CanPlayStatus.NEED_POST) {
+            if (this.game.mainPlayer.canPlayStatus == Def.CanPlayStatus.NEED_POST) {
                 // 需要补盲
                 this.game.ShowWaitBlindBtn();
                 mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind.Instance);
@@ -1494,7 +1491,7 @@ export default class TexasGameProtocol {
             return;
         }
 
-        let json = Buffer.from(rec.extra.toString(), 'base64').toString();
+        let json = window.Buffer.from(rec.extra.toString(), 'base64').toString();
         let responseData = Broadcast.Response(json);
         let code: number = responseData.code;
         let data: string = responseData.data;
