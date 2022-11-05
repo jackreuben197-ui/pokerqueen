@@ -2712,8 +2712,8 @@ export default class TexasGame {
 
     // 牌桌玩家信息
     public CheckPlayerInfo(userId: number, player: CPlayer = null): void {
-        GameCache.Instance.CurGame.texasGameProtocol.HANDLER_REQ_INSURANCE_TRIGGED(null);
-        // UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, player], { parentUI: Main.Marquee });
+        // GameCache.Instance.CurGame.texasGameProtocol.HANDLER_REQ_INSURANCE_TRIGGED(null);
+        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, player], { parentUI: Main.Marquee });
     }
 
     public HideSeeMorePublic(): void {

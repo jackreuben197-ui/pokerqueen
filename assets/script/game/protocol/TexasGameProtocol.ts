@@ -1626,7 +1626,7 @@ export default class TexasGameProtocol {
     /// <param name="response"></param>
     public HANDLER_REQ_INSURANCE_TRIGGED(rec: ServerMessageInsuranceTrigged.AsObject) {
 
-        rec = {"round":2,"operatorList":[{"seatId":1,"actionsList":[],"insuranceLimitList":[{"potId":0,"potAmount":400000,"bet":200000,"max":100000,"min":1,"insuranced":0,"outs":6,"outsDetailList":[{"seatId":2,"outsCardsList":[{"card":26,"isEqual":false},{"card":11,"isEqual":false},{"card":28,"isEqual":false},{"card":41,"isEqual":false},{"card":13,"isEqual":false},{"card":58,"isEqual":false}]}],"potUserCount":2,"potLeaderCount":1}],"leftOpTime":30,"delayTimes":0,"shortcutsList":[],"isInsurance":true,"isAgreeSecondPc":false,"opDeadline":1667618865}]};
+        // rec = {"round":2,"operatorList":[{"seatId":1,"actionsList":[],"insuranceLimitList":[{"potId":0,"potAmount":400000,"bet":200000,"max":100000,"min":1,"insuranced":0,"outs":6,"outsDetailList":[{"seatId":2,"outsCardsList":[{"card":26,"isEqual":false},{"card":11,"isEqual":false},{"card":28,"isEqual":false},{"card":41,"isEqual":false},{"card":13,"isEqual":false},{"card":58,"isEqual":false}]}],"potUserCount":2,"potLeaderCount":1}],"leftOpTime":30,"delayTimes":0,"shortcutsList":[],"isInsurance":true,"isAgreeSecondPc":false,"opDeadline":1667618865}]};
 
         if (rec == null) {
             return;
