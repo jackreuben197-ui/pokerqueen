@@ -3247,6 +3247,11 @@ UILogin_mail_login=邮箱登录
 UILogin_phone_register=手机注册
 UILogin_mail_register=邮箱注册
 
+UILogin_phone_reset=手机找回密码
+UILogin_mail_reset=邮箱找回密码
+
+
+
 UILogin_phone_pwd_l=用密码登录
 UILogin_phone_vcode_l=用验证码登录
 UILogin_vcode_len_limit_tip=验证码只能是4位数

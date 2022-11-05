@@ -41,6 +41,8 @@ import { ServerMessageAgreeSecondPcsTrigged } from "../../protobuf/holdem/recv_a
 import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_agree_second_pcs_pb";
 import { ClientMessageAgreeSecondPcsActive, ServerMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_agree_second_pcs_active_pb";
 import { ClientMessageBuyInsuranceActive, ServerMessageBuyInsuranceActive } from "../../protobuf/holdem/req_buy_insurance_active_pb";
+import { ServerMessageShowcards } from "../../protobuf/holdem/recv_showcards_pb";
+import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_up_blind_pb";
 
 export class ProtocolCommon {
 
@@ -319,6 +321,16 @@ export const ProtocolMap = {
         Client: ClientMessageBuyInsuranceActive,
         Server: ServerMessageBuyInsuranceActive,
     },
-
+    [ProtocolCode.Protocol_Holdem_Showcards]: {
+        Server: ServerMessageShowcards,
+    },
+    //触发第二套牌的投票
+    [ProtocolCode.Protocol_Holdem_AgreeSecondPcsTrigged]: {
+        Server: ServerMessageAgreeSecondPcsTrigged,
+    },
+    //升盲
+    [ProtocolCode.Protocol_Holdem_UpBlind]: {
+        Server: ServerMessageUpBlind
+    }
 }
 

@@ -24,8 +24,8 @@ export default class GoogleApi {
         let str = Buffer.from(this.credential, 'base64').toString();
 
         //普通解析只能解析出数据头
-        // {"alg":"RS256","kid":"77cc0ef4c7181cf4c0dcef7b60ae28cc9022c76b","typ":"JWT"}
-        console.log("================> google login 解析  : ", str)
+        // {"alg":"RS256","kid":"77cc0ef4c7181cf4c0dcef7b60ae28cc9022c76b","typ":"JWT"}
+        //console.log("================> google login 解析  : ", str)
         // 解析后的数据 JWT
         // {
         //     "iss": "https://accounts.google.com",

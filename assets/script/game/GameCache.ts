@@ -287,7 +287,7 @@ export class GameCache {
         return this._Instance ||= new GameCache();
     }
 
-    initTexasGame() {
+    InitTexasGame() {
         this.CurGame = GameUtil.InstantiateTexasGame(this.room_type);
     }
 

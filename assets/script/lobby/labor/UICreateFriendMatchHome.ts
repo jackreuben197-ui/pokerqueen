@@ -93,7 +93,7 @@ export default class UICreateFriendMatchHome extends UIBase {
         let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string);
         if (_data?.data?.data) {
             _data = new LobbyRoomListItem(_data?.data?.data);
-            GameUtil.EnterRoomAPI(_data, UIDefine.UICreateMatch);
+            GameUtil.EnterRoomAPI(_data, [UIDefine.UICreateMatch]);
         }
         else {
             UIComponent.Instance.Toast('房间信息错误')

@@ -392,6 +392,5 @@ export default class TimeHelper {
     private static __PadZero(num: number) {
         return num < 10 ? "0" + num : num;
     }
-
 }
 (window as any).TimeHelper = TimeHelper;

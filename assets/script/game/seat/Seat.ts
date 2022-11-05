@@ -881,8 +881,10 @@ export default class Seat {
                     // tweenerHideBubble = imageBubble.transform.DOScale(new Vector3(0, 0, 1), 0.2f).SetDelay(1f).OnComplete(() => {
                     //     imageBubble.gameObject.SetActive(false);
 
-
                     // });
+                    cc.tween(this.uirc.imageBubble.node).to(0.2, { scale: 0 }).call(() => {
+                        this.uirc.imageBubble.node.active = false;
+                    }).start();
 
                     this.HideCardBack();
                 }
@@ -1124,7 +1126,7 @@ export default class Seat {
         this.uirc.imageHeadFrame.node.active = istrue;
         this.uirc.Text_NickName.node.active = istrue;
 
-        console.log("隐藏头像", istrue);
+        console.log("SetOperationHeadActive", istrue);
     }
 
 

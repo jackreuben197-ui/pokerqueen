@@ -419,6 +419,10 @@ export default class TexasGame {
         this.texasGameProtocol = new TexasGameProtocol(this);
     }
 
+    Update(dt: number) {
+
+    }
+
     Enter() {
         UpdateComponent.Add(this.GameLogicSMComponent, this);
         this.listSeat = [];
@@ -675,7 +679,6 @@ export default class TexasGame {
                 }
                 this.mainPlayer = mSeat.Player;
             }
-            //mSeat.UpdateFSMbyStatus(true);
             //更新玩家离线状态
             mSeat.UpdateOnOrOffLine();
         }
@@ -2955,17 +2958,11 @@ export default class TexasGame {
                 this.uirc.TransPot_Pool.BackNode(potInfo.trans);
             }
         }
-
-        // 清空玩家自己
-        if (null != this.mainPlayer) {
-            this.mainPlayer.Dispose();
-            this.mainPlayer = null;
-        }
-
-        if (this.GameLogicSMComponent != null) {
-            this.GameLogicSMComponent.stop();
-        }
-
+        // 清空自己
+        this.mainPlayer?.Dispose();
+        this.mainPlayer = null;
+        //停止状态机刷新
+        this.GameLogicSMComponent?.stop();
     }
 
     //////////////////

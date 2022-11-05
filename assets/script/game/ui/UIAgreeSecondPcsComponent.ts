@@ -1,6 +1,13 @@
 
 
+import { CipherCCM } from "crypto";
+import GGEvent from "../../event/GGEvent";
+import TimeHelper from "../../helper/TimeHelper";
+import WebImageHelper from "../../helper/WebImageHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
+import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import Seat from "../seat/Seat";
 
@@ -16,13 +23,15 @@ class AgreeSecondData {
 }
 
 
+const Agree_HeadAsset: string = "Head02";
+const DeAgree_HeadAsset: string = "Head01";
+
 const { ccclass } = cc._decorator;
 
 @ccclass
 export default class UIAgreeSecondPcsComponent extends UIBase {
 
     public static AgreeSecondData: typeof AgreeSecondData = AgreeSecondData;
-
 
     Text_Title: cc.Label = null;
     Text_CountDown: cc.Label = null;
@@ -33,13 +42,22 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
     Button_Reject: cc.Node = null;
     Button_Agree: cc.Node = null;
 
+    Text_AgreeNum: cc.Label = null;
+
     curAgreeSecondData: AgreeSecondData = null;
 
     time: number = 0;
 
     PlayerActionToggleList: cc.Node[] = null;
 
+    Player_Count: number;
+
     Heads: cc.Node = null;
+
+    //同意的个数
+    Agree_Count: number = 0;
+
+    PlayerIndexMap: Map<number, number> = new Map();
 
     protected lateLoad() {
         super.lateLoad();
@@ -50,29 +68,41 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
         this.Button_Reject = this.getChildNodeOrComponent("Button_Reject");
         this.Button_Agree = this.getChildNodeOrComponent("Button_Agree");
-
+        this.Text_AgreeNum = this.getChildNodeOrComponent("Text_AgreeNum", cc.Label);
         this.Heads = this.getChildNodeOrComponent("Heads");
+    }
+
+    update(dt) {
+        if (this.time > 0) {
+            this.time -= dt;
+            this.Text_CountDown.string = TimeHelper.ShowRemainingSemicolonPure(Math.max(0, this.time ^ 0));
+        }
+        else {
+            UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
+        }
     }
 
     onShow(param: AgreeSecondData): void {
         super.onShow(param);
         if (param != null) {
             this.curAgreeSecondData = param;
-            //textCommit.text = string.IsNullOrEmpty(param.contentCommit) ? $"Commit" : param.contentCommit;
-            //textCancel.text = string.IsNullOrEmpty(param.contentCancel) ? $"Cancel" : param.contentCancel;
             this.Text_Reject.string = param.contentCancel ?? "Cancel";
             this.Text_Agree.string = param.contentCommit ?? "Commit";
-
             this.Text_Title.string = param.title ?? "";
-
             this.time = param.SecondPcsTime;
             this.UpdateSecondPcsUI();
-            //AgreeNumText.text = $"{0}/{PlayerActionToggleList.Count}\t" + LanguageManager.mInstance.GetLanguageForKey("UIAgreeSecondPcs_AgreeDtail");
+            this.UpdateTextAgreeNum();
         }
+        this.setButtonInteractable(this.Button_Reject, true);
+        this.setButtonInteractable(this.Button_Agree, true);
     }
     protected regiterTouchEvents() {
         this.setButtonClick(this.Button_Reject, this.onClickReject);
         this.setButtonClick(this.Button_Agree, this.onClickAgree);
+    }
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(GGEvent.AgreeSecondPcsRefresh, this.PlayerAgreeSecondPcsToggleRefresh);
     }
     //拒绝点击
     onClickReject() {
@@ -91,38 +121,68 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
         if (GameCache.Instance.CurGame == null) return;
 
+        this.ClearAllHeads();
 
         this.PlayerActionToggleList = [];
 
-        // if (PlayerActionToggleList == null) {
-        //     PlayerActionToggleList = new List<GameObject>();
-        // }
-        // else {
-        //     ClearGameObjList(PlayerActionToggleList);
-        // }
+        this.Player_Count = 0;
 
         for (let i = 0; i < GameCache.Instance.CurGame.listSeat.length; i++) {
             let seat: Seat = GameCache.Instance.CurGame.listSeat[i];
             if (seat.Player == null || seat.seatID == -1 || !seat.Player.isPlaying) {
                 continue;
             }
-            //this.PlayerActionToggleList.push(this.CreatGameObj(item_head.gameObject, this.PlayerAgreeAndRefuse, seat.seatID, seat.Player.headPic));
+            let head = this.Heads.children[this.Player_Count];
+
+            head.active = true;
+
+            let head_icon: cc.Sprite = cc.find("Mask/Icon", head).getComponent(cc.Sprite);
+
+            WebImageHelper.SetHeadImage(head_icon, seat.Player.headPic);
+
+            this.PlayerIndexMap.set(i, this.Player_Count);
+
+            this.Player_Count++;
+
+        }
+        //判断长度设置头像总容器的缩放值(5个头像以内保持1,>5 进行递减)
+        this.Heads.scale = (1 - (Math.max(0, this.Player_Count - 5)) * 0.1);
+
+    }
+
+    //刷新同意的对象
+    public PlayerAgreeSecondPcsToggleRefresh(seatId: number, isAgree: boolean) {
+
+        if (isAgree) this.Agree_Count++;
+
+        this.UpdateTextAgreeNum();
+
+
+        let index = this.PlayerIndexMap.get(seatId);
+
+        let head = this.Heads.children[index];
+
+        console.log("head index:", index);
+
+        head.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(isAgree ? Agree_HeadAsset : DeAgree_HeadAsset, AssetFold.texture_TexasUI);
+    }
+
+    UpdateTextAgreeNum() {
+        this.Text_AgreeNum.string = `${this.Agree_Count}/${this.Player_Count} ${i18nMgr.Get("UIAgreeSecondPcs_AgreeDtail")}`;
+    }
+
+    lateClose(param?: any) {
+        this.Agree_Count = 0;
+        //this.unregiterAllDispatchEvent();
+        this.PlayerIndexMap.clear();
+    }
+
+    private ClearAllHeads() {
+        for (let i = 0; i < this.Heads.children.length; i++) {
+            let head = this.Heads.children[i];
+            head.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(DeAgree_HeadAsset, AssetFold.texture_TexasUI);
+            head.active = false;
         }
     }
-
-    private CreatGameObj(gameObject: cc.Node, parent: cc.Node, seatID: number, headPic: string): cc.Node {
-        let go = cc.instantiate(gameObject);
-        go.parent = parent;
-        //go = GameObject.Instantiate(gameObject, parent);
-        go.name = seatID.toString();
-        //WebImageHelper.SetUrlImage(go.transform.Find("Mask_head/img_head").GetComponent<RawImage>(), headPic);
-        // go.transform.localPosition = Vector3.zero;
-        // go.transform.localRotation = Quaternion.identity;
-        // go.transform.localScale = Vector3.one;
-        //go.gameObject.SetActive(true);
-        go.active = true;
-        return go;
-    }
-
 
 }

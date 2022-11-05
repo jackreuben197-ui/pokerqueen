@@ -43,7 +43,7 @@ export default class UIMatchChessItem extends UIBase {
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.bindClick(this.node, () => {
-            GameUtil.EnterRoomAPI(this._data, UIDefine.UIMatchPlayViewForm);
+            GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
         })
     }
     initData(data: LobbyRoomListItem) {

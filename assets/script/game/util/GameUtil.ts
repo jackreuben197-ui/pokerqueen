@@ -1439,7 +1439,7 @@ export default class GameUtil {
      * @param fromUI 
      * @returns 
      */
-    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUI?: UIDefineType) {
+    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUIs?: UIDefineType[]) {
         //未开放房间类型
         if (!GameUtil.IsOpenRoomType(enter_room_info.room_type)) {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
@@ -1454,7 +1454,7 @@ export default class GameUtil {
 
                     GameCache.Instance.InitEnterRoomInfo(enter_room_info);
 
-                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUI: fromUI });//[this.UIDefine, false, 0]
+                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUIs: fromUIs });//[this.UIDefine, false, 0]
                 }
             } else {
                 console.warn("房间类型未解析:", enter_room_info.room_type);
@@ -1463,6 +1463,33 @@ export default class GameUtil {
         } else {
             cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
         }
+    }
+
+    public static EnterMTTRoom(param: { fromUIs?: UIDefineType[], isLookOn?: boolean }) {
+
+        let room_type: number = GameCache.Instance.room_type;
+
+        console.log("EnterMTTRoom room_type:", room_type);
+        //未开放房间类型
+        if (!GameUtil.IsOpenRoomType(room_type)) {
+            UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
+            return;
+        }
+
+        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
+            if (RoomType[room_type]) {
+                ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, param);//[this.UIDefine, false, 0]
+            }
+            else {
+                console.warn("房间类型未解析:", room_type);
+                UIComponent.Instance.Toast(`room_type:${room_type} is error`);
+            }
+        }
+        else {
+            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
+        }
+
+
     }
 }
 (window as any).GameUtil = GameUtil;
