@@ -470,8 +470,10 @@ export default class UITexasInsuranceComponent extends UIBase {
             // buttonDelay.node.transform.Find("Image_bean").node.active = false;
             this.lbl_btn_1.getComponent(cc.Label).string = "0s";
             this.lbl_btn_2.getComponent(cc.Label).string = "";
+            this.lbl_btn_2.parent.active = false;
             return;
         }
+        this.lbl_btn_2.parent.active = true;
         let fee =  200 * Math.pow(2, this.addTimeCount);
         // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = $"{StringHelper.GetDoubleString(fee)}";
         this.lbl_btn_2.getComponent(cc.Label).string = fee;
@@ -1185,9 +1187,8 @@ export default class UITexasInsuranceComponent extends UIBase {
 
         this.OnclickDelayButtonTimes += 1;
         
-        this.onChangeTime(30);
 
-        this.onClickClose();
+        // this.onClickClose();
     }
 
     /// <summary>
@@ -1575,21 +1576,22 @@ export default class UITexasInsuranceComponent extends UIBase {
         {
             return;
         }
-        if (rec.Status != 0)
+        if (rec.status != 0)
         {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.Status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
             return;
         }
 
-        if (rec.Status == 0)
+        if (rec.status == 0)
         {
-            this.addTimeCount = rec.Times;
-            this.countDownTime += rec.Duration;
+            this.addTimeCount = rec.times;
+            this.countDownTime += rec.duration;
             this.isCountdown = true;
             this.CountDownImage.fillAmount = 1;
             // this.CountDownImage.color = new Color32(86, 181, 87, 255);
             // this.DOTween.To(x => CountDownImage.fillAmount = x, countDownTime / countDownTime, 0, this.countDownTime).SetEase(Ease.Linear);
             this.UpdateDelayButton();
+            this.onChangeTime(this.addTimeCount);
         }
 
 

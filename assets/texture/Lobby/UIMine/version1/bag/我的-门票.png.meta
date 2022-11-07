@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "f469c54f-bf29-4610-99e0-753a03a9ae5e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2688,
+  "platformSettings": {},
+  "subMetas": {
+    "我的-门票": {
+      "ver": "1.0.6",
+      "uuid": "91b7afa2-6e1f-4fbb-a997-5b3fcb9e7024",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "f469c54f-bf29-4610-99e0-753a03a9ae5e",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2688,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

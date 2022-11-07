@@ -1,4 +1,4 @@
-import { info } from "console";
+import { info, table } from "console";
 import { UIDefine } from "../../../define/UIDefine";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
@@ -69,11 +69,26 @@ export default class UIMineArch extends BaseForm {
             return;
         }
         let list = data.list;
+
+        
+        let len = list.length;
+
+        let ary1 = [];
+        let ary2 = [];
+        for (let i=0; i<len; i++) {
+            let info = list[i];
+            if (info.is_get_goods == 1) {
+                ary1.push(info);
+            } else {
+                ary2.push(info);
+            }
+        }
+        list = ary1.concat(ary2);
+
         let lbl_noshow: cc.Node = this.getChildNodeOrComponent("lbl_no");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
         scrollView.scrollToTop();
-        let len = list.length;
         if (len == 0) {
             lbl_noshow.active = true;
         } else {

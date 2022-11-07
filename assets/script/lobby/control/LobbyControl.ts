@@ -301,38 +301,6 @@ export class LobbyControl {
     }
 
 
-    getLongTimeStr(pNum) {//1小时3600秒      1天86400秒
-        if (pNum >= 3600)//>1小时
-        {
-            let tHour = Math.floor(pNum / 3600);
-            return tHour.toString().padStart(2, '0') + "小时局";
-        }
-        else if (pNum >= 60)//>1分钟
-        {
-            let tMinutes = Math.floor(pNum / 60);
-            return tMinutes.toString().padStart(2, '0') + "分钟局";
-
-        }
-        else if (pNum < 60) {
-            return pNum.toString() + '秒局';
-        }
-        return "";
-    }
-
-    setWinColor(lbl, num) {
-        let bxStr = "";
-        bxStr = num.toString();
-        if (num >= 0) {
-            if (num > 0) {
-                bxStr = "+" + num.toString();
-            }
-            lbl.node.color = cc.color(53, 163, 179)
-        } else {
-            lbl.node.color = cc.color(255, 204, 0)
-        }
-        lbl.string = bxStr;
-    }
-
     /**
      * MTT 比赛列表详情  
      */
@@ -350,18 +318,6 @@ export class LobbyControl {
                 }.bind(this)
             });
         });
-    }
-
-    formatString(localValue: string, ...params): string {
-        if (params.length) {
-            params.forEach((value, index) => {
-                let paramStr: string = String(value);
-
-                let reg = new RegExp(`\\{${index}\\}`, "g");
-                localValue = localValue.replace(reg, paramStr);
-            })
-        }
-        return localValue;
     }
 
     /**
@@ -489,12 +445,7 @@ export class LobbyControl {
             });
         });
     }
-    
-    GetMsg(pType) {
-        var tValue = i18nMgr.Get("MsgInfo_" + pType.toString());
-        return tValue;
-    }
-    
+
      /**
      * 获取消息列表
      */
@@ -676,6 +627,73 @@ export class LobbyControl {
         });
     }
 
+    
+    /********************************* 公共接口 ***********************************/
+
+    /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
+        1.获取固定时间
+    ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+    getLongTimeStr(pNum) {//1小时3600秒      1天86400秒
+        if (pNum >= 3600)//>1小时
+        {
+            let tHour = Math.floor(pNum / 3600);
+            return tHour.toString().padStart(2, '0') + "小时局";
+        }
+        else if (pNum >= 60)//>1分钟
+        {
+            let tMinutes = Math.floor(pNum / 60);
+            return tMinutes.toString().padStart(2, '0') + "分钟局";
+
+        }
+        else if (pNum < 60) {
+            return pNum.toString() + '秒局';
+        }
+        return "";
+    }
+
+    /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
+        2.设置输赢分颜色
+    ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+    setWinColor(lbl, num) {
+        let bxStr = "";
+        bxStr = num.toString();
+        if (num >= 0) {
+            if (num > 0) {
+                bxStr = "+" + num.toString();
+            }
+            lbl.node.color = cc.color(53, 163, 179)
+        } else {
+            lbl.node.color = cc.color(255, 204, 0)
+        }
+        lbl.string = bxStr;
+    }
+        
+    /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
+        3.获取消息多语言
+    ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+    GetMsg(pType) {
+        var tValue = i18nMgr.Get("MsgInfo_" + pType.toString());
+        return tValue;
+    }
+    
+    /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
+        4.字符串多参数解析
+    ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
+    formatString(localValue: string, ...params): string {
+        if (params.length) {
+            params.forEach((value, index) => {
+                let paramStr: string = String(value);
+
+                let reg = new RegExp(`\\{${index}\\}`, "g");
+                localValue = localValue.replace(reg, paramStr);
+            })
+        }
+        return localValue;
+    }
+
+    /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
+        5.固定牌型
+    ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
     getArchPKInfo(index) {
         let pkInfo = [-1, -1, -1, -1, -1];
         let name = "其他";
@@ -722,8 +740,7 @@ export class LobbyControl {
             name: name
         }
     }
-    
-    /********************************* 流程控制 ***********************************/
+
     /********************************* 清除 ***********************************/
 
 
