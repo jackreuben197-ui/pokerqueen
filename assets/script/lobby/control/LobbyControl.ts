@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, API_PROP_TASK_LIST, API_PROP_TASK_RECEIVE, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -638,6 +638,89 @@ export class LobbyControl {
                 }.bind(this)
             });
         });
+    }
+
+    /**
+     * 查询成就任务列表
+     */
+     async reqPropTaskList(param: typeof API_PROP_TASK_LIST.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: API_PROP_TASK_LIST,
+                body: API_PROP_TASK_LIST.Request(param),
+                onSuccess: function () {
+                    resolve(API_PROP_TASK_LIST.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 成就任务领取奖励
+     */
+     async reqPropTaskReceive(param: typeof API_PROP_TASK_RECEIVE.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: API_PROP_TASK_RECEIVE,
+                body: API_PROP_TASK_RECEIVE.Request(param),
+                onSuccess: function () {
+                    resolve(API_PROP_TASK_RECEIVE.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    getArchPKInfo(index) {
+        let pkInfo = [-1, -1, -1, -1, -1];
+        let name = "其他";
+        switch (index) {
+            case 9:
+                pkInfo = [14,13,12,11,10];
+                name = "皇家同花顺";
+                break;
+            case 10:
+                pkInfo = [28,27,26,25,24];
+                name = "同花顺";
+                break;
+            case 11:
+                pkInfo = [14,29,44,59,10];
+                name = "四条";
+                break;    
+            case 12:
+                pkInfo = [13,43,12,7,22];
+                name = "葫芦";
+                break;  
+            case 13:
+                pkInfo = [27,24,23,22,21];
+                name = "同花";
+                break;  
+            case 14:
+                pkInfo = [14,28,42,11,55];
+                name = "顺子";
+                break;  
+            case 15:
+                pkInfo = [55,25,10,11,7];
+                name = "三条";
+                break;  
+            case 16:
+                pkInfo = [14,44,26,11,10];
+                name = "两对";
+                break;  
+            case 17:
+                pkInfo = [14,29,12,11,10];
+                name = "一对";
+                break; 
+        }
+        return {
+            info: pkInfo,
+            name: name
+        }
     }
     
     /********************************* 流程控制 ***********************************/

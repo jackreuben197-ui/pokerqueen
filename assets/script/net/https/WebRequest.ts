@@ -2314,6 +2314,52 @@ export class Web_Misc_Game_Round_List {
 }
 
 /// <summary>
+/// 成就任务列表
+/// </summary>
+export class API_PROP_TASK_LIST {
+    //接口地址
+    static API: string = "/api/prop/task/task_list";
+
+    //字段声明
+    static RequestParams: {
+        type     : number, // 类型ID  任务类型  1；每日任务 2：成就任务
+        timezone : number, // 时区 0-巴西 1-utc
+        limit    : number,
+        offset   : number,
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_PROP_TASK_LIST.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_PROP_TASK_LIST.ResponseData };
+}
+
+/// <summary>
+/// 成就任务领取奖励
+/// </summary>
+export class API_PROP_TASK_RECEIVE {
+    //接口地址
+    static API: string = "/api/prop/task/task_receive";
+
+    //字段声明
+    static RequestParams: {
+        task_id     : number, 
+        timezone    : number,
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_PROP_TASK_RECEIVE.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_PROP_TASK_RECEIVE.ResponseData };
+}
+
+/// <summary>
 /// 查询牌普列表是否是状态
 /// </summary>
 export class Web_Misc_Game_Round_Status {

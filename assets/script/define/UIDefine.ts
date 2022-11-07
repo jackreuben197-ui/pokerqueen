@@ -150,6 +150,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/record/UIRecord",
         Title: "UICareerRecord",
     },
+    //成就
+    UIMineArch: {
+        UIType: UIType.Form,
+        Name: "UIMineArch",
+        Bundle: null,
+        Path: "main/lobby/prefab/achi/UIMineArch",
+        Title: "",
+    },
     //战绩详情
     UIRecordDetail: {
         UIType: UIType.Form,
