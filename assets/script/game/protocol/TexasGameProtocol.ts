@@ -1727,8 +1727,8 @@ export default class TexasGameProtocol {
             data.triggedDatas = wrapTriggedInsuranceDatas;
             data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
             data.delayTimes = this.game.mainPlayer.delayTimes;
-            // UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceComponent, data);
-            UIComponent.open(UIDefine.UITexasInsuranceComponent, data);
+            UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceComponent, data);
+            //UIComponent.open(UIDefine.UITexasInsuranceComponent, data);
 
         };
         mTweenCallback();

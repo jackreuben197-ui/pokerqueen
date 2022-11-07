@@ -87,6 +87,8 @@ export default class UIOperationComponent extends UIBase {
     private isCountDown: boolean = false;
     private hadAlertSound: boolean = false;
     private isShowingDialog: boolean = false;
+
+    //滑动条比例值 
     private calibrationWeight: number = 100;
     private chipScale: number = 100;
 
@@ -112,7 +114,8 @@ export default class UIOperationComponent extends UIBase {
 
     private UI: cc.Node = null;
 
-    startRate: number = 0;
+    //滑动条最底部位置
+    sliderMin: number = 0;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -191,6 +194,223 @@ export default class UIOperationComponent extends UIBase {
         this.sliderFreeCall.onChange(this.onValueChangeFreeCall.bind(this));
     }
 
+
+    onShow(obj?: OperationData): void {
+
+        super.onShow(obj);
+
+        if (null == obj) {
+            return;
+        }
+        GameCache.Instance.IsAllowOpenDanmu = false;
+
+        this.operationData = obj;
+
+        if (null == this.operationData || null == this.operationData.actionLimits) {
+            return;
+        }
+        this.SetCalibrationWeight();
+        if (this.isShowingDialog) {
+            //UIComponent.Instance.HideUI(UIType.UIDialog);
+            UIComponent.close(UIDefine.UIDialogComponent);
+        }
+        this.isShowingDialog = false;
+        this.actionDataInfo = new ActionDataInfo();
+        this.optCurTime = GameCache.Instance.CurGame.GetOpTime();
+        this.optTotalTime = this.optCurTime;
+        this.hadAlertSound = false;
+        if (this.optTotalTime < GameCache.Instance.CurGame.opTime) {
+            this.optTotalTime = GameCache.Instance.CurGame.opTime;
+        }
+
+
+        this.isCountDown = false;
+
+        this.show(this.operationData.actionLimits);
+
+    }
+
+    private actions = {
+
+        [Def.Action.STRADDLE]://4
+        {
+            show: () => {
+
+            },
+        },
+        [Def.Action.BET]://5
+        {
+            show: () => {
+
+            },
+        },
+        [Def.Action.CALL]://6
+        {
+            show: this.__CALL,
+        },
+        [Def.Action.FOLD]://7
+        {
+            show: () => {
+                cc.log("+ Def.Action.FOLD");
+                this.buttonFold.active = true;
+                if (this.getActionLimitByAction(Def.Action.CHECK) != null) {
+                    return;
+                }
+                //放弃选项走进度条
+                this.imageFoldCountDown.node.active = true;
+                this.imageFoldCountDown.fillRange = 1;
+                this._isFoldCountDown = true;
+            },
+        },
+        [Def.Action.CHECK]://8
+        {
+            show: () => {
+
+            },
+        },
+        [Def.Action.RAISE]://9
+        {
+            show: (action: ActionLimit.AsObject) => {
+
+                this.buttonFreeCall.active = true;
+
+                this.actionDataInfo.actionLimit = action;
+                //滑动条最小最大，显示最小最大
+                let min, max, action_min, action_max;
+                //相同
+                if (action.max == action.min) {
+                    min = max = Math.ceil(action.max / this.calibrationWeight);
+                    this.sliderFreeCall.SetMinMax(0, 0);
+                    this.textFreeCall.string = `ALL IN`;
+                    this.textFreeCallMax.string = `${action.max / 100}`;
+                } else {
+                    if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
+                        action_max = action.max;
+                    } else {
+                        action_max = action.max + 1;
+                    }
+                    action_min = action.min;
+                    max = Math.ceil(action_max / this.calibrationWeight);
+                    min = Math.ceil(action_min / this.calibrationWeight);
+
+                    if (min >= max) {
+                        min = max;
+                        this.textFreeCall.string = `ALL IN`;
+                    } else {
+                        this.textFreeCall.string = `${action_min / 100}`;
+                    }
+                    //设置滑动条组件
+                    //滑动条起始位置的刻度
+                    this.sliderMin = min;
+                    this.sliderFreeCall.SetMinMax(min, max);
+                    this.textFreeCallMax.string = `${action_max / 100}`;
+
+                }
+                console.log(" >> min max action_min action_max", min, max, action_min, action_max);
+
+                this.setTopCallButtons();
+
+                //this.onValueChangeFreeCall(0);
+                this.sliderFreeCall.onShow({ index: 0 });
+
+            },
+        },
+        [Def.Action.ALLIN]://10
+        {
+            show: (action: ActionLimit.AsObject) => {
+                if (this.getActionLimitByAction(Def.Action.BET) == null &&
+                    this.getActionLimitByAction(Def.Action.RAISE) == null &&
+                    this.getActionLimitByAction(Def.Action.CALL) != null
+                ) {
+                    this.showAllInRaise(action);
+                }
+                else if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CHECK) != null) {
+                    this.showAllInRaise(action);
+                }
+                else {
+                    this.showAllin(action);
+                }
+            },
+        },
+
+    }
+
+    __CALL(action: ActionLimit.AsObject) {
+        cc.log("+ Def.Action.CALL");
+        this.buttonCall.active = true;
+        this.actionDataInfo.CallAmount = action.min;
+        this.textCall.string = StringHelper.GetLongString(action.min);
+    }
+
+
+
+
+
+    private show(actionLimits: ActionLimit.AsObject[]): void {
+        actionLimits.forEach(actionLimit => {
+            switch (actionLimit.action) {
+
+                case Def.Action.STRADDLE:
+
+                    this.showStraddle(actionLimit);
+
+                    break;
+                case Def.Action.BET:
+
+                    this.showBet(actionLimit);
+
+                    break;
+                case Def.Action.CALL:
+
+                    this.showCall(actionLimit);
+
+                    break;
+                case Def.Action.FOLD:
+
+                    this.showFold(actionLimit);
+
+                    break;
+                case Def.Action.CHECK:
+
+                    this.showCheck(actionLimit);
+
+                    break;
+                case Def.Action.RAISE: // 筹码条上下拖动
+
+                    this.showBet(actionLimit);
+
+                    break;
+                case Def.Action.ALLIN:
+
+
+                    if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CALL) != null) {
+                        this.showAllInRaise(actionLimit);
+                    }
+                    else if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CHECK) != null) {
+                        this.showAllInRaise(actionLimit);
+                    }
+                    else {
+                        this.showAllin(actionLimit);
+                    }
+
+                    break;
+                default:
+
+                    cc.warn(`UIOperationComponent: cannot recognize action: ${actionLimit.action}`);
+
+                    break;
+            }
+        })
+
+    }
+
+
+
+
+
+
+
+
     //设置UI位置
     public SetUIPos(pos: cc.Vec2) {
         this.UI.setPosition(pos);
@@ -204,7 +424,7 @@ export default class UIOperationComponent extends UIBase {
 
     //点击确定按钮 
     onClickreeCallConfirm() {
-        this.callValue = (this.startRate + this.sliderFreeCall.Index) * this.calibrationWeight;
+        this.callValue = (this.sliderMin + this.sliderFreeCall.Index) * this.calibrationWeight;
         this.CheckOpt();
         this.showFreeCall(false);
     }
@@ -215,7 +435,7 @@ export default class UIOperationComponent extends UIBase {
     /// <param name="arg0"></param>
     private onValueChangeFreeCall(arg0: number): void {
 
-        let curr = this.startRate + arg0;
+        let curr = this.sliderMin + arg0;
 
         if (curr >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
             this.textFreeCall.string = `ALL IN`;
@@ -387,97 +607,7 @@ export default class UIOperationComponent extends UIBase {
         }
     }
 
-    onShow(obj?: OperationData): void {
 
-        super.onShow(obj);
-
-        if (null == obj) {
-            return;
-        }
-        GameCache.Instance.IsAllowOpenDanmu = false;
-
-        this.operationData = obj;
-
-        if (null == this.operationData || null == this.operationData.actionLimits) {
-            return;
-        }
-        this.SetCalibrationWeight();
-        if (this.isShowingDialog) {
-            //UIComponent.Instance.HideUI(UIType.UIDialog);
-            UIComponent.close(UIDefine.UIDialogComponent);
-        }
-        this.isShowingDialog = false;
-        this.actionDataInfo = new ActionDataInfo();
-        this.optCurTime = GameCache.Instance.CurGame.GetOpTime();
-        this.optTotalTime = this.optCurTime;
-        this.hadAlertSound = false;
-        if (this.optTotalTime < GameCache.Instance.CurGame.opTime) {
-            this.optTotalTime = GameCache.Instance.CurGame.opTime;
-        }
-
-
-        this.isCountDown = false;
-
-        this.show(this.operationData.actionLimits);
-
-    }
-
-    private show(actionLimits: ActionLimit.AsObject[]): void {
-        actionLimits.forEach(actionLimit => {
-            switch (actionLimit.action) {
-
-                case Def.Action.STRADDLE:
-
-                    this.showStraddle(actionLimit);
-
-                    break;
-                case Def.Action.BET:
-
-                    this.showBet(actionLimit);
-
-                    break;
-                case Def.Action.CALL:
-
-                    this.showCall(actionLimit);
-
-                    break;
-                case Def.Action.FOLD:
-
-                    this.showFold(actionLimit);
-
-                    break;
-                case Def.Action.CHECK:
-
-                    this.showCheck(actionLimit);
-
-                    break;
-                case Def.Action.RAISE: // 筹码条上下拖动
-
-                    this.showBet(actionLimit);
-
-                    break;
-                case Def.Action.ALLIN:
-
-                    if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CALL) != null) {
-                        this.showAllInRaise(actionLimit);
-                    }
-                    else if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CHECK) != null) {
-                        this.showAllInRaise(actionLimit);
-                    }
-                    else {
-                        this.showAllin(actionLimit);
-                    }
-
-                    break;
-                default:
-
-                    cc.warn(`UIOperationComponent: cannot recognize action: ${actionLimit.action}`);
-
-                    break;
-            }
-        })
-
-    }
 
     //观
     private showStraddle(actionLimit: ActionLimit.AsObject): void {
@@ -512,7 +642,7 @@ export default class UIOperationComponent extends UIBase {
                 //this.sliderFreeCall.value = this.sliderFreeCall.minValue;
                 this.textFreeCall.string = `${actionLimit.min / this.chipScale}`;
 
-                this.startRate = min;
+                this.sliderMin = min;
             }
             this.sliderFreeCall.SetMinMax(min, max);
             let actionLimitMax: number = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) ? (actionLimit.max) : (actionLimit.max + 1);
