@@ -438,6 +438,8 @@ export default class Seat {
             this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
         }
 
+        this.ClearUI();
+
     }
 
     /// <summary>

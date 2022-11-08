@@ -374,7 +374,7 @@ export default class TexasGameMessageHandler {
         throw new Error("Method not implemented.");
     }
     Protocol_Holdem_BuyInsurance_Handler(Protocol_Holdem_BuyInsurance: ProtocolCode, Protocol_Holdem_BuyInsurance_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_BuyInsurance_Handler`);
     }
 
 
