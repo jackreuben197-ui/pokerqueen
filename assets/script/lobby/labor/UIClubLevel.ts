@@ -5,7 +5,7 @@ import BaseForm from "../../ui/form/BaseForm";
  * @Date: 2022-11-08 12:28:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-08 17:26:48
+ * @LastEditTime: 2022-11-08 17:56:32
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubLevel.ts
  */
 const { ccclass, property, menu } = cc._decorator;
@@ -29,6 +29,10 @@ export default class UIClubLevel extends BaseForm {
 
     @property(cc.Label)
     currentLevel: cc.Label = null;
+
+    @property(cc.Node)
+    upLevelInd: cc.Node = null;
+
 
     _currentLevel = 1;
     _tempLevel = 1;
@@ -73,6 +77,15 @@ export default class UIClubLevel extends BaseForm {
         this.lbl_level.string = 'LV.' + this._tempLevel;
 
 
+
+    }
+    upLevelClick() {
+        this.upLevelInd.active = true;
+    }
+    cancleClick() {
+        this.upLevelInd.active = false;
+    }
+    sureClick() {
 
     }
 
