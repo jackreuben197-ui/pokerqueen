@@ -214,7 +214,7 @@ export default class UIMineBag extends BaseForm {
         let info = target.info;
 
         if (target.index == 1) {
-            UIComponent.open(UIDefine.UIBagTicket);
+            UIComponent.open(UIDefine.UIBagTicket, {info: info});
             return;
         }
 
