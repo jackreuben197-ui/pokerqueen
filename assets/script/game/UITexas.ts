@@ -388,14 +388,11 @@ export default class UITexas extends BaseScene {
         if (this.Image_InsuranceTips.activeInHierarchy) {
             this.Image_InsuranceTips.active = false;
         }
-        await TimeHelper.Sleep(1000);
-        if (this.Image_InsuranceTips.activeInHierarchy) {
-            this.Image_InsuranceTips.active = false;
-        }
+        // await TimeHelper.Sleep(1000);
+        // if (this.Image_InsuranceTips.activeInHierarchy) {
+        //     this.Image_InsuranceTips.active = false;
+        // }
     }
-
-
-
 
 
     //显示邀请码

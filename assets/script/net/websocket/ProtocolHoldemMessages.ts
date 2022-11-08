@@ -1,5 +1,5 @@
 
-import { Def, GPS, Room } from "../../protobuf/holdem/define_pb";
+import { Def, GPS, PotInsuranceBuy, Room } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageError } from "../../protobuf/holdem/recv_error_pb";
 import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
@@ -61,7 +61,7 @@ export class ProtocolCommon {
     Request<Client_AsObject>(code: number, body?: Client_AsObject, classDic?: any): Uint8Array {
         let c: any = ProtocolMap.GetCS(code).Client;
         let request: { serializeBinary: Function } = this._getRequest(c);
-        this.setBody(request, body, classDic || { room: Room, gps: GPS });
+        this.setBody(request, body, classDic || { room: Room, gps: GPS, buyList: PotInsuranceBuy });
         return request.serializeBinary();
     }
     _getRequest(c: any): { serializeBinary: Function } {
@@ -79,13 +79,24 @@ export class ProtocolCommon {
 
             let func = `set${key[0].toLocaleUpperCase()}${key.slice(1)}`;
 
+            //cc.log("set 对象", func, value);
+
             if (classDic && classDic[key]) {
-
-                let childObj = new classDic[key]();
-
-                obj[func](childObj);
-
-                this._setBody(childObj, value, classDic);
+                //如果是数组
+                if (value instanceof Array) {
+                    let childs = [];
+                    value.forEach(item => {
+                        let childObj = new classDic[key]();
+                        //cc.log("new 对象", key)
+                        this._setBody(childObj, item, classDic);
+                        childs.push(childObj);
+                    })
+                    obj[func](childs);
+                } else {
+                    let childObj = new classDic[key]();
+                    obj[func](childObj);
+                    this._setBody(childObj, value, classDic);
+                }
             } else {
                 obj[func](value);
 

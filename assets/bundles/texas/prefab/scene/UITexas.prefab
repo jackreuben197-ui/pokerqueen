@@ -21020,8 +21020,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 870,
-      "height": 56.7
+      "width": 790,
+      "height": 140
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -21033,7 +21033,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        -29.891,
         0,
         0,
         0,
@@ -21072,11 +21072,11 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "未买中保险，结算时将扣除保费",
-    "_N$string": "未买中保险，结算时将扣除保费",
+    "_string": "未买中保险，结算时将扣除",
+    "_N$string": "未买中保险，结算时将扣除",
     "_fontSize": 45,
     "_lineHeight": 45,
-    "_enableWrapText": false,
+    "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -21084,7 +21084,7 @@
     "_styleFlags": 0,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
+    "_N$verticalAlign": 0,
     "_N$fontFamily": "Arial",
     "_N$overflow": 2,
     "_N$cacheMode": 0,
@@ -21101,8 +21101,8 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 40,
-    "_left": 0,
-    "_right": 0,
+    "_left": 40,
+    "_right": 40,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,
@@ -21148,9 +21148,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 198,
-      "g": 198,
-      "b": 198,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -21168,7 +21168,7 @@
       "ctor": "Float64Array",
       "array": [
         -381.202,
-        58.93,
+        70.93,
         0,
         0,
         0,

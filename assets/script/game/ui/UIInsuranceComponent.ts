@@ -20,13 +20,11 @@ import GameUtil from "../util/GameUtil";
 
 const { ccclass, property } = cc._decorator;
 
-class UserOutsCardsData
-{
+class UserOutsCardsData {
     overOuts: any;//反超outs
     equalOuts: any;//平分outs
 
-    public UserOutsCardsData()
-    {
+    public UserOutsCardsData() {
         this.overOuts = [];
         this.equalOuts = [];
     }
@@ -139,7 +137,7 @@ export default class UIInsuranceComponent extends UIBase {
     /**
      * 滑动条改变触发
      */
-     onValueChangedSliderCoin(rate: number) {
+    onValueChangedSliderCoin(rate: number) {
 
         let showValue = (this.startRate + rate) * this._param.bigBlind;
 
@@ -170,7 +168,7 @@ export default class UIInsuranceComponent extends UIBase {
             this.myWrapTriggedInsuranceData = param.triggedDatas[0];
         }
 
-      
+
         this.svList = [];
         this.data = param;
         this.cacheInsuranceData = param;
@@ -180,19 +178,19 @@ export default class UIInsuranceComponent extends UIBase {
         let panel_click: cc.Node = this.getChildNodeOrComponent("panel_click");
         panel_click.on("click", this.onClickClose, this);
 
-        for (let i=1; i<4; i++) {
-            let panel_btn_1:cc. Node = this.getChildNodeOrComponent("panel_btn_" + i);
+        for (let i = 1; i < 4; i++) {
+            let panel_btn_1: cc.Node = this.getChildNodeOrComponent("panel_btn_" + i);
             panel_btn_1["index"] = i;
             panel_btn_1.on("click", this.onClickBottomBtn, this);
         }
 
-        for (let i=1; i<3; i++) {
-            let btn_1:cc. Node = this.getChildNodeOrComponent("btn_" + i);
+        for (let i = 1; i < 3; i++) {
+            let btn_1: cc.Node = this.getChildNodeOrComponent("btn_" + i);
             btn_1["index"] = i;
             btn_1.on("click", this.onClicBtn, this);
         }
 
-        let btn_choose:cc. Node = this.getChildNodeOrComponent("btn_choose");
+        let btn_choose: cc.Node = this.getChildNodeOrComponent("btn_choose");
         btn_choose.on("click", this.onClickChoose, this);
         this.isChooseAll = false;
 
@@ -222,16 +220,16 @@ export default class UIInsuranceComponent extends UIBase {
 
         if (null == this.listCards) {
             this.listCards = [];
-        } 
+        }
         if (this.listCards.length > 0) {
             this.listCards = [];
-			this.listCards.push(imagePublicCard0);
-			this.listCards.push(imagePublicCard1);
-			this.listCards.push(imagePublicCard2);
-			this.listCards.push(imagePublicCard3);
-			this.listCards.push(imagePublicCard4);
+            this.listCards.push(imagePublicCard0);
+            this.listCards.push(imagePublicCard1);
+            this.listCards.push(imagePublicCard2);
+            this.listCards.push(imagePublicCard3);
+            this.listCards.push(imagePublicCard4);
         }
-           
+
         this.CountDownText = this.getChildNodeOrComponent("lbl_21", cc.Label);
         this.CountDownImage = this.getChildNodeOrComponent("progress_bar", cc.Sprite);
 
@@ -253,62 +251,49 @@ export default class UIInsuranceComponent extends UIBase {
         this.updateNameStr();
     }
 
-    CurrentSecureAmount()
-    {
+    CurrentSecureAmount() {
 
         let parameter = 0.25;
-        if (GameCache.Instance.CurGame.cacheRound == Def.Round.TURN)
-        {
+        if (GameCache.Instance.CurGame.cacheRound == Def.Round.TURN) {
             parameter = 0.5;
         }
         let amount1 = Math.floor(this.myWrapTriggedInsuranceData.pot * parameter);
         let amount2 = (Math.ceil(this.myWrapTriggedInsuranceData.potTotalCost / this.SelectedOdd())); // 不可以超过分池的池底
-        if (this.SelectedOdd() == 0)
-        {
+        if (this.SelectedOdd() == 0) {
             return 0;
         }
-        else
-        {
+        else {
             return Math.min(amount1, amount2);
         }
 
     }
 
-    onValueChangedInsuranceValue(arg0)
-    {
+    onValueChangedInsuranceValue(arg0) {
         let mTmpOdd = this.SelectedOdd();
-        if (GameCache.Instance.CurGame.smallBlind<100 || this.CurrentMostAmount() <= 100)
-        {
-            this.textPayValue.string = (mTmpOdd * arg0*10);
-            this.textInsuranceValue.string = arg0/10;
-            if (arg0 == Math.ceil((this.CurrentSecureAmount() / 10)))
-            {
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
+            this.textPayValue.string = (mTmpOdd * arg0 * 10);
+            this.textInsuranceValue.string = arg0 / 10;
+            if (arg0 == Math.ceil((this.CurrentSecureAmount() / 10))) {
                 this.HighlightMinBtn();
             }
-            else if (arg0 == this.CurrentMostAmount()/10)
-            {
+            else if (arg0 == this.CurrentMostAmount() / 10) {
                 this.HighlightAllBtn();
             }
-            else
-            {
+            else {
                 this.UnHighlighTwoBtn();
             }
         }
-        else
-        {
-            
-            this.textPayValue.string = mTmpOdd * arg0*100;
+        else {
+
+            this.textPayValue.string = mTmpOdd * arg0 * 100;
             this.textInsuranceValue.string = arg0;
-            if (arg0 == Math.ceil((this.CurrentSecureAmount() / 100)))
-            {
+            if (arg0 == Math.ceil((this.CurrentSecureAmount() / 100))) {
                 this.HighlightMinBtn();
             }
-            else if (arg0 == this.CurrentMostAmount()/100 )
-            {
+            else if (arg0 == this.CurrentMostAmount() / 100) {
                 this.HighlightAllBtn();
             }
-            else
-            {
+            else {
                 this.UnHighlighTwoBtn();
             }
         }
@@ -322,59 +307,51 @@ export default class UIInsuranceComponent extends UIBase {
     /// <param name="cardIds"></param>
     /// <param name="nickName"></param>
     /// <param name="outs"></param>
-    UpdateItem(cardIds, nickName, outs)
-    {
+    UpdateItem(cardIds, nickName, outs) {
         let mUpdateStart = 0;
         let mUpdateEnd = 0;
         let mHideStart = 0;
         let mHideEnd = 0;
         let mTmpHandCards = GameCache.Instance.CurGame.HandCards;
         let mTmpCount = this.imageCards.length;
-        if (mTmpHandCards > mTmpCount)
-        {
+        if (mTmpHandCards > mTmpCount) {
             mUpdateEnd = mTmpCount;
         }
-        else if(mTmpHandCards < mTmpCount)
-        {
+        else if (mTmpHandCards < mTmpCount) {
             mUpdateEnd = mTmpHandCards;
             mHideStart = mTmpHandCards;
             mHideEnd = mTmpCount;
         }
-        else
-        {
+        else {
             mUpdateEnd = mTmpHandCards;
         }
 
-        for (let i = mUpdateStart; i < mUpdateEnd; i++)
-        {
+        for (let i = mUpdateStart; i < mUpdateEnd; i++) {
             let cardStr = GameUtil.GetCardNameByNum(cardIds[i]);
             let path = AssetContext.getAsset(
-                cardStr, 
+                cardStr,
                 AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             this.imageCards[i].getComponent(cc.Sprite).spriteFrame = path;
             this.imageCards[i].node.active(true);
         }
 
-        for (let i = mHideStart; i < mHideEnd; i++)
-        {
+        for (let i = mHideStart; i < mHideEnd; i++) {
             this.imageCards[i].node.active(false);
         }
         this.getChildNodeOrComponent("lbl_name2", cc.Label).string = nickName;
         // textOuts.text = outs >= 0? $"outs={outs}" : "购买保险中";
-        this.getChildNodeOrComponent("lbl_outs", cc.Label).string = outs >= 0 ? 
-        outs.toString() + i18nMgr.Get("UIInsurance_ge") + "outs" 
-        : CPErrorCode.LanguageDescription(10298);
+        this.getChildNodeOrComponent("lbl_outs", cc.Label).string = outs >= 0 ?
+            outs.toString() + i18nMgr.Get("UIInsurance_ge") + "outs"
+            : CPErrorCode.LanguageDescription(10298);
     }
 
     /// <summary>
     /// 判断是否展示多池toggle，  池>1 默认展示 第一条。
     /// </summary>
-    ShowMultiPoolToggle()
-    {
+    ShowMultiPoolToggle() {
         // MultiPoolToggles.node.SetActive(cacheInsuranceData.triggedDatas.length > 1);
         this.MultiPoolToggleList = [];
-        if (this.cacheInsuranceData.triggedDatas.length > 1)
-        {
+        if (this.cacheInsuranceData.triggedDatas.length > 1) {
             let index = 0;
             // foreach (WrapTriggedInsuranceData insuranceData in cacheInsuranceData.triggedDatas)
             // {
@@ -399,10 +376,9 @@ export default class UIInsuranceComponent extends UIBase {
             //     index++;
             // }
             // MultiPoolToggleList[0].GetComponent<Toggle>().isOn = true;
-            
+
         }
-        else if(this.cacheInsuranceData.triggedDatas.length==1)
-        {
+        else if (this.cacheInsuranceData.triggedDatas.length == 1) {
             this.RefreshInsuranceData(this.cacheInsuranceData.triggedDatas[0]);
         }
     }
@@ -411,23 +387,20 @@ export default class UIInsuranceComponent extends UIBase {
     /// <summary>
     /// 刷新公共牌
     /// </summary>
-    UpdatePublicCards()
-    {
+    UpdatePublicCards() {
         if (null == this.data.publicCards)
             return;
 
-        for (let i = 0, n = this.data.publicCards.length; i < n; i++)
-        {
+        for (let i = 0, n = this.data.publicCards.length; i < n; i++) {
             let cardStr = GameUtil.GetCardNameByNum(this.data.publicCards[i]);
             let path = AssetContext.getAsset(
-                cardStr, 
+                cardStr,
                 AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             this.listCards[i].getComponent(cc.Sprite).spriteFrame = path;
             this.listCards[i].node.active(this.data.publicCards[i] >= 0);
         }
 
-        for (let i = this.data.publicCards.length, n = this.listCards.length; i < n; i++)
-        {
+        for (let i = this.data.publicCards.length, n = this.listCards.length; i < n; i++) {
             this.listCards[i].node.active = false;
         }
     }
@@ -435,8 +408,7 @@ export default class UIInsuranceComponent extends UIBase {
     /// <summary>
     /// 展示倒计时相关
     /// </summary>
-    ShowCountDown()
-    {
+    ShowCountDown() {
         this.recordDeltaTime = TimeHelper.Now;
         this.isCountdown = true;
         this.addTimeCount = this.data.delayTimes;
@@ -461,7 +433,7 @@ export default class UIInsuranceComponent extends UIBase {
 
     timeDown() {
         // this.scheTime ++;
-        this.changeTime ++;
+        this.changeTime++;
         if (this.countDownTime < this.changeTime) {
             this.unschedule(this.timeDown);
             this.onClickClose()
@@ -484,10 +456,8 @@ export default class UIInsuranceComponent extends UIBase {
     /// <summary>
     /// 刷新加时按钮
     /// </summary>
-    UpdateDelayButton()
-    {
-        if (this.OnclickDelayButtonTimes>1)
-        {
+    UpdateDelayButton() {
+        if (this.OnclickDelayButtonTimes > 1) {
             // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = "";
             // buttonDelay.node.transform.Find("Text").GetComponent<Text>().text = $"{0}s";
             // buttonDelay.node.transform.Find("Text").GetComponent<Text>().color = Color.gray;
@@ -498,12 +468,11 @@ export default class UIInsuranceComponent extends UIBase {
             return;
         }
         this.lbl_btn_2.parent.active = true;
-        let fee =  200 * Math.pow(2, this.addTimeCount);
+        let fee = 200 * Math.pow(2, this.addTimeCount);
         // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = $"{StringHelper.GetDoubleString(fee)}";
         this.lbl_btn_2.getComponent(cc.Label).string = fee;
-        
-        if (this.OnclickDelayButtonTimes==1)
-        {
+
+        if (this.OnclickDelayButtonTimes == 1) {
             this.DelayTimes = 20;
         }
         // buttonDelay.node.transform.Find("Text").GetComponent<Text>().text = $"+{DelayTimes}s";
@@ -515,15 +484,12 @@ export default class UIInsuranceComponent extends UIBase {
     /// 刷新保险数据展示
     /// </summary>
     /// <param name="triggedInsuranceData"></param>
-    RefreshInsuranceData( triggedInsuranceData)
-    {
+    RefreshInsuranceData(triggedInsuranceData) {
         this.myWrapTriggedInsuranceData = triggedInsuranceData;
-        if (this.userOutsCardsData==null)
-        {
+        if (this.userOutsCardsData == null) {
             this.userOutsCardsData = new UserOutsCardsData();
         }
-        else
-        {
+        else {
             this.userOutsCardsData.equalOuts = [];
             this.userOutsCardsData.overOuts = [];
         }
@@ -552,12 +518,10 @@ export default class UIInsuranceComponent extends UIBase {
         this.InsuranceCards();
 
         this.UpdateInsuranceSlider();
-        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
-        {
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
             // sliderInsuranceValue.value = (float)Math.Ceiling((CurrentSecureAmount() / 10f));
         }
-        else
-        {
+        else {
             // sliderInsuranceValue.value = (float)Math.Ceiling((CurrentSecureAmount() / 100f));
         }
 
@@ -565,22 +529,18 @@ export default class UIInsuranceComponent extends UIBase {
         this.textOdds.string = "1:" + mTmpOdd;
         this.textPot.string = this.myWrapTriggedInsuranceData.pot / 100;
         this.textMainPut.string = this.myWrapTriggedInsuranceData.potTotalCost / 100;
-        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
-        {
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
             this.textInsuranceValue.string = this.CurrentSecureAmount() / 100;
         }
-        else
-        {
+        else {
             this.textInsuranceValue.string = Math.ceil((this.CurrentSecureAmount() / 100));
         }
 
-        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
-        {
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
             // this.textPayValue.string = Math.floor(mTmpOdd * this.CurrentSecureAmount() / 100)};
             this.textPayValue.string = Math.floor(mTmpOdd * this.CurrentSecureAmount() / 100);
         }
-        else 
-        {
+        else {
             // this.textPayValue.string = Math.floor(mTmpOdd * Math.ceil(this.CurrentSecureAmount() / 100))};
             this.textPayValue.string = Math.floor(mTmpOdd * Math.ceil(this.CurrentSecureAmount() / 100));
         }
@@ -589,21 +549,18 @@ export default class UIInsuranceComponent extends UIBase {
     /// <summary>
     /// 保险池所有outs 展示
     /// </summary>
-    InsuranceCards()
-    {
+    InsuranceCards() {
         if (null == this.listInsuranceCardItems)
-        this.listInsuranceCardItems = [];
+            this.listInsuranceCardItems = [];
 
         let mWrapTriggedInsuranceData = this.myWrapTriggedInsuranceData;
         this.mOutsObjList = [];
-        if (this.userOutsCardsData.overOuts == null)
-        {
+        if (this.userOutsCardsData.overOuts == null) {
             this.userOutsCardsData.overOuts = [];
         }
         // Insurance_outs_tipobj = rc.Get<GameObject>("Insurance_outs_tip");
         // Image_line = rc.Get<GameObject>("Image_line");
-        for (let i = 0; i < this.userOutsCardsData.overOuts.length; i++)
-        {
+        for (let i = 0; i < this.userOutsCardsData.overOuts.length; i++) {
             let mInsuranceCardItem = null;
             let mGo = null;
             // mGo = GameObject.Instantiate(transInsuranceCard.node, transInsuranceCards);
@@ -613,8 +570,7 @@ export default class UIInsuranceComponent extends UIBase {
             // mGo.transform.localScale = Vector3.one;
             // mInsuranceCardItem = new InsuranceCardItem(mGo.transform);
             // mOutsObjList.Add(mGo);
-            if (i==0)
-            {
+            if (i == 0) {
                 // GameObject mGo1= GameObject.Instantiate(Insurance_outs_tipobj.node, mGo.transform);
                 // mGo1.transform.localScale = Vector3.one;
                 // mGo1.transform.localPosition =new Vector3(mGo.transform.GetChild(1).localPosition.x- mGo.GetComponent<RectTransform>().sizeDelta.x/2-80, 0) ;
@@ -627,19 +583,16 @@ export default class UIInsuranceComponent extends UIBase {
             // listInsuranceCardItems.Add(mInsuranceCardItem);
         }
 
-        if (this.userOutsCardsData.equalOuts != null&& this.userOutsCardsData.equalOuts.length>0)
-        {
+        if (this.userOutsCardsData.equalOuts != null && this.userOutsCardsData.equalOuts.length > 0) {
             let pinfenIndex = this.userOutsCardsData.overOuts.length % 8;
-            
-            if (pinfenIndex > 0)
-            {
-                for (let i = 0; i < 8 - pinfenIndex; i++)
-                {
+
+            if (pinfenIndex > 0) {
+                for (let i = 0; i < 8 - pinfenIndex; i++) {
                     let mInsuranceCardItem = null;
                     let mGo = null;
                     // mGo = GameObject.Instantiate(transInsuranceCard.node, transInsuranceCards);
                     // mGo.name = (userOutsCardsData.overOuts.length + i+1).ToString();
-                    
+
                     // mGo.transform.localPosition = Vector3.zero;
                     // mGo.transform.localRotation = Quaternion.identity;
                     // mGo.transform.localScale = Vector3.one;
@@ -652,15 +605,14 @@ export default class UIInsuranceComponent extends UIBase {
                     // listInsuranceCardItems.Add(mInsuranceCardItem);
                 }
             }
-            this.LineOutsNum = this.userOutsCardsData.overOuts.length>0?8:0;
+            this.LineOutsNum = this.userOutsCardsData.overOuts.length > 0 ? 8 : 0;
             this.pingfenOutsCount = this.userOutsCardsData.equalOuts.length;
-            for (let i = 0; i < this.pingfenOutsCount; i++)
-            {
+            for (let i = 0; i < this.pingfenOutsCount; i++) {
                 // InsuranceCardItem mInsuranceCardItem = null;
                 // GameObject mGo = null;
                 // mGo = GameObject.Instantiate(transInsuranceCard.node, transInsuranceCards);
                 // mGo.name = (i + LineOutsNum + userOutsCardsData.overOuts.length - pinfenIndex).ToString();
-                
+
                 // mGo.transform.localPosition = Vector3.zero;
                 // mGo.transform.localRotation = Quaternion.identity;
                 // mGo.transform.localScale = Vector3.one;
@@ -684,19 +636,16 @@ export default class UIInsuranceComponent extends UIBase {
                 // mOutsObjList.Add(mGo);
             }
         }
-        if (this.userOutsCardsData.equalOuts != null)
-        {
+        if (this.userOutsCardsData.equalOuts != null) {
             this.selectOuts = this.userOutsCardsData.overOuts.length + this.userOutsCardsData.equalOuts.length;
         }
-        else
-        {
+        else {
             this.selectOuts = this.userOutsCardsData.overOuts.length;
         }
         this.UpdateOuts();
     }
 
-    SelectedOdd()
-    {
+    SelectedOdd() {
         if (this.myWrapTriggedInsuranceData == null || this.myWrapTriggedInsuranceData.PotUserCount == null) {
             return 0;
         }
@@ -713,16 +662,13 @@ export default class UIInsuranceComponent extends UIBase {
         //}
     }
 
-    UnSelectedOdd()
-    {
-       
-        if (this.userOutsCardsData.equalOuts != null)
-        {
+    UnSelectedOdd() {
+
+        if (this.userOutsCardsData.equalOuts != null) {
             //如果有平分outs，再减去平分
             return GameUtil.GetOddsByPlayerNum(this.myWrapTriggedInsuranceData.PotUserCount, this.userOutsCardsData.overOuts.length + this.userOutsCardsData.equalOuts.length - this.selectOuts);
         }
-        else
-        {
+        else {
             return GameUtil.GetOddsByPlayerNum(this.myWrapTriggedInsuranceData.PotUserCount, this.userOutsCardsData.overOuts.length - this.selectOuts);
         }
         ////todo 区分奥马哈
@@ -753,8 +699,7 @@ export default class UIInsuranceComponent extends UIBase {
         //}
     }
 
-    update()
-    {
+    update() {
         // if (!this.isCountdown)
         //     return;
 
@@ -783,91 +728,72 @@ export default class UIInsuranceComponent extends UIBase {
         // this.CountDownText.string = this.countDownTime + "s";
     }
 
-    CurrentMostAmount()
-    {
+    CurrentMostAmount() {
 
         let parameter = 0.25;
-        if (GameCache.Instance.CurGame.cacheRound == Def.Round.TURN)
-        {
+        if (GameCache.Instance.CurGame.cacheRound == Def.Round.TURN) {
             parameter = 0.5;
         }
 
         let amount1 = Math.floor(this.myWrapTriggedInsuranceData.pot / this.myWrapTriggedInsuranceData.PotLeaderCount * parameter);
-        let amount2 = Math.floor((this.myWrapTriggedInsuranceData.pot / this.myWrapTriggedInsuranceData.PotLeaderCount /  this.SelectedOdd())); // 不可以超过分池的池底
+        let amount2 = Math.floor((this.myWrapTriggedInsuranceData.pot / this.myWrapTriggedInsuranceData.PotLeaderCount / this.SelectedOdd())); // 不可以超过分池的池底
 
-        if ( this.SelectedOdd() == 0)
-        {
+        if (this.SelectedOdd() == 0) {
             return 0;
         }
-        else
-        {
+        else {
             return Math.min(amount1, amount2);
         }
 
     }
 
-    UpdateOuts()
-    {
+    UpdateOuts() {
         // this.textOuts.string = $"{selectOuts}{LanguageManager.Get("UIInsurance_zhang")}";
         this.textOdds.string = "1:" + this.SelectedOdd();
-        if (GameCache.Instance.CurGame.smallBlind<100 || this.CurrentMostAmount() <= 100)
-        {
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
             this.textPayValue.string = this.SelectedOdd() * this.sliderInsuranceValue * 10;
         }
-        else
-        {
+        else {
             this.textPayValue.string = this.SelectedOdd() * this.sliderInsuranceValue * 100;
         }
-        
-        if (this.myWrapTriggedInsuranceData.potAllowOutSelection == 1)
-        {
+
+        if (this.myWrapTriggedInsuranceData.potAllowOutSelection == 1) {
             // Toggle_AllSec.enabled = true;
-            if (this.userOutsCardsData.equalOuts != null)
-            {
-                if (this.selectOuts != this.userOutsCardsData.overOuts.length+ this.userOutsCardsData.equalOuts.length)
-                {
+            if (this.userOutsCardsData.equalOuts != null) {
+                if (this.selectOuts != this.userOutsCardsData.overOuts.length + this.userOutsCardsData.equalOuts.length) {
                     // let autoInsured = Convert.ToInt32(Math.Ceiling(Convert.ToInt32(sliderInsuranceValue.value) / UnSelectedOdd()));
-                    if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
-                    {
+                    if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
                         // autoInsured = Convert.ToInt32(Math.Ceiling(Convert.ToInt32(sliderInsuranceValue.value) / UnSelectedOdd()) * 10);
                     }
-                    else
-                    {
+                    else {
                         // autoInsured = Convert.ToInt32(Math.Ceiling(Convert.ToInt32(sliderInsuranceValue.value) / UnSelectedOdd()) * 100);
-                    }   
+                    }
                     // textTips.text = $"强制背保：未选中OUTS {myWrapTriggedInsuranceData.outs.length - selectOuts}张，赔率{UnSelectedOdd()}，自动投保额{autoInsured}";
                     // textTips.text = CPErrorCode.LanguageDescription(20034, new List<object>() { (userOutsCardsData.overOuts.length+ userOutsCardsData.equalOuts.length - selectOuts), UnSelectedOdd(), autoInsured /100f});
                 }
-                else
-                {
+                else {
                     // textTips.text = "";
                 }
             }
-            else
-            {
-                if (this.electOuts != this.userOutsCardsData.overOuts.length)
-                {
+            else {
+                if (this.electOuts != this.userOutsCardsData.overOuts.length) {
                     // let autoInsured = Convert.ToInt32(Math.Ceiling(Convert.ToInt32(sliderInsuranceValue.value) / UnSelectedOdd()));
-                    if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
-                    {
+                    if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
                         // autoInsured = Convert.ToInt32(Math.Ceiling(Convert.ToInt32(sliderInsuranceValue.value) / UnSelectedOdd()) * 10);
                     }
-                    else
-                    {
+                    else {
                         // autoInsured = Convert.ToInt32(Math.Ceiling(Convert.ToInt32(sliderInsuranceValue.value) / UnSelectedOdd()) * 100);
                     }
                     // textTips.text = $"强制背保：未选中OUTS {myWrapTriggedInsuranceData.outs.length - selectOuts}张，赔率{UnSelectedOdd()}，自动投保额{autoInsured}";
 
                     // textTips.text = CPErrorCode.LanguageDescription(20034, new List<object>() { (userOutsCardsData.overOuts.length - selectOuts), UnSelectedOdd(), autoInsured /100f});
                 }
-                else
-                {
+                else {
                     // textTips.text = "";
                 }
             }
         }
-        else
-        {
+        else {
             // Toggle_AllSec.enabled = false;
             // // textTips.text = "这一轮你必须购买所有OUTS";
             // textTips.text = CPErrorCode.LanguageDescription(20035);
@@ -875,23 +801,20 @@ export default class UIInsuranceComponent extends UIBase {
         let mInsuredCards = [];
 
         let mInsuranceCardItem = null;
-        for (let i = 0, n = this.listInsuranceCardItems.length; i < n; i++)
-        {
+        for (let i = 0, n = this.listInsuranceCardItems.length; i < n; i++) {
             mInsuranceCardItem = this.listInsuranceCardItems[i];
             if (null == mInsuranceCardItem)
                 continue;
 
             if (!mInsuranceCardItem.IsSelect)
                 continue;
-            if (mInsuranceCardItem.CardId<0)
-            {
+            if (mInsuranceCardItem.CardId < 0) {
                 continue;
             }
             mInsuredCards.push(mInsuranceCardItem.CardId);
         }
-        
-        if ( this.listInsuranceCardItems.length == mInsuredCards.length)
-        {
+
+        if (this.listInsuranceCardItems.length == mInsuredCards.length) {
             // Toggle_AllSec.isOn = true;
         }
     }
@@ -899,11 +822,9 @@ export default class UIInsuranceComponent extends UIBase {
     /// <summary>
     /// 刷新投保额slider
     /// </summary>
-    UpdateInsuranceSlider()
-    {
-        
-        if (GameCache.Instance.CurGame.smallBlind<100||this.CurrentMostAmount() <= 100)
-        {
+    UpdateInsuranceSlider() {
+
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
             // sliderInsuranceValue.minValue = myWrapTriggedInsuranceData.leastAmount / 10;
             // sliderInsuranceValue.maxValue = CurrentMostAmount() / 10;
             // if (sliderInsuranceValue.value > CurrentMostAmount() / 10)
@@ -911,8 +832,7 @@ export default class UIInsuranceComponent extends UIBase {
             //     sliderInsuranceValue.value = CurrentMostAmount() / 10;
             // }
         }
-        else
-        {
+        else {
             // sliderInsuranceValue.minValue = myWrapTriggedInsuranceData.leastAmount / 100;
             // sliderInsuranceValue.maxValue = CurrentMostAmount() / 100;
             // if (sliderInsuranceValue.value > CurrentMostAmount() / 100)
@@ -920,10 +840,10 @@ export default class UIInsuranceComponent extends UIBase {
             //     sliderInsuranceValue.value = CurrentMostAmount() / 100;
             // }
         }
-        
+
     }
 
-    
+
     refreshView() {
         let scrollView = this.getChildNodeOrComponent("sv_center", cc.ScrollView);
         scrollView.content.removeAllChildren();
@@ -938,7 +858,7 @@ export default class UIInsuranceComponent extends UIBase {
         } else {
             // 有数据 刷新列表
             let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
-            for (let i=0; i<len; i++) {
+            for (let i = 0; i < len; i++) {
                 let _cloneNode = cc.instantiate(panel_item);
                 _cloneNode.parent = scrollView.content;
 
@@ -948,7 +868,7 @@ export default class UIInsuranceComponent extends UIBase {
                 let card = info.card;
                 let cardStr = GameUtil.GetCardNameByNum(card);
                 let path = AssetContext.getAsset(
-                    cardStr, 
+                    cardStr,
                     AssetFold.texture_BigCard0) as cc.SpriteFrame;
                 let img_pk = _cloneNode.getChildByName("img_pk");
                 img_pk.getComponent(cc.Sprite).spriteFrame = path;
@@ -969,7 +889,7 @@ export default class UIInsuranceComponent extends UIBase {
         let num = 0;
         this.svList.forEach((v) => {
             if (v.isChoose) {
-                num ++;
+                num++;
             }
         })
         this.lbl_choose_num.getComponent(cc.Label).string = num;
@@ -993,7 +913,7 @@ export default class UIInsuranceComponent extends UIBase {
     }
 
     onClickChoose() {
-        let btn_choose:cc. Node = this.getChildNodeOrComponent("btn_choose");
+        let btn_choose: cc.Node = this.getChildNodeOrComponent("btn_choose");
         let hook = btn_choose.getChildByName("hook");
         if (this.isChooseAll) {
             this.isChooseAll = false;
@@ -1028,7 +948,7 @@ export default class UIInsuranceComponent extends UIBase {
         } else if (index == 2) {
             // 满池
             this.onClickAll(target);
-        } 
+        }
     }
 
     private onClickBottomBtn(event): void {
@@ -1050,32 +970,26 @@ export default class UIInsuranceComponent extends UIBase {
         UIComponent.Instance.HideUI(PrefabUI.UIInsuranceComponent);
     }
 
-    onClickAll(go)
-    {
-        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
-        {
+    onClickAll(go) {
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
             this.sliderCoin.onShow({ index: this.CurrentMostAmount() / 10 });
             // this.sliderInsuranceValue.value = this.CurrentMostAmount() / 10;
         }
-        else
-        {
+        else {
             this.sliderCoin.onShow({ index: this.CurrentMostAmount() / 100 });
             // this.sliderInsuranceValue.value = this.CurrentMostAmount() / 100;
         }
         this.HighlightAllBtn();
 
-        
+
     }
 
-    onClickMin(go)
-    {
-        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
-        {
+    onClickMin(go) {
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
             this.sliderCoin.onShow({ index: this.CurrentSecureAmount() / 10 });
             // sliderInsuranceValue.value = (float)(CurrentSecureAmount() / 10f) ;
         }
-        else
-        {
+        else {
             this.sliderCoin.onShow({ index: this.CurrentSecureAmount() / 100 });
             // sliderInsuranceValue.value = (float)Math.Ceiling((CurrentSecureAmount() / 100f));
         }
@@ -1095,34 +1009,31 @@ export default class UIInsuranceComponent extends UIBase {
         yes2.active = !isMax;
         no1.active = !isMax;
         no2.active = isMax;
-        lbl1.color = isMax ? cc.color(255,255,255) : cc.color(0,0,0);
-        lbl2.color = !isMax ? cc.color(255,255,255) : cc.color(0,0,0);
+        lbl1.color = isMax ? cc.color(255, 255, 255) : cc.color(0, 0, 0);
+        lbl2.color = !isMax ? cc.color(255, 255, 255) : cc.color(0, 0, 0);
         if (isHide) {
             yes1.active = false;
             yes2.active = false;
             no1.active = true;
             no2.active = true;
-            lbl1.color = cc.color(0,0,0);
-            lbl2.color = cc.color(0,0,0);
+            lbl1.color = cc.color(0, 0, 0);
+            lbl2.color = cc.color(0, 0, 0);
         }
     }
 
-    HighlightMinBtn()
-    {
+    HighlightMinBtn() {
         this.refreshTwoBtn(true);
         // buttonAll.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insutance_dengli");
         // buttonMin.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insurance_baoben");
     }
 
-    HighlightAllBtn()
-    {
+    HighlightAllBtn() {
         this.refreshTwoBtn(false);
         // buttonAll.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insurance_baoben");
         // buttonMin.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insutance_dengli");
     }
 
-    UnHighlighTwoBtn()
-    {
+    UnHighlighTwoBtn() {
         this.refreshTwoBtn(null, true);
         // buttonAll.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insutance_dengli");
         // buttonMin.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_Insutance_dengli");
@@ -1132,26 +1043,25 @@ export default class UIInsuranceComponent extends UIBase {
     /// 取消购买
     /// </summary>
     /// <param name="go"></param>
-    onClickCancel(go)
-    {
+    onClickCancel(go) {
         // if (this.sliderInsuranceValue.minValue > 0)
         // {
-            // List<int> mInsuredCards = new List<int>();
+        // List<int> mInsuredCards = new List<int>();
 
-            // InsuranceCardItem mInsuranceCardItem = null;
-            // for (int i = 0, n = listInsuranceCardItems.length; i < n; i++)
-            // {
-            //     mInsuranceCardItem = listInsuranceCardItems[i];
-            //     if (null == mInsuranceCardItem)
-            //         continue;
+        // InsuranceCardItem mInsuranceCardItem = null;
+        // for (int i = 0, n = listInsuranceCardItems.length; i < n; i++)
+        // {
+        //     mInsuranceCardItem = listInsuranceCardItems[i];
+        //     if (null == mInsuranceCardItem)
+        //         continue;
 
-            //     if (!mInsuranceCardItem.IsSelect)
-            //         continue;
+        //     if (!mInsuranceCardItem.IsSelect)
+        //         continue;
 
-            //     mInsuredCards.Add(mInsuranceCardItem.CardId);
-            // }
-            
-            // ETHotfix.UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(20053, new List<object>(){ myWrapTriggedInsuranceData.leastAmount/100f }));
+        //     mInsuredCards.Add(mInsuranceCardItem.CardId);
+        // }
+
+        // ETHotfix.UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(20053, new List<object>(){ myWrapTriggedInsuranceData.leastAmount/100f }));
         // }
         // GameCache.Instance.CurGame.cacheBuyInsurancePotUserCount = myWrapTriggedInsuranceData.PotUserCount;//缓存购买池子
         // CPGameSessionComponent.Instance.Send(new Protocol_Holdem_BuyInsuranceActive()
@@ -1165,7 +1075,7 @@ export default class UIInsuranceComponent extends UIBase {
         //     }
         // });
 
-        
+
         ProtocolAgency.Send<ClientMessageBuyInsuranceActive.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_BuyInsuranceActive,
             RoomID: GameCache.Instance.room_id,
@@ -1177,15 +1087,13 @@ export default class UIInsuranceComponent extends UIBase {
         });
 
         // UIComponent.Instance.HideNoAnimation(UIType.UIInsurance);
-        
+
         this.pingfenOutsCount = 0;
         this.onClickClose();
     }
 
-    onClickDelay(go)
-    {
-        if (this.OnclickDelayButtonTimes>1)
-        {
+    onClickDelay(go) {
+        if (this.OnclickDelayButtonTimes > 1) {
             return;
         }
         // CPGameSessionComponent.Instance.Send(new Protocol_Holdem_AddTime()
@@ -1210,7 +1118,7 @@ export default class UIInsuranceComponent extends UIBase {
         });
 
         this.OnclickDelayButtonTimes += 1;
-        
+
 
         // this.onClickClose();
     }
@@ -1219,8 +1127,7 @@ export default class UIInsuranceComponent extends UIBase {
     /// 购买
     /// </summary>
     /// <param name="go"></param>
-    onClickBuy(go)
-    {
+    onClickBuy(go) {
         let mInsuredCards = [];
 
         let mInsuranceCardItem = null;
@@ -1235,15 +1142,14 @@ export default class UIInsuranceComponent extends UIBase {
 
         //     mInsuredCards.push(mInsuranceCardItem.CardId);
         // }
-        
+
         this.svList.forEach(element => {
             if (element.isChoose) {
                 mInsuredCards.push(element.cardId);
             }
         });
 
-        if (mInsuredCards.length == 0)
-        {
+        if (mInsuredCards.length == 0) {
             // UIComponent.Instance.Toast($"请选择要投保的牌");
             UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(10299));
             return;
@@ -1258,25 +1164,24 @@ export default class UIInsuranceComponent extends UIBase {
 
         let MpotInsureAmount = 0;
 
-        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100)
-        {
+        if (GameCache.Instance.CurGame.smallBlind < 100 || this.CurrentMostAmount() <= 100) {
             // MpotInsureAmount = sliderInsuranceValue.value * 10;
         }
-        else
-        {
+        else {
             // MpotInsureAmount = sliderInsuranceValue.value * 100;
         }
-        if (MpotInsureAmount < this.myWrapTriggedInsuranceData.leastAmount)
-        {
+        if (MpotInsureAmount < this.myWrapTriggedInsuranceData.leastAmount) {
             MpotInsureAmount = this.myWrapTriggedInsuranceData.leastAmount;
         }
-        let potInsuranceBuy : any = {
-            activeAmount : MpotInsureAmount,
-            activeOutsList : mInsuredCards,
-            round : GameCache.Instance.CurGame.cacheRound,
-            potId : this.myWrapTriggedInsuranceData.subPot,
+        let potInsuranceBuy: PotInsuranceBuy.AsObject = {
+            activeAmount: MpotInsureAmount,
+            activeOutsList: mInsuredCards,
+            round: GameCache.Instance.CurGame.cacheRound,
+            potId: this.myWrapTriggedInsuranceData.subPot,
+            passiveAmount: 0,
+            passiveOutsList: [],
         };
-        
+
         // for (let i = 0; i < mInsuredCards.length; i++)
         // {
         //     potInsuranceBuy.getActiveOutsList().push(mInsuredCards[i]);
@@ -1300,7 +1205,7 @@ export default class UIInsuranceComponent extends UIBase {
             MatchID: GameCache.Instance.match_id,
             Body: {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                buyList: potInsuranceBuy
+                buyList: [potInsuranceBuy]
             },
         }
         );
@@ -1313,8 +1218,7 @@ export default class UIInsuranceComponent extends UIBase {
     /// 点击保险outs牌
     /// </summary>
     /// <param name="go"></param>
-    onClickInSuranceCard(go)
-    {
+    onClickInSuranceCard(go) {
         // if (myWrapTriggedInsuranceData.potAllowOutSelection == 1)
         // {
         //     int mIndex = Convert.ToInt32(go.transform.parent.name);
@@ -1343,8 +1247,7 @@ export default class UIInsuranceComponent extends UIBase {
     /// <summary>
     /// 全部选中Toggle
     /// </summary>
-    OnclickAllSelect(ison)
-    {
+    OnclickAllSelect(ison) {
         // if (myWrapTriggedInsuranceData.potAllowOutSelection == 1)
         // {
         //     if (ison)
@@ -1432,9 +1335,9 @@ export default class UIInsuranceComponent extends UIBase {
         this.getChildNodeOrComponent("lbl_name1", cc.Label).string = nameStr1;
         this.getChildNodeOrComponent("lbl_name2", cc.Label).string = nameStr2;
         // textOuts.text = outs >= 0? $"outs={outs}" : "购买保险中";
-        this.getChildNodeOrComponent("lbl_outs", cc.Label).string = outs >= 0 ? 
-        outs.toString() + i18nMgr.Get("UIInsurance_ge") + "outs" 
-        : CPErrorCode.LanguageDescription(10298);
+        this.getChildNodeOrComponent("lbl_outs", cc.Label).string = outs >= 0 ?
+            outs.toString() + i18nMgr.Get("UIInsurance_ge") + "outs"
+            : CPErrorCode.LanguageDescription(10298);
 
         let playerCards = info.playerCards;
         let cardLen = playerCards.length;
@@ -1456,7 +1359,7 @@ export default class UIInsuranceComponent extends UIBase {
             card3 = outs[0];
             card4 = outs[1];
         }
-        for (let i=1; i<5; i++) {
+        for (let i = 1; i < 5; i++) {
             let item = this.getChildNodeOrComponent("img_pk_" + i);
             let card = card1;
             if (i == 1 || i == 2) {
@@ -1472,12 +1375,12 @@ export default class UIInsuranceComponent extends UIBase {
             }
             let cardStr = GameUtil.GetCardNameByNum(card);
             let path = AssetContext.getAsset(
-                cardStr, 
+                cardStr,
                 AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-                item.getComponent(cc.Sprite).spriteFrame = path;
+            item.getComponent(cc.Sprite).spriteFrame = path;
         }
 
-        
+
     }
 
 
@@ -1486,16 +1389,14 @@ export default class UIInsuranceComponent extends UIBase {
     /// <summary>
     /// 刷新购买保险池对应玩家信息
     /// </summary>
-    UpdatePlayers()
-    {
+    UpdatePlayers() {
         if (this.myWrapTriggedInsuranceData == null)
             return;
 
         let mList = [];
         let mWrapTriggedPlayerData = null;
         let mWrapTriggedInsuranceData = this.myWrapTriggedInsuranceData;
-        for (let i = 0, n = mWrapTriggedInsuranceData.userNames.length; i < n; i++)
-        {
+        for (let i = 0, n = mWrapTriggedInsuranceData.userNames.length; i < n; i++) {
             mWrapTriggedPlayerData = {};
             mWrapTriggedPlayerData.name = mWrapTriggedInsuranceData.userNames[i];
             mWrapTriggedPlayerData.outsPerUser = mWrapTriggedInsuranceData.outsPerUser[i];
@@ -1503,8 +1404,7 @@ export default class UIInsuranceComponent extends UIBase {
                 mWrapTriggedPlayerData.playerCards = [];
 
             let mHandCards = GameCache.Instance.CurGame.HandCards;
-            for (let j = 0; j < mHandCards; j++)
-            {
+            for (let j = 0; j < mHandCards; j++) {
                 mWrapTriggedPlayerData.playerCards.Add(mWrapTriggedInsuranceData.playerCards[i][j]);
             }
 
@@ -1529,43 +1429,36 @@ export default class UIInsuranceComponent extends UIBase {
         let mHideStart = 0;
         let mHideEnd = 0;
 
-        if (mList.length > this.listPlayerItems.length)
-        {
+        if (mList.length > this.listPlayerItems.length) {
             mUpdateStart = 0;
             mUpdateEnd = this.listPlayerItems.length;
             mNewStart = this.listPlayerItems.length == 0 ? 0 : mUpdateEnd;
             mNewEnd = mList.length;
         }
-        else if(mList.length < this.listPlayerItems.length)
-        {
+        else if (mList.length < this.listPlayerItems.length) {
             mUpdateStart = 0;
             mUpdateEnd = mList.length;
             mHideStart = mUpdateEnd;
             mHideEnd = this.listPlayerItems.length;
         }
-        else
-        {
+        else {
             mUpdateStart = 0;
             mUpdateEnd = mList.length;
         }
 
-        for (let i = mUpdateStart; i < mUpdateEnd; i++)
-        {
+        for (let i = mUpdateStart; i < mUpdateEnd; i++) {
             mPlayerItem = this.listPlayerItems[i];
             mWrapTriggedPlayerData = mList[i];
             mPlayerItem.UpdateItem(mWrapTriggedPlayerData.playerCards, mWrapTriggedPlayerData.name, mWrapTriggedPlayerData.outsPerUser);
-                
+
             mPlayerItem.trans.node.active = true;
         }
 
-        for (let i = mNewStart; i < mNewEnd; i++)
-        {
-            if (i == 0)
-            {
+        for (let i = mNewStart; i < mNewEnd; i++) {
+            if (i == 0) {
                 // mGo = transPlayerMine.node;
             }
-            else
-            {
+            else {
                 // mGo = GameObject.Instantiate(transPlayer.node, transPlayers);
                 // mGo.transform.localPosition = Vector3.zero;
                 // mGo.transform.localRotation = Quaternion.identity;
@@ -1574,13 +1467,12 @@ export default class UIInsuranceComponent extends UIBase {
             // mPlayerItem = new PlayerItem(mGo.transform);
             // mWrapTriggedPlayerData = mList[i];
             // mPlayerItem.UpdateItem(mWrapTriggedPlayerData.playerCards, mWrapTriggedPlayerData.name, mWrapTriggedPlayerData.outsPerUser);
-                
+
             // mPlayerItem.trans.node.active = true;
             // listPlayerItems.Add(mPlayerItem);
         }
 
-        for (let i = mHideStart; i < mHideEnd; i++)
-        {
+        for (let i = mHideStart; i < mHideEnd; i++) {
             mPlayerItem = this.listPlayerItems[i];
             mPlayerItem.trans.node.active = false;
         }
@@ -1589,25 +1481,21 @@ export default class UIInsuranceComponent extends UIBase {
     /**
      * 注册广播事件
      */
-     protected regiterDispatchEvent() {
+    protected regiterDispatchEvent() {
         GC.notify.register(ProtocolCode.Protocol_Holdem_AddTime, this.HANDLER_REQ_INSURANCE_ADD_TIME, this);  // 操作加时
     }
 
-    HANDLER_REQ_INSURANCE_ADD_TIME(response)
-    {
+    HANDLER_REQ_INSURANCE_ADD_TIME(response) {
         var rec = response;
-        if (rec == null)
-        {
+        if (rec == null) {
             return;
         }
-        if (rec.status != 0)
-        {
+        if (rec.status != 0) {
             UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.Status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
             return;
         }
 
-        if (rec.status == 0)
-        {
+        if (rec.status == 0) {
             this.addTimeCount = rec.times;
             this.countDownTime += rec.duration;
             this.isCountdown = true;
@@ -1620,5 +1508,5 @@ export default class UIInsuranceComponent extends UIBase {
 
 
     }
-    
+
 }
