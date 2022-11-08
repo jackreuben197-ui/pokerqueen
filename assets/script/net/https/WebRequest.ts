@@ -2338,6 +2338,90 @@ export class API_PROP_TASK_LIST {
 }
 
 /// <summary>
+/// 用户的装扮道具背包
+/// </summary>
+export class API_BAG_PENDANT_LIST {
+    //接口地址
+    static API: string = "/api/prop/user_prop/pendant_list";
+
+    //字段声明
+    static RequestParams: {
+        prop_type: number,
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_BAG_PENDANT_LIST.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_BAG_PENDANT_LIST.ResponseData };
+}
+
+/// <summary>
+/// 用户当前装扮的道具
+/// </summary>
+export class API_BAG_CURRENT_PENDANT_LIST {
+    //接口地址
+    static API: string = "/api/prop/user_prop/current_pendant_list";
+
+    //字段声明
+    static RequestParams: {
+        prop_type: number,
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_BAG_CURRENT_PENDANT_LIST.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_BAG_CURRENT_PENDANT_LIST.ResponseData };
+}
+
+/// <summary>
+/// 用户穿上装扮道具
+/// </summary>
+export class API_BAG_PANDANT_UP {
+    //接口地址
+    static API: string = "/api/prop/user_prop/pendant_up";
+
+    //字段声明
+    static RequestParams: {
+        prop_id: number, //道具id
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_BAG_PANDANT_UP.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_BAG_PANDANT_UP.ResponseData };
+}
+
+/// <summary>
+/// 用户移除装扮道具
+/// </summary>
+export class API_BAG_PANDANT_DOWN {
+    //接口地址
+    static API: string = "/api/prop/user_prop/pendant_down";
+
+    //字段声明
+    static RequestParams: {
+        prop_id: number, //道具id
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_BAG_PANDANT_DOWN.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_BAG_PANDANT_DOWN.ResponseData };
+}
+
+/// <summary>
 /// 成就任务领取奖励
 /// </summary>
 export class API_PROP_TASK_RECEIVE {

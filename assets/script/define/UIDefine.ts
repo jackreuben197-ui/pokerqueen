@@ -158,6 +158,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/achi/UIMineArch",
         Title: "",
     },
+    //背包
+    UIMineBag: {
+        UIType: UIType.Form,
+        Name: "UIMineBag",
+        Bundle: null,
+        Path: "main/lobby/prefab/bag/UIMineBag",
+        Title: "",
+    },
     //战绩详情
     UIRecordDetail: {
         UIType: UIType.Form,

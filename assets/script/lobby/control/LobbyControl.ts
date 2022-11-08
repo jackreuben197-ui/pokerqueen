@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, API_PROP_TASK_LIST, API_PROP_TASK_RECEIVE, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, API_BAG_CURRENT_PENDANT_LIST, API_BAG_PANDANT_DOWN, API_BAG_PANDANT_UP, API_BAG_PENDANT_LIST, API_PROP_TASK_LIST, API_PROP_TASK_RECEIVE, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -627,6 +627,77 @@ export class LobbyControl {
         });
     }
 
+     /**
+     * 用户的装扮道具背包
+     */
+      async reqBagPendantList(param: typeof API_BAG_PENDANT_LIST.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: API_BAG_PENDANT_LIST,
+                body: API_BAG_PENDANT_LIST.Request(param),
+                onSuccess: function () {
+                    resolve(API_BAG_PENDANT_LIST.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 用户当前装扮的道具
+     */
+     async reqBagCurrentPendantList(param: typeof API_BAG_CURRENT_PENDANT_LIST.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: API_BAG_CURRENT_PENDANT_LIST,
+                body: API_BAG_CURRENT_PENDANT_LIST.Request(param),
+                onSuccess: function () {
+                    resolve(API_BAG_CURRENT_PENDANT_LIST.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    /**
+     * 用户穿上装扮道具
+     */
+     async reqBagPandantUp(param: typeof API_BAG_PANDANT_UP.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: API_BAG_PANDANT_UP,
+                body: API_BAG_PANDANT_UP.Request(param),
+                onSuccess: function () {
+                    resolve(API_BAG_PANDANT_UP.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+     /**
+     * 用户移除装扮道具
+     */
+      async reqBagPandantDown(param: typeof API_BAG_PANDANT_DOWN.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: API_BAG_PANDANT_DOWN,
+                body: API_BAG_PANDANT_DOWN.Request(param),
+                onSuccess: function () {
+                    resolve(API_BAG_PANDANT_DOWN.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
     
     /********************************* 公共接口 ***********************************/
 
