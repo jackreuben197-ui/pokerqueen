@@ -375,6 +375,13 @@ export const UIDefine = {
         Path: "main/club/UIlaborExaminatMerber",
     },
 
+    UIClubLevel: {
+        UIType: UIType.Form,
+        Name: "UIClubLevel",
+        Bundle: null,
+        Path: "main/club/UIClubLevel",
+    },
+
     MyWalletForm: {
         UIType: UIType.Form,
         Name: "MyWalletForm",
