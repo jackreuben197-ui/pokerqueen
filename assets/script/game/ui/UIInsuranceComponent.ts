@@ -251,6 +251,14 @@ export default class UIInsuranceComponent extends UIBase {
         this.onValueChangedSliderCoin(0);
 
         this.updateNameStr();
+
+        this.svList.forEach((v) => {
+            let kuang = v.getChildByName("kuang");
+            let hook = v.getChildByName("hook");
+            kuang.active = false;
+            hook.active = false;
+            v.isChoose = false;
+        })
     }
 
     CurrentSecureAmount()

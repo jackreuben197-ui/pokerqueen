@@ -2380,6 +2380,29 @@ export class API_BAG_CURRENT_PENDANT_LIST {
 }
 
 /// <summary>
+/// 我得背包
+/// </summary>
+export class Web_Prop_User_Prop_List {
+    //接口地址
+    static API: string = "/api/prop/user_prop/list";
+
+    //字段声明
+    static RequestParams: {
+        prop_type: number,//道具类型(prop_type):0-全部;1-mtt门票，2-实物，3-电话卡，4-购物卡，5-代金卷 6-线下门票 7-免服务费代金券 8-充值代金券 9-金豆券 10-一元购活动券 11-道具代替劵
+        limit: number,//条目
+        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof Web_Prop_User_Prop_List.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Prop_User_Prop_List.ResponseData };
+}
+
+/// <summary>
 /// 用户穿上装扮道具
 /// </summary>
 export class API_BAG_PANDANT_UP {

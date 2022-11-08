@@ -166,6 +166,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/bag/UIMineBag",
         Title: "",
     },
+    //门票
+    UIBagTicket: {
+        UIType: UIType.Form,
+        Name: "UIBagTicket",
+        Bundle: null,
+        Path: "main/lobby/prefab/bag/UIBagTicket",
+        Title: "",
+    },
     //战绩详情
     UIRecordDetail: {
         UIType: UIType.Form,
