@@ -1149,6 +1149,7 @@ export default class Seat {
         // Image_OtherWinnerCardType.gameObject.SetActive(false);
         // Image_OtherWinner.gameObject.SetActive(false);
         // imageWinner.gameObject.SetActive(false);
+        this.uirc.Spine_Winner.node.active = false;
 
     }
     /// <summary>
@@ -1189,6 +1190,24 @@ export default class Seat {
         //}
         //this.StopLightArmature();
     }
+
+
+    /// <summary>
+    /// 显示保险冒泡
+    /// </summary>
+    public ShowBubbleInsuranceCountDown(): void {
+        if (null == this.Player || GameCache.Instance.CurGame.mainPlayer.userID == this.Player.userID) {
+            return;
+        }
+        // textBubbleInsuranceCountDown.text = $"购买剩余{Player.timeLeft_insurance}秒";
+        this.uirc.Image_BubbleInsuranceCountDown.active = true;
+        this.uirc.Text_BubbleInsuranceCountDown.string = CPErrorCode.LanguageDescription(20062, [this.Player.timeLeft_insurance < 0 ? 0 : this.Player.timeLeft_insurance]);
+        this.HideBubbleInsurance();
+    }
+
+
+
+
 
     public UpdateImageBackActive(istrue: boolean = false): void {
         for (let i = 0, n = this.Player.cards.length; i < n; i++) {
@@ -1349,7 +1368,8 @@ export default class Seat {
     /// 播放赢牌头像特效
     /// </summary>
     public PlayWinArmature(): void {
-        // UpdateWinCoin();
+
+        // this.UpdateWinCoin();
 
         // if (!Player.isWin) {
         //     return;
@@ -1361,6 +1381,14 @@ export default class Seat {
         // else {
         //     armatureYouWin.gameObject.SetActive(false);
         // }
+        if (this.Player.isWin) {
+            this.uirc.Spine_Winner.node.active = true;
+            this.uirc.Spine_Winner.setAnimation(0, "animation", false);
+            this.uirc.Spine_Winner.setCompleteListener(() => {
+                //cc.log("动画结束");
+                this.StopWinArmature();
+            })
+        }
     }
 
     /// <summary>
@@ -1519,8 +1547,7 @@ export default class Seat {
     /// 隐藏保险冒泡
     /// </summary>
     public HideBubbleInsuranceCountDown(): void {
-        //if (null != this.uirc.textBubbleInsuranceCountDown)
-        //this.uirc.imageBubbleInsuranceCountDown.gameObject.SetActive(false);
+        this.uirc.Image_BubbleInsuranceCountDown.active = false;
     }
     public HideBubbleInsurance(): void {
         //if (imageBubbleInsurance.gameObject.activeInHierarchy) {
@@ -1663,6 +1690,12 @@ export default class Seat {
             this.FsmLogicComponent.stop();
         }
         this.ClearData();
+        this.ClearUI();
+    }
+    //清理UI
+    ClearUI() {
+        this.HideBubbleInsurance();
+        this.HideBubbleInsuranceCountDown();
     }
 
     /// <summary>

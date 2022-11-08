@@ -16,8 +16,8 @@ import GameUtil from "../util/GameUtil";
 
 
 export type OperationData = {
-    actionLimits?: ActionLimit.AsObject[],
-    Shortcuts?: ActionShortcutLimit.AsObject[],
+    actionsList?: ActionLimit.AsObject[],
+    shortcutsList?: ActionShortcutLimit.AsObject[],
 }
 class ActionDataInfo {
 
@@ -117,6 +117,8 @@ export default class UIOperationComponent extends UIBase {
     //滑动条最底部位置
     sliderMin: number = 0;
 
+    ActionMap: Map<number, ActionLimit.AsObject> = new Map;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.imageFreeCallMask = this.getChildNodeOrComponent("Image_FreeCallMask");
@@ -199,17 +201,12 @@ export default class UIOperationComponent extends UIBase {
 
         super.onShow(obj);
 
-        if (null == obj) {
-            return;
-        }
         GameCache.Instance.IsAllowOpenDanmu = false;
 
         this.operationData = obj;
 
-        if (null == this.operationData || null == this.operationData.actionLimits) {
-            return;
-        }
         this.SetCalibrationWeight();
+
         if (this.isShowingDialog) {
             //UIComponent.Instance.HideUI(UIType.UIDialog);
             UIComponent.close(UIDefine.UIDialogComponent);
@@ -223,193 +220,203 @@ export default class UIOperationComponent extends UIBase {
             this.optTotalTime = GameCache.Instance.CurGame.opTime;
         }
 
-
         this.isCountDown = false;
-
-        this.show(this.operationData.actionLimits);
-
-    }
-
-    private actions = {
-
-        [Def.Action.STRADDLE]://4
-        {
-            show: () => {
-
-            },
-        },
-        [Def.Action.BET]://5
-        {
-            show: () => {
-
-            },
-        },
-        [Def.Action.CALL]://6
-        {
-            show: this.__CALL,
-        },
-        [Def.Action.FOLD]://7
-        {
-            show: () => {
-                cc.log("+ Def.Action.FOLD");
-                this.buttonFold.active = true;
-                if (this.getActionLimitByAction(Def.Action.CHECK) != null) {
-                    return;
-                }
-                //放弃选项走进度条
-                this.imageFoldCountDown.node.active = true;
-                this.imageFoldCountDown.fillRange = 1;
-                this._isFoldCountDown = true;
-            },
-        },
-        [Def.Action.CHECK]://8
-        {
-            show: () => {
-
-            },
-        },
-        [Def.Action.RAISE]://9
-        {
-            show: (action: ActionLimit.AsObject) => {
-
-                this.buttonFreeCall.active = true;
-
-                this.actionDataInfo.actionLimit = action;
-                //滑动条最小最大，显示最小最大
-                let min, max, action_min, action_max;
-                //相同
-                if (action.max == action.min) {
-                    min = max = Math.ceil(action.max / this.calibrationWeight);
-                    this.sliderFreeCall.SetMinMax(0, 0);
-                    this.textFreeCall.string = `ALL IN`;
-                    this.textFreeCallMax.string = `${action.max / 100}`;
-                } else {
-                    if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
-                        action_max = action.max;
-                    } else {
-                        action_max = action.max + 1;
-                    }
-                    action_min = action.min;
-                    max = Math.ceil(action_max / this.calibrationWeight);
-                    min = Math.ceil(action_min / this.calibrationWeight);
-
-                    if (min >= max) {
-                        min = max;
-                        this.textFreeCall.string = `ALL IN`;
-                    } else {
-                        this.textFreeCall.string = `${action_min / 100}`;
-                    }
-                    //设置滑动条组件
-                    //滑动条起始位置的刻度
-                    this.sliderMin = min;
-                    this.sliderFreeCall.SetMinMax(min, max);
-                    this.textFreeCallMax.string = `${action_max / 100}`;
-
-                }
-                console.log(" >> min max action_min action_max", min, max, action_min, action_max);
-
-                this.setTopCallButtons();
-
-                //this.onValueChangeFreeCall(0);
-                this.sliderFreeCall.onShow({ index: 0 });
-
-            },
-        },
-        [Def.Action.ALLIN]://10
-        {
-            show: (action: ActionLimit.AsObject) => {
-                if (this.getActionLimitByAction(Def.Action.BET) == null &&
-                    this.getActionLimitByAction(Def.Action.RAISE) == null &&
-                    this.getActionLimitByAction(Def.Action.CALL) != null
-                ) {
-                    this.showAllInRaise(action);
-                }
-                else if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CHECK) != null) {
-                    this.showAllInRaise(action);
-                }
-                else {
-                    this.showAllin(action);
-                }
-            },
-        },
+        this.sliderMin = 0;
+        this.show(this.operationData.actionsList);
 
     }
 
-    __CALL(action: ActionLimit.AsObject) {
-        cc.log("+ Def.Action.CALL");
-        this.buttonCall.active = true;
-        this.actionDataInfo.CallAmount = action.min;
-        this.textCall.string = StringHelper.GetLongString(action.min);
-    }
+    private show(actions: ActionLimit.AsObject[]): void {
+
+        this.ActionMap.clear();
+        actions.forEach(action => {
+            this.ActionMap.set(action.action, action);
+        });
 
 
+        actions.forEach(action => {
 
+            this.ActionMap.set(action.action, action);
 
+            switch (action.action) {
 
-    private show(actionLimits: ActionLimit.AsObject[]): void {
-        actionLimits.forEach(actionLimit => {
-            switch (actionLimit.action) {
+                case Def.Action.STRADDLE://4
 
-                case Def.Action.STRADDLE:
-
-                    this.showStraddle(actionLimit);
-
-                    break;
-                case Def.Action.BET:
-
-                    this.showBet(actionLimit);
+                    this.showStraddle(action);
 
                     break;
-                case Def.Action.CALL:
+                case Def.Action.BET://5
 
-                    this.showCall(actionLimit);
-
-                    break;
-                case Def.Action.FOLD:
-
-                    this.showFold(actionLimit);
+                    this.showBet(action);
 
                     break;
-                case Def.Action.CHECK:
+                case Def.Action.CALL://6
 
-                    this.showCheck(actionLimit);
-
-                    break;
-                case Def.Action.RAISE: // 筹码条上下拖动
-
-                    this.showBet(actionLimit);
+                    this.showCall(action);
 
                     break;
-                case Def.Action.ALLIN:
+                case Def.Action.FOLD://7
+
+                    this.showFold(action);
+
+                    break;
+                case Def.Action.CHECK://8
+
+                    this.showCheck(action);
+
+                    break;
+                case Def.Action.RAISE: // 9 筹码条上下拖动
+
+                    this.showBet(action);
+
+                    break;
+                case Def.Action.ALLIN://10
 
 
-                    if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CALL) != null) {
-                        this.showAllInRaise(actionLimit);
+                    if (this.ActionMap.get(Def.Action.BET) == null && this.ActionMap.get(Def.Action.RAISE) == null && this.ActionMap.get(Def.Action.CALL) != null) {
+                        this.showAllInRaise(action);
                     }
-                    else if (this.getActionLimitByAction(Def.Action.BET) == null && this.getActionLimitByAction(Def.Action.RAISE) == null && this.getActionLimitByAction(Def.Action.CHECK) != null) {
-                        this.showAllInRaise(actionLimit);
+                    else if (this.ActionMap.get(Def.Action.BET) == null && this.ActionMap.get(Def.Action.RAISE) == null && this.ActionMap.get(Def.Action.CHECK) != null) {
+                        this.showAllInRaise(action);
                     }
                     else {
-                        this.showAllin(actionLimit);
+                        this.showAllin(action);
                     }
 
                     break;
                 default:
 
-                    cc.warn(`UIOperationComponent: cannot recognize action: ${actionLimit.action}`);
+                    cc.warn(`UIOperationComponent: cannot recognize action: ${action.action}`);
 
                     break;
             }
         })
-
     }
 
+    //4 观
+    private showStraddle(action: ActionLimit.AsObject): void {
+        cc.log("+ showStraddle");
+        this.Button_Straddle.active = true;
+        this.actionDataInfo.StraddleAmount = action.min;
+        this.Text_Straddle.string = StringHelper.GetLongString(action.min);
+    }
+    //5 , 9 
+    private showBet(action: ActionLimit.AsObject): void {
 
+        cc.log("+ showBet");
 
+        this.buttonFreeCall.active = true;
 
+        this.actionDataInfo.actionLimit = action;
+        //滑动条最小最大，显示最小最大
+        let min, max, action_min, action_max;
+        //相同
+        if (action.max == action.min) {
+            min = max = Math.ceil(action.max / this.calibrationWeight);
+            this.sliderFreeCall.SetMinMax(0, 0);
+            this.textFreeCall.string = `ALL IN`;
+            this.textFreeCallMax.string = `${action.max / 100}`;
+        } else {
+            if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
+                action_max = action.max;
+            } else {
+                action_max = action.max + 1;
+            }
+            action_min = action.min;
+            max = Math.ceil(action_max / this.calibrationWeight);
+            min = Math.ceil(action_min / this.calibrationWeight);
 
+            if (min >= max) {
+                min = max;
+                this.textFreeCall.string = `ALL IN`;
+            } else {
+                this.textFreeCall.string = `${action_min / 100}`;
+            }
+            //设置滑动条组件
+            //滑动条起始位置的刻度
+            this.sliderMin = min;
+            this.sliderFreeCall.SetMinMax(min, max);
+            this.textFreeCallMax.string = `${action_max / 100}`;
 
+        }
+        console.log(" >> min max action_min action_max", min, max, action_min, action_max);
 
+        this.setTopCallButtons();
+
+        this.sliderFreeCall.onShow({ index: 0 });
+    }
+    // 6 
+    private showCall(action: ActionLimit.AsObject): void {
+        cc.log("+ showCall");
+
+        this.buttonCall.active = true;
+
+        this.actionDataInfo.CallAmount = action.min;
+        this.textCall.string = StringHelper.GetLongString(action.min);
+    }
+    // 7 
+    private showFold(action: ActionLimit.AsObject): void {
+        cc.log("+ showFold");
+        this.buttonFold.active = true;
+
+        if (this.ActionMap.get(Def.Action.CHECK) != null) {
+            return;
+        }
+        this.imageFoldCountDown.node.active = true;
+        this.imageFoldCountDown.fillRange = 1;
+        this._isFoldCountDown = true;
+    }
+    // 8
+    private showCheck(action: ActionLimit.AsObject): void {
+        cc.log("+ showCheck");
+        this.buttonCheck.active = true;
+
+        this.imageCheckCountDown.node.active = true;
+        this.imageCheckCountDown.fillRange = 1;
+        this._isCheckCountDown = true;
+    }
+    //10-1
+    private showAllInRaise(actionLimit: ActionLimit.AsObject): void {
+        cc.log("+ showRaise");
+        this.buttonFreeCall.active = true;
+        this.actionDataInfo.AllInAmount = actionLimit.min;
+        this.actionDataInfo.actionLimit = actionLimit;
+        let max = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
+        let min = max;
+        this.sliderFreeCall.SetMinMax(min, max);
+        this.textFreeCall.string = `ALL IN`;
+        this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
+        this.setTopCallButtons();
+        this.sliderFreeCall.onShow({ index: 0 });
+
+    }
+    //10-2
+    private showAllin(actionLimit: ActionLimit.AsObject) {
+        cc.log("+ showAllin");
+        this.buttonAllin.active = true;
+        this.actionDataInfo.AllInAmount = actionLimit.min;
+    }
+    //显示或者隐藏 自由加注条
+    private showFreeCall(show: boolean): void {
+        if (show) {
+            this.imageFreeCallMask.active = true;
+            this.sliderFreeCall.node.active = true;
+            this.buttonFreeCallConfirm.active = true;
+            this.buttonFreeCall.active = false;
+            this.buttonCall0.active = false;
+            this.buttonCall1.active = false;
+            this.buttonCall2.active = false;
+            this.buttonCallLeft.active = false;
+            this.buttonCallRight.active = false;
+        }
+        else {
+            this.imageFreeCallMask.active = false;
+            this.sliderFreeCall.node.active = false;
+            this.buttonFreeCallConfirm.active = false;
+            this.buttonFreeCall.active = true;
+            this.showRaiseButton();
+        }
+    }
 
     //设置UI位置
     public SetUIPos(pos: cc.Vec2) {
@@ -424,7 +431,13 @@ export default class UIOperationComponent extends UIBase {
 
     //点击确定按钮 
     onClickreeCallConfirm() {
-        this.callValue = (this.sliderMin + this.sliderFreeCall.Index) * this.calibrationWeight;
+
+        if (this.sliderMin == 0) {
+            this.callValue = this.actionDataInfo.AllInAmount;
+        } else {
+            this.callValue = (this.sliderMin + this.sliderFreeCall.Index) * this.calibrationWeight;
+        }
+
         this.CheckOpt();
         this.showFreeCall(false);
     }
@@ -434,6 +447,8 @@ export default class UIOperationComponent extends UIBase {
     /// </summary>
     /// <param name="arg0"></param>
     private onValueChangeFreeCall(arg0: number): void {
+
+        if (this.sliderMin == 0) return;
 
         let curr = this.sliderMin + arg0;
 
@@ -563,7 +578,7 @@ export default class UIOperationComponent extends UIBase {
             return;
         }
         else if (this.callValue >= this.actionDataInfo.actionLimit.max) {
-            if (this.getActionLimitByAction(Def.Action.BET) != null) {
+            if (this.ActionMap.get(Def.Action.BET) != null) {
                 GameCache.Instance.CurGame.OptAction(Def.Action.BET, this.actionDataInfo.actionLimit.max);
             }
             else {
@@ -571,7 +586,7 @@ export default class UIOperationComponent extends UIBase {
             }
             return;
         }
-        if (this.getActionLimitByAction(Def.Action.BET) != null) {
+        if (this.ActionMap.get(Def.Action.BET) != null) {
             GameCache.Instance.CurGame.OptAction(Def.Action.BET, this.callValue);
         }
         else {
@@ -580,106 +595,13 @@ export default class UIOperationComponent extends UIBase {
         this.isCountDown = false;
     }
 
-    /// <summary>
-    /// 展示自由加注按钮
-    /// </summary>
-    /// <param name="show"></param>
-    private showFreeCall(show: boolean): void {
-        //this.sliderFreeCall.value = this.sliderFreeCall.minValue;
-        if (show) {
-            this.imageFreeCallMask.active = true;
-            this.sliderFreeCall.node.active = true;
-            this.buttonFreeCallConfirm.active = true;
-            this.buttonFreeCall.active = false;
-            this.buttonCall0.active = false;
-            this.buttonCall1.active = false;
-            this.buttonCall2.active = false;
-            this.buttonCallLeft.active = false;
-            this.buttonCallRight.active = false;
-        }
-        else {
-            cc.log("关闭控制台");
-            this.imageFreeCallMask.active = false;
-            this.sliderFreeCall.node.active = false;
-            this.buttonFreeCallConfirm.active = false;
-            this.buttonFreeCall.active = true;
-            this.showRaiseButton();
-        }
-    }
 
 
 
-    //观
-    private showStraddle(actionLimit: ActionLimit.AsObject): void {
-        cc.log("+ showStraddle");
-        this.actionDataInfo.StraddleAmount = actionLimit.min;
-        this.Button_Straddle.active = true;
-        this.Text_Straddle.string = StringHelper.getStringDiv100(actionLimit.min);
-    }
 
 
-    private showBet(actionLimit: ActionLimit.AsObject): void {
 
-        this.actionDataInfo.actionLimit = actionLimit;
-        let max, min;
-        if (actionLimit.max == actionLimit.min) {
-            max = Math.ceil(actionLimit.max / this.calibrationWeight);
-            min = max;
-            this.sliderFreeCall.SetMinMax(min, max);
-            this.textFreeCall.string = `ALL IN`;
-            this.textFreeCallMax.string = `${actionLimit.max / this.chipScale}`;
-        }
-        else {
-            max = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)
-                ? Math.ceil(actionLimit.max / this.calibrationWeight)
-                : Math.ceil((actionLimit.max + 1) / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-            if (Math.ceil(actionLimit.min / this.calibrationWeight) >= max) {
-                min = max;
-                this.textFreeCall.string = `ALL IN`;
-            }
-            else {
-                min = Math.ceil(actionLimit.min / this.calibrationWeight);
-                //this.sliderFreeCall.value = this.sliderFreeCall.minValue;
-                this.textFreeCall.string = `${actionLimit.min / this.chipScale}`;
 
-                this.sliderMin = min;
-            }
-            this.sliderFreeCall.SetMinMax(min, max);
-            let actionLimitMax: number = GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) ? (actionLimit.max) : (actionLimit.max + 1);
-            this.textFreeCallMax.string = `${actionLimitMax / this.chipScale}`;
-        }
-        console.log("min max", min, max);
-        this.setTopCallButtons();
-        this.onValueChangeFreeCall(0);
-        this.sliderFreeCall.onShow({ index: 0 });
-        this.buttonFreeCall.active = true;
-    }
-    private showCall(actionLimit: ActionLimit.AsObject): void {
-        cc.log("+ showCall");
-        cc.log("showCall actionLimit:", actionLimit);
-        this.actionDataInfo.CallAmount = actionLimit.min;
-        this.buttonCall.active = true;
-        this.textCall.string = StringHelper.GetLongString(actionLimit.min);
-    }
-
-    private showFold(actionLimit: ActionLimit.AsObject): void {
-        cc.log("+ showFold");
-        this.buttonFold.active = true;
-        if (this.getActionLimitByAction(Def.Action.CHECK) != null) {
-            return;
-        }
-        this.imageFoldCountDown.node.active = true;
-        this.imageFoldCountDown.fillRange = 1;
-        this._isFoldCountDown = true;
-    }
-
-    private showCheck(AactionLimit: ActionLimit.AsObject): void {
-        cc.log("+ showCheck");
-        this.buttonCheck.active = true;
-        this.imageCheckCountDown.node.active = true;
-        this.imageCheckCountDown.fillRange = 1;
-        this._isCheckCountDown = true;
-    }
     /// <summary>
     /// 设置 n/m底池加注按钮
     /// </summary>
@@ -736,26 +658,6 @@ export default class UIOperationComponent extends UIBase {
         this.buttonCallRight.active = UITexasSettingComponent.GetCurQuickActionNum(4) != "0";
 
         this.buttonFreeCall.active = true;
-    }
-
-    private showAllInRaise(actionLimit: ActionLimit.AsObject): void {
-        this.actionDataInfo.AllInAmount = actionLimit.min;
-        this.actionDataInfo.actionLimit = actionLimit;
-        let max = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-        let min = max;
-        this.sliderFreeCall.SetMinMax(min, max);
-        this.textFreeCall.string = `ALL IN`;
-        this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
-        this.setTopCallButtons();
-        this.sliderFreeCall.onShow({ index: 0 });
-        this.buttonFreeCall.active = true;
-        cc.log("+ showRaise");
-    }
-
-    private showAllin(actionLimit: ActionLimit.AsObject) {
-        cc.log("+ showAllin");
-        this.actionDataInfo.AllInAmount = actionLimit.min;
-        this.buttonAllin.active = true;
     }
 
 
@@ -817,19 +719,19 @@ export default class UIOperationComponent extends UIBase {
         return valueTmp;
     }
 
-    /// <summary>
-    /// 通过Action 取得ActionLimit
-    /// </summary>
-    /// <param name="action"></param>
-    /// <returns></returns>
-    private getActionLimitByAction(action: Def.ActionMap[keyof Def.ActionMap]): ActionLimit.AsObject {
-        for (let actionLimit of this.operationData.actionLimits) {
-            if (actionLimit.action == action) {
-                return actionLimit;
-            }
-        }
-        return null;
-    }
+    // /// <summary>
+    // /// 通过Action 取得ActionLimit
+    // /// </summary>
+    // /// <param name="action"></param>
+    // /// <returns></returns>
+    // private getActionLimitByAction(action: Def.ActionMap[keyof Def.ActionMap]): ActionLimit.AsObject {
+    //     for (let actionLimit of this.operationData.actionsList) {
+    //         if (actionLimit.action == action) {
+    //             return actionLimit;
+    //         }
+    //     }
+    //     return null;
+    // }
     /// <summary>
     /// 计算 n/m池加注 数值
     /// </summary>
@@ -846,13 +748,6 @@ export default class UIOperationComponent extends UIBase {
         this.calibrationWeight = GameCache.Instance.CurGame.smallBlind < 100 ? 10 : 100;
 
         console.log("SetCalibrationWeight", this.calibrationWeight);
-    }
-
-    static OperationData(actionsList, shortcutsList): OperationData {
-        return {
-            actionLimits: actionsList,
-            Shortcuts: shortcutsList
-        }
     }
 
     protected update(dt: number): void {

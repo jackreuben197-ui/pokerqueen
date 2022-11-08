@@ -690,15 +690,15 @@ export default class TexasGame {
         let LeftOpTime = 0;
         //RepeatedField<ActionLimit> actionLimits = null;
         //RepeatedField<ActionShortcutLimit> actionShortcutLimits = null;
-        let actionLimits = null;
-        let actionShortcutLimits = null;
+        let actionsList = null;
+        let shortcutsList = null;
         if (rec.operatorList != null && rec.operatorList.length > 0) {
             for (let i = 0; i < rec.operatorList.length; i++) {
                 this.operationID = this.GetLocalSeatID(rec.operatorList[i].seatId);
                 LeftOpTime = rec.operatorList[i].leftOpTime;
                 if (this.GetLocalSeatID(rec.operatorList[i].seatId) == this.mainPlayer.seatID) {
-                    actionLimits = rec.operatorList[i].actionsList;
-                    actionShortcutLimits = rec.operatorList[i].shortcutsList;
+                    actionsList = rec.operatorList[i].actionsList;
+                    shortcutsList = rec.operatorList[i].shortcutsList;
                     this.TexasGameProtocol.HandlerInsueranceData(rec.operatorList);//重进房间保险处理
                 }
             }
@@ -723,7 +723,7 @@ export default class TexasGame {
                 if (mSeat.seatID == this.mainPlayer.seatID && mSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isPlaying) {
                     //自己操作中
                     this.HideAutoOperationPanel();   // 隐藏预操作
-                    this.ShowOperationPanel(UIOperationComponent.OperationData(actionLimits, actionShortcutLimits));
+                    this.ShowOperationPanel({ actionsList: actionsList, shortcutsList: shortcutsList });
                 }
                 else {
                     // 下一个操作不是自己
@@ -1027,10 +1027,11 @@ export default class TexasGame {
     }
     // 通过本地座位号获取位置对象
     public GetSeatByLocalSeatID(localSeatID: number): Seat {
-        let mSeat: Seat = null;
-        if (localSeatID >= 0 && localSeatID < this.listSeat.length)
-            mSeat = this.listSeat[localSeatID];
-        return mSeat;
+        // let mSeat: Seat = null;
+        // if (localSeatID >= 0 && localSeatID < this.listSeat.length)
+        //     mSeat = this.listSeat[localSeatID];
+        // return mSeat;
+        return this.listSeat[localSeatID];
     }
     //通过服务器座位id返回seat
     public GetSeatByServerSeatID(serverSeadID: number): Seat {
@@ -1082,6 +1083,7 @@ export default class TexasGame {
             this.dicSeatOnlyClient.set(tmp, mSeat);
             //座位位移
             cc.tween(mSeat.ui).to(0.3, { position: mInfos[tmp].Pos }).call(() => {
+                cc.log("座位运动完毕");
                 mSeat.InitSeatUIInfo(mInfos[tmp], this.listSeat.length);
                 this.SeatPlayRecord.SeatMove = false;
                 this.SeatPlayRecord.PlayDealFunc?.(this.SeatPlayRecord.StartInfo);
@@ -1533,7 +1535,7 @@ export default class TexasGame {
     /// <param name="operationData"></param>
     /// <param name="delay"></param> UIOperationComponent.OperationData
     public ShowOperationPanel(operationData: OperationData, delay: number = 0): void {
-        if (operationData?.actionLimits == null || operationData?.actionLimits.length <= 0) {
+        if (operationData?.actionsList == null || operationData?.actionsList.length <= 0) {
             return;
         }
         if (this.mainPlayer != null) {

@@ -379,15 +379,16 @@ export default class TexasGameProtocol {
                 }
             }
 
-            mSeat0 = this.game.GetSeatByLocalSeatID(this.game.operationID);
+            //mSeat0 = this.game.GetSeatByLocalSeatID(this.game.operationID);
+
             let mMySeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
 
-            if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
-
+            //if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
+            if (this.game.operationID == this.game.mainPlayer.seatID) {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(responseData.nextOperator.actionsList, responseData.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(responseData.nextOperator);
                 }
             }
             else {
@@ -753,12 +754,12 @@ export default class TexasGameProtocol {
                         this.game.HideOperationPanel();
                     }
                     else {
-                        this.game.ShowOperationPanel(UIOperationComponent.OperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                        this.game.ShowOperationPanel(rec.nextOperator);
 
                     }
                 }
                 else {
-                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(rec.nextOperator);
                 }
             }
             else {
@@ -1104,6 +1105,7 @@ export default class TexasGameProtocol {
             mSeat.Player.recyclingChip = result.win;
             mSeat.Player.cardType = result.handValueType;
             mSeat.Player.isWin = result.win > result.handBet;
+            cc.log(result.win, result.handBet);
             mSeat.StopAllinArmature();
             mSeat.PlayWinArmature();
             mSeat.UpdateRecyclingWinChip();
@@ -1282,7 +1284,7 @@ export default class TexasGameProtocol {
 
                 // 非托管
                 if (!this.game.mainPlayer.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(source.nextOperator.actionsList, source.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(source.nextOperator);
                 }
             }
             else {
@@ -1644,7 +1646,7 @@ export default class TexasGameProtocol {
             UIComponent.Instance.Toast(i18nMgr.Get("Purchase_insurance"));
             return;
         }
-        
+
         this.HandlerInsueranceData(rec.operatorList);
     }
     /// <summary>

@@ -21,6 +21,7 @@ export enum PrefabUI {
     UIOutChipsTipComponent = "UIOutChipsTipComponent",
     UIAgreeSecondPcsComponent = "UIAgreeSecondPcsComponent",//第二套公共牌的同意拒绝面板
 }
+(window as any).PrefabUI = PrefabUI;
 //打开面板追加参数
 export interface Open_Obj {
     parentUI?: cc.Node;//父节点
@@ -38,7 +39,7 @@ export default class UIComponent {
     prefab_node_map = new Map;
 
     static get Instance(): UIComponent {
-        return (<any>this).instance ??= new UIComponent;
+        return (<any>this).__instance ??= new UIComponent;
     }
     /**
      存储预制体节点

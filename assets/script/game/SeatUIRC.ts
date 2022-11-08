@@ -129,7 +129,13 @@ export default class SeatUIRC extends UIBase {
     imageSmallCards: CardUIInfo[];
     imageSmallCardBacks: cc.Sprite[];
 
+    //winner动画
+    Spine_Winner: sp.Skeleton = null;
 
+
+    //保险状态
+    Image_BubbleInsuranceCountDown: cc.Node = null;
+    Text_BubbleInsuranceCountDown: cc.Label = null;
 
     ///////////////////////////////////
     protected lateLoad(): void {
@@ -151,6 +157,8 @@ export default class SeatUIRC extends UIBase {
 
         this.transSmallCardBacks = this.getChildNodeOrComponent("SmallCardBacks");
         this.imageBanker = this.getChildNodeOrComponent("Image_Banker");
+
+        this.Spine_Winner = this.getChildNodeOrComponent("Spine_Winner", sp.Skeleton);
 
         //当前最大6张
         this.imageCards = [];
@@ -199,6 +207,9 @@ export default class SeatUIRC extends UIBase {
         this.Operation_Pos_Mark = this.getChildNodeOrComponent("Operation_Pos_Mark");
 
 
+        this.Image_BubbleInsuranceCountDown = this.getChildNodeOrComponent("Image_BubbleInsuranceCountDown");
+        this.Text_BubbleInsuranceCountDown = this.getChildNodeOrComponent("Text_BubbleInsuranceCountDown", cc.Label);
+
         //声纹
         this.voiceprintList = [];
         // this.voiceprintList.Add(VoiceprintStart);
@@ -210,9 +221,10 @@ export default class SeatUIRC extends UIBase {
 
     }
 
+
     protected regiterTouchEvents(): void {
         for (let i = 0; i < this.imageCards.length; i++) {
-            this.setButtonClick(this.imageCards[i].imageCard, this.onClickEmpty);
+            this.setButtonClick(this.imageCards[i].imageCard, this.onClickCard);
         }
         this.setButtonClick(this.imageEmpty.node, this.onClickEmpty);
         this.setButtonClick(this.rawimageHead.node, this.onClickHead);

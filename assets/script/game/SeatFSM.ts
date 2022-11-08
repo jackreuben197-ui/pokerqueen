@@ -69,6 +69,7 @@ export class SeatFSM {
 
         this.seat.uirc.imageEmpty.node.active = true;
         this.seat.UpdateVoiceprintState(VoiceprintState.None);
+
     }
 
     public EmptyExecute(): void {
@@ -92,10 +93,14 @@ export class SeatFSM {
         this.seat.UpdateBanker();
 
         // this.seat.StopAllinArmature();
-        // this.seat.StopWinArmature();
+        this.seat.StopWinArmature();
 
         this.seat.uirc.imageHeadFrame.node.active = true;
         this.seat.uirc.imageEmpty.node.active = false;
+
+
+
+
     }
 
     public SitExecute(): void {
@@ -285,7 +290,7 @@ export class SeatFSM {
     //#region 购买保险
     public InsuranceEnter(): void {
         this.seat.StartCountDown(this.seat.Player.timeLeft_insurance, true);
-        //this.ShowBubbleInsuranceCountDown();
+        this.seat.ShowBubbleInsuranceCountDown();
     }
 
     public InsuranceExecute(dt: number): void {
@@ -307,12 +312,12 @@ export class SeatFSM {
             let leftTime = Math.ceil(this.seat.optCurTime);
             if (leftTime < 0)
                 leftTime = 0;
-            //textBubbleInsuranceCountDown.text = CPErrorCode.LanguageDescription(20062, new List<object>() { leftTime });
+            this.seat.uirc.Text_BubbleInsuranceCountDown.string = CPErrorCode.LanguageDescription(20062, [leftTime]);
         }
     }
     public InsuranceExit(): void {
         this.seat.StopCountDown();
-        //this.seat.HideBubbleInsuranceCountDown();
+        this.seat.HideBubbleInsuranceCountDown();
     }
     //#endregion
 
