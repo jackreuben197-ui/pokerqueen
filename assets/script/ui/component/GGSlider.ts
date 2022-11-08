@@ -69,6 +69,7 @@ export default class GGSlider extends cc.Component {
     }
 
     onShow(param: { index: number }) {
+        this.moved = false;
         this.setBarPos(param.index);
     }
     onBarTouchStart(e: cc.Event.EventTouch) {

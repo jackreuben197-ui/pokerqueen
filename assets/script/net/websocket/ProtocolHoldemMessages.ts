@@ -43,11 +43,11 @@ import { ClientMessageAgreeSecondPcsActive, ServerMessageAgreeSecondPcsActive } 
 import { ClientMessageBuyInsuranceActive, ServerMessageBuyInsuranceActive } from "../../protobuf/holdem/req_buy_insurance_active_pb";
 import { ServerMessageShowcards } from "../../protobuf/holdem/recv_showcards_pb";
 import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_up_blind_pb";
+import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_buy_insurance_pb";
 
 export class ProtocolCommon {
 
     private _request_map = new Map();
-    private _response_map = new Map();
 
     private _body: any = null;
 
@@ -317,6 +317,11 @@ export const ProtocolMap = {
         Client: ClientMessageAgreeSecondPcsActive,
         Server: ServerMessageAgreeSecondPcsActive,
     },
+
+    [ProtocolCode.Protocol_Holdem_BuyInsurance]: {
+        Server: ServerMessageBuyInsurance,
+    },
+
     [ProtocolCode.Protocol_Holdem_BuyInsuranceActive]: {
         Client: ClientMessageBuyInsuranceActive,
         Server: ServerMessageBuyInsuranceActive,

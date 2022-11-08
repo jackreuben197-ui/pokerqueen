@@ -63,33 +63,14 @@ export default class TexasGame {
         deskType: null,
         pokerType: null,
     };
-    //桌布资源索引[desk,table]
-    private DeskTypeIndexs = [
-        [0],
-        [1],
-        [2],
-        [3],
-        [4],
-        [5],
-        [6],
-        [7],
-        [8, 1],
-        [9, 2],
-        [10, 3],
-        [11, 5],
-    ];
-
-    private CardTypeAbnames: string[] = ["ordinarycard.unity3d", "fourcolorcard.unity3d", "portraitcard.unity3d"];
-    private CardTypeObjnames: string[] = ["OrdinaryCard", "FourColorCard", "PortraitCard"];
-
     public IsLookOn: boolean = false;
 
     //ui界面类的引用
     public uirc: UITexas = null;
 
-    public messageHandler: TexasGameMessageHandler = null;
+    public TexasGameMessageHandler: TexasGameMessageHandler = null;
 
-    public texasGameProtocol: TexasGameProtocol = null;
+    public TexasGameProtocol: TexasGameProtocol = null;
 
     public GameLogicSMComponent: FSMLogicComponent = null;
 
@@ -131,11 +112,11 @@ export default class TexasGame {
     /// <summary>
     /// 已发出公共牌
     /// </summary>
-    public cards: number[] = null;
+    //public cards_1: number[] = null;
     /// <summary>
     /// 已发出第二套公共牌
     /// </summary>
-    public secondCards: number[] = null;
+    //public cards_2: number[] = null;
 
     /// <summary>
     /// 大盲
@@ -413,10 +394,9 @@ export default class TexasGame {
         this.TexasGameUtils = new TexasGameUtils(this);
         this.RCInit();
     }
-
     protected RCInit() {
-        this.messageHandler = new TexasGameMessageHandler(this);
-        this.texasGameProtocol = new TexasGameProtocol(this);
+        this.TexasGameMessageHandler = new TexasGameMessageHandler(this);
+        this.TexasGameProtocol = new TexasGameProtocol(this);
     }
 
     Update(dt: number) {
@@ -432,12 +412,12 @@ export default class TexasGame {
     }
 
     RegisterMsgHandler() {
-        this.messageHandler.RegisterMessageHandler();
-        this.texasGameProtocol.RegisterMsgHandler();
+        this.TexasGameMessageHandler.RegisterMessageHandler();
+        this.TexasGameProtocol.RegisterMsgHandler();
     }
     RemoveMsgHandler() {
-        this.messageHandler.RemoveMessageHandler();
-        this.texasGameProtocol.RemoveMsgHandler();
+        this.TexasGameMessageHandler.RemoveMessageHandler();
+        this.TexasGameProtocol.RemoveMsgHandler();
     }
 
 
@@ -446,10 +426,10 @@ export default class TexasGame {
     }
 
     public RegiterEnterRoom() {
-        GC.notify.register(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
+        GC.notify.register(ProtocolCode.Protocol_Holdem_EnterRoom, this.TexasGameMessageHandler.Protocol_Holdem_EnterRoom_Handler, this.TexasGameMessageHandler);
     }
     public UnRegiterEnterRoom() {
-        GC.notify.remove(ProtocolCode.Protocol_Holdem_EnterRoom, this.messageHandler.Protocol_Holdem_EnterRoom_Handler, this.messageHandler);
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_EnterRoom, this.TexasGameMessageHandler.Protocol_Holdem_EnterRoom_Handler, this.TexasGameMessageHandler);
     }
 
     /////////////////////////////////获取桌面样式/////////////////////////////////
@@ -575,7 +555,7 @@ export default class TexasGame {
         this.smallIndex = this.GetLocalSeatID(rec.handInfo.sbSeatId);
         this.bankerIndex = this.GetLocalSeatID(rec.handInfo.buSeatId);
         if (rec.mttProgress == null || !(rec.mttProgress.isBubbleWait && rec.gameStatus == Def.GameStatus.HAND_END)) {
-            this.AddPublicCards(rec.handInfo.publicCardsList);
+            this.UpgradePublicCards(1, rec.handInfo.publicCardsList);
         }
         this.smallBlind = rec.roomInfo.smallBlind;
         GameCache.Instance.carry_small = rec.roomInfo.smallBlind * 2;
@@ -710,16 +690,16 @@ export default class TexasGame {
         let LeftOpTime = 0;
         //RepeatedField<ActionLimit> actionLimits = null;
         //RepeatedField<ActionShortcutLimit> actionShortcutLimits = null;
-        let actionLimits = null;
-        let actionShortcutLimits = null;
+        let actionsList = null;
+        let shortcutsList = null;
         if (rec.operatorList != null && rec.operatorList.length > 0) {
             for (let i = 0; i < rec.operatorList.length; i++) {
                 this.operationID = this.GetLocalSeatID(rec.operatorList[i].seatId);
                 LeftOpTime = rec.operatorList[i].leftOpTime;
                 if (this.GetLocalSeatID(rec.operatorList[i].seatId) == this.mainPlayer.seatID) {
-                    actionLimits = rec.operatorList[i].actionsList;
-                    actionShortcutLimits = rec.operatorList[i].shortcutsList;
-                    this.texasGameProtocol.HandlerInsueranceData(rec.operatorList);//重进房间保险处理
+                    actionsList = rec.operatorList[i].actionsList;
+                    shortcutsList = rec.operatorList[i].shortcutsList;
+                    this.TexasGameProtocol.HandlerInsueranceData(rec.operatorList);//重进房间保险处理
                 }
             }
         }
@@ -743,7 +723,7 @@ export default class TexasGame {
                 if (mSeat.seatID == this.mainPlayer.seatID && mSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isPlaying) {
                     //自己操作中
                     this.HideAutoOperationPanel();   // 隐藏预操作
-                    this.ShowOperationPanel(UIOperationComponent.OperationData(actionLimits, actionShortcutLimits));
+                    this.ShowOperationPanel({ actionsList: actionsList, shortcutsList: shortcutsList });
                 }
                 else {
                     // 下一个操作不是自己
@@ -1047,10 +1027,11 @@ export default class TexasGame {
     }
     // 通过本地座位号获取位置对象
     public GetSeatByLocalSeatID(localSeatID: number): Seat {
-        let mSeat: Seat = null;
-        if (localSeatID >= 0 && localSeatID < this.listSeat.length)
-            mSeat = this.listSeat[localSeatID];
-        return mSeat;
+        // let mSeat: Seat = null;
+        // if (localSeatID >= 0 && localSeatID < this.listSeat.length)
+        //     mSeat = this.listSeat[localSeatID];
+        // return mSeat;
+        return this.listSeat[localSeatID];
     }
     //通过服务器座位id返回seat
     public GetSeatByServerSeatID(serverSeadID: number): Seat {
@@ -1102,6 +1083,7 @@ export default class TexasGame {
             this.dicSeatOnlyClient.set(tmp, mSeat);
             //座位位移
             cc.tween(mSeat.ui).to(0.3, { position: mInfos[tmp].Pos }).call(() => {
+                cc.log("座位运动完毕");
                 mSeat.InitSeatUIInfo(mInfos[tmp], this.listSeat.length);
                 this.SeatPlayRecord.SeatMove = false;
                 this.SeatPlayRecord.PlayDealFunc?.(this.SeatPlayRecord.StartInfo);
@@ -1553,7 +1535,7 @@ export default class TexasGame {
     /// <param name="operationData"></param>
     /// <param name="delay"></param> UIOperationComponent.OperationData
     public ShowOperationPanel(operationData: OperationData, delay: number = 0): void {
-        if (operationData?.actionLimits == null || operationData?.actionLimits.length <= 0) {
+        if (operationData?.actionsList == null || operationData?.actionsList.length <= 0) {
             return;
         }
         if (this.mainPlayer != null) {
@@ -1610,125 +1592,23 @@ export default class TexasGame {
         return 2;
     }
 
-    /// <summary>
-    /// 添加公共牌Id
-    /// </summary>
-    /// <param name="list"></param>
-    public AddPublicCards(list: number[]): void {
-        // 判断一下cards的合法性
-        if (null == this.cards) this.cards = [];
-
-        cc.log("AddPublicCards : ", this.cards.toString(), this.uirc.listCards.length);
-
-        if (this.cards.length < this.uirc.listCards.length) {
-            for (let i = 0, n = this.uirc.listCards.length - this.cards.length; i < n; i++) {
-                this.cards.push(-1);
-            }
-        }
-        else if (this.cards.length > this.uirc.listCards.length) {
-            cc.warn(`Add PublicCards Error cards.length:${this.cards.length}`);
-            return;
-        }
-
-        let mStartIndex: number = 0;
-        for (let i = 0, n = this.cards.length; i < n; i++) {
-            if (this.cards[i] == -1) {
-                mStartIndex = i;
-                break;
-            }
-        }
-
-        if (list.length > this.cards.length - mStartIndex) {
-            cc.warn(`Add PublicCards Error index:{mStartIndex}, list.length:${list.length}`);
-            return;
-        }
-
-        for (let i = 0, n = list.length; i < n; i++) {
-            this.cards[i + mStartIndex] = list[i];
-        }
-
-    }
-
-
-
-    /// <summary>
-    /// 获取当前已发公共牌数量 第一套
-    /// </summary>
-    /// <returns></returns>
-    public GetCurPublicCardsCount(): number {
-        if (null == this.cards)
-            this.ResetPublicCardsId();
-
-        for (let i = 0, n = this.cards.length; i < n; i++) {
-            if (this.cards[i] == -1)
-                return i;
-        }
-        // 最多5张
-        return 5;
-    }
-    /// <summary>
-    /// 重置公共牌Id
-    /// </summary>
-    public ResetPublicCardsId(): void {
-        // if (null == this.cards)
-        //     this.cards = [];
-        // if (this.cards.length == this.uirc.listCards.length) {
-        //     for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
-        //         this.cards[i] = -1;
-        //     }
-        // }
-        // else {
-        //     this.cards = [];
-        //     for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
-        //         this.cards.push(-1);
-        //     }
-        // }
-        this.cards = [];
-        for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
-            this.cards.push(-1);
-        }
-
-    }
-
-    /// <summary>
-    /// 重置公共牌Id
-    /// </summary>
-    public ResetSecondPublicCardsId(): void {
-        if (null == this.secondCards)
-            this.secondCards = [];
-
-        if (this.secondCards.length == this.uirc.listSecondCards.length) {
-            for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
-                this.secondCards[i] = -1;
-            }
-        }
-        else {
-            this.secondCards = [];
-            for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
-                {
-                    this.secondCards.push(-1);
-                }
-            }
-        }
-    }
 
 
     /// <summary>
     /// 获取当前已发公共牌数量 第二套
     /// </summary>
     /// <returns></returns>
-    public GetCurSecondPublicCardsCount(): number {
-        if (null == this.secondCards)
-            this.ResetSecondPublicCardsId();
+    // public GetCurSecondPublicCardsCount(): number {
+    //     this.cards_2 || this.ResetPublicCardsId_2();
 
-        for (let i = 0, n = this.secondCards.length; i < n; i++) {
-            if (this.secondCards[i] == -1)
-                return i;
-        }
+    //     for (let i = 0, n = this.cards_2.length; i < n; i++) {
+    //         if (this.cards_2[i] == -1)
+    //             return i;
+    //     }
 
-        // 最多5张
-        return 5;
-    }
+    //     // 最多5张
+    //     return 5;
+    // }
 
 
 
@@ -1740,10 +1620,10 @@ export default class TexasGame {
     /// 刷新公共牌 第一套
     /// </summary>
     public UpdatePublicCards(startIndex: number, tweenCallback: Function, SecondtweenCallback: Function): void {
-        if (null == this.cards)
-            return;
+        // if (null == this.cards_1)
+        //     return;
 
-        let mCacheCount: number = this.GetCurPublicCardsCount();
+        let mCacheCount: number = this.GetPublicCardsCount(1);
 
         if (mCacheCount == 0) {
             this.ClearPublicCardsUI();
@@ -1761,12 +1641,14 @@ export default class TexasGame {
         let PublicCardInfo: PublicCardInfo = null;
         let cardId = null;
 
+        let cards = this.GetPublicCards(1);
+
         if (startIndex == 0) {
             //第0张牌，设定第1,2张牌位置都在0号位置
             let index = 2;
             PublicCardInfo = this.uirc.listCards[index];
             //PublicCardInfo.cardId = this.cards[index];
-            cardId = this.cards[index];
+            cardId = cards[index];
             PublicHelper.InitSprite(PublicCardInfo.imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
             PublicHelper.InitNode(PublicCardInfo.trans, this.listDefaultPublicCardsLPos[0]);
             PublicCardInfo.SetSpriteFrame(-1);
@@ -1789,7 +1671,7 @@ export default class TexasGame {
                 let PublicCardInfo = this.uirc.listCards[i];
                 let trans = PublicCardInfo.trans;
                 let imageCard = PublicCardInfo.imageCard;
-                let cardId = this.cards[i];
+                let cardId = cards[i];
                 let move_pos = this.listDefaultPublicCardsLPos[i];
                 //PublicCardInfo.cardId = cardId;
                 trans.setPosition(this.listDefaultPublicCardsLPos[0]);
@@ -1827,7 +1709,7 @@ export default class TexasGame {
                     let PublicCardInfo = this.uirc.listCards[i];
                     let trans = PublicCardInfo.trans;
                     let imageCard = PublicCardInfo.imageCard;
-                    let cardId = this.cards[i];
+                    let cardId = cards[i];
                     //PublicCardInfo.cardId = cardId;
                     PublicHelper.InitSprite(imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
                     PublicHelper.InitNode(trans, this.listDefaultPublicCardsLPos[i], false);
@@ -1860,7 +1742,7 @@ export default class TexasGame {
                 let PublicCardInfo = this.uirc.listCards[i];
                 let trans = PublicCardInfo.trans;
                 let imageCard = PublicCardInfo.imageCard;
-                let cardId = this.cards[i];
+                let cardId = cards[i];
                 let move_pos = this.listDefaultPublicCardsLPos[i];
                 //PublicCardInfo.cardId = cardId;
                 PublicHelper.InitSprite(imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1)));
@@ -1902,7 +1784,7 @@ export default class TexasGame {
             this.sequenceUpdatePublicCards.OnComplete(() => {
 
                 let highlightCards_ref = { highlightCards: null };
-                let cardType: CardType = this.GetCardType(highlightCards_ref, this.cards);
+                let cardType: CardType = this.GetCardType(highlightCards_ref, cards);
                 let highlightCards = highlightCards_ref.highlightCards;
                 for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
                     this.uirc.listCards[i].imageSelect.node.active = false;
@@ -1945,11 +1827,11 @@ export default class TexasGame {
     /// <summary>
     /// 刷新公共牌 第二套
     /// </summary>
-    public UpdateSecondPublicCards(CardsCount: number, secondCardsCount: number, tweenCallback: Function): void {
-        if (null == this.cards)
-            return;
+    public UpdateSecondPublicCards(CardsCount: number, cards_2Count: number, tweenCallback: Function): void {
+        // if (null == this.cards_1)
+        //     return;
 
-        let CacheCount = this.GetCurSecondPublicCardsCount();
+        let CacheCount = this.GetPublicCardsCount(2);
 
         if (CacheCount == 0) {
             this.ClearSecondPublicCardsUI();
@@ -1959,19 +1841,20 @@ export default class TexasGame {
         //this.sequenceSecondUpdatePublicCards = DOTween.Sequence();
         this.sequenceSecondUpdatePublicCards = { tween: cc.tween(this.uirc.node), IsPlaying: true };
         let tween: cc.Tween = this.sequenceSecondUpdatePublicCards.tween;
+        let cards: number[] = this.GetPublicCards(2);
         //第二套牌为五张牌时
-        if (secondCardsCount == 5) {
+        if (cards_2Count == 5) {
             //#region 第三张牌翻牌动画
             let PublicCardInfo: PublicCardInfo = null;
             PublicCardInfo = this.uirc.listSecondCards[2];//三张一起发，从第三张显示翻牌动画
             PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-            //PublicCardInfo.cardId = this.secondCards[2];
+            //PublicCardInfo.cardId = this.cards_2[2];
             //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
             PublicCardInfo.SetSpriteFrame(-1);
             PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[0]);
             PublicCardInfo.trans.setScale(cc.Vec3.ONE);
             PublicCardInfo.trans.active = true;
-            let CacheCardId = this.secondCards[2];
+            let CacheCardId = cards[2];
             //PublicCardInfo.cardId;
             //let CacheImage: cc.Sprite = PublicCardInfo.imageCard;
             let CacheTrans = PublicCardInfo.trans;
@@ -1983,9 +1866,9 @@ export default class TexasGame {
                 })).to(.1, { scaleX: 1 }).call(() => {
                     let mPublicCardInfo0: PublicCardInfo = this.uirc.listSecondCards[0];
                     mPublicCardInfo0.imageCard.node.color = cc.Color.WHITE;
-                    //mPublicCardInfo0.cardId = this.secondCards[0];
+                    //mPublicCardInfo0.cardId = this.cards_2[0];
                     //mPublicCardInfo0.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mPublicCardInfo0.cardId));
-                    mPublicCardInfo0.SetSpriteFrame(this.secondCards[0]);
+                    mPublicCardInfo0.SetSpriteFrame(cards[0]);
                     mPublicCardInfo0.trans.setPosition(this.listDefaultSecondPublicCardsLPos[0]);
                     mPublicCardInfo0.trans.setScale(cc.Vec3.ONE);
                     mPublicCardInfo0.trans.active = true;
@@ -2003,9 +1886,9 @@ export default class TexasGame {
             for (let i = mTmpStartIndex; i < 3; i++) {
                 let cardTypeIndex = i;
                 let PublicCardInfo = this.uirc.listSecondCards[i];
-                let PublicCardInfo_card = this.secondCards[i];
+                let PublicCardInfo_card = cards[i];
                 PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                //PublicCardInfo.cardId = this.secondCards[i];
+                //PublicCardInfo.cardId = this.cards_2[i];
                 if (i != 2) {
                     //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(PublicCardInfo.cardId));
                     PublicCardInfo.SetSpriteFrame(PublicCardInfo_card);
@@ -2027,7 +1910,7 @@ export default class TexasGame {
                         cc.tween(mCacheTrans).to(.4, { position: this.listDefaultSecondPublicCardsLPos[i] }).call(() => {
                             if (cardTypeIndex == 2) {
                                 let sCards: number[] = [];
-                                sCards.push(...this.secondCards);
+                                sCards.push(...cards);
                                 sCards[cardTypeIndex + 1] = -1;
                                 sCards[cardTypeIndex + 2] = -1;
                                 this.UpdateSecondPublicCardsCardType(sCards);
@@ -2039,16 +1922,16 @@ export default class TexasGame {
             }
             //#endregion
             //#region 后两张牌翻牌动画
-            for (let i = 3; i < secondCardsCount; i++) {
+            for (let i = 3; i < cards_2Count; i++) {
                 let cardTypeIndex = i;
                 let PublicCardInfo = this.uirc.listSecondCards[i];
                 PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                //PublicCardInfo.cardId = this.secondCards[i];
+                //PublicCardInfo.cardId = this.cards_2[i];
                 //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
                 PublicCardInfo.SetSpriteFrame(-1);
                 PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[i]);
                 let mCacheTrans = PublicCardInfo.trans;
-                let mCacheCardId1 = this.secondCards[i];
+                let mCacheCardId1 = cards[i];
                 //PublicCardInfo.cardId;
                 let mCacheImage1 = PublicCardInfo.imageCard;
 
@@ -2061,13 +1944,13 @@ export default class TexasGame {
                     })).to(.2, { scaleX: 1 }).call(() => {
                         if (cardTypeIndex == 3) {
                             let sCards = []
-                            sCards.push(...this.secondCards);
+                            sCards.push(...cards);
                             sCards[cardTypeIndex + 1] = -1;
 
                             this.UpdateSecondPublicCardsCardType(sCards);
                         }
                         else {
-                            this.UpdateSecondPublicCardsCardType(this.secondCards);
+                            this.UpdateSecondPublicCardsCardType(cards);
                         }
                     }).start();
                 }))
@@ -2075,15 +1958,15 @@ export default class TexasGame {
             //#endregion
         }
         else {
-            for (let i = 0; i < CacheCount - secondCardsCount; i++) {
+            for (let i = 0; i < CacheCount - cards_2Count; i++) {
                 let cardTypeIndex = i;
                 let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
-                //PublicCardInfo.cardId = this.secondCards[i];
+                //PublicCardInfo.cardId = this.cards_2[i];
                 PublicCardInfo.trans.setPosition(this.listDefaultPublicCardsLPos[i]);
                 PublicCardInfo.trans.setScale(cc.Vec3.ONE);
                 PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                PublicCardInfo.SetSpriteFrame(this.secondCards[i]);
-                //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(this.secondCards[i]));
+                PublicCardInfo.SetSpriteFrame(cards[i]);
+                //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(this.cards_2[i]));
                 //let mCacheCardId = PublicCardInfo.cardId;
                 //let mCacheImage = PublicCardInfo.imageCard;
                 let mCacheTrans = PublicCardInfo.trans;
@@ -2096,7 +1979,7 @@ export default class TexasGame {
                     })).parallel(cc.scaleTo(.2, 1), cc.moveTo(0.4, CacheDefaultPublicCardsLPos)).then(cc.callFunc(() => {
                         if (cardTypeIndex == 2) {
                             let sCards = [];
-                            sCards.push(...this.secondCards);
+                            sCards.push(...cards);
                             sCards[cardTypeIndex + 1] = -1;
                             sCards[cardTypeIndex + 2] = -1;
                             this.UpdateSecondPublicCardsCardType(sCards);
@@ -2107,16 +1990,16 @@ export default class TexasGame {
                 tween.delay(0.6);
             }
             tween.delay(0.4);
-            for (let i = CacheCount - secondCardsCount, n = CacheCount; i < n; i++) {
+            for (let i = CacheCount - cards_2Count, n = CacheCount; i < n; i++) {
                 let cardTypeIndex = i;
                 let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
-                //PublicCardInfo.cardId = this.secondCards[i];
+                //PublicCardInfo.cardId = this.cards_2[i];
                 PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[i]);
                 PublicCardInfo.trans.setScale(cc.Vec3.ONE);
                 PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
                 //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
                 PublicCardInfo.SetSpriteFrame(-1);
-                let mCacheCardId = this.secondCards[i];
+                let mCacheCardId = cards[i];
                 //PublicCardInfo.cardId;
                 let mCacheImage = PublicCardInfo.imageCard;
                 let mCacheTrans = PublicCardInfo.trans;
@@ -2130,13 +2013,13 @@ export default class TexasGame {
                     })).to(.2, { scaleX: 1 }).call(() => {
                         if (cardTypeIndex == 3) {
                             let sCards = [];
-                            sCards.push(...this.secondCards);
+                            sCards.push(...cards);
                             sCards[cardTypeIndex + 1] = -1;
                             sCards[cardTypeIndex + 2] = -1;
                             this.UpdateSecondPublicCardsCardType(sCards);
                         }
                         else {
-                            this.UpdateSecondPublicCardsCardType(this.secondCards);
+                            this.UpdateSecondPublicCardsCardType(cards);
                         }
                     }).start();
                 }));
@@ -2199,29 +2082,29 @@ export default class TexasGame {
     /// 添加公共牌Id
     /// </summary>
     /// <param name="list"></param>
-    public AddSecondPublicCards(list: number[]): void {
-        // 判断一下cards的合法性
-        if (null == this.secondCards)
-            this.secondCards = []
+    // public AddSecondPublicCards(list: number[]): void {
+    //     // // 判断一下cards的合法性
+    //     // if (null == this.cards_2)
+    //     //     this.cards_2 = []
 
-        this.secondCards = [];
-        for (let i = 0; i < this.uirc.listSecondCards.length; i++) {
-            this.secondCards.push(-1);
-        }
-        if (list.length < this.uirc.listSecondCards.length) {
-            for (let i = 0, n = this.uirc.listSecondCards.length - list.length; i < n; i++) {
-                this.secondCards[i] = this.cards[i];
-            }
-            for (let i = 0; i < list.length; i++) {
-                this.secondCards[i + this.uirc.listSecondCards.length - list.length] = list[i];
-            }
-        }
-        else {
-            for (let i = 0, n = list.length; i < n; i++) {
-                this.secondCards[i] = list[i];
-            }
-        }
-    }
+    //     // this.cards_2 = [];
+    //     for (let i = 0; i < this.uirc.listSecondCards.length; i++) {
+    //         this.cards_2.push(-1);
+    //     }
+    //     if (list.length < this.uirc.listSecondCards.length) {
+    //         for (let i = 0, n = this.uirc.listSecondCards.length - list.length; i < n; i++) {
+    //             this.cards_2[i] = this.cards_1[i];
+    //         }
+    //         for (let i = 0; i < list.length; i++) {
+    //             this.cards_2[i + this.uirc.listSecondCards.length - list.length] = list[i];
+    //         }
+    //     }
+    //     else {
+    //         for (let i = 0, n = list.length; i < n; i++) {
+    //             this.cards_2[i] = list[i];
+    //         }
+    //     }
+    // }
     /// <summary>
     /// 播放首次收筹码到底池动画
     /// </summary>Sequence
@@ -2342,6 +2225,7 @@ export default class TexasGame {
 
         let mIsFirst = true;
         let mCacheCardIds = [];
+        let cards = this.GetPublicCards(1);
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
             for (let j = 0, m = mTmpCardSorts[mWinnerIndex].Count; j < m; j++) {
                 if (mCacheCardIds.includes(this.uirc.listCards[i].cardId))
@@ -2349,7 +2233,7 @@ export default class TexasGame {
                 if (mTmpCardSorts[mWinnerIndex][j] > 4 || mTmpCardSorts[mWinnerIndex][j] < 0)
                     continue;
 
-                if (this.uirc.listCards[i].cardId == GameCache.Instance.CurGame.cards[mTmpCardSorts[mWinnerIndex][j]]) {
+                if (this.uirc.listCards[i].cardId == cards[mTmpCardSorts[mWinnerIndex][j]]) {
                     mCacheCardIds.push(this.uirc.listCards[i].cardId);
                     if (mIsFirst) {
                         mIsFirst = false;
@@ -2477,46 +2361,40 @@ export default class TexasGame {
 
 
     /// <summary>
-    /// 设置公共牌Id
-    /// </summary>
-    public SetPublicCardInfosId(): void {
-        let mPublicCardInfo: PublicCardInfo = null;
-        for (let i = 0, n = this.cards.length; i < n; i++) {
-            mPublicCardInfo = this.uirc.listCards[i];
-            mPublicCardInfo.cardId = this.cards[i];
-        }
-    }
-
-    /// <summary>
     /// 显示查看更多公共牌
     /// </summary>
     public ShowSeeMorePublic(): void {
         if (!this.mainPlayer.isParticipateInTheGame)
             return;
 
-        if (this.GetCurPublicCardsCount() == 5)
-            return;
+        let public_card_count = this.GetPublicCardsCount(1);
+
+        if (public_card_count == 5) return;
 
         let mCost = GameUtil.GetSeeMoreCost(this.smallBlind / 100 ^ 0);
         this.uirc.textSeeMorePublicGold.string = `${StringHelper.GetLongString(mCost)}`;
 
-        if (this.GetCurPublicCardsCount() == 0) {
-            // textSeeMorePublic.text = $"查看翻牌";
-            this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10018);
+        switch (public_card_count) {
+            case 0:
+                // textSeeMorePublic.text = $"查看翻牌";
+                this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10018);
+                break;
+            case 3:
+                // textSeeMorePublic.text = $"查看转牌";
+                this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10019);
+                break;
+            default:
+                // textSeeMorePublic.text = $"查看河牌";
+                this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10020);
+                break;
         }
-        else if (this.GetCurPublicCardsCount() == 3) {
-            // textSeeMorePublic.text = $"查看转牌";
-            this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10019);
-        }
-        else {
-            // textSeeMorePublic.text = $"查看河牌";
-            this.uirc.textSeeMorePublic.string = CPErrorCode.LanguageDescription(10020);
-        }
+
         if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit)//MTT没有查看翻牌
         {
             //this.uirc.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
             this.uirc.buttonSeeMorePublic.active = true;
         }
+
     }
 
     /// <summary>
@@ -2577,15 +2455,20 @@ export default class TexasGame {
         console.log("显示公共牌");
 
         let mPublicCardInfo: PublicCardInfo;
-        for (let i = 0, n = this.GetCurPublicCardsCount(); i < n; i++) {
+
+        let cards = this.GetPublicCards(1);
+
+        let public_card_count = this.GetPublicCardsCount(1);
+
+        for (let i = 0, n = public_card_count; i < n; i++) {
             mPublicCardInfo = this.uirc.listCards[i];
             //mPublicCardInfo.cardId = this.cards[i];
             PublicHelper.InitNode(mPublicCardInfo.trans, this.listDefaultPublicCardsLPos[i], true);
             PublicHelper.InitSprite(mPublicCardInfo.imageCard);//, this.GetBigPokerSP(GameUtil.GetCardNameByNum(mPublicCardInfo.cardId)));
-            mPublicCardInfo.SetSpriteFrame(this.cards[i]);
+            mPublicCardInfo.SetSpriteFrame(cards[i]);
         }
 
-        for (let i = this.GetCurPublicCardsCount(), n = this.uirc.listCards.length; i < n; i++) {
+        for (let i = public_card_count, n = this.uirc.listCards.length; i < n; i++) {
             mPublicCardInfo = this.uirc.listCards[i];
             //mPublicCardInfo.cardId = -1;
             PublicHelper.InitNode(mPublicCardInfo.trans, this.listDefaultPublicCardsLPos[i], false);
@@ -2597,7 +2480,7 @@ export default class TexasGame {
         if (null != this.mainPlayer && this.mainPlayer.isPlaying) {
             let highlightCards_ref = { highlightCards: null };
 
-            let cardType: CardType = this.GetCardType(highlightCards_ref, this.cards);
+            let cardType: CardType = this.GetCardType(highlightCards_ref, cards);
 
             let highlightCards = highlightCards_ref.highlightCards;
 
@@ -2821,14 +2704,13 @@ export default class TexasGame {
         this.smallIndex = 0;
         this.bankerIndex = 0;
         this.operationID = -1;
-        if (null != this.cards) {
-            this.cards = []
-            this.cards = null;
-        }
-        if (null != this.secondCards) {
-            this.secondCards = []
-            this.secondCards = null;
-        }
+
+        //this.cards_1 = null;
+        //this.cards_2 = null;
+        //this.ResetPublicCardsId_1();
+        //this.ResetPublicCardsId_2();
+        this.ResetPublicCards();
+
         this.bigBlind = 0;
         this.smallBlind = 0;
         this.alreadAnte = 0;
@@ -3201,4 +3083,87 @@ export default class TexasGame {
         }
         return false;
     }
+    ///////////////////////////////////////////////////////////////////重构部分
+    //多套公共牌
+    public public_cards: number[][];
+
+    public ResetPublicCards() {
+        this.public_cards = [
+            [-1, -1, -1, -1, -1],
+            [-1, -1, -1, -1, -1],
+        ]
+    }
+    //获取公共牌数量 第n套 1-n
+    public GetPublicCardsCount(n: number) {
+        let cards = this.public_cards[n - 1];
+        let count = cards.indexOf(-1);
+        return count == -1 ? GameUtil.PublicCardMaxCount : count;
+    }
+    //获取第n套公共牌 第n套 1-n
+    public GetPublicCards(n: number): number[] {
+        return this.public_cards[n - 1];
+    }
+    public SetPublicCards(n: number, index: number, card: number) {
+        this.public_cards[n - 1][index] = card;
+    }
+
+    //升级公共牌id 第n套 1-n
+    public UpgradePublicCards(n: number, list: number[]): void {
+
+        let had_count: number = this.GetPublicCardsCount(n);
+
+        let add_count = list.length;
+
+        let prev_count = GameUtil.PublicCardMaxCount - add_count;
+
+        if (add_count > GameUtil.PublicCardMaxCount - had_count) {
+            cc.warn(`Add PublicCards Error index:{mStartIndex}, list.length:${add_count}`);
+            return;
+        }
+        if (n > 1) {
+            let prev_cards = this.GetPublicCards(n - 1);
+            had_count = prev_count;
+            for (let i = 0; i < prev_count; i++) {
+                this.SetPublicCards(n, i, prev_cards[i]);
+            }
+        }
+        for (let i = 0; i < list.length; i++) {
+            this.SetPublicCards(n, i + had_count, list[i]);
+        }
+    }
+    //设置公共牌Id
+    public SetPublicCardInfosId(): void {
+        //let mPublicCardInfo: PublicCardInfo = null;
+
+        let cards = this.GetPublicCards(1);
+
+        for (let i = 0, n = cards.length; i < n; i++) {
+
+            this.uirc.listCards[i].cardId = cards[i];
+
+            // mPublicCardInfo = this.uirc.listCards[i];
+            // mPublicCardInfo.cardId = this.cards_1[i];
+        }
+    }
+
+
+
+    // // 重置第一套公共牌Id
+    // public ResetPublicCardsId_1(): void {
+    //     this.cards_1 = [-1, -1, -1, -1, -1];
+    // }
+
+    // // 重置第二套公共牌Id
+    // public ResetPublicCardsId_2(): void {
+    //     this.cards_2 = [-1, -1, -1, -1, -1];
+    // }
+    // //获取当前已发第一套公共牌数量
+    // public GetCurPublicCardsCount_1(): number {
+
+    //     let index = this.cards_1.indexOf(-1);
+
+    //     return index == -1 ? GameUtil.PublicCardMaxCount : index;
+
+    // }
+
 }

@@ -1,3 +1,5 @@
+import { GameCache } from "../game/GameCache";
+import TexasGame from "../game/texas/TexasGame";
 import AudioManager from "./manager/AudioManager";
 import DataManager from "./manager/DataManager";
 import LanguageManager from "./manager/LanguageManager";
@@ -6,12 +8,9 @@ import { NotifyManager } from "./manager/NotifyManager";
 import SDKManager from "./manager/SDKManager";
 
 class GameControl {
-    private static _instance: GameControl = null;
+    //private static _instance: GameControl = null;
     public static get instance() {
-        if (!GameControl._instance) {
-            GameControl._instance = new GameControl();
-        }
-        return GameControl._instance;
+        return (this as any)._instance ?? new GameControl;
     }
 
     get language() {
@@ -36,6 +35,10 @@ class GameControl {
 
     get sdk() {
         return SDKManager.instance;
+    }
+
+    get game(): TexasGame {
+        return GameCache.Instance.CurGame;
     }
 
     init() {

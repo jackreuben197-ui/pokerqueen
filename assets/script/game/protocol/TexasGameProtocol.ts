@@ -49,7 +49,8 @@ import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
 import UIAgreeSecondPcsComponent from "../ui/UIAgreeSecondPcsComponent";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
-import UIInsuranceComponent, { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
+import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
+//import UIInsuranceComponent, { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
 import UIOperationComponent from "../ui/UIOperationComponent";
 import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
@@ -271,7 +272,7 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="responseData"></param>
     /// <param name="obj"></param>
-    public handleRecvStartInfoCommon(rec: ServerMessageStartInfo.AsObject, obj): void {
+    public handleRecvStartInfoCommon(rec: ServerMessageStartInfo.AsObject): void {
         this.game.gamestatus = 1;
         GameCache.Instance.GameStatus = this.game.gamestatus;
         this.game.cacheRound = Def.Round.PREFLOP;
@@ -287,7 +288,9 @@ export default class TexasGameProtocol {
         }
         this.game.mHandNum = rec.handInfo.handNum;
         this.game.UpdateRoomDes();
-        this.game.ResetPublicCardsId();
+        // this.game.ResetPublicCardsId_1();
+        // this.game.ResetPublicCardsId_2();
+        this.game.ResetPublicCards();
         this.game.ClearPublicCardsUI();
         this.game.HideWaitBlindBtn();
         let Seat: Seat = null;
@@ -377,15 +380,16 @@ export default class TexasGameProtocol {
                 }
             }
 
-            mSeat0 = this.game.GetSeatByLocalSeatID(this.game.operationID);
+            //mSeat0 = this.game.GetSeatByLocalSeatID(this.game.operationID);
+
             let mMySeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
 
-            if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
-
+            //if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
+            if (this.game.operationID == this.game.mainPlayer.seatID) {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(responseData.nextOperator.actionsList, responseData.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(responseData.nextOperator);
                 }
             }
             else {
@@ -501,7 +505,7 @@ export default class TexasGameProtocol {
         }
         this.game.pots = m_pots;
         // 播放首次收筹码到底池动画是不需要显示Pots
-        if (this.game.GetCurPublicCardsCount() > 0)
+        if (this.game.GetPublicCardsCount(1) > 0)
             this.game.UpdatePots();
     }
 
@@ -521,11 +525,11 @@ export default class TexasGameProtocol {
         // GameCache.Instance.gold -= this.game.checkPublicCardsCost;
         GC.data.user.info.gold -= this.game.checkPublicCardsCost;
         this.game.cacheRound = rec.round;
-        this.game.AddPublicCards(rec.publicCardsList);
+        this.game.UpgradePublicCards(1, rec.publicCardsList);
         //启用按钮
         this.game.uirc.buttonSeeMorePublic.getChildByName("click").getComponent(cc.Button).interactable = true;
         // 花费查看未发公共牌
-        if (this.game.GetCurPublicCardsCount() == 5) {
+        if (this.game.GetPublicCardsCount(1) == 5) {
             this.game.HideSeeMorePublic();
         }
         this.game.UpdatePublicCardsNoAnim();
@@ -569,7 +573,7 @@ export default class TexasGameProtocol {
         }
         this.game.isAllinGetPlayerCards = true;
         // 保险模式，allin后要收筹码，不用等收到公共牌再收。
-        if (this.game.insurance && this.game.GetCurPublicCardsCount() > 0) {
+        if (this.game.insurance && this.game.GetPublicCardsCount(1) > 0) {
             this.game.PlayRecyclingChipAnimation(null);
         }
         let mSeat: Seat = null;
@@ -751,12 +755,12 @@ export default class TexasGameProtocol {
                         this.game.HideOperationPanel();
                     }
                     else {
-                        this.game.ShowOperationPanel(UIOperationComponent.OperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                        this.game.ShowOperationPanel(rec.nextOperator);
 
                     }
                 }
                 else {
-                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(rec.nextOperator.actionsList, rec.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(rec.nextOperator);
                 }
             }
             else {
@@ -832,7 +836,7 @@ export default class TexasGameProtocol {
                 mSeat.UpdateImageBackActive();
             }
         }
-        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listCards, this.game.cards);
+        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listCards, this.game.GetPublicCards(1));
         //第一套牌
         this.game.SetSecondPublicCardImageColor(cc.Color.GRAY);
         this.HandleTwoWinnerAnimation(true);
@@ -843,7 +847,7 @@ export default class TexasGameProtocol {
 
         this.game.SetSecondPublicCardImageColor(cc.Color.WHITE);
         this.game.SetPublicCardsImageColor(cc.Color.GRAY);
-        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listSecondCards, this.game.secondCards);
+        this.game.TexasGameUtils.SetWinnerCardsHight(this.game.uirc.listSecondCards, this.game.GetPublicCards(2));
         this.HandleTwoWinnerAnimation(false);
     }
     /// <summary>
@@ -935,7 +939,7 @@ export default class TexasGameProtocol {
         let mainSeat: Seat = null;
         mainSeat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
         if (mainSeat != null) {
-            let cacheCards: number[] = isFirst ? this.game.cards : this.game.secondCards;
+            let cacheCards: number[] = isFirst ? this.game.GetPublicCards(1) : this.game.GetPublicCards(2);
 
             let highlightCards_ref = { highlightCards: null };
             let cardType: CardType = this.game.GetCardType(highlightCards_ref, cacheCards);
@@ -1000,11 +1004,11 @@ export default class TexasGameProtocol {
 
 
 
-        let mCount = this.game.GetCurPublicCardsCount();
+        let mCount = this.game.GetPublicCardsCount(1);
         let mCanPlayEndPublicCardsAnimation = mCount == 5 && !mOtherAllFold;
         if (mCanPlayEndPublicCardsAnimation) {
             let highlightCards_ref = { highlightCards: null };
-            let cardType: CardType = this.game.GetCardType(highlightCards_ref, this.game.cards);
+            let cardType: CardType = this.game.GetCardType(highlightCards_ref, this.game.GetPublicCards(1));
             let highlightCards = highlightCards_ref.highlightCards;
             for (let i = 0, n = this.game.uirc.listCards.length; i < n; i++) {
                 this.game.uirc.listCards[i].imageSelect.node.active = false;
@@ -1102,6 +1106,7 @@ export default class TexasGameProtocol {
             mSeat.Player.recyclingChip = result.win;
             mSeat.Player.cardType = result.handValueType;
             mSeat.Player.isWin = result.win > result.handBet;
+            cc.log(result.win, result.handBet);
             mSeat.StopAllinArmature();
             mSeat.PlayWinArmature();
             mSeat.UpdateRecyclingWinChip();
@@ -1212,19 +1217,22 @@ export default class TexasGameProtocol {
         this.game.autoAllin = false;
         this.game.autoCheck = false;
         this.game.autoFold = false;
-        let iCount: number = this.game.GetCurPublicCardsCount();  // 要在更新公共牌前拿数量
+        let iCount: number = this.game.GetPublicCardsCount(1);  // 要在更新公共牌前拿数量
 
         console.log("HandleGetPublicCards : ", this.game.GameState, iCount);
-        console.log("this.game.cards>>>>>", this.game.cards);
+        console.log("this.game.cards>>>>>", this.game.GetPublicCards(1));
 
+        //未发公共牌状态
         if (this.game.GameState == TexasGameState.HandFlop && iCount == 0) {
-            this.game.AddPublicCards(source.publicCardsArrayList);
+            this.game.UpgradePublicCards(1, source.publicCardsArrayList);
         }
+        //发了三张公共牌状态
         else if (this.game.GameState == TexasGameState.HandTurn && iCount == 3) {
-            this.game.AddPublicCards(source.publicCardsArrayList);
+            this.game.UpgradePublicCards(1, source.publicCardsArrayList);
         }
+        //发了四张公共牌状态
         else if (this.game.GameState == TexasGameState.HandRiver && iCount == 4) {
-            this.game.AddPublicCards(source.publicCardsArrayList);
+            this.game.UpgradePublicCards(1, source.publicCardsArrayList);
         }
         else {
             cc.warn("public card error：" + this.game.GameState + " Cur Public Cards Count :" + iCount);
@@ -1277,7 +1285,7 @@ export default class TexasGameProtocol {
 
                 // 非托管
                 if (!this.game.mainPlayer.IsAutoOp) {
-                    this.game.ShowOperationPanel(UIOperationComponent.OperationData(source.nextOperator.actionsList, source.nextOperator.shortcutsList));
+                    this.game.ShowOperationPanel(source.nextOperator);
                 }
             }
             else {
@@ -1301,7 +1309,7 @@ export default class TexasGameProtocol {
         let SecondTweenCallback = () => {
             if (source.extPublicCardsArrayList != null && source.extPublicCardsArrayList.length > 0) {
 
-                this.game.AddSecondPublicCards(source.extPublicCardsArrayList);
+                this.game.UpgradePublicCards(2, source.extPublicCardsArrayList);
                 //执行第二套牌动画
                 this.game.UpdateSecondPublicCards(iCount, source.extPublicCardsArrayList.length, null);
 
@@ -1449,13 +1457,14 @@ export default class TexasGameProtocol {
         this.game.pots = [];
         this.game.UpdatePots();
 
-        // 刷新公共牌
-        this.game.ResetPublicCardsId();
+        // 刷新所有公共牌
+        this.game.ResetPublicCards();
+        //this.game.ResetPublicCardsId_1();
         this.game.ResetPublicCardsImage();
 
-        //刷新第二套公共牌
-        this.game.ResetSecondPublicCardsId();
+        //this.game.ResetPublicCardsId_2();
         this.game.ResetSecondPublicCardsImage();
+
 
         if (null != this.game.cacheTrunOutsCards) {
             this.game.cacheTrunOutsCards.clear();
@@ -1638,7 +1647,7 @@ export default class TexasGameProtocol {
             UIComponent.Instance.Toast(i18nMgr.Get("Purchase_insurance"));
             return;
         }
-        
+
         this.HandlerInsueranceData(rec.operatorList);
     }
     /// <summary>
@@ -1717,12 +1726,12 @@ export default class TexasGameProtocol {
             });
 
             let data: InsuranceData = new InsuranceData;
-            data.publicCards = this.game.cards;
+            data.publicCards = this.game.GetPublicCards(1);
             data.triggedDatas = wrapTriggedInsuranceDatas;
             data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
             data.delayTimes = this.game.mainPlayer.delayTimes;
-            // UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceComponent, data);
-            UIComponent.open(UIDefine.UITexasInsuranceComponent, data);
+            UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceComponent, data);
+            //UIComponent.open(UIDefine.UITexasInsuranceComponent, data);
 
         };
         mTweenCallback();

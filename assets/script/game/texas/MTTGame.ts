@@ -24,7 +24,7 @@ import { ClientMessageAutoOpActive } from "../../protobuf/holdem/req_auto_op_act
 import MTTGameProtocol from "../protocol/MTTGameProtocol";
 import MTTGameMessageHandler from "../messageHandler/MTTGameMessageHandler";
 import UIMTTTimeComponent from "../ui/UIMTTTimeComponent";
-
+import MTTGameUtils from "../util/MTTGameUtils";
 
 enum MTTMatchStatus // mtt比赛状态
 {
@@ -171,8 +171,9 @@ export default class MTTGame extends TexasGame {
     IsMTT: boolean = true;
 
     protected override RCInit() {
-        this.texasGameProtocol = new MTTGameProtocol(this);
-        this.messageHandler = new MTTGameMessageHandler(this);
+        this.TexasGameProtocol = new MTTGameProtocol(this);
+        this.TexasGameMessageHandler = new MTTGameMessageHandler(this);
+        this.TexasGameUtils = new MTTGameUtils(this);
     }
 
     public Update(dt: number) {
@@ -356,7 +357,7 @@ export default class MTTGame extends TexasGame {
 
     public async ClearRoundDate(time: number) {
         await TimeHelper.Sleep(time);
-        this.texasGameProtocol.HandleRoundFinish(null);
+        this.TexasGameProtocol.HandleRoundFinish(null);
         this.isSyncHand = true;
         this.uirc.Image_WaitForStartBathTips.active = true;
     }
