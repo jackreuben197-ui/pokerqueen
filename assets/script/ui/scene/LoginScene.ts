@@ -565,11 +565,12 @@ export default class LoginScene extends BaseScene {
                 return true
             }
         }
-
-        //密码不对提示
-        if (this.passwordNode.active && password.length < 6) {
-            ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10330));
-            return true;
+        if (!this._isQuiklyLogin) {
+            //密码不对提示
+            if (this.passwordNode.active && password.length < 6) {
+                ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10330));
+                return true;
+            }
         }
     }
 
@@ -611,7 +612,8 @@ export default class LoginScene extends BaseScene {
     checkPhoneLogin(area, account, password, vcode) {
         if (this._isQuiklyLogin) {
             //手机号 快速登录
-            ToastManager.Instance.createToast("手机号 快速登录  还没有！！！");
+            this.tryEnterGame(area, account, vcode);
+            // ToastManager.Instance.createToast("手机号 快速登录  还没有！！！");
         } else {
             //手机号普通登录
             this.tryEnterGame(area, account, password);
@@ -662,12 +664,23 @@ export default class LoginScene extends BaseScene {
     tryEnterGame(area, account, password) {
 
         if (this._loginType == ELoginType.phone) {
-            ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
-                phone: account,
-                password: Md5.hashStr(password),
-                area: area,
-                is_simulator: false
-            });
+            if (this._isQuiklyLogin) {
+                ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
+                    phone: account,
+                    code: password,
+                    area: area,
+                    is_simulator: false
+                });
+            }
+            else {
+                ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
+                    phone: account,
+                    password: Md5.hashStr(password),
+                    area: area,
+                    is_simulator: false
+                });
+            }
+
         } else {
             ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby, {
                 email: account,
