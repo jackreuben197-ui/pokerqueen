@@ -27,14 +27,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 154
+        "__id__": 157
       },
       {
-        "__id__": 155
+        "__id__": 158
       }
     ],
     "_prefab": {
-      "__id__": 156
+      "__id__": 159
     },
     "_opacity": 255,
     "_color": {
@@ -297,20 +297,20 @@
         "__id__": 139
       },
       {
-        "__id__": 148
+        "__id__": 151
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 151
+        "__id__": 154
       },
       {
-        "__id__": 152
+        "__id__": 155
       }
     ],
     "_prefab": {
-      "__id__": 153
+      "__id__": 156
     },
     "_opacity": 255,
     "_color": {
@@ -676,7 +676,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 118.34,
+      "width": 90,
       "height": 56.7
     },
     "_anchorPoint": {
@@ -728,8 +728,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Ticket",
-    "_N$string": "Ticket",
+    "_string": "门票",
+    "_N$string": "门票",
     "_fontSize": 45,
     "_lineHeight": 45,
     "_enableWrapText": true,
@@ -2267,7 +2267,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 115.05,
+      "width": 90,
       "height": 56.7
     },
     "_anchorPoint": {
@@ -2319,8 +2319,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Chips",
-    "_N$string": "Chips",
+    "_string": "金豆",
+    "_N$string": "金豆",
     "_fontSize": 45,
     "_lineHeight": 45,
     "_enableWrapText": true,
@@ -2471,7 +2471,7 @@
         "__id__": 65
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 68
@@ -2929,7 +2929,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "node_1x",
+    "_name": "node_3x",
     "_objFlags": 0,
     "_parent": {
       "__id__": 51
@@ -3517,7 +3517,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "node_2x",
+    "_name": "node_4x",
     "_objFlags": 0,
     "_parent": {
       "__id__": 51
@@ -5033,7 +5033,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_1",
+    "_name": "lbl_gold",
     "_objFlags": 0,
     "_parent": {
       "__id__": 6
@@ -5058,7 +5058,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 110.06,
+      "width": 154,
       "height": 45.36
     },
     "_anchorPoint": {
@@ -5110,8 +5110,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Accout",
-    "_N$string": "Accout",
+    "_string": "账户余额:",
+    "_N$string": "账户余额:",
     "_fontSize": 36,
     "_lineHeight": 36,
     "_enableWrapText": true,
@@ -5141,7 +5141,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_2",
+    "_name": "lbl_last",
     "_objFlags": 0,
     "_parent": {
       "__id__": 6
@@ -5166,7 +5166,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 124.05,
+      "width": 154,
       "height": 45.36
     },
     "_anchorPoint": {
@@ -5218,8 +5218,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Remain",
-    "_N$string": "Remain",
+    "_string": "剩余买入:",
+    "_N$string": "剩余买入:",
     "_fontSize": 36,
     "_lineHeight": 36,
     "_enableWrapText": true,
@@ -5249,7 +5249,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_3",
+    "_name": "lbl_ticket",
     "_objFlags": 0,
     "_parent": {
       "__id__": 6
@@ -5274,7 +5274,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80.05,
+      "width": 180,
       "height": 45.36
     },
     "_anchorPoint": {
@@ -5326,8 +5326,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Auail",
-    "_N$string": "Auail",
+    "_string": "可用门票：",
+    "_N$string": "可用门票：",
     "_fontSize": 36,
     "_lineHeight": 36,
     "_enableWrapText": true,
@@ -5357,7 +5357,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_4",
+    "_name": "lbl_center",
     "_objFlags": 0,
     "_parent": {
       "__id__": 6
@@ -5382,7 +5382,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 176.15,
+      "width": 484.14,
       "height": 45.36
     },
     "_anchorPoint": {
@@ -5434,8 +5434,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "No enough",
-    "_N$string": "No enough",
+    "_string": "选择{0}倍买入，得{0}倍记分牌",
+    "_N$string": "选择{0}倍买入，得{0}倍记分牌",
     "_fontSize": 36,
     "_lineHeight": 36,
     "_enableWrapText": true,
@@ -5476,16 +5476,19 @@
       },
       {
         "__id__": 143
+      },
+      {
+        "__id__": 146
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 146
+        "__id__": 149
       }
     ],
     "_prefab": {
-      "__id__": 147
+      "__id__": 150
     },
     "_opacity": 255,
     "_color": {
@@ -5536,7 +5539,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "img_add",
+    "_name": "img_2",
     "_objFlags": 0,
     "_parent": {
       "__id__": 139
@@ -5561,8 +5564,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 963,
-      "height": 201
+      "width": 944,
+      "height": 188
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5614,7 +5617,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "a54e7f73-b0d1-4cc7-8e33-3d50bf2e2392"
+      "__uuid__": "a57c0d4a-3062-48e8-a532-0ad9fc5af7ce"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -5643,7 +5646,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_confim",
+    "_name": "img_1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 139
@@ -5657,6 +5660,113 @@
     ],
     "_prefab": {
       "__id__": 145
+    },
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 941,
+      "height": 188
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        1.183,
+        -30.513000000000005,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 143
+    },
+    "_enabled": true,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_spriteFrame": {
+      "__uuid__": "a54e7f73-b0d1-4cc7-8e33-3d50bf2e2392"
+    },
+    "_type": 0,
+    "_sizeMode": 1,
+    "_fillType": 0,
+    "_fillCenter": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_atlas": null,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "e2+Af0fDxD5LCl5Qqh0h0a",
+    "sync": false
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "lbl_confim",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 139
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 147
+      }
+    ],
+    "_prefab": {
+      "__id__": 148
     },
     "_opacity": 255,
     "_color": {
@@ -5710,7 +5820,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 143
+      "__id__": 146
     },
     "_enabled": true,
     "_materials": [
@@ -5839,11 +5949,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 149
+        "__id__": 152
       }
     ],
     "_prefab": {
-      "__id__": 150
+      "__id__": 153
     },
     "_opacity": 255,
     "_color": {
@@ -5855,7 +5965,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 397.39,
+      "width": 200,
       "height": 63
     },
     "_anchorPoint": {
@@ -5897,7 +6007,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 148
+      "__id__": 151
     },
     "_enabled": true,
     "_materials": [
@@ -5907,8 +6017,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Match registration",
-    "_N$string": "Match registration",
+    "_string": "比赛报名",
+    "_N$string": "比赛报名",
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,

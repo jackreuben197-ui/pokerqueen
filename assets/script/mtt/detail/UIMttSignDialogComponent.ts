@@ -2,8 +2,10 @@
 import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
 import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
+import { GameCache } from "../../game/GameCache";
 import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import { Web_Room_Center_Mtt_Details } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
@@ -85,6 +87,7 @@ export default class UIMttSignDialogComponent extends UIBase {
     used_prop_id: number = 0;
     prop_type: number = 0;
     use_free: boolean = false;
+    coinnum: any = null;
 
     lateLoad() {
         super.lateLoad();
@@ -120,6 +123,8 @@ export default class UIMttSignDialogComponent extends UIBase {
 
 
 
+        this.coinnum =  this.getChildNodeOrComponent("lbl_chips", cc.Label);
+
         if (null != data) {
             this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
             this.curDialogData = data;
@@ -147,6 +152,123 @@ export default class UIMttSignDialogComponent extends UIBase {
                 else {
                     this.HandleDate();
                 }
+            }
+
+            let lbl_gold = this.getChildNodeOrComponent("lbl_gold", cc.Label);
+            lbl_gold.string = data.coinBalance;
+
+
+            this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
+
+            let lbl_ticket = this.getChildNodeOrComponent("lbl_ticket", cc.Label);
+
+            if (this.totalRebuyTimes < 10000) {
+                //可重构次数   
+                //!!!!!特别注意:当后台设置不限制重构次数时,rebuy_times为10000,而left_rebuy_times在后端传输时做了int8转换越界变为16了,但只是传到前端的转化了后端正常,故在此做特别处理!!!!!!
+                if (UIMatchMttModel.Instance.MttInfo.state != null) {
+                    lbl_ticket.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", UIMatchMttModel.Instance.MttInfo.state.left_rebuy_times.toString());
+                } else {
+                    lbl_ticket.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", this.totalRebuyTimes.toString());
+                }
+            } else {
+                lbl_ticket.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", i18nMgr.Get("UIMTT_StateUnLimitRebuy"));
+            }
+    
+            let lbl_last = this.getChildNodeOrComponent("lbl_last", cc.Label);
+            lbl_last.string = i18nMgr.Get("UIMTTSignDialogCanUseTickt").replace("{0}", this.cachePropBalance.toString());
+
+            let lbl_center = this.getChildNodeOrComponent("lbl_center", cc.Label);
+            lbl_center.string = i18nMgr.Get("UIMTTbuyinDialog").replace("{0}", data.buyRatio.toString());
+
+            lbl_center.node.active = data.buyRatio > 1;
+
+            let btn_2: cc.Node = this.getChildNodeOrComponent("btn_2");
+            btn_2.active = this.SingType == 0 || this.SingType == 2;
+
+
+            let node_1x: cc.Node = this.getChildNodeOrComponent("node_1x");
+            let node_2x: cc.Node = this.getChildNodeOrComponent("node_2x");
+            let node_3x: cc.Node = this.getChildNodeOrComponent("node_3x");
+            let node_4x: cc.Node = this.getChildNodeOrComponent("node_4x");
+            node_1x.active = data.buyRatio > 1;
+            node_2x.active = data.buyRatio > 1;
+            node_3x.active = data.buyRatio > 1;
+            node_4x.active = data.buyRatio > 1;
+
+            node_1x.getChildByName("img1").getChildByName("lbl").getComponent(cc.Label).string = i18nMgr.Get("UIMTTbuyinDialogRatio").replace("{0}", "1");
+            node_1x.getChildByName("img2").getChildByName("lbl").getComponent(cc.Label).string = i18nMgr.Get("UIMTTbuyinDialogRatio").replace("{0}", "1");
+
+            node_2x.getChildByName("img1").getChildByName("lbl").getComponent(cc.Label).string = i18nMgr.Get("UIMTTbuyinDialogRatio").replace("{0}", data.buyRatio.toString());
+            node_2x.getChildByName("img2").getChildByName("lbl").getComponent(cc.Label).string = i18nMgr.Get("UIMTTbuyinDialogRatio").replace("{0}", data.buyRatio.toString());
+
+            node_3x.getChildByName("img1").getChildByName("lbl").getComponent(cc.Label).string = i18nMgr.Get("UIMTTbuyinDialogRatio").replace("{0}", "1");
+            node_3x.getChildByName("img2").getChildByName("lbl").getComponent(cc.Label).string = i18nMgr.Get("UIMTTbuyinDialogRatio").replace("{0}", "1");
+
+            node_4x.getChildByName("img1").getChildByName("lbl").getComponent(cc.Label).string = i18nMgr.Get("UIMTTbuyinDialogRatio").replace("{0}", data.buyRatio.toString());
+            node_4x.getChildByName("img2").getChildByName("lbl").getComponent(cc.Label).string = i18nMgr.Get("UIMTTbuyinDialogRatio").replace("{0}", data.buyRatio.toString());
+
+            let buttonCommit = btn_confim.getComponent(cc.Button);
+            let btnComImg = btn_confim.getChildByName("img_1");
+
+            switch (this.SingType)//0 金币，1 道具，2 全选
+            {
+                case 0:
+                    // ToggleCoin.isOn = true;
+                    // ToggleTicket.isOn = false;
+                    // ToggleCoin.interactable = false;
+                    // ToggleTicket.interactable = false;
+                    buttonCommit.interactable = data.coinnum + data.Fee <= GameCache.Instance.gold;
+                    btnComImg.active = data.coinnum + data.Fee <= GameCache.Instance.gold;
+                    // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
+                    if (this.curDialogData.buyRatio > 1) {
+                        // ToggleCoin1.isOn = true;
+                        // ToggleCoin2.isOn = false;
+                        node_3x.getChildByName("img2").active = true;
+                        node_4x.getChildByName("img2").active = false;
+                    }
+                    break;
+                case 1:
+                    // ToggleCoin.interactable = false;
+                    // ToggleTicket.interactable = false;
+                    // ToggleTicket.isOn = true;
+                    // ToggleCoin.isOn = false;
+                    // node_3x.getChildByName("img2").active = false;
+
+                    buttonCommit.interactable = this.cachePropBalance > 0;
+                    btnComImg.active = this.cachePropBalance > 0;
+                    // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
+                    if (this.curDialogData.buyRatio > 1) {
+                        // ToggleTicket1.isOn = true;
+                        // ToggleTicket2.isOn = false;
+                        node_1x.getChildByName("img2").active = true;
+                        node_2x.getChildByName("img2").active = false;
+                    }
+                    break;
+                case 2:
+                    // ToggleCoin.interactable = true;
+                    // ToggleTicket.interactable = true;
+                    // ToggleCoin.isOn = true;
+                    // node_3x.getChildByName("img2").active = true;
+                    // ToggleTicket.isOn = false;
+                    buttonCommit.interactable = data.coinnum + data.Fee <= GameCache.Instance.gold;
+                    btnComImg.active = data.coinnum + data.Fee <= GameCache.Instance.gold;
+                    // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
+                    if (this.curDialogData.buyRatio > 1) {
+                        // ToggleCoin1.isOn = true;
+                        node_3x.getChildByName("img2").active = true;
+                        // ToggleCoin2.isOn = false;
+                        node_4x.getChildByName("img2").active = false;
+
+                        node_1x.getChildByName("img2").active = false;
+                        node_2x.getChildByName("img2").active = false;
+                        // ToggleTicket1.isOn = false;
+                        // ToggleTicket2.isOn = false;
+                        // ToggleCoin.interactable = false;
+                        // ToggleTicket.interactable = false;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
         // textCommit.text = string.IsNullOrEmpty(curDialogData.contentCommit) ? $"Commit" : curDialogData.contentCommit;
@@ -182,6 +304,9 @@ export default class UIMttSignDialogComponent extends UIBase {
             }
         });
 
+
+        
+
     }
 
     setVisible(isShow) {
@@ -195,11 +320,12 @@ export default class UIMttSignDialogComponent extends UIBase {
         this.panel_click2.active = false;
     }
 
-    onClickCommit() {
-        // if (!buttonCommit.interactable)
-        // 	{
-        // 		return;
-        // 	}
+    onClickCommit(event) {
+        let target = event.currentTarget;
+        if (!target.getComponent(cc.Button).interactable)
+        {
+            // return;
+        }
         this.ApplyMatch();
     }
 
@@ -386,10 +512,10 @@ export default class UIMttSignDialogComponent extends UIBase {
         if (this.isUseFreeService) {
             if (this.curDialogData.isHunter == 0) {
                 //猎人赛处于关闭
-                // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(0);
+                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + "0";
             }
             else {
-                // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(0) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio);
+                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + "0" + "+" + (this.curDialogData.Fee * buyRatio);
             }
             return;
         }
@@ -410,10 +536,10 @@ export default class UIMttSignDialogComponent extends UIBase {
         if (discount == 0) {
             if (this.curDialogData.isHunter == 0) {
                 //猎人赛处于关闭
-                // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio);
+                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio);
             }
             else {
-                // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio);
+                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio);
             }
         }
         else {
@@ -430,7 +556,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     }
                 }
                 //猎人赛处于关闭
-                // coinnum.text = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(discountResult);
+                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (discountResult);
             }
             else {
                 if (DiscountType == 12) {
@@ -441,7 +567,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     if (discountResult >= this.curDialogData.coinnum * buyRatio + this.curDialogData.hunterFee * buyRatio + this.curDialogData.Fee * buyRatio)
                         discountResult = this.curDialogData.coinnum * buyRatio + this.curDialogData.hunterFee * buyRatio + this.curDialogData.Fee * buyRatio;
                 }
-                // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(discountResult);
+                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (discountResult);
             }
         }
 
@@ -455,10 +581,10 @@ export default class UIMttSignDialogComponent extends UIBase {
     UseLimitFreeNoServer(buyRatio) {
         if (this.curDialogData.isHunter == 0) {
             //猎人赛处于关闭
-            // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(curDialogData.coinnum);
+            this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum);
         }
         else {
-            // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(curDialogData.coinnum + curDialogData.hunterFee);
+            this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.hunterFee);
         }
     }
 
@@ -468,10 +594,10 @@ export default class UIMttSignDialogComponent extends UIBase {
     UseLimitFree(buyRatio) {
         if (this.curDialogData.isHunter == 0) {
             //猎人赛处于关闭
-            // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(curDialogData.coinnum + curDialogData.Fee);
+            this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.Fee);
         }
         else {
-            // coinnum.text = StringHelper.GetLongString(curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(curDialogData.Fee * buyRatio) + "-" + StringHelper.GetLongString(curDialogData.coinnum + curDialogData.hunterFee + curDialogData.Fee);
+            this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.hunterFee + this.curDialogData.Fee);
         }
     }
 

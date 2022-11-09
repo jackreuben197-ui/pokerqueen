@@ -356,7 +356,7 @@ export default class TexasGameMessageHandler {
     }
 
     Protocol_Holdem_UpBlind_Handler(Protocol_Holdem_UpBlind: ProtocolCode, Protocol_Holdem_UpBlind_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+        // throw new Error("Method not implemented.");
     }
     /// <summary>
     /// 一手结束清理桌面 消息回调

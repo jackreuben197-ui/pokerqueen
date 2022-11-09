@@ -533,7 +533,7 @@ export default class MttDetailForm extends BaseForm {
                     {
                         UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
                             if (rebuyCode == 0) {
-                                UIMatchMttModel.Instance.ShowGameplayUI(null, false, 0);
+                                UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
                                 // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
                             }
                             else {
