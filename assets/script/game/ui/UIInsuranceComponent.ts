@@ -257,6 +257,9 @@ export default class UIInsuranceComponent extends UIBase {
             hook.active = false;
             v.isChoose = false;
         })
+
+        let hook = btn_choose.getChildByName("hook");
+        hook.active = false;
     }
 
     CurrentSecureAmount() {
