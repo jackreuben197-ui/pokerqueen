@@ -137,11 +137,33 @@ export default class Seat {
 
         this.FsmLogicComponent.start();
 
-        this.InitUIStaticData();
-
+        //this.InitUIStaticData();
+        this.InitData();
+        this.InitUI();
+    }
+    InitData() {
+        let pos = GameUtil.Seat_ElementPos[GameCache.Instance.CurGame.HandCards];
+        Seat.myCardsPos = pos.myCardsPos;
+        Seat.backSmallCardPos = pos.backSmallCardPos;
+        Seat.smallCardPos = pos.smallCardPos;
+        Seat.myCardTypePos = pos.myCardTypePos;
+        this.listCardUIInfos = [];
+        this.listSmallCardUIInfos = [];
+        this.listImageSmallCardBack = [];
+        for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
+            this.listCardUIInfos.push(this.uirc.imageCards[i]);
+            this.listSmallCardUIInfos.push(this.uirc.imageSmallCards[i]);
+            this.listImageSmallCardBack.push(this.uirc.imageSmallCardBacks[i]);
+        }
+        this.ResetShowCardsId();
+    }
+    InitUI() {
+        this.StopAllActions();
+        this.HideBubbleInsurance();
+        this.HideBubbleInsuranceCountDown();
     }
     //停止所有动作
-    public stopAllActions() {
+    public StopAllActions() {
         this.uirc.imageIconChip.node.active = true;
         this.uirc.imageIconChip.node.stopAllActions();
         this.uirc.Head.stopAllActions();
@@ -153,6 +175,89 @@ export default class Seat {
             item.node.stopAllActions();
         })
         this.uirc.imageRecyclingWinChip.node.stopAllActions();
+
+        this.uirc.node.stopAllActions();
+    }
+    //刷新座位信息
+    public UpdateSeatUIInfo(info: SeatUIInfo, usercount: number): void {
+        this.PlayerCount = usercount;
+        this.ClientSeatId = + this.ui.name.substring(this.ui.name.length - 1);
+        this.seatUIInfo = info;
+        this.ui.setPosition(info.Pos);
+
+        this.uirc.imageBanker.setPosition(info.BankerPos);
+        this.uirc.transSmallCardBacks.setPosition(info.CardBackPos);
+        this.uirc.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
+
+        //是自己座位设置筹码数量位置
+        // if (this.IsMySeat) {//this.ClientSeatId == 0 && 
+        //     this.uirc.textCoin.node.setPosition(0, -130);
+        // } else {
+        //     this.uirc.textCoin.node.setPosition(0, -90);
+        // }
+
+        if (this.ui.x > 0) {
+            //this.uirc.armatureVoice.setPosition(-90, 50, 0);
+        }
+        else {
+            //this.uirc.armatureVoice.setPosition(90, 50, 0);
+        }
+
+        let mRectTransform = this.uirc.imageBubble.node;
+        //mRectTransform.SetParent(transBubble);
+        mRectTransform.setPosition(info.BubblePos);
+
+
+        // mRectTransform = imageBubbleInsurance.rectTransform;
+        // mRectTransform.SetParent(transBubble);
+        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        // mRectTransform.localPosition = info.BubblePos;
+
+        // mRectTransform = imageBubbleInsuranceCountDown.rectTransform;
+        // mRectTransform.SetParent(transBubble);
+        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
+        // {
+        //     mRectTransform.localPosition = info.AoMaHaInsurancePos;
+        // }
+        // else
+        // {
+        //     mRectTransform.localPosition = info.InsurancePos;
+        // }
+        // //
+        // mRectTransform = Image_BubbleInsuranceNum.rectTransform;
+        // mRectTransform.SetParent(transBubble);
+        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
+        // {
+        //     mRectTransform.localPosition = info.AoMaHaInsurancebubaoPos;
+        // }
+        // else
+        // {
+        //     mRectTransform.localPosition = info.InsurancebubaoPos;
+        // }
+        // //
+        // mRectTransform = Image_BubbleInsuranceToubao.rectTransform;
+        // mRectTransform.SetParent(transBubble);
+        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
+            // mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
+        }
+        else {
+            //mRectTransform.localPosition = info.InsurancetoubaoPos;
+        }
+        if (this.IsMySeat) {
+            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
+            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -416);
+        }
+        else {
+            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
+            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
+        }
     }
 
     /// <summary>
@@ -353,93 +458,6 @@ export default class Seat {
                 }
             }
         }
-    }
-    /// <summary>
-    /// 初始化SeatUI元素
-    /// </summary>
-    /// <param name="info"></param>
-    public InitSeatUIInfo(info: SeatUIInfo, usercount: number): void {
-        this.PlayerCount = usercount;
-        this.ClientSeatId = + this.ui.name.substring(this.ui.name.length - 1);
-        this.seatUIInfo = info;
-        this.ui.setPosition(info.Pos);
-
-        this.uirc.imageBanker.setPosition(info.BankerPos);
-        this.uirc.transSmallCardBacks.setPosition(info.CardBackPos);
-        this.uirc.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
-
-        //是自己座位设置筹码数量位置
-        // if (this.IsMySeat) {//this.ClientSeatId == 0 && 
-        //     this.uirc.textCoin.node.setPosition(0, -130);
-        // } else {
-        //     this.uirc.textCoin.node.setPosition(0, -90);
-        // }
-
-        if (this.ui.x > 0) {
-            //this.uirc.armatureVoice.setPosition(-90, 50, 0);
-        }
-        else {
-            //this.uirc.armatureVoice.setPosition(90, 50, 0);
-        }
-
-        let mRectTransform = this.uirc.imageBubble.node;
-        //mRectTransform.SetParent(transBubble);
-        mRectTransform.setPosition(info.BubblePos);
-
-
-        // mRectTransform = imageBubbleInsurance.rectTransform;
-        // mRectTransform.SetParent(transBubble);
-        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // mRectTransform.localPosition = info.BubblePos;
-
-        // mRectTransform = imageBubbleInsuranceCountDown.rectTransform;
-        // mRectTransform.SetParent(transBubble);
-        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
-        // {
-        //     mRectTransform.localPosition = info.AoMaHaInsurancePos;
-        // }
-        // else
-        // {
-        //     mRectTransform.localPosition = info.InsurancePos;
-        // }
-        // //
-        // mRectTransform = Image_BubbleInsuranceNum.rectTransform;
-        // mRectTransform.SetParent(transBubble);
-        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
-        // {
-        //     mRectTransform.localPosition = info.AoMaHaInsurancebubaoPos;
-        // }
-        // else
-        // {
-        //     mRectTransform.localPosition = info.InsurancebubaoPos;
-        // }
-        // //
-        // mRectTransform = Image_BubbleInsuranceToubao.rectTransform;
-        // mRectTransform.SetParent(transBubble);
-        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
-            // mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
-        }
-        else {
-            //mRectTransform.localPosition = info.InsurancetoubaoPos;
-        }
-        if (this.IsMySeat) {
-            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
-            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -416);
-        }
-        else {
-            this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
-            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
-        }
-
-        this.ClearUI();
-
     }
 
     /// <summary>
@@ -1692,14 +1710,8 @@ export default class Seat {
             this.FsmLogicComponent.stop();
         }
         this.ClearData();
-        this.ClearUI();
+        this.StopAllActions();
     }
-    //清理UI
-    ClearUI() {
-        this.HideBubbleInsurance();
-        this.HideBubbleInsuranceCountDown();
-    }
-
     /// <summary>
     /// 设置声纹状态按钮要到达的位置
     /// </summary>
@@ -1766,24 +1778,7 @@ export default class Seat {
         }
 
     }
-    InitUIStaticData() {
-        let pos = GameUtil.Seat_ElementPos[GameCache.Instance.CurGame.HandCards];
-        Seat.myCardsPos = pos.myCardsPos;
-        Seat.backSmallCardPos = pos.backSmallCardPos;
-        Seat.smallCardPos = pos.smallCardPos;
-        Seat.myCardTypePos = pos.myCardTypePos;
 
-
-        this.listCardUIInfos = [];
-        this.listSmallCardUIInfos = [];
-        this.listImageSmallCardBack = [];
-        for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
-            this.listCardUIInfos.push(this.uirc.imageCards[i]);
-            this.listSmallCardUIInfos.push(this.uirc.imageSmallCards[i]);
-            this.listImageSmallCardBack.push(this.uirc.imageSmallCardBacks[i]);
-        }
-        this.ResetShowCardsId();
-    }
     // 刷新托管
     public UpdateTrust() {
         this.uirc.Image_Trust.active = this.Player.IsAutoOp;
