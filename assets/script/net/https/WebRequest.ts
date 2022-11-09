@@ -11,6 +11,7 @@ export class Web_Login {
     static API: string = "/api/user/login";
     //字段声明
     static RequestParams: {
+        code?: string,        // 验证码
         email?: string,        // 邮箱
         phone?: string,        // 手机号
         password?: string,        // 密码MD5
