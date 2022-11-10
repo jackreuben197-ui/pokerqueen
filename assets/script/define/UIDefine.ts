@@ -94,6 +94,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_Service",
         Title: "UIMineMain01",
     },
+    //工会-消息推送
+    UIMsg_Send: {
+        UIType: UIType.Form,
+        Name: "UIMsg_Send",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIMsg_Send",
+        Title: "",
+    },
     //设置-消息
     UIMine_Message: {
         UIType: UIType.Form,

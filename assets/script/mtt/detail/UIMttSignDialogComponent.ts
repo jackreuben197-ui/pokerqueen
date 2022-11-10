@@ -160,22 +160,22 @@ export default class UIMttSignDialogComponent extends UIBase {
 
             this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
 
-            let lbl_ticket = this.getChildNodeOrComponent("lbl_ticket", cc.Label);
+            let lbl_last = this.getChildNodeOrComponent("lbl_last", cc.Label);
 
             if (this.totalRebuyTimes < 10000) {
                 //可重构次数   
                 //!!!!!特别注意:当后台设置不限制重构次数时,rebuy_times为10000,而left_rebuy_times在后端传输时做了int8转换越界变为16了,但只是传到前端的转化了后端正常,故在此做特别处理!!!!!!
                 if (UIMatchMttModel.Instance.MttInfo.state != null) {
-                    lbl_ticket.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", UIMatchMttModel.Instance.MttInfo.state.left_rebuy_times.toString());
+                    lbl_last.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", UIMatchMttModel.Instance.MttInfo.state.left_rebuy_times.toString());
                 } else {
-                    lbl_ticket.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", this.totalRebuyTimes.toString());
+                    lbl_last.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", this.totalRebuyTimes.toString());
                 }
             } else {
-                lbl_ticket.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", i18nMgr.Get("UIMTT_StateUnLimitRebuy"));
+                lbl_last.string = i18nMgr.Get("UIMTTSignDialogRemainingBuy").replace("{0}", i18nMgr.Get("UIMTT_StateUnLimitRebuy"));
             }
     
-            let lbl_last = this.getChildNodeOrComponent("lbl_last", cc.Label);
-            lbl_last.string = i18nMgr.Get("UIMTTSignDialogCanUseTickt").replace("{0}", this.cachePropBalance.toString());
+            let lbl_ticket = this.getChildNodeOrComponent("lbl_ticket", cc.Label);
+            lbl_ticket.string = i18nMgr.Get("UIMTTSignDialogCanUseTickt").replace("{0}", this.cachePropBalance.toString());
 
             let lbl_center = this.getChildNodeOrComponent("lbl_center", cc.Label);
             lbl_center.string = i18nMgr.Get("UIMTTbuyinDialog").replace("{0}", data.buyRatio.toString());

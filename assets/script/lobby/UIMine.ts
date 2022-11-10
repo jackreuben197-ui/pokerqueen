@@ -173,6 +173,7 @@ export default class UIMine extends UIBase {
     }
 
     onClickAchieve() {
-        UIComponent.open(UIDefine.UIMineArch);
+        UIComponent.open(UIDefine.UIMsg_Send)
+        // UIComponent.open(UIDefine.UIMineArch);
     }
 }
