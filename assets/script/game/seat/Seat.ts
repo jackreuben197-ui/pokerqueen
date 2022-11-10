@@ -4,6 +4,7 @@
 /// 声纹状态
 
 import UpdateComponent from "../../funcomponent/UpdateComponent";
+import { GM } from "../../gm/GMAPI";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -490,7 +491,7 @@ export default class Seat {
         this.SetNickName(this.Player?.nick || "");
     }
     public SetNickName(name: string): void {
-        this.uirc.Text_NickName.string = name;
+        this.uirc.Text_NickName.string = `${name}${GM.GetDebugSwitch(1) ? `:${this.seatID}` : ``}`;
     }
     public SetCoin(coin: string) {
         this.uirc.Text_Coin.string = coin;
@@ -869,12 +870,16 @@ export default class Seat {
                     hadCard = true;
                 }
                 //主位位移中显示卡牌
-                if ((hadCard || this.Player.isPlaying) && !GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
+                if ((hadCard || this.Player.isPlaying)) {
 
-                    for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
-                        this.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
+                    if (GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
+
+                        GameCache.Instance.CurGame.SeatPlayRecord.ShowCardsSeat = this;
+
+                    } else {
+
+                        this.AfterMoveShowCards();
                     }
-                    this.ShowCards(this.listCardUIInfos);
                 }
                 else {
                     this.HideCards(this.listCardUIInfos);
@@ -923,6 +928,14 @@ export default class Seat {
                 this.HideCardBack();
             }
         }
+    }
+
+    //座位运动完显示手牌
+    public AfterMoveShowCards() {
+        for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
+            this.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
+        }
+        this.ShowCards(this.listCardUIInfos);
     }
 
     /// <summary>

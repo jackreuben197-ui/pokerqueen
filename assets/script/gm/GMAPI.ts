@@ -1,8 +1,213 @@
 
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
+import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 
 export class GM {
+    private static __DebugSwitch: any = null;
+    public static SetDebugSwitch(obj) {
+        this.__DebugSwitch = obj;
+    }
+    /**
+     * id 
+     * 1:显示座位id
+     * 2:调试 非MTT 房间Enter数据
+     * 3.调试 MTT 房间Enter数据
+     */
+    public static GetDebugSwitch(id: number): boolean {
+        return !!~this.__DebugSwitch?.indexOf(id);
+    }
+
+    //MTT进入房间模拟数据
+    static Moni_MTT_ServerMessageEnterRoom: { seat_count: number, rec: ServerMessageEnterRoom.AsObject } = {
+        seat_count: 9,
+        rec:
+        {
+            "status": 0,
+            "gameStatus": 3,
+            "roomInfo": {
+                "ante": 0,
+                "smallBlind": 10000,
+                "scheduleStartTime": 0,
+                "schedulePlayDuration": 0,
+                "startTime": 1667992583,
+                "currentMinRate": 0,
+                "currentMaxRate": 0,
+                "limitIp": false,
+                "limitGps": false,
+                "insurance": false,
+                "limitPoolRateAllLv": false,
+                "limitMinPoolRate": 0,
+                "limitRetainMinRate": 0,
+                "limitTotalHandNumAllLv": false,
+                "limitTotalHandNum": 0,
+                "delaySeeCard": false,
+                "straddle": false,
+                "opDuration": 15,
+                "retainType": 0,
+                "muck": false,
+                "uniqueId": "1667992583",
+                "isAgreeSecondPcs": false
+            },
+            "handInfo": {
+                "handNum": 12,
+                "buSeatId": 7,
+                "sbSeatId": 7,
+                "bbSeatId": 5,
+                "publicCardsList": [
+
+                ],
+                "allBet": 40000,
+                "potsList": [
+
+                ],
+                "roundBet": 20000,
+                "insurancePool": 0,
+                "extPublicCardsList": [
+
+                ]
+            },
+            "playersList": [
+                {
+                    "seatId": 7,
+                    "userRid": 92955898,
+                    "action": 6,
+                    "cardsList": [
+                        17,
+                        24
+                    ],
+                    "name": "Player",
+                    "avatar": "http://static.awanptesting.com/image-normal/20220310094859-noCSy.png",
+                    "sex": 0,
+                    "chip": 10000,
+                    "handBet": 20000,
+                    "roundBet": 20000,
+                    "status": 1,
+                    "keepSeatLeftTime": -1,
+                    "buyInsuranceStep": 0,
+                    "buyInsuranceList": [
+
+                    ],
+                    "isAutoop": false,
+                    "roundActioned": true,
+                    "hunterKill": 0,
+                    "hunterKillAward": 0,
+                    "hunterKillAwardOther": 0,
+                    "hunterHeadValue": 0,
+                    "vip": 0
+                },
+                {
+                    "seatId": 5,
+                    "userRid": 98123898,
+                    "action": 3,
+                    "cardsList": [
+                        0,
+                        0
+                    ],
+                    "name": "Player",
+                    "avatar": "http://static.awanptesting.com/image-normal/20220310094859-noCSy.png",
+                    "sex": 0,
+                    "chip": 30000,
+                    "handBet": 20000,
+                    "roundBet": 20000,
+                    "status": 1,
+                    "keepSeatLeftTime": -1,
+                    "buyInsuranceStep": 0,
+                    "buyInsuranceList": [
+
+                    ],
+                    "isAutoop": false,
+                    "roundActioned": false,
+                    "hunterKill": 0,
+                    "hunterKillAward": 0,
+                    "hunterKillAwardOther": 0,
+                    "hunterHeadValue": 0,
+                    "vip": 0
+                }
+            ],
+            "myInfo": {
+                "chip": 10000,
+                "seatId": 7,
+                "mttCurrentRank": 2,
+                "rebuyTimes": 2,
+                "addon": false,
+                "hunterKill": 0,
+                "hunterKillAward": 0,
+                "hunterRank": 0,
+                "storeChips": 0,
+                "isAutoop": false,
+                "roundActioned": true,
+                "addonPlusMode1Times": 0,
+                "addonPlusMode2Times": 0,
+                "hunterKillAwardOther": 0,
+                "hunterHeadValue": 0
+            },
+            "operatorList": [
+                {
+                    "seatId": 5,
+                    "actionsList": [
+
+                    ],
+                    "insuranceLimitList": [
+
+                    ],
+                    "leftOpTime": 3,
+                    "delayTimes": 0,
+                    "shortcutsList": [
+
+                    ],
+                    "isInsurance": false,
+                    "isAgreeSecondPc": false,
+                    "opDeadline": 1667992945
+                }
+            ],
+            "mttInfo": {
+                "upBlindInterval": 120,
+                "blindType": 0,
+                "rebuyTimes": 2,
+                "maxRebuyBlindLevel": 15,
+                "rebuyScore": 20000,
+                "addOn": false,
+                "startAddOnBlindLevel": 0,
+                "endAddOnBlindLevel": 0,
+                "addOnScore": 0,
+                "huntMode": false,
+                "hunterBonus": 0,
+                "hunterFee": 0,
+                "poolFee": 0,
+                "serviceFee": 500,
+                "partialBringIn": false,
+                "moneySync": false,
+                "partialBringInReturnBlindLevel": 0,
+                "buyPropId": 0,
+                "propBuyType": 0,
+                "addOnPlusMode1": false,
+                "addOnPlusMode1Limit": 0,
+                "addOnPlusMode1MaxTimes": 0,
+                "addOnPlusMode2": false,
+                "addOnPlusMode2EndBl": 0,
+                "addOnPlusMode2MaxTimes": 0,
+                "buyRatio": 1
+            },
+            "mttProgress": {
+                "upBlindLeftTime": 21,
+                "nextAnte": 2500,
+                "nextSmallBlind": 12500,
+                "startCountDown": 0,
+                "blindLevel": 4,
+                "canAddOn": false,
+                "addonMode": 0,
+                "isBubbleWait": false
+            },
+            "mttRoom": {
+                "roomId": 1,
+                "matchId": 93226850
+            }
+        }
+    }
+
+
+
     /**
      * 用户信息请求
      */
@@ -24,6 +229,14 @@ export class GM {
             });
         });
     }
+
+
+
+
+
+
+
+
 }
 (window as any).GM = GM;
 export var GM_Templete = {

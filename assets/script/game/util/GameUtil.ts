@@ -1,6 +1,7 @@
 import { GameConfig } from "../../config/GameConfig";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefineType } from "../../define/UIDefine";
+import { GM } from "../../gm/GMAPI";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
@@ -124,7 +125,7 @@ export default class GameUtil {
 
         this.GameMap = new Map();
         //1.TexasGame基础
-        this.GameMap.set(RoomType.TexasHoldemStandardNoLimit, TexasGame);// 普通
+        this.GameMap.set(RoomType.TexasHoldemStandardNoLimit, GM.GetDebugSwitch(3) ? MTTGame : TexasGame);// 普通
         this.GameMap.set(RoomType.TexasHoldemStandardPotLimit, TexasGame);// 普通底池限注
         this.GameMap.set(RoomType.TexasHoldemSixPlusFixedNoLimit, TexasGame);// 普通短牌
         this.GameMap.set(RoomType.TexasHoldemSixPlusFixedPotLimit, TexasGame);// 普通短牌底池限注
