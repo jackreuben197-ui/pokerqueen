@@ -44,6 +44,8 @@ import { ClientMessageBuyInsuranceActive, ServerMessageBuyInsuranceActive } from
 import { ServerMessageShowcards } from "../../protobuf/holdem/recv_showcards_pb";
 import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_up_blind_pb";
 import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_buy_insurance_pb";
+import { ClientMessageAutoOpActive, ServerMessageAutoOpActive } from "../../protobuf/holdem/req_auto_op_active_pb";
+import { ServerMessageAutoOp } from "../../protobuf/holdem/recv_auto_op_pb";
 
 export class ProtocolCommon {
 
@@ -347,6 +349,15 @@ export const ProtocolMap = {
     //升盲
     [ProtocolCode.Protocol_Holdem_UpBlind]: {
         Server: ServerMessageUpBlind
+    },
+    //主动自动操作
+    [ProtocolCode.Protocol_Holdem_AutoOpActive]: {
+        Client: ClientMessageAutoOpActive,
+        Server: ServerMessageAutoOpActive,
+    },
+    //被动自动操作
+    [ProtocolCode.Protocol_Holdem_AutoOp]: {
+        Server: ServerMessageAutoOp,
     }
 }
 

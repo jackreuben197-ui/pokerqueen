@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 17:55:21
+ * @LastEditTime: 2022-11-08 12:33:27
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -173,6 +173,9 @@ export default class UIManageLabor extends BaseForm {
 
     clickJijin() {
         UIComponent.open(UIDefine.MyWalletForm, true)
+    }
+    clickLevel() {
+        UIComponent.open(UIDefine.UIClubLevel)
     }
 
     clickRate() {

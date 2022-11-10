@@ -137,11 +137,11 @@ export default class UITexasMenuComponent extends UIBase {
         this.outTipNode = this.getChildNodeOrComponent("outTipNode");
         this.outGold = this.getChildNodeOrComponent("outGold", cc.Label);
         this.buildMenuButtons();
-        this.game = GameCache.Instance.CurGame;
     }
 
     onShow(param?: any) {
         super.onShow(param);
+        this.game = GameCache.Instance.CurGame;
         this.game.UpdateMenu();
         this.updateBean();
         if (null != this.transSubMenu)

@@ -4,11 +4,18 @@ import { GameCache } from "./GameCache";
 import Seat, { VoiceprintState } from "./seat/Seat";
 import { SeatEmpty, SeatSit, SeatStandup, SeatWaitStart } from "./SeatStateHandler";
 
+
+
+
+
+
+
 export class SeatFSM {
 
     constructor(public id: number, public seat: Seat) {
 
     }
+
     //#region 座位待机
     public IdleEnter(): void {
         //设置座位节点激活显示
@@ -26,7 +33,6 @@ export class SeatFSM {
         this.seat.Player = null;
         this.seat.SetNickName("");
         this.seat.SetCoin("");
-        this.seat.stopAllActions();
         this.seat.uirc.Text_NickName.node.active = true;
         this.seat.uirc.imageBanker.active = false;
         this.seat.uirc.Image_CoinShadow.active = false;
@@ -57,7 +63,7 @@ export class SeatFSM {
         this.seat.uirc.WaitforthenextmoveTips.node.active = false;
         this.seat.FoldHeadGray(false);
 
-        this.seat.ui.stopAllActions();
+        this.seat.StopAllActions();
 
         // if (null != armatureVoice.dragonAnimation && armatureVoice.dragonAnimation.isPlaying)
         //     armatureVoice.dragonAnimation.Stop();
@@ -98,9 +104,6 @@ export class SeatFSM {
         this.seat.uirc.imageHeadFrame.node.active = true;
         this.seat.uirc.imageEmpty.node.active = false;
 
-
-
-
     }
 
     public SitExecute(): void {
@@ -114,16 +117,10 @@ export class SeatFSM {
 
     //#region 坐下动画
     SitAnimationEnter() {
-        cc.tween(this.seat.uirc.Head).to(.15, { scaleX: 0 }).then(cc.callFunc(() => {
+        cc.tween(this.seat.uirc.Head).to(0.15, { scaleX: 0 }).then(cc.callFunc(() => {
             this.seat.FsmLogicComponent.SM.ChangeState(SeatSit.Instance);
             this.seat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
         })).to(.15, { scaleX: 1 }).start();
-
-        // cc.tween(this.seat.uirc.Head).sequence(cc.scaleTo(0.15, 0, 1), cc.callFunc(() => {
-        //     this.seat.FsmLogicComponent.SM.ChangeState(SeatSit.Instance);
-        //     this.seat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
-        // }), cc.scaleTo(0.15, 1, 1)).start();
-
     }
     SitAnimationExecute() {
     }
@@ -183,7 +180,7 @@ export class SeatFSM {
     //#region 站起动画
     public StandupAnimationEnter(): void {
         this.seat.FsmLogicComponent.SM.ChangeState(SeatStandup.Instance);
-        cc.tween(this.seat.uirc.Head).sequence(cc.scaleTo(0.15, 0, 1), cc.scaleTo(0.15, 1, 1)).start();
+        cc.tween(this.seat.uirc.Head).to(0.15, { scaleX: 0 }).to(.15, { scaleX: 1 }).start();
     }
 
     public StandupAnimationExecute(): void {

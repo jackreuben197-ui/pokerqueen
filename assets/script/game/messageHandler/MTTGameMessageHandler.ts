@@ -1,11 +1,14 @@
+import { UIDefine } from "../../define/UIDefine";
 import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { Def } from "../../protobuf/holdem/define_pb";
 import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_leave_notification_pb";
 import UIComponent from "../../ui/UIComponent";
+import { GameCache } from "../GameCache";
 import MTTGame from "../texas/MTTGame";
 import { TexasGameState } from "../TexasGameState";
+import { MineRankData } from "../ui/UIMTTMineRankComponent";
 import MTTGameUtils from "../util/MTTGameUtils";
 import TexasGameMessageHandler from "./TexasGameMessageHandler";
 
@@ -81,12 +84,12 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
     }
     private async ShowMineRank(isRebuy: boolean = false) {
         await TimeHelper.Sleep(2000);
-        // UIComponent.Instance.ShowNoAnimation(UIType.UIMTTMineRank, new UIMTTMineRankComponent.MineRankData()
-        // {
-        //         matchId = GameCache.Instance.match_id,
-        //         matchName = GameCache.Instance.roomName,
-        //         isRebuy = isRebuy,
-        //     });
+
+        UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
+            matchId: GameCache.Instance.match_id,
+            matchName: GameCache.Instance.roomName,
+            isRebuy: isRebuy
+        }))
         this.game.SMAgency.ChangeGameState(TexasGameState.Exit, null);
     }
 }

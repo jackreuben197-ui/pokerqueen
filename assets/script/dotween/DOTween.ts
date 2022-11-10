@@ -4,6 +4,7 @@ export class DOTween {
     }
 }
 export type sequence_unit = { t?: Function, duration?: number, args?: any };
+
 export class Sequence<T> {
 
     private _tween: cc.Tween = null;

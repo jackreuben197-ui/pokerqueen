@@ -332,6 +332,7 @@ export default class UITexas extends BaseScene {
 
         this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
 
+        this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust)
 
     }
 
@@ -404,12 +405,13 @@ export default class UITexas extends BaseScene {
             this.Text_InvateCode.node.active = false;
         }
     }
-    // CanClick(): boolean {
-    //     if (GetNowTime() - lastClickTime > 500) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
+    onClickCancelTrust() {
+        if (!this.game.mainPlayer.IsAutoOp) {
+            return;
+        }
+        this.game.SendTrustAction(false);
+    }
+
     private sideClick(e: cc.Button) {
         switch (e.node) {
             case this.menu_btn://菜单按钮

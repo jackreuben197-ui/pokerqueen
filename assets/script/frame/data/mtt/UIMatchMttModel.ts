@@ -2,6 +2,8 @@ import { ProcedureEnum, UIType } from "../../../define/EIDefine";
 import { UIDefine, UIDefineType } from "../../../define/UIDefine";
 import { GameCache } from "../../../game/GameCache";
 import MTTGame from "../../../game/texas/MTTGame";
+import { TexasGameState } from "../../../game/TexasGameState";
+import { MineRankData } from "../../../game/ui/UIMTTMineRankComponent";
 import GameUtil from "../../../game/util/GameUtil";
 import { CPErrorCode } from "../../../i18n/CPErrorCode";
 import { i18nMgr } from "../../../i18n/i18nMgr";
@@ -167,14 +169,11 @@ export class UIMatchMttModel {
 
 
 
-    MTTRebuyActionHandler(resultCallback, exceptionCallback)
-    {
+    MTTRebuyActionHandler(resultCallback, exceptionCallback) {
         let curGame = GameCache.Instance.CurGame as MTTGame;
-        this.RequestMTTDetails(this.MttInfo.mtt.match_id, code =>
-        {
-            if (code == 0)
-            {
-                let cost : any;
+        this.RequestMTTDetails(this.MttInfo.mtt.match_id, code => {
+            if (code == 0) {
+                let cost: any;
                 let score = curGame == null ? this.MttInfo.mtt.initial_score : curGame.RebuyScore;
                 let remain_count = curGame == null ? this.MttInfo.state.left_rebuy_times : curGame.RemainRebuyCount;
                 let upBlTime = this.MttInfo.mtt.upblind_interval;
@@ -184,46 +183,45 @@ export class UIMatchMttModel {
                 let rebuyTimes = this.MttInfo.state.left_rebuy_times;
 
                 //string content = string.Format(LanguageManager.Get("MTT_Rebuy_Alert"), StringHelper.GetLongString(cost), StringHelper.GetLongString(score), remain_count);
-                let dialogData = 
+                let dialogData =
                 {
-                    type :  DialogType.CommitCancel,
-                    title : i18nMgr.Get("UIMTTSignDialogReBuyTitle"),
+                    type: DialogType.CommitCancel,
+                    title: i18nMgr.Get("UIMTTSignDialogReBuyTitle"),
                     //content = content,
 
-                    coinnum : this.MttInfo.mtt.apply_fee_pool,
-                    hunterFee : this.MttInfo.mtt.apply_fee_hunter,
-                    Fee : this.MttInfo.mtt.apply_fee_service,
-                    isHunter : this.MttInfo.mtt.hunter_on,
-                    buyTimes : rebuyTimes,
-                    buyRatio : this.MttInfo.mtt.buy_ratio,
+                    coinnum: this.MttInfo.mtt.apply_fee_pool,
+                    hunterFee: this.MttInfo.mtt.apply_fee_hunter,
+                    Fee: this.MttInfo.mtt.apply_fee_service,
+                    isHunter: this.MttInfo.mtt.hunter_on,
+                    buyTimes: rebuyTimes,
+                    buyRatio: this.MttInfo.mtt.buy_ratio,
 
-                    buyin_free_times : this.MttInfo.mtt.buyin_free_times,
-                    rebuy_free_times : this.MttInfo.mtt.rebuy_free_times,
-                    multi_ratio_free_times : this.MttInfo.mtt.multi_ratio_free_times,
-                    addon_free_times : this.MttInfo.mtt.addon_free_times,
-                    buyin_free_incl_svr : this.MttInfo.mtt.buyin_free_incl_svr,
-                    rebuy_free_incl_svr : this.MttInfo.mtt.rebuy_free_incl_svr,
-                    multi_ratio_free_incl_svr : this.MttInfo.mtt.multi_ratio_free_incl_svr,
-                    addon_free_incl_svr : this.MttInfo.mtt.addon_free_incl_svr,
-                    mTTJoinMode : MTTJoinMode.Rebuy,
+                    buyin_free_times: this.MttInfo.mtt.buyin_free_times,
+                    rebuy_free_times: this.MttInfo.mtt.rebuy_free_times,
+                    multi_ratio_free_times: this.MttInfo.mtt.multi_ratio_free_times,
+                    addon_free_times: this.MttInfo.mtt.addon_free_times,
+                    buyin_free_incl_svr: this.MttInfo.mtt.buyin_free_incl_svr,
+                    rebuy_free_incl_svr: this.MttInfo.mtt.rebuy_free_incl_svr,
+                    multi_ratio_free_incl_svr: this.MttInfo.mtt.multi_ratio_free_incl_svr,
+                    addon_free_incl_svr: this.MttInfo.mtt.addon_free_incl_svr,
+                    mTTJoinMode: MTTJoinMode.Rebuy,
 
-                    coinBalance : i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", GameCache.Instance.gold.toString()),
-                    contentCommit : CPErrorCode.LanguageDescription(10012),
-                    contentCancel : CPErrorCode.LanguageDescription(10013),
-                    rebuyData :
+                    coinBalance: i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", GameCache.Instance.gold.toString()),
+                    contentCommit: CPErrorCode.LanguageDescription(10012),
+                    contentCancel: CPErrorCode.LanguageDescription(10013),
+                    rebuyData:
                     {
-                        upblindInterval : upBlTime,
-                        rebuyBlind : rebuyBl,
-                        starTime : starTime
+                        upblindInterval: upBlTime,
+                        rebuyBlind: rebuyBl,
+                        starTime: starTime
                     },
-                    actionCommit : (isticket, buyRatio, used_prop_id, prop_type, use_free) =>
-                    {
-                        let req = { 
-                            ticket : isticket, 
-                            ratio : buyRatio, 
-                            used_prop_id : used_prop_id, 
-                            prop_type : prop_type, 
-                            use_free : use_free 
+                    actionCommit: (isticket, buyRatio, used_prop_id, prop_type, use_free) => {
+                        let req = {
+                            ticket: isticket,
+                            ratio: buyRatio,
+                            used_prop_id: used_prop_id,
+                            prop_type: prop_type,
+                            use_free: use_free
                         };
 
                         let requestData =
@@ -251,24 +249,20 @@ export class UIMatchMttModel {
                             }.bind(this)
                         });
                     },
-                    actionCancel : () =>
-                    {
-                        if (curGame != null)
-                        {
-                            // UIComponent.Instance.ShowNoAnimation(UIType.UIMTTMineRank, new UIMTTMineRankComponent.MineRankData()
-                            // {
-                            // 	matchId = GameCache.Instance.match_id,
-                            // 	matchName = GameCache.Instance.roomName,
-                            // 	isRebuy = true,
-                            // });
-                            // curGame.ChangeGameState(TexasGameState.Exit, null);
+                    actionCancel: () => {
+                        if (curGame != null) {
+                            UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
+                                matchId: GameCache.Instance.match_id,
+                                matchName: GameCache.Instance.roomName,
+                                isRebuy: true
+                            }))
+                            GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.Exit, null);
                         }
                     }
                 }
                 UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
             }
-            else
-            {
+            else {
                 ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(code));
             }
         }, null);
