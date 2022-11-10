@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 16:46:21
+ * @LastEditTime: 2022-11-10 14:43:43
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -42,6 +42,12 @@ enum memberType {
     admin,
     member
 }
+enum layerType {
+    chess = 0,
+    mess = 1,
+
+}
+
 export class ClubAdmin {
     _data = null
     constructor(data) {
@@ -86,15 +92,16 @@ export default class UILabarPlayViewForm extends UIBase {
 
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
+    private subView: cc.Node = null;
+    private messView: cc.Node = null;
+    // private _tabViewData: Array<UIDefineType> = [
+    //     UIDefine.UIMatchChessView,
+    //     UIDefine.UIMatchSportsView,
+    //     UIDefine.UIMatchGameView,
+    //     UIDefine.UIMatchRealityView,
 
-    private _tabViewData: Array<UIDefineType> = [
-        UIDefine.UIMatchChessView,
-        UIDefine.UIMatchSportsView,
-        UIDefine.UIMatchGameView,
-        UIDefine.UIMatchRealityView,
-
-    ]
-
+    // ]
+    _curType = 0;
     private _chessView: UIBase = null;
     private _loadingChessBiew: boolean = false;
 
@@ -105,14 +112,46 @@ export default class UILabarPlayViewForm extends UIBase {
         super.lateLoad();
 
         this.tabBtnsParent = this.getChildNodeOrComponent("tabBtns");
-        let subView: cc.Node = this.getChildNodeOrComponent("subView");
-        this.tabViewParents = subView.children;
+        this.subView = this.getChildNodeOrComponent("subView");
+        this.tabViewParents = this.subView.children;
+
+        this.messView = this.getChildNodeOrComponent("messView");
     }
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.listen(EventName.refreshActive, this.initActive)
+        this.tabBtnsParent.children.forEach((item, index) => {
+            this.bindClick(item, this.onClickTabBtns, index);
+        })
     }
+    private onClickTabBtns(index: number): void {
+        this.switchTab(index);
+    }
+    switchTab = (type: layerType) => {
+        if (this._curType != type) {
+            this._curType = type;
+            this.switchTabBtnState();
+        }
+
+        this.subView.active = this._curType == layerType.chess;
+        this.messView.active = !this.subView.active
+
+
+    }
+    switchTabBtnState() {
+        this.tabBtnsParent.children.forEach((item, index) => {
+            let choose = item.getChildByName("choose");
+            let normal = item.getChildByName("normal");
+            choose.active = this._curType == index;
+            normal.active = this._curType != index;
+        })
+
+        // this.tabViewParents.forEach((parent, index) => {
+        //     parent.active = this._curType == index;
+        // })
+    }
+
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
