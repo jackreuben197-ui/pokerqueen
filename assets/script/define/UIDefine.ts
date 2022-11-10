@@ -557,8 +557,15 @@ export const UIDefine = {
         Name: "UIMineThridBind",
         Bundle: null,
         Path: "main/lobby/prefab/UIMineThridBind",
-    }
-
+    },
+    //比赛结算等级
+    UIMTTMineRankComponent: {
+        UIType: UIType.CommonUI,
+        Name: "UIMTTMineRankComponent",
+        Bundle: 'texas',
+        Path: "prefab/ui/UIMTTMineRankComponent",
+    },
+    
 
 
 

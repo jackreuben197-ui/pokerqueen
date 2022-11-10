@@ -203,10 +203,9 @@ export default class TexasGameProtocol {
                 this.game.ShowWaitBlindBtn();
                 mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind.Instance);
             }
-            else {
-                mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
-            }
-
+            // else {
+            //     mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+            // }
         }
 
         mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
@@ -1756,9 +1755,9 @@ export default class TexasGameProtocol {
     //主动购买保险
     HANDLER_REQ_BUY_INSURANCE(rec: ServerMessageBuyInsuranceActive.AsObject) {
         if (rec == null) return;
-        // if (rec.status != 0) {
-
-        // }
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status))
+        }
     }
     //保险赔付
     HANDLER_REQ_CLAIM_INSURANCE(rec: ServerMessageBuyInsurance.AsObject) {

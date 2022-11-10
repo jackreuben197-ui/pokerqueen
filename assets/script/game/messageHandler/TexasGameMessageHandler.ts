@@ -355,8 +355,8 @@ export default class TexasGameMessageHandler {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_BringIn_Handler`);
     }
 
-    Protocol_Holdem_UpBlind_Handler(Protocol_Holdem_UpBlind: ProtocolCode, Protocol_Holdem_UpBlind_Handler: any, arg2: this) {
-        throw new Error("Method not implemented.");
+    public Protocol_Holdem_UpBlind_Handler(rec) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_UpBlind_Handler`);
     }
     /// <summary>
     /// 一手结束清理桌面 消息回调

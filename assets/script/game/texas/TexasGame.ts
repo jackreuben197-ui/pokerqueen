@@ -51,6 +51,7 @@ import { AddClipsData } from "./../ui/UIAddChipsComponent";
 import UIOperationComponent, { OperationData } from "./../ui/UIOperationComponent";
 import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
+import MTTGame from "./MTTGame";
 //const PBTypes = Def.Types;
 
 
@@ -353,11 +354,6 @@ export default class TexasGame {
     public stopUpdatePublicCardsAnimation: boolean = false;
 
     /// <summary>
-    /// 等待翻牌结束，播放赢家牌型
-    /// </summary>
-    public waittingUpdatePublicCardsAnimation: boolean = false;
-
-    /// <summary>
     /// 是否正在播放大牌动画
     /// </summary>
     public isPlayingBigWinAnimation: boolean = false;
@@ -379,7 +375,6 @@ export default class TexasGame {
     sequencePlayFirstRecyclingChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequencePlayRecyclingChipAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequenceUpdatePublicCards: Sequence<{}> = null;
-    // { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequenceSecondUpdatePublicCards: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
     sequencePlayEndPublicCardsAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
 
@@ -1084,7 +1079,7 @@ export default class TexasGame {
             //座位位移
             cc.tween(mSeat.ui).to(0.3, { position: mInfos[tmp].Pos }).call(() => {
                 cc.log("座位运动完毕");
-                mSeat.InitSeatUIInfo(mInfos[tmp], this.listSeat.length);
+                mSeat.UpdateSeatUIInfo(mInfos[tmp], this.listSeat.length);
                 this.SeatPlayRecord.SeatMove = false;
                 this.SeatPlayRecord.PlayDealFunc?.(this.SeatPlayRecord.StartInfo);
             }).start();
@@ -1631,7 +1626,6 @@ export default class TexasGame {
         }
 
         // 公共牌动画
-        this.waittingUpdatePublicCardsAnimation = true;
         this.sequenceUpdatePublicCards = DOTween.Sequence(this.sequenceUpdatePublicCards_obj);
         //{ tween: cc.tween(this.uirc.node), IsPlaying: true };
         //let tween: cc.Tween = this.sequenceUpdatePublicCards.tween;
@@ -1801,7 +1795,7 @@ export default class TexasGame {
                     mSeat.UpdateCardType(cardType, highlightCards);
                 }
                 tweenCallback?.();
-                this.waittingUpdatePublicCardsAnimation = false;
+
 
             })
         }
@@ -1809,7 +1803,6 @@ export default class TexasGame {
 
             this.sequenceUpdatePublicCards.OnComplete(() => {
                 tweenCallback?.();
-                this.waittingUpdatePublicCardsAnimation = false;
             })
         }
 
@@ -2248,14 +2241,6 @@ export default class TexasGame {
                     break;
                 }
             }
-        }
-
-        if (this.waittingUpdatePublicCardsAnimation) {
-
-            //sequencePlayEndPublicCardsAnimation.SetDelay(0.5f);
-        }
-        else {
-
         }
     }
 
@@ -2764,7 +2749,6 @@ export default class TexasGame {
         this.cacheSitdownSeatId = 0;
         this.waittingGPSCallback = false;
         this.stopUpdatePublicCardsAnimation = false;
-        this.waittingUpdatePublicCardsAnimation = false;
         this.isAllinGetPlayerCards = false;
         // this.barrageRecordList = []
         // this.barrageCountDown = -1;
@@ -2899,7 +2883,7 @@ export default class TexasGame {
             console.log(mInfos[i].Pos.toString());
             seatUI.scale = 1;
             let mSeat: Seat = new Seat(i, seatUI);
-            mSeat.InitSeatUIInfo(mInfos[i], seatCount);
+            mSeat.UpdateSeatUIInfo(mInfos[i], seatCount);
             this.listSeat.push(mSeat);
             this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
         }
