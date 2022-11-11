@@ -1683,6 +1683,7 @@ export class Web_Org_Club_Get {
         more_contact: string,
         club_id: number,
         level: number,
+        upper_limit:: number,
     } = null;
     static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;
