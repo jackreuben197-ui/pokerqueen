@@ -1682,6 +1682,7 @@ export class Web_Org_Club_Get {
         club_name: string,
         more_contact: string,
         club_id: number,
+        level: number,
     } = null;
     static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;
@@ -2323,10 +2324,10 @@ export class API_PROP_TASK_LIST {
 
     //字段声明
     static RequestParams: {
-        type     : number, // 类型ID  任务类型  1；每日任务 2：成就任务
-        timezone : number, // 时区 0-巴西 1-utc
-        limit    : number,
-        offset   : number,
+        type: number, // 类型ID  任务类型  1；每日任务 2：成就任务
+        timezone: number, // 时区 0-巴西 1-utc
+        limit: number,
+        offset: number,
     } = null;
 
     static ResponseData: {
@@ -2454,8 +2455,8 @@ export class API_PROP_TASK_RECEIVE {
 
     //字段声明
     static RequestParams: {
-        task_id     : number, 
-        timezone    : number,
+        task_id: number,
+        timezone: number,
     } = null;
 
     static ResponseData: {
@@ -3363,6 +3364,97 @@ export class APIBindThrid {
         code?: number, message?: string, data?: typeof APIBindPhone.ResponseData
     };
 }
+export class APIOrgClubLevelBenefit {
+    public static API: string = "/api/org/club/level_benefit";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubLevelBenefit.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubLevelBenefit.ResponseData
+    };
+}
+
+export class APIOrgClubLevelInfo {
+    public static API: string = "/api/org/club/level_info";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubLevelInfo.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubLevelInfo.ResponseData
+    };
+}
+export class APIOrgClubLevelCost {
+    public static API: string = "/api/org/club/level_cost";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubLevelCost.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubLevelCost.ResponseData
+    };
+}
+
+export class APIOrgClubUpLevel {
+    public static API: string = "/api/org/club/level_up";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUpLevel.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUpLevel.ResponseData
+    };
+}
+
+
+export class APIOrgClubRoom {
+    public static API: string = "/api/roomcenter/club/rooms";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubRoom.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubRoom.ResponseData
+    };
+}
+
+
 
 
 

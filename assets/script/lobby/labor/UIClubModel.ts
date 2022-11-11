@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-01 11:23:13
+ * @LastEditTime: 2022-11-11 16:22:50
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgClubCreateRoomAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgClubCreateRoomAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -637,6 +637,96 @@ export class UIClubModel {
             });
         });
     }
+
+    APIOrgClubLevelBenefit(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubLevelBenefit,
+                body: APIOrgClubLevelBenefit.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubLevelBenefit.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubLevelInfo(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubLevelInfo,
+                body: APIOrgClubLevelInfo.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubLevelInfo.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubLevelCost(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubLevelCost,
+                body: APIOrgClubLevelCost.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubLevelCost.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgClubLevelInfo(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubLevelInfo,
+                body: APIOrgClubLevelInfo.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubLevelInfo.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubUpLevel(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubUpLevel,
+                body: APIOrgClubUpLevel.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgClubUpLevel.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    APIOrgClubRoom() {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubRoom,
+                body: APIOrgClubRoom.Request({}),
+                onSuccess: function () {
+                    resolve(APIOrgClubRoom.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
 
 
 
