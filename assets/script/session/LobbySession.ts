@@ -18,9 +18,6 @@ import GlobalSession from "./GlobalSession";
 
 export default class LobbySession {
 
-
-
-
     //房间名多语言配置
     static RoomLanguageDic_CN = {};
     static RoomLanguageDic_US = {};

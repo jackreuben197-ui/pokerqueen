@@ -1444,13 +1444,15 @@ export default class GameUtil {
      * @returns 
      */
     public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUIs?: UIDefineType[]) {
+        let room_type: number = enter_room_info.room_type;
+        console.log("EnterRoom room_type:", room_type);
         //未开放房间类型
-        if (!GameUtil.IsOpenRoomType(enter_room_info.room_type)) {
+        if (!GameUtil.IsOpenRoomType(room_type)) {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
             return;
         }
-        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
-            if (RoomType[enter_room_info.room_type]) {
+        if (WebSocketClient.CheckOpen()) {
+            if (RoomType[room_type]) {
                 let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch(() => { });
 
                 if (response) {
@@ -1464,8 +1466,6 @@ export default class GameUtil {
                 console.warn("房间类型未解析:", enter_room_info.room_type);
                 UIComponent.Instance.Toast(`room_type:${enter_room_info.room_type} is error`);
             }
-        } else {
-            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
         }
     }
 
@@ -1479,8 +1479,7 @@ export default class GameUtil {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
             return;
         }
-
-        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
+        if (WebSocketClient.CheckOpen()) {
             if (RoomType[room_type]) {
                 ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, param);//[this.UIDefine, false, 0]
             }
@@ -1489,11 +1488,6 @@ export default class GameUtil {
                 UIComponent.Instance.Toast(`room_type:${room_type} is error`);
             }
         }
-        else {
-            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
-        }
-
-
     }
 }
 (window as any).GameUtil = GameUtil;

@@ -1,3 +1,4 @@
+import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import TexasGame from "../game/texas/TexasGame";
 import AudioManager from "./manager/AudioManager";
@@ -41,6 +42,10 @@ class GameControl {
         return GameCache.Instance.CurGame;
     }
 
+    get uc() {
+        return UpdateComponent.Instance;
+    }
+
     init() {
         this.data.init();
         this.sdk.init();
@@ -48,7 +53,7 @@ class GameControl {
 
 }
 
-let GC = GameControl.instance;
+let GC: GameControl = GameControl.instance;
 export default GC;
 
 (window as any).GC = GC;

@@ -83,6 +83,11 @@ export default class Main extends cc.Component {
         }, 1);
 
     }
+
+    protected update(dt: number): void {
+        GC.uc.Update(dt);
+    }
+
     start() {
         console.log("start");
         window.Buffer = Buffer;

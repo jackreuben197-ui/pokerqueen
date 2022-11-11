@@ -1,12 +1,18 @@
 
 import { GameCache } from "../game/GameCache";
+import Seat from "../game/seat/Seat";
 import HttpRequest from "../net/https/HttpRequest";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 
 export class GM {
-    private static __DebugSwitch: any = null;
-    public static SetDebugSwitch(obj) {
-        this.__DebugSwitch = obj;
+    private static __DebugSwitch: number[] = null;
+    public static SetDebugSwitch(obj: string) {
+        if (!obj) return;
+        let list: any[] = obj.split(",");
+        for (let i = 0; i < list.length; i++) {
+            list[i] = +list[i];
+        }
+        this.__DebugSwitch = list;
     }
     /**
      * id 
@@ -15,7 +21,7 @@ export class GM {
      * 3.调试 MTT 房间Enter数据
      */
     public static GetDebugSwitch(id: number): boolean {
-        return !!~this.__DebugSwitch?.indexOf(id);
+        return this.__DebugSwitch?.indexOf(id) > -1;
     }
 
     //MTT进入房间模拟数据
@@ -231,12 +237,15 @@ export class GM {
     }
 
 
-
-
-
-
-
-
+    //显示 座位ID
+    static ShowSeatIDs() {
+        let seat_count = GameCache.Instance.CurGame?.listSeat?.length;
+        if (seat_count) {
+            GameCache.Instance.CurGame?.listSeat.forEach((item, index) => {
+                item.uirc.Text_NickName.string = `${item.Player?.nick ?? ""}:${index}`;
+            })
+        }
+    }
 }
 (window as any).GM = GM;
 export var GM_Templete = {
