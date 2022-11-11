@@ -43,7 +43,7 @@ export default class UITexasPlayerInfoComponent extends UIBase {
     refreshUpInfo() {
         let lbl_id = this.getChildNodeOrComponent("lbl_id", cc.Label);
         lbl_id.string = this.openInfo[0].toString();
-        let leavelChips = this.openInfo[2].leavelChips ?? 0;
+        // let leavelChips = this.openInfo[2].leavelChips ?? 0;
         let lbl_gold = this.getChildNodeOrComponent("lbl_gold", cc.Label);
         lbl_gold.string = GC.data.user.info.displayGold.toString();
         this.refreshHeadImg();

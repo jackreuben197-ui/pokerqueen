@@ -3,7 +3,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { Def, Player } from "../../protobuf/holdem/define_pb";
+import { Def, MTTInfo, Player } from "../../protobuf/holdem/define_pb";
 import { ClientMessageAddOn } from "../../protobuf/holdem/req_add_on_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
 import { GameCache } from "../GameCache";
@@ -25,6 +25,7 @@ import MTTGameProtocol from "../protocol/MTTGameProtocol";
 import MTTGameMessageHandler from "../messageHandler/MTTGameMessageHandler";
 import UIMTTTimeComponent from "../ui/UIMTTTimeComponent";
 import MTTGameUtils from "../util/MTTGameUtils";
+import { GM } from "../../gm/GMAPI";
 
 enum MTTMatchStatus // mtt比赛状态
 {
@@ -99,14 +100,14 @@ class AddOnModeDate {
     public AddOnPlusMode2MaxTimes: number;//最大次数限制
     public AddOnPlusMode2EndBl: number;//最大盲注等级
     public BuyRatio: number;//买入倍率
-    constructor(obj: any) {
-        this.AddOnPlusMode1 = obj.AddOnPlusMode1;
-        this.AddOnPlusMode1MaxTimes = obj.AddOnPlusMode1MaxTimes;
-        this.AddOnPlusMode1Limit = obj.AddOnPlusMode1Limit;
-        this.AddOnPlusMode2 = obj.AddOnPlusMode2;
-        this.AddOnPlusMode2MaxTimes = obj.AddOnPlusMode2MaxTimes;
-        this.AddOnPlusMode2EndBl = obj.AddOnPlusMode2EndBl;
-        this.BuyRatio = obj.BuyRatio;
+    constructor(obj: MTTInfo.AsObject) {
+        this.AddOnPlusMode1 = obj.addOnPlusMode1;
+        this.AddOnPlusMode1MaxTimes = obj.addOnPlusMode1MaxTimes;
+        this.AddOnPlusMode1Limit = obj.addOnPlusMode1Limit;
+        this.AddOnPlusMode2 = obj.addOnPlusMode2;
+        this.AddOnPlusMode2MaxTimes = obj.addOnPlusMode2MaxTimes;
+        this.AddOnPlusMode2EndBl = obj.addOnPlusMode2EndBl;
+        this.BuyRatio = obj.buyRatio;
     }
 }
 export default class MTTGame extends TexasGame {
@@ -240,10 +241,11 @@ export default class MTTGame extends TexasGame {
 
     public override UpdateRoom(rec: ServerMessageEnterRoom.AsObject) {
 
-        //模拟数据
-        //GameCache.Instance.seat_count = 9;
-        //rec = { "status": 0, "gameStatus": 3, "roomInfo": { "ante": 0, "smallBlind": 10000, "scheduleStartTime": 0, "schedulePlayDuration": 0, "startTime": 1667992583, "currentMinRate": 0, "currentMaxRate": 0, "limitIp": false, "limitGps": false, "insurance": false, "limitPoolRateAllLv": false, "limitMinPoolRate": 0, "limitRetainMinRate": 0, "limitTotalHandNumAllLv": false, "limitTotalHandNum": 0, "delaySeeCard": false, "straddle": false, "opDuration": 15, "retainType": 0, "muck": false, "uniqueId": "1667992583", "isAgreeSecondPcs": false }, "handInfo": { "handNum": 12, "buSeatId": 7, "sbSeatId": 7, "bbSeatId": 5, "publicCardsList": [], "allBet": 40000, "potsList": [], "roundBet": 20000, "insurancePool": 0, "extPublicCardsList": [] }, "playersList": [{ "seatId": 7, "userRid": 92955898, "action": 6, "cardsList": [17, 24], "name": "Player", "avatar": "http://static.awanptesting.com/image-normal/20220310094859-noCSy.png", "sex": 0, "chip": 10000, "handBet": 20000, "roundBet": 20000, "status": 1, "keepSeatLeftTime": -1, "buyInsuranceStep": 0, "buyInsuranceList": [], "isAutoop": false, "roundActioned": true, "hunterKill": 0, "hunterKillAward": 0, "hunterKillAwardOther": 0, "hunterHeadValue": 0, "vip": 0 }, { "seatId": 5, "userRid": 98123898, "action": 3, "cardsList": [0, 0], "name": "Player", "avatar": "http://static.awanptesting.com/image-normal/20220310094859-noCSy.png", "sex": 0, "chip": 30000, "handBet": 20000, "roundBet": 20000, "status": 1, "keepSeatLeftTime": -1, "buyInsuranceStep": 0, "buyInsuranceList": [], "isAutoop": false, "roundActioned": false, "hunterKill": 0, "hunterKillAward": 0, "hunterKillAwardOther": 0, "hunterHeadValue": 0, "vip": 0 }], "myInfo": { "chip": 10000, "seatId": 7, "mttCurrentRank": 2, "rebuyTimes": 2, "addon": false, "hunterKill": 0, "hunterKillAward": 0, "hunterRank": 0, "storeChips": 0, "isAutoop": false, "roundActioned": true, "addonPlusMode1Times": 0, "addonPlusMode2Times": 0, "hunterKillAwardOther": 0, "hunterHeadValue": 0 }, "operatorList": [{ "seatId": 5, "actionsList": [], "insuranceLimitList": [], "leftOpTime": 3, "delayTimes": 0, "shortcutsList": [], "isInsurance": false, "isAgreeSecondPc": false, "opDeadline": 1667992945 }], "mttInfo": { "upBlindInterval": 120, "blindType": 0, "rebuyTimes": 2, "maxRebuyBlindLevel": 15, "rebuyScore": 20000, "addOn": false, "startAddOnBlindLevel": 0, "endAddOnBlindLevel": 0, "addOnScore": 0, "huntMode": false, "hunterBonus": 0, "hunterFee": 0, "poolFee": 0, "serviceFee": 500, "partialBringIn": false, "moneySync": false, "partialBringInReturnBlindLevel": 0, "buyPropId": 0, "propBuyType": 0, "addOnPlusMode1": false, "addOnPlusMode1Limit": 0, "addOnPlusMode1MaxTimes": 0, "addOnPlusMode2": false, "addOnPlusMode2EndBl": 0, "addOnPlusMode2MaxTimes": 0, "buyRatio": 1 }, "mttProgress": { "upBlindLeftTime": 21, "nextAnte": 2500, "nextSmallBlind": 12500, "startCountDown": 0, "blindLevel": 4, "canAddOn": false, "addonMode": 0, "isBubbleWait": false }, "mttRoom": { "roomId": 1, "matchId": 93226850 } }
-
+        //调试判断
+        if (GM.GetDebugSwitch(3)) {
+            GameCache.Instance.seat_count = GM.Moni_MTT_ServerMessageEnterRoom.seat_count;
+            rec = GM.Moni_MTT_ServerMessageEnterRoom.rec;
+        }
 
         if (null == rec)
             return;
@@ -283,7 +285,7 @@ export default class MTTGame extends TexasGame {
             this.addOnMode = rec.mttProgress.addonMode;
         }
         this.addOnScore = rec.mttInfo.addOnScore;
-        //#region 增购plus
+        //增购plus
         this.addOnModeDate = new AddOnModeDate(rec.mttInfo);
 
         this.cachePartialBringInReturnBlindLevel = rec.mttInfo.partialBringInReturnBlindLevel;
@@ -315,11 +317,11 @@ export default class MTTGame extends TexasGame {
             let seat: Seat = this.listSeat[this.GetLocalSeatID(player.seatId)];
 
             if (seat != null) {
-                //seat.UpdateTrust();
+                seat.UpdateTrust();
             }
             seat.Player.HunterKillAwardOther = player.hunterKillAwardOther;
             seat.Player.HunterHeadValue = player.hunterHeadValue;
-            //seat.UpdateHunterAward();
+            seat.UpdateHunterAward();
         }
         //更新自己增购次数
         if (rec.myInfo != null && this.mainPlayer.seatID > -1) {
