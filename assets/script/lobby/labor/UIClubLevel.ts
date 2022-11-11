@@ -47,7 +47,7 @@ export default class UIClubLevel extends BaseForm {
     down: cc.Node = null;
 
     @property(cc.Button)
-    uplevel: cc.Button;
+    uplevel: cc.Button = null;
 
     @property(cc.Node)
     lastNode: cc.Node = null;

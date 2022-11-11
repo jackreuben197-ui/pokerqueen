@@ -1,64 +1,42 @@
-import { IUpdate } from "../define/EIDefine";
 
-
-export interface IUComponent {
-    Update(dt);
+export interface IUpComponent {
+    active: boolean;
+    Awake?(param?: any);
+    Update(dt: number);
 }
 
 export default class UpdateComponent {
-
-    //public static _updates: IUpdate[] = [];
 
     public static get Instance(): UpdateComponent {
 
         return (this as any).instance ??= new UpdateComponent();
 
     }
-    private components: IUComponent[] = [];
+    private components: IUpComponent[] = [];
 
     //增加子刷新器
-    public AddComponent(component: IUComponent): void {
+    public AddComponent<T>(component: IUpComponent): void {
         this.components.push(component);
+        component.active = true;
+        component.Awake?.();
     }
     //移除子刷新器
-    public RemoveComponent(component: IUComponent): void {
+    public RemoveComponent(component: IUpComponent): void {
+        if (!component) return;
         let index = this.components.indexOf(component);
         if (index > -1) this.components.splice(index, 1);
     }
     //移除所有
-    public RemoveAll() {
+    public RemoveAll(): void {
         this.components = [];
+        console.log("清空所有 IUpComponent");
     }
     //轮询 
-    public Update() {
-        
+    public Update(dt): void {
+        this.components.forEach(component => {
+            component.active && component.Update(dt);
+        });
+
     }
 
-
-    // public static Add(update: IUpdate, awake_param?: any) {
-    //     this._updates.push(update);
-    //     update.awake && update.awake(awake_param);
-    // }
-
-    // public static Remove(update: IUpdate) {
-    //     for (let i = this._updates.length - 1; i >= 0; i--) {
-    //         let item = this._updates[i];
-    //         if (item == update) {
-    //             this._updates.splice(i, 1);
-    //             break;
-    //         }
-    //     }
-    // }
-    // public static RemoveAll() {
-    //     while (UpdateComponent._updates.length) {
-    //         let update_item = this._updates.pop();
-    //         update_item.stop();
-    //     }
-    //     cc.log("UpdateComponent RemoveAll", this._updates.length);
-    // }
-    // Update(dt) {
-    //     for (let update of UpdateComponent._updates) {
-    //         update.allowUpdate && update.update(dt);
-    //     }
-    // }
 }

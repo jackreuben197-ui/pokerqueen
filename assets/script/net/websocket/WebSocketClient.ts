@@ -1,4 +1,5 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
@@ -118,7 +119,7 @@ export default class WebSocketClient {
     static Close() {
         if (this.CheckOpen()) {
             this.WS.close();
-            LobbySession.heartbeatComponent.stop();
+            GC.uc.RemoveAll();
         }
     }
     //清理ws
