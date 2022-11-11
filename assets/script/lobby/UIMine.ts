@@ -3,6 +3,7 @@ import UIBase from "../../../assets/script/ui/UIBase";
 import { UIDefine } from "../define/UIDefine";
 import GGEvent from "../event/GGEvent";
 import { GameCache } from "../game/GameCache";
+import { MineRankData } from "../game/ui/UIMTTMineRankComponent";
 import PublicHelper from "../helper/PublicHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
@@ -173,7 +174,11 @@ export default class UIMine extends UIBase {
     }
 
     onClickAchieve() {
-        UIComponent.open(UIDefine.UIMsg_Send)
+        UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
+            matchId: GameCache.Instance.match_id,
+            matchName: GameCache.Instance.roomName,
+            isRebuy: false
+        }))
         // UIComponent.open(UIDefine.UIMineArch);
     }
 }

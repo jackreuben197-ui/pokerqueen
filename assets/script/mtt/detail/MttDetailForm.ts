@@ -10,6 +10,8 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
 import ToastManager from "../../manager/ToastManager";
+import HttpRequest from "../../net/https/HttpRequest";
+import { Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize } from "../../net/https/WebRequest";
 
 import BaseForm from "../../ui/form/BaseForm";
 
@@ -262,7 +264,28 @@ export default class MttDetailForm extends BaseForm {
             sv_down2.active = false;
             sv_down3.active = false;
             sv_down4.active = false;
-            this.refreshListView("panel_item", "sv_down1");
+            let reqInfo = {
+                limit: 100,//几人池
+                offset: 0,
+            }
+            HttpRequest.Send({
+                api: Web_Room_Center_Mtt_Real_Prize.API.replace("{id}", this._data._msg.match_id.toString()),
+                request: Web_Room_Center_Mtt_Real_Prize,
+                body: Web_Room_Center_Mtt_Real_Prize.Request(reqInfo),
+                onSuccess: function () {
+                    let tResp = Web_Room_Center_Mtt_Real_Prize.Response;
+                    if (tResp.code == 0)
+                    {
+                        this.refreshListView("panel_item", "sv_down1");
+                    }
+                    else
+                    {
+                      
+                    }
+                }.bind(this),
+                onFailure: function (content) {
+                }.bind(this)
+            });
         } else if (this.curType == 2) {
             panel_0.active = false;
             panel_1.active = true;
@@ -274,7 +297,28 @@ export default class MttDetailForm extends BaseForm {
             sv_down2.active = true;
             sv_down3.active = false;
             sv_down4.active = false;
-            this.refreshListView("panel_item3", "sv_down2");
+            let reqInfo = {
+                limit: 100,//几人池
+                offset: 0,
+            }
+            HttpRequest.Send({
+                api: Web_Room_Center_Mtt_Ranks.API.replace("{id}", this._data._msg.match_id.toString()),
+                request: Web_Room_Center_Mtt_Ranks,
+                body: Web_Room_Center_Mtt_Ranks.Request(reqInfo),
+                onSuccess: function () {
+                    let tResp = Web_Room_Center_Mtt_Ranks.Response;
+                    if (tResp.code == 0)
+                    {
+                        this.refreshListView("panel_item3", "sv_down2");
+                    }
+                    else
+                    {
+                      
+                    }
+                }.bind(this),
+                onFailure: function (content) {
+                }.bind(this)
+            });
         } else if (this.curType == 3) {
             panel_0.active = false;
             panel_1.active = true;

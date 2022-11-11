@@ -1480,7 +1480,7 @@ export class Web_Room_Center_Mtt_Rooms {
 /// </summary>
 export class Web_Room_Center_Mtt_Real_Prize {
     //接口地址
-    static API: string = "/api/roomcenter/room/{id}/real_prize";
+    static API: string = "/api/roomcenter/mtt/{id}/real_prize";
 
     //字段声明
     static RequestParams: {
@@ -1528,21 +1528,21 @@ export class Web_Room_Center_Mtt_Real_Prize {
 /// </summary>
 export class Web_Room_Center_Mtt_Myaward {
     //接口地址
-    static API: string = "/api/roomcenter/room/{id}/myaward";
+    static API: string = "/api/roomcenter/mtt/{id}/myaward";
 
     //字段声明
     static RequestParams: {
     } = null;
 
     static ResponseData: {
-        data: typeof Web_Room_Center_Mtt_Myaward.Data[],
+        data: typeof Web_Room_Center_Mtt_Myaward.Data,
     } = null;
 
     static Data: {
         uid: number,//开始下标。例子（offset=0，limit=10，0-9。）
         rank: number,//存活人数
         award_gold: number,//总人数
-        award_goods: typeof Web_Room_Center_Mtt_Myaward.AwardGoods[],
+        award_goods: typeof Web_Room_Center_Mtt_Myaward.AwardGoods,
         hunter_award: number,//
         hunter_rank: number,//
         hunter_kill: number,//
