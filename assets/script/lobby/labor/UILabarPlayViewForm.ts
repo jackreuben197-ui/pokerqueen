@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-10 14:43:43
+ * @LastEditTime: 2022-11-12 13:02:52
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -90,6 +90,18 @@ export default class UILabarPlayViewForm extends UIBase {
     @property(cc.Label)
     lbl_active: cc.Label = null;
 
+    @property(cc.Node)
+    messScoContent: cc.Node = null;
+
+    @property(cc.Prefab)
+    messPfItem: cc.Prefab = null;
+
+    @property(cc.Prefab)
+    messTsItem: cc.Prefab = null;
+
+    @property(cc.Prefab)
+    messNomalItem: cc.Prefab = null;
+
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
     private subView: cc.Node = null;
@@ -169,7 +181,8 @@ export default class UILabarPlayViewForm extends UIBase {
 
         this.initTop();
         this.initChessView();
-        this.initActive()
+        this.initActive();
+        this.initMess();
     }
     async initActive() {
         await UIClubModel.mInstance.APIOrgClubActivityInfo();
@@ -274,6 +287,50 @@ export default class UILabarPlayViewForm extends UIBase {
     createMatch() {
         this.tabNode.active = false;
         UIComponent.open(UIDefine.UICreateMatchHome);
+    }
+
+    initMess() {
+        let data = [
+            { type: 1, lbl: 'cijdsncdsjkncdsidcijdsn', time: '2022/11/11' },
+            { type: 2, isOwen: true, lbl: '1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn' },
+            { type: 2, isOwen: false, lbl: '1111111ncdihfincdsjkncdsidcijdsn' },
+            { type: 3, isOwen: true, lbl: '1111111ncdihfincdsjkncdsidcijdsn' },
+            { type: 3, isOwen: false, lbl: '1111111ncdihfincdsjkncdsidcijdsn' }]
+        let node = null;
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            if (element.type == 1) {
+                node = cc.instantiate(this.messTsItem);
+            } else if (element.type == 2) {
+                node = cc.instantiate(this.messNomalItem);
+            } else if (element.type == 3) {
+                node = cc.instantiate(this.messPfItem);
+            }
+            node.parent = this.messScoContent
+            node.getComponent(node.name).initData(element);
+        }
+
+    }
+
+
+
+    clickPf() {
+
+    }
+    clickzj() {
+
+    }
+    clickxxts() {
+
+    }
+    clickqk() {
+
+    }
+    clicka() {
+
+    }
+    clickbq() {
+
     }
 
 }
