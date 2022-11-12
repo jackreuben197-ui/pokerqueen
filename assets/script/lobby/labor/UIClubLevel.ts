@@ -1,3 +1,4 @@
+import { A } from "../../common/Singleton";
 import { EventName } from "../../config/EventName";
 import TimeHelper from "../../helper/TimeHelper";
 import { APIOrgClubLevelBenefit, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubRoom, APIOrgGetTemplate, Web_Org_Club_Get } from "../../net/https/WebRequest";
@@ -9,7 +10,7 @@ import { UIClubModel } from "./UIClubModel";
  * @Date: 2022-11-08 12:28:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-11 16:40:25
+ * @LastEditTime: 2022-11-11 18:55:55
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubLevel.ts
  */
 const { ccclass, property, menu } = cc._decorator;
@@ -64,8 +65,9 @@ export default class UIClubLevel extends BaseForm {
     }
     async getData() {
         let _data: any = Web_Org_Club_Get.Response.data;
-        this._tempLevel = this._currentLevel
         this._currentLevel = _data.level
+        this._tempLevel = this._currentLevel
+
         this.currentLevel.string = 'LV.' + this._currentLevel
 
         await UIClubModel.mInstance.APIOrgClubLevelBenefit({ club_id: _data.club_id })
@@ -138,7 +140,7 @@ export default class UIClubLevel extends BaseForm {
         this.setState();
     }
     setState() {
-        if (this._tempLevel <= 1) {
+        if (this._tempLevel <= this._currentLevel) {
             this.uplevel.interactable = false
             this.reduceButton.interactable = false
         } else {
@@ -177,8 +179,13 @@ export default class UIClubLevel extends BaseForm {
     async sureClick() {
         let _data: any = Web_Org_Club_Get.Response.data;
         await UIClubModel.mInstance.APIOrgClubUpLevel({ club_id: _data.club_id, level: this._tempLevel })
-        this.getData();
         Web_Org_Club_Get.Response.data.level = this._tempLevel
+
+        let benefit_data: any = APIOrgClubLevelBenefit.Response.data
+        let level_data = benefit_data.data[benefit_data.data.length - this._tempLevel]
+        Web_Org_Club_Get.Response.data.upper_limit = level_data.user_num
+
+        this.getData();
         this.post(EventName.refreshClubLevel)
         this.upLevelInd.active = false;
     }

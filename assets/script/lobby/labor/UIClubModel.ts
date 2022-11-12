@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-11 16:22:50
+ * @LastEditTime: 2022-11-11 19:01:41
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -682,20 +682,7 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubLevelInfo(params) {
-        return new Promise((resolve, reject) => {
-            HttpRequest.Send({
-                request: APIOrgClubLevelInfo,
-                body: APIOrgClubLevelInfo.Request(params),
-                onSuccess: function () {
-                    resolve(APIOrgClubLevelInfo.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this)
-            });
-        });
-    }
+
 
     APIOrgClubUpLevel(params) {
         return new Promise((resolve, reject) => {

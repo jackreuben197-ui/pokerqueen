@@ -2515,7 +2515,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 162.66,
+      "width": 62.56,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -2567,8 +2567,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "235/300",
-    "_N$string": "235/300",
+    "_string": "0/1",
+    "_N$string": "0/1",
     "_fontSize": 45,
     "_lineHeight": 60,
     "_enableWrapText": false,
@@ -2869,7 +2869,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 162.66,
+      "width": 62.56,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -2921,8 +2921,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "235/300",
-    "_N$string": "235/300",
+    "_string": "0/1",
+    "_N$string": "0/1",
     "_fontSize": 45,
     "_lineHeight": 60,
     "_enableWrapText": false,
@@ -3223,7 +3223,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 162.66,
+      "width": 62.56,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -3275,8 +3275,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "235/300",
-    "_N$string": "235/300",
+    "_string": "0/1",
+    "_N$string": "0/1",
     "_fontSize": 45,
     "_lineHeight": 60,
     "_enableWrapText": false,
@@ -3577,7 +3577,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 162.66,
+      "width": 62.56,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -3629,8 +3629,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "235/300",
-    "_N$string": "235/300",
+    "_string": "0/1",
+    "_N$string": "0/1",
     "_fontSize": 45,
     "_lineHeight": 60,
     "_enableWrapText": false,
@@ -16805,7 +16805,7 @@
       "ctor": "Float64Array",
       "array": [
         269.225,
-        -0.1280000000000001,
+        5.917999999999999,
         0,
         0,
         0,
@@ -16875,7 +16875,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 12.328000000000003,
+    "_top": 6.2820000000000045,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -17336,7 +17336,7 @@
       "ctor": "Float64Array",
       "array": [
         520.615,
-        -0.1280000000000001,
+        5.917999999999999,
         0,
         0,
         0,
@@ -17406,7 +17406,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 12.328000000000003,
+    "_top": 6.2820000000000045,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -17867,7 +17867,7 @@
       "ctor": "Float64Array",
       "array": [
         469.225,
-        -0.1280000000000001,
+        5.917999999999999,
         0,
         0,
         0,
@@ -17937,7 +17937,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 12.328000000000003,
+    "_top": 6.2820000000000045,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -18398,7 +18398,7 @@
       "ctor": "Float64Array",
       "array": [
         519.225,
-        -0.1280000000000001,
+        5.917999999999999,
         0,
         0,
         0,
@@ -18468,7 +18468,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 12.328000000000003,
+    "_top": 6.2820000000000045,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -18929,7 +18929,7 @@
       "ctor": "Float64Array",
       "array": [
         419.225,
-        -0.1280000000000001,
+        5.917999999999999,
         0,
         0,
         0,
@@ -18999,7 +18999,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 12.328000000000003,
+    "_top": 6.2820000000000045,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -19460,7 +19460,7 @@
       "ctor": "Float64Array",
       "array": [
         219.225,
-        -0.1280000000000001,
+        5.917999999999999,
         0,
         0,
         0,
@@ -19530,7 +19530,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 12.328000000000003,
+    "_top": 6.2820000000000045,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -19994,7 +19994,7 @@
       "ctor": "Float64Array",
       "array": [
         169.225,
-        -0.1280000000000001,
+        5.917999999999999,
         0,
         0,
         0,
@@ -20064,7 +20064,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 12.328000000000003,
+    "_top": 6.2820000000000045,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
