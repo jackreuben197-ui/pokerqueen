@@ -81,9 +81,7 @@ export default class Main extends cc.Component {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
-
     }
-
     protected update(dt: number): void {
         GC.uc.Update(dt);
     }

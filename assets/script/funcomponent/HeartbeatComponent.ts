@@ -2,15 +2,14 @@
 /**
  * 心跳刷新组件
  */
-
-import { IUpdate } from "../define/EIDefine";
 import GameUtil from "../game/util/GameUtil";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import GlobalSession from "../session/GlobalSession";
+import { IUpComponent } from "./UpdateComponent";
 
 
-export default class HeartbeatComponent implements IUpdate {
+export default class HeartbeatComponent implements IUpComponent {
 
     //刷新间隔
     SendIntervalNormal: number = 5;
@@ -19,7 +18,7 @@ export default class HeartbeatComponent implements IUpdate {
     //上次刷新时间
     tokenLastTime: number = 0;
 
-    allowUpdate: boolean = false;
+    active: boolean = false;
 
     isRefreshRequesting: boolean = false;
 
@@ -30,7 +29,11 @@ export default class HeartbeatComponent implements IUpdate {
     //最大连续发送次数，超过就算超时
     maxSendTime: number = 5;
 
-    async update(dt: number) {
+    Awake() {
+        this.lastTime = GlobalSession.NowTimeS;
+    }
+
+    Update(dt: number) {
 
         let passTime = GlobalSession.NowTimeS - this.lastTime;
 
@@ -38,19 +41,7 @@ export default class HeartbeatComponent implements IUpdate {
             return;
         }
 
-        if (this.sendTime > 0) {
-
-            //设置网络延迟
-
-            //判断超时
-            if (this.sendTime >= 5) {
-                //websocket进行重新连接
-            }
-        }
-
         this.lastTime = GlobalSession.NowTimeS;
-
-        this.sendTime += 1;
 
         ProtocolAgency.Send({
             Code: ProtocolCode.Protocol_Holdem_Heartbeat,
@@ -66,15 +57,6 @@ export default class HeartbeatComponent implements IUpdate {
         else {
             return this.SendIntervalNormal;
         }
-    }
-
-    start() {
-        console.log("启动心跳");
-        this.allowUpdate = true;
-        this.lastTime = GlobalSession.NowTimeS;
-    }
-    stop() {
-        this.allowUpdate = false;
     }
 }
 

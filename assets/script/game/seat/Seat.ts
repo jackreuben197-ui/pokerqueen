@@ -3,6 +3,7 @@
 /// <summary>
 /// 声纹状态
 
+import GC from "../../frame/GameControl";
 import UpdateComponent from "../../funcomponent/UpdateComponent";
 import { GM } from "../../gm/GMAPI";
 import { StringHelper } from "../../helper/StringHelper";
@@ -134,11 +135,8 @@ export default class Seat {
 
         this.uirc.seat = this;
 
-        UpdateComponent.Add(this.FsmLogicComponent = new FSMLogicComponent(), this.SeatFSM);
+        GC.uc.AddComponent(this.FsmLogicComponent = new FSMLogicComponent(this.SeatFSM));
 
-        this.FsmLogicComponent.start();
-
-        //this.InitUIStaticData();
         this.InitData();
         this.InitUI();
     }
@@ -390,15 +388,7 @@ export default class Seat {
     }
 
 
-    public Clear() {
 
-        this.ui = null;
-
-        this.SeatFSM = null;
-
-        UpdateComponent.Remove(this.FsmLogicComponent);
-
-    }
 
 
 
@@ -1714,16 +1704,12 @@ export default class Seat {
     }
 
     Dispose() {
-        if (this.IsDisposed) {
-            return;
-        }
         this.KillAllTweener();
-
-        if (null != this.FsmLogicComponent) {
-            this.FsmLogicComponent.stop();
-        }
         this.ClearData();
         this.StopAllActions();
+        this.ui = null;
+        this.SeatFSM = null;
+        GC.uc.RemoveComponent(this.FsmLogicComponent);
     }
     /// <summary>
     /// 设置声纹状态按钮要到达的位置
@@ -1731,8 +1717,6 @@ export default class Seat {
     public SetVoiceStatePositon() {
         this.voiceStatePositon = GameUtil.Seat_ElementPos[GameCache.Instance.CurGame.HandCards].voiceStatePositon;
     }
-
-
     // 刷新购买保险数量
     public UpdateBubbleInsurance() {
         this.isCountDown = false;

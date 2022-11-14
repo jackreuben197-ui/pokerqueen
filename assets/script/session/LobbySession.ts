@@ -39,9 +39,9 @@ export default class LobbySession {
             this.regiterEvents();
         }
         cc.log("注册心跳");
-        UpdateComponent.Add(this.tokenRefreshComponent);
-        UpdateComponent.Add(this.heartbeatComponent);
-        this.tokenRefreshComponent.start();
+        GC.uc.AddComponent(this.tokenRefreshComponent);
+        GC.uc.AddComponent(this.heartbeatComponent);
+        this.heartbeatComponent.active = false;
     }
 
     static regiterEvents() {
@@ -53,7 +53,7 @@ export default class LobbySession {
             return;
         }
         if (body.status == 0) {
-            this.heartbeatComponent.start();
+            this.heartbeatComponent.active = true;
         } else {
             GlobalSession.Logout();
         }

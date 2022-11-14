@@ -384,7 +384,7 @@ export default class TexasGame {
     SeatPlayRecord: { SeatMove?, PlayDealFunc?, ShowCardsSeat?, StartInfo } = null;
 
     constructor() {
-        this.GameLogicSMComponent = new FSMLogicComponent();
+        this.GameLogicSMComponent = new FSMLogicComponent(this);
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
         this.RCInit();
@@ -399,11 +399,10 @@ export default class TexasGame {
     }
 
     Enter() {
-        UpdateComponent.Add(this.GameLogicSMComponent, this);
         this.listSeat = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
-        this.GameLogicSMComponent.start();
         this.SMAgency.LoadGameStateConf();
+        GC.uc.AddComponent(this.GameLogicSMComponent);
     }
 
     RegisterMsgHandler() {
@@ -2793,7 +2792,6 @@ export default class TexasGame {
                     mSeat.Player = null;
                 }
                 this.removeSeatUI(mSeat?.ui);
-                mSeat?.Clear();
                 mSeat?.Dispose();
             }
         }
@@ -2845,7 +2843,7 @@ export default class TexasGame {
         this.mainPlayer?.Dispose();
         this.mainPlayer = null;
         //停止状态机刷新
-        this.GameLogicSMComponent?.stop();
+        GC.uc.RemoveComponent(this.GameLogicSMComponent);
     }
 
     //////////////////

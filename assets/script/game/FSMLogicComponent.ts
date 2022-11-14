@@ -1,33 +1,20 @@
-import { IUpdate } from "../define/EIDefine";
+import { IUpComponent } from "../funcomponent/UpdateComponent";
 import StateMachine from "../statemachine/StateMachine";
 /**
  * 状态机刷新组件
  */
-export default class FSMLogicComponent implements IUpdate {
+export default class FSMLogicComponent implements IUpComponent {
 
-    allowUpdate: boolean = false;
+    active: boolean = false;
 
     protected _sm: StateMachine = null;
 
-    public awake(entity: any) {
-
+    constructor(entity: any) {
         this._sm = new StateMachine(entity);
-
     }
 
-    public update(dt: number) {
-
-        if (this.allowUpdate) this._sm.UpdateStateMachine(dt);
-    }
-
-    // public Reset(entity: any) {
-    //     //this._sm = new StateMachine<Entity>(entity);
-    // }
-    start() {
-        this.allowUpdate = true;
-    }
-    stop() {
-        this.allowUpdate = false;
+    public Update(dt: number) {
+        this._sm.UpdateStateMachine(dt);
     }
 
     public get SM() {
