@@ -1,0 +1,37 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-11-12 11:37:53
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-14 15:56:32
+ * @FilePath: /pokerqueen/assets/script/lobby/labor/messTsItem.ts
+ */
+
+const { ccclass, property, menu } = cc._decorator;
+
+@ccclass
+@menu('脚本分组/labor/messTsItem')
+export default class messTsItem extends cc.Component {
+    _data = null;
+    @property(cc.Node)
+    lblNode: cc.Node = null
+    @property(cc.Label)
+    mess: cc.Label = null
+    @property(cc.Label)
+    dm: cc.Label = null
+    initData(data) {
+        this._data = data
+        this.mess.string = this._data.lbl
+        this.dm.string = this._data.time
+
+        setTimeout(() => {
+            this.node.height = this.lblNode.height + 150
+            this.dm.node.y = - this.lblNode.height - 70
+            // this.node.parent.height = this.node.height
+        }, 100)
+
+    }
+    closeClick() {
+        this.node.removeFromParent();
+    }
+}

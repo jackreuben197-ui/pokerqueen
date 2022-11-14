@@ -304,7 +304,7 @@ export default class TexasGameProtocol {
             Seat.isBig = Seat.seatID == this.game.bigIndex;
             Seat.isSmall = Seat.seatID == this.game.smallIndex;
             Seat.isStraddle = rec.playersList[i].action == Def.Action.STRADDLE;
-            Seat.Player.SetCards(this.game.GetHandCardsAtRecvStartInfo(rec, i));
+            Seat.Player.SetCards(this.game.GetHandCardsByRecList(rec.playersList[i].cardsList));
             Seat.Player.chips = rec.playersList[i].chip;
             Seat.Player.cacheChips = rec.playersList[i].chip + rec.playersList[i].roundBet + rec.playersList[i].ante;
             Seat.Player.canPlayStatus = Def.CanPlayStatus.NORMAL;//数组里面有人即可打牌
@@ -827,7 +827,7 @@ export default class TexasGameProtocol {
                 continue;
             if (!mSeat.IsMySeat) {
                 //自己的牌不用更新
-                mSeat.Player.SetCards(this.game.GetHandCardsAtRecvWinner(this.game.MessageWinnerData, i));
+                mSeat.Player.SetCards(this.game.GetHandCardsByRecList(this.game.MessageWinnerData.resultsList[i].myCardsList));
                 mSeat.UpdateCards();
             }
             if (mSeat.IsMySeat) {
@@ -978,7 +978,7 @@ export default class TexasGameProtocol {
 
             if (!mSeat.IsMySeat) {
                 //自己的牌不用更新
-                mSeat.Player.SetCards(this.game.GetHandCardsAtRecvWinner(this.game.MessageWinnerData, i));
+                mSeat.Player.SetCards(this.game.GetHandCardsByRecList(this.game.MessageWinnerData.resultsList[i].myCardsList));
             }
             if (mSeat.IsMySeat) {
                 GameCache.Instance.CurGame.mainPlayer.chips = result.chip;

@@ -18,7 +18,7 @@ export default class ProtocolAgency extends cc.Component {
 
     static Send<Client_AsObject>(param: { Code: number, RoomID: number, MatchID: number, Body?: Client_AsObject }) {
 
-        if (WebSocketClient.WS && WebSocketClient.WS.readyState == WebSocket.OPEN) {
+        if (WebSocketClient.CheckOpen()) {
 
             let protocol_name = ProtocolCode[param.Code];
             //this._getCodeByProtocolName(protocol.Name);

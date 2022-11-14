@@ -1,6 +1,7 @@
 import { GameConfig } from "../../config/GameConfig";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefineType } from "../../define/UIDefine";
+import { GM } from "../../gm/GMAPI";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
@@ -124,7 +125,7 @@ export default class GameUtil {
 
         this.GameMap = new Map();
         //1.TexasGame基础
-        this.GameMap.set(RoomType.TexasHoldemStandardNoLimit, TexasGame);// 普通
+        this.GameMap.set(RoomType.TexasHoldemStandardNoLimit, GM.GetDebugSwitch(3) ? MTTGame : TexasGame);// 普通
         this.GameMap.set(RoomType.TexasHoldemStandardPotLimit, TexasGame);// 普通底池限注
         this.GameMap.set(RoomType.TexasHoldemSixPlusFixedNoLimit, TexasGame);// 普通短牌
         this.GameMap.set(RoomType.TexasHoldemSixPlusFixedPotLimit, TexasGame);// 普通短牌底池限注
@@ -1443,13 +1444,15 @@ export default class GameUtil {
      * @returns 
      */
     public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUIs?: UIDefineType[]) {
+        let room_type: number = enter_room_info.room_type;
+        console.log("EnterRoom room_type:", room_type);
         //未开放房间类型
-        if (!GameUtil.IsOpenRoomType(enter_room_info.room_type)) {
+        if (!GameUtil.IsOpenRoomType(room_type)) {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
             return;
         }
-        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
-            if (RoomType[enter_room_info.room_type]) {
+        if (WebSocketClient.CheckOpen()) {
+            if (RoomType[room_type]) {
                 let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch(() => { });
 
                 if (response) {
@@ -1463,8 +1466,6 @@ export default class GameUtil {
                 console.warn("房间类型未解析:", enter_room_info.room_type);
                 UIComponent.Instance.Toast(`room_type:${enter_room_info.room_type} is error`);
             }
-        } else {
-            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
         }
     }
 
@@ -1478,8 +1479,7 @@ export default class GameUtil {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
             return;
         }
-
-        if (WebSocketClient.WS?.readyState == WebSocket.OPEN) {
+        if (WebSocketClient.CheckOpen()) {
             if (RoomType[room_type]) {
                 ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, param);//[this.UIDefine, false, 0]
             }
@@ -1488,11 +1488,6 @@ export default class GameUtil {
                 UIComponent.Instance.Toast(`room_type:${room_type} is error`);
             }
         }
-        else {
-            cc.warn("websocket is not open:", WebSocketClient.WS.readyState);
-        }
-
-
     }
 }
 (window as any).GameUtil = GameUtil;

@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-09 18:20:41
+ * @LastEditTime: 2022-11-14 12:38:29
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -25,7 +25,7 @@ export class GameConfig {
     //4: https://dev1.awanptesting.com 
     static BuildType: number = 4;
     //版本号
-    static Version: string = "20221103_1620";
+    static Version: string = "20221112_0900";
 
     static Default_Language: string = "en";
     //是否使用代理

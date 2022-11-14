@@ -1,8 +1,10 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import GlobalSession from "../../session/GlobalSession";
+import LobbySession from "../../session/LobbySession";
 import LoginSession from "../../session/LoginSession";
 import UIComponent from "../../ui/UIComponent";
 import { Web_WS } from "../https/WebRequest";
@@ -39,7 +41,7 @@ export default class WebSocketClient {
             this.Host_Port = GameConfig.Network.WSS.replace("{0}", `:${this.Port}`);
             this.__connect();
         } else {
-            ToastManager.Instance.createToast("host or port is error!");
+            UIComponent.Instance.Toast("host or port is error!");
         }
     }
     private static __connect() {
@@ -104,11 +106,20 @@ export default class WebSocketClient {
             console.log("重连次数结束");
         }
     }
+
+    static CheckOpen() {
+        let result = this.WS?.readyState == WebSocket.OPEN;
+        if (!result) {
+            UIComponent.Instance.Toast("errorDefault");
+            console.log("socket state:", this.WS?.readyState);
+        }
+        return result;
+    }
     //主动关闭
     static Close() {
-        if (this.WS && this.WS.readyState == WebSocket.OPEN) {
+        if (this.CheckOpen()) {
             this.WS.close();
-            //this.ToClose = true;
+            GC.uc.RemoveAll();
         }
     }
     //清理ws

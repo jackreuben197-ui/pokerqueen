@@ -83,6 +83,7 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
         }
     }
     private async ShowMineRank(isRebuy: boolean = false) {
+        
         await TimeHelper.Sleep(2000);
 
         UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({

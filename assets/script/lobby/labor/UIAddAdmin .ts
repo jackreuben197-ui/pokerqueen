@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 18:02:22
+ * @LastEditTime: 2022-11-14 14:59:37
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAddAdmin .ts
  */
 
@@ -92,9 +92,6 @@ export default class UIAddAdmin extends BaseForm {
         this._offset = this._list.length;
         this._reqEnd = this._list.length == this._total;
 
-        this.list.numItems = this._list.length;
-        this._offset = this._list.length;
-        this._reqEnd = this._list.length == this._total;
     }
 
     async sousuoBtn() {

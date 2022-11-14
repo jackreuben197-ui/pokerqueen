@@ -105,13 +105,13 @@ export interface INetWork {
 /**
  * 刷新接口
  */
-export interface IUpdate {
-    allowUpdate: boolean;
-    awake?(param?: any);
-    update(dt: number);
-    start?();
-    stop?();
-}
+// export interface IUpdate {
+//     allowUpdate: boolean;
+//     awake?(param?: any);
+//     update(dt: number);
+//     start?();
+//     stop?();
+// }
 /**
  * bundle包
  */

@@ -11,6 +11,7 @@
  */
 import { GameConfig } from "./config/GameConfig";
 import GC from "./frame/GameControl";
+import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
@@ -36,6 +37,12 @@ export default class Main extends cc.Component {
     static UIPreloading: cc.Node = null;
     static Toast_Node: cc.Node = null;
 
+    ////////////////////////////////////调试开关
+
+
+
+    static ShowSeatID: number;//显示seat id
+
 
     async onLoad() {
 
@@ -48,6 +55,10 @@ export default class Main extends cc.Component {
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)
         GameConfig.useProxy = !!CCTools.getQueryString("proxy");
+        //设置各种开关
+        Main.ShowSeatID = + CCTools.getQueryString("ShowSeatID");
+        //设置调试开关
+        GM.SetDebugSwitch(CCTools.getQueryString("debug"));
 
         // UI 节点缓存
         Main.Cache_UI = this.node.parent.getChildByName("Cache_UI - UI缓存");
@@ -70,8 +81,11 @@ export default class Main extends cc.Component {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
-
     }
+    protected update(dt: number): void {
+        GC.uc.Update(dt);
+    }
+
     start() {
         console.log("start");
         window.Buffer = Buffer;

@@ -616,6 +616,7 @@ export class Web_User_Info {
         ut?: number,        //1 普通用户; 2 支桌号; 3 牌局机器人; 4 牛仔机器人
         forbid_withdraw_gold?: number,        //提现冻结，1 开启，2 关闭
         forbid_bring_in?: number,        //带入冻结，1 开启，2 关闭
+        user_id
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -1682,6 +1683,8 @@ export class Web_Org_Club_Get {
         club_name: string,
         more_contact: string,
         club_id: number,
+        level: number,
+        upper_limit:: number,
     } = null;
     static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;
@@ -2323,10 +2326,10 @@ export class API_PROP_TASK_LIST {
 
     //字段声明
     static RequestParams: {
-        type     : number, // 类型ID  任务类型  1；每日任务 2：成就任务
-        timezone : number, // 时区 0-巴西 1-utc
-        limit    : number,
-        offset   : number,
+        type: number, // 类型ID  任务类型  1；每日任务 2：成就任务
+        timezone: number, // 时区 0-巴西 1-utc
+        limit: number,
+        offset: number,
     } = null;
 
     static ResponseData: {
@@ -2454,8 +2457,8 @@ export class API_PROP_TASK_RECEIVE {
 
     //字段声明
     static RequestParams: {
-        task_id     : number, 
-        timezone    : number,
+        task_id: number,
+        timezone: number,
     } = null;
 
     static ResponseData: {
@@ -3363,6 +3366,157 @@ export class APIBindThrid {
         code?: number, message?: string, data?: typeof APIBindPhone.ResponseData
     };
 }
+export class APIOrgClubLevelBenefit {
+    public static API: string = "/api/org/club/level_benefit";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubLevelBenefit.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubLevelBenefit.ResponseData
+    };
+}
+
+export class APIOrgClubLevelInfo {
+    public static API: string = "/api/org/club/level_info";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubLevelInfo.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubLevelInfo.ResponseData
+    };
+}
+export class APIOrgClubLevelCost {
+    public static API: string = "/api/org/club/level_cost";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubLevelCost.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubLevelCost.ResponseData
+    };
+}
+
+export class APIOrgClubUpLevel {
+    public static API: string = "/api/org/club/level_up";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUpLevel.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUpLevel.ResponseData
+    };
+}
+
+
+export class APIOrgClubRoom {
+    public static API: string = "/api/roomcenter/club/rooms";
+    //字段声明
+    public static RequestParams: {
+
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubRoom.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubRoom.ResponseData
+    };
+}
+
+export class APIOrgSendMess {
+    public static API: string = "/api/chat/club/send_messages";
+    //字段声明
+    public static RequestParams: {
+        "content": string,
+        "message_type": number,  // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
+        "standings_user_id": number, // 消息类型为 3战绩分享 时，分享的玩家ID
+        "game_round_id": number// 消息类型为 4牌谱分享 时，牌谱ID
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgSendMess.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgSendMess.ResponseData
+    };
+}
+export class APIOrgGetMessList {
+    public static API: string = "/api/chat/club/messages";
+    //字段声明
+    public static RequestParams: {
+        "history_id": number, // 查历史，小于此ID的消息
+        "last_id": number, // 查最新，大于此ID的消息
+        "limit": 10,
+        "offset": 0
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgGetMessList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgGetMessList.ResponseData
+    };
+
+
+}
+
+export class APIOrgGetNewMessNum {
+    public static API: string = "/api/chat/club/messages/new_count";
+    //字段声明
+    public static RequestParams: {
+        "msg_id": number
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgGetNewMessNum.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgGetNewMessNum.ResponseData
+    };
+}
+
 
 
 

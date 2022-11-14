@@ -1,4 +1,5 @@
 import { ProcedureEnum } from "../define/EIDefine";
+import GC from "../frame/GameControl";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import Main from "../Main";
@@ -24,7 +25,7 @@ export default class GlobalSession {
         UIComponent.closeAll();
         LoginSession.LoginOut();
         WebSocketClient.Close();
-        UpdateComponent.RemoveAll();
+        GC.uc.RemoveAll();
         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
         ProcedureManager.StartProcedure(ProcedureEnum.Login, { logout: true });
     }
