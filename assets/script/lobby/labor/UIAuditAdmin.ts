@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:06:35
+ * @LastEditTime: 2022-11-14 15:36:52
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAuditAdmin.ts
  */
 
@@ -86,9 +86,6 @@ export default class UIAuditAdmin extends BaseForm {
         this._offset = this._list.length;
         this._reqEnd = this._list.length == this._total;
 
-        this.list.numItems = this._list.length;
-        this._offset = this._list.length;
-        this._reqEnd = this._list.length == this._total;
     }
     addAdminBtn() {
         UIComponent.open(UIDefine.UIAddAdmin)

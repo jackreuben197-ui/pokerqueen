@@ -3,11 +3,12 @@
  * @Date: 2022-11-12 11:38:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-12 12:36:41
+ * @LastEditTime: 2022-11-14 16:55:35
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messPfItem.ts
  */
 
 import WebImageHelper from "../../helper/WebImageHelper";
+import { Web_User_Info } from "../../net/https/WebRequest";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -46,9 +47,10 @@ export default class messPfItem extends cc.Component {
     initData(data) {
         this._data = data
         this.dm.string = this._data.time
-        this.ower.active = this._data.isOwen
-        this.other.active = !this._data.isOwen
-        this.iconMask.x = this._data.isOwen ? 447 : -447;
+        let id = Web_User_Info.Response.data.user.un_id
+        this.ower.active = this._data.sender_id == id
+        this.other.active = !this.ower.active
+        this.iconMask.x = this._data.sender_id == id ? 447 : -447;
         WebImageHelper.SetHeadImage(this.icon, '')
         this.type.string = '牌谱分享'
         this.nckName.string = 'aaaa'

@@ -3,11 +3,12 @@
  * @Date: 2022-11-12 11:36:57
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-12 12:57:36
+ * @LastEditTime: 2022-11-14 16:54:51
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messNomalItem .ts
  */
 
 import WebImageHelper from "../../helper/WebImageHelper";
+import { Web_User_Info } from "../../net/https/WebRequest";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -31,15 +32,19 @@ export default class messNomalItem extends cc.Component {
 
 
     initData(data) {
+
+        //    Web_User_Info.Response.data
+        let id = Web_User_Info.Response.data.user.un_id
         this._data = data
-        this.ower.active = this._data.isOwen
-        this.other.active = !this._data.isOwen
-        this.iconMask.x = this._data.isOwen ? 447 : -447;
+        this.ower.active = this._data.sender_id == id
+        this.other.active = !this.ower.active
+        this.iconMask.x = this._data.sender_id == id ? 447 : -447;
         WebImageHelper.SetHeadImage(this.icon, '')
         let cont = this._data.isOwen ? this.ower.getChildByName('name') : this.other.getChildByName('name')
-        cont.getComponent(cc.Label).string = this._data.lbl;
+        cont.getComponent(cc.Label).string = this._data.content;
         setTimeout(() => {
             this.node.height = cont.height + 150 > 250 ? cont.height + 150 : 250
+
         }, 100)
 
     }

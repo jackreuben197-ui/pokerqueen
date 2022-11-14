@@ -52,10 +52,13 @@
       },
       {
         "__id__": 39
+      },
+      {
+        "__id__": 40
       }
     ],
     "_prefab": {
-      "__id__": 40
+      "__id__": 41
     },
     "_opacity": 255,
     "_color": {
@@ -73,14 +76,14 @@
     "_anchorPoint": {
       "__type__": "cc.Vec2",
       "x": 0.5,
-      "y": 0.5
+      "y": 1
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
         0,
-        -1471.5,
+        2688,
         0,
         0,
         0,
@@ -144,7 +147,7 @@
       "ctor": "Float64Array",
       "array": [
         -0.071,
-        -20.975,
+        -153.902,
         0,
         0,
         0,
@@ -251,7 +254,7 @@
       "ctor": "Float64Array",
       "array": [
         -0.071,
-        -20.975,
+        -153.902,
         0,
         0,
         0,
@@ -358,7 +361,7 @@
       "ctor": "Float64Array",
       "array": [
         -273.683,
-        42,
+        -90.927,
         0,
         0,
         0,
@@ -466,7 +469,7 @@
       "ctor": "Float64Array",
       "array": [
         -71.683,
-        41.243,
+        -91.684,
         0,
         0,
         0,
@@ -574,7 +577,7 @@
       "ctor": "Float64Array",
       "array": [
         -72.073,
-        -20.085,
+        -153.012,
         0,
         0,
         0,
@@ -670,7 +673,7 @@
       "ctor": "Float64Array",
       "array": [
         -70.466,
-        -81.197,
+        -214.124,
         0,
         0,
         0,
@@ -778,7 +781,7 @@
       "ctor": "Float64Array",
       "array": [
         63.039,
-        -78.993,
+        -211.92,
         0,
         0,
         0,
@@ -889,7 +892,7 @@
       "ctor": "Float64Array",
       "array": [
         -213.312,
-        -56.962,
+        -189.889,
         0,
         0,
         0,
@@ -1182,7 +1185,7 @@
       "ctor": "Float64Array",
       "array": [
         -447,
-        90.833,
+        -42.094,
         0,
         0,
         0,
@@ -1459,6 +1462,33 @@
     "icon": {
       "__id__": 33
     },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.Widget",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "alignMode": 1,
+    "_target": null,
+    "_alignFlags": 1,
+    "_left": 0,
+    "_right": 0,
+    "_top": 0,
+    "_bottom": 0,
+    "_verticalCenter": 0,
+    "_horizontalCenter": 0,
+    "_isAbsLeft": true,
+    "_isAbsRight": true,
+    "_isAbsTop": true,
+    "_isAbsBottom": true,
+    "_isAbsHorizontalCenter": true,
+    "_isAbsVerticalCenter": true,
+    "_originalWidth": 0,
+    "_originalHeight": 0,
     "_id": ""
   },
   {

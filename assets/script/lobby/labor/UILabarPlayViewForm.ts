@@ -3,25 +3,23 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 11:52:11
+ * @LastEditTime: 2022-11-14 16:44:21
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
-import { ResManager } from "../../manager/ResManager";
-import { UIDefine, UIDefineType } from "../../define/UIDefine";
+import { UIDefine } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
-import { EMatchViewTabType } from "../matchView/MatchViewConfig";
-import BaseForm from "../../ui/form/BaseForm";
-import { APIOrgClubActivityInfo, APIOrgClubGold, APIOrgClubIsManger, APIOrgGetMessList, APIOrgSendMess, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { APIOrgClubActivityInfo, APIOrgClubGold, APIOrgClubIsManger, APIOrgGetMessList, APIOrgGetNewMessNum, APIOrgSendMess, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { UIClubModel } from "./UIClubModel";
 import { GameType } from "../../game/util/GameUtil";
-import { EWalletGoldOpration } from "../../wallet/WalletConfig";
 import GC from "../../frame/GameControl";
 import { EventName } from "../../config/EventName";
 import SceneManager from "../../manager/SceneManager";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
+import List from "../../common/List";
+import messParent from "./messParent";
 
 /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ꧁༺ ༒ ༻꧂≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
     房间（牌桌）选择界面
@@ -104,20 +102,39 @@ export default class UILabarPlayViewForm extends UIBase {
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;
 
+    @property(cc.Node)
+    btnNode: cc.Node = null;
+
+    @property(cc.Node)
+    tsMESS: cc.Node = null;
+    @property(cc.ScrollView)
+    messScrollView: cc.ScrollView = null;
+
+
+    @property(cc.Label)
+    lbl_messNewNum: cc.Label = null;
+
+
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
     private subView: cc.Node = null;
     private messView: cc.Node = null;
-    // private _tabViewData: Array<UIDefineType> = [
-    //     UIDefine.UIMatchChessView,
-    //     UIDefine.UIMatchSportsView,
-    //     UIDefine.UIMatchGameView,
-    //     UIDefine.UIMatchRealityView,
 
-    // ]
     _curType = 0;
     private _chessView: UIBase = null;
     private _loadingChessBiew: boolean = false;
+
+    _lastGetId = 1
+    _fistGetId = 1
+
+    @property(List)
+    list: List = null;
+    private _offset: number = 0;
+    private _reqing: boolean = false;
+    private _reqEnd: boolean = false;
+    private _list: Array<any> = [];
+    private _total: number = 0
+
 
     onLoad() {
         super.onLoad();
@@ -128,7 +145,7 @@ export default class UILabarPlayViewForm extends UIBase {
         this.tabBtnsParent = this.getChildNodeOrComponent("tabBtns");
         this.subView = this.getChildNodeOrComponent("subView");
         this.tabViewParents = this.subView.children;
-
+        this.messScrollView.node.on('scroll-ended', this.scrollingCB, this)
         this.messView = this.getChildNodeOrComponent("messView");
     }
 
@@ -146,12 +163,16 @@ export default class UILabarPlayViewForm extends UIBase {
         if (this._curType != type) {
             this._curType = type;
             this.switchTabBtnState();
+        } else {
+            return
         }
 
         this.subView.active = this._curType == layerType.chess;
         this.messView.active = !this.subView.active
-
-
+        if (this.messView.active) {
+            this.initMess();
+            // this.reqDataAgain();
+        }
     }
     switchTabBtnState() {
         this.tabBtnsParent.children.forEach((item, index) => {
@@ -184,7 +205,9 @@ export default class UILabarPlayViewForm extends UIBase {
         this.initTop();
         this.initChessView();
         this.initActive();
-        this.initMess();
+
+        this.staSchedu();
+
     }
     async initActive() {
         await UIClubModel.mInstance.APIOrgClubActivityInfo();
@@ -291,33 +314,102 @@ export default class UILabarPlayViewForm extends UIBase {
         UIComponent.open(UIDefine.UICreateMatchHome);
     }
 
+
+    /*******聊天逻辑 */
+    // onRender(node: cc.Node, index: number) {
+    //     let item = node.getComponent(messParent);
+    //     item.initData(this._list[index]);
+    // }
+
+    // async reqDataAgain() {
+    //     this._offset = 0;
+    //     this._total = 0;
+    //     this._list.length = 0;
+    //     this._reqing = false;
+    //     this._reqEnd = false;
+    //     this.dealData()
+    // }
+    // async dealData() {
+    //     this._reqing = true
+
+    //     await UIClubModel.mInstance.APIOrgGetMessList({ last_id: this._lastGetId, limit: 10, offset: 0 })
+    //     let _data: any = APIOrgGetMessList.Response.data
+    //     this._reqing = false
+    //     if (!_data.data) {
+    //         _data.data = [];
+    //     } else {
+    //         let id = _data.data[_data.data.length - 1].id
+    //         this._lastGetId = id;
+    //     }
+    //     _data.data.forEach(element => {
+    //         this._list.push(element);
+    //     });  //分页的时候使用的
+    //     this._total = _data.data.total
+
+    //     this.list.numItems = this._list.length;
+    //     // this._offset = this._list.length;
+    //     this._reqEnd = this._list.length == this._total;
+    // }
+
+
+    scrollingCB(scrollView: cc.ScrollView) {
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset()
+            let isDown = cur.y >= max.y;
+            if (isDown && !this._reqing && !this._reqEnd) {
+                // this.dealData()
+                this.initMess();
+            }
+        }
+    }
+
     async initMess() {
-        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 10, offset: 0 })
+        this._reqing = true
+        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 10, offset: this._offset })
+        this._reqing = false
+
         let data: any = APIOrgGetMessList.Response.data
-        // let data = [
-        //     { type: 1, lbl: 'cijdsncdsjkncdsidcijdsn', time: '2022/11/11' },
-        //     { type: 2, isOwen: true, lbl: '1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn' },
-        //     { type: 2, isOwen: false, lbl: '1111111ncdihfincdsjkncdsidcijdsn' },
-        //     { type: 3, isOwen: true, lbl: '1111111ncdihfincdsjkncdsidcijdsn' },
-        //     { type: 3, isOwen: false, lbl: '1111111ncdihfincdsjkncdsidcijdsn' }]
         let node = null;
-        this.messScoContent.childrenCount = 0
+        data = data.data
+        // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
+        if (data?.length == 0) return
+        let id = data[data.length - 1].id
+        this._lastGetId = id;
+        // this.messScoContent.childrenCount = 0
         for (let index = 0; index < data.length; index++) {
             const element = data[index];
-            if (element.type == 1) {
-                node = cc.instantiate(this.messTsItem);
-            } else if (element.type == 2) {
+            if (element.message_type == 1) {
                 node = cc.instantiate(this.messNomalItem);
-            } else if (element.type == 3) {
+            } else if (element.message_type == 2) {
+                node = cc.instantiate(this.messTsItem);
+
+            } else if (element.message_type == 3 || element.message_type == 4) {
                 node = cc.instantiate(this.messPfItem);
             }
             node.parent = this.messScoContent
             node.getComponent(node.name).initData(element);
         }
-
+        this._offset = this._list.length;
+        this._reqEnd = this.messScoContent.childrenCount >= this._total;
+        this.staSchedu();
     }
 
-
+    staSchedu() {
+        this.getNewMess();
+        this.unscheduleAllCallbacks()
+        this.schedule(() => {
+            this.getNewMess();
+        }, 8)
+    }
+    async getNewMess() {
+        await UIClubModel.mInstance.APIOrgGetNewMessNum({ msg_id: this._lastGetId });
+        let data: any = APIOrgGetNewMessNum.Response.data
+        this.setNewNum(data);
+    }
+    setNewNum(string = 0) {
+        this.lbl_messNewNum.string = `(${string})`;
+    }
 
     clickPf() {
 
@@ -331,14 +423,14 @@ export default class UILabarPlayViewForm extends UIBase {
     clickqk() {
 
     }
-    clicka() {
-
+    async clicka() {
+        let param = { content: this.EditBox.string, message_type: 1 }
+        await UIClubModel.mInstance.APIOrgSendMess(param)
+        this.initMess();
+        this.EditBox.string = ''
     }
     clickbq() {
-        let param = APIOrgSendMess.RequestParams
-        param.content = this.EditBox.string
-        param.message_type = 1
-        UIClubModel.mInstance.APIOrgSendMess(param)
+        this.btnNode.active = !this.btnNode.active
 
         //发送
     }
