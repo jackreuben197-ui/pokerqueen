@@ -174,11 +174,11 @@ export default class UIMine extends UIBase {
     }
 
     onClickAchieve() {
-        UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
-            matchId: GameCache.Instance.match_id,
-            matchName: GameCache.Instance.roomName,
-            isRebuy: false
-        }))
-        // UIComponent.open(UIDefine.UIMineArch);
+        // UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
+        //     matchId: GameCache.Instance.match_id,
+        //     matchName: GameCache.Instance.roomName,
+        //     isRebuy: false
+        // }))
+        UIComponent.open(UIDefine.UIMineArch);
     }
 }
