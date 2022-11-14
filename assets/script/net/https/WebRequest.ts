@@ -3455,6 +3455,66 @@ export class APIOrgClubRoom {
     };
 }
 
+export class APIOrgSendMess {
+    public static API: string = "/api/chat/club/send_messages";
+    //字段声明
+    public static RequestParams: {
+        "content": string,
+        "message_type": number,  // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
+        "standings_user_id": number, // 消息类型为 3战绩分享 时，分享的玩家ID
+        "game_round_id": number// 消息类型为 4牌谱分享 时，牌谱ID
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgSendMess.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgSendMess.ResponseData
+    };
+}
+export class APIOrgGetMessList {
+    public static API: string = "/api/chat/club/messages";
+    //字段声明
+    public static RequestParams: {
+        "history_id": number, // 查历史，小于此ID的消息
+        "last_id": number, // 查最新，大于此ID的消息
+        "limit": 10,
+        "offset": 0
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgGetMessList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgGetMessList.ResponseData
+    };
+
+
+}
+
+export class APIOrgGetNewMessNum {
+    public static API: string = "/api/chat/club/messages/new_count";
+    //字段声明
+    public static RequestParams: {
+        "msg_id": number
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgGetNewMessNum.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgGetNewMessNum.ResponseData
+    };
+}
 
 
 

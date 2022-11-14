@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-12 13:02:52
+ * @LastEditTime: 2022-11-14 11:52:11
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -14,7 +14,7 @@ import { UIDefine, UIDefineType } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { EMatchViewTabType } from "../matchView/MatchViewConfig";
 import BaseForm from "../../ui/form/BaseForm";
-import { APIOrgClubActivityInfo, APIOrgClubGold, APIOrgClubIsManger, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { APIOrgClubActivityInfo, APIOrgClubGold, APIOrgClubIsManger, APIOrgGetMessList, APIOrgSendMess, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { UIClubModel } from "./UIClubModel";
 import { GameType } from "../../game/util/GameUtil";
 import { EWalletGoldOpration } from "../../wallet/WalletConfig";
@@ -101,6 +101,8 @@ export default class UILabarPlayViewForm extends UIBase {
 
     @property(cc.Prefab)
     messNomalItem: cc.Prefab = null;
+    @property(cc.EditBox)
+    EditBox: cc.EditBox = null;
 
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
@@ -289,14 +291,17 @@ export default class UILabarPlayViewForm extends UIBase {
         UIComponent.open(UIDefine.UICreateMatchHome);
     }
 
-    initMess() {
-        let data = [
-            { type: 1, lbl: 'cijdsncdsjkncdsidcijdsn', time: '2022/11/11' },
-            { type: 2, isOwen: true, lbl: '1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn' },
-            { type: 2, isOwen: false, lbl: '1111111ncdihfincdsjkncdsidcijdsn' },
-            { type: 3, isOwen: true, lbl: '1111111ncdihfincdsjkncdsidcijdsn' },
-            { type: 3, isOwen: false, lbl: '1111111ncdihfincdsjkncdsidcijdsn' }]
+    async initMess() {
+        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 10, offset: 0 })
+        let data: any = APIOrgGetMessList.Response.data
+        // let data = [
+        //     { type: 1, lbl: 'cijdsncdsjkncdsidcijdsn', time: '2022/11/11' },
+        //     { type: 2, isOwen: true, lbl: '1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn1111111ncdihfincdsjkncdsidcijdsn' },
+        //     { type: 2, isOwen: false, lbl: '1111111ncdihfincdsjkncdsidcijdsn' },
+        //     { type: 3, isOwen: true, lbl: '1111111ncdihfincdsjkncdsidcijdsn' },
+        //     { type: 3, isOwen: false, lbl: '1111111ncdihfincdsjkncdsidcijdsn' }]
         let node = null;
+        this.messScoContent.childrenCount = 0
         for (let index = 0; index < data.length; index++) {
             const element = data[index];
             if (element.type == 1) {
@@ -330,7 +335,12 @@ export default class UILabarPlayViewForm extends UIBase {
 
     }
     clickbq() {
+        let param = APIOrgSendMess.RequestParams
+        param.content = this.EditBox.string
+        param.message_type = 1
+        UIClubModel.mInstance.APIOrgSendMess(param)
 
+        //发送
     }
 
 }
