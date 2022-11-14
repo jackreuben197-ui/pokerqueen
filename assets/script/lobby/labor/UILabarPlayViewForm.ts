@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 16:44:21
+ * @LastEditTime: 2022-11-14 17:17:05
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -390,7 +390,7 @@ export default class UILabarPlayViewForm extends UIBase {
             node.parent = this.messScoContent
             node.getComponent(node.name).initData(element);
         }
-        this._offset = this._list.length;
+        this._offset = this.messScoContent.childrenCount;
         this._reqEnd = this.messScoContent.childrenCount >= this._total;
         this.staSchedu();
     }

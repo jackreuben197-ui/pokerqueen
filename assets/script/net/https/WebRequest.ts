@@ -616,6 +616,7 @@ export class Web_User_Info {
         ut?: number,        //1 普通用户; 2 支桌号; 3 牌局机器人; 4 牛仔机器人
         forbid_withdraw_gold?: number,        //提现冻结，1 开启，2 关闭
         forbid_bring_in?: number,        //带入冻结，1 开启，2 关闭
+        user_id
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
