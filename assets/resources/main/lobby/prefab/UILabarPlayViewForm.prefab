@@ -619,7 +619,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1059,
+        1124,
         0,
         0,
         0,
@@ -2135,7 +2135,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        778,
+        843,
         0,
         0,
         0,
@@ -2447,7 +2447,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        597,
+        662,
         0,
         0,
         0,
@@ -2826,7 +2826,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        597,
+        662,
         0,
         0,
         0,
@@ -4572,7 +4572,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        597,
+        662,
         0,
         0,
         0,
@@ -4762,7 +4762,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        537,
+        602,
         0,
         0,
         0,
@@ -6051,7 +6051,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 747,
+    "_top": 682,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -6129,7 +6129,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -452,
+        -387,
         0,
         0,
         0,
@@ -6574,8 +6574,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 867,
-    "_bottom": -37,
+    "_top": 802,
+    "_bottom": 28,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -6652,7 +6652,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -2310,
+        -2245,
         0,
         0,
         0,
@@ -7551,7 +7551,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 500
+      "height": 450
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7640,7 +7640,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        400,
+        350,
         0,
         0,
         0,
@@ -9882,8 +9882,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "牌谱",
-    "_N$string": "牌谱",
+    "_string": "战绩",
+    "_N$string": "战绩",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -10658,7 +10658,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
+      "width": 160,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -10710,8 +10710,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "牌谱",
-    "_N$string": "牌谱",
+    "_string": "消息推送",
+    "_N$string": "消息推送",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -10977,7 +10977,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 500
+      "height": 450
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -10990,7 +10990,7 @@
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
     "_N$paddingTop": 0,
-    "_N$paddingBottom": 300,
+    "_N$paddingBottom": 250,
     "_N$spacingX": 0,
     "_N$spacingY": 0,
     "_N$verticalDirection": 1,
@@ -11936,8 +11936,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 2725,
-    "_bottom": -1895,
+    "_top": 2660,
+    "_bottom": -1830,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -12011,7 +12011,7 @@
     "_N$startAxis": 0,
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
-    "_N$paddingTop": 185,
+    "_N$paddingTop": 120,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
     "_N$spacingY": 0,
@@ -12145,6 +12145,9 @@
     },
     "lbl_messNewNum": {
       "__id__": 124
+    },
+    "item_xxts": {
+      "__id__": 283
     },
     "list": null,
     "_id": ""

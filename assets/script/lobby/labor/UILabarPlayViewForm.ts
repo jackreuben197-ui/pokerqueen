@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 17:17:05
+ * @LastEditTime: 2022-11-14 20:38:38
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -113,6 +113,9 @@ export default class UILabarPlayViewForm extends UIBase {
 
     @property(cc.Label)
     lbl_messNewNum: cc.Label = null;
+    @property(cc.Node)
+    item_xxts: cc.Node = null;
+
 
 
     private tabBtnsParent: cc.Node = null;
@@ -123,10 +126,11 @@ export default class UILabarPlayViewForm extends UIBase {
     _curType = 0;
     private _chessView: UIBase = null;
     private _loadingChessBiew: boolean = false;
+    _showTsMessIndex = 0;
 
     _lastGetId = 1
     _fistGetId = 1
-
+    _tsMessArr = []
     @property(List)
     list: List = null;
     private _offset: number = 0;
@@ -191,6 +195,7 @@ export default class UILabarPlayViewForm extends UIBase {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.clubGoldChange, this.updateGold);
+        this.listen(EventName.refreshMess, this.initMess)
     }
 
     onShow(param?: any, fromUI?: cc.Node) {
@@ -257,12 +262,14 @@ export default class UILabarPlayViewForm extends UIBase {
             let isManger: any = APIOrgClubIsManger.Response.data
             if (isManger.info) {
                 let _data = new ClubAdmin(isManger.info)
+                this.item_xxts.active = false
                 switch (_data.level) {
                     case memberType.own:
                         this.chongzhi.active = true;
                         this.tabNode.getChildByName('chpj').active = true;   //创建牌桌
                         this.tabNode.getChildByName('ghgl').active = true;   //公会管理
                         this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active;  //查看公会
+                        this.item_xxts.active = true
                         break;
                     case memberType.member:
                         this.chongzhi.active = false;
@@ -366,12 +373,15 @@ export default class UILabarPlayViewForm extends UIBase {
 
     async initMess() {
         this._reqing = true
-        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 10, offset: this._offset })
+        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 4, offset: this._offset })
         this._reqing = false
 
         let data: any = APIOrgGetMessList.Response.data
         let node = null;
         data = data.data
+        data.sort((a: any, b: any) => {
+            return a.id - b.id
+        })
         // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
         if (data?.length == 0) return
         let id = data[data.length - 1].id
@@ -383,7 +393,7 @@ export default class UILabarPlayViewForm extends UIBase {
                 node = cc.instantiate(this.messNomalItem);
             } else if (element.message_type == 2) {
                 node = cc.instantiate(this.messTsItem);
-
+                this._tsMessArr.push(element);
             } else if (element.message_type == 3 || element.message_type == 4) {
                 node = cc.instantiate(this.messPfItem);
             }
@@ -391,8 +401,20 @@ export default class UILabarPlayViewForm extends UIBase {
             node.getComponent(node.name).initData(element);
         }
         this._offset = this.messScoContent.childrenCount;
-        this._reqEnd = this.messScoContent.childrenCount >= this._total;
+        // this._reqEnd = this.messScoContent.childrenCount >= this._total;
         this.staSchedu();
+    }
+
+    changeTsMes() {
+        let tsData = this._tsMessArr[this._showTsMessIndex];
+        if (tsData) {
+            this.tsMESS.active = true
+            let _messTsItem = this.tsMESS.getChildByName('messTsItem')
+            _messTsItem.getComponent(_messTsItem.name).initData(tsData);
+            this._showTsMessIndex++;
+        } else {
+            this.tsMESS.active = false
+        }
     }
 
     staSchedu() {
@@ -403,6 +425,7 @@ export default class UILabarPlayViewForm extends UIBase {
         }, 8)
     }
     async getNewMess() {
+        this.changeTsMes();
         await UIClubModel.mInstance.APIOrgGetNewMessNum({ msg_id: this._lastGetId });
         let data: any = APIOrgGetNewMessNum.Response.data
         this.setNewNum(data);
@@ -412,13 +435,13 @@ export default class UILabarPlayViewForm extends UIBase {
     }
 
     clickPf() {
-
+        UIComponent.open(UIDefine.UICollectScore);
     }
     clickzj() {
-
+        UIComponent.open(UIDefine.UIRecord);
     }
     clickxxts() {
-
+        UIComponent.open(UIDefine.UIMsg_Send);
     }
     clickqk() {
 

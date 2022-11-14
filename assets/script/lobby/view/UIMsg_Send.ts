@@ -1,3 +1,5 @@
+import { eventNames } from "process";
+import { EventName } from "../../config/EventName";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import ToastManager from "../../manager/ToastManager";
@@ -13,7 +15,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UIMsg_Send extends BaseForm {
 
-
+    @property(cc.EditBox)
     ebx_name: cc.EditBox = null;
 
     panel_dialog: cc.Node = null;
@@ -47,15 +49,15 @@ export default class UIMsg_Send extends BaseForm {
         btn_send.on(cc.Node.EventType.TOUCH_END, this.onClickSend, this);
 
 
-        let lbl_use : cc.Label = this.getChildNodeOrComponent("lbl_use", cc.Label);
+        let lbl_use: cc.Label = this.getChildNodeOrComponent("lbl_use", cc.Label);
         lbl_use.string = "0";
 
-        let lbl_gold : cc.Label = this.getChildNodeOrComponent("lbl_gold", cc.Label);
+        let lbl_gold: cc.Label = this.getChildNodeOrComponent("lbl_gold", cc.Label);
         lbl_gold.string = "0";
 
         let btn_close: cc.Node = this.getChildNodeOrComponent("btn_close")
         btn_close.on(cc.Node.EventType.TOUCH_END, this.onClickHide, this);
-        
+
         let btn_ok: cc.Node = this.getChildNodeOrComponent("btn_ok")
         btn_ok.on(cc.Node.EventType.TOUCH_END, this.onClickOk, this);
 
@@ -65,34 +67,34 @@ export default class UIMsg_Send extends BaseForm {
     }
 
     resetUI() {
-        let ebx_4 :cc.EditBox = this.getChildNodeOrComponent("ebx_4", cc.EditBox);
+        let ebx_4: cc.EditBox = this.getChildNodeOrComponent("ebx_4", cc.EditBox);
         ebx_4.string = "";
 
         this.resetDialog();
     }
 
     resetDialog() {
-        let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
+        let ebx_1: cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
         ebx_1.string = "";
 
-        let ebx_2 :cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
+        let ebx_2: cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
         ebx_2.string = "";
 
-        let lbl_up : cc.Label = this.getChildNodeOrComponent("lbl_up", cc.Label);
+        let lbl_up: cc.Label = this.getChildNodeOrComponent("lbl_up", cc.Label);
         lbl_up.string = "0/8";
 
-        let lbl_down : cc.Label = this.getChildNodeOrComponent("lbl_down", cc.Label);
+        let lbl_down: cc.Label = this.getChildNodeOrComponent("lbl_down", cc.Label);
         lbl_down.string = "0/60";
 
         this.panel_dialog.active = false;
     }
 
     updateAutoView() {
-        let panel_auto :cc.Node = this.getChildNodeOrComponent("panel_auto");
+        let panel_auto: cc.Node = this.getChildNodeOrComponent("panel_auto");
         panel_auto.removeAllChildren();
         let len = this.testStr.length;
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
-        for (let i=0; i<len; i++) {
+        for (let i = 0; i < len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
             _cloneNode.parent = panel_auto;
 
@@ -102,7 +104,7 @@ export default class UIMsg_Send extends BaseForm {
             _cloneNode.width = item_lbl.node.width + 150;
 
             _cloneNode["isShow"] = false;
-            _cloneNode["isAdd"] = i == len-1;
+            _cloneNode["isAdd"] = i == len - 1;
             _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickShow, this);
 
             let item_close = _cloneNode.getChildByName("item_close");
@@ -112,25 +114,32 @@ export default class UIMsg_Send extends BaseForm {
     }
 
     onChangeText(param) {
-        let ebx_4 :cc.EditBox = this.getChildNodeOrComponent("ebx_4", cc.EditBox);
-        let lbl_max : cc.Label = this.getChildNodeOrComponent("lbl_max", cc.Label);
+        let ebx_4: cc.EditBox = this.getChildNodeOrComponent("ebx_4", cc.EditBox);
+        let lbl_max: cc.Label = this.getChildNodeOrComponent("lbl_max", cc.Label);
         lbl_max.string = ebx_4.string.length + " / 200";
     }
 
     onChangeUp(param) {
-        let ebx_2 :cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
-        let lbl_up : cc.Label = this.getChildNodeOrComponent("lbl_up", cc.Label);
+        let ebx_2: cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
+        let lbl_up: cc.Label = this.getChildNodeOrComponent("lbl_up", cc.Label);
         lbl_up.string = ebx_2.string.length + "/8";
     }
 
     onChangeDown(param) {
-        let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
-        let lbl_down : cc.Label = this.getChildNodeOrComponent("lbl_down", cc.Label);
+        let ebx_1: cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
+        let lbl_down: cc.Label = this.getChildNodeOrComponent("lbl_down", cc.Label);
         lbl_down.string = ebx_1.string.length + "/60";
     }
 
-    onClickSend() {
-
+    async onClickSend() {
+        await UIClubModel.mInstance.APIOrgSendMess({
+            "content": this.ebx_name.string,
+            "message_type": 2,
+            "standings_user_id": 0,
+            "game_round_id": 0
+        })
+        this.post(EventName.refreshMess)
+        // this.close();
     }
 
     onClickHide() {
@@ -138,20 +147,20 @@ export default class UIMsg_Send extends BaseForm {
     }
 
     onClickOk() {
-        let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
-        let ebx_2 :cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
+        let ebx_1: cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
+        let ebx_2: cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
         let upStr = ebx_2.string;
         let downStr = ebx_1.string;
 
         let newList = [];
         let len = this.testStr.length;
-        for (let i=0; i<len; i++) {
+        for (let i = 0; i < len; i++) {
             if (i != len - 1) {
                 newList.push(this.testStr[i]);
             }
         }
         newList.push(upStr);
-        newList.push(this.testStr[len-1]);
+        newList.push(this.testStr[len - 1]);
         this.testStr = newList;
         this.resetDialog();
         this.updateAutoView();
@@ -176,7 +185,7 @@ export default class UIMsg_Send extends BaseForm {
 
         let newList = [];
         let len = this.testStr.length;
-        for (let i=0; i<len; i++) {
+        for (let i = 0; i < len; i++) {
             if (i != index) {
                 newList.push(this.testStr[i]);
             }

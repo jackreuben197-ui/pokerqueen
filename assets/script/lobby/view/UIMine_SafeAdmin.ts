@@ -3,7 +3,7 @@
  * @Date: 2022-11-05 10:09:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-05 15:46:35
+ * @LastEditTime: 2022-11-14 19:24:42
  * @FilePath: /pokerqueen/assets/script/lobby/view/UIMine_SafeAdmin.ts
  */
 
@@ -91,9 +91,13 @@ export default class UIMine_SafeAdmin extends BaseForm {
         let data: any = APIGetBlindStatus.Response?.data
         if (data.phone_status.status) {
             this.phone.string = this.splitString(data.phone_status.phone)
+        } else {
+            this.phone.string = '未绑定'
         }
         if (data.email_status.status) {
             this.exmail.string = this.splitString(data.email_status.email)
+        } else {
+            this.exmail.string = '未绑定'
         }
         let flag = false
         if (data.third_party_user_status.facebook.status) {
