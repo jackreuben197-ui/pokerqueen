@@ -3,7 +3,7 @@
  * @Date: 2022-11-12 11:37:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 15:56:32
+ * @LastEditTime: 2022-11-14 20:18:07
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messTsItem.ts
  */
 
@@ -21,8 +21,8 @@ export default class messTsItem extends cc.Component {
     dm: cc.Label = null
     initData(data) {
         this._data = data
-        this.mess.string = this._data.lbl
-        this.dm.string = this._data.time
+        this.mess.string = this._data.content
+        this.dm.string = this._data.time || ''
 
         setTimeout(() => {
             this.node.height = this.lblNode.height + 150

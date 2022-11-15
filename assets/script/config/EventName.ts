@@ -3,7 +3,7 @@
  * @Date: 2022-10-24 16:03:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-11 15:37:47
+ * @LastEditTime: 2022-11-14 20:37:43
  * @FilePath: /pokerqueen/assets/script/config/EventName.ts
  */
 export const enum EventName {
@@ -29,6 +29,7 @@ export const enum EventName {
     refreshActive = 'refreshActive',//刷新活动
     refresh_Btn_Data = 'refresh_Btn_Data',//
     refresh_bind = 'refresh_bind',//
-    refreshClubLevel = 'refreshClubLevel'
+    refreshClubLevel = 'refreshClubLevel',
+    refreshMess = 'refreshMess'
 
 }

@@ -1421,10 +1421,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "",
-    "handler": "",
+    "_componentId": "9b015n4ocxOHLgueZ855vKU",
+    "handler": "click",
     "customEventData": ""
   },
   {

@@ -619,7 +619,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1059,
+        1124,
         0,
         0,
         0,
@@ -2135,7 +2135,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        778,
+        843,
         0,
         0,
         0,
@@ -2447,7 +2447,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        597,
+        662,
         0,
         0,
         0,
@@ -2826,7 +2826,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        597,
+        662,
         0,
         0,
         0,
@@ -4572,7 +4572,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        597,
+        662,
         0,
         0,
         0,
@@ -4762,7 +4762,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        537,
+        602,
         0,
         0,
         0,
@@ -6051,7 +6051,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 747,
+    "_top": 682,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -6129,7 +6129,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -452,
+        -387,
         0,
         0,
         0,
@@ -6574,8 +6574,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 867,
-    "_bottom": -37,
+    "_top": 802,
+    "_bottom": 28,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -6652,7 +6652,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -2310,
+        -2245,
         0,
         0,
         0,
@@ -7551,7 +7551,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 500
+      "height": 450
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7640,7 +7640,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        400,
+        350,
         0,
         0,
         0,
@@ -8097,10 +8097,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "c986e37egdO1YmiqIaJUPrI",
-    "handler": "hideSearchNode",
+    "_componentId": "5a4d14OUSJG6rhsz5jpvaSO",
+    "handler": "editChange",
     "customEventData": ""
   },
   {
@@ -8126,7 +8128,7 @@
         "__id__": 221
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 224
@@ -8374,7 +8376,7 @@
         "__id__": 228
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 232
@@ -8396,8 +8398,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 83,
-      "height": 83
+      "width": 266,
+      "height": 194
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -8408,8 +8410,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        373.585,
-        2.723,
+        440.396,
+        -28.991,
         0,
         0,
         0,
@@ -8463,8 +8465,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 60,
-      "height": 37.8
+      "width": 100,
+      "height": 69.3
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -8476,7 +8478,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        28.751,
         0,
         0,
         0,
@@ -8517,8 +8519,8 @@
     "_dstBlendFactor": 771,
     "_string": "发送",
     "_N$string": "发送",
-    "_fontSize": 30,
-    "_lineHeight": 30,
+    "_fontSize": 50,
+    "_lineHeight": 55,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -8653,7 +8655,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "ec7890dd-b7a4-4461-8cb8-561cfdbf7db3"
+      "__uuid__": "6dc716bb-b32e-47d8-a00b-1f381217ba2e"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -8726,7 +8728,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        477.953,
+        450.893,
         2.723,
         0,
         0,
@@ -9882,8 +9884,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "牌谱",
-    "_N$string": "牌谱",
+    "_string": "战绩",
+    "_N$string": "战绩",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -10658,7 +10660,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
+      "width": 160,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -10710,8 +10712,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "牌谱",
-    "_N$string": "牌谱",
+    "_string": "消息推送",
+    "_N$string": "消息推送",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -10977,7 +10979,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 500
+      "height": 450
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -10990,7 +10992,7 @@
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
     "_N$paddingTop": 0,
-    "_N$paddingBottom": 300,
+    "_N$paddingBottom": 250,
     "_N$spacingX": 0,
     "_N$spacingY": 0,
     "_N$verticalDirection": 1,
@@ -11936,8 +11938,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 2725,
-    "_bottom": -1895,
+    "_top": 2660,
+    "_bottom": -1830,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -12011,7 +12013,7 @@
     "_N$startAxis": 0,
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
-    "_N$paddingTop": 185,
+    "_N$paddingTop": 120,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
     "_N$spacingY": 0,
@@ -12145,6 +12147,15 @@
     },
     "lbl_messNewNum": {
       "__id__": 124
+    },
+    "item_xxts": {
+      "__id__": 283
+    },
+    "item_A": {
+      "__id__": 227
+    },
+    "item_bq": {
+      "__id__": 236
     },
     "list": null,
     "_id": ""

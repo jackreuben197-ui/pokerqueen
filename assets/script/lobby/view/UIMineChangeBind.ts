@@ -3,7 +3,7 @@
  * @Date: 2022-11-05 12:59:25
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-05 16:05:46
+ * @LastEditTime: 2022-11-14 19:00:18
  * @FilePath: /pokerqueen/assets/script/lobby/view/UIMineChangeBind.ts
  */
 import ButtonClickCD from "../../common/ButtonClickCD";
@@ -91,6 +91,7 @@ export default class UIMineChangeBind extends BaseForm {
         this.phoneEdit.string = "";
         this.vcodeEdit.string = "";
         this.passwordEdit.string = "";
+        this.areaNum.string = LoginSession.AreaCode;
         let data: any = APIGetBlindStatus.Response?.data
         this._isNoAllHave = !data.phone_status.status && !data.email_status.status
         this.passwordNode.active = this._isNoAllHave
