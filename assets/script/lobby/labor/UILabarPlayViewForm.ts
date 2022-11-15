@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 20:38:38
+ * @LastEditTime: 2022-11-15 11:43:19
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -116,7 +116,11 @@ export default class UILabarPlayViewForm extends UIBase {
     @property(cc.Node)
     item_xxts: cc.Node = null;
 
+    @property(cc.Node)
+    item_A: cc.Node = null;
 
+    @property(cc.Node)
+    item_bq: cc.Node = null;
 
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
@@ -435,9 +439,11 @@ export default class UILabarPlayViewForm extends UIBase {
     }
 
     clickPf() {
+        // UIComponent.open(UIDefine.UIMine_Poker, { info: '' })
         UIComponent.open(UIDefine.UICollectScore);
     }
     clickzj() {
+        // UIComponent.open(UIDefine.UIRecordDetail, { info: '' });
         UIComponent.open(UIDefine.UIRecord);
     }
     clickxxts() {
@@ -451,11 +457,28 @@ export default class UILabarPlayViewForm extends UIBase {
         await UIClubModel.mInstance.APIOrgSendMess(param)
         this.initMess();
         this.EditBox.string = ''
+        this.editChange()
     }
     clickbq() {
         this.btnNode.active = !this.btnNode.active
-
         //发送
+    }
+    editChange() {
+        if (this.EditBox.string == '') {
+            this.item_A.active = false
+            this.item_bq.active = true
+        }
+        else {
+            this.item_A.active = true
+            this.item_bq.active = false
+        }
+
+    }
+    editEnd() {
+
+    }
+    editBegan() {
+
     }
 
 }

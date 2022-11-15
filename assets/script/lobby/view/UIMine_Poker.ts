@@ -22,7 +22,7 @@ export default class UIMine_Poker extends BaseForm {
 
     _enterInfo: any = null;
 
-    
+
     /// 0 庄家，1 小盲注，2 大盲注，3 枪口，4 枪口+1，5 中位1，6 中位2，7 劫位，8 关位
     /// </summary>
     private PlayerPositionStr = ["BTN", "SB", "BB", "UTG", "UTG+1", "MP1", "MP2", "HJ", "CO"];
@@ -37,8 +37,8 @@ export default class UIMine_Poker extends BaseForm {
 
     protected lateLoad() {
         super.lateLoad();
-    }
 
+    }
 
     lateClose(param: any = null) {
         super.lateClose(param);
@@ -60,7 +60,7 @@ export default class UIMine_Poker extends BaseForm {
             }
             LobbyControl.getInstance().reqRoundStrtus(info).then(
                 (res: any) => {
-                    if (res.code==0 && res.data.records != null && res.data.records.length > 0) {
+                    if (res.code == 0 && res.data.records != null && res.data.records.length > 0) {
                         this.isSC = true;
                     } else {
                         this.isSC = false;
@@ -71,14 +71,14 @@ export default class UIMine_Poker extends BaseForm {
                 }
             )
         }
-        let btn_get:cc.Node = this.getChildNodeOrComponent("btn_get");
+        let btn_get: cc.Node = this.getChildNodeOrComponent("btn_get");
         btn_get.on("click", this.onClickGet, this);
 
-        
+
     }
 
     refreshBtnUI() {
-        let btn_get:cc.Node = this.getChildNodeOrComponent("btn_get");
+        let btn_get: cc.Node = this.getChildNodeOrComponent("btn_get");
         let img1 = btn_get.getChildByName("img1");
         let img2 = btn_get.getChildByName("img2");
         if (this.isSC) {
@@ -130,7 +130,7 @@ export default class UIMine_Poker extends BaseForm {
 
     reqInfo(data: any) {
         let info = {
-       
+
         }
         let match_id = data.info.id;
         LobbyControl.getInstance().reqHistoryReplay(match_id, info).then(
@@ -175,13 +175,12 @@ export default class UIMine_Poker extends BaseForm {
     /// <summary>
     /// 初始化顶部房间信息
     /// </summary>
-    initRoomInfo(responseData)
-    {
+    initRoomInfo(responseData) {
         let roomName = responseData.data.s.name;
         let ante = responseData.data.s.table.ante;
-        let blind = responseData.data.s.table.sb==null? responseData.data.s.table.bb.bet/2: responseData.data.s.table.sb.bet;
+        let blind = responseData.data.s.table.sb == null ? responseData.data.s.table.bb.bet / 2 : responseData.data.s.table.sb.bet;
         let playerNum = responseData.data.s.table.pl.length;
-        let roomId = responseData.data.s.mid==0 ? responseData.data.s.rid : responseData.data.s.mid;
+        let roomId = responseData.data.s.mid == 0 ? responseData.data.s.rid : responseData.data.s.mid;
         let handNum = responseData.data.s.hand;
 
         let panel_top_1: cc.Node = this.getChildNodeOrComponent("panel_top_1");
@@ -193,25 +192,22 @@ export default class UIMine_Poker extends BaseForm {
         let lbl_3 = panel_top_1.getChildByName("lbl_3").getComponent(cc.Label);
 
         let lbl_4 = panel_top_1.getChildByName("lbl_4").getComponent(cc.Label);
-        if (ante > 0)
-        {
-            lbl_2.string = blind.toString() +"/"+ (blind*2).toString() + "(" + ante.toString() + ")";
+        if (ante > 0) {
+            lbl_2.string = blind.toString() + "/" + (blind * 2).toString() + "(" + ante.toString() + ")";
         }
-        else
-        {
+        else {
             lbl_2.string = blind.toString() + "/" + (blind * 2).toString();
         }
-        lbl_3.string = playerNum.toString() ;
+        lbl_3.string = playerNum.toString();
         lbl_4.string = roomId + "-" + handNum;
 
-       
+
     }
 
-     /// <summary>
+    /// <summary>
     /// 刷新顶部玩家数量和当前手数
     /// </summary>
-    refreshTopHandAndPlayerNumInfo(responseData)
-    {
+    refreshTopHandAndPlayerNumInfo(responseData) {
         let panel_top_2: cc.Node = this.getChildNodeOrComponent("panel_top_2");
         let panel_c1: cc.Node = this.getChildNodeOrComponent("panel_c1");
         let lbl_5 = panel_c1.getChildByName("lbl_5").getComponent(cc.Label);
@@ -224,7 +220,7 @@ export default class UIMine_Poker extends BaseForm {
         let lbl_16 = panel_c2.getChildByName("lbl_6").getComponent(cc.Label);
 
         let mPool = 0;//各底池
-        mPool = responseData.s.procedure.preflop.pl[len-1].pot_out;
+        mPool = responseData.s.procedure.preflop.pl[len - 1].pot_out;
         lbl_6.string = StringHelper.getStringDiv100(mPool);
 
         lbl_15.string = len;
@@ -241,18 +237,18 @@ export default class UIMine_Poker extends BaseForm {
         let len1 = list1.length;
         let len2 = list2.length;
 
-        for (let i=0; i<infoLen; i++) {
+        for (let i = 0; i < infoLen; i++) {
             let result = info[i];
             let card = result.card;
             let cardLen = card.length;
             if (i == 0) {
-                for (let j=0; j<len1; j++) {
+                for (let j = 0; j < len1; j++) {
                     let item = list1[j];
                     if (j < cardLen) {
                         item.active = true;
                         let cardStr = GameUtil.GetCardNameByNum(card[j]);
                         let path = AssetContext.getAsset(
-                            cardStr, 
+                            cardStr,
                             AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                         item.getComponent(cc.Sprite).spriteFrame = path;
                     } else {
@@ -260,19 +256,19 @@ export default class UIMine_Poker extends BaseForm {
                     }
                 }
             } else if (i == 1) {
-                for (let j=0; j<len2; j++) {
+                for (let j = 0; j < len2; j++) {
                     let item = list2[j];
                     if (j < cardLen) {
                         item.active = true;
                         item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
-                            GameUtil.GetCardNameByNum(card[j]), 
+                            GameUtil.GetCardNameByNum(card[j]),
                             AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                     } else {
                         item.active = false;
                     }
                 }
             }
-            
+
         }
 
     }
@@ -300,7 +296,7 @@ export default class UIMine_Poker extends BaseForm {
         let lbl_s3 = this.getChildNodeOrComponent("lbl_s3", cc.Label);
         let lbl_s4 = this.getChildNodeOrComponent("lbl_s4", cc.Label);
 
-        
+
         let lbl_left_up_1 = this.getChildNodeOrComponent("lbl_left_up_1", cc.Label);
         let lbl_left_up_2 = this.getChildNodeOrComponent("lbl_left_up_2", cc.Label);
         let lbl_left_up_3 = this.getChildNodeOrComponent("lbl_left_up_3", cc.Label);
@@ -315,7 +311,7 @@ export default class UIMine_Poker extends BaseForm {
             let player: PlayerInfo = new PlayerInfo();
             player.playerId = ResponseData.s.table.pl[i].uid;
             player.playerPosition = this.getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.table.pl[i].sn);
-            
+
             player.userName = ResponseData.s.table.pl[i].name;
             player.headPic = ResponseData.s.table.pl[i].avatar;
             player.seatID = ResponseData.s.table.pl[i].sn;
@@ -360,7 +356,7 @@ export default class UIMine_Poker extends BaseForm {
                 lbl_left_up_3.string = this.GetShowCardType(card_type);
             }
 
-            
+
         }
 
     }
@@ -368,7 +364,7 @@ export default class UIMine_Poker extends BaseForm {
     updateCenterUI(ResponseData) {
         let pl = ResponseData.s.procedure.preflop.pl;
         let len = pl.length;
-        for (let i=0; i<6; i++) {
+        for (let i = 0; i < 6; i++) {
             let node_row: cc.Node = this.getChildNodeOrComponent("node_c_" + (i + 1));
             if (i < len) {
                 let info = ResponseData.s.procedure.preflop.pl[i];
@@ -391,7 +387,7 @@ export default class UIMine_Poker extends BaseForm {
 
                 if (actList == 6 || actList == 7) {
                     if (raiseTimes == 1) {
-        
+
                         lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[actList];
                     }
                     else if (raiseTimes == 2) {
@@ -408,13 +404,13 @@ export default class UIMine_Poker extends BaseForm {
                 let leftChips = ResponseData.s.procedure.preflop.pl[i].c;
                 let str = (leftChips / 100).toString();
                 lbl_3.getComponent(cc.Label).string = pl[i].act_amt;
-                lbl_score.getComponent(cc.Label).string =  this.tryParse(str);
+                lbl_score.getComponent(cc.Label).string = this.tryParse(str);
 
                 lbl_name3.getComponent(cc.Label).string = ResponseData.s.table.pl[0].name;
 
                 lbl_btn.getComponent(cc.Label).string = this.PlayerPositionStr[pl[i].sn];
-                
-            }  else {
+
+            } else {
                 node_row.active = false;
             }
 
@@ -477,12 +473,23 @@ export default class UIMine_Poker extends BaseForm {
     GetShowCardType(cardType) {
         return CardTypeUtil.GetCardTypeEnglishName(cardType);
     }
-    
+
     /**
      * 注册触摸事件
      */
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
+        let btn_share = this.getChildNodeOrComponent('btn_share')
+        this.bindClick(btn_share, () => {
+            UIClubModel.mInstance.APIOrgSendMess(
+                {
+                    "content": '牌谱分享',
+                    "message_type": 4,
+                    "standings_user_id": 0,
+                    "game_round_id": 1,
+                }
+            )
+        })
     }
     /**
      * 注册广播事件
