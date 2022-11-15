@@ -1,6 +1,7 @@
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import TexasGame from "../game/texas/TexasGame";
+import MoniModel from "./data/moni/MoniModel";
 import AudioManager from "./manager/AudioManager";
 import DataManager from "./manager/DataManager";
 import LanguageManager from "./manager/LanguageManager";
@@ -44,6 +45,10 @@ class GameControl {
 
     get uc() {
         return UpdateComponent.Instance;
+    }
+
+    get moni() {
+        return MoniModel.Instance;
     }
 
     init() {
