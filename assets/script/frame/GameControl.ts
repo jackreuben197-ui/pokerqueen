@@ -11,7 +11,7 @@ import SDKManager from "./manager/SDKManager";
 
 class GameControl {
     //private static _instance: GameControl = null;
-    public static get instance() {
+    public static get instance(): GameControl {
         return (this as any)._instance ?? new GameControl;
     }
 
@@ -43,11 +43,11 @@ class GameControl {
         return GameCache.Instance.CurGame;
     }
 
-    get uc() {
+    get uc(): UpdateComponent {
         return UpdateComponent.Instance;
     }
 
-    get moni() {
+    get moni(): MoniModel {
         return MoniModel.Instance;
     }
 

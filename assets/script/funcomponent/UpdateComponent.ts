@@ -9,7 +9,7 @@ export default class UpdateComponent {
 
     public static get Instance(): UpdateComponent {
 
-        return (this as any).instance ??= new UpdateComponent();
+        return (this as any).__Instance ??= new UpdateComponent();
 
     }
     private components: IUpComponent[] = [];
@@ -36,7 +36,6 @@ export default class UpdateComponent {
         this.components.forEach(component => {
             component.active && component.Update(dt);
         });
-
     }
 
 }

@@ -69,7 +69,7 @@ export default class Seat {
     public FsmLogicComponent: FSMLogicComponent = null;//状态机
 
 
-    public ClientSeatId: number = 0;    // 客户端座位号
+    public ClientSeatId: number = 0;    // 客户端座位号(0最下方,顺时针)
 
     public seatID: number = 0;   // 服务器座位号
 

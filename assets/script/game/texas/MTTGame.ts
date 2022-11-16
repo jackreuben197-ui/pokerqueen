@@ -372,42 +372,6 @@ export default class MTTGame extends TexasGame {
 
     // }
 
-    private InitMttFakeSeat() {
-        this.InitSeatByCount(GameCache.Instance.seat_count);
-        let mSeat: Seat = null;
-        for (let i = 0, n = this.listSeat.length; i < n; i++) {
-            mSeat = this.listSeat[i];
-            mSeat.seatID = i;
-            mSeat.FsmLogicComponent.SM.ChangeState(SeatIdle.Instance);
-
-            if (i == 0) {
-                let mPlayer: CPlayer = new CPlayer(GameCache.Instance.nUserId);
-                //ComponentFactory.CreateWithId<Player>(GameCache.Instance.nUserId);
-                mPlayer.seatID = 0;
-                mPlayer.headPic = GameCache.Instance.headPic;
-                mPlayer.nick = GameCache.Instance.nick;
-                mPlayer.userID = GameCache.Instance.nUserId;
-                mPlayer.chips = 0;
-                mPlayer.canPlayStatus = Def.CanPlayStatus.DISABLE;
-                mPlayer.actionStatus = Def.Action.NONE;
-                mPlayer.ante = 0;
-                mPlayer.anteNumber = 0;
-                mPlayer.SetCards(this.GetEmptyHandCards());
-                mSeat.Player = mPlayer;
-
-                if (null != this.mainPlayer) {
-                    this.mainPlayer.Dispose();
-                    this.mainPlayer = null;
-                }
-                this.mainPlayer = mSeat.Player;
-
-                mSeat.UpdateFSMbyStatus();
-            }
-            else {
-                mSeat.FsmLogicComponent.SM.ChangeState(SeatEmpty.Instance);
-            }
-        }
-    }
 
     public countDownTo30Second() {
         if (!this.hadRequestEnterRoom) {

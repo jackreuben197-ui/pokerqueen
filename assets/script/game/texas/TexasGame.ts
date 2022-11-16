@@ -2878,7 +2878,6 @@ export default class TexasGame {
             //     console.log("适配最下方座位");
             // }
             seatUI.setPosition(mInfos[i].Pos);
-            console.log(mInfos[i].Pos.toString());
             seatUI.scale = 1;
             let mSeat: Seat = new Seat(i, seatUI);
             mSeat.UpdateSeatUIInfo(mInfos[i], seatCount);
