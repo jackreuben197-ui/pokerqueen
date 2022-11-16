@@ -3,9 +3,11 @@ import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
 import TimeHelper from "../../../helper/TimeHelper";
 import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
+import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
+import { UIClubModel } from "../../labor/UIClubModel";
 
 
 
@@ -22,7 +24,7 @@ export default class UIRecord extends BaseForm {
         super.lateLoad();
     }
 
-
+    _fromParm = null;
     lateClose(param: any = null) {
         super.lateClose(param);
     }
@@ -31,21 +33,21 @@ export default class UIRecord extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-      
+        this._fromParm = param
         this.resetUI();
 
-        for (let i=1; i<6; i++) {
+        for (let i = 1; i < 6; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
             btn_pt_1["index"] = i;
             btn_pt_1.on(cc.Node.EventType.TOUCH_END, this.onClickNLH, this)
         }
 
-        for (let i=1; i<4; i++) {
+        for (let i = 1; i < 4; i++) {
             let btn_pd_1: cc.Node = this.getChildNodeOrComponent("btn_pd_" + i);
             btn_pd_1["index"] = i;
             btn_pd_1.on(cc.Node.EventType.TOUCH_END, this.onClickDate, this)
         }
-        
+
         this.reqUpInfo(this.lastGameType, this.lastTimeType);
         this.reqDownInfo();
     }
@@ -86,7 +88,7 @@ export default class UIRecord extends BaseForm {
     }
 
     refreshChooseNLH(index) {
-        for (let i=1; i<6; i++) {
+        for (let i = 1; i < 6; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
             let label = btn_pt_1.getComponent(cc.Label);
             if (i == index) {
@@ -100,7 +102,7 @@ export default class UIRecord extends BaseForm {
     }
 
     refreshChooseDate(index) {
-        for (let i=1; i<4; i++) {
+        for (let i = 1; i < 4; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pd_" + i);
             let label = btn_pt_1.getComponent(cc.Label);
             let img_line = btn_pt_1.getChildByName("img_line");
@@ -141,13 +143,13 @@ export default class UIRecord extends BaseForm {
     }
 
     refreshUpUI(data) {
-        for (let i=1; i<7; i++) {
+        for (let i = 1; i < 7; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("pi_" + i);
             let lbl = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
             let label = btn_pt_1.getComponent(cc.Label);
             let room_data = data.data.room_data;
             let mtt_room_data = data.data.mtt_room_data;
-            
+
             if (this.lastGameType == 5) {
                 // MTT
                 if (i == 1) {
@@ -197,7 +199,7 @@ export default class UIRecord extends BaseForm {
                 }
             }
         }
-        
+
 
     }
 
@@ -215,7 +217,7 @@ export default class UIRecord extends BaseForm {
             let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
             let len = records.length;
             this.oldDates = [];
-            for (let i=0; i<len; i++) {
+            for (let i = 0; i < len; i++) {
                 let info = records[i];
                 let _cloneNode = cc.instantiate(panel_item);
                 _cloneNode.x = 0;
@@ -313,7 +315,30 @@ export default class UIRecord extends BaseForm {
     onClickItem(event) {
         let target = event.target;
         let info = target.info;
-        UIComponent.open(UIDefine.UIRecordDetail, {info : info});
+        if (this._fromParm.Name == UIDefine.UILaborPlayViewForm.Name) {
+            UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.CommitCancel,
+                    title: "提示",
+                    content: '即将分享到聊天中',
+                    contentCommit: "确定",
+                    contentCancel: "取消",
+                    actionCommit: () => {
+                        UIClubModel.mInstance.APIOrgSendMess(
+                            {
+                                "content": JSON.stringify(info),
+                                "message_type": 3,
+                                "standings_user_id": 0,
+                                "game_round_id": 1,
+                            }
+                        )
+                    },
+                    noAnimation: true,
+                });
+            return
+        }
+
+        UIComponent.open(UIDefine.UIRecordDetail, { info: info });
     }
 
 }
