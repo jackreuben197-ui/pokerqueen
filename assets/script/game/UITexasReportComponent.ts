@@ -261,5 +261,8 @@ export default class UITexasReportComponent extends UIBase {
         UIComponent.close(this.UIDefine);
 
     }
+    onShow(param?: any): void {
+        super.onShow();
+    }
 
 }

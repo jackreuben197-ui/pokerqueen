@@ -3,10 +3,11 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-13 10:42:43
+ * @LastEditTime: 2022-11-16 14:03:29
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
+import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -136,7 +137,8 @@ export default class UITexasHistoryComponent extends UIBase {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler)
+
+        GC.notify.register(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);
     }
     // registerHandler() {
     //     CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
@@ -261,6 +263,7 @@ export default class UITexasHistoryComponent extends UIBase {
 
 
     onShow(param?: any): void {
+        super.onShow();
         if (null == param)
             return;
         this.historyInfoData = param as HistoryInfoData;
