@@ -523,7 +523,7 @@ export default class TexasGame {
             this.HideWaitForStartTips();
             this.HideOperationPanel();
             this.HideWaitBlindBtn();
-            this.InitSeatByCount(GameCache.Instance.seat_count);
+            this.InitSeatByCount();
             this.InitOperationPos();
             this.HideAllPots();
         }
@@ -1070,14 +1070,14 @@ export default class TexasGame {
             let tmp: number = mSeat.ClientSeatId - clientSeatId;
             if (tmp < 0)
                 tmp += mInfos.length;
-            mSeat.ClientSeatId = tmp;
-            mSeat.ui.name = `Seat${tmp}`;
-
+            //mSeat.ClientSeatId = tmp;
+            //mSeat.ui.name = `Seat${tmp}`;
             this.dicSeatOnlyClient.set(tmp, mSeat);
             //座位位移
             cc.tween(mSeat.ui).to(0.3, { position: mInfos[tmp].Pos }).call(() => {
                 cc.log("座位运动完毕");
-                mSeat.UpdateSeatUIInfo(mInfos[tmp], this.listSeat.length);
+                //mSeat.UpdateSeatUIInfo(mInfos[tmp], this.listSeat.length);
+                mSeat.UpdateSeatUIInfo(tmp);
                 this.SeatMoveEnd();
             }).start();
         }
@@ -2623,9 +2623,14 @@ export default class TexasGame {
     }
     //移除座位UI
     removeSeatUI(seatUI: cc.Node) {
-        seatUI && (seatUI.parent = null);
-        seatUI && this.seatUI_pool.push(seatUI);
-        cc.log("移除 seatUI ", seatUI);
+        if (seatUI) {
+            seatUI.parent = null;
+            seatUI.scale = 1;
+            seatUI.stopAllActions();
+            seatUI.active = false;
+            this.seatUI_pool.push(seatUI);
+            cc.log("移除 seatUI ");
+        }
     }
     public InitPublicLocalPos() {
         // 第一套,第二套 公共牌默认位置
@@ -2865,24 +2870,21 @@ export default class TexasGame {
     }
 
     //初始化座位
-    public InitSeatByCount(seatCount: number) {
-        let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
-        for (let i = 0; i < seatCount; i++) {
+    public InitSeatByCount() {
+        //let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
+        let count = GameCache.Instance.seat_count;
+        for (let i = 0; i < count; i++) {
             let seatUI = this.createSeatUI();
-            seatUI.getComponent(cc.Widget).enabled = false;
             seatUI.active = true;
             seatUI.parent = this.uirc.Seats;
-            seatUI.name = `Seat${i}`;
-            // if (i == 0 && cc.view.getVisibleSize().height < 2688) {
-            //     mInfos[i].Pos = cc.v3(this.uirc.Seat_Temp.x, 454 - cc.view.getVisibleSize().height / 2, 0);
-            //     console.log("适配最下方座位");
-            // }
-            seatUI.setPosition(mInfos[i].Pos);
-            seatUI.scale = 1;
-            let mSeat: Seat = new Seat(i, seatUI);
-            mSeat.UpdateSeatUIInfo(mInfos[i], seatCount);
-            this.listSeat.push(mSeat);
-            this.dicSeatOnlyClient.set(mSeat.ClientSeatId, mSeat);
+            //seatUI.scale = 1;
+            //seatUI.name = `Seat${i}`;
+            //seatUI.setPosition(mInfos[i].Pos);
+            let seat: Seat = new Seat(i, seatUI);
+            seat.UpdateSeatUIInfo(i);
+            //seat.UpdateSeatUIInfo_1(i);
+            this.listSeat.push(seat);
+            this.dicSeatOnlyClient.set(seat.ClientSeatId, seat);
         }
     }
     /////////////////////////////////////////////////
