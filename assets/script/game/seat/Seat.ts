@@ -479,7 +479,7 @@ export default class Seat {
     //刷新座位下方筹码数
     public UpdateCoin(): void {
 
-        this.SetCoin(this.Player?.chips >= 0 ? StringHelper.getStringDiv100(this.Player.chips) : "");
+        this.SetCoin(this.Player?.chips >= 0 ? StringHelper.GetLongString(this.Player.chips) : "");
 
         if (this.IsMySeat) {
             this.uirc.Text_Coin.node.setPosition(0, -130);

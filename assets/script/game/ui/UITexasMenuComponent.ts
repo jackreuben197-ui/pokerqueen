@@ -194,7 +194,8 @@ export default class UITexasMenuComponent extends UIBase {
     updateBean() {
         this.setText(this.textTotalBean, GC.data.user.info.displayGold);
 
-        let outGold = GameCache.Instance?.CurGame?.mainPlayer?.cacheStoreChips || 0;
+        let outGold = (GameCache.Instance?.CurGame?.mainPlayer?.cacheStoreChips || 0) / 100;
+
         this.setActive(this.outTipNode, GameCache.Instance.CurGame.mainPlayer.cacheStoreChips)
         if (this.outTipNode.active) {
             this.setText(this.outGold, outGold);
