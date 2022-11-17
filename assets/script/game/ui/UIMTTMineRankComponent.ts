@@ -250,18 +250,18 @@ export default class UIMTTMineRankComponent extends UIBase {
 
     ShowVoiceprint()
     {
-        if (this.MttInfo.mtt.voiceprint_verify_on == 1)
-        {
-            // if (!MicrophoneHelper.IsMicrophonePermissionAllowed())
-            // {
-            //     return;
-            // }
-            // Game.Scene.GetComponent<UIComponent>().ShowNoAnimation(UIType.UITexasHumanYZ, new UITexasHumanYZComponent.VerificationDataInfo()
-            // {
-            //     cacheVoiceprint = VoiceprintRoomType.MTT,
-            //     matchId = MttInfo.mtt.match_id,
-            // });
-        }
+        // if (this.MttInfo.mtt.voiceprint_verify_on == 1)
+        // {
+        //     if (!MicrophoneHelper.IsMicrophonePermissionAllowed())
+        //     {
+        //         return;
+        //     }
+        //     Game.Scene.GetComponent<UIComponent>().ShowNoAnimation(UIType.UITexasHumanYZ, new UITexasHumanYZComponent.VerificationDataInfo()
+        //     {
+        //         cacheVoiceprint = VoiceprintRoomType.MTT,
+        //         matchId = MttInfo.mtt.match_id,
+        //     });
+        // }
     }
 
     /// <summary>
