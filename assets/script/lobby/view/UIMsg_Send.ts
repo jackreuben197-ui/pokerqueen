@@ -1,5 +1,6 @@
 import { eventNames } from "process";
 import { EventName } from "../../config/EventName";
+import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import ToastManager from "../../manager/ToastManager";
@@ -20,11 +21,7 @@ export default class UIMsg_Send extends BaseForm {
 
     panel_dialog: cc.Node = null;
 
-    testStr = [
-        "消息1",
-        "测试测试",
-        " + "
-    ]
+    testStr = [];
 
     protected lateLoad() {
         super.lateLoad();
@@ -50,10 +47,10 @@ export default class UIMsg_Send extends BaseForm {
 
 
         let lbl_use: cc.Label = this.getChildNodeOrComponent("lbl_use", cc.Label);
-        lbl_use.string = "0";
+        lbl_use.string = "10";
 
         let lbl_gold: cc.Label = this.getChildNodeOrComponent("lbl_gold", cc.Label);
-        lbl_gold.string = "0";
+        lbl_gold.string = GC.data.user.info.displayGold.toString();
 
         let btn_close: cc.Node = this.getChildNodeOrComponent("btn_close")
         btn_close.on(cc.Node.EventType.TOUCH_END, this.onClickHide, this);
@@ -64,6 +61,56 @@ export default class UIMsg_Send extends BaseForm {
         this.resetUI();
 
         this.updateAutoView();
+
+        this.reqGetMsgList();
+
+    }
+
+    reqSetMsgTempLate(upStr, downStr) {
+        let info = {
+            template_name: upStr, //名称,
+            content: downStr, //内容
+        }
+        LobbyControl.getInstance().reqSetMsgTempLate(info).then(
+            (res) => {
+                this.resetDialog();
+                this.reqGetMsgList();
+            },
+            (res) => {
+            }
+        )
+    }
+
+    reqDelMsgTempLate(id) {
+        let info = {
+            id: id
+        }
+        LobbyControl.getInstance().reqDelMsgTempLate(info).then(
+            (res) => {
+                this.reqGetMsgList();
+            },
+            (res) => {
+            }
+        )
+    }
+
+    reqGetMsgList() {
+        let info = {
+            
+
+        }
+        LobbyControl.getInstance().reqGetMsgList(info).then(
+            (res: any) => {
+                this.testStr = res.data.data;
+                let last = {
+                    template_name: " + "
+                }
+                this.testStr.push(last);
+                this.updateAutoView();
+            },
+            (res) => {
+            }
+        )
     }
 
     resetUI() {
@@ -99,7 +146,7 @@ export default class UIMsg_Send extends BaseForm {
             _cloneNode.parent = panel_auto;
 
             let item_lbl: any = _cloneNode.getChildByName("item_lbl").getComponent(cc.Label);
-            item_lbl.string = this.testStr[i];
+            item_lbl.string = this.testStr[i].template_name;
             item_lbl._forceUpdateRenderData();
             _cloneNode.width = item_lbl.node.width + 150;
 
@@ -109,6 +156,7 @@ export default class UIMsg_Send extends BaseForm {
 
             let item_close = _cloneNode.getChildByName("item_close");
             item_close["index"] = i;
+            item_close["id"] = this.testStr[i].id;
             item_close.on(cc.Node.EventType.TOUCH_END, this.onClickClose, this);
         }
     }
@@ -132,14 +180,22 @@ export default class UIMsg_Send extends BaseForm {
     }
 
     async onClickSend() {
+        if (this.ebx_name.string == "") {
+            ToastManager.Instance.createToast("请输入内容");
+            return;
+        }
         await UIClubModel.mInstance.APIOrgSendMess({
             "content": this.ebx_name.string,
             "message_type": 2,
             "standings_user_id": 0,
-            "game_round_id": 0
+            "game_round_id": 0,
+            "amount": 1000
         })
+        GC.data.user.info.gold = GC.data.user.info.displayGold - 10;
+        let lbl_gold: cc.Label = this.getChildNodeOrComponent("lbl_gold", cc.Label);
+        lbl_gold.string = GC.data.user.info.displayGold.toString();
         this.post(EventName.refreshMess)
-        // this.close();
+        this.close();
     }
 
     onClickHide() {
@@ -152,18 +208,29 @@ export default class UIMsg_Send extends BaseForm {
         let upStr = ebx_2.string;
         let downStr = ebx_1.string;
 
-        let newList = [];
-        let len = this.testStr.length;
-        for (let i = 0; i < len; i++) {
-            if (i != len - 1) {
-                newList.push(this.testStr[i]);
-            }
+        if (upStr == "") {
+            ToastManager.Instance.createToast("请输入标题");
+            return;
         }
-        newList.push(upStr);
-        newList.push(this.testStr[len - 1]);
-        this.testStr = newList;
-        this.resetDialog();
-        this.updateAutoView();
+
+        if (downStr == "") {
+            ToastManager.Instance.createToast("请输入内容");
+            return;
+        }
+
+        this.reqSetMsgTempLate(upStr, downStr);
+        // let newList = [];
+        // let len = this.testStr.length;
+        // for (let i = 0; i < len; i++) {
+        //     if (i != len - 1) {
+        //         newList.push(this.testStr[i]);
+        //     }
+        // }
+        // newList.push(upStr);
+        // newList.push(this.testStr[len - 1]);
+        // this.testStr = newList;
+        // this.resetDialog();
+        // this.updateAutoView();
     }
 
     onClickShow(event) {
@@ -181,17 +248,18 @@ export default class UIMsg_Send extends BaseForm {
 
     onClickClose(event) {
         let target = event.currentTarget;
-        let index = target.index;
+        let id = target.id;
 
-        let newList = [];
-        let len = this.testStr.length;
-        for (let i = 0; i < len; i++) {
-            if (i != index) {
-                newList.push(this.testStr[i]);
-            }
-        }
-        this.testStr = newList;
-        this.updateAutoView();
+        this.reqDelMsgTempLate(id);
+        // let newList = [];
+        // let len = this.testStr.length;
+        // for (let i = 0; i < len; i++) {
+        //     if (i != index) {
+        //         newList.push(this.testStr[i]);
+        //     }
+        // }
+        // this.testStr = newList;
+        // this.updateAutoView();
     }
 
 }

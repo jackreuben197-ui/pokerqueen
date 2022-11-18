@@ -1684,7 +1684,7 @@ export class Web_Org_Club_Get {
         more_contact: string,
         club_id: number,
         level: number,
-        upper_limit:: number,
+        upper_limit: number,
     } = null;
     static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;
@@ -2491,6 +2491,91 @@ export class Web_Misc_Game_Round_Status {
         return param;
     }
     static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_Status.ResponseData };
+}
+
+/// <summary>
+/// 设置消息模版
+/// </summary>
+export class API_SET_MSG_TEMPLATE {
+    //接口地址
+    static API: string = "/api/chat/club/inform/template/set";
+
+    //字段声明
+    static RequestParams: {
+        template_name: string, //名称,
+        content: string, //内容
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_SET_MSG_TEMPLATE.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_SET_MSG_TEMPLATE.ResponseData };
+}
+
+/// <summary>
+/// 获取用户消息模版列表
+/// </summary>
+export class API_GET_MSG_LIST {
+    //接口地址
+    static API: string = "/api/chat/club/inform/template/list";
+
+    //字段声明
+    static RequestParams: {
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_GET_MSG_LIST.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_GET_MSG_LIST.ResponseData };
+}
+
+/// <summary>
+/// 删除消息模版
+/// </summary>
+export class API_DEL_MSG_TEMPLATE {
+    //接口地址
+    static API: string = "/api/chat/club/inform/template/del";
+
+    //字段声明
+    static RequestParams: {
+        id: number
+    } = null;
+
+    static ResponseData: {
+    } = null;
+    static Request(param: typeof API_DEL_MSG_TEMPLATE.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof API_DEL_MSG_TEMPLATE.ResponseData };
+}
+
+export class API_SEND_MSG {
+    public static API: string = "/api/chat/club/send_messages";
+    //字段声明
+    public static RequestParams: {
+        "content": string,
+        "message_type": number,  // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
+        "standings_user_id": number, // 消息类型为 3战绩分享 时，分享的玩家ID
+        "game_round_id": number,// 消息类型为 4牌谱分享 时，牌谱ID
+        "amount": number
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof API_SEND_MSG.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof API_SEND_MSG.ResponseData
+    };
 }
 
 /// <summary>
