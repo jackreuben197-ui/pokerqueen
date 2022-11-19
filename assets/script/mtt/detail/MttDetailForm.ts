@@ -11,7 +11,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
 import ToastManager from "../../manager/ToastManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize } from "../../net/https/WebRequest";
+import { Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize, Web_Room_Center_Mtt_Rooms } from "../../net/https/WebRequest";
 
 import BaseForm from "../../ui/form/BaseForm";
 
@@ -83,7 +83,7 @@ export default class MttDetailForm extends BaseForm {
     }
 
     refreshStatusUI(res) {
-        let panel_item2: cc.Node = this.getChildNodeOrComponent("panel_item2");
+        let panel_item2: cc.Node = this.getChildNodeOrComponent("panel_item");
         let mttDetails = res;
         let isStar = false;
         // 根据比赛状态设置状态标签
@@ -235,7 +235,7 @@ export default class MttDetailForm extends BaseForm {
             panel_0.active = true;
             panel_1.active = false;
             let sv_status = this.getChildNodeOrComponent("sv_status", cc.ScrollView);
-            let panel_item2: cc.Node = this.getChildNodeOrComponent("panel_item2");
+            let panel_item2: cc.Node = this.getChildNodeOrComponent("panel_item");
             sv_status.content.height = panel_item2.height * 1.2;
             sv_status.scrollToTop();
             panel_item2.x = 0;
@@ -276,7 +276,7 @@ export default class MttDetailForm extends BaseForm {
                     let tResp = Web_Room_Center_Mtt_Real_Prize.Response;
                     if (tResp.code == 0)
                     {
-                        this.refreshListView("panel_item", "sv_down1");
+                        this.refreshListView(2, tResp.data);
                     }
                     else
                     {
@@ -309,7 +309,7 @@ export default class MttDetailForm extends BaseForm {
                     let tResp = Web_Room_Center_Mtt_Ranks.Response;
                     if (tResp.code == 0)
                     {
-                        this.refreshListView("panel_item3", "sv_down2");
+                        this.refreshListView(3, tResp);
                     }
                     else
                     {
@@ -330,7 +330,28 @@ export default class MttDetailForm extends BaseForm {
             sv_down2.active = false;
             sv_down3.active = true;
             sv_down4.active = false;
-            this.refreshListView("panel_item4", "sv_down3");
+            let reqInfo = {
+                limit: 100,//几人池
+                offset: 0,
+            }
+            HttpRequest.Send({
+                api: Web_Room_Center_Mtt_Rooms.API.replace("{id}", this._data._msg.match_id.toString()),
+                request: Web_Room_Center_Mtt_Rooms,
+                body: Web_Room_Center_Mtt_Rooms.Request(reqInfo),
+                onSuccess: function () {
+                    let tResp = Web_Room_Center_Mtt_Rooms.Response;
+                    if (tResp.code == 0)
+                    {
+                        this.refreshListView(4, tResp);
+                    }
+                    else
+                    {
+                      
+                    }
+                }.bind(this),
+                onFailure: function (content) {
+                }.bind(this)
+            });
         } else if (this.curType == 4) {
             panel_0.active = false;
             panel_1.active = true;
@@ -342,18 +363,25 @@ export default class MttDetailForm extends BaseForm {
             sv_down2.active = false;
             sv_down3.active = false;
             sv_down4.active = true;
-            this.refreshListView("panel_item5", "sv_down4");
+            this.refreshListView(5, null);
         }
 
         this.refreshTopUI(this.curType);
     }
 
     // sv需要拆出来
-    refreshListView(panelName, svName) {
+    refreshListView(index, data) {
+        if (data == null) {
+            return;
+        }
+        let info = data;
+        if (index == 2) {
+            data = data.prizes;
+        }
         // 有数据 刷新列表
-        let len = 50;
-        let panel_item: cc.Node = this.getChildNodeOrComponent(panelName);
-        let scrollView = this.getChildNodeOrComponent(svName, cc.ScrollView);
+        let len = data.length;
+        let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item" + index);
+        let scrollView = this.getChildNodeOrComponent("sv_down" + (index-1), cc.ScrollView);
         scrollView.scrollToTop();
         scrollView.content.removeAllChildren();
         for (let i = 0; i < len; i++) {
