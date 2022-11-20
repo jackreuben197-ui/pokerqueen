@@ -479,17 +479,6 @@ export default class UIMine_Poker extends BaseForm {
      */
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
-        let btn_share = this.getChildNodeOrComponent('btn_share')
-        this.bindClick(btn_share, () => {
-            UIClubModel.mInstance.APIOrgSendMess(
-                {
-                    "content": '牌谱分享',
-                    "message_type": 4,
-                    "standings_user_id": 0,
-                    "game_round_id": 1,
-                }
-            )
-        })
     }
     /**
      * 注册广播事件

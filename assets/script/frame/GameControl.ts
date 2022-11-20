@@ -1,6 +1,7 @@
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import TexasGame from "../game/texas/TexasGame";
+import MoniModel from "./data/moni/MoniModel";
 import AudioManager from "./manager/AudioManager";
 import DataManager from "./manager/DataManager";
 import LanguageManager from "./manager/LanguageManager";
@@ -10,7 +11,7 @@ import SDKManager from "./manager/SDKManager";
 
 class GameControl {
     //private static _instance: GameControl = null;
-    public static get instance() {
+    public static get instance(): GameControl {
         return (this as any)._instance ?? new GameControl;
     }
 
@@ -42,8 +43,12 @@ class GameControl {
         return GameCache.Instance.CurGame;
     }
 
-    get uc() {
+    get uc(): UpdateComponent {
         return UpdateComponent.Instance;
+    }
+
+    get moni(): MoniModel {
+        return MoniModel.Instance;
     }
 
     init() {

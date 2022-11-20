@@ -69,7 +69,7 @@ export default class Seat {
     public FsmLogicComponent: FSMLogicComponent = null;//状态机
 
 
-    public ClientSeatId: number = 0;    // 客户端座位号
+    public ClientSeatId: number = 0;    // 客户端当前的方位座位号(0最下方,顺时针)
 
     public seatID: number = 0;   // 服务器座位号
 
@@ -177,13 +177,24 @@ export default class Seat {
 
         this.uirc.node.stopAllActions();
     }
-    //刷新座位信息
-    public UpdateSeatUIInfo(info: SeatUIInfo, usercount: number): void {
-        this.PlayerCount = usercount;
-        this.ClientSeatId = + this.ui.name.substring(this.ui.name.length - 1);
+
+
+    // public UpdateSeatUIInfo_1(dir: number) {
+    //     let infos = GameUtil.SeatUIInfos[GameCache.Instance.seat_count];
+    //     this.ClientSeatId = dir;
+    //     this.seatUIInfo = infos[dir];
+
+    // }
+
+    //刷新座位信息 dir方位 (0下,顺时针)
+    public UpdateSeatUIInfo(dir: number): void {
+        let info = GameUtil.SeatUIInfos[GameCache.Instance.seat_count][dir];
+        this.PlayerCount = GameCache.Instance.seat_count;
+        this.ClientSeatId = dir;
+        //+ this.ui.name.substring(this.ui.name.length - 1);
         this.seatUIInfo = info;
         this.ui.setPosition(info.Pos);
-
+        console.log("setpos == >> ", info.Pos.toString());
         this.uirc.imageBanker.setPosition(info.BankerPos);
         this.uirc.transSmallCardBacks.setPosition(info.CardBackPos);
         this.uirc.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
@@ -468,7 +479,7 @@ export default class Seat {
     //刷新座位下方筹码数
     public UpdateCoin(): void {
 
-        this.SetCoin(this.Player?.chips >= 0 ? StringHelper.getStringDiv100(this.Player.chips) : "");
+        this.SetCoin(this.Player?.chips >= 0 ? StringHelper.GetLongString(this.Player.chips) : "");
 
         if (this.IsMySeat) {
             this.uirc.Text_Coin.node.setPosition(0, -130);

@@ -297,6 +297,7 @@ export default class UITexas extends BaseScene {
         //////////////////////////////////////////////////////////////////////
         //////////////////初始化杂类
         //隐藏座位模板
+        //this.Seat_Temp.removeComponent(cc.Widget);
         this.Seat_Temp.active = false;
         //Pot对象池
         this.TransPot_Pool = new SimpleNodePool(this.transPot);

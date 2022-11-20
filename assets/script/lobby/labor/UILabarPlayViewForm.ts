@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-15 11:43:19
+ * @LastEditTime: 2022-11-16 11:04:51
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -440,11 +440,11 @@ export default class UILabarPlayViewForm extends UIBase {
 
     clickPf() {
         // UIComponent.open(UIDefine.UIMine_Poker, { info: '' })
-        UIComponent.open(UIDefine.UICollectScore);
+        UIComponent.open(UIDefine.UICollectScore, UIDefine.UILaborPlayViewForm);
     }
     clickzj() {
         // UIComponent.open(UIDefine.UIRecordDetail, { info: '' });
-        UIComponent.open(UIDefine.UIRecord);
+        UIComponent.open(UIDefine.UIRecord, UIDefine.UILaborPlayViewForm);
     }
     clickxxts() {
         UIComponent.open(UIDefine.UIMsg_Send);

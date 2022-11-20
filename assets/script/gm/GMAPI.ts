@@ -14,6 +14,8 @@ export class GM {
         }
         this.__DebugSwitch = list;
     }
+    //房间id开启显示
+    static switch_roomid_show: boolean = false;
     /**
      * id 
      * 1:显示座位id
@@ -212,8 +214,6 @@ export class GM {
         }
     }
 
-
-
     /**
      * 用户信息请求
      */
@@ -235,8 +235,6 @@ export class GM {
             });
         });
     }
-
-
     //显示 座位ID
     static ShowSeatIDs() {
         let seat_count = GameCache.Instance.CurGame?.listSeat?.length;
@@ -246,6 +244,7 @@ export class GM {
             })
         }
     }
+
 }
 (window as any).GM = GM;
 export var GM_Templete = {

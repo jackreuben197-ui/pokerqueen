@@ -2,6 +2,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil from "../../game/util/GameUtil";
+import { GM } from "../../gm/GMAPI";
 
 import UIBase from "../../ui/UIBase";
 
@@ -54,7 +55,7 @@ export default class UIMatchChessItem extends UIBase {
     initView() {
         let sb = this._data.sb / 100;
         this.setText(this.lbl_center_left, `${sb}/${sb * 2}(${this._data.ante})`)
-        this.setText(this.lbl_deskName, this._data.name)
+        this.setText(this.lbl_deskName, this._data.name + (GM.switch_roomid_show ? `[${this._data.rid}]` : ""));
         this.setText(this.lbl_num, `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`);
         this.setText(this.lbl_status, `UIChessItemStatus_${this._data.status}`);
 

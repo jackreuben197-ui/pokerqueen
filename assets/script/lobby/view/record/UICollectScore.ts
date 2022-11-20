@@ -7,9 +7,11 @@ import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
+import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
+import { UIClubModel } from "../../labor/UIClubModel";
 
 
 
@@ -18,7 +20,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UICollectScore extends BaseForm {
 
-
+    _fromParm = null;
     protected lateLoad() {
         super.lateLoad();
     }
@@ -27,18 +29,20 @@ export default class UICollectScore extends BaseForm {
     lateClose(param: any = null) {
         super.lateClose(param);
     }
+
     /**
      * 每次打开面板处理的内容
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+        this._fromParm = param
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         Text_title.string = "收藏牌谱";
 
         this.reqInfo();
     }
 
-    
+
     /**
      * 注册广播事件
      */
@@ -48,7 +52,7 @@ export default class UICollectScore extends BaseForm {
 
     reqInfo() {
         let info = {
-            limit: 100,   
+            limit: 100,
             offset: 0,
         }
         LobbyControl.getInstance().reqRoundList(info).then(
@@ -63,13 +67,13 @@ export default class UICollectScore extends BaseForm {
     refreshListView(data) {
         let records = data.data.records;
         let len = records.length;
-        let lbl_no : cc.Node = this.getChildNodeOrComponent("lbl_no");
+        let lbl_no: cc.Node = this.getChildNodeOrComponent("lbl_no");
         lbl_no.active = len == 0;
         // 有数据 刷新列表
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
-        scrollView.content.removeAllChildren();
-        for (let i=0; i<len; i++) {
+        // scrollView.content.removeAllChildren();
+        for (let i = 0; i < len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
             _cloneNode.x = 0;
             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
@@ -99,7 +103,7 @@ export default class UICollectScore extends BaseForm {
             btn_dele["data"] = info;
             btn_dele.on(cc.Node.EventType.TOUCH_END, this.onClickCancle, this)
         }
-        scrollView.content.height = panel_item.height * (len+2);
+        scrollView.content.height = panel_item.height * (len + 2);
     }
 
     onScrolling(event) {
@@ -126,8 +130,32 @@ export default class UICollectScore extends BaseForm {
     onClickItem(event) {
         let node = event.target;
         let info = node.info;
-        let e = {info: info}
-        UIComponent.open(UIDefine.UIMine_Poker, {info : e});
+        let e = { info: info }
+
+        if (this._fromParm.Name == UIDefine.UILaborPlayViewForm.Name) {
+            UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+                {
+                    type: UIDialogComponent.DialogType.CommitCancel,
+                    title: "提示",
+                    content: '即将分享到聊天中',
+                    contentCommit: "确定",
+                    contentCancel: "取消",
+                    actionCommit: () => {
+                        UIClubModel.mInstance.APIOrgSendMess(
+                            {
+                                "content": JSON.stringify(e),
+                                "message_type": 4,
+                                "standings_user_id": 0,
+                                "game_round_id": 1,
+                            }
+                        )
+                    },
+                    noAnimation: true,
+                });
+            return
+        }
+
+        UIComponent.open(UIDefine.UIMine_Poker, { info: e });
     }
 
 }
