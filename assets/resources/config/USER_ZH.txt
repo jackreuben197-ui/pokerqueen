@@ -2883,6 +2883,11 @@ ServerErrorCode_20021=您有多笔充值订单未支付，请去记录中查看
 
 ServerErrorCode_20031=用户已有公会
 ServerErrorCode_20032=用户已申请创建公会
+ServerErrorCode_20038=用户没有加入公会
+ServerErrorCode_20039=公会没有加入联盟
+ServerErrorCode_20040=公会已申请加入联盟,等待审核 
+ServerErrorCode_20041=公会已有联盟
+
 
 ServerErrorCode_31001=减少筹码
 ServerErrorCode_31002=不在投注时间
