@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-16 11:04:51
+ * @LastEditTime: 2022-11-16 14:25:27
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -396,7 +396,7 @@ export default class UILabarPlayViewForm extends UIBase {
             if (element.message_type == 1) {
                 node = cc.instantiate(this.messNomalItem);
             } else if (element.message_type == 2) {
-                node = cc.instantiate(this.messTsItem);
+                node = cc.instantiate(this.messNomalItem);
                 this._tsMessArr.push(element);
             } else if (element.message_type == 3 || element.message_type == 4) {
                 node = cc.instantiate(this.messPfItem);

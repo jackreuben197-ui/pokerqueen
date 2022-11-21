@@ -7,6 +7,8 @@
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messTsItem.ts
  */
 
+import TimeHelper from "../../helper/TimeHelper";
+
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -22,7 +24,7 @@ export default class messTsItem extends cc.Component {
     initData(data) {
         this._data = data
         this.mess.string = this._data.content
-        this.dm.string = this._data.time || ''
+        this.dm.string = TimeHelper.convertUTCTimeToLocalTime(this._data.create_time)
 
         setTimeout(() => {
             this.node.height = this.lblNode.height + 150
