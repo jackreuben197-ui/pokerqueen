@@ -3,10 +3,11 @@
  * @Date: 2022-11-05 14:31:49
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-05 15:09:32
+ * @LastEditTime: 2022-11-21 17:49:45
  * @FilePath: /pokerqueen/assets/script/lobby/view/UIMineThridBind.ts
  */
 
+import { EventName } from "../../config/EventName";
 import GC from "../../frame/GameControl";
 import { APIGetBlindStatus } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
@@ -74,7 +75,11 @@ export default class UIMineThridBind extends BaseForm {
         console.log('-------', parms)
 
         let data = await LoginSession.APIBindThrid(parms)
+        await LoginSession.APIGetBlindStatus()
+        this.post(EventName.refresh_bind)
         console.log('-------', data)
+
+        this.initUI()
     }
     /*** 第三方登录 ***/
     clickGoogle() {
