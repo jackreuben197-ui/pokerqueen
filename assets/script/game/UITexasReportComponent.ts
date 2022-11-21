@@ -46,8 +46,7 @@ export default class UITexasReportComponent extends UIBase {
     protected lateLoad(): void {
         super.lateLoad();
         // this.registerHandler();
-        this.initUI();
-        this.RequestRoomers();
+
     }
 
     // private registerHandler() {
@@ -94,10 +93,13 @@ export default class UITexasReportComponent extends UIBase {
 
         //玩家 
         this.content = this.getChildNodeOrComponent('content')
+        this.content.removeAllChildren();
+        this.tInfo_0 = []
+        this.tInfo_1 = []
         let text_Insnum = this.getChildNodeOrComponent('Text_Insnum').getComponent(cc.Label);
         text_Insnum.string = RoomersData.insurance != 0 ? StringHelper.getStringDiv100(RoomersData.insurance) : 0 + "";
-        let textTitle = this.getChildNodeOrComponent('Title').getComponent(cc.RichText);
-        textTitle.string = "<color=\"#E9BF80FF\">" + GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum + "</color>";
+        let textTitle = this.getChildNodeOrComponent('Title').getComponent(cc.Label);
+        textTitle.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
         let tAllNum = 0;
         let totalLen = 0;
         for (let i = 0; i < RoomersData.playersList.length; i++) {
@@ -141,6 +143,8 @@ export default class UITexasReportComponent extends UIBase {
             this.setInfos(element, this.tInfo_1[index1], false);
             element.active = true;
         }
+
+
         totalLen = totalLen + 100 * (this.tInfo_0.length + this.tInfo_1.length);
         //观众
         let title_viewer: cc.Node = this.getChildNodeOrComponent('title_viewer');
@@ -150,11 +154,11 @@ export default class UITexasReportComponent extends UIBase {
         let text_ReportViewer = cc.find('Text_ReportViewer', element)
         text_ReportViewer.getComponent(cc.Label).string = i18nMgr.Get(`adaptation${20052}`) + '(' + RoomersData.observersList.length + ')';
         //Viewer_List
-        let viewer_List: cc.Node = this.getChildNodeOrComponent('Viewer_List');
-        let item = viewer_List.getChildByName('item');
+        let _viewer_List: cc.Node = this.getChildNodeOrComponent('Viewer_List');
+        let viewer_List: cc.Node = cc.instantiate(_viewer_List);
         viewer_List.parent = this.content;
         viewer_List.active = true;
-
+        let item: any = this.getChildNodeOrComponent('item');
         for (let index = 1; index < RoomersData.observersList.length; index++) {
             const element = cc.instantiate(item);
             element.parent = viewer_List
@@ -223,21 +227,21 @@ export default class UITexasReportComponent extends UIBase {
         if (pDto.userId == GameCache.Instance.nUserId) {
             objTemp.getChildByName('SelfGo').active = true;
         } else {
-            let a = onLine ? 255 : 125;
-            if (pDto.score > 0) {
-                objTemp.getChildByName('Text_Count').color = cc.color(184, 43, 48, a);
-            }
-            else if (pDto.score < 0)
-                objTemp.getChildByName('Text_Count').color = cc.color(66, 200, 113, a);
+            // let a = onLine ? 255 : 125;
+            // if (pDto.score > 0) {
+            //     objTemp.getChildByName('Text_Count').color = cc.color(184, 43, 48, a);
+            // }
+            // else if (pDto.score < 0)
+            //     objTemp.getChildByName('Text_Count').color = cc.color(66, 200, 113, a);
         }
     }
     colorText(onLine, str) {
         let tt = "";
         if (onLine) {
-            tt = "<color=\"#E9BF80FF\">" + str + "</color>";
+            tt = str //"<color=\"#E9BF80FF\">" + str + "</color>";
         }
         else {
-            tt = "<color=\"#E9BF807D\">" + str + "</color>";
+            tt = str // "<color=\"#E9BF807D\">" + str + "</color>";
         }
         return tt;
     }
@@ -263,6 +267,8 @@ export default class UITexasReportComponent extends UIBase {
     }
     onShow(param?: any): void {
         super.onShow();
+        this.initUI();
+        this.RequestRoomers();
     }
 
 }
