@@ -67,6 +67,9 @@ export default class UIMine_Service extends BaseForm {
         let panel_click :cc.Node = this.getChildNodeOrComponent("panel_click");
         panel_click.on(cc.Node.EventType.TOUCH_END, this.onClickHide, this);
 
+        let lbl_user :cc.Node = this.getChildNodeOrComponent("lbl_user");
+        lbl_user.on(cc.Node.EventType.TOUCH_END, this.onClickUser, this);
+
         for (let i=1; i<5; i++) {
             let pc1 :cc.Node = this.getChildNodeOrComponent("pc_" + i);
             pc1["index"] = i;
@@ -174,6 +177,10 @@ export default class UIMine_Service extends BaseForm {
         panel_click.active = false;
     }
 
+    onClickUser() {
+        ToastManager.Instance.createToast("功能暂未开放");
+    }
+
     onClickItem(event) {
         let target = event.target;
         let index = target.index;
@@ -213,6 +220,12 @@ export default class UIMine_Service extends BaseForm {
         if (this._email == null || this._email == "") {
             ToastManager.Instance.createToast("请输入电子邮箱");
             return;
+        }
+
+        let reg = new RegExp(/^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/g);
+        if (!reg.test(this._email)) {
+            ToastManager.Instance.createToast("邮箱格式不正确");
+            return true;
         }
 
         if (this._description == null || this._description == "") {
