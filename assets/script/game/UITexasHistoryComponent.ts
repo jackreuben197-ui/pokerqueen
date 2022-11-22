@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-16 14:03:29
+ * @LastEditTime: 2022-11-22 10:42:10
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -890,10 +890,14 @@ export default class UITexasHistoryComponent extends UIBase {
 
         //  #region 收藏牌谱和分享牌谱逻辑
         let DownBar: cc.Node = this.getChildNodeOrComponent('DownBar')
+        // DownBar.active = true
         let textShareTip = cc.find('Button_Share/Text_ShareTip', DownBar)
         textShareTip.color = cc.color(233, 191, 128, 255);
         let textCollectTip = cc.find('Button_Collect/Text_ShareTip', DownBar)
         textCollectTip.color = cc.color(233, 191, 128, 255);
+
+    }
+    shouCangBtn() {
 
     }
     /// <summary>
