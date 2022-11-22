@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-09-30 11:31:00
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-22 19:30:58
+ * @FilePath: /pokerqueen/assets/script/net/https/HttpLink.ts
+ */
 import { TSendInfo } from "../../config/TTypeConfig";
 import HttpRequest from "./HttpRequest";
 

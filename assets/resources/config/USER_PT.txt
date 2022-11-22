@@ -3167,7 +3167,9 @@ UIMTT_StateUnLimitRebuy=Rebuy ilimitado
 UIMTT_StateReward=Recompensa:
 
 
-
+UILookRate=查看汇率
+UINoRateTip=暂无汇率
+UIRate_x_x=汇率:1-{0}
 
 
 

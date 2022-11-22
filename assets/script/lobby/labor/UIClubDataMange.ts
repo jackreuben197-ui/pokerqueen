@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-01 15:48:52
+ * @LastEditTime: 2022-11-22 18:22:18
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
@@ -86,7 +86,25 @@ export default class UIClubDataMange extends BaseForm {
         let index = node.index;
         this.refreshChooseDate(index);
         this.lastTimeType = index;
+        let btn_pd_4 = this.getChildNodeOrComponent("btn_pd_4", cc.Label);
+        let btn_pd_5 = this.getChildNodeOrComponent("btn_pd_5", cc.Label);
+
+        if (btn_pd_4.string == '开始时间') {
+            UIComponent.Instance.Toast('请选择开始时间')
+            return;
+        }
+        if (btn_pd_5.string == '结束时间') {
+            UIComponent.Instance.Toast('请选择结束时间')
+            return;
+        }
+        if (btn_pd_4.node['_data'].getTime() > btn_pd_5.node['_data'].getTime()) {
+            UIComponent.Instance.Toast('开始时间不得大于结束时间')
+            return;
+        }
+
+
         this.reqUpInfo(this.lastGameType, index);
+        this.reqDownInfo(this.lastGameType, index);
     }
 
     resetUI() {
@@ -99,25 +117,22 @@ export default class UIClubDataMange extends BaseForm {
 
         let data: any = Web_Org_Club_Get.Response.data;
         let info: any = {
+            // "club_id": 2,
+            // "game_type": 0,
+            // "time_type": 4,
+            // "time_long": 1,
             club_id: data.club_id,
             game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
             time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
-            time_long: new Date().getTime(),      //客户端时间戳
+            time_long: new Date().getTime(),       //客户端时间戳
         }
         let btn_pd_4 = this.getChildNodeOrComponent("btn_pd_4", cc.Label);
         let btn_pd_5 = this.getChildNodeOrComponent("btn_pd_5", cc.Label);
 
         if (timeType == 5) {
-            if (btn_pd_4.string == '开始时间') {
-                UIComponent.Instance.Toast('请选择开始时间')
-                return;
-            }
-            if (btn_pd_5.string == '结束时间') {
-                UIComponent.Instance.Toast('请选择结束时间')
-                return;
-            }
-            info.start_time = btn_pd_4.node['_data'].getTime();
-            info.end_time = btn_pd_5.node['_data'].getTime();
+
+            info.start_time = btn_pd_4.node['_data'].getTime() / 1000;
+            info.end_time = btn_pd_5.node['_data'].getTime() / 1000;
         }
         UIClubModel.mInstance.APIOrgClubEarning(info).then(
             (res) => {
@@ -198,11 +213,22 @@ export default class UIClubDataMange extends BaseForm {
     }
     reqDownInfo(gameType, timeType) {
         let data: any = Web_Org_Club_Get.Response.data;
-        let info = {
-            club_id: data.club_id,
-            game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
-            time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
-            time_long: new Date().getTime(),      //客户端时间戳
+        let info: any = {
+            "club_id": 2,
+            "game_type": 0,
+            "time_type": 4,
+            "time_long": 1,
+            // club_id: data.club_id,
+            // game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
+            // time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+            // time_long: new Date().getTime(),      //客户端时间戳
+        }
+        let btn_pd_4 = this.getChildNodeOrComponent("btn_pd_4", cc.Label);
+        let btn_pd_5 = this.getChildNodeOrComponent("btn_pd_5", cc.Label);
+        if (timeType == 5) {
+
+            info.start_time = btn_pd_4.node['_data'].getTime() / 1000;
+            info.end_time = btn_pd_5.node['_data'].getTime() / 1000;
         }
         UIClubModel.mInstance.APIOrgClubMemberEarning(info).then(
             (res) => {
@@ -214,7 +240,7 @@ export default class UIClubDataMange extends BaseForm {
     }
 
     refreshListView(data) {
-        let records = data.data.data;
+        let records = data.data.items;
         let lbl_noshow: cc.Node = this.getChildNodeOrComponent("lbl_notShow");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
@@ -253,10 +279,13 @@ export default class UIClubDataMange extends BaseForm {
                 lbl1.string = info.total_hand + ' / ' + info.total_game_cnt
                 lbl2.string = info.service_profit
                 lbl3.string = info.prop_profit
-                lbl4.string = info.total_earn
+                lbl4.string = info.total_profit
 
             }
         }
+    }
+    sousuoBtn() {
+
     }
 
 }

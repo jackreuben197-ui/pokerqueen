@@ -3157,7 +3157,9 @@ UIMTT_StateHuntChampionshipsDialogDetail=
 UIMTT_StateUnLimitRebuy=
 UIMTT_StateReward=獵頭/獎勵
 
-
+UILookRate=查看汇率
+UINoRateTip=暂无汇率
+UIRate_x_x=汇率:1-{0}
 
 
 

@@ -43,6 +43,7 @@ export default class RateModel {
             this.addRate(sendInfo, list)
         } else {
             item.updateRate(sendInfo);
+            GC.notify.post(EventName.addRateItem);
         }
     }
 
