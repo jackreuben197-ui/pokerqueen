@@ -2887,6 +2887,7 @@ ServerErrorCode_20038=用户没有加入公会
 ServerErrorCode_20039=公会没有加入联盟
 ServerErrorCode_20040=公会已申请加入联盟,等待审核 
 ServerErrorCode_20041=公会已有联盟
+ServerErrorCode_20042=公会玩家数量已到上限
 
 
 ServerErrorCode_31001=减少筹码

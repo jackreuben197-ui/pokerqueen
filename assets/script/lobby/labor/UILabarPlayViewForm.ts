@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-16 14:25:27
+ * @LastEditTime: 2022-11-22 20:07:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -425,6 +425,7 @@ export default class UILabarPlayViewForm extends UIBase {
         this.getNewMess();
         this.unscheduleAllCallbacks()
         this.schedule(() => {
+            // if (!this.node.active) return
             this.getNewMess();
         }, 8)
     }
@@ -472,7 +473,7 @@ export default class UILabarPlayViewForm extends UIBase {
             this.item_A.active = true
             this.item_bq.active = false
         }
-
+        // this.close()
     }
     editEnd() {
 
@@ -480,5 +481,6 @@ export default class UILabarPlayViewForm extends UIBase {
     editBegan() {
 
     }
+
 
 }

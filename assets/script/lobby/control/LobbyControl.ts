@@ -176,7 +176,7 @@ export class LobbyControl {
     /**
      * 验证用户昵称
      */
-     async CheckNickName(param: typeof Web_User_Check_Nickname.RequestParams) {
+    async CheckNickName(param: typeof Web_User_Check_Nickname.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Check_Nickname,
@@ -194,7 +194,7 @@ export class LobbyControl {
     /**
      * 修改个人信息
      */
-     async fixUserInfo(param: typeof Web_User_Modify_User_Info.RequestParams) {
+    async fixUserInfo(param: typeof Web_User_Modify_User_Info.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_User_Modify_User_Info,
@@ -212,7 +212,7 @@ export class LobbyControl {
     /**
      * 获取战绩数据 int group_by, int match_id, int limit, int offset, int type, sbyte game_type,
      */
-     async getHistoryInfo(param: typeof Web_Room_Center_History_List.RequestParams) {
+    async getHistoryInfo(param: typeof Web_Room_Center_History_List.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Room_Center_History_List,
@@ -230,7 +230,7 @@ export class LobbyControl {
     /**
      * 查询他人统计数据 - 【数据统计模块】
      */
-     async getPersionInfo(param: typeof WEB2_data_stat_person.RequestParams) {
+    async getPersionInfo(param: typeof WEB2_data_stat_person.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: WEB2_data_stat_person,
@@ -248,7 +248,7 @@ export class LobbyControl {
     /**
      * 战绩7，30,生涯数据(MTT,Room)
      */
-     async getUserStatsInfo(param: typeof Web_Stats_User_Stats.RequestParams) {
+    async getUserStatsInfo(param: typeof Web_Stats_User_Stats.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Stats_User_Stats,
@@ -266,7 +266,7 @@ export class LobbyControl {
     /**
      * 战绩详情  
      */
-     async getRecordDetailInfo(roomId, param: typeof Web_Stats_Room_Detail.RequestParams) {
+    async getRecordDetailInfo(roomId, param: typeof Web_Stats_Room_Detail.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 api: Web_Stats_Room_Detail.API.replace("{id}", roomId.toString()),
@@ -285,7 +285,7 @@ export class LobbyControl {
     /**
      * 手数列表  
      */
-     async getRecordHandInfo(param: typeof Web_Room_Center_History_Hand.RequestParams) {
+    async getRecordHandInfo(param: typeof Web_Room_Center_History_Hand.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Room_Center_History_Hand,
@@ -304,7 +304,7 @@ export class LobbyControl {
     /**
      * MTT 比赛列表详情  
      */
-     async reqMTTDetailInfo(matchID, param: typeof Web_Room_Center_Mtt_Details.RequestParams) {
+    async reqMTTDetailInfo(matchID, param: typeof Web_Room_Center_Mtt_Details.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 api: Web_Room_Center_Mtt_Details.API.replace("{id}", matchID.toString()),
@@ -323,7 +323,7 @@ export class LobbyControl {
     /**
      * 玩家申请加入公会列表
      */
-     async reqClubJoinList(param: typeof APIClubJoinList.RequestParams) {
+    async reqClubJoinList(param: typeof APIClubJoinList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIClubJoinList,
@@ -341,7 +341,7 @@ export class LobbyControl {
     /**
      * 公会管理员冻结公会成员
      */
-     async reqClubLockUser(param: typeof APILockUser.RequestParams) {
+    async reqClubLockUser(param: typeof APILockUser.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APILockUser,
@@ -359,7 +359,7 @@ export class LobbyControl {
     /**
      * 公会管理员解冻公会成员
      */
-     async reqClubUnlockUser(param: typeof APIUnlockUser.RequestParams) {
+    async reqClubUnlockUser(param: typeof APIUnlockUser.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIUnlockUser,
@@ -377,7 +377,7 @@ export class LobbyControl {
     /**
      * 公会管理员删除公会成员
      */
-     async reqClubDeleleUser(param: typeof APIDeleleUser.RequestParams) {
+    async reqClubDeleleUser(param: typeof APIDeleleUser.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIDeleleUser,
@@ -395,7 +395,7 @@ export class LobbyControl {
     /**
      * 管理员查看玩家退会记录
      */
-     async reqClubQuitList(param: typeof APIClubQuitList.RequestParams) {
+    async reqClubQuitList(param: typeof APIClubQuitList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIClubQuitList,
@@ -413,7 +413,7 @@ export class LobbyControl {
     /**
      * 查看成员战绩
      */
-     async reqClubStandings(param: typeof APIClubStandings.RequestParams) {
+    async reqClubStandings(param: typeof APIClubStandings.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIClubStandings,
@@ -446,10 +446,10 @@ export class LobbyControl {
         });
     }
 
-     /**
-     * 获取消息列表
-     */
-      async reqMessageList(param: typeof APIMsgMessageList.RequestParams) {
+    /**
+    * 获取消息列表
+    */
+    async reqMessageList(param: typeof APIMsgMessageList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIMsgMessageList,
@@ -467,7 +467,7 @@ export class LobbyControl {
     /**
      * 发送客服数据
      */
-     async reqServiceInfo(param: typeof APITicketCreate.RequestParams) {
+    async reqServiceInfo(param: typeof APITicketCreate.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APITicketCreate,
@@ -485,7 +485,7 @@ export class LobbyControl {
     /**
      * 判断用户是否绑定手机  返回布尔值
      */
-     async reqIsPhoneUser(param: typeof APIIsPhoneUser.RequestParams) {
+    async reqIsPhoneUser(param: typeof APIIsPhoneUser.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIIsPhoneUser,
@@ -503,7 +503,7 @@ export class LobbyControl {
     /**
      * 牌谱详情
      */
-     async reqHistoryReplay(matchID, param: typeof Web_Room_Center_History_Replay.RequestParams) {
+    async reqHistoryReplay(matchID, param: typeof Web_Room_Center_History_Replay.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 api: Web_Room_Center_History_Replay.API.replace("{id}", matchID.toString()),
@@ -522,7 +522,7 @@ export class LobbyControl {
     /**
      * 收藏
      */
-     async reqRecordRound(param: typeof Web_Misc_Game_Record_Round.RequestParams) {
+    async reqRecordRound(param: typeof Web_Misc_Game_Record_Round.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Misc_Game_Record_Round,
@@ -540,7 +540,7 @@ export class LobbyControl {
     /**
      * 取消收藏
      */
-     async reqRemoveRound(param: typeof Web_Misc_Game_Remove_Round.RequestParams) {
+    async reqRemoveRound(param: typeof Web_Misc_Game_Remove_Round.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Misc_Game_Remove_Round,
@@ -558,7 +558,7 @@ export class LobbyControl {
     /**
      * 收藏列表
      */
-     async reqRoundList(param: typeof Web_Misc_Game_Round_List.RequestParams) {
+    async reqRoundList(param: typeof Web_Misc_Game_Round_List.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Misc_Game_Round_List,
@@ -576,7 +576,7 @@ export class LobbyControl {
     /**
      * 查询牌普列表是否是状态
      */
-     async reqRoundStrtus(param: typeof Web_Misc_Game_Round_Status.RequestParams) {
+    async reqRoundStrtus(param: typeof Web_Misc_Game_Round_Status.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Misc_Game_Round_Status,
@@ -594,7 +594,7 @@ export class LobbyControl {
     /**
      * 查询成就任务列表
      */
-     async reqPropTaskList(param: typeof API_PROP_TASK_LIST.RequestParams) {
+    async reqPropTaskList(param: typeof API_PROP_TASK_LIST.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_PROP_TASK_LIST,
@@ -612,7 +612,7 @@ export class LobbyControl {
     /**
      * 成就任务领取奖励
      */
-     async reqPropTaskReceive(param: typeof API_PROP_TASK_RECEIVE.RequestParams) {
+    async reqPropTaskReceive(param: typeof API_PROP_TASK_RECEIVE.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_PROP_TASK_RECEIVE,
@@ -627,10 +627,10 @@ export class LobbyControl {
         });
     }
 
-     /**
-     * 用户的装扮道具背包
-     */
-      async reqBagPendantList(param: typeof API_BAG_PENDANT_LIST.RequestParams) {
+    /**
+    * 用户的装扮道具背包
+    */
+    async reqBagPendantList(param: typeof API_BAG_PENDANT_LIST.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_BAG_PENDANT_LIST,
@@ -648,7 +648,7 @@ export class LobbyControl {
     /**
      * 用户当前装扮的道具
      */
-     async reqBagCurrentPendantList(param: typeof API_BAG_CURRENT_PENDANT_LIST.RequestParams) {
+    async reqBagCurrentPendantList(param: typeof API_BAG_CURRENT_PENDANT_LIST.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_BAG_CURRENT_PENDANT_LIST,
@@ -666,7 +666,7 @@ export class LobbyControl {
     /**
      * 用户穿上装扮道具
      */
-     async reqBagPandantUp(param: typeof API_BAG_PANDANT_UP.RequestParams) {
+    async reqBagPandantUp(param: typeof API_BAG_PANDANT_UP.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_BAG_PANDANT_UP,
@@ -681,10 +681,10 @@ export class LobbyControl {
         });
     }
 
-     /**
-     * 用户移除装扮道具
-     */
-      async reqBagPandantDown(param: typeof API_BAG_PANDANT_DOWN.RequestParams) {
+    /**
+    * 用户移除装扮道具
+    */
+    async reqBagPandantDown(param: typeof API_BAG_PANDANT_DOWN.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_BAG_PANDANT_DOWN,
@@ -698,7 +698,7 @@ export class LobbyControl {
             });
         });
     }
-    
+
     /**
      * 我的背包
      */
@@ -720,7 +720,7 @@ export class LobbyControl {
     /**
      * 设置消息模版
      */
-     async reqSetMsgTempLate(param: typeof API_SET_MSG_TEMPLATE.RequestParams) {
+    async reqSetMsgTempLate(param: typeof API_SET_MSG_TEMPLATE.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_SET_MSG_TEMPLATE,
@@ -738,7 +738,7 @@ export class LobbyControl {
     /**
      * 获取用户消息模版列表
      */
-     async reqGetMsgList(param: typeof API_GET_MSG_LIST.RequestParams) {
+    async reqGetMsgList(param: typeof API_GET_MSG_LIST.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_GET_MSG_LIST,
@@ -756,7 +756,7 @@ export class LobbyControl {
     /**
      * 删除消息模版
      */
-     async reqDelMsgTempLate(param: typeof API_DEL_MSG_TEMPLATE.RequestParams) {
+    async reqDelMsgTempLate(param: typeof API_DEL_MSG_TEMPLATE.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_DEL_MSG_TEMPLATE,
@@ -774,7 +774,7 @@ export class LobbyControl {
     /**
      * 发送消息
      */
-     async reqSendMsg(param: typeof API_SEND_MSG.RequestParams) {
+    async reqSendMsg(param: typeof API_SEND_MSG.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: API_SEND_MSG,
@@ -788,7 +788,7 @@ export class LobbyControl {
             });
         });
     }
-    
+
     /********************************* 公共接口 ***********************************/
 
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
@@ -828,7 +828,7 @@ export class LobbyControl {
         }
         lbl.string = bxStr;
     }
-        
+
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         3.获取消息多语言
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
@@ -836,7 +836,7 @@ export class LobbyControl {
         var tValue = i18nMgr.Get("MsgInfo_" + pType.toString());
         return tValue;
     }
-    
+
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         4.字符串多参数解析
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
@@ -860,41 +860,41 @@ export class LobbyControl {
         let name = "其他";
         switch (index) {
             case 9:
-                pkInfo = [14,13,12,11,10];
+                pkInfo = [14, 13, 12, 11, 10];
                 name = "皇家同花顺";
                 break;
             case 10:
-                pkInfo = [28,27,26,25,24];
+                pkInfo = [28, 27, 26, 25, 24];
                 name = "同花顺";
                 break;
             case 11:
-                pkInfo = [14,29,44,59,10];
+                pkInfo = [14, 29, 44, 59, 10];
                 name = "四条";
-                break;    
+                break;
             case 12:
-                pkInfo = [13,43,12,7,22];
+                pkInfo = [13, 43, 12, 7, 22];
                 name = "葫芦";
-                break;  
+                break;
             case 13:
-                pkInfo = [27,24,23,22,21];
+                pkInfo = [27, 24, 23, 22, 21];
                 name = "同花";
-                break;  
+                break;
             case 14:
-                pkInfo = [14,28,42,11,55];
+                pkInfo = [14, 28, 42, 11, 55];
                 name = "顺子";
-                break;  
+                break;
             case 15:
-                pkInfo = [55,25,10,11,7];
+                pkInfo = [55, 25, 10, 11, 7];
                 name = "三条";
-                break;  
+                break;
             case 16:
-                pkInfo = [14,44,26,11,10];
+                pkInfo = [14, 44, 26, 11, 10];
                 name = "两对";
-                break;  
+                break;
             case 17:
-                pkInfo = [14,29,12,11,10];
+                pkInfo = [14, 29, 12, 11, 10];
                 name = "一对";
-                break; 
+                break;
         }
         return {
             info: pkInfo,
