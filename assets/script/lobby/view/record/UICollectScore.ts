@@ -132,7 +132,7 @@ export default class UICollectScore extends BaseForm {
         let info = node.info;
         let e = { info: info }
 
-        if (this._fromParm.Name == UIDefine.UILaborPlayViewForm.Name) {
+        if (this._fromParm && this._fromParm.Name == UIDefine.UILaborPlayViewForm.Name) {
             UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,

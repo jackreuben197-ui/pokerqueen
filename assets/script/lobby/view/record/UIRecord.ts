@@ -315,7 +315,7 @@ export default class UIRecord extends BaseForm {
     onClickItem(event) {
         let target = event.target;
         let info = target.info;
-        if (this._fromParm.Name == UIDefine.UILaborPlayViewForm.Name) {
+        if (this._fromParm && this._fromParm.Name == UIDefine.UILaborPlayViewForm.Name) {
             UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
                 {
                     type: UIDialogComponent.DialogType.CommitCancel,
