@@ -133,14 +133,14 @@ export default class MTTGame extends TexasGame {
         return this.blindType;
     }
 
-    public upBlindTime: number; // 当前升盲时间
-    public upBlindLeftTime: number; //升盲剩余时间，秒
-    private upBlindLeftTimeDeltaTime: number;
-    public BlindLevel: number; // 盲注级别
-    public curBld: number;//当前盲注
-    public curAnte: number;//当前前注
-    public nextBld: number;//下一个盲注
-    public nextAnte: number;//下一个前注
+    public upBlindTime: number = 0; // 当前升盲时间
+    public upBlindLeftTime: number = 0; //升盲剩余时间，秒
+    private upBlindLeftTimeDeltaTime: number = 0;
+    public BlindLevel: number = 0; // 盲注级别
+    public curBld: number = 0;//当前盲注
+    public curAnte: number = 0;//当前前注
+    public nextBld: number = 0;//下一个盲注
+    public nextAnte: number = 0;//下一个前注
     // 升盲倒计时
     public upBldCounting: boolean;
 
@@ -607,7 +607,7 @@ export default class MTTGame extends TexasGame {
             info += `\n${i18nMgr.Get("UITexasReport_Text_DeskNumTip")}:${GameCache.Instance.room_id}-${this.mHandNum}`;
         }
 
-        info += GameCache.Instance.roomName;
+        info += `\n${GameCache.Instance.roomName}`;
         info += `\n${this.GetRoomTypeDes()}-${GameCache.Instance.match_id}`;
         info += `\n${i18nMgr.Get("UITexasReport_Text_MatchCurrBlindTip")}:${StringHelper.GetLongStringUnit(this.curBld)}/${StringHelper.GetLongStringUnit(this.curBld * 2)}(${StringHelper.GetLongStringUnit(this.curAnte)})`;
         info += `\n${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:${StringHelper.GetLongStringUnit(this.nextBld)}/${StringHelper.GetLongStringUnit(this.nextBld * 2)}(${StringHelper.GetLongStringUnit(this.nextAnte)})`;

@@ -15,9 +15,9 @@ import { INetWork } from "../define/EIDefine";
 export class GameConfig {
 
     static debug: boolean = true;
-    static Web_Host_Test1 = "test1.awanptesting.com";
-    static Web_Host_Dev1 = "dev1.awanptesting.com";
-    static Web_Host_Dev = "dev.k8s.awanptesting.com";
+    static Web_Host_Test1 = "test1.awanptest.com";
+    static Web_Host_Dev1 = "dev1.awanptest.com";
+    static Web_Host_Dev = "dev.k8s.awanptest.com";
     //0: http://dev.k8s.awanptesting.com 
     //1: http://test1.awanptesting.com  
     //2: http://dev1.awanptesting.com 
@@ -25,7 +25,7 @@ export class GameConfig {
     //4: https://dev1.awanptesting.com 
     static BuildType: number = 3;
     //版本号
-    static Version: string = "20221121_1900";
+    static Version: string = "20221122_1700";
 
     static Default_Language: string = "en";
     //是否使用代理
