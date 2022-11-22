@@ -1159,7 +1159,7 @@ export default class TexasGame {
                                 bringIn: bring_out + fee,
                                 autoOnTable: 0,
                                 autoUseWallet: false,
-                                returnOrNew: 0,
+                                returnOrNew: 1,
                                 store: 0,
                             },
                         });
