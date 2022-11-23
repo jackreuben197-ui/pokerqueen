@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-22 20:07:16
+ * @LastEditTime: 2022-11-23 18:11:41
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -262,11 +262,11 @@ export default class UILabarPlayViewForm extends UIBase {
         let icon = cc.find('iconMask/icon', this.panel_right).getComponent(cc.Sprite);
         WebImageHelper.SetHeadImage(icon, data.logo)
         UIClubModel.mInstance.APIOrgClubGold(data.random_id)
+        this.item_xxts.active = false
         UIClubModel.mInstance.APIOrgClubIsManger(data.club_id).then(() => {
             let isManger: any = APIOrgClubIsManger.Response.data
             if (isManger.info) {
                 let _data = new ClubAdmin(isManger.info)
-                this.item_xxts.active = false
                 switch (_data.level) {
                     case memberType.own:
                         this.chongzhi.active = true;
@@ -377,7 +377,7 @@ export default class UILabarPlayViewForm extends UIBase {
 
     async initMess() {
         this._reqing = true
-        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 4, offset: this._offset })
+        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 10, offset: this._offset })
         this._reqing = false
 
         let data: any = APIOrgGetMessList.Response.data
@@ -407,6 +407,7 @@ export default class UILabarPlayViewForm extends UIBase {
         this._offset = this.messScoContent.childrenCount;
         // this._reqEnd = this.messScoContent.childrenCount >= this._total;
         this.staSchedu();
+        this.messScrollView.scrollToBottom();
     }
 
     changeTsMes() {
@@ -459,6 +460,7 @@ export default class UILabarPlayViewForm extends UIBase {
         this.initMess();
         this.EditBox.string = ''
         this.editChange()
+
     }
     clickbq() {
         this.btnNode.active = !this.btnNode.active
