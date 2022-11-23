@@ -1,6 +1,7 @@
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import TexasGame from "../game/texas/TexasGame";
+import SoundComponent from "../sound/SoundComponent";
 import MoniModel from "./data/moni/MoniModel";
 import AudioManager from "./manager/AudioManager";
 import DataManager from "./manager/DataManager";
@@ -49,6 +50,9 @@ class GameControl {
 
     get moni(): MoniModel {
         return MoniModel.Instance;
+    }
+    get sound(): SoundComponent {
+        return SoundComponent.Instance;
     }
 
     init() {

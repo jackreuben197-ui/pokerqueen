@@ -1,5 +1,6 @@
 
 import { UIDefine } from "../../define/UIDefine";
+import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -776,7 +777,7 @@ export default class UIOperationComponent extends UIBase {
         if (this._isFoldCountDown) {
             this.imageFoldCountDown.fillRange = (this.optCurTime -= dt) / this.optTotalTime;
             if (this.imageFoldCountDown.fillRange <= 0.02) {
-                //GameCache.Instance.CurGame.HideBtnDelay(false);
+                GameCache.Instance.CurGame.HideBtnDelay(false);
             }
             if (this.imageFoldCountDown.fillRange <= 0) {
                 this.isCountDown = false;
@@ -794,7 +795,7 @@ export default class UIOperationComponent extends UIBase {
 
         if (this.optCurTime < 6.1 && this.optCurTime > 6 && !this.hadAlertSound) {
             //剩余5秒音效
-            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_ACTION_ALERT);
+            GC.sound.Play("sfx_action_alert");
             this.hadAlertSound = true;
             //this.DelayPlayBarrage();
         }

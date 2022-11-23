@@ -1666,7 +1666,7 @@ export default class TexasGame {
                 cc.tween(PublicCardInfo.trans).to(.1, { scaleX: 0 }).start();
             }, .1)
             this.sequenceUpdatePublicCards.Append(() => {
-                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
+                GC.sound.Play("sfx_desk_chat");
                 //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
                 PublicCardInfo.SetSpriteFrame(cardId);
 
@@ -1729,7 +1729,7 @@ export default class TexasGame {
                             cc.tween(trans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
                                 //imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(cardId));
                                 PublicCardInfo.SetSpriteFrame(cardId);
-                                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
+                                GC.sound.Play("sfx_desk_chat");
                             })).to(.2, { scaleX: 1 }).start();
                         },
                         .4);
@@ -1870,7 +1870,8 @@ export default class TexasGame {
                 cc.tween(CacheTrans).to(.1, { scaleX: 0 }).then(cc.callFunc(() => {
                     //CacheImage.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(CacheCardId));
                     PublicCardInfo.SetSpriteFrame(CacheCardId);
-                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
+
+                    GC.sound.Play("sfx_desk_chat");
                 })).to(.1, { scaleX: 1 }).call(() => {
                     let mPublicCardInfo0: PublicCardInfo = this.uirc.listSecondCards[0];
                     mPublicCardInfo0.imageCard.node.color = cc.Color.WHITE;
@@ -1948,7 +1949,7 @@ export default class TexasGame {
                     cc.tween(mCacheTrans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
                         //mCacheImage1.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mCacheCardId1));
                         PublicCardInfo.SetSpriteFrame(mCacheCardId1);
-                        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
+                        GC.sound.Play("sfx_desk_chat");
                     })).to(.2, { scaleX: 1 }).call(() => {
                         if (cardTypeIndex == 3) {
                             let sCards = []
@@ -1983,7 +1984,9 @@ export default class TexasGame {
                 tween.then(cc.callFunc(() => {
 
                     cc.tween(mCacheTrans).to(.2, { scaleX: 1.2 }).then(cc.callFunc(() => {
-                        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
+                        
+                        GC.sound.Play("sfx_desk_chat");
+                        
                     })).parallel(cc.scaleTo(.2, 1), cc.moveTo(0.4, CacheDefaultPublicCardsLPos)).then(cc.callFunc(() => {
                         if (cardTypeIndex == 2) {
                             let sCards = [];
@@ -2017,7 +2020,7 @@ export default class TexasGame {
                     cc.tween(mCacheTrans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
                         PublicCardInfo.SetSpriteFrame(mCacheCardId);
                         //mCacheImage.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mCacheCardId));
-                        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_CHAT);
+                        GC.sound.Play("sfx_desk_chat");
                     })).to(.2, { scaleX: 1 }).call(() => {
                         if (cardTypeIndex == 3) {
                             let sCards = [];

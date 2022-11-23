@@ -1,5 +1,6 @@
 import { UIDefine } from "../../define/UIDefine";
 import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -283,7 +284,7 @@ export default class UIMTTMineRankComponent extends UIBase {
             if (responseData.data.rank == 1)
             {
                 this.HandleFirstAwardData(responseData);
-                // SoundComponent.Instance.PlaySFX(SoundComponent.SFX_MTT_RANKING);
+                GC.sound.Play("sfx_mtt_ranking");
             }
             else
             {

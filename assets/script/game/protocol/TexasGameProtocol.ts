@@ -337,14 +337,14 @@ export default class TexasGameProtocol {
 
         }
         if (this.game.smallIndex >= 0) {
-            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_FIRST);
+            GC.sound.Play("sfx_desk_bet_first");
         }
         else {
             //（短牌没有小盲注位置）当小盲位小于零，算出小盲位置，用于首位发牌人座位。
             this.game.smallIndex = this.game.TexasGameUtils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
         }
         if (this.game.bigIndex >= 0) {
-            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_BET_SECOND);
+            GC.sound.Play("sfx_desk_bet_second");
         }
 
         //判断座位是否运动中,做延迟处理

@@ -61,8 +61,8 @@ export default class UICreateFriendMatchHome extends UIBase {
         this.dr.active = parms[0];
     }
     async reqDataAgain() {
-        await UIClubModel.mInstance.APIOrgFriendRoomList();
-        let data: any = APIOrgFriendRoomList.Response.data
+        let data: any = await UIClubModel.mInstance.APIOrgFriendRoomList().catch((content) => { console.log(`>> catch error:${APIOrgFriendRoomList.API}`, content) });
+        //let data: any = APIOrgFriendRoomList.Response.data
         if (!data) return
         this._roomList = data?.records;
         this.list.numItems = data?.records?.length;
