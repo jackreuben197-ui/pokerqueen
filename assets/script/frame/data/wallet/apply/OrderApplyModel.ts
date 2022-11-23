@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 10:50:41
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-11-23 19:22:18
+ * @FilePath: /pokerqueen/assets/script/frame/data/wallet/apply/OrderApplyModel.ts
+ */
 import { EOrderType } from "../../../../config/EEnumConfig";
 import { EventName } from "../../../../config/EventName";
 import { TOrderApplyItem } from "../../../../config/TTypeConfig";
@@ -47,8 +55,10 @@ export default class OrderApplyModel {
         if (item) {
             item.updateData(msg.user_info);
             GC.notify.post(EventName.orderApplyItemChange, item);
+        } else {
+            this.reqList(0, this._type);
         }
-        msg.club_info && GC.data.club.info.updateGold(msg.club_info);
+        msg?.club_info && GC.data.club.info.updateGold(msg?.club_info);
     }
 
     updateData(msg: any) {
