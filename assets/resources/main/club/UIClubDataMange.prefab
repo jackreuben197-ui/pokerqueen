@@ -5821,7 +5821,7 @@
     "_enabled": true,
     "_string": "",
     "returnType": 0,
-    "maxLength": 8,
+    "maxLength": 20,
     "_tabIndex": 0,
     "editingDidBegan": [],
     "textChanged": [
@@ -8846,6 +8846,9 @@
     },
     "sureBtn": {
       "__id__": 83
+    },
+    "EditBox": {
+      "__id__": 150
     },
     "_id": ""
   },

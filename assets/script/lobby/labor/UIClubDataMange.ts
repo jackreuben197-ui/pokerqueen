@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-22 22:07:23
+ * @LastEditTime: 2022-11-23 14:58:05
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
@@ -32,6 +32,8 @@ export default class UIClubDataMange extends BaseForm {
     oldDates: Array<string> = [];
     _info: any = null;
     _clickDataItem = null;
+    @property(cc.EditBox)
+    EditBox: cc.EditBox
     protected lateLoad(): void {
         super.lateLoad();
     }
@@ -211,16 +213,16 @@ export default class UIClubDataMange extends BaseForm {
             }
         }
     }
-    reqDownInfo(gameType, timeType) {
+    reqDownInfo(gameType, timeType, search = null) {
         let data: any = Web_Org_Club_Get.Response.data;
         let info: any = {
-            // "club_id": 2,
-            // "game_type": 0,
-            // "time_type": 4,
+            "club_id": 2,
+            "game_type": 0,
+            "time_type": 4,
             // "time_long": 1,
-            club_id: data.club_id,
-            game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
-            time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+            // club_id: data.club_id,
+            // game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
+            // time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
             time_long: new Date().getTime(),      //客户端时间戳
         }
         let btn_pd_4 = this.getChildNodeOrComponent("btn_pd_4", cc.Label);
@@ -229,6 +231,9 @@ export default class UIClubDataMange extends BaseForm {
 
             info.start_time = btn_pd_4.node['_data'].getTime() / 1000;
             info.end_time = btn_pd_5.node['_data'].getTime() / 1000;
+        }
+        if (search) {
+            info.search = search
         }
         UIClubModel.mInstance.APIOrgClubMemberEarning(info).then(
             (res) => {
@@ -285,7 +290,8 @@ export default class UIClubDataMange extends BaseForm {
         }
     }
     sousuoBtn() {
-
+        let search = this.EditBox.string
+        this.reqDownInfo(this.lastGameType, this.lastTimeType, search);
     }
 
 }

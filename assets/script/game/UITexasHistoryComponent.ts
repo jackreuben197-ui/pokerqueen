@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-22 10:42:10
+ * @LastEditTime: 2022-11-23 11:03:13
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -527,7 +527,7 @@ export default class UITexasHistoryComponent extends UIBase {
         this.FlopNum.active = (ResponseData.s.procedure.flop.pl.length > 0);
         if (ResponseData.s.procedure.flop.pl.length > 0) {
             for (let i = 0; i < 3; i++) {
-                let publicCard = this.FlopInfoList.getChildByName("PublicCard" + i).getComponent(cc.Sprite);
+                let publicCard = this.FlopInfoList.getChildByName("ImageCard" + i).getComponent(cc.Sprite);
 
                 if (this.PublicCards[i] == 0) {
                     //没发完的公共牌不显示
