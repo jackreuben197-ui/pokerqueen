@@ -69,8 +69,15 @@ export default class UIMTTMineRankComponent extends UIBase {
 
     enterInfo: any = null;
 
+    node_1: cc.Node = null;
+    node_2: cc.Node = null;
+    node_3: cc.Node = null;
+
     InItUI()
     {
+        this.node_1 = this.getChildNodeOrComponent("node_1");
+        this.node_2 = this.getChildNodeOrComponent("node_2");
+        this.node_3 = this.getChildNodeOrComponent("node_3");
         // rc = this.GetParent<UI>().GameObject.GetComponent<ReferenceCollector>();
         // Text_GameName = rc.Get<GameObject>("Text_GameName").GetComponent<Text>();
         this.headIcon = this.getChildNodeOrComponent("img_head", cc.Sprite);
@@ -115,6 +122,9 @@ export default class UIMTTMineRankComponent extends UIBase {
         let btn_ok: cc.Node = this.getChildNodeOrComponent("btn_ok");
         btn_ok.on("click", this.onClickClose, this);
 
+        let panel_bag: cc.Node = this.getChildNodeOrComponent("panel_bag");
+        panel_bag.on("click", this.onClickBag, this);
+
         this.InItUI();
         if (null != obj)
         {
@@ -136,6 +146,11 @@ export default class UIMTTMineRankComponent extends UIBase {
         //         shareSwitch = pDto.data.usable;
         //     }
         // });
+    }
+
+    onClickBag() {
+        UIComponent.open(UIDefine.UIMineBag);
+        this.onCloseClick();
     }
 
     onClickClose(): void {
@@ -221,6 +236,10 @@ export default class UIMTTMineRankComponent extends UIBase {
             if (this.MttInfo)
             {
                 WebImageHelper.SetUrlImage(this.headIcon, GameCache.Instance.headPic);
+                let lbl_name = this.getChildNodeOrComponent("lbl_name", cc.Label);
+                let lbl_date = this.getChildNodeOrComponent("lbl_date", cc.Label);
+                lbl_name.string = GameCache.Instance.nick;
+                lbl_date.string = TimeHelper.convertUTCTimeToLocalTime(data.data.mtt.start_time);
                 // nameText.text = GameCache.Instance.nick;
                 // Text_StartTime.text = TimeHelper.TimerDateStr((long)TimeHelper.GetTimestampByDateTime(TimeHelper.RFC3339TimeConvertToUTCTime(this.MttInfo.mtt.start_time))) + "  " + TimeHelper.TimerDateMinStr(TimeHelper.GetTimestampByDateTime(TimeHelper.RFC3339TimeConvertToUTCTime(MttInfo.mtt.start_time)));
 
@@ -228,7 +247,7 @@ export default class UIMTTMineRankComponent extends UIBase {
                 if (this.mineRankDate.isRebuy)
                 {
                     //若是当前盲注大于最大盲注级别，不能重购，请求排名
-                    if (this.MttInfo.more.bl >= this.MttInfo.mtt.max_rebuy_bl)
+                    if (this.MttInfo.more.bl >= data.data.mtt.max_rebuy_bl)
                     {
                         this.GetMyawardApi();
                     }
@@ -312,6 +331,12 @@ export default class UIMTTMineRankComponent extends UIBase {
     /// <param name="responseData"></param>
     HandleFirstAwardData(responseData)
     {
+        this.node_1.active = true;
+        this.node_2.active = false;
+        this.node_3.active = false;
+        let lbl_bigGold = this.getChildNodeOrComponent("lbl_wait", cc.Label);
+        let lbl_rank = this.getChildNodeOrComponent("lbl_rank", cc.Label);
+        let lbl_free = this.getChildNodeOrComponent("lbl_free", cc.Label);
         // firstRank.SetActive(true);
         // if (shareSwitch)
         // {
@@ -324,12 +349,19 @@ export default class UIMTTMineRankComponent extends UIBase {
         // checkTips.SetActive(true);
         // firstRank.transform.Find("firstRankNum").GetComponent<Text>().text = $"{responseData.data.rank}/{UIMatchMTTModel.Instance.MttInfo.mtt.participants}";
         // firstRank.transform.Find("firstGameNameBg/name").GetComponent<Text>().text = gameName;
+        lbl_free.string = this.gameName;
+        let mttInfo = UIMatchMttModel.Instance.MttInfo;
+        if (mttInfo && mttInfo.mtt) {
+            lbl_rank.string = "当前排名:" + responseData.data.rank.toString() + "/" + mttInfo.mtt.participants.toString;
+        }
+
 
         if (responseData.data.award_gold > 0)
         {
             // Text money = firstRank.transform.Find("moneyNum").GetComponent<Text>();
             // money.gameObject.SetActive(true);
             // money.text = string.Format("{0:N2}", responseData.data.award_gold / 100);
+            lbl_bigGold.string = (responseData.data.award_gold / 100).toFixed(2).toString();
         }
         else
         {
@@ -376,6 +408,9 @@ export default class UIMTTMineRankComponent extends UIBase {
     /// <param name="responseData"></param>
     HandleAfterFirstAwardData(responseData)
     {
+        this.node_1.active = false;
+        this.node_2.active = true;
+        this.node_3.active = false;
         // Text_Rank.gameObject.SetActive(true);
         // Text_Rank.text = string.Format(LanguageManager.Get("MTT_end_rank"), $"{responseData.data.rank}/{UIMatchMTTModel.Instance.MttInfo.mtt.participants}");
         // checkTips.SetActive(VerifyGoodsNullOrZero(responseData));
