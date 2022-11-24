@@ -11,7 +11,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
 import ToastManager from "../../manager/ToastManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize, Web_Room_Center_Mtt_Rooms } from "../../net/https/WebRequest";
+import { Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Hranks, Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize, Web_Room_Center_Mtt_Rooms } from "../../net/https/WebRequest";
 
 import BaseForm from "../../ui/form/BaseForm";
 
@@ -363,7 +363,28 @@ export default class MttDetailForm extends BaseForm {
             sv_down2.active = false;
             sv_down3.active = false;
             sv_down4.active = true;
-            this.refreshListView(5, null);
+            let reqInfo = {
+                limit: 100,//几人池
+                offset: 0,
+            }
+            HttpRequest.Send({
+                api: Web_Room_Center_Mtt_Hranks.API.replace("{id}", this._data._msg.match_id.toString()),
+                request: Web_Room_Center_Mtt_Hranks,
+                body: Web_Room_Center_Mtt_Hranks.Request(reqInfo),
+                onSuccess: function () {
+                    let tResp = Web_Room_Center_Mtt_Hranks.Response;
+                    if (tResp.code == 0)
+                    {
+                        this.refreshListView(5, tResp);
+                    }
+                    else
+                    {
+                      
+                    }
+                }.bind(this),
+                onFailure: function (content) {
+                }.bind(this)
+            });
         }
 
         this.refreshTopUI(this.curType);

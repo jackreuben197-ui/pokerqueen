@@ -1438,7 +1438,7 @@ export class Web_Room_Center_Mtt_Hranks {
 /// </summary>
 export class Web_Room_Center_Mtt_Rooms {
     //接口地址
-    static API: string = "/api/roomcenter/room/{id}/rooms";
+    static API: string = "/api/roomcenter/mtt/{id}/rooms";
 
     //字段声明
     static RequestParams: {
