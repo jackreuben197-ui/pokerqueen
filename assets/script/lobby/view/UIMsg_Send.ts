@@ -21,6 +21,10 @@ export default class UIMsg_Send extends BaseForm {
 
     panel_dialog: cc.Node = null;
 
+    clickType = 0; // 0 正常 1 开始 2 结束
+    clickTime = 0;
+    clickSender = null;
+
     testStr = [];
 
     protected lateLoad() {
@@ -50,7 +54,7 @@ export default class UIMsg_Send extends BaseForm {
         lbl_use.string = "10";
 
         let lbl_gold: cc.Label = this.getChildNodeOrComponent("lbl_gold", cc.Label);
-        lbl_gold.string = GC.data.user.info.displayGold.toString();
+        lbl_gold.string = GC.data.club.info.displayGold.toString();
 
         let btn_close: cc.Node = this.getChildNodeOrComponent("btn_close")
         btn_close.on(cc.Node.EventType.TOUCH_END, this.onClickHide, this);
@@ -136,6 +140,19 @@ export default class UIMsg_Send extends BaseForm {
         this.panel_dialog.active = false;
     }
 
+    update() {
+        if (this.clickType == 0) {
+            return;
+        }
+
+        this.clickTime = this.clickTime + 1;
+        if (this.clickTime > 1 / 0.02) {
+            this.clickType = 0;
+            this.onClickShow(this.clickSender);
+            this.clickSender = null;
+        }
+    }
+
     updateAutoView() {
         let panel_auto: cc.Node = this.getChildNodeOrComponent("panel_auto");
         panel_auto.removeAllChildren();
@@ -152,7 +169,34 @@ export default class UIMsg_Send extends BaseForm {
 
             _cloneNode["isShow"] = false;
             _cloneNode["isAdd"] = i == len - 1;
-            _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickShow, this);
+            _cloneNode["info"] = this.testStr[i];
+            // _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickMB, this);
+
+            _cloneNode.on(cc.Node.EventType.TOUCH_START, (event: cc.Event.EventTouch) => {
+                this.clickType = 1;
+                this.clickTime = 0;
+                this.clickSender = event;
+            }, this);
+            _cloneNode.on(cc.Node.EventType.TOUCH_CANCEL, (event: cc.Event.EventTouch) => {
+                this.clickType = 0;
+                this.clickSender = null;
+            }, this);
+            _cloneNode.on(cc.Node.EventType.TOUCH_END, (event: cc.Event.EventTouch) => {
+                if (this.clickType == 0) {
+                    this.clickSender = null;
+                    return
+                }
+                this.clickType = 0;
+                this.clickSender = null;
+                let target = event.currentTarget;
+                let isAdd = target.isAdd;
+                if (isAdd) {
+                    this.panel_dialog.active = true;
+                    return;
+                }
+                let info = target.info;
+                this.ebx_name.string = info.content;
+            }, this);
 
             let item_close = _cloneNode.getChildByName("item_close");
             item_close["index"] = i;
@@ -191,9 +235,10 @@ export default class UIMsg_Send extends BaseForm {
             "game_round_id": 0,
             "amount": 1000
         })
-        GC.data.user.info.gold = GC.data.user.info.displayGold - 10;
+        GC.data.user.info.gold = GC.data.club.info.displayGold - 10;
         let lbl_gold: cc.Label = this.getChildNodeOrComponent("lbl_gold", cc.Label);
-        lbl_gold.string = GC.data.user.info.displayGold.toString();
+        lbl_gold.string = GC.data.club.info.displayGold.toString();
+        GC.notify.post(EventName.clubGoldChange);
         this.post(EventName.refreshMess)
         this.close();
     }
@@ -231,6 +276,17 @@ export default class UIMsg_Send extends BaseForm {
         // this.testStr = newList;
         // this.resetDialog();
         // this.updateAutoView();
+    }
+
+    onClickMB(event) {
+        let target = event.currentTarget;
+        let isAdd = target.isAdd;
+        if (isAdd) {
+            this.panel_dialog.active = true;
+            return;
+        }
+        let info = target.info;
+        this.ebx_name.string = info.content;
     }
 
     onClickShow(event) {
