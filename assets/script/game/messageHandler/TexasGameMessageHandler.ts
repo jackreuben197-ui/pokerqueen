@@ -131,16 +131,16 @@ export default class TexasGameMessageHandler {
         // GameStatusRestoreHandler?.Invoke(responseData.Status);
         // GameStatusRestoreHandler = null;
 
-        let isMtt: boolean = this.game instanceof MTTGame;
+        let isMTT: boolean = this.game.isMTT;
 
-        console.log("当前游戏是比赛:", isMtt);
+        console.log("当前游戏是比赛:", isMTT);
 
         if (response.status == 0) {
 
-            if (isMtt) {
+            if (isMTT) {
                 // 缓存房间id
-                GameCache.Instance.room_id = response.mttRoom.matchId;
-
+                GameCache.Instance.room_id = response.mttRoom.roomId;
+                //matchId;
                 console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
             }
 
@@ -160,7 +160,7 @@ export default class TexasGameMessageHandler {
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 
         }
-        else if (response.status == ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame && isMtt) {
+        else if (response.status == ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame && isMTT) {
             console.log(`Protocol_Holdem_EnterRoom_Handler: response.state : ServerErrorCode.Gameplay_AutoSeatReturnToInvalidGame`);
             // 进入ExchangeRoom状态，等待换房
             this.game.SMAgency.ChangeGameState(TexasGameState.ExchangeRoom, null);

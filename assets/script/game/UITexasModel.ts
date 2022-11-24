@@ -1,4 +1,5 @@
 
+import GC from "../frame/GameControl";
 import HttpRequest from "../net/https/HttpRequest";
 import { APIOrgFriendBringIn, Web_Stats_Other_User_Stats, Web_User_Info, Web_User_Room, Web_User_Room_Settle_Detail } from "../net/https/WebRequest";
 import { GameCache } from "./GameCache";

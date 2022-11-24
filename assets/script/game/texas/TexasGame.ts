@@ -64,6 +64,9 @@ export default class TexasGame {
         deskType: null,
         pokerType: null,
     };
+    //判断是否比赛
+    public isMTT: boolean = false;
+
     public IsLookOn: boolean = false;
 
     //ui界面类的引用
@@ -362,8 +365,6 @@ export default class TexasGame {
 
     //分池节点对象池
     TransPot_Pool: SimpleNodePool = null;
-
-    IsMTT: boolean = false;
 
     //发牌动画
     sequencePlayDealAnimation: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean } = null;
@@ -1984,9 +1985,9 @@ export default class TexasGame {
                 tween.then(cc.callFunc(() => {
 
                     cc.tween(mCacheTrans).to(.2, { scaleX: 1.2 }).then(cc.callFunc(() => {
-                        
+
                         GC.sound.Play("sfx_desk_chat");
-                        
+
                     })).parallel(cc.scaleTo(.2, 1), cc.moveTo(0.4, CacheDefaultPublicCardsLPos)).then(cc.callFunc(() => {
                         if (cardTypeIndex == 2) {
                             let sCards = [];

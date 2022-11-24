@@ -115,7 +115,7 @@ export default class MTTGame extends TexasGame {
     static MTTPlayerStatus = MTTPlayerStatus;
     static AddOnModeDate = AddOnModeDate;
     ///////////////////////////////////////////
-
+    public isMTT: boolean = true;
     //////////////////////////////////////////
     public isSyncHand: boolean = false;
     //protected UnityArmatureComponent armatureRewardCircleZH;
@@ -168,8 +168,6 @@ export default class MTTGame extends TexasGame {
     private readonly minPullDownTipNum: number = 1;//最小的随机数
     private readonly maxPullDownTipsNum: number = 7;//最大的随机数
     private readonly intervelTime: number = 4;//随机间隔时间
-
-    IsMTT: boolean = true;
 
     protected override RCInit() {
         this.TexasGameProtocol = new MTTGameProtocol(this);
