@@ -108,6 +108,10 @@ export class ResManager {
                                                 if (sprite) {
                                                     AssetContext.setAsset(ac.fold, item.name, sprite.spriteFrame);
                                                 }
+                                                let sound = item.getComponent(cc.AudioSource);
+                                                if (sound) {
+                                                    AssetContext.setAsset(ac.fold, item.name, sound.clip);
+                                                }
                                             })
                                         }
                                     }

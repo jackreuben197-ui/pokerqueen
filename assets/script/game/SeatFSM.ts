@@ -1,3 +1,4 @@
+import GC from "../frame/GameControl";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import GlobalSession from "../session/GlobalSession";
 import { GameCache } from "./GameCache";
@@ -253,7 +254,7 @@ export class SeatFSM {
                 //this.seat.VoiceMoveToOhter();
             }
             this.seat.UpdateImageBackActive();
-            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_PLAYER_TURN);
+            GC.sound.Play('sfx_desk_player_turn');
             return;
         }
         this.seat.StartCountDown(GameCache.Instance.CurGame.GetOpTime());
@@ -409,8 +410,7 @@ export class SeatFSM {
     //#region 让牌
     public CheckEnter(): void {
         this.seat.UpdateBubble();
-
-        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_PLAYER_CHECK);
+        GC.sound.Play("sfx_desk_player_check");
     }
 
     public CheckExecute(): void {
@@ -430,7 +430,8 @@ export class SeatFSM {
 
         this.seat.FoldHeadGray(this.seat.Player.isFold);
         this.seat.PlayFoldAnimation();
-        //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_PLAYER_FOLD);
+       
+        GC.sound.Play("sfx_desk_player_fold");
     }
 
     public FoldExecute(): void {

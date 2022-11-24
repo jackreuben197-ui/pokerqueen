@@ -4,13 +4,13 @@
 /// 声纹状态
 
 import GC from "../../frame/GameControl";
-import UpdateComponent from "../../funcomponent/UpdateComponent";
 import { GM } from "../../gm/GMAPI";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { Def } from "../../protobuf/holdem/define_pb";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import { CardType, CardTypeUtil } from "../CardTypeUtil";
 import { CPlayer } from "../CPlayer";
 import FSMLogicComponent from "../FSMLogicComponent";
@@ -290,7 +290,7 @@ export default class Seat {
         if (this.IsMySeat) {
 
             tween.then(cc.callFunc(() => {
-                //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                GC.sound.Play("sfx_desk_new_card");
             }));
 
             for (let i = 0, n = this.Player.cards.length; i < n; i++) {
@@ -346,7 +346,7 @@ export default class Seat {
                 let pos = this.GetBackSmallCardPos(i);
                 mTmpObj.setPosition(mLocalPos);
                 tween.then(cc.callFunc(() => {
-                    //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_NEW_CARD);
+                    GC.sound.Play("sfx_desk_new_card");
                     mTmpObj.active = true;
                     cc.tween(mTmpObj).to(0.4, { position: pos }, cc.easeSineOut()).start();
                 }))
@@ -1072,7 +1072,7 @@ export default class Seat {
         if (this.uirc.imageIconChip.node.activeInHierarchy) {
             this.uirc.textCurRoundHaveBet.node.active = false;
             let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
-            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_MOVE_CHIPS);
+            GC.sound.Play('sfx_desk_move_chips');
             cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
                 this.uirc.imageIconChip.node.active = false;
             }).start();
@@ -1390,7 +1390,7 @@ export default class Seat {
     /// </summary>
     public PlayAllinArmature(isAllinShowVoice = false): void {
         if (isAllinShowVoice) {
-            //SoundComponent.Instance.PlaySFX(SoundComponent.SFX_DESK_ALLIN);
+            GC.sound.Play('sfx_desk_allin');
         }
         // armatureAllin.gameObject.SetActive(true);
         // if (null != armatureAllin.dragonAnimation) {

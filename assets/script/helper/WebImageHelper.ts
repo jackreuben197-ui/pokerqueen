@@ -17,6 +17,11 @@ export default class WebImageHelper {
         else {
             rawImage.spriteFrame = AssetContext.getAsset("default_avatar");
 
+            if (url == "") {
+                console.log("image url = ''");
+                return;
+            }
+
             cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
 
                 if (err) {

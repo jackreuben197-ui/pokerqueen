@@ -219,9 +219,9 @@ export default class UILabarPlayViewForm extends UIBase {
 
     }
     async initActive() {
-        await UIClubModel.mInstance.APIOrgClubActivityInfo();
-        let data: any = APIOrgClubActivityInfo.Response.data
-        if (!data.info) return;
+        let data: any = await UIClubModel.mInstance.APIOrgClubActivityInfo().catch((content) => { console.log(`>> catch error:${APIOrgClubActivityInfo.API}`, content) });
+        //let data: any = APIOrgClubActivityInfo.Response.data
+        if (!data || !data.info) return;
         let url: string = data.info.img_url;
         let index = url.indexOf('http')
         if (index == -1) {

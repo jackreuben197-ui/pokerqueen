@@ -28,7 +28,9 @@ export enum AssetFold {
     texture_SmallCard0,
     texture_SmallCard1,
     texture_mtt,
-    texture_labor
+    texture_labor,
+    //声音
+    sound_all,
 }
 const { ccclass, property, executionOrder } = cc._decorator;
 
