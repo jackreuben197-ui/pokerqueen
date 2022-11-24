@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 18:11:41
+ * @LastEditTime: 2022-11-24 19:08:31
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -377,7 +377,7 @@ export default class UILabarPlayViewForm extends UIBase {
 
     async initMess() {
         this._reqing = true
-        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 10, offset: this._offset })
+        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 50, offset: this._offset })
         this._reqing = false
 
         let data: any = APIOrgGetMessList.Response.data
