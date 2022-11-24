@@ -146,7 +146,7 @@ export default class UICollectScore extends BaseForm {
                                 "content": JSON.stringify(e),
                                 "message_type": 4,
                                 "standings_user_id": 0,
-                                "game_round_id": 1,
+                                "game_round_id": info.room_id,
                             }
                         )
                     },

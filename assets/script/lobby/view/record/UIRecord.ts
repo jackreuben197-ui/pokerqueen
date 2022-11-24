@@ -2,7 +2,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
 import TimeHelper from "../../../helper/TimeHelper";
-import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
+import { Web_Stats_User_Stats, Web_User_Info } from "../../../net/https/WebRequest";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
@@ -328,8 +328,8 @@ export default class UIRecord extends BaseForm {
                             {
                                 "content": JSON.stringify(info),
                                 "message_type": 3,
-                                "standings_user_id": 0,
-                                "game_round_id": 1,
+                                "standings_user_id": Web_User_Info.Response.data.user.user_id,
+                                "game_round_id": 0,
                             }
                         )
                     },

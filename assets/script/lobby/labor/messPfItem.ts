@@ -3,7 +3,7 @@
  * @Date: 2022-11-12 11:38:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-15 10:25:07
+ * @LastEditTime: 2022-11-24 18:49:38
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messPfItem.ts
  */
 
@@ -54,18 +54,28 @@ export default class messPfItem extends cc.Component {
         this.other.active = !this.ower.active
         this.iconMask.x = this._data.sender_id == id ? 447 : -447;
         WebImageHelper.SetHeadImage(this.icon, '')
-        this.type.string = '牌谱分享'
-        this.nckName.string = 'aaaa'
+        this.type.string = this._data.message_type == 3 ? '战绩分享' : '牌谱分享'
+        this.nckName.string = this._data.sender_nickname
+        let content = JSON.parse(this._data.content);
         this.winType.string = '以<color=#35A3B3>同花顺</color>获得胜利'
-        this.dm.string = '40/80'
-        this.winNum.string = '+888'
+        this.winType.node.active = false;
+        if (this._data.message_type == 3) {
+            this.dm.string = content.small_blind + '/' + content.small_blind * 2
+            this.winNum.string = content.Change > 0 ? '+' + content.Change : content.Change
+
+        }
+        else {
+            this.winNum.string = content.info.change > 0 ? '+' + content.info.change : content.info.change
+            this.dm.string = '第 ' + content.info.hand_num + ' 手'
+        }
     }
     click() {
+        let content = JSON.parse(this._data.content);
         if (this._data.message_type == 3) {
-            UIComponent.open(UIDefine.UIRecordDetail, { info: this._data })
+            UIComponent.open(UIDefine.UIRecordDetail, { info: content })
         }
         else if (this._data.message_type == 4) {
-            UIComponent.open(UIDefine.UIMine_Poker, { info: this._data });
+            UIComponent.open(UIDefine.UIMine_Poker, { info: content });
         }
     }
 }
