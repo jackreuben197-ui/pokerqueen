@@ -139,7 +139,7 @@ export default class TexasGameMessageHandler {
 
             if (isMtt) {
                 // 缓存房间id
-                GameCache.Instance.room_id = response.mttRoom.roomId;
+                GameCache.Instance.room_id = response.mttRoom.matchId;
 
                 console.log(`Protocol_Holdem_EnterRoom_Handler: cache mtt room id: ${GameCache.Instance.room_id}`);
             }
