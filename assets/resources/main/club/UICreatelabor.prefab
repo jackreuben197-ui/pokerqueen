@@ -430,8 +430,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 50.4
+      "width": 240,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -484,8 +484,8 @@
     "_dstBlendFactor": 771,
     "_string": "创建公会",
     "_N$string": "创建公会",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 60,
+    "_lineHeight": 60,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -524,7 +524,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 160,
+    "_top": 147.4,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,

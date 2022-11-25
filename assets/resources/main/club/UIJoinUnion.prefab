@@ -436,8 +436,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 50.4
+      "width": 240,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -449,7 +449,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1154.8,
+        1142.2,
         0,
         0,
         0,
@@ -490,8 +490,8 @@
     "_dstBlendFactor": 771,
     "_string": "加入联盟",
     "_N$string": "加入联盟",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 60,
+    "_lineHeight": 60,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -530,7 +530,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 164,
+    "_top": 163.99999999999991,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -595,7 +595,7 @@
       "ctor": "Float64Array",
       "array": [
         49.461,
-        1129.6,
+        1104.4,
         0,
         0,
         0,
@@ -1008,7 +1008,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        979.5999999999999,
+        954.4000000000001,
         0,
         0,
         0,
@@ -1947,7 +1947,7 @@
     "_alignFlags": 41,
     "_left": 0,
     "_right": 0,
-    "_top": 214.4000000000001,
+    "_top": 239.5999999999999,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,

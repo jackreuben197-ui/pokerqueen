@@ -855,8 +855,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
-      "height": 50.4
+      "width": 100,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -909,8 +909,8 @@
     "_dstBlendFactor": 771,
     "_string": "审批",
     "_N$string": "审批",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -1147,8 +1147,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 50.4
+      "width": 240,
+      "height": 71.82
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1159,7 +1159,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
+        -68,
         0,
         0,
         0,
@@ -1201,8 +1201,8 @@
     "_dstBlendFactor": 771,
     "_string": "成员管理",
     "_N$string": "成员管理",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 60,
+    "_lineHeight": 57.1,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -1267,7 +1267,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        107.785,
+        187.785,
         0,
         0,
         0,
@@ -1375,7 +1375,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        141.125,
+        221.125,
         0,
         0,
         0,
@@ -1483,7 +1483,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        196.71,
+        276.71000000000004,
         0,
         0,
         0,

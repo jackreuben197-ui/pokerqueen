@@ -424,8 +424,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 50.4
+      "width": 240,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -437,7 +437,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1198.8,
+        1220.22,
         0,
         0,
         0,
@@ -478,8 +478,8 @@
     "_dstBlendFactor": 771,
     "_string": "创建牌局",
     "_N$string": "创建牌局",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 60,
+    "_lineHeight": 60,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -507,7 +507,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 120,
+    "_top": 85.97999999999992,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -572,7 +572,7 @@
       "ctor": "Float64Array",
       "array": [
         49.461,
-        1173.6,
+        1216.44,
         0,
         0,
         0,
@@ -979,7 +979,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1023.5999999999999,
+        1066.44,
         0,
         0,
         0,
@@ -1050,7 +1050,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -28.484,
+        -88.726,
         0,
         0,
         0,
@@ -1713,7 +1713,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        723.5999999999999,
+        766.44,
         0,
         0,
         0,
@@ -2255,7 +2255,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -370.4000000000008,
+        -327.5600000000006,
         0,
         0,
         0,
@@ -2614,8 +2614,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 770.4000000000002,
-    "_bottom": 29.599999999998488,
+    "_top": 727.5600000000001,
+    "_bottom": 72.43999999999863,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,

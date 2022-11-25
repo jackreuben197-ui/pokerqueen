@@ -2091,8 +2091,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 120,
-      "height": 50.4
+      "width": 150,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2103,7 +2103,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -396.353,
+        -416.504,
         0,
         0,
         0,
@@ -2145,8 +2145,8 @@
     "_dstBlendFactor": 771,
     "_string": "创始人",
     "_N$string": "创始人",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -2172,7 +2172,7 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 8,
-    "_left": 224.647,
+    "_left": 204.49599999999998,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -2236,7 +2236,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 310,
+      "width": 390,
       "height": 100
     },
     "_anchorPoint": {
@@ -2319,7 +2319,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -260,
+        -340,
         4.4199999999999875,
         0,
         0,
@@ -2536,8 +2536,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 50.4
+      "width": 240,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2590,8 +2590,8 @@
     "_dstBlendFactor": 771,
     "_string": "公会名称",
     "_N$string": "公会名称",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 60,
+    "_lineHeight": 60,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -2654,7 +2654,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 310,
+      "width": 390,
       "height": 100
     },
     "_resize": 1,
@@ -2966,8 +2966,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
-      "height": 50.4
+      "width": 100,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2978,7 +2978,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -396.353,
+        -416.504,
         0,
         0,
         0,
@@ -3020,8 +3020,8 @@
     "_dstBlendFactor": 771,
     "_string": "联盟",
     "_N$string": "联盟",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -3047,7 +3047,7 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 8,
-    "_left": 224.647,
+    "_left": 204.49599999999998,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -3111,7 +3111,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 310,
+      "width": 390,
       "height": 100
     },
     "_anchorPoint": {
@@ -3194,7 +3194,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -260,
+        -340,
         4.4199999999999875,
         0,
         0,
@@ -3411,8 +3411,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 50.4
+      "width": 240,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3465,8 +3465,8 @@
     "_dstBlendFactor": 771,
     "_string": "公会名称",
     "_N$string": "公会名称",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 60,
+    "_lineHeight": 60,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -3529,7 +3529,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 310,
+      "width": 390,
       "height": 100
     },
     "_resize": 1,
@@ -4556,8 +4556,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 50.4
+      "width": 200,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4568,7 +4568,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -396.353,
+        -416.504,
         0,
         0,
         0,
@@ -4610,8 +4610,8 @@
     "_dstBlendFactor": 771,
     "_string": "创建时间",
     "_N$string": "创建时间",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -4637,7 +4637,7 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 8,
-    "_left": 224.647,
+    "_left": 204.49599999999998,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -4694,8 +4694,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 257.97,
-      "height": 50.4
+      "width": 386.95,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4748,8 +4748,8 @@
     "_dstBlendFactor": 771,
     "_string": "2022：10：19",
     "_N$string": "2022：10：19",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 60,
+    "_lineHeight": 60,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
