@@ -3038,9 +3038,8 @@ export default class TexasGame {
             else {
                 this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, true);
             }
-            if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = true;
-            }
+
+            menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO;
 
         }
         else //未坐下
