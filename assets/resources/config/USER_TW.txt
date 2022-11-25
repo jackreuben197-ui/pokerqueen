@@ -2772,6 +2772,8 @@ MuteTip=禁言解除后可发言
 MessgainfoForever=您被永久禁言，如有疑问请咨询客服 
 Danmustate_4=功能暂停使用，如有疑问请咨询客服
 UIMatch_TableCount={0}桌
+
+OpCodeString_CLUBLEAVELUP =公会升级
 OpCodeString_RECHARGE=充豆
 OpCodeString_LOCK=冻结
 OpCodeString_UNLOCK=解冻

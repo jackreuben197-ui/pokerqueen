@@ -2782,6 +2782,9 @@ OpCodeString_UNLOCK=Descongelar
 OpCodeString_WLOCK=Dinheiro congelado
 OpCodeString_WROLLBACK=Falha encontrada
 OpCodeString_WUNLOCK=Criado com sucesso
+
+OpCodeString_CLUBLEAVELUP =公会升级
+
 OpCodeString_BRINGIN=trazer
 OpCodeString_BRINGOUT=levar
 OpCodeString_HANDCO=Liquidado por lote

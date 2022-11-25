@@ -2819,6 +2819,9 @@ OpCodeString_FIXNICKNAME=道具消费
 OpCodeString_MTTHAW=猎人赛奖励
 OpCodeString_MTTAOM1=增购1
 OpCodeString_MTTAOM2=增购2
+
+
+OpCodeString_CLUBLEAVELUP =公会升级
 UIPlatformrecharge=申请充值
 UIRechargeconfirmorder=充值确认订单
 RfCodeString_DYNAMIC=动态码充值
