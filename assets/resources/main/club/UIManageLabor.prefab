@@ -438,7 +438,7 @@
       "ctor": "Float64Array",
       "array": [
         -506,
-        1174,
+        1204,
         0,
         0,
         0,
@@ -694,7 +694,7 @@
     "_alignFlags": 1,
     "_left": 12.801000000000045,
     "_right": 0,
-    "_top": 120,
+    "_top": 90,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -774,7 +774,7 @@
       "ctor": "Float64Array",
       "array": [
         0.484,
-        874,
+        904,
         0,
         0,
         0,
@@ -1602,7 +1602,7 @@
       "ctor": "Float64Array",
       "array": [
         5.365,
-        454,
+        484,
         0,
         0,
         0,
@@ -2042,7 +2042,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        282,
+        312,
         0,
         0,
         0,
@@ -2159,7 +2159,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -511,
+        -481,
         0,
         0,
         0,
@@ -11853,7 +11853,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 0,
-      "height": 75.6
+      "height": 56.7
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -16867,8 +16867,8 @@
     "_alignFlags": 5,
     "_left": 501,
     "_right": 501,
-    "_top": 1064,
-    "_bottom": 42,
+    "_top": 1034,
+    "_bottom": 72,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -16942,7 +16942,7 @@
     "_N$startAxis": 0,
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
-    "_N$paddingTop": 120,
+    "_N$paddingTop": 90,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
     "_N$spacingY": 0,

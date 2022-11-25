@@ -441,7 +441,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1174,
+        1204,
         0,
         0,
         0,
@@ -970,7 +970,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        974,
+        1004,
         0,
         0,
         0,
@@ -1765,7 +1765,7 @@
     "_alignFlags": 41,
     "_left": 0,
     "_right": 0,
-    "_top": 220,
+    "_top": 190,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -1840,7 +1840,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -120.00000000000034,
+        -90.00000000000034,
         0,
         0,
         0,
@@ -2199,8 +2199,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 520,
-    "_bottom": 279.9999999999993,
+    "_top": 490,
+    "_bottom": 309.9999999999993,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -2262,7 +2262,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 1887.9999999957126
+      "height": 1887.9999999957072
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2274,7 +2274,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -2007.999999997857,
+        -1977.9999999978543,
         0,
         0,
         0,
@@ -2333,7 +2333,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 1887.9999999957126
+      "height": 1887.9999999957072
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2412,7 +2412,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        943.9999999978563,
+        943.9999999978536,
         0,
         0,
         0,
@@ -2633,8 +2633,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 2408.000000000001,
-    "_bottom": -1607.9999999957136,
+    "_top": 2378.000000000001,
+    "_bottom": -1577.9999999957076,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -5377,7 +5377,7 @@
     "_N$startAxis": 0,
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
-    "_N$paddingTop": 120,
+    "_N$paddingTop": 90,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
     "_N$spacingY": 0,
