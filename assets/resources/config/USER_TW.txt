@@ -2773,7 +2773,7 @@ MessgainfoForever=您被永久禁言，如有疑问请咨询客服
 Danmustate_4=功能暂停使用，如有疑问请咨询客服
 UIMatch_TableCount={0}桌
 
-OpCodeString_CLUBLEAVELUP =公会升级
+OpCodeString_CLUBLEAVELUP=公会升级
 OpCodeString_RECHARGE=充豆
 OpCodeString_LOCK=冻结
 OpCodeString_UNLOCK=解冻
@@ -2781,7 +2781,7 @@ OpCodeString_WLOCK=提豆冻结
 OpCodeString_WROLLBACK=提豆失败
 OpCodeString_WUNLOCK=提豆成功
 OpCodeString_BRINGIN=带入
-OpCodeString_BRINGOUT=带出
+=带出
 OpCodeString_HANDCO=每手结算
 OpCodeString_INSUR=保险记录
 OpCodeString_RETURN=重新带入

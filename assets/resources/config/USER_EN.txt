@@ -2780,7 +2780,7 @@ MessgainfoForever=You are permanently forbidden to speak, please consult custome
 Danmustate_4=Features are suspended, please consult customer service if in doubt
 UIMatch_TableCount={0} Tables
 
-OpCodeString_CLUBLEAVELUP =公会升级
+OpCodeString_CLUBLEAVELUP=公会升级
 OpCodeString_RECHARGE=Recharge
 OpCodeString_LOCK=Freeze
 OpCodeString_UNLOCK=Thaw
