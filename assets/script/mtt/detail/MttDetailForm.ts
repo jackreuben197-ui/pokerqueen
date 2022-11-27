@@ -99,6 +99,8 @@ export default class MttDetailForm extends BaseForm {
                 }
                 break;
         }
+        let lbl_test = this.getChildNodeOrComponent("lbl_test").getComponent(cc.Label);
+        lbl_test.string = mttDetails.mtt.name;
 
         let img_av: cc.Sprite = panel_item2.getChildByName("img_av").getComponent(cc.Sprite);
         WebImageHelper.SetUrlImage(img_av, mttDetails.mtt.game_icon);
@@ -109,7 +111,7 @@ export default class MttDetailForm extends BaseForm {
             let btn_pt_1: cc.Node = panel_item2.getChildByName("node" + i);
             let lbl_gold = btn_pt_1.getChildByName("lbl_gold").getComponent(cc.Label);
             if (i == 1) {
-                lbl_gold.string = mttDetails.more.prize_pool.toString();
+                lbl_gold.string = (mttDetails.more.prize_pool * 0.01).toString();
             } else if (i == 2) {
                 lbl_gold.string = mttDetails.mtt.award_num.toString();
             } else if (i == 3) {
@@ -121,7 +123,8 @@ export default class MttDetailForm extends BaseForm {
                         lbl_gold.string = singType[0];
                     }
                     else {
-                        lbl_gold.string = `${mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter}`;
+                        let num = mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter;
+                        lbl_gold.string = `${num * 0.01}`;
                     }
                 }
                 else if (mttDetails.mtt.prop_buy_type == 1) {
@@ -132,8 +135,9 @@ export default class MttDetailForm extends BaseForm {
                         lbl_gold.string = singType[2];
                     }
                     else {
+                        let num = mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter;
                         lbl_gold.string = `${i18nMgr.Get("UIMatch_MttDetailState_ReyBuFerr02"),
-                            mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter}`;
+                        num * 0.01}`;
                     }
                 }
             }
@@ -174,14 +178,30 @@ export default class MttDetailForm extends BaseForm {
                 lbl_2.string = mttDetails.mtt.poker_type == 2 ? six_List[mttDetails.mtt.game_type] : type_List[mttDetails.mtt.game_type];
             } else if (i == 2) {
                 lbl_1.string = i18nMgr.Get("MTT_State_Starting_Scoreboard");
-                lbl_2.string = `${mttDetails.mtt.initial_score}}` + `${(mttDetails.mtt.initial_score / (MTTGameUtil.BlindAtLevel(0, mttDetails.mtt.blindtable_type, 1) * 2))}` + " BB";
+                lbl_2.string = `${mttDetails.mtt.initial_score * 0.01}` + "(" + `${(mttDetails.mtt.initial_score / (MTTGameUtil.BlindAtLevel(0, mttDetails.mtt.blindtable_type, 1) * 2))}` + "BB)";
             } else if (i == 3) {
                 let lbl_3 = baseNode.getChildByName("lbl_3").getComponent(cc.RichText);
                 let btn_open: cc.Node = baseNode.getChildByName("btn_open");
-                btn_open.on(cc.Node.EventType.TOUCH_END, this.onClickOpen, this)
-                lbl_1.string = i18nMgr.Get("UIMTT_StateReward");
-                lbl_2.string = `${mttDetails.alive}` + "/" + `${mttDetails.mtt.participants}`;
-                lbl_3.string = i18nMgr.Get("UIMTT_StateHuntChampionshipsDetail").replace("{0}", " " + (mttDetails.mtt.apply_fee_hunter / 100).toString() + " ");
+
+                if (mttDetails.mtt.apply_fee_hunter > 0) {
+                    baseNode.active = true;
+                    // lbl_3.node.active = true;
+                    // btn_open.active = true;
+                    // lbl_1.node.active = true;
+                    // lbl_2.node.active = true;
+                    // lbl_3.node.active = true;
+                    btn_open.on(cc.Node.EventType.TOUCH_END, this.onClickOpen, this)
+                    lbl_1.string = i18nMgr.Get("UIMTT_StateReward");
+                    lbl_2.string = `${mttDetails.alive}` + "/" + `${mttDetails.mtt.participants}`;
+                    lbl_3.string = i18nMgr.Get("UIMTT_StateHuntChampionshipsDetail").replace("{0}", " " + (mttDetails.mtt.apply_fee_hunter / 100).toString() + " ");
+                } else {
+                    baseNode.active = false;
+                    // lbl_3.node.active = false;
+                    // btn_open.active = false;
+                    // lbl_1.node.active = false;
+                    // lbl_2.node.active = false;
+                    // lbl_3.node.active = false;
+                }
             } else if (i == 4) {//截止买入
                 lbl_1.string = `${i18nMgr.Get("MTT_State_ShangXian")}:`;
                 if (mttDetails.mtt.max_delay_apply_bl > mttDetails.more.bl) {
@@ -197,18 +217,19 @@ export default class MttDetailForm extends BaseForm {
                 }
             } else if (i == 5) {//重构次数
                 lbl_1.string = `${i18nMgr.Get("MTT_State_RebuyTime")}:`;
-                if (mttDetails.state != null) {
-                    lbl_2.string = `${mttDetails.state.left_rebuy_times}` + "/" + `${mttDetails.mtt.rebuy_times}`;
+                if (mttDetails.mtt != null) {
+                    // lbl_2.string = `${mttDetails.state.left_rebuy_times}` + "/" + `${mttDetails.mtt.rebuy_times}`;
+                    lbl_2.string = mttDetails.mtt.rebuy_times;
                 }
                 else {
                     lbl_2.string = `${i18nMgr.Get("UIMTT_StateUnLimitRebuy")}`;
                 }
             } else if (i == 6) {//当前盲注
                 lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchCurrBlindTip")}:` + "-" + mttDetails.more.bl.toString();
-                lbl_2.string = mttDetails.more.sb.toString() + "/" + (mttDetails.more.sb * 2).toString() + "{" + mttDetails.more.ante.toString() + "}";
+                lbl_2.string = mttDetails.more.sb.toString() + "/" + (mttDetails.more.sb * 2).toString() + mttDetails.more.ante.toString();
             } else if (i == 7) {//下一盲注
                 lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:` + "-" + mttDetails.more.nbl.toString();
-                lbl_2.string = mttDetails.more.nsb.toString() + "/" + (mttDetails.more.nsb * 2).toString() + "{" + mttDetails.more.nante.toString() + "}";
+                lbl_2.string = mttDetails.more.nsb.toString() + "/" + (mttDetails.more.nsb * 2).toString() + mttDetails.more.nante.toString();
             } else if (i == 8) {//涨盲时间
                 lbl_1.string = `${i18nMgr.Get("MTT_State_UpBlindTime")}:`;
                 lbl_2.string = `${i18nMgr.Get("UITexasReport_Text_MatchZmsysj")}:`.replace("{0}", (mttDetails.mtt.upblind_interval / 60).toString());
@@ -269,11 +290,11 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Real_Prize.API.replace("{id}", this._data._msg.match_id.toString()),
-                request: Web_Room_Center_Mtt_Real_Prize,
-                body: Web_Room_Center_Mtt_Real_Prize.Request(reqInfo),
+                api: Web_Room_Center_Mtt_Ranks.API.replace("{id}", this._data._msg.match_id.toString()),
+                request: Web_Room_Center_Mtt_Ranks,
+                body: Web_Room_Center_Mtt_Ranks.Request(reqInfo),
                 onSuccess: function () {
-                    let tResp = Web_Room_Center_Mtt_Real_Prize.Response;
+                    let tResp = Web_Room_Center_Mtt_Ranks.Response;
                     if (tResp.code == 0)
                     {
                         this.refreshListView(2, tResp.data);
@@ -302,11 +323,11 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Ranks.API.replace("{id}", this._data._msg.match_id.toString()),
-                request: Web_Room_Center_Mtt_Ranks,
-                body: Web_Room_Center_Mtt_Ranks.Request(reqInfo),
+                api: Web_Room_Center_Mtt_Real_Prize.API.replace("{id}", this._data._msg.match_id.toString()),
+                request: Web_Room_Center_Mtt_Real_Prize,
+                body: Web_Room_Center_Mtt_Real_Prize.Request(reqInfo),
                 onSuccess: function () {
-                    let tResp = Web_Room_Center_Mtt_Ranks.Response;
+                    let tResp = Web_Room_Center_Mtt_Real_Prize.Response;
                     if (tResp.code == 0)
                     {
                         this.refreshListView(3, tResp);
@@ -368,11 +389,11 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Hranks.API.replace("{id}", this._data._msg.match_id.toString()),
-                request: Web_Room_Center_Mtt_Hranks,
-                body: Web_Room_Center_Mtt_Hranks.Request(reqInfo),
+                api: Web_Room_Center_Mtt_Details.API.replace("{id}", this._data._msg.match_id.toString()),
+                request: Web_Room_Center_Mtt_Details,
+                body: Web_Room_Center_Mtt_Details.Request(reqInfo),
                 onSuccess: function () {
-                    let tResp = Web_Room_Center_Mtt_Hranks.Response;
+                    let tResp = Web_Room_Center_Mtt_Details.Response;
                     if (tResp.code == 0)
                     {
                         this.refreshListView(5, tResp);
@@ -395,12 +416,18 @@ export default class MttDetailForm extends BaseForm {
         if (data == null) {
             return;
         }
+        data = data.data;
         let info = data;
-        if (index == 2) {
+        if (index == 3) {
             data = data.prizes;
         }
         // 有数据 刷新列表
-        let len = data.length;
+        let len = 0;
+        if (index == 5) {
+            len = data.mtt.blindtable_type;
+        } else {
+            len = data.length;
+        }
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item" + index);
         let scrollView = this.getChildNodeOrComponent("sv_down" + (index-1), cc.ScrollView);
         scrollView.scrollToTop();
@@ -411,6 +438,85 @@ export default class MttDetailForm extends BaseForm {
             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
             _cloneNode.parent = scrollView.content;
             _cloneNode.getChildByName("lbl_jp").getComponent(cc.Label).string = i.toString();
+            let itemInfo = data[i];
+            // 奖励
+            if (index == 3) {
+                let lbl_addNum21 = this.getChildNodeOrComponent("lbl_addNum21");
+                lbl_addNum21.getComponent(cc.Label).string = info.award.toString();
+                let lbl_addNum22 = this.getChildNodeOrComponent("lbl_addNum22");
+                lbl_addNum22.getComponent(cc.Label).string = info.award_num.toString();
+                let rank = itemInfo.min == itemInfo.max ? itemInfo.min : itemInfo.min - itemInfo.max;
+                let lbl_jp = _cloneNode.getChildByName("lbl_jp");
+                lbl_jp.getComponent(cc.Label).string = rank.toString();
+                let lbl_score = _cloneNode.getChildByName("lbl_score");
+                lbl_jp.active = true;
+                if (UIMatchMttModel.Instance.MttInfo.mtt.hunter_on == 0)
+                {
+                    //等于0是关闭猎人赛
+                    lbl_score.getComponent(cc.Label).string = itemInfo.award.toString();
+                }
+                else
+                {
+                    lbl_score.getComponent(cc.Label).string = itemInfo.award.toString() + "+" + i18nMgr.Get("UIReward_Bounty");
+                }
+                let img_jp_1 = _cloneNode.getChildByName("img_jp_1");
+                let img_jp_2 = _cloneNode.getChildByName("img_jp_2");
+                let img_jp_3 = _cloneNode.getChildByName("img_jp_3");
+                if (itemInfo.min == itemInfo.max)
+                {
+                    switch (itemInfo.min)
+                    {
+                        case 1:
+                            img_jp_1.active = true;
+                            img_jp_2.active = false;
+                            img_jp_3.active = false;
+                            lbl_jp.active = false;
+                            break;
+                        case 2:
+                            img_jp_1.active = false;
+                            img_jp_2.active = true;
+                            img_jp_3.active = false;
+                            lbl_jp.active = false;
+                            break;
+                        case 3:
+                            img_jp_1.active = false;
+                            img_jp_2.active = false;
+                            img_jp_3.active = true;
+                            lbl_jp.active = false;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            // 盲注
+            if (index == 5) {
+                let lbl_addNum4 = this.getChildNodeOrComponent("lbl_addNum4");
+                lbl_addNum4.getComponent(cc.Label).string = len.toString();
+                let lbl_jp = _cloneNode.getChildByName("lbl_jp");
+                lbl_jp.getComponent(cc.Label).string = (i+1).toString();
+                let lbl_mz = _cloneNode.getChildByName("lbl_mz");
+                let lbl_go = _cloneNode.getChildByName("lbl_go");
+                let lbl_time = _cloneNode.getChildByName("lbl_time");
+                let img_stop = _cloneNode.getChildByName("img_stop");
+                img_stop.active = false;
+                let sb = MTTGameUtil.BlindAtLevel(i, data.mtt.blindtable_type, 1);
+                let ante = MTTGameUtil.AnteAtLevel(i, data.mtt.blindtable_type, 1);
+                lbl_mz.getComponent(cc.Label).string = sb.toString() + "/" + (sb * 2).toString();
+                lbl_go.getComponent(cc.Label).string = ante.toString();
+                lbl_time.getComponent(cc.Label).string = i18nMgr.Get("UITexasReport_Text_MatchNextBlindTime").replace("{0}", (data.mtt.upblind_interval / 60).toString());
+                if (data.mtt.addon_begin_bl.toString() == (i+1).toString() && data.mtt.addon_begin_bl > 0)
+                {
+                    // img_stop.active = true;
+                    // des_text.text = LanguageManager.Get("MTT_Blind_Deadline_add_op");
+                }
+                if (data.mtt.addon_end_bl.toString() == (i+1) && data.mtt.addon_end_bl > 0)
+                {
+                    img_stop.active = true;
+                    // des_text.text = LanguageManager.Get("MTT_Blind_Deadline_add_cl");
+    
+                }
+            }
         }
         scrollView.content.height = panel_item.height * (len + 5);
     }

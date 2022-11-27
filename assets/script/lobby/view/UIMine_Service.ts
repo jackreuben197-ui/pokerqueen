@@ -1,7 +1,7 @@
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import ToastManager from "../../manager/ToastManager";
-import { APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgClubUploadIcon, Web_User_Info } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import { LobbyControl } from "../control/LobbyControl";
 import { UIClubModel } from "../labor/UIClubModel";
@@ -58,6 +58,10 @@ export default class UIMine_Service extends BaseForm {
         this.showPhotoNum = 0;
         this.resetUI();
 
+        this._user_id = Web_User_Info.Response.data.user.un_id;
+        let lbl_uid : cc.Label = this.getChildNodeOrComponent("lbl_uid", cc.Label);
+        lbl_uid.string = this._user_id.toString();
+
         let btn_photo: cc.Node = this.getChildNodeOrComponent("btn_photo")
         btn_photo.on(cc.Node.EventType.TOUCH_END, this.onClickPhoto, this);
 
@@ -103,8 +107,8 @@ export default class UIMine_Service extends BaseForm {
         lbl_choose.string = "其他";
         lbl_choose.node.opacity = 255;
 
-        let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
-        ebx_1.string = "";
+        // let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
+        // ebx_1.string = "";
 
         let ebx_2 :cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
         ebx_2.string = "";
@@ -195,8 +199,8 @@ export default class UIMine_Service extends BaseForm {
 
     onClickSend() {
 
-        let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
-        this._user_id = Number(ebx_1.string);
+        // let ebx_1 :cc.EditBox = this.getChildNodeOrComponent("ebx_1", cc.EditBox);
+        // this._user_id = Number(ebx_1.string);
 
         let ebx_2 :cc.EditBox = this.getChildNodeOrComponent("ebx_2", cc.EditBox);
         this._phone = Number(ebx_2.string);
@@ -207,10 +211,10 @@ export default class UIMine_Service extends BaseForm {
         let ebx_4 :cc.EditBox = this.getChildNodeOrComponent("ebx_4", cc.EditBox);
         this._description = ebx_4.string;
 
-        if (this._user_id == null || this._user_id == 0) {
-            ToastManager.Instance.createToast("请输入玩家ID");
-            return;
-        }
+        // if (this._user_id == null || this._user_id == 0) {
+        //     ToastManager.Instance.createToast("请输入玩家ID");
+        //     return;
+        // }
 
         if (this._phone == null || this._phone == 0) {
             ToastManager.Instance.createToast("请输入电话号码");
