@@ -88,6 +88,8 @@ export default class UIMttSignDialogComponent extends UIBase {
     prop_type: number = 0;
     use_free: boolean = false;
     coinnum: any = null;
+    isUpArrow = true;
+    isChoose3 = false;
 
     lateLoad() {
         super.lateLoad();
@@ -117,11 +119,28 @@ export default class UIMttSignDialogComponent extends UIBase {
         this.panel_click2.active = true;
         this.panel_click2.on(cc.Node.EventType.TOUCH_END, this.onHideAddMtt, this)
 
+        let btn_3: cc.Node = this.getChildNodeOrComponent("btn_3");
+        btn_3.active = false;
 
         let btn_confim: cc.Node = this.getChildNodeOrComponent("btn_confim");
         btn_confim.on(cc.Node.EventType.TOUCH_END, this.onClickCommit, this)
 
+        let btn_arrow: cc.Node = this.getChildNodeOrComponent("btn_arrow");
+        btn_arrow.on(cc.Node.EventType.TOUCH_END, this.onClickArrow, this)
+        this.isUpArrow = true;
+        let img_arrrow_up: cc.Node = this.getChildNodeOrComponent("img_arrrow_up");
+        let img_arrrow_down: cc.Node = this.getChildNodeOrComponent("img_arrrow_down");
+        img_arrrow_up.active = true;
+        img_arrrow_down.active = false;
 
+        let node_choose3: cc.Node = this.getChildNodeOrComponent("node_choose3");
+        node_choose3.on(cc.Node.EventType.TOUCH_END, this.onClickChoose3, this)
+        this.isChoose3 = false;
+        node_choose3.active = false;
+
+        let node_normal3: cc.Node = this.getChildNodeOrComponent("node_normal3");
+        node_normal3.on(cc.Node.EventType.TOUCH_END, this.onClickChoose3, this)
+        node_normal3.active = true;
 
         this.coinnum =  this.getChildNodeOrComponent("lbl_chips", cc.Label);
 
@@ -183,13 +202,23 @@ export default class UIMttSignDialogComponent extends UIBase {
             lbl_center.node.active = data.buyRatio > 1;
 
             let btn_2: cc.Node = this.getChildNodeOrComponent("btn_2");
-            btn_2.active = this.SingType == 0 || this.SingType == 2;
+            let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
+            // btn_2.active = this.SingType == 0 || this.SingType == 2;
 
 
             let node_1x: cc.Node = this.getChildNodeOrComponent("node_1x");
             let node_2x: cc.Node = this.getChildNodeOrComponent("node_2x");
             let node_3x: cc.Node = this.getChildNodeOrComponent("node_3x");
             let node_4x: cc.Node = this.getChildNodeOrComponent("node_4x");
+
+            node_1x["index"] = 1;
+            node_2x["index"] = 2;
+            node_3x["index"] = 3;
+            node_4x["index"] = 4;
+            node_1x.on(cc.Node.EventType.TOUCH_END, this.onClickNX, this);
+            node_2x.on(cc.Node.EventType.TOUCH_END, this.onClickNX, this);
+            node_3x.on(cc.Node.EventType.TOUCH_END, this.onClickNX, this);
+            node_4x.on(cc.Node.EventType.TOUCH_END, this.onClickNX, this);
             node_1x.active = data.buyRatio > 1;
             node_2x.active = data.buyRatio > 1;
             node_3x.active = data.buyRatio > 1;
@@ -213,6 +242,8 @@ export default class UIMttSignDialogComponent extends UIBase {
             switch (this.SingType)//0 金币，1 道具，2 全选
             {
                 case 0:
+                    btn_1.active = false;
+                    btn_2.active = true;
                     // ToggleCoin.isOn = true;
                     // ToggleTicket.isOn = false;
                     // ToggleCoin.interactable = false;
@@ -220,14 +251,16 @@ export default class UIMttSignDialogComponent extends UIBase {
                     buttonCommit.interactable = data.coinnum + data.Fee <= GameCache.Instance.gold;
                     btnComImg.active = data.coinnum + data.Fee <= GameCache.Instance.gold;
                     // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
-                    if (this.curDialogData.buyRatio > 1) {
+                    // if (this.curDialogData.buyRatio > 1) {
                         // ToggleCoin1.isOn = true;
                         // ToggleCoin2.isOn = false;
-                        node_3x.getChildByName("img2").active = true;
-                        node_4x.getChildByName("img2").active = false;
-                    }
+                        node_1x.getChildByName("img2").active = true;
+                        node_2x.getChildByName("img2").active = false;
+                    // }
                     break;
                 case 1:
+                    btn_1.active = true;
+                    btn_2.active = false;
                     // ToggleCoin.interactable = false;
                     // ToggleTicket.interactable = false;
                     // ToggleTicket.isOn = true;
@@ -237,14 +270,16 @@ export default class UIMttSignDialogComponent extends UIBase {
                     buttonCommit.interactable = this.cachePropBalance > 0;
                     btnComImg.active = this.cachePropBalance > 0;
                     // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
-                    if (this.curDialogData.buyRatio > 1) {
+                    // if (this.curDialogData.buyRatio > 1) {
                         // ToggleTicket1.isOn = true;
                         // ToggleTicket2.isOn = false;
-                        node_1x.getChildByName("img2").active = true;
-                        node_2x.getChildByName("img2").active = false;
-                    }
+                        node_3x.getChildByName("img2").active = true;
+                        node_4x.getChildByName("img2").active = false;
+                    // }
                     break;
                 case 2:
+                    btn_1.active = true;
+                    btn_2.active = true;
                     // ToggleCoin.interactable = true;
                     // ToggleTicket.interactable = true;
                     // ToggleCoin.isOn = true;
@@ -253,7 +288,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     buttonCommit.interactable = data.coinnum + data.Fee <= GameCache.Instance.gold;
                     btnComImg.active = data.coinnum + data.Fee <= GameCache.Instance.gold;
                     // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
-                    if (this.curDialogData.buyRatio > 1) {
+                    // if (this.curDialogData.buyRatio > 1) {
                         // ToggleCoin1.isOn = true;
                         node_3x.getChildByName("img2").active = true;
                         // ToggleCoin2.isOn = false;
@@ -265,7 +300,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                         // ToggleTicket2.isOn = false;
                         // ToggleCoin.interactable = false;
                         // ToggleTicket.interactable = false;
-                    }
+                    // }
                     break;
                 default:
                     break;
@@ -306,6 +341,65 @@ export default class UIMttSignDialogComponent extends UIBase {
 
 
         
+
+    }
+
+    onClickNX(event) {
+        let target = event.currentTarget;
+        let index = target.index;
+        let node_1x: cc.Node = this.getChildNodeOrComponent("node_1x");
+        let node_2x: cc.Node = this.getChildNodeOrComponent("node_2x");
+        let node_3x: cc.Node = this.getChildNodeOrComponent("node_3x");
+        let node_4x: cc.Node = this.getChildNodeOrComponent("node_4x");
+        if (index == 1) {
+            node_1x.getChildByName("img2").active = true;
+            node_2x.getChildByName("img2").active = false;
+        } else if (index == 2) {
+            node_2x.getChildByName("img2").active = true;
+            node_1x.getChildByName("img2").active = false;
+        } else if (index == 3) {
+            node_3x.getChildByName("img2").active = true;
+            node_4x.getChildByName("img2").active = false;
+        } else if (index == 4) {
+            node_4x.getChildByName("img2").active = true;
+            node_3x.getChildByName("img2").active = false;
+        }
+    }
+
+    onClickChoose3() {
+        let node_choose3: cc.Node = this.getChildNodeOrComponent("node_choose3");
+        let node_normal3: cc.Node = this.getChildNodeOrComponent("node_normal3");
+        this.isChoose3 = !this.isChoose3;
+        if (this.isChoose3) {
+            node_choose3.active = true;
+            node_normal3.active = false;
+        } else {
+            node_choose3.active = false;
+            node_normal3.active = true;
+        }
+    }
+
+    onClickArrow() {
+        let img_arrrow_up: cc.Node = this.getChildNodeOrComponent("img_arrrow_up");
+        let img_arrrow_down: cc.Node = this.getChildNodeOrComponent("img_arrrow_down");
+        let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
+        let btn_2: cc.Node = this.getChildNodeOrComponent("btn_2");
+        let btn_3: cc.Node = this.getChildNodeOrComponent("btn_3");
+        if (this.isUpArrow) {
+            // 改成向下
+            img_arrrow_up.active = false;
+            img_arrrow_down.active = true;
+            btn_1.active = false;
+            btn_2.active = true;
+            btn_3.active = true;
+        } else {
+            btn_1.active = this.SingType == 2 || this.SingType == 3;
+            btn_2.active = true;
+            btn_3.active = false;
+            img_arrrow_up.active = true;
+            img_arrrow_down.active = false;
+        }
+        this.isUpArrow = !this.isUpArrow;
 
     }
 
