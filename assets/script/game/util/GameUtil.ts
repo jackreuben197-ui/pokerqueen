@@ -10,6 +10,12 @@ import UIComponent from "../../ui/UIComponent";
 import { EnterRoomInfo, GameCache } from "../GameCache";
 import { SeatUIInfo } from "../seat/Seat";
 import MTTGame from "../texas/MTTGame";
+import MTTOmahaGame4 from "../texas/MTTOmahaGame4";
+import MTTOmahaGame5 from "../texas/MTTOmahaGame5";
+import MTTOmahaGame6 from "../texas/MTTOmahaGame6";
+import OmahaAofGame4 from "../texas/OmahaAofGame4";
+import OmahaAofGame5 from "../texas/OmahaAofGame5";
+import OmahaAofGame6 from "../texas/OmahaAofGame6";
 import OmahaGame4 from "../texas/OmahaGame4";
 import OmahaGame5 from "../texas/OmahaGame5";
 import OmahaGame6 from "../texas/OmahaGame6";
@@ -138,24 +144,24 @@ export default class GameUtil {
         this.GameMap.set(RoomType.Omaha4SixPlusFixedNoLimit, OmahaGame4);// 奥马哈4张短牌
         this.GameMap.set(RoomType.Omaha4SixPlusFixedPotLimit, OmahaGame4);// 奥马哈4张短牌, 底池限注
         //4.OmahaAofGame4
-        this.GameMap.set(RoomType.Omaha4StandardAof, null);// 奥马哈4张AOF
-        this.GameMap.set(RoomType.Omaha4SixPlusFixedAof, null);// 奥马哈4张短牌AOF
+        this.GameMap.set(RoomType.Omaha4StandardAof, OmahaAofGame4);// 奥马哈4张AOF
+        this.GameMap.set(RoomType.Omaha4SixPlusFixedAof, OmahaAofGame4);// 奥马哈4张短牌AOF
         //5.OmahaGame5
         this.GameMap.set(RoomType.Omaha5StandardNoLimit, OmahaGame5);// 奥马哈5张
         this.GameMap.set(RoomType.Omaha5StandardPotLimit, OmahaGame5);// 奥马哈5张底池限注
         this.GameMap.set(RoomType.Omaha5SixPlusFixedNoLimit, OmahaGame5);// 奥马哈5张短牌
         this.GameMap.set(RoomType.Omaha5SixPlusFixedPotLimit, OmahaGame5);// 奥马哈5张短牌, 底池限注
         //6.OmahaGameFiveAof
-        this.GameMap.set(RoomType.Omaha5StandardAof, null);// 奥马哈5张aof
-        this.GameMap.set(RoomType.Omaha5SixPlusFixedAof, null);// 奥马哈5张短牌aof
+        this.GameMap.set(RoomType.Omaha5StandardAof, OmahaAofGame5);// 奥马哈5张aof
+        this.GameMap.set(RoomType.Omaha5SixPlusFixedAof, OmahaAofGame5);// 奥马哈5张短牌aof
         //7.OmahaGame6
         this.GameMap.set(RoomType.Omaha6StandardNoLimit, OmahaGame6);// 奥马哈6张
         this.GameMap.set(RoomType.Omaha6StandardPotLimit, OmahaGame6);// 奥马哈6张底池限注
         this.GameMap.set(RoomType.Omaha6SixPlusFixedNoLimit, OmahaGame6);// 奥马哈6张短牌
         this.GameMap.set(RoomType.Omaha6SixPlusFixedPotLimit, OmahaGame6);// 奥马哈6张短牌, 底池限注
         //8.OmahaGameSixAof
-        this.GameMap.set(RoomType.Omaha6StandardAof, null);// 奥马哈6张aof
-        this.GameMap.set(RoomType.Omaha6SixPlusFixedAof, null);// 奥马哈6张aof
+        this.GameMap.set(RoomType.Omaha6StandardAof, OmahaAofGame6);// 奥马哈6张aof
+        this.GameMap.set(RoomType.Omaha6SixPlusFixedAof, OmahaAofGame6);// 奥马哈6张aof
         //9.MTT基础
         this.GameMap.set(RoomType.MTTTexasHoldemStandardNoLimit, MTTGame);// MTT
         this.GameMap.set(RoomType.MTTTexasHoldemStandardPotLimit, MTTGame);// 
@@ -164,29 +170,29 @@ export default class GameUtil {
         this.GameMap.set(RoomType.MTTTexasHoldemSixPlusFixedPotLimit, MTTGame);// 
         this.GameMap.set(RoomType.MTTTexasHoldemSixPlusFixedAof, MTTGame);// 
         //10.MTTOmahaGameFour
-        this.GameMap.set(RoomType.MTTOmaha4StandardNoLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha4StandardPotLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha4StandardAof, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedNoLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedPotLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedAof, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4StandardNoLimit, MTTOmahaGame4);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4StandardPotLimit, MTTOmahaGame4);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4StandardAof, MTTOmahaGame4);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedNoLimit, MTTOmahaGame4);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedPotLimit, MTTOmahaGame4);// MTT
+        this.GameMap.set(RoomType.MTTOmaha4SixPlusFixedAof, MTTOmahaGame4);// MTT
 
         //11.MTTOmahaGameFive
 
-        this.GameMap.set(RoomType.MTTOmaha5StandardNoLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha5StandardPotLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha5StandardAof, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedNoLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedPotLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedAof, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5StandardNoLimit, MTTOmahaGame5);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5StandardPotLimit, MTTOmahaGame5);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5StandardAof, MTTOmahaGame5);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedNoLimit, MTTOmahaGame5);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedPotLimit, MTTOmahaGame5);// MTT
+        this.GameMap.set(RoomType.MTTOmaha5SixPlusFixedAof, MTTOmahaGame5);// MTT
 
         //12.MTTOmahaGameSix
-        this.GameMap.set(RoomType.MTTOmaha6StandardNoLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha6StandardPotLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha6StandardAof, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedNoLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedPotLimit, null);// MTT
-        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedAof, null);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6StandardNoLimit, MTTOmahaGame6);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6StandardPotLimit, MTTOmahaGame6);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6StandardAof, MTTOmahaGame6);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedNoLimit, MTTOmahaGame6);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedPotLimit, MTTOmahaGame6);// MTT
+        this.GameMap.set(RoomType.MTTOmaha6SixPlusFixedAof, MTTOmahaGame6);// MTT
     }
     private static GetGame(roomType: RoomType, Game_Cls: any) {
         if (!Game_Cls) return null;
@@ -1285,6 +1291,94 @@ export default class GameUtil {
         }
         return isPotLimit;
     }
+
+
+    //判断是否是奥马哈
+    public static JudgeIsOmahaRoomPath(roomType: RoomType): boolean {
+        let isOmaha: boolean = false;
+        switch (roomType) {
+            case RoomType.Omaha4StandardNoLimit:
+
+            case RoomType.Omaha4StandardPotLimit:
+
+            case RoomType.Omaha4StandardAof:
+
+            case RoomType.Omaha4SixPlusFixedNoLimit:
+
+            case RoomType.Omaha4SixPlusFixedPotLimit:
+
+            case RoomType.Omaha4SixPlusFixedAof:
+
+            case RoomType.Omaha5StandardNoLimit:
+
+            case RoomType.Omaha5StandardPotLimit:
+
+            case RoomType.Omaha5StandardAof:
+
+            case RoomType.Omaha5SixPlusFixedNoLimit:
+
+            case RoomType.Omaha5SixPlusFixedPotLimit:
+
+            case RoomType.Omaha5SixPlusFixedAof:
+
+            case RoomType.Omaha6StandardNoLimit:
+
+            case RoomType.Omaha6StandardPotLimit:
+
+            case RoomType.Omaha6StandardAof:
+
+            case RoomType.Omaha6SixPlusFixedNoLimit:
+
+            case RoomType.Omaha6SixPlusFixedPotLimit:
+
+            case RoomType.Omaha6SixPlusFixedAof:
+
+            case RoomType.MTTOmaha4StandardNoLimit:
+
+            case RoomType.MTTOmaha4StandardPotLimit:
+
+            case RoomType.MTTOmaha4StandardAof:
+
+            case RoomType.MTTOmaha4SixPlusFixedNoLimit:
+
+            case RoomType.MTTOmaha4SixPlusFixedPotLimit:
+
+            case RoomType.MTTOmaha4SixPlusFixedAof:
+
+            case RoomType.MTTOmaha5StandardNoLimit:
+
+            case RoomType.MTTOmaha5StandardPotLimit:
+
+            case RoomType.MTTOmaha5StandardAof:
+
+            case RoomType.MTTOmaha5SixPlusFixedNoLimit:
+
+            case RoomType.MTTOmaha5SixPlusFixedPotLimit:
+
+            case RoomType.MTTOmaha5SixPlusFixedAof:
+
+            case RoomType.MTTOmaha6StandardNoLimit:
+
+            case RoomType.MTTOmaha6StandardPotLimit:
+
+            case RoomType.MTTOmaha6StandardAof:
+
+            case RoomType.MTTOmaha6SixPlusFixedNoLimit:
+
+            case RoomType.MTTOmaha6SixPlusFixedPotLimit:
+
+            case RoomType.MTTOmaha6SixPlusFixedAof:
+                isOmaha = true;
+                break;
+            default:
+                isOmaha = false;
+                break;
+        }
+
+        return isOmaha;
+    }
+
+
 
     /// <summary>
     /// 源变换本地坐标转化为目标变换本地坐标

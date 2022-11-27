@@ -33,7 +33,7 @@ export default class UIClubDataMange extends BaseForm {
     _info: any = null;
     _clickDataItem = null;
     @property(cc.EditBox)
-    EditBox: cc.EditBox
+    EditBox: cc.EditBox = null;
     protected lateLoad(): void {
         super.lateLoad();
     }
