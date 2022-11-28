@@ -334,9 +334,10 @@ export default class UIMTTMineRankComponent extends UIBase {
         this.node_1.active = true;
         this.node_2.active = false;
         this.node_3.active = false;
-        let lbl_bigGold = this.getChildNodeOrComponent("lbl_wait", cc.Label);
+        let lbl_bigGold = this.getChildNodeOrComponent("lbl_bigGold", cc.Label);
         let lbl_rank = this.getChildNodeOrComponent("lbl_rank", cc.Label);
         let lbl_free = this.getChildNodeOrComponent("lbl_free", cc.Label);
+        let node_box: cc.Node = this.getChildNodeOrComponent("node_box");
         // firstRank.SetActive(true);
         // if (shareSwitch)
         // {
@@ -352,7 +353,7 @@ export default class UIMTTMineRankComponent extends UIBase {
         lbl_free.string = this.gameName;
         let mttInfo = UIMatchMttModel.Instance.MttInfo;
         if (mttInfo && mttInfo.mtt) {
-            lbl_rank.string = "当前排名:" + responseData.data.rank.toString() + "/" + mttInfo.mtt.participants.toString;
+            lbl_rank.string = "当前排名:" + responseData.data.rank.toString() + "/" + mttInfo.mtt.participants.toString();
         }
 
 
@@ -362,9 +363,11 @@ export default class UIMTTMineRankComponent extends UIBase {
             // money.gameObject.SetActive(true);
             // money.text = string.Format("{0:N2}", responseData.data.award_gold / 100);
             lbl_bigGold.string = (responseData.data.award_gold / 100).toFixed(2).toString();
+            node_box.active = false;
         }
         else
         {
+            node_box.active = true;
             // firstRank.transform.Find("firstRank_baoxiang").gameObject.SetActive(true);
         }
 

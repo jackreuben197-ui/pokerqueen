@@ -54,6 +54,11 @@ export default class MttDetailForm extends BaseForm {
 
         this._data = data;
 
+        let panel_item2: cc.Node = this.getChildNodeOrComponent("panel_item");
+        let img_av: cc.Sprite = panel_item2.getChildByName("img_av").getComponent(cc.Sprite);
+        img_av.spriteFrame = null;
+
+
         let tabToggles: cc.Node = this.getChildNodeOrComponent("tabToggles");
         for (let i = 1; i < 6; i++) {
             let btn_pt_1: cc.Node = tabToggles.children[i - 1];
