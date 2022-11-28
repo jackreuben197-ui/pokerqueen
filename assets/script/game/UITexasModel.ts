@@ -58,7 +58,7 @@ export class UITexasModel {
     public getOtherUserStats(user_id) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_Stats_Other_User_Stats.API.replace("{id}", GameCache.Instance.room_id.toString()),
+                api: Web_Stats_Other_User_Stats.API.replace("{id}", user_id.toString()),
                 body: Web_Stats_Other_User_Stats.Request(user_id),
                 request: Web_Stats_Other_User_Stats,
                 onSuccess: function () {
