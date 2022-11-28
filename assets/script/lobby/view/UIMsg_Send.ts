@@ -105,11 +105,25 @@ export default class UIMsg_Send extends BaseForm {
         }
         LobbyControl.getInstance().reqGetMsgList(info).then(
             (res: any) => {
-                this.testStr = res.data.data;
+                let head = [
+                    {
+                        template_name: " 空白 "
+                    },
+                    {
+                        template_name: "新建模板"
+                    }
+                ]
+                this.testStr = head;
+                for (let i=0; i<res.data.data.length; i++) {
+                    this.testStr.push(res.data.data[i]);
+                }
+                // this.testStr.concat(res.data.data);
                 let last = {
                     template_name: " + "
                 }
-                this.testStr.push(last);
+                if (this.testStr.length < 6) {
+                    this.testStr.push(last);
+                }
                 this.updateAutoView();
             },
             (res) => {
@@ -141,7 +155,7 @@ export default class UIMsg_Send extends BaseForm {
     }
 
     update() {
-        if (this.clickType == 0) {
+        if (this.clickType == 0 || this.clickType == 2) {
             return;
         }
 
@@ -173,6 +187,11 @@ export default class UIMsg_Send extends BaseForm {
             // _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickMB, this);
 
             _cloneNode.on(cc.Node.EventType.TOUCH_START, (event: cc.Event.EventTouch) => {
+                let str = this.testStr[i].template_name;
+                if (str == " 空白 " || str == "新建模板" || str == " + " ) {
+                    this.clickType = 2;
+                    return;
+                }
                 this.clickType = 1;
                 this.clickTime = 0;
                 this.clickSender = event;
@@ -192,6 +211,14 @@ export default class UIMsg_Send extends BaseForm {
                 let isAdd = target.isAdd;
                 if (isAdd) {
                     this.panel_dialog.active = true;
+                    return;
+                }
+                if (this.testStr[i].template_name == " 空白 ") {
+                    this.ebx_name.string = "";
+                    return;
+                }
+                if (this.testStr[i].template_name == "新建模板") {
+                    this.ebx_name.string = "牌局【】当前有【】个空位";
                     return;
                 }
                 let info = target.info;
@@ -291,11 +318,11 @@ export default class UIMsg_Send extends BaseForm {
 
     onClickShow(event) {
         let target = event.currentTarget;
-        let isAdd = target.isAdd;
-        if (isAdd) {
-            this.panel_dialog.active = true;
-            return;
-        }
+        // let isAdd = target.isAdd;
+        // if (isAdd) {
+        //     this.panel_dialog.active = true;
+        //     return;
+        // }
         let isShow = target.isShow;
         let item_close = target.getChildByName("item_close");
         item_close.active = !isShow;

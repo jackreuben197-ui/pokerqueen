@@ -109,8 +109,8 @@ export default class UIMessageItem extends UIBase {
             // tTxt.gameObject.SetActive(true);
             tTxtContent = LobbyControl.getInstance().formatString(
                 tValue, 
-                "{<color=#3BE1F5> " + tTitleColor + " </color> }", 
-                "{ <color=#3BE1F5> " + pDto.content + " </color> }"
+                "<color=#3BE1F5> " + tTitleColor + " </color> ", 
+                " <color=#3BE1F5> " + pDto.content + " </color> "
             );
         }
         else if (pDto.msg_type == MessageSubType.MsgBagTypeUserTransferTicketsToOther)
@@ -119,8 +119,8 @@ export default class UIMessageItem extends UIBase {
             // tTxt.gameObject.SetActive(true);
             tTxtContent = LobbyControl.getInstance().formatString(
                 tValue, 
-                "{<color=#3BE1F5> " + pDto.content + " </color> }", 
-                "{ <color=#3BE1F5> " + tTitleColor + " </color> }"
+                "<color=#3BE1F5> " + pDto.content + " </color> ", 
+                " <color=#3BE1F5> " + tTitleColor + " </color> "
             );
         }
         else if (pDto.msg_type == MessageSubType.MsgBagTypeAwardPropsByEveryDayTask ||
@@ -131,8 +131,8 @@ export default class UIMessageItem extends UIBase {
             // tTxt.gameObject.SetActive(true);
             tTxtContent = LobbyControl.getInstance().formatString(
                 tValue, 
-                "{<color=#3BE1F5> " + pDto.remark + " </color> }", 
-                "{ <color=#3BE1F5> " + tTitleColor + " </color> }"
+                "<color=#3BE1F5> " + pDto.remark + " </color> ", 
+                " <color=#3BE1F5> " + tTitleColor + " </color> "
             );
         }
         else
@@ -147,9 +147,9 @@ export default class UIMessageItem extends UIBase {
             }
             tTxtContent = LobbyControl.getInstance().formatString(
                 tValue, 
-                "{<color=#3BE1F5> " + typename + pDto.content + " </color> }", 
-                "{ <color=#3BE1F5> " + pDto.remark + " </color> }",
-                "{ <color=#3BE1F5> " + tTitleColor + " </color> }"
+                "<color=#3BE1F5> " + typename + pDto.content + " </color> ", 
+                " <color=#3BE1F5> " + pDto.remark + " </color> ",
+                " <color=#3BE1F5> " + tTitleColor + " </color> "
             );
         }
         rt_msg.string = tTxtContent;
