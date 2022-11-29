@@ -110,7 +110,7 @@ export default class UIMsg_Send extends BaseForm {
                         template_name: " 空白 "
                     },
                     {
-                        template_name: "新建模板"
+                        template_name: "新建牌局模板"
                     }
                 ]
                 this.testStr = head;
@@ -188,7 +188,7 @@ export default class UIMsg_Send extends BaseForm {
 
             _cloneNode.on(cc.Node.EventType.TOUCH_START, (event: cc.Event.EventTouch) => {
                 let str = this.testStr[i].template_name;
-                if (str == " 空白 " || str == "新建模板" || str == " + " ) {
+                if (str == " 空白 " || str == "新建牌局模板" || str == " + " ) {
                     this.clickType = 2;
                     return;
                 }
@@ -205,11 +205,12 @@ export default class UIMsg_Send extends BaseForm {
                     this.clickSender = null;
                     return
                 }
+                let str = this.testStr[i].template_name;
                 this.clickType = 0;
                 this.clickSender = null;
                 let target = event.currentTarget;
                 let isAdd = target.isAdd;
-                if (isAdd) {
+                if (str == " + ") {
                     this.panel_dialog.active = true;
                     return;
                 }
@@ -217,7 +218,7 @@ export default class UIMsg_Send extends BaseForm {
                     this.ebx_name.string = "";
                     return;
                 }
-                if (this.testStr[i].template_name == "新建模板") {
+                if (this.testStr[i].template_name == "新建牌局模板") {
                     this.ebx_name.string = "牌局【】当前有【】个空位";
                     return;
                 }
@@ -305,16 +306,16 @@ export default class UIMsg_Send extends BaseForm {
         // this.updateAutoView();
     }
 
-    onClickMB(event) {
-        let target = event.currentTarget;
-        let isAdd = target.isAdd;
-        if (isAdd) {
-            this.panel_dialog.active = true;
-            return;
-        }
-        let info = target.info;
-        this.ebx_name.string = info.content;
-    }
+    // onClickMB(event) {
+    //     let target = event.currentTarget;
+    //     let isAdd = target.isAdd;
+    //     if (isAdd) {
+    //         this.panel_dialog.active = true;
+    //         return;
+    //     }
+    //     let info = target.info;
+    //     this.ebx_name.string = info.content;
+    // }
 
     onClickShow(event) {
         let target = event.currentTarget;
