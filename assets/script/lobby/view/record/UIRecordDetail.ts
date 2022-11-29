@@ -143,7 +143,7 @@ export default class UIRecordDetail extends BaseForm {
 
         this.getChildNodeOrComponent("lbl_total_num", cc.Label).string = roomData.room_total_hand_num.toString();
 
-        this.getChildNodeOrComponent("lbl_gold_num", cc.Label).string = roomData.all_bring_in.toString();
+        this.getChildNodeOrComponent("lbl_gold_num", cc.Label).string = (roomData.all_bring_in * 0.01).toString();
 
 
         let lbl_bx_score = this.getChildNodeOrComponent("lbl_bx_score", cc.Label);
@@ -170,7 +170,7 @@ export default class UIRecordDetail extends BaseForm {
             let head = _cloneNode.getChildByName("img_head").getComponent(cc.Sprite);
             WebImageHelper.SetHeadImage(head, info.avatar);
             _cloneNode.getChildByName("item_name").getComponent(cc.Label).string = info.nick_name;
-            _cloneNode.getChildByName("item_gold").getComponent(cc.Label).string = info.bring_in;
+            _cloneNode.getChildByName("item_gold").getComponent(cc.Label).string = (info.bring_in * 0.01).toString();
             let score = info.finally_game_results;
             let scLbl = _cloneNode.getChildByName("item_score").getComponent(cc.Label);
             LobbyControl.getInstance().setWinColor(scLbl, score);
