@@ -10514,14 +10514,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -352.906,
+        -472.044,
         39,
         0,
         0,
@@ -10585,7 +10585,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -125,
+        0,
         0,
         0,
         0,
@@ -10801,7 +10801,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        125,
+        250,
         0,
         0,
         0,
@@ -12884,15 +12884,15 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -332.087,
-        39.219,
+        -472.044,
+        39,
         0,
         0,
         0,
@@ -12955,7 +12955,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -143.78,
+        0,
         0,
         0,
         0,
@@ -13063,7 +13063,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        81.22,
+        225,
         0,
         0,
         0,
@@ -13171,7 +13171,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        143.78,
+        287.56,
         0,
         0,
         0,
@@ -15733,14 +15733,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -322,
+        -472.044,
         39,
         0,
         0,
@@ -15804,7 +15804,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -147.515,
+        0,
         0,
         0,
         0,
@@ -15912,7 +15912,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        77.48500000000001,
+        225,
         0,
         0,
         0,
@@ -16020,7 +16020,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        102.51500000000001,
+        250.03,
         0,
         0,
         0,
@@ -17015,14 +17015,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -281,
+        -472.044,
         39,
         0,
         0,
@@ -17086,7 +17086,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -188.76999999999998,
+        0,
         0,
         0,
         0,
@@ -17194,7 +17194,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        118.74000000000001,
+        307.51,
         0,
         0,
         0,
@@ -17234,8 +17234,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "3",
-    "_N$string": "3",
+    "_string": "1",
+    "_N$string": "1",
     "_fontSize": 45,
     "_lineHeight": 65,
     "_enableWrapText": false,
@@ -17302,7 +17302,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        143.77,
+        332.53999999999996,
         0,
         0,
         0,
@@ -19060,14 +19060,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -345,
+        -472.044,
         39,
         0,
         0,
@@ -19131,7 +19131,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -125.015,
+        0,
         0,
         0,
         0,
@@ -19239,7 +19239,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        99.985,
+        225,
         0,
         0,
         0,
@@ -19347,7 +19347,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        125.015,
+        250.03,
         0,
         0,
         0,
@@ -20342,14 +20342,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -276,
+        -472.044,
         39,
         0,
         0,
@@ -20413,7 +20413,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -195.04499999999996,
+        0,
         0,
         0,
         0,
@@ -20521,7 +20521,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        144.985,
+        340.03,
         0,
         0,
         0,
@@ -20629,7 +20629,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        170.01500000000001,
+        365.05999999999995,
         0,
         0,
         0,
@@ -21740,14 +21740,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -221,
+        -472.044,
         39,
         0,
         0,
@@ -21811,7 +21811,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -250.02999999999997,
+        0,
         0,
         0,
         0,
@@ -21919,7 +21919,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        109.97000000000003,
+        360,
         0,
         0,
         0,
@@ -22027,7 +22027,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        135.00000000000003,
+        385.03,
         0,
         0,
         0,
@@ -22135,7 +22135,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        180.00000000000003,
+        430.03,
         0,
         0,
         0,
@@ -22243,7 +22243,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        205.03000000000003,
+        455.05999999999995,
         0,
         0,
         0,
@@ -23238,14 +23238,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -214,
+        -472.044,
         39,
         0,
         0,
@@ -23309,7 +23309,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -257.52,
+        0,
         0,
         0,
         0,
@@ -23417,7 +23417,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        232.49,
+        490.01,
         0,
         0,
         0,
@@ -23525,7 +23525,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        257.52,
+        515.04,
         0,
         0,
         0,
@@ -24520,14 +24520,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -257,
+        -472.044,
         39,
         0,
         0,
@@ -24591,7 +24591,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -215.015,
+        0,
         0,
         0,
         0,
@@ -24699,7 +24699,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        189.985,
+        405,
         0,
         0,
         0,
@@ -24807,7 +24807,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        215.01500000000001,
+        430.03,
         0,
         0,
         0,
@@ -25802,14 +25802,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -324,
+        -472.044,
         39,
         0,
         0,
@@ -25873,7 +25873,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -147.515,
+        0,
         0,
         0,
         0,
@@ -25981,7 +25981,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        122.48500000000001,
+        270,
         0,
         0,
         0,
@@ -26089,7 +26089,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        147.51500000000001,
+        295.03,
         0,
         0,
         0,
@@ -27084,14 +27084,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -234,
+        -472.044,
         39,
         0,
         0,
@@ -27155,7 +27155,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -237.515,
+        0,
         0,
         0,
         0,
@@ -27263,7 +27263,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        189.985,
+        427.5,
         0,
         0,
         0,
@@ -27371,7 +27371,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        215.01500000000001,
+        452.53,
         0,
         0,
         0,
@@ -40350,7 +40350,7 @@
     "node": {
       "__id__": 93
     },
-    "_enabled": false,
+    "_enabled": true,
     "_materials": [
       {
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
