@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-24 19:08:31
+ * @LastEditTime: 2022-11-29 19:07:48
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -426,8 +426,9 @@ export default class UILabarPlayViewForm extends UIBase {
     staSchedu() {
         this.getNewMess();
         this.unscheduleAllCallbacks()
+
         this.schedule(() => {
-            // if (!this.node.active) return
+            if (!this.messView.active) return
             this.getNewMess();
         }, 8)
     }
