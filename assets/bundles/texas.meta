@@ -6,7 +6,7 @@
   "bundleName": "",
   "priority": "5",
   "compressionType": {
-    "web-mobile": "default"
+    "web-mobile": "merge_all_json"
   },
   "optimizeHotUpdate": {
     "web-mobile": false
