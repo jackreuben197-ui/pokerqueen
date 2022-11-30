@@ -1,6 +1,7 @@
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import WebImageHelper from "../../helper/WebImageHelper";
+import { LobbyControl } from "../../lobby/control/LobbyControl";
 import { Web_Stats_Other_User_Stats, Web_User_Info } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -35,6 +36,30 @@ export default class UITexasPlayerInfoComponent extends UIBase {
             }
         }, (tResp: typeof Web_Stats_Other_User_Stats.Response) => {
         })
+
+        let info = {
+                
+        }
+        LobbyControl.getInstance().reqOherUserInfo(param[0], info).then(
+            (res: any) => {
+                if (res.data) {
+                    this.refreshHeadImg(res.data.avatar);
+                    this.refreshUserName(res.data.nick_name);
+                }
+            },
+            (res) => {
+            }
+        )
+        let img_gold: cc.Node = this.getChildNodeOrComponent("img_gold");
+        let lbl_gold: cc.Node = this.getChildNodeOrComponent("lbl_gold");
+        if (param[0] != GameCache.Instance.nUserId) {
+            img_gold.active = false;
+            lbl_gold.active = false;
+        } else {
+            img_gold.active = true;
+            lbl_gold.active = true;
+        }
+        
         this.refreshUpInfo();
         this.resetCenterInfo();
         this.refreshDownInfo();
@@ -46,8 +71,7 @@ export default class UITexasPlayerInfoComponent extends UIBase {
         // let leavelChips = this.openInfo[2].leavelChips ?? 0;
         let lbl_gold = this.getChildNodeOrComponent("lbl_gold", cc.Label);
         lbl_gold.string = GC.data.user.info.displayGold.toString();
-        this.refreshHeadImg();
-        this.refreshUserName();
+        
     }
 
     /**
@@ -58,17 +82,17 @@ export default class UITexasPlayerInfoComponent extends UIBase {
         this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
     }
 
-    refreshHeadImg() {
+    refreshHeadImg(headStr) {
         let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
         img_head.node.active = false;
-        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(() => {
+        WebImageHelper.SetUrlImage(img_head, headStr).then(() => {
             img_head.node.active = true;
         });
     }
 
-    refreshUserName() {
+    refreshUserName(nameStr) {
         let lbl_nickname = this.getChildNodeOrComponent("lbl_name", cc.Label);
-        lbl_nickname.string = Web_User_Info.Response.data.user.nickname;
+        lbl_nickname.string = nameStr;
     }
 
     resetCenterInfo() {

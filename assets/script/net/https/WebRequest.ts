@@ -585,6 +585,28 @@ export class Web_Stats_Mtt_Room_Detail {
 }
 
 
+
+/// <summary>
+/// 查询其他玩家信息
+/// </summary>
+export class Web_Other_User_Info {
+    //接口地址
+    static API: string = "/api/user/{id}/info";
+
+    //字段声明
+    static RequestParams: {
+    } = null;
+
+    static ResponseData: {
+    } = null;
+
+    static Request(param: typeof Web_Other_User_Info.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: (typeof Web_Other_User_Info.ResponseData)[] };
+}
+
 /// <summary>
 /// 请求用户数据
 /// </summary>
