@@ -3767,7 +3767,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "4aae7a5a-a0fd-480b-8e5c-6eefc5cec26c"
+      "__uuid__": "bd2b5b7d-81ba-47e8-b57c-bdcf26174895"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -5289,7 +5289,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -9.2,
+        -40.2,
         0,
         0,
         0,
@@ -5667,7 +5667,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 128,
+      "width": 160,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -5721,7 +5721,7 @@
     "_dstBlendFactor": 771,
     "_string": "忘记密码",
     "_N$string": "忘记密码",
-    "_fontSize": 32,
+    "_fontSize": 40,
     "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": null,
@@ -5789,7 +5789,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 256,
+      "width": 320,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -5843,7 +5843,7 @@
     "_dstBlendFactor": 771,
     "_string": "切换手机登录方式",
     "_N$string": "切换手机登录方式",
-    "_fontSize": 32,
+    "_fontSize": 40,
     "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": null,

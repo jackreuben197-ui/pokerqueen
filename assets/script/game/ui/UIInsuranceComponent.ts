@@ -479,7 +479,7 @@ export default class UIInsuranceComponent extends UIBase {
             return;
         }
         this.lbl_btn_2.parent.active = true;
-        let fee = 200 * Math.pow(2, this.addTimeCount);
+        let fee = 200 * Math.pow(2, this.addTimeCount) * 0.01;
         // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = $"{StringHelper.GetDoubleString(fee)}";
         this.lbl_btn_2.getComponent(cc.Label).string = fee;
 
