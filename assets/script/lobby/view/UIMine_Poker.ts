@@ -297,12 +297,21 @@ export default class UIMine_Poker extends BaseForm {
                         cardNum = card[j];
                     } else {
                         cardNum = this.PublicCards[j-2];
-                        if (maxCardIndex[j - 2] < 5) {
-                            item.color = cc.color(127, 127, 127, 255);
-                        } else {
-                            item.color = cc.color(255, 255, 255, 255);
+                    }
+
+                    let isExist = false;
+                    for (let ik=0; ik<maxCardIndex.length; ik++) {
+                        if (maxCardIndex[ik] == j) {
+                            isExist = true;
+                            break;
                         }
                     }
+                    if (!isExist) {
+                        item.color = cc.color(127, 127, 127, 255);
+                    } else {
+                        item.color = cc.color(255, 255, 255, 255);
+                    }
+
                     if (j < cardLen) {
                         item.active = true;
                         let cardStr = GameUtil.GetCardNameByNum(cardNum);
@@ -322,12 +331,21 @@ export default class UIMine_Poker extends BaseForm {
                         cardNum = card[j];
                     } else {
                         cardNum = this.PublicCards[j-2];
-                        if (maxCardIndex[j - 2] < 5) {
-                            item.color = cc.color(127, 127, 127, 255);
-                        } else {
-                            item.color = cc.color(255, 255, 255, 255);
+                    }
+
+                    let isExist = false;
+                    for (let ik=0; ik<maxCardIndex.length; ik++) {
+                        if (maxCardIndex[ik] == j) {
+                            isExist = true;
+                            break;
                         }
                     }
+                    if (!isExist) {
+                        item.color = cc.color(127, 127, 127, 255);
+                    } else {
+                        item.color = cc.color(255, 255, 255, 255);
+                    }
+                    
                     if (j < cardLen) {
                         item.active = true;
                         item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
