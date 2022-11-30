@@ -11,7 +11,12 @@ export class StringHelper {
     }
     static GetLongString(num: number): string {
 
-        return `${num / 100}`;
+        let n: number = num / 100;
+        let str: string = `${n}`;
+        if (~str.indexOf(".") && str.split(".")[1].length > 2) {
+            return n.toFixed(2);
+        }
+        return str;
     }
 
     public static GetLongStringUnit(num: number): string {
