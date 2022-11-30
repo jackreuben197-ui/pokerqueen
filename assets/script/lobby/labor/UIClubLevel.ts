@@ -10,7 +10,7 @@ import { UIClubModel } from "./UIClubModel";
  * @Date: 2022-11-08 12:28:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-21 10:04:20
+ * @LastEditTime: 2022-11-30 12:20:56
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubLevel.ts
  */
 const { ccclass, property, menu } = cc._decorator;
@@ -82,7 +82,7 @@ export default class UIClubLevel extends BaseForm {
 
 
         let data: any = APIOrgClubLevelBenefit.Response.data
-        let level_data = data.data[data.data.length - this._tempLevel]
+        let level_data = data.data[data.data.length - this._currentLevel]
 
 
         UIClubModel.mInstance.APIOrgClubLevelInfo({ club_id: _data.club_id }).then(() => {
