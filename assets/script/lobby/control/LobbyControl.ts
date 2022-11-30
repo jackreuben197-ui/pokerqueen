@@ -4,7 +4,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, API_BAG_CURRENT_PENDANT_LIST, API_BAG_PANDANT_DOWN, API_BAG_PANDANT_UP, API_BAG_PENDANT_LIST, API_DEL_MSG_TEMPLATE, API_GET_MSG_LIST, API_PROP_TASK_LIST, API_PROP_TASK_RECEIVE, API_SEND_MSG, API_SET_MSG_TEMPLATE, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Prop_User_Prop_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, API_BAG_CURRENT_PENDANT_LIST, API_BAG_PANDANT_DOWN, API_BAG_PANDANT_UP, API_BAG_PENDANT_LIST, API_DEL_MSG_TEMPLATE, API_GET_MSG_LIST, API_PROP_TASK_LIST, API_PROP_TASK_RECEIVE, API_SEND_MSG, API_SET_MSG_TEMPLATE, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Other_User_Info, Web_Prop_User_Prop_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -788,6 +788,26 @@ export class LobbyControl {
             });
         });
     }
+
+    /**
+     * 发送消息
+     */
+     async reqOherUserInfo(uid, param: typeof Web_Other_User_Info.RequestParams) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                api: Web_Other_User_Info.API.replace("{id}", uid.toString()),
+                request: Web_Other_User_Info,
+                body: Web_Other_User_Info.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Other_User_Info.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    
 
     /********************************* 公共接口 ***********************************/
 

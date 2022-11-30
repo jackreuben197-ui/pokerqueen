@@ -33,6 +33,8 @@ export default class UIMine_Poker extends BaseForm {
 
     playerInfos: Array<PlayerInfo> = []
 
+    PublicCards = null;
+
     isSC: boolean = false;
 
     protected lateLoad() {
@@ -60,11 +62,17 @@ export default class UIMine_Poker extends BaseForm {
             }
             LobbyControl.getInstance().reqRoundStrtus(info).then(
                 (res: any) => {
+                    let isSC = false;
                     if (res.code == 0 && res.data.records != null && res.data.records.length > 0) {
-                        this.isSC = true;
-                    } else {
-                        this.isSC = false;
+                        for (let i=0; i<res.data.records.length; i++) {
+                            let t1 = param.info.info.id;
+                            let t2 = res.data.records[i].id;
+                            if (t1 == t2) {
+                                isSC = true;
+                            }
+                        }
                     }
+                    this.isSC = isSC;
                     this.refreshBtnUI();
                 },
                 (res) => {
@@ -143,6 +151,7 @@ export default class UIMine_Poker extends BaseForm {
     }
 
     refreshUI(data) {
+        this.updatePublicCard(data);
         this.initRoomInfo(data);
         this.refreshTopHandAndPlayerNumInfo(data.data);
         this.updateHandcards(data, "node_p1", "node_p2");
@@ -150,6 +159,44 @@ export default class UIMine_Poker extends BaseForm {
         this.updateLeftStr(data.data);
         this.updateCenterUI(data.data);
         // this.refreshTop1(data);
+    }
+
+    updatePublicCard(data) {
+        this.PublicCards = [0, 0, 0, 0, 0]
+        let ResponseData = data.data;
+        //缓存公共牌
+        if (ResponseData.s.procedure.flop.card != null) {
+            for (let i = 0; i < ResponseData.s.procedure.flop.card.length; i++) {
+                this.PublicCards[i] = ResponseData.s.procedure.flop.card[i];
+            }
+        }
+        if (ResponseData.s.procedure.turn.card != null && ResponseData.s.procedure.turn.card.length > 0) {
+            this.PublicCards[3] = ResponseData.s.procedure.turn.card[0];
+        }
+        if (ResponseData.s.procedure.river.card != null && ResponseData.s.procedure.river.card.length > 0) {
+            this.PublicCards[4] = ResponseData.s.procedure.river.card[0];
+        }
+
+        //显示公共牌
+        let panel_c1: cc.Node = this.getChildNodeOrComponent("panel_c1");
+        let panel_c2: cc.Node = this.getChildNodeOrComponent("panel_c2");
+        for (let i = 0; i < 5; i++) {
+            let publicCard = panel_c1.getChildByName('img_pk_' + (i+1)).getComponent(cc.Sprite)
+            let publicCard2 = panel_c2.getChildByName('img_pk_' + (i+1)).getComponent(cc.Sprite)
+
+            if (this.PublicCards[i] == 0) {
+                //没发完的公共牌不显示
+                publicCard.node.active = (false);
+                publicCard2.node.active = (false);
+            }
+            else {
+                publicCard.node.active = (true);
+                publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+
+                publicCard2.node.active = (true);
+                publicCard2.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+            }
+        }
     }
 
     getPositionNumByBaner(seatIds, banerSeatId, seatId) {
@@ -240,13 +287,25 @@ export default class UIMine_Poker extends BaseForm {
         for (let i = 0; i < infoLen; i++) {
             let result = info[i];
             let card = result.card;
-            let cardLen = card.length;
+            let maxCardIndex = result.maxcard_idx;
+            let cardLen = this.PublicCards.length + 2;
             if (i == 0) {
                 for (let j = 0; j < len1; j++) {
                     let item = list1[j];
+                    let cardNum = 0;
+                    if (j < 2) {
+                        cardNum = card[j];
+                    } else {
+                        cardNum = this.PublicCards[j-2];
+                        if (maxCardIndex[j - 2] < 5) {
+                            item.color = cc.color(127, 127, 127, 255);
+                        } else {
+                            item.color = cc.color(255, 255, 255, 255);
+                        }
+                    }
                     if (j < cardLen) {
                         item.active = true;
-                        let cardStr = GameUtil.GetCardNameByNum(card[j]);
+                        let cardStr = GameUtil.GetCardNameByNum(cardNum);
                         let path = AssetContext.getAsset(
                             cardStr,
                             AssetFold.texture_SmallCard0) as cc.SpriteFrame;
@@ -258,10 +317,21 @@ export default class UIMine_Poker extends BaseForm {
             } else if (i == 1) {
                 for (let j = 0; j < len2; j++) {
                     let item = list2[j];
+                    let cardNum = 0;
+                    if (j < 2) {
+                        cardNum = card[j];
+                    } else {
+                        cardNum = this.PublicCards[j-2];
+                        if (maxCardIndex[j - 2] < 5) {
+                            item.color = cc.color(127, 127, 127, 255);
+                        } else {
+                            item.color = cc.color(255, 255, 255, 255);
+                        }
+                    }
                     if (j < cardLen) {
                         item.active = true;
                         item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(
-                            GameUtil.GetCardNameByNum(card[j]),
+                            GameUtil.GetCardNameByNum(cardNum),
                             AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                     } else {
                         item.active = false;
