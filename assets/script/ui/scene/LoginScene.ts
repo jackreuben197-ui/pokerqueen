@@ -143,7 +143,7 @@ export default class LoginScene extends BaseScene {
         this.bindClick(this.areaNode, this.clickAreaNode)
         this.bindClick(this.languageBtn, this.clickLanguage);
         this.bindClick(this.languageLayer, this.clickLanguageLayer);
-        this.bindClick(this.agreeTip2, this.clickUserAgreeRule);
+        // this.bindClick(this.agreeTip2, this.clickUserAgreeRule);
         this.bindClick(this.changeLoginBtn, this.clickChangeLoginBtn);
         this.bindClick(this.backLoginBtn, this.clickBackLoginBtn);
         this.bindClick(this.facebook, this.clickFaceBook, null, true);
