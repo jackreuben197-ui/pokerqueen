@@ -1671,8 +1671,8 @@
     "_dstBlendFactor": 771,
     "_string": "输入6位房间号快速开局",
     "_N$string": "输入6位房间号快速开局",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 45,
+    "_lineHeight": 45,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -4513,8 +4513,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 100
+      "width": 240,
+      "height": 75.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4567,8 +4567,8 @@
     "_dstBlendFactor": 771,
     "_string": "当前牌局",
     "_N$string": "当前牌局",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 60,
+    "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -4579,7 +4579,7 @@
     "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 1,
+    "_N$overflow": 0,
     "_N$cacheMode": 0,
     "_id": ""
   },
