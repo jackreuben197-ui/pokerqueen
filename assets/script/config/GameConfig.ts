@@ -17,8 +17,8 @@ export class GameConfig {
     static debug: boolean = true;
     static Web_Host_Test1 = "test1.awanptest.com";
     static Web_Host_Dev1 = "dev1.awanptest.com";
-    static Web_Host_Dev = "dev.k8s.awanptest.com";
-    //0: http://dev.k8s.awanptest.com 
+    static Web_Host_Dev = "dev.awanptest.com";
+    //0: http://dev.awanptest.com 
     //1: http://test1.awanptest.com  
     //2: http://dev1.awanptest.com 
     //3: https://test1.awanptest.com  
