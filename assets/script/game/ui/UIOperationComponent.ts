@@ -815,7 +815,7 @@ export default class UIOperationComponent extends UIBase {
         }
 
         if (rec.status != 0) {
-            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
+            //UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));//CPErrorCode.RoomErrorDescription(HotfixOpcode.REQ_ADD_TIME, rec.Status)
             return;
         }
         if (rec.status == 0) {

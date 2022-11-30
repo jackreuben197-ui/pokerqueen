@@ -2331,6 +2331,7 @@ export default class TexasGame {
         if (this.delayCount >= 2) {
             this.uirc.buttonDelay.getChildByName("click").getComponent(cc.Button).interactable = false;
             this.uirc.buttonDelay.getChildByName("Text_Time").getComponent(cc.Label).string = "0";
+            this.HideBtnDelay(false);
         }
         else {
             this.uirc.buttonDelay.getChildByName("click").getComponent(cc.Button).interactable = true;

@@ -33,7 +33,7 @@ export default class UIBase extends BaseComponent {
             }
         }, cc.SpriteFrame);
     }
-    protected setSpriteShowGray(sp: cc.Sprite | cc.Node | cc.Button | cc.Label | dragonBones.ArmatureDisplay, showGray: boolean = true) {
+    protected setSpriteShowGray(sp: cc.Sprite | cc.Node | cc.Button | cc.Label | sp.Skeleton, showGray: boolean = true) {
         if (this.nodeIsValid(sp)) {
             let material = null;
             if (showGray) {
@@ -157,13 +157,13 @@ export default class UIBase extends BaseComponent {
                     cb && cb(instance, res);
                 }, errorCb)
             } break;
-            case dragonBones.DragonBonesAsset: {
-                ResManager.instance.loadRes(url + "_ske", (asset: dragonBones.DragonBonesAsset) => {
-                    ResManager.instance.loadRes(url + "_tex", (atlas: dragonBones.DragonBonesAtlasAsset) => {
-                        cb && cb(asset, atlas)
-                    }, dragonBones.DragonBonesAtlasAsset);
-                }, dragonBones.DragonBonesAsset);
-            } break;
+            // case dragonBones.DragonBonesAsset: {
+            //     ResManager.instance.loadRes(url + "_ske", (asset: dragonBones.DragonBonesAsset) => {
+            //         ResManager.instance.loadRes(url + "_tex", (atlas: dragonBones.DragonBonesAtlasAsset) => {
+            //             cb && cb(asset, atlas)
+            //         }, dragonBones.DragonBonesAtlasAsset);
+            //     }, dragonBones.DragonBonesAsset);
+            // } break;
             case cc.Texture2D: {
                 ResManager.instance.loadUrl(url, asset_type, (instance: cc.Texture2D) => {
                     cb && cb(new cc.SpriteFrame(instance))

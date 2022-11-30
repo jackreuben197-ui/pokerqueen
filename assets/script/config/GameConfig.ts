@@ -17,15 +17,15 @@ export class GameConfig {
     static debug: boolean = true;
     static Web_Host_Test1 = "test1.awanptest.com";
     static Web_Host_Dev1 = "dev1.awanptest.com";
-    static Web_Host_Dev = "dev.k8s.awanptest.com";
-    //0: http://dev.k8s.awanptest.com 
+    static Web_Host_Dev = "dev.awanptest.com";
+    //0: http://dev.awanptest.com 
     //1: http://test1.awanptest.com  
     //2: http://dev1.awanptest.com 
     //3: https://test1.awanptest.com  
     //4: https://dev1.awanptest.com 
     static BuildType: number = 3;
     //版本号
-    static Version: string = "20221130_1430";
+    static Version: string = "20221130_2200";
 
     static Default_Language: string = "en";
     //是否使用代理
