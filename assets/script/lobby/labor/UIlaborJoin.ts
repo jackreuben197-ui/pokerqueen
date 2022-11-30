@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:08:56
+ * @LastEditTime: 2022-11-30 14:14:27
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
@@ -35,8 +35,8 @@ export default class UIlaborJoin extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any, fromUI?: cc.Node) {
-        super.onShow(param, fromUI);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.initApplyList();
         this.EditBox.string = '';
     }

@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-11 15:38:51
+ * @LastEditTime: 2022-11-30 14:10:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
  */
 
@@ -41,8 +41,8 @@ export default class UIManageLabor extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any, fromUI?: cc.Node) {
-        super.onShow(param, fromUI);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.initTop();
         this.initMangerList();
 
@@ -149,6 +149,7 @@ export default class UIManageLabor extends BaseForm {
         UIComponent.open(UIDefine.UIlaborMerberManager);
     }
     joinUnion() {
+
         UIComponent.open(UIDefine.UIJoinUnion);
 
         // let lm = this.contentNode.getChildByName('lm')
@@ -176,6 +177,7 @@ export default class UIManageLabor extends BaseForm {
         UIComponent.open(UIDefine.MyWalletForm, true)
     }
     clickLevel() {
+        // this.node.active = false
         UIComponent.open(UIDefine.UIClubLevel)
     }
 

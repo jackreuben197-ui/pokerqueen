@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 18:19:52
+ * @LastEditTime: 2022-11-30 14:14:33
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -56,8 +56,8 @@ export default class UIlaborMerberManager extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any, fromUI?: cc.Node) {
-        super.onShow(param, fromUI);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.reqDataAgain();
     }
 

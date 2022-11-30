@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 14:36:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 17:35:09
+ * @LastEditTime: 2022-11-30 14:14:22
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborExaminatMerber.ts
  */
 // Learn TypeScript:
@@ -55,8 +55,8 @@ export default class UIlaborExaminatMerber extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any, fromUI?: cc.Node) {
-        super.onShow(param, fromUI);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.topBtnClick(null, 'join')
     }
 

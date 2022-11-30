@@ -10,7 +10,7 @@ import { UIClubModel } from "./UIClubModel";
  * @Date: 2022-11-08 12:28:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 12:20:56
+ * @LastEditTime: 2022-11-30 14:13:08
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubLevel.ts
  */
 const { ccclass, property, menu } = cc._decorator;
@@ -59,8 +59,8 @@ export default class UIClubLevel extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any) {
-        super.onShow(param);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.getData();
     }
     async getData() {

@@ -21,7 +21,8 @@ export default class UIlabor extends UIBase {
         super.lateLoad();
 
     }
-    onShow(param?: any): void {
+    onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
 
     }
     async joinBtnClick() {

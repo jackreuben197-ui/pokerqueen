@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 15:36:52
+ * @LastEditTime: 2022-11-30 14:12:45
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAuditAdmin.ts
  */
 
@@ -33,8 +33,8 @@ export default class UIAuditAdmin extends BaseForm {
         super.lateLoad();
     }
 
-    async onShow(param?: any) {
-        super.onShow(param);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.reqDataAgain();
         this.list.scrollingCB = this.scrollingCB;
 

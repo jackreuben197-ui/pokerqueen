@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:07:20
+ * @LastEditTime: 2022-11-30 14:16:59
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -12,6 +12,7 @@ import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil from "../../game/util/GameUtil";
+import SceneManager from "../../manager/SceneManager";
 import { APIOrgFriendRoomList } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -39,8 +40,8 @@ export default class UICreateFriendMatchHome extends UIBase {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any) {
-        super.onShow(param);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.EditBox.string = ''
         for (let index = 0; index < this.numNode.childrenCount; index++) {
             const element = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
@@ -69,7 +70,7 @@ export default class UICreateFriendMatchHome extends UIBase {
     }
 
     createMatch() {
-        UIComponent.open(UIDefine.UICreateMatch);
+        UIComponent.open(UIDefine.UICreateMatch, null, { SceneUI: SceneManager.Instance.currUI });
     }
     numNodeClick() {
         for (let index = 0; index < this.numNode.childrenCount; index++) {

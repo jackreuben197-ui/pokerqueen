@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 11:00:04
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 11:06:14
+ * @LastEditTime: 2022-11-30 14:12:29
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIActiveMange.ts
  */
 
@@ -33,8 +33,8 @@ export default class UIActiveMange extends BaseForm {
     activeType = 2;
     picType = 'activeB1';
 
-    async onShow(param?: any) {
-        super.onShow(param);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
 
     }
 

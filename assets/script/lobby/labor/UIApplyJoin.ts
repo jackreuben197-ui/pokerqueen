@@ -3,7 +3,7 @@
  * @Date: 2022-10-21 21:48:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:06:13
+ * @LastEditTime: 2022-11-30 14:12:40
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIApplyJoin.ts
  */
 
@@ -38,8 +38,8 @@ export default class UIApplyJoin extends BaseForm {
         super.lateLoad();
     }
 
-    async onShow(param?: any) {
-        super.onShow(param);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.reqDataAgain();
         this.list.scrollingCB = this.scrollingCB;
 

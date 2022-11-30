@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:07:29
+ * @LastEditTime: 2022-11-30 14:13:37
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -40,8 +40,8 @@ export default class UICreatelabor extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    async onShow(param?: any, fromUI?: cc.Node) {
-        super.onShow(param, fromUI);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.editName.string = ''
         this.editjieshao.string = ''
         this.xinxi.string = ''

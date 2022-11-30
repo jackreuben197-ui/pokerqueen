@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-29 19:07:48
+ * @LastEditTime: 2022-11-30 13:16:21
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -315,15 +315,15 @@ export default class UILabarPlayViewForm extends UIBase {
     }
     playerLookLaber() {
         this.tabNode.active = false;
-        UIComponent.open(UIDefine.UIPlayerLookLabor);
+        UIComponent.open(UIDefine.UIPlayerLookLabor, null, { SceneUI: SceneManager.Instance.currUI });
     }
     managerLookLaber() {
         this.tabNode.active = false;
-        UIComponent.open(UIDefine.UIManageLabor);
+        UIComponent.open(UIDefine.UIManageLabor, null, { SceneUI: SceneManager.Instance.currUI });
     }
     createMatch() {
         this.tabNode.active = false;
-        UIComponent.open(UIDefine.UICreateMatchHome);
+        UIComponent.open(UIDefine.UICreateMatchHome, null, { SceneUI: SceneManager.Instance.currUI });
     }
 
 
@@ -444,7 +444,7 @@ export default class UILabarPlayViewForm extends UIBase {
 
     clickPf() {
         // UIComponent.open(UIDefine.UIMine_Poker, { info: '' })
-        UIComponent.open(UIDefine.UICollectScore, UIDefine.UILaborPlayViewForm);
+        UIComponent.open(UIDefine.UICollectScore, UIDefine.UILaborPlayViewForm,);
     }
     clickzj() {
         // UIComponent.open(UIDefine.UIRecordDetail, { info: '' });
