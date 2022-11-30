@@ -86,7 +86,7 @@ export default class UIRecordInto extends BaseForm {
             
 
             let img_head: cc.Sprite = _cloneNode.getChildByName("img_head").getComponent(cc.Sprite);
-            img_head.node.active =false;
+            // img_head.node.active =false;
             WebImageHelper.SetUrlImage(img_head, info.avatar).then(()=>{
                 img_head.node.active =true;
             });

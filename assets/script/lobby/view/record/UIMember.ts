@@ -97,7 +97,7 @@ export default class UIMember extends BaseForm {
 
     refreshHeadImg() {
         let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
-        img_head.node.active =false;
+        // img_head.node.active =false;
         WebImageHelper.SetUrlImage(img_head, this._info.avatar).then(()=>{
             img_head.node.active =true;
         });
