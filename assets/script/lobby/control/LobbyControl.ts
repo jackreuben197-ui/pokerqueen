@@ -835,12 +835,18 @@ export class LobbyControl {
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         2.设置输赢分颜色
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-    setWinColor(lbl, num) {
+    setWinColor(lbl, num, isFix = null) {
         let bxStr = "";
         bxStr = num.toString();
+        if (isFix) {
+            bxStr = (num * 0.01).toFixed(2).toString();
+        }
         if (num >= 0) {
             if (num > 0) {
                 bxStr = "+" + num.toString();
+                if (isFix) {
+                    bxStr = "+" + (num * 0.01).toFixed(2).toString();
+                }
             }
             lbl.node.color = cc.color(53, 163, 179)
         } else {

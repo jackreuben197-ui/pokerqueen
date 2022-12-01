@@ -1,4 +1,5 @@
 import { UIDefine } from "../../../define/UIDefine";
+import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
@@ -36,7 +37,8 @@ export default class UIRecordDetail extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
-        Text_title.string = "牌桌名称+ID";
+        let nameStr = GC.data.languageTemp.temp.getName(param.info.Name);
+        Text_title.string = nameStr + "+" + param.info.RoomID.toString();
         if (param && param.info) {
             this.reqInfo(param.info.RoomID);
         }
@@ -139,7 +141,7 @@ export default class UIRecordDetail extends BaseForm {
         if (score > 0) {
             scoreStr = "+" + score.toString();
         }
-        LobbyControl.getInstance().setWinColor(this.getChildNodeOrComponent("lbl_record_num", cc.Label), score);
+        LobbyControl.getInstance().setWinColor(this.getChildNodeOrComponent("lbl_record_num", cc.Label), score, true);
 
         this.getChildNodeOrComponent("lbl_total_num", cc.Label).string = roomData.room_total_hand_num.toString();
 
@@ -173,7 +175,7 @@ export default class UIRecordDetail extends BaseForm {
             _cloneNode.getChildByName("item_gold").getComponent(cc.Label).string = (info.bring_in * 0.01).toFixed(2).toString();
             let score = info.finally_game_results;
             let scLbl = _cloneNode.getChildByName("item_score").getComponent(cc.Label);
-            LobbyControl.getInstance().setWinColor(scLbl, score);
+            LobbyControl.getInstance().setWinColor(scLbl, score, true);
 
             let img_line = _cloneNode.getChildByName("img_line");
             img_line.active = i != len - 1;

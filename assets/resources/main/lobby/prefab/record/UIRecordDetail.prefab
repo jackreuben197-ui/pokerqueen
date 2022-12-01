@@ -5543,7 +5543,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        435.151,
+        490,
         0.4269999999999996,
         0,
         0,
@@ -6532,14 +6532,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0,
+      "x": 1,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        343.221,
+        460,
         0.918,
         0,
         0,

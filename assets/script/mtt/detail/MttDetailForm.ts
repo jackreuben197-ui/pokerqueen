@@ -55,7 +55,7 @@ export default class MttDetailForm extends BaseForm {
         this._data = data;
 
         let panel_item2: cc.Node = this.getChildNodeOrComponent("panel_item");
-        let img_av: cc.Sprite = panel_item2.getChildByName("img_av").getComponent(cc.Sprite);
+        let img_av: cc.Sprite = panel_item2.getChildByName("mask").getChildByName("img_av").getComponent(cc.Sprite);
         img_av.spriteFrame = null;
 
 
@@ -107,7 +107,7 @@ export default class MttDetailForm extends BaseForm {
         let lbl_test = this.getChildNodeOrComponent("lbl_test").getComponent(cc.Label);
         lbl_test.string = mttDetails.mtt.name;
 
-        let img_av: cc.Sprite = panel_item2.getChildByName("img_av").getComponent(cc.Sprite);
+        let img_av: cc.Sprite = panel_item2.getChildByName("mask").getChildByName("img_av").getComponent(cc.Sprite);
         WebImageHelper.SetUrlImage(img_av, mttDetails.mtt.game_icon);
         let dialogStr = i18nMgr.Get("UIMTT_StateHuntChampionshipsDialogDetail");
         let msg = LobbyControl.getInstance().formatString(dialogStr, mttDetails.mtt.hunter_bonus, 100 - mttDetails.mtt.hunter_bonus);
@@ -531,12 +531,13 @@ export default class MttDetailForm extends BaseForm {
         for (let i = 1; i < 6; i++) {
             let btn_pt_1: cc.Node = tabToggles.children[i - 1];
             let line = btn_pt_1.getChildByName("line");
+            let text = btn_pt_1.getChildByName("text");
             if (index == i - 1) {
                 line.active = true;
-                btn_pt_1.color = cc.color(53, 163, 179);
+                text.color = cc.color(53, 163, 179);
             } else {
                 line.active = false;
-                btn_pt_1.color = cc.color(255, 255, 255);
+                text.color = cc.color(255, 255, 255);
             }
         }
     }

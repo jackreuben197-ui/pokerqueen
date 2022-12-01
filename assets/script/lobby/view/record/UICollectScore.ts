@@ -72,7 +72,7 @@ export default class UICollectScore extends BaseForm {
         // 有数据 刷新列表
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
-        // scrollView.content.removeAllChildren();
+        scrollView.content.removeAllChildren();
         for (let i = 0; i < len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
             _cloneNode.x = 0;
@@ -88,7 +88,7 @@ export default class UICollectScore extends BaseForm {
             item_sv.content.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
             let score = info.change;
             let scLbl = item_sv.content.getChildByName("lbl_score").getComponent(cc.Label);
-            LobbyControl.getInstance().setWinColor(scLbl, score);
+            LobbyControl.getInstance().setWinColor(scLbl, score, true);
 
             _cloneNode["index"] = i;
             // item_sv.content.width = 2000;
