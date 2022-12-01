@@ -25,7 +25,9 @@ export default class ProcedureInit extends ProcedureBase {
         let framesize = cc.view.getFrameSize();
         let w_h_r = framesize.width / framesize.height;
 
-        if (w_h_r > 0.6) {
+        console.log("屏幕实际分辨率", framesize.width, framesize.height);
+
+        if (w_h_r > 0.63) {
             cc.Canvas.instance.fitHeight = true;
         } else {
             cc.Canvas.instance.fitWidth = true;

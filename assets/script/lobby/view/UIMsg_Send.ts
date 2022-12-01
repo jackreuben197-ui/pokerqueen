@@ -263,7 +263,7 @@ export default class UIMsg_Send extends BaseForm {
             "game_round_id": 0,
             "amount": 1000
         })
-        GC.data.user.info.gold = GC.data.club.info.displayGold - 10;
+        GC.data.club.info.gold = GC.data.club.info.gold - 10 * 100;
         let lbl_gold: cc.Label = this.getChildNodeOrComponent("lbl_gold", cc.Label);
         lbl_gold.string = GC.data.club.info.displayGold.toString();
         GC.notify.post(EventName.clubGoldChange);

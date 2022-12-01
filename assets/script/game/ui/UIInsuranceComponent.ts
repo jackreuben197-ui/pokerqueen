@@ -218,24 +218,24 @@ export default class UIInsuranceComponent extends UIBase {
         this.textOdds = this.getChildNodeOrComponent("lbl_pay_num").getComponent(cc.Label);
         this.textPot = this.getChildNodeOrComponent("lbl_pay_num1").getComponent(cc.Label);
 
-        if (null == this.listCards) {
-            this.listCards = [];
-        }
-        if (this.listCards.length > 0) {
+        // if (null == this.listCards) {
+        //     this.listCards = [];
+        // }
+        // if (this.listCards.length > 0) {
             this.listCards = [];
             this.listCards.push(imagePublicCard0);
             this.listCards.push(imagePublicCard1);
             this.listCards.push(imagePublicCard2);
             this.listCards.push(imagePublicCard3);
             this.listCards.push(imagePublicCard4);
-        }
+        // }
 
         this.CountDownText = this.getChildNodeOrComponent("lbl_21", cc.Label);
         this.CountDownImage = this.getChildNodeOrComponent("progress_bar", cc.Sprite);
 
         this.refreshView();
         this.ShowMultiPoolToggle();
-        // this.UpdatePublicCards();
+        this.UpdatePublicCards();
         this.ShowCountDown();
         this.UpdateDelayButton();
 
@@ -402,18 +402,20 @@ export default class UIInsuranceComponent extends UIBase {
         if (null == this.data.publicCards)
             return;
 
+        for (let i = this.data.publicCards.length, n = this.listCards.length; i < n; i++) {
+            this.listCards[i].active = false;
+        }
+
         for (let i = 0, n = this.data.publicCards.length; i < n; i++) {
             let cardStr = GameUtil.GetCardNameByNum(this.data.publicCards[i]);
             let path = AssetContext.getAsset(
                 cardStr,
                 AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             this.listCards[i].getComponent(cc.Sprite).spriteFrame = path;
-            this.listCards[i].node.active(this.data.publicCards[i] >= 0);
+            this.listCards[i].active = this.data.publicCards[i] >= 0;
         }
 
-        for (let i = this.data.publicCards.length, n = this.listCards.length; i < n; i++) {
-            this.listCards[i].node.active = false;
-        }
+        
     }
 
     /// <summary>
@@ -481,7 +483,7 @@ export default class UIInsuranceComponent extends UIBase {
         this.lbl_btn_2.parent.active = true;
         let fee = 200 * Math.pow(2, this.addTimeCount) * 0.01;
         // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = $"{StringHelper.GetDoubleString(fee)}";
-        this.lbl_btn_2.getComponent(cc.Label).string = fee;
+        this.lbl_btn_2.getComponent(cc.Label).string = fee.toFixed(2).toString();
 
         if (this.OnclickDelayButtonTimes == 1) {
             this.DelayTimes = 20;

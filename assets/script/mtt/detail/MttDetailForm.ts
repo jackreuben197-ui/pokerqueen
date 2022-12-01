@@ -116,7 +116,7 @@ export default class MttDetailForm extends BaseForm {
             let btn_pt_1: cc.Node = panel_item2.getChildByName("node" + i);
             let lbl_gold = btn_pt_1.getChildByName("lbl_gold").getComponent(cc.Label);
             if (i == 1) {
-                lbl_gold.string = (mttDetails.more.prize_pool * 0.01).toString();
+                lbl_gold.string = (mttDetails.more.prize_pool * 0.01).toFixed(2).toString();
             } else if (i == 2) {
                 lbl_gold.string = mttDetails.mtt.award_num.toString();
             } else if (i == 3) {
