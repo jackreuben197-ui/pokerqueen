@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 11:03:13
+ * @LastEditTime: 2022-12-01 19:48:39
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -1051,23 +1051,23 @@ export default class UITexasHistoryComponent extends UIBase {
         // //公共牌位置
         // GameObject publiccardpos = go.getChildByName("PublicCardpos").gameObject;
         let handCardNum = GameCache.Instance.CurGame.HandCards;
-        switch (handCardNum) {
-            case 2:
-                PublicCardpos.position = cc.v3(-78.1, 0, 0);
-                break;
-            case 4:
-                PublicCardpos.position = cc.v3(30, 0, 0);
-                break;
-            case 5:
-                PublicCardpos.position = cc.v3(75, 0, 0);
-                break;
-            case 6:
-                PublicCardpos.position = cc.v3(120, 0, 0);
-                break;
-            default:
-                PublicCardpos.position = cc.v3(-78.1, 0, 0);
-                break;
-        }
+        // switch (handCardNum) {
+        //     case 2:
+        //         PublicCardpos.position = cc.v3(-78.1, 0, 0);
+        //         break;
+        //     case 4:
+        //         PublicCardpos.position = cc.v3(30, 0, 0);
+        //         break;
+        //     case 5:
+        //         PublicCardpos.position = cc.v3(75, 0, 0);
+        //         break;
+        //     case 6:
+        //         PublicCardpos.position = cc.v3(120, 0, 0);
+        //         break;
+        //     default:
+        //         PublicCardpos.position = cc.v3(-78.1, 0, 0);
+        //         break;
+        // }
 
         if (isSecond && SpcsIndex != 0) {
             //公共牌显示
