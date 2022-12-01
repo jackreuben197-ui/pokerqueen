@@ -218,17 +218,17 @@ export default class UIInsuranceComponent extends UIBase {
         this.textOdds = this.getChildNodeOrComponent("lbl_pay_num").getComponent(cc.Label);
         this.textPot = this.getChildNodeOrComponent("lbl_pay_num1").getComponent(cc.Label);
 
-        if (null == this.listCards) {
-            this.listCards = [];
-        }
-        if (this.listCards.length > 0) {
+        // if (null == this.listCards) {
+        //     this.listCards = [];
+        // }
+        // if (this.listCards.length > 0) {
             this.listCards = [];
             this.listCards.push(imagePublicCard0);
             this.listCards.push(imagePublicCard1);
             this.listCards.push(imagePublicCard2);
             this.listCards.push(imagePublicCard3);
             this.listCards.push(imagePublicCard4);
-        }
+        // }
 
         this.CountDownText = this.getChildNodeOrComponent("lbl_21", cc.Label);
         this.CountDownImage = this.getChildNodeOrComponent("progress_bar", cc.Sprite);
@@ -402,18 +402,20 @@ export default class UIInsuranceComponent extends UIBase {
         if (null == this.data.publicCards)
             return;
 
+        for (let i = this.data.publicCards.length, n = this.listCards.length; i < n; i++) {
+            this.listCards[i].active = false;
+        }
+
         for (let i = 0, n = this.data.publicCards.length; i < n; i++) {
             let cardStr = GameUtil.GetCardNameByNum(this.data.publicCards[i]);
             let path = AssetContext.getAsset(
                 cardStr,
                 AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             this.listCards[i].getComponent(cc.Sprite).spriteFrame = path;
-            this.listCards[i].node.active(this.data.publicCards[i] >= 0);
+            this.listCards[i].active = this.data.publicCards[i] >= 0;
         }
 
-        for (let i = this.data.publicCards.length, n = this.listCards.length; i < n; i++) {
-            this.listCards[i].node.active = false;
-        }
+        
     }
 
     /// <summary>
