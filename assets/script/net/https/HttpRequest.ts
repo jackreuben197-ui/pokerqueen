@@ -24,6 +24,7 @@ export default class HttpRequest {
         let url = host + api;
         url = this.handleUrl(url);
         let needJuhua = WebHelper.NeedJuhua(api);
+        let needConsole = WebHelper.NeedConsole(api);
         await HttpClient[`${isGet ? "get" : "post"}`]({
             url: url,
             body: body,
@@ -31,7 +32,8 @@ export default class HttpRequest {
             onSuccess: HttpRequest.onSuccess.bind(HttpRequest, api, request, body, onSuccess),
             headers: headers,
             needJuhua: needJuhua,
-            isJson: isJson
+            isJson: isJson,
+            needConsole: needConsole
         });
     }
     private static onSuccess(api, request, body, onSuccess, response) {

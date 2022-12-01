@@ -9,7 +9,8 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import { i18nSprite } from "../i18n/i18nSprite";
 
 
-import { Bundle_Texas } from "../manager/ResManager";
+import { Bundle_Resources, Bundle_Texas } from "../manager/ResManager";
+import UIMttSignDialogComponent from "../mtt/detail/UIMttSignDialogComponent";
 
 import GlobalSession from "../session/GlobalSession";
 import StorageKey from "../session/StorageKey";
@@ -26,6 +27,7 @@ import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsComponent from "./ui/UIOutChipsComponent";
+import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
 import UITexasMenuComponent from "./ui/UITexasMenuComponent";
 import GameUtil from "./util/GameUtil";
 
@@ -159,14 +161,17 @@ export default class UITexas extends BaseScene {
     UIAddChips_Com: UIAddChipsComponent = null;
     UIOutChips_Com: UIOutChipsComponent = null;
     UIAutoChips_Com: UIAutoChipsComponent = null;
-    UIOutChipsTipComponent = null;
+    UIOutChipsTip_Com: UIOutChipsTipComponent = null;
+
     //6.保险面板
     UIInsurance_Con: cc.Node = null;
     UIInsurance_Com: UIInsuranceComponent = null;
     //7.二套牌投票面板
     UIAgreeSecondPcs_Con: cc.Node = null;
     UIAgreeSecondPcs_Com: UIAgreeSecondPcsComponent = null;
-
+    //8.MTT重购面板
+    UIMttSignDialog_Con: cc.Node = null;
+    UIMttSignDialog_Com: UIMttSignDialogComponent = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -288,12 +293,17 @@ export default class UITexas extends BaseScene {
         this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
         this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
         this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
+        this.UIOutChipsTip_Com = this.AddComponents(PrefabUI.UIOutChipsTipComponent, this.UIChips_Con);
         //6.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
         this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
         //7.二套牌投票面板
         this.UIAgreeSecondPcs_Con = this.getChildNodeOrComponent("UIAgreeSecondPcs_Con");
         this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
+        //8.MTT重购面板
+        this.UIMttSignDialog_Con = this.getChildNodeOrComponent("UIMttSignDialog_Con");
+        this.UIMttSignDialog_Com = this.AddComponents(PrefabUI.UIMttSignDialogComponent, this.UIMttSignDialog_Con, false, Bundle_Resources);
+
         //////////////////////////////////////////////////////////////////////
         //////////////////初始化杂类
         //隐藏座位模板
@@ -305,8 +315,8 @@ export default class UITexas extends BaseScene {
 
 
     //从预制体添加到容器
-    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false) {
-        let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, Bundle_Texas);
+    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
+        let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
         let com = null;
         if (prefab) {
             com = cc.instantiate(prefab).getComponent(prefab_name);
@@ -373,6 +383,7 @@ export default class UITexas extends BaseScene {
         UIComponent.Instance.HideUI(PrefabUI.UIMTTTimeComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIOutChipsTipComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIMttSignDialogComponent);
         this.HideMenu(false);
     }
     Exit(param) {

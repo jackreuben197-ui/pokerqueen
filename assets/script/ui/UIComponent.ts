@@ -20,6 +20,7 @@ export enum PrefabUI {
     UIMTTTimeComponent = "UIMTTTimeComponent",
     UIOutChipsTipComponent = "UIOutChipsTipComponent",
     UIAgreeSecondPcsComponent = "UIAgreeSecondPcsComponent",//第二套公共牌的同意拒绝面板
+    UIMttSignDialogComponent = "UIMttSignDialogComponent",//牌桌上的比赛重购面板
 }
 (window as any).PrefabUI = PrefabUI;
 //打开面板追加参数
@@ -75,7 +76,7 @@ export default class UIComponent {
             node.active = true;
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onShow(param);
-            cc.log("PrefabUI_node", node);
+            cc.log("ShowUI PrefabUI_node", node.name);
         } else {
             cc.log("ShowUI ::: > 缺少相关的节点", com);
         }
