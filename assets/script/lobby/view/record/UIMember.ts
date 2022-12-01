@@ -67,7 +67,7 @@ export default class UIMember extends BaseForm {
         lbl_nickname.string = this._info.nick_name;
 
         let lbl_gold = this.getChildNodeOrComponent('lbl_gold').getComponent(cc.Label)
-        lbl_gold.string = this._info.gold;
+        lbl_gold.string = (this._info.gold * 0.01).toFixed(2).toString();
         
 
         let lbl_id = this.getChildNodeOrComponent('lbl_id').getComponent(cc.Label)
