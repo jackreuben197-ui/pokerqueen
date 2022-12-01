@@ -7,7 +7,6 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UIMine_About extends BaseForm {
 
-    webview: cc.WebView = null;
 
     /**
      * 节点|组件 定义 
@@ -24,7 +23,7 @@ export default class UIMine_About extends BaseForm {
      */
     protected lateLoad() {
         super.lateLoad();
-        this.webview = this.getChildNodeOrComponent("webview").getComponent(cc.WebView);
+        // this.webview = this.getChildNodeOrComponent("webview").getComponent(cc.WebView);
     }
     /**
      * 关闭需要处理的内容
@@ -37,7 +36,7 @@ export default class UIMine_About extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-        this.webview.url = i18nMgr.Get("UIAboutURL");
+        // this.webview.url = i18nMgr.Get("UIAboutURL");
     }
     /**
      * 注册触摸事件
