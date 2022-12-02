@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-01 19:48:39
+ * @LastEditTime: 2022-12-02 12:18:31
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -793,14 +793,14 @@ export default class UITexasHistoryComponent extends UIBase {
                 }
                 let handBet1 = playerInfo.handBet / 2;
                 let handBet2 = playerInfo.handBet - handBet1;
-                player.winAnte2.Add(win1 - fee1 - handBet1);
-                player.winAnte2.Add(win2 - fee2 - handBet2);
+                player.winAnte2.push(win1 - fee1 - handBet1);
+                player.winAnte2.push(win2 - fee2 - handBet2);
 
                 player.maxCardType2 = ResponseData.s.result[i].card_type2;
                 player.maxCardIndex2 = ResponseData.s.result[i].maxcard_idx2;
 
-                playerInfo.winAnte2.Add(win1 - fee1 - handBet1);
-                playerInfo.winAnte2.Add(win2 - fee2 - handBet2);
+                playerInfo.winAnte2.push(win1 - fee1 - handBet1);
+                playerInfo.winAnte2.push(win2 - fee2 - handBet2);
                 playerInfo.maxCardIndex2 = ResponseData.s.result[i].maxcard_idx2;
             }
             this.playerInfosWinner.push(player);
@@ -1042,7 +1042,7 @@ export default class UITexasHistoryComponent extends UIBase {
         //公共牌
         let publicCards = []
         let PublicCardpos = cc.find('PublicCardpos', go)
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 0; i < 5; i++) {
             let publicCard = PublicCardpos.getChildByName("Image_publicCard" + i).getComponent(cc.Sprite);
             publicCard.node.active = true;
             publicCards.push(publicCard);
@@ -1071,7 +1071,7 @@ export default class UITexasHistoryComponent extends UIBase {
 
         if (isSecond && SpcsIndex != 0) {
             //公共牌显示
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 0; i < 5; i++) {
                 let publicCard = PublicCardpos.getChildByName("Image_publicCard" + i).getComponent(cc.Sprite);
                 if (this.SecondPublicCards[i] == 0) {
                     //没发完的公共牌不显示
@@ -1086,7 +1086,7 @@ export default class UITexasHistoryComponent extends UIBase {
         }
         else {
             //公共牌显示
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 0; i < 5; i++) {
                 let publicCard = PublicCardpos.getChildByName("Image_publicCard" + i).getComponent(cc.Sprite);
                 if (this.PublicCards[i] == 0) {
                     //没发完的公共牌不显示
@@ -1200,14 +1200,14 @@ export default class UITexasHistoryComponent extends UIBase {
         //公共牌
         let publicCards = []
         let PublicCardpos = cc.find('PublicCardpos', go)
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 0; i < 5; i++) {
             let publicCard = PublicCardpos.getChildByName("Image_publicCard" + i).getComponent(cc.Sprite);
             publicCard.node.active = true;
             publicCards.push(publicCard);
         }
         let secondPublicCards = [];
 
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 0; i < 5; i++) {
             let publicCard = PublicCardpos.getChildByName("Image_secondPublicCard" + i).getComponent(cc.Sprite);
             publicCard.node.active = true;
             secondPublicCards.push(publicCard);
