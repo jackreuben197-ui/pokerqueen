@@ -5,6 +5,7 @@ import MTTGame from "../../../game/texas/MTTGame";
 import { TexasGameState } from "../../../game/TexasGameState";
 import { MineRankData } from "../../../game/ui/UIMTTMineRankComponent";
 import GameUtil from "../../../game/util/GameUtil";
+import { StringHelper } from "../../../helper/StringHelper";
 import { CPErrorCode } from "../../../i18n/CPErrorCode";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import ProcedureManager from "../../../manager/ProcedureManager";
@@ -105,7 +106,7 @@ export class UIMatchMttModel {
             addon_free_incl_svr: this.MttInfo.mtt.addon_free_incl_svr,
             mTTJoinMode: MTTJoinMode.Apply,
 
-            coinBalance: i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", GC.data.user.info.gold.toString()),
+            coinBalance: i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", StringHelper.GetLongString(GC.data.user.info.gold)),
             contentCommit: CPErrorCode.LanguageDescription(10012),
             contentCancel: CPErrorCode.LanguageDescription(10013),
             buyRatio: this.MttInfo.mtt.buy_ratio,
@@ -207,7 +208,7 @@ export class UIMatchMttModel {
                     addon_free_incl_svr: this.MttInfo.mtt.addon_free_incl_svr,
                     mTTJoinMode: MTTJoinMode.Rebuy,
 
-                    coinBalance: i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", (GameCache.Instance.gold * 0.01).toFixed(2).toString()),
+                    coinBalance: i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", StringHelper.GetLongString(GameCache.Instance.gold)),
                     contentCommit: CPErrorCode.LanguageDescription(10012),
                     contentCancel: CPErrorCode.LanguageDescription(10013),
                     rebuyData:

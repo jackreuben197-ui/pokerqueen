@@ -1,5 +1,6 @@
 import { ProcedureEnum } from "../../define/EIDefine";
 import { GameCache } from "../../game/GameCache";
+import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
@@ -839,13 +840,13 @@ export class LobbyControl {
         let bxStr = "";
         bxStr = num.toString();
         if (isFix) {
-            bxStr = (num * 0.01).toFixed(2).toString();
+            bxStr = StringHelper.GetLongString(num);
         }
         if (num >= 0) {
             if (num > 0) {
                 bxStr = "+" + num.toString();
                 if (isFix) {
-                    bxStr = "+" + (num * 0.01).toFixed(2).toString();
+                    bxStr = "+" + StringHelper.GetLongString(num);
                 }
             }
             lbl.node.color = cc.color(53, 163, 179)

@@ -1,5 +1,6 @@
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
+import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
@@ -483,7 +484,7 @@ export default class UIInsuranceComponent extends UIBase {
         this.lbl_btn_2.parent.active = true;
         let fee = 200 * Math.pow(2, this.addTimeCount) * 0.01;
         // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = $"{StringHelper.GetDoubleString(fee)}";
-        this.lbl_btn_2.getComponent(cc.Label).string = fee.toFixed(2).toString();
+        this.lbl_btn_2.getComponent(cc.Label).string = StringHelper.GetLongString(fee);
 
         if (this.OnclickDelayButtonTimes == 1) {
             this.DelayTimes = 20;

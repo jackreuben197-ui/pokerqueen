@@ -2,6 +2,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import GGEvent from "../../../event/GGEvent";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
+import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
@@ -67,7 +68,7 @@ export default class UIMember extends BaseForm {
         lbl_nickname.string = this._info.nick_name;
 
         let lbl_gold = this.getChildNodeOrComponent('lbl_gold').getComponent(cc.Label)
-        lbl_gold.string = (this._info.gold * 0.01).toFixed(2).toString();
+        lbl_gold.string = StringHelper.GetLongString(this._info.gold);
         
 
         let lbl_id = this.getChildNodeOrComponent('lbl_id').getComponent(cc.Label)
