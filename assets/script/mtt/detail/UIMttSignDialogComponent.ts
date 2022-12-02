@@ -557,7 +557,7 @@ export default class UIMttSignDialogComponent extends UIBase {
     }
 
     UpdateGold(discount = 0, DiscountType = 0) {
-        let buyRatio = 0;
+        let buyRatio = 1;
         // if (ToggleCoin2.isOn)
         // {
         // 	buyRatio = curDialogData.buyRatio;

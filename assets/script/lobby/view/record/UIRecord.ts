@@ -227,7 +227,7 @@ export default class UIRecord extends BaseForm {
                 let nameStr = GC.data.languageTemp.temp.getName(info.Name);
                 // 分数
                 let lbl_bx_score = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
-                LobbyControl.getInstance().setWinColor(lbl_bx_score, info.Change);
+                LobbyControl.getInstance().setWinColor(lbl_bx_score, info.Change, true);
                 _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
                 let sbStr = `${info.small_blind}/${info.small_blind * 2}`
                 _cloneNode.getChildByName("lbl_sb").getComponent(cc.Label).string = sbStr;
