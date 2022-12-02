@@ -38,7 +38,7 @@ export default class UIRecordDetail extends BaseForm {
         super.onShow(param, fromUI);
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         let nameStr = GC.data.languageTemp.temp.getName(param.info.Name);
-        Text_title.string = nameStr + "+" + param.info.RoomID.toString();
+        Text_title.string = nameStr + " " + param.info.RoomID.toString();
         if (param && param.info) {
             this.reqInfo(param.info.RoomID);
         }

@@ -79,7 +79,7 @@ export default class UIRecordScore extends BaseForm {
             _cloneNode.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
             let score = info.change;
             let scLbl = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
-            LobbyControl.getInstance().setWinColor(scLbl, score);
+            LobbyControl.getInstance().setWinColor(scLbl, score, true);
 
             _cloneNode["index"] = i;
             _cloneNode["info"] = {

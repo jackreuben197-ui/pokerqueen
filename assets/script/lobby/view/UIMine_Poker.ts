@@ -429,8 +429,8 @@ export default class UIMine_Poker extends BaseForm {
                 lbl_left_4.string = this.PlayerPositionStr[player.playerPosition];
                 lbl_left_name_1.string = player.userName;
                 lbl_left_name_4.string = player.userName;
-                lbl_s1.string = win1;
-                lbl_s4.string = win1;
+                lbl_s1.string = (win1 * 0.01).toFixed(2);
+                lbl_s4.string = (win1 * 0.01).toFixed(2);
                 lbl_left_up_1.string = this.GetShowCardType(card_type);
                 lbl_left_up_4.string = this.GetShowCardType(card_type);
             } else if (i == 1) {
@@ -438,8 +438,8 @@ export default class UIMine_Poker extends BaseForm {
                 lbl_left_3.string = this.PlayerPositionStr[player.playerPosition];
                 lbl_left_name_2.string = player.userName;
                 lbl_left_name_3.string = player.userName;
-                lbl_s2.string = win2;
-                lbl_s3.string = win2;
+                lbl_s2.string = (win2 * 0.01).toFixed(2);
+                lbl_s3.string = (win2 * 0.01).toFixed(2);
                 lbl_left_up_2.string = this.GetShowCardType(card_type);
                 lbl_left_up_3.string = this.GetShowCardType(card_type);
             }
