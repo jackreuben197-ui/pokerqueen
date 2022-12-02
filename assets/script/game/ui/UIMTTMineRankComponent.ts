@@ -169,11 +169,11 @@ export default class UIMTTMineRankComponent extends UIBase {
         {
             return;
         }
-        if (TimeHelper.Now - this.lastTime < this.IntervalTime)
+        if (TimeHelper.NowS - this.lastTime < this.IntervalTime)
         {
             return;
         }
-        this.lastTime = TimeHelper.Now;
+        this.lastTime = TimeHelper.NowS;
         this.RequestTimes++;
         this.GetMyawardApi();
     }

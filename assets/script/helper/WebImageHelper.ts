@@ -17,11 +17,9 @@ export default class WebImageHelper {
         else {
             rawImage.spriteFrame = AssetContext.getAsset("default_avatar");
 
-            if (url == "") {
-                console.log("image url = ''");
+            if (url == "" || ~url.indexOf("awanptesting.com")) {
                 return;
             }
-
             cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
 
                 if (err) {
@@ -46,7 +44,7 @@ export default class WebImageHelper {
 
             if (defaultImage) rawImage.spriteFrame = defaultImage;
 
-            if (url == null || url == "" || url == "-1") return;
+            if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
 
             cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
                 if (err) {

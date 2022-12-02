@@ -166,6 +166,10 @@ export default class ProtocolAgency extends cc.Component {
 
         GC.notify.post(code, body);
 
+        
+        body = null;
+        
+        body_ua = null;
     }
 
     static _readNumber(ua: Uint8Array, offset, size): number {

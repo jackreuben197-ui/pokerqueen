@@ -18,7 +18,7 @@ export default class HttpClient {
      * post 请求
      * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
-    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true ,needConsole = true}) {
+    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true }) {
         if (isJson) {
             body = JSON.stringify(body);
         }
@@ -32,7 +32,7 @@ export default class HttpClient {
     /**
      * get 请求
      */
-    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true,needConsole = true }) {
+    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true }) {
         body = JSON.stringify(body);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
@@ -90,7 +90,9 @@ export default class HttpClient {
                 xhr.abort();//请求中止
                 resolve("timeout");
             }, HttpClient.TimeOut);
+
             xhr.onreadystatechange = function () {
+
                 if (xhr.readyState === 4 && (xhr.status >= 200 && xhr.status < 400)) {
                     var response = xhr.responseText;
                     if (isTimeout) return;//请求已经超时，忽略
@@ -99,6 +101,7 @@ export default class HttpClient {
                 }
             };
             xhr.onerror = function (err) {
+
                 if (isTimeout) return;//请求已经超时，忽略
                 clearTimeout(timer);//取消等待的超时
                 resolve("error");

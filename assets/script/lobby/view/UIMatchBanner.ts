@@ -11,16 +11,16 @@ import { Web_Misc_Banner_List } from "../../net/https/WebRequest";
 @ccclass
 export default class UIMatchBanner extends UIBase {
     private curNum: number = 0;
-    public static instance:UIMatchBanner = null;
+    public static instance: UIMatchBanner = null;
     private markData: Date = null;
     private layout: cc.Node = null;
     private pageView: cc.Node = null;
     private pageData: any = null;
     protected lateLoad(): void {
         super.lateLoad();
-        if(UIMatchBanner.instance===null){
+        if (UIMatchBanner.instance === null) {
             UIMatchBanner.instance = this;
-        }else{
+        } else {
             this.destroy();
             return;
         }
@@ -36,7 +36,7 @@ export default class UIMatchBanner extends UIBase {
 
     initPageBanner(): void {
         let list: Array<any> = this.pageData.data.list;
-        if(list.length>0){
+        if (list.length > 0) {
             this.curNum = list.length;
             let bannerPrefab = this.getChildNodeOrComponent("Banner_Prefab");
             //添加banner
@@ -67,6 +67,10 @@ export default class UIMatchBanner extends UIBase {
     private loadRawImage(img: string): Promise<cc.SpriteFrame> {
         //异步的写一个promise
         return new Promise(function (resolve, reject) {
+            if (~img.indexOf("awanptesting.com")) {
+                reject();
+                return;
+            }
             cc.assetManager.loadRemote(img, { ext: '.jpg' }, function (err, texture: cc.Texture2D) {
                 if (err) {
                     reject(img + " load error")
@@ -89,7 +93,7 @@ export default class UIMatchBanner extends UIBase {
         this.loadRawImage(fixUrl).then((fram: cc.SpriteFrame) => {
             banner.getChildByName("icon").getComponent(cc.Sprite).spriteFrame = fram;
         }).catch((err) => {
-            
+
         })
     }
     addPageEvent(): void {
@@ -147,9 +151,9 @@ export default class UIMatchBanner extends UIBase {
     }
     //移除所有页面
     onRemoveAllPage(): void {
-        let page:cc.PageView = this.getChildNodeOrComponent("ScrollView_TopCards").getComponent(cc.PageView)
+        let page: cc.PageView = this.getChildNodeOrComponent("ScrollView_TopCards").getComponent(cc.PageView)
         let _pages = page.getPages();
-        if(_pages.length>0){
+        if (_pages.length > 0) {
             page.removeAllPages();
             this.curNum = 0;
         }

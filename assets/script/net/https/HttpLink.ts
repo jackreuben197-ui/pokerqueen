@@ -22,11 +22,11 @@ export class HttpLink {
 
     private _sendQueue: Array<TSendInfo> = [];
     constructor() {
-        setInterval(this.checkQueue)
+        setInterval(this.checkQueue);
     }
-
     checkQueue = () => {
         if (this._sendQueue.length) {
+
             let sendInfo = this._sendQueue.shift();
 
             HttpRequest.Send({

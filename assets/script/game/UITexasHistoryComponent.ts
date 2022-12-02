@@ -151,6 +151,7 @@ export default class UITexasHistoryComponent extends UIBase {
     Protocol_Holdem_PublicReplay_Handler(response) {
 
         // let ResponseData = (response as Protocol_Holdem_PublicReplay)?.response;
+
         if (response == null || Buffer.from(response.data, 'base64').toString() == "") {
             // Log.Debug("rec.Data is null");
             return;

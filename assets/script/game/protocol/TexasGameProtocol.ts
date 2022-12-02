@@ -1501,7 +1501,7 @@ export default class TexasGameProtocol {
             return;
         }
 
-        let json = window.Buffer.from(rec.extra.toString(), 'base64').toString();
+        let json = Buffer.from(rec.extra.toString(), 'base64').toString();
         let responseData = Broadcast.Response(json);
         let code: number = responseData.code;
         let data: string = responseData.data;
