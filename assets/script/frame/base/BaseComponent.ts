@@ -182,9 +182,6 @@ export default class BaseComponent extends Base {
         }
     }
     /***  touches end */
-
-
-
     onClose(param?: any) {
         this.UIDefine && cc.log("::", this.UIDefine.Name, "onClose()");
         this.stopAllThings();

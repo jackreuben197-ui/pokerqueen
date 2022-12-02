@@ -14,7 +14,7 @@ import HttpRequest from "../../../net/https/HttpRequest";
 import { Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Rebuy } from "../../../net/https/WebRequest";
 import { ServerErrorCode } from "../../../net/websocket/ServerErrorCode";
 import { MTTInfo } from "../../../protobuf/holdem/define_pb";
-import UIComponent from "../../../ui/UIComponent";
+import UIComponent, { PrefabUI } from "../../../ui/UIComponent";
 import GC from "../../GameControl";
 
 
@@ -164,7 +164,8 @@ export class UIMatchMttModel {
 
             }
         }
-        UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+        //UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+        UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
     }
 
 
@@ -260,7 +261,8 @@ export class UIMatchMttModel {
                         }
                     }
                 }
-                UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+                //UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+                UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
             }
             else {
                 ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(code));

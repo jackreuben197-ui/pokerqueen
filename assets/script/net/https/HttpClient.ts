@@ -6,6 +6,7 @@ import ToastManager from "../../manager/ToastManager";
 import LoginSession from "../../session/LoginSession";
 import CCTools from "../../tools/CCTools";
 import UIComponent from "../../ui/UIComponent";
+import WebHelper from "./WebHelper";
 
 /**
  * Http端
@@ -17,27 +18,27 @@ export default class HttpClient {
      * post 请求
      * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
-    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true }) {
+    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true ,needConsole = true}) {
         if (isJson) {
             body = JSON.stringify(body);
         }
-        console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
+        needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http post - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, false, body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
-        console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
+        needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
     }
     /**
      * get 请求
      */
-    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true }) {
+    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true,needConsole = true }) {
         body = JSON.stringify(body);
-        console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
+        needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, true, body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
-        console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
+        needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
         this.__response(response, onFailure, onSuccess);
     }
 

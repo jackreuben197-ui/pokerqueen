@@ -9,8 +9,10 @@ import GlobalSession from "../session/GlobalSession";
 import { IUpComponent } from "./UpdateComponent";
 
 
+
 export default class HeartbeatComponent implements IUpComponent {
 
+    static send_obj: any = null;
     //刷新间隔
     SendIntervalNormal: number = 5;
     SendIntervalInGameplay: number = 1;
@@ -30,7 +32,14 @@ export default class HeartbeatComponent implements IUpComponent {
     maxSendTime: number = 5;
 
     Awake() {
+
         this.lastTime = GlobalSession.NowTimeS;
+
+        HeartbeatComponent.send_obj || (HeartbeatComponent.send_obj = {
+            Code: ProtocolCode.Protocol_Holdem_Heartbeat,
+            RoomID: 0,
+            MatchID: 0,
+        });
     }
 
     Update(dt: number) {
@@ -43,11 +52,7 @@ export default class HeartbeatComponent implements IUpComponent {
 
         this.lastTime = GlobalSession.NowTimeS;
 
-        ProtocolAgency.Send({
-            Code: ProtocolCode.Protocol_Holdem_Heartbeat,
-            RoomID: 0,
-            MatchID: 0,
-        });
+        ProtocolAgency.Send(HeartbeatComponent.send_obj);
     }
 
     get interval() {

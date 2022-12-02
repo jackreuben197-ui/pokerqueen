@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-09-26 17:25:47
  * @FilePath: /pokerqueen/assets/script/net/https/WebHelper.ts
  */
-import { APIOrgClubApprovalJoin, APIOrgClubCancleJoinClub, APIOrgClubGetJoinlList, APIOrgClubQuit, Web_Config_Global_Config, Web_Msg_Message_Unread, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Join, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Room_Center_Groups } from "./WebRequest";
+import { APIOrgClubApprovalJoin, APIOrgClubCancleJoinClub, APIOrgClubGetJoinlList, APIOrgClubQuit, Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Msg_Message_Unread, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Join, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Room_Center_Groups } from "./WebRequest";
 
 export default class WebHelper {
 
@@ -38,6 +38,14 @@ export default class WebHelper {
     ];
     static NeedJuhua(api: string): boolean {
         return this._IgnoreShowJuhua_APIS.indexOf(api) == -1;
+    }
+    //忽略打印信息的接口
+    static _IgnoreConsole_APIS = [
+        Web_Config_Multi_Language_Template.API,
+    ]
+
+    static NeedConsole(api: string) {
+        return this._IgnoreConsole_APIS.indexOf(api) == -1;
     }
 
 }
