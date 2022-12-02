@@ -37,6 +37,8 @@ export default class UIMine_Poker extends BaseForm {
 
     isSC: boolean = false;
 
+    _data = null;
+
     protected lateLoad() {
         super.lateLoad();
 
@@ -151,6 +153,7 @@ export default class UIMine_Poker extends BaseForm {
     }
 
     refreshUI(data) {
+        this._data = data.data;
         this.updatePublicCard(data);
         this.initRoomInfo(data);
         this.refreshTopHandAndPlayerNumInfo(data.data);
@@ -159,6 +162,269 @@ export default class UIMine_Poker extends BaseForm {
         this.updateLeftStr(data.data);
         this.updateCenterUI(data.data);
         // this.refreshTop1(data);
+        this.updateHideUI(data.data);
+    }
+
+    updateHideUI(data) {
+        let FlopInfoList: cc.Node = this.getChildNodeOrComponent("FlopInfoList");
+        let node_11: cc.Node = this.getChildNodeOrComponent("node_11");
+        let node_12: cc.Node = this.getChildNodeOrComponent("node_12");
+        let node_13: cc.Node = this.getChildNodeOrComponent("node_13");
+        let node_14: cc.Node = this.getChildNodeOrComponent("node_14");
+        let TurnInfoList: cc.Node = this.getChildNodeOrComponent("TurnInfoList");
+        let node_21: cc.Node = this.getChildNodeOrComponent("node_21");
+        let node_22: cc.Node = this.getChildNodeOrComponent("node_22");
+        let node_23: cc.Node = this.getChildNodeOrComponent("node_23");
+        let node_24: cc.Node = this.getChildNodeOrComponent("node_24");
+        let RiverInfoList: cc.Node = this.getChildNodeOrComponent("RiverInfoList");
+        let node_31: cc.Node = this.getChildNodeOrComponent("node_31");
+        let node_32: cc.Node = this.getChildNodeOrComponent("node_32");
+        let node_33: cc.Node = this.getChildNodeOrComponent("node_33");
+        let node_34: cc.Node = this.getChildNodeOrComponent("node_34");
+        let ResponseData = data;
+        if (ResponseData.s.procedure.flop.pl.length > 0) {
+            FlopInfoList.active = true;
+            node_11.active = true;
+            node_12.active = true;
+            node_13.active = true;
+            node_14.active = true;
+            let card = ResponseData.s.procedure.flop.card;
+            let pl = ResponseData.s.procedure.flop.pl;
+            let cardLen = card.length;
+            let plLen = ResponseData.s.procedure.flop.pl.length;
+            for (let i=0; i<3; i++) {
+                let ImageCard = FlopInfoList.getChildByName("ImageCard" + i);
+                if (i < cardLen) {
+                    ImageCard.active = true;
+                    let sp = ImageCard.getComponent(cc.Sprite)
+                    sp.spriteFrame = AssetContext.getAsset(
+                        GameUtil.GetCardNameByNum(
+                            card[i]), 
+                            AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+                } else {
+                    ImageCard.active = false;
+                }
+            }
+            let ChipNumText = FlopInfoList.getChildByName("ChipNumText");
+            ChipNumText.getComponent(cc.Label).string = StringHelper.GetLongString(pl[0].pot_out);
+            let PlayerNumText = FlopInfoList.getChildByName("PlayerNumText");
+            PlayerNumText.getComponent(cc.Label).string = plLen.toString();
+            for (let i=0; i<4; i++) {
+                let node_row:cc.Node = this.getChildNodeOrComponent("node_1" + (i+1));
+                if (i < plLen) {
+                    node_row.active = true;
+                    let lbl_2 = node_row.getChildByName("lbl_2");
+                    let lbl_3 = node_row.getChildByName("lbl_3");
+                    let lbl_score = node_row.getChildByName("lbl_score");
+                    let lbl_btn = node_row.getChildByName("lbl_btn");
+                    let lbl_name3 = node_row.getChildByName("lbl_name3");
+
+                    let actList = this.getActionNumByName(pl[i].act);
+
+                    let raiseTimes = 0;
+                    for (let i = 0; i < pl.length; i++) {
+                        if (pl[i].act == "bet" || pl[i].act == "raise") {
+                            raiseTimes++;
+                        }
+                    }
+
+                    if (actList == 6 || actList == 7) {
+                        if (raiseTimes == 1) {
+
+                            lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[actList];
+                        }
+                        else if (raiseTimes == 2) {
+                            lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[7];
+                        }
+                        else {
+                            lbl_2.getComponent(cc.Label).string = raiseTimes + "B";
+                        }
+                    }
+                    else {
+                        lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[actList];
+                    }
+
+                    let leftChips = pl[i].c;
+                    let str = (leftChips / 100).toString();
+                    lbl_3.getComponent(cc.Label).string = pl[i].act_amt;
+                    lbl_score.getComponent(cc.Label).string = this.tryParse(str);
+
+                    lbl_name3.getComponent(cc.Label).string = this.getNameBySn(pl[i].sn);
+
+                    lbl_btn.getComponent(cc.Label).string = this.PlayerPositionStr[pl[i].sn];
+                } else {
+                    node_row.active = false;
+                }
+            }
+        } else {
+            FlopInfoList.active = false;
+            node_11.active = false;
+            node_12.active = false;
+            node_13.active = false;
+            node_14.active = false;
+        }
+        if (ResponseData.s.procedure.turn.pl.length > 0) {
+            TurnInfoList.active = true;
+            node_21.active = true;
+            node_22.active = true;
+            node_23.active = true;
+            node_24.active = true;
+            let card = ResponseData.s.procedure.turn.card;
+            let pl = ResponseData.s.procedure.turn.pl;
+            let cardLen = card.length;
+            let plLen = ResponseData.s.procedure.turn.pl.length;
+            for (let i=0; i<5; i++) {
+                let ImageCard = TurnInfoList.getChildByName("PublicCard" + i);
+                if (i < cardLen) {
+                    ImageCard.active = true;
+                    let sp = ImageCard.getComponent(cc.Sprite)
+                    sp.spriteFrame = AssetContext.getAsset(
+                        GameUtil.GetCardNameByNum(
+                            card[i]), 
+                            AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+                } else {
+                    ImageCard.active = false;
+                }
+            }
+            let ChipNumText = TurnInfoList.getChildByName("ChipNumText");
+            ChipNumText.getComponent(cc.Label).string = StringHelper.GetLongString(pl[0].pot_out);
+            let PlayerNumText = TurnInfoList.getChildByName("PlayerNumText");
+            PlayerNumText.getComponent(cc.Label).string = plLen.toString();
+            for (let i=0; i<4; i++) {
+                let node_row:cc.Node = this.getChildNodeOrComponent("node_2" + (i+1));
+                if (i < plLen) {
+                    node_row.active = true;
+                    let lbl_2 = node_row.getChildByName("lbl_2");
+                    let lbl_3 = node_row.getChildByName("lbl_3");
+                    let lbl_score = node_row.getChildByName("lbl_score");
+                    let lbl_btn = node_row.getChildByName("lbl_btn");
+                    let lbl_name3 = node_row.getChildByName("lbl_name3");
+
+                    let actList = this.getActionNumByName(pl[i].act);
+
+                    let raiseTimes = 0;
+                    for (let i = 0; i < pl.length; i++) {
+                        if (pl[i].act == "bet" || pl[i].act == "raise") {
+                            raiseTimes++;
+                        }
+                    }
+
+                    if (actList == 6 || actList == 7) {
+                        if (raiseTimes == 1) {
+
+                            lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[actList];
+                        }
+                        else if (raiseTimes == 2) {
+                            lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[7];
+                        }
+                        else {
+                            lbl_2.getComponent(cc.Label).string = raiseTimes + "B";
+                        }
+                    }
+                    else {
+                        lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[actList];
+                    }
+
+                    let leftChips = pl[i].c;
+                    let str = (leftChips / 100).toString();
+                    lbl_3.getComponent(cc.Label).string = pl[i].act_amt;
+                    lbl_score.getComponent(cc.Label).string = this.tryParse(str);
+
+                    lbl_name3.getComponent(cc.Label).string = this.getNameBySn(pl[i].sn);
+
+                    lbl_btn.getComponent(cc.Label).string = this.PlayerPositionStr[pl[i].sn];
+                } else {
+                    node_row.active = false;
+                }
+            }
+        } else {
+            TurnInfoList.active = false;
+            node_21.active = false;
+            node_22.active = false;
+            node_23.active = false;
+            node_24.active = false;
+        }
+        if (ResponseData.s.procedure.river.pl.length > 0) {
+            RiverInfoList.active = true;
+            node_31.active = true;
+            node_32.active = true;
+            node_33.active = true;
+            node_34.active = true;
+            let card = ResponseData.s.procedure.river.card;
+            let pl = ResponseData.s.procedure.river.pl;
+            let cardLen = card.length;
+            let plLen = ResponseData.s.procedure.river.pl.length;
+            for (let i=0; i<5; i++) {
+                let ImageCard = RiverInfoList.getChildByName("PublicCard" + i);
+                if (i < cardLen) {
+                    ImageCard.active = true;
+                    let sp = ImageCard.getComponent(cc.Sprite)
+                    sp.spriteFrame = AssetContext.getAsset(
+                        GameUtil.GetCardNameByNum(
+                            card[i]), 
+                            AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+                } else {
+                    ImageCard.active = false;
+                }
+            }
+            let ChipNumText = RiverInfoList.getChildByName("ChipNumText");
+            ChipNumText.getComponent(cc.Label).string = StringHelper.GetLongString(pl[0].pot_out);
+            let PlayerNumText = RiverInfoList.getChildByName("PlayerNumText");
+            PlayerNumText.getComponent(cc.Label).string = plLen.toString();
+            for (let i=0; i<4; i++) {
+                let node_row:cc.Node = this.getChildNodeOrComponent("node_3" + (i+1));
+                if (i < plLen) {
+                    node_row.active = true;
+                    let lbl_2 = node_row.getChildByName("lbl_2");
+                    let lbl_3 = node_row.getChildByName("lbl_3");
+                    let lbl_score = node_row.getChildByName("lbl_score");
+                    let lbl_btn = node_row.getChildByName("lbl_btn");
+                    let lbl_name3 = node_row.getChildByName("lbl_name3");
+
+                    let actList = this.getActionNumByName(pl[i].act);
+
+                    let raiseTimes = 0;
+                    for (let i = 0; i < pl.length; i++) {
+                        if (pl[i].act == "bet" || pl[i].act == "raise") {
+                            raiseTimes++;
+                        }
+                    }
+
+                    if (actList == 6 || actList == 7) {
+                        if (raiseTimes == 1) {
+
+                            lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[actList];
+                        }
+                        else if (raiseTimes == 2) {
+                            lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[7];
+                        }
+                        else {
+                            lbl_2.getComponent(cc.Label).string = raiseTimes + "B";
+                        }
+                    }
+                    else {
+                        lbl_2.getComponent(cc.Label).string = this.PlayerActionStr[actList];
+                    }
+
+                    let leftChips = pl[i].c;
+                    let str = (leftChips / 100).toString();
+                    lbl_3.getComponent(cc.Label).string = pl[i].act_amt;
+                    lbl_score.getComponent(cc.Label).string = this.tryParse(str);
+
+                    lbl_name3.getComponent(cc.Label).string = this.getNameBySn(pl[i].sn);
+
+                    lbl_btn.getComponent(cc.Label).string = this.PlayerPositionStr[pl[i].sn];
+                } else {
+                    node_row.active = false;
+                }
+            }
+        } else {
+            RiverInfoList.active = false;
+            node_31.active = false;
+            node_32.active = false;
+            node_33.active = false;
+            node_34.active = false;
+        }
     }
 
     updatePublicCard(data) {
@@ -197,6 +463,21 @@ export default class UIMine_Poker extends BaseForm {
                 publicCard2.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
             }
         }
+    }
+
+    getNameBySn(sn) {
+        if (this._data == null) {
+            return "";
+        }
+        let name = "";
+        let tPl = this._data.s.table.pl;
+        for (let i=0; i<tPl.length; i++) {
+            if (tPl[i].sn == sn) {
+                name = tPl[i].name;
+                break;
+            }
+        }
+        return name;
     }
 
     getPositionNumByBaner(seatIds, banerSeatId, seatId) {
@@ -494,7 +775,7 @@ export default class UIMine_Poker extends BaseForm {
                 lbl_3.getComponent(cc.Label).string = pl[i].act_amt;
                 lbl_score.getComponent(cc.Label).string = this.tryParse(str);
 
-                lbl_name3.getComponent(cc.Label).string = ResponseData.s.table.pl[0].name;
+                lbl_name3.getComponent(cc.Label).string = this.getNameBySn(pl[i].sn);
 
                 lbl_btn.getComponent(cc.Label).string = this.PlayerPositionStr[pl[i].sn];
 
