@@ -202,6 +202,8 @@ export default class UIOperationComponent extends UIBase {
 
         super.onShow(obj);
 
+        this.hideAllOperationButton();
+
         GameCache.Instance.IsAllowOpenDanmu = false;
 
         this.operationData = obj;
@@ -220,6 +222,8 @@ export default class UIOperationComponent extends UIBase {
         if (this.optTotalTime < GameCache.Instance.CurGame.opTime) {
             this.optTotalTime = GameCache.Instance.CurGame.opTime;
         }
+
+        console.log("当前时间:> ", this.optCurTime, this.optTotalTime);
 
         this.isCountDown = false;
         this.sliderMin = 0;

@@ -92,7 +92,7 @@ export default class TexasGameUtils {
                 },
             });
         } else {
-            this.game.TexasGameUtils.ExitRoom();
+            this.ExitRoom();
         }
     }
     /// <summary>

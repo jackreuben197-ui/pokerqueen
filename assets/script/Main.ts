@@ -19,6 +19,9 @@ import UIComponent, { PrefabUI } from "./ui/UIComponent";
 
 const { ccclass, property } = cc._decorator;
 
+
+
+
 @ccclass
 export default class Main extends cc.Component {
 
@@ -41,12 +44,15 @@ export default class Main extends cc.Component {
     ////////////////////////////////////调试开关
 
 
-
     static ShowSeatID: number;//显示seat id
 
 
     async onLoad() {
 
+
+        if (!CCTools.getQueryString("log")) {
+            console.log = function () { }
+        }
         console.log("游戏启动", cc.sys.os);
 
         GC.init();

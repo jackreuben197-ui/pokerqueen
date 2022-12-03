@@ -1,5 +1,6 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
 import GC from "../../frame/GameControl";
+import { GameCache } from "../../game/GameCache";
 import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
@@ -90,6 +91,7 @@ export default class WebSocketClient {
         if (!GC.game_active) return;
         cc.log("重新连接socket");
         WebSocketClient.CleanWS();
+        GameCache.Instance.CurGame?.ReEnterClear();
         //请求Channel判断token是否无效
         LoginSession.SyncWS().then(
             //成功
@@ -133,11 +135,13 @@ export default class WebSocketClient {
     }
     //清理ws
     static CleanWS() {
-        this.WS.onopen = null;
-        this.WS.onerror = null;
-        this.WS.onmessage = null;
-        this.WS.onclose = null;
-        this.WS = null;
+        if (this.WS) {
+            this.WS.onopen = null;
+            this.WS.onerror = null;
+            this.WS.onmessage = null;
+            this.WS.onclose = null;
+            this.WS = null;
+        }
     }
 }
 (window as any).WebSocketClient = WebSocketClient;

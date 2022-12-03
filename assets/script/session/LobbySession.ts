@@ -55,10 +55,8 @@ export default class LobbySession {
         if (body.status == 0) {
             this.heartbeatComponent.active = true;
             //判断是否在牌桌内
-            if (GameCache.Instance.CurGame) {
-                //GameCache.Instance.CurGame.Dispose();
-                //GameCache.Instance.CurGame.EnterRoom();
-            }
+            GameCache.Instance.CurGame?.ReEnterRoom();
+
         } else {
             GlobalSession.Logout();
         }

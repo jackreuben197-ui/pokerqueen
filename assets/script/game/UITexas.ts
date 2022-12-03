@@ -42,6 +42,7 @@ export class PotInfo {
     public imagePot: cc.Sprite;
     public imagePotFrame: cc.Sprite;
     public imagePotText: cc.Label;
+    public potType: number;
 
     constructor(public trans: cc.Node) {
         if (null != trans) {
@@ -92,9 +93,9 @@ export default class UITexas extends BaseScene {
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
 
-    imageSelectSeatTips: cc.Node = null;
-    imageWaitForStartTips: cc.Node = null;
-    imageReserveSeatTips: cc.Node = null;
+    Image_SelectSeatTips: cc.Node = null;
+    Image_WaitForStartTips: cc.Node = null;
+    Image_ReserveSeatTips: cc.Node = null;
     Image_InsuranceTips: cc.Node = null;
 
     //座位节点容器
@@ -116,9 +117,9 @@ export default class UITexas extends BaseScene {
     public transAllPot: cc.Node = null;
 
 
-    buttonDelay: cc.Node = null;
-    buttonSeeMorePublic: cc.Node = null;
-    imageSeeMorePublicTips: cc.Node = null;
+    Button_Delay: cc.Node = null;
+    Button_SeeMorePublic: cc.Node = null;
+    Image_SeeMorePublicTips: cc.Node = null;
     textSeeMorePublicTips: cc.Label = null;
 
     textSeeMorePublic: cc.Label = null;
@@ -186,7 +187,7 @@ export default class UITexas extends BaseScene {
     lastClickTime: number = 0;
 
     TransPot_Pool: SimpleNodePool = null;
-
+    TransAllPot_Pool: SimpleNodePool = null;
 
     //#region 弹幕界面
     /// <summary>
@@ -223,9 +224,9 @@ export default class UITexas extends BaseScene {
         this.cursituation_btn = this.getChildNodeOrComponent("cursituation_btn");
         this.chat_btn = this.getChildNodeOrComponent("chat_btn");
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
-        this.imageSelectSeatTips = this.getChildNodeOrComponent("Image_SelectSeatTips");
-        this.imageWaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
-        this.imageReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
+        this.Image_SelectSeatTips = this.getChildNodeOrComponent("Image_SelectSeatTips");
+        this.Image_WaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
+        this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
         this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
 
         this.Seats = this.getChildNodeOrComponent("Seats");
@@ -242,9 +243,9 @@ export default class UITexas extends BaseScene {
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
 
 
-        this.buttonDelay = this.getChildNodeOrComponent("Button_Delay");
-        this.buttonSeeMorePublic = this.getChildNodeOrComponent("Button_SeeMorePublic");
-        this.imageSeeMorePublicTips = this.getChildNodeOrComponent("Image_SeeMorePublicTips");
+        this.Button_Delay = this.getChildNodeOrComponent("Button_Delay");
+        this.Button_SeeMorePublic = this.getChildNodeOrComponent("Button_SeeMorePublic");
+        this.Image_SeeMorePublicTips = this.getChildNodeOrComponent("Image_SeeMorePublicTips");
         this.textSeeMorePublicTips = this.getChildNodeOrComponent("Text_SeeMorePublicTips", cc.Label);
 
         this.textSeeMorePublic = this.getChildNodeOrComponent("Text_SeeMorePublic", cc.Label);
@@ -311,6 +312,7 @@ export default class UITexas extends BaseScene {
         this.Seat_Temp.active = false;
         //Pot对象池
         this.TransPot_Pool = new SimpleNodePool(this.transPot);
+        this.TransAllPot_Pool = new SimpleNodePool(this.transAllPot);
     }
 
 
@@ -336,8 +338,8 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.chat_btn, this.sideClick);
 
 
-        this.setButtonClick(this.buttonDelay, this.onClickDelay);
-        this.setButtonClick(this.buttonSeeMorePublic, this.onClickSeeMorePublic);
+        this.setButtonClick(this.Button_Delay, this.onClickDelay);
+        this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
 
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
 
@@ -374,20 +376,41 @@ export default class UITexas extends BaseScene {
     }
     //清理UI
     CleanUI() {
-        UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIAutoOperationComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIInsuranceComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIAutoChipsComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIMTTTimeComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIOutChipsTipComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
-        UIComponent.Instance.HideUI(PrefabUI.UIMttSignDialogComponent);
+        //隐藏面板
+        [
+            PrefabUI.UIAddChipsComponent,
+            PrefabUI.UIOutChipsComponent,
+            PrefabUI.UIOperationComponent,
+            PrefabUI.UIAutoOperationComponent,
+            PrefabUI.UIInsuranceComponent,
+            PrefabUI.UIAutoChipsComponent,
+            PrefabUI.UIMTTTimeComponent,
+            PrefabUI.UIOutChipsTipComponent,
+            PrefabUI.UIAgreeSecondPcsComponent,
+            PrefabUI.UIMttSignDialogComponent
+        ].forEach(item => {
+            UIComponent.Instance.HideUI(item);
+        });
+        //隐藏节点
+        [
+            this.Button_BringIn,
+            this.Button_AddOn,
+            this.Button_CancelTrust,
+            this.buttonWaitBlind,
+            this.Image_SelectSeatTips,
+            this.Image_WaitForStartTips,
+            this.Image_RedistributionTips,
+            this.Image_WaitForStartBathTips,
+            this.Image_ReserveSeatTips,
+            this.Image_InsuranceTips,
+        ].forEach(item => {
+            this.setActive(item, false);
+        });
+        //关闭菜单
         this.HideMenu(false);
+
     }
     Exit(param) {
-        this.CleanUI();
         super.Exit(param);
     }
     /// <param name="num"></param>几张
@@ -409,7 +432,7 @@ export default class UITexas extends BaseScene {
 
 
     //显示邀请码
-    public ShowInvateCode() {
+    private ShowInvateCode() {
         if (GameCache.Instance.origin_type == 4 && GameCache.Instance.invitation_code) {
             this.Text_InvateCode.node.active = true;
             this.Text_InvateCode.string = `牌局邀请码:${GameCache.Instance.invitation_code}`;
