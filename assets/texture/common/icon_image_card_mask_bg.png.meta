@@ -22,16 +22,16 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 8,
-      "trimY": 8,
-      "width": 65,
-      "height": 65,
+      "trimX": 12,
+      "trimY": 12,
+      "width": 57,
+      "height": 57,
       "rawWidth": 81,
       "rawHeight": 81,
       "borderTop": 31,
-      "borderBottom": 31,
+      "borderBottom": 26,
       "borderLeft": 31,
-      "borderRight": 31,
+      "borderRight": 26,
       "subMetas": {}
     }
   }
