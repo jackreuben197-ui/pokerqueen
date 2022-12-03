@@ -415,6 +415,9 @@ export default class UIMttSignDialogComponent extends UIBase {
     onHideAddMtt() {
         this.setVisible(false);
         this.panel_click2.active = false;
+        if (this.curDialogData.actionCancel) {
+            this.curDialogData.actionCancel();
+        }
     }
 
     onClickCommit(event) {
