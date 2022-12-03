@@ -164,7 +164,7 @@ export default class UIRecord extends BaseForm {
                     label.string = mtt_room_data.frist_times;
                 } else if (i == 2) {
                     let total = mtt_room_data.frist_times + mtt_room_data.second_times + mtt_room_data.third_times;
-                    LobbyControl.getInstance().setWinColor(label, total);
+                    LobbyControl.getInstance().setWinColor(label, total, true);
                 } else if (i == 3) {
                     label.string = mtt_room_data.win_times;
                 } else if (i == 4) {
@@ -187,7 +187,7 @@ export default class UIRecord extends BaseForm {
                 if (i == 1) {
                     label.string = room_data.total_game_cnt;
                 } else if (i == 2) {
-                    LobbyControl.getInstance().setWinColor(label, room_data.total_earn);
+                    LobbyControl.getInstance().setWinColor(label, room_data.total_earn, true);
                 } else if (i == 3) {
                     label.string = room_data.total_hand;
                 } else if (i == 4) {

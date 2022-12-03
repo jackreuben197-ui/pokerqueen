@@ -211,7 +211,7 @@ export class UIMatchMttModel {
                     addon_free_incl_svr: this.MttInfo.mtt.addon_free_incl_svr,
                     mTTJoinMode: MTTJoinMode.Rebuy,
 
-                    coinBalance: i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", StringHelper.GetLongString(GameCache.Instance.gold)),
+                    coinBalance: i18nMgr.Get("UIMTTApply_dialog_content").replace("{0}", StringHelper.GetLongString(GC.data.user.info.gold)),
                     contentCommit: CPErrorCode.LanguageDescription(10012),
                     contentCancel: CPErrorCode.LanguageDescription(10013),
                     rebuyData:
