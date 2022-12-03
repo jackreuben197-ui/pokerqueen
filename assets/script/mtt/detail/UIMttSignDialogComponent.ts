@@ -3,6 +3,7 @@ import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
 import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
+import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -606,10 +607,10 @@ export default class UIMttSignDialogComponent extends UIBase {
         if (this.isUseFreeService) {
             if (this.curDialogData.isHunter == 0) {
                 //猎人赛处于关闭
-                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + "0";
+                this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + "0";
             }
             else {
-                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + "0" + "+" + (this.curDialogData.Fee * buyRatio);
+                this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + "0" + "+" + StringHelper.GetLongString(this.curDialogData.Fee * buyRatio);
             }
             return;
         }
@@ -630,10 +631,10 @@ export default class UIMttSignDialogComponent extends UIBase {
         if (discount == 0) {
             if (this.curDialogData.isHunter == 0) {
                 //猎人赛处于关闭
-                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio);
+                this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this.curDialogData.Fee * buyRatio);
             }
             else {
-                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio);
+                this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio);
             }
         }
         else {
@@ -650,7 +651,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     }
                 }
                 //猎人赛处于关闭
-                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (discountResult);
+                this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this.curDialogData.Fee * buyRatio) + "-" + (discountResult);
             }
             else {
                 if (DiscountType == 12) {
@@ -661,7 +662,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     if (discountResult >= this.curDialogData.coinnum * buyRatio + this.curDialogData.hunterFee * buyRatio + this.curDialogData.Fee * buyRatio)
                         discountResult = this.curDialogData.coinnum * buyRatio + this.curDialogData.hunterFee * buyRatio + this.curDialogData.Fee * buyRatio;
                 }
-                this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (discountResult);
+                this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (discountResult);
             }
         }
 
@@ -675,10 +676,10 @@ export default class UIMttSignDialogComponent extends UIBase {
     UseLimitFreeNoServer(buyRatio) {
         if (this.curDialogData.isHunter == 0) {
             //猎人赛处于关闭
-            this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum);
+            this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum);
         }
         else {
-            this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.hunterFee);
+            this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.hunterFee);
         }
     }
 
@@ -688,10 +689,10 @@ export default class UIMttSignDialogComponent extends UIBase {
     UseLimitFree(buyRatio) {
         if (this.curDialogData.isHunter == 0) {
             //猎人赛处于关闭
-            this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.Fee);
+            this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.Fee);
         }
         else {
-            this.coinnum.string = (this.curDialogData.coinnum * buyRatio) + "+" + (this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.hunterFee + this.curDialogData.Fee);
+            this.coinnum.string = StringHelper.GetLongString(this.curDialogData.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this.curDialogData.hunterFee * buyRatio) + "+" + (this.curDialogData.Fee * buyRatio) + "-" + (this.curDialogData.coinnum + this.curDialogData.hunterFee + this.curDialogData.Fee);
         }
     }
 

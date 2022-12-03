@@ -117,6 +117,9 @@ export default class UIMTTMineRankComponent extends UIBase {
     
     onShow(obj?: any): void {
 
+        let lbl_rank = this.getChildNodeOrComponent("lbl_rank", cc.Label);
+        lbl_rank.node.active = false;
+
         let panel_click: cc.Node = this.getChildNodeOrComponent("panel_click");
         // panel_click.on("click", this.onClickClose, this);
 
@@ -355,7 +358,7 @@ export default class UIMTTMineRankComponent extends UIBase {
         this.node_1.active = true;
         this.node_2.active = false;
         this.node_3.active = false;
-        this.panel_show.active = true;
+        this.panel_show.active = this.VerifyGoodsNullOrZero(responseData);
         this.btn_ok.active = true;
         let lbl_bigGold = this.getChildNodeOrComponent("lbl_bigGold", cc.Label);
         let lbl_rank = this.getChildNodeOrComponent("lbl_rank", cc.Label);
@@ -376,7 +379,10 @@ export default class UIMTTMineRankComponent extends UIBase {
         lbl_free.string = this.gameName;
         let mttInfo = UIMatchMttModel.Instance.MttInfo;
         if (mttInfo && mttInfo.mtt) {
+            lbl_rank.node.active = true;
             lbl_rank.string = "当前排名:" + responseData.data.rank.toString() + "/" + mttInfo.mtt.participants.toString();
+        } else {
+            lbl_rank.node.active = false;
         }
 
 
@@ -437,7 +443,7 @@ export default class UIMTTMineRankComponent extends UIBase {
         this.node_1.active = false;
         this.node_2.active = true;
         this.node_3.active = false;
-        this.panel_show.active = true;
+        this.panel_show.active = this.VerifyGoodsNullOrZero(responseData);
         this.btn_ok.active = true;
         // Text_Rank.gameObject.SetActive(true);
         // Text_Rank.text = string.Format(LanguageManager.Get("MTT_end_rank"), $"{responseData.data.rank}/{UIMatchMTTModel.Instance.MttInfo.mtt.participants}");
@@ -503,13 +509,13 @@ export default class UIMTTMineRankComponent extends UIBase {
     /// <returns></returns>
     VerifyGoodsNullOrZero(responseData)
     {
-        if (responseData.data.award_goods == null)
+        if (responseData. data.award_goods == null)
         {
             return false;
         }
         else
         {
-            if (responseData.data.award_goods.Count <= 0)
+            if (responseData.data.award_goods.length <= 0)
             {
                 return false;
             }
