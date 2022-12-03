@@ -7,6 +7,7 @@ import { MineRankData } from "../game/ui/UIMTTMineRankComponent";
 import PublicHelper from "../helper/PublicHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nLabel } from "../i18n/i18nLabel";
+import SceneManager from "../manager/SceneManager";
 import ToastManager from "../manager/ToastManager";
 import { Web_User_Info } from "../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
@@ -38,7 +39,7 @@ export default class UIMine extends UIBase {
     }
     protected lateLoad(): void {
         super.lateLoad();
-        
+
     }
 
     public onShow(param?: any): void {
@@ -67,8 +68,8 @@ export default class UIMine extends UIBase {
     refreshHeadImg() {
         let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
         // img_head.node.active =false;
-        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(()=>{
-            img_head.node.active =true;
+        WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(() => {
+            img_head.node.active = true;
         });
     }
 
@@ -79,7 +80,7 @@ export default class UIMine extends UIBase {
     /**
      * 注册广播事件
      */
-     protected regiterDispatchEvent() {
+    protected regiterDispatchEvent() {
         this.listen(GGEvent.Refresh_UserHead, this.refreshHeadImg);
         this.listen(GGEvent.Refresh_UserName, this.refreshUserName);
     }
@@ -135,7 +136,7 @@ export default class UIMine extends UIBase {
             UIComponent.open(UIDefine.SettingsForm);
         } else if (index == 0) {
             let info = {
-                
+
             }
             LobbyControl.getInstance().reqIsPhoneUser(info).then(
                 (res: any) => {
@@ -151,9 +152,9 @@ export default class UIMine extends UIBase {
         } else if (index == 1) {
             UIComponent.open(UIDefine.UIMine_Message);
         } else if (index == 2) {
-            UIComponent.open(UIDefine.UIMineBag);
+            UIComponent.open(UIDefine.UIMineBag, null, { SceneUI: SceneManager.Instance.currUI });
         }
-        
+
     }
 
     onClickCopy() {

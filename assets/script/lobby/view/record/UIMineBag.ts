@@ -33,12 +33,12 @@ export default class UIMineBag extends BaseForm {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: cc.Node): void {
-        super.onShow(param, fromUI);
+    onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node): void {
+        super.onShow(param, fromUI, sceneUI);
 
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         Text_title.string = "背包";
-      
+
         this.resetUI();
 
         // 先请求自身数据 然后请求所有数据
@@ -77,7 +77,7 @@ export default class UIMineBag extends BaseForm {
 
     reqAllInfo(cb = null) {
         let info = {
-            "prop_type":0,
+            "prop_type": 0,
         }
         LobbyControl.getInstance().reqBagPendantList(info).then(
             (res: any) => {
@@ -95,7 +95,7 @@ export default class UIMineBag extends BaseForm {
     reqMyUseInfo(cb = null) {
         // 刷新是否使用
         let info1 = {
-            "prop_type":0,
+            "prop_type": 0,
         }
         LobbyControl.getInstance().reqBagCurrentPendantList(info1).then(
             (res: any) => {
@@ -113,7 +113,7 @@ export default class UIMineBag extends BaseForm {
 
 
     resetUI() {
-       
+
         // let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         // scrollView.content.removeAllChildren();
     }
@@ -133,7 +133,7 @@ export default class UIMineBag extends BaseForm {
             lbl_noshow.active = false;
             // 有数据 刷新列表
             let panel_item: cc.Node = self.getChildNodeOrComponent("panel_item" + index);
-            for (let i=0; i<itemLen; i++) {
+            for (let i = 0; i < itemLen; i++) {
                 let itemInfo = data[i];
                 let _cloneNode = cc.instantiate(panel_item);
                 _cloneNode.x = _cloneNode.width * 0.5 + _cloneNode.width * (i);
@@ -141,7 +141,7 @@ export default class UIMineBag extends BaseForm {
                 _cloneNode.parent = scrollView.content;
 
                 let img_item: cc.Sprite = _cloneNode.getChildByName("img_item").getComponent(cc.Sprite);
-                WebImageHelper.SetUrlImage(img_item, itemInfo.game_prop.prop_icon).then(()=>{
+                WebImageHelper.SetUrlImage(img_item, itemInfo.game_prop.prop_icon).then(() => {
                 });
 
                 let isUse = self.isUseById(itemInfo.prop_id);
@@ -184,7 +184,7 @@ export default class UIMineBag extends BaseForm {
         let len = list.length;
 
         let self = this;
-        
+
 
 
         let data1 = [];
@@ -192,7 +192,7 @@ export default class UIMineBag extends BaseForm {
         let data3 = [];
 
         //14 头像框 15 标识 16 特效
-        for (let i=0; i<len; i++) {
+        for (let i = 0; i < len; i++) {
             let info = list[i];
             if (info.prop_type == 14) {
                 data1.push(info);
@@ -206,7 +206,7 @@ export default class UIMineBag extends BaseForm {
         this.createView(data1, 2)
         this.createView(data2, 3)
         this.createView(data3, 4)
-        
+
     }
 
     onClickItem(event) {
@@ -214,7 +214,7 @@ export default class UIMineBag extends BaseForm {
         let info = target.info;
 
         if (target.index == 1) {
-            UIComponent.open(UIDefine.UIBagTicket, {info: info});
+            UIComponent.open(UIDefine.UIBagTicket, { info: info });
             return;
         }
 
@@ -249,7 +249,7 @@ export default class UIMineBag extends BaseForm {
                 }
             )
         }
-        
+
     }
 
 }
