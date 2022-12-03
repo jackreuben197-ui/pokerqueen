@@ -29,12 +29,12 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
             case Def.LeaveReason.LR_NOCHIP: // 桌上筹码输光
                 {
                     let isTriggerPartialBringIn: boolean = rec.storeChips > 0;
+                    game.RemainRebuyCount = game.TotalRebuyCount - rec.rebuyTimes;
                     let isTriggerRebuy: boolean =
                         rec.storeChips == 0
                         && rec.accountChips >= UIMatchMttModel.Instance.RebuyCost
                         && (game.MaxRebuyBlindLevel > 0 && game.MaxRebuyBlindLevel > game.BlindLevel)
                         && game.RemainRebuyCount > 0;
-                    game.RemainRebuyCount = game.TotalRebuyCount - rec.rebuyTimes;
                     if (isTriggerPartialBringIn) {
 
                         utils.HandlePartialBringIn(rec.storeChips, code => {
