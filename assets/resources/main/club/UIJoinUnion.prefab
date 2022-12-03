@@ -1410,8 +1410,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "输入公会ID",
-    "_N$string": "输入公会ID",
+    "_string": "输入联盟ID",
+    "_N$string": "输入联盟ID",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": false,
@@ -1529,7 +1529,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 4,
-      "height": 97
+      "height": 101
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1541,7 +1541,7 @@
       "ctor": "Float64Array",
       "array": [
         320.279,
-        2.6159999999999997,
+        0.6159999999999997,
         0,
         0,
         0,
@@ -1593,7 +1593,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 4,
-      "height": 99
+      "height": 101
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1772,8 +1772,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 129,
-      "height": 129
+      "width": 121,
+      "height": 125
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:27:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-11 19:03:22
+ * @LastEditTime: 2022-12-03 17:27:49
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchHome.ts
  */
 
@@ -42,7 +42,6 @@ export default class UICreateMatchHome extends BaseForm {
         let data: any = APIOrgGetTemplate.Response.data;
 
         let length = data?.data?.length || 0
-        length = length > 4 ? 4 : length;
         this.lbModel.string = `(${length}/${data.club_template_limit} )`;
 
         this.contentModel.removeAllChildren();
