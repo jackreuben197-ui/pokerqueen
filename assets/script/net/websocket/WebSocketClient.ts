@@ -73,29 +73,38 @@ export default class WebSocketClient {
     private static onclose(ev: CloseEvent) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);
         console.log("close reason : > ", ev.code, ev.reason, ev.wasClean);
-        WebSocketClient.CleanWS();
+        //停止心跳
+        LobbySession.heartbeatComponent.active = false;
+
         //主动断开
         if (ev.code == 1005) {
 
         }
-        //服务器断开，请求Channel判断token是否无效
+        //服务器断开
         if (ev.code == 1006) {
-            LoginSession.SyncWS().then(
-                //成功
-                () => {
-                    //尝试重连
-                    WebSocketClient.Reconnect();
-                },
-                //失败
-                () => {
-                    UIComponent.Instance.Toast("Request Channel Fail");
-                    GlobalSession.Logout();
-                    UIComponent.Instance.Toast(i18nMgr.Get("clientInt_anormal"));
-                }
-            )
+            WebSocketClient.TryReconnect();
         }
     }
 
+    public static TryReconnect() {
+        if (!GC.game_active) return;
+        cc.log("重新连接socket");
+        WebSocketClient.CleanWS();
+        //请求Channel判断token是否无效
+        LoginSession.SyncWS().then(
+            //成功
+            () => {
+                //尝试重连
+                WebSocketClient.Reconnect();
+            },
+            //失败
+            () => {
+                UIComponent.Instance.Toast("Request Channel Fail");
+                GlobalSession.Logout();
+                UIComponent.Instance.Toast(i18nMgr.Get("clientInt_anormal"));
+            }
+        )
+    }
     private static async Reconnect() {
         if (WebSocketClient._reconnectTime < WebSocketClient.ReconnectMaxTime) {
             WebSocketClient._reconnectTime++;

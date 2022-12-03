@@ -483,8 +483,8 @@ export default class TexasGame {
 
 
 
-    public EnterRoom(id) {
-        this.TexasGameUtils.EnterRoom(id);
+    public EnterRoom() {
+        this.TexasGameUtils.EnterRoom();
     }
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
@@ -2629,6 +2629,7 @@ export default class TexasGame {
     }
     //移除座位UI
     removeSeatUI(seatUI: cc.Node) {
+        console.log("removeSeatUI", seatUI?.name);
         if (seatUI) {
             seatUI.parent = null;
             seatUI.scale = 1;

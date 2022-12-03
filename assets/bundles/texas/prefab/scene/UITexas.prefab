@@ -17307,8 +17307,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "爱上-3\nTexas-Standard-NoLimit\n97895706-0\nBlind1/2\n",
-    "_N$string": "爱上-3\nTexas-Standard-NoLimit\n97895706-0\nBlind1/2\n",
+    "_string": "中文\n中文\n中文\n中文\n中文\n中文",
+    "_N$string": "中文\n中文\n中文\n中文\n中文\n中文",
     "_fontSize": 38,
     "_lineHeight": 50,
     "_enableWrapText": true,
@@ -17875,7 +17875,7 @@
         "__id__": 474
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 477

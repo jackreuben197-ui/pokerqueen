@@ -56,7 +56,7 @@ export default class UIPreloadingComponent extends UIBase {
         this.asset_count = 0;
         if (bundle == Bundle_Resources) {
             cc.resources.loadDir(dir,
-                (finish: number, total: number) => {
+                (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
                     if (param.stopProgress) return;
                     let percent = finish / total;
                     //纠错，保证当前进度不会小于上次进度
