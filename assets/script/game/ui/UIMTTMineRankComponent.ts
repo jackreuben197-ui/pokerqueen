@@ -73,11 +73,15 @@ export default class UIMTTMineRankComponent extends UIBase {
     node_2: cc.Node = null;
     node_3: cc.Node = null;
 
+    btn_ok: cc.Node = null;
+    panel_show: cc.Node = null;
+
     InItUI()
     {
         this.node_1 = this.getChildNodeOrComponent("node_1");
         this.node_2 = this.getChildNodeOrComponent("node_2");
         this.node_3 = this.getChildNodeOrComponent("node_3");
+        
         // rc = this.GetParent<UI>().GameObject.GetComponent<ReferenceCollector>();
         // Text_GameName = rc.Get<GameObject>("Text_GameName").GetComponent<Text>();
         this.headIcon = this.getChildNodeOrComponent("img_head", cc.Sprite);
@@ -121,6 +125,10 @@ export default class UIMTTMineRankComponent extends UIBase {
 
         let btn_ok: cc.Node = this.getChildNodeOrComponent("btn_ok");
         btn_ok.on("click", this.onClickClose, this);
+        this.btn_ok = btn_ok;
+        this.panel_show = this.getChildNodeOrComponent("panel_show");
+        this.panel_show.active = false;
+        this.btn_ok.active = false;
 
         let panel_bag: cc.Node = this.getChildNodeOrComponent("panel_bag");
         panel_bag.on("click", this.onClickBag, this);
@@ -139,6 +147,10 @@ export default class UIMTTMineRankComponent extends UIBase {
                 this.InitUIData();
             }
         }
+
+        this.node_1.active = false;
+        this.node_2.active = false;
+        this.node_3.active = true;
         // UIShareModel.mInstance.APIShareUsable(UIShareModel.mInstance.SHARE_TYPE_MTT, pDto =>
         // {//邀请玩家分享开关
         //     if (pDto.code == 0)
@@ -169,11 +181,12 @@ export default class UIMTTMineRankComponent extends UIBase {
         {
             return;
         }
-        if (TimeHelper.NowS - this.lastTime < this.IntervalTime)
+        let dif = TimeHelper.Now - this.lastTime;
+        if (dif < this.IntervalTime * 1000)
         {
             return;
         }
-        this.lastTime = TimeHelper.NowS;
+        this.lastTime = TimeHelper.Now;
         this.RequestTimes++;
         this.GetMyawardApi();
     }
@@ -231,15 +244,15 @@ export default class UIMTTMineRankComponent extends UIBase {
     /// </summary>
     InitUIData()
     {
-        this.GetMatchRoomsInfo(data =>
+        this.GetMatchRoomsInfo(code =>
         {
-            if (this.MttInfo)
+            if (code == 0)
             {
                 WebImageHelper.SetUrlImage(this.headIcon, GameCache.Instance.headPic);
                 let lbl_name = this.getChildNodeOrComponent("lbl_name", cc.Label);
                 let lbl_date = this.getChildNodeOrComponent("lbl_date", cc.Label);
                 lbl_name.string = GameCache.Instance.nick;
-                lbl_date.string = TimeHelper.convertUTCTimeToLocalTime(data.data.mtt.start_time);
+                lbl_date.string = TimeHelper.convertUTCTimeToLocalTime(this.MttInfo.mtt.start_time);
                 // nameText.text = GameCache.Instance.nick;
                 // Text_StartTime.text = TimeHelper.TimerDateStr((long)TimeHelper.GetTimestampByDateTime(TimeHelper.RFC3339TimeConvertToUTCTime(this.MttInfo.mtt.start_time))) + "  " + TimeHelper.TimerDateMinStr(TimeHelper.GetTimestampByDateTime(TimeHelper.RFC3339TimeConvertToUTCTime(MttInfo.mtt.start_time)));
 
@@ -247,7 +260,7 @@ export default class UIMTTMineRankComponent extends UIBase {
                 if (this.mineRankDate.isRebuy)
                 {
                     //若是当前盲注大于最大盲注级别，不能重购，请求排名
-                    if (this.MttInfo.more.bl >= data.data.mtt.max_rebuy_bl)
+                    if (this.MttInfo.more.bl >= this.MttInfo.mtt.max_rebuy_bl)
                     {
                         this.GetMyawardApi();
                     }
@@ -262,6 +275,14 @@ export default class UIMTTMineRankComponent extends UIBase {
                     this.GetMyawardApi();
                 }
 
+            } else {
+                this.node_1.active = false;
+                this.node_2.active = false;
+                this.node_3.active = true;
+                this.panel_show.active = false;
+                this.btn_ok.active = false;
+                this.lastTime = TimeHelper.Now;
+                this.isRequest = true;
             }
 
         });
@@ -334,6 +355,8 @@ export default class UIMTTMineRankComponent extends UIBase {
         this.node_1.active = true;
         this.node_2.active = false;
         this.node_3.active = false;
+        this.panel_show.active = true;
+        this.btn_ok.active = true;
         let lbl_bigGold = this.getChildNodeOrComponent("lbl_bigGold", cc.Label);
         let lbl_rank = this.getChildNodeOrComponent("lbl_rank", cc.Label);
         let lbl_free = this.getChildNodeOrComponent("lbl_free", cc.Label);
@@ -414,6 +437,8 @@ export default class UIMTTMineRankComponent extends UIBase {
         this.node_1.active = false;
         this.node_2.active = true;
         this.node_3.active = false;
+        this.panel_show.active = true;
+        this.btn_ok.active = true;
         // Text_Rank.gameObject.SetActive(true);
         // Text_Rank.text = string.Format(LanguageManager.Get("MTT_end_rank"), $"{responseData.data.rank}/{UIMatchMTTModel.Instance.MttInfo.mtt.participants}");
         // checkTips.SetActive(VerifyGoodsNullOrZero(responseData));
@@ -632,24 +657,24 @@ export default class UIMTTMineRankComponent extends UIBase {
     /// <param name="resultCallback"></param>
     GetMatchRoomsInfo(resultCallback)
     {
-        let data = {"code":0,"data":{"alive":1,"more":{"ante":0,"bl":1,"nante":0,"nbl":2,"nsb":5000,"prize_pool":100,"sb":2500},"mtt":{"match_id":95756690,"name":"MTT202206181655524636341059","type":512,"game_type":0,"poker_type":0,"limit_bet_type":0,"rank_type":1,"enter_time":"2022-11-11T09:17:21Z","start_time":"2022-11-11T09:17:22Z","end_time":null,"hunter_on":0,"hunter_bonus":0,"partial_on":0,"parital_return_bl":0,"straddle_on":0,"straddle_max":0,"muck_on":0,"rooms":1,"max_room_id":1,"delay_view_card_on":0,"limit_min":2,"limit_delay_times":2,"limit_auto_check_times":2,"limit_auto_fold_times":2,"participants":2,"alive":1,"award_num":1,"money_sync":0,"status":1,"seat_count":9,"final_seat_count":0,"no_user_wait_duration":2,"initial_score":20000,"blindtable_type":0,"upblind_interval":120,"apply_start_time":"2022-11-11T07:16:13Z","op_duration":15,"max_delay_apply_bl":15,"rebuy_times":2,"max_rebuy_bl":15,"limit_total_buy_times":10000,"total_buy_times":2,"total_buyin_times":2,"total_rebuy_times":0,"addon_begin_bl":0,"addon_end_bl":0,"addon_score":0,"total_addon_times":0,"apply_fee_pool":0,"apply_fee_service":500,"apply_fee_hunter":0,"prize_type":1,"prize_base_pool":100,"tribe_id":1,"create_time":"2022-11-11T09:17:01Z","update_time":"2022-11-11T09:17:43Z","buy_prop_id":0,"prop_buy_type":0,"game_icon":"http://static.awanptesting.com/awanptesting-h5-dev/image-normal/20221111081310-mbPXa.png","voiceprint_verify_on":0,"voiceprint_verify_duration":0,"addonplus_m1_on":0,"addonplus_m1_max_times":0,"addonplus_m1_limit":0,"total_addonplus_m1_times":0,"addonplus_m2_on":0,"addonplus_m2_max_times":0,"addonplus_m2_max_bl":0,"total_addonplus_m2_times":0,"buy_ratio":1,"pre_buyin_bonus":0,"tablecloth_tag":"","limit_tag":"","bonustable_type":1,"buyin_free_times":0,"rebuy_free_times":0,"multi_ratio_free_times":0,"addon_free_times":0,"buyin_free_incl_svr":0,"rebuy_free_incl_svr":0,"multi_ratio_free_incl_svr":0,"addon_free_incl_svr":0,"award_replace_prop_id":0,"award_replace_prop_value":0,"award_extra_buy_times":0,"award_extra_add_count":0,"award_extra_prop_id":0,"award_extra_gold_value":0,"award_extra_gold_buy":0,"award_extra_ticket_buy":0,"award_extra_free_buy":0,"break_base_pool":0,"total_extra_buy_times":0,"award_extra_prop_value":0,"rebuy_ticket_limit_times":0,"addon_ticket_limit_times":0},"state":{"left_rebuy_times":2,"chip":0,"store":0,"init_score":20000,"partial_enable":false},"state_code":6,"top":40000}};
-        this.MttInfo = data;
-        resultCallback(data);
+        // let data = {"code":0,"data":{"alive":1,"more":{"ante":0,"bl":1,"nante":0,"nbl":2,"nsb":5000,"prize_pool":100,"sb":2500},"mtt":{"match_id":95756690,"name":"MTT202206181655524636341059","type":512,"game_type":0,"poker_type":0,"limit_bet_type":0,"rank_type":1,"enter_time":"2022-11-11T09:17:21Z","start_time":"2022-11-11T09:17:22Z","end_time":null,"hunter_on":0,"hunter_bonus":0,"partial_on":0,"parital_return_bl":0,"straddle_on":0,"straddle_max":0,"muck_on":0,"rooms":1,"max_room_id":1,"delay_view_card_on":0,"limit_min":2,"limit_delay_times":2,"limit_auto_check_times":2,"limit_auto_fold_times":2,"participants":2,"alive":1,"award_num":1,"money_sync":0,"status":1,"seat_count":9,"final_seat_count":0,"no_user_wait_duration":2,"initial_score":20000,"blindtable_type":0,"upblind_interval":120,"apply_start_time":"2022-11-11T07:16:13Z","op_duration":15,"max_delay_apply_bl":15,"rebuy_times":2,"max_rebuy_bl":15,"limit_total_buy_times":10000,"total_buy_times":2,"total_buyin_times":2,"total_rebuy_times":0,"addon_begin_bl":0,"addon_end_bl":0,"addon_score":0,"total_addon_times":0,"apply_fee_pool":0,"apply_fee_service":500,"apply_fee_hunter":0,"prize_type":1,"prize_base_pool":100,"tribe_id":1,"create_time":"2022-11-11T09:17:01Z","update_time":"2022-11-11T09:17:43Z","buy_prop_id":0,"prop_buy_type":0,"game_icon":"http://static.awanptesting.com/awanptesting-h5-dev/image-normal/20221111081310-mbPXa.png","voiceprint_verify_on":0,"voiceprint_verify_duration":0,"addonplus_m1_on":0,"addonplus_m1_max_times":0,"addonplus_m1_limit":0,"total_addonplus_m1_times":0,"addonplus_m2_on":0,"addonplus_m2_max_times":0,"addonplus_m2_max_bl":0,"total_addonplus_m2_times":0,"buy_ratio":1,"pre_buyin_bonus":0,"tablecloth_tag":"","limit_tag":"","bonustable_type":1,"buyin_free_times":0,"rebuy_free_times":0,"multi_ratio_free_times":0,"addon_free_times":0,"buyin_free_incl_svr":0,"rebuy_free_incl_svr":0,"multi_ratio_free_incl_svr":0,"addon_free_incl_svr":0,"award_replace_prop_id":0,"award_replace_prop_value":0,"award_extra_buy_times":0,"award_extra_add_count":0,"award_extra_prop_id":0,"award_extra_gold_value":0,"award_extra_gold_buy":0,"award_extra_ticket_buy":0,"award_extra_free_buy":0,"break_base_pool":0,"total_extra_buy_times":0,"award_extra_prop_value":0,"rebuy_ticket_limit_times":0,"addon_ticket_limit_times":0},"state":{"left_rebuy_times":2,"chip":0,"store":0,"init_score":20000,"partial_enable":false},"state_code":6,"top":40000}};
+        // this.MttInfo = data;
+        // resultCallback(data);
 
 
-        // UIMatchMttModel.Instance.RequestMTTDetails(this.mineRankDate.matchId, code => {
-        //     if (code == 0) {
-        //         this.MttInfo = UIMatchMttModel.Instance.MttInfo;
-        //     }
-        //     else {
-        //         // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(code));
-        //     }
-        //     if (resultCallback) {
-        //         resultCallback(code);
-        //     }
-        // }, httpState => {
-        //     // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
-        // });
+        UIMatchMttModel.Instance.RequestMTTDetails(this.mineRankDate.matchId, code => {
+            if (code == 0) {
+                this.MttInfo = UIMatchMttModel.Instance.MttInfo;
+            }
+            else {
+                // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(code));
+            }
+            if (resultCallback) {
+                resultCallback(code);
+            }
+        }, httpState => {
+            // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+        });
 }
 
     /// <summary>
@@ -657,51 +682,55 @@ export default class UIMTTMineRankComponent extends UIBase {
     /// </summary>
     GetMyawardApi()
     {
-        let data = {"code":0,"data":{"uid":96855706,"rank":1,"award_gold":100,"award_goods":[],"hunter_award":0,"hunter_rank":0,"hunter_kill":0,"is_final":true,"awarded":true,"award_replace_prop_id":0,"award_replace_remain":0,"award_extra_prop_id":0,"award_extra_gold_value":0,"username":"Player","avatar":"http://static.awanptesting.com/image-normal/20220310094721-zdArt.png"}};
-        this.isRequest = false;
-        this.HandleRankDate(data);
+        // let data = {"code":0,"data":{"uid":96855706,"rank":1,"award_gold":100,"award_goods":[],"hunter_award":0,"hunter_rank":0,"hunter_kill":0,"is_final":true,"awarded":true,"award_replace_prop_id":0,"award_replace_remain":0,"award_extra_prop_id":0,"award_extra_gold_value":0,"username":"Player","avatar":"http://static.awanptesting.com/image-normal/20220310094721-zdArt.png"}};
+        // this.isRequest = false;
+        // this.HandleRankDate(data);
 
-        // Image_Mask.SetActive(true);
-        // HttpRequest.Send({
-        //     api: Web_Room_Center_Mtt_Myaward.API.replace("{id}", this.mineRankDate.matchId.toString()),
-        //     request: Web_Room_Center_Mtt_Myaward,
-        //     body: Web_Room_Center_Mtt_Myaward.Request({}),
-        //     onSuccess: function () {
-        //         let tResp = Web_Room_Center_Mtt_Myaward.Response;
-        //         if (tResp.code == 0)
-        //         {
-        //             this.isRequest = false;
-        //             this.HandleRankDate(tResp);
-        //         }
-        //         else
-        //         {
+        HttpRequest.Send({
+            api: Web_Room_Center_Mtt_Myaward.API.replace("{id}", this.mineRankDate.matchId.toString()),
+            request: Web_Room_Center_Mtt_Myaward,
+            body: Web_Room_Center_Mtt_Myaward.Request({}),
+            onSuccess: function () {
+                let tResp = Web_Room_Center_Mtt_Myaward.Response;
+                if (tResp.code == 0)
+                {
+                    this.isRequest = false;
+                    this.HandleRankDate(tResp);
+                }
+                else
+                {
                     
-        //         }
-        //     }.bind(this),
-        //     onFailure: function (content) {
-        //         if (this.RequestTimes > 0)
-        //         {
-        //             this.WaitText.active = true;
-        //             if (this.MttInfo.more.bl >= this.MttInfo.mtt.max_rebuy_bl)
-        //             {
-        //                 if (this.RequestTimes > 5)
-        //                 {
-        //                     this.WaitText.string = i18nMgr.Get("Ranking_check");
-        //                 }
-        //                 else
-        //                 {
-        //                     this.WaitText.string = i18nMgr.Get("Ranking_patient");
-        //                 }
-        //             }
-        //             else
-        //             {
-        //                 this.WaitText.string = i18nMgr.Get("UIMTT_Ranking_TiaoZheng");
-        //             }
-        //         }
-        //         this.lastTime = TimeHelper.Now;
-        //         this.isRequest = true;
-        //     }.bind(this)
-        // });
+                }
+            }.bind(this),
+            onFailure: function (content) {
+                this.node_1.active = false;
+                this.node_2.active = false;
+                this.node_3.active = true;
+                this.panel_show.active = false;
+                this.btn_ok.active = false;
+                if (this.RequestTimes > 0)
+                {
+                    this.WaitText.active = true;
+                    if (this.MttInfo.more.bl >= this.MttInfo.mtt.max_rebuy_bl)
+                    {
+                        if (this.RequestTimes > 5)
+                        {
+                            this.WaitText.string = i18nMgr.Get("Ranking_check");
+                        }
+                        else
+                        {
+                            this.WaitText.string = i18nMgr.Get("Ranking_patient");
+                        }
+                    }
+                    else
+                    {
+                        this.WaitText.string = i18nMgr.Get("UIMTT_Ranking_TiaoZheng");
+                    }
+                }
+                this.lastTime = TimeHelper.Now;
+                this.isRequest = true;
+            }.bind(this)
+        });
         
     }
 

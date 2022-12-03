@@ -2,6 +2,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
 import { MTTJoinAction, UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
+import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import MTTGame from "../../game/texas/MTTGame";
 import MTTGameUtil from "../../game/util/MTTGameUtil";
@@ -106,7 +107,8 @@ export default class MttDetailForm extends BaseForm {
                 break;
         }
         let lbl_test = this.getChildNodeOrComponent("lbl_test").getComponent(cc.Label);
-        lbl_test.string = mttDetails.mtt.name;
+        let nameStr = GC.data.languageTemp.temp.getName(mttDetails.mtt.name);
+        lbl_test.string = nameStr;
 
         let img_av: cc.Sprite = panel_item2.getChildByName("mask").getChildByName("img_av").getComponent(cc.Sprite);
         WebImageHelper.SetUrlImage(img_av, mttDetails.mtt.game_icon);
@@ -168,7 +170,7 @@ export default class MttDetailForm extends BaseForm {
                 //     TimeHelper.RFC3339TimeConvertToUTCTime(mttDetails.mtt.start_time)));
                 let date = new Date(timespan);
                 let ymd = TimeHelper.getDateStructYMD(timespan / 1000);
-                lbl_time.string = ymd.day + "/" + ymd.month + "/" + ymd.year + " - " + date.getHours().toString() + ":" + date.getMinutes().toString();
+                lbl_time.string = ymd.day + "/" + ymd.month + "/" + ymd.year + " - " + TimeHelper.toTimeFormat(date.getHours()).toString() + ":" + TimeHelper.toTimeFormat(date.getMinutes()).toString();
             }
             this.isStar = isStar;
         }
@@ -232,16 +234,16 @@ export default class MttDetailForm extends BaseForm {
                 }
             } else if (i == 6) {//当前盲注
                 lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchCurrBlindTip")}:` + "-" + mttDetails.more.bl.toString();
-                lbl_2.string = mttDetails.more.sb.toString() + "/" + (mttDetails.more.sb * 2).toString() + mttDetails.more.ante.toString();
+                lbl_2.string = StringHelper.GetLongString(mttDetails.more.sb) + "/" + StringHelper.GetLongString(mttDetails.more.sb * 2) + "(" + StringHelper.GetLongString(mttDetails.more.ante) + ")";
             } else if (i == 7) {//下一盲注
                 lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:` + "-" + mttDetails.more.nbl.toString();
-                lbl_2.string = mttDetails.more.nsb.toString() + "/" + (mttDetails.more.nsb * 2).toString() + mttDetails.more.nante.toString();
+                lbl_2.string = StringHelper.GetLongString(mttDetails.more.nsb) + "/" +StringHelper.GetLongString(mttDetails.more.nsb * 2) + "(" + StringHelper.GetLongString(mttDetails.more.nante)+ ")";
             } else if (i == 8) {//涨盲时间
                 lbl_1.string = `${i18nMgr.Get("MTT_State_UpBlindTime")}:`;
-                lbl_2.string = `${i18nMgr.Get("UITexasReport_Text_MatchZmsysj")}:`.replace("{0}", (mttDetails.mtt.upblind_interval / 60).toString());
+                lbl_2.string = `${i18nMgr.Get("UITexasReport_Text_MatchZmsysj")}`.replace("{0}", (mttDetails.mtt.upblind_interval / 60).toFixed(2).toString());
             } else if (i == 9) {//记分牌(只显示最大记分牌)
-                lbl_1.string = `${i18nMgr.Get("UITexasReport_Label_AllBarJL")}:`;
-                lbl_2.string = i18nMgr.Get("Maximum") + mttDetails.top.toString();
+                lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_ListBarScore")}:`;
+                lbl_2.string = i18nMgr.Get("Maximum") + StringHelper.GetLongString(mttDetails.top);
             }
         }
     }
@@ -448,7 +450,7 @@ export default class MttDetailForm extends BaseForm {
             // 奖励
             if (index == 3) {
                 let lbl_addNum21 = this.getChildNodeOrComponent("lbl_addNum21");
-                lbl_addNum21.getComponent(cc.Label).string = info.award.toString();
+                lbl_addNum21.getComponent(cc.Label).string = StringHelper.GetLongString(info.award);
                 let lbl_addNum22 = this.getChildNodeOrComponent("lbl_addNum22");
                 lbl_addNum22.getComponent(cc.Label).string = info.award_num.toString();
                 let rank = itemInfo.min == itemInfo.max ? itemInfo.min : itemInfo.min - itemInfo.max;
@@ -459,11 +461,11 @@ export default class MttDetailForm extends BaseForm {
                 if (UIMatchMttModel.Instance.MttInfo.mtt.hunter_on == 0)
                 {
                     //等于0是关闭猎人赛
-                    lbl_score.getComponent(cc.Label).string = itemInfo.award.toString();
+                    lbl_score.getComponent(cc.Label).string = StringHelper.GetLongString(itemInfo.award);
                 }
                 else
                 {
-                    lbl_score.getComponent(cc.Label).string = itemInfo.award.toString() + "+" + i18nMgr.Get("UIReward_Bounty");
+                    lbl_score.getComponent(cc.Label).string = StringHelper.GetLongString(itemInfo.award) + "+" + i18nMgr.Get("UIReward_Bounty");
                 }
                 let img_jp_1 = _cloneNode.getChildByName("img_jp_1");
                 let img_jp_2 = _cloneNode.getChildByName("img_jp_2");
@@ -508,8 +510,8 @@ export default class MttDetailForm extends BaseForm {
                 img_stop.active = false;
                 let sb = MTTGameUtil.BlindAtLevel(i, data.mtt.blindtable_type, 1);
                 let ante = MTTGameUtil.AnteAtLevel(i, data.mtt.blindtable_type, 1);
-                lbl_mz.getComponent(cc.Label).string = sb.toString() + "/" + (sb * 2).toString();
-                lbl_go.getComponent(cc.Label).string = ante.toString();
+                lbl_mz.getComponent(cc.Label).string = StringHelper.GetLongString(sb) + "/" + StringHelper.GetLongString((sb * 2));
+                lbl_go.getComponent(cc.Label).string = StringHelper.GetLongString(ante);
                 lbl_time.getComponent(cc.Label).string = i18nMgr.Get("UITexasReport_Text_MatchNextBlindTime").replace("{0}", (data.mtt.upblind_interval / 60).toString());
                 if (data.mtt.addon_begin_bl.toString() == (i+1).toString() && data.mtt.addon_begin_bl > 0)
                 {

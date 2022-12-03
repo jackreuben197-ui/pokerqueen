@@ -249,7 +249,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     // ToggleCoin.interactable = false;
                     // ToggleTicket.interactable = false;
                     buttonCommit.interactable = data.coinnum + data.Fee <= GameCache.Instance.gold;
-                    btnComImg.active = data.coinnum + data.Fee <= GameCache.Instance.gold;
+                    // btnComImg.active = data.coinnum + data.Fee <= GameCache.Instance.gold;
                     // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
                     // if (this.curDialogData.buyRatio > 1) {
                         // ToggleCoin1.isOn = true;
@@ -268,7 +268,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     // node_3x.getChildByName("img2").active = false;
 
                     buttonCommit.interactable = this.cachePropBalance > 0;
-                    btnComImg.active = this.cachePropBalance > 0;
+                    // btnComImg.active = this.cachePropBalance > 0;
                     // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
                     // if (this.curDialogData.buyRatio > 1) {
                         // ToggleTicket1.isOn = true;
@@ -286,7 +286,7 @@ export default class UIMttSignDialogComponent extends UIBase {
                     // node_3x.getChildByName("img2").active = true;
                     // ToggleTicket.isOn = false;
                     buttonCommit.interactable = data.coinnum + data.Fee <= GameCache.Instance.gold;
-                    btnComImg.active = data.coinnum + data.Fee <= GameCache.Instance.gold;
+                    // btnComImg.active = data.coinnum + data.Fee <= GameCache.Instance.gold;
                     // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
                     // if (this.curDialogData.buyRatio > 1) {
                         // ToggleCoin1.isOn = true;

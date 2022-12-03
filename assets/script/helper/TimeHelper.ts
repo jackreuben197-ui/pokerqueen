@@ -342,7 +342,7 @@ export default class TimeHelper {
         return { hour, min, sec };
     }
 
-    private static toTimeFormat(unit: number) {
+    public static toTimeFormat(unit: number) {
         return unit >= 0 ? `${unit < 10 ? "0" : ""}${unit}` : "00";
     }
 

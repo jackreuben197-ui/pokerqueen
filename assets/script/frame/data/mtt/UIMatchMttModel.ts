@@ -262,8 +262,8 @@ export class UIMatchMttModel {
                         }
                     }
                 }
-                //UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
-                UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
+                UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+                // UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
             }
             else {
                 ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(code));
