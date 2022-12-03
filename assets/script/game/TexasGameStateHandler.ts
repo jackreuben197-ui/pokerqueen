@@ -47,8 +47,6 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
 
         let game: TexasGame = entity as TexasGame;
 
-        console.log("Enter game", game);
-
         if (!game) return;
 
         game.RegiterEnterRoom();

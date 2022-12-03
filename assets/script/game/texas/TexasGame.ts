@@ -404,6 +404,7 @@ export default class TexasGame {
         this.dicSeatOnlyClient = new Map<number, Seat>();
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
+        GameCache.Instance.CurGame
     }
 
     RegisterMsgHandler() {
