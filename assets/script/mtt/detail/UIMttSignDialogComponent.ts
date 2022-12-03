@@ -149,6 +149,8 @@ export default class UIMttSignDialogComponent extends UIBase {
             this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
             this.curDialogData = data;
             if (null != this.curDialogData) {
+                let lbl_title =  this.getChildNodeOrComponent("lbl_title", cc.Label);
+                lbl_title.string = data.title;
                 if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
                     UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
                         if (res.code == 0) {
