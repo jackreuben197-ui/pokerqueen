@@ -3,12 +3,13 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:12:58
+ * @LastEditTime: 2022-12-03 17:13:33
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
+import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import { Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
@@ -90,20 +91,20 @@ export default class UIClubDataMange extends BaseForm {
         this.lastTimeType = index;
         let btn_pd_4 = this.getChildNodeOrComponent("btn_pd_4", cc.Label);
         let btn_pd_5 = this.getChildNodeOrComponent("btn_pd_5", cc.Label);
-
-        if (btn_pd_4.string == '开始时间') {
-            UIComponent.Instance.Toast('请选择开始时间')
-            return;
+        if (index == 5) {
+            if (btn_pd_4.string == '开始时间') {
+                UIComponent.Instance.Toast('请选择开始时间')
+                return;
+            }
+            if (btn_pd_5.string == '结束时间') {
+                UIComponent.Instance.Toast('请选择结束时间')
+                return;
+            }
+            if (btn_pd_4.node['_data'].getTime() > btn_pd_5.node['_data'].getTime()) {
+                UIComponent.Instance.Toast('开始时间不得大于结束时间')
+                return;
+            }
         }
-        if (btn_pd_5.string == '结束时间') {
-            UIComponent.Instance.Toast('请选择结束时间')
-            return;
-        }
-        if (btn_pd_4.node['_data'].getTime() > btn_pd_5.node['_data'].getTime()) {
-            UIComponent.Instance.Toast('开始时间不得大于结束时间')
-            return;
-        }
-
 
         this.reqUpInfo(this.lastGameType, index);
         this.reqDownInfo(this.lastGameType, index);
@@ -177,13 +178,13 @@ export default class UIClubDataMange extends BaseForm {
             //普通
             if (i == 1) {
                 lbl.string = "总收益";
-                label.string = room_data.total_profit;
+                label.string = StringHelper.getStringDiv100(room_data.total_profit)
             } else if (i == 2) {
                 lbl.string = "服务费";
-                label.string = room_data.service_profit
+                label.string = StringHelper.getStringDiv100(room_data.service_profit)
             } else if (i == 3) {
                 lbl.string = "道具分成";
-                label.string = room_data.prop_profit;
+                label.string = StringHelper.getStringDiv100(room_data.prop_profit);
             }
             else if (i == 4) {
                 lbl.string = "手数/局数";
@@ -282,9 +283,9 @@ export default class UIClubDataMange extends BaseForm {
                 let lbl3 = lbl_down.getChildByName('lbl_Node3').getChildByName('lbl_hand').getComponent(cc.Label);
                 let lbl4 = lbl_down.getChildByName('lbl_Node4').getChildByName('lbl_hand').getComponent(cc.Label);
                 lbl1.string = info.total_hand + ' / ' + info.total_game_cnt
-                lbl2.string = info.service_profit
-                lbl3.string = info.prop_profit
-                lbl4.string = info.total_profit
+                lbl2.string = StringHelper.getStringDiv100(info.service_profit)
+                lbl3.string = StringHelper.getStringDiv100(info.prop_profit)
+                lbl4.string = StringHelper.getStringDiv100(info.total_profit)
 
             }
         }
