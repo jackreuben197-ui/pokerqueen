@@ -165,8 +165,11 @@ export class UIMatchMttModel {
 
             }
         }
-        UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
-        // UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
+        if (GameCache.Instance.CurGame) {
+            UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
+        } else {
+            UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+        }
     }
 
 
@@ -262,8 +265,11 @@ export class UIMatchMttModel {
                         }
                     }
                 }
-                UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
-                // UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
+                if (GameCache.Instance.CurGame) {
+                    UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
+                } else {
+                    UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+                }
             }
             else {
                 ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(code));
