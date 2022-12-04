@@ -51,7 +51,7 @@ export class TexasGameStateHandlerLaunch extends StateHandler {
 
         game.RegiterEnterRoom();
 
-        game.EnterRoom(GameCache.Instance.room_id);
+        game.EnterRoom();//GameCache.Instance.room_id
 
         this._waitTimeoutTime = GlobalSession.NowTimeS + this._waitTimeoutThreshold;
 

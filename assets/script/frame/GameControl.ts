@@ -15,6 +15,8 @@ class GameControl {
     public static get instance(): GameControl {
         return (this as any)._instance ?? new GameControl;
     }
+    //判断游戏是否激活
+    game_active: boolean = true;
 
     get language() {
         return LanguageManager.instance;

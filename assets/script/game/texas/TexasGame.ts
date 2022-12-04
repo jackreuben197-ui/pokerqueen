@@ -404,7 +404,6 @@ export default class TexasGame {
         this.dicSeatOnlyClient = new Map<number, Seat>();
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
-        GameCache.Instance.CurGame
     }
 
     RegisterMsgHandler() {
@@ -483,8 +482,8 @@ export default class TexasGame {
 
 
 
-    public EnterRoom(id) {
-        this.TexasGameUtils.EnterRoom(id);
+    public EnterRoom() {
+        this.TexasGameUtils.EnterRoom();
     }
     //更新房间数据
     public UpdateRoom(obj: ServerMessageEnterRoom.AsObject) {
@@ -493,13 +492,13 @@ export default class TexasGame {
 
 
     protected HideWaitForStartTips() {
-        if (this.uirc.imageWaitForStartTips.activeInHierarchy) {
-            this.uirc.imageWaitForStartTips.active = false;
+        if (this.uirc.Image_WaitForStartTips.activeInHierarchy) {
+            this.uirc.Image_WaitForStartTips.active = false;
         }
     }
     protected HideSelectSeatTips() {
-        if (this.uirc.imageSelectSeatTips.activeInHierarchy) {
-            this.uirc.imageSelectSeatTips.active = false;
+        if (this.uirc.Image_SelectSeatTips.activeInHierarchy) {
+            this.uirc.Image_SelectSeatTips.active = false;
         }
     }
 
@@ -518,12 +517,8 @@ export default class TexasGame {
         if (this.listSeat?.length) {
 
         } else {
-            this.KillAllTweener(true);// 清掉所有动画，避免极端条件下，动画结束的操作覆盖重置后的方法
+            this.ClearTableUI();
             this.HideCancelTrustBtn();
-            this.HideSeeMorePublic();
-            this.HideSelectSeatTips();
-            this.HideWaitForStartTips();
-            this.HideOperationPanel();
             this.HideWaitBlindBtn();
             this.InitSeatByCount();
             this.InitOperationPos();
@@ -657,7 +652,7 @@ export default class TexasGame {
             //更新玩家离线状态
             mSeat.UpdateOnOrOffLine();
         }
-        this.uirc.imageWaitForStartTips.active = this.gamestatus == 0;
+        this.uirc.Image_WaitForStartTips.active = this.gamestatus == 0;
         this.UpdateAlreadAnte();
         this.UpdateRoomDes();
         this.UpdatePublicCardsNoAnim();
@@ -840,14 +835,15 @@ export default class TexasGame {
 
             if (i == 0) {
 
-                mObj = this.uirc.transAllPot;
-                //cc.instantiate(this.uirc.transAllPot);
+                mObj = this.uirc.TransAllPot_Pool.GetNode();
+
                 mObj.setParent(this.uirc.transPots);
                 mObj.setPosition(GameUtil.TexasPots[0]);
                 //mObj.transform.localRotation = Quaternion.identity;
                 mObj.setScale(cc.Vec3.ONE);
                 mObj.name = `Pot${i}`;
                 mPotInfo = new PotInfo(mObj);
+                mPotInfo.potType = 2;
                 this.uirc.listPotInfo.push(mPotInfo);
                 mPotInfo.textPot.string = StringHelper.getStringDiv100(this.pots[i]);
                 mObj.active = this.pots[i] > 0;
@@ -861,6 +857,7 @@ export default class TexasGame {
                 mObj.name = `Pot${i}`;
 
                 mPotInfo = new PotInfo(mObj);
+                mPotInfo.potType = 1;
                 this.uirc.listPotInfo.push(mPotInfo);
 
                 //mPotInfo.imagePot.sprite = rcChipSprite.Get<Sprite>(GameUtil.GetChipSpriteName(pots[i]));
@@ -1060,7 +1057,7 @@ export default class TexasGame {
     /// <param name="content"></param>
     public ShowSeeMorePublicTips(content: string) {
         this.uirc.textSeeMorePublicTips.string = content;
-        this.uirc.imageSeeMorePublicTips.active = true;
+        this.uirc.Image_SeeMorePublicTips.active = true;
     }
     // 重置位置信息
     public ResetSeatUIInfo(clientSeatId: number): void {
@@ -1168,6 +1165,22 @@ export default class TexasGame {
                     }
                 } else {
 
+                    //判断朋友桌带入是否审核通过
+                    if (tResp.data.bring_in_apply) {
+                        GameCache.Instance.friendBringInStatus = tResp.data.bring_in_apply.status;
+                        if (tResp.data.bring_in_apply.status == 2) {
+                            GameCache.Instance.CurGame.AddChips(tResp.data.bring_in_apply.bring_in);
+                            return;
+                        }
+                    }
+
+                    if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+
+                        this.ShowSetAutoAddChips();
+                    }
+                    else {
+                        this.ShowAddChips();
+                    }
                 }
             }
             else {
@@ -1456,14 +1469,15 @@ export default class TexasGame {
             let mObj: cc.Node = null;
             let mPotInfo: PotInfo = null;
             if (this.uirc.listPotInfo.length == 0) {
-
-                mObj = cc.instantiate(this.uirc.transAllPot);
+                mObj = this.uirc.TransAllPot_Pool.GetNode();
+                //cc.instantiate(this.uirc.transAllPot);
                 mObj.setParent(this.uirc.transPots);
                 mObj.setPosition(GameUtil.TexasPots[0]);
                 //mObj.transform.localRotation = Quaternion.identity;
                 mObj.setScale(cc.Vec3.ONE);
                 mObj.name = `Pot${0}`;
                 mPotInfo = new PotInfo(mObj);
+                mPotInfo.potType = 2;
                 this.uirc.listPotInfo.push(mPotInfo);
             }
             else {
@@ -1559,7 +1573,7 @@ export default class TexasGame {
                 }
             }
         }
-        this.uirc.buttonDelay.active = true;
+        this.uirc.Button_Delay.active = true;
         this.delayCount = delay;
         this.UpdateDelayBtn();
         UIComponent.Instance.ShowUI(PrefabUI.UIOperationComponent, operationData);
@@ -1577,7 +1591,7 @@ export default class TexasGame {
                 }
             }
         }
-        this.uirc.buttonDelay.active = false;
+        this.uirc.Button_Delay.active = false;
         UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
 
     }
@@ -2298,7 +2312,8 @@ export default class TexasGame {
         let mPotInfo: PotInfo = null;
 
         if (this.uirc.listPotInfo.length == 0) {
-            mObj = cc.instantiate(this.uirc.transAllPot);
+            mObj = this.uirc.TransAllPot_Pool.GetNode();
+            //cc.instantiate(this.uirc.transAllPot);
             mObj.parent = this.uirc.transAllPot.parent;
             mObj.setPosition(GameUtil.TexasPots[0]);
             //mObj.transform.localRotation = Quaternion.identity;
@@ -2306,6 +2321,8 @@ export default class TexasGame {
             mObj.name = `Pot${0}`;
 
             mPotInfo = new PotInfo(mObj);
+            mPotInfo.potType = 2;
+
             this.uirc.listPotInfo.push(mPotInfo);
         }
         else {
@@ -2330,18 +2347,18 @@ export default class TexasGame {
         this.HideBtnDelay(true);
         //使用次数
         if (this.delayCount >= 2) {
-            this.uirc.buttonDelay.getChildByName("click").getComponent(cc.Button).interactable = false;
-            this.uirc.buttonDelay.getChildByName("Text_Time").getComponent(cc.Label).string = "0";
+            this.uirc.Button_Delay.getChildByName("click").getComponent(cc.Button).interactable = false;
+            this.uirc.Button_Delay.getChildByName("Text_Time").getComponent(cc.Label).string = "0";
             this.HideBtnDelay(false);
         }
         else {
-            this.uirc.buttonDelay.getChildByName("click").getComponent(cc.Button).interactable = true;
-            this.uirc.buttonDelay.getChildByName("Text_Coin").getComponent(cc.Label).string = `${StringHelper.GetSignedLongString(this.TexasGameUtils.AddTimeCost())}`;
-            this.uirc.buttonDelay.getChildByName("Text_Time").getComponent(cc.Label).string = this.delayCount > 0 ? "+20s" : "+30s";
+            this.uirc.Button_Delay.getChildByName("click").getComponent(cc.Button).interactable = true;
+            this.uirc.Button_Delay.getChildByName("Text_Coin").getComponent(cc.Label).string = `${StringHelper.GetSignedLongString(this.TexasGameUtils.AddTimeCost())}`;
+            this.uirc.Button_Delay.getChildByName("Text_Time").getComponent(cc.Label).string = this.delayCount > 0 ? "+20s" : "+30s";
         }
     }
     public HideBtnDelay(isActive: boolean): void {
-        this.uirc.buttonDelay.active = isActive;
+        this.uirc.Button_Delay.active = isActive;
     }
 
     /// <summary>
@@ -2397,8 +2414,8 @@ export default class TexasGame {
 
         if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit)//MTT没有查看翻牌
         {
-            //this.uirc.buttonSeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
-            this.uirc.buttonSeeMorePublic.active = true;
+            //this.uirc.Button_SeeMorePublic.getChildByName("BtnArea").getComponent(cc.Button).interactable = true;
+            this.uirc.Button_SeeMorePublic.active = true;
         }
 
     }
@@ -2569,6 +2586,7 @@ export default class TexasGame {
     /// 清空公共牌UI
     /// </summary>
     public ClearSecondPublicCardsUI(): void {
+        cc.log("ClearSecondPublicCardsUI");
         let PublicCardInfo: PublicCardInfo = null;
         for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
             PublicCardInfo = this.uirc.listSecondCards[i];
@@ -2579,7 +2597,6 @@ export default class TexasGame {
             PublicCardInfo.trans.active = false;
         }
     }
-
     /**
      * 显示手动设置面板 
      */
@@ -2606,11 +2623,11 @@ export default class TexasGame {
     }
 
     public HideSeeMorePublic(): void {
-        this.uirc.buttonSeeMorePublic.active = false;
+        this.uirc.Button_SeeMorePublic.active = false;
     }
 
     public HideSeeMorePublicTips(): void {
-        this.uirc.imageSeeMorePublicTips.active = false;
+        this.uirc.Image_SeeMorePublicTips.active = false;
     }
 
     //重置座位运动和发牌动画记录
@@ -2629,6 +2646,7 @@ export default class TexasGame {
     }
     //移除座位UI
     removeSeatUI(seatUI: cc.Node) {
+        console.log("removeSeatUI", seatUI?.name);
         if (seatUI) {
             seatUI.parent = null;
             seatUI.scale = 1;
@@ -2654,6 +2672,15 @@ export default class TexasGame {
     /// </summary>
     /// <param name="complete"></param>
     protected KillAllTweener(complete = false): void {
+
+        console.log("TexasGame KillAllTweener");
+
+        if (null != this.sequenceUpdatePublicCards && this.sequenceUpdatePublicCards.IsPlaying) {
+
+            this.sequenceUpdatePublicCards.Kill();
+
+        }
+
         // if (null != tweenerResetSeatUIInfo && tweenerResetSeatUIInfo.IsPlaying()) {
         //     tweenerResetSeatUIInfo.Kill(complete);
         // }
@@ -2809,53 +2836,8 @@ export default class TexasGame {
 
     }
 
-    /**
-     * 退出
-     */
-    Dispose() {
 
-        console.log("TexasGame Dispose");
 
-        this.RemoveMsgHandler();
-
-        this.ClearAllData();
-
-        this.ClearAllPlayers();
-
-        this.KillAllTweener();
-
-        GameCache.Instance.CurGame = null;
-        // 清空公共牌
-        // if (null != this.uirc?.listCards)
-        //     this.uirc.listCards = [];
-
-        // 清空座位
-        // if (null != this.listSeat) {
-        //     for (let i = 0; i < this.listSeat.length; i++) {
-        //         this.listSeat[i]?.Dispose();
-        //     }
-        //     this.listSeat = null;
-        // }
-
-        // 清空座位(客户端标记)
-        if (null != this.dicSeatOnlyClient) {
-            this.dicSeatOnlyClient.clear();
-            this.dicSeatOnlyClient = null;
-        }
-        // 清空分池
-        if (null != this.uirc?.listPotInfo) {
-            while (this.uirc.listPotInfo.length) {
-                let potInfo = this.uirc.listPotInfo.shift();
-                potInfo.trans.active = false;
-                this.uirc.TransPot_Pool.BackNode(potInfo.trans);
-            }
-        }
-        // 清空自己
-        this.mainPlayer?.Dispose();
-        this.mainPlayer = null;
-        //停止状态机刷新
-        GC.uc.RemoveComponent(this.GameLogicSMComponent);
-    }
 
     //////////////////
     public GetEmptyHandCards(): number[] {
@@ -2954,10 +2936,10 @@ export default class TexasGame {
             return;
         this.lastClickTime = GlobalSession.NowTimeMS;
 
-        if (this.uirc.getButtonInteractable(this.uirc.buttonSeeMorePublic) == false) {
+        if (this.uirc.getButtonInteractable(this.uirc.Button_SeeMorePublic) == false) {
             return;
         }
-        this.uirc.setButtonInteractable(this.uirc.buttonSeeMorePublic, false);
+        this.uirc.setButtonInteractable(this.uirc.Button_SeeMorePublic, false);
 
         ProtocolAgency.Send<ClientMessageShowPublicCards.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_ShowPublicCards,
@@ -3133,25 +3115,79 @@ export default class TexasGame {
             // mPublicCardInfo.cardId = this.cards_1[i];
         }
     }
+    //重连清理
+    ReEnterClear() {
+        this.ClearTableUI();
+        this.ClearOther();
+        this.Enter();
+    }
+    //重连进入
+    ReEnterRoom() {
+        this.EnterRoom();
+    }
+    //清理牌桌
+    ClearTableUI() {
 
+        this.ResetPublicCards();
+        this.ClearPublicCardsUI();
+        this.ClearSecondPublicCardsUI();
+        this.ResetPublicCardsImage();
+        this.ResetSecondPublicCardsImage();
 
+        this.HideSeeMorePublic();
 
-    // // 重置第一套公共牌Id
-    // public ResetPublicCardsId_1(): void {
-    //     this.cards_1 = [-1, -1, -1, -1, -1];
-    // }
+        this.HideSeeMorePublicTips();
 
-    // // 重置第二套公共牌Id
-    // public ResetPublicCardsId_2(): void {
-    //     this.cards_2 = [-1, -1, -1, -1, -1];
-    // }
-    // //获取当前已发第一套公共牌数量
-    // public GetCurPublicCardsCount_1(): number {
+        this.HideOperationPanel();
+        this.HideAutoOperationPanel();
 
-    //     let index = this.cards_1.indexOf(-1);
+        this.uirc.CleanUI();
 
-    //     return index == -1 ? GameUtil.PublicCardMaxCount : index;
+        this.KillAllTweener();
 
-    // }
+    }
+
+    ClearOther() {
+
+        this.ClearAllData();
+
+        this.ClearAllPlayers();
+
+        // 清空座位(客户端标记)
+        if (null != this.dicSeatOnlyClient) {
+            this.dicSeatOnlyClient.clear();
+            this.dicSeatOnlyClient = null;
+        }
+        // 清空分池
+        if (null != this.uirc?.listPotInfo) {
+            while (this.uirc.listPotInfo.length) {
+                let potInfo = this.uirc.listPotInfo.shift();
+                potInfo.trans.active = false;
+                if (potInfo.potType == 1) {
+                    this.uirc.TransPot_Pool.BackNode(potInfo.trans);
+                } else {
+                    this.uirc.TransAllPot_Pool.BackNode(potInfo.trans);
+                }
+            }
+        }
+        // 清空自己
+        this.mainPlayer?.Dispose();
+        this.mainPlayer = null;
+    }
+    /**
+     * 退出
+     */
+    Dispose() {
+
+        console.log("TexasGame Dispose");
+
+        this.ClearTableUI();
+
+        this.ClearOther();
+
+        this.RemoveMsgHandler();
+        //停止状态机刷新
+        GC.uc.RemoveComponent(this.GameLogicSMComponent);
+    }
 
 }

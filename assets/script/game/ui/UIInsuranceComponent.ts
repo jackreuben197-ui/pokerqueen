@@ -472,10 +472,10 @@ export default class UIInsuranceComponent extends UIBase {
     /// </summary>
     UpdateDelayButton() {
         if (this.OnclickDelayButtonTimes > 1) {
-            // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = "";
-            // buttonDelay.node.transform.Find("Text").GetComponent<Text>().text = $"{0}s";
-            // buttonDelay.node.transform.Find("Text").GetComponent<Text>().color = Color.gray;
-            // buttonDelay.node.transform.Find("Image_bean").node.active = false;
+            // Button_Delay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = "";
+            // Button_Delay.node.transform.Find("Text").GetComponent<Text>().text = $"{0}s";
+            // Button_Delay.node.transform.Find("Text").GetComponent<Text>().color = Color.gray;
+            // Button_Delay.node.transform.Find("Image_bean").node.active = false;
             this.lbl_btn_1.getComponent(cc.Label).string = "0s";
             this.lbl_btn_2.getComponent(cc.Label).string = "";
             this.lbl_btn_2.parent.active = false;
@@ -483,15 +483,15 @@ export default class UIInsuranceComponent extends UIBase {
         }
         this.lbl_btn_2.parent.active = true;
         let fee = 200 * Math.pow(2, this.addTimeCount) * 0.01;
-        // buttonDelay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = $"{StringHelper.GetDoubleString(fee)}";
+        // Button_Delay.node.transform.Find("Text_delay_bean").GetComponent<Text>().text = $"{StringHelper.GetDoubleString(fee)}";
         this.lbl_btn_2.getComponent(cc.Label).string = StringHelper.GetLongString(fee);
 
         if (this.OnclickDelayButtonTimes == 1) {
             this.DelayTimes = 20;
         }
-        // buttonDelay.node.transform.Find("Text").GetComponent<Text>().text = $"+{DelayTimes}s";
+        // Button_Delay.node.transform.Find("Text").GetComponent<Text>().text = $"+{DelayTimes}s";
         this.lbl_btn_1.getComponent(cc.Label).string = this.DelayTimes.toString() + "s";
-        // buttonDelay.node.transform.Find("Text").GetComponent<Text>().color = Color.white;
+        // Button_Delay.node.transform.Find("Text").GetComponent<Text>().color = Color.white;
     }
 
     /// <summary>

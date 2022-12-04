@@ -602,7 +602,7 @@ export default class MTTGame extends TexasGame {
         let info: string = "";
         if (GameCache.Instance.match_id > 0) {
             //mStringBuilder.AppendLine($"{LanguageManager.Get("UITexasReport_Text_DeskNumTip")}:{GameCache.Instance.room_id}-{mHandNum}");
-            info += `\n${i18nMgr.Get("UITexasReport_Text_DeskNumTip")}:${GameCache.Instance.room_id}-${this.mHandNum}`;
+            info += `${i18nMgr.Get("UITexasReport_Text_DeskNumTip")}:${GameCache.Instance.room_id}-${this.mHandNum}`;
         }
 
         info += `\n${GameCache.Instance.roomName}`;

@@ -6,6 +6,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
+import WebSocketClient from "../../net/websocket/WebSocketClient";
 import { ActionLimit, Def } from "../../protobuf/holdem/define_pb";
 import { ClientMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_agree_second_pcs_active_pb";
 import { ClientMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
@@ -30,7 +31,7 @@ export default class TexasGameUtils {
     /**
      * 请求进入房间
      */
-    public EnterRoom(id) {
+    public EnterRoom() {
 
         let roomType = GameCache.Instance.room_type;
 
@@ -78,17 +79,21 @@ export default class TexasGameUtils {
      * 离开房间
      */
     public LeaveRoom() {
-        ProtocolAgency.Send<ClientMessageLeave.AsObject>({
-            Code: ProtocolCode.Protocol_Holdem_Leave,
-            RoomID: GameCache.Instance.room_id,
-            MatchID: GameCache.Instance.match_id,
-            Body: {
-                room: {
-                    roomId: GameCache.Instance.room_id,
-                    matchId: GameCache.Instance.match_id,
-                }
-            },
-        });
+        if (WebSocketClient.CheckOpen()) {
+            ProtocolAgency.Send<ClientMessageLeave.AsObject>({
+                Code: ProtocolCode.Protocol_Holdem_Leave,
+                RoomID: GameCache.Instance.room_id,
+                MatchID: GameCache.Instance.match_id,
+                Body: {
+                    room: {
+                        roomId: GameCache.Instance.room_id,
+                        matchId: GameCache.Instance.match_id,
+                    }
+                },
+            });
+        } else {
+            this.ExitRoom();
+        }
     }
     /// <summary>
     /// 站起

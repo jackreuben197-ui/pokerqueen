@@ -275,7 +275,7 @@ export default class TexasGameProtocol {
         this.game.gamestatus = 1;
         GameCache.Instance.GameStatus = this.game.gamestatus;
         this.game.cacheRound = Def.Round.PREFLOP;
-        this.game.uirc.imageWaitForStartTips.active = false;
+        this.game.uirc.Image_WaitForStartTips.active = false;
         this.game.fuck4thPCardByInsuranceState = 0;
         this.game.isAllinGetPlayerCards = false;
         this.game.lastBankerIndex = this.game.bankerIndex;
@@ -291,6 +291,9 @@ export default class TexasGameProtocol {
         // this.game.ResetPublicCardsId_2();
         this.game.ResetPublicCards();
         this.game.ClearPublicCardsUI();
+        this.game.ClearSecondPublicCardsUI();
+        this.game.ResetPublicCardsImage();
+        this.game.ResetSecondPublicCardsImage();
         this.game.HideWaitBlindBtn();
         let Seat: Seat = null;
         let SeverSeatIds: number[] = [];
@@ -439,8 +442,8 @@ export default class TexasGameProtocol {
         if (rec.status != 0)
             return;
         if (!this.game.cacheCancelKeepSeat) {
-            this.game.uirc.imageReserveSeatTips.active = true;
-            this.game.TexasGameUtils.WaitFewSeconds(this.game.uirc.imageReserveSeatTips, 3000);
+            this.game.uirc.Image_ReserveSeatTips.active = true;
+            this.game.TexasGameUtils.WaitFewSeconds(this.game.uirc.Image_ReserveSeatTips, 3000);
         }
     }
     /// <summary>
@@ -526,7 +529,7 @@ export default class TexasGameProtocol {
         this.game.cacheRound = rec.round;
         this.game.UpgradePublicCards(1, rec.publicCardsList);
         //启用按钮
-        this.game.uirc.buttonSeeMorePublic.getChildByName("click").getComponent(cc.Button).interactable = true;
+        this.game.uirc.Button_SeeMorePublic.getChildByName("click").getComponent(cc.Button).interactable = true;
         // 花费查看未发公共牌
         if (this.game.GetPublicCardsCount(1) == 5) {
             this.game.HideSeeMorePublic();
@@ -1218,9 +1221,6 @@ export default class TexasGameProtocol {
         this.game.autoFold = false;
         let iCount: number = this.game.GetPublicCardsCount(1);  // 要在更新公共牌前拿数量
 
-        console.log("HandleGetPublicCards : ", this.game.GameState, iCount);
-        console.log("this.game.cards>>>>>", this.game.GetPublicCards(1));
-
         //未发公共牌状态
         if (this.game.GameState == TexasGameState.HandFlop && iCount == 0) {
             this.game.UpgradePublicCards(1, source.publicCardsArrayList);
@@ -1439,11 +1439,11 @@ export default class TexasGameProtocol {
         //每手清理缓存购买池子人数
         this.game.cacheBuyInsurancePotUserCount = 0;
         this.game.IsSecondPsc = false;
-        this.game.HideSeeMorePublic();
-        this.game.HideSeeMorePublicTips();
+        // this.game.HideSeeMorePublic();
+        // this.game.HideSeeMorePublicTips();
 
-        this.game.HideWaitBlindBtn();
-        this.game.HideOperationPanel();
+        // this.game.HideWaitBlindBtn();
+        // this.game.HideOperationPanel();
         //防止大牌动画未消失
         if (this.game.isPlayingBigWinAnimation) {
             //UIComponent.Instance.HideUI(UIType.UIBigWinAnimation);
@@ -1456,13 +1456,7 @@ export default class TexasGameProtocol {
         this.game.pots = [];
         this.game.UpdatePots();
 
-        // 刷新所有公共牌
-        this.game.ResetPublicCards();
-        //this.game.ResetPublicCardsId_1();
-        this.game.ResetPublicCardsImage();
-
-        //this.game.ResetPublicCardsId_2();
-        this.game.ResetSecondPublicCardsImage();
+        this.game.ClearTableUI();
 
 
         if (null != this.game.cacheTrunOutsCards) {

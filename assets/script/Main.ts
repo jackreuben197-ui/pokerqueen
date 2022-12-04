@@ -13,10 +13,14 @@ import { GameConfig } from "./config/GameConfig";
 import GC from "./frame/GameControl";
 import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
+import WebSocketClient from "./net/websocket/WebSocketClient";
 import CCTools from "./tools/CCTools";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
 
 const { ccclass, property } = cc._decorator;
+
+
+
 
 @ccclass
 export default class Main extends cc.Component {
@@ -40,12 +44,14 @@ export default class Main extends cc.Component {
     ////////////////////////////////////调试开关
 
 
-
     static ShowSeatID: number;//显示seat id
 
 
     async onLoad() {
 
+        if (!CCTools.getQueryString("log")) {
+            console.log = function () { }
+        }
         console.log("游戏启动", cc.sys.os);
 
         GC.init();
@@ -75,6 +81,23 @@ export default class Main extends cc.Component {
         Main.Toast_Node = Main.Toast.getChildByName("Toast_Node");
 
         UIComponent.Instance.SetPrefabNode(PrefabUI.UIPreloading, Main.UIPreloading);
+
+
+        cc.log(WebSocketClient);
+
+        cc.game.on(cc.game.EVENT_HIDE, () => {
+            cc.log("cc.game.EVENT_HIDE");
+            GC.game_active = false;
+        })
+        cc.game.on(cc.game.EVENT_SHOW, () => {
+            cc.log("cc.game.EVENT_SHOW");
+            GC.game_active = true;
+            //游戏从后台返回前台的处理
+            //检测WebSocket状态
+            if (!WebSocketClient.CheckOpen()) {
+                WebSocketClient.TryReconnect();
+            }
+        })
 
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());

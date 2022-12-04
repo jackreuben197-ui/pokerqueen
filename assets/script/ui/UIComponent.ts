@@ -84,7 +84,7 @@ export default class UIComponent {
     //隐藏节点
     HideUI<T>(com: PrefabUI, param?: T) {
         let node = this.GetPrefabNode(com);
-        if (node) {
+        if (node && node.active) {
             node.active = false;
             let ui_component: UIBase = node.getComponent(UIBase);
             ui_component?.onClose(param);

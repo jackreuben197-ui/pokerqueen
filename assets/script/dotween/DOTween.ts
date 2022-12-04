@@ -115,6 +115,7 @@ export class Sequence<T> {
             cc.Tween.stopAllByTarget(target);
         }
         cc.Tween.stopAllByTarget(this._mainTarget);
+        this._isPlaying = false;
     }
 }
 
