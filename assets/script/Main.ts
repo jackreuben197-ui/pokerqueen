@@ -49,7 +49,6 @@ export default class Main extends cc.Component {
 
     async onLoad() {
 
-
         if (!CCTools.getQueryString("log")) {
             console.log = function () { }
         }

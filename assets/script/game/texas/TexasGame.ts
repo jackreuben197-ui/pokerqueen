@@ -1165,6 +1165,22 @@ export default class TexasGame {
                     }
                 } else {
 
+                    //判断朋友桌带入是否审核通过
+                    if (tResp.data.bring_in_apply) {
+                        GameCache.Instance.friendBringInStatus = tResp.data.bring_in_apply.status;
+                        if (tResp.data.bring_in_apply.status == 2) {
+                            GameCache.Instance.CurGame.AddChips(tResp.data.bring_in_apply.bring_in);
+                            return;
+                        }
+                    }
+
+                    if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+
+                        this.ShowSetAutoAddChips();
+                    }
+                    else {
+                        this.ShowAddChips();
+                    }
                 }
             }
             else {
