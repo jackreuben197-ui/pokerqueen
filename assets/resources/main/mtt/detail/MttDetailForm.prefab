@@ -11102,9 +11102,7 @@
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
-    "_spriteFrame": {
-      "__uuid__": "198a2a90-07fb-47d6-8778-8a6db695ac39"
-    },
+    "_spriteFrame": null,
     "_type": 2,
     "_segments": 306,
     "_N$alphaThreshold": 1,
