@@ -477,10 +477,11 @@ export default class LoginScene extends BaseScene {
     }
 
     get codeTimeKey() {
-        if (this._loginProcess == ELoginProcess.login && this._isQuiklyLogin) {
-            return StorageKey.CODE_TIME_QUIKLY_LOGIN_PHONE;
-        } else if (this._loginProcess == ELoginProcess.register) {
-            return [StorageKey.CODE_TIME_REGIST_PHONE, StorageKey.CODE_TIME_REGIST_MAIL][this._loginType]
+        if (this._loginProcess == ELoginProcess.login) {//&& this._isQuiklyLogin
+            return [StorageKey.CODE_TIME_QUIKLY_LOGIN_PHONE, StorageKey.CODE_TIME_EMAIL][this._loginType]
+        }
+        else if (this._loginProcess == ELoginProcess.register) {
+            return [StorageKey.CODE_TIME_REGIST_PHONE,][this._loginType]
         } else if (this._loginProcess == ELoginProcess.reset) {
             return [StorageKey.CODE_TIME_RESET_PHONE, StorageKey.CODE_TIME_RESET_MAIL][this._loginType]
         }
