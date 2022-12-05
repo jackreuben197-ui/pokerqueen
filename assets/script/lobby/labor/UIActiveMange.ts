@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 11:00:04
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:12:29
+ * @LastEditTime: 2022-12-05 13:21:12
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIActiveMange.ts
  */
 
@@ -13,6 +13,7 @@ import { APIOrgClubActivityCreate, APIOrgClubUploadIcon, Web_Org_Club_Get } from
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
+import ComFormTitle from "../../common/ComFormTitle";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -32,12 +33,16 @@ export default class UIActiveMange extends BaseForm {
     iconUrl = 'active0';
     activeType = 2;
     picType = 'activeB1';
-
-    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
-        super.onShow(param, fromUI, sceneUI);
+    private comFormTitle: ComFormTitle = null;
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
 
     }
-
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
+        this.comFormTitle.initData('UIClub_ActiveAdmin', this);
+    }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
     }

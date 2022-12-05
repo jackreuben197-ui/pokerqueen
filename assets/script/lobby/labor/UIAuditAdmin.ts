@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:12:45
+ * @LastEditTime: 2022-12-05 13:20:20
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAuditAdmin.ts
  */
 
@@ -15,6 +15,7 @@ import UIComponent from "../../ui/UIComponent";
 import UIAdmin from "./UIAdmin";
 import { UIClubModel } from "./UIClubModel";
 import { APIOrgChangeClubData, APIOrgMangerList, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import ComFormTitle from "../../common/ComFormTitle";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -29,12 +30,17 @@ export default class UIAuditAdmin extends BaseForm {
     private _reqEnd: boolean = false;
     private _list: Array<any> = [];
     private _total: number = 0
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
 
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+        this.comFormTitle.initData('UIClub_MangerAdmin', this);
+
         this.reqDataAgain();
         this.list.scrollingCB = this.scrollingCB;
 

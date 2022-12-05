@@ -284,13 +284,6 @@ export const UIDefine = {
 
     },
 
-    BottomTouchBoard: {
-        UIType: UIType.Board,
-        Name: "BottomTouchBoard",
-        Bundle: null,
-        Path: "main/prefab/board/BottomTouchBoard",
-    },
-
     /**
      * 确认取消 弹窗面板(默认触摸全屏可关闭)
      */
@@ -384,7 +377,7 @@ export const UIDefine = {
     },
     UIManageLabor: {
         UIType: UIType.Form,
-        Name: "UIManageLabor ",
+        Name: "UIManageLabor",
         Bundle: null,
         Path: "main/club/UIManageLabor",
     },
@@ -573,7 +566,7 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/ui/UIMTTMineRankComponent",
     },
-    
+
 
 
 

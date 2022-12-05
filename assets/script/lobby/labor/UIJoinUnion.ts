@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 17:56:34
+ * @LastEditTime: 2022-12-05 12:47:08
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -13,7 +13,7 @@ import { Web_Org_Club_Get, APIOrgTribeSearchByID, Web_Org_Club_Player_Apply_List
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
-
+import ComFormTitle from "../../common/ComFormTitle";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -44,12 +44,17 @@ export default class UIJoinUnion extends BaseForm {
     @property(cc.EditBox)
     contentEdit: cc.EditBox = null;
 
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
         this.UIDialogComponent.active = false
+        let title = "UIClub_TribeJoin"
+        this.comFormTitle.initData(title, this);
     }
     async sousuoBtn() {
         let string = this.EditBox.string

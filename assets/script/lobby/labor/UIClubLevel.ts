@@ -10,9 +10,11 @@ import { UIClubModel } from "./UIClubModel";
  * @Date: 2022-11-08 12:28:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:13:08
+ * @LastEditTime: 2022-12-05 13:06:39
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubLevel.ts
  */
+import ComFormTitle from "../../common/ComFormTitle";
+
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -56,12 +58,18 @@ export default class UIClubLevel extends BaseForm {
     _tempLevel = 1;
     _maxLevel = 9;
 
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+        let title = "club_Level"
+        this.comFormTitle.initData(title, this);
         this.getData();
+
     }
     async getData() {
         let _data: any = Web_Org_Club_Get.Response.data;

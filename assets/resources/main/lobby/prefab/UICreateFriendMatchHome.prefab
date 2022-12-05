@@ -218,7 +218,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 2000,
-      "height": 113
+      "height": 160
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -230,7 +230,7 @@
       "ctor": "Float64Array",
       "array": [
         -163.126,
-        869.271,
+        903.338,
         0,
         0,
         0,
@@ -724,7 +724,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 418.22900000000004,
+    "_top": 360.66200000000003,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -772,9 +772,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 27,
+      "g": 31,
+      "b": 34,
       "a": 255
     },
     "_contentSize": {
@@ -832,7 +832,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "8fb665c0-6d42-4654-9a4a-ada90d6a2f21"
+      "__uuid__": "a23235d1-15db-4b95-8439-a2e005bfff91"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -1015,7 +1015,7 @@
       "ctor": "Float64Array",
       "array": [
         5.555,
-        1266.2,
+        1216.2,
         0,
         0,
         0,
@@ -1085,7 +1085,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 40,
+    "_top": 90,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -1150,7 +1150,7 @@
       "ctor": "Float64Array",
       "array": [
         49.461,
-        1228.4,
+        1178.4,
         0,
         0,
         0,
@@ -1566,7 +1566,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        978.4000000000001,
+        928.4000000000001,
         0,
         0,
         0,
@@ -3969,7 +3969,7 @@
     "_alignFlags": 41,
     "_left": 0,
     "_right": 0,
-    "_top": 115.59999999999991,
+    "_top": 165.5999999999999,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -4041,7 +4041,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        628.4000000000001,
+        578.4000000000001,
         0,
         0,
         0,
@@ -4214,7 +4214,7 @@
     "_dstBlendFactor": 771,
     "_string": "我要组局",
     "_N$string": "我要组局",
-    "_fontSize": 40,
+    "_fontSize": 50,
     "_lineHeight": 80,
     "_enableWrapText": false,
     "_N$file": null,
@@ -4393,7 +4393,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 615.5999999999999,
+    "_top": 665.5999999999999,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -4462,7 +4462,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        428.4000000000001,
+        378.4000000000001,
         0,
         0,
         0,
@@ -4513,7 +4513,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 200,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -4526,7 +4526,7 @@
       "ctor": "Float64Array",
       "array": [
         -538.608,
-        0,
+        41.526,
         0,
         0,
         0,
@@ -4567,7 +4567,7 @@
     "_dstBlendFactor": 771,
     "_string": "当前牌局",
     "_N$string": "当前牌局",
-    "_fontSize": 60,
+    "_fontSize": 50,
     "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": null,
@@ -4607,7 +4607,7 @@
     "_alignFlags": 41,
     "_left": 0,
     "_right": 0,
-    "_top": 815.5999999999999,
+    "_top": 865.5999999999999,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -4682,7 +4682,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        328.4000000000001,
+        278.4000000000001,
         0,
         0,
         0,
@@ -4981,8 +4981,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 1015.5999999999999,
-    "_bottom": 429.99999999999955,
+    "_top": 1065.6,
+    "_bottom": 379.99999999999955,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -5116,7 +5116,7 @@
     "_N$startAxis": 0,
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
-    "_N$paddingTop": 40,
+    "_N$paddingTop": 90,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
     "_N$spacingY": 0,

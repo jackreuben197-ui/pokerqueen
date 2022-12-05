@@ -70,7 +70,7 @@ export default class MainTest extends UIBase {
                 ToastManager.Instance.createToast(str);
                 break;
             case "下入面板":
-                UIComponent.open(UIDefine.BottomTouchBoard);
+                //UIComponent.open(UIDefine.BottomTouchBoard);
                 break;
             case "loading":
                 UIComponent.open(UIDefine.UIPromptComponent);

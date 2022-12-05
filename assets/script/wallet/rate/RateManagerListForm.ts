@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 10:50:55
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2022-12-05 13:31:37
+ * @FilePath: /pokerqueen/assets/script/wallet/rate/RateManagerListForm.ts
+ */
 import ComFormTitle from "../../common/ComFormTitle";
 import List from "../../common/List";
 import { EventName } from "../../config/EventName";
@@ -5,6 +13,7 @@ import { UIDefine } from "../../define/UIDefine";
 import RateModel from "../../frame/data/rate/RateModel";
 import GC from "../../frame/GameControl";
 import { Web_Rate_Api } from "../../net/https/WebRequest";
+import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import RateSetItem from "./RateSetItem";
@@ -12,7 +21,7 @@ import RateSetItem from "./RateSetItem";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/wallet/rate/RateManagerListForm')
-export default class RateManagerListForm extends UIBase {
+export default class RateManagerListForm extends BaseForm {
     private comFormTitle: ComFormTitle = null;
     private list: List = null;
     private emptyNode: cc.Node = null;

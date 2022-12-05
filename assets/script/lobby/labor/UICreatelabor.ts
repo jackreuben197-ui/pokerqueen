@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:13:37
+ * @LastEditTime: 2022-12-05 12:45:29
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -16,6 +16,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import upLoadIcon from "../upLoadIcon";
 import { UIClubModel } from "./UIClubModel";
+import ComFormTitle from "../../common/ComFormTitle";
 
 
 
@@ -37,14 +38,19 @@ export default class UICreatelabor extends BaseForm {
     @property(cc.Sprite)
     camera: cc.Sprite = null;
     iconUrl = null;
+    private comFormTitle: ComFormTitle = null;
+
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.editName.string = ''
         this.editjieshao.string = ''
         this.xinxi.string = ''
+        this.comFormTitle.initData('club_2', this);
 
     }
     async commitClick() {

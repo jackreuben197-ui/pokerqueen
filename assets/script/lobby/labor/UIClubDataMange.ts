@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-03 17:13:33
+ * @LastEditTime: 2022-12-05 13:13:34
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
@@ -16,6 +16,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import Data from "./script/Data";
 import { UIClubModel } from "./UIClubModel";
+import ComFormTitle from "../../common/ComFormTitle";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -35,11 +36,15 @@ export default class UIClubDataMange extends BaseForm {
     _clickDataItem = null;
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+        this.comFormTitle.initData('UIClub_DataAdmin', this);
         // this._info = param;
         // if (this._info == null) {
         //     return;
@@ -178,13 +183,13 @@ export default class UIClubDataMange extends BaseForm {
             //普通
             if (i == 1) {
                 lbl.string = "总收益";
-                label.string = StringHelper.getStringDiv100(room_data.total_profit)
+                label.string = StringHelper.DivFloat(room_data.total_profit)
             } else if (i == 2) {
                 lbl.string = "服务费";
-                label.string = StringHelper.getStringDiv100(room_data.service_profit)
+                label.string = StringHelper.DivFloat(room_data.service_profit)
             } else if (i == 3) {
                 lbl.string = "道具分成";
-                label.string = StringHelper.getStringDiv100(room_data.prop_profit);
+                label.string = StringHelper.DivFloat(room_data.prop_profit);
             }
             else if (i == 4) {
                 lbl.string = "手数/局数";
@@ -198,6 +203,11 @@ export default class UIClubDataMange extends BaseForm {
             }
         }
 
+    }
+    DivFloat(num) {
+        let float = num / 100 + '';
+        let dot_index = float.indexOf(".");
+        return float.substring(0, dot_index + 2);
     }
 
     refreshChooseDate(index) {
@@ -283,9 +293,9 @@ export default class UIClubDataMange extends BaseForm {
                 let lbl3 = lbl_down.getChildByName('lbl_Node3').getChildByName('lbl_hand').getComponent(cc.Label);
                 let lbl4 = lbl_down.getChildByName('lbl_Node4').getChildByName('lbl_hand').getComponent(cc.Label);
                 lbl1.string = info.total_hand + ' / ' + info.total_game_cnt
-                lbl2.string = StringHelper.getStringDiv100(info.service_profit)
-                lbl3.string = StringHelper.getStringDiv100(info.prop_profit)
-                lbl4.string = StringHelper.getStringDiv100(info.total_profit)
+                lbl2.string = StringHelper.DivFloat(info.service_profit)
+                lbl3.string = StringHelper.DivFloat(info.prop_profit)
+                lbl4.string = StringHelper.DivFloat(info.total_profit)
 
             }
         }

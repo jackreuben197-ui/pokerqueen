@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 14:36:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:14:22
+ * @LastEditTime: 2022-12-05 12:34:05
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborExaminatMerber.ts
  */
 // Learn TypeScript:
@@ -20,7 +20,7 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { LobbyControl } from "../control/LobbyControl";
 import GGEvent from "../../event/GGEvent";
 import TimeHelper from "../../helper/TimeHelper";
-
+import ComFormTitle from "../../common/ComFormTitle";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -52,12 +52,16 @@ export default class UIlaborExaminatMerber extends BaseForm {
 
 
     topBtnTye = ''
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.topBtnClick(null, 'join')
+        this.comFormTitle.initData("UIClub_Approval", this);
     }
 
     topBtnClick(event, customData) {

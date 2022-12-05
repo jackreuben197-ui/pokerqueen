@@ -1552,8 +1552,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 153,
-      "height": 137
+      "width": 146,
+      "height": 132
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1573,7 +1573,7 @@
         0.7071067811865476,
         1,
         1,
-        1
+        0
       ]
     },
     "_eulerAngles": {
