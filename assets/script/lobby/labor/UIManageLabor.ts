@@ -3,8 +3,8 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:10:28
- * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor .ts
+ * @LastEditTime: 2022-12-05 19:52:21
+ * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
 
@@ -66,7 +66,6 @@ export default class UIManageLabor extends BaseForm {
         let id = this.mask_group.getChildByName('id').getComponent(cc.Label);
         id.string = 'ID:' + data.random_id
         this.EditBox.string = data.desc   //|| '暂无公会说明'
-
         let icon = cc.find('iconMask/icon', this.mask_group);
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), data.logo)
         this.initClubData();

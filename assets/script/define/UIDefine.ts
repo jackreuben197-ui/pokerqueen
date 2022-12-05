@@ -377,7 +377,7 @@ export const UIDefine = {
     },
     UIManageLabor: {
         UIType: UIType.Form,
-        Name: "UIManageLabor ",
+        Name: "UIManageLabor",
         Bundle: null,
         Path: "main/club/UIManageLabor",
     },
@@ -566,7 +566,7 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/ui/UIMTTMineRankComponent",
     },
-    
+
 
 
 
