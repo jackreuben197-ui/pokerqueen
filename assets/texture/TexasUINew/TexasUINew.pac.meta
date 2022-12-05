@@ -22,7 +22,7 @@
     "default": {
       "formats": [
         {
-          "name": "webp",
+          "name": "png",
           "quality": 80
         }
       ]
