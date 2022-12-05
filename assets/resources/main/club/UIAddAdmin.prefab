@@ -33,14 +33,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 59
+        "__id__": 61
       },
       {
-        "__id__": 60
+        "__id__": 62
       }
     ],
     "_prefab": {
-      "__id__": 61
+      "__id__": 63
     },
     "_opacity": 255,
     "_color": {
@@ -370,19 +370,22 @@
       },
       {
         "__id__": 41
+      },
+      {
+        "__id__": 43
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 56
+        "__id__": 58
       },
       {
-        "__id__": 57
+        "__id__": 59
       }
     ],
     "_prefab": {
-      "__id__": 58
+      "__id__": 60
     },
     "_opacity": 255,
     "_color": {
@@ -481,7 +484,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1044,
+        969,
         0,
         0,
         0,
@@ -1420,7 +1423,7 @@
     "_alignFlags": 41,
     "_left": 0,
     "_right": 0,
-    "_top": 200,
+    "_top": 275,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -1447,6 +1450,77 @@
   },
   {
     "__type__": "cc.Node",
+    "_name": "New Node",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 11
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [],
+    "_prefab": {
+      "__id__": 42
+    },
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 95
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        821.5,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "ca7s6mhxdMLKcbsIV4mofi",
+    "sync": false
+  },
+  {
+    "__type__": "cc.Node",
     "_name": "list",
     "_objFlags": 0,
     "_parent": {
@@ -1454,23 +1528,23 @@
     },
     "_children": [
       {
-        "__id__": 42
+        "__id__": 44
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 49
-      },
-      {
-        "__id__": 50
-      },
-      {
         "__id__": 51
+      },
+      {
+        "__id__": 52
+      },
+      {
+        "__id__": 53
       }
     ],
     "_prefab": {
-      "__id__": 55
+      "__id__": 57
     },
     "_opacity": 255,
     "_color": {
@@ -1495,7 +1569,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        944,
+        774,
         0,
         0,
         0,
@@ -1524,24 +1598,24 @@
     "_name": "view",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 41
+      "__id__": 43
     },
     "_children": [
       {
-        "__id__": 43
+        "__id__": 45
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 46
+        "__id__": 48
       },
       {
-        "__id__": 47
+        "__id__": 49
       }
     ],
     "_prefab": {
-      "__id__": 48
+      "__id__": 50
     },
     "_opacity": 255,
     "_color": {
@@ -1595,17 +1669,17 @@
     "_name": "sv_content",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 42
+      "__id__": 44
     },
     "_children": [],
     "_active": true,
     "_components": [
       {
-        "__id__": 44
+        "__id__": 46
       }
     ],
     "_prefab": {
-      "__id__": 45
+      "__id__": 47
     },
     "_opacity": 255,
     "_color": {
@@ -1618,7 +1692,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 255
+      "height": 600
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1659,13 +1733,13 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 43
+      "__id__": 45
     },
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 255
+      "height": 600
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -1702,7 +1776,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 42
+      "__id__": 44
     },
     "_enabled": true,
     "_materials": [
@@ -1722,7 +1796,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 42
+      "__id__": 44
     },
     "_enabled": true,
     "alignMode": 1,
@@ -1760,7 +1834,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 41
+      "__id__": 43
     },
     "_enabled": true,
     "horizontal": false,
@@ -1772,10 +1846,10 @@
     "scrollEvents": [],
     "cancelInnerEvents": true,
     "_N$content": {
-      "__id__": 43
+      "__id__": 45
     },
     "content": {
-      "__id__": 43
+      "__id__": 45
     },
     "_N$horizontalScrollBar": null,
     "_N$verticalScrollBar": null,
@@ -1786,7 +1860,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 41
+      "__id__": 43
     },
     "_enabled": true,
     "alignMode": 1,
@@ -1794,8 +1868,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 400,
-    "_bottom": 220,
+    "_top": 570,
+    "_bottom": 50,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -1813,7 +1887,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 41
+      "__id__": 43
     },
     "_enabled": true,
     "templateType": 2,
@@ -1824,7 +1898,7 @@
     "_slideMode": 1,
     "pageDistance": 0.3,
     "pageChangeEvent": {
-      "__id__": 52
+      "__id__": 54
     },
     "_virtual": true,
     "cyclic": false,
@@ -1833,12 +1907,12 @@
     "_updateRate": 0,
     "frameByFrameRenderNum": 0,
     "renderEvent": {
-      "__id__": 53
+      "__id__": 55
     },
     "selectedMode": 0,
     "repeatEventSingle": false,
     "selectedEvent": {
-      "__id__": 54
+      "__id__": 56
     },
     "_id": ""
   },
@@ -1929,7 +2003,7 @@
     "_N$startAxis": 0,
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
-    "_N$paddingTop": 200,
+    "_N$paddingTop": 275,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
     "_N$spacingY": 0,
@@ -1971,7 +2045,7 @@
       "__id__": 24
     },
     "list": {
-      "__id__": 51
+      "__id__": 53
     },
     "_id": ""
   },

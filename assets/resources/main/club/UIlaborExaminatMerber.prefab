@@ -1193,7 +1193,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1074,
+        954,
         0,
         0,
         0,
@@ -1988,7 +1988,7 @@
     "_alignFlags": 41,
     "_left": 0,
     "_right": 0,
-    "_top": 120,
+    "_top": 240,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -2063,7 +2063,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -20.00000000000034,
+        -140.00000000000034,
         0,
         0,
         0,
@@ -2422,8 +2422,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 420,
-    "_bottom": 379.9999999999993,
+    "_top": 540,
+    "_bottom": 259.9999999999993,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -2485,7 +2485,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 1887.9999999956049
+      "height": 1887.9999999955498
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2497,7 +2497,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -1907.9999999978031,
+        -2027.9999999977756,
         0,
         0,
         0,
@@ -2556,7 +2556,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 1887.9999999956049
+      "height": 1887.9999999955498
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2635,7 +2635,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        943.9999999978024,
+        943.9999999977749,
         0,
         0,
         0,
@@ -2856,8 +2856,8 @@
     "_alignFlags": 45,
     "_left": 0,
     "_right": 0,
-    "_top": 2308.000000000001,
-    "_bottom": -1507.9999999956055,
+    "_top": 2428.000000000001,
+    "_bottom": -1627.9999999955508,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -5600,7 +5600,7 @@
     "_N$startAxis": 0,
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
-    "_N$paddingTop": 120,
+    "_N$paddingTop": 240,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
     "_N$spacingY": 0,
