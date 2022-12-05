@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:04:43
+ * @LastEditTime: 2022-12-05 14:59:42
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght1.ts
  */
 
@@ -40,6 +40,8 @@ export default class slidewidght1 extends cc.Component {
     initUi(data, selectIndex = 0, selectIndex1 = 3) {
         this.itemNode = this.node.getChildByName('itemNode')
         this.nomalItem = this.itemNode.getChildByName('nomalItem')
+        this.nomalItem.width = 100;
+        this.nomalItem.height = 100;
         this.selectNum = this.node.getChildByName('selectNum')
         this.selectNum1 = this.node.getChildByName('selectNum1')
         let _x = 937 / (data.length - 1)
@@ -51,7 +53,8 @@ export default class slidewidght1 extends cc.Component {
         for (let index = 1; index < data.length; index++) {
             let node = cc.instantiate(this.nomalItem);
             node.parent = this.itemNode;
-
+            node.width = 100;
+            node.height = 100;
         }
         for (let index = 0; index < data.length; index++) {
             let _nomalItem = this.itemNode.children[index];
