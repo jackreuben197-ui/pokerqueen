@@ -1,8 +1,18 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 10:50:41
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2022-12-05 20:31:02
+ * @FilePath: /pokerqueen/assets/script/wallet/apply/OrderApplyItem.ts
+ */
 import ListItem from "../../common/ListItem";
 import { EApplyStatus, EOrderOprationStatus } from "../../config/EEnumConfig";
 import { EventName } from "../../config/EventName";
 import OrderApplyItemModel from "../../frame/data/wallet/apply/OrderApplyItemModel";
 import GC from "../../frame/GameControl";
+import WebImageHelper from "../../helper/WebImageHelper";
+import WebHelper from "../../net/https/WebHelper";
 import { Web_Order_apply } from "../../net/https/WebRequest";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -54,7 +64,8 @@ export default class OrderApplyItem extends ListItem {
     initData(data: OrderApplyItemModel) {
         this._data = data;
 
-        this.setTexture(this.icon, this._data.avatar);
+        // this.setTexture();
+        WebImageHelper.SetHeadImage(this.icon, this._data.avatar)
         this.setText(this.userName, this._data.nickname);
         this.setText(this.userDesc, "UIUserDesc", this._data.desc);
         this.setText(this.userId, `ID:${this._data.user_id}`);
