@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:56:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:14:33
+ * @LastEditTime: 2022-12-05 12:27:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborMerberManager.ts
  */
 
@@ -17,7 +17,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import GGEvent from "../../event/GGEvent";
 import memberItem from "./memberItem";
 import List from "../../common/List";
-
+import ComFormTitle from "../../common/ComFormTitle";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -49,12 +49,12 @@ export default class UIlaborMerberManager extends BaseForm {
     private _reqEnd: boolean = false;
     private _list: Array<any> = [];
     private _total: number = 0
-
-
+    private comFormTitle: ComFormTitle = null;
     nickNameSortType: 'up';
     timeSortType: 'up';
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -141,6 +141,8 @@ export default class UIlaborMerberManager extends BaseForm {
     }
 
     async initTop() {
+        let title = "UIClub_MemberManage"
+        this.comFormTitle.initData(title, this, "Text_Approval", this.examination);
         let data: any = Web_Org_Club_Get.Response.data;
         let current = this.topLabel.getChildByName('current').getComponent(cc.Label)
         let total = this.topLabel.getChildByName('total').getComponent(cc.Label)

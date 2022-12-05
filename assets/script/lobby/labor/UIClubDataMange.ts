@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 10:03:31
+ * @LastEditTime: 2022-12-05 13:13:34
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
@@ -16,6 +16,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import Data from "./script/Data";
 import { UIClubModel } from "./UIClubModel";
+import ComFormTitle from "../../common/ComFormTitle";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -35,11 +36,15 @@ export default class UIClubDataMange extends BaseForm {
     _clickDataItem = null;
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+        this.comFormTitle.initData('UIClub_DataAdmin', this);
         // this._info = param;
         // if (this._info == null) {
         //     return;

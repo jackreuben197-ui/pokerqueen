@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:27:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-03 17:27:49
+ * @LastEditTime: 2022-12-05 12:44:01
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchHome.ts
  */
 
@@ -13,7 +13,7 @@ import { APIOrgGetTemplate } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
-
+import ComFormTitle from "../../common/ComFormTitle";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -28,10 +28,12 @@ export default class UICreateMatchHome extends BaseForm {
 
     @property(cc.Node)
     contentModel: cc.Node = null;
-
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
         UIClubModel.mInstance.APIOrgGetRoomConfig()
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     regiterDispatchEvent() {
         super.regiterDispatchEvent();
@@ -57,6 +59,8 @@ export default class UICreateMatchHome extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.refreshModel();
+        let title = "UIClub_MatchTable"
+        this.comFormTitle.initData(title, this);
     }
     createMatch() {
         UIComponent.open(UIDefine.UICreateMatch);

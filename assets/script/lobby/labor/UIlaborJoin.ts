@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:14:27
+ * @LastEditTime: 2022-12-05 12:46:41
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
@@ -13,7 +13,7 @@ import { Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id } from "../..
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
-
+import ComFormTitle from "../../common/ComFormTitle";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -31,14 +31,18 @@ export default class UIlaborJoin extends BaseForm {
 
     @property(cc.Node)
     contentList: cc.Node = null;
-
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.initApplyList();
         this.EditBox.string = '';
+        let title = "club_3"
+        this.comFormTitle.initData(title, this);
     }
     async sousuoBtn() {
         let string = this.EditBox.string

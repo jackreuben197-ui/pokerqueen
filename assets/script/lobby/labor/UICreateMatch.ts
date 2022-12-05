@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-07 11:17:34
+ * @LastEditTime: 2022-12-05 12:43:15
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -15,6 +15,8 @@ import TimeHelper from "../../helper/TimeHelper";
 import { APIOrgGetRoomConfig, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import { UIClubModel } from "./UIClubModel";
+import ComFormTitle from "../../common/ComFormTitle";
+
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -139,10 +141,12 @@ export default class UICreateMatch extends BaseForm {
 
     }
     _editModelData = null;
-
+    private comFormTitle: ComFormTitle = null;
     _data: LobbyRoomListItem = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
         this.tabBtnsParent = this.getChildNodeOrComponent("tabBtns");
         this.tabBtnsParent.children.forEach((item, index) => {
             this.bindClick(item, this.onClickTabBtns, index);
@@ -185,7 +189,8 @@ export default class UICreateMatch extends BaseForm {
             this._editModelData = null;
         }
         this.initUI();
-
+        let title = "UIClub_MatchHome"
+        this.comFormTitle.initData(title, this);
     }
 
     private onClickTabBtns(index: number): void {

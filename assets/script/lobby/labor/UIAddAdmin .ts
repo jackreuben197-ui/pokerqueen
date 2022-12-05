@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 13:55:48
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 14:59:37
+ * @LastEditTime: 2022-12-05 13:27:48
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIAddAdmin .ts
  */
 
@@ -13,6 +13,7 @@ import UIClubMamber from "./UIClubMamber";
 import { UIClubModel } from "./UIClubModel";
 import { APIOrgClubGetJoinlList, APIOrgClubMember, APIOrgMangerList, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { EventName } from "../../config/EventName";
+import ComFormTitle from "../../common/ComFormTitle";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -32,13 +33,18 @@ export default class UIAddAdmin extends BaseForm {
     private _list: Array<any> = [];
     private _total: number = 0
 
+    private comFormTitle: ComFormTitle = null;
+
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
 
     async onShow(param?: any) {
 
         super.onShow(param);
+        this.comFormTitle.initData('UIClub_AddAdmin', this);
         this.reqDataAgain();
         this.list.scrollingCB = this.scrollingCB;
         this.EditBox.string = null;
