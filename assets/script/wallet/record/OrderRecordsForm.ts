@@ -42,6 +42,7 @@ export default class OrderRecordsForm extends BaseForm {
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
             case Web_Order_Rcords.USER_RECORD:
+            case Web_Order_Rcords.CLUB_GRANT:
             case Web_Order_Rcords.CLUB_RECORD: {
                 this.updateList();
             } break;

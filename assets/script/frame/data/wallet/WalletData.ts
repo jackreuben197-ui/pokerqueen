@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 10:50:41
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-06 13:42:51
+ * @FilePath: /pokerqueen/assets/script/frame/data/wallet/WalletData.ts
+ */
 import { EOrderOprationStatus, EOrderType } from "../../../config/EEnumConfig";
 import { Web_Club_Issue_Gold, Web_Gold_Change_Log, Web_Order_apply, Web_Order_Rcords, Web_Org_Club_Get, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../../../net/https/WebRequest";
 import { EWalletGoldOpration } from "../../../wallet/WalletConfig";
@@ -23,6 +31,7 @@ export default class WalletData extends BaseData {
                 this.goldChangeLogs.updateData(msg, true);
             } break;
             case Web_Order_Rcords.USER_RECORD:
+            case Web_Order_Rcords.CLUB_GRANT:
             case Web_Order_Rcords.CLUB_RECORD: {
                 this.orderRecord.updateData(msg, sendInfo.order_type);
             } break;
@@ -77,6 +86,9 @@ export default class WalletData extends BaseData {
             sendData = { limit: limit, offset: offset, order_type: type, user_type: 1 };
         }
         let api = isClub ? Web_Order_Rcords.CLUB_RECORD : Web_Order_Rcords.USER_RECORD;
+        if (isClub && type == EOrderType.fafang) {
+            api = Web_Order_Rcords.CLUB_GRANT
+        }
         this.reqServePost(api, sendData);
     }
 
