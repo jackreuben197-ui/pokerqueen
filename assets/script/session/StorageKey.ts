@@ -9,6 +9,8 @@ import LocalStoreManager from "../frame/manager/LocalStoreManager";
  * @FilePath: /pokerqueen/assets/script/session/StorageKey.ts
  */
 export default class StorageKey {
+    //清理所有记录的标记
+    static CLEAN_ALL_FLAG: string = "CLEAN_ALL_FLAG";
     //登录数据
     static LOGIN_DATA: string = "LOGIN_DATA";
     //token字符串

@@ -14,6 +14,7 @@ import GC from "./frame/GameControl";
 import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
 import WebSocketClient from "./net/websocket/WebSocketClient";
+import StorageKey from "./session/StorageKey";
 import CCTools from "./tools/CCTools";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
 
@@ -43,20 +44,25 @@ export default class Main extends cc.Component {
 
     ////////////////////////////////////调试开关
 
-
     static ShowSeatID: number;//显示seat id
-
 
     async onLoad() {
 
         if (!CCTools.getQueryString("log")) {
-            console.log = function () { }
+            //console.log = function () { }
         }
         console.log("游戏启动", cc.sys.os);
 
         GC.init();
 
         GC.localStore.keyPre = CCTools.getQueryString("player") || "";
+
+        let flag = GC.localStore.getItem(StorageKey.CLEAN_ALL_FLAG);
+
+        if (+flag != GameConfig.clean_all_flag) {
+            GC.localStore.clear();
+            GC.localStore.setItem(StorageKey.CLEAN_ALL_FLAG, GameConfig.clean_all_flag);
+        }
 
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)

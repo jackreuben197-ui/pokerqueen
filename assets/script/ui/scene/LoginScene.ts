@@ -705,4 +705,36 @@ export default class LoginScene extends BaseScene {
     clickInstagram() {
         GC.sdk.instagramLogin();
     }
+
+
+    vconsole_click_time = 0;
+    timeRun = false;
+    timePass = 0;
+    vconsole_is_show: boolean = false;
+    /**开启vconsole */
+    clickShowVconsole() {
+        if (this.vconsole_is_show == true) return;
+        if (this.timeRun == false) {
+            this.timeRun = true;
+            this.vconsole_click_time = 0;
+        }
+        this.vconsole_click_time++;
+    }
+    update(dt) {
+        if (this.timeRun) {
+            this.timePass += dt;
+            if (this.timePass > 2) {
+                //判断次数
+                if (this.vconsole_click_time > 8) {
+                    //显示vconsole
+                    this.vconsole_is_show = true;
+                    (window as any).createVconsole?.();
+                    cc.log("显示console");
+                }
+                //cc.log("失败", this.vconsole_click_time);
+                this.timeRun = false;
+                this.timePass = 0;
+            }
+        }
+    }
 }

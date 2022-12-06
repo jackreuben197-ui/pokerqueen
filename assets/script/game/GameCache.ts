@@ -281,10 +281,8 @@ export class GameCache {
     public invitation_code: number = null  //邀请码  
     public friendBringInStatus: number = 0; // 朋友桌带入申请的状态
 
-    private static _Instance: GameCache = null;
-
-    public static get Instance() {
-        return this._Instance ||= new GameCache();
+    public static get Instance(): GameCache {
+        return (this as any).instance ??= new GameCache;
     }
 
     InitTexasGame() {

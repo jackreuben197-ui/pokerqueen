@@ -34,7 +34,7 @@ export default class WebSocketClient {
     static ReconnectDelay: number = 3000;
 
     static _reconnectTime: number = 0;
-
+    
     public static Connect() {
         this.Port = Web_WS.Response?.data?.port;
 

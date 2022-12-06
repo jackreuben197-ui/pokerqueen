@@ -55,7 +55,12 @@ export default class ToastManager {
         this.sequenceContent.y = this.config.contentStartPosition;
     }
 
+    //prevContent: string = null;
+
     createToast(content: string) {
+        //防止重复提示
+        // if (content == this.prevContent) return;
+        // this.prevContent = content;
         let toast: cc.Node = this.getToast();
         if (toast) {
             let toast_script: Toast = toast.getComponent(Toast);
