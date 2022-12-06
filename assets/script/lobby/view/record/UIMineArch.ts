@@ -132,7 +132,8 @@ export default class UIMineArch extends BaseForm {
                 }
 
                 let lbl_date = _cloneNode.getChildByName("lbl_date"); 
-                lbl_date.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(info.update_time);
+                let timeStr = info.update_time.toString().replace("+0000 ", "");
+                lbl_date.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(timeStr);
 
                 let lbl_times = _cloneNode.getChildByName("lbl_times"); 
                 lbl_times.getComponent(cc.Label).string = info.task_final_num + "次";
