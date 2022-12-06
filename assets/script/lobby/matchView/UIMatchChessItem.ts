@@ -1,8 +1,12 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
+import GC from "../../frame/GameControl";
 import GameUtil from "../../game/util/GameUtil";
 import { GM } from "../../gm/GMAPI";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import ToastManager from "../../manager/ToastManager";
 
 import UIBase from "../../ui/UIBase";
 
@@ -44,7 +48,11 @@ export default class UIMatchChessItem extends UIBase {
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.bindClick(this.node, () => {
-            GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
+            if (GC.data.club && GC.data.club.info && GC.data.club.info.club_id) {
+                GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
+            } else {
+                ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
+            }
         })
     }
     initData(data: LobbyRoomListItem) {

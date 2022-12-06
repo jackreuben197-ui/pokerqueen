@@ -12,73 +12,73 @@ export default class ClubInfoModel {
     }
 
     get club_id() {
-        return this._msg.club_id;
+        return this._msg?.club_id;
     }
     get club_name() {
-        return this._msg.club_name;
+        return this._msg?.club_name;
     }
     get logo() {
-        return this._msg.logo;
+        return this._msg?.logo;
     }
     get random_id() {
-        return this._msg.random_id;
+        return this._msg?.random_id;
     }
     get upper_limit() {
-        return this._msg.upper_limit;
+        return this._msg?.upper_limit;
     }
     get club_members() {
-        return this._msg.club_members;
+        return this._msg?.club_members;
     }
     get area_id() {
-        return this._msg.area_id;
+        return this._msg?.area_id;
     }
     get club_type() {
-        return this._msg.club_type;
+        return this._msg?.club_type;
     }
     get create_time() {
-        return this._msg.create_time;
+        return this._msg?.create_time;
     }
     get is_official() {
-        return this._msg.is_official;
+        return this._msg?.is_official;
     }
     get club_status() {
-        return this._msg.club_status;
+        return this._msg?.club_status;
     }
     get desc() {
-        return this._msg.desc;
+        return this._msg?.desc;
     }
     get contact_info() {
-        return this._msg.contact_info;
+        return this._msg?.contact_info;
     }
     get member_type() {
-        return this._msg.member_type;
+        return this._msg?.member_type;
     }
     get more_contact() {
-        return this._msg.more_contact;
+        return this._msg?.more_contact;
     }
     get level() {
-        return this._msg.level;
+        return this._msg?.level;
     }
     get search_switch() {
-        return this._msg.search_switch;
+        return this._msg?.search_switch;
     }
     get auto_audit_switch() {
-        return this._msg.auto_audit_switch;
+        return this._msg?.auto_audit_switch;
     }
     get show_contact_switch() {
-        return this._msg.show_contact_switch;
+        return this._msg?.show_contact_switch;
     }
     get club_creator_random_id() {
-        return this._msg.club_creator_random_id;
+        return this._msg?.club_creator_random_id;
     }
     get club_creator_avatar() {
-        return this._msg.club_creator_avatar;
+        return this._msg?.club_creator_avatar;
     }
     get club_creator_nickname() {
-        return this._msg.club_creator_nickname;
+        return this._msg?.club_creator_nickname;
     }
     get tribe_name() {
-        return this._msg.tribe_name;
+        return this._msg?.tribe_name;
     }
 
     // {"org_id":20,"gold":200,"gold_lock":100,"forbidden":false}
