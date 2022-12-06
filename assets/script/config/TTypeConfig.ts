@@ -683,6 +683,8 @@ export enum MessageSubType
     MsgClubTypeWithdrawRequest,                                     //提豆申请
     MsgClubTypeRechargeRefuse,                                      //充豆申请被拒绝
     MsgClubTypeWithdrawRefuse,                                      //提豆申请被拒绝
+    MsgClubType2011 = 2011,                                         //玩家申请加入公会成功
+    MsgClubType2012,                                                //玩家申请加入公会失败
     MsgMoneyTypeReleaseClubFunds = 3000,                            //俱乐部基金发放（可提）
     MsgMoneyTypeWithdrawSuccess,                                    //提豆成功消息
     MsgMoneyTypeMatchWin,                                           //mtt比赛结束赢取
@@ -707,6 +709,8 @@ export enum MessageSubType
     MsgSystemTypeBanBeansOff,                                       //提豆解禁
     MsgSystemTypeUserCreateClubSuccess,                             //用户创建俱乐部成功 4009
     MsgSystemTypeUserCreateClubFail,                                //用户创建俱乐部失败 4010
+    MsgSystemTypeUserJoinClubSuccess = 4019,                        // 玩家申请加入公会成功 4019
+    MsgSystemTypeUserJoinClubFail,                                  // 玩家申请加入公会失败 4020
     MsgTirbeTypeCreateSuccess = 5000,                               //俱乐部创建成功
     MsgTirbeTypeCreateFail,                                         //俱乐部创建失败
     MsgTribeTypeNewClub,                                            //联盟加入新的俱乐部
