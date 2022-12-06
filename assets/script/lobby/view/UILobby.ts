@@ -5,8 +5,10 @@ import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { i18nSprite } from "../../i18n/i18nSprite";
 import SceneManager from "../../manager/SceneManager";
+import ToastManager from "../../manager/ToastManager";
 import { Web_User_Info } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -118,7 +120,11 @@ export default class UILobby extends UIBase {
     }
 
     clickBean() {
-        UIComponent.open(UIDefine.MyWalletForm, false, { SceneUI: SceneManager.Instance.currUI });
+        if (GC.data.club && GC.data.club.info && GC.data.club.info.club_id) {
+            UIComponent.open(UIDefine.MyWalletForm, false, { SceneUI: SceneManager.Instance.currUI });
+        } else {
+            ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
+        }
     }
 
     onScrolling() {

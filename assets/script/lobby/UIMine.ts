@@ -34,8 +34,7 @@ export default class UIMine extends UIBase {
 
     onLoad(): void {
         super.onLoad();
-        let widget: cc.Widget = this.node.getComponent(cc.Widget);
-        widget.target = cc.find("Canvas");
+        
     }
     protected lateLoad(): void {
         super.lateLoad();
@@ -44,6 +43,8 @@ export default class UIMine extends UIBase {
 
     public onShow(param?: any): void {
         super.onShow(param);
+        let widget: cc.Widget = this.node.getComponent(cc.Widget);
+        widget.target = cc.find("Canvas");
         this.func_item = this.getChildNodeOrComponent("func_item");
         this.content = this.getChildNodeOrComponent("content");
         this.nickname_lab = this.getChildNodeOrComponent("nickname_lab", cc.Label);
@@ -63,6 +64,8 @@ export default class UIMine extends UIBase {
         this.setMine();
         this.refreshUserName();
         this.userid_lab.string = `ID : ${Web_User_Info.Response.data.user.un_id}`;
+
+        // this.content.height = widget.target.height;
     }
 
     refreshHeadImg() {

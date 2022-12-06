@@ -58,17 +58,17 @@ export default class UIMine_About extends BaseForm {
     }
 
     mainFadeIn(style: any) {
-        this.content.active = false;
+        // this.content.active = false;
         super.mainFadeIn(style);
     }
 
     async mainFadeOut(style: any) {
-        this.content.active = false;
+        // this.content.active = false;
         super.mainFadeOut(style);
     }
 
     fadeInComplete() {
         super.fadeInComplete();
-        this.content.active = true;
+        // this.content.active = true;
     }
 }
