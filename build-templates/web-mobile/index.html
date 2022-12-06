@@ -80,14 +80,14 @@
     <!-- capture="camera" -->
     <script type="text/javascript">
         (function () {
-            // window.createVconsole = () => {
-            //     if (typeof VConsole !== 'undefined') {
-            //         window.vConsole = new VConsole();
-            //     }
-            // }
-            if (typeof VConsole !== 'undefined') {
-                window.vConsole = new VConsole();
+            window.createVconsole = () => {
+                if (typeof VConsole !== 'undefined') {
+                    window.vConsole = new VConsole();
+                }
             }
+            // if (typeof VConsole !== 'undefined') {
+            //     window.vConsole = new VConsole();
+            // }
 
             var debug = window._CCSettings.debug;
             var splash = document.getElementById('splash');

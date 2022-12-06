@@ -51,7 +51,6 @@ export default class HeartbeatComponent implements IUpComponent {
             MatchID: 0,
         }
         ProtocolAgency.Send(send_obj);
-        send_obj = null;
     }
 
     get interval() {

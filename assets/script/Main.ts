@@ -57,12 +57,12 @@ export default class Main extends cc.Component {
 
         GC.localStore.keyPre = CCTools.getQueryString("player") || "";
 
-        let flag = GC.localStore.getItem(StorageKey.CLEAN_ALL_FLAG);
+        // let flag = GC.localStore.getItem(StorageKey.CLEAN_ALL_FLAG);
 
-        if (+flag != GameConfig.clean_all_flag) {
-            GC.localStore.clear();
-            GC.localStore.setItem(StorageKey.CLEAN_ALL_FLAG, GameConfig.clean_all_flag);
-        }
+        // if (+flag > 0 && +flag != GameConfig.clean_all_flag) {
+        //     GC.localStore.clear();
+        //     GC.localStore.setItem(StorageKey.CLEAN_ALL_FLAG, GameConfig.clean_all_flag);
+        // }
 
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)

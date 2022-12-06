@@ -799,6 +799,7 @@ export default class TexasGame {
     /// 刷新分池
     /// </summary>
     public UpdatePots(): void {
+        return;
         let mNewStart = 0, mNewEnd = 0;
         let mUpdateStart = 0, mUpdateEnd = 0;
         let mHideStart = 0, mHideEnd = 0;
@@ -2328,9 +2329,12 @@ export default class TexasGame {
         else {
             mPotInfo = this.uirc.listPotInfo[0];
         }
-        mPotInfo.textPot.string = StringHelper.getStringDiv100(this.alreadAnte);
 
-        mPotInfo.trans.active = true;
+        //判断MTT就不显示(暂时修改)
+        if (!this.isMTT) {
+            mPotInfo.textPot.string = StringHelper.getStringDiv100(this.alreadAnte);
+            mPotInfo.trans.active = true;
+        }
 
         if (null != tweenCallback) {
             this.UpdatePots();
