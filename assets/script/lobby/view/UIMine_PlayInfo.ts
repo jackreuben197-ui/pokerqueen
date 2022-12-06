@@ -6,6 +6,7 @@ import { APIOrgClubUploadIcon, Web_User_Info } from "../../net/https/WebRequest"
 import BaseForm from "../../ui/form/BaseForm";
 import { LobbyControl } from "../control/LobbyControl";
 import { UIClubModel } from "../labor/UIClubModel";
+import { UIMineModel } from "../UIMineModel";
 
 
 const { ccclass, property } = cc._decorator;
@@ -142,7 +143,10 @@ export default class UIMine_PlayInfo extends BaseForm {
                         Web_User_Info.Response.data.user.nickname = this.ebx_name.string;
                         this.post(GGEvent.Refresh_UserName);
                     }
+                    //更新金豆
+                    UIMineModel.mInstance.ObtainUserInfo(pDto => {
 
+                    });
                 })
             }, (res) => {
                 // 用户名违规
@@ -153,9 +157,14 @@ export default class UIMine_PlayInfo extends BaseForm {
                 if (this.isFixHead) {
                     GameCache.Instance.headPic = headStr;
                     this.post(GGEvent.Refresh_UserHead);
+                    //更新金豆
+                    UIMineModel.mInstance.ObtainUserInfo(pDto => {
+
+                    });
                 }
             })
         }
+        
 
     }
 

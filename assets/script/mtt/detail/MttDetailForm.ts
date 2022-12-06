@@ -11,6 +11,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
+import { UIMineModel } from "../../lobby/UIMineModel";
 import ToastManager from "../../manager/ToastManager";
 import HttpRequest from "../../net/https/HttpRequest";
 import { Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Hranks, Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize, Web_Room_Center_Mtt_Rooms } from "../../net/https/WebRequest";
@@ -739,18 +740,22 @@ export default class MttDetailForm extends BaseForm {
                     break;
                 case MTTGame.MTTPlayerStatus.LoseCanRebuy:
                     {
-                        UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
-                            if (rebuyCode == 0) {
-                                UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
-                                // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
-                            }
-                            else {
-                                this.RefreshMttDetails();
-                                // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rebuyCode));
-                            }
-                        }, httpState => {
-                            // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+                        //更新金豆
+                        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+                            UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
+                                if (rebuyCode == 0) {
+                                    UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
+                                    // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
+                                }
+                                else {
+                                    this.RefreshMttDetails();
+                                    // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rebuyCode));
+                                }
+                            }, httpState => {
+                                // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
+                            });
                         });
+                        
                     }
                     break;
             }
