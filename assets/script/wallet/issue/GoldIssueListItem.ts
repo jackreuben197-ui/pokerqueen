@@ -1,7 +1,16 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-21 16:44:29
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2022-12-06 11:12:27
+ * @FilePath: /pokerqueen/assets/script/wallet/issue/GoldIssueListItem.ts
+ */
 import ListItem from "../../common/ListItem";
 import { UIDefine } from "../../define/UIDefine";
 import GoldIssueItemModel from "../../frame/data/wallet/issue/GoldIssueItemModel";
 import TimeHelper from "../../helper/TimeHelper";
+import WebImageHelper from "../../helper/WebImageHelper";
 import UIComponent from "../../ui/UIComponent";
 import { EWalletGoldOpration } from "../WalletConfig";
 
@@ -37,8 +46,9 @@ export default class GoldIssueListItem extends ListItem {
 
     initData(data: GoldIssueItemModel) {
         this._data = data;
-
-        this.setTexture(this.icon, this._data.avatar);
+        if (this._data.avatar) {
+            WebImageHelper.SetHeadImage(this.icon, this._data.avatar)
+        }
         this.setText(this.userName, this._data.nick_name);
         this.setText(this.userId, `ID:${this._data.user_id}`);
         this.setText(this.time, TimeHelper.getTimeBefore(this._data.updated_time));
