@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 19:52:21
+ * @LastEditTime: 2022-12-06 11:04:50
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -61,7 +61,7 @@ export default class UIManageLabor extends BaseForm {
 
     initTop() {
         let data: any = Web_Org_Club_Get.Response.data;
-        let name = this.mask_group.getChildByName('name').getComponent(cc.Label);
+        let name = cc.find('node_name/name', this.mask_group).getComponent(cc.Label);
         name.string = data.club_name
         let id = this.mask_group.getChildByName('id').getComponent(cc.Label);
         id.string = 'ID:' + data.random_id
