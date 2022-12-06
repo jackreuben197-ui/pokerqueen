@@ -1594,7 +1594,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 105.1,
+      "width": 115.07,
       "height": 56.7
     },
     "_anchorPoint": {
@@ -1646,8 +1646,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "PL04",
-    "_N$string": "PL04",
+    "_string": "PLO5",
+    "_N$string": "PLO5",
     "_fontSize": 45,
     "_lineHeight": 45,
     "_enableWrapText": true,
@@ -2220,7 +2220,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 105.1,
+      "width": 115.07,
       "height": 56.7
     },
     "_anchorPoint": {
@@ -2272,8 +2272,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "PL05",
-    "_N$string": "PL05",
+    "_string": "PLO5",
+    "_N$string": "PLO5",
     "_fontSize": 45,
     "_lineHeight": 45,
     "_enableWrapText": true,
