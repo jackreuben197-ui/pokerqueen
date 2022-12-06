@@ -3,7 +3,7 @@
  * @Date: 2022-11-05 14:31:49
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-21 17:49:45
+ * @LastEditTime: 2022-12-06 10:30:18
  * @FilePath: /pokerqueen/assets/script/lobby/view/UIMineThridBind.ts
  */
 
@@ -13,6 +13,7 @@ import { APIGetBlindStatus } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
+import ComFormTitle from "../../common/ComFormTitle";
 
 
 const { ccclass, property } = cc._decorator;
@@ -37,8 +38,12 @@ export default class UIMineThridBind extends BaseForm {
     @property(cc.Label)
     instragramStatus: cc.Label = null
 
+    private comFormTitle: ComFormTitle = null;
+
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
 
     async onShow(param?: any, fromUI?: cc.Node) {
@@ -50,7 +55,7 @@ export default class UIMineThridBind extends BaseForm {
     }
 
     initUI() {
-
+        this.comFormTitle.initData('UIMine_BindThird', this);
         let data: any = APIGetBlindStatus.Response?.data
         this.facebookStatus.string = data.third_party_user_status.facebook.status ? '已绑定' : '未绑定'
         this.instragramStatus.string = data.third_party_user_status.instagram.status ? '已绑定' : '未绑定'

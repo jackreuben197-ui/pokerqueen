@@ -3,7 +3,7 @@
  * @Date: 2022-11-05 10:09:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 19:24:42
+ * @LastEditTime: 2022-12-06 10:43:52
  * @FilePath: /pokerqueen/assets/script/lobby/view/UIMine_SafeAdmin.ts
  */
 
@@ -16,6 +16,7 @@ import LoginSession from "../../session/LoginSession";
 import BaseForm from "../../ui/form/BaseForm";
 import LoginScene from "../../ui/scene/LoginScene";
 import UIComponent from "../../ui/UIComponent";
+import ComFormTitle from "../../common/ComFormTitle";
 
 const { ccclass, property } = cc._decorator;
 
@@ -42,14 +43,18 @@ export default class UIMine_SafeAdmin extends BaseForm {
 
     @property(cc.Label)
     third_status: cc.Label = null;
-
-
+    private comFormTitle: ComFormTitle = null;
 
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
+
     async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
+        this.comFormTitle.initData('UIMine_SafeAdmin', this);
+
         let Layout: cc.Node = this.getChildNodeOrComponent("Layout");
         Layout.children.forEach((item, i) => {
             item["index"] = i;
@@ -68,11 +73,11 @@ export default class UIMine_SafeAdmin extends BaseForm {
     private onItemClick(e: cc.Event.EventTouch): void {
         let target: cc.Node = e.target;
         let index = target["index"];
-        if (index == 1) {
+        if (index == 0) {
             UIComponent.open(UIDefine.UIMine_bindMess, 1);
-        } else if (index == 2) {
+        } else if (index == 1) {
             UIComponent.open(UIDefine.UIMine_bindMess, 2);
-        } else if (index == 3) {
+        } else if (index == 2) {
             UIComponent.open(UIDefine.UIMineThridBind);
         }
         else {

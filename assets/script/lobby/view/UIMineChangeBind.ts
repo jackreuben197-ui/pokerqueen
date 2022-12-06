@@ -3,7 +3,7 @@
  * @Date: 2022-11-05 12:59:25
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 19:00:18
+ * @LastEditTime: 2022-12-06 10:36:20
  * @FilePath: /pokerqueen/assets/script/lobby/view/UIMineChangeBind.ts
  */
 import ButtonClickCD from "../../common/ButtonClickCD";
@@ -22,6 +22,7 @@ import StorageKey from "../../session/StorageKey";
 import LabelCDTime from "../../ui/component/LabelCDTime";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
+import ComFormTitle from "../../common/ComFormTitle";
 
 
 const { ccclass, property } = cc._decorator;
@@ -62,9 +63,11 @@ export default class UIMineChangeBind extends BaseForm {
     type = null;
     private _vcodeBtnCanClick: boolean = true;
     private getVCDTime: LabelCDTime = null;
-
+    private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
         this.getVLab = this.getChildNodeOrComponent("getVLab", cc.Label)
         this.getVCDTime = this.getVLab.node.addComponent(LabelCDTime);
         this.eyesBtn = this.getChildNodeOrComponent("eyesBtn")
@@ -103,10 +106,11 @@ export default class UIMineChangeBind extends BaseForm {
             this.areaNode.active = true;
             this.mailNode.active = false;
             if (data.phone_status.status) {
-                this.title.string = '更换手机号'
+                this.comFormTitle.initData('UIMine_ChangePhone', this);
+
                 this.title_tip.string = '更换手机号后，下次登录可用新手机号登录。'
             } else {
-                this.title.string = '绑定手机号'
+                this.comFormTitle.initData('UIMine_BindPhone', this);
                 this.title_tip.string = '你暂时未绑定手机号，绑定手机号后，下次登录可用新手机号登录。'
             }
         } else {
@@ -114,11 +118,11 @@ export default class UIMineChangeBind extends BaseForm {
             this.mailNode.active = true;
             if (data.email_status.status) {
                 this.title_tip.string = '更换邮箱后，下次登录可用新邮箱登录。'
-                this.title.string = '更换邮箱'
+                this.comFormTitle.initData('UIMine_ChangeEmail', this);
+
             } else {
                 this.title_tip.string = '你暂未绑定邮箱，绑定邮箱后，下次登录可用邮箱登录。'
-
-                this.title.string = '绑定邮箱'
+                this.comFormTitle.initData('UIMine_BindEmail', this);
             }
         }
     }

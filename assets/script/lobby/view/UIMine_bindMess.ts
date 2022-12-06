@@ -3,15 +3,15 @@
  * @Date: 2022-11-05 11:55:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-05 14:17:27
+ * @LastEditTime: 2022-12-06 10:30:45
  * @FilePath: /pokerqueen/assets/script/lobby/view/UIMine_bindMess.ts
  */
+import ComFormTitle from "../../common/ComFormTitle";
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import { APIGetBlindStatus } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -26,8 +26,12 @@ export default class UIMine_bindMess extends BaseForm {
     sureBtnLab: cc.Label = null;
 
     type = null;
+    private comFormTitle: ComFormTitle = null;
+
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
@@ -52,7 +56,8 @@ export default class UIMine_bindMess extends BaseForm {
 
         this.phone.active = this.type == 1
         this.email.active = this.type == 2
-        this.title.string = this.type == 1 ? '绑定手机号' : '绑定邮箱'
+        let title = this.type == 1 ? 'UIMine_BindPhone' : 'UIMine_BindEmail'
+        this.comFormTitle.initData(title, this);
 
         if (this.type == 1) {
             if (data.phone_status.status) {
