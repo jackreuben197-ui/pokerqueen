@@ -125,8 +125,13 @@ export default class UIMineBag extends BaseForm {
         let scrollView = self.getChildNodeOrComponent("sv_row" + index, cc.ScrollView);
         scrollView.content.removeAllChildren();
         scrollView.scrollToLeft();
-        let _touchListener = scrollView.node["_touchListener"];
-        _touchListener.setSwallowTouches(false); 
+
+        let sv_bg = self.getChildNodeOrComponent("sv_bg", cc.ScrollView);
+        // let _touchListener = sv_bg.node["_touchListener"];
+        // _touchListener.setSwallowTouches(true); 
+
+        let _touchListener1 = scrollView.node["_touchListener"];
+        _touchListener1.setSwallowTouches(false); 
         if (itemLen == 0) {
             lbl_noshow.active = true;
         } else {

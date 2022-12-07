@@ -4,6 +4,7 @@ import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import { UIMineModel } from "../../lobby/UIMineModel";
 import HttpRequest from "../../net/https/HttpRequest";
 import { Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Myaward } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
@@ -116,6 +117,10 @@ export default class UIMTTMineRankComponent extends UIBase {
     }
     
     onShow(obj?: any): void {
+
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+
+        });
 
         let lbl_rank = this.getChildNodeOrComponent("lbl_rank", cc.Label);
         lbl_rank.node.active = false;
