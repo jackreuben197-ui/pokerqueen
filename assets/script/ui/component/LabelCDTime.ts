@@ -69,6 +69,7 @@ export default class LabelCDTime extends cc.Component {
     }
 
     updateLabel(time: number) {
+        if (time < 0) return;
         this.label.string = time + this.unit;
     }
 
