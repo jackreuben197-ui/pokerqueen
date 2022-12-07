@@ -4,6 +4,7 @@ import { EventName } from "../config/EventName";
 import { UIDefine } from "../define/UIDefine";
 import GoldChangeLogModel from "../frame/data/wallet/goldChangeLog/GoldChangeLogModel";
 import GC from "../frame/GameControl";
+import { UIMineModel } from "../lobby/UIMineModel";
 import ToastManager from "../manager/ToastManager";
 import { APIOrgClubGold, Web_Gold_Change_Log } from "../net/https/WebRequest";
 import BaseForm from "../ui/form/BaseForm";
@@ -59,6 +60,9 @@ export default class MyWalletForm extends BaseForm {
 
     onShow(isClub?: boolean, fromUI?: any, sceneUI?: cc.Node): void {
         super.onShow(isClub, fromUI, sceneUI);
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+
+        });
         this._isClub = isClub;
         this._goldChangeLogs.reqLog(isClub);
 

@@ -1,3 +1,4 @@
+import ComFormTitle from "../../common/ComFormTitle";
 import GGEvent from "../../event/GGEvent";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -21,8 +22,12 @@ export default class UIMine_PlayInfo extends BaseForm {
     isFixName: boolean = false;
     isCanFix: boolean = false;
 
-    protected lateLoad() {
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
 
 
@@ -37,8 +42,14 @@ export default class UIMine_PlayInfo extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "玩家信息";
+
         let PLACEHOLDER_LABEL = this.getChildNodeOrComponent("PLACEHOLDER_LABEL", cc.Label);
         PLACEHOLDER_LABEL.string = Web_User_Info.Response.data.user.nickname;
+
 
         let lbl_name = this.getChildNodeOrComponent("lbl_name", cc.Label);
         lbl_name.string = Web_User_Info.Response.data.user.nickname;
