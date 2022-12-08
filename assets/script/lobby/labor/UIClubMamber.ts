@@ -3,7 +3,7 @@
  * @Date: 2022-10-26 14:02:25
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:06:49
+ * @LastEditTime: 2022-12-08 17:47:59
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubMamber.ts
  */
 
@@ -45,7 +45,7 @@ export default class UIClubMamber extends UIBase {
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
-                title: "",
+                title: "提示",
                 content: `确定添加玩家昵称<color=#3BE1F5"> ${this._data.nick_name} </color>管理员身份？`,
                 contentCommit: "确定",
                 contentCancel: "取消",

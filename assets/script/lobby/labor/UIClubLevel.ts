@@ -10,7 +10,7 @@ import { UIClubModel } from "./UIClubModel";
  * @Date: 2022-11-08 12:28:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 13:06:39
+ * @LastEditTime: 2022-12-08 17:27:30
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubLevel.ts
  */
 import ComFormTitle from "../../common/ComFormTitle";
@@ -51,6 +51,8 @@ export default class UIClubLevel extends BaseForm {
 
     @property(cc.Button)
     uplevel: cc.Button = null;
+    @property(cc.Button)
+    tip: cc.Button = null;
 
     @property(cc.Node)
     lastNode: cc.Node = null;
@@ -180,8 +182,10 @@ export default class UIClubLevel extends BaseForm {
         this.upLevelInd.getChildByName('node6').getChildByName('num').getComponent(cc.Label).string = level_data.level_duration
         this.upLevelInd.getChildByName('node7').getChildByName('num').getComponent(cc.Label).string = data.data
         this.upLevelInd.active = true;
+        this.tip.interactable = false
     }
     cancleClick() {
+        this.tip.interactable = true
         this.upLevelInd.active = false;
     }
     async sureClick() {
@@ -196,6 +200,7 @@ export default class UIClubLevel extends BaseForm {
         this.getData();
         this.post(EventName.refreshClubLevel)
         this.upLevelInd.active = false;
+        this.tip.interactable = true
     }
 
 }
