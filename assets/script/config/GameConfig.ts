@@ -46,7 +46,7 @@ export class GameConfig {
     static Server_Type = 2;
 
     //对应 GlobalProto.txt
-    static GlobalProto: { NetLineSwitchUrl?: string } = null;
+    static GlobalProto:  any = null;
     //网络配置
     static Network: INetWork = null;
 

@@ -88,7 +88,7 @@ export default class UIRecordScore extends BaseForm {
             };
             _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         }
-        scrollView.content.height = panel_item.height * (len+2);
+        scrollView.content.height = panel_item.height * (len+5);
     }
 
     onClickItem(event) {
