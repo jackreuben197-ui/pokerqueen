@@ -103,7 +103,7 @@ export default class UICollectScore extends BaseForm {
             btn_dele["data"] = info;
             btn_dele.on(cc.Node.EventType.TOUCH_END, this.onClickCancle, this)
         }
-        scrollView.content.height = panel_item.height * (len + 2);
+        scrollView.content.height = panel_item.height * (len + 5);
     }
 
     onScrolling(event) {

@@ -181,7 +181,7 @@ export default class UIRecordDetail extends BaseForm {
             let img_line = _cloneNode.getChildByName("img_line");
             img_line.active = i != len - 1;
         }
-        scrollView.content.height = panel_item.height * (len + 2);
+        scrollView.content.height = panel_item.height * (len + 5);
     }
 
 }
