@@ -36,6 +36,8 @@ export default class UITexasMenuComponent extends UIBase {
     outGold: cc.Label = null;
 
 
+    gold_click: cc.Node = null;
+
     IMenuButton_Type: {
         node: cc.Node;
         text: string;
@@ -136,6 +138,7 @@ export default class UITexasMenuComponent extends UIBase {
         this.Menu_Button = this.getChildNodeOrComponent("Menu_Button");
         this.outTipNode = this.getChildNodeOrComponent("outTipNode");
         this.outGold = this.getChildNodeOrComponent("outGold", cc.Label);
+        this.gold_click = this.getChildNodeOrComponent("gold_click");
         this.buildMenuButtons();
     }
 
@@ -164,6 +167,7 @@ export default class UITexasMenuComponent extends UIBase {
 
     regiterTouchEvents() {
         this.imageMenuMask.on("click", this.onClose, this);
+        this.gold_click.on("click", this.onGold, this);
     }
 
     protected regiterDispatchEvent(): void {
@@ -188,6 +192,14 @@ export default class UITexasMenuComponent extends UIBase {
             item.node = button;
         }
         this.Menu_Button.active = false;
+    }
+    //金币点击跳转钱包
+    onGold() {
+        if (GC.data.club?.info?.club_id) {
+            UIComponent.open(UIDefine.MyWalletForm);
+        } else {
+            ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
+        }
     }
 
     //更新金豆

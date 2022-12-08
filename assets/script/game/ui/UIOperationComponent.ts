@@ -547,11 +547,11 @@ export default class UIOperationComponent extends UIBase {
                     // contentCancel = "让牌",
                     contentCancel: CPErrorCode.LanguageDescription(10315),
                     actionCommit: () => {
-                        GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);
+                        GameCache.Instance.CurGame?.OptAction(Def.Action.FOLD, 0);
                         this.isCountDown = false;
                     },
                     actionCancel: () => {
-                        GameCache.Instance.CurGame.OptAction(Def.Action.CHECK, 0);
+                        GameCache.Instance.CurGame?.OptAction(Def.Action.CHECK, 0);
                         this.isCountDown = false;
                     },
                     noAnimation: true,
