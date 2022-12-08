@@ -85,7 +85,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
     refreshHeadImg() {
         let img_head: cc.Sprite = this.getChildNodeOrComponent("user_icon", cc.Sprite);
-        img_head.node.active = false;
+        // img_head.node.active = false;
         WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(() => {
             img_head.node.active = true;
         });

@@ -1079,8 +1079,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 180.39,
-      "height": 69.3
+      "width": 163.99,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1133,8 +1133,8 @@
     "_dstBlendFactor": 771,
     "_string": "English",
     "_N$string": "English",
-    "_fontSize": 55,
-    "_lineHeight": 55,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -8496,8 +8496,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 180,
-      "height": 56.7
+      "width": 200,
+      "height": 63
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -8550,8 +8550,8 @@
     "_dstBlendFactor": 771,
     "_string": "退出登录",
     "_N$string": "退出登录",
-    "_fontSize": 45,
-    "_lineHeight": 45,
+    "_fontSize": 50,
+    "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
