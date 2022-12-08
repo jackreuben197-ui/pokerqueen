@@ -549,7 +549,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -215.73,
+        -224.522,
         0,
         0,
         0,
@@ -763,7 +763,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -164.765,
+        -170.627,
         0,
         0,
         0,
@@ -878,7 +878,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -256.147,
+        -254.681,
         -88.069,
         0,
         0,
@@ -1714,8 +1714,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "op",
-    "_N$string": "op",
+    "_string": "存储",
+    "_N$string": "存储",
     "_fontSize": 46.34,
     "_lineHeight": 46,
     "_enableWrapText": true,
