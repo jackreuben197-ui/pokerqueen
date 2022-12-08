@@ -91,7 +91,7 @@ export default class UIMatchBanner extends UIBase {
     setPageBanner(banner: cc.Node, data: any): void {
         let fixUrl = data.image_url.replace("http:", "https:");
         this.loadRawImage(fixUrl).then((fram: cc.SpriteFrame) => {
-            banner.getChildByName("icon").getComponent(cc.Sprite).spriteFrame = fram;
+            banner.getChildByName("mask").getChildByName("icon").getComponent(cc.Sprite).spriteFrame = fram;
         }).catch((err) => {
 
         })
