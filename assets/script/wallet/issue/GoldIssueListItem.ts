@@ -2,8 +2,8 @@
  * @Author: xfj
  * @Date: 2022-10-21 16:44:29
  * @description: 
- * @LastEditors: 
- * @LastEditTime: 2022-12-06 11:12:27
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-08 15:36:48
  * @FilePath: /pokerqueen/assets/script/wallet/issue/GoldIssueListItem.ts
  */
 import ListItem from "../../common/ListItem";

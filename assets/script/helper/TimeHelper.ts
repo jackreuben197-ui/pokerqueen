@@ -3,7 +3,7 @@
  * @Date: 2022-09-05 15:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-29 16:23:42
+ * @LastEditTime: 2022-12-08 16:00:47
  * @FilePath: /pokerqueen/assets/script/helper/TimeHelper.ts
  */
 
@@ -207,9 +207,9 @@ export default class TimeHelper {
             return i18nMgr.isCN ? `${Math.floor(subTime / 60 / 60)}小时前` : `${subTime}h ago`;
         }
         if (subTime < 60 * 60 * 24 * 365) {
-            return i18nMgr.isCN ? `${Math.floor(subTime / 60 / 60 * 24)}天前` : `${subTime}day ago`;
+            return i18nMgr.isCN ? `${Math.floor(subTime / 60 / 60 / 24)}天前` : `${subTime}day ago`;
         }
-        return i18nMgr.isCN ? `${Math.floor(subTime / 60 / 60 * 24 * 365)}年前` : `${subTime}year ago`;
+        return i18nMgr.isCN ? `${Math.floor(subTime / 60 / 60 / 24 / 365)}年前` : `${subTime}year ago`;
     }
 
     static getSubTimeHMS(subTime: number, flag: string = null, isMil: boolean = false) {
