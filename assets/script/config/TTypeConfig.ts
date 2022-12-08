@@ -663,8 +663,7 @@ export type TMttRoomsDeskPlayer = {
 /// <summary>
 /// 消息类型
 /// </summary>
-export enum MessageSubType
-{
+export enum MessageSubType {
     MsgBagTypeGetTickets = 1000,                                    //获得门票
     MsgBagTypeUserTransferTicketsToSelf,                            //玩家转让门票给其他玩家，自己接收消息
     MsgBagTypeUserTransferTicketsToOther,                           //玩家转让门票给其他玩家，其他玩家接收消息

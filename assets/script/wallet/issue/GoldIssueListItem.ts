@@ -3,7 +3,7 @@
  * @Date: 2022-10-21 16:44:29
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-08 15:36:48
+ * @LastEditTime: 2022-12-08 18:44:26
  * @FilePath: /pokerqueen/assets/script/wallet/issue/GoldIssueListItem.ts
  */
 import ListItem from "../../common/ListItem";
@@ -50,7 +50,7 @@ export default class GoldIssueListItem extends ListItem {
             WebImageHelper.SetHeadImage(this.icon, this._data.avatar)
         }
         this.setText(this.userName, this._data.nick_name);
-        this.setText(this.userId, `ID:${this._data.user_id}`);
+        this.setText(this.userId, `ID:${this._data.random_id}`);
         this.setText(this.time, TimeHelper.getTimeBefore(this._data.updated_time));
     }
 

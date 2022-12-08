@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 10:50:41
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-08 18:41:59
+ * @FilePath: /pokerqueen/assets/script/frame/data/wallet/apply/OrderApplyItemModel.ts
+ */
 import { EApplyStatus, EOrderType } from "../../../../config/EEnumConfig";
 import { TOrderApplyItem } from "../../../../config/TTypeConfig";
 
@@ -17,6 +25,9 @@ export default class OrderApplyItemModel {
 
     get user_id() {
         return this._msg.user_id;
+    }
+    get user_random_id() {
+        return this._msg.user_random_id;
     }
     get order_no() {
         return this._msg.order_no;

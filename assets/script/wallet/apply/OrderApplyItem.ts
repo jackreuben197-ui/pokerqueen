@@ -69,7 +69,7 @@ export default class OrderApplyItem extends ListItem {
         WebImageHelper.SetHeadImage(this.icon, this._data.avatar)
         this.setText(this.userName, this._data.nickname);
         this.setText(this.userDesc, "UIUserDesc", this._data.desc);
-        this.setText(this.userId, `ID:${this._data.user_id}`);
+        this.setText(this.userId, `ID:${this._data.user_random_id}`);
         this.setText(this.num, this._data.gold_num);
 
         let typeTip = GC.language.getLocal("UIAppay") + GC.language.getLocal(["Text_Add", "Text_Getchips", "Text_Trans"][this._data.order_type - 1]);
