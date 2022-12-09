@@ -542,7 +542,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 942,
-      "height": 40
+      "height": 50
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -605,7 +605,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 964,
+      "width": 94.2,
       "height": 40
     },
     "_anchorPoint": {
@@ -730,7 +730,7 @@
       "__id__": 15
     },
     "_N$mode": 0,
-    "_N$progress": 1,
+    "_N$progress": 0.1,
     "_N$reverse": false,
     "_id": ""
   },
