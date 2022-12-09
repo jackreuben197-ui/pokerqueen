@@ -28,16 +28,6 @@ export default class LanguageForm extends BaseForm {
     //记录上一个选中对象
     _prevItem: LanguageFormItem = null;
 
-    private comFormTitle: ComFormTitle = null;
-
-    protected lateLoad(): void {
-        super.lateLoad();
-        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
-        this.LanguageFormItem = this.getChildNodeOrComponent("LanguageFormItem");
-        this.content = this.getChildNodeOrComponent("content");
-        this.setItems();
-    }
-
     configs: ILanguageFormItem[] = [
         { id: "en", s_language: "sl_K8cPNvxU", language: "English", flag: "flag_en", item: null },
         { id: "pt", s_language: "sl_ptyyPutao", language: "Portuguese", flag: "flag_pt", item: null },
@@ -45,16 +35,26 @@ export default class LanguageForm extends BaseForm {
     ]
 
     ///////////////////////////////////
+
+    comFormTitle: ComFormTitle = null;
+
+    protected lateLoad() {
+        super.lateLoad();
+        this.LanguageFormItem = this.getChildNodeOrComponent("LanguageFormItem");
+        this.content = this.getChildNodeOrComponent("content");
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+        this.setItems();
+        //this.toggleContainer = this.getChildNodeOrComponent("toggleContainer", GGToggleContainer);
+    }
+
     lateClose(param: any = null) {
         super.lateClose(param);
     }
 
     onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
+        this.comFormTitle.initData('UIMine_SettingLanguage', this);
         this.showLanguage(i18nMgr.language);
-        this.comFormTitle.initData('', this);
-
-        this.comFormTitle.title.string = "语言";
     }
 
     showLanguage(language: string) {

@@ -1,4 +1,5 @@
 
+import ComFormTitle from "../../common/ComFormTitle";
 import { AreaCodeConfig } from "../../config/AreaCodeConfig";
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -24,6 +25,7 @@ export default class AreaCodeForm extends BaseForm {
 
     scrollView: cc.ScrollView = null;
 
+    private comFormTitle: ComFormTitle = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -40,9 +42,9 @@ export default class AreaCodeForm extends BaseForm {
         this.scrollContent = this.getChildNodeOrComponent("scrollContent");
         this.search_editbox = this.getChildNodeOrComponent("search_editbox", cc.EditBox);
         this.scrollView = this.getChildNodeOrComponent("scrollView", cc.ScrollView);
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.AreaCodeFormItem.active = false;
         this.createAreaList();
-
     }
 
     lateClose(param: any = null) {
@@ -51,6 +53,7 @@ export default class AreaCodeForm extends BaseForm {
 
     onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
+        this.comFormTitle.initData('UILogin_Local', this);
         this.clearSearch();
         this.map = this.getAreaMap();
         this.scrollView.scrollToTop(.5);
