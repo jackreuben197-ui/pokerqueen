@@ -154,7 +154,7 @@ export default class UIMineArch extends BaseForm {
                 let lbl_progress = _cloneNode.getChildByName("lbl_progress"); 
                 lbl_progress.getComponent(cc.Label).string = info.task_final_num + "/" + info.task_num;
             }
-            scrollView.content.height = panel_item.height * (len + 1);
+            scrollView.content.height = panel_item.height * (len + 3);
         }
     }
 

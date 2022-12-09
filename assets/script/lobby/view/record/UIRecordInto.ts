@@ -110,7 +110,7 @@ export default class UIRecordInto extends BaseForm {
             }
             _cloneNode.getChildByName("lbl_status").getComponent(cc.Label).string = str;
         }
-        scrollView.content.height = panel_item.height * (len+2);
+        scrollView.content.height = panel_item.height * (len+5);
     }
 
 }

@@ -92,6 +92,8 @@ export default class UIMttSignDialogComponent extends UIBase {
     coinnum: any = null;
     isUpArrow = true;
     isChoose3 = false;
+    textCommit: cc.Label = null;
+    isRebuySecondStart = false;
 
     lateLoad() {
         super.lateLoad();
@@ -116,6 +118,9 @@ export default class UIMttSignDialogComponent extends UIBase {
     onShow(data?: DialogData): void {
         super.onShow(data);
 
+        this.isRebuySecondStart = false;
+
+        this.textCommit = this.getChildNodeOrComponent("lbl_confim", cc.Label);
 
         this.panel_click2 = this.getChildNodeOrComponent("panel_click2");
         this.panel_click2.active = true;
@@ -309,6 +314,11 @@ export default class UIMttSignDialogComponent extends UIBase {
                 default:
                     break;
             }
+        }
+        if (this.curDialogData && this.curDialogData.contentCommit) {
+            this.textCommit.string = this.curDialogData.contentCommit;
+        } else {
+            this.textCommit.string = "确认";
         }
         // textCommit.text = string.IsNullOrEmpty(curDialogData.contentCommit) ? $"Commit" : curDialogData.contentCommit;
         // textTitle.text = string.IsNullOrEmpty(curDialogData.title) ? $"" : curDialogData.title;
@@ -515,17 +525,19 @@ export default class UIMttSignDialogComponent extends UIBase {
             this.rebuySecond = deadLineTime - TimeHelper.Now / 10000000;
             if (this.rebuySecond > 15) {
                 this.rebuySecond = 14;
+                this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(15s)";
                 // textCommit.text = CPErrorCode.LanguageDescription(10012) + "(15s)";
             }
             else {
                 this.rebuySecond -= -1;
                 if (this.rebuySecond < 0) {
-                    // textCommit.text = CPErrorCode.LanguageDescription(10012) + "(" + 0 + "s)";
+                    this.textCommit.string =  CPErrorCode.LanguageDescription(10012) + "(" + 0 + "s)";
                 }
                 else {
-                    // textCommit.text = CPErrorCode.LanguageDescription(10012) + "(" + rebuySecond + "s)";
+                    this.textCommit.string =  CPErrorCode.LanguageDescription(10012) + "(" + this.rebuySecond + "s)";
                 }
             }
+            this.isRebuySecondStart = true;
         }
     }
 
@@ -538,27 +550,32 @@ export default class UIMttSignDialogComponent extends UIBase {
         // {
         //     return;
         // }
-        if (this.curDialogData != null && this.curDialogData.rebuyData != null) {
-            // if (Time.time - lastTime < IntervalTime)
-            // {
-            //     return;
-            // }
-            // lastTime = Time.time;
-            // if (rebuySecond > 0)
-            // {
-            //     rebuySecond -= IntervalTime;
+        if (this.curDialogData != null && this.curDialogData.rebuyData != null && this.isRebuySecondStart) {
+            let dif = TimeHelper.Now - this.lastTime;
+            if (dif < this.IntervalTime * 1000)
+            {
+                return;
+            }
+            this.lastTime = TimeHelper.Now;
+            if (this.rebuySecond > 0)
+            {
+                this.rebuySecond -= this.IntervalTime;
 
-            //     textCommit.text = CPErrorCode.LanguageDescription(10012) + "(" + (rebuySecond + 1) + "s)";
-            // }
-            // else
-            // {
+                this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(" + (this.rebuySecond + 1) + "s)";
+            }
+            else
+            {
 
-            //     if (null != curDialogData && curDialogData.type == DialogData.DialogType.CommitCancel && null != curDialogData.actionCancel)
-            //     {
-            //         curDialogData.actionCancel.Invoke();
-            //     }
-            //     UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
-            // }
+                // if (null != this.curDialogData && this.curDialogData.type == DialogData.DialogType.CommitCancel && null != curDialogData.actionCancel)
+                // {
+                    // this.curDialogData.actionCancel.Invoke();
+                    if (this.curDialogData.actionCancel) {
+                        this.curDialogData.actionCancel();
+                    }
+                // }
+                this.onCloseUI()
+                // UIComponent.Instance.Remove(UIType.UIMTTSignDialog);
+            }
         }
 
     }
