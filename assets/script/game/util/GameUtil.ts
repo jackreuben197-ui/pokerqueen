@@ -250,7 +250,7 @@ export default class GameUtil {
     // Dealer标识坐标 0左、1右
     public static readonly BankerLRV3: cc.Vec3[] = [
 
-        cc.v3(0, -180),//cc.v3(138, -175),
+        cc.v3(105, -200),//cc.v3(138, -175),
         cc.v3(0, -180),
     ];
 
@@ -309,7 +309,7 @@ export default class GameUtil {
     // 本手已下注坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
     public static readonly CurRoundHaveBetPosLRV3 =
         [
-            cc.v3(374, 0),//cc.v3(374, -12.5),
+            cc.v3(374, 22),//cc.v3(374, -12.5),
             cc.v3(-200, -10),
             cc.v3(-200, -10),
             cc.v3(-200, -10),
@@ -1414,14 +1414,15 @@ export default class GameUtil {
             backSmallCardPos?: cc.Vec3[],
             smallCardPos?: cc.Vec3[],
             myCardTypePos?: cc.Vec3[],
-            voiceStatePositon?: cc.Vec3
+            voiceStatePositon?: cc.Vec3,
+            myCardsScale?: number,
         }
     } =
         {
             2: {
                 myCardsPos: [
-                    cc.v3(-20, 0),
-                    cc.v3(160, 0),
+                    cc.v3(-100, 0),
+                    cc.v3(100, 0),
                 ],
                 backSmallCardPos: [
                     cc.v3(0, 0),
@@ -1433,13 +1434,15 @@ export default class GameUtil {
                 ],
                 myCardTypePos: [cc.v3(-80, -243)],
                 voiceStatePositon: cc.v3(284, -237, 0),
+
+                myCardsScale: 1
             },
             4: {
                 myCardsPos: [
-                    cc.v3(-63, 0),
-                    cc.v3(30, 0),
-                    cc.v3(123, 0),
-                    cc.v3(216, 0),
+                    cc.v3(-180, 0),
+                    cc.v3(-20, 0),
+                    cc.v3(160, 0),
+                    cc.v3(300, 0),
                 ],
                 backSmallCardPos: [
                     cc.v3(0, 0),
@@ -1455,14 +1458,16 @@ export default class GameUtil {
                 ],
                 myCardTypePos: [cc.v3(-117, -243)],
                 voiceStatePositon: cc.v3(335.4, -232, 0),
+
+                myCardsScale: 1
             },
             5: {
                 myCardsPos: [
-                    cc.v3(-63, 0),
-                    cc.v3(30, 0),
-                    cc.v3(123, 0),
-                    cc.v3(216, 0),
-                    cc.v3(309, 0),
+                    cc.v3(-190, 0),
+                    cc.v3(-50, 0),
+                    cc.v3(90, 0),
+                    cc.v3(230, 0),
+                    cc.v3(370, 0),
                 ],
                 backSmallCardPos: [
                     cc.v3(0, 0),
@@ -1480,15 +1485,17 @@ export default class GameUtil {
                 ],
                 myCardTypePos: [cc.v3(-117, -243)],
                 voiceStatePositon: cc.v3(446, -233, 0),
+
+                myCardsScale: .8
             },
             6: {
                 myCardsPos: [
-                    cc.v3(-63, 0),
-                    cc.v3(30, 0),
-                    cc.v3(123, 0),
-                    cc.v3(216, 0),
-                    cc.v3(309, 0),
-                    cc.v3(402, 0),
+                    cc.v3(-210, 0),
+                    cc.v3(-210 + 115, 0),
+                    cc.v3(-210 + 115 + 115, 0),
+                    cc.v3(-210 + 115 + 115 + 115, 0),
+                    cc.v3(-210 + 115 + 115 + 115 + 115, 0),
+                    cc.v3(-210 + 115 + 115 + 115 + 115 + 115, 0),
                 ],
                 backSmallCardPos: [
                     cc.v3(0, 0),
@@ -1508,6 +1515,7 @@ export default class GameUtil {
                 ],
                 myCardTypePos: [cc.v3(-117, -243)],
                 voiceStatePositon: cc.v3(515, -237, 0),
+                myCardsScale: .7
             },
         }
 

@@ -950,7 +950,7 @@ export default class TexasGame {
     public UpdateAlreadAnte(): void {
         //textAlreadAnte.text = $"底池:{alreadAnte}";
         this.uirc.textAlreadAnte.node.active = (this.gamestatus >= 1 && this.gamestatus < 7);
-        this.uirc.textAlreadAnte.string = `${CPErrorCode.LanguageDescription(20005)}:${(this.alreadAnte / 100)}`;
+        this.uirc.textAlreadAnte.string = `${CPErrorCode.LanguageDescription(20005)} : ${(this.alreadAnte / 100)}`;
     }
 
 

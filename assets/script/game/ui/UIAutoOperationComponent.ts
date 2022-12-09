@@ -79,7 +79,7 @@ export default class UIAutoOperationComponent extends UIBase {
             this.toggleAutoCall.node.active = false;
             this.toggleAutoAllin.node.active = true;
         }
-
+        
     }
 
     protected regiterTouchEvents(): void {
