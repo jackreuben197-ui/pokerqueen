@@ -1,3 +1,4 @@
+import ComFormTitle from "../../../common/ComFormTitle";
 import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
 import TimeHelper from "../../../helper/TimeHelper";
@@ -14,10 +15,13 @@ const { ccclass, property } = cc._decorator;
 export default class UIRecordInto extends BaseForm {
 
 
-    protected lateLoad() {
-        super.lateLoad();
-    }
+    private comFormTitle: ComFormTitle = null;
 
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+    }
 
     lateClose(param: any = null) {
         super.lateClose(param);
@@ -27,8 +31,13 @@ export default class UIRecordInto extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-        let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
-        Text_title.string = "带入申请";
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "带入申请";
+
+        // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
+        // Text_title.string = "带入申请";
         if (param && param.info) {
             this.reqInfo(param.info);
         }

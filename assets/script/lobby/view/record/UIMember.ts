@@ -1,3 +1,4 @@
+import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
 import GGEvent from "../../../event/GGEvent";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
@@ -23,8 +24,12 @@ export default class UIMember extends BaseForm {
     oldDates: Array<string> = [];
     _info: any = null;
 
-    protected lateLoad() {
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
 
 
@@ -36,6 +41,10 @@ export default class UIMember extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "详细资料";
 
         this._info = param.info;
         if (this._info == null) {
