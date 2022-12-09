@@ -90,7 +90,7 @@ export default class UIRecord extends BaseForm {
     refreshChooseNLH(index) {
         for (let i = 1; i < 6; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
-            let label = btn_pt_1.getComponent(cc.Label);
+            let label = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
             if (i == index) {
                 label.fontSize = 46;
                 btn_pt_1.opacity = 255;
