@@ -48,7 +48,11 @@ export default class UIMatchChessItem extends UIBase {
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.bindClick(this.node, () => {
-            if (GC.data.club && GC.data.club.info && GC.data.club.info.club_id) {
+            let isFriendDesk = false;
+            if (this._data && this._data.origin_type == 4) {
+                isFriendDesk = true;
+            }
+            if (GC.data.club && GC.data.club.info && GC.data.club.info.club_id || isFriendDesk) {
                 GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
             } else {
                 ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
