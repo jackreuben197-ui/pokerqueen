@@ -492,7 +492,7 @@ export default class Seat {
         this.SetCoin(this.Player?.chips >= 0 ? StringHelper.GetLongString(this.Player.chips) : "");
 
         if (this.IsMySeat) {
-            this.uirc.Text_Coin.node.setPosition(0, -200);
+            this.uirc.Text_Coin.node.setPosition(0, -202);
         } else {
             this.uirc.Text_Coin.node.setPosition(0, -104);
         }

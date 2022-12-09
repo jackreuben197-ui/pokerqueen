@@ -2137,6 +2137,7 @@ UIMine_MsgSystemContent=消息
 MsgInfo_1=您创建的{0}公会已经审核通过
 MsgInfo_2=您创建的{0}公会没有审核通过
 MsgInfo_3=您的公会人数调整为{0}人
+MsgInfo_4=带入申请审核通过
 MsgInfo_2000=您的公会占成比例调整为{0}
 MsgInfo_5=您收到{0}牌局的{1}金豆牌局收益
 MsgInfo_2001=您的公会被转移到{0}联盟，请知悉

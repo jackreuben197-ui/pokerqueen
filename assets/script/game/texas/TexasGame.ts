@@ -3033,7 +3033,7 @@ export default class TexasGame {
                 this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, true);
             }
 
-            menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO;
+            menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = (this.isMTT ? false : this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO);
 
         }
         else //未坐下

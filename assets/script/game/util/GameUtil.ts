@@ -236,7 +236,7 @@ export default class GameUtil {
     public static SeatAdapterPos() {
 
         if (cc.view.getVisibleSize().height < GameConfig.DesignResolution.height) {
-            this.SeatPosV3[0].y = 454 - cc.view.getVisibleSize().height / 2;
+            this.SeatPosV3[0].y = 522 - cc.view.getVisibleSize().height / 2;
             console.log("适配0位置:", this.SeatPosV3[0].toString());
         }
         if (cc.view.getVisibleSize().height < 2300) {
@@ -1421,8 +1421,8 @@ export default class GameUtil {
         {
             2: {
                 myCardsPos: [
-                    cc.v3(-100, 0),
-                    cc.v3(100, 0),
+                    cc.v3(-80, 0),
+                    cc.v3(80, 0),
                 ],
                 backSmallCardPos: [
                     cc.v3(0, 0),
@@ -1439,10 +1439,10 @@ export default class GameUtil {
             },
             4: {
                 myCardsPos: [
-                    cc.v3(-180, 0),
-                    cc.v3(-20, 0),
-                    cc.v3(160, 0),
-                    cc.v3(300, 0),
+                    cc.v3(-150, 0),
+                    cc.v3(-150 + 160, 0),
+                    cc.v3(-150 + 160 * 2, 0),
+                    cc.v3(-150 + 160 * 3, 0),
                 ],
                 backSmallCardPos: [
                     cc.v3(0, 0),
@@ -1492,10 +1492,10 @@ export default class GameUtil {
                 myCardsPos: [
                     cc.v3(-210, 0),
                     cc.v3(-210 + 115, 0),
-                    cc.v3(-210 + 115 + 115, 0),
-                    cc.v3(-210 + 115 + 115 + 115, 0),
-                    cc.v3(-210 + 115 + 115 + 115 + 115, 0),
-                    cc.v3(-210 + 115 + 115 + 115 + 115 + 115, 0),
+                    cc.v3(-210 + 115 * 2, 0),
+                    cc.v3(-210 + 115 * 3, 0),
+                    cc.v3(-210 + 115 * 4, 0),
+                    cc.v3(-210 + 115 * 5, 0),
                 ],
                 backSmallCardPos: [
                     cc.v3(0, 0),

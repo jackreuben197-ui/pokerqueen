@@ -4326,7 +4326,7 @@
         "__id__": 109
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 112
@@ -4627,7 +4627,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -210,
+        -80,
         0,
         0,
         0,
@@ -4673,7 +4673,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -93.998,
+        80,
         0,
         0,
         0,
@@ -4719,7 +4719,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        21.002,
+        299.404,
         0,
         0,
         0,
@@ -4765,7 +4765,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        136.002,
+        377.419,
         0,
         0,
         0,
@@ -4811,7 +4811,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        251.002,
+        456.935,
         0,
         0,
         0,
@@ -4857,7 +4857,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        366.002,
+        567.375,
         0,
         0,
         0,
@@ -5114,7 +5114,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -103.677,
+        -202,
         0,
         0,
         0,
@@ -15551,7 +15551,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 790,
+      "width": 780,
       "height": 180
     },
     "_anchorPoint": {
@@ -15603,10 +15603,10 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "未买中保险，结算时将扣除",
-    "_N$string": "未买中保险，结算时将扣除",
+    "_string": "我...\n未买中保险，结算时将扣除\n买",
+    "_N$string": "我...\n未买中保险，结算时将扣除\n买",
     "_fontSize": 45,
-    "_lineHeight": 45,
+    "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -15614,7 +15614,7 @@
     "_batchAsBitmap": false,
     "_styleFlags": 0,
     "_underlineHeight": 0,
-    "_N$horizontalAlign": 1,
+    "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 2,
@@ -15632,8 +15632,8 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 40,
-    "_left": 40,
-    "_right": 40,
+    "_left": 45,
+    "_right": 45,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,
