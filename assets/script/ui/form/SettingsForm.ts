@@ -1,4 +1,5 @@
 
+import ComFormTitle from "../../common/ComFormTitle";
 import { GameConfig } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
@@ -37,12 +38,13 @@ export default class SettingsForm extends BaseForm {
     /**
      * onLoad之后处理的内容
      */
-    protected lateLoad() {
-        super.lateLoad();
-        // this.func_item = this.getChildNodeOrComponent("func_item");
-        // this.content = this.getChildNodeOrComponent("content");
+     private comFormTitle: ComFormTitle = null;
 
-    }
+     protected lateLoad(): void {
+         super.lateLoad();
+         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+ 
+     }
     /**
      * 关闭需要处理的内容
      */
@@ -54,6 +56,11 @@ export default class SettingsForm extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "设置";
+
         this.Button_logout = this.getChildNodeOrComponent("Button_logout");
         this.Button_logout.on(cc.Node.EventType.TOUCH_END, this.onLogoutClick, this)
         let Layout: cc.Node = this.getChildNodeOrComponent("Layout");

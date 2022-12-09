@@ -1,3 +1,4 @@
+import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
 import GGEvent from "../../../event/GGEvent";
 import GC from "../../../frame/GameControl";
@@ -21,8 +22,12 @@ const { ccclass, property } = cc._decorator;
 export default class UICollectScore extends BaseForm {
 
     _fromParm = null;
-    protected lateLoad() {
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
 
 
@@ -36,8 +41,12 @@ export default class UICollectScore extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         this._fromParm = param
-        let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
-        Text_title.string = "收藏牌谱";
+        // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
+        // Text_title.string = "收藏牌谱";
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "收藏牌谱";
 
         this.reqInfo();
     }

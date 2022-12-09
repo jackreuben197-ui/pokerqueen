@@ -1,4 +1,5 @@
 
+import ComFormTitle from "../../common/ComFormTitle";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import BaseForm from "../../ui/form/BaseForm";
 
@@ -21,10 +22,13 @@ export default class UIMine_About extends BaseForm {
     /**
      * onLoad之后处理的内容
      */
-    protected lateLoad() {
-        super.lateLoad();
-        // this.webview = this.getChildNodeOrComponent("webview").getComponent(cc.WebView);
-    }
+     private comFormTitle: ComFormTitle = null;
+
+     protected lateLoad(): void {
+         super.lateLoad();
+         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+ 
+     }
     /**
      * 关闭需要处理的内容
      */
@@ -36,6 +40,9 @@ export default class UIMine_About extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "关于我们";
         // this.webview.url = i18nMgr.Get("UIAboutURL");
     }
     /**

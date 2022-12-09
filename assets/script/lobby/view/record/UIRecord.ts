@@ -1,3 +1,4 @@
+import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
@@ -20,19 +21,29 @@ export default class UIRecord extends BaseForm {
     lastTimeType: number = 1;
     oldDates: Array<string> = [];
 
-    protected lateLoad() {
-        super.lateLoad();
-    }
-
     _fromParm = null;
     lateClose(param: any = null) {
         super.lateClose(param);
     }
+
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+    }
+
     /**
      * 每次打开面板处理的内容
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "战绩";
+
         this._fromParm = param
         this.resetUI();
 
