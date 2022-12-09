@@ -94,6 +94,8 @@ export default class UIRecordBXList extends BaseForm {
         this._detail = data;
 
         this.comFormTitle.initData("UIMine_InsurancesItems", this);
+
+        this.comFormTitle.title.string = "保险";
         this.list.scrollingCB = this.scrollingCB;
         this.reqList();
     }

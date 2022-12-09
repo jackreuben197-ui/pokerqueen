@@ -1,4 +1,5 @@
 import { info, table } from "console";
+import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
@@ -18,9 +19,13 @@ const { ccclass, property } = cc._decorator;
 export default class UIMineArch extends BaseForm {
 
 
-    protected lateLoad() {
-        super.lateLoad();
-    }
+    private comFormTitle: ComFormTitle = null;
+
+     protected lateLoad(): void {
+         super.lateLoad();
+         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+ 
+     }
 
 
     lateClose(param: any = null) {
@@ -34,6 +39,10 @@ export default class UIMineArch extends BaseForm {
 
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         Text_title.string = "牌型成就";
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "牌型成就";
       
         this.resetUI();
 

@@ -1,3 +1,4 @@
+import ComFormTitle from "../../common/ComFormTitle";
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import { CardTypeUtil } from "../../game/CardTypeUtil";
@@ -57,10 +58,14 @@ export default class UIMine_Poker extends BaseForm {
     handcards = [];
     publicCards1 = [];
     publicCards2 = [];
-    protected lateLoad() {
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
 
     }
+
 
     lateClose(param: any = null) {
         super.lateClose(param);
@@ -87,6 +92,9 @@ export default class UIMine_Poker extends BaseForm {
         this.panel_item_river = this.getChildNodeOrComponent("panel_item_river");
         this.panel_paipu_down = this.getChildNodeOrComponent("panel_paipu_down");
         this.panel_player_down = this.getChildNodeOrComponent("panel_player_down");
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "牌谱详情";
         if (param.info) {
             this._enterInfo = param.info;
             this.reqInfo(param.info);
