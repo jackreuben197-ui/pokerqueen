@@ -1894,7 +1894,7 @@
         "__id__": 75
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 82
@@ -3357,7 +3357,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -90,
+        -227,
         0,
         0,
         0,
@@ -3411,7 +3411,7 @@
         "__id__": 129
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 147
@@ -3497,7 +3497,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 216,
+      "width": 0,
       "height": 47.88
     },
     "_anchorPoint": {
@@ -3636,7 +3636,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -141,
+        -166,
         0,
         0,
         0,
@@ -4328,7 +4328,7 @@
     "_N$paddingRight": 0,
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
-    "_N$spacingX": 10,
+    "_N$spacingX": 3,
     "_N$spacingY": 0,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
@@ -4376,7 +4376,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 144,
+      "width": 24.47,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -4388,7 +4388,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        424.589,
+        476.614,
         29,
         0,
         0,
@@ -4442,7 +4442,7 @@
     "_N$horizontalAlign": 2,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 1,
+    "_N$overflow": 0,
     "_N$cacheMode": 0,
     "_id": ""
   },
@@ -4458,7 +4458,7 @@
     "_target": null,
     "_alignFlags": 32,
     "_left": 0,
-    "_right": 80,
+    "_right": 55.886000000000024,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,
@@ -5022,7 +5022,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 265,
+      "width": 237,
       "height": 100
     },
     "_anchorPoint": {
@@ -5034,7 +5034,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        196,
+        126,
         0,
         0,
         0,
@@ -5098,7 +5098,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -110,
+        -96,
         0,
         0,
         0,
@@ -5203,7 +5203,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -55,
+        -48,
         0,
         0,
         0,
@@ -5413,7 +5413,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        55,
+        48,
         0,
         0,
         0,
@@ -5518,7 +5518,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        110,
+        96,
         0,
         0,
         0,
@@ -5594,7 +5594,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 265,
+      "width": 237,
       "height": 100
     },
     "_resize": 1,
@@ -5609,7 +5609,7 @@
     "_N$paddingRight": 0,
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
-    "_N$spacingX": 10,
+    "_N$spacingX": 3,
     "_N$spacingY": 0,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
@@ -5750,7 +5750,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        -90,
         0,
         0,
         0,
@@ -6466,7 +6466,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -141,
+        -166,
         0,
         0,
         0,
@@ -7867,7 +7867,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        196,
+        140,
         0,
         0,
         0,
@@ -8967,7 +8967,7 @@
     "_N$paddingRight": 0,
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
-    "_N$spacingX": 10,
+    "_N$spacingX": 3,
     "_N$spacingY": 0,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
@@ -9068,7 +9068,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 0,
+    "_top": 137,
     "_bottom": 1002.5,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -11392,7 +11392,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        470.781,
+        476.614,
         0,
         0,
         0,

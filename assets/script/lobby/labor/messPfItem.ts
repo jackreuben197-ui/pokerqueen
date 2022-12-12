@@ -3,11 +3,12 @@
  * @Date: 2022-11-12 11:38:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-24 18:49:38
+ * @LastEditTime: 2022-12-12 12:00:23
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messPfItem.ts
  */
 
 import { UIDefine } from "../../define/UIDefine";
+import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { Web_User_Info } from "../../net/https/WebRequest";
 import UIComponent from "../../ui/UIComponent";
@@ -60,9 +61,8 @@ export default class messPfItem extends cc.Component {
         this.winType.string = '以<color=#35A3B3>同花顺</color>获得胜利'
         this.winType.node.active = false;
         if (this._data.message_type == 3) {
-            this.dm.string = content.small_blind + '/' + content.small_blind * 2
-            this.winNum.string = content.Change > 0 ? '+' + content.Change : content.Change
-
+            this.dm.string = StringHelper.GetLongString(content.small_blind) + '/' + StringHelper.GetLongString(content.small_blind * 2)
+            this.winNum.string = content.Change > 0 ? '+' + StringHelper.GetLongString(content.Change) : StringHelper.GetLongString(content.Change)
         }
         else {
             this.winNum.string = content.info.change > 0 ? '+' + content.info.change : content.info.change

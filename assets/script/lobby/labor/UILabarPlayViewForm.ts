@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 14:21:50
+ * @LastEditTime: 2022-12-12 11:44:47
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -121,6 +121,8 @@ export default class UILabarPlayViewForm extends UIBase {
 
     @property(cc.Node)
     item_bq: cc.Node = null;
+    @property(cc.Node)
+    img_right_bg: cc.Node = null;
 
     private tabBtnsParent: cc.Node = null;
     private tabViewParents: Array<cc.Node> = [];
@@ -271,6 +273,7 @@ export default class UILabarPlayViewForm extends UIBase {
                 switch (_data.level) {
                     case memberType.own:
                         this.chongzhi.active = true;
+                        this.img_right_bg.active = true
                         this.tabNode.getChildByName('chpj').active = true;   //创建牌桌
                         this.tabNode.getChildByName('ghgl').active = true;   //公会管理
                         this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active;  //查看公会
@@ -278,6 +281,7 @@ export default class UILabarPlayViewForm extends UIBase {
                         break;
                     case memberType.member:
                         this.chongzhi.active = false;
+                        this.img_right_bg.active = false
                         this.tabNode.getChildByName('chpj').active = _data.create_room == 1;
                         this.tabNode.getChildByName('ghgl').active = false;
                         this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
@@ -294,6 +298,7 @@ export default class UILabarPlayViewForm extends UIBase {
                 }
             } else {
                 this.chongzhi.active = false;
+                this.img_right_bg.active = false
                 this.tabNode.getChildByName('chpj').active = false;
                 this.tabNode.getChildByName('ghgl').active = false;
                 this.tabNode.getChildByName('ckgh').active = !this.tabNode.getChildByName('ghgl').active
