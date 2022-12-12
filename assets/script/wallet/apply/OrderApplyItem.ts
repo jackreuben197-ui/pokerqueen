@@ -3,7 +3,7 @@
  * @Date: 2022-10-24 10:50:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-08 15:12:19
+ * @LastEditTime: 2022-12-12 13:03:49
  * @FilePath: /pokerqueen/assets/script/wallet/apply/OrderApplyItem.ts
  */
 import ListItem from "../../common/ListItem";
@@ -53,13 +53,14 @@ export default class OrderApplyItem extends ListItem {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(EventName.orderApplyItemChange, this.orderApplyItemChange);
     }
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
         this.bindClick(this.sureBtn, this.clickSure);
         this.bindClick(this.cancelBtn, this.clickCancel);
+        GC.notify.register(EventName.orderApplyItemChange, this.orderApplyItemChange, this);
+
     }
 
     initData(data: OrderApplyItemModel) {

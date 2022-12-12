@@ -3,7 +3,7 @@
  * @Date: 2022-10-24 10:50:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-23 19:22:18
+ * @LastEditTime: 2022-12-12 13:06:41
  * @FilePath: /pokerqueen/assets/script/frame/data/wallet/apply/OrderApplyModel.ts
  */
 import { EOrderType } from "../../../../config/EEnumConfig";
