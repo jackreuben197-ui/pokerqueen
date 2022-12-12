@@ -418,8 +418,7 @@ export default class UITexas extends BaseScene {
     /// <param name="paynum"></param>赔付金额
     public async ShowInsuranceTip(num: number, premium: number, paynum: number) {
         this.Image_InsuranceTips.active = true;
-        this.Image_InsuranceTips.getChildByName("Text").getComponent(cc.Label).string = `${i18nMgr.Get("UILobby_Menu_menu_btn_my")}......`;
-        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("UIInsurance_tips001"), [num.toString(), StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum)]);
+        this.Image_InsuranceTips.getChildByName("Text_Tips").getComponent(cc.Label).string = `${i18nMgr.Get("UILobby_Menu_menu_btn_my")}......\n` + StringHelper.Format(i18nMgr.Get("UIInsurance_tips001"), [num.toString(), StringHelper.GetLongString(premium), StringHelper.GetLongString(paynum)]);
         await TimeHelper.Sleep(2000);
         if (this.Image_InsuranceTips.activeInHierarchy) {
             this.Image_InsuranceTips.active = false;

@@ -1,4 +1,5 @@
 import { eventNames } from "process";
+import ComFormTitle from "../../common/ComFormTitle";
 import { EventName } from "../../config/EventName";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
@@ -27,10 +28,13 @@ export default class UIMsg_Send extends BaseForm {
 
     testStr = [];
 
-    protected lateLoad() {
-        super.lateLoad();
-    }
+    private comFormTitle: ComFormTitle = null;
 
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+    }
 
     lateClose(param: any = null) {
         super.lateClose(param);
@@ -40,8 +44,12 @@ export default class UIMsg_Send extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-        let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
-        Text_title.string = "消息推送";
+        // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
+        // Text_title.string = "消息推送";
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "消息推送";
 
         this.panel_dialog = this.getChildNodeOrComponent("panel_dialog");
         this.panel_dialog.active = false;

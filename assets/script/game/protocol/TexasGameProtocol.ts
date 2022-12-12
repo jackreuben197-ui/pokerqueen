@@ -1538,7 +1538,8 @@ export default class TexasGameProtocol {
                         GameCache.Instance.CurGame.uirc.ShowBringIn();
                         break;
                     case 2:
-                        console.log("朋友桌带入申请通过");
+                        UIComponent.Instance.Toast(i18nMgr.Get("MsgInfo_4"));
+                        //console.log("朋友桌带入申请通过");
                         break;
                 }
                 break;

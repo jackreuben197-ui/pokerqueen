@@ -1,3 +1,4 @@
+import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
 import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
@@ -18,8 +19,12 @@ const { ccclass, property } = cc._decorator;
 export default class UIRecordScore extends BaseForm {
 
 
-    protected lateLoad() {
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
 
 
@@ -31,6 +36,11 @@ export default class UIRecordScore extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "本局牌谱";
+
         if (param && param.info) {
             this.reqInfo(param.info);
         }

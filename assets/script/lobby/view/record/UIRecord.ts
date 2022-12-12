@@ -1,3 +1,4 @@
+import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
@@ -20,19 +21,29 @@ export default class UIRecord extends BaseForm {
     lastTimeType: number = 1;
     oldDates: Array<string> = [];
 
-    protected lateLoad() {
-        super.lateLoad();
-    }
-
     _fromParm = null;
     lateClose(param: any = null) {
         super.lateClose(param);
     }
+
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+    }
+
     /**
      * 每次打开面板处理的内容
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "战绩";
+
         this._fromParm = param
         this.resetUI();
 
@@ -90,7 +101,7 @@ export default class UIRecord extends BaseForm {
     refreshChooseNLH(index) {
         for (let i = 1; i < 6; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
-            let label = btn_pt_1.getComponent(cc.Label);
+            let label = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
             if (i == index) {
                 label.fontSize = 46;
                 btn_pt_1.opacity = 255;

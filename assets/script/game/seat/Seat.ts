@@ -39,6 +39,10 @@ export default class Seat {
     /// 自己手牌位置
     /// </summary>
     protected static myCardsPos: cc.Vec3[] = [];
+
+    //缩放值
+    protected static myCardsScale: number = 1;
+
     /// <summary>
     /// 自己手牌旋转
     /// </summary>
@@ -143,12 +147,18 @@ export default class Seat {
     InitData() {
         let pos = GameUtil.Seat_ElementPos[GameCache.Instance.CurGame.HandCards];
         Seat.myCardsPos = pos.myCardsPos;
+        Seat.myCardsScale = pos.myCardsScale;
         Seat.backSmallCardPos = pos.backSmallCardPos;
         Seat.smallCardPos = pos.smallCardPos;
         Seat.myCardTypePos = pos.myCardTypePos;
         this.listCardUIInfos = [];
         this.listSmallCardUIInfos = [];
         this.listImageSmallCardBack = [];
+
+        for (let i = 0; i < 6; i++) {
+            this.uirc.imageCards[i].imageCard.active = false;
+        }
+
         for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
             this.listCardUIInfos.push(this.uirc.imageCards[i]);
             this.listSmallCardUIInfos.push(this.uirc.imageSmallCards[i]);
@@ -300,7 +310,7 @@ export default class Seat {
                 cardInfo.SetSpriteFrame(this.Player.cards[i]);
                 //cardInfo.imageCard.getComponent(cc.Sprite).spriteFrame = GameCache.Instance.CurGame.GetBigPokerSP(GameUtil.GetCardNameByNum(this.Player.cards[i]));
                 cardInfo.imageCard.color = cc.Color.WHITE;
-                cardInfo.imageCard.setScale(cc.v3(0.5, 0.5));
+                cardInfo.imageCard.setScale(.5);
                 cardInfo.imageCard.setPosition(this.listCardUIInfos[i].imageCard.parent.convertToNodeSpaceAR(targetPos));
                 cardInfo.imageCard.active = true;
 
@@ -317,7 +327,7 @@ export default class Seat {
 
 
                 tween.then(cc.callFunc(() => {
-                    tween_card.to(0.4, { scaleX: 1.5, scaleY: 1.3, position: Seat.myCardsPos[i] }, cc.easeSineOut()).start();
+                    tween_card.to(0.4, { scale: Seat.myCardsScale, position: Seat.myCardsPos[i] }, cc.easeSineOut()).start();
                 }))
                 if (!GameCache.Instance.CurlimitDelaySeeCard) {
                     tween.then(cc.callFunc(() => {
@@ -482,9 +492,9 @@ export default class Seat {
         this.SetCoin(this.Player?.chips >= 0 ? StringHelper.GetLongString(this.Player.chips) : "");
 
         if (this.IsMySeat) {
-            this.uirc.Text_Coin.node.setPosition(0, -130);
+            this.uirc.Text_Coin.node.setPosition(0, -202);
         } else {
-            this.uirc.Text_Coin.node.setPosition(0, -90);
+            this.uirc.Text_Coin.node.setPosition(0, -104);
         }
     }
     //刷新昵称

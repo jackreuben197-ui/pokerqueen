@@ -1739,7 +1739,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 964,
-      "height": 40
+      "height": 50
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1814,7 +1814,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -483.049,
+        -486.989,
         0,
         0,
         0,
@@ -5429,8 +5429,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 204.57,
-      "height": 50.4
+      "width": 76,
+      "height": 103.96
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5442,7 +5442,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        -5.274,
         0,
         0,
         0,
@@ -5481,10 +5481,10 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "asdfasdfsdf",
-    "_N$string": "asdfasdfsdf",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_string": "提醒\n你",
+    "_N$string": "提醒\n你",
+    "_fontSize": 38,
+    "_lineHeight": 46,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,

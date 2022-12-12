@@ -1,3 +1,4 @@
+import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
 import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
@@ -18,8 +19,12 @@ export default class UIRecordDetail extends BaseForm {
 
     respInfo: any = null;
 
-    protected lateLoad() {
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
 
 
@@ -37,9 +42,15 @@ export default class UIRecordDetail extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-        let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
+
+        this.comFormTitle.initData('', this);
+
         let nameStr = GC.data.languageTemp.temp.getName(param.info.Name);
-        Text_title.string = nameStr + " " + param.info.RoomID.toString();
+
+
+        this.comFormTitle.title.string = nameStr + " " + param.info.RoomID.toString();
+        // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
+        // Text_title.string = nameStr + " " + param.info.RoomID.toString();
         if (param && param.info) {
             this.reqInfo(param.info.RoomID);
         }

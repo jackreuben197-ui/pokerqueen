@@ -799,7 +799,7 @@ export default class TexasGame {
     /// 刷新分池
     /// </summary>
     public UpdatePots(): void {
-        return;
+
         let mNewStart = 0, mNewEnd = 0;
         let mUpdateStart = 0, mUpdateEnd = 0;
         let mHideStart = 0, mHideEnd = 0;
@@ -938,6 +938,10 @@ export default class TexasGame {
 
             mObj.active = this.pots[i] > 0;
         }
+        // //比赛隐藏金币显示(暂时)
+        // if (this.isMTT && this.uirc.listPotInfo?.[0]) {
+        //     this.uirc.listPotInfo[0].trans.active = false;
+        // }
     }
 
     /// <summary>
@@ -946,7 +950,7 @@ export default class TexasGame {
     public UpdateAlreadAnte(): void {
         //textAlreadAnte.text = $"底池:{alreadAnte}";
         this.uirc.textAlreadAnte.node.active = (this.gamestatus >= 1 && this.gamestatus < 7);
-        this.uirc.textAlreadAnte.string = `${CPErrorCode.LanguageDescription(20005)}:${(this.alreadAnte / 100)}`;
+        this.uirc.textAlreadAnte.string = `${CPErrorCode.LanguageDescription(20005)} : ${(this.alreadAnte / 100)}`;
     }
 
 
@@ -1487,6 +1491,7 @@ export default class TexasGame {
 
             mPotInfo.textPot.string = StringHelper.getStringDiv100(allGroupBet);
             mPotInfo.trans.active = true;
+            //this.isMTT ? false : true;
         }
         //从小盲位置开始发牌
         let mStartPos: cc.Vec3 = this.uirc.node.convertToWorldSpaceAR(cc.Vec3.ZERO);
@@ -2330,11 +2335,10 @@ export default class TexasGame {
             mPotInfo = this.uirc.listPotInfo[0];
         }
 
+        mPotInfo.textPot.string = StringHelper.getStringDiv100(this.alreadAnte);
         //判断MTT就不显示(暂时修改)
-        if (!this.isMTT) {
-            mPotInfo.textPot.string = StringHelper.getStringDiv100(this.alreadAnte);
-            mPotInfo.trans.active = true;
-        }
+        mPotInfo.trans.active = true;
+        //this.isMTT ? false : true;
 
         if (null != tweenCallback) {
             this.UpdatePots();
@@ -2987,6 +2991,8 @@ export default class TexasGame {
         menu.MenuButtons_Dic.Button_Rule.node.active = true;
         menu.MenuButtons_Dic.Button_Exit.node.active = true;
 
+        menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = false;
+
         if (UserSitdown) //已坐下
         {
 
@@ -3027,7 +3033,7 @@ export default class TexasGame {
                 this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, true);
             }
 
-            menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO;
+            menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = (this.isMTT ? false : this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO);
 
         }
         else //未坐下

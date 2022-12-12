@@ -843,7 +843,7 @@
     "_dstBlendFactor": 771,
     "_string": "未绑定",
     "_N$string": "未绑定",
-    "_fontSize": 55,
+    "_fontSize": 50,
     "_lineHeight": 55,
     "_enableWrapText": false,
     "_N$file": null,
@@ -909,7 +909,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        416,
+        440,
         12,
         0,
         0,
@@ -1429,7 +1429,7 @@
     "_dstBlendFactor": 771,
     "_string": "未绑定",
     "_N$string": "未绑定",
-    "_fontSize": 55,
+    "_fontSize": 50,
     "_lineHeight": 41,
     "_enableWrapText": false,
     "_N$file": null,
@@ -1495,7 +1495,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        415,
+        439,
         7,
         0,
         0,
@@ -1974,7 +1974,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 225,
       "height": 63
     },
     "_anchorPoint": {
@@ -2359,19 +2359,19 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 165,
+      "width": 150,
       "height": 51.66
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -157.5,
+        -225,
         -2,
         0,
         0,
@@ -2413,7 +2413,7 @@
     "_dstBlendFactor": 771,
     "_string": "未绑定",
     "_N$string": "未绑定",
-    "_fontSize": 55,
+    "_fontSize": 50,
     "_lineHeight": 41,
     "_enableWrapText": false,
     "_N$file": null,
@@ -2450,7 +2450,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 225,
       "height": 63
     },
     "_resize": 1,
@@ -2522,7 +2522,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        415,
+        439,
         3,
         0,
         0,

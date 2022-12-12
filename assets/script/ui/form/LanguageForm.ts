@@ -1,4 +1,5 @@
 
+import ComFormTitle from "../../common/ComFormTitle";
 import GGEvent from "../../event/GGEvent";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import GGToggleContainer from "../component/GGToggleContainer";
@@ -35,10 +36,13 @@ export default class LanguageForm extends BaseForm {
 
     ///////////////////////////////////
 
+    comFormTitle: ComFormTitle = null;
+
     protected lateLoad() {
         super.lateLoad();
         this.LanguageFormItem = this.getChildNodeOrComponent("LanguageFormItem");
         this.content = this.getChildNodeOrComponent("content");
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.setItems();
         //this.toggleContainer = this.getChildNodeOrComponent("toggleContainer", GGToggleContainer);
     }
@@ -49,6 +53,7 @@ export default class LanguageForm extends BaseForm {
 
     onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
+        this.comFormTitle.initData('UIMine_SettingLanguage', this);
         this.showLanguage(i18nMgr.language);
     }
 
@@ -100,6 +105,7 @@ export default class LanguageForm extends BaseForm {
             item.check();
             this._prevItem = item;
             i18nMgr.setLanguage(item.param.id)
+            console.log("设置语言:",item.param.id);
         }
         this.post(GGEvent.CHANGE_LAUNCH);
     }

@@ -34,8 +34,9 @@ export default class WebSocketClient {
     static ReconnectDelay: number = 3000;
 
     static _reconnectTime: number = 0;
-    
+
     public static Connect() {
+
         this.Port = Web_WS.Response?.data?.port;
 
         if (GameConfig.Network?.WSS) {
@@ -86,9 +87,8 @@ export default class WebSocketClient {
             WebSocketClient.TryReconnect();
         }
     }
-
     public static TryReconnect() {
-        if (!GC.game_active) return;
+        if (!GC.game_active || !this.Host_Port) return;
         cc.log("重新连接socket");
         WebSocketClient.CleanWS();
         GameCache.Instance.CurGame?.ReEnterClear();

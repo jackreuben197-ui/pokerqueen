@@ -1,4 +1,5 @@
 import { info, table } from "console";
+import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
@@ -22,9 +23,13 @@ export default class UIMineBag extends BaseForm {
     _allInfo = [];
     _useInfo = [];
 
-    protected lateLoad() {
-        super.lateLoad();
-    }
+    private comFormTitle: ComFormTitle = null;
+
+     protected lateLoad(): void {
+         super.lateLoad();
+         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+ 
+     }
 
 
     lateClose(param: any = null) {
@@ -38,6 +43,10 @@ export default class UIMineBag extends BaseForm {
 
         let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         Text_title.string = "背包";
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "背包";
 
         this.resetUI();
 

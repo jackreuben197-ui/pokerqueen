@@ -7,7 +7,7 @@ const { ccclass, property, menu } = cc._decorator;
 export default class ComFormTitle extends UIBase {
 
     public title: cc.Label = null;
-    private rightTextBtn: cc.Label = null;
+    public rightTextBtn: cc.Label = null;
 
 
     private _target: UIBase = null;

@@ -1,3 +1,4 @@
+import ComFormTitle from "../common/ComFormTitle";
 import BaseForm from "../ui/form/BaseForm";
 
 
@@ -17,6 +18,14 @@ export default class UIMineSetting extends BaseForm {
     //         this.load_all_object(root.children[i]);
     //     }
     // }
+
+    private comFormTitle: ComFormTitle = null;
+
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+    }
 
     /**
      * 注册触摸事件

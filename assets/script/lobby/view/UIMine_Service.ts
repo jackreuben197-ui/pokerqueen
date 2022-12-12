@@ -1,3 +1,4 @@
+import ComFormTitle from "../../common/ComFormTitle";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import ToastManager from "../../manager/ToastManager";
@@ -41,10 +42,13 @@ export default class UIMine_Service extends BaseForm {
         "其他"
     ]
 
-    protected lateLoad() {
-        super.lateLoad();
-    }
+    private comFormTitle: ComFormTitle = null;
 
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+    }
 
     lateClose(param: any = null) {
         super.lateClose(param);
@@ -54,6 +58,11 @@ export default class UIMine_Service extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "客服";
+
        
         this.showPhotoNum = 0;
         this.resetUI();
@@ -72,6 +81,9 @@ export default class UIMine_Service extends BaseForm {
         panel_click.on(cc.Node.EventType.TOUCH_END, this.onClickHide, this);
 
         let lbl_user :cc.Node = this.getChildNodeOrComponent("lbl_user");
+        this.comFormTitle.rightTextBtn.string = "人工客服";
+        this.comFormTitle.rightTextBtn.node.active = true;
+        lbl_user = this.comFormTitle.rightTextBtn.node;
         lbl_user.on(cc.Node.EventType.TOUCH_END, this.onClickUser, this);
 
         for (let i=1; i<5; i++) {

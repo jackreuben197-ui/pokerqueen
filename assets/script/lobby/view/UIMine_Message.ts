@@ -1,3 +1,4 @@
+import ComFormTitle from "../../common/ComFormTitle";
 import List from "../../common/List";
 import { MessageSubType } from "../../config/TTypeConfig";
 import GC from "../../frame/GameControl";
@@ -31,10 +32,13 @@ export default class UIMine_Message extends BaseForm {
 
     _searchData: any = null;
 
-    protected lateLoad() {
-        super.lateLoad();
-    }
+    private comFormTitle: ComFormTitle = null;
 
+     protected lateLoad(): void {
+         super.lateLoad();
+         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+ 
+     }
 
     lateClose(param: any = null) {
         super.lateClose(param);
@@ -45,6 +49,9 @@ export default class UIMine_Message extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
        
+        this.comFormTitle.initData('', this);
+
+        this.comFormTitle.title.string = "消息";
         this.resetUI();
 
         for (let i=1; i<6; i++) {
