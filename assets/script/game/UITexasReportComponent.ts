@@ -60,11 +60,8 @@ export default class UITexasReportComponent extends UIBase {
 
     onClose(param?: any): void {
         super.onClose();
-        if (this.IntervalId) {
-            clearInterval(this.IntervalId)
-        }
+        this.unscheduleAllCallbacks();
         // this.removeHandler();
-        this.isLoad = false;
     }
 
     // private removeHandler() {
@@ -185,9 +182,11 @@ export default class UITexasReportComponent extends UIBase {
         // let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms({ room_ids: [GameCache.Instance.room_id] })
         GC.data.lobby.reqRoomByIds([GameCache.Instance.room_id], (roomsInfoData) => {
             cc.log('roomsInfoData====', roomsInfoData);
+            if (roomsInfoData.data.records.length == 0) textTitle.string = '';
             roomsInfoData.data.records.forEach(item => {
                 if (item.rid == GameCache.Instance.room_id) {
                     if (item.start_time == null) {
+                        // textTitle.string = '';
                         return;
                     }
                     let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(item.start_time)
@@ -205,8 +204,8 @@ export default class UITexasReportComponent extends UIBase {
     }
     ShowLeaveTimer(textTitle) {
         // TimerComponent mTC = Game.Scene.ModelScene.GetComponent<TimerComponent>();
-        this.IntervalId = setInterval(() => {
-            if (this.mRoomLeaveTime >= 0 && this.isLoad && this.node.isValid) {
+        this.schedule(() => {
+            if (this.mRoomLeaveTime >= 0 && this.node.isValid) {
                 this.mRoomLeaveTime--;
                 if (textTitle != null)
                     textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
@@ -215,7 +214,7 @@ export default class UITexasReportComponent extends UIBase {
                     textTitle.string = "00:00";
                 }
             }
-        }, 1000)
+        }, 1)
     }
     setInfos(objTemp, pDto, onLine) {
         objTemp.getChildByName('Text_Name').getComponent(cc.RichText).string = this.colorText(onLine, pDto.nickName)
@@ -255,6 +254,8 @@ export default class UITexasReportComponent extends UIBase {
         if (GameCache.Instance.CurGame != null && !GameCache.Instance.CurGame.insurance) {
             insurancePool.active = false;
         }
+        let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.RichText);
+        textTitle.string = '';
     }
 
     btnShowProblemClick() {

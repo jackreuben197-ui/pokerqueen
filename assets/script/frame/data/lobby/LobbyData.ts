@@ -1,5 +1,6 @@
 import { TRoomList } from "../../../config/TTypeConfig";
-import { Web_Config_Multi_Language_Template, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../../net/https/WebRequest";
+import { GameCache } from "../../../game/GameCache";
+import { APIOrgFriendRoomList, Web_Config_Multi_Language_Template, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
 import GC from "../../GameControl";
 import LobbyGroupModel from "./LobbyGroupModel";
@@ -99,7 +100,13 @@ export default class LobbyData extends BaseData {
     }
 
     reqRoomByIds(ids: Array<number>, callBack?: Function, isClub = false) {
-        let url = isClub ? Web_Room_Center_Rooms_CLUB.API : Web_Room_Center_Rooms.API;
+        let url = Web_Room_Center_Rooms.API
+        if (GameCache.Instance.origin_type == 4) {
+            url = APIOrgFriendRoomList.API
+        } else if (GameCache.Instance.origin_type == 3) {
+            url = Web_Room_Center_Rooms_CLUB.API
+        }
+        // let url = isClub ? Web_Room_Center_Rooms_CLUB.API : Web_Room_Center_Rooms.API;
         this.reqServePost(url, {
             room_ids: ids,
             order: ["sb_asc"]
