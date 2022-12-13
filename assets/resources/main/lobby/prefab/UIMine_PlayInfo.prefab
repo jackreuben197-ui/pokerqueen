@@ -2692,7 +2692,7 @@
     "_enabled": true,
     "_string": "",
     "returnType": 0,
-    "maxLength": 18.4,
+    "maxLength": 10,
     "_tabIndex": 0,
     "editingDidBegan": [],
     "textChanged": [],

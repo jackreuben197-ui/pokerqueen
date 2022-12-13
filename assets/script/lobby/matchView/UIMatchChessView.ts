@@ -122,6 +122,8 @@ export default class UIMatchChessView extends UIBase {
 
     updateList() {
         this.list.numItems = this._roomList.getList(this._isClub).length;
+        let lbl_no:cc.Node = this.getChildNodeOrComponent("lbl_no");
+        lbl_no.active = this.list.numItems == 0;
     }
 
     onRender(node: cc.Node, index: number) {

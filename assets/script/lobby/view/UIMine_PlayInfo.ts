@@ -82,7 +82,7 @@ export default class UIMine_PlayInfo extends BaseForm {
 
     /**
      * 注册触摸事件
-     */
+     *
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
     }
