@@ -254,8 +254,11 @@ export default class UITexasReportComponent extends UIBase {
         if (GameCache.Instance.CurGame != null && !GameCache.Instance.CurGame.insurance) {
             insurancePool.active = false;
         }
-        let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.RichText);
-        textTitle.string = '';
+        let textTitle = this.getChildNodeOrComponent('Title').getComponent(cc.Label);
+        textTitle.string = ''
+
+        let Text_Time = this.getChildNodeOrComponent('Text_Time').getComponent(cc.RichText);
+        Text_Time.string = '';
     }
 
     btnShowProblemClick() {
