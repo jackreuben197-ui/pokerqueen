@@ -190,10 +190,10 @@ export default class UIMember extends BaseForm {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
             let label = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
             if (i == index) {
-                label.fontSize = 46;
+                label.fontSize = 55;
                 btn_pt_1.opacity = 255;
             } else {
-                label.fontSize = 38;
+                label.fontSize = 55;
                 btn_pt_1.opacity = 76.5;
             }
         }
