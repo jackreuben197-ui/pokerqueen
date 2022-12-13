@@ -38,13 +38,13 @@ export default class SettingsForm extends BaseForm {
     /**
      * onLoad之后处理的内容
      */
-     private comFormTitle: ComFormTitle = null;
+    //private comFormTitle: ComFormTitle = null;
 
-     protected lateLoad(): void {
-         super.lateLoad();
-         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
- 
-     }
+    protected lateLoad(): void {
+        super.lateLoad();
+        //this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+    }
     /**
      * 关闭需要处理的内容
      */
@@ -57,18 +57,16 @@ export default class SettingsForm extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
-
-        this.comFormTitle.title.string = "设置";
+        //this.comFormTitle.initData('UIMine_Setting', this);
 
         this.Button_logout = this.getChildNodeOrComponent("Button_logout");
         this.Button_logout.on(cc.Node.EventType.TOUCH_END, this.onLogoutClick, this)
         let Layout: cc.Node = this.getChildNodeOrComponent("Layout");
         Layout.children.forEach((item, i) => {
-            item["index"] = i;
+            item["index"] = i + 1;
             item.on(cc.Node.EventType.TOUCH_END, this.onItemClick, this)
         });
-        // this.setItems();
+        //this.setItems();
         this.updateLaunch();
         let version_Text = this.getChildNodeOrComponent("Text_Right", cc.Label);
         version_Text.string = GameConfig.Version + "||" + GameConfig.BuildType;
@@ -101,6 +99,7 @@ export default class SettingsForm extends BaseForm {
             let item = cc.instantiate(this.func_item);
             item.active = true;
             item.parent = this.content;
+            item["index"] = i;
             item.getComponent(SettingsFormItem).onShow(config);
             item.on("click", this.onItemClick, this);
         }

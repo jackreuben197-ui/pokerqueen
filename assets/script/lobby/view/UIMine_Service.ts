@@ -59,9 +59,9 @@ export default class UIMine_Service extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
+        //this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "客服";
+        //this.comFormTitle.title.string = "客服";
 
        
         this.showPhotoNum = 0;

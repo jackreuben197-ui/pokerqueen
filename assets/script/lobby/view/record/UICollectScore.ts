@@ -44,9 +44,9 @@ export default class UICollectScore extends BaseForm {
         // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         // Text_title.string = "收藏牌谱";
 
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "收藏牌谱";
+        // this.comFormTitle.title.string = "收藏牌谱";
 
         this.reqInfo();
     }

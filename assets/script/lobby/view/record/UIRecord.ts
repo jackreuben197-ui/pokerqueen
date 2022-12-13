@@ -40,9 +40,9 @@ export default class UIRecord extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
+        //this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "战绩";
+        //this.comFormTitle.title.string = "战绩";
 
         this._fromParm = param
         this.resetUI();

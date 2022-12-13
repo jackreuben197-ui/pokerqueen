@@ -105,7 +105,7 @@ export default class LanguageForm extends BaseForm {
             item.check();
             this._prevItem = item;
             i18nMgr.setLanguage(item.param.id)
-            console.log("设置语言:",item.param.id);
+            console.log("设置语言:", item.param.id);
         }
         this.post(GGEvent.CHANGE_LAUNCH);
     }

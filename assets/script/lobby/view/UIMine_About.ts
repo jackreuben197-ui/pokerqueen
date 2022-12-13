@@ -40,42 +40,42 @@ export default class UIMine_About extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "关于我们";
+        // this.comFormTitle.title.string = "关于我们";
         // this.webview.url = i18nMgr.Get("UIAboutURL");
     }
-    /**
-     * 注册触摸事件
-     */
-    protected regiterTouchEvents() {
-        super.regiterTouchEvents();
-    }
-    /**
-     * 注册广播事件
-     */
-    protected regiterDispatchEvent() {
+    // /**
+    //  * 注册触摸事件
+    //  */
+    // protected regiterTouchEvents() {
+    //     super.regiterTouchEvents();
+    // }
+    // /**
+    //  * 注册广播事件
+    //  */
+    // protected regiterDispatchEvent() {
 
-    }
-    /**
-     * 停止所有 动作，包括 tween ,update，等
-     */
-    protected stopAllThings() {
+    // }
+    // /**
+    //  * 停止所有 动作，包括 tween ,update，等
+    //  */
+    // protected stopAllThings() {
 
-    }
+    // }
 
-    mainFadeIn(style: any) {
-        // this.content.active = false;
-        super.mainFadeIn(style);
-    }
+    // mainFadeIn(style: any) {
+    //     // this.content.active = false;
+    //     super.mainFadeIn(style);
+    // }
 
-    async mainFadeOut(style: any) {
-        // this.content.active = false;
-        super.mainFadeOut(style);
-    }
+    // async mainFadeOut(style: any) {
+    //     // this.content.active = false;
+    //     super.mainFadeOut(style);
+    // }
 
-    fadeInComplete() {
-        super.fadeInComplete();
-        // this.content.active = true;
-    }
+    // fadeInComplete() {
+    //     super.fadeInComplete();
+    //     // this.content.active = true;
+    // }
 }

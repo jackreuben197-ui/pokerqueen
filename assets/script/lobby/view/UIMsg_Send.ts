@@ -47,9 +47,9 @@ export default class UIMsg_Send extends BaseForm {
         // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         // Text_title.string = "消息推送";
 
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "消息推送";
+        // this.comFormTitle.title.string = "消息推送";
 
         this.panel_dialog = this.getChildNodeOrComponent("panel_dialog");
         this.panel_dialog.active = false;

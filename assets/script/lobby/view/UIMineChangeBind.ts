@@ -107,6 +107,7 @@ export default class UIMineChangeBind extends BaseForm {
             this.mailNode.active = false;
             if (data.phone_status.status) {
                 this.comFormTitle.initData('UIMine_ChangePhone', this);
+            
 
                 this.title_tip.string = '更换手机号后，下次登录可用新手机号登录。'
             } else {

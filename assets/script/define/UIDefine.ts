@@ -87,9 +87,9 @@ export const UIDefine = {
         Title: "UIMine_btn_setting",
     },
     //设置-客服
-    MyService: {
+    UIMine_Service: {
         UIType: UIType.Form,
-        Name: "MyService",
+        Name: "UIMine_Service",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_Service",
         Title: "UIMineMain01",
@@ -100,7 +100,7 @@ export const UIDefine = {
         Name: "UIMsg_Send",
         Bundle: null,
         Path: "main/lobby/prefab/UIMsg_Send",
-        Title: "",
+        Title: "消息推送",
     },
     //设置-消息
     UIMine_Message: {
@@ -108,15 +108,15 @@ export const UIDefine = {
         Name: "UIMine_Message",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_Message",
-        Title: "UIMine_Message",
+        Title: "UIMine_MsgSummary",
     },
     //设置-玩家信息
-    MyPlayInfo: {
+    UIMine_PlayInfo: {
         UIType: UIType.Form,
-        Name: "MyPlayInfo",
+        Name: "UIMine_PlayInfo",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_PlayInfo",
-        Title: "",
+        Title: "玩家信息",
     },
     //牌谱详情
     UIMine_Poker: {
@@ -124,7 +124,7 @@ export const UIDefine = {
         Name: "UIMine_Poker",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_Poker",
-        Title: "",
+        Title: "牌谱详情",
     },
     //设置-版本
     UIMine_SettingVersion: {
@@ -148,7 +148,7 @@ export const UIDefine = {
         Name: "UIMember",
         Bundle: null,
         Path: "main/lobby/prefab/record/UIMember",
-        Title: "",
+        Title: "详细资料",
     },
     //战绩
     UIRecord: {
@@ -164,7 +164,7 @@ export const UIDefine = {
         Name: "UIMineArch",
         Bundle: null,
         Path: "main/lobby/prefab/achi/UIMineArch",
-        Title: "",
+        Title: "牌型成就",
     },
     //背包
     UIMineBag: {
@@ -172,7 +172,7 @@ export const UIDefine = {
         Name: "UIMineBag",
         Bundle: null,
         Path: "main/lobby/prefab/bag/UIMineBag",
-        Title: "",
+        Title: "UIMine_Backpack",
     },
     //门票
     UIBagTicket: {
@@ -204,7 +204,7 @@ export const UIDefine = {
         Name: "UICollectScore",
         Bundle: null,
         Path: "main/lobby/prefab/record/UICollectScore",
-        Title: "",
+        Title: "收藏牌谱",
     },
     //带入申请
     UIRecordInto: {
@@ -212,12 +212,12 @@ export const UIDefine = {
         Name: "UIRecordInto",
         Bundle: null,
         Path: "main/lobby/prefab/record/UIRecordInto",
-        Title: "",
+        Title: "带入申请",
     },
     //保险详情
-    MttRecordBXListForm: {
+    UIRecordBXList: {
         UIType: UIType.Form,
-        Name: "MttRecordBXListForm",
+        Name: "UIRecordBXList",
         Bundle: null,
         Path: "main/lobby/prefab/record/MttRecordBXListForm",
         Title: "",
@@ -465,6 +465,7 @@ export const UIDefine = {
         Name: "OrderRecordsForm",
         Bundle: null,
         Path: "main/wallet/record/OrderRecordsForm",
+        Title:"Text_RecordLine"
     },
     GoldIssueListForm: {
         UIType: UIType.Form,

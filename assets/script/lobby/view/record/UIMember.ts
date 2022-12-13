@@ -42,9 +42,9 @@ export default class UIMember extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "详细资料";
+        // this.comFormTitle.title.string = "详细资料";
 
         this._info = param.info;
         if (this._info == null) {

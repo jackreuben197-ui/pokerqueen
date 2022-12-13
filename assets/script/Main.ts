@@ -110,6 +110,7 @@ export default class Main extends cc.Component {
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
 
+        cc.resources.releaseAll
     }
     protected update(dt: number): void {
         GC.uc.Update(dt);
