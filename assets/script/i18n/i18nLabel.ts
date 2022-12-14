@@ -66,6 +66,7 @@ export class i18nLabel extends cc.Component {
 
     _resetValue() {
         //this.string = this.i18n_string;
+        if (this.i18n_string == "") return;
         this.setEndValue();
     }
 

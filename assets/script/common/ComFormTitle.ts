@@ -6,7 +6,7 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('common/comFormTitle')
 export default class ComFormTitle extends UIBase {
 
-    public title: cc.Label = null;
+    public title_label: cc.Label = null;
     public rightTextBtn: cc.Label = null;
 
 
@@ -14,7 +14,7 @@ export default class ComFormTitle extends UIBase {
     private _rightTextBtnCallBack: Function = null;
     lateLoad() {
         super.lateLoad();
-        this.title = this.getChildNodeOrComponent("title", cc.Label);
+        this.title_label = this.getChildNodeOrComponent("title_label", cc.Label);
         this.rightTextBtn = this.getChildNodeOrComponent("rightTextBtn", cc.Label);
     }
 
@@ -35,7 +35,7 @@ export default class ComFormTitle extends UIBase {
 
     initData(title: string, target: UIBase, rightTextStr: string = null, rightTextCallBack: Function = null) {
         this._target = target
-        this.setText(this.title, title);
+        this.setText(this.title_label, title);
 
         this.rightTextBtn.node.active = Boolean(rightTextStr);
         if (this.rightTextBtn.node.active) {
@@ -48,7 +48,7 @@ export default class ComFormTitle extends UIBase {
         this._rightTextBtnCallBack && this._rightTextBtnCallBack.call(this._target);
     }
 
-    clickBack() {
-        UIComponent.close(this._target.UIDefine)
-    }
+    // clickBack() {
+    //     UIComponent.close(this._target.UIDefine)
+    // }
 }

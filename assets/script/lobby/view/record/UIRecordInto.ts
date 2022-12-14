@@ -32,9 +32,9 @@ export default class UIRecordInto extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "带入申请";
+        // this.comFormTitle.title.string = "带入申请";
 
         // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         // Text_title.string = "带入申请";

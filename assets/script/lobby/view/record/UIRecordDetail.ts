@@ -48,7 +48,10 @@ export default class UIRecordDetail extends BaseForm {
         let nameStr = GC.data.languageTemp.temp.getName(param.info.Name);
 
 
-        this.comFormTitle.title.string = nameStr + " " + param.info.RoomID.toString();
+        //this.comFormTitle.title.string = nameStr + " " + param.info.RoomID.toString();
+
+        this.comFormTitle.initData(nameStr + " " + param.info.RoomID.toString(), this);
+
         // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
         // Text_title.string = nameStr + " " + param.info.RoomID.toString();
         if (param && param.info) {
@@ -70,7 +73,7 @@ export default class UIRecordDetail extends BaseForm {
     }
 
     clickBx() {
-        UIComponent.open(UIDefine.MttRecordBXListForm, { info: this.respInfo })
+        UIComponent.open(UIDefine.UIRecordBXList, { info: this.respInfo })
     }
 
     reqInfo(roomId) {

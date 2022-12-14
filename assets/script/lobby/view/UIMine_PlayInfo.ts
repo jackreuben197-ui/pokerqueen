@@ -43,9 +43,9 @@ export default class UIMine_PlayInfo extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
+        //this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "玩家信息";
+        //this.comFormTitle.title.string = "玩家信息";
 
         let PLACEHOLDER_LABEL = this.getChildNodeOrComponent("PLACEHOLDER_LABEL", cc.Label);
         PLACEHOLDER_LABEL.string = Web_User_Info.Response.data.user.nickname;
@@ -82,7 +82,7 @@ export default class UIMine_PlayInfo extends BaseForm {
 
     /**
      * 注册触摸事件
-     */
+     *
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
     }

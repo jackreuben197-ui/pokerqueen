@@ -37,9 +37,9 @@ export default class UIRecordScore extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "本局牌谱";
+        // this.comFormTitle.title.string = "本局牌谱";
 
         if (param && param.info) {
             this.reqInfo(param.info);

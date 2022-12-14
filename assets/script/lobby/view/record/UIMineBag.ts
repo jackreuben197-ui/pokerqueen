@@ -41,12 +41,12 @@ export default class UIMineBag extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node): void {
         super.onShow(param, fromUI, sceneUI);
 
-        let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
-        Text_title.string = "背包";
+        // let Text_title = this.getChildNodeOrComponent("Text_title", cc.Label);
+        // Text_title.string = "背包";
 
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "背包";
+        // this.comFormTitle.title.string = "背包";
 
         this.resetUI();
 

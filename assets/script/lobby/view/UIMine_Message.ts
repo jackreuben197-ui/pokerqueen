@@ -32,11 +32,11 @@ export default class UIMine_Message extends BaseForm {
 
     _searchData: any = null;
 
-    private comFormTitle: ComFormTitle = null;
+    //private comFormTitle: ComFormTitle = null;
 
      protected lateLoad(): void {
          super.lateLoad();
-         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+         //this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
  
      }
 
@@ -49,9 +49,9 @@ export default class UIMine_Message extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
        
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "消息";
+        // this.comFormTitle.title.string = "消息";
         this.resetUI();
 
         for (let i=1; i<6; i++) {

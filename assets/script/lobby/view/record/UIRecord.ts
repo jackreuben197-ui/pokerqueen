@@ -40,9 +40,9 @@ export default class UIRecord extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
+        //this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "战绩";
+        //this.comFormTitle.title.string = "战绩";
 
         this._fromParm = param
         this.resetUI();
@@ -103,10 +103,10 @@ export default class UIRecord extends BaseForm {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("btn_pt_" + i);
             let label = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
             if (i == index) {
-                label.fontSize = 46;
+                label.fontSize = 55;
                 btn_pt_1.opacity = 255;
             } else {
-                label.fontSize = 38;
+                label.fontSize = 55;
                 btn_pt_1.opacity = 76.5;
             }
         }

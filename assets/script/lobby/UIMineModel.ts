@@ -1,5 +1,6 @@
 
 
+import { EventName } from "../config/EventName";
 import GGEvent from "../event/GGEvent";
 import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
@@ -34,6 +35,7 @@ export class UIMineModel {
                     GC.data.user.info.gold = tDto.data.user.gold;
                     GameCache.Instance.isTestflight = tDto.data.user.province;
                     this.UIRefreshGoldEvent();
+                    GC.notify.post(EventName.myGoldChange);
                     if (pAct != null)
                         pAct(tDto.data);
                 } else {

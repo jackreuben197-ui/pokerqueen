@@ -92,9 +92,9 @@ export default class UIMine_Poker extends BaseForm {
         this.panel_item_river = this.getChildNodeOrComponent("panel_item_river");
         this.panel_paipu_down = this.getChildNodeOrComponent("panel_paipu_down");
         this.panel_player_down = this.getChildNodeOrComponent("panel_player_down");
-        this.comFormTitle.initData('', this);
+        // this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "牌谱详情";
+        // this.comFormTitle.title.string = "牌谱详情";
         if (param.info) {
             this._enterInfo = param.info;
             this.reqInfo(param.info);

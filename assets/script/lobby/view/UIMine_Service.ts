@@ -59,9 +59,9 @@ export default class UIMine_Service extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
-        this.comFormTitle.initData('', this);
+        //this.comFormTitle.initData('', this);
 
-        this.comFormTitle.title.string = "客服";
+        //this.comFormTitle.title.string = "客服";
 
        
         this.showPhotoNum = 0;
@@ -160,6 +160,7 @@ export default class UIMine_Service extends BaseForm {
                 img_show1.active = true;
                 let img = img_show1.getComponent(cc.Sprite);
                 await WebImageHelper.SetUrlImage(img, icon);
+                WebImageHelper.setImageSize(icon, 637, 240)
                 this._img_url1 = icon;
             } else if (this.showPhotoNum == 2) {
                 let btn_photo: cc.Node = this.getChildNodeOrComponent("btn_photo")
@@ -168,6 +169,7 @@ export default class UIMine_Service extends BaseForm {
                 lbl_hide1.active = false;
                 let img = img_show2.getComponent(cc.Sprite);
                 await WebImageHelper.SetUrlImage(img, icon);
+                WebImageHelper.setImageSize(icon, 637, 240)
                 this._img_url2 = icon;
             }
         }
@@ -194,6 +196,9 @@ export default class UIMine_Service extends BaseForm {
     }
 
     onClickUser() {
+        if (ToastManager.Instance.sequenceToasts.length > 0) {
+            return;
+        }
         ToastManager.Instance.createToast("功能暂未开放");
     }
 

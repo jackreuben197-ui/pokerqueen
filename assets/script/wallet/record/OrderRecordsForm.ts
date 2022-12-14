@@ -11,7 +11,7 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/wallet/record/OrderRcordsForm')
 export default class OrderRecordsForm extends BaseForm {
-    private comFormTitle: ComFormTitle = null;
+    //private comFormTitle: ComFormTitle = null;
     private tabToggles: ComTabToggles = null;
     private list: List = null;
 
@@ -23,7 +23,7 @@ export default class OrderRecordsForm extends BaseForm {
         super.lateLoad();
         this.list = this.getChildNodeOrComponent("list", List);
         this.tabToggles = this.getChildNodeOrComponent("tabToggles", ComTabToggles);
-        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+        //this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
 
         this.titleNodes.set(EOrderType.chongzhi, this.getChildNodeOrComponent("titleNode1"));
         this.titleNodes.set(EOrderType.tiqu, this.getChildNodeOrComponent("titleNode2"));
@@ -54,7 +54,7 @@ export default class OrderRecordsForm extends BaseForm {
     onShow(isClub?: boolean, fromUI?: any): void {
         super.onShow(isClub, fromUI);
         this._isClub = isClub;
-        this.comFormTitle.initData("Text_RecordLine", this);
+        //this.comFormTitle.initData("Text_RecordLine", this);
         GC.data.wallet.orderRecord.resetData();
 
         let data: TTabToggleData = {

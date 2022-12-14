@@ -144,7 +144,7 @@ export default class UIMine extends UIBase {
             LobbyControl.getInstance().reqIsPhoneUser(info).then(
                 (res: any) => {
                     if (res.data.isPhoneUser) {
-                        UIComponent.open(UIDefine.MyService);
+                        UIComponent.open(UIDefine.UIMine_Service);
                     } else {
                         ToastManager.Instance.createToast("请先绑定手机号");
                     }
@@ -166,7 +166,7 @@ export default class UIMine extends UIBase {
     }
 
     onClickMyInfo() {
-        UIComponent.open(UIDefine.MyPlayInfo);
+        UIComponent.open(UIDefine.UIMine_PlayInfo);
     }
 
     onClickRecord() {
