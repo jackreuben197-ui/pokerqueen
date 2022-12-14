@@ -22,6 +22,8 @@ export default class UIMine_PlayInfo extends BaseForm {
     isFixName: boolean = false;
     isCanFix: boolean = false;
 
+    oldName: string = "";
+
     private comFormTitle: ComFormTitle = null;
 
     protected lateLoad(): void {
@@ -43,6 +45,7 @@ export default class UIMine_PlayInfo extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
+        this.oldName = "";
         //this.comFormTitle.initData('', this);
 
         //this.comFormTitle.title.string = "玩家信息";
@@ -74,7 +77,7 @@ export default class UIMine_PlayInfo extends BaseForm {
 
     refreshHeadImg() {
         let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
-        img_head.node.active = false;
+        // img_head.node.active = false;
         WebImageHelper.SetUrlImage(img_head, GameCache.Instance.headPic).then(() => {
             img_head.node.active = true;
         });
@@ -206,5 +209,11 @@ export default class UIMine_PlayInfo extends BaseForm {
     onClickFix() {
         this.isCanFix = !this.isCanFix;
         this.refreshInputColor();
+        if (this.isCanFix) {
+            this.oldName = this.ebx_name.string;
+            this.ebx_name.string = "";
+            let PLACEHOLDER_LABEL = this.getChildNodeOrComponent("PLACEHOLDER_LABEL", cc.Label);
+            PLACEHOLDER_LABEL.string = "";
+        }
     }
 }
