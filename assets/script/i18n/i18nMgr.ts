@@ -159,12 +159,13 @@ export class i18nMgr {
     }
     public static _praseConfig(language: string, config: cc.TextAsset) {
         if (config && config.text) {
-            let list = config.text.split("\r\n");
+            let list = config.text.split("\n");
             for (let item of list) {
                 let eq_index = item.indexOf("=");
                 if (~eq_index) {
                     let key = item.slice(0, eq_index);
                     let value = item.slice(eq_index + 1);
+                    value = value.replace("\r", "");
                     LanguageAllObject[language][key] = value;
                 }
             }
