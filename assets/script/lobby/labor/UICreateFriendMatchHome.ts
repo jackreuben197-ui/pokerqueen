@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-30 14:16:59
+ * @LastEditTime: 2022-12-14 16:09:44
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -32,7 +32,8 @@ export default class UICreateFriendMatchHome extends UIBase {
 
     @property(cc.Node)
     dr: cc.Node = null;
-
+    @property(cc.Node)
+    lb_tip: cc.Node = null;
     @property(List)
     list: List = null;
     _roomList: any = []
@@ -67,6 +68,8 @@ export default class UICreateFriendMatchHome extends UIBase {
         let data: any = APIOrgFriendRoomList.Response.data
         this._roomList = data?.records;
         this.list.numItems = data?.records?.length;
+
+        this.lb_tip.active = this.list.numItems == 0
     }
 
     createMatch() {

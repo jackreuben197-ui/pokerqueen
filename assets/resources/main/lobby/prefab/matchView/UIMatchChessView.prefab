@@ -1936,7 +1936,7 @@
     "_prefab": {
       "__id__": 58
     },
-    "_opacity": 255,
+    "_opacity": 130,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -2000,7 +2000,7 @@
     "_dstBlendFactor": 771,
     "_string": "暂无牌桌",
     "_N$string": "暂无牌桌",
-    "_fontSize": 60,
+    "_fontSize": 50,
     "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": null,
