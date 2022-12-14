@@ -84,7 +84,7 @@ export default class UITexasPlayerInfoComponent extends UIBase {
 
     refreshHeadImg(headStr) {
         let img_head: cc.Sprite = this.getChildNodeOrComponent("img_head", cc.Sprite);
-        img_head.node.active = false;
+        // img_head.node.active = false;
         WebImageHelper.SetUrlImage(img_head, headStr).then(() => {
             img_head.node.active = true;
         });
