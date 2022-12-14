@@ -162,7 +162,7 @@ export default class UITexasReportComponent extends UIBase {
         }
         for (let index = 0; index < RoomersData.observersList.length; index++) {
             let tItem: cc.Node = viewer_List.children[index]
-            tItem.getChildByName('Text').getComponent(cc.Label).string = RoomersData.observersList[index].name;
+            tItem.getChildByName('Text').getComponent(cc.Label).string = StringHelper.LengthNick(RoomersData.observersList[index].name);
             if (RoomersData.observersList[index].avatar != "") {
                 let icon = cc.find('mask/icon', tItem);
                 WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
@@ -217,7 +217,7 @@ export default class UITexasReportComponent extends UIBase {
         }, 1)
     }
     setInfos(objTemp, pDto, onLine) {
-        objTemp.getChildByName('Text_Name').getComponent(cc.RichText).string = this.colorText(onLine, pDto.nickName)
+        objTemp.getChildByName('Text_Name').getComponent(cc.RichText).string = StringHelper.LengthNick(this.colorText(onLine, pDto.nickName))
         objTemp.getChildByName('Text_Num').getComponent(cc.RichText).string = this.colorText(onLine, pDto.hand + '')
         objTemp.getChildByName('Text_All').getComponent(cc.RichText).string = this.colorText(onLine, StringHelper.getStringDiv100(pDto.bringIn))
         objTemp.getChildByName('Text_All').getChildByName('Text_outChip').getComponent(cc.RichText).string = pDto.outChip != 0 ? StringHelper.getStringDiv100(pDto.outChip) : 0;
