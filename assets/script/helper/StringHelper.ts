@@ -198,7 +198,7 @@ export class StringHelper {
      */
     public static LengthNick(nick: string, limit: number = 5) {
         if (nick.length > limit) {
-            return nick.substring(0, 5) + "...";
+            return nick.substring(0, limit) + "...";
         }
         return nick;
     }
