@@ -502,7 +502,9 @@ export default class Seat {
         this.SetNickName(this.Player?.nick || "");
     }
     public SetNickName(name: string): void {
-        this.uirc.Text_NickName.string = `${name}${GM.GetDebugSwitch(1) ? `:${this.seatID}` : ``}`;
+        let nick: string = `${GM.GetDebugSwitch(1) ? `:${this.seatID}` : ``}${name}`;
+        this.uirc.Text_NickName.string = StringHelper.LengthNick(nick);
+        //`${GM.GetDebugSwitch(1) ? `:${this.seatID}` : ``}${name}`;
     }
     public SetCoin(coin: string) {
         this.uirc.Text_Coin.string = coin;
