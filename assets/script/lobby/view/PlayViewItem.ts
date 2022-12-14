@@ -48,13 +48,13 @@ export default class PlayViewItem extends UIBase {
 
     getTime(pNum: number) {
         if (pNum >= 3600) {
-            let h = (pNum / 3600);
-            let m = pNum % 3600 / 3600;
+            let h = Math.floor(pNum / 3600);
+            let m = Math.floor(pNum % 3600 / 3600);
             let mRound = Math.round(m);
             return h + mRound + "h";
         }
         else if (pNum >= 0)
-            return pNum / 60 + "m";
+            return Math.floor(pNum / 60) + "m";
 
         return "0m";
     }
