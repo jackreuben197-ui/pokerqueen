@@ -193,5 +193,16 @@ export class StringHelper {
         return num_str;
     }
 
+    /**
+     * 名字长度超出加...
+     */
+    public static LengthNick(nick: string, limit: number = 5) {
+        if (nick.length > limit) {
+            return nick.substring(0, limit) + "...";
+        }
+        return nick;
+    }
+
+
 }
 (window as any).StringHelper = StringHelper;

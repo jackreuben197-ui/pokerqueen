@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-02 12:18:31
+ * @LastEditTime: 2022-12-14 16:53:28
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -905,7 +905,7 @@ export default class UITexasHistoryComponent extends UIBase {
     /// 设置无牌预制体
     /// </summary>
     SetPlayerItem(go, element, isoutchip = false) {
-        go.getChildByName("Text_name").getComponent(cc.Label).string = element.nickNameStr;
+        go.getChildByName("Text_name").getComponent(cc.Label).string = StringHelper.LengthNick(element.nickNameStr);
         if (isoutchip) {
             let str = (element.leftChips / 100).toString();
             go.getChildByName("Text_wins").getComponent(cc.Label).string = this.tryParse(str)
@@ -978,7 +978,7 @@ export default class UITexasHistoryComponent extends UIBase {
         return CardTypeUtil.GetCardTypeEnglishName(cardType);
     }
     SetPlayerCardItem(go, element, isSecond = false, SpcsIndex = 0) {
-        go.getChildByName("Text_name").getComponent(cc.Label).string = element.userName;//名字
+        go.getChildByName("Text_name").getComponent(cc.Label).string = StringHelper.LengthNick(element.userName);//名字
         //输赢筹码
         let str = StringHelper.getStringDiv100(element.winAnte);
         if (isSecond) {
@@ -1148,7 +1148,7 @@ export default class UITexasHistoryComponent extends UIBase {
         // #endregion
     }
     SetPlayerSecondCardItem(go, element) {
-        go.getChildByName("Text_name").getComponent(cc.Label).string = element.userName;//名字
+        go.getChildByName("Text_name").getComponent(cc.Label).string = StringHelper.LengthNick(element.userName);//名字
         //输赢筹码
         let str;
         str = StringHelper.getStringDiv100(element.winAnte2[0]);

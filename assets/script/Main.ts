@@ -11,6 +11,7 @@
  */
 import { GameConfig } from "./config/GameConfig";
 import GC from "./frame/GameControl";
+import OrientationComponent from "./funcomponent/OrientationComponent";
 import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
 import WebSocketClient from "./net/websocket/WebSocketClient";
@@ -41,6 +42,8 @@ export default class Main extends cc.Component {
     static Toast: cc.Node = null;
     static UIPreloading: cc.Node = null;
     static Toast_Node: cc.Node = null;
+    //横屏提示
+    static Orientation: cc.Node = null;
 
     ////////////////////////////////////调试开关
 
@@ -86,10 +89,9 @@ export default class Main extends cc.Component {
         Main.UIPreloading = Main.Block.getChildByName("UIPreloading");
         Main.Toast_Node = Main.Toast.getChildByName("Toast_Node");
 
+        Main.Orientation = this.node.parent.getChildByName("Orientation");
+
         UIComponent.Instance.SetPrefabNode(PrefabUI.UIPreloading, Main.UIPreloading);
-
-
-        cc.log(WebSocketClient);
 
         cc.game.on(cc.game.EVENT_HIDE, () => {
             cc.log("cc.game.EVENT_HIDE");
@@ -104,13 +106,12 @@ export default class Main extends cc.Component {
                 WebSocketClient.TryReconnect();
             }
         })
-
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
+        GC.uc.AddComponent(new OrientationComponent);
 
-        cc.resources.releaseAll
     }
     protected update(dt: number): void {
         GC.uc.Update(dt);
