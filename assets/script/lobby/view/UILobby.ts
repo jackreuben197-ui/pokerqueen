@@ -4,6 +4,7 @@ import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
+import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { i18nSprite } from "../../i18n/i18nSprite";
@@ -111,7 +112,7 @@ export default class UILobby extends UIBase {
 
     refreshUserName() {
         let lbl_nickname = this.getChildNodeOrComponent("lbl_nickname", cc.Label);
-        lbl_nickname.string = Web_User_Info.Response.data.user.nickname;
+        lbl_nickname.string = StringHelper.LengthNick(Web_User_Info.Response.data.user.nickname);
     }
 
     updateBean() {

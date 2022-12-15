@@ -1,5 +1,6 @@
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
+import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
 import { Web_Stats_Other_User_Stats, Web_User_Info } from "../../net/https/WebRequest";
@@ -92,7 +93,7 @@ export default class UITexasPlayerInfoComponent extends UIBase {
 
     refreshUserName(nameStr) {
         let lbl_nickname = this.getChildNodeOrComponent("lbl_name", cc.Label);
-        lbl_nickname.string = nameStr;
+        lbl_nickname.string = StringHelper.LengthNick(nameStr);
     }
 
     resetCenterInfo() {

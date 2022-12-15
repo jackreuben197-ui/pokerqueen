@@ -269,7 +269,7 @@ export default class UIMTTMineRankComponent extends UIBase {
                 WebImageHelper.SetUrlImage(this.headIcon, GameCache.Instance.headPic);
                 let lbl_name = this.getChildNodeOrComponent("lbl_name", cc.Label);
                 let lbl_date = this.getChildNodeOrComponent("lbl_date", cc.Label);
-                lbl_name.string = GameCache.Instance.nick;
+                lbl_name.string = StringHelper.LengthNick(GameCache.Instance.nick);
                 lbl_date.string = TimeHelper.convertUTCTimeToLocalTime(this.MttInfo.mtt.start_time);
                 // nameText.text = GameCache.Instance.nick;
                 // Text_StartTime.text = TimeHelper.TimerDateStr((long)TimeHelper.GetTimestampByDateTime(TimeHelper.RFC3339TimeConvertToUTCTime(this.MttInfo.mtt.start_time))) + "  " + TimeHelper.TimerDateMinStr(TimeHelper.GetTimestampByDateTime(TimeHelper.RFC3339TimeConvertToUTCTime(MttInfo.mtt.start_time)));
