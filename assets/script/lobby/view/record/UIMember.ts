@@ -74,7 +74,7 @@ export default class UIMember extends BaseForm {
         this.refreshHeadImg();
 
         let lbl_nickname = this.getChildNodeOrComponent('lbl_nickname').getComponent(cc.Label)
-        lbl_nickname.string = this._info.nick_name;
+        lbl_nickname.string = StringHelper.LengthNick(this._info.nick_name);
 
         let lbl_gold = this.getChildNodeOrComponent('lbl_gold').getComponent(cc.Label)
         lbl_gold.string = StringHelper.GetLongString(this._info.gold);

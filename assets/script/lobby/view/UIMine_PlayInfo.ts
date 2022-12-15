@@ -1,6 +1,7 @@
 import ComFormTitle from "../../common/ComFormTitle";
 import GGEvent from "../../event/GGEvent";
 import { GameCache } from "../../game/GameCache";
+import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import ToastManager from "../../manager/ToastManager";
 import { APIOrgClubUploadIcon, Web_User_Info } from "../../net/https/WebRequest";
@@ -55,7 +56,7 @@ export default class UIMine_PlayInfo extends BaseForm {
 
 
         let lbl_name = this.getChildNodeOrComponent("lbl_name", cc.Label);
-        lbl_name.string = Web_User_Info.Response.data.user.nickname;
+        lbl_name.string = StringHelper.LengthNick(Web_User_Info.Response.data.user.nickname);
 
         let btn_save: cc.Node = this.getChildNodeOrComponent("btn_save");
         btn_save.on(cc.Node.EventType.TOUCH_END, this.onClickSave, this);
