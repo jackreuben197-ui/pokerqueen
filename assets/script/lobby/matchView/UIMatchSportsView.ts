@@ -12,9 +12,9 @@ export default class UIMatchSportsView extends UIBase {
 
 
     private _data: Array<TMatchSportsDataType> = [
-        { bgPath: "sports_1", name: "体育明星", url: "url:name1" },
-        { bgPath: "sports_2", name: "体育明星", url: "url:name2" },
-        { bgPath: "sports_3", name: "体育明星", url: "url:name3" },
+        { bgPath: "sports_1", name: "体育明星", url: "功能暂未开放" },
+        { bgPath: "sports_2", name: "体育明星", url: "功能暂未开放" },
+        { bgPath: "sports_3", name: "体育明星", url: "功能暂未开放" },
     ]
 
     protected lateLoad(): void {
