@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-25 17:12:38
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2022-12-15 16:15:15
+ * @FilePath: /pokerqueen/assets/script/mtt/realTime/MttRealTimeRankItem.ts
+ */
 import ListItem from "../../common/ListItem";
 import MttRealTimeRankItemModel from "../../frame/data/mtt/realTime/MttRealTimeRankItemModel";
 
@@ -31,8 +39,11 @@ export default class MttRealTimeRankItem extends ListItem {
         this._data = data;
 
         this.setActive(this.myselfFlag, this._data.isMySelf);
-        this.setText(this.rank, `${this._data.rank} ${this._data.name}`);
-        this.setText(this.desk, this._data.rid);
-        this.setText(this.score, this._data.chip);
+        this.rank.string = `${this._data.rank} ${this._data.name}`
+        this.desk.string = this._data.rid + ''
+        this.score.string = this._data.chip + ''
+        // this.setText(this.rank, `${this._data.rank} ${this._data.name}`);
+        // this.setText(this.desk, this._data.rid);
+        // this.setText(this.score, this._data.chip);
     }
 }

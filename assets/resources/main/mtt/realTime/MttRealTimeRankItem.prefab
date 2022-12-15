@@ -113,8 +113,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 49,
-      "height": 49
+      "width": 47,
+      "height": 46
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -301,7 +301,7 @@
       "__id__": 5
     },
     "_enabled": true,
-    "i18n_string": "UITexasReport_title",
+    "i18n_string": "",
     "_id": ""
   },
   {
@@ -423,7 +423,7 @@
       "__id__": 9
     },
     "_enabled": true,
-    "i18n_string": "UITexasReport_title",
+    "i18n_string": "",
     "_id": ""
   },
   {
@@ -545,7 +545,7 @@
       "__id__": 13
     },
     "_enabled": true,
-    "i18n_string": "UITexasReport_title",
+    "i18n_string": "",
     "_id": ""
   },
   {

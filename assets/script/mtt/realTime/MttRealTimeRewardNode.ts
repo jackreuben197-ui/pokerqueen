@@ -28,14 +28,14 @@ export default class MttRealTimeRewardNode extends UIBase {
 
     }
 
-    protected notify(id: any, msg: any, sendInfo?: any): void {
-        //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
-        switch (id) {
-            case Web_Mtt.REAL_PRIZE: {
-                this.updateView();
-            } break;
-        }
-    }
+    // protected notify(id: any, msg: any, sendInfo?: any): void {
+    //     //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
+    //     switch (id) {
+    //         case Web_Mtt.REAL_PRIZE: {
+    //             this.updateView();
+    //         } break;
+    //     }
+    // }
 
     initData() {
         GC.data.mtt.reqRealTimeRealPrize();
