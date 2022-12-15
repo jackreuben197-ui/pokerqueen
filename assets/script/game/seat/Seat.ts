@@ -1044,7 +1044,7 @@ export default class Seat {
         this.uirc.imageEmpty.node.getPosition(pos);
         this.uirc.imageIconChip.node.setPosition(GameUtil.ChangeToLocalPos(pos, this.ui, this.uirc.transCurRoundHaveBet));
         this.uirc.imageIconChip.node.active = true;
-        return cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos }).start();
+        return cc.tween(this.uirc.imageIconChip.node).to(.2, { position: this.defaultIconChipLocalPos }, cc.easeQuadraticActionOut()).start();
     }
 
     /// <summary>
@@ -1087,7 +1087,7 @@ export default class Seat {
             this.uirc.textCurRoundHaveBet.node.active = false;
             let pos = this.uirc.textCurRoundHaveBet.node.convertToNodeSpaceAR(GameCache.Instance.CurGame.GetRecyclingChipPosV3());
             GC.sound.Play('sfx_desk_move_chips');
-            cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }).call(() => {
+            cc.tween(this.uirc.imageIconChip.node).to(.5, { position: pos }, cc.easeQuadraticActionOut()).call(() => {
                 this.uirc.imageIconChip.node.active = false;
             }).start();
         }
@@ -1539,7 +1539,7 @@ export default class Seat {
                 imageRecyclingWinChip.node.active = true;
             }));
             let pos = GameUtil.ChangeToLocalPos(this.uirc.imageHeadFrame.node.position, this.uirc.imageHeadFrame.node.parent, this.ui);
-            tween.to(.5, { position: pos });
+            tween.to(.5, { position: pos }, cc.easeQuadraticActionOut());
             tween.call(() => {
                 imageRecyclingWinChip.node.active = false;
                 this.tweenerPlayRecyclingWinChipAnimation.IsPlaying = false;
