@@ -37,6 +37,7 @@ export default class BaseForm extends UIBase {
     }
     fromUI: cc.Node = null;
     sceneUI: cc.Node = null;
+    move_node: cc.Node = null;
     ////////////////////////////////////
     protected lateLoad() {
         super.lateLoad();
@@ -49,6 +50,7 @@ export default class BaseForm extends UIBase {
         if (this.title_label) {
             this.title_label.i18NString = this.UIDefine?.Title || "";
         }
+        this.move_node = this.getChildNodeOrComponent("main") || this.node;
         //设置尺寸
         // this.main.setContentSize(this.node.getContentSize());
     }
@@ -82,13 +84,13 @@ export default class BaseForm extends UIBase {
     mainFadeIn(show_animation: boolean = true) {
         this.top_block.active = true;
         if (show_animation == false) {
-            this.node.x = 0;
+            this.move_node.x = 0;
             this.fadeInComplete();
         } else {
             let duration = this.defaultStyle.main_fadeIn_duration;
             let ease = this.defaultStyle.main_fadeIn_ease;
-            this.node.x = this.node.width;
-            cc.tween(this.node)
+            this.move_node.x = this.move_node.width;
+            cc.tween(this.move_node)
                 .to(duration, { x: 0 }, ease)
                 .call(this.fadeInComplete, this)
                 .start();
@@ -98,8 +100,8 @@ export default class BaseForm extends UIBase {
         return new Promise((resolve, reject) => {
             let duration = this.defaultStyle.main_fadeOut_duration;
             let ease = this.defaultStyle.main_fadeOut_ease;
-            this.node.x = 0;
-            cc.tween(this.node).to(duration, { x: this.node.width }, ease).call(this.fadeOutComplete.bind(this, resolve)).start();
+            this.move_node.x = 0;
+            cc.tween(this.move_node).to(duration, { x: this.move_node.width }, ease).call(this.fadeOutComplete.bind(this, resolve)).start();
         })
     }
 
@@ -111,7 +113,7 @@ export default class BaseForm extends UIBase {
 
     fadeOutComplete(resolve?) {
         resolve?.(0);
-        this.node.x = this.node.width;
+        this.move_node.x = this.move_node.width;
     }
     /**
      * 显示隐藏来源界面
