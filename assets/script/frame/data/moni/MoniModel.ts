@@ -25,6 +25,9 @@ export default class MoniModel {
 
         this.play_index++;
     }
+    public Reset() {
+        this.play_index = 0;
+    }
 
     public play_index: number = 0;
     //正常一套牌

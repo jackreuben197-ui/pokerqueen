@@ -170,6 +170,7 @@ export default class Seat {
         this.StopAllActions();
         this.HideBubbleInsurance();
         this.HideBubbleInsuranceCountDown();
+        this.HideReturnGame();
     }
     //停止所有动作
     public StopAllActions() {
@@ -327,7 +328,8 @@ export default class Seat {
 
 
                 tween.then(cc.callFunc(() => {
-                    tween_card.to(0.4, { scale: Seat.myCardsScale, position: Seat.myCardsPos[i] }, cc.easeSineOut()).start();
+                    tween_card.to(0.4, { scale: Seat.myCardsScale, position: Seat.myCardsPos[i] }, cc.easeQuadraticActionOut()).start();
+                    //cc.easeSineOut()
                 }))
                 if (!GameCache.Instance.CurlimitDelaySeeCard) {
                     tween.then(cc.callFunc(() => {
@@ -358,7 +360,7 @@ export default class Seat {
                 tween.then(cc.callFunc(() => {
                     GC.sound.Play("sfx_desk_new_card");
                     mTmpObj.active = true;
-                    cc.tween(mTmpObj).to(0.4, { position: pos }, cc.easeSineOut()).start();
+                    cc.tween(mTmpObj).to(0.4, { position: pos }, cc.easeQuadraticActionOut()).start();
                 }))
             }
             tween.delay(0.4);
@@ -1654,6 +1656,7 @@ export default class Seat {
         this.keepSeatDeltaTime = 0;
         this.voiceprintTime = 0;
         this.UpdateVoiceprintState(VoiceprintState.None);
+        this.HideReturnGame();
     }
     /// <summary>
     /// 删除所有Tweener动画

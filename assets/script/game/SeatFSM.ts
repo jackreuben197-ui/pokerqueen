@@ -77,6 +77,8 @@ export class SeatFSM {
         this.seat.uirc.imageEmpty.node.active = true;
         this.seat.UpdateVoiceprintState(VoiceprintState.None);
 
+        this.seat.HideReturnGame();
+
     }
 
     public EmptyExecute(): void {
