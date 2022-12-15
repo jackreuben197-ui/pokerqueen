@@ -48,6 +48,7 @@ export default class MttRealTime extends UIBase {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
+        GC.notify.register(Web_Mtt.RANKS, this.updateRankList, this)
     }
 
     protected regiterTouchEvents(): void {
@@ -60,14 +61,14 @@ export default class MttRealTime extends UIBase {
         this.bindClick(this.lastBtn, this.clickLast);
     }
 
-    protected notify(id: any, msg: any, sendInfo?: any): void {
-        //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
-        switch (id) {
-            case Web_Mtt.RANKS: {
-                this.updateRankList();
-            } break;
-        }
-    }
+    // protected notify(id: any, msg: any, sendInfo?: any): void {
+    //     //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
+    //     switch (id) {
+    //         case Web_Mtt.RANKS: {
+    //             this.updateRankList();
+    //         } break;
+    //     }
+    // }
 
     onShow(param: any, fromUI: any): void {
         super.onShow(param, fromUI);

@@ -4834,7 +4834,7 @@
     },
     "component": "",
     "_componentId": "43d466iTvlJhrUIqcLcx9rT",
-    "handler": "onRender",
+    "handler": "onRenderRankItem",
     "customEventData": ""
   },
   {

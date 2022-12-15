@@ -24,6 +24,8 @@ export default class MttRealTimeRewardNode extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
+        GC.notify.register(Web_Mtt.REAL_PRIZE, this.updateView, this)
+
     }
 
     protected notify(id: any, msg: any, sendInfo?: any): void {

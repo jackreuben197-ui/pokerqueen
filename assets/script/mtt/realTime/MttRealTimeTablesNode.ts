@@ -20,16 +20,18 @@ export default class MttRealTimeTablesNode extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
+        GC.notify.register(Web_Mtt.ROOMS, this.updateList, this)
+
     }
 
-    protected notify(id: any, msg: any, sendInfo?: any): void {
-       //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
-        switch (id) {
-            case Web_Mtt.ROOMS: {
-                this.updateList();
-            } break;
-        }
-    }
+    // protected notify(id: any, msg: any, sendInfo?: any): void {
+    //     //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
+    //     switch (id) {
+    //         case Web_Mtt.ROOMS: {
+    //             this.updateList();
+    //         } break;
+    //     }
+    // }
 
     initData() {
         this.tableList.scrollingCB = this.scrollingCB;

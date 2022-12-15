@@ -10,22 +10,28 @@ export default class MttData extends BaseData {
     realTime: MttRealTimeModel = new MttRealTimeModel();
     detail: MttDetailModel = new MttDetailModel();
     protected notify(id: string, msg: any, sendInfo?: any): void {
-        //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
+        // id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
+        id = id.replace(/\d+/, "{0}")
         switch (id) {
             case Web_Mtt.LIST: {
                 this.list.updateData(msg);
+                GC.notify.post(Web_Mtt.LIST)
             } break;
             case Web_Mtt.RANKS: {
                 this.realTime.updateRankList(msg);
+                GC.notify.post(Web_Mtt.RANKS)
             } break;
             case Web_Mtt.DETAIL: {
                 this.detail.updateData(msg);
+                GC.notify.post(Web_Mtt.DETAIL)
             } break;
             case Web_Mtt.REAL_PRIZE: {
                 this.realTime.updateRealPrize(msg);
+                GC.notify.post(Web_Mtt.REAL_PRIZE)
             } break;
             case Web_Mtt.ROOMS: {
                 this.realTime.updateRooms(msg);
+                GC.notify.post(Web_Mtt.ROOMS)
             } break;
         }
     }
