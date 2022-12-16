@@ -13,6 +13,10 @@ export default class OrientationComponent implements IUpComponent {
 
     Update(dt: number) {
 
+        if (Main.Orientation == null) {
+            return;
+        }
+
         if (Main.Orientation.active) {
             if (window.orientation == 0) Main.Orientation.active = false;
         } else {
