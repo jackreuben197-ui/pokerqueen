@@ -1,3 +1,4 @@
+import { EventName } from "../../../config/EventName";
 import { TRoomList } from "../../../config/TTypeConfig";
 import { GameCache } from "../../../game/GameCache";
 import { APIOrgFriendRoomList, Web_Config_Multi_Language_Template, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../../net/https/WebRequest";
@@ -21,6 +22,7 @@ export default class LobbyData extends BaseData {
             } break;
             case Web_Room_Center_Groups.API: {
                 this.respLobbyBaseData(msg, sendInfo);
+                GC.notify.post(EventName.refreshLobby);
             } break;
             // case Web_Config_Multi_Language_Template.API: {
             //     this.respDeskNameTemp(msg, sendInfo);

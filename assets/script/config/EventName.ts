@@ -30,6 +30,7 @@ export const enum EventName {
     refresh_Btn_Data = 'refresh_Btn_Data',//
     refresh_bind = 'refresh_bind',//
     refreshClubLevel = 'refreshClubLevel',
-    refreshMess = 'refreshMess'
+    refreshMess = 'refreshMess',
+    refreshLobby = 'refreshLobby'
 
 }
