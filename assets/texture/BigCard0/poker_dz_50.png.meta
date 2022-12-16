@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "cef9e004-7ef5-4e11-8eea-f7988c19d1d6",
+  "uuid": "86771e98-4d87-4526-a0f5-57af562fb61c",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -14,9 +14,9 @@
   "subMetas": {
     "poker_dz_50": {
       "ver": "1.0.6",
-      "uuid": "0a9d8753-b42d-46f9-8488-1159cc0220b9",
+      "uuid": "9f1738e2-d7cf-4fe5-b72c-134a37d08a4b",
       "importer": "sprite-frame",
-      "rawTextureUuid": "cef9e004-7ef5-4e11-8eea-f7988c19d1d6",
+      "rawTextureUuid": "86771e98-4d87-4526-a0f5-57af562fb61c",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

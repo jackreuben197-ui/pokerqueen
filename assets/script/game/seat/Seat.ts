@@ -157,6 +157,8 @@ export default class Seat {
 
         for (let i = 0; i < 6; i++) {
             this.uirc.imageCards[i].imageCard.active = false;
+            this.uirc.imageSmallCards[i].imageCard.active = false;
+            this.uirc.imageSmallCardBacks[i].node.active = false;
         }
 
         for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
@@ -1657,6 +1659,7 @@ export default class Seat {
         this.voiceprintTime = 0;
         this.UpdateVoiceprintState(VoiceprintState.None);
         this.HideReturnGame();
+        this.HideCardBack();
     }
     /// <summary>
     /// 删除所有Tweener动画
