@@ -32,6 +32,7 @@ export default class UIMatchRealityItam extends UIBase {
     }
 
     clickBg = () => {
-        ToastManager.Instance.createToast(this._data.url);
+        ToastManager.Instance.createToast("功能暂未开放")
+        // ToastManager.Instance.createToast(this._data.url);
     }
 }

@@ -7,6 +7,7 @@ import GC from "../../frame/GameControl";
 import { GameType } from "../../game/util/GameUtil";
 import { TLobbyGroup } from "../../config/TTypeConfig";
 import SceneManager from "../../manager/SceneManager";
+import { EventName } from "../../config/EventName";
 @ccclass
 export default class UIMatchRoom extends UIBase {
     private room_NLH: cc.Node = null;
@@ -17,6 +18,7 @@ export default class UIMatchRoom extends UIBase {
     public RoomTypesInfos = [];
     protected lateLoad(): void {
         super.lateLoad();
+        this.listen(EventName.refreshLobby, this.updateView);
         this.room_NLH = this.getChildNodeOrComponent("room_NLH");
         this.room_Plus6 = this.getChildNodeOrComponent("room_Plus6");
         this.room_456 = this.getChildNodeOrComponent("room_456");
@@ -28,7 +30,7 @@ export default class UIMatchRoom extends UIBase {
         this.bindClick(this.room_Plus6, this.clickRoom, GameType.Plus6);
         this.bindClick(this.room_456, this.clickRoom, GameType.Omaha4);
     }
-
+    
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
             case Web_Room_Center_Groups.API: {

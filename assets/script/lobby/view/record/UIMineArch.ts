@@ -192,6 +192,11 @@ export default class UIMineArch extends BaseForm {
         } else {
             let item_dialog = target.parent.getChildByName("item_dialog");
             item_dialog.active = !item_dialog.active;
+            if (item_dialog.active) {
+                this.scheduleOnce(() => {
+                    item_dialog.active = false;
+                }, 2)
+            }
         }
     }
 
