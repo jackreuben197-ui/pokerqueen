@@ -1708,6 +1708,8 @@ export class Web_Org_Club_Get {
         club_id: number,
         level: number,
         upper_limit: number,
+        search_switch: any
+        auto_audit_switch: any
     } = null;
     static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;

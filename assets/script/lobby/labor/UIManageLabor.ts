@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-06 11:04:50
+ * @LastEditTime: 2022-12-18 12:22:54
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -35,6 +35,14 @@ export default class UIManageLabor extends BaseForm {
     iconNodeMan: cc.Node = null;
     @property(cc.Node)
     iconNodeMer: cc.Node = null;
+
+    @property(cc.Node)
+    rusp_st: cc.Node = null;
+
+    @property(cc.Node)
+    yxss_st: cc.Node = null;
+    rusp_st_state = false
+    yxss_st_state = true;
 
     @property(cc.Label)
     lbl_glod: cc.Label = null;
@@ -94,7 +102,7 @@ export default class UIManageLabor extends BaseForm {
         let lm = this.contentNode.getChildByName('lm')
         let lm_panel_right = lm.getChildByName('panel_right')
         lm_panel_right.getChildByName('name').getComponent(cc.Label).string = data.tribe_name || ''
-
+        this.initYxssAndRusp();
         // if (data.tribe_name) {
         //     lm.active = true
         // } else {
@@ -160,7 +168,59 @@ export default class UIManageLabor extends BaseForm {
         //     lm.active = false;
         // }
     }
+    initYxssAndRusp() {
+        let data = Web_Org_Club_Get.Response.data;
+        let st2 = this.yxss_st.getChildByName('st2')
+        let st4 = this.yxss_st.getChildByName('st4')
+        if (data.search_switch == 1) {
+            this.yxss_st_state = true
+        } else {
+            this.yxss_st_state = false
+        }
+        st2.active = this.yxss_st_state
+        st4.active = !st2.active
+        if (data.auto_audit_switch == 1) {
+            this.rusp_st_state = true;
+        } else {
+            this.rusp_st_state = false;
+        }
 
+        let st21 = this.rusp_st.getChildByName('st2')
+        let st41 = this.rusp_st.getChildByName('st4')
+        st21.active = this.rusp_st_state
+        st41.active = !st21.active
+    }
+    yxssClick() {
+
+        let st2 = this.yxss_st.getChildByName('st2')
+        let st4 = this.yxss_st.getChildByName('st4')
+        this.yxss_st_state = !this.yxss_st_state
+        st2.active = this.yxss_st_state
+        st4.active = !st2.active
+        let search_switch = 1;
+        if (this.yxss_st_state == true) {
+            search_switch = 1
+        } else {
+            search_switch = 2
+        }
+        UIClubModel.mInstance.APIOrgChangeClubData({ search_switch: search_switch })
+
+    }
+
+    ruspClick() {
+        this.rusp_st_state = !this.rusp_st_state
+        let st2 = this.rusp_st.getChildByName('st2')
+        let st4 = this.rusp_st.getChildByName('st4')
+        st2.active = this.rusp_st_state
+        st4.active = !st2.active
+        let auto_audit_switch = 1;
+        if (this.rusp_st_state == true) {
+            auto_audit_switch = 1
+        } else {
+            auto_audit_switch = 2
+        }
+        UIClubModel.mInstance.APIOrgChangeClubData({ auto_audit_switch: auto_audit_switch })
+    }
     changeClubData() {
         Web_Org_Club_Get.Response.data['desc'] = this.EditBox.string
         UIClubModel.mInstance.APIOrgChangeClubData({ desc: this.EditBox.string })
