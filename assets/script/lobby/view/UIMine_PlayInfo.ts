@@ -96,6 +96,40 @@ export default class UIMine_PlayInfo extends BaseForm {
     protected regiterDispatchEvent() {
     }
 
+     /**
+     * 名字是否符合长度
+     */
+    isCanUseName(nick: string) {
+
+        let strLen = nick.length;
+
+        let result = true;
+
+        let len = 0;
+
+        for (let i = 0; i < strLen; i++) {
+            let char_code = nick.charCodeAt(i);
+            //半角
+            if (char_code >= 0 && char_code <= 0xff) {
+                len++;
+            }
+            //中文
+            if (char_code >= 0x4e00 && char_code <= 0x9fa5) {
+                len += 2;
+            }
+            //全角
+            if (char_code >= 0xff00 && char_code <= 0xffff) {
+                len += 2;
+            }
+            if (len > 10) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+
+    }
+
     /**
      * 20004 用户钱包金额不足
      * 20009 用户钱包被冻结
@@ -103,6 +137,13 @@ export default class UIMine_PlayInfo extends BaseForm {
     onClickSave() {
 
         let reqParames = {};
+
+        //是否满足格式 名称
+        let isCanUse = this.isCanUseName(this.ebx_name.string);
+        if (!isCanUse) {
+            ToastManager.Instance.createToast("请输入10个字符以内的昵称");
+            return;
+        }
 
         if (this.ebx_name.string != "" && this.ebx_name.string != Web_User_Info.Response.data.user.nickname) {
             this.isFixName = true;
