@@ -3,7 +3,7 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
-import { GameType, PokerType } from "./util/GameUtil";
+import GameUtil, { GameType, PokerType } from "./util/GameUtil";
 
 /*
  * @Author: xfj
@@ -23,6 +23,41 @@ export default class UITexasRule extends UIBase {
     ScrollView: cc.Node = null;
     RulerText: cc.RichText = null;
     CardType: cc.Node = null;
+
+    CardType_Config = {
+        0: {
+            cards: [14, 13, 12, 11, 10],
+        },
+        1: {
+            cards: [28, 27, 26, 25, 24],
+        },
+        2: {
+            cards: [14, 29, 44, 59, 8],
+        },
+        3: {
+            cards: [28, 43, 58, 37, 52],
+        },
+        4: {
+            cards: [27, 25, 23, 21, 22],
+        },
+        5: {
+            cards: [26, 10, 24, 38, 52],
+        },
+        6: {
+            cards: [25, 40, 55, 39, 51],
+        },
+        7: {
+            cards: [24, 9, 22, 7, 51],
+        },
+        8: {
+            cards: [23, 38, 51, 39, 52],
+        },
+        9: {
+            cards: [22, 6, 24, 25, 28],
+        }
+    }
+
+
     protected lateLoad(): void {
         super.lateLoad();
         this.ScrollView = this.getChildNodeOrComponent('ScrollView');
@@ -36,7 +71,6 @@ export default class UITexasRule extends UIBase {
         this.titelGroup = this.getChildNodeOrComponent('ToggleGroup')
         this.initTitle();
         this.setWidgetState();
-
     }
     initTitle() {
 

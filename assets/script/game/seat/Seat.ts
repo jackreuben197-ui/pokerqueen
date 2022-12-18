@@ -496,9 +496,9 @@ export default class Seat {
         this.SetCoin(this.Player?.chips >= 0 ? StringHelper.GetLongString(this.Player.chips) : "");
 
         if (this.IsMySeat) {
-            this.uirc.Text_Coin.node.setPosition(0, -202);
+            this.uirc.Text_Coin.node.setPosition(GameUtil.SeatGoldPos[0]);
         } else {
-            this.uirc.Text_Coin.node.setPosition(0, -104);
+            this.uirc.Text_Coin.node.setPosition(GameUtil.SeatGoldPos[1]);
         }
     }
     //刷新昵称

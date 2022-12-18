@@ -28,6 +28,10 @@ export default class ProcedureTexas extends ProcedureBase {
             UIComponent.open(UIDefine.MttDetailForm, GC.data.mtt.list.select);
         }
 
+        // if (this.param?.fromUIs?.[0]?.Name == UIDefine.UIMatchPlayViewForm.Name) {
+        //     UIComponent.open(UIDefine.UIMatchPlayViewForm, null, { animation: false });
+        // }
+
         GameCache.Instance.CurGame.Dispose();
         GameCache.Instance.CurGame = null;
     }
