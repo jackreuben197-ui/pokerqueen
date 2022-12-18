@@ -3,7 +3,8 @@ import ProcedureManager from "../../manager/ProcedureManager";
 import LoginSession from "../../session/LoginSession";
 
 export default class GoogleApi {
-    static client_id: string = '671936740901-7e3qu313i1tf6bkg0gdo39jekv085r48.apps.googleusercontent.com';
+    static client_id: string = '671936740901-7e3qu313i1tf6bkg0gdo39jekv085r48.apps.googleusercontent.com'
+    // static client_id: string = '779388442442-1ov44ohqr1mgauuf8mkem30orc3mn7ev.apps.googleusercontent.com';
     static credential: string = '';
     static func = null;
     static init() {

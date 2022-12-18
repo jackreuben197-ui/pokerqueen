@@ -10960,8 +10960,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 75.63,
-      "height": 50.4
+      "width": 225,
+      "height": 56.7
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -11012,10 +11012,10 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "bing",
-    "_N$string": "bing",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_string": "未加入联盟",
+    "_N$string": "未加入联盟",
+    "_fontSize": 45,
+    "_lineHeight": 45,
     "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
