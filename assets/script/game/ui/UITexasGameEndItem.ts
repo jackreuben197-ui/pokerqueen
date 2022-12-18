@@ -43,7 +43,7 @@ export default class UITexasGameEndItem extends UIBase {
     onShow(param?: typeof Web_User_Room_Settle_Detail.UsersInfo): void {
         super.onShow(param);
         this.MemberNumTxt.string = `${this.index}`;
-        this.MemberNameTxt.string = param.nick_name;
+        this.MemberNameTxt.string = StringHelper.LengthNick(param.nick_name);
         this.MemberIDTxt.string = `ID:${param.user_random_id}`;
         this.MemberComeTxt.string = `${i18nMgr.Get("UIMine_RecordItemsNormal_eodrjcHJ")} ${StringHelper.GetLongString(param.bring_in)}`;
         this.MemberHandleTxt.string = `${i18nMgr.Get("UIMine_RecordItemsNormal_3RCUa3w8")} ${param.user_hand_num}`;
@@ -69,5 +69,5 @@ export default class UITexasGameEndItem extends UIBase {
     get param(): typeof Web_User_Room_Settle_Detail.UsersInfo {
         return this._param;
     }
-    
+
 }

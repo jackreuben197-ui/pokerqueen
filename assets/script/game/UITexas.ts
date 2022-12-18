@@ -1,6 +1,6 @@
 import SimpleNodePool from "../common/MyNodePool";
 import { IUIDefine } from "../define/EIDefine";
-import { UIDefine } from "../define/UIDefine";
+import { UIDefine, UIDefineType } from "../define/UIDefine";
 import { Sequence } from "../dotween/DOTween";
 import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
@@ -332,10 +332,10 @@ export default class UITexas extends BaseScene {
     }
     protected regiterTouchEvents(): void {
 
-        this.setButtonClick(this.menu_btn, this.sideClick);
-        this.setButtonClick(this.report_btn, this.sideClick);
-        this.setButtonClick(this.cursituation_btn, this.sideClick);
-        this.setButtonClick(this.chat_btn, this.sideClick);
+        this.setButtonClick(this.menu_btn.getChildByName("click"), this.sideClick);
+        this.setButtonClick(this.report_btn.getChildByName("click"), this.sideClick);
+        this.setButtonClick(this.cursituation_btn.getChildByName("click"), this.sideClick);
+        //this.setButtonClick(this.chat_btn, this.sideClick);
 
 
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
@@ -349,7 +349,7 @@ export default class UITexas extends BaseScene {
 
     }
 
-    Enter(param: { fromUI: IUIDefine, isLookOn: boolean }): void {
+    Enter(param: { fromUIs: UIDefineType[], isLookOn: boolean }): void {
 
         super.Enter(param);
 
@@ -447,7 +447,7 @@ export default class UITexas extends BaseScene {
     }
 
     private sideClick(e: cc.Button) {
-        switch (e.node) {
+        switch (e.node?.parent) {
             case this.menu_btn://菜单按钮
                 //this.CallbackExit();
                 if (this.game.CanClick() == false) return;

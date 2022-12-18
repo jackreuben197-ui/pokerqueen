@@ -124,6 +124,8 @@ export default class GameUtil {
     //每套公共牌数量
     public static PublicCardMaxCount: number = 5;
 
+    public static SeatGoldPos = [cc.v2(0, -202), cc.v2(0, -104)];
+
     //初始化 roomtype映射Game
     private static _SetGameMap() {
 
@@ -1231,15 +1233,28 @@ export default class GameUtil {
     /// 牌局分池位置
     /// </summary>
     public static readonly TexasPots: cc.Vec3[] = [
-        cc.v3(-71.8, 103),
-        cc.v3(-332, -130),
-        cc.v3(-65, -62.3),
-        cc.v3(295, -130),
-        cc.v3(-332, -130),
-        cc.v3(-65, -146.4),
-        cc.v3(295, -130),
-        cc.v3(-332, -230.8),
-        cc.v3(-65, -230.8),
+        // cc.v3(-71.8, 103),
+        // cc.v3(-332, -130),
+        // cc.v3(-65, -62.3),
+        // cc.v3(295, -130),
+        // cc.v3(-332, -130),
+        // cc.v3(-65, -146.4),
+        // cc.v3(295, -130),
+        // cc.v3(-332, -230.8),
+        // cc.v3(-65, -230.8),
+        cc.v3(0, 103),
+
+        cc.v3(-207, -90),
+        cc.v3(0, -90),
+        cc.v3(207, -90),
+
+        cc.v3(-207, -170),
+        cc.v3(0, -170),
+        cc.v3(207, -170),
+
+        cc.v3(-97, -250),
+        cc.v3(97, -250),
+
     ];
 
     static get isInGameplay() {
@@ -1421,12 +1436,12 @@ export default class GameUtil {
         {
             2: {
                 myCardsPos: [
-                    cc.v3(-80, 0),
-                    cc.v3(80, 0),
+                    cc.v3(-73, -12),
+                    cc.v3(73, -12),
                 ],
                 backSmallCardPos: [
-                    cc.v3(0, 0),
-                    cc.v3(-20, 0),
+                    cc.v3(-5, 2),
+                    cc.v3(-5 - 16, 2),
                 ],
                 smallCardPos: [
                     cc.v3(-29, 0),
@@ -1439,16 +1454,16 @@ export default class GameUtil {
             },
             4: {
                 myCardsPos: [
-                    cc.v3(-150, 0),
-                    cc.v3(-150 + 160, 0),
-                    cc.v3(-150 + 160 * 2, 0),
-                    cc.v3(-150 + 160 * 3, 0),
+                    cc.v3(-157, -12),
+                    cc.v3(-157 + 107, -12),
+                    cc.v3(-157 + 107 * 2, -12),
+                    cc.v3(-157 + 107 * 3, -12),
                 ],
                 backSmallCardPos: [
-                    cc.v3(0, 0),
-                    cc.v3(-20, 0),
-                    cc.v3(-40, 0),
-                    cc.v3(-60, 0),
+                    cc.v3(-5, 2),
+                    cc.v3(-5 - 16, 2),
+                    cc.v3(-5 - 16 * 2, 2),
+                    cc.v3(-5 - 16 * 3, 2),
                 ],
                 smallCardPos: [
                     cc.v3(-60, 0),
@@ -1463,18 +1478,18 @@ export default class GameUtil {
             },
             5: {
                 myCardsPos: [
-                    cc.v3(-190, 0),
-                    cc.v3(-50, 0),
-                    cc.v3(90, 0),
-                    cc.v3(230, 0),
-                    cc.v3(370, 0),
+                    cc.v3(-157, -12),
+                    cc.v3(-157 + 80, -12),
+                    cc.v3(-157 + 80 * 2, -12),
+                    cc.v3(-157 + 80 * 3, -12),
+                    cc.v3(-157 + 80 * 4, -12),
                 ],
                 backSmallCardPos: [
-                    cc.v3(0, 0),
-                    cc.v3(-20, 0),
-                    cc.v3(-40, 0),
-                    cc.v3(-60, 0),
-                    cc.v3(-80, 0),
+                    cc.v3(-5, 2),
+                    cc.v3(-5 - 16, 2),
+                    cc.v3(-5 - 16 * 2, 2),
+                    cc.v3(-5 - 16 * 3, 2),
+                    cc.v3(-5 - 16 * 4, 2),
                 ],
                 smallCardPos: [
                     cc.v3(-60, 0),
@@ -1490,20 +1505,20 @@ export default class GameUtil {
             },
             6: {
                 myCardsPos: [
-                    cc.v3(-210, 0),
-                    cc.v3(-210 + 115, 0),
-                    cc.v3(-210 + 115 * 2, 0),
-                    cc.v3(-210 + 115 * 3, 0),
-                    cc.v3(-210 + 115 * 4, 0),
-                    cc.v3(-210 + 115 * 5, 0),
+                    cc.v3(-163, -12),
+                    cc.v3(-163 + 66, -12),
+                    cc.v3(-163 + 66 * 2, -12),
+                    cc.v3(-163 + 66 * 3, -12),
+                    cc.v3(-163 + 66 * 4, -12),
+                    cc.v3(-163 + 66 * 5, -12),
                 ],
                 backSmallCardPos: [
-                    cc.v3(0, 0),
-                    cc.v3(-20, 0),
-                    cc.v3(-40, 0),
-                    cc.v3(-60, 0),
-                    cc.v3(-80, 0),
-                    cc.v3(-100, 0),
+                    cc.v3(-5, 2),
+                    cc.v3(-5 - 16, 2),
+                    cc.v3(-5 - 16 * 2, 2),
+                    cc.v3(-5 - 16 * 3, 2),
+                    cc.v3(-5 - 16 * 4, 2),
+                    cc.v3(-5 - 16 * 5, 2),
                 ],
                 smallCardPos: [
                     cc.v3(-60, 0),

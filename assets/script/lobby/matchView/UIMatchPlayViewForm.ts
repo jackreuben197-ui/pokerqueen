@@ -66,6 +66,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
     onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
+        if (!data) return;
         this._defultGameType = data.type;
         this._curType = EMatchViewTabType.no;
         this.switchTab(data.page);

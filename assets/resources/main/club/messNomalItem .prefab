@@ -25,19 +25,22 @@
       },
       {
         "__id__": 16
+      },
+      {
+        "__id__": 23
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 23
+        "__id__": 25
       },
       {
-        "__id__": 24
+        "__id__": 26
       }
     ],
     "_prefab": {
-      "__id__": 25
+      "__id__": 27
     },
     "_opacity": 255,
     "_color": {
@@ -50,7 +53,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 350
+      "height": 160
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -120,8 +123,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 679,
-      "height": 226.7
+      "width": 680,
+      "height": 136.7
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -132,8 +135,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -5,
-        -84.978,
+        -30,
+        -16,
         0,
         0,
         0,
@@ -141,7 +144,7 @@
         1,
         -1,
         1,
-        1
+        null
       ]
     },
     "_eulerAngles": {
@@ -185,7 +188,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 600,
-      "height": 146.7
+      "height": 56.7
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -197,7 +200,7 @@
       "ctor": "Float64Array",
       "array": [
         293.84,
-        -113.35,
+        -68.35,
         0,
         0,
         0,
@@ -236,8 +239,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称",
-    "_N$string": "玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称",
+    "_string": "玩家昵称玩家昵称玩家昵称玩家昵称玩",
+    "_N$string": "玩家昵称玩家昵称玩家昵称玩家昵称玩",
     "_fontSize": 35,
     "_lineHeight": 45,
     "_enableWrapText": true,
@@ -262,7 +265,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "a2SuOcvgNKzqNONW8BBTrW",
+    "fileId": "cd3mCDI4dIk6d8wYt8OzGs",
     "sync": false
   },
   {
@@ -281,7 +284,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "eb0b98a7-c6e4-476e-94be-69b861c6fcaa"
+      "__uuid__": "7fb79321-9886-4378-9d66-68e2dbd39416"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -307,8 +310,8 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 679,
-      "height": 226.7
+      "width": 729,
+      "height": 136.7
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -337,7 +340,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "3bH5PyCZFOX6bpG19mxjpY",
+    "fileId": "35bCX8QtlFKYqguKk6DbrL",
     "sync": false
   },
   {
@@ -374,8 +377,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 679,
-      "height": 226.7
+      "width": 680,
+      "height": 136.7
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -386,8 +389,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -5,
-        -84.978,
+        30,
+        -16,
         0,
         0,
         0,
@@ -439,7 +442,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 600,
-      "height": 146.7
+      "height": 56.7
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -451,7 +454,7 @@
       "ctor": "Float64Array",
       "array": [
         -291.664,
-        -113.35,
+        -68.35,
         0,
         0,
         0,
@@ -490,8 +493,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称",
-    "_N$string": "玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称玩家昵称",
+    "_string": "玩家昵称玩家昵称玩家昵称玩家昵称",
+    "_N$string": "玩家昵称玩家昵称玩家昵称玩家昵称",
     "_fontSize": 30,
     "_lineHeight": 45,
     "_enableWrapText": true,
@@ -535,7 +538,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "eb0b98a7-c6e4-476e-94be-69b861c6fcaa"
+      "__uuid__": "7fb79321-9886-4378-9d66-68e2dbd39416"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -562,7 +565,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 679,
-      "height": 226.7
+      "height": 136.7
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -641,7 +644,7 @@
       "ctor": "Float64Array",
       "array": [
         -447,
-        -65.881,
+        -66,
         0,
         0,
         0,
@@ -649,7 +652,7 @@
         1,
         1,
         1,
-        1
+        null
       ]
     },
     "_eulerAngles": {
@@ -769,7 +772,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "cebjKtYz9BmZXvhFEFpO7l",
+    "fileId": "a5qgMoqq5NkKQraxzrPKlj",
     "sync": false
   },
   {
@@ -805,7 +808,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 15.881,
+    "_top": 16,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -827,7 +830,78 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "49QM2/VpZLHp7xsNgR7oLJ",
+    "fileId": "9cvOWqVvZH9J7JLGyi/yVX",
+    "sync": false
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "otherNode",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 1
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [],
+    "_prefab": {
+      "__id__": 24
+    },
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "7dlY0OzVFL0rfkFsfkTjrA",
     "sync": false
   },
   {

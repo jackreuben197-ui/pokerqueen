@@ -3,7 +3,7 @@
  * @Date: 2022-11-12 11:36:57
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 17:14:21
+ * @LastEditTime: 2022-12-16 19:18:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messNomalItem .ts
  */
 
@@ -42,8 +42,7 @@ export default class messNomalItem extends cc.Component {
         let cont = this._data.sender_id == id ? this.ower.getChildByName('name') : this.other.getChildByName('name')
         cont.getComponent(cc.Label).string = this._data.content;
         setTimeout(() => {
-            this.node.height = cont.height + 150 > 250 ? cont.height + 150 : 250
-
+            this.node.height = cont.height + 100
         }, 100)
 
     }

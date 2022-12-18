@@ -40,9 +40,9 @@ export default class RateModel {
         let list = this.getList(isUnion);
         let item = list.find(item => item.country == msg.to_currency)
         if (!item) {
-            this.addRate(sendInfo, list)
+            this.addRate(msg, list)
         } else {
-            item.updateRate(sendInfo);
+            item.updateRate(msg);
             GC.notify.post(EventName.addRateItem);
         }
     }

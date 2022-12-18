@@ -152,7 +152,7 @@ export default class EditRateForm extends BaseForm {
                     contentCommit: "adaptation10012",
                     contentCancel: "adaptation10013",
                     actionCommit: () => {
-                        GC.data.rate.reqSetRate(this._to.country, rate, this._data?.id || 0, false);
+                        GC.data.rate.reqSetRate(this._to.country, rate, this._data?.id || null, false);
                     },
                     noAnimation: true,
                 });
