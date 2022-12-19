@@ -34,5 +34,7 @@ export default class ProcedureTexas extends ProcedureBase {
 
         GameCache.Instance.CurGame.Dispose();
         GameCache.Instance.CurGame = null;
+
+        GC.data.lobby.reqLobbyGroupData();
     }
 }
