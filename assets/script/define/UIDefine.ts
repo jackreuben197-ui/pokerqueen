@@ -383,7 +383,7 @@ export const UIDefine = {
     },
     UIJoinUnion: {
         UIType: UIType.Form,
-        Name: "UIJoinUnion ",
+        Name: "UIJoinUnion",
         Bundle: null,
         Path: "main/club/UIJoinUnion",
     },
@@ -465,7 +465,7 @@ export const UIDefine = {
         Name: "OrderRecordsForm",
         Bundle: null,
         Path: "main/wallet/record/OrderRecordsForm",
-        Title:"Text_RecordLine"
+        Title: "Text_RecordLine"
     },
     GoldIssueListForm: {
         UIType: UIType.Form,

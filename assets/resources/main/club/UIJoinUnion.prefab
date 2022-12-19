@@ -1500,7 +1500,7 @@
       "ctor": "Float64Array",
       "array": [
         1.091,
-        729.5999999999999,
+        704,
         0,
         0,
         0,
@@ -5638,7 +5638,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "main",
+    "_name": "mainL",
     "_objFlags": 0,
     "_parent": {
       "__id__": 148
