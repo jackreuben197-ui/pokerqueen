@@ -35,11 +35,16 @@ export default class PlayViewItem extends UIBase {
                 if (textTitle != null && cc.isValid(this.node, true)) {
                     textTitle.string = "00:00";
                 }
+                clearInterval(this.IntervalId);
             }
         }, 1000)
     }
 
     updateNormalItem(data) {
+        this.mRoomLeaveTime = null;
+        if (this.IntervalId) {
+            clearInterval(this.IntervalId);
+        }
         let textTitle = this.getComponent(cc.Label);
         if (textTitle != null && cc.isValid(this.node, true)) {
             textTitle.string = `${this.getTime(data)}/${this.getTime(data)}`
