@@ -368,7 +368,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "main",
+    "_name": "main1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1

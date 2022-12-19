@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 12:43:15
+ * @LastEditTime: 2022-12-19 17:53:57
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatch.ts
  */
 
@@ -189,7 +189,7 @@ export default class UICreateMatch extends BaseForm {
             this._editModelData = null;
         }
         this.initUI();
-        let title = "UIClub_MatchHome"
+        let title = "UIClub_MatchTable"
         this.comFormTitle.initData(title, this);
     }
 

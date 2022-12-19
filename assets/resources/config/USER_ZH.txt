@@ -566,6 +566,7 @@ UIClub_Join=加入工会
 UIClub_Approval=成员审批
 UIClub_Manage=公会管理
 UIClub_Look=查看公会
+
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌
 adaptation11001=##分钟##秒

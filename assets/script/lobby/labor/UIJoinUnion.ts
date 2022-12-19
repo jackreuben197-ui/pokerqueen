@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 12:47:08
+ * @LastEditTime: 2022-12-19 17:41:20
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -50,8 +50,8 @@ export default class UIJoinUnion extends BaseForm {
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
 
     }
-    async onShow(param?: any, fromUI?: cc.Node) {
-        super.onShow(param, fromUI);
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
         this.UIDialogComponent.active = false
         let title = "UIClub_TribeJoin"
         this.comFormTitle.initData(title, this);
