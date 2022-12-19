@@ -1534,12 +1534,15 @@ export default class TexasGameProtocol {
                 let bringInData = ServerMessageRoomBringInApply.Response(data);
                 switch (bringInData.status) {
                     case 1:
-                        UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
+                        //缺少多语言
+                        UIComponent.Instance.Toast("有玩家请求带入申请");
                         GameCache.Instance.CurGame.uirc.ShowBringIn();
                         break;
                     case 2:
-                        UIComponent.Instance.Toast(i18nMgr.Get("MsgInfo_4"));
-                        //console.log("朋友桌带入申请通过");
+                        UIComponent.Instance.Toast("房主已通过您的带入申请");
+                        break;
+                    case 3:
+                        UIComponent.Instance.Toast("房主拒绝了您的申请");
                         break;
                 }
                 break;

@@ -68,6 +68,9 @@ export default class HttpClient {
                 } else {
                     //错误码提示 friend room bringin applied
                     switch (response_json.code) {
+                        case 90001://朋友圈带入申请
+                            ToastManager.Instance.createToast("请等待房主审核");
+                            break;
                         case 90003:
                             ToastManager.Instance.createToast(response_json.message);
                             break;

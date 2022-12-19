@@ -217,22 +217,31 @@ export default class GameUtil {
 
     //#region 牌局内座位UI信息   
     // 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
+    //2: 0,7
+    //3: 0,4,10
+    //4: 0,3,7,11
+    //5: 0,3,6,8,11
+    //6: 0,1,5,7,9,13
+    //7: 0,2,4,6,8,10,12
+    //8: 0,1,3,5,7,9,11,13
+    //9: 0,1,3,5,6,8,9,11,13
     public static SeatPosV3: cc.Vec3[] = [
         cc.v3(0, -841 + 19),//0
-        cc.v3(-502, -414),//1 -cc.v3(-516, -272)
-        cc.v3(-502, -300 + 19),//2 -cc.v3(-516, -95)
-        cc.v3(-502, 192),//3 -cc.v3(-516, 155) 
+        cc.v3(-502, -248),//1 -cc.v3(-516, -272)
+        cc.v3(-502, -248),//2 -cc.v3(-516, -95)
+        cc.v3(-502, 254),//3 -cc.v3(-516, 155) 
         cc.v3(-502, 300 + 19),//4 -cc.v3(-516, 495),
         cc.v3(-496, 558),//5 -cc.v3(-516, 582)
-        cc.v3(-212, 950),//6 -cc.v3(-212, 987)
+        cc.v3(-330, 893),//6 -cc.v3(-212, 987)
         cc.v3(0, 1000),//7 -cc.v3(0, 987),
-        cc.v3(212, 950),//8 -cc.v3(214, 987)
+        cc.v3(330, 893),//8 -cc.v3(214, 987)
         cc.v3(496, 558),//9 -cc.v3(512, 582)
         cc.v3(502, 300 + 19),//10 -cc.v3(512, 495),
-        cc.v3(502, 192),//11 -cc.v3(512, 155)
-        cc.v3(502, -300 + 19),//12 -cc.v3(502, -95)
-        cc.v3(502, -414),//13 -cc.v3(512, -272)
+        cc.v3(502, 254),//11 -cc.v3(512, 155)
+        cc.v3(502, -248),//12 -cc.v3(502, -95)
+        cc.v3(502, -248),//13 -cc.v3(512, -272)
     ];
+    
 
     //上下座位 适配位置
     public static SeatAdapterPos() {
@@ -241,8 +250,8 @@ export default class GameUtil {
             this.SeatPosV3[0].y = 522 - cc.view.getVisibleSize().height / 2;
             console.log("适配0位置:", this.SeatPosV3[0].toString());
         }
-        if (cc.view.getVisibleSize().height < 2300) {
-            this.SeatPosV3[7].y = cc.view.getVisibleSize().height / 2 - 170;
+        if (cc.view.getVisibleSize().height < 2410) {
+            this.SeatPosV3[7].y = cc.view.getVisibleSize().height / 2 - 205;
             console.log("适配7位置:", this.SeatPosV3[7].toString());
         }
     }

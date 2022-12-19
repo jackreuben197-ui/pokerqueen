@@ -3,6 +3,7 @@ import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { DOTween, Sequence } from "../../dotween/DOTween";
 import GC from "../../frame/GameControl";
+import ReconnectComponent from "../../funcomponent/ReconnectComponent";
 import UpdateComponent from "../../funcomponent/UpdateComponent";
 import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
@@ -1325,12 +1326,11 @@ export default class TexasGame {
                         bring_in: anteNumber
                     }).then((rec: typeof APIOrgFriendBringIn.ResponseData) => {
                         if (rec.data?.status == 1) {
-                            UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
+                            //UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
+                            UIComponent.Instance.Toast("申请成功，等待房主审核");
                         }
                     }).catch(obj => {
-                        if (obj.code == 90001) {
-                            UIComponent.Instance.Toast(obj.message);
-                        }
+
                     })
                 } else {
                     ProtocolAgency.Send<ClientMessageSeated.AsObject>({
@@ -2573,7 +2573,6 @@ export default class TexasGame {
             mSeat.HideBubble();
         }
     }
-
     /// <summary>
     /// 清空公共牌UI
     /// </summary>
@@ -2689,59 +2688,14 @@ export default class TexasGame {
 
         }
 
-        // if (null != tweenerResetSeatUIInfo && tweenerResetSeatUIInfo.IsPlaying()) {
-        //     tweenerResetSeatUIInfo.Kill(complete);
-        // }
+        //清理公共牌运动
+        this.uirc.listCards.forEach(item => {
+            item.trans.stopAllActions();
+        })
+        this.uirc.listSecondCards.forEach(item => {
+            item.trans.stopAllActions();
+        })
 
-        // tweenerResetSeatUIInfo = null;
-
-        // if (null != sequencePlayDealAnimation && sequencePlayDealAnimation.IsPlaying()) {
-        //     sequencePlayDealAnimation.Kill(complete);
-        // }
-
-        // sequencePlayDealAnimation = null;
-
-        // if (null != sequencePlayRecyclingChipAnimation && sequencePlayRecyclingChipAnimation.IsPlaying()) {
-        //     sequencePlayRecyclingChipAnimation.Kill(complete);
-        // }
-
-        // sequencePlayRecyclingChipAnimation = null;
-
-        // if (null != sequencePlayFirstRecyclingChipAnimation && sequencePlayFirstRecyclingChipAnimation.IsPlaying()) {
-        //     sequencePlayFirstRecyclingChipAnimation.Kill(complete);
-        // }
-
-        // sequencePlayFirstRecyclingChipAnimation = null;
-
-        // if (null != sequencePlayFirstRecyclingChipSubAnimation && sequencePlayFirstRecyclingChipSubAnimation.IsPlaying()) {
-        //     sequencePlayFirstRecyclingChipSubAnimation.Kill(complete);
-        // }
-
-        // sequencePlayFirstRecyclingChipSubAnimation = null;
-
-        // if (null != sequencePlayFirstInsurance && sequencePlayFirstInsurance.IsPlaying()) {
-        //     sequencePlayFirstInsurance.Kill(complete);
-        // }
-
-        // sequencePlayFirstInsurance = null;
-
-        // if (null != sequenceUpdatePublicCards && sequenceUpdatePublicCards.IsPlaying()) {
-        //     sequenceUpdatePublicCards.Kill(complete);
-        // }
-
-        // sequenceUpdatePublicCards = null;
-
-        // if (null != sequenceSecondUpdatePublicCards && sequenceSecondUpdatePublicCards.IsPlaying()) {
-        //     sequenceSecondUpdatePublicCards.Kill(complete);
-        // }
-
-        // sequenceSecondUpdatePublicCards = null;
-
-        // if (null != sequencePlayEndPublicCardsAnimation && sequencePlayEndPublicCardsAnimation.IsPlaying()) {
-        //     sequencePlayEndPublicCardsAnimation.Kill(complete);
-        // }
-
-        // sequencePlayEndPublicCardsAnimation = null;
     }
     protected ClearAllData() {
         cc.log("清理所有数据");
@@ -3138,6 +3092,8 @@ export default class TexasGame {
     //清理牌桌
     ClearTableUI() {
 
+        if (!this.uirc) return;
+
         this.ResetPublicCards();
         this.ClearPublicCardsUI();
         this.ClearSecondPublicCardsUI();
@@ -3158,6 +3114,8 @@ export default class TexasGame {
     }
 
     ClearOther() {
+
+        if (!this.uirc) return;
 
         this.ClearAllData();
 
@@ -3189,7 +3147,7 @@ export default class TexasGame {
      */
     Dispose() {
 
-        console.log("TexasGame Dispose");
+        console.log("TexasGame >>>> Dispose");
 
         this.ClearTableUI();
 
@@ -3198,6 +3156,7 @@ export default class TexasGame {
         this.RemoveMsgHandler();
         //停止状态机刷新
         GC.uc.RemoveComponent(this.GameLogicSMComponent);
+
     }
 
 }

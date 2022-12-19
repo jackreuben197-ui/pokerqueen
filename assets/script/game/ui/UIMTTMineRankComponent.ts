@@ -717,7 +717,6 @@ export default class UIMTTMineRankComponent extends UIBase {
         // let data = {"code":0,"data":{"uid":95825674,"rank":1,"award_gold":10000,"award_goods":[{"i":218,"na":"PROP202208111660195705456456","v":600,"n":2}],"hunter_award":0,"hunter_rank":0,"hunter_kill":0,"is_final":true,"awarded":false,"award_replace_prop_id":0,"award_replace_remain":0,"award_extra_prop_id":0,"award_extra_gold_value":0,"username":"Player","avatar":"http://static.awanptesting.com/image-normal/20220310095010-cuwhY.png"}}
         // this.isRequest = false;
         // this.HandleRankDate(data);
-
         HttpRequest.Send({
             api: Web_Room_Center_Mtt_Myaward.API.replace("{id}", this.mineRankDate.matchId.toString()),
             request: Web_Room_Center_Mtt_Myaward,

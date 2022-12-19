@@ -7,6 +7,7 @@ import ProcedureBase from "./ProcedureBase";
 import GC from "../frame/GameControl";
 import UIComponent from "../ui/UIComponent";
 import { UIDefine } from "../define/UIDefine";
+import ReconnectComponent from "../funcomponent/ReconnectComponent";
 
 /**
  * 牌桌内进程
@@ -36,5 +37,7 @@ export default class ProcedureTexas extends ProcedureBase {
         GameCache.Instance.CurGame = null;
 
         GC.data.lobby.reqLobbyGroupData();
+
+        ReconnectComponent.Instance.ChangeStatus(1);
     }
 }

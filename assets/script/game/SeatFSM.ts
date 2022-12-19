@@ -79,6 +79,9 @@ export class SeatFSM {
 
         this.seat.HideReturnGame();
 
+        this.seat.HideTrust();
+        this.seat.HideCoinShadow();
+
     }
 
     public EmptyExecute(): void {
@@ -432,7 +435,7 @@ export class SeatFSM {
 
         this.seat.FoldHeadGray(this.seat.Player.isFold);
         this.seat.PlayFoldAnimation();
-       
+
         GC.sound.Play("sfx_desk_player_fold");
     }
 

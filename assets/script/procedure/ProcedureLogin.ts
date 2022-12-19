@@ -1,6 +1,7 @@
 import { GameConfig } from "../config/GameConfig";
 import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import ReconnectComponent from "../funcomponent/ReconnectComponent";
 import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import { Pre_Login_Define } from "../manager/ResManager";
@@ -17,6 +18,7 @@ export default class ProcedureLogin extends ProcedureBase {
     lateEnter(param?: any) {
         super.lateEnter(param);
         if (param.logout) {
+            ReconnectComponent.Instance.ChangeStatus(0);
             //展示登录界面
             SceneManager.Instance.switchScene(UIDefine.LoginScene);
             return;

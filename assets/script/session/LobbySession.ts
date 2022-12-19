@@ -4,6 +4,7 @@
 
 import GC from "../frame/GameControl";
 import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
+import ReconnectComponent from "../funcomponent/ReconnectComponent";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
@@ -49,14 +50,15 @@ export default class LobbySession {
     }
 
     private static on_Protocol_Holdem_Register(body: ServerMessageRegister.AsObject) {
-        if (!body) {
-            return;
-        }
-        if (body.status == 0) {
+        if (body?.status == 0) {
             this.heartbeatComponent.active = true;
-            //判断是否在牌桌内
-            GameCache.Instance.CurGame?.ReEnterRoom();
+            ReconnectComponent.Instance.ChangeStatus(1);
 
+            if (GameCache.Instance.CurGame) {
+                GameCache.Instance.CurGame.ReEnterRoom();
+            } else {
+                ReconnectComponent.Instance.HideMask();
+            }
         } else {
             GlobalSession.Logout();
         }

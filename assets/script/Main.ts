@@ -12,6 +12,7 @@
 import { GameConfig } from "./config/GameConfig";
 import GC from "./frame/GameControl";
 import OrientationComponent from "./funcomponent/OrientationComponent";
+import ReconnectComponent from "./funcomponent/ReconnectComponent";
 import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
 import WebSocketClient from "./net/websocket/WebSocketClient";
@@ -44,6 +45,8 @@ export default class Main extends cc.Component {
     static Toast_Node: cc.Node = null;
     //横屏提示
     static Orientation: cc.Node = null;
+    //重连提示
+    static Reconnect: cc.Node = null;
 
     ////////////////////////////////////调试开关
 
@@ -90,27 +93,17 @@ export default class Main extends cc.Component {
         Main.Toast_Node = Main.Toast.getChildByName("Toast_Node");
 
         Main.Orientation = this.node.parent.getChildByName("Orientation");
+        Main.Reconnect = this.node.parent.getChildByName("Reconnect - 重连");
+
 
         UIComponent.Instance.SetPrefabNode(PrefabUI.UIPreloading, Main.UIPreloading);
 
-        cc.game.on(cc.game.EVENT_HIDE, () => {
-            cc.log("cc.game.EVENT_HIDE");
-            GC.game_active = false;
-        })
-        cc.game.on(cc.game.EVENT_SHOW, () => {
-            cc.log("cc.game.EVENT_SHOW");
-            GC.game_active = true;
-            //游戏从后台返回前台的处理
-            //检测WebSocket状态
-            if (!WebSocketClient.CheckOpen()) {
-                WebSocketClient.TryReconnect();
-            }
-        })
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
         }, 1);
         GC.uc.AddComponent(new OrientationComponent);
+        ReconnectComponent.Instance.Start();
 
     }
     protected update(dt: number): void {

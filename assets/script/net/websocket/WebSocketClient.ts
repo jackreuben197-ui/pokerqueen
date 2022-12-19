@@ -1,5 +1,6 @@
 import { GameConfig, LogStyle } from "../../config/GameConfig";
 import GC from "../../frame/GameControl";
+import ReconnectComponent from "../../funcomponent/ReconnectComponent";
 import { GameCache } from "../../game/GameCache";
 import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -35,20 +36,21 @@ export default class WebSocketClient {
 
     static _reconnectTime: number = 0;
 
+    public static SetPort(port: number) {
+        this.Port = port;
+        this.Host_Port = port ? GameConfig.Network.WSS.replace("{0}", `:${this.Port}`) : null;
+    }
+
     public static Connect() {
-
-        this.Port = Web_WS.Response?.data?.port;
-
-        if (GameConfig.Network?.WSS) {
-            this.Host_Port = GameConfig.Network.WSS.replace("{0}", `:${this.Port}`);
+        if (this.Host_Port) {
             this.__connect();
         } else {
             UIComponent.Instance.Toast("host or port is error!");
         }
     }
     private static __connect() {
+        console.log("%c%s", LogStyle.ws_request, ">>>>> websocket connect:" + this.Host_Port);
         this.WS = new WebSocket(this.Host_Port);
-        console.log("%c%s", LogStyle.ws_request, ">>>>> websocket connect:" + WebSocketClient.Host_Port);
         this.WS.binaryType = "arraybuffer";
         this.WS.onopen = this.onopen;
         this.WS.onerror = this.onerror;
@@ -77,44 +79,14 @@ export default class WebSocketClient {
         console.log("close reason : > ", ev.code, ev.reason, ev.wasClean);
         //停止心跳
         LobbySession.heartbeatComponent.active = false;
-
+        WebSocketClient.CleanWS();
         //主动断开
         if (ev.code == 1005) {
 
         }
         //服务器断开
         if (ev.code == 1006) {
-            WebSocketClient.TryReconnect();
-        }
-    }
-    public static TryReconnect() {
-        if (!GC.game_active || !this.Host_Port) return;
-        cc.log("重新连接socket");
-        WebSocketClient.CleanWS();
-        GameCache.Instance.CurGame?.ReEnterClear();
-        //请求Channel判断token是否无效
-        LoginSession.SyncWS().then(
-            //成功
-            () => {
-                //尝试重连
-                WebSocketClient.Reconnect();
-            },
-            //失败
-            () => {
-                UIComponent.Instance.Toast("Request Channel Fail");
-                GlobalSession.Logout();
-                UIComponent.Instance.Toast(i18nMgr.Get("clientInt_anormal"));
-            }
-        )
-    }
-    private static async Reconnect() {
-        if (WebSocketClient._reconnectTime < WebSocketClient.ReconnectMaxTime) {
-            WebSocketClient._reconnectTime++;
-            console.log("%c%s", LogStyle.ws_request, `reconnect:${WebSocketClient._reconnectTime} ${WebSocketClient.Host_Port}`);
-            await TimeHelper.Sleep(this.ReconnectDelay);
-            this.__connect();
-        } else {
-            console.log("重连次数结束");
+            ReconnectComponent.Instance.TryReconnect();
         }
     }
 

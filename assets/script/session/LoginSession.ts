@@ -8,6 +8,7 @@ import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
 import { APIBindThrid, APIBindPhone, APIBindEmail, APIGetBlindStatus, APIEmailExist, APISendEmailCode, Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
+import WebSocketClient from "../net/websocket/WebSocketClient";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
 
@@ -130,6 +131,7 @@ export default class LoginSession {
                 request: Web_WS,
                 onSuccess: function () {
                     resolve(Web_WS.Response);
+                    WebSocketClient.SetPort(Web_WS.Response?.data?.port);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

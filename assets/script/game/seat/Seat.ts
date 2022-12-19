@@ -173,7 +173,11 @@ export default class Seat {
         this.HideBubbleInsurance();
         this.HideBubbleInsuranceCountDown();
         this.HideReturnGame();
+        this.HideCoinShadow();
+        this.HideTrust();
     }
+
+
     //停止所有动作
     public StopAllActions() {
         this.uirc.imageIconChip.node.active = true;
@@ -1805,6 +1809,14 @@ export default class Seat {
 
     }
 
+    //隐藏猎人头标记
+    public HideCoinShadow() {
+        this.uirc.Image_CoinShadow.active = false;
+    }
+    //隐藏托管
+    public HideTrust() {
+        this.uirc.Image_Trust.active = false;
+    }
     // 刷新托管
     public UpdateTrust() {
         this.uirc.Image_Trust.active = this.Player.IsAutoOp;

@@ -1,6 +1,7 @@
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
+import ReconnectComponent from "../../funcomponent/ReconnectComponent";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import Main from "../../Main";
@@ -135,6 +136,13 @@ export default class TexasGameMessageHandler {
 
         console.log("当前游戏是比赛:", isMTT);
 
+        ReconnectComponent.Instance.ChangeStatus(2);
+
+        //判断重连进行牌桌场景清理
+        if (ReconnectComponent.Instance.CheckMask()) {
+            GC.game?.ReEnterClear();
+            ReconnectComponent.Instance.HideMask();
+        }
         if (response.status == 0) {
 
             if (isMTT) {
