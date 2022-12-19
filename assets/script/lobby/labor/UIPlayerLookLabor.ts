@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 18:53:01
+ * @LastEditTime: 2022-12-19 17:30:38
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -18,6 +18,7 @@ import { LobbyControl } from "../control/LobbyControl";
 import { GameCache } from "../../game/GameCache";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
+import ComFormTitle from "../../common/ComFormTitle";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -29,12 +30,17 @@ export default class UIPlayerLookLabor extends BaseForm {
 
     @property(cc.Node)
     contentNode: cc.Node = null;
+    private comFormTitle: ComFormTitle = null;
 
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+        let title = "UIClub_Look"
+        this.comFormTitle.initData(title, this);
         await UIClubModel.mInstance.APIOrgClubGet()
         this.initTop();
     }

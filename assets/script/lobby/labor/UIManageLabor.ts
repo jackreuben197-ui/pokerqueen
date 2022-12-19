@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-18 12:22:54
+ * @LastEditTime: 2022-12-19 17:28:04
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -18,6 +18,7 @@ import { APIOrgClubGold, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get } 
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
+import ComFormTitle from "../../common/ComFormTitle";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -46,11 +47,18 @@ export default class UIManageLabor extends BaseForm {
 
     @property(cc.Label)
     lbl_glod: cc.Label = null;
+
+    private comFormTitle: ComFormTitle = null;
+
     protected lateLoad(): void {
         super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+        let title = "UIClub_Manage"
+        this.comFormTitle.initData(title, this);
         this.initTop();
         this.initMangerList();
 
