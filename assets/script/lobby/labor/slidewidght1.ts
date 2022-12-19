@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 14:59:42
+ * @LastEditTime: 2022-12-19 10:18:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght1.ts
  */
 
@@ -116,6 +116,9 @@ export default class slidewidght1 extends cc.Component {
                 _index = index;
                 break;
             }
+        }
+        if (_index >= this.itemNode.childrenCount || _index <= 0) {
+            return
         }
         let _x1 = this.itemNode.children[_index].x - node.x;
         let _x2 = node.x - this.itemNode.children[_index - 1].x;
