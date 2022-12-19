@@ -128,7 +128,7 @@ export default class UIAddChipsComponent extends UIBase {
         if (this._fromSetting) {
             GameCache.Instance.CurGame.SetAutoOnTableChips(Math.ceil(this._curAutoValue * 100), this.intoToggle.isChecked);
         } else {
-            GameCache.Instance.CurGame.AddChips(Math.ceil(this._curIntoValue * 100), this._curAutoValue, this.intoToggle.isChecked);
+            GameCache.Instance.CurGame.AddChips(Math.ceil(this._curIntoValue * 100), Math.ceil(this._curAutoValue * 100), this.intoToggle.isChecked);
 
         }
         this.hideUI();
