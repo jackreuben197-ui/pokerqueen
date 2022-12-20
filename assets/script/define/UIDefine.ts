@@ -568,7 +568,12 @@ export const UIDefine = {
         Path: "prefab/ui/UIMTTMineRankComponent",
     },
 
-
+    UIClubMerberManager: {
+        UIType: UIType.Form,
+        Name: "UIClubMerberManager",
+        Bundle: null,
+        Path: "main/new_club/UIClubMerberManager",
+    },
 
 
 
