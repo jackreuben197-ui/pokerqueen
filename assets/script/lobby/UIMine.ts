@@ -153,7 +153,7 @@ export default class UIMine extends UIBase {
                 }
             )
         } else if (index == 1) {
-            UIComponent.open(UIDefine.UIMine_Message);
+            UIComponent.open(UIDefine.UIMine_MessageList);
         } else if (index == 2) {
             UIComponent.open(UIDefine.UIMineBag, null, { SceneUI: SceneManager.Instance.currUI });
         }

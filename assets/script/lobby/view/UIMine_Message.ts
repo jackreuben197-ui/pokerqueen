@@ -32,6 +32,8 @@ export default class UIMine_Message extends BaseForm {
 
     _searchData: any = null;
 
+    _index: number = 1;
+
     //private comFormTitle: ComFormTitle = null;
 
      protected lateLoad(): void {
@@ -49,109 +51,26 @@ export default class UIMine_Message extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
        
+        if (param.index) {
+            this._index = param.index;
+        }
         // this.comFormTitle.initData('', this);
 
         // this.comFormTitle.title.string = "消息";
-        this.resetUI();
 
-        for (let i=1; i<6; i++) {
-            let btn_pt_1: cc.Node = this.getChildNodeOrComponent("pi_" + i);
-            btn_pt_1["index"] = i;
-            btn_pt_1.on(cc.Node.EventType.TOUCH_END, this.onClickNLH, this)
-        }
-
-        this.reqDataAgain(1);
+        this.reqDataAgain(this._index);
     }
 
     changeType(chooseType) {
         if (chooseType == 1) {
             return 4;
         } else if (chooseType == 2) {
-            return 3;
-        } else if (chooseType == 3) {
-            return 1;
-        } else if (chooseType == 4) {
             return 2;
-        } else if (chooseType == 5) {
+        } else if (chooseType == 3) {
             return 5;
-        }
+        } 
     }
 
-
-    refreshChooseNLH(index) {
-        for (let i=1; i<6; i++) {
-            let btn_pt_1: cc.Node = this.getChildNodeOrComponent("pi_" + i);
-            let lbl = btn_pt_1.getChildByName("lbl");
-            let img_line = btn_pt_1.getChildByName("img_line");
-            if (i == index) {
-                lbl.color = cc.color(53, 163, 179);
-                img_line.active = true;
-            } else {
-                lbl.color = cc.color(255, 255, 255);
-                img_line.active = false;
-            }
-        }
-    }
-
-    onClickNLH(event) {
-        let node = event.target;
-        let index = node.index;
-        this.refreshChooseNLH(index);
-        this.reqDataAgain(index);
-    }
-
-    resetUI() {
-        this.refreshChooseNLH(1);
-    }
-
-    // getCurViewUI(index) {
-    //     let sv = null;
-    //     for (let i=1; i<6; i++) {
-    //         let sv_down: cc.Node = this.getChildNodeOrComponent("sv_down" + i);
-    //         if (i == index) {
-    //             sv_down.active = true;
-    //             sv = sv_down;
-    //         } else {
-    //             sv_down.active = false;
-    //         }
-    //     }
-    //     return sv;
-    // }
-
-    // refreshListView(index, data) {
-    //     let list = data.data.list;
-    //     this._searchData = list;
-    //     let lbl_noshow: cc.Node = this.getChildNodeOrComponent("lbl_notShow");
-    //     let curSV = this.getCurViewUI(index);
-    //     let scrollView = curSV.getComponent(cc.ScrollView);
-    //     scrollView.content.removeAllChildren();
-    //     scrollView.scrollToTop();
-    //     let len = list.length;
-    //     if (len == 0) {
-    //         lbl_noshow.active = true;
-    //     } else {
-    //         lbl_noshow.active = false;
-    //         // 有数据 刷新列表
-    //         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
-    //         for (let i=0; i<len; i++) {
-    //             let _cloneNode = cc.instantiate(panel_item);
-    //             _cloneNode.x = 0;
-    //             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
-    //             _cloneNode.parent = scrollView.content;
-
-    //             // let info = list[i];
-
-               
-               
-    //         }
-    //         scrollView.content.height = panel_item.height * (len + 2);
-    //     }
-    // }
-
-    // onRender(node: cc.Node, index: number) {
-    //     let item = node.getComponent(UIMessageItem);
-    //     item.initData(this._searchData[index]);
-    // }
 
     async reqDataAgain(index) {
         let curSV: cc.Node = this.getChildNodeOrComponent("sv_down" + 1);
