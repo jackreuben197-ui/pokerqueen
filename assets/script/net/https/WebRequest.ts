@@ -608,6 +608,48 @@ export class Web_Other_User_Info {
 }
 
 /// <summary>
+/// 公会消息-带入列表
+/// </summary>
+export class API_CLUB_APPLY_LIST {
+    //接口地址
+    static API: string = "/api/roomcenter/club/room/apply/list";
+
+    //字段声明
+    static RequestParams: {
+    } = null;
+
+    static ResponseData: {
+    } = null;
+
+    static Request(param: typeof API_CLUB_APPLY_LIST.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: (typeof API_CLUB_APPLY_LIST.ResponseData)[] };
+}
+
+/// <summary>
+/// 审批玩家带入申请
+/// </summary>
+export class API_CLUB_APPLY_AUDIT {
+    //接口地址
+    static API: string = "/api/roomcenter/club/room/apply/audit";
+
+    //字段声明
+    static RequestParams: {
+    } = null;
+
+    static ResponseData: {
+    } = null;
+
+    static Request(param: typeof API_CLUB_APPLY_AUDIT.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: (typeof API_CLUB_APPLY_AUDIT.ResponseData)[] };
+}
+
+/// <summary>
 /// 请求用户数据
 /// </summary>
 export class Web_User_Info {

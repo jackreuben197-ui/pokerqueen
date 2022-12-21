@@ -5,7 +5,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, API_BAG_CURRENT_PENDANT_LIST, API_BAG_PANDANT_DOWN, API_BAG_PANDANT_UP, API_BAG_PENDANT_LIST, API_DEL_MSG_TEMPLATE, API_GET_MSG_LIST, API_PROP_TASK_LIST, API_PROP_TASK_RECEIVE, API_SEND_MSG, API_SET_MSG_TEMPLATE, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Other_User_Info, Web_Prop_User_Prop_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APITicketCreate, APIUnlockUser, API_BAG_CURRENT_PENDANT_LIST, API_BAG_PANDANT_DOWN, API_BAG_PANDANT_UP, API_BAG_PENDANT_LIST, API_CLUB_APPLY_AUDIT, API_CLUB_APPLY_LIST, API_DEL_MSG_TEMPLATE, API_GET_MSG_LIST, API_PROP_TASK_LIST, API_PROP_TASK_RECEIVE, API_SEND_MSG, API_SET_MSG_TEMPLATE, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Other_User_Info, Web_Prop_User_Prop_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -808,7 +808,45 @@ export class LobbyControl {
             });
         });
     }
-    
+
+    /**
+     * 公会消息-带入列表
+     */
+    async reqClubApplyList(club_id, param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: API_CLUB_APPLY_LIST,
+                body: API_CLUB_APPLY_LIST.Request(param),
+                onSuccess: function () {
+                    resolve(API_CLUB_APPLY_LIST.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: ["X-Club", club_id]
+            });
+        });
+    }
+
+    /**
+     * 审批玩家带入申请 审批状态(audit_op):2-通过;3-拒绝
+     */
+    async reqClubApplyAudit(club_id, param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: API_CLUB_APPLY_AUDIT,
+                body: API_CLUB_APPLY_AUDIT.Request(param),
+                onSuccess: function () {
+                    resolve(API_CLUB_APPLY_AUDIT.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: ["X-Club", club_id]
+            });
+        });
+    }
+
 
     /********************************* 公共接口 ***********************************/
 
