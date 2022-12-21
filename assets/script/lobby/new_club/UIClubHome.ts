@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 19:07:24
+ * @LastEditTime: 2022-12-21 19:13:49
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -11,6 +11,8 @@ import BaseForm from "../../ui/form/BaseForm";
 import ComFormTitle from "../../common/ComFormTitle";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import ClubData from "../../frame/data/club/ClubData";
+import UIComponent from "../../ui/UIComponent";
+import { UIDefine } from "../../define/UIDefine";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -57,7 +59,7 @@ export default class UIClubHome extends BaseForm {
             case 1:
                 break;
             case 2:
-
+                UIComponent.open(UIDefine.UIClubMerberManager)
                 break;
             case 3:
 

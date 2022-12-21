@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 15:47:11
+ * @LastEditTime: 2022-12-21 20:10:08
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubList.ts
  */
 
@@ -73,7 +73,7 @@ export default class UIClubList extends BaseForm {
     initPageNode(clubList) {
         let menberlist = this.pageNode.getChildByName('PageView');
         let content = cc.find('view/content', menberlist);
-        content.removeAllChildren();
+        this.pageViews.removeAllPages();
         for (let index = 0; index < clubList.length; index++) {
             const element = clubList[index];
             let clubPageItem = cc.instantiate(this.clubPageItem);
