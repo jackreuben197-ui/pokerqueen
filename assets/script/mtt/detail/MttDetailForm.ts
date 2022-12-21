@@ -237,8 +237,13 @@ export default class MttDetailForm extends BaseForm {
                 lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchCurrBlindTip")}:` + "-" + mttDetails.more.bl.toString();
                 lbl_2.string = StringHelper.GetLongString(mttDetails.more.sb) + "/" + StringHelper.GetLongString(mttDetails.more.sb * 2) + "(" + StringHelper.GetLongString(mttDetails.more.ante) + ")";
             } else if (i == 7) {//下一盲注
-                lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:` + "-" + mttDetails.more.nbl.toString();
-                lbl_2.string = StringHelper.GetLongString(mttDetails.more.nsb) + "/" +StringHelper.GetLongString(mttDetails.more.nsb * 2) + "(" + StringHelper.GetLongString(mttDetails.more.nante)+ ")";
+                if (mttDetails.more.nbl) {
+                    baseNode.active = true;
+                    lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:` + "-" + mttDetails.more.nbl.toString();
+                    lbl_2.string = StringHelper.GetLongString(mttDetails.more.nsb) + "/" +StringHelper.GetLongString(mttDetails.more.nsb * 2) + "(" + StringHelper.GetLongString(mttDetails.more.nante)+ ")";
+                } else {
+                    baseNode.active = false;
+                }
             } else if (i == 8) {//涨盲时间
                 lbl_1.string = `${i18nMgr.Get("MTT_State_UpBlindTime")}:`;
                 lbl_2.string = `${i18nMgr.Get("UITexasReport_Text_MatchZmsysj")}`.replace("{0}", (mttDetails.mtt.upblind_interval / 60).toFixed(2).toString());
@@ -425,10 +430,15 @@ export default class MttDetailForm extends BaseForm {
         if (data == null) {
             return;
         }
-        data = data.data;
+        if (index != 2) {
+            data = data.data;
+        }
         let info = data;
         if (index == 3) {
             data = data.prizes;
+        }
+        if (index == 2 || index == 4) {
+            data = data.records
         }
         // 有数据 刷新列表
         let len = 0;
@@ -448,6 +458,21 @@ export default class MttDetailForm extends BaseForm {
             _cloneNode.parent = scrollView.content;
             _cloneNode.getChildByName("lbl_jp").getComponent(cc.Label).string = i.toString();
             let itemInfo = data[i];
+            // 玩家
+            if (index == 2) {
+                let lbl_addNum1 = this.getChildNodeOrComponent("lbl_addNum1");
+                lbl_addNum1.getComponent(cc.Label).string = len.toString();
+                let lbl_addNum2 = this.getChildNodeOrComponent("lbl_addNum2");
+                lbl_addNum2.getComponent(cc.Label).string = itemInfo.rebuy;
+                let lbl_jp = _cloneNode.getChildByName("lbl_jp");
+                lbl_jp.getComponent(cc.Label).string = itemInfo.rank.toString();
+                let lbl_score = _cloneNode.getChildByName("lbl_score");
+                lbl_score.getComponent(cc.Label).string = StringHelper.GetLongString(itemInfo.chip);
+                let lbl_name = _cloneNode.getChildByName("lbl_name");
+                lbl_name.getComponent(cc.Label).string = itemInfo.name.toString();
+                let lbl_r = _cloneNode.getChildByName("lbl_r");
+                lbl_r.getComponent(cc.Label).string = itemInfo.rid.toString();
+            }
             // 奖励
             if (index == 3) {
                 let lbl_addNum21 = this.getChildNodeOrComponent("lbl_addNum21");
@@ -497,6 +522,27 @@ export default class MttDetailForm extends BaseForm {
                             break;
                     }
                 }
+            }
+            // 牌桌
+            if (index == 4) {
+                let deskInfo = itemInfo.roomers;
+                let lbl_addNum41 = this.getChildNodeOrComponent("lbl_addNum41");
+                lbl_addNum41.getComponent(cc.Label).string = "共" + len.toString() + "个牌桌";
+                let lbl_addNum42 = this.getChildNodeOrComponent("lbl_addNum42");
+                lbl_addNum42.getComponent(cc.Label).string = deskInfo.length.toString();
+
+                let lbl_jp = _cloneNode.getChildByName("lbl_jp");
+                lbl_jp.getComponent(cc.Label).string = itemInfo.rid.toString();
+                let lbl_name = _cloneNode.getChildByName("lbl_name");
+                lbl_name.getComponent(cc.Label).string = itemInfo.roomers.length.toString();
+                let lbl_score = _cloneNode.getChildByName("lbl_score");
+                if (deskInfo.length > 0) {
+                    deskInfo = deskInfo[0];
+                    lbl_score.getComponent(cc.Label).string = StringHelper.GetLongString(deskInfo.chip).toString();
+                } else {
+                    lbl_score.getComponent(cc.Label).string = "0";
+                }
+
             }
             // 盲注
             if (index == 5) {
