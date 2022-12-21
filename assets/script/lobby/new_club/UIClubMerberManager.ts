@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-20 20:49:19
+ * @LastEditTime: 2022-12-21 12:11:01
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -14,15 +14,12 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const { ccclass, property, menu } = cc._decorator;
-import { UIDefine } from "../../define/UIDefine";
 import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
 import ComFormTitle from "../../common/ComFormTitle";
 import List from "../../common/List";
 import { APIOrgClubGetJoinlList, APIOrgMemberList, Web_Org_Club_Get } from "../../net/https/WebRequest";
 import { UIClubModel } from "../labor/UIClubModel";
 import MemberItem from "./MemberItem";
-import ApplyJoinClubItem from "./applyJoinClubItem";
 
 enum TITALtYPE {
     MEMBER = 0,
@@ -53,7 +50,8 @@ export default class UIClubMerberManager extends BaseForm {
     applyList: cc.Node = null;
 
     @property(cc.Prefab)
-    ApplyJoinClubItem: cc.Prefab
+    ApplyJoinClubItem: cc.Prefab = null;
+
 
     protected lateLoad(): void {
         super.lateLoad();

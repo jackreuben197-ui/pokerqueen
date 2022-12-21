@@ -17,9 +17,7 @@ export default class WebImageHelper {
         else {
             rawImage.spriteFrame = AssetContext.getAsset("default_avatar");
 
-            if (url == "" || ~url.indexOf("awanptesting.com")) {
-                return;
-            }
+            if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
             cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
 
                 if (err) {
