@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 15:22:14
+ * @LastEditTime: 2022-12-21 16:33:44
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubPageItem.ts
  */
 
@@ -49,9 +49,6 @@ export default class clubPageItem extends UIBase {
         this.node['info'] = this._data;
         this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         let iconRole = cc.find('iconRole/icon', this.messNode);
-    }
-    initView1() {
-
     }
 
     onClickItem(event) {

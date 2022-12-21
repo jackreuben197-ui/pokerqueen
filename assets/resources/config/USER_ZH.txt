@@ -574,6 +574,9 @@ UIClubRole_member=成员
 UIClub_memberNum=总人数
 UIClub_Num=公会数量
 UIClub_Home=公会
+UIClub_JoinUnion=加入联盟
+UIClub_Table=牌桌
+UIClub_chet=聊天
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌

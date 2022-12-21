@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 12:42:56
+ * @LastEditTime: 2022-12-21 18:35:17
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -21,6 +21,10 @@ export class ClubCache {
     static setClubData(data) {
         this._msg = data
     }
+    static get club_table() {
+        return this._msg?.tables;
+    }
+
     static get club_id() {
         return this._msg?.club_id;
     }
