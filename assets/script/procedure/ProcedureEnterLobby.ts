@@ -6,7 +6,7 @@ import { ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
 import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
-import { Pre_Login_Define, Pre_Login_Main_Define, Pre_Main_Define } from "../manager/ResManager";
+import { Pre_Login_Define, Pre_Login_Main_Define } from "../manager/ResManager";
 import SceneManager from "../manager/SceneManager";
 import GlobalSession from "../session/GlobalSession";
 import LoginSession from "../session/LoginSession";

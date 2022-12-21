@@ -49,6 +49,10 @@ export default class ReconnectComponent {
         })
     }
 
+    //重置重连次数
+    public ResetReconnectTime() {
+        this._reconnectTime = 0;
+    }
     public TryReconnect() {
         // 离开屏幕 || 未连接socket
         if (!this.game_active || this.game_status == 0) return;
@@ -83,7 +87,7 @@ export default class ReconnectComponent {
         if (this._reconnectTime < this.ReconnectMaxTime) {
             this.ShowMask();
             this._reconnectTime++;
-            console.log("%c%s", LogStyle.ws_request, `reconnect:${WebSocketClient._reconnectTime} ${WebSocketClient.Host_Port}`);
+            console.log("%c%s", LogStyle.ws_request, `reconnect:${this._reconnectTime} ${WebSocketClient.Host_Port}`);
             await TimeHelper.Sleep(this.ReconnectDelay);
             WebSocketClient.Connect();
         } else {

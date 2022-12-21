@@ -98,6 +98,7 @@ export class ResManager {
                                 cc.log("load dir error:", error);
                                 reject(0);
                             } else {
+                                
                                 assets.forEach((item) => {
                                     if (item instanceof cc.Prefab) {
                                         AssetContext.setAsset(bundleName, item.name, item);
