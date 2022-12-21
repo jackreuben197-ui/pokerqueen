@@ -130,6 +130,8 @@ export default class UIMTTMineRankComponent extends UIBase {
 
         });
 
+        this.RequestTimes = 0;
+
         this.item_Award = this.getChildNodeOrComponent("Award");
 
         let lbl_rank = this.getChildNodeOrComponent("lbl_rank", cc.Label);
