@@ -514,7 +514,7 @@ export default class MTTGame extends TexasGame {
 
         menu.MenuButtons_Dic.Button_Exit.node.active = true;
 
-
+        menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = false;
 
         //this.MenuButtons_Dic.Button_Rule.node.getChildByName("Text").getComponent(cc.Label).string = i18nMgr.Get("UITexas_RuleOfTips");
 
