@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 18:37:21
+ * @LastEditTime: 2022-12-21 19:07:24
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -19,6 +19,11 @@ export default class UIClubHome extends BaseForm {
     private comFormTitle: ComFormTitle = null;
     toggleType = 1
     layout: cc.Node = null;
+    @property(cc.Node)
+    menu: cc.Node = null;
+
+    @property(cc.Node)
+    menuShow: cc.Node = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -40,7 +45,29 @@ export default class UIClubHome extends BaseForm {
         cc.find('messLayout/id', messNode).getComponent(cc.Label).string = ClubCache.random_id;
         cc.find('people/data', messNode).getComponent(cc.Label).string = ClubCache.club_members;
         cc.find('table/data', messNode).getComponent(cc.Label).string = ClubCache.club_table;
+        this.menuShow.children.forEach((item, index) => {
+            this.bindClick(item, this.onClickTabBtns, index);
+        })
+    }
+    onClickTabBtns(index: number) {
+        switch (index) {
+            case 0:
+                this.menuClick()
+                break;
+            case 1:
+                break;
+            case 2:
 
+                break;
+            case 3:
+
+                break;
+            case 4:
+
+                break;
+            default:
+                break;
+        }
 
     }
     initToggle() {
@@ -57,5 +84,8 @@ export default class UIClubHome extends BaseForm {
         this.toggleType = this.toggleType == 1 ? 2 : 1
         this.initToggle()
     }
-
+    menuClick() {
+        this.menu.active = !this.menu.active
+        this.menuShow.active = !this.menu.active
+    }
 }
