@@ -574,6 +574,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/UIClubMerberManager",
     },
+    UIClubHome: {
+        UIType: UIType.Form,
+        Name: "UIClubHome",
+        Bundle: null,
+        Path: "main/new_club/UIClubHome",
+    },
 
 
 

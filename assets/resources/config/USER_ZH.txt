@@ -572,6 +572,8 @@ UIClubRole_manager=管理员
 UIClubRole_vip=贵宾
 UIClubRole_member=成员
 UIClub_memberNum=总人数
+UIClub_Num=公会数量
+UIClub_Home=公会
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌
