@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 12:45:29
+ * @LastEditTime: 2022-12-21 15:56:15
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -69,7 +69,7 @@ export default class UICreatelabor extends BaseForm {
         }
 
         let data: any = await UIClubModel.mInstance.APIOrgClubCreate(this.iconUrl || null, this.editName.string, this.editjieshao.string, this.xinxi.string)
-        if (data.code == 0 && data?.data?.club_apply) {
+        if (data.code == 0) {
             console.log('data===', data);
             UIComponent.Instance.Toast(i18nMgr.Get('club_creat_8'));
             this.close();
