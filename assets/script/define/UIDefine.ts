@@ -206,6 +206,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/record/UIRecordScore",
         Title: "UIMine_RecordDetailForNormal_FENSVUz3",
     },
+    //带入申请
+    UIMsgIntoList: {
+        UIType: UIType.Form,
+        Name: "UIMsgIntoList",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIMsgIntoList",
+        Title: "UIClub_IntoApply",
+    },
     //收藏牌谱
     UICollectScore: {
         UIType: UIType.Form,
