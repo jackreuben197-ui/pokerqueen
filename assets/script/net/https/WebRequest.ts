@@ -1744,14 +1744,14 @@ export class Web_Org_Club_Get {
     } = null;
 
     static ResponseData: {
-        random_id: number,
-        club_name: string,
-        more_contact: string,
-        club_id: number,
-        level: number,
-        upper_limit: number,
-        search_switch: any
-        auto_audit_switch: any
+        // random_id: number,
+        // club_name: string,
+        // more_contact: string,
+        // club_id: number,
+        // level: number,
+        // upper_limit: number,
+        // search_switch: any
+        // auto_audit_switch: any
     } = null;
     static Request(param: typeof Web_Org_Club_Create.RequestParams) {
         this.RequestParams = param;
@@ -3668,6 +3668,41 @@ export class APIOrgGetNewMessNum {
         code?: number, message?: string, data?: typeof APIOrgGetNewMessNum.ResponseData
     };
 }
+
+export class APIOrgClubUserInfo {
+    public static API: string = "/api/org/club/user/info";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUserInfo.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUserInfo.ResponseData
+    };
+}
+
+export class APIOrgClubUserRemarks {
+    public static API: string = "/api/org/club/user/update";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUserRemarks.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUserRemarks.ResponseData
+    };
+}
+
 
 
 

@@ -28,10 +28,10 @@
       "height": 136,
       "rawWidth": 898,
       "rawHeight": 136,
-      "borderTop": 0,
-      "borderBottom": 0,
-      "borderLeft": 0,
-      "borderRight": 0,
+      "borderTop": 30,
+      "borderBottom": 30,
+      "borderLeft": 199.5,
+      "borderRight": 199.5,
       "subMetas": {}
     }
   }

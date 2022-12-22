@@ -79,13 +79,14 @@ export default class UILobbyMenu extends UIBase {
     }
     async career_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        let data: any = await UIClubModel.mInstance.APIOrgClubGet()
-        //打开公会  //进入公会还是加入界面
-        if (data.data) {
-            LobbyControl.getInstance().switchContent("UILabarPlayViewForm")
-        } else {
-            LobbyControl.getInstance().switchContent("UIlabor")
-        }
+        LobbyControl.getInstance().switchContent("UIClubList")
+        // let data: any = await UIClubModel.mInstance.APIOrgClubGet()
+        // //打开公会  //进入公会还是加入界面
+        // if (data.data) {
+        //     LobbyControl.getInstance().switchContent("UILabarPlayViewForm")
+        // } else {
+        //     LobbyControl.getInstance().switchContent("UIlabor")
+        // }
     }
     my_click(btn: cc.Button) {
         this.changeBtn(btn.node);

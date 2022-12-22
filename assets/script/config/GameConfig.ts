@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-03 19:34:48
+ * @LastEditTime: 2022-12-21 11:54:32
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -26,7 +26,7 @@ export class GameConfig {
     //2: http://dev1.awanptest.com 
     //3: https://test1.awanptest.com  
     //4: https://dev1.awanptest.com 
-    static BuildType: number = 3;
+    static BuildType: number = 4;
     //版本号
     static Version: string = "20221218_1510";
 
@@ -46,7 +46,7 @@ export class GameConfig {
     static Server_Type = 2;
 
     //对应 GlobalProto.txt
-    static GlobalProto:  any = null;
+    static GlobalProto: any = null;
     //网络配置
     static Network: INetWork = null;
 

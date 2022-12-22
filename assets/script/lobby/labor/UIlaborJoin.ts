@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 12:46:41
+ * @LastEditTime: 2022-12-21 16:38:46
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIlaborJoin.ts
  */
 
@@ -85,8 +85,8 @@ export default class UIlaborJoin extends BaseForm {
         this.contentList.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
         let data: any = Web_Org_Club_Player_Apply_List.Response.data
-        for (let index = 0; index < data?.data?.length; index++) {
-            const element = data?.data[index];
+        for (let index = 0; index < data?.items?.length; index++) {
+            const element = data?.items[index];
             let item = cc.instantiate(this.joinNode);
             item.parent = this.contentList;
             this.initItem(item, element, async () => {

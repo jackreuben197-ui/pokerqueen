@@ -584,7 +584,26 @@ export const UIDefine = {
         Path: "prefab/ui/UIMTTMineRankComponent",
     },
 
-
+    UIClubMerberManager: {
+        UIType: UIType.Form,
+        Name: "UIClubMerberManager",
+        Bundle: null,
+        Path: "main/new_club/UIClubMerberManager",
+    },
+    UIClubHome: {
+        UIType: UIType.Form,
+        Name: "UIClubHome",
+        Bundle: null,
+        Path: "main/new_club/UIClubHome",
+    },
+    //公会-成员详细
+    UIClubMember: {
+        UIType: UIType.Form,
+        Name: "UIClubMember",
+        Bundle: null,
+        Path: "main/new_club/UIClubMember",
+        Title: "详细资料",
+    },
 
 
 
