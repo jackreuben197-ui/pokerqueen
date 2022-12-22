@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 17:30:50
+ * @LastEditTime: 2022-12-22 17:51:45
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
