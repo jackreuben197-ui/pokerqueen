@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 17:51:45
+ * @LastEditTime: 2022-12-22 19:16:01
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -108,11 +108,12 @@ export default class UIClubMember extends BaseForm {
         panel_date.children.forEach((item, index) => {
             this.bindClick(item, this.onClickDateTabBtns, index);
         })
-        this.onClickDateTabBtns(0);
-        this.onClickTypeTabBtns(0);
+        this.initDateTabBtns(0);
+        this.initTypeTabBtns(0);
+        this.reqDataInfo();
 
     }
-    onClickTypeTabBtns(index) {
+    initTypeTabBtns(index) {
         this._dataType = index
         let panel_type = this.panel_mid.getChildByName('panel_type')
         panel_type.children.forEach((item, _index) => {
@@ -122,7 +123,7 @@ export default class UIClubMember extends BaseForm {
             }
         })
     }
-    onClickDateTabBtns(index) {
+    initDateTabBtns(index) {
         this._dateType = index
         let panel_date = this.panel_mid.getChildByName('panel_date')
         panel_date.children.forEach((item, _index) => {
@@ -134,6 +135,55 @@ export default class UIClubMember extends BaseForm {
             }
         })
     }
+    onClickTypeTabBtns(index) {
+        this.initTypeTabBtns(index)
+        this.reqDataInfo()
+    }
+    onClickDateTabBtns(index) {
+        this.initDateTabBtns(index)
+        this.reqDataInfo()
+    }
+    reqDataInfo() {
+        let info: any = {
+            club_id: ClubCache.club_id,
+            user_id: this._info.user_info.user_id,
+            game_type: this._dateType,       //游戏类型0-all,1-NLH，2-PLO，3-6+
+            time_type: (this._dateType + 1),      //时间类型1-今日, 2-7天, 3-30天, 4-生涯,5-选择时间
+            time_long: new Date().getTime(),       //客户端时间戳
+        }
+        UIClubModel.mInstance.APIOrgClubUserGameInfo(info).then(
+            (res) => {
+                this.refreshUpUI(res);
+            },
+            (res) => {
+            }
+        )
+    }
+    refreshUpUI(data) {
+        for (let i = 1; i < 7; i++) {
+            let btn_pt_1: cc.Node = this.getChildNodeOrComponent("pi_" + i);
+            let lbl = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
+            let label = btn_pt_1.getComponent(cc.Label);
+            let room_data = data?.data?.data;
+            if (!room_data) return
+            //普通
+            if (i == 1) {
+                label.string = room_data.total_game_cnt
+            } else if (i == 2) {
+                label.string = room_data.total_hand
+            } else if (i == 3) {
+                label.string = StringHelper.DivFloat(room_data.recharge_gold_total);
+            }
+            else if (i == 4) {
+                label.string = StringHelper.DivFloat(room_data.recharge_gold_total);
+            } else if (i == 5) {
+                label.string = StringHelper.DivFloat(room_data.withdraw_gold_total);
+            } else if (i == 6) {
+                label.string = StringHelper.DivFloat(room_data.withdraw_gold_total);
+            }
+        }
+    }
+
     onClickBtn(event) {
         let node = event.target;
         let index = node.index;
