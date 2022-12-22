@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 13:21:53
+ * @LastEditTime: 2022-12-22 15:35:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubPageItem.ts
  */
 
@@ -63,25 +63,7 @@ export default class clubPageItem extends UIBase {
         this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         let hg = cc.find('iconRole/icon', this.messNode);
         hg.active = true;
-        switch (this._data.user_level) {
-            case 0:
-                hg.active = false;
-                break;
-            case 1:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club)
-
-                break;
-            case 2:
-                break;
-            case 3:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
-                break;
-            case 4:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club)
-                break;
-            default:
-                break;
-        }
+        ClubCache.setRoleType(hg, this._data.user_level)
     }
 
     async onClickItem(event) {

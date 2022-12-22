@@ -3627,6 +3627,41 @@ export class APIOrgGetNewMessNum {
     };
 }
 
+export class APIOrgClubUserInfo {
+    public static API: string = "/api/org/club/user/info";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUserInfo.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUserInfo.ResponseData
+    };
+}
+
+export class APIOrgClubUserRemarks {
+    public static API: string = "/api/org/club/user/update";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUserRemarks.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUserRemarks.ResponseData
+    };
+}
+
+
 
 
 

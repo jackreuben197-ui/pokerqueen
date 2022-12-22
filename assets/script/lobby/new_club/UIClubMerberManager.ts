@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 11:43:07
+ * @LastEditTime: 2022-12-22 17:10:43
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -21,6 +21,8 @@ import { APIOrgClubGetJoinlList, APIOrgMemberList, Web_Org_Club_Get } from "../.
 import { UIClubModel } from "../labor/UIClubModel";
 import MemberItem from "./MemberItem";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import GGEvent from "../../event/GGEvent";
+import { EventName } from "../../config/EventName";
 
 enum TITALtYPE {
     MEMBER = 0,
@@ -108,6 +110,10 @@ export default class UIClubMerberManager extends BaseForm {
         this.toggleNode.children.forEach((item, index) => {
             this.bindClick(item, this.switchTabBtnState, index);
         })
+    }
+    protected regiterDispatchEvent() {
+        this.listen(EventName.requestClubMemList, this.reqDataAgain);
+
     }
     switchTabBtnState(index: number, isInit = false) {
         if (this._selectRoleType == index) return;

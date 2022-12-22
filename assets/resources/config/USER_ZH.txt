@@ -582,6 +582,7 @@ UIClub_noApply=暂无申请数据
 UIClub_mess=公会信息
 UIClub_Beizhu=备注
 UIClub_memberRole=成员角色
+UIClub_xxzl=详细资料
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌
