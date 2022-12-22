@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 11:05:57
+ * @LastEditTime: 2022-12-22 13:22:40
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubListItem.ts
  */
 
@@ -14,8 +14,10 @@ import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import SceneManager from "../../manager/SceneManager";
+import { Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
+import { UIClubModel } from "../labor/UIClubModel";
 import { ClubAdmin } from "../labor/UILabarPlayViewForm";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -32,11 +34,11 @@ export default class clubListItem extends UIBase {
     }
     regiterTouchEvents() {
         super.regiterTouchEvents();
-        GC.notify.register(EventName.refreshClubData, () => {
-            if (this._data?.club_id == ClubCache.club_id) {
-                this.node['info'] = ClubCache._msg;
-            }
-        }, this)
+        // GC.notify.register(EventName.refreshClubData, () => {
+        //     if (this._data?.club_id == ClubCache.club_id) {
+        //         this.node['info'] = ClubCache._msg;
+        //     }
+        // }, this)
     }
     initView() {
         cc.find('messLayout/name', this.node).getComponent(cc.Label).string = this._data.club_name
@@ -46,14 +48,16 @@ export default class clubListItem extends UIBase {
 
         let icon = cc.find('iconMask/icon', this.node);
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo)
-        this.node['info'] = this._data;
+        // this.node['info'] = this._data;
         this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
     }
 
-    onClickItem(event) {
-        let target = event.target;
-        let info = target.info;
-        ClubCache.setClubData(info);
-        UIComponent.open(UIDefine.UIClubHome, info, { SceneUI: SceneManager.Instance.currUI });
+
+    async onClickItem(event) {
+        await UIClubModel.mInstance.APIOrgClubSearchByID(this._data.random_id);
+        let data: any = Web_Org_Club_Search_By_Id.Response.data
+        ClubCache.setClubData(data);
+
+        UIComponent.open(UIDefine.UIClubHome, null, { SceneUI: SceneManager.Instance.currUI });
     }
 }

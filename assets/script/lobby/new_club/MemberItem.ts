@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 09:54:41
+ * @LastEditTime: 2022-12-22 13:12:39
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberItem.ts
  */
 
@@ -66,6 +66,6 @@ export default class MemberItem extends UIBase {
     onClickItem(event) {
         let target = event.target;
         let info = target.info;
-        UIComponent.open(UIDefine.UIMember, { info: info });
+        UIComponent.open(UIDefine.UIClubMember, { info: info });
     }
 }
