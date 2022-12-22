@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 17:10:43
+ * @LastEditTime: 2022-12-22 21:08:51
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -49,12 +49,14 @@ export default class UIClubMerberManager extends BaseForm {
     _sort_type: number = 1
     _order_type: number = 1
     _rusp_st_state = 1
+    _dropDownBox: cc.Node = null;
     @property(List)
     memberList: List = null;
 
     @property(cc.Node)
     applyList: cc.Node = null;
-
+    @property(cc.Prefab)
+    dropDownBox: cc.Prefab = null;
     @property(cc.Prefab)
     ApplyJoinClubItem: cc.Prefab = null;
     ROLE_TYPE = {
@@ -82,6 +84,12 @@ export default class UIClubMerberManager extends BaseForm {
         this.switchTabBtnState(0, true)
         this._rusp_st_state = ClubCache.auto_audit_switch;
         this.initTop();
+
+        let Rectangle = this.sortNode.getChildByName('Rectangle');
+        this._dropDownBox = cc.instantiate(this.dropDownBox);
+        this._dropDownBox.parent = Rectangle
+        this._dropDownBox.position = cc.v3(0, -50, 0);
+        this._dropDownBox.active = false;
     }
     initTop() {
         this.sortNode.getChildByName('num').getComponent(cc.Label).string = ClubCache.club_members
@@ -204,5 +212,9 @@ export default class UIClubMerberManager extends BaseForm {
         let st4 = cc.find('rusp/st/st4', this.applyNode)
         st2.active = this._rusp_st_state == 1
         st4.active = !st2.active
+    }
+    clickSelect() {
+        this._dropDownBox.active = true;
+        // this._dropDownBox.getComponent('dropDownBox').open(RateConfig.filter(cfg => cfg.country != "USD"), this.selectItem);
     }
 }

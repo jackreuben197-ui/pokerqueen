@@ -4526,10 +4526,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "d06fadDP1FOEr/mILtxL0tf",
-    "handler": "straddleSelect",
+    "_componentId": "327e5yIek5AsKacbSDAGifi",
+    "handler": "clickSelect",
     "customEventData": ""
   },
   {
@@ -6617,6 +6619,9 @@
     },
     "applyList": {
       "__id__": 175
+    },
+    "dropDownBox": {
+      "__uuid__": "8c9a4a8f-6bb0-4cdf-8cbe-3053e685c17b"
     },
     "ApplyJoinClubItem": {
       "__uuid__": "cc055b02-cb96-4102-af4b-3a6c57d6bde7"
