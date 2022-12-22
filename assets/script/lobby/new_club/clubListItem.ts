@@ -3,12 +3,14 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 12:59:17
+ * @LastEditTime: 2022-12-22 11:05:57
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubListItem.ts
  */
 
+import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import SceneManager from "../../manager/SceneManager";
@@ -27,6 +29,14 @@ export default class clubListItem extends UIBase {
     initData(data) {
         this._data = data
         this.initView();
+    }
+    regiterTouchEvents() {
+        super.regiterTouchEvents();
+        GC.notify.register(EventName.refreshClubData, () => {
+            if (this._data?.club_id == ClubCache.club_id) {
+                this.node['info'] = ClubCache._msg;
+            }
+        }, this)
     }
     initView() {
         cc.find('messLayout/name', this.node).getComponent(cc.Label).string = this._data.club_name

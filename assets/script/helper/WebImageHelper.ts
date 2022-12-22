@@ -18,6 +18,7 @@ export default class WebImageHelper {
             rawImage.spriteFrame = AssetContext.getAsset("default_avatar");
 
             if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
+
             cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
 
                 if (err) {

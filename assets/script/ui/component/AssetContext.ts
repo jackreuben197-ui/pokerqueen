@@ -3,7 +3,7 @@
  * @Date: 2022-08-25 18:30:36
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 19:59:06
+ * @LastEditTime: 2022-12-21 19:58:17
  * @FilePath: /pokerqueen/assets/script/ui/component/AssetContext.ts
  */
 
@@ -29,6 +29,7 @@ export enum AssetFold {
     texture_SmallCard1,
     texture_mtt,
     texture_labor,
+    texture_new_club,
     //声音
     sound_all,
 }

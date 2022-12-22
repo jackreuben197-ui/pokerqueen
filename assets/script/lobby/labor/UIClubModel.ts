@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-14 11:47:28
+ * @LastEditTime: 2022-12-21 19:28:51
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -137,8 +137,9 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubGetJoinList(limit = 1000, offset = 0) {
+    APIOrgClubGetJoinList(random_id, limit = 1000, offset = 0) {
         let parms: any = {
+            club_id: random_id,
             limit: limit,
             offset: offset
         };
@@ -234,13 +235,14 @@ export class UIClubModel {
         });
     }
 
-    APIOrgMemberList(id, limit = 5, offset = 0, search = null) {
-        let params: any = {
-            club_random_id: id,
-            "limit": limit,
-            "offset": offset,
-            search: search
-        };
+    APIOrgMemberList(params) {
+        // let params: any = {
+        //     club_id: id,
+        //     club_random_id:
+        //     "limit": limit,
+        //     "offset": offset,
+        //     search: search
+        // };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgMemberList,
