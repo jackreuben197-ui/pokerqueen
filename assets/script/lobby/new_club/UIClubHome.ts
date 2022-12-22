@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 19:13:49
+ * @LastEditTime: 2022-12-22 10:03:27
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -13,6 +13,8 @@ import { ClubCache } from "../../frame/data/club/ClubCache";
 import ClubData from "../../frame/data/club/ClubData";
 import UIComponent from "../../ui/UIComponent";
 import { UIDefine } from "../../define/UIDefine";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
+import WebImageHelper from "../../helper/WebImageHelper";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -43,13 +45,49 @@ export default class UIClubHome extends BaseForm {
         club_introduce.getComponent(cc.Label).string = ClubCache.desc;
         let messNode = this.layout.getChildByName('messNode');
 
+        let icon = cc.find('iconMask/icon', messNode)
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), ClubCache.logo)
         cc.find('messLayout/nameNode/name', messNode).getComponent(cc.Label).string = ClubCache.club_name;
         cc.find('messLayout/id', messNode).getComponent(cc.Label).string = ClubCache.random_id;
         cc.find('people/data', messNode).getComponent(cc.Label).string = ClubCache.club_members;
         cc.find('table/data', messNode).getComponent(cc.Label).string = ClubCache.club_table;
+        let hg = cc.find('messLayout/nameNode/hg', messNode)
+
+        //0 普通 1会长 3管理员 4代理
+        switch (ClubCache.user_level) {
+            case 0:
+                hg.active = false;
+                break;
+            case 1:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club)
+
+                break;
+            case 2:
+                break;
+            case 3:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
+                break;
+            case 4:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club)
+                break;
+            default:
+                break;
+        }
+
         this.menuShow.children.forEach((item, index) => {
             this.bindClick(item, this.onClickTabBtns, index);
         })
+        let topNode: cc.Node = this.getChildNodeOrComponent("topNode");
+        let joinTrip = topNode.getChildByName('joinTrip');
+        let coinNode = topNode.getChildByName('coinNode');
+        if (ClubCache.tribe_name) {
+            joinTrip.active = false
+            coinNode.active = true
+        }
+        else {
+            joinTrip.active = true
+            coinNode.active = false
+        }
     }
     onClickTabBtns(index: number) {
         switch (index) {

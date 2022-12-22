@@ -577,6 +577,8 @@ UIClub_Home=公会
 UIClub_JoinUnion=加入联盟
 UIClub_Table=牌桌
 UIClub_chet=聊天
+UIClub_openDotApply=开启免审批
+UIClub_noApply=暂无申请数据
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌

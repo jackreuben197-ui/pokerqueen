@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 19:46:06
+ * @LastEditTime: 2022-12-22 10:51:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -35,6 +35,7 @@ export default class UIClubMerberManager extends BaseForm {
     sousuo: cc.Node
     toggleNode: cc.Node
     sortNode: cc.Node
+    applyNode: cc.Node = null;
     _search = null;
     _selectTitle = null;
     _selectRoleType = null;
@@ -45,6 +46,7 @@ export default class UIClubMerberManager extends BaseForm {
     _total: number = 0
     _sort_type: number = 1
     _order_type: number = 1
+    _rusp_st_state = 1
     @property(List)
     memberList: List = null;
 
@@ -68,7 +70,7 @@ export default class UIClubMerberManager extends BaseForm {
         this.sousuo = this.getChildNodeOrComponent("sousuo");
         this.toggleNode = this.getChildNodeOrComponent("toggleNode");
         this.sortNode = this.getChildNodeOrComponent("sortNode");
-
+        this.applyNode = this.getChildNodeOrComponent("applyNode");
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -76,6 +78,7 @@ export default class UIClubMerberManager extends BaseForm {
         this.comFormTitle.initData(title, this);
         this.titleNodeClick(null, TITALtYPE.MEMBER)
         this.switchTabBtnState(0, true)
+        this._rusp_st_state = ClubCache.auto_audit_switch;
 
     }
     titleNodeClick(event, customData) {
@@ -90,7 +93,7 @@ export default class UIClubMerberManager extends BaseForm {
         this.memberListT.getChildByName('title').color = this._selectTitle == TITALtYPE.MEMBER ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         this.applyListT.getChildByName('title').color = this._selectTitle == TITALtYPE.APPLY ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         this.memberList.node.active = this._selectTitle == TITALtYPE.MEMBER
-        this.applyList.active = this._selectTitle == TITALtYPE.APPLY
+        this.applyNode.active = this._selectTitle == TITALtYPE.APPLY
         if (this._selectTitle == TITALtYPE.MEMBER) {
             this.reqDataAgain()
         } else {
@@ -169,6 +172,7 @@ export default class UIClubMerberManager extends BaseForm {
         sv_content.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubGetJoinList(ClubCache.club_id)
         let data: any = APIOrgClubGetJoinlList.Response.data
+        this.applyNode.getChildByName('tip').active = data.length == 0
         for (let index = 0; index < data?.data.length; index++) {
             const element = data?.data[index];
             let item = cc.instantiate(this.ApplyJoinClubItem);
@@ -176,6 +180,20 @@ export default class UIClubMerberManager extends BaseForm {
             item.getComponent('ApplyJoinClubItem').initData(element)
 
         }
+        this.initRusp();
 
+    }
+    ruspClick() {
+        this._rusp_st_state = this._rusp_st_state == 1 ? 2 : 1
+        this.initRusp();
+        UIClubModel.mInstance.APIOrgChangeClubData({ auto_audit_switch: this._rusp_st_state, club_id: ClubCache.club_id })
+        ClubCache.refreshData({ auto_audit_switch: this._rusp_st_state })
+        let a = ClubCache.auto_audit_switch
+    }
+    initRusp() {
+        let st2 = cc.find('rusp/st/st2', this.applyNode)
+        let st4 = cc.find('rusp/st/st4', this.applyNode)
+        st2.active = this._rusp_st_state == 1
+        st4.active = !st2.active
     }
 }

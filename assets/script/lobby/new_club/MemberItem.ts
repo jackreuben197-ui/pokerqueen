@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 20:05:30
+ * @LastEditTime: 2022-12-22 09:54:41
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberItem.ts
  */
 
@@ -29,24 +29,22 @@ export default class MemberItem extends UIBase {
         let hg = cc.find('messLayout/nameNode/hg', this.node)
         hg.active = true;
         // //0-所有;1-普通;2-创建者;3-管理员;4-代理;
-        switch (this._data.user_type) {
+        switch (this._data.user_level) {
             case 0:
                 hg.active = false;
                 break;
             case 1:
-                hg.active = false;
-                break;
-            case 2:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
-                break;
-            case 3:
                 hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club)
 
+                break;
+            case 2:
+                break;
+            case 3:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
                 break;
             case 4:
                 hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club)
                 break;
-
             default:
                 break;
         }

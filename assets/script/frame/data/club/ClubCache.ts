@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 18:35:17
+ * @LastEditTime: 2022-12-22 11:01:23
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -13,11 +13,16 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import { EventName } from "../../../config/EventName";
+import GC from "../../GameControl";
+
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export class ClubCache {
     static _msg = null;
+    static _allCubData = null;
+
     static setClubData(data) {
         this._msg = data
     }
@@ -70,7 +75,7 @@ export class ClubCache {
     static get more_contact() {
         return this._msg?.more_contact;
     }
-    get level() {
+    static get level() {
         return this._msg?.level;
     }
     static get search_switch() {
@@ -93,6 +98,15 @@ export class ClubCache {
     }
     static get tribe_name() {
         return this._msg?.tribe_name;
+    }
+    static get user_level() {
+        return this._msg?.user_level;
+    }
+    static refreshData(data: Object) {
+        Object.keys(data).map((key) => {
+            this._msg[key] = data[key];
+        })
+        GC.notify.post(EventName.refreshClubData)
     }
 }
 (window as any).GameCache = ClubCache;

@@ -3,15 +3,18 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 16:33:44
+ * @LastEditTime: 2022-12-22 11:06:13
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubPageItem.ts
  */
 
+import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import SceneManager from "../../manager/SceneManager";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 
@@ -36,6 +39,14 @@ export default class clubPageItem extends UIBase {
             this.initView();
         }
     }
+    regiterTouchEvents() {
+        super.regiterTouchEvents();
+        GC.notify.register(EventName.refreshClubData, () => {
+            if (this._data?.club_id == ClubCache.club_id) {
+                this.node['info'] = ClubCache._msg;
+            }
+        }, this)
+    }
     async initView() {
 
         cc.find('messLayout/name', this.messNode).getComponent(cc.Label).string = this._data.club_name
@@ -48,7 +59,27 @@ export default class clubPageItem extends UIBase {
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo)
         this.node['info'] = this._data;
         this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
-        let iconRole = cc.find('iconRole/icon', this.messNode);
+        let hg = cc.find('iconRole/icon', this.messNode);
+        hg.active = true;
+        switch (this._data.user_level) {
+            case 0:
+                hg.active = false;
+                break;
+            case 1:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club)
+
+                break;
+            case 2:
+                break;
+            case 3:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
+                break;
+            case 4:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club)
+                break;
+            default:
+                break;
+        }
     }
 
     onClickItem(event) {
