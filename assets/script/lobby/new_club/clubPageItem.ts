@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 11:06:13
+ * @LastEditTime: 2022-12-22 15:35:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubPageItem.ts
  */
 
@@ -14,9 +14,11 @@ import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import SceneManager from "../../manager/SceneManager";
+import { Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
+import { UIClubModel } from "../labor/UIClubModel";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -41,11 +43,11 @@ export default class clubPageItem extends UIBase {
     }
     regiterTouchEvents() {
         super.regiterTouchEvents();
-        GC.notify.register(EventName.refreshClubData, () => {
-            if (this._data?.club_id == ClubCache.club_id) {
-                this.node['info'] = ClubCache._msg;
-            }
-        }, this)
+        // GC.notify.register(EventName.refreshClubData, () => {
+        //     if (this._data?.club_id == ClubCache.club_id) {
+        //         this.node['info'] = ClubCache._msg;
+        //     }
+        // }, this)
     }
     async initView() {
 
@@ -57,36 +59,19 @@ export default class clubPageItem extends UIBase {
         // WebImageHelper.setImageSize(icon.getComponent(cc.Sprite), 398, 398)
 
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo)
-        this.node['info'] = this._data;
+        // this.node['info'] = this._data;
         this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         let hg = cc.find('iconRole/icon', this.messNode);
         hg.active = true;
-        switch (this._data.user_level) {
-            case 0:
-                hg.active = false;
-                break;
-            case 1:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club)
-
-                break;
-            case 2:
-                break;
-            case 3:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
-                break;
-            case 4:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club)
-                break;
-            default:
-                break;
-        }
+        ClubCache.setRoleType(hg, this._data.user_level)
     }
 
-    onClickItem(event) {
-        let target = event.target;
-        let info = target.info;
-        ClubCache.setClubData(info);
-        UIComponent.open(UIDefine.UIClubHome, info, { SceneUI: SceneManager.Instance.currUI });
+    async onClickItem(event) {
+        await UIClubModel.mInstance.APIOrgClubSearchByID(this._data.random_id);
+        let data: any = Web_Org_Club_Search_By_Id.Response.data
+        ClubCache.setClubData(data);
+
+        UIComponent.open(UIDefine.UIClubHome, null, { SceneUI: SceneManager.Instance.currUI });
     }
     createClub() {
         UIComponent.open(UIDefine.UICreatelabor, null, { SceneUI: SceneManager.Instance.currUI });

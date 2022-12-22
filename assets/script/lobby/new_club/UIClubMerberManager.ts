@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 10:51:15
+ * @LastEditTime: 2022-12-22 17:10:43
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -21,6 +21,8 @@ import { APIOrgClubGetJoinlList, APIOrgMemberList, Web_Org_Club_Get } from "../.
 import { UIClubModel } from "../labor/UIClubModel";
 import MemberItem from "./MemberItem";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import GGEvent from "../../event/GGEvent";
+import { EventName } from "../../config/EventName";
 
 enum TITALtYPE {
     MEMBER = 0,
@@ -79,7 +81,10 @@ export default class UIClubMerberManager extends BaseForm {
         this.titleNodeClick(null, TITALtYPE.MEMBER)
         this.switchTabBtnState(0, true)
         this._rusp_st_state = ClubCache.auto_audit_switch;
-
+        this.initTop();
+    }
+    initTop() {
+        this.sortNode.getChildByName('num').getComponent(cc.Label).string = ClubCache.club_members
     }
     titleNodeClick(event, customData) {
         // if (this._selectTitle == customData) return
@@ -105,6 +110,10 @@ export default class UIClubMerberManager extends BaseForm {
         this.toggleNode.children.forEach((item, index) => {
             this.bindClick(item, this.switchTabBtnState, index);
         })
+    }
+    protected regiterDispatchEvent() {
+        this.listen(EventName.requestClubMemList, this.reqDataAgain);
+
     }
     switchTabBtnState(index: number, isInit = false) {
         if (this._selectRoleType == index) return;

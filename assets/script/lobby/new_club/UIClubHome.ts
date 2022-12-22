@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 10:03:27
+ * @LastEditTime: 2022-12-22 15:39:42
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -15,6 +15,11 @@ import UIComponent from "../../ui/UIComponent";
 import { UIDefine } from "../../define/UIDefine";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import WebImageHelper from "../../helper/WebImageHelper";
+import { UIClubModel } from "../labor/UIClubModel";
+import { GameCache } from "../../game/GameCache";
+import { APIOrgClubUserInfo, Web_User_Info } from "../../net/https/WebRequest";
+import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
+import { StringHelper } from "../../helper/StringHelper";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -38,7 +43,21 @@ export default class UIClubHome extends BaseForm {
         let title = "UIClub_Home"
         this.comFormTitle.initData(title, this);
         this.initToggle();
+        this.initTabBnts()
         this.initTop();
+        await UIClubModel.mInstance.APIOrgClubUserInfo({
+            "user_id": Web_User_Info.Response.data.user.un_id,
+            "club_id": ClubCache.club_id
+        })
+        let data = APIOrgClubUserInfo.Response.data
+        ClubUserDataCache.setUserData(data);
+        this.initCoin();
+    }
+    initCoin() {
+        let topNode: cc.Node = this.getChildNodeOrComponent("topNode");
+        let coinNode = topNode.getChildByName('coinNode');
+        cc.find('coin/label', coinNode).getComponent(cc.Label).string = StringHelper.GetLongString(ClubUserDataCache.gold);
+        cc.find('usdt/label', coinNode).getComponent(cc.Label).string = StringHelper.GetLongString(ClubUserDataCache.usdt);
     }
     initTop() {
         let club_introduce = this.layout.getChildByName('club_introduce');
@@ -52,28 +71,8 @@ export default class UIClubHome extends BaseForm {
         cc.find('people/data', messNode).getComponent(cc.Label).string = ClubCache.club_members;
         cc.find('table/data', messNode).getComponent(cc.Label).string = ClubCache.club_table;
         let hg = cc.find('messLayout/nameNode/hg', messNode)
-
-        //0 普通 1会长 3管理员 4代理
-        switch (ClubCache.user_level) {
-            case 0:
-                hg.active = false;
-                break;
-            case 1:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club)
-
-                break;
-            case 2:
-                break;
-            case 3:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
-                break;
-            case 4:
-                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club)
-                break;
-            default:
-                break;
-        }
-
+        hg.active = true;
+        ClubCache.setRoleType(hg, ClubCache.user_level)
         this.menuShow.children.forEach((item, index) => {
             this.bindClick(item, this.onClickTabBtns, index);
         })
@@ -85,9 +84,41 @@ export default class UIClubHome extends BaseForm {
             coinNode.active = true
         }
         else {
-            joinTrip.active = true
             coinNode.active = false
+            if (ClubCache.user_level == 1) {
+                joinTrip.active = true
+            } else {
+                joinTrip.active = false
+            }
         }
+    }
+    initTabBnts() {
+        for (let index = 1; index < this.menuShow.childrenCount; index++) {
+            const element = this.menuShow.children[index];
+            element.active = true
+        }
+        //0 普通 1会长 3管理员 4代理
+        switch (ClubCache.user_level) {
+            case 0:
+                this.menuShow.children[2].active = false
+                this.menuShow.children[3].active = false
+                this.menuShow.children[4].active = false
+                this.menuShow.children[5].active = false
+                break;
+            case 1:
+            case 3:
+                this.menuShow.children[1].active = false
+                break;
+            case 2:
+                break;
+            case 4:
+                this.menuShow.children[4].active = false
+                this.menuShow.children[2].active = false
+                break;
+            default:
+                break;
+        }
+        if (!ClubCache.tribe_name) this.menuShow.children[4].active = false
     }
     onClickTabBtns(index: number) {
         switch (index) {
@@ -97,13 +128,13 @@ export default class UIClubHome extends BaseForm {
             case 1:
                 break;
             case 2:
-                UIComponent.open(UIDefine.UIClubMerberManager)
                 break;
             case 3:
-
+                UIComponent.open(UIDefine.UIClubMerberManager)
                 break;
             case 4:
-
+                break;
+            case 4:
                 break;
             default:
                 break;

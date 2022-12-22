@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 11:01:23
+ * @LastEditTime: 2022-12-22 17:16:42
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -14,6 +14,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import { EventName } from "../../../config/EventName";
+import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import GC from "../../GameControl";
 
 const { ccclass, property } = cc._decorator;
@@ -102,11 +103,36 @@ export class ClubCache {
     static get user_level() {
         return this._msg?.user_level;
     }
+    static get players() {
+        return this._msg?.players;
+    }
     static refreshData(data: Object) {
         Object.keys(data).map((key) => {
             this._msg[key] = data[key];
         })
         GC.notify.post(EventName.refreshClubData)
+    }
+    static setRoleType(hg, type) {
+        //0 普通 1会长 3管理员 4代理
+        switch (type) {
+            case 0:
+                hg.active = false;
+                break;
+            case 1:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club)
+
+                break;
+            case 2:
+                break;
+            case 3:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club)
+                break;
+            case 4:
+                hg.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club)
+                break;
+            default:
+                break;
+        }
     }
 }
 (window as any).GameCache = ClubCache;
