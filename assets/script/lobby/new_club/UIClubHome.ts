@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 10:03:27
+ * @LastEditTime: 2022-12-22 11:37:00
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -39,6 +39,7 @@ export default class UIClubHome extends BaseForm {
         this.comFormTitle.initData(title, this);
         this.initToggle();
         this.initTop();
+        this.initTabBnts()
     }
     initTop() {
         let club_introduce = this.layout.getChildByName('club_introduce');
@@ -85,9 +86,42 @@ export default class UIClubHome extends BaseForm {
             coinNode.active = true
         }
         else {
-            joinTrip.active = true
             coinNode.active = false
+            if (ClubCache.user_level == 1) {
+                joinTrip.active = true
+            } else {
+                joinTrip.active = false
+            }
         }
+    }
+    initTabBnts() {
+        return;
+        for (let index = 1; index < this.menuShow.childrenCount; index++) {
+            const element = this.menuShow.children[index];
+            element.active = true
+        }
+        //0 普通 1会长 3管理员 4代理
+        switch (ClubCache.user_level) {
+            case 0:
+                this.menuShow.children[2].active = false
+                this.menuShow.children[3].active = false
+                this.menuShow.children[4].active = false
+                this.menuShow.children[5].active = false
+                break;
+            case 1:
+            case 3:
+                this.menuShow.children[1].active = false
+                break;
+            case 2:
+                break;
+            case 4:
+                this.menuShow.children[4].active = false
+                this.menuShow.children[2].active = false
+                break;
+            default:
+                break;
+        }
+        if (!ClubCache.tribe_name) this.menuShow.children[4].active = false
     }
     onClickTabBtns(index: number) {
         switch (index) {
@@ -97,13 +131,13 @@ export default class UIClubHome extends BaseForm {
             case 1:
                 break;
             case 2:
-                UIComponent.open(UIDefine.UIClubMerberManager)
                 break;
             case 3:
-
+                UIComponent.open(UIDefine.UIClubMerberManager)
                 break;
             case 4:
-
+                break;
+            case 4:
                 break;
             default:
                 break;

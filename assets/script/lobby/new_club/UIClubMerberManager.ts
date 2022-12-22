@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 10:51:15
+ * @LastEditTime: 2022-12-22 11:43:07
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -79,7 +79,10 @@ export default class UIClubMerberManager extends BaseForm {
         this.titleNodeClick(null, TITALtYPE.MEMBER)
         this.switchTabBtnState(0, true)
         this._rusp_st_state = ClubCache.auto_audit_switch;
-
+        this.initTop();
+    }
+    initTop() {
+        this.sortNode.getChildByName('num').getComponent(cc.Label).string = ClubCache.club_members
     }
     titleNodeClick(event, customData) {
         // if (this._selectTitle == customData) return
