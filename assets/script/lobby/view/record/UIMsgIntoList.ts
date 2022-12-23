@@ -1,5 +1,6 @@
 import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
+import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
 import { HistoryInfoData } from "../../../game/UITexasHistoryComponent";
@@ -41,21 +42,18 @@ export default class UIMsgIntoList extends BaseForm {
 
         // this.comFormTitle.title.string = "本局牌谱";
 
-        if (param && param.info) {
-            this.reqInfo(param.info);
-        }
+        // this.reqInfo();
+        this.refreshListView(param);
 
     }
 
-    reqInfo(data) {
-        let roomData = data.data.room_data;
+    reqInfo() {
         let info = {
             limit: 100,
             offset: 0  
         }
-        LobbyControl.getInstance().reqClubApplyList(1,info).then(
+        LobbyControl.getInstance().reqClubApplyList(ClubCache.club_id,info).then(
             (res) => {
-                this.refreshListView(res);
             },
             (res) => {
             }
@@ -63,9 +61,8 @@ export default class UIMsgIntoList extends BaseForm {
     }
 
     refreshListView(data) {
-        let records = data.data.records;
-        let len = records.length;
-        this.getChildNodeOrComponent("lbl_total", cc.Label).string = "共计" + len + "手";
+        // let records = data.data.records;
+        let len = 10;
         let lbl_no : cc.Node = this.getChildNodeOrComponent("lbl_no");
         lbl_no.active = len == 0;
         // 有数据 刷新列表
@@ -78,23 +75,23 @@ export default class UIMsgIntoList extends BaseForm {
             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
             _cloneNode.parent = scrollView.content;
 
-            let info = records[i];
+            // let info = records[i];
 
-            let nameStr = GC.data.languageTemp.temp.getName(info.name);
-            _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
-            _cloneNode.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
-            let score = info.change;
-            let scLbl = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
-            LobbyControl.getInstance().setWinColor(scLbl, score, true);
+            // let nameStr = GC.data.languageTemp.temp.getName(info.name);
+            // _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
+            // _cloneNode.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
+            // let score = info.change;
+            // let scLbl = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
+            // LobbyControl.getInstance().setWinColor(scLbl, score, true);
 
-            _cloneNode["index"] = i;
-            _cloneNode["info"] = {
-                data: data,
-                info: info
-            };
-            _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
+            // _cloneNode["index"] = i;
+            // _cloneNode["info"] = {
+            //     data: data,
+            //     info: info
+            // };
+            // _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         }
-        scrollView.content.height = panel_item.height * (len+5);
+        scrollView.content.height = panel_item.height * (len+3);
     }
 
     onClickItem(event) {
