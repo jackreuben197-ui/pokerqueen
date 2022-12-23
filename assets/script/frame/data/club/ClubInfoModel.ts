@@ -9,7 +9,7 @@ export default class ClubInfoModel {
     private _gold_lock: number = 0;
 
     updateData(msg: TClubInfo) {
-        // ClubCache = msg;
+        ClubCache._msg = msg;
     }
     get club_id() {
         return ClubCache?.club_id;
