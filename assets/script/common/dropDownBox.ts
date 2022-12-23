@@ -3,10 +3,11 @@
  * @Date: 2022-12-22 19:24:17
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 20:29:56
+ * @LastEditTime: 2022-12-23 11:38:19
  * @FilePath: /pokerqueen/assets/script/common/dropDownBox.ts
  */
 import List from "../common/List";
+import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIBase from "../ui/UIBase";
 import dropDownBoxItem from "./dropDownBoxItem";
 
@@ -14,11 +15,14 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/common/dropDownBox')
 export default class dropDownBox extends UIBase {
-    private list: List = null;
 
-    private _data: Array<{ country: string, path: string }> = [];
+    private list: List = null;
+    private _data = [];
     private _aniing: boolean = false;
     private _selectItem: Function = null;
+
+    @property(cc.Node)
+    rateTypeList: cc.Node = null;
     lateLoad() {
         super.lateLoad();
         this.list = this.getChildNodeOrComponent("rateTypeList", List);
@@ -32,39 +36,42 @@ export default class dropDownBox extends UIBase {
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
 
-        this.bindClick(this.node, this.clickBg);
+        this.bindClick(this.rateTypeList, this.clickBg);
     }
-
-    open(data: Array<{ country: string, path: string }>, selectItem: Function) {
-        this._data = data;
+    initData(dataConfig, selectItem) {
+        this.rateTypeList.active = false;
+        this._data = dataConfig
         this._selectItem = selectItem;
-
-        this.node.scale = 0;
-
+        this.initSortData(this._data[0]);
+    }
+    open() {
+        this.rateTypeList.height = this._data.length * 100 + 60
+        this.rateTypeList.width = this.node.width
+        this.list.numItems = this._data.length;
+        this.rateTypeList.scale = 0;
         this._aniing = true;
-        cc.Tween.stopAllByTarget(this.node);
-        cc.tween(this.node)
+        cc.Tween.stopAllByTarget(this.rateTypeList);
+        cc.tween(this.rateTypeList)
             .to(0.1, { scale: 1 })
             .call(() => { this._aniing = false })
             .start();
 
-        this.list.numItems = this._data.length;
     }
 
     close(ani: boolean = true) {
-        if (this.node.active) {
+        if (this.rateTypeList.active) {
             if (ani) {
                 this._aniing = false;
-                cc.Tween.stopAllByTarget(this.node);
-                cc.tween(this.node)
+                cc.Tween.stopAllByTarget(this.rateTypeList);
+                cc.tween(this.rateTypeList)
                     .to(0.1, { scale: 0 })
                     .call(() => {
                         this._aniing = false;
-                        this.setActive(this.node, false)
+                        this.setActive(this.rateTypeList, false)
                     }).start();
             } else {
-                this.node.scale = 0;
-                this.setActive(this.node, false);
+                this.rateTypeList.scale = 0;
+                this.setActive(this.rateTypeList, false);
             }
         }
     }
@@ -76,7 +83,34 @@ export default class dropDownBox extends UIBase {
     }
 
     onRender(node: cc.Node, index) {
-        let item = node.getComponent(dropDownBoxItem);
-        item.initData(this._data[index], this._selectItem);
+        let item = node.getComponent('dropDownBoxItem');
+        item.initData(this._data[index], this.node.width, this.selectItemCb.bind(this));
     }
+
+    clickSelect() {
+        this.rateTypeList.active = true;
+        this.open();
+    }
+    selectItemCb(data) {
+        this.selectSort(data);
+    }
+
+    selectSort(data) {
+        this._selectItem && this._selectItem(data);
+        this.initSortData(data);
+    }
+    initSortData(data) {
+        let Rectangle = this.node.getChildByName('Rectangle');
+        let sortType = Rectangle.getChildByName('sortType');
+        sortType.getChildByName("num").getComponent(cc.Label).string = data.desc
+        let Polygon = sortType.getChildByName("Polygon").getComponent(cc.Sprite);
+        Polygon.node.active = true;
+        if (data.type == 0) {
+            Polygon.node.active = false;
+            return;
+        }
+        Polygon.spriteFrame = AssetContext.getAsset(data.type + '', AssetFold.texture_new_club)
+
+    }
+
 }

@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 19:16:01
+ * @LastEditTime: 2022-12-23 11:28:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -25,6 +25,8 @@ import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { LobbyControl } from "../control/LobbyControl";
 import { UIClubModel } from "../labor/UIClubModel";
 import { EventName } from "../../config/EventName";
+import { memberRoleConfig } from "../../frame/data/rate/RateConfig";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubMember')
@@ -34,7 +36,8 @@ export default class UIClubMember extends BaseForm {
     @property(cc.EditBox)
     editjieshao: cc.EditBox = null;
     private comFormTitle: ComFormTitle = null;
-
+    @property(cc.Prefab)
+    dropDownBox: cc.Prefab = null;
 
     messNode: cc.Node = null;
     panel_up: cc.Node = null;
@@ -45,6 +48,11 @@ export default class UIClubMember extends BaseForm {
     _info = null;
     _dataType = 0;
     _dateType = 0;
+
+    _sort_type: number = 1
+    _order_type: number = 1
+    _dropDownBox: cc.Node = null;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -54,6 +62,17 @@ export default class UIClubMember extends BaseForm {
         this.panel_vip = this.getChildNodeOrComponent('panel_vip')
         this.panel_vipMan = this.getChildNodeOrComponent('panel_vipMan')
         this.panel_down = this.getChildNodeOrComponent('panel_down')
+
+        this._dropDownBox = cc.instantiate(this.dropDownBox);
+        let Rectangle = this.panel_mid.getChildByName('panel_role')
+        this._dropDownBox.parent = Rectangle
+        this._dropDownBox.position = cc.v3(352, 50, 0);
+        this._dropDownBox.width = 400
+        this._dropDownBox.getComponent('dropDownBox').initData(memberRoleConfig, this.selectSort.bind(this))
+    }
+    selectSort(data) {
+        this._sort_type = data.model
+        this._order_type = data.type
     }
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
@@ -341,6 +360,5 @@ export default class UIClubMember extends BaseForm {
             //贵宾统计
         }, this)
     }
-
 
 }

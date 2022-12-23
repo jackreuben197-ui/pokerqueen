@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 21:08:51
+ * @LastEditTime: 2022-12-23 11:30:23
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -21,13 +21,14 @@ import { APIOrgClubGetJoinlList, APIOrgMemberList, Web_Org_Club_Get } from "../.
 import { UIClubModel } from "../labor/UIClubModel";
 import MemberItem from "./MemberItem";
 import { ClubCache } from "../../frame/data/club/ClubCache";
-import GGEvent from "../../event/GGEvent";
 import { EventName } from "../../config/EventName";
+import { memberAdminConfig } from "../../frame/data/rate/RateConfig";
 
 enum TITALtYPE {
     MEMBER = 0,
     APPLY = 1,
 }
+
 @ccclass
 @menu('脚本分组/new_club/UIlaborMerberManager')
 export default class UIClubMerberManager extends BaseForm {
@@ -66,6 +67,7 @@ export default class UIClubMerberManager extends BaseForm {
         3: 1
     }
 
+
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -75,6 +77,16 @@ export default class UIClubMerberManager extends BaseForm {
         this.toggleNode = this.getChildNodeOrComponent("toggleNode");
         this.sortNode = this.getChildNodeOrComponent("sortNode");
         this.applyNode = this.getChildNodeOrComponent("applyNode");
+        this._dropDownBox = cc.instantiate(this.dropDownBox);
+        this._dropDownBox.parent = this.sortNode
+        this._dropDownBox.position = cc.v3(228, 50, 0);
+        this._dropDownBox.width = 629;
+        this._dropDownBox.getComponent('dropDownBox').initData(memberAdminConfig, this.selectSort.bind(this))
+    }
+    selectSort(data) {
+        this._sort_type = data.model
+        this._order_type = data.type
+        this.reqDataAgain();
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -84,15 +96,10 @@ export default class UIClubMerberManager extends BaseForm {
         this.switchTabBtnState(0, true)
         this._rusp_st_state = ClubCache.auto_audit_switch;
         this.initTop();
-
-        let Rectangle = this.sortNode.getChildByName('Rectangle');
-        this._dropDownBox = cc.instantiate(this.dropDownBox);
-        this._dropDownBox.parent = Rectangle
-        this._dropDownBox.position = cc.v3(0, -50, 0);
-        this._dropDownBox.active = false;
     }
     initTop() {
         this.sortNode.getChildByName('num').getComponent(cc.Label).string = ClubCache.club_members
+
     }
     titleNodeClick(event, customData) {
         // if (this._selectTitle == customData) return
@@ -213,8 +220,5 @@ export default class UIClubMerberManager extends BaseForm {
         st2.active = this._rusp_st_state == 1
         st4.active = !st2.active
     }
-    clickSelect() {
-        this._dropDownBox.active = true;
-        // this._dropDownBox.getComponent('dropDownBox').open(RateConfig.filter(cfg => cfg.country != "USD"), this.selectItem);
-    }
+
 }
