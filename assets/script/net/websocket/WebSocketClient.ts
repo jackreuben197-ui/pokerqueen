@@ -29,12 +29,7 @@ export default class WebSocketClient {
 
     //主动关闭
     static ToClose: boolean = false;
-    //尝试重连总次数
-    static ReconnectMaxTime: number = 3;
-    //断开3秒重连
-    static ReconnectDelay: number = 3000;
 
-    static _reconnectTime: number = 0;
 
     public static SetPort(port: number) {
         this.Port = port;
@@ -59,7 +54,7 @@ export default class WebSocketClient {
     }
     private static onopen(ev: Event) {
         console.log("%c%s", LogStyle.ws_response, ">>>>> websocket connect success:" + WebSocketClient.Host_Port);
-        WebSocketClient._reconnectTime = 0;
+        ReconnectComponent.Instance.ResetReconnectTime();
         //发送握手后的注册
         ProtocolAgency.Send({
             Code: ProtocolCode.Protocol_Holdem_Register,

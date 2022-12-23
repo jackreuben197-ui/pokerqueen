@@ -11,6 +11,8 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import Main from "../../Main";
+import { Bundle_Texas } from "../../manager/ResManager";
+import SceneManager from "../../manager/SceneManager";
 import { APIOrgFriendBringIn, Web_User_Room } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
@@ -3156,6 +3158,10 @@ export default class TexasGame {
         this.RemoveMsgHandler();
         //停止状态机刷新
         GC.uc.RemoveComponent(this.GameLogicSMComponent);
+
+        //移除资源
+        //GC.bundle.get(Bundle_Texas).releaseAll();
+        //SceneManager.Instance.removeScene(UIDefine.UITexas);
 
     }
 

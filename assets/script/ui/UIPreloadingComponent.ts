@@ -62,12 +62,13 @@ export default class UIPreloadingComponent extends UIBase {
                     //纠错，保证当前进度不会小于上次进度
                     percent = Math.max(percent, this.prevPercent);
                     this.setProgress(percent);
+                    //console.log(finish, total);
                 }, (error: Error, assets) => {
                     if (error) {
                         console.warn(`资源加载失败:${bundle}/${dir}`);
                         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
                     } else {
-                        console.log(`资源加载完成:${bundle}/${dir}`);
+                        console.log(`资源加载完成:${bundle}/${dir}`, assets.length);
 
                         assets.forEach((item) => {
                             if (item instanceof cc.Prefab) {
@@ -90,6 +91,7 @@ export default class UIPreloadingComponent extends UIBase {
                             }
                         }
                         )
+
                         param?.complete();
                     }
                 })
