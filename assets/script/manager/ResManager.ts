@@ -30,8 +30,8 @@ export const Pre_Texas_Define: Pre_Define = {
     dir: "/"
 }
 
-
-
+//bundle字典
+export const Bundle_Map: Map<string, cc.AssetManager.Bundle> = new Map<string, cc.AssetManager.Bundle>();
 
 export class ResManager {
     private static _instance: ResManager = null;
@@ -89,6 +89,7 @@ export class ResManager {
                     cc.log("load bundle error:", bundleName);
                     reject(0);
                 } else {
+                    Bundle_Map.set(bundleName, bundle);
                     bundle.loadDir("/",
                         (finish: number, total: number) => {
                             percent = Math.max(percent, finish / total);
@@ -98,7 +99,7 @@ export class ResManager {
                                 cc.log("load dir error:", error);
                                 reject(0);
                             } else {
-                                
+
                                 assets.forEach((item) => {
                                     if (item instanceof cc.Prefab) {
                                         AssetContext.setAsset(bundleName, item.name, item);

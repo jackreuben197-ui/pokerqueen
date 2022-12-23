@@ -1,6 +1,7 @@
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import TexasGame from "../game/texas/TexasGame";
+import { Bundle_Map } from "../manager/ResManager";
 import SoundComponent from "../sound/SoundComponent";
 import MoniModel from "./data/moni/MoniModel";
 import AudioManager from "./manager/AudioManager";
@@ -55,6 +56,10 @@ class GameControl {
     }
     get sound(): SoundComponent {
         return SoundComponent.Instance;
+    }
+
+    get bundle(): Map<string, cc.AssetManager.Bundle> {
+        return Bundle_Map;
     }
 
     init() {

@@ -77,6 +77,12 @@ export default class SceneManager {
         }
     }
 
+    //移除场景记录
+    public removeScene(uiDefine: { Bundle: string, Path: string }) {
+        let bundleName = uiDefine.Bundle + uiDefine.Path;
+        this.uiMap[bundleName] = null;
+    }
+
     /**
      * 获取当前 UIDefine
      */
