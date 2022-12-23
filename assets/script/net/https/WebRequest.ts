@@ -3692,6 +3692,39 @@ export class APIOrgClubUserRole_change {
         code?: number, message?: string, data?: typeof APIOrgClubUserRole_change.ResponseData
     };
 }
+export class APIOrgClubApplyTribeList {
+    public static API: string = "/api/org/tribe/club/join/apply_list";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubApplyTribeList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubApplyTribeList.ResponseData
+    };
+}
+export class APIOrgClubCancleJoinTribe {
+    public static API: string = "/api/org/tribe/club/join/cancel_apply";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubCancleJoinTribe.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubCancleJoinTribe.ResponseData
+    };
+}
+
 
 
 
