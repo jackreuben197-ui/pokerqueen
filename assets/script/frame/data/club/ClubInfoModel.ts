@@ -1,6 +1,7 @@
 import { EventName } from "../../../config/EventName";
 import { TClubInfo } from "../../../config/TTypeConfig";
 import GC from "../../GameControl";
+import { ClubCache } from "./ClubCache";
 
 export default class ClubInfoModel {
     private _msg: TClubInfo = null;
@@ -8,77 +9,76 @@ export default class ClubInfoModel {
     private _gold_lock: number = 0;
 
     updateData(msg: TClubInfo) {
-        this._msg = msg;
+        // ClubCache = msg;
     }
-
     get club_id() {
-        return this._msg?.club_id;
+        return ClubCache?.club_id;
     }
     get club_name() {
-        return this._msg?.club_name;
+        return ClubCache?.club_name;
     }
     get logo() {
-        return this._msg?.logo;
+        return ClubCache?.logo;
     }
     get random_id() {
-        return this._msg?.random_id;
+        return ClubCache?.random_id;
     }
     get upper_limit() {
-        return this._msg?.upper_limit;
+        return ClubCache?.upper_limit;
     }
     get club_members() {
-        return this._msg?.club_members;
+        return ClubCache?.club_members;
     }
     get area_id() {
-        return this._msg?.area_id;
+        return ClubCache?.area_id;
     }
     get club_type() {
-        return this._msg?.club_type;
+        return ClubCache?.club_type;
     }
     get create_time() {
-        return this._msg?.create_time;
+        return ClubCache?.create_time;
     }
     get is_official() {
-        return this._msg?.is_official;
+        return ClubCache?.is_official;
     }
     get club_status() {
-        return this._msg?.club_status;
+        return ClubCache?.club_status;
     }
     get desc() {
-        return this._msg?.desc;
+        return ClubCache?.desc;
     }
     get contact_info() {
-        return this._msg?.contact_info;
+        return ClubCache?.contact_info;
     }
     get member_type() {
-        return this._msg?.member_type;
+        return ClubCache?.member_type;
     }
     get more_contact() {
-        return this._msg?.more_contact;
+        return ClubCache?.more_contact;
     }
     get level() {
-        return this._msg?.level;
+        return ClubCache?.level;
     }
     get search_switch() {
-        return this._msg?.search_switch;
+        return ClubCache?.search_switch;
     }
     get auto_audit_switch() {
-        return this._msg?.auto_audit_switch;
+        return ClubCache?.auto_audit_switch;
     }
     get show_contact_switch() {
-        return this._msg?.show_contact_switch;
+        return ClubCache?.show_contact_switch;
     }
     get club_creator_random_id() {
-        return this._msg?.club_creator_random_id;
+        return ClubCache?.club_creator_random_id;
     }
     get club_creator_avatar() {
-        return this._msg?.club_creator_avatar;
+        return ClubCache?.club_creator_avatar;
     }
     get club_creator_nickname() {
-        return this._msg?.club_creator_nickname;
+        return ClubCache?.club_creator_nickname;
     }
     get tribe_name() {
-        return this._msg?.tribe_name;
+        return ClubCache?.tribe_name;
     }
 
     // {"org_id":20,"gold":200,"gold_lock":100,"forbidden":false}

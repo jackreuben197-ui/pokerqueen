@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 17:46:32
+ * @LastEditTime: 2022-12-23 18:54:30
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -16,6 +16,7 @@
 import { EventName } from "../../../config/EventName";
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import GC from "../../GameControl";
+import ClubInfoModel from "./ClubInfoModel";
 
 const { ccclass, property } = cc._decorator;
 
@@ -23,7 +24,6 @@ const { ccclass, property } = cc._decorator;
 export class ClubCache {
     static _msg = null;
     static _allCubData = null;
-
     static setClubData(data) {
         this._msg = data
     }
