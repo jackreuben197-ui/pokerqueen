@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 15:39:42
+ * @LastEditTime: 2022-12-22 18:30:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -28,6 +28,11 @@ export default class UIClubHome extends BaseForm {
     private comFormTitle: ComFormTitle = null;
     toggleType = 1
     layout: cc.Node = null;
+
+    subView: cc.Node = null;
+    messView: cc.Node = null;
+
+    menuNode: cc.Node = null;
     @property(cc.Node)
     menu: cc.Node = null;
 
@@ -37,6 +42,9 @@ export default class UIClubHome extends BaseForm {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.layout = this.getChildNodeOrComponent("layout");
+        this.menuNode = this.getChildNodeOrComponent("menuNode");
+        this.subView = this.getChildNodeOrComponent("subView");
+        this.messView = this.getChildNodeOrComponent("messView");
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -93,6 +101,8 @@ export default class UIClubHome extends BaseForm {
         }
     }
     initTabBnts() {
+        let createBtn: cc.Node = this.getChildNodeOrComponent('createBtn')
+        createBtn.active = true
         for (let index = 1; index < this.menuShow.childrenCount; index++) {
             const element = this.menuShow.children[index];
             element.active = true
@@ -104,6 +114,7 @@ export default class UIClubHome extends BaseForm {
                 this.menuShow.children[3].active = false
                 this.menuShow.children[4].active = false
                 this.menuShow.children[5].active = false
+                createBtn.active = false
                 break;
             case 1:
             case 3:
@@ -112,13 +123,14 @@ export default class UIClubHome extends BaseForm {
             case 2:
                 break;
             case 4:
-                this.menuShow.children[4].active = false
+                createBtn.active = false
+                this.menuShow.children[5].active = false
                 this.menuShow.children[2].active = false
                 break;
             default:
                 break;
         }
-        if (!ClubCache.tribe_name) this.menuShow.children[4].active = false
+        if (!ClubCache.tribe_name) this.menuShow.children[5].active = false
     }
     onClickTabBtns(index: number) {
         switch (index) {
@@ -150,6 +162,10 @@ export default class UIClubHome extends BaseForm {
         cc.find('labelNode/lbl_2', table).opacity = this.toggleType == 1 ? 255 : 75
         cc.find('labelNode/lbl_1', chet).opacity = this.toggleType == 2 ? 255 : 75
         cc.find('labelNode/lbl_2', chet).opacity = this.toggleType == 2 ? 255 : 75
+        this.menuNode.active = this.toggleType == 1;
+        this.subView.active = this.toggleType == 1;
+        this.messView.active = this.toggleType == 2;
+
     }
     toggleClick() {
         this.toggleType = this.toggleType == 1 ? 2 : 1

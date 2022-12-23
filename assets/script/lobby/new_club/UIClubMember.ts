@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 17:30:50
+ * @LastEditTime: 2022-12-23 14:29:18
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -25,6 +25,9 @@ import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { LobbyControl } from "../control/LobbyControl";
 import { UIClubModel } from "../labor/UIClubModel";
 import { EventName } from "../../config/EventName";
+import { memberRoleConfig } from "../../frame/data/rate/RateConfig";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
+import { APIOrgClubUserInfo, APIOrgClubUserRole_change } from "../../net/https/WebRequest";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubMember')
@@ -34,7 +37,8 @@ export default class UIClubMember extends BaseForm {
     @property(cc.EditBox)
     editjieshao: cc.EditBox = null;
     private comFormTitle: ComFormTitle = null;
-
+    @property(cc.Prefab)
+    dropDownBox: cc.Prefab = null;
 
     messNode: cc.Node = null;
     panel_up: cc.Node = null;
@@ -45,6 +49,11 @@ export default class UIClubMember extends BaseForm {
     _info = null;
     _dataType = 0;
     _dateType = 0;
+
+    _sort_type: number = 1
+    _order_type: number = 1
+    _dropDownBox: cc.Node = null;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -54,6 +63,37 @@ export default class UIClubMember extends BaseForm {
         this.panel_vip = this.getChildNodeOrComponent('panel_vip')
         this.panel_vipMan = this.getChildNodeOrComponent('panel_vipMan')
         this.panel_down = this.getChildNodeOrComponent('panel_down')
+
+        this._dropDownBox = cc.instantiate(this.dropDownBox);
+        let Rectangle = this.panel_mid.getChildByName('panel_role')
+        this._dropDownBox.parent = Rectangle
+        this._dropDownBox.position = cc.v3(352, 50, 0);
+        this._dropDownBox.width = 400
+        this._dropDownBox.getComponent('dropDownBox').initData(memberRoleConfig, this.selectSort.bind(this))
+    }
+    selectSort(data) {
+        this._sort_type = data.model
+        // this._order_type = data.type
+        if (this._sort_type == this._info.user_level) return
+        this.requestData();
+    }
+    async requestData() {
+        let parms = {
+            club_id: ClubCache.club_id,
+            user_id: this._info.user_info.user_id,
+            "user_level": this._sort_type  //用户等级 0 普通 1会长  3管理员 4代理
+        }
+        await UIClubModel.mInstance.APIOrgClubUserRole_change(parms);
+        await UIClubModel.mInstance.APIOrgClubUserInfo({
+            "user_id": this._info.user_info.user_id,
+            "club_id": ClubCache.club_id,
+        })
+        this.post(EventName.requestClubMemList);
+        let data: any = APIOrgClubUserInfo.Response.data
+        this._info = data;
+        this.initTop()
+        this.initPanel_mid()
+        this.initVip();
     }
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
@@ -73,13 +113,15 @@ export default class UIClubMember extends BaseForm {
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._info.avatar)
         cc.find('messLayout/nameNode/name', this.messNode).getComponent(cc.Label).string = this._info.user_info.nickname;
         cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = this._info.user_info.random_id;
-        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.user_info.user_join_club_time);
+        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.user_join_club_time);
 
         cc.find('people/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.user_info.gold);
         cc.find('table/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.user_info.usdt);
         let hg = cc.find('messLayout/nameNode/hg', this.messNode)
         hg.active = true;
         ClubCache.setRoleType(hg, this._info.user_level);
+        let name = ClubCache.getRoleName(this._info.user_level)
+        this._dropDownBox.getComponent('dropDownBox').initSortData({ type: 0, desc: name })
 
         let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
         let btn_3: cc.Node = this.getChildNodeOrComponent("btn_3");
@@ -96,8 +138,8 @@ export default class UIClubMember extends BaseForm {
             btn_1["index"] = i;
             btn_1.on(cc.Node.EventType.TOUCH_END, this.onClickBtn, this)
         }
-        this.editName.string = this._info.user_info.remark_name
-        this.editjieshao.string = this._info.user_info.remark_desc
+        this.editName.string = this._info.remark_name
+        this.editjieshao.string = this._info.remark_desc
     }
     initPanel_mid() {
         let panel_type = this.panel_mid.getChildByName('panel_type')
@@ -108,11 +150,12 @@ export default class UIClubMember extends BaseForm {
         panel_date.children.forEach((item, index) => {
             this.bindClick(item, this.onClickDateTabBtns, index);
         })
-        this.onClickDateTabBtns(0);
-        this.onClickTypeTabBtns(0);
+        this.initDateTabBtns(0);
+        this.initTypeTabBtns(0);
+        this.reqDataInfo();
 
     }
-    onClickTypeTabBtns(index) {
+    initTypeTabBtns(index) {
         this._dataType = index
         let panel_type = this.panel_mid.getChildByName('panel_type')
         panel_type.children.forEach((item, _index) => {
@@ -122,7 +165,7 @@ export default class UIClubMember extends BaseForm {
             }
         })
     }
-    onClickDateTabBtns(index) {
+    initDateTabBtns(index) {
         this._dateType = index
         let panel_date = this.panel_mid.getChildByName('panel_date')
         panel_date.children.forEach((item, _index) => {
@@ -134,6 +177,55 @@ export default class UIClubMember extends BaseForm {
             }
         })
     }
+    onClickTypeTabBtns(index) {
+        this.initTypeTabBtns(index)
+        this.reqDataInfo()
+    }
+    onClickDateTabBtns(index) {
+        this.initDateTabBtns(index)
+        this.reqDataInfo()
+    }
+    reqDataInfo() {
+        let info: any = {
+            club_id: ClubCache.club_id,
+            user_id: this._info.user_info.user_id,
+            game_type: this._dateType,       //游戏类型0-all,1-NLH，2-PLO，3-6+
+            time_type: (this._dateType + 1),      //时间类型1-今日, 2-7天, 3-30天, 4-生涯,5-选择时间
+            time_long: new Date().getTime(),       //客户端时间戳
+        }
+        UIClubModel.mInstance.APIOrgClubUserGameInfo(info).then(
+            (res) => {
+                this.refreshUpUI(res);
+            },
+            (res) => {
+            }
+        )
+    }
+    refreshUpUI(data) {
+        for (let i = 1; i < 7; i++) {
+            let btn_pt_1: cc.Node = this.getChildNodeOrComponent("pi_" + i);
+            let lbl = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
+            let label = btn_pt_1.getComponent(cc.Label);
+            let room_data = data?.data?.data;
+            if (!room_data) return
+            //普通
+            if (i == 1) {
+                label.string = room_data.total_game_cnt
+            } else if (i == 2) {
+                label.string = room_data.total_hand
+            } else if (i == 3) {
+                label.string = StringHelper.DivFloat(room_data.recharge_gold_total);
+            }
+            else if (i == 4) {
+                label.string = StringHelper.DivFloat(room_data.recharge_gold_total);
+            } else if (i == 5) {
+                label.string = StringHelper.DivFloat(room_data.withdraw_gold_total);
+            } else if (i == 6) {
+                label.string = StringHelper.DivFloat(room_data.withdraw_gold_total);
+            }
+        }
+    }
+
     onClickBtn(event) {
         let node = event.target;
         let index = node.index;
@@ -291,6 +383,5 @@ export default class UIClubMember extends BaseForm {
             //贵宾统计
         }, this)
     }
-
 
 }

@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 17:16:42
+ * @LastEditTime: 2022-12-23 13:54:42
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -133,6 +133,28 @@ export class ClubCache {
             default:
                 break;
         }
+    }
+    static getRoleName(type) {
+        let name = ''
+        switch (type) {
+            case 0:
+                name = '成员'
+                break;
+            case 1:
+                name = '会长'
+                break;
+            case 2:
+                break;
+            case 3:
+                name = '管理员'
+                break;
+            case 4:
+                name = '贵宾'
+                break;
+            default:
+                break;
+        }
+        return name;
     }
 }
 (window as any).GameCache = ClubCache;

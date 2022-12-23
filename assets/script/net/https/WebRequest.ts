@@ -3660,6 +3660,38 @@ export class APIOrgClubUserRemarks {
         code?: number, message?: string, data?: typeof APIOrgClubUserRemarks.ResponseData
     };
 }
+export class APIOrgClubUserGameInfo {
+    public static API: string = "/api/stats/club/user/info";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUserGameInfo.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUserGameInfo.ResponseData
+    };
+}
+export class APIOrgClubUserRole_change {
+    public static API: string = "/api/org/club/role_change";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUserRole_change.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUserRole_change.ResponseData
+    };
+}
 
 
 
