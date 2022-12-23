@@ -3,12 +3,12 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 14:01:39
+ * @LastEditTime: 2022-12-23 16:08:08
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -291,12 +291,12 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgJoinTrip(id, contact) {
-        let paramas: any = { tribe_random_id: id, contact: contact };
+    APIOrgJoinTrip(parms) {
+
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgJoinTrip,
-                body: APIOrgJoinTrip.Request(paramas),
+                body: APIOrgJoinTrip.Request(parms),
                 onSuccess: function () {
                     resolve(APIOrgJoinTrip.Response);
                 }.bind(this),
@@ -817,6 +817,35 @@ export class UIClubModel {
             });
         });
     }
+    APIOrgClubApplyTribeList(parms) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubApplyTribeList,
+                body: APIOrgClubApplyTribeList.Request(parms),
+                onSuccess: function () {
+                    resolve(APIOrgClubApplyTribeList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+    APIOrgClubCancleJoinTribe(parms) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubCancleJoinTribe,
+                body: APIOrgClubCancleJoinTribe.Request(parms),
+                onSuccess: function () {
+                    resolve(APIOrgClubCancleJoinTribe.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
 
 
 }
