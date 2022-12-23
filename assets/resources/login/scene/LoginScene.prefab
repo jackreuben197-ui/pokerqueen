@@ -551,12 +551,12 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 12
+      "__id__": 1
     },
     "asset": {
-      "__uuid__": "5bd425cd-c0c6-4e1c-8492-0d01032886af"
+      "__id__": 0
     },
-    "fileId": "acbSW/TV1Ib6brU9L7O3Fu",
+    "fileId": "599xfVE9ZFb4MY4yRvCI+x",
     "sync": false
   },
   {
@@ -743,12 +743,12 @@
   {
     "__type__": "cc.PrefabInfo",
     "root": {
-      "__id__": 15
+      "__id__": 1
     },
     "asset": {
-      "__uuid__": "5bd425cd-c0c6-4e1c-8492-0d01032886af"
+      "__id__": 0
     },
-    "fileId": "97cnxbMYZGyLEyvfvy6jR/",
+    "fileId": "80HXMDzp9DWoCFe5JdlGa2",
     "sync": false
   },
   {

@@ -583,6 +583,12 @@ UIClub_mess=公会信息
 UIClub_Beizhu=备注
 UIClub_memberRole=成员角色
 UIClub_xxzl=详细资料
+UIClubData_ju=局数
+UIClubData_hand=手数
+UIClubData_C_USDT=充值usdt
+UIClubData_T_USDT=提现usdt
+UIClubData_C_GOLD=充值金豆
+UIClubData_T_GOLD=提现金豆
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌

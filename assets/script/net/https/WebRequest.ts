@@ -3702,6 +3702,71 @@ export class APIOrgClubUserRemarks {
         code?: number, message?: string, data?: typeof APIOrgClubUserRemarks.ResponseData
     };
 }
+export class APIOrgClubUserGameInfo {
+    public static API: string = "/api/stats/club/user/info";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUserGameInfo.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUserGameInfo.ResponseData
+    };
+}
+export class APIOrgClubUserRole_change {
+    public static API: string = "/api/org/club/role_change";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubUserRole_change.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubUserRole_change.ResponseData
+    };
+}
+export class APIOrgClubApplyTribeList {
+    public static API: string = "/api/org/tribe/club/join/apply_list";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubApplyTribeList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubApplyTribeList.ResponseData
+    };
+}
+export class APIOrgClubCancleJoinTribe {
+    public static API: string = "/api/org/tribe/club/join/cancel_apply";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubCancleJoinTribe.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubCancleJoinTribe.ResponseData
+    };
+}
+
 
 
 
