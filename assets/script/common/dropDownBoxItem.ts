@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 20:29:36
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 11:12:06
+ * @LastEditTime: 2022-12-23 13:44:14
  * @FilePath: /pokerqueen/assets/script/common/dropDownBoxItem.ts
  */
 // Learn TypeScript:
@@ -43,12 +43,8 @@ export default class dropDownBoxItem extends UIBase {
         this.node.width = width
         this._selectItem = selectItem;
         this.setText(this.flag, this._data.desc);
-
-        if (this._data.type == 0) {
-            this.up.node.active = false
-            return;
-        }
         this.up.spriteFrame = AssetContext.getAsset(this._data.type + '', AssetFold.texture_new_club)
+
     }
 
     clickItem() {

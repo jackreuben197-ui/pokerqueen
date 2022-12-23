@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 11:28:32
+ * @LastEditTime: 2022-12-23 14:29:18
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -27,6 +27,7 @@ import { UIClubModel } from "../labor/UIClubModel";
 import { EventName } from "../../config/EventName";
 import { memberRoleConfig } from "../../frame/data/rate/RateConfig";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
+import { APIOrgClubUserInfo, APIOrgClubUserRole_change } from "../../net/https/WebRequest";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubMember')
@@ -72,7 +73,27 @@ export default class UIClubMember extends BaseForm {
     }
     selectSort(data) {
         this._sort_type = data.model
-        this._order_type = data.type
+        // this._order_type = data.type
+        if (this._sort_type == this._info.user_level) return
+        this.requestData();
+    }
+    async requestData() {
+        let parms = {
+            club_id: ClubCache.club_id,
+            user_id: this._info.user_info.user_id,
+            "user_level": this._sort_type  //用户等级 0 普通 1会长  3管理员 4代理
+        }
+        await UIClubModel.mInstance.APIOrgClubUserRole_change(parms);
+        await UIClubModel.mInstance.APIOrgClubUserInfo({
+            "user_id": this._info.user_info.user_id,
+            "club_id": ClubCache.club_id,
+        })
+        this.post(EventName.requestClubMemList);
+        let data: any = APIOrgClubUserInfo.Response.data
+        this._info = data;
+        this.initTop()
+        this.initPanel_mid()
+        this.initVip();
     }
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
@@ -92,13 +113,15 @@ export default class UIClubMember extends BaseForm {
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._info.avatar)
         cc.find('messLayout/nameNode/name', this.messNode).getComponent(cc.Label).string = this._info.user_info.nickname;
         cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = this._info.user_info.random_id;
-        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.user_info.user_join_club_time);
+        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.user_join_club_time);
 
         cc.find('people/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.user_info.gold);
         cc.find('table/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.user_info.usdt);
         let hg = cc.find('messLayout/nameNode/hg', this.messNode)
         hg.active = true;
         ClubCache.setRoleType(hg, this._info.user_level);
+        let name = ClubCache.getRoleName(this._info.user_level)
+        this._dropDownBox.getComponent('dropDownBox').initSortData({ type: 0, desc: name })
 
         let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
         let btn_3: cc.Node = this.getChildNodeOrComponent("btn_3");
@@ -115,8 +138,8 @@ export default class UIClubMember extends BaseForm {
             btn_1["index"] = i;
             btn_1.on(cc.Node.EventType.TOUCH_END, this.onClickBtn, this)
         }
-        this.editName.string = this._info.user_info.remark_name
-        this.editjieshao.string = this._info.user_info.remark_desc
+        this.editName.string = this._info.remark_name
+        this.editjieshao.string = this._info.remark_desc
     }
     initPanel_mid() {
         let panel_type = this.panel_mid.getChildByName('panel_type')

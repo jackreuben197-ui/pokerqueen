@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 19:24:17
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 11:38:19
+ * @LastEditTime: 2022-12-23 13:44:58
  * @FilePath: /pokerqueen/assets/script/common/dropDownBox.ts
  */
 import List from "../common/List";
@@ -105,12 +105,7 @@ export default class dropDownBox extends UIBase {
         sortType.getChildByName("num").getComponent(cc.Label).string = data.desc
         let Polygon = sortType.getChildByName("Polygon").getComponent(cc.Sprite);
         Polygon.node.active = true;
-        if (data.type == 0) {
-            Polygon.node.active = false;
-            return;
-        }
         Polygon.spriteFrame = AssetContext.getAsset(data.type + '', AssetFold.texture_new_club)
-
     }
 
 }
