@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 15:42:42
+ * @LastEditTime: 2022-12-23 17:01:05
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -138,15 +138,22 @@ export default class UIClubHome extends BaseForm {
                 this.menuClick()
                 break;
             case 1:
+                UIComponent.open(UIDefine.UIPlayerLookLabor)
                 break;
             case 2:
+                UIComponent.open(UIDefine.UIManageLabor)
                 break;
             case 3:
                 UIComponent.open(UIDefine.UIClubMerberManager)
                 break;
             case 4:
+                UIComponent.open(UIDefine.UIClubDataMange)
                 break;
-            case 4:
+            case 5:
+                UIComponent.open(UIDefine.MyWalletForm, true)
+                break;
+            case 6:
+                UIComponent.open(UIDefine.UIMine_Message);
                 break;
             default:
                 break;
