@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 12:27:19
+ * @LastEditTime: 2022-12-24 13:44:27
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -59,6 +59,34 @@ export default class UIClubCreateMatchItem extends UIBase {
         this._currentNum = 0;
         this.ToggleClick()
         this.setState();
+
+        let lbl_center_left = this.labelNode.getChildByName('lbl_center_left').getComponent(cc.Label)
+        let lbl_deskName = this.labelNode.getChildByName('lbl_deskName').getComponent(cc.Label)
+        let lbl_time = cc.find('data_label/img_time/lbl_time', this.labelNode).getComponent(cc.Label)
+        let lbl_num = cc.find('data_label/img_num/lbl_num', this.labelNode).getComponent(cc.Label)
+        let sb = this._data.sb / 100;
+        lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`
+        lbl_deskName.string = '模版名称: ' + this._data.name
+        lbl_time.string = this._data.op_duration / 60 + 'h'
+        lbl_num.string = this._data.seat_count
+        let lbl_gameType = cc.find('item_choose/lbl_gameType', this.node).getComponent(cc.Label);
+        lbl_gameType.string = this.gameTypeName
+        let Rectangle = cc.find('item_choose/Rectangle', this.node)
+        Rectangle.active = this._data.share_table == 2
+
+    }
+    get gameTypeName() {
+        let str = "NLH";
+        if (this._data.game_type == 1) {
+            str = "PLO4";
+        } else if (this._data.game_type == 2) {
+            str = "PLO5";
+        } else if (this._data.game_type == 3) {
+            str = "PLO6";
+        } else if (this._data.poker_type == 2) {
+            str = "6+";
+        }
+        return str;
     }
     ToggleClick() {
         this.btnNode.active = !this.Toggle.isChecked
@@ -79,8 +107,6 @@ export default class UIClubCreateMatchItem extends UIBase {
 
     }
     editModel() {
-        UIComponent
-        UIDefine
         UIComponent.open(UIDefine.UICreateMatch, this._data);
     }
     delateModel() {

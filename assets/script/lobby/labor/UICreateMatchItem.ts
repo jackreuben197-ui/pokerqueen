@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:45:09
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:08:09
+ * @LastEditTime: 2022-12-24 13:32:34
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchItem.ts
  */
 
@@ -45,22 +45,10 @@ export default class UICreateMatchItem extends UIBase {
         let sb = this._data.sb / 100;
         this.setText(this.lbl_center_left, `${sb}/${sb * 2}(${this._data.ante})`)
         this.setText(this.lbl_deskName, this._data.name)
-        // this.setText(this.lbl_num, `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`);
-
-        // let isJoin = this._data.participation_status == 1;
-        // this.item_choose.active = isJoin;
-        // this.item_normal.active = !isJoin;
-
-        // let displayNode = this._data.participation_status == 0 ? this.item_normal : this.item_choose;
         this.item_choose.getChildByName("lbl_gameType").getComponent(cc.Label).string = this.gameTypeName;
         let playView = this.node.getChildByName("lbl_time").getComponent(PlayViewItem)
         playView.updateNormalItem(this._data.play_duration);
-        // if (isJoin) {
-        //     playView.updateItemInfo(this._data);
-        // } else 
-        // {
-        //     playView.updateNormalItem(this._data.play_duration);
-        // }
+
     }
 
     lateLoad() {
