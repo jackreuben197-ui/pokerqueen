@@ -91,8 +91,18 @@ export default class UITexasRule extends UIBase {
         }
         event.node.getChildByName('text').getChildByName('Checkmark').active = true
         event.node.getChildByName('text').color = new cc.Color().fromHEX("#35A3B3");
-        this.setWidgetState(event.node['index'])
+        this.setWidgetState(event.node['index']);
+
+        this.scrollReset();
+
     }
+    //滚动重置
+    scrollReset() {
+        let scroll = this.ScrollView.getComponent(cc.ScrollView);
+        scroll.stopAutoScroll();
+        scroll.scrollToTop();
+    }
+
     setWidgetState(index = 0) {
         this.RulerText.node.active = false;
         this.CardType.active = false;
