@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-22 15:38:28
+ * @LastEditTime: 2022-12-24 20:49:25
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubUserDataCache.ts
  */
 
@@ -33,5 +33,6 @@ export class ClubUserDataCache {
         })
         // GC.notify.post(EventName.refreshClubData)
     }
+
 }
 (window as any).GameCache = ClubUserDataCache;

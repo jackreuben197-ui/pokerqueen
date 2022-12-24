@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 19:52:28
+ * @LastEditTime: 2022-12-24 22:17:56
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
  */
 
@@ -65,6 +65,8 @@ export default class slidewidght extends cc.Component {
         } else {
             this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = data[this._selectIndex];
         }
+        cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
+
     }
 
     /**
@@ -97,6 +99,7 @@ export default class slidewidght extends cc.Component {
                     } else {
                         this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[index];
                     }
+
 
                 }
             }
@@ -150,6 +153,7 @@ export default class slidewidght extends cc.Component {
         } else {
             this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
         }
+        cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
     }
 
     nomalItemClick(event) {
@@ -167,6 +171,7 @@ export default class slidewidght extends cc.Component {
     }
     setFdxmUi() {
         cc.find('labelNode/lblNum', this.node.parent.parent).getComponent(cc.Label).string = this._itemData[this._selectIndex] + "/" + this._itemData[this._selectIndex] * 2;
+
         // this.node.parent.parent.getChildByName('jfplbl').getComponent(cc.Label).string = this._itemData[this._selectIndex] * 200 + '';
     }
 

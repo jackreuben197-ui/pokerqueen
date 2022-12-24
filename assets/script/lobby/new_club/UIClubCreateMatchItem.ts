@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 13:44:27
+ * @LastEditTime: 2022-12-24 22:21:14
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -110,7 +110,6 @@ export default class UIClubCreateMatchItem extends UIBase {
         UIComponent.open(UIDefine.UICreateMatch, this._data);
     }
     delateModel() {
-        UIDialogComponent
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
@@ -119,7 +118,9 @@ export default class UIClubCreateMatchItem extends UIBase {
                 contentCommit: "确定",
                 contentCancel: "取消",
                 actionCommit: async () => {
+                    this.node.active = false;
                     await UIClubModel.mInstance.APIOrgTemplateDelete(this._data.id)
+
 
                 },
                 noAnimation: true,

@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 12:58:04
+ * @LastEditTime: 2022-12-24 22:06:26
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -406,7 +406,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
