@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 10:33:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 12:00:36
+ * @LastEditTime: 2022-12-24 22:25:18
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -12,8 +12,11 @@ enum TITALTYPE {
 }
 import ComFormTitle from "../../common/ComFormTitle";
 import { EventName } from "../../config/EventName";
+import { UIDefine } from "../../define/UIDefine";
+import { ClubCache } from "../../frame/data/club/ClubCache";
 import { APIOrgGetTemplate } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
+import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "../labor/UIClubModel";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -52,6 +55,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
         // this.refreshModel();
         let title = "UIClub_MatchTable"
         this.comFormTitle.initData(title, this);
+        this._selectRoleType = 0;
         this.titleNodeClick(null, TITALTYPE.GAME_TYPE)
     }
 
@@ -64,7 +68,16 @@ export default class UIClubCreateMatchHome extends BaseForm {
         this.toggleNode.children.forEach((item, index) => {
             this.bindClick(item, this.switchTabBtnState, index);
         })
+        this.matchTypeNode.children.forEach((item, index) => {
+            this.bindClick(item, this.openMatchCreate, index);
+        })
+
     }
+    openMatchCreate(index) {
+        ClubCache.CreateGameType = index + 1;
+        UIComponent.open(UIDefine.UIClubCreateMatch);
+    }
+
     switchTabBtnState(index: number, isInit = false) {
         if (this._selectRoleType == index) return;
         this._selectRoleType = index
@@ -90,19 +103,18 @@ export default class UIClubCreateMatchHome extends BaseForm {
         }
     }
     async refreshModel() {
-        // await UIClubModel.mInstance.APIOrgGetTemplate();
-        // let data: any = APIOrgGetTemplate.Response.data;
-
-        let length = 10
+        await UIClubModel.mInstance.APIOrgGetTemplate({ game_play_type: this._selectRoleType });
+        let data: any = APIOrgGetTemplate.Response.data;
+        let length = data?.data?.length
+        this.matchModel.getChildByName('tip').active = length == 0
         // this.lbModel.string = `(${length}/${data.club_template_limit} )`;
-
         this.contentModel.removeAllChildren();
         for (let index = 0; index < length; index++) {
             const element = cc.instantiate(this.UIClubCreateMatchItem);
             element.position.x = 0;
             element.parent = this.contentModel
             element['index'] = index;
-            element.getComponent('UIClubCreateMatchItem').initData()
+            element.getComponent('UIClubCreateMatchItem').initData(data.data[index])
         }
     }
 

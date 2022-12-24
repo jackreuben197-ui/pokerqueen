@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 10:50:17
+ * @LastEditTime: 2022-12-24 20:55:56
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -186,6 +186,7 @@ export default class UIClubHome extends BaseForm {
         UIComponent.open(UIDefine.UIJoinUnion)
     }
     createMatchClick() {
+        ClubCache.joinCreateMatchType = 0
         UIComponent.open(UIDefine.UIClubCreateMatchHome)
     }
 }

@@ -591,6 +591,12 @@ UIClubData_C_GOLD=充值金豆
 UIClubData_T_GOLD=提现金豆
 UIClub_gameType=玩法类型
 UIClub_matchModel=牌局模版
+UIClub_inside=公会内部桌
+UIClub_outside=公会外部桌
+UIClub_beganMatch=立即开局
+UIClub_ownDiamond=余额：
+UIClub_payDiamond=消耗：
+
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌

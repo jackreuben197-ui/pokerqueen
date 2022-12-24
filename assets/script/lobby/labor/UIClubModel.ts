@@ -3,10 +3,11 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 16:08:08
+ * @LastEditTime: 2022-12-24 22:06:26
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
+import { ClubCache } from "../../frame/data/club/ClubCache";
 import HttpRequest from "../../net/https/HttpRequest";
 import { APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
@@ -348,8 +349,7 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgGetTemplate() {
-        let params = {}
+    APIOrgGetTemplate(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgGetTemplate,
@@ -359,7 +359,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
@@ -374,7 +375,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
@@ -404,7 +406,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }

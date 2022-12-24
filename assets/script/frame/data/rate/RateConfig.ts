@@ -24,3 +24,37 @@ export const memberRoleConfig = [
     { type: 0, desc: "贵宾", model: 4 },
     { type: 0, desc: "成员", model: 0 },
 ]
+export const dcjfpConfig = [
+    { type: 0, desc: "自动", model: 1 },
+    { type: 0, desc: "手动", model: 2 },
+]
+export const zxbljfpbsConfig = [
+    { type: 0, desc: "1", model: 1 },
+    { type: 0, desc: "2", model: 2 },
+    { type: 0, desc: "3", model: 3 },
+    { type: 0, desc: "4", model: 4 },
+]
+
+export const jslxConfig = [
+    { type: 0, desc: "按把抽", model: 1 },
+    { type: 0, desc: "按局抽", model: 2 },
+]
+export const zwslConfig = [
+    { type: 0, desc: "2人", model: 2 },
+    { type: 0, desc: "3人", model: 3 },
+    { type: 0, desc: "4人", model: 4 },
+    { type: 0, desc: "5人", model: 5 },
+    { type: 0, desc: "6人", model: 6 },
+    { type: 0, desc: "7人", model: 7 },
+    { type: 0, desc: "8人", model: 8 },
+    { type: 0, desc: "9人", model: 9 },
+]
+export const straddleConfig = [
+    { type: 0, desc: "2", model: 2 },
+    { type: 0, desc: "3", model: 3 },
+    { type: 0, desc: "4", model: 4 },
+    { type: 0, desc: "5", model: 5 },
+    { type: 0, desc: "6", model: 6 },
+
+]
+

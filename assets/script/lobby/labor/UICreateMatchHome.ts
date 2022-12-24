@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:27:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-05 12:44:01
+ * @LastEditTime: 2022-12-24 12:51:52
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchHome.ts
  */
 
@@ -40,7 +40,7 @@ export default class UICreateMatchHome extends BaseForm {
         this.listen(EventName.matchModelChange, this.refreshModel)
     }
     async refreshModel() {
-        await UIClubModel.mInstance.APIOrgGetTemplate();
+        await UIClubModel.mInstance.APIOrgGetTemplate({});
         let data: any = APIOrgGetTemplate.Response.data;
 
         let length = data?.data?.length || 0
