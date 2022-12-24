@@ -19,8 +19,6 @@ export default class LanguageFormItem extends UIBase {
 
     toggle: GGToggleChild = null;
 
-    flag_icon: cc.Sprite = null;
-
     s_language_label: i18nLabel = null;
 
     language_label: cc.Label = null;
@@ -29,14 +27,14 @@ export default class LanguageFormItem extends UIBase {
     /**
      * 声明内容
      */
-    public param: ILanguageFormItem;
-    label_colors = ["#FFFFFF", "#DDBA82"];
+    _param: ILanguageFormItem;
+    label_colors = ["#FFFFFF", "#35A3B3"];
     ///////////////////////////////////
 
     protected lateLoad(): void {
         super.lateLoad();
         this.toggle = this.getChildNodeOrComponent("toggle", GGToggleChild);
-        this.flag_icon = this.getChildNodeOrComponent("flag_icon", cc.Sprite);
+        //this.flag_icon = this.getChildNodeOrComponent("flag_icon", cc.Sprite);
         this.s_language_label = this.getChildNodeOrComponent("s_language_label", i18nLabel);
         this.language_label = this.getChildNodeOrComponent("language_label", cc.Label);
     }
@@ -48,7 +46,7 @@ export default class LanguageFormItem extends UIBase {
         super.onShow(param);
         this.s_language_label.i18NString = param.s_language;
         this.language_label.string = param.language;
-        this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag, AssetFold.texture_flag);
+        //this.flag_icon.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(param.flag, AssetFold.texture_flag);
     }
     check() {
         this.toggle.check();

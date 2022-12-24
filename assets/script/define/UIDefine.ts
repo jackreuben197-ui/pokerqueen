@@ -132,7 +132,7 @@ export const UIDefine = {
         Name: "UIMine_SettingVersion",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_SettingVersion",
-        Title: "",
+        Title: "UIMine_SettingVersion",
     },
     //设置-关于
     UIMine_About: {

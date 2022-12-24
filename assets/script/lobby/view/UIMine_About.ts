@@ -12,7 +12,7 @@ export default class UIMine_About extends BaseForm {
     /**
      * 节点|组件 定义 
      */
-
+    Scroller: cc.ScrollView = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -22,13 +22,12 @@ export default class UIMine_About extends BaseForm {
     /**
      * onLoad之后处理的内容
      */
-     private comFormTitle: ComFormTitle = null;
+    //private comFormTitle: ComFormTitle = null;
 
-     protected lateLoad(): void {
-         super.lateLoad();
-         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
- 
-     }
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.Scroller = this.getChildNodeOrComponent("Scroller", cc.ScrollView);
+    }
     /**
      * 关闭需要处理的内容
      */
@@ -40,10 +39,12 @@ export default class UIMine_About extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
+        this.Scroller.scrollToTop();
         // this.comFormTitle.initData('', this);
 
         // this.comFormTitle.title.string = "关于我们";
         // this.webview.url = i18nMgr.Get("UIAboutURL");
+
     }
     // /**
     //  * 注册触摸事件
