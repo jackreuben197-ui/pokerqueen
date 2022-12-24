@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "0d71a617-a163-45cd-91b2-cd5dae2fc05b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2688,
+  "platformSettings": {},
+  "subMetas": {
+    "创建牌桌-模板列表": {
+      "ver": "1.0.6",
+      "uuid": "102edd95-8481-4b8d-9ebb-23cdc22305f7",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "0d71a617-a163-45cd-91b2-cd5dae2fc05b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": -0.5,
+      "trimX": 0,
+      "trimY": 1,
+      "width": 1242,
+      "height": 2687,
+      "rawWidth": 1242,
+      "rawHeight": 2688,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

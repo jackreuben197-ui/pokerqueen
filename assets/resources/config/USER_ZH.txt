@@ -589,6 +589,8 @@ UIClubData_C_USDT=充值usdt
 UIClubData_T_USDT=提现usdt
 UIClubData_C_GOLD=充值金豆
 UIClubData_T_GOLD=提现金豆
+UIClub_gameType=玩法类型
+UIClub_matchModel=牌局模版
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌

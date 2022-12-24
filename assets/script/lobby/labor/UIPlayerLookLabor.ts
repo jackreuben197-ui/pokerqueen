@@ -3,19 +3,17 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 18:37:44
+ * @LastEditTime: 2022-12-24 09:57:40
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
 import { UIDefine } from "../../define/UIDefine";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
-import { Web_Org_Club_Get } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { UIClubModel } from "./UIClubModel";
 import { LobbyControl } from "../control/LobbyControl";
-import { GameCache } from "../../game/GameCache";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import ComFormTitle from "../../common/ComFormTitle";
@@ -42,20 +40,18 @@ export default class UIPlayerLookLabor extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIClub_Look"
         this.comFormTitle.initData(title, this);
-        await UIClubModel.mInstance.APIOrgClubGet()
         this.initTop();
     }
     initTop() {
-        let data: any = Web_Org_Club_Get.Response.data;
         let name = cc.find('Node_name/name', this.mask_group).getComponent(cc.Label);
-        name.string = data.club_name
+        name.string = ClubCache.club_name
         let id = this.mask_group.getChildByName('id').getComponent(cc.Label);
-        id.string = 'ID:' + data.random_id
+        id.string = 'ID:' + ClubCache.random_id
         let dec = this.mask_group.parent.getChildByName('TEXT_LABEL').getComponent(cc.Label);
-        dec.string = data.desc || ''
+        dec.string = ClubCache.desc || ''
 
         let icon = cc.find('iconMask/icon', this.mask_group).getComponent(cc.Sprite);
-        WebImageHelper.SetHeadImage(icon, data.logo)
+        WebImageHelper.SetHeadImage(icon, ClubCache.logo)
         // let lbl_glod = cc.find('img_right_bg/lbl_glod', this.mask_group).getComponent(cc.Label);
         this.initClubData()
     }

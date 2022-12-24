@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 11:30:23
+ * @LastEditTime: 2022-12-24 10:38:54
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -21,14 +21,13 @@ import { APIOrgClubGetJoinlList, APIOrgMemberList, Web_Org_Club_Get } from "../.
 import { UIClubModel } from "../labor/UIClubModel";
 import MemberItem from "./MemberItem";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import GGEvent from "../../event/GGEvent";
 import { EventName } from "../../config/EventName";
-import { memberAdminConfig } from "../../frame/data/rate/RateConfig";
 
 enum TITALtYPE {
     MEMBER = 0,
     APPLY = 1,
 }
-
 @ccclass
 @menu('脚本分组/new_club/UIlaborMerberManager')
 export default class UIClubMerberManager extends BaseForm {
@@ -50,14 +49,12 @@ export default class UIClubMerberManager extends BaseForm {
     _sort_type: number = 1
     _order_type: number = 1
     _rusp_st_state = 1
-    _dropDownBox: cc.Node = null;
     @property(List)
     memberList: List = null;
 
     @property(cc.Node)
     applyList: cc.Node = null;
-    @property(cc.Prefab)
-    dropDownBox: cc.Prefab = null;
+
     @property(cc.Prefab)
     ApplyJoinClubItem: cc.Prefab = null;
     ROLE_TYPE = {
@@ -66,7 +63,6 @@ export default class UIClubMerberManager extends BaseForm {
         2: 4,
         3: 1
     }
-
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -77,16 +73,6 @@ export default class UIClubMerberManager extends BaseForm {
         this.toggleNode = this.getChildNodeOrComponent("toggleNode");
         this.sortNode = this.getChildNodeOrComponent("sortNode");
         this.applyNode = this.getChildNodeOrComponent("applyNode");
-        this._dropDownBox = cc.instantiate(this.dropDownBox);
-        this._dropDownBox.parent = this.sortNode
-        this._dropDownBox.position = cc.v3(228, 50, 0);
-        this._dropDownBox.width = 629;
-        this._dropDownBox.getComponent('dropDownBox').initData(memberAdminConfig, this.selectSort.bind(this))
-    }
-    selectSort(data) {
-        this._sort_type = data.model
-        this._order_type = data.type
-        this.reqDataAgain();
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -99,7 +85,6 @@ export default class UIClubMerberManager extends BaseForm {
     }
     initTop() {
         this.sortNode.getChildByName('num').getComponent(cc.Label).string = ClubCache.club_members
-
     }
     titleNodeClick(event, customData) {
         // if (this._selectTitle == customData) return
@@ -220,5 +205,4 @@ export default class UIClubMerberManager extends BaseForm {
         st2.active = this._rusp_st_state == 1
         st4.active = !st2.active
     }
-
 }

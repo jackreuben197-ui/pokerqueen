@@ -140,7 +140,7 @@ export const UIDefine = {
         Name: "UIMine_SettingVersion",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_SettingVersion",
-        Title: "",
+        Title: "UIMine_SettingVersion",
     },
     //设置-关于
     UIMine_About: {
@@ -604,7 +604,12 @@ export const UIDefine = {
         Path: "main/new_club/UIClubMember",
         Title: "详细资料",
     },
-
+    UIClubCreateMatchHome: {
+        UIType: UIType.Form,
+        Name: "UIClubCreateMatchHome",
+        Bundle: null,
+        Path: "main/new_club/UIClubCreateMatchHome",
+    },
 
 
 
