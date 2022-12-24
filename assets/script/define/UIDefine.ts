@@ -602,6 +602,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/UIClubCreateMatchHome",
     },
+    UIClubCreateMatch: {
+        UIType: UIType.Form,
+        Name: "UIClubCreateMatch",
+        Bundle: null,
+        Path: "main/new_club/UIClubCreateMatch",
+    },
 
 
 

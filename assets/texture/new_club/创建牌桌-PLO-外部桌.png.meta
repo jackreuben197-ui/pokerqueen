@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "afc4143b-779f-4b52-a514-f7aba56504a6",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 6664,
+  "platformSettings": {},
+  "subMetas": {
+    "创建牌桌-PLO-外部桌": {
+      "ver": "1.0.6",
+      "uuid": "05953c72-a7d6-4b1d-b13a-ead0a9dc941f",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "afc4143b-779f-4b52-a514-f7aba56504a6",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 6663,
+      "rawWidth": 1242,
+      "rawHeight": 6664,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

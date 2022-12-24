@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-19 10:18:16
+ * @LastEditTime: 2022-12-24 16:20:00
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght1.ts
  */
 
@@ -44,7 +44,7 @@ export default class slidewidght1 extends cc.Component {
         this.nomalItem.height = 100;
         this.selectNum = this.node.getChildByName('selectNum')
         this.selectNum1 = this.node.getChildByName('selectNum1')
-        let _x = 937 / (data.length - 1)
+        let _x = 1000 / (data.length - 1)
         this._itemData = data
         for (let index = this.itemNode.childrenCount - 1; index > 0; index--) {
             this.itemNode.children[index].removeFromParent();
@@ -79,7 +79,7 @@ export default class slidewidght1 extends cc.Component {
         this._targetDe.ScrollView.enabled = false
         let node = event.target;
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
-        if (pos.x >= 0 && pos.x <= 937) {
+        if (pos.x >= 0 && pos.x <= 1000) {
             node.x = pos.x;
         }
 
@@ -91,7 +91,7 @@ export default class slidewidght1 extends cc.Component {
     drogTouchMove(event, customData) {
         let node = event.target;
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
-        if (pos.x >= 0 && pos.x <= 937) {
+        if (pos.x >= 0 && pos.x <= 1000) {
             node.x = pos.x;
             // for (let index = 0; index < this.itemNode.childrenCount; index++) {
             //     const element = this.itemNode.children[index];
@@ -126,9 +126,9 @@ export default class slidewidght1 extends cc.Component {
             _index = _index - 1
         }
         node.x = this.itemNode.children[_index].x
-        if (node.x > 937) {
+        if (node.x > 1000) {
             _index = this.itemNode.childrenCount;
-            node.x = 937
+            node.x = 1000
         }
         if (node.x < 0) {
             _index = 0;

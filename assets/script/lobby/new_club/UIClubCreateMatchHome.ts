@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 10:33:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 13:26:28
+ * @LastEditTime: 2022-12-24 13:52:50
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -73,7 +73,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
 
     }
     openMatchCreate() {
-        UIComponent.open(UIDefine.UICreateMatch);
+        UIComponent.open(UIDefine.UIClubCreateMatch);
     }
 
     switchTabBtnState(index: number, isInit = false) {
