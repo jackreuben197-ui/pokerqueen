@@ -3,15 +3,16 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 16:52:48
+ * @LastEditTime: 2022-12-25 18:00:45
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIMatchView.ts
  */
 
 import List from "../../common/List";
 import { dxmConfig } from "../../frame/data/rate/RateConfig";
 import GC from "../../frame/GameControl";
-import { GameType } from "../../game/util/GameUtil";
+import { GameType, Table_Type } from "../../game/util/GameUtil";
 import UIBase from "../../ui/UIBase";
+import { UIClubModel } from "../labor/UIClubModel";
 import UIClubMatchItem from "./UIClubMatchItem";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -28,14 +29,26 @@ export default class UIMatchView extends UIBase {
     _gameType = null;
     _sbSelectType = null;
     _sbType = null;
-    _sbData: Array<number> = null;;;
-    async onShow(type?: GameType, isClub: boolean = false) {
-        super.onShow(type, isClub);
-        this._isClub = isClub;
-        this._roomList = GC.data.lobby.roomList;
+    _sbData: Array<number> = null;
+
+    // _roomList = [
+    //     { _offset: 0, _total: 0, _reqing: false, _reqEnd: false, _list: [] },
+    //     { _offset: 0, _reqing: false, _reqEnd: false, _list: [] }
+    // ]
+    _tableType = Table_Type.club
+    _offset = 0;
+    _total = 0
+    _reqing = false
+    _reqEnd = false
+    _list = []
+
+    async onShow(type?: GameType, tableType = Table_Type.club) {
+        super.onShow(type);
+        this._tableType = tableType;
+        // this._roomList = GC.data.lobby.roomList;
         // this._curGameType = null;
         this.clickGameType(type);
-        this.clickSbSelect(0);
+
     }
 
     protected lateLoad(): void {
@@ -56,10 +69,6 @@ export default class UIMatchView extends UIBase {
             this.bindClick(item, this.clickSbSelect, index);
         })
 
-        // this.sbNode.children.forEach((item, index) => {
-        //     this.bindClick(item, this.clickSb, index);
-        // })
-
     }
     /**
      * @method 点击游戏类型
@@ -72,9 +81,7 @@ export default class UIMatchView extends UIBase {
         this.gameTypeNode.children.forEach((item, index) => {
             item.getChildByName("title").color = this._gameType == index ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         })
-        // if (!isInit) {
-        //     this.reqDataAgain()
-        // }
+        this.clickSbSelect(0);
     }
     /**
      * @method 点击微小中大
@@ -140,20 +147,69 @@ export default class UIMatchView extends UIBase {
         this.clickSb(0);
     }
 
-    onRender(node: cc.Node, index: number) {
-        let item = node.getComponent(UIClubMatchItem);
-        item.initData(this._roomList.getList(this._isClub)[index]);
+
+    async reqDataAgain() {
+        // let ob = this._roomList[this._tableType];
+        this._offset = 0;
+        this._total = 0;
+        this._list.length = 0;
+        this._reqing = false;
+        this._reqEnd = false;
+        this.dealData()
+    }
+    async dealData() {
+        // let ob = this._roomList[this._tableType];
+        this._reqing = true
+
+        let params = {
+            "limit": 10,
+            "offset": this._offset,
+        }
+        let _data: any = []
+
+        if (this._tableType == Table_Type.club) {
+            await UIClubModel.mInstance.APIOrgMemberList(params);
+            _data = []
+        }
+        else if (this._tableType == Table_Type.holl) {
+            await UIClubModel.mInstance.APIOrgMemberList(params);
+            _data = []
+        }
+        this._reqing = false
+        if (!_data.data) {
+            _data.data = [];
+        }
+
+        _data.data.forEach(element => {
+            this._list.push(element);
+        });  //分页的时候使用的
+        this._total = _data.total
+        this.list.numItems = this._list.length;
+        this._offset = this._list.length;
+        this._reqEnd = this._list.length == this._total;
+
+
+
     }
 
+
+    onRender(node: cc.Node, index: number) {
+        // let ob = this._roomList[this._tableType];
+        let item = node.getComponent(UIClubMatchItem);
+        item.initData(this._list[index]);
+    }
+
+
+
     scrollingCB = (scrollView: cc.ScrollView) => {
-        // if (scrollView) {
-        //     let cur = scrollView.getScrollOffset();
-        //     let max = scrollView.getMaxScrollOffset()
-        //     let isDown = cur.y >= max.y;
-        //     if (isDown && this._roomList.canReq) {
-        //         this._roomList.dropDownReq(true, this._isClub);
-        //     }
-        // }
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset()
+            let isDown = cur.y >= max.y;
+            if (isDown && !this._reqing && !this._reqEnd) {
+                this.dealData()
+            }
+        }
     }
 
 

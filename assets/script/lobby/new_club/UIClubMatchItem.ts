@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 17:05:15
+ * @LastEditTime: 2022-12-25 17:11:30
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMatchItem.ts
  */
 
@@ -64,7 +64,7 @@ export default class UIClubMatchItem extends UIBase {
 
         let lbl_gameType = cc.find('item_choose/lbl_gameType', this.node).getComponent(cc.Label);
         lbl_gameType.string = this.gameTypeName
-
+        lbl_gameType.node.opacity = isJoin ? 255 : 150
 
         let lbl_time = cc.find('data_label/img_time/lbl_time', this.labelNode).getComponent(cc.Label)
 

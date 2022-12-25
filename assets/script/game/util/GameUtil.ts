@@ -43,8 +43,11 @@ export enum Game_Type {
     Holdem = 1,//德州
     Plo = 2,
     Plus6 = 3, //6+
-
-
+}
+export enum Table_Type {
+    club = 0,
+    holl = 1,
+    friend = 2,
 }
 
 

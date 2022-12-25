@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 15:52:14
+ * @LastEditTime: 2022-12-25 17:13:50
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -18,7 +18,7 @@ import { APIOrgClubUserInfo, Web_User_Info } from "../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../helper/StringHelper";
 import UIBase from "../../ui/UIBase";
-import { GameType, Game_Type } from "../../game/util/GameUtil";
+import { GameType, Game_Type, Table_Type } from "../../game/util/GameUtil";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -205,10 +205,10 @@ export default class UIClubHome extends BaseForm {
                 node.parent = this.subView
                 let baseScript = node.getComponent(UIBase);
                 this._chessView = baseScript;
-                this._chessView.onShow(Game_Type.All, true);
+                this._chessView.onShow(Game_Type.All, Table_Type.club);
             })
         } else if (this._chessView) {
-            this._chessView.onShow(Game_Type.All, true);
+            this._chessView.onShow(Game_Type.All, Table_Type.club);
         }
     }
 
