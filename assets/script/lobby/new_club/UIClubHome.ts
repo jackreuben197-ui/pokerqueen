@@ -3,23 +3,22 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 20:55:56
+ * @LastEditTime: 2022-12-25 15:52:14
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
 import BaseForm from "../../ui/form/BaseForm";
 import ComFormTitle from "../../common/ComFormTitle";
 import { ClubCache } from "../../frame/data/club/ClubCache";
-import ClubData from "../../frame/data/club/ClubData";
 import UIComponent from "../../ui/UIComponent";
 import { UIDefine } from "../../define/UIDefine";
-import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { UIClubModel } from "../labor/UIClubModel";
-import { GameCache } from "../../game/GameCache";
 import { APIOrgClubUserInfo, Web_User_Info } from "../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../helper/StringHelper";
+import UIBase from "../../ui/UIBase";
+import { GameType, Game_Type } from "../../game/util/GameUtil";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -38,6 +37,8 @@ export default class UIClubHome extends BaseForm {
 
     @property(cc.Node)
     menuShow: cc.Node = null;
+    private _chessView: UIBase = null;
+    private _loadingChessBiew: boolean = false;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -53,6 +54,7 @@ export default class UIClubHome extends BaseForm {
         this.initToggle();
         this.initTabBnts()
         this.initTop();
+        this.initChessView();
         await UIClubModel.mInstance.APIOrgClubUserInfo({
             "user_id": Web_User_Info.Response.data.user.un_id,
             "club_id": ClubCache.club_id
@@ -160,6 +162,9 @@ export default class UIClubHome extends BaseForm {
         }
 
     }
+    /**
+     * @method 聊天--列表
+     */
     initToggle() {
         let table = cc.find('toggleNode/Rectangle/table', this.layout)
         let chet = cc.find('toggleNode/Rectangle/chet', this.layout)
@@ -189,4 +194,22 @@ export default class UIClubHome extends BaseForm {
         ClubCache.joinCreateMatchType = 0
         UIComponent.open(UIDefine.UIClubCreateMatchHome)
     }
+    /**
+     * @method  牌局列表
+     */
+    initChessView() {
+        if (!this._chessView && !this._loadingChessBiew) {
+            this._loadingChessBiew = true;
+            this.loadPrefab(UIDefine.UIMatchView.Path, (node: cc.Node) => {
+                this._loadingChessBiew = false;
+                node.parent = this.subView
+                let baseScript = node.getComponent(UIBase);
+                this._chessView = baseScript;
+                this._chessView.onShow(Game_Type.All, true);
+            })
+        } else if (this._chessView) {
+            this._chessView.onShow(Game_Type.All, true);
+        }
+    }
+
 }

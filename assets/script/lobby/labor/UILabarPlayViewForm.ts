@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 16:24:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-16 20:13:33
+ * @LastEditTime: 2022-12-25 15:06:54
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UILabarPlayViewForm.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -247,10 +247,10 @@ export default class UILabarPlayViewForm extends UIBase {
                 node.parent = this.tabViewParents[0];
                 let baseScript = node.getComponent(UIBase);
                 this._chessView = baseScript;
-                this._chessView.onShow(GameType.Holdem, true);
+                this._chessView.onShow(GameType.All, true);
             })
         } else if (this._chessView) {
-            this._chessView.onShow(GameType.Holdem, true);
+            this._chessView.onShow(GameType.All, true);
         }
     }
 

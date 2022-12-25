@@ -32,7 +32,22 @@ export enum GameType {
     Omaha5 = 2,//奥马哈五张
     Omaha6 = 3,//奥马哈六张
     Plus6 = 4, //6+
+    All = 5, //6+
+
 }
+/**
+ * 游戏类型
+ */
+export enum Game_Type {
+    All = 0, //6+
+    Holdem = 1,//德州
+    Plo = 2,
+    Plus6 = 3, //6+
+
+
+}
+
+
 
 /**
  * 扑克类型
@@ -241,7 +256,7 @@ export default class GameUtil {
         cc.v3(502, -248),//12 -cc.v3(502, -95)
         cc.v3(502, -248),//13 -cc.v3(512, -272)
     ];
-    
+
 
     //上下座位 适配位置
     public static SeatAdapterPos() {

@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 22:21:14
+ * @LastEditTime: 2022-12-25 17:08:01
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -13,6 +13,7 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import { prototype } from "events";
 import { UIDefine } from "../../define/UIDefine";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIBase from "../../ui/UIBase";
@@ -24,14 +25,22 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubCreateMatchItem')
 export default class UIClubCreateMatchItem extends UIBase {
-    item_choose: cc.Node
-    labelNode: cc.Node
-    btnNode: cc.Node
-    Toggle: cc.Toggle
-    Rectang: cc.Node
-    reduceButton: cc.Button
-    addButton: cc.Button
-    lbl_level: cc.Label
+    @property(cc.Node)
+    item_choose: cc.Node = null;
+    @property(cc.Node)
+    labelNode: cc.Node = null;
+    @property(cc.Node)
+    btnNode: cc.Node = null;
+    @property(cc.Toggle)
+    Toggle: cc.Toggle = null;
+    @property(cc.Node)
+    Rectang: cc.Node = null;
+    @property(cc.Button)
+    reduceButton: cc.Button = null;
+    @property(cc.Button)
+    addButton: cc.Button = null;
+    @property(cc.Label)
+    lbl_level: cc.Label = null;
 
     _currentNum = 0;
     _maxNum = 10;
@@ -41,14 +50,14 @@ export default class UIClubCreateMatchItem extends UIBase {
         super.lateLoad();
         // UIClubModel.mInstance.APIOrgGetRoomConfig()
 
-        this.item_choose = this.getChildNodeOrComponent("item_choose");
-        this.labelNode = this.getChildNodeOrComponent("labelNode");
-        this.btnNode = this.getChildNodeOrComponent("btnNode");
-        this.Toggle = this.getChildNodeOrComponent("Toggle", cc.Toggle);
-        this.Rectang = this.getChildNodeOrComponent("Rectang");
-        this.reduceButton = this.getChildNodeOrComponent("reduce", cc.Button);
-        this.addButton = this.getChildNodeOrComponent("add", cc.Button);
-        this.lbl_level = this.getChildNodeOrComponent("lbl_level", cc.Label);
+        // this.item_choose = this.getChildNodeOrComponent("item_choose");
+        // this.labelNode = this.getChildNodeOrComponent("labelNode");
+        // this.btnNode = this.getChildNodeOrComponent("btnNode");
+        // this.Toggle = this.getChildNodeOrComponent("Toggle", cc.Toggle);
+        // this.Rectang = this.getChildNodeOrComponent("Rectang");
+        // this.reduceButton = this.getChildNodeOrComponent("reduce", cc.Button);
+        // this.addButton = this.getChildNodeOrComponent("add", cc.Button);
+        // this.lbl_level = this.getChildNodeOrComponent("lbl_level", cc.Label);
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);

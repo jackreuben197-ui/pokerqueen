@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 22:19:46
+ * @LastEditTime: 2022-12-25 15:30:06
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -14,7 +14,7 @@ import BaseForm from "../../ui/form/BaseForm";
 
 import ComFormTitle from "../../common/ComFormTitle";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { dcjfpConfig, jslxConfig, zwslConfig, zxbljfpbsConfig } from "../../frame/data/rate/RateConfig";
+import { dcjfpConfig, dxmConfig, jslxConfig, zwslConfig, zxbljfpbsConfig } from "../../frame/data/rate/RateConfig";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { UIClubModel } from "../labor/UIClubModel";
 import { EventName } from "../../config/EventName";
@@ -108,7 +108,6 @@ export default class UIClubCreateMatch extends BaseForm {
         dxm: 0,
         fwfbl: 0
     }
-    dxmDataArr = [[0.1, 0.2, 0.3, 0.4, 0.5], [1, 2, 3, 4, 5], [10, 15, 20, 25, 30, 50], [100, 200, 300, 500, 1000]]
 
     qzshData = {
         '0.1': [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 3, 4, 6, 8, 15, 30],
@@ -208,7 +207,7 @@ export default class UIClubCreateMatch extends BaseForm {
     switchTabBtnState(index: number) {
         if (this._selectRoleType == index) return;
         this._selectRoleType = index
-        this.itemData.dxm = this.dxmDataArr[this._selectRoleType]
+        this.itemData.dxm = dxmConfig[this._selectRoleType]
         this.toggleNode.children.forEach((item, index) => {
             item.getChildByName("title").opacity = this._selectRoleType == index ? 255 : 75
         })
@@ -499,7 +498,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.seat_count = this.zwrs['levelData'].level;
         room_config.play_duration = Number(this.pjsc.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 3600    //房间有效时长 秒,必填
         room_config.retain_min_rate = this.zxblbs['levelData'].level;//最小倍率 最小保留记分牌倍数
-        room_config.tribe_id = ClubCache.tribe_id;
+        // room_config.tribe_id = ClubCache.tribe_id;
 
         if (this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == '不限') {
             room_config.limit_hc_total_hands = 0;
@@ -523,7 +522,7 @@ export default class UIClubCreateMatch extends BaseForm {
         // room_config.limit_bring_in = this._kzwjdrState
         if (this._btnType == 0) {
             let params: any = { name: modelName, room_config: room_config }
-            await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+            await UIClubModel.mInstance.APIOrgCreateTemplate(params);
             this.post(EventName.matchModelChange)
             this.close();
         }
@@ -533,4 +532,8 @@ export default class UIClubCreateMatch extends BaseForm {
         // }
 
     }
+    straddleClick() {
+        this.Straddle.getChildByName('Group').active = !this.Straddle.getChildByName('Group').active
+    }
+
 }

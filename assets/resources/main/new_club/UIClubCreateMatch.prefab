@@ -5815,8 +5815,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "5",
-    "_N$string": "5",
+    "_string": "6",
+    "_N$string": "6",
     "_fontSize": 45,
     "_lineHeight": 65,
     "_enableWrapText": false,
@@ -34233,8 +34233,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "d06fadDP1FOEr/mILtxL0tf",
-    "handler": "straddleTip",
+    "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
+    "handler": "straddleClick",
     "customEventData": ""
   },
   {
