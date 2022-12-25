@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 21:37:54
+ * @LastEditTime: 2022-12-25 18:33:48
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -25,6 +25,7 @@ export class ClubCache {
     static _msg = null;
     static _allCubData = null;
     // 创建来源 1 平台，2 联盟，3 公会（外） 4 个人（朋友桌）5 公会（内）
+    // joinCreateMatchType 0 俱乐部  1 朋友桌
     static joinCreateMatchType = 0;
     //玩法类型 1 NLH 2 PLO 3 6+
     static CreateGameType = 1

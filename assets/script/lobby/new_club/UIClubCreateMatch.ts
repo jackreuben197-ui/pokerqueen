@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 15:30:06
+ * @LastEditTime: 2022-12-25 20:31:29
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -18,6 +18,10 @@ import { dcjfpConfig, dxmConfig, jslxConfig, zwslConfig, zxbljfpbsConfig } from 
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { UIClubModel } from "../labor/UIClubModel";
 import { EventName } from "../../config/EventName";
+import TimeHelper from "../../helper/TimeHelper";
+import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
+import { UIDefine } from "../../define/UIDefine";
+import GameUtil from "../../game/util/GameUtil";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -39,7 +43,7 @@ export default class UIClubCreateMatch extends BaseForm {
 
 
     private comFormTitle: ComFormTitle = null;
-    _selectTitle = null;
+
     titleNode: cc.Node = null;
     memberListT: cc.Node = null;
     applyListT: cc.Node = null;
@@ -82,12 +86,14 @@ export default class UIClubCreateMatch extends BaseForm {
     _gpsState = false;
     _jslxNum = 0;
     _dcjfpNum = 0;
-    _jsblpNum = 0;
     _sksjNum = 15;
     _yxbzNum = 4;
-    _selectRoleType = null;
-    _editModelData = null;
+    _selectRoleType = 0;
     _btnType = 0;
+    _selectTitle = 0;
+
+    room_config = null;
+
     itemData = {
         qwsz: [0, 1, 2, 4, 8, 18, 20, 30],
         pjsc: [0.5, 1, 2, 3, 4, 5, 6],
@@ -167,36 +173,132 @@ export default class UIClubCreateMatch extends BaseForm {
         this.toggleNode = this.getChildNodeOrComponent("toggleNode");
         this.yxbz = this.getChildNodeOrComponent("yxbz");
         this.etp = this.getChildNodeOrComponent("etp");
+
+        this.zxblbs['levelData'] = { min: 1, total: 4, level: 1 }
+        this.zwrs['levelData'] = { min: 2, total: 9, level: 2 }
+        this.zdks['levelData'] = { min: 2, total: 9, level: 2 }
+        this.Straddle['levelData'] = { min: 0, total: 6, level: 2 }
+
     }
     onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
         let title = "UIClub_MatchTable"
         this.comFormTitle.initData(title, this);
+        if (data) {
+            this.editModel(data);
+        } else {
+            this.room_config = null;
+        }
+
         this.initUI()
 
 
     }
+    calculateIndex(key, value) {
+        let flag = false;
+        this.itemData[key].forEach((item, index) => {
+            if (item == value) {
+                flag = true
+                this.itemDataIndex[key] = index
+            }
+        })
+        // if (!flag && key == 'fdxm') {
+        //     this.itemData[key].push(value);
+        //     this.itemData[key].sort((a, b) => a - b)
+        //     this.itemData[key].forEach((item, index) => {
+        //         if (item == value) {
+        //             this.itemDataIndex[key] = index
+        //         }
+        //     })
+        // }
+    }
+
+    editModel(room_config) {
+        this.room_config = room_config;
+        this._bxState = room_config.insurance;
+        this._yckpState = room_config.delay_view_card;
+        this._bmState = room_config.post
+        this._ipState = room_config.limit_ip
+        this._gpsState = room_config.limit_gps
+        this._etpState = room_config.second_public_cards
+        // this._kzwjdrState = room_config.limit_bring_in
+        this._aofState = room_config.bettype_aof_on == 1
+        this._sryxState = room_config.private_room == 1
+        if (room_config.origin_type == 5) {
+            this._selectTitle = 0
+        } else if (room_config.origin_type == 3) {
+            this._selectTitle = 1
+        }
+
+        this.zxblbs['levelData'] = { min: 1, total: 4, level: room_config.retain_min_rate }
+        this.zwrs['levelData'] = { min: 2, total: 9, level: room_config.seat_count }
+        this.zdks['levelData'] = { min: 2, total: 9, level: room_config.autostart_min_players }
+        this.Straddle['levelData'] = { min: 0, total: 6, level: room_config.straddle_max }
+        this._yxbzNum = room_config.plo_game_type
+        this._dcjfpNum = room_config.retain_type
+        this._jslxNum = room_config.settlement_type
+        this._sksjNum = room_config.op_duration
+        this._selectRoleType = room_config.blind_type - 1;
+        //牌局时长
+        this.calculateIndex('pjsc', room_config.play_duration / 3600)
+        //最低池率
+        if (room_config.limit_hc_pool_rate == 0) {
+            this.calculateIndex('zdcl', '不限')
+        } else {
+            this.calculateIndex('zdcl', room_config.limit_hc_pool_rate)
+        }
+        //总手数
+        if (room_config.limit_hc_total_hands == 0) {
+            this.calculateIndex('zss', '不限')
+        } else {
+            this.calculateIndex('zss', room_config.limit_hc_total_hands)
+        }
+        //大小盲
+        this.itemData.dxm = dxmConfig[this._selectRoleType];
+        this.calculateIndex('dxm', room_config.sb / 100)
+        //前注
+        this.itemData.qwsz = this.qzshData[room_config.sb / 100]
+        this.calculateIndex('qwsz', room_config.ante)
+
+        //服务费比例
+        this.calculateIndex('fwfbl', room_config.fee_permillage)
+
+        this.passNodeEd.string = room_config.room_password;
+        this.shareClubIdEd.string = room_config.share_clubs
+
+
+        // //最小记分牌比例
+        // this.calculateIndex('jfpbs', room_config.min_rate / 100)
+        // this.calculateIndex('fddm', room_config.sb / 100)
+
+
+        ClubCache.CreateGameType = room_config.game_play_type
+
+
+
+    }
     initUI() {
-        this.titleNodeClick(null, TITALTYPE.GAME_TYPE)
+        this.titleNodeClick(null, this._selectTitle)
         this.initdxmToggleNode();
         this.initSlideNode()
         this.initSelect();
 
         // this.initDropBoX();
 
-        this.zxblbs['levelData'] = { min: 1, total: 4, level: 1 }
         this.setState(this.zxblbs)
-        this.zwrs['levelData'] = { min: 2, total: 9, level: 2 }
         this.setState(this.zwrs)
-        this.zdks['levelData'] = { min: 2, total: 9, level: 2 }
         this.setState(this.zdks)
-        this.Straddle['levelData'] = { min: 0, total: 6, level: 2 }
         this.setState(this.Straddle)
 
         cc.find(`ToggleContainer/toggle${this._jslxNum}`, this.jslx).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._dcjfpNum}`, this.dcjfp).getComponent(cc.Toggle).isChecked = true;
+        cc.find(`ToggleContainer/toggle${this._sksjNum}`, this.sksj).getComponent(cc.Toggle).isChecked = true;
         this.titleNode.active = ClubCache.tribe_name ? true : false;
         this.yxbz.active = ClubCache.CreateGameType == 2
+        if (this.yxbz.active) {
+            cc.find(`ToggleContainer/toggle${this._yxbzNum}`, this.yxbz).getComponent(cc.Toggle).isChecked = true;
+
+        }
     }
     initdxmToggleNode() {
         this.toggleNode.children.forEach((item, index) => {
@@ -303,8 +405,8 @@ export default class UIClubCreateMatch extends BaseForm {
 
     }
     jsblToggle(event, customData) {
-        this._jsblpNum = Number(customData);
-        this.fddm.active = this._jsblpNum == 0
+        this._jslxNum = Number(customData);
+        this.fddm.active = this._jslxNum == 0
     }
     sksjToggle(event, customData) {
         this._sksjNum = Number(customData);
@@ -452,15 +554,16 @@ export default class UIClubCreateMatch extends BaseForm {
     }
 
 
-    saveModel() {
-        this._btnType == 0
+    saveModel(event, customData) {
+        this._btnType == Number(customData)
+
         this.fillName();
     }
     fillName() {
-        // if (this._editModelData) {
-        //     this.upLoadData(this._editModelData.name)
-        //     return;
-        // }
+        if (this.room_config) {
+            this.upLoadData(this.room_config.name)
+            return;
+        }
         let _UISaveModel = cc.instantiate(this.UISaveModel);
         _UISaveModel.parent = this.node
         _UISaveModel.position = cc.v3(0, 0);
@@ -474,7 +577,7 @@ export default class UIClubCreateMatch extends BaseForm {
             room_config.plo_game_type = this._yxbzNum
         }
         if (ClubCache.joinCreateMatchType == 0) {
-            room_config.origin_type = this._selectTitle == 0 ? 5 : 6
+            room_config.origin_type = this._selectTitle == 0 ? 5 : 3
         }
         room_config.private_room = this._sryxState ? 1 : 0
         room_config.room_password = this.passNodeEd.string;
@@ -490,7 +593,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.autostart_min_players = this.zdks['levelData'].level
         // room_config.min_players = this.zdks['levelData'].level
         room_config.straddle_max = this.Straddle['levelData'].level;
-        room_config.insurance = this._bmState;
+        room_config.insurance = this._bxState;
         room_config.delay_view_card = this._yckpState;
         room_config.post = this._bmState;
         room_config.limit_ip = this._ipState
@@ -519,13 +622,56 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.settlement_type = this._jslxNum
         room_config.fee_permillage = Number(this.fwfbl.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) //服务费比例(0-100)
         room_config.second_public_cards = this._etpState;
+        room_config.limit_bet_type = ClubCache.CreateGameType == 2 ? 1 : 0
+        let params: any = { name: modelName, room_config: room_config }
+
         // room_config.limit_bring_in = this._kzwjdrState
+        //模版
         if (this._btnType == 0) {
-            let params: any = { name: modelName, room_config: room_config }
-            await UIClubModel.mInstance.APIOrgCreateTemplate(params);
+            if (this.room_config) {
+                params.id = this.room_config.id
+                await UIClubModel.mInstance.APIOrgUpdateTemplate(params);
+            } else {
+                await UIClubModel.mInstance.APIOrgCreateTemplate(params);
+
+            }
             this.post(EventName.matchModelChange)
-            this.close();
+
         }
+        else if (this._btnType == 1) {
+            //公会牌桌
+            if (ClubCache.joinCreateMatchType == 0) {
+                // room_config.insurance = this._bxState
+                // room_config.limit_friend_table = false
+                // room_config.limit_bring_in = false
+                let data = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                this.post(EventName.updateChessView);
+            }
+            else {
+                // //朋友桌
+                // if (this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
+                //     room_config.max_per_hand = 0 //服务费比例(0-100)
+
+                // } else {
+                //     room_config.max_per_hand = Number(this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //服务费比例(0-100)
+                // }
+
+
+                // room_config.fee_permillage = Number(this.jslx.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
+                // room_config.limit_friend_table = true;
+                // room_config.limit_bring_in = this.kzwjdrState;
+                let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                this.top_block.active = true;
+                await TimeHelper.Sleep(1000);
+                data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
+                this.post(EventName.updateFriendChessView)
+                this.top_block.active = false;
+                let _data = new LobbyRoomListItem(data.data.data);
+                GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch]);
+            }
+        }
+        this.close();
+        this.room_config = null;
 
         // let _room_config: any = {
         //     "limit_bet_type": 0, //底池限制类型：0-无底池限制，1-底池限制，2-AOF,必填

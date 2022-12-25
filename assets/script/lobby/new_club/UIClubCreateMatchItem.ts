@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 17:08:01
+ * @LastEditTime: 2022-12-25 20:05:37
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -76,12 +76,14 @@ export default class UIClubCreateMatchItem extends UIBase {
         let sb = this._data.sb / 100;
         lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`
         lbl_deskName.string = '模版名称: ' + this._data.name
-        lbl_time.string = this._data.op_duration / 60 + 'h'
+        lbl_time.string = this._data.play_duration / 3600 + 'h'
         lbl_num.string = this._data.seat_count
         let lbl_gameType = cc.find('item_choose/lbl_gameType', this.node).getComponent(cc.Label);
         lbl_gameType.string = this.gameTypeName
         let Rectangle = cc.find('item_choose/Rectangle', this.node)
         Rectangle.active = this._data.share_table == 2
+        let vector = lbl_center_left.node.getChildByName('Vector1');
+        vector.active = this._data.private_room == 1
 
     }
     get gameTypeName() {
@@ -116,7 +118,7 @@ export default class UIClubCreateMatchItem extends UIBase {
 
     }
     editModel() {
-        UIComponent.open(UIDefine.UICreateMatch, this._data);
+        UIComponent.open(UIDefine.UIClubCreateMatch, this._data);
     }
     delateModel() {
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,

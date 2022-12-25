@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 22:17:56
+ * @LastEditTime: 2022-12-25 19:51:32
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
  */
 
@@ -60,7 +60,7 @@ export default class slidewidght extends cc.Component {
         this._selectIndex = selectIndex;
         this.selectNum.x = this.itemNode.children[this._selectIndex].x
 
-        if (this.node.parent.parent.name == 'fdxm') {
+        if (this.node.parent.parent.name == 'dxm') {
             this.setFdxmUi();
         } else {
             this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = data[this._selectIndex];
@@ -94,7 +94,7 @@ export default class slidewidght extends cc.Component {
                 const element = this.itemNode.children[index];
                 if (element.x < this.selectNum.x) {
                     this._selectIndex = index
-                    if (this.node.parent.parent.name == 'fdxm') {
+                    if (this.node.parent.parent.name == 'dxm') {
                         this.setFdxmUi();
                     } else {
                         this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[index];
