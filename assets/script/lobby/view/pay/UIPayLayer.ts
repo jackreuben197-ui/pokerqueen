@@ -24,6 +24,8 @@ export default class UIPayLayer extends BaseForm {
 
     isUSDT: boolean = false;
 
+    ebx_num: cc.EditBox = null;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -68,8 +70,23 @@ export default class UIPayLayer extends BaseForm {
         let btn_usdt: cc.Node = this.getChildNodeOrComponent("btn_usdt");
         btn_usdt.on(cc.Node.EventType.TOUCH_END, this.onClickUSDT, this)
 
+        this.ebx_num = this.getChildNodeOrComponent("ebx_num", cc.EditBox);
+
         this.isUSDT = false;
         this.refreshCenterGoldIcon();
+
+        let panel_usdt: cc.Node = this.getChildNodeOrComponent("panel_usdt");
+        panel_usdt.children.forEach((v, i) => {
+            v["index"] = i;
+            v.on(cc.Node.EventType.TOUCH_END, this.onClickCenterChoose, this)
+        })
+        this.ebx_num.string = "";
+    }
+
+    onClickCenterChoose(event) {
+        let node = event.target;
+        let index = node.index;
+        this.ebx_num.string = "500";
     }
 
     refreshCenterGoldIcon() {
@@ -81,6 +98,7 @@ export default class UIPayLayer extends BaseForm {
             img_gold2.active = !this.isUSDT;
         })
         this.refreshTopUI();
+        this.ebx_num.string = "";
     }
 
     refreshTopUI() {

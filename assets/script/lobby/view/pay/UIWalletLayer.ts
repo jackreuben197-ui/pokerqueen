@@ -1,5 +1,6 @@
 import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
+import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
 import { HistoryInfoData } from "../../../game/UITexasHistoryComponent";
@@ -23,6 +24,9 @@ export default class UIWalletLayer extends BaseForm {
 
     panel_accout: cc.Node = null;
     panel_record: cc.Node = null;
+
+    lbl_no: cc.Node = null;
+    lbl_no2: cc.Node = null;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -72,6 +76,9 @@ export default class UIWalletLayer extends BaseForm {
 
         this.panel_accout = this.getChildNodeOrComponent("panel_accout");
         this.panel_record = this.getChildNodeOrComponent("panel_record");
+
+        this.lbl_no = this.getChildNodeOrComponent("lbl_no");
+        this.lbl_no2 = this.getChildNodeOrComponent("lbl_no2");
 
         this.changeTopThreeBtn(1);
 
@@ -167,6 +174,10 @@ export default class UIWalletLayer extends BaseForm {
         btn_record.getChildByName("lbl_show").color = cc.color(255, 255, 255);
         this.panel_accout.active = true;
         this.panel_record.active = false;
+        this.lbl_no.active = true;
+        this.lbl_no2.active = false;
+
+        this.reqInfo();
     }
 
     onClickAccout(event) {
@@ -184,19 +195,17 @@ export default class UIWalletLayer extends BaseForm {
         btn_accout.getChildByName("lbl_show").color = cc.color(255, 255, 255);
         this.panel_accout.active = false;
         this.panel_record.active = true;
+
+        this.lbl_no.active = false;
+        this.lbl_no2.active = true;
     }
 
-    reqInfo(data) {
-        let roomData = data.data.room_data;
+    reqInfo() {
         let info = {
-            room_id: roomData.room_id,         
-            match_id: 0,     
-            limit: roomData.limit,   
-            offset: roomData.offset,
-            type: 0,   
-            gametype: roomData.game_type,   
+            limit : 100,
+            offset : 0
         }
-        LobbyControl.getInstance().getRecordHandInfo(info).then(
+        LobbyControl.getInstance().reqGoldChangeLog(ClubCache.club_id, info).then(
             (res) => {
                 this.refreshListView(res);
             },

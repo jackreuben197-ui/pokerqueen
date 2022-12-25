@@ -21,6 +21,11 @@ export default class UIChangeLayer extends BaseForm {
 
     private comFormTitle: ComFormTitle = null;
 
+    isUSDT: boolean = false;
+
+    ebx_num_up: cc.EditBox = null;
+    ebx_num_down: cc.EditBox = null;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -47,6 +52,66 @@ export default class UIChangeLayer extends BaseForm {
 
         // this.refreshListView(res);
 
+        let btn_gold: cc.Node = this.getChildNodeOrComponent("btn_gold");
+        btn_gold.on(cc.Node.EventType.TOUCH_END, this.onClickGold, this)
+
+        let btn_usdt: cc.Node = this.getChildNodeOrComponent("btn_usdt");
+        btn_usdt.on(cc.Node.EventType.TOUCH_END, this.onClickUSDT, this)
+
+        let btn_all: cc.Node = this.getChildNodeOrComponent("btn_all");
+        btn_all.on(cc.Node.EventType.TOUCH_END, this.onClickAll, this)
+
+        this.ebx_num_up = this.getChildNodeOrComponent("ebx_num_up", cc.EditBox);
+        this.ebx_num_down = this.getChildNodeOrComponent("ebx_num_down", cc.EditBox);
+
+        this.isUSDT = false;
+        this.refreshTopUI();
+
+        this.ebx_num_up.string = "";
+        this.ebx_num_down.string = "";
+    }
+
+    onClickAll(event) {
+        let node = event.target;
+        let info = node.info;
+        this.ebx_num_up.string = "500";
+    }
+
+
+    refreshTopUI() {
+        let btn_usdt: cc.Node = this.getChildNodeOrComponent("btn_usdt");
+        let btn_gold: cc.Node = this.getChildNodeOrComponent("btn_gold");
+        btn_usdt.getChildByName("img_line").active = this.isUSDT;
+        btn_usdt.getChildByName("lbl_show").color = this.isUSDT ? 
+            cc.color(53, 163, 179) : cc.color(255, 255, 255);
+        btn_gold.getChildByName("img_line").active = !this.isUSDT;
+        btn_gold.getChildByName("lbl_show").color = !this.isUSDT ? 
+            cc.color(53, 163, 179) : cc.color(255, 255, 255);
+
+        let panel_input: cc.Node = this.getChildNodeOrComponent("panel_input");
+        let panel_input2: cc.Node = this.getChildNodeOrComponent("panel_input2");
+        // 上面的金豆 如果是金豆 显示绿色 是usdt 显示黄色 img_bg 绿色 img_bg2 黄色
+        panel_input.getChildByName("img_bg").active = !this.isUSDT;
+        panel_input2.getChildByName("img_bg").active = this.isUSDT;
+        panel_input.getChildByName("img_bg2").active = this.isUSDT;
+        panel_input2.getChildByName("img_bg2").active = !this.isUSDT;
+
+        this.ebx_num_up.string = "";
+        this.ebx_num_down.string = "";
+    }
+
+    onClickGold(event) {
+        let node = event.target;
+        let info = node.info;
+        this.isUSDT = false;
+        this.refreshTopUI();
+    }
+
+    onClickUSDT(event) {
+        let node = event.target;
+        let info = node.info;
+        this.isUSDT = true;
+        this.refreshTopUI();
     }
 
     reqInfo(data) {

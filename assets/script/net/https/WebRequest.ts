@@ -2907,6 +2907,30 @@ export class APIOrgCreateTemplate {
         code?: number, message?: string, data?: typeof APIOrgCreateTemplate.ResponseData
     };
 }
+
+//玩家在某个工会钱包变动记录
+export class API_GOLD_CHANGE_LOG {
+    //接口地址
+    static API: string = "/api/user/gold_change/log";
+
+
+    //字段声明
+    static RequestParams: {
+
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof API_GOLD_CHANGE_LOG.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number, message?: string, data?: typeof API_GOLD_CHANGE_LOG.ResponseData
+    };
+}
+
 export class APIOrgGetTemplate {
     //接口地址
     static API: string = "/api/cmsext/room/template/list";
