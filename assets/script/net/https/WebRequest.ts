@@ -3724,6 +3724,22 @@ export class APIOrgClubCancleJoinTribe {
         code?: number, message?: string, data?: typeof APIOrgClubCancleJoinTribe.ResponseData
     };
 }
+export class APIOrgRoomBatchCreate {
+    public static API: string = "/api/cmsext/room/club/batch/create";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgRoomBatchCreate.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgRoomBatchCreate.ResponseData
+    };
+}
 
 
 

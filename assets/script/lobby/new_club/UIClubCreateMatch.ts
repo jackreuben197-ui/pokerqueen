@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 20:31:29
+ * @LastEditTime: 2022-12-25 21:24:30
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -645,7 +645,7 @@ export default class UIClubCreateMatch extends BaseForm {
                 // room_config.limit_friend_table = false
                 // room_config.limit_bring_in = false
                 let data = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
-                this.post(EventName.updateChessView);
+                // this.post(EventName.updateChessView);
             }
             else {
                 // //朋友桌

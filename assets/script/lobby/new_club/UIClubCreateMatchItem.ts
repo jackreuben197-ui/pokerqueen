@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 20:05:37
+ * @LastEditTime: 2022-12-25 21:20:06
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -42,9 +42,10 @@ export default class UIClubCreateMatchItem extends UIBase {
     @property(cc.Label)
     lbl_level: cc.Label = null;
 
-    _currentNum = 0;
+    _currentNum = 1;
     _maxNum = 10;
     _data = null;
+    _delegate = null;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -65,7 +66,7 @@ export default class UIClubCreateMatchItem extends UIBase {
     }
     initData(data) {
         this._data = data;
-        this._currentNum = 0;
+        this._currentNum = 1;
         this.ToggleClick()
         this.setState();
 
@@ -102,6 +103,7 @@ export default class UIClubCreateMatchItem extends UIBase {
     ToggleClick() {
         this.btnNode.active = !this.Toggle.isChecked
         this.Rectang.active = this.Toggle.isChecked
+        this._delegate.dealItemSelect()
     }
     addClick() {
         this._currentNum++
@@ -112,10 +114,11 @@ export default class UIClubCreateMatchItem extends UIBase {
         this.setState();
     }
     setState() {
-        this.reduceButton.interactable = this._currentNum > 0
+        this.reduceButton.interactable = this._currentNum > 1
         this.addButton.interactable = this._currentNum < this._maxNum
         this.lbl_level.string = this._currentNum + '';
-
+        this.node['_modelData'] = { template_id: this._data.id, count: this._currentNum }
+        this._delegate.dealItemSelect()
     }
     editModel() {
         UIComponent.open(UIDefine.UIClubCreateMatch, this._data);

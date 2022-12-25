@@ -3,13 +3,13 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 14:00:16
+ * @LastEditTime: 2022-12-25 21:03:32
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgRoomBatchCreate, APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -415,6 +415,24 @@ export class UIClubModel {
             });
         });
     }
+
+
+    APIOrgRoomBatchCreate(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgRoomBatchCreate,
+                body: APIOrgRoomBatchCreate.Request(params),
+                onSuccess: function () {
+                    resolve(APIOrgRoomBatchCreate.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
+            });
+        });
+    }
+
 
     APIOrgGetRoomConfig() {
         let params = {}
