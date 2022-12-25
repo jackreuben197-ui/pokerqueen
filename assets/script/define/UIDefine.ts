@@ -438,6 +438,22 @@ export const UIDefine = {
         Title: "UIMine_WalletMy",
     },
 
+    UIPayLayer: {
+        UIType: UIType.Form,
+        Name: "UIPayLayer",
+        Bundle: null,
+        Path: "main/lobby/prefab/pay/UIPayLayer",
+        Title: "充值",
+    },
+
+    UIChangeLayer: {
+        UIType: UIType.Form,
+        Name: "UIChangeLayer",
+        Bundle: null,
+        Path: "main/lobby/prefab/pay/UIChangeLayer",
+        Title: "转换",
+    },
+
     WalletJumpForm: {
         UIType: UIType.Form,
         Name: "WalletJumpForm",
