@@ -57,4 +57,11 @@ export const straddleConfig = [
     { type: 0, desc: "6", model: 6 },
 
 ]
+export const dxmConfig = [
+    [0.1, 0.2, 0.3, 0.4, 0.5],
+    [1, 2, 3, 4, 5],
+    [10, 15, 20, 25, 30, 50],
+    [100, 200, 300, 500, 1000]
+]
+
 

@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 10:33:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 22:25:18
+ * @LastEditTime: 2022-12-25 21:24:59
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -18,6 +18,7 @@ import { APIOrgGetTemplate } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "../labor/UIClubModel";
+import UIClubCreateMatchItem from "./UIClubCreateMatchItem";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -26,6 +27,9 @@ const { ccclass, property, menu } = cc._decorator;
 export default class UIClubCreateMatchHome extends BaseForm {
     @property(cc.Node)
     contentModel: cc.Node = null;
+    @property(cc.Button)
+    createBtn: cc.Button = null;
+
 
     @property(cc.Prefab)
     UIClubCreateMatchItem: cc.Prefab = null;
@@ -39,6 +43,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
     toggleNode: cc.Node = null;
     _selectTitle = null;
     _selectRoleType = null;
+    _modelData = []
     protected lateLoad(): void {
         super.lateLoad();
         // UIClubModel.mInstance.APIOrgGetRoomConfig()
@@ -53,6 +58,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         // this.refreshModel();
+        ClubCache.joinCreateMatchType = param
         let title = "UIClub_MatchTable"
         this.comFormTitle.initData(title, this);
         this._selectRoleType = 0;
@@ -112,10 +118,34 @@ export default class UIClubCreateMatchHome extends BaseForm {
         for (let index = 0; index < length; index++) {
             const element = cc.instantiate(this.UIClubCreateMatchItem);
             element.position.x = 0;
+            element.getComponent('UIClubCreateMatchItem')._delegate = this
             element.parent = this.contentModel
             element['index'] = index;
             element.getComponent('UIClubCreateMatchItem').initData(data.data[index])
         }
+    }
+
+    dealItemSelect() {
+        let modelNum = 0
+        this._modelData = [];
+        for (let index = 0; index < this.contentModel.childrenCount; index++) {
+            const element = this.contentModel.children[index];
+            let flag = element.getChildByName('Toggle').getComponent(cc.Toggle).isChecked;
+            if (flag) {
+                modelNum++
+                this._modelData.push(element['_modelData'])
+            }
+        }
+        if (modelNum <= 0 || modelNum > 5) {
+            this.createBtn.interactable = false;
+        } else {
+            this.createBtn.interactable = true;
+        }
+
+    }
+    async createBtnClick() {
+        await UIClubModel.mInstance.APIOrgRoomBatchCreate({ data: this._modelData });
+        // this.refreshModel()
     }
 
 }

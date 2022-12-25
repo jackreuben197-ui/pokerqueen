@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-14 16:09:44
+ * @LastEditTime: 2022-12-25 20:25:48
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateFriendMatchHome.ts
  */
 
@@ -73,7 +73,7 @@ export default class UICreateFriendMatchHome extends UIBase {
     }
 
     createMatch() {
-        UIComponent.open(UIDefine.UICreateMatch, null, { SceneUI: SceneManager.Instance.currUI });
+        UIComponent.open(UIDefine.UIClubCreateMatchHome, 1, { SceneUI: SceneManager.Instance.currUI });
     }
     numNodeClick() {
         for (let index = 0; index < this.numNode.childrenCount; index++) {

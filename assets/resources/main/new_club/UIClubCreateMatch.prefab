@@ -756,7 +756,7 @@
     "component": "",
     "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
     "handler": "saveModel",
-    "customEventData": ""
+    "customEventData": "0"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -846,7 +846,7 @@
   {
     "__type__": "cc.Node",
     "_name": "view",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "_parent": {
       "__id__": 21
     },
@@ -5815,8 +5815,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "5",
-    "_N$string": "5",
+    "_string": "6",
+    "_N$string": "6",
     "_fontSize": 45,
     "_lineHeight": 65,
     "_enableWrapText": false,
@@ -20697,7 +20697,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "toggle0",
+    "_name": "toggle13",
     "_objFlags": 0,
     "_parent": {
       "__id__": 556
@@ -21194,7 +21194,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "toggle1",
+    "_name": "toggle15",
     "_objFlags": 0,
     "_parent": {
       "__id__": 556
@@ -21691,7 +21691,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "toggle2",
+    "_name": "toggle18",
     "_objFlags": 0,
     "_parent": {
       "__id__": 556
@@ -22188,7 +22188,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "toggle3",
+    "_name": "toggle20",
     "_objFlags": 0,
     "_parent": {
       "__id__": 556
@@ -22685,7 +22685,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "toggle4",
+    "_name": "toggle25",
     "_objFlags": 0,
     "_parent": {
       "__id__": 556
@@ -33129,7 +33129,7 @@
     },
     "component": "",
     "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
-    "handler": "bmCilck",
+    "handler": "etpClick",
     "customEventData": ""
   },
   {
@@ -34233,8 +34233,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "d06fadDP1FOEr/mILtxL0tf",
-    "handler": "straddleTip",
+    "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
+    "handler": "straddleClick",
     "customEventData": ""
   },
   {
@@ -35840,11 +35840,13 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "5aaa6TGmTNO8LgA5+rSRzXn",
-    "handler": "createMatchClick",
-    "customEventData": ""
+    "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
+    "handler": "saveModel",
+    "customEventData": "1"
   },
   {
     "__type__": "cc.Widget",

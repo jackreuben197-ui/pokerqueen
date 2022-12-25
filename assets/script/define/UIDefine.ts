@@ -608,6 +608,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/UIClubCreateMatch",
     },
+    UIMatchView: {
+        UIType: UIType.CommonUI,
+        Name: "UIMatchView",
+        Bundle: null,
+        Path: "main/new_club/UIMatchView"
+    },
 
 
 
