@@ -66,6 +66,10 @@ export default class UIClubHome extends BaseForm {
         let coinNode = topNode.getChildByName('coinNode');
         cc.find('coin/label', coinNode).getComponent(cc.Label).string = StringHelper.GetLongString(ClubUserDataCache.gold);
         cc.find('usdt/label', coinNode).getComponent(cc.Label).string = StringHelper.GetLongString(ClubUserDataCache.usdt);
+        coinNode.on(cc.Node.EventType.TOUCH_END, this.onClickPay, this)
+    }
+    onClickPay() {
+        UIComponent.open(UIDefine.UIWalletLayer);
     }
     initTop() {
         let club_introduce = this.layout.getChildByName('club_introduce');

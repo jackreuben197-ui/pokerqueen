@@ -430,6 +430,14 @@ export const UIDefine = {
         Path: "main/wallet/MyWalletForm",
     },
 
+    UIWalletLayer: {
+        UIType: UIType.Form,
+        Name: "UIWalletLayer",
+        Bundle: null,
+        Path: "main/lobby/prefab/pay/UIWalletLayer",
+        Title: "UIMine_WalletMy",
+    },
+
     WalletJumpForm: {
         UIType: UIType.Form,
         Name: "WalletJumpForm",
