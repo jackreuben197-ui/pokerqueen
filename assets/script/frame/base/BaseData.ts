@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-09 10:42:01
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-26 10:16:52
+ * @FilePath: /pokerqueen/assets/script/frame/base/BaseData.ts
+ */
 import { EventName } from "../../config/EventName";
 import { TSendInfo } from "../../config/TTypeConfig";
 import { HttpLink } from "../../net/https/HttpLink";

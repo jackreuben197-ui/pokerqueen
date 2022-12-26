@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 21:03:32
+ * @LastEditTime: 2022-12-26 10:45:49
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -726,17 +726,18 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubRoom() {
+    APIOrgClubRoom(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgClubRoom,
-                body: APIOrgClubRoom.Request({}),
+                body: APIOrgClubRoom.Request(parms),
                 onSuccess: function () {
                     resolve(APIOrgClubRoom.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
