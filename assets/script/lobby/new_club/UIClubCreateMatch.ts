@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-26 20:24:48
+ * @LastEditTime: 2022-12-26 20:42:21
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -222,7 +222,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this._ipState = room_config.limit_ip
         this._gpsState = room_config.limit_gps
         this._etpState = room_config.second_public_cards
-        this._kzwjdrState = room_config.limit_bring_in
+        this._kzwjdrState = room_config.limit_bring_in == 1
         this._aofState = room_config.bettype_aof_on == 1
         this._sryxState = room_config.private_room == 1
         if (room_config.origin_type == 5) {
@@ -268,15 +268,12 @@ export default class UIClubCreateMatch extends BaseForm {
         this.shareClubIdEd.string = room_config.share_clubs
 
 
-        // //最小记分牌比例
-        // this.calculateIndex('jfpbs', room_config.min_rate / 100)
-        // this.calculateIndex('fddm', room_config.sb / 100)
+        let small = room_config.sb * 20;
 
+        this.itemDataIndex.jfpbs = room_config.min_rate / small - 1
+        this.itemDataIndex.jfpbs1 = room_config.max_rate / small - 1
 
         ClubCache.CreateGameType = room_config.game_play_type
-
-
-
     }
     initUI() {
         this.titleNodeClick(null, this._selectTitle)
@@ -639,7 +636,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.limit_bet_type = ClubCache.CreateGameType == 2 ? 1 : 0
         let params: any = { name: modelName, room_config: room_config }
 
-        room_config.limit_bring_in = this._kzwjdrState
+        room_config.limit_bring_in = this._kzwjdrState ? 1 : 0
         //模版
         if (this._btnType == 0) {
             if (this.room_config) {
