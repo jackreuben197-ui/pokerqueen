@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 21:24:30
+ * @LastEditTime: 2022-12-26 20:24:48
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -108,6 +108,7 @@ export default class UIClubCreateMatch extends BaseForm {
         qwsz: 0,
         pjsc: 0,
         jfpbs: 0,
+        jfpbs1: 0,
         zdcl: 0,
         zss: 0,
         fddm: 0,
@@ -221,7 +222,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this._ipState = room_config.limit_ip
         this._gpsState = room_config.limit_gps
         this._etpState = room_config.second_public_cards
-        // this._kzwjdrState = room_config.limit_bring_in
+        this._kzwjdrState = room_config.limit_bring_in
         this._aofState = room_config.bettype_aof_on == 1
         this._sryxState = room_config.private_room == 1
         if (room_config.origin_type == 5) {
@@ -299,6 +300,11 @@ export default class UIClubCreateMatch extends BaseForm {
             cc.find(`ToggleContainer/toggle${this._yxbzNum}`, this.yxbz).getComponent(cc.Toggle).isChecked = true;
 
         }
+        if (this._selectTitle == 1 || ClubCache.joinCreateMatchType == 1) {
+            this.drsq.active = true
+        } else {
+            this.drsq.active = false
+        }
     }
     initdxmToggleNode() {
         this.toggleNode.children.forEach((item, index) => {
@@ -307,7 +313,6 @@ export default class UIClubCreateMatch extends BaseForm {
         this.switchTabBtnState(0);
     }
     switchTabBtnState(index: number) {
-        if (this._selectRoleType == index) return;
         this._selectRoleType = index
         this.itemData.dxm = dxmConfig[this._selectRoleType]
         this.toggleNode.children.forEach((item, index) => {
@@ -316,20 +321,28 @@ export default class UIClubCreateMatch extends BaseForm {
         let dxm: any = cc.find('item/Rectangle', this.dxm).getComponent('slidewidght');
         dxm._targetDe = this;
         dxm.initUi(this.itemData.dxm, this.itemDataIndex.dxm)
+        this.resetDrjfp();
+        this.changeQzsh(this.itemData.dxm[this.itemDataIndex.dxm])
 
+    }
+    resetDrjfp() {
+        let sb = Number(this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'])
+        let drjfp: any = cc.find('item/Rectangle', this.drjfp).getComponent('slidewidght1');
+        drjfp._targetDe = this;
+        let small = sb * 20;
+        let big = small * 30
+        drjfp.initUi(small, big, this.itemDataIndex.jfpbs, this.itemDataIndex.jfpbs1)
     }
     initSlideNode() {
         let dxm: any = cc.find('item/Rectangle', this.dxm).getComponent('slidewidght');
         dxm._targetDe = this;
         dxm.initUi(this.itemData.dxm, this.itemDataIndex.dxm)
 
-        let drjfp: any = cc.find('item/Rectangle', this.drjfp).getComponent('slidewidght');
-        drjfp._targetDe = this;
-        drjfp.initUi(this.itemData.dxm, this.itemDataIndex.jfpbs)
+        // this.resetDrjfp();
 
-        let qz: any = cc.find('item/Rectangle', this.qz).getComponent('slidewidght');
-        qz._targetDe = this;
-        qz.initUi(this.itemData.qwsz, this.itemDataIndex.qwsz)
+        // let qz: any = cc.find('item/Rectangle', this.qz).getComponent('slidewidght');
+        // qz._targetDe = this;
+        // qz.initUi(this.itemData.qwsz, this.itemDataIndex.qwsz)
 
 
         let fwfbl: any = cc.find('item/Rectangle', this.fwfbl).getComponent('slidewidght');
@@ -588,8 +601,9 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.sb = Number(this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 100 //小盲注,必填
         room_config.op_duration = this._sksjNum;
         //功能为实现
-        room_config.min_rate = 1;
-        room_config.max_rate = 4;
+
+        room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string);
+        room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string);;
         room_config.autostart_min_players = this.zdks['levelData'].level
         // room_config.min_players = this.zdks['levelData'].level
         room_config.straddle_max = this.Straddle['levelData'].level;
@@ -625,7 +639,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.limit_bet_type = ClubCache.CreateGameType == 2 ? 1 : 0
         let params: any = { name: modelName, room_config: room_config }
 
-        // room_config.limit_bring_in = this._kzwjdrState
+        room_config.limit_bring_in = this._kzwjdrState
         //模版
         if (this._btnType == 0) {
             if (this.room_config) {
