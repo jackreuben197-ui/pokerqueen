@@ -78,6 +78,7 @@ export default class UIMine_MessageList extends BaseForm {
 
         if (index == 4) {
             // 带入界面
+            UIComponent.open(UIDefine.UIMsgIntoList);
             return;
         }
         UIComponent.open(UIDefine.UIMine_Message, {index : index});

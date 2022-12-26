@@ -608,6 +608,48 @@ export class Web_Other_User_Info {
 }
 
 /// <summary>
+/// 公会消息-带入列表
+/// </summary>
+export class API_CLUB_APPLY_LIST {
+    //接口地址
+    static API: string = "/api/roomcenter/club/room/apply/list";
+
+    //字段声明
+    static RequestParams: {
+    } = null;
+
+    static ResponseData: {
+    } = null;
+
+    static Request(param: typeof API_CLUB_APPLY_LIST.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: (typeof API_CLUB_APPLY_LIST.ResponseData)[] };
+}
+
+/// <summary>
+/// 审批玩家带入申请
+/// </summary>
+export class API_CLUB_APPLY_AUDIT {
+    //接口地址
+    static API: string = "/api/roomcenter/club/room/apply/audit";
+
+    //字段声明
+    static RequestParams: {
+    } = null;
+
+    static ResponseData: {
+    } = null;
+
+    static Request(param: typeof API_CLUB_APPLY_AUDIT.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: (typeof API_CLUB_APPLY_AUDIT.ResponseData)[] };
+}
+
+/// <summary>
 /// 请求用户数据
 /// </summary>
 export class Web_User_Info {
@@ -2865,6 +2907,55 @@ export class APIOrgCreateTemplate {
         code?: number, message?: string, data?: typeof APIOrgCreateTemplate.ResponseData
     };
 }
+
+
+
+//查看玩家的工会钱包
+export class API_CLUB_USER_WALLET {
+    //接口地址
+    static API: string = "/api/org/club/club_user/wallet";
+
+
+    //字段声明
+    static RequestParams: {
+
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof API_CLUB_USER_WALLET.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number, message?: string, data?: typeof API_CLUB_USER_WALLET.ResponseData
+    };
+}
+
+//玩家在某个工会钱包变动记录
+export class API_GOLD_CHANGE_LOG {
+    //接口地址
+    static API: string = "/api/user/gold_change/log";
+
+
+    //字段声明
+    static RequestParams: {
+
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof API_GOLD_CHANGE_LOG.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number, message?: string, data?: typeof API_GOLD_CHANGE_LOG.ResponseData
+    };
+}
+
 export class APIOrgGetTemplate {
     //接口地址
     static API: string = "/api/cmsext/room/template/list";

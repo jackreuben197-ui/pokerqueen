@@ -206,6 +206,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/record/UIRecordScore",
         Title: "UIMine_RecordDetailForNormal_FENSVUz3",
     },
+    //带入申请
+    UIMsgIntoList: {
+        UIType: UIType.Form,
+        Name: "UIMsgIntoList",
+        Bundle: null,
+        Path: "main/lobby/prefab/record/UIMsgIntoList",
+        Title: "UIClub_IntoApply",
+    },
     //收藏牌谱
     UICollectScore: {
         UIType: UIType.Form,
@@ -420,6 +428,30 @@ export const UIDefine = {
         Name: "MyWalletForm",
         Bundle: null,
         Path: "main/wallet/MyWalletForm",
+    },
+
+    UIWalletLayer: {
+        UIType: UIType.Form,
+        Name: "UIWalletLayer",
+        Bundle: null,
+        Path: "main/lobby/prefab/pay/UIWalletLayer",
+        Title: "UIMine_WalletMy",
+    },
+
+    UIPayLayer: {
+        UIType: UIType.Form,
+        Name: "UIPayLayer",
+        Bundle: null,
+        Path: "main/lobby/prefab/pay/UIPayLayer",
+        Title: "充值",
+    },
+
+    UIChangeLayer: {
+        UIType: UIType.Form,
+        Name: "UIChangeLayer",
+        Bundle: null,
+        Path: "main/lobby/prefab/pay/UIChangeLayer",
+        Title: "转换",
     },
 
     WalletJumpForm: {
