@@ -80,7 +80,7 @@ export default class UIWalletLayer extends BaseForm {
         this.lbl_no = this.getChildNodeOrComponent("lbl_no");
         this.lbl_no2 = this.getChildNodeOrComponent("lbl_no2");
 
-        this.changeTopThreeBtn(1);
+        this.changeTopThreeBtn(0);
 
         let panel_record: cc.Node = this.getChildNodeOrComponent("panel_record");
         panel_record.children.forEach((v, i) => {
@@ -145,8 +145,12 @@ export default class UIWalletLayer extends BaseForm {
             chooseFun(btn_get);
             normalFun(btn_buy);
             normalFun(btn_change);
-        } else {
+        } else if (index == 3) {
             chooseFun(btn_change);
+            normalFun(btn_get);
+            normalFun(btn_buy);
+        } else {
+            normalFun(btn_change);
             normalFun(btn_get);
             normalFun(btn_buy);
         }
@@ -177,7 +181,8 @@ export default class UIWalletLayer extends BaseForm {
         this.lbl_no.active = true;
         this.lbl_no2.active = false;
 
-        this.reqInfo();
+        this.reqListInfo();
+        this.reqBaseInfo();
     }
 
     onClickAccout(event) {
@@ -200,7 +205,24 @@ export default class UIWalletLayer extends BaseForm {
         this.lbl_no2.active = true;
     }
 
-    reqInfo() {
+    reqBaseInfo() {
+        let info = {
+           
+        }
+        LobbyControl.getInstance().reqClubUserWallet(ClubCache.club_id, info).then(
+            (res: any) => {
+                let data = res.data;
+                let panel_gold_up: cc.Node = this.getChildNodeOrComponent("panel_gold_up");
+                panel_gold_up.getChildByName("lbl_gold").getComponent(cc.Label).string = data.golds.toString();
+                let panel_gold_down: cc.Node = this.getChildNodeOrComponent("panel_gold_down");
+                panel_gold_down.getChildByName("lbl_gold").getComponent(cc.Label).string = data.usdt.toString();
+            },
+            (res) => {
+            }
+        )
+    }
+
+    reqListInfo() {
         let info = {
             limit : 100,
             offset : 0
@@ -215,13 +237,12 @@ export default class UIWalletLayer extends BaseForm {
     }
 
     refreshListView(data) {
-        let records = data.data.records;
+        let records = data.data.list;
         let len = records.length;
-        this.getChildNodeOrComponent("lbl_total", cc.Label).string = "共计" + len + "手";
         let lbl_no : cc.Node = this.getChildNodeOrComponent("lbl_no");
         lbl_no.active = len == 0;
         // 有数据 刷新列表
-        let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
+        let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item1");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
         for (let i=0; i<len; i++) {
@@ -232,21 +253,21 @@ export default class UIWalletLayer extends BaseForm {
 
             let info = records[i];
 
-            let nameStr = GC.data.languageTemp.temp.getName(info.name);
-            _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
-            _cloneNode.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
-            let score = info.change;
-            let scLbl = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
-            LobbyControl.getInstance().setWinColor(scLbl, score, true);
+            // let nameStr = GC.data.languageTemp.temp.getName(info.name);
+            // _cloneNode.getChildByName("lbl_deskName").getComponent(cc.Label).string = nameStr;
+            // _cloneNode.getChildByName("lbl_next").getComponent(cc.Label).string = "第" + info.hand_num + "手";
+            // let score = info.change;
+            // let scLbl = _cloneNode.getChildByName("lbl_score").getComponent(cc.Label);
+            // LobbyControl.getInstance().setWinColor(scLbl, score, true);
 
-            _cloneNode["index"] = i;
-            _cloneNode["info"] = {
-                data: data,
-                info: info
-            };
-            _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
+            // _cloneNode["index"] = i;
+            // _cloneNode["info"] = {
+            //     data: data,
+            //     info: info
+            // };
+            // _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         }
-        scrollView.content.height = panel_item.height * (len+5);
+        scrollView.content.height = panel_item.height * (len+2);
     }
 
     onClickItem(event) {

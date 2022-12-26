@@ -2908,6 +2908,31 @@ export class APIOrgCreateTemplate {
     };
 }
 
+
+
+//查看玩家的工会钱包
+export class API_CLUB_USER_WALLET {
+    //接口地址
+    static API: string = "/api/org/club/club_user/wallet";
+
+
+    //字段声明
+    static RequestParams: {
+
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof API_CLUB_USER_WALLET.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number, message?: string, data?: typeof API_CLUB_USER_WALLET.ResponseData
+    };
+}
+
 //玩家在某个工会钱包变动记录
 export class API_GOLD_CHANGE_LOG {
     //接口地址
