@@ -42,11 +42,11 @@
         "__id__": 75
       },
       {
-        "__id__": 76
+        "__id__": 77
       }
     ],
     "_prefab": {
-      "__id__": 77
+      "__id__": 78
     },
     "_opacity": 255,
     "_color": {
@@ -1463,12 +1463,12 @@
     "_prefab": {
       "__id__": 40
     },
-    "_opacity": 255,
+    "_opacity": 125,
     "_color": {
       "__type__": "cc.Color",
-      "r": 59,
-      "g": 225,
-      "b": 245,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -2756,7 +2756,11 @@
     "_grayMaterial": null,
     "duration": 0.1,
     "zoomScale": 1.05,
-    "clickEvents": [],
+    "clickEvents": [
+      {
+        "__id__": 76
+      }
+    ],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": false,
     "_N$transition": 3,
@@ -2813,6 +2817,16 @@
     "_id": ""
   },
   {
+    "__type__": "cc.ClickEvent",
+    "target": {
+      "__id__": 1
+    },
+    "component": "",
+    "_componentId": "0e320pDg/ZD75CfTN5RQZNw",
+    "handler": "baganClick",
+    "customEventData": ""
+  },
+  {
     "__type__": "0e320pDg/ZD75CfTN5RQZNw",
     "_name": "",
     "_objFlags": 0,
@@ -2820,11 +2834,21 @@
       "__id__": 1
     },
     "_enabled": true,
-    "item_choose": null,
-    "item_nomal": null,
-    "labelNode": null,
-    "lbl_num": null,
-    "lbl_status": null,
+    "item_choose": {
+      "__id__": 2
+    },
+    "item_nomal": {
+      "__id__": 22
+    },
+    "labelNode": {
+      "__id__": 47
+    },
+    "lbl_num": {
+      "__id__": 73
+    },
+    "lbl_status": {
+      "__id__": 70
+    },
     "_id": ""
   },
   {

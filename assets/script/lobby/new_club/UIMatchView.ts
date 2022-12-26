@@ -3,14 +3,15 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 18:00:45
+ * @LastEditTime: 2022-12-26 17:21:05
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIMatchView.ts
  */
 
 import List from "../../common/List";
 import { dxmConfig } from "../../frame/data/rate/RateConfig";
 import GC from "../../frame/GameControl";
-import { GameType, Table_Type } from "../../game/util/GameUtil";
+import { GameType, Game_Type, Table_Type } from "../../game/util/GameUtil";
+import { APIOrgClubRoom } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import { UIClubModel } from "../labor/UIClubModel";
 import UIClubMatchItem from "./UIClubMatchItem";
@@ -25,6 +26,7 @@ export default class UIMatchView extends UIBase {
     sbSelect: cc.Node = null;
     sbNode: cc.Node = null;
     sbTab: cc.Node = null;
+    lbl_no: cc.Node = null;
     list: List = null;
     _gameType = null;
     _sbSelectType = null;
@@ -60,7 +62,7 @@ export default class UIMatchView extends UIBase {
         this.sbNode = this.getChildNodeOrComponent("sbNode");
         this.sbTab = this.sbNode.children[0];
         this.list.scrollingCB = this.scrollingCB;
-
+        this.lbl_no = this.getChildNodeOrComponent("lbl_no");
         this.gameTypeNode.children.forEach((item, index) => {
             this.bindClick(item, this.clickGameType, index);
         })
@@ -89,7 +91,7 @@ export default class UIMatchView extends UIBase {
      * @returns 
      */
     clickSbSelect(index) {
-        if (this._sbSelectType == index) return;
+        // if (this._sbSelectType == index) return;
         this._sbSelectType = index
         this.sbSelect.children.forEach((item, index) => {
             item.getChildByName("title").opacity = this._sbSelectType == index ? 255 : 75
@@ -109,7 +111,7 @@ export default class UIMatchView extends UIBase {
         this.sbNode.children.forEach((item, index) => {
             item.getChildByName("lbl").opacity = this._sbType == index ? 255 : 75
         })
-
+        this.reqDataAgain();
     }
 
     initSbNode() {
@@ -161,26 +163,54 @@ export default class UIMatchView extends UIBase {
         // let ob = this._roomList[this._tableType];
         this._reqing = true
 
-        let params = {
-            "limit": 10,
-            "offset": this._offset,
+
+        let _data: any = null;
+        let tempD = this.getGameType()
+        let sb_min = this._sbData[this._sbType] * 100
+        let sb_max = this._sbData[this._sbType] * 100
+
+        if (this._sbType == 0) {
+            sb_min = this._sbData[1] * 100
+            sb_max = this._sbData[this._sbData.length - 1] * 100
         }
-        let _data: any = []
 
         if (this._tableType == Table_Type.club) {
-            await UIClubModel.mInstance.APIOrgMemberList(params);
-            _data = []
+            let parms = {
+                name: "",
+                ante_min: 0,
+                ante_max: 0,
+                sb_min: sb_min,
+                sb_max: sb_max,
+                tribe_id: 0,
+                start_time_s: 0,
+                start_time_e: 0,
+                enter_time_s: 0,
+                enter_time_e: 0,
+                game_type: tempD.game_type,
+                poker_type: tempD.poker_type,
+                limit_bet_type: [],
+                limit: 10,
+                offset: this._offset,
+                order: ["sb_asc"],
+
+            }
+
+            await UIClubModel.mInstance.APIOrgClubRoom(parms)
+            _data = APIOrgClubRoom.Response.data;
         }
         else if (this._tableType == Table_Type.holl) {
+            let params = {
+
+            }
             await UIClubModel.mInstance.APIOrgMemberList(params);
             _data = []
         }
         this._reqing = false
-        if (!_data.data) {
-            _data.data = [];
+        if (!_data.records) {
+            _data.records = [];
         }
-
-        _data.data.forEach(element => {
+        this.lbl_no.active = _data.records.length == 0
+        _data.records.forEach(element => {
             this._list.push(element);
         });  //分页的时候使用的
         this._total = _data.total
@@ -188,8 +218,37 @@ export default class UIMatchView extends UIBase {
         this._offset = this._list.length;
         this._reqEnd = this._list.length == this._total;
 
+    }
+    getGameType() {
+        // Holdem = 0,//德州
+        // Omaha4 = 1,//奥马哈四张
+        // Omaha5 = 2,//奥马哈五张
+        // Omaha6 = 3,//奥马哈六张
+        // Plus6 = 4, //6+
+        // All = 5, //全部
+        let data = { game_type: [], poker_type: [] }
+        switch (this._gameType) {
+            case Game_Type.All:
+                data.game_type = []
+                data.poker_type = [0]
+                break;
+            case Game_Type.Holdem:
+                data.game_type = [0]
+                data.poker_type = [0]
+                break;
+            case Game_Type.Plo:
+                data.game_type = [1, 2, 3]
+                data.poker_type = [0]
+                break;
+            case Game_Type.Plus6:
+                data.game_type = []
+                data.poker_type = [2]
+                break;
 
-
+            default:
+                break;
+        }
+        return data;
     }
 
 

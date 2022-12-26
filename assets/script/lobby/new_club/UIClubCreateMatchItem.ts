@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 21:20:06
+ * @LastEditTime: 2022-12-26 17:28:41
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -64,8 +64,9 @@ export default class UIClubCreateMatchItem extends UIBase {
         super.onShow(param, fromUI, sceneUI);
 
     }
-    initData(data) {
+    initData(data, target) {
         this._data = data;
+        this._delegate = target;
         this._currentNum = 1;
         this.ToggleClick()
         this.setState();

@@ -3,12 +3,17 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 17:11:30
+ * @LastEditTime: 2022-12-26 17:16:44
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMatchItem.ts
  */
 
 
+import { UIDefine } from "../../define/UIDefine";
+import { ClubCache } from "../../frame/data/club/ClubCache";
+import GameUtil from "../../game/util/GameUtil";
 import { GM } from "../../gm/GMAPI";
+import { i18nMgr } from "../../i18n/i18nMgr";
+import ToastManager from "../../manager/ToastManager";
 import UIBase from "../../ui/UIBase";
 import PlayViewItem from "../view/PlayViewItem";
 
@@ -62,9 +67,8 @@ export default class UIClubMatchItem extends UIBase {
         this.item_choose.active = isJoin;
         this.item_nomal.active = !isJoin;
 
-        let lbl_gameType = cc.find('item_choose/lbl_gameType', this.node).getComponent(cc.Label);
+        let lbl_gameType = isJoin ? cc.find('item_choose/lbl_gameType', this.node).getComponent(cc.Label) : cc.find('item_nomal/lbl_gameType', this.node).getComponent(cc.Label)
         lbl_gameType.string = this.gameTypeName
-        lbl_gameType.node.opacity = isJoin ? 255 : 150
 
         let lbl_time = cc.find('data_label/img_time/lbl_time', this.labelNode).getComponent(cc.Label)
 
@@ -91,7 +95,16 @@ export default class UIClubMatchItem extends UIBase {
     }
 
     baganClick() {
+        let isFriendDesk = false;
+        if (this._data && this._data.origin_type == 4) {
+            isFriendDesk = true;
+        }
+        if (ClubCache._msg && ClubCache.club_id || isFriendDesk) {
+            GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
+        } else {
 
+            ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
+        }
     }
 
 }
