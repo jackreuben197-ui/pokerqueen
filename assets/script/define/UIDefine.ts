@@ -423,6 +423,9 @@ export const UIDefine = {
         Path: "main/club/UIClubLevel",
     },
 
+
+
+
     MyWalletForm: {
         UIType: UIType.Form,
         Name: "MyWalletForm",
@@ -645,6 +648,12 @@ export const UIDefine = {
         Name: "UIMatchView",
         Bundle: null,
         Path: "main/new_club/UIMatchView"
+    },
+    UIClubUpLevel: {
+        UIType: UIType.Form,
+        Name: "UIClubUpLevel",
+        Bundle: null,
+        Path: "main/new_club/UIClubUpLevel",
     },
 
 
