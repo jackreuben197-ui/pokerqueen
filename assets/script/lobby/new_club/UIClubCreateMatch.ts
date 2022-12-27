@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-26 20:42:21
+ * @LastEditTime: 2022-12-27 10:30:55
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -565,7 +565,7 @@ export default class UIClubCreateMatch extends BaseForm {
 
 
     saveModel(event, customData) {
-        this._btnType == Number(customData)
+        this._btnType = Number(customData)
 
         this.fillName();
     }
@@ -583,11 +583,15 @@ export default class UIClubCreateMatch extends BaseForm {
         cc.log('modelName==', modelName);
         let room_config: any = {}
         room_config.game_play_type = ClubCache.CreateGameType;
+        // nlh plo=2 6+  plo ---4,5,6
         if (ClubCache.CreateGameType == 2) {
             room_config.plo_game_type = this._yxbzNum
         }
+        // 0-俱乐部  1 朋友桌
         if (ClubCache.joinCreateMatchType == 0) {
             room_config.origin_type = this._selectTitle == 0 ? 5 : 3
+        } else {
+            room_config.origin_type = 4
         }
         room_config.private_room = this._sryxState ? 1 : 0
         room_config.room_password = this.passNodeEd.string;
@@ -637,6 +641,17 @@ export default class UIClubCreateMatch extends BaseForm {
         let params: any = { name: modelName, room_config: room_config }
 
         room_config.limit_bring_in = this._kzwjdrState ? 1 : 0
+
+
+        if (this.fddm.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
+            room_config.max_per_hand = 0 //封顶大盲
+
+        } else {
+            room_config.max_per_hand = Number(this.fddm.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //封顶大盲
+        }
+
+
+
         //模版
         if (this._btnType == 0) {
             if (this.room_config) {
@@ -652,25 +667,14 @@ export default class UIClubCreateMatch extends BaseForm {
         else if (this._btnType == 1) {
             //公会牌桌
             if (ClubCache.joinCreateMatchType == 0) {
-                // room_config.insurance = this._bxState
-                // room_config.limit_friend_table = false
-                // room_config.limit_bring_in = false
-                let data = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                room_config.limit_friend_table = false
+                await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
+                this.post(EventName.matchModelChange)
                 // this.post(EventName.updateChessView);
             }
             else {
                 // //朋友桌
-                // if (this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string == '不限') {
-                //     room_config.max_per_hand = 0 //服务费比例(0-100)
-
-                // } else {
-                //     room_config.max_per_hand = Number(this.fddmHd.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //服务费比例(0-100)
-                // }
-
-
-                // room_config.fee_permillage = Number(this.jslx.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //服务费比例(0-100)
-                // room_config.limit_friend_table = true;
-                // room_config.limit_bring_in = this.kzwjdrState;
+                room_config.limit_friend_table = true
                 let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
                 this.top_block.active = true;
                 await TimeHelper.Sleep(1000);
