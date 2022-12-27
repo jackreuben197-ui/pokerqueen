@@ -3832,7 +3832,7 @@ export class APIOrgRoomBatchCreate {
     };
 }
 export class APIOrgRoomClubCreate {
-    public static API: string = "api/cmsext/room/club/config/create";
+    public static API: string = "/api/cmsext/room/club/config/create";
     //字段声明
     public static RequestParams: {
     } = null;
