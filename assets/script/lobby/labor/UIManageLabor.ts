@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 18:24:59
+ * @LastEditTime: 2022-12-27 11:35:21
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -253,7 +253,7 @@ export default class UIManageLabor extends BaseForm {
     }
     clickLevel() {
         // this.node.active = false
-        UIComponent.open(UIDefine.UIClubLevel)
+        UIComponent.open(UIDefine.UIClubUpLevel)
     }
 
     clickRate() {

@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-25 20:23:05
+ * @LastEditTime: 2022-12-27 10:41:07
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -124,7 +124,7 @@ export default class UIClubHome extends BaseForm {
                 break;
             case 1:
             case 3:
-                // this.menuShow.children[1].active = false
+                this.menuShow.children[1].active = false
                 break;
             case 2:
                 break;

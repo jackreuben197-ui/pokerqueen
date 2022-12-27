@@ -10,7 +10,7 @@ import { UIClubModel } from "./UIClubModel";
  * @Date: 2022-11-08 12:28:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-08 17:27:30
+ * @LastEditTime: 2022-12-27 11:16:57
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubLevel.ts
  */
 import ComFormTitle from "../../common/ComFormTitle";
@@ -36,6 +36,7 @@ export default class UIClubLevel extends BaseForm {
 
     @property(cc.Label)
     currentLevel: cc.Label = null;
+
 
     @property(cc.Node)
     upLevelInd: cc.Node = null;
