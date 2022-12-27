@@ -166,4 +166,5 @@ export class ClubCache {
         return name;
     }
 }
-(window as any).GameCache = ClubCache;
+//(window as any).GameCache = ClubCache;
+(window as any).ClubCache = ClubCache;
