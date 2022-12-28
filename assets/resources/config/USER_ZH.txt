@@ -2738,6 +2738,7 @@ UIBackDiolg_title04=实物兑换
 UIBackDiolg_title05=代金卷兑换
 UIBackDiolg_Cancel_01=报名
 UIBackDiolg_Cancel_02=兑换金豆
+UIBackDiolg_Cancel_03=兑换USDT
 UIBackDiolg_Commit_01=暂不报名
 UIBackDiolg_Commit_02=联系客服
 UIBackDiolg_Commit_03=兑换电话卡
