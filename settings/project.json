@@ -9,6 +9,7 @@
   ],
   "excluded-modules": [
     "Animation",
+    "Dynamic Atlas",
     "DragonBones",
     "Geom Utils",
     "MotionStreak",

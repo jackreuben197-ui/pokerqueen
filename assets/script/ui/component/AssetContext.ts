@@ -32,6 +32,7 @@ export enum AssetFold {
     texture_new_club,
     //声音
     sound_all,
+    texture_icon,
 }
 const { ccclass, property, executionOrder } = cc._decorator;
 
