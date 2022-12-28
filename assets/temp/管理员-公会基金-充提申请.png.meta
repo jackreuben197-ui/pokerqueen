@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "ebae0ffb-78ad-474d-bd4d-09014395780e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2688,
+  "platformSettings": {},
+  "subMetas": {
+    "管理员-公会基金-充提申请": {
+      "ver": "1.0.6",
+      "uuid": "15feb709-2342-40fd-b044-e9450fcee716",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ebae0ffb-78ad-474d-bd4d-09014395780e",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0.5,
+      "offsetY": -0.5,
+      "trimX": 1,
+      "trimY": 1,
+      "width": 1241,
+      "height": 2687,
+      "rawWidth": 1242,
+      "rawHeight": 2688,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

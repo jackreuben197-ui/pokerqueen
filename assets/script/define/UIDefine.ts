@@ -438,7 +438,7 @@ export const UIDefine = {
         Name: "UIWalletLayer",
         Bundle: null,
         Path: "main/lobby/prefab/pay/UIWalletLayer",
-        Title: "UIMine_WalletMy",
+        //Title: "UIMine_WalletMy",
     },
 
     UIPayLayer: {
@@ -656,7 +656,14 @@ export const UIDefine = {
         Path: "main/new_club/UIClubUpLevel",
     },
 
-
+    //公会贵宾详情
+    UIClubVipStatistics: {
+        UIType: UIType.Form,
+        Name: "UIClubVipStatistics",
+        Bundle: null,
+        Path: "main/new_club/UIClubVipStatistics",
+        Title: "Agent statistics"
+    }
 
 }
 //批量设置

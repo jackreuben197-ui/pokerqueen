@@ -1,5 +1,6 @@
 import ComFormTitle from "../../../common/ComFormTitle";
 import { UIDefine } from "../../../define/UIDefine";
+import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
 import { HistoryInfoData } from "../../../game/UITexasHistoryComponent";
@@ -11,6 +12,8 @@ import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
+import { UIClubModel } from "../../labor/UIClubModel";
+import { WalletType } from "./UIWalletLayer";
 
 
 
@@ -22,24 +25,31 @@ export default class UIPayLayer extends BaseForm {
 
     private comFormTitle: ComFormTitle = null;
 
+    protected _param: { type: string, walletType: number } = null;
+
     isUSDT: boolean = false;
 
     ebx_num: cc.EditBox = null;
+
+    send_gold: number = 0;
+
+    default_golds = [
+        500, 300, 1000, 5000, 10000, 50000
+    ]
 
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
 
     }
-
-
     lateClose(param: any = null) {
         super.lateClose(param);
     }
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: cc.Node): void {
+    onShow(param?: { type: string, walletType: number }, fromUI?: cc.Node): void {
+
         super.onShow(param, fromUI);
 
         if (param.type) {
@@ -86,16 +96,20 @@ export default class UIPayLayer extends BaseForm {
     onClickCenterChoose(event) {
         let node = event.target;
         let index = node.index;
-        this.ebx_num.string = "500";
+        //this.ebx_num.string = "500";
+        this.ebx_num.string = `${this.default_golds[index]}`;
     }
 
     refreshCenterGoldIcon() {
         let panel_usdt: cc.Node = this.getChildNodeOrComponent("panel_usdt");
-        panel_usdt.children.forEach((v) => {
+        panel_usdt.children.forEach((v, index) => {
             let img_gold = v.getChildByName("img_gold");
             let img_gold2 = v.getChildByName("img_gold2");
+            let gold = v.getChildByName("lbl_gold");
             img_gold.active = this.isUSDT;
             img_gold2.active = !this.isUSDT;
+            gold.getComponent(cc.Label).string = `${this.default_golds[index]}`
+
         })
         this.refreshTopUI();
         this.ebx_num.string = "";
@@ -105,10 +119,10 @@ export default class UIPayLayer extends BaseForm {
         let btn_usdt: cc.Node = this.getChildNodeOrComponent("btn_usdt");
         let btn_gold: cc.Node = this.getChildNodeOrComponent("btn_gold");
         btn_usdt.getChildByName("img_line").active = this.isUSDT;
-        btn_usdt.getChildByName("lbl_show").color = this.isUSDT ? 
+        btn_usdt.getChildByName("lbl_show").color = this.isUSDT ?
             cc.color(53, 163, 179) : cc.color(255, 255, 255);
         btn_gold.getChildByName("img_line").active = !this.isUSDT;
-        btn_gold.getChildByName("lbl_show").color = !this.isUSDT ? 
+        btn_gold.getChildByName("lbl_show").color = !this.isUSDT ?
             cc.color(53, 163, 179) : cc.color(255, 255, 255);
     }
 
@@ -129,12 +143,12 @@ export default class UIPayLayer extends BaseForm {
     reqInfo(data) {
         let roomData = data.data.room_data;
         let info = {
-            room_id: roomData.room_id,         
-            match_id: 0,     
-            limit: roomData.limit,   
+            room_id: roomData.room_id,
+            match_id: 0,
+            limit: roomData.limit,
             offset: roomData.offset,
-            type: 0,   
-            gametype: roomData.game_type,   
+            type: 0,
+            gametype: roomData.game_type,
         }
         LobbyControl.getInstance().getRecordHandInfo(info).then(
             (res) => {
@@ -149,13 +163,13 @@ export default class UIPayLayer extends BaseForm {
         let records = data.data.records;
         let len = records.length;
         this.getChildNodeOrComponent("lbl_total", cc.Label).string = "共计" + len + "手";
-        let lbl_no : cc.Node = this.getChildNodeOrComponent("lbl_no");
+        let lbl_no: cc.Node = this.getChildNodeOrComponent("lbl_no");
         lbl_no.active = len == 0;
         // 有数据 刷新列表
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
-        for (let i=0; i<len; i++) {
+        for (let i = 0; i < len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
             _cloneNode.x = 0;
             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
@@ -177,30 +191,125 @@ export default class UIPayLayer extends BaseForm {
             };
             _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         }
-        scrollView.content.height = panel_item.height * (len+5);
+        scrollView.content.height = panel_item.height * (len + 5);
     }
 
     onClickItem(event) {
         let node = event.target;
         let info = node.info;
-        UIComponent.open(UIDefine.UIMine_Poker, {info : info});
+        UIComponent.open(UIDefine.UIMine_Poker, { info: info });
     }
 
     onClickBottomBtn() {
-        let str = '确定给<color=#3BE1F5>此账号</color>提出<color=#3BE1F5>500</color>金豆？ 折合泰铢<color=#3BE1F5>10000</color>$'
-        str = '确定向<color=#3BE1F5>公会名称</color>申请提取<color=#3BE1F5>500</color>金豆？ 收款金额<color=#3BE1F5>1000</color>$'
+
+        //判断整数
+        this.send_gold = +this.ebx_num.string;
+
+        if (this.send_gold == 0 || this.send_gold % 100 != 0) {
+
+            UIComponent.Instance.Toast("请输入100的整数");
+
+            return;
+        }
+
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent, {
             type: UIDialogComponent.DialogType.CommitCancel,
             title: "提示",
-            content: str,
+            content: this.getDialogMessage(),
             contentCommit: "确定",
             contentCancel: "取消",
             actionCommit: () => {
-
+                this.reqRechargeOrDraw(this.send_gold );
             },
             noAnimation: true,
         });
+
     }
 
+    //获取提示面板信息
+    getDialogMessage(): string {
+
+        let message: string = null;
+
+        let gold_name: string = this.isUSDT ? "USDT" : "金豆";
+
+        let tribe_name: string = ClubCache.tribe_name;
+
+        switch (this._param.walletType) {
+
+            case WalletType.Club://玩家钱包
+
+                //充
+                if (this._param.type == "buy") {
+                    message = `确定给<color=#3BE1F5>此账号</color>申请充值<color=#3BE1F5>${this.send_gold}</color>${gold_name}？`
+                }
+                //提
+                if (this._param.type == "get") {
+                    message = `确定给<color=#3BE1F5>此账号</color>申请提出<color=#3BE1F5>${this.send_gold}</color>${gold_name}？`
+                }
+
+                break;
+            case WalletType.Fund://公会基金
+
+                //充
+                if (this._param.type == "buy") {
+                    message = `确定向<color=#3BE1F5>${tribe_name}</color>申请充值<color=#3BE1F5>${this.send_gold}</color>${gold_name}？`
+                }
+                //提
+                if (this._param.type == "get") {
+                    message = `确定向<color=#3BE1F5>${tribe_name}</color>申请提出<color=#3BE1F5>${this.send_gold}</color>${gold_name}？`
+                }
+                break;
+        }
+        return message;
+    }
+
+    //请求充值or提现
+    reqRechargeOrDraw(value: number) {
+
+        switch (this._param.walletType) {
+
+            case WalletType.Club://玩家钱包
+
+                //充
+                if (this._param.type == "buy") {
+                    //UIClubModel.mInstance.reqClubFundRecharge(ClubCache.club_id, { amount: value, gold_type: this.isUSDT ? 2 : 1 });
+                }
+                //提
+                if (this._param.type == "get") {
+                    //UIClubModel.mInstance.reqClubWithDraw(ClubCache.club_id, { amount: value, gold_type: this.isUSDT ? 2 : 1 });
+                }
+
+
+
+                break;
+            case WalletType.Fund://公会基金
+                //充
+                if (this._param.type == "buy") {
+                    UIClubModel.mInstance.reqClubFundRecharge(ClubCache.club_id, { amount: value, gold_type: this.isUSDT ? 2 : 1 }).then(
+                        (res) => {
+                            UIComponent.Instance.Toast("充值申请成功");
+                        },
+                        () => {
+
+                        },
+                    )
+                }
+                //提
+                if (this._param.type == "get") {
+                    UIClubModel.mInstance.reqClubFundWithDraw(ClubCache.club_id, { amount: value, gold_type: this.isUSDT ? 2 : 1 }).then(
+                        (res) => {
+                            UIComponent.Instance.Toast("提现申请成功");
+                        },
+                        () => {
+
+                        },
+                    )
+                }
+                break;
+
+        }
+
+    }
 
 }

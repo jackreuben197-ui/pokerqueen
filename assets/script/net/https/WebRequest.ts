@@ -1796,36 +1796,41 @@ export class Web_Tiqu_Gold {
     static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
 
 }
-
+//公会基金充值
 export class Web_Recharge_Gold_Club {
     //接口地址
     static API: string = "/api/order/club/recharge";
 
     //字段声明
     static RequestParams: {
+        amount: number,
+        gold_type: number // 1 联盟币 2 usdt
     } = null;
 
     static ResponseData: {
 
     } = null;
-    static Request(param: { amount: number }) {
+    static Request(param: typeof Web_Recharge_Gold_Club.RequestParams) {
         this.RequestParams = param;
         return param;
     }
     static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
 }
+//公会基金提取
 export class Web_Tiqu_Gold_Club {
     //接口地址
     static API: string = "/api/order/club/withdraw";
 
     //字段声明
     static RequestParams: {
+        amount: number,
+        gold_type: number,
     } = null;
 
     static ResponseData: {
 
     } = null;
-    static Request(param: { amount: number }) {
+    static Request(param: typeof Web_Tiqu_Gold_Club.RequestParams) {
         this.RequestParams = param;
         return param;
     }
@@ -2316,7 +2321,7 @@ export class APIOrgClubGold {
 
     //字段声明
     static RequestParams: {
-
+        club_random_id: number
     } = null;
 
     static ResponseData: {
@@ -3849,8 +3854,72 @@ export class APIOrgRoomClubCreate {
 }
 
 
+//公会基金变动
+export class Web_Club_Fund_ChangeLog {
+    //接口地址
+    static API: string = "/api/org/club/fund/gold_change/log";
 
+    //字段声明
+    static RequestParams: {
+        club_random_id: number
+    } = null;
 
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof Web_Club_Fund_ChangeLog.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number, message?: string, data?: typeof Web_Club_Fund_ChangeLog.ResponseData
+    };
+}
+
+//公会基金充提转 记录列表
+export class Web_Club_Fund_OrderList {
+    //接口地址
+    static API: string = "/api/order/club/order_list";
+
+    //字段声明
+    static RequestParams: {
+        order_type: number,
+        limit?: number,
+        offset?: number
+    } = null;
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof Web_Club_Fund_OrderList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number, message?: string, data?: typeof Web_Club_Fund_OrderList.ResponseData
+    };
+}
+//公会基金申请列表
+export class Web_Club_Fund_ApplyList {
+    //接口地址
+    static API: string = "/api/club/member_order/list";
+
+    //字段声明
+    static RequestParams: {
+        order_type: number,
+        limit?: number,
+        offset?: number
+    } = null;
+    static ResponseData: {
+
+    } = null;
+    static Request(param: typeof Web_Club_Fund_ApplyList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: {
+        code?: number, message?: string, data?: typeof Web_Club_Fund_ApplyList.ResponseData
+    };
+}
 
 
 

@@ -392,5 +392,13 @@ export default class TimeHelper {
     private static __PadZero(num: number) {
         return num < 10 ? "0" + num : num;
     }
+    // 时间转换 2022-12-27T10:03:02Z 转换为本地时间
+    public static UTCToLocal(time: string) {
+        time = new Date(time).toString();
+        time = time.replace("+0000 ", "");
+        time = time.replace(/-/g, "/");//苹果需要这样处理
+        return TimeHelper.convertUTCTimeToLocalTime(time);
+    }
+
 }
 (window as any).TimeHelper = TimeHelper;

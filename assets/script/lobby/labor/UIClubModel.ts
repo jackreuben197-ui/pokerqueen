@@ -9,7 +9,7 @@
 
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIOrgRoomClubCreate, APIOrgRoomBatchCreate, APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon } from "../../net/https/WebRequest";
+import { APIOrgRoomClubCreate, APIOrgRoomBatchCreate, APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, APIOrgFriendApplyDeal, APIOrgFriendApplyList, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon, Web_Club_Fund_ChangeLog, Web_Recharge_Gold_Club, Web_Tiqu_Gold_Club, Web_Club_Fund_OrderList, Web_Club_Fund_ApplyList } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -892,4 +892,105 @@ export class UIClubModel {
 
 
 
+    /**
+     * 请求公会基金变动
+     */
+    reqClubFundChangeLog(club_id, param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Club_Fund_ChangeLog,
+                body: Web_Club_Fund_ChangeLog.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Club_Fund_ChangeLog.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                //headers: [["X-Club", club_id]]
+            });
+        });
+    }
+
+    /**
+     * 请求公会基金信息
+     */
+    reqClubFund(club_id, param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: APIOrgClubGold,
+                body: APIOrgClubGold.Request(param),
+                onSuccess: function () {
+                    resolve(APIOrgClubGold.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+            });
+        });
+    }
+    //公会基金充值 
+    reqClubFundRecharge(club_id, param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Recharge_Gold_Club,
+                body: Web_Recharge_Gold_Club.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Recharge_Gold_Club.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: [["X-Club", club_id]]
+            });
+        });
+    }
+
+    //公会基金提取
+    reqClubFundWithDraw(club_id, param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Tiqu_Gold_Club,
+                body: Web_Tiqu_Gold_Club.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Tiqu_Gold_Club.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: [["X-Club", club_id]]
+            });
+        });
+    }
+    //公会基金充提转记录
+    reqClubFundOrderList(club_id, param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Club_Fund_OrderList,
+                body: Web_Club_Fund_OrderList.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Club_Fund_OrderList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: [["X-Club", club_id]]
+            });
+        });
+    }
+    //公会基金申请列表
+    reqClubFundList(club_id, param) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: Web_Club_Fund_ApplyList,
+                body: Web_Club_Fund_ApplyList.Request(param),
+                onSuccess: function () {
+                    resolve(Web_Club_Fund_ApplyList.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: [["X-Club", club_id]]
+            });
+        });
+    }
 }
