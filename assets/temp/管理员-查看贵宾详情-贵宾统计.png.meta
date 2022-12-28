@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "a161eb6e-20ff-449f-90b7-f38d5c97d6b6",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1243,
+  "height": 2689,
+  "platformSettings": {},
+  "subMetas": {
+    "管理员-查看贵宾详情-贵宾统计": {
+      "ver": "1.0.6",
+      "uuid": "bccdb3d1-2808-41e6-a4ae-4ba19375ad88",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "a161eb6e-20ff-449f-90b7-f38d5c97d6b6",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -0.5,
+      "offsetY": -0.5,
+      "trimX": 0,
+      "trimY": 1,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1243,
+      "rawHeight": 2689,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

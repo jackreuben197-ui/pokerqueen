@@ -19,6 +19,7 @@ import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../helper/StringHelper";
 import UIBase from "../../ui/UIBase";
 import { GameType, Game_Type, Table_Type } from "../../game/util/GameUtil";
+import { WalletType } from "../view/pay/UIWalletLayer";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -71,7 +72,7 @@ export default class UIClubHome extends BaseForm {
         coinNode.on(cc.Node.EventType.TOUCH_END, this.onClickPay, this)
     }
     onClickPay() {
-        UIComponent.open(UIDefine.UIWalletLayer);
+        UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Club });
     }
     initTop() {
         let club_introduce = this.layout.getChildByName('club_introduce');
@@ -156,7 +157,8 @@ export default class UIClubHome extends BaseForm {
                 UIComponent.open(UIDefine.UIClubDataMange)
                 break;
             case 5:
-                UIComponent.open(UIDefine.MyWalletForm, true)
+                //UIComponent.open(UIDefine.MyWalletForm, true)
+                UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Fund });
                 break;
             case 6:
                 UIComponent.open(UIDefine.UIMine_Message);

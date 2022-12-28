@@ -44,6 +44,11 @@ export default class ComFormTitle extends UIBase {
         }
     }
 
+    //设置标题
+    setTitle(title: string) {
+        this.setText(this.title_label, title);
+    }
+
     clickRightTextBtn = () => {
         this._rightTextBtnCallBack && this._rightTextBtnCallBack.call(this._target);
     }
