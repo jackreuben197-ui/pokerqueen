@@ -3,12 +3,14 @@
  * @Date: 2022-12-28 16:52:38
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-28 17:33:59
+ * @LastEditTime: 2022-12-29 12:42:49
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubRateSet.ts
  */
 import ComFormTitle from "../../common/ComFormTitle";
+import { ClubCache } from "../../frame/data/club/ClubCache";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
+import { UIClubModel } from "../labor/UIClubModel";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -49,6 +51,10 @@ export default class UIClubRateSet extends BaseForm {
         let title = "UITitle_RateSet"
         this.comFormTitle.initData(title, this);
         this.titleNodeClick(null, 0)
+        this.usdtEditBox.string = ClubCache.gold_to_usdt_rate
+        this.lbl_gold.string = this.goldEditBox.string + ' 金豆'
+        this.goldEditBox.string = ClubCache.usdt_to_gold_rate
+        this.lbl_usdt.string = this.usdtEditBox.string + ' USDT'
 
     }
     titleNodeClick(event, customData) {
@@ -61,6 +67,7 @@ export default class UIClubRateSet extends BaseForm {
         this.applyListT.getChildByName('title').color = this._selectTitle == 1 ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         this.changeGold.active = this._selectTitle == 0
         this.changeUsdt.active = this._selectTitle == 1
+
     }
     editBoxChangeCb() {
         if (this._selectTitle == 0) {
@@ -83,16 +90,18 @@ export default class UIClubRateSet extends BaseForm {
         }
     }
     getString(string: String) {
+
         let idnex = string.indexOf('.')
         if (~idnex) {
             return string.length - idnex <= 2
         }
         return true
     }
-    saveRate() {
-        if (this._selectTitle == 0) {
-        } else {
-        }
+    async saveRate() {
+        ClubCache._msg.gold_to_usdt_rate = Number(this.usdtEditBox.string)
+        ClubCache._msg.usdt_to_gold_rate = Number(this.goldEditBox.string)
+        await UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, usdt_to_gold_rate: ClubCache.usdt_to_gold_rate, gold_to_usdt_rate: ClubCache.gold_to_usdt_rate })
+        this.close();
     }
 
 }

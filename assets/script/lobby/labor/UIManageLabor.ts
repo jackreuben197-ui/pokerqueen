@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-29 10:30:22
+ * @LastEditTime: 2022-12-29 12:35:36
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -227,13 +227,13 @@ export default class UIManageLabor extends BaseForm {
     initTctz() {
         let st22 = this.tstz_st.getChildByName('st2')
         let st42 = this.tstz_st.getChildByName('st4')
-        st22.active = ClubCache.show_contact_switch == 1
+        st22.active = ClubCache.show_notice_switch == 1
         st42.active = !st22.active
     }
     tctzClick() {
-        ClubCache._msg.show_contact_switch = ClubCache.show_contact_switch == 1 ? 2 : 1
+        ClubCache._msg.show_notice_switch = ClubCache.show_notice_switch == 1 ? 2 : 1
         this.initTctz();
-        UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, show_contact_switch: ClubCache.show_contact_switch })
+        UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, show_notice_switch: ClubCache.show_notice_switch })
 
     }
 
@@ -257,8 +257,8 @@ export default class UIManageLabor extends BaseForm {
     }
 
     clickRate() {
-        // UIComponent.open(UIDefine.UIClubRateSet)
-        UIComponent.open(UIDefine.UIClubActive)
+        UIComponent.open(UIDefine.UIClubRateSet)
+        // UIComponent.open(UIDefine.UIClubActive)
     }
 
     lxfsEditBoxCb() {

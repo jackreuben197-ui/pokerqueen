@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-26 18:09:34
+ * @LastEditTime: 2022-12-29 12:29:33
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -114,6 +114,16 @@ export class ClubCache {
     static get tribe_id() {
         return this._msg?.tribe_id;
     }
+    static get show_notice_switch() {
+        return this._msg?.show_notice_switch;
+    }
+    static get gold_to_usdt_rate() {
+        return this._msg?.gold_to_usdt_rate;
+    }
+    static get usdt_to_gold_rate() {
+        return this._msg?.usdt_to_gold_rate;
+    }
+
 
     static refreshData(data: Object) {
         Object.keys(data).map((key) => {

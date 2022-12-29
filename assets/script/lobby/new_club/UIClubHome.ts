@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-29 12:13:30
+ * @LastEditTime: 2022-12-29 12:20:05
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -65,10 +65,9 @@ export default class UIClubHome extends BaseForm {
         ClubUserDataCache.setUserData(data);
         this.initCoin();
 
-
-
     }
     async initAcTiveBord() {
+        if (ClubCache.show_notice_switch == 1) return
         await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
         let data: any = APIOrgClubNotice.Response.data;
         // data = {
@@ -86,9 +85,9 @@ export default class UIClubHome extends BaseForm {
         let month = now.getMonth();
         let day = now.getDate();
         let currenTime = new Date(year, month, day).getTime();
-        localStorage.getItem(data.info.id + '_' + currenTime)
 
-        if (data.info && data.info.id + '_' + currenTime == '1') {
+
+        if (data.info && localStorage.getItem(data.info.id + '_' + currenTime) == '1') {
             UIComponent.open(UIDefine.UIClubActiveBord, data.info)
         }
     }
