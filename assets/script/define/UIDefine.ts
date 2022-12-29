@@ -662,8 +662,22 @@ export const UIDefine = {
         Name: "UIClubVipStatistics",
         Bundle: null,
         Path: "main/new_club/UIClubVipStatistics",
-        Title: "Agent statistics"
-    }
+
+    },
+
+    UIClubRateSet: {
+        UIType: UIType.Form,
+        Name: "UIClubRateSet",
+        Bundle: null,
+        Path: "main/new_club/UIClubRateSet",
+    },
+    UIClubActive: {
+        UIType: UIType.Form,
+        Name: "UIClubActive",
+        Bundle: null,
+        Path: "main/new_club/UIClubActive",
+    },
+
 
 }
 //批量设置
