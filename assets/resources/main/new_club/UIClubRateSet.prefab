@@ -5354,8 +5354,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "创建牌桌",
-    "_N$string": "创建牌桌",
+    "_string": "保存",
+    "_N$string": "保存",
     "_fontSize": 45,
     "_lineHeight": 80,
     "_enableWrapText": false,
@@ -5380,7 +5380,7 @@
       "__id__": 148
     },
     "_enabled": true,
-    "i18n_string": "UIClub_MatchTable",
+    "i18n_string": "Save",
     "_id": ""
   },
   {

@@ -662,7 +662,7 @@ export const UIDefine = {
         Name: "UIClubVipStatistics",
         Bundle: null,
         Path: "main/new_club/UIClubVipStatistics",
-        Title: "Agent statistics"
+
     },
 
     UIClubRateSet: {
@@ -670,8 +670,13 @@ export const UIDefine = {
         Name: "UIClubRateSet",
         Bundle: null,
         Path: "main/new_club/UIClubRateSet",
-        Title: "Agent statistics"
-    }
+    },
+    UIClubActive: {
+        UIType: UIType.Form,
+        Name: "UIClubActive",
+        Bundle: null,
+        Path: "main/new_club/UIClubActive",
+    },
 
 
 }
