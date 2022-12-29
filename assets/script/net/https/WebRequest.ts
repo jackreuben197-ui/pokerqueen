@@ -3921,6 +3921,40 @@ export class Web_Club_Fund_ApplyList {
     };
 }
 
+export class APIOrgClubNotice_update {
+    public static API: string = "/api/cmsext/club/notice_update";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubNotice_update.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubNotice_update.ResponseData
+    };
+}
+export class APIOrgClubNotice {
+    public static API: string = "/api/cmsext/club/notice";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubNotice.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubNotice.ResponseData
+    };
+}
+
+
 
 
 

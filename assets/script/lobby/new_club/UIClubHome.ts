@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-27 10:41:07
+ * @LastEditTime: 2022-12-29 12:13:30
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -14,7 +14,7 @@ import UIComponent from "../../ui/UIComponent";
 import { UIDefine } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { UIClubModel } from "../labor/UIClubModel";
-import { APIOrgClubUserInfo, Web_User_Info } from "../../net/https/WebRequest";
+import { APIOrgClubNotice, APIOrgClubUserInfo, Web_User_Info } from "../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../helper/StringHelper";
 import UIBase from "../../ui/UIBase";
@@ -52,6 +52,7 @@ export default class UIClubHome extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIClub_Home"
         this.comFormTitle.initData(title, this);
+        this.initAcTiveBord()
         this.initToggle();
         this.initTabBnts()
         this.initTop();
@@ -63,7 +64,35 @@ export default class UIClubHome extends BaseForm {
         let data = APIOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
         this.initCoin();
+
+
+
     }
+    async initAcTiveBord() {
+        await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
+        let data: any = APIOrgClubNotice.Response.data;
+        // data = {
+        //     "info": {
+        //         "id": 1,
+        //         "club_id": 4,
+        //         "title": "title",
+        //         "content": "content",
+        //         "start_time": "2022-12-01T03:34:00Z",
+        //         "end_time": "2022-12-30T03:34:00Z"
+        //     }
+        // }
+        let now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth();
+        let day = now.getDate();
+        let currenTime = new Date(year, month, day).getTime();
+        localStorage.getItem(data.info.id + '_' + currenTime)
+
+        if (data.info && data.info.id + '_' + currenTime == '1') {
+            UIComponent.open(UIDefine.UIClubActiveBord, data.info)
+        }
+    }
+
     initCoin() {
         let topNode: cc.Node = this.getChildNodeOrComponent("topNode");
         let coinNode = topNode.getChildByName('coinNode');
@@ -71,9 +100,11 @@ export default class UIClubHome extends BaseForm {
         cc.find('usdt/label', coinNode).getComponent(cc.Label).string = StringHelper.GetLongString(ClubUserDataCache.usdt);
         coinNode.on(cc.Node.EventType.TOUCH_END, this.onClickPay, this)
     }
+
     onClickPay() {
         UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Club });
     }
+
     initTop() {
         let club_introduce = this.layout.getChildByName('club_introduce');
         club_introduce.getComponent(cc.Label).string = ClubCache.desc;
@@ -139,6 +170,7 @@ export default class UIClubHome extends BaseForm {
         }
         if (!ClubCache.tribe_name) this.menuShow.children[5].active = false
     }
+
     onClickTabBtns(index: number) {
         switch (index) {
             case 0:

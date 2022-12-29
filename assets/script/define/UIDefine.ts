@@ -678,6 +678,13 @@ export const UIDefine = {
         Path: "main/new_club/UIClubActive",
     },
 
+    UIClubActiveBord: {
+        UIType: UIType.Board,
+        Name: "UIClubActiveBord",
+        Bundle: null,
+        Path: "main/new_club/UIClubActiveBord",
+    },
+
 
 }
 //批量设置

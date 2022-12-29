@@ -1416,8 +1416,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "9a8bcAlJKJHxKZGUyk7lH1S",
-    "handler": "delateModel",
+    "_componentId": "6a635sTbt1Hw4Iby5j24dJQ",
+    "handler": "sureClick",
     "customEventData": ""
   },
   {
@@ -1728,10 +1728,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "9a8bcAlJKJHxKZGUyk7lH1S",
-    "handler": "editModel",
+    "_componentId": "6a635sTbt1Hw4Iby5j24dJQ",
+    "handler": "cancle",
     "customEventData": ""
   },
   {
@@ -1799,13 +1801,19 @@
     "_id": ""
   },
   {
-    "__type__": "cc.BlockInputEvents",
+    "__type__": "6a635sTbt1Hw4Iby5j24dJQ",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
+    "title": {
+      "__id__": 16
+    },
+    "text": {
+      "__id__": 20
+    },
     "_id": ""
   },
   {

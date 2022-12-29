@@ -3,7 +3,7 @@
  * @Date: 2022-12-28 17:59:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-29 10:43:11
+ * @LastEditTime: 2022-12-29 12:06:28
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubActive.ts
  */
 // Learn TypeScript:
@@ -20,6 +20,8 @@ import Data from "../labor/script/Data";
 import { UIDefine } from "../../define/UIDefine";
 import { EventName } from "../../config/EventName";
 import TimeHelper from "../../helper/TimeHelper";
+import { UIClubModel } from "../labor/UIClubModel";
+import { ClubCache } from "../../frame/data/club/ClubCache";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -64,7 +66,7 @@ export default class UIClubActive extends BaseForm {
         this._clickDataItem = event.target
         UIComponent.open(UIDefine.UICalendar)
     }
-    saveClick() {
+    async saveClick() {
         let btn_pd_4 = this.getChildNodeOrComponent("btn_pd_4", cc.Label);
         let btn_pd_5 = this.getChildNodeOrComponent("btn_pd_5", cc.Label);
 
@@ -86,9 +88,12 @@ export default class UIClubActive extends BaseForm {
             UIComponent.Instance.Toast('请选择结束时间')
             return;
         }
-
-        let data = new Date().getTime();
-        if (btn_pd_4.node['_data'].getTime() < data) {
+        let now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth();
+        let day = now.getDate();
+        let currenTime = new Date(year, month, day).getTime();
+        if (btn_pd_4.node['_data'].getTime() < currenTime) {
             UIComponent.Instance.Toast('开始时间不得小于当前时间')
             return;
         }
@@ -96,6 +101,18 @@ export default class UIClubActive extends BaseForm {
             UIComponent.Instance.Toast('开始时间不得大于结束时间')
             return;
         }
+        let parms = {
+            "club_id": ClubCache.club_id,
 
+            "title": this.titleEditBox.string,
+
+            "content": this.textEditBox.string,
+
+            "start_time": btn_pd_4.node['_data'].getTime(),
+
+            "end_time": btn_pd_5.node['_data'].getTime()
+        }
+        await UIClubModel.mInstance.APIOrgClubNotice_update({ parms })
+        this.close();
     }
 }
