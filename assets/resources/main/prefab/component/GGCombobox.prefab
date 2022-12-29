@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Com_Game",
+    "_name": "GGCombobox",
     "_objFlags": 0,
     "_parent": null,
     "_children": [

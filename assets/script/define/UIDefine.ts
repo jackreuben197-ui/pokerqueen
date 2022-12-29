@@ -656,15 +656,6 @@ export const UIDefine = {
         Path: "main/new_club/UIClubUpLevel",
     },
 
-    //公会贵宾详情
-    UIClubVipStatistics: {
-        UIType: UIType.Form,
-        Name: "UIClubVipStatistics",
-        Bundle: null,
-        Path: "main/new_club/UIClubVipStatistics",
-
-    },
-
     UIClubRateSet: {
         UIType: UIType.Form,
         Name: "UIClubRateSet",
@@ -685,6 +676,38 @@ export const UIDefine = {
         Path: "main/new_club/UIClubActiveBord",
     },
 
+    
+	/////////////////////////////////////////
+    //公会贵宾详情统计
+    UIClubVipStatistics: {
+        UIType: UIType.Form,
+        Name: "UIClubVipStatistics",
+        Bundle: null,
+        Path: "main/new_club/vip/UIClubVipStatistics",
+        Title: "Agent statistics"
+    },
+    //绑定贵宾
+    UIAgentLink: {
+        UIType: UIType.CommonUI,
+        Name: "UIAgentLink",
+        Bundle: null,
+        Path: "main/new_club/ui/UIAgentLink",
+    },
+    //解绑贵宾
+    UIAgentUnlink: {
+        UIType: UIType.CommonUI,
+        Name: "UIAgentUnlink",
+        Bundle: null,
+        Path: "main/new_club/ui/UIAgentUnlink",
+    },
+    //贵宾管理
+    UIClubVipManage: {
+        UIType: UIType.Form,
+        Name: "UIClubVipManage",
+        Bundle: null,
+        Path: "main/new_club/vip/UIClubVipManage",
+        Title: "贵宾管理"
+    }
 
 }
 //批量设置

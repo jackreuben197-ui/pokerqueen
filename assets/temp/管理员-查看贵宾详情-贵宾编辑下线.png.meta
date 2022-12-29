@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "2a72d950-e6e0-4463-9bce-446168d133a1",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2689,
+  "platformSettings": {},
+  "subMetas": {
+    "管理员-查看贵宾详情-贵宾编辑下线": {
+      "ver": "1.0.6",
+      "uuid": "d783ee0d-0ece-4770-a928-e7a7beae12a5",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "2a72d950-e6e0-4463-9bce-446168d133a1",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 1,
+      "offsetY": -0.5,
+      "trimX": 2,
+      "trimY": 1,
+      "width": 1240,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2689,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

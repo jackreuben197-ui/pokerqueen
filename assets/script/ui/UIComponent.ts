@@ -1,6 +1,7 @@
 
 import { IUIDefine, UIType } from "../define/EIDefine";
 import { i18nMgr } from "../i18n/i18nMgr";
+import Main from "../Main";
 import ToastManager from "../manager/ToastManager";
 import UIBase from "../ui/UIBase";
 import { UIBoardMgr, UICommonMgr, UIDialogMgr, UIFormMgr, UIPromptMgr } from "./UIMgr";
@@ -189,7 +190,15 @@ export default class UIComponent {
         UIDialogMgr.Instance.closeAll();
         UIBoardMgr.Instance.closeAll();
         UIPromptMgr.Instance.closeAll();
+        this.closeDialog();
     }
+
+    static closeDialog() {
+        if (Main.Dialog.childrenCount) {
+            Main.Dialog.children[0].parent = Main.Cache_UI;
+        }
+    }
+
 }
 (window as any).UIComponent = UIComponent;
 (window as any).UIFormMgr = UIFormMgr;

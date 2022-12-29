@@ -1,6 +1,6 @@
-import WebImageHelper from "../../helper/WebImageHelper";
-import GGCombobox from "../../ui/component/GGCombobox";
-import BaseForm from "../../ui/form/BaseForm";
+import WebImageHelper from "../../../helper/WebImageHelper";
+import GGCombobox from "../../../ui/component/GGCombobox";
+import BaseForm from "../../../ui/form/BaseForm";
 
 
 const { ccclass, property } = cc._decorator;

@@ -74,9 +74,7 @@ CCProgram fs %{
     vec2 cen = v_uv0 - .5;
 
     float ratio = smoothstep(.5,.5 - .03, length(cen));
-    // if(length(cen) > .5){
-    //   o.a = 0.0;
-    // }
+    
     o.a = ratio;
 
     o *= v_color;
