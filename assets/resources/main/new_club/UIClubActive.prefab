@@ -1265,7 +1265,7 @@
     "_enabled": true,
     "_string": "",
     "returnType": 0,
-    "maxLength": 10,
+    "maxLength": 30,
     "_tabIndex": 0,
     "editingDidBegan": [],
     "textChanged": [],
@@ -2004,7 +2004,7 @@
       "__id__": 35
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 55
