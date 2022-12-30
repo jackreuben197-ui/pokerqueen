@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-29 11:42:31
+ * @LastEditTime: 2022-12-30 10:37:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -770,7 +770,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
@@ -785,7 +786,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
@@ -800,7 +802,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
