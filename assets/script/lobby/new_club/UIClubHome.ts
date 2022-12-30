@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-29 12:20:05
+ * @LastEditTime: 2022-12-30 13:49:40
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -14,12 +14,13 @@ import UIComponent from "../../ui/UIComponent";
 import { UIDefine } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { UIClubModel } from "../labor/UIClubModel";
-import { APIOrgClubNotice, APIOrgClubUserInfo, Web_User_Info } from "../../net/https/WebRequest";
+import { APIOrgClubNotice, APIOrgClubUserInfo, APIOrgGetMessList, APIOrgGetNewMessNum, Web_User_Info } from "../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../helper/StringHelper";
 import UIBase from "../../ui/UIBase";
 import { GameType, Game_Type, Table_Type } from "../../game/util/GameUtil";
 import { WalletType } from "../view/pay/UIWalletLayer";
+import List from "../../common/List";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -38,6 +39,51 @@ export default class UIClubHome extends BaseForm {
 
     @property(cc.Node)
     menuShow: cc.Node = null;
+
+    @property(cc.Node)
+    tsMESS: cc.Node = null;
+
+    @property(cc.Label)
+    lbl_messNewNum: cc.Label = null;
+
+    @property(cc.Label)
+    lbl_tabelNum: cc.Label = null;
+
+    @property(cc.Node)
+    messScoContent: cc.Node = null;
+
+    @property(cc.Prefab)
+    messPfItem: cc.Prefab = null;
+
+    @property(cc.Prefab)
+    messTsItem: cc.Prefab = null;
+
+    @property(cc.Prefab)
+    messNomalItem: cc.Prefab = null;
+
+    @property(cc.ScrollView)
+    messScrollView: cc.ScrollView = null;
+
+    @property(cc.EditBox)
+    EditBox: cc.EditBox = null;
+
+    @property(cc.Node)
+    btnNode: cc.Node = null;
+
+    @property(cc.Node)
+    item_A: cc.Node = null;
+
+    @property(cc.Node)
+    item_bq: cc.Node = null;
+
+    _showTsMessIndex = 0;
+    _lastGetId = 1
+    _fistGetId = 1
+    _tsMessArr = []
+    private _offset: number = 0;
+    private _reqing: boolean = false;
+    private _reqEnd: boolean = false;
+
     private _chessView: UIBase = null;
     private _loadingChessBiew: boolean = false;
     protected lateLoad(): void {
@@ -47,6 +93,7 @@ export default class UIClubHome extends BaseForm {
         this.menuNode = this.getChildNodeOrComponent("menuNode");
         this.subView = this.getChildNodeOrComponent("subView");
         this.messView = this.getChildNodeOrComponent("messView");
+        this.messScrollView.node.on('scroll-ended', this.scrollingCB, this)
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -64,6 +111,7 @@ export default class UIClubHome extends BaseForm {
         let data = APIOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
         this.initCoin();
+        this.staSchedu();
 
     }
     async initAcTiveBord() {
@@ -247,6 +295,127 @@ export default class UIClubHome extends BaseForm {
         } else if (this._chessView) {
             this._chessView.onShow(Game_Type.All, Table_Type.club);
         }
+    }
+    /** ************************聊天逻辑********************************************** */
+    /**
+     * @method 聊天列表
+     */
+
+    scrollingCB(scrollView: cc.ScrollView) {
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset()
+            let isDown = cur.y >= max.y;
+            if (isDown && !this._reqing && !this._reqEnd) {
+                // this.dealData()
+                this.initChat();
+            }
+        }
+    }
+
+
+    async initChat() {
+        this._reqing = true
+        await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 50, offset: this._offset })
+        this._reqing = false
+        let data: any = APIOrgGetMessList.Response.data
+        let node = null;
+        data = data.data
+        data.sort((a: any, b: any) => {
+            return a.id - b.id
+        })
+        // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
+        if (data?.length == 0) return
+        let id = data[data.length - 1].id
+        this._lastGetId = id;
+        // this.messScoContent.childrenCount = 0
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            if (element.message_type == 1) {
+                node = cc.instantiate(this.messNomalItem);
+            } else if (element.message_type == 2) {
+                node = cc.instantiate(this.messNomalItem);
+                this._tsMessArr.push(element);
+            } else if (element.message_type == 3 || element.message_type == 4) {
+                node = cc.instantiate(this.messPfItem);
+            }
+            node.parent = this.messScoContent
+            node.getComponent(node.name).initData(element);
+        }
+        this._offset = this.messScoContent.childrenCount;
+        // this._reqEnd = this.messScoContent.childrenCount >= this._total;
+        this.staSchedu();
+        this.scheduleOnce(() => {
+            this.messScrollView.scrollToBottom();
+
+        }, 0.2)
+    }
+    staSchedu() {
+        this.getNewMess();
+        this.unscheduleAllCallbacks()
+
+        this.schedule(() => {
+            if (this.toggleType == 2) {
+                this.initChat();
+            } else {
+                this.getNewMess();
+            }
+        }, 8)
+    }
+    async getNewMess() {
+        this.changeTsMes();
+        await UIClubModel.mInstance.APIOrgGetNewMessNum({ msg_id: this._lastGetId });
+        let data: any = APIOrgGetNewMessNum.Response.data
+        this.setNewNum(data);
+    }
+    changeTsMes() {
+        let tsData = this._tsMessArr[this._showTsMessIndex];
+        if (tsData) {
+            this.tsMESS.active = true
+            let _messTsItem = this.tsMESS.getChildByName('messTsItem')
+            _messTsItem.getComponent(_messTsItem.name).initData(tsData);
+            this._showTsMessIndex++;
+        } else {
+            this.tsMESS.active = false
+        }
+    }
+    setNewNum(string = 0) {
+        this.lbl_messNewNum.string = `(${string})`;
+    }
+    async clicka() {
+        let param = { content: this.EditBox.string, message_type: 1 }
+        await UIClubModel.mInstance.APIOrgSendMess(param)
+        this.initChat();
+        this.EditBox.string = ''
+        this.editChange()
+
+    }
+    clickbq() {
+        this.btnNode.active = !this.btnNode.active
+        //发送
+    }
+    editChange() {
+        if (this.EditBox.string == '') {
+            this.item_A.active = false
+            this.item_bq.active = true
+        }
+        else {
+            this.item_A.active = true
+            this.item_bq.active = false
+        }
+        // this.close()
+    }
+
+    clickPf() {
+        // UIComponent.open(UIDefine.UIMine_Poker, { info: '' })
+        UIComponent.open(UIDefine.UICollectScore, UIDefine.UILaborPlayViewForm,);
+    }
+    clickzj() {
+        // UIComponent.open(UIDefine.UIRecordDetail, { info: '' });
+        UIComponent.open(UIDefine.UIRecord, UIDefine.UILaborPlayViewForm);
+    }
+    clickxxts() {
+        UIComponent.open(UIDefine.UIMsg_Send);
     }
 
 }
