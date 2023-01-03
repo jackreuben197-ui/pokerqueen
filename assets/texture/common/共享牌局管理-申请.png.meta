@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "ef442e39-f6ab-4e15-b8b0-adf0fa134f85",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2688,
+  "platformSettings": {},
+  "subMetas": {
+    "共享牌局管理-申请": {
+      "ver": "1.0.6",
+      "uuid": "fb9f89c2-a523-41fd-abea-2c0d7377dd40",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ef442e39-f6ab-4e15-b8b0-adf0fa134f85",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": -0.5,
+      "trimX": 0,
+      "trimY": 1,
+      "width": 1242,
+      "height": 2687,
+      "rawWidth": 1242,
+      "rawHeight": 2688,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

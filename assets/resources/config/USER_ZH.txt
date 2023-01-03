@@ -596,7 +596,8 @@ UIClub_outside=公会外部桌
 UIClub_beganMatch=立即开局
 UIClub_ownDiamond=余额：
 UIClub_payDiamond=消耗：
-
+UIClub_shareMatch=共享牌局
+UIClub_receiveMatch=接收牌局
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌

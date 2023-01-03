@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-29 12:35:36
+ * @LastEditTime: 2023-01-03 11:41:32
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -259,6 +259,9 @@ export default class UIManageLabor extends BaseForm {
     clickRate() {
         UIComponent.open(UIDefine.UIClubRateSet)
         // UIComponent.open(UIDefine.UIClubActive)
+    }
+    clickShareMath() {
+        UIComponent.open(UIDefine.UIClubShareMatch)
     }
 
     lxfsEditBoxCb() {

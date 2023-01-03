@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-03 10:57:08
+ * @LastEditTime: 2023-01-03 11:17:29
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -111,7 +111,7 @@ export default class UIClubHome extends BaseForm {
         let data = APIOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
         this.initCoin();
-        this.staSchedu();
+        // this.staSchedu();
 
     }
     async initAcTiveBord() {

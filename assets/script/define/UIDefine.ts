@@ -622,13 +622,14 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/ui/UIMTTMineRankComponent",
     },
-
+    //成员管理
     UIClubMerberManager: {
         UIType: UIType.Form,
         Name: "UIClubMerberManager",
         Bundle: null,
         Path: "main/new_club/UIClubMerberManager",
     },
+    //俱乐部主页
     UIClubHome: {
         UIType: UIType.Form,
         Name: "UIClubHome",
@@ -643,50 +644,63 @@ export const UIDefine = {
         Path: "main/new_club/UIClubMember",
         Title: "详细资料",
     },
+    //创建比赛选择
     UIClubCreateMatchHome: {
         UIType: UIType.Form,
         Name: "UIClubCreateMatchHome",
         Bundle: null,
         Path: "main/new_club/UIClubCreateMatchHome",
     },
+    //创建比赛
     UIClubCreateMatch: {
         UIType: UIType.Form,
         Name: "UIClubCreateMatch",
         Bundle: null,
         Path: "main/new_club/UIClubCreateMatch",
     },
+    //排座列表管理
     UIMatchView: {
         UIType: UIType.CommonUI,
         Name: "UIMatchView",
         Bundle: null,
         Path: "main/new_club/UIMatchView"
     },
+    //俱乐部升级
     UIClubUpLevel: {
         UIType: UIType.Form,
         Name: "UIClubUpLevel",
         Bundle: null,
         Path: "main/new_club/UIClubUpLevel",
     },
-
+    //汇率设置
     UIClubRateSet: {
         UIType: UIType.Form,
         Name: "UIClubRateSet",
         Bundle: null,
         Path: "main/new_club/UIClubRateSet",
     },
+    //活动推送
     UIClubActive: {
         UIType: UIType.Form,
         Name: "UIClubActive",
         Bundle: null,
         Path: "main/new_club/UIClubActive",
     },
-
+    //活动弹窗
     UIClubActiveBord: {
         UIType: UIType.Board,
         Name: "UIClubActiveBord",
         Bundle: null,
         Path: "main/new_club/UIClubActiveBord",
     },
+    //共享牌局
+    UIClubShareMatch: {
+        UIType: UIType.Form,
+        Name: "UIClubShareMatch",
+        Bundle: null,
+        Path: "main/new_club/UIClubShareMatch",
+    },
+
 
 
     /////////////////////////////////////////
