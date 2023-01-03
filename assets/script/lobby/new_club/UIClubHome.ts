@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-30 13:49:40
+ * @LastEditTime: 2023-01-03 10:57:08
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -135,7 +135,7 @@ export default class UIClubHome extends BaseForm {
         let currenTime = new Date(year, month, day).getTime();
 
 
-        if (data.info && localStorage.getItem(data.info.id + '_' + currenTime) == '1') {
+        if (data && data?.info && localStorage.getItem(data.info.id + '_' + currenTime) == '1') {
             UIComponent.open(UIDefine.UIClubActiveBord, data.info)
         }
     }

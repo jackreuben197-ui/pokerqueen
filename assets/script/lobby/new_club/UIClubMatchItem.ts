@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-26 17:16:44
+ * @LastEditTime: 2023-01-03 11:08:50
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMatchItem.ts
  */
 
@@ -14,7 +14,9 @@ import GameUtil from "../../game/util/GameUtil";
 import { GM } from "../../gm/GMAPI";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
+import UIDialogEditComponent from "../../ui/dialog/UIDialogEditComponent";
 import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
 import PlayViewItem from "../view/PlayViewItem";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -22,6 +24,7 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubMatchItem')
 export default class UIClubMatchItem extends UIBase {
+
     @property(cc.Node)
     item_choose: cc.Node = null;
 
@@ -95,16 +98,36 @@ export default class UIClubMatchItem extends UIBase {
     }
 
     baganClick() {
-        let isFriendDesk = false;
-        if (this._data && this._data.origin_type == 4) {
-            isFriendDesk = true;
-        }
-        if (ClubCache._msg && ClubCache.club_id || isFriendDesk) {
-            GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
-        } else {
+        let cb = () => {
+            let isFriendDesk = false;
+            if (this._data && this._data.origin_type == 4) {
+                isFriendDesk = true;
+            }
+            if (ClubCache._msg && ClubCache.club_id || isFriendDesk) {
+                GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
+            } else {
 
-            ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
+                ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
+            }
         }
+        if (this._data.private_room == 0) {
+            cb();
+            return;
+        }
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogEditComponent,
+            {
+                type: UIDialogEditComponent.DialogType.CommitCancel,
+                title: "加入牌桌",
+                content: '',
+                contentCommit: "确定",
+                contentCancel: "取消",
+                passWord: '123456',
+                actionCommit: async () => {
+                    cb()
+                },
+                noAnimation: true,
+            });
     }
 
 }
+

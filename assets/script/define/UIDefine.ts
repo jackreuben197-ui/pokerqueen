@@ -309,6 +309,18 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UIDialogComponent",
     },
+
+    /**
+    * 确认取消 弹窗面板(默认触摸全屏可关闭)
+    */
+    UIDialogEditComponent: {
+        UIType: UIType.Dialog,
+        Name: "UIDialogEditComponent",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIDialogEditComponent",
+    },
+
+
     UIPromptComponent: {
         UIType: UIType.Prompt,
         Name: "UIPromptComponent",
@@ -676,8 +688,8 @@ export const UIDefine = {
         Path: "main/new_club/UIClubActiveBord",
     },
 
-    
-	/////////////////////////////////////////
+
+    /////////////////////////////////////////
     //公会贵宾详情统计
     UIClubVipStatistics: {
         UIType: UIType.Form,

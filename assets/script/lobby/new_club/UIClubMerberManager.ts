@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 10:38:54
+ * @LastEditTime: 2023-01-03 09:45:49
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -57,6 +57,10 @@ export default class UIClubMerberManager extends BaseForm {
 
     @property(cc.Prefab)
     ApplyJoinClubItem: cc.Prefab = null;
+
+    @property(cc.EditBox)
+    EditBox: cc.EditBox = null;
+
     ROLE_TYPE = {
         0: 0,
         1: 3,
@@ -116,6 +120,7 @@ export default class UIClubMerberManager extends BaseForm {
 
     }
     switchTabBtnState(index: number, isInit = false) {
+        this._search = null;
         if (this._selectRoleType == index) return;
         this._selectRoleType = index
         this.toggleNode.children.forEach((item, index) => {
@@ -143,7 +148,8 @@ export default class UIClubMerberManager extends BaseForm {
             "user_type": this.ROLE_TYPE[this._selectRoleType],
             "sort_type": this._sort_type,  //1-输赢数;2-手数;3-服务费;4-最后登陆时间;
             "order_type": this._order_type, //1-顺序;2-倒叙;
-            "club_id": ClubCache.club_id
+            "club_id": ClubCache.club_id,
+            'search': this._search,
         }
         await UIClubModel.mInstance.APIOrgMemberList(params);
         let _data: any = APIOrgMemberList.Response.data
@@ -204,5 +210,21 @@ export default class UIClubMerberManager extends BaseForm {
         let st4 = cc.find('rusp/st/st4', this.applyNode)
         st2.active = this._rusp_st_state == 1
         st4.active = !st2.active
+    }
+    async sousuoBtn() {
+        let string = this.EditBox.string
+        string.trim();
+        if (string == '') {
+            return;
+        }
+        this._search = string;
+        this.reqDataAgain();
+    }
+    hideSearchNode() {
+        let string = this.EditBox.string
+        if (string == '') {
+            this._search = null;
+            this.reqDataAgain();
+        }
     }
 }

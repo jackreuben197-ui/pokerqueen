@@ -1967,7 +1967,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "c986e37egdO1YmiqIaJUPrI",
+    "_componentId": "327e5yIek5AsKacbSDAGifi",
     "handler": "hideSearchNode",
     "customEventData": ""
   },
@@ -2407,7 +2407,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "c986e37egdO1YmiqIaJUPrI",
+    "_componentId": "327e5yIek5AsKacbSDAGifi",
     "handler": "sousuoBtn",
     "customEventData": ""
   },
@@ -5733,6 +5733,9 @@
     },
     "ApplyJoinClubItem": {
       "__uuid__": "cc055b02-cb96-4102-af4b-3a6c57d6bde7"
+    },
+    "EditBox": {
+      "__id__": 52
     },
     "_id": ""
   },

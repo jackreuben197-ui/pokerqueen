@@ -3,7 +3,7 @@
  * @Date: 2022-10-18 15:16:01
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 11:10:00
+ * @LastEditTime: 2023-01-03 09:55:20
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UISaveModel.ts
  */
 
@@ -17,6 +17,7 @@ export default class UISaveModel extends cc.Component {
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;
     delagate = null;
+
     cancelClick() {
         this.node.destroy();
     }
