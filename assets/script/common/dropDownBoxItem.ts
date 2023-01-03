@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 20:29:36
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 13:44:14
+ * @LastEditTime: 2023-01-03 13:08:58
  * @FilePath: /pokerqueen/assets/script/common/dropDownBoxItem.ts
  */
 // Learn TypeScript:
@@ -12,6 +12,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
+import TimeHelper from "../helper/TimeHelper";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIBase from "../ui/UIBase";
 const { ccclass, property, menu } = cc._decorator;
@@ -37,14 +38,15 @@ export default class dropDownBoxItem extends UIBase {
         this.bindClick(this.node, this.clickItem);
     }
 
-    initData(data, width, selectItem: Function) {
+    async initData(data, width, selectItem: Function) {
         this.up.node.active = true
         this._data = data;
         this.node.width = width
         this._selectItem = selectItem;
         this.setText(this.flag, this._data.desc);
         this.up.spriteFrame = AssetContext.getAsset(this._data.type + '', AssetFold.texture_new_club)
-
+        await TimeHelper.Sleep(100)
+        this.up.node.x = this.flag.node.width / 2 + 40;
     }
 
     clickItem() {

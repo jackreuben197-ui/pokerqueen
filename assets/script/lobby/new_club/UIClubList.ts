@@ -3,11 +3,12 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 20:10:08
+ * @LastEditTime: 2023-01-03 12:42:53
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubList.ts
  */
 
 import { UIDefine } from "../../define/UIDefine";
+import { clubListConfig } from "../../frame/data/rate/RateConfig";
 import { GameCache } from "../../game/GameCache";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -29,12 +30,18 @@ export default class UIClubList extends BaseForm {
     @property(cc.PageView)
     pageViews: cc.PageView = null;
 
+    @property(cc.Prefab)
+    dropDownBox: cc.Prefab = null;
+
+
     @property(cc.Label)
     num: cc.Label = null;
     topNode: cc.Node
     pageNode: cc.Node
     listNode: cc.Node
+    sortNode: cc.Node
     listType = 2;
+    _dropDownBox = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.topNode = this.getChildNodeOrComponent("topNode");
@@ -42,9 +49,25 @@ export default class UIClubList extends BaseForm {
         this.listNode = this.getChildNodeOrComponent("listNode");
         this.pageNode.active = this.listType == 2
         this.listNode.active = this.listType == 1
+        this.sortNode = this.getChildNodeOrComponent("sortNode");
+        this._dropDownBox = cc.instantiate(this.dropDownBox);
+        this._dropDownBox.parent = this.node
+        this._dropDownBox.position = cc.v3(230, 680, 0);
+        this._dropDownBox.width = 629
+        this._dropDownBox.getComponent('dropDownBox').initData(clubListConfig, this.selectSort.bind(this))
+        this._dropDownBox.active = this.listType == 1
     }
+
+    selectSort(data) {
+        // this._sort_type = data.model
+        // if (this._sort_type == this._info.user_level) return
+        // this.requestData();
+    }
+
+
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+
         await UIClubModel.mInstance.APIOrgClubGet()
         let data: any = Web_Org_Club_Get.Response.data
         this.num.string = data.length;
@@ -101,7 +124,7 @@ export default class UIClubList extends BaseForm {
         this.listNode.active = this.listType == 1
         union.active = this.pageNode.active
         list.active = this.listNode.active
-
+        this._dropDownBox.active = this.listType == 1
     }
 
 }
