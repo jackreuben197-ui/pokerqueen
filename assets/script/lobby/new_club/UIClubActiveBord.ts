@@ -3,11 +3,12 @@
  * @Date: 2022-12-29 11:17:46
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-29 12:11:21
+ * @LastEditTime: 2023-01-04 17:30:55
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubActiveBord.ts
  */
 
 import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -35,7 +36,7 @@ export default class UIClubActiveBord extends UIBase {
     }
 
     sureClick() {
-        this.onClose();
+        UIComponent.close(this.UIDefine);
     }
     cancle() {
         let now = new Date();
@@ -43,6 +44,7 @@ export default class UIClubActiveBord extends UIBase {
         let month = now.getMonth();
         let day = now.getDate();
         let currenTime = new Date(year, month, day).getTime();
-        localStorage.setItem(this._data.id + '_' + currenTime, 1 + '')
+        localStorage.setItem(this._data.id + '_' + currenTime, 1 + '');
+        UIComponent.close(this.UIDefine);
     }
 }

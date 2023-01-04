@@ -3,7 +3,7 @@
  * @Date: 2022-12-27 11:14:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-04 16:55:15
+ * @LastEditTime: 2023-01-04 17:19:33
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubUpLevel.ts
  */
 
@@ -147,7 +147,7 @@ export default class UIClubUpLevel extends BaseForm {
         node.getChildByName('levelNum').getComponent(cc.Label).string = 'Lv' + data.club_level
         node.getChildByName('levelNum').getChildByName('data').getComponent(cc.Label).string = `（${data.level_duration}天）`
         node.getChildByName('peopleNum').getChildByName('data').getComponent(cc.Label).string = data.user_num
-        node.getChildByName('diamondNum').getComponent(cc.Label).string = data.level_count
+        node.getChildByName('diamondNode').getChildByName('diamondNum').getComponent(cc.Label).string = data.level_count
 
     }
     upBtn(node) {
