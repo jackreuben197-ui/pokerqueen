@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-12-25 21:27:26
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2023-01-03 12:33:12
+ * @FilePath: /pokerqueen/assets/script/frame/data/rate/RateConfig.ts
+ */
 
 
 export const RateConfig = [
@@ -62,6 +70,15 @@ export const dxmConfig = [
     [1, 2, 3, 4, 5],
     [10, 15, 20, 25, 30, 50],
     [100, 200, 300, 500, 1000]
+]
+export const clubListConfig = [
+    //type 0 不显示 1上 2 下
+    { type: 1, desc: "创建时间", model: 1 },
+    { type: 2, desc: "创建时间", model: 1 },
+    { type: 1, desc: "在线成员数", model: 2 },
+    { type: 2, desc: "在线成员数", model: 2 },
+    { type: 1, desc: "当前牌桌数", model: 3 },
+    { type: 2, desc: "当前牌桌数", model: 3 },
 ]
 
 

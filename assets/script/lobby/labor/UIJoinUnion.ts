@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 16:24:09
+ * @LastEditTime: 2023-01-04 19:51:33
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -83,7 +83,12 @@ export default class UIJoinUnion extends BaseForm {
         let name = node.getChildByName('name').getComponent(cc.Label)
         name.string = data.name || data.tribe_name
         let id = node.getChildByName('id').getComponent(cc.Label)
-        id.string = 'ID: ' + data.random_id || data.tribe_random_id
+        if (data.random_id) {
+            id.string = 'ID: ' + data.random_id
+        } else {
+            id.string = 'ID: ' + data.tribe_random_id
+        }
+
 
         let icon = cc.find("iconMask/icon", node).getComponent(cc.Sprite)
         if (data.logo || data.tribe_logo) {

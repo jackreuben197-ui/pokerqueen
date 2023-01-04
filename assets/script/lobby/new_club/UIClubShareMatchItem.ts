@@ -3,10 +3,11 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-03 11:39:33
+ * @LastEditTime: 2023-01-04 20:30:44
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubShareMatchItem.ts
  */
 
+import { EventName } from "../../config/EventName";
 import GGEvent from "../../event/GGEvent";
 import WebImageHelper from "../../helper/WebImageHelper";
 import UIBase from "../../ui/UIBase";
@@ -25,32 +26,53 @@ export default class UIClubShareMatchItem extends UIBase {
         this.initView();
     }
     initView() {
-        this.node.getChildByName('name').getComponent(cc.Label).string = this._data.nickname
-        this.node.getChildByName('id').getComponent(cc.Label).string = this._data.user_random_id
+        // if (this._type == 0) {
+        //     this.node.getChildByName('name').getComponent(cc.Label).string = this._data.share_club_name
+        //     this.node.getChildByName('id').getComponent(cc.Label).string = this._data.share_club_random_id
+        //     let icon = cc.find('iconMask/icon', this.node);
+        //     WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.share_club_logo)
+        // } else {
+        //     this.node.getChildByName('name').getComponent(cc.Label).string = this._data.apply_club_name
+        //     this.node.getChildByName('id').getComponent(cc.Label).string = this._data.apply_club_random_id
+        //     let icon = cc.find('iconMask/icon', this.node);
+        //     WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.apply_club_logo)
+        // }
+
+        this.node.getChildByName('name').getComponent(cc.Label).string = this._data.share_club_name
+        this.node.getChildByName('id').getComponent(cc.Label).string = this._data.share_club_random_id
         let icon = cc.find('iconMask/icon', this.node);
-        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.avatar)
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.share_club_logo)
+
         let btnNode = this.node.getChildByName("btnNode")
         btnNode.active = this._type == 1
         let canclebtnNode = this.node.getChildByName("canclebtnNode")
         canclebtnNode.active = this._type == 0
+
         let refuse = cc.find('btnNode/refuse', this.node)
-        refuse.on(cc.Node.EventType.TOUCH_END, () => {
-            // UIClubModel.mInstance.APIOrgClubApprovalJoin(this._data.id, 3);
-            this.node.active = false
+        refuse.on(cc.Node.EventType.TOUCH_END, async () => {
+            await UIClubModel.mInstance.APIOrgClubShareAudit({
+                "apply_id": this._data.id,
+                "audit_op": 3
+            });
+            this.post(EventName.refreshShareMatch);
         }, this)
 
         let agree = cc.find('btnNode/agree', this.node)
         agree.on(cc.Node.EventType.TOUCH_END, async () => {
-            // await UIClubModel.mInstance.APIOrgClubApprovalJoin(this._data.id, 2);
-            this.node.active = false
-            // this.post(GGEvent.CLUB_DELE_USER);
+            await UIClubModel.mInstance.APIOrgClubShareAudit({
+                "apply_id": this._data.id,
+                "audit_op": 2
+            });
+            this.post(EventName.refreshShareMatch);
         }, this)
 
         let cancle = cc.find('canclebtnNode/cancle', this.node)
         cancle.on(cc.Node.EventType.TOUCH_END, async () => {
-            // await UIClubModel.mInstance.APIOrgClubApprovalJoin(this._data.id, 2);
-            this.node.active = false
-            // this.post(GGEvent.CLUB_DELE_USER);
+            await UIClubModel.mInstance.APIOrgClubShareAudit({
+                "apply_id": this._data.id,
+                "audit_op": 4
+            });
+            this.post(EventName.refreshShareMatch);
         }, this)
     }
 }

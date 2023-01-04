@@ -3,7 +3,7 @@
  * @Date: 2022-12-27 11:14:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-28 16:07:07
+ * @LastEditTime: 2023-01-04 17:19:33
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubUpLevel.ts
  */
 
@@ -60,79 +60,79 @@ export default class UIClubUpLevel extends BaseForm {
                 this.lastData.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(data.data.up_level_time)
             })
         }
+        this.currentLevel.string = 'LV.' + ClubCache.level
     }
 
     async getData() {
-        this.currentLevel.string = 'LV.' + ClubCache.level
         await UIClubModel.mInstance.APIOrgClubLevelBenefit({ club_id: ClubCache.club_id });
         let data: any = APIOrgClubLevelBenefit.Response.data;
-        data = {
-            "data": [
-                {
-                    "id": 9,
-                    "club_level": 9,
-                    "user_num": 1500,
-                    "level_count": 100,
-                    "level_duration": 30
-                },
-                {
-                    "id": 8,
-                    "club_level": 8,
-                    "user_num": 1200,
-                    "level_count": 100,
-                    "level_duration": 30
-                },
-                {
-                    "id": 7,
-                    "club_level": 7,
-                    "user_num": 1000,
-                    "level_count": 100,
-                    "level_duration": 30
-                },
-                {
-                    "id": 6,
-                    "club_level": 6,
-                    "user_num": 800,
-                    "level_count": 100,
-                    "level_duration": 30
-                },
-                {
-                    "id": 5,
-                    "club_level": 5,
-                    "user_num": 600,
-                    "level_count": 100,
-                    "level_duration": 30
-                },
-                {
-                    "id": 4,
-                    "club_level": 4,
-                    "user_num": 400,
-                    "level_count": 100,
-                    "level_duration": 30
-                },
-                {
-                    "id": 3,
-                    "club_level": 3,
-                    "user_num": 300,
-                    "level_count": 100,
-                    "level_duration": 30
-                },
-                {
-                    "id": 2,
-                    "club_level": 2,
-                    "user_num": 200,
-                    "level_count": 100,
-                    "level_duration": 30
-                },
-                {
-                    "id": 1,
-                    "club_level": 1,
-                    "user_num": 100,
-                    "level_count": 100,
-                    "level_duration": 30
-                }
-            ]
-        }
+        // data = {
+        //     "data": [
+        //         {
+        //             "id": 9,
+        //             "club_level": 9,
+        //             "user_num": 1500,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         },
+        //         {
+        //             "id": 8,
+        //             "club_level": 8,
+        //             "user_num": 1200,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         },
+        //         {
+        //             "id": 7,
+        //             "club_level": 7,
+        //             "user_num": 1000,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         },
+        //         {
+        //             "id": 6,
+        //             "club_level": 6,
+        //             "user_num": 800,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         },
+        //         {
+        //             "id": 5,
+        //             "club_level": 5,
+        //             "user_num": 600,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         },
+        //         {
+        //             "id": 4,
+        //             "club_level": 4,
+        //             "user_num": 400,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         },
+        //         {
+        //             "id": 3,
+        //             "club_level": 3,
+        //             "user_num": 300,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         },
+        //         {
+        //             "id": 2,
+        //             "club_level": 2,
+        //             "user_num": 200,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         },
+        //         {
+        //             "id": 1,
+        //             "club_level": 1,
+        //             "user_num": 100,
+        //             "level_count": 100,
+        //             "level_duration": 30
+        //         }
+        //     ]
+        // }
         for (let index = 0; index < data.data.length; index++) { //data.data.lengt
             const element = data?.data[index];
 
@@ -147,12 +147,15 @@ export default class UIClubUpLevel extends BaseForm {
         node.getChildByName('levelNum').getComponent(cc.Label).string = 'Lv' + data.club_level
         node.getChildByName('levelNum').getChildByName('data').getComponent(cc.Label).string = `（${data.level_duration}天）`
         node.getChildByName('peopleNum').getChildByName('data').getComponent(cc.Label).string = data.user_num
-        node.getChildByName('diamondNum').getComponent(cc.Label).string = data.level_count
+        node.getChildByName('diamondNode').getChildByName('diamondNum').getComponent(cc.Label).string = data.level_count
 
     }
     upBtn(node) {
         let data = node.target['levelData']
-        if (ClubCache.level >= data.club_level) return
+        if (ClubCache.level >= data.club_level) {
+            UIComponent.Instance.Toast('公会等级大于当前选择的等级')
+            return
+        }
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             {
                 type: UIDialogComponent.DialogType.CommitCancel,

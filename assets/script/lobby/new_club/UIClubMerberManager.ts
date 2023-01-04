@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-03 09:45:49
+ * @LastEditTime: 2023-01-03 13:03:36
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -23,6 +23,7 @@ import MemberItem from "./MemberItem";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import GGEvent from "../../event/GGEvent";
 import { EventName } from "../../config/EventName";
+import { memberAdminConfig } from "../../frame/data/rate/RateConfig";
 
 enum TITALtYPE {
     MEMBER = 0,
@@ -61,6 +62,9 @@ export default class UIClubMerberManager extends BaseForm {
     @property(cc.EditBox)
     EditBox: cc.EditBox = null;
 
+    @property(cc.Prefab)
+    dropDownBox: cc.Prefab = null;
+    _dropDownBox = null;
     ROLE_TYPE = {
         0: 0,
         1: 3,
@@ -77,6 +81,19 @@ export default class UIClubMerberManager extends BaseForm {
         this.toggleNode = this.getChildNodeOrComponent("toggleNode");
         this.sortNode = this.getChildNodeOrComponent("sortNode");
         this.applyNode = this.getChildNodeOrComponent("applyNode");
+
+        this._dropDownBox = cc.instantiate(this.dropDownBox);
+        this._dropDownBox.parent = this.sortNode
+        this._dropDownBox.position = cc.v3(210, 50, 0);
+        this._dropDownBox.width = 629
+        this._dropDownBox.getComponent('dropDownBox').initData(memberAdminConfig, this.selectSort.bind(this))
+
+
+    }
+    selectSort(data) {
+        this._sort_type = data.model
+        this._order_type = data.type
+        this.reqDataAgain();
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);

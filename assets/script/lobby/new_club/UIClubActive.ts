@@ -3,7 +3,7 @@
  * @Date: 2022-12-28 17:59:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-29 12:06:28
+ * @LastEditTime: 2023-01-04 17:11:28
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubActive.ts
  */
 // Learn TypeScript:
@@ -22,6 +22,7 @@ import { EventName } from "../../config/EventName";
 import TimeHelper from "../../helper/TimeHelper";
 import { UIClubModel } from "../labor/UIClubModel";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import { APIOrgClubNotice } from "../../net/https/WebRequest";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -101,6 +102,9 @@ export default class UIClubActive extends BaseForm {
             UIComponent.Instance.Toast('开始时间不得大于结束时间')
             return;
         }
+        await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
+        let data: any = APIOrgClubNotice.Response.data;
+
         let parms = {
             "club_id": ClubCache.club_id,
 
@@ -108,11 +112,15 @@ export default class UIClubActive extends BaseForm {
 
             "content": this.textEditBox.string,
 
-            "start_time": btn_pd_4.node['_data'].getTime(),
+            "start_time": btn_pd_4.node['_data'].getTime() / 1000,
 
-            "end_time": btn_pd_5.node['_data'].getTime()
+            "end_time": btn_pd_5.node['_data'].getTime() / 1000
         }
-        await UIClubModel.mInstance.APIOrgClubNotice_update({ parms })
+        if (data?.info?.id) {
+            parms['id'] = data?.info?.id
+        }
+
+        await UIClubModel.mInstance.APIOrgClubNotice_update(parms)
         this.close();
     }
 }

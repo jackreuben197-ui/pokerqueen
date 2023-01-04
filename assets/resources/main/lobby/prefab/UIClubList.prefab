@@ -1375,7 +1375,7 @@
         "__id__": 70
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 85
@@ -3161,7 +3161,7 @@
         "__id__": 163
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 174
@@ -5011,7 +5011,7 @@
         "__id__": 138
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 141
@@ -5262,7 +5262,7 @@
         "__id__": 154
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 159
@@ -6423,6 +6423,9 @@
     },
     "pageViews": {
       "__id__": 81
+    },
+    "dropDownBox": {
+      "__uuid__": "8c9a4a8f-6bb0-4cdf-8cbe-3053e685c17b"
     },
     "num": {
       "__id__": 135

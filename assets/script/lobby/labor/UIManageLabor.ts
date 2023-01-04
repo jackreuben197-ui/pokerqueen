@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-03 11:41:32
+ * @LastEditTime: 2023-01-04 17:42:42
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -14,7 +14,7 @@ import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
-import { APIOrgClubGold, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
+import { APIOrgClubGold, APIOrgClubLevelInfo, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
@@ -73,27 +73,18 @@ export default class UIManageLabor extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIClub_Manage"
         this.comFormTitle.initData(title, this);
-        // await UIClubModel.mInstance.APIOrgClubSearchByID(ClubCache.random_id);
-        // let data: any = Web_Org_Club_Search_By_Id.Response.data
-        // ClubCache.setClubData(data);
         this.initTop();
-        // this.initMangerList();
-        // this.initMemberList();
 
     }
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        // this.listen(GGEvent.CLUB_DELE_USER, this.initMemberList);
-        // this.listen(EventName.refreshAdmin, this.initMangerList);
-
         this.listen(EventName.clubGoldChange, this.updateGold);
         this.listen(EventName.refreshClubLevel, this.initClubData);
 
     }
 
     initTop() {
-        // let data: any = Web_Org_Club_Get.Response.data;
 
         let name = cc.find('node_name/name', this.mask_group).getComponent(cc.Label);
         name.string = ClubCache.club_name
@@ -142,42 +133,42 @@ export default class UIManageLabor extends BaseForm {
         UIComponent.open(UIDefine.UIAuditAdmin)
     }
 
-    async initMangerList() {
-        let data: any = Web_Org_Club_Get.Response.data;
-        // await UIClubModel.mInstance.APIOrgMangerList(data.random_id);
-        // data = APIOrgMangerList.Response.data
+    // async initMangerList() {
+    //     let data: any = Web_Org_Club_Get.Response.data;
+    //     // await UIClubModel.mInstance.APIOrgMangerList(data.random_id);
+    //     // data = APIOrgMangerList.Response.data
 
-        await UIClubModel.mInstance.APIOrgMangerList(data.random_id, 5, 0);
-        data = APIOrgMangerList.Response.data
-        for (let index = 0; index < this.iconNodeMan.childrenCount; index++) {
-            const element = this.iconNodeMan.children[index];
-            element.active = false;
-        }
-        for (let index = 0; index < data?.data?.length; index++) {
+    //     await UIClubModel.mInstance.APIOrgMangerList(data.random_id, 5, 0);
+    //     data = APIOrgMangerList.Response.data
+    //     for (let index = 0; index < this.iconNodeMan.childrenCount; index++) {
+    //         const element = this.iconNodeMan.children[index];
+    //         element.active = false;
+    //     }
+    //     for (let index = 0; index < data?.data?.length; index++) {
 
-            const element = this.iconNodeMan.children[index].getChildByName('icon').getComponent(cc.Sprite);
-            WebImageHelper.SetHeadImage(element, data?.data[index].avatar)
-            this.iconNodeMan.children[index].active = true;
-        }
-    }
-    async initMemberList() {
-        let data: any = Web_Org_Club_Get.Response.data;
-        await UIClubModel.mInstance.APIOrgMemberList(data.random_id);
-        data = APIOrgMemberList.Response.data;
-        for (let index = 0; index < this.iconNodeMer.childrenCount; index++) {
-            const element = this.iconNodeMer.children[index];
-            element.active = false
-        }
-        for (let index = 0; index < data?.data?.length; index++) {
+    //         const element = this.iconNodeMan.children[index].getChildByName('icon').getComponent(cc.Sprite);
+    //         WebImageHelper.SetHeadImage(element, data?.data[index].avatar)
+    //         this.iconNodeMan.children[index].active = true;
+    //     }
+    // }
+    // async initMemberList() {
+    //     let data: any = Web_Org_Club_Get.Response.data;
+    //     await UIClubModel.mInstance.APIOrgMemberList(data.random_id);
+    //     data = APIOrgMemberList.Response.data;
+    //     for (let index = 0; index < this.iconNodeMer.childrenCount; index++) {
+    //         const element = this.iconNodeMer.children[index];
+    //         element.active = false
+    //     }
+    //     for (let index = 0; index < data?.data?.length; index++) {
 
-            const element = this.iconNodeMer.children[index].getChildByName('icon').getComponent(cc.Sprite);
-            WebImageHelper.SetHeadImage(element, data?.data[index].avatar)
-            this.iconNodeMer.children[index].active = true;
-        }
-    }
-    managementMember() {
-        UIComponent.open(UIDefine.UIClubMerberManager);
-    }
+    //         const element = this.iconNodeMer.children[index].getChildByName('icon').getComponent(cc.Sprite);
+    //         WebImageHelper.SetHeadImage(element, data?.data[index].avatar)
+    //         this.iconNodeMer.children[index].active = true;
+    //     }
+    // }
+    // managementMember() {
+    //     UIComponent.open(UIDefine.UIClubMerberManager);
+    // }
     joinUnion() {
 
         UIComponent.open(UIDefine.UIJoinUnion);
@@ -239,6 +230,8 @@ export default class UIManageLabor extends BaseForm {
 
     changeClubData() {
         Web_Org_Club_Get.Response.data['desc'] = this.EditBox.string
+        ClubCache._msg.desc = this.EditBox.string;
+        this.post(EventName.refreshClubTitle);
         UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, desc: this.EditBox.string })
     }
     clickActive() {
@@ -258,7 +251,9 @@ export default class UIManageLabor extends BaseForm {
 
     clickRate() {
         UIComponent.open(UIDefine.UIClubRateSet)
-        // UIComponent.open(UIDefine.UIClubActive)
+    }
+    opActive() {
+        UIComponent.open(UIDefine.UIClubActive)
     }
     clickShareMath() {
         UIComponent.open(UIDefine.UIClubShareMatch)
