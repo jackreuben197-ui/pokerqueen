@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-26 17:21:05
+ * @LastEditTime: 2023-01-04 20:38:46
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIMatchView.ts
  */
 
@@ -78,7 +78,7 @@ export default class UIMatchView extends UIBase {
      * @returns 
      */
     clickGameType(index) {
-        if (this._gameType == index) return;
+        // if (this._gameType == index) return;
         this._gameType = index
         this.gameTypeNode.children.forEach((item, index) => {
             item.getChildByName("title").color = this._gameType == index ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')

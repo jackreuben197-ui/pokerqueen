@@ -3953,11 +3953,71 @@ export class APIOrgClubNotice {
         code?: number, message?: string, data?: typeof APIOrgClubNotice.ResponseData
     };
 }
+export class APIOrgClubSharePendingList {
+    public static API: string = "/api/cmsext/club/share/pending/list";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
 
+    } = null;
+    public static Request(param: typeof APIOrgClubSharePendingList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubSharePendingList.ResponseData
+    };
+}
 
+export class APIOrgClubShareAudit {
+    public static API: string = "/api/cmsext/club/share/audit";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
 
+    } = null;
+    public static Request(param: typeof APIOrgClubShareAudit.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubShareAudit.ResponseData
+    };
+}
+export class APIOrgClubShareApplyList {
+    public static API: string = "/api/cmsext/club/share/apply/list";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
 
+    } = null;
+    public static Request(param: typeof APIOrgClubShareApplyList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubShareApplyList.ResponseData
+    };
+}
+export class APIOrgClubShareApproveList {
+    public static API: string = "/api/cmsext/club/share/approve/list";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
 
+    } = null;
+    public static Request(param: typeof APIOrgClubShareApproveList.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubShareApproveList.ResponseData
+    };
+}
 
 /**
  * 注册全局访问

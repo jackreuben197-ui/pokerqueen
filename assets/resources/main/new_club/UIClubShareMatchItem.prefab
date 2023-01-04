@@ -1565,7 +1565,7 @@
         "__id__": 41
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [],
     "_prefab": {
       "__id__": 51
@@ -2071,7 +2071,7 @@
     "_id": ""
   },
   {
-    "__type__": "e409b178O9Fk5NaQvJQwKdi",
+    "__type__": "06b0eOAno5GD5x6bA3qCPiI",
     "_name": "",
     "_objFlags": 0,
     "node": {

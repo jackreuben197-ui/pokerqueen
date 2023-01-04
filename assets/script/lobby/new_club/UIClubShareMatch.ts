@@ -3,7 +3,7 @@
  * @Date: 2023-01-03 11:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-03 11:37:13
+ * @LastEditTime: 2023-01-04 20:32:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubShareMatch.ts
  */
 // Learn TypeScript:
@@ -18,6 +18,8 @@ import ComFormTitle from "../../common/ComFormTitle";
 import UIClubShareMatchItem from "./UIClubShareMatchItem";
 import List from "../../common/List";
 import { UIClubModel } from "../labor/UIClubModel";
+import { APIOrgClubShareApplyList, APIOrgClubShareApproveList, APIOrgClubSharePendingList } from "../../net/https/WebRequest";
+import { EventName } from "../../config/EventName";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -46,6 +48,11 @@ export default class UIClubShareMatch extends BaseForm {
         this.comFormTitle.initData(title, this);
         this.titleNodeClick(null, 0)
     }
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.refreshShareMatch, this.reqDataAgain);
+    }
+
     titleNodeClick(event, customData) {
         // if (this._selectTitle == customData) return
         this._selectTitle = customData
@@ -54,11 +61,7 @@ export default class UIClubShareMatch extends BaseForm {
 
         this.memberListT.getChildByName('title').color = this._selectTitle == 0 ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         this.applyListT.getChildByName('title').color = this._selectTitle == 1 ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
-        // if (this._selectTitle == 0) {
-        //     this.reqDataAgain()
-        // } else {
-        //     this.initJoinList()
-        // }
+        this.reqDataAgain();
     }
     async reqDataAgain() {
         this._offset = 0;
@@ -70,7 +73,15 @@ export default class UIClubShareMatch extends BaseForm {
     }
     async dealData() {
         this._reqing = true
+        let _data: any = [];
 
+        if (this._selectTitle == 1) {
+            await UIClubModel.mInstance.APIOrgClubSharePendingList({ limit: 10, offset: this._offset })
+            _data = APIOrgClubSharePendingList.Response.data
+        } else if (this._selectTitle == 0) {
+            await UIClubModel.mInstance.APIOrgClubShareApproveList({ limit: 10, offset: this._offset })
+            _data = APIOrgClubShareApproveList.Response.data
+        }
         // let params = {
         //     "club_random_id": ClubCache.random_id,
         //     "limit": 20,
@@ -82,7 +93,6 @@ export default class UIClubShareMatch extends BaseForm {
         //     'search': this._search,
         // }
         // await UIClubModel.mInstance.APIOrgMemberList(params);
-        let _data: any = [];
         this._reqing = false
         if (!_data.data) {
             _data.data = [];
