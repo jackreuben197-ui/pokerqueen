@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-03 12:42:53
+ * @LastEditTime: 2023-01-03 13:12:21
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubList.ts
  */
 
@@ -52,7 +52,7 @@ export default class UIClubList extends BaseForm {
         this.sortNode = this.getChildNodeOrComponent("sortNode");
         this._dropDownBox = cc.instantiate(this.dropDownBox);
         this._dropDownBox.parent = this.node
-        this._dropDownBox.position = cc.v3(230, 680, 0);
+        this._dropDownBox.position = cc.v3(230, 690, 0);
         this._dropDownBox.width = 629
         this._dropDownBox.getComponent('dropDownBox').initData(clubListConfig, this.selectSort.bind(this))
         this._dropDownBox.active = this.listType == 1

@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-03 11:41:32
+ * @LastEditTime: 2023-01-04 16:53:09
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -14,7 +14,7 @@ import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
-import { APIOrgClubGold, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
+import { APIOrgClubGold, APIOrgClubLevelInfo, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
@@ -73,27 +73,21 @@ export default class UIManageLabor extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIClub_Manage"
         this.comFormTitle.initData(title, this);
-        // await UIClubModel.mInstance.APIOrgClubSearchByID(ClubCache.random_id);
-        // let data: any = Web_Org_Club_Search_By_Id.Response.data
-        // ClubCache.setClubData(data);
+        await UIClubModel.mInstance.APIOrgClubLevelInfo({ club_id: ClubCache.club_id })
+        let _da: any = APIOrgClubLevelInfo.Response.data?.data
+        ClubCache._msg.level = _da.level
         this.initTop();
-        // this.initMangerList();
-        // this.initMemberList();
 
     }
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        // this.listen(GGEvent.CLUB_DELE_USER, this.initMemberList);
-        // this.listen(EventName.refreshAdmin, this.initMangerList);
-
         this.listen(EventName.clubGoldChange, this.updateGold);
         this.listen(EventName.refreshClubLevel, this.initClubData);
 
     }
 
     initTop() {
-        // let data: any = Web_Org_Club_Get.Response.data;
 
         let name = cc.find('node_name/name', this.mask_group).getComponent(cc.Label);
         name.string = ClubCache.club_name
@@ -258,7 +252,9 @@ export default class UIManageLabor extends BaseForm {
 
     clickRate() {
         UIComponent.open(UIDefine.UIClubRateSet)
-        // UIComponent.open(UIDefine.UIClubActive)
+    }
+    opActive() {
+        UIComponent.open(UIDefine.UIClubActive)
     }
     clickShareMath() {
         UIComponent.open(UIDefine.UIClubShareMatch)

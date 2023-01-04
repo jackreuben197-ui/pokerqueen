@@ -3597,7 +3597,7 @@ export class APIOrgClubLevelInfo {
 
     } = null;
     public static ResponseData: {
-
+        data: Object
     } = null;
     public static Request(param: typeof APIOrgClubLevelInfo.RequestParams) {
         this.RequestParams = param;
