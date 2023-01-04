@@ -102,16 +102,11 @@ export class i18nMgr {
     }
 
     public static _getLabel(opt: string): string {
-
-        let value: string = this.Get(opt);
-
-        return value || opt;
+        return this.Get(opt);
     }
     //从表格获取内容
     public static Get(opt: string): string {
-        if (excelAdd[this.language]?.[opt]) return excelAdd[this.language][opt];
-        if (this.LanguageObject?.[opt]) return this.LanguageObject[opt];
-        return null;
+        return this.LanguageObject?.[opt] || opt;
     }
     /**
      * 添加或移除 i18nSprite

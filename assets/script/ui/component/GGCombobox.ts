@@ -1,4 +1,5 @@
 import UIBase from "../UIBase";
+import AssetContext, { AssetFold } from "./AssetContext";
 
 
 const { ccclass, property } = cc._decorator;
@@ -13,6 +14,7 @@ export default class GGCombobox extends UIBase {
     Node_Click: cc.Node = null;
 
     onOpen: () => void = null;
+    onClose: () => void = null;
     onSelect: (index) => void = null;
 
     item_pool: cc.Node[] = [];
@@ -31,14 +33,17 @@ export default class GGCombobox extends UIBase {
         this.Label_Top.string = text;
     }
     //绑定列表
-    bindList(list: { show: string, index: number, value?: string }[]) {
+    bindList(list: { show: string, index: number, icon?: string, value?: string }[]) {
         this.clearAllItems();
         this.setTopLabel("");
         if (list.length) {
             for (let item_obj of list) {
                 let item = this.getItem();
                 item.parent = this.List;
-                item.getChildByName("Item_Label").getComponent(cc.Label).string = item_obj.show;
+                let label_node = item.getChildByName("Item_Label") || cc.find("RichLabel/Item_Label", item);
+                let icon_node = cc.find("RichLabel/Icon", item);
+                label_node.getComponent(cc.Label).string = item_obj.show;
+                if (icon_node) icon_node.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(item_obj.icon, AssetFold.texture_icon);
                 item["obj"] = item_obj;
                 if (!item.hasEventListener("click")) {
                     item.on("click", this.itemClick, this);
@@ -70,9 +75,8 @@ export default class GGCombobox extends UIBase {
     }
     nodeClick() {
         this.Box_Bg.active = !this.Box_Bg.active;
-        if (this.Box_Bg.active) {
-            this.onOpen?.();
-        }
+
+        this.Box_Bg.active ? this.onOpen?.() : this.onClose?.();
     }
 
     closeBox() {

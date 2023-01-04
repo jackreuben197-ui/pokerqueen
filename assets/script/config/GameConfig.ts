@@ -89,3 +89,17 @@ export var LogStyle = {
     ws_request: "color:#E3C127;background:#47100A",
     ws_response: "color:#19FF00;background:#47100A",
 }
+//文本选中文字颜色
+export var Text_Colors = ["#FFFFFF", "#35A3B3"];
+
+//成员管理排序表
+export var Member_Order_List = [
+    { show: "输赢值", index: 0, icon: "Up", order: 0, order_key: "time" },
+    { show: "输赢值", index: 1, icon: "Down", order: 1, order_key: "time" },
+    { show: "手数", index: 2, icon: "Up", order: 0, order_key: "time" },
+    { show: "手数", index: 3, icon: "Down", order: 1, order_key: "time" },
+    { show: "服务费", index: 4, icon: "Up", order: 0, order_key: "time" },
+    { show: "服务费", index: 5, icon: "Down", order: 1, order_key: "time" },
+    { show: "最后登录时间", index: 6, icon: "Up", order: 0, order_key: "time" },
+    { show: "最后登录时间", index: 7, icon: "Down", order: 1, order_key: "time" },
+];

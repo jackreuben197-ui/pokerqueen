@@ -8,13 +8,11 @@ export default class BaseComponent extends Base {
     private _path: string = "";
     private _clickNodes: Array<cc.Node> = [];
     private _view: any = {};
-    protected declare_list: [string, any?][] = null;
     onLoad() {
         super.onLoad();
         this.lateLoad();
         this.regiterTouchEvents();
         //this.regiterDispatchEvent();
-
         this.UIDefine && !this.UIDefine.DisAdaptScreen && this.node.addComponent(AdapterComponent);
         if (this.UIDefine) window[this.UIDefine.Name] = this;
     }
@@ -50,17 +48,7 @@ export default class BaseComponent extends Base {
 
     protected lateLoad() {
         this.load_all_object(this.node);
-        this.declareAll();
     }
-    //声明所有
-    declareAll() {
-        if (this.declare_list) {
-            this.declare_list.forEach(item => {
-                this[item[0]] = this.getChildNodeOrComponent(item[0], item[1]);
-            })
-        }
-    }
-
     /**
      * 保证节点名字在根节点下唯一性 最好不要取名view
      * @param root 

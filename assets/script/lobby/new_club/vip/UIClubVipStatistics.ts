@@ -2,24 +2,31 @@ import WebImageHelper from "../../../helper/WebImageHelper";
 import GGCombobox from "../../../ui/component/GGCombobox";
 import BaseForm from "../../../ui/form/BaseForm";
 
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIClubVipStatistics extends BaseForm {
 
-    //icons = ["gold0", "gold1", "people"];
-
-
+    ///////////////////////引用声明////////////////////////
     Label_People: cc.Label = null;
     Label_Gold: cc.Label = null;
     Label_USDT: cc.Label = null;
-
-
     Com_Game: GGCombobox = null;
     Com_Gold: GGCombobox = null;
-
     Detail: cc.Node = null;
+    Com_Back: cc.Node = null;
+    Head: cc.Node = null;
+    protected declare_list: any = [
+        ["Com_Game", GGCombobox],
+        ["Com_Gold", GGCombobox],
+        ["Com_Back"],
+        ["Head"],
+        ["Detail"],
+        ["Label_People", cc.Label],
+        ["Label_Gold", cc.Label],
+        ["Label_USDT", cc.Label],
+    ]
+    ////////////////////////////////////////////////////
 
     Com_Game_List = [
         { show: "Game0", index: 0 },
@@ -32,35 +39,15 @@ export default class UIClubVipStatistics extends BaseForm {
         { show: "金豆2", index: 2 },
     ];
 
-    Com_Back: cc.Node = null;
-
-    Head: cc.Node = null;
 
     protected lateLoad() {
         super.lateLoad();
-        this.Com_Game = this.getChildNodeOrComponent("Com_Game", GGCombobox);
-        this.Com_Gold = this.getChildNodeOrComponent("Com_Gold", GGCombobox);
-
-
-        this.Com_Back = this.getChildNodeOrComponent("Com_Back");
-        this.Head = this.getChildNodeOrComponent("Head");
-
-
-        this.Label_People = this.getChildNodeOrComponent("Label_People", cc.Label);
-        this.Label_Gold = this.getChildNodeOrComponent("Label_Gold", cc.Label);
-        this.Label_USDT = this.getChildNodeOrComponent("Label_USDT", cc.Label);
-
-
-        this.Detail = this.getChildNodeOrComponent("Detail");
-
 
         this.Com_Game.onOpen = this.Game_ComOpen.bind(this);
         this.Com_Game.onSelect = this.Game_ComSelect.bind(this);
 
-
         this.Com_Gold.onOpen = this.Gold_ComOpen.bind(this);
         this.Com_Gold.onSelect = this.Gold_ComSelect.bind(this);
-
     }
 
     regiterTouchEvents() {

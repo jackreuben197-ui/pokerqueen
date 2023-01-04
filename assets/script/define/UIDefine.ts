@@ -703,6 +703,8 @@ export const UIDefine = {
 
 
 
+
+
     /////////////////////////////////////////
     //公会贵宾详情统计
     UIClubVipStatistics: {
@@ -733,6 +735,22 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/vip/UIClubVipManage",
         Title: "贵宾管理"
+    },
+    //贵宾打开的成员详细资料
+    UIClubVipMemberDetail: {
+        UIType: UIType.Form,
+        Name: "UIClubVipMemberDetail",
+        Bundle: null,
+        Path: "main/new_club/vip/UIClubVipMemberDetail",
+        Title: "详细资料"
+    },
+    //贵宾的成员管理
+    UIClubVipMemberManage: {
+        UIType: UIType.Form,
+        Name: "UIClubVipMemberManage",
+        Bundle: null,
+        Path: "main/new_club/vip/UIClubVipMemberManage",
+        Title: "成员管理"
     }
 
 }

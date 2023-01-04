@@ -9,21 +9,16 @@ import ItemVipManage from "../ui/ItemVipManage";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class UIClubVipStatistics extends BaseFormPlus {
+export default class UIClubVipMemberManage extends BaseFormPlus {
     //文本
-    private Text_Switch: string = "开启免审批";
-    private Text_NullTip: string = "暂无申请数据";
-    private Text_Save: string = "保 存";
+
 
     ///////////////////////引用声明////////////////////////
     $ComBack: cc.Node = null;
-    $TabsNode: cc.Node = null;
     $ItemVipManage: cc.Node = null;
-    $ItemVipManageEdit: cc.Node = null;
     $Searcher1: cc.Node = null;
-    $Searcher2: cc.Node = null;
-    $Page0: cc.Node = null;
-    $Page1: cc.Node = null;
+
+
     cc_ScrollView$Scroller1: cc.ScrollView = null;
     cc_ScrollView$Scroller2: cc.ScrollView = null;
     GGCombobox$Order: GGCombobox = null;
@@ -36,47 +31,39 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     select_indexs = [];
 
     item_member_pool: SimpleNodePool = null;
-    item_member_edit_pool: SimpleNodePool = null;
 
     members = [
-        { nick: "a1", id: 12, time: 1 },
-        { nick: "b2", id: 34, time: 2 },
-        { nick: "b3", id: 124, time: 3 },
-        { nick: "b4", id: 84, time: 4 },
-        { nick: "b5", id: 1129, time: 5 },
-        { nick: "b6", id: 8, time: 6 },
-        { nick: "b7", id: 722, time: 7 },
-        { nick: "b8", id: 107, time: 8 },
-        { nick: "b9", id: 44, time: 9 },
+        { nick: "a1", id: 12, time: "2022-12-27T10:01:02Z", timeOrder: 1 },
+        { nick: "b2", id: 34, time: "2022-12-27T10:02:02Z", timeOrder: 2 },
+        { nick: "b3", id: 124, time: "2022-12-27T10:03:02Z", timeOrder: 3 },
+        { nick: "b4", id: 84, time: "2022-12-27T10:04:02Z", timeOrder: 4 },
+        { nick: "b5", id: 1129, time: "2022-12-27T10:05:02Z", timeOrder: 5 },
+        { nick: "b6", id: 8, time: "2022-12-27T10:06:02Z", timeOrder: 6 },
+        { nick: "b7", id: 722, time: "2022-12-27T10:07:02Z", timeOrder: 7 },
+        { nick: "b8", id: 107, time: "2022-12-27T10:08:02Z", timeOrder: 8 },
+        { nick: "b9", id: 44, time: "2022-12-27T10:09:02Z", timeOrder: 9 },
     ];
-
-    Tabs = ["下线成员", "编辑下线"];
-
-
     _title_status: number = -1;
 
     protected lateLoad() {
         super.lateLoad();
-        this.setTabs();
         this.GGCombobox$Order.onOpen = this.Order_ComOpen.bind(this);
         this.GGCombobox$Order.onClose = this.Order_ComClose.bind(this);
         this.GGCombobox$Order.onSelect = this.Order_ComSelect.bind(this);
         this.item_member_pool = new SimpleNodePool(this.$ItemVipManage);
-        this.item_member_edit_pool = new SimpleNodePool(this.$ItemVipManageEdit);
     }
 
     regiterTouchEvents() {
         super.regiterTouchEvents();
         this.setButtonClick(this.$ComBack, this.comBackClick);
         this.setButtonClick(this.$Searcher1.getChildByName("Btn_Search"), this.searchClick1);
-        this.setButtonClick(this.$Searcher2.getChildByName("Btn_Search"), this.searchClick2);
     }
 
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         //初始化界面
         this.refreshTexts();
-        this.resetStatus();
+        this.refreshMemberList(this.members);
         this.GGCombobox$Order.closeBox();
         this.GGCombobox$Order.bindList(Member_Order_List);
         this.Order_ComSelect(0);
@@ -85,79 +72,28 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         super.fadeInComplete();
         //打开完成进行处理
     }
-    resetStatus() {
-        this._title_status = -1;
-        this.title_status = 0;
-    }
-    refreshMemberList(list: { nick: string, id: number, time: number }[]) {
+    refreshMemberList(list: { nick: string, id: number, time: string, timeOrder: number }[]) {
         this.clearScroller(this.cc_ScrollView$Scroller1, this.item_member_pool);
         list.forEach((data, index) => {
             let item = this.item_member_pool.GetNode();
             item.parent = this.cc_ScrollView$Scroller1.content;
-            item.getComponent(ItemVipManage).onShow({ data: data, index: index, style: 1, parent: this });
+            item.getComponent(ItemVipManage).onShow({ data: data, index: index, switch: 1, parent: this });
         })
     }
-    refreshMemberEditList(list: { nick: string, id: number, time: number }[]) {
-        this.clearScroller(this.cc_ScrollView$Scroller2, this.item_member_pool);
-        list.forEach((data, index) => {
-            let item = this.item_member_pool.GetNode();
-            item.parent = this.cc_ScrollView$Scroller2.content;
-            item.getComponent(ItemVipManage).onShow({ data: data, index: index, style: 0, parent: this });
-        })
-    }
-
     clearScroller(scroller: cc.ScrollView, pool: SimpleNodePool) {
         scroller.content.children.forEach(item => {
             pool.BackNode(item);
         })
         scroller.content.removeAllChildren();
     }
-    private setTabs() {
-        this.$TabsNode.children.forEach((item, index) => {
-            item.getChildByName("Label").getComponent(cc.Label).string = i18nMgr.Get(this.Tabs[index]);
-            item["index"] = index;
-            this.setButtonClick(item, this.tabClick);
-        })
-    }
     private refreshTexts() {
-        this.cc_Label$Switch.string = i18nMgr.Get(this.Text_Switch);
-        this.cc_Label$NullTip.string = i18nMgr.Get(this.Text_NullTip);
-        this.cc_Label$Save.string = i18nMgr.Get(this.Text_Save);
+
     }
     //底层点击触发combobox组件关闭
     comBackClick() {
         this.GGCombobox$Order.closeBox();
         this.$ComBack.active = false;
     }
-
-    tabClick(button: cc.Button) {
-        let index = button.node["index"];
-        this.title_status = index;
-    }
-    set title_status(value: number) {
-        if (this._title_status == value) return;
-        this._title_status = value;
-        this.$TabsNode.children.forEach((item, index) => {
-            this.tab_select(item, 0);
-        });
-        this.tab_select(this.$TabsNode.children[value], 1);
-        //切换界面
-        if (value == 0) {
-            this.$Page0.active = true;
-            this.$Page1.active = false;
-            this.refreshMemberList(this.members);
-        } else {
-            this.$Page0.active = false;
-            this.$Page1.active = true;
-            this.refreshMemberEditList(this.members);
-            this.cc_Label$NullTip.node.active = false;
-            this.select_indexs = [];
-        }
-    }
-    get title_status(): number {
-        return this._title_status;
-    }
-
     //顶部页签切换
     tab_select(tab: cc.Node, on: number) {
         tab.getChildByName("Label").color = cc.Color.BLACK.fromHEX(Text_Colors[on]);
@@ -176,14 +112,14 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     Order_ComSelect(index: number) {
         this.$ComBack.active = false;
         //console.log(index);
-        let member = Member_Order_List[index];
-        if (member.order) {
+        let item = Member_Order_List[index];
+        if (item.order) {
             this.members.sort((a, b) => {
-                return a.time - b.time;
+                return a.timeOrder - b.timeOrder;
             })
         } else {
             this.members.sort((a, b) => {
-                return b.time - a.time;
+                return b.timeOrder - a.timeOrder;
             })
         }
         this.cc_ScrollView$Scroller1.scrollToTop();
@@ -203,21 +139,6 @@ export default class UIClubVipStatistics extends BaseFormPlus {
             this.refreshMemberList(temp);
         } else {
             this.refreshMemberList(this.members);
-        }
-    }
-    searchClick2() {
-        let search_value = this.$Searcher2.getChildByName("EditBox").getComponent(cc.EditBox).string;
-        let temp = [];
-        for (let member of this.members) {
-            if (~member.id.toString().indexOf(search_value)) {
-                temp.push(member);
-            }
-        }
-
-        if (temp.length) {
-            this.refreshMemberEditList(temp);
-        } else {
-            this.refreshMemberEditList(this.members);
         }
     }
     //条目点击的回调

@@ -47,6 +47,7 @@ export default class BaseForm extends UIBase {
         this.back_click = this.getChildNodeOrComponent("back_click");
         this.content = this.getChildNodeOrComponent("content - 内容填充");
         this.top_block = this.getChildNodeOrComponent("top_block");
+
         if (this.title_label) {
             this.title_label.i18NString = this.UIDefine?.Title || "";
         }
