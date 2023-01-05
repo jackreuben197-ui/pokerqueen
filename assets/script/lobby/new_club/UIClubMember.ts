@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-05 12:32:06
+ * @LastEditTime: 2023-01-05 12:57:47
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -349,13 +349,12 @@ export default class UIClubMember extends BaseForm {
     initPanel_vip() {
         let noHave = this.panel_vip.getChildByName('noHave');
         let haveData = this.panel_vip.getChildByName('haveData');
-        let vip_tip = haveData.getChildByName('vip_tip');
         //有没有上线
-        if (1) {
+        if (this._info.info.agent_user_id) {
             noHave.active = false
             haveData.active = true
             cc.find('messLayout/name', haveData).getComponent(cc.Label).string = ''
-            cc.find('messLayout/id', haveData).getComponent(cc.Label).string = ''
+            cc.find('messLayout/id', haveData).getComponent(cc.Label).string = 'ID: ' + this._info.info.agent_user_id
             let icon = cc.find('iconRole/icon', haveData)
             WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), '');
         }
@@ -363,29 +362,12 @@ export default class UIClubMember extends BaseForm {
             noHave.active = true
             haveData.active = false
         }
-        this.bindClick(vip_tip, () => {
-            //解绑贵宾
-        }, this)
-
-        let vip_tip1 = noHave.getChildByName('vip_tip');
-        this.bindClick(vip_tip1, () => {
-            //绑定贵宾
-        }, this)
-
-
     }
-    initPanel_vipMan() {
+    async initPanel_vipMan() {
         let Rectangle1 = this.panel_vipMan.getChildByName('Rectangle1');
-
         let vip_tip = cc.find('noHave/Group/vip_tip', Rectangle1)
         vip_tip.getComponent(cc.Label).string = 3 + '';
-        this.bindClick(Rectangle1, () => {
-            //下线成员
-        }, this)
-        let Rectangle2 = this.panel_vipMan.getChildByName('Rectangle2');
-        this.bindClick(Rectangle2, () => {
-            //贵宾统计
-        }, this)
+
     }
 
 

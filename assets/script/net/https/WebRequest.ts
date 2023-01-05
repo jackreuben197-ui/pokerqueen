@@ -4019,6 +4019,24 @@ export class APIOrgClubShareApproveList {
     };
 }
 
+export class APIOrgClubAgentUser_list {
+    public static API: string = "/api/org/club/agent/user_list";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+
+    } = null;
+    public static Request(param: typeof APIOrgClubAgentUser_list.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?: typeof APIOrgClubAgentUser_list.ResponseData
+    };
+}
+
+
 /**
  * 注册全局访问
  */
