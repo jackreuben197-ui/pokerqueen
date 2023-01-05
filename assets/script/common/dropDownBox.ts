@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 19:24:17
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 13:44:58
+ * @LastEditTime: 2023-01-05 11:44:46
  * @FilePath: /pokerqueen/assets/script/common/dropDownBox.ts
  */
 import List from "../common/List";
@@ -20,6 +20,8 @@ export default class dropDownBox extends UIBase {
     private _data = [];
     private _aniing: boolean = false;
     private _selectItem: Function = null;
+    @property(cc.Node)
+    Group: cc.Node = null;
 
     @property(cc.Node)
     rateTypeList: cc.Node = null;
@@ -38,11 +40,12 @@ export default class dropDownBox extends UIBase {
 
         this.bindClick(this.rateTypeList, this.clickBg);
     }
-    initData(dataConfig, selectItem) {
+    initData(dataConfig, selectItem, isCanClick = true) {
         this.rateTypeList.active = false;
         this._data = dataConfig
         this._selectItem = selectItem;
         this.initSortData(this._data[0]);
+        this.Group.active = isCanClick;
     }
     open() {
         this.rateTypeList.height = this._data.length * 100 + 60
@@ -57,7 +60,6 @@ export default class dropDownBox extends UIBase {
             .start();
 
     }
-
     close(ani: boolean = true) {
         if (this.rateTypeList.active) {
             if (ani) {

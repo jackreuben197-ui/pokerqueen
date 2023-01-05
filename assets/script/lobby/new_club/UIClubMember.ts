@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 14:29:18
+ * @LastEditTime: 2023-01-05 12:32:06
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -27,7 +27,7 @@ import { UIClubModel } from "../labor/UIClubModel";
 import { EventName } from "../../config/EventName";
 import { memberRoleConfig } from "../../frame/data/rate/RateConfig";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
-import { APIOrgClubUserInfo, APIOrgClubUserRole_change } from "../../net/https/WebRequest";
+import { APIOrgClubUserInfo, APIOrgClubUserRole_change, Web_User_Info } from "../../net/https/WebRequest";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubMember')
@@ -53,7 +53,7 @@ export default class UIClubMember extends BaseForm {
     _sort_type: number = 1
     _order_type: number = 1
     _dropDownBox: cc.Node = null;
-
+    _flag = true;  //会长或者是本人
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -69,28 +69,27 @@ export default class UIClubMember extends BaseForm {
         this._dropDownBox.parent = Rectangle
         this._dropDownBox.position = cc.v3(352, 50, 0);
         this._dropDownBox.width = 400
-        this._dropDownBox.getComponent('dropDownBox').initData(memberRoleConfig, this.selectSort.bind(this))
     }
     selectSort(data) {
         this._sort_type = data.model
         // this._order_type = data.type
-        if (this._sort_type == this._info.user_level) return
+        // if (this._sort_type == this._info.info.user_level) return
         this.requestData();
     }
     async requestData() {
         let parms = {
             club_id: ClubCache.club_id,
-            user_id: this._info.user_info.user_id,
+            user_id: this._info.info.user_info.user_id,
             "user_level": this._sort_type  //用户等级 0 普通 1会长  3管理员 4代理
         }
         await UIClubModel.mInstance.APIOrgClubUserRole_change(parms);
         await UIClubModel.mInstance.APIOrgClubUserInfo({
-            "user_id": this._info.user_info.user_id,
+            "user_id": this._info.info.user_info.user_id,
             "club_id": ClubCache.club_id,
         })
         this.post(EventName.requestClubMemList);
         let data: any = APIOrgClubUserInfo.Response.data
-        this._info = data;
+        this._info = { info: data, itemData: this._info.itemData };
         this.initTop()
         this.initPanel_mid()
         this.initVip();
@@ -98,10 +97,12 @@ export default class UIClubMember extends BaseForm {
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
         this.comFormTitle.initData('UIClub_xxzl', this);
-        this._info = param.info;
+        this._info = param;
         if (this._info == null) {
             return;
         }
+        this._flag = this._info.info.user_level != 1 || this._info.info.user_info.random_id != Web_User_Info.Response.data.user.un_id
+        this._dropDownBox.getComponent('dropDownBox').initData(memberRoleConfig, this.selectSort.bind(this), this._flag)
         this.initTop()
         this.initPanel_mid()
         this.initVip();
@@ -110,22 +111,22 @@ export default class UIClubMember extends BaseForm {
     initTop() {
 
         let icon = cc.find('iconMask/icon', this.messNode)
-        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._info.avatar)
-        cc.find('messLayout/nameNode/name', this.messNode).getComponent(cc.Label).string = this._info.user_info.nickname;
-        cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = this._info.user_info.random_id;
-        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.user_join_club_time);
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._info.info.user_info.avatar)
+        cc.find('messLayout/nameNode/name', this.messNode).getComponent(cc.Label).string = this._info.info.user_info.nickname;
+        cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = this._info.info.user_info.random_id;
+        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.itemData.user_join_club_time);
 
-        cc.find('people/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.user_info.gold);
-        cc.find('table/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.user_info.usdt);
+        cc.find('people/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.info.user_info.gold);
+        cc.find('table/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.info.user_info.usdt);
         let hg = cc.find('messLayout/nameNode/hg', this.messNode)
         hg.active = true;
-        ClubCache.setRoleType(hg, this._info.user_level);
-        let name = ClubCache.getRoleName(this._info.user_level)
+        ClubCache.setRoleType(hg, this._info.info.user_level);
+        let name = ClubCache.getRoleName(this._info.info.user_level)
         this._dropDownBox.getComponent('dropDownBox').initSortData({ type: 0, desc: name })
 
         let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
         let btn_3: cc.Node = this.getChildNodeOrComponent("btn_3");
-        if (this._info.user_info.forbidden) {
+        if (this._info.info.user_info.forbidden) {
             //冻结
             btn_1.active = false;
             btn_3.active = true;
@@ -138,8 +139,8 @@ export default class UIClubMember extends BaseForm {
             btn_1["index"] = i;
             btn_1.on(cc.Node.EventType.TOUCH_END, this.onClickBtn, this)
         }
-        this.editName.string = this._info.remark_name
-        this.editjieshao.string = this._info.remark_desc
+        this.editName.string = this._info.itemData.remark_name
+        this.editjieshao.string = this._info.itemData.remark_desc
     }
     initPanel_mid() {
         let panel_type = this.panel_mid.getChildByName('panel_type')
@@ -188,7 +189,7 @@ export default class UIClubMember extends BaseForm {
     reqDataInfo() {
         let info: any = {
             club_id: ClubCache.club_id,
-            user_id: this._info.user_info.user_id,
+            user_id: this._info.info.user_info.user_id,
             game_type: this._dateType,       //游戏类型0-all,1-NLH，2-PLO，3-6+
             time_type: (this._dateType + 1),      //时间类型1-今日, 2-7天, 3-30天, 4-生涯,5-选择时间
             time_long: new Date().getTime(),       //客户端时间戳
@@ -235,15 +236,15 @@ export default class UIClubMember extends BaseForm {
         if (index == 1) {
             // 冻结
             title = "冻结";
-            content = "确定冻结 " + this._info.user_info.nickname + "?";
+            content = "确定冻结 " + this._info.info.user_info.nickname + "?";
         } else if (index == 3) {
             // 解冻
             title = "解冻";
-            content = "确定解冻 " + this._info.user_info.nickname + "?";
+            content = "确定解冻 " + this._info.info.user_info.nickname + "?";
         } else if (index == 2) {
             // 删除
             title = "删除";
-            content = "确定删除 " + this._info.user_info.nickname + "?";
+            content = "确定删除 " + this._info.info.user_info.nickname + "?";
         }
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent, {
             type: UIDialogComponent.DialogType.CommitCancel,
@@ -257,7 +258,7 @@ export default class UIClubMember extends BaseForm {
                 if (index == 1) {
                     // 冻结
                     let info = {
-                        user_id: this._info.user_info.user_id,
+                        user_id: this._info.info.user_info.user_id,
                         club_id: ClubCache.club_id,
                     }
                     LobbyControl.getInstance().reqClubLockUser(info).then(
@@ -273,7 +274,7 @@ export default class UIClubMember extends BaseForm {
                 } else if (index == 3) {
                     // 解冻
                     let info = {
-                        user_id: this._info.user_info.user_id,
+                        user_id: this._info.info.user_info.user_id,
                         club_id: ClubCache.club_id,
                     }
                     LobbyControl.getInstance().reqClubUnlockUser(info).then(
@@ -289,7 +290,7 @@ export default class UIClubMember extends BaseForm {
                 } else if (index == 2) {
                     // 删除
                     let info = {
-                        user_id: this._info.user_info.user_id,
+                        user_id: this._info.info.user_info.user_id,
                         club_id: ClubCache.club_id,
                     }
                     LobbyControl.getInstance().reqClubDeleleUser(info).then(
@@ -309,7 +310,7 @@ export default class UIClubMember extends BaseForm {
         this.editName.string = this.editName.string.trim()
         if (this.editName.string == '') return
         let parms = {
-            "user_id": this._info.user_info.user_id,
+            "user_id": this._info.info.user_info.user_id,
             "club_id": ClubCache.club_id,
             "remark_name": this.editName.string,
         }
@@ -321,7 +322,7 @@ export default class UIClubMember extends BaseForm {
         this.editjieshao.string = this.editjieshao.string.trim()
         if (this.editjieshao.string == '') return
         let parms = {
-            "user_id": this._info.user_info.user_id,
+            "user_id": this._info.info.user_info.user_id,
             "club_id": ClubCache.club_id,
             // "remark_name": this.editName.string,
             "remark_desc": this.editjieshao.string
@@ -331,14 +332,17 @@ export default class UIClubMember extends BaseForm {
         this.post(EventName.requestClubMemList);
     }
     initVip() {
-        if (this._info.user_level == 0) {
-            this.panel_vip.active = true
-            this.panel_vipMan.active = false
-            this.initPanel_vip()
-        } else if (this._info.user_level == 4) {
+        // this.panel_vip.active = false
+        // this.panel_vipMan.active = false
+        this.panel_down.active = this._flag;
+        if (this._info.info.user_level == 4) {
             this.panel_vip.active = false
             this.panel_vipMan.active = true
             this.initPanel_vipMan()
+        } else {
+            this.panel_vip.active = true
+            this.panel_vipMan.active = false
+            this.initPanel_vip()
         }
     }
 
@@ -382,6 +386,32 @@ export default class UIClubMember extends BaseForm {
         this.bindClick(Rectangle2, () => {
             //贵宾统计
         }, this)
+    }
+
+
+    //按钮点击事件
+
+    btnclick(event, customdata) {
+        let key = Number(customdata)
+        switch (key) {
+            case 1:
+                //绑定贵宾
+                break;
+            case 2:
+                //解绑贵宾
+                break;
+            case 3:
+                //下线成员总数
+
+                break;
+            case 4:
+                //贵宾统计
+                break;
+
+
+            default:
+                break;
+        }
     }
 
 }

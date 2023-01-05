@@ -3,8 +3,8 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 14:27:55
- * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberItem.ts
+ * @LastEditTime: 2023-01-05 11:04:54
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/MemberItem.ts
  */
 
 import { UIDefine } from "../../define/UIDefine";
@@ -63,6 +63,6 @@ export default class MemberItem extends UIBase {
         // data.user_info.remark_desc = this._data.remark_desc
         // data.user_info.remark_name = this._data.remark_name
 
-        UIComponent.open(UIDefine.UIClubMember, { info: data });
+        UIComponent.open(UIDefine.UIClubMember, { info: data, itemData: this._data });
     }
 }

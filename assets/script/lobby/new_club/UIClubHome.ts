@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-04 17:41:43
+ * @LastEditTime: 2023-01-05 11:59:02
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -210,7 +210,7 @@ export default class UIClubHome extends BaseForm {
             case 4:
                 createBtn.active = false
                 this.menuShow.children[5].active = false
-                this.menuShow.children[2].active = false
+                // this.menuShow.children[2].active = false
                 break;
             default:
                 break;
@@ -230,7 +230,11 @@ export default class UIClubHome extends BaseForm {
                 UIComponent.open(UIDefine.UIManageLabor)
                 break;
             case 3:
-                UIComponent.open(UIDefine.UIClubMerberManager)
+                if (ClubCache.user_level == 4) {
+                    UIComponent.open(UIDefine.UIClubVipMemberManage)
+                } else {
+                    UIComponent.open(UIDefine.UIClubMerberManager)
+                }
                 break;
             case 4:
                 UIComponent.open(UIDefine.UIClubDataMange)
