@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-27 10:30:55
+ * @LastEditTime: 2023-01-05 17:23:12
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -184,7 +184,9 @@ export default class UIClubCreateMatch extends BaseForm {
     onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
         let title = "UIClub_MatchTable"
-        this.comFormTitle.initData(title, this);
+        let _title = i18nMgr.Get(title)
+        _title = _title + this.getMatchType()
+        this.comFormTitle.initData(_title, this);
         if (data) {
             this.editModel(data);
         } else {
@@ -194,6 +196,25 @@ export default class UIClubCreateMatch extends BaseForm {
         this.initUI()
 
 
+    }
+    getMatchType() {
+        let _string = 'NLH'
+        switch (ClubCache.CreateGameType) {
+            case 1:
+                _string == 'NLH'
+                break;
+            case 2:
+                _string == 'PLO'
+                break;
+            case 3:
+                _string == '6+'
+                break;
+                break;
+
+            default:
+                break;
+        }
+        return '-' + _string
     }
     calculateIndex(key, value) {
         let flag = false;

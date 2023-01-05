@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-05 11:59:02
+ * @LastEditTime: 2023-01-05 17:28:50
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -76,6 +76,8 @@ export default class UIClubHome extends BaseForm {
 
     @property(cc.Node)
     item_bq: cc.Node = null;
+    @property(cc.Button)
+    createBtn: cc.Button = null;
 
     _showTsMessIndex = 0;
     _lastGetId = 1
@@ -150,13 +152,13 @@ export default class UIClubHome extends BaseForm {
     refreshData() {
         let club_introduce = this.layout.getChildByName('club_introduce');
         club_introduce.getComponent(cc.Label).string = ClubCache.desc;
+        this.createBtn.interactable = ClubCache.user_level == 1 || ClubCache.user_level == 3
+
     }
 
     initTop() {
-        let club_introduce = this.layout.getChildByName('club_introduce');
-        club_introduce.getComponent(cc.Label).string = ClubCache.desc;
+        this.refreshData();
         let messNode = this.layout.getChildByName('messNode');
-
         let icon = cc.find('iconMask/icon', messNode)
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), ClubCache.logo)
         cc.find('messLayout/nameNode/name', messNode).getComponent(cc.Label).string = ClubCache.club_name;
