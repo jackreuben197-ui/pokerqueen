@@ -9275,7 +9275,7 @@
     "component": "",
     "_componentId": "b9fd47K9L9Ht4hzJnFO/y+W",
     "handler": "btnclick",
-    "customEventData": ""
+    "customEventData": "1"
   },
   {
     "__type__": "cc.PrefabInfo",
