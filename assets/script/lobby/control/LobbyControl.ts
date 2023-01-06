@@ -1,4 +1,5 @@
 import { ProcedureEnum } from "../../define/EIDefine";
+import { ClubCache } from "../../frame/data/club/ClubCache";
 import { GameCache } from "../../game/GameCache";
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -731,7 +732,8 @@ export class LobbyControl {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
@@ -749,7 +751,8 @@ export class LobbyControl {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
@@ -884,7 +887,7 @@ export class LobbyControl {
         });
     }
 
-    
+
 
 
 

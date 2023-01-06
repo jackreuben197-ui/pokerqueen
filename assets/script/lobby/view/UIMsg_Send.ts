@@ -108,7 +108,7 @@ export default class UIMsg_Send extends BaseForm {
 
     reqGetMsgList() {
         let info = {
-            
+
 
         }
         LobbyControl.getInstance().reqGetMsgList(info).then(
@@ -122,7 +122,7 @@ export default class UIMsg_Send extends BaseForm {
                     }
                 ]
                 this.testStr = head;
-                for (let i=0; i<res.data.data.length; i++) {
+                for (let i = 0; i < res.data.data.length; i++) {
                     this.testStr.push(res.data.data[i]);
                 }
                 // this.testStr.concat(res.data.data);
@@ -196,7 +196,7 @@ export default class UIMsg_Send extends BaseForm {
 
             _cloneNode.on(cc.Node.EventType.TOUCH_START, (event: cc.Event.EventTouch) => {
                 let str = this.testStr[i].template_name;
-                if (str == " 空白 " || str == "新建牌局模板" || str == " + " ) {
+                if (str == " 空白 " || str == "新建牌局模板" || str == " + ") {
                     this.clickType = 2;
                     return;
                 }
