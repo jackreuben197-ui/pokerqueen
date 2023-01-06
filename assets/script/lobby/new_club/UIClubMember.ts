@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-05 12:57:47
+ * @LastEditTime: 2023-01-06 12:35:58
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -28,6 +28,7 @@ import { EventName } from "../../config/EventName";
 import { memberRoleConfig } from "../../frame/data/rate/RateConfig";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import { APIOrgClubUserInfo, APIOrgClubUserRole_change, Web_User_Info } from "../../net/https/WebRequest";
+import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubMember')
@@ -89,6 +90,7 @@ export default class UIClubMember extends BaseForm {
         })
         this.post(EventName.requestClubMemList);
         let data: any = APIOrgClubUserInfo.Response.data
+        ClubUserDataCache.setUserData(data);
         this._info = { info: data, itemData: this._info.itemData };
         this.initTop()
         this.initPanel_mid()

@@ -2154,8 +2154,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 815,
-      "height": 135
+      "width": 1044,
+      "height": 136
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3798,8 +3798,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 815,
-      "height": 135
+      "width": 1044,
+      "height": 136
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -36410,14 +36410,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
+        -98.904,
         50,
         0,
         0,
@@ -36484,7 +36484,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -109.625,
+        0,
         0,
         0,
         0,
@@ -36603,7 +36603,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        48.875,
+        158.5,
         0,
         0,
         0,
@@ -36710,7 +36710,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        87.375,
+        197,
         0,
         0,
         0,
@@ -36864,14 +36864,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
+        -98.904,
         -35,
         0,
         0,
@@ -36938,7 +36938,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -109.625,
+        0,
         0,
         0,
         0,
@@ -37057,7 +37057,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        48.875,
+        158.5,
         0,
         0,
         0,
@@ -37164,7 +37164,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        87.375,
+        197,
         0,
         0,
         0,

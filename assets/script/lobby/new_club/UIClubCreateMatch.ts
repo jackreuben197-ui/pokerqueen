@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-05 17:23:12
+ * @LastEditTime: 2023-01-06 12:33:17
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -74,7 +74,7 @@ export default class UIClubCreateMatch extends BaseForm {
     toggleNode: cc.Node = null;
     yxbz: cc.Node = null;
     etp: cc.Node = null;
-
+    coinNode: cc.Node = null;
     _bmState = false;
     _yckpState = false;
     _kzwjdrState = false;
@@ -174,12 +174,12 @@ export default class UIClubCreateMatch extends BaseForm {
         this.toggleNode = this.getChildNodeOrComponent("toggleNode");
         this.yxbz = this.getChildNodeOrComponent("yxbz");
         this.etp = this.getChildNodeOrComponent("etp");
+        this.coinNode = this.getChildNodeOrComponent("coinNode");
 
         this.zxblbs['levelData'] = { min: 1, total: 4, level: 1 }
         this.zwrs['levelData'] = { min: 2, total: 9, level: 2 }
         this.zdks['levelData'] = { min: 2, total: 9, level: 2 }
         this.Straddle['levelData'] = { min: 0, total: 6, level: 2 }
-
     }
     onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
@@ -194,7 +194,13 @@ export default class UIClubCreateMatch extends BaseForm {
         }
 
         this.initUI()
-
+    }
+    initDiamond() {
+        let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
+        own.string = 1000 + '';
+        let pay = cc.find('pay/num', this.coinNode).getComponent(cc.Label)
+        let num = this._selectTitle == 0 ? 15 : 0
+        pay.string = num + '';
 
     }
     getMatchType() {
@@ -454,6 +460,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.memberListT.getChildByName('title').color = this._selectTitle == TITALTYPE.GAME_TYPE ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         this.applyListT.getChildByName('title').color = this._selectTitle == TITALTYPE.MODEL ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         this.clubIdNode.active = this._selectTitle == TITALTYPE.MODEL
+        this.initDiamond();
     }
     initSelect() {
         cc.find('btn_switch/open', this.yckp).active = this._yckpState;

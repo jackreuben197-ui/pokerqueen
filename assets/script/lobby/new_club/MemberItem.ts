@@ -3,12 +3,13 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-05 11:04:54
+ * @LastEditTime: 2023-01-06 12:35:30
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/MemberItem.ts
  */
 
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { APIOrgClubUserInfo, Web_User_Info } from "../../net/https/WebRequest";
@@ -59,6 +60,7 @@ export default class MemberItem extends UIBase {
             "club_id": ClubCache.club_id
         })
         let data: any = APIOrgClubUserInfo.Response.data
+        ClubUserDataCache.setUserData(data);
         // data.user_info.user_join_club_time = this._data.user_join_club_time
         // data.user_info.remark_desc = this._data.remark_desc
         // data.user_info.remark_name = this._data.remark_name
