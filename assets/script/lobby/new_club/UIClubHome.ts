@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-06 12:59:33
+ * @LastEditTime: 2023-01-07 10:24:03
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubHome.ts
  */
 
@@ -268,7 +268,9 @@ export default class UIClubHome extends BaseForm {
         this.menuNode.active = this.toggleType == 1;
         this.subView.active = this.toggleType == 1;
         this.messView.active = this.toggleType == 2;
-
+        if (this.toggleType == 2) {
+            this.initChat();
+        }
     }
     toggleClick() {
         this.toggleType = this.toggleType == 1 ? 2 : 1
@@ -327,9 +329,9 @@ export default class UIClubHome extends BaseForm {
         let data: any = APIOrgGetMessList.Response.data
         let node = null;
         data = data.data
-        data.sort((a: any, b: any) => {
-            return a.id - b.id
-        })
+        // data.sort((a: any, b: any) => {
+        //     return a.id - b.id
+        // })
         // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
         if (data?.length == 0) return
         let id = data[data.length - 1].id
@@ -349,7 +351,6 @@ export default class UIClubHome extends BaseForm {
             node.getComponent(node.name).initData(element);
         }
         this._offset = this.messScoContent.childrenCount;
-        // this._reqEnd = this.messScoContent.childrenCount >= this._total;
         this.staSchedu();
         this.scheduleOnce(() => {
             this.messScrollView.scrollToBottom();
@@ -359,19 +360,21 @@ export default class UIClubHome extends BaseForm {
     staSchedu() {
         this.getNewMess();
         this.unscheduleAllCallbacks()
-
+        // if (this.toggleType == 2) {
+        //     this.initChat();
+        // }
         this.schedule(() => {
             if (this.toggleType == 2) {
                 this.initChat();
-            } else {
-                this.getNewMess();
             }
+            this.getNewMess();
         }, 8)
     }
     async getNewMess() {
-        this.changeTsMes();
+        this.changeTsMes()
         await UIClubModel.mInstance.APIOrgGetNewMessNum({ msg_id: this._lastGetId });
         let data: any = APIOrgGetNewMessNum.Response.data
+        this._reqEnd = data == 0;
         this.setNewNum(data);
     }
     changeTsMes() {
