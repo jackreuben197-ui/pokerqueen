@@ -1,6 +1,17 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-12-19 15:49:57
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-01-09 15:38:44
+ * @FilePath: /pokerqueen/assets/script/mtt/realTime/MttRealTimeActionNode.ts
+ */
 import GC from "../../frame/GameControl";
+import { StringHelper } from "../../helper/StringHelper";
 import { Web_Mtt } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
+import TimeHelper from "../../helper/TimeHelper";
+import { setInterval } from "timers";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -13,7 +24,7 @@ export default class MttRealTimeActionNode extends UIBase {
     private cur: cc.Label = null;
     private next: cc.Label = null;
     private nextTime: cc.Label = null;
-
+    _mRoomLeaveTime = null;;
     lateLoad() {
         super.lateLoad();
         this.time = this.getChildNodeOrComponent("time", cc.Label);
@@ -57,9 +68,26 @@ export default class MttRealTimeActionNode extends UIBase {
         this.setText(this.buy, `${info.alive}/${info.total_buy_time}`)
         this.setText(this.cur, `${info.sb}/${info.sb * 2}`)
         this.setText(this.next, `${info.nsb}/${info.nsb * 2}`)
-        this.setText(this.nextTime, "UITexasReport_Text_MatchZmsysj", info.upblind_interval / 60);
-
+        this.setText(this.nextTime, "UITexasReport_Text_MatchZmsysj", StringHelper.FormatIntOrFloat1(info.upblind_interval / 60))
+        if (!this._mRoomLeaveTime) {
+            this._mRoomLeaveTime = info.upblind_interval
+            this.ShowLeaveTimer()
+        }
         // 进入游戏时才能拿到
         // this.textMatchZmsysj.text = TimeHelper.ShowRemainingSemicolonPure(raiseBlindTime);
+    }
+
+    ShowLeaveTimer() {
+        // TimerComponent mTC = Game.Scene.ModelScene.GetComponent<TimerComponent>();
+        this.time.string = TimeHelper.ShowRemainingSemicolon(this._mRoomLeaveTime);
+        let id = setInterval(() => {
+            if (this._mRoomLeaveTime >= 0 && this.node.isValid) {
+                this._mRoomLeaveTime--;
+                this.time.string = TimeHelper.ShowRemainingSemicolon(this._mRoomLeaveTime)
+            } else {
+                clearInterval(id);
+                this.time.string = "00:00";
+            }
+        }, 1000)
     }
 }
