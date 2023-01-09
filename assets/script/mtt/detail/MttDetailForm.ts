@@ -146,7 +146,7 @@ export default class MttDetailForm extends BaseForm {
                     else {
                         let num = mttDetails.mtt.apply_fee_pool + mttDetails.mtt.apply_fee_service + mttDetails.mtt.apply_fee_hunter;
                         lbl_gold.string = `${i18nMgr.Get("UIMatch_MttDetailState_ReyBuFerr02"),
-                        num * 0.01}`;
+                            num * 0.01}`;
                     }
                 }
             }
@@ -183,7 +183,7 @@ export default class MttDetailForm extends BaseForm {
             let lbl_1 = baseNode.getChildByName("lbl_1").getComponent(cc.Label);
             let lbl_2 = baseNode.getChildByName("lbl_2").getComponent(cc.Label);
             if (i == 1) {
-                lbl_1.string = `${i18nMgr.Get("MTT_State_gametype")}`;
+                lbl_1.string = `${i18nMgr.Get("MTT_State_gametype")}:`;
                 lbl_2.string = mttDetails.mtt.poker_type == 2 ? six_List[mttDetails.mtt.game_type] : type_List[mttDetails.mtt.game_type];
             } else if (i == 2) {
                 lbl_1.string = i18nMgr.Get("MTT_State_Starting_Scoreboard");
@@ -240,7 +240,7 @@ export default class MttDetailForm extends BaseForm {
                 if (mttDetails.more.nbl) {
                     baseNode.active = true;
                     lbl_1.string = `${i18nMgr.Get("UITexasReport_Text_MatchNextBlindTip")}:` + "-" + mttDetails.more.nbl.toString();
-                    lbl_2.string = StringHelper.GetLongString(mttDetails.more.nsb) + "/" +StringHelper.GetLongString(mttDetails.more.nsb * 2) + "(" + StringHelper.GetLongString(mttDetails.more.nante)+ ")";
+                    lbl_2.string = StringHelper.GetLongString(mttDetails.more.nsb) + "/" + StringHelper.GetLongString(mttDetails.more.nsb * 2) + "(" + StringHelper.GetLongString(mttDetails.more.nante) + ")";
                 } else {
                     baseNode.active = false;
                 }
@@ -309,13 +309,11 @@ export default class MttDetailForm extends BaseForm {
                 body: Web_Room_Center_Mtt_Ranks.Request(reqInfo),
                 onSuccess: function () {
                     let tResp = Web_Room_Center_Mtt_Ranks.Response;
-                    if (tResp.code == 0)
-                    {
+                    if (tResp.code == 0) {
                         this.refreshListView(2, tResp.data);
                     }
-                    else
-                    {
-                      
+                    else {
+
                     }
                 }.bind(this),
                 onFailure: function (content) {
@@ -342,13 +340,11 @@ export default class MttDetailForm extends BaseForm {
                 body: Web_Room_Center_Mtt_Real_Prize.Request(reqInfo),
                 onSuccess: function () {
                     let tResp = Web_Room_Center_Mtt_Real_Prize.Response;
-                    if (tResp.code == 0)
-                    {
+                    if (tResp.code == 0) {
                         this.refreshListView(3, tResp);
                     }
-                    else
-                    {
-                      
+                    else {
+
                     }
                 }.bind(this),
                 onFailure: function (content) {
@@ -375,13 +371,11 @@ export default class MttDetailForm extends BaseForm {
                 body: Web_Room_Center_Mtt_Rooms.Request(reqInfo),
                 onSuccess: function () {
                     let tResp = Web_Room_Center_Mtt_Rooms.Response;
-                    if (tResp.code == 0)
-                    {
+                    if (tResp.code == 0) {
                         this.refreshListView(4, tResp);
                     }
-                    else
-                    {
-                      
+                    else {
+
                     }
                 }.bind(this),
                 onFailure: function (content) {
@@ -408,13 +402,11 @@ export default class MttDetailForm extends BaseForm {
                 body: Web_Room_Center_Mtt_Details.Request(reqInfo),
                 onSuccess: function () {
                     let tResp = Web_Room_Center_Mtt_Details.Response;
-                    if (tResp.code == 0)
-                    {
+                    if (tResp.code == 0) {
                         this.refreshListView(5, tResp);
                     }
-                    else
-                    {
-                      
+                    else {
+
                     }
                 }.bind(this),
                 onFailure: function (content) {
@@ -448,7 +440,7 @@ export default class MttDetailForm extends BaseForm {
             len = data.length;
         }
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item" + index);
-        let scrollView = this.getChildNodeOrComponent("sv_down" + (index-1), cc.ScrollView);
+        let scrollView = this.getChildNodeOrComponent("sv_down" + (index - 1), cc.ScrollView);
         scrollView.scrollToTop();
         scrollView.content.removeAllChildren();
         for (let i = 0; i < len; i++) {
@@ -484,22 +476,18 @@ export default class MttDetailForm extends BaseForm {
                 lbl_jp.getComponent(cc.Label).string = rank.toString();
                 let lbl_score = _cloneNode.getChildByName("lbl_score");
                 lbl_jp.active = true;
-                if (UIMatchMttModel.Instance.MttInfo.mtt.hunter_on == 0)
-                {
+                if (UIMatchMttModel.Instance.MttInfo.mtt.hunter_on == 0) {
                     //等于0是关闭猎人赛
                     lbl_score.getComponent(cc.Label).string = StringHelper.GetLongString(itemInfo.award);
                 }
-                else
-                {
+                else {
                     lbl_score.getComponent(cc.Label).string = StringHelper.GetLongString(itemInfo.award) + "+" + i18nMgr.Get("UIReward_Bounty");
                 }
                 let img_jp_1 = _cloneNode.getChildByName("img_jp_1");
                 let img_jp_2 = _cloneNode.getChildByName("img_jp_2");
                 let img_jp_3 = _cloneNode.getChildByName("img_jp_3");
-                if (itemInfo.min == itemInfo.max)
-                {
-                    switch (itemInfo.min)
-                    {
+                if (itemInfo.min == itemInfo.max) {
+                    switch (itemInfo.min) {
                         case 1:
                             img_jp_1.active = true;
                             img_jp_2.active = false;
@@ -549,7 +537,7 @@ export default class MttDetailForm extends BaseForm {
                 let lbl_addNum4 = this.getChildNodeOrComponent("lbl_addNum4");
                 lbl_addNum4.getComponent(cc.Label).string = len.toString();
                 let lbl_jp = _cloneNode.getChildByName("lbl_jp");
-                lbl_jp.getComponent(cc.Label).string = (i+1).toString();
+                lbl_jp.getComponent(cc.Label).string = (i + 1).toString();
                 let lbl_mz = _cloneNode.getChildByName("lbl_mz");
                 let lbl_go = _cloneNode.getChildByName("lbl_go");
                 let lbl_time = _cloneNode.getChildByName("lbl_time");
@@ -560,16 +548,14 @@ export default class MttDetailForm extends BaseForm {
                 lbl_mz.getComponent(cc.Label).string = StringHelper.GetLongString(sb) + "/" + StringHelper.GetLongString((sb * 2));
                 lbl_go.getComponent(cc.Label).string = StringHelper.GetLongString(ante);
                 lbl_time.getComponent(cc.Label).string = i18nMgr.Get("UITexasReport_Text_MatchNextBlindTime").replace("{0}", (data.mtt.upblind_interval / 60).toString());
-                if (data.mtt.addon_begin_bl.toString() == (i+1).toString() && data.mtt.addon_begin_bl > 0)
-                {
+                if (data.mtt.addon_begin_bl.toString() == (i + 1).toString() && data.mtt.addon_begin_bl > 0) {
                     // img_stop.active = true;
                     // des_text.text = LanguageManager.Get("MTT_Blind_Deadline_add_op");
                 }
-                if (data.mtt.addon_end_bl.toString() == (i+1) && data.mtt.addon_end_bl > 0)
-                {
+                if (data.mtt.addon_end_bl.toString() == (i + 1) && data.mtt.addon_end_bl > 0) {
                     img_stop.active = true;
                     // des_text.text = LanguageManager.Get("MTT_Blind_Deadline_add_cl");
-    
+
                 }
             }
         }
@@ -801,7 +787,7 @@ export default class MttDetailForm extends BaseForm {
                                 // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
                             });
                         });
-                        
+
                     }
                     break;
             }
