@@ -109,7 +109,6 @@ export default class Main extends cc.Component {
     protected update(dt: number): void {
         GC.uc.Update(dt);
     }
-
     start() {
         console.log("start");
         ProcedureManager.Init();

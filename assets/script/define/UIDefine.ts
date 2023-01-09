@@ -102,21 +102,29 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMsg_Send",
         Title: "消息推送",
     },
-    //设置-消息
-    UIMine_Message: {
-        UIType: UIType.Form,
-        Name: "UIMine_Message",
-        Bundle: null,
-        Path: "main/lobby/prefab/UIMine_Message",
-        Title: "UIMine_MsgSummary",
-    },
-    //设置-消息
+    //公会消息
     UIMine_MessageList: {
         UIType: UIType.Form,
         Name: "UIMine_MessageList",
         Bundle: null,
-        Path: "main/lobby/prefab/UIMine_MessageList",
+        Path: "main/new_club/message/UIMine_MessageList",
         Title: "UIMine_MsgSummary",
+    },
+    //系统公会等消息
+    UIMine_Message: {
+        UIType: UIType.Form,
+        Name: "UIMine_Message",
+        Bundle: null,
+        Path: "main/new_club/message/UIMine_Message",
+        Title: "UIMine_MsgSummary",
+    },
+    //带入申请消息
+    UIMsgIntoList: {
+        UIType: UIType.Form,
+        Name: "UIMsgIntoList",
+        Bundle: null,
+        Path: "main/new_club/message/UIMsgIntoList",
+        Title: "UIClub_IntoApply",
     },
     //设置-玩家信息
     UIMine_PlayInfo: {
@@ -205,14 +213,6 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/prefab/record/UIRecordScore",
         Title: "UIMine_RecordDetailForNormal_FENSVUz3",
-    },
-    //带入申请
-    UIMsgIntoList: {
-        UIType: UIType.Form,
-        Name: "UIMsgIntoList",
-        Bundle: null,
-        Path: "main/lobby/prefab/record/UIMsgIntoList",
-        Title: "UIClub_IntoApply",
     },
     //收藏牌谱
     UICollectScore: {

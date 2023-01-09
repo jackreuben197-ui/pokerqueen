@@ -1760,7 +1760,7 @@ export class Web_Org_Club_Get {
     static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
 
 }
-
+//公会玩家钱包充值
 export class Web_Recharge_Gold {
     //接口地址
     static API: string = "/api/order/user/recharge";
@@ -1776,8 +1776,9 @@ export class Web_Recharge_Gold {
         this.RequestParams = param;
         return param;
     }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+    static Response: { code?: number, message?: string, data?: typeof Web_Recharge_Gold.ResponseData };
 }
+//公会玩家钱包提取
 export class Web_Tiqu_Gold {
     //接口地址
     static API: string = "/api/order/user/withdraw";
@@ -1793,7 +1794,7 @@ export class Web_Tiqu_Gold {
         this.RequestParams = param;
         return param;
     }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+    static Response: { code?: number, message?: string, data?: typeof Web_Tiqu_Gold.ResponseData };
 
 }
 //公会基金充值
@@ -4035,6 +4036,41 @@ export class APIOrgClubAgentUser_list {
         code?: number, message?: string, data?: typeof APIOrgClubAgentUser_list.ResponseData
     };
 }
+
+//公会 玩家钱包 充提转记录
+export class Web_Club_Player_Order_Record {
+    public static API: string = "/api/order/user/order_records";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+    } = null;
+    public static Request(param) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?
+    };
+}
+//金币和USDT转换rate
+export class Web_ExchangeRate {
+    public static API: string = "/api/order/club/exchange_rate";
+    //字段声明
+    public static RequestParams: {
+    } = null;
+    public static ResponseData: {
+    } = null;
+    public static Request(param) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?
+    };
+}
+
+
 
 
 /**

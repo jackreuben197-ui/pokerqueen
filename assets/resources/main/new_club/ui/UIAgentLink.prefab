@@ -82,7 +82,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Back",
+    "_name": "$Back",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -686,7 +686,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Scroller",
+    "_name": "cc_ScrollView$Scroller",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -899,7 +899,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "ItemAgentLink",
+    "_name": "$ItemAgentLink",
     "_objFlags": 0,
     "_parent": {
       "__id__": 18
@@ -2082,7 +2082,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Button_Cancel",
+    "_name": "$Button_Cancel",
     "_objFlags": 0,
     "_parent": {
       "__id__": 7
@@ -2372,7 +2372,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Button_Commit",
+    "_name": "$Button_Commit",
     "_objFlags": 0,
     "_parent": {
       "__id__": 7
@@ -2676,7 +2676,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "d238ae7b-ceca-4b1a-97a8-d1ee0bffd218"
+      "__uuid__": "833db4c1-604a-4baa-b5e8-1f32a997d9e5"
     },
     "_type": 1,
     "_sizeMode": 0,

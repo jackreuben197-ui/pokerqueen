@@ -1,31 +1,24 @@
 import WebImageHelper from "../../../helper/WebImageHelper";
 import GGCombobox from "../../../ui/component/GGCombobox";
 import BaseForm from "../../../ui/form/BaseForm";
+import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class UIClubVipStatistics extends BaseForm {
+export default class UIClubVipStatistics extends BaseFormPlus {
 
     ///////////////////////引用声明////////////////////////
-    Label_People: cc.Label = null;
-    Label_Gold: cc.Label = null;
-    Label_USDT: cc.Label = null;
-    Com_Game: GGCombobox = null;
-    Com_Gold: GGCombobox = null;
-    Detail: cc.Node = null;
-    Com_Back: cc.Node = null;
-    Head: cc.Node = null;
-    protected declare_list: any = [
-        ["Com_Game", GGCombobox],
-        ["Com_Gold", GGCombobox],
-        ["Com_Back"],
-        ["Head"],
-        ["Detail"],
-        ["Label_People", cc.Label],
-        ["Label_Gold", cc.Label],
-        ["Label_USDT", cc.Label],
-    ]
+    cc_Label$People: cc.Label = null;
+    cc_Label$Gold: cc.Label = null;
+    cc_Label$USDT: cc.Label = null;
+
+    GGCombobox$Game: GGCombobox = null;
+    GGCombobox$Gold: GGCombobox = null;
+
+    $Detail: cc.Node = null;
+    $Com_Back: cc.Node = null;
+    $Head: cc.Node = null;
     ////////////////////////////////////////////////////
 
     Com_Game_List = [
@@ -43,32 +36,32 @@ export default class UIClubVipStatistics extends BaseForm {
     protected lateLoad() {
         super.lateLoad();
 
-        this.Com_Game.onOpen = this.Game_ComOpen.bind(this);
-        this.Com_Game.onSelect = this.Game_ComSelect.bind(this);
+        this.GGCombobox$Game.onOpen = this.Game_ComOpen.bind(this);
+        this.GGCombobox$Game.onSelect = this.Game_ComSelect.bind(this);
 
-        this.Com_Gold.onOpen = this.Gold_ComOpen.bind(this);
-        this.Com_Gold.onSelect = this.Gold_ComSelect.bind(this);
+        this.GGCombobox$Gold.onOpen = this.Gold_ComOpen.bind(this);
+        this.GGCombobox$Gold.onSelect = this.Gold_ComSelect.bind(this);
     }
 
     regiterTouchEvents() {
         super.regiterTouchEvents();
-        this.Com_Back.on("click", this.ComBackClick, this);
+        this.$Com_Back.on("click", this.ComBackClick, this);
     }
 
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         //初始化界面
-        this.Com_Game.closeBox();
-        this.Com_Gold.closeBox();
-        this.Com_Game.bindList(this.Com_Game_List);
-        this.Com_Gold.bindList(this.Com_Gold_List);
+        this.GGCombobox$Game.closeBox();
+        this.GGCombobox$Gold.closeBox();
+        this.GGCombobox$Game.bindList(this.Com_Game_List);
+        this.GGCombobox$Gold.bindList(this.Com_Gold_List);
         ////////////////////////////////////////////////////
         this.RefreshHeader(["", "w", "ID: 9999999"]);
         this.RefreshUICount([0, 0, 0]);
 
-        this.RefreshDetailItem(this.Detail.getChildByName("Item1"), [8, 8, 8]);
-        this.RefreshDetailItem(this.Detail.getChildByName("Item2"), [8, 8, 8]);
-        this.RefreshDetailItem(this.Detail.getChildByName("Item3"), [8, 8, 8]);
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item1"), [8, 8, 8]);
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item2"), [8, 8, 8]);
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item3"), [8, 8, 8]);
     }
     fadeInComplete() {
         super.fadeInComplete();
@@ -77,13 +70,13 @@ export default class UIClubVipStatistics extends BaseForm {
     }
 
     Game_ComOpen() {
-        this.Com_Gold.closeBox();
+        this.GGCombobox$Gold.closeBox();
     }
     Game_ComSelect(index: number) {
         console.log(index);
     }
     Gold_ComOpen() {
-        this.Com_Game.closeBox();
+        this.GGCombobox$Game.closeBox();
     }
     Gold_ComSelect(index: number) {
         console.log(index);
@@ -91,8 +84,8 @@ export default class UIClubVipStatistics extends BaseForm {
 
     //底层点击触发combobox组件关闭
     ComBackClick() {
-        this.Com_Game.closeBox();
-        this.Com_Gold.closeBox();
+        this.GGCombobox$Game.closeBox();
+        this.GGCombobox$Gold.closeBox();
     }
     //////////////////////刷新
     SetLabel(node: cc.Node, path: string, value: string) {
@@ -110,14 +103,15 @@ export default class UIClubVipStatistics extends BaseForm {
     }
     //刷新头部
     RefreshHeader(data: string[]) {
-        this.SetImage(this.Head, data[0]);
-        this.SetLabel(this.Head, "Label_Nick", data[1]);
-        this.SetLabel(this.Head, "Label_ID", data[2]);
+        this.SetImage(this.$Head, data[0]);
+        this.SetLabel(this.$Head, "Label_Nick", data[1]);
+        this.SetLabel(this.$Head, "Label_ID", data[2]);
     }
     //刷新成员金豆usdt数量
     RefreshUICount(data: number[]) {
-        this.Label_People.string = `${data[0]}`;
-        this.Label_Gold.string = `${data[1]}`;
-        this.Label_USDT.string = `${data[2]}`;
+        this.cc_Label$People.string = `${data[0]}`;
+        this.cc_Label$Gold.string = `${data[1]}`;
+        this.cc_Label$USDT.string = `${data[2]}`;
+
     }
 }

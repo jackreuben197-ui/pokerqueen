@@ -1099,7 +1099,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Head",
+    "_name": "$Head",
     "_objFlags": 0,
     "_parent": {
       "__id__": 26
@@ -1775,7 +1775,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "71273862-69a9-42be-8d8f-433266ae1036"
+      "__uuid__": "9cdca4ee-c84a-4ede-b7d8-ae122f4c7e63"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -2019,7 +2019,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label_People",
+    "_name": "cc_Label$People",
     "_objFlags": 0,
     "_parent": {
       "__id__": 41
@@ -2361,7 +2361,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "71273862-69a9-42be-8d8f-433266ae1036"
+      "__uuid__": "9cdca4ee-c84a-4ede-b7d8-ae122f4c7e63"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -2605,7 +2605,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label_Gold",
+    "_name": "cc_Label$Gold",
     "_objFlags": 0,
     "_parent": {
       "__id__": 56
@@ -2947,7 +2947,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "71273862-69a9-42be-8d8f-433266ae1036"
+      "__uuid__": "9cdca4ee-c84a-4ede-b7d8-ae122f4c7e63"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -3191,7 +3191,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label_USDT",
+    "_name": "cc_Label$USDT",
     "_objFlags": 0,
     "_parent": {
       "__id__": 71
@@ -3456,7 +3456,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Detail",
+    "_name": "$Detail",
     "_objFlags": 0,
     "_parent": {
       "__id__": 87
@@ -6298,7 +6298,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Com_Game",
+    "_name": "GGCombobox$Game",
     "_objFlags": 0,
     "_parent": {
       "__id__": 160
@@ -7586,7 +7586,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Com_Gold",
+    "_name": "GGCombobox$Gold",
     "_objFlags": 0,
     "_parent": {
       "__id__": 160
@@ -9080,7 +9080,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Com_Back",
+    "_name": "$Com_Back",
     "_objFlags": 0,
     "_parent": {
       "__id__": 14

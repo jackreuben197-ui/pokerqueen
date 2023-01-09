@@ -1,6 +1,8 @@
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import TexasGame from "../game/texas/TexasGame";
+import MessageModel from "../lobby/new_club/message/MessageModel";
+import WalletModel from "../lobby/view/pay/WalletModel";
 import { Bundle_Map } from "../manager/ResManager";
 import SoundComponent from "../sound/SoundComponent";
 import MoniModel from "./data/moni/MoniModel";
@@ -60,6 +62,14 @@ class GameControl {
 
     get bundle(): Map<string, cc.AssetManager.Bundle> {
         return Bundle_Map;
+    }
+
+    get wallet() {
+        return WalletModel.Instance;
+    }
+
+    get message() {
+        return MessageModel.Instance;
     }
 
     init() {

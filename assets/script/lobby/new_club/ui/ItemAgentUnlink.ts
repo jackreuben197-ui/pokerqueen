@@ -1,24 +1,25 @@
 import WebImageHelper from "../../../helper/WebImageHelper";
 import UIBase from "../../../ui/UIBase";
+import UIBasePlus from "../../../ui/UIBasePlus";
 import UIComponent from "../../../ui/UIComponent";
 import { UICommonMgr } from "../../../ui/UIMgr";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class ItemAgentUnlink extends UIBase {
+export default class ItemAgentUnlink extends UIBasePlus {
 
 
-    Label_Nick: cc.Label = null;
-    Label_ID: cc.Label = null;
+    cc_Label$Nick: cc.Label = null;
+    cc_Label$ID: cc.Label = null;
 
-    Head: cc.Sprite = null;
+    cc_Sprite$Head: cc.Sprite = null;
 
-    protected declare_list: [string, any?][] = [
-        ["Label_Nick", cc.Label],
-        ["Label_ID", cc.Label],
-        ["Head", cc.Sprite],
-    ]
+    // protected declare_list: [string, any?][] = [
+    //     ["Label_Nick", cc.Label],
+    //     ["Label_ID", cc.Label],
+    //     ["Head", cc.Sprite],
+    // ]
     protected lateLoad() {
         super.lateLoad();
     }
@@ -28,8 +29,8 @@ export default class ItemAgentUnlink extends UIBase {
     }
 
     private refreshUI() {
-        this.Label_Nick.string = this._param.nick;
-        this.Label_ID.string = `ID:  ${this._param.id}`;
-        WebImageHelper.SetHeadImage(this.Head, "");
+        this.cc_Label$Nick.string = this._param.nick;
+        this.cc_Label$ID.string = `ID:  ${this._param.id}`;
+        WebImageHelper.SetHeadImage(this.cc_Sprite$Head, "");
     }
 }   

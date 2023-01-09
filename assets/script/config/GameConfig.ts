@@ -103,3 +103,14 @@ export var Member_Order_List = [
     { show: "最后登录时间", index: 6, icon: "Up", order: 0, order_key: "time" },
     { show: "最后登录时间", index: 7, icon: "Down", order: 1, order_key: "time" },
 ];
+//页签状态 暂时支持6个页签
+export var Tabs_Status =
+{
+    [-1]: [0, 0, 0, 0, 0, 0],
+    0: [1, 0, 0, 0, 0, 0],
+    1: [0, 1, 0, 0, 0, 0],
+    2: [0, 0, 1, 0, 0, 0],
+    3: [0, 0, 0, 1, 0, 0],
+    4: [0, 0, 0, 0, 1, 0],
+    5: [0, 0, 0, 0, 0, 1],
+}

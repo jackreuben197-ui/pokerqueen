@@ -34,7 +34,7 @@ export default class UIMine extends UIBase {
 
     onLoad(): void {
         super.onLoad();
-        
+
     }
     protected lateLoad(): void {
         super.lateLoad();
@@ -153,7 +153,7 @@ export default class UIMine extends UIBase {
                 }
             )
         } else if (index == 1) {
-            UIComponent.open(UIDefine.UIMine_MessageList);
+            UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 2 });
         } else if (index == 2) {
             UIComponent.open(UIDefine.UIMineBag, null, { SceneUI: SceneManager.Instance.currUI });
         }

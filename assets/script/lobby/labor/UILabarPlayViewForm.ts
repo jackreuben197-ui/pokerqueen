@@ -332,7 +332,7 @@ export default class UILabarPlayViewForm extends UIBase {
     }
     createMess() {
         this.tabNode.active = false;
-        UIComponent.open(UIDefine.UIMine_MessageList, null, { SceneUI: SceneManager.Instance.currUI });
+        UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 1 }, { SceneUI: SceneManager.Instance.currUI });
     }
 
 

@@ -9,8 +9,8 @@ export class StringHelper {
     static getStringDiv100(num: number): string {
         return `${num / 100 ^ 0}`;
     }
-    static GetLongString(num: number): string {
-
+    static GetLongString(num: number | string): string {
+        num = +num;
         let n: number = num / 100;
         let str: string = `${n}`;
         if (~str.indexOf(".") && str.split(".")[1].length > 2) {

@@ -380,16 +380,19 @@ export default class UIClubMember extends BaseForm {
         switch (key) {
             case 1:
                 //绑定贵宾
+                UIComponent.open(UIDefine.UIAgentLink);
                 break;
             case 2:
                 //解绑贵宾
+                UIComponent.open(UIDefine.UIAgentUnlink);
                 break;
             case 3:
                 //下线成员总数
-
+                UIComponent.open(UIDefine.UIClubVipManage);
                 break;
             case 4:
                 //贵宾统计
+                UIComponent.open(UIDefine.UIClubVipStatistics);
                 break;
 
 

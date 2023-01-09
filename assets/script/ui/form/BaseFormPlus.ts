@@ -1,5 +1,6 @@
 
 
+import ComFormTitle from "../../common/ComFormTitle";
 import { i18nLabel } from "../../i18n/i18nLabel";
 import BaseForm from "./BaseForm";
 
@@ -8,15 +9,18 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class BaseFormPlus extends BaseForm {
 
+    protected ComFormTitle$title: ComFormTitle = null;
 
     protected lateLoad() {
         super.lateLoad();
-
         this.move_node = this.node.getChildByName("main");
-
-        this.title_label = cc.find("comFormTitle/comTopUI/title_label", this.move_node).getComponent(i18nLabel);
-        //this.getChildNodeOrComponent("title_label", i18nLabel);
-        this.back_click = cc.find("comFormTitle/comTopUI/back_click", this.move_node)
+        if (this.ComFormTitle$title) {
+            this.title_label = cc.find("comTopUI/title_label", this.ComFormTitle$title.node).getComponent(i18nLabel);
+            this.back_click = cc.find("comTopUI/back_click", this.ComFormTitle$title.node)
+        } else {
+            this.title_label = cc.find("comFormTitle/comTopUI/title_label", this.move_node).getComponent(i18nLabel);
+            this.back_click = cc.find("comFormTitle/comTopUI/back_click", this.move_node)
+        }
         this.content = this.move_node.getChildByName("content - 内容填充");
         this.top_block = this.move_node.getChildByName("top_block");;
         if (this.title_label) {
