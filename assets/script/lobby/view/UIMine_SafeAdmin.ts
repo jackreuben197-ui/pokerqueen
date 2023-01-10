@@ -43,20 +43,20 @@ export default class UIMine_SafeAdmin extends BaseForm {
 
     @property(cc.Label)
     third_status: cc.Label = null;
-    private comFormTitle: ComFormTitle = null;
+   
+
+    content: cc.Node = null;
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
-
+        
+        this.content = this.getChildNodeOrComponent("content");
     }
 
     async onShow(param?: any, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
-        this.comFormTitle.initData('UIMine_SafeAdmin', this);
-
-        let Layout: cc.Node = this.getChildNodeOrComponent("Layout");
-        Layout.children.forEach((item, i) => {
+        
+        this.content.children.forEach((item, i) => {
             item["index"] = i;
             item.on(cc.Node.EventType.TOUCH_END, this.onItemClick, this)
         });

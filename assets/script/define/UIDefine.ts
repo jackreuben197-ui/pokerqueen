@@ -595,6 +595,7 @@ export const UIDefine = {
         Name: "UIMine_SafeAdmin",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_SafeAdmin",
+        Title:"UIMine_SafeAdmin"
     },
     UIMine_bindMess: {
         UIType: UIType.Form,

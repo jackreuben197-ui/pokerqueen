@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-06 12:33:17
+ * @LastEditTime: 2023-01-10 16:12:37
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -14,7 +14,7 @@ import BaseForm from "../../ui/form/BaseForm";
 
 import ComFormTitle from "../../common/ComFormTitle";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { dcjfpConfig, dxmConfig, jslxConfig, zwslConfig, zxbljfpbsConfig } from "../../frame/data/rate/RateConfig";
+import { dxmConfig, } from "../../frame/data/rate/RateConfig";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { UIClubModel } from "../labor/UIClubModel";
 import { EventName } from "../../config/EventName";
@@ -318,7 +318,6 @@ export default class UIClubCreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this._jslxNum}`, this.jslx).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._dcjfpNum}`, this.dcjfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._sksjNum}`, this.sksj).getComponent(cc.Toggle).isChecked = true;
-        this.titleNode.active = ClubCache.tribe_name ? true : false;
         this.yxbz.active = ClubCache.CreateGameType == 2
         if (this.yxbz.active) {
             cc.find(`ToggleContainer/toggle${this._yxbzNum}`, this.yxbz).getComponent(cc.Toggle).isChecked = true;
@@ -459,8 +458,17 @@ export default class UIClubCreateMatch extends BaseForm {
         this.applyListT.getChildByName('block').active = this._selectTitle == TITALTYPE.MODEL
         this.memberListT.getChildByName('title').color = this._selectTitle == TITALTYPE.GAME_TYPE ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         this.applyListT.getChildByName('title').color = this._selectTitle == TITALTYPE.MODEL ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
-        this.clubIdNode.active = this._selectTitle == TITALTYPE.MODEL
         this.initDiamond();
+
+        if (ClubCache.joinCreateMatchType == 1) {
+            this.titleNode.active = false
+            this.clubIdNode.active = false
+            this.passNode.active = false
+            this.sryy.active = false
+        } else {
+            this.clubIdNode.active = this._selectTitle == TITALTYPE.MODEL
+            this.titleNode.active = ClubCache.tribe_name ? true : false;
+        }
     }
     initSelect() {
         cc.find('btn_switch/open', this.yckp).active = this._yckpState;
