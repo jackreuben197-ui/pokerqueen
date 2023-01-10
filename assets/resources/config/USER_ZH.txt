@@ -598,6 +598,9 @@ UIClub_ownDiamond=余额：
 UIClub_payDiamond=消耗：
 UIClub_shareMatch=共享牌局
 UIClub_receiveMatch=接收牌局
+UIClub_Match=牌局
+UIClub_FastBangan=快速开局
+
 
 IClub_MatchHome=创建牌局
 UIClub_MatchTable=创建牌桌

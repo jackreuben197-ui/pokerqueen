@@ -1125,7 +1125,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 180,
+      "width": 90,
       "height": 56.7
     },
     "_anchorPoint": {
@@ -1177,8 +1177,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "成员管理",
-    "_N$string": "成员管理",
+    "_string": "成员",
+    "_N$string": "成员",
     "_fontSize": 45,
     "_lineHeight": 45,
     "_enableWrapText": true,
@@ -1244,7 +1244,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 180,
+      "width": 100,
       "height": 5
     },
     "_anchorPoint": {
@@ -1637,7 +1637,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 180,
+      "width": 100,
       "height": 5
     },
     "_anchorPoint": {
@@ -2154,7 +2154,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1044,
+      "width": 850,
       "height": 136
     },
     "_anchorPoint": {
@@ -2210,7 +2210,7 @@
       "__uuid__": "63631556-8278-4080-acc2-58af91a0e079"
     },
     "_type": 1,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -3798,7 +3798,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1044,
+      "width": 850,
       "height": 136
     },
     "_anchorPoint": {
@@ -3854,7 +3854,7 @@
       "__uuid__": "63631556-8278-4080-acc2-58af91a0e079"
     },
     "_type": 1,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
