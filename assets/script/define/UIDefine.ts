@@ -363,18 +363,7 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/ui/UITexasGameEnd",
     },
-    UICreatelabor: {
-        UIType: UIType.Form,
-        Name: "UICreatelabor",
-        Bundle: null,
-        Path: "main/club/UICreatelabor",
-    },
-    UIlaborJoin: {
-        UIType: UIType.Form,
-        Name: "UIlaborJoin",
-        Bundle: null,
-        Path: "main/club/UIlaborJoin",
-    },
+
     //房间模版
     UILaborPlayViewForm: {
         UIType: UIType.CommonUI,
@@ -397,24 +386,8 @@ export const UIDefine = {
         Path: "prefab/ui/UITexasInsurance",
     },
 
-    UIPlayerLookLabor: {
-        UIType: UIType.Form,
-        Name: "UIPlayerLookLabor",
-        Bundle: null,
-        Path: "main/club/UIPlayerLookLabor",
-    },
-    UIManageLabor: {
-        UIType: UIType.Form,
-        Name: "UIManageLabor",
-        Bundle: null,
-        Path: "main/club/UIManageLabor",
-    },
-    UIJoinUnion: {
-        UIType: UIType.Form,
-        Name: "UIJoinUnion",
-        Bundle: null,
-        Path: "main/club/UIJoinUnion",
-    },
+
+
     UIlaborMerberManager: {
         UIType: UIType.Form,
         Name: "UIlaborMerberManager",
@@ -581,7 +554,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIClubDataMange",
         Bundle: null,
-        Path: "main/club/UIClubDataMange",
+        Path: "main/new_club/dataManger/UIClubDataMange",
     },
 
     UICalendar: {
@@ -595,7 +568,7 @@ export const UIDefine = {
         Name: "UIMine_SafeAdmin",
         Bundle: null,
         Path: "main/lobby/prefab/UIMine_SafeAdmin",
-        Title:"UIMine_SafeAdmin"
+        Title: "UIMine_SafeAdmin"
     },
     UIMine_bindMess: {
         UIType: UIType.Form,
@@ -628,21 +601,21 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIClubMerberManager",
         Bundle: null,
-        Path: "main/new_club/UIClubMerberManager",
+        Path: "main/new_club/memberAdmin/UIClubMerberManager",
     },
     //俱乐部主页
     UIClubHome: {
         UIType: UIType.Form,
         Name: "UIClubHome",
         Bundle: null,
-        Path: "main/new_club/UIClubHome",
+        Path: "main/new_club/clubList/UIClubHome",
     },
     //公会-成员详细
     UIClubMember: {
         UIType: UIType.Form,
         Name: "UIClubMember",
         Bundle: null,
-        Path: "main/new_club/UIClubMember",
+        Path: "main/new_club/memberAdmin/UIClubMember",
         Title: "详细资料",
     },
     //创建比赛选择
@@ -650,58 +623,90 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIClubCreateMatchHome",
         Bundle: null,
-        Path: "main/new_club/UIClubCreateMatchHome",
+        Path: "main/new_club/createMatch/UIClubCreateMatchHome",
     },
     //创建比赛
     UIClubCreateMatch: {
         UIType: UIType.Form,
         Name: "UIClubCreateMatch",
         Bundle: null,
-        Path: "main/new_club/UIClubCreateMatch",
+        Path: "main/new_club/createMatch/UIClubCreateMatch",
     },
     //排座列表管理
     UIMatchView: {
         UIType: UIType.CommonUI,
         Name: "UIMatchView",
         Bundle: null,
-        Path: "main/new_club/UIMatchView"
+        Path: "main/new_club/createMatch/UIMatchView"
     },
     //俱乐部升级
     UIClubUpLevel: {
         UIType: UIType.Form,
         Name: "UIClubUpLevel",
         Bundle: null,
-        Path: "main/new_club/UIClubUpLevel",
+        Path: "main/new_club/upLevel/UIClubUpLevel",
     },
     //汇率设置
     UIClubRateSet: {
         UIType: UIType.Form,
         Name: "UIClubRateSet",
         Bundle: null,
-        Path: "main/new_club/UIClubRateSet",
+        Path: "main/new_club/rateSet/UIClubRateSet",
     },
     //活动推送
     UIClubActive: {
         UIType: UIType.Form,
         Name: "UIClubActive",
         Bundle: null,
-        Path: "main/new_club/UIClubActive",
+        Path: "main/new_club/active/UIClubActive",
     },
     //活动弹窗
     UIClubActiveBord: {
         UIType: UIType.Board,
         Name: "UIClubActiveBord",
         Bundle: null,
-        Path: "main/new_club/UIClubActiveBord",
+        Path: "main/new_club/active/UIClubActiveBord",
     },
     //共享牌局
     UIClubShareMatch: {
         UIType: UIType.Form,
         Name: "UIClubShareMatch",
         Bundle: null,
-        Path: "main/new_club/UIClubShareMatch",
+        Path: "main/new_club/shareMatch/UIClubShareMatch",
     },
-
+    //创建俱乐部
+    UICreatelabor: {
+        UIType: UIType.Form,
+        Name: "UICreatelabor",
+        Bundle: null,
+        Path: "main/new_club/createClub/UICreatelabor",
+    },
+    //加入俱乐部
+    UIlaborJoin: {
+        UIType: UIType.Form,
+        Name: "UIlaborJoin",
+        Bundle: null,
+        Path: "main/new_club/createClub/UIlaborJoin",
+    },
+    //加入联盟
+    UIJoinUnion: {
+        UIType: UIType.Form,
+        Name: "UIJoinUnion",
+        Bundle: null,
+        Path: "main/new_club/createClub/UIJoinUnion",
+    },
+    UIPlayerLookLabor: {
+        UIType: UIType.Form,
+        Name: "UIPlayerLookLabor",
+        Bundle: null,
+        Path: "main/new_club/lookClub/UIPlayerLookLabor",
+    },
+    UIManageLabor: {
+        UIType: UIType.Form,
+        Name: "UIManageLabor",
+        Bundle: null,
+        Path: "main/new_club/lookClub/UIManageLabor",
+    },
 
 
 
@@ -752,7 +757,8 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/vip/UIClubVipMemberManage",
         Title: "成员管理"
-    }
+    },
+
 
 }
 //批量设置
