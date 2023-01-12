@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-10 11:12:03
+ * @LastEditTime: 2023-01-12 14:44:31
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIFriendMatch.ts
  */
 
@@ -19,6 +19,7 @@ import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "../labor/UIClubModel";
 import UIMatchChessItem from "../matchView/UIMatchChessItem";
 import ComFormTitle from "../../common/ComFormTitle";
+import UIClubMatchItem from "./UIClubMatchItem";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -83,8 +84,8 @@ export default class UIFriendMatch extends UIBase {
 
     }
     onRender(node: cc.Node, index: number) {
-        let item = node.getComponent(UIMatchChessItem);
-        item.initData(new LobbyRoomListItem(this._roomList[index]));
+        let item = node.getComponent(UIClubMatchItem);
+        item.initData(this._roomList[index]); //new LobbyRoomListItem(this._roomList[index])
     }
 
     protected regiterDispatchEvent(): void {
@@ -134,6 +135,10 @@ export default class UIFriendMatch extends UIBase {
         else {
             UIComponent.Instance.Toast('房间信息错误')
         }
+    }
+    openMessageList() {
+        UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 0 });
+
     }
     // update (dt) {}
 }

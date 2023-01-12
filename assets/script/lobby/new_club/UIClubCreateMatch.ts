@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-10 16:12:37
+ * @LastEditTime: 2023-01-12 14:30:53
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -674,6 +674,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.fee_permillage = Number(this.fwfbl.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) //服务费比例(0-100)
         room_config.second_public_cards = this._etpState;
         room_config.limit_bet_type = ClubCache.CreateGameType == 2 ? 1 : 0
+        room_config.anti_cheat_type = 1;  //防作弊
         let params: any = { name: modelName, room_config: room_config }
 
         room_config.limit_bring_in = this._kzwjdrState ? 1 : 0
@@ -718,7 +719,7 @@ export default class UIClubCreateMatch extends BaseForm {
                 this.post(EventName.updateFriendChessView)
                 this.top_block.active = false;
                 let _data = new LobbyRoomListItem(data.data.data);
-                GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch]);
+                GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
             }
         }
         this.close();
