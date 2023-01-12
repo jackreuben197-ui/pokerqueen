@@ -317,7 +317,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
             });
         });
     }
@@ -1110,21 +1111,5 @@ export class UIClubModel {
     }
 
     //////////////////////////////////////////////////////
-    CommonAPI(clubid: number, param: any, web: any,) {
-        return new Promise((resolve, reject) => {
-            let obj: any = {
-                request: web,
-                body: web.Request(param),
-                onSuccess: function () {
-                    resolve(web.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this)
-            }
-            clubid > 0 && (obj.headers = [["X-Club", clubid]]);
-
-            HttpRequest.Send(obj);
-        });
-    }
+    
 }

@@ -5,7 +5,7 @@ import GC from "../../../frame/GameControl";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import WebHelper from "../../../net/https/WebHelper";
-import { API_CLUB_APPLY_AUDIT } from "../../../net/https/WebRequest";
+import { API_CLUB_APPLY_AUDIT, WWW } from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
@@ -100,7 +100,7 @@ export default class UIMsgIntoList extends BaseFormPlus {
     noClick(button: cc.Button) {
         let index = button.node.parent["index"];
         let c_data = this.data[index];
-        UIClubModel.mInstance.CommonAPI(
+        WWW.Instance.CommonAPI(
             ClubCache.club_id,
             {
                 apply_id: c_data.id,
@@ -119,7 +119,7 @@ export default class UIMsgIntoList extends BaseFormPlus {
     okClick(button: cc.Button) {
         let index = button.node.parent["index"];
         let c_data = this.data[index];
-        UIClubModel.mInstance.CommonAPI(
+        WWW.Instance.CommonAPI(
             ClubCache.club_id,
             {
                 apply_id: c_data.id,

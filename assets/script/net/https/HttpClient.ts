@@ -7,6 +7,7 @@ import LoginSession from "../../session/LoginSession";
 import CCTools from "../../tools/CCTools";
 import UIComponent from "../../ui/UIComponent";
 import WebHelper from "./WebHelper";
+import { APIOrgFriendBringIn } from "./WebRequest";
 
 /**
  * Http端
@@ -18,7 +19,7 @@ export default class HttpClient {
      * post 请求
      * headers 头文件 格式 [["name1","value"],["name2","value"]];
      */
-    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true }) {
+    static async post({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true, api = null }) {
         if (isJson) {
             body = JSON.stringify(body);
         }
@@ -27,22 +28,22 @@ export default class HttpClient {
         let response: string = <string>await this.__request(url, false, body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http post - response : ", url, response);
-        this.__response(response, onFailure, onSuccess);
+        this.__response(response, onFailure, onSuccess, api);
     }
     /**
      * get 请求
      */
-    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true }) {
+    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true, api = null }) {
         body = JSON.stringify(body);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
         let response: string = <string>await this.__request(url, true, body, headers, isJson);
         needJuhua && UIComponent.close(UIDefine.UIPromptComponent);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_response, ">>>>> http get - response : ", url, response);
-        this.__response(response, onFailure, onSuccess);
+        this.__response(response, onFailure, onSuccess, api);
     }
 
-    static __response(response, onFailure, onSuccess) {
+    static __response(response, onFailure, onSuccess, api) {
         switch (response) {
             case "timeout":
                 ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10126));
@@ -66,10 +67,15 @@ export default class HttpClient {
                 if (response_json?.code == 0) {
                     onSuccess && onSuccess(response_json);
                 } else {
-                    //错误码提示 friend room bringin applied
+                    //错误码提示 
                     switch (response_json.code) {
                         case 90001://朋友圈带入申请
-                            ToastManager.Instance.createToast("请等待房主审核");
+                            if (api == APIOrgFriendBringIn.API) {
+                                //friend room bringin applied
+                                ToastManager.Instance.createToast("请等待房主审核");
+                            } else {
+                                ToastManager.Instance.createToast(response_json.message);
+                            }
                             break;
                         case 90003:
                             ToastManager.Instance.createToast(response_json.message);

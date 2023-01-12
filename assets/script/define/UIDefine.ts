@@ -449,7 +449,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIWalletLayer",
         Bundle: null,
-        Path: "main/lobby/prefab/pay/UIWalletLayer",
+        Path: "main/new_club/pay/UIWalletLayer",
         //Title: "UIMine_WalletMy",
     },
 
@@ -457,7 +457,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIPayLayer",
         Bundle: null,
-        Path: "main/lobby/prefab/pay/UIPayLayer",
+        Path: "main/new_club/pay/UIPayLayer",
         Title: "充值",
     },
 
@@ -465,7 +465,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIChangeLayer",
         Bundle: null,
-        Path: "main/lobby/prefab/pay/UIChangeLayer",
+        Path: "main/new_club/pay/UIChangeLayer",
         Title: "转换",
     },
 

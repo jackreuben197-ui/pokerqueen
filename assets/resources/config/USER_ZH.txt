@@ -2836,6 +2836,7 @@ OpCodeString_RECHARGE=充豆
 OpCodeString_LOCK=冻结
 OpCodeString_UNLOCK=解冻
 OpCodeString_WLOCK=提豆冻结
+OpCodeString_EXCHLOCK=兑换冻结
 OpCodeString_WROLLBACK=提豆失败
 OpCodeString_WUNLOCK=提豆成功
 OpCodeString_BRINGIN=带入

@@ -19,9 +19,9 @@ import { ClubUserDataCache } from "../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../helper/StringHelper";
 import UIBase from "../../ui/UIBase";
 import { GameType, Game_Type, Table_Type } from "../../game/util/GameUtil";
-import { WalletType } from "../view/pay/UIWalletLayer";
 import List from "../../common/List";
 import { EventName } from "../../config/EventName";
+import { WalletType } from "./pay/UIWalletLayer";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 

@@ -1,9 +1,14 @@
 import ComFormTitle from "../../../common/ComFormTitle";
 import List from "../../../common/List";
+import GGEvent from "../../../event/GGEvent";
+import { ClubCache } from "../../../frame/data/club/ClubCache";
+import ClubInfoModel from "../../../frame/data/club/ClubInfoModel";
 import GC from "../../../frame/GameControl";
 import { i18nMgr } from "../../../i18n/i18nMgr";
+import { WWW, Web_Msg_Message_UnreadClear } from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import { LobbyControl } from "../../control/LobbyControl";
+import { UIClubModel } from "../../labor/UIClubModel";
 import UIMessageItem from "./UIMessageItem";
 
 
@@ -118,11 +123,29 @@ export default class UIMine_Message extends BaseFormPlus {
                 // this.SetItemInfo(res);
                 // this.refreshListView(index, res);
                 cb?.(res);
+                //假如未读设置为已读状态
+                if (GC.message.unreadList[this.index]) {
+                    this.reqUnreadClear();
+                }
             },
             (res) => {
             }
         )
     }
+    //清理未读消息
+    reqUnreadClear() {
+        WWW.Instance.CommonAPI(
+            0,
+            { msg_type: GC.message.MessageType[this.index] },
+            Web_Msg_Message_UnreadClear
+        ).then(
+            res => {
+                GC.message.unreadList[this.index] = 0;
+                this.post(GGEvent.Refresh_Unread);
+            },
+            res => {
 
-
+            }
+        )
+    }
 }

@@ -882,16 +882,10 @@ export class LobbyControl {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                //headers: [["X-Club", club_id]]
+                headers: [["X-Club", club_id]]
             });
         });
     }
-
-
-
-
-
-
 
     /********************************* 公共接口 ***********************************/
 

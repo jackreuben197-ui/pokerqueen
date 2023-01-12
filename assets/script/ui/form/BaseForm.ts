@@ -115,6 +115,7 @@ export default class BaseForm extends UIBase {
     fadeOutComplete(resolve?) {
         resolve?.(0);
         this.move_node.x = this.move_node.width;
+        this.fromUI?.getComponent(UIBase).reback();
     }
     /**
      * 显示隐藏来源界面

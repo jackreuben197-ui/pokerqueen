@@ -27,4 +27,7 @@ export default class GGEvent {
     //二套牌同意刷新
     static AgreeSecondPcsRefresh: string = "AgreeSecondPcsRefresh";
 
+    //刷新未读消息
+    static Refresh_Unread: string = "Refresh_Unread";
+
 }

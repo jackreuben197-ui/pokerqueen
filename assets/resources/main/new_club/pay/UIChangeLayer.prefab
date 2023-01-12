@@ -665,7 +665,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_show",
+    "_name": "cc_Label$Gold_Show",
     "_objFlags": 0,
     "_parent": {
       "__id__": 13
@@ -1281,7 +1281,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_show",
+    "_name": "cc_Label$USDT_Show",
     "_objFlags": 0,
     "_parent": {
       "__id__": 29
@@ -3118,7 +3118,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl",
+    "_name": "text",
     "_objFlags": 0,
     "_parent": {
       "__id__": 76
@@ -5076,7 +5076,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl",
+    "_name": "cc_Label$Des0",
     "_objFlags": 0,
     "_parent": {
       "__id__": 134
@@ -5106,14 +5106,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -230.735,
+        -406,
         135.51,
         0,
         0,
@@ -5184,7 +5184,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl",
+    "_name": "cc_Label$Des1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 134
@@ -5214,14 +5214,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -139.373,
+        -406,
         -1.402,
         0,
         0,
@@ -5292,7 +5292,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl",
+    "_name": "cc_Label$Des2",
     "_objFlags": 0,
     "_parent": {
       "__id__": 134
@@ -5322,14 +5322,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -199.614,
+        -406,
         -141.052,
         0,
         0,
@@ -5619,7 +5619,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lbl_txt",
+    "_name": "text",
     "_objFlags": 0,
     "_parent": {
       "__id__": 146
@@ -5736,7 +5736,7 @@
     "_normalMaterial": null,
     "_grayMaterial": null,
     "duration": 0.1,
-    "zoomScale": 1.2,
+    "zoomScale": 1.1,
     "clickEvents": [],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": false,

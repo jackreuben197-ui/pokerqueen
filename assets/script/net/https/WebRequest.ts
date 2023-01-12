@@ -2,6 +2,8 @@
  * Http请求接口
  */
 
+import HttpRequest from "./HttpRequest";
+
 
 /// <summary>
 /// 登陆
@@ -1039,6 +1041,29 @@ export class Web_Msg_Message_Unread {
     }
     static Response: { code?: number, message?: string, data?: (typeof Web_Msg_Message_Unread.ResponseData)[] };
 }
+//消息读取完毕清理
+
+export class Web_Msg_Message_UnreadClear {
+    //接口地址
+    static API: string = "/api/msg/message/clear_unread";
+    //字段声明
+    static RequestParams: {
+
+    } = null;
+
+    static ResponseData: {
+
+    } = null;
+    static Request(param) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: any };
+}
+
+
+
+
 /// <summary>
 /// 小盲列表
 /// </summary>
@@ -3899,28 +3924,7 @@ export class Web_Club_Fund_OrderList {
         code?: number, message?: string, data?: typeof Web_Club_Fund_OrderList.ResponseData
     };
 }
-//公会基金申请列表
-export class Web_Club_Fund_ApplyList {
-    //接口地址
-    static API: string = "/api/club/member_order/list";
 
-    //字段声明
-    static RequestParams: {
-        order_type: number,
-        limit?: number,
-        offset?: number
-    } = null;
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof Web_Club_Fund_ApplyList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof Web_Club_Fund_ApplyList.ResponseData
-    };
-}
 
 export class APIOrgClubNotice_update {
     public static API: string = "/api/cmsext/club/notice_update";
@@ -4037,40 +4041,72 @@ export class APIOrgClubAgentUser_list {
     };
 }
 
+
+//////////////////////////////////////////////通用请求(简化上面的代码)
+export class WWW {
+    public static get Instance(): WWW {
+        return (this as any).__Instance ??= new WWW();
+    }
+    CommonAPI(clubid: number, param: any, web: any, replaceID: number = 0) {
+        return new Promise((resolve, reject) => {
+            let obj: any = {
+                request: web,
+                body: web.Request(param),
+                onSuccess: function () {
+                    resolve(web.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            }
+            //设置动态id参数
+            replaceID > 0 && (obj.api = web.API.replace("{id}", replaceID));
+            //设置header
+            clubid > 0 && (obj.headers = [["X-Club", clubid]]);
+            HttpRequest.Send(obj);
+        });
+    }
+}
+export class WebCommon {
+    public static API: string;
+    public static RequestParams: any;
+    public static ResponseData: any;
+    public static Request(param) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?
+    };
+}
 //公会 玩家钱包 充提转记录
-export class Web_Club_Player_Order_Record {
+export class Web_Club_Player_Order_Record extends WebCommon {
     public static API: string = "/api/order/user/order_records";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-    } = null;
-    public static Request(param) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?
-    };
 }
+//公会 玩家钱包 金豆-usdt 兑换
+export class Web_Club_Player_Exchange extends WebCommon {
+    static API: string = "/api/order/user/exchange";
+}
+
+
+
 //金币和USDT转换rate
-export class Web_ExchangeRate {
+export class Web_ExchangeRate extends WebCommon {
     public static API: string = "/api/order/club/exchange_rate";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-    } = null;
-    public static Request(param) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?
-    };
+}
+//公会基金申请列表
+export class Web_Club_Fund_ApplyList extends WebCommon {
+    static API: string = "/api/order/club/member_order/list";
+}
+//公会审核玩家充提
+export class Web_Club_Fund_Audit extends WebCommon {
+    static API: string = "/api/order/club/audit/member_order";
 }
 
-
+//公会基金 金豆-usdt 兑换
+export class Web_Club_Fund_Exchange extends WebCommon {
+    static API: string = "/api/order/club/exchange";
+}
 
 
 /**

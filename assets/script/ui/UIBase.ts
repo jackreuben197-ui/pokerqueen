@@ -194,5 +194,22 @@ export default class UIBase extends BaseComponent {
         this._prefabs.clear();
     }
 
+    //从其他页面回退执行
+    reback() {
+
+    }
+    //设置节点下的文本,包括子路径
+    setChildLabel(node: cc.Node, path: string, text: string | number) {
+        cc.find(path, node).getComponent(cc.Label).string = `${text}`;
+    }
+    //设置节点下的文本颜色
+    setChildLabelColor(node: cc.Node, path: string, color: string) {
+        cc.find(path, node).color = cc.Color.BLACK.fromHEX(color);
+    }
+
+    setChildVisible(node: cc.Node, path: string, visible: boolean) {
+        cc.find(path, node).active = visible;
+    }
+
 
 }

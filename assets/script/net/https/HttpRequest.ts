@@ -33,7 +33,8 @@ export default class HttpRequest {
             headers: headers,
             needJuhua: needJuhua,
             isJson: isJson,
-            needConsole: needConsole
+            needConsole: needConsole,
+            api: api,
         });
     }
     private static onSuccess(api, request, body, onSuccess, response) {
@@ -64,7 +65,7 @@ export default class HttpRequest {
         let needJuhua = WebHelper.NeedJuhua(request.API);
         await HttpClient.post({
             url: url, body, onFailure, onSuccess: HttpRequest.onSuccess2.bind(HttpRequest, request, onSuccess),
-            headers: headers, needJuhua
+            headers: headers, needJuhua, api
         });
     }
     private static onSuccess2(request, onSuccess, response) {
