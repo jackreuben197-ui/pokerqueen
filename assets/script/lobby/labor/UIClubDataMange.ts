@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 16:30:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-14 16:59:36
+ * @LastEditTime: 2023-01-11 10:29:30
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubDataMange.ts
  */
 
@@ -17,6 +17,7 @@ import UIComponent from "../../ui/UIComponent";
 import Data from "./script/Data";
 import { UIClubModel } from "./UIClubModel";
 import ComFormTitle from "../../common/ComFormTitle";
+import { ClubCache } from "../../frame/data/club/ClubCache";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -123,13 +124,13 @@ export default class UIClubDataMange extends BaseForm {
     }
     reqUpInfo(gameType, timeType) {
 
-        let data: any = Web_Org_Club_Get.Response.data;
+        // let data: any = Web_Org_Club_Get.Response.data;
         let info: any = {
             // "club_id": 2,
             // "game_type": 0,
             // "time_type": 4,
             // "time_long": 1,
-            club_id: data.club_id,
+            club_id: ClubCache.club_id,
             game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
             time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
             time_long: new Date().getTime(),       //客户端时间戳
@@ -225,13 +226,13 @@ export default class UIClubDataMange extends BaseForm {
         }
     }
     reqDownInfo(gameType, timeType, search = null) {
-        let data: any = Web_Org_Club_Get.Response.data;
+        // let data: any = Web_Org_Club_Get.Response.data;
         let info: any = {
             // "club_id": 2,
             // "game_type": 0,
             // "time_type": 4,
             // "time_long": 1,
-            club_id: data.club_id,
+            club_id: ClubCache.club_id,
             game_type: gameType,       //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
             time_type: timeType,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
             time_long: new Date().getTime(),      //客户端时间戳
