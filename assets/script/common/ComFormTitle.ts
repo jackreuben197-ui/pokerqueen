@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2023-01-09 16:08:49
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-01-13 11:22:48
+ * @FilePath: /pokerqueen/assets/script/common/ComFormTitle.ts
+ */
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
 
@@ -33,6 +41,7 @@ export default class ComFormTitle extends UIBase {
     onShow(param?: any): void {
         super.onShow(param);
     }
+
 
     initData(title: string, target: UIBase, rightTextStr: string = null, rightTextCallBack: Function = null) {
         this._target = target

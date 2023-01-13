@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-12 14:44:31
+ * @LastEditTime: 2023-01-13 12:41:14
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIFriendMatch.ts
  */
 
@@ -20,6 +20,8 @@ import { UIClubModel } from "../labor/UIClubModel";
 import UIMatchChessItem from "../matchView/UIMatchChessItem";
 import ComFormTitle from "../../common/ComFormTitle";
 import UIClubMatchItem from "./UIClubMatchItem";
+import TabNode from "../../common/tabNode";
+import { FriendMathTabConfig } from "../../frame/config/tabConfig";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -31,26 +33,24 @@ export default class UIFriendMatch extends UIBase {
     @property(cc.Node)
     numNode: cc.Node = null;
 
-    // @property(cc.Node)
-    // dr: cc.Node = null;
     @property(cc.Node)
     lb_tip: cc.Node = null;
     @property(List)
     list: List = null;
     _roomList: any = []
 
-    titleNode: cc.Node = null;
+    tabNode: TabNode = null;
     fastBeganNode: cc.Node = null;
     dataNode: cc.Node = null;
     node0: cc.Node = null;
     node1: cc.Node = null;
-    private comFormTitle: ComFormTitle = null;
+    private comFormTitle: cc.Label = null;
     _selectTitle = 0;
     protected lateLoad(): void {
         super.lateLoad();
-        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+        this.comFormTitle = this.getChildNodeOrComponent("title_lbl", cc.Label);
 
-        this.titleNode = this.getChildNodeOrComponent('titleNode')
+        this.tabNode = this.getChildNodeOrComponent('tabNode', TabNode)
         this.fastBeganNode = this.getChildNodeOrComponent('fastBeganNode')
         this.dataNode = this.getChildNodeOrComponent('dataNode')
         this.node0 = this.getChildNodeOrComponent('node0')
@@ -60,22 +60,19 @@ export default class UIFriendMatch extends UIBase {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIClub_FastBangan"
-        this.comFormTitle.initData(title, this);
-
+        this.setText(this.comFormTitle, title)
         this.EditBox.string = ''
         for (let index = 0; index < this.numNode.childrenCount; index++) {
             const element = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
             element.string = '';
         }
-        this.titleNodeClick(null, this._selectTitle)
+        this.tabNode.initData(FriendMathTabConfig, this.titleNodeClick.bind(this), this)
         this.reqDataAgain();
+        this.titleNodeClick(0)
+
     }
-    titleNodeClick(event, customData) {
+    titleNodeClick(customData) {
         this._selectTitle = customData
-        this.node0.getChildByName('block').active = this._selectTitle == 0
-        this.node1.getChildByName('block').active = this._selectTitle == 1
-        this.node0.getChildByName('title').color = this._selectTitle == 0 ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
-        this.node1.getChildByName('title').color = this._selectTitle == 1 ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         this.fastBeganNode.active = this._selectTitle == 0;
         this.dataNode.active = this._selectTitle == 1;
         this.initDiamond();
