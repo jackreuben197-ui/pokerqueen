@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-13 12:41:14
+ * @LastEditTime: 2023-01-13 13:18:52
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIFriendMatch.ts
  */
 
@@ -35,8 +35,15 @@ export default class UIFriendMatch extends UIBase {
 
     @property(cc.Node)
     lb_tip: cc.Node = null;
+
     @property(List)
     list: List = null;
+
+    @property(cc.Node)
+    joinBtnBg: cc.Node = null;
+    @property(cc.Button)
+    joinBtn: cc.Button = null;
+
     _roomList: any = []
 
     tabNode: TabNode = null;
@@ -115,15 +122,14 @@ export default class UIFriendMatch extends UIBase {
             const item = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
             item.string = element;
         }
+        this.EditBox.string.trim();
+        this.joinBtn.interactable = this.EditBox.string.length == 6
+        this.joinBtnBg.opacity = this.EditBox.string.length == 6 ? 255 : 25
     }
     applyJoin() {
         UIComponent.open(UIDefine.UIMine_Message)
     }
     async joinMatch() {
-        this.EditBox.string.trim();
-        if (this.EditBox.string.length != 6) {
-            return;
-        }
         let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string);
         if (_data?.data?.data) {
             _data = new LobbyRoomListItem(_data?.data?.data);
