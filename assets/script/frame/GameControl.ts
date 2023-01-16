@@ -14,7 +14,6 @@ import { NotifyManager } from "./manager/NotifyManager";
 import SDKManager from "./manager/SDKManager";
 
 class GameControl {
-    //private static _instance: GameControl = null;
     public static get instance(): GameControl {
         return (this as any)._instance ?? new GameControl;
     }

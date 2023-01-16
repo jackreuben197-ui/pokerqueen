@@ -210,6 +210,8 @@ export default class UIBase extends BaseComponent {
     setChildVisible(node: cc.Node, path: string, visible: boolean) {
         cc.find(path, node).active = visible;
     }
-
+    setChildSprite(node: cc.Node, path: string, spriteFrame: cc.SpriteFrame) {
+        cc.find(path, node).getComponent(cc.Sprite).spriteFrame = spriteFrame;
+    }
 
 }

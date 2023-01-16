@@ -2940,30 +2940,6 @@ export class APIOrgCreateTemplate {
 }
 
 
-
-//查看玩家的工会钱包
-export class API_CLUB_USER_WALLET {
-    //接口地址
-    static API: string = "/api/org/club/club_user/wallet";
-
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof API_CLUB_USER_WALLET.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof API_CLUB_USER_WALLET.ResponseData
-    };
-}
-
 //玩家在某个工会钱包变动记录
 export class API_GOLD_CHANGE_LOG {
     //接口地址
@@ -4047,22 +4023,50 @@ export class WWW {
     public static get Instance(): WWW {
         return (this as any).__Instance ??= new WWW();
     }
-    CommonAPI(clubid: number, param: any, web: any, replaceID: number = 0) {
+    /**
+     * @param param 
+     * web_class 接口类
+     * body 发送数据body
+     * api_id 替换接口中{id}
+     * club_id 公会club_id
+     * 范例
+     * WWW.Instance.CommonAPI(
+            {
+                web_class: API_CLUB_APPLY_AUDIT,
+                body: {
+                    apply_id: 111,
+                    audit_op: 2//2同意 3拒绝
+                },
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+                this.reqInfo();
+            },
+            (res: any) => {
+
+            }
+        )
+     * @returns 
+     */
+    CommonAPI(param: { web_class: { API: string, Request, Response }, body?: any, api_id?: number, club_id?: number }) {
         return new Promise((resolve, reject) => {
             let obj: any = {
-                request: web,
-                body: web.Request(param),
+                request: param.web_class,
+                body: param.web_class.Request(param.body),
                 onSuccess: function () {
-                    resolve(web.Response);
+                    resolve(param.web_class.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this)
             }
             //设置动态id参数
-            replaceID > 0 && (obj.api = web.API.replace("{id}", replaceID));
+            param.api_id > 0 && (obj.api = param.web_class.API.replace("{id}", `${param.api_id}`));
             //设置header
-            clubid > 0 && (obj.headers = [["X-Club", clubid]]);
+            let headers = [];
+            param.club_id > 0 && headers.push(["X-Club", param.club_id]);
+            obj.headers = headers;
             HttpRequest.Send(obj);
         });
     }
@@ -4087,9 +4091,6 @@ export class Web_Club_Player_Order_Record extends WebCommon {
 export class Web_Club_Player_Exchange extends WebCommon {
     static API: string = "/api/order/user/exchange";
 }
-
-
-
 //金币和USDT转换rate
 export class Web_ExchangeRate extends WebCommon {
     public static API: string = "/api/order/club/exchange_rate";
@@ -4106,6 +4107,38 @@ export class Web_Club_Fund_Audit extends WebCommon {
 //公会基金 金豆-usdt 兑换
 export class Web_Club_Fund_Exchange extends WebCommon {
     static API: string = "/api/order/club/exchange";
+}
+//公会贵宾列表
+export class Web_Club_Agent_List extends WebCommon {
+    static API: string = "/api/org/club/agent/list";
+}
+//公会会员绑定贵宾
+export class Web_Club_Agent_Add extends WebCommon {
+    static API: string = "/api/org/club/user/add_agent";
+}
+//公会会员解绑贵宾
+export class Web_Club_Agent_Del extends WebCommon {
+    static API: string = "/api/org/club/user/del_agent";
+}
+//公会贵宾线下成员列表
+export class Web_Club_Agent_UserList extends WebCommon {
+    static API: string = "/api/org/club/agent/user_list";
+}
+//公会贵宾线下编辑下线保存
+export class Web_Club_Agent_UserListCover extends WebCommon {
+    static API: string = "/api/org/club/agent/user_list_cover";
+}
+//公会贵宾的下线信息
+export class Web_Club_Agent_Friend_Info extends WebCommon {
+    static API: string = "/api/stats/club/agent/friend_info";
+}
+//公会贵宾的下线数据
+export class Web_Club_Agent_Friend_Data extends WebCommon {
+    static API: string = "/api/stats/club/agent/friend_data";
+}
+//查看玩家的公会钱包
+export class API_CLUB_USER_WALLET extends WebCommon {
+    static API: string = "/api/org/club/club_user/wallet";
 }
 
 

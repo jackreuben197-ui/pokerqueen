@@ -9,10 +9,11 @@ export default class SoundComponent {
     }
     Play(name: string, loop: boolean = false) {
 
-        if (+GC.localStore.getItem(StorageKey.soundIsOpen) == 0) return;
+        if (+GC.localStore.getItem(StorageKey.soundIsOpen) == 1) {
 
-        let sounc_clip: cc.AudioClip = AssetContext.getAsset<cc.AudioClip>(name, AssetFold.sound_all);
-        
-        sounc_clip && cc.audioEngine.playEffect(sounc_clip, loop);
+            let sounc_clip: cc.AudioClip = AssetContext.getAsset<cc.AudioClip>(name, AssetFold.sound_all);
+
+            sounc_clip && cc.audioEngine.playEffect(sounc_clip, loop);
+        }
     }
 }

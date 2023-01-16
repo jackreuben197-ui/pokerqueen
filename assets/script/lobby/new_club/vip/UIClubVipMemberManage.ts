@@ -112,7 +112,7 @@ export default class UIClubVipMemberManage extends BaseFormPlus {
     Order_ComSelect(index: number) {
         this.$ComBack.active = false;
         //console.log(index);
-        let item = Member_Order_List[index];
+        let item: any = Member_Order_List[index];
         if (item.order) {
             this.members.sort((a, b) => {
                 return a.timeOrder - b.timeOrder;

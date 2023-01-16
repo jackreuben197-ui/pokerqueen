@@ -175,6 +175,25 @@ export class ClubCache {
         }
         return name;
     }
+    //设置用户等级图标
+    static getUserLevelIcon(user_level: number): cc.SpriteFrame {
+        let spriteFrame = null;
+        switch (user_level) {
+            case 0:
+                spriteFrame = null;
+                break;
+            case 1:
+                spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club);
+                break;
+            case 3:
+                spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club);
+                break;
+            case 4:
+                spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);
+                break;
+        }
+        return spriteFrame;
+    }
 }
 //(window as any).GameCache = ClubCache;
 (window as any).ClubCache = ClubCache;

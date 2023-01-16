@@ -4,7 +4,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { Web_Club_Fund_Exchange, Web_Club_Player_Exchange, Web_ExchangeRate, WWW } from "../../../net/https/WebRequest";
+import { API_CLUB_USER_WALLET, Web_Club_Fund_Exchange, Web_Club_Player_Exchange, Web_ExchangeRate, WWW } from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { WalletType } from "./UIWalletLayer";
@@ -50,6 +50,7 @@ export default class UIChangeLayer extends BaseFormPlus {
 
     changeReq = [null, Web_Club_Player_Exchange, Web_Club_Fund_Exchange];
 
+    // 0 1 两个页签状态
     config = [
         {
             //获取比率信息
@@ -73,24 +74,41 @@ export default class UIChangeLayer extends BaseFormPlus {
                 }
 
                 WWW.Instance.CommonAPI(
-                    ClubCache.club_id,
                     {
-                        "src_gold_type": 2,
-                        "dest_gold_type": 1,
-                        "src_amount": +this.cc_EditBox$Input.string * 100
-                    }, this.changeReq[GC.wallet.wallet_type]).then(
-                        (res: any) => {
-                            UIComponent.Instance.Toast(i18nMgr.Get(GC.wallet.Change_Success));
-                            let gold = res.data?.wallet?.gold;
-                            if (gold > 0) {
-                                this.usdt = StringHelper.GetLongString(gold);
-                                this.refreshGold();
-                            }
+                        web_class: this.changeReq[GC.wallet.wallet_type],
+                        body: {
+                            "src_gold_type": 2,
+                            "dest_gold_type": 1,
+                            "src_amount": +this.cc_EditBox$Input.string * 100
                         },
-                        res => {
 
+                        club_id: ClubCache.club_id
+                    }
+                ).then(
+                    (res: any) => {
+                        UIComponent.Instance.Toast(i18nMgr.Get(GC.wallet.Change_Success));
+
+                        //判断钱包类型
+
+                        switch (GC.wallet.wallet_type) {
+                            case WalletType.Club:
+                                this.reqWallet();
+                                break;
+                            case WalletType.Fund:
+                                let gold = res.data?.wallet?.gold;
+                                if (gold > 0) {
+                                    this.usdt = StringHelper.GetLongString(gold);
+                                    this.refreshGold();
+                                }
+                                break;
+                            default:
+                                break;
                         }
-                    )
+                    },
+                    (res: any) => {
+
+                    }
+                )
             }
         },
         {
@@ -110,24 +128,39 @@ export default class UIChangeLayer extends BaseFormPlus {
                     return;
                 }
                 WWW.Instance.CommonAPI(
-                    ClubCache.club_id,
                     {
-                        "src_gold_type": 1,
-                        "dest_gold_type": 2,
-                        "src_amount": +this.cc_EditBox$Input.string * 100
-                    }, this.changeReq[GC.wallet.wallet_type]).then(
-                        (res: any) => {
-                            UIComponent.Instance.Toast(i18nMgr.Get(GC.wallet.Change_Success));
-                            let gold = res.data?.wallet?.gold;
-                            if (gold > 0) {
-                                this.gold = StringHelper.GetLongString(gold);
-                                this.refreshGold();
-                            }
+                        web_class: this.changeReq[GC.wallet.wallet_type],
+                        body: {
+                            "src_gold_type": 1,
+                            "dest_gold_type": 2,
+                            "src_amount": +this.cc_EditBox$Input.string * 100
                         },
-                        res => {
+                        club_id: ClubCache.club_id
+                    }
+                ).then(
+                    (res: any) => {
+                        UIComponent.Instance.Toast(i18nMgr.Get(GC.wallet.Change_Success));
+                        //判断钱包类型
 
+                        switch (GC.wallet.wallet_type) {
+                            case WalletType.Club:
+                                this.reqWallet();
+                                break;
+                            case WalletType.Fund:
+                                let gold = res.data?.wallet?.gold;
+                                if (gold > 0) {
+                                    this.usdt = StringHelper.GetLongString(gold);
+                                    this.refreshGold();
+                                }
+                                break;
+                            default:
+                                break;
                         }
-                    )
+                    },
+                    (res: any) => {
+
+                    }
+                )
             }
         }
     ];
@@ -206,21 +239,26 @@ export default class UIChangeLayer extends BaseFormPlus {
         if (GC.wallet.wallet_type == WalletType.Fund) {
 
             WWW.Instance.CommonAPI(
-                ClubCache.club_id,
                 {
-                    "src_gold_type": 1,
-                    "dest_gold_type": 2,
-                    "src_amount": 100
-                }, Web_ExchangeRate).then(
-                    (res: any) => {
-                        GC.wallet.gold_to_usdt_rate = res.data.gold_to_usdt_rate;
-                        GC.wallet.usdt_to_gold_rate = res.data.usdt_to_gold_rate;
-                        this.refreshRateDes();
+                    web_class: Web_ExchangeRate,
+                    body: {
+                        "src_gold_type": 1,
+                        "dest_gold_type": 2,
+                        "src_amount": 100
                     },
-                    err => {
 
-                    }
-                )
+                    club_id: ClubCache.club_id
+                }
+            ).then(
+                (res: any) => {
+                    GC.wallet.gold_to_usdt_rate = res.data.gold_to_usdt_rate;
+                    GC.wallet.usdt_to_gold_rate = res.data.usdt_to_gold_rate;
+                    this.refreshRateDes();
+                },
+                (res: any) => {
+
+                }
+            )
         }
     }
     set Top_Index(index: number) {
@@ -281,5 +319,27 @@ export default class UIChangeLayer extends BaseFormPlus {
     textChanged(evt) {
         //console.log(evt);
         this.cc_EditBox$Exchange.string = `${this.config[this.Top_Index].getValue(evt)}`;
+    }
+    ///////////////////////////////
+    reqWallet() {
+
+        WWW.Instance.CommonAPI(
+            {
+                web_class: API_CLUB_USER_WALLET,
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+                let gold = res.data?.golds || 0;
+                let usdt = res.data?.usdt || 0;
+                this.gold = StringHelper.GetLongString(gold);
+                this.usdt = StringHelper.GetLongString(usdt);
+                this.refreshGold();
+            },
+            (res: any) => {
+
+            }
+        )
+
     }
 }

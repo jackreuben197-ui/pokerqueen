@@ -5,7 +5,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
-import { WWW, Web_Club_Fund_ApplyList, Web_Club_Fund_OrderList, Web_Club_Player_Order_Record, Web_Club_Fund_Audit } from "../../../net/https/WebRequest";
+import { WWW, Web_Club_Fund_ApplyList, Web_Club_Fund_OrderList, Web_Club_Player_Order_Record, Web_Club_Fund_Audit, API_CLUB_USER_WALLET } from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
@@ -179,39 +179,47 @@ export default class UIWalletLayer extends BaseFormPlus {
     reqClubRecord(order_type: number) {
 
         WWW.Instance.CommonAPI(
-            0, {
-            "order_type": order_type,
-            "limit": 100,
-            "offset": 0
-        }, Web_Club_Player_Order_Record).then(
+            {
+                body: {
+                    "order_type": order_type,
+                    "limit": 100,
+                    "offset": 0
+                },
+                web_class: Web_Club_Player_Order_Record,
+            }
+        ).then(
             (res: any) => {
                 this.record_datas[order_type] = res;
                 this.refreshRecord(res);
             },
-            err => {
+            (res: any) => {
 
             }
         )
     }
     //请求公会基金充值记录 order_type 1,2,4
     reqFundRecord(order_type: number) {
-
         WWW.Instance.CommonAPI(
-            ClubCache.club_id,
             {
-                "order_type": order_type,
-                "limit": 100,
-                "offset": 0
-            },
-            Web_Club_Fund_OrderList).then(
-                (res: any) => {
-                    this.record_datas[order_type] = res;
-                    this.refreshRecord(res);
-                },
-                err => {
 
-                }
-            );
+                web_class: Web_Club_Fund_OrderList,
+
+                body: {
+                    "order_type": order_type,
+                    "limit": 100,
+                    "offset": 0
+                },
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+                this.record_datas[order_type] = res;
+                this.refreshRecord(res);
+            },
+            (res: any) => {
+
+            }
+        )
     }
 
     //刷新金币和USDT
@@ -359,10 +367,12 @@ export default class UIWalletLayer extends BaseFormPlus {
     ////////////////////////////////////////////////////
     //请求公会钱包
     reqClubUserWallet(next) {
-        let info = {
-
-        }
-        LobbyControl.getInstance().reqClubUserWallet(ClubCache.club_id, info).then(
+        WWW.Instance.CommonAPI(
+            {
+                web_class: API_CLUB_USER_WALLET,
+                club_id: ClubCache.club_id
+            }
+        ).then(
             (res: any) => {
                 let data = res.data;
                 GC.wallet.Gold = data?.golds || 0;
@@ -372,9 +382,10 @@ export default class UIWalletLayer extends BaseFormPlus {
                 GC.wallet.usdt_to_gold_rate = res.data.usdt_to_gold_rate;
 
                 this.refreshGold();
-                next.call(this);
+                next?.call(this);
             },
-            (res) => {
+            (res: any) => {
+
             }
         )
     }
@@ -387,7 +398,7 @@ export default class UIWalletLayer extends BaseFormPlus {
         LobbyControl.getInstance().reqGoldChangeLog(ClubCache.club_id, info).then(
             (res) => {
                 this.refreshChangeList(res);
-                next.call(this);
+                next?.call(this);
             },
             (res) => {
             }
@@ -434,20 +445,24 @@ export default class UIWalletLayer extends BaseFormPlus {
     //请求公积金申请列表
     reqApplyList() {
         WWW.Instance.CommonAPI(
-            ClubCache.club_id,
             {
-                "order_type": 0, //0-全部;1-充豆;2-提豆;3-转换
-                "limit": 100,
-                "offset": 0
-            },
-            Web_Club_Fund_ApplyList).then(
-                (res: any) => {
-                    this.refreshApplyList(res);
-                },
-                err => {
+                web_class: Web_Club_Fund_ApplyList,
 
-                }
-            );
+                body: {
+                    "order_type": 0, //0-全部;1-充豆;2-提豆;4-转换
+                    "limit": 100,
+                    "offset": 0
+                },
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+                this.refreshApplyList(res);
+            },
+            (res: any) => {
+
+            }
+        )
     }
 
     //请求充提转换记录
@@ -569,15 +584,21 @@ export default class UIWalletLayer extends BaseFormPlus {
     //审核同意和拒绝
     reqAudit(obj) {
         WWW.Instance.CommonAPI(
-            ClubCache.club_id,
-            obj,
-            Web_Club_Fund_Audit).then(
-                res => {
-                    this.reqApplyList();
-                },
-                res => {
-                }
-            )
+            {
+                web_class: Web_Club_Fund_Audit,
+
+                body: obj,
+
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+                this.reqApplyList();
+            },
+            (res: any) => {
+
+            }
+        )
     }
     // ordet_type转换 1充值 2提取 4转换
     transformOrderType(index: number): number {

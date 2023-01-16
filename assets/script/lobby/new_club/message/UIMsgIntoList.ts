@@ -101,17 +101,19 @@ export default class UIMsgIntoList extends BaseFormPlus {
         let index = button.node.parent["index"];
         let c_data = this.data[index];
         WWW.Instance.CommonAPI(
-            ClubCache.club_id,
             {
-                apply_id: c_data.id,
-                audit_op: 3//2同意 3拒绝
-            },
-            API_CLUB_APPLY_AUDIT
+                web_class: API_CLUB_APPLY_AUDIT,
+                body: {
+                    apply_id: c_data.id,
+                    audit_op: 3 //2同意 3拒绝
+                },
+                club_id: ClubCache.club_id
+            }
         ).then(
-            res => {
+            (res: any) => {
                 this.reqInfo();
             },
-            res => {
+            (res: any) => {
 
             }
         )
@@ -120,20 +122,24 @@ export default class UIMsgIntoList extends BaseFormPlus {
         let index = button.node.parent["index"];
         let c_data = this.data[index];
         WWW.Instance.CommonAPI(
-            ClubCache.club_id,
             {
-                apply_id: c_data.id,
-                audit_op: 2//2同意 3拒绝
-            },
-            API_CLUB_APPLY_AUDIT
+                web_class: API_CLUB_APPLY_AUDIT,
+                body: {
+                    apply_id: c_data.id,
+                    audit_op: 2//2同意 3拒绝
+                },
+                club_id: ClubCache.club_id
+            }
         ).then(
-            res => {
+            (res: any) => {
                 this.reqInfo();
             },
-            res => {
+            (res: any) => {
 
             }
         )
+
+
     }
 
 }

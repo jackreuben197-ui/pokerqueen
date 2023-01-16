@@ -73,18 +73,23 @@ export default class UIMine_MessageList extends BaseFormPlus {
     }
     //请求未读的消息
     reqUnreadMessage() {
+
         WWW.Instance.CommonAPI(
-            0,
-            {},
-            Web_Msg_Message_Unread
+            {
+                web_class: Web_Msg_Message_Unread,
+            }
         ).then(
-            res => {
+            (res: any) => {
                 this.parseUnread(res);
             },
-            res => {
+            (res: any) => {
 
             }
         )
+
+
+
+
     }
     //解析unread,并且刷新显示
     parseUnread(res) {

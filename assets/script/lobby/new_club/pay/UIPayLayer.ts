@@ -223,24 +223,42 @@ export default class UIPayLayer extends BaseFormPlus {
 
                 //充
                 if (this._param.type == 1) {
-                    WWW.Instance.CommonAPI(ClubCache.club_id, { amount: value, gold_type: gold_type }, Web_Recharge_Gold).then(
-                        (res) => {
+
+                    WWW.Instance.CommonAPI(
+                        {
+                            web_class: Web_Recharge_Gold,
+
+                            body: { amount: value, gold_type: gold_type },
+
+                            club_id: ClubCache.club_id
+                        }
+                    ).then(
+                        (res: any) => {
                             UIComponent.Instance.Toast("充值申请成功");
                         },
-                        () => {
+                        (res: any) => {
 
-                        },
+                        }
                     )
                 }
                 //提
                 if (this._param.type == 2) {
-                    WWW.Instance.CommonAPI(ClubCache.club_id, { amount: value, gold_type: gold_type }, Web_Tiqu_Gold).then(
-                        (res) => {
+
+                    WWW.Instance.CommonAPI(
+                        {
+                            web_class: Web_Tiqu_Gold,
+
+                            body: { amount: value, gold_type: gold_type },
+
+                            club_id: ClubCache.club_id
+                        }
+                    ).then(
+                        (res: any) => {
                             UIComponent.Instance.Toast("提现申请成功");
                         },
-                        () => {
+                        (res: any) => {
 
-                        },
+                        }
                     )
                 }
                 break;

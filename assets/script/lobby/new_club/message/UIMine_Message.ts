@@ -134,16 +134,20 @@ export default class UIMine_Message extends BaseFormPlus {
     }
     //清理未读消息
     reqUnreadClear() {
+
         WWW.Instance.CommonAPI(
-            0,
-            { msg_type: GC.message.MessageType[this.index] },
-            Web_Msg_Message_UnreadClear
+            {
+                web_class: Web_Msg_Message_UnreadClear,
+                body: {
+                    msg_type: GC.message.MessageType[this.index]
+                },
+            }
         ).then(
-            res => {
+            (res: any) => {
                 GC.message.unreadList[this.index] = 0;
                 this.post(GGEvent.Refresh_Unread);
             },
-            res => {
+            (res: any) => {
 
             }
         )

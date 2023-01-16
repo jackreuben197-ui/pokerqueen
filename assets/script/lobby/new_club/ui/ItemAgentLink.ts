@@ -1,34 +1,22 @@
 import WebImageHelper from "../../../helper/WebImageHelper";
-import UIBase from "../../../ui/UIBase";
-import UIComponent from "../../../ui/UIComponent";
-import { UICommonMgr } from "../../../ui/UIMgr";
+import UIBasePlus from "../../../ui/UIBasePlus";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class ItemAgentLink extends UIBase {
-
-    On: cc.Node = null;
-    Off: cc.Node = null;
-    SwitchClick: cc.Node = null;
-
-    Label_Nick: cc.Label = null;
-    Label_ID: cc.Label = null;
-
-    Head: cc.Sprite = null;
-
+export default class ItemAgentLink extends UIBasePlus {
+    /////////////////////声明界面节点组件引用
+    $On: cc.Node = null;
+    $Off: cc.Node = null;
+    $SwitchClick: cc.Node = null;
+    cc_Label$Nick: cc.Label = null;
+    cc_Label$ID: cc.Label = null;
+    cc_Sprite$Head: cc.Sprite = null;
+    ///////////////////////////////////////
     _switch: boolean = false;
 
-    protected _param: { data: any, index: number, parent: { onItemClick: (index: number, switch_on: boolean) => void } }
+    protected _param: { data: any, index: number, own: { onItemClick: (index: number, switch_on: boolean) => void } }
 
-    protected declare_list: [string, any?][] = [
-        ["On"],
-        ["Off"],
-        ["SwitchClick"],
-        ["Label_Nick", cc.Label],
-        ["Label_ID", cc.Label],
-        ["Head", cc.Sprite],
-    ]
     protected lateLoad() {
         super.lateLoad();
     }
@@ -39,15 +27,14 @@ export default class ItemAgentLink extends UIBase {
     }
     regiterTouchEvents() {
         super.regiterTouchEvents();
-        this.setButtonClick(this.SwitchClick, this.switchClick);
+        this.setButtonClick(this.$SwitchClick, this.switchClick);
     }
 
     private refreshUI() {
-        this.Label_Nick.string = this._param.data.nick;
-        this.Label_ID.string = `ID:  ${this._param.data.id}`;
-        WebImageHelper.SetHeadImage(this.Head, this._param.data.avatar || "");
+        this.cc_Label$Nick.string = this._param.data.nick_name;
+        this.cc_Label$ID.string = `ID:  ${this._param.data.random_num}`;
+        WebImageHelper.SetHeadImage(this.cc_Sprite$Head, this._param.data.avatar || "");
     }
-
     set switch(status: boolean) {
         this._switch = status;
         this._switch ? this.switchOn() : this.switchOff();
@@ -57,18 +44,18 @@ export default class ItemAgentLink extends UIBase {
     }
     //设置勾选
     private switchOn() {
-        this.On.active = true;
-        this.Off.active = false;
+        this.$On.active = true;
+        this.$Off.active = false;
     }
     //设置取消
     private switchOff() {
-        this.On.active = false;
-        this.Off.active = true;
+        this.$On.active = false;
+        this.$Off.active = true;
     }
     ///////////////////点击
     //开关点击
     private switchClick() {
         this.switch = !this.switch;
-        this._param.parent?.onItemClick?.(this._param.index, this.switch);
+        this._param.own?.onItemClick?.(this._param.index, this.switch);
     }
 }   

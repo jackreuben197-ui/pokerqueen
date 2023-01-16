@@ -202,23 +202,26 @@ export class StringHelper {
 
         let result = nick;
 
-        for (let i = 0; i < nick.length; i++) {
-            let char_code = nick.charCodeAt(i);
-            //半角
-            if (char_code >= 0 && char_code <= 0xff) {
-                len++;
-            }
-            //中文
-            if (char_code >= 0x4e00 && char_code <= 0x9fa5) {
-                len += 2;
-            }
-            //全角
-            if (char_code >= 0xff00 && char_code <= 0xffff) {
-                len += 2;
-            }
-            if (len > limit) {
-                result = nick.substring(0, i) + "...";
-                break;
+        if (nick?.length) {
+
+            for (let i = 0; i < nick.length; i++) {
+                let char_code = nick.charCodeAt(i);
+                //半角
+                if (char_code >= 0 && char_code <= 0xff) {
+                    len++;
+                }
+                //中文
+                if (char_code >= 0x4e00 && char_code <= 0x9fa5) {
+                    len += 2;
+                }
+                //全角
+                if (char_code >= 0xff00 && char_code <= 0xffff) {
+                    len += 2;
+                }
+                if (len > limit) {
+                    result = nick.substring(0, i) + "...";
+                    break;
+                }
             }
         }
         return result;

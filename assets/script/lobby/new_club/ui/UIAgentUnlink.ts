@@ -1,16 +1,23 @@
+import { ClubCache } from "../../../frame/data/club/ClubCache";
+import WebImageHelper from "../../../helper/WebImageHelper";
+import { Web_Club_Agent_Del, WWW } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
+import UIBasePlus from "../../../ui/UIBasePlus";
 import UIComponent from "../../../ui/UIComponent";
+import { UIClubModel } from "../../labor/UIClubModel";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class UIAgentUnlink extends UIBase {
+export default class UIAgentUnlink extends UIBasePlus {
 
 
-    Back: cc.Node = null;
-    Button_Cancel: cc.Node = null;
-    Button_Commit: cc.Node = null;
+    $Back: cc.Node = null;
 
+    $Content: cc.Node = null;
+
+    $Close: cc.Node = null;
+    $Unlink: cc.Node = null;
 
     protected declare_list: [string, any?][] = [
         ["Back"],
@@ -22,9 +29,22 @@ export default class UIAgentUnlink extends UIBase {
     }
     regiterTouchEvents() {
         super.regiterTouchEvents();
-        this.setButtonClick(this.Back, this.backClick);
-        this.setButtonClick(this.Button_Cancel, this.cancelClick);
-        this.setButtonClick(this.Button_Commit, this.commitClick);
+        this.setButtonClick(this.$Back, this.backClick);
+        this.setButtonClick(this.$Close, this.closeClick);
+        this.setButtonClick(this.$Unlink, this.unlinkClick);
+    }
+    onShow(param: any) {
+        super.onShow(param);
+        //测试 this._param.user
+        this.refreshInfo(0, this._param.user);
+        this.reqAgentInfo();
+    }
+
+    refreshInfo(index: number, data) {
+        let item = this.$Content.children[index];
+        this.setChildLabel(item, "Nick", data.nickname);
+        this.setChildLabel(item, "ID", data.random_id);
+        WebImageHelper.SetHeadImage(item.getChildByName("Head").getComponent(cc.Sprite), data.avatar);
     }
 
     ///////////////////点击
@@ -33,13 +53,52 @@ export default class UIAgentUnlink extends UIBase {
         UIComponent.close(this.UIDefine);
     }
     //取消点击
-    private cancelClick() {
+    private closeClick() {
         UIComponent.close(this.UIDefine);
     }
     //提交点击
-    private commitClick() {
+    private unlinkClick() {
         UIComponent.close(this.UIDefine);
         //发送请求
+        this.reqUnlink();
     }
+
+    //////////////////////////////////////////////请求
+    // -> 请求绑定对象信息
+    reqAgentInfo() {
+        UIClubModel.mInstance.APIOrgClubUserInfo({
+            "user_id": this._param.agent_id,
+            "club_id": ClubCache.club_id
+        }).then(
+            (res: any) => {
+                this.refreshInfo(1, res.data.user_info);
+            },
+            (res) => {
+
+            }
+        )
+    }
+    // -> 请求解绑
+    reqUnlink() {
+        WWW.Instance.CommonAPI(
+            {
+                web_class: Web_Club_Agent_Del,
+                body: {
+                    "user_id": this._param.user.user_id,
+                    "club_id": ClubCache.club_id,
+                    "agent_id": this._param.agent_id
+                },
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+                UIComponent.Instance.Toast("成功解除绑定");
+            },
+            (res: any) => {
+
+            }
+        )
+    }
+
 
 }
