@@ -759,6 +759,21 @@ export const UIDefine = {
         Title: "成员管理"
     },
 
+    //mtt支付列表
+    MttPayforList: {
+        UIType: UIType.Form,
+        Name: "MttPayforList",
+        Bundle: null,
+        Path: "main/mtt/detail/MttPayforList",
+    },
+
+    MttPayforHome: {
+        UIType: UIType.Form,
+        Name: "MttPayforHome",
+        Bundle: null,
+        Path: "main/mtt/detail/MttPayforHome",
+    },
+
 
 }
 //批量设置
