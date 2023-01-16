@@ -774,6 +774,15 @@ export const UIDefine = {
         Path: "main/mtt/detail/MttPayforHome",
     },
 
+    MttAgainBuy: {
+        UIType: UIType.Form,
+        Name: "MttAgainBuy",
+        Bundle: null,
+        Path: "main/mtt/detail/MttAgainBuy",
+    },
+
+
+
 
 }
 //批量设置

@@ -678,6 +678,7 @@
       "__id__": 1
     },
     "_enabled": true,
+    "direction": 0,
     "track_back": {
       "__id__": 2
     },

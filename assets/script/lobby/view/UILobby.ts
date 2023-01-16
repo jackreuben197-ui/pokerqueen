@@ -92,7 +92,8 @@ export default class UILobby extends UIBase {
         // http://dev.k8s.awanptesting.com:80/api/roomcenter/mtt/list
         // UIComponent.open(UIDefine.MttListForm, null, { SceneUI: SceneManager.Instance.currUI })
         //todo 测试
-        UIComponent.open(UIDefine.MttPayforHome, null, { SceneUI: SceneManager.Instance.currUI })
+        // UIComponent.open(UIDefine.MttPayforHome, null, { SceneUI: SceneManager.Instance.currUI })
+        UIComponent.open(UIDefine.MttAgainBuy, null, { SceneUI: SceneManager.Instance.currUI })
 
     }
 
