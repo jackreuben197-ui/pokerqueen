@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-06 12:35:58
+ * @LastEditTime: 2023-01-28 13:58:01
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -352,7 +352,8 @@ export default class UIClubMember extends BaseForm {
         let noHave = this.panel_vip.getChildByName('noHave');
         let haveData = this.panel_vip.getChildByName('haveData');
         //有没有上线
-        if (this._info.info.agent_user_id) {
+        // invitation_code
+        if (this._info.info.agent_user_id > 0) {
             noHave.active = false
             haveData.active = true
             cc.find('messLayout/name', haveData).getComponent(cc.Label).string = ''
