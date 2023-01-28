@@ -4,66 +4,118 @@
 
 import HttpRequest from "./HttpRequest";
 
+export class WebCommon {
+    public static API: string;
+    public static RequestParams: any;
+    public static ResponseData: any;
+    public static Request(param) {
+        this.RequestParams = param;
+        return param;
+    }
+    public static Response: {
+        code?: number, message?: string, data?
+    };
+}
+//////////////////////////////////////////////通用请求(简化上面的代码)
+export class WWW {
+    public static get Instance(): WWW {
+        return (this as any).__Instance ??= new WWW();
+    }
+    /**
+     * @param param 
+     * web_class 接口类
+     * body 发送数据body
+     * api_id 替换接口中{id}
+     * club_id 公会club_id
+     * 范例
+     * WWW.Instance.CommonAPI(
+            {
+                web_class: API_CLUB_APPLY_AUDIT,
+                body: {
+                    apply_id: 111,
+                    audit_op: 2//2同意 3拒绝
+                },
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+                this.reqInfo();
+            },
+            (res: any) => {
+
+            }
+        )
+     * @returns 
+     */
+    CommonAPI(param: { web_class: { API: string, Request, Response }, body?: any, api_id?: number, club_id?: number }) {
+        return new Promise((resolve, reject) => {
+            let obj: any = {
+                request: param.web_class,
+                body: param.web_class.Request(param.body),
+                onSuccess: function () {
+                    resolve(param.web_class.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            }
+            //设置动态id参数
+            param.api_id > 0 && (obj.api = param.web_class.API.replace("{id}", `${param.api_id}`));
+            //设置header
+            let headers = [];
+            param.club_id > 0 && headers.push(["X-Club", param.club_id]);
+            obj.headers = headers;
+            HttpRequest.Send(obj);
+        });
+    }
+}
+
 
 /// <summary>
 /// 登陆
 /// </summary>
-export class Web_Login {
+export class Web_Login extends WebCommon {
     //接口地址
     static API: string = "/api/user/login";
     //字段声明
-    static RequestParams: {
-        code?: string,        // 验证码
-        email?: string,        // 邮箱
-        phone?: string,        // 手机号
-        password?: string,        // 密码MD5
-        area?: string,        // 区号ProtocolCode
-        device_id?: string,        // 设备唯一id
-        mac_addr?: string,        // mac地址
-        is_simulator?: boolean,        // 是否是模拟器
-        simulator_name?: string,        // 模拟器名称
-        system_version?: string,        // 系统版本号
-        user_device_no?: string,        // 设备机型
-    } = null;
+    // static RequestParams: {
+    //     code?: string,        // 验证码
+    //     email?: string,        // 邮箱
+    //     phone?: string,        // 手机号
+    //     password?: string,        // 密码MD5
+    //     area?: string,        // 区号ProtocolCode
+    //     device_id?: string,        // 设备唯一id
+    //     mac_addr?: string,        // mac地址
+    //     is_simulator?: boolean,        // 是否是模拟器
+    //     simulator_name?: string,        // 模拟器名称
+    //     system_version?: string,        // 系统版本号
+    //     user_device_no?: string,        // 设备机型
+    // } = null;
 
-    static ResponseData: {
-        token?: string,        // 手机号
-        expire_at?: number,        // 密码MD5
-    } = null;
-
-
-    static Request(param: typeof Web_Login.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
+    // static ResponseData: {
+    //     token?: string,        // 手机号
+    //     expire_at?: number,        // 密码MD5
+    // } = null;
 }
 
-export class Web_Login_Third_Party {
+export class Web_Login_Third_Party extends WebCommon {
     static API: string = "/api/user/login_third_party";
-    static RequestParams: {
-        token: string,
-        source: string,
-        app_source: number
-    } = null;
+    // static RequestParams: {
+    //     token: string,
+    //     source: string,
+    //     app_source: number
+    // } = null;
 
-    static ResponseData: {
-        token?: string,        // 手机号
-        expire_at?: number,        // 密码MD5
-    } = null;
-
-
-    static Request(param: typeof Web_Login_Third_Party.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Login.ResponseData };
+    // static ResponseData: {
+    //     token?: string,        // 手机号
+    //     expire_at?: number,        // 密码MD5
+    // } = null;
 }
 
 /// <summary>
 /// 刷新token
 /// </summary>
-export class Web_Refresh_Token {
+export class Web_Refresh_Token extends WebCommon {
     //接口地址
     static API: string = "/api/user/refresh";
     //字段声明
@@ -86,7 +138,7 @@ export class Web_Refresh_Token {
 /// <summary>
 /// 验证手机号
 /// </summary>
-export class Web_User_Check_Phone {
+export class Web_User_Check_Phone extends WebCommon {
     //接口地址
     static API: string = "/api/user/check_phone";
     //字段声明
@@ -109,7 +161,7 @@ export class Web_User_Check_Phone {
 /// <summary>
 /// 获取验证码
 /// </summary>
-export class Web_User_Send_Code {
+export class Web_User_Send_Code extends WebCommon {
     //接口地址
     static API: string = "/api/user/sendcode";
     //字段声明
@@ -132,7 +184,7 @@ export class Web_User_Send_Code {
 /// <summary>
 /// 修改密码
 /// </summary>
-export class Web_User_Modify_Password {
+export class Web_User_Modify_Password extends WebCommon {
     //接口地址
     static API: string = "/api/user/modify/password";
     //字段声明
@@ -158,7 +210,7 @@ export class Web_User_Modify_Password {
 /// <summary>
 /// 修改个人信息
 /// </summary>
-export class Web_User_Modify_User_Info {
+export class Web_User_Modify_User_Info extends WebCommon {
     //接口地址
     static API: string = "/api/user/modify/user_info";
     //字段声明
@@ -184,7 +236,7 @@ export class Web_User_Modify_User_Info {
 /// <summary>
 /// 验证用户昵称
 /// </summary>
-export class Web_User_Check_Nickname {
+export class Web_User_Check_Nickname extends WebCommon {
     //接口地址
     static API: string = "/api/user/check_nickname";
     //字段声明
@@ -208,7 +260,7 @@ export class Web_User_Check_Nickname {
 /// <summary>
 /// 手机号注册
 /// </summary>
-export class Web_User_Register {
+export class Web_User_Register extends WebCommon {
     //接口地址
     static API: string = "/api/user/register";
     //字段声明
@@ -237,7 +289,7 @@ export class Web_User_Register {
 ///
 /// 查询他人统计数据
 /// </summary>
-export class WEB2_data_stat_person {
+export class WEB2_data_stat_person extends WebCommon {
     //接口地址
     static API: string = "/api/data_stat/person";
     //字段声明
@@ -292,7 +344,7 @@ export class WEB2_data_stat_person {
 /// <summary>
 /// 战绩7，30,生涯数据(MTT,Room)
 /// </summary>
-export class Web_Stats_User_Stats {
+export class Web_Stats_User_Stats extends WebCommon {
     //接口地址
     static API: string = "/api/stats/user_stats";
     //字段声明
@@ -350,120 +402,100 @@ export class Web_Stats_User_Stats {
 /// <summary>
 /// 战绩
 /// </summary>
-export class Web_Room_Center_History_List {
+export class Web_Room_Center_History_List extends WebCommon {
     //接口地址
     static API: string = "/api/stats/room/history/list";
-    //字段声明
-    static RequestParams: {
-        group_by?: number,      //1 room 2 mtt 3 mttroom
-        limit?: number,         //条目
-        offset?: number,        //开始下标。例子（offset=0，limit=10，0-9。）
-        game_type?: number,     //游戏类型，对应客户端 枚举 GameType
-    } = null;
+    // //字段声明
+    // static RequestParams: {
+    //     group_by?: number,      //1 room 2 mtt 3 mttroom
+    //     limit?: number,         //条目
+    //     offset?: number,        //开始下标。例子（offset=0，limit=10，0-9。）
+    //     game_type?: number,     //游戏类型，对应客户端 枚举 GameType
+    // } = null;
 
-    static Records: {
-        Name: string,//房间名称
-        Type: number,//房间类型
-        MatchID: number,//比赛id
-        RoomID: number,//房间id
-        Time: string,//开始时间
-        Change: number,//筹码变动
-        Count: number,//总手数
-    } = null;
+    // static Records: {
+    //     Name: string,//房间名称
+    //     Type: number,//房间类型
+    //     MatchID: number,//比赛id
+    //     RoomID: number,//房间id
+    //     Time: string,//开始时间
+    //     Change: number,//筹码变动
+    //     Count: number,//总手数
+    // } = null;
 
-    static Data: {
-        limit: number,
-        offset: number,
-        total: number,// //总条数
-        records: typeof Web_Room_Center_History_List.Records,
-    } = null;
+    // static Data: {
+    //     limit: number,
+    //     offset: number,
+    //     total: number,// //总条数
+    //     records: typeof Web_Room_Center_History_List.Records,
+    // } = null;
 
-    static ResponseData: {
-        data?: typeof Web_Room_Center_History_List.Data,
-    } = null;
-
-    static Request(param: typeof Web_Room_Center_History_List.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_History_List.ResponseData };
 }
 
 /// <summary>
 /// 手数列表
 /// </summary>
-export class Web_Room_Center_History_Hand {
+export class Web_Room_Center_History_Hand extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/history/hand";
     //字段声明
-    static RequestParams: {
-        room_id?: number,
-        match_id?: number,
-        limit?: number,
-        offset?: number,
-        type?: number,
-        gametype?: number,
-    } = null;
+    // static RequestParams: {
+    //     room_id?: number,
+    //     match_id?: number,
+    //     limit?: number,
+    //     offset?: number,
+    //     type?: number,
+    //     gametype?: number,
+    // } = null;
 
-    static Record: {
-        id: number,                 //查询replay id
-        type: number,               //房间类型
-        room_id: number,            //房间id
-        match_id: number,           //比赛id
-        name: string,               //房间名字
-        user_id: number,            //玩家id
-        hand_num: number,           //本手手数
-        open: number,               //0：非公开
-        change: number,             //筹码变动
-        create_time: string,        //创建时间
-        room_unique_id: string,     //房间唯一id
-    } = null;
+    // static Record: {
+    //     id: number,                 //查询replay id
+    //     type: number,               //房间类型
+    //     room_id: number,            //房间id
+    //     match_id: number,           //比赛id
+    //     name: string,               //房间名字
+    //     user_id: number,            //玩家id
+    //     hand_num: number,           //本手手数
+    //     open: number,               //0：非公开
+    //     change: number,             //筹码变动
+    //     create_time: string,        //创建时间
+    //     room_unique_id: string,     //房间唯一id
+    // } = null;
 
-    static Data: {
-        limit: number,
-        offset: number,
-        total: number,              //总条数
-        records: typeof Web_Room_Center_History_Hand.Record,
-    } = null;
+    // static Data: {
+    //     limit: number,
+    //     offset: number,
+    //     total: number,              //总条数
+    //     records: typeof Web_Room_Center_History_Hand.Record,
+    // } = null;
 
-    static ResponseData: {
-        data?: typeof Web_Room_Center_History_Hand.Data,
-    } = null;
-
-    static Request(param: typeof Web_Room_Center_History_Hand.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_History_Hand.ResponseData };
+    // static ResponseData: {
+    //     data?: typeof Web_Room_Center_History_Hand.Data,
+    // } = null;
 }
 
 /// <summary>
 /// 7.玩家查看带入申请列表
 /// </summary>
-export class APIFriendApplyList {
+export class APIFriendApplyList extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/friend/room/apply/user/list";
     //字段声明
-    static RequestParams: {
-        limit: number,
-        offset: number,
-        room_id: number,
-    } = null;
+    // static RequestParams: {
+    //     limit: number,
+    //     offset: number,
+    //     room_id: number,
+    // } = null;
 
-    static ResponseData: {
+    // static ResponseData: {
 
-    } = null;
-    static Request(param: typeof APIFriendApplyList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIFriendApplyList.ResponseData };
+    // } = null;
 }
 
 /// <summary>
 /// 战绩详情
 /// </summary>
-export class Web_Stats_Room_Detail {
+export class Web_Stats_Room_Detail extends WebCommon {
     //接口地址
     static API: string = "/api/stats/room_detail/{id}";
     //字段声明
@@ -526,7 +558,7 @@ export class Web_Stats_Room_Detail {
 /// <summary>
 /// MTT战绩详情
 /// </summary>
-export class Web_Stats_Mtt_Room_Detail {
+export class Web_Stats_Mtt_Room_Detail extends WebCommon {
     //接口地址
     static API: string = "/api/stats/mtt_room_detail/{id}";
     //字段声明
@@ -591,7 +623,7 @@ export class Web_Stats_Mtt_Room_Detail {
 /// <summary>
 /// 查询其他玩家信息
 /// </summary>
-export class Web_Other_User_Info {
+export class Web_Other_User_Info extends WebCommon {
     //接口地址
     static API: string = "/api/user/{id}/info";
 
@@ -612,7 +644,7 @@ export class Web_Other_User_Info {
 /// <summary>
 /// 公会消息-带入列表
 /// </summary>
-export class API_CLUB_APPLY_LIST {
+export class API_CLUB_APPLY_LIST extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/club/room/apply/list";
 
@@ -633,7 +665,7 @@ export class API_CLUB_APPLY_LIST {
 /// <summary>
 /// 审批玩家带入申请
 /// </summary>
-export class API_CLUB_APPLY_AUDIT {
+export class API_CLUB_APPLY_AUDIT extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/club/room/apply/audit";
 
@@ -654,7 +686,7 @@ export class API_CLUB_APPLY_AUDIT {
 /// <summary>
 /// 请求用户数据
 /// </summary>
-export class Web_User_Info {
+export class Web_User_Info extends WebCommon {
     //接口地址
     static API: string = "/api/user/info";
     static RequestParams: {
@@ -694,7 +726,7 @@ export class Web_User_Info {
 /// <summary>
 /// 牌局内玩家战绩数据
 /// </summary>
-export class Web_Stats_Other_User_Stats {
+export class Web_Stats_Other_User_Stats extends WebCommon {
     //接口地址
     static API: string = "/api/stats/other_user_stats/{id}";
     static RequestParams: {
@@ -743,7 +775,7 @@ export class Web_Stats_Other_User_Stats {
 /// <summary>
 /// socket channel info
 /// </summary>
-export class Web_Channel {
+export class Web_Channel extends WebCommon {
     //接口地址
     static API: string = "/api/user/channel";
     //字段声明
@@ -765,7 +797,7 @@ export class Web_Channel {
 /// <summary>
 /// 请求频道信息 websocket的port
 /// </summary>
-export class Web_WS {
+export class Web_WS extends WebCommon {
     //接口地址
     static API: string = "/api/user/ws";
     //字段声明
@@ -787,7 +819,7 @@ export class Web_WS {
 /// <summary>
 /// 获取全局配置
 /// </summary>
-export class Web_Config_Global_Config {
+export class Web_Config_Global_Config extends WebCommon {
 
     //接口地址
     static API: string = "/api/config/global/config";
@@ -821,7 +853,7 @@ export class Web_Config_Global_Config {
 /// <summary>
 /// 获取多语言配置
 /// </summary>
-export class Web_Config_Multi_Language_Template {
+export class Web_Config_Multi_Language_Template extends WebCommon {
 
     //接口地址
     static API: string = "/api/config/multi_language/template";
@@ -847,7 +879,7 @@ export class Web_Config_Multi_Language_Template {
 /// <summary>
 /// Banner
 /// </summary>
-export class Web_Misc_Banner_List {
+export class Web_Misc_Banner_List extends WebCommon {
 
     //接口地址
     static API: string = "/api/misc/banner/list";
@@ -885,7 +917,7 @@ export class Web_Misc_Banner_List {
 /// <summary>
 /// 查询道具信息
 /// </summary>
-export class Web_Prop_User_Check_Prop_Info {
+export class Web_Prop_User_Check_Prop_Info extends WebCommon {
 
     //接口地址
     static API: string = "/api/prop/user/check_prop_info";
@@ -916,7 +948,7 @@ export class Web_Prop_User_Check_Prop_Info {
 /// <summary>
 /// 查看优惠
 /// </summary>
-export class Web_Room_Center_Mtt_GetDiscounts {
+export class Web_Room_Center_Mtt_GetDiscounts extends WebCommon {
 
     //接口地址
     static API: string = "/api/prop/user_prop/mtt/list";
@@ -946,7 +978,7 @@ export class Web_Room_Center_Mtt_GetDiscounts {
 /// <summary>
 /// 购买道具
 /// </summary>
-export class Web_Prop_User_Buy_Prop {
+export class Web_Prop_User_Buy_Prop extends WebCommon {
 
     //接口地址
     static API: string = "/api/prop/user/buy_inner_prop";
@@ -976,7 +1008,7 @@ export class Web_Prop_User_Buy_Prop {
 /// <summary>
 /// 大厅房间列表
 /// </summary>
-export class Web_Room_Center_Groups {
+export class Web_Room_Center_Groups extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/groups";
 
@@ -1017,7 +1049,7 @@ export class Web_Room_Center_Groups {
 /// <summary>
 /// 未读消息 （只有五条）
 /// </summary>
-export class Web_Msg_Message_Unread {
+export class Web_Msg_Message_Unread extends WebCommon {
     //接口地址
     static API: string = "/api/msg/message/unread";
 
@@ -1043,7 +1075,7 @@ export class Web_Msg_Message_Unread {
 }
 //消息读取完毕清理
 
-export class Web_Msg_Message_UnreadClear {
+export class Web_Msg_Message_UnreadClear extends WebCommon {
     //接口地址
     static API: string = "/api/msg/message/clear_unread";
     //字段声明
@@ -1067,7 +1099,7 @@ export class Web_Msg_Message_UnreadClear {
 /// <summary>
 /// 小盲列表
 /// </summary>
-export class Web_Room_Center_Rooms_Blinds {
+export class Web_Room_Center_Rooms_Blinds extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/room_blinds";
 
@@ -1095,7 +1127,7 @@ export class Web_Room_Center_Rooms_Blinds {
 /// <summary>
 /// 房间详细列表
 /// </summary>
-export class Web_Room_Center_Rooms {
+export class Web_Room_Center_Rooms extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/rooms";
 
@@ -1260,533 +1292,460 @@ export class Web_Gold_Change_Insure_Log {
 /// <summary>
 /// MTT 比赛列表详情
 /// </summary>
-export class Web_Room_Center_Mtt_Details {
+export class Web_Room_Center_Mtt_Details extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/mtt/{id}";
 
     //字段声明
-    static RequestParams: {
+    // static RequestParams: {
 
-    } = null;
+    // } = null;
 
-    static ResponseData: {
-        data: typeof Web_Room_Center_Mtt_Details.Data[],
-    } = null;
+    // static ResponseData: {
+    //     data: typeof Web_Room_Center_Mtt_Details.Data[],
+    // } = null;
 
-    static Data: {
-        alive: number,//存活人数
-        state_code: number,//当前玩家的状态 MTTPlayerStatus定义
-        mtt: typeof Web_Room_Center_Mtt_Details.MttDetails,//比赛细节信息
-        state: typeof Web_Room_Center_Mtt_Details.PlayerState,//玩家筹码状态信息
-        more: typeof Web_Room_Center_Mtt_Details.More,//盲注等级和奖励池
-        top: number,//最大记分牌
-    } = null;
+    // static Data: {
+    //     alive: number,//存活人数
+    //     state_code: number,//当前玩家的状态 MTTPlayerStatus定义
+    //     mtt: typeof Web_Room_Center_Mtt_Details.MttDetails,//比赛细节信息
+    //     state: typeof Web_Room_Center_Mtt_Details.PlayerState,//玩家筹码状态信息
+    //     more: typeof Web_Room_Center_Mtt_Details.More,//盲注等级和奖励池
+    //     top: number,//最大记分牌
+    // } = null;
 
-    static PlayerState: {
-        left_rebuy_times: number,//剩余重购次数
-        chip: number,//桌上记分牌
-        store: number,//存储记分牌
-        init_score: number,//初始化记分牌
-        partial_enable: boolean//是否允许部分带入
-    } = null;
+    // static PlayerState: {
+    //     left_rebuy_times: number,//剩余重购次数
+    //     chip: number,//桌上记分牌
+    //     store: number,//存储记分牌
+    //     init_score: number,//初始化记分牌
+    //     partial_enable: boolean//是否允许部分带入
+    // } = null;
 
-    static MttDetails: {
-        match_id: number, // 比赛id
-        name: string, // 比赛名字
-        type: number, // 房间类型
-        game_type: number,//游戏类型
-        poker_type: number,//牌类型
-        limit_bet_type: number,//底池限注类型
-        rank_type: number,//排名类型
-        enter_time: string,//进入时间
-        start_time: string,//开始时间
-        end_time: string,//结束时间
-        hunter_on: number,//猎人赛开启  1：开启，0关闭
-        hunter_bonus: number,//0-100  //猎人赛滚雪球比例 0~100 0:杀白丁无收益 1～99 单次收益 100:不滚雪球
-        partial_on: number,//部分带入开启  1：开启，0：关闭
-        parital_return_bl: number,//部分带入返还金币盲注等级
-        straddle_on: number,//强制盲注开启 1：开启，0：关闭
-        straddle_max: number,//强制盲注数量
-        rooms: number,//房间数量
-        max_room_id: number,//最大房间id
-        delay_view_card_on: number,//延迟看牌  1：开启，0：关闭
-        limit_min: number,//最低参赛人数下限
-        limit_delay_times: number,//操作加时次数限制
-        limit_auto_check_times: number,//自动过牌次数
-        limit_auto_fold_times: number,//自动弃牌次数
-        participants: number,//参赛人数
-        award_num: number,//奖金
-        money_sync: number,//奖励圈同步(截止无法买入以后才会开启)
-        status: number,//游戏状态
-        seat_count: number,//在座人数
-        final_seat_count: number,//最终座位人数
-        no_user_wait_duration: number
-        initial_score: number,//初始化记分牌
-        blindtable_type: number,//盲注表类型
-        upblind_interval: number,//升盲时间间隔
-        apply_start_time: string,//报名开始时间
-        op_duration: number,//操作时间
-        max_delay_apply_bl: number,//延迟报名升盲等级
-        rebuy_times: number,//重构次数          
-        max_rebuy_bl: number,//重购升盲等级
-        limit_total_buy_times: number,//最大买入次数上限
-        total_buy_times: number,//总买入次数
-        total_rebuy_times: number,//总重购次数
-        addon_begin_bl: number,//增购开启 升盲等级
-        addon_end_bl: number,//增购关闭 升盲等级
-        addon_score: number,//增购 记分牌
-        total_addon_times: number,//增购次数
-        apply_fee_pool: number,//报名费
-        apply_fee_service: number,//服务费
-        apply_fee_hunter: number,//猎人赛费用
-        prize_type: number,//奖励类型
-        tribe_id: number,//联盟id
-        create_time: string,//创建房间时间
-        update_time: string,
-        game_icon: string,
-        prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
-        voiceprint_verify_on: number,//是否开启验证声纹 0 关闭，1 开启。
-        voiceprint_verify_duration: number,//验证声纹时长
-        buy_prop_id: number,//道具id
-        addonplus_m1_on: number,//增购plus 模式一 0 关闭，1 开启
-        addonplus_m1_max_times: number,//增购最大次数
-        addonplus_m1_limit: number,//增购限制筹码
-        total_addonplus_m1_times: number,//总增购次数
-        addonplus_m2_on: number,//增购模式2 0 关闭，1 开启
-        addonplus_m2_max_times: number,//增购限制最大次数
-        addonplus_m2_max_bl: number,//增购 截止盲注
-        total_addonplus_m2_times: number,//增购总次数
-        buy_ratio: number,//买入倍率
-        pre_buyin_bonus: number,//赛前报名多得记分牌
-        tablecloth_tag: string,//桌布id
-        limit_tag: string,//相同比赛检测tag
-        buyin_free_times: number,//报名限免次数
-        rebuy_free_times: number,//重购限免次数
-        multi_ratio_free_times: number,//多倍率限免次数
-        addon_free_times: number,//增购限免次数
-        buyin_free_incl_svr: number,//报名限免是否包含服务费，0不包含，1包含
-        rebuy_free_incl_svr: number //重购限免是否包含服务费，0不包含，1包含
-        multi_ratio_free_incl_svr: number,//多倍率限免是否包含服务费，0不包含，1包含
-        addon_free_incl_svr: number,//增购限免是否包含服务费，0不包含，1包含
-    } = null;
+    // static MttDetails: {
+    //     match_id: number, // 比赛id
+    //     name: string, // 比赛名字
+    //     type: number, // 房间类型
+    //     game_type: number,//游戏类型
+    //     poker_type: number,//牌类型
+    //     limit_bet_type: number,//底池限注类型
+    //     rank_type: number,//排名类型
+    //     enter_time: string,//进入时间
+    //     start_time: string,//开始时间
+    //     end_time: string,//结束时间
+    //     hunter_on: number,//猎人赛开启  1：开启，0关闭
+    //     hunter_bonus: number,//0-100  //猎人赛滚雪球比例 0~100 0:杀白丁无收益 1～99 单次收益 100:不滚雪球
+    //     partial_on: number,//部分带入开启  1：开启，0：关闭
+    //     parital_return_bl: number,//部分带入返还金币盲注等级
+    //     straddle_on: number,//强制盲注开启 1：开启，0：关闭
+    //     straddle_max: number,//强制盲注数量
+    //     rooms: number,//房间数量
+    //     max_room_id: number,//最大房间id
+    //     delay_view_card_on: number,//延迟看牌  1：开启，0：关闭
+    //     limit_min: number,//最低参赛人数下限
+    //     limit_delay_times: number,//操作加时次数限制
+    //     limit_auto_check_times: number,//自动过牌次数
+    //     limit_auto_fold_times: number,//自动弃牌次数
+    //     participants: number,//参赛人数
+    //     award_num: number,//奖金
+    //     money_sync: number,//奖励圈同步(截止无法买入以后才会开启)
+    //     status: number,//游戏状态
+    //     seat_count: number,//在座人数
+    //     final_seat_count: number,//最终座位人数
+    //     no_user_wait_duration: number
+    //     initial_score: number,//初始化记分牌
+    //     blindtable_type: number,//盲注表类型
+    //     upblind_interval: number,//升盲时间间隔
+    //     apply_start_time: string,//报名开始时间
+    //     op_duration: number,//操作时间
+    //     max_delay_apply_bl: number,//延迟报名升盲等级
+    //     rebuy_times: number,//重构次数          
+    //     max_rebuy_bl: number,//重购升盲等级
+    //     limit_total_buy_times: number,//最大买入次数上限
+    //     total_buy_times: number,//总买入次数
+    //     total_rebuy_times: number,//总重购次数
+    //     addon_begin_bl: number,//增购开启 升盲等级
+    //     addon_end_bl: number,//增购关闭 升盲等级
+    //     addon_score: number,//增购 记分牌
+    //     total_addon_times: number,//增购次数
+    //     apply_fee_pool: number,//报名费
+    //     apply_fee_service: number,//服务费
+    //     apply_fee_hunter: number,//猎人赛费用
+    //     prize_type: number,//奖励类型
+    //     tribe_id: number,//联盟id
+    //     create_time: string,//创建房间时间
+    //     update_time: string,
+    //     game_icon: string,
+    //     prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
+    //     voiceprint_verify_on: number,//是否开启验证声纹 0 关闭，1 开启。
+    //     voiceprint_verify_duration: number,//验证声纹时长
+    //     buy_prop_id: number,//道具id
+    //     addonplus_m1_on: number,//增购plus 模式一 0 关闭，1 开启
+    //     addonplus_m1_max_times: number,//增购最大次数
+    //     addonplus_m1_limit: number,//增购限制筹码
+    //     total_addonplus_m1_times: number,//总增购次数
+    //     addonplus_m2_on: number,//增购模式2 0 关闭，1 开启
+    //     addonplus_m2_max_times: number,//增购限制最大次数
+    //     addonplus_m2_max_bl: number,//增购 截止盲注
+    //     total_addonplus_m2_times: number,//增购总次数
+    //     buy_ratio: number,//买入倍率
+    //     pre_buyin_bonus: number,//赛前报名多得记分牌
+    //     tablecloth_tag: string,//桌布id
+    //     limit_tag: string,//相同比赛检测tag
+    //     buyin_free_times: number,//报名限免次数
+    //     rebuy_free_times: number,//重购限免次数
+    //     multi_ratio_free_times: number,//多倍率限免次数
+    //     addon_free_times: number,//增购限免次数
+    //     buyin_free_incl_svr: number,//报名限免是否包含服务费，0不包含，1包含
+    //     rebuy_free_incl_svr: number //重购限免是否包含服务费，0不包含，1包含
+    //     multi_ratio_free_incl_svr: number,//多倍率限免是否包含服务费，0不包含，1包含
+    //     addon_free_incl_svr: number,//增购限免是否包含服务费，0不包含，1包含
+    // } = null;
 
-    static More: {
-        ante: number,//当前前注
-        nante: number,//下一前注
-        bl: number,//当前盲注等级
-        nbl: number,//下一盲注等级
-        sb: number,//当前小盲
-        nsb: number,//下一小盲
-        prize_pool: number,//奖池
-    } = null;
+    // static More: {
+    //     ante: number,//当前前注
+    //     nante: number,//下一前注
+    //     bl: number,//当前盲注等级
+    //     nbl: number,//下一盲注等级
+    //     sb: number,//当前小盲
+    //     nsb: number,//下一小盲
+    //     prize_pool: number,//奖池
+    // } = null;
 
-    static Request(param: typeof Web_Room_Center_Mtt_Details.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_Mtt_Details.Data };
+    // static Request(param: typeof Web_Room_Center_Mtt_Details.RequestParams) {
+    //     this.RequestParams = param;
+    //     return param;
+    // }
+    // static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_Mtt_Details.Data };
 }
 
 /// <summary>
 /// MTT 报名
 /// </summary>
-export class Web_Room_Center_Mtt_Buyin {
+export class Web_Room_Center_Mtt_Buyin extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/mtt/{id}/buyin";
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-        ticket: boolean,//几人池
-        ratio: number,
-    } = null;
-
-    static Request(param: typeof Web_Room_Center_Mtt_Buyin.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Buyin.ResponseData)[] };
 }
 
 /// <summary>
 /// MTT 重购
 /// </summary>
-export class Web_Room_Center_Mtt_Rebuy {
+export class Web_Room_Center_Mtt_Rebuy extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/mtt/{id}/rebuy";
 
     //字段声明
-    static RequestParams: {
+    // static RequestParams: {
 
-    } = null;
+    // } = null;
 
-    static ResponseData: {
-        ticket: boolean,//几人池
-        ratio: number,
-    } = null;
-
-    static Request(param: typeof Web_Room_Center_Mtt_Rebuy.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Rebuy.ResponseData)[] };
+    // static ResponseData: {
+    //     ticket: boolean,//几人池
+    //     ratio: number,
+    // } = null;
 }
 
 /// <summary>
 /// MTT 该比赛玩家排名信息
 /// </summary>
-export class Web_Room_Center_Mtt_Ranks {
+export class Web_Room_Center_Mtt_Ranks extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/mtt/{id}/ranks";
 
-    //字段声明
-    static RequestParams: {
-        limit: number,//几人池
-        offset: number,
-    } = null;
+    // //字段声明
+    // static RequestParams: {
+    //     limit: number,//几人池
+    //     offset: number,
+    // } = null;
 
-    static ResponseData: {
-        data: typeof Web_Room_Center_Mtt_Ranks.Data[],
-    } = null;
+    // static ResponseData: {
+    //     data: typeof Web_Room_Center_Mtt_Ranks.Data[],
+    // } = null;
 
-    static Data: {
-        limit: number,//条目
-        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-        alive: number,//存活人数
-        total: number,//总人数
-        records: typeof Web_Room_Center_Mtt_Ranks.PlayerListElement[],// 玩家列表
-    } = null;
+    // static Data: {
+    //     limit: number,//条目
+    //     offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    //     alive: number,//存活人数
+    //     total: number,//总人数
+    //     records: typeof Web_Room_Center_Mtt_Ranks.PlayerListElement[],// 玩家列表
+    // } = null;
 
-    static PlayerListElement: {
-        rank: number,//排名
-        chip: number,//记分牌
-        alive: number,//是否被淘汰
-        rid: number,//桌号
-        urid: number,//玩家随机id
-        seat: number,//座位号
-        rebuy: number,//重构次数
-        addon: number,//是否重构
-        name: number,//名字
-    } = null;
+    // static PlayerListElement: {
+    //     rank: number,//排名
+    //     chip: number,//记分牌
+    //     alive: number,//是否被淘汰
+    //     rid: number,//桌号
+    //     urid: number,//玩家随机id
+    //     seat: number,//座位号
+    //     rebuy: number,//重构次数
+    //     addon: number,//是否重构
+    //     name: number,//名字
+    // } = null;
 
-    static Request(param: typeof Web_Room_Center_Mtt_Ranks.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Ranks.ResponseData)[] };
 }
 
 /// <summary>
 /// MTT 猎人赛排名信息
 /// </summary>
-export class Web_Room_Center_Mtt_Hranks {
+export class Web_Room_Center_Mtt_Hranks extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/room/{id}/hranks";
 
-    //字段声明
-    static RequestParams: {
-        limit: number,//几人池
-        offset: number,
-    } = null;
+    // //字段声明
+    // static RequestParams: {
+    //     limit: number,//几人池
+    //     offset: number,
+    // } = null;
 
-    static ResponseData: {
-        data: typeof Web_Room_Center_Mtt_Hranks.Data[],
-    } = null;
+    // static ResponseData: {
+    //     data: typeof Web_Room_Center_Mtt_Hranks.Data[],
+    // } = null;
 
-    static Data: {
-        limit: number,//条目
-        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-        alive: number,//存活人数
-        total: number,//总人数
-        records: typeof Web_Room_Center_Mtt_Hranks.PlayerListElement[],
-    } = null;
+    // static Data: {
+    //     limit: number,//条目
+    //     offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    //     alive: number,//存活人数
+    //     total: number,//总人数
+    //     records: typeof Web_Room_Center_Mtt_Hranks.PlayerListElement[],
+    // } = null;
 
-    static PlayerListElement: {
-        uid: number,//玩家id
-        rank: number,//排名
-        h: number,//猎头
-        award: number,//赏金
-        rid: number,//桌号
-        seat: number,//座位号
-        name: string,//名字
-        avatar: string,//头像
-        urid: number,//随机id
-    } = null;
+    // static PlayerListElement: {
+    //     uid: number,//玩家id
+    //     rank: number,//排名
+    //     h: number,//猎头
+    //     award: number,//赏金
+    //     rid: number,//桌号
+    //     seat: number,//座位号
+    //     name: string,//名字
+    //     avatar: string,//头像
+    //     urid: number,//随机id
+    // } = null;
 
-    static Request(param: typeof Web_Room_Center_Mtt_Hranks.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Hranks.ResponseData)[] };
 }
 
 /// <summary>
 /// MTT 牌桌信息
 /// </summary>
-export class Web_Room_Center_Mtt_Rooms {
+export class Web_Room_Center_Mtt_Rooms extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/mtt/{id}/rooms";
 
-    //字段声明
-    static RequestParams: {
-        limit: number,//几人池
-        offset: number,
-    } = null;
+    // //字段声明
+    // static RequestParams: {
+    //     limit: number,//几人池
+    //     offset: number,
+    // } = null;
 
-    static ResponseData: {
-        data: typeof Web_Room_Center_Mtt_Rooms.Data[],
-    } = null;
+    // static ResponseData: {
+    //     data: typeof Web_Room_Center_Mtt_Rooms.Data[],
+    // } = null;
 
-    static Data: {
-        limit: number,//条目
-        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-        total: number,//总人数
-        records: typeof Web_Room_Center_Mtt_Rooms.DeskListElement[],
-    } = null;
+    // static Data: {
+    //     limit: number,//条目
+    //     offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    //     total: number,//总人数
+    //     records: typeof Web_Room_Center_Mtt_Rooms.DeskListElement[],
+    // } = null;
 
-    static players: {
-        uid: number,//玩家id
-        chip: number,//玩家筹码
-        seat: number,//玩家座位号
-    } = null;
+    // static players: {
+    //     uid: number,//玩家id
+    //     chip: number,//玩家筹码
+    //     seat: number,//玩家座位号
+    // } = null;
 
-    static DeskListElement: {
-        rid: number,//桌号
-        service_id: number,//用于查询IP列表IP Port
-        roomers: typeof Web_Room_Center_Mtt_Rooms.players[],
-    } = null;
+    // static DeskListElement: {
+    //     rid: number,//桌号
+    //     service_id: number,//用于查询IP列表IP Port
+    //     roomers: typeof Web_Room_Center_Mtt_Rooms.players[],
+    // } = null;
 
-    static Request(param: typeof Web_Room_Center_Mtt_Rooms.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Rooms.ResponseData)[] };
 }
 
 /// <summary>
 /// MTT 奖励
 /// </summary>
-export class Web_Room_Center_Mtt_Real_Prize {
+export class Web_Room_Center_Mtt_Real_Prize extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/mtt/{id}/real_prize";
 
     //字段声明
-    static RequestParams: {
-        limit: number,//几人池
-        offset: number,
-    } = null;
+    // static RequestParams: {
+    //     limit: number,//几人池
+    //     offset: number,
+    // } = null;
 
-    static ResponseData: {
-        data: typeof Web_Room_Center_Mtt_Real_Prize.Data[],
-    } = null;
+    // static ResponseData: {
+    //     data: typeof Web_Room_Center_Mtt_Real_Prize.Data[],
+    // } = null;
 
-    static Data: {
-        dynamic: boolean,//是否是动态
-        award: boolean//总奖池
-        award_type: number,//奖励类型
-        award_num: number,//奖励圈人数
-        participants: number,//参与人数
-        next_award_count: number,//1. 如果是动态奖池 其实是下一等级参与人数, 会影响奖励人数  2. 如果是静态奖池 是下一个等级的买入人次, 会影响奖励人数
-        prizes: typeof Web_Room_Center_Mtt_Real_Prize.Prize[],
-    } = null;
+    // static Data: {
+    //     dynamic: boolean,//是否是动态
+    //     award: boolean//总奖池
+    //     award_type: number,//奖励类型
+    //     award_num: number,//奖励圈人数
+    //     participants: number,//参与人数
+    //     next_award_count: number,//1. 如果是动态奖池 其实是下一等级参与人数, 会影响奖励人数  2. 如果是静态奖池 是下一个等级的买入人次, 会影响奖励人数
+    //     prizes: typeof Web_Room_Center_Mtt_Real_Prize.Prize[],
+    // } = null;
 
-    static Prize: {
-        min: number,//最小名次
-        max: number,//最大名次
-        award: number,//奖励
-        goods: typeof Web_Room_Center_Mtt_Real_Prize.Goods[],
-    } = null;
+    // static Prize: {
+    //     min: number,//最小名次
+    //     max: number,//最大名次
+    //     award: number,//奖励
+    //     goods: typeof Web_Room_Center_Mtt_Real_Prize.Goods[],
+    // } = null;
 
-    static Goods: {
-        i: number,//道具id
-        na: string//道具名称
-        v: number,//价值等价货币
-        n: number,//数量
-    } = null;
-
-    static Request(param: typeof Web_Room_Center_Mtt_Real_Prize.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Real_Prize.ResponseData)[] };
+    // static Goods: {
+    //     i: number,//道具id
+    //     na: string//道具名称
+    //     v: number,//价值等价货币
+    //     n: number,//数量
+    // } = null;
 }
 
 /// <summary>
 /// MTT 我的奖励
 /// </summary>
-export class Web_Room_Center_Mtt_Myaward {
+export class Web_Room_Center_Mtt_Myaward extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/mtt/{id}/myaward";
 
-    //字段声明
-    static RequestParams: {
-    } = null;
+    // //字段声明
+    // static RequestParams: {
+    // } = null;
 
-    static ResponseData: {
-        data: typeof Web_Room_Center_Mtt_Myaward.Data,
-    } = null;
+    // static ResponseData: {
+    //     data: typeof Web_Room_Center_Mtt_Myaward.Data,
+    // } = null;
 
-    static Data: {
-        uid: number,//开始下标。例子（offset=0，limit=10，0-9。）
-        rank: number,//存活人数
-        award_gold: number,//总人数
-        award_goods: typeof Web_Room_Center_Mtt_Myaward.AwardGoods,
-        hunter_award: number,//
-        hunter_rank: number,//
-        hunter_kill: number,//
-        is_final: boolean,//
-        awarded: boolean,//
-        username: string,//
-        avatar: string,//
-    } = null;
+    // static Data: {
+    //     uid: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    //     rank: number,//存活人数
+    //     award_gold: number,//总人数
+    //     award_goods: typeof Web_Room_Center_Mtt_Myaward.AwardGoods,
+    //     hunter_award: number,//
+    //     hunter_rank: number,//
+    //     hunter_kill: number,//
+    //     is_final: boolean,//
+    //     awarded: boolean,//
+    //     username: string,//
+    //     avatar: string,//
+    // } = null;
 
-    static AwardGoods: {
-        i: number,//道具ID
-        na: string,//道具名字
-        v: number,//道具价值
-        n: number,//道具数量
-    } = null;
-
-    static Request(param: typeof Web_Room_Center_Mtt_Myaward.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof Web_Room_Center_Mtt_Myaward.ResponseData)[] };
+    // static AwardGoods: {
+    //     i: number,//道具ID
+    //     na: string,//道具名字
+    //     v: number,//道具价值
+    //     n: number,//道具数量
+    // } = null;
 }
 
 /// <summary>
 /// 查询在该房间保险赔率表
 /// </summary>
-export class Web_User_Room_insur {
+export class Web_User_Room_insur extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/room/{id}/insur";
 
-    //字段声明
-    static RequestParams: {
+    // //字段声明
+    // static RequestParams: {
 
-    } = null;
+    // } = null;
 
-    static ResponseData: {
-        pot_user_count: number,//几人池
-        detail: typeof Web_User_Room_insur.Outs[],
-    } = null;
+    // static ResponseData: {
+    //     pot_user_count: number,//几人池
+    //     detail: typeof Web_User_Room_insur.Outs[],
+    // } = null;
 
-    static Outs: {
-        outs: number,//outs 张数
-        odds: number,//对应outs张数赔率
-    } = null;
+    // static Outs: {
+    //     outs: number,//outs 张数
+    //     odds: number,//对应outs张数赔率
+    // } = null;
 
-    static Request(param: typeof Web_User_Room_insur.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof Web_User_Room_insur.ResponseData)[] };
 }
 
 
 /// <summary>
 /// 查询在该房间带出信息
 /// </summary>
-export class Web_User_Room {
+export class Web_User_Room extends WebCommon {
     //接口地址
     static API: string = "/api/user/room/{id}";
 
 
     //字段声明
-    static RequestParams: {
+    // static RequestParams: {
 
-    } = null;
+    // } = null;
 
-    static ResponseData: {
-        last_bring_out: typeof Web_User_Room.BringOut,
-        wallet: typeof Web_User_Room.Wallet,
-        bring_in_apply: typeof Web_User_Room.BringIn,
-    } = null;
+    // static ResponseData: {
+    //     last_bring_out: typeof Web_User_Room.BringOut,
+    //     wallet: typeof Web_User_Room.Wallet,
+    //     bring_in_apply: typeof Web_User_Room.BringIn,
+    // } = null;
 
-    static BringOut: {
-        to_wallet: number,//带出（减去服务费后的带出金额）
-        fee: number,//服务费
-    } = null;
+    // static BringOut: {
+    //     to_wallet: number,//带出（减去服务费后的带出金额）
+    //     fee: number,//服务费
+    // } = null;
 
-    static Wallet: {
-        w_u_id: number,//钱包id
-        gold: number,//钱包金额
-        gold_lock: number,//被锁定金额
-        wallet_status: number,//钱包状态
-    } = null;
+    // static Wallet: {
+    //     w_u_id: number,//钱包id
+    //     gold: number,//钱包金额
+    //     gold_lock: number,//被锁定金额
+    //     wallet_status: number,//钱包状态
+    // } = null;
 
-    static BringIn: {
-        room_id: number,//房间ID
-        user_id: number,//用户ID
-        bring_in: number,//带入筹码
-        status: number,// 状态 1 待审批，2通过，3拒绝，4取消
-    } = null;
+    // static BringIn: {
+    //     room_id: number,//房间ID
+    //     user_id: number,//用户ID
+    //     bring_in: number,//带入筹码
+    //     status: number,// 状态 1 待审批，2通过，3拒绝，4取消
+    // } = null;
 
-    static Request(param: typeof Web_User_Room.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_User_Room.ResponseData };
 
 }
 
 /// <summary>
 /// </summary>
-export class Web_Org_Club_Create {
+export class Web_Org_Club_Create extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/create";
 
 
-    //字段声明
-    static RequestParams: {
-        area_id: null,
-        club_name: null,
-        desc: null,
-        logo: null,
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof Web_Org_Club_Create.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Create.ResponseData };
+    // //字段声明
+    // static RequestParams: {
+    //     area_id: null,
+    //     club_name: null,
+    //     desc: null,
+    //     logo: null,
+    // } = null;
 
 }
 
-export class Web_Org_Club_Get {
+export class Web_Org_Club_Get extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user_club";
 
 
     //字段声明
-    static RequestParams: {
-    } = null;
+    // static RequestParams: {
+    // } = null;
 
-    static ResponseData: {
-        // random_id: number,
-        // club_name: string,
-        // more_contact: string,
-        // club_id: number,
-        // level: number,
-        // upper_limit: number,
-        // search_switch: any
-        // auto_audit_switch: any
-    } = null;
-    static Request(param: typeof Web_Org_Club_Create.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+    // static ResponseData: {
+    //     // random_id: number,
+    //     // club_name: string,
+    //     // more_contact: string,
+    //     // club_id: number,
+    //     // level: number,
+    //     // upper_limit: number,
+    //     // search_switch: any
+    //     // auto_audit_switch: any
+    // } = null;
 
 }
 //公会玩家钱包充值
-export class Web_Recharge_Gold {
+export class Web_Recharge_Gold extends WebCommon {
     //接口地址
     static API: string = "/api/order/user/recharge";
 
@@ -1804,926 +1763,566 @@ export class Web_Recharge_Gold {
     static Response: { code?: number, message?: string, data?: typeof Web_Recharge_Gold.ResponseData };
 }
 //公会玩家钱包提取
-export class Web_Tiqu_Gold {
+export class Web_Tiqu_Gold extends WebCommon {
     //接口地址
     static API: string = "/api/order/user/withdraw";
-
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: { amount: number }) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Tiqu_Gold.ResponseData };
-
 }
 //公会基金充值
-export class Web_Recharge_Gold_Club {
+export class Web_Recharge_Gold_Club extends WebCommon {
     //接口地址
     static API: string = "/api/order/club/recharge";
-
     //字段声明
-    static RequestParams: {
-        amount: number,
-        gold_type: number // 1 联盟币 2 usdt
-    } = null;
+    // static RequestParams: {
+    //     amount: number,
+    //     gold_type: number // 1 联盟币 2 usdt
+    // } = null;
 
-    static ResponseData: {
 
-    } = null;
-    static Request(param: typeof Web_Recharge_Gold_Club.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
 }
 //公会基金提取
-export class Web_Tiqu_Gold_Club {
+export class Web_Tiqu_Gold_Club extends WebCommon {
     //接口地址
     static API: string = "/api/order/club/withdraw";
 
-    //字段声明
-    static RequestParams: {
-        amount: number,
-        gold_type: number,
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof Web_Tiqu_Gold_Club.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Get.ResponseData };
+    // //字段声明
+    // static RequestParams: {
+    //     amount: number,
+    //     gold_type: number,
+    // } = null;
 
 }
 
-export class Web_Org_Club_Player_Apply_List {
+export class Web_Org_Club_Player_Apply_List extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/join/list";
-
-
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof Web_Org_Club_Player_Apply_List.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Player_Apply_List.ResponseData };
-
 }
-export class Web_Org_Club_Search_By_Id {
+export class Web_Org_Club_Search_By_Id extends WebCommon{
     //接口地址
     static API: string = "/api/org/club/info";
 
-
     //字段声明
-    static RequestParams: {
-        club_random_id: null;
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof Web_Org_Club_Search_By_Id.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Search_By_Id.ResponseData };
+    // static RequestParams: {
+    //     club_random_id: null;
+    // } = null;
 
 }
 
-export class Web_Org_Club_Join {
+export class Web_Org_Club_Join extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/join/apply";
-
-
     //字段声明
-    static RequestParams: {
-        club_id: null;
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof Web_Org_Club_Join.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Org_Club_Join.ResponseData };
+    // static RequestParams: {
+    //     club_id: null;
+    // } = null;
 
 }
-export class APIOrgClubCancleJoinClub {
+export class APIOrgClubCancleJoinClub extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/join/cancel";
-
-
     //字段声明
-    static RequestParams: {
-        apply_id: null;
-    } = null;
+    // static RequestParams: {
+    //     apply_id: null;
+    // } = null;
 
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgClubCancleJoinClub.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgClubCancleJoinClub.ResponseData };
 
 }
-export class APIOrgClubIsManger {
+export class APIOrgClubIsManger extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/admin/has";
-
-
     //字段声明
-    static RequestParams: {
-        club_id: null;
-    } = null;
+    // static RequestParams: {
+    //     club_id: null;
+    // } = null;
 
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgClubIsManger.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgClubIsManger.ResponseData };
-
+;
 }
-export class APIOrgClubApprovalJoin {
+export class APIOrgClubApprovalJoin extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/join/audit";
-
     //字段声明
-    static RequestParams: {
-        "apply_id": ''
-        "audit_op": ''
-    } = null;
+    // static RequestParams: {
+    //     "apply_id": ''
+    //     "audit_op": ''
+    // } = null;
 
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgClubApprovalJoin.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgClubApprovalJoin.ResponseData };
 }
-export class APIOrgClubGetJoinlList {
+export class APIOrgClubGetJoinlList extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/join/list";
 
-
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgClubGetJoinlList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgClubGetJoinlList.ResponseData };
 }
 /// <summary>
 /// 查询结算信息
 /// </summary>
-export class Web_User_Room_Settle_Detail {
+export class Web_User_Room_Settle_Detail extends WebCommon {
     //接口地址
     static API: string = "/api/user/room_settle/detail/{id}";
 
     //字段声明
-    static RequestParams: {
-    } = null;
+    // static RequestParams: {
+    // } = null;
 
-    static ResponseData: {
-        list: typeof Web_User_Room_Settle_Detail.UsersInfo[],
-        self_settle: typeof Web_User_Room_Settle_Detail.SelfSettle
-    } = null;
+    // static ResponseData: {
+    //     list: typeof Web_User_Room_Settle_Detail.UsersInfo[],
+    //     self_settle: typeof Web_User_Room_Settle_Detail.SelfSettle
+    // } = null;
 
-    static SelfSettle:
-        {
-            user_random_id: number,
-            nick_name: string,//昵称
-            avatar: string,//头像
-            user_hand_num: number,//手数
-            bring_in: number,//带入
-            bring_out: number,//带出
-        } = null;
-    static UsersInfo:
-        {
-            user_random_id: number,//user id
-            nick_name: string,//昵称
-            avatar: string,//头像
-            user_hand_num: number,//手数
-            bring_in: number,//带入
-            bring_out: number,//带出
-        }
-
-    static Request(param: typeof Web_User_Room_Settle_Detail.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_User_Room_Settle_Detail.ResponseData };
-
+    // static SelfSettle:
+    //     {
+    //         user_random_id: number,
+    //         nick_name: string,//昵称
+    //         avatar: string,//头像
+    //         user_hand_num: number,//手数
+    //         bring_in: number,//带入
+    //         bring_out: number,//带出
+    //     } = null;
+    // static UsersInfo:
+    //     {
+    //         user_random_id: number,//user id
+    //         nick_name: string,//昵称
+    //         avatar: string,//头像
+    //         user_hand_num: number,//手数
+    //         bring_in: number,//带入
+    //         bring_out: number,//带出
+    //     }
 }
 
-export class APIOrgClubQuit {
+export class APIOrgClubQuit extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/quit";
-
-
     //字段声明
-    static RequestParams: {
-        club_id: null;
-    } = null;
+    // static RequestParams: {
+    //     club_id: null;
+    // } = null;
 
-    static ResponseData: {
 
-    } = null;
-    static Request(param: typeof APIOrgClubQuit.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgClubQuit.ResponseData };
 }
 
-export class APIMsgMessageList {
+export class APIMsgMessageList extends WebCommon {
     //接口地址
     static API: string = "/api/msg/message/list";
-
-
     //字段声明
-    static RequestParams: {
-        msg_type: number,//消息类型
-        limit: number,//条目
-        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-    } = null;
+    // static RequestParams: {
+    //     msg_type: number,//消息类型
+    //     limit: number,//条目
+    //     offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    // } = null;
 
-    static ResponseData: {
-        data?: typeof APIMsgMessageList.Data,
-    } = null;
-    static Data: {
-        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-        total: number,//总条目数
-        list: typeof APIMsgMessageList.MsgInfo,
-    } = null;
+    // static ResponseData: {
+    //     data?: typeof APIMsgMessageList.Data,
+    // } = null;
+    // static Data: {
+    //     offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    //     total: number,//总条目数
+    //     list: typeof APIMsgMessageList.MsgInfo,
+    // } = null;
 
-    static MsgInfo:
-        {
-            msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
-            num: number,//未读消息数量
-            msg_id: number,//消息ID
-            title: string,
-            content: string,
-            remark: string,
-            msg_type: number,//消息类型 MessageSubType
-            create_time: string,//创建时间
-            game_type: number,//游戏类型
-            multi_language_id: string,//房间名称key
-        }
-
-    static Request(param: typeof APIMsgMessageList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIMsgMessageList.ResponseData };
+    // static MsgInfo:
+    //     {
+    //         msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
+    //         num: number,//未读消息数量
+    //         msg_id: number,//消息ID
+    //         title: string,
+    //         content: string,
+    //         remark: string,
+    //         msg_type: number,//消息类型 MessageSubType
+    //         create_time: string,//创建时间
+    //         game_type: number,//游戏类型
+    //         multi_language_id: string,//房间名称key
+    //     }
 }
 
-export class APITicketCreate {
+export class APITicketCreate extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/exchange/ticket/create";
-
-
     //字段声明
-    static RequestParams: {
-        user_id: number,// 玩家ID
-        user_random_id: number,// 玩家randomID
-        phone: number,// 电话
-        email: string,// 邮箱
-        ticket_type: number,// 问题类型
-        description: string,//  问题描述
-        img_url: string,//  图片描述
-    } = null;
+    // static RequestParams: {
+    //     user_id: number,// 玩家ID
+    //     user_random_id: number,// 玩家randomID
+    //     phone: number,// 电话
+    //     email: string,// 邮箱
+    //     ticket_type: number,// 问题类型
+    //     description: string,//  问题描述
+    //     img_url: string,//  图片描述
+    // } = null;
 
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APITicketCreate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APITicketCreate.ResponseData };
 }
 
-export class APIIsPhoneUser {
+export class APIIsPhoneUser extends WebCommon {
     //接口地址
     static API: string = "/api/user/isPhoneUser";
-
-
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIIsPhoneUser.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIIsPhoneUser.ResponseData };
 }
 
-export class APIOrgClubUploadIcon {
+export class APIOrgClubUploadIcon extends WebCommon {
     //接口地址
     static API: string = "/api/oss/upload/avatar";
 
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgClubUploadIcon.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgClubUploadIcon.ResponseData };
 }
-export class APIOrgMemberList {
+export class APIOrgMemberList extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/member/list";
-
-
     //字段声明
-    static RequestParams: {
-        club_id: null;
-    } = null;
+    // static RequestParams: {
+    //     club_id: null;
+    // } = null;
 
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgMemberList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgMemberList.ResponseData };
 }
-export class APIOrgMangerList {
+export class APIOrgMangerList extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/admin/list";
-
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgMangerList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgMangerList.ResponseData };
 }
 
 
 // 6.玩家申请加入公会列表
-export class APIClubJoinList {
+export class APIClubJoinList extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/join/list";
 
     //字段声明
-    static RequestParams: {
-        "limit": number,
-        "offset": number
-    } = null;
+    // static RequestParams: {
+    //     "limit": number,
+    //     "offset": number
+    // } = null;
 
-    static ResponseData: {
 
-    } = null;
-    static Request(param: typeof APIClubJoinList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIClubJoinList.ResponseData };
 }
 
 // 17.公会管理员冻结公会成员
-export class APILockUser {
+export class APILockUser extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/admin/lock/user";
-
-
     //字段声明
-    static RequestParams: {
-        user_id: number;
-    } = null;
+    // static RequestParams: {
+    //     user_id: number;
+    // } = null;
 
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APILockUser.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APILockUser.ResponseData };
 }
 
 // 18.公会管理员解冻公会成员
-export class APIUnlockUser {
+export class APIUnlockUser extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/admin/unlock/user";
-
-
     //字段声明
-    static RequestParams: {
-        user_id: number;
-    } = null;
+    // static RequestParams: {
+    //     user_id: number;
+    // } = null;
 
-    static ResponseData: {
 
-    } = null;
-    static Request(param: typeof APIUnlockUser.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIUnlockUser.ResponseData };
 }
 
 // 19.公会管理员删除公会成员
-export class APIDeleleUser {
+export class APIDeleleUser extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/admin/delele/user";
-
-
     //字段声明
-    static RequestParams: {
-        user_id: number;
-    } = null;
+    // static RequestParams: {
+    //     user_id: number;
+    // } = null;
 
-    static ResponseData: {
 
-    } = null;
-    static Request(param: typeof APIDeleleUser.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIDeleleUser.ResponseData };
+
 }
 
 // 22.管理员查看玩家退会记录
-export class APIClubQuitList {
+export class APIClubQuitList extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/quit/log";
-
-
     //字段声明
-    static RequestParams: {
-        "limit": number,
-        "offset": number
-    } = null;
+    // static RequestParams: {
+    //     "limit": number,
+    //     "offset": number
+    // } = null;
 
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIClubQuitList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIClubQuitList.ResponseData };
 }
 
 // 查看成员战绩
-export class APIClubStandings {
+export class APIClubStandings extends WebCommon {
     //接口地址
     static API: string = "/api/stats/user/standings";
+    // //字段声明
+    // static RequestParams: {
+    //     "user_id": number,
+    //     "game_type": number,
+    //     "time_type": number,
+    //     "time_long": number
+    // } = null;
 
 
-    //字段声明
-    static RequestParams: {
-        "user_id": number,
-        "game_type": number,
-        "time_type": number,
-        "time_long": number
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIClubStandings.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIClubStandings.ResponseData };
 }
 
-export class APIOrgClubGold {
+export class APIOrgClubGold extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/fund/detail";
-
-
     //字段声明
-    static RequestParams: {
-        club_random_id: number
-    } = null;
+    // static RequestParams: {
+    //     club_random_id: number
+    // } = null;
 
-    static ResponseData: {
-        org_id: number, // 公会ID
-        gold: number, // 公会金豆数
-        gold_lock: number, // 公会被锁定的金豆数
-        forbidden: boolean, // 是否冻结 true已冻结，false未冻结
-        club_name: string,   //公会名字
-    } = null;
-    static Request(param: typeof APIOrgClubGold.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgClubGold.ResponseData };
+    // static ResponseData: {
+    //     org_id: number, // 公会ID
+    //     gold: number, // 公会金豆数
+    //     gold_lock: number, // 公会被锁定的金豆数
+    //     forbidden: boolean, // 是否冻结 true已冻结，false未冻结
+    //     club_name: string,   //公会名字
+    // } = null;
 }
 
 /// <summary>
 /// 收藏牌普
 /// </summary>
-export class Web_Misc_Game_Record_Round {
+export class Web_Misc_Game_Record_Round extends WebCommon {
     //接口地址
     static API: string = "/api/misc/game/record_round";
 
     //字段声明
-    static RequestParams: {
-        id: number, // 牌普id
-        room_id: number, // 普通牌局，
-        match_id: number, // mtt赛事id
-        room_unique_id: string, // room唯一标识
-        name: string, // 
-        hand_num: number, // 手数
-        change: number, // 金币变动值
-        type: number, // 类型
-        open: number, // 是否公开
-    } = null;
+    // static RequestParams: {
+    //     id: number, // 牌普id
+    //     room_id: number, // 普通牌局，
+    //     match_id: number, // mtt赛事id
+    //     room_unique_id: string, // room唯一标识
+    //     name: string, // 
+    //     hand_num: number, // 手数
+    //     change: number, // 金币变动值
+    //     type: number, // 类型
+    //     open: number, // 是否公开
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof Web_Misc_Game_Record_Round.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Record_Round.ResponseData };
 }
 
 /// <summary>
 /// 查询牌普列表
 /// </summary>
-export class Web_Misc_Game_Round_List {
+export class Web_Misc_Game_Round_List extends WebCommon {
     //接口地址
     static API: string = "/api/misc/game/round/list";
 
     //字段声明
-    static RequestParams: {
-        limit: number,
-        offset: number,
-    } = null;
+    // static RequestParams: {
+    //     limit: number,
+    //     offset: number,
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof Web_Misc_Game_Round_List.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_List.ResponseData };
 }
 
 /// <summary>
 /// 成就任务列表
 /// </summary>
-export class API_PROP_TASK_LIST {
+export class API_PROP_TASK_LIST extends WebCommon {
     //接口地址
     static API: string = "/api/prop/task/task_list";
 
     //字段声明
-    static RequestParams: {
-        type: number, // 类型ID  任务类型  1；每日任务 2：成就任务
-        timezone: number, // 时区 0-巴西 1-utc
-        limit: number,
-        offset: number,
-    } = null;
+    // static RequestParams: {
+    //     type: number, // 类型ID  任务类型  1；每日任务 2：成就任务
+    //     timezone: number, // 时区 0-巴西 1-utc
+    //     limit: number,
+    //     offset: number,
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_PROP_TASK_LIST.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_PROP_TASK_LIST.ResponseData };
 }
 
 /// <summary>
 /// 用户的装扮道具背包
 /// </summary>
-export class API_BAG_PENDANT_LIST {
+export class API_BAG_PENDANT_LIST extends WebCommon {
     //接口地址
     static API: string = "/api/prop/user_prop/pendant_list";
 
     //字段声明
-    static RequestParams: {
-        prop_type: number,
-    } = null;
+    // static RequestParams: {
+    //     prop_type: number,
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_BAG_PENDANT_LIST.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_BAG_PENDANT_LIST.ResponseData };
 }
 
 /// <summary>
 /// 用户当前装扮的道具
 /// </summary>
-export class API_BAG_CURRENT_PENDANT_LIST {
+export class API_BAG_CURRENT_PENDANT_LIST extends WebCommon {
     //接口地址
     static API: string = "/api/prop/user_prop/current_pendant_list";
 
     //字段声明
-    static RequestParams: {
-        prop_type: number,
-    } = null;
+    // static RequestParams: {
+    //     prop_type: number,
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_BAG_CURRENT_PENDANT_LIST.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_BAG_CURRENT_PENDANT_LIST.ResponseData };
 }
 
 /// <summary>
 /// 我得背包
 /// </summary>
-export class Web_Prop_User_Prop_List {
+export class Web_Prop_User_Prop_List extends WebCommon {
     //接口地址
     static API: string = "/api/prop/user_prop/list";
 
     //字段声明
-    static RequestParams: {
-        prop_type: number,//道具类型(prop_type):0-全部;1-mtt门票，2-实物，3-电话卡，4-购物卡，5-代金卷 6-线下门票 7-免服务费代金券 8-充值代金券 9-金豆券 10-一元购活动券 11-道具代替劵
-        limit: number,//条目
-        offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-    } = null;
+    // static RequestParams: {
+    //     prop_type: number,//道具类型(prop_type):0-全部;1-mtt门票，2-实物，3-电话卡，4-购物卡，5-代金卷 6-线下门票 7-免服务费代金券 8-充值代金券 9-金豆券 10-一元购活动券 11-道具代替劵
+    //     limit: number,//条目
+    //     offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof Web_Prop_User_Prop_List.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Prop_User_Prop_List.ResponseData };
+    // static ResponseData: {
+    // } = null;
 }
 
 /// <summary>
 /// 用户穿上装扮道具
 /// </summary>
-export class API_BAG_PANDANT_UP {
+export class API_BAG_PANDANT_UP extends WebCommon {
     //接口地址
     static API: string = "/api/prop/user_prop/pendant_up";
 
     //字段声明
-    static RequestParams: {
-        prop_id: number, //道具id
-    } = null;
+    // static RequestParams: {
+    //     prop_id: number, //道具id
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_BAG_PANDANT_UP.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_BAG_PANDANT_UP.ResponseData };
+    // static ResponseData: {
+    // } = null;
 }
 
 /// <summary>
 /// 用户移除装扮道具
 /// </summary>
-export class API_BAG_PANDANT_DOWN {
+export class API_BAG_PANDANT_DOWN extends WebCommon {
     //接口地址
     static API: string = "/api/prop/user_prop/pendant_down";
 
     //字段声明
-    static RequestParams: {
-        prop_id: number, //道具id
-    } = null;
+    // static RequestParams: {
+    //     prop_id: number, //道具id
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_BAG_PANDANT_DOWN.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_BAG_PANDANT_DOWN.ResponseData };
+    // static ResponseData: {
+    // } = null;
 }
 
 /// <summary>
 /// 成就任务领取奖励
 /// </summary>
-export class API_PROP_TASK_RECEIVE {
+export class API_PROP_TASK_RECEIVE extends WebCommon {
     //接口地址
     static API: string = "/api/prop/task/task_receive";
 
     //字段声明
-    static RequestParams: {
-        task_id: number,
-        timezone: number,
-    } = null;
+    // static RequestParams: {
+    //     task_id: number,
+    //     timezone: number,
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_PROP_TASK_RECEIVE.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_PROP_TASK_RECEIVE.ResponseData };
+    // static ResponseData: {
+    // } = null;
+
 }
 
 /// <summary>
 /// 查询牌普列表是否是状态
 /// </summary>
-export class Web_Misc_Game_Round_Status {
+export class Web_Misc_Game_Round_Status extends WebCommon {
     //接口地址
     static API: string = "/api/misc/game/get_round_status";
 
     //字段声明
-    static RequestParams: {
-        room_id: number, //普通牌局，
-        room_unique_id: string, // room唯一标识
-        hand_num: number, //手数
-    } = null;
+    // static RequestParams: {
+    //     room_id: number, //普通牌局，
+    //     room_unique_id: string, // room唯一标识
+    //     hand_num: number, //手数
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof Web_Misc_Game_Round_Status.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Round_Status.ResponseData };
+    // static ResponseData: {
+    // } = null;
 }
 
 /// <summary>
 /// 设置消息模版
 /// </summary>
-export class API_SET_MSG_TEMPLATE {
+export class API_SET_MSG_TEMPLATE extends WebCommon {
     //接口地址
     static API: string = "/api/chat/club/inform/template/set";
 
     //字段声明
-    static RequestParams: {
-        template_name: string, //名称,
-        content: string, //内容
-    } = null;
+    // static RequestParams: {
+    //     template_name: string, //名称,
+    //     content: string, //内容
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_SET_MSG_TEMPLATE.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_SET_MSG_TEMPLATE.ResponseData };
+    // static ResponseData: {
+    // } = null;
 }
 
 /// <summary>
 /// 获取用户消息模版列表
 /// </summary>
-export class API_GET_MSG_LIST {
+export class API_GET_MSG_LIST extends WebCommon {
     //接口地址
     static API: string = "/api/chat/club/inform/template/list";
 
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_GET_MSG_LIST.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_GET_MSG_LIST.ResponseData };
 }
 
 /// <summary>
 /// 删除消息模版
 /// </summary>
-export class API_DEL_MSG_TEMPLATE {
+export class API_DEL_MSG_TEMPLATE extends WebCommon {
     //接口地址
     static API: string = "/api/chat/club/inform/template/del";
 
     //字段声明
-    static RequestParams: {
-        id: number
-    } = null;
+    // static RequestParams: {
+    //     id: number
+    // } = null;
 
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof API_DEL_MSG_TEMPLATE.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof API_DEL_MSG_TEMPLATE.ResponseData };
+    // static ResponseData: {
+    // } = null;
 }
 
-export class API_SEND_MSG {
+export class API_SEND_MSG extends WebCommon {
     public static API: string = "/api/chat/club/send_messages";
     //字段声明
-    public static RequestParams: {
-        "content": string,
-        "message_type": number,  // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
-        "standings_user_id": number, // 消息类型为 3战绩分享 时，分享的玩家ID
-        "game_round_id": number,// 消息类型为 4牌谱分享 时，牌谱ID
-        "amount": number
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof API_SEND_MSG.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof API_SEND_MSG.ResponseData
-    };
+    // public static RequestParams: {
+    //     "content": string,
+    //     "message_type": number,  // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
+    //     "standings_user_id": number, // 消息类型为 3战绩分享 时，分享的玩家ID
+    //     "game_round_id": number,// 消息类型为 4牌谱分享 时，牌谱ID
+    //     "amount": number
+    // } = null;
 }
 
 /// <summary>
 /// 取消收藏牌普
 /// </summary>
-export class Web_Misc_Game_Remove_Round {
+export class Web_Misc_Game_Remove_Round extends WebCommon {
 
     //接口地址
     static API: string = "/api/misc/game/remove_round";
 
     //字段声明
-    static RequestParams: {
-        room_id: number, // 普通牌局，
-        room_unique_id: string, // room唯一标识
-        hand_num: number, // 手数
-    } = null;
-
-    static ResponseData: {
-    } = null;
-    static Request(param: typeof Web_Misc_Game_Remove_Round.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Misc_Game_Remove_Round.ResponseData };
+    // static RequestParams: {
+    //     room_id: number, // 普通牌局，
+    //     room_unique_id: string, // room唯一标识
+    //     hand_num: number, // 手数
+    // } = null;
 }
 
 /// <summary>
 /// 单手回放信息 生涯（战绩，牌谱）
 /// </summary>
-export class Web_Room_Center_History_Replay {
+export class Web_Room_Center_History_Replay extends WebCommon {
     static API: string = "/api/roomcenter/history/replay/{id}";
 
     //字段声明
-    static RequestParams: {
+    // static RequestParams: {
 
-    } = null;
+    // } = null;
 
-
-    static ResponseData: {
-        org_id: number, // 公会ID
-        gold: number, // 公会金豆数
-        gold_lock: number, // 公会被锁定的金豆数
-        forbidden: boolean, // 是否冻结 true已冻结，false未冻结
-        club_name: string,   //公会名字
-    } = null;
-    static Request(param: typeof Web_Room_Center_History_Replay.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_History_Replay.ResponseData };
+    // static ResponseData: {
+    //     org_id: number, // 公会ID
+    //     gold: number, // 公会金豆数
+    //     gold_lock: number, // 公会被锁定的金豆数
+    //     forbidden: boolean, // 是否冻结 true已冻结，false未冻结
+    //     club_name: string,   //公会名字
+    // } = null;
 
     // public sealed class ResponseData : WebResponseDataBase
     // {
@@ -2855,1234 +2454,418 @@ export class Web_Room_Center_History_Replay {
     // }
 }
 
-export class APIOrgTribeSearchByID {
+export class APIOrgTribeSearchByID extends WebCommon {
     //接口地址
     static API: string = "/api/org/tribe/info";
-
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgTribeSearchByID.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgTribeSearchByID.ResponseData };
 }
 
-export class APIOrgJoinTrip {
+export class APIOrgJoinTrip extends WebCommon {
     //接口地址
     static API: string = "/api/org/tribe/club/join/apply";
-
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgJoinTrip.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: typeof APIOrgJoinTrip.ResponseData };
 }
 
 
-export class APIOrgChangeClubData {
+export class APIOrgChangeClubData extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/modify/club_info";
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgChangeClubData.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgChangeClubData.ResponseData
-    };
 }
 
-export class APIOrgCreateTemplate {
+export class APIOrgCreateTemplate extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/room/template/create";
 
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgCreateTemplate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgCreateTemplate.ResponseData
-    };
 }
 
 
 //玩家在某个工会钱包变动记录
-export class API_GOLD_CHANGE_LOG {
+export class API_GOLD_CHANGE_LOG extends WebCommon {
     //接口地址
     static API: string = "/api/user/gold_change/log";
 
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof API_GOLD_CHANGE_LOG.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof API_GOLD_CHANGE_LOG.ResponseData
-    };
 }
 
-export class APIOrgGetTemplate {
+export class APIOrgGetTemplate extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/room/template/list";
-
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgGetTemplate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgGetTemplate.ResponseData
-    };
 }
-export class APIOrgTemplateDelete {
+export class APIOrgTemplateDelete extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/room/template/delete";
-
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgTemplateDelete.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgTemplateDelete.ResponseData
-    };
 }
-export class APIOrgUpdateTemplate {
+export class APIOrgUpdateTemplate extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/room/template/update";
-
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgUpdateTemplate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgUpdateTemplate.ResponseData
-    };
 }
-export class APIOrgRoomCreate {
+export class APIOrgRoomCreate extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/room/create";
-
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-        room_id: null;
-    } = null;
-    static Request(param: typeof APIOrgRoomCreate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgRoomCreate.ResponseData
-    };
 }
-export class APIOrgGetRoomConfig {
+export class APIOrgGetRoomConfig extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/room/fixed/config";
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgGetRoomConfig.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgGetRoomConfig.ResponseData
-    };
 }
-export class APIOrgRoomConfigCreate {
+export class APIOrgRoomConfigCreate extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/room/config/create";
-
-    //字段声明
-    static RequestParams: {
-
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgRoomConfigCreate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgRoomConfigCreate.ResponseData
-    };
 
 }
 //#region MTT
 /// <summary>
 /// MTT 比赛列表
 ///  </summary>
-export class Web_Room_Center_Mtt_list {
+export class Web_Room_Center_Mtt_list extends WebCommon {
     static API: string = "/api/roomcenter/mtt/list";
     //字段声明
-    static RequestParams: {
-        limit: number,  // 页码
-        offset: number,  // 页大小
-        name: string,  //名字(name)
-        mine: boolean,  //是否只有我报名(mine)
-        types: number[], // 类型(types)
-        hunter: boolean, //猎人模式(hunter)
-        tribe_id: number, //联盟ID(tribe_id)
-        start_time_s: number, // 开始时间开始(start_time_s)
-        start_time_e: number, // 开始时间结束(start_time_e)
-        enter_time_s: number,  //进入时间开始(enter_time_s)
-        enter_time_e: number,  //进入时间开始(enter_time_e)
-        game_type: number[], //游戏类型(game_type)
-        poker_type: number[], // 牌类型(poker_type)
-        limit_bet_type: number[],  //下注类型(limit_bet_type)
-        order: string[], // 排序(order[id_asc,id_desc,start_xxx,enter_xxx])  //asc 正序   //desc 倒序
-        buyin_min: number, // 最低买入价格(buyin_min),不包括服务费,人头费
-        buyin_max: number // 最高买入价格(buyin_max),不包括服务费,人头费
-        status: number[]//0已创建 1正在进行 2已关闭
-    } = null;
+    // static RequestParams: {
+    //     limit: number,  // 页码
+    //     offset: number,  // 页大小
+    //     name: string,  //名字(name)
+    //     mine: boolean,  //是否只有我报名(mine)
+    //     types: number[], // 类型(types)
+    //     hunter: boolean, //猎人模式(hunter)
+    //     tribe_id: number, //联盟ID(tribe_id)
+    //     start_time_s: number, // 开始时间开始(start_time_s)
+    //     start_time_e: number, // 开始时间结束(start_time_e)
+    //     enter_time_s: number,  //进入时间开始(enter_time_s)
+    //     enter_time_e: number,  //进入时间开始(enter_time_e)
+    //     game_type: number[], //游戏类型(game_type)
+    //     poker_type: number[], // 牌类型(poker_type)
+    //     limit_bet_type: number[],  //下注类型(limit_bet_type)
+    //     order: string[], // 排序(order[id_asc,id_desc,start_xxx,enter_xxx])  //asc 正序   //desc 倒序
+    //     buyin_min: number, // 最低买入价格(buyin_min),不包括服务费,人头费
+    //     buyin_max: number // 最高买入价格(buyin_max),不包括服务费,人头费
+    //     status: number[]//0已创建 1正在进行 2已关闭
+    // } = null;
 
-    static ResponseData: {
-        limit: number,
-        offset: number,
-        total: number,
-        records: typeof Web_Room_Center_Mtt_list.RoomListElement[]  // mtt列表
-    } = null;
+    // static ResponseData: {
+    //     limit: number,
+    //     offset: number,
+    //     total: number,
+    //     records: typeof Web_Room_Center_Mtt_list.RoomListElement[]  // mtt列表
+    // } = null;
 
-    static RoomListElement:
-        {
-            match_id: number,//比赛id
-            name: string,//比赛名称
-            type: number,//room path 房间类型
-            game_type: number,//游戏类型
-            poker_type: number,//牌类型
-            limit_bet_type: number,//底池限注类型
-            rank_type: number,//排名类型
-            enter_time: string,//进入时间
-            start_time: string,//开始时间
-            end_time: string,//结束时间
-            hunter_on: number,//是否猎人赛
-            hunter_bonus: number,//人头奖金
-            partial_on: number,//部分带入是否开启 1：开启，0：关闭
-            parital_return_bl: number,//部分带入返还升盲等级
-            straddle_on: number,//强制盲注是否打开，1：开启，0：关闭
-            straddle_max: number,//强制盲注最大次数
-            rooms: number,//总桌子
-            max_room_id: number,//最大房间id
-            delay_view_card_on: number,//延迟看牌。1：开启，0：关闭
-            limit_min: number,//参赛人数下限
-            limit_delay_times: number,//玩家操作加时次数限制
-            limit_auto_check_times: number,//最大check次数
-            limit_auto_fold_times: number,//最大fold次数
-            participants: number,//参赛人次
-            award_num: number,//奖金
-            money_sync: number,//奖励圈同步(截止无法买入以后才会开启)
-            status: number,//游戏状态
-            seat_count: number,//座位总数。9
-            final_seat_count: number,//最终座位数量
-            no_user_wait_duration: number,
-            initial_score: number,//初始记分牌
-            blindtable_type: number,//盲注表类型
-            upblind_interval: number,//升盲时间
-            apply_start_time: string,//报名时间
-            op_duration: number,//操作时间
-            max_delay_apply_bl: number,//关闭延迟报名，升盲等级
-            rebuy_times: number,//重构次数
-            max_rebuy_bl: number,//关闭重购，升盲等级
-            limit_total_buy_times: number,//最大重购次数
-            total_buy_times: number,//总报名次数
-            total_rebuy_times: number,//总重购次数
-            addon_begin_bl: number,//增购开始盲注等级
-            addon_end_bl: number,//增购结束盲注等级
-            addon_score: number,//增购记分牌
-            total_addon_times: number,//总增购次数
-            apply_fee_pool: number,//报名费
-            apply_fee_service: number,//服务费
-            apply_fee_hunter: number,//猎人赛人头费
-            prize_type: number,//奖励类型
-            prize_base_pool: number,//奖励数量
-            tribe_id: number,//联盟id
-            create_time: string,//创建时间
-            update_time: string,//
-            bought: number,// 0: 无法报名 , 1: 报名中 , 2: 参与中
-            alive: number,//存活人数
-            is_buy_in: boolean,//是否已经买入
-            prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
-        } = null;
+    // static RoomListElement:
+    //     {
+    //         match_id: number,//比赛id
+    //         name: string,//比赛名称
+    //         type: number,//room path 房间类型
+    //         game_type: number,//游戏类型
+    //         poker_type: number,//牌类型
+    //         limit_bet_type: number,//底池限注类型
+    //         rank_type: number,//排名类型
+    //         enter_time: string,//进入时间
+    //         start_time: string,//开始时间
+    //         end_time: string,//结束时间
+    //         hunter_on: number,//是否猎人赛
+    //         hunter_bonus: number,//人头奖金
+    //         partial_on: number,//部分带入是否开启 1：开启，0：关闭
+    //         parital_return_bl: number,//部分带入返还升盲等级
+    //         straddle_on: number,//强制盲注是否打开，1：开启，0：关闭
+    //         straddle_max: number,//强制盲注最大次数
+    //         rooms: number,//总桌子
+    //         max_room_id: number,//最大房间id
+    //         delay_view_card_on: number,//延迟看牌。1：开启，0：关闭
+    //         limit_min: number,//参赛人数下限
+    //         limit_delay_times: number,//玩家操作加时次数限制
+    //         limit_auto_check_times: number,//最大check次数
+    //         limit_auto_fold_times: number,//最大fold次数
+    //         participants: number,//参赛人次
+    //         award_num: number,//奖金
+    //         money_sync: number,//奖励圈同步(截止无法买入以后才会开启)
+    //         status: number,//游戏状态
+    //         seat_count: number,//座位总数。9
+    //         final_seat_count: number,//最终座位数量
+    //         no_user_wait_duration: number,
+    //         initial_score: number,//初始记分牌
+    //         blindtable_type: number,//盲注表类型
+    //         upblind_interval: number,//升盲时间
+    //         apply_start_time: string,//报名时间
+    //         op_duration: number,//操作时间
+    //         max_delay_apply_bl: number,//关闭延迟报名，升盲等级
+    //         rebuy_times: number,//重构次数
+    //         max_rebuy_bl: number,//关闭重购，升盲等级
+    //         limit_total_buy_times: number,//最大重购次数
+    //         total_buy_times: number,//总报名次数
+    //         total_rebuy_times: number,//总重购次数
+    //         addon_begin_bl: number,//增购开始盲注等级
+    //         addon_end_bl: number,//增购结束盲注等级
+    //         addon_score: number,//增购记分牌
+    //         total_addon_times: number,//总增购次数
+    //         apply_fee_pool: number,//报名费
+    //         apply_fee_service: number,//服务费
+    //         apply_fee_hunter: number,//猎人赛人头费
+    //         prize_type: number,//奖励类型
+    //         prize_base_pool: number,//奖励数量
+    //         tribe_id: number,//联盟id
+    //         create_time: string,//创建时间
+    //         update_time: string,//
+    //         bought: number,// 0: 无法报名 , 1: 报名中 , 2: 参与中
+    //         alive: number,//存活人数
+    //         is_buy_in: boolean,//是否已经买入
+    //         prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
+    //     } = null;
 
-    static Request(param: typeof Web_Room_Center_Mtt_list.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof Web_Room_Center_Mtt_list.ResponseData
-    };
 }
-export class APIOrgInvitationRoom {
+export class APIOrgInvitationRoom extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/invitation/room";
 
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgInvitationRoom.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgInvitationRoom.ResponseData
-    };
-
 }
-export class APIOrgFriendRoomList {
+export class APIOrgFriendRoomList extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/friend/rooms";
 
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgFriendRoomList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgFriendRoomList.ResponseData
-    };
-
 }
-export class APIOrgFriendApplyList {
+export class APIOrgFriendApplyList extends WebCommon {
     //接口地址’
     static API: string = "/api/roomcenter/friend/room/apply/list"
-
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof APIOrgFriendApplyList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof APIOrgFriendApplyList.ResponseData
-    };
-
 }
-export class APIOrgFriendApplyDeal {
+export class APIOrgFriendApplyDeal extends WebCommon {
     //接口地址’
     public static API: string = "/api/roomcenter/friend/room/apply/audit"
-
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgFriendApplyDeal.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgFriendApplyDeal.ResponseData
-    };
-
 }
-export class APIOrgFriendRoomInfo {
+export class APIOrgFriendRoomInfo extends WebCommon {
     //接口地址’
     public static API: string = "/api/roomcenter/room/info"
-
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgFriendRoomInfo.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgFriendRoomInfo.ResponseData
-    };
 }
 /**
  * 朋友桌带入申请
  */
-export class APIOrgFriendBringIn {
+export class APIOrgFriendBringIn extends WebCommon {
     public static API: string = "/api/roomcenter/friend/room/apply/bring_in";
     //字段声明
-    public static RequestParams: {
-        room_id: number,  // 房间id
-        bring_in: number // 带入值
-    } = null;
-    public static ResponseData: {
-        data: typeof APIOrgFriendBringIn.Data
-    } = null;
-    public static Data: {
-        id: number,
-        room_creator_id: number,
-        bring_in: number,
-        status: number,
-        op_id: number,
-        create_time: string,
-        update_time: string,
-    } = null;
-    public static Request(param: typeof APIOrgFriendBringIn.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgFriendBringIn.ResponseData
-    };
+    // public static RequestParams: {
+    //     room_id: number,  // 房间id
+    //     bring_in: number // 带入值
+    // } = null;
+    // public static ResponseData: {
+    //     data: typeof APIOrgFriendBringIn.Data
+    // } = null;
+    // public static Data: {
+    //     id: number,
+    //     room_creator_id: number,
+    //     bring_in: number,
+    //     status: number,
+    //     op_id: number,
+    //     create_time: string,
+    //     update_time: string,
+    // } = null;
 }
 
-export class APIOrgClubDelAdmin {
+export class APIOrgClubDelAdmin extends WebCommon {
     public static API: string = "/api/org/club/admin/del_admin";
     //字段声明
-    public static RequestParams: {
-        user_id: number,  //
-    } = null;
-    public static ResponseData: {
+    // public static RequestParams: {
+    //     user_id: number,  //
+    // } = null;
 
-    } = null;
-    public static Request(param: typeof APIOrgClubDelAdmin.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubDelAdmin.ResponseData
-    };
 }
 
-export class APIOrgClubCreateRoomChange {
+export class APIOrgClubCreateRoomChange extends WebCommon {
     public static API: string = "/api/org/club/admin/create_room_switch";
     //字段声明
-    public static RequestParams: {
-        user_id: number,  //
-        create_room: number //
-    } = null;
-    public static ResponseData: {
+    // public static RequestParams: {
+    //     user_id: number,  //
+    //     create_room: number //
+    // } = null;
 
-    } = null;
-    public static Request(param: typeof APIOrgClubCreateRoomChange.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubCreateRoomChange.ResponseData
-    };
 }
-export class APIOrgClubAddAdmin {
+export class APIOrgClubAddAdmin extends WebCommon {
     public static API: string = "/api/org/club/admin/add_admin";
     //字段声明
-    public static RequestParams: {
-        user_id: number,  //
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubAddAdmin.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubAddAdmin.ResponseData
-    };
+    // public static RequestParams: {
+    //     user_id: number,  //
+    // } = null;
 }
-export class APIOrgClubMember {
+export class APIOrgClubMember extends WebCommon {
     public static API: string = "/api/org/club/member/ordinary_list";
     //字段声明
-    public static RequestParams: {
-        club_random_id: number,  //
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubMember.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubMember.ResponseData
-    };
+    // public static RequestParams: {
+    //     club_random_id: number,  //
+    // } = null;
 }
-export class APIOrgClubActivityCreate {
+export class APIOrgClubActivityCreate extends WebCommon {
     public static API: string = "/api/cmsext/activity/club/update";
     //字段声明
-    public static RequestParams: {
-        club_id: number,  //
-        activity_type: number,  //
-        description: string,
-        img_url: string,
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubActivityCreate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubActivityCreate.ResponseData
-    };
+    // public static RequestParams: {
+    //     club_id: number,  //
+    //     activity_type: number,  //
+    //     description: string,
+    //     img_url: string,
+    // } = null;
 }
 
-export class APIOrgClubActivityInfo {
+export class APIOrgClubActivityInfo extends WebCommon {
     public static API: string = "/api/cmsext/activity/club/info";
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubActivityInfo.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubActivityInfo.ResponseData
-    };
 }
-export class APIOrgClubEarning {
+export class APIOrgClubEarning extends WebCommon {
     public static API: string = "/api/stats/club/profit";
     //字段声明
-    public static RequestParams: {
-
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubEarning.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubEarning.ResponseData
-    };
 }
-export class APIOrgClubMemberEarning {
+export class APIOrgClubMemberEarning extends WebCommon {
     public static API: string = "/api/stats/club/user_profit";
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubMemberEarning.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubMemberEarning.ResponseData
-    };
 }
-export class APISendEmailCode {
+export class APISendEmailCode extends WebCommon {
     public static API: string = "/api/user/send_email_code";
     //字段声明
-    public static RequestParams: {
-        lang: number,
-        email: string,
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APISendEmailCode.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APISendEmailCode.ResponseData
-    };
+    // public static RequestParams: {
+    //     lang: number,
+    //     email: string,
+    // } = null;
 }
-export class APIEmailExist {
+export class APIEmailExist extends WebCommon {
     public static API: string = "/api/user/check_email";
     //字段声明
-    public static RequestParams: {
-        email: string,
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIEmailExist.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIEmailExist.ResponseData
-    };
+    // public static RequestParams: {
+    //     email: string,
+    // } = null;
 }
-export class APIGetBlindStatus {
+export class APIGetBlindStatus extends WebCommon {
     public static API: string = "/api/user/bind_status";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIGetBlindStatus.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIGetBlindStatus.ResponseData
-    };
 }
 
-export class APIBindEmail {
+export class APIBindEmail extends WebCommon {
     public static API: string = "/api/user/bind_email";
     //字段声明
-    public static RequestParams: {
-        email: string,
-        code: string,
-        password: string,
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIBindEmail.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIBindEmail.ResponseData
-    };
+    // public static RequestParams: {
+    //     email: string,
+    //     code: string,
+    //     password: string,
+    // } = null;
 }
-export class APIBindPhone {
+export class APIBindPhone extends WebCommon {
     public static API: string = "/api/user/bind_phone";
     //字段声明
-    public static RequestParams: {
-        phone: string,
-        code: string,
-        area: string,
-        password: string,
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIBindPhone.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIBindPhone.ResponseData
-    };
+    // public static RequestParams: {
+    //     phone: string,
+    //     code: string,
+    //     area: string,
+    //     password: string,
+    // } = null;
 }
-export class APIBindThrid {
+export class APIBindThrid extends WebCommon {
     public static API: string = "/api/user/bind_third_party";
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIBindPhone.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIBindPhone.ResponseData
-    };
 }
-export class APIOrgClubLevelBenefit {
+export class APIOrgClubLevelBenefit extends WebCommon {
     public static API: string = "/api/org/club/level_benefit";
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubLevelBenefit.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubLevelBenefit.ResponseData
-    };
 }
 
-export class APIOrgClubLevelInfo {
+export class APIOrgClubLevelInfo extends WebCommon {
     public static API: string = "/api/org/club/level_info";
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-    public static ResponseData: {
-        data: Object
-    } = null;
-    public static Request(param: typeof APIOrgClubLevelInfo.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubLevelInfo.ResponseData
-    };
 }
-export class APIOrgClubLevelCost {
+export class APIOrgClubLevelCost extends WebCommon {
     public static API: string = "/api/org/club/level_cost";
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubLevelCost.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubLevelCost.ResponseData
-    };
 }
 
-export class APIOrgClubUpLevel {
+export class APIOrgClubUpLevel extends WebCommon {
     public static API: string = "/api/org/club/level_up";
-    //字段声明
-    public static RequestParams: {
-
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubUpLevel.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubUpLevel.ResponseData
-    };
 }
 
-
-export class APIOrgClubRoom {
+export class APIOrgClubRoom extends WebCommon {
     public static API: string = "/api/roomcenter/club/rooms";
-    //字段声明
-    public static RequestParams: {
 
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubRoom.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubRoom.ResponseData
-    };
 }
 
-export class APIOrgSendMess {
+export class APIOrgSendMess extends WebCommon {
     public static API: string = "/api/chat/club/send_messages";
     //字段声明
-    public static RequestParams: {
-        "content": string,
-        "message_type": number,  // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
-        "standings_user_id": number, // 消息类型为 3战绩分享 时，分享的玩家ID
-        "game_round_id": number// 消息类型为 4牌谱分享 时，牌谱ID
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgSendMess.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgSendMess.ResponseData
-    };
+    // public static RequestParams: {
+    //     "content": string,
+    //     "message_type": number,  // 消息类型 1 普通消息 2 会长公告 3 战绩分享 4 牌谱分享
+    //     "standings_user_id": number, // 消息类型为 3战绩分享 时，分享的玩家ID
+    //     "game_round_id": number// 消息类型为 4牌谱分享 时，牌谱ID
+    // } = null;
 }
-export class APIOrgGetMessList {
+export class APIOrgGetMessList extends WebCommon {
     public static API: string = "/api/chat/club/messages";
     //字段声明
-    public static RequestParams: {
-        "history_id": number, // 查历史，小于此ID的消息
-        "last_id": number, // 查最新，大于此ID的消息
-        "limit": 10,
-        "offset": 0
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgGetMessList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgGetMessList.ResponseData
-    };
-
-
+    // public static RequestParams: {
+    //     "history_id": number, // 查历史，小于此ID的消息
+    //     "last_id": number, // 查最新，大于此ID的消息
+    //     "limit": 10,
+    //     "offset": 0
+    // } = null;
 }
 
-export class APIOrgGetNewMessNum {
+export class APIOrgGetNewMessNum extends WebCommon {
     public static API: string = "/api/chat/club/messages/new_count";
     //字段声明
-    public static RequestParams: {
-        "msg_id": number
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgGetNewMessNum.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgGetNewMessNum.ResponseData
-    };
+    // public static RequestParams: {
+    //     "msg_id": number
+    // } = null;
 }
 
-export class APIOrgClubUserInfo {
+export class APIOrgClubUserInfo extends WebCommon {
     public static API: string = "/api/org/club/user/info";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubUserInfo.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubUserInfo.ResponseData
-    };
 }
 
-export class APIOrgClubUserRemarks {
+export class APIOrgClubUserRemarks extends WebCommon {
     public static API: string = "/api/org/club/user/update";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubUserRemarks.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubUserRemarks.ResponseData
-    };
 }
-export class APIOrgClubUserGameInfo {
+export class APIOrgClubUserGameInfo extends WebCommon {
     public static API: string = "/api/stats/club/user/info";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubUserGameInfo.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubUserGameInfo.ResponseData
-    };
 }
-export class APIOrgClubUserRole_change {
+export class APIOrgClubUserRole_change extends WebCommon {
     public static API: string = "/api/org/club/role_change";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubUserRole_change.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubUserRole_change.ResponseData
-    };
 }
-export class APIOrgClubApplyTribeList {
+export class APIOrgClubApplyTribeList extends WebCommon {
     public static API: string = "/api/org/tribe/club/join/apply_list";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubApplyTribeList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubApplyTribeList.ResponseData
-    };
 }
-export class APIOrgClubCancleJoinTribe {
+export class APIOrgClubCancleJoinTribe extends WebCommon {
     public static API: string = "/api/org/tribe/club/join/cancel_apply";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubCancleJoinTribe.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubCancleJoinTribe.ResponseData
-    };
 }
-export class APIOrgRoomBatchCreate {
+export class APIOrgRoomBatchCreate extends WebCommon {
     public static API: string = "/api/cmsext/room/club/batch/create";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgRoomBatchCreate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgRoomBatchCreate.ResponseData
-    };
 }
-export class APIOrgRoomClubCreate {
+export class APIOrgRoomClubCreate extends WebCommon {
     public static API: string = "/api/cmsext/room/club/config/create";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgRoomClubCreate.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgRoomClubCreate.ResponseData
-    };
 }
-
-
 //公会基金变动
-export class Web_Club_Fund_ChangeLog {
+export class Web_Club_Fund_ChangeLog extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/fund/gold_change/log";
 
     //字段声明
-    static RequestParams: {
-        club_random_id: number
-    } = null;
-
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof Web_Club_Fund_ChangeLog.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof Web_Club_Fund_ChangeLog.ResponseData
-    };
+    // static RequestParams: {
+    //     club_random_id: number
+    // } = null;
 }
 
 //公会基金充提转 记录列表
-export class Web_Club_Fund_OrderList {
+export class Web_Club_Fund_OrderList extends WebCommon {
     //接口地址
     static API: string = "/api/order/club/order_list";
 
     //字段声明
-    static RequestParams: {
-        order_type: number,
-        limit?: number,
-        offset?: number
-    } = null;
-    static ResponseData: {
-
-    } = null;
-    static Request(param: typeof Web_Club_Fund_OrderList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: {
-        code?: number, message?: string, data?: typeof Web_Club_Fund_OrderList.ResponseData
-    };
+    // static RequestParams: {
+    //     order_type: number,
+    //     limit?: number,
+    //     offset?: number
+    // } = null;
 }
 
 
-export class APIOrgClubNotice_update {
+export class APIOrgClubNotice_update extends WebCommon {
     public static API: string = "/api/cmsext/club/notice_update";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubNotice_update.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubNotice_update.ResponseData
-    };
 }
-export class APIOrgClubNotice {
+export class APIOrgClubNotice extends WebCommon {
     public static API: string = "/api/cmsext/club/notice";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubNotice.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubNotice.ResponseData
-    };
 }
-export class APIOrgClubSharePendingList {
+export class APIOrgClubSharePendingList extends WebCommon {
     public static API: string = "/api/cmsext/club/share/pending/list";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
 
-    } = null;
-    public static Request(param: typeof APIOrgClubSharePendingList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubSharePendingList.ResponseData
-    };
 }
-
-export class APIOrgClubShareAudit {
+export class APIOrgClubShareAudit extends WebCommon {
     public static API: string = "/api/cmsext/club/share/audit";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubShareAudit.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubShareAudit.ResponseData
-    };
 }
-export class APIOrgClubShareApplyList {
+export class APIOrgClubShareApplyList extends WebCommon {
     public static API: string = "/api/cmsext/club/share/apply/list";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
 
-    } = null;
-    public static Request(param: typeof APIOrgClubShareApplyList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubShareApplyList.ResponseData
-    };
 }
-export class APIOrgClubShareApproveList {
+export class APIOrgClubShareApproveList extends WebCommon {
     public static API: string = "/api/cmsext/club/share/approve/list";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubShareApproveList.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubShareApproveList.ResponseData
-    };
 }
 
-export class APIOrgClubAgentUser_list {
-    public static API: string = "/api/org/club/agent/user_list";
-    //字段声明
-    public static RequestParams: {
-    } = null;
-    public static ResponseData: {
-
-    } = null;
-    public static Request(param: typeof APIOrgClubAgentUser_list.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?: typeof APIOrgClubAgentUser_list.ResponseData
-    };
-}
-
-
-//////////////////////////////////////////////通用请求(简化上面的代码)
-export class WWW {
-    public static get Instance(): WWW {
-        return (this as any).__Instance ??= new WWW();
-    }
-    /**
-     * @param param 
-     * web_class 接口类
-     * body 发送数据body
-     * api_id 替换接口中{id}
-     * club_id 公会club_id
-     * 范例
-     * WWW.Instance.CommonAPI(
-            {
-                web_class: API_CLUB_APPLY_AUDIT,
-                body: {
-                    apply_id: 111,
-                    audit_op: 2//2同意 3拒绝
-                },
-                club_id: ClubCache.club_id
-            }
-        ).then(
-            (res: any) => {
-                this.reqInfo();
-            },
-            (res: any) => {
-
-            }
-        )
-     * @returns 
-     */
-    CommonAPI(param: { web_class: { API: string, Request, Response }, body?: any, api_id?: number, club_id?: number }) {
-        return new Promise((resolve, reject) => {
-            let obj: any = {
-                request: param.web_class,
-                body: param.web_class.Request(param.body),
-                onSuccess: function () {
-                    resolve(param.web_class.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this)
-            }
-            //设置动态id参数
-            param.api_id > 0 && (obj.api = param.web_class.API.replace("{id}", `${param.api_id}`));
-            //设置header
-            let headers = [];
-            param.club_id > 0 && headers.push(["X-Club", param.club_id]);
-            obj.headers = headers;
-            HttpRequest.Send(obj);
-        });
-    }
-}
-export class WebCommon {
-    public static API: string;
-    public static RequestParams: any;
-    public static ResponseData: any;
-    public static Request(param) {
-        this.RequestParams = param;
-        return param;
-    }
-    public static Response: {
-        code?: number, message?: string, data?
-    };
-}
 //公会 玩家钱包 充提转记录
 export class Web_Club_Player_Order_Record extends WebCommon {
     public static API: string = "/api/order/user/order_records";
