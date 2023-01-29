@@ -319,6 +319,15 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UIDialogEditComponent",
     },
+    /**
+    * 确认取消 弹窗面板(默认触摸全屏可关闭)新版
+    */
+    UINewDialogComponent: {
+        UIType: UIType.Dialog,
+        Name: "UINewDialogComponent",
+        Bundle: null,
+        Path: "main/prefab/dialog/UINewDialogComponent",
+    },
 
 
     UIPromptComponent: {
