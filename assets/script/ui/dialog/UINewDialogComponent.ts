@@ -21,7 +21,7 @@ export type UIDialogParam = {
 const { ccclass } = cc._decorator;
 
 @ccclass
-export default class UIDialogComponent extends BaseTouchBoard {
+export default class UINewDialogComponent extends BaseTouchBoard {
 
     /**
      * 类型
@@ -54,7 +54,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
     Button_Cancel: cc.Node = null;
     Text_Cancel: cc.Label = null;
 
-    Rectangle1201: cc.Node = null;
+    Rectangle1202: cc.Node = null;
 
 
 
@@ -100,7 +100,7 @@ export default class UIDialogComponent extends BaseTouchBoard {
 
         this.Button_Cancel = this.getChildNodeOrComponent("Button_Cancel");
         this.Text_Cancel = this.getChildNodeOrComponent("Text_Cancel", cc.Label);
-        this.Rectangle1201 == this.getChildNodeOrComponent("Rectangle1201");
+        this.Rectangle1202 = this.getChildNodeOrComponent("Rectangle");
     }
 
 
@@ -119,8 +119,8 @@ export default class UIDialogComponent extends BaseTouchBoard {
 
         super.lateShow(param);
 
-        this.Button_Cancel.active = param?.type == UIDialogComponent.DialogType.CommitCancel;
-        this.Rectangle1201.active = param?.type == UIDialogComponent.DialogType.CommitCancel;
+        this.Button_Cancel.active = param?.type == UINewDialogComponent.DialogType.CommitCancel;
+        this.Rectangle1202.active = param?.type == UINewDialogComponent.DialogType.CommitCancel;
         this.setText(this.Text_Title, param?.title || "")
         this.setText(this.Text_Content, param?.content || "")
         this.setText(this.Text_Commit, param?.contentCommit || "ok")

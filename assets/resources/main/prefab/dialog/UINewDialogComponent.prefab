@@ -703,7 +703,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Rectangle 1202",
+    "_name": "Rectangle",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11

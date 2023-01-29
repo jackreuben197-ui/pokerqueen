@@ -3363,7 +3363,8 @@ MsgInfo_4020=加入{0}申请被拒绝
 MsgInfo_2011=欢迎加入{0}
 MsgInfo_2012=加入{0}申请被拒绝
 
-
+UI_WalletNoHave=钱包余额不足
+UI_otherPay=其他支付
 
 
 

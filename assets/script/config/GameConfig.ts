@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 11:54:32
+ * @LastEditTime: 2023-01-29 19:59:59
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -43,7 +43,7 @@ export class GameConfig {
     static ENABLE_MULTI_TOUCH = false;
 
     //服务器类型 1测试 2正式
-    static Server_Type = 2;
+    static Server_Type = 1;
 
     //对应 GlobalProto.txt
     static GlobalProto: any = null;

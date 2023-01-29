@@ -41,7 +41,7 @@ export default class GGSlider extends cc.Component {
     _index: number = 0;
 
     private _onChange: Function = null;
-
+    _delegate = null;
     onLoad() {
         this.bar.on(cc.Node.EventType.TOUCH_START, this.onBarTouchStart, this);
         this.bar.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -75,6 +75,9 @@ export default class GGSlider extends cc.Component {
     onBarTouchStart(e: cc.Event.EventTouch) {
         this.press = true;
         this.moved = false;
+        if (this._delegate && this._delegate.scrow) {
+            this._delegate.scrow.enabled = false
+        }
     }
     onTouchMove(e: cc.Event.EventTouch) {
         if (this._count == 0) return;
@@ -90,11 +93,17 @@ export default class GGSlider extends cc.Component {
         }
     }
     onTouchEnd() {
+        if (this._delegate && this._delegate.scrow) {
+            this._delegate.scrow.enabled = true
+        }
         this.press = false;
     }
 
     onTrackTouchStart(e: cc.Event.EventTouch) {
         if (this._count == 0) return;
+        if (this._delegate && this._delegate.scrow) {
+            this._delegate.scrow.enabled = true
+        }
         this.press = true;
         let w_location = e.getLocation();
         let l_location = this.node.convertToNodeSpaceAR(w_location);
@@ -154,6 +163,7 @@ export default class GGSlider extends cc.Component {
         } else {
             obj.x = pos;
         }
+        console.log('obj.x===', obj.x)
     }
     private setOffset(obj: { width: number, height: number }, offset: number) {
         if (this.direction == Direction.Bottom_To_Top) {
