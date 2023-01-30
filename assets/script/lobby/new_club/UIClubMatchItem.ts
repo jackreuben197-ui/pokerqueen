@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-03 11:08:50
+ * @LastEditTime: 2023-01-30 09:51:16
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubMatchItem.ts
  */
 
@@ -104,7 +104,7 @@ export default class UIClubMatchItem extends UIBase {
                 isFriendDesk = true;
             }
             if (ClubCache._msg && ClubCache.club_id || isFriendDesk) {
-                GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
+                GameUtil.EnterRoomAPI(this._data, [UIDefine.UIClubHome]);
             } else {
 
                 ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
