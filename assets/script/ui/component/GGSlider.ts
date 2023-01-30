@@ -67,7 +67,6 @@ export default class GGSlider extends cc.Component {
     get TrackBack() {
         return this.track_back.getChildByName("click") || this.track_back;
     }
-
     onShow(param: { index: number }) {
         this.moved = false;
         this.setBarPos(param.index);
@@ -163,7 +162,7 @@ export default class GGSlider extends cc.Component {
         } else {
             obj.x = pos;
         }
-        console.log('obj.x===', obj.x)
+        //console.log('obj.x===', obj.x)
     }
     private setOffset(obj: { width: number, height: number }, offset: number) {
         if (this.direction == Direction.Bottom_To_Top) {

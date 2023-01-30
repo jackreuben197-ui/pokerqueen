@@ -209,7 +209,7 @@ export default class UIWalletLayer extends BaseFormPlus {
                     "limit": 100,
                     "offset": 0
                 },
-                club_id: ClubCache.club_id
+                club_id: WalletModel.Instance.club_id
             }
         ).then(
             (res: any) => {
@@ -370,7 +370,7 @@ export default class UIWalletLayer extends BaseFormPlus {
         WWW.Instance.CommonAPI(
             {
                 web_class: API_CLUB_USER_WALLET,
-                club_id: ClubCache.club_id
+                club_id: WalletModel.Instance.club_id
             }
         ).then(
             (res: any) => {
@@ -395,7 +395,7 @@ export default class UIWalletLayer extends BaseFormPlus {
             limit: 100,
             offset: 0
         }
-        LobbyControl.getInstance().reqGoldChangeLog(ClubCache.club_id, info).then(
+        LobbyControl.getInstance().reqGoldChangeLog(WalletModel.Instance.club_id, info).then(
             (res) => {
                 this.refreshChangeList(res);
                 next?.call(this);
@@ -409,7 +409,7 @@ export default class UIWalletLayer extends BaseFormPlus {
         let param = {
             club_random_id: ClubCache.random_id
         }
-        UIClubModel.mInstance.reqClubFund(ClubCache.club_id, param).then(
+        UIClubModel.mInstance.reqClubFund(WalletModel.Instance.club_id, param).then(
             (res: any) => {
                 let data = res.data;
                 GC.wallet.Gold = data?.gold || 0;
@@ -428,7 +428,7 @@ export default class UIWalletLayer extends BaseFormPlus {
             offset: 0,
             club_random_id: ClubCache.random_id
         }
-        UIClubModel.mInstance.reqClubFundChangeLog(ClubCache.club_id, param).then(
+        UIClubModel.mInstance.reqClubFundChangeLog(WalletModel.Instance.club_id, param).then(
             (res) => {
                 this.refreshChangeList(res);
                 next.call(this);
@@ -453,7 +453,7 @@ export default class UIWalletLayer extends BaseFormPlus {
                     "limit": 100,
                     "offset": 0
                 },
-                club_id: ClubCache.club_id
+                club_id: WalletModel.Instance.club_id
             }
         ).then(
             (res: any) => {
@@ -589,7 +589,7 @@ export default class UIWalletLayer extends BaseFormPlus {
 
                 body: obj,
 
-                club_id: ClubCache.club_id
+                club_id: WalletModel.Instance.club_id
             }
         ).then(
             (res: any) => {

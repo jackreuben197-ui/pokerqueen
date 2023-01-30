@@ -322,6 +322,7 @@ export default class UITexas extends BaseScene {
     //从预制体添加到容器
      AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
+        console.log("AddComponents",prefab_name,prefab);
         let com = null;
         if (prefab) {
             com = cc.instantiate(prefab).getComponent(prefab_name);

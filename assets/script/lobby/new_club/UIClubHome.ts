@@ -22,6 +22,7 @@ import { GameType, Game_Type, Table_Type } from "../../game/util/GameUtil";
 import List from "../../common/List";
 import { EventName } from "../../config/EventName";
 import { WalletType } from "./pay/UIWalletLayer";
+import WalletModel from "./pay/WalletModel";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -146,6 +147,7 @@ export default class UIClubHome extends BaseForm {
     }
 
     onClickPay() {
+        WalletModel.Instance.club_id = ClubCache.club_id;
         UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Club });
     }
 
@@ -243,6 +245,7 @@ export default class UIClubHome extends BaseForm {
                 break;
             case 5:
                 //UIComponent.open(UIDefine.MyWalletForm, true)
+                WalletModel.Instance.club_id = ClubCache.club_id;
                 UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Fund });
                 break;
             case 6:

@@ -11,6 +11,7 @@ import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
 import { UIClubModel } from "../../labor/UIClubModel";
 import { WalletType } from "./UIWalletLayer";
+import WalletModel from "./WalletModel";
 
 
 const { ccclass, property } = cc._decorator;
@@ -230,7 +231,7 @@ export default class UIPayLayer extends BaseFormPlus {
 
                             body: { amount: value, gold_type: gold_type },
 
-                            club_id: ClubCache.club_id
+                            club_id: WalletModel.Instance.club_id
                         }
                     ).then(
                         (res: any) => {
@@ -250,7 +251,7 @@ export default class UIPayLayer extends BaseFormPlus {
 
                             body: { amount: value, gold_type: gold_type },
 
-                            club_id: ClubCache.club_id
+                            club_id: WalletModel.Instance.club_id
                         }
                     ).then(
                         (res: any) => {
@@ -266,7 +267,7 @@ export default class UIPayLayer extends BaseFormPlus {
                 //充
 
                 if (this._param.type == 1) {
-                    UIClubModel.mInstance.reqClubFundRecharge(ClubCache.club_id, { amount: value, gold_type: gold_type }).then(
+                    UIClubModel.mInstance.reqClubFundRecharge(WalletModel.Instance.club_id, { amount: value, gold_type: gold_type }).then(
                         (res) => {
                             UIComponent.Instance.Toast("充值申请成功");
                         },
@@ -277,7 +278,7 @@ export default class UIPayLayer extends BaseFormPlus {
                 }
                 //提
                 if (this._param.type == 2) {
-                    UIClubModel.mInstance.reqClubFundWithDraw(ClubCache.club_id, { amount: value, gold_type: gold_type }).then(
+                    UIClubModel.mInstance.reqClubFundWithDraw(WalletModel.Instance.club_id, { amount: value, gold_type: gold_type }).then(
                         (res) => {
                             UIComponent.Instance.Toast("提现申请成功");
                         },

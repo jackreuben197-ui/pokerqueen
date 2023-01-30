@@ -76,7 +76,7 @@ export default class UIAddChipsComponent extends UIBase {
             this.textBlind.string = `${addClipsData.smallBlind / 100}/${addClipsData.bigBlind / 100}`;//SB/BB
             this.textCoin.string = `${addClipsData.bigBlind}`; // Buy-in
             this.textNeedCoin.string = `${addClipsData.bigBlind}`;//Require
-            this.textTotalCoin.string = `${addClipsData.totalCoin / 100}`;//Balance
+            //this.textTotalCoin.string = `${addClipsData.totalCoin / 100}`;//Balance
             //当前最大带入
             let currMaxBring = addClipsData.currentMaxRate * addClipsData.bigBlind - addClipsData.tableChips;
             let maxRate = currMaxBring / addClipsData.bigBlind ^ 0;

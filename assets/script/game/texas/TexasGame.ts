@@ -1323,27 +1323,27 @@ export default class TexasGame {
     /// <param name="anteNumber"></param>
     public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false) {
         //朋友桌不需要判断金豆
-        if (GameCache.Instance.origin_type != 4 && GC.data.user.info.gold < anteNumber) {
-            UIComponent.open(UIDefine.UIDialogComponent,
-                {
-                    type: UIDialogComponent.DialogType.CommitCancel,
-                    // title = $"余额不足",
-                    title: CPErrorCode.LanguageDescription(10025),
-                    // content = $"金豆余额不足，请先充值",
-                    content: CPErrorCode.LanguageDescription(20010),
-                    // contentCommit = "去充豆",
-                    contentCommit: CPErrorCode.LanguageDescription(10026),
-                    // contentCancel = "取消",
-                    contentCancel: CPErrorCode.LanguageDescription(10013),
+        // if (GameCache.Instance.origin_type != 4 && GC.data.user.info.gold < anteNumber) {
+        //     UIComponent.open(UIDefine.UIDialogComponent,
+        //         {
+        //             type: UIDialogComponent.DialogType.CommitCancel,
+        //             // title = $"余额不足",
+        //             title: CPErrorCode.LanguageDescription(10025),
+        //             // content = $"金豆余额不足，请先充值",
+        //             content: CPErrorCode.LanguageDescription(20010),
+        //             // contentCommit = "去充豆",
+        //             contentCommit: CPErrorCode.LanguageDescription(10026),
+        //             // contentCancel = "取消",
+        //             contentCancel: CPErrorCode.LanguageDescription(10013),
 
-                    actionCommit: () => {
-                        //跳转充豆
-                        UIComponent.open(UIDefine.MyWalletForm, false);
-                    },
-                    noAnimation: true,
-                });
-            return;
-        }
+        //             actionCommit: () => {
+        //                 //跳转充豆
+        //                 UIComponent.open(UIDefine.MyWalletForm, false);
+        //             },
+        //             noAnimation: true,
+        //         });
+        //     return;
+        // }
         if (this.mainPlayer == null || this.mainPlayer.seatID == -1) {
             //声纹认证开启判断
             if (GameCache.Instance.voiceprint_verify_on == 1) {
@@ -2671,15 +2671,26 @@ export default class TexasGame {
      * 显示手动设置面板 
      */
     private ShowAddChips(): void {
-        UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent, {
-            bigBlind: this.bigBlind,
-            smallBlind: this.smallBlind,
-            currentMinRate: this.currentMinRate,
-            currentMaxRate: this.currentMaxRate,
-            // totalCoin: GameCache.Instance.gold,
-            totalCoin: GC.data.user.info.gold,
-            tableChips: this.mainPlayer.chips
-        });
+        // UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent, {
+        //     bigBlind: this.bigBlind,
+        //     smallBlind: this.smallBlind,
+        //     currentMinRate: this.currentMinRate,
+        //     currentMaxRate: this.currentMaxRate,
+        //     // totalCoin: GameCache.Instance.gold,
+        //     totalCoin: GC.data.user.info.gold,
+        //     tableChips: this.mainPlayer.chips
+        // });
+        UIComponent.Instance.ShowUI<AddClipsData>(
+            PrefabUI.UIBringIn,
+            {
+                    bigBlind: this.bigBlind,
+                    smallBlind: this.smallBlind,
+                    currentMinRate: this.currentMinRate,
+                    currentMaxRate: this.currentMaxRate,
+                    //totalCoin: GC.data.user.info.gold,
+                    tableChips: this.mainPlayer.chips
+            }
+        )
     }
 
     ShowSetAutoAddChips() {
