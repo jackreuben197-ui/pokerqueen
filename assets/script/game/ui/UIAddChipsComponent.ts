@@ -8,16 +8,9 @@ import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
 import { UITexasModel } from "../UITexasModel";
+import { AddClipsData } from "./UIBringIn";
 
 
-export type AddClipsData = {
-    bigBlind: number,// 大盲
-    smallBlind: number, // 小盲
-    currentMinRate: number, // 当前最小带入倍数
-    currentMaxRate: number, // 当前最大带入倍数
-    totalCoin: number, // 总金豆
-    tableChips: number, // 玩家剩余记分牌
-}
 
 const { ccclass } = cc._decorator;
 

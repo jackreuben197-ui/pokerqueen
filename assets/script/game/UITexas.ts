@@ -23,6 +23,7 @@ import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 import UIAgreeSecondPcsComponent from "./ui/UIAgreeSecondPcsComponent";
 import UIAutoChipsComponent from "./ui/UIAutoChipsComponent";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
+import UIBringIn from "./ui/UIBringIn";
 import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
@@ -163,6 +164,7 @@ export default class UITexas extends BaseScene {
     UIOutChips_Com: UIOutChipsComponent = null;
     UIAutoChips_Com: UIAutoChipsComponent = null;
     UIOutChipsTip_Com: UIOutChipsTipComponent = null;
+    UIBringIn:UIBringIn = null;
 
     //6.保险面板
     UIInsurance_Con: cc.Node = null;
@@ -295,6 +297,7 @@ export default class UITexas extends BaseScene {
         this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
         this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
         this.UIOutChipsTip_Com = this.AddComponents(PrefabUI.UIOutChipsTipComponent, this.UIChips_Con);
+        this.UIBringIn = this.AddComponents(PrefabUI.UIBringIn, this.UIChips_Con);
         //6.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
         this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
@@ -317,7 +320,7 @@ export default class UITexas extends BaseScene {
 
 
     //从预制体添加到容器
-    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
+     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
         let com = null;
         if (prefab) {
