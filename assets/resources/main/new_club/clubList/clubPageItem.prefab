@@ -110,7 +110,7 @@
         "__id__": 41
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 51
@@ -1918,7 +1918,7 @@
         "__id__": 70
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [],
     "_prefab": {
       "__id__": 79
@@ -2044,7 +2044,7 @@
   {
     "__type__": "cc.Node",
     "_name": "Background",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "_parent": {
       "__id__": 54
     },
@@ -2552,7 +2552,7 @@
   {
     "__type__": "cc.Node",
     "_name": "Group_3340",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "_parent": {
       "__id__": 53
     },
@@ -2593,7 +2593,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        224,
+        96,
         0,
         0,
         0,
