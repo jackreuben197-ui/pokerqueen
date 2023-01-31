@@ -2,6 +2,7 @@ import ListItem from "../common/ListItem";
 import { EMttItemStatus } from "../config/EEnumConfig";
 import { GameConfig } from "../config/GameConfig";
 import { UIDefine } from "../define/UIDefine";
+import { ClubCache } from "../frame/data/club/ClubCache";
 import MttListItemModel from "../frame/data/mtt/MttListItemModel";
 import GC from "../frame/GameControl";
 import TimeHelper from "../helper/TimeHelper";
@@ -137,7 +138,7 @@ export default class MttListItem extends ListItem {
             GC.data.mtt.list.select = this._data;
             UIComponent.open(UIDefine.MttDetailForm, this._data);
         } else {
-            if (Web_Org_Club_Get.Response.data.club_id > 0) {
+            if (ClubCache.club_id > 0) {
                 GC.data.mtt.list.select = this._data;
                 UIComponent.open(UIDefine.MttDetailForm, this._data);
                 // UIComponent.open(UIDefine.MttRealTime, this._data);

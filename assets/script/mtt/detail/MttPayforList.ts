@@ -3,12 +3,16 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-16 11:21:54
+ * @LastEditTime: 2023-01-30 21:51:32
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforList.ts
  */
 
 
 import List from "../../common/List";
+import { ClubCache } from "../../frame/data/club/ClubCache";
+import GC from "../../frame/GameControl";
+import { UIClubModel } from "../../lobby/labor/UIClubModel";
+import { APIMttUserWallet, Web_Mtt } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -35,24 +39,28 @@ export default class MttPayforList extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         this.reqDataAgain();
     }
+    protected regiterTouchEvents(): void {
+        super.regiterTouchEvents();
+    }
     async reqDataAgain() {
         this._offset = 0;
         this._total = 0;
         this._list.length = 0;
         this._reqing = false;
         this._reqEnd = false;
-        this.list.numItems = 10
-        // this.dealData()
+        this.list.numItems = 0
+        this.dealData()
     }
     async dealData() {
         this._reqing = true
-        let _data: any = [];
+        await UIClubModel.mInstance.APIMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: this._offset, limit: 20 })
+        let _data: any = APIMttUserWallet.Response.data
         this._reqing = false
-        if (!_data.data) {
-            _data.data = [];
+        if (!_data.wallet) {
+            _data.wallet = [];
         }
 
-        _data.data.forEach(element => {
+        _data.wallet.forEach(element => {
             this._list.push(element);
         });  //分页的时候使用的
         this._total = _data.total
@@ -62,9 +70,10 @@ export default class MttPayforList extends BaseForm {
         this._reqEnd = this._list.length == this._total;
 
     }
+
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(MttPayforItem);
-        item.initData(index, this); //this._list[index]
+        item.initData(this._list[index], this); //this._list[index]
     }
     scrollingCB = async (scrollView: cc.ScrollView) => {
         if (scrollView) {

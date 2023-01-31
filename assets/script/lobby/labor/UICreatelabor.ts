@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-21 15:56:15
+ * @LastEditTime: 2023-01-31 14:36:23
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -39,11 +39,11 @@ export default class UICreatelabor extends BaseForm {
     camera: cc.Sprite = null;
     iconUrl = null;
     private comFormTitle: ComFormTitle = null;
-
+    commit: cc.Button = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
-
+        this.commit = this.getChildNodeOrComponent("commit", cc.Button);
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -80,6 +80,13 @@ export default class UICreatelabor extends BaseForm {
         }
         else {
             UIComponent.Instance.Toast(data.code);
+        }
+    }
+    clubNamechange() {
+        if (this.editName.string == '') {
+            this.commit.interactable = false
+        } else {
+            this.commit.interactable = true;
         }
     }
     changeIntroduce() {

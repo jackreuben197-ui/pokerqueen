@@ -17,6 +17,7 @@ import HttpRequest from "../../net/https/HttpRequest";
 import { Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Hranks, Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize, Web_Room_Center_Mtt_Rooms } from "../../net/https/WebRequest";
 
 import BaseForm from "../../ui/form/BaseForm";
+import UIComponent from "../../ui/UIComponent";
 
 import UIMttSignDialogComponent from "./UIMttSignDialogComponent";
 
@@ -706,10 +707,9 @@ export default class MttDetailForm extends BaseForm {
             return;
         }
 
-        // if (!btnSignUp.interactable)
-        // {
-        //     return;
-        // }
+        //打开报名支付页面
+        UIComponent.open(UIDefine.MttPayforHome, this._data)
+        return;
         if (this.NeedVoiceprintVerification) {
             // if (!MicrophoneHelper.IsMicrophonePermissionAllowed())
             // {

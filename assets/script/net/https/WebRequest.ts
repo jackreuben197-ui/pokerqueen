@@ -1280,6 +1280,8 @@ export class Web_Mtt {
     static AWARDS = "/api/roomcenter/mtt/{0}/awards";
     static MYINFO = "/api/roomcenter/mtt/{0}/myinfo";
     static FREE_REMAIN = "/api/roomcenter/mtt/{0}/free_remain";
+
+    static USER_WALLET = "/api/roomcenter/mtt/{0}/user_wallet";  //用户钱包
 }
 
 
@@ -1796,7 +1798,7 @@ export class Web_Org_Club_Player_Apply_List extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/join/list";
 }
-export class Web_Org_Club_Search_By_Id extends WebCommon{
+export class Web_Org_Club_Search_By_Id extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/info";
 
@@ -1834,7 +1836,7 @@ export class APIOrgClubIsManger extends WebCommon {
     //     club_id: null;
     // } = null;
 
-;
+    ;
 }
 export class APIOrgClubApprovalJoin extends WebCommon {
     //接口地址
@@ -2863,6 +2865,10 @@ export class APIOrgClubShareApplyList extends WebCommon {
 
 }
 export class APIOrgClubShareApproveList extends WebCommon {
+    public static API: string = "/api/cmsext/club/share/approve/list";
+}
+export class APIMttUserWallet extends WebCommon {
+    // let api = GC.language.formatString(Web_Mtt.USER_WALLET, this.list.select.match_id);
     public static API: string = "/api/cmsext/club/share/approve/list";
 }
 
