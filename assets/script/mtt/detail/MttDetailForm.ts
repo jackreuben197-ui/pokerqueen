@@ -708,8 +708,8 @@ export default class MttDetailForm extends BaseForm {
         }
 
         //打开报名支付页面
-        UIComponent.open(UIDefine.MttPayforHome, this._data)
-        return;
+        // UIComponent.open(UIDefine.MttPayforHome, this._data)
+        // return;
         if (this.NeedVoiceprintVerification) {
             // if (!MicrophoneHelper.IsMicrophonePermissionAllowed())
             // {
@@ -731,6 +731,7 @@ export default class MttDetailForm extends BaseForm {
                 case MTTGame.MTTPlayerStatus.CanApplyNotStart:
                 case MTTGame.MTTPlayerStatus.CanApplyDelay:
                     {
+                        // UIComponent.open(UIDefine.MttPayforHome, this._data)
                         UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Apply, code => {
                             this.RefreshMttDetails();
                         }, httpState => {
