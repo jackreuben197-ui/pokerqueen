@@ -3007,9 +3007,7 @@
       "__id__": 81
     },
     "_indicators": [],
-    "spriteFrame": {
-      "__uuid__": "69049749-b288-499f-bd56-ca1d013e3dbf"
-    },
+    "spriteFrame": null,
     "direction": 0,
     "cellSize": {
       "__type__": "cc.Size",

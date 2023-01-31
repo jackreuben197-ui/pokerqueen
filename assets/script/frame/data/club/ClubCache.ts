@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-30 21:02:20
+ * @LastEditTime: 2023-01-31 15:21:13
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -29,7 +29,7 @@ export class ClubCache {
     static joinCreateMatchType = 0;
     //玩法类型 1 NLH 2 PLO 3 6+
     static CreateGameType = 1
-    static mttPayWallat = 0;   //mtt支付钱包
+    static mttPayWallat = null;   //mtt支付钱包
     static setClubData(data) {
         this._msg = data
     }

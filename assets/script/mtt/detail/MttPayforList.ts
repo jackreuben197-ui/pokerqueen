@@ -3,12 +3,13 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-30 21:51:32
+ * @LastEditTime: 2023-01-31 15:29:51
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforList.ts
  */
 
 
 import List from "../../common/List";
+import { EventName } from "../../config/EventName";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import GC from "../../frame/GameControl";
 import { UIClubModel } from "../../lobby/labor/UIClubModel";
@@ -85,7 +86,8 @@ export default class MttPayforList extends BaseForm {
             }
         }
     }
-    itemClick(data) {
+    itemClick() {
+        this.post(EventName.selectMttWwllet);
         this.close();
     }
 }
