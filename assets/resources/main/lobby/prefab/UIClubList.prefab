@@ -1375,7 +1375,7 @@
         "__id__": 70
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 85
@@ -3008,7 +3008,7 @@
     },
     "_indicators": [],
     "spriteFrame": {
-      "__uuid__": "c9fa51ff-3f01-4601-8f80-325d1b11dab7"
+      "__uuid__": "69049749-b288-499f-bd56-ca1d013e3dbf"
     },
     "direction": 0,
     "cellSize": {
