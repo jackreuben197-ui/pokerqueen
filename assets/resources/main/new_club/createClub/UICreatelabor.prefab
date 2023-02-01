@@ -1694,7 +1694,7 @@
     },
     "component": "",
     "_componentId": "e1099qcX9VMBorbkTJ3qF/R",
-    "handler": "",
+    "handler": "clubNamechange",
     "customEventData": ""
   },
   {
@@ -2394,7 +2394,7 @@
     },
     "component": "",
     "_componentId": "e1099qcX9VMBorbkTJ3qF/R",
-    "handler": "changeIntroduce",
+    "handler": "clubNamechange",
     "customEventData": ""
   },
   {
