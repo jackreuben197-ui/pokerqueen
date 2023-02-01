@@ -173,7 +173,7 @@ export class UIMatchMttModel {
         } else {
             // UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
             UIComponent.open(UIDefine.MttPayforHome, dialogData)
-            UIComponent.open(UIDefine.MttAgainBuy, dialogData)
+            // UIComponent.open(UIDefine.MttAgainBuy, dialogData)
         }
     }
 
