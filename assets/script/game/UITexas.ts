@@ -18,12 +18,12 @@ import AssetContext from "../ui/component/AssetContext";
 import BaseScene from "../ui/scene/BaseScene";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
+import UIBringIn from "./new_ui/UIBringIn";
 import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 import UIAgreeSecondPcsComponent from "./ui/UIAgreeSecondPcsComponent";
 import UIAutoChipsComponent from "./ui/UIAutoChipsComponent";
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
-import UIBringIn from "./ui/UIBringIn";
 import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
@@ -391,7 +391,8 @@ export default class UITexas extends BaseScene {
             PrefabUI.UIMTTTimeComponent,
             PrefabUI.UIOutChipsTipComponent,
             PrefabUI.UIAgreeSecondPcsComponent,
-            PrefabUI.UIMttSignDialogComponent
+            PrefabUI.UIMttSignDialogComponent,
+            PrefabUI.UIBringIn,
         ].forEach(item => {
             UIComponent.Instance.HideUI(item);
         });

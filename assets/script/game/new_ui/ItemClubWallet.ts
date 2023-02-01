@@ -56,7 +56,7 @@ export default class ItemClubWallet extends UIBasePlus {
         super.onShow(data);
         this.cc_Label$name.string = data.data.club_name;
         this.cc_Label$id.string = `${data.data.club_random_id}`;
-        this.cc_Label$coin.string = `${data.data.gold}`;
+        this.cc_Label$coin.string = `${data.data.gold/100}`;
         this.$coin.active = data.data.gold_type == 1;
         this.$usdt.active = data.data.gold_type == 2;
         this.$select.active = data.data.club_id == data.selected_wallet?.club_id;

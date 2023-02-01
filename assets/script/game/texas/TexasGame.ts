@@ -35,10 +35,10 @@ import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
+import { AddClipsData } from "../new_ui/UIBringIn";
 import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
-import { AddClipsData } from "../ui/UIBringIn";
 import { HistoryInfoData } from "../UITexasHistoryComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 import TexasGameUtils from "../util/TexasGameUtils";
@@ -1415,6 +1415,7 @@ export default class TexasGame {
             }
             return;
         }
+        //已经上桌就发送带入补充
         let IsUseWallet = true;
         if (this.mainPlayer.cacheStoreChips >= anteNumber) {
             IsUseWallet = false;
@@ -2682,7 +2683,7 @@ export default class TexasGame {
         // });
         UIComponent.Instance.ShowUI<AddClipsData>(
             PrefabUI.UIBringIn,
-            {
+            { 
                     bigBlind: this.bigBlind,
                     smallBlind: this.smallBlind,
                     currentMinRate: this.currentMinRate,

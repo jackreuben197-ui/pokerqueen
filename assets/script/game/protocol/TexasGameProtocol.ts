@@ -1620,7 +1620,8 @@ export default class TexasGameProtocol {
             return;
         }
         mSeat.Player.chips = rec.chips;
-        UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
+        //UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
     }

@@ -6,12 +6,13 @@ import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import ToastManager from "../../manager/ToastManager";
+import { Web_User_Room, WWW } from "../../net/https/WebRequest";
 import { RoomInfo } from "../../protobuf/holdem/define_pb";
 import UIBase from "../../ui/UIBase";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
+import { AddClipsData } from "../new_ui/UIBringIn";
 import TexasGame from "../texas/TexasGame";
-import { AddClipsData } from "./UIAddChipsComponent";
 import { OutClipsData } from "./UIOutChipsComponent";
 
 const { ccclass, property } = cc._decorator;
@@ -276,15 +277,37 @@ export default class UITexasMenuComponent extends UIBase {
         }
         this.game.uirc.HideMenu();
         // 弹代入框
-        UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent, {
-            bigBlind: GameCache.Instance.CurGame.bigBlind,
-            smallBlind: GameCache.Instance.CurGame.smallBlind,
-            currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-            currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-            // totalCoin: GameCache.Instance.gold,
-            totalCoin: GC.data.user.info.gold,
-            tableChips: GameCache.Instance.CurGame.mainPlayer.chips
-        });
+        // UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent, {
+        //     bigBlind: GameCache.Instance.CurGame.bigBlind,
+        //     smallBlind: GameCache.Instance.CurGame.smallBlind,
+        //     currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+        //     currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+        //     // totalCoin: GameCache.Instance.gold,
+        //     totalCoin: GC.data.user.info.gold,
+        //     tableChips: GameCache.Instance.CurGame.mainPlayer.chips
+        // });
+
+        //先获取房间信息，得到钱包列表
+        WWW.Instance.CommonAPI({
+            web_class: Web_User_Room,
+            api_id:GameCache.Instance.room_id,
+        }).then(
+            (res:any) =>{
+                UIComponent.Instance.ShowUI<AddClipsData>(
+                        PrefabUI.UIBringIn,
+                        {
+                            bigBlind: GameCache.Instance.CurGame.bigBlind,
+                            smallBlind: GameCache.Instance.CurGame.smallBlind,
+                            currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                            currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                            tableChips: GameCache.Instance.CurGame.mainPlayer.chips
+                        }
+                    )
+            },
+            (res:any) =>{
+
+            },
+        )
 
     }
 
