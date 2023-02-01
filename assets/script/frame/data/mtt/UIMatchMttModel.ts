@@ -42,7 +42,7 @@ export class UIMatchMttModel {
     _actionResultCallback: any = null;
     _args: any = null;
     _actionExceptionCallback: any = null;
-    MttInfo: typeof Web_Room_Center_Mtt_Details.Data;
+    MttInfo: typeof Web_Room_Center_Mtt_Details.Response.data;
     PartialBringIn: number = 0;
 
     public HandleMTTJoinAction(
@@ -69,7 +69,7 @@ export class UIMatchMttModel {
         switch (actionType) {
             case MTTJoinAction.Apply:
                 {
-                    this.MTTApplyActionHandler(resultCallback, exceptionCallback);
+                    this.MTTApplyActionHandler(resultCallback, exceptionCallback);//MTTApplyActionHandler
                 }
                 break;
             case MTTJoinAction.Rebuy:
@@ -169,6 +169,7 @@ export class UIMatchMttModel {
         }
         if (GameCache.Instance.CurGame) {
             UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
+            // UIComponent.open(UIDefine.MttAgainBuy, dialogData)
         } else {
             // UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
             UIComponent.open(UIDefine.MttPayforHome, dialogData)
@@ -271,7 +272,7 @@ export class UIMatchMttModel {
                 if (GameCache.Instance.CurGame) {
                     UIComponent.Instance.ShowUI(PrefabUI.UIMttSignDialogComponent, dialogData);
                 } else {
-                    UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
+                    UIComponent.open(UIDefine.MttAgainBuy, dialogData)
                 }
             }
             else {

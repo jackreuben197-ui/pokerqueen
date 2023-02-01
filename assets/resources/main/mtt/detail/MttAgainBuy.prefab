@@ -733,8 +733,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "比赛报名",
-    "_N$string": "比赛报名",
+    "_string": "比赛重构",
+    "_N$string": "比赛重构",
     "_fontSize": 185,
     "_lineHeight": 185,
     "_enableWrapText": true,
@@ -830,8 +830,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 47,
-      "height": 47
+      "width": 67,
+      "height": 67
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -842,15 +842,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -455.11400000000003,
+        -446.419,
         -729.867,
         0,
         0,
         0,
         0,
         1,
-        1.2,
-        1.2,
+        1,
+        1,
         1
       ]
     },
@@ -883,7 +883,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "a638aa7f-da9e-4222-9117-ceccb0e28ff9"
+      "__uuid__": "34c85ae0-02fe-45aa-9259-fd9023ed6db0"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -910,7 +910,7 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 8,
-    "_left": 137.68599999999998,
+    "_left": 141.08100000000002,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -939,7 +939,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "coin",
+    "_name": "coinNum",
     "_objFlags": 0,
     "_parent": {
       "__id__": 14
@@ -1377,7 +1377,7 @@
         "__id__": 36
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 39
@@ -2522,7 +2522,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 266.95,
+      "width": 66.74,
       "height": 151.2
     },
     "_anchorPoint": {
@@ -2574,8 +2574,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "9999",
-    "_N$string": "9999",
+    "_string": "0",
+    "_N$string": "0",
     "_fontSize": 120,
     "_lineHeight": 120,
     "_enableWrapText": true,
@@ -3950,7 +3950,7 @@
     },
     "min": 1,
     "max": 10,
-    "_id": "613esTq5pOJ4XCKH99fnRo"
+    "_id": ""
   },
   {
     "__type__": "cc.PrefabInfo",

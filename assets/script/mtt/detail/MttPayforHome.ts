@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 11:09:08
+ * @LastEditTime: 2023-02-01 16:55:03
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 
@@ -102,7 +102,6 @@ export default class MttPayforHome extends BaseForm {
                     this.HandleDate();
                 }
                 else {
-                    // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res.code));
                 }
             });
         }
@@ -124,7 +123,7 @@ export default class MttPayforHome extends BaseForm {
             this.setText(this.select_lbl, ClubCache.mttPayWallat.club_name)
             this.rateNode.active = true
             let num1 = cc.find('node1/num', this.rateNode).getComponent(cc.Label)
-            num1.string = ClubCache.mttPayWallat.gold
+            num1.string = StringHelper.GetLongString(ClubCache.mttPayWallat.gold)
             let num2 = cc.find('node2/num', this.rateNode).getComponent(cc.Label)
             this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
             if (this.totalRebuyTimes < 10000) {
