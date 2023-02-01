@@ -26,6 +26,7 @@ export enum PrefabUI {
     MttPayforHome = 'MttPayforHome'
     //////////////
     UIBringIn = "UIBringIn",//带入记分牌
+    MttPayforHome = "MttPayforHome",//MTT重购
 }
 (window as any).PrefabUI = PrefabUI;
 //打开面板追加参数

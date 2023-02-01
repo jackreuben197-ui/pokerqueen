@@ -1307,112 +1307,112 @@ export class Web_Room_Center_Mtt_Details extends WebCommon {
     //     data: typeof Web_Room_Center_Mtt_Details.Data[],
     // } = null;
 
-    // static Data: {
-    //     alive: number,//存活人数
-    //     state_code: number,//当前玩家的状态 MTTPlayerStatus定义
-    //     mtt: typeof Web_Room_Center_Mtt_Details.MttDetails,//比赛细节信息
-    //     state: typeof Web_Room_Center_Mtt_Details.PlayerState,//玩家筹码状态信息
-    //     more: typeof Web_Room_Center_Mtt_Details.More,//盲注等级和奖励池
-    //     top: number,//最大记分牌
-    // } = null;
+    static Data: {
+        alive: number,//存活人数
+        state_code: number,//当前玩家的状态 MTTPlayerStatus定义
+        mtt: typeof Web_Room_Center_Mtt_Details.MttDetails,//比赛细节信息
+        state: typeof Web_Room_Center_Mtt_Details.PlayerState,//玩家筹码状态信息
+        more: typeof Web_Room_Center_Mtt_Details.More,//盲注等级和奖励池
+        top: number,//最大记分牌
+    } = null;
 
-    // static PlayerState: {
-    //     left_rebuy_times: number,//剩余重购次数
-    //     chip: number,//桌上记分牌
-    //     store: number,//存储记分牌
-    //     init_score: number,//初始化记分牌
-    //     partial_enable: boolean//是否允许部分带入
-    // } = null;
+    static PlayerState: {
+        left_rebuy_times: number,//剩余重购次数
+        chip: number,//桌上记分牌
+        store: number,//存储记分牌
+        init_score: number,//初始化记分牌
+        partial_enable: boolean//是否允许部分带入
+    } = null;
 
-    // static MttDetails: {
-    //     match_id: number, // 比赛id
-    //     name: string, // 比赛名字
-    //     type: number, // 房间类型
-    //     game_type: number,//游戏类型
-    //     poker_type: number,//牌类型
-    //     limit_bet_type: number,//底池限注类型
-    //     rank_type: number,//排名类型
-    //     enter_time: string,//进入时间
-    //     start_time: string,//开始时间
-    //     end_time: string,//结束时间
-    //     hunter_on: number,//猎人赛开启  1：开启，0关闭
-    //     hunter_bonus: number,//0-100  //猎人赛滚雪球比例 0~100 0:杀白丁无收益 1～99 单次收益 100:不滚雪球
-    //     partial_on: number,//部分带入开启  1：开启，0：关闭
-    //     parital_return_bl: number,//部分带入返还金币盲注等级
-    //     straddle_on: number,//强制盲注开启 1：开启，0：关闭
-    //     straddle_max: number,//强制盲注数量
-    //     rooms: number,//房间数量
-    //     max_room_id: number,//最大房间id
-    //     delay_view_card_on: number,//延迟看牌  1：开启，0：关闭
-    //     limit_min: number,//最低参赛人数下限
-    //     limit_delay_times: number,//操作加时次数限制
-    //     limit_auto_check_times: number,//自动过牌次数
-    //     limit_auto_fold_times: number,//自动弃牌次数
-    //     participants: number,//参赛人数
-    //     award_num: number,//奖金
-    //     money_sync: number,//奖励圈同步(截止无法买入以后才会开启)
-    //     status: number,//游戏状态
-    //     seat_count: number,//在座人数
-    //     final_seat_count: number,//最终座位人数
-    //     no_user_wait_duration: number
-    //     initial_score: number,//初始化记分牌
-    //     blindtable_type: number,//盲注表类型
-    //     upblind_interval: number,//升盲时间间隔
-    //     apply_start_time: string,//报名开始时间
-    //     op_duration: number,//操作时间
-    //     max_delay_apply_bl: number,//延迟报名升盲等级
-    //     rebuy_times: number,//重构次数          
-    //     max_rebuy_bl: number,//重购升盲等级
-    //     limit_total_buy_times: number,//最大买入次数上限
-    //     total_buy_times: number,//总买入次数
-    //     total_rebuy_times: number,//总重购次数
-    //     addon_begin_bl: number,//增购开启 升盲等级
-    //     addon_end_bl: number,//增购关闭 升盲等级
-    //     addon_score: number,//增购 记分牌
-    //     total_addon_times: number,//增购次数
-    //     apply_fee_pool: number,//报名费
-    //     apply_fee_service: number,//服务费
-    //     apply_fee_hunter: number,//猎人赛费用
-    //     prize_type: number,//奖励类型
-    //     tribe_id: number,//联盟id
-    //     create_time: string,//创建房间时间
-    //     update_time: string,
-    //     game_icon: string,
-    //     prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
-    //     voiceprint_verify_on: number,//是否开启验证声纹 0 关闭，1 开启。
-    //     voiceprint_verify_duration: number,//验证声纹时长
-    //     buy_prop_id: number,//道具id
-    //     addonplus_m1_on: number,//增购plus 模式一 0 关闭，1 开启
-    //     addonplus_m1_max_times: number,//增购最大次数
-    //     addonplus_m1_limit: number,//增购限制筹码
-    //     total_addonplus_m1_times: number,//总增购次数
-    //     addonplus_m2_on: number,//增购模式2 0 关闭，1 开启
-    //     addonplus_m2_max_times: number,//增购限制最大次数
-    //     addonplus_m2_max_bl: number,//增购 截止盲注
-    //     total_addonplus_m2_times: number,//增购总次数
-    //     buy_ratio: number,//买入倍率
-    //     pre_buyin_bonus: number,//赛前报名多得记分牌
-    //     tablecloth_tag: string,//桌布id
-    //     limit_tag: string,//相同比赛检测tag
-    //     buyin_free_times: number,//报名限免次数
-    //     rebuy_free_times: number,//重购限免次数
-    //     multi_ratio_free_times: number,//多倍率限免次数
-    //     addon_free_times: number,//增购限免次数
-    //     buyin_free_incl_svr: number,//报名限免是否包含服务费，0不包含，1包含
-    //     rebuy_free_incl_svr: number //重购限免是否包含服务费，0不包含，1包含
-    //     multi_ratio_free_incl_svr: number,//多倍率限免是否包含服务费，0不包含，1包含
-    //     addon_free_incl_svr: number,//增购限免是否包含服务费，0不包含，1包含
-    // } = null;
+    static MttDetails: {
+        match_id: number, // 比赛id
+        name: string, // 比赛名字
+        type: number, // 房间类型
+        game_type: number,//游戏类型
+        poker_type: number,//牌类型
+        limit_bet_type: number,//底池限注类型
+        rank_type: number,//排名类型
+        enter_time: string,//进入时间
+        start_time: string,//开始时间
+        end_time: string,//结束时间
+        hunter_on: number,//猎人赛开启  1：开启，0关闭
+        hunter_bonus: number,//0-100  //猎人赛滚雪球比例 0~100 0:杀白丁无收益 1～99 单次收益 100:不滚雪球
+        partial_on: number,//部分带入开启  1：开启，0：关闭
+        parital_return_bl: number,//部分带入返还金币盲注等级
+        straddle_on: number,//强制盲注开启 1：开启，0：关闭
+        straddle_max: number,//强制盲注数量
+        rooms: number,//房间数量
+        max_room_id: number,//最大房间id
+        delay_view_card_on: number,//延迟看牌  1：开启，0：关闭
+        limit_min: number,//最低参赛人数下限
+        limit_delay_times: number,//操作加时次数限制
+        limit_auto_check_times: number,//自动过牌次数
+        limit_auto_fold_times: number,//自动弃牌次数
+        participants: number,//参赛人数
+        award_num: number,//奖金
+        money_sync: number,//奖励圈同步(截止无法买入以后才会开启)
+        status: number,//游戏状态
+        seat_count: number,//在座人数
+        final_seat_count: number,//最终座位人数
+        no_user_wait_duration: number
+        initial_score: number,//初始化记分牌
+        blindtable_type: number,//盲注表类型
+        upblind_interval: number,//升盲时间间隔
+        apply_start_time: string,//报名开始时间
+        op_duration: number,//操作时间
+        max_delay_apply_bl: number,//延迟报名升盲等级
+        rebuy_times: number,//重构次数          
+        max_rebuy_bl: number,//重购升盲等级
+        limit_total_buy_times: number,//最大买入次数上限
+        total_buy_times: number,//总买入次数
+        total_rebuy_times: number,//总重购次数
+        addon_begin_bl: number,//增购开启 升盲等级
+        addon_end_bl: number,//增购关闭 升盲等级
+        addon_score: number,//增购 记分牌
+        total_addon_times: number,//增购次数
+        apply_fee_pool: number,//报名费
+        apply_fee_service: number,//服务费
+        apply_fee_hunter: number,//猎人赛费用
+        prize_type: number,//奖励类型
+        tribe_id: number,//联盟id
+        create_time: string,//创建房间时间
+        update_time: string,
+        game_icon: string,
+        prop_buy_type: number,// 道具使用类型 1: 只能道具 2: 混合 0: 不支持道具
+        voiceprint_verify_on: number,//是否开启验证声纹 0 关闭，1 开启。
+        voiceprint_verify_duration: number,//验证声纹时长
+        buy_prop_id: number,//道具id
+        addonplus_m1_on: number,//增购plus 模式一 0 关闭，1 开启
+        addonplus_m1_max_times: number,//增购最大次数
+        addonplus_m1_limit: number,//增购限制筹码
+        total_addonplus_m1_times: number,//总增购次数
+        addonplus_m2_on: number,//增购模式2 0 关闭，1 开启
+        addonplus_m2_max_times: number,//增购限制最大次数
+        addonplus_m2_max_bl: number,//增购 截止盲注
+        total_addonplus_m2_times: number,//增购总次数
+        buy_ratio: number,//买入倍率
+        pre_buyin_bonus: number,//赛前报名多得记分牌
+        tablecloth_tag: string,//桌布id
+        limit_tag: string,//相同比赛检测tag
+        buyin_free_times: number,//报名限免次数
+        rebuy_free_times: number,//重购限免次数
+        multi_ratio_free_times: number,//多倍率限免次数
+        addon_free_times: number,//增购限免次数
+        buyin_free_incl_svr: number,//报名限免是否包含服务费，0不包含，1包含
+        rebuy_free_incl_svr: number //重购限免是否包含服务费，0不包含，1包含
+        multi_ratio_free_incl_svr: number,//多倍率限免是否包含服务费，0不包含，1包含
+        addon_free_incl_svr: number,//增购限免是否包含服务费，0不包含，1包含
+    } = null;
 
-    // static More: {
-    //     ante: number,//当前前注
-    //     nante: number,//下一前注
-    //     bl: number,//当前盲注等级
-    //     nbl: number,//下一盲注等级
-    //     sb: number,//当前小盲
-    //     nsb: number,//下一小盲
-    //     prize_pool: number,//奖池
-    // } = null;
+    static More: {
+        ante: number,//当前前注
+        nante: number,//下一前注
+        bl: number,//当前盲注等级
+        nbl: number,//下一盲注等级
+        sb: number,//当前小盲
+        nsb: number,//下一小盲
+        prize_pool: number,//奖池
+    } = null;
 
     // static Request(param: typeof Web_Room_Center_Mtt_Details.RequestParams) {
     //     this.RequestParams = param;
