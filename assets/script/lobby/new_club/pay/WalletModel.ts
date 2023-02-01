@@ -56,4 +56,6 @@ export default class WalletModel {
 
     //钱包类型
     wallet_type: number = 0;
+    //公会id 不同公会请求参数不同
+    club_id:number = 0;
 }

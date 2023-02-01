@@ -1674,36 +1674,30 @@ export class Web_User_Room extends WebCommon {
     //接口地址
     static API: string = "/api/user/room/{id}";
 
-
-    //字段声明
-    // static RequestParams: {
-
-    // } = null;
-
-    // static ResponseData: {
-    //     last_bring_out: typeof Web_User_Room.BringOut,
-    //     wallet: typeof Web_User_Room.Wallet,
-    //     bring_in_apply: typeof Web_User_Room.BringIn,
-    // } = null;
-
-    // static BringOut: {
-    //     to_wallet: number,//带出（减去服务费后的带出金额）
-    //     fee: number,//服务费
-    // } = null;
-
-    // static Wallet: {
-    //     w_u_id: number,//钱包id
-    //     gold: number,//钱包金额
-    //     gold_lock: number,//被锁定金额
-    //     wallet_status: number,//钱包状态
-    // } = null;
-
-    // static BringIn: {
-    //     room_id: number,//房间ID
-    //     user_id: number,//用户ID
-    //     bring_in: number,//带入筹码
-    //     status: number,// 状态 1 待审批，2通过，3拒绝，4取消
-    // } = null;
+    /*
+                "data": {
+                    "last_bring_out": {
+                        "to_wallet": 0, // 金豆
+                        "fee": 0, // 服务费
+                        "club_id": 0, // 工会ID
+                        "gold_type": 0 // 钱包类型 1:gold(联盟币)  2 usdt
+                    },
+                    "wallet": [
+                        {
+                            "w_u_id": 0, // 用户id
+                            "club_id": 0, // 工会ID
+                            "tribe_id": 0, // 联盟ID
+                            "gold": 0, // 金豆
+                            "gold_lock": 0,// 锁定金豆
+                            "wallet_status": 0, // 状态(1-正常,2-停用, 3提现中)
+                            "gold_type": 0, // 钱包类型 1:gold(联盟币)  2 usdt
+                            "gold_currency": "", // 币种三字码
+                            "club_random_id": 929776, // 公会随机ID
+                            "club_name": "峨眉派" // 公会名称
+                        }
+                    ]
+                }
+    */
 
 
 }

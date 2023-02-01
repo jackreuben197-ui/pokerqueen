@@ -10,7 +10,7 @@ import { ClientMessageSetAutoOnTable } from "../../protobuf/holdem/req_set_auto_
 import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
-import { AddClipsData } from "./UIAddChipsComponent";
+
 
 
 const { ccclass } = cc._decorator;

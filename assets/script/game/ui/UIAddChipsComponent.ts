@@ -8,16 +8,9 @@ import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
 import { UITexasModel } from "../UITexasModel";
+import { AddClipsData } from "./UIBringIn";
 
 
-export type AddClipsData = {
-    bigBlind: number,// 大盲
-    smallBlind: number, // 小盲
-    currentMinRate: number, // 当前最小带入倍数
-    currentMaxRate: number, // 当前最大带入倍数
-    totalCoin: number, // 总金豆
-    tableChips: number, // 玩家剩余记分牌
-}
 
 const { ccclass } = cc._decorator;
 
@@ -83,7 +76,7 @@ export default class UIAddChipsComponent extends UIBase {
             this.textBlind.string = `${addClipsData.smallBlind / 100}/${addClipsData.bigBlind / 100}`;//SB/BB
             this.textCoin.string = `${addClipsData.bigBlind}`; // Buy-in
             this.textNeedCoin.string = `${addClipsData.bigBlind}`;//Require
-            this.textTotalCoin.string = `${addClipsData.totalCoin / 100}`;//Balance
+            //this.textTotalCoin.string = `${addClipsData.totalCoin / 100}`;//Balance
             //当前最大带入
             let currMaxBring = addClipsData.currentMaxRate * addClipsData.bigBlind - addClipsData.tableChips;
             let maxRate = currMaxBring / addClipsData.bigBlind ^ 0;

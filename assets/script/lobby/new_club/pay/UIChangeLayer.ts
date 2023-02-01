@@ -8,6 +8,7 @@ import { API_CLUB_USER_WALLET, Web_Club_Fund_Exchange, Web_Club_Player_Exchange,
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { WalletType } from "./UIWalletLayer";
+import WalletModel from "./WalletModel";
 
 const { ccclass, property } = cc._decorator;
 
@@ -82,7 +83,7 @@ export default class UIChangeLayer extends BaseFormPlus {
                             "src_amount": +this.cc_EditBox$Input.string * 100
                         },
 
-                        club_id: ClubCache.club_id
+                        club_id: WalletModel.Instance.club_id
                     }
                 ).then(
                     (res: any) => {
@@ -135,7 +136,7 @@ export default class UIChangeLayer extends BaseFormPlus {
                             "dest_gold_type": 2,
                             "src_amount": +this.cc_EditBox$Input.string * 100
                         },
-                        club_id: ClubCache.club_id
+                        club_id: WalletModel.Instance.club_id
                     }
                 ).then(
                     (res: any) => {
@@ -247,7 +248,7 @@ export default class UIChangeLayer extends BaseFormPlus {
                         "src_amount": 100
                     },
 
-                    club_id: ClubCache.club_id
+                    club_id: WalletModel.Instance.club_id
                 }
             ).then(
                 (res: any) => {
@@ -326,7 +327,7 @@ export default class UIChangeLayer extends BaseFormPlus {
         WWW.Instance.CommonAPI(
             {
                 web_class: API_CLUB_USER_WALLET,
-                club_id: ClubCache.club_id
+                club_id: WalletModel.Instance.club_id
             }
         ).then(
             (res: any) => {

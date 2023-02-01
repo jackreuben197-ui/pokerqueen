@@ -790,7 +790,21 @@ export const UIDefine = {
         Path: "main/mtt/detail/MttAgainBuy",
     },
 
-
+    /////////////////
+    //通用提示面板
+    UICommonDialog:{
+        UIType: UIType.CommonUI,
+        Name: "UICommonDialog",
+        Bundle: null,
+        Path: "main/prefab/dialog/UICommonDialog",
+    },
+    //公会钱包列表
+    UIClubWalletList:{
+        UIType: UIType.CommonUI,
+        Name: "UIClubWalletList",
+        Bundle: "texas",
+        Path: "purple_prefab/ui/UIClubWalletList",
+    }
 
 
 }

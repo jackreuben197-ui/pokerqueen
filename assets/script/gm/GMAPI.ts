@@ -26,6 +26,29 @@ export class GM {
         return this.__DebugSwitch?.indexOf(id) > -1;
     }
 
+    //user/room 模拟数据
+    static Moni_user_room = 
+    {
+        "last_bring_out":null,
+        "return_table":false,
+        "wallet":[
+            {
+                "w_u_id":6727,
+                "club_id":47,
+                "tribe_id":3,
+                "gold":18900,
+                "gold_lock":0,
+                "wallet_status":3,
+                "gold_type":1,
+                "gold_currency":"USD",
+                "user_status":0,
+                "user_type":0,
+                "club_random_id":928776,
+                "club_name":"超级联盟"
+            }
+        ]
+    }
+
     //MTT进入房间模拟数据
     static Moni_MTT_ServerMessageEnterRoom: { seat_count: number, rec: ServerMessageEnterRoom.AsObject } = {
         seat_count: 9,

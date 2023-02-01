@@ -22,6 +22,8 @@ export enum PrefabUI {
     UIOutChipsTipComponent = "UIOutChipsTipComponent",
     UIAgreeSecondPcsComponent = "UIAgreeSecondPcsComponent",//第二套公共牌的同意拒绝面板
     UIMttSignDialogComponent = "UIMttSignDialogComponent",//牌桌上的比赛重购面板
+    //////////////
+    UIBringIn = "UIBringIn",//带入记分牌
 }
 (window as any).PrefabUI = PrefabUI;
 //打开面板追加参数
