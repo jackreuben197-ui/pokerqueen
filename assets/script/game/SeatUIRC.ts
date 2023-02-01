@@ -12,8 +12,8 @@ import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent
 import UIBase from "../ui/UIBase";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
+import { AddClipsData } from "./new_ui/UIBringIn";
 import Seat, { VoiceprintState } from "./seat/Seat";
-import { AddClipsData } from "./ui/UIAddChipsComponent";
 import GameUtil from "./util/GameUtil";
 
 
@@ -240,16 +240,26 @@ export default class SeatUIRC extends UIBase {
 
     private ClickCancelReserveSeat(): void {
         if (this.seat.IsMySeat && this.seat.Player.chips <= 0) {
-            UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent,
+            // UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent,
+            //     {
+            //         bigBlind: GameCache.Instance.CurGame.bigBlind,
+            //         smallBlind: GameCache.Instance.CurGame.smallBlind,
+            //         currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+            //         currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+            //         // totalCoin: GameCache.Instance.gold,
+            //         totalCoin: GC.data.user.info.gold,
+            //         tableChips: this.seat.Player.chips
+            //     });
+            UIComponent.Instance.ShowUI<AddClipsData>(
+                PrefabUI.UIBringIn,
                 {
                     bigBlind: GameCache.Instance.CurGame.bigBlind,
                     smallBlind: GameCache.Instance.CurGame.smallBlind,
                     currentMinRate: GameCache.Instance.CurGame.currentMinRate,
                     currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                    // totalCoin: GameCache.Instance.gold,
-                    totalCoin: GC.data.user.info.gold,
                     tableChips: this.seat.Player.chips
-                });
+                }
+            )
         }
         else {
             ProtocolAgency.Send<ClientMessageKeepSeatActive.AsObject>({

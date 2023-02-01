@@ -1,5 +1,6 @@
 
 import { UIDefine } from "../../define/UIDefine";
+import GC from "../../frame/GameControl";
 import { WalletType } from "../../lobby/new_club/pay/UIWalletLayer";
 import WalletModel from "../../lobby/new_club/pay/WalletModel";
 import { Web_User_Room } from "../../net/https/WebRequest";
@@ -19,7 +20,6 @@ export type AddClipsData = {
     currentMaxRate: number, // 当前最大带入倍数
     //totalCoin: number, // 总金豆
     tableChips: number, // 玩家剩余记分牌
-    
 }
 
 @ccclass
@@ -80,6 +80,7 @@ export default class UIBringIn extends UIBasePlus {
         this.$icon_coin.active = this.gold_type == 1;
         this.$icon_usdt.active = this.gold_type == 2;
         this.$arrow.active = this.wallet.length > 1;
+        this.$club_click.active = this.wallet.length > 1;
         this.refreshSelect(this.wallet.length == 1?0:-1);
 
         if (null != data) {
@@ -120,6 +121,7 @@ export default class UIBringIn extends UIBasePlus {
 
         this.cc_Label$value.string = `${this.sendCoin}`;
 
+        this.cc_Label$buyin.string = `${this.sendCoin}`;
         //颜色处理
         
         this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX(this.sendCoin < this.ownCoin  ? "#EEF5FF":"#ee8380");
@@ -154,7 +156,7 @@ export default class UIBringIn extends UIBasePlus {
             this.ownCoin = 0;
         }else{
             this.cc_Label$club.string = this.selected_wallet.club_name;
-            this.ownCoin = this.selected_wallet.gold;
+            this.ownCoin = (this.selected_wallet.gold-GC.game.mainPlayer.chips)/100;
         }
         this.cc_Label$coin.string = `${this.ownCoin}`;
     }

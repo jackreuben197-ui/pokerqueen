@@ -106,7 +106,8 @@ export default class TexasGameUtils {
             mSeat.Player = null;
             mSeat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
         }
-        UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
+        //UIComponent.Instance.HideUI(PrefabUI.UIAddChipsComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
         UIComponent.close(UIDefine.UITexasPlayerInfoComponent);
 
         this.game.HideOperationPanel();
