@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-13 13:18:52
+ * @LastEditTime: 2023-02-01 12:00:42
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIFriendMatch.ts
  */
 
@@ -13,7 +13,7 @@ import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil from "../../game/util/GameUtil";
 import SceneManager from "../../manager/SceneManager";
-import { APIOrgFriendRoomList } from "../../net/https/WebRequest";
+import { APIOrgFriendRoomList, APIUserDiamondsWallet } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "../labor/UIClubModel";
@@ -22,6 +22,7 @@ import ComFormTitle from "../../common/ComFormTitle";
 import UIClubMatchItem from "./UIClubMatchItem";
 import TabNode from "../../common/tabNode";
 import { FriendMathTabConfig } from "../../frame/config/tabConfig";
+import { ClubCache } from "../../frame/data/club/ClubCache";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -43,6 +44,8 @@ export default class UIFriendMatch extends UIBase {
     joinBtnBg: cc.Node = null;
     @property(cc.Button)
     joinBtn: cc.Button = null;
+    @property(cc.Label)
+    num_diamond: cc.Label = null;
 
     _roomList: any = []
 
@@ -84,8 +87,11 @@ export default class UIFriendMatch extends UIBase {
         this.dataNode.active = this._selectTitle == 1;
         this.initDiamond();
     }
-    initDiamond() {
-
+    async initDiamond() {
+        await UIClubModel.mInstance.APIUserDiamondsWallet();
+        let wallet = APIUserDiamondsWallet.Response.data;
+        ClubCache._diamonds_wallet = wallet.diamonds_wallet
+        this.num_diamond.string = ClubCache._diamonds_wallet.diamonds
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(UIClubMatchItem);
@@ -130,6 +136,7 @@ export default class UIFriendMatch extends UIBase {
         UIComponent.open(UIDefine.UIMine_Message)
     }
     async joinMatch() {
+
         let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string);
         if (_data?.data?.data) {
             _data = new LobbyRoomListItem(_data?.data?.data);

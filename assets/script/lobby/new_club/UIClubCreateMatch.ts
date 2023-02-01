@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-12 14:30:53
+ * @LastEditTime: 2023-02-01 12:00:31
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -22,6 +22,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import { UIDefine } from "../../define/UIDefine";
 import GameUtil from "../../game/util/GameUtil";
+import { APIUserDiamondsWallet } from "../../net/https/WebRequest";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -181,7 +182,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.zdks['levelData'] = { min: 2, total: 9, level: 2 }
         this.Straddle['levelData'] = { min: 0, total: 6, level: 2 }
     }
-    onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+    async onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
         let title = "UIClub_MatchTable"
         let _title = i18nMgr.Get(title)
@@ -192,12 +193,14 @@ export default class UIClubCreateMatch extends BaseForm {
         } else {
             this.room_config = null;
         }
-
+        await UIClubModel.mInstance.APIUserDiamondsWallet();
+        let wallet = APIUserDiamondsWallet.Response.data;
+        ClubCache._diamonds_wallet = wallet.diamonds_wallet
         this.initUI()
     }
-    initDiamond() {
+    async initDiamond() {
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
-        own.string = 1000 + '';
+        own.string = ClubCache._diamonds_wallet.diamonds + '';
         let pay = cc.find('pay/num', this.coinNode).getComponent(cc.Label)
         let num = this._selectTitle == 0 ? 15 : 0
         pay.string = num + '';

@@ -2923,6 +2923,9 @@ export class Web_Club_Agent_Friend_Data extends WebCommon {
 export class API_CLUB_USER_WALLET extends WebCommon {
     static API: string = "/api/org/club/club_user/wallet";
 }
+export class APIUserDiamondsWallet extends WebCommon {
+    static API: string = "/api/user/user_diamonds_wallet";
+}
 
 
 /**

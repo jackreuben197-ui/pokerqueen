@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-31 15:21:13
+ * @LastEditTime: 2023-02-01 12:00:09
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -24,6 +24,7 @@ const { ccclass, property } = cc._decorator;
 export class ClubCache {
     static _msg = null;
     static _allCubData = null;
+    static _diamonds_wallet = null;
     // 创建来源 1 平台，2 联盟，3 公会（外） 4 个人（朋友桌）5 公会（内）
     // joinCreateMatchType 0 俱乐部  1 朋友桌
     static joinCreateMatchType = 0;

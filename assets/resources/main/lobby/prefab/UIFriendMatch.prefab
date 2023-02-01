@@ -882,7 +882,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "num",
+    "_name": "num_diamond",
     "_objFlags": 0,
     "_parent": {
       "__id__": 12
@@ -7339,6 +7339,9 @@
     },
     "joinBtn": {
       "__id__": 130
+    },
+    "num_diamond": {
+      "__id__": 20
     },
     "_id": ""
   },
