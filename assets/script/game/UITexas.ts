@@ -10,6 +10,7 @@ import { i18nSprite } from "../i18n/i18nSprite";
 
 
 import { Bundle_Resources, Bundle_Texas } from "../manager/ResManager";
+import MttAgainBuy from "../mtt/detail/MttAgainBuy";
 import MttPayforHome from "../mtt/detail/MttPayforHome";
 import UIMttSignDialogComponent from "../mtt/detail/UIMttSignDialogComponent";
 
@@ -174,8 +175,8 @@ export default class UITexas extends BaseScene {
     UIAgreeSecondPcs_Con: cc.Node = null;
     UIAgreeSecondPcs_Com: UIAgreeSecondPcsComponent = null;
     //8.MTT重购面板
-    MttPayforHome_Con: cc.Node = null;
-    MttPayforHome: MttPayforHome = null;
+    MttAgainBuy_Con: cc.Node = null;
+    MttAgainBuy: MttAgainBuy = null;
     ///////////////////////////////////
     /**
      * 声明内容
@@ -306,9 +307,9 @@ export default class UITexas extends BaseScene {
         this.UIAgreeSecondPcs_Con = this.getChildNodeOrComponent("UIAgreeSecondPcs_Con");
         this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
         //8.MTT重购面板
-        this.MttPayforHome_Con = this.getChildNodeOrComponent("UIMttSignDialog_Con");
+        this.MttAgainBuy_Con = this.getChildNodeOrComponent("UIMttSignDialog_Con");
         //this.UIMttSignDialog_Com = this.AddComponents(PrefabUI.UIMttSignDialogComponent, this.UIMttSignDialog_Con, false, Bundle_Resources);
-        this.MttPayforHome = this.AddComponents(PrefabUI.MttPayforHome, this.MttPayforHome_Con, false, Bundle_Resources);
+        this.MttAgainBuy = this.AddComponents(PrefabUI.MttAgainBuy, this.MttAgainBuy_Con, false, Bundle_Resources);
         //////////////////////////////////////////////////////////////////////
         //////////////////初始化杂类
         //隐藏座位模板

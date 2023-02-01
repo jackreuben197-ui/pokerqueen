@@ -25,7 +25,7 @@ export enum PrefabUI {
     MttAgainBuy = "MttAgainBuy",//牌桌上的比赛重购面板
     //////////////
     UIBringIn = "UIBringIn",//带入记分牌
-    MttPayforHome = "MttPayforHome",//MTT重购
+    
 }
 (window as any).PrefabUI = PrefabUI;
 //打开面板追加参数
