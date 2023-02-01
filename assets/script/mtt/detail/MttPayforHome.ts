@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-31 17:40:29
+ * @LastEditTime: 2023-02-01 11:09:08
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 
@@ -14,17 +14,23 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { EventName } from "../../config/EventName";
 import { MTTJoinAction, UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
-import { GameCache } from "../../game/GameCache";
 import TimeHelper from "../../helper/TimeHelper";
-import MTTGame from "../../game/texas/MTTGame";
-import { UIMineModel } from "../../lobby/UIMineModel";
-import HttpRequest from "../../net/https/HttpRequest";
 import { Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Rebuy } from "../../net/https/WebRequest";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { ServerErrorCode } from "../../net/websocket/ServerErrorCode";
-
+import ToastManager from "../../manager/ToastManager";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import GC from "../../frame/GameControl";
+import { StringHelper } from "../../helper/StringHelper";
+import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
+import { WalletType } from "../../lobby/new_club/pay/UIWalletLayer";
 const { ccclass, property, menu } = cc._decorator;
-
+enum MTTJoinMode // 参与mtt玩法方式
+{
+    None,
+    Apply,          // 报名
+    Rebuy,          // 重购
+    AddOn, // 增购
+}
 @ccclass
 @menu('脚本分组/mtt/detail/MttPayforHome')
 export default class MttPayforHome extends BaseForm {
@@ -34,24 +40,75 @@ export default class MttPayforHome extends BaseForm {
     sure: cc.Node = null;
     rateNode: cc.Node = null;
     _data: any = null;
+
     totalRebuyTimes = 0;
     isCurTimeOverEnterTime = null;
+
+    panel_click2: cc.Node = null;
+    cachePropPropertyType: number = 0;
+    cacheIsFreeServiceFee: boolean = false;
+    SingType: number = 0;
+    cachePropBalance: number = 0;
+    isUseLimitFree: any = null;
+    isUseFreeService: any = null;
+    isUseMultFree: any = null;
+    limitFreeName: any = null;
+    limitDetail: any = null;
+    discountNum: any = null;
+    disCountType: any = null;
+    MultLimitFree: any = null;
+    rebuySecond: number = 0;
+    lastTime: number = 0;
+    IntervalTime: number = 1;
+    used_prop_id: number = 0;
+    prop_type: number = 0;
+    use_free: boolean = false;
+    coinnum: any = null;
+    _coinnum: number = null;
+    isUpArrow = true;
+    isChoose3 = false;
+    textCommit: cc.Label = null;
+    isRebuySecondStart = false;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.payNode = this.getChildNodeOrComponent('payNode')
         this.select_lbl = this.getChildNodeOrComponent('select_lbl', cc.Label);
         this.sure = this.getChildNodeOrComponent('sure');
         this.rateNode = this.getChildNodeOrComponent('rateNode');
+        this.coinnum = this.getChildNodeOrComponent('coin', cc.Label);
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
 
         super.onShow(param, fromUI, sceneUI);
+
         this._data = param;
         this.initSelectWallet()
         this.bindClick(this.payNode, () => {
             // if (ClubCache.mttPayWallat != null) return
             UIComponent.open(UIDefine.MttPayforList)
         })
+        this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
+        if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
+            UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
+                if (res.code == 0) {
+                    this.cachePropPropertyType = res.data.prop_property_type;
+                    this.cachePropBalance = res.data.prop_balance;
+                    this.cacheIsFreeServiceFee = res.data.is_free_service_charge;
+                    GC.data.user.info.gold = res.data.wallet_balance;
+                    if (this.cachePropPropertyType == 2) {
+                        this.SingType = 0;
+                    }
+                    this.HandleDate();
+                }
+                else {
+                    // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res.code));
+                }
+            });
+        }
+        else {
+            this.HandleDate();
+        }
     }
     protected regiterDispatchEvent() {
         this.listen(EventName.selectMttWwllet, this.initSelectWallet);
@@ -88,198 +145,312 @@ export default class MttPayforHome extends BaseForm {
             // num3.string = i18nMgr.Get("UIMTTSignDialogCanUseTickt").replace("{0}", this.cachePropBalance.toString());
 
         }
+
+
     }
-    // signUpBtn() {
-    //     this.RefreshMttDetails(() => {
-    //         // if (!go.GetComponent<Button>().interactable)
-    //         // {
-    //         //     return;
-    //         // }
-    //         let mttInfo = UIMatchMttModel.Instance.MttInfo;
-    //         switch (mttInfo.state_code) {
-    //             case MTTGame.MTTPlayerStatus.CanApplyNotStart:
-    //             case MTTGame.MTTPlayerStatus.CanApplyDelay:
-    //                 {
-    //                     UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Apply, code => {
-    //                         // this.RefreshMttDetails();
-    //                         this.close();
-    //                     }, httpState => {
-    //                         // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
-    //                     });
-    //                 }
-    //                 break;
-    //             case MTTGame.MTTPlayerStatus.CanJoin:
-    //                 {
-    //                     UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.PartialBringIn, bringInCode => {
-    //                         if (bringInCode == 0) {
-    //                             //进入MTT房间时添加firebase事件触发
-    //                             // let paramMap = [];
-    //                             // paramMap.push("game_type", GameCache.Instance.game_type + "");//游戏类型
-    //                             // paramMap.push("roomId", GameCache.Instance.room_id + "");//房间id
-    //                             // paramMap.push("roomName", GameCache.Instance.roomName + "");//房间名称
-    //                             // paramMap.push("room_type", GameCache.Instance.room_type + "");//房间类型
-    //                             // paramMap.push("match_id", GameCache.Instance.match_id + "");//比赛id
-    //                             // GoogleFirebaseHelper.LevelStartEvent(paramMap);
-    //                             //添加到appsFlyer统计进入MTT房间消息
-    //                             // let valuesMap = [];
-    //                             // valuesMap.push("game_type", GameCache.Instance.game_type + "");//游戏类型
-    //                             // valuesMap.push("roomId", GameCache.Instance.room_id + "");//房间id
-    //                             // valuesMap.push("roomName", GameCache.Instance.roomName + "");//房间名称
-    //                             // valuesMap.push("room_type", GameCache.Instance.room_type + "");//房间类型
-    //                             // valuesMap.push("match_id", GameCache.Instance.match_id + "");//比赛id
-    //                             // AppsFlyerHelper.MTTGameEnterEvent(valuesMap);
-    //                             // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
-    //                             UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
-    //                         }
-    //                         else {
-    //                             this.RefreshMttDetails();
-    //                             // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(bringInCode));
-    //                         }
-    //                     }, httpState => {
-    //                         // ToastManager.Instance.createToast($"{nameof(HTTPRequestStates)}: {httpState}");
-    //                     });
-    //                 }
-    //                 break;
-    //             case MTTGame.MTTPlayerStatus.LoseCanRebuy:
-    //                 {
-    //                     //更新金豆
-    //                     UIMineModel
-    //                     UIMineModel.mInstance.ObtainUserInfo(pDto => {
-    //                         UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
-    //                             if (rebuyCode == 0) {
-    //                                 UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
-    //                                 // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
-    //                             }
-    //                             else {
-    //                                 this.RefreshMttDetails();
-    //                                 // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rebuyCode));
-    //                             }
-    //                         }, httpState => {
-    //                             // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
-    //                         });
-    //                     });
+    HandleDate() {
+        this.UpdateGold();
+        // coinBalance.text = _data.coinBalance;
+        //多倍买入时展示
+        // ToggleCoin1.gameObject.SetActive(_data.buyRatio > 1);
+        // ToggleCoin2.gameObject.SetActive(_data.buyRatio > 1);
+        // ToggleCoin1.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), 1);
+        // ToggleCoin2.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), _data.buyRatio);
+        // ToggleTicket1.gameObject.SetActive(_data.buyRatio > 1);
+        // ToggleTicket2.gameObject.SetActive(_data.buyRatio > 1);
+        // ToggleTicket1.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), 1);
+        // ToggleTicket2.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), _data.buyRatio);
+        // Text_Ratio.text = string.Format(LanguageManager.Get("UIMTTbuyinDialog"), _data.buyRatio);
+        // AvailableTickets.text = string.Format(LanguageManager.Get("UIMTTSignDialogCanUseTickt"), cachePropBalance);
+        //if (UIMatchMTTModel.Instance.MttInfo.mtt.total_rebuy_times > 0) {
+        this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
+        if (this.totalRebuyTimes < 10000) {
+            //可重构次数   
+            //!!!!!特别注意:当后台设置不限制重构次数时,rebuy_times为10000,而left_rebuy_times在后端传输时做了int8转换越界变为16了,但只是传到前端的转化了后端正常,故在此做特别处理!!!!!!
+            if (UIMatchMttModel.Instance.MttInfo.state != null) {
+                // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), UIMatchMTTModel.Instance.MttInfo.state.left_rebuy_times);
+            } else {
+                // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), totalRebuyTimes);
+            }
+        } else {
+            // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), LanguageManager.Get("UIMTT_StateUnLimitRebuy"));
+        }
 
-    //                 }
-    //                 break;
-    //         }
-    //     });
-    // }
-    // signUpReq() {
-    //     // let req =
-    //     // {
-    //     //     ticket: isticket,
-    //     //     ratio: buyRatio,
-    //     //     used_prop_id: used_prop_id,
-    //     //     prop_type: prop_type,
-    //     //     use_free: use_free
-    //     // };
+        // Text_ErroTips.text = LanguageManager.Get("UIMTTSignDialogBuyErroTipscoin");
+        // ToggleCoin.gameObject.SetActive(SingType == 0 || SingType == 2);
+        // ToggleTicket.gameObject.SetActive(SingType == 1 || SingType == 2);
+        switch (this.SingType)//0 金币，1 道具，2 全选
+        {
+            case 0:
+                // ToggleCoin.isOn = true;
+                // ToggleTicket.isOn = false;
+                // ToggleCoin.interactable = false;
+                // ToggleTicket.interactable = false;
+                // buttonCommit.interactable = _data.coinnum + _data.Fee <= GameCache.Instance.gold;
+                // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
+                if (this._data.buyRatio > 1) {
+                    // ToggleCoin1.isOn = true;
+                    // ToggleCoin2.isOn = false;
+                }
+                break;
+            case 1:
+                // ToggleCoin.interactable = false;
+                // ToggleTicket.interactable = false;
+                // ToggleTicket.isOn = true;
+                // ToggleCoin.isOn = false;
 
-    //     HttpRequest.Send({
-    //         api: Web_Room_Center_Mtt_Buyin.API.replace("{id}", this._data._msg.match_id.toString()),
-    //         request: Web_Room_Center_Mtt_Buyin,
-    //         body: Web_Room_Center_Mtt_Buyin.Request(req),
-    //         onSuccess: function () {
-    //             let response = Web_Room_Center_Mtt_Buyin.Response;
-    //             if (response.code == 0) {
-    //                 let content = i18nMgr.Get("MTT_Apply_Success");
-    //                 UIComponent.Instance.Toast(content);
-    //             }
-    //             else if (response.code == ServerErrorCode.MTT_SameTagLimit) {
-    //                 // UIComponent.Instance.ShowNoAnimation(UIType.UIDialog,
-    //                 //                             new UIDialogComponent.DialogData()
-    //                 //                             {
-    //                 //                                 type = UIDialogComponent.DialogData.DialogType.Commit,
-    //                 //                                 title = LanguageManager.Get("adaptation10007"),
-    //                 //                                 content = CPErrorCode.ServerErrorDescription(response.code),
-    //                 //                                 contentCommit = LanguageManager.Get("UIBackDiolg_Konw_01"),
-    //                 //                                 contentCancel = string.Empty,
-    //                 //                                 actionCommit = null,
-    //                 //                                 actionCancel = null
-    //                 //                             });
-    //             }
-    //             else {
-    //                 // if (UIMineModel.mInstance.UserInfoDto.user.gold < (StringHelper.GetLongClientCurrencyUnit(MttInfo.mtt.apply_fee_pool) + StringHelper.GetLongClientCurrencyUnit(MttInfo.mtt.apply_fee_service) + StringHelper.GetLongClientCurrencyUnit(MttInfo.mtt.apply_fee_hunter)))
-    //                 // {
-    //                 //     UIComponent.Instance.Toast(LanguageManager.Get("adaptation20094"));
-    //                 // }
-    //                 // else
-    //                 // {
-    //                 //     UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.code));
-    //                 // }
-    //             }
-    //         }.bind(this),
-    //         onFailure: function (content) {
-    //         }.bind(this)
-    //     });
-    // }
-    // RefreshMttDetails(callback = null) {
-    //     // if (IsDisposed)
-    //     // {
-    //     //     return;
-    //     // }
-    //     UIMatchMttModel.Instance.RequestMTTDetails(this._data._msg.match_id, code => {
-    //         if (code == 0) {
-    //             //声纹获取麦克风权限
-    //             if (UIMatchMttModel.Instance.MttInfo.mtt.voiceprint_verify_on == 1) {
-    //                 // if (!MicrophoneHelper.IsMicrophonePermissionAllowed())
-    //                 // {
-    //                 //     return;
-    //                 // }
+                // buttonCommit.interactable = cachePropBalance > 0;
+                // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
+                if (this._data.buyRatio > 1) {
+                    // ToggleTicket1.isOn = true;
+                    // ToggleTicket2.isOn = false;
+                }
+                break;
+            case 2:
+                // ToggleCoin.interactable = true;
+                // ToggleTicket.interactable = true;
+                // ToggleCoin.isOn = true;
+                // ToggleTicket.isOn = false;
+                // buttonCommit.interactable = _data.coinnum + _data.Fee <= GameCache.Instance.gold;
+                // Text_ErroTips.gameObject.SetActive(!buttonCommit.interactable);
+                if (this._data.buyRatio > 1) {
+                    // ToggleCoin1.isOn = true;
+                    // ToggleCoin2.isOn = false;
 
-    //                 // UITexasModel.mInstance.APIUserVoiceprint(0, 0, Act =>
-    //                 // {
-    //                 //     if (Act.code == 0)
-    //                 //     {
-    //                 //         if (Act.data == null)
-    //                 //         {
-    //                 //             NeedVoiceprintVerification = true;
-    //                 //         }
-    //                 //     }
-    //                 // });
-    //             }
-    //             ///免服务费逻辑
-    //             if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
-    //                 UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
+                    // ToggleTicket1.isOn = false;
+                    // ToggleTicket2.isOn = false;
+                    // ToggleCoin.interactable = false;
+                    // ToggleTicket.interactable = false;
+                }
+                break;
+            default:
+                break;
+        }
+        // Text_Ratio.gameObject.SetActive(!Text_ErroTips.gameObject.activeInHierarchy && _data.buyRatio > 1);
+        //textContent.gameObject.SetActive(!Text_ErroTips.gameObject.activeInHierarchy && cacheIsFreeServiceFee && _data.buyRatio == 1);
+        if (this._data.rebuyData != null) {
+            let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(this._data.rebuyData.starTime) + (this._data.rebuyData.rebuyBlind - 1) * this._data.rebuyData.upblindInterval;
+            this.rebuySecond = deadLineTime - TimeHelper.Now / 10000000;
+            if (this.rebuySecond > 15) {
+                this.rebuySecond = 14;
+                this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(15s)";
+                // textCommit.text = CPErrorCode.LanguageDescription(10012) + "(15s)";
+            }
+            else {
+                this.rebuySecond -= -1;
+                if (this.rebuySecond < 0) {
+                    this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(" + 0 + "s)";
+                }
+                else {
+                    this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(" + this.rebuySecond + "s)";
+                }
+            }
+            this.isRebuySecondStart = true;
+        }
+    }
+    UpdateGold(discount = 0, DiscountType = 0) {
+        let buyRatio = 1;
+        // if (ToggleCoin2.isOn)
+        // {
+        // 	buyRatio = _data.buyRatio;
+        // }
+        // else
+        // {
+        // 	buyRatio = 1;
+        // }
 
-    //                     if (res.code == 0) {
-    //                         GameCache.Instance.gold = res.data.wallet_balance;
-    //                         if (res.data.prop_property_type == 2)//如果Type == 2  免服务费 
-    //                         {
-    //                             UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type = 0;
-    //                         }
-    //                         // UI mUI = UIComponent.Instance.Get(UIType.UIMatch_MttDetailState);
-    //                         // if (null != mUI)
-    //                         // {
-    //                         //     UIMatch_MttDetailStateComponent mUIComponent = mUI.UiBaseComponent as UIMatch_MttDetailStateComponent;
-    //                         //     mUIComponent.UpdateInfo(UIMatchMttModel.Instance.MttInfo);
-    //                         // }
-    //                     }
-    //                     else {
-    //                         // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(res.code));
-    //                     }
-    //                 });
-    //             }
-    //             else {
-    //                 // UI mUI = UIComponent.Instance.Get(UIType.UIMatch_MttDetailState);
-    //                 // if (null != mUI)
-    //                 // {
-    //                 //     UIMatch_MttDetailStateComponent mUIComponent = mUI.UiBaseComponent as UIMatch_MttDetailStateComponent;
-    //                 //     mUIComponent.UpdateInfo(UIMatchMttModel.Instance.MttInfo);
-    //                 // }
-    //             }
-    //             //判断当前时间是否大于进入比赛时间
+        if (this.isUseLimitFree) {
+            switch (this._data.mTTJoinMode) {
+                case MTTJoinMode.None:
+                    break;
+                case MTTJoinMode.Apply:
+                    if (this._data.buyin_free_incl_svr == 0) //限免是否包含服务费，0不包含，1包含
+                    {
+                        this.UseLimitFreeNoServer(buyRatio);
+                    }
+                    else {
+                        this.UseLimitFree(buyRatio);
+                    }
+                    break;
+                case MTTJoinMode.Rebuy:
+                    if (this._data.rebuy_free_incl_svr == 0) //限免是否包含服务费，0不包含，1包含
+                    {
+                        this.UseLimitFreeNoServer(buyRatio);
+                    }
+                    else {
+                        this.UseLimitFree(buyRatio);
+                    }
+                    break;
+                case MTTJoinMode.AddOn:
+                    if (this._data.addon_free_incl_svr == 0) //限免是否包含服务费，0不包含，1包含
+                    {
+                        this.UseLimitFreeNoServer(buyRatio);
+                    }
+                    else {
+                        this.UseLimitFree(buyRatio);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
 
-    //             this.isCurTimeOverEnterTime = TimeHelper.Now >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMatchMttModel.Instance.MttInfo.mtt.enter_time);
-    //             if (callback) {
-    //                 callback();
-    //             }
-    //         }
-    //         else {
-    //             // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(code));
-    //         }
-    //     }, httpState => {
-    //         // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
-    //     });
-    // }
+        if (this.isUseFreeService) {
+            if (this._data.isHunter == 0) {
+                //猎人赛处于关闭
+                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + "0";
+                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio))
+            }
+            else {
+                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + "0" + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio);
+                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.Fee * buyRatio))
+
+            }
+            return;
+        }
+
+        if (this.isUseMultFree) {
+            if (this._data.multi_ratio_free_incl_svr == 0) //限免是否包含服务费，0不包含，1包含
+            {
+                this.UseLimitFreeNoServer(buyRatio);
+            }
+            else {
+                this.UseLimitFree(buyRatio);
+            }
+            return;
+        }
+
+        let discountResult = discount;
+        let type = DiscountType;
+        if (discount == 0) {
+            if (this._data.isHunter == 0) {
+                //猎人赛处于关闭
+                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio);
+                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.Fee * buyRatio))
+
+
+            }
+            else {
+                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + (this._data.Fee * buyRatio);
+                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + this._data.Fee * buyRatio
+
+            }
+        }
+        else {
+
+            if (this._data.isHunter == 0) {
+                if (DiscountType == 12) {
+                    if (discountResult >= this._data.coinnum * buyRatio) {
+                        discountResult = this._data.coinnum * buyRatio;
+                    }
+                }
+                else if (DiscountType == 13) {
+                    if (discountResult >= this._data.coinnum * buyRatio + this._data.Fee * buyRatio) {
+                        discountResult = this._data.coinnum * buyRatio + this._data.Fee * buyRatio;
+                    }
+                }
+                //猎人赛处于关闭
+                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio) + "-" + (discountResult);
+                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.Fee * buyRatio)) - discountResult
+
+            }
+            else {
+                if (DiscountType == 12) {
+                    if (discountResult >= this._data.coinnum * buyRatio + this._data.hunterFee * buyRatio)
+                        discountResult = this._data.coinnum * buyRatio + this._data.hunterFee * buyRatio;
+                }
+                else if (DiscountType == 13) {
+                    if (discountResult >= this._data.coinnum * buyRatio + this._data.hunterFee * buyRatio + this._data.Fee * buyRatio)
+                        discountResult = this._data.coinnum * buyRatio + this._data.hunterFee * buyRatio + this._data.Fee * buyRatio;
+                }
+                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + (this._data.Fee * buyRatio) + "-" + (discountResult);
+                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + this._data.Fee * buyRatio - discountResult
+
+            }
+        }
+
+        this.disCountType = type;
+        this.discountNum = discountResult;
+    }
+    UseLimitFreeNoServer(buyRatio) {
+        if (this._data.isHunter == 0) {
+            //猎人赛处于关闭
+            this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio) + "-" + (this._data.coinnum);
+            this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.Fee * buyRatio)) - this._data.coinnum
+
+        }
+        else {
+            this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + (this._data.Fee * buyRatio) + "-" + (this._data.coinnum + this._data.hunterFee);
+            this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + this._data.Fee * buyRatio - (this._data.coinnum + this._data.hunterFee)
+
+        }
+    }
+    /// <summary>
+    /// 使用限免包含服务费
+    /// </summary>
+    UseLimitFree(buyRatio) {
+        if (this._data.isHunter == 0) {
+            //猎人赛处于关闭
+            this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio) + "-" + (this._data.coinnum + this._data.Fee);
+            this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.Fee * buyRatio)) - (this._data.coinnum + this._data.Fee)
+        }
+        else {
+            this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + (this._data.Fee * buyRatio) + "-" + (this._data.coinnum + this._data.hunterFee + this._data.Fee);
+            this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + (this._data.Fee * buyRatio) - (this._data.coinnum + this._data.hunterFee + this._data.Fee)
+
+        }
+    }
+
+    signUpReq() {
+        // 报名
+        if (ClubCache.mttPayWallat.gold < this._coinnum) {
+            UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
+                {
+                    type: UINewDialogComponent.DialogType.CommitCancel,
+                    content: 'UI_WalletNoHave',
+                    contentCommit: "UIMine_WalletAdd_EjPOTlsz",
+                    contentCancel: "UI_otherPay",
+                    actionCommit: () => {
+                        UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Club });
+                    },
+                    actionCancel: () => {
+                        UIComponent.open(UIDefine.MttPayforList)
+                    },
+                    noAnimation: true,
+                });
+            return
+        }
+        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this._data.buyRatio == 1 && UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService) {
+            UIMatchMttModel.Instance.APIPropUserBuyProp(response => {
+                if (response.code == 0) {
+                    if (null != this._data && null != this._data.actionCommit) {
+                        this._data.actionCommit.Invoke(true, 1, this.used_prop_id, this.prop_type, this.use_free);
+                    }
+                    this.close();
+                }
+                else {
+                    ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response.code));
+                }
+            });
+        }
+        // else if (this._data.buyRatio > 1 && (ToggleCoin2.isOn || ToggleTicket2.isOn))
+        else if (this._data.buyRatio > 1) {
+            if (null != this._data && null != this._data.actionCommit) {
+                // _data.actionCommit.Invoke(ToggleTicket2.isOn, _data.buyRatio, used_prop_id, prop_type, use_free);
+                this._data.actionCommit(false, 1, this._data.buyRatio, this.used_prop_id, this.prop_type, this.use_free);
+            }
+            this.close();
+        }
+        else {
+            if (null != this._data && null != this._data.actionCommit) {
+                //this._data.actionCommit(ToggleTicket.isOn, 1, used_prop_id, prop_type, use_free);
+                this._data.actionCommit(false, 1, this.used_prop_id, this.prop_type, this.use_free);
+            }
+            this.close();
+        }
+
+
+    }
 
 }

@@ -17,6 +17,7 @@ import { ServerErrorCode } from "../../../net/websocket/ServerErrorCode";
 import { MTTInfo } from "../../../protobuf/holdem/define_pb";
 import UIComponent, { PrefabUI } from "../../../ui/UIComponent";
 import GC from "../../GameControl";
+import { ClubCache } from "../club/ClubCache";
 
 
 export enum MTTJoinAction // 参与mtt玩法动作
@@ -118,7 +119,8 @@ export class UIMatchMttModel {
                     ratio: buyRatio,
                     used_prop_id: used_prop_id,
                     prop_type: prop_type,
-                    use_free: use_free
+                    use_free: use_free,
+                    club_id: ClubCache.mttPayWallat.club_id
                 };
 
                 HttpRequest.Send({

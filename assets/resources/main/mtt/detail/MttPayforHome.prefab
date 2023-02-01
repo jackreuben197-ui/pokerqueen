@@ -5271,7 +5271,7 @@
     },
     "component": "",
     "_componentId": "8c410KzsTBJHIfCWiFKzwQ3",
-    "handler": "signUpBtn",
+    "handler": "signUpReq",
     "customEventData": ""
   },
   {
