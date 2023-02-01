@@ -452,7 +452,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Part1",
+    "_name": "$Part1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 7
@@ -2712,7 +2712,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Part4",
+    "_name": "$Part4",
     "_objFlags": 0,
     "_parent": {
       "__id__": 7

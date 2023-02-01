@@ -103,7 +103,7 @@ export default class UIMine_MessageList extends BaseFormPlus {
     //设置未读显示
     visibleNew(item: cc.Node, visible: boolean) {
         cc.find("MessDes/new", item).active = visible;
-        item.getChildByName("img_light").active = visible;
+        //item.getChildByName("img_light").active = visible;
     }
 
     protected regiterDispatchEvent() {
