@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 14:35:11
+ * @LastEditTime: 2023-02-01 14:37:05
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -83,8 +83,9 @@ export default class UICreatelabor extends BaseForm {
         }
     }
     clubNamechange() {
+        this.editName.string = this.editName.string.trim()
         this.labelNum.string = this.editjieshao.string.length + '/50'
-        if (this.editName.string == '' || this.editjieshao.string == '') {
+        if (this.editName.string == '' || this.editjieshao.string == '' || this.xinxi.string == '') {
             this.commit.interactable = false
         } else {
             this.commit.interactable = true;
