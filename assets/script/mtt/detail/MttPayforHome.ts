@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 16:55:03
+ * @LastEditTime: 2023-02-01 17:44:22
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 
@@ -34,13 +34,17 @@ enum MTTJoinMode // 参与mtt玩法方式
 @ccclass
 @menu('脚本分组/mtt/detail/MttPayforHome')
 export default class MttPayforHome extends BaseForm {
-
+    @property(cc.Node)
+    USDT: cc.Node = null;
+    @property(cc.Node)
+    USDT1: cc.Node = null;
+    @property(cc.Label)
+    uc: cc.Label = null;
     payNode: cc.Node = null;
     select_lbl: cc.Label = null;
     sure: cc.Node = null;
     rateNode: cc.Node = null;
     _data: any = null;
-
     totalRebuyTimes = 0;
     isCurTimeOverEnterTime = null;
 
@@ -88,6 +92,9 @@ export default class MttPayforHome extends BaseForm {
             // if (ClubCache.mttPayWallat != null) return
             UIComponent.open(UIDefine.MttPayforList)
         })
+        this.USDT.active = UIMatchMttModel.Instance.MttInfo.mtt.gold_type == 2
+        this.USDT1.active = UIMatchMttModel.Instance.MttInfo.mtt.gold_type == 2
+        this.uc.string = UIMatchMttModel.Instance.MttInfo.mtt.gold_type == 2 ? 'USDT' : 'UC'
         this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
         if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
             UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {

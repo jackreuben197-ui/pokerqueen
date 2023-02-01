@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 18:31:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 17:10:55
+ * @LastEditTime: 2023-02-01 18:04:54
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttAgainBuy.ts
  */
 
@@ -21,6 +21,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { WalletType } from "../../lobby/new_club/pay/UIWalletLayer";
+import Toast from "../../ui/toast/Toast";
 enum MTTJoinMode // 参与mtt玩法方式
 {
     None,
@@ -33,11 +34,16 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/mtt/detail/MttAgainBuy')
 export default class MttAgainBuy extends BaseForm {
+    @property(cc.Node)
+    USDT: cc.Node = null;
+
     @property(cc.ScrollView)
     scrow: cc.ScrollView = null;
     private slider: GGSlider = null;
     buy_lbl: cc.Label = null;
     select_lbl: cc.Label = null;
+    sb_lbl: cc.Label = null;
+    sure: cc.Node = null;
     _data = null;
 
 
@@ -80,6 +86,10 @@ export default class MttAgainBuy extends BaseForm {
         this.buy_lbl = this.getChildNodeOrComponent("buy_lbl", cc.Label);
         this.slider = this.getChildNodeOrComponent("Slider_Coin", GGSlider);
         this.coinnum = this.getChildNodeOrComponent("coinNum", cc.Label);
+        this.sb_lbl = this.getChildNodeOrComponent("sb_lbl", cc.Label);
+        this.select_lbl = this.getChildNodeOrComponent("select_lbl", cc.Label);
+        this.sure = this.getChildNodeOrComponent('sure');
+
         this.slider.onChange(this.onSliderChange.bind(this));
         this.slider._delegate = this;
     }
@@ -87,14 +97,15 @@ export default class MttAgainBuy extends BaseForm {
 
         super.onShow(param, fromUI, sceneUI);
         this._data = param;
-
+        this.USDT.active = UIMatchMttModel.Instance.MttInfo.mtt.gold_type == 2
         this.setText(this.select_lbl, ClubCache.mttPayWallat.club_name)
         this.setText(this.coinnum, Number(StringHelper.GetLongString(ClubCache.mttPayWallat.gold)))
+        this.setText(this.sb_lbl, StringHelper.GetLongString(UIMatchMttModel.Instance.MttInfo.more.sb) + '/' + StringHelper.GetLongString(UIMatchMttModel.Instance.MttInfo.more.nsb))
 
         this.slider.SetMinMax(0, Number(StringHelper.GetLongString(ClubCache.mttPayWallat.gold)));
-        this.slider.onShow({ index: 1 });
-        this.setText(this.buy_lbl, 1);
-
+        this.slider.onShow({ index: 0 });
+        this.setText(this.buy_lbl, 0);
+        this.sure.active = false
         this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
         if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
             UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
@@ -121,7 +132,7 @@ export default class MttAgainBuy extends BaseForm {
      */
     onSliderChange(rate: number) {
         // this._curIntoValue = (this._startRate + rate) * GameCache.Instance.CurGame.bigBlind / 100;
-
+        this.sure.active = rate != 0;
         this.setText(this.buy_lbl, rate);
         // this.setTextColor(this.curInto, this._curIntoValue >= GC.data.user.info.displayGold ? "#B82B30" : "#3BE1F5");
     }
@@ -382,6 +393,7 @@ export default class MttAgainBuy extends BaseForm {
 
 
     commitBtn() {
+
         if (ClubCache.mttPayWallat.gold <= 0) {
             UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
                 {
