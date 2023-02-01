@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 14:37:05
+ * @LastEditTime: 2023-02-01 14:40:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -51,7 +51,7 @@ export default class UICreatelabor extends BaseForm {
         this.editjieshao.string = ''
         this.xinxi.string = ''
         this.comFormTitle.initData('club_2', this);
-
+        this.clubNamechange()
     }
     async commitClick() {
         this.editName.string = this.editName.string.trim()
