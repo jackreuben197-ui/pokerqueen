@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:37:33
+ * @LastEditTime: 2023-02-02 11:57:12
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -14,7 +14,7 @@ import UIComponent from "../../../ui/UIComponent";
 import { UIDefine } from "../../../define/UIDefine";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { UIClubModel } from "../../labor/UIClubModel";
-import { APIOrgClubNotice, APIOrgClubUserInfo, APIOrgGetMessList, APIOrgGetNewMessNum, Web_User_Info } from "../../net/https/WebRequest";
+import { APIOrgClubNotice, APIOrgClubUserInfo, APIOrgGetMessList, APIOrgGetNewMessNum, Web_User_Info } from "../../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../../helper/StringHelper";
 import UIBase from "../../../ui/UIBase";

@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 12:00:42
+ * @LastEditTime: 2023-02-02 11:55:44
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIFriendMatch.ts
  */
 
@@ -19,7 +19,7 @@ import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "../labor/UIClubModel";
 import UIMatchChessItem from "../matchView/UIMatchChessItem";
 import ComFormTitle from "../../common/ComFormTitle";
-import UIClubMatchItem from "./UIClubMatchItem";
+import UIClubMatchItem from "../new_club/createMatch/UIClubMatchItem";
 import TabNode from "../../common/tabNode";
 import { FriendMathTabConfig } from "../../frame/config/tabConfig";
 import { ClubCache } from "../../frame/data/club/ClubCache";
