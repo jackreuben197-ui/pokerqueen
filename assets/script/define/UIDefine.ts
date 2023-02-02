@@ -812,7 +812,16 @@ export const UIDefine = {
         Name: "dropDownBoxNew",
         Bundle: null,
         Path: "common/dropDownBoxNew",
+    },
+    //战绩
+    UICareerRecord: {
+        UIType: UIType.Form,
+        Name: "UICareerRecord",
+        Bundle: null,
+        Path: "main/career/UICareerRecord",
+        Title: "战绩"
     }
+
 
 
 }

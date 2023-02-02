@@ -3,7 +3,7 @@
  * @Date: 2023-01-13 11:05:06
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-13 12:56:03
+ * @LastEditTime: 2023-02-02 17:50:29
  * @FilePath: /pokerqueen/assets/script/common/tabNode.ts
  */
 
@@ -54,7 +54,8 @@ export default class TabNode extends UIBase {
             this.setText(item.getComponent(cc.Label), param.data[index]);
             this.bindClick(item, this.onClickTypeTabBtns, index);
         })
-        this.setIndex(param.defaultIndex || 0)
+        // this.setIndex(param.defaultIndex || 0)
+        this.onClickTypeTabBtns(param.defaultIndex || 0)
     }
 
     setIndex(index) {
@@ -67,7 +68,7 @@ export default class TabNode extends UIBase {
 
     onClickTypeTabBtns(index) {
         if (this._isAction || this._selectIndex == index) return;
-        let pos = this._titleNode.children[this._selectIndex].position;
+        let pos = this._titleNode.children[index].position;
         cc.Tween.stopAllByTarget(this._selectBg);
         cc.tween(this._selectBg)
             .to(0.1, { position: pos })
