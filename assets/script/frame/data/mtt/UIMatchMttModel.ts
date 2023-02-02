@@ -168,7 +168,7 @@ export class UIMatchMttModel {
             }
         }
         if (GameCache.Instance.CurGame) {
-            UIComponent.Instance.ShowUI(PrefabUI.MttPayforHome, dialogData);
+            UIComponent.Instance.ShowUI(PrefabUI.MttAgainBuy, dialogData);
             // UIComponent.open(UIDefine.MttAgainBuy, dialogData)
         } else {
             // UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
