@@ -81,7 +81,8 @@ export default class UILobbyMenu extends UIBase {
         LobbyControl.getInstance().switchContent("UIFriendMatch")
     }
     async career_click(btn: cc.Button) {
-
+        this.changeBtn(btn.node);
+        LobbyControl.getInstance().switchContent("UICareer")
 
     }
     club_click(btn: cc.Button) {
