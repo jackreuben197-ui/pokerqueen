@@ -17,6 +17,7 @@ export default class UILobbyMenu extends UIBase {
     menu_btn_world_chat: cc.Node = null;
     menu_btn_career: cc.Node = null;
     menu_btn_my: cc.Node = null;
+    menu_btn_club: cc.Node = null;
     redTip: cc.Node = null;
 
     protected lateLoad(): void {
@@ -24,8 +25,9 @@ export default class UILobbyMenu extends UIBase {
         this.menu_btn_lobby = this.getChildNodeOrComponent("menu_btn_lobby");
         this.menu_btn_world_chat = this.getChildNodeOrComponent("menu_btn_world_chat");
         this.menu_btn_career = this.getChildNodeOrComponent("menu_btn_career");
+        this.menu_btn_club = this.getChildNodeOrComponent("menu_btn_club");
         this.menu_btn_my = this.getChildNodeOrComponent("menu_btn_my");
-        this.redTip = this.getChildNodeOrComponent("redTip");
+        // this.redTip = this.getChildNodeOrComponent("redTip");
     }
 
     onShow() {
@@ -44,12 +46,13 @@ export default class UILobbyMenu extends UIBase {
         this.menu_btn_world_chat.on("click", this.world_chat_click, this);
         this.menu_btn_career.on("click", this.career_click, this);
         this.menu_btn_my.on("click", this.my_click, this);
+        this.menu_btn_club.on("click", this.club_click, this);
 
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(ProtocolCode.Protocol_Holdem_GetMsg, this.setRedTip);  // 
-        this.listen(EventName.reFreshApplyState, this.setRedState);
+        // this.listen(ProtocolCode.Protocol_Holdem_GetMsg, this.setRedTip);  // 
+        // this.listen(EventName.reFreshApplyState, this.setRedState);
     }
     // }() {
     //     // let btns = ["lobby", "world_chat", "career", "my"];
@@ -78,15 +81,12 @@ export default class UILobbyMenu extends UIBase {
         LobbyControl.getInstance().switchContent("UIFriendMatch")
     }
     async career_click(btn: cc.Button) {
+
+
+    }
+    club_click(btn: cc.Button) {
         this.changeBtn(btn.node);
         LobbyControl.getInstance().switchContent("UIClubList")
-        // let data: any = await UIClubModel.mInstance.APIOrgClubGet()
-        // //打开公会  //进入公会还是加入界面
-        // if (data.data) {
-        //     LobbyControl.getInstance().switchContent("UILabarPlayViewForm")
-        // } else {
-        //     LobbyControl.getInstance().switchContent("UIlabor")
-        // }
     }
     my_click(btn: cc.Button) {
         this.changeBtn(btn.node);
