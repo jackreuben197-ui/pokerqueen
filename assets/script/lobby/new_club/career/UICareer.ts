@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 11:32:22
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 16:59:08
+ * @LastEditTime: 2023-02-02 19:24:39
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/career/UICareer.ts
  */
 
@@ -60,6 +60,7 @@ export default class UICareer extends UIBase {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIMine_VIP_dataAll"
         this.setText(this.comFormTitle, title)
+        this.setText(this.dropNode_lbl, careerConfig[this._selectIndex].desc);
     }
     initMiddleData() {
         this.lbl_number_1.string = ''
