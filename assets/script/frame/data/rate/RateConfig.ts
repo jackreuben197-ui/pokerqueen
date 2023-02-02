@@ -2,8 +2,8 @@
  * @Author: xfj
  * @Date: 2022-12-25 21:27:26
  * @description: 
- * @LastEditors: 
- * @LastEditTime: 2023-01-03 12:33:12
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-02-02 13:46:44
  * @FilePath: /pokerqueen/assets/script/frame/data/rate/RateConfig.ts
  */
 
@@ -80,5 +80,12 @@ export const clubListConfig = [
     { type: 1, desc: "当前牌桌数", model: 3 },
     { type: 2, desc: "当前牌桌数", model: 3 },
 ]
+//战绩赛选
+export const careerConfig = [
+    //type 0 不显示 1上 2 下
+    { type: 0, desc: "UICareer_uc", model: 1 },
+    { type: 0, desc: "UICareer_ustd", model: 2 },
+]
+
 
 

@@ -792,18 +792,26 @@ export const UIDefine = {
 
     /////////////////
     //通用提示面板
-    UICommonDialog:{
+    UICommonDialog: {
         UIType: UIType.CommonUI,
         Name: "UICommonDialog",
         Bundle: null,
         Path: "main/prefab/dialog/UICommonDialog",
     },
     //公会钱包列表
-    UIClubWalletList:{
+    UIClubWalletList: {
         UIType: UIType.CommonUI,
         Name: "UIClubWalletList",
         Bundle: "texas",
         Path: "purple_prefab/ui/UIClubWalletList",
+    },
+
+    //新版下拉框
+    dropDownBoxNew: {
+        UIType: UIType.Board,
+        Name: "dropDownBoxNew",
+        Bundle: null,
+        Path: "common/dropDownBoxNew",
     }
 
 

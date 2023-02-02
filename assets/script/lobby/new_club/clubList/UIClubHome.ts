@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:57:12
+ * @LastEditTime: 2023-02-02 12:05:01
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -115,7 +115,7 @@ export default class UIClubHome extends BaseForm {
         this.initTop();
         this.initChessView();
         await UIClubModel.mInstance.APIOrgClubUserInfo({
-            "user_id": Web_User_Info.Response.data.user.un_id,
+            "user_id": Web_User_Info.Response.data.user.user_id,
             "club_id": ClubCache.club_id
         })
         let data = APIOrgClubUserInfo.Response.data
