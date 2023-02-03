@@ -3,8 +3,8 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-03 09:58:19
- * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
+ * @LastEditTime: 2023-02-03 11:02:45
+ * @FilePath: /pokerqueen/assets/script/lobby/career/UIRecordDetail.ts
  */
 
 import List from "../../common/List";
@@ -12,28 +12,27 @@ import TabNode from "../../common/tabNode";
 import { CareerRecordTabConfig } from "../../frame/config/tabConfig";
 import TimeHelper from "../../helper/TimeHelper";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
+import recordDetailItem from "./recordDetailItem";
 import recordItem from "./recordItem";
 
 
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
-@menu('脚本分组/career/UICareerRecord')
-export default class UICareerRecord extends BaseFormPlus {
-    @property(cc.Node)
-    titleNode: cc.Node = null;
-    @property(TabNode)
-    tabNode: TabNode = null;
+@menu('脚本分组/career/UIRecordDetail')
+export default class UIRecordDetail extends BaseFormPlus {
     @property(cc.Node)
     lb_tip: cc.Node = null;
 
-    @property(cc.Node)
-    Rectangle: cc.Node = null;
+    @property(cc.Label)
+    data_date: cc.Label = null;
+
+    @property(cc.Label)
+    id: cc.Label = null;
 
     @property(cc.Node)
-    mtt: cc.Node = null;
-    @property(cc.Node)
-    listNode: cc.Node = null;
+    lbl_Node: cc.Node = null;
+
 
     @property(List)
     list: List = null;
@@ -50,29 +49,9 @@ export default class UICareerRecord extends BaseFormPlus {
     }
     onShow(param?, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-        this.tabNode.initData(CareerRecordTabConfig, this.titleNodeClick.bind(this), this);
-        this.titleNode.children.forEach((item, index) => {
-            item.getChildByName('title').color = this._titleSelect == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
-            item.getChildByName('block').active = this._titleSelect == index
-            this.bindClick(item, this.onClickTypeTabBtns, index);
-        })
         this.reqDataAgain();
-        this.onClickTypeTabBtns(0);
-    }
-    titleNodeClick(customData) {
-        this._tabSelect = customData
     }
 
-    onClickTypeTabBtns(_index) {
-        this._titleSelect = _index
-        this.titleNode.children.forEach((item, index) => {
-            item.getChildByName('title').color = this._titleSelect == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
-            item.getChildByName('block').active = this._titleSelect == index
-        })
-        this.mtt.active = this._titleSelect == 3
-        this.Rectangle.active = !this.mtt.active
-
-    }
     async reqDataAgain() {
         this._offset = 0;
         this._total = 0;
@@ -87,7 +66,7 @@ export default class UICareerRecord extends BaseFormPlus {
 
         // await UIClubModel.mInstance.APIOrgMemberList(params);
         // let _data: any = APIOrgMemberList.Response.data
-        let _data = { data: [1, 2, 34, 56], total: 5 }
+        let _data = { data: [1, 2, 34, 56, 55], total: 5 }
         this._reqing = false
         if (!_data.data) {
             _data.data = [];
@@ -104,8 +83,8 @@ export default class UICareerRecord extends BaseFormPlus {
         this.lb_tip.active = this.list.numItems == 0
     }
     onRender(node: cc.Node, index: number) {
-        let item = node.getComponent(recordItem);
-        item.initData(this._list[index]);//
+        let item = node.getComponent(recordDetailItem);
+        item.initData(this._list[index], index);//
     }
     scrollingCB = async (scrollView: cc.ScrollView) => {
         if (scrollView) {

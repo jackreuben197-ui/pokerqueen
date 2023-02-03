@@ -198,14 +198,14 @@ export const UIDefine = {
         Path: "main/lobby/prefab/bag/UIBagTicket",
         Title: "",
     },
-    //战绩详情
-    UIRecordDetail: {
-        UIType: UIType.Form,
-        Name: "UIRecordDetail",
-        Bundle: null,
-        Path: "main/lobby/prefab/record/UIRecordDetail",
-        Title: "",
-    },
+    // //战绩详情
+    // UIRecordDetail: {
+    //     UIType: UIType.Form,
+    //     Name: "UIRecordDetail",
+    //     Bundle: null,
+    //     Path: "main/lobby/prefab/record/UIRecordDetail",
+    //     Title: "",
+    // },
     //本局牌谱
     UIRecordScore: {
         UIType: UIType.Form,
@@ -819,8 +819,16 @@ export const UIDefine = {
         Name: "UICareerRecord",
         Bundle: null,
         Path: "main/career/UICareerRecord",
-        Title: "战绩"
+        Title: "UICareerRecord"
+    },
+    UIRecordDetail: {
+        UIType: UIType.Form,
+        Name: "UIRecordDetail",
+        Bundle: null,
+        Path: "main/career/UIRecordDetail",
+        Title: "战绩详情"
     }
+
 
 
 
