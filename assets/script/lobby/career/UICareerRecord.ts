@@ -3,13 +3,14 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 19:17:59
+ * @LastEditTime: 2023-02-03 09:51:21
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 
 import List from "../../common/List";
 import TabNode from "../../common/tabNode";
 import { CareerRecordTabConfig } from "../../frame/config/tabConfig";
+import TimeHelper from "../../helper/TimeHelper";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import recordItem from "./recordItem";
 
@@ -25,6 +26,14 @@ export default class UICareerRecord extends BaseFormPlus {
     tabNode: TabNode = null;
     @property(cc.Node)
     lb_tip: cc.Node = null;
+
+    @property(cc.Node)
+    Rectangle: cc.Node = null;
+
+    @property(cc.Node)
+    mtt: cc.Node = null;
+    @property(cc.Node)
+    listNode: cc.Node = null;
 
     @property(List)
     list: List = null;
@@ -48,6 +57,7 @@ export default class UICareerRecord extends BaseFormPlus {
             this.bindClick(item, this.onClickTypeTabBtns, index);
         })
         this.reqDataAgain();
+        this.onClickTypeTabBtns(0);
     }
     titleNodeClick(customData) {
         this._tabSelect = customData
@@ -59,6 +69,11 @@ export default class UICareerRecord extends BaseFormPlus {
             item.getChildByName('title').color = this._titleSelect == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
             item.getChildByName('block').active = this._titleSelect == index
         })
+        this.mtt.active = this._titleSelect == 3
+        this.Rectangle.active = !this.mtt.active
+        // TimeHelper.Sleep(1000);
+        // this.listNode.getComponent(cc.Widget).top = 0
+        // this.listNode.getComponent(cc.Widget).bottom = 0
     }
     async reqDataAgain() {
         this._offset = 0;
