@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "a45cdacd-336e-4fcd-9a6b-551c9d5e8430",
+  "uuid": "e90ace71-b1f0-46df-b53d-3092495f0a9c",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -9,14 +9,14 @@
   "genMipmaps": false,
   "packable": true,
   "width": 1242,
-  "height": 2688,
+  "height": 408,
   "platformSettings": {},
   "subMetas": {
-    "过滤-USD": {
+    "Rectangle 1235": {
       "ver": "1.0.6",
-      "uuid": "9b16d269-f462-4e03-b7dc-4bec1b29bebc",
+      "uuid": "1226a126-9013-4400-afcd-4d3c48d34dfa",
       "importer": "sprite-frame",
-      "rawTextureUuid": "a45cdacd-336e-4fcd-9a6b-551c9d5e8430",
+      "rawTextureUuid": "e90ace71-b1f0-46df-b53d-3092495f0a9c",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
@@ -25,9 +25,9 @@
       "trimX": 0,
       "trimY": 0,
       "width": 1242,
-      "height": 2688,
+      "height": 408,
       "rawWidth": 1242,
-      "rawHeight": 2688,
+      "rawHeight": 408,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

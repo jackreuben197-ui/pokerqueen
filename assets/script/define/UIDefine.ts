@@ -134,14 +134,7 @@ export const UIDefine = {
         Path: "main/lobby/prefab/UIMine_PlayInfo",
         Title: "玩家信息",
     },
-    //牌谱详情
-    UIMine_Poker: {
-        UIType: UIType.Form,
-        Name: "UIMine_Poker",
-        Bundle: null,
-        Path: "main/lobby/prefab/UIMine_Poker",
-        Title: "牌谱详情",
-    },
+
     //设置-版本
     UIMine_SettingVersion: {
         UIType: UIType.Form,
@@ -821,13 +814,30 @@ export const UIDefine = {
         Path: "main/career/UICareerRecord",
         Title: "UICareerRecord"
     },
+    //战绩详情
     UIRecordDetail: {
         UIType: UIType.Form,
         Name: "UIRecordDetail",
         Bundle: null,
         Path: "main/career/UIRecordDetail",
         Title: "战绩详情"
+    },
+    //牌谱列表
+    UIRecordHands: {
+        UIType: UIType.Form,
+        Name: "UIRecordHands",
+        Bundle: null,
+        Path: "main/career/UIRecordHands",
+        Title: "牌谱"
     }
+     //牌谱详情
+     UIMine_Poker: {
+        UIType: UIType.Form,
+        Name: "UIMine_Poker",
+        Bundle: null,
+        Path: "main/career/UIMine_Poker",
+        Title: "牌谱详情",
+    },
 
 
 

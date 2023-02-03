@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 19:04:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-03 11:07:19
+ * @LastEditTime: 2023-02-03 17:15:21
  * @FilePath: /pokerqueen/assets/script/lobby/career/recordDetailItem.ts
  */
 // Learn TypeScript:
@@ -13,6 +13,7 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import { UIDefine } from "../../define/UIDefine";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 
@@ -44,6 +45,6 @@ export default class recordDetailItem extends UIBase {
         this.node.getComponent(cc.Sprite).enabled = index % 2 == 0;
     }
     itemClick() {
-        // UIComponent.open(UIRecordDetail)
+        UIComponent.open(UIDefine.UIRecordHands, { type: 2 })
     }
 }
