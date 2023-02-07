@@ -1123,6 +1123,10 @@ export default class TexasGame {
     /// <param name="clientSeatId"></param>
     public Sitdown(clientSeatId: number, isEmptyClick: boolean = false): void {
 
+        //test
+        this.CurlimitOutChip = RoomInfo.RetainType.RT_AUTO;
+
+
         let mSeat: Seat = this.GetSeatByClientId(clientSeatId);
         if (null == mSeat) {
             cc.log(`Sitdown 位置不存在 clientSeatId:${clientSeatId}`);
@@ -1156,7 +1160,12 @@ export default class TexasGame {
                 //钱包数组
                 let wallet = res.data?.wallet;
                 let wallet_dic = {};
+                //房间消耗钱币类型
+                let roomCoinType:number = 0;
                 if(wallet && wallet.length){
+                    roomCoinType = 1;
+                }
+                if(roomCoinType){
                     wallet.forEach(item =>{
                         wallet_dic[item.club_id] = item;
                     })
@@ -1167,7 +1176,7 @@ export default class TexasGame {
                     let bring_out = res.data.last_bring_out.to_wallet;
                     let last_club_id = res.data.last_bring_out.club_id;
                     if(bring_out + fee > 0){
-                        if (bring_out <= wallet_dic[last_club_id].gold) {
+                        if (roomCoinType == 0 || bring_out <= wallet_dic[last_club_id].gold) {
                             ProtocolAgency.Send<ClientMessageSeated.AsObject>({
                                 Code: ProtocolCode.Protocol_Holdem_Seated,
                                 RoomID: GameCache.Instance.room_id,
@@ -1187,7 +1196,7 @@ export default class TexasGame {
 
                         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
 
-                            this.ShowSetAutoAddChips();
+                            this.ShowAutoAddChips();
                         }
                         else {
                             this.ShowAddChips();
@@ -1197,7 +1206,7 @@ export default class TexasGame {
                 }else{
                     if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
 
-                        this.ShowSetAutoAddChips();
+                        this.ShowAutoAddChips();
                     }
                     else {
                         this.ShowAddChips();
@@ -2693,9 +2702,25 @@ export default class TexasGame {
             }
         )
     }
+    public ShowAutoAddChips(fromMenu:boolean = false) {
 
-    ShowSetAutoAddChips() {
-        UIComponent.Instance.ShowUI(PrefabUI.UIAutoChipsComponent, false);
+        //UIComponent.Instance.ShowUI(PrefabUI.UIAutoChipsComponent, false);
+
+        let data:AddClipsData = {
+            bigBlind: this.bigBlind,
+            smallBlind: this.smallBlind,
+            currentMinRate: this.currentMinRate,
+            currentMaxRate: this.currentMaxRate,
+            tableChips: this.mainPlayer.chips
+        }
+        UIComponent.Instance.ShowUI(
+
+            PrefabUI.UIAutoBringIn,
+            { 
+                    data : data,
+                    fromMenu:fromMenu,
+            }
+        )
     }
 
     // 牌桌玩家信息

@@ -16,7 +16,7 @@ import { GameCache } from "../GameCache";
 const { ccclass } = cc._decorator;
 
 @ccclass
-export default class UIAddChipsComponent extends UIBase {
+export default class   extends UIBase {
 
     ///////////////////////////////////
     /**
@@ -129,7 +129,6 @@ export default class UIAddChipsComponent extends UIBase {
             GameCache.Instance.CurGame.SetAutoOnTableChips(Math.ceil(this._curAutoValue * 100), this.intoToggle.isChecked);
         } else {
             GameCache.Instance.CurGame.AddChips(Math.ceil(this._curIntoValue * 100), Math.ceil(this._curAutoValue * 100), this.intoToggle.isChecked);
-
         }
         this.hideUI();
     }
