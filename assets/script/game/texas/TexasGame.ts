@@ -2704,23 +2704,23 @@ export default class TexasGame {
     }
     public ShowAutoAddChips(fromMenu:boolean = false) {
 
-        //UIComponent.Instance.ShowUI(PrefabUI.UIAutoChipsComponent, false);
+        UIComponent.Instance.ShowUI(PrefabUI.UIAutoChipsComponent, false);
 
-        let data:AddClipsData = {
-            bigBlind: this.bigBlind,
-            smallBlind: this.smallBlind,
-            currentMinRate: this.currentMinRate,
-            currentMaxRate: this.currentMaxRate,
-            tableChips: this.mainPlayer.chips
-        }
-        UIComponent.Instance.ShowUI(
+        // let data:AddClipsData = {
+        //     bigBlind: this.bigBlind,
+        //     smallBlind: this.smallBlind,
+        //     currentMinRate: this.currentMinRate,
+        //     currentMaxRate: this.currentMaxRate,
+        //     tableChips: this.mainPlayer.chips
+        // }
+        // UIComponent.Instance.ShowUI(
 
-            PrefabUI.UIAutoBringIn,
-            { 
-                    data : data,
-                    fromMenu:fromMenu,
-            }
-        )
+        //     PrefabUI.UIAutoBringIn,
+        //     { 
+        //             data : data,
+        //             fromMenu:fromMenu,
+        //     }
+        // )
     }
 
     // 牌桌玩家信息
