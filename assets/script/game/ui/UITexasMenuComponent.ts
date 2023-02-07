@@ -267,7 +267,8 @@ export default class UITexasMenuComponent extends UIBase {
         }
         this.game.uirc.HideMenu();
         // 弹代入框
-        UIComponent.Instance.ShowUI(PrefabUI.UIAutoChipsComponent, true);
+        //UIComponent.Instance.ShowUI(PrefabUI.UIAutoChipsComponent, true);
+        GC.game.ShowAutoAddChips(true);
     }
 
     //手动带入
