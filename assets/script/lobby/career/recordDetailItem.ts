@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 19:04:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-03 17:15:21
+ * @LastEditTime: 2023-02-07 17:08:41
  * @FilePath: /pokerqueen/assets/script/lobby/career/recordDetailItem.ts
  */
 // Learn TypeScript:
@@ -14,6 +14,8 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import { UIDefine } from "../../define/UIDefine";
+import { StringHelper } from "../../helper/StringHelper";
+import WebImageHelper from "../../helper/WebImageHelper";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 
@@ -38,6 +40,13 @@ export default class recordDetailItem extends UIBase {
     _data = null;
     initData(data, index) {
         this._data = data;
+        this.setText(this.nickName, StringHelper.LengthNick(this._data.nick_name))
+        this.id.string = 'ID:' + this._data.user_random_id
+        this.setText(this.buyin, StringHelper.GetLongString(this._data.bring_in))
+        this.setText(this.hands, this._data.user_room_hand_num)
+        this.setText(this.wins, StringHelper.GetLongString(this._data.bring_out - this._data.bring_in))
+        this.setTextColor(this.wins, this._data.bring_out - this._data.bring_in < 0 ? '#FF7C7C' : '#B0FFAE')
+        WebImageHelper.SetHeadImage(this.icon, this._data.avatar);
         let num = this.icon.node.getChildByName('num' + (index + 1))
         if (num) {
             num.active = true

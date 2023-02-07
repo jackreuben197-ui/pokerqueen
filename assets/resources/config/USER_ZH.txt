@@ -3368,6 +3368,9 @@ UI_otherPay=其他支付
 
 UICareer_uc=联盟币
 UICareer_ustd=国际币
+UICareer_win=盈利
+UICareerEnding_time=牌局时长
+UICareerhands=手
 
 
 

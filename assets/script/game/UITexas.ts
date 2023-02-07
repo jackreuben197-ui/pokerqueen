@@ -165,7 +165,7 @@ export default class UITexas extends BaseScene {
     UIChips_Con: cc.Node = null;
     //UIAddChips_Com: UIAddChipsComponent = null;
     UIOutChips_Com: UIOutChipsComponent = null;
-    //UIAutoChips_Com: UIAutoChipsComponent = null;
+    UIAutoChips_Com: UIAutoChipsComponent = null;
     UIOutChipsTip_Com: UIOutChipsTipComponent = null;
 
     UIBringIn:UIBringIn = null;
@@ -299,7 +299,7 @@ export default class UITexas extends BaseScene {
         this.UIChips_Con = this.getChildNodeOrComponent("UIChips_Con");
         //this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
         this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
-        //this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
+        this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
         this.UIOutChipsTip_Com = this.AddComponents(PrefabUI.UIOutChipsTipComponent, this.UIChips_Con);
         this.UIBringIn = this.AddComponents(PrefabUI.UIBringIn, this.UIChips_Con);
         this.UIAutoBringIn = this.AddComponents(PrefabUI.UIAutoBringIn, this.UIChips_Con);

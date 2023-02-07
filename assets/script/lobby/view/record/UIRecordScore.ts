@@ -50,12 +50,12 @@ export default class UIRecordScore extends BaseForm {
     reqInfo(data) {
         let roomData = data.data.room_data;
         let info = {
-            room_id: roomData.room_id,         
-            match_id: 0,     
-            limit: roomData.limit,   
+            room_id: roomData.room_id,
+            match_id: 0,
+            limit: roomData.limit,
             offset: roomData.offset,
-            type: 0,   
-            gametype: roomData.game_type,   
+            type: 0,
+            gametype: roomData.game_type,
         }
         LobbyControl.getInstance().getRecordHandInfo(info).then(
             (res) => {
@@ -70,13 +70,13 @@ export default class UIRecordScore extends BaseForm {
         let records = data.data.records;
         let len = records.length;
         this.getChildNodeOrComponent("lbl_total", cc.Label).string = "共计" + len + "手";
-        let lbl_no : cc.Node = this.getChildNodeOrComponent("lbl_no");
+        let lbl_no: cc.Node = this.getChildNodeOrComponent("lbl_no");
         lbl_no.active = len == 0;
         // 有数据 刷新列表
         let panel_item: cc.Node = this.getChildNodeOrComponent("panel_item");
         let scrollView = this.getChildNodeOrComponent("sv_down", cc.ScrollView);
         scrollView.content.removeAllChildren();
-        for (let i=0; i<len; i++) {
+        for (let i = 0; i < len; i++) {
             let _cloneNode = cc.instantiate(panel_item);
             _cloneNode.x = 0;
             _cloneNode.y = -_cloneNode.height * 0.5 - _cloneNode.height * (i);
@@ -98,13 +98,13 @@ export default class UIRecordScore extends BaseForm {
             };
             _cloneNode.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         }
-        scrollView.content.height = panel_item.height * (len+5);
+        scrollView.content.height = panel_item.height * (len + 5);
     }
 
     onClickItem(event) {
         let node = event.target;
         let info = node.info;
-        UIComponent.open(UIDefine.UIMine_Poker, {info : info});
+        UIComponent.open(UIDefine.UIMine_Poker, { info: info });
     }
 
 }

@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "UIRecordCard",
+    "_name": "UIRecordHands",
     "_objFlags": 0,
     "_parent": null,
     "_children": [
@@ -391,7 +391,7 @@
       "__id__": 6
     },
     "_enabled": true,
-    "i18n_string": "",
+    "i18n_string": "UIMine_Paipu_count",
     "_id": ""
   },
   {

@@ -3,7 +3,7 @@
  * @Date: 2023-02-03 16:57:42
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-03 17:16:18
+ * @LastEditTime: 2023-02-07 17:38:25
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIRecordHands.ts
  */
 // Learn TypeScript:
@@ -14,7 +14,9 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import List from "../../common/List";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
+import { LobbyControl } from "../control/LobbyControl";
 import recordScoreItem from "./recordScoreItem";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -35,12 +37,15 @@ export default class UIRecordHands extends BaseFormPlus {
     _reqing = false;
     _reqEnd = false;
     _type = 1;
+    _roomData = null;
     protected lateLoad(): void {
         super.lateLoad();
     }
     onShow(param?, fromUI?: cc.Node): void {
         this._type = param.type;
+        this._roomData = param.roomData;
         super.onShow(param, fromUI);
+
         this.reqDataAgain();
     }
 
@@ -54,17 +59,29 @@ export default class UIRecordHands extends BaseFormPlus {
     }
     async dealData() {
         this._reqing = true
-
-
-        // await UIClubModel.mInstance.APIOrgMemberList(params);
-        // let _data: any = APIOrgMemberList.Response.data
-        let _data = { data: [1, 2, 34, 56, 55], total: 5 }
-        this._reqing = false
-        if (!_data.data) {
-            _data.data = [];
+        let str = i18nMgr.Get('UIMine_Paipu_count')
+        let _data = null;
+        if (this._roomData) {
+            let info = {
+                room_id: this._roomData.room_id,
+                match_id: 0,
+                limit: 20,
+                offset: this._offset,
+                type: 0,
+                gametype: this._roomData.game_type,
+            }
+            _data = await LobbyControl.getInstance().getRecordHandInfo(info)
         }
+        else {
 
-        _data.data.forEach(element => {
+        }
+        this._reqing = false
+        if (!_data?.data?.records) {
+            _data.data.records = [];
+        }
+        str.replace(`{0}`, _data.data.records.length);
+
+        _data.data.records.forEach(element => {
             this._list.push(element);
         });  //分页的时候使用的
         this._total = _data.total
