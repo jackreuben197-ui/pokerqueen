@@ -145,9 +145,9 @@ export default class UIMine_Poker extends BaseForm {
     onClickGet() {
         if (this.isSC) {
             let info = {
-                room_id: this._enterInfo.info.room_id, // 普通牌局，
-                room_unique_id: this._enterInfo.info.room_unique_id, // room唯一标识
-                hand_num: this._enterInfo.info.hand_num, // 手数
+                room_id: this._enterInfo.room_id, // 普通牌局，
+                room_unique_id: this._enterInfo.room_unique_id, // room唯一标识
+                hand_num: this._enterInfo.hand_num, // 手数
             }
             LobbyControl.getInstance().reqRemoveRound(info).then(
                 (res) => {
@@ -159,15 +159,15 @@ export default class UIMine_Poker extends BaseForm {
             )
         } else {
             let info = {
-                id: this._enterInfo.info.id, // 牌普id
-                room_id: this._enterInfo.info.room_id, // 普通牌局，
-                match_id: this._enterInfo.info.match_id, // mtt赛事id
-                room_unique_id: this._enterInfo.info.room_unique_id, // room唯一标识
-                name: this._enterInfo.info.name, // 
-                hand_num: this._enterInfo.info.hand_num, // 手数
-                change: this._enterInfo.info.change, // 金币变动值
-                type: this._enterInfo.info.type, // 类型
-                open: this._enterInfo.info.open, // 是否公开
+                id: this._enterInfo.id, // 牌普id
+                room_id: this._enterInfo.room_id, // 普通牌局，
+                match_id: this._enterInfo.match_id, // mtt赛事id
+                room_unique_id: this._enterInfo.room_unique_id, // room唯一标识
+                name: this._enterInfo.name, // 
+                hand_num: this._enterInfo.hand_num, // 手数
+                change: this._enterInfo.change, // 金币变动值
+                type: this._enterInfo.type, // 类型
+                open: this._enterInfo.open, // 是否公开
             }
             LobbyControl.getInstance().reqRecordRound(info).then(
                 (res) => {
