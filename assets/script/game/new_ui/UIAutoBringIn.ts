@@ -71,7 +71,9 @@ export default class UIAutoBringIn extends UIBasePlus {
 
     wallet: any[] = null;
 
-    //显示状态，设置位置和适配
+    //显示状态，设置位置和适配 
+    //0:无钱包剩余和钱包选择和无滑动条
+    //1:
     show_status:number = 0;
 
 
@@ -144,7 +146,7 @@ export default class UIAutoBringIn extends UIBasePlus {
         this.GGToggle$auto.uncheck();
         this.GGToggle$account.uncheck();
         //根据显示状态设置位置和适配
-        //this.show_status
+        //this.show_status 
         if(param.fromMenu){
             if(this.wallet_mode == 0){
                 this.show_status = 1;
