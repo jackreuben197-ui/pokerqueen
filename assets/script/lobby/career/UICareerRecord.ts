@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 14:24:07
+ * @LastEditTime: 2023-02-07 16:02:35
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 
@@ -12,6 +12,8 @@ import TabNode from "../../common/tabNode";
 import { CareerRecordTabConfig } from "../../frame/config/tabConfig";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
+import { Web_Config_Multi_Language_Template } from "../../net/https/WebRequest";
+import LobbySession from "../../session/LobbySession";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import { LobbyControl } from "../control/LobbyControl";
 import recordItem from "./recordItem";
@@ -39,6 +41,8 @@ export default class UICareerRecord extends BaseFormPlus {
 
     @property(List)
     list: List = null;
+    @property(cc.Label)
+    lbl_13: cc.Label = null;
 
     @property(cc.Node)
     lbl_Node: cc.Node = null;
@@ -56,7 +60,7 @@ export default class UICareerRecord extends BaseFormPlus {
     protected lateLoad(): void {
         super.lateLoad();
     }
-    onShow(param?, fromUI?: cc.Node): void {
+    async onShow(param?, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
         this.tabNode.initData(CareerRecordTabConfig, this.titleNodeClick.bind(this), this);
         this.titleNode.children.forEach((item, index) => {
@@ -65,13 +69,12 @@ export default class UICareerRecord extends BaseFormPlus {
             this.bindClick(item, this.onClickTypeTabBtns, index);
         })
         this._coinIndex = param || 1
-        this.reqDataAgain();
+        // await LobbySession.APIConfig_Multi_Language_Template()
         this.onClickTypeTabBtns(0);
-        this.reqUpInfo(this._titleSelect, this._tabSelect)
     }
     titleNodeClick(customData) {
         this._tabSelect = customData
-        this.reqUpInfo(this._titleSelect, this._tabSelect)
+        this.reqUpInfo()
     }
 
     onClickTypeTabBtns(_index) {
@@ -82,21 +85,37 @@ export default class UICareerRecord extends BaseFormPlus {
         })
         this.mtt.active = this._titleSelect == 3
         this.Rectangle.active = !this.mtt.active
-        this.reqUpInfo(this._titleSelect, this._tabSelect)
+        this.reqUpInfo();
+        this.reqDataAgain()
     }
 
-    reqUpInfo(gameType, timeType) {
+    reqUpInfo() {
         let info = {
-            game_type: gameType + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
-            time_type: timeType + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+            game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
+            time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
             time_long: TimeHelper.Now,      //客户端时间戳
             filter_type: this._coinIndex
         }
-        // UIData_KrVdD5WqB=生涯
-        // UIData_TodayMoney=今日盈利
-        // UIData_WeekMoney=7日盈利
-        // UIData_MonthMoney=30日盈利
 
+        let str = 'UIData_TodayMoney'
+        switch (this._tabSelect + 1) {
+            case 1:
+                str = 'UIData_TodayMoney'
+                break;
+            case 2:
+                str = 'UIData_WeekMoney'
+                break;
+            case 3:
+                str = 'UIData_MonthMoney'
+                break;
+            case 4:
+                str = 'UIData_KrVdD5WqB'
+                break;
+
+            default:
+                break;
+        }
+        this.setText(this.lbl_13, str)
         LobbyControl.getInstance().getUserStatsInfo(info).then(
             (res) => {
                 this.refreshUpUI(res);
@@ -104,6 +123,7 @@ export default class UICareerRecord extends BaseFormPlus {
             (res) => {
             }
         )
+        this.reqDataAgain()
     }
 
     refreshUpUI(data) {
@@ -112,8 +132,7 @@ export default class UICareerRecord extends BaseFormPlus {
         if (this._titleSelect == 3) //mtt
         {
             for (let index = 0; index < this.mtt_lbl_Node.childrenCount; index++) {
-                const element = this.mtt_lbl_Node.children[index];
-                let lbl_1 = element.children[index].getComponent(cc.Label)
+                const lbl_1 = this.mtt_lbl_Node.children[index].getComponent(cc.Label)
                 switch (index) {
                     case 0:
                         lbl_1.string = mtt_room_data.play_times
@@ -143,13 +162,13 @@ export default class UICareerRecord extends BaseFormPlus {
                         str = room_data.total_game_cnt
                         break;
                     case 2:
-                        str = room_data.aveage_earn
+                        str = StringHelper.DivFloat(room_data.aveage_earn, 100, -1)
                         break;
                     case 3:
                         str = room_data.total_hand
                         break;
                     case 4:
-                        str = room_data.aveage_earn_hundred
+                        str = StringHelper.DivFloat(room_data.aveage_earn_hundred, 100, -1)
                         break;
                     case 5:
                         str = room_data.vpip + '%'
@@ -199,25 +218,40 @@ export default class UICareerRecord extends BaseFormPlus {
     }
     async dealData() {
         this._reqing = true
-
-
-        // await UIClubModel.mInstance.APIOrgMemberList(params);
-        // let _data: any = APIOrgMemberList.Response.data
-        let _data = { data: [1, 2, 34, 56], total: 5 }
-        this._reqing = false
-        if (!_data.data) {
-            _data.data = [];
+        let group_by = 1;
+        if (this._tabSelect == 3) {
+            group_by = 2;
         }
+        let info = {
+            group_by: group_by,      //1 room 2 mtt 3 mttroom
+            limit: 20,         //条目
+            offset: this._offset,        //开始下标。例子（offset=0，limit=10，0-9。）
+            game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
+            time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+            time_long: TimeHelper.Now,      //客户端时间戳
+            filter_type: this._coinIndex
+        }
+        LobbyControl.getInstance().getHistoryInfo(info).then(
+            (res: any) => {
+                let _data = res.data
+                this._reqing = false
+                if (!_data.records) {
+                    _data.records = [];
+                }
 
-        _data.data.forEach(element => {
-            this._list.push(element);
-        });  //分页的时候使用的
-        this._total = _data.total
+                _data.records.forEach(element => {
+                    this._list.push(element);
+                });  //分页的时候使用的
+                this._total = _data.total
 
-        this.list.numItems = this._list.length;
-        this._offset = this._list.length;
-        this._reqEnd = this._list.length == this._total;
-        this.lb_tip.active = this.list.numItems == 0
+                this.list.numItems = this._list.length;
+                this._offset = this._list.length;
+                this._reqEnd = this._list.length == this._total;
+                this.lb_tip.active = this.list.numItems == 0
+            },
+            (res) => {
+            }
+        )
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(recordItem);

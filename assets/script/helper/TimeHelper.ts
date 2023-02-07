@@ -3,7 +3,7 @@
  * @Date: 2022-09-05 15:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-08 16:00:47
+ * @LastEditTime: 2023-02-07 16:56:13
  * @FilePath: /pokerqueen/assets/script/helper/TimeHelper.ts
  */
 
@@ -86,6 +86,43 @@ export default class TimeHelper {
         }
         else if (pNum < 60) {
             return Math.ceil(pNum).toString() + '秒';
+        }
+        return "";
+    }
+    public static ShowRemainingSemicolon3(pNum) {//1小时3600秒      1天86400秒
+        let tseconds_str = ''
+        let tMinutes_str = ''
+
+        if (pNum >= 3600)//>1小时
+        {
+            let tHour = Math.floor(pNum / 3600);
+            let tMinutes = Math.floor(pNum % 3600 / 60);
+            let tseconds = Math.floor(pNum % 3600 % 60);
+
+            if (tseconds != 0) {
+                tseconds_str = tseconds.toString().padStart(2, '0') + (i18nMgr.isCN ? "秒" : 's')
+
+            }
+            if (tMinutes != 0) {
+                tMinutes_str = tMinutes.toString().padStart(2, '0') + (i18nMgr.isCN ? "分钟" : 'm')
+
+            }
+            return tHour.toString() + (i18nMgr.isCN ? "小时" : 'h') + tseconds_str + tMinutes_str
+        }
+        else if (pNum >= 60)//>1分钟
+        {
+            let tMinutes = Math.floor(pNum / 60);
+            let tseconds = Math.floor(pNum % 60);
+            if (tseconds != 0) {
+                tseconds_str = tseconds.toString().padStart(2, '0') + (i18nMgr.isCN ? "秒" : 's')
+
+            }
+
+            return tMinutes.toString() + (i18nMgr.isCN ? "分钟" : 'm') + tseconds
+
+        }
+        else if (pNum < 60) {
+            return Math.ceil(pNum).toString() + (i18nMgr.isCN ? "秒" : 's')
         }
         return "";
     }

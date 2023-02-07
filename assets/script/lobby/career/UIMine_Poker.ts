@@ -42,18 +42,18 @@ export default class UIMine_Poker extends BaseForm {
 
     _data = null;
 
-    item_poker:cc.Node = null;
-    item_preflop:cc.Node = null;
-    item_player:cc.Node = null;
-    panel_paipu_up:cc.Node = null;
-    panel_player_up:cc.Node = null;
-    panel_prefrop:cc.Node = null;
-    panel_item_preflop:cc.Node = null;
-    panel_item_flop:cc.Node = null;
-    panel_item_turn:cc.Node = null;
-    panel_item_river:cc.Node = null;
-    panel_paipu_down:cc.Node = null;
-    panel_player_down:cc.Node = null;
+    item_poker: cc.Node = null;
+    item_preflop: cc.Node = null;
+    item_player: cc.Node = null;
+    panel_paipu_up: cc.Node = null;
+    panel_player_up: cc.Node = null;
+    panel_prefrop: cc.Node = null;
+    panel_item_preflop: cc.Node = null;
+    panel_item_flop: cc.Node = null;
+    panel_item_turn: cc.Node = null;
+    panel_item_river: cc.Node = null;
+    panel_paipu_down: cc.Node = null;
+    panel_player_down: cc.Node = null;
 
     handcards = [];
     publicCards1 = [];
@@ -108,7 +108,7 @@ export default class UIMine_Poker extends BaseForm {
                 (res: any) => {
                     let isSC = false;
                     if (res.code == 0 && res.data.records != null && res.data.records.length > 0) {
-                        for (let i=0; i<res.data.records.length; i++) {
+                        for (let i = 0; i < res.data.records.length; i++) {
                             let t1 = param.info.info.id;
                             let t2 = res.data.records[i].id;
                             if (t1 == t2) {
@@ -184,7 +184,7 @@ export default class UIMine_Poker extends BaseForm {
         let info = {
 
         }
-        let match_id = data.info.id;
+        let match_id = data.id;
         LobbyControl.getInstance().reqHistoryReplay(match_id, info).then(
             (res) => {
                 this.refreshUI(res);
@@ -264,7 +264,7 @@ export default class UIMine_Poker extends BaseForm {
         let propLen = propPl.length;
         this.panel_item_preflop.removeAllChildren();
         for (let i = 0; i < propLen; i++) {
-            let clone_item : cc.Node = cc.instantiate(this.item_preflop);
+            let clone_item: cc.Node = cc.instantiate(this.item_preflop);
             clone_item.x = 0;
             clone_item.y = 0;
             this.updateOneRow(clone_item, propPl, i, false);
@@ -279,15 +279,15 @@ export default class UIMine_Poker extends BaseForm {
             let pl = ResponseData.s.procedure.flop.pl;
             let cardLen = card.length;
             let plLen = ResponseData.s.procedure.flop.pl.length;
-            for (let i=0; i<3; i++) {
+            for (let i = 0; i < 3; i++) {
                 let ImageCard = FlopInfoList.getChildByName("ImageCard" + i);
                 if (i < cardLen) {
                     ImageCard.active = true;
                     let sp = ImageCard.getComponent(cc.Sprite)
                     sp.spriteFrame = AssetContext.getAsset(
                         GameUtil.GetCardNameByNum(
-                            this.PublicCards[i]), 
-                            AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+                            this.PublicCards[i]),
+                        AssetFold.texture_SmallCard0) as cc.SpriteFrame;
                 } else {
                     ImageCard.active = false;
                 }
@@ -296,8 +296,8 @@ export default class UIMine_Poker extends BaseForm {
             ChipNumText.getComponent(cc.Label).string = StringHelper.GetLongString(pl[0].pot_out);
             let PlayerNumText = FlopInfoList.getChildByName("PlayerNumText");
             PlayerNumText.getComponent(cc.Label).string = plLen.toString();
-            for (let i=0; i<plLen; i++) {
-                let clone_item : cc.Node = cc.instantiate(this.item_preflop);
+            for (let i = 0; i < plLen; i++) {
+                let clone_item: cc.Node = cc.instantiate(this.item_preflop);
                 clone_item.x = 0;
                 clone_item.y = 0;
                 this.updateOneRow(clone_item, pl, i, true);
@@ -315,22 +315,22 @@ export default class UIMine_Poker extends BaseForm {
             let pl = ResponseData.s.procedure.turn.pl;
             let cardLen = card.length;
             let plLen = ResponseData.s.procedure.turn.pl.length;
-            for (let i=0; i<4; i++) {
+            for (let i = 0; i < 4; i++) {
                 let ImageCard = TurnInfoList.getChildByName("PublicCard" + i);
                 ImageCard.active = true;
                 let sp = ImageCard.getComponent(cc.Sprite)
                 sp.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(
-                        this.PublicCards[i]), 
-                        AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-              
+                        this.PublicCards[i]),
+                    AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+
             }
             let ChipNumText = TurnInfoList.getChildByName("ChipNumText");
             ChipNumText.getComponent(cc.Label).string = StringHelper.GetLongString(pl[0].pot_out);
             let PlayerNumText = TurnInfoList.getChildByName("PlayerNumText");
             PlayerNumText.getComponent(cc.Label).string = plLen.toString();
-            for (let i=0; i<plLen; i++) {
-                let clone_item : cc.Node = cc.instantiate(this.item_preflop);
+            for (let i = 0; i < plLen; i++) {
+                let clone_item: cc.Node = cc.instantiate(this.item_preflop);
                 clone_item.x = 0;
                 clone_item.y = 0;
                 this.panel_item_turn.addChild(clone_item);
@@ -348,22 +348,22 @@ export default class UIMine_Poker extends BaseForm {
             let pl = ResponseData.s.procedure.river.pl;
             let cardLen = card.length;
             let plLen = ResponseData.s.procedure.river.pl.length;
-            for (let i=0; i<5; i++) {
+            for (let i = 0; i < 5; i++) {
                 let ImageCard = RiverInfoList.getChildByName("PublicCard" + i);
                 ImageCard.active = true;
                 let sp = ImageCard.getComponent(cc.Sprite)
                 sp.spriteFrame = AssetContext.getAsset(
                     GameUtil.GetCardNameByNum(
-                        this.PublicCards[i]), 
-                        AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-               
+                        this.PublicCards[i]),
+                    AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+
             }
             let ChipNumText = RiverInfoList.getChildByName("ChipNumText");
             ChipNumText.getComponent(cc.Label).string = StringHelper.GetLongString(pl[0].pot_out);
             let PlayerNumText = RiverInfoList.getChildByName("PlayerNumText");
             PlayerNumText.getComponent(cc.Label).string = plLen.toString();
-            for (let i=0; i<plLen; i++) {
-                let clone_item : cc.Node = cc.instantiate(this.item_preflop);
+            for (let i = 0; i < plLen; i++) {
+                let clone_item: cc.Node = cc.instantiate(this.item_preflop);
                 clone_item.x = 0;
                 clone_item.y = 0;
                 this.panel_item_river.addChild(clone_item);
@@ -391,26 +391,20 @@ export default class UIMine_Poker extends BaseForm {
         }
 
         //判断是否有第二套牌，并赋值
-        if (ResponseData.s.procedure.river.scard != null && ResponseData.s.procedure.river.scard.length > 0)
-        {
+        if (ResponseData.s.procedure.river.scard != null && ResponseData.s.procedure.river.scard.length > 0) {
             this.SecondPublicCards = [0, 0, 0, 0, 0]
             this.HaveSecondCard = true;
 
-            if (ResponseData.s.procedure.river.scard.length < this.PublicCards.Length)
-            {
-                for (let i = 0; i < this.PublicCards.Length - ResponseData.s.procedure.river.scard.length; i++)
-                {
+            if (ResponseData.s.procedure.river.scard.length < this.PublicCards.Length) {
+                for (let i = 0; i < this.PublicCards.Length - ResponseData.s.procedure.river.scard.length; i++) {
                     this.SecondPublicCards[i] = this.PublicCards[i];
                 }
-                for (let i = 0; i < ResponseData.s.procedure.river.scard.length; i++)
-                {
+                for (let i = 0; i < ResponseData.s.procedure.river.scard.length; i++) {
                     this.SecondPublicCards[this.PublicCards.Length - ResponseData.s.procedure.river.scard.length + i] = this.PublicCards[i];
                 }
             }
-            else
-            {
-                for (let i = 0; i < ResponseData.s.procedure.river.scard.length; i++)
-                {
+            else {
+                for (let i = 0; i < ResponseData.s.procedure.river.scard.length; i++) {
                     this.SecondPublicCards[i] = ResponseData.s.procedure.river.scard[i];
                 }
             }
@@ -425,10 +419,10 @@ export default class UIMine_Poker extends BaseForm {
         list_poke1.removeAllChildren();
         list_poker2.removeAllChildren();
         for (let i = 0; i < cardLen; i++) {
-            let item_poker : cc.Node = cc.instantiate(this.item_poker);
+            let item_poker: cc.Node = cc.instantiate(this.item_poker);
             item_poker.x = 0;
             item_poker.y = 0;
-            let item_poker2 : cc.Node = cc.instantiate(this.item_poker);
+            let item_poker2: cc.Node = cc.instantiate(this.item_poker);
             item_poker2.x = 0;
             item_poker2.y = 0;
             list_poke1.addChild(item_poker);
@@ -447,7 +441,7 @@ export default class UIMine_Poker extends BaseForm {
         }
         let name = "";
         let tPl = this._data.s.table.pl;
-        for (let i=0; i<tPl.length; i++) {
+        for (let i = 0; i < tPl.length; i++) {
             if (tPl[i].sn == sn) {
                 name = tPl[i].name;
                 break;
@@ -532,8 +526,8 @@ export default class UIMine_Poker extends BaseForm {
     updatePlayerUI(responseData) {
         let plLen = responseData.s.table.pl.length;
         this.panel_player_up.removeAllChildren();
-        for (let i=0; i<plLen; i++) {
-            let clone_item : cc.Node = cc.instantiate(this.item_player);
+        for (let i = 0; i < plLen; i++) {
+            let clone_item: cc.Node = cc.instantiate(this.item_player);
             clone_item.x = 0;
             clone_item.y = 0;
             this.updateHandcards(responseData, clone_item, i);
@@ -541,8 +535,8 @@ export default class UIMine_Poker extends BaseForm {
             this.panel_player_up.addChild(clone_item);
         }
         this.panel_player_down.removeAllChildren();
-        for (let i=0; i<plLen; i++) {
-            let clone_item : cc.Node = cc.instantiate(this.item_player);
+        for (let i = 0; i < plLen; i++) {
+            let clone_item: cc.Node = cc.instantiate(this.item_player);
             clone_item.x = 0;
             clone_item.y = 0;
             this.updateHandcards(responseData, clone_item, (plLen - 1 - i));
@@ -582,7 +576,7 @@ export default class UIMine_Poker extends BaseForm {
             let cardLen = card.length;
             item_hand_public.removeAllChildren();
             for (let j = 0; j < cardLen; j++) {
-                let item_poker : cc.Node = cc.instantiate(this.item_poker);
+                let item_poker: cc.Node = cc.instantiate(this.item_poker);
                 item_poker.x = 0;
                 item_poker.y = 0;
                 item_hand_public.addChild(item_poker);
@@ -595,7 +589,7 @@ export default class UIMine_Poker extends BaseForm {
             item_public_up.removeAllChildren();
             item_public_down.removeAllChildren();
             for (let j = 0; j < publicCardLen; j++) {
-                let item_poker : cc.Node = cc.instantiate(this.item_poker);
+                let item_poker: cc.Node = cc.instantiate(this.item_poker);
                 item_poker.x = 0;
                 item_poker.y = 0;
                 item_public_up.addChild(item_poker);
@@ -606,7 +600,7 @@ export default class UIMine_Poker extends BaseForm {
                 this.udpateCardUI(item_poker, cardNum);
             }
             for (let j = 0; j < secondPublicCardLen; j++) {
-                let item_poker : cc.Node = cc.instantiate(this.item_poker);
+                let item_poker: cc.Node = cc.instantiate(this.item_poker);
                 item_poker.x = 0;
                 item_poker.y = 0;
                 item_public_down.addChild(item_poker);
@@ -627,7 +621,7 @@ export default class UIMine_Poker extends BaseForm {
             let total = cardLen + 1 + publicCardLen;
             item_hand_public.removeAllChildren();
             for (let j = 0; j < total; j++) {
-                let item_poker : cc.Node = cc.instantiate(this.item_poker);
+                let item_poker: cc.Node = cc.instantiate(this.item_poker);
                 item_poker.x = 0;
                 item_poker.y = 0;
                 item_hand_public.addChild(item_poker);
@@ -643,10 +637,10 @@ export default class UIMine_Poker extends BaseForm {
                 } else {
                     //公共牌
                     publicCards1.push(item_poker);
-                    cardNum = this.PublicCards[j-1-cardLen];
+                    cardNum = this.PublicCards[j - 1 - cardLen];
                     this.udpateCardUI(item_poker, cardNum);
                 }
-                 
+
                 // // 高亮牌
                 // let isExist = false;
                 // for (let ik=0; ik<maxCardIndex.length; ik++) {
@@ -663,7 +657,7 @@ export default class UIMine_Poker extends BaseForm {
             }
             this.updateMaxCardUI(result, handcards, publicCards1, publicCards2);
         }
-           
+
     }
 
     //更新高亮牌
@@ -671,62 +665,47 @@ export default class UIMine_Poker extends BaseForm {
         this.handcards = handcards;
         this.publicCards1 = publicCards1;
         this.publicCards2 = publicCards2;
-        if (this.HaveSecondCard)
-        {
+        if (this.HaveSecondCard) {
             //高亮牌显示
-            if (element.maxcard_idx2 != null && element.maxcard_idx2.length > 0)
-            {
+            if (element.maxcard_idx2 != null && element.maxcard_idx2.length > 0) {
                 //手牌置灰
-                for (let i = 0; i < this.handcards.length; i++)
-                {
+                for (let i = 0; i < this.handcards.length; i++) {
                     this.handcards[i].getChildByName("img").color = cc.color(127, 127, 127, 255);
                 }
                 //公共牌置灰
-                for (let i = 0; i < this.publicCards1.length; i++)
-                {
+                for (let i = 0; i < this.publicCards1.length; i++) {
                     this.publicCards1[i].getChildByName("img").color = cc.color(127, 127, 127, 255);
                 }
-                for (let i = 0; i < this.publicCards2.length; i++)
-                {
+                for (let i = 0; i < this.publicCards2.length; i++) {
                     this.publicCards2[i].getChildByName("img").color = cc.color(127, 127, 127, 255);
                 }
-                for (let i = 0; i < element.maxcard_idx2.length; i++)
-                {
-                    if (element.maxcard_idx2[i] >= 5)
-                    {
+                for (let i = 0; i < element.maxcard_idx2.length; i++) {
+                    if (element.maxcard_idx2[i] >= 5) {
                         this.handcards[element.maxcard_idx2[i] - 5].getChildByName("img").color = cc.color(255, 255, 255, 255);
                     }
-                    else
-                    {
+                    else {
                         this.publicCards1[element.maxcard_idx2[i]].getChildByName("img").color = cc.color(255, 255, 255, 255);
                         this.publicCards2[element.maxcard_idx2[i]].getChildByName("img").color = cc.color(255, 255, 255, 255);
                     }
                 }
             }
         }
-        else
-        {
+        else {
             //高亮牌显示
-            if (element.maxcard_idx != null && element.maxcard_idx.length > 0)
-            {
+            if (element.maxcard_idx != null && element.maxcard_idx.length > 0) {
                 //手牌置灰
-                for (let i = 0; i < this.handcards.length; i++)
-                {
+                for (let i = 0; i < this.handcards.length; i++) {
                     this.handcards[i].getChildByName("img").color = cc.color(127, 127, 127, 255);
                 }
                 //公共牌置灰
-                for (let i = 0; i < this.publicCards1.length; i++)
-                {
+                for (let i = 0; i < this.publicCards1.length; i++) {
                     this.publicCards1[i].getChildByName("img").color = cc.color(127, 127, 127, 255);
                 }
-                for (let i = 0; i < element.maxcard_idx.length; i++)
-                {
-                    if (element.maxcard_idx[i] >= 5)
-                    {
+                for (let i = 0; i < element.maxcard_idx.length; i++) {
+                    if (element.maxcard_idx[i] >= 5) {
                         this.handcards[element.maxcard_idx[i] - 5].getChildByName("img").color = cc.color(255, 255, 255, 255);
                     }
-                    else
-                    {
+                    else {
                         this.publicCards1[element.maxcard_idx[i]].getChildByName("img").color = cc.color(255, 255, 255, 255);
                     }
                 }

@@ -1407,10 +1407,12 @@
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
-    "_spriteFrame": null,
+    "_spriteFrame": {
+      "__uuid__": "143dbb2a-ca37-420d-9962-df30ff884fa3"
+    },
     "_type": 2,
-    "_segments": 94,
-    "_N$alphaThreshold": 0,
+    "_segments": 332,
+    "_N$alphaThreshold": 0.10000000000000014,
     "_N$inverted": false,
     "_id": ""
   },
@@ -1492,7 +1494,7 @@
     "node": {
       "__id__": 1
     },
-    "_enabled": true,
+    "_enabled": false,
     "_normalMaterial": null,
     "_grayMaterial": null,
     "duration": 0.1,
