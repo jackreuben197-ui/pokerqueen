@@ -515,11 +515,12 @@ export default class UIMine_Poker extends BaseForm {
         let lbl_score1 = this.panel_paipu_down.getChildByName("lbl_score").getComponent(cc.Label);
 
         let mPool = 0;//各底池
-        mPool = responseData.s.procedure.preflop.pl[len - 1].pot_out;
-        lbl_score.string = StringHelper.getStringDiv100(mPool);
+
+        mPool = responseData.s.procedure.preflop.pl[responseData.s.procedure.preflop.pl.length - 1].pot_out;//pot_out
+        lbl_score.string = StringHelper.GetLongString(mPool);
 
         lbl_playerNum1.string = len;
-        lbl_score1.string = StringHelper.getStringDiv100(mPool);
+        lbl_score1.string = StringHelper.GetLongString(mPool);
     }
 
     // 动态创建玩家 更新玩家数据
