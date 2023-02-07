@@ -3,7 +3,7 @@
  * @Date: 2023-02-03 16:57:42
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 17:38:25
+ * @LastEditTime: 2023-02-07 20:15:33
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIRecordHands.ts
  */
 // Learn TypeScript:
@@ -26,6 +26,9 @@ const { ccclass, property, menu } = cc._decorator;
 export default class UIRecordHands extends BaseFormPlus {
     @property(cc.Node)
     lb_tip: cc.Node = null;
+    @property(cc.Label)
+    hands: cc.Label = null;
+
     @property(List)
     list: List = null;
 
@@ -73,13 +76,17 @@ export default class UIRecordHands extends BaseFormPlus {
             _data = await LobbyControl.getInstance().getRecordHandInfo(info)
         }
         else {
-
+            let info = {
+                limit: 20,
+                offset: this._offset,
+            }
+            _data = await LobbyControl.getInstance().reqRoundList(info)
         }
         this._reqing = false
         if (!_data?.data?.records) {
             _data.data.records = [];
         }
-        str.replace(`{0}`, _data.data.records.length);
+        this.hands.string = str.replace('{0}', _data.data.records.length);
 
         _data.data.records.forEach(element => {
             this._list.push(element);

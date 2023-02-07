@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 16:02:35
+ * @LastEditTime: 2023-02-07 20:34:46
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 
@@ -86,7 +86,6 @@ export default class UICareerRecord extends BaseFormPlus {
         this.mtt.active = this._titleSelect == 3
         this.Rectangle.active = !this.mtt.active
         this.reqUpInfo();
-        this.reqDataAgain()
     }
 
     reqUpInfo() {
@@ -219,7 +218,7 @@ export default class UICareerRecord extends BaseFormPlus {
     async dealData() {
         this._reqing = true
         let group_by = 1;
-        if (this._tabSelect == 3) {
+        if (this._titleSelect == 3) {
             group_by = 2;
         }
         let info = {

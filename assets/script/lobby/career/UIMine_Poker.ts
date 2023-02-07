@@ -109,7 +109,7 @@ export default class UIMine_Poker extends BaseForm {
                     let isSC = false;
                     if (res.code == 0 && res.data.records != null && res.data.records.length > 0) {
                         for (let i = 0; i < res.data.records.length; i++) {
-                            let t1 = param.info.info.id;
+                            let t1 = param.info.id;
                             let t2 = res.data.records[i].id;
                             if (t1 == t2) {
                                 isSC = true;

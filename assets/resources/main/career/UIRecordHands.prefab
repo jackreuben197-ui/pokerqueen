@@ -282,7 +282,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "id",
+    "_name": "hands",
     "_objFlags": 0,
     "_parent": {
       "__id__": 5
@@ -1399,6 +1399,9 @@
     "_enabled": true,
     "lb_tip": {
       "__id__": 11
+    },
+    "hands": {
+      "__id__": 7
     },
     "list": {
       "__id__": 29
