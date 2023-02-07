@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-26 20:21:40
+ * @LastEditTime: 2023-02-07 14:31:14
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght1.ts
  */
 
@@ -29,8 +29,9 @@ export default class slidewidght1 extends cc.Component {
     _big = 0;
     _offNum = 0; //每隔数值
 
-    start() {
-
+    onLoad() {
+        this.selectNum = this.node.getChildByName('selectNum')
+        this.selectNum1 = this.node.getChildByName('selectNum1')
         this.selectNum.on(cc.Node.EventType.TOUCH_START, this.drogTouchStart, this);
         this.selectNum.on(cc.Node.EventType.TOUCH_MOVE, this.drogTouchMove, this);
         this.selectNum.on(cc.Node.EventType.TOUCH_END, this.drogTouchEnd, this);
@@ -46,8 +47,6 @@ export default class slidewidght1 extends cc.Component {
         this.nomalItem = this.itemNode.getChildByName('nomalItem')
         this.nomalItem.width = 5;
         this.nomalItem.height = 5;
-        this.selectNum = this.node.getChildByName('selectNum')
-        this.selectNum1 = this.node.getChildByName('selectNum1')
         this._big = big;
         this._small = small;
         let _leng = this._big / this._small
