@@ -242,10 +242,10 @@ export default class UIMine_Poker extends BaseForm {
         }
 
         let leftChips = pl[i].c;
-        let str = (leftChips / 100).toString();
-        lbl_3.getComponent(cc.Label).string = pl[i].act_amt;
+        // let str = (leftChips / 100).toString();
+        lbl_3.getComponent(cc.Label).string = StringHelper.GetLongString(pl[i].act_amt);
         let pStr = isShowP ? "P:" : "";
-        lbl_score.getComponent(cc.Label).string = pStr + this.tryParse(str);
+        lbl_score.getComponent(cc.Label).string = pStr + StringHelper.GetLongString(leftChips);
 
         lbl_name3.getComponent(cc.Label).string = this.getNameBySn(pl[i].sn);
 
@@ -758,12 +758,15 @@ export default class UIMine_Poker extends BaseForm {
             clone_item.getChildByName("lbl_public").active = false;
             clone_item.getChildByName("lbl_public_up").active = true;
             clone_item.getChildByName("lbl_public_down").active = true;
+            this.setTextColor(clone_item.getChildByName("lbl_public_up").getComponent(cc.Label), win1 < 0 ? '#7187FF' : '#B0FFAE')
             clone_item.getChildByName("lbl_public_up").getComponent(cc.Label).string = StringHelper.GetLongString(win1);
+            this.setTextColor(clone_item.getChildByName("lbl_public_down").getComponent(cc.Label), win2 < 0 ? '#7187FF' : '#B0FFAE')
             clone_item.getChildByName("lbl_public_down").getComponent(cc.Label).string = StringHelper.GetLongString(win2);
         } else {
             clone_item.getChildByName("lbl_public").active = true;
             clone_item.getChildByName("lbl_public_up").active = false;
             clone_item.getChildByName("lbl_public_down").active = false;
+            this.setTextColor(clone_item.getChildByName("lbl_public").getComponent(cc.Label), win1 < 0 ? '#7187FF' : '#B0FFAE')
             clone_item.getChildByName("lbl_public").getComponent(cc.Label).string = StringHelper.GetLongString(win1);
         }
     }
