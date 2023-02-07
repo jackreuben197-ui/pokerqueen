@@ -2926,6 +2926,10 @@ export class API_CLUB_USER_WALLET extends WebCommon {
 export class APIUserDiamondsWallet extends WebCommon {
     static API: string = "/api/user/user_diamonds_wallet";
 }
+export class api_stats_user_stats_all extends WebCommon {
+    static API: string = "/api/stats/user_stats/all";
+}
+
 
 
 /**

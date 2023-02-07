@@ -3,14 +3,18 @@
  * @Date: 2023-02-02 11:32:22
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-03 17:14:15
+ * @LastEditTime: 2023-02-07 12:39:47
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/career/UICareer.ts
  */
 
 import { UIDefine } from "../../../define/UIDefine";
 import { careerConfig } from "../../../frame/data/rate/RateConfig";
+import { StringHelper } from "../../../helper/StringHelper";
+import TimeHelper from "../../../helper/TimeHelper";
+import { api_stats_user_stats_all } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
+import { UICareerModel } from "../../career/UICareerModel";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -54,29 +58,72 @@ export default class UICareer extends UIBase {
     selectSort(data, index) {
         this._selectIndex = index;
         this.setText(this.dropNode_lbl, data.desc);
+        this.initMiddleData();
     }
 
-    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+    onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIMine_VIP_dataAll"
         this.setText(this.comFormTitle, title)
         this.setText(this.dropNode_lbl, careerConfig[this._selectIndex].desc);
+        this.initMiddleData()
     }
-    initMiddleData() {
-        this.lbl_number_1.string = ''
-        this.lbl_number_2.string = ''
-        this.lbl_number_3.string = ''
-        this.lbl_number_4.string = ''
-        this.lbl_profit_1.string = ''
-        this.lbl_profit_2.string = ''
-        this.lbl_profit_3.string = ''
-        this.lbl_profit_4.string = ''
+    async initMiddleData() {
+        let parm = {
+            "game_type": 0,
+            "time_type": 0,
+            "time_long": TimeHelper.Now,
+            filter_type: this._selectIndex + 1
+        }
+        await UICareerModel.mInstance.api_stats_user_stats_all(parm);
+        let _data = api_stats_user_stats_all.Response.data
+        let room_data_total = _data?.room_data_total
+        if (!room_data_total) return
+
+        this.lbl_number_1.string = room_data_total?.one_day?.total_game_cnt || 0
+        this.lbl_number_2.string = room_data_total?.week_day?.total_game_cnt || 0
+        this.lbl_number_3.string = room_data_total?.mon_day?.total_game_cnt || 0
+        this.lbl_number_4.string = room_data_total?.all_day?.total_game_cnt || 0
+
+
+
+        this.lbl_profit_1.string = (room_data_total?.one_day?.total_earn < 0 ? '' : '+') + StringHelper.GetLongString(room_data_total?.one_day?.total_earn || 0)
+        this.setTextColor(this.lbl_profit_1, room_data_total?.one_day?.total_earn < 0 ? '#FF7C7C' : '#B0FFAE')
+
+        this.lbl_profit_2.string = (room_data_total?.week_day?.total_earn < 0 ? '' : '+') + StringHelper.GetLongString(room_data_total?.week_day?.total_earn || 0)
+        this.setTextColor(this.lbl_profit_2, room_data_total?.week_day?.total_earn < 0 ? '#FF7C7C' : '#B0FFAE')
+
+
+        this.lbl_profit_3.string = (room_data_total?.mon_day?.total_earn < 0 ? '' : '+') + StringHelper.GetLongString(room_data_total?.mon_day?.total_earn || 0)
+        this.setTextColor(this.lbl_profit_3, room_data_total?.mon_day?.total_earn < 0 ? '#FF7C7C' : '#B0FFAE')
+
+        this.lbl_profit_4.string = (room_data_total?.all_day?.total_earn < 0 ? '' : '+') + StringHelper.GetLongString(room_data_total?.all_day?.total_earn || 0)
+        this.setTextColor(this.lbl_profit_4, room_data_total?.all_day?.total_earn < 0 ? '#FF7C7C' : '#B0FFAE')
+        this.initScrow(_data.mtt_room_data)
     }
-    initScrow() {
+    initScrow(mtt_room_data) {
         for (let index = 0; index < this.contentNode.childrenCount; index++) {
             const element = this.contentNode.children[index];
             let lbl_1 = element.getChildByName('lbl_1').getComponent(cc.Label)
-            lbl_1.string = ''
+            switch (index) {
+                case 0:
+                    lbl_1.string = mtt_room_data.play_times
+                    break;
+                case 1:
+                    lbl_1.string = mtt_room_data.win_times
+                    break;
+                case 2:
+                    lbl_1.string = mtt_room_data.frist_times
+                    break;
+                case 3:
+                    lbl_1.string = mtt_room_data.second_times
+                    break;
+                case 4:
+                    lbl_1.string = mtt_room_data.third_times
+                    break;
+                default:
+                    break;
+            }
         }
 
     }

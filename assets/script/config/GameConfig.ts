@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-29 19:59:59
+ * @LastEditTime: 2023-02-07 11:19:30
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -21,12 +21,13 @@ export class GameConfig {
     static Web_Host_Test1 = "test1.awanptest.com";
     static Web_Host_Dev1 = "dev1.awanptest.com";
     static Web_Host_Dev = "dev.awanptest.com";
+    static Web_Host_Test2 = "test2.awanptest.com";
     //0: http://dev.awanptest.com 
     //1: http://test1.awanptest.com  
     //2: http://dev1.awanptest.com 
     //3: https://test1.awanptest.com  
     //4: https://dev1.awanptest.com 
-    static BuildType: number = 4;
+    static BuildType: number = 5;
     //版本号
     static Version: string = "20221225_1700";
 

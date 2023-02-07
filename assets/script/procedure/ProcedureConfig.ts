@@ -89,6 +89,13 @@ export default class ProcedureConfig extends ProcedureBase {
                     WSS: `wss://${GameConfig.Web_Host_Dev1}/api/channel/`
                 };
                 break;
+            case 5:
+                GameConfig.Network = {
+                    WebHost: `https://${GameConfig.Web_Host_Test2}`,
+                    WSS: `wss://${GameConfig.Web_Host_Test2}/api/channel/`
+                };
+                break;
+
         }
 
         // let keys =
