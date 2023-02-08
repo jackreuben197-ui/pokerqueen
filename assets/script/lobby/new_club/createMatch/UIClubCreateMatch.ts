@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-08 13:06:49
+ * @LastEditTime: 2023-02-08 18:37:26
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -326,7 +326,7 @@ export default class UIClubCreateMatch extends BaseForm {
             cc.find(`ToggleContainer/toggle${this._yxbzNum}`, this.yxbz).getComponent(cc.Toggle).isChecked = true;
 
         }
-        if (this._selectTitle == 1 || ClubCache.joinCreateMatchType == 1) {
+        if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
             this.drsq.active = true
         } else {
             this.drsq.active = false
@@ -473,6 +473,12 @@ export default class UIClubCreateMatch extends BaseForm {
             this.clubIdNode.active = this._selectTitle == TITALTYPE.MODEL
             this.titleNode.active = ClubCache.tribe_name ? true : false;
         }
+        if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
+            this.drsq.active = true
+        } else {
+            this.drsq.active = false
+        }
+
     }
     initSelect() {
         cc.find('btn_switch/open', this.yckp).active = this._yckpState;
