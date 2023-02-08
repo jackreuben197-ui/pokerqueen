@@ -2929,6 +2929,9 @@ export class APIUserDiamondsWallet extends WebCommon {
 export class api_stats_user_stats_all extends WebCommon {
     static API: string = "/api/stats/user_stats/all";
 }
+export class api_roomcenter_history_group extends WebCommon {
+    static API: string = "/api/roomcenter/history/group";
+}
 
 
 

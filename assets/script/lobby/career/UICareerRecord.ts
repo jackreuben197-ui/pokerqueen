@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 20:34:46
+ * @LastEditTime: 2023-02-08 10:20:37
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 
@@ -17,6 +17,7 @@ import LobbySession from "../../session/LobbySession";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import { LobbyControl } from "../control/LobbyControl";
 import recordItem from "./recordItem";
+import { UICareerModel } from "./UICareerModel";
 
 
 const { ccclass, property, menu } = cc._decorator;
@@ -218,39 +219,44 @@ export default class UICareerRecord extends BaseFormPlus {
     async dealData() {
         this._reqing = true
         let group_by = 1;
+        let _data = null;
         if (this._titleSelect == 3) {
             group_by = 2;
-        }
-        let info = {
-            group_by: group_by,      //1 room 2 mtt 3 mttroom
-            limit: 20,         //条目
-            offset: this._offset,        //开始下标。例子（offset=0，limit=10，0-9。）
-            game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
-            time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
-            time_long: TimeHelper.Now,      //客户端时间戳
-            filter_type: this._coinIndex
-        }
-        LobbyControl.getInstance().getHistoryInfo(info).then(
-            (res: any) => {
-                let _data = res.data
-                this._reqing = false
-                if (!_data.records) {
-                    _data.records = [];
-                }
-
-                _data.records.forEach(element => {
-                    this._list.push(element);
-                });  //分页的时候使用的
-                this._total = _data.total
-
-                this.list.numItems = this._list.length;
-                this._offset = this._list.length;
-                this._reqEnd = this._list.length == this._total;
-                this.lb_tip.active = this.list.numItems == 0
-            },
-            (res) => {
+            let info = {
+                group_by: group_by,      //1 room 2 mtt 3 mttroom
+                limit: 20,         //条目
+                offset: this._offset,        //开始下标。例子（offset=0，limit=10，0-9。）
+                filter_type: this._coinIndex
             }
-        )
+            _data = await UICareerModel.mInstance.api_roomcenter_history_group(info)
+
+        } else {
+            group_by = 1;
+            let info = {
+                group_by: group_by,      //1 room 2 mtt 3 mttroom
+                limit: 20,         //条目
+                offset: this._offset,        //开始下标。例子（offset=0，limit=10，0-9。）
+                game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
+                time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+                time_long: TimeHelper.Now,      //客户端时间戳
+                filter_type: this._coinIndex
+            }
+            _data = await LobbyControl.getInstance().getHistoryInfo(info)
+        }
+        this._reqing = false
+        if (!_data?.data.records) {
+            _data.data.records = [];
+        }
+
+        _data.data.records.forEach(element => {
+            this._list.push(element);
+        });  //分页的时候使用的
+        this._total = _data.data.total
+
+        this.list.numItems = this._list.length;
+        this._offset = this._list.length;
+        this._reqEnd = this._list.length == this._total;
+        this.lb_tip.active = this.list.numItems == 0
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(recordItem);

@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:39:19
+ * @LastEditTime: 2023-02-08 13:06:49
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -261,7 +261,7 @@ export default class UIClubCreateMatch extends BaseForm {
             this._selectTitle = 1
         }
 
-        this.zxblbs['levelData'] = { min: 1, total: 4, level: room_config.retain_min_rate }
+        this.zxblbs['levelData'] = { min: 1, total: 4, level: room_config.retain_min_rate / 100 }
         this.zwrs['levelData'] = { min: 2, total: 9, level: room_config.seat_count }
         this.zdks['levelData'] = { min: 2, total: 9, level: room_config.autostart_min_players }
         this.Straddle['levelData'] = { min: 0, total: 6, level: room_config.straddle_max }
@@ -289,7 +289,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.calculateIndex('dxm', room_config.sb / 100)
         //前注
         this.itemData.qwsz = this.qzshData[room_config.sb / 100]
-        this.calculateIndex('qwsz', room_config.ante)
+        this.calculateIndex('qwsz', room_config.ante / 100)
 
         //服务费比例
         this.calculateIndex('fwfbl', room_config.fee_permillage)
@@ -298,10 +298,10 @@ export default class UIClubCreateMatch extends BaseForm {
         this.shareClubIdEd.string = room_config.share_clubs
 
 
-        let small = room_config.sb * 20;
+        let small = room_config.sb / 100 * 20;
 
-        this.itemDataIndex.jfpbs = room_config.min_rate / small - 1
-        this.itemDataIndex.jfpbs1 = room_config.max_rate / small - 1
+        this.itemDataIndex.jfpbs = room_config.min_rate / 100 / small - 1
+        this.itemDataIndex.jfpbs1 = room_config.max_rate / 100 / small - 1
 
         ClubCache.CreateGameType = room_config.game_play_type
     }
@@ -398,6 +398,7 @@ export default class UIClubCreateMatch extends BaseForm {
         let _data: any = this.qzshData[num]
         this.itemData.qwsz = _data
         let qz: any = cc.find('item/Rectangle', this.qz).getComponent('slidewidght');
+        qz._targetDe = this;
         qz.initUi(this.itemData.qwsz, 0)
     }
 
@@ -639,11 +640,13 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.bettype_aof_on = this._aofState ? 1 : 0
         room_config.ante = Number(this.qz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 100 //前注筹码,必填
         room_config.sb = Number(this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 100 //小盲注,必填
+        room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100;
+        room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100;
+        room_config.retain_min_rate = this.zxblbs['levelData'].level * 100;//最小倍率 最小保留记分牌倍数
+
         room_config.op_duration = this._sksjNum;
         //功能为实现
 
-        room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string);
-        room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string);;
         room_config.autostart_min_players = this.zdks['levelData'].level
         // room_config.min_players = this.zdks['levelData'].level
         room_config.straddle_max = this.Straddle['levelData'].level;
@@ -654,7 +657,6 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.limit_gps = this._gpsState
         room_config.seat_count = this.zwrs['levelData'].level;
         room_config.play_duration = Number(this.pjsc.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 3600    //房间有效时长 秒,必填
-        room_config.retain_min_rate = this.zxblbs['levelData'].level;//最小倍率 最小保留记分牌倍数
         // room_config.tribe_id = ClubCache.tribe_id;
 
         if (this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == '不限') {

@@ -3,7 +3,7 @@
  * @Date: 2022-09-05 15:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 16:56:13
+ * @LastEditTime: 2023-02-08 10:48:03
  * @FilePath: /pokerqueen/assets/script/helper/TimeHelper.ts
  */
 
@@ -22,7 +22,7 @@ export default class TimeHelper {
     public static get NowS() {
         return (new Date().getTime() / 1000) ^ 0;
     }
-    public static convertUTCTimeToLocalTime(UTCDateString, separated = '-', isNeedMin = true) {
+    public static convertUTCTimeToLocalTime(UTCDateString, separated = '-', isNeedYear = true, isNeedMin = true) {
         let date2 = new Date(UTCDateString);     //这步是关键
         let year = date2.getFullYear();
         let formatFunc = (str) => {    //格式化显示
@@ -35,7 +35,11 @@ export default class TimeHelper {
         // hour = hour >= 12 ? hour - 12 : hour;
         hour = formatFunc(hour);
         let min = formatFunc(date2.getMinutes());
-        let dateStr = year + separated + mon + separated + day
+
+        let dateStr = mon + separated + day
+        if (isNeedYear) {
+            dateStr = year + separated + mon + separated + day
+        }
         if (isNeedMin) {
             dateStr = dateStr + ' ' + hour + ':' + min;
         }

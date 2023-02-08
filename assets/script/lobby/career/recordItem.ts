@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 19:04:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 17:57:16
+ * @LastEditTime: 2023-02-08 10:46:52
  * @FilePath: /pokerqueen/assets/script/lobby/career/recordItem.ts
  */
 // Learn TypeScript:
@@ -60,22 +60,22 @@ export default class recordItem extends UIBase {
         this._data = data;
         this.lbl_node.active = false;
         this.mtt_lbl_node.active = false
-        if (this._data.game_type_name == 'MTT') {
+        if (!this._data.game_type_name) {
             this.mtt_lbl_node.active = true
-            this.setText(this.mtt_lbl_1, StringHelper.LengthNick(GC.data.languageTemp.temp.getName(this._data.Name)))
-            this.mtt_lbl_11.string = 'ID:' + this._data.RoomID
-            this.setText(this.mtt_lbl_44, TimeHelper.convertUTCTimeToLocalTime(this._data.end_time))
+            this.setText(this.mtt_lbl_1, GC.data.languageTemp.temp.getName(this._data.Name))
+            this.mtt_lbl_11.string = 'ID:' + this._data.MatchID
+            this.setText(this.mtt_lbl_44, TimeHelper.convertUTCTimeToLocalTime(this._data.EndTime, '/', false))
         } else {
             this.lbl_node.active = true;
             this.setText(this.lbl_1, StringHelper.LengthNick(GC.data.languageTemp.temp.getName(this._data.Name)))
             this.lbl_11.string = 'ID:' + this._data.RoomID
             this.setText(this.lbl_22, this._data.hand_num)
             this.setText(this.lbl_33, this._data.blinds)
-            this.setText(this.lbl_44, TimeHelper.convertUTCTimeToLocalTime(this._data.end_time))
+            this.setText(this.lbl_44, TimeHelper.convertUTCTimeToLocalTime(this._data.end_time, '/', false))
         }
         this.lbl_55.string = (this._data.Change < 0 ? '' : '+') + StringHelper.GetLongString(this._data.Change)
         this.setTextColor(this.lbl_55, this._data.Change < 0 ? '#FF7C7C' : '#B0FFAE')
-        this.setText(this.gameType, this._data.game_type_name);
+        this.setText(this.gameType, this._data.game_type_name || 'MTT');
         this.setGameType();
     }
     itemClick() {
