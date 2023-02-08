@@ -11,18 +11,12 @@ import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
+import { AddClipsData } from "./UIBringIn";
 import UIClubWalletList from "./UIClubWalletList";
 
 const { ccclass, menu } = cc._decorator;
 
-export type AddClipsData = {
-    bigBlind: number,// 大盲
-    smallBlind: number, // 小盲
-    currentMinRate: number, // 当前最小带入倍数
-    currentMaxRate: number, // 当前最大带入倍数
-    //totalCoin: number, // 总金豆
-    tableChips: number, // 玩家剩余记分牌
-}
+
 
 @ccclass
 @menu('脚本分组/game/new_ui/UIAutoBringIn')
@@ -86,7 +80,7 @@ export default class UIAutoBringIn extends UIBasePlus {
     onShow(param: { data: AddClipsData, fromMenu: boolean }): void {
         super.onShow(param);
         let data: AddClipsData = param.data;
-        this.$Part3.active = !param.fromMenu;
+        //this.$Part3.active = !param.fromMenu;
         //this.animateDialog();
         //this.Total_obj.active = (GameCache.Instance.origin_type != 4);
         this.ownCoin = 0;
@@ -147,14 +141,10 @@ export default class UIAutoBringIn extends UIBasePlus {
         this.GGToggle$account.uncheck();
         //根据显示状态设置位置和适配
         //this.show_status 
-        if(param.fromMenu){
-            if(this.wallet_mode == 0){
-                this.show_status = 1;
-            }else{
-                this.show_status = 2;
-            }
-        }
-
+        this.$Part1.active = !(param.fromMenu || this.wallet_mode == 0);
+        this.$Part4.active = !(param.fromMenu || this.wallet_mode == 0);
+        this.$Part3.active = !param.fromMenu;
+        this.GGToggle$account.node.active = !(this.wallet_mode == 0);
     }
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$confirm, this.onClickConfirm);

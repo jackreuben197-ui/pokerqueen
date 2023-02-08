@@ -64,7 +64,10 @@ proto.holdem.pb.ClientMessageAddOn.toObject = function(includeInstance, msg) {
     room: (f = msg.getRoom()) && protobuf_holdem_define_pb.Room.toObject(includeInstance, f),
     useProp: jspb.Message.getFieldWithDefault(msg, 2, false),
     ratio: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    mode: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    mode: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    usedPropId: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    propType: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    useFree: jspb.Message.getFieldWithDefault(msg, 7, false)
   };
 
   if (includeInstance) {
@@ -117,6 +120,18 @@ proto.holdem.pb.ClientMessageAddOn.deserializeBinaryFromReader = function(msg, r
     case 4:
       var value = /** @type {!proto.holdem.pb.Def.AddOnMode} */ (reader.readEnum());
       msg.setMode(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setUsedPropId(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPropType(value);
+      break;
+    case 7:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setUseFree(value);
       break;
     default:
       reader.skipField();
@@ -173,6 +188,27 @@ proto.holdem.pb.ClientMessageAddOn.serializeBinaryToWriter = function(message, w
   if (f !== 0.0) {
     writer.writeEnum(
       4,
+      f
+    );
+  }
+  f = message.getUsedPropId();
+  if (f !== 0) {
+    writer.writeUint64(
+      5,
+      f
+    );
+  }
+  f = message.getPropType();
+  if (f !== 0) {
+    writer.writeInt32(
+      6,
+      f
+    );
+  }
+  f = message.getUseFree();
+  if (f) {
+    writer.writeBool(
+      7,
       f
     );
   }
@@ -253,6 +289,53 @@ proto.holdem.pb.ClientMessageAddOn.prototype.getMode = function() {
 /** @param {!proto.holdem.pb.Def.AddOnMode} value */
 proto.holdem.pb.ClientMessageAddOn.prototype.setMode = function(value) {
   jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional uint64 used_prop_id = 5;
+ * @return {number}
+ */
+proto.holdem.pb.ClientMessageAddOn.prototype.getUsedPropId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ClientMessageAddOn.prototype.setUsedPropId = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * optional int32 prop_type = 6;
+ * @return {number}
+ */
+proto.holdem.pb.ClientMessageAddOn.prototype.getPropType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ClientMessageAddOn.prototype.setPropType = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+/**
+ * optional bool use_free = 7;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.ClientMessageAddOn.prototype.getUseFree = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 7, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.ClientMessageAddOn.prototype.setUseFree = function(value) {
+  jspb.Message.setField(this, 7, value);
 };
 
 

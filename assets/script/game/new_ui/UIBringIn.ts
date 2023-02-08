@@ -18,7 +18,7 @@ export type AddClipsData = {
     smallBlind: number, // 小盲
     currentMinRate: number, // 当前最小带入倍数
     currentMaxRate: number, // 当前最大带入倍数
-    //totalCoin: number, // 总金豆
+    totalCoin?: number, // 总金豆
     tableChips: number, // 玩家剩余记分牌
 }
 
@@ -52,7 +52,16 @@ export default class UIBringIn extends UIBasePlus {
     $cancel: cc.Node = null;
     ///////////////////////////
     _param: AddClipsData = null;
-    startRate: number = 0;//开始比率
+    //startRate: number = 0;//开始比率
+
+
+    //滑动条 数据对象
+    slider_obj = {
+        min:0,
+        max:0,
+        step:0
+    };
+  
     sendCoin: number = 0;//发送货币值
     ownCoin: number = 0;//拥有的货币值
     gold_type: number = 0;//货币类型
@@ -105,20 +114,16 @@ export default class UIBringIn extends UIBasePlus {
             this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
             //this.textNeedCoin.string = `${data.bigBlind}`;//Require
             //this.textTotalCoin.string = `${data.totalCoin / 100}`;//Balance
-            //当前最大带入
-            let currMaxBring = data.currentMaxRate * data.bigBlind - data.tableChips;
-            let maxRate = currMaxBring / data.bigBlind ^ 0;
-            //边界
-            if (maxRate > data.currentMaxRate) {
-                maxRate = data.currentMaxRate;
-            }
-            if (maxRate < data.currentMinRate) {
-                maxRate = data.currentMinRate;
-            }
-            let min = data.currentMinRate / 100 ^ 0;
-            let max = maxRate / 100 ^ 0;
-            this.startRate = min;
-            this.GGSlider$slider.SetMinMax(min, max);
+            //最大带入值
+            let maxBring = data.currentMaxRate * data.bigBlind - data.tableChips;
+            //data.currentMaxRate / 10;
+            let max = maxBring / data.bigBlind /10;
+            let min = data.currentMinRate / 10;
+            max = Math.max(min,max);
+            this.slider_obj.min = min;
+            this.slider_obj.max = max;
+            this.slider_obj.step = Math.round(data.bigBlind/10);
+            this.GGSlider$slider.setMinMaxAbs(this.slider_obj);
             this.GGSlider$slider.onShow({ index: 0 });
         }
     }
@@ -133,7 +138,9 @@ export default class UIBringIn extends UIBasePlus {
 
     onSliderChange(rate: number) {
 
-        this.sendCoin = (this.startRate + rate) * this._param.bigBlind;
+        this.sendCoin = this.slider_obj.min + this.slider_obj.step * rate;
+
+        this.sendCoin = Math.min(this.sendCoin,this.slider_obj.max);
 
         this.cc_Label$value.string = `${this.sendCoin}`;
 
@@ -212,8 +219,7 @@ export default class UIBringIn extends UIBasePlus {
                 return;
             }
         }
-
-        GameCache.Instance.CurGame.AddChips(this.sendCoin * 100);
+        GameCache.Instance.CurGame.AddChips(this.sendCoin*100);
         this.hideUI();        
     }
     //取消

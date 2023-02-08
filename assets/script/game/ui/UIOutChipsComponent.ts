@@ -6,12 +6,13 @@ import { StringHelper } from "../../helper/StringHelper";
 import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
+import { OutClipsData } from "../new_ui/UIBringOut";
 
 
-export type OutClipsData = {
-    currentMinRate: number,// 当前最小倍数
-    tableChips: number// 玩家剩余记分牌
-}
+// export type OutClipsData = {
+//     currentMinRate: number,// 当前最小倍数
+//     tableChips: number// 玩家剩余记分牌
+// }
 
 const { ccclass } = cc._decorator;
 

@@ -373,9 +373,9 @@ export namespace RoomInfo {
   }
 
   export interface RetainTypeMap {
-    RT_DISABLE: 0;  //不支持
-    RT_AUTO: 1;     //自动
-    RT_MANUAL: 2;   //手动
+    RT_DISABLE: 0;
+    RT_AUTO: 1;
+    RT_MANUAL: 2;
   }
 
   export const RetainType: RetainTypeMap;
@@ -1089,6 +1089,9 @@ export class Player extends jspb.Message {
   getVip(): number;
   setVip(value: number): void;
 
+  getKeepSeatDeadline(): number;
+  setKeepSeatDeadline(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Player.AsObject;
   static toObject(includeInstance: boolean, msg: Player): Player.AsObject;
@@ -1122,6 +1125,7 @@ export namespace Player {
     hunterKillAwardOther: number,
     hunterHeadValue: number,
     vip: number,
+    keepSeatDeadline: number,
   }
 }
 

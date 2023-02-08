@@ -6267,7 +6267,8 @@ proto.holdem.pb.Player.toObject = function(includeInstance, msg) {
     hunterKillAward: jspb.Message.getFieldWithDefault(msg, 18, 0),
     hunterKillAwardOther: jspb.Message.getFieldWithDefault(msg, 19, 0),
     hunterHeadValue: jspb.Message.getFieldWithDefault(msg, 20, 0),
-    vip: jspb.Message.getFieldWithDefault(msg, 21, 0)
+    vip: jspb.Message.getFieldWithDefault(msg, 21, 0),
+    keepSeatDeadline: jspb.Message.getFieldWithDefault(msg, 22, 0)
   };
 
   if (includeInstance) {
@@ -6388,6 +6389,10 @@ proto.holdem.pb.Player.deserializeBinaryFromReader = function(msg, reader) {
     case 21:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setVip(value);
+      break;
+    case 22:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setKeepSeatDeadline(value);
       break;
     default:
       reader.skipField();
@@ -6563,6 +6568,13 @@ proto.holdem.pb.Player.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt32(
       21,
+      f
+    );
+  }
+  f = message.getKeepSeatDeadline();
+  if (f !== 0) {
+    writer.writeInt64(
+      22,
       f
     );
   }
@@ -6915,6 +6927,21 @@ proto.holdem.pb.Player.prototype.getVip = function() {
 /** @param {number} value */
 proto.holdem.pb.Player.prototype.setVip = function(value) {
   jspb.Message.setField(this, 21, value);
+};
+
+
+/**
+ * optional int64 keep_seat_deadline = 22;
+ * @return {number}
+ */
+proto.holdem.pb.Player.prototype.getKeepSeatDeadline = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 22, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.Player.prototype.setKeepSeatDeadline = function(value) {
+  jspb.Message.setField(this, 22, value);
 };
 
 

@@ -653,6 +653,8 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.op_duration = this._sksjNum;
         //功能为实现
 
+        room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100;
+        room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100;;
         room_config.autostart_min_players = this.zdks['levelData'].level
         // room_config.min_players = this.zdks['levelData'].level
         room_config.straddle_max = this.Straddle['levelData'].level;
@@ -663,6 +665,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.limit_gps = this._gpsState
         room_config.seat_count = this.zwrs['levelData'].level;
         room_config.play_duration = Number(this.pjsc.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 3600    //房间有效时长 秒,必填
+        room_config.retain_min_rate = this.zxblbs['levelData'].level * 100;//最小倍率 最小保留记分牌倍数
         // room_config.tribe_id = ClubCache.tribe_id;
 
         if (this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == '不限') {

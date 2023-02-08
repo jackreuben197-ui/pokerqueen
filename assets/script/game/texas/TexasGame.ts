@@ -556,15 +556,17 @@ export default class TexasGame {
         this.bigBlind = rec.roomInfo.smallBlind * 2;
         this.alreadAnte = rec.handInfo.allBet;
         this.maxPlayTime = rec.roomInfo.schedulePlayDuration;
-        //记分牌倍数特殊处理下(可能传过来的倍数乘过100),倍数1-8
-        if (rec.roomInfo.currentMinRate < 100) {
-            this.currentMinRate = rec.roomInfo.currentMinRate * 100;
-            this.currentMaxRate = rec.roomInfo.currentMaxRate * 100;
-        } else {
-            this.currentMinRate = rec.roomInfo.currentMinRate;
-            this.currentMaxRate = rec.roomInfo.currentMaxRate;
-        }
-
+        //记分牌倍数特殊处理下(可能传过来的倍数乘过100),倍数1-8 后台创建的可能会翻倍
+        // if (rec.roomInfo.currentMinRate < 100) {
+        //     this.currentMinRate = rec.roomInfo.currentMinRate * 100;
+        //     this.currentMaxRate = rec.roomInfo.currentMaxRate * 100;
+        // } else {
+        //     this.currentMinRate = rec.roomInfo.currentMinRate;
+        //     this.currentMaxRate = rec.roomInfo.currentMaxRate;
+        // }
+        this.currentMinRate = rec.roomInfo.currentMinRate;
+        this.currentMaxRate = rec.roomInfo.currentMaxRate;
+        
         this.CurlimitOutChip = rec.roomInfo.retainType;
         this.CurrentMinRate = rec.roomInfo.limitRetainMinRate * rec.roomInfo.currentMinRate;
         this.mHandNum = rec.handInfo.handNum;
@@ -1124,7 +1126,7 @@ export default class TexasGame {
     public Sitdown(clientSeatId: number, isEmptyClick: boolean = false): void {
 
         //test
-        this.CurlimitOutChip = RoomInfo.RetainType.RT_AUTO;
+        //this.CurlimitOutChip = RoomInfo.RetainType.RT_AUTO;
 
 
         let mSeat: Seat = this.GetSeatByClientId(clientSeatId);
@@ -1189,6 +1191,8 @@ export default class TexasGame {
                                     autoUseWallet: false,
                                     returnOrNew: 1,
                                     store: 0,
+                                    clubId:0,
+                                    keepSeat:false
                                 },
                             });
                         }
@@ -1330,7 +1334,7 @@ export default class TexasGame {
     /// 带入
     /// </summary>
     /// <param name="anteNumber"></param>
-    public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false) {
+    public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false,club_id:number=0) {
         //朋友桌不需要判断金豆
         // if (GameCache.Instance.origin_type != 4 && GC.data.user.info.gold < anteNumber) {
         //     UIComponent.open(UIDefine.UIDialogComponent,
@@ -1417,6 +1421,9 @@ export default class TexasGame {
                             autoUseWallet: autoUseWallet,
                             returnOrNew: 0,
                             store: 0,
+                            keepSeat:false,
+                            clubId:club_id,
+                            
                         },
                     });
 

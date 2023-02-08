@@ -70,7 +70,9 @@ proto.holdem.pb.ServerMessageSeatedOthers.toObject = function(includeInstance, m
     hunterKillAward: jspb.Message.getFieldWithDefault(msg, 9, 0),
     hunterKillAwardOther: jspb.Message.getFieldWithDefault(msg, 10, 0),
     hunterHeadValue: jspb.Message.getFieldWithDefault(msg, 11, 0),
-    vip: jspb.Message.getFieldWithDefault(msg, 12, 0)
+    vip: jspb.Message.getFieldWithDefault(msg, 12, 0),
+    keepSeatLeftTime: jspb.Message.getFieldWithDefault(msg, 13, 0),
+    keepSeatDeadline: jspb.Message.getFieldWithDefault(msg, 14, 0)
   };
 
   if (includeInstance) {
@@ -154,6 +156,14 @@ proto.holdem.pb.ServerMessageSeatedOthers.deserializeBinaryFromReader = function
     case 12:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setVip(value);
+      break;
+    case 13:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setKeepSeatLeftTime(value);
+      break;
+    case 14:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setKeepSeatDeadline(value);
       break;
     default:
       reader.skipField();
@@ -265,6 +275,20 @@ proto.holdem.pb.ServerMessageSeatedOthers.serializeBinaryToWriter = function(mes
   if (f !== 0) {
     writer.writeInt32(
       12,
+      f
+    );
+  }
+  f = message.getKeepSeatLeftTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      13,
+      f
+    );
+  }
+  f = message.getKeepSeatDeadline();
+  if (f !== 0) {
+    writer.writeInt64(
+      14,
       f
     );
   }
@@ -448,6 +472,36 @@ proto.holdem.pb.ServerMessageSeatedOthers.prototype.getVip = function() {
 /** @param {number} value */
 proto.holdem.pb.ServerMessageSeatedOthers.prototype.setVip = function(value) {
   jspb.Message.setField(this, 12, value);
+};
+
+
+/**
+ * optional int64 keep_seat_left_time = 13;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageSeatedOthers.prototype.getKeepSeatLeftTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 13, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageSeatedOthers.prototype.setKeepSeatLeftTime = function(value) {
+  jspb.Message.setField(this, 13, value);
+};
+
+
+/**
+ * optional int64 keep_seat_deadline = 14;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageSeatedOthers.prototype.getKeepSeatDeadline = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 14, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageSeatedOthers.prototype.setKeepSeatDeadline = function(value) {
+  jspb.Message.setField(this, 14, value);
 };
 
 

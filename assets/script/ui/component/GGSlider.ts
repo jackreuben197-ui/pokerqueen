@@ -79,8 +79,9 @@ export default class GGSlider extends cc.Component {
         }
     }
     onTouchMove(e: cc.Event.EventTouch) {
+        
         if (this._count == 0) return;
-        if (this.press) {
+        //if (this.press) {
             let w_location = e.getLocation();
             let l_location = this.node.convertToNodeSpaceAR(w_location);
             let pos = this.getPos(l_location);
@@ -89,13 +90,14 @@ export default class GGSlider extends cc.Component {
             let index = this.getIndex(pos);
             this.setBarPos(index);
             this.moved = true;
-        }
+        //}
     }
     onTouchEnd() {
         if (this._delegate && this._delegate.scrow) {
             this._delegate.scrow.enabled = true
         }
         this.press = false;
+        
     }
 
     onTrackTouchStart(e: cc.Event.EventTouch) {
@@ -172,4 +174,19 @@ export default class GGSlider extends cc.Component {
         }
     }
 
+    //设置为绝对左右值模式 min,max,step最小移动步长
+    data_abs = {
+        min:0,
+        max:0,
+        step:0
+    }
+    drag_active = false;
+    public setMinMaxAbs(data:{min:number,max:number,step:number}){
+        if(data.max == data.min) {
+            this.drag_active = false;
+            return;
+        }
+        let part = (data.max - data.min)/data.step;
+        this.SetMinMax(0,part);
+    }
 }

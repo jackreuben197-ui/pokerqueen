@@ -163,7 +163,7 @@ export default class UITexas extends BaseScene {
     Common_Con: cc.Node = null;
     //5.带入带出 OutChips提示
     UIChips_Con: cc.Node = null;
-    //UIAddChips_Com: UIAddChipsComponent = null;
+    UIAddChips_Com: UIAddChipsComponent = null;
     UIOutChips_Com: UIOutChipsComponent = null;
     UIAutoChips_Com: UIAutoChipsComponent = null;
     UIOutChipsTip_Com: UIOutChipsTipComponent = null;
@@ -297,7 +297,7 @@ export default class UITexas extends BaseScene {
         this.Common_Con = this.getChildNodeOrComponent("Common_Con");
         //5.带入面板 带出面板
         this.UIChips_Con = this.getChildNodeOrComponent("UIChips_Con");
-        //this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
+        this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
         this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
         this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
         this.UIOutChipsTip_Com = this.AddComponents(PrefabUI.UIOutChipsTipComponent, this.UIChips_Con);

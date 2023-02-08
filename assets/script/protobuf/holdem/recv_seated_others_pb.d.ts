@@ -40,6 +40,12 @@ export class ServerMessageSeatedOthers extends jspb.Message {
   getVip(): number;
   setVip(value: number): void;
 
+  getKeepSeatLeftTime(): number;
+  setKeepSeatLeftTime(value: number): void;
+
+  getKeepSeatDeadline(): number;
+  setKeepSeatDeadline(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageSeatedOthers.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageSeatedOthers): ServerMessageSeatedOthers.AsObject;
@@ -64,6 +70,8 @@ export namespace ServerMessageSeatedOthers {
     hunterKillAwardOther: number,
     hunterHeadValue: number,
     vip: number,
+    keepSeatLeftTime: number,
+    keepSeatDeadline: number,
   }
 }
 

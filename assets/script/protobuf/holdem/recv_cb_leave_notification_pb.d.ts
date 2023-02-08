@@ -8,6 +8,9 @@ export class ServerMessageCbLeaveNotification extends jspb.Message {
   getReason(): protobuf_holdem_define_cb_pb.DefCB.LeaveReasonMap[keyof protobuf_holdem_define_cb_pb.DefCB.LeaveReasonMap];
   setReason(value: protobuf_holdem_define_cb_pb.DefCB.LeaveReasonMap[keyof protobuf_holdem_define_cb_pb.DefCB.LeaveReasonMap]): void;
 
+  getBringOut(): number;
+  setBringOut(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbLeaveNotification.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbLeaveNotification): ServerMessageCbLeaveNotification.AsObject;
@@ -21,6 +24,7 @@ export class ServerMessageCbLeaveNotification extends jspb.Message {
 export namespace ServerMessageCbLeaveNotification {
   export type AsObject = {
     reason: protobuf_holdem_define_cb_pb.DefCB.LeaveReasonMap[keyof protobuf_holdem_define_cb_pb.DefCB.LeaveReasonMap],
+    bringOut: number,
   }
 }
 

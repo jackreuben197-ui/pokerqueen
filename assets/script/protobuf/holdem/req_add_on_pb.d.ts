@@ -19,6 +19,15 @@ export class ClientMessageAddOn extends jspb.Message {
   getMode(): protobuf_holdem_define_pb.Def.AddOnModeMap[keyof protobuf_holdem_define_pb.Def.AddOnModeMap];
   setMode(value: protobuf_holdem_define_pb.Def.AddOnModeMap[keyof protobuf_holdem_define_pb.Def.AddOnModeMap]): void;
 
+  getUsedPropId(): number;
+  setUsedPropId(value: number): void;
+
+  getPropType(): number;
+  setPropType(value: number): void;
+
+  getUseFree(): boolean;
+  setUseFree(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ClientMessageAddOn.AsObject;
   static toObject(includeInstance: boolean, msg: ClientMessageAddOn): ClientMessageAddOn.AsObject;
@@ -35,6 +44,9 @@ export namespace ClientMessageAddOn {
     useProp: boolean,
     ratio: number,
     mode: protobuf_holdem_define_pb.Def.AddOnModeMap[keyof protobuf_holdem_define_pb.Def.AddOnModeMap],
+    usedPropId: number,
+    propType: number,
+    useFree: boolean,
   }
 }
 
