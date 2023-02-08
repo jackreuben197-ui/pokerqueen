@@ -27,6 +27,7 @@ export enum PrefabUI {
     //////////////
     UIBringIn = "UIBringIn",//带入记分牌
     UIAutoBringIn = "UIAutoBringIn",//自动记分牌
+    UIBringOut = "UIBringOut",//带出记分牌
     
 }
 (window as any).PrefabUI = PrefabUI;

@@ -10,6 +10,7 @@ export default class GGASCom extends UIBasePlus {
     cc_Label$label: cc.Label = null;
     /////////////////////////////
     _value:number;
+    _use:boolean;
     private _data: any = {
         value: 0,
         step: 0,
@@ -21,11 +22,13 @@ export default class GGASCom extends UIBasePlus {
         this.setButtonClick(this.$add, this.onAdd);
     }
     onSub() {
+        if(!this._use) return;
         let a = this.value - this._data.step;
         a = Math.max(this._data.min, a);
         this.value = a;
     }
     onAdd() {
+        if(!this._use) return;
         let a = this.value + this._data.step;
         a = Math.min(this._data.max, a);
         this.value = a;
@@ -43,5 +46,8 @@ export default class GGASCom extends UIBasePlus {
     //获取value
     get value() {
         return this._value ;
+    }
+    set use(boo:boolean){
+        this._use = boo;
     }
 }

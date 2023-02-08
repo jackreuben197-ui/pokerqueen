@@ -112,18 +112,17 @@ export default class UIBringIn extends UIBasePlus {
             //小盲值/100
             this.cc_Label$blind.string = `${data.smallBlind / 100}/${data.bigBlind / 100}`;//SB/BB
             this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
-            //this.textNeedCoin.string = `${data.bigBlind}`;//Require
-            //this.textTotalCoin.string = `${data.totalCoin / 100}`;//Balance
             //最大带入值
-            let maxBring = data.currentMaxRate * data.bigBlind - data.tableChips;
-            //data.currentMaxRate / 10;
-            let max = maxBring / data.bigBlind /10;
-            let min = data.currentMinRate / 10;
+            let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
+            let min = data.currentMinRate * data.bigBlind / 100;
             max = Math.max(min,max);
+            
             this.slider_obj.min = min;
             this.slider_obj.max = max;
-            this.slider_obj.step = Math.round(data.bigBlind/10);
-            this.GGSlider$slider.setMinMaxAbs(this.slider_obj);
+            this.slider_obj.step = data.bigBlind;
+        
+            this.GGSlider$slider.data = this.slider_obj;
+
             this.GGSlider$slider.onShow({ index: 0 });
         }
     }
@@ -220,6 +219,7 @@ export default class UIBringIn extends UIBasePlus {
             }
         }
         GameCache.Instance.CurGame.AddChips(this.sendCoin*100);
+        //GameCache.Instance.CurGame.AddChips(1080*100);
         this.hideUI();        
     }
     //取消

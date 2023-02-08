@@ -12,7 +12,7 @@ import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import { AddClipsData } from "./UIBringIn";
-import UIClubWalletList from "./UIClubWalletList";
+
 
 const { ccclass, menu } = cc._decorator;
 
@@ -68,9 +68,14 @@ export default class UIAutoBringIn extends UIBasePlus {
     //显示状态，设置位置和适配 
     //0:无钱包剩余和钱包选择和无滑动条
     //1:
-    show_status:number = 0;
+    show_status: number = 0;
 
-
+    //滑动条 数据对象
+    slider_obj = {
+        min:0,
+        max:0,
+        step:0
+    };
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -107,44 +112,43 @@ export default class UIAutoBringIn extends UIBasePlus {
         }
         if (null != data) {
             //小盲值/100
-            //this.cc_Label$blind.string = `${data.smallBlind / 100}/${data.bigBlind / 100}`;//SB/BB
-            //this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
-            //this.textNeedCoin.string = `${data.bigBlind}`;//Require
-            //this.textTotalCoin.string = `${data.totalCoin / 100}`;//Balance
-            //当前最大带入 currentMaxRate是乘过100 ， tableChips是乘过100
-            let currMaxBring = data.currentMaxRate * data.bigBlind - data.tableChips;
-            let maxRate = currMaxBring / data.bigBlind ^ 0;
-            //边界
-            if (maxRate > data.currentMaxRate) {
-                maxRate = data.currentMaxRate;
-            }
-            if (maxRate < data.currentMinRate) {
-                maxRate = data.currentMinRate;
-            }
-            let min = data.currentMinRate / 100 ^ 0;
-            let max = maxRate / 100 ^ 0;
-            this.startRate = min;
+            //最大带入值
+            let auto_max = data.currentMaxRate * data.bigBlind/100;
+            let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
+            let min = data.currentMinRate * data.bigBlind / 100;
+            max = Math.max(min, max);
 
-            this.GGSlider$slider.SetMinMax(min, max);
+
+            this.slider_obj.min = min;
+            this.slider_obj.max = max;
+            this.slider_obj.step = data.bigBlind;
+
+            //滑动条
+            this.GGSlider$slider.data = this.slider_obj;
             this.GGSlider$slider.onShow({ index: 0 });
-
             //com
             this.GGASCom$com.data = {
-                min: this.sendCoin,
-                max: currMaxBring/100,
+                min: min,
+                max: auto_max,
                 step: data.bigBlind,
-                value: this.sendCoin,
+                value: min,
             }
         }
         //toggle
+        this.GGToggle$auto.own = this;
         this.GGToggle$auto.uncheck();
         this.GGToggle$account.uncheck();
+
         //根据显示状态设置位置和适配
         //this.show_status 
         this.$Part1.active = !(param.fromMenu || this.wallet_mode == 0);
         this.$Part4.active = !(param.fromMenu || this.wallet_mode == 0);
         this.$Part3.active = !param.fromMenu;
         this.GGToggle$account.node.active = !(this.wallet_mode == 0);
+    }
+    change(boo:boolean){
+        this.GGASCom$com.use = boo;
+        console.log("激活：",boo);
     }
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$confirm, this.onClickConfirm);
@@ -157,11 +161,11 @@ export default class UIAutoBringIn extends UIBasePlus {
 
     onSliderChange(rate: number) {
 
-        this.sendCoin = (this.startRate + rate) * this._param.data.bigBlind;
+        this.sendCoin = this.slider_obj.min + this.slider_obj.step * rate;
+
+        this.sendCoin = Math.min(this.sendCoin,this.slider_obj.max);
 
         this.cc_Label$value.string = `${this.sendCoin}`;
-
-        //this.cc_Label$buyin.string = `${this.sendCoin}`;
 
         if (this.wallet_mode > 0) {
             //颜色处理
@@ -237,10 +241,15 @@ export default class UIAutoBringIn extends UIBasePlus {
             }
         }
 
+        //判断自动上桌是否勾选
+        let auto_100 = this.GGToggle$auto.isCheck ? this.GGASCom$com.value * 100: 0;
+        let coin_100 = this.sendCoin * 100;
+        let accountCheck = this.GGToggle$account.isCheck;
+
         if (this._param.fromMenu) {
-            GameCache.Instance.CurGame.SetAutoOnTableChips(Math.ceil(this.GGASCom$com.value * 100), this.GGToggle$account.isCheck);
+            GameCache.Instance.CurGame.SetAutoOnTableChips(auto_100, accountCheck);
         } else {
-            GameCache.Instance.CurGame.AddChips(Math.ceil(this.sendCoin * 100), Math.ceil(this.GGASCom$com.value * 100), this.GGToggle$account.isCheck);
+            GameCache.Instance.CurGame.AddChips(coin_100, auto_100, accountCheck);
         }
         this.hideUI();
     }

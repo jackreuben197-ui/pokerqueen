@@ -22,6 +22,7 @@ import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
 import UIAutoBringIn from "./new_ui/UIAutoBringIn";
 import UIBringIn from "./new_ui/UIBringIn";
+import UIBringOut from "./new_ui/UIBringOut";
 import TexasGame from "./texas/TexasGame";
 import UIAddChipsComponent from "./ui/UIAddChipsComponent";
 import UIAgreeSecondPcsComponent from "./ui/UIAgreeSecondPcsComponent";
@@ -109,7 +110,7 @@ export default class UITexas extends BaseScene {
 
 
     //UIAddChips: UIAddChipsComponent = null;
-    UIOutChips: UIOutChipsComponent = null;
+    //UIOutChips: UIOutChipsComponent = null;
 
     textAlreadAnte: cc.Label = null;
     //个性设置界面
@@ -163,13 +164,14 @@ export default class UITexas extends BaseScene {
     Common_Con: cc.Node = null;
     //5.带入带出 OutChips提示
     UIChips_Con: cc.Node = null;
-    UIAddChips_Com: UIAddChipsComponent = null;
-    UIOutChips_Com: UIOutChipsComponent = null;
-    UIAutoChips_Com: UIAutoChipsComponent = null;
+    //UIAddChips_Com: UIAddChipsComponent = null;
+    //UIOutChips_Com: UIOutChipsComponent = null;
+    //UIAutoChips_Com: UIAutoChipsComponent = null;
     UIOutChipsTip_Com: UIOutChipsTipComponent = null;
 
     UIBringIn:UIBringIn = null;
     UIAutoBringIn:UIAutoBringIn = null;
+    UIBringOut:UIBringOut = null;
     //6.保险面板
     UIInsurance_Con: cc.Node = null;
     UIInsurance_Com: UIInsuranceComponent = null;
@@ -238,7 +240,7 @@ export default class UITexas extends BaseScene {
         this.Seats = this.getChildNodeOrComponent("Seats");
         this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
 
-        this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
+        //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
 
         this.textAlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
@@ -297,12 +299,13 @@ export default class UITexas extends BaseScene {
         this.Common_Con = this.getChildNodeOrComponent("Common_Con");
         //5.带入面板 带出面板
         this.UIChips_Con = this.getChildNodeOrComponent("UIChips_Con");
-        this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
-        this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
-        this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
+        //this.UIAddChips_Com = this.AddComponents(PrefabUI.UIAddChipsComponent, this.UIChips_Con);
+        //this.UIOutChips_Com = this.AddComponents(PrefabUI.UIOutChipsComponent, this.UIChips_Con);
+        //this.UIAutoChips_Com = this.AddComponents(PrefabUI.UIAutoChipsComponent, this.UIChips_Con);
         this.UIOutChipsTip_Com = this.AddComponents(PrefabUI.UIOutChipsTipComponent, this.UIChips_Con);
         this.UIBringIn = this.AddComponents(PrefabUI.UIBringIn, this.UIChips_Con);
         this.UIAutoBringIn = this.AddComponents(PrefabUI.UIAutoBringIn, this.UIChips_Con);
+        this.UIBringOut = this.AddComponents(PrefabUI.UIBringOut, this.UIChips_Con);
         //6.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
         this.UIInsurance_Com = this.AddComponents(PrefabUI.UIInsuranceComponent, this.UIInsurance_Con);
@@ -398,6 +401,8 @@ export default class UITexas extends BaseScene {
             PrefabUI.UIAgreeSecondPcsComponent,
             PrefabUI.UIMttSignDialogComponent,
             PrefabUI.UIBringIn,
+            PrefabUI.UIBringOut,
+            PrefabUI.UIAutoBringIn,
         ].forEach(item => {
             UIComponent.Instance.HideUI(item);
         });

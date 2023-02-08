@@ -12,8 +12,9 @@ import UIBase from "../../ui/UIBase";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import { AddClipsData } from "../new_ui/UIBringIn";
+import { OutClipsData } from "../new_ui/UIBringOut";
 import TexasGame from "../texas/TexasGame";
-import { OutClipsData } from "./UIOutChipsComponent";
+
 
 const { ccclass, property } = cc._decorator;
 
@@ -320,7 +321,7 @@ export default class UITexasMenuComponent extends UIBase {
         }
         this.game.uirc.HideMenu();
         // 弹代入框CurretainMinRate
-        UIComponent.Instance.ShowUI<OutClipsData>(PrefabUI.UIOutChipsComponent, {
+        UIComponent.Instance.ShowUI<OutClipsData>(PrefabUI.UIBringOut, {
             currentMinRate: this.game.currentMinRate,
             tableChips: this.game.mainPlayer.chips,
         })

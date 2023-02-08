@@ -1,16 +1,10 @@
 
 import { UIDefine } from "../../define/UIDefine";
-import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
-import { WalletType } from "../../lobby/new_club/pay/UIWalletLayer";
-import WalletModel from "../../lobby/new_club/pay/WalletModel";
-import { Web_User_Room } from "../../net/https/WebRequest";
 import GGSlider from "../../ui/component/GGSlider";
-import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
-import { AddClipsData } from "./UIBringIn";
 
 
 const { ccclass, menu } = cc._decorator;
@@ -40,12 +34,7 @@ export default class UIBringOut extends UIBasePlus {
     $commit: cc.Node = null;
     $enable: cc.Node = null;
 
-    //滑动条 数据对象
-    // slider_obj = {
-    //     min:0,
-    //     max:0,
-    //     step:0
-    // };
+    $close:cc.Node = null;
 
     MaxRate: number = 0;
     CurMinOutBeans:number = 0;
@@ -73,6 +62,7 @@ export default class UIBringOut extends UIBasePlus {
 
     onShow(data: OutClipsData): void {
         super.onShow(data);
+        
         if (null != data) {
 
             //textCoin.text = $"{GameCache.Instance.carry_small* addClipsData.currentMinRate}";
@@ -121,7 +111,7 @@ export default class UIBringOut extends UIBasePlus {
 
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$commit, this.onClickCommit);
-
+        this.setButtonClick(this.$close, this.onClickClose);
     }
     /**
      * 滑动条改变触发
@@ -157,7 +147,7 @@ export default class UIBringOut extends UIBasePlus {
 
     //打开钱包列表
     goWalletList() {
-        console.log("goWalletList");
+    
         UIComponent.open(UIDefine.UIClubWalletList, {
             data: this.wallet,
             selected_wallet: this.selected_wallet,
@@ -167,11 +157,15 @@ export default class UIBringOut extends UIBasePlus {
     /////////////////////click事件
     //确认
     onClickCommit() {
-
+        let mAnteNumber = + this.cc_Label$coin.string;
+        if (mAnteNumber == 0) {
+            return;
+        }
+        GameCache.Instance.CurGame.OutChips(mAnteNumber * 100);
         this.hideUI();
     }
-    //取消
-    onClickCancel() {
+    //关闭
+    onClickClose() {
         this.hideUI();
     }
 }

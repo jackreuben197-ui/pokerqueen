@@ -1569,7 +1569,7 @@ export default class TexasGameProtocol {
                 if (playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE1 || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE2) {
                     UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get("Addondz"), [StringHelper.GetSignedLongString(playerChipChange.change)]));
                 }
-                UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
+                UIComponent.Instance.HideUI(PrefabUI.UIBringOut);
                 this.game.mainPlayer.cacheStoreChips = playerChipChange.storeChips;
             }
             mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
@@ -1594,7 +1594,7 @@ export default class TexasGameProtocol {
             new UIOutChipsTipComponent.OutClipstipData(rec.status, this.game.cacheOutChips)
         );
         this.game.cacheOutChips = 0;
-        UIComponent.Instance.HideUI(PrefabUI.UIOutChipsComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIBringOut);
         let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
         if (null == mSeat) return;
         mSeat.Player.chips = rec.chips;

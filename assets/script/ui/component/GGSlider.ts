@@ -42,6 +42,7 @@ export default class GGSlider extends cc.Component {
 
     private _onChange: Function = null;
     _delegate = null;
+    drag_active = true;
     onLoad() {
         this.bar.on(cc.Node.EventType.TOUCH_START, this.onBarTouchStart, this);
         this.bar.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -72,6 +73,9 @@ export default class GGSlider extends cc.Component {
         this.setBarPos(param.index);
     }
     onBarTouchStart(e: cc.Event.EventTouch) {
+
+        if(this.drag_active == false) return;
+
         this.press = true;
         this.moved = false;
         if (this._delegate && this._delegate.scrow) {
@@ -79,7 +83,7 @@ export default class GGSlider extends cc.Component {
         }
     }
     onTouchMove(e: cc.Event.EventTouch) {
-        
+        if(this.drag_active == false) return;
         if (this._count == 0) return;
         //if (this.press) {
             let w_location = e.getLocation();
@@ -93,6 +97,7 @@ export default class GGSlider extends cc.Component {
         //}
     }
     onTouchEnd() {
+        if(this.drag_active == false) return;
         if (this._delegate && this._delegate.scrow) {
             this._delegate.scrow.enabled = true
         }
@@ -101,6 +106,7 @@ export default class GGSlider extends cc.Component {
     }
 
     onTrackTouchStart(e: cc.Event.EventTouch) {
+        if(this.drag_active == false) return;
         if (this._count == 0) return;
         if (this._delegate && this._delegate.scrow) {
             this._delegate.scrow.enabled = true
@@ -174,14 +180,7 @@ export default class GGSlider extends cc.Component {
         }
     }
 
-    //设置为绝对左右值模式 min,max,step最小移动步长
-    data_abs = {
-        min:0,
-        max:0,
-        step:0
-    }
-    drag_active = false;
-    public setMinMaxAbs(data:{min:number,max:number,step:number}){
+    public set data(data:{min:number,max:number,step:number}){
         if(data.max == data.min) {
             this.drag_active = false;
             return;
