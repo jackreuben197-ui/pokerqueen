@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 11:32:22
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 14:23:17
+ * @LastEditTime: 2023-02-09 11:17:22
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/career/UICareer.ts
  */
 
@@ -75,6 +75,7 @@ export default class UICareer extends UIBase {
             "time_long": TimeHelper.Now,
             filter_type: this._selectIndex + 1
         }
+        UICareerModel.mInstance._coinType = this._selectIndex + 1
         await UICareerModel.mInstance.api_stats_user_stats_all(parm);
         let _data = api_stats_user_stats_all.Response.data
         let room_data_total = _data?.room_data_total

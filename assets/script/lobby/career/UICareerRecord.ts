@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-08 10:20:37
+ * @LastEditTime: 2023-02-09 09:49:49
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 

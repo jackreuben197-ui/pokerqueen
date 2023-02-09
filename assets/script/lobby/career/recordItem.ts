@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 19:04:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-08 10:46:52
+ * @LastEditTime: 2023-02-09 10:34:57
  * @FilePath: /pokerqueen/assets/script/lobby/career/recordItem.ts
  */
 // Learn TypeScript:
@@ -79,25 +79,31 @@ export default class recordItem extends UIBase {
         this.setGameType();
     }
     itemClick() {
-        UIComponent.open(UIDefine.UIRecordDetail, this._data.RoomID)
+        if (!this._data.game_type_name) {
+            UIComponent.open(UIDefine.UIMttRecordDetail, this._data.MatchID)
+
+        } else {
+            UIComponent.open(UIDefine.UIRecordDetail, this._data.RoomID)
+        }
     }
     setGameType() {
-        switch (this._data.game_type_name) {
-            case 'NLH':
+        if (!this._data.game_type_name) {
 
-                break;
-            case 'PLO':
+        } else {
+            switch (this._data.game_type_name) {
+                case 'NLH':
 
-                break;
-            case '6+':
+                    break;
+                case 'PLO':
 
-                break;
-            case '6+':
+                    break;
+                case '6+':
 
-                break;
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
 
     }

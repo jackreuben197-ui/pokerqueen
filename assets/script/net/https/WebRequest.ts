@@ -2932,6 +2932,9 @@ export class api_stats_user_stats_all extends WebCommon {
 export class api_roomcenter_history_group extends WebCommon {
     static API: string = "/api/roomcenter/history/group";
 }
+export class api_stats_mtt_room_detail extends WebCommon {
+    static API: string = "/api/stats/mtt_room_detail/{id}";
+}
 
 
 
