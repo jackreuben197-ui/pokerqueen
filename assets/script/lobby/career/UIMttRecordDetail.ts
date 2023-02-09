@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 11:58:35
+ * @LastEditTime: 2023-02-09 12:26:29
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIMttRecordDetail.ts
  */
 
@@ -61,6 +61,7 @@ export default class UIMttRecordDetail extends BaseFormPlus {
         super.onShow(param, fromUI);
         this._roomId = param;
         this.reqDataAgain();
+        this.list.scrollingCB = this.scrollingCB;
     }
     async reqDataAgain() {
         this._offset = 0;

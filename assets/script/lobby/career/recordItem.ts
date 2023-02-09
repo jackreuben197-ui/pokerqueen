@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 19:04:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 10:34:57
+ * @LastEditTime: 2023-02-09 12:33:18
  * @FilePath: /pokerqueen/assets/script/lobby/career/recordItem.ts
  */
 // Learn TypeScript:
@@ -36,6 +36,7 @@ export default class recordItem extends UIBase {
     mtt_lbl_44: cc.Label = null;
     lbl_node: cc.Node = null;
     mtt_lbl_node: cc.Node = null;
+    Rectangle: cc.Node = null;
     _data = null;
     protected lateLoad(): void {
         super.lateLoad();
@@ -51,6 +52,7 @@ export default class recordItem extends UIBase {
         this.mtt_lbl_44 = this.getChildNodeOrComponent('mtt_lbl_44', cc.Label)
         this.lbl_node = this.getChildNodeOrComponent('lbl_node')
         this.mtt_lbl_node = this.getChildNodeOrComponent('mtt_lbl_node')
+        this.Rectangle = this.getChildNodeOrComponent('Rectangle')
     }
     onShow(param?, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
@@ -88,17 +90,19 @@ export default class recordItem extends UIBase {
     }
     setGameType() {
         if (!this._data.game_type_name) {
-
+            this.Rectangle.color = cc.color().fromHEX('#59C18F')
         } else {
             switch (this._data.game_type_name) {
                 case 'NLH':
-
+                    this.Rectangle.color = cc.color().fromHEX('#F1BD02')
                     break;
-                case 'PLO':
-
+                case 'PLO4':
+                case 'PLO5':
+                case 'PLO6':
+                    this.Rectangle.color = cc.color().fromHEX('#57CDDD')
                     break;
                 case '6+':
-
+                    this.Rectangle.color = cc.color().fromHEX('#DD5778')
                     break;
 
                 default:

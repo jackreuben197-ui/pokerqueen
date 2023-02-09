@@ -3,7 +3,7 @@
  * @Date: 2023-02-03 16:57:42
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 20:15:33
+ * @LastEditTime: 2023-02-09 12:18:07
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIRecordHands.ts
  */
 // Learn TypeScript:
@@ -48,7 +48,7 @@ export default class UIRecordHands extends BaseFormPlus {
         this._type = param.type;
         this._roomData = param.roomData;
         super.onShow(param, fromUI);
-
+        this.list.scrollingCB = this.scrollingCB;
         this.reqDataAgain();
     }
 

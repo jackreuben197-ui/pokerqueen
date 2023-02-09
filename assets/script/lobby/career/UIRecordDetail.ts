@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 17:36:14
+ * @LastEditTime: 2023-02-09 12:18:02
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIRecordDetail.ts
  */
 
@@ -57,6 +57,7 @@ export default class UIRecordDetail extends BaseFormPlus {
         super.onShow(param, fromUI);
         this._roomId = param;
         this.reqDataAgain();
+        this.list.scrollingCB = this.scrollingCB;
     }
     async reqDataAgain() {
         this._offset = 0;

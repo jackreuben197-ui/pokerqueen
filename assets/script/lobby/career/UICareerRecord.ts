@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 09:49:49
+ * @LastEditTime: 2023-02-09 12:26:39
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 
@@ -72,6 +72,7 @@ export default class UICareerRecord extends BaseFormPlus {
         this._coinIndex = param || 1
         // await LobbySession.APIConfig_Multi_Language_Template()
         this.onClickTypeTabBtns(0);
+        this.list.scrollingCB = this.scrollingCB;
     }
     titleNodeClick(customData) {
         this._tabSelect = customData
