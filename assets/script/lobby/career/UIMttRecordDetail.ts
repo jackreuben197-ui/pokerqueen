@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 11:23:47
+ * @LastEditTime: 2023-02-09 11:58:35
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIMttRecordDetail.ts
  */
 
@@ -98,7 +98,7 @@ export default class UIMttRecordDetail extends BaseFormPlus {
         this.id.string = 'ID:' + roomData.room_id;
         let _duration = new Date(roomData.end_time).getTime() - new Date(roomData.start_time).getTime();
 
-        this.data_date.string = TimeHelper.convertUTCTimeToLocalTime(roomData.start_time) + ' - ' + TimeHelper.convertUTCTimeToLocalTime(roomData.end_time)
+        this.data_date.string = TimeHelper.convertUTCTimeToLocalTime(roomData.end_time)
 
         for (let index = 0; index < this.lbl_Node.childrenCount; index++) {
             const lbl_1 = this.lbl_Node.children[index].getComponent(cc.Label)
