@@ -128,7 +128,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 135.61,
+      "width": 117.08,
       "height": 83.16
     },
     "_anchorPoint": {
@@ -185,8 +185,10 @@
     "_fontSize": 66,
     "_lineHeight": 66,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -280,7 +282,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 161.52,
+      "width": 156.41,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -337,8 +339,10 @@
     "_fontSize": 35,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -432,7 +436,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 128.36,
+      "width": 121.38,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -489,8 +493,10 @@
     "_fontSize": 35,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -584,7 +590,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 98.3,
+      "width": 99.22,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -641,8 +647,10 @@
     "_fontSize": 35,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
