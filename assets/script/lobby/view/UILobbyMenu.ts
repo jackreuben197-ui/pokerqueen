@@ -89,9 +89,10 @@ export default class UILobbyMenu extends UIBase {
         this.changeBtn(btn.node);
         LobbyControl.getInstance().switchContent("UIClubList")
     }
-    my_click(btn: cc.Button) {
+    my_click(btn: cc.Button) { 
         this.changeBtn(btn.node);
-        LobbyControl.getInstance().switchContent("UIMine")
+        //LobbyControl.getInstance().switchContent("UIMine");
+        LobbyControl.getInstance().switchContent("UIMe","main/new_me/");
     }
     //显示btn的状态
     changeBtn(btn: cc.Node) {

@@ -1,0 +1,104 @@
+import { UIDefine } from "../../define/UIDefine";
+import { GameCache } from "../../game/GameCache";
+import PublicHelper from "../../helper/PublicHelper";
+import WebImageHelper from "../../helper/WebImageHelper";
+import WebHelper from "../../net/https/WebHelper";
+import { APIUserDiamondsWallet, Web_Config_Global_Config, Web_User_Info, WWW } from "../../net/https/WebRequest";
+import UIBasePlus from "../../ui/UIBasePlus";
+
+const { ccclass, menu } = cc._decorator;
+@ccclass
+@menu("脚本分组/new_me/UIMe")
+export default class UIMe extends UIBasePlus {
+
+    //part1
+    cc_Label$title: cc.Label = null;
+    cc_Label$coin: cc.Label = null;
+    $diamond: cc.Node = null;
+    //part2
+    $head: cc.Node = null;
+    $copy: cc.Node = null;
+    cc_Label$nick: cc.Label = null;
+    cc_Label$id: cc.Label = null;
+    cc_Sprite$head:cc.Sprite = null;
+    //part3
+    $scontent: cc.Node = null;
+    //
+    $kefu: cc.Node = null;
+    ////////////////////////////////
+    protected lateLoad(): void {
+        super.lateLoad();
+        
+    }
+    protected regiterTouchEvents(): void {
+        this.setButtonClick(this.$diamond, this.onDiamondClick);
+        this.setButtonClick(this.$copy, this.onCopyClick);
+        this.setButtonClick(this.$kefu, this.onKefuClick);
+        this.setButtonClick(this.$head, this.onHeadClick);
+        this
+        this.$scontent.children.forEach((item, index) => {
+            this.setButtonClick(item, this.onOptionClick.bind(index));
+        })
+    }
+    onShow(param?: any): void {
+        super.onShow(param);
+        this.refreshUserInfo();
+        this.refreshWallet();
+    }
+    //刷新用户信息
+    refreshUserInfo(){
+        this.cc_Label$nick.string = Web_User_Info.Response.data.user.nickname;
+        this.cc_Label$id.string = `ID:${Web_User_Info.Response.data.user.un_id}`;
+        //this.cc_Sprite$head.
+        WebImageHelper.SetHeadImage(this.cc_Sprite$head,GameCache.Instance.headPic);
+    }
+    //刷新钱包获取钻石
+    refreshWallet(){
+        WWW.Instance.CommonAPI(
+            {
+                web_class: APIUserDiamondsWallet,
+            }
+        ).then(
+            (res: any) => {
+                this.cc_Label$coin.string = `${res.data?.diamonds_wallet?.diamonds || 0}`;
+            },
+            (res: any) => {
+
+            }
+        )
+    }
+
+    ///////////////////
+    onHeadClick(){
+        //编辑个人资料
+    }
+    onDiamondClick() {
+        //跳转商城
+    }
+    onCopyClick() {
+        //拷贝id号码
+        PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
+    }
+    onKefuClick(){
+        //打开客服
+        let email = Web_Config_Global_Config.Response.data.support_email;//目标邮箱
+        let subject = "";//主题
+        let body = "";//内容
+        window.location.href = "mailto:"+email+"?subject="+subject+"&body="+body
+
+    }
+    onOptionClick(index: number) {
+        //选项点击
+        switch (index) {
+            case 0://钻石商城
+                break;
+            case 1://我的背包
+                break;
+            case 2://我的消息
+                break;
+            case 3://设置
+                break;
+        }
+    }
+
+}

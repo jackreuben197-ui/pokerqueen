@@ -841,6 +841,7 @@ export class Web_Config_Global_Config extends WebCommon {
         android_mtt_switch?: number,//androidMTT功能开关 1 开 2 关
         android_pay_switch?: number,//android支付功能开关 1 开 2 关
         apple_mtt_switch?: number,//iosMTT功能开关 1 开 2 关
+        support_email?:string,
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;

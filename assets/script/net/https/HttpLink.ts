@@ -29,6 +29,8 @@ export class HttpLink {
 
             let sendInfo = this._sendQueue.shift();
 
+            console.log("sendInfo ==>",sendInfo);
+
             HttpRequest.Send({
                 api: sendInfo.api,
                 request: sendInfo.request,

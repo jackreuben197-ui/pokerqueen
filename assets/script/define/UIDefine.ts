@@ -830,8 +830,8 @@ export const UIDefine = {
         Path: "main/career/UIRecordHands",
         Title: "牌谱"
     },
-    //牌谱详情
-    UIMine_Poker: {
+     //牌谱详情
+     UIMine_Poker: {
         UIType: UIType.Form,
         Name: "UIMine_Poker",
         Bundle: null,
@@ -846,9 +846,6 @@ export const UIDefine = {
         Path: "main/career/UIMttRecordDetail",
         Title: "战绩详情"
     },
-
-
-
 
 }
 //批量设置
