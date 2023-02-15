@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:45:57
+ * @LastEditTime: 2023-02-15 11:48:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/MemberItem.ts
  */
 
@@ -12,6 +12,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
+import { i18nMgr } from "../../../i18n/i18nMgr";
 import { APIOrgClubUserInfo, Web_User_Info } from "../../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import UIBase from "../../../ui/UIBase";
@@ -43,8 +44,13 @@ export default class MemberItem extends UIBase {
 
         }
         // cc.find('messLayout/xiaxian', this.node).getComponent(cc.Label).string
-        // cc.find('messLayout/guibin', this.node).getComponent(cc.Label).string
 
+
+        if (this._data.agent_random_id) {
+            let vip = cc.find('messLayout/guibin', this.node)
+            vip.active = true
+            vip.getComponent(cc.Label).string = i18nMgr.Get('UIClubRole_vip') + " ID:" + this._data.agent_random_id
+        }
 
         this.node.getChildByName('data').getComponent(cc.Label).string = this._data.last_login_time_str// TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - this._data.last_login_time))
         this.node['last_login_time'] = this._data.last_login_time_str
@@ -65,6 +71,6 @@ export default class MemberItem extends UIBase {
         // data.user_info.remark_desc = this._data.remark_desc
         // data.user_info.remark_name = this._data.remark_name
 
-        UIComponent.open(UIDefine.UIClubMember, { info: data, itemData: this._data });
+        UIComponent.open(UIDefine.UIClubMember, { info: data, agent_random_id: this._data.agent_random_id });
     }
 }

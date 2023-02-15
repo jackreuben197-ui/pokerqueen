@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:46:17
+ * @LastEditTime: 2023-02-15 11:50:01
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -55,6 +55,7 @@ export default class UIClubMember extends BaseForm {
     _order_type: number = 1
     _dropDownBox: cc.Node = null;
     _flag = true;  //会长或者是本人
+    _agent_random_id = 0; //贵宾
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -91,7 +92,7 @@ export default class UIClubMember extends BaseForm {
         this.post(EventName.requestClubMemList);
         let data: any = APIOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
-        this._info = { info: data, itemData: this._info.itemData };
+        this._info = { info: data };
         this.initTop()
         this.initPanel_mid()
         this.initVip();
@@ -103,6 +104,7 @@ export default class UIClubMember extends BaseForm {
         if (this._info == null) {
             return;
         }
+        this._agent_random_id = param.agent_random_id
         this._flag = this._info.info.user_level != 1 || this._info.info.user_info.random_id != Web_User_Info.Response.data.user.un_id
         this._dropDownBox.getComponent('dropDownBox').initData(memberRoleConfig, this.selectSort.bind(this), this._flag)
         this.initTop()
@@ -115,8 +117,8 @@ export default class UIClubMember extends BaseForm {
         let icon = cc.find('iconMask/icon', this.messNode)
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._info.info.user_info.avatar)
         cc.find('messLayout/nameNode/name', this.messNode).getComponent(cc.Label).string = this._info.info.user_info.nickname;
-        cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = this._info.info.user_info.random_id;
-        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.itemData.user_join_club_time);
+        cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = 'ID:' + this._info.info.user_info.random_id;
+        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.info.create_time);
 
         cc.find('people/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.info.user_info.gold);
         cc.find('table/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.info.user_info.usdt);
@@ -141,8 +143,8 @@ export default class UIClubMember extends BaseForm {
             btn_1["index"] = i;
             btn_1.on(cc.Node.EventType.TOUCH_END, this.onClickBtn, this)
         }
-        this.editName.string = this._info.itemData.remark_name
-        this.editjieshao.string = this._info.itemData.remark_desc
+        this.editName.string = this._info.info.remark_name
+        this.editjieshao.string = this._info.info.remark_desc
     }
     initPanel_mid() {
         let panel_type = this.panel_mid.getChildByName('panel_type')
@@ -353,11 +355,12 @@ export default class UIClubMember extends BaseForm {
         let haveData = this.panel_vip.getChildByName('haveData');
         //有没有上线
         // invitation_code
-        if (this._info.info.agent_user_id > 0) {
+        // this._info.info.agent_user_id
+        if (this._agent_random_id > 0) {
             noHave.active = false
             haveData.active = true
             cc.find('messLayout/name', haveData).getComponent(cc.Label).string = ''
-            cc.find('messLayout/id', haveData).getComponent(cc.Label).string = 'ID: ' + this._info.info.agent_user_id
+            cc.find('messLayout/id', haveData).getComponent(cc.Label).string = 'ID: ' + this._agent_random_id //this._info.info.agent_user_id
             let icon = cc.find('iconRole/icon', haveData)
             WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), '');
         }
@@ -385,7 +388,7 @@ export default class UIClubMember extends BaseForm {
                 break;
             case 2:
                 //解绑贵宾
-                //UIComponent.open(UIDefine.UIAgentUnlink, { user: this._info.info.user_info, agent_id: 0 });
+                UIComponent.open(UIDefine.UIAgentUnlink, { user: this._info.info.user_info, agent_id: this._agent_random_id });
                 break;
             case 3:
                 //下线成员总数
