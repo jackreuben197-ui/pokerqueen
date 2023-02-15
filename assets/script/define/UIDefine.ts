@@ -34,7 +34,7 @@ export const UIDefine = {
         UIType: UIType.Scene,
         Name: "LobbyScene",
         Bundle: null,
-        Path: "main/lobby/prefab/scene/LobbyScene"
+        Path: "main/lobby/LobbyScene"
     },
     //基础牌桌
     UITexas: {
@@ -846,6 +846,24 @@ export const UIDefine = {
         Path: "main/career/UIMttRecordDetail",
         Title: "战绩详情"
     },
+
+    //编辑资料
+    UIEditInformation:{
+        UIType: UIType.Form,
+        Name: "UIEditInformation",
+        Bundle: null,
+        Path: "main/lobby/ui/UIEditInformation",
+        Title: "UIMine_UserInfoSetting_title"
+    },
+    //修改昵称
+    UIChangeName:{
+        UIType: UIType.Form,
+        Name: "UIChangeName",
+        Bundle: null,
+        Path: "main/lobby/ui/UIChangeName",
+        Title: "UIMine_Mission_8"
+    }
+
 
 }
 //批量设置

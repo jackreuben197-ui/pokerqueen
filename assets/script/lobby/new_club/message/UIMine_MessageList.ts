@@ -45,8 +45,8 @@ export default class UIMine_MessageList extends BaseFormPlus {
     /**
      * 每次打开面板处理的内容 
      */
-    onShow(param?: { enterType: number }, fromUI?: cc.Node): void {
-        super.onShow(param, fromUI);
+    onShow(param?: { enterType: number }, fromUI?: cc.Node,sceneUI?: cc.Node): void {
+        super.onShow(param, fromUI,sceneUI);
         GC.message.enterType = param.enterType;
         this.refreshOption();
         this.reqUnreadMessage();

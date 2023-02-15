@@ -29,7 +29,7 @@ export class GameConfig {
     //4: https://dev1.awanptest.com 
     static BuildType: number = 5;
     //版本号
-    static Version: string = "20230209_1030";
+    static Version: string = "20230215_2030";
 
     static Default_Language: string = "cn";
     //是否使用代理

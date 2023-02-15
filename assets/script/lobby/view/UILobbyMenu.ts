@@ -2,8 +2,10 @@ const { ccclass, property } = cc._decorator;
 import { EventName } from "../../config/EventName";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Broadcast, BroadcastCode, ServerMessageRoomBringInApply } from "../../net/websocket/ProtocolHoldemMessages";
+import UILobbyIndex from "../../new_lobby/index/UILobbyIndex";
 import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
 import UIBase from "../../ui/UIBase";
+import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
 import { UIClubModel } from "../labor/UIClubModel";
 import LobbyScene from "./LobbyScene";
@@ -73,7 +75,9 @@ export default class UILobbyMenu extends UIBase {
     }
     lobby_click(btn: cc.Button) {
         this.changeBtn(btn.node);
-        LobbyControl.getInstance().switchContent("UILobby")
+        //LobbyControl.getInstance().switchContent("UILobby")
+        LobbyControl.getInstance().switchContent("UILobbyIndex","main/lobby/ui/");
+        UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").start();
     }
     world_chat_click(btn: cc.Button) {
         this.changeBtn(btn.node);
@@ -92,7 +96,7 @@ export default class UILobbyMenu extends UIBase {
     my_click(btn: cc.Button) { 
         this.changeBtn(btn.node);
         //LobbyControl.getInstance().switchContent("UIMine");
-        LobbyControl.getInstance().switchContent("UIMe","main/new_me/");
+        LobbyControl.getInstance().switchContent("UIMe","main/lobby/ui/");
     }
     //显示btn的状态
     changeBtn(btn: cc.Node) {

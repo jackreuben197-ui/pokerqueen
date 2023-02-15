@@ -2936,6 +2936,10 @@ export class api_roomcenter_history_group extends WebCommon {
 export class api_stats_mtt_room_detail extends WebCommon {
     static API: string = "/api/stats/mtt_room_detail/{id}";
 }
+//玩家总钱包
+export class api_wallet_total extends WebCommon {
+    static API: string = "/api/user/wallet_total";
+}
 
 
 

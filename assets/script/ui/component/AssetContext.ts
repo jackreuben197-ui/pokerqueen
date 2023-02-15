@@ -61,7 +61,7 @@ export default class AssetContext extends cc.Component {
         if (key in AssetFold) {
 
             key = `${AssetFold[key]}|${asset.name}`;
-            console.log("++++++",key)
+            
         } else {
 
             key = `${key}|${asset.name}`;

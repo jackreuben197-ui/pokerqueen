@@ -2,15 +2,15 @@ import { UIDefine } from "../../define/UIDefine";
 import { GameCache } from "../../game/GameCache";
 import PublicHelper from "../../helper/PublicHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
-import WebHelper from "../../net/https/WebHelper";
+import SceneManager from "../../manager/SceneManager";
 import { APIUserDiamondsWallet, Web_Config_Global_Config, Web_User_Info, WWW } from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
+import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, menu } = cc._decorator;
 @ccclass
 @menu("脚本分组/new_me/UIMe")
 export default class UIMe extends UIBasePlus {
-
     //part1
     cc_Label$title: cc.Label = null;
     cc_Label$coin: cc.Label = null;
@@ -20,24 +20,24 @@ export default class UIMe extends UIBasePlus {
     $copy: cc.Node = null;
     cc_Label$nick: cc.Label = null;
     cc_Label$id: cc.Label = null;
-    cc_Sprite$head:cc.Sprite = null;
+    cc_Sprite$head: cc.Sprite = null;
     //part3
     $scontent: cc.Node = null;
     //
     $kefu: cc.Node = null;
     ////////////////////////////////
     protected lateLoad(): void {
+        this.name = "UIMe";
         super.lateLoad();
-        
     }
     protected regiterTouchEvents(): void {
+
         this.setButtonClick(this.$diamond, this.onDiamondClick);
         this.setButtonClick(this.$copy, this.onCopyClick);
         this.setButtonClick(this.$kefu, this.onKefuClick);
         this.setButtonClick(this.$head, this.onHeadClick);
-        this
         this.$scontent.children.forEach((item, index) => {
-            this.setButtonClick(item, this.onOptionClick.bind(index));
+            this.setButtonClick(item, this.onOptionClick.bind(this,index));
         })
     }
     onShow(param?: any): void {
@@ -46,14 +46,13 @@ export default class UIMe extends UIBasePlus {
         this.refreshWallet();
     }
     //刷新用户信息
-    refreshUserInfo(){
-        this.cc_Label$nick.string = Web_User_Info.Response.data.user.nickname;
+    refreshUserInfo() {
         this.cc_Label$id.string = `ID:${Web_User_Info.Response.data.user.un_id}`;
-        //this.cc_Sprite$head.
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head,GameCache.Instance.headPic);
+        WebImageHelper.SetHeadImage(this.cc_Sprite$head, GameCache.Instance.headPic);
+        this.refreshNick();
     }
     //刷新钱包获取钻石
-    refreshWallet(){
+    refreshWallet() {
         WWW.Instance.CommonAPI(
             {
                 web_class: APIUserDiamondsWallet,
@@ -67,10 +66,10 @@ export default class UIMe extends UIBasePlus {
             }
         )
     }
-
     ///////////////////
-    onHeadClick(){
+    onHeadClick() {
         //编辑个人资料
+        UIComponent.open(UIDefine.UIEditInformation);
     }
     onDiamondClick() {
         //跳转商城
@@ -79,26 +78,32 @@ export default class UIMe extends UIBasePlus {
         //拷贝id号码
         PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
     }
-    onKefuClick(){
+    onKefuClick() {
         //打开客服
         let email = Web_Config_Global_Config.Response.data.support_email;//目标邮箱
         let subject = "";//主题
         let body = "";//内容
-        window.location.href = "mailto:"+email+"?subject="+subject+"&body="+body
-
+        window.location.href = "mailto:" + email + "?subject=" + subject + "&body=" + body
     }
     onOptionClick(index: number) {
+        console.log(index);
         //选项点击
         switch (index) {
             case 0://钻石商城
                 break;
             case 1://我的背包
+                UIComponent.open(UIDefine.UIMineBag, null, { SceneUI: SceneManager.Instance.currUI });
                 break;
             case 2://我的消息
+                UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 2 });
                 break;
             case 3://设置
+                UIComponent.open(UIDefine.SettingsForm);
                 break;
         }
+    }
+    refreshNick(){
+        this.cc_Label$nick.string = Web_User_Info.Response.data.user.nickname;
     }
 
 }

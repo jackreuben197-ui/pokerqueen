@@ -77,6 +77,14 @@ export default class UIComponent {
             ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"));
         }
     }
+    ToastLanguage(content?: string) {
+        if (content) {
+            ToastManager.Instance.createToast(i18nMgr.Get(content));
+        } else {
+            //提示暂未开放
+            ToastManager.Instance.createToast(i18nMgr.Get("adaptation10301"));
+        }
+    }
     //显示节点
     ShowUI<T>(com: PrefabUI, param?: T) {
         let node = this.GetPrefabNode(com);
@@ -205,7 +213,33 @@ export default class UIComponent {
             Main.Dialog.children[0].parent = Main.Cache_UI;
         }
     }
+    //////////////////////////////
+    setComponent(component:UIBase){
+        this[component.name] = component;
+    }
+    getComponent<T>(component_name:string):T{
+        return this[component_name] as T;
+    }
+    /////////////////////////////
 
+    // set UIMe(component:UIMe){
+    //     this["_UIMe"] = component;
+    // }
+    // get UIMe():UIMe{
+    //     return this["_UIMe"];
+    // }
+    // set UIEditInformation(component:UIEditInformation){
+    //     this["_UIEditInformation"] = component;
+    // }
+    // get UIEditInformation():UIEditInformation{
+    //     return this["_UIEditInformation"];
+    // }
+    // set UILobbyIndex(component:UILobbyIndex){
+    //     this["_UILobbyIndex"] = component;
+    // }
+    // get UILobbyIndex():UILobbyIndex{
+    //     return this["_UILobbyIndex"];
+    // }
 }
 (window as any).UIComponent = UIComponent;
-(window as any).UIFormMgr = UIFormMgr;
+//(window as any).UIFormMgr = UIFormMgr;

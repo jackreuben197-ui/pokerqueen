@@ -73,7 +73,7 @@ CCProgram fs %{
 
     vec2 cen = v_uv0 - .5;
 
-    float ratio = smoothstep(.5,.5 - .03, length(cen));
+    float ratio = smoothstep(.5,.5 - .02, length(cen));
     
     o.a = ratio;
 

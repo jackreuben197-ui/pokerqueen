@@ -84,9 +84,9 @@ CCProgram fs %{
     #if USE_LR
       z = v_uv0.x;
     #endif 
-
-    vec4 c = color_a + (color_b - color_a) * z;
-  
+    
+    vec4 c = mix(color_a ,color_b,z);
+    
     o *= c;
 
     o *= v_color;

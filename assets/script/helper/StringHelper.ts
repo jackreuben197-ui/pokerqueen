@@ -228,6 +228,13 @@ export class StringHelper {
 
     }
 
+    /// <summary>
+    /// 是否包含特殊字符
+    /// </summary>
+    public static IsContainSpecialCharacter(text:string) {
+        let reg:RegExp = new RegExp("^[a-zA-Z0-9\u4e00-\u9fa5]+$");
+        return !text.match(reg);
+    }
 
 }
 (window as any).StringHelper = StringHelper;

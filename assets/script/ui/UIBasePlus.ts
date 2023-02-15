@@ -4,6 +4,8 @@ import LanguageManager from "../frame/manager/LanguageManager";
 import { ResManager } from "../manager/ResManager";
 import CCTools from "../tools/CCTools";
 import UIBase from "./UIBase";
+import UIComponent from "./UIComponent";
+import { UICommonMgr } from "./UIMgr";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -24,5 +26,10 @@ export default class UIBasePlus extends UIBase {
             }
             this.load_all_object(child);
         })
+    }
+
+    protected lateLoad(): void {
+        super.lateLoad();
+        if(this.name) UIComponent.Instance.setComponent(this);
     }
 }
