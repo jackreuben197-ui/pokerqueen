@@ -37,7 +37,7 @@ export default class UIMe extends UIBasePlus {
         this.setButtonClick(this.$kefu, this.onKefuClick);
         this.setButtonClick(this.$head, this.onHeadClick);
         this.$scontent.children.forEach((item, index) => {
-            this.setButtonClick(item, this.onOptionClick.bind(this,index));
+            this.setButtonClick(item, this.onOptionClick.bind(this, index));
         })
     }
     onShow(param?: any): void {
@@ -73,6 +73,7 @@ export default class UIMe extends UIBasePlus {
     }
     onDiamondClick() {
         //跳转商城
+        UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI });
     }
     onCopyClick() {
         //拷贝id号码
@@ -90,9 +91,10 @@ export default class UIMe extends UIBasePlus {
         //选项点击
         switch (index) {
             case 0://钻石商城
+                UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI });
                 break;
             case 1://我的背包
-                UIComponent.open(UIDefine.UIMineBag, null, { SceneUI: SceneManager.Instance.currUI });
+                UIComponent.open(UIDefine.UIMyPack, null, { SceneUI: SceneManager.Instance.currUI });
                 break;
             case 2://我的消息
                 UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 2 });
@@ -102,7 +104,7 @@ export default class UIMe extends UIBasePlus {
                 break;
         }
     }
-    refreshNick(){
+    refreshNick() {
         this.cc_Label$nick.string = Web_User_Info.Response.data.user.nickname;
     }
 

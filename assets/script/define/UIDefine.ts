@@ -847,7 +847,7 @@ export const UIDefine = {
         Title: "战绩详情"
     },
 
-    //编辑资料
+    //编辑资料-new
     UIEditInformation:{
         UIType: UIType.Form,
         Name: "UIEditInformation",
@@ -855,14 +855,30 @@ export const UIDefine = {
         Path: "main/lobby/ui/UIEditInformation",
         Title: "UIMine_UserInfoSetting_title"
     },
-    //修改昵称
+    //修改昵称-new
     UIChangeName:{
         UIType: UIType.Form,
         Name: "UIChangeName",
         Bundle: null,
         Path: "main/lobby/ui/UIChangeName",
         Title: "UIMine_Mission_8"
-    }
+    },
+    //钻石商城-new
+    UIMall:{
+        UIType: UIType.Form,
+        Name: "UIMall",
+        Bundle: null,
+        Path: "main/lobby/ui/UIMall",
+        Title: "UIHappyShop_ActivityShop"
+    },
+    //我的背包-new
+    UIMyPack:{
+        UIType: UIType.Form,
+        Name: "UIMyPack",
+        Bundle: null,
+        Path: "main/lobby/ui/UIMyPack",
+        Title: "UIMine_Backpack"
+    },
 
 
 }

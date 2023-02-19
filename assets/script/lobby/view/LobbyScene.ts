@@ -72,6 +72,6 @@ export default class LobbyScene extends BaseScene {
     //大厅相关数据加载完成
     private readyComplete(): void {
         console.log("====== lobby readyComplete! ======");
-        UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").start();
+        UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").run();
     }
 }

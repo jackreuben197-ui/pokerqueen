@@ -2,7 +2,8 @@ import { UIDefine } from "../../define/UIDefine";
 import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_User_Info, Web_User_Modify_User_Info, WWW } from "../../net/https/WebRequest";
+import { UIClubModel } from "../../lobby/labor/UIClubModel";
+import { APIOrgClubUploadIcon, Web_User_Info, Web_User_Modify_User_Info, WWW } from "../../net/https/WebRequest";
 import BottomSelector from "../../ui/component/BottomSelector";
 import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
@@ -13,8 +14,7 @@ const {ccclass, property} = cc._decorator;
 @ccclass
 export default class UIEditInformation extends BaseFormPlus {
 
-    
-
+    $Head:cc.Node = null;
     cc_Sprite$head:cc.Sprite = null;
     BottomSelector$selector:BottomSelector = null;
     //part1
@@ -42,6 +42,8 @@ export default class UIEditInformation extends BaseFormPlus {
          super.regiterTouchEvents();
          this.setButtonClick(this.$name,this.onNameClick);
          this.setButtonClick(this.$sex,this.onSexClick);
+         this.setButtonClick(this.$Head,this.onHeadClick);
+         
      }
      //刷新用户信息
     refreshUserInfo() {
@@ -58,6 +60,17 @@ export default class UIEditInformation extends BaseFormPlus {
         this.cc_Label$sex.string = i18nMgr.Get(Web_User_Info.Response.data.user.sex ? "UIMine_UserInfoSetting_Male":"UIMine_UserInfoSetting_Female");
     }
     ////////////click////////////
+
+    async onHeadClick() {
+        await UIClubModel.mInstance.APIOrgClubUploadIcon();
+        let icon: any = APIOrgClubUploadIcon.Response.data;
+        if (icon) {
+            await WebImageHelper.SetUrlImage(this.cc_Sprite$head, icon ,null);
+        }
+    }
+
+
+
     onNameClick(){
         //更改姓名
         UIComponent.open(UIDefine.UIChangeName);

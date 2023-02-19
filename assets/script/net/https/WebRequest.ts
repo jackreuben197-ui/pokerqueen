@@ -2147,7 +2147,7 @@ export class API_BAG_CURRENT_PENDANT_LIST extends WebCommon {
 }
 
 /// <summary>
-/// 我得背包
+/// 我的背包
 /// </summary>
 export class Web_Prop_User_Prop_List extends WebCommon {
     //接口地址
@@ -2939,6 +2939,10 @@ export class api_stats_mtt_room_detail extends WebCommon {
 //玩家总钱包
 export class api_wallet_total extends WebCommon {
     static API: string = "/api/user/wallet_total";
+}
+//钻石商城列表
+export class Web_MallShopList extends WebCommon {
+    static API: string = "/api/prop/shopping/goods_list";
 }
 
 

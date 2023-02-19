@@ -77,7 +77,7 @@ export default class UILobbyMenu extends UIBase {
         this.changeBtn(btn.node);
         //LobbyControl.getInstance().switchContent("UILobby")
         LobbyControl.getInstance().switchContent("UILobbyIndex","main/lobby/ui/");
-        UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").start();
+        UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").run();
     }
     world_chat_click(btn: cc.Button) {
         this.changeBtn(btn.node);
