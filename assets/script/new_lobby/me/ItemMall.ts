@@ -12,8 +12,8 @@ export default class ItemMall extends UIBasePlus {
     cc_Label$price:cc.Label = null;
     $discount:cc.Node = null;
     cc_Label$discount:cc.Label = null;
+    $price:cc.Node = null;
     //////////////////////////////////
-    
     
     onShow(data: any): void {
         super.onShow(data);

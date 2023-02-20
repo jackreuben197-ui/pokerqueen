@@ -2944,7 +2944,14 @@ export class api_wallet_total extends WebCommon {
 export class Web_MallShopList extends WebCommon {
     static API: string = "/api/prop/shopping/goods_list";
 }
-
+//背包物品使用
+export class Web_Prop_User_Prop_Used extends WebCommon {
+    static API: string = "/api/prop/user_prop/used";
+}
+//钻石商城购买
+export class Web_Mall_Buy extends WebCommon {
+    static API: string = "/api/prop/shopping/goods_buy";
+}
 
 
 /**

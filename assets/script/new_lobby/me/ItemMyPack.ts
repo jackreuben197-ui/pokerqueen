@@ -14,7 +14,7 @@ export default class ItemMyPack extends UIBasePlus {
     cc_Label$title: cc.Label = null;
     cc_Label$time: cc.Label = null;
     $button: cc.Node = null;
-    cc_Label$button:cc.Label = null;
+    cc_Label$button: cc.Label = null;
     //////////////////////////////////
     Use_IText = {
         1: null,
@@ -22,17 +22,15 @@ export default class ItemMyPack extends UIBasePlus {
         3: "adaptation10200",
         4: "adaptation10200",
         5: "adaptation10200",
-        6: "adaptation10200",
+        6: null,//"adaptation10200",
         7: "adaptation10200",
-        8: "adaptation10200",
+        8: null,//"adaptation10200",
         9: "adaptation10200",
         10: "adaptation10200",
         11: null,
         12: null,
         13: null,
     }
-
-
     onShow(data: any): void {
         super.onShow(data);
         this.refreshUI(data);
@@ -40,8 +38,6 @@ export default class ItemMyPack extends UIBasePlus {
     refreshUI(data: any) {
         //图标
         this.cc_Sprite$icon.spriteFrame = this.getIconRes(data.prop_type - 1);
-        //标题内容
-        this.cc_Label$title.string = `${data.prop_name} *${data.prop_number}`;
         //到期时间
         let time_18 = i18nMgr.Get("UIMine_BackpackList_timeLimit").split('^');
         if (data.time_limit == null || data.time_limit == "") {
@@ -58,8 +54,21 @@ export default class ItemMyPack extends UIBasePlus {
         let use_text = this.Use_IText[data.prop_type];
         this.$button.active = !!use_text;
         this.cc_Label$button.string = i18nMgr.Get(use_text);
+        //标题
+        let title: string = "";
+        switch (data.prop_type) {
+            case 8:
+            case 9:
+            case 12:
+            case 13:
+                title = data.game_prop.prop_value / 100 + data.game_prop.prop_name;
+                break;
+            default:
+                title = `${data.prop_name} *${data.prop_number}`;
+                break;
+        }
+        this.cc_Label$title.string = title;
     }
-
     getIconRes(index: number) {
         return this.$res.children[index].getComponent(cc.Sprite).spriteFrame;
     }

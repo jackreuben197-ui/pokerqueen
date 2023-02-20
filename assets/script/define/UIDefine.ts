@@ -791,6 +791,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UICommonDialog",
     },
+    //背包提示面板
+    UIBackDialog: {
+        UIType: UIType.CommonUI,
+        Name: "UIBackDialog",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIBackDialog",
+    },
     //公会钱包列表
     UIClubWalletList: {
         UIType: UIType.CommonUI,
@@ -830,8 +837,8 @@ export const UIDefine = {
         Path: "main/career/UIRecordHands",
         Title: "牌谱"
     },
-     //牌谱详情
-     UIMine_Poker: {
+    //牌谱详情
+    UIMine_Poker: {
         UIType: UIType.Form,
         Name: "UIMine_Poker",
         Bundle: null,
@@ -848,7 +855,7 @@ export const UIDefine = {
     },
 
     //编辑资料-new
-    UIEditInformation:{
+    UIEditInformation: {
         UIType: UIType.Form,
         Name: "UIEditInformation",
         Bundle: null,
@@ -856,7 +863,7 @@ export const UIDefine = {
         Title: "UIMine_UserInfoSetting_title"
     },
     //修改昵称-new
-    UIChangeName:{
+    UIChangeName: {
         UIType: UIType.Form,
         Name: "UIChangeName",
         Bundle: null,
@@ -864,7 +871,7 @@ export const UIDefine = {
         Title: "UIMine_Mission_8"
     },
     //钻石商城-new
-    UIMall:{
+    UIMall: {
         UIType: UIType.Form,
         Name: "UIMall",
         Bundle: null,
@@ -872,7 +879,7 @@ export const UIDefine = {
         Title: "UIHappyShop_ActivityShop"
     },
     //我的背包-new
-    UIMyPack:{
+    UIMyPack: {
         UIType: UIType.Form,
         Name: "UIMyPack",
         Bundle: null,
