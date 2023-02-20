@@ -12,7 +12,7 @@
   "height": 60,
   "platformSettings": {},
   "subMetas": {
-    "uc_big": {
+    "uc_sm": {
       "ver": "1.0.6",
       "uuid": "ef1ee63c-ec07-4254-96c7-e25707a4bb24",
       "importer": "sprite-frame",

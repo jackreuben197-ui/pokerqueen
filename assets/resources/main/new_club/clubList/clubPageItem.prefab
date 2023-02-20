@@ -30,14 +30,14 @@
         "__id__": 84
       },
       {
-        "__id__": 85
+        "__id__": 86
       },
       {
-        "__id__": 86
+        "__id__": 87
       }
     ],
     "_prefab": {
-      "__id__": 87
+      "__id__": 88
     },
     "_opacity": 255,
     "_color": {
@@ -3021,7 +3021,11 @@
     "_grayMaterial": null,
     "duration": 0.1,
     "zoomScale": 1.05,
-    "clickEvents": [],
+    "clickEvents": [
+      {
+        "__id__": 85
+      }
+    ],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": false,
     "_N$transition": 0,
@@ -3076,6 +3080,16 @@
     "_N$disabledSprite": null,
     "_N$target": null,
     "_id": ""
+  },
+  {
+    "__type__": "cc.ClickEvent",
+    "target": {
+      "__id__": 1
+    },
+    "component": "",
+    "_componentId": "6cf1bb8NgRKgJ1R3Wxh/tNn",
+    "handler": "onClickItem",
+    "customEventData": ""
   },
   {
     "__type__": "6cf1bb8NgRKgJ1R3Wxh/tNn",

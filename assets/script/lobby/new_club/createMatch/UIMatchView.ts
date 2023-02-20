@@ -3,8 +3,8 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-04 20:38:46
- * @FilePath: /pokerqueen/assets/script/lobby/new_club/UIMatchView.ts
+ * @LastEditTime: 2023-02-20 11:56:22
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIMatchView.ts
  */
 
 import List from "../../../common/List";
@@ -230,7 +230,7 @@ export default class UIMatchView extends UIBase {
         switch (this._gameType) {
             case Game_Type.All:
                 data.game_type = []
-                data.poker_type = [0]
+                data.poker_type = [0, 2]
                 break;
             case Game_Type.Holdem:
                 data.game_type = [0]

@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:37:48
+ * @LastEditTime: 2023-02-20 10:47:44
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -30,8 +30,8 @@ export default class UIClubList extends BaseForm {
     @property(cc.PageView)
     pageViews: cc.PageView = null;
 
-    @property(cc.Prefab)
-    dropDownBox: cc.Prefab = null;
+    @property(cc.Node)
+    dropDownBox: cc.Node = null;
 
 
     @property(cc.Label)
@@ -50,12 +50,11 @@ export default class UIClubList extends BaseForm {
         this.pageNode.active = this.listType == 2
         this.listNode.active = this.listType == 1
         this.sortNode = this.getChildNodeOrComponent("sortNode");
-        this._dropDownBox = cc.instantiate(this.dropDownBox);
-        this._dropDownBox.parent = this.node
-        this._dropDownBox.position = cc.v3(230, 690, 0);
-        this._dropDownBox.width = 629
-        this._dropDownBox.getComponent('dropDownBox').initData(clubListConfig, this.selectSort.bind(this))
-        this._dropDownBox.active = this.listType == 1
+        // this._dropDownBox = cc.instantiate(this.dropDownBox);
+        // this._dropDownBox.parent = this.listNode
+        // this._dropDownBox.position = cc.v3(230, 690, 0);
+        // this._dropDownBox.width = 629
+
     }
 
     selectSort(data) {
@@ -67,7 +66,8 @@ export default class UIClubList extends BaseForm {
 
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-
+        this.dropDownBox.getComponent('dropDownBox').initData(clubListConfig, this.selectSort.bind(this))
+        this.dropDownBox.active = this.listType == 1
         await UIClubModel.mInstance.APIOrgClubGet()
         let data: any = Web_Org_Club_Get.Response.data
         this.num.string = data.length;
@@ -79,7 +79,7 @@ export default class UIClubList extends BaseForm {
         let icon = cc.find('iconMask/icon', this.topNode).getComponent(cc.Sprite);
         WebImageHelper.SetHeadImage(icon, GameCache.Instance.headPic)
         this.topNode.getChildByName('name').getComponent(cc.Label).string = StringHelper.LengthNick(Web_User_Info.Response.data.user.nickname);
-        this.topNode.getChildByName('id').getComponent(cc.Label).string = Web_User_Info.Response.data.user.un_id + ""
+        this.topNode.getChildByName('id').getComponent(cc.Label).string = 'ID:' + Web_User_Info.Response.data.user.un_id
 
     }
     initListNode(clubList) {
@@ -124,7 +124,7 @@ export default class UIClubList extends BaseForm {
         this.listNode.active = this.listType == 1
         union.active = this.pageNode.active
         list.active = this.listNode.active
-        this._dropDownBox.active = this.listType == 1
+        this.dropDownBox.active = this.listType == 1
     }
 
 }
