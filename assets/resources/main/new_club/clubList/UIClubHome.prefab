@@ -4801,7 +4801,7 @@
     "asset": {
       "__uuid__": "6f8af907-5256-41a0-9517-1d4c3fe220a1"
     },
-    "fileId": "9ahB9EsZlOU6Se83yZygc9",
+    "fileId": "9eYL4cbPZMhZcEXgKuKcyj",
     "sync": true
   },
   {
@@ -8930,24 +8930,6 @@
     "menuShow": {
       "__id__": 147
     },
-    "tsMESS": null,
-    "lbl_messNewNum": null,
-    "lbl_tabelNum": null,
-    "messScoContent": null,
-    "messPfItem": {
-      "__uuid__": "b147dbd1-9bc5-4ddf-880d-3b2eb84df52c"
-    },
-    "messTsItem": {
-      "__uuid__": "7cb7c074-d9d2-4246-bdca-82f799ab7642"
-    },
-    "messNomalItem": {
-      "__uuid__": "617b9578-6c86-44cc-9c9c-200d3b2404ad"
-    },
-    "messScrollView": null,
-    "EditBox": null,
-    "btnNode": null,
-    "item_A": null,
-    "item_bq": null,
     "createBtn": {
       "__id__": 125
     },

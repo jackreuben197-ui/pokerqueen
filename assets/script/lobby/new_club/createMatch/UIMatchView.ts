@@ -3,11 +3,13 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-20 11:56:22
+ * @LastEditTime: 2023-02-23 14:00:31
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIMatchView.ts
  */
 
 import List from "../../../common/List";
+import TabNode from "../../../common/tabNode";
+import { ClubTabConfig } from "../../../frame/config/tabConfig";
 import { dxmConfig } from "../../../frame/data/rate/RateConfig";
 import GC from "../../../frame/GameControl";
 import { GameType, Game_Type, Table_Type } from "../../../game/util/GameUtil";
@@ -23,11 +25,11 @@ const { ccclass, property, menu } = cc._decorator;
 export default class UIMatchView extends UIBase {
     private _isClub: boolean = false;
     gameTypeNode: cc.Node = null;
-    sbSelect: cc.Node = null;
     sbNode: cc.Node = null;
     sbTab: cc.Node = null;
     lbl_no: cc.Node = null;
     list: List = null;
+    tabNode: TabNode = null;
     _gameType = null;
     _sbSelectType = null;
     _sbType = null;
@@ -43,14 +45,27 @@ export default class UIMatchView extends UIBase {
     _reqing = false
     _reqEnd = false
     _list = []
-
-    async onShow(type?: GameType, tableType = Table_Type.club) {
+    onLoad(): void {
+        this.onShow(0, 0)
+    }
+    async onShow(type: GameType = 0, tableType = Table_Type.club) {
         super.onShow(type);
         this._tableType = tableType;
         // this._roomList = GC.data.lobby.roomList;
         // this._curGameType = null;
         this.clickGameType(type);
-
+        this.tabNode = this.getChildNodeOrComponent('tabNode', TabNode)
+        this.tabNode.initData(ClubTabConfig, this.titleNodeClick.bind(this), this)
+    }
+    /**
+     * 微 小 中  大
+     * @param index 
+     */
+    titleNodeClick(index) {
+        this._sbSelectType = index
+        this._sbData = dxmConfig[index].concat();
+        this._sbData.unshift(0);
+        this.initSbNode()
     }
 
     protected lateLoad(): void {
@@ -58,7 +73,6 @@ export default class UIMatchView extends UIBase {
 
         this.list = this.getChildNodeOrComponent("list", List);
         this.gameTypeNode = this.getChildNodeOrComponent("gameTypeNode");
-        this.sbSelect = this.getChildNodeOrComponent("sbSelect");
         this.sbNode = this.getChildNodeOrComponent("sbNode");
         this.sbTab = this.sbNode.children[0];
         this.list.scrollingCB = this.scrollingCB;
@@ -67,39 +81,20 @@ export default class UIMatchView extends UIBase {
             this.bindClick(item, this.clickGameType, index);
         })
 
-        this.sbSelect.children.forEach((item, index) => {
-            this.bindClick(item, this.clickSbSelect, index);
-        })
-
     }
     /**
      * @method 点击游戏类型
      * @param index 
      * @returns 
      */
-    clickGameType(index) {
+    clickGameType(_index) {
         // if (this._gameType == index) return;
-        this._gameType = index
+        this._gameType = _index
         this.gameTypeNode.children.forEach((item, index) => {
-            item.getChildByName("title").color = this._gameType == index ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
+            item.getChildByName("title").color = this._gameType == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
+            item.getChildByName("Rectangle").active = this._gameType == index
         })
-        this.clickSbSelect(0);
-    }
-    /**
-     * @method 点击微小中大
-     * @param index 
-     * @returns 
-     */
-    clickSbSelect(index) {
-        // if (this._sbSelectType == index) return;
-        this._sbSelectType = index
-        this.sbSelect.children.forEach((item, index) => {
-            item.getChildByName("title").opacity = this._sbSelectType == index ? 255 : 75
-        })
-        this._sbData = dxmConfig[index].concat();
-        this._sbData.unshift(0);
-        this.initSbNode()
-
+        this.titleNodeClick(0);
     }
     /**
     * @method 点击sb
