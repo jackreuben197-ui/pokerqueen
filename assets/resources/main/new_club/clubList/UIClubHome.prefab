@@ -6645,7 +6645,7 @@
       "__id__": 174
     },
     "_enabled": true,
-    "i18n_string": "UIClubRole_manager",
+    "i18n_string": "UIGuildTableBottomBtns001",
     "_id": ""
   },
   {
@@ -8817,7 +8817,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "66ced802-c8b2-42a2-86a0-f8d2299638f4"
+      "__uuid__": "50dbbfde-9c6c-46b0-9266-df3f359a810f"
     },
     "_type": 0,
     "_sizeMode": 0,

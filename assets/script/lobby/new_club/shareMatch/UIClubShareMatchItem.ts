@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:48:01
+ * @LastEditTime: 2023-02-23 17:46:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatchItem.ts
  */
 
@@ -20,10 +20,13 @@ const { ccclass, property, menu } = cc._decorator;
 export default class UIClubShareMatchItem extends UIBase {
     _data = null;
     _type = 0
-    initData(data, type) {
+    initData(data, type, index) {
+        this.initView();
         this._data = data
         this._type = type;
-        this.initView();
+        this.node.getComponent(cc.Sprite).enabled = index % 2 == 0;
+        this.node.getChildByName('Rectangle1').active = index % 2 == 0
+        this.node.getChildByName('Rectangle2').active = !this.node.getChildByName('Rectangle1').active
     }
     initView() {
         // if (this._type == 0) {

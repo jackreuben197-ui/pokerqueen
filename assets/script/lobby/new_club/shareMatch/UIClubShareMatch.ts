@@ -3,7 +3,7 @@
  * @Date: 2023-01-03 11:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:47:54
+ * @LastEditTime: 2023-02-23 17:43:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatch.ts
  */
 // Learn TypeScript:
@@ -33,6 +33,7 @@ export default class UIClubShareMatch extends BaseForm {
     _total: number = 0
     memberListT: cc.Node
     applyListT: cc.Node
+    noDataTip: cc.Node
     private comFormTitle: ComFormTitle = null;
     @property(List)
     memberList: List = null;
@@ -41,10 +42,11 @@ export default class UIClubShareMatch extends BaseForm {
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.memberListT = this.getChildNodeOrComponent("memberListT");
         this.applyListT = this.getChildNodeOrComponent("applyListT");
+        this.noDataTip = this.getChildNodeOrComponent("noDataTip");
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-        let title = "UIClub_shareMatch"
+        let title = "UIGuild_ShareGameManager"
         this.comFormTitle.initData(title, this);
         this.titleNodeClick(null, 0)
     }
@@ -59,8 +61,8 @@ export default class UIClubShareMatch extends BaseForm {
         this.memberListT.getChildByName('block').active = this._selectTitle == 0
         this.applyListT.getChildByName('block').active = this._selectTitle == 1
 
-        this.memberListT.getChildByName('title').color = this._selectTitle == 0 ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
-        this.applyListT.getChildByName('title').color = this._selectTitle == 1 ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
+        this.memberListT.getChildByName('title').color = this._selectTitle == 0 ? cc.color().fromHEX('#757CAB') : cc.color().fromHEX('#EEF5FF')
+        this.applyListT.getChildByName('title').color = this._selectTitle == 1 ? cc.color().fromHEX('#757CAB') : cc.color().fromHEX('#EEF5FF')
         this.reqDataAgain();
     }
     async reqDataAgain() {
@@ -102,7 +104,7 @@ export default class UIClubShareMatch extends BaseForm {
             this._list.push(element);
         });  //分页的时候使用的
         this._total = _data.total
-
+        this.noDataTip.active = this._list.length == 0
         this.memberList.numItems = this._list.length;
         this._offset = this._list.length;
         this._reqEnd = this._list.length == this._total;
@@ -110,7 +112,7 @@ export default class UIClubShareMatch extends BaseForm {
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(UIClubShareMatchItem);
-        item.initData(this._list[index], this._selectTitle);
+        item.initData(this._list[index], this._selectTitle, index);
     }
     scrollingCB = async (scrollView: cc.ScrollView) => {
         if (scrollView) {
