@@ -1,0 +1,80 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-09-14 19:02:14
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-02-23 21:26:56
+ * @FilePath: /pokerqueen/assets/script/lobby/labor/UISearchJoin.ts
+ */
+
+import WebImageHelper from "../../helper/WebImageHelper";
+import BaseForm from "../../ui/form/BaseForm";
+import ComFormTitle from "../../common/ComFormTitle";
+import TabNode from "../../common/tabNode";
+import { UIClubModel } from "./UIClubModel";
+
+const { ccclass, property, menu } = cc._decorator;
+@ccclass
+
+@menu('脚本分组/labor/UISearchJoin')
+export default class UISearchJoin extends BaseForm {
+    @property(cc.Sprite)
+    Round: cc.Sprite = null;
+    @property(cc.Node)
+    union: cc.Node = null;
+    @property(cc.Node)
+    club: cc.Node = null;
+
+
+    @property(cc.Label)
+    nickName: cc.Label = null;
+    @property(cc.Label)
+    id: cc.Label = null;
+    @property(cc.Label)
+    memberNum = null;
+
+    private comFormTitle: ComFormTitle = null;
+    tabNode: TabNode = null;
+    list: cc.Node = null;
+    searchNode: cc.Node = null;
+
+    @property(cc.Label)
+    btn_lbl: cc.Label = null;
+
+    @property(cc.Button)
+    sousuo: cc.Button = null;
+
+    type = 0;
+    _data = null;
+    protected lateLoad(): void {
+        super.lateLoad();
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+    }
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
+        this.type = param.type;
+        this._data = param.data;
+        let title = this.type == 0 ? "club_3" : "UIClub_TribeJoin"
+        this.comFormTitle.initData(title, this);
+        WebImageHelper.SetHeadImage(this.Round, this._data.logo)
+        this.nickName.string = this._data.club_name;
+        this.id.string = 'ID:' + this._data.random_id;
+        this.club.active = this.type == 0
+        this.union.active = this.type == 1
+        this.sousuo.interactable = false;
+        if (this.type == 0) {
+            this.sousuo.interactable = true;
+            this.memberNum.string = this._data.club_members
+        }
+    }
+
+    async sousuoBtn() {
+        if (this.type == 0) {
+            await UIClubModel.mInstance.APIOrgClubCancleJoinClub(this._data.club_id);
+            this.close()
+        } else {
+
+        }
+    }
+    // update (dt) {}
+}

@@ -697,6 +697,14 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/createClub/UIJoinUnion",
     },
+    //确认加入联盟
+    UISearchJoin: {
+        UIType: UIType.Form,
+        Name: "UISearchJoin",
+        Bundle: null,
+        Path: "main/new_club/createClub/UISearchJoin",
+    },
+
     UIPlayerLookLabor: {
         UIType: UIType.Form,
         Name: "UIPlayerLookLabor",
@@ -886,6 +894,7 @@ export const UIDefine = {
         Path: "main/lobby/ui/UIMyPack",
         Title: "UIMine_Backpack"
     },
+
 
 
 }

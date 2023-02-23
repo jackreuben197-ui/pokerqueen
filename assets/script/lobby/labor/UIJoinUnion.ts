@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 20:22:17
+ * @LastEditTime: 2023-02-23 21:29:12
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -17,6 +17,7 @@ import ComFormTitle from "../../common/ComFormTitle";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import TabNode from "../../common/tabNode";
 import { ClubTabConfig, joinClubConfig, joinUnionConfig } from "../../frame/config/tabConfig";
+import { UIDefine } from "../../define/UIDefine";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -34,6 +35,11 @@ export default class UIJoinUnion extends BaseForm {
 
     @property(cc.Button)
     sousuo: cc.Button = null;
+
+    @property(cc.Node)
+    contentList: cc.Node = null;
+    @property(cc.Node)
+    joinNode: cc.Node = null;
     type = 0;
 
     tempString = ''
@@ -53,8 +59,41 @@ export default class UIJoinUnion extends BaseForm {
         this.tabNode.initData(this.type == 0 ? joinClubConfig : joinUnionConfig, this.titleNodeClick.bind(this), this)
         this.titleNodeClick(0);
         this.setText(this.search_id, this.type == 0 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
-        // this.initApplyList();
+        this.initApplyList();
+        this.tempString = ''
+        this.sousuo.interactable = false;
     }
+    async initApplyList() {
+        this.contentList.removeAllChildren();
+        await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
+        let data: any = Web_Org_Club_Player_Apply_List.Response.data
+        for (let index = 0; index < data?.items?.length; index++) {
+            const element = data?.items[index];
+            let item = cc.instantiate(this.joinNode);
+            item.parent = this.contentList;
+            this.initItem(item, element, async () => {
+                await UIClubModel.mInstance.APIOrgClubCancleJoinClub(element.id);
+                item.active = false;
+            })
+        }
+    }
+    initItem(node, data, cb) {
+        let name = node.getChildByName('name').getComponent(cc.Label)
+        name.string = data.club_name
+        let id = node.getChildByName('id').getComponent(cc.Label)
+        id.string = 'ID: ' + data.random_id
+
+        let icon = cc.find("iconMask/icon", node).getComponent(cc.Sprite)
+        WebImageHelper.SetHeadImage(icon, data.logo)
+        let current = cc.find("number/current", node).getComponent(cc.Label)
+        current.string = data.club_members
+        let total = cc.find("number/total", node).getComponent(cc.Label)
+        total.string = data.upper_limit;
+        node.active = true;
+        let join = node.getChildByName('join')
+        join.on(cc.Node.EventType.TOUCH_END, cb, this)
+    }
+
     titleNodeClick(customData) {
         this.searchNode.active = customData === 0;
         this.list.active = customData === 1;
@@ -94,6 +133,7 @@ export default class UIJoinUnion extends BaseForm {
         await UIClubModel.mInstance.APIOrgClubSearchByID(Number(this.tempString));
         let data: any = Web_Org_Club_Search_By_Id.Response.data
         if (data) {
+            UIComponent.open(UIDefine.UISearchJoin, { data: data, type: this.type })
         }
     }
     // update (dt) {}
