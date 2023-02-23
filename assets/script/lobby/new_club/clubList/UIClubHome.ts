@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 13:52:41
+ * @LastEditTime: 2023-02-23 14:53:55
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -44,7 +44,8 @@ export default class UIClubHome extends BaseForm {
 
     @property(cc.Button)
     createBtn: cc.Button = null;
-
+    _chessView
+    _loadingChessBiew
     _showTsMessIndex = 0;
     _lastGetId = 1
     _fistGetId = 1
@@ -80,6 +81,7 @@ export default class UIClubHome extends BaseForm {
         let data = APIOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
         this.initCoin();
+        this.initChessView()
 
     }
 
@@ -155,6 +157,7 @@ export default class UIClubHome extends BaseForm {
             }
         }
     }
+
     initTabBnts() {
         let createBtn: cc.Node = this.getChildNodeOrComponent('createBtn')
         createBtn.active = true
@@ -233,23 +236,23 @@ export default class UIClubHome extends BaseForm {
 
         UIComponent.open(UIDefine.UIClubCreateMatchHome, 0)
     }
-    // /**
-    //  * @method  牌局列表
-    //  */
-    // initChessView() {
-    //     if (!this._chessView && !this._loadingChessBiew) {
-    //         this._loadingChessBiew = true;
-    //         this.loadPrefab(UIDefine.UIMatchView.Path, (node: cc.Node) => {
-    //             this._loadingChessBiew = false;
-    //             node.parent = this.subView
-    //             let baseScript = node.getComponent(UIBase);
-    //             this._chessView = baseScript;
-    //             this._chessView.onShow(Game_Type.All, Table_Type.club);
-    //         })
-    //     } else if (this._chessView) {
-    //         this._chessView.onShow(Game_Type.All, Table_Type.club);
-    //     }
-    // }
+    /**
+     * @method  牌局列表
+     */
+    initChessView() {
+        if (!this._chessView && !this._loadingChessBiew) {
+            this._loadingChessBiew = true;
+            this.loadPrefab(UIDefine.UIMatchView.Path, (node: cc.Node) => {
+                this._loadingChessBiew = false;
+                node.parent = this.layout
+                let baseScript = node.getComponent(UIBase);
+                this._chessView = baseScript;
+                this._chessView.onShow(Game_Type.All, Table_Type.club);
+            })
+        } else if (this._chessView) {
+            this._chessView.onShow(Game_Type.All, Table_Type.club);
+        }
+    }
     /** ************************聊天逻辑********************************************** */
     /**
      * @method 聊天列表

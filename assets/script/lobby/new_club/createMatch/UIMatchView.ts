@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 14:00:31
+ * @LastEditTime: 2023-02-23 14:56:30
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIMatchView.ts
  */
 
@@ -29,34 +29,36 @@ export default class UIMatchView extends UIBase {
     sbTab: cc.Node = null;
     lbl_no: cc.Node = null;
     list: List = null;
-    tabNode: TabNode = null;
+    tabNode
     _gameType = null;
     _sbSelectType = null;
     _sbType = null;
     _sbData: Array<number> = null;
 
-    // _roomList = [
-    //     { _offset: 0, _total: 0, _reqing: false, _reqEnd: false, _list: [] },
-    //     { _offset: 0, _reqing: false, _reqEnd: false, _list: [] }
-    // ]
     _tableType = Table_Type.club
     _offset = 0;
     _total = 0
     _reqing = false
     _reqEnd = false
     _list = []
-    onLoad(): void {
-        this.onShow(0, 0)
-    }
-    async onShow(type: GameType = 0, tableType = Table_Type.club) {
-        super.onShow(type);
-        this._tableType = tableType;
-        // this._roomList = GC.data.lobby.roomList;
-        // this._curGameType = null;
-        this.clickGameType(type);
+    protected lateLoad(): void {
+        super.lateLoad()
+        this.gameTypeNode = this.getChildNodeOrComponent('gameTypeNode')
+        this.sbNode = this.getChildNodeOrComponent('sbNode')
+        this.lbl_no = this.getChildNodeOrComponent('lbl_no')
+        this.list = this.getChildNodeOrComponent('list', List)
         this.tabNode = this.getChildNodeOrComponent('tabNode', TabNode)
-        this.tabNode.initData(ClubTabConfig, this.titleNodeClick.bind(this), this)
+        this.sbTab = this.getChildNodeOrComponent('sbTab');
     }
+    async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
+        this.tabNode.initData(ClubTabConfig, this.titleNodeClick.bind(this), this)
+        this.clickGameType(0);
+        this.gameTypeNode.children.forEach((item, index) => {
+            this.bindClick(item, this.clickGameType, index);
+        })
+    }
+
     /**
      * 微 小 中  大
      * @param index 
@@ -66,21 +68,6 @@ export default class UIMatchView extends UIBase {
         this._sbData = dxmConfig[index].concat();
         this._sbData.unshift(0);
         this.initSbNode()
-    }
-
-    protected lateLoad(): void {
-        super.lateLoad();
-
-        this.list = this.getChildNodeOrComponent("list", List);
-        this.gameTypeNode = this.getChildNodeOrComponent("gameTypeNode");
-        this.sbNode = this.getChildNodeOrComponent("sbNode");
-        this.sbTab = this.sbNode.children[0];
-        this.list.scrollingCB = this.scrollingCB;
-        this.lbl_no = this.getChildNodeOrComponent("lbl_no");
-        this.gameTypeNode.children.forEach((item, index) => {
-            this.bindClick(item, this.clickGameType, index);
-        })
-
     }
     /**
      * @method 点击游戏类型
