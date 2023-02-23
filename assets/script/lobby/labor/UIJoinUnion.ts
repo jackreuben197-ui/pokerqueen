@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 22:10:49
+ * @LastEditTime: 2023-02-23 22:53:19
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -18,6 +18,7 @@ import { ClubCache } from "../../frame/data/club/ClubCache";
 import TabNode from "../../common/tabNode";
 import { ClubTabConfig, joinClubConfig, joinUnionConfig } from "../../frame/config/tabConfig";
 import { UIDefine } from "../../define/UIDefine";
+import { EventName } from "../../config/EventName";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -50,6 +51,11 @@ export default class UIJoinUnion extends BaseForm {
         this.searchNode = this.getChildNodeOrComponent('searchNode');
         this.list = this.getChildNodeOrComponent('list');
     }
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+
+        this.listen(EventName.refreshApplyList, this.initList);
+    }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.type = param.type
@@ -59,6 +65,11 @@ export default class UIJoinUnion extends BaseForm {
         this.tabNode.initData(this.type == 0 ? joinClubConfig : joinUnionConfig, this.titleNodeClick.bind(this), this)
         this.titleNodeClick(0);
         this.setText(this.search_id, this.type == 0 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
+        this.initList();
+        this.tempString = ''
+        this.sousuo.interactable = false;
+    }
+    initList() {
         if (this.type == 0) {
             this.initApplyList();
 
@@ -66,8 +77,6 @@ export default class UIJoinUnion extends BaseForm {
             this.initUnionList()
         }
 
-        this.tempString = ''
-        this.sousuo.interactable = false;
     }
     async initApplyList() {
         this.contentList.removeAllChildren();
@@ -106,21 +115,24 @@ export default class UIJoinUnion extends BaseForm {
         club.active = false
         let union = node.getChildByName('union')
         union.active = false
-        node.getComponent('Rectangle').active = index % 2 != 0
+        let flag = index % 2 != 0
+        node.getChildByName('Rectangle').active = flag
+        node.getChildByName('Rectangle1').active = !flag
         if (this.type == 0) {
             let name = club.getChildByName('name').getComponent(cc.Label)
             name.string = data.club_name
             let id = club.getChildByName('id').getComponent(cc.Label)
             id.string = 'ID: ' + data.random_id
             let num = club.getChildByName('num').getComponent(cc.Label)
-            num.string = data.club_members
+
+            num.string = `${i18nMgr.Get('UIGuild_Member')} :${data.club_members}`
             club.active = true
 
         } else {
             let name = union.getChildByName('name').getComponent(cc.Label)
             name.string = data.club_name
             let id = union.getChildByName('id').getComponent(cc.Label)
-            id.string = 'ID: ' + data.random_id
+            id.string = 'ID: ' + data.tribe_random_id
             union.active = true;
         }
         let icon = cc.find("Round", node).getComponent(cc.Sprite)
@@ -166,6 +178,7 @@ export default class UIJoinUnion extends BaseForm {
 
 
     }
+
     async sousuoBtn() {
 
         if (this.type == 0) {
@@ -176,7 +189,7 @@ export default class UIJoinUnion extends BaseForm {
             }
         } else {
             await UIClubModel.mInstance.APIOrgTribeSearchByID(Number(this.tempString));
-            let data: any = Web_Org_Club_Search_By_Id.Response.data
+            let data: any = APIOrgTribeSearchByID.Response.data
             if (data) {
                 UIComponent.open(UIDefine.UISearchJoin, { data: data, type: this.type })
             }

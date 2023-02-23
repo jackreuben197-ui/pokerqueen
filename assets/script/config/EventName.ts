@@ -3,7 +3,7 @@
  * @Date: 2022-10-24 16:03:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-31 15:28:43
+ * @LastEditTime: 2023-02-23 22:24:38
  * @FilePath: /pokerqueen/assets/script/config/EventName.ts
  */
 export const enum EventName {
@@ -39,5 +39,6 @@ export const enum EventName {
     refreshClubTitle = 'refreshClubTitle',
     refreshShareMatch = 'refreshShareMatch',
     selectMttWwllet = 'selectMttWwllet',  //选择钱包
+    refreshApplyList = 'refreshApplyList'  //加入俱乐部或者加入联盟
 
 }

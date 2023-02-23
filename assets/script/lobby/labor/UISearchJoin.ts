@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 21:36:59
+ * @LastEditTime: 2023-02-23 22:50:56
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UISearchJoin.ts
  */
 
@@ -13,6 +13,8 @@ import ComFormTitle from "../../common/ComFormTitle";
 import TabNode from "../../common/tabNode";
 import { UIClubModel } from "./UIClubModel";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import EventEmitter = require("events");
+import { EventName } from "../../config/EventName";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -60,7 +62,7 @@ export default class UISearchJoin extends BaseForm {
         let title = this.type == 0 ? "club_3" : "UIClub_TribeJoin"
         this.comFormTitle.initData(title, this);
         WebImageHelper.SetHeadImage(this.Round, this._data.logo)
-        this.nickName.string = this._data.club_name;
+        this.nickName.string = this._data.club_name || this._data.name;
         this.id.string = 'ID:' + this._data.random_id;
         this.club.active = this.type == 0
         this.union.active = this.type == 1
@@ -70,15 +72,19 @@ export default class UISearchJoin extends BaseForm {
             this.memberNum.string = this._data.club_members
         }
     }
-
+    editBoxChange() {
+        this.sousuo.interactable = this.contentEdit.string != ''
+    }
     async sousuoBtn() {
         if (this.type == 0) {
-            await UIClubModel.mInstance.APIOrgClubCancleJoinClub(this._data.random_id);
-            this.close()
+            await UIClubModel.mInstance.APIOrgClubJoinClub(this._data.club_id);
+            this.post(EventName.refreshApplyList)
         } else {
             let parms: any = { tribe_random_id: this._data.random_id, contact: this.contentEdit.string, club_id: ClubCache.club_id };
             await UIClubModel.mInstance.APIOrgJoinTrip(parms)
+            this.post(EventName.refreshApplyList)
         }
+        this.close()
     }
     // update (dt) {}
 }
