@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 14:56:30
+ * @LastEditTime: 2023-02-23 15:53:40
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIMatchView.ts
  */
 
@@ -45,7 +45,7 @@ export default class UIMatchView extends UIBase {
         super.lateLoad()
         this.gameTypeNode = this.getChildNodeOrComponent('gameTypeNode')
         this.sbNode = this.getChildNodeOrComponent('sbNode')
-        this.lbl_no = this.getChildNodeOrComponent('lbl_no')
+        this.lbl_no = this.getChildNodeOrComponent('noDataTip')
         this.list = this.getChildNodeOrComponent('list', List)
         this.tabNode = this.getChildNodeOrComponent('tabNode', TabNode)
         this.sbTab = this.getChildNodeOrComponent('sbTab');
@@ -91,7 +91,7 @@ export default class UIMatchView extends UIBase {
     clickSb(index) {
         this._sbType = index
         this.sbNode.children.forEach((item, index) => {
-            item.getChildByName("lbl").opacity = this._sbType == index ? 255 : 75
+            item.getChildByName("lbl").color = this._sbType == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
         })
         this.reqDataAgain();
     }
