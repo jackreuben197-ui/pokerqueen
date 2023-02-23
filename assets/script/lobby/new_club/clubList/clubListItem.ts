@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:36:47
+ * @LastEditTime: 2023-02-23 11:20:42
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/clubListItem.ts
  */
 
@@ -42,14 +42,19 @@ export default class clubListItem extends UIBase {
     }
     initView() {
         cc.find('messLayout/name', this.node).getComponent(cc.Label).string = this._data.club_name
-        cc.find('messLayout/id', this.node).getComponent(cc.Label).string = 'ID:' + this._data.random_id
+        cc.find('id', this.node).getComponent(cc.Label).string = 'ID:' + this._data.random_id
         cc.find('table/data', this.node).getComponent(cc.Label).string = this._data.tables
         cc.find('people/data', this.node).getComponent(cc.Label).string = this._data.club_members
 
-        let icon = cc.find('iconMask/icon', this.node);
+        let icon = cc.find('Round', this.node);
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo)
-        // this.node['info'] = this._data;
         this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
+        let iconRole = cc.find('messLayout/hg', this.node);
+        if (this._data.user_level == 0) {
+            iconRole.active = false;
+            return;
+        }
+        ClubCache.setRoleType(iconRole.getComponent(cc.Sprite), this._data.user_level)
     }
 
 

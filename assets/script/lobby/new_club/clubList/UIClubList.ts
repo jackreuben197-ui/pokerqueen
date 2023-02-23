@@ -3,12 +3,12 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-20 10:47:44
+ * @LastEditTime: 2023-02-23 11:37:55
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
 import { UIDefine } from "../../../define/UIDefine";
-import { clubListConfig } from "../../../frame/data/rate/RateConfig";
+import { clubListConfig, memberSortConfig } from "../../../frame/data/rate/RateConfig";
 import { GameCache } from "../../../game/GameCache";
 import { StringHelper } from "../../../helper/StringHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
@@ -30,18 +30,15 @@ export default class UIClubList extends BaseForm {
     @property(cc.PageView)
     pageViews: cc.PageView = null;
 
-    @property(cc.Node)
-    dropDownBox: cc.Node = null;
-
-
     @property(cc.Label)
     num: cc.Label = null;
     topNode: cc.Node
     pageNode: cc.Node
     listNode: cc.Node
     sortNode: cc.Node
+    dropNode_lbl: cc.Label
     listType = 2;
-    _dropDownBox = null;
+    _selectIndex = 0;
     protected lateLoad(): void {
         super.lateLoad();
         this.topNode = this.getChildNodeOrComponent("topNode");
@@ -50,33 +47,20 @@ export default class UIClubList extends BaseForm {
         this.pageNode.active = this.listType == 2
         this.listNode.active = this.listType == 1
         this.sortNode = this.getChildNodeOrComponent("sortNode");
-        // this._dropDownBox = cc.instantiate(this.dropDownBox);
-        // this._dropDownBox.parent = this.listNode
-        // this._dropDownBox.position = cc.v3(230, 690, 0);
-        // this._dropDownBox.width = 629
-
+        this.dropNode_lbl = this.getChildNodeOrComponent("dropNode_lbl", cc.Label);
     }
-
-    selectSort(data) {
-        // this._sort_type = data.model
-        // if (this._sort_type == this._info.user_level) return
-        // this.requestData();
-    }
-
-
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-        this.dropDownBox.getComponent('dropDownBox').initData(clubListConfig, this.selectSort.bind(this))
-        this.dropDownBox.active = this.listType == 1
         await UIClubModel.mInstance.APIOrgClubGet()
         let data: any = Web_Org_Club_Get.Response.data
         this.num.string = data.length;
         this.initListNode(data)
         this.initPageNode(data)
         this.initTop()
+        this.setText(this.dropNode_lbl, memberSortConfig[this._selectIndex].desc);
     }
     initTop() {
-        let icon = cc.find('iconMask/icon', this.topNode).getComponent(cc.Sprite);
+        let icon = cc.find('Round', this.topNode).getComponent(cc.Sprite);
         WebImageHelper.SetHeadImage(icon, GameCache.Instance.headPic)
         this.topNode.getChildByName('name').getComponent(cc.Label).string = StringHelper.LengthNick(Web_User_Info.Response.data.user.nickname);
         this.topNode.getChildByName('id').getComponent(cc.Label).string = 'ID:' + Web_User_Info.Response.data.user.un_id
@@ -93,9 +77,15 @@ export default class UIClubList extends BaseForm {
             clubListItem.getComponent('clubListItem').initData(element);
         }
     }
+    openDropDownBox() {
+        UIComponent.open(UIDefine.dropDownBoxNew, { data: memberSortConfig, index: this._selectIndex, cb: this.selectSort.bind(this) })
+    }
+    selectSort(data, index) {
+        this._selectIndex = index;
+        this.setText(this.dropNode_lbl, data.desc);
+    }
+
     initPageNode(clubList) {
-        let menberlist = this.pageNode.getChildByName('PageView');
-        let content = cc.find('view/content', menberlist);
         this.pageViews.removeAllPages();
         for (let index = 0; index < clubList.length; index++) {
             const element = clubList[index];
@@ -124,7 +114,6 @@ export default class UIClubList extends BaseForm {
         this.listNode.active = this.listType == 1
         union.active = this.pageNode.active
         list.active = this.listNode.active
-        this.dropDownBox.active = this.listType == 1
     }
 
 }
