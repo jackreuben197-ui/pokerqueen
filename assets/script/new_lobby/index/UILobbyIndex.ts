@@ -5,6 +5,7 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { Bundle_Resources } from "../../manager/ResManager";
 import SceneManager from "../../manager/SceneManager";
 import { api_wallet_total, Web_Room_Center_Rooms, Web_User_Info, WWW } from "../../net/https/WebRequest";
+import LobbySession from "../../session/LobbySession";
 import AssetContext from "../../ui/component/AssetContext";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent from "../../ui/UIComponent";
@@ -21,28 +22,28 @@ export default class UILobbyIndex extends UIBasePlus {
     cc_Label$gc_num: cc.Label = null;
     cc_Label$welcome: cc.Label = null;
     cc_Sprite$head: cc.Sprite = null;
-    $message:cc.Node = null;
+    $message: cc.Node = null;
     //Part2
     $mtt: cc.Node = null;
-    $banner:cc.Node = null;
-    $game:cc.Node = null;
+    $banner: cc.Node = null;
+    $game: cc.Node = null;
     //table
-    $table:cc.Node = null;
+    $table: cc.Node = null;
     $GameTypeTabs: cc.Node = null;
     //list
-    $list:cc.Node = null;
-    $null:cc.Node = null;
+    $list: cc.Node = null;
+    $null: cc.Node = null;
     ////////////////////////////////////
-    room_item_pool:SimpleNodePool = null;
-    $ItemLobbyRoom:cc.Node = null;
+    room_item_pool: SimpleNodePool = null;
+    $ItemLobbyRoom: cc.Node = null;
     //room_offset = 0;
 
     //当前房间列表
-    curr_room_list:any[]  = null;
-    curr_room_offset:number = 0;
-    offset_end:boolean = false;
+    curr_room_list: any[] = null;
+    curr_room_offset: number = 0;
+    offset_end: boolean = false;
     //一次请求的房间数量限制
-    room_limit:number = 50;
+    room_limit: number = 50;
     ///////////////////////////////
     GameTypeTabs = {
         0: {
@@ -103,7 +104,7 @@ export default class UILobbyIndex extends UIBasePlus {
         })
     }
     //激活房间选项和房间列表
-    private activeRooms(boo:boolean){
+    private activeRooms(boo: boolean) {
         this.$table.active = boo;
         this.$list.active = boo;
     }
@@ -130,18 +131,18 @@ export default class UILobbyIndex extends UIBasePlus {
         UIComponent.open(UIDefine.UIEditInformation, null, { SceneUI: SceneManager.Instance.currUI });
     }
     //消息点击
-    onMessageClick(){
-        UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 2 },{ SceneUI: SceneManager.Instance.currUI });
+    onMessageClick() {
+        UIComponent.open(UIDefine.UIMyMessage, { from: 0 }, { SceneUI: SceneManager.Instance.currUI });
     }
     //banner点击
-    onBannerClick(){
+    onBannerClick() {
         console.log("onBannerClick");
     }
     //游戏入口点击
-    onGameClick(){
+    onGameClick() {
         console.log("onGameClick");
     }
-    
+
     //mtt入口点击
     onMTTClick() {
         UIComponent.open(UIDefine.MttListForm, null, { SceneUI: SceneManager.Instance.currUI })
@@ -149,7 +150,7 @@ export default class UILobbyIndex extends UIBasePlus {
     //游戏类型页签点击
     onGameTypeTabClick(button: cc.Button) {
         let index = button.node["index"];
-        if(this.gametype_status == index) return;
+        if (this.gametype_status == index) return;
         this.gametype_status = index;
         this.resetCurrRoom();
         this.reqRooms();
@@ -163,7 +164,7 @@ export default class UILobbyIndex extends UIBasePlus {
         this.reqWalletTotal();
     }
     //重置当前房间的数据
-    resetCurrRoom(){
+    resetCurrRoom() {
         this.curr_room_offset = 0;
         this.curr_room_list = [];
         this.offset_end = false;
@@ -178,21 +179,27 @@ export default class UILobbyIndex extends UIBasePlus {
         ).then(
             (res: any) => {
 
-                this.cc_Label$uc_num.string = `${res.data.usdt_total}`;
-                this.cc_Label$gc_num.string = `${res.data.tribe_total}`;
-                this.reqRooms();
+                this.cc_Label$uc_num.string = `${res.data.usdt_total / 100}`;
+                this.cc_Label$gc_num.string = `${res.data.tribe_total / 100}`;
+                this.reqLanguageTemplete();
             },
             (res: any) => {
-                this.reqRooms();
+                this.reqLanguageTemplete();
             }
         )
     }
+
+    async reqLanguageTemplete() {
+        await LobbySession.APIConfig_Multi_Language_Template();
+        this.reqRooms();
+    }
+
     //请求所有房间  
     reqRooms() {
 
         console.log("......reqRooms", this.gametype_status);
 
-        if(this.offset_end){
+        if (this.offset_end) {
             console.log("请求到头");
             return;
         }
@@ -213,18 +220,18 @@ export default class UILobbyIndex extends UIBasePlus {
                 this.activeRooms(true);
                 this.cleanList();
                 //判断数据长度0
-                if(res.data.total == 0){
-                    this.$table.x =  (this.gametype_status == 0) ? 2000 : 0;
+                if (res.data.total == 0) {
+                    this.$table.x = (this.gametype_status == 0) ? 2000 : 0;
                     this.$null.parent = this.$list;
-                }else{
-                    this.$table.x =  0;
+                } else {
+                    this.$table.x = 0;
                     this.$null.parent = null;
                     this.curr_room_list.push(...res.data.records);
                     this.refreshRooms();
                 }
-                if(res.data.total > this.curr_room_list.length){
+                if (res.data.total > this.curr_room_list.length) {
                     this.curr_room_offset += this.room_limit;
-                }else{
+                } else {
                     this.offset_end = true;
                 }
             },
@@ -235,36 +242,36 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     //////////////////////////////////
     //清理列表
-    cleanList(){
-        this.$list.children.forEach(item =>{
-            if(item.getComponent(ItemLobbyRoom)){
+    cleanList() {
+        this.$list.children.forEach(item => {
+            if (item.getComponent(ItemLobbyRoom)) {
                 this.room_item_pool.BackNode(item);
             }
         })
         this.$list.removeAllChildren();
     }
     //刷新显示房间列表 
-    refreshRooms(){
+    refreshRooms() {
         console.log("刷新显示房间列表");
-        if(this.curr_room_list.length){
-            this.curr_room_list.forEach((room,index) => {
-                let item_node:cc.Node = this.room_item_pool.GetNode();
+        if (this.curr_room_list.length) {
+            this.curr_room_list.forEach((room, index) => {
+                let item_node: cc.Node = this.room_item_pool.GetNode();
                 item_node.parent = this.$list;
-                let item_sc:ItemLobbyRoom = item_node.getComponent(ItemLobbyRoom);
+                let item_sc: ItemLobbyRoom = item_node.getComponent(ItemLobbyRoom);
                 item_sc.onShow(room);
-                item_node.on("click",this.onRoomClick,this);
+                item_node.on("click", this.onRoomClick, this);
                 item_sc.index = index;
             });
         }
     }
-    onRoomClick(button:cc.Button){
+    onRoomClick(button: cc.Button) {
         let sc = button.node.getComponent(ItemLobbyRoom);
-        if(sc.hasClub){
+        if (sc.hasClub) {
             //sc.index
-            console.log("房间",sc.index);
+            console.log("房间", sc.index);
 
             GameUtil.EnterRoomAPI(this.curr_room_list[sc.index]);
-        }else{
+        } else {
             UIComponent.Instance.ToastLanguage("error2005");
         }
     }

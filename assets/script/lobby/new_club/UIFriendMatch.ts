@@ -133,7 +133,8 @@ export default class UIFriendMatch extends UIBase {
         this.joinBtnBg.opacity = this.EditBox.string.length == 6 ? 255 : 25
     }
     applyJoin() {
-        UIComponent.open(UIDefine.UIMine_Message)
+        //UIComponent.open(UIDefine.UIMine_Message)
+        UIComponent.open(UIDefine.UIMyMessage, { from: 2 });
     }
     async joinMatch() {
 
@@ -147,8 +148,8 @@ export default class UIFriendMatch extends UIBase {
         }
     }
     openMessageList() {
-        UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 0 });
-
+        //UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 0 });
+        UIComponent.open(UIDefine.UIMyMessage, { from: 2 });
     }
     // update (dt) {}
 }

@@ -727,14 +727,14 @@ export const UIDefine = {
         UIType: UIType.CommonUI,
         Name: "UIAgentLink",
         Bundle: null,
-        Path: "main/new_club/ui/UIAgentLink",
+        Path: "main/lobby/vip/link/UIAgentLink",
     },
     //解绑贵宾
     UIAgentUnlink: {
         UIType: UIType.CommonUI,
         Name: "UIAgentUnlink",
         Bundle: null,
-        Path: "main/new_club/ui/UIAgentUnlink",
+        Path: "main/lobby/vip/link/UIAgentUnlink",
     },
     //贵宾管理
     UIClubVipManage: {
@@ -886,6 +886,22 @@ export const UIDefine = {
         Path: "main/lobby/ui/UIMyPack",
         Title: "UIMine_Backpack"
     },
+    //我的消息
+    UIMyMessage: {
+        UIType: UIType.Form,
+        Name: "UIMyMessage",
+        Bundle: null,
+        Path: "main/lobby/message/UIMyMessage",
+        Title: "UIMine_MsgSummary"
+    },
+    //系统消息面板
+    UIMsgSystem: {
+        UIType: UIType.Form,
+        Name: "UIMsgSystem",
+        Bundle: null,
+        Path: "main/lobby/message/UIMsgSystem",
+    },
+
 
 
 }

@@ -1,4 +1,4 @@
-
+UserLanguage=Simplified Chinese^English^Traditional Chinese^Português
 errorDefault=Failed to connect, please try again later. 
 error0=Success
 error995=Invalid request
@@ -2122,7 +2122,7 @@ MsgInfo_2=The {0} club you created was not approved.
 MsgInfo_3=Your club number was adjusted to {0} people
 MsgInfo_2000=Your club percentage was adjusted to {0}
 MsgInfo_5=You receive {1} Union coin revenue from {0} game 
-MsgInfo_2001=Your club was moved to {0} Union , please kindly note
+
 MsgInfo_7=Your request to change your transaction method was reviewed and approved
 MsgInfo_8=Your request to change the transaction method was rejected
 MsgInfo_9=Your transaction method becomes {0}
@@ -2132,13 +2132,10 @@ MsgInfo_12=Your application to join the {0} Union was rejected
 MsgInfo_13=Your club has reached the maximum number of members and can't be added more
 MsgInfo_14=Your Club subordinate member can't recharge, please contact customer service
 MsgInfo_15=You received {0} Union coin for your performance bonus
-MsgInfo_2002=Your club ID was changed to '{0}'
 MsgInfo_21=Player {0} exited the club
-MsgInfo_5000=Congratulations for creating {0}, Union customer service will contact you as soon as possible.
-MsgInfo_5001=The creation of {0} club failed, {1}, if you have questions, please contact the Union customer service
 MsgInfo_201=The {0} Union you created was reviewed and approved
 MsgInfo_202=The {0} Union you created was rejected
-MsgInfo_5002={0} club joins {1} Union 
+
 MsgInfo_204=Your club was removed from the {0} Union 
 MsgInfo_205=The number of your clubs was adjusted to {0}
 MsgInfo_206={0} club applied to join {1} Union 
@@ -2163,8 +2160,6 @@ MsgInfo_4008=You have been restored to withdraw, enjoy your game!
 MsgInfo_407=We have dealt with your feedback, thanks for your support and trust.
 MsgInfo_408={0}
 MsgInfo_601=Your recharge of {0} Union coin has arrived
-MsgInfo_3000=You applied for conversion of {0} {1} successfully
-MsgInfo_3001=Your application to withdraw {1} Union coin was successful
 MsgInfo_604=Your wire to {0} player has arrived. {1} Union coin is already in their account.
 MsgInfo_605=Player {0} withdrew {1} chips, please review
 MsgInfo_606=You received {0} Union coin transferred by player {1}
@@ -2422,17 +2417,6 @@ Tips_UIClub_FundGive_OrderConfirm=Do you agree with user {0}(ID:{1})'s request t
 Tips_Withdraw_Limit=Minimum {0} chips, maximum {1} chips
 Tips_Withdraw_Confirm=Do you want to submit a order to withdraw {0} chips?
 Tips_UIClub_FundTake_OrderConfirm=Do you agree with user {0}(ID:{1})'s request to withdraw {2} chips?
-MsgInfo_2003=[Recharge request] The player {0} is requesting to recharge {1} chips
-MsgInfo_2004=[Withdrawal request] The player {0} is requesting to withdraw {1} chips
-MsgInfo_1007=[Tournament Request] {0} Request Registration {2} {1}
-MsgInfo_3003=Request for registration {2} {1} Completed, please join the game on time
-MsgInfo_3004=Collect {0} VIP regular table service fee {2} share {2}
-MsgInfo_3005=Collect {0} VIP gaming insurance {2} share
-MsgInfo_3006=Collect {0} VIP game items {2} share
-MsgInfo_3007=Collect {0} MTT {2} rakeback
-MsgInfo_3008=Collect {0} regular table {2} rackback
-MsgInfo_3011=Collect {0} VIP match service fee {2} share
-MsgInfo_3012=Collect {0} VIP game items {2} share
 adaptation20080=You've agreed to ## withdraw ## chips
 adaptation20082=You've agreed to ## recharge ## chips
 Tips_UIClub_FundRecharge_InputError=Input number of participants Error
@@ -2441,8 +2425,8 @@ Tips_UIClub_FundRecharge_RechargeConfirm=Recharge {0} chips?
 Tips_UIMine_UserInfoSettingNick_ChangedName=Confirm in using {0} diamonds to edit username？
 MsgInfo_625=You've registered for {0} tournament and used {1} chips
 adaptation10334=Declined
-MsgInfo_2005=Your request for recharge was rejected, please contact the customer service of the club if you have any questions
-MsgInfo_2006=Your request for withdrawal was rejected, please contact the customer service of the club if you have any questions
+
+
 adaptation20083=You've refused to ## recharge ## chips
 adaptation20084=You've refused to ## withdraw ## chips
 adaptation20085=Agreed
@@ -2701,7 +2685,7 @@ UIBackDiolg_Iphonetips=Please enter an accurate mobile number to avoid customer 
 UIBackDiolg_textContent03=Use {0}?
 UIMine_BackpackList_timeLimit=Expiration time:{0}^Expiration time: none
 UIBackDiolg_DaoCoin=Item value:
-MsgInfo_3002=Congratulations on your {1} rank in {0}, collect {2}
+
 FreeAni_001=Eat melon
 FreeAni_002=Hello everyone
 FreeAni_003=Proud
@@ -3446,7 +3430,6 @@ UIClub_InputLeagueIdTips=Enter the correct Union Id
 OpCodeString_SNATCHTREASUREAWARDD=Super 1
 MsgInfo_4010=Your application to create a club has not been approved, if you have any questions, please contact Union 's customer service
 UIHappyShop_HasGiveState=Prizes have been issued
-MsgInfo_3014=Congratulations, you have successfully redeemed your Super 1 prize {0} and received {1}.
 UIClub_Dividend_Ratio=Percentage of profit
 UIClub_PhoneOrCodeError=Cell phone number or verification code error
 WalletPlatform_Name=Name
@@ -3721,15 +3704,51 @@ UIGuild_MemberList_RemarkName=Note Title
 UIMTT_Listbuy1=Buy-In:
 UIMTT_Listbonus1=Prize
 UIMine_Paipu_handNum2={0} Hands
-MsgInfo_2007=The {0} club has modified the exchange rate
-MsgInfo_2008=You have become an administrator of the {0} club
-MsgInfo_2009=You have been removed as an administrator of the {0} club
-MsgInfo_2010=You have been removed from the {0} club
-MsgInfo_2011=Welcome to the {0} club
-MsgInfo_2012=Application to join the {0} club has been rejected
-MsgInfo_5003=Welcome to the {0} Union 
-MsgInfo_5004=Application to join the {0} Union has been rejected
-UIMine_MallShop_recharge=Are you sure you want to spend {0} to recharge {1} diamond(s)?
+MsgInfo_2001=Please be aware that your club has been transferred to the alliance {0}.
+MsgInfo_2002=Your club ID has been changed to '{0}'
+MsgInfo_2003=[Chips request] {0} is requesting to recharge {1} league coin
+MsgInfo_2004=[Withdrawal request] {0} is withdrawing {1} league coin
+MsgInfo_2005=Your request to recharge {0}{1} has been denied, please contact the league's customer service for more information.
+MsgInfo_2006=Your request to withdraw {0}{1} has been denied, please contact the club's customer service for more information.
+MsgInfo_2007=The club {0} administrator has updated the exchange rate chart, go check it out!
+MsgInfo_2008=Congratulations, you have become the administrator of club {0}!
+MsgInfo_2009=Unfortunately, your position as an administrator of club {0} has been terminated.
+MsgInfo_2010=Unfortunately, you have been removed from the club {0} by the administrator, please contact the club's customer service for more information.
+MsgInfo_2011=Welcome to the club {0}
+MsgInfo_2012=Your request to join the club {0} has been denied.
+MsgInfo_2013=Congratulations, you've become an VIP of the club {0}!
+MsgInfo_2014=Unfortunately, your VIP at the club {0} has been suspended.
+MsgInfo_2015=Your club {0} has successfully joined the league {0}
+MsgInfo_2016=All of your clubs {0} are no longer in the league {0}
+MsgInfo_2017=Your account has been frozen by club {0}, please contact the club's customer service if you have any questions.
+MsgInfo_1007=[Tournament Request] {0} for applying in {2} {1}
+MsgInfo_3000={0} released {0}{1} to you
+MsgInfo_3001=Your request to {0} club for {1}{2} withdrawals {1}{2} has been completed
+MsgInfo_3002=Congratulations for ranking {1} place and winning {2} in {0}
+MsgInfo_3003=Your request for {2} {1} admission has been confirmed, please join the tournament on time
+MsgInfo_3004=Receive {2} share of the VIP table service fee from {0} {2}
+MsgInfo_3005=Receive {2} from {0} for VIP table insurance
+MsgInfo_3006=Receive {2} share of VIP table items from {0}
+MsgInfo_3007=Receive {2} MTT rake from {0}
+MsgInfo_3008=Receive {2} regular table rake from {0}
+MsgInfo_3011=Receive {2} share of the VIP tournament service fee from {0}
+MsgInfo_3012=Receive {2} share of the VIP tournament items from {0}
+MsgInfo_3014=Congratulations, you've redeemed your {0} $1 prize and received {1}.
+MsgInfo_3016=Your request to club {0} for {1}{2} recharge has been done
+MsgInfo_3017=Your request to club {0} to exchange {1} to {2} has been completed
+MsgInfo_3018=Your request for {1}{2} recharge to club {0} has been completed
+MsgInfo_3019=Your request to club {0} for {1}{2} withdrawals has been completed
+MsgInfo_3020=Your request to club {0} to exchange {1} to {2} has been completed
+MsgInfo_5000=Congratulations! Your club {0} has been created, you will be contacted by the league's customer service shortly!
+MsgInfo_5001=Your request to create the club {0} failed, {1}, please contact the league's Customer Service for more details.
+MsgInfo_5002=The club {0} joined the league {1}
+MsgInfo_5003=Your application to join the league {0} has been approved
+MsgInfo_5004=Your request to join the league {0} has been denied
+MsgInfo_5005=Your club {0} has been frozen by the league {0}. If you have any questions, please contact the league's customer service
+MsgInfo_5006=Your request to recharge {0}{1} was rejected. If you have any questions, please contact the league's customer service
+MsgInfo_5007=Your request to withdraw {0}{1} has been rejected. If you have any questions, please contact the league's customer service
+MsgInfo_5008=Your request to exchange {0} to {1} has been rejected. If you have any questions, please contact the league's customer service
+UIMine_MallShop_recharge=Confirm spending {0} to recharge {1} diamond?
 UIMTT_PoolReward=Pool Rewards
 UIRoomCreate_RealTimeAudio=Realtime voice
 TexasGameAudio_seatdowntip=After you've sat down, you can join with your microphone
@@ -3774,7 +3793,7 @@ UIAUDIOVIEWTIPS006=Speaker on
 UIEXCHANGERECORD_exchangetips=exchange amount
 UIEXCHANGERECORD_receivetips=receive amount
 UIFriendsTable_EnterNumTips=Enter 6-digit room number for quick opening
-UIGuild_CoinType1=Scoreboard
+UIGuild_CoinType1=Chip
 UIGuild_CoinType2=UC
 UIGuild_CoinType3=GC
 UIMain_JoinGuildTips=Please join or create a guild first
@@ -3793,49 +3812,48 @@ UIFaceCollection_tips004=Liveness testing in progress
 UIFaceCollection_tips005=Please open your mouth
 UIFaceCollection_tips006=Please turn left
 UIFaceCollection_tips007=Please turn right
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UITEXAS_PLAYERSEATDOWNTIPS01=Requesting
+UIFriendsTable_CreateRoomTips=Launch a card game and invite friends to join
+UIFriendsTable_DataTimeError_30day=You can query data for up to 30 days
+UIFriendsTable_Winninglbl=Winnings
+UIFriendsTable_fee=fee
+UIFriendsTable_totalfee=total fee
+UIFriendsTable_playercount=total player
+UIGuild_SearchBtn=Search union
+UIGuild_RecordBtn=Application record
+UIGuild_SearchTips=Please enter the guild ID to search
+UIClub_AuditRecords_auto=Auto Reject
+UIGuild_MemberNumber=Number of members
+UIGuild_TitleName=Trade union name
+UIGuild_SearchUnionBtn=Search Federation
+UIGuild_ContactInfo=contact information
+UIFriendsTable_Create_NLH=No limit hold’em
+UIFriendsTable_Create_PLO=Pot Limit Omaha
+UIFriendsTable_Create_6P=Short Desk Omaha
+UIGuild_JoinUnionContactTips=Please leave contact information
+UIGuild_NoDescTips=No labor union explanation
+UIFACEDELECTION_TIPSSUC=Verification successful
+UIRoom_LimitTimeFreeFace=Free for a limited time
+UITexas_FaceRecogVerifying=
+UITexas_FaceRecogDaoJiShi=
+UITexas_FaceRecogSuccess=
+UITexas_FaceRecogTip1=
+UITexas_FaceRecogTip2=
+UITexas_FaceRecogTip3=
+UITexas_FaceRecogTip4=
+UITexas_FaceRecogTip5=
+UITexas_FaceRecogTip6=
+UITexas_FaceRecogTip7=
+UITexas_FaceRecogTip8=
+UITexas_FaceRecogTip9=
+UITexas_FaceRecogTip10=
+UITexas_FaceRecogTip11=
+UITexas_FaceRecogTip12=
+UIGuild_NoUnion=alliance does not exist
+UIGuild_CancelShare=unshare
+UIPaiJu_GameRhythm=
+UIPaiJu_GGMode=
+UIPaiJu_HHMode=
 
 
 

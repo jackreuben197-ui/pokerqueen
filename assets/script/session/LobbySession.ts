@@ -9,6 +9,7 @@ import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import GameUtil from "../game/util/GameUtil";
+import { i18nMgr } from "../i18n/i18nMgr";
 import HttpRequest from "../net/https/HttpRequest";
 import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
@@ -278,6 +279,24 @@ export default class LobbySession {
         this.RoomLanguageDic_CN = {};
         this.RoomLanguageDic_US = {};
         this.RoomLanguageDic_BR = {};
+    }
+
+    public static getLanguageValueByKey(key: string): string {
+        let dic = null;
+        switch (i18nMgr.language) {
+            case "cn":
+                dic = this.RoomLanguageDic_CN;
+                break;
+            case "pt":
+                dic = this.RoomLanguageDic_BR;
+                break;
+            case "en":
+                dic = this.RoomLanguageDic_US;
+                break;
+            // case "zh":
+            //     break;
+        }
+        return dic?.[key] || key;
     }
 }
 (window as any).LobbySession = LobbySession;

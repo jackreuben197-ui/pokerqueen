@@ -1,13 +1,13 @@
-import SimpleNodePool from "../../../common/MyNodePool";
+
 import { Text_Colors } from "../../../config/GameConfig";
 import { UIDefine } from "../../../define/UIDefine";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import GGCombobox from "../../../ui/component/GGCombobox";
+
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
-import BaseForm from "../../../ui/form/BaseForm";
+
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
-import ItemVipManage from "../ui/ItemVipManage";
+
 
 const { ccclass, property } = cc._decorator;
 

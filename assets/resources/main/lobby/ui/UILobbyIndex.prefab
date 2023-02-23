@@ -1639,7 +1639,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 67.56,
+      "width": 67.63,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -1691,8 +1691,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "UC",
-    "_N$string": "UC",
+    "_string": "GC",
+    "_N$string": "GC",
     "_fontSize": 46,
     "_lineHeight": 80,
     "_enableWrapText": true,

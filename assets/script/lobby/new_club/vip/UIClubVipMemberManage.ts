@@ -1,10 +1,11 @@
 import SimpleNodePool from "../../../common/MyNodePool";
 import { Member_Order_List, Text_Colors } from "../../../config/GameConfig";
-import { i18nMgr } from "../../../i18n/i18nMgr";
+import ItemVipManage from "../../../new_lobby/vip/link/ItemVipManage";
+
 import GGCombobox from "../../../ui/component/GGCombobox";
-import BaseForm from "../../../ui/form/BaseForm";
+
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
-import ItemVipManage from "../ui/ItemVipManage";
+
 
 const { ccclass, property } = cc._decorator;
 

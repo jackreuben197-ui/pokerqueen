@@ -3,11 +3,12 @@ import { Member_Order_List, Text_Colors } from "../../../config/GameConfig";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { Web_Club_Agent_UserList, Web_Club_Agent_UserListCover, WWW } from "../../../net/https/WebRequest";
+import ItemVipManage from "../../../new_lobby/vip/link/ItemVipManage";
 import GGCombobox from "../../../ui/component/GGCombobox";
 import GGSwitch from "../../../ui/component/GGSwitch";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
-import ItemVipManage from "../ui/ItemVipManage";
+
 
 const { ccclass, property } = cc._decorator;
 

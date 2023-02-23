@@ -16,7 +16,7 @@ export default class UIMyPack extends BaseFormPlus {
 
     //$ItemMall:cc.Node = null;
     $content: cc.Node = null;
-    $null: cc.Node = null;
+    $Null: cc.Node = null;
     $ItemMyPack: cc.Node = null;
     /////////////////////////////////////////////
     item_pool: SimpleNodePool = null;
@@ -32,7 +32,7 @@ export default class UIMyPack extends BaseFormPlus {
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.cleanList();
-        this.$null.active = false;
+        this.$Null.active = false;
         this.reqPackList();
     }
     regiterTouchEvents() {
@@ -61,7 +61,7 @@ export default class UIMyPack extends BaseFormPlus {
                     this.cleanList();
                     this.refreshList(res.data.list);
                 } else {
-                    this.$null.active = true;
+                    this.$Null.active = true;
                 }
             },
             (res: any) => {

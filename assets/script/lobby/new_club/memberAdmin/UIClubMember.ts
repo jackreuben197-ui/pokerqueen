@@ -388,7 +388,12 @@ export default class UIClubMember extends BaseForm {
                 break;
             case 2:
                 //解绑贵宾
-                UIComponent.open(UIDefine.UIAgentUnlink, { user: this._info.info.user_info, agent_id: this._agent_random_id });
+                if (this._info.info.agent_user_id > 0) {
+                    UIComponent.open(UIDefine.UIAgentUnlink, { user: this._info.info.user_info, agent_id: this._info.info.agent_user_id });
+                } else {
+                    //用户不存在
+                    UIComponent.Instance.ToastLanguage("error1107");
+                }
                 break;
             case 3:
                 //下线成员总数
