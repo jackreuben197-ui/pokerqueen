@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-20 10:25:28
+ * @LastEditTime: 2023-02-23 12:33:39
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -38,6 +38,8 @@ export default class UICreatelabor extends BaseForm {
     labelNum: cc.Label = null;
     @property(cc.Sprite)
     camera: cc.Sprite = null;
+    @property(cc.Sprite)
+    Round: cc.Sprite = null;
     iconUrl = null;
     private comFormTitle: ComFormTitle = null;
     commit: cc.Button = null;
@@ -52,7 +54,8 @@ export default class UICreatelabor extends BaseForm {
         this.editjieshao.string = ''
         this.xinxi.string = ''
         this.comFormTitle.initData('club_2', this);
-        this.camera.spriteFrame = AssetContext.getAsset('camera', AssetFold.texture_new_club)
+        this.camera.node.active = true
+        this.Round.node.active = false
         this.clubNamechange()
     }
     async commitClick() {
@@ -100,7 +103,9 @@ export default class UICreatelabor extends BaseForm {
         let icon: any = APIOrgClubUploadIcon.Response.data
         if (icon) {
             this.iconUrl = icon
-            WebImageHelper.SetHeadImage(this.camera, icon);
+            WebImageHelper.SetHeadImage(this.Round, icon);
+            this.camera.node.active = false
+            this.Round.node.active = true
         }
     }
 }
