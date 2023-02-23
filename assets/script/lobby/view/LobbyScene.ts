@@ -1,7 +1,9 @@
 const { ccclass, property } = cc._decorator;
 import GC from "../../frame/GameControl";
-import { Web_Misc_Banner_List } from "../../net/https/WebRequest";
+import { Web_Config_Global_Config, Web_Misc_Banner_List, WWW } from "../../net/https/WebRequest";
+import UILobbyIndex from "../../new_lobby/index/UILobbyIndex";
 import BaseScene from "../../ui/scene/BaseScene";
+import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
 import UILobbyMenu from "./UILobbyMenu";
 import UIMatchBanner from "./UIMatchBanner";
@@ -36,11 +38,13 @@ export default class LobbyScene extends BaseScene {
      * @return {*}
      */
     public async setLooby() {
-        await LobbyControl.getInstance().switchContent("UILobby");
+
+        await LobbyControl.getInstance().switchContent("UILobbyIndex","main/lobby/ui/");
+        //await LobbyControl.getInstance().switchContent("UILobby");
         //刷新banner数据 
-        this.refreshBanner();
-        //刷新房间的数据
-        this.refreshRoom();
+        //this.refreshBanner();
+        //一些配置请求准备
+        this.toReady();
     }
 
     //刷新banner
@@ -56,11 +60,18 @@ export default class LobbyScene extends BaseScene {
             UIMatchBanner.instance.onShow(res);
         })
     }
-    //刷新room
-    public refreshRoom(): void {
-        GC.data.lobby.reqLobbyGroupData();
-        // LobbyControl.getInstance().RequestListSummary({}).then((res) => {
-        //     UIMatchRoom.instance.onShow(res);
-        // })
+    private toReady(){
+        GC.data.lobby.reqLobbyGroupData(()=>{
+           this.refreshConfig();
+        });
+    }
+    private async refreshConfig(){
+        await WWW.Instance.CommonAPI({web_class:Web_Config_Global_Config});
+        this.readyComplete();
+    }
+    //大厅相关数据加载完成
+    private readyComplete(): void {
+        console.log("====== lobby readyComplete! ======");
+        UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").run();
     }
 }

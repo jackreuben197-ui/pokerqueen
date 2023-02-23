@@ -1,8 +1,11 @@
 
+import { UIDefine } from "../define/UIDefine";
 import { GameCache } from "../game/GameCache";
 import Seat from "../game/seat/Seat";
+import { i18nMgr } from "../i18n/i18nMgr";
 import HttpRequest from "../net/https/HttpRequest";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
+import UIComponent from "../ui/UIComponent";
 
 export class GM {
     private static __DebugSwitch: number[] = null;
@@ -27,27 +30,27 @@ export class GM {
     }
 
     //user/room 模拟数据
-    static Moni_user_room = 
-    {
-        "last_bring_out":null,
-        "return_table":false,
-        "wallet":[
-            {
-                "w_u_id":6727,
-                "club_id":47,
-                "tribe_id":3,
-                "gold":18900,
-                "gold_lock":0,
-                "wallet_status":3,
-                "gold_type":1,
-                "gold_currency":"USD",
-                "user_status":0,
-                "user_type":0,
-                "club_random_id":928776,
-                "club_name":"超级联盟"
-            }
-        ]
-    }
+    static Moni_user_room =
+        {
+            "last_bring_out": null,
+            "return_table": false,
+            "wallet": [
+                {
+                    "w_u_id": 6727,
+                    "club_id": 47,
+                    "tribe_id": 3,
+                    "gold": 18900,
+                    "gold_lock": 0,
+                    "wallet_status": 3,
+                    "gold_type": 1,
+                    "gold_currency": "USD",
+                    "user_status": 0,
+                    "user_type": 0,
+                    "club_random_id": 928776,
+                    "club_name": "超级联盟"
+                }
+            ]
+        }
 
     //MTT进入房间模拟数据
     static Moni_MTT_ServerMessageEnterRoom: { seat_count: number, rec: ServerMessageEnterRoom.AsObject } = {
@@ -99,62 +102,62 @@ export class GM {
                 ]
             },
             "playersList": [
-                {
-                    "seatId": 7,
-                    "userRid": 92955898,
-                    "action": 6,
-                    "cardsList": [
-                        17,
-                        24
-                    ],
-                    "name": "Player",
-                    "avatar": "http://static.awanptesting.com/image-normal/20220310094859-noCSy.png",
-                    "sex": 0,
-                    "chip": 10000,
-                    "handBet": 20000,
-                    "roundBet": 20000,
-                    "status": 1,
-                    "keepSeatLeftTime": -1,
-                    "buyInsuranceStep": 0,
-                    "buyInsuranceList": [
+                // {
+                //     "seatId": 7,
+                //     "userRid": 92955898,
+                //     "action": 6,
+                //     "cardsList": [
+                //         17,
+                //         24
+                //     ],
+                //     "name": "Player",
+                //     "avatar": "http://static.awanptesting.com/image-normal/20220310094859-noCSy.png",
+                //     "sex": 0,
+                //     "chip": 10000,
+                //     "handBet": 20000,
+                //     "roundBet": 20000,
+                //     "status": 1,
+                //     "keepSeatLeftTime": -1,
+                //     "buyInsuranceStep": 0,
+                //     "buyInsuranceList": [
 
-                    ],
-                    "isAutoop": false,
-                    "roundActioned": true,
-                    "hunterKill": 0,
-                    "hunterKillAward": 0,
-                    "hunterKillAwardOther": 0,
-                    "hunterHeadValue": 0,
-                    "vip": 0
-                },
-                {
-                    "seatId": 5,
-                    "userRid": 98123898,
-                    "action": 3,
-                    "cardsList": [
-                        0,
-                        0
-                    ],
-                    "name": "Player",
-                    "avatar": "http://static.awanptesting.com/image-normal/20220310094859-noCSy.png",
-                    "sex": 0,
-                    "chip": 30000,
-                    "handBet": 20000,
-                    "roundBet": 20000,
-                    "status": 1,
-                    "keepSeatLeftTime": -1,
-                    "buyInsuranceStep": 0,
-                    "buyInsuranceList": [
+                //     ],
+                //     "isAutoop": false,
+                //     "roundActioned": true,
+                //     "hunterKill": 0,
+                //     "hunterKillAward": 0,
+                //     "hunterKillAwardOther": 0,
+                //     "hunterHeadValue": 0,
+                //     "vip": 0
+                // },
+                // {
+                //     "seatId": 5,
+                //     "userRid": 98123898,
+                //     "action": 3,
+                //     "cardsList": [
+                //         0,
+                //         0
+                //     ],
+                //     "name": "Player",
+                //     "avatar": "http://static.awanptesting.com/image-normal/20220310094859-noCSy.png",
+                //     "sex": 0,
+                //     "chip": 30000,
+                //     "handBet": 20000,
+                //     "roundBet": 20000,
+                //     "status": 1,
+                //     "keepSeatLeftTime": -1,
+                //     "buyInsuranceStep": 0,
+                //     "buyInsuranceList": [
 
-                    ],
-                    "isAutoop": false,
-                    "roundActioned": false,
-                    "hunterKill": 0,
-                    "hunterKillAward": 0,
-                    "hunterKillAwardOther": 0,
-                    "hunterHeadValue": 0,
-                    "vip": 0
-                }
+                //     ],
+                //     "isAutoop": false,
+                //     "roundActioned": false,
+                //     "hunterKill": 0,
+                //     "hunterKillAward": 0,
+                //     "hunterKillAwardOther": 0,
+                //     "hunterHeadValue": 0,
+                //     "vip": 0
+                // }
             ],
             "myInfo": {
                 "chip": 10000,
@@ -267,7 +270,18 @@ export class GM {
             })
         }
     }
-
+    static OpenBackDialog() {
+        let dialog_param = {
+            title: i18nMgr.Get("UIBackDiolg_title04"),
+            content: i18nMgr.Get("UIBackDiolg_textContent03").replace("{0}", "富贵"),
+            cancelText: i18nMgr.Get("UIBackDiolg_Cancel_02"),
+            commitText: i18nMgr.Get("UIBackDiolg_Commit_02"),
+            knowText: i18nMgr.Get("UIBackDiolg_Konw_01"),
+            info: { prop_type: 2, game_prop: { prop_value: 100 } },
+            this: this
+        }
+        UIComponent.open(UIDefine.UIBackDialog, dialog_param);
+    }
 }
 (window as any).GM = GM;
 export var GM_Templete = {

@@ -104,11 +104,13 @@ export class ResManager {
                                     if (item instanceof cc.Prefab) {
                                         AssetContext.setAsset(bundleName, item.name, item);
                                         let ac = item.data?.getComponent(AssetContext);
+            
                                         if (ac) {
                                             item.data.children.forEach((item) => {
                                                 let sprite = item.getComponent(cc.Sprite);
                                                 if (sprite) {
                                                     AssetContext.setAsset(ac.fold, item.name, sprite.spriteFrame);
+
                                                 }
                                                 let sound = item.getComponent(cc.AudioSource);
                                                 if (sound) {

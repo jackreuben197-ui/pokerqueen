@@ -44,7 +44,7 @@ export class LobbyControl {
         2.2 点击主界面下方4个按钮 切换中间不同显示
             name: UILobby UIChat UICareer UIMine
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-    public async switchContent(name: string) {
+    public async switchContent(name: string,resPath:string = "main/lobby/prefab/") {
 
         if (this.curShowUI && name === this.curShowUI.name) {
             return;
@@ -59,7 +59,7 @@ export class LobbyControl {
                 this.curShowUI.getComponent(UIBase)?.onShow();
                 resolve(newUI);
             } else {
-                ResManager.Load(null, "main/lobby/prefab/" + name, cc.Prefab, (err, asset: cc.Prefab) => {
+                ResManager.Load(null, resPath + name, cc.Prefab, (err, asset: cc.Prefab) => {
                     if (err) {
                         return;
                     }

@@ -57,9 +57,11 @@ export default class AssetContext extends cc.Component {
 
     public static setAsset<T extends cc.Asset>(key: AssetFold | string, name: string, asset: T) {
 
+        
         if (key in AssetFold) {
 
             key = `${AssetFold[key]}|${asset.name}`;
+            
         } else {
 
             key = `${key}|${asset.name}`;

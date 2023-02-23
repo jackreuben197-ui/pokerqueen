@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 12:05:01
+ * @LastEditTime: 2023-02-20 11:07:10
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -18,11 +18,12 @@ import { APIOrgClubNotice, APIOrgClubUserInfo, APIOrgGetMessList, APIOrgGetNewMe
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../../helper/StringHelper";
 import UIBase from "../../../ui/UIBase";
-import { GameType, Game_Type, Table_Type } from "../../../game/util/GameUtil";
-import List from "../../../common/List";
+import { Game_Type, Table_Type } from "../../../game/util/GameUtil";
 import { EventName } from "../../../config/EventName";
 import { WalletType } from ".././pay/UIWalletLayer";
 import WalletModel from "./../pay/WalletModel";
+import PublicHelper from "../../../helper/PublicHelper";
+import UIBasePlus from "../../../ui/UIBasePlus";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -103,7 +104,11 @@ export default class UIClubHome extends BaseForm {
         super.regiterDispatchEvent();
 
         this.listen(EventName.refreshClubTitle, this.refreshData);
+    }
 
+    onCopyClick() {
+        //拷贝id号码
+        PublicHelper.copyToClipBoard(ClubCache.random_id);
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -164,7 +169,7 @@ export default class UIClubHome extends BaseForm {
         let icon = cc.find('iconMask/icon', messNode)
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), ClubCache.logo)
         cc.find('messLayout/nameNode/name', messNode).getComponent(cc.Label).string = ClubCache.club_name;
-        cc.find('messLayout/id', messNode).getComponent(cc.Label).string = ClubCache.random_id;
+        cc.find('messLayout/id', messNode).getComponent(cc.Label).string = 'ID:' + ClubCache.random_id;
         cc.find('people/data', messNode).getComponent(cc.Label).string = ClubCache.club_members;
         cc.find('table/data', messNode).getComponent(cc.Label).string = ClubCache.club_table;
         let hg = cc.find('messLayout/nameNode/hg', messNode)

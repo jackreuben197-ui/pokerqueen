@@ -841,6 +841,7 @@ export class Web_Config_Global_Config extends WebCommon {
         android_mtt_switch?: number,//androidMTT功能开关 1 开 2 关
         android_pay_switch?: number,//android支付功能开关 1 开 2 关
         apple_mtt_switch?: number,//iosMTT功能开关 1 开 2 关
+        support_email?:string,
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -2146,7 +2147,7 @@ export class API_BAG_CURRENT_PENDANT_LIST extends WebCommon {
 }
 
 /// <summary>
-/// 我得背包
+/// 我的背包
 /// </summary>
 export class Web_Prop_User_Prop_List extends WebCommon {
     //接口地址
@@ -2935,7 +2936,22 @@ export class api_roomcenter_history_group extends WebCommon {
 export class api_stats_mtt_room_detail extends WebCommon {
     static API: string = "/api/stats/mtt_room_detail/{id}";
 }
-
+//玩家总钱包
+export class api_wallet_total extends WebCommon {
+    static API: string = "/api/user/wallet_total";
+}
+//钻石商城列表
+export class Web_MallShopList extends WebCommon {
+    static API: string = "/api/prop/shopping/goods_list";
+}
+//背包物品使用
+export class Web_Prop_User_Prop_Used extends WebCommon {
+    static API: string = "/api/prop/user_prop/used";
+}
+//钻石商城购买
+export class Web_Mall_Buy extends WebCommon {
+    static API: string = "/api/prop/shopping/goods_buy";
+}
 
 
 /**

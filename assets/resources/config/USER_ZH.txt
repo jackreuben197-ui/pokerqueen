@@ -19,7 +19,7 @@ error1102=手机未注册
 error1103=手机已注册
 error1104=超过了IMEI限制
 error1105=禁止模拟器注册
-error1106=金豆数不足
+error1106=Union coin数不足
 error1107=用户不存在
 error1108=用户名非法,不能包含Emoji,@,%以及逗号(,)等违法字符
 error1109=用户名已经存在
@@ -35,7 +35,7 @@ error1208=公会基金冻结
 error1209=公会基金不足
 error1210=更改交易模式过于频繁,7天内只允许更改一次
 error1212=提豆订单不存在
-error1213=金豆数不在范围内或者不是100的倍数
+error1213=Union coin数不在范围内或者不是100的倍数
 error1214=输入金额已超出交收额度
 error1215=输入金额已超出公会基金
 error1300=公会已有联盟
@@ -77,10 +77,10 @@ error2006=玩家所属公会已被关闭
 error2007=玩家所属公会未绑定联盟
 error2008=玩家所属公会转移中或已被踢出
 error2009=用户已被踢出
-error2100=分享赚金豆功能没有开启
+error2100=分享赚Union coin功能没有开启
 error2101=请先加入公会，才可以成为推广员
 error2103=邀请码错误，请重新输入
-error2104=账户金豆数量不足！
+error2104=账户Union coin数量不足！
 error2105=您输入的二级密码有误
 error2106=邀请码注册失败！
 error2107=已通过邀请码注册过
@@ -89,7 +89,7 @@ error2108=支付订单不存在
 error2109=需要成为推广员才能查看
 error2110=绑定推广员上下级关系错误
 error2200=钱包已被停用
-error2201=提现金豆数在10,000~1,000,000范围内,并且是100的整数倍
+error2201=提现Union coin数在10,000~1,000,000范围内,并且是100的整数倍
 error2202=不支持该交易方式(支付宝)
 error2203=提款账号信息正在审核中，暂不能修改
 error2204=没有提款账户信息
@@ -140,20 +140,20 @@ roomError72_1=失败
 roomError78_1=失败
 roomError82_1=失败
 roomError86_1=失败
-roomError86_2=金豆不足
+roomError86_2=Union coin不足
 roomError90_1= 失败
 roomError118_1=超过上限
 roomError118_2=其他错误
 roomError143_1= 失败 
-roomError143_2=金豆不足
+roomError143_2=Union coin不足
 roomError148_1=失败
 roomError148_2=操作超时
 roomError153_1=失败
 roomError168_1=失败
 roomError171_1=服务器异常
 roomError171_2=前一个重购申请中
-roomError171_3=金豆不足
-roomError171_4=金豆不足
+roomError171_3=Union coin不足
+roomError171_4=Union coin不足
 roomError171_5= 申请成功，正在审核
 roomError171_6= 报名券不足
 roomError171_7= 重购关闭
@@ -162,32 +162,30 @@ roomError171_9=战队在公会信用不足
 roomError171_10= 拆分桌中，无法重购
 roomError175_22=弹出重购提示框
 roomError236_1= 失败 
-roomError236_2=金豆不足
+roomError236_2=Union coin不足
 roomError12_5=你已在比赛中，无法观战
-roomError28_1=金豆不足
-roomError28_3=超过最大可带入记分牌
+roomError28_1=Union coin不足
+roomError28_3=Excede a quantidade máxima de stacks que podem ser trazidas
 roomError28_9=您所在房间即将结束，无法继续带入
 roomError28_15=账号异常，无法进行游戏，请您联系管理员。
 roomError28_16=玩家所在公会被联盟踢出
 roomError28_17=公会、联盟处于关闭状态时不允许带入
 roomError300_2=钱包被锁定
-roomError300_2=金豆不足无法发弹幕
+roomError300_2=Union coin不足无法发弹幕
 roomError28_18=您的钱包已被冻结，请联系客服
-Text_TopRemind=金豆数量
+Text_TopRemind=Union coin数量
 Text_CanUsing=当前可提余豆
 Text_NoUsing=当前不可提余豆
 Text_Add=充豆
 Text_Trans=转豆
 Text_Getchips=提豆
 Text_RecordLine=记录
-Text_Approval=审批
 UILogin_BtnLogin=登 录
 UILogin_Register=注册账号
 UILogin_Forget=找回密码
 UILogin_Connect=联系客服
 UILogin_ChangeLine=切换线路
 UILogin_InputMoblie=请输入手机号
-UILogin_InputMail=请输入邮箱
 UILogin_InputPW=请输入密码
 UILogin_InputLocal=国家/地区
 UILogin_Code=请输入验证码
@@ -206,13 +204,12 @@ UILogin_RetrievePWD=找回密码
 UILogin_China=中国
 UILogin_USA=美国
 UILogin_Canada=加拿大
-UILogin_Canada=加拿大
 UILogin_Singapore=新加坡
 UILogin_Britain=英国
 UILogin_France=菲律宾
 UILogin_SelectLocal=选择地区
 UILogin_GLI=通过GLI认证
-UIMine_ShareGolden=分享赚金豆
+UIMine_ShareGolden=分享赚Union coin
 ShareItem1=成为推广员
 ShareItem2=业绩查询
 ShareItem3=推广员管理
@@ -230,9 +227,9 @@ UIMine_AchievementQuery=业绩查询
 MyAchie=我的业绩
 Mychips=我的返豆
 TimeItem=时间
-ToweekAch=本月业绩/记分牌
-SelectWeek=本月业绩(记分牌)^本月返豆(金豆)
-SelectAch=今日业绩(记分牌)^昨日返豆(金豆)
+ToweekAch=本月业绩/筹码
+SelectWeek=本月业绩(筹码)^本月返豆(Union coin)
+SelectAch=今日业绩(筹码)^昨日返豆(Union coin)
 UIClub_SelectProps=选择道具
 UIClub_SendPropsContent=是否发放{0}给{1}(ID:{2})？
 UIClub_SendPropsSucceed=发放成功
@@ -243,8 +240,8 @@ UIClub_Insurance_Share=保险分成
 UIClub_VIP_Insurance_Share=贵宾保险分成
 UIClub_Props_are_divided=道具分成
 UIClub_Service_fee_sharing=服务费分成
-UIClub_Alliance_issue=联盟发放
-UIClub_Alliance_recycling=联盟回收
+UIClub_league_issue=联盟发放
+UIClub_league_recycling=联盟回收
 UIMine_Wallet_MTT=MTT分成
 UIMine_WalletMyMTTId=比赛ID
 UIMine_WalletMyPaiId=牌局ID
@@ -350,7 +347,7 @@ UIMine_btn_VIP=VIP
 UIMine_btn_paipu=牌谱收藏
 UIMine_btn_record=我的战绩
 UIMine_btn_backpack=我的背包
-UIMine_btn_share=分享赚金豆
+UIMine_btn_share=分享赚Union coin
 UIMine_btn_message=我的消息
 UIMine_btn_fair=游戏公平
 UIMine_btn_setting=设置
@@ -361,8 +358,8 @@ UIMine_VIP_expire=有效期至
 UIMine_VIP_openVIP=开通会员立即享受特权
 UIMine_VIP_year=年
 UIMine_VIP_month=月
-UIMine_VIP_year_price=金豆/年
-UIMine_VIP_month_price=金豆/月
+UIMine_VIP_year_price=Union coin/年
+UIMine_VIP_month_price=Union coin/月
 UIMine_VIP_right=特权
 UIMine_VIP_upperLimit=上限
 UIMine_VIP_used=已用
@@ -407,9 +404,9 @@ UIMine_UserInfoSetting_btn_nick=昵称
 UIMine_UserInfoSetting_btn_gender=性别
 UIMine_UserInfoSettingNick_Placeholder=不超过12个汉字或字母
 UIMine_UserInfoSettingNick_InputName=输入昵称
-UIMine_UserInfoSettingNick_cost_title=消耗金豆:
-UIMine_UserInfoSettingNick_coin_left=我的金豆:
-UIMine_UserInfoSettingNick_tips=*首次更改昵称免费，之后每次消耗{0}金豆
+UIMine_UserInfoSettingNick_cost_title=消耗Union coin:
+UIMine_UserInfoSettingNick_coin_left=我的Union coin:
+UIMine_UserInfoSettingNick_tips=*首次更改昵称免费，之后每次消耗{0}Union coin
 UIMine_UserInfoSettingNick_title=修改昵称
 Save=保存
 UILobby_Menu_menu_btn_discover=发现
@@ -469,7 +466,7 @@ UIMine_RecordDetailForNormal_soxaxJz1=保险池
 UIMine_RecordDetailForNormal_oLEwo2wI=公会战绩
 UIMine_RecordDetailForNormal_RiDnNRPJ=玩家
 UIMine_RecordDetailForNormal_BYh6JqX4=牌型
-UIMine_RecordDetailForNormal_XpE4EVeO=奖励(金豆)
+UIMine_RecordDetailForNormal_XpE4EVeO=奖励(Union coin)
 UIMine_RecordDetailForNormal_kLk3czkP=名次
 UIMine_RecordDetailForNormal_CqIHdrgI=手数
 UIMine_RecordDetailForNormal_eUGoSk5Y=带入
@@ -493,17 +490,17 @@ UIOwner_3hvt5EXj=解散游戏
 UIOwner_GBUKP7d2=分享房间
 UIOwner_YSQJyJYp=设置
 UIOwner_BSRdHRe8=Muck开关
-UIOwner_1UwjmB0F=设置玩家可以带入的记分牌倍数
+UIOwner_1UwjmB0F=设置玩家可以带入的筹码倍数
 UIOwner_puEMtzn6=牌局延时（分钟）
 UIPause_sdXLZk7S=继续游戏
 UIPromptWifi_yujciRSe=网络请求失败,请检查您的网络
 UITexasRule_Ug7QXzjK=牌型提示
 UITexasRule_RlNZ1ysZ=玩法说明
 UITexasRule_1QEuiq2M=保险说明
-UIAddChips_dIyU7Svz=带入记分牌
+UIAddChips_dIyU7Svz=带入筹码
 UIAddChips_OhZuXhM0=小盲/大盲
-UIAddChips_zL0qp8UO=所需金豆:
-UIAddChips_1mIC7nGP=账户金豆:
+UIAddChips_zL0qp8UO=所需Union coin:
+UIAddChips_1mIC7nGP=账户Union coin:
 UIAutoOperation_DTQMhJtu=自动弃牌
 UIAutoOperation_zwTtLsjf=自动跟牌
 UIAutoOperation_Nq9t7pxs=自动Allin
@@ -536,9 +533,9 @@ UIClub_FundDetail_2SUn7PLM=基金收益记录
 UIClub_FundDetail_xYlV8VBZ=暂无数据
 UIClub_FundGive_B40BFWsR=请输入成员昵称
 UIClub_FundGiveSub_iNmQjMMj=发放基金
-UIClub_FundGiveSub_90RdvzTv=发放金豆数量：
-UIClub_FundGiveSub_6iXlkJGI=请输入金豆数量
-UIClub_FundRecharge_yioCCJHp=交收金豆：
+UIClub_FundGiveSub_90RdvzTv=发放Union coin数量：
+UIClub_FundGiveSub_6iXlkJGI=请输入Union coin数量
+UIClub_FundRecharge_yioCCJHp=交收Union coin：
 UIClub_FundRecharge_9Uo6D5gi=余豆
 UIClub_FundRecharge_9jO4mlS6=消耗
 UIClub_Info_RaQUXcSW=简介
@@ -560,50 +557,7 @@ UIClub_JoinQuery_ISNSnu1A=请输入公会ID
 UIClub_Mlistinfo_GiVUYG7E=数据统计
 UIClub_Mlistinfo_rRyW4JkW=入池率
 UIClub_Mlistinfo_zJ34Z3aQ=入池胜率
-UIClub_Quit=您是否要退出公会{0}?退出后钱包金豆将被回收
-UIClub_Join=加入工会
-UIClub_Approval=成员审批
-UIClub_Manage=公会管理
-UIClub_Look=查看公会
-UIClub_ApplyList=申请列表
-UIClub_MemberManage=成员管理
-UIClubRole_all=全部
-UIClubRole_manager=管理
-UIClubRole_vip=贵宾
-UIClubRole_member=成员
-UIClub_memberNum=总人数
-UIClub_Num=公会数量
-UIClub_Home=公会
-UIClub_JoinUnion=加入联盟
-UIClub_Table=牌桌
-UIClub_chet=聊天
-UIClub_openDotApply=开启免审批
-UIClub_noApply=暂无申请数据
-UIClub_mess=公会信息
-UIClub_Beizhu=备注
-UIClub_memberRole=成员角色
-UIClub_xxzl=详细资料
-UIClubData_ju=局数
-UIClubData_hand=手数
-UIClubData_C_USDT=充值usdt
-UIClubData_T_USDT=提现usdt
-UIClubData_C_GOLD=充值金豆
-UIClubData_T_GOLD=提现金豆
-UIClub_gameType=玩法类型
-UIClub_matchModel=牌局模版
-UIClub_inside=公会内部桌
-UIClub_outside=公会外部桌
-UIClub_beganMatch=立即开局
-UIClub_ownDiamond=余额：
-UIClub_payDiamond=消耗：
-UIClub_shareMatch=共享牌局
-UIClub_receiveMatch=接收牌局
-UIClub_Match=牌局
-UIClub_FastBangan=快速开局
-
-
-IClub_MatchHome=创建牌局
-UIClub_MatchTable=创建牌桌
+UIClub_Quit=您是否要退出公会{0}?退出后钱包Union coin将被回收
 adaptation11001=##分钟##秒
 adaptation11000=##天##小时##分钟##秒
 adaptation10000=##天##小时##分钟
@@ -704,12 +658,12 @@ adaptation10094=牌局收益
 adaptation10095=战绩流水返佣
 adaptation10096=平台代充支付渠道充豆
 adaptation10097=提豆记录
-adaptation10098=分享赚金豆返豆
+adaptation10098=分享赚Union coin返豆
 adaptation10099=请输入联系人的微信
 adaptation10100=长度超出
 adaptation10101=名称长度超出
-adaptation10102=金豆不足
-adaptation10103=请输入正确的金豆数目
+adaptation10102=Union coin不足
+adaptation10103=请输入正确的Union coin数目
 adaptation10104=充值成功
 adaptation10105=敬请期待
 adaptation10106=复制成功
@@ -848,7 +802,7 @@ adaptation10238=充豆
 adaptation10239=公会充值
 adaptation10240=平台充值
 adaptation10241=充值
-adaptation10242=未选中金豆数量或未输入想充值的金额
+adaptation10242=未选中Union coin数量或未输入想充值的金额
 adaptation10243=工商银行
 adaptation10244=提豆
 adaptation10245=充豆中
@@ -875,7 +829,7 @@ adaptation10265=提豆时间
 adaptation10266=返豆订单
 adaptation10267=返豆数量
 adaptation10268=返豆时间
-adaptation10269=系统赠送金豆##
+adaptation10269=系统赠送Union coin##
 adaptation10270=有误
 adaptation10271=请先填全信息
 adaptation10272=两次密码输入不相符
@@ -901,12 +855,12 @@ adaptation10291=您修改交易方式的申请已经审核通过
 adaptation10292=您修改交易方式的申请审核没有通过
 adaptation10293=您修改提豆账号信息的申请已经通过
 adaptation10294=您修改提豆账号信息的申请没有通过
-adaptation10295=金豆数不足
+adaptation10295=Union coin数不足
 adaptation10296=开始录音
 adaptation10297=停止录音
 adaptation10298=购买保险中
 adaptation10299=请选择要投保的牌
-adaptation10300=金豆不足
+adaptation10300=Union coin不足
 adaptation10301=功能尚未开放
 adaptation10302=继续游戏
 adaptation10303=暂停游戏
@@ -1391,19 +1345,19 @@ club_fund_4=松开可以加载更多
 club_fund_5=没有更多数据了
 club_fund_6=上拉可以加载更多
 club_fund_7=发放基金
-club_fund_8=交收(充值){0}金豆 
+club_fund_8=交收(充值){0}Union coin 
 club_fund_9=公会牌局收益
 club_fund_10=战绩流水返佣
 club_fund_11=平台代充支付渠道充豆
 club_fund_12=提豆记录
-club_fund_13=分享赚金豆返豆
+club_fund_13=分享赚Union coin返豆
 club_fund_14=发放成功
 club_fund_15=充值成功
-club_fund_16=请输入正确的金豆数目
-club_fund_17=金豆不足
+club_fund_16=请输入正确的Union coin数目
+club_fund_17=Union coin不足
 club_fund_18=联盟牌局分润收益
 club_fund_19=联盟牌局收益
-club_fund_20=交收(提现){0}金豆 
+club_fund_20=交收(提现){0}Union coin 
 club_creat_0=公会名字长度超出
 club_creat_1=请输入公会名称
 club_creat_2=请选择地区
@@ -1450,18 +1404,6 @@ club_0=您创建的公会正在审核中，不可创建其他公会。
 club_1=您创建的公会正在审核中，不可加入其他公会。
 club_2=创建公会
 club_3=加入公会
-club_Level=公会等级
-UIClub_DataAdmin=数据管理
-UIClub_ActiveAdmin=活动管理
-UIClub_MangerAdmin=管理员管理
-UIClub_IntoApply=带入申请
-UIClub_AddAdmin=添加管理员
-UIMine_BindPhone=绑定手机号
-UIMine_BindEmail=绑定邮箱
-UIMine_ChangePhone=更换手机号
-UIMine_ChangeEmail=更换邮箱
-UIMine_BindThird=第三方账号绑定
-UIMine_SafeAdmin=安全管理
 UIClub_RoomCreat=开局
 UIClub_Info=公会
 UIClub_InfoIntroduce=公会简介
@@ -1473,6 +1415,7 @@ UIClub_TribeCreat=新建联盟
 UIClub_TribeJoin=加入联盟
 UIClub_TribeInfo=联盟详情
 UIClub_JoinQuery=加入公会
+UIClub_Join=加入公会
 UIClub_JoinRecommend=推荐公会
 UIClub_JoinCountry=选择国家
 UIClub_JoinProvince=选择省份
@@ -1499,7 +1442,7 @@ UIClub_RoomCreat_0HvQkjkd=牌局名称
 UIClub_RoomCreat_1mIGCqso=请输入牌局名称
 UIClub_RoomCreat_mDLGm5JA=牌桌人数设置
 UIClub_RoomCreat_I03E3BUH=小/大盲注设置
-UIClub_RoomCreat_kRMRZT6c=带入记分牌
+UIClub_RoomCreat_kRMRZT6c=带入筹码
 UIClub_RoomCreat_TCA5h9k4=牌局时长
 UIClub_RoomCreat_cGRiZucp=最短上桌时间
 UIClub_RoomCreat_vCP1YSI0=思考时间
@@ -1525,7 +1468,7 @@ adaptation20006=盲注
 adaptation20007=前注
 adaptation20008=限制
 adaptation20009=房主设置玩家的最短打牌时间为<color=#ff0000>##小时</color>,玩家在此期间内不能离桌,否则将实行留盲代打得托管模式.
-adaptation20010=金豆余额不足，请先充值
+adaptation20010=Union coin余额不足，请先充值
 adaptation20011=房主已开启Muck
 adaptation20012=房主已关闭Muck
 adaptation20013=房主已开启强制Straddle
@@ -1533,10 +1476,10 @@ adaptation20014=房主已关闭强制Straddle
 adaptation20015=房主进行延时##分钟
 adaptation20016=您在 ## 牌局中处于留座状态，无法加入本局游戏
 adaptation20017=OUTS>16 或 OUTS=0，不能购买保险
-adaptation20018=系统自动背保险，购买##金豆
+adaptation20018=系统自动背保险，购买##Union coin
 adaptation20019=您本次投保额最大为自身投入底池积分的0.45，已自动购买最高值#
 adaptation20020=二次投保额最高为1/2底池，已自动购买最高值##
-adaptation20021=当前局若不是大盲位，你将在扣至大盲数额的金豆后，加入牌局
+adaptation20021=当前局若不是大盲位，你将在扣至大盲数额的Union coin后，加入牌局
 adaptation20022=在 ## 房间被托管
 adaptation20023=房主设置带入倍数为##-##倍
 adaptation20024=公平起见，轮到你是大盲位时才能加入牌局
@@ -1552,7 +1495,7 @@ adaptation20034=强制背保：未选中OUTS ##张，赔率##，自动投保额#
 adaptation20035=这一轮你必须购买所有OUTS
 adaptation20036=最小加注金额: ##
 adaptation20037=确定弃牌？
-adaptation20038=你可以让牌而不需要任何记分牌
+adaptation20038=你可以让牌而不需要任何筹码
 adaptation20039=是否解散房间?
 adaptation20040=花费: ##
 adaptation20041=昵称:
@@ -1568,7 +1511,7 @@ adaptation20050=是否强制踢出该玩家？踢出后无法进入本房间。
 adaptation20051=是否强制站起该玩家?
 adaptation20052=观众
 adaptation20053=由于你已买转牌保险，为保障你的利益，河牌保险强制购买。已自动为你背保##（本次无法选牌）
-adaptation20054=恭喜##击中##，赢得##金豆
+adaptation20054=恭喜##击中##，赢得##Union coin
 adaptation20055=您确定要成为推广员吗？
 adaptation20056=投保
 adaptation20057=背保
@@ -1583,7 +1526,7 @@ adaptation20065=牌局时长：
 adaptation20066=牌局##分润收益
 adaptation20067=给##返豆
 adaptation20068=该账号已冻结，请联系公会客服
-adaptation20069=您是否确定要给##发放##金豆?
+adaptation20069=您是否确定要给##发放##Union coin?
 adaptation20070=亲爱的玩家，此活动仅限新玩家参与，一个设备只能领取一次，您的设备已经领取过红包，无法再次领取！
 adaptation20071=当前线路连接状态不佳，请在下方切换线路再登录
 adaptation30073=赔付
@@ -1617,17 +1560,17 @@ UITexas_autoFlod=看牌/弃牌
 UITexas_autoCall=自动跟牌
 UITexas_autoAllin=自动All in
 UITexas_autoCheck=自动看牌
-UITexas_AddChips=带入记分牌
+UITexas_AddChips=带入筹码
 UITexas_smallBigBlind=小盲/大盲
-UITexas_needBean=所需金豆:
-UITexas_leftBean=账户金豆:
+UITexas_needBean=所需Union coin:
+UITexas_leftBean=账户Union coin:
 UITexas_InsuranceMode=保险模式
 UITexas_standUp=站起围观
 UITexas_OwerFund=房主功能
 UITexas_PreLeave=提前离桌
-UITexas_AddChipsMenu=补充记分牌
-UITexas_BringOutChipsMenu=带出记分牌
-UITexas_BringOutChips=本手结束时，将为您带出相应的记分牌
+UITexas_AddChipsMenu=补充筹码
+UITexas_BringOutChipsMenu=带出筹码
+UITexas_BringOutChips=本手结束时，将为您带出相应的筹码
 UITexas_SureBringOut=确认带出
 UITexas_LeaveTheTable=留座离桌
 UITexas_RuleTips=规则
@@ -1649,7 +1592,7 @@ UIInsurance_peifue=赔付额:
 UIInsurance_peilv=赔率
 UIInsurance_publicCard=公共牌
 UIInsurance_yixuan=已选
-UIJackPotInfo_tips=1.当前手如果参与玩家达到4人，则自动开启Jackpot彩池，不足4人不激活奖励也不抽取JP，开启后玩家击中特定牌型，即可获得彩池奖励；\n2.击中特定牌型指的是：\n玩家的两张手牌与公共牌共同组成了【皇家同花顺】【同花顺】【四条】其中一种并且取得胜利。\n如：击中4条，必须玩家的两张手牌为其中一对\n3.投入彩池：\n玩家每手牌盈利数额达到10个大盲时，系统自动从中拿出两个小盲，一个小盲投入彩池，一个小盲投入“奖池”。\n注：“奖池”会每天随机发放，每桌会抽取一个幸运玩家获得奖励，具体规则见奖池页面。\n4.发放说明\n（1）击中发放的奖励为金豆\n（2）击中的奖励直接发放至钱包中
+UIJackPotInfo_tips=1.当前手如果参与玩家达到4人，则自动开启Jackpot彩池，不足4人不激活奖励也不抽取JP，开启后玩家击中特定牌型，即可获得彩池奖励；\n2.击中特定牌型指的是：\n玩家的两张手牌与公共牌共同组成了【皇家同花顺】【同花顺】【四条】其中一种并且取得胜利。\n如：击中4条，必须玩家的两张手牌为其中一对\n3.投入彩池：\n玩家每手牌盈利数额达到10个大盲时，系统自动从中拿出两个小盲，一个小盲投入彩池，一个小盲投入“奖池”。\n注：“奖池”会每天随机发放，每桌会抽取一个幸运玩家获得奖励，具体规则见奖池页面。\n4.发放说明\n（1）击中发放的奖励为Union coin\n（2）击中的奖励直接发放至钱包中
 UIJackPotInfo_cardType=获奖牌型
 UIJackPotInfo_tonghuashun=同花顺
 UIJackPotInfo_huangjia=皇家同花顺
@@ -1662,7 +1605,7 @@ UIOwner_share=分享房间
 UIOwner_setting=设置
 UIOwner_voice=观众语音
 UIOwner_muck=Muck开关
-UIOwner_bring=设置玩家可以带入的记分牌倍数
+UIOwner_bring=设置玩家可以带入的筹码倍数
 UIOwner_delay=牌局延时（分钟）
 TexasGameProtocol_currentPoolRate=当前入池率
 TexasGameProtocol_currentHandNumber=当前总手数
@@ -1705,7 +1648,7 @@ UITexasInfo_allhands=总手数
 UITexasInfo_poolrate=入池率
 UITexasInfo_games=总局数
 UITexasInfo_loss=盈亏
-UITexasInfo_flop=翻牌加注率
+UITexasInfo_flop=翻前加注率
 UITexasInfo_winrate=胜率
 UITexasInfo_fantexi=进范率
 UITexasInfo_score=手牌平均分
@@ -1764,9 +1707,9 @@ UIData_oLKlAnibz=入池胜率(Wins):
 UIMine_WalletCardNames=银行卡
 UIMine_WalletCardNames_plz=请选择银行
 UIMine_WalletTranschipsAlipay_j9O6YS7JR=我的账户
-UIMine_WalletTranschipsAlipay_xdaAUIDlE=可提金豆
-UIMine_WalletTranschipsAlipay_i05eleDyA=不可提金豆
-UIMine_WalletTranschipsAlipay_lxAPN4IQx=金豆数量
+UIMine_WalletTranschipsAlipay_xdaAUIDlE=可提Union coin
+UIMine_WalletTranschipsAlipay_i05eleDyA=不可提Union coin
+UIMine_WalletTranschipsAlipay_lxAPN4IQx=Union coin数量
 UIMine_WalletTranschipsAlipay_zaAMhdahi=收款账号
 UIMine_WalletTranschipsAlipay_D31aLGq1y=提豆信息
 UIMine_WalletTranschipsAlipay_Rg1u7wzFT=提豆数量:
@@ -1787,9 +1730,9 @@ WalletTranschipsBindingAlipay_Q7lCW2=支付宝账号:
 WalletTranschipsBindingAlipay_Vp8HMd=请输入支付宝账号
 WalletTranschipsBindingAlipay_RUkX0Q=注意：\n1.请输入正确的支付宝账号，支付宝提豆时将直接转入支付宝账号，修改账号请咨询客服。\n2.请输入正确实名制支付宝姓名，否则将无法转入该账号。
 WalletTranschipsCard_ZhjVmd=我的账户
-WalletTranschipsCard_uktqy5=可提金豆
-WalletTranschipsCard_0HCaLQ=不可提金豆
-WalletTranschipsCard_SVwzKi=金豆数量
+WalletTranschipsCard_uktqy5=可提Union coin
+WalletTranschipsCard_0HCaLQ=不可提Union coin
+WalletTranschipsCard_SVwzKi=Union coin数量
 WalletTranschipsCard_W2WxXj=收款账号
 WalletTranschipsCard_v6bEhU=提豆信息
 WalletTranschipsCard_2yVGEa=提豆数量:
@@ -1834,7 +1777,7 @@ WalletTranschipsBindingCard_rightNowAdd=立即添加
 UIData_ShowProblem_zIwG=基础数据
 UIData_ShowProblem_eZys=VIP会员高阶数据
 UIData_ShowProblem_SM0y=总手数：玩家在疯狂扑克内游戏过的手牌总数量\n\n总局数：玩家在疯狂扑克内游戏过的牌局总数量\n\n入池率：玩家手牌入池进行游戏的比率（前注不算入池，需要玩家主动进行跟注或加注）；入池次数/总手数\n\n入池胜率：玩家在入池的手牌中获得胜利的比率。\n\n场均战绩：平均每局盈利/亏损的积分。计算方法是总战绩除以总局数。\n\n场均带入：平均每局带入的积分。计算方法是总带入除以总局数。                        
-UIData_ShowProblem_3xqp=入池率（VPIP）：玩家在翻牌前主动向底池中投入记分牌的比率。入池率反应玩家打牌的松紧度哦。\n\n翻前加注（PRF）：翻牌前加注入池的比率。计算方法是翻前加注入池次数/翻前入池次数\n\n翻前再加注（3Bet）：在他人下注，加注之后的再加注比率。计算方法是再加注次数/入池次数\n\n持续下注（CBet）：是指一个玩家在前一轮主动下注或加注后，在当前这一轮再次主动下注。计算方法是持续下注次数/前一轮主动下注或加注次数。\n\n激进率（AF）：该数值越高，说明玩家越激进，更倾向于下注/加注。计算方法是{（下注的次数+加注的次数）/跟注的次数}/50（除以50是为了转换为百分比，该数值封100%，即原始最高值为50）\n\n摊牌率（WTSD）：即摊牌率，是指一个玩家看到翻牌圈并玩到摊牌的百分比。计算方法是摊牌的手数/翻牌的手数。\n\n全下胜率（ALL-wins）：统计玩家全下后的牌局胜率，数值较高则说明该玩家很少咋呼，全下基本都能赢。\n\n入池胜率（Wins）：玩家在入池的手牌中获胜的比率。
+UIData_ShowProblem_3xqp=入池率（VPIP）：玩家在翻牌前主动向底池中投入筹码的比率。入池率反应玩家打牌的松紧度哦。\n\n翻前加注（PRF）：翻牌前加注入池的比率。计算方法是翻前加注入池次数/翻前入池次数\n\n翻前再加注（3Bet）：在他人下注，加注之后的再加注比率。计算方法是再加注次数/入池次数\n\n持续下注（CBet）：是指一个玩家在前一轮主动下注或加注后，在当前这一轮再次主动下注。计算方法是持续下注次数/前一轮主动下注或加注次数。\n\n激进率（AF）：该数值越高，说明玩家越激进，更倾向于下注/加注。计算方法是{（下注的次数+加注的次数）/跟注的次数}/50（除以50是为了转换为百分比，该数值封100%，即原始最高值为50）\n\n摊牌率（WTSD）：即摊牌率，是指一个玩家看到翻牌圈并玩到摊牌的百分比。计算方法是摊牌的手数/翻牌的手数。\n\n全下胜率（ALL-wins）：统计玩家全下后的牌局胜率，数值较高则说明该玩家很少咋呼，全下基本都能赢。\n\n入池胜率（Wins）：玩家在入池的手牌中获胜的比率。
 UIMatchFilter_4Rj47D=清空
 UIMatchFilter_DPY5kR=类型
 UIMineDetail_UsedTime=耗时
@@ -1892,15 +1835,15 @@ BindingCard=绑定银行卡
 UIMine_WalletTranschipsCard=提豆
 Wallet_AddItem1=公会充值
 Wallet_AddItem2=平台充值
-Wallet_AddItem3=未选中金豆数量或未输入想充值的金额
-Wallet_AddItem4=未选中金豆数量或未输入想充值的金额
+Wallet_AddItem3=未选中Union coin数量或未输入想充值的金额
+Wallet_AddItem4=未选中Union coin数量或未输入想充值的金额
 Wallet_AddItem5=单笔最高充值{0}元
 Wallet_AddItem6=充豆金额最低{0}元
-Wallet_AddItem7=您充值{0}金豆需支付{1}元
+Wallet_AddItem7=您充值{0}Union coin需支付{1}元
 Wallet_Flow1=充豆中^充豆成功^充豆失败^被拒绝
 Wallet_Flow2=转豆成功
-PlWallet_Flow=未支付(申请等待)^已支付^支付失败^取消^关闭
-Wallet_Flow3=等待中^处理中^成功^失败^被拒绝
+PlWallet_Flow=未支付(申请等待)^已支付^支付失败^取消^关闭^等待审核
+Wallet_Flow3=等待中^处理中^成功^失败^被拒绝^等待审核
 Wallet_Flow4=失败^成功
 Wallet_Flow53=充豆记录^提豆记录
 Wallet_Flow54=充豆记录^转豆记录^提豆记录
@@ -1908,9 +1851,9 @@ Wallet_Flow6=状态
 Wallet_Flow7=充豆订单^充豆数量^充豆时间
 Wallet_Flow8=转豆订单^转豆数量^转豆时间
 Wallet_Flow9=提豆订单^提豆数量^提豆时间
-Wallet_Flow10=收入类型^金豆数量^返豆时间
+Wallet_Flow10=收入类型^Union coin数量^返豆时间
 WalletMy11=请先加入公会
-WalletMy12=1.不可提金豆目前仅包含系统赠送金豆，每产生1金豆战绩流水，则自动转化1不可提金豆为可提金豆，一局一结算；\n2.新增的不可提金豆只能由新的战绩流水进行转化。
+WalletMy12=1.不可提Union coin目前仅包含系统赠送Union coin，每产生1Union coin战绩流水，则自动转化1不可提Union coin为可提Union coin，一局一结算；\n2.新增的不可提Union coin只能由新的战绩流水进行转化。
 WalletSettingPW1=您的保密手机（{0}）
 WalletSettingPW2=验证码已发送
 WalletSettingPW3=请先填全信息
@@ -1918,7 +1861,7 @@ WalletSettingPW4=密码长度在6~12位
 WalletSettingPW5=两次密码输入不一致
 WalletSettingPW6=密码必须为6-12位数字或字母，组合也可以
 WalletSettingPW7=二级密码设置成功，请牢记您的密码
-WalletAlipay11=您输入的金豆数量有误，请重新输入
+WalletAlipay11=您输入的Union coin数量有误，请重新输入
 WalletAlipay12=非法数值
 WalletAlipay13=验证码已发送
 WalletAlipay14=请填写完整信息
@@ -1936,12 +1879,12 @@ WalletBindingCard24=银行卡号输入有误,请重新输入
 WalletBindingCard25=开户行输入有误,请重新输入
 WalletBindingCard26=您并没有修改信息
 WalletBindingCard27=您提交的修改信息正在审核中
-WalletCardTT41=您输入的金豆数量有误，请重新输入
+WalletCardTT41=您输入的Union coin数量有误，请重新输入
 WalletCardTT42=免手续费金额为{0},手续费金额为{1},能提金额{2}
 WalletCardTT43=提豆已发出申请
 WalletCardTT44=请填写完整信息
 WalletCardTT45=验证码已发送
-WalletTransferTT51=单笔转豆1000~5000000金豆
+WalletTransferTT51=单笔转豆1000~5000000Union coin
 WalletTransferTT52=最低转1000豆
 WalletTransferTT53=最高转5000000豆
 WalletTransferTT54=转豆成功
@@ -1950,10 +1893,10 @@ SuperView1=<color=#FFFFFF4C>放开加载更多 ...</color>
 SuperView2=<color=#FFFFFF4C>加载中 ...</color>
 SuperView3=<color=#FFFFFF4C>已经是最后一条啦</color>
 SuperViewNon=暂无比赛
-UICareerRecordNon=暂无战绩~
+UICareerRecordNon=暂无数据
 UIMineModel101=小时局^小时^分钟
-UIMIneModel102=账户余额不足，您当前最多可购买{0}元金豆，如需购买更多数量，请联系客服
-UIMIneModel103=金豆数不足
+UIMIneModel102=账户余额不足，您当前最多可购买{0}元Union coin，如需购买更多数量，请联系客服
+UIMIneModel103=Union coin数不足
 UIMIneModel1021=账户余额不足，请联系客服
 Become101=我的二维码
 Become102=下载链接:
@@ -1964,10 +1907,10 @@ Become106=复制成功
 ProManage101=你输入的ID或昵称{0}并无搜索到
 ProManage102=请搜索ID和昵称
 ProManage103=我的业绩^我的返豆
-ProManage104=本月返豆/金豆
+ProManage104=本月返豆/Union coin
 UIMine_RecordDetailForNormal=战绩详情
 RecordDetail101=盲注级别
-RecordDetail102=结束时间:
+RecordDetail102=结束时间
 RecordDetail103=牌局时长:
 RecordDetail104=皇家同花顺^同花顺^四条
 UIMine_InsurancesItems=保险明细
@@ -1992,7 +1935,7 @@ UIMine_Setting106=请稍等再发
 UIMine_Setting107=验证码已发送
 UIMine_Setting108=提交成功~
 UIMine_Setting109=请先输入内容
-UIMine_Setting110=恭喜您，完成首次修改头像和昵称，获得{0}金豆
+UIMine_Setting110=恭喜您，完成首次修改头像和昵称，获得{0}Union coin
 UIMine_SettingPassword=修改密码
 UIMine_SettingVersion=版本号
 UIMine_SettingReport=问题反馈
@@ -2010,7 +1953,7 @@ UIData_Script102=钻石^铂金,钻石^所有
 UIData_Script103=VIP可查看
 UIData_Script104=
 UIData_Script105=到期
-UIMatch_Script101=温馨提示^首次修改头像及昵称赠送300金豆^前往^取消
+UIMatch_Script101=温馨提示^首次修改头像及昵称赠送300Union coin^前往^取消
 UIMatch_Script102=保险^德州^血战^血进^同时^顺序^赖子^血战
 UIMatchModel_101=德州^奥马哈^大菠萝^必下场
 UIMatchModel_102=用户协议
@@ -2027,7 +1970,7 @@ UILogin_1010=此号码未注册
 UITexasRule_title111=过庄
 UITexasRule_detail1=需要等到自己是大盲位时，才能加入牌局
 UITexasRule_title112=补盲
-UITexasRule_detail2=下一手时，玩家若不是大小盲位，将在扣除大盲数额的金豆后，立即加入牌局回合。小盲位玩家将在扣至大盲数额的金豆后，立即加入牌局回合。大盲位玩家将直接加入牌局回合。
+UITexasRule_detail2=下一手时，玩家若不是大小盲位，将在扣除大盲数额的Union coin后，立即加入牌局回合。小盲位玩家将在扣至大盲数额的Union coin后，立即加入牌局回合。大盲位玩家将直接加入牌局回合。
 UITexasRule_title113=最短上桌时间
 UITexasRule_detail3=当房主开启最短打牌时间，玩家在牌局内打牌时间必须满足该最短时间，否则系统将实行留盲代打的托管模式。
 UITexasRule_detail4=1.当全部玩家All in后激活保险
@@ -2039,11 +1982,11 @@ UITexasRule_detail9=5.若转牌购买保险未中,则河牌必须购买所有补
 UITexasRule_detail10=6.若玩家只购买部分补牌,系统为规避玩家被BB的风险,会自动购买剩余补牌,带回玩家的投保额
 UITexasRule_detail11=7.牌内【实时战绩】【上局回顾】和生涯中【牌局详情】中显示保险数据
 UITexasRule_detail12=8.德州,奥马哈outs超过30张时,保险不激活
-UITexasRule_detail13=10.若当多人推Allin，出现多底池的情况下，领先玩家只能购买自身参与的最大积分的底池的Outs，无法购买所有底池的Outs。
+UITexasRule_detail13=10.若当多人推All-in，出现多底池的情况下，领先玩家只能购买自身参与的最大积分的底池的Outs，无法购买所有底池的Outs。
 UITexasRule_title114=操作
 UITexasRule_detail15=1.保本：赔付额=玩家投入
 UITexasRule_detail16=2.满池：不管保险中没中, 收益相等
-UITexasRule_detail17=3.购买保险消耗的金豆从底池中扣除
+UITexasRule_detail17=3.购买保险消耗的Union coin从底池中扣除
 UITexasRule_detail18=4.若买中,系统根据赔率直接赔付给玩家
 UITexasRule_detail30=5.未买中,系统收走购买保险所耗金额
 UITexasRule_title115=赔率
@@ -2056,11 +1999,9 @@ UITexasRule_detail20=德州扑克,20世纪初开始于美国德克萨斯州,是�
 UITexasRule_detail21=1.奥马哈是德州扑克的变种玩法,基本规则同德州扑克一致,只有少许不同\n\n2.奥马哈给每位玩家发五张或六张手牌,德州扑克发两张;\n\n3.奥马哈必须用五张或六张底牌中的2张，与3张公共牌组成一手最好的牌;\n\n4.奥马哈分为底池限注和不限注奥马哈，我们采用的是底池限注奥马哈;\n\n5.底池限注奥马哈:玩家每次加注时,不能超过1倍底池\n计算公式:加注上限=跟平金额+跟平金额+当前底池,即玩家需先跟平下注金额,然后再下跟平之后的1倍底池.
 UITexasRule_detail22=AOF规则：翻牌前阶段，只能选择ALLIN or FOLD,\n所有玩家行动后，ALLIN的玩家进行比牌;\n\n手牌展示限制:发牌后,并不立即展示自己手牌,轮到玩家行动时才能看见自己手牌.
 UITexasRule_detail23=1.必下场一共四轮下注;\n\n2.翻牌前:每人发2张牌后进行第一轮下注;\n\n3.翻牌:发3张公共牌后下第二轮注;\n\n4.转牌圈:发第5张公共牌后下第三轮注;\n\n5.河牌圈:发第5张公共牌后下第四轮注;\n\n6.下注结束后所有剩余玩家进行比牌，最大者赢得底池。\n\n牌型对比:皇家同花顺>同花顺>四条>葫芦>同花>顺子>三条>两对>一对>高牌\n\n牌点从大到小为:A.K.Q.J.1.0.9.8.7.6.5.4.3.2各花色不分大小\n只是在创建房间的时候，前注选择的范围比普通德州局大
-UITexasRule_detail24=1.在原来标准德州/奥马哈的基础上，去掉“2-5”这16张牌，只是使用"6-A"这9*4=36张牌游戏，游戏玩家人数限制在4~6人;\n\n2.在牌局开始时,会给每个玩家发2张“底牌”,桌面上会分三次陆续发出3张、1张、1张（共5张）的公共牌,在经过四轮的“加注”、“跟注”和“弃牌”等押注圈操作后,若牌局存在至少两名玩家仍然没有弃牌的情况下,进入“摊牌”阶段,把自己的2张底牌和5张公共牌力挑选出最大的5张组合,按照牌型大小规则分出胜负,赢家拿下“底池”全部筹码;\n\n3.牌型大小为：皇家同花顺>同花顺>四条>同花>葫芦>三条>顺子>两对>一对>高牌﻿﻿
+UITexasRule_detail24=1.在原来标准德州/奥马哈的基础上，去掉“2-5”这16张牌，只是使用"6-A"这9*4=36张牌游戏，游戏玩家人数限制在4~6人;\n\n2.在牌局开始时,会给每个玩家发2张“底牌”,桌面上会分三次陆续发出3张、1张、1张（共5张）的公共牌,在经过四轮的“加注”、“跟注”和“弃牌”等押注圈操作后,若牌局存在至少两名玩家仍然没有弃牌的情况下,进入“摊牌”阶段,把自己的2张底牌和5张公共牌力挑选出最大的5张组合,按照牌型大小规则分出胜负,赢家拿下“底池”全部筹码;\n\n3.牌型大小为：皇家同花顺>同花顺>四条>同花>葫芦>三条>顺子>两对>一对>高牌
 UITexasRule_dezhou=
-UILogin_USER101=阅读并同意<color=#35A3B3>《用户协议》</color>
-UILogin_USERTip1=阅读并同意
-UILogin_USERTip2=《用户协议》
+UILogin_USER101=阅读并同意<color=#DCBA82>《用户协议》</color>
 WalletStop101=您的钱包功能已停用，请联系客服
 UIMine_RecordItemsNormal=详情
 UIUserRemarks_A3WNZg2C=备注标记
@@ -2074,10 +2015,10 @@ UITexasSetting_qAONskmY=牌面设置
 UITexasSetting_HK3O9Fa8=牌面风格
 UITexasSetting_LrI45uIK=音效设置
 CardNames=ICBC,中国工商银行^ABC,中国农业银行^CCB,中国建设银行^CMB,中国招商银行^COMM,中国交通银行^CMBC,中国民生银行^CEB,中国光大银行^GDB,广东发展银行^BOC,中国银行^CIB,兴业银行^SPABANK,平安银行^HXB,华夏银行^SPDB,浦发银行^BJBANK,北京银行^BOHAIB,渤海银行^HKBEA,东亚银行^QDCCB,青岛银行^CITIC,中信银行
-UIMatch_Sharechips100=温馨提示^恭喜您获得推广赠送金豆资格，是否前往公告栏查看详情？可获得总量：{0}金豆^前往查看^不要金豆
+UIMatch_Sharechips100=温馨提示^恭喜您获得推广赠送Union coin资格，是否前往公告栏查看详情？可获得总量：{0}Union coin^前往查看^不要Union coin
 UIMine_paipuDetail1=复制链接
 SystemMes_inadffAl=您的账户已冻结，请点击下角联系客服
-UIClub_FundRecharge_yioCCJpp=请输入金豆数量
+UIClub_FundRecharge_yioCCJpp=请输入Union coin数量
 UIMine_MsgSystem_viewMore=查看详情
 UIMine_Wallet_Trans123=修改账号
 UIClub_MlistRemarks_GOwJkxU8=玩家昵称：
@@ -2087,15 +2028,15 @@ UIClub_MlistRemarks_HyLVqf1x=请输入打法标记(10个字符以内)
 UIClub_MlistRemarks_MepBVcgq=标记颜色：
 UIClub_MlistRemarks_63Os5RC2=打法标记
 MethodTime001=年^月^日^时^分^秒
-UIClub_RoomCreat_QFahkZsl=血战模式不限注，且可调整带入记分牌为50BB
+UIClub_RoomCreat_QFahkZsl=血战模式不限注，且可调整带入筹码为50BB
 YaoDou_receive=领取
-UIMine_userInfoSettingPS=注:首次修改头像和昵称免费赠送300金豆，赶快去修改吧。若仅单独修改一项内容不予赠送，必须修改头像和昵称两项内容。
+UIMine_userInfoSettingPS=注:首次修改头像和昵称免费赠送300Union coin，赶快去修改吧。若仅单独修改一项内容不予赠送，必须修改头像和昵称两项内容。
 UIMine_backpackListNodata=你的背包暂无物品
 UIJackPotInfo_Above=50/100以上
 UIJackPotInfo_blindLevel2=盲注级别1/2
-UIMine_WalletSC001=金豆
+UIMine_WalletSC001=Union coin
 WalletTranschipsCard_1000=战绩流水
-WalletTranschipsCard_1001=<color=#FFFFFFFF>温馨提示</color>\n1.当您流水不足提豆数额的一倍流水，不足流水部分将需要支付{0}手续费\n2.通过战绩流水可以获得提豆免手续费的额度，减免比例为1:1\n3.战绩流水为您参与的牌局盈亏绝对值的总和\n4.不可提金豆目前仅包含系统赠送金豆，每产生1金豆战绩流水，则自动转化1不可提金豆为可提金豆，一局一结算\n5.新增的不可提金豆只能由新的战绩流水进行转化
+WalletTranschipsCard_1001=<color=#FFFFFFFF>温馨提示</color>\n1.当您流水不足提豆数额的一倍流水，不足流水部分将需要支付{0}手续费\n2.通过战绩流水可以获得提豆免手续费的额度，减免比例为1:1\n3.战绩流水为您参与的牌局盈亏绝对值的总和\n4.不可提Global coin目前仅包含系统赠送Global coin，每产生1Global coin战绩流水，则自动转化1不可提Global coin为可提Global coin，一局一结算\n5.新增的不可提Global coin只能由新的战绩流水进行转化
 WalletTranschipsCard_1002=元
 WalletServiceCharge_eeydpBno=温馨提示
 WalletServiceCharge_GRvZTIYV=您的提豆数量：
@@ -2124,7 +2065,7 @@ UIMine_WalletPlatform_FuWu=服务费({0}%)-服务费({0}/笔)
 UIMine_WalletPlatform_ShouXu=手续费({0}%)-手续费({0}/笔)
 UIMine_WalletPlatform_DaoZhangBank=到账银行卡
 UIMine_WalletPlatform_Btn_ShenQing=申请提豆
-UIMine_WalletPlatform_TiShi=1.请填写提豆金额及选择提豆方式;\n2.在【我的钱包】->【记录】可查看充/提记录及订单状态，如有疑问请联系客服;\n3.pix码若输入手机号，请在手机号前输入“+55”;\n4.R$ 1=1金豆
+UIMine_WalletPlatform_TiShi=1.请填写提豆金额及选择提豆方式;\n2.在【我的钱包】->【记录】可查看充/提记录及订单状态，如有疑问请联系客服;\n3.pix码若输入手机号，请在手机号前输入“+55”;\n4.R$ 1=1Union coin
 UIMine_WalletPlatform_fee_f=服务费
 UIMine_WalletPlatform_fee_s=手续费
 UIMine_WalletTranschipsBindingCard=添加银行卡
@@ -2149,8 +2090,8 @@ MyToday0067=今日新增直属玩家
 MyToday0068=我的推广总人数(推广员+直属玩家):
 MyToday0069=玩家^推广员
 WalletTranschipsCard_100011=战绩流水:
-WalletTranschipsCard_100012=<color="ffffff">温馨提示</color>\n1.不可提的金豆玩家之间不能互转\n2.转豆需要消耗金豆数量1:1的战绩流水；\n3.战绩流水不足的部分收取0%的转豆手续费\n4.战绩流水可以通过参与牌局获得，获得数量为所参与的不同牌局盈亏的绝对值总和。
-fsdlfjlsj=，不足1金豆按照1金豆收取；
+WalletTranschipsCard_100012=<color="ffffff">温馨提示</color>\n1.不可提的Union coin玩家之间不能互转\n2.转豆需要消耗Union coin数量1:1的战绩流水；\n3.战绩流水不足的部分收取0%的转豆手续费\n4.战绩流水可以通过参与牌局获得，获得数量为所参与的不同牌局盈亏的绝对值总和。
+fsdlfjlsj=，不足1Union coin按照1Union coin收取；
 WalletServiceCharge_GRvZTIYV2=您的转豆数量：
 WalletServiceCharge_YzYnYaRH2=您的转豆手续费：
 WalletServiceCharge_0CuQrQWn2=*转豆手续费等于0
@@ -2176,7 +2117,7 @@ MsgInfo_1=您创建的{0}公会已经审核通过
 MsgInfo_2=您创建的{0}公会没有审核通过
 MsgInfo_3=您的公会人数调整为{0}人
 MsgInfo_2000=您的公会占成比例调整为{0}
-MsgInfo_5=您收到{0}牌局的{1}金豆牌局收益
+MsgInfo_5=您收到{0}牌局的{1}Union coin牌局收益
 MsgInfo_2001=您的公会被转移到{0}联盟，请知悉
 MsgInfo_7=您修改交易方式的申请已经审核通过
 MsgInfo_8=您修改交易方式的申请审核没有通过
@@ -2186,7 +2127,7 @@ MsgInfo_11=您申请加入{0}联盟的申请已经通过审核
 MsgInfo_12=您申请加入{0}联盟的申请没有通过审核
 MsgInfo_13=您的公会人数达到上限，不能被加入
 MsgInfo_14=您的公会下属玩家无法充值，请联系客服处理
-MsgInfo_15=您收到{0}金豆的战绩返佣
+MsgInfo_15=您收到{0}Union coin的战绩返佣
 MsgInfo_2002=您的公会ID已修改为'{0}'
 MsgInfo_21=玩家{0}退出公会
 MsgInfo_5000=恭喜您成功创建{0}，稍后联盟客服将会与您联系
@@ -2200,10 +2141,10 @@ MsgInfo_206={0}公会申请加入{1}联盟
 MsgInfo_207=您的联盟占成比例调整为{0}
 MsgInfo_208={0}公会已经退出{1}联盟
 MsgInfo_209=您的联盟被{0}管理员关闭，如有疑问请咨询客服
-MsgInfo_210=您收到{0}牌局的{1}金豆牌局收益
+MsgInfo_210=您收到{0}牌局的{1}Union coin牌局收益
 MsgInfo_211=您的联盟ID已修改为'{0}'
 MsgInfo_401=您收到{0}公告
-MsgInfo_402=系统将在{0}维护，请知晓
+MsgInfo_402=系统将在{0}维护
 MsgInfo_4000=您的账号被{0}管理员冻结，如有疑问请咨询客服
 MsgInfo_404={0}
 MsgInfo_405=您的反馈已收到，谢谢您的反馈
@@ -2217,56 +2158,56 @@ MsgInfo_4007=您已被禁止提豆，如有疑问请联系客服
 MsgInfo_4008=您已恢复提豆，祝您游戏愉快
 MsgInfo_407=您好，您的反馈内容我们已处理，感谢您一路以来的支持和信任
 MsgInfo_408={0}
-MsgInfo_601=您充值的{0}金豆已到账
-MsgInfo_3000=您申请充值{1}金豆成功
-MsgInfo_3001=您申请提取{1}金豆成功
-MsgInfo_604=您给{0}玩家转账{1}金豆已到账
+MsgInfo_601=您充值的{0}Union coin已到账
+MsgInfo_3000=您申请转换{0}{1}成功
+MsgInfo_3001=您申请提取{1}Union coin成功
+MsgInfo_604=您给{0}玩家转账{1}Union coin已到账
 MsgInfo_605={0}玩家提豆{1}，请审核
-MsgInfo_606=您收到{0}玩家转账的{1}金豆
+MsgInfo_606=您收到{0}玩家转账的{1}Union coin
 MsgInfo_607=您修改提豆账号信息的申请已经通过
 MsgInfo_608=您修改提豆账号信息的申请已经拒绝
-MsgInfo_609=玩家{0}在您基金仓购买{1}金豆，但是您的基金仓金豆不足，请及时充值
+MsgInfo_609=玩家{0}在您基金仓购买{1}Union coin，但是您的基金仓Union coin不足，请及时充值
 MsgInfo_610=您的公会基金仓为负，请及时充值
-MsgInfo_611=您的提豆订单{0}申请提豆{1}金豆没有通过审核，原因如下:{2}
+MsgInfo_611=您的提豆订单{0}申请提豆{1}Union coin没有通过审核，原因如下:{2}
 MsgInfo_612=您的充豆失败，请联系客服
 MsgInfo_613=您的提豆失败，请联系客服
-MsgInfo_614=您的账户金豆不足，请及时充值
-MsgInfo_615=您已收到系统发放的{0}金豆
-MsgInfo_616=恭喜您被金豆红包雨砸中，收到{0}金豆！
-MsgInfo_617=您收到{0}公会给您发放的{1}不可提金豆
-MsgInfo_618=恭喜您，成为幸运玩家，获得{0}金豆
-MsgInfo_620=您收到房间{0}的利润{1}金豆
-MsgInfo_621=利润转出给贵宾({0}){1}金豆
-MsgInfo_622=您收到房间{0}的贵宾转账{1}金豆
-MsgInfo_623=您在{0}排名{2}获得奖金{1}金豆
-MsgInfo_624=您在{0}成功猎掉{2}人头，获得{1}金豆
+MsgInfo_614=您的账户Union coin不足，请及时充值
+MsgInfo_615=您已收到系统发放的{0}Union coin
+MsgInfo_616=恭喜您被Union coin红包雨砸中，收到{0}Union coin！
+MsgInfo_617=您收到{0}公会给您发放的{1}不可提Union coin
+MsgInfo_618=恭喜您，成为幸运玩家，获得{0}Union coin
+MsgInfo_620=您收到房间{0}的利润{1}Union coin
+MsgInfo_621=利润转出给贵宾({0}){1}Union coin
+MsgInfo_622=您收到房间{0}的贵宾转账{1}Union coin
+MsgInfo_623=您在{0}排名{2}获得奖金{1}Union coin
+MsgInfo_624=您在{0}成功猎掉{2}人头，获得{1}Union coin
 MsgInfo_801=恭喜您获得{0}奖品
 MsgInfo_802=恭喜您参与{1}排名{2}获得{0}奖励
 MsgInfo_1000=恭喜您在{0}排名第{1}，获得{2}
 MsgInfo_1001=您把{0}转让给{1}
-MsgInfo_1002={1}给您转让{0},请去【我的背包】查收
+MsgInfo_1002={0}转让给您{1}
 MsgInfo_1003=公会管理员给{1}发放{0}
 MsgInfo_1004={1}公会管理员给您发放{0},请去【我的背包】查收
 MsgInfo_1005=联盟给您的公会发放{0},请去【我的背包】查收
 MsgInfo_1006=您使用{0}
 MsgInfo_1007=您使用{0}成功报名{1}
-MsgInfo_10011001=您获得{0}金豆
+MsgInfo_10011001=您获得{0}Union coin
 Cowboy_MsgInfo_2002=已经停止下注
 MsgInfo_20032003=操作异常，你不在房间内
 MsgInfo_20042004=本局游戏下注超过房间设定单局上限
 Cowboy_MsgInfo_3002=下注错误
-UIClub_FundGiveSub_11=可提取金豆
-UIClub_FundGiveSub_12=不可提取金豆
-adaptation20073=交收(联盟发放)##公会 ##金豆
-adaptation20081=交收(联盟回收)##公会 ##金豆
-adaptation20074=您给##发放了##不可提金豆
+UIClub_FundGiveSub_11=可提取Union coin
+UIClub_FundGiveSub_12=不可提取Union coin
+adaptation20073=交收(联盟发放)##公会 ##Union coin
+adaptation20081=交收(联盟回收)##公会 ##Union coin
+adaptation20074=您给##发放了##不可提Union coin
 adaptation20075=您的## 包含非法字符，请重新输入
-UIClub_FundGiveSub_90R3vzTv=温馨提示：\n1.不可提金豆目前仅包含系统赠送金豆，每产生1金豆战绩流水，则自动转化1不可提金豆为可提金豆，一局一结算；2.新增的不可提金豆只能由新的战绩流水进行转化。
+UIClub_FundGiveSub_90R3vzTv=温馨提示：\n1.不可提Union coin目前仅包含系统赠送Union coin，每产生1Union coin战绩流水，则自动转化1不可提Union coin为可提Union coin，一局一结算；2.新增的不可提Union coin只能由新的战绩流水进行转化。
 UIClub_TribeCreat_0HvQpjkd=联盟名称
 UIClub_InfoIntroduce_44vQpjkd=公会简介
-UITexasCom009=投诉反馈需要花费{0}金豆
-adaptation20076=您是否确定要给##发放##可提金豆?
-adaptation20077=您是否确定要给##发放##不可提金豆?
+UITexasCom009=投诉反馈需要花费{0}Union coin
+adaptation20076=您是否确定要给##发放##可提Union coin?
+adaptation20077=您是否确定要给##发放##不可提Union coin?
 UIMine_Mission=任务
 UIMine_Mission_1=说明
 UIMine_Mission_2=待完成^已完成
@@ -2280,7 +2221,7 @@ UIMine_Mission_9=修改头像
 UIMine_Mission_10=保存官网
 UIMine_Mission_11=领取成功
 error2500=系统原因暂时无法领取，请联系客服.
-adaptation20078=恭喜##获得##金豆
+adaptation20078=恭喜##获得##Union coin
 UITexasMarqueeGame_Title=当前奖池
 UITexasMarqueeGame_Content=1.开启条件：不定时随机开启\n2.参与条件：活动仅限在线且在牌局内的用户可参与\n                     参与活动的牌桌人数需≥4\n3.获奖说明：系统将随机抽取当桌一名玩家为获奖玩家\n4.奖励说明：获奖玩家的奖励会发放至玩家钱包中\n注：该活动以增强游戏乐趣，提高游戏体验为目的，只要运气好，清空奖池随便搞。
 UITexasMarqueeGame_Tips=当前奖励金额会根据奖池实时多少级中奖人数进行随机抽取，最高中奖者可达5W元不止哦。
@@ -2299,13 +2240,13 @@ UITexasMarqueeGame_LevelCoinTip4=最高可达500元
 UITexasMarqueeGame_LevelCoinTip5=最高可达250元
 UITexasMarqueeGame_LevelCoinTip6=最高可达100元
 adaptation20079=您好，你所在地区异常，无法登陆，请点击左下角联系客服
-otherLog_001=分享赚金豆^系统赠送^JP击中
+otherLog_001=分享赚Union coin^系统赠送^JP击中
 otherLog_002=失败^已到账
 UIBeanModify001=温馨提示^您好，您当前绑定的银行卡由于银行政策问题，暂不支持提豆功能，请您重新绑定非'{0}'的新卡。^前往修改
-UIMine_Mission_12=完成任务奖励的金豆为不可提金豆
+UIMine_Mission_12=完成任务奖励的Union coin为不可提Union coin
 UICollectPageAlert_go=前往
-UICollectPageAlert_title=金豆小任务
-UICollectPageAlert_content=任务详情：点击下方前往按钮，进入对应任务界面，通过右下角“保存官网到桌面”，保存我们的下载地址，方便随时安装与更新。保存后前往“我的 - 任务”更有专属1000金豆奖励
+UICollectPageAlert_title=Union coin小任务
+UICollectPageAlert_content=任务详情：点击下方前往按钮，进入对应任务界面，通过右下角“保存官网到桌面”，保存我们的下载地址，方便随时安装与更新。保存后前往“我的 - 任务”更有专属1000Union coin奖励
 UICollectPageAlert_tips=（保存后此弹窗不再显示）
 CollectPage_title=保存官网
 UITexasMarqueeGame_ex=玩法介绍
@@ -2353,7 +2294,7 @@ mtt_btn_waiting_approval=等待审核
 mtt_btn_Stopbuying=停止买入
 UIMTT_Ranking_QRCode=扫码下载游戏
 UIMTT_Ranking_Content=这是你当前名次，排名会根据比赛人数增加而变化，最终成绩请您赛后查看比赛战绩
-UIMTT_Ranking_Reward=奖励金豆 {0}
+UIMTT_Ranking_Reward=奖励Union coin {0}
 UIMTT_Ranking_YourRank=您的排名
 UIMTT_Ranking_YourReward=您的奖励
 UIMTT_Ranking_TiaoZheng=调整好状态，再来一局吧
@@ -2365,7 +2306,7 @@ UIMine_RecordDetailForMatchMyBonus=我的奖励
 UITexasReport_Text_TitleBar=实时战况
 UITexasReport_Text_MatchZmsysjTip=涨盲剩余时间
 UITexasReport_Text_MatchTotalBonusTip=总奖池
-UITexasReport_Text_MatchAverageScoreboardTip=最大记分牌
+UITexasReport_Text_MatchAverageScoreboardTip=最大筹码
 UITexasReport_Text_MatchParticipantsTip=玩家人数
 UITexasReport_Text_MatchOnTableBuy=在桌/买入
 UITexasReport_Text_MatchCurrBlindTip=当前盲注
@@ -2373,7 +2314,7 @@ UITexasReport_Text_MatchNextBlindTip=下一盲注
 UITexasReport_Text_MatchNextBlindTimeTip=下一注时长
 UITexasReport_Text_DeskNumTip=桌号
 UITexasReport_Text_DeskPlayerCountTip=人数
-UITexasReport_Text_DeskScoreTip=记分牌
+UITexasReport_Text_DeskScoreTip=筹码
 UITexasReport_Text_RewardTotalBonusTip=总奖池：
 UITexasReport_Text_RewardRewardTip=奖励圈：
 UITexasReport_Text_RewardNextRewardTip=下一个奖励圈：
@@ -2385,25 +2326,25 @@ UITexasReport_Text_ListBarRanking=实时排名
 UITexasReport_Text_ListBarNum=桌号
 UIReward_Bounty=赏金
 UITexasReport_Text_ListBarReward=赏金
-UITexasReport_Text_ListBarScore=记分牌
+UITexasReport_Text_ListBarScore=筹码
 UITexasReport_Text_MyInfoRewardTip=猎人奖励:
 UITexasReport_Text_HunterTitle=猎人奖励
-UITexasReport_Text_MyInfoScoreTip=记分牌:
+UITexasReport_Text_MyInfoScoreTip=筹码:
 UITexasReport_Label_AllBarSK=赛况
 UITexasReport_Label_AllBarPZ=牌桌
-UITexasReport_Label_AllBarJL=奖励
+UITexasReport_Label_AllBarJL=筹码
 UITexasReport_Label_AllBarMZ=盲注
 UITexasReport_Text_MatchZmsysj={0}分钟
-UITexasReport_Text_MatchTotalBonus={0} 金豆
+UITexasReport_Text_MatchTotalBonus={0} Union coin
 UITexasReport_Text_MatchNextBlindTime={0}分钟
 UITexasReport_Text_RewardReward=前{0}名
-MTT_Rebuy_Alert=你没有记分牌了，是否花费{0}购买{1}记分牌重新进入比赛？\n（剩余购买次数：{2}次）
+MTT_Rebuy_Alert=你没有筹码了，是否花费{0}购买{1}筹码重新进入比赛？\n（剩余购买次数：{2}次）
 MTT-Rebuy rebuy server error=服务器异常...
 MTT-Rebuy rebuy no more allow=已过重购级别或进入奖励圈，重购取消
 MTT-Rebuy rebuy rejected=重购申请被拒绝...
 MTT-Rebuy rebuy is distributing=在进行拆分桌，请稍后重购...
 roomError236_1=失败
-roomError236_2=金豆不足
+roomError236_2=Union coin不足
 roomError236_4=本手牌已无延时机会
 MTT_Official=官方锦标赛
 UIMatchMTTDetailList=状态^玩家^奖励^牌桌^盲注
@@ -2412,7 +2353,7 @@ Average=平均
 The_smallest=最小
 MTT_Rebuy=重购
 MTT_State_RebuyTime=重购次数
-MTT_State_Starting_Scoreboard=起始记分牌:
+MTT_State_Starting_Scoreboard=起始筹码:
 MTT_State_Registered=已报名
 MTT_State_ShangXian=买入上限
 MTT_State_ApplyFee=报名费
@@ -2424,7 +2365,7 @@ MTT_State_DelayApply=延迟报名
 MTT_State_DelayDetail={0}（{1}级截止买入，增购{2}～{3}级）
 MTT_State_CannotDelay=不可延迟报名
 MTT_State_ApplyCount=<color=#DCDCDC>报名人数：</color>
-MTT_State_DeskPlayerCount=单桌人数：{0}
+MTT_State_DeskPlayerCount=<color=#757CAB>单桌人数：</color>{0}
 MTT_State_NotStart=未开始
 MTT_State_ApplyNumBottom={0}人已报名
 MTT_State_RewardCircle=奖励圈
@@ -2441,7 +2382,7 @@ UIMine_RecordDetailForMatch=战绩详情
 MTT_Start_Remind=锦标赛“{0}”即将开始，是否进入比赛？
 MTT_Begin_Remind=锦标赛“{0}”进行中，是否进入比赛？
 MTT_Apply_Result_1=你的报名券不足
-MTT_Apply_Result_2=你的金豆不足
+MTT_Apply_Result_2=你的Union coin不足
 MTT_Apply_Result_3=报名被拒绝多次
 MTT_Apply_Result_4=报名已经截止
 MTT_Apply_Result_5=报名人数已满，无法报名
@@ -2457,8 +2398,8 @@ MTT_Apply_Result_16=背包有未使用日赛门票，不可报30分钟赛
 MTT_Apply_Success=报名成功，请准时参赛
 MTT_Rebuy_Outside_Result_1=服务器异常
 MTT_Rebuy_Outside_Result_2=前一个重购申请中
-MTT_Rebuy_Outside_Result_3=你的金豆不足
-MTT_Rebuy_Outside_Result_4=你的金豆不足
+MTT_Rebuy_Outside_Result_3=你的Union coin不足
+MTT_Rebuy_Outside_Result_4=你的Union coin不足
 MTT_Rebuy_Outside_Result_5=正在审核
 MTT_Rebuy_Outside_Result_6=你的报名券不足
 MTT_Rebuy_Outside_Result_7=重购已关闭
@@ -2471,14 +2412,14 @@ UIMatchModel_103=德州^德州-必下场^德州-AOF^奥马哈^奥马哈-必下�
 Tips_RefushUIMatch=有新牌局，刷新看看
 Tips_UIMatch_NewRoomNum=成功获取\n{0}个新牌局
 Tips_Recharge_LimitContent=最少充值100
-Tips_Recharge_Limit=金豆数额最低{0}，最高{1}
-Tips_Recharge_Recharge=确定提交充值{0}金豆的订单？
-Tips_UIClub_FundGive_OrderConfirm=同意用户{0}(ID:{1})发放{2}金豆的申请?
-Tips_Withdraw_Limit=金豆数额最低{0}，最高{1}
-Tips_Withdraw_Confirm=确定提交提现{0}金豆的订单？
-Tips_UIClub_FundTake_OrderConfirm=同意用户{0}(ID:{1})提取{2}金豆的申请?
-MsgInfo_2003=[充豆申请] {0} 正在申请充值 {1} 金豆
-MsgInfo_2004=[提豆申请] {0} 正在申请提现 {1} 金豆 
+Tips_Recharge_Limit=Union coin数额最低{0}，最高{1}
+Tips_Recharge_Recharge=确定提交充值{0}Union coin的订单？
+Tips_UIClub_FundGive_OrderConfirm=同意用户{0}(ID:{1})发放{2}Union coin的申请?
+Tips_Withdraw_Limit=Union coin数额最低{0}，最高{1}
+Tips_Withdraw_Confirm=确定提交提现{0}Union coin的订单？
+Tips_UIClub_FundTake_OrderConfirm=同意用户{0}(ID:{1})提取{2}Union coin的申请?
+MsgInfo_2003=[充豆申请] {0} 正在申请充值 {1} Union coin
+MsgInfo_2004=[提豆申请] {0} 正在申请提现 {1} Union coin 
 MsgInfo_1007=[赛事申请] {0} 申请报名 {2}  {1}
 MsgInfo_3003=申请报名 {2} {1} 成功，请按时参加比赛
 MsgInfo_3004=从{0}获得贵宾普通桌服务费分成{2}
@@ -2488,27 +2429,27 @@ MsgInfo_3007=从{0}获得MTT返水{2}
 MsgInfo_3008=从{0}获得普通桌返水{2}
 MsgInfo_3011=从{0}获得贵宾比赛服务费分成{2}
 MsgInfo_3012=从{0}获得贵宾比赛道具分成{2}
-adaptation20080=您同意了##提取##金豆
-adaptation20082=您同意了##充值##金豆
+adaptation20080=您同意了##提取##Union coin
+adaptation20082=您同意了##充值##Union coin
 Tips_UIClub_FundRecharge_InputError=输入数额错误
-Tips_UIClub_FundRecharge_WithdrawConfirm=申请提现{0}金豆?
-Tips_UIClub_FundRecharge_RechargeConfirm=申请充值{0}金豆?
-Tips_UIMine_UserInfoSettingNick_ChangedName=是否使用{0}金豆修改昵称？
-MsgInfo_625=您报名比赛{0}使用{1}金豆
+Tips_UIClub_FundRecharge_WithdrawConfirm=申请提现{0}Union coin?
+Tips_UIClub_FundRecharge_RechargeConfirm=申请充值{0}Union coin?
+Tips_UIMine_UserInfoSettingNick_ChangedName=是否使用{0}钻石修改昵称？
+MsgInfo_625=您报名比赛{0}使用{1}Global coin
 adaptation10334=拒绝
 MsgInfo_2005=充值申请被拒绝，如有疑问请联系公会客服
 MsgInfo_2006=提现申请被拒绝，如有疑问请联系公会客服
-adaptation20083=您拒绝了##充值##金豆
-adaptation20084=您拒绝了##提取##金豆
+adaptation20083=您拒绝了##充值##Union coin
+adaptation20084=您拒绝了##提取##Union coin
 adaptation20085=同意
 adaptation20086=审核
-adaptation20087=最小保留记分牌数
+adaptation20087=最小保留筹码数
 adaptation20088=延迟看牌
 adaptation20089=底池
 adaptation20090=等待下一手
 adaptation20091=等待
 adaptation20092=充值
-adaptation20093=金豆余额不足，请先充值
+adaptation20093=Union coin余额不足，请先充值
 adaptation20094=余额不足
 UIData_YGvXd5iXr_001=总战绩
 UIData_YGvXd5iXr_002=（德州+奥马哈+AOF）
@@ -2534,7 +2475,7 @@ UIInsurance_GiveUp=放弃
 UIInsurance_ge=个
 UIInsurance_tips001=已购买{0}张Outs，保费{1}，预计赔付{2}
 UIInsurance_tips002=未买中保险，结算时将扣除保费
-UIInsurance_tips003=中保险，赔付记分牌：{0}
+UIInsurance_tips003=中保险，赔付筹码：{0}
 UIInsurance_words=含敏感词不可保存
 UITexasDanMuAndExpression_Item0=扑克就像性爱，体位决定一切。
 UITexasDanMuAndExpression_Item1=我有勇气，我没有的是运气。
@@ -2555,13 +2496,13 @@ UITexasDanMuAndExpression_tip002=不可输入弹幕
 UITexasDanMuAndExpression_tip003=打开弹幕
 UITexasDanMuAndExpression_tip004=关闭弹幕
 UITexasDanMuAndExpression_mymsg=我
-UIGameNiuZai_continuetips=金豆不足无法续投
+UIGameNiuZai_continuetips=Union coin不足无法续投
 UIGameNiuZai_continuebtn=续投
 UIGameNiuZai_qingpingbtn=清屏
 UILobby_Menu_menu_btn_lobby=大厅
 UIClub_FundDetail_recycle=回收
 UIClub_FundRecharge_tishiText=交收金额输入正数为充豆，负数为提豆\n\n例：充500 输入500    提500  输入-500
-UIClub_FundRecharge_tishiGolden=现有金豆:
+UIClub_FundRecharge_tishiGolden=现有Union coin:
 UIClub_FundRecharge_tishiAmount=交收额度:
 UILogin_labelPassword=密码:
 UILogin_labelCode=验证码:
@@ -2608,7 +2549,7 @@ UINiuZaiXiaZhuQu_content07=2.单牌:A>K>Q>J>10>9>8>7>6>5>4>3>2;
 UINiuZaiXiaZhuQu_content08=3.相同牌型:优先比较最大单牌,相同则依次向下继续比较,如5张
 UINiuZaiXiaZhuQu_content09=牌相同,则为平局;
 UINiuZaiInsurance_titleThree=爆庄规则
-UINiuZaiXiaZhuQu_content011=庄家剩余记分牌不足以赔付所有获胜玩家的赔付量时,庄家所剩
+UINiuZaiXiaZhuQu_content011=庄家剩余筹码不足以赔付所有获胜玩家的赔付量时,庄家所剩
 UINiuZaiXiaZhuQu_content012=余的记分将按比例全部分配给获胜玩家,并在结算结束后关闭房
 UINiuZaiXiaZhuQu_content013=间
 UINiuZaiToggle_tishi=牌型提示
@@ -2652,8 +2593,8 @@ UIGameNiuZai_XianHong=已达限红
 UIMatch_RoomItemMark=参与中
 UIMTT_Howtoplay_rules=比赛规则
 UIMTT_Howtoplay_rulesc=MTT[Multi Table Tournament]   即多桌锦标赛，指在多张桌子上同时进行的锦标赛，桌子会随着选手的淘汰进行合终，会减少到一张桌子进去决赛，当比赛剩下一人有筹码时。冠军产生，比赛结束
-UIMTT_Howtoplay_scoreboard=带入记分牌
-UIMTT_Howtoplay_scoreboardc=比赛中，所有玩家会自动带入相同的固定数量的记分牌，玩家只需报名参赛即可，比赛过程中不可随意补充记分牌
+UIMTT_Howtoplay_scoreboard=带入筹码
+UIMTT_Howtoplay_scoreboardc=比赛中，所有玩家会自动带入相同的固定数量的筹码，玩家只需报名参赛即可，比赛过程中不可随意补充筹码
 UIMTT_Howtoplay_blind=盲注
 UIMTT_Howtoplay_blindc=比赛盲注结构与标准局的固定盲注不同，会有起始盲注，并且随赛事推进，盲注级别会定时不断上涨，比赛节奏将会越来越快。
 UIMTT_Howtoplay_Zmtime=涨盲时间
@@ -2674,8 +2615,8 @@ UIMTT_Listitemyc=延迟报名
 UIMTT_Liststartimeone=开始时间: 
 UIMTT_Listbuy=买入: {0}
 UIMTT_Listbonus=奖金: <color=#DCBA82>{0}</color>
-UIMTT_Listdistancestart=距离开始
-UIMTT_Listdistancesclose=距离关闭
+UIMTT_Listdistancestart=<size=30>距离开始</size>\n<size=45>{0}</size>
+UIMTT_Listdistancesclose=<size=30>距离关闭</size>\n<size=45>{0}</size>
 MTT_xq_buy=买入
 StrJanuary=一月^1
 StrFebruary=二月^2
@@ -2722,7 +2663,7 @@ MTT_State_Gamemtt=<color=#DCBA82>锦标赛</color>
 MTT_State_Freegame=<color=#DCBA82>免费赛</color>
 MTT_State_Huntergame=<color=#DCBA82>猎人赛</color>
 MTT_State_Satellite=<color=#DCBA82>卫星赛</color>
-UIMTTSignDialog_Rebuy=买入:
+UIMTTSignDialog_Rebuy=买入
 Uiclub_profile=请输入公会简介[最多50字]
 Uiclub_con1=加入公会畅想愉快游戏时光
 Uiclub_con2=创建公会，寻找志同道合朋友
@@ -2741,8 +2682,7 @@ UIBackDiolg_title03=电话卡兑换
 UIBackDiolg_title04=实物兑换
 UIBackDiolg_title05=代金卷兑换
 UIBackDiolg_Cancel_01=报名
-UIBackDiolg_Cancel_02=兑换金豆
-UIBackDiolg_Cancel_03=兑换USDT
+UIBackDiolg_Cancel_02=兑换Union coin
 UIBackDiolg_Commit_01=暂不报名
 UIBackDiolg_Commit_02=联系客服
 UIBackDiolg_Commit_03=兑换电话卡
@@ -2824,7 +2764,7 @@ Uiwithdrawfailed=提交失败
 Uiclubrechargeconfirmordersuccessfully=操作成功
 Uiclubrechargeconfirmorderfailed=操作失败
 UITeaxinDeailt=1.当全部玩家All in后激活保险\n\n2.由当前牌型最大玩家进行购买,若出现多个底池则由最大底池中领先的玩家购买，且只能购买最大底池\n\n3.当保险涉及的底池中超过3个玩家的时候,保险不激活。（2人或者3人时可以买保险）。\n\n4.翻牌三张不可购买保险,转牌投保额不得超过0.25*底池，河牌投保额不得超过0.5*底池\n\n5.若转牌购买保险未中,则河牌必须购买所有补牌,且河牌的赔付额必须大于转牌的投保额\n\n6.若玩家只购买部分补牌,系统为规避玩家被BB的风险,会自动购买剩余补牌,带回玩家的投保额\n\n7.牌内【实时战绩】【上局回顾】和生涯中【牌局详情】中显示保险数据\n\n8.德州,奥马哈outs超过30张时,保险不激活
-UITeaxinDeailt_PeiFu=1.保本：赔付额=玩家投入\n\n2.满池：不管保险中没中, 收益相等\n\n3.购买保险消耗的金豆从底池中扣除\n\n4.若买中,系统根据赔率直接赔付给玩家\n\n5.未买中,系统收走购买保险所耗金额
+UITeaxinDeailt_PeiFu=1.保本：赔付额=玩家投入\n\n2.满池：不管保险中没中, 收益相等\n\n3.购买保险消耗的Union coin从底池中扣除\n\n4.若买中,系统根据赔率直接赔付给玩家\n\n5.未买中,系统收走购买保险所耗金额
 UILoginviolator=账户涉嫌违规，请联系公会管理员！
 UIBackDialog_ticketsbtnClose=关闭
 UIBackpackDialog_ticketbtnText=查看
@@ -2832,11 +2772,10 @@ MuteTip=禁言解除后可发言
 MessgainfoForever=您被永久禁言，如有疑问请咨询客服 
 Danmustate_4=功能暂停使用，如有疑问请咨询客服
 UIMatch_TableCount={0}桌
-OpCodeString_RECHARGE=充豆
+OpCodeString_RECHARGE=充值
 OpCodeString_LOCK=冻结
 OpCodeString_UNLOCK=解冻
 OpCodeString_WLOCK=提豆冻结
-OpCodeString_EXCHLOCK=兑换冻结
 OpCodeString_WROLLBACK=提豆失败
 OpCodeString_WUNLOCK=提豆成功
 OpCodeString_BRINGIN=带入
@@ -2876,9 +2815,9 @@ OpCodeString_FIXNICKNAME=道具消费
 OpCodeString_MTTHAW=猎人赛奖励
 OpCodeString_MTTAOM1=增购1
 OpCodeString_MTTAOM2=增购2
-
-
-OpCodeString_CLUBLEAVELUP=公会升级
+OpCodeString_SNATCHTREASURE=一元夺宝消费Union coin
+OpCodeString_SNATCHTREASURECANCEL=一元夺宝活动取消
+OpCodeString_OpCodeShopping=商城消费
 UIPlatformrecharge=申请充值
 UIRechargeconfirmorder=充值确认订单
 RfCodeString_DYNAMIC=动态码充值
@@ -2903,16 +2842,17 @@ ServerErrorCode_90007=中止
 ServerErrorCode_90008=未实现
 ServerErrorCode_90009=不可用
 ServerErrorCode_90010=未经身份验证
+ServerErrorCode_90011=您的地区或国家不能访问
 ServerErrorCode_10000=没有报名
 ServerErrorCode_10001=未开始
 ServerErrorCode_10002=还未准备完毕 没有ROOM
 ServerErrorCode_10003=已淘汰
 ServerErrorCode_10004=比赛已经结束
 ServerErrorCode_10005=购买截止了
-ServerErrorCode_10006=重构截止了
+ServerErrorCode_10006=重购截止了
 ServerErrorCode_10007=AddOn截止了
 ServerErrorCode_10008=房间变化了
-ServerErrorCode_10009=没有重构
+ServerErrorCode_10009=没有重购
 ServerErrorCode_10010=没有加购
 ServerErrorCode_10011=部分带入金额错误
 ServerErrorCode_10012=合并存储筹码最大等级已过,不能进场
@@ -2940,16 +2880,7 @@ ServerErrorCode_20018=带入小于最小限制
 ServerErrorCode_20019=您已被禁止提豆，如有疑问请联系客服
 ServerErrorCode_20020=登录失败
 ServerErrorCode_20021=您有多笔充值订单未支付，请去记录中查看
-
-ServerErrorCode_20031=用户已有公会
-ServerErrorCode_20032=用户已申请创建公会
-ServerErrorCode_20038=用户没有加入公会
-ServerErrorCode_20039=公会没有加入联盟
-ServerErrorCode_20040=公会已申请加入联盟,等待审核 
-ServerErrorCode_20041=公会已有联盟
-ServerErrorCode_20042=公会玩家数量已到上限
-
-
+ServerErrorCode_20034=格式错误，重新输入
 ServerErrorCode_31001=减少筹码
 ServerErrorCode_31002=不在投注时间
 ServerErrorCode_31003=占座
@@ -3139,11 +3070,11 @@ UiVoiceprint_10058=系统正在审核<color=#DDBA82>{0}</color>玩家提交的�
 UIPlatformDepositAndWithdrawal=完成声纹录入可参与游戏
 UIWordChatMsgTooLong=输入字数过长，最多可输入200个字符
 UIMTTSignDialogFeeTip=本次购买的服务费已减免
-UIMTTSignDialogCoin=金豆
+UIMTTSignDialogCoin=Union coin
 UIMTTSignDialogCanUseTickt=可用门票: {0}
 UIMTTSignDialogRemainingBuy=剩余买入: {0}
 UIMTTSignDialogBuyTitle=比赛报名
-UIMTTSignDialogBuyErroTipscoin=可用金豆不足
+UIMTTSignDialogBuyErroTipscoin=可用Union coin不足
 UIMTTSignDialogBuyErroTips=可用门票不足
 UIMTTSignDialogReBuyTitle=比赛重购
 UIDialogInvitationCodeSucTips=恭喜您获得一次任意比赛服务费减免权益
@@ -3168,7 +3099,7 @@ UIMinevoiceprint=声纹
 MsgContentUnRead=暂无未读消息
 UIChatFree=免费
 UIChatTmpMsg=大家好，交个朋友
-UIMTTbuyinDialog=选择{0}倍买入，得{0}倍记分牌
+UIMTTbuyinDialog=选择{0}倍买入，得{0}倍筹码
 UIMTTbuyinDialogRatio={0}倍
 ServerErrorCode_50000=获取停机维护表信息失败
 ServerErrorCode_50001=停机维护
@@ -3186,7 +3117,7 @@ UIMine_WalletPlatform_Tips=请输入Pix码
 UIMine_WalletPlatform_OnceAgainTips=为保证您的资金安全，请再次输入Pix码
 UIMine_WalletPlatform_ErrorTips=两次输入Pix码不一致，请重新输入
 UIMTTWaitforend=等待结算...
-MTT_State_DelayDetailNoAddOn={0} ({1}级截止买入)
+MTT_State_DelayDetailNoAddOn={0}（{1}级截止买入）
 UIForbidBringInTips=您已被禁止带入，如有疑问请联系客服
 UIForbidWithdrawGoldTips=您已被禁止提豆，如有疑问请联系客服
 UIBathTip001=等待下一手...
@@ -3209,168 +3140,752 @@ UISettingPassword003=邮箱:customerservices@olavamos.com
 UIPayWithdrawBtn01=刷新
 UIPayWithdrawBtn02=查看记录
 UIWithdrawTips001=等待提豆审核，如有疑问请复制订单号联系客服
-UITexasRule_Introduce=<b><size=50>Introduction</size></b>\nTexas Hold'em, which began in the early 20th century in Texas, is the most popular public poker game in Europe and America with a history of hundreds of years. Texas Hold'em is a poker game favored by chess and card lovers all over the world.\n\n<b><size=50>Gameplay</size></b>\n1.There are four rounds of betting in Texas Hold'em;\n2.Pre-flop: each player will be dealt with 2 cards and then start the first round of betting;\n3.Flop: after the three community cards are dealt, the remaining players from the first round betting will start the second round of betting;\n4.Turn: the third round of betting after the 4th community card is dealt;\n5.River: the fourth round of betting after the 5th community card is dealt;\n6.After the betting is over, all remaining players must show their cards and the player with the highest hand wins the pot.\n\n<b><size=50>Ranking of poker hand:</size></b>\nRoyal Flush>Straight Flush>Four of a kind>Full House>Flush>Straight>Three of a kind>Two Pairs>One Pair>High Card\nRanking of the card: \nA>K>O>J>10>9>8>7>6>5>4>3>2, regardless of suit\n\n
-UIPlO4Rule_Introduce=<b><size=50>Introduction</size></b>\nOmaha is very similar to Texas Hold’em with one game changing factor. Instead of two hand cards, each player is dealt four to six cards. In Omaha, players must make the best possible hand with a combination that two from their hand cards and three from the community cards.\n\n<b><size=50>PL04</size></b>\nIn Pot Limit Omaha (most popular form of Omaha Poker), the maximum a player can bet is as the same amount as in the pot. “04” means four cards will be dealt to each player.\n\n<b><size=50>Gameplay</size></b>\n1.There are four rounds of betting in Omaha;\n2.Pre-flop: each player will be dealt with 4 cards and then start the first round of betting;\n3.Flop: after the three community cards are dealt, the remaining players from the first round betting will start the second round of betting;\n4.Turn: the third round of betting after the 4th community card is dealt;\n5.River: the fourth round of betting after the 5th community card is dealt;\n6.After the betting is over, all remaining players must show their cards and the player with the highest hand wins the pot.\n\n<b><size=50>Ranking of poker hand:</size></b>\nRoyal Flush>Straight Flush>Four of a kind>Full House>Flush>Straight>Three of a kind>Two Pairs>One Pair>High Card\nRanking of the card: \nA>K>O>J>10>9>8>7>6>5>4>3>2, regardless of suit\n\n
-UIPlO5Rule_Introduce=<b><size=50>Introduction</size></b>\nOmaha is very similar to Texas Hold’em with one game changing factor. Instead of two hand cards, each player is dealt four to six cards. In Omaha, players must make the best possible hand with a combination that two from their hand cards and three from the community cards.\n\n<b><size=50>PL05</size></b>\nIn Pot Limit Omaha (most popular form of Omaha Poker), the maximum a player can bet is as the same amount as in the pot. “05” means five cards will be dealt to each player.\n\n<b><size=50>Gameplay</size></b>\n1.There are four rounds of betting in Omaha;\n2.Pre-flop: each player will be dealt with 5 cards and then start the first round of betting;\n3.Flop: after the three community cards are dealt, the remaining players from the first round betting will start the second round of betting;\n4.Turn: the third round of betting after the 4th community card is dealt;\n5.River: the fourth round of betting after the 5th community card is dealt;\n6.After the betting is over, all remaining players must show their cards and the player with the highest hand wins the pot.\n\n<b><size=50>Ranking of poker hand:</size></b>\nRoyal Flush>Straight Flush>Four of a kind>Full House>Flush>Straight>Three of a kind>Two Pairs>One Pair>High Card\nRanking of the card: \nA>K>O>J>10>9>8>7>6>5>4>3>2, regardless of suit\n\n
-
-UIPlO6Rule_Introduce=<b><size=50>Introduction</size></b>\nOmaha is very similar to Texas Hold’em with one game changing factor. Instead of two hand cards, each player is dealt four to six cards. In Omaha, players must make the best possible hand with a combination that two from their hand cards and three from the community cards.\n\n<b><size=50>PL06</size></b>\nIn Pot Limit Omaha (most popular form of Omaha Poker), the maximum a player can bet is as the same amount as in the pot. “06” means six cards will be dealt to each player.\n\n<b><size=50>Gameplay</size></b>\n1.There are four rounds of betting in Omaha;\n2.Pre-flop: each player will be dealt with 6 cards and then start the first round of betting;\n3.Flop: after the three community cards are dealt, the remaining players from the first round betting will start the second round of betting;\n4.Turn: the third round of betting after the 4th community card is dealt;\n5.River: the fourth round of betting after the 5th community card is dealt;\n6.After the betting is over, all remaining players must show their cards and the player with the highest hand wins the pot.\n\n<b><size=50>Ranking of poker hand:</size></b>\nRoyal Flush>Straight Flush>Four of a kind>Full House>Flush>Straight>Three of a kind>Two Pairs>One Pair>High Card\nRanking of the card: \nA>K>O>J>10>9>8>7>6>5>4>3>2, regardless of suit\n\n
-UI6Plus_Introduce=<b><size=50>6+ Hold'em</size></b>\n6+ Hold'em is a popular “short deck” poker gameplay that mostly follows the same rules with Texas Hold’em, but with a few exciting differences:\n1.All cards lower than 6 are removed from the deck;\n2.Everyone bets an ante and only the button bets a blind - known as the “button blind”;\n3.Flush beats Full-house and A, 6, 7, 8, 9 is classified as lowest straight\nAvailable exclusively at Poker Queen, 6+ Hold’em gives you the chance to play an action-packed gameplay loved by high-stakes players around the world.\n
+UITexasRule_Introduce=<b><size=50>介绍</size></b>\n德州扑克, 扑克游戏始于20世纪初的德克萨斯州，是欧美最受欢迎的公共扑克游戏，已有数百年的历史。德州扑克是一种被全世界的象棋和纸牌爱好者所喜爱的扑克游戏。\n\n<b><size=50>玩法</size></b>\n1.德州扑克一共有四回合;\n2.翻牌前:每位玩家将得到2张牌，然后开始第一轮;\n3.翻牌:发完三张公共牌后，第一轮剩下的玩家将开始第二轮;\n4.转牌:第4张公共牌发完后的第三回合;\n5.河牌:第5张公共牌发出后的第4轮;游戏结束后，所有剩下的玩家都必须出示他们的牌，手牌最高的玩家赢得一局。\n\n<b><size=50>手牌大小:</size></b>\n皇家同花顺>同花顺>四条>葫芦>同花>顺子>三条>两对>一对>高牌\n牌的大小: \nA>K>O>J>10>9>8>7>6>5>4>3>2, 不管花色\n\n
+UIPlO4Rule_Introduce=<b><size=50>介绍</size></b>\n奥马哈和德州扑克非常相似，有一个改变游戏规则的因素。不是两张牌，而是四到六张牌。在奥马哈，玩家必须用他们手上的两张牌和社区牌的三张牌的组合来做出最好的手牌。\n\n<b><size=50>PL04</size></b>\nIn “池底限注奥马哈”(最受欢迎的形式的奥马哈扑克)，一个玩家可以放筹码的最大值是相同的金额在奖池。“04”意味着四张底牌将发给每个玩家。\n\n<b><size=50>玩法</size></b>\n1.奥马哈有四轮;\n2.翻牌前:每个玩家将被处理4张牌，然后开始第一轮;\n3.翻牌:发完三张公共牌后，第一轮剩余的玩家将开始第二轮;\n4.转牌:打出第4张公共牌后的第三回合;\n5.河牌:第5张社区卡出牌后的第4轮;\n6.游戏结束后，所有剩下的玩家都必须出示他们的牌，手牌最高的玩家赢得奖池。\n\n<b><size=50>手牌大小:</size></b>\n皇家同花顺>同花顺>四条>葫芦>同花>顺子>三条>两对>一对>高牌\n牌的大小: \nA>K>O>J>10>9>8>7>6>5>4>3>2, 不管花色\n\n
+UIPlO5Rule_Introduce=<b><size=50>介绍</size></b>\n奥马哈和德州扑克非常相似，有一个改变游戏规则的因素。不是两张牌，而是四到六张牌。在奥马哈，玩家必须用他们手上的两张牌和社区牌的三张牌的组合来做出最好的手牌。\n\n<b><size=50>PL05</size></b>\nIn “池底限注奥马哈”(最受欢迎的形式的奥马哈扑克)，一个玩家可以放筹码的最大值是相同的金额在奖池。 “05”意味着五张底牌将发给每个玩家。\n\n<b><size=50>玩法</size></b>\n1.奥马哈有四轮;\n2.翻牌前:每个玩家将被处理4张牌，然后开始第一轮;\n3.翻牌:发完三张公共牌后，第一轮剩余的玩家将开始第二轮;\n4.转牌:打出第4张公共牌后的第三回合;\n5.河牌:第5张社区卡出牌后的第4轮;\n6.游戏结束后，所有剩下的玩家都必须出示他们的牌，手牌最高的玩家赢得奖池。\n\n<b><size=50>手牌大小:</size></b>\n皇家同花顺>同花顺>四条>葫芦>同花>顺子>三条>两对>一对>高牌\n牌的大小: \nA>K>O>J>10>9>8>7>6>5>4>3>2, 不管花色\n\n
+UIPlO6Rule_Introduce=<b><size=50>介绍</size></b>\n奥马哈和德州扑克非常相似，有一个改变游戏规则的因素。不是两张牌，而是四到六张牌。在奥马哈，玩家必须用他们手上的两张牌和社区牌的三张牌的组合来做出最好的手牌。\n\n<b><size=50>PL06</size></b>\nIn  “池底限注奥马哈”(最受欢迎的形式的奥马哈扑克)，一个玩家可以放筹码的最大值是相同的金额在奖池。“06”意味着六张底牌将发给每个玩家。\n\n<b><size=50>玩法</size></b>\n1.奥马哈有四轮;\n2.翻牌前:每个玩家将被处理4张牌，然后开始第一轮;\n3.翻牌:发完三张公共牌后，第一轮剩余的玩家将开始第二轮;\n4.转牌:打出第4张公共牌后的第三回合;\n5.河牌:第5张社区卡出牌后的第4轮;\n6.游戏结束后，所有剩下的玩家都必须出示他们的牌，手牌最高的玩家赢得奖池。\n\n<b><size=50>手牌大小:</size></b>\n皇家同花顺>同花顺>四条>葫芦>同花>顺子>三条>两对>一对>高牌\n牌的大小: \nA>K>O>J>10>9>8>7>6>5>4>3>2, 不管花色\n\n
+UI6Plus_Introduce=<b><size=50>6+德州</size></b>\n6+ 德州 是一种流行的“短牌”扑克玩法，大部分遵循与德州扑克相同的规则，但有一些令人兴奋的不同:\n1.所有低于6的牌将从牌组中移除;\n2.每个人下注和底注\n3.同花比葫芦大 和A, 6, 7, 8, 9被归类为最低直\ n独家在扑克女王，6+ Hold 'em让你有机会玩一个内容丰富的游戏，受到世界各地喜欢冒险玩家的喜爱。\n
 UIRecharge_Input=充值游戏币数量
 UIWithdraw_Input=提取游戏币数量
 UIReplicationFailed=复制失败
 UIWithdrawalLimit=单笔提款额度最高50000
 UIFormatError=格式错误，重新输入
-UIExchangeRatio=R$ 1=1金豆
+UIExchangeRatio=R$ 1=1Union coin
 UIMine_CustomerService_Connect=联系
 UIMine_CustomerService=客户服务
-UIWebViewURL=https://h5.olavamos.com/#/
-UIAboutURL=https://h5.olavamos.com/#/introduce
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-UIEditDefultTip1=输入玩家昵称或ID
-UIEditDefultTip2=搜索您喜欢的游戏
-
-UIChessItemStatus_0=待创建
-UIChessItemStatus_1=已创建未开始
-UIChessItemStatus_2=已开始
-UIChessItemStatus_3=已结束
-UIChessItemStatus_4=即将关闭
-UIChessItemStatus_5=房间关闭
-
-UIOrder_Apply_Status_1=申请中
-UIOrder_Apply_Status_2=同意
-UIOrder_Apply_Status_3=拒绝
-UIOrder_Apply_Status_4=取消申请
-
-
-UIBtnLab_add=添加
-UIEditRateTip=请输入汇率
-UILookRate=查看汇率
-UINoRateTip=暂无汇率
-UIRate_x_x=汇率:1-{0}
-UIAppay=申请
-UIRateSetEditIsNullTip=请先补全信息
-
-UI_BIANJI=编辑
-UI_SHANCHU=删除
-
-UIText_today=今天
-UIText_yesterday=昨天
-
-UIRateAddTip=点击右上角“+”,开始配置
-UIRateInstructions=此页面由公会会长配置，仅供参考，如有疑问 请与公会会长联系。
-UIRateManagerListTip=汇率由公会会长设置，向公会所有会员展示，用于公会会员充值和提现时计算转账金额。
-UIDeletRateTostTip=确定将{0}/{1}汇率从表格中移除
-UISetRateTostTip=确定修改{0}{1}/{2}{3}汇率<br/>{4}
-
-UITitle_issue_order=发放订单
-UITitle_issue_num=发放数量
-UITitle_issue_time=发放时间
-UITitle_jijin_fafang=基金发放
-
-UITitle_RateSet=汇率设置
-UITitle_addRate=新增汇率
-UITitle_setRate=编辑汇率
-
-UITitle_fafang_jilu=发放记录
-UITitle_zongjijin=总基金
-
-UITitle_apply_chongdou=充豆申请
-UITitle_apply_tidou=提豆申请
-
-UIUserDesc=玩家备注:{0}
-
-UITip_jiangjin=奖金
-UIOutChipsTip=存储：
-
-UIOtherLoginTip=使用其他账号登录
-UIBackLogin=登录已有账号
-
-
-UILogin_phone_login=手机登录
-UILogin_mail_login=邮箱登录
-UILogin_phone_register=手机注册
-UILogin_mail_register=邮箱注册
-
-UILogin_phone_reset=手机找回密码
-UILogin_mail_reset=邮箱找回密码
-
-
-
-UILogin_phone_pwd_l=用密码登录
-UILogin_phone_vcode_l=用验证码登录
-UILogin_vcode_len_limit_tip=验证码只能是4位数
-UILogin_phone_len_limit_tip=手机号必须在6到20位之间
-
-UITips_GoldOpration_0=确定向{0}公会申请充值{1}金豆？<br/>付款金额{2}
-UITips_GoldOpration_1=确定向{0}公会申请提取{1}金豆？<br/>收款金额{2}
-UITips_GoldOpration_2=确定向{0}发放{1}金豆？<br/>收款金额{1}
-UITips_GoldOpration_suc_0=申请充豆成功！<br/>如有疑问请联系客服，联系方式{0}
-UITips_GoldOpration_suc_1=申请提豆成功！<br/>如有疑问请联系客服，联系方式{0}
-UITips_GoldOpration_suc_2=金豆发放成功！<br/>如有疑问请联系客服，联系方式{0}
-
+UIMine_TicketsReceive=领取门票
+UIMine_TicketsAddress=场地
+UIMine_TicketsGroup=组别
+UIMine_TicketsRemain=剩余/总席位
+UIMine_TicketsEntryCertificate=参赛凭证
+UIMine_TicketsTrans=转让门票
+UIMine_TicketsOnceGet=立即领取
+UIMine_TicketsStart=比赛开始
+UIMine_TicketsEnd=截至买入
+UIMine_TicketsCheck=检票
+UIMine_TicketsChange=门票兑换
+UIMine_TicketsIfTrans=是否将门票转让？
+UIMine_TicketsCPF=CPF
+UIMine_TicketsID=ID
+UIMine_TicketsPhoneNum=电话号码
+UIMine_TicketsError=请输入正确信息
+UIMine_TicketsGainSuccess=领取成功，可在【我的-我的门票】去使用
+UIMine_MyTickets=我的门票
+UIMine_Notes=注意事项：
+UIMine_CheckSuccess=检票成功
+UIMine_GoogleMap=谷歌地图
+UIMine_WazeMap=Waze地图
+UIMine_PleaseEnter=请输入
+UIMine_NoOfflineTickets=门票已被他人抢到
+UIText_NeedUpdate=NEW POKER 立即更新
+UIText_Desc1=首页风格改版，更全面的内容，焕然一新的视觉体验
+UIText_Desc2=功能入口集结，方便您快速找到自己想要的功能模块
+UIText_Desc3=[取消更新]会直接退出 NEW POKER
+UIText_NeedUpdate_Exit=退出
+UIText_NeedUpdate_Update=更新
 UIMTT_StateHuntChampionships=悬赏金锦标赛
 UIMTT_StateHuntChampionshipsDetail=每淘汰一名玩家，至少得<color=#DDBA82>{0}</color>赏金。
-UIMTT_StateHuntChampionshipsDialogDetail=每淘汰一名玩家，可从被淘汰玩家的当前悬赏金获得<color=#3BE1F5>{0}</color>%，剩下的<color=#3BE1F5>{1}</color>%将累积到自己的赏金。
+UIMTT_StateHuntChampionshipsDialogDetail=每淘汰一名玩家，可从被淘汰玩家的当前悬赏金获得{0}%，剩下的{1}%将累积到自己的赏金。
 UIMTT_StateUnLimitRebuy=无限重进
+ServerErrorCode_10015=MTT买入倍率错误
+ServerErrorCode_10016=增购时间不对
+ServerErrorCode_10017=筹码过多无法增购
+ServerErrorCode_10018=增购超过次数了
+ServerErrorCode_10019=须打完或被淘汰，才能报下一场相同tag的比赛
+UIChat_LockShowContent=，即解锁聊天功能
+UIChat_LockShowContent_pay=<color=#DDBA82>完成首充</color>
+UIChat_LockShowContent_day=连续<color=#DDBA82>{0}/{1}</color>天每天参与<color=#DDBA82>{2}</color>场游戏
+UIChat_LockShowContent_or=；或者
 UIMTT_StateReward=赏金:
-
-
-MsgInfo_2007={0}公会管理员更新了汇率表，去看看吧
-MsgInfo_2008=恭喜您，成为{0}公会管理员
-MsgInfo_2009=很遗憾，您在{0}公会管理员已被取消
-MsgInfo_2010=很遗憾，您被管理员移出{0}公会，如有疑问请咨询公会客服
-MsgInfo_5003=您申请加入{0}联盟的申请已经通过审核
-MsgInfo_5004=您申请加入{0}联盟的申请没有通过审核
-MsgInfo_4013=您的账号被公会冻结，如有疑问请咨询公会客服
-MsgInfo_4017=您的xx公会被联盟冻结，如有疑问请咨询客服
-MsgInfo_4011=您的账号被平台冻结，如有疑问请咨询客服
-
-
-
-
+UIHappyShop_Title=Super 1
+UIHappyShop_JoinRecord=参与记录
+UIHappyShop_MyPrize=我的奖品
+UIHappyShop_Ruler=规则说明
+UIHappyShop_FreeJoin=免费参与
+UIHappyShop_RulerDetail=<P><T>NEW POKER为了感谢玩家们一直以来的支持，特意推出Super 1活动回馈我们VIP玩家。凡是成为NEW POKER VIP的玩家除了游戏中的专属头像框等特权以外，还可获得活动券参加Super 1特别回馈活动<P><H>一.活动介绍<P><T>1. Super 1 为VIP玩家准备多种丰厚的礼品等待大家抽取！<P><T>2.Super 1将每件礼品分成若干等份，1张活动券可抽1次。当玩家抽取1次后会获的一个编号，当这件礼品的份数被抽取完毕后，系统会根据抽奖规则计算出一个“幸运编码”，此“幸运编码”的拥有者即可获得这件商品！<P><H>二.参与规则<P><T>1. 每个玩家可通过“我的商城”购买VIP服务，赠送获得活动券参与，1天得VIP服务赠送1次活动券。<P><T>2. 每个玩家可通过完成“Super 1”每日任务获得活动券参与.<P><H>三.抽奖规则<P><T>1.当礼品最后一个号码分配完毕后，系统会将奖品最后50个参与用户的参与时间提取，不足50个按照最多数取。<P><T>2.将最后50个参与用户的参与时间数值进行求和，得到数值A（每个时间按照小时、份、秒、毫秒的顺序组合，如20:15:23.345则为201523345）.<P><T>3.数值A除以该奖品总该奖品总份数得到的余数+原始数10000001，得到最终“幸运编码”，拥有该“幸运编码”的玩家，直接获得该奖励。<P><H>四.领奖规则<P><T>1.实物礼品，需中奖的用户在中奖后的3个月内领取中奖物品，并且根据本平台提示，提供有效通讯地址，超过3个月为登记领取奖励或则未提供有效通讯地址则视为放弃奖励。<P><T>2.实物礼品，在登记提供有效通讯地址后，所有实物礼品需要60个工作日运输日期。<P><T>3.任何实物礼品都可兑换成该礼品对等价值的GC。<P><T>4.若中奖礼品为NEW POKER虚拟道具，平台将直接发放到中奖玩家背包，自行查收。<P><H>五.取消规则<P><T>1.玩家使用活动券参与礼品的抽奖，将无法取消退回。<P><T>2.Super 1单件商品的夺宝活动在一定时间没有挤满总次数要求或存在某些不可控因素，NEW POKER有权中途取消，用户消耗的活动券会原路反还。<P><H>六.权益声明<P><T>1.Super 1所有礼品售后均由礼品品牌方提供，和本平台没有任何关系<P><T>2.Super 1的时间有效期由NEW POKER决定，可随时更改时间，奖励以及和此活动的一切内容，平台的决定是最终的，不得质疑和申述。\n
+UIHappyShop_Periods=第{0}期
+UIHappyShop_ActivitySchedule=活动进度
+UIHappyShop_Join=参与
+UIHappyShop_ComputeRuleTitle=计算规则
+UIHappyShop_MathShow=计算公式
+UIHappyShop_MathDetails=计算详情
+UIHappyShop_MathDataA=数值A
+UIHappyShop_MathPrizeManCount=奖品所需人数
+UIHappyShop_MathRemainder=(取余数)
+UIHappyShop_MathDataDetails=截止开奖时间点前最后50条参与记录
+UIHappyShop_MathJoinTime=参与时间
+UIHappyShop_MathDataConversion=转换数据
+UIHappyShop_MathDetailsOpen=展开
+UIHappyShop_MathJoinUser=参与用户
+UIHappyShop_MathComputedResult=计算结果
+UIHappyShop_MathLuckNumber=幸运号码
+UIHappyShop_PastRecord=往期夺宝记录
+UIHappyShop_AnnounceNumber=揭晓号码
+UIHappyShop_LuckyUser=幸运用户
+UIHappyShop_AnnounceTime=揭晓时间
+UIHappyShop_TheParticipation=本次参与
+UIHappyShop_Commodity=商品
+UIHappyShop_PersonTime=人次
+UIHappyShop_ConfirmOrder=确认订单
+UIHappyShop_AvailableActivityVoucher=可用活动券:
+UIHappyShop_AvailableChip=可用Union coin:
+UIHappyShop_ToPickUp=去领取
+UIHappyShop_ToRechange=去充值
+UIHappyShop_TotalVouchersNum=合计活动券个数：
+UIHappyShop_TotalVouchers=合计活动券：
+UIHappyShop_ConfirmJoin=确认参与
+UIHappyShop_PayLater=稍后支付
+UIHappyShop_PayConfirm=确认支付
+UIHappyShop_FreeGet=免费领取
+UIHappyShop_MixedPayment=您的活动券余额不足，需要额外支付{0}Union coin购买，是否确认支付？
+UIHappyShop_LackOfBalance=您的活动券和金币余额不足，可以通过以下方式免费领取活动券和充值Union coin
+UIHappyShop_EnoughBalance=购入{0}人次商品夺宝份额，需要消耗{1}活动券，是否确认支付？
+UIHappyShop_JoinSuccess=参与成功
+UIHappyShop_JoinNumber=参与人次
+UIHappyShop_Time=次
+UIHappyShop_TheUse=其中使用
+UIHappyShop_ItemDetailTitle=商品详情
+UIHappyShop_Insides=正在参与
+UIHappyShop_MyNums=我的号码
+UIHappyShop_TotalNeed=共需{0}人次
+UIHappyShop_LeftNeed=剩余{0}人次
+UIHappyShop_ShowAll=查看全部
+UIHappyShop_NumberNotEnough=号码不足
+UIHappyShop_Voucher=活动券
+UIHappyShop_TaskSchedule=进度
+UIHappyShop_TaskDaily=日常任务
+UIHappyShop_VoucherLeft=活动券余额
+UIHappyShop_JoinNow=立即参与
+UIHappyShop_ItemPriceDetail=一元购活动券可以通过完成任务免费领取，或者通过我的商城购买VIP特权赠送
+UIHappyShop_JoinRecordAll=全部
+UIHappyShop_JoinRecordProcessing=进行中
+UIHappyShop_JoinRecordBeanRevealed=已揭晓
+UIHappyShop_Return=返回
+UIHappyShop_AllNumber=全部号码
+UIHappyShop_VirtualGoodExchangeCode=虚拟物品兑换码
+UIHappyShop_InputNumAnd=输入手机号后,客服会联系您
+UIHappyShop_InputYourNumP=请输入您的手机号码
+UIHappyShop_HasReceived=已领取
+UICommon_SeatNobody=请坐
+UIHappyShop_PrizeGiving=待发奖
+UIMatch_NewRoomTips=新增{0}个牌局
+UIHappyShop_ActivityShop=我的商城
+UIHappyShop_ActivityShopVip=VIP服务{0}天
+UIHappyShop_ActivityShopGold=价格：{0}Union coin
+UIHappyShop_ActivityShopTicket=赠送一元购活动券*{0}
+UIHappyShop_ActivityShopCheckBuy=购买VIP特权1天赠送一元购活动券*{0}
+UIHappyShop_ActivityShopBuy=确认兑换
+UIHappyShop_ActivityShopDay=天
+UIHappyShop_ActivityShopVips=VIP服务
+UIHappyShop_ActivityShopNogold=你的Union coin余额账户不足，兑换失败
+UIMTTRank_ShareMyVictory=分享我的胜利
+UIUIMine_EndVipTime=VIP特权到期:
+UItexasuiUserSeatVipMsgTips=VIP用户{0}进入牌桌
+UIHappyShop_ActivityShopNoticket=你的活动券余额不足，可以通过我的商城购买VIP特权赠送
+UIChatReport=举报玩家
+UIChatReport001=被举报玩家:<color=#DDBA82>{0}</color>
+UIChatReport002=举报原因(多选):
+UIChatReport003=侮辱谩骂
+UIChatReport004=涉嫌作弊
+UIChatReport005=政治敏感
+UIChatReport006=色情暴力
+UIChatReport007=违规名字
+UIChatReport008=其他
+UIChatReport009=请输入举报原因
+UIChatReport010=举报
+UIChatReport011=非常感谢您的支持，我们会对您的反馈尽快处理。
+UIChatReport012=屏蔽此用户
+UIChatReport013=屏蔽成功
+UIChatReport014=无法举报/屏蔽自己
+UIShare_ShareFriends=邀请好友参与
+UIMine_Backpack_FreeServiceVoucherDescriptions=说明：\n每张代金券使用后在任意一场MTT赛事中减免服务费一次，需要主动使用后生效。
+UIMine_Backpack_RechargeVoucherDescriptions=说明：\n单笔充值{0}元Union coin可以减免{1}元代金券，可在充值界面付款时选择使用。
+UIMine_Backpack_ChipsVoucherDescriptions=说明：\n使用后Union coin账户直接增加{0}Union coin，可提现。
+UIMine_Backpack_OneShopVoucherDescriptions=说明：\n使用后直接在一元购活动券账户增加一张活动券，一元购活动券可以用来参与一元购活动。
+UIMine_Backpack_PropVoucherDescriptions=说明:   \n每1张代替券可以代替免费使用任意道具1次，不消耗Union coin。
+UIMine_Backpack_FreeServiceVoucher=MTT免服务费代金券
+UIMine_Backpack_RechargeVoucher={0}元充值代金券
+UIMine_Backpack_ChipsVoucher={0}Union coin券
+UIMine_Backpack_OneShopVoucher=一元购活动券
+UIMine_Backpack_PropVoucher=道具代替券
+UIMTT_FreeServer=本次服务费免费
+UIMine_FreeAward_DetailExplain=<color=#DCBA82>每日任务</color>\n限定的时间完成任务指标领取对应奖励，每天定时刷新，未领取的奖励视作放弃领取\n\n<color=#DCBA82>成就任务</color>\n通过完成指定任务指标领取对应奖励，一直存在，没有时间限制\n\n<color=#DCBA82>奖励</color>\n领取奖励后在我的背包查看奖品的具体使用规则
+UIMine_Backpack_UsedSuccess=使用成功
+UIMine_FreeAward_DailyTask=每日任务
+UIMine_FreeAward_Achievement task=成就任务
+UIMine_FreeAward_TitleText=免费奖品
+UIRecharge_ChooseVoucher=选择充值代金券
+UIShare_ShareDone=分享成功
+UIMine_Backpack_UsedFail=用户道具使用失败
+UITexas_MyHandCard=我的手牌
+UITexas_Winner=赢家
+UITexas_WinCoin=池底(盈利)
 MsgInfo_1008=完成每日任务获得{0}{1}
 MsgInfo_1009=完成成就任务获得{0}{1}
 MsgInfo_1010=贵宾邀请获得{0}{1}
+UIMine_FreeAward_ShareText=分享
+UIShowAdv_TodayNot=今天不想再提示这个
+UIClub_AgentManager_TitleT=代理管理
+UILogin_InputEmail=请输入邮箱
+UILogin_NewUser= 新用户？<color=#DCBA82>注册账号</color>
+UIClub_JoinClub=加入俱乐部
+UIClub_CreateClub=创建俱乐部
+UIClub_InputClubID=请输入俱乐部ID
+UIClub_ClubID=俱乐部ID
+UIClub_DataManager=数据管理
+UIClub_InviteCode=邀请码
+UIClub_InviteLink=邀请链接
+UIClub_InviteQR=邀请二维码
+UIClub_CreateTime=创建时间
+UIClub_IntroClubDatail=介绍一下俱乐部吧
+UIClub_EditIntro=编辑简介
+UIClub_InputContact=请输入whatsapp联系方式
+UIClub_MemberManager=成员管理
+UIClub_Remove=移除
+UIClub_RemoveTips=确定让{0}从你的俱乐部成员中移除？
+UIClub_JoinClubTime=加入时间:
+UIClub_AddAgent=添加代理
+UIClub_NumsOfPlayer=人数
+UIClub_InputPlayerID=请输入玩家昵称或ID
+UIClub_DeleteSomeone=删除
+UIClub_AddSomething=添加
+UIClub_HasAdded=已添加
+UIClub_AddYes=确定添加{0}为代理吗
+UIClub_ClubData=俱乐部数据
+UIClub_AgentData=代理数据
+UIClub_TotalGain=累积总收益
+UIClub_GainNum=盈利
+UIClub_AddNum=新增
+UIClub_AliveNum=活跃
+UIClub_AgentItem=代理
+UIClub_ClubItem=俱乐部
+UIClub_RemoveYes=确定将{0}从你代理的成员中移除吗?
+UIClub_LeagueLevel=当前联盟等级
+UIClub_ClubManager=俱乐部管理
+UIClub_ClubGain=俱乐部收益
+UIClub_ClubDataDetail=俱乐部数据详情
+UIClub_RemoveSuccess=移除成功
+UISetting_SecurityManager=安全管理
+UISetting_SecurityBindTel=绑定手机
+UISetting_SecurityBindEmail=绑定邮箱
+UISetting_SecurityBindThird=绑定第三方登录
+UISetting_SecurityBindNo=未绑定
+UISetting_SecurityBindYes=已绑定
+UISetting_SecurityBindChange=更换
+UISetting_SecurityBindAlert=更换手机号后,下次登录可使用手机号登录
+UISetting_SecurityBindCodeAlert=验证码已发送至{0},请填写
+UISetting_SecurityBindTelItem=手机
+UISetting_SecurityBindTelNum=手机号
+UISetting_SecurityBindEmailItem=邮箱
+UISetting_SecurityBindEmailNum=邮箱号
+UIClub_IDError=ID错误
+UISetting_SecurityBindSuccess=绑定成功
+UISetting_SecurityBindCodeErr=验证码错误
+UISetting_SecurityBindNumHasBind=此号码已绑定其他的账号
+UISetting_SecurityBindNumSame=和之前绑定的号码相同
+UISetting_SecurityBindInvalidUser=找不到当前用户
+UISetting_SecurityBindValidNum=请输入有效号码
+UISetting_SecurityBindInvalidNum=号码无效
+UISetting_SecurityBindFirst=请绑定手机或邮箱
+UIBindPhoneTips=你暂时未绑定手机号，为了你的账户安全，请绑定手机号，下次登录可使用手机号登录。
+UISetting_SecurityBindEmailAlert=更换邮箱号后,下次登录可使用邮箱号登录
+UIHappyShop_Super1WinTitle=商品开奖栏
+UIHappyShop_Super1WinNum=中奖号码
+UIHappyShop_Super1WinPlayer=幸运玩家
+UIHappyShop_Super1WinTime=开奖时间
+UIHappyShop_Super1WinLuckNewsTC=恭喜你在一元购活动中成为幸运用户，请在“一元购”-“我的奖品”处查看中奖详情！
+UIHappyShop_Super1WinLuckNewsTitle=中奖提示
+UIHappyShop_Super1WinLuckNewsPMD=恭喜{0}用户在一元购活动中成为幸运用户奖励{1}商品！
+UIHappyShop_Super1WinUnLuckNews=很遗憾你参与的一元购{0}商品第{1}期活动没有中奖，感谢你的参与！
+UIHappyShop_Super1WinLuckNewsBag=在一元购活动总获得{0}商品{1}
+UIClub_ClubFounder=创建人
+UIHallOfFame_enter=名人堂
+UIMine_Backpack_PropMTTVoucherDes=说明:   \n可以在MTT报名、rebuy、Addon的时候减免{0}Union coin，此券一次性消耗道具.
+UIMine_Backpack_PropMTTNoFreeVoucherDes=可以在MTT报名、rebuy、Addon的时候减免{0}Union coin，但是不包含服务费的费用，此券一次性消耗道具
+UIMTT_LimitFree=本次限免
+UIMTT_LimitFreeNoServer=本次限免(不包含服务费)
+UIClub_NoTelAlert=俱乐部未填写联系方式
+OpCodeString_MTTPROPREM=MTT买入
+OpCodeString_MTTFREEREM=MTT买入
+OpCodeString_SNATCHTREASUREPFTDIV=一元夺宝分润
+UIMTT_MultiFree=减免一倍率
+UIMTT_MultiFreeNoServer=减免一倍率(不包含服务费)
+UIHallOfFame_super1reward=一元购奖品
+UIClub_AgentRate=比例
+UIClub_AgentEditor=操作
+UIClub_AgentCount=人数
+UISHOPguide=新手引导
+UIClub_belongLeague=所属联盟
+UIClub_CreateSuccess=创建成功
+MsgInfo_4009=恭喜俱乐部已经成立，从现在起你可以邀请朋友一起享受游戏。
+UIClub_InputLeagueId=请输入联盟ID
+UIClub_InputClubName=请输入俱乐部名称
+UIClub_LeagueID=联盟ID
+UIInfo_UploadHead=请上传头像
+UIClub_WaitingApproval=<color=#FF0000>等待审核</color>
+UIClub_HasKnow=已知晓
+UIHappyShop_LotteryTime=剩余开奖时间
+UIHappyShop_LotteryPeople=已参与{0}人次
+UIClub_AuditRecords_search=请输入俱乐部名称或ID
+UIClub_AuditRecords_title=俱乐部审核
+UIClub_AuditRecords_switch=开启免审核
+UIHappyShop_GetEntity=领取物品
+UIHappyShop_GetChip=兑换Union coin
+UIHappyShop_GetEntityTips=将<color=#DDBA82>{0}</color>折算Union coin，可获得<color=#DDBA82>{1}Union coin</color>，获得的Union coin将直接发送到您的账户
+UIClub_Dissolve=解散俱乐部
+UIClub_DissolveTips=俱乐部解散后将不可恢复，您拥有的俱乐部权益和权限也会取消，请您谨慎操作。
+UIClub_DissolveTips_Risk=风险提示
+UIClub_AuditRecords_ok=审核通过
+UIClub_AuditRecords_no=已拒绝
+UIClub_CreateSuccessTips=你的俱乐部目前初始分润比例为<size=60><color=#DDBA82>{0}%</color></size>。
+UIClub_InputLeagueIdTips=请输入正确的联盟id
+OpCodeString_SNATCHTREASUREAWARDD=一元购
+MsgInfo_4010=您提交的创建俱乐部申请未通过，如有疑问，请联系联盟客服
+UIHappyShop_HasGiveState=已发奖
+MsgInfo_3014=恭喜您，成功兑换一元购奖品{0}，获得{1}。
+UIClub_Dividend_Ratio=分润比例
+UIClub_PhoneOrCodeError=注册手机号或验证码错误
+WalletPlatform_Name=姓名
+UIMine_WalletPlatform_OnceAgainPix=再次输入pix码
+UIMine_WalletPlatform_InputCPF=请输入CPF号码
+UIGame_TimeLeftTips=房间将于{0}分钟后结束
+UIGame_RoomEndTips=房间将于本手后结束
+UIGame_MttCloseTips=比赛已被赛事方关闭,报名费原路退,如有疑问请联系客服
+UIClub_SendItem_title=发放道具
+UIClub_SendItem_select=选择道具
+UIClub_SendItem_number=发放数量
+UIClub_SendGold=发放Union coin
+UIClub_SendGoldNumber=请输入发放Union coin数量
+UIClub_RemainGoldNumber=账户余额：<size=50><color=#DDBA82>{0}</color></size>Union coin
+UIClub_ReconfirmGoldNumber=确定向<color=#DDBA82>{0}</color>发送<color=#DDBA82>{1}</color>Union coin
+UIClub_ReconfirmItem=确定向<color=#DDBA82>{0}</color>发送<color=#DDBA82>{1}</color>
+MsgInfo_1011=<color=#DDBA82>{0}俱乐部</color>管理员向您的账户发放<color=#DDBA82>{1}</color>
+OpCodeString_FCLUBSENDGOLD=俱乐部转出
+OpCodeString_FCLUBUSERGETGOLD=俱乐部发放
+UIClub_SendItemNoItem=没有道具,不能发送
+UIMine_WalletPlatform_UUID=UUID
+UIMine_Setting_UserSecret=用户隐私协议
+UIMTT_OfflineTicketsAlreadyGain=线下门票已经领取过
+UITexas_AddTimeSuccess=加时成功
+UITexas_FlipSuccess=翻牌成功
+UITexas_TurnBrandSuccess=转牌成功
+UITexas_RiverSuccess=河牌成功
+UIClub_RoomSitApplyRecords_title=带入申请
+UIClub_RoomApplyBringIn=申请带入
+UIClub_RoomSitApplyRecords_ok=已同意
+UIClub_RoomSitApplyRecords_no=已拒绝
+UIClub_RoomJoin_Title=快速开局
+UIClub_RoomJoinNumber=输入6位房间号快速开局
+UIClub_RoomList=当前牌局
+UIClub_RoomJoin=加入
+UIClub_RoomCreate=我要组局
+UIClub_RoomNoCreateTips=牌局不存在
+UIClub_RoomId=房间ID
+UIClub_RoomApplyAudit=审批
+UIClub_PokeType=牌类型
+UIClub_CreateRoom1=长牌
+UIClub_CreateRoom2=短牌（6+）
+UIClub_CreateRoom3=下注类型
+UIClub_CreateRoom4=不限制
+UIClub_CreateRoom5=底池限制
+UIClub_CreateRoom6=带出筹码
+UIClub_CreateRoom7=关闭
+UIClub_CreateRoom8=自动
+UIClub_CreateRoom9=手动
+UIClub_CreateRoom10=服务费（%）：
+UIClub_CreateRoom11=按把抽
+UIClub_CreateRoom12=按局抽
+UIClub_CreateRoom13=小盲/大盲：
+UIClub_CreateRoom14=带入筹码
+UIClub_CreateRoom15=座位数量：
+UIClub_CreateRoom16=自动开始人数：
+UIClub_CreateRoom17=前注设置:
+UIClub_CreateRoom18=牌局时长(h):
+UIClub_CreateRoom19=带入筹码:
+UIClub_CreateRoom20=最低入池率限制(%):
+UIClub_CreateRoom21=最小保留筹码倍数
+UIClub_CreateRoom22=总手数限制:
+UIClub_CreateRoom23=不限
+UIClub_CreateRoom24=思考时间:
+UIClub_CreateRoom25=IP地址限制
+UIClub_CreateRoom26=GPS限制
+UIClub_CreateRoom27=延迟看牌
+UIClub_CreateRoom28=补盲
+UIClub_CreateRoom29=控制玩家带入
+UIClub_CreateRoom30=立即开局
+UIClub_CreateRoom31=余额
+UIClub_CreateRoom32=消耗
+UIClub_CreateRoom33=封顶（大盲）：
+UIClub_CreateRoom34=结算设置
+UIClub_CreateRoom35=不选则为过盲
+UIClub_CreateRoom36=游戏限制
+UIGuild_MemberManager=成员管理
+UIGuild_Notice=弹窗通知
+UIGuild_NoticeTitle=标题
+UIGuild_NoticeContent=正文
+UIGuild_NoticeTitleInput=输入标题
+UIGuild_NoticeContentInput=输入备注
+UIGuild_NoticeDate=通知期
+UIGuild_InputName=请输入公会名称
+UIGuild_InputDetail=请输入公会说明
+UIGuild_Introduce=公会说明
+UIGuild_ContactInformation=填写您的联系方式
+UIGuild_InputContactInformation=请填写联系方式
+UIGuild_ConfirmCreate=确认创建
+UIGuild_InputNameTips=公会名称请输入4-20字符
+UIGuild_IntroduceTips=公会说明在160字符以内
+UIGuild_ContactInformationTips=联系方式在100字符以内
+UIGuild_MemberManagerSortByWinOrLose=按输赢值排序
+UIGuild_MemberManagerSortByHands=按手数排序
+UIGuild_MemberManagerSortByServiceFee=按服务费排序
+UIGuild_MemberManagerSortByLastLoginTime=按最后登陆时间排序
+UIGuild_MemberList=成员列表
+UIGuild_MemberApplyList=申请列表
+UIGuild_FilterButtonAll=全部
+UIGuild_FilterButtonManager=管理员
+UIGuild_FilterButtonVip=贵宾
+UIGuild_FilterButtonMember=成员
+UIGuild_MemberNumber=总人数
+UIGuid_Founder=创始人
+UIGuid_Level=公会等级
+UIGuild_ShowContactDetail=向玩家提供公会联系方式
+UIGuild_ContactInfo=公会联系方式
+UIGuild_ExchangeRateSettings=汇率设置
+UIGuild_ShareGameManager=共享牌局管理
+UIGuild_AllowSearch=允许他人搜索到公会
+UIGuild_Approve=入会无需审批
+UIGuild_NoUnion=暂未加入联盟
+UIGuild_ID=公会ID
+UIGuild_Member=公会人数
+UIGuild_ExchangeRateSettingsDesc=转换汇率由公会会长设置，将向公会所有成员展示，用于公会成员在转换Union coin和Global coin时的比例。
+UIGuild_ExchangeRateSettingsGold=兑换Union coin
+UIGuild_ExchangeRateSettingsUsdt=兑换Global coin
+ServerErrorCode_20045=您加入的公会数量已达上限
+UIGuild_CreateWaitAgree=创建公会申请已提交，请等待审核
+UIGuild_CreateSuccess=创建公会申请已通过
+UIGuild_HaveApplyList=已申请的公会
+UIGuild_HaveApplyTribeList=已申请的联盟
+UIGuild_ApplyJoin=申请加入
+UIGuild_CancleApplyJoin=取消申请
+UIGuild_NoInfo=未查询到公会信息
+UIGuild_NoTribeInfo=未查询到联盟信息
+UIGuild_HasJoin=已加入公会
+UIGuild_HasJoinTribe=已加入联盟
+UIGuild_ExchangeRateSettingsExNumTips=请输入兑换数量
+UIGuid_LevelBuy=购买
+UIGuild_MemberDetailsTimeAll=全部
+UIGuild_MemberDetailsTime7Day=7天
+UIGuild_MemberDetailsTimeCustom=自定义
+UIMTT_Info=信息
+UIGuild_VipCountOffLineMemberNumber=下线成员总数
+UIGuild_VipCountOffLineGoldNumber=下线成员Union coin
+UIGuild_VipCountOffLineUsdtNumber=下线成员Global coin
+UIGuild_MemberDetailsTimeToday=今天
+UIGuild_MemberDetailsTimePast7Day=过去7天
+UIGuild_VipCountGoldType1=Union coin
+UIGuild_VipCountGoldType2=Global coin
+UIGuild_VipCountGoldType3=筹码
+UIGuild_VipCountGameTypeALL=全部游戏
+UIGuild_VipCountGameTypeNLH=NLH
+UIGuild_VipCountGameTypePLO=PLO
+UICareer_Union=联盟
+UICareer_USDT=Global coin
+UIFriendsTable_EnterRoomNumer=输入6位房间号快速开局
+UIGuild_InsideTable=公会内部桌
+UIGuild_ExternalTable=公会外部桌
+UIGuild_GameType=玩法类型
+UIGuild_TableTemplate=牌桌模版
+UIGuild_CreateTable=创建牌桌
+UIGuild_Tiny=微
+UIGuild_Small=小
+UIGuild_Middle=中
+UIGuild_Big=大
+UIGuild_Fund_Acount=账户
+UIGuild_Fund_Record=记录
+UIGuild_Fund_Apply=申请
+UIGuildFund=公会基金
+UIGuildFund_RtTips001=确定向{0}联盟申请充值{1}Union coin？
+UIGuildFund_RtTips002=确定向{0}联盟申请充值{1}Global coin?
+UIGuildFund_RtTips003=确定向{0}联盟申请提现{1}Union coin？
+UIGuildFund_RtTips004=确定向{0}联盟申请提现{1}Global coin?
+UIGuildFund_RtTips005=申请充值成功！
+如有疑问联系客服，联系方式{0}
+UIGuildFund_RtTips006=申请提现成功！
+如有疑问联系客服，联系方式{0}
+UIGuild_MemberDetails_title=详细资料
+UIGuilFundRecordTopTIps=申请中^同意^拒绝^取消申请
+UIGuild_PloType=游戏变种
+UIGuild_MemberDetailsRole=成员角色
+UIGuild_MemberDetailsUpdateRoleTips=确定将成员{0}身份修改为{1}
+UIGuild_MemberDetailsUpdateVipRoleTips={0}下线成员{1}人，身份修改后，所有下线成员将解除绑定，是否确定操作？
+UIGuildExchange=换汇
+UIGuild_MemberDetailsName=名称:
+UIGuild_MemberDetailsRemarks=备注:
+UIGuild_CreateDes=创建
+UIFriendsTable_CreateRoomTips=启动游戏并邀请朋友加入
+UIGuild_MemberDetails_UpLine=上线贵宾
+UIGuild_MemberDetails_Nothing=无
+UIGuild_MemberDetails_BindVip=绑定贵宾
+UIGuild_MemberDetails_UnBindVip=解绑贵宾
+UIGuild_MemberDetails_VipManager=贵宾管理
+UIGuild_MemberDetails_OfflineNum=下线成员总数：
+UIGuild_MemberDetails_VipCount=贵宾统计：
+UIGuild_MemberDetails_RechargeGold=充值Union coin
+UIGuild_MemberDetails_TakeGold=提现Union coin
+UIGuild_MemberDetails_RechargeUsdt=充值Global coin
+UIGuild_MemberDetails_TakeUsdt=提现Global coin
+UIGuild_WalletNoSelect=请选择
+UIGuild_MemberDetails_UnBindVipTips=是否要取消此贵宾绑定
+UIGuild_MemberDetails_Delete=确定删除{0}?
+UIGuild_MemberDetails_Frozen=确定冻结{0}?
+UIGuild_MemberDetails_VipOffLine=下线成员
+UIGuild_MemberDetails_OffLineEdit=编辑下线
+UIGuild_Level=当前公会等级
+UIGuild_LevelUp=确定给花费{0}钻石购买Level {1}（{2}天）?
+UIGuild_Beside=外
+UIGuild_EditorTemplate=编辑
+UIGuild_TipsTitle=提示
+UIGuild_TipsCreateNotEnough=由于钻石不足，剩余{0}个牌桌创建失败，请先充值
+UIGuild_DeleteTemplateTips=确定删除模版{0}?
+UIGuild_InputIDTips=请输入公会ID,用逗号隔开
+UIGuild_PleaseInputName=请输入模板名称
+UIGuild_SaveSuccess=保存模板成功
+UIGuild_Founder=创始人
+UIGuild_HaveApplyTribe=已申请联盟
+UIHoldemAddChipsPaywallet=支付钱包
+UIGuild_FilterName001=按创建时间正序
+UIGuild_FilterName002=按创建时间倒序
+UIGuild_FilterName003=按在线成员数
+UIGuild_FilterBtnName001=按创建时间
+UIGuild_FilterBtnName002=按成员
+UIGuild_ClubNum=公会数量
+UIGuild_gametableNum=桌数
+UIGuildTableBottomBtns001=管理
+UIGuildTableBottomBtns002=成员
+UIGuildTableBottomBtns003=数据
+UIGuildTableBottomBtns004=基金
+UIGuildTableBottomBtns005=消息
+UIGuild_MemberOffLineList=成员下线
+UIGuild_MemberOffLineListSearch=请输入成员名称或ID
+UIGuild_PrivateGame=私人游戏
+UIGuild_PassworldLimit=4-8位字符密码
+UIFriendsTable_JoinRoomNumberWrong=您输入的房间号{0}错误
+UIGuild_PassworldLimit=等待房主审核
+UIGuild_JoinUnionTips={0}确定申请加入{1}
+UIGuildFund_RechargeText=充值
+UIGuildFund_WithdrawalText=提现
+UIGuildFund_ExchangeText=转换
+UIloginNEW_thirdlogintips=第三方登录
+UIloginPhone_logintext=手机登录
+UIloginEmail_logintext=邮箱登录
+UIloginphonecode_logintext=手机验证码登录
+UIloginPhone_Registertext=手机号注册
+UIloginEmail_Registertext=邮箱注册
+UIGuild_MemberBindVipDone=绑定成功
+UIGuild_MemberUnBindVipDone=解绑成功
+UIClub_IntroGuildDatail=介绍一下公会吧
+UIGuild_NoticeNoShow=不在提醒
+UIloginPhone_forgettext=手机找回密码
+UIloginEmail_forgettext=邮箱找回密码
+UIGuild_QuitTips=退出后将无法参与游戏，是否继续退出？
+UIGuild_QuitTipsRemove=你的下线成员{0}人，退出公会后，所有下线成员将解除绑定，是否确定操作？
+UIGuild_Quit=退出公会
+UIGuild_QuitClearMoney=您的账号内Union coin{0}和Global coin{1}将会清空，是否确认退出？
+UIGuild_GoWithdraw=去提现
+UIGuild_tablebottomclubinfo_text=信息
+UIGuild_ApplyShareTable=申请共享牌局
+UIMine_XHZS=消耗:
+UIMine_ZSYE=钻石余额：
+UIMine_ChangeNameTipsZS=*首次更改昵称免费，之后每次消耗{0}钻石
+UIGuild_ReceiveGame=接收牌局
+UITexas_FriendtableapplyBringinTips001=等待房主审核
+UITexas_FriendtableapplyBringinTips002=申请被拒绝
+UIFriendsTable_CreateRoom=创建房间
+ServerErrorCode_20044=公会共享牌桌，必须是同联盟才能共享
+UIGuild_JoinGameTitle=加入牌桌
+UIGuild_SelectTemplateLimit=上限5个模板
+UIGuildFund_RtPlayerTips001=确定向{0}公会申请充值{1}Union coin？
+UIGuildFund_RtPlayerTips002=确定向{0}公会申请充值{1}Global coin?
+UIGuildFund_RtPlayerTips003=确定向{0}公会申请提现{1}Union coin？
+UIGuildFund_RtPlayerTips004=确定向{0}公会申请提现{1}Global coin?
+UIGuildFund_EXPlayerTips001=确定向{0}公会申请转换{1}Union coin，获得{2}Global coin
+UIGuildFund_EXPlayerTips002=确定向{0}公会申请转换{1}Global coin，获得{2}Union coin
+UIGuildFund_EXPlayerTips003=确定向{0}联盟申请转换{1}Union coin，获得{2}Global coin
+UIGuildFund_EXPlayerTips004=确定向{0}联盟申请转换{1}Global coin，获得{2}Union coin
+UIGuildTable=公会
+UIGuild_MemberList_RemarkName=备注名称
+UIMTT_Listbuy1=买入:
+UIMTT_Listbonus1=奖金
+UIMine_Paipu_handNum2={0}手
+MsgInfo_2007={0}公会修改了汇率
+MsgInfo_2008=您已成为{0}公会的管理员
+MsgInfo_2009=您已被撤销{0}公会的管理员
+MsgInfo_2010=您已被移出{0}公会
+MsgInfo_2011=欢迎加入{0}公会
+MsgInfo_2012=加入{0}公会申请被拒绝
+MsgInfo_5003=欢迎加入{0}联盟
+MsgInfo_5004=加入{0}联盟申请被拒绝
+UIMine_MallShop_recharge=确定花费{0}充值{1}钻石吗?
+UIMTT_PoolReward=奖池奖励
+UIRoomCreate_RealTimeAudio=实时语音
+TexasGameAudio_seatdowntip=坐下后可加入语音
+TexasGameAudio_wattip=当前无法关闭麦克风，{0}秒后才可以重新关闭
+UIMine_SetNick_InputTips=请输入昵称
+UIFundExchangehuilvTips01=1  Global coin ≈ {0} Union coin
+UIFundExchangehuilvTips02=1  Union coin  ≈ {0} Global coin
+UIFundExchangeTips=兑换按照以上汇率进行转换；\n\n兑换完成后不可取消；
+UIMTT_MiniScoreboard=最小筹码
+UIMTT_Listbonus2=奖池:
+UILogin_EmailHasRegist=此邮箱已经被注册
+UIMine_DeleteUser=注销账号
+UIMine_DeleteUserContent=账户注销后立即生效。所有数据将被清除，无法恢复。你确定要取消吗？
+UIGuild_NoticeNoShow=不再提示
+UIMine_DiamondsNotEnough=钻石余额不足，请先充值
+UIMine_ChangeDefaultHeadIcon=点击随机切换默认头像
+UIMine_SetHeadIcon=设置头像
+UIGuild_ComingSoon=即将推出
+UIGuild_FDBB=服务费封顶(BB)
+UIGuild_FDPerson=服务费封顶(人数)
+UIRoom_RealVoice=语音桌
+UIRoom_RealVedio=视频桌
+UIRoom_FaceCheck=人脸识别
+UIRoom_Check=防作弊选项
+UIRoom_LimitTimeFree=(限时免费)
+UIRoom_FDIncorrect=封顶信息配置错误
+UIGuild_MoneyNotZero=当前公会钱包余额大于零，无法退出公会
+UIGuild_ApplyTX=申请提现
+UIMine_MsgHasNoRead=您有{0}条未读消息
+UIGUILDEXCHANGE_SUCTIPS=转换成功
+UIRoom_FDIncorrectPeople=服务费 本手参与人数设置重复
+UIRoom_FDIncorrectNo=服务费 本手参与人数不满足2-{0}人
+OpCodeString_EXCHUNLOCK=转换锁定
+UIVIDEOVIEW_TIPS01=强制开启视频
+UITexas_FriendtableapplyBringinTips003=房主同意审核
+UIAUDIOVIEWTIPS001=摄像头已关闭
+UIAUDIOVIEWTIPS002=麦克风已关闭
+UIAUDIOVIEWTIPS003=扬声器已关闭
+UIAUDIOVIEWTIPS004=摄像头已开启
+UIAUDIOVIEWTIPS005=麦克风已开启
+UIAUDIOVIEWTIPS006=扬声器已开启
+UIEXCHANGERECORD_exchangetips=兑换数量
+UIEXCHANGERECORD_receivetips=获得数量
+UIFriendsTable_EnterNumTips=输入6位数房间号码以快速打开
+UIGuild_CoinType1=记分牌
+UIGuild_CoinType2=UC
+UIGuild_CoinType3=GC
+UIMain_JoinGuildTips=请先加入或创建公会
+UIMain_JoinUnionTips=公会未加入联盟，请联系工会客服
+UIFaceCollectionExa_BtnText=开启人脸识别
+UIFaceCollectionEx=人脸认证
+UIFaceCollectionExa_Text01=即将开启人脸识别
+UIFaceCollectionExa_Text02=请确保是本人操作
+UIFaceCollectionExa_Text03=避免强弱光
+UIFaceCollectionExa_Text04=脸在取景框内
+UIFaceCollectionExa_Text05=需正对屏幕
+UIFaceCollection_tips001=未检测到人脸
+UIFaceCollection_tips002=检测到多个人脸
+UIFaceCollection_tips003=请将脸移至圈内
+UIFaceCollection_tips004=正在进行活体检测
+UIFaceCollection_tips005=请张嘴
+UIFaceCollection_tips006=请左转头
+UIFaceCollection_tips007=请右转头
 
-MsgInfo_4009=创建工会成功
-MsgInfo_4010=创建工会失败
 
-MsgInfo_4019=欢迎加入{0}
-MsgInfo_4020=加入{0}申请被拒绝
 
-MsgInfo_2011=欢迎加入{0}
-MsgInfo_2012=加入{0}申请被拒绝
 
-UI_WalletNoHave=钱包余额不足
-UI_otherPay=其他支付
 
-UICareer_uc=联盟币
-UICareer_ustd=国际币
-UICareer_win=盈利
-UICareerEnding_time=牌局时长
-UICareerhands=手
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

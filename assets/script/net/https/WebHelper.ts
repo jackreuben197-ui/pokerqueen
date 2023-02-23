@@ -18,7 +18,7 @@ export default class WebHelper {
         //Web_Chat.API,
         //Web_Send_Messages.API,
         //Web_User_Voiceprint_suspect.API,
-        Web_Config_Global_Config.API,
+        //Web_Config_Global_Config.API,
         Web_Msg_Message_Unread.API,
         Web_Room_Center_Groups.API,
         // Web_Misc_Banner_List.API,

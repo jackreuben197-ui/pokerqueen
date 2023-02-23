@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:37:10
+ * @LastEditTime: 2023-02-20 11:37:17
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/clubPageItem.ts
  */
 
@@ -60,18 +60,19 @@ export default class clubPageItem extends UIBase {
 
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo)
         // this.node['info'] = this._data;
-        this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
+        // this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         let hg = cc.find('iconRole/icon', this.messNode);
         hg.active = true;
         ClubCache.setRoleType(hg, this._data.user_level)
     }
 
     async onClickItem(event) {
+        // return;
         await UIClubModel.mInstance.APIOrgClubSearchByID(this._data.random_id);
         let data: any = Web_Org_Club_Search_By_Id.Response.data
         ClubCache.setClubData(data);
-
-        UIComponent.open(UIDefine.UIClubHome, null, { SceneUI: SceneManager.Instance.currUI });
+        // , { SceneUI: SceneManager.Instance.currUI }
+        UIComponent.open(UIDefine.UIClubHome, null);
     }
     createClub() {
         UIComponent.open(UIDefine.UICreatelabor, null, { SceneUI: SceneManager.Instance.currUI });

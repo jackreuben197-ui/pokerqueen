@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 14:40:16
+ * @LastEditTime: 2023-02-20 10:25:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
  */
 
@@ -17,6 +17,7 @@ import UIComponent from "../../ui/UIComponent";
 import upLoadIcon from "../upLoadIcon";
 import { UIClubModel } from "./UIClubModel";
 import ComFormTitle from "../../common/ComFormTitle";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 
 
 
@@ -51,6 +52,7 @@ export default class UICreatelabor extends BaseForm {
         this.editjieshao.string = ''
         this.xinxi.string = ''
         this.comFormTitle.initData('club_2', this);
+        this.camera.spriteFrame = AssetContext.getAsset('camera', AssetFold.texture_new_club)
         this.clubNamechange()
     }
     async commitClick() {

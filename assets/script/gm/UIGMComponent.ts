@@ -37,7 +37,7 @@ export default class UIGMComponent extends UIBase {
             UIComponent.Instance.Toast("指令参数错误");
         }
         if (param) {
-            let result = await CMD_Call[this.currCMD](param);
+            let result = await CMD_Call[this.currCMD]();
             if (result) {
                 UIComponent.Instance.Toast(`${GM_CMD[this.currCMD]} 成功`);
             }

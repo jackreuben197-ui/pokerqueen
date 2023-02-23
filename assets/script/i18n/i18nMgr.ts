@@ -178,6 +178,8 @@ export class i18nMgr {
 }
 //@ts-ignore
 window.i18nMgr = i18nMgr;
+//@ts-ignore
+window.LanguageAllObject = LanguageAllObject;
 
 /**
      * 读取语言配置文件_csv格式
