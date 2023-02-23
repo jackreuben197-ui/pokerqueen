@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 21:29:12
+ * @LastEditTime: 2023-02-23 21:41:04
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -65,8 +65,15 @@ export default class UIJoinUnion extends BaseForm {
     }
     async initApplyList() {
         this.contentList.removeAllChildren();
-        await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
-        let data: any = Web_Org_Club_Player_Apply_List.Response.data
+        let data = null;
+        if (this.type == 0) {
+            await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
+            data = Web_Org_Club_Player_Apply_List.Response.data
+        } else {
+
+        }
+
+
         for (let index = 0; index < data?.items?.length; index++) {
             const element = data?.items[index];
             let item = cc.instantiate(this.joinNode);

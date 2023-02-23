@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 21:26:56
+ * @LastEditTime: 2023-02-23 21:36:59
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UISearchJoin.ts
  */
 
@@ -12,6 +12,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import ComFormTitle from "../../common/ComFormTitle";
 import TabNode from "../../common/tabNode";
 import { UIClubModel } from "./UIClubModel";
+import { ClubCache } from "../../frame/data/club/ClubCache";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -32,6 +33,8 @@ export default class UISearchJoin extends BaseForm {
     id: cc.Label = null;
     @property(cc.Label)
     memberNum = null;
+    @property(cc.EditBox)
+    contentEdit: cc.EditBox = null;
 
     private comFormTitle: ComFormTitle = null;
     tabNode: TabNode = null;
@@ -70,10 +73,11 @@ export default class UISearchJoin extends BaseForm {
 
     async sousuoBtn() {
         if (this.type == 0) {
-            await UIClubModel.mInstance.APIOrgClubCancleJoinClub(this._data.club_id);
+            await UIClubModel.mInstance.APIOrgClubCancleJoinClub(this._data.random_id);
             this.close()
         } else {
-
+            let parms: any = { tribe_random_id: this._data.random_id, contact: this.contentEdit.string, club_id: ClubCache.club_id };
+            await UIClubModel.mInstance.APIOrgJoinTrip(parms)
         }
     }
     // update (dt) {}
