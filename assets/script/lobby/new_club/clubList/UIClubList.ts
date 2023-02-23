@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 11:37:55
+ * @LastEditTime: 2023-02-23 12:58:51
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -57,7 +57,23 @@ export default class UIClubList extends BaseForm {
         this.initListNode(data)
         this.initPageNode(data)
         this.initTop()
+        this.sortData()
         this.setText(this.dropNode_lbl, memberSortConfig[this._selectIndex].desc);
+    }
+    sortData() {
+        let data: any = Web_Org_Club_Get.Response.data
+        let _data = data.sort((a, b) => {
+            if (this._selectIndex == 0) {
+                return new Date(a.create_time).getTime() - new Date(b.create_time).getTime()
+
+            } else if (this._selectIndex == 1) {
+                return new Date(b.create_time).getTime() - new Date(a.create_time).getTime()
+            }
+            else if (this._selectIndex == 2) {
+                return a.club_members - b.club_members
+            }
+        })
+        this.initListNode(_data)
     }
     initTop() {
         let icon = cc.find('Round', this.topNode).getComponent(cc.Sprite);
@@ -83,6 +99,7 @@ export default class UIClubList extends BaseForm {
     selectSort(data, index) {
         this._selectIndex = index;
         this.setText(this.dropNode_lbl, data.desc);
+        this.sortData();
     }
 
     initPageNode(clubList) {
