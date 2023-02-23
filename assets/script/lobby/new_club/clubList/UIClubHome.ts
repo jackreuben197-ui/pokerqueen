@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 14:53:55
+ * @LastEditTime: 2023-02-23 16:03:02
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -122,8 +122,12 @@ export default class UIClubHome extends BaseForm {
     refreshData() {
         let club_introduce = this.layout.getChildByName('club_introduce');
         club_introduce.getComponent(cc.Label).string = ClubCache.desc;
-        this.createBtn.interactable = ClubCache.user_level == 1 || ClubCache.user_level == 3
-
+        if (ClubCache.desc == '') {
+            club_introduce.active = false
+            let up: cc.Node = this.getChildNodeOrComponent("up")
+            up.active = false;
+        }
+        this.createBtn.node.active = ClubCache.user_level == 1 || ClubCache.user_level == 3
     }
 
     initTop() {
