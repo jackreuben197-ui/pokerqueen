@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 16:03:02
+ * @LastEditTime: 2023-02-23 18:58:29
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -234,7 +234,7 @@ export default class UIClubHome extends BaseForm {
         this.menuShow.active = !this.menu.active
     }
     joinTripClick() {
-        UIComponent.open(UIDefine.UIJoinUnion)
+        UIComponent.open(UIDefine.UIJoinUnion, { type: 1 })
     }
     createMatchClick() {
 

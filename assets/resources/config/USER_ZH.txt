@@ -3789,6 +3789,9 @@ UIFaceCollection_tips004=正在进行活体检测
 UIFaceCollection_tips005=请张嘴
 UIFaceCollection_tips006=请左转头
 UIFaceCollection_tips007=请右转头
+UISearchClub=搜索公会
+UISearchUnion=搜索联盟
+UIApplyHistory=申请记录
 
 
 

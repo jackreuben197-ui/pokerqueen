@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 12:58:51
+ * @LastEditTime: 2023-02-23 18:57:39
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -119,7 +119,7 @@ export default class UIClubList extends BaseForm {
         UIComponent.open(UIDefine.UICreatelabor, null, { SceneUI: SceneManager.Instance.currUI });
     }
     joinClub() {
-        UIComponent.open(UIDefine.UIlaborJoin, null, { SceneUI: SceneManager.Instance.currUI });
+        UIComponent.open(UIDefine.UIJoinUnion, { type: 0 }, { SceneUI: SceneManager.Instance.currUI });
     }
     changeMenu() {
 

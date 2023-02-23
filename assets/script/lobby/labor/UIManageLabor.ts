@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-04 17:42:42
+ * @LastEditTime: 2023-02-23 18:58:48
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -171,7 +171,7 @@ export default class UIManageLabor extends BaseForm {
     // }
     joinUnion() {
 
-        UIComponent.open(UIDefine.UIJoinUnion);
+        // UIComponent.open(UIDefine.UIJoinUnion, { type: 1 });
 
         // let lm = this.contentNode.getChildByName('lm')
         // let data: any = Web_Org_Club_Get.Response.data;
