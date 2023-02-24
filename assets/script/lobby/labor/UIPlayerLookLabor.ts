@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 10:55:43
+ * @LastEditTime: 2023-02-24 10:59:26
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -95,9 +95,9 @@ export default class UIPlayerLookLabor extends BaseForm {
         UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
             {
                 type: UINewDialogComponent.DialogType.Commit,
-                title: "提示",
+                title: "UIGuild_TipsTitle",
                 content: 'UIGuild_MoneyNotZero',
-                contentCommit: "取消",
+                contentCommit: "adaptation10013",
                 noAnimation: true,
             });
     }
@@ -105,10 +105,10 @@ export default class UIPlayerLookLabor extends BaseForm {
         UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
             {
                 type: UINewDialogComponent.DialogType.CommitCancel,
-                title: "退出公会",
+                title: "sr_r9ccQuit",
                 content: '退出后无法参与游戏，是否继续推出？',
-                contentCommit: "确定",
-                contentCancel: "取消",
+                contentCommit: "adaptation10012",
+                contentCancel: "adaptation10013",
                 actionCommit: () => {
                     this.exitClub()
                 },
