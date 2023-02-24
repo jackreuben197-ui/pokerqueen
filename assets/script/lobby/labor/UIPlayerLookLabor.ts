@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 09:57:40
+ * @LastEditTime: 2023-02-24 10:55:43
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -18,6 +18,7 @@ import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import ComFormTitle from "../../common/ComFormTitle";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -25,7 +26,7 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('脚本分组/labor/UIPlayerLookLabor')
 export default class UIPlayerLookLabor extends BaseForm {
     @property(cc.Node)
-    mask_group: cc.Node = null;
+    main1: cc.Node = null;
 
     @property(cc.Node)
     contentNode: cc.Node = null;
@@ -38,74 +39,72 @@ export default class UIPlayerLookLabor extends BaseForm {
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-        let title = "UIClub_Look"
+        let title = "UIClub_Info"
         this.comFormTitle.initData(title, this);
         this.initTop();
     }
     initTop() {
-        let name = cc.find('Node_name/name', this.mask_group).getComponent(cc.Label);
+        let name = cc.find('messLayout/nameNode/name', this.main1).getComponent(cc.Label);
         name.string = ClubCache.club_name
-        let id = this.mask_group.getChildByName('id').getComponent(cc.Label);
+        let id = cc.find('messLayout/id', this.main1).getComponent(cc.Label);
         id.string = 'ID:' + ClubCache.random_id
-        let dec = this.mask_group.parent.getChildByName('TEXT_LABEL').getComponent(cc.Label);
-        dec.string = ClubCache.desc || ''
+        let dec = this.contentNode.getChildByName('dec').getComponent(cc.Label);
+        this.setText(dec, ClubCache.desc || 'UIClub_introduce')
 
-        let icon = cc.find('iconMask/icon', this.mask_group).getComponent(cc.Sprite);
+        let icon = cc.find('Round', this.main1).getComponent(cc.Sprite);
         WebImageHelper.SetHeadImage(icon, ClubCache.logo)
-        // let lbl_glod = cc.find('img_right_bg/lbl_glod', this.mask_group).getComponent(cc.Label);
         this.initClubData()
     }
     initClubData() {
-        // let data: any = Web_Org_Club_Get.Response.data;
 
         //初始化创始人
         let csr = this.contentNode.getChildByName('csr')
-        // csr.getChildByName('pName').getComponent(cc.Label).string = data.club_creator_nickname
         let panel_right = csr.getChildByName('panel_right')
         panel_right.getChildByName('name').getComponent(cc.Label).string = ClubCache.club_creator_nickname
-        let icon = cc.find('iconMask/icon', panel_right);
+        let icon = cc.find('Round', panel_right);
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), ClubCache.club_creator_avatar)
-        //创建时间
-        let chsj = this.contentNode.getChildByName('chsj')
-        chsj.getChildByName('time').getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(ClubCache.create_time)
-        //联盟
-        let ghllfs = this.contentNode.getChildByName('ghllfs')
-        ghllfs.getChildByName('name').getComponent(cc.Label).string = ClubCache.more_contact
+
 
         //联盟
         let lm = this.contentNode.getChildByName('lm')
         let lm_panel_right = lm.getChildByName('panel_right')
         lm_panel_right.getChildByName('name').getComponent(cc.Label).string = ClubCache.tribe_name || ''
+        let union_icon = cc.find('Round', lm_panel_right);
+        WebImageHelper.SetHeadImage(union_icon.getComponent(cc.Sprite), ClubCache.club_creator_avatar)
+
+        //联盟
+        let ghllfs = this.contentNode.getChildByName('ghllfs')
+        ghllfs.getChildByName('name').getComponent(cc.Label).string = ClubCache.more_contact
+
+
+        //创建时间
+        let chsj = this.contentNode.getChildByName('chsj')
+        chsj.getChildByName('time').getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(ClubCache.create_time)
+
+
+
     }
     async exitClub() {
         if (GC.data.user.info.displayGold == 0) {
             await UIClubModel.mInstance.APIOrgClubQuit();
             GC.data.user.info.gold = 0;
             this.close();
-            LobbyControl.getInstance().switchContent("UIlabor");
+            LobbyControl.getInstance().switchContent("UIClubList");
             return
         }
-        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
             {
-                type: UIDialogComponent.DialogType.CommitCancel,
+                type: UINewDialogComponent.DialogType.Commit,
                 title: "提示",
-                // content: `您的账户内剩余金豆${GameCache.Instance.gold}，如减持退出，系统将清空您的所有剩余金豆，是否继续？`,
-                content: `您的账户内金豆 ${GC.data.user.info.displayGold}和usdt ${GC.data.user.info.displayGold} ,将会清空,是否继续？`,
-                contentCommit: "确定",
-                contentCancel: "取消",
-                actionCommit: async () => {
-                    await UIClubModel.mInstance.APIOrgClubQuit();
-                    GC.data.user.info.gold = 0;
-                    this.close();
-                    LobbyControl.getInstance().switchContent("UIlabor");
-                },
+                content: 'UIGuild_MoneyNotZero',
+                contentCommit: "取消",
                 noAnimation: true,
             });
     }
     exitClubSure() {
-        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
             {
-                type: UIDialogComponent.DialogType.CommitCancel,
+                type: UINewDialogComponent.DialogType.CommitCancel,
                 title: "退出公会",
                 content: '退出后无法参与游戏，是否继续推出？',
                 contentCommit: "确定",

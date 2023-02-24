@@ -3,7 +3,7 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 11:50:31
+ * @LastEditTime: 2023-02-24 10:46:04
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
@@ -179,7 +179,7 @@ export class UIClubModel {
     }
 
     APIOrgClubQuit() {
-        let paramas: any = {};
+        let paramas: any = { club_id: ClubCache.club_id };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIOrgClubQuit,
