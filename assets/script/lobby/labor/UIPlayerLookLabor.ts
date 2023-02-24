@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 10:59:26
+ * @LastEditTime: 2023-02-24 12:32:44
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
  */
 
@@ -70,7 +70,7 @@ export default class UIPlayerLookLabor extends BaseForm {
         let lm_panel_right = lm.getChildByName('panel_right')
         lm_panel_right.getChildByName('name').getComponent(cc.Label).string = ClubCache.tribe_name || ''
         let union_icon = cc.find('Round', lm_panel_right);
-        WebImageHelper.SetHeadImage(union_icon.getComponent(cc.Sprite), ClubCache.club_creator_avatar)
+        WebImageHelper.SetHeadImage(union_icon.getComponent(cc.Sprite), ClubCache.tribe_logo)
 
         //联盟
         let ghllfs = this.contentNode.getChildByName('ghllfs')

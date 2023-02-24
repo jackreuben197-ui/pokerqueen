@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2023-01-29 20:55:53
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-02-24 12:53:40
+ * @FilePath: /pokerqueen/assets/script/ui/component/GGSwitch.ts
+ */
 import UIBase from "../UIBase";
 import UIBasePlus from "../UIBasePlus";
 
@@ -40,6 +48,10 @@ export default class GGSwitch extends UIBasePlus {
     //获取开关是否开启
     public get isOn() {
         return this._on;
+    }
+    //设置开关是否开启
+    public setIsOn(flag) {
+        flag ? this.On() : this.Off();
     }
     //添加点击回调
     addClick() {
