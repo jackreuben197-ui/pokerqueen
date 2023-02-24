@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "a446a810-6344-443a-b6a7-9e198a91cc22",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2689,
+  "platformSettings": {},
+  "subMetas": {
+    "创始人 管理员 设置 弹窗页面": {
+      "ver": "1.0.6",
+      "uuid": "a6cfca84-bc9b-4e55-8a7e-83724091a4e9",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "a446a810-6344-443a-b6a7-9e198a91cc22",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2689,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
