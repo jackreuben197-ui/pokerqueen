@@ -3,23 +3,23 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 22:50:56
- * @FilePath: /pokerqueen/assets/script/lobby/labor/UISearchJoin.ts
+ * @LastEditTime: 2023-02-24 19:10:41
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UISearchJoin.ts
  */
 
-import WebImageHelper from "../../helper/WebImageHelper";
-import BaseForm from "../../ui/form/BaseForm";
-import ComFormTitle from "../../common/ComFormTitle";
-import TabNode from "../../common/tabNode";
-import { UIClubModel } from "./UIClubModel";
-import { ClubCache } from "../../frame/data/club/ClubCache";
+import WebImageHelper from "../../../helper/WebImageHelper";
+import BaseForm from "../../../ui/form/BaseForm";
+import ComFormTitle from "../../../common/ComFormTitle";
+import TabNode from "../../../common/tabNode";
+import { UIClubModel } from "../../labor/UIClubModel";
+import { ClubCache } from "../../../frame/data/club/ClubCache";
 import EventEmitter = require("events");
-import { EventName } from "../../config/EventName";
+import { EventName } from "../../../config/EventName";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
-@menu('脚本分组/labor/UISearchJoin')
+@menu('脚本分组/new_club/createClub/UISearchJoin')
 export default class UISearchJoin extends BaseForm {
     @property(cc.Sprite)
     Round: cc.Sprite = null;

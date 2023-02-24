@@ -3,27 +3,27 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 09:38:28
- * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
+ * @LastEditTime: 2023-02-24 19:10:42
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
-import WebImageHelper from "../../helper/WebImageHelper";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_Org_Club_Get, APIOrgTribeSearchByID, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, APIOrgClubApplyTribeList } from "../../net/https/WebRequest";
-import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
-import { UIClubModel } from "./UIClubModel";
-import ComFormTitle from "../../common/ComFormTitle";
-import { ClubCache } from "../../frame/data/club/ClubCache";
-import TabNode from "../../common/tabNode";
-import { ClubTabConfig, joinClubConfig, joinUnionConfig } from "../../frame/config/tabConfig";
-import { UIDefine } from "../../define/UIDefine";
-import { EventName } from "../../config/EventName";
+import WebImageHelper from "../../../helper/WebImageHelper";
+import { i18nMgr } from "../../../i18n/i18nMgr";
+import { Web_Org_Club_Get, APIOrgTribeSearchByID, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, APIOrgClubApplyTribeList } from "../../../net/https/WebRequest";
+import BaseForm from "../../../ui/form/BaseForm";
+import UIComponent from "../../../ui/UIComponent";
+import { UIClubModel } from "../../labor/UIClubModel";
+import ComFormTitle from "../../../common/ComFormTitle";
+import { ClubCache } from "../../../frame/data/club/ClubCache";
+import TabNode from "../../../common/tabNode";
+import { ClubTabConfig, joinClubConfig, joinUnionConfig } from "../../../frame/config/tabConfig";
+import { UIDefine } from "../../../define/UIDefine";
+import { EventName } from "../../../config/EventName";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
-@menu('脚本分组/labor/UIJoinUnion')
+@menu('脚本分组/new_club/createClub/UIJoinUnion')
 export default class UIJoinUnion extends BaseForm {
     @property(cc.Label)
     search_id: cc.Label = null;

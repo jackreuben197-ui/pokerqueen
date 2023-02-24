@@ -1903,7 +1903,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "e90fezAYcFFWopsXyMiaioy",
+    "_componentId": "88d8ewT0IpC9rKBmE/KbjyB",
     "handler": "editBoxChange",
     "customEventData": ""
   },
@@ -2383,7 +2383,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "e90fezAYcFFWopsXyMiaioy",
+    "_componentId": "88d8ewT0IpC9rKBmE/KbjyB",
     "handler": "sousuoBtn",
     "customEventData": ""
   },
@@ -2506,7 +2506,7 @@
     "_id": ""
   },
   {
-    "__type__": "e90fezAYcFFWopsXyMiaioy",
+    "__type__": "88d8ewT0IpC9rKBmE/KbjyB",
     "_name": "",
     "_objFlags": 0,
     "node": {

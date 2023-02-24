@@ -3,28 +3,28 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 12:33:39
- * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreatelabor.ts
+ * @LastEditTime: 2023-02-24 19:09:03
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UICreatelabor.ts
  */
 
-import { UIDefine } from "../../define/UIDefine";
-import WebImageHelper from "../../helper/WebImageHelper";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import { APIOrgClubUploadIcon } from "../../net/https/WebRequest";
-import LoginSession from "../../session/LoginSession";
-import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
-import upLoadIcon from "../upLoadIcon";
-import { UIClubModel } from "./UIClubModel";
-import ComFormTitle from "../../common/ComFormTitle";
-import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
+import { UIDefine } from "../../../define/UIDefine";
+import WebImageHelper from "../../../helper/WebImageHelper";
+import { i18nMgr } from "../../../i18n/i18nMgr";
+import { APIOrgClubUploadIcon } from "../../../net/https/WebRequest";
+import LoginSession from "../../../session/LoginSession";
+import BaseForm from "../../../ui/form/BaseForm";
+import UIComponent from "../../../ui/UIComponent";
+import upLoadIcon from "../../upLoadIcon";
+import { UIClubModel } from "../../labor/UIClubModel";
+import ComFormTitle from "../../../common/ComFormTitle";
+import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 
 
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
-@menu('脚本分组/labor/UICreatelabor')
+@menu('脚本分组/new_club/createClub/UICreatelabor')
 export default class UICreatelabor extends BaseForm {
     @property(cc.EditBox)
     editName: cc.EditBox = null;
