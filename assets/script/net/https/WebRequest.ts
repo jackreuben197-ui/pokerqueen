@@ -1060,7 +1060,7 @@ export class Web_Msg_Message_Unread extends WebCommon {
     } = null;
 
     static ResponseData: {
-        msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe
+        msg_main_type: number,//消息类型:1-bag,2-club,3-money,4-system,5-tribe,6-带入
         num: number,//未读消息数量
         title: string,
         content: string,

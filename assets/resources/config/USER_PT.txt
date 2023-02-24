@@ -1,4 +1,4 @@
-
+UserLanguage=Chinês Simplificado^Inglês^Chinês Tradicional^Português
 errorDefault=Erro de conexão, favor tentar novamente. 
 error0=Sucesso
 error995=Solicitação inválida
@@ -2125,7 +2125,7 @@ MsgInfo_2=O clube {0} que você criou não foi aprovado
 MsgInfo_3=A quantidade de membros do clube foi ajustado para {0} membros
 MsgInfo_2000=Sua porcentagem do clube foi ajustada para {0}
 MsgInfo_5=Você recebeu {1} fichas do jogo {0}
-MsgInfo_2001=Seu clube foi transferido para a liga {0}, por favor, tome nota
+
 MsgInfo_7=Seu pedido para alterar seu método de transação foi revisado e aprovado 
 MsgInfo_8=Sua alteração do método de transação não foi aprovada
 MsgInfo_9=Seu método de transação é {0}
@@ -2135,13 +2135,10 @@ MsgInfo_12=Seu pedido de se juntar à liga {0} não foi aprovado
 MsgInfo_13=O seu clube atingiu o número máximo de membros.
 MsgInfo_14=Seus sucessores do clube não podem recarregar, favor contatar o SAC para obter assistência
 MsgInfo_15=Você recebeu {0} Fichas como bônus de performance
-MsgInfo_2002=O ID do seu clube foi alterado para ‘{0}’
 MsgInfo_21=Jogador {0} saiu do clube
-MsgInfo_5000=Parabéns pela criação do {0}, o SAC da liga entrará em contato com você o mais rápido possível.
-MsgInfo_5001=Falha ao criar {0}, {1}, em caso de dúvida entre em contato com o suporte
 MsgInfo_201=A liga {0} que você criou foi revisada e aprovada!
 MsgInfo_202=A liga {0} que você criou foi rejeitada
-MsgInfo_5002={0} clube ingressou na liga {1}
+
 MsgInfo_204=Seu clube foi retirado da liga {0}
 MsgInfo_205=O número de seus clubes foi ajustado para {0}
 MsgInfo_206=Clube {0} solicitou para ingressar na liga {1}
@@ -2166,8 +2163,6 @@ MsgInfo_4008=Você pode realizar saques novamente. Divirta-se!
 MsgInfo_407=Olá, processamos seu feedback, obrigado por seu apoio e confiança
 MsgInfo_408={0}
 MsgInfo_601=Sua recarga de {0} fichas já está disponível
-MsgInfo_3000=Você solicitou a conversão de {0} {1} sucesso
-MsgInfo_3001=Sua solicitação para sacar {1} fichas foi bem-sucedida
 MsgInfo_604=Sua transferência de {1} Fichas para o jogador {0} já está disponível na conta
 MsgInfo_605=Jogador {0} fez saque de {1} fichas, favor revisar
 MsgInfo_606=Você recebeu {1} fichas do jogador {0}
@@ -2425,17 +2420,6 @@ Tips_UIClub_FundGive_OrderConfirm=Você concorda com a solicitação do usuário
 Tips_Withdraw_Limit=Mínimo de {0} fichas, máximo de {1} fichas
 Tips_Withdraw_Confirm=Tem certeza que quer sacar {0} Fichas?
 Tips_UIClub_FundTake_OrderConfirm=Você concorda com a solicitação do usuário {0}(ID:{1}) de sacar {2} fichas?
-MsgInfo_2003=[Pedido de recarga] {0} O jogador está solicitando a recarga de {1} Fichas
-MsgInfo_2004=[Pedido de saque] {0} O jogador está solicitando o saque de {1} Fichas
-MsgInfo_1007=[Pedido de torneio] {0} Solicitar inscrição {2} {1}
-MsgInfo_3003=Solicitação de inscrição no torneio {2} {1} efetuada, ingresse no horário informado
-MsgInfo_3004=Receba {2} de parcela de taxa de serviço de mesas regular VIP {0}
-MsgInfo_3005=Receba {2} de parcela do seguro de jogo VIP {0}
-MsgInfo_3006=Receba {2} de parcela dos itens de jogos VIP {0}
-MsgInfo_3007=Receba comissão de {2} do MTT {0}
-MsgInfo_3008=Receba comissão de {2} da mesa regular {0}
-MsgInfo_3011=Receba {2} de parcela de taxa de serviço VIP {0}
-MsgInfo_3012=Receba {2} de parcela dos itens de jogos VIP {0}
 adaptation20080=Você concordou em ## sacar ## Fichas
 adaptation20082=Você concordou em ## depositar ## Fichas
 Tips_UIClub_FundRecharge_InputError=Inserir erro do número de participantes
@@ -2444,8 +2428,8 @@ Tips_UIClub_FundRecharge_RechargeConfirm=Solicitar depósito de {0} Fichas?
 Tips_UIMine_UserInfoSettingNick_ChangedName=Deseja usar diamantes {0} para editar o seu usuário?
 MsgInfo_625=Sua taxa de inscrição para o torneio {0} é de {1} Fichas
 adaptation10334=Recusado
-MsgInfo_2005=Seu pedido de recarga foi recusado, em caso de dúvidas entre em contato com o SAC do clube
-MsgInfo_2006=Seu pedido de saque foi recusado, em caso de dúvida entre em contato com o SAC do clubw
+
+
 adaptation20083=Você recusou ## recarregar ## Fichas
 adaptation20084=Você recusou ## sacar ## Fichas
 adaptation20085=Concordou
@@ -2705,7 +2689,7 @@ UIBackDiolg_Iphonetips=Por favor, insira o número de celular correto para evita
 UIBackDiolg_textContent03=Gostaria de utilizar {0}?
 UIMine_BackpackList_timeLimit=Data de vencimento: {0}^Data de vencimento: nada
 UIBackDiolg_DaoCoin=Valor do item:
-MsgInfo_3002=Parabéns pelo seu ranking de {1} no {0} conquistando {2}.
+
 FreeAni_001=Perdeu a vez
 FreeAni_002=Olá a todos
 FreeAni_003=Orgulhoso
@@ -3457,7 +3441,6 @@ UIClub_InputLeagueIdTips=Insira o ID correto da liga
 OpCodeString_SNATCHTREASUREAWARDD=Super 1
 MsgInfo_4010=Sua solicitação para criar um clube não foi aprovada. Em caso de dúvidas, por favor entre em contato com o SAC da liga
 UIHappyShop_HasGiveState=Prêmio enviado
-MsgInfo_3014=Parabéns! Você resgatou seu prêmio {0} do Super 1 e recebeu {1}.
 UIClub_Dividend_Ratio=Porcentagem de lucro
 UIClub_PhoneOrCodeError=Número de telefone celular ou código de verificação incorreto para cadastro
 WalletPlatform_Name=Nome
@@ -3732,15 +3715,51 @@ UIGuild_MemberList_RemarkName=Título da nota
 UIMTT_Listbuy1=Buy-In:
 UIMTT_Listbonus1=Prêmio
 UIMine_Paipu_handNum2={0} Mãos
-MsgInfo_2007=O clube {0} alterou a taxa de câmbio
-MsgInfo_2008=Você se tornou um administrador do clube {0}
-MsgInfo_2009=Você foi removido como administrador do clube {0}
-MsgInfo_2010=Você foi removido do clube {0}
-MsgInfo_2011=Bem-vindo ao clube {0}
-MsgInfo_2012=O requerimento para entrar no clube {0} foi rejeitado
-MsgInfo_5003=Bem-vindo à liga {0}
-MsgInfo_5004=O requerimento para entrar na liga {0} foi rejeitado
-UIMine_MallShop_recharge=Você tem certeza de que quer gastar {0} para recarregar {1} diamante(s)?
+MsgInfo_2001=Por favor, esteja ciente de que seu clube foi transferido para a aliança {0}.
+MsgInfo_2002=Seu ID do clube foi alterado para '{0}'.
+MsgInfo_2003={0} está pedindo para recarregar {1} moeda(s) da liga
+MsgInfo_2004={0} está retirando {1} moeda(s) da liga
+MsgInfo_2005=Seu pedido de recarga {0}{1} foi negado, contate o SAC da liga para mais informações.
+MsgInfo_2006=Sua solicitação de retirada {0}{1} foi negada, contate o SAC do clube para mais informações.
+MsgInfo_2007=O administrador do clube {0} atualizou a tabela de taxas de câmbio, confira!
+MsgInfo_2008=Parabéns, você se tornou o administrador do clube {0}!
+MsgInfo_2009=Infelizmente, sua posição como administrador do clube {0} foi suspensa.
+MsgInfo_2010=Infelizmente, você foi removido do clube {0} pelo administrador, consulte o SAC do clube para mais informações.
+MsgInfo_2011=Bem-vindo ao clube {0}!
+MsgInfo_2012=Seu pedido de adesão ao clube {0} foi negado.
+MsgInfo_2013=Parabéns, você se tornou um VIP do clube {0}!
+MsgInfo_2014=Infelizmente, seu VIP do clube {0} foi suspenso.
+MsgInfo_2015=Seu clube {0} entrou com sucesso na liga {0}.
+MsgInfo_2016=Todos os seus clubes {0} não estão mais na liga {0}
+MsgInfo_2017=Sua conta foi congelada pelo clube {0}, entre em contato com o SAC do clube se você tiver alguma dúvida.
+MsgInfo_1007=[Pedido de Torneio] {0} para se inscrever em {2}. {1}
+MsgInfo_3000={0} liberou {0}{1} para você
+MsgInfo_3001=Seu pedido de {0} clube para {1}{2} saques {1}{2} foi concluído
+MsgInfo_3002=Parabéns pela classificação de {1} lugar, ganhando {2} em {0}.
+MsgInfo_3003=Seu pedido de inscrição {2} {1} foi confirmada, favor entrar no torneio a tempo
+MsgInfo_3004=Receba a parcela {2} da taxa de serviço de mesa VIP de {0} para {2}
+MsgInfo_3005=Receba {2} de {0} por seguro de mesa VIP
+MsgInfo_3006=Receba a parcela {2} dos itens da tabela VIP de {0}.
+MsgInfo_3007=Receba a comissão {2} MTT de {0}
+MsgInfo_3008=Receba a comissão {2} de mesa regular de {0}
+MsgInfo_3011=Receba a parcela {2} da taxa de serviço do torneio VIP de {0}
+MsgInfo_3012=Receba a parcela {2} dos itens do torneio VIP de {0}
+MsgInfo_3014=Parabéns, você resgatou seu prêmio {0} de $1 e recebeu {1}.
+MsgInfo_3016=Seu pedido ao clube {0} de recarga {1}{2} foi concluído.
+MsgInfo_3017=Seu pedido ao clube {0} para câmbio {1} a {2} foi concluído
+MsgInfo_3018=Sua solicitação de recargar {1}{2} para o clube {0} foi concluída
+MsgInfo_3019=Seu pedido de retirar{1}{2} ao clube {0} foi concluído
+MsgInfo_3020=Seu pedido ao clube {0} para câmbio {1} para {2} foi concluído
+MsgInfo_5000=Parabéns pela criação do {0}, o SAC da liga entrará em contato com você o mais rápido possível.
+MsgInfo_5001=Sua solicitação para criar o clube {0} falhou, {1}, entre em contato com o SAC da liga para obter mais detalhes.
+MsgInfo_5002=O clube {0} se juntou a liga {1}.
+MsgInfo_5003=Seu pedido para entrar na liga {0} foi aprovado
+MsgInfo_5004=Seu pedido para entrar no campeonato {0} foi negado
+MsgInfo_5005=Seu clube {0} foi congelado pela liga {0}. Se você tiver alguma dúvida, entre em contato com o serviço de atendimentoSAC ao cliente da liga
+MsgInfo_5006=Seu pedido de recarga {0}{1} foi negado. Se você tiver alguma dúvida, entre em contato com o SAC da liga
+MsgInfo_5007=Seu pedido de retirada {0}{1} foi negado. Se você tiver alguma dúvida, entre em contato com o SAC da liga
+MsgInfo_5008=Seu pedido de câmbio de {0} para {1} foi negado. Se você tiver alguma dúvida, entre em contato com o SAC da liga
+UIMine_MallShop_recharge=Confirmar gastar {0} para recarregar {1} diamante(s)?
 UIMTT_PoolReward=Prêmio
 UIRoomCreate_RealTimeAudio=Voz em tempo real
 TexasGameAudio_seatdowntip=Depois de se sentar, você pode se comunicar com seu microfone
@@ -3785,7 +3804,7 @@ UIAUDIOVIEWTIPS006=
 UIEXCHANGERECORD_exchangetips=
 UIEXCHANGERECORD_receivetips=
 UIFriendsTable_EnterNumTips=
-UIGuild_CoinType1=Painel de Avaliação
+UIGuild_CoinType1=Chip
 UIGuild_CoinType2=UC
 UIGuild_CoinType3=GC
 UIMain_JoinGuildTips=Por favor, junte-se ou crie uma guilda primeiro
@@ -3804,49 +3823,48 @@ UIFaceCollection_tips004=
 UIFaceCollection_tips005=
 UIFaceCollection_tips006=
 UIFaceCollection_tips007=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UITEXAS_PLAYERSEATDOWNTIPS01=
+UIFriendsTable_CreateRoomTips=Inicie um jogo de cartas e convide amigos para participar
+UIFriendsTable_DataTimeError_30day=Você pode consultar dados por até 30 dias
+UIFriendsTable_Winninglbl=Ganhos
+UIFriendsTable_fee=taxa
+UIFriendsTable_totalfee=taxa total
+UIFriendsTable_playercount=jogador total
+UIGuild_SearchBtn=Unidade de pesquisa
+UIGuild_RecordBtn=Registo da aplicação
+UIGuild_SearchTips=Indique por favor o ID da guilda para pesquisar
+UIClub_AuditRecords_auto=Rejeitar automaticamente
+UIGuild_MemberNumber=Número de membros
+UIGuild_TitleName=Denominação sindical
+UIGuild_SearchUnionBtn=Federação de Busca
+UIGuild_ContactInfo=informações de contacto
+UIFriendsTable_Create_NLH=Retenção ilimitada
+UIFriendsTable_Create_PLO=Pot Limit Omaha
+UIFriendsTable_Create_6P=Short Desk Omaha
+UIGuild_JoinUnionContactTips=Por favor, deixe informações de contacto
+UIGuild_NoDescTips=Sem explicação sindical
+UIFACEDELECTION_TIPSSUC=
+UIRoom_LimitTimeFreeFace=Gratuito por um tempo limitado
+UITexas_FaceRecogVerifying=
+UITexas_FaceRecogDaoJiShi=
+UITexas_FaceRecogSuccess=
+UITexas_FaceRecogTip1=
+UITexas_FaceRecogTip2=
+UITexas_FaceRecogTip3=
+UITexas_FaceRecogTip4=
+UITexas_FaceRecogTip5=
+UITexas_FaceRecogTip6=
+UITexas_FaceRecogTip7=
+UITexas_FaceRecogTip8=
+UITexas_FaceRecogTip9=
+UITexas_FaceRecogTip10=
+UITexas_FaceRecogTip11=
+UITexas_FaceRecogTip12=
+UIGuild_NoUnion=aliança não existe
+UIGuild_CancelShare=não compartilhar
+UIPaiJu_GameRhythm=
+UIPaiJu_GGMode=
+UIPaiJu_HHMode=
 
 
 

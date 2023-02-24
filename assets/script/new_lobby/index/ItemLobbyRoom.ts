@@ -37,7 +37,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
     }
     refreshUI(data: any) {
         //gametype 图标
-        this.cc_Sprite$type_icon.spriteFrame = this.getIconSpriteFrame(data.game_type);
+        this.cc_Sprite$type_icon.spriteFrame = this.getIconSpriteFrame(data.poker_type, data.game_type);
         this.cc_Label$bb.string = `${data.sb / 100}/${data.sb * 2 / 100}`;
         this.cc_Label$player.string = `${data.roomers}/${data.seat_count}`;
         this.$icon_bring.active = !!data.limit_bring_in;
@@ -52,7 +52,13 @@ export default class ItemLobbyRoom extends UIBasePlus {
 
     }
 
-    getIconSpriteFrame(index: number) {
-        return this.$room_type_icons.children[index].getComponent(cc.Sprite).spriteFrame;
+    getIconSpriteFrame(poker_type: number, game_type: number) {
+        //return this.$room_type_icons.children[index].getComponent(cc.Sprite).spriteFrame;
+        if (poker_type == 0) {
+            return this.$room_type_icons.children[game_type].getComponent(cc.Sprite).spriteFrame;
+        }
+        if (poker_type == 2) {
+            return this.$room_type_icons.children[4].getComponent(cc.Sprite).spriteFrame;
+        }
     }
 }

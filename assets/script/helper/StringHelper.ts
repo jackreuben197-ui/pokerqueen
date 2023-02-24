@@ -231,9 +231,26 @@ export class StringHelper {
     /// <summary>
     /// 是否包含特殊字符
     /// </summary>
-    public static IsContainSpecialCharacter(text:string) {
-        let reg:RegExp = new RegExp("^[a-zA-Z0-9\u4e00-\u9fa5]+$");
+    public static IsContainSpecialCharacter(text: string) {
+        let reg: RegExp = new RegExp("^[a-zA-Z0-9\u4e00-\u9fa5]+$");
         return !text.match(reg);
+    }
+
+    /**
+     * 获取长文本...
+     * limitHeight 限制高度
+     */
+    public static SetLargeText(label: cc.Label | cc.RichText, limitHeight: number): boolean {
+        if (label.node.height > limitHeight) {
+            let height = label.node.height;
+            while (height > limitHeight) {
+                label.string = label.string.substring(0, label.string.length - 1);
+                height = label.node.height;
+            }
+            label.string = label.string.substring(0, label.string.length - 3) + "...";
+            return true;
+        }
+        return false;
     }
 
 }

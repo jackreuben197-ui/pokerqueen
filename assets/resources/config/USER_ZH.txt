@@ -1,4 +1,4 @@
-
+UserLanguage=简体中文^English^繁体中文^Português
 errorDefault=网络错误，请稍后重试
 error0=操作成功
 error995=非法请求
@@ -2118,7 +2118,7 @@ MsgInfo_2=您创建的{0}公会没有审核通过
 MsgInfo_3=您的公会人数调整为{0}人
 MsgInfo_2000=您的公会占成比例调整为{0}
 MsgInfo_5=您收到{0}牌局的{1}Union coin牌局收益
-MsgInfo_2001=您的公会被转移到{0}联盟，请知悉
+
 MsgInfo_7=您修改交易方式的申请已经审核通过
 MsgInfo_8=您修改交易方式的申请审核没有通过
 MsgInfo_9=您的交易方式变为{0}
@@ -2128,13 +2128,10 @@ MsgInfo_12=您申请加入{0}联盟的申请没有通过审核
 MsgInfo_13=您的公会人数达到上限，不能被加入
 MsgInfo_14=您的公会下属玩家无法充值，请联系客服处理
 MsgInfo_15=您收到{0}Union coin的战绩返佣
-MsgInfo_2002=您的公会ID已修改为'{0}'
 MsgInfo_21=玩家{0}退出公会
-MsgInfo_5000=恭喜您成功创建{0}，稍后联盟客服将会与您联系
-MsgInfo_5001=创建公会{0}失败，{1}，有疑问请联系联盟客服
 MsgInfo_201=您创建的{0}联盟已经审核通过
 MsgInfo_202=您创建的{0}联盟没有审核通过
-MsgInfo_5002={0}公会加入{1}联盟
+
 MsgInfo_204=您的公会已被{0}联盟移除
 MsgInfo_205=您的公会个数被调整为{0}个
 MsgInfo_206={0}公会申请加入{1}联盟
@@ -2159,8 +2156,6 @@ MsgInfo_4008=您已恢复提豆，祝您游戏愉快
 MsgInfo_407=您好，您的反馈内容我们已处理，感谢您一路以来的支持和信任
 MsgInfo_408={0}
 MsgInfo_601=您充值的{0}Union coin已到账
-MsgInfo_3000=您申请转换{0}{1}成功
-MsgInfo_3001=您申请提取{1}Union coin成功
 MsgInfo_604=您给{0}玩家转账{1}Union coin已到账
 MsgInfo_605={0}玩家提豆{1}，请审核
 MsgInfo_606=您收到{0}玩家转账的{1}Union coin
@@ -2418,17 +2413,6 @@ Tips_UIClub_FundGive_OrderConfirm=同意用户{0}(ID:{1})发放{2}Union coin的�
 Tips_Withdraw_Limit=Union coin数额最低{0}，最高{1}
 Tips_Withdraw_Confirm=确定提交提现{0}Union coin的订单？
 Tips_UIClub_FundTake_OrderConfirm=同意用户{0}(ID:{1})提取{2}Union coin的申请?
-MsgInfo_2003=[充豆申请] {0} 正在申请充值 {1} Union coin
-MsgInfo_2004=[提豆申请] {0} 正在申请提现 {1} Union coin 
-MsgInfo_1007=[赛事申请] {0} 申请报名 {2}  {1}
-MsgInfo_3003=申请报名 {2} {1} 成功，请按时参加比赛
-MsgInfo_3004=从{0}获得贵宾普通桌服务费分成{2}
-MsgInfo_3005=从{0}获得贵宾牌局保险分成{2}
-MsgInfo_3006=从{0}获得贵宾牌局道具分成{2}
-MsgInfo_3007=从{0}获得MTT返水{2}
-MsgInfo_3008=从{0}获得普通桌返水{2}
-MsgInfo_3011=从{0}获得贵宾比赛服务费分成{2}
-MsgInfo_3012=从{0}获得贵宾比赛道具分成{2}
 adaptation20080=您同意了##提取##Union coin
 adaptation20082=您同意了##充值##Union coin
 Tips_UIClub_FundRecharge_InputError=输入数额错误
@@ -2437,8 +2421,8 @@ Tips_UIClub_FundRecharge_RechargeConfirm=申请充值{0}Union coin?
 Tips_UIMine_UserInfoSettingNick_ChangedName=是否使用{0}钻石修改昵称？
 MsgInfo_625=您报名比赛{0}使用{1}Global coin
 adaptation10334=拒绝
-MsgInfo_2005=充值申请被拒绝，如有疑问请联系公会客服
-MsgInfo_2006=提现申请被拒绝，如有疑问请联系公会客服
+
+
 adaptation20083=您拒绝了##充值##Union coin
 adaptation20084=您拒绝了##提取##Union coin
 adaptation20085=同意
@@ -2697,7 +2681,7 @@ UIBackDiolg_Iphonetips=请输入准确的电话号码，以免客服充值失败
 UIBackDiolg_textContent03=是否使用{0}?
 UIMine_BackpackList_timeLimit=到期时间：{0}^到期时间：无
 UIBackDiolg_DaoCoin=道具价值：
-MsgInfo_3002=恭喜您在{0}排名第{1}，获得{2}
+
 FreeAni_001=吃瓜
 FreeAni_002=大家好
 FreeAni_003=得意
@@ -3443,7 +3427,6 @@ UIClub_InputLeagueIdTips=请输入正确的联盟id
 OpCodeString_SNATCHTREASUREAWARDD=一元购
 MsgInfo_4010=您提交的创建俱乐部申请未通过，如有疑问，请联系联盟客服
 UIHappyShop_HasGiveState=已发奖
-MsgInfo_3014=恭喜您，成功兑换一元购奖品{0}，获得{1}。
 UIClub_Dividend_Ratio=分润比例
 UIClub_PhoneOrCodeError=注册手机号或验证码错误
 WalletPlatform_Name=姓名
@@ -3718,14 +3701,50 @@ UIGuild_MemberList_RemarkName=备注名称
 UIMTT_Listbuy1=买入:
 UIMTT_Listbonus1=奖金
 UIMine_Paipu_handNum2={0}手
-MsgInfo_2007={0}公会修改了汇率
-MsgInfo_2008=您已成为{0}公会的管理员
-MsgInfo_2009=您已被撤销{0}公会的管理员
-MsgInfo_2010=您已被移出{0}公会
+MsgInfo_2001=您的公会被转移到{0}联盟，请知悉
+MsgInfo_2002=您的公会ID已修改为'{0}'
+MsgInfo_2003=[充豆申请] {0} 正在申请充值 {1} Union coin
+MsgInfo_2004=[提豆申请] {0} 正在申请提现 {1} Union coin 
+MsgInfo_2005=您申请充值{0}{1}被拒绝，如有疑问请联系公会客服
+MsgInfo_2006=您申请提现{0}{1}被拒绝，如有疑问请联系公会客服
+MsgInfo_2007={0}公会管理员更新了汇率表，去看看吧
+MsgInfo_2008=恭喜您，成为{0}公会管理员
+MsgInfo_2009=很遗憾，您在{0}公会管理员已被取消
+MsgInfo_2010=很遗憾，您被管理员移出{0}公会，如有疑问请咨询公会客服
 MsgInfo_2011=欢迎加入{0}公会
 MsgInfo_2012=加入{0}公会申请被拒绝
-MsgInfo_5003=欢迎加入{0}联盟
-MsgInfo_5004=加入{0}联盟申请被拒绝
+MsgInfo_2013=恭喜您，成为{0}公会贵宾
+MsgInfo_2014=很遗憾，您在{0}公会贵宾已被取消
+MsgInfo_2015=您所在的{0}公会成功加入{0}联盟
+MsgInfo_2016=您所有的{0}公会退出{0}联盟
+MsgInfo_2017=您的账号被{0}公会冻结，如有疑问请咨询公会客服
+MsgInfo_1007=[赛事申请] {0} 申请报名 {2}  {1}
+MsgInfo_3000={0}向您发放{0}{1}
+MsgInfo_3001=您向{0}公会申请的提现{1}{2}成功
+MsgInfo_3002=恭喜您在{0}排名第{1}，获得{2}
+MsgInfo_3003=申请报名 {2} {1} 成功，请按时参加比赛
+MsgInfo_3004=从{0}获得贵宾普通桌服务费分成{2}
+MsgInfo_3005=从{0}获得贵宾牌局保险分成{2}
+MsgInfo_3006=从{0}获得贵宾牌局道具分成{2}
+MsgInfo_3007=从{0}获得MTT返水{2}
+MsgInfo_3008=从{0}获得普通桌返水{2}
+MsgInfo_3011=从{0}获得贵宾比赛服务费分成{2}
+MsgInfo_3012=从{0}获得贵宾比赛道具分成{2}
+MsgInfo_3014=恭喜您，成功兑换一元购奖品{0}，获得{1}。
+MsgInfo_3016=您向{0}公会申请的充值{1}{2}成功
+MsgInfo_3017=您向{0}公会申请{1}转换{2}成功
+MsgInfo_3018=您的{0}公会申请的充值{1}{2}成功
+MsgInfo_3019=您的{0}公会申请的提现{1}{2}成功
+MsgInfo_3020=您的{0}公会申请{1}转换{2}成功
+MsgInfo_5000=恭喜您成功创建{0}，稍后联盟客服将会与您联系
+MsgInfo_5001=创建公会{0}失败，{1}，有疑问请联系联盟客服
+MsgInfo_5002={0}公会加入{1}联盟
+MsgInfo_5003=您申请加入{0}联盟的申请已经通过审核
+MsgInfo_5004=您申请加入{0}联盟的申请没有通过审核
+MsgInfo_5005=您的{0}公会被{0}联盟冻结，如有疑问请咨询联盟客服
+MsgInfo_5006=您申请充值{0}{1}被拒绝，如有疑问请联系联盟客服
+MsgInfo_5007=您申请提现{0}{1}被拒绝，如有疑问请联系联盟客服
+MsgInfo_5008=您申请{0}转换{1}被拒绝，如有疑问请联系联盟客服
 UIMine_MallShop_recharge=确定花费{0}充值{1}钻石吗?
 UIMTT_PoolReward=奖池奖励
 UIRoomCreate_RealTimeAudio=实时语音
@@ -3797,50 +3816,48 @@ UIMemberNum=成员总数
 UIClubInfo=资讯
 UIClub_mess=联络人资讯
 UIClub_introduce=暂无公会说明
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UITEXAS_PLAYERSEATDOWNTIPS01=请求中
+UIFriendsTable_CreateRoomTips=启动纸牌游戏并邀请朋友加入
+UIFriendsTable_DataTimeError_30day=最长只能查询30天的数据
+UIFriendsTable_Winninglbl=奖金
+UIFriendsTable_fee=服务费
+UIFriendsTable_totalfee=总服务费
+UIFriendsTable_playercount=总人数
+UIGuild_SearchBtn=搜索工会
+UIGuild_RecordBtn=申请记录
+UIGuild_SearchTips=请输入公会ID进行搜索
+UIClub_AuditRecords_auto=自动拒绝
+UIGuild_MemberNumber=成员人数
+UIGuild_TitleName=工会名称
+UIGuild_SearchUnionBtn=搜索联盟
+UIGuild_ContactInfo=联系人信息
+UIFriendsTable_Create_NLH=德州
+UIFriendsTable_Create_PLO=奥马哈
+UIFriendsTable_Create_6P=短牌奧馬哈
+UIGuild_JoinUnionContactTips=请留下联系方式
+UIGuild_NoDescTips=暂无工会说明
+UIFACEDELECTION_TIPSSUC=验证成功
+UIRoom_LimitTimeFreeFace=限时免费
+UITexas_FaceRecogVerifying=验证中
+UITexas_FaceRecogDaoJiShi=倒计时:{0}后可再被验证
+UITexas_FaceRecogSuccess=已通过验证
+UITexas_FaceRecogTip1=您在本房间发起验证次数为0，不可发起验证
+UITexas_FaceRecogTip2=对方已超过最大验证次数
+UITexas_FaceRecogTip3=确定向{0}发起人脸验证
+UITexas_FaceRecogTip4=剩余验证次数: {0}
+UITexas_FaceRecogTip5=倒计时:{0}s
+UITexas_FaceRecogTip6={0}向您发起人脸验证，请在限时内完成验证，否则将退出游戏。
+UITexas_FaceRecogTip7=稍后验证
+UITexas_FaceRecogTip8=已完成人脸验证
+UITexas_FaceRecogTip9=由于您未通过人脸认证，已被冻结。如有疑问，请联系公会昵称客服
+UITexas_FaceRecogTip10={0}未通过人脸验证
+UITexas_FaceRecogTip11={0}已通过人脸验证
+UITexas_FaceRecogTip12=身份验证中{0}s
+UIGuild_NoUnion=联盟不存在
+UIGuild_CancelShare=取消共享
+UIPaiJu_GameRhythm=游戏节奏：
+UIPaiJu_GGMode=GG模式
+UIPaiJu_HHMode=HH模式
 
 
 

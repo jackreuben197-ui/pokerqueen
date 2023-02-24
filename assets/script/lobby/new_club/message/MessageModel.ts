@@ -17,4 +17,6 @@ export default class MessageModel {
 
     //未读列表 0已读 1未读
     public unreadList = [0, 0, 0, 0, 0, 0];
+
+    ///////////////////////////////////////
 }

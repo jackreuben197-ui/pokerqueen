@@ -675,6 +675,7 @@ export enum MessageSubType {
     MsgBagTypeAwardPropsByEveryDayTask,                             //玩家完成每日任务获取奖励道具
     MsgBagTypeAwardPropsByAchievementsTask,                         //玩家完成成就任务获取奖励道具
     MsgBagTypeAwardPropsByVipInvitationReward,                      //贵宾邀请获取奖励道具
+    MsgBagTypeClubGrantGold,                                        //俱乐部发放金币	
     MsgClubTypeModifyProportion = 2000,                             //俱乐部占成比例修改
     MsgClubTypeModifyTirbe,                                         //俱乐部所在联盟被更改
     MsgClubTypeModifyID,                                            //俱乐部修改显性id
@@ -697,6 +698,7 @@ export enum MessageSubType {
     MsgMoneyTypeCowboyProfit,                                       // 牛仔返水
     MsgMoneyTypeMttVipServiceFeeProfit,                             //mtt赛事vip服务费分成
     MsgMoneyTypeMttVipPropProfit,                                   //mtt赛事vip道具分润分成
+    MsgSuper1AwardDiscount,                                         //一元购提现
     MsgSystemTypeLock = 4000,                                       //冻结账号
     MsgSystemTypeForbidden,                                         //被禁言
     MsgSystemTypeNoticePhoneCard,                                   //比赛奖品电话卡发放通知

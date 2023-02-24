@@ -221,7 +221,8 @@ export default class UIClubHome extends BaseForm {
                 UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Fund });
                 break;
             case 6:
-                UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 1 });
+                //UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 1 });
+                UIComponent.open(UIDefine.UIMyMessage, { from: 1 });
                 break;
             default:
                 break;

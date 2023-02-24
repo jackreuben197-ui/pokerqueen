@@ -4,6 +4,7 @@ import TexasGame from "../game/texas/TexasGame";
 import MessageModel from "../lobby/new_club/message/MessageModel";
 import WalletModel from "../lobby/new_club/pay/WalletModel";
 import { Bundle_Map } from "../manager/ResManager";
+import LobbySession from "../session/LobbySession";
 import SoundComponent from "../sound/SoundComponent";
 import MoniModel from "./data/moni/MoniModel";
 import AudioManager from "./manager/AudioManager";
