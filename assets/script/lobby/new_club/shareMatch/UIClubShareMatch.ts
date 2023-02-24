@@ -3,7 +3,7 @@
  * @Date: 2023-01-03 11:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 17:43:15
+ * @LastEditTime: 2023-02-24 18:21:44
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatch.ts
  */
 // Learn TypeScript:
@@ -20,6 +20,8 @@ import List from "../../../common/List";
 import { UIClubModel } from "../../labor/UIClubModel";
 import { APIOrgClubShareApplyList, APIOrgClubShareApproveList, APIOrgClubSharePendingList } from "../../../net/https/WebRequest";
 import { EventName } from "../../../config/EventName";
+import TabNode from "../../../common/tabNode";
+import { shareMatchTabConfig } from "../../../frame/config/tabConfig";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -31,38 +33,30 @@ export default class UIClubShareMatch extends BaseForm {
     _reqEnd: boolean = false;
     _list: Array<any> = [];
     _total: number = 0
-    memberListT: cc.Node
-    applyListT: cc.Node
     noDataTip: cc.Node
+    tabNode: TabNode = null;
     private comFormTitle: ComFormTitle = null;
     @property(List)
     memberList: List = null;
     protected lateLoad(): void {
         super.lateLoad();
+        this.tabNode = this.getChildNodeOrComponent("tabNode", TabNode);
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
-        this.memberListT = this.getChildNodeOrComponent("memberListT");
-        this.applyListT = this.getChildNodeOrComponent("applyListT");
         this.noDataTip = this.getChildNodeOrComponent("noDataTip");
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+        this.tabNode.initData(shareMatchTabConfig, this.titleNodeClick.bind(this), this)
         let title = "UIGuild_ShareGameManager"
         this.comFormTitle.initData(title, this);
-        this.titleNodeClick(null, 0)
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.refreshShareMatch, this.reqDataAgain);
     }
 
-    titleNodeClick(event, customData) {
-        // if (this._selectTitle == customData) return
+    titleNodeClick(customData) {
         this._selectTitle = customData
-        this.memberListT.getChildByName('block').active = this._selectTitle == 0
-        this.applyListT.getChildByName('block').active = this._selectTitle == 1
-
-        this.memberListT.getChildByName('title').color = this._selectTitle == 0 ? cc.color().fromHEX('#757CAB') : cc.color().fromHEX('#EEF5FF')
-        this.applyListT.getChildByName('title').color = this._selectTitle == 1 ? cc.color().fromHEX('#757CAB') : cc.color().fromHEX('#EEF5FF')
         this.reqDataAgain();
     }
     async reqDataAgain() {
@@ -84,17 +78,6 @@ export default class UIClubShareMatch extends BaseForm {
             await UIClubModel.mInstance.APIOrgClubShareApproveList({ limit: 10, offset: this._offset })
             _data = APIOrgClubShareApproveList.Response.data
         }
-        // let params = {
-        //     "club_random_id": ClubCache.random_id,
-        //     "limit": 20,
-        //     "offset": this._offset,
-        //     "user_type": this.ROLE_TYPE[this._selectRoleType],
-        //     "sort_type": this._sort_type,  //1-输赢数;2-手数;3-服务费;4-最后登陆时间;
-        //     "order_type": this._order_type, //1-顺序;2-倒叙;
-        //     "club_id": ClubCache.club_id,
-        //     'search': this._search,
-        // }
-        // await UIClubModel.mInstance.APIOrgMemberList(params);
         this._reqing = false
         if (!_data.data) {
             _data.data = [];

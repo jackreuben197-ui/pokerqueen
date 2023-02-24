@@ -434,7 +434,7 @@
       "__id__": 13
     },
     "_name": "comFormTitle",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -1130,7 +1130,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 2263.589
+      "height": 2205.3640000000005
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1142,7 +1142,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        861.364,
+        861.3640000000005,
         0,
         0,
         0,
@@ -1201,7 +1201,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 2263.589
+      "height": 2205.3640000000005
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1327,7 +1327,7 @@
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
-    "_N$spacingY": 20,
+    "_N$spacingY": 50,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
     "_N$affectedByScale": false,
@@ -1442,7 +1442,7 @@
     "_left": 0,
     "_right": 0,
     "_top": 482.63599999999974,
-    "_bottom": -58.22499999999991,
+    "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,

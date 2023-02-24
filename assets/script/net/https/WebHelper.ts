@@ -3,10 +3,10 @@
  * @Date: 2022-08-22 00:32:52
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-26 17:25:47
+ * @LastEditTime: 2023-02-24 18:55:43
  * @FilePath: /pokerqueen/assets/script/net/https/WebHelper.ts
  */
-import { APIOrgClubApprovalJoin, APIOrgClubCancleJoinClub, APIOrgClubGetJoinlList, APIOrgClubQuit, Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Msg_Message_Unread, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Join, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Room_Center_Groups } from "./WebRequest";
+import { APIOrgClubShareApplyList, APIOrgClubSharePendingList, APIOrgClubApprovalJoin, APIOrgClubCancleJoinClub, APIOrgClubGetJoinlList, APIOrgClubQuit, APIOrgClubShareApproveList, APIOrgClubShareAudit, Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Msg_Message_Unread, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Join, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Room_Center_Groups } from "./WebRequest";
 
 export default class WebHelper {
 
@@ -32,7 +32,10 @@ export default class WebHelper {
         APIOrgClubApprovalJoin.API,
         APIOrgClubGetJoinlList.API,
         APIOrgClubQuit.API,
-
+        APIOrgClubShareAudit.API,
+        APIOrgClubShareApproveList.API,
+        APIOrgClubSharePendingList.API,
+        APIOrgClubShareApplyList.API
         //Web_Pay_Apple_Order_Recharge.API,
         //Web_Pay_Apple_Order_Verifyreceipt.API,
     ];
