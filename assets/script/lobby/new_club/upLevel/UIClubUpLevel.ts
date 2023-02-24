@@ -3,7 +3,7 @@
  * @Date: 2022-12-27 11:14:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:47:21
+ * @LastEditTime: 2023-02-24 15:41:33
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/upLevel/UIClubUpLevel.ts
  */
 
@@ -17,17 +17,14 @@ import { UIDefine } from "../../../define/UIDefine";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import TimeHelper from "../../../helper/TimeHelper";
 import { EventName } from "../../../config/EventName";
+import { i18nMgr } from "../../../i18n/i18nMgr";
+import UINewDialogComponent from "../../../ui/dialog/UINewDialogComponent";
+import { StringHelper } from "../../../helper/StringHelper";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
 @menu('脚本分组/new_club/UIClubUpLevel')
 export default class UIClubUpLevel extends BaseForm {
-
-    @property(cc.Label)
-    currentLevel: cc.Label = null;
-
-    @property(cc.Label)
-    lastData: cc.Label = null;
 
     @property(cc.Node)
     contentNode: cc.Node = null;
@@ -35,139 +32,83 @@ export default class UIClubUpLevel extends BaseForm {
     @property(cc.Node)
     itemNode: cc.Node = null;
 
-    private comFormTitle: ComFormTitle = null;
+    currentLevel_1: cc.Label = null;
+    currentLevel_2: cc.Label = null;
+    lbl_lastData: cc.Label = null;
+
+
     protected lateLoad(): void {
         super.lateLoad();
-        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+        this.currentLevel_1 = this.getChildNodeOrComponent("currentLevel_1", cc.Label);
+        this.currentLevel_2 = this.getChildNodeOrComponent("currentLevel_2", cc.Label);
+        this.lbl_lastData = this.getChildNodeOrComponent("lbl_lastData", cc.Label);
 
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-        let title = "club_Level"
-        this.comFormTitle.initData(title, this);
         this.getData();
         this.initTop();
 
     }
     initTop() {
+        this.currentLevel_2.string = ClubCache.level
         if (ClubCache.level == 1) {
-            this.lastData.node.active = false
+            this.lbl_lastData.node.active = false
         }
         else {
-            this.lastData.node.active = true
+            this.lbl_lastData.node.active = true
             UIClubModel.mInstance.APIOrgClubLevelInfo({ club_id: ClubCache.club_id }).then(() => {
                 let data: any = APIOrgClubLevelInfo.Response.data;
-                this.lastData.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(data.data.up_level_time)
+                this.setText(this.lbl_lastData, `${i18nMgr.Get('UIMine_VIP_expire')}:${TimeHelper.convertUTCTimeToLocalTime(data.data.up_level_time)}`)
             })
         }
-        this.currentLevel.string = 'LV.' + ClubCache.level
+        this.currentLevel_1.string = '——LV.' + ClubCache.level + '——'
     }
 
     async getData() {
+        this.contentNode.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubLevelBenefit({ club_id: ClubCache.club_id });
         let data: any = APIOrgClubLevelBenefit.Response.data;
-        // data = {
-        //     "data": [
-        //         {
-        //             "id": 9,
-        //             "club_level": 9,
-        //             "user_num": 1500,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         },
-        //         {
-        //             "id": 8,
-        //             "club_level": 8,
-        //             "user_num": 1200,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         },
-        //         {
-        //             "id": 7,
-        //             "club_level": 7,
-        //             "user_num": 1000,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         },
-        //         {
-        //             "id": 6,
-        //             "club_level": 6,
-        //             "user_num": 800,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         },
-        //         {
-        //             "id": 5,
-        //             "club_level": 5,
-        //             "user_num": 600,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         },
-        //         {
-        //             "id": 4,
-        //             "club_level": 4,
-        //             "user_num": 400,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         },
-        //         {
-        //             "id": 3,
-        //             "club_level": 3,
-        //             "user_num": 300,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         },
-        //         {
-        //             "id": 2,
-        //             "club_level": 2,
-        //             "user_num": 200,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         },
-        //         {
-        //             "id": 1,
-        //             "club_level": 1,
-        //             "user_num": 100,
-        //             "level_count": 100,
-        //             "level_duration": 30
-        //         }
-        //     ]
-        // }
         for (let index = 0; index < data.data.length; index++) { //data.data.lengt
             const element = data?.data[index];
 
             let item = cc.instantiate(this.itemNode)
             item.parent = this.contentNode;
-            this.initItemData(item, element);
+            this.initItemData(item, element, index);
             item['levelData'] = element;
         }
 
     }
-    initItemData(node, data) {
-        node.getChildByName('levelNum').getComponent(cc.Label).string = 'Lv' + data.club_level
-        node.getChildByName('levelNum').getChildByName('data').getComponent(cc.Label).string = `（${data.level_duration}天）`
-        node.getChildByName('peopleNum').getChildByName('data').getComponent(cc.Label).string = data.user_num
-        node.getChildByName('diamondNode').getChildByName('diamondNum').getComponent(cc.Label).string = data.level_count
+    initItemData(node, data, index) {
+        node.active = true
+        node.getChildByName('Rectangle').active = index % 2 == 0
+        node.getChildByName('itemLevel_1').getComponent(cc.Label).string = '—LV.' + data.club_level + '—'
+        node.getChildByName('itemLevel_2').getComponent(cc.Label).string = data.club_level
+        node.getChildByName('levelNum').getComponent(cc.Label).string = `Level ${data.club_level}(${data.level_duration} Day)`
+        node.getChildByName('peopleNum').getComponent(cc.Label).string = data.user_num + ' People'
+        node.getChildByName('diamondNum').getComponent(cc.Label).string = data.level_count
 
     }
     upBtn(node) {
-        let data = node.target['levelData']
+        let data = node.target.parent['levelData']
         if (ClubCache.level >= data.club_level) {
             UIComponent.Instance.Toast('公会等级大于当前选择的等级')
             return
         }
-        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+
+        let UIGuild_LevelUp = i18nMgr.Get('UIGuild_LevelUp')
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
             {
-                type: UIDialogComponent.DialogType.CommitCancel,
+                type: UINewDialogComponent.DialogType.CommitCancel,
                 title: "提示",
-                content: `确定花费 ${data.level_count} 钻石购买 Lv.${data.club_level} （${data.level_duration}天）`,
-                contentCommit: "确定",
-                contentCancel: "取消",
+                content: StringHelper.Format(UIGuild_LevelUp, [data.level_count, data.club_level, data.level_duration]),
+                contentCommit: "adaptation10012",
+                contentCancel: "adaptation10013",
                 actionCommit: async () => {
                     await UIClubModel.mInstance.APIOrgClubUpLevel({ club_id: ClubCache.club_id, level: data.club_level })
                     ClubCache._msg.level = data.club_level;
                     this.initTop();
-                    this.post(EventName.refreshClubLevel)
+                    this.post(EventName.refreshMess)
                 },
                 noAnimation: true,
             });

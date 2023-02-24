@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "35917bd1-ffeb-4407-abee-82840ddf4a18",
+  "uuid": "9022f42a-b8b2-4c73-bdd1-13756a87381b",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -9,14 +9,14 @@
   "genMipmaps": false,
   "packable": true,
   "width": 1242,
-  "height": 3877,
+  "height": 2689,
   "platformSettings": {},
   "subMetas": {
-    "创始人 打开公会管理页面 全页": {
+    "公会等级": {
       "ver": "1.0.6",
-      "uuid": "9ca83fe3-9781-4c4c-a458-9f4c7376f518",
+      "uuid": "20ed917e-37fe-4703-82ca-cd33e9959a2e",
       "importer": "sprite-frame",
-      "rawTextureUuid": "35917bd1-ffeb-4407-abee-82840ddf4a18",
+      "rawTextureUuid": "9022f42a-b8b2-4c73-bdd1-13756a87381b",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
@@ -25,9 +25,9 @@
       "trimX": 0,
       "trimY": 0,
       "width": 1242,
-      "height": 3876,
+      "height": 2688,
       "rawWidth": 1242,
-      "rawHeight": 3877,
+      "rawHeight": 2689,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,
