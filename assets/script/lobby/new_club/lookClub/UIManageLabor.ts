@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 13:55:24
+ * @LastEditTime: 2023-02-24 14:15:53
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIManageLabor.ts
  */
 
@@ -89,10 +89,15 @@ export default class UIManageLabor extends BaseForm {
         //联盟
         let lm = this.contentNode.getChildByName('lm')
         let lm_panel_right = lm.getChildByName('panel_right')
-        lm_panel_right.getChildByName('name').getComponent(cc.Label).string = ClubCache.tribe_name || ''
+        let name = lm_panel_right.getChildByName('name').getComponent(cc.Label)
         let union_icon = cc.find('Round', lm_panel_right);
-        WebImageHelper.SetHeadImage(union_icon.getComponent(cc.Sprite), ClubCache.tribe_logo
-        )
+        if (ClubCache.tribe_name && ClubCache.tribe_name != '') {
+            this.setText(name, ClubCache.tribe_name)
+            WebImageHelper.SetHeadImage(union_icon.getComponent(cc.Sprite), ClubCache.tribe_logo)
+        } else {
+            this.setText(name, 'UIGuild_NoUnion')
+            union_icon.active = false;
+        }
         //联系方式
         let lxfs = this.contentNode.getChildByName('lxfs')
         let label = cc.find('editNode/label', lxfs).getComponent(cc.Label);
@@ -155,6 +160,12 @@ export default class UIManageLabor extends BaseForm {
     openEdit(event, customData) {
         UIComponent.open(UIDefine.UIClubEdit, { type: Number(customData) })
     }
+
+    joinTrip() {
+        UIComponent.open(UIDefine.UIJoinUnion, { type: 1 })
+
+    }
+
 
 
 }

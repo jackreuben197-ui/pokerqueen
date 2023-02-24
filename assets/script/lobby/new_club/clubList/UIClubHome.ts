@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 18:58:29
+ * @LastEditTime: 2023-02-24 14:19:53
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -198,7 +198,6 @@ export default class UIClubHome extends BaseForm {
     onClickTabBtns(index: number) {
         switch (index) {
             case 0:
-                this.menuClick()
                 break;
             case 1:
                 UIComponent.open(UIDefine.UIPlayerLookLabor)
@@ -227,6 +226,7 @@ export default class UIClubHome extends BaseForm {
             default:
                 break;
         }
+        this.menuClick()
 
     }
     menuClick() {
