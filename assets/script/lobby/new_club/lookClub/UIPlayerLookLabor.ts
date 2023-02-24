@@ -3,27 +3,27 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 12:32:44
- * @FilePath: /pokerqueen/assets/script/lobby/labor/UIPlayerLookLabor.ts
+ * @LastEditTime: 2023-02-24 13:25:20
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIPlayerLookLabor.ts
  */
 
-import { UIDefine } from "../../define/UIDefine";
-import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
-import WebImageHelper from "../../helper/WebImageHelper";
-import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
-import { UIClubModel } from "./UIClubModel";
-import { LobbyControl } from "../control/LobbyControl";
-import GC from "../../frame/GameControl";
-import TimeHelper from "../../helper/TimeHelper";
-import ComFormTitle from "../../common/ComFormTitle";
-import { ClubCache } from "../../frame/data/club/ClubCache";
-import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
+import { UIDefine } from "../../../define/UIDefine";
+import BaseForm from "../../../ui/form/BaseForm";
+import UIComponent from "../../../ui/UIComponent";
+import WebImageHelper from "../../../helper/WebImageHelper";
+import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
+import { UIClubModel } from "../../labor/UIClubModel";
+import { LobbyControl } from "../../control/LobbyControl";
+import GC from "../../../frame/GameControl";
+import TimeHelper from "../../../helper/TimeHelper";
+import ComFormTitle from "../../../common/ComFormTitle";
+import { ClubCache } from "../../../frame/data/club/ClubCache";
+import UINewDialogComponent from "../../../ui/dialog/UINewDialogComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
-@menu('脚本分组/labor/UIPlayerLookLabor')
+@menu('脚本分组/new_club/lookClub/UIPlayerLookLabor')
 export default class UIPlayerLookLabor extends BaseForm {
     @property(cc.Node)
     main1: cc.Node = null;

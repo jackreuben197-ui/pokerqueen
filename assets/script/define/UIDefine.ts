@@ -409,6 +409,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/club/UIClubLevel",
     },
+    UIClubEdit: {
+        UIType: UIType.Form,
+        Name: "UIClubEdit",
+        Bundle: null,
+        Path: "main/new_club/lookClub/UIClubEdit",
+    },
 
 
 

@@ -3,29 +3,27 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 12:50:50
- * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
+ * @LastEditTime: 2023-02-24 13:55:24
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIManageLabor.ts
  */
 
 
-import { EventName } from "../../config/EventName";
-import { UIDefine } from "../../define/UIDefine";
-import GGEvent from "../../event/GGEvent";
-import GC from "../../frame/GameControl";
-import TimeHelper from "../../helper/TimeHelper";
-import WebImageHelper from "../../helper/WebImageHelper";
-import { APIOrgClubGold, APIOrgClubLevelInfo, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../net/https/WebRequest";
-import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
-import { UIClubModel } from "./UIClubModel";
-import ComFormTitle from "../../common/ComFormTitle";
-import { ClubCache } from "../../frame/data/club/ClubCache";
-import GGSwitch from "../../ui/component/GGSwitch";
+import { EventName } from "../../../config/EventName";
+import { UIDefine } from "../../../define/UIDefine";
+import TimeHelper from "../../../helper/TimeHelper";
+import WebImageHelper from "../../../helper/WebImageHelper";
+import { APIOrgClubGold, APIOrgClubLevelInfo, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../../net/https/WebRequest";
+import BaseForm from "../../../ui/form/BaseForm";
+import UIComponent from "../../../ui/UIComponent";
+import { UIClubModel } from "../../labor/UIClubModel";
+import ComFormTitle from "../../../common/ComFormTitle";
+import { ClubCache } from "../../../frame/data/club/ClubCache";
+import GGSwitch from "../../../ui/component/GGSwitch";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
-@menu('脚本分组/labor/UIManageLabor')
+@menu('脚本分组/new_club/lookClub/UIManageLabor')
 export default class UIManageLabor extends BaseForm {
     @property(cc.Node)
     contentNode: cc.Node = null;
@@ -61,7 +59,7 @@ export default class UIManageLabor extends BaseForm {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(EventName.refreshClubLevel, this.initClubData);
+        this.listen(EventName.refreshMess, this.initTop);
     }
 
     initTop() {
@@ -154,37 +152,9 @@ export default class UIManageLabor extends BaseForm {
         UIComponent.open(UIDefine.UIClubShareMatch)
     }
 
-
-
-
-
-
-    joinUnion() {
-
-        // UIComponent.open(UIDefine.UIJoinUnion, { type: 1 });
-
-        // let lm = this.contentNode.getChildByName('lm')
-        // let data: any = Web_Org_Club_Get.Response.data;
-        // if (!data.tribe_name) {
-        //     lm.active = true;
-        //     UIComponent.open(UIDefine.UIJoinUnion);
-        // } else {
-        //     lm.active = false;
-        // }
+    openEdit(event, customData) {
+        UIComponent.open(UIDefine.UIClubEdit, { type: Number(customData) })
     }
-
-    changeClubData() {
-        Web_Org_Club_Get.Response.data['desc'] = this.EditBox.string
-        ClubCache._msg.desc = this.EditBox.string;
-        this.post(EventName.refreshClubTitle);
-        UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, desc: this.EditBox.string })
-    }
-    // lxfsEditBoxCb() {
-    //     this.lxfsEditBox.string = this.lxfsEditBox.string.trim()
-    //     ClubCache._msg.more_contact = this.lxfsEditBox.string
-    //     UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, more_contact: this.lxfsEditBox.string })
-
-    // }
 
 
 }
