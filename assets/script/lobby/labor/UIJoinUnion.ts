@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 22:53:19
+ * @LastEditTime: 2023-02-24 09:38:28
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIJoinUnion.ts
  */
 
@@ -42,6 +42,8 @@ export default class UIJoinUnion extends BaseForm {
     @property(cc.Node)
     joinNode: cc.Node = null;
     type = 0;
+    @property(cc.Node)
+    noDataTip: cc.Node = null;
 
     tempString = ''
     protected lateLoad(): void {
@@ -82,7 +84,7 @@ export default class UIJoinUnion extends BaseForm {
         this.contentList.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
         let data: any = Web_Org_Club_Player_Apply_List.Response.data
-
+        this.noDataTip.active = data?.items != 0
         for (let index = 0; index < data?.items?.length; index++) {
             const element = data?.items[index];
             let item = cc.instantiate(this.joinNode);
@@ -97,6 +99,7 @@ export default class UIJoinUnion extends BaseForm {
         this.contentList.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubApplyTribeList({ club_id: ClubCache.club_id })
         let data: any = APIOrgClubApplyTribeList.Response.data
+        this.noDataTip.active = data?.list != 0
         for (let index = 0; index < data?.list?.length; index++) {
             const element = data?.list[index];
             let item = cc.instantiate(this.joinNode);
