@@ -1,8 +1,8 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
-import { WalletType } from "../../lobby/new_club/pay/UIWalletLayer";
-import WalletModel from "../../lobby/new_club/pay/WalletModel";
+import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
+import WalletModel from "../../lobby/new_club/wallet/WalletModel";
 import { Web_User_Room } from "../../net/https/WebRequest";
 import GGSlider from "../../ui/component/GGSlider";
 import UICommonDialog from "../../ui/dialog/UICommonDialog";
@@ -57,11 +57,11 @@ export default class UIBringIn extends UIBasePlus {
 
     //滑动条 数据对象
     slider_obj = {
-        min:0,
-        max:0,
-        step:0
+        min: 0,
+        max: 0,
+        step: 0
     };
-  
+
     sendCoin: number = 0;//发送货币值
     ownCoin: number = 0;//拥有的货币值
     gold_type: number = 0;//货币类型
@@ -92,8 +92,7 @@ export default class UIBringIn extends UIBasePlus {
         //this.wallet.push({club_id:33,gold:1});
         if (!this.wallet?.length) this.wallet_mode = 0;
         if (this.wallet?.length == 1) this.wallet_mode = 1;
-        if (this.wallet?.length == 2) this.wallet_mode = 2;
-
+        if (this.wallet?.length > 1) this.wallet_mode = 2;
         if (this.wallet_mode == 0) {
             this.$Part1.active = false;
             this.$Part4.active = false;
@@ -115,12 +114,11 @@ export default class UIBringIn extends UIBasePlus {
             //最大带入值
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
             let min = data.currentMinRate * data.bigBlind / 100;
-            max = Math.max(min,max);
-            
+            max = Math.max(min, max);
             this.slider_obj.min = min;
             this.slider_obj.max = max;
-            this.slider_obj.step = data.bigBlind;
-        
+            this.slider_obj.step = data.bigBlind / 10;
+            console.log(">>>>>>>>>", min, max, data.bigBlind);
             this.GGSlider$slider.data = this.slider_obj;
 
             this.GGSlider$slider.onShow({ index: 0 });
@@ -139,7 +137,7 @@ export default class UIBringIn extends UIBasePlus {
 
         this.sendCoin = this.slider_obj.min + this.slider_obj.step * rate;
 
-        this.sendCoin = Math.min(this.sendCoin,this.slider_obj.max);
+        this.sendCoin = Math.min(this.sendCoin, this.slider_obj.max);
 
         this.cc_Label$value.string = `${this.sendCoin}`;
 
@@ -168,7 +166,7 @@ export default class UIBringIn extends UIBasePlus {
     goCharge() {
         console.log("goCharge");
         WalletModel.Instance.club_id = this.selected_wallet.club_id;
-        UIComponent.open(UIDefine.UIPayLayer, { type: 1, walletType: WalletType.Club });
+        UIComponent.open(UIDefine.UIRecharge, { type: 1, walletType: WalletType.Club });
         this.hideUI();
     }
     refreshSelect(index: number) {
@@ -218,9 +216,9 @@ export default class UIBringIn extends UIBasePlus {
                 return;
             }
         }
-        GameCache.Instance.CurGame.AddChips(this.sendCoin*100);
+        GameCache.Instance.CurGame.AddChips(this.sendCoin * 100);
         //GameCache.Instance.CurGame.AddChips(1080*100);
-        this.hideUI();        
+        this.hideUI();
     }
     //取消
     onClickCancel() {

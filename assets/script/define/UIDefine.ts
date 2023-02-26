@@ -409,47 +409,52 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/club/UIClubLevel",
     },
+    // MyWalletForm: {
+    //     UIType: UIType.Form,
+    //     Name: "MyWalletForm",
+    //     Bundle: null,
+    //     Path: "main/wallet/MyWalletForm",
+    // },
 
-
-
-
-    MyWalletForm: {
+    //钱包主界面
+    UIWallet: {
         UIType: UIType.Form,
-        Name: "MyWalletForm",
+        Name: "UIWallet",
         Bundle: null,
-        Path: "main/wallet/MyWalletForm",
-    },
-
-    UIWalletLayer: {
-        UIType: UIType.Form,
-        Name: "UIWalletLayer",
-        Bundle: null,
-        Path: "main/new_club/pay/UIWalletLayer",
+        Path: "main/new_club/wallet/UIWallet",
         //Title: "UIMine_WalletMy",
     },
-
-    UIPayLayer: {
+    //跳转充值页面
+    UIToRecharge: {
         UIType: UIType.Form,
-        Name: "UIPayLayer",
+        Name: "UIToRecharge",
         Bundle: null,
-        Path: "main/new_club/pay/UIPayLayer",
-        Title: "充值",
+        Path: "main/new_club/wallet/UIToRecharge",
+        Title: "UIGuildFund_RechargeText",
+    },
+    //豆充值页面
+    UIRecharge: {
+        UIType: UIType.Form,
+        Name: "UIRecharge",
+        Bundle: null,
+        Path: "main/new_club/wallet/UIRecharge",
+        Title: "UIGuildFund_RechargeText",
+    },
+    //豆转换界面
+    UIExchange: {
+        UIType: UIType.Form,
+        Name: "UIExchange",
+        Bundle: null,
+        Path: "main/new_club/wallet/UIExchange",
+        Title: "UIGuildFund_ExchangeText",
     },
 
-    UIChangeLayer: {
-        UIType: UIType.Form,
-        Name: "UIChangeLayer",
-        Bundle: null,
-        Path: "main/new_club/pay/UIChangeLayer",
-        Title: "转换",
-    },
-
-    WalletJumpForm: {
-        UIType: UIType.Form,
-        Name: "WalletJumpForm",
-        Bundle: null,
-        Path: "main/wallet/WalletJumpForm",
-    },
+    // WalletJumpForm: {
+    //     UIType: UIType.Form,
+    //     Name: "WalletJumpForm",
+    //     Bundle: null,
+    //     Path: "main/wallet/WalletJumpForm",
+    // },
 
     GoldOprationForm: {
         UIType: UIType.Form,
@@ -790,6 +795,14 @@ export const UIDefine = {
         Name: "UICommonDialog",
         Bundle: null,
         Path: "main/prefab/dialog/UICommonDialog",
+    },
+
+    //标题通用提示面板
+    UISuperDialog: {
+        UIType: UIType.CommonUI,
+        Name: "UISuperDialog",
+        Bundle: null,
+        Path: "main/prefab/dialog/UISuperDialog",
     },
     //背包提示面板
     UIBackDialog: {

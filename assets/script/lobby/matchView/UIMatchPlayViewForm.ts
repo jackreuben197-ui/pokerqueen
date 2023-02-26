@@ -110,7 +110,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
     }
 
     private clickGoldBg() {
-        UIComponent.open(UIDefine.MyWalletForm)
+        //UIComponent.open(UIDefine.MyWalletForm)
     }
 
 

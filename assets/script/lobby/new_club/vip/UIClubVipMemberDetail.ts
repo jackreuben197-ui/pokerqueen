@@ -1,5 +1,5 @@
 
-import { Text_Colors } from "../../../config/GameConfig";
+import { TextColor } from "../../../config/GameConfig";
 import { UIDefine } from "../../../define/UIDefine";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 
@@ -103,7 +103,8 @@ export default class UIClubVipMemberDetail extends BaseFormPlus {
         this._A_index = index;
         let status = this.A_Tab_Status[index];
         this.$A.children.forEach((item, index) => {
-            item.color = cc.Color.BLACK.fromHEX(Text_Colors[status[index]]);
+            let color = status[index] ? TextColor.Color1 : TextColor.Color2;
+            item.color = cc.Color.BLACK.fromHEX(color);
         })
     }
     set B_Index(index: number) {
@@ -111,8 +112,11 @@ export default class UIClubVipMemberDetail extends BaseFormPlus {
         this._B_index = index;
         let status = this.B_Tab_Status[index];
         this.$B.children.forEach((item, index) => {
-            item.children[0].color = cc.Color.BLACK.fromHEX(Text_Colors[status[index]]);
-            item.children[0].children[0].color = cc.Color.BLACK.fromHEX(Text_Colors[status[index]]);
+
+            let color = status[index] ? TextColor.Color1 : TextColor.Color2;
+            item.color = cc.Color.BLACK.fromHEX(color);
+            item.children[0].color = cc.Color.BLACK.fromHEX(color);
+            item.children[0].children[0].color = cc.Color.BLACK.fromHEX(color);
         })
     }
 
@@ -135,7 +139,7 @@ export default class UIClubVipMemberDetail extends BaseFormPlus {
             {
                 type: UIDialogComponent.DialogType.CommitCancel,
                 title: "提示",
-                content: `<color=${Text_Colors[1]}}>玩家昵称</color>下线成员xx人，身份修改后，所有下线成员将解除绑定，是否确定操作？`,
+                content: `<color=${TextColor.Color2}}>玩家昵称</color>下线成员xx人，身份修改后，所有下线成员将解除绑定，是否确定操作？`,
                 contentCommit: "确定",
                 contentCancel: "取消",
                 actionCommit: async () => {

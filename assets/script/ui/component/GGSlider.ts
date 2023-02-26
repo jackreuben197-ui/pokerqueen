@@ -74,7 +74,7 @@ export default class GGSlider extends cc.Component {
     }
     onBarTouchStart(e: cc.Event.EventTouch) {
 
-        if(this.drag_active == false) return;
+        if (this.drag_active == false) return;
 
         this.press = true;
         this.moved = false;
@@ -83,30 +83,30 @@ export default class GGSlider extends cc.Component {
         }
     }
     onTouchMove(e: cc.Event.EventTouch) {
-        if(this.drag_active == false) return;
+        if (this.drag_active == false) return;
         if (this._count == 0) return;
         //if (this.press) {
-            let w_location = e.getLocation();
-            let l_location = this.node.convertToNodeSpaceAR(w_location);
-            let pos = this.getPos(l_location);
-            pos = Math.max(0, pos);
-            pos = Math.min(pos, this.distance);
-            let index = this.getIndex(pos);
-            this.setBarPos(index);
-            this.moved = true;
+        let w_location = e.getLocation();
+        let l_location = this.node.convertToNodeSpaceAR(w_location);
+        let pos = this.getPos(l_location);
+        pos = Math.max(0, pos);
+        pos = Math.min(pos, this.distance);
+        let index = this.getIndex(pos);
+        this.setBarPos(index);
+        this.moved = true;
         //}
     }
     onTouchEnd() {
-        if(this.drag_active == false) return;
+        if (this.drag_active == false) return;
         if (this._delegate && this._delegate.scrow) {
             this._delegate.scrow.enabled = true
         }
         this.press = false;
-        
+
     }
 
     onTrackTouchStart(e: cc.Event.EventTouch) {
-        if(this.drag_active == false) return;
+        if (this.drag_active == false) return;
         if (this._count == 0) return;
         if (this._delegate && this._delegate.scrow) {
             this._delegate.scrow.enabled = true
@@ -118,14 +118,14 @@ export default class GGSlider extends cc.Component {
         let index = this.getIndex(pos);
         this.setBarPos(index);
     }
-
-
     public SetMinMax(min: number, max: number) {
         console.log("SetMinMax", min, max);
+        this.drag_active = true;
         this._min = min;
         this._max = max;
         this._count = max - min;
         if (this._count == 0) {
+            this.drag_active = false;
             this._count_dis = 0;
         } else {
             this._count_dis = this.distance / this._count;
@@ -180,12 +180,12 @@ export default class GGSlider extends cc.Component {
         }
     }
 
-    public set data(data:{min:number,max:number,step:number}){
-        if(data.max == data.min) {
+    public set data(data: { min: number, max: number, step: number }) {
+        if (data.max == data.min) {
             this.drag_active = false;
             return;
         }
-        let part = (data.max - data.min)/data.step;
-        this.SetMinMax(0,part);
+        let part = (data.max - data.min) / data.step;
+        this.SetMinMax(0, part);
     }
 }

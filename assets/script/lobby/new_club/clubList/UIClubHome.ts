@@ -20,10 +20,9 @@ import { StringHelper } from "../../../helper/StringHelper";
 import UIBase from "../../../ui/UIBase";
 import { Game_Type, Table_Type } from "../../../game/util/GameUtil";
 import { EventName } from "../../../config/EventName";
-import { WalletType } from ".././pay/UIWalletLayer";
-import WalletModel from "./../pay/WalletModel";
 import PublicHelper from "../../../helper/PublicHelper";
-import UIBasePlus from "../../../ui/UIBasePlus";
+import WalletModel from "../wallet/WalletModel";
+import { WalletType } from "../wallet/UIWallet";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -153,7 +152,7 @@ export default class UIClubHome extends BaseForm {
 
     onClickPay() {
         WalletModel.Instance.club_id = ClubCache.club_id;
-        UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Club });
+        UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Club });
     }
 
     refreshData() {
@@ -251,7 +250,7 @@ export default class UIClubHome extends BaseForm {
             case 5:
                 //UIComponent.open(UIDefine.MyWalletForm, true)
                 WalletModel.Instance.club_id = ClubCache.club_id;
-                UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Fund });
+                UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Fund });
                 break;
             case 6:
                 //UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 1 });

@@ -1,8 +1,8 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
-import { WalletType } from "../../lobby/new_club/pay/UIWalletLayer";
-import WalletModel from "../../lobby/new_club/pay/WalletModel";
+import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
+import WalletModel from "../../lobby/new_club/wallet/WalletModel";
 import { Web_User_Room } from "../../net/https/WebRequest";
 import GGASCom from "../../ui/component/GGASCom";
 import GGSlider from "../../ui/component/GGSlider";
@@ -72,9 +72,9 @@ export default class UIAutoBringIn extends UIBasePlus {
 
     //滑动条 数据对象
     slider_obj = {
-        min:0,
-        max:0,
-        step:0
+        min: 0,
+        max: 0,
+        step: 0
     };
 
     protected lateLoad(): void {
@@ -113,7 +113,7 @@ export default class UIAutoBringIn extends UIBasePlus {
         if (null != data) {
             //小盲值/100
             //最大带入值
-            let auto_max = data.currentMaxRate * data.bigBlind/100;
+            let auto_max = data.currentMaxRate * data.bigBlind / 100;
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
             let min = data.currentMinRate * data.bigBlind / 100;
             max = Math.max(min, max);
@@ -146,9 +146,9 @@ export default class UIAutoBringIn extends UIBasePlus {
         this.$Part3.active = !param.fromMenu;
         this.GGToggle$account.node.active = !(this.wallet_mode == 0);
     }
-    change(boo:boolean){
+    change(boo: boolean) {
         this.GGASCom$com.use = boo;
-        console.log("激活：",boo);
+        console.log("激活：", boo);
     }
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$confirm, this.onClickConfirm);
@@ -163,7 +163,7 @@ export default class UIAutoBringIn extends UIBasePlus {
 
         this.sendCoin = this.slider_obj.min + this.slider_obj.step * rate;
 
-        this.sendCoin = Math.min(this.sendCoin,this.slider_obj.max);
+        this.sendCoin = Math.min(this.sendCoin, this.slider_obj.max);
 
         this.cc_Label$value.string = `${this.sendCoin}`;
 
@@ -190,7 +190,7 @@ export default class UIAutoBringIn extends UIBasePlus {
     goCharge() {
         console.log("goCharge");
         WalletModel.Instance.club_id = this.selected_wallet.club_id;
-        UIComponent.open(UIDefine.UIPayLayer, { type: 1, walletType: WalletType.Club });
+        UIComponent.open(UIDefine.UIRecharge, { type: 1, walletType: WalletType.Club });
         this.hideUI();
     }
     refreshSelect(index: number) {
@@ -242,7 +242,7 @@ export default class UIAutoBringIn extends UIBasePlus {
         }
 
         //判断自动上桌是否勾选
-        let auto_100 = this.GGToggle$auto.isCheck ? this.GGASCom$com.value * 100: 0;
+        let auto_100 = this.GGToggle$auto.isCheck ? this.GGASCom$com.value * 100 : 0;
         let coin_100 = this.sendCoin * 100;
         let accountCheck = this.GGToggle$account.isCheck;
 

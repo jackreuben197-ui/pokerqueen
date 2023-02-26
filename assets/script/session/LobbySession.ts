@@ -282,6 +282,9 @@ export default class LobbySession {
     }
 
     public static getLanguageValueByKey(key: string): string {
+
+        key = key.split("-")[0];
+        
         let dic = null;
         switch (i18nMgr.language) {
             case "cn":

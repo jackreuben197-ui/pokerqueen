@@ -242,7 +242,7 @@ export default class UIManageLabor extends BaseForm {
     }
 
     clickJijin() {
-        UIComponent.open(UIDefine.MyWalletForm, true)
+        //UIComponent.open(UIDefine.MyWalletForm, true)
     }
     clickLevel() {
         // this.node.active = false

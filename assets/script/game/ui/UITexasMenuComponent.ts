@@ -198,7 +198,8 @@ export default class UITexasMenuComponent extends UIBase {
     //金币点击跳转钱包
     onGold() {
         if (GC.data.club?.info?.club_id) {
-            UIComponent.open(UIDefine.MyWalletForm);
+            //UIComponent.open(UIDefine.MyWalletForm);
+            console.log("跳转充值");
         } else {
             ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
         }
@@ -292,21 +293,21 @@ export default class UITexasMenuComponent extends UIBase {
         //先获取房间信息，得到钱包列表
         WWW.Instance.CommonAPI({
             web_class: Web_User_Room,
-            api_id:GameCache.Instance.room_id,
+            api_id: GameCache.Instance.room_id,
         }).then(
-            (res:any) =>{
+            (res: any) => {
                 UIComponent.Instance.ShowUI<AddClipsData>(
-                        PrefabUI.UIBringIn,
-                        {
-                            bigBlind: GameCache.Instance.CurGame.bigBlind,
-                            smallBlind: GameCache.Instance.CurGame.smallBlind,
-                            currentMinRate: GameCache.Instance.CurGame.currentMinRate,
-                            currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
-                            tableChips: GameCache.Instance.CurGame.mainPlayer.chips
-                        }
-                    )
+                    PrefabUI.UIBringIn,
+                    {
+                        bigBlind: GameCache.Instance.CurGame.bigBlind,
+                        smallBlind: GameCache.Instance.CurGame.smallBlind,
+                        currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                        currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                        tableChips: GameCache.Instance.CurGame.mainPlayer.chips
+                    }
+                )
             },
-            (res:any) =>{
+            (res: any) => {
 
             },
         )

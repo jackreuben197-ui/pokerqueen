@@ -3595,10 +3595,8 @@ UIGuildFund_RtTips001=Confirm recharging {1} chips to {0} Union ?
 UIGuildFund_RtTips002=Confirm recharging {1} Global coin to {0} Union ?
 UIGuildFund_RtTips003=Confirm to withdraw {1} chips from {0} Union ?
 UIGuildFund_RtTips004=Confirm to withdraw {1} Global coin to {0} Union ?
-UIGuildFund_RtTips005=Request for recharge was approved!
-If you have any questions contact customer service at {0}
-UIGuildFund_RtTips006=Request for withdraw was approved!
-If you have any questions contact customer service at {0}
+UIGuildFund_RtTips005=Request for recharge was approved!If you have any questions contact customer service at {0}
+UIGuildFund_RtTips006=Request for withdraw was approved!If you have any questions contact customer service at {0}
 UIGuild_MemberDetails_title=Detailed information
 UIGuilFundRecordTopTIps=Request in progress^Agree^Reject^Cancel request
 UIGuild_PloType=Game variations
