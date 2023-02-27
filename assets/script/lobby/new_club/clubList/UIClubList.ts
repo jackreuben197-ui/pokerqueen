@@ -3,12 +3,12 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 18:57:39
+ * @LastEditTime: 2023-02-27 11:31:42
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
 import { UIDefine } from "../../../define/UIDefine";
-import { clubListConfig, memberSortConfig } from "../../../frame/data/rate/RateConfig";
+import { clubListConfig } from "../../../frame/data/rate/RateConfig";
 import { GameCache } from "../../../game/GameCache";
 import { StringHelper } from "../../../helper/StringHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
@@ -58,7 +58,7 @@ export default class UIClubList extends BaseForm {
         this.initPageNode(data)
         this.initTop()
         this.sortData()
-        this.setText(this.dropNode_lbl, memberSortConfig[this._selectIndex].desc);
+        this.setText(this.dropNode_lbl, clubListConfig[this._selectIndex].desc);
     }
     sortData() {
         let data: any = Web_Org_Club_Get.Response.data
@@ -94,7 +94,7 @@ export default class UIClubList extends BaseForm {
         }
     }
     openDropDownBox() {
-        UIComponent.open(UIDefine.dropDownBoxNew, { data: memberSortConfig, index: this._selectIndex, cb: this.selectSort.bind(this) })
+        UIComponent.open(UIDefine.dropDownBoxNew, { data: clubListConfig, index: this._selectIndex, cb: this.selectSort.bind(this) })
     }
     selectSort(data, index) {
         this._selectIndex = index;

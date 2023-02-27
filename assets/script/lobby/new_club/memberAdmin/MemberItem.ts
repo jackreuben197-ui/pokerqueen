@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-15 11:48:32
+ * @LastEditTime: 2023-02-27 11:55:04
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/MemberItem.ts
  */
 
@@ -25,13 +25,16 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('脚本分组/new_club/MemberItem')
 export default class MemberItem extends UIBase {
     _data = null;
-    initData(data) {
+
+    initData(data, index) {
+        this.node.getChildByName('Rectangle').active = index % 2 == 0
         this._data = data
         this.initView();
     }
     initView() {
-        cc.find('messLayout/nameNode/name', this.node).getComponent(cc.Label).string = this._data.nick_name
-        let hg = cc.find('messLayout/nameNode/hg', this.node)
+
+        cc.find('messLayout/panle/nameNode/name', this.node).getComponent(cc.Label).string = this._data.nick_name
+        let hg = cc.find('messLayout/panle/nameNode/hg', this.node)
         hg.active = true;
         // //0-所有;1-普通;2-创建者;3-管理员;4-代理;
         ClubCache.setRoleType(hg, this._data.user_level)
@@ -49,12 +52,12 @@ export default class MemberItem extends UIBase {
         if (this._data.agent_random_id) {
             let vip = cc.find('messLayout/guibin', this.node)
             vip.active = true
-            vip.getComponent(cc.Label).string = i18nMgr.Get('UIClubRole_vip') + " ID:" + this._data.agent_random_id
+            vip.getComponent(cc.Label).string = i18nMgr.Get('UIClub_AgentItem') + " ID:" + this._data.agent_random_id
         }
-
-        this.node.getChildByName('data').getComponent(cc.Label).string = this._data.last_login_time_str// TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - this._data.last_login_time))
+        cc.find('messLayout/panle/data', this.node).getComponent(cc.Label).string = this._data.last_login_time_str
+        // this.node.getChildByName('data')// TimeHelper.ShowRemainingSemicolon2((new Date().getTime() / 1000 - this._data.last_login_time))
         this.node['last_login_time'] = this._data.last_login_time_str
-        let icon = cc.find('iconMask/icon', this.node);
+        let icon = cc.find('icon', this.node);
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.avatar)
         this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         this.node.getChildByName('img_lock').active = this._data.forbidden;
