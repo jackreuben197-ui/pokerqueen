@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 12:28:56
+ * @LastEditTime: 2023-02-27 15:36:25
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -47,7 +47,7 @@ export default class UIClubMerberManager extends BaseForm {
     applyNode: cc.Node = null;
     _search = null;
     _selectTitle = null;
-    _selectRoleType = null;
+    _selectRoleType = 0;
     _offset: number = 0;
     _reqing: boolean = false;
     _reqEnd: boolean = false;
@@ -90,7 +90,6 @@ export default class UIClubMerberManager extends BaseForm {
         this.sousuo = this.getChildNodeOrComponent("sousuo");
         this.sortNode = this.getChildNodeOrComponent("sortNode");
         this.applyNode = this.getChildNodeOrComponent("applyNode");
-        this.tabNode = this.getChildNodeOrComponent("tabNode", TabNode);
         this.dropNode_lbl = this.getChildNodeOrComponent("dropNode_lbl", cc.Label);
 
     }
@@ -152,10 +151,10 @@ export default class UIClubMerberManager extends BaseForm {
         this.reqDataAgain();
     }
 
-    switchTabBtnState() {
+    switchTabBtnState(index) {
         this._search = null;
         // if (this._selectRoleType == index) return;
-        // this._selectRoleType = index
+        this._selectRoleType = index
         // this.toggleNode.children.forEach((item, index) => {
         //     item.getChildByName("title").color = this._selectRoleType == index ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
         // })

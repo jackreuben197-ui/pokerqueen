@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 15:31:16
+ * @LastEditTime: 2023-02-27 15:59:57
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -29,6 +29,7 @@ import { memberRoleConfig, roleSortConfig } from "../../../frame/data/rate/RateC
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import { APIOrgClubUserInfo, APIOrgClubUserRole_change, Web_User_Info } from "../../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
+import Data from "../../labor/script/Data";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubMember')
@@ -46,17 +47,19 @@ export default class UIClubMember extends BaseForm {
     panel_mid: cc.Node = null;
     panel_vip: cc.Node = null;
     panel_vipMan: cc.Node = null;
+    caulate: cc.Node = null;
     panel_down: cc.Node = null;
     dropNode_lbl: cc.Label
     _info = null;
-    _dataType = 0;
+    _gameType = 0;
     _dateType = 0;
 
     _sort_type: number = 1
     _order_type: number = 1
     _flag = true;  //会长或者是本人
     _agent_random_id = 0; //贵宾
-    // _select = 0;
+    _selectType = 0;
+    _clickDataItem = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -67,6 +70,8 @@ export default class UIClubMember extends BaseForm {
         this.panel_vipMan = this.getChildNodeOrComponent('panel_vipMan')
         this.panel_down = this.getChildNodeOrComponent('panel_down')
         this.dropNode_lbl = this.getChildNodeOrComponent("dropNode_lbl", cc.Label);
+        this.caulate = this.getChildNodeOrComponent('caulate')
+
     }
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
@@ -75,23 +80,26 @@ export default class UIClubMember extends BaseForm {
         if (this._info == null) {
             return;
         }
-
+        this._selectType = this.getMemberRole()
         this._agent_random_id = param.agent_random_id
         this.initTop()
         this.initPanel_mid()
         this.initVip();
     }
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+        this.listen(EventName.refresh_Btn_Data, this.chaneData)
+    }
 
     openDropDownBox() {
         if (this._flag) {
-            UIComponent.open(UIDefine.dropDownBoxNew, { data: roleSortConfig, index: this._sort_type, cb: this.selectSort.bind(this) })
+            UIComponent.open(UIDefine.dropDownBoxNew, { data: roleSortConfig, index: this._selectType, cb: this.selectSort.bind(this) })
         }
     }
     selectSort(data, index) {
         this._sort_type = data.model
-        // this._sort_type = index
+        this._selectType = index
         this.setText(this.dropNode_lbl, data.desc);
-        // this._order_type = data.type
         this.requestData();
     }
     initTop() {
@@ -148,7 +156,7 @@ export default class UIClubMember extends BaseForm {
         for (let index = 0; index < roleSortConfig.length; index++) {
             const element = roleSortConfig[index];
             if (element.model == this._info.info.user_level) {
-                return { desc: element.desc, index: index }
+                return index
             }
         }
     }
@@ -165,10 +173,33 @@ export default class UIClubMember extends BaseForm {
         this.initDateTabBtns(0);
         this.initTypeTabBtns(0);
         this.reqDataInfo();
+        this.initCaulate();
+    }
+    initCaulate() {
+        let btn_pd_1: cc.Node = this.getChildNodeOrComponent("btn_pd_4");
+        btn_pd_1.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', true, false)
+
+        let btn_pd_2: cc.Node = this.getChildNodeOrComponent("btn_pd_5");
+        btn_pd_2.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', true, false)
+        let began = this.getChildNodeOrComponent("began",);
+        began['_data'] = Data.getInstance().selDate;
+        let end = this.getChildNodeOrComponent("end");
+        end['_data'] = Data.getInstance().selDate;
 
     }
+    chaneData() {
+        this._clickDataItem['_data'] = Data.getInstance().selDate;
+        this._clickDataItem.children[1].getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', true, false)
+        this.reqDataInfo()
+    }
+    openCalendar(event, customData) {
+        this._clickDataItem = event.target
+        UIComponent.open(UIDefine.UICalendar)
+
+    }
+
     initTypeTabBtns(index) {
-        this._dataType = index
+        this._gameType = index
         let panel_type = this.panel_mid.getChildByName('panel_type')
         panel_type.children.forEach((item, _index) => {
             item.getChildByName('lbl').color = cc.color().fromHEX('#757CAB')
@@ -197,16 +228,42 @@ export default class UIClubMember extends BaseForm {
     }
     onClickDateTabBtns(index) {
         this.initDateTabBtns(index)
-        this.reqDataInfo()
+        if (index == 2) {
+            this._dateType = 4
+            this.caulate.active = true
+        } else {
+            this.caulate.active = false
+            this.reqDataInfo()
+        }
     }
     reqDataInfo() {
         let info: any = {
             club_id: ClubCache.club_id,
             user_id: this._info.info.user_info.user_id,
-            game_type: this._dateType,       //游戏类型0-all,1-NLH，2-PLO，3-6+
+            game_type: this._gameType,       //游戏类型0-all,1-NLH，2-PLO，3-6+
             time_type: (this._dateType + 1),      //时间类型1-今日, 2-7天, 3-30天, 4-生涯,5-选择时间
             time_long: new Date().getTime(),       //客户端时间戳
         }
+        if (this._dateType == 4) {
+            let began = this.getChildNodeOrComponent("began",);
+            let end = this.getChildNodeOrComponent("end");
+            let now = new Date();
+            let year = now.getFullYear();
+            let month = now.getMonth();
+            let day = now.getDate();
+            let currenTime = new Date(year, month, day).getTime();
+            if (began['_data'].getTime() < currenTime) {
+                UIComponent.Instance.Toast('开始时间不得小于当前时间')
+                return;
+            }
+            if (began['_data'].getTime() > end['_data'].getTime()) {
+                UIComponent.Instance.Toast('开始时间不得大于结束时间')
+                return;
+            }
+            info["start_time"] = end['_data'].getTime() / 1000;;
+            info["end_time"] = end['_data'].getTime() / 1000
+        }
+
         UIClubModel.mInstance.APIOrgClubUserGameInfo(info).then(
             (res) => {
                 this.refreshUpUI(res);
