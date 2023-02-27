@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 12:28:04
+ * @LastEditTime: 2023-02-27 12:31:13
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/ApplyJoinClubItem.ts
  */
 
@@ -26,7 +26,7 @@ export default class ApplyJoinClubItem extends UIBase {
     initView(index) {
         this.node.getChildByName('Rectangle').active = index % 2 == 0
         this.node.getChildByName('name').getComponent(cc.Label).string = this._data.nickname
-        this.node.getChildByName('id').getComponent(cc.Label).string = this._data.user_random_id
+        this.node.getChildByName('id').getComponent(cc.Label).string = 'ID:' + this._data.user_random_id
         let icon = cc.find('icon', this.node);
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.avatar)
         let refuse = cc.find('btnNode/refuse', this.node)
