@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 11:55:25
+ * @LastEditTime: 2023-02-27 12:09:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -53,7 +53,7 @@ export default class UIClubMerberManager extends BaseForm {
     _reqEnd: boolean = false;
     _list: Array<any> = [];
     _total: number = 0
-    _sort_type: number = 1
+    _sort_type: number = 0
     _order_type: number = 1
     _rusp_st_state = 1
     @property(List)
@@ -143,12 +143,12 @@ export default class UIClubMerberManager extends BaseForm {
     }
     openDropDownBox() {
 
-        UIComponent.open(UIDefine.dropDownBoxNew, { data: memberSortConfig, index: 0, cb: this.selectSort.bind(this) })
+        UIComponent.open(UIDefine.dropDownBoxNew, { data: memberSortConfig, index: this._sort_type, cb: this.selectSort.bind(this) })
     }
     selectSort(data, index) {
-        this._sort_type = data.model
+        this._sort_type = index
         this.setText(this.dropNode_lbl, data.desc);
-        this._order_type = data.type
+        // this._order_type = data.type
         this.reqDataAgain();
     }
 
@@ -180,7 +180,7 @@ export default class UIClubMerberManager extends BaseForm {
             "limit": 20,
             "offset": this._offset,
             "user_type": this.ROLE_TYPE[this._selectRoleType],
-            "sort_type": this._sort_type,  //1-输赢数;2-手数;3-服务费;4-最后登陆时间;
+            "sort_type": this._sort_type + 1,  //1-输赢数;2-手数;3-服务费;4-最后登陆时间;
             "order_type": this._order_type, //1-顺序;2-倒叙;
             "club_id": ClubCache.club_id,
             'search': this._search,

@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 21:27:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 11:31:08
+ * @LastEditTime: 2023-02-27 12:00:50
  * @FilePath: /pokerqueen/assets/script/frame/data/rate/RateConfig.ts
  */
 
@@ -101,9 +101,11 @@ export const clubListConfig = [
 ]
 export const memberSortConfig = [
     //type 0 不显示 1上 2 下
-    { type: 0, desc: "UIGuild_FilterName001", model: 1 },
-    { type: 0, desc: "UIGuild_FilterName002", model: 2 },
-    { type: 0, desc: "UIGuild_FilterName003", model: 3 },
+    { type: 0, desc: "UIGuild_MemberManagerSortByWinOrLose", model: 1 },
+    { type: 0, desc: "UIGuild_MemberManagerSortByHands", model: 2 },
+    { type: 0, desc: "UIGuild_MemberManagerSortByServiceFee", model: 3 },
+    { type: 0, desc: "UIGuild_MemberManagerSortByLastLoginTime", model: 4 },
+
 
 ]
 

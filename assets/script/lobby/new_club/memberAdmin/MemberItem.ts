@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 11:55:04
+ * @LastEditTime: 2023-02-27 12:03:23
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/MemberItem.ts
  */
 
@@ -33,8 +33,8 @@ export default class MemberItem extends UIBase {
     }
     initView() {
 
-        cc.find('messLayout/panle/nameNode/name', this.node).getComponent(cc.Label).string = this._data.nick_name
-        let hg = cc.find('messLayout/panle/nameNode/hg', this.node)
+        cc.find('messLayout/panle/name', this.node).getComponent(cc.Label).string = this._data.nick_name
+        let hg = cc.find('messLayout/panle/hg', this.node)
         hg.active = true;
         // //0-所有;1-普通;2-创建者;3-管理员;4-代理;
         ClubCache.setRoleType(hg, this._data.user_level)

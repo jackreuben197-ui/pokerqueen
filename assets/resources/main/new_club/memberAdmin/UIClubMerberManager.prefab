@@ -5295,7 +5295,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 474,
+      "width": 510,
       "height": 106
     },
     "_anchorPoint": {
@@ -5582,7 +5582,7 @@
       "__uuid__": "0876152c-3063-4eaf-b812-1229b27f4d43"
     },
     "_type": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -5669,9 +5669,11 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "9daebHWLF5KCJQkQahukX2i",
+    "_componentId": "327e5yIek5AsKacbSDAGifi",
     "handler": "openDropDownBox",
     "customEventData": ""
   },
