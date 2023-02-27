@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 12:09:15
+ * @LastEditTime: 2023-02-27 12:12:41
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -204,7 +204,7 @@ export default class UIClubMerberManager extends BaseForm {
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(MemberItem);
-        item.initData(this._list[index], index);
+        item.initData(this._list[index], index, this._sort_type + 1);
     }
     scrollingCB = async (scrollView: cc.ScrollView) => {
         if (scrollView) {
