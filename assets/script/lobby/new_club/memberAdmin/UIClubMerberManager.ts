@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 12:12:41
+ * @LastEditTime: 2023-02-27 12:28:56
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -226,7 +226,7 @@ export default class UIClubMerberManager extends BaseForm {
             const element = data?.data[index];
             let item = cc.instantiate(this.ApplyJoinClubItem);
             item.parent = sv_content;
-            item.getComponent('ApplyJoinClubItem').initData(element)
+            item.getComponent('ApplyJoinClubItem').initData(element, index)
 
         }
     }
