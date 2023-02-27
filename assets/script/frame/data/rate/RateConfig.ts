@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 21:27:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 12:00:50
+ * @LastEditTime: 2023-02-27 14:25:58
  * @FilePath: /pokerqueen/assets/script/frame/data/rate/RateConfig.ts
  */
 
@@ -105,6 +105,13 @@ export const memberSortConfig = [
     { type: 0, desc: "UIGuild_MemberManagerSortByHands", model: 2 },
     { type: 0, desc: "UIGuild_MemberManagerSortByServiceFee", model: 3 },
     { type: 0, desc: "UIGuild_MemberManagerSortByLastLoginTime", model: 4 },
+
+
+]
+export const roleSortConfig = [
+    { type: 0, desc: "UIGuild_FilterButtonManager", model: 3 },
+    { type: 0, desc: "UIGuild_FilterButtonVip", model: 4 },
+    { type: 0, desc: "UIGuild_FilterButtonMember", model: 0 },
 
 
 ]

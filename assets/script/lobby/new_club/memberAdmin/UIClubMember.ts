@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-15 11:50:01
+ * @LastEditTime: 2023-02-27 14:43:07
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -25,7 +25,7 @@ import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import { LobbyControl } from "../../control/LobbyControl";
 import { UIClubModel } from "../../labor/UIClubModel";
 import { EventName } from "../../../config/EventName";
-import { memberRoleConfig } from "../../../frame/data/rate/RateConfig";
+import { memberRoleConfig, roleSortConfig } from "../../../frame/data/rate/RateConfig";
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import { APIOrgClubUserInfo, APIOrgClubUserRole_change, Web_User_Info } from "../../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
@@ -47,13 +47,13 @@ export default class UIClubMember extends BaseForm {
     panel_vip: cc.Node = null;
     panel_vipMan: cc.Node = null;
     panel_down: cc.Node = null;
+    dropNode_lbl: cc.Label
     _info = null;
     _dataType = 0;
     _dateType = 0;
 
     _sort_type: number = 1
     _order_type: number = 1
-    _dropDownBox: cc.Node = null;
     _flag = true;  //会长或者是本人
     _agent_random_id = 0; //贵宾
     protected lateLoad(): void {
@@ -65,19 +65,65 @@ export default class UIClubMember extends BaseForm {
         this.panel_vip = this.getChildNodeOrComponent('panel_vip')
         this.panel_vipMan = this.getChildNodeOrComponent('panel_vipMan')
         this.panel_down = this.getChildNodeOrComponent('panel_down')
-
-        this._dropDownBox = cc.instantiate(this.dropDownBox);
-        let Rectangle = this.panel_mid.getChildByName('panel_role')
-        this._dropDownBox.parent = Rectangle
-        this._dropDownBox.position = cc.v3(352, 50, 0);
-        this._dropDownBox.width = 400
+        this.dropNode_lbl = this.getChildNodeOrComponent("dropNode_lbl", cc.Label);
     }
-    selectSort(data) {
+    onShow(param?: any, fromUI?: cc.Node): void {
+        super.onShow(param, fromUI);
+        this.comFormTitle.initData('UIClub_MlistInfo', this);
+        this._info = param;
+        if (this._info == null) {
+            return;
+        }
+
+        this._agent_random_id = param.agent_random_id
+        this.initTop()
+        // this.initPanel_mid()
+        // this.initVip();
+    }
+
+    openDropDownBox() {
+        if (this._flag) {
+            UIComponent.open(UIDefine.dropDownBoxNew, { data: roleSortConfig, index: this._sort_type, cb: this.selectSort.bind(this) })
+        }
+    }
+    selectSort(data, index) {
         this._sort_type = data.model
+        // this._sort_type = index
+        this.setText(this.dropNode_lbl, data.desc);
         // this._order_type = data.type
-        // if (this._sort_type == this._info.info.user_level) return
         this.requestData();
     }
+    initTop() {
+        let icon = cc.find('icon', this.messNode)
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._info.info.user_info.avatar)
+        cc.find('messLayout/nameNode/name', this.messNode).getComponent(cc.Label).string = this._info.info.user_info.nickname;
+        cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = 'ID:' + this._info.info.user_info.random_id;
+        cc.find('lbl_addTime', this.messNode).getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(this._info.info.create_time);
+        let hg = cc.find('messLayout/nameNode/hg', this.messNode)
+        hg.active = true;
+        ClubCache.setRoleType(hg, this._info.info.user_level);
+        let name = ClubCache.getRoleName(this._info.info.user_level)
+        this.setText(this.dropNode_lbl, name);
+        let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
+        let btn_3: cc.Node = this.getChildNodeOrComponent("btn_3");
+        if (this._info.info.user_info.forbidden) {
+            //冻结
+            btn_1.active = false;
+            btn_3.active = true;
+        } else {
+            btn_1.active = true;
+            btn_3.active = false;
+        }
+        for (let i = 1; i < 4; i++) {
+            let btn_1: cc.Node = this.getChildNodeOrComponent("btn_" + i);
+            btn_1["index"] = i;
+            btn_1.on(cc.Node.EventType.TOUCH_END, this.onClickBtn, this)
+        }
+        this.editName.string = this._info.info.remark_name
+        this.editjieshao.string = this._info.info.remark_desc
+    }
+
+
     async requestData() {
         let parms = {
             club_id: ClubCache.club_id,
@@ -97,55 +143,15 @@ export default class UIClubMember extends BaseForm {
         this.initPanel_mid()
         this.initVip();
     }
-    onShow(param?: any, fromUI?: cc.Node): void {
-        super.onShow(param, fromUI);
-        this.comFormTitle.initData('UIClub_xxzl', this);
-        this._info = param;
-        if (this._info == null) {
-            return;
+    getMemberRole() {
+        for (let index = 0; index < roleSortConfig.length; index++) {
+            const element = roleSortConfig[index];
+            if (element.model == this._info.info.user_level) {
+                return { desc: element.desc, index: index }
+            }
         }
-        this._agent_random_id = param.agent_random_id
-        this._flag = this._info.info.user_level != 1 || this._info.info.user_info.random_id != Web_User_Info.Response.data.user.un_id
-        this._dropDownBox.getComponent('dropDownBox').initData(memberRoleConfig, this.selectSort.bind(this), this._flag)
-        this.initTop()
-        this.initPanel_mid()
-        this.initVip();
     }
 
-    initTop() {
-
-        let icon = cc.find('iconMask/icon', this.messNode)
-        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._info.info.user_info.avatar)
-        cc.find('messLayout/nameNode/name', this.messNode).getComponent(cc.Label).string = this._info.info.user_info.nickname;
-        cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = 'ID:' + this._info.info.user_info.random_id;
-        cc.find('messLayout/lbl_addTime', this.messNode).getComponent(cc.Label).string = "加入时间: " + TimeHelper.convertUTCTimeToLocalTime(this._info.info.create_time);
-
-        cc.find('people/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.info.user_info.gold);
-        cc.find('table/data', this.messNode).getComponent(cc.Label).string = StringHelper.GetLongString(this._info.info.user_info.usdt);
-        let hg = cc.find('messLayout/nameNode/hg', this.messNode)
-        hg.active = true;
-        ClubCache.setRoleType(hg, this._info.info.user_level);
-        let name = ClubCache.getRoleName(this._info.info.user_level)
-        this._dropDownBox.getComponent('dropDownBox').initSortData({ type: 0, desc: name })
-
-        let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
-        let btn_3: cc.Node = this.getChildNodeOrComponent("btn_3");
-        if (this._info.info.user_info.forbidden) {
-            //冻结
-            btn_1.active = false;
-            btn_3.active = true;
-        } else {
-            btn_1.active = true;
-            btn_3.active = false;
-        }
-        for (let i = 1; i < 4; i++) {
-            let btn_1: cc.Node = this.getChildNodeOrComponent("btn_" + i);
-            btn_1["index"] = i;
-            btn_1.on(cc.Node.EventType.TOUCH_END, this.onClickBtn, this)
-        }
-        this.editName.string = this._info.info.remark_name
-        this.editjieshao.string = this._info.info.remark_desc
-    }
     initPanel_mid() {
         let panel_type = this.panel_mid.getChildByName('panel_type')
         panel_type.children.forEach((item, index) => {
