@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 14:51:17
+ * @LastEditTime: 2023-02-27 15:31:16
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -56,6 +56,7 @@ export default class UIClubMember extends BaseForm {
     _order_type: number = 1
     _flag = true;  //会长或者是本人
     _agent_random_id = 0; //贵宾
+    // _select = 0;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -78,7 +79,7 @@ export default class UIClubMember extends BaseForm {
         this._agent_random_id = param.agent_random_id
         this.initTop()
         this.initPanel_mid()
-        // this.initVip();
+        this.initVip();
     }
 
     openDropDownBox() {
@@ -215,25 +216,20 @@ export default class UIClubMember extends BaseForm {
         )
     }
     refreshUpUI(data) {
-        for (let i = 1; i < 7; i++) {
+        for (let i = 1; i < 5; i++) {
             let btn_pt_1: cc.Node = this.getChildNodeOrComponent("pi_" + i);
-            let lbl = btn_pt_1.getChildByName("lbl").getComponent(cc.Label);
             let label = btn_pt_1.getComponent(cc.Label);
             let room_data = data?.data?.data;
             if (!room_data) return
             //普通
             if (i == 1) {
                 label.string = room_data.total_game_cnt
-            } else if (i == 2) {
-                label.string = room_data.total_hand
             } else if (i == 3) {
+                label.string = room_data.total_hand
+            } else if (i == 2) {
                 label.string = StringHelper.DivFloat(room_data.recharge_gold_total);
             }
             else if (i == 4) {
-                label.string = StringHelper.DivFloat(room_data.recharge_gold_total);
-            } else if (i == 5) {
-                label.string = StringHelper.DivFloat(room_data.withdraw_gold_total);
-            } else if (i == 6) {
                 label.string = StringHelper.DivFloat(room_data.withdraw_gold_total);
             }
         }
@@ -343,6 +339,8 @@ export default class UIClubMember extends BaseForm {
         await UIClubModel.mInstance.APIOrgClubUserRemarks(parms)
         this.post(EventName.requestClubMemList);
     }
+
+
     initVip() {
         // this.panel_vip.active = false
         // this.panel_vipMan.active = false
@@ -369,7 +367,7 @@ export default class UIClubMember extends BaseForm {
             haveData.active = true
             cc.find('messLayout/name', haveData).getComponent(cc.Label).string = ''
             cc.find('messLayout/id', haveData).getComponent(cc.Label).string = 'ID: ' + this._agent_random_id //this._info.info.agent_user_id
-            let icon = cc.find('iconRole/icon', haveData)
+            let icon = cc.find('icon', haveData)
             WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), '');
         }
         else {
