@@ -4077,7 +4077,7 @@
         "__id__": 314
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 347
@@ -4100,7 +4100,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 1384
+      "height": 530
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -6305,7 +6305,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "btn_pd_2",
+    "_name": "btn_pd_1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 165
@@ -6636,7 +6636,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "btn_pd_3",
+    "_name": "btn_pd_1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 174
@@ -6819,7 +6819,7 @@
         "__id__": 218
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [],
     "_prefab": {
       "__id__": 229
@@ -8362,7 +8362,7 @@
       "__id__": 115
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [],
     "_prefab": {
       "__id__": 231
@@ -9942,7 +9942,7 @@
         "__id__": 298
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 312
@@ -11460,7 +11460,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -1334,
+        -480,
         0,
         0,
         0,
@@ -12634,7 +12634,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 1284,
+    "_top": 430,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -12697,7 +12697,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 1384
+      "height": 530
     },
     "_resize": 1,
     "_N$layoutType": 2,

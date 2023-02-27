@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 14:43:07
+ * @LastEditTime: 2023-02-27 14:51:17
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -77,7 +77,7 @@ export default class UIClubMember extends BaseForm {
 
         this._agent_random_id = param.agent_random_id
         this.initTop()
-        // this.initPanel_mid()
+        this.initPanel_mid()
         // this.initVip();
     }
 
@@ -170,9 +170,11 @@ export default class UIClubMember extends BaseForm {
         this._dataType = index
         let panel_type = this.panel_mid.getChildByName('panel_type')
         panel_type.children.forEach((item, _index) => {
-            item.opacity = 76
+            item.getChildByName('lbl').color = cc.color().fromHEX('#757CAB')
+            item.getChildByName('block').active = false
             if (index == _index) {
-                item.opacity = 255
+                item.getChildByName('lbl').color = cc.color().fromHEX('#EEF5FF')
+                item.getChildByName('block').active = true
             }
         })
     }
@@ -180,11 +182,11 @@ export default class UIClubMember extends BaseForm {
         this._dateType = index
         let panel_date = this.panel_mid.getChildByName('panel_date')
         panel_date.children.forEach((item, _index) => {
-            item.color = cc.color().fromHEX('#FFFFFF')
-            item.getChildByName('img_line').active = false
+            item.getChildByName('btn_pd_1').color = cc.color().fromHEX('#757CAB')
+            item.getChildByName('Rectangle').active = false
             if (index == _index) {
-                item.color = cc.color().fromHEX('#35A3B3')
-                item.getChildByName('img_line').active = true
+                item.getChildByName('btn_pd_1').color = cc.color().fromHEX('#EEF5FF')
+                item.getChildByName('Rectangle').active = true
             }
         })
     }
