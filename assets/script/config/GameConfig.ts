@@ -29,7 +29,7 @@ export class GameConfig {
     //4: https://dev1.awanptest.com 
     static BuildType: number = 5;
     //版本号
-    static Version: string = "20230221_0000";
+    static Version: string = "20230223_1830";
 
     static Default_Language: string = "cn";
     //是否使用代理
@@ -91,8 +91,18 @@ export var LogStyle = {
     ws_response: "color:#19FF00;background:#47100A",
 }
 //文本选中文字颜色
-export var Text_Colors = ["#FFFFFF", "#35A3B3"];
+//export var Text_Colors = ["#FFFFFF", "#35A3B3"];
 
+export var TextColor = {
+    Color1: "#FFFFFF",//白色
+    Color2: "#35A3B3",//亮蓝色
+    Color3: "#757CAB",//灰色
+    Color4: "#7187FF",//蓝色
+    Color5: "#B0FFAE",//亮绿
+    Color6: "#FF7C7C",//亮红
+    Color7: "#EEF5FF",//次白色
+
+}
 //成员管理排序表
 export var Member_Order_List = [
     { show: "输赢值", index: 0, icon: "Up", sort_type: 1, order_type: 1 },

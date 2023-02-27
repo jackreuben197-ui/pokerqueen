@@ -3591,10 +3591,8 @@ UIGuildFund_RtTips001=確定向{0}聯盟申請充值{1}Union coin？
 UIGuildFund_RtTips002=確定向{0}聯盟申請充值{1}Global coin?
 UIGuildFund_RtTips003=確定向{0}聯盟申請提現{1}Union coin？
 UIGuildFund_RtTips004=確定向{0}聯盟申請提現{1}Global coin?
-UIGuildFund_RtTips005=申請充值成功！
-如有疑問聯繫客服，聯繫方式{0}
-UIGuildFund_RtTips006=申請提現成功！
-如有疑問聯繫客服，聯繫方式{0}
+UIGuildFund_RtTips005=申請充值成功！如有疑問聯繫客服，聯繫方式{0}
+UIGuildFund_RtTips006=申請提現成功！如有疑問聯繫客服，聯繫方式{0}
 UIGuild_MemberDetails_title=詳細資料
 UIGuilFundRecordTopTIps=申請中^同意^拒絕^取消申請
 UIGuild_PloType=遊戲變種

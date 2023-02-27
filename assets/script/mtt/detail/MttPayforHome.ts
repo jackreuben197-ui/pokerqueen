@@ -22,7 +22,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
-import { WalletType } from "../../lobby/new_club/pay/UIWalletLayer";
+import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 const { ccclass, property, menu } = cc._decorator;
 enum MTTJoinMode // 参与mtt玩法方式
 {
@@ -418,7 +418,7 @@ export default class MttPayforHome extends BaseForm {
                     contentCommit: "UIMine_WalletAdd_EjPOTlsz",
                     contentCancel: "UI_otherPay",
                     actionCommit: () => {
-                        UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Club });
+                        UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Club });
                     },
                     actionCancel: () => {
                         UIComponent.open(UIDefine.MttPayforList)

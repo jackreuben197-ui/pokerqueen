@@ -2980,3 +2980,5 @@ export class Web_Mall_Buy extends WebCommon {
 (window as any).APIOrgClubIsManger = APIOrgClubIsManger;
 (window as any).Web_User_Room_Settle_Detail = Web_User_Room_Settle_Detail;
 (window as any).Web_Room_Center_Mtt_list = Web_Room_Center_Mtt_list;
+(window as any).Web_User_Room = Web_User_Room;
+

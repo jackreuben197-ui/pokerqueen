@@ -161,6 +161,7 @@ export class i18nMgr {
                     let key = item.slice(0, eq_index);
                     let value = item.slice(eq_index + 1);
                     value = value.replace("\r", "");
+                    value = value.replace(/\\n/g, "\n");
                     LanguageAllObject[language][key] = value;
                 }
             }

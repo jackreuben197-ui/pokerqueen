@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "3ab7bc86-c73c-4669-a9b5-9fa7af972014",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2688,
+  "platformSettings": {},
+  "subMetas": {
+    "玩家转换-兑换金豆": {
+      "ver": "1.0.6",
+      "uuid": "58d27f31-f92f-4293-808f-e093047e8cde",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "3ab7bc86-c73c-4669-a9b5-9fa7af972014",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2688,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

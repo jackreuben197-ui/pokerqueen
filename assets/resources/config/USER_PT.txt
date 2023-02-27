@@ -3606,10 +3606,8 @@ UIGuildFund_RtTips001=Confirmar recarregar {1} fichas para {0} liga?
 UIGuildFund_RtTips002=Confirmar recarregar {1} Global coin a {0} liga?
 UIGuildFund_RtTips003=Confirmar o saque de {1} fichas da {0} liga?
 UIGuildFund_RtTips004=Confirmar para retirar {1} Global coin a {0} liga?
-UIGuildFund_RtTips005=Pedido para recarga aprovado!
-Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
-UIGuildFund_RtTips006=Solicitação de saque aprovada!
-Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
+UIGuildFund_RtTips005=Pedido para recarga aprovado!Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
+UIGuildFund_RtTips006=Solicitação de saque aprovada!Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
 UIGuild_MemberDetails_title=Informações detalhadas
 UIGuilFundRecordTopTIps=Pedido em andamento^Confirmar^Rejeitar^Cancelar pedido
 UIGuild_PloType=Variações do jogo

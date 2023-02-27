@@ -542,8 +542,8 @@ export default class UICreateMatch extends BaseForm {
 
         room_config.sb = Number(this.fdxm.getChildByName('jfplbl').getComponent(cc.Label).string) / 2 //小盲注,必填
         room_config.op_duration = Number(this.sksj.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string)//操作时间 15s
-        room_config.min_rate = Number(this.jfpbs.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //最小带入倍率(BB的倍数),必填
-        room_config.max_rate = Number(this.jfpbs.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100 //最小带入倍率(BB的倍数),必填//最大带入倍率,必填
+        room_config.min_rate = Number(this.jfpbs.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 / (room_config.sb * 2) //最小带入倍率(BB的倍数),必填
+        room_config.max_rate = Number(this.jfpbs.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100 / (room_config.sb * 2) //最小带入倍率(BB的倍数),必填//最大带入倍率,必填
         // room_config.min_players = '' //最小游戏人数
 
 

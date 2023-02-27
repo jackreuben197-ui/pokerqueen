@@ -18,10 +18,9 @@ import ToastManager from "../../manager/ToastManager";
 import GGSlider from "../../ui/component/GGSlider";
 import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
 import BaseForm from "../../ui/form/BaseForm";
-import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
-import { WalletType } from "../../lobby/new_club/pay/UIWalletLayer";
 import Toast from "../../ui/toast/Toast";
+import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 enum MTTJoinMode // 参与mtt玩法方式
 {
     None,
@@ -402,7 +401,7 @@ export default class MttAgainBuy extends BaseForm {
                     contentCommit: "UIMine_WalletAdd_EjPOTlsz",
                     contentCancel: "UI_otherPay",
                     actionCommit: () => {
-                        UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Club });
+                        UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Club });
                     },
                     actionCancel: () => {
                         UIComponent.open(UIDefine.MttPayforList)

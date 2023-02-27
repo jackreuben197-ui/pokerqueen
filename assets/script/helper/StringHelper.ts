@@ -253,5 +253,12 @@ export class StringHelper {
         return false;
     }
 
+    /**
+     * 获取颜色富文本
+     */
+    public static GetColorText(text: string, color: string): string {
+        return `<color=${color}>${text}</color>`;
+    }
+
 }
 (window as any).StringHelper = StringHelper;

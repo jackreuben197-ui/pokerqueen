@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 14:19:53
+ * @LastEditTime: 2023-02-27 12:35:56
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -20,12 +20,12 @@ import { StringHelper } from "../../../helper/StringHelper";
 import UIBase from "../../../ui/UIBase";
 import { Game_Type, Table_Type } from "../../../game/util/GameUtil";
 import { EventName } from "../../../config/EventName";
-import { WalletType } from ".././pay/UIWalletLayer";
-import WalletModel from "./../pay/WalletModel";
 import PublicHelper from "../../../helper/PublicHelper";
 import UIBasePlus from "../../../ui/UIBasePlus";
 import TabNode from "../../../common/tabNode";
 import { ClubTabConfig } from "../../../frame/config/tabConfig";
+import WalletModel from "../wallet/WalletModel";
+import { WalletType } from "../wallet/UIWallet";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -113,7 +113,7 @@ export default class UIClubHome extends BaseForm {
      */
     onClickPay() {
         WalletModel.Instance.club_id = ClubCache.club_id;
-        UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Club });
+        UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Club });
     }
 
     /**
@@ -218,7 +218,7 @@ export default class UIClubHome extends BaseForm {
             case 5:
                 //UIComponent.open(UIDefine.MyWalletForm, true)
                 WalletModel.Instance.club_id = ClubCache.club_id;
-                UIComponent.open(UIDefine.UIWalletLayer, { wallet_type: WalletType.Fund });
+                UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Fund });
                 break;
             case 6:
                 //UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 1 });

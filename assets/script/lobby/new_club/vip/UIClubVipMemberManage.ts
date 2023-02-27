@@ -1,5 +1,5 @@
 import SimpleNodePool from "../../../common/MyNodePool";
-import { Member_Order_List, Text_Colors } from "../../../config/GameConfig";
+import { Member_Order_List, TextColor } from "../../../config/GameConfig";
 import ItemVipManage from "../../../new_lobby/vip/link/ItemVipManage";
 
 import GGCombobox from "../../../ui/component/GGCombobox";
@@ -97,7 +97,8 @@ export default class UIClubVipMemberManage extends BaseFormPlus {
     }
     //顶部页签切换
     tab_select(tab: cc.Node, on: number) {
-        tab.getChildByName("Label").color = cc.Color.BLACK.fromHEX(Text_Colors[on]);
+        let color = on ? TextColor.Color2 : TextColor.Color1;
+        tab.getChildByName("Label").color = cc.Color.BLACK.fromHEX(color);
         tab.getChildByName("Line").active = Boolean(on);
     }
 

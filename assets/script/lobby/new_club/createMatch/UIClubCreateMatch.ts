@@ -646,15 +646,15 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.bettype_aof_on = this._aofState ? 1 : 0
         room_config.ante = Number(this.qz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 100 //前注筹码,必填
         room_config.sb = Number(this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 100 //小盲注,必填
-        room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100;
-        room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100;
+        room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 / (room_config.sb * 2);
+        room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100 / (room_config.sb * 2);
         room_config.retain_min_rate = this.zxblbs['levelData'].level * 100;//最小倍率 最小保留记分牌倍数
 
         room_config.op_duration = this._sksjNum;
         //功能为实现
 
-        room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100;
-        room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100;;
+        //room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100;
+        //room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100;;
         room_config.autostart_min_players = this.zdks['levelData'].level
         // room_config.min_players = this.zdks['levelData'].level
         room_config.straddle_max = this.Straddle['levelData'].level;
@@ -700,8 +700,6 @@ export default class UIClubCreateMatch extends BaseForm {
         } else {
             room_config.max_per_hand = Number(this.fddm.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 //封顶大盲
         }
-
-
 
         //模版
         if (this._btnType == 0) {

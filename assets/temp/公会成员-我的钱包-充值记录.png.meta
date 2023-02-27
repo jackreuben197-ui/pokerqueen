@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "88f53f0f-e960-44c5-842c-c252aad946b9",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2688,
+  "platformSettings": {},
+  "subMetas": {
+    "公会成员-我的钱包-充值记录": {
+      "ver": "1.0.6",
+      "uuid": "e0c729a9-f27a-430d-af12-668e3ed6a28c",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "88f53f0f-e960-44c5-842c-c252aad946b9",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2688,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

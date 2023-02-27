@@ -200,7 +200,9 @@ export default class UIBase extends BaseComponent {
     }
     //设置节点下的文本,包括子路径
     setChildLabel(node: cc.Node, path: string, text: string | number) {
-        cc.find(path, node).getComponent(cc.Label).string = `${text}`;
+        let label_node = cc.find(path, node);
+        let label = label_node.getComponent(cc.Label) || label_node.getComponent(cc.RichText);
+        label.string = `${text}`;
     }
     //设置节点下的文本颜色
     setChildLabelColor(node: cc.Node, path: string, color: string) {

@@ -1,5 +1,5 @@
 import SimpleNodePool from "../../../common/MyNodePool";
-import { Member_Order_List, Text_Colors } from "../../../config/GameConfig";
+import { Member_Order_List, TextColor } from "../../../config/GameConfig";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { Web_Club_Agent_UserList, Web_Club_Agent_UserListCover, WWW } from "../../../net/https/WebRequest";
@@ -174,7 +174,7 @@ export default class UIClubVipManage extends BaseFormPlus {
     }
     //顶部页签切换
     tab_select(tab: cc.Node, on: number) {
-        tab.getChildByName("Label").color = cc.Color.BLACK.fromHEX(Text_Colors[on]);
+        tab.getChildByName("Label").color = cc.Color.BLACK.fromHEX(on == 0 ? TextColor.Color1 : TextColor.Color2);
         tab.getChildByName("Line").active = Boolean(on);
     }
 

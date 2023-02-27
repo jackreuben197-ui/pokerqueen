@@ -126,7 +126,7 @@ export default class UILobby extends UIBase {
 
     clickBean() {
         if (GC.data.club && GC.data.club.info && GC.data.club.info.club_id) {
-            UIComponent.open(UIDefine.MyWalletForm, false, { SceneUI: SceneManager.Instance.currUI });
+            //UIComponent.open(UIDefine.MyWalletForm, false, { SceneUI: SceneManager.Instance.currUI });
         } else {
             ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
         }

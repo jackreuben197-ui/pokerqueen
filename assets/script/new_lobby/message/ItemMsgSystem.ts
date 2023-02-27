@@ -211,8 +211,7 @@ export default class ItemMsgSystem extends UIBasePlus {
                 default:
                     let typename = "";
                     if (data.game_type > 0) {
-                        let language_id = data.multi_language_id.split("-")[0];
-                        typename = LobbySession.getLanguageValueByKey(language_id);
+                        typename = LobbySession.getLanguageValueByKey(data.multi_language_id);
                     }
                     tTxtContent = StringHelper.Format(msg, [`<color=#7187FF>${typename}${data.content}</color>`, c, a]);
                     break;

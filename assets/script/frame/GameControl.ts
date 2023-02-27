@@ -2,7 +2,7 @@ import UpdateComponent from "../funcomponent/UpdateComponent";
 import { GameCache } from "../game/GameCache";
 import TexasGame from "../game/texas/TexasGame";
 import MessageModel from "../lobby/new_club/message/MessageModel";
-import WalletModel from "../lobby/new_club/pay/WalletModel";
+import WalletModel from "../lobby/new_club/wallet/WalletModel";
 import { Bundle_Map } from "../manager/ResManager";
 import LobbySession from "../session/LobbySession";
 import SoundComponent from "../sound/SoundComponent";

@@ -8,7 +8,6 @@
  */
 import { EOrderOprationStatus, EOrderType } from "../../../config/EEnumConfig";
 import { Web_Club_Issue_Gold, Web_Gold_Change_Log, Web_Order_apply, Web_Order_Rcords, Web_Org_Club_Get, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../../../net/https/WebRequest";
-import { EWalletGoldOpration } from "../../../wallet/WalletConfig";
 import { BaseData } from "../../base/BaseData";
 import GC from "../../GameControl";
 import OrderApplyModel from "./apply/OrderApplyModel";
