@@ -3848,7 +3848,7 @@ UIGuild_CancelShare=取消共享
 UIPaiJu_GameRhythm=游戏节奏：
 UIPaiJu_GGMode=GG模式
 UIPaiJu_HHMode=HH模式
-
+UI_otherPay=其他支付
 
 
 

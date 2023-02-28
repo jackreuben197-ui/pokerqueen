@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-31 15:29:51
+ * @LastEditTime: 2023-02-28 10:38:24
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforList.ts
  */
 
@@ -39,6 +39,7 @@ export default class MttPayforList extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.reqDataAgain();
+        this.bindClick(this.node, () => { this.close() }, this)
     }
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();

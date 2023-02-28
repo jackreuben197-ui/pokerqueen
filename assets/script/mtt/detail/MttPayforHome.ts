@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 17:44:22
+ * @LastEditTime: 2023-02-28 17:08:44
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 
@@ -73,7 +73,10 @@ export default class MttPayforHome extends BaseForm {
     isChoose3 = false;
     textCommit: cc.Label = null;
     isRebuySecondStart = false;
-
+    _type = 1;
+    title_lbl: cc.Label = null;
+    ToggleGroup: cc.Node = null;
+    _ratio = 1
     protected lateLoad(): void {
         super.lateLoad();
         this.payNode = this.getChildNodeOrComponent('payNode')
@@ -81,14 +84,19 @@ export default class MttPayforHome extends BaseForm {
         this.sure = this.getChildNodeOrComponent('sure');
         this.rateNode = this.getChildNodeOrComponent('rateNode');
         this.coinnum = this.getChildNodeOrComponent('coin', cc.Label);
+        this.title_lbl = this.getChildNodeOrComponent('title_lbl', cc.Label);
+        this.ToggleGroup = this.getChildNodeOrComponent('ToggleGroup')
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
 
         super.onShow(param, fromUI, sceneUI);
+        this._data = param.data;
+        this._type = param.type;
+        this.setText(this.title_lbl, this._type == 1 ? 'UIMTTSignDialogBuyTitle' : 'UIMTTSignDialogReBuyTitle')
 
-        this._data = param;
         this.initSelectWallet()
         this.bindClick(this.payNode, () => {
+            if (this._type == 2) return
             // if (ClubCache.mttPayWallat != null) return
             UIComponent.open(UIDefine.MttPayforList)
         })
@@ -158,10 +166,7 @@ export default class MttPayforHome extends BaseForm {
         this.UpdateGold();
         // coinBalance.text = _data.coinBalance;
         //多倍买入时展示
-        // ToggleCoin1.gameObject.SetActive(_data.buyRatio > 1);
-        // ToggleCoin2.gameObject.SetActive(_data.buyRatio > 1);
-        // ToggleCoin1.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), 1);
-        // ToggleCoin2.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), _data.buyRatio);
+        this.ToggleGroup.active = this._data.buyRatio > 1
         // ToggleTicket1.gameObject.SetActive(_data.buyRatio > 1);
         // ToggleTicket2.gameObject.SetActive(_data.buyRatio > 1);
         // ToggleTicket1.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), 1);
@@ -409,12 +414,12 @@ export default class MttPayforHome extends BaseForm {
     }
 
     signUpReq() {
-        // 报名
+
         if (ClubCache.mttPayWallat.gold < this._coinnum) {
             UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
                 {
                     type: UINewDialogComponent.DialogType.CommitCancel,
-                    content: 'UI_WalletNoHave',
+                    content: 'ServerErrorCode_20004',
                     contentCommit: "UIMine_WalletAdd_EjPOTlsz",
                     contentCancel: "UI_otherPay",
                     actionCommit: () => {
@@ -444,7 +449,7 @@ export default class MttPayforHome extends BaseForm {
         else if (this._data.buyRatio > 1) {
             if (null != this._data && null != this._data.actionCommit) {
                 // _data.actionCommit.Invoke(ToggleTicket2.isOn, _data.buyRatio, used_prop_id, prop_type, use_free);
-                this._data.actionCommit(false, 1, this._data.buyRatio, this.used_prop_id, this.prop_type, this.use_free);
+                this._data.actionCommit(false, this._ratio, this.used_prop_id, this.prop_type, this.use_free);
             }
             this.close();
         }
@@ -457,6 +462,9 @@ export default class MttPayforHome extends BaseForm {
         }
 
 
+    }
+    buyRatioBtn(event, custom) {
+        this._ratio = Number(custom);
     }
 
 }

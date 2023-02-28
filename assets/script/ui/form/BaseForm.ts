@@ -41,7 +41,7 @@ export default class BaseForm extends UIBase {
     ////////////////////////////////////
     protected lateLoad() {
         super.lateLoad();
-        
+
         //元素赋值
         // this.main = this.getChildNodeOrComponent("main");
         this.title_label = this.getChildNodeOrComponent("title_label", i18nLabel);

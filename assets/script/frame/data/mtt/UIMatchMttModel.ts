@@ -168,12 +168,10 @@ export class UIMatchMttModel {
             }
         }
         if (GameCache.Instance.CurGame) {
-            UIComponent.Instance.ShowUI(PrefabUI.MttAgainBuy, dialogData);
-            // UIComponent.open(UIDefine.MttAgainBuy, dialogData)
+            UIComponent.open(UIDefine.MttPayforHome, { data: dialogData, type: 1 })
+            // UIComponent.Instance.ShowUI(PrefabUI.MttPayforHome, dialogData);
         } else {
-            // UIComponent.open(UIDefine.UIMttSignDialogComponent, dialogData)
-            UIComponent.open(UIDefine.MttPayforHome, dialogData)
-            // UIComponent.open(UIDefine.MttAgainBuy, dialogData)
+            UIComponent.open(UIDefine.MttPayforHome, { data: dialogData, type: 1 })
         }
     }
 
@@ -271,9 +269,14 @@ export class UIMatchMttModel {
                     }
                 }
                 if (GameCache.Instance.CurGame) {
-                    UIComponent.Instance.ShowUI(PrefabUI.MttAgainBuy, dialogData);
+
+                    UIComponent.Instance.ShowUI(PrefabUI.MttPayforHome, { data: dialogData, type: 2 });
+
+                    // UIComponent.Instance.ShowUI(PrefabUI.MttAgainBuy, dialogData);
                 } else {
-                    UIComponent.open(UIDefine.MttAgainBuy, dialogData)
+
+                    UIComponent.open(UIDefine.MttPayforHome, { data: dialogData, type: 2 })
+                    // UIComponent.open(UIDefine.MttAgainBuy, dialogData)
                 }
             }
             else {
