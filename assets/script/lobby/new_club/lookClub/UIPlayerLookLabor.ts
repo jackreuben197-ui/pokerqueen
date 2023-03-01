@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 14:12:58
+ * @LastEditTime: 2023-03-01 11:46:09
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIPlayerLookLabor.ts
  */
 
@@ -28,8 +28,8 @@ export default class UIPlayerLookLabor extends BaseForm {
     @property(cc.Node)
     main1: cc.Node = null;
 
-    @property(cc.Button)
-    joinTrip: cc.Button = null;
+    // @property(cc.Button)
+    // joinTrip: cc.Button = null;
 
 
     @property(cc.Node)
@@ -78,11 +78,11 @@ export default class UIPlayerLookLabor extends BaseForm {
         if (ClubCache.tribe_name && ClubCache.tribe_name != '') {
             this.setText(name, ClubCache.tribe_name)
             WebImageHelper.SetHeadImage(union_icon.getComponent(cc.Sprite), ClubCache.tribe_logo)
-            this.joinTrip.interactable = false;
+            // this.joinTrip.interactable = false;
         } else {
             this.setText(name, 'UIGuild_NoUnion')
             union_icon.active = false;
-            this.joinTrip.interactable = true;
+            // this.joinTrip.interactable = true;
         }
         //联系方式
         let ghllfs = this.contentNode.getChildByName('ghllfs')
