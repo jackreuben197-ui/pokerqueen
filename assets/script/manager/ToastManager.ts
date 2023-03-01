@@ -1,10 +1,7 @@
 /**
  * toast管理器 队列上行显示
  */
-// import Dispatcher from "../event/Dispatcher";
-import { i18nMgr } from "../i18n/i18nMgr";
 import Main from "../Main";
-import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import Toast from "../ui/toast/Toast";
 
 

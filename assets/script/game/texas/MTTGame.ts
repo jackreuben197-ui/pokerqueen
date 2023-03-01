@@ -413,9 +413,13 @@ export default class MTTGame extends TexasGame {
             Body:
             {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                mode: this.addOnMode,
-                ratio: 1,
+               
                 useProp: false,
+                ratio: 1,
+                mode: this.addOnMode,
+                usedPropId: 0,
+                propType: 0,
+                useFree: false,
             },
         });
         this.CurrentOpAddOnMode = this.addOnMode;
@@ -437,7 +441,7 @@ export default class MTTGame extends TexasGame {
     /// <param name="addChip"></param>
     /// <param name="storeChip"></param>
     /// <param name="isAutoAddChips"></param>
-    public override  AddChips(anteNumber: number, addChip: number = 0, isAutoAddChips: boolean = false) {
+    public override  AddChips(anteNumber: number, addChip: number = 0, isAutoAddChips: boolean = false, clubid = 0, clubrandomid = 0) {
         ProtocolAgency.Send<ClientMessageAddOn.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_AddOn,
             RoomID: GameCache.Instance.room_id,
@@ -445,9 +449,15 @@ export default class MTTGame extends TexasGame {
             Body:
             {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                mode: this.addOnMode,
-                ratio: 1,
+                // mode: this.addOnMode,
+                // ratio: 1,
+                // useProp: false,
                 useProp: false,
+                ratio: 1,
+                mode: this.addOnMode,
+                usedPropId: 0,
+                propType: 0,
+                useFree: false,
             },
         });
     }

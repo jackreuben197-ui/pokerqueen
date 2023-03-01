@@ -29,7 +29,7 @@ export default class WalletModel {
     //钱包类型
     wallet_type: number = 0;
     //公会id 不同公会请求参数不同
-    club_id: number = 0;
+    //club_id: number = 0;
 
     //充豆状态文本颜色
     recharge_status_textColors = [TextColor.Color4, TextColor.Color5, TextColor.Color6, TextColor.Color6];

@@ -1633,5 +1633,21 @@ export default class GameUtil {
             }
         }
     }
+
+
+    //获取 公会或者朋友桌类型 1 朋友桌，2 工会内部桌。3 大厅桌
+    public static GetFriendsOrClubTable(): number {
+
+        let tableType = 3;
+
+        if (GameCache.Instance.share_table == 1) {
+            if (GameCache.Instance.origin_type == 4) tableType = 1;
+            if (GameCache.Instance.origin_type == 3) tableType = 2;
+        }
+        return tableType;
+    }
+
+
+
 }
 (window as any).GameUtil = GameUtil;

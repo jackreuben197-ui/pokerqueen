@@ -20,18 +20,23 @@ export default class TokenRefreshComponent implements IUpComponent {
     isRefreshRequesting: boolean = false;
 
     async Update(dt: number) {
-        // 刷新请求中 || 
-        if (this.isRefreshRequesting || !LoginSession.IsTokenVaild()) return;
 
-        let nowTime = GlobalSession.NowTimeS;
-        if (nowTime - this.lasttime < this.interval) return;
+        if (this.isRefreshRequesting) return;
 
-        this.lasttime = nowTime;
+        if (GlobalSession.NowTimeS - this.lasttime < this.interval) return;
+
+        this.lasttime = GlobalSession.NowTimeS;
+
+        if (!LoginSession.IsTokenVaild()) return;
+
         let timeDiff = LoginSession.TokenExpireAt - GlobalSession.NowTimeS;
         if (timeDiff < this.threshold) {
             cc.log("token过期,重新拉取token");
             this.isRefreshRequesting = true;
-            await LoginSession.SyncRefreshToken().catch(() => { });
+            await LoginSession.SyncRefreshToken().catch(() => {
+                GlobalSession.Logout();
+            });
+
             this.isRefreshRequesting = false;
         }
     }

@@ -1,6 +1,7 @@
 import SimpleNodePool from "../../common/MyNodePool";
 import { UIDefine } from "../../define/UIDefine";
 import GameUtil, { GameType, PokerType } from "../../game/util/GameUtil";
+import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { Bundle_Resources } from "../../manager/ResManager";
 import SceneManager from "../../manager/SceneManager";
@@ -178,9 +179,9 @@ export default class UILobbyIndex extends UIBasePlus {
             }
         ).then(
             (res: any) => {
-
-                this.cc_Label$uc_num.string = `${res.data.usdt_total / 100}`;
-                this.cc_Label$gc_num.string = `${res.data.tribe_total / 100}`;
+                
+                this.cc_Label$uc_num.string = `${StringHelper.GetLongString(res.data.tribe_total)}`;
+                this.cc_Label$gc_num.string = `${StringHelper.GetLongString(res.data.usdt_total)}`;
                 this.reqLanguageTemplete();
             },
             (res: any) => {

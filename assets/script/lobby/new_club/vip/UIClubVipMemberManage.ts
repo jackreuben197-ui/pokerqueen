@@ -1,6 +1,6 @@
 import SimpleNodePool from "../../../common/MyNodePool";
 import { Member_Order_List, TextColor } from "../../../config/GameConfig";
-import ItemVipManage from "../../../new_lobby/vip/link/ItemVipManage";
+import ItemVipOffline from "../../../new_lobby/vip/link/ItemVipOffline";
 
 import GGCombobox from "../../../ui/component/GGCombobox";
 
@@ -78,7 +78,7 @@ export default class UIClubVipMemberManage extends BaseFormPlus {
         list.forEach((data, index) => {
             let item = this.item_member_pool.GetNode();
             item.parent = this.cc_ScrollView$Scroller1.content;
-            item.getComponent(ItemVipManage).onShow({ data: data, index: index, switch: 1, parent: this });
+            item.getComponent(ItemVipOffline).onShow({ data: data, index: index, switch: 1, parent: this });
         })
     }
     clearScroller(scroller: cc.ScrollView, pool: SimpleNodePool) {

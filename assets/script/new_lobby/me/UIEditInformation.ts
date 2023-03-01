@@ -9,55 +9,56 @@ import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 
-const {ccclass, property} = cc._decorator;
+const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIEditInformation extends BaseFormPlus {
 
-    $Head:cc.Node = null;
-    cc_Sprite$head:cc.Sprite = null;
-    BottomSelector$selector:BottomSelector = null;
+    $Head: cc.Node = null;
+    cc_Sprite$head: cc.Sprite = null;
+    BottomSelector$selector: BottomSelector = null;
     //part1
-    $Page1:cc.Node = null;
-    $name:cc.Node = null;
-    $sex:cc.Node = null;
-    cc_Label$name:cc.Label = null;
-    cc_Label$sex:cc.Label = null;
+    $Page1: cc.Node = null;
+    $name: cc.Node = null;
+    $sex: cc.Node = null;
+    cc_Label$name: cc.Label = null;
+    cc_Label$sex: cc.Label = null;
     /////////////////////////////////////////////
-    bottomSelect_data:any = null;
+    bottomSelect_data: any = null;
 
-    lateLoad(){
+    lateLoad() {
         this.name = "UIEditInformation";
         super.lateLoad();
     }
     /**
      * 每次打开面板处理的内容
      */
-     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
-         super.onShow(param,fromUI,sceneUI);
-         this.refreshUserInfo();
-         this.BottomSelector$selector.data = ["UIMine_UserInfoSetting_Female","UIMine_UserInfoSetting_Male",this];
-     }
-     regiterTouchEvents(){
-         super.regiterTouchEvents();
-         this.setButtonClick(this.$name,this.onNameClick);
-         this.setButtonClick(this.$sex,this.onSexClick);
-         this.setButtonClick(this.$Head,this.onHeadClick);
-         
-     }
-     //刷新用户信息
+    onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
+        super.onShow(param, fromUI, sceneUI);
+        this.refreshUserInfo();
+        this.BottomSelector$selector.data = ["UIMine_UserInfoSetting_Female", "UIMine_UserInfoSetting_Male", this];
+    }
+    regiterTouchEvents() {
+        super.regiterTouchEvents();
+        this.setButtonClick(this.$name, this.onNameClick);
+        this.setButtonClick(this.$sex, this.onSexClick);
+        this.setButtonClick(this.$Head, this.onHeadClick);
+
+    }
+    //刷新用户信息
     refreshUserInfo() {
         WebImageHelper.SetHeadImage(this.cc_Sprite$head, GameCache.Instance.headPic);
         this.refreshNick();
         this.refreshSex();
     }
 
-    refreshNick(){
+    refreshNick() {
         this.cc_Label$name.string = Web_User_Info.Response.data.user.nickname;
     }
-    //0女 1男
-    refreshSex(){
-        this.cc_Label$sex.string = i18nMgr.Get(Web_User_Info.Response.data.user.sex ? "UIMine_UserInfoSetting_Male":"UIMine_UserInfoSetting_Female");
+    // 1女 2男
+    refreshSex() {
+        console.log("刷新性别,", Web_User_Info.Response.data.user.sex);
+        this.cc_Label$sex.string = i18nMgr.Get(Web_User_Info.Response.data.user.sex == 1 ? "UIMine_UserInfoSetting_Female" : "UIMine_UserInfoSetting_Male");
     }
     ////////////click////////////
 
@@ -65,33 +66,33 @@ export default class UIEditInformation extends BaseFormPlus {
         await UIClubModel.mInstance.APIOrgClubUploadIcon();
         let icon: any = APIOrgClubUploadIcon.Response.data;
         if (icon) {
-            await WebImageHelper.SetUrlImage(this.cc_Sprite$head, icon ,null);
+            await WebImageHelper.SetUrlImage(this.cc_Sprite$head, icon, null);
         }
     }
 
 
 
-    onNameClick(){
+    onNameClick() {
         //更改姓名
         UIComponent.open(UIDefine.UIChangeName);
     }
-    onSexClick(){
+    onSexClick() {
         //更改性别
         this.BottomSelector$selector.onShow();
     }
     //性别选择
-    onBottomSelect(index:number){
-        this.reqChangeSex(index);
+    onBottomSelect(index: number) {
+        this.reqChangeSex(index + 1);
     }
 
     //请求改变性别
-    reqChangeSex(sex:number){
+    reqChangeSex(sex: number) {
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_User_Modify_User_Info,
-                body:{
-				    sex : sex,
-                    used_prop_id:0,
+                body: {
+                    sex: sex,
+                    used_prop_id: 0,
                 }
             }
         ).then(
@@ -112,10 +113,10 @@ export default class UIEditInformation extends BaseFormPlus {
             }
         ).then(
             (res: typeof Web_User_Info.Response) => {
-                
+                this.refreshSex();
             },
             (res: any) => {
-                this.refreshSex();
+
             }
         )
     }

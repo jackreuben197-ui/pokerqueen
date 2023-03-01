@@ -108,7 +108,7 @@ export default class UIRecharge extends BaseFormPlus {
 
                             body: { amount: value, gold_type: gold_type },
 
-                            club_id: WalletModel.Instance.club_id
+                            club_id: ClubCache.club_id
                         }
                     ).then(
                         (res: any) => {
@@ -144,7 +144,7 @@ export default class UIRecharge extends BaseFormPlus {
                 //充
 
                 if (this._param.type == 1) {
-                    UIClubModel.mInstance.reqClubFundRecharge(WalletModel.Instance.club_id, { amount: value, gold_type: gold_type }).then(
+                    UIClubModel.mInstance.reqClubFundRecharge(ClubCache.club_id, { amount: value, gold_type: gold_type }).then(
                         (res: any) => {
                             this.requestSuccess(res.data);
                         },

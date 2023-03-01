@@ -105,14 +105,14 @@ export var TextColor = {
 }
 //成员管理排序表
 export var Member_Order_List = [
-    { show: "输赢值", index: 0, icon: "Up", sort_type: 1, order_type: 1 },
-    { show: "输赢值", index: 1, icon: "Down", sort_type: 1, order_type: 2 },
-    { show: "手数", index: 2, icon: "Up", sort_type: 2, order_type: 1 },
-    { show: "手数", index: 3, icon: "Down", sort_type: 2, order_type: 2 },
-    { show: "服务费", index: 4, icon: "Up", sort_type: 3, order_type: 1 },
-    { show: "服务费", index: 5, icon: "Down", sort_type: 3, order_type: 2 },
-    { show: "最后登录时间", index: 6, icon: "Up", sort_type: 4, order_type: 1 },
-    { show: "最后登录时间", index: 7, icon: "Down", sort_type: 4, order_type: 2 },
+    { show: "UIGuild_MemberManagerSortByWinOrLose", index: 0, icon: "Up", sort_type: 1, order_type: 1 },
+
+    { show: "UIGuild_MemberManagerSortByHands", index: 2, icon: "Up", sort_type: 2, order_type: 1 },
+
+    { show: "UIGuild_MemberManagerSortByServiceFee", index: 4, icon: "Up", sort_type: 3, order_type: 1 },
+
+    { show: "UIGuild_MemberManagerSortByLastLoginTime", index: 6, icon: "Up", sort_type: 4, order_type: 1 },
+
 ];
 //页签状态 暂时支持6个页签
 export var Tabs_Status =

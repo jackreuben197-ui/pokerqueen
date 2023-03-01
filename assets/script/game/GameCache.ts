@@ -276,10 +276,16 @@ export class GameCache {
     //#endregion
     public FCMToken: string = null;
 
-    public origin_type: number = null;   // 4 是朋友桌
+    public origin_type: number = 0;   // 1 平台，2 联盟，3 公会 4 朋友桌
+    public share_table: number = 0; //是否共享牌桌及共享牌桌类型  1 不共享 2 USDT桌 3 联盟币桌
+    public gold_type: number = 0;//
+
+
     public limit_bring_in: number = null  //是否开启带入  0/1
     public invitation_code: number = null  //邀请码  
     public friendBringInStatus: number = 0; // 朋友桌带入申请的状态
+
+    public anti_cheat_type:number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
 
     public static get Instance(): GameCache {
         return (this as any).instance ??= new GameCache;
@@ -303,9 +309,12 @@ export class GameCache {
         GameCache.Instance.muck_switch = room_info.muck_on;
         GameCache.Instance.voiceprint_verify_on = room_info.voiceprint_verify_on;
         GameCache.Instance.voiceprint_verify_duration = room_info.voiceprint_verify_duration;
-        GameCache.Instance.origin_type = room_info.origin_type || null
+        GameCache.Instance.origin_type = room_info.origin_type || 0;
+        GameCache.Instance.share_table = room_info.share_table || 0;
         GameCache.Instance.limit_bring_in = room_info.limit_bring_in || 0
-        GameCache.Instance.invitation_code = room_info.invitation_code
+        GameCache.Instance.invitation_code = room_info.invitation_code;
+        GameCache.Instance.gold_type = room_info.gold_type || 0;
+        GameCache.Instance.anti_cheat_type = room_info.anti_cheat_type || 0;
     }
 }
 export interface EnterRoomInfo {
@@ -325,5 +334,8 @@ export interface EnterRoomInfo {
     origin_type?;
     limit_bring_in?;
     invitation_code?;
+    share_table?;
+    gold_type?;
+    anti_cheat_type?;
 }
 (window as any).GameCache = GameCache;

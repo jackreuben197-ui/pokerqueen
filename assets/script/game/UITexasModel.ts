@@ -85,4 +85,22 @@ export class UITexasModel {
             });
         });
     }
+
+    /// 通过俱乐部id 获取钱包
+    public GetGoldByClubID(club_id: number,): number {
+
+        let gold = 0;
+
+        let wallet = Web_User_Room.Response?.data?.wallet;
+
+        if (wallet?.length) {
+            for (let item of wallet) {
+                if (club_id == item.club_id) {
+                    gold = item.gold;
+                    break;
+                }
+            }
+        }
+        return gold;
+    }
 }

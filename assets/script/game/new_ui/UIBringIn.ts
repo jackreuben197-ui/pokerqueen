@@ -1,6 +1,7 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import WalletModel from "../../lobby/new_club/wallet/WalletModel";
 import { Web_User_Room } from "../../net/https/WebRequest";
@@ -9,6 +10,7 @@ import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
+import GameUtil from "../util/GameUtil";
 import UIClubWalletList from "./UIClubWalletList";
 
 const { ccclass, menu } = cc._decorator;
@@ -118,7 +120,6 @@ export default class UIBringIn extends UIBasePlus {
             this.slider_obj.min = min;
             this.slider_obj.max = max;
             this.slider_obj.step = data.bigBlind / 10;
-            console.log(">>>>>>>>>", min, max, data.bigBlind);
             this.GGSlider$slider.data = this.slider_obj;
 
             this.GGSlider$slider.onShow({ index: 0 });
@@ -162,17 +163,10 @@ export default class UIBringIn extends UIBasePlus {
             own: this
         });
     }
-    //打开充值
-    goCharge() {
-        console.log("goCharge");
-        WalletModel.Instance.club_id = this.selected_wallet.club_id;
-        UIComponent.open(UIDefine.UIRecharge, { type: 1, walletType: WalletType.Club });
-        this.hideUI();
-    }
     refreshSelect(index: number) {
         this.selected_wallet = this.wallet[index];
         if (index == -1) {
-            this.cc_Label$club.string = "Please select";
+            this.cc_Label$club.string = i18nMgr.Get("UIGuild_WalletNoSelect");
             this.ownCoin = 0;
         } else {
             this.cc_Label$club.string = this.selected_wallet.club_name;
@@ -184,41 +178,55 @@ export default class UIBringIn extends UIBasePlus {
     /////////////////////click事件
     //确认
     onClickConfirm() {
-        //有钱包的模式
-        if (this.wallet_mode > 0) {
-            //判断钱包状态
-            if (this.selected_wallet == null) {
-                UIComponent.Instance.Toast("Select");
-                return;
-            }
-            //判断余额不足
-            if (this.sendCoin > this.ownCoin) {
 
-                let dialog_param: typeof UICommonDialog.type = null;
-                if (this.wallet.length == 1) {
-                    dialog_param = {
-                        status: 1,
-                        detail: "钱包金额不足",
-                        texts: ["充值"],
-                        callbacks: [this.goCharge],
-                        this: this
-                    }
-                } else {
-                    dialog_param = {
-                        status: 2,
-                        detail: "钱包金额不足",
-                        texts: ["其他支付", "充值"],
-                        callbacks: [this.goWalletList, this.goCharge],
-                        this: this
-                    }
-                }
-                UIComponent.open(UIDefine.UICommonDialog, dialog_param);
-                return;
-            }
+        if (GameUtil.GetFriendsOrClubTable() == 3 && this.selected_wallet == null) {
+            UIComponent.Instance.ToastLanguage("UILogin_Select");
+            return;
         }
-        GameCache.Instance.CurGame.AddChips(this.sendCoin * 100);
-        //GameCache.Instance.CurGame.AddChips(1080*100);
+        let mAnteNumber: number = this.sendCoin * 100;
+
+        if (GameUtil.GetFriendsOrClubTable() == 3) {
+
+            GameCache.Instance.CurGame.AddChips(mAnteNumber, 0, false, this.selected_wallet.club_id, this.selected_wallet.club_random_id);
+        }
+        else {
+            GameCache.Instance.CurGame.AddChips(mAnteNumber);
+        }
+
         this.hideUI();
+
+        //有钱包的模式
+        // if (this.wallet_mode > 0) {
+        //     //判断钱包状态
+        //     if (this.selected_wallet == null) {
+        //         UIComponent.Instance.ToastLanguage("UILogin_Select");
+        //         return;
+        //     }
+        //     //判断余额不足
+        //     if (this.sendCoin > this.ownCoin) {
+
+        //         let dialog_param: typeof UICommonDialog.type = null;
+        //         if (this.wallet.length == 1) {
+        //             dialog_param = {
+        //                 status: 1,
+        //                 detail: "钱包金额不足",
+        //                 texts: ["充值"],
+        //                 callbacks: [this.goCharge],
+        //                 this: this
+        //             }
+        //         } else {
+        //             dialog_param = {
+        //                 status: 2,
+        //                 detail: "钱包金额不足",
+        //                 texts: ["其他支付", "充值"],
+        //                 callbacks: [this.goWalletList, this.goCharge],
+        //                 this: this
+        //             }
+        //         }
+        //         UIComponent.open(UIDefine.UICommonDialog, dialog_param);
+        //         return;
+        //     }
+        // }
     }
     //取消
     onClickCancel() {

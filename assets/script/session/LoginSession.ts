@@ -78,9 +78,16 @@ export default class LoginSession {
             HttpRequest.Send({
                 request: Web_Refresh_Token,
                 onSuccess: function () {
-                    this.Token = Web_Login.Response.data.token;
-                    this.TokenExpireAt = Web_Login.Response.data.expire_at;
-                    resolve(Web_Refresh_Token.Response);
+                    let token = Web_Login.Response.data?.token;
+                    if (token) {
+                        this.Token = Web_Login.Response.data.token;
+                        this.TokenExpireAt = Web_Login.Response.data.expire_at;
+                        resolve(Web_Refresh_Token.Response);
+                    } else {
+                        this.Token = null;
+                        reject(0);
+                    }
+                    GlobalSession.Logout();
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -255,7 +262,7 @@ export default class LoginSession {
      */
     public static IsTokenVaild(): boolean {
         let token = this.Token;
-        if (token == null || token == undefined || this.Token == "") {
+        if (token == null || token == undefined || token == "") {
             return false;
         }
         return GlobalSession.NowTimeS < this.TokenExpireAt;

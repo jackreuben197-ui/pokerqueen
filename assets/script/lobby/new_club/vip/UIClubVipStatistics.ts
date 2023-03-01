@@ -1,26 +1,44 @@
+import TabsGroup from "../../../common/TabsGroup";
+import { Tabs_Status, TextColor } from "../../../config/GameConfig";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
+import { i18nMgr } from "../../../i18n/i18nMgr";
 import { Web_Club_Agent_Friend_Data, Web_Club_Agent_Friend_Info, WWW } from "../../../net/https/WebRequest";
 import GGCombobox from "../../../ui/component/GGCombobox";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
-
+//贵宾统计
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIClubVipStatistics extends BaseFormPlus {
 
     ///////////////////////引用声明////////////////////////
-    cc_Label$People: cc.Label = null;
-    cc_Label$Gold: cc.Label = null;
-    cc_Label$USDT: cc.Label = null;
+    cc_Label$people: cc.Label = null;
+    cc_Label$uc: cc.Label = null;
+    cc_Label$gc: cc.Label = null;
 
-    GGCombobox$Game: GGCombobox = null;
-    GGCombobox$Gold: GGCombobox = null;
+    //GGCombobox$Gold: GGCombobox = null;
+
+    cc_Label$down_list: cc.Label = null;
 
     $Detail: cc.Node = null;
     $Com_Back: cc.Node = null;
-    $Head: cc.Node = null;
+
+    cc_Sprite$head: cc.Sprite = null;
+    cc_Sprite$vip_icon: cc.Sprite = null;
+
+    cc_Label$nick: cc.Label = null;
+    cc_Label$id: cc.Label = null;
+
+
+    $GameTypeTabs: cc.Node = null;
+
+    gameTypeTabs: TabsGroup = null;
+
+    gold_index: number = 0;
+
+
     ////////////////////////////////////////////////////
     //0-all,1-NLH，2-PLO，3-6+ 4MTT
     Com_Game_List = [
@@ -32,13 +50,10 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     ];
     //gold_type 1-金豆,2-USDT，4-记分牌
     Com_Gold_List = [
-        { show: "金豆", index: 0, gold_type: 1 },
-        { show: "USDT", index: 1, gold_type: 2 },
-        { show: "记分牌", index: 2, gold_type: 4 },
+        { show: "UIGuild_CoinType2", index: 0, gold_type: 1 },
+        { show: "UIGuild_CoinType3", index: 1, gold_type: 2 },
+        { show: "UIGuild_CoinType1", index: 2, gold_type: 4 },
     ];
-    //"total_game_cnt":0,
-    //"total_hand": 0,
-    //"total_profit": 0,
 
     request_quene: any[] = [];
 
@@ -48,55 +63,36 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     protected lateLoad() {
         super.lateLoad();
 
-        this.GGCombobox$Game.onOpen = this.Game_ComOpen.bind(this);
-        this.GGCombobox$Game.onSelect = this.Game_ComSelect.bind(this);
 
-        this.GGCombobox$Gold.onOpen = this.Gold_ComOpen.bind(this);
-        this.GGCombobox$Gold.onSelect = this.Gold_ComSelect.bind(this);
+        this.gameTypeTabs = new TabsGroup(this.$GameTypeTabs.children, this.onGameTypeClick, this);
     }
 
     regiterTouchEvents() {
         super.regiterTouchEvents();
-        this.$Com_Back.on("click", this.ComBackClick, this);
     }
 
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         //初始化界面
-        this.GGCombobox$Game.closeBox();
-        this.GGCombobox$Gold.closeBox();
-        this.GGCombobox$Game.bindList(this.Com_Game_List);
-        this.GGCombobox$Gold.bindList(this.Com_Gold_List);
         ////////////////////////////////////////////////////
         this.RefreshHeader([param.user.avatar, param.user.nickname, param.user.random_id, param.user_level]);
-        this.request_quene = [this.reqAgentFriendInfo, this.reqAgentFriendData];
-        this.executeQuene();
+        this.reqAgentFriendInfo();
+
     }
     fadeInComplete() {
         super.fadeInComplete();
         //打开完成进行处理
     }
 
-    Game_ComOpen() {
-        this.GGCombobox$Gold.closeBox();
+    reset() {
+        this.gold_index = 0;
+        this.gameTypeTabs.reset(-1);
+        this.refreshDownListLabel();
     }
-    Game_ComSelect(index: number) {
-        //console.log(index);
-        this.reqAgentFriendData(null, index);
-    }
-    Gold_ComOpen() {
-        this.GGCombobox$Game.closeBox();
-    }
-    Gold_ComSelect(index: number) {
-        console.log(index);
-        this.refreshFriendData();
+    refreshDownListLabel() {
+        this.cc_Label$down_list.string = i18nMgr.Get(this.Com_Gold_List[this.gold_index].show);
     }
 
-    //底层点击触发combobox组件关闭
-    ComBackClick() {
-        this.GGCombobox$Game.closeBox();
-        this.GGCombobox$Gold.closeBox();
-    }
     //////////////////////刷新
     SetImage(node: cc.Node, value: string) {
         let sprite = node.getComponent(cc.Sprite);
@@ -110,22 +106,23 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     }
     //刷新头部
     RefreshHeader(data: any[]) {
-        this.setChildLabel(this.$Head, "Label_Nick", `${data[1]}`);
-        this.setChildLabel(this.$Head, "Label_ID", `ID:  ${data[2]}`);
-        this.setChildSprite(this.$Head, "Icon_VIP", ClubCache.getUserLevelIcon(data[3]));
-        WebImageHelper.SetHeadImage(this.$Head.getComponent(cc.Sprite), data[0]);
-        console.log(">>>>", ClubCache.getUserLevelIcon(data[3]))
+
+        WebImageHelper.SetHeadImage(this.cc_Sprite$head, data[0]);
+        this.cc_Label$nick.string = `${data[1]}`;
+        this.cc_Label$id.string = `ID:  ${data[2]}`;
+        this.cc_Sprite$vip_icon.spriteFrame = ClubCache.getUserLevelIcon(data[3]);
+
     }
     //刷新成员金豆usdt数量
     RefreshUICount(data: number[]) {
-        this.cc_Label$People.string = `${data[0]}`;
-        this.cc_Label$Gold.string = `${data[1]}`;
-        this.cc_Label$USDT.string = `${data[2]}`;
+        this.cc_Label$people.string = `${data[0]}`;
+        this.cc_Label$uc.string = `${data[1]}`;
+        this.cc_Label$gc.string = `${data[2]}`;
     }
 
     //刷新下面数据
     refreshFriendData() {
-        let gold_index = this.GGCombobox$Gold.select_index;
+        let gold_index = 0;
         let gold_type = this.Com_Gold_List[gold_index].gold_type;
         let obj = this.currData[gold_type];
         this.RefreshDetailItem(this.$Detail.getChildByName("Item1"), [obj.total_hand, 8, 8]);
@@ -143,7 +140,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     //Web_Club_Agent_Friend_Data
     //////////////////////////////////////////////请求
     // -> 请求贵宾统计信息
-    reqAgentFriendInfo(next = null) {
+    reqAgentFriendInfo() {
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_Club_Agent_Friend_Info,
@@ -157,9 +154,8 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         ).then(
             (res: any) => {
 
-                //UIComponent.Instance.Toast("成功解除绑定");
-                this.RefreshUICount([res.data.data.user_num, res.data.data.gold_total, res.data.data.usdt_total]);
-                next?.call(this);
+                this.RefreshUICount([res.data.data.user_num, res.data.data.gold_total / 100, res.data.data.usdt_total / 100]);
+                this.gameTypeTabs.reset(0);
             },
             (res: any) => {
 
@@ -167,7 +163,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         )
     }
     // -> 请求贵宾统计数据
-    reqAgentFriendData(next = null, game_type: number = 0) {
+    reqAgentFriendData(game_type: number = 0) {
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_Club_Agent_Friend_Data,
@@ -186,11 +182,23 @@ export default class UIClubVipStatistics extends BaseFormPlus {
                 //UIComponent.Instance.Toast("成功解除绑定");
                 this.currData = res.data.data;
                 this.refreshFriendData();
-                next?.call(this);
             },
             (res: any) => {
 
             }
         )
+    }
+
+    //顶部标签点击切换响应
+    onGameTypeClick(items: cc.Node[], index: number) {
+        let status_list = Tabs_Status[index];
+        items.forEach((item, index) => {
+            let status = status_list[index];
+            item.getChildByName("lbl_show").color = status ? cc.Color.BLACK.fromHEX(TextColor.Color7) : cc.Color.BLACK.fromHEX(TextColor.Color3);
+            item.getChildByName("line").active = status == 1;
+        })
+        //////////////////////////////////
+        if (index == -1) return;
+        this.reqAgentFriendData(index);
     }
 }

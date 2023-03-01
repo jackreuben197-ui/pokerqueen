@@ -112,7 +112,6 @@ export default class UIClubHome extends BaseForm {
      * 钱包界面
      */
     onClickPay() {
-        WalletModel.Instance.club_id = ClubCache.club_id;
         UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Club });
     }
 
@@ -216,8 +215,6 @@ export default class UIClubHome extends BaseForm {
                 UIComponent.open(UIDefine.UIClubDataMange)
                 break;
             case 5:
-                //UIComponent.open(UIDefine.MyWalletForm, true)
-                WalletModel.Instance.club_id = ClubCache.club_id;
                 UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Fund });
                 break;
             case 6:

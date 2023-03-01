@@ -127,7 +127,7 @@ export default class UITexasGameEndComponent extends UIBase {
         this.Head.active = true;
     }
     private InitSuperView(response: typeof Web_User_Room_Settle_Detail.Response): void {
-        let list: typeof Web_User_Room_Settle_Detail.UsersInfo[] = response.data.list;
+        let list = response.data.list;
         for (let i = 0; i < list.length; i++) {
             let info = list[i];
             let userInfoNode: cc.Node = this.getUserInfoItem();

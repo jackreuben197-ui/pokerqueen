@@ -460,7 +460,8 @@ export default class UIClubMember extends BaseForm {
                 break;
             case 3:
                 //下线成员总数
-                UIComponent.open(UIDefine.UIClubVipManage, { user_id: this._info.info.user_info.user_id });
+                //UIComponent.open(UIDefine.UIClubVipManage, { user_id: this._info.info.user_info.user_id });
+                UIComponent.open(UIDefine.UIClubVipOffline, { user_id: this._info.info.user_info.user_id });
                 break;
             case 4:
                 //贵宾统计

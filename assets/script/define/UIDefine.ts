@@ -746,15 +746,24 @@ export const UIDefine = {
         UIType: UIType.CommonUI,
         Name: "UIAgentLink",
         Bundle: null,
-        Path: "main/lobby/vip/link/UIAgentLink",
+        Path: "main/new_club/vip/link/UIAgentLink",
     },
     //解绑贵宾
     UIAgentUnlink: {
         UIType: UIType.CommonUI,
         Name: "UIAgentUnlink",
         Bundle: null,
-        Path: "main/lobby/vip/link/UIAgentUnlink",
+        Path: "main/new_club/vip/link/UIAgentUnlink",
     },
+
+    //公会贵宾的线下管理
+    UIClubVipOffline: {
+        UIType: UIType.CommonUI,
+        Name: "UIClubVipOffline",
+        Bundle: null,
+        Path: "main/new_club/vip/UIClubVipOffline",
+    },
+
     //贵宾管理
     UIClubVipManage: {
         UIType: UIType.Form,
@@ -928,7 +937,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/message/UIMsgSystem",
     },
-
+    //下方条目选择器
+    UIDownSelector: {
+        UIType: UIType.CommonUI,
+        Name: "UIDownSelector",
+        Bundle: null,
+        Path: "main/prefab/component/UIDownSelector",
+    }
 
 
 

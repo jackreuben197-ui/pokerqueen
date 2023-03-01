@@ -11,6 +11,7 @@ import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
+import GameUtil from "../util/GameUtil";
 import { AddClipsData } from "./UIBringIn";
 
 
@@ -114,18 +115,18 @@ export default class UIAutoBringIn extends UIBasePlus {
             //小盲值/100
             //最大带入值
             let auto_max = data.currentMaxRate * data.bigBlind / 100;
+
+            //最大带入值
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
             let min = data.currentMinRate * data.bigBlind / 100;
             max = Math.max(min, max);
-
-
             this.slider_obj.min = min;
             this.slider_obj.max = max;
-            this.slider_obj.step = data.bigBlind;
-
-            //滑动条
+            this.slider_obj.step = data.bigBlind / 10;
             this.GGSlider$slider.data = this.slider_obj;
+
             this.GGSlider$slider.onShow({ index: 0 });
+
             //com
             this.GGASCom$com.data = {
                 min: min,
@@ -179,7 +180,7 @@ export default class UIAutoBringIn extends UIBasePlus {
 
     //打开钱包列表
     goWalletList() {
-        console.log("goWalletList");
+
         UIComponent.open(UIDefine.UIClubWalletList, {
             data: this.wallet,
             selected_wallet: this.selected_wallet,
@@ -188,8 +189,7 @@ export default class UIAutoBringIn extends UIBasePlus {
     }
     //打开充值
     goCharge() {
-        console.log("goCharge");
-        WalletModel.Instance.club_id = this.selected_wallet.club_id;
+
         UIComponent.open(UIDefine.UIRecharge, { type: 1, walletType: WalletType.Club });
         this.hideUI();
     }
@@ -208,38 +208,44 @@ export default class UIAutoBringIn extends UIBasePlus {
     /////////////////////click事件
     //确认
     onClickConfirm() {
-        //有钱包的模式
-        if (this.wallet_mode > 0) {
-            //判断钱包状态
-            if (this.selected_wallet == null) {
-                UIComponent.Instance.Toast("Select");
-                return;
-            }
-            //判断余额不足
-            if (this.sendCoin > this.ownCoin) {
 
-                let dialog_param: typeof UICommonDialog.type = null;
-                if (this.wallet.length == 1) {
-                    dialog_param = {
-                        status: 1,
-                        detail: "钱包金额不足",
-                        texts: ["充值"],
-                        callbacks: [this.goCharge],
-                        this: this
-                    }
-                } else {
-                    dialog_param = {
-                        status: 2,
-                        detail: "钱包金额不足",
-                        texts: ["其他支付", "充值"],
-                        callbacks: [this.goWalletList, this.goCharge],
-                        this: this
-                    }
-                }
-                UIComponent.open(UIDefine.UICommonDialog, dialog_param);
-                return;
-            }
+        if (GameUtil.GetFriendsOrClubTable() == 3 && this.selected_wallet == null) {
+            UIComponent.Instance.ToastLanguage("UILogin_Select");
+            return;
         }
+
+        // //有钱包的模式
+        // if (this.wallet_mode > 0) {
+        //     //判断钱包状态
+        //     if (this.selected_wallet == null) {
+        //         UIComponent.Instance.Toast("Select");
+        //         return;
+        //     }
+        //     //判断余额不足
+        //     if (this.sendCoin > this.ownCoin) {
+
+        //         let dialog_param: typeof UICommonDialog.type = null;
+        //         if (this.wallet.length == 1) {
+        //             dialog_param = {
+        //                 status: 1,
+        //                 detail: "钱包金额不足",
+        //                 texts: ["充值"],
+        //                 callbacks: [this.goCharge],
+        //                 this: this
+        //             }
+        //         } else {
+        //             dialog_param = {
+        //                 status: 2,
+        //                 detail: "钱包金额不足",
+        //                 texts: ["其他支付", "充值"],
+        //                 callbacks: [this.goWalletList, this.goCharge],
+        //                 this: this
+        //             }
+        //         }
+        //         UIComponent.open(UIDefine.UICommonDialog, dialog_param);
+        //         return;
+        //     }
+        // }
 
         //判断自动上桌是否勾选
         let auto_100 = this.GGToggle$auto.isCheck ? this.GGASCom$com.value * 100 : 0;
@@ -247,9 +253,16 @@ export default class UIAutoBringIn extends UIBasePlus {
         let accountCheck = this.GGToggle$account.isCheck;
 
         if (this._param.fromMenu) {
+
             GameCache.Instance.CurGame.SetAutoOnTableChips(auto_100, accountCheck);
         } else {
-            GameCache.Instance.CurGame.AddChips(coin_100, auto_100, accountCheck);
+
+            if (GameUtil.GetFriendsOrClubTable() == 3) {
+                GameCache.Instance.CurGame.AddChips(coin_100, auto_100, accountCheck, this.selected_wallet.club_id, this.selected_wallet.club_random_id);
+            }
+            else {
+                GameCache.Instance.CurGame.AddChips(coin_100, auto_100, accountCheck);
+            }
         }
         this.hideUI();
     }

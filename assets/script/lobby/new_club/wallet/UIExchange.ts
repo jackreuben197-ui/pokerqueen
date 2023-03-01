@@ -196,7 +196,7 @@ export default class UIExchange extends BaseFormPlus {
                         "src_amount": 100
                     },
 
-                    club_id: WalletModel.Instance.club_id
+                    club_id: ClubCache.club_id
                 }
             ).then(
                 (res: any) => {
@@ -282,7 +282,7 @@ export default class UIExchange extends BaseFormPlus {
         WWW.Instance.CommonAPI(
             {
                 web_class: API_CLUB_USER_WALLET,
-                club_id: WalletModel.Instance.club_id
+                club_id: ClubCache.club_id
             }
         ).then(
             (res: any) => {
@@ -307,7 +307,7 @@ export default class UIExchange extends BaseFormPlus {
                     "dest_gold_type": this.mode == 0 ? 2 : 1,
                     "src_amount": +this.cc_EditBox$input.string * 100
                 },
-                club_id: WalletModel.Instance.club_id
+                club_id: ClubCache.club_id
             }
         ).then(
             (res: any) => {

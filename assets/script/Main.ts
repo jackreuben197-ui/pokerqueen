@@ -15,8 +15,6 @@ import OrientationComponent from "./funcomponent/OrientationComponent";
 import ReconnectComponent from "./funcomponent/ReconnectComponent";
 import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
-import WebSocketClient from "./net/websocket/WebSocketClient";
-import StorageKey from "./session/StorageKey";
 import CCTools from "./tools/CCTools";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
 
