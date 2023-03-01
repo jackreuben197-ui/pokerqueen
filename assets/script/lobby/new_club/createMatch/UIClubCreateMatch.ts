@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-01 20:34:13
+ * @LastEditTime: 2023-03-01 20:58:40
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -24,7 +24,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import GameUtil from "../../../game/util/GameUtil";
 import { APIUserDiamondsWallet } from "../../../net/https/WebRequest";
 import TabNode from "../../../common/tabNode";
-import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig, fzbTabConfig } from "../../../frame/config/tabConfig";
+import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig, fzbTabConfig, bcTabConfig } from "../../../frame/config/tabConfig";
 import GGSlider from "../../../ui/component/GGSlider";
 import GGSwitch from "../../../ui/component/GGSwitch";
 
@@ -158,6 +158,9 @@ export default class UIClubCreateMatch extends BaseForm {
     sr_zw: cc.Node = null;
     clubNode: cc.Node = null;
     friendNode: cc.Node = null;
+    bcNode: cc.Node = null;
+    bcTabNode: TabNode = null;
+    ffrs: cc.Node = null;
     // etpSwitch: GGSwitch = null;
     protected lateLoad(): void {
         super.lateLoad();
@@ -209,7 +212,9 @@ export default class UIClubCreateMatch extends BaseForm {
         this.sr_zw = this.getChildNodeOrComponent("sr_zw");
         this.friendNode = this.getChildNodeOrComponent("friendNode");
         this.clubNode = this.getChildNodeOrComponent("clubNode");
-
+        this.bcNode = this.getChildNodeOrComponent("bcNode");
+        this.bcTabNode = this.getChildNodeOrComponent("bcTabNode", TabNode);
+        this.ffrs = this.getChildNodeOrComponent("ffrs");
     }
     async onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
@@ -349,6 +354,8 @@ export default class UIClubCreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this._jslxNum}`, this.jslx).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._dcjfpNum}`, this.dcjfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._sksjNum}`, this.sksj).getComponent(cc.Toggle).isChecked = true;
+
+        this.bcNode.active = this._jslxNum == 1
         if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
             this.drsq.active = true
         } else {
@@ -454,6 +461,11 @@ export default class UIClubCreateMatch extends BaseForm {
 
 
         this.fzbTabNode.initData(fzbTabConfig, (customData) => {
+        }, this)
+
+        this.bcTabNode.initData(bcTabConfig, (customData) => {
+            this.fddm.active = customData == 0
+            this.ffrs.active = customData == 1
         }, this)
 
 
@@ -575,7 +587,8 @@ export default class UIClubCreateMatch extends BaseForm {
     }
     jsblToggle(event, customData) {
         this._jslxNum = Number(customData);
-        this.fddm.active = this._jslxNum == 0
+        // this.fddm.active = this._jslxNum == 0
+        this.bcNode.active = this._jslxNum == 1
     }
     sksjToggle(event, customData) {
         this._sksjNum = Number(customData);
