@@ -30,17 +30,17 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 157
-      },
-      {
         "__id__": 158
       },
       {
         "__id__": 159
+      },
+      {
+        "__id__": 160
       }
     ],
     "_prefab": {
-      "__id__": 160
+      "__id__": 161
     },
     "_opacity": 255,
     "_color": {
@@ -326,17 +326,17 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 153
-      },
-      {
         "__id__": 154
       },
       {
         "__id__": 155
+      },
+      {
+        "__id__": 156
       }
     ],
     "_prefab": {
-      "__id__": 156
+      "__id__": 157
     },
     "_opacity": 255,
     "_color": {
@@ -400,14 +400,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 150
+        "__id__": 151
       },
       {
-        "__id__": 151
+        "__id__": 152
       }
     ],
     "_prefab": {
-      "__id__": 152
+      "__id__": 153
     },
     "_opacity": 255,
     "_color": {
@@ -481,9 +481,13 @@
       }
     ],
     "_active": true,
-    "_components": [],
+    "_components": [
+      {
+        "__id__": 149
+      }
+    ],
     "_prefab": {
-      "__id__": 149
+      "__id__": 150
     },
     "_opacity": 255,
     "_color": {
@@ -578,7 +582,7 @@
       "ctor": "Float64Array",
       "array": [
         -491.101,
-        -907.048,
+        -539.389,
         0,
         0,
         0,
@@ -650,7 +654,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 831.448,
+    "_top": 463.78900000000004,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -689,7 +693,7 @@
   {
     "__type__": "cc.Node",
     "_name": "coinNode",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "_parent": {
       "__id__": 11
     },
@@ -742,7 +746,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -1355.014,
+        -987.355,
         0,
         0,
         0,
@@ -2816,7 +2820,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 1230.014,
+    "_top": 862.355,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -2894,7 +2898,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -1628.899,
+        -1261.24,
         0,
         0,
         0,
@@ -4381,7 +4385,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 1478.899,
+    "_top": 1111.24,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -4456,7 +4460,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -1912.043,
+        -1544.384,
         0,
         0,
         0,
@@ -4981,7 +4985,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 1787.043,
+    "_top": 1419.384,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -5056,7 +5060,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -2401.039,
+        -2438,
         0,
         0,
         0,
@@ -5571,11 +5575,11 @@
     "_enabled": true,
     "alignMode": 1,
     "_target": null,
-    "_alignFlags": 0,
+    "_alignFlags": 4,
     "_left": 0,
     "_right": 0,
     "_top": 0,
-    "_bottom": 0,
+    "_bottom": 140,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,
@@ -5598,6 +5602,33 @@
     },
     "fileId": "a6atO0w0FC4b3UtnQ4CfNf",
     "sync": false
+  },
+  {
+    "__type__": "cc.Widget",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 11
+    },
+    "_enabled": true,
+    "alignMode": 1,
+    "_target": null,
+    "_alignFlags": 5,
+    "_left": 0,
+    "_right": 0,
+    "_top": 0,
+    "_bottom": 0,
+    "_verticalCenter": 0,
+    "_horizontalCenter": 0,
+    "_isAbsLeft": true,
+    "_isAbsRight": true,
+    "_isAbsTop": true,
+    "_isAbsBottom": true,
+    "_isAbsHorizontalCenter": true,
+    "_isAbsVerticalCenter": true,
+    "_originalWidth": 0,
+    "_originalHeight": 2688,
+    "_id": ""
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -5705,7 +5736,7 @@
     "node": {
       "__id__": 9
     },
-    "_enabled": true,
+    "_enabled": false,
     "horizontal": false,
     "vertical": true,
     "inertia": true,
