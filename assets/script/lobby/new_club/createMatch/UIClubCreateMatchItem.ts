@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:41:31
+ * @LastEditTime: 2023-03-01 11:25:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -19,6 +19,7 @@ import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
+import PlayViewItem from "../../view/PlayViewItem";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -26,9 +27,17 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('脚本分组/new_club/UIClubCreateMatchItem')
 export default class UIClubCreateMatchItem extends UIBase {
     @property(cc.Node)
-    item_choose: cc.Node = null;
-    @property(cc.Node)
     labelNode: cc.Node = null;
+
+    @property(cc.Label)
+    lbl_num: cc.Label = null;
+
+    @property(cc.Node)
+    Rectangle: cc.Node = null;
+
+    @property(cc.Label)
+    gameType: cc.Label = null;
+
     @property(cc.Node)
     btnNode: cc.Node = null;
     @property(cc.Toggle)
@@ -49,16 +58,6 @@ export default class UIClubCreateMatchItem extends UIBase {
 
     protected lateLoad(): void {
         super.lateLoad();
-        // UIClubModel.mInstance.APIOrgGetRoomConfig()
-
-        // this.item_choose = this.getChildNodeOrComponent("item_choose");
-        // this.labelNode = this.getChildNodeOrComponent("labelNode");
-        // this.btnNode = this.getChildNodeOrComponent("btnNode");
-        // this.Toggle = this.getChildNodeOrComponent("Toggle", cc.Toggle);
-        // this.Rectang = this.getChildNodeOrComponent("Rectang");
-        // this.reduceButton = this.getChildNodeOrComponent("reduce", cc.Button);
-        // this.addButton = this.getChildNodeOrComponent("add", cc.Button);
-        // this.lbl_level = this.getChildNodeOrComponent("lbl_level", cc.Label);
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -71,35 +70,53 @@ export default class UIClubCreateMatchItem extends UIBase {
         this.ToggleClick()
         this.setState();
 
-        let lbl_center_left = this.labelNode.getChildByName('lbl_center_left').getComponent(cc.Label)
-        let lbl_deskName = this.labelNode.getChildByName('lbl_deskName').getComponent(cc.Label)
-        let lbl_time = cc.find('data_label/img_time/lbl_time', this.labelNode).getComponent(cc.Label)
-        let lbl_num = cc.find('data_label/img_num/lbl_num', this.labelNode).getComponent(cc.Label)
+        this.labelNode.getChildByName('lbl_1').getComponent(cc.Label).string = this._data.apply_club_name
+        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = 'ID:' + this._data.apply_club_random_id
+
         let sb = this._data.sb / 100;
-        lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`
-        lbl_deskName.string = '模版名称: ' + this._data.name
-        lbl_time.string = this._data.play_duration / 3600 + 'h'
-        lbl_num.string = this._data.seat_count
-        let lbl_gameType = cc.find('item_choose/lbl_gameType', this.node).getComponent(cc.Label);
-        lbl_gameType.string = this.gameTypeName
-        let Rectangle = cc.find('item_choose/Rectangle', this.node)
-        Rectangle.active = this._data.share_table == 2
-        let vector = lbl_center_left.node.getChildByName('Vector1');
-        vector.active = this._data.private_room == 1
+        this.labelNode.getChildByName('lbl_1').getComponent(cc.Label).string = `${sb}/${sb * 2}（${this._data.ante}）`
+        let lbl_time = this.labelNode.getChildByName('lbl_2')
+        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = this._data.name
+
+        let playView = lbl_time.getComponent(PlayViewItem)
+        playView.updateNormalItem(this._data.play_duration);
+
+
+        this.lbl_num.string = this._data.seat_count
+        this.setGameType()
+
+        let lock = this.node.getChildByName('lock');
+        lock.active = this._data.private_room == 1
+        let beSide = this.node.getChildByName('beSide')
+        beSide.active = this._data.share_table == 2
 
     }
-    get gameTypeName() {
-        let str = "NLH";
-        if (this._data.game_type == 1) {
-            str = "PLO4";
-        } else if (this._data.game_type == 2) {
-            str = "PLO5";
-        } else if (this._data.game_type == 3) {
-            str = "PLO6";
-        } else if (this._data.poker_type == 2) {
-            str = "6+";
+    setGameType() {
+        this.Rectangle.color = cc.color().fromHEX('#57CDDD')
+        if (this._data.poker_type == 0) {
+            switch (this._data.game_type) {
+                case 0:
+                    this.gameType.string = 'NLH'
+                    this.Rectangle.color = cc.color().fromHEX('#F1BD02')
+                    break;
+                case 1:
+                    this.gameType.string = 'PLO4'
+                    break;
+                case 2:
+                    this.gameType.string = 'PLO5'
+                    break;
+                case 3:
+                    this.gameType.string = 'PLO6'
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            this.gameType.string = '6+'
+            this.Rectangle.color = cc.color().fromHEX('#DD5778')
         }
-        return str;
+
     }
     ToggleClick() {
         this.btnNode.active = !this.Toggle.isChecked

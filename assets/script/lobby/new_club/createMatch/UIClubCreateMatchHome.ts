@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 10:33:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:41:17
+ * @LastEditTime: 2023-03-01 10:49:26
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -97,10 +97,10 @@ export default class UIClubCreateMatchHome extends BaseForm {
     }
 
     switchTabBtnState(index: number, isInit = false) {
-        if (this._selectRoleType == index) return;
         this._selectRoleType = index
         this.toggleNode.children.forEach((item, index) => {
-            item.getChildByName("title").opacity = this._selectRoleType == index ? 255 : 75
+            item.getChildByName("title").color = this._selectRoleType == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
+            item.getChildByName("Rectangle").active = this._selectRoleType == index
         })
         if (!isInit) {
             this.reqDataAgain()
@@ -113,30 +113,10 @@ export default class UIClubCreateMatchHome extends BaseForm {
         this.matchModel.active = this._selectTitle == TITALTYPE.MODEL
         this.memberListT.getChildByName('block').active = this._selectTitle == TITALTYPE.GAME_TYPE
         this.applyListT.getChildByName('block').active = this._selectTitle == TITALTYPE.MODEL
-        this.memberListT.getChildByName('title').color = this._selectTitle == TITALTYPE.GAME_TYPE ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
-        this.applyListT.getChildByName('title').color = this._selectTitle == TITALTYPE.MODEL ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
-
         if (this._selectTitle == TITALTYPE.MODEL) {
-            this.reqDataAgain()
+            this.switchTabBtnState(this._selectRoleType)
         }
     }
-    // async refreshModel() {
-    //     await UIClubModel.mInstance.APIOrgGetTemplate({ game_play_type: this._selectRoleType });
-    //     let data: any = APIOrgGetTemplate.Response.data;
-    //     let length = data?.data?.length
-    //     this.matchModel.getChildByName('tip').active = length == 0
-    //     // this.lbModel.string = `(${length}/${data.club_template_limit} )`;
-    //     this.contentModel.removeAllChildren();
-    //     for (let index = 0; index < length; index++) {
-    //         const element = cc.instantiate(this.UIClubCreateMatchItem);
-    //         element.position.x = 0;
-    //         element.getComponent('UIClubCreateMatchItem')._delegate = this
-    //         element.parent = this.contentModel
-    //         element['index'] = index;
-    //         element.getComponent('UIClubCreateMatchItem').initData(data.data[index])
-    //     }
-    // }
-
     dealItemSelect() {
         let modelNum = 0
         this._modelData = [];
@@ -177,7 +157,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
         if (!_data.data) {
             _data.data = [];
         }
-        this.matchModel.getChildByName('tip').active = _data?.data?.length == 0
+        this.matchModel.getChildByName('noDataTip').active = _data?.data?.length == 0
 
         _data.data.forEach(element => {
             this._list.push(element);
