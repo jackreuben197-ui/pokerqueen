@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 21:27:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 13:46:44
+ * @LastEditTime: 2023-02-27 14:25:58
  * @FilePath: /pokerqueen/assets/script/frame/data/rate/RateConfig.ts
  */
 
@@ -71,21 +71,51 @@ export const dxmConfig = [
     [10, 15, 20, 25, 30, 50],
     [100, 200, 300, 500, 1000]
 ]
-export const clubListConfig = [
-    //type 0 不显示 1上 2 下
-    { type: 1, desc: "创建时间", model: 1 },
-    { type: 2, desc: "创建时间", model: 1 },
-    { type: 1, desc: "在线成员数", model: 2 },
-    { type: 2, desc: "在线成员数", model: 2 },
-    { type: 1, desc: "当前牌桌数", model: 3 },
-    { type: 2, desc: "当前牌桌数", model: 3 },
-]
+// export const clubListConfig = [
+//     //type 0 不显示 1上 2 下
+//     { type: 1, desc: "创建时间", model: 1 },
+//     { type: 2, desc: "创建时间", model: 1 },
+//     { type: 1, desc: "在线成员数", model: 2 },
+//     { type: 2, desc: "在线成员数", model: 2 },
+//     { type: 1, desc: "当前牌桌数", model: 3 },
+//     { type: 2, desc: "当前牌桌数", model: 3 },
+// ]
+
+
+
+
+//新版  下拉框配置
 //战绩赛选
 export const careerConfig = [
     //type 0 不显示 1上 2 下
     { type: 0, desc: "UICareer_uc", model: 1 },
     { type: 0, desc: "UICareer_ustd", model: 2 },
 ]
+
+export const clubListConfig = [
+    //type 0 不显示 1上 2 下
+    { type: 0, desc: "UIGuild_FilterName001", model: 1 },
+    { type: 0, desc: "UIGuild_FilterName002", model: 2 },
+    { type: 0, desc: "UIGuild_FilterName003", model: 3 },
+
+]
+export const memberSortConfig = [
+    //type 0 不显示 1上 2 下
+    { type: 0, desc: "UIGuild_MemberManagerSortByWinOrLose", model: 1 },
+    { type: 0, desc: "UIGuild_MemberManagerSortByHands", model: 2 },
+    { type: 0, desc: "UIGuild_MemberManagerSortByServiceFee", model: 3 },
+    { type: 0, desc: "UIGuild_MemberManagerSortByLastLoginTime", model: 4 },
+
+
+]
+export const roleSortConfig = [
+    { type: 0, desc: "UIGuild_FilterButtonManager", model: 3 },
+    { type: 0, desc: "UIGuild_FilterButtonVip", model: 4 },
+    { type: 0, desc: "UIGuild_FilterButtonMember", model: 0 },
+
+
+]
+
 
 
 

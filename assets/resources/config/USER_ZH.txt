@@ -2865,6 +2865,7 @@ ServerErrorCode_20019=您已被禁止提豆，如有疑问请联系客服
 ServerErrorCode_20020=登录失败
 ServerErrorCode_20021=您有多笔充值订单未支付，请去记录中查看
 ServerErrorCode_20034=格式错误，重新输入
+ServerErrorCode_20040=已经申请加入该联盟
 ServerErrorCode_31001=减少筹码
 ServerErrorCode_31002=不在投注时间
 ServerErrorCode_31003=占座
@@ -3806,6 +3807,13 @@ UIFaceCollection_tips004=正在进行活体检测
 UIFaceCollection_tips005=请张嘴
 UIFaceCollection_tips006=请左转头
 UIFaceCollection_tips007=请右转头
+UISearchClub=搜索公会
+UISearchUnion=搜索联盟
+UIApplyHistory=申请记录
+UIMemberNum=成员总数
+UIClubInfo=资讯
+UIClub_mess=联络人资讯
+UIClub_introduce=暂无公会说明
 UITEXAS_PLAYERSEATDOWNTIPS01=请求中
 UIFriendsTable_CreateRoomTips=启动纸牌游戏并邀请朋友加入
 UIFriendsTable_DataTimeError_30day=最长只能查询30天的数据
@@ -3849,6 +3857,7 @@ UIPaiJu_GameRhythm=游戏节奏：
 UIPaiJu_GGMode=GG模式
 UIPaiJu_HHMode=HH模式
 UI_otherPay=其他支付
+
 
 
 

@@ -395,7 +395,7 @@
       "__id__": 8
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 10
@@ -407,15 +407,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 59,
-      "g": 225,
-      "b": 245,
+      "r": 238,
+      "g": 245,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 30.86,
-      "height": 65.52
+      "width": 0,
+      "height": 66.78
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -427,7 +427,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        180,
+        193.671,
         0,
         0,
         0,
@@ -466,13 +466,15 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "--",
-    "_N$string": "--",
-    "_fontSize": 46.34,
-    "_lineHeight": 52,
+    "_string": "",
+    "_N$string": "",
+    "_fontSize": 53,
+    "_lineHeight": 53,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -523,7 +525,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 850,
-      "height": 63
+      "height": 88.2
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -568,14 +570,16 @@
     },
     "_enabled": true,
     "_fontFamily": "Arial",
-    "_isSystemFontUsed": true,
+    "_isSystemFontUsed": false,
     "_N$string": "--",
     "_N$horizontalAlign": 1,
-    "_N$fontSize": 39.72,
-    "_N$font": null,
+    "_N$fontSize": 46,
+    "_N$font": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
     "_N$cacheMode": 0,
     "_N$maxWidth": 850,
-    "_N$lineHeight": 50,
+    "_N$lineHeight": 70,
     "_N$imageAtlas": null,
     "_N$handleTouchEvent": true,
     "_id": ""
@@ -967,15 +971,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 59,
-      "g": 225,
-      "b": 245,
+      "r": 117,
+      "g": 124,
+      "b": 171,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 343,
-      "height": 100
+      "width": 58.41,
+      "height": 66.78
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1028,11 +1032,13 @@
     "_dstBlendFactor": 771,
     "_string": "12",
     "_N$string": "12",
-    "_fontSize": 46,
-    "_lineHeight": 46,
+    "_fontSize": 53,
+    "_lineHeight": 53,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -1040,7 +1046,7 @@
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 1,
+    "_N$overflow": 0,
     "_N$cacheMode": 0,
     "_id": ""
   },
@@ -1257,15 +1263,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
+      "r": 113,
+      "g": 135,
       "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 343,
-      "height": 100
+      "width": 106,
+      "height": 66.78
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1318,11 +1324,13 @@
     "_dstBlendFactor": 771,
     "_string": "弃牌",
     "_N$string": "弃牌",
-    "_fontSize": 46,
-    "_lineHeight": 46,
+    "_fontSize": 53,
+    "_lineHeight": 53,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -1330,7 +1338,7 @@
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 1,
+    "_N$overflow": 0,
     "_N$cacheMode": 0,
     "_id": ""
   },

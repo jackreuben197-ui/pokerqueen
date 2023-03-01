@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-04 17:42:42
+ * @LastEditTime: 2023-02-27 12:35:53
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIManageLabor.ts
  */
 
@@ -80,7 +80,7 @@ export default class UIManageLabor extends BaseForm {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.clubGoldChange, this.updateGold);
-        this.listen(EventName.refreshClubLevel, this.initClubData);
+        // this.listen(EventName.refreshClubLevel, this.initClubData);
 
     }
 

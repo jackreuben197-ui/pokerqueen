@@ -409,6 +409,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/club/UIClubLevel",
     },
+    UIClubEdit: {
+        UIType: UIType.Form,
+        Name: "UIClubEdit",
+        Bundle: null,
+        Path: "main/new_club/lookClub/UIClubEdit",
+    },
     // MyWalletForm: {
     //     UIType: UIType.Form,
     //     Name: "MyWalletForm",
@@ -702,6 +708,14 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/createClub/UIJoinUnion",
     },
+    //确认加入联盟
+    UISearchJoin: {
+        UIType: UIType.Form,
+        Name: "UISearchJoin",
+        Bundle: null,
+        Path: "main/new_club/createClub/UISearchJoin",
+    },
+
     UIPlayerLookLabor: {
         UIType: UIType.Form,
         Name: "UIPlayerLookLabor",
@@ -914,6 +928,7 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/message/UIMsgSystem",
     },
+
 
 
 

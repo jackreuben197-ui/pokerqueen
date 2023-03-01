@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-20 11:37:17
+ * @LastEditTime: 2023-02-23 11:01:58
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/clubPageItem.ts
  */
 
@@ -51,18 +51,23 @@ export default class clubPageItem extends UIBase {
     }
     async initView() {
 
-        cc.find('messLayout/name', this.messNode).getComponent(cc.Label).string = this._data.club_name
-        cc.find('messLayout/id', this.messNode).getComponent(cc.Label).string = 'ID:' + this._data.random_id
+        cc.find('node/messLayout/name', this.messNode).getComponent(cc.Label).string = this._data.club_name
+        cc.find('node/messLayout/id', this.messNode).getComponent(cc.Label).string = 'ID:' + this._data.random_id
         cc.find('table/data', this.messNode).getComponent(cc.Label).string = this._data.tables
         cc.find('people/data', this.messNode).getComponent(cc.Label).string = this._data.club_members
-        let icon = cc.find('Group_3340/iconMask/icon', this.messNode);
+        let icon = cc.find('Group_3340/Round', this.messNode);
         // WebImageHelper.setImageSize(icon.getComponent(cc.Sprite), 398, 398)
 
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo)
         // this.node['info'] = this._data;
         // this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
-        let hg = cc.find('iconRole/icon', this.messNode);
+        let hg = cc.find('node/iconRole/icon', this.messNode);
         hg.active = true;
+        if (this._data.user_level == 0) {
+            let iconRole = cc.find('node/iconRole', this.messNode);
+            iconRole.active = false;
+            return;
+        }
         ClubCache.setRoleType(hg, this._data.user_level)
     }
 

@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 18:13:48
+ * @LastEditTime: 2023-02-27 14:38:12
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -125,6 +125,10 @@ export class ClubCache {
     static get usdt_to_gold_rate() {
         return this._msg?.usdt_to_gold_rate;
     }
+    static get tribe_logo() {
+        return this._msg?.tribe_logo;
+    }
+
 
 
     static refreshData(data: Object) {
@@ -159,18 +163,18 @@ export class ClubCache {
         let name = ''
         switch (type) {
             case 0:
-                name = '成员'
+                name = 'UIGuild_FilterButtonMember'
                 break;
             case 1:
-                name = '会长'
+                name = 'UIGuid_Founder'
                 break;
             case 2:
                 break;
             case 3:
-                name = '管理员'
+                name = 'UIGuild_FilterButtonManager'
                 break;
             case 4:
-                name = '贵宾'
+                name = 'UIGuild_FilterButtonVip'
                 break;
             default:
                 break;

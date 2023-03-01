@@ -1617,7 +1617,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 48.58,
+      "width": 48.94,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -1674,8 +1674,10 @@
     "_fontSize": 46,
     "_lineHeight": 80,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
