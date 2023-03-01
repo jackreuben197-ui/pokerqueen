@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-26 20:10:49
+ * @LastEditTime: 2023-03-01 19:22:05
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
  */
 
@@ -20,6 +20,7 @@ export default class slidewidght extends cc.Component {
     // @property(cc.Node)
     selectNum: cc.Node = null;
 
+    fillsp: cc.Node = null;
     _targetDe = null;
     _selectIndex = 0;
     _itemData = null;
@@ -35,6 +36,7 @@ export default class slidewidght extends cc.Component {
         this.nomalItem.width = 100;
         this.nomalItem.height = 100;
         this.selectNum = this.node.getChildByName('selectNum')
+        this.fillsp = this.node.getChildByName('fillsp')
         this.initListen();
 
         let _x = 1000 / (data.length - 1)
@@ -59,7 +61,7 @@ export default class slidewidght extends cc.Component {
         }
         this._selectIndex = selectIndex;
         this.selectNum.x = this.itemNode.children[this._selectIndex].x
-
+        this.fillsp.width = this.selectNum.x
         if (this.node.parent.parent.name == 'dxm') {
             this.setFdxmUi();
         } else {
@@ -78,6 +80,7 @@ export default class slidewidght extends cc.Component {
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
         if (pos.x >= 0 && pos.x <= 1000) {
             node.x = pos.x;
+            this.fillsp.width = this.selectNum.x
         }
 
 
@@ -90,6 +93,7 @@ export default class slidewidght extends cc.Component {
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
         if (pos.x >= 0 && pos.x <= 1000) {
             node.x = pos.x;
+            this.fillsp.width = this.selectNum.x
             for (let index = 0; index < this.itemNode.childrenCount; index++) {
                 const element = this.itemNode.children[index];
                 if (element.x < this.selectNum.x) {
@@ -134,14 +138,16 @@ export default class slidewidght extends cc.Component {
         }
 
         node.x = this.itemNode.children[this._selectIndex].x
-
+        this.fillsp.width = this.selectNum.x
         if (this.selectNum.x > 1000) {
             this._selectIndex = this.itemNode.childrenCount;
             node.x = 1000
+            this.fillsp.width = 1000
         }
         if (this.selectNum.x < 0) {
             this._selectIndex = 0;
             node.x = 0
+            this.fillsp.width = 0
         }
         cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
 
@@ -149,10 +155,6 @@ export default class slidewidght extends cc.Component {
             this.setFdxmUi();
             this._targetDe.changeQzsh(this._itemData[this._selectIndex]);
             this._targetDe.resetDrjfp();
-
-            // this.node.parent.parent.getChildByName('dmlbl').getComponent(cc.Label).string = this._itemData[this._selectIndex];
-            // let a = this._itemData[this._selectIndex].substring(this._itemData[this._selectIndex].length - 1, this._itemData[this._selectIndex].length);
-            // this.node.parent.parent.getChildByName('jfplbl').getComponent(cc.Label).string = Number(a) * 100 + '';
         } else {
             this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
         }
@@ -174,7 +176,6 @@ export default class slidewidght extends cc.Component {
     }
     setFdxmUi() {
         cc.find('labelNode/lblNum', this.node.parent.parent).getComponent(cc.Label).string = this._itemData[this._selectIndex] + "/" + this._itemData[this._selectIndex] * 2;
-        // this.node.parent.parent.getChildByName('jfplbl').getComponent(cc.Label).string = this._itemData[this._selectIndex] * 200 + '';
     }
 
 
