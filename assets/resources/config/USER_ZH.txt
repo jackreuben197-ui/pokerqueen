@@ -498,7 +498,7 @@ UITexasRule_Ug7QXzjK=牌型提示
 UITexasRule_RlNZ1ysZ=玩法说明
 UITexasRule_1QEuiq2M=保险说明
 UIAddChips_dIyU7Svz=带入筹码
-UIAddChips_OhZuXhM0=小盲/大盲
+UIAddChips_OhZuXhM0=小盲/大盲 :
 UIAddChips_zL0qp8UO=所需Union coin:
 UIAddChips_1mIC7nGP=账户Union coin:
 UIAutoOperation_DTQMhJtu=自动弃牌
@@ -3856,7 +3856,8 @@ UIGuild_CancelShare=取消共享
 UIPaiJu_GameRhythm=游戏节奏：
 UIPaiJu_GGMode=GG模式
 UIPaiJu_HHMode=HH模式
-UIGuild_MemberDetails_Recharge
+UIClub_inSide=俱乐部内部桌
+UIClub_outSide=俱乐部外部桌
 
 
 

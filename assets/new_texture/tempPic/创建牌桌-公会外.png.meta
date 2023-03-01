@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "f49edb4d-d35c-459e-a88d-ba9e99cd6c5b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 11566,
+  "platformSettings": {},
+  "subMetas": {
+    "创建牌桌-公会外": {
+      "ver": "1.0.6",
+      "uuid": "d464c812-1f5f-4845-a7a5-de3e7747c59f",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "f49edb4d-d35c-459e-a88d-ba9e99cd6c5b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 11566,
+      "rawWidth": 1242,
+      "rawHeight": 11566,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

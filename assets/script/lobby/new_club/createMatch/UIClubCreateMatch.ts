@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-08 18:37:26
+ * @LastEditTime: 2023-03-01 14:40:20
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -23,6 +23,10 @@ import LobbyRoomListItem from "../../../frame/data/lobby/LobbyRoomListItem";
 import { UIDefine } from "../../../define/UIDefine";
 import GameUtil from "../../../game/util/GameUtil";
 import { APIUserDiamondsWallet } from "../../../net/https/WebRequest";
+import TabNode from "../../../common/tabNode";
+import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig } from "../../../frame/config/tabConfig";
+import GGSlider from "../../../ui/component/GGSlider";
+import GGSwitch from "../../../ui/component/GGSwitch";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -31,8 +35,10 @@ const { ccclass, property, menu } = cc._decorator;
 export default class UIClubCreateMatch extends BaseForm {
     @property(cc.Prefab)
     dropDownBox: cc.Prefab = null;
+
     @property(cc.ScrollView)
     ScrollView: cc.ScrollView = null;
+
     @property(cc.Prefab)
     UISaveModel: cc.Prefab = null;
 
@@ -44,10 +50,7 @@ export default class UIClubCreateMatch extends BaseForm {
 
 
     private comFormTitle: ComFormTitle = null;
-
-    titleNode: cc.Node = null;
-    memberListT: cc.Node = null;
-    applyListT: cc.Node = null;
+    tabNode: TabNode
     clubIdNode: cc.Node = null;
     sryy: cc.Node = null;
     passNode: cc.Node = null;
@@ -72,7 +75,6 @@ export default class UIClubCreateMatch extends BaseForm {
     yckp: cc.Node = null;
     bm: cc.Node = null;
     Straddle: cc.Node = null;
-    toggleNode: cc.Node = null;
     yxbz: cc.Node = null;
     etp: cc.Node = null;
     coinNode: cc.Node = null;
@@ -142,12 +144,22 @@ export default class UIClubCreateMatch extends BaseForm {
 
     }
 
+
+    sryxSwitch: GGSwitch = null;
+    aofSwitch: GGSwitch = null;
+    toggleNode: cc.Node = null;
+
+    yxbzTabNode: TabNode = null;
+    dxmTabNode: TabNode = null;
+    fzbTabNode: TabNode = null;
+    drsqSwitch: GGSwitch = null;
+    yckpSwitch: GGSwitch = null;
+    bmSwitch: GGSwitch = null;
+    // etpSwitch: GGSwitch = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
-        this.memberListT = this.getChildNodeOrComponent("memberListT");
-        this.applyListT = this.getChildNodeOrComponent("applyListT");
-        this.titleNode = this.getChildNodeOrComponent("titleNode");
+
         this.clubIdNode = this.getChildNodeOrComponent("clubIdNode");
         this.sryy = this.getChildNodeOrComponent("sryy");
         this.passNode = this.getChildNodeOrComponent("passNode");
@@ -181,10 +193,23 @@ export default class UIClubCreateMatch extends BaseForm {
         this.zwrs['levelData'] = { min: 2, total: 9, level: 2 }
         this.zdks['levelData'] = { min: 2, total: 9, level: 2 }
         this.Straddle['levelData'] = { min: 0, total: 6, level: 2 }
+
+        this.tabNode = this.getChildNodeOrComponent("tabNode", TabNode);
+        this.sryxSwitch = this.getChildNodeOrComponent("sryxSwitch", GGSwitch);
+        this.aofSwitch = this.getChildNodeOrComponent("aofSwitch", GGSwitch);
+        this.yxbzTabNode = this.getChildNodeOrComponent("yxbzTabNode", TabNode);
+        this.dxmTabNode = this.getChildNodeOrComponent("dxmTabNode", TabNode);
+        this.drsqSwitch = this.getChildNodeOrComponent("drsqSwitch", GGSwitch);
+        this.bmSwitch = this.getChildNodeOrComponent("bmSwitch", GGSwitch);
+        this.yckpSwitch = this.getChildNodeOrComponent("yckpSwitch", GGSwitch);
+        this.fzbTabNode = this.getChildNodeOrComponent("fzbTabNode", TabNode);
+
+
     }
+
     async onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
-        let title = "UIClub_MatchTable"
+        let title = "UIGuild_CreateTable"
         let _title = i18nMgr.Get(title)
         _title = _title + this.getMatchType()
         this.comFormTitle.initData(_title, this);
@@ -193,6 +218,7 @@ export default class UIClubCreateMatch extends BaseForm {
         } else {
             this.room_config = null;
         }
+
         await UIClubModel.mInstance.APIUserDiamondsWallet();
         let wallet = APIUserDiamondsWallet.Response.data;
         ClubCache._diamonds_wallet = wallet.diamonds_wallet
@@ -243,6 +269,8 @@ export default class UIClubCreateMatch extends BaseForm {
         //     })
         // }
     }
+
+
 
     editModel(room_config) {
         this.room_config = room_config;
@@ -306,13 +334,7 @@ export default class UIClubCreateMatch extends BaseForm {
         ClubCache.CreateGameType = room_config.game_play_type
     }
     initUI() {
-        this.titleNodeClick(null, this._selectTitle)
-        this.initdxmToggleNode();
         this.initSlideNode()
-        this.initSelect();
-
-        // this.initDropBoX();
-
         this.setState(this.zxblbs)
         this.setState(this.zwrs)
         this.setState(this.zdks)
@@ -321,36 +343,145 @@ export default class UIClubCreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this._jslxNum}`, this.jslx).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._dcjfpNum}`, this.dcjfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._sksjNum}`, this.sksj).getComponent(cc.Toggle).isChecked = true;
-        this.yxbz.active = ClubCache.CreateGameType == 2
-        if (this.yxbz.active) {
-            cc.find(`ToggleContainer/toggle${this._yxbzNum}`, this.yxbz).getComponent(cc.Toggle).isChecked = true;
-
-        }
         if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
             this.drsq.active = true
         } else {
             this.drsq.active = false
         }
+        this.initSwitch();
+        this.initTabNode();
     }
-    initdxmToggleNode() {
-        this.toggleNode.children.forEach((item, index) => {
-            this.bindClick(item, this.switchTabBtnState, index);
-        })
-        this.switchTabBtnState(0);
-    }
-    switchTabBtnState(index: number) {
-        this._selectRoleType = index
-        this.itemData.dxm = dxmConfig[this._selectRoleType]
-        this.toggleNode.children.forEach((item, index) => {
-            item.getChildByName("title").opacity = this._selectRoleType == index ? 255 : 75
-        })
-        let dxm: any = cc.find('item/Rectangle', this.dxm).getComponent('slidewidght');
-        dxm._targetDe = this;
-        dxm.initUi(this.itemData.dxm, this.itemDataIndex.dxm)
-        this.resetDrjfp();
-        this.changeQzsh(this.itemData.dxm[this.itemDataIndex.dxm])
+    /**************** */
+    initSwitch() {
+        //私人游戏
+        this.sryxSwitch.setIsOn(this._sryxState)
+        this.sryxSwitch.clickObj = {
+            click: () => {
+                this._sryxState = !this._sryxState
+                this.passNode.active = this._sryxState
+            }, self: this
+        };
+        this.passNode.active = this._sryxState
+
+        //aof
+        this.aofSwitch.setIsOn(this._aofState)
+        this.aofSwitch.clickObj = {
+            click: () => {
+                this._aofState = !this._aofState
+                this.dcjfp.active = this._aofState
+                this.zxblbs.active = this._aofState
+            }, self: this
+        };
+        this.dcjfp.active = this._aofState
+        this.zxblbs.active = this._aofState
+
+
+        this.drsqSwitch.setIsOn(this._kzwjdrState)
+        this.drsqSwitch.clickObj = {
+            click: () => {
+                this._kzwjdrState = !this._kzwjdrState
+            }, self: this
+        };
+
+
+        this.bmSwitch.setIsOn(this._bmState)
+        this.bmSwitch.clickObj = {
+            click: () => {
+                this._bmState = !this._bmState
+            }, self: this
+        };
+
+
+        this.yckpSwitch.setIsOn(this._yckpState)
+        this.yckpSwitch.clickObj = {
+            click: () => {
+                this._yckpState = !this._yckpState
+            }, self: this
+        };
+
 
     }
+    initTabNode() {
+        this.tabNode.initData(createMatchTabConfig, (customData) => {
+            this._selectTitle = customData
+            this.initDiamond();
+            if (ClubCache.joinCreateMatchType == 1) {
+                this.tabNode.node.active = false
+                this.clubIdNode.active = false
+                this.passNode.active = false
+                this.sryy.active = false
+            } else {
+                this.clubIdNode.active = this._selectTitle == 1
+                this.tabNode.node.active = ClubCache.tribe_name ? true : false;
+            }
+            if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
+                this.drsq.active = true
+            } else {
+                this.drsq.active = false
+            }
+        }, this)
+
+        gameChangeTypeTabConfig.defaultIndex = this._yxbzNum - 4;
+        this.yxbzTabNode.initData(gameChangeTypeTabConfig, (customData) => {
+            this._yxbzNum = Number(customData) + 4;
+        }, this)
+
+        this.yxbz.active = ClubCache.CreateGameType == 2
+        dxmTabConfig.defaultIndex = 0
+        this.dxmTabNode.initData(dxmTabConfig, (customData) => {
+            this._selectRoleType = customData
+            this.itemData.dxm = dxmConfig[this._selectRoleType]
+            let dxm: any = cc.find('item/Rectangle', this.dxm).getComponent('slidewidght');
+            dxm._targetDe = this;
+            dxm.initUi(this.itemData.dxm, this.itemDataIndex.dxm)
+            this.resetDrjfp();
+            this.changeQzsh(this.itemData.dxm[this.itemDataIndex.dxm])
+        }, this)
+
+
+
+        this.yxbzTabNode.initData(gameChangeTypeTabConfig, (customData) => {
+            this._yxbzNum = Number(customData) + 4;
+        }, this)
+
+
+
+
+
+
+    }
+
+    ipCilck() {
+        this._ipState = !this._ipState
+        let block = cc.find('slectNode/1/block', this.yyxz);
+        block.active = this._ipState
+    }
+    gpsCilck() {
+        this._gpsState = !this._gpsState
+        let block = cc.find('slectNode/2/block', this.yyxz);
+        block.active = this._gpsState
+    }
+
+    addClick(event, customData) {
+        let node = this.getLevelParent(customData);
+        node['levelData'].level += 1;
+        this.setState(node);
+    }
+    reduceClick(event, customData) {
+        let node = this.getLevelParent(customData)
+        node['levelData'].level -= 1;
+        this.setState(node);
+    }
+    etpClick() {
+        this._etpState = !this._etpState
+        cc.find('btn_switch/open', this.etp).active = this._etpState;
+        cc.find('btn_switch/close', this.etp).active = !this._etpState;
+    }
+
+    /**************** */
+
+
+
     resetDrjfp() {
         let sb = Number(this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'])
         let drjfp: any = cc.find('item/Rectangle', this.drjfp).getComponent('slidewidght1');
@@ -402,16 +533,7 @@ export default class UIClubCreateMatch extends BaseForm {
         qz.initUi(this.itemData.qwsz, 0)
     }
 
-    addClick(event, customData) {
-        let node = this.getLevelParent(customData);
-        node['levelData'].level += 1;
-        this.setState(node);
-    }
-    reduceClick(event, customData) {
-        let node = this.getLevelParent(customData)
-        node['levelData'].level -= 1;
-        this.setState(node);
-    }
+
     setState(node) {
         let reduceButton = cc.find('Rectang/reduce', node).getComponent(cc.Button);
         reduceButton.interactable = node['levelData'].level > node['levelData'].min
@@ -454,161 +576,6 @@ export default class UIClubCreateMatch extends BaseForm {
     yxbzToggle(event, customData) {
         this._yxbzNum = Number(customData);
     }
-
-
-    titleNodeClick(event, customData) {
-        this._selectTitle = customData
-        this.memberListT.getChildByName('block').active = this._selectTitle == TITALTYPE.GAME_TYPE
-        this.applyListT.getChildByName('block').active = this._selectTitle == TITALTYPE.MODEL
-        this.memberListT.getChildByName('title').color = this._selectTitle == TITALTYPE.GAME_TYPE ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
-        this.applyListT.getChildByName('title').color = this._selectTitle == TITALTYPE.MODEL ? cc.color().fromHEX('#35A3B3') : cc.color().fromHEX('#FFFFFF')
-        this.initDiamond();
-
-        if (ClubCache.joinCreateMatchType == 1) {
-            this.titleNode.active = false
-            this.clubIdNode.active = false
-            this.passNode.active = false
-            this.sryy.active = false
-        } else {
-            this.clubIdNode.active = this._selectTitle == TITALTYPE.MODEL
-            this.titleNode.active = ClubCache.tribe_name ? true : false;
-        }
-        if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
-            this.drsq.active = true
-        } else {
-            this.drsq.active = false
-        }
-
-    }
-    initSelect() {
-        cc.find('btn_switch/open', this.yckp).active = this._yckpState;
-        cc.find('btn_switch/close', this.yckp).active = !this._yckpState;
-        cc.find('btn_switch/open', this.bm).active = this._bmState;
-        cc.find('btn_switch/close', this.bm).active = !this._bmState;
-
-        cc.find('btn_switch/open', this.drsq).active = this._kzwjdrState;
-        cc.find('btn_switch/close', this.drsq).active = !this._kzwjdrState;
-
-        cc.find('btn_switch/open', this.bx).active = this._bxState;
-        cc.find('btn_switch/close', this.bx).active = !this._bxState;
-
-        cc.find('btn_switch/open', this.sryy).active = this._sryxState;
-        cc.find('btn_switch/close', this.sryy).active = !this._sryxState;
-
-        cc.find('btn_switch/open', this.aof).active = this._aofState;
-        cc.find('btn_switch/close', this.aof).active = !this._aofState;
-
-
-        cc.find('btn_switch/open', this.etp).active = this._etpState;
-        cc.find('btn_switch/close', this.etp).active = !this._etpState;
-
-        this.passNode.active = this._sryxState
-        this.dcjfp.active = this._aofState
-        this.zxblbs.active = this._aofState
-    }
-    yckpCilck() {
-        this._yckpState = !this._yckpState
-        cc.find('btn_switch/open', this.yckp).active = this._yckpState;
-        cc.find('btn_switch/close', this.yckp).active = !this._yckpState;
-    }
-    bmCilck() {
-        this._bmState = !this._bmState
-        cc.find('btn_switch/open', this.bm).active = this._bmState;
-        cc.find('btn_switch/close', this.bm).active = !this._bmState;
-    }
-    kzwjdrCilck() {
-        this._kzwjdrState = !this._kzwjdrState
-        cc.find('btn_switch/open', this.drsq).active = this._kzwjdrState;
-        cc.find('btn_switch/close', this.drsq).active = !this._kzwjdrState;
-    }
-    bxCilck() {
-        this._bxState = !this._bxState
-        cc.find('btn_switch/open', this.bx).active = this._bxState;
-        cc.find('btn_switch/close', this.bx).active = !this._bxState;
-    }
-    sryxClick() {
-        this._sryxState = !this._sryxState
-        cc.find('btn_switch/open', this.sryy).active = this._sryxState;
-        cc.find('btn_switch/close', this.sryy).active = !this._sryxState;
-        this.passNode.active = this._sryxState
-    }
-
-    etpClick() {
-        this._etpState = !this._etpState
-        cc.find('btn_switch/open', this.etp).active = this._etpState;
-        cc.find('btn_switch/close', this.etp).active = !this._etpState;
-    }
-
-    aofClick() {
-        this._aofState = !this._aofState
-        cc.find('btn_switch/open', this.aof).active = this._aofState;
-        cc.find('btn_switch/close', this.aof).active = !this._aofState;
-        this.dcjfp.active = this._aofState
-        this.zxblbs.active = this._aofState
-
-    }
-    ipCilck() {
-        this._ipState = !this._ipState
-        let block = cc.find('slectNode/1/block', this.yyxz);
-        block.active = this._ipState
-    }
-    gpsCilck() {
-        this._gpsState = !this._gpsState
-        let block = cc.find('slectNode/2/block', this.yyxz);
-        block.active = this._gpsState
-    }
-    initDropBoX() {
-        // let dcjfp_dropDownBox = cc.instantiate(this.dropDownBox);
-        // dcjfp_dropDownBox.parent = this.dcjfp
-        // dcjfp_dropDownBox.position = cc.v3(367, -5, 0);
-        // dcjfp_dropDownBox.width = 320
-        // dcjfp_dropDownBox.getComponent('dropDownBox').initData(dcjfpConfig, () => {
-
-        // })
-
-        // let zzbljfp_dropDownBox = cc.instantiate(this.dropDownBox);
-        // zzbljfp_dropDownBox.parent = this.zxblbs
-        // zzbljfp_dropDownBox.position = cc.v3(367, -5, 0);
-        // zzbljfp_dropDownBox.width = 320
-        // zzbljfp_dropDownBox.getComponent('dropDownBox').initData(zxbljfpbsConfig, () => {
-
-        // })
-
-        // let jslx_dropDownBox = cc.instantiate(this.dropDownBox);
-        // jslx_dropDownBox.parent = this.jslx
-        // jslx_dropDownBox.position = cc.v3(310, -5, 0);
-        // jslx_dropDownBox.width = 450
-        // jslx_dropDownBox.getComponent('dropDownBox').initData(jslxConfig, () => {
-
-        // })
-
-        // let zwsl_dropDownBox = cc.instantiate(this.dropDownBox);
-        // zwsl_dropDownBox.parent = this.zwrs
-        // zwsl_dropDownBox.position = cc.v3(367, -5, 0);
-        // zwsl_dropDownBox.width = 320
-        // zwsl_dropDownBox.getComponent('dropDownBox').initData(zwslConfig, () => {
-
-        // })
-
-        // let zdks_dropDownBox = cc.instantiate(this.dropDownBox);
-        // zdks_dropDownBox.parent = this.zdks
-        // zdks_dropDownBox.position = cc.v3(367, -5, 0);
-        // zdks_dropDownBox.width = 320
-        // zdks_dropDownBox.getComponent('dropDownBox').initData(zwslConfig, () => {
-
-        // })
-
-        // let Straddle_dropDownBox = cc.instantiate(this.dropDownBox);
-        // Straddle_dropDownBox.parent = this.Straddle
-        // Straddle_dropDownBox.position = cc.v3(367, -5, 0);
-        // Straddle_dropDownBox.width = 320
-        // Straddle_dropDownBox.getComponent('dropDownBox').initData(zwslConfig, () => {
-
-        // })
-
-
-    }
-
 
     saveModel(event, customData) {
         this._btnType = Number(customData)
