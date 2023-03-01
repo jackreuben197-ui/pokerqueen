@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "GGSwitch$Follow",
+    "_name": "GGSwitch",
     "_objFlags": 0,
     "_parent": null,
     "_children": [
