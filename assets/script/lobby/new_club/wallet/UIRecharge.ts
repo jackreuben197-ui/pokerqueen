@@ -1,8 +1,6 @@
 
 import { GameConfig, Tabs_Status, TextColor } from "../../../config/GameConfig";
 import { UIDefine } from "../../../define/UIDefine";
-import { ClubCache } from "../../../frame/data/club/ClubCache";
-import GC from "../../../frame/GameControl";
 import PublicHelper from "../../../helper/PublicHelper";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
@@ -19,10 +17,19 @@ import WalletModel from "./WalletModel";
 //充值界面
 const { ccclass } = cc._decorator;
 
+
+export type UIRechargeParam = {
+    type?: number,
+    walletType?: number,
+    club_id?: number,
+    club_name?: string,
+    tribe_name?: string
+}
+
 @ccclass
 export default class UIRecharge extends BaseFormPlus {
 
-    protected _param: { type: number, walletType: number } = null;
+    protected _param: UIRechargeParam = null;
 
     isUSDT: boolean = false;
 
@@ -71,7 +78,7 @@ export default class UIRecharge extends BaseFormPlus {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: { type: number, walletType: number }, fromUI?: cc.Node): void {
+    onShow(param?: UIRechargeParam, fromUI?: cc.Node): void {
 
         super.onShow(param, fromUI);
 
@@ -108,7 +115,7 @@ export default class UIRecharge extends BaseFormPlus {
 
                             body: { amount: value, gold_type: gold_type },
 
-                            club_id: ClubCache.club_id
+                            club_id: this._param.club_id
                         }
                     ).then(
                         (res: any) => {
@@ -144,7 +151,7 @@ export default class UIRecharge extends BaseFormPlus {
                 //充
 
                 if (this._param.type == 1) {
-                    UIClubModel.mInstance.reqClubFundRecharge(ClubCache.club_id, { amount: value, gold_type: gold_type }).then(
+                    UIClubModel.mInstance.reqClubFundRecharge(this._param.club_id, { amount: value, gold_type: gold_type }).then(
                         (res: any) => {
                             this.requestSuccess(res.data);
                         },
@@ -223,11 +230,11 @@ export default class UIRecharge extends BaseFormPlus {
         switch (this._param.walletType) {
             case WalletType.Club://公会玩家钱包
                 content = this.Top_Index == 0 ? i18nMgr.Get("UIGuildFund_RtPlayerTips001") : i18nMgr.Get("UIGuildFund_RtPlayerTips002");
-                target_name = ClubCache.club_name;
+                target_name = this._param.club_name;
                 break;
             case WalletType.Fund://公会基金
                 content = this.Top_Index == 0 ? i18nMgr.Get("UIGuildFund_RtTips001") : i18nMgr.Get("UIGuildFund_RtTips002");
-                target_name = ClubCache.tribe_name;
+                target_name = this._param.tribe_name;
                 break;
         }
         content = StringHelper.Format(content, [

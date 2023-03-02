@@ -1,6 +1,7 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import WalletModel from "../../lobby/new_club/wallet/WalletModel";
 import { Web_User_Room } from "../../net/https/WebRequest";
@@ -64,7 +65,7 @@ export default class UIAutoBringIn extends UIBasePlus {
 
     selected_wallet: any = null;//选中的钱包
 
-    wallet: any[] = null;
+    wallets: any[] = null;
 
     //显示状态，设置位置和适配 
     //0:无钱包剩余和钱包选择和无滑动条
@@ -86,16 +87,15 @@ export default class UIAutoBringIn extends UIBasePlus {
     onShow(param: { data: AddClipsData, fromMenu: boolean }): void {
         super.onShow(param);
         let data: AddClipsData = param.data;
-        //this.$Part3.active = !param.fromMenu;
         //this.animateDialog();
-        //this.Total_obj.active = (GameCache.Instance.origin_type != 4);
+        this.selected_wallet = null;
         this.ownCoin = 0;
-        this.wallet = Web_User_Room.Response.data.wallet;
+        this.wallets = Web_User_Room.Response.data.wallet;
         //test
         //this.wallet.push({club_id:33,gold:1});
-        if (!this.wallet?.length) this.wallet_mode = 0;
-        if (this.wallet?.length == 1) this.wallet_mode = 1;
-        if (this.wallet?.length == 2) this.wallet_mode = 2;
+        if (!this.wallets?.length) this.wallet_mode = 0;
+        if (this.wallets?.length == 1) this.wallet_mode = 1;
+        if (this.wallets?.length == 2) this.wallet_mode = 2;
 
         if (this.wallet_mode == 0) {
             this.$Part1.active = false;
@@ -104,7 +104,7 @@ export default class UIAutoBringIn extends UIBasePlus {
             this.$Part1.active = true;
             this.$Part4.active = true;
             //设置货币类型
-            this.gold_type = this.wallet[0].gold_type;
+            this.gold_type = this.wallets[0].gold_type;
             this.$icon_coin.active = this.gold_type == 1;
             this.$icon_usdt.active = this.gold_type == 2;
             this.$arrow.active = this.wallet_mode > 1;
@@ -178,25 +178,18 @@ export default class UIAutoBringIn extends UIBasePlus {
         UIComponent.Instance.HideUI(PrefabUI.UIAutoBringIn);
     }
 
-    //打开钱包列表
-    goWalletList() {
-
-        UIComponent.open(UIDefine.UIClubWalletList, {
-            data: this.wallet,
-            selected_wallet: this.selected_wallet,
-            own: this
-        });
-    }
     //打开充值
     goCharge() {
 
         UIComponent.open(UIDefine.UIRecharge, { type: 1, walletType: WalletType.Club });
         this.hideUI();
     }
+
+
     refreshSelect(index: number) {
-        this.selected_wallet = this.wallet[index];
+        this.selected_wallet = this.wallets[index] || null;
         if (index == -1) {
-            this.cc_Label$club.string = "Please select";
+            this.cc_Label$club.string = i18nMgr.Get("UIGuild_WalletNoSelect");
             this.ownCoin = 0;
         } else {
             this.cc_Label$club.string = this.selected_wallet.club_name;
@@ -204,6 +197,8 @@ export default class UIAutoBringIn extends UIBasePlus {
         }
         this.cc_Label$coin.string = `${this.ownCoin}`;
     }
+
+
 
     /////////////////////click事件
     //确认
@@ -258,7 +253,11 @@ export default class UIAutoBringIn extends UIBasePlus {
         } else {
 
             if (GameUtil.GetFriendsOrClubTable() == 3) {
-                GameCache.Instance.CurGame.AddChips(coin_100, auto_100, accountCheck, this.selected_wallet.club_id, this.selected_wallet.club_random_id);
+
+
+                GameCache.Instance.CurGame.AddChips(coin_100, auto_100, accountCheck, { own: this, wallets: this.wallets, selected_wallet: this.selected_wallet })
+
+
             }
             else {
                 GameCache.Instance.CurGame.AddChips(coin_100, auto_100, accountCheck);
@@ -273,7 +272,7 @@ export default class UIAutoBringIn extends UIBasePlus {
     //公会选择
     onClickClub() {
         UIComponent.open(UIDefine.UIClubWalletList, {
-            data: this.wallet,
+            wallets: this.wallets,
             selected_wallet: this.selected_wallet,
             own: this
         });

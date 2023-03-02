@@ -1308,73 +1308,96 @@ export default class TexasGame {
     /// 带入
     /// </summary>
     /// <param name="anteNumber"></param>
-    public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false, club_id: number = 0, clubrandomid: number = 0) {
+    public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false, fromBring: { wallets: any, selected_wallet: any, own: any } = null) {
+        //club_id: number = 0, clubrandomid: number = 0, otherPay: boolean = false) {
+
+        let club_id = fromBring?.selected_wallet?.club_id || 0;
+        let club_random_id = fromBring?.selected_wallet?.club_random_id || 0;
 
         //大厅桌
         if (GameUtil.GetFriendsOrClubTable() == 3) {
 
             if (anteNumber > UITexasModel.mInstance.GetGoldByClubID(club_id)) {
 
-                UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
-                    // title = $"余额不足",
-                    title: CPErrorCode.LanguageDescription(10025),
-                    // content = $"金豆余额不足，请先充值",
-                    content: CPErrorCode.LanguageDescription(20010),
-                    // ok = "去充豆",
-                    ok: CPErrorCode.LanguageDescription(10026),
+                //多钱包有其他支付
+                if (fromBring?.wallets.length > 1) {
 
-                    ok_click: () => {
+                    UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
 
-                        WWW.Instance.CommonAPI(
-                            {
-                                web_class: Web_Org_Club_Search_By_Id,
-                                body: {
-                                    club_random_id: clubrandomid
+                        content: i18nMgr.Get("ServerErrorCode_20004"),
+
+                        commit: i18nMgr.Get("UIMine_WalletAddchipsListItems"),
+
+                        cancel: i18nMgr.Get("UI_otherPay"),
+
+                        commit_click: () => {
+
+                            WWW.Instance.CommonAPI(
+                                {
+                                    web_class: Web_Org_Club_Search_By_Id,
+                                    body: {
+                                        club_random_id: club_random_id
+                                    }
                                 }
-                            }
-                        ).then(
-                            (res: any) => {
-                                ClubCache.setClubData(res.data);
+                            ).then(
+                                (res: any) => {
 
-                                UIComponent.open(UIDefine.UIToRecharge, { type: 1, walletType: WalletType.Club });
-                            },
-                            (res: any) => {
+                                    UIComponent.open(UIDefine.UIToRecharge,
+                                        {
+                                            type: 1,
+                                            walletType: WalletType.Club,
+                                            club_id: res.data.club_id,
+                                            club_name: res.data.club_name,
+                                            tribe_name: res.data.tribe_name,
+                                        });
+                                },
+                                (res: any) => {
 
-                            }
-                        )
-                    }
+                                }
+                            )
+                        },
 
-                });
+                        cancel_click: () => {
+                            UIComponent.open(UIDefine.UIClubWalletList, fromBring);
+                        }
+                    });
 
-                // UIComponent.Instance.ShowNoAnimation(UIType.UIDialog, new UIDialogComponent.DialogData()
-                // 			{
-                //         type = UIDialogComponent.DialogData.DialogType.Commit,
-                //         // title = $"余额不足",
-                //         title = CPErrorCode.LanguageDescription(10025),
-                //         // content = $"金豆余额不足，请先充值",
-                //         content = CPErrorCode.LanguageDescription(20010),
-                //         // contentCommit = "去充豆",
-                //         contentCommit = CPErrorCode.LanguageDescription(10026),
-                //         // contentCancel = "取消",
-                //         contentCancel = "",
-                //         actionCommit = () => {
-                //             //TODO-充值跳转
-                //             UIGuildModel.mInstance.APIOrgClubInfoNew(clubrandomid, (response) => {
+                } else {
+                    UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
 
-                //                 if (response.code == 0) {//UIGuildFundGoldDialogComponent
-                //                     Game.Scene.GetComponent<UIComponent>().ShowAsync(UIType.UIGuildFundGoldDialog, new UIGuildFundGoldDialogComponent.GuildFundGoldDialogData()
-                // 							{
-                //                             ClubInfoData = response.data,
-                //                             isRecharge = true,
-                //                         }, null, 0.25f, DG.Tweening.Ease.Unset, UIComponent.ShowAnimType.HThrough);
-                //                 }
+                        content: i18nMgr.Get("ServerErrorCode_20004"),
 
-                //             });
+                        ok: i18nMgr.Get("UIMine_WalletAddchipsListItems"),
 
-                //         },
-                //         actionCancel = null
-                //     });
+                        ok_click: () => {
 
+                            WWW.Instance.CommonAPI(
+                                {
+                                    web_class: Web_Org_Club_Search_By_Id,
+                                    body: {
+                                        club_random_id: club_random_id
+                                    }
+                                }
+                            ).then(
+                                (res: any) => {
+
+                                    UIComponent.open(UIDefine.UIToRecharge,
+                                        {
+                                            type: 1,
+                                            walletType: WalletType.Club,
+                                            club_id: res.data.club_id,
+                                            club_name: res.data.club_name,
+                                            tribe_name: res.data.tribe_name,
+                                        });
+                                },
+                                (res: any) => {
+
+                                }
+                            )
+                        }
+
+                    });
+                }
                 return;
             }
 

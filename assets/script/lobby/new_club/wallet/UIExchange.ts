@@ -1,7 +1,6 @@
 
-import { Tabs_Status, TextColor } from "../../../config/GameConfig";
+import { TextColor } from "../../../config/GameConfig";
 import { UIDefine } from "../../../define/UIDefine";
-import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
@@ -10,13 +9,21 @@ import { UISuperDialogType } from "../../../ui/dialog/UISuperDialog";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { WalletType } from "./UIWallet";
-import WalletModel from "./WalletModel";
 
 const { ccclass, property } = cc._decorator;
+
+export type UIExchangeParam = {
+    club_id?: number,
+    club_name?: string,
+    tribe_name?: string
+}
+
+
 
 @ccclass
 export default class UIExchange extends BaseFormPlus {
 
+    protected _param: UIExchangeParam = null;
 
     cc_Label$gc: cc.Label = null;
     cc_Label$us: cc.Label = null;
@@ -156,7 +163,7 @@ export default class UIExchange extends BaseFormPlus {
     /**
      * 每次打开面板处理的内容
      */
-    onShow(param?: any, fromUI?: cc.Node): void {
+    onShow(param?: UIExchangeParam, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
 
         this.usdt = StringHelper.GetLongString(GC.wallet.USDT);
@@ -196,7 +203,7 @@ export default class UIExchange extends BaseFormPlus {
                         "src_amount": 100
                     },
 
-                    club_id: ClubCache.club_id
+                    club_id: this._param.club_id
                 }
             ).then(
                 (res: any) => {
@@ -260,15 +267,15 @@ export default class UIExchange extends BaseFormPlus {
         let target_name = "";
         if (GC.wallet.wallet_type == WalletType.Club) {
             content = this.mode == 0 ? i18nMgr.Get("UIGuildFund_EXPlayerTips001") : i18nMgr.Get("UIGuildFund_EXPlayerTips002");
-            target_name = ClubCache.club_name;
+            target_name = this._param.club_name;
         }
         if (GC.wallet.wallet_type == WalletType.Fund) {
             content = this.mode == 0 ? i18nMgr.Get("UIGuildFund_EXPlayerTips003") : i18nMgr.Get("UIGuildFund_EXPlayerTips004");
-            target_name = ClubCache.tribe_name;
+            target_name = this._param.tribe_name;
         }
         content = StringHelper.Format(content,
             [
-                ` ${StringHelper.GetColorText(ClubCache.club_name, TextColor.Color4)} `,
+                ` ${StringHelper.GetColorText(this._param.club_name, TextColor.Color4)} `,
                 ` ${StringHelper.GetColorText(this.cc_EditBox$input.string, TextColor.Color4)} `,
                 ` ${StringHelper.GetColorText(this.cc_Label$auto_count.string, TextColor.Color4)} `,
             ]
@@ -282,7 +289,7 @@ export default class UIExchange extends BaseFormPlus {
         WWW.Instance.CommonAPI(
             {
                 web_class: API_CLUB_USER_WALLET,
-                club_id: ClubCache.club_id
+                club_id: this._param.club_id
             }
         ).then(
             (res: any) => {
@@ -307,7 +314,7 @@ export default class UIExchange extends BaseFormPlus {
                     "dest_gold_type": this.mode == 0 ? 2 : 1,
                     "src_amount": +this.cc_EditBox$input.string * 100
                 },
-                club_id: ClubCache.club_id
+                club_id: this._param.club_id
             }
         ).then(
             (res: any) => {
@@ -337,7 +344,3 @@ export default class UIExchange extends BaseFormPlus {
 
     /////////////////
 }
-//UIGuildFund_EXPlayerTips001=确定向{0}公会申请转换{1}Union coin，获得{2}Global coin
-//UIGuildFund_EXPlayerTips002=确定向{0}公会申请转换{1}Global coin，获得{2}Union coin
-//UIGuildFund_EXPlayerTips003=确定向{0}联盟申请转换{1}Union coin，获得{2}Global coin
-//UIGuildFund_EXPlayerTips004=确定向{0}联盟申请转换{1}Global coin，获得{2}Union coin

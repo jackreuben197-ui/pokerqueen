@@ -29,10 +29,9 @@ export type UISuperDialogType = {
 @ccclass
 @menu('脚本分组/ui/dialog/UISuperDialog')
 export default class UISuperDialog extends UIBasePlus {
-    $cover: cc.Node = null;
-    $title: cc.Node = null;
-    cc_RichText$title: cc.Label = null;
-    cc_RichText$content: cc.Label = null;
+    $back: cc.Node = null;
+    cc_RichText$title: cc.RichText = null;
+    cc_RichText$content: cc.RichText = null;
     $v_line: cc.Node = null;
 
     //单按钮和双按钮
@@ -41,12 +40,13 @@ export default class UISuperDialog extends UIBasePlus {
     $commit: cc.Node = null;
 
     _param: UISuperDialogType;
-    onShow(data): void {
+    onShow(data = null): void {
+        data = data || {};
         super.onShow(data);
         this.refreshUI(data);
     }
     protected regiterTouchEvents(): void {
-        this.setButtonClick(this.$cover, this.onClickCover);
+        this.setButtonClick(this.$back, this.onClickBack);
         this.setButtonClick(this.$ok, this.onClickOK);
         this.setButtonClick(this.$cancel, this.onClickCancel);
         this.setButtonClick(this.$commit, this.onClickCommit);
@@ -56,14 +56,13 @@ export default class UISuperDialog extends UIBasePlus {
         this.$commit.active = !data.ok_click;
         this.$ok.active = !!data.ok_click;
         this.$v_line.active = !data.ok_click;
-        this.$title.active = data.title?.length > 0;
-        this.cc_RichText$content.string = data.content;
-        this.setChildLabel(this.$title, "label", data.title || "Title");
-        this.setChildLabel(this.$ok, "label", data.ok || "OK");
+        this.cc_RichText$title.node.active = data.title?.length > 0;
+
+        this.cc_RichText$title.string = data.title || i18nMgr.Get("UIGuild_NoticeTitle");
+        this.cc_RichText$content.string = data.content || i18nMgr.Get("adaptation10005");
+        this.setChildLabel(this.$ok, "label", data.ok || i18nMgr.Get("adaptation10008"));
         this.setChildLabel(this.$commit, "label", data.commit || i18nMgr.Get("adaptation10012"));
         this.setChildLabel(this.$cancel, "label", data.cancel || i18nMgr.Get("adaptation10013"));
-
-
     }
     onClickOK() {
         this._param.ok_click?.call(this._param.this);
@@ -77,7 +76,7 @@ export default class UISuperDialog extends UIBasePlus {
         this._param.commit_click?.call(this._param.this);
         this.hideUI();
     }
-    onClickCover() {
+    onClickBack() {
         if (this._param.stop_back) return;
         this.hideUI();
     }

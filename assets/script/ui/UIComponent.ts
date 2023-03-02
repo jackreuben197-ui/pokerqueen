@@ -28,7 +28,7 @@ export enum PrefabUI {
     UIBringIn = "UIBringIn",//带入记分牌
     UIAutoBringIn = "UIAutoBringIn",//自动记分牌
     UIBringOut = "UIBringOut",//带出记分牌
-    
+
 }
 (window as any).PrefabUI = PrefabUI;
 //打开面板追加参数
@@ -214,10 +214,10 @@ export default class UIComponent {
         }
     }
     //////////////////////////////
-    setComponent(component:UIBase){
+    setComponent(component: UIBase) {
         this[component.name] = component;
     }
-    getComponent<T>(component_name:string):T{
+    getComponent<T>(component_name: string): T {
         return this[component_name] as T;
     }
     /////////////////////////////

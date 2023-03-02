@@ -515,15 +515,25 @@ export default class UIWallet extends BaseFormPlus {
     set Op_Index(index: number) {
         //if (this._OpIndex == index) return;
         this._OpIndex = index;
-        let status = Tabs_Status[index];
-        let order_type = this.transformOrderType(index);
+        //let status = Tabs_Status[index];
+        //let order_type = this.transformOrderType(index);
         switch (index) {
             case 0:
-                //UIComponent.open(UIDefine.UIRecharge, { type: order_type, walletType: this._param.wallet_type });
-                UIComponent.open(UIDefine.UIToRecharge, { type: order_type, walletType: this._param.wallet_type });
+                UIComponent.open(UIDefine.UIToRecharge,
+                    {
+                        type: 1,
+                        walletType: this._param.wallet_type,
+                        club_id: ClubCache.club_id,
+                        club_name: ClubCache.club_name,
+                        tribe_name: ClubCache.tribe_name,
+                    });
                 break;
             case 1:
-                UIComponent.open(UIDefine.UIExchange);
+                UIComponent.open(UIDefine.UIExchange, {
+                    club_id: ClubCache.club_id,
+                    club_name: ClubCache.club_name,
+                    tribe_name: ClubCache.tribe_name,
+                });
                 break;
         }
     }

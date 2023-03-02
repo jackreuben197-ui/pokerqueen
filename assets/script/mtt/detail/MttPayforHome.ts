@@ -343,8 +343,8 @@ export default class MttPayforHome extends BaseForm {
 
             }
             else {
-                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + (this._data.Fee * buyRatio);
-                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + this._data.Fee * buyRatio
+                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio);
+                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + +StringHelper.GetLongString(this._data.Fee * buyRatio);
 
             }
         }
@@ -375,8 +375,8 @@ export default class MttPayforHome extends BaseForm {
                     if (discountResult >= this._data.coinnum * buyRatio + this._data.hunterFee * buyRatio + this._data.Fee * buyRatio)
                         discountResult = this._data.coinnum * buyRatio + this._data.hunterFee * buyRatio + this._data.Fee * buyRatio;
                 }
-                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + (this._data.Fee * buyRatio) + "-" + (discountResult);
-                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + this._data.Fee * buyRatio - discountResult
+                this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio) + "-" + (discountResult);
+                this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + +StringHelper.GetLongString(this._data.Fee * buyRatio) - discountResult
 
             }
         }
@@ -392,8 +392,8 @@ export default class MttPayforHome extends BaseForm {
 
         }
         else {
-            this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + (this._data.Fee * buyRatio) + "-" + (this._data.coinnum + this._data.hunterFee);
-            this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + this._data.Fee * buyRatio - (this._data.coinnum + this._data.hunterFee)
+            this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio) + "-" + (this._data.coinnum + this._data.hunterFee);
+            this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + +StringHelper.GetLongString(this._data.Fee * buyRatio) - (this._data.coinnum + this._data.hunterFee)
 
         }
     }
@@ -407,8 +407,8 @@ export default class MttPayforHome extends BaseForm {
             this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.Fee * buyRatio)) - (this._data.coinnum + this._data.Fee)
         }
         else {
-            this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + (this._data.Fee * buyRatio) + "-" + (this._data.coinnum + this._data.hunterFee + this._data.Fee);
-            this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + (this._data.Fee * buyRatio) - (this._data.coinnum + this._data.hunterFee + this._data.Fee)
+            this.coinnum.string = StringHelper.GetLongString(this._data.coinnum * buyRatio) + "+" + StringHelper.GetLongString(this._data.hunterFee * buyRatio) + "+" + StringHelper.GetLongString(this._data.Fee * buyRatio) + "-" + (this._data.coinnum + this._data.hunterFee + this._data.Fee);
+            this._coinnum = Number(StringHelper.GetLongString(this._data.coinnum * buyRatio)) + Number(StringHelper.GetLongString(this._data.hunterFee * buyRatio)) + +StringHelper.GetLongString(this._data.Fee * buyRatio) - (this._data.coinnum + this._data.hunterFee + this._data.Fee)
 
         }
     }
@@ -423,7 +423,15 @@ export default class MttPayforHome extends BaseForm {
                     contentCommit: "UIMine_WalletAdd_EjPOTlsz",
                     contentCancel: "UI_otherPay",
                     actionCommit: () => {
-                        UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Club });
+
+                        UIComponent.open(UIDefine.UIToRecharge,
+                            {
+                                type: 1,
+                                walletType: WalletType.Club,
+                                club_id: ClubCache.mttPayWallat.club_id,
+                                club_name: ClubCache.mttPayWallat.club_name,
+                            });
+
                     },
                     actionCancel: () => {
                         UIComponent.open(UIDefine.MttPayforList)

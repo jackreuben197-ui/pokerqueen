@@ -1,6 +1,7 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
+import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import WalletModel from "../../lobby/new_club/wallet/WalletModel";
@@ -73,13 +74,15 @@ export default class UIBringIn extends UIBasePlus {
     wallet_status: number = 0;//钱包状态 0未选择 1选择
 
     selected_wallet: any = null;//选中的钱包
+    //wallet_select: number = 0;
 
-    wallet: any[] = null;
+    wallets: any[] = null;
 
 
 
 
     protected lateLoad(): void {
+        this.name = "UIBringIn";
         super.lateLoad();
         this.GGSlider$slider.onChange(this.onSliderChange.bind(this));
     }
@@ -87,14 +90,16 @@ export default class UIBringIn extends UIBasePlus {
     onShow(data: AddClipsData): void {
         super.onShow(data);
         //this.animateDialog();
-        //this.Total_obj.active = (GameCache.Instance.origin_type != 4);
+
+        this.selected_wallet = null;
+
         this.ownCoin = 0;
-        this.wallet = Web_User_Room.Response.data.wallet;
+        this.wallets = Web_User_Room.Response.data.wallet;
         //test
         //this.wallet.push({club_id:33,gold:1});
-        if (!this.wallet?.length) this.wallet_mode = 0;
-        if (this.wallet?.length == 1) this.wallet_mode = 1;
-        if (this.wallet?.length > 1) this.wallet_mode = 2;
+        if (!this.wallets?.length) this.wallet_mode = 0;
+        if (this.wallets?.length == 1) this.wallet_mode = 1;
+        if (this.wallets?.length > 1) this.wallet_mode = 2;
         if (this.wallet_mode == 0) {
             this.$Part1.active = false;
             this.$Part4.active = false;
@@ -102,7 +107,7 @@ export default class UIBringIn extends UIBasePlus {
             this.$Part1.active = true;
             this.$Part4.active = true;
             //设置货币类型
-            this.gold_type = this.wallet[0].gold_type;
+            this.gold_type = this.wallets[0].gold_type;
             this.$icon_coin.active = this.gold_type == 1;
             this.$icon_usdt.active = this.gold_type == 2;
             this.$arrow.active = this.wallet_mode > 1;
@@ -111,7 +116,7 @@ export default class UIBringIn extends UIBasePlus {
         }
         if (null != data) {
             //小盲值/100
-            this.cc_Label$blind.string = `${data.smallBlind / 100}/${data.bigBlind / 100}`;//SB/BB
+            this.cc_Label$blind.string = `${StringHelper.GetLongString(data.smallBlind)}/${StringHelper.GetLongString(data.bigBlind)}`;//SB/BB
             this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
             //最大带入值
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
@@ -144,27 +149,15 @@ export default class UIBringIn extends UIBasePlus {
 
         this.cc_Label$buyin.string = `${this.sendCoin}`;
 
-        if (this.wallet_mode > 0) {
-            //颜色处理
-            this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX(this.sendCoin < this.ownCoin ? "#EEF5FF" : "#ee8380");
-        }
+        this.refreshSliderTextColor();
     }
 
     hideUI() {
         UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
     }
 
-    //打开钱包列表
-    goWalletList() {
-        console.log("goWalletList");
-        UIComponent.open(UIDefine.UIClubWalletList, {
-            data: this.wallet,
-            selected_wallet: this.selected_wallet,
-            own: this
-        });
-    }
     refreshSelect(index: number) {
-        this.selected_wallet = this.wallet[index];
+        this.selected_wallet = this.wallets[index];
         if (index == -1) {
             this.cc_Label$club.string = i18nMgr.Get("UIGuild_WalletNoSelect");
             this.ownCoin = 0;
@@ -173,7 +166,15 @@ export default class UIBringIn extends UIBasePlus {
             this.ownCoin = (this.selected_wallet.gold - GC.game.mainPlayer.chips) / 100;
         }
         this.cc_Label$coin.string = `${this.ownCoin}`;
+        this.refreshSliderTextColor();
     }
+
+
+    refreshSliderTextColor() {
+        this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX(this.sendCoin < this.ownCoin ? "#EEF5FF" : "#ee8380");
+    }
+
+
 
     /////////////////////click事件
     //确认
@@ -187,46 +188,14 @@ export default class UIBringIn extends UIBasePlus {
 
         if (GameUtil.GetFriendsOrClubTable() == 3) {
 
-            GameCache.Instance.CurGame.AddChips(mAnteNumber, 0, false, this.selected_wallet.club_id, this.selected_wallet.club_random_id);
+            GameCache.Instance.CurGame.AddChips(mAnteNumber, 0, false, { own: this, wallets: this.wallets, selected_wallet: this.selected_wallet })
+
         }
         else {
             GameCache.Instance.CurGame.AddChips(mAnteNumber);
         }
 
         this.hideUI();
-
-        //有钱包的模式
-        // if (this.wallet_mode > 0) {
-        //     //判断钱包状态
-        //     if (this.selected_wallet == null) {
-        //         UIComponent.Instance.ToastLanguage("UILogin_Select");
-        //         return;
-        //     }
-        //     //判断余额不足
-        //     if (this.sendCoin > this.ownCoin) {
-
-        //         let dialog_param: typeof UICommonDialog.type = null;
-        //         if (this.wallet.length == 1) {
-        //             dialog_param = {
-        //                 status: 1,
-        //                 detail: "钱包金额不足",
-        //                 texts: ["充值"],
-        //                 callbacks: [this.goCharge],
-        //                 this: this
-        //             }
-        //         } else {
-        //             dialog_param = {
-        //                 status: 2,
-        //                 detail: "钱包金额不足",
-        //                 texts: ["其他支付", "充值"],
-        //                 callbacks: [this.goWalletList, this.goCharge],
-        //                 this: this
-        //             }
-        //         }
-        //         UIComponent.open(UIDefine.UICommonDialog, dialog_param);
-        //         return;
-        //     }
-        // }
     }
     //取消
     onClickCancel() {
@@ -235,7 +204,7 @@ export default class UIBringIn extends UIBasePlus {
     //公会选择
     onClickClub() {
         UIComponent.open(UIDefine.UIClubWalletList, {
-            data: this.wallet,
+            wallets: this.wallets,
             selected_wallet: this.selected_wallet,
             own: this
         });
