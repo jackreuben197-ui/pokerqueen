@@ -37,16 +37,6 @@ export default class UIRecharge extends BaseFormPlus {
 
     Gold_Text = [100, 300, 500, 1000, 5000, 50000];
 
-    //WalletServiceCharge_eeydpBno = Prompt
-
-    //Title_Text = ["充值", "提现"];
-
-    // Top_Tab_Text = {
-    //     1: ["金豆充值", "USDT充值"],
-    //     2: ["金豆提现", "USDT提现"],
-    // }
-    // Type_Text = ["金豆", "USDT"];
-    //Apply_Text = ["申请充值", "申请提现"];
 
     $TopTabs: cc.Node = null;
     $GoldOptions: cc.Node = null;
