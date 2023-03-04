@@ -69,7 +69,7 @@ proto.holdem.pb.ClientMessageSeated.toObject = function(includeInstance, msg) {
     autoUseWallet: jspb.Message.getFieldWithDefault(msg, 6, false),
     store: jspb.Message.getFieldWithDefault(msg, 7, 0),
     clubId: jspb.Message.getFieldWithDefault(msg, 8, 0),
-    keepSeat: jspb.Message.getFieldWithDefault(msg, 9, false)
+    applyBringIn: jspb.Message.getFieldWithDefault(msg, 9, false)
   };
 
   if (includeInstance) {
@@ -141,7 +141,7 @@ proto.holdem.pb.ClientMessageSeated.deserializeBinaryFromReader = function(msg, 
       break;
     case 9:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setKeepSeat(value);
+      msg.setApplyBringIn(value);
       break;
     default:
       reader.skipField();
@@ -229,7 +229,7 @@ proto.holdem.pb.ClientMessageSeated.serializeBinaryToWriter = function(message, 
       f
     );
   }
-  f = message.getKeepSeat();
+  f = message.getApplyBringIn();
   if (f) {
     writer.writeBool(
       9,
@@ -377,18 +377,18 @@ proto.holdem.pb.ClientMessageSeated.prototype.setClubId = function(value) {
 
 
 /**
- * optional bool keep_seat = 9;
+ * optional bool apply_bring_in = 9;
  * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
  * You should avoid comparisons like {@code val === true/false} in those cases.
  * @return {boolean}
  */
-proto.holdem.pb.ClientMessageSeated.prototype.getKeepSeat = function() {
+proto.holdem.pb.ClientMessageSeated.prototype.getApplyBringIn = function() {
   return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 9, false));
 };
 
 
 /** @param {boolean} value */
-proto.holdem.pb.ClientMessageSeated.prototype.setKeepSeat = function(value) {
+proto.holdem.pb.ClientMessageSeated.prototype.setApplyBringIn = function(value) {
   jspb.Message.setField(this, 9, value);
 };
 

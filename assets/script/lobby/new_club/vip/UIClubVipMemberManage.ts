@@ -16,7 +16,7 @@ export default class UIClubVipMemberManage extends BaseFormPlus {
 
     ///////////////////////引用声明////////////////////////
     $ComBack: cc.Node = null;
-    $ItemVipManage: cc.Node = null;
+    $ItemVipOffline: cc.Node = null;
     $Searcher1: cc.Node = null;
 
 
@@ -51,7 +51,7 @@ export default class UIClubVipMemberManage extends BaseFormPlus {
         this.GGCombobox$Order.onOpen = this.Order_ComOpen.bind(this);
         this.GGCombobox$Order.onClose = this.Order_ComClose.bind(this);
         this.GGCombobox$Order.onSelect = this.Order_ComSelect.bind(this);
-        this.item_member_pool = new SimpleNodePool(this.$ItemVipManage);
+        this.item_member_pool = new SimpleNodePool(this.$ItemVipOffline);
     }
 
     regiterTouchEvents() {
@@ -78,7 +78,11 @@ export default class UIClubVipMemberManage extends BaseFormPlus {
         list.forEach((data, index) => {
             let item = this.item_member_pool.GetNode();
             item.parent = this.cc_ScrollView$Scroller1.content;
-            item.getComponent(ItemVipOffline).onShow({ data: data, index: index, switch: 1, parent: this });
+            //item.getComponent(ItemVipOffline).onShow({ data: data, index: index, switch: 1, parent: this });
+
+            item.getComponent(ItemVipOffline).onShow({ data: data, index: index, sort_type: 1, parent: this });
+
+            //data: data, index: index, sort_type: 0, hide_follow: this.GGSwitch$Follow.isOn, parent: this
         })
     }
     clearScroller(scroller: cc.ScrollView, pool: SimpleNodePool) {

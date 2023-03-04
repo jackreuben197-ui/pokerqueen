@@ -64,7 +64,8 @@ proto.holdem.pb.ServerMessageKeepSeat.toObject = function(includeInstance, msg) 
     keep: jspb.Message.getFieldWithDefault(msg, 2, false),
     times: jspb.Message.getFieldWithDefault(msg, 3, 0),
     leftTime: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    postStatus: jspb.Message.getFieldWithDefault(msg, 5, 0)
+    postStatus: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    keepSeatReason: jspb.Message.getFieldWithDefault(msg, 6, 0)
   };
 
   if (includeInstance) {
@@ -120,6 +121,10 @@ proto.holdem.pb.ServerMessageKeepSeat.deserializeBinaryFromReader = function(msg
     case 5:
       var value = /** @type {!proto.holdem.pb.Def.CanPlayStatus} */ (reader.readEnum());
       msg.setPostStatus(value);
+      break;
+    case 6:
+      var value = /** @type {!proto.holdem.pb.Def.KeepSeatReason} */ (reader.readEnum());
+      msg.setKeepSeatReason(value);
       break;
     default:
       reader.skipField();
@@ -182,6 +187,13 @@ proto.holdem.pb.ServerMessageKeepSeat.serializeBinaryToWriter = function(message
   if (f !== 0.0) {
     writer.writeEnum(
       5,
+      f
+    );
+  }
+  f = message.getKeepSeatReason();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      6,
       f
     );
   }
@@ -262,6 +274,21 @@ proto.holdem.pb.ServerMessageKeepSeat.prototype.getPostStatus = function() {
 /** @param {!proto.holdem.pb.Def.CanPlayStatus} value */
 proto.holdem.pb.ServerMessageKeepSeat.prototype.setPostStatus = function(value) {
   jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * optional Def.KeepSeatReason keep_seat_reason = 6;
+ * @return {!proto.holdem.pb.Def.KeepSeatReason}
+ */
+proto.holdem.pb.ServerMessageKeepSeat.prototype.getKeepSeatReason = function() {
+  return /** @type {!proto.holdem.pb.Def.KeepSeatReason} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {!proto.holdem.pb.Def.KeepSeatReason} value */
+proto.holdem.pb.ServerMessageKeepSeat.prototype.setKeepSeatReason = function(value) {
+  jspb.Message.setField(this, 6, value);
 };
 
 

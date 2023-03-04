@@ -841,7 +841,7 @@ export class Web_Config_Global_Config extends WebCommon {
         android_mtt_switch?: number,//androidMTT功能开关 1 开 2 关
         android_pay_switch?: number,//android支付功能开关 1 开 2 关
         apple_mtt_switch?: number,//iosMTT功能开关 1 开 2 关
-        support_email?:string,
+        support_email?: string,
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -2951,6 +2951,10 @@ export class Web_Prop_User_Prop_Used extends WebCommon {
 //钻石商城购买
 export class Web_Mall_Buy extends WebCommon {
     static API: string = "/api/prop/shopping/goods_buy";
+}
+//我的 - 带入申请
+export class Web_Me_Apply extends WebCommon {
+    static API: string = "/api/roomcenter/user/apply/list";
 }
 
 

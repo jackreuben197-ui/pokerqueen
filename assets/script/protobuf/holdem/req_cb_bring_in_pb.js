@@ -256,7 +256,9 @@ proto.holdem.pb.ServerMessageCbBringIn.prototype.toObject = function(opt_include
  */
 proto.holdem.pb.ServerMessageCbBringIn.toObject = function(includeInstance, msg) {
   var f, obj = {
-    status: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    status: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    bringIn: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    current: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -297,6 +299,14 @@ proto.holdem.pb.ServerMessageCbBringIn.deserializeBinaryFromReader = function(ms
       var value = /** @type {number} */ (reader.readInt32());
       msg.setStatus(value);
       break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setBringIn(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setCurrent(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -333,6 +343,20 @@ proto.holdem.pb.ServerMessageCbBringIn.serializeBinaryToWriter = function(messag
       f
     );
   }
+  f = message.getBringIn();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+  f = message.getCurrent();
+  if (f !== 0) {
+    writer.writeUint64(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -348,6 +372,36 @@ proto.holdem.pb.ServerMessageCbBringIn.prototype.getStatus = function() {
 /** @param {number} value */
 proto.holdem.pb.ServerMessageCbBringIn.prototype.setStatus = function(value) {
   jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 bring_in = 2;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageCbBringIn.prototype.getBringIn = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageCbBringIn.prototype.setBringIn = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional uint64 current = 3;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageCbBringIn.prototype.getCurrent = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageCbBringIn.prototype.setCurrent = function(value) {
+  jspb.Message.setField(this, 3, value);
 };
 
 

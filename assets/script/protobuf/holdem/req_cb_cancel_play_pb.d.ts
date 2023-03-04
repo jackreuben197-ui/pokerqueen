@@ -34,6 +34,9 @@ export class ServerMessageCbCancelPlay extends jspb.Message {
   getAmount(): number;
   setAmount(value: number): void;
 
+  getCurrent(): number;
+  setCurrent(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbCancelPlay.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbCancelPlay): ServerMessageCbCancelPlay.AsObject;
@@ -48,6 +51,7 @@ export namespace ServerMessageCbCancelPlay {
   export type AsObject = {
     status: number,
     amount: number,
+    current: number,
   }
 }
 

@@ -219,7 +219,8 @@ export default class UIClubHome extends BaseForm {
                 break;
             case 6:
                 //UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 1 });
-                UIComponent.open(UIDefine.UIMyMessage, { from: 1 });
+                //apply 带入申请消息
+                UIComponent.open(UIDefine.UIMyMessage, { from: 1, apply: ClubCache.user_level == 1 || ClubCache.user_level == 3 });
                 break;
             default:
                 break;

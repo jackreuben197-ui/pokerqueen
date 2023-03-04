@@ -22,6 +22,7 @@ goog.exportSymbol('proto.holdem.pb.Def.ChipChangeReason', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.ConsumeType', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.GameStatus', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.GameType', null, global);
+goog.exportSymbol('proto.holdem.pb.Def.KeepSeatReason', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.LeaveReason', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.LimitBetType', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.MTTPropBuyType', null, global);
@@ -225,6 +226,16 @@ proto.holdem.pb.Def.Round = {
   FLOP: 2,
   TURN: 3,
   RIVER: 4
+};
+
+/**
+ * @enum {number}
+ */
+proto.holdem.pb.Def.KeepSeatReason = {
+  KSR_NONE: 0,
+  KSR_TAKE_SEAT: 1,
+  KSR_ACTIVE: 2,
+  KSR_NOCHIP: 3
 };
 
 /**
@@ -6268,7 +6279,8 @@ proto.holdem.pb.Player.toObject = function(includeInstance, msg) {
     hunterKillAwardOther: jspb.Message.getFieldWithDefault(msg, 19, 0),
     hunterHeadValue: jspb.Message.getFieldWithDefault(msg, 20, 0),
     vip: jspb.Message.getFieldWithDefault(msg, 21, 0),
-    keepSeatDeadline: jspb.Message.getFieldWithDefault(msg, 22, 0)
+    keepSeatDeadline: jspb.Message.getFieldWithDefault(msg, 22, 0),
+    keepSeatReason: jspb.Message.getFieldWithDefault(msg, 23, 0)
   };
 
   if (includeInstance) {
@@ -6393,6 +6405,10 @@ proto.holdem.pb.Player.deserializeBinaryFromReader = function(msg, reader) {
     case 22:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setKeepSeatDeadline(value);
+      break;
+    case 23:
+      var value = /** @type {!proto.holdem.pb.Def.KeepSeatReason} */ (reader.readEnum());
+      msg.setKeepSeatReason(value);
       break;
     default:
       reader.skipField();
@@ -6575,6 +6591,13 @@ proto.holdem.pb.Player.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt64(
       22,
+      f
+    );
+  }
+  f = message.getKeepSeatReason();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      23,
       f
     );
   }
@@ -6942,6 +6965,21 @@ proto.holdem.pb.Player.prototype.getKeepSeatDeadline = function() {
 /** @param {number} value */
 proto.holdem.pb.Player.prototype.setKeepSeatDeadline = function(value) {
   jspb.Message.setField(this, 22, value);
+};
+
+
+/**
+ * optional Def.KeepSeatReason keep_seat_reason = 23;
+ * @return {!proto.holdem.pb.Def.KeepSeatReason}
+ */
+proto.holdem.pb.Player.prototype.getKeepSeatReason = function() {
+  return /** @type {!proto.holdem.pb.Def.KeepSeatReason} */ (jspb.Message.getFieldWithDefault(this, 23, 0));
+};
+
+
+/** @param {!proto.holdem.pb.Def.KeepSeatReason} value */
+proto.holdem.pb.Player.prototype.setKeepSeatReason = function(value) {
+  jspb.Message.setField(this, 23, value);
 };
 
 

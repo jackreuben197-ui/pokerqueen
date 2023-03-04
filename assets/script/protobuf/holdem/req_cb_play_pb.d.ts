@@ -38,6 +38,9 @@ export class ServerMessageCbPlay extends jspb.Message {
   getStatus(): number;
   setStatus(value: number): void;
 
+  getCurrent(): number;
+  setCurrent(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbPlay.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbPlay): ServerMessageCbPlay.AsObject;
@@ -51,6 +54,7 @@ export class ServerMessageCbPlay extends jspb.Message {
 export namespace ServerMessageCbPlay {
   export type AsObject = {
     status: number,
+    current: number,
   }
 }
 

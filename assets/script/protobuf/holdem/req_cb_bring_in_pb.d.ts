@@ -35,6 +35,12 @@ export class ServerMessageCbBringIn extends jspb.Message {
   getStatus(): number;
   setStatus(value: number): void;
 
+  getBringIn(): number;
+  setBringIn(value: number): void;
+
+  getCurrent(): number;
+  setCurrent(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbBringIn.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbBringIn): ServerMessageCbBringIn.AsObject;
@@ -48,6 +54,8 @@ export class ServerMessageCbBringIn extends jspb.Message {
 export namespace ServerMessageCbBringIn {
   export type AsObject = {
     status: number,
+    bringIn: number,
+    current: number,
   }
 }
 

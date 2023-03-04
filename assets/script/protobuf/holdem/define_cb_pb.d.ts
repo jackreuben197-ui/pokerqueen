@@ -120,6 +120,20 @@ export class CBRoom extends jspb.Message {
   setSettingsList(value: Array<CBSetting>): void;
   addSettings(value?: CBSetting, index?: number): CBSetting;
 
+  clearMaxAmountsList(): void;
+  getMaxAmountsList(): Array<CBPlaySummary>;
+  setMaxAmountsList(value: Array<CBPlaySummary>): void;
+  addMaxAmounts(value?: CBPlaySummary, index?: number): CBPlaySummary;
+
+  getStartTime(): number;
+  setStartTime(value: number): void;
+
+  getDuration(): number;
+  setDuration(value: number): void;
+
+  getGameDuration(): number;
+  setGameDuration(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CBRoom.AsObject;
   static toObject(includeInstance: boolean, msg: CBRoom): CBRoom.AsObject;
@@ -135,6 +149,10 @@ export namespace CBRoom {
     roomId: number,
     name: string,
     settingsList: Array<CBSetting.AsObject>,
+    maxAmountsList: Array<CBPlaySummary.AsObject>,
+    startTime: number,
+    duration: number,
+    gameDuration: number,
   }
 }
 
@@ -202,6 +220,11 @@ export class CBGameResult extends jspb.Message {
   setSummaryList(value: Array<CBPlaySummary>): void;
   addSummary(value?: CBPlaySummary, index?: number): CBPlaySummary;
 
+  clearPublicCardsSelectedList(): void;
+  getPublicCardsSelectedList(): Array<boolean>;
+  setPublicCardsSelectedList(value: Array<boolean>): void;
+  addPublicCardsSelected(value: boolean, index?: number): boolean;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CBGameResult.AsObject;
   static toObject(includeInstance: boolean, msg: CBGameResult): CBGameResult.AsObject;
@@ -219,6 +242,7 @@ export namespace CBGameResult {
     resultCowboy?: CBHandResult.AsObject,
     resultBeauty?: CBHandResult.AsObject,
     summaryList: Array<CBPlaySummary.AsObject>,
+    publicCardsSelectedList: Array<boolean>,
   }
 }
 
@@ -370,6 +394,11 @@ export class CBHandResult extends jspb.Message {
   setSelectedList(value: Array<boolean>): void;
   addSelected(value: boolean, index?: number): boolean;
 
+  clearPublicCardsSelectedList(): void;
+  getPublicCardsSelectedList(): Array<boolean>;
+  setPublicCardsSelectedList(value: Array<boolean>): void;
+  addPublicCardsSelected(value: boolean, index?: number): boolean;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CBHandResult.AsObject;
   static toObject(includeInstance: boolean, msg: CBHandResult): CBHandResult.AsObject;
@@ -385,6 +414,7 @@ export namespace CBHandResult {
     cardsList: Array<number>,
     handValueType: number,
     selectedList: Array<boolean>,
+    publicCardsSelectedList: Array<boolean>,
   }
 }
 
@@ -476,6 +506,30 @@ export namespace CBHistoryItem {
     slot: DefCB.HistorySlotMap[keyof DefCB.HistorySlotMap],
     resultList: Array<DefCB.HistoryResultMap[keyof DefCB.HistoryResultMap]>,
     notOccurTimes: number,
+    occurTimes: number,
+  }
+}
+
+export class CBHistorySimpleItem extends jspb.Message {
+  getSlot(): DefCB.HistorySlotMap[keyof DefCB.HistorySlotMap];
+  setSlot(value: DefCB.HistorySlotMap[keyof DefCB.HistorySlotMap]): void;
+
+  getOccurTimes(): number;
+  setOccurTimes(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CBHistorySimpleItem.AsObject;
+  static toObject(includeInstance: boolean, msg: CBHistorySimpleItem): CBHistorySimpleItem.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CBHistorySimpleItem, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CBHistorySimpleItem;
+  static deserializeBinaryFromReader(message: CBHistorySimpleItem, reader: jspb.BinaryReader): CBHistorySimpleItem;
+}
+
+export namespace CBHistorySimpleItem {
+  export type AsObject = {
+    slot: DefCB.HistorySlotMap[keyof DefCB.HistorySlotMap],
     occurTimes: number,
   }
 }
@@ -649,6 +703,34 @@ export namespace CBUserPlay {
     name: string,
     avatar: string,
     amount: number,
+  }
+}
+
+export class CBUser extends jspb.Message {
+  getUserId(): number;
+  setUserId(value: number): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getAvatar(): string;
+  setAvatar(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CBUser.AsObject;
+  static toObject(includeInstance: boolean, msg: CBUser): CBUser.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CBUser, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CBUser;
+  static deserializeBinaryFromReader(message: CBUser, reader: jspb.BinaryReader): CBUser;
+}
+
+export namespace CBUser {
+  export type AsObject = {
+    userId: number,
+    name: string,
+    avatar: string,
   }
 }
 

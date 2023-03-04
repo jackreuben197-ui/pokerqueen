@@ -133,7 +133,7 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     //消息点击
     onMessageClick() {
-        UIComponent.open(UIDefine.UIMyMessage, { from: 0 }, { SceneUI: SceneManager.Instance.currUI });
+        UIComponent.open(UIDefine.UIMyMessage, { from: 2 }, { SceneUI: SceneManager.Instance.currUI });
     }
     //banner点击
     onBannerClick() {

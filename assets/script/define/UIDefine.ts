@@ -937,6 +937,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/message/UIMsgSystem",
     },
+    //带入申请列表
+    UIMsgBring: {
+        UIType: UIType.Form,
+        Name: "UIMsgBring",
+        Bundle: null,
+        Path: "main/lobby/message/UIMsgBring",
+    },
     //下方条目选择器
     UIDownSelector: {
         UIType: UIType.CommonUI,

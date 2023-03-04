@@ -8,6 +8,8 @@ import BottomSelector from "../../ui/component/BottomSelector";
 import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
+import UILobbyIndex from "../index/UILobbyIndex";
+import UIMe from "./UIMe";
 
 const { ccclass, property } = cc._decorator;
 
@@ -47,7 +49,7 @@ export default class UIEditInformation extends BaseFormPlus {
     }
     //刷新用户信息
     refreshUserInfo() {
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head, GameCache.Instance.headPic);
+        WebImageHelper.SetHeadImage(this.cc_Sprite$head, Web_User_Info.Response.data.user.avatar);
         this.refreshNick();
         this.refreshSex();
     }
@@ -67,6 +69,7 @@ export default class UIEditInformation extends BaseFormPlus {
         let icon: any = APIOrgClubUploadIcon.Response.data;
         if (icon) {
             await WebImageHelper.SetUrlImage(this.cc_Sprite$head, icon, null);
+            this.reqUserHead(icon);
         }
     }
 
@@ -113,7 +116,28 @@ export default class UIEditInformation extends BaseFormPlus {
             }
         ).then(
             (res: typeof Web_User_Info.Response) => {
-                this.refreshSex();
+                this.refreshUserInfo();
+                UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
+                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
+            },
+            (res: any) => {
+
+            }
+        )
+    }
+    //修改头像
+    reqUserHead(avatar: string) {
+
+        WWW.Instance.CommonAPI(
+            {
+                web_class: Web_User_Modify_User_Info,
+                body: {
+                    avatar: avatar,
+                }
+            }
+        ).then(
+            (res: typeof Web_User_Info.Response) => {
+                this.reqUserInfo();
             },
             (res: any) => {
 

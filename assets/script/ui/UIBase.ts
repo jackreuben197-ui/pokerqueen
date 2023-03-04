@@ -126,6 +126,12 @@ export default class UIBase extends BaseComponent {
             button_com.node.on("click", clickHandler, this);
         }
     }
+
+    protected setChildButtonClick(node: cc.Node, path: string, clickHandler: Function) {
+        let button = cc.find(path, node);
+        this.setButtonClick(button, clickHandler);
+    }
+
     //获取按钮节点是否可交互
     public getButtonInteractable(button: cc.Node) {
         if (!button) return;

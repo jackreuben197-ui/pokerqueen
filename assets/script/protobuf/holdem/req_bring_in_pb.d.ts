@@ -16,6 +16,9 @@ export class ClientMessageBringIn extends jspb.Message {
   getUseWallet(): boolean;
   setUseWallet(value: boolean): void;
 
+  getApplyBringIn(): boolean;
+  setApplyBringIn(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ClientMessageBringIn.AsObject;
   static toObject(includeInstance: boolean, msg: ClientMessageBringIn): ClientMessageBringIn.AsObject;
@@ -31,6 +34,7 @@ export namespace ClientMessageBringIn {
     room?: protobuf_holdem_define_pb.Room.AsObject,
     bringIn: number,
     useWallet: boolean,
+    applyBringIn: boolean,
   }
 }
 

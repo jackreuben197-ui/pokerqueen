@@ -132,10 +132,10 @@ export default class UIFriendMatch extends UIBase {
         this.joinBtn.interactable = this.EditBox.string.length == 6
         this.joinBtnBg.opacity = this.EditBox.string.length == 6 ? 255 : 25
     }
-    applyJoin() {
-        //UIComponent.open(UIDefine.UIMine_Message)
-        UIComponent.open(UIDefine.UIMyMessage, { from: 2 });
-    }
+    // applyJoin() {
+    //     //UIComponent.open(UIDefine.UIMine_Message)
+    //     UIComponent.open(UIDefine.UIMyMessage, { from: 2 });
+    // }
     async joinMatch() {
 
         let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string);
@@ -149,7 +149,7 @@ export default class UIFriendMatch extends UIBase {
     }
     openMessageList() {
         //UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 0 });
-        UIComponent.open(UIDefine.UIMyMessage, { from: 2 });
+        UIComponent.open(UIDefine.UIMyMessage, { from: 0 });
     }
     // update (dt) {}
 }

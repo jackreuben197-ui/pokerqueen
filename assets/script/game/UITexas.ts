@@ -31,7 +31,6 @@ import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
-import UIOutChipsComponent from "./ui/UIOutChipsComponent";
 import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
 import UITexasMenuComponent from "./ui/UITexasMenuComponent";
 import GameUtil from "./util/GameUtil";
@@ -108,9 +107,6 @@ export default class UITexas extends BaseScene {
     //座位模板
     Seat_Temp: cc.Node = null;
 
-
-    //UIAddChips: UIAddChipsComponent = null;
-    //UIOutChips: UIOutChipsComponent = null;
 
     textAlreadAnte: cc.Label = null;
     //个性设置界面

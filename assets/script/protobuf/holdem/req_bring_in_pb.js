@@ -63,7 +63,8 @@ proto.holdem.pb.ClientMessageBringIn.toObject = function(includeInstance, msg) {
   var f, obj = {
     room: (f = msg.getRoom()) && protobuf_holdem_define_pb.Room.toObject(includeInstance, f),
     bringIn: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    useWallet: jspb.Message.getFieldWithDefault(msg, 3, false)
+    useWallet: jspb.Message.getFieldWithDefault(msg, 3, false),
+    applyBringIn: jspb.Message.getFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -113,6 +114,10 @@ proto.holdem.pb.ClientMessageBringIn.deserializeBinaryFromReader = function(msg,
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setUseWallet(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setApplyBringIn(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -161,6 +166,13 @@ proto.holdem.pb.ClientMessageBringIn.serializeBinaryToWriter = function(message,
   if (f) {
     writer.writeBool(
       3,
+      f
+    );
+  }
+  f = message.getApplyBringIn();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -226,6 +238,23 @@ proto.holdem.pb.ClientMessageBringIn.prototype.getUseWallet = function() {
 /** @param {boolean} value */
 proto.holdem.pb.ClientMessageBringIn.prototype.setUseWallet = function(value) {
   jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional bool apply_bring_in = 4;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.ClientMessageBringIn.prototype.getApplyBringIn = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 4, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.ClientMessageBringIn.prototype.setApplyBringIn = function(value) {
+  jspb.Message.setField(this, 4, value);
 };
 
 

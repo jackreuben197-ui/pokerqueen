@@ -50,11 +50,11 @@ export default class MyMessageModel {
             msg_type: EnumMSG.MSG_ApplyList,
         },
     ]
-    //面板开启来源 对应索引-message_items
+    //面板开启来源 对应索引-message_items //0 朋友桌 1 公会桌 2 我的
     ui_show_from = {
-        0: [0, 1, 2, 3, 4, 5],//我的来源
+        0: [5],//朋友桌来源
         1: [0, 3, 4, 5],//公会来源
-        2: [5],//朋友桌来源
+        2: [0, 1, 2, 3, 4, 5],//我的来源[5],//朋友桌来源
     }
     //消息状态颜色
     content_colors = ["#757CAB", "#FF7C7C"]

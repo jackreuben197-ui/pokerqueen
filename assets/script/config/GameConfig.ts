@@ -125,3 +125,17 @@ export var Tabs_Status =
     4: [0, 0, 0, 0, 1, 0],
     5: [0, 0, 0, 0, 0, 1],
 }
+//获取游戏类型名
+export function GetGameTypeName(data: any): string {
+    let str = "NLH";
+    if (data.game_type == 1) {
+        str = "PLO4";
+    } else if (data.game_type == 2) {
+        str = "PLO5";
+    } else if (data.game_type == 3) {
+        str = "PLO6";
+    } else if (data.poker_type == 2) {
+        str = "6+";
+    }
+    return str;
+}

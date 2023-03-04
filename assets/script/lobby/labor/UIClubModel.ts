@@ -256,6 +256,7 @@ export class UIClubModel {
                     reject(content);
                 }.bind(this),
                 //headers: [['Content-Type:', 'image/jpeg']]
+                headers: [["X-Club", ClubCache.club_id]]
             });
         });
     }

@@ -215,6 +215,7 @@ export default class UIComponent {
     }
     //////////////////////////////
     setComponent(component: UIBase) {
+        console.log("setComponent>>>>>", component.name);
         this[component.name] = component;
     }
     getComponent<T>(component_name: string): T {

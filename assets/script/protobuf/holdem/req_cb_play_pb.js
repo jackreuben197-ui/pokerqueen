@@ -283,7 +283,8 @@ proto.holdem.pb.ServerMessageCbPlay.prototype.toObject = function(opt_includeIns
  */
 proto.holdem.pb.ServerMessageCbPlay.toObject = function(includeInstance, msg) {
   var f, obj = {
-    status: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    status: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    current: jspb.Message.getFieldWithDefault(msg, 2, 0)
   };
 
   if (includeInstance) {
@@ -324,6 +325,10 @@ proto.holdem.pb.ServerMessageCbPlay.deserializeBinaryFromReader = function(msg, 
       var value = /** @type {number} */ (reader.readInt32());
       msg.setStatus(value);
       break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setCurrent(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -360,6 +365,13 @@ proto.holdem.pb.ServerMessageCbPlay.serializeBinaryToWriter = function(message, 
       f
     );
   }
+  f = message.getCurrent();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -375,6 +387,21 @@ proto.holdem.pb.ServerMessageCbPlay.prototype.getStatus = function() {
 /** @param {number} value */
 proto.holdem.pb.ServerMessageCbPlay.prototype.setStatus = function(value) {
   jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 current = 2;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageCbPlay.prototype.getCurrent = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageCbPlay.prototype.setCurrent = function(value) {
+  jspb.Message.setField(this, 2, value);
 };
 
 

@@ -1182,7 +1182,7 @@ export default class TexasGame {
                                     returnOrNew: 1,
                                     store: 0,
                                     clubId: res.data.last_bring_out.club_id,
-                                    keepSeat: false
+                                    applyBringIn: false
                                 },
                             });
                         }
@@ -1201,7 +1201,7 @@ export default class TexasGame {
                                     returnOrNew: res.data.return_table ? 1 : 0,
                                     store: 0,
                                     clubId: res.data.last_bring_out.club_id,
-                                    keepSeat: false
+                                    applyBringIn: false
                                 },
                             });
                         }
@@ -1237,11 +1237,9 @@ export default class TexasGame {
                             returnOrNew: 0,
                             store: 0,
                             clubId: res.data.last_bring_out.club_id,
-                            keepSeat: false,
-                            //ApplyBringIn: true,
+                            applyBringIn: true,
                         },
                     });
-
                 }
                 else {
                     if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
@@ -1462,40 +1460,23 @@ export default class TexasGame {
                 UIComponent.Instance.Toast("声纹认证暂未开启");
             }
             else {
+                ProtocolAgency.Send<ClientMessageSeated.AsObject>({
+                    Code: ProtocolCode.Protocol_Holdem_Seated,
+                    RoomID: GameCache.Instance.room_id,
+                    MatchID: GameCache.Instance.match_id,
+                    Body: {
+                        room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                        seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
+                        bringIn: anteNumber,//rec.Chips
+                        autoOnTable: autoOnTable,
+                        autoUseWallet: autoUseWallet,
+                        returnOrNew: 0,
+                        store: 0,
+                        applyBringIn: (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.limit_bring_in == 1,
+                        clubId: club_id,
 
-                //判断是否需要带入申请 （朋友桌）
-                if (GameCache.Instance.limit_bring_in == 1 && GameCache.Instance.origin_type == 4 && GameCache.Instance.friendBringInStatus != 2) {
-                    UITexasModel.mInstance.APIFriendBringIn({
-                        room_id: GameCache.Instance.room_id,
-                        bring_in: anteNumber
-                    }).then((rec: typeof APIOrgFriendBringIn.ResponseData) => {
-                        if (rec.data?.status == 1) {
-                            //UIComponent.Instance.Toast(i18nMgr.Get("roomError171_5"));
-                            UIComponent.Instance.Toast("申请成功，等待房主审核");
-                        }
-                    }).catch(obj => {
-
-                    })
-                } else {
-                    ProtocolAgency.Send<ClientMessageSeated.AsObject>({
-                        Code: ProtocolCode.Protocol_Holdem_Seated,
-                        RoomID: GameCache.Instance.room_id,
-                        MatchID: GameCache.Instance.match_id,
-                        Body: {
-                            room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
-                            seatId: this.GetRemoteSeatID(this.cacheSitdownSeatId),
-                            bringIn: anteNumber,//rec.Chips
-                            autoOnTable: autoOnTable,
-                            autoUseWallet: autoUseWallet,
-                            returnOrNew: 0,
-                            store: 0,
-                            keepSeat: false,
-                            clubId: club_id,
-
-                        },
-                    });
-
-                }
+                    },
+                });
             }
             return;
         }
@@ -1511,7 +1492,8 @@ export default class TexasGame {
             Body: {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                 bringIn: anteNumber,
-                useWallet: IsUseWallet
+                useWallet: IsUseWallet,
+                applyBringIn: (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.limit_bring_in == 1,
             },
         });
 

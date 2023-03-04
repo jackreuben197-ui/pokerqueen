@@ -48,7 +48,7 @@ export default class UIMe extends UIBasePlus {
     //刷新用户信息
     refreshUserInfo() {
         this.cc_Label$id.string = `ID:${Web_User_Info.Response.data.user.un_id}`;
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head, GameCache.Instance.headPic);
+        WebImageHelper.SetHeadImage(this.cc_Sprite$head, Web_User_Info.Response.data.user.avatar);
         this.refreshNick();
     }
     //刷新钱包获取钻石
@@ -98,7 +98,7 @@ export default class UIMe extends UIBasePlus {
                 break;
             case 2://我的消息
                 //UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 2 });
-                UIComponent.open(UIDefine.UIMyMessage, { from: 0 });
+                UIComponent.open(UIDefine.UIMyMessage, { from: 2 });
                 break;
             case 3://设置
                 UIComponent.open(UIDefine.SettingsForm);

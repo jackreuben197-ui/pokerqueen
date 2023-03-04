@@ -73,6 +73,15 @@ export namespace Def {
 
   export const Round: RoundMap;
 
+  export interface KeepSeatReasonMap {
+    KSR_NONE: 0;
+    KSR_TAKE_SEAT: 1;
+    KSR_ACTIVE: 2;
+    KSR_NOCHIP: 3;
+  }
+
+  export const KeepSeatReason: KeepSeatReasonMap;
+
   export interface StandUpReasonMap {
     SUR_NONE: 0;
     SUR_NOCHIP: 1;
@@ -1092,6 +1101,9 @@ export class Player extends jspb.Message {
   getKeepSeatDeadline(): number;
   setKeepSeatDeadline(value: number): void;
 
+  getKeepSeatReason(): Def.KeepSeatReasonMap[keyof Def.KeepSeatReasonMap];
+  setKeepSeatReason(value: Def.KeepSeatReasonMap[keyof Def.KeepSeatReasonMap]): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Player.AsObject;
   static toObject(includeInstance: boolean, msg: Player): Player.AsObject;
@@ -1126,6 +1138,7 @@ export namespace Player {
     hunterHeadValue: number,
     vip: number,
     keepSeatDeadline: number,
+    keepSeatReason: Def.KeepSeatReasonMap[keyof Def.KeepSeatReasonMap],
   }
 }
 

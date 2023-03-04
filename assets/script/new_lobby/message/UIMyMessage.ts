@@ -52,6 +52,11 @@ export default class UIMyMessage extends BaseFormPlus {
             } else {
                 item.active = false;
             }
+
+            if (indexs[index] == 5 && from == 1 && !this._param.apply) {
+                item.active = false;
+            }
+
             let item_sc = item.getComponent(ItemMyMessage);
             item_sc.refreshName(i18nMgr.Get(MyMessageModel.Instance.message_items[index].name));
             item_sc.refreshContent(i18nMgr.Get("MsgContentUnRead"), MyMessageModel.Instance.content_colors[0]);
@@ -105,7 +110,7 @@ export default class UIMyMessage extends BaseFormPlus {
                 UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name });
                 break;
             case 5://带入申请
-                //this.reqMsgList(EnumMSG.MSG_ApplyList);
+                UIComponent.open(UIDefine.UIMsgBring, { from: this._param.from, name: item.name });
                 break;
         }
     }

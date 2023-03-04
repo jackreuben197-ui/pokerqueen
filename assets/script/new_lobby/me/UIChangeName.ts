@@ -6,6 +6,7 @@ import { APIUserDiamondsWallet, Web_Config_Global_Config, Web_User_Check_Nicknam
 import BottomSelector from "../../ui/component/BottomSelector";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
+import UILobbyIndex from "../index/UILobbyIndex";
 import UIEditInformation from "./UIEditInformation";
 import UIMe from "./UIMe";
 
@@ -73,7 +74,7 @@ export default class UIChangeName extends BaseFormPlus {
         this.onNickInputChange();
     }
     //刷新次数，显示消耗
-    refreshModifyCount(){
+    refreshModifyCount() {
         this.cc_RichText$cost.string = `<color=#757CAB>消耗：</color><color=#7187FF><color=#7187FF>${Web_User_Info.Response.data.user.mnt > 0 ? this.user_modify_name_cost : 0}</color>`;
     }
 
@@ -128,15 +129,15 @@ export default class UIChangeName extends BaseFormPlus {
             return;
         }
         //判断钻石数量 非免费情况
-        if( Web_User_Info.Response.data.user.mnt > 0 &&
-            APIUserDiamondsWallet.Response.data.diamonds_wallet?.diamonds < this.user_modify_name_cost){
+        if (Web_User_Info.Response.data.user.mnt > 0 &&
+            APIUserDiamondsWallet.Response.data.diamonds_wallet?.diamonds < this.user_modify_name_cost) {
             UIComponent.Instance.ToastLanguage("UIMine_DiamondsNotEnough");
             return;
         }
         this.reqCheckName();
 
     }
-    onNickInputChange(){
+    onNickInputChange() {
         this.cc_Label$count.string = `${this.cc_EditBox$input.string.length}/10`
     }
 
@@ -169,13 +170,14 @@ export default class UIChangeName extends BaseFormPlus {
             }
         ).then(
             (res: typeof Web_User_Info.Response) => {
-                
+
                 this.refreshModifyCount();
 
                 this.refreshWallet();
-                
-                UIComponent.Instance.getComponent<UIMe>("UIMe").refreshNick();
-                UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation").refreshNick();
+
+                UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
+                UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation")?.refreshNick();
+                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
             },
             (res: any) => {
 
@@ -183,20 +185,20 @@ export default class UIChangeName extends BaseFormPlus {
         )
     }
     //请求改变姓名
-    reqChangeName(){
+    reqChangeName() {
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_User_Modify_User_Info,
-                body:{
-				    nick_name : this.cc_EditBox$input.string,
+                body: {
+                    nick_name: this.cc_EditBox$input.string,
                 }
             }
         ).then(
             (res: typeof Web_User_Modify_User_Info.Response) => {
-                
+
                 GameCache.Instance.nick = this.cc_EditBox$input.string;
 
-				UIComponent.Instance.ToastLanguage("UIMine_Setting116");
+                UIComponent.Instance.ToastLanguage("UIMine_Setting116");
 
                 this.reqUserInfo();
 
