@@ -92,30 +92,30 @@ export default class UIlaborMerberManager extends BaseForm {
     }
 
     async dealData() {
-        this._reqing = true
+        // this._reqing = true
 
-        let data: any = Web_Org_Club_Get.Response.data;
-        await UIClubModel.mInstance.APIOrgMemberList(data.random_id, this._offset, 10, this._search);
-        let _data: any = APIOrgMemberList.Response.data
-        this.initTop()
+        // let data: any = Web_Org_Club_Get.Response.data;
+        // await UIClubModel.mInstance.APIOrgMemberList(data.random_id, this._offset, 10, this._search);
+        // let _data: any = APIOrgMemberList.Response.data
+        // this.initTop()
 
-        this._reqing = false
-        if (!_data.data) {
-            _data.data = [];
-        }
+        // this._reqing = false
+        // if (!_data.data) {
+        //     _data.data = [];
+        // }
 
-        _data.data.forEach(element => {
-            this._list.push(element);
-        });  //分页的时候使用的
-        this._total = _data.total
+        // _data.data.forEach(element => {
+        //     this._list.push(element);
+        // });  //分页的时候使用的
+        // this._total = _data.total
 
-        this.list.numItems = this._list.length;
-        this._offset = this._list.length;
-        this._reqEnd = this._list.length == this._total;
+        // this.list.numItems = this._list.length;
+        // this._offset = this._list.length;
+        // this._reqEnd = this._list.length == this._total;
 
-        this.list.numItems = this._list.length;
-        this._offset = this._list.length;
-        this._reqEnd = this._list.length == this._total;
+        // this.list.numItems = this._list.length;
+        // this._offset = this._list.length;
+        // this._reqEnd = this._list.length == this._total;
     }
 
     async sousuoBtn() {

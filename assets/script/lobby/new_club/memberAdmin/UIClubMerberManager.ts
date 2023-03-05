@@ -98,7 +98,7 @@ export default class UIClubMerberManager extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIClub_MemberManager"
         this.comFormTitle.initData(title, this);
-        this.titleNodeClick(null, TITALtYPE.MEMBER)
+        this.titleNodeClick(null, TITALtYPE.MEMBER, false)
         this.tabNode.initData(memberAdminTabConfig, this.switchTabBtnState.bind(this), this)
         this.initTop();
         this.kqmsp_st.setIsOn(ClubCache.auto_audit_switch == 1)
@@ -116,7 +116,7 @@ export default class UIClubMerberManager extends BaseForm {
         this.setText(this.dropNode_lbl, memberSortConfig[0].desc);
     }
 
-    titleNodeClick(event, customData) {
+    titleNodeClick(event, customData, request: boolean = true) {
         this._selectTitle = customData
         this.sousuo.active = this._selectTitle == TITALtYPE.MEMBER
         this.sortNode.active = this._selectTitle == TITALtYPE.MEMBER
@@ -127,6 +127,7 @@ export default class UIClubMerberManager extends BaseForm {
         this.applyListT.getChildByName('title').color = this._selectTitle == TITALtYPE.MEMBER ? cc.color().fromHEX('#757CAB') : cc.color().fromHEX('#EEF5FF')
         this.memberList.node.active = this._selectTitle == TITALtYPE.MEMBER
         this.applyNode.active = this._selectTitle == TITALtYPE.APPLY
+        if (!request) return;
         if (this._selectTitle == TITALtYPE.MEMBER) {
             this.reqDataAgain()
         } else {
@@ -161,7 +162,9 @@ export default class UIClubMerberManager extends BaseForm {
         // if (!isInit) {
         //     this.reqDataAgain()
         // }
+        console.log("switchTabBtnState");
         this.reqDataAgain()
+
     }
     async reqDataAgain() {
         this._offset = 0;
@@ -172,6 +175,9 @@ export default class UIClubMerberManager extends BaseForm {
         this.dealData()
     }
     async dealData() {
+
+
+
         this._reqing = true
 
         let params = {

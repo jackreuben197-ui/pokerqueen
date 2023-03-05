@@ -1,5 +1,7 @@
 import TabsGroup from "../../../common/TabsGroup";
+import { UIDownSelectorParam } from "../../../common/UIDownSelector";
 import { Tabs_Status, TextColor } from "../../../config/GameConfig";
+import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
@@ -7,6 +9,7 @@ import { i18nMgr } from "../../../i18n/i18nMgr";
 import { Web_Club_Agent_Friend_Data, Web_Club_Agent_Friend_Info, WWW } from "../../../net/https/WebRequest";
 import GGCombobox from "../../../ui/component/GGCombobox";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
+import UIComponent from "../../../ui/UIComponent";
 //贵宾统计
 const { ccclass, property } = cc._decorator;
 
@@ -19,7 +22,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     cc_Label$gc: cc.Label = null;
 
     //GGCombobox$Gold: GGCombobox = null;
-
+    $down_list: cc.Node = null;
     cc_Label$down_list: cc.Label = null;
 
     $Detail: cc.Node = null;
@@ -55,6 +58,12 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         { show: "UIGuild_CoinType1", index: 2, gold_type: 4 },
     ];
 
+
+    // UIGuild_CoinType1=Chip
+    // UIGuild_CoinType2=UC
+    // UIGuild_CoinType3=GC
+
+
     request_quene: any[] = [];
 
     //记录当前数据 1 2 4
@@ -69,6 +78,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
 
     regiterTouchEvents() {
         super.regiterTouchEvents();
+        this.setButtonClick(this.$down_list, this.onClickDownlist);
     }
 
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
@@ -122,12 +132,18 @@ export default class UIClubVipStatistics extends BaseFormPlus {
 
     //刷新下面数据
     refreshFriendData() {
-        let gold_index = 0;
-        let gold_type = this.Com_Gold_List[gold_index].gold_type;
-        let obj = this.currData[gold_type];
-        this.RefreshDetailItem(this.$Detail.getChildByName("Item1"), [obj.total_hand, 8, 8]);
-        this.RefreshDetailItem(this.$Detail.getChildByName("Item2"), [obj.total_profit, 9, 9]);
-        this.RefreshDetailItem(this.$Detail.getChildByName("Item3"), [obj.total_game_cnt, 10, 10]);
+        //let gold_index = 0;
+        //let gold_type = this.Com_Gold_List[gold_index].gold_type;
+        ///let obj = this.currData[gold_type];
+
+        //1 当天  2 :7天 4：所有
+        let a_1 = this.currData[1];
+        let a_2 = this.currData[2];
+        let a_4 = this.currData[4];
+
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item1"), [a_4.total_hand, a_1.total_hand, a_2.total_hand]);
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item2"), [a_4.total_game_cnt, a_1.total_game_cnt, a_2.total_game_cnt]);
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item3"), [a_4.total_profit, a_1.total_profit, a_2.total_profit]);
     }
     ////////////////////////////////////
     executeQuene() {
@@ -201,4 +217,23 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         if (index == -1) return;
         this.reqAgentFriendData(index);
     }
+
+    //选择器点击
+    onClickDownlist() {
+        UIComponent.open<UIDownSelectorParam>(UIDefine.UIDownSelector, {
+            this: this,
+            select_texts: [
+                i18nMgr.Get(this.Com_Gold_List[0].show),
+                i18nMgr.Get(this.Com_Gold_List[1].show),
+                i18nMgr.Get(this.Com_Gold_List[2].show),
+            ],
+            confirm_text: i18nMgr.Get("CommitOK"),
+            select: this.gold_index,
+            confirm_click: (index) => {
+                this.gold_index = index;
+                this.refreshDownListLabel();
+            }
+        })
+    }
+
 }

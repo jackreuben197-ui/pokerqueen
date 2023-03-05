@@ -206,7 +206,7 @@ export default class UIClubHome extends BaseForm {
                 break;
             case 3:
                 if (ClubCache.user_level == 4) {
-                    UIComponent.open(UIDefine.UIClubVipMemberManage)
+                    UIComponent.open(UIDefine.UIClubVipOffline, { user_id: Web_User_Info.Response.data.user.user_id, from: 1 });
                 } else {
                     UIComponent.open(UIDefine.UIClubMerberManager)
                 }

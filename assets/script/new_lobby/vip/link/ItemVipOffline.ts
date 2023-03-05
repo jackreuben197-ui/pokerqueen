@@ -30,8 +30,8 @@ export default class ItemVipOffline extends UIBasePlus {
     $T_On: cc.Node = null;
     $T_Off: cc.Node = null;
     //////////////////////////////////////
-    protected _param: { data: any, index: number, sort_type: number, hide_follow: boolean, parent: { onItemClick?: (index: number, switch_on: boolean) => void } } = null;
-    private _switch: boolean = false;
+    //protected _param: { data: any, index: number, sort_type: number, hide_follow: boolean, parent: { onItemClick?: (index: number, switch_on: boolean) => void } } = null;
+    private _checked: boolean = false;
 
     //成员排序key
     // private sort_type_key = {
@@ -47,11 +47,10 @@ export default class ItemVipOffline extends UIBasePlus {
 
     regiterTouchEvents() {
         super.regiterTouchEvents();
-        this.setButtonClick(this.$ToggleClick, this.switchClick);
+        this.setButtonClick(this.$ToggleClick, this.checkClick);
     }
 
     public refreshUI(data) {
-
 
         //user_level //用户等级 0 普通 1会长  3管理员 4代理
 
@@ -76,41 +75,39 @@ export default class ItemVipOffline extends UIBasePlus {
 
         this.$Forbidden.active = data.wallet_forbidden;
 
-        this.$ToggleClick.active = this._param.sort_type == 0;
-
-        this.cc_Label$time.node.active = this._param.sort_type > 0;
-
         this.cc_Sprite$icon.spriteFrame = ClubCache.getUserLevelIcon(this._param.data.user_level);
 
-        this.switch = false;
+        if (this._param.edit_obj) {
+
+            this.$ToggleClick.active = true;
+
+            this.cc_Label$time.node.active = false;
+
+            this.checked = this._param.edit_obj.checked;
+
+        } else {
+            this.$ToggleClick.active = false;
+
+            this.cc_Label$time.node.active = true;
+        }
+
     }
 
     vislbleFollow(boo: boolean) {
         this.cc_Label$member.node.active = boo;
     }
 
-    set switch(status: boolean) {
-        this._switch = status;
-        this._switch ? this.switchOn() : this.switchOff();
+    set checked(status: boolean) {
+        this._checked = status;
+        this.$T_On.active = status;
+        this.$T_Off.active = !status;
     }
-    get switch(): boolean {
-        return this._switch;
+    get checked(): boolean {
+        return this._checked;
     }
-
-    //设置勾选
-    private switchOn() {
-        this.$T_On.active = true;
-        this.$T_Off.active = false;
-    }
-    //设置取消
-    private switchOff() {
-        this.$T_On.active = false;
-        this.$T_Off.active = true;
-    }
-    ///////////////////点击
     //开关点击
-    private switchClick() {
-        this.switch = !this.switch;
-        this._param.parent?.onItemClick?.(this._param.index, this.switch);
+    private checkClick() {
+        this.checked = !this.checked;
+        this._param.edit_obj?.own?.onToggleCheck?.(this.checked, this._param.data.user_id);
     }
 }

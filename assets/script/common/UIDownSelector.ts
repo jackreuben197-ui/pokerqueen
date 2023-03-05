@@ -44,9 +44,12 @@ export default class UIDownSelector extends UIBasePlus {
         this.setButtonClick(this.$confirm, this.onClickConfirm);
     }
     refreshUI(data: UIDownSelectorParam) {
+
         this.clearItems();
 
         let status = Tabs_Status[this.select];
+
+        this.cc_Label$confirm_text.string = data.confirm_text || "OK";
 
         data.select_texts.forEach((text, index) => {
             let item = this.pool.GetNode();

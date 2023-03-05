@@ -10406,7 +10406,7 @@
     },
     "component": "",
     "_componentId": "b9fd47K9L9Ht4hzJnFO/y+W",
-    "handler": "onClickBtn",
+    "handler": "btnclick",
     "customEventData": "2"
   },
   {
@@ -10928,7 +10928,7 @@
     },
     "component": "",
     "_componentId": "b9fd47K9L9Ht4hzJnFO/y+W",
-    "handler": "onClickBtn",
+    "handler": "btnclick",
     "customEventData": "1"
   },
   {
@@ -12006,7 +12006,7 @@
     },
     "component": "",
     "_componentId": "b9fd47K9L9Ht4hzJnFO/y+W",
-    "handler": "onClickBtn",
+    "handler": "btnclick",
     "customEventData": "3"
   },
   {
@@ -12626,8 +12626,8 @@
     },
     "component": "",
     "_componentId": "b9fd47K9L9Ht4hzJnFO/y+W",
-    "handler": "onClickBtn",
-    "customEventData": ""
+    "handler": "btnclick",
+    "customEventData": "4"
   },
   {
     "__type__": "cc.PrefabInfo",

@@ -6,21 +6,24 @@ import { GameConfig, Member_Order_List, Tabs_Status, TextColor } from "../../../
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { Web_Club_Agent_UserList, Web_Club_Agent_UserListCover, WWW } from "../../../net/https/WebRequest";
+import { APIOrgMemberList, Web_Club_Agent_UserList, Web_Club_Agent_UserListCover, WWW } from "../../../net/https/WebRequest";
 import ItemVipOffline from "../../../new_lobby/vip/link/ItemVipOffline";
 
 import GGCombobox from "../../../ui/component/GGCombobox";
 import GGSwitch from "../../../ui/component/GGSwitch";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
+import { UIClubModel } from "../../labor/UIClubModel";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIClubVipOffline extends BaseFormPlus {
     //文本
-    private Text_Switch: string = "Hide current offline players";
+    //private Text_Switch: string = "Hide current offline players";
     ///////////////////////引用声明////////////////////////
+
+    $Top: cc.Node = null;
 
     $down_list: cc.Node = null;
 
@@ -29,8 +32,6 @@ export default class UIClubVipOffline extends BaseFormPlus {
     cc_Label$down_list: cc.Label = null;
 
     $TopTabs: cc.Node = null;
-    $ItemVipManage: cc.Node = null;
-    $ItemVipManageEdit: cc.Node = null;
     $Btn_Searcher1: cc.Node = null;
     $Btn_Searcher2: cc.Node = null;
     $Page0: cc.Node = null;
@@ -66,6 +67,11 @@ export default class UIClubVipOffline extends BaseFormPlus {
 
     top_tabs_group: TabsGroup;
 
+    //记录当前线下成员
+    current_offlines: any = null;
+
+    ids: any = null;
+
     protected lateLoad() {
         super.lateLoad();
         this.item_member_pool = new SimpleNodePool(this.$ItemVipOffline);
@@ -81,65 +87,109 @@ export default class UIClubVipOffline extends BaseFormPlus {
         this.GGSwitch$Follow.clickObj = { click: this.followClick, self: this };
     }
 
+    //param from 样式
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.downSelectIndex = -1;
+        this.$Top.active = param.from == 0;
+        this.$Page0.getComponent(cc.Widget).top = param.from == 0 ? 202 : 0;
         this.top_tabs_group.reset();
-        this.cc_EditBox$Searcher1.string = "";
-        this.cc_EditBox$Searcher2.string = "";
     }
     fadeInComplete() {
         super.fadeInComplete();
         //打开完成进行处理
     }
-    refreshMemberList(list: any[] = null, sort_type: number = 1) {
+    refreshOfflineMemberList(list: any[] = null) {
         this.clearScroller(this.cc_ScrollView$Scroller1, this.item_member_pool);
         if (!list) return;
         list.forEach((data, index) => {
             let item = this.item_member_pool.GetNode();
             item.parent = this.cc_ScrollView$Scroller1.content;
-            item.getComponent(ItemVipOffline).onShow({ data: data, index: index, sort_type: sort_type, parent: this });
             item.getComponent(ItemVipOffline).index = index;
+            item.getComponent(ItemVipOffline).onShow({ data: data });
         })
     }
     refreshMemberEditList(list: any[] = null) {
         this.clearScroller(this.cc_ScrollView$Scroller2, this.item_member_pool);
         if (!list) return;
-        this.$Save.active = !(list.length == 0);
+        let count = 0;
         list.forEach((data, index) => {
+            let checked = this.checkUserInOfflines(data.user_id);
+            if (this.GGSwitch$Follow.isOn && checked) {
+                return true;
+            }
+            count++;
             let item = this.item_member_pool.GetNode();
             item.parent = this.cc_ScrollView$Scroller2.content;
-            item.getComponent(ItemVipOffline).onShow({ data: data, index: index, sort_type: 0, hide_follow: this.GGSwitch$Follow.isOn, parent: this });
+            //item.getComponent(ItemVipOffline).onShow({ data: data, index: index, sort_type: 0, hide_follow: this.GGSwitch$Follow.isOn, parent: this });
             item.getComponent(ItemVipOffline).index = index;
+            item.getComponent(ItemVipOffline).onShow(
+                {
+                    data: data,
+                    edit_obj: {
+                        checked: checked,
+                        own: this
+                    }
+                }
+            )
         })
+
+        this.$Save.active = count > 0;
     }
+
+    checkUserInOfflines(id: number) {
+        for (let user of this.current_offlines) {
+            if (user.user_id == id) return true;
+        }
+        return false;
+    }
+
 
     searchClick1() {
-        this.reqMemberList(Member_Order_List[this.downSelectIndex], this.cc_EditBox$Searcher1.string, true);
+        this.reqVipOfflineMemberList(this.downSelectIndex, this.cc_EditBox$Searcher1.string);
     }
     searchClick2() {
-        this.reqMemberList(Member_Order_List[0], this.cc_EditBox$Searcher2.string, true);
-    }
-    // //条目点击的回调
-    public onItemClick(index: number, switch_on: boolean) {
-        this.select_indexs[index] = switch_on;
-    }
-    //保存点击
-    private saveClick() {
-        this.reqMemberSave();
-    }
-    private followClick() {
-        let visible = !this.GGSwitch$Follow.isOn;
-        this.cc_ScrollView$Scroller2.content.children.forEach(item => {
-            item.getComponent(ItemVipOffline).vislbleFollow(visible);
-        });
+        this.reqMemberList(this.cc_EditBox$Searcher2.string);
     }
 
+
+
     //////////////////////////////////////////////请求
-    // -> 请求成员列表
-    reqMemberList(order_obj: any, search: string = "", edit: boolean = false) {
+
+    //请求公会内所有普通成员列表
+    reqMemberList(search: string = "") {
+
+        WWW.Instance.CommonAPI(
+            {
+                web_class: APIOrgMemberList,
+                body: {
+                    "club_random_id": ClubCache.random_id,
+                    "club_id": ClubCache.club_id,
+                    "search": search,
+                    "user_type": 1,
+                    "sort_type": 4,
+                    "order_type": 2,
+                    "limit": 20,
+                    "offset": 0,
+                },
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+
+                this.refreshMemberEditList(res.data?.data);
+            },
+            (res: any) => {
+
+            }
+        )
+    }
+
+    // -> 请求贵宾下线成员列表
+    reqVipOfflineMemberList(index: number, search: string = "") {
         //sort_type 排序类别(sort_type):1-输赢数;2-手数;3-服务费;4-最后登录时间
         //order_type 顺序类别(order_type):1-顺序;2-倒叙;
+        let order_obj = Member_Order_List[index];
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_Club_Agent_UserList,
@@ -157,14 +207,18 @@ export default class UIClubVipOffline extends BaseFormPlus {
             }
         ).then(
             (res: any) => {
-                if (edit) {
-                    this.refreshMemberEditList(res.data?.data);
-                } else {
-                    this.cc_Label$total_people.string = res.data?.data?.length || 0;
-                    this.refreshMemberList(res.data?.data, order_obj.sort_type);
+
+                this.cc_Label$total_people.string = res.data?.data?.length || 0;
+                this.refreshOfflineMemberList(res.data?.data);
+                if (search == "") {
+                    this.current_offlines = res.data?.data || [];
+                    this.ids = [];
+                    this.current_offlines.forEach(item => {
+                        this.ids.push(item.user_id);
+                    })
                 }
-                this.show_member_list = res.data?.data;
-                this.select_indexs = [];
+                //this.show_member_list = res.data?.data;
+                //this.select_indexs = [];
             },
             (res: any) => {
 
@@ -178,14 +232,9 @@ export default class UIClubVipOffline extends BaseFormPlus {
         let body = {
             "club_id": ClubCache.club_id,
             "agent_id": this._param.user_id,
-            "user_ids": []
+            "user_ids": this.ids
         }
-        this.select_indexs.forEach((boo: boolean, index: number) => {
-            if (boo) {
-                let member = this.show_member_list[index];
-                body.user_ids.push(member.user_id);
-            }
-        })
+
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_Club_Agent_UserListCover,
@@ -195,7 +244,7 @@ export default class UIClubVipOffline extends BaseFormPlus {
         ).then(
             (res: any) => {
                 UIComponent.Instance.Toast("save success");
-                this.reqMemberList(Member_Order_List[0], this.cc_EditBox$Searcher2.string, true);
+                //this.reqMemberList(Member_Order_List[0], this.cc_EditBox$Searcher2.string, true);
             },
             (res: any) => {
 
@@ -216,25 +265,26 @@ export default class UIClubVipOffline extends BaseFormPlus {
         if (index == 0) {
             this.$Page0.active = true;
             this.$Page1.active = false;
+            this.cc_EditBox$Searcher1.string = "";
+            this.downSelectIndex = -8;
             this.downListSelect(0);
         } else {
             this.$Page0.active = false;
             this.$Page1.active = true;
             this.cc_EditBox$Searcher2.string = "";
             this.clearScroller(this.cc_ScrollView$Scroller2, this.item_member_pool);
-            this.reqMemberList(Member_Order_List[0], this.cc_EditBox$Searcher2.string, true);
+            this.reqMemberList();
         }
     }
     //排序面板选择
     downListSelect(index: number) {
         if (this.downSelectIndex == index) return;
         this.downSelectIndex = index;
-        let order_obj = Member_Order_List[index];
         this.cc_ScrollView$Scroller1.scrollToTop();
         //this.setDownListLabel(this.downList_contents[index]);
         this.cc_Label$down_list.string = i18nMgr.Get(Member_Order_List[index].show);
         this.clearScroller(this.cc_ScrollView$Scroller1, this.item_member_pool);
-        this.reqMemberList(order_obj, this.cc_EditBox$Searcher1.string);
+        this.reqVipOfflineMemberList(index);
     }
 
     clearScroller(scroller: cc.ScrollView, pool: SimpleNodePool) {
@@ -262,5 +312,22 @@ export default class UIClubVipOffline extends BaseFormPlus {
             confirm_click: this.onSortSelect,
             select: this.downSelectIndex
         })
+    }
+
+    // 编辑项选中和取消
+    public onToggleCheck(checked: boolean, user_id: number) {
+        //this.select_indexs[index] = switch_on;
+        if (checked) {
+            this.ids.push(user_id);
+        } else {
+            this.ids.splice(this.ids.indexOf(user_id), 1);
+        }
+    }
+    //保存点击
+    private saveClick() {
+        this.reqMemberSave();
+    }
+    private followClick() {
+        this.refreshMemberEditList(APIOrgMemberList.Response.data?.data);
     }
 }

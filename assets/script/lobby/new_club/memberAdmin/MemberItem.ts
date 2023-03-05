@@ -76,8 +76,6 @@ export default class MemberItem extends UIBase {
         }
 
         cc.find('messLayout/panle/data', this.node).getComponent(cc.Label).string = string
-
-
     }
 
     async onClickItem(event) {
