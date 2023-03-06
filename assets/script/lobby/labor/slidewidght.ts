@@ -57,7 +57,7 @@ export default class slidewidght extends cc.Component {
             const x = 0 + _x * index;
             _nomalItem.x = x;
             _nomalItem['clickIndex'] = index;
-            _nomalItem.on(cc.Node.EventType.TOUCH_END, this.nomalItemClick, this);
+            // _nomalItem.on(cc.Node.EventType.TOUCH_END, this.nomalItemClick, this);
         }
         this._selectIndex = selectIndex;
         this.selectNum.x = this.itemNode.children[this._selectIndex].x
@@ -161,18 +161,18 @@ export default class slidewidght extends cc.Component {
     }
 
     nomalItemClick(event) {
-        let node = event.target;
-        this._selectIndex = node['clickIndex'];
-        this.selectNum.x = node.x
-        cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
-        if (this.node.parent.parent.name == 'dxm') {
-            this.setFdxmUi();
-            this._targetDe.resetDrjfp();
-            this._targetDe.changeQzsh(this._itemData[this._selectIndex]);
-        } else {
-            cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
-            this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
-        }
+        // let node = event.target;
+        // this._selectIndex = node['clickIndex'];
+        // this.selectNum.x = node.x
+        // cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
+        // if (this.node.parent.parent.name == 'dxm') {
+        //     this.setFdxmUi();
+        //     this._targetDe.resetDrjfp();
+        //     this._targetDe.changeQzsh(this._itemData[this._selectIndex]);
+        // } else {
+        //     cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
+        //     this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
+        // }
     }
     setFdxmUi() {
         cc.find('labelNode/lblNum', this.node.parent.parent).getComponent(cc.Label).string = this._itemData[this._selectIndex] + "/" + this._itemData[this._selectIndex] * 2;

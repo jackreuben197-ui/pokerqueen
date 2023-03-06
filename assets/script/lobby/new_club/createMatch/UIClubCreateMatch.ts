@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 19:12:51
+ * @LastEditTime: 2023-03-06 19:32:05
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -448,7 +448,7 @@ export default class UIClubCreateMatch extends BaseForm {
         }, this)
 
         this.yxbz.active = ClubCache.CreateGameType == 2
-        dxmTabConfig.defaultIndex = 0
+        dxmTabConfig.defaultIndex = this._selectRoleType
         this.dxmTabNode.initData(dxmTabConfig, (customData) => {
             this._selectRoleType = customData
             this.itemData.dxm = dxmConfig[this._selectRoleType]
