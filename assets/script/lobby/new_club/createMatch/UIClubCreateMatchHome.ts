@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 10:33:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-01 10:49:26
+ * @LastEditTime: 2023-03-06 13:48:02
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -71,7 +71,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         // this.refreshModel();
         ClubCache.joinCreateMatchType = param
-        let title = "UIClub_MatchTable"
+        let title = "UIGuild_CreateTable"
         this.comFormTitle.initData(title, this);
         this._selectRoleType = 0;
         this.titleNodeClick(null, TITALTYPE.GAME_TYPE)
