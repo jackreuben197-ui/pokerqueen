@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 15:36:25
+ * @LastEditTime: 2023-03-06 12:42:33
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -170,6 +170,7 @@ export default class UIClubMerberManager extends BaseForm {
         this._offset = 0;
         this._total = 0;
         this._list.length = 0;
+        this.memberList.numItems = 0;
         this._reqing = false;
         this._reqEnd = false;
         this.dealData()
