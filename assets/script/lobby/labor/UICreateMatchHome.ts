@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 11:27:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-24 12:51:52
+ * @LastEditTime: 2023-03-06 13:26:29
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UICreateMatchHome.ts
  */
 
@@ -59,7 +59,7 @@ export default class UICreateMatchHome extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.refreshModel();
-        let title = "UIClub_MatchTable"
+        let title = "UIGuild_CreateTable"
         this.comFormTitle.initData(title, this);
     }
     createMatch() {

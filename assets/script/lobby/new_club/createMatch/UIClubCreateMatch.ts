@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 13:03:41
+ * @LastEditTime: 2023-03-06 13:24:55
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -604,14 +604,16 @@ export default class UIClubCreateMatch extends BaseForm {
         this.fillName();
     }
     fillName() {
-        if (this.room_config) {
-            this.upLoadData(this.room_config.name)
-            return;
-        }
-        let _UISaveModel = cc.instantiate(this.UISaveModel);
-        _UISaveModel.parent = this.node
-        _UISaveModel.position = cc.v3(0, 0);
-        _UISaveModel.getComponent('UISaveModel').delagate = this;
+        // if (this.room_config) {
+        //     this.upLoadData(this.room_config.name)
+        //     return;
+        // }
+        // // let _UISaveModel = cc.instantiate(this.UISaveModel);
+        // _UISaveModel.parent = this.node
+        // _UISaveModel.position = cc.v3(0, 0);
+        // _UISaveModel.getComponent('UISaveModel').delagate = this;
+        this.upLoadData(' ')
+
     }
     async upLoadData(modelName) {
         cc.log('modelName==', modelName);
@@ -706,8 +708,8 @@ export default class UIClubCreateMatch extends BaseForm {
             if (ClubCache.joinCreateMatchType == 0) {
                 room_config.limit_friend_table = false
                 await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
+                TimeHelper.Sleep(3000);
                 this.post(EventName.matchModelChange)
-                // this.post(EventName.updateChessView);
             }
             else {
                 // //朋友桌

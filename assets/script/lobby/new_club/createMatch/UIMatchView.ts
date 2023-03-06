@@ -3,12 +3,13 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 15:53:40
+ * @LastEditTime: 2023-03-06 13:21:41
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIMatchView.ts
  */
 
 import List from "../../../common/List";
 import TabNode from "../../../common/tabNode";
+import { EventName } from "../../../config/EventName";
 import { ClubTabConfig } from "../../../frame/config/tabConfig";
 import { dxmConfig } from "../../../frame/data/rate/RateConfig";
 import GC from "../../../frame/GameControl";
@@ -57,6 +58,10 @@ export default class UIMatchView extends UIBase {
         this.gameTypeNode.children.forEach((item, index) => {
             this.bindClick(item, this.clickGameType, index);
         })
+    }
+    regiterDispatchEvent() {
+        super.regiterDispatchEvent();
+        this.listen(EventName.matchModelChange, this.reqDataAgain)
     }
 
     /**
