@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 14:31:14
+ * @LastEditTime: 2023-03-06 19:26:05
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght1.ts
  */
 
@@ -28,7 +28,7 @@ export default class slidewidght1 extends cc.Component {
     _small = 0;
     _big = 0;
     _offNum = 0; //每隔数值
-
+    fillsp: cc.Node = null;
     onLoad() {
         this.selectNum = this.node.getChildByName('selectNum')
         this.selectNum1 = this.node.getChildByName('selectNum1')
@@ -45,6 +45,7 @@ export default class slidewidght1 extends cc.Component {
     initUi(small, big, selectIndex, selectIndex1) {
         this.itemNode = this.node.getChildByName('itemNode')
         this.nomalItem = this.itemNode.getChildByName('nomalItem')
+        this.fillsp = this.node.getChildByName('fillsp')
         this.nomalItem.width = 5;
         this.nomalItem.height = 5;
         this._big = big;
@@ -72,9 +73,16 @@ export default class slidewidght1 extends cc.Component {
             _nomalItem['clickIndex'] = index;
             // _nomalItem.on(cc.Node.EventType.TOUCH_END, this.nomalItemClick, this);
         }
+
+        let indexArr = this.getIndex(selectIndex, selectIndex1)
+        selectIndex = indexArr[0]
+        selectIndex1 = indexArr[1]
         this.selectNum.x = this.itemNode.children[selectIndex].x
         this.selectNum1.x = this.itemNode.children[selectIndex1].x
 
+
+        this.fillsp.x = this.selectNum.x
+        this.fillsp.width = this.selectNum1.x - this.selectNum.x
         this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._small + selectIndex * this._offNum + ''
         this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string = this._small + selectIndex1 * this._offNum + ''
         this.selectNum['num'] = this._small + selectIndex * this._offNum
@@ -82,6 +90,22 @@ export default class slidewidght1 extends cc.Component {
 
         this.node.getChildByName('lbl_small').getComponent(cc.Label).string = this._small + ''
         this.node.getChildByName('lbl_big').getComponent(cc.Label).string = this._big + ''
+    }
+
+    getIndex(selectIndex, selectIndex1) {
+        let _selectIndex = 0
+        let _selectIndex1 = 0
+        let _leng = this._big / this._small
+        for (let index = 0; index < _leng; index++) {
+            if (this._small + this._offNum == selectIndex) {
+                _selectIndex = index
+            }
+            if (this._small + this._offNum == selectIndex1) {
+                _selectIndex1 = index
+            }
+        }
+        return [_selectIndex, _selectIndex1]
+
     }
 
 
@@ -158,6 +182,9 @@ export default class slidewidght1 extends cc.Component {
         let max = Math.max(this.selectNum['num'], this.selectNum1['num']) + ''
         this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = min
         this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string = max
+
+        this.fillsp.x = Math.min(this.selectNum1.x, this.selectNum.x)
+        this.fillsp.width = Math.abs(this.selectNum1.x - this.selectNum.x)
     }
 
     // update (dt) {}

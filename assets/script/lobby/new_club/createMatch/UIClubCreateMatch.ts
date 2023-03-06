@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 13:31:39
+ * @LastEditTime: 2023-03-06 19:12:51
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -77,6 +77,7 @@ export default class UIClubCreateMatch extends BaseForm {
     Straddle: cc.Node = null;
     yxbz: cc.Node = null;
     etp: cc.Node = null;
+    yxjz: cc.Node = null;
     coinNode: cc.Node = null;
     _bmState = false;
     _yckpState = false;
@@ -94,6 +95,7 @@ export default class UIClubCreateMatch extends BaseForm {
     _selectRoleType = 0;
     _btnType = 0;
     _selectTitle = 0;
+    deal_delayNum = 1;
 
     room_config = null;
 
@@ -215,6 +217,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.bcNode = this.getChildNodeOrComponent("bcNode");
         this.bcTabNode = this.getChildNodeOrComponent("bcTabNode", TabNode);
         this.ffrs = this.getChildNodeOrComponent("ffrs");
+        this.yxjz = this.getChildNodeOrComponent("yxjz");
     }
     async onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
@@ -308,6 +311,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this._dcjfpNum = room_config.retain_type
         this._jslxNum = room_config.settlement_type
         this._sksjNum = room_config.op_duration
+        this.deal_delayNum = room_config.deal_delay
         this._selectRoleType = room_config.blind_type - 1;
         //牌局时长
         this.calculateIndex('pjsc', room_config.play_duration / 3600)
@@ -337,11 +341,12 @@ export default class UIClubCreateMatch extends BaseForm {
         this.shareClubIdEd.string = room_config.share_clubs
 
 
-        let small = room_config.sb / 100 * 20;
+        // let small = room_config.sb / 2 
+        // this.itemDataIndex.jfpbs = room_config.min_rate / 100 / small
+        // this.itemDataIndex.jfpbs1 = room_config.max_rate / small
 
-        this.itemDataIndex.jfpbs = room_config.min_rate / 100 / small - 1
-        this.itemDataIndex.jfpbs1 = room_config.max_rate / 100 / small - 1
-
+        this.itemDataIndex.jfpbs = room_config.min_rate / 100 * (room_config.sb * 2)
+        this.itemDataIndex.jfpbs1 = room_config.max_rate / 100 * (room_config.sb * 2)
         ClubCache.CreateGameType = room_config.game_play_type
     }
     initUI() {
@@ -354,6 +359,7 @@ export default class UIClubCreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this._jslxNum}`, this.jslx).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._dcjfpNum}`, this.dcjfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._sksjNum}`, this.sksj).getComponent(cc.Toggle).isChecked = true;
+        cc.find(`ToggleContainer/toggle${this.deal_delayNum}`, this.yxjz).getComponent(cc.Toggle).isChecked = true;
 
         this.bcNode.active = this._jslxNum == 1
         if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
@@ -436,7 +442,7 @@ export default class UIClubCreateMatch extends BaseForm {
             }
         }, this)
 
-        gameChangeTypeTabConfig.defaultIndex = this._yxbzNum - 4;
+        gameChangeTypeTabConfig.defaultIndex = this._yxbzNum - 4 < 0 ? 0 : this._yxbzNum - 4;
         this.yxbzTabNode.initData(gameChangeTypeTabConfig, (customData) => {
             this._yxbzNum = Number(customData) + 4;
         }, this)
@@ -588,7 +594,6 @@ export default class UIClubCreateMatch extends BaseForm {
     }
     jsblToggle(event, customData) {
         this._jslxNum = Number(customData);
-        // this.fddm.active = this._jslxNum == 0
         this.bcNode.active = this._jslxNum == 1
     }
     sksjToggle(event, customData) {
@@ -596,6 +601,9 @@ export default class UIClubCreateMatch extends BaseForm {
     }
     yxbzToggle(event, customData) {
         this._yxbzNum = Number(customData);
+    }
+    yxjzToggle(event, customData) {
+        this.deal_delayNum = Number(customData)
     }
 
     saveModel(event, customData) {
@@ -678,7 +686,10 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.fee_permillage = Number(this.fwfbl.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) //服务费比例(0-100)
         room_config.second_public_cards = this._etpState;
         room_config.limit_bet_type = ClubCache.CreateGameType == 2 ? 1 : 0
-        room_config.anti_cheat_type = 1;  //防作弊
+        room_config.anti_cheat_type = this.deal_delayNum;
+
+        room_config.deal_delay = 1
+
         let params: any = { name: modelName, room_config: room_config }
 
         room_config.limit_bring_in = this._kzwjdrState ? 1 : 0
