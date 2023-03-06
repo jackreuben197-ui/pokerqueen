@@ -3,7 +3,7 @@
  * @Date: 2022-12-27 11:14:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 15:41:33
+ * @LastEditTime: 2023-03-06 13:04:08
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/upLevel/UIClubUpLevel.ts
  */
 
@@ -11,7 +11,7 @@ import BaseForm from "../../../ui/form/BaseForm";
 import ComFormTitle from "../../../common/ComFormTitle";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { UIClubModel } from "../../labor/UIClubModel";
-import { APIOrgClubLevelBenefit, APIOrgClubLevelInfo } from "../../../net/https/WebRequest";
+import { APIOrgClubLevelBenefit, APIOrgClubLevelInfo, APIUserDiamondsWallet } from "../../../net/https/WebRequest";
 import UIComponent from "../../../ui/UIComponent";
 import { UIDefine } from "../../../define/UIDefine";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
@@ -47,6 +47,9 @@ export default class UIClubUpLevel extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.getData();
+        await UIClubModel.mInstance.APIUserDiamondsWallet();
+        let wallet = APIUserDiamondsWallet.Response.data;
+        ClubCache._diamonds_wallet = wallet.diamonds_wallet
         this.initTop();
 
     }
@@ -93,6 +96,10 @@ export default class UIClubUpLevel extends BaseForm {
         let data = node.target.parent['levelData']
         if (ClubCache.level >= data.club_level) {
             UIComponent.Instance.Toast('公会等级大于当前选择的等级')
+            return
+        }
+        if (ClubCache._diamonds_wallet.diamonds < data.level_count) {
+            UIComponent.Instance.Toast('钻石余额不足')
             return
         }
 
