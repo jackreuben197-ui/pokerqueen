@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 12:18:02
+ * @LastEditTime: 2023-03-06 11:07:29
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIRecordDetail.ts
  */
 
@@ -70,8 +70,8 @@ export default class UIRecordDetail extends BaseFormPlus {
     async dealData() {
         this._reqing = true
         let info = {
-            limit: 20,         //条目
-            offset: this._offset,        //开始下标。例子（offset=0，limit=10，0-9。）
+            // limit: 1000,         //条目
+            // offset: this._offset,        //开始下标。例子（offset=0，limit=10，0-9。）
         }
 
         LobbyControl.getInstance().getRecordDetailInfo(this._roomId, info).then(
@@ -91,7 +91,7 @@ export default class UIRecordDetail extends BaseFormPlus {
 
                 this.list.numItems = this._list.length;
                 this._offset = this._list.length;
-                this._reqEnd = this._list.length == this._total;
+                this._reqEnd = true //this._list.length == this._total;
                 this.lb_tip.active = this.list.numItems == 0
             },
             (res) => {

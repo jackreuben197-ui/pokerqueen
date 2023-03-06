@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-28 10:38:24
+ * @LastEditTime: 2023-03-06 11:47:55
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforList.ts
  */
 
@@ -55,7 +55,6 @@ export default class MttPayforList extends BaseForm {
     }
     async dealData() {
         this._reqing = true
-        await UIClubModel.mInstance.APIMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: this._offset, limit: 20 })
         let _data: any = APIMttUserWallet.Response.data
         this._reqing = false
         if (!_data.wallet) {

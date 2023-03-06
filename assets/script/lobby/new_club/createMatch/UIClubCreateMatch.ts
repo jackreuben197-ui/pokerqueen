@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-01 14:40:20
+ * @LastEditTime: 2023-03-06 11:31:54
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -24,7 +24,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import GameUtil from "../../../game/util/GameUtil";
 import { APIUserDiamondsWallet } from "../../../net/https/WebRequest";
 import TabNode from "../../../common/tabNode";
-import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig } from "../../../frame/config/tabConfig";
+import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig, fzbTabConfig, bcTabConfig } from "../../../frame/config/tabConfig";
 import GGSlider from "../../../ui/component/GGSlider";
 import GGSwitch from "../../../ui/component/GGSwitch";
 
@@ -155,6 +155,12 @@ export default class UIClubCreateMatch extends BaseForm {
     drsqSwitch: GGSwitch = null;
     yckpSwitch: GGSwitch = null;
     bmSwitch: GGSwitch = null;
+    sr_zw: cc.Node = null;
+    clubNode: cc.Node = null;
+    friendNode: cc.Node = null;
+    bcNode: cc.Node = null;
+    bcTabNode: TabNode = null;
+    ffrs: cc.Node = null;
     // etpSwitch: GGSwitch = null;
     protected lateLoad(): void {
         super.lateLoad();
@@ -203,10 +209,13 @@ export default class UIClubCreateMatch extends BaseForm {
         this.bmSwitch = this.getChildNodeOrComponent("bmSwitch", GGSwitch);
         this.yckpSwitch = this.getChildNodeOrComponent("yckpSwitch", GGSwitch);
         this.fzbTabNode = this.getChildNodeOrComponent("fzbTabNode", TabNode);
-
-
+        this.sr_zw = this.getChildNodeOrComponent("sr_zw");
+        this.friendNode = this.getChildNodeOrComponent("friendNode");
+        this.clubNode = this.getChildNodeOrComponent("clubNode");
+        this.bcNode = this.getChildNodeOrComponent("bcNode");
+        this.bcTabNode = this.getChildNodeOrComponent("bcTabNode", TabNode);
+        this.ffrs = this.getChildNodeOrComponent("ffrs");
     }
-
     async onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
         let title = "UIGuild_CreateTable"
@@ -230,6 +239,8 @@ export default class UIClubCreateMatch extends BaseForm {
         let pay = cc.find('pay/num', this.coinNode).getComponent(cc.Label)
         let num = this._selectTitle == 0 ? 15 : 0
         pay.string = num + '';
+        this.friendNode.active = this._selectTitle == 1
+        this.clubNode.active = this._selectTitle == 0
 
     }
     getMatchType() {
@@ -343,6 +354,8 @@ export default class UIClubCreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this._jslxNum}`, this.jslx).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._dcjfpNum}`, this.dcjfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._sksjNum}`, this.sksj).getComponent(cc.Toggle).isChecked = true;
+
+        this.bcNode.active = this._jslxNum == 1
         if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
             this.drsq.active = true
         } else {
@@ -402,6 +415,7 @@ export default class UIClubCreateMatch extends BaseForm {
 
     }
     initTabNode() {
+        this.sr_zw.active = ClubCache.joinCreateMatchType == 2
         this.tabNode.initData(createMatchTabConfig, (customData) => {
             this._selectTitle = customData
             this.initDiamond();
@@ -410,6 +424,7 @@ export default class UIClubCreateMatch extends BaseForm {
                 this.clubIdNode.active = false
                 this.passNode.active = false
                 this.sryy.active = false
+
             } else {
                 this.clubIdNode.active = this._selectTitle == 1
                 this.tabNode.node.active = ClubCache.tribe_name ? true : false;
@@ -431,7 +446,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.dxmTabNode.initData(dxmTabConfig, (customData) => {
             this._selectRoleType = customData
             this.itemData.dxm = dxmConfig[this._selectRoleType]
-            let dxm: any = cc.find('item/Rectangle', this.dxm).getComponent('slidewidght');
+            let dxm: any = cc.find('slideItem/Rectangle', this.dxm).getComponent('slidewidght');
             dxm._targetDe = this;
             dxm.initUi(this.itemData.dxm, this.itemDataIndex.dxm)
             this.resetDrjfp();
@@ -442,6 +457,15 @@ export default class UIClubCreateMatch extends BaseForm {
 
         this.yxbzTabNode.initData(gameChangeTypeTabConfig, (customData) => {
             this._yxbzNum = Number(customData) + 4;
+        }, this)
+
+
+        this.fzbTabNode.initData(fzbTabConfig, (customData) => {
+        }, this)
+
+        this.bcTabNode.initData(bcTabConfig, (customData) => {
+            this.fddm.active = customData == 0
+            this.ffrs.active = customData == 1
         }, this)
 
 
@@ -491,36 +515,31 @@ export default class UIClubCreateMatch extends BaseForm {
         drjfp.initUi(small, big, this.itemDataIndex.jfpbs, this.itemDataIndex.jfpbs1)
     }
     initSlideNode() {
-        let dxm: any = cc.find('item/Rectangle', this.dxm).getComponent('slidewidght');
+        let dxm: any = cc.find('slideItem/Rectangle', this.dxm).getComponent('slidewidght');
         dxm._targetDe = this;
         dxm.initUi(this.itemData.dxm, this.itemDataIndex.dxm)
 
-        // this.resetDrjfp();
-
-        // let qz: any = cc.find('item/Rectangle', this.qz).getComponent('slidewidght');
-        // qz._targetDe = this;
-        // qz.initUi(this.itemData.qwsz, this.itemDataIndex.qwsz)
 
 
-        let fwfbl: any = cc.find('item/Rectangle', this.fwfbl).getComponent('slidewidght');
+        let fwfbl: any = cc.find('slideItem/Rectangle', this.fwfbl).getComponent('slidewidght');
         fwfbl._targetDe = this;
         fwfbl.initUi(this.itemData.fwfbl, this.itemDataIndex.fwfbl)
 
 
-        let fddm: any = cc.find('item/Rectangle', this.fddm).getComponent('slidewidght');
+        let fddm: any = cc.find('slideItem/Rectangle', this.fddm).getComponent('slidewidght');
         fddm._targetDe = this;
         fddm.initUi(this.itemData.fddm, this.itemDataIndex.fddm)
 
 
-        let pjsc: any = cc.find('item/Rectangle', this.pjsc).getComponent('slidewidght');
+        let pjsc: any = cc.find('slideItem/Rectangle', this.pjsc).getComponent('slidewidght');
         pjsc._targetDe = this;
         pjsc.initUi(this.itemData.pjsc, this.itemDataIndex.pjsc)
 
-        let zdrcl: any = cc.find('item/Rectangle', this.zdrcl).getComponent('slidewidght');
+        let zdrcl: any = cc.find('slideItem/Rectangle', this.zdrcl).getComponent('slidewidght');
         zdrcl._targetDe = this;
         zdrcl.initUi(this.itemData.zdcl, this.itemDataIndex.zdcl)
 
-        let zssxz: any = cc.find('item/Rectangle', this.zssxz).getComponent('slidewidght');
+        let zssxz: any = cc.find('slideItem/Rectangle', this.zssxz).getComponent('slidewidght');
         zssxz._targetDe = this;
         zssxz.initUi(this.itemData.zss, this.itemDataIndex.zss)
     }
@@ -528,7 +547,7 @@ export default class UIClubCreateMatch extends BaseForm {
     changeQzsh(num) {
         let _data: any = this.qzshData[num]
         this.itemData.qwsz = _data
-        let qz: any = cc.find('item/Rectangle', this.qz).getComponent('slidewidght');
+        let qz: any = cc.find('slideItem/Rectangle', this.qz).getComponent('slidewidght');
         qz._targetDe = this;
         qz.initUi(this.itemData.qwsz, 0)
     }
@@ -548,12 +567,13 @@ export default class UIClubCreateMatch extends BaseForm {
     getLevelParent(num) {
         switch (Number(num)) {
             case 1:
-                return this.zxblbs
-            case 2:
                 return this.zwrs
+
+            case 2:
+                return this.zdks
                 break;
             case 3:
-                return this.zdks
+            // return this.zdks
             case 4:
                 return this.Straddle
                 break;
@@ -568,7 +588,8 @@ export default class UIClubCreateMatch extends BaseForm {
     }
     jsblToggle(event, customData) {
         this._jslxNum = Number(customData);
-        this.fddm.active = this._jslxNum == 0
+        // this.fddm.active = this._jslxNum == 0
+        this.bcNode.active = this._jslxNum == 1
     }
     sksjToggle(event, customData) {
         this._sksjNum = Number(customData);
