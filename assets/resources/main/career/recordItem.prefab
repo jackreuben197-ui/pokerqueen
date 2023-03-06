@@ -636,7 +636,7 @@
       "__id__": 14
     },
     "_enabled": true,
-    "i18n_string": "UICareer_win",
+    "i18n_string": "UIClub_GainNum",
     "_id": ""
   },
   {
@@ -1313,7 +1313,7 @@
       "__id__": 33
     },
     "_enabled": true,
-    "i18n_string": "UIClubData_hand",
+    "i18n_string": "UIMine_RecordItemsNormal_3RCUa3w8",
     "_id": ""
   },
   {
@@ -1979,7 +1979,7 @@
         "__id__": 70
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [],
     "_prefab": {
       "__id__": 74

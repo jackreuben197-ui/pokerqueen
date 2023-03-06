@@ -834,7 +834,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
+      "width": 80,
       "height": 100
     },
     "_anchorPoint": {
@@ -846,7 +846,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -100,
+        -38.709,
         0,
         0,
         0,
@@ -913,7 +913,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        74,
+        14,
         0,
         0,
         0,
@@ -1054,7 +1054,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -157.014,
+        -263.433,
         26,
         0,
         0,
@@ -1383,7 +1383,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -157.014,
+        -263.433,
         -26,
         0,
         0,
@@ -1678,7 +1678,7 @@
     "_target": null,
     "_alignFlags": 32,
     "_left": 0,
-    "_right": 0,
+    "_right": -1.2909999999999968,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,
@@ -4027,7 +4027,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1242,
+      "width": 1000,
       "height": 75.6
     },
     "_anchorPoint": {
@@ -4090,7 +4090,7 @@
     "_batchAsBitmap": false,
     "_styleFlags": 0,
     "_underlineHeight": 0,
-    "_N$horizontalAlign": 1,
+    "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 3,

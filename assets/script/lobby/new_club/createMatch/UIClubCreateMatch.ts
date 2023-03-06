@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-01 20:58:40
+ * @LastEditTime: 2023-03-06 11:31:54
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -567,12 +567,13 @@ export default class UIClubCreateMatch extends BaseForm {
     getLevelParent(num) {
         switch (Number(num)) {
             case 1:
-                return this.zxblbs
-            case 2:
                 return this.zwrs
+
+            case 2:
+                return this.zdks
                 break;
             case 3:
-                return this.zdks
+            // return this.zdks
             case 4:
                 return this.Straddle
                 break;

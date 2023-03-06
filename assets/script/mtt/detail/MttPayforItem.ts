@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:38:30
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-01 16:16:54
+ * @LastEditTime: 2023-03-06 10:18:21
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforItem.ts
  */
 // Learn TypeScript:
@@ -15,6 +15,7 @@
 
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { StringHelper } from "../../helper/StringHelper";
+import WebImageHelper from "../../helper/WebImageHelper";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import MttPayforHome from "./MttPayforHome";
@@ -59,7 +60,8 @@ export default class MttPayforItem extends UIBase {
         this.uc.active = this._data.gold_type == 1
         this.setText(this.num, StringHelper.GetLongString(this._data.gold))
         this.setText(this.nick_name, this._data.club_name);
-        this.setText(this.id, this._data.club_random_id);
+        this.setText(this.id, 'ID:' + this._data.club_random_id);
+        WebImageHelper.SetHeadImage(this.icon, this._data.avatar)
         if (ClubCache.mttPayWallat && ClubCache.mttPayWallat.club_random_id == this._data.club_random_id) {
             this.agree.active = true
         } else {

@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-28 17:08:44
+ * @LastEditTime: 2023-03-06 11:56:26
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 
@@ -15,7 +15,7 @@ import UIComponent from "../../ui/UIComponent";
 import { EventName } from "../../config/EventName";
 import { MTTJoinAction, UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import TimeHelper from "../../helper/TimeHelper";
-import { Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Rebuy } from "../../net/https/WebRequest";
+import { APIMttUserWallet, Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Rebuy } from "../../net/https/WebRequest";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
@@ -23,6 +23,7 @@ import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
+import { UIClubModel } from "../../lobby/labor/UIClubModel";
 const { ccclass, property, menu } = cc._decorator;
 enum MTTJoinMode // 参与mtt玩法方式
 {
@@ -93,7 +94,7 @@ export default class MttPayforHome extends BaseForm {
         this._data = param.data;
         this._type = param.type;
         this.setText(this.title_lbl, this._type == 1 ? 'UIMTTSignDialogBuyTitle' : 'UIMTTSignDialogReBuyTitle')
-
+        await UIClubModel.mInstance.APIMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: this._offset, limit: 20 })
         this.initSelectWallet()
         this.bindClick(this.payNode, () => {
             if (this._type == 2) return
@@ -123,22 +124,30 @@ export default class MttPayforHome extends BaseForm {
         else {
             this.HandleDate();
         }
+
     }
     protected regiterDispatchEvent() {
         this.listen(EventName.selectMttWwllet, this.initSelectWallet);
 
     }
     initSelectWallet() {
+
         if (ClubCache.mttPayWallat == null) {
             this.sure.active = false
             this.setText(this.select_lbl, 'UILogin_Select')
             this.rateNode.active = false
         } else {
+            let _data: any = APIMttUserWallet.Response.data
+            let walletData = null;
+            _data.wallet.some(element => {
+                walletData = element
+                return element.club_random_id == ClubCache.mttPayWallat.club_random_id
+            });
             this.sure.active = true;
             this.setText(this.select_lbl, ClubCache.mttPayWallat.club_name)
             this.rateNode.active = true
             let num1 = cc.find('node1/num', this.rateNode).getComponent(cc.Label)
-            num1.string = StringHelper.GetLongString(ClubCache.mttPayWallat.gold)
+            num1.string = StringHelper.GetLongString(walletData.gold)
             let num2 = cc.find('node2/num', this.rateNode).getComponent(cc.Label)
             this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
             if (this.totalRebuyTimes < 10000) {

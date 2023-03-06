@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 21:27:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 14:25:58
+ * @LastEditTime: 2023-03-06 10:23:47
  * @FilePath: /pokerqueen/assets/script/frame/data/rate/RateConfig.ts
  */
 
@@ -88,8 +88,8 @@ export const dxmConfig = [
 //战绩赛选
 export const careerConfig = [
     //type 0 不显示 1上 2 下
-    { type: 0, desc: "UICareer_uc", model: 1 },
-    { type: 0, desc: "UICareer_ustd", model: 2 },
+    { type: 0, desc: "UIClub_Tribe", model: 1 },
+    { type: 0, desc: "UIGuild_VipCountGoldType2", model: 2 },
 ]
 
 export const clubListConfig = [
