@@ -646,7 +646,10 @@ export default class MttDetailForm extends BaseForm {
                     UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
 
                         if (res.code == 0) {
-                            GameCache.Instance.gold = res.data.wallet_balance;
+                            //GameCache.Instance.gold = res.data.wallet_balance;
+
+                            GC.data.user.info.gold = res.data.wallet_balance;
+
                             if (res.data.prop_property_type == 2)//如果Type == 2  免服务费 
                             {
                                 UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type = 0;

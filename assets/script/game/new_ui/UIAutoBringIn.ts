@@ -1,6 +1,7 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
+import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import WalletModel from "../../lobby/new_club/wallet/WalletModel";
@@ -17,6 +18,34 @@ import { AddClipsData } from "./UIBringIn";
 
 
 const { ccclass, menu } = cc._decorator;
+
+
+// public sealed class SetAutoAddClipsData {
+//     public ulong bigBlind { get; set; } // 大盲
+//     public ulong smallBlind { get; set; } // 小盲
+//     public ulong currentMinRate { get; set; } // 当前最小带入倍数
+//     public ulong currentMaxRate { get; set; } // 当前最大带入倍数
+//     public double totalCoin { get; set; } // 总金豆
+//     public ulong tableChips { get; set; } // 玩家剩余记分牌
+//     public ulong storeChips { get; set; } // 藏钱记分牌
+//     public bool isFromSetting { get; set; }//是否来自设置界面
+//     public List < Web_User_Room.Wallet > wallets { get; set; }//钱包列表
+// }
+
+
+export type SetAutoAddClipsData = {
+    bigBlind: number,// 大盲
+    smallBlind: number, // 小盲
+    currentMinRate: number, // 当前最小带入倍数
+    currentMaxRate: number, // 当前最大带入倍数
+    totalCoin?: number, // 总金豆
+    tableChips: number, // 玩家剩余记分牌
+    storeChips: number, // 藏钱记分牌
+    isFromSetting?: boolean,//是否来自设置界面
+    wallets?: any,//钱包列表
+}
+
+
 
 
 
@@ -53,7 +82,7 @@ export default class UIAutoBringIn extends UIBasePlus {
     $confirm: cc.Node = null;
     $cancel: cc.Node = null;
     ///////////////////////////
-    _param: { data: AddClipsData, fromMenu: boolean } = null;
+    _param: SetAutoAddClipsData = null;
     startRate: number = 0;//开始比率
     sendCoin: number = 0;//发送货币值
     ownCoin: number = 0;//拥有的货币值
@@ -84,34 +113,19 @@ export default class UIAutoBringIn extends UIBasePlus {
         this.GGSlider$slider.onChange(this.onSliderChange.bind(this));
     }
 
-    onShow(param: { data: AddClipsData, fromMenu: boolean }): void {
-        super.onShow(param);
-        let data: AddClipsData = param.data;
+    onShow(data: SetAutoAddClipsData): void {
+        super.onShow(data);
         //this.animateDialog();
-        this.selected_wallet = null;
-        this.ownCoin = 0;
-        this.wallets = Web_User_Room.Response.data.wallet;
-        //test
-        //this.wallet.push({club_id:33,gold:1});
-        if (!this.wallets?.length) this.wallet_mode = 0;
-        if (this.wallets?.length == 1) this.wallet_mode = 1;
-        if (this.wallets?.length == 2) this.wallet_mode = 2;
 
-        if (this.wallet_mode == 0) {
-            this.$Part1.active = false;
-            this.$Part4.active = false;
-        } else {
-            this.$Part1.active = true;
-            this.$Part4.active = true;
-            //设置货币类型
-            this.gold_type = this.wallets[0].gold_type;
-            this.$icon_coin.active = this.gold_type == 1;
-            this.$icon_usdt.active = this.gold_type == 2;
-            this.$arrow.active = this.wallet_mode > 1;
-            this.$club_click.active = this.wallet_mode > 1;
-            this.refreshSelect(this.wallet_mode == 1 ? 0 : -1);
-        }
-        if (null != data) {
+        if (data != null) {
+
+            this.selected_wallet = null;
+            this.ownCoin = 0;
+            this.wallets = data.wallets;
+
+            //隐藏滑动条
+            this.$Part3.active = !data.isFromSetting;
+
             //小盲值/100
             //最大带入值
             let auto_max = data.currentMaxRate * data.bigBlind / 100;
@@ -124,32 +138,112 @@ export default class UIAutoBringIn extends UIBasePlus {
             this.slider_obj.max = max;
             this.slider_obj.step = data.bigBlind / 10;
             this.GGSlider$slider.data = this.slider_obj;
-
             this.GGSlider$slider.onShow({ index: 0 });
-
             //com
             this.GGASCom$com.data = {
                 min: min,
                 max: auto_max,
-                step: data.bigBlind,
+                step: this.slider_obj.step,
                 value: min,
+                add_click: () => {
+
+                },
+            }
+
+            //toggle
+            this.GGToggle$auto.own = this;
+            this.GGToggle$auto.uncheck();
+            this.GGToggle$account.uncheck();
+
+            this.$Part1.active = true;
+            this.$Part4.active = true;
+            this.GGToggle$account.node.active = true;
+
+            if (GameCache.Instance.gold_type == 3) {
+                this.$Part1.active = false;
+                this.$Part4.active = false;
+                this.GGToggle$account.node.active = false;
+                return;
+            }
+            this.$icon_coin.active = GameCache.Instance.gold_type == 1;
+            this.$icon_usdt.active = GameCache.Instance.gold_type == 2;
+
+            //带入选择钱包逻辑
+            if (data.wallets != null) {
+                if (data.wallets.length == 1) {
+                    this.refreshSelect(0);
+                    this.$arrow.active = false;
+                    this.$club_click.active = false;
+                }
+                else if (data.wallets.length > 1) {
+                    this.refreshSelect(-1);
+                    this.$arrow.active = true;
+                    this.$club_click.active = true;
+                }
+                else {
+
+                }
             }
         }
-        //toggle
-        this.GGToggle$auto.own = this;
-        this.GGToggle$auto.uncheck();
-        this.GGToggle$account.uncheck();
 
-        //根据显示状态设置位置和适配
-        //this.show_status 
-        this.$Part1.active = !(param.fromMenu || this.wallet_mode == 0);
-        this.$Part4.active = !(param.fromMenu || this.wallet_mode == 0);
-        this.$Part3.active = !param.fromMenu;
-        this.GGToggle$account.node.active = !(this.wallet_mode == 0);
+        // this.selected_wallet = null;
+        // this.ownCoin = 0;
+        // this.wallets = data.wallets;
+        // if (!this.wallets?.length) this.wallet_mode = 0;
+        // if (this.wallets?.length == 1) this.wallet_mode = 1;
+        // if (this.wallets?.length == 2) this.wallet_mode = 2;
+
+        // if (this.wallet_mode == 0) {
+        //     this.$Part1.active = false;
+        //     this.$Part4.active = false;
+        // } else {
+        //     this.$Part1.active = true;
+        //     this.$Part4.active = true;
+        //     //设置货币类型
+        //     this.gold_type = this.wallets[0].gold_type;
+        //     this.$icon_coin.active = this.gold_type == 1;
+        //     this.$icon_usdt.active = this.gold_type == 2;
+        //     this.$arrow.active = this.wallet_mode > 1;
+        //     this.$club_click.active = this.wallet_mode > 1;
+        //     this.refreshSelect(this.wallet_mode == 1 ? 0 : -1);
+        // }
+        // if (null != data) {
+        //     //小盲值/100
+        //     //最大带入值
+        //     let auto_max = data.currentMaxRate * data.bigBlind / 100;
+
+        //     //最大带入值
+        //     let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
+        //     let min = data.currentMinRate * data.bigBlind / 100;
+        //     max = Math.max(min, max);
+        //     this.slider_obj.min = min;
+        //     this.slider_obj.max = max;
+        //     this.slider_obj.step = data.bigBlind / 10;
+        //     this.GGSlider$slider.data = this.slider_obj;
+        //     this.GGSlider$slider.onShow({ index: 0 });
+        //     //com
+        //     this.GGASCom$com.data = {
+        //         min: min,
+        //         max: auto_max,
+        //         step: data.bigBlind,
+        //         value: min,
+        //     }
+        // }
+        // //toggle
+        // this.GGToggle$auto.own = this;
+        // this.GGToggle$auto.uncheck();
+        // this.GGToggle$account.uncheck();
+
+        // //根据显示状态设置位置和适配
+        // //this.show_status 
+        // this.$Part1.active = !(data.isFromSetting || this.wallet_mode == 0);
+        // this.$Part4.active = !(data.isFromSetting || this.wallet_mode == 0);
+        // this.$Part3.active = !data.isFromSetting;
+        // this.GGToggle$account.node.active = !(this.wallet_mode == 0);
     }
+
     change(boo: boolean) {
         this.GGASCom$com.use = boo;
-        console.log("激活：", boo);
     }
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$confirm, this.onClickConfirm);
@@ -168,10 +262,7 @@ export default class UIAutoBringIn extends UIBasePlus {
 
         this.cc_Label$value.string = `${this.sendCoin}`;
 
-        if (this.wallet_mode > 0) {
-            //颜色处理
-            this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX(this.sendCoin < this.ownCoin ? "#EEF5FF" : "#ee8380");
-        }
+        this.refreshSliderTextColor();
     }
 
     hideUI() {
@@ -185,21 +276,26 @@ export default class UIAutoBringIn extends UIBasePlus {
         this.hideUI();
     }
 
-
     refreshSelect(index: number) {
-        this.selected_wallet = this.wallets[index] || null;
+        this.selected_wallet = this.wallets[index];
         if (index == -1) {
             this.cc_Label$club.string = i18nMgr.Get("UIGuild_WalletNoSelect");
             this.ownCoin = 0;
         } else {
             this.cc_Label$club.string = this.selected_wallet.club_name;
-            this.ownCoin = (this.selected_wallet.gold - GC.game.mainPlayer.chips) / 100;
+            this.ownCoin = this.selected_wallet.gold;
         }
-        this.cc_Label$coin.string = `${this.ownCoin}`;
+        this.cc_Label$coin.string = `${StringHelper.GetLongString(this.ownCoin)}`;
+        this.refreshSliderTextColor();
+        GC.data.user.info.gold = this.ownCoin;
     }
 
-
-
+    refreshSliderTextColor() {
+        this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
+        if (GameCache.Instance.gold_type && this.sendCoin > this.ownCoin) {
+            this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#ee8380");
+        }
+    }
     /////////////////////click事件
     //确认
     onClickConfirm() {
@@ -209,45 +305,12 @@ export default class UIAutoBringIn extends UIBasePlus {
             return;
         }
 
-        // //有钱包的模式
-        // if (this.wallet_mode > 0) {
-        //     //判断钱包状态
-        //     if (this.selected_wallet == null) {
-        //         UIComponent.Instance.Toast("Select");
-        //         return;
-        //     }
-        //     //判断余额不足
-        //     if (this.sendCoin > this.ownCoin) {
-
-        //         let dialog_param: typeof UICommonDialog.type = null;
-        //         if (this.wallet.length == 1) {
-        //             dialog_param = {
-        //                 status: 1,
-        //                 detail: "钱包金额不足",
-        //                 texts: ["充值"],
-        //                 callbacks: [this.goCharge],
-        //                 this: this
-        //             }
-        //         } else {
-        //             dialog_param = {
-        //                 status: 2,
-        //                 detail: "钱包金额不足",
-        //                 texts: ["其他支付", "充值"],
-        //                 callbacks: [this.goWalletList, this.goCharge],
-        //                 this: this
-        //             }
-        //         }
-        //         UIComponent.open(UIDefine.UICommonDialog, dialog_param);
-        //         return;
-        //     }
-        // }
-
         //判断自动上桌是否勾选
         let auto_100 = this.GGToggle$auto.isCheck ? this.GGASCom$com.value * 100 : 0;
         let coin_100 = this.sendCoin * 100;
         let accountCheck = this.GGToggle$account.isCheck;
 
-        if (this._param.fromMenu) {
+        if (this._param.isFromSetting) {
 
             GameCache.Instance.CurGame.SetAutoOnTableChips(auto_100, accountCheck);
         } else {

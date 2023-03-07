@@ -23,6 +23,7 @@ export type AddClipsData = {
     currentMaxRate: number, // 当前最大带入倍数
     totalCoin?: number, // 总金豆
     tableChips: number, // 玩家剩余记分牌
+    wallets?: any,//钱包列表
 }
 
 @ccclass
@@ -78,9 +79,6 @@ export default class UIBringIn extends UIBasePlus {
 
     wallets: any[] = null;
 
-
-
-
     protected lateLoad(): void {
         this.name = "UIBringIn";
         super.lateLoad();
@@ -89,32 +87,15 @@ export default class UIBringIn extends UIBasePlus {
 
     onShow(data: AddClipsData): void {
         super.onShow(data);
-        //this.animateDialog();
 
-        this.selected_wallet = null;
 
-        this.ownCoin = 0;
-        this.wallets = Web_User_Room.Response.data.wallet;
-        //test
-        //this.wallet.push({club_id:33,gold:1});
-        if (!this.wallets?.length) this.wallet_mode = 0;
-        if (this.wallets?.length == 1) this.wallet_mode = 1;
-        if (this.wallets?.length > 1) this.wallet_mode = 2;
-        if (this.wallet_mode == 0) {
-            this.$Part1.active = false;
-            this.$Part4.active = false;
-        } else {
-            this.$Part1.active = true;
-            this.$Part4.active = true;
-            //设置货币类型
-            this.gold_type = this.wallets[0].gold_type;
-            this.$icon_coin.active = this.gold_type == 1;
-            this.$icon_usdt.active = this.gold_type == 2;
-            this.$arrow.active = this.wallet_mode > 1;
-            this.$club_click.active = this.wallet_mode > 1;
-            this.refreshSelect(this.wallet_mode == 1 ? 0 : -1);
-        }
-        if (null != data) {
+        if (data != null) {
+
+            this.selected_wallet = null;
+            this.ownCoin = 0;
+            this.wallets = data.wallets;
+
+
             //小盲值/100
             this.cc_Label$blind.string = `${StringHelper.GetLongString(data.smallBlind)}/${StringHelper.GetLongString(data.bigBlind)}`;//SB/BB
             this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
@@ -126,9 +107,74 @@ export default class UIBringIn extends UIBasePlus {
             this.slider_obj.max = max;
             this.slider_obj.step = data.bigBlind / 10;
             this.GGSlider$slider.data = this.slider_obj;
-
             this.GGSlider$slider.onShow({ index: 0 });
+
+
+            this.$Part1.active = true;
+            this.$Part4.active = true;
+
+            if (GameCache.Instance.gold_type == 3) {
+                this.$Part1.active = false;
+                this.$Part4.active = false;
+                return;
+            }
+            this.$icon_coin.active = GameCache.Instance.gold_type == 1;
+            this.$icon_usdt.active = GameCache.Instance.gold_type == 2;
+
+            //带入选择钱包逻辑
+            if (data.wallets != null) {
+                if (data.wallets.length == 1) {
+                    this.refreshSelect(0);
+                    this.$arrow.active = false;
+                    this.$club_click.active = false;
+                }
+                else if (data.wallets.length > 1) {
+                    this.refreshSelect(-1);
+                    this.$arrow.active = true;
+                    this.$club_click.active = true;
+                }
+                else {
+
+                }
+            }
         }
+
+        //this.animateDialog();
+        // this.selected_wallet = null;
+        // this.ownCoin = 0;
+        // this.wallets = data.wallets;
+        // if (!this.wallets?.length) this.wallet_mode = 0;
+        // if (this.wallets?.length == 1) this.wallet_mode = 1;
+        // if (this.wallets?.length > 1) this.wallet_mode = 2;
+        // if (this.wallet_mode == 0) {
+        //     this.$Part1.active = false;
+        //     this.$Part4.active = false;
+        // } else {
+        //     this.$Part1.active = true;
+        //     this.$Part4.active = true;
+        //     //设置货币类型
+        //     this.gold_type = this.wallets[0].gold_type;
+        //     this.$icon_coin.active = this.gold_type == 1;
+        //     this.$icon_usdt.active = this.gold_type == 2;
+        //     this.$arrow.active = this.wallet_mode > 1;
+        //     this.$club_click.active = this.wallet_mode > 1;
+        //     this.refreshSelect(this.wallet_mode == 1 ? 0 : -1);
+        // }
+        // if (null != data) {
+        //     //小盲值/100
+        //     this.cc_Label$blind.string = `${StringHelper.GetLongString(data.smallBlind)}/${StringHelper.GetLongString(data.bigBlind)}`;//SB/BB
+        //     this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
+        //     //最大带入值
+        //     let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
+        //     let min = data.currentMinRate * data.bigBlind / 100;
+        //     max = Math.max(min, max);
+        //     this.slider_obj.min = min;
+        //     this.slider_obj.max = max;
+        //     this.slider_obj.step = data.bigBlind / 10;
+        //     this.GGSlider$slider.data = this.slider_obj;
+
+        //     this.GGSlider$slider.onShow({ index: 0 });
+        // }
     }
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$confirm, this.onClickConfirm);
@@ -163,17 +209,20 @@ export default class UIBringIn extends UIBasePlus {
             this.ownCoin = 0;
         } else {
             this.cc_Label$club.string = this.selected_wallet.club_name;
-            this.ownCoin = (this.selected_wallet.gold - GC.game.mainPlayer.chips) / 100;
+            this.ownCoin = this.selected_wallet.gold;
         }
-        this.cc_Label$coin.string = `${this.ownCoin}`;
+        this.cc_Label$coin.string = `${StringHelper.GetLongString(this.ownCoin)}`;
         this.refreshSliderTextColor();
+        GC.data.user.info.gold = this.ownCoin;
     }
 
 
     refreshSliderTextColor() {
-        this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX(this.sendCoin < this.ownCoin ? "#EEF5FF" : "#ee8380");
+        this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
+        if (GameCache.Instance.gold_type && this.sendCoin > this.ownCoin) {
+            this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#ee8380");
+        }
     }
-
 
 
     /////////////////////click事件

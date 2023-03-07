@@ -244,16 +244,20 @@ export default class UIRecharge extends BaseFormPlus {
     }
     //申请成功响应弹窗
     requestSuccess(data: any) {
-        UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
-            this: this,
-            title: i18nMgr.Get("adaptation10007"),
-            cancel: i18nMgr.Get("UIBackDialog_ticketsbtnClose"),
-            commit: i18nMgr.Get("UIClub_Info_gL1Ehrnk"),
-            content: StringHelper.Format(i18nMgr.Get("UIGuildFund_RtTips005"), [` ${StringHelper.GetColorText(data.more_contact, TextColor.Color4)} `]),
-            commit_click: () => {
-                PublicHelper.copyToClipBoard(data.more_contact);
-            }
-        });
+        if (data?.more_contact) {
+            UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+                this: this,
+                title: i18nMgr.Get("adaptation10007"),
+                cancel: i18nMgr.Get("UIBackDialog_ticketsbtnClose"),
+                commit: i18nMgr.Get("UIClub_Info_gL1Ehrnk"),
+                content: StringHelper.Format(i18nMgr.Get("UIGuildFund_RtTips005"), [` ${StringHelper.GetColorText(data.more_contact, TextColor.Color4)} `]),
+                commit_click: () => {
+                    PublicHelper.copyToClipBoard(data.more_contact);
+                }
+            });
+        } else {
+            UIComponent.Instance.ToastLanguage("roomError171_5");
+        }
     }
 
 }

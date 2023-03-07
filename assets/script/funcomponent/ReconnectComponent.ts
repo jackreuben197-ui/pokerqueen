@@ -22,7 +22,7 @@ export default class ReconnectComponent {
 
     }
 
-    game_active: boolean = false;
+    game_active: boolean = true;
 
     /**
      * 0 : 未连接socket 

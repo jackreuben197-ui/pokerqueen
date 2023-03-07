@@ -40,6 +40,7 @@ import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
+import { SetAutoAddClipsData } from "../new_ui/UIAutoBringIn";
 import { AddClipsData } from "../new_ui/UIBringIn";
 import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
@@ -1213,10 +1214,10 @@ export default class TexasGame {
                     }
                     else {
                         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                            this.ShowAutoAddChips();
+                            this.ShowAutoAddChips(res.data.wallet);
                         }
                         else {
-                            this.ShowAddChips();
+                            this.ShowAddChips(res.data.wallet);
                         }
                     }
                 }
@@ -1243,10 +1244,10 @@ export default class TexasGame {
                 }
                 else {
                     if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                        this.ShowAutoAddChips();
+                        this.ShowAutoAddChips(res.data.wallet);
                     }
                     else {
-                        this.ShowAddChips();
+                        this.ShowAddChips(res.data.wallet);
                     }
                 }
 
@@ -2737,16 +2738,7 @@ export default class TexasGame {
     /**
      * 显示手动设置面板 
      */
-    private ShowAddChips(): void {
-        // UIComponent.Instance.ShowUI<AddClipsData>(PrefabUI.UIAddChipsComponent, {
-        //     bigBlind: this.bigBlind,
-        //     smallBlind: this.smallBlind,
-        //     currentMinRate: this.currentMinRate,
-        //     currentMaxRate: this.currentMaxRate,
-        //     // totalCoin: GameCache.Instance.gold,
-        //     totalCoin: GC.data.user.info.gold,
-        //     tableChips: this.mainPlayer.chips
-        // });
+    private ShowAddChips(wallets): void {
         UIComponent.Instance.ShowUI<AddClipsData>(
             PrefabUI.UIBringIn,
             {
@@ -2754,26 +2746,25 @@ export default class TexasGame {
                 smallBlind: this.smallBlind,
                 currentMinRate: this.currentMinRate,
                 currentMaxRate: this.currentMaxRate,
-                //totalCoin: GC.data.user.info.gold,
-                tableChips: this.mainPlayer.chips
+                totalCoin: GC.data.user.info.gold,
+                tableChips: this.mainPlayer.chips,
+                wallets: wallets
             }
         )
     }
-    public ShowAutoAddChips(fromMenu: boolean = false) {
-
-        let data: AddClipsData = {
-            bigBlind: this.bigBlind,
-            smallBlind: this.smallBlind,
-            currentMinRate: this.currentMinRate,
-            currentMaxRate: this.currentMaxRate,
-            tableChips: this.mainPlayer.chips,
-        }
+    public ShowAutoAddChips(wallets) {
         UIComponent.Instance.ShowUI(
 
             PrefabUI.UIAutoBringIn,
             {
-                data: data,
-                fromMenu: fromMenu,
+                bigBlind: this.bigBlind,
+                smallBlind: this.smallBlind,
+                currentMinRate: this.currentMinRate,
+                currentMaxRate: this.currentMaxRate,
+                totalCoin: GameCache.Instance.gold,
+                tableChips: this.mainPlayer.chips,
+                storeChips: this.mainPlayer.cacheStoreChips,
+                wallets: wallets
             }
         )
     }

@@ -49,6 +49,10 @@ class GameControl {
         return GameCache.Instance.CurGame;
     }
 
+    get game_cache(): GameCache {
+        return GameCache.Instance;
+    }
+
     get uc(): UpdateComponent {
         return UpdateComponent.Instance;
     }

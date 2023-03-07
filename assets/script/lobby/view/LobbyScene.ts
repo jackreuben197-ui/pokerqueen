@@ -39,7 +39,7 @@ export default class LobbyScene extends BaseScene {
      */
     public async setLooby() {
 
-        await LobbyControl.getInstance().switchContent("UILobbyIndex","main/lobby/ui/");
+        await LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/ui/");
         //await LobbyControl.getInstance().switchContent("UILobby");
         //刷新banner数据 
         //this.refreshBanner();
@@ -60,13 +60,13 @@ export default class LobbyScene extends BaseScene {
             UIMatchBanner.instance.onShow(res);
         })
     }
-    private toReady(){
-        GC.data.lobby.reqLobbyGroupData(()=>{
-           this.refreshConfig();
+    private toReady() {
+        GC.data.lobby.reqLobbyGroupData(() => {
+            this.refreshConfig();
         });
     }
-    private async refreshConfig(){
-        await WWW.Instance.CommonAPI({web_class:Web_Config_Global_Config});
+    private async refreshConfig() {
+        await WWW.Instance.CommonAPI({ web_class: Web_Config_Global_Config });
         this.readyComplete();
     }
     //大厅相关数据加载完成

@@ -2957,6 +2957,11 @@ export class Web_Me_Apply extends WebCommon {
     static API: string = "/api/roomcenter/user/apply/list";
 }
 
+//查看房间的带入信息
+export class Web_User_Room_Bringin extends WebCommon {
+    static API: string = "/api/user/room/bringin/{id}";
+}
+
 
 /**
  * 注册全局访问

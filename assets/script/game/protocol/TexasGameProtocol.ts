@@ -175,6 +175,7 @@ export default class TexasGameProtocol {
         this.game.mainPlayer.leavelChips = rec.accountChips;
         // GameCache.Instance.gold = rec.accountChips;
         GC.data.user.info.gold = rec.accountChips;
+        
         this.game.mainPlayer.cacheStoreChips = rec.storeChips;
 
         this.game.mainPlayer.actionStatus = Def.Action.NONE;

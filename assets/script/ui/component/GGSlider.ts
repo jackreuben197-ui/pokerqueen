@@ -188,4 +188,8 @@ export default class GGSlider extends cc.Component {
         let part = (data.max - data.min) / data.step;
         this.SetMinMax(0, part);
     }
+    //限制最小值
+    limitMin() {
+
+    }
 }
