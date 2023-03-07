@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-07 12:35:12
+ * @LastEditTime: 2023-03-07 12:41:04
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 
@@ -80,6 +80,11 @@ export default class UIFriendMatch extends UIBase {
         this.initDiamond();
 
     }
+    onDiamondClick() {
+        //跳转商城
+        UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI });
+    }
+
     titleNodeClick(customData) {
         this._selectTitle = Number(customData)
         this.fastBeganNode.active = this._selectTitle == 1;
