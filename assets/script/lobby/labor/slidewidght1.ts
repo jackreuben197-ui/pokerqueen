@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 19:26:05
+ * @LastEditTime: 2023-03-08 18:00:16
  * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght1.ts
  */
 
@@ -97,10 +97,10 @@ export default class slidewidght1 extends cc.Component {
         let _selectIndex1 = 0
         let _leng = this._big / this._small
         for (let index = 0; index < _leng; index++) {
-            if (this._small + this._offNum == selectIndex) {
+            if (this._small + this._offNum * index == selectIndex) {
                 _selectIndex = index
             }
-            if (this._small + this._offNum == selectIndex1) {
+            if (this._small + this._offNum * index == selectIndex1) {
                 _selectIndex1 = index
             }
         }

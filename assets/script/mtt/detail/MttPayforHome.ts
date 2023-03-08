@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 11:56:26
+ * @LastEditTime: 2023-03-08 19:30:50
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 
@@ -93,8 +93,12 @@ export default class MttPayforHome extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         this._data = param.data;
         this._type = param.type;
+        if (this._type == 1) {
+            ClubCache.mttPayWallat = null
+        }
         this.setText(this.title_lbl, this._type == 1 ? 'UIMTTSignDialogBuyTitle' : 'UIMTTSignDialogReBuyTitle')
-        await UIClubModel.mInstance.APIMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: this._offset, limit: 20 })
+        await UIClubModel.mInstance.APIMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: 0, limit: 20 })
+
         this.initSelectWallet()
         this.bindClick(this.payNode, () => {
             if (this._type == 2) return
