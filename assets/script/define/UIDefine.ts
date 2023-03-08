@@ -958,6 +958,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/createMatch/UIKeyNode",
     },
+    UIClubList: {
+        UIType: UIType.CommonUI,
+        Name: "UIClubList",
+        Bundle: null,
+        Path: "main/lobby/prefab/UIClubList",
+    },
+
 
 
 }

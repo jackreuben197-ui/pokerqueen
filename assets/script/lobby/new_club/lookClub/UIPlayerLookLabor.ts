@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-01 11:46:09
+ * @LastEditTime: 2023-03-08 20:42:03
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIPlayerLookLabor.ts
  */
 
@@ -19,6 +19,7 @@ import TimeHelper from "../../../helper/TimeHelper";
 import ComFormTitle from "../../../common/ComFormTitle";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import UINewDialogComponent from "../../../ui/dialog/UINewDialogComponent";
+import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -96,11 +97,10 @@ export default class UIPlayerLookLabor extends BaseForm {
 
     }
     async exitClub() {
-        if (GC.data.user.info.displayGold == 0) {
+        if (ClubUserDataCache.gold == 0 && ClubUserDataCache.usdt == 0) {
             await UIClubModel.mInstance.APIOrgClubQuit();
-            GC.data.user.info.gold = 0;
-            this.close();
-            LobbyControl.getInstance().switchContent("UIClubList");
+            this.close()
+            UIComponent.close(UIDefine.UIClubHome)
             return
         }
         UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
@@ -117,7 +117,7 @@ export default class UIPlayerLookLabor extends BaseForm {
             {
                 type: UINewDialogComponent.DialogType.CommitCancel,
                 title: "sr_r9ccQuit",
-                content: '退出后无法参与游戏，是否继续推出？',
+                content: 'UIGuild_QuitTips',
                 contentCommit: "adaptation10012",
                 contentCancel: "adaptation10013",
                 actionCommit: () => {

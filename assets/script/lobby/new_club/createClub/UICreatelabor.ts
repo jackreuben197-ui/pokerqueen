@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 19:09:03
+ * @LastEditTime: 2023-03-08 20:41:50
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UICreatelabor.ts
  */
 
@@ -69,7 +69,7 @@ export default class UICreatelabor extends BaseForm {
             return
         }
         if (this.xinxi.string == '') {
-            UIComponent.Instance.Toast('请填写联系方式：如微信/199999')//i18nMgr.Get('club_creat_7')
+            UIComponent.Instance.Toast(i18nMgr.Get('UIGuild_InputContactInformation'))//
             return
         }
 
@@ -77,6 +77,7 @@ export default class UICreatelabor extends BaseForm {
         if (data.code == 0) {
             console.log('data===', data);
             UIComponent.Instance.Toast(i18nMgr.Get('club_creat_8'));
+            this.iconUrl = null;
             this.close();
             // UIComponent.Instance.Toast(i18nMgr.Get('club_tribe_0'));
             // await UIClubModel.mInstance.APIOrgClubGet()
