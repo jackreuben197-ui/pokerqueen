@@ -950,8 +950,14 @@ export const UIDefine = {
         Name: "UIDownSelector",
         Bundle: null,
         Path: "main/prefab/component/UIDownSelector",
-    }
-
+    },
+    //键盘
+    UIKeyNode: {
+        UIType: UIType.Board,
+        Name: "UIKeyNode",
+        Bundle: null,
+        Path: "main/new_club/createMatch/UIKeyNode",
+    },
 
 
 }

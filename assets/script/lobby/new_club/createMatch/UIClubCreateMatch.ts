@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 19:32:05
+ * @LastEditTime: 2023-03-08 18:59:11
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -47,7 +47,8 @@ export default class UIClubCreateMatch extends BaseForm {
 
     @property(cc.EditBox)
     shareClubIdEd: cc.EditBox = null;
-
+    @property(cc.Node)
+    saveBtn: cc.Node = null;
 
     private comFormTitle: ComFormTitle = null;
     tabNode: TabNode
@@ -112,8 +113,8 @@ export default class UIClubCreateMatch extends BaseForm {
     itemDataIndex = {
         qwsz: 0,
         pjsc: 0,
-        jfpbs: 0,
-        jfpbs1: 0,
+        jfpbs: 2,
+        jfpbs1: 16,
         zdcl: 0,
         zss: 0,
         fddm: 0,
@@ -164,6 +165,7 @@ export default class UIClubCreateMatch extends BaseForm {
     bcTabNode: TabNode = null;
     ffrs: cc.Node = null;
     // etpSwitch: GGSwitch = null;
+    _isFromModel = false
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -226,8 +228,10 @@ export default class UIClubCreateMatch extends BaseForm {
         _title = _title + this.getMatchType()
         this.comFormTitle.initData(_title, this);
         if (data) {
+            this._isFromModel = true;
             this.editModel(data);
         } else {
+            this._isFromModel = false;
             this.room_config = null;
         }
 
@@ -360,7 +364,7 @@ export default class UIClubCreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this._dcjfpNum}`, this.dcjfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._sksjNum}`, this.sksj).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.deal_delayNum}`, this.yxjz).getComponent(cc.Toggle).isChecked = true;
-
+        this.saveBtn.active = ClubCache.joinCreateMatchType == 0
         this.bcNode.active = this._jslxNum == 1
         if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
             this.drsq.active = true
@@ -455,14 +459,10 @@ export default class UIClubCreateMatch extends BaseForm {
             let dxm: any = cc.find('slideItem/Rectangle', this.dxm).getComponent('slidewidght');
             dxm._targetDe = this;
             dxm.initUi(this.itemData.dxm, this.itemDataIndex.dxm)
+
             this.resetDrjfp();
+            this._isFromModel = false
             this.changeQzsh(this.itemData.dxm[this.itemDataIndex.dxm])
-        }, this)
-
-
-
-        this.yxbzTabNode.initData(gameChangeTypeTabConfig, (customData) => {
-            this._yxbzNum = Number(customData) + 4;
         }, this)
 
 
@@ -518,6 +518,12 @@ export default class UIClubCreateMatch extends BaseForm {
         drjfp._targetDe = this;
         let small = sb * 20;
         let big = small * 30
+        if (!this._isFromModel) {
+            let _offNum = (big - small) / 29
+            this.itemDataIndex.jfpbs = small
+            this.itemDataIndex.jfpbs1 = small + _offNum * 7
+        }
+
         drjfp.initUi(small, big, this.itemDataIndex.jfpbs, this.itemDataIndex.jfpbs1)
     }
     initSlideNode() {
@@ -651,8 +657,6 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.op_duration = this._sksjNum;
         //功能为实现
 
-        //room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100;
-        //room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100;;
         room_config.autostart_min_players = this.zdks['levelData'].level
         // room_config.min_players = this.zdks['levelData'].level
         room_config.straddle_max = this.Straddle['levelData'].level;
@@ -716,24 +720,23 @@ export default class UIClubCreateMatch extends BaseForm {
         }
         else if (this._btnType == 1) {
             //公会牌桌
-            if (ClubCache.joinCreateMatchType == 0) {
-                room_config.limit_friend_table = false
-                await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
-                TimeHelper.Sleep(3000);
-                this.post(EventName.matchModelChange)
-            }
-            else {
-                // //朋友桌
-                room_config.limit_friend_table = true
-                let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
-                this.top_block.active = true;
-                await TimeHelper.Sleep(1000);
-                data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
-                this.post(EventName.updateFriendChessView)
-                this.top_block.active = false;
-                let _data = new LobbyRoomListItem(data.data.data);
-                GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
-            }
+            room_config.limit_friend_table = false
+            await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
+            TimeHelper.Sleep(3000);
+            this.post(EventName.matchModelChange)
+
+        }
+        else if (this._btnType == 2) {
+            // //朋友桌
+            room_config.limit_friend_table = true
+            let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+            this.top_block.active = true;
+            await TimeHelper.Sleep(1000);
+            data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
+            this.post(EventName.updateFriendChessView)
+            this.top_block.active = false;
+            let _data = new LobbyRoomListItem(data.data.data);
+            GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
         }
         this.close();
         this.room_config = null;
