@@ -3,7 +3,7 @@
  * @Date: 2022-12-28 17:59:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 17:46:09
+ * @LastEditTime: 2023-03-08 20:04:34
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/active/UIClubActive.ts
  */
 // Learn TypeScript:
@@ -60,6 +60,9 @@ export default class UIClubActive extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.comFormTitle.initData('UIGuild_Notice', this);
+        this.titleEditBox.string = ''
+        this.textEditBox.string = ''
+        this.editChange();
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
