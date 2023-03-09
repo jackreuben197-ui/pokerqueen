@@ -35,4 +35,4 @@ export class ClubUserDataCache {
     }
 
 }
-(window as any).GameCache = ClubUserDataCache;
+(window as any).ClubUserDataCache = ClubUserDataCache;

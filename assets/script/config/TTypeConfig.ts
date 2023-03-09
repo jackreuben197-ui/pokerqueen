@@ -708,8 +708,8 @@ export enum MessageSubType {
     MsgSystemTypeBanBringinOff,                                     //带入解禁
     MsgSystemTypeBanBeansOn,                                        //提豆被禁
     MsgSystemTypeBanBeansOff,                                       //提豆解禁
-    MsgSystemTypeUserCreateClubSuccess,                             //用户创建俱乐部成功 4009
-    MsgSystemTypeUserCreateClubFail,                                //用户创建俱乐部失败 4010
+    MsgSystemTypeUserCreateClubSuccess = 4009,                      //用户创建俱乐部成功 4009
+    MsgSystemTypeUserCreateClubFail = 4010,                         //用户创建俱乐部失败 4010
     MsgSystemTypeUserJoinClubSuccess = 4019,                        // 玩家申请加入公会成功 4019
     MsgSystemTypeUserJoinClubFail,                                  // 玩家申请加入公会失败 4020
     MsgTirbeTypeCreateSuccess = 5000,                               //俱乐部创建成功

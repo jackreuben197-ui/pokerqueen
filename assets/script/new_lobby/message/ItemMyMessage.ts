@@ -14,6 +14,7 @@ export default class ItemMyMessage extends UIBasePlus {
     cc_Sprite$icon: cc.Sprite = null;
 
     //////////////////////////////////
+    unread: boolean = false;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -27,7 +28,8 @@ export default class ItemMyMessage extends UIBasePlus {
         this.cc_Label$name.string = name;
     }
     //刷新消息状态
-    refreshContent(text: string, color = "#0") {
+    refreshContent(unread: boolean, text: string, color = "#0") {
+        this.unread = unread;
         this.cc_Label$content.string = text;
         this.cc_Label$content.node.color = cc.Color.BLACK.fromHEX(color);
     }

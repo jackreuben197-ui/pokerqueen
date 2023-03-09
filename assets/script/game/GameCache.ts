@@ -1,4 +1,5 @@
 
+import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import TexasGame from "./texas/TexasGame";
 import GameUtil from "./util/GameUtil";
 
@@ -285,7 +286,12 @@ export class GameCache {
     public invitation_code: number = null  //邀请码  
     public friendBringInStatus: number = 0; // 朋友桌带入申请的状态
 
-    public anti_cheat_type:number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
+    public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
+
+
+    //存放 enterroom 消息返回结果
+    public enter_room_res: ServerMessageEnterRoom.AsObject = null;
+
 
     public static get Instance(): GameCache {
         return (this as any).instance ??= new GameCache;
@@ -315,7 +321,10 @@ export class GameCache {
         GameCache.Instance.invitation_code = room_info.invitation_code;
         GameCache.Instance.gold_type = room_info.gold_type || 0;
         GameCache.Instance.anti_cheat_type = room_info.anti_cheat_type || 0;
+
+        console.log("GameCache.Instance.gold_type", room_info.gold_type);
     }
+
 }
 export interface EnterRoomInfo {
     service_id?;

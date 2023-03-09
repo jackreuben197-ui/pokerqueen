@@ -736,7 +736,8 @@ export default class UIClubCreateMatch extends BaseForm {
             this.post(EventName.updateFriendChessView)
             this.top_block.active = false;
             let _data = new LobbyRoomListItem(data.data.data);
-            GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
+            //GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
+            GameUtil.EnterRoomAPI(data.data.data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
         }
         this.close();
         this.room_config = null;

@@ -1,8 +1,9 @@
 import { executionAsyncResource } from "async_hooks";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
+import GC from "../../frame/GameControl";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { APIMsgMessageList, Web_Msg_Message_Unread, WWW } from "../../net/https/WebRequest";
+import { APIMsgMessageList, Web_Msg_Message_Unread, Web_Msg_Message_UnreadClear, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemMyMessage from "./ItemMyMessage";
@@ -59,7 +60,7 @@ export default class UIMyMessage extends BaseFormPlus {
 
             let item_sc = item.getComponent(ItemMyMessage);
             item_sc.refreshName(i18nMgr.Get(MyMessageModel.Instance.message_items[index].name));
-            item_sc.refreshContent(i18nMgr.Get("MsgContentUnRead"), MyMessageModel.Instance.content_colors[0]);
+            item_sc.refreshContent(false, i18nMgr.Get("MsgContentUnRead"), MyMessageModel.Instance.content_colors[0]);
         })
     }
     //刷新未读消息
@@ -69,7 +70,7 @@ export default class UIMyMessage extends BaseFormPlus {
                 let order = MyMessageModel.Instance.message_order[item.msg_main_type];
                 let item_node = this.$content.children[order];
                 let content = i18nMgr.Get("UIMine_MsgHasNoRead").replace("{0}", item.num);
-                item_node.getComponent(ItemMyMessage).refreshContent(content, MyMessageModel.Instance.content_colors[1]);
+                item_node.getComponent(ItemMyMessage).refreshContent(true, content, MyMessageModel.Instance.content_colors[1]);
             })
         }
     }
@@ -88,9 +89,29 @@ export default class UIMyMessage extends BaseFormPlus {
             }
         )
     }
-    onItemClick(button: cc.Button) {
-        let index = button.node.getComponent(ItemMyMessage).index;
+
+    //清理未读消息
+    reqUnreadClear(index: number) {
+        return WWW.Instance.CommonAPI(
+            {
+                web_class: Web_Msg_Message_UnreadClear,
+                body: {
+                    msg_type: GC.message.MessageType[index]
+                },
+            }
+        )
+    }
+
+    async onItemClick(button: cc.Button) {
+        let script = button.node.getComponent(ItemMyMessage);
+        let index = script.index;
         let item = MyMessageModel.Instance.message_items[index];
+        if (script.unread) {
+            let res = await this.reqUnreadClear(index).catch(() => { });
+            if (res) {
+                script.refreshContent(false, i18nMgr.Get("MsgContentUnRead"), MyMessageModel.Instance.content_colors[0]);
+            }
+        }
         switch (index) {
             case 0://系统消息
                 UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name });
