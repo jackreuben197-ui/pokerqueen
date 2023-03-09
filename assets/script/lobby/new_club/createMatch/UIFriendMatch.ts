@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-07 12:41:04
+ * @LastEditTime: 2023-03-09 18:39:10
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 
@@ -30,8 +30,16 @@ export default class UIFriendMatch extends UIBase {
     @property(cc.Node)
     numNode: cc.Node = null;
 
+    @property(cc.Label)
+    pjlbl: cc.Label = null;
+
+    @property(cc.Label)
+    datalbl: cc.Label = null;
+
     @property(cc.Node)
     lb_tip: cc.Node = null;
+
+
 
     @property(List)
     list: List = null;
@@ -85,10 +93,12 @@ export default class UIFriendMatch extends UIBase {
         UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI });
     }
 
-    titleNodeClick(customData) {
+    titleNodeClick(event, customData) {
         this._selectTitle = Number(customData)
         this.fastBeganNode.active = this._selectTitle == 1;
         this.dataNode.active = this._selectTitle == 2;
+        this.pjlbl.node.color = this._selectTitle == 1 ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#E6E8EC')
+        this.datalbl.node.color = this._selectTitle == 2 ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#E6E8EC')
     }
     async initDiamond() {
         await UIClubModel.mInstance.APIUserDiamondsWallet();
@@ -156,6 +166,7 @@ export default class UIFriendMatch extends UIBase {
             UIComponent.close(UIDefine.UIKeyNode)
         }
         this.joinBtn.interactable = this._keyNodeNumArr.length == 6
+        this.joinBtn.node.getChildByName('Rectangle').active = !this.joinBtn.interactable
         for (let index = 0; index < this.numNode.childrenCount; index++) {
             const element = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
             element.string = '';
