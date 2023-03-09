@@ -96,5 +96,11 @@ export default class LobbyRoomListItem {
     get invitation_code() {
         return this._data.invitation_code;
     }
+    get gold_type() {
+        return this._data.gold_type;
+    }
+    get share_table(){
+        return this._data.share_table;
+    }
 
 }

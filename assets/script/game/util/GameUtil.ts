@@ -1589,7 +1589,6 @@ export default class GameUtil {
      */
     public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUIs?: UIDefineType[]) {
         let room_type: number = enter_room_info.room_type;
-        console.log("EnterRoom room_type:", room_type);
         //未开放房间类型
         if (!GameUtil.IsOpenRoomType(room_type)) {
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));

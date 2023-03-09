@@ -108,7 +108,9 @@ export type TRoomListItem = {
     club_id: number, // 公会ID
     origin_type: number,    // 创建来源 1 平台，2 联盟，3 公会
     invitation_code: string
-    limit_bring_in: number
+    limit_bring_in: number,
+    gold_type: number,
+    share_table: number,
 
 }
 

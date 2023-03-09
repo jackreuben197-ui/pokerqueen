@@ -292,7 +292,7 @@ export default class UIAutoBringIn extends UIBasePlus {
 
     refreshSliderTextColor() {
         this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
-        if (GameCache.Instance.gold_type && this.sendCoin > this.ownCoin) {
+        if ((GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2) && this.sendCoin > this.ownCoin) {
             this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#ee8380");
         }
     }

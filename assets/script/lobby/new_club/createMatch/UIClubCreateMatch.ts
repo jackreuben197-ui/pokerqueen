@@ -652,7 +652,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.sb = Number(this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 100 //小盲注,必填
         room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 / (room_config.sb * 2);
         room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100 / (room_config.sb * 2);
-        room_config.retain_min_rate = this.zxblbs['levelData'].level * 100;//最小倍率 最小保留记分牌倍数
+        room_config.retain_min_rate = this.zxblbs['levelData'].level;//* 100;//最小倍率 最小保留记分牌倍数
 
         room_config.op_duration = this._sksjNum;
         //功能为实现
@@ -667,7 +667,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.limit_gps = this._gpsState
         room_config.seat_count = this.zwrs['levelData'].level;
         room_config.play_duration = Number(this.pjsc.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 3600    //房间有效时长 秒,必填
-        room_config.retain_min_rate = this.zxblbs['levelData'].level * 100;//最小倍率 最小保留记分牌倍数
+        //room_config.retain_min_rate = this.zxblbs['levelData'].level * 100;//最小倍率 最小保留记分牌倍数
         // room_config.tribe_id = ClubCache.tribe_id;
 
         if (this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == '不限') {
@@ -736,8 +736,7 @@ export default class UIClubCreateMatch extends BaseForm {
             this.post(EventName.updateFriendChessView)
             this.top_block.active = false;
             let _data = new LobbyRoomListItem(data.data.data);
-            //GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
-            GameUtil.EnterRoomAPI(data.data.data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
+            GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
         }
         this.close();
         this.room_config = null;

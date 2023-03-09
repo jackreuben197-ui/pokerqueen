@@ -643,7 +643,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 327.77,
+      "width": 275.77,
       "height": 100
     },
     "_anchorPoint": {
@@ -1460,7 +1460,7 @@
         "__id__": 47
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [],
     "_prefab": {
       "__id__": 50
@@ -1996,7 +1996,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        307.77,
+        255.76999999999998,
         0,
         0,
         0,
@@ -2363,7 +2363,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 327.77,
+      "width": 275.77,
       "height": 100
     },
     "_resize": 1,
