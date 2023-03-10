@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 17:02:13
+ * @LastEditTime: 2023-03-10 17:01:49
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubMatchItem.ts
  */
 
@@ -126,10 +126,10 @@ export default class UIClubMatchItem extends UIBase {
         UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogEditComponent,
             {
                 type: UIDialogEditComponent.DialogType.CommitCancel,
-                title: "加入牌桌",
+                title: "UIGuild_JoinGameTitle",
                 content: '',
-                contentCommit: "确定",
-                contentCancel: "取消",
+                contentCommit: "adaptation10012",
+                contentCancel: "adaptation10013",
                 passWord: '123456',
                 actionCommit: async () => {
                     cb()

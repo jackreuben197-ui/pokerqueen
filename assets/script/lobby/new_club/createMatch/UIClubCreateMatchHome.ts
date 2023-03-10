@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 10:33:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 13:48:02
+ * @LastEditTime: 2023-03-10 15:52:35
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -15,6 +15,7 @@ import List from "../../../common/List";
 import { EventName } from "../../../config/EventName";
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
+import { i18nMgr } from "../../../i18n/i18nMgr";
 import { APIOrgGetTemplate } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
@@ -137,6 +138,8 @@ export default class UIClubCreateMatchHome extends BaseForm {
     }
     async createBtnClick() {
         await UIClubModel.mInstance.APIOrgRoomBatchCreate({ data: this._modelData });
+        UIComponent.Instance.Toast(i18nMgr.Get('UIClub_CreateSuccess'))
+        this.close();
         // this.refreshModel()
     }
     async reqDataAgain() {

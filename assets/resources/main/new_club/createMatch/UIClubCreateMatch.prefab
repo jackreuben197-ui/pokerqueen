@@ -39502,7 +39502,7 @@
     "component": "",
     "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
     "handler": "saveModel",
-    "customEventData": "2"
+    "customEventData": "1"
   },
   {
     "__type__": "cc.Widget",
@@ -41098,7 +41098,7 @@
     "component": "",
     "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
     "handler": "saveModel",
-    "customEventData": "1"
+    "customEventData": "2"
   },
   {
     "__type__": "cc.Widget",

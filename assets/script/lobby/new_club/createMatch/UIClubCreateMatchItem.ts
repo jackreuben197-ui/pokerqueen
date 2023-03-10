@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-01 11:25:15
+ * @LastEditTime: 2023-03-10 16:36:53
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -16,6 +16,7 @@
 import { prototype } from "events";
 import { UIDefine } from "../../../define/UIDefine";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
+import UINewDialogComponent from "../../../ui/dialog/UINewDialogComponent";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -142,17 +143,17 @@ export default class UIClubCreateMatchItem extends UIBase {
         UIComponent.open(UIDefine.UIClubCreateMatch, this._data);
     }
     delateModel() {
-        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
             {
-                type: UIDialogComponent.DialogType.CommitCancel,
-                title: "提示",
+                type: UINewDialogComponent.DialogType.CommitCancel,
+                title: "UIGuild_TipsTitle",
                 content: `确定删除模版 ${this._data.name} `,
-                contentCommit: "确定",
-                contentCancel: "取消",
+                contentCommit: "adaptation10012",
+                contentCancel: "adaptation10013",
                 actionCommit: async () => {
-                    this.node.active = false;
+                    // this.node.active = false;
                     await UIClubModel.mInstance.APIOrgTemplateDelete(this._data.id)
-
+                    this.post('matchModelChange')
 
                 },
                 noAnimation: true,

@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 10:26:41
+ * @LastEditTime: 2023-03-10 16:40:43
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -254,13 +254,13 @@ export default class UIClubCreateMatch extends BaseForm {
         let _string = 'NLH'
         switch (ClubCache.CreateGameType) {
             case 1:
-                _string == 'NLH'
+                _string = 'NLH'
                 break;
             case 2:
-                _string == 'PLO'
+                _string = 'PLO'
                 break;
             case 3:
-                _string == '6+'
+                _string = '6+'
                 break;
                 break;
 

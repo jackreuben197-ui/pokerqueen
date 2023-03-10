@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 19:10:42
+ * @LastEditTime: 2023-03-10 17:24:08
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
@@ -45,6 +45,14 @@ export default class UIJoinUnion extends BaseForm {
     @property(cc.Node)
     noDataTip: cc.Node = null;
 
+    @property(cc.Node)
+    canClick: cc.Node = null;
+    @property(cc.Node)
+    noClick: cc.Node = null;
+    @property(cc.Label)
+    btnTip: cc.Label = null;
+
+
     tempString = ''
     protected lateLoad(): void {
         super.lateLoad();
@@ -70,6 +78,9 @@ export default class UIJoinUnion extends BaseForm {
         this.initList();
         this.tempString = ''
         this.sousuo.interactable = false;
+        this.canClick.active = this.sousuo.interactable
+        this.noClick.active = !this.sousuo.interactable
+        this.btnTip.node.color = this.sousuo.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
     }
     initList() {
         if (this.type == 0) {
@@ -84,7 +95,7 @@ export default class UIJoinUnion extends BaseForm {
         this.contentList.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
         let data: any = Web_Org_Club_Player_Apply_List.Response.data
-        this.noDataTip.active = data?.items != 0
+        this.noDataTip.active = data?.items.length == 0
         for (let index = 0; index < data?.items?.length; index++) {
             const element = data?.items[index];
             let item = cc.instantiate(this.joinNode);
@@ -99,7 +110,7 @@ export default class UIJoinUnion extends BaseForm {
         this.contentList.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubApplyTribeList({ club_id: ClubCache.club_id })
         let data: any = APIOrgClubApplyTribeList.Response.data
-        this.noDataTip.active = data?.list != 0
+        this.noDataTip.active = data?.list.length == 0
         for (let index = 0; index < data?.list?.length; index++) {
             const element = data?.list[index];
             let item = cc.instantiate(this.joinNode);
@@ -178,7 +189,9 @@ export default class UIJoinUnion extends BaseForm {
                 break;
         }
         this.sousuo.interactable = this.tempString.length == 6
-
+        this.canClick.active = this.sousuo.interactable
+        this.noClick.active = !this.sousuo.interactable
+        this.btnTip.node.color = this.sousuo.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
 
     }
 

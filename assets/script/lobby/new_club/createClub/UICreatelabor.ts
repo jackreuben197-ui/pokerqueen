@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-08 20:41:50
+ * @LastEditTime: 2023-03-10 17:17:59
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UICreatelabor.ts
  */
 
@@ -40,6 +40,14 @@ export default class UICreatelabor extends BaseForm {
     camera: cc.Sprite = null;
     @property(cc.Sprite)
     Round: cc.Sprite = null;
+
+    @property(cc.Node)
+    canClick: cc.Node = null;
+    @property(cc.Node)
+    noClick: cc.Node = null;
+    @property(cc.Label)
+    btnTip: cc.Label = null;
+
     iconUrl = null;
     private comFormTitle: ComFormTitle = null;
     commit: cc.Button = null;
@@ -92,9 +100,17 @@ export default class UICreatelabor extends BaseForm {
         this.editName.string = this.editName.string.trim()
         this.labelNum.string = this.editjieshao.string.length + '/50'
         if (this.editName.string == '' || this.editjieshao.string == '' || this.xinxi.string == '') {
+
             this.commit.interactable = false
+            this.canClick.active = false
+            this.noClick.active = true
+            this.btnTip.node.color = cc.color().fromHEX('#515774')
         } else {
+            this.canClick.active = true
+            this.noClick.active = false
             this.commit.interactable = true;
+            this.btnTip.node.color = cc.color().fromHEX('#EEF5FF')
+
         }
     }
     changeIntroduce() {
