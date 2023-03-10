@@ -3,7 +3,7 @@
  * @Date: 2023-01-13 12:26:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-09 18:15:58
+ * @LastEditTime: 2023-03-10 17:48:42
  * @FilePath: /pokerqueen/assets/script/frame/config/tabConfig.ts
  */
 // data  读多语言   默认值可以不填
@@ -14,7 +14,7 @@ export const joinClubConfig = { data: ['UISearchClub', 'UIApplyHistory'] }
 export const joinUnionConfig = { data: ['UISearchUnion', 'UIApplyHistory'] }
 export const rateTabConfig = { data: ['UIGuild_ExchangeRateSettingsGold', 'UIGuild_ExchangeRateSettingsUsdt'] }
 export const shareMatchTabConfig = { data: ['UIGuild_ReceiveGame', 'UIGuild_Fund_Apply'] }
-export const memberAdminTabConfig = { data: ['UIGuild_FilterButtonAll', 'UIGuild_FilterButtonManager', 'UIGuild_FilterButtonVip', 'UIGuild_FilterButtonMember'] }
+export const memberAdminTabConfig = { data: ['UIGuild_FilterButtonAll', 'UIGuild_FilterButtonManager', 'UIGuild_FilterButtonVip', 'UIGuild_FilterButtonMember'], defaultWidth: 1109 }
 export const createMatchTabConfig = { data: ['UIClub_inSide', 'UIClub_outSide'] }
 export const gameChangeTypeTabConfig = { data: ['4', '5', '6'], defaultIndex: 0 }
 export const dxmTabConfig = { data: ['UIGuild_Tiny', 'UIGuild_Small', 'UIGuild_Middle', 'UIGuild_Big'], defaultIndex: 0 }

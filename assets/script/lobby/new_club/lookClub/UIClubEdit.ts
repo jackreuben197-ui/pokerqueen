@@ -3,7 +3,7 @@
  * @Date: 2023-02-24 13:22:46
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 13:57:02
+ * @LastEditTime: 2023-03-10 18:15:31
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIClubEdit.ts
  */
 // Learn TypeScript:
@@ -31,7 +31,16 @@ export default class UIClubEdit extends BaseForm {
     more_contect: cc.EditBox = null;
 
     @property(cc.Button)
-    sure_btn: cc.Button = null;
+    sure_btn: cc.Button = null
+
+    @property(cc.Node)
+    canClick: cc.Node = null;
+
+    @property(cc.Node)
+    noClick: cc.Node = null;
+
+    @property(cc.Label)
+    btn_lbl: cc.Label = null;
 
     private comFormTitle: ComFormTitle = null;
     _type = 0
@@ -56,7 +65,14 @@ export default class UIClubEdit extends BaseForm {
         } else {
             this.sure_btn.interactable = this.more_contect.string != ''
         }
+        this.setBtnState()
     }
+    setBtnState() {
+        this.canClick.active = this.sure_btn.interactable
+        this.noClick.active = !this.sure_btn.interactable
+        this.btn_lbl.node.color = this.sure_btn.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
+    }
+
     async sureClick() {
         if (this._type == 0) {
             ClubCache._msg.desc = this.introduce.string;
