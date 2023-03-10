@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-08 18:59:11
+ * @LastEditTime: 2023-03-10 10:26:41
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -307,7 +307,7 @@ export default class UIClubCreateMatch extends BaseForm {
             this._selectTitle = 1
         }
 
-        this.zxblbs['levelData'] = { min: 1, total: 4, level: room_config.retain_min_rate / 100 }
+        this.zxblbs['levelData'] = { min: 1, total: 4, level: room_config.retain_min_rate }
         this.zwrs['levelData'] = { min: 2, total: 9, level: room_config.seat_count }
         this.zdks['levelData'] = { min: 2, total: 9, level: room_config.autostart_min_players }
         this.Straddle['levelData'] = { min: 0, total: 6, level: room_config.straddle_max }
@@ -652,8 +652,6 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.sb = Number(this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 100 //小盲注,必填
         room_config.min_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) * 100 / (room_config.sb * 2);
         room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100 / (room_config.sb * 2);
-        room_config.retain_min_rate = this.zxblbs['levelData'].level;//* 100;//最小倍率 最小保留记分牌倍数
-
         room_config.op_duration = this._sksjNum;
         //功能为实现
 
@@ -667,7 +665,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.limit_gps = this._gpsState
         room_config.seat_count = this.zwrs['levelData'].level;
         room_config.play_duration = Number(this.pjsc.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 3600    //房间有效时长 秒,必填
-        //room_config.retain_min_rate = this.zxblbs['levelData'].level * 100;//最小倍率 最小保留记分牌倍数
+        room_config.retain_min_rate = this.zxblbs['levelData'].level;//最小倍率 最小保留记分牌倍数
         // room_config.tribe_id = ClubCache.tribe_id;
 
         if (this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == '不限') {

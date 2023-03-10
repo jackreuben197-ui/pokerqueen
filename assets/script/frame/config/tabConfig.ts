@@ -3,12 +3,12 @@
  * @Date: 2023-01-13 12:26:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-01 20:51:07
+ * @LastEditTime: 2023-03-09 18:15:58
  * @FilePath: /pokerqueen/assets/script/frame/config/tabConfig.ts
  */
 // data  读多语言   默认值可以不填
 export const FriendMathTabConfig = { data: ['UIClub_Match', 'adaptation10124'] }
-export const CareerRecordTabConfig = { data: ['UIData_Today', 'UIData_Week', 'UIData_Month', 'UIData_KrVdD5WqB'] }
+export const CareerRecordTabConfig = { data: ['UIData_Today', 'UIData_Week', 'UIData_Month', 'UIData_KrVdD5WqB'], defaultWidth: 1109 }
 export const ClubTabConfig = { data: ['UIGuild_Tiny', 'UIGuild_Small', 'UIGuild_Middle', 'UIGuild_Big'] }
 export const joinClubConfig = { data: ['UISearchClub', 'UIApplyHistory'] }
 export const joinUnionConfig = { data: ['UISearchUnion', 'UIApplyHistory'] }
