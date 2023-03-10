@@ -283,7 +283,7 @@ export class GameCache {
 
 
     public limit_bring_in: number = null  //是否开启带入  0/1
-    public invitation_code: number = null  //邀请码  
+    public invitation_code: any = null  //邀请码  
     public friendBringInStatus: number = 0; // 朋友桌带入申请的状态
 
     public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 

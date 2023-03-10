@@ -286,6 +286,12 @@ export default class TexasGameUtils {
         GameCache.Instance.game_type = 0;
         GameCache.Instance.poker_type = 0;
         GameCache.Instance.bet_type = 0;
+
+        GameCache.Instance.origin_type = 0;
+        GameCache.Instance.invitation_code = null;
+        // GameCache.Instance.share_table = 0;
+        // GameCache.Instance.limit_bring_in = 0
+
         //#endregion
     }
 
