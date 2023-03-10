@@ -3,8 +3,8 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-08 18:00:16
- * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght1.ts
+ * @LastEditTime: 2023-03-10 19:50:54
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/slidewidght1.ts
  */
 
 const { ccclass, property, menu } = cc._decorator;
@@ -51,8 +51,9 @@ export default class slidewidght1 extends cc.Component {
         this._big = big;
         this._small = small;
         let _leng = this._big / this._small
-
-        let _x = 1000 / _leng
+        this.node.x = -450
+        this.node.width = 900
+        let _x = this.node.width / _leng
         this._offNum = (this._big - this._small) / (_leng - 1)
         // this._itemData = data
         for (let index = this.itemNode.childrenCount - 1; index > 0; index--) {
@@ -116,7 +117,7 @@ export default class slidewidght1 extends cc.Component {
         this._targetDe.ScrollView.enabled = false
         let node = event.target;
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
-        if (pos.x >= 0 && pos.x <= 1000) {
+        if (pos.x >= 0 && pos.x <= this.node.width) {
             node.x = pos.x;
 
         }
@@ -128,7 +129,7 @@ export default class slidewidght1 extends cc.Component {
     drogTouchMove(event, customData) {
         let node = event.target;
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
-        if (pos.x >= 0 && pos.x <= 1000) {
+        if (pos.x >= 0 && pos.x <= this.node.width) {
             node.x = pos.x;
             for (let index = 0; index < this.itemNode.childrenCount; index++) {
                 const element = this.itemNode.children[index];
@@ -162,9 +163,9 @@ export default class slidewidght1 extends cc.Component {
             _index = _index - 1
         }
         node.x = this.itemNode.children[_index].x
-        if (node.x > 1000) {
+        if (node.x > this.node.width) {
             _index = this.itemNode.childrenCount;
-            node.x = 1000
+            node.x = this.node.width
         }
         if (node.x < 0) {
             _index = 0;

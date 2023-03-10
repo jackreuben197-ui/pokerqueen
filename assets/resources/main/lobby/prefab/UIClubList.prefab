@@ -1250,7 +1250,7 @@
         "__id__": 56
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 71
@@ -2525,12 +2525,14 @@
       "__id__": 67
     },
     "_indicators": [],
-    "spriteFrame": null,
+    "spriteFrame": {
+      "__uuid__": "3c267d0d-483c-4647-bd3a-5dde0e7232a8"
+    },
     "direction": 0,
     "cellSize": {
       "__type__": "cc.Size",
-      "width": 15,
-      "height": 15
+      "width": 27,
+      "height": 27
     },
     "spacing": 10,
     "_id": ""
@@ -2680,7 +2682,7 @@
         "__id__": 117
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 130

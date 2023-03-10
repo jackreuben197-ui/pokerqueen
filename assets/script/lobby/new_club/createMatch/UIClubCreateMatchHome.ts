@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 10:33:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 15:52:35
+ * @LastEditTime: 2023-03-10 19:17:45
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -31,6 +31,13 @@ export default class UIClubCreateMatchHome extends BaseForm {
     contentModel: cc.Node = null;
     @property(cc.Button)
     createBtn: cc.Button = null;
+
+    @property(cc.Node)
+    canClick: cc.Node = null;
+    @property(cc.Node)
+    noClick: cc.Node = null;
+    @property(cc.Label)
+    btnTip: cc.Label = null;
 
 
     @property(cc.Prefab)
@@ -114,6 +121,10 @@ export default class UIClubCreateMatchHome extends BaseForm {
         this.matchModel.active = this._selectTitle == TITALTYPE.MODEL
         this.memberListT.getChildByName('block').active = this._selectTitle == TITALTYPE.GAME_TYPE
         this.applyListT.getChildByName('block').active = this._selectTitle == TITALTYPE.MODEL
+
+        this.memberListT.getChildByName('title').color = this._selectTitle == 0 ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#E6E8EC')
+        this.applyListT.getChildByName('title').color = this._selectTitle == 1 ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#E6E8EC')
+
         if (this._selectTitle == TITALTYPE.MODEL) {
             this.switchTabBtnState(this._selectRoleType)
         }
@@ -134,6 +145,14 @@ export default class UIClubCreateMatchHome extends BaseForm {
         } else {
             this.createBtn.interactable = true;
         }
+        this.setBtnState()
+
+
+    }
+    setBtnState() {
+        this.canClick.active = this.createBtn.interactable
+        this.noClick.active = !this.createBtn.interactable
+        this.btnTip.node.color = this.createBtn.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
 
     }
     async createBtnClick() {

@@ -3,8 +3,8 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-01 19:22:05
- * @FilePath: /pokerqueen/assets/script/lobby/labor/slidewidght.ts
+ * @LastEditTime: 2023-03-10 19:49:30
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/slidewidght.ts
  */
 
 const { ccclass, property, menu } = cc._decorator;
@@ -38,8 +38,9 @@ export default class slidewidght extends cc.Component {
         this.selectNum = this.node.getChildByName('selectNum')
         this.fillsp = this.node.getChildByName('fillsp')
         this.initListen();
-
-        let _x = 1000 / (data.length - 1)
+        this.node.x = -450
+        this.node.width = 900
+        let _x = this.node.width / (data.length - 1)
         this._itemData = data
         for (let index = this.itemNode.childrenCount - 1; index > 0; index--) {
             this.itemNode.children[index].removeFromParent();
@@ -78,7 +79,7 @@ export default class slidewidght extends cc.Component {
         this._targetDe.ScrollView.enabled = false
         let node = event.target;
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
-        if (pos.x >= 0 && pos.x <= 1000) {
+        if (pos.x >= 0 && pos.x <= this.node.width) {
             node.x = pos.x;
             this.fillsp.width = this.selectNum.x
         }
@@ -91,7 +92,7 @@ export default class slidewidght extends cc.Component {
     drogTouchMove(event, customData) {
         let node = event.target;
         let pos = node.parent.convertToNodeSpaceAR(event.getLocation());
-        if (pos.x >= 0 && pos.x <= 1000) {
+        if (pos.x >= 0 && pos.x <= this.node.width) {
             node.x = pos.x;
             this.fillsp.width = this.selectNum.x
             for (let index = 0; index < this.itemNode.childrenCount; index++) {
@@ -139,10 +140,10 @@ export default class slidewidght extends cc.Component {
 
         node.x = this.itemNode.children[this._selectIndex].x
         this.fillsp.width = this.selectNum.x
-        if (this.selectNum.x > 1000) {
+        if (this.selectNum.x > this.node.width) {
             this._selectIndex = this.itemNode.childrenCount;
-            node.x = 1000
-            this.fillsp.width = 1000
+            node.x = this.node.width
+            this.fillsp.width = this.node.width
         }
         if (this.selectNum.x < 0) {
             this._selectIndex = 0;

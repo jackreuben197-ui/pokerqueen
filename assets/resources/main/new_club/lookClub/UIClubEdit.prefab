@@ -1620,7 +1620,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1000,
-      "height": 200
+      "height": 260
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1791,19 +1791,19 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1000,
-      "height": 200
+      "height": 260
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
+      "x": 0,
+      "y": 1
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        0,
+        -494.204,
+        129.788,
         0,
         0,
         0,
@@ -1835,14 +1835,18 @@
       "__id__": 47
     },
     "_enabled": true,
-    "_materials": [],
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_string": "",
     "_N$string": "",
     "_fontSize": 53,
     "_lineHeight": 70,
-    "_enableWrapText": false,
+    "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
     },
@@ -1852,7 +1856,7 @@
     "_styleFlags": 0,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 0,
-    "_N$verticalAlign": 1,
+    "_N$verticalAlign": 0,
     "_N$fontFamily": "Arial",
     "_N$overflow": 1,
     "_N$cacheMode": 0,
@@ -1897,19 +1901,19 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1000,
-      "height": 200
+      "height": 260
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
+      "x": 0,
+      "y": 1
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        0,
+        -494.204,
+        129.788,
         0,
         0,
         0,
@@ -1952,7 +1956,7 @@
     "_N$string": "",
     "_fontSize": 40,
     "_lineHeight": 40,
-    "_enableWrapText": false,
+    "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
     },
@@ -1962,7 +1966,7 @@
     "_styleFlags": 0,
     "_underlineHeight": 0,
     "_N$horizontalAlign": 0,
-    "_N$verticalAlign": 1,
+    "_N$verticalAlign": 0,
     "_N$fontFamily": "Arial",
     "_N$overflow": 1,
     "_N$cacheMode": 0,
@@ -2009,7 +2013,7 @@
       "__id__": 45
     },
     "_N$inputFlag": 5,
-    "_N$inputMode": 6,
+    "_N$inputMode": 0,
     "_N$stayOnTop": false,
     "_id": ""
   },

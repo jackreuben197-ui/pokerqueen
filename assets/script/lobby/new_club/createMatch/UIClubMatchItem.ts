@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 17:01:49
+ * @LastEditTime: 2023-03-10 20:19:01
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubMatchItem.ts
  */
 
@@ -119,7 +119,7 @@ export default class UIClubMatchItem extends UIBase {
                 ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
             }
         }
-        if (this._data.private_room == 0) {
+        if (this._data.private_room == 0 || ClubCache.user_level == 1 || ClubCache.user_level == 3) {
             cb();
             return;
         }
@@ -130,7 +130,7 @@ export default class UIClubMatchItem extends UIBase {
                 content: '',
                 contentCommit: "adaptation10012",
                 contentCancel: "adaptation10013",
-                passWord: '123456',
+                passWord: this._data.room_password,
                 actionCommit: async () => {
                     cb()
                 },

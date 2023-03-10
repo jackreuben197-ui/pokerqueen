@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 11:31:42
+ * @LastEditTime: 2023-03-10 19:29:05
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -71,6 +71,15 @@ export default class UIClubList extends BaseForm {
             }
             else if (this._selectIndex == 2) {
                 return a.club_members - b.club_members
+            }
+            else if (this._selectIndex == 3) {
+                return b.club_members - a.club_members
+            }
+            else if (this._selectIndex == 4) {
+                return a.tables - b.tables
+            }
+            else if (this._selectIndex == 5) {
+                return b.tables - a.tables
             }
         })
         this.initListNode(_data)

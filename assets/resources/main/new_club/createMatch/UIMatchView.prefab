@@ -135,7 +135,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1040,
+      "width": 960,
       "height": 100
     },
     "_anchorPoint": {
@@ -202,7 +202,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 260,
+      "width": 240,
       "height": 100
     },
     "_anchorPoint": {
@@ -214,7 +214,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -390,
+        -360,
         -50,
         0,
         0,
@@ -511,7 +511,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 260,
+      "width": 240,
       "height": 100
     },
     "_anchorPoint": {
@@ -523,7 +523,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -130,
+        -120,
         -50,
         0,
         0,
@@ -820,7 +820,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 260,
+      "width": 240,
       "height": 100
     },
     "_anchorPoint": {
@@ -832,7 +832,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        130,
+        120,
         -50,
         0,
         0,
@@ -1129,7 +1129,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 260,
+      "width": 240,
       "height": 100
     },
     "_anchorPoint": {
@@ -1141,7 +1141,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        390,
+        360,
         -50,
         0,
         0,
@@ -1418,7 +1418,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 1040,
+      "width": 960,
       "height": 100
     },
     "_resize": 1,
@@ -2057,7 +2057,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1100,
+      "width": 1000,
       "height": 160
     },
     "_anchorPoint": {
@@ -2140,7 +2140,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -444,
+        -394,
         25,
         0,
         0,
@@ -2387,8 +2387,8 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 300,
-      "height": 200
+      "width": 1000,
+      "height": 160
     },
     "_resize": 0,
     "_N$layoutType": 3,

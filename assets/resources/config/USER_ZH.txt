@@ -3637,7 +3637,11 @@ UIGuild_HaveApplyTribe=已申请联盟
 UIHoldemAddChipsPaywallet=支付钱包
 UIGuild_FilterName001=按创建时间正序
 UIGuild_FilterName002=按创建时间倒序
-UIGuild_FilterName003=按在线成员数
+UIGuild_FilterName003=按在线成员数正序
+UIGuild_FilterName004=按在线成员数倒序
+UIGuild_FilterName005=按当前牌桌数正序
+UIGuild_FilterName006=按当前牌桌数倒序
+
 UIGuild_FilterBtnName001=按创建时间
 UIGuild_FilterBtnName002=按成员
 UIGuild_ClubNum=公会数量
