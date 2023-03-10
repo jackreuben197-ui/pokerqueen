@@ -34,13 +34,10 @@
     "_components": [
       {
         "__id__": 225
-      },
-      {
-        "__id__": 226
       }
     ],
     "_prefab": {
-      "__id__": 227
+      "__id__": 226
     },
     "_opacity": 255,
     "_color": {
@@ -8404,25 +8401,6 @@
     "_isAbsVerticalCenter": true,
     "_originalWidth": 1242,
     "_originalHeight": 2688,
-    "_id": ""
-  },
-  {
-    "__type__": "7b91ajVwa5CgqmyQLHt0EC1",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "lbl_num": {
-      "__id__": 127
-    },
-    "sureBtn": {
-      "__id__": 73
-    },
-    "EditBox": {
-      "__id__": 140
-    },
     "_id": ""
   },
   {
