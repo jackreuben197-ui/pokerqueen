@@ -827,6 +827,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UISuperDialog",
     },
+    //密码输入提示面板
+    UIPasswordDialog: {
+        UIType: UIType.CommonUI,
+        Name: "UIPasswordDialog",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIPasswordDialog",
+    },
     //背包提示面板
     UIBackDialog: {
         UIType: UIType.CommonUI,
@@ -895,7 +902,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIEditInformation",
         Bundle: null,
-        Path: "main/lobby/ui/UIEditInformation",
+        Path: "main/lobby/me/UIEditInformation",
         Title: "UIMine_UserInfoSetting_title"
     },
     //修改昵称-new
@@ -903,7 +910,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIChangeName",
         Bundle: null,
-        Path: "main/lobby/ui/UIChangeName",
+        Path: "main/lobby/me/UIChangeName",
         Title: "UIMine_Mission_8"
     },
     //钻石商城-new
@@ -911,7 +918,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIMall",
         Bundle: null,
-        Path: "main/lobby/ui/UIMall",
+        Path: "main/lobby/me/UIMall",
         Title: "UIHappyShop_ActivityShop"
     },
     //我的背包-new
@@ -919,7 +926,7 @@ export const UIDefine = {
         UIType: UIType.Form,
         Name: "UIMyPack",
         Bundle: null,
-        Path: "main/lobby/ui/UIMyPack",
+        Path: "main/lobby/me/UIMyPack",
         Title: "UIMine_Backpack"
     },
     //我的消息
@@ -930,6 +937,15 @@ export const UIDefine = {
         Path: "main/lobby/message/UIMyMessage",
         Title: "UIMine_MsgSummary"
     },
+    //我的设置
+    UIMeSettings: {
+        UIType: UIType.Form,
+        Name: "UIMeSettings",
+        Bundle: null,
+        Path: "main/lobby/me/UIMeSettings",
+        Title: "UIMine_Setting"
+    },
+
     //系统消息面板
     UIMsgSystem: {
         UIType: UIType.Form,

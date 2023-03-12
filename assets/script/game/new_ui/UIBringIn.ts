@@ -1,4 +1,5 @@
 
+import SliderPlus from "../../common/SliderPlus";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
@@ -43,8 +44,7 @@ export default class UIBringIn extends UIBasePlus {
     //part3
     cc_Label$min: cc.Label = null;
     cc_Label$max: cc.Label = null;
-    cc_Label$value: cc.Label = null;
-    GGSlider$slider: GGSlider = null;
+    SliderPlus$slider: SliderPlus = null;
     //part4
     $Part4: cc.Node = null;
     cc_Label$wallet: cc.Label = null;
@@ -82,7 +82,7 @@ export default class UIBringIn extends UIBasePlus {
     protected lateLoad(): void {
         this.name = "UIBringIn";
         super.lateLoad();
-        this.GGSlider$slider.onChange(this.onSliderChange.bind(this));
+        //this.GGSlider$slider.onChange(this.onSliderChange.bind(this));
     }
 
     onShow(data: AddClipsData): void {
@@ -95,7 +95,6 @@ export default class UIBringIn extends UIBasePlus {
             this.ownCoin = 0;
             this.wallets = data.wallets;
 
-
             //小盲值/100
             this.cc_Label$blind.string = `${StringHelper.GetLongString(data.smallBlind)}/${StringHelper.GetLongString(data.bigBlind)}`;//SB/BB
             this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
@@ -103,11 +102,15 @@ export default class UIBringIn extends UIBasePlus {
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
             let min = data.currentMinRate * data.bigBlind / 100;
             max = Math.max(min, max);
-            this.slider_obj.min = min;
-            this.slider_obj.max = max;
-            this.slider_obj.step = data.bigBlind / 10;
-            this.GGSlider$slider.data = this.slider_obj;
-            this.GGSlider$slider.onShow({ index: 0 });
+
+            this.SliderPlus$slider.show({
+                min_value: min,
+                max_value: max,
+                step: data.bigBlind / 10,
+                change: this.sliderChange,
+                own: this
+            });
+            this.sliderChange(min);
 
 
             this.$Part1.active = true;
@@ -139,63 +142,25 @@ export default class UIBringIn extends UIBasePlus {
             }
         }
 
-        //this.animateDialog();
-        // this.selected_wallet = null;
-        // this.ownCoin = 0;
-        // this.wallets = data.wallets;
-        // if (!this.wallets?.length) this.wallet_mode = 0;
-        // if (this.wallets?.length == 1) this.wallet_mode = 1;
-        // if (this.wallets?.length > 1) this.wallet_mode = 2;
-        // if (this.wallet_mode == 0) {
-        //     this.$Part1.active = false;
-        //     this.$Part4.active = false;
-        // } else {
-        //     this.$Part1.active = true;
-        //     this.$Part4.active = true;
-        //     //设置货币类型
-        //     this.gold_type = this.wallets[0].gold_type;
-        //     this.$icon_coin.active = this.gold_type == 1;
-        //     this.$icon_usdt.active = this.gold_type == 2;
-        //     this.$arrow.active = this.wallet_mode > 1;
-        //     this.$club_click.active = this.wallet_mode > 1;
-        //     this.refreshSelect(this.wallet_mode == 1 ? 0 : -1);
-        // }
-        // if (null != data) {
-        //     //小盲值/100
-        //     this.cc_Label$blind.string = `${StringHelper.GetLongString(data.smallBlind)}/${StringHelper.GetLongString(data.bigBlind)}`;//SB/BB
-        //     this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
-        //     //最大带入值
-        //     let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
-        //     let min = data.currentMinRate * data.bigBlind / 100;
-        //     max = Math.max(min, max);
-        //     this.slider_obj.min = min;
-        //     this.slider_obj.max = max;
-        //     this.slider_obj.step = data.bigBlind / 10;
-        //     this.GGSlider$slider.data = this.slider_obj;
-
-        //     this.GGSlider$slider.onShow({ index: 0 });
-        // }
     }
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$confirm, this.onClickConfirm);
         this.setButtonClick(this.$cancel, this.onClickCancel);
         this.setButtonClick(this.$club_click, this.onClickClub);
     }
-    /**
+
+
+    /*
      * 滑动条改变触发
      */
+    sliderChange(value: number) {
 
-    onSliderChange(rate: number) {
-
-        this.sendCoin = this.slider_obj.min + this.slider_obj.step * rate;
-
-        this.sendCoin = Math.min(this.sendCoin, this.slider_obj.max);
-
-        this.cc_Label$value.string = `${this.sendCoin}`;
+        this.sendCoin = value;
 
         this.cc_Label$buyin.string = `${this.sendCoin}`;
 
         this.refreshSliderTextColor();
+
     }
 
     hideUI() {
@@ -218,9 +183,10 @@ export default class UIBringIn extends UIBasePlus {
 
 
     refreshSliderTextColor() {
-        this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
+        let label = this.SliderPlus$slider.label_value;
+        label.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
         if ((GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2) && this.sendCoin > this.ownCoin) {
-            this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#ee8380");
+            label.node.color = cc.Color.BLACK.fromHEX("#ee8380");
         }
     }
 

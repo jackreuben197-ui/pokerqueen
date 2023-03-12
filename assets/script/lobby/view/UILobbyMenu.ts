@@ -36,7 +36,7 @@ export default class UILobbyMenu extends UIBasePlus {
         }
         switch (index) {
             case 0://大厅
-                LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/ui/");
+                LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/index/");
                 UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").run();
                 break;
             case 1://朋友
@@ -49,7 +49,7 @@ export default class UILobbyMenu extends UIBasePlus {
                 LobbyControl.getInstance().switchContent("UICareer")
                 break;
             case 4://我得
-                LobbyControl.getInstance().switchContent("UIMe", "main/lobby/ui/");
+                LobbyControl.getInstance().switchContent("UIMe", "main/lobby/me/");
                 break;
         }
     }

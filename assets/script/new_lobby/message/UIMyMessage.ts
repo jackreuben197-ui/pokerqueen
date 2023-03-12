@@ -91,12 +91,12 @@ export default class UIMyMessage extends BaseFormPlus {
     }
 
     //清理未读消息
-    reqUnreadClear(index: number) {
+    reqUnreadClear(msg_type: number) {
         return WWW.Instance.CommonAPI(
             {
                 web_class: Web_Msg_Message_UnreadClear,
                 body: {
-                    msg_type: GC.message.MessageType[index]
+                    msg_type: msg_type
                 },
             }
         )
@@ -107,7 +107,7 @@ export default class UIMyMessage extends BaseFormPlus {
         let index = script.index;
         let item = MyMessageModel.Instance.message_items[index];
         if (script.unread) {
-            let res = await this.reqUnreadClear(index).catch(() => { });
+            let res = await this.reqUnreadClear(item.msg_type).catch(() => { });
             if (res) {
                 script.refreshContent(false, i18nMgr.Get("MsgContentUnRead"), MyMessageModel.Instance.content_colors[0]);
             }

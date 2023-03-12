@@ -1588,6 +1588,10 @@ export default class GameUtil {
      * @returns 
      */
     public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUIs?: UIDefineType[]) {
+        if (!GameCache.Instance.hasClub) {
+            UIComponent.Instance.ToastLanguage("error2005");
+            return;
+        }
         let room_type: number = enter_room_info.room_type;
         //未开放房间类型
         if (!GameUtil.IsOpenRoomType(room_type)) {

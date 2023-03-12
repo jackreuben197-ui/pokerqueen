@@ -39,7 +39,7 @@ export default class LobbyScene extends BaseScene {
      */
     public async setLooby() {
 
-        await LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/ui/");
+        await LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/index/");
         //await LobbyControl.getInstance().switchContent("UILobby");
         //刷新banner数据 
         //this.refreshBanner();

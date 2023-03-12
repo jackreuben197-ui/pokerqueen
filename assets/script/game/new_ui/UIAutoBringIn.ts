@@ -1,4 +1,5 @@
 
+import SliderPlus from "../../common/SliderPlus";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
@@ -70,8 +71,9 @@ export default class UIAutoBringIn extends UIBasePlus {
     $Part3: cc.Node = null;
     cc_Label$min: cc.Label = null;
     cc_Label$max: cc.Label = null;
-    cc_Label$value: cc.Label = null;
-    GGSlider$slider: GGSlider = null;
+    //cc_Label$value: cc.Label = null;
+    //GGSlider$slider: GGSlider = null;
+    SliderPlus$slider: SliderPlus = null;
     //part4
     $Part4: cc.Node = null;
     cc_Label$wallet: cc.Label = null;
@@ -110,7 +112,6 @@ export default class UIAutoBringIn extends UIBasePlus {
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.GGSlider$slider.onChange(this.onSliderChange.bind(this));
     }
 
     onShow(data: SetAutoAddClipsData): void {
@@ -134,11 +135,19 @@ export default class UIAutoBringIn extends UIBasePlus {
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
             let min = data.currentMinRate * data.bigBlind / 100;
             max = Math.max(min, max);
-            this.slider_obj.min = min;
-            this.slider_obj.max = max;
-            this.slider_obj.step = data.bigBlind / 10;
-            this.GGSlider$slider.data = this.slider_obj;
-            this.GGSlider$slider.onShow({ index: 0 });
+
+
+            this.SliderPlus$slider.show({
+                min_value: min,
+                max_value: max,
+                step: data.bigBlind / 10,
+                change: this.sliderChange,
+                own: this,
+            });
+            this.sliderChange(min);
+
+
+
             //com
             this.GGASCom$com.data = {
                 min: min,
@@ -186,60 +195,6 @@ export default class UIAutoBringIn extends UIBasePlus {
             }
         }
 
-        // this.selected_wallet = null;
-        // this.ownCoin = 0;
-        // this.wallets = data.wallets;
-        // if (!this.wallets?.length) this.wallet_mode = 0;
-        // if (this.wallets?.length == 1) this.wallet_mode = 1;
-        // if (this.wallets?.length == 2) this.wallet_mode = 2;
-
-        // if (this.wallet_mode == 0) {
-        //     this.$Part1.active = false;
-        //     this.$Part4.active = false;
-        // } else {
-        //     this.$Part1.active = true;
-        //     this.$Part4.active = true;
-        //     //设置货币类型
-        //     this.gold_type = this.wallets[0].gold_type;
-        //     this.$icon_coin.active = this.gold_type == 1;
-        //     this.$icon_usdt.active = this.gold_type == 2;
-        //     this.$arrow.active = this.wallet_mode > 1;
-        //     this.$club_click.active = this.wallet_mode > 1;
-        //     this.refreshSelect(this.wallet_mode == 1 ? 0 : -1);
-        // }
-        // if (null != data) {
-        //     //小盲值/100
-        //     //最大带入值
-        //     let auto_max = data.currentMaxRate * data.bigBlind / 100;
-
-        //     //最大带入值
-        //     let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
-        //     let min = data.currentMinRate * data.bigBlind / 100;
-        //     max = Math.max(min, max);
-        //     this.slider_obj.min = min;
-        //     this.slider_obj.max = max;
-        //     this.slider_obj.step = data.bigBlind / 10;
-        //     this.GGSlider$slider.data = this.slider_obj;
-        //     this.GGSlider$slider.onShow({ index: 0 });
-        //     //com
-        //     this.GGASCom$com.data = {
-        //         min: min,
-        //         max: auto_max,
-        //         step: data.bigBlind,
-        //         value: min,
-        //     }
-        // }
-        // //toggle
-        // this.GGToggle$auto.own = this;
-        // this.GGToggle$auto.uncheck();
-        // this.GGToggle$account.uncheck();
-
-        // //根据显示状态设置位置和适配
-        // //this.show_status 
-        // this.$Part1.active = !(data.isFromSetting || this.wallet_mode == 0);
-        // this.$Part4.active = !(data.isFromSetting || this.wallet_mode == 0);
-        // this.$Part3.active = !data.isFromSetting;
-        // this.GGToggle$account.node.active = !(this.wallet_mode == 0);
     }
 
     change(boo: boolean) {
@@ -250,19 +205,16 @@ export default class UIAutoBringIn extends UIBasePlus {
         this.setButtonClick(this.$cancel, this.onClickCancel);
         this.setButtonClick(this.$club_click, this.onClickClub);
     }
-    /**
+
+    /*
      * 滑动条改变触发
      */
+    sliderChange(value: number) {
 
-    onSliderChange(rate: number) {
-
-        this.sendCoin = this.slider_obj.min + this.slider_obj.step * rate;
-
-        this.sendCoin = Math.min(this.sendCoin, this.slider_obj.max);
-
-        this.cc_Label$value.string = `${this.sendCoin}`;
+        this.sendCoin = value;
 
         this.refreshSliderTextColor();
+
     }
 
     hideUI() {
@@ -291,9 +243,10 @@ export default class UIAutoBringIn extends UIBasePlus {
     }
 
     refreshSliderTextColor() {
-        this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
+        let label = this.SliderPlus$slider.label_value;
+        label.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
         if ((GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2) && this.sendCoin > this.ownCoin) {
-            this.cc_Label$value.node.color = cc.Color.BLACK.fromHEX("#ee8380");
+            label.node.color = cc.Color.BLACK.fromHEX("#ee8380");
         }
     }
     /////////////////////click事件

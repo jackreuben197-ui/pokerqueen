@@ -27,14 +27,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 157
+        "__id__": 154
       },
       {
-        "__id__": 158
+        "__id__": 155
       }
     ],
     "_prefab": {
-      "__id__": 159
+      "__id__": 156
     },
     "_opacity": 255,
     "_color": {
@@ -217,19 +217,16 @@
       },
       {
         "__id__": 148
-      },
-      {
-        "__id__": 151
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 155
+        "__id__": 152
       }
     ],
     "_prefab": {
-      "__id__": 156
+      "__id__": 153
     },
     "_opacity": 255,
     "_color": {
@@ -2174,9 +2171,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 117,
+      "g": 124,
+      "b": 171,
       "a": 255
     },
     "_contentSize": {
@@ -5678,113 +5675,6 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "公会充值-充值金豆",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 6
-    },
-    "_children": [],
-    "_active": false,
-    "_components": [
-      {
-        "__id__": 149
-      }
-    ],
-    "_prefab": {
-      "__id__": 150
-    },
-    "_opacity": 136,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 1242,
-      "height": 2688
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        145,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_skewX": 0,
-    "_skewY": 0,
-    "_is3DNode": false,
-    "_groupIndex": 0,
-    "groupIndex": 0,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 148
-    },
-    "_enabled": true,
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
-    "_spriteFrame": {
-      "__uuid__": "25d288b9-808b-4ecc-a70a-ff2902be7a66"
-    },
-    "_type": 0,
-    "_sizeMode": 1,
-    "_fillType": 0,
-    "_fillCenter": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_fillStart": 0,
-    "_fillRange": 0,
-    "_isTrimmedMode": true,
-    "_atlas": null,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.PrefabInfo",
-    "root": {
-      "__id__": 1
-    },
-    "asset": {
-      "__id__": 0
-    },
-    "fileId": "3cgCiGcjpCLIOve50kvTVe",
-    "sync": false
-  },
-  {
-    "__type__": "cc.Node",
     "_name": "top_block",
     "_objFlags": 0,
     "_parent": {
@@ -5794,14 +5684,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 152
+        "__id__": 149
       },
       {
-        "__id__": 153
+        "__id__": 150
       }
     ],
     "_prefab": {
-      "__id__": 154
+      "__id__": 151
     },
     "_opacity": 255,
     "_color": {
@@ -5855,7 +5745,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 151
+      "__id__": 148
     },
     "_enabled": true,
     "alignMode": 1,
@@ -5882,7 +5772,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 151
+      "__id__": 148
     },
     "_enabled": true,
     "_id": ""

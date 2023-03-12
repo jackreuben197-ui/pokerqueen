@@ -136,7 +136,7 @@ export default class TexasGameMessageHandler {
 
         console.log("当前游戏是比赛:", isMTT);
 
-        GameCache.Instance.enter_room_res = response;
+        //GameCache.Instance.enter_room_res = response;
 
         ReconnectComponent.Instance.ChangeStatus(2);
 
