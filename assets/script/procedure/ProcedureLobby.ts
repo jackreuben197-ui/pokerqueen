@@ -4,6 +4,7 @@ import SceneManager from "../manager/SceneManager";
 import PacketHead from "../net/websocket/PacketHead";
 import WebSocketClient from "../net/websocket/WebSocketClient";
 import LobbySession from "../session/LobbySession";
+import UIComponent from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
 
 /**
@@ -14,13 +15,41 @@ export default class ProcedureLobby extends ProcedureBase {
     Name: string = "ProcedureLobby";
 
     lateEnter(param?: any) {
+
         super.lateEnter(param);
-        if (!param?.leaveRoom) {
+
+        //mode 0:正常登錄進入 1:牌桌回大廳
+        //table_type 0:大廳桌子 1:公會桌子 2:朋友桌 3:MTT桌
+        if (param.mode == 0) {
             PacketHead.Init();
             LobbySession.Init();
             WebSocketClient.Connect();
         }
-        SceneManager.Instance.switchScene(UIDefine.LobbyScene);
+        SceneManager.Instance.switchScene(UIDefine.LobbyScene, null, param);
+
+
+        console.log("進入大廳的參數:", param);
+
+        //從牌桌内退出,判斷返回到哪個頁面
+        if (param.mode == 1) {
+
+            switch (param.game_enter_type) {
+
+                case 0://大廳桌子
+                    break;
+                case 1://工會
+                    UIComponent.open(UIDefine.UIClubHome, null, { SceneUI: SceneManager.Instance.currUI, jumpShow: true });
+                    break;
+                case 2://朋友
+
+                    break;
+                case 3://MTT
+                    UIComponent.open(UIDefine.MttDetailForm, null, { SceneUI: SceneManager.Instance.currUI, jumpShow: true });
+                    UIComponent.open(UIDefine.MttListForm, null, { jumpShow: true });
+                    break;
+
+            }
+        }
     }
     Leave() {
         super.Leave();

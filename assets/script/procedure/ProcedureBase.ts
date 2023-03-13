@@ -13,9 +13,9 @@ export default class ProcedureBase {
     Enter(param?: any) {
         console.log("::Procedure ", this.Name, "Enter()", "param:", param);
         this.param = param;
-        if (param?.ignoreEnter) {
-            return;
-        }
+        // if (param?.ignoreEnter) {
+        //     return;
+        // }
         this.lateEnter(param);
     }
     Leave() {

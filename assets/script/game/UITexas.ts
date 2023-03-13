@@ -33,7 +33,7 @@ import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
 import UITexasMenuComponent from "./ui/UITexasMenuComponent";
-import GameUtil from "./util/GameUtil";
+import GameUtil, { GameEnterType } from "./util/GameUtil";
 
 export class PlayerBarrageRecord {
     public name: string;
@@ -165,9 +165,9 @@ export default class UITexas extends BaseScene {
     //UIAutoChips_Com: UIAutoChipsComponent = null;
     UIOutChipsTip_Com: UIOutChipsTipComponent = null;
 
-    UIBringIn:UIBringIn = null;
-    UIAutoBringIn:UIAutoBringIn = null;
-    UIBringOut:UIBringOut = null;
+    UIBringIn: UIBringIn = null;
+    UIAutoBringIn: UIAutoBringIn = null;
+    UIBringOut: UIBringOut = null;
     //6.保险面板
     UIInsurance_Con: cc.Node = null;
     UIInsurance_Com: UIInsuranceComponent = null;
@@ -324,9 +324,9 @@ export default class UITexas extends BaseScene {
 
 
     //从预制体添加到容器
-     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
+    AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
-        console.log("AddComponents",prefab_name,prefab);
+        console.log("AddComponents", prefab_name, prefab);
         let com = null;
         if (prefab) {
             com = cc.instantiate(prefab).getComponent(prefab_name);
@@ -357,7 +357,7 @@ export default class UITexas extends BaseScene {
 
     }
 
-    Enter(param: { fromUIs: UIDefineType[], isLookOn: boolean }): void {
+    Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
 
         super.Enter(param);
 

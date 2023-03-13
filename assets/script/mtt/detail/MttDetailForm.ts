@@ -5,6 +5,7 @@ import { MTTJoinAction, UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttM
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import MTTGame from "../../game/texas/MTTGame";
+import { GameEnterType } from "../../game/util/GameUtil";
 import MTTGameUtil from "../../game/util/MTTGameUtil";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
@@ -763,7 +764,7 @@ export default class MttDetailForm extends BaseForm {
                                 // valuesMap.push("match_id", GameCache.Instance.match_id + "");//比赛id
                                 // AppsFlyerHelper.MTTGameEnterEvent(valuesMap);
                                 // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
-                                UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
+                                UIMatchMttModel.Instance.ShowGameplayUI(false, 0);
                             }
                             else {
                                 this.RefreshMttDetails();
@@ -780,7 +781,8 @@ export default class MttDetailForm extends BaseForm {
                         UIMineModel.mInstance.ObtainUserInfo(pDto => {
                             UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
                                 if (rebuyCode == 0) {
-                                    UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
+                                    UIMatchMttModel.Instance.ShowGameplayUI(false, 0);
+                                    //UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
                                     // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
                                 }
                                 else {

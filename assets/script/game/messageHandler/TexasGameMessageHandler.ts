@@ -156,16 +156,33 @@ export default class TexasGameMessageHandler {
 
             if (ProcedureManager.currProcedure.id == ProcedureEnum.Texas) {
 
-                let fromUIs = ProcedureManager.currProcedure.param?.fromUIs;
+                let game_enter_type = GameCache.Instance.enter_param.game_enter_type;
+                //ProcedureManager.currProcedure.param?.game_enter_type;
 
-                if (fromUIs?.length) {
-                    for (let i = 0; i < fromUIs.length; i++) {
-                        UIComponent.Instance.CloseNoAnimation(fromUIs[i]);
-                    }
+                // if (game_enter_type?.length) {
+                //     for (let i = 0; i < fromUIs.length; i++) {
+                //         UIComponent.Instance.CloseNoAnimation(fromUIs[i]);
+                //     }
+                // }
+                switch (game_enter_type) {
+                    case 0:
+                        break;
+                    case 1://工會
+                        UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubHome);
+                        break;
+                    case 2://朋友
+                        UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubCreateMatchHome);
+                        UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubCreateMatch);
+                        break;
+                    case 3://MTT
+                        UIComponent.Instance.CloseNoAnimation(UIDefine.MttDetailForm);
+                        UIComponent.Instance.CloseNoAnimation(UIDefine.MttListForm);
+                        break;
                 }
+
             }
 
-            SceneManager.Instance.switchScene(UIDefine.UITexas, null, ProcedureManager.currProcedure.param);
+            SceneManager.Instance.switchScene(UIDefine.UITexas, null, GameCache.Instance.enter_param);
 
             this.game.SMAgency.ChangeGameState(TexasGameState.Init, response);
 

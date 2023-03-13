@@ -1,7 +1,7 @@
 
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import TexasGame from "./texas/TexasGame";
-import GameUtil from "./util/GameUtil";
+import GameUtil, { GameEnterType } from "./util/GameUtil";
 
 export class GameCache {
 
@@ -295,6 +295,11 @@ export class GameCache {
 
     //存放 enterroom 消息返回结果
     //public enter_room_res: ServerMessageEnterRoom.AsObject = null;
+
+
+    //存儲進入房間的參數
+    enter_param: { game_enter_type: GameEnterType, isLookOn: boolean } = null;
+
 
 
     public static get Instance(): GameCache {

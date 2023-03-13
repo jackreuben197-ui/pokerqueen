@@ -10,7 +10,7 @@
 
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
-import GameUtil from "../../../game/util/GameUtil";
+import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
 import { GM } from "../../../gm/GMAPI";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import ToastManager from "../../../manager/ToastManager";
@@ -105,7 +105,14 @@ export default class UIFriendMatchItem extends UIBase {
                 isFriendDesk = true;
             }
             if (ClubCache._msg && ClubCache.club_id || isFriendDesk) {
-                GameUtil.EnterRoomAPI(this._data, [UIDefine.UIClubHome]);
+
+                //GameUtil.EnterRoomAPI(this._data, [UIDefine.UIClubHome]);
+                if (isFriendDesk) {
+                    GameUtil.EnterRoomAPI(this._data, { game_enter_type: GameEnterType.Friend });
+                } else {
+                    GameUtil.EnterRoomAPI(this._data, { game_enter_type: GameEnterType.Club });
+                }
+
             } else {
 
                 ToastManager.Instance.createToast(i18nMgr.Get("error2005"));

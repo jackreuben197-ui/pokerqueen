@@ -36,6 +36,7 @@ export interface Open_Obj {
     parentUI?: cc.Node;//父节点
     SceneUI?: cc.Node;//场景节点
     animation?: boolean;
+    jumpShow?: boolean; //跳過執行onShow
 }
 //关闭面板追加参数
 export interface Close_Obj {

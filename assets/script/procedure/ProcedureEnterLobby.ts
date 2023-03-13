@@ -65,7 +65,7 @@ export default class ProcedureEnterLobby extends ProcedureBase {
         UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, {
             pre_define: Pre_Login_Main_Define, complete: () => {
                 UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-                ProcedureManager.StartProcedure(ProcedureEnum.Lobby);
+                ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 0 });
             }
         })
     }

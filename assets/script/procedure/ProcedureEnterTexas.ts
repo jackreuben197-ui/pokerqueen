@@ -1,6 +1,7 @@
 
 import { Bundle, ProcedureEnum } from "../define/EIDefine";
 import { UIDefine } from "../define/UIDefine";
+import { GameCache } from "../game/GameCache";
 import Main from "../Main";
 import ProcedureManager from "../manager/ProcedureManager";
 import { Pre_Texas_Define } from "../manager/ResManager";
@@ -25,10 +26,13 @@ export default class ProcedureEnterTexas extends ProcedureBase {
     }
 
     onComplete() {
+
+        GameCache.Instance.enter_param = this.param;
+
         ProcedureManager.StartProcedure(ProcedureEnum.Texas, this.param);
     }
     errorHandler() {
         UIComponent.Instance.HideUI(PrefabUI.UIPreloading);
-        ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { ignoreEnter: true });
+        ProcedureManager.StartProcedure(ProcedureEnum.Lobby, { mode: 1, game_enter_type: 0 });
     }
 }

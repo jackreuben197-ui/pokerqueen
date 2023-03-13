@@ -4,7 +4,7 @@ import { GameCache } from "../../../game/GameCache";
 import MTTGame from "../../../game/texas/MTTGame";
 import { TexasGameState } from "../../../game/TexasGameState";
 import { MineRankData } from "../../../game/ui/UIMTTMineRankComponent";
-import GameUtil from "../../../game/util/GameUtil";
+import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
 import { StringHelper } from "../../../helper/StringHelper";
 import { CPErrorCode } from "../../../i18n/CPErrorCode";
 import { i18nMgr } from "../../../i18n/i18nMgr";
@@ -527,7 +527,7 @@ export class UIMatchMttModel {
     }
 
 
-    public ShowGameplayUI(fromUIs: UIDefineType[], isLookOn: boolean, roomid: number = 0) {
+    public ShowGameplayUI(isLookOn: boolean, roomid: number = 0) {
         // 参赛进入roomid置空，观众进入roomid置为对应房间id
         GameCache.Instance.room_id = roomid;
 
@@ -536,7 +536,7 @@ export class UIMatchMttModel {
         // UIComponent.Instance.Remove(UIType.UIMatch_MttList);
         // UIComponent.Instance.Remove(UIType.UIMatch_MttDetail);
         // UIComponent.Instance.ShowNoAnimation(UIType.UITexas, new object[] { fromUI, isLookOn, PartialBringIn });
-        GameUtil.EnterMTTRoom({ fromUIs: fromUIs, isLookOn: isLookOn });
+        GameUtil.EnterMTTRoom({ game_enter_type: GameEnterType.MTT, isLookOn: isLookOn });
     }
 
 
