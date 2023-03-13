@@ -11,7 +11,7 @@ import List from "../../../common/List";
 import { EventName } from "../../../config/EventName";
 import { UIDefine } from "../../../define/UIDefine";
 import LobbyRoomListItem from "../../../frame/data/lobby/LobbyRoomListItem";
-import GameUtil from "../../../game/util/GameUtil";
+import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
 import SceneManager from "../../../manager/SceneManager";
 import { APIOrgFriendRoomList, APIUserDiamondsWallet } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
@@ -185,7 +185,8 @@ export default class UIFriendMatch extends UIBase {
         let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this._keyNodeString);
         if (_data?.data?.data) {
             _data = new LobbyRoomListItem(_data?.data?.data);
-            GameUtil.EnterRoomAPI(_data, [UIDefine.UICreateMatch]);
+            //GameUtil.EnterRoomAPI(_data, [UIDefine.UICreateMatch]);
+            GameUtil.EnterRoomAPI(_data, { game_enter_type: GameEnterType.Friend });
         }
         else {
             let str = i18nMgr.Get('UIFriendsTable_JoinRoomNumberWrong')

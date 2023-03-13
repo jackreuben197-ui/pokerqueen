@@ -18,7 +18,6 @@ import { Web_Org_Club_Search_By_Id } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
-import { ClubAdmin } from "../../labor/UILabarPlayViewForm";
 
 const { ccclass, property, menu } = cc._decorator;
 

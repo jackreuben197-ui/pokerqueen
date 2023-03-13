@@ -9,7 +9,7 @@ export default class BaseScene extends UIBase {
     Enter(param: any = null) {
         console.log("::", this.UIDefine.Name, "Enter()", "param:", param);
         this.regiterDispatchEvent();
-        this.lateEnter();
+        this.lateEnter(param);
     }
     Exit(param: any = null) {
         console.log("::", this.UIDefine.Name, "Exit()", "param:", param);

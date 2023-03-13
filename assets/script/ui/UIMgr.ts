@@ -100,10 +100,16 @@ export class UIFormMgr {
             ui.node.parent = this.UILayer;
             ui.show_animation = obj?.animation == null ? true : obj?.animation;
             if (obj?.animation == false) ui.show_animation = false;
-            if (ui instanceof BaseForm) {
-                ui.onShow(param, this.currUI?.node, obj?.SceneUI);
+
+            if (obj?.jumpShow) {
+                ui.node.x = 0;
+                ui.node.y = 0;
             } else {
-                ui.onShow(param);
+                if (ui instanceof BaseForm) {
+                    ui.onShow(param, this.currUI?.node, obj?.SceneUI);
+                } else {
+                    ui.onShow(param);
+                }
             }
             this.currUI = ui;
             this.showUIs.push(ui);

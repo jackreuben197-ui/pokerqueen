@@ -129,6 +129,13 @@ export enum RoomType {
     GameNiuZai = 1024, // 牛仔游戏
 }
 
+//牌桌進入類型
+export enum GameEnterType {
+    Lobby,
+    Club,
+    Friend,
+    MTT,
+}
 
 export default class GameUtil {
     private static readonly normalOuts: number[] = [0, 30, 16, 10, 8, 6, 5, 4, 3.5, 3, 2.5, 2.2, 2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.5];
@@ -1587,7 +1594,8 @@ export default class GameUtil {
      * @param fromUI 
      * @returns 
      */
-    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, fromUIs?: UIDefineType[]) {
+    public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, enter_param: any = null) {
+        //, fromUIs?: UIDefineType[]) {
         if (!GameCache.Instance.hasClub) {
             UIComponent.Instance.ToastLanguage("error2005");
             return;
@@ -1607,7 +1615,8 @@ export default class GameUtil {
 
                     GameCache.Instance.InitEnterRoomInfo(enter_room_info);
 
-                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, { fromUIs: fromUIs });//[this.UIDefine, false, 0]
+                    ProcedureManager.StartProcedure(ProcedureEnum.EnterTexas, enter_param);
+                    //{ fromUIs: fromUIs });
                 }
             } else {
                 console.warn("房间类型未解析:", enter_room_info.room_type);
@@ -1616,7 +1625,7 @@ export default class GameUtil {
         }
     }
 
-    public static EnterMTTRoom(param: { fromUIs?: UIDefineType[], isLookOn?: boolean }) {
+    public static EnterMTTRoom(param) {
 
         let room_type: number = GameCache.Instance.room_type;
 

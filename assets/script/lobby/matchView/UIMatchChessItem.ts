@@ -2,7 +2,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import GC from "../../frame/GameControl";
-import GameUtil from "../../game/util/GameUtil";
+import GameUtil, { GameEnterType } from "../../game/util/GameUtil";
 import { GM } from "../../gm/GMAPI";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -53,7 +53,15 @@ export default class UIMatchChessItem extends UIBase {
                 isFriendDesk = true;
             }
             if (GC.data.club && GC.data.club.info && GC.data.club.info.club_id || isFriendDesk) {
-                GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
+                //GameUtil.EnterRoomAPI(this._data, [UIDefine.UIMatchPlayViewForm]);
+
+                if (isFriendDesk) {
+                    GameUtil.EnterRoomAPI(this._data, { game_enter_type: GameEnterType.Friend });
+                } else {
+                    GameUtil.EnterRoomAPI(this._data, { game_enter_type: GameEnterType.Club });
+                }
+
+
             } else {
                 ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
             }

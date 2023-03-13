@@ -25,9 +25,9 @@ export default class ProcedureTexas extends ProcedureBase {
     Leave() {
         super.Leave();
 
-        if (GameCache.Instance.CurGame.isMTT) {
-            UIComponent.open(UIDefine.MttDetailForm, GC.data.mtt.list.select);
-        }
+        // if (GameCache.Instance.CurGame.isMTT) {
+        //     UIComponent.open(UIDefine.MttDetailForm, GC.data.mtt.list.select);
+        // }
 
         // if (this.param?.fromUIs?.[0]?.Name == UIDefine.UIMatchPlayViewForm.Name) {
         //     UIComponent.open(UIDefine.UIMatchPlayViewForm, null, { animation: false });

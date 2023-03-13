@@ -1307,11 +1307,7 @@ export default class TexasGame {
     /// 带入
     /// </summary>
     /// <param name="anteNumber"></param>
-    public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false, fromBring: { wallets: any, selected_wallet: any, own: any } = null) {
-        //club_id: number = 0, clubrandomid: number = 0, otherPay: boolean = false) {
-
-        let club_id = fromBring?.selected_wallet?.club_id || 0;
-        let club_random_id = fromBring?.selected_wallet?.club_random_id || 0;
+    public AddChips(anteNumber: number, autoOnTable: number = 0, autoUseWallet: boolean = false, club_id = 0, club_random_id = 0, fromBring: { wallets: any, selected_wallet: any, own: any } = null) {
 
         //大厅桌
         if (GameUtil.GetFriendsOrClubTable() == 3) {

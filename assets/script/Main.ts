@@ -109,4 +109,4 @@ export default class Main extends cc.Component {
         ProcedureManager.Init();
     }
 }
-//window.Buffer = Buffer;
+(window as any).Main = Main;

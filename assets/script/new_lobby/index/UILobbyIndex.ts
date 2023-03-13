@@ -1,7 +1,7 @@
 import SimpleNodePool from "../../common/MyNodePool";
 import { UIDefine } from "../../define/UIDefine";
 import { GameCache } from "../../game/GameCache";
-import GameUtil, { GameType, PokerType } from "../../game/util/GameUtil";
+import GameUtil, { GameEnterType, GameType, PokerType } from "../../game/util/GameUtil";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -272,7 +272,7 @@ export default class UILobbyIndex extends UIBasePlus {
     onRoomClick(button: cc.Button) {
         let room = button.node["room"];
         if (room.private_room != 1) {
-            GameUtil.EnterRoomAPI(room);
+            GameUtil.EnterRoomAPI(room, { game_enter_type: GameEnterType.Lobby });
             return;
         }
         WWW.Instance.CommonAPI(
@@ -286,7 +286,7 @@ export default class UILobbyIndex extends UIBasePlus {
             (res: any) => {
 
                 if (res.data) {
-                    GameUtil.EnterRoomAPI(room);
+                    GameUtil.EnterRoomAPI(room, { game_enter_type: GameEnterType.Lobby });
                 } else {
                     let password: string = GameCache.Instance.privateRoomPdDic.get(room.rid) || "";
                     UIComponent.open<UIPasswordDialogType>(UIDefine.UIPasswordDialog, {
@@ -297,7 +297,7 @@ export default class UILobbyIndex extends UIBasePlus {
                             if (password == room.room_password) {
                                 GameCache.Instance.privateRoomPdDic.set(room.rid, password);
                                 UIComponent.close(UIDefine.UIPasswordDialog);
-                                GameUtil.EnterRoomAPI(room);
+                                GameUtil.EnterRoomAPI(room, { game_enter_type: GameEnterType.Lobby });
                             } else {
                                 UIComponent.Instance.ToastLanguage("roomError6_2");
                             }

@@ -21,17 +21,26 @@ export default class LobbyScene extends BaseScene {
         this.UILobby_Menu = this.getChildNodeOrComponent("UILobby_Menu", UILobbyMenu);
         this.Layer = this.getChildNodeOrComponent("Layer");
 
-        let widget: cc.Widget = this.node.getComponent(cc.Widget);
-        widget.target = cc.find("Canvas");
+        // let widget: cc.Widget = this.node.getComponent(cc.Widget);
+        // widget.target = cc.find("Canvas");
 
         LobbyControl.getInstance().setLobbyInfo({
             curShowUI: this.currUI,
             Layer: this.Layer
         })
     }
-    protected lateEnter() {
-        this.UILobby_Menu.onShow();
-        this.setLooby();
+    protected lateEnter(param) {
+
+        console.log("进入大厅--->", param);
+
+        if (param.mode == 0) {
+            this.UILobby_Menu.onShow();
+            this.setLooby();
+        }
+
+        if (param.mode == 1 && param.table_type == 0) {
+            this.readyComplete();
+        }
     }
     /**
      * @description: 首次进入大厅的时候异步处理一些数据

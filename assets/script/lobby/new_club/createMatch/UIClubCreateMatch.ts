@@ -21,7 +21,7 @@ import { EventName } from "../../../config/EventName";
 import TimeHelper from "../../../helper/TimeHelper";
 import LobbyRoomListItem from "../../../frame/data/lobby/LobbyRoomListItem";
 import { UIDefine } from "../../../define/UIDefine";
-import GameUtil from "../../../game/util/GameUtil";
+import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
 import { APIUserDiamondsWallet } from "../../../net/https/WebRequest";
 import TabNode from "../../../common/tabNode";
 import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig, fzbTabConfig, bcTabConfig } from "../../../frame/config/tabConfig";
@@ -734,7 +734,8 @@ export default class UIClubCreateMatch extends BaseForm {
             this.post(EventName.updateFriendChessView)
             this.top_block.active = false;
             let _data = new LobbyRoomListItem(data.data.data);
-            GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
+            //GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
+            GameUtil.EnterRoomAPI(_data, { game_enter_type: GameEnterType.Friend });
         }
         this.close();
         this.room_config = null;

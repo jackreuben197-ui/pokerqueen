@@ -203,7 +203,7 @@ export default class UIBringIn extends UIBasePlus {
 
         if (GameUtil.GetFriendsOrClubTable() == 3) {
 
-            GameCache.Instance.CurGame.AddChips(mAnteNumber, 0, false, { own: this, wallets: this.wallets, selected_wallet: this.selected_wallet })
+            GameCache.Instance.CurGame.AddChips(mAnteNumber, 0, false, this.selected_wallet.club_id, this.selected_wallet.club_random_id, { own: this, wallets: this.wallets, selected_wallet: this.selected_wallet })
 
         }
         else {
