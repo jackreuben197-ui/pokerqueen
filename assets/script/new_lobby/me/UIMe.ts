@@ -101,7 +101,8 @@ export default class UIMe extends UIBasePlus {
                 UIComponent.open(UIDefine.UIMyMessage, { from: 2 });
                 break;
             case 3://设置
-                UIComponent.open(UIDefine.SettingsForm);
+                //UIComponent.open(UIDefine.SettingsForm);
+                UIComponent.open(UIDefine.UIMeSettings);
                 break;
         }
     }

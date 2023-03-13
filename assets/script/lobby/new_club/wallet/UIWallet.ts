@@ -184,6 +184,7 @@ export default class UIWallet extends BaseFormPlus {
                     "offset": 0
                 },
                 web_class: Web_Club_Player_Order_Record,
+                club_id: ClubCache.club_id
             }
         ).then(
             (res: any) => {

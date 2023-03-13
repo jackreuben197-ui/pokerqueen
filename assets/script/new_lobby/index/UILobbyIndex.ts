@@ -1,13 +1,16 @@
 import SimpleNodePool from "../../common/MyNodePool";
 import { UIDefine } from "../../define/UIDefine";
+import { GameCache } from "../../game/GameCache";
 import GameUtil, { GameType, PokerType } from "../../game/util/GameUtil";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { Bundle_Resources } from "../../manager/ResManager";
 import SceneManager from "../../manager/SceneManager";
-import { api_wallet_total, Web_Room_Center_Rooms, Web_User_Info, WWW } from "../../net/https/WebRequest";
+import { api_wallet_total, Web_Guild_AdminHas, Web_Room_Center_Rooms, Web_User_Info, WWW } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import AssetContext from "../../ui/component/AssetContext";
+import { UIPasswordDialogType } from "../../ui/dialog/UIPasswordDialog";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemLobbyRoom from "./ItemLobbyRoom";
@@ -179,7 +182,7 @@ export default class UILobbyIndex extends UIBasePlus {
             }
         ).then(
             (res: any) => {
-                
+
                 this.cc_Label$uc_num.string = `${StringHelper.GetLongString(res.data.tribe_total)}`;
                 this.cc_Label$gc_num.string = `${StringHelper.GetLongString(res.data.usdt_total)}`;
                 this.reqLanguageTemplete();
@@ -260,20 +263,52 @@ export default class UILobbyIndex extends UIBasePlus {
                 item_node.parent = this.$list;
                 let item_sc: ItemLobbyRoom = item_node.getComponent(ItemLobbyRoom);
                 item_sc.onShow(room);
+                item_node["room"] = room;
                 item_node.on("click", this.onRoomClick, this);
                 item_sc.index = index;
             });
         }
     }
     onRoomClick(button: cc.Button) {
-        let sc = button.node.getComponent(ItemLobbyRoom);
-        if (sc.hasClub) {
-            //sc.index
-            console.log("房间", sc.index);
-
-            GameUtil.EnterRoomAPI(this.curr_room_list[sc.index]);
-        } else {
-            UIComponent.Instance.ToastLanguage("error2005");
+        let room = button.node["room"];
+        if (room.private_room != 1) {
+            GameUtil.EnterRoomAPI(room);
+            return;
         }
+        WWW.Instance.CommonAPI(
+            {
+                web_class: Web_Guild_AdminHas,
+                body: {
+                    club_id: room.club_id
+                }
+            }
+        ).then(
+            (res: any) => {
+
+                if (res.data) {
+                    GameUtil.EnterRoomAPI(room);
+                } else {
+                    let password: string = GameCache.Instance.privateRoomPdDic.get(room.rid) || "";
+                    UIComponent.open<UIPasswordDialogType>(UIDefine.UIPasswordDialog, {
+                        title: i18nMgr.Get("UIGuild_JoinGameTitle"),
+                        this: this,
+                        password: password,
+                        commit_click: (password: string) => {
+                            if (password == room.room_password) {
+                                GameCache.Instance.privateRoomPdDic.set(room.rid, password);
+                                UIComponent.close(UIDefine.UIPasswordDialog);
+                                GameUtil.EnterRoomAPI(room);
+                            } else {
+                                UIComponent.Instance.ToastLanguage("roomError6_2");
+                            }
+                        },
+
+                    })
+                }
+            },
+            (res: any) => {
+
+            }
+        )
     }
 }

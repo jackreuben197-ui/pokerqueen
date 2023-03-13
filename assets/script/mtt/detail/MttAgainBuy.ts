@@ -21,6 +21,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import Toast from "../../ui/toast/Toast";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
+import SliderPlus from "../../common/SliderPlus";
 enum MTTJoinMode // 参与mtt玩法方式
 {
     None,
@@ -38,7 +39,12 @@ export default class MttAgainBuy extends BaseForm {
 
     @property(cc.ScrollView)
     scrow: cc.ScrollView = null;
-    private slider: GGSlider = null;
+    //private slider: GGSlider = null;
+    
+    private slider_plus: SliderPlus = null;
+
+
+
     buy_lbl: cc.Label = null;
     select_lbl: cc.Label = null;
     sb_lbl: cc.Label = null;
@@ -83,14 +89,15 @@ export default class MttAgainBuy extends BaseForm {
         super.lateLoad();
 
         this.buy_lbl = this.getChildNodeOrComponent("buy_lbl", cc.Label);
-        this.slider = this.getChildNodeOrComponent("Slider_Coin", GGSlider);
+        //this.slider = this.getChildNodeOrComponent("Slider_Coin", GGSlider);
+        this.slider_plus = this.getChildNodeOrComponent("slider_plus", SliderPlus);
         this.coinnum = this.getChildNodeOrComponent("coinNum", cc.Label);
         this.sb_lbl = this.getChildNodeOrComponent("sb_lbl", cc.Label);
         this.select_lbl = this.getChildNodeOrComponent("select_lbl", cc.Label);
         this.sure = this.getChildNodeOrComponent('sure');
 
-        this.slider.onChange(this.onSliderChange.bind(this));
-        this.slider._delegate = this;
+        //this.slider.onChange(this.onSliderChange.bind(this));
+        //this.slider._delegate = this;
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
 
@@ -101,9 +108,24 @@ export default class MttAgainBuy extends BaseForm {
         this.setText(this.coinnum, Number(StringHelper.GetLongString(ClubCache.mttPayWallat.gold)))
         this.setText(this.sb_lbl, StringHelper.GetLongString(UIMatchMttModel.Instance.MttInfo.more.sb) + '/' + StringHelper.GetLongString(UIMatchMttModel.Instance.MttInfo.more.nsb))
 
-        this.slider.SetMinMax(0, Number(StringHelper.GetLongString(ClubCache.mttPayWallat.gold)));
-        this.slider.onShow({ index: 0 });
-        this.setText(this.buy_lbl, 0);
+        // this.slider.SetMinMax(0, Number(StringHelper.GetLongString(ClubCache.mttPayWallat.gold)));
+        // this.slider.onShow({ index: 0 });
+        //////////////////////////////////////////
+        this.slider_plus.show(
+            {
+                min_value: 0,
+                max_value: Number(StringHelper.GetLongString(ClubCache.mttPayWallat.gold)),
+                step: 1,
+                change: this.sliderChange,
+                touch_start: this.sliderStart,
+                touch_end: this.sliderEnd,
+                own: this
+            }
+        )
+        this.sliderChange(0);
+        //////////////////////////////////////////
+
+        //this.setText(this.buy_lbl, 0);
         this.sure.active = false
         this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
         if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
@@ -129,11 +151,22 @@ export default class MttAgainBuy extends BaseForm {
     /**
      * 滑动条改变触发
      */
-    onSliderChange(rate: number) {
-        // this._curIntoValue = (this._startRate + rate) * GameCache.Instance.CurGame.bigBlind / 100;
-        this.sure.active = rate != 0;
-        this.setText(this.buy_lbl, rate);
-        // this.setTextColor(this.curInto, this._curIntoValue >= GC.data.user.info.displayGold ? "#B82B30" : "#3BE1F5");
+    // onSliderChange(rate: number) {
+    //     // this._curIntoValue = (this._startRate + rate) * GameCache.Instance.CurGame.bigBlind / 100;
+    //     this.sure.active = rate != 0;
+    //     this.setText(this.buy_lbl, rate);
+    //     // this.setTextColor(this.curInto, this._curIntoValue >= GC.data.user.info.displayGold ? "#B82B30" : "#3BE1F5");
+    // }
+
+    sliderChange(value: number) {
+        this.sure.active = value != 0;
+        this.setText(this.buy_lbl, value);
+    }
+    sliderStart() {
+        this.scrow.enabled = false;
+    }
+    sliderEnd() {
+        this.scrow.enabled = true;
     }
 
     HandleDate() {

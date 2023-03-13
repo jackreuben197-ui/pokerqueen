@@ -44,6 +44,9 @@ export default class UIWalletApplyItem extends UIBasePlus {
 
         this.setChildLabel(this.node, "remark_content", data.user_desc);
 
+        this.setChildVisible(this.node, "coin/icon/gc", data.gold_type == 1);
+        this.setChildVisible(this.node, "coin/icon/us", data.gold_type == 2);
+
         this.$refuse.active = data.status == 1;
         this.$agree.active = data.status == 1;
         WebImageHelper.SetHeadImage(this.cc_Sprite$Head, data.avatar);

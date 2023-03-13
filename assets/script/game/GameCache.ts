@@ -288,9 +288,13 @@ export class GameCache {
 
     public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
 
+    public hasClub: boolean = false;//是否有加入公会
+
+    //密码存储
+    privateRoomPdDic: Map<number, string> = new Map();
 
     //存放 enterroom 消息返回结果
-    public enter_room_res: ServerMessageEnterRoom.AsObject = null;
+    //public enter_room_res: ServerMessageEnterRoom.AsObject = null;
 
 
     public static get Instance(): GameCache {
@@ -324,6 +328,7 @@ export class GameCache {
 
         console.log("GameCache.Instance.gold_type", room_info.gold_type);
     }
+
 
 }
 export interface EnterRoomInfo {

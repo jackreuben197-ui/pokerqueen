@@ -58,6 +58,9 @@ export class i18nMgr {
         }
     }
 
+    public static getLanguageText() {
+        return i18nMgr.Get("UserLanguage").split("^")[i18nMgr.getLanguage()];
+    }
 
     /**
      * 设置语言
