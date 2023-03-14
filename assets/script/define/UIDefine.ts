@@ -962,6 +962,31 @@ export const UIDefine = {
         Path: "main/lobby/me/UIAboutus",
         Title: "tc_YQAGnw3p"
     },
+    //版本号
+    UIVersion: {
+        UIType: UIType.Form,
+        Name: "UIVersion",
+        Bundle: null,
+        Path: "main/lobby/me/UIVersion",
+        Title: "tc_NO5NT6aa"
+    },
+    //语言
+    UILanguage: {
+        UIType: UIType.Form,
+        Name: "UILanguage",
+        Bundle: null,
+        Path: "main/lobby/me/UILanguage",
+        Title: "tc_PpNL8LVJ"
+    },
+    //问题反馈
+    UIReport: {
+        UIType: UIType.Form,
+        Name: "UILaUIReportnguage",
+        Bundle: null,
+        Path: "main/lobby/me/UIReport",
+        Title: "tc_wV5t3xsr"
+    },
+
     //webview通用面板
     UIWebCommon:
     {

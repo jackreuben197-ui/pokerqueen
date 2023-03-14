@@ -85,17 +85,17 @@ export default class WebSocketClient {
         }
     }
 
-    static CheckOpen() {
+    static CheckOpen(close: boolean = false) {
         let result = this.WS?.readyState == WebSocket.OPEN;
         if (!result) {
-            UIComponent.Instance.Toast("errorDefault");
+            close || UIComponent.Instance.Toast("errorDefault");
             console.log("socket state:", this.WS?.readyState);
         }
         return result;
     }
     //主动关闭
     static Close() {
-        if (this.CheckOpen()) {
+        if (this.CheckOpen(true)) {
             this.WS.close();
             GC.uc.RemoveAll();
         }

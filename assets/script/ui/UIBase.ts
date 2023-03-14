@@ -1,6 +1,7 @@
 
 import BaseComponent from "../frame/base/BaseComponent";
 import LanguageManager from "../frame/manager/LanguageManager";
+import { i18nLabel } from "../i18n/i18nLabel";
 import { ResManager } from "../manager/ResManager";
 import CCTools from "../tools/CCTools";
 const { ccclass, property } = cc._decorator;
@@ -207,8 +208,13 @@ export default class UIBase extends BaseComponent {
     //设置节点下的文本,包括子路径
     setChildLabel(node: cc.Node, path: string, text: string | number) {
         let label_node = cc.find(path, node);
-        let label = label_node.getComponent(cc.Label) || label_node.getComponent(cc.RichText);
-        label.string = `${text}`;
+        let i18n = label_node.getComponent(i18nLabel);
+        if (i18n) {
+            i18n.i18NString = `${text}`;
+        } else {
+            let label = label_node.getComponent(cc.Label) || label_node.getComponent(cc.RichText);
+            label.string = `${text}`;
+        }
     }
     //设置节点下的文本颜色
     setChildLabelColor(node: cc.Node, path: string, color: string) {

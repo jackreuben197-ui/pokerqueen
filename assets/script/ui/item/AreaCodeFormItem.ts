@@ -1,10 +1,10 @@
 
-import UIBase from "../UIBase";
+import UIBasePlus from "../UIBasePlus";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class AreaCodeFormItem extends UIBase {
+export default class AreaCodeFormItem extends UIBasePlus {
     ///////////////////////////////////
     /**
      * 节点|组件 定义
@@ -18,7 +18,7 @@ export default class AreaCodeFormItem extends UIBase {
     /**
      * 声明内容
      */
-    label_colors = ["#FFFFFF", "#DDBA82"];
+    //label_colors = ["#FFFFFF", "#DDBA82"];
     ///////////////////////////////////
     protected lateLoad(): void {
         super.lateLoad();

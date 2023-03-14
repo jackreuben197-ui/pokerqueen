@@ -2970,9 +2970,14 @@ export class Web_Guild_AdminHas extends WebCommon {
 export class APIMessageRed_num extends WebCommon {
     static API: string = "/api/msg/message/red_num";
 }
-
-
-
+//问题反馈描述
+export class Web_misc_report_feedback_question extends WebCommon {
+    static API: string = "/api/misc/report/feedback_question";
+}
+//注销用户
+export class Web_User_Delete extends WebCommon {
+    static API: string = "/api/user/delete";
+}
 
 /**
  * 注册全局访问

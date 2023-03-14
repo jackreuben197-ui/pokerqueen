@@ -1,10 +1,13 @@
+import { GameConfig } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import { Web_User_Delete, WWW } from "../../net/https/WebRequest";
 import GlobalSession from "../../session/GlobalSession";
 import StorageKey from "../../session/StorageKey";
 import GGSwitch from "../../ui/component/GGSwitch";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
+import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 
@@ -26,7 +29,7 @@ export default class UIMeSettings extends BaseFormPlus {
     GGSwitch$sound: GGSwitch = null;
 
     list = [
-        { node: null, a: "UIMine_SettingLanguage", b: "", switch: false, b_get: this.getLanguageText, click: this.click_language },// 多语言
+        { node: null, a: "UIMine_SettingLanguage", b: "", switch: false, b_get: this.setLanguageText.bind(this), click: this.click_language },// 多语言
         { node: null, a: "UITexasSetting_LrI45uIK", b: "", switch: true, click: this.click_sound, switch_show: this.sound_show.bind(this) },// 游戏声音
         { node: null, a: "UISettingPassword001", b: "", switch: false, click: this.click_reset_password },// 账号管理
         { node: null, a: "UIMine_SettingReport", b: "", switch: false, click: this.click_report },// 上报
@@ -65,7 +68,7 @@ export default class UIMeSettings extends BaseFormPlus {
             let item_node = cc.instantiate(this.$item);
             item_node.parent = this.$content;
             this.setChildLabel(item_node, "a", i18nMgr.Get(item.a));
-            this.setChildLabel(item_node, "b", item.b_get?.() || item.b);
+            this.setChildLabel(item_node, "b", item.b);
             this.setButtonClick(item_node, item.click);
             this.setChildVisible(item_node, "switch", item.switch);
             item.node = item_node;
@@ -80,16 +83,18 @@ export default class UIMeSettings extends BaseFormPlus {
                 let ggswitch = item.node.getChildByName("switch").getComponent(GGSwitch);
                 item.switch_show(ggswitch);
             }
+            if (item.b_get) {
+                let b = item.node.getChildByName("b").getComponent(cc.Label);
+                item.b_get(b);
+            }
         })
     }
-
-    getLanguageText() {
-        return i18nMgr.getLanguageText();
+    setLanguageText(label: cc.Label) {
+        label.string = i18nMgr.getLanguageText();
     }
-
     // 多语言
     click_language() {
-
+        UIComponent.open(UIDefine.UILanguage, { lan: i18nMgr.language, onChange: this.showView.bind(this) });
     }
     // 账号管理 重置密码
     click_reset_password() {
@@ -103,7 +108,7 @@ export default class UIMeSettings extends BaseFormPlus {
     }
     // 上报
     click_report() {
-
+        UIComponent.open(UIDefine.UIReport);
     }
     // 关于我们
     click_about() {
@@ -116,10 +121,42 @@ export default class UIMeSettings extends BaseFormPlus {
     }
     // 版本号
     click_version() {
-
+        UIComponent.open(UIDefine.UIVersion, { version: GameConfig.Version });
     }
     // 注销账号
     click_delete() {
+
+        //UIMine_DeleteUserContent
+
+        UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+
+            content: i18nMgr.Get("UIMine_DeleteUserContent"),
+            commit: i18nMgr.Get("adaptation10008"),
+            cancel: i18nMgr.Get("adaptation10013"),
+            commit_click: () => {
+
+                WWW.Instance.CommonAPI(
+                    {
+                        web_class: Web_User_Delete,
+                    }
+                ).then(
+                    (res: any) => {
+                        UIComponent.Instance.ToastLanguage("Uiclubrechargeconfirmordersuccessfully");
+                        GlobalSession.Logout();
+                        // GameCache.Instance.isFirstShowActivity = true;
+                        // UIMineModel.mInstance.Dispose();
+                        // UIMatchModel.mInstance.Dispose();
+                    },
+                    (res: any) => {
+
+                    }
+                )
+            }
+
+        });
+
+
+
 
     }
 
