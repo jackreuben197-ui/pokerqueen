@@ -945,6 +945,31 @@ export const UIDefine = {
         Path: "main/lobby/me/UIMeSettings",
         Title: "UIMine_Setting"
     },
+    //重置密码
+    UIResetPassword:
+    {
+        UIType: UIType.Form,
+        Name: "UIResetPassword",
+        Bundle: null,
+        Path: "main/lobby/me/UIResetPassword",
+        Title: "UIMine_SettingPassword"
+    },
+    //關於我們
+    UIAboutus: {
+        UIType: UIType.Form,
+        Name: "UIAboutus",
+        Bundle: null,
+        Path: "main/lobby/me/UIAboutus",
+        Title: "tc_YQAGnw3p"
+    },
+    //webview通用面板
+    UIWebCommon:
+    {
+        UIType: UIType.Form,
+        Name: "UIWebCommon",
+        Bundle: null,
+        Path: "main/lobby/me/UIWebCommon",
+    },
 
     //系统消息面板
     UIMsgSystem: {

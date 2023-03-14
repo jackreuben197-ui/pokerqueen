@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "3288e58c-9fce-4e81-918a-67de12c3c63a",
+  "uuid": "629ff74b-9aa1-46d0-b1a2-bff5fc6dc450",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -8,15 +8,15 @@
   "premultiplyAlpha": false,
   "genMipmaps": false,
   "packable": true,
-  "width": 186,
-  "height": 54,
+  "width": 1242,
+  "height": 2689,
   "platformSettings": {},
   "subMetas": {
-    "Rectangle 1127": {
+    "更换手机号": {
       "ver": "1.0.6",
-      "uuid": "71587154-3040-48c0-96ff-491923565385",
+      "uuid": "7838d8ce-9ce3-4465-a15e-8704c01cf173",
       "importer": "sprite-frame",
-      "rawTextureUuid": "3288e58c-9fce-4e81-918a-67de12c3c63a",
+      "rawTextureUuid": "629ff74b-9aa1-46d0-b1a2-bff5fc6dc450",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
@@ -24,14 +24,14 @@
       "offsetY": 0.5,
       "trimX": 0,
       "trimY": 0,
-      "width": 186,
-      "height": 53,
-      "rawWidth": 186,
-      "rawHeight": 54,
-      "borderTop": 17.5,
-      "borderBottom": 18.5,
-      "borderLeft": 51,
-      "borderRight": 46,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2689,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
       "subMetas": {}
     }
   }

@@ -10,10 +10,12 @@ import UIBase from "../UIBase";
 import UIBasePlus from "../UIBasePlus";
 
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, executionOrder } = cc._decorator;
 
 
 @ccclass
+@executionOrder(-1)
+
 export default class GGSwitch extends UIBasePlus {
 
     $On: cc.Node = null;
@@ -29,7 +31,7 @@ export default class GGSwitch extends UIBasePlus {
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.node, this.click);
     }
-    private click() {
+    public click() {
         this._on ? this.Off() : this.On();
         if (this.clickObj?.click && this.clickObj?.self) {
             this.clickObj.click.call(this.clickObj.self);
@@ -50,7 +52,7 @@ export default class GGSwitch extends UIBasePlus {
         return this._on;
     }
     //设置开关是否开启
-    public setIsOn(flag) {
+    public setIsOn(flag: boolean) {
         flag ? this.On() : this.Off();
     }
     //添加点击回调
