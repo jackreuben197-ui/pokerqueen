@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-13 10:43:39
+ * @LastEditTime: 2023-03-14 11:28:00
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -14,7 +14,7 @@ import UIComponent from "../../../ui/UIComponent";
 import { UIDefine } from "../../../define/UIDefine";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { UIClubModel } from "../../labor/UIClubModel";
-import { APIOrgClubNotice, APIOrgClubUserInfo, APIOrgGetMessList, APIOrgGetNewMessNum, Web_User_Info } from "../../../net/https/WebRequest";
+import { APIMessageRed_num, APIOrgClubNotice, APIOrgClubUserInfo, APIOrgGetMessList, APIOrgGetNewMessNum, Web_User_Info } from "../../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../../helper/StringHelper";
 import UIBase from "../../../ui/UIBase";
@@ -81,7 +81,37 @@ export default class UIClubHome extends BaseForm {
         let data = APIOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
         this.initCoin();
-        this.initChessView()
+        this.initChessView();
+        this.initRedTip()
+
+
+    }
+    async initRedTip() {
+        await UIClubModel.mInstance.APIMessageRed_num()
+        let redData = APIMessageRed_num.Response.data
+
+
+        let flag = redData.some((element) => {
+            return element.num != 0
+        })
+        let menuRed = cc.find('menu/red', this.menuNode)
+        menuRed.active = flag
+
+        let menuShow = cc.find('menuShow', this.menuNode)
+        let meberRed = menuShow.children[2].getChildByName('Ellipse')
+        let jjRed = menuShow.children[5].getChildByName('Ellipse')
+        let messRed = menuShow.children[6].getChildByName('Ellipse')
+        redData.forEach((element) => {
+            if (element.type == 3) {
+                meberRed.active = element.num != 0
+            } else if (element.type == 2) {
+                jjRed.active = element.num != 0
+            }
+            else if (element.type == 1) {
+                messRed.active = element.num != 0
+            }
+        })
+
 
     }
 
@@ -235,6 +265,7 @@ export default class UIClubHome extends BaseForm {
     menuClick() {
         this.menu.active = !this.menu.active
         this.menuShow.active = !this.menu.active
+        this.initRedTip()
     }
     joinTripClick() {
         UIComponent.open(UIDefine.UIJoinUnion, { type: 1 })

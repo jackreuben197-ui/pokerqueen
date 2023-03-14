@@ -714,8 +714,8 @@ export class Web_User_Info extends WebCommon {
         ut?: number,        //1 普通用户; 2 支桌号; 3 牌局机器人; 4 牛仔机器人
         forbid_withdraw_gold?: number,        //提现冻结，1 开启，2 关闭
         forbid_bring_in?: number,        //带入冻结，1 开启，2 关闭
-        user_id?:number,
-        club_id?:number,
+        user_id?: number,
+        club_id?: number,
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -2966,6 +2966,12 @@ export class Web_User_Room_Bringin extends WebCommon {
 export class Web_Guild_AdminHas extends WebCommon {
     static API: string = "/api/org/club/user/admin/has";
 }
+//红点提示
+export class APIMessageRed_num extends WebCommon {
+    static API: string = "/api/msg/message/red_num";
+}
+
+
 
 
 /**
