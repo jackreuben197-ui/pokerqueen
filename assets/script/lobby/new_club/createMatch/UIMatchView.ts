@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 13:21:41
+ * @LastEditTime: 2023-03-14 10:30:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIMatchView.ts
  */
 
@@ -54,7 +54,7 @@ export default class UIMatchView extends UIBase {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.tabNode.initData(ClubTabConfig, this.titleNodeClick.bind(this), this)
-        this.clickGameType(0);
+        this.clickGameType(0, true);
         this.gameTypeNode.children.forEach((item, index) => {
             this.bindClick(item, this.clickGameType, index);
         })
@@ -79,14 +79,16 @@ export default class UIMatchView extends UIBase {
      * @param index 
      * @returns 
      */
-    clickGameType(_index) {
+    clickGameType(_index, isInit = false) {
         // if (this._gameType == index) return;
         this._gameType = _index
         this.gameTypeNode.children.forEach((item, index) => {
             item.getChildByName("title").color = this._gameType == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
             item.getChildByName("Rectangle").active = this._gameType == index
         })
-        this.titleNodeClick(0);
+        if (!isInit) {
+            this.titleNodeClick(0);
+        }
     }
     /**
     * @method 点击sb
