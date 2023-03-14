@@ -124,7 +124,7 @@ export default class AreaCodeForm extends BaseForm {
     onItemClick(button: cc.Button) {
         let code = button.node.getComponent(AreaCodeFormItem).param.code;
         LoginSession.AreaCode = code;
-        this.post(GGEvent.Change_AreaCode);
+        this.post(GGEvent.Change_AreaCode, code);
         this.close();
     }
 
