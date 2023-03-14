@@ -5,7 +5,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
-import { WWW, Web_Club_Fund_ApplyList, Web_Club_Fund_OrderList, Web_Club_Player_Order_Record, Web_Club_Fund_Audit, API_CLUB_USER_WALLET } from "../../../net/https/WebRequest";
+import { WWW, Web_Club_Fund_ApplyList, Web_Club_Fund_OrderList, Web_Club_Player_Order_Record, Web_Club_Fund_Audit, API_CLUB_USER_WALLET, APIMessageRed_num } from "../../../net/https/WebRequest";
 import LobbySession from "../../../session/LobbySession";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
@@ -79,6 +79,9 @@ export default class UIWallet extends BaseFormPlus {
     exchange_tags = null;
 
 
+    $red: cc.Node = null;
+
+    //APIMessageRed_num
 
     //请求账户配置
     ReqAccountBean = {
@@ -162,9 +165,25 @@ export default class UIWallet extends BaseFormPlus {
 
         this.resetData();
 
+        this.refreshRed()
+
         this.clearChangeLogItems();
 
         this.Top_Index = 0;
+
+    }
+    //刷新红点
+    refreshRed() {
+        let data = APIMessageRed_num.Response.data;
+        let hasRed: boolean = false;
+        if (data) {
+            data.forEach(obj => {
+                if (obj.type == 2 && obj.num > 0) {
+                    hasRed = true;
+                }
+            })
+        }
+        this.$red.active = hasRed;
     }
     resetData() {
         this._TopIndex = -8;

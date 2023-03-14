@@ -2966,7 +2966,7 @@ export class Web_User_Room_Bringin extends WebCommon {
 export class Web_Guild_AdminHas extends WebCommon {
     static API: string = "/api/org/club/user/admin/has";
 }
-//红点提示
+//红点提示 type 1未读消息 2未处理充提豆 3未处理入会
 export class APIMessageRed_num extends WebCommon {
     static API: string = "/api/msg/message/red_num";
 }
