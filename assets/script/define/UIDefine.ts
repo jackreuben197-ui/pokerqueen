@@ -986,7 +986,6 @@ export const UIDefine = {
         Path: "main/lobby/me/UIReport",
         Title: "tc_wV5t3xsr"
     },
-
     //webview通用面板
     UIWebCommon:
     {

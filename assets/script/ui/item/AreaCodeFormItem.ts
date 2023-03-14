@@ -34,7 +34,7 @@ export default class AreaCodeFormItem extends UIBasePlus {
     }
     //设置被选中
     setSelected(boo: boolean) {
-        this.country_label.node.color = cc.Color.BLACK.fromHEX(this.label_colors[boo ? 1 : 0]);
-        this.button.normalColor = cc.Color.BLACK.fromHEX(this.label_colors[boo ? 1 : 0]);
+        //this.country_label.node.color = cc.Color.BLACK.fromHEX(this.label_colors[boo ? 1 : 0]);
+        //this.button.normalColor = cc.Color.BLACK.fromHEX(this.label_colors[boo ? 1 : 0]);
     }
 }
