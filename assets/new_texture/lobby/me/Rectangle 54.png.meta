@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "b00c6f6f-f191-461c-90d6-9b7b0aaa88d0",
+  "uuid": "6dcf1926-a415-450f-b2d7-21d0fcbd0765",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -14,9 +14,9 @@
   "subMetas": {
     "Rectangle 54": {
       "ver": "1.0.6",
-      "uuid": "b9ffe19f-9ea9-498c-b96e-da3975c49232",
+      "uuid": "f062ceab-37f7-48af-a820-54f43df8e03f",
       "importer": "sprite-frame",
-      "rawTextureUuid": "b00c6f6f-f191-461c-90d6-9b7b0aaa88d0",
+      "rawTextureUuid": "6dcf1926-a415-450f-b2d7-21d0fcbd0765",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
