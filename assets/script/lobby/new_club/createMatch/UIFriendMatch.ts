@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-09 18:39:10
+ * @LastEditTime: 2023-03-15 19:18:29
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 
@@ -95,6 +95,10 @@ export default class UIFriendMatch extends UIBase {
 
     titleNodeClick(event, customData) {
         this._selectTitle = Number(customData)
+
+        if (this._selectTitle == 2) {
+            UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
+        }
         this.fastBeganNode.active = this._selectTitle == 1;
         this.dataNode.active = this._selectTitle == 2;
         this.pjlbl.node.color = this._selectTitle == 1 ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#E6E8EC')
@@ -130,18 +134,6 @@ export default class UIFriendMatch extends UIBase {
     }
     numNodeClick() {
         UIComponent.open(UIDefine.UIKeyNode, { cb: this.ketNodeCall.bind(this) })
-        // for (let index = 0; index < this.numNode.childrenCount; index++) {
-        //     const element = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
-        //     element.string = '';
-        // }
-        // for (let index = 0; index < this.EditBox.string.length; index++) {
-        //     const element = this.EditBox.string[index];
-        //     const item = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
-        //     item.string = element;
-        // }
-        // this.EditBox.string.trim();
-        // this.joinBtn.interactable = this.EditBox.string.length == 6
-        // this.joinBtnBg.opacity = this.EditBox.string.length == 6 ? 255 : 25
     }
     ketNodeCall(data) {
         switch (Number(data)) {
@@ -151,8 +143,20 @@ export default class UIFriendMatch extends UIBase {
             case 11:
                 if (this._keyNodeNumArr.length > 0) {
                     this._keyNodeNumArr.pop()
-                    break
+
                 }
+                break
+            // case 0:
+            // case 1:
+            // case 2:
+            // case 3:
+            // case 4:
+            // case 5:
+            // case 6:
+            // case 7:
+            // case 7:
+            // case 8:
+            // case 9:
             default:
                 if (this._keyNodeNumArr.length < 6) {
                     this._keyNodeNumArr.push(data)
@@ -162,6 +166,7 @@ export default class UIFriendMatch extends UIBase {
                 }
                 break;
         }
+
         if (this._keyNodeNumArr.length >= 6) {
             UIComponent.close(UIDefine.UIKeyNode)
         }

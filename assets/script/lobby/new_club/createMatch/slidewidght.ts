@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 19:49:30
+ * @LastEditTime: 2023-03-15 18:19:12
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/slidewidght.ts
  */
 
@@ -38,8 +38,8 @@ export default class slidewidght extends cc.Component {
         this.selectNum = this.node.getChildByName('selectNum')
         this.fillsp = this.node.getChildByName('fillsp')
         this.initListen();
-        this.node.x = -450
-        this.node.width = 900
+        this.node.x = -470
+        this.node.width = 930
         let _x = this.node.width / (data.length - 1)
         this._itemData = data
         for (let index = this.itemNode.childrenCount - 1; index > 0; index--) {

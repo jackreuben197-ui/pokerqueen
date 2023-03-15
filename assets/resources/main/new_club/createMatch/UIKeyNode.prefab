@@ -4612,7 +4612,7 @@
     },
     "component": "",
     "_componentId": "02e75i/kF5CUqIw8HrNJda0",
-    "handler": "close",
+    "handler": "closeLayer",
     "customEventData": ""
   },
   {

@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 16:36:53
+ * @LastEditTime: 2023-03-15 19:05:51
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -68,6 +68,7 @@ export default class UIClubCreateMatchItem extends UIBase {
         this._data = data;
         this._delegate = target;
         this._currentNum = 1;
+        this.Toggle.isChecked = false
         this.ToggleClick()
         this.setState();
 
@@ -90,6 +91,7 @@ export default class UIClubCreateMatchItem extends UIBase {
         lock.active = this._data.private_room == 1
         let beSide = this.node.getChildByName('beSide')
         beSide.active = this._data.share_table == 2
+
 
     }
     setGameType() {

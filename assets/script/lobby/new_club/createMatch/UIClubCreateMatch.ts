@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 16:40:43
+ * @LastEditTime: 2023-03-15 19:48:47
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -246,6 +246,9 @@ export default class UIClubCreateMatch extends BaseForm {
         let pay = cc.find('pay/num', this.coinNode).getComponent(cc.Label)
         let num = this._selectTitle == 0 ? 15 : 0
         pay.string = num + '';
+        // if (ClubCache.CreateGameType == 2) {
+        //     this._selectTitle = 1
+        // }
         this.friendNode.active = this._selectTitle == 1
         this.clubNode.active = this._selectTitle == 0
 
@@ -583,13 +586,10 @@ export default class UIClubCreateMatch extends BaseForm {
 
             case 2:
                 return this.zdks
-                break;
             case 3:
-            // return this.zdks
+                return this.zxblbs
             case 4:
                 return this.Straddle
-                break;
-
             default:
                 break;
         }
@@ -716,20 +716,20 @@ export default class UIClubCreateMatch extends BaseForm {
             this.post(EventName.matchModelChange)
 
         }
-        else if (this._btnType == 1) {
+
+        if (ClubCache.CreateGameType == 1) {
             //公会牌桌
             room_config.limit_friend_table = false
             await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
-            TimeHelper.Sleep(3000);
+            // TimeHelper.Sleep(3000);
             this.post(EventName.matchModelChange)
-
         }
-        else if (this._btnType == 2) {
+        else if (ClubCache.CreateGameType == 2) {
             // //朋友桌
             room_config.limit_friend_table = true
             let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
             this.top_block.active = true;
-            await TimeHelper.Sleep(1000);
+            // await TimeHelper.Sleep(1000);
             data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
             this.post(EventName.updateFriendChessView)
             this.top_block.active = false;
