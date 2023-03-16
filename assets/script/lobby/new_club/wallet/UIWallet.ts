@@ -1,4 +1,5 @@
 import SimpleNodePool from "../../../common/MyNodePool";
+import TabsGroup from "../../../common/TabsGroup";
 import { Tabs_Status, TextColor } from "../../../config/GameConfig";
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
@@ -63,13 +64,6 @@ export default class UIWallet extends BaseFormPlus {
 
     $record_tags: cc.Node = null;
 
-    //顶层页签位置（"账户", "记录", "申请"）
-    _TopIndex: number = -8;
-    //操作页签位置（"充 值", "提 现", "转 换"）
-    _OpIndex: number = -8;
-    //记录页签位置（"充值记录", "提现记录", "转换记录"）
-    _RecordIndex: number = -8;
-
     main_request_quene = [];
 
     //记录数据
@@ -97,19 +91,20 @@ export default class UIWallet extends BaseFormPlus {
     }
 
 
+    top_tabs_group: TabsGroup = null;
+    //op_tabs_group: TabsGroup = null;
+    record_tabs_group: TabsGroup = null;
+
+
     protected lateLoad(): void {
         super.lateLoad();
-        this.$TopTabs.children.forEach((item, index) => {
-            item["index"] = index;
-            this.setButtonClick(item, this.topTabClick);
-        })
+
+        this.top_tabs_group = new TabsGroup(this.$TopTabs.children, this.top_tabs_click, this);
+        this.record_tabs_group = new TabsGroup(this.$RecordTabs.children, this.record_tabs_click, this);
+
         this.$OpTabs.children.forEach((item, index) => {
             item["index"] = index;
-            this.setButtonClick(item, this.opTabClick);
-        })
-        this.$RecordTabs.children.forEach((item, index) => {
-            item["index"] = index;
-            this.setButtonClick(item, this.recordTabClick);
+            this.setButtonClick(item, this.op_tabs_click);
         })
 
         this.record_item_pool = new SimpleNodePool(this.$record_item);
@@ -117,14 +112,81 @@ export default class UIWallet extends BaseFormPlus {
         this.apply_item_pool = new SimpleNodePool(this.$apply_item);
     }
 
+    //顶部标题点击
+    top_tabs_click(items: cc.Node[], index: number) {
 
-    lateClose(param: any = null) {
-        super.lateClose(param);
+        let status = Tabs_Status[index];
+        items.forEach((item, index) => {
+            let color = status[index] ? TextColor.Color1 : TextColor.Color3;
+            item.children[0].color = cc.Color.BLACK.fromHEX(color);
+            item.children[0].children[0].active = !!status[index];
+        })
+        this.$Pages.children.forEach((item, index) => {
+            item.active = !!status[index];
+        })
+        switch (index) {
+            case 0:
+                //this.Op_Index = -1;
+                this.reqAccount();
+                break;
+            case 1:
+                this.clearRecordItems();
+                this.record_datas = [];
+                this.record_tabs_group.reset(0);
+                break;
+            case 2:
+                this.clearApplyItems();
+                this.reqApplyList();
+                break;
+        }
+
+    }
+    //充值和转换点击
+    op_tabs_click(button: cc.Button) {
+        switch (button.node["index"]) {
+            case 0://充值
+                UIComponent.open(UIDefine.UIToRecharge,
+                    {
+                        type: 1,
+                        walletType: this._param.wallet_type,
+                        club_id: ClubCache.club_id,
+                        club_name: ClubCache.club_name,
+                        tribe_name: ClubCache.tribe_name,
+                    });
+                break;
+            case 1://转换
+                UIComponent.open(UIDefine.UIExchange, {
+                    club_id: ClubCache.club_id,
+                    club_name: ClubCache.club_name,
+                    tribe_name: ClubCache.tribe_name,
+                });
+                break;
+        }
+    }
+    //各种记录点击
+    record_tabs_click(items: cc.Node[], index: number) {
+
+        let status = Tabs_Status[index];
+        items.forEach((item, index) => {
+            let on = status[index];
+            item.getComponent(cc.Sprite).enabled = !!on;
+            item.getChildByName("label").color = cc.Color.BLACK.fromHEX(on ? TextColor.Color7 : TextColor.Color3);
+        })
+        switch (index) {
+            case 0:
+                this.$record_tags.children.forEach((item, index) => {
+                    item.getComponent(cc.Label).string = this.recharge_tags[index];
+                })
+                break;
+            case 1:
+                this.$record_tags.children.forEach((item, index) => {
+                    item.getComponent(cc.Label).string = this.exchange_tags[index];
+                })
+                break;
+        }
+        this.reqRecord(index);
     }
 
-    regiterTouchEvents() {
-        super.regiterTouchEvents();
-    }
     /**
      * 每次打开面板处理的内容
      * param {type: 0:个人钱包 1:公会钱包 2:公会基金}
@@ -169,7 +231,9 @@ export default class UIWallet extends BaseFormPlus {
 
         this.clearChangeLogItems();
 
-        this.Top_Index = 0;
+        //this.Top_Index = 0;
+
+        this.top_tabs_group.reset(0);
 
     }
     //刷新红点
@@ -186,9 +250,9 @@ export default class UIWallet extends BaseFormPlus {
         this.$red.active = hasRed;
     }
     resetData() {
-        this._TopIndex = -8;
-        this._OpIndex = -8;
-        this._RecordIndex = -8;
+        // this._TopIndex = -8;
+        // this._OpIndex = -8;
+        // this._RecordIndex = -8;
         this.recharge_tags = WalletModel.Instance.getTags(0);
         this.exchange_tags = WalletModel.Instance.getTags(1);
     }
@@ -313,16 +377,12 @@ export default class UIWallet extends BaseFormPlus {
             switch (order_type) {
                 case 1:
                     status_des = WalletModel.Instance.getRechargeStatusText(status);
-                    //Record_Recharge_Status[status];
-                    //status_num = "";
                     break;
                 case 2:
-                    //status_des = WalletModel.Instance.Record_Withdraw_Status[status];
-                    //status_num = "";
                     break;
                 case 4:
                     status_des = WalletModel.Instance.Record_Exchange_Status[status];
-                    //status_num = "";
+
                     break;
             }
             this.setChildLabel(item, "lbl_name", StringHelper.LengthNick(order_no, 8));
@@ -498,108 +558,6 @@ export default class UIWallet extends BaseFormPlus {
         }
     }
 
-    set Top_Index(index: number) {
-        if (this._TopIndex == index) return;
-        this._TopIndex = index;
-        let status = Tabs_Status[index];
-        this.$TopTabs.children.forEach((item, index) => {
-            let color = status[index] ? TextColor.Color1 : TextColor.Color3;
-            item.children[0].color = cc.Color.BLACK.fromHEX(color);
-            item.children[0].children[0].active = !!status[index];
-        })
-        this.$Pages.children.forEach((item, index) => {
-            item.active = !!status[index];
-        })
-        switch (index) {
-            case 0:
-                this.Op_Index = -1;
-                //this.clearChangeLogItems();
-                this.reqAccount();
-                break;
-            case 1:
-                this.clearRecordItems();
-                this.record_datas = [];
-                this._RecordIndex = -8;
-                this.Record_Index = 0;
-                break;
-            case 2:
-                this.clearApplyItems();
-                this.reqApplyList();
-                break;
-        }
-    }
-    get Top_Index(): number {
-        return this._TopIndex;
-    }
-
-    set Op_Index(index: number) {
-        //if (this._OpIndex == index) return;
-        this._OpIndex = index;
-        //let status = Tabs_Status[index];
-        //let order_type = this.transformOrderType(index);
-        switch (index) {
-            case 0:
-                UIComponent.open(UIDefine.UIToRecharge,
-                    {
-                        type: 1,
-                        walletType: this._param.wallet_type,
-                        club_id: ClubCache.club_id,
-                        club_name: ClubCache.club_name,
-                        tribe_name: ClubCache.tribe_name,
-                    });
-                break;
-            case 1:
-                UIComponent.open(UIDefine.UIExchange, {
-                    club_id: ClubCache.club_id,
-                    club_name: ClubCache.club_name,
-                    tribe_name: ClubCache.tribe_name,
-                });
-                break;
-        }
-    }
-    get Record_Index(): number {
-        return this._RecordIndex;
-    }
-    set Record_Index(index: number) {
-        if (this._RecordIndex == index) return;
-        this._RecordIndex = index;
-        let status = Tabs_Status[index];
-        this.$RecordTabs.children.forEach((item, index) => {
-            let on = status[index];
-            item.getComponent(cc.Sprite).enabled = !!on;
-            item.getChildByName("label").color = cc.Color.BLACK.fromHEX(on ? TextColor.Color7 : TextColor.Color3);
-        })
-        switch (index) {
-            case 0:
-                this.$record_tags.children.forEach((item, index) => {
-                    item.getComponent(cc.Label).string = this.recharge_tags[index];
-                })
-                break;
-            case 1:
-                this.$record_tags.children.forEach((item, index) => {
-                    item.getComponent(cc.Label).string = this.exchange_tags[index];
-                })
-                break;
-        }
-        this.reqRecord(index);
-    }
-    get Op_Index(): number {
-        return this._OpIndex;
-    }
-
-    //topTabs 点击
-    topTabClick(button: cc.Button) {
-        let index = button.node["index"];
-        this.Top_Index = index;
-    }
-    opTabClick(button: cc.Button) {
-        let index = button.node["index"];
-        this.Op_Index = index;
-    }
-    recordTabClick(button: cc.Button) {
-        let index = button.node["index"];
-        this.Record_Index = index;
-    }
     refuseClick(index: number) {
         console.log("refuseClick", index);
         let obj = {
@@ -643,8 +601,9 @@ export default class UIWallet extends BaseFormPlus {
     }
     //从其他页面回退执行
     reback() {
-        this._TopIndex = -8;
-        this.Top_Index = 0;
+        // this._TopIndex = -8;
+        // this.Top_Index = 0;
+        this.top_tabs_group.reset(0);
     }
 }
 ///////////////////////////

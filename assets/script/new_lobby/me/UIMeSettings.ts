@@ -87,6 +87,7 @@ export default class UIMeSettings extends BaseFormPlus {
                 let b = item.node.getChildByName("b").getComponent(cc.Label);
                 item.b_get(b);
             }
+            this.setChildLabel(item.node, "a", i18nMgr.Get(item.a));
         })
     }
     setLanguageText(label: cc.Label) {
@@ -154,10 +155,6 @@ export default class UIMeSettings extends BaseFormPlus {
             }
 
         });
-
-
-
-
     }
 
     click_layout() {
