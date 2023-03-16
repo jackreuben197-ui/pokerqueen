@@ -6,6 +6,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
+import { i18nMgr } from "../../../i18n/i18nMgr";
 import { WWW, Web_Club_Fund_ApplyList, Web_Club_Fund_OrderList, Web_Club_Player_Order_Record, Web_Club_Fund_Audit, API_CLUB_USER_WALLET, APIMessageRed_num } from "../../../net/https/WebRequest";
 import LobbySession from "../../../session/LobbySession";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
@@ -614,9 +615,24 @@ let changeItem = {
         changeItem.data = data;
     },
     get opName() {
+
         let str = GC.language.getLocal(`OpCodeString_${changeItem.data.op_code}`);
-        if (changeItem.data.src_type != 0) {
-            str += ` ${LobbySession.getLanguageValueByKey(changeItem.data.name)}`
+
+        let after = changeItem.data.src_room_id > 0 ? ` · ${changeItem.data.src_room_id}` : "";
+
+        switch (changeItem.data.src_type) {
+            case 0:
+                //desc.gameObject.SetActive(false);
+                break;
+            case 1:
+                str += ` ${i18nMgr.Get("UITexasInfo_Texas")}${after}`;
+                break;
+            case 2:
+                str += ` ${i18nMgr.Get("UITexasInfo_mtt")}${after}`;
+                break;
+            case 3:
+                str += ` ${i18nMgr.Get("UIData_YGvXd5iXr_011")}${after}`;
+                break;
         }
         return str;
     },
