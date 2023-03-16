@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-15 19:48:47
+ * @LastEditTime: 2023-03-16 10:44:08
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -496,15 +496,57 @@ export default class UIClubCreateMatch extends BaseForm {
     }
 
     addClick(event, customData) {
+
         let node = this.getLevelParent(customData);
-        node['levelData'].level += 1;
-        this.setState(node);
+        this.correlationTableAndPeople(1, node)
+
     }
     reduceClick(event, customData) {
         let node = this.getLevelParent(customData)
-        node['levelData'].level -= 1;
+        this.correlationTableAndPeople(0, node)
+        // node['levelData'].level -= 1;
+        // this.setState(node);
+    }
+    setState(node) {
+        let reduceButton = cc.find('Rectang/reduce', node).getComponent(cc.Button);
+        reduceButton.interactable = node['levelData'].level > node['levelData'].min
+
+        let addButton = cc.find('Rectang/add', node).getComponent(cc.Button);
+        addButton.interactable = node['levelData'].level < node['levelData'].total
+
+        let lbl_level = cc.find('Rectang/lbl_level', node).getComponent(cc.Label);
+        lbl_level.string = node['levelData'].level;
+
+    }
+
+    //
+    correlationTableAndPeople(type, node) {
+        // if (node.name == 'zdks' && type == 1 && node['levelData'].level >= this.zwrs['levelData'].level) {
+
+        // }
+        // if (node.name == 'zwrs') {
+        //     if (this.zdks['levelData'].level >= this.zwrs['levelData'].level) {
+        //         this.zdks['levelData'].level = this.zwrs['levelData'].level
+        //     }
+        // }
+
+
+        if (type == 1) {
+            node['levelData'].level += 1;
+
+        } else {
+            node['levelData'].level -= 1;
+        }
+        if (node.name == 'zdks' || node.name == 'zwrs') {
+            if (this.zdks['levelData'].level >= this.zwrs['levelData'].level) {
+                this.zdks['levelData'].level = this.zwrs['levelData'].level
+                let lbl_level = cc.find('Rectang/lbl_level', this.zdks).getComponent(cc.Label);
+                lbl_level.string = node['levelData'].level;
+            }
+        }
         this.setState(node);
     }
+
     etpClick() {
         this._etpState = !this._etpState
         cc.find('btn_switch/open', this.etp).active = this._etpState;
@@ -568,17 +610,7 @@ export default class UIClubCreateMatch extends BaseForm {
     }
 
 
-    setState(node) {
-        let reduceButton = cc.find('Rectang/reduce', node).getComponent(cc.Button);
-        reduceButton.interactable = node['levelData'].level > node['levelData'].min
 
-        let addButton = cc.find('Rectang/add', node).getComponent(cc.Button);
-        addButton.interactable = node['levelData'].level < node['levelData'].total
-
-        let lbl_level = cc.find('Rectang/lbl_level', node).getComponent(cc.Label);
-        lbl_level.string = node['levelData'].level;
-
-    }
     getLevelParent(num) {
         switch (Number(num)) {
             case 1:
@@ -629,7 +661,11 @@ export default class UIClubCreateMatch extends BaseForm {
         // this.upLoadData(' ')
 
     }
-    async upLoadData(modelName) {
+    creatMatch() {
+        this._btnType = 1
+        this.upLoadData()
+    }
+    async upLoadData(modelName = ' ') {
         cc.log('modelName==', modelName);
         let room_config: any = {}
         room_config.game_play_type = ClubCache.CreateGameType;
@@ -717,14 +753,14 @@ export default class UIClubCreateMatch extends BaseForm {
 
         }
 
-        if (ClubCache.CreateGameType == 1) {
+        if (ClubCache.joinCreateMatchType == 0) {
             //公会牌桌
             room_config.limit_friend_table = false
             await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
             // TimeHelper.Sleep(3000);
             this.post(EventName.matchModelChange)
         }
-        else if (ClubCache.CreateGameType == 2) {
+        else if (ClubCache.joinCreateMatchType == 1) {
             // //朋友桌
             room_config.limit_friend_table = true
             let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);

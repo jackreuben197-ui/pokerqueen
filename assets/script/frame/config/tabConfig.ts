@@ -3,7 +3,7 @@
  * @Date: 2023-01-13 12:26:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 17:48:42
+ * @LastEditTime: 2023-03-16 10:46:58
  * @FilePath: /pokerqueen/assets/script/frame/config/tabConfig.ts
  */
 // data  读多语言   默认值可以不填

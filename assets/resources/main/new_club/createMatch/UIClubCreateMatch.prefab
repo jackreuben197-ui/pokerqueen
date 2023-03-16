@@ -37086,7 +37086,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 158.89,
+      "width": 183.8,
       "height": 66.78
     },
     "_anchorPoint": {
@@ -37138,8 +37138,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "SB/BB:",
-    "_N$string": "SB/BB:",
+    "_string": "Straddle",
+    "_N$string": "Straddle",
     "_fontSize": 53,
     "_lineHeight": 53,
     "_enableWrapText": true,
@@ -37192,7 +37192,7 @@
     "node": {
       "__id__": 1018
     },
-    "_enabled": true,
+    "_enabled": false,
     "i18n_string": "UIRoom_Check",
     "_id": ""
   },
@@ -39875,7 +39875,7 @@
     },
     "component": "",
     "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
-    "handler": "saveModel",
+    "handler": "creatMatch",
     "customEventData": "1"
   },
   {
@@ -41471,7 +41471,7 @@
     },
     "component": "",
     "_componentId": "2f764mi0rxNJ7WwvxuIPaT3",
-    "handler": "saveModel",
+    "handler": "creatMatch",
     "customEventData": "2"
   },
   {

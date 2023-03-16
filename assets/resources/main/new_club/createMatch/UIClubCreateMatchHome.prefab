@@ -484,7 +484,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        1044.024,
+        1054,
         0,
         0,
         0,
@@ -1381,7 +1381,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 189.9760000000001,
+    "_top": 180,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -1424,7 +1424,7 @@
         "__id__": 70
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 85
@@ -1459,7 +1459,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        907.411,
+        894,
         0,
         0,
         0,
@@ -3050,7 +3050,7 @@
     "_alignFlags": 1,
     "_left": 0,
     "_right": 0,
-    "_top": 436.58900000000006,
+    "_top": 450,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -3128,7 +3128,7 @@
         "__id__": 157
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 165
@@ -3148,7 +3148,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 2219.48
+      "height": 2238
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3160,7 +3160,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        875.48,
+        894,
         0,
         0,
         0,
@@ -4555,7 +4555,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 2052.464
+      "height": 2070.984
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4626,7 +4626,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1242,
-      "height": 2052.464
+      "height": 2070.984
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5064,7 +5064,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -1986.98,
+        -2005.5,
         0,
         0,
         0,
@@ -5842,7 +5842,7 @@
     "_alignFlags": 5,
     "_left": 0,
     "_right": 0,
-    "_top": 468.5200000000001,
+    "_top": 450.0000000000001,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -5901,7 +5901,7 @@
     "node": {
       "__id__": 11
     },
-    "_enabled": false,
+    "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 1242,
@@ -5917,10 +5917,10 @@
     "_N$startAxis": 0,
     "_N$paddingLeft": 0,
     "_N$paddingRight": 0,
-    "_N$paddingTop": 250,
+    "_N$paddingTop": 180,
     "_N$paddingBottom": 0,
     "_N$spacingX": 0,
-    "_N$spacingY": 0,
+    "_N$spacingY": 50,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
     "_N$affectedByScale": false,
