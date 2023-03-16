@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-23 11:01:58
+ * @LastEditTime: 2023-03-16 15:10:26
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/clubPageItem.ts
  */
 
@@ -72,12 +72,14 @@ export default class clubPageItem extends UIBase {
     }
 
     async onClickItem(event) {
-        // return;
-        await UIClubModel.mInstance.APIOrgClubSearchByID(this._data.random_id);
-        let data: any = Web_Org_Club_Search_By_Id.Response.data
-        ClubCache.setClubData(data);
-        // , { SceneUI: SceneManager.Instance.currUI }
-        UIComponent.open(UIDefine.UIClubHome, null);
+        if (this._data) {
+            await UIClubModel.mInstance.APIOrgClubSearchByID(this._data.random_id);
+            let data: any = Web_Org_Club_Search_By_Id.Response.data
+            ClubCache.setClubData(data);
+            // , { SceneUI: SceneManager.Instance.currUI }
+            UIComponent.open(UIDefine.UIClubHome, null);
+        }
+
     }
     createClub() {
         UIComponent.open(UIDefine.UICreatelabor, null, { SceneUI: SceneManager.Instance.currUI });
