@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-14 11:28:00
+ * @LastEditTime: 2023-03-16 11:10:00
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -53,7 +53,7 @@ export default class UIClubHome extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
-        this.layout = this.getChildNodeOrComponent("layout");
+        this.layout = this.getChildNodeOrComponent("contentNode");
         this.menuNode = this.getChildNodeOrComponent("menuNode");
 
     }
