@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-16 10:44:08
+ * @LastEditTime: 2023-03-17 12:12:35
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -532,10 +532,14 @@ export default class UIClubCreateMatch extends BaseForm {
 
 
         if (type == 1) {
-            node['levelData'].level += 1;
+            if (node['levelData'].level < node['levelData'].total) {
+                node['levelData'].level += 1;
+            }
 
         } else {
-            node['levelData'].level -= 1;
+            if (node['levelData'].level > node['levelData'].min) {
+                node['levelData'].level -= 1;
+            }
         }
         if (node.name == 'zdks' || node.name == 'zwrs') {
             if (this.zdks['levelData'].level >= this.zwrs['levelData'].level) {

@@ -159,6 +159,7 @@ export default class UIAgentLink extends UIBasePlus {
         ).then(
             (res: any) => {
                 //this.refreshList(res);
+                this.post('refresh_vip_ui')
                 UIComponent.Instance.Toast("成功绑定贵宾");
             },
             (res: any) => {

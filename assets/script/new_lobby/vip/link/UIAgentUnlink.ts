@@ -93,6 +93,7 @@ export default class UIAgentUnlink extends UIBasePlus {
             }
         ).then(
             (res: any) => {
+                this.post('refresh_vip_ui')
                 UIComponent.Instance.Toast("成功解除绑定");
             },
             (res: any) => {

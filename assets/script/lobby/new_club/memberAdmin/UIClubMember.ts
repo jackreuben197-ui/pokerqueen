@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 15:59:57
+ * @LastEditTime: 2023-03-17 12:44:43
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -57,7 +57,7 @@ export default class UIClubMember extends BaseForm {
     _sort_type: number = 1
     _order_type: number = 1
     _flag = true;  //会长或者是本人
-    _agent_random_id = 0; //贵宾
+    // _agent_random_id = 0; //贵宾
     _selectType = 0;
     _clickDataItem = null;
     protected lateLoad(): void {
@@ -81,7 +81,6 @@ export default class UIClubMember extends BaseForm {
             return;
         }
         this._selectType = this.getMemberRole()
-        this._agent_random_id = param.agent_random_id
         this.initTop()
         this.initPanel_mid()
         this.initVip();
@@ -89,6 +88,7 @@ export default class UIClubMember extends BaseForm {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.refresh_Btn_Data, this.chaneData)
+        this.listen(EventName.refresh_vip_ui, this.requestData)
     }
 
     openDropDownBox() {
@@ -418,14 +418,26 @@ export default class UIClubMember extends BaseForm {
         let haveData = this.panel_vip.getChildByName('haveData');
         //有没有上线
         // invitation_code
-        // this._info.info.agent_user_id
-        if (this._agent_random_id > 0) {
+
+        if (this._info.info.agent_user_id > 0) {
             noHave.active = false
             haveData.active = true
-            cc.find('messLayout/name', haveData).getComponent(cc.Label).string = ''
-            cc.find('messLayout/id', haveData).getComponent(cc.Label).string = 'ID: ' + this._agent_random_id //this._info.info.agent_user_id
-            let icon = cc.find('icon', haveData)
-            WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), '');
+            UIClubModel.mInstance.APIOrgClubUserInfo({
+                "user_id": this._info.info.agent_user_id,
+                "club_id": ClubCache.club_id
+            }).then(
+                (res: any) => {
+                    cc.find('messLayout/name', haveData).getComponent(cc.Label).string = res.data.user_info.nickname
+                    cc.find('messLayout/id', haveData).getComponent(cc.Label).string = 'ID: ' + res.data.user_info.random_id //this._info.info.agent_user_id
+                    let icon = cc.find('icon', haveData)
+                    WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), res.data.user_info.avatar);
+                },
+                (res) => {
+
+                }
+            )
+
+
         }
         else {
             noHave.active = true

@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 12:18:29
+ * @LastEditTime: 2023-03-17 12:52:00
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/MemberItem.ts
  */
 
@@ -41,16 +41,20 @@ export default class MemberItem extends UIBase {
         ClubCache.setRoleType(hg, this._data.user_level)
 
         cc.find('messLayout/id', this.node).getComponent(cc.Label).string = 'ID:' + this._data.random_num
+        let beizhu = cc.find('messLayout/beizhu', this.node)
         if (this._data.remark_desc && this._data.remark_desc != '') {
-            let beizhu = cc.find('messLayout/beizhu', this.node)
             beizhu.active = true;
             beizhu.getComponent(cc.Label).string = '备注: ' + this._data.remark_desc
 
+        } else {
+            beizhu.active = false;
         }
+        let vip = cc.find('messLayout/guibin', this.node)
         if (this._data.agent_random_id) {
-            let vip = cc.find('messLayout/guibin', this.node)
             vip.active = true
             vip.getComponent(cc.Label).string = i18nMgr.Get('UIClub_AgentItem') + " ID:" + this._data.agent_random_id
+        } else {
+            vip.active = false
         }
         this.node['last_login_time'] = this._data.last_login_time_str
         let icon = cc.find('icon', this.node);
@@ -89,6 +93,6 @@ export default class MemberItem extends UIBase {
         // data.user_info.remark_desc = this._data.remark_desc
         // data.user_info.remark_name = this._data.remark_name
 
-        UIComponent.open(UIDefine.UIClubMember, { info: data, agent_random_id: this._data.agent_random_id });
+        UIComponent.open(UIDefine.UIClubMember, { info: data });
     }
 }

@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 12:42:33
+ * @LastEditTime: 2023-03-17 12:49:09
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -53,7 +53,7 @@ export default class UIClubMerberManager extends BaseForm {
     _reqEnd: boolean = false;
     _list: Array<any> = [];
     _total: number = 0
-    _sort_type: number = 0
+    _sort_type: number = 3
     _order_type: number = 1
     _rusp_st_state = 1
     @property(List)
@@ -113,7 +113,7 @@ export default class UIClubMerberManager extends BaseForm {
     }
     initTop() {
         this.sortNode.getChildByName('num').getComponent(cc.Label).string = ClubCache.club_members
-        this.setText(this.dropNode_lbl, memberSortConfig[0].desc);
+        this.setText(this.dropNode_lbl, memberSortConfig[3].desc);
     }
 
     titleNodeClick(event, customData, request: boolean = true) {
@@ -139,6 +139,7 @@ export default class UIClubMerberManager extends BaseForm {
     }
     protected regiterDispatchEvent() {
         this.listen(EventName.requestClubMemList, this.reqDataAgain);
+        this.listen(EventName.refresh_vip_ui, this.reqDataAgain);
 
     }
     openDropDownBox() {
