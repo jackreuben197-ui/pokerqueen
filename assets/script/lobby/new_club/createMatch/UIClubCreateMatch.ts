@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-17 12:12:35
+ * @LastEditTime: 2023-03-17 17:55:25
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -106,7 +106,7 @@ export default class UIClubCreateMatch extends BaseForm {
         zdcl: ['不限', 25, 30, 35, 40, 45],
         zss: ['不限', 50, 100, 300, 1000],
         fddm: ['不限', 0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3],
-        fwfbl: [0, .5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5],//5+
+        fwfbl: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5],//5+
         dxm: [0.1, 0.2, 0.3, 0.4, 0.5],
     }
 
@@ -119,7 +119,7 @@ export default class UIClubCreateMatch extends BaseForm {
         zss: 0,
         fddm: 0,
         dxm: 0,
-        fwfbl: 0
+        fwfbl: 10
     }
 
     qzshData = {
