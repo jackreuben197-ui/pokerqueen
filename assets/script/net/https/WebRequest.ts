@@ -668,19 +668,6 @@ export class API_CLUB_APPLY_LIST extends WebCommon {
 export class API_CLUB_APPLY_AUDIT extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/club/room/apply/audit";
-
-    //字段声明
-    static RequestParams: {
-    } = null;
-
-    static ResponseData: {
-    } = null;
-
-    static Request(param: typeof API_CLUB_APPLY_AUDIT.RequestParams) {
-        this.RequestParams = param;
-        return param;
-    }
-    static Response: { code?: number, message?: string, data?: (typeof API_CLUB_APPLY_AUDIT.ResponseData)[] };
 }
 
 /// <summary>
@@ -2614,11 +2601,13 @@ export class APIOrgFriendRoomList extends WebCommon {
     static API: string = "/api/roomcenter/friend/rooms";
 
 }
-export class APIOrgFriendApplyList extends WebCommon {
+//带入申请列表
+export class Web_RoomSitApplyRecords extends WebCommon {
     //接口地址’
     static API: string = "/api/roomcenter/friend/room/apply/list"
 }
-export class APIOrgFriendApplyDeal extends WebCommon {
+//带入申请审批
+export class Web_RoomSitApplyAudit extends WebCommon {
     //接口地址’
     public static API: string = "/api/roomcenter/friend/room/apply/audit"
 }
@@ -2977,6 +2966,10 @@ export class Web_misc_report_feedback_question extends WebCommon {
 //注销用户
 export class Web_User_Delete extends WebCommon {
     static API: string = "/api/user/delete";
+}
+//贵宾详情统计
+export class Web_GuildDataVipInfo extends WebCommon {
+    static API: string = "/api/stats/club_data_stats/vip_game";
 }
 
 /**

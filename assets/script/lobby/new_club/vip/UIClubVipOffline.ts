@@ -92,6 +92,7 @@ export default class UIClubVipOffline extends BaseFormPlus {
         super.onShow(param, fromUI, sceneUI);
         this.downSelectIndex = -1;
         this.$Top.active = param.from == 0;
+        this.cc_Label$total_people.string = "-";
         this.$Page0.getComponent(cc.Widget).top = param.from == 0 ? 202 : 0;
         this.top_tabs_group.reset();
     }
@@ -138,8 +139,10 @@ export default class UIClubVipOffline extends BaseFormPlus {
     }
 
     checkUserInOfflines(id: number) {
-        for (let user of this.current_offlines) {
-            if (user.user_id == id) return true;
+        if (this.current_offlines?.length) {
+            for (let user of this.current_offlines) {
+                if (user.user_id == id) return true;
+            }
         }
         return false;
     }
@@ -317,6 +320,7 @@ export default class UIClubVipOffline extends BaseFormPlus {
     // 编辑项选中和取消
     public onToggleCheck(checked: boolean, user_id: number) {
         //this.select_indexs[index] = switch_on;
+        this.ids?.length || (this.ids = []);
         if (checked) {
             this.ids.push(user_id);
         } else {

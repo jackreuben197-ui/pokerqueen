@@ -53,11 +53,9 @@ export default class UIMyMessage extends BaseFormPlus {
             } else {
                 item.active = false;
             }
-
-            if (indexs[index] == 5 && from == 1 && !this._param.apply) {
-                item.active = false;
-            }
-
+            // if (indexs[index] == 5 && from == 1 && !this._param.apply) {
+            //     item.active = false;
+            // }
             let item_sc = item.getComponent(ItemMyMessage);
             item_sc.refreshName(i18nMgr.Get(MyMessageModel.Instance.message_items[index].name));
             item_sc.refreshContent(false, i18nMgr.Get("MsgContentUnRead"), MyMessageModel.Instance.content_colors[0]);

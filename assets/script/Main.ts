@@ -49,8 +49,8 @@ export default class Main extends cc.Component {
 
     async onLoad() {
 
-        if (!CCTools.getQueryString("log")) {
-            //console.log = function () { }
+        if (!CCTools.getQueryString("log") && GameConfig.publish) {
+            console.log = function () { }
         }
         console.log("游戏启动", cc.sys.os);
 

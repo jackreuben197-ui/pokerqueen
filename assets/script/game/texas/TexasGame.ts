@@ -4,24 +4,17 @@ import { UIDefine } from "../../define/UIDefine";
 import { DOTween, Sequence } from "../../dotween/DOTween";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import GC from "../../frame/GameControl";
-import ReconnectComponent from "../../funcomponent/ReconnectComponent";
-import UpdateComponent from "../../funcomponent/UpdateComponent";
 import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { UIClubModel } from "../../lobby/labor/UIClubModel";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
-import WalletModel from "../../lobby/new_club/wallet/WalletModel";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import Main from "../../Main";
-import { Bundle_Texas } from "../../manager/ResManager";
-import SceneManager from "../../manager/SceneManager";
-import { APIOrgFriendBringIn, Web_Org_Club_Search_By_Id, Web_User_Room, WWW } from "../../net/https/WebRequest";
+import { API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_User_Room, WWW } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { Def, Operator, RoomInfo } from "../../protobuf/holdem/define_pb";
-import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
+import { Def, RoomInfo } from "../../protobuf/holdem/define_pb";
 import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
 import { ClientMessageAction } from "../../protobuf/holdem/req_action_pb";
 import { ClientMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
@@ -40,7 +33,6 @@ import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
-import { SetAutoAddClipsData } from "../new_ui/UIAutoBringIn";
 import { AddClipsData } from "../new_ui/UIBringIn";
 import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
@@ -52,7 +44,7 @@ import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
 import { GameCache } from "./../GameCache";
-import { SeatEmpty, SeatIdle, SeatInsurance, SeatOperation } from "./../SeatStateHandler";
+import { SeatEmpty, SeatIdle, SeatOperation } from "./../SeatStateHandler";
 
 import { TexasGameState } from "./../TexasGameState";
 
@@ -634,9 +626,9 @@ export default class TexasGame {
             mSeat.isBank = this.bankerIndex == this.GetLocalSeatID(rec.playersList[i].seatId);
             mSeat.isStraddle = false;
             let mSex = rec.playersList[i].sex;
-            let mKeptTime = rec.playersList[i].keepSeatLeftTime;
-            mSeat.keepSeatLeftTime = mKeptTime;
+            mSeat.keepSeatLeftTime = rec.playersList[i].keepSeatLeftTime;
             let mPlayer: CPlayer = new CPlayer(mPlayerId);
+
             mPlayer.seatID = this.GetLocalSeatID(rec.playersList[i].seatId);
             mPlayer.sex = mSex;
             mPlayer.headPic = mHeadPic;
@@ -649,6 +641,12 @@ export default class TexasGame {
             mPlayer.anteNumber = mAnte;
             mPlayer.isOffLine = OffLineState;
             mPlayer.IsAutoOp = rec.playersList[i].isAutoop;
+
+            mPlayer.keepSeatReason = rec.playersList[i].keepSeatReason;
+            //留座原因是带入申请中
+            if (mPlayer.keepSeatReason == Def.KeepSeatReason.KSR_TAKE_SEAT) {
+                mPlayer.KeepSeatLeftTime = mSeat.keepSeatLeftTime;
+            }
             mPlayer.SetCards(this.GetHandCardsByRecList(rec.playersList[i].cardsList));
             mPlayer.RoundActioned = rec.playersList[i].roundActioned;
             mSeat.Player = mPlayer;
@@ -801,9 +799,8 @@ export default class TexasGame {
                 }
                 break;
         }
+        this.UpdateMsgBtnSprite();
     }
-
-
 
 
     /// <summary>
@@ -969,9 +966,11 @@ export default class TexasGame {
      * 刷新牌桌房间信息显示
      */
     public UpdateRoomDes() {
-
         let info: string = ``;
-        info += `\n${GameCache.Instance.roomName}`;
+        if (GameUtil.GetFriendsOrClubTable() == 1) {
+            info += `${GameCache.Instance.FriendsTableCode}\n`;
+        }
+        info += `${GameCache.Instance.roomName}`;
         info += `\n${this.GetRoomTypeDes()}`;
         info += `\n${GameCache.Instance.room_id}-${this.mHandNum}`;
         let straddleStr: string = "";
@@ -1237,7 +1236,7 @@ export default class TexasGame {
                             autoUseWallet: false,
                             returnOrNew: 0,
                             store: 0,
-                            clubId: res.data.last_bring_out.club_id,
+                            clubId: 0,
                             applyBringIn: true,
                         },
                     });
@@ -1469,7 +1468,7 @@ export default class TexasGame {
                         autoUseWallet: autoUseWallet,
                         returnOrNew: 0,
                         store: 0,
-                        applyBringIn: (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.limit_bring_in == 1,
+                        applyBringIn: (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.FriendsTableLimitBringIn,
                         clubId: club_id,
 
                     },
@@ -1490,7 +1489,7 @@ export default class TexasGame {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                 bringIn: anteNumber,
                 useWallet: IsUseWallet,
-                applyBringIn: (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.limit_bring_in == 1,
+                applyBringIn: (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.FriendsTableLimitBringIn,
             },
         });
 
@@ -3221,6 +3220,37 @@ export default class TexasGame {
             // mPublicCardInfo.cardId = this.cards_1[i];
         }
     }
+    /// <summary>
+    /// 刷新申请消息红点
+    /// </summary>
+    public UpdateMsgBtnSprite() {
+
+
+        if (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) {
+
+            WWW.Instance.CommonAPI(
+                {
+                    web_class: Web_RoomSitApplyRecords,
+                    body: {
+                        "limit": 1,
+                        "offset": 0,
+                        "status": 1
+                    },
+                }
+            ).then(
+                (res: any) => {
+                    if (res.data?.data) {
+                        this.uirc.Button_Msg.getChildByName("red_icon").active = res.data.data.length > 0;
+                        this.uirc.Button_Msg.getChildByName("normal_icon").active = !(res.data.data.length > 0);
+                    }
+                },
+                (res: any) => {
+
+                }
+            )
+        }
+    }
+
     //重连清理
     ReEnterClear() {
         this.ClearTableUI();

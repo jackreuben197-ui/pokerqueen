@@ -1,6 +1,7 @@
 import SimpleNodePool from "../../common/MyNodePool";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import Data from "../../lobby/labor/script/Data";
 import { APIMsgMessageList, Web_Msg_Message_Unread, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import ItemMsgSystem from "./ItemMsgSystem";
@@ -30,11 +31,11 @@ export default class UIMsgSystem extends BaseFormPlus {
         this.title_label.i18NString = param.name;
         this.$Null.active = false;
         this.clearList();
-        this.reqMsgList(param.msg_type);
     }
     fadeInComplete() {
         super.fadeInComplete();
         //打开完成进行处理
+        this.reqMsgList(this._param.msg_type);
     }
     initUI() {
 

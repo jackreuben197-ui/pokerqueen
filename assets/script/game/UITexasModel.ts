@@ -70,22 +70,6 @@ export class UITexasModel {
             });
         });
     }
-    //带入申请
-    public APIFriendBringIn(param: typeof APIOrgFriendBringIn.RequestParams) {
-        return new Promise((resolve, reject) => {
-            HttpRequest.Send({
-                body: APIOrgFriendBringIn.Request(param),
-                request: APIOrgFriendBringIn,
-                onSuccess: function () {
-                    resolve(APIOrgFriendBringIn.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this)
-            });
-        });
-    }
-
     /// 通过俱乐部id 获取钱包
     public GetGoldByClubID(club_id: number,): number {
 

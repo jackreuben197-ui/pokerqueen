@@ -9,6 +9,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { Def } from "../../protobuf/holdem/define_pb";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import { CardType, CardTypeUtil } from "../CardTypeUtil";
@@ -497,12 +498,32 @@ export default class Seat {
     //刷新座位下方筹码数
     public UpdateCoin(): void {
 
-        this.SetCoin(this.Player?.chips >= 0 ? StringHelper.GetLongString(this.Player.chips) : "");
+        if (this.Player == null) {
+            this.SetCoin("");
+        } else {
+            if (this.Player.chips < 0) {
+                this.SetCoin("");
+            }
+            else {
+                this.SetCoin(StringHelper.GetLongString(this.Player.chips));
+            }
+        }
 
         if (this.IsMySeat) {
             this.uirc.Text_Coin.node.setPosition(GameUtil.SeatGoldPos[0]);
         } else {
             this.uirc.Text_Coin.node.setPosition(GameUtil.SeatGoldPos[1]);
+        }
+    }
+
+    /// <summary>
+    /// 刷新占座
+    /// </summary>
+    public UpdateRequesting() {
+        this.uirc.TextRequesting.node.active = this.Player.KeepSeatLeftTime > 0;
+        this.uirc.Text_Coin.node.active = this.Player.KeepSeatLeftTime <= 0;
+        if (this.Player.KeepSeatLeftTime > 0) {
+            this.uirc.TextRequesting.string = `${i18nMgr.Get("UITEXAS_PLAYERSEATDOWNTIPS01")}${Math.ceil(this.Player.KeepSeatLeftTime)}s`;
         }
     }
     //刷新昵称
@@ -1579,12 +1600,17 @@ export default class Seat {
     /// 显示返回游戏、留座
     /// </summary>
     public ShowReturnGame(): void {
+
+        if (this.Player.keepSeatReason == Def.KeepSeatReason.KSR_TAKE_SEAT) {
+            return;
+        }
         this.bKeepSeatCounting = true;
 
         if (GameCache.Instance.CurGame.mainPlayer.userID == this.Player.userID) {
             this.uirc.buttonCancelReserveSeat.active = true;
         }
         this.uirc.imageReserveSeat.active = true;
+
     }
     /// <summary>
     /// 隐藏返回游戏、留座

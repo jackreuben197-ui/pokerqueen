@@ -97,8 +97,8 @@ export default class JoinitemNode extends UIBase {
     }
 
     async btnClick(event, customData) {
-        await UIClubModel.mInstance.APIOrgFriendApplyDeal(this._data.id, Number(customData))
-        this.post(EventName.updateFrendApplyList)
+        //await UIClubModel.mInstance.APIOrgFriendApplyDeal(this._data.id, Number(customData))
+        //this.post(EventName.updateFrendApplyList)
     }
 
     // update (dt) {}

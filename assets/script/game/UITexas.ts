@@ -1,18 +1,17 @@
 import SimpleNodePool from "../common/MyNodePool";
-import { IUIDefine } from "../define/EIDefine";
+
 import { UIDefine, UIDefineType } from "../define/UIDefine";
 import { Sequence } from "../dotween/DOTween";
 import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { i18nSprite } from "../i18n/i18nSprite";
+
 
 
 import { Bundle_Resources, Bundle_Texas } from "../manager/ResManager";
 import MttAgainBuy from "../mtt/detail/MttAgainBuy";
-import MttPayforHome from "../mtt/detail/MttPayforHome";
-import UIMttSignDialogComponent from "../mtt/detail/UIMttSignDialogComponent";
+
 
 import GlobalSession from "../session/GlobalSession";
 import StorageKey from "../session/StorageKey";
@@ -24,9 +23,9 @@ import UIAutoBringIn from "./new_ui/UIAutoBringIn";
 import UIBringIn from "./new_ui/UIBringIn";
 import UIBringOut from "./new_ui/UIBringOut";
 import TexasGame from "./texas/TexasGame";
-import UIAddChipsComponent from "./ui/UIAddChipsComponent";
+
 import UIAgreeSecondPcsComponent from "./ui/UIAgreeSecondPcsComponent";
-import UIAutoChipsComponent from "./ui/UIAutoChipsComponent";
+
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
 import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
@@ -209,7 +208,7 @@ export default class UITexas extends BaseScene {
     private barrageAnimationSequence: Sequence<{}> = null;
     //#endregion
 
-
+    Button_Msg: cc.Node = null;
 
     ///////////////////////////////////
     update(dt: number) {
@@ -320,13 +319,16 @@ export default class UITexas extends BaseScene {
         //Pot对象池
         this.TransPot_Pool = new SimpleNodePool(this.transPot);
         this.TransAllPot_Pool = new SimpleNodePool(this.transAllPot);
+
+        this.Button_Msg = this.getChildNodeOrComponent("Button_Msg");
+
     }
 
 
     //从预制体添加到容器
     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
-        console.log("AddComponents", prefab_name, prefab);
+        //console.log("AddComponents", prefab_name, prefab);
         let com = null;
         if (prefab) {
             com = cc.instantiate(prefab).getComponent(prefab_name);
@@ -353,7 +355,10 @@ export default class UITexas extends BaseScene {
 
         this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
 
-        this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust)
+        this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
+
+        this.setButtonClick(this.Button_Msg, this.onClickMsg);
+
 
     }
 
@@ -378,9 +383,11 @@ export default class UITexas extends BaseScene {
 
     //进入初始UI
     EnterInitUI() {
-        this.ShowInvateCode();
+        //this.ShowInvateCode();
         this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
+        //消息按钮显示
+        this.Button_Msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
     }
     //清理UI
     CleanUI() {
@@ -440,16 +447,6 @@ export default class UITexas extends BaseScene {
         // }
     }
 
-
-    //显示邀请码
-    private ShowInvateCode() {
-        if (GameCache.Instance.origin_type == 4 && GameCache.Instance.invitation_code) {
-            this.Text_InvateCode.node.active = true;
-            this.Text_InvateCode.string = `牌局邀请码:${GameCache.Instance.invitation_code}`;
-        } else {
-            this.Text_InvateCode.node.active = false;
-        }
-    }
     onClickCancelTrust() {
         if (!this.game.mainPlayer.IsAutoOp) {
             return;
@@ -525,4 +522,15 @@ export default class UITexas extends BaseScene {
             this.Image_InsuranceTips.active = false;
         }
     }
+
+    //消息点击
+    onClickMsg() {
+        if (GameUtil.GetFriendsOrClubTable() == 1) {
+            UIComponent.open(UIDefine.UIMsgBring, { from: 0, name: "UIClub_RoomSitApplyRecords_title" });
+        }
+        if (GameUtil.GetFriendsOrClubTable() == 2) {
+            UIComponent.open(UIDefine.UIMsgBring, { from: 1, name: "UIClub_RoomSitApplyRecords_title" });
+        }
+    }
+
 }

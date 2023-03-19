@@ -1,3 +1,4 @@
+import List from "../../../common/List";
 import SimpleNodePool from "../../../common/MyNodePool";
 import TabsGroup from "../../../common/TabsGroup";
 import { Tabs_Status, TextColor } from "../../../config/GameConfig";
@@ -111,10 +112,12 @@ export default class UIWallet extends BaseFormPlus {
         this.record_item_pool = new SimpleNodePool(this.$record_item);
         this.changelog_item_pool = new SimpleNodePool(this.$changelog_item);
         this.apply_item_pool = new SimpleNodePool(this.$apply_item);
+
+        this.initEX();
     }
 
     //顶部标题点击
-    top_tabs_click(items: cc.Node[], index: number) {
+    private top_tabs_click(items: cc.Node[], index: number) {
 
         let status = Tabs_Status[index];
         items.forEach((item, index) => {
@@ -128,6 +131,7 @@ export default class UIWallet extends BaseFormPlus {
         switch (index) {
             case 0:
                 //this.Op_Index = -1;
+                this.change_log_list_ex.reset();
                 this.reqAccount();
                 break;
             case 1:
@@ -143,7 +147,7 @@ export default class UIWallet extends BaseFormPlus {
 
     }
     //充值和转换点击
-    op_tabs_click(button: cc.Button) {
+    private op_tabs_click(button: cc.Button) {
         switch (button.node["index"]) {
             case 0://充值
                 UIComponent.open(UIDefine.UIToRecharge,
@@ -165,7 +169,7 @@ export default class UIWallet extends BaseFormPlus {
         }
     }
     //各种记录点击
-    record_tabs_click(items: cc.Node[], index: number) {
+    private record_tabs_click(items: cc.Node[], index: number) {
 
         let status = Tabs_Status[index];
         items.forEach((item, index) => {
@@ -236,9 +240,11 @@ export default class UIWallet extends BaseFormPlus {
 
         this.top_tabs_group.reset(0);
 
+        this.showEX();
+
     }
     //刷新红点
-    refreshRed() {
+    private refreshRed() {
         let data = APIMessageRed_num.Response.data;
         let hasRed: boolean = false;
         if (data) {
@@ -250,10 +256,7 @@ export default class UIWallet extends BaseFormPlus {
         }
         this.$red.active = hasRed;
     }
-    resetData() {
-        // this._TopIndex = -8;
-        // this._OpIndex = -8;
-        // this._RecordIndex = -8;
+    private resetData() {
         this.recharge_tags = WalletModel.Instance.getTags(0);
         this.exchange_tags = WalletModel.Instance.getTags(1);
     }
@@ -459,7 +462,8 @@ export default class UIWallet extends BaseFormPlus {
                 GC.wallet.usdt_to_gold_rate = res.data.usdt_to_gold_rate;
 
                 this.refreshGold();
-                next?.call(this);
+                //next?.call(this);
+                this.reqGoldChangeLog(0);
             },
             (res: any) => {
 
@@ -467,17 +471,21 @@ export default class UIWallet extends BaseFormPlus {
         )
     }
     //请求公会钱包变动
-    reqGoldChangeLog(next) {
+    reqGoldChangeLog(offset: number) {
         let info = {
-            limit: 100,
-            offset: 0
+            limit: 10,
+            offset: offset
         }
         LobbyControl.getInstance().reqGoldChangeLog(ClubCache.club_id, info).then(
-            (res) => {
-                this.refreshChangeList(res);
-                next?.call(this);
+            (res: any) => {
+                //this.refreshChangeList(res);
+                this.change_log_list_ex.refresh(res.data.list, res.data.total);
+
+                this.List$change_log.numItems = this.change_log_list_ex.offset;
+
             },
             (res) => {
+                this.change_log_list_ex.error();
             }
         )
     }
@@ -492,25 +500,29 @@ export default class UIWallet extends BaseFormPlus {
                 GC.wallet.Gold = data?.gold || 0;
                 GC.wallet.USDT = data?.usdt || 0;
                 this.refreshGold();
-                next.call(this);
+                //next.call(this);
+                this.reqClubFundChangeLog(0);
             },
             (res) => {
             }
         )
     }
     //请求公会基金变动
-    reqClubFundChangeLog(next) {
+    reqClubFundChangeLog(offset: number = 0) {
         let param = {
-            limit: 100,
-            offset: 0,
+            limit: 10,
+            offset: offset,
             club_random_id: ClubCache.random_id
         }
         UIClubModel.mInstance.reqClubFundChangeLog(ClubCache.club_id, param).then(
-            (res) => {
-                this.refreshChangeList(res);
-                next.call(this);
+            (res: any) => {
+                //this.refreshChangeList(res);
+                this.change_log_list_ex.refresh(res.data.list, res.data.total);
+
+                this.List$change_log.numItems = this.change_log_list_ex.offset;
             },
             (res) => {
+                this.change_log_list_ex.error();
             }
         )
     }
@@ -606,8 +618,94 @@ export default class UIWallet extends BaseFormPlus {
         // this.Top_Index = 0;
         this.top_tabs_group.reset(0);
     }
+
+    /////////////////////////////////list///////////////////////////////
+    private List$change_log: List = null;
+
+    private change_log_list_ex: List_EX = null;
+
+    //初始化滚动列表的补充数据
+    private initEX() {
+        this.change_log_list_ex = new List_EX;
+    }
+    private showEX() {
+        this.change_log_list_ex.init({
+            list: this.List$change_log,
+            nullNode: this.$Page0.getChildByName("Null"),
+            this: this,
+            request: this.ReqAccountBean[this.param.wallet_type][1]
+        });
+    }
+
+    //////////////////////////////////滚动节点渲染///////////////////////
+    render_changelog(node: cc.Node, index: number) {
+
+        //console.log("index:>>>", index);
+        let item_data = this.change_log_list_ex.data[index];
+        changeItem.init(item_data);
+        this.setChildLabel(node, "bg/lbl_date", changeItem.create_time_MD);
+        this.setChildLabel(node, "bg/lbl_content", changeItem.opName);
+        this.setChildLabel(node, "bg/lbl_amount", changeItem.gold_after);
+        this.setChildLabel(node, "bg/lbl_time", changeItem.create_time_HM);
+        this.setChildLabel(node, "bg/lbl_change", changeItem.changeNum);
+        this.setChildLabelColor(node, "bg/lbl_change", changeItem.changeNumColor);
+        this.setChildVisible(node, "bg/gc_icon", changeItem.gold_type == 1);
+        this.setChildVisible(node, "bg/us_icon", changeItem.gold_type == 2);
+    }
+
 }
 ///////////////////////////
+
+class List_EX {
+    data: any[] = null;
+    offset: number = 0;
+    req_ing: boolean = false;
+    req_end: boolean = false;
+    constructor(public param: { list: List, nullNode: cc.Node, request: Function, this: any } = null) {
+        this.reset();
+        this.init(param);
+    }
+    init(param: { list: List, nullNode: cc.Node, request: Function, this: any }) {
+        this.param = param;
+        param && (param.list.scrollingCB = this.scrolling);
+    }
+    reset() {
+        this.offset = 0;
+        this.data = [];
+        this.req_ing = false;
+        this.req_end = false;
+        this.param?.list.scrollView.scrollToTop(0);
+    }
+    refresh(data: any[], total: number) {
+        this.req_ing = false;
+        this.data = this.data.concat(data);
+        this.offset = this.data.length;
+        this.param.nullNode.active = this.offset == 0;
+        if (this.offset == total) this.req_end = true;
+    }
+    error() {
+        this.req_ing = false;
+    }
+    scrolling = (scrollView) => {
+        if (scrollView) {
+            let cur = scrollView.getScrollOffset();
+            let max = scrollView.getMaxScrollOffset();
+            let isDown = cur.y >= max.y;
+            if (isDown) {
+                //GC.data.mtt.list.dropDownReq();
+                //console.log("滚动到结尾");
+                if (!this.req_ing && !this.req_end) {
+                    this.dropRequest();
+                }
+            }
+        }
+    }
+    dropRequest() {
+        this.req_ing = true;
+        this.param.request.call(this.param.this, this.offset);
+    }
+}
+
 
 let changeItem = {
     data: null,

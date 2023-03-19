@@ -122,7 +122,12 @@ export enum BroadcastCode {
     VerifyTickets = 1004,//验证门票
     Super1_PMD = 1005,//一元购开奖中奖_跑马灯消息
     Super1_TC = 1006,//一元购开奖中奖_弹窗消息
-    Friend_BringIn = 2001 // 朋友桌带入申请
+    FaceRecognizeCode = 1007,// 房间人脸识别消息
+    SeatFriendApplyRefreshMsgNum = 2001,//朋友桌房主提示
+    SeatFriendBringInApply = 2002,//朋友桌房主同意坐下
+    SeatClubApplyRefreshMsgNum = 2003,//公会桌房主提示
+    SeatClubBringInApply = 2004,//公会房主同意坐下
+    AntiCheatRoomVideoMsgCode = 2005,//随机触发强制视频		
 
 }
 
@@ -187,14 +192,14 @@ export class BroadcastMsg {
     }
 }
 //朋友桌带入申请返回结构
-export class ServerMessageRoomBringInApply {
+export class BringInApplyMsg {
     public static ResponseData: {
         room_id: number,//房间ID
         user_id: number,//用户ID
         bring_in: number,//带入筹码
         status: number,// 状态 1 待审批，2通过，3拒绝，4取消
     } = null;
-    public static Response(json: string): typeof ServerMessageRoomBringInApply.ResponseData {
+    public static Response(json: string): typeof BringInApplyMsg.ResponseData {
         return JSON.parse(json);
     }
 }
