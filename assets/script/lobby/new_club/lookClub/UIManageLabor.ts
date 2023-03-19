@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 14:15:53
+ * @LastEditTime: 2023-03-19 15:44:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIManageLabor.ts
  */
 
@@ -162,6 +162,7 @@ export default class UIManageLabor extends BaseForm {
     }
 
     joinTrip() {
+        if (ClubCache.tribe_name && ClubCache.tribe_name != '') return
         UIComponent.open(UIDefine.UIJoinUnion, { type: 1 })
 
     }

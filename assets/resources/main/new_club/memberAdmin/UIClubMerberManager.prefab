@@ -3302,8 +3302,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 331,
-      "height": 351
+      "width": 176,
+      "height": 186
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3315,7 +3315,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -132.0999999999999,
+        -49.59999999999991,
         0,
         0,
         0,
@@ -3382,7 +3382,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -270.249,
+        -199.237,
         0,
         0,
         0,
@@ -3697,8 +3697,10 @@
     "_fontSize": 50,
     "_lineHeight": 50,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,

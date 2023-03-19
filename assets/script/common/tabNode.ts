@@ -3,7 +3,7 @@
  * @Date: 2023-01-13 11:05:06
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 09:45:25
+ * @LastEditTime: 2023-03-19 16:24:12
  * @FilePath: /pokerqueen/assets/script/common/tabNode.ts
  */
 
@@ -69,6 +69,8 @@ export default class TabNode extends UIBase {
     onClickTypeTabBtns(index) {
         if (this._isAction) return;  //|| this._selectIndex == index
         let pos = this._titleNode.children[index].position;
+        // pos = this._titleNode.convertToWorldSpaceAR(pos)
+        // pos = this.node.convertToNodeSpaceAR(pos)
         cc.Tween.stopAllByTarget(this._selectBg);
         cc.tween(this._selectBg)
             .to(0.1, { position: pos })

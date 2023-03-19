@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-14 10:30:15
+ * @LastEditTime: 2023-03-19 16:00:29
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIMatchView.ts
  */
 
@@ -87,7 +87,8 @@ export default class UIMatchView extends UIBase {
             item.getChildByName("Rectangle").active = this._gameType == index
         })
         if (!isInit) {
-            this.titleNodeClick(0);
+            this.reqDataAgain();
+            // this.titleNodeClick(0);
         }
     }
     /**

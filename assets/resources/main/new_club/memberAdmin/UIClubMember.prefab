@@ -1943,8 +1943,10 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -2239,8 +2241,10 @@
     "_fontSize": 53,
     "_lineHeight": 66,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -2347,8 +2351,10 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -2639,8 +2645,10 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -2939,8 +2947,10 @@
     "_fontSize": 53,
     "_lineHeight": 66,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -3050,8 +3060,10 @@
     "_fontSize": 40,
     "_lineHeight": 42,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -13038,7 +13050,7 @@
       "__id__": 356
     },
     "_enabled": true,
-    "i18n_string": "",
+    "i18n_string": "OpCodeString_LOCK",
     "_id": ""
   },
   {
@@ -13417,7 +13429,7 @@
       "__id__": 366
     },
     "_enabled": true,
-    "i18n_string": "",
+    "i18n_string": "UIClub_DeleteSomeone",
     "_id": ""
   },
   {
@@ -13796,7 +13808,7 @@
       "__id__": 376
     },
     "_enabled": true,
-    "i18n_string": "",
+    "i18n_string": "OpCodeString_UNLOCK",
     "_id": ""
   },
   {

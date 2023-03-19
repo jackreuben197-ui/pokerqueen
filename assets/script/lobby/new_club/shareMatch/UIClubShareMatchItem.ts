@@ -3,12 +3,13 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 19:03:13
+ * @LastEditTime: 2023-03-19 15:54:34
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatchItem.ts
  */
 
 import { EventName } from "../../../config/EventName";
 import GGEvent from "../../../event/GGEvent";
+import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import UIBase from "../../../ui/UIBase";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -54,9 +55,10 @@ export default class UIClubShareMatchItem extends UIBase {
 
         let lock = this.node.getChildByName('lock');
         lock.active = this._data.private_room == 1
-        let lbl_time = this.labelNode.getChildByName('lbl_3')
-        let playView = lbl_time.getComponent(PlayViewItem)
-        playView.updateNormalItem(this._data.play_duration);
+        let lbl_time = this.labelNode.getChildByName('lbl_3').getComponent(cc.Label)
+        lbl_time.string = this._data.play_duration / 3600 + 'h'
+        // let playView = lbl_time.getComponent(PlayViewItem)
+        // playView.updateNormalItem(this._data.play_duration);
 
         let btnNode = this.node.getChildByName("btnNode")
         btnNode.active = this._type == 1

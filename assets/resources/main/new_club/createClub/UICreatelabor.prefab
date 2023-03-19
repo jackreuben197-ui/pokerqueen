@@ -33,14 +33,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 122
+        "__id__": 123
       },
       {
-        "__id__": 123
+        "__id__": 124
       }
     ],
     "_prefab": {
-      "__id__": 124
+      "__id__": 125
     },
     "_opacity": 255,
     "_color": {
@@ -372,14 +372,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 119
+        "__id__": 120
       },
       {
-        "__id__": 120
+        "__id__": 121
       }
     ],
     "_prefab": {
-      "__id__": 121
+      "__id__": 122
     },
     "_opacity": 255,
     "_color": {
@@ -443,14 +443,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 116
+        "__id__": 117
       },
       {
-        "__id__": 117
+        "__id__": 118
       }
     ],
     "_prefab": {
-      "__id__": 118
+      "__id__": 119
     },
     "_opacity": 255,
     "_color": {
@@ -514,14 +514,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 113
+        "__id__": 114
       },
       {
-        "__id__": 114
+        "__id__": 115
       }
     ],
     "_prefab": {
-      "__id__": 115
+      "__id__": 116
     },
     "_opacity": 255,
     "_color": {
@@ -594,13 +594,13 @@
         "__id__": 76
       },
       {
-        "__id__": 96
+        "__id__": 97
       }
     ],
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 112
+      "__id__": 113
     },
     "_opacity": 255,
     "_color": {
@@ -2769,11 +2769,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 94
+        "__id__": 95
       }
     ],
     "_prefab": {
-      "__id__": 95
+      "__id__": 96
     },
     "_opacity": 255,
     "_color": {
@@ -2932,7 +2932,7 @@
       "__id__": 77
     },
     "_enabled": true,
-    "i18n_string": "",
+    "i18n_string": "UIGuild_InputContactInformation",
     "_id": ""
   },
   {
@@ -2967,11 +2967,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 91
+        "__id__": 92
       }
     ],
     "_prefab": {
-      "__id__": 93
+      "__id__": 94
     },
     "_opacity": 255,
     "_color": {
@@ -3245,10 +3245,13 @@
     "_components": [
       {
         "__id__": 89
+      },
+      {
+        "__id__": 90
       }
     ],
     "_prefab": {
-      "__id__": 90
+      "__id__": 91
     },
     "_opacity": 80,
     "_color": {
@@ -3333,6 +3336,17 @@
     "_id": ""
   },
   {
+    "__type__": "9bfc327oKRNEYZBVCrkUjhI",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 88
+    },
+    "_enabled": true,
+    "i18n_string": "UIGuild_InputContactInformation",
+    "_id": ""
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -3358,7 +3372,7 @@
     "editingDidBegan": [],
     "textChanged": [
       {
-        "__id__": 92
+        "__id__": 93
       }
     ],
     "editingDidEnded": [],
@@ -3445,29 +3459,29 @@
     },
     "_children": [
       {
-        "__id__": 97
+        "__id__": 98
       },
       {
-        "__id__": 100
+        "__id__": 101
       },
       {
-        "__id__": 103
+        "__id__": 104
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 107
-      },
-      {
         "__id__": 108
       },
       {
-        "__id__": 110
+        "__id__": 109
+      },
+      {
+        "__id__": 111
       }
     ],
     "_prefab": {
-      "__id__": 111
+      "__id__": 112
     },
     "_opacity": 255,
     "_color": {
@@ -3521,17 +3535,17 @@
     "_name": "canClick",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 96
+      "__id__": 97
     },
     "_children": [],
     "_active": false,
     "_components": [
       {
-        "__id__": 98
+        "__id__": 99
       }
     ],
     "_prefab": {
-      "__id__": 99
+      "__id__": 100
     },
     "_opacity": 255,
     "_color": {
@@ -3585,7 +3599,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 97
+      "__id__": 98
     },
     "_enabled": true,
     "_materials": [
@@ -3628,17 +3642,17 @@
     "_name": "noClick",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 96
+      "__id__": 97
     },
     "_children": [],
     "_active": true,
     "_components": [
       {
-        "__id__": 101
+        "__id__": 102
       }
     ],
     "_prefab": {
-      "__id__": 102
+      "__id__": 103
     },
     "_opacity": 255,
     "_color": {
@@ -3692,7 +3706,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 100
+      "__id__": 101
     },
     "_enabled": true,
     "_materials": [
@@ -3735,20 +3749,20 @@
     "_name": "tijiao",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 96
+      "__id__": 97
     },
     "_children": [],
     "_active": true,
     "_components": [
       {
-        "__id__": 104
+        "__id__": 105
       },
       {
-        "__id__": 105
+        "__id__": 106
       }
     ],
     "_prefab": {
-      "__id__": 106
+      "__id__": 107
     },
     "_opacity": 255,
     "_color": {
@@ -3802,7 +3816,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 103
+      "__id__": 104
     },
     "_enabled": true,
     "_materials": [
@@ -3837,7 +3851,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 103
+      "__id__": 104
     },
     "_enabled": true,
     "i18n_string": "UIClub_Creat_7G6oAawB",
@@ -3859,7 +3873,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 96
+      "__id__": 97
     },
     "_enabled": false,
     "_materials": [
@@ -3891,7 +3905,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 96
+      "__id__": 97
     },
     "_enabled": true,
     "_normalMaterial": {
@@ -3904,7 +3918,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 109
+        "__id__": 110
       }
     ],
     "_N$interactable": true,
@@ -3977,7 +3991,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 96
+      "__id__": 97
     },
     "_enabled": true,
     "alignMode": 1,
@@ -4238,7 +4252,7 @@
       "__id__": 68
     },
     "xinxi": {
-      "__id__": 91
+      "__id__": 92
     },
     "labelNum": {
       "__id__": 72
@@ -4250,13 +4264,13 @@
       "__id__": 20
     },
     "canClick": {
-      "__id__": 97
+      "__id__": 98
     },
     "noClick": {
-      "__id__": 100
+      "__id__": 101
     },
     "btnTip": {
-      "__id__": 104
+      "__id__": 105
     },
     "_id": ""
   },
