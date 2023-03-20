@@ -7,7 +7,7 @@ import LoginSession from "../../session/LoginSession";
 import CCTools from "../../tools/CCTools";
 import UIComponent from "../../ui/UIComponent";
 import WebHelper from "./WebHelper";
-import { APIOrgFriendBringIn } from "./WebRequest";
+import { APIOrgFriendBringIn, Web_Club_Fund_Audit } from "./WebRequest";
 
 /**
  * Http端
@@ -69,10 +69,11 @@ export default class HttpClient {
                 } else {
                     //错误码提示 
                     switch (response_json.code) {
-                        case 90001://朋友圈带入申请
-                            if (api == APIOrgFriendBringIn.API) {
+                        case 90001://玩家充值失败
+                            if (api == Web_Club_Fund_Audit.API) {
                                 //friend room bringin applied
-                                ToastManager.Instance.createToast("请等待房主审核");
+                                //ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response_json.code));
+                                UIComponent.Instance.ToastLanguage("UISupplememtDetails_cz_fail");
                             } else {
                                 ToastManager.Instance.createToast(response_json.message);
                             }
