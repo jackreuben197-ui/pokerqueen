@@ -242,6 +242,9 @@ export default class UIWallet extends BaseFormPlus {
 
         this.showEX();
 
+        //刷红点位置
+        this.scheduleOnce(() => { this.$red.getComponent(cc.Widget).updateAlignment(); }, 0);
+
     }
     //刷新红点
     private refreshRed() {
