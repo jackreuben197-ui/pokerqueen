@@ -12,7 +12,7 @@ import MyMessageModel from "./MyMessageModel";
 const { ccclass, executionOrder, property } = cc._decorator;
 
 @ccclass
-@executionOrder(-1)
+//@executionOrder(-1)
 export default class ItemMsgSystem extends UIBasePlus {
     @property([cc.SpriteFrame])
     icons: cc.SpriteFrame[] = [];
@@ -35,9 +35,6 @@ export default class ItemMsgSystem extends UIBasePlus {
 
     //////////////////////////////////
 
-    protected lateLoad(): void {
-        super.lateLoad();
-    }
     onShow(param: any) {
         super.onShow(param);
         this.reset();
