@@ -10,6 +10,8 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import { APIOrgClubUploadIcon, Web_User_Info } from "../../net/https/WebRequest";
+import ProtocolAgency from "../../net/websocket/ProtocolAgency";
+import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import BaseForm from "../../ui/form/BaseForm";
 import { LobbyControl } from "../control/LobbyControl";
@@ -54,12 +56,18 @@ export default class UIMine_Poker extends BaseForm {
     panel_item_river: cc.Node = null;
     panel_paipu_down: cc.Node = null;
     panel_player_down: cc.Node = null;
-
     handcards = [];
     publicCards1 = [];
     publicCards2 = [];
     private comFormTitle: ComFormTitle = null;
-
+    currentPage: number = 0
+    totalPage: number = 0;
+    buttonFirstPage: cc.Button = null;
+    buttonLastPage: cc.Button = null;
+    buttonPrePage: cc.Button = null;
+    buttonNextPage: cc.Button = null;
+    Text_num: cc.Label = null;
+    ScrollBar: cc.Node = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -70,6 +78,73 @@ export default class UIMine_Poker extends BaseForm {
     lateClose(param: any = null) {
         super.lateClose(param);
         GC.notify.post(GGEvent.UPD_CARD_SCORE);
+    }
+
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+
+        GC.notify.register(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);
+    }
+    Protocol_Holdem_PublicReplay_Handler(response) {
+        if (response == null || Buffer.from(response.data, 'base64').toString() == "") {
+            return;
+        }
+        let _data = Buffer.from(response.data, 'base64').toString()
+        _data = JSON.parse(_data)
+        let a = { data: _data }
+
+        this.refreshUI(a);
+    }
+
+    RefreshData(_currentPage) {
+        this.currentPage = _currentPage;
+        this.RefreshPageButton();
+        this.SendClientMessagePublicReplay(this.currentPage);
+    }
+    RefreshPageButton() {
+        this.buttonFirstPage.interactable = this.currentPage > 1;
+        this.buttonLastPage.interactable = this.currentPage < this.totalPage;
+        this.buttonPrePage.interactable = this.currentPage > 1;
+        this.buttonNextPage.interactable = this.currentPage < this.totalPage;
+        this.Text_num.string = `${this.currentPage}/${this.totalPage}`;
+    }
+    onClickFirstPage(event) {
+        if (this.buttonFirstPage.interactable == false)
+            return;
+        this.currentPage = 1;
+        this.RefreshData(this.currentPage);
+    }
+    onClickPrePage(event) {
+        if (this.buttonPrePage.interactable == false)
+            return;
+        this.currentPage--;
+        this.RefreshData(this.currentPage);
+    }
+    onClickNextPage(event) {
+        if (this.buttonNextPage.interactable == false)
+            return;
+        this.currentPage++;
+        this.RefreshData(this.currentPage);
+    }
+    onClickLastPage(event) {
+        if (this.buttonLastPage.interactable == false)
+            return;
+        this.currentPage = this.totalPage;
+        this.RefreshData(this.currentPage);
+    }
+
+    SendClientMessagePublicReplay(handNum) {
+        ProtocolAgency.Send({
+            Code: ProtocolCode.Protocol_Holdem_PublicReplay,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                handNum: handNum,
+                uniqueId: GameCache.Instance.CurGame.cacheUniqueId,
+            },
+        }
+        );
     }
     /**
      * 每次打开面板处理的内容
@@ -92,36 +167,51 @@ export default class UIMine_Poker extends BaseForm {
         this.panel_item_river = this.getChildNodeOrComponent("panel_item_river");
         this.panel_paipu_down = this.getChildNodeOrComponent("panel_paipu_down");
         this.panel_player_down = this.getChildNodeOrComponent("panel_player_down");
+        this.buttonFirstPage = this.getChildNodeOrComponent("Button_FirstPage", cc.Button);
+        this.buttonLastPage = this.getChildNodeOrComponent("Button_LastPage", cc.Button);
+        this.buttonPrePage = this.getChildNodeOrComponent("Button_PrePage", cc.Button);
+        this.buttonNextPage = this.getChildNodeOrComponent("Button_NextPage", cc.Button);
+        this.Text_num = this.getChildNodeOrComponent("Text_num", cc.Label);
+        this.ScrollBar = this.getChildNodeOrComponent("ScrollBar");
         // this.comFormTitle.initData('', this);
 
         // this.comFormTitle.title.string = "牌谱详情";
-        if (param.info) {
-            this._enterInfo = param.info;
-            this.reqInfo(param.info);
+        this.ScrollBar.active = false
+        if (param.enterType == 1) {
+            this.totalPage = param.info.handNum == 0 ? param.info.handNum : param.info.handNum - 1;
+            this.RefreshData(this.totalPage);
+            this.ScrollBar.active = true
+            this.isSC = false;
+        } else {
+            if (param.info) {
+                this._enterInfo = param.info;
+                this.reqInfo(param.info);
 
-            let info = {
-                room_id: param.info.room_id, //普通牌局，
-                room_unique_id: param.info.room_unique_id, // room唯一标识
-                hand_num: param.info.hand_num, //手数
-            }
-            LobbyControl.getInstance().reqRoundStrtus(info).then(
-                (res: any) => {
-                    let isSC = false;
-                    if (res.code == 0 && res.data.records != null && res.data.records.length > 0) {
-                        for (let i = 0; i < res.data.records.length; i++) {
-                            let t1 = param.info.id;
-                            let t2 = res.data.records[i].id;
-                            if (t1 == t2) {
-                                isSC = true;
+                let info = {
+                    room_id: param.info.room_id, //普通牌局，
+                    room_unique_id: param.info.room_unique_id, // room唯一标识
+                    hand_num: param.info.hand_num, //手数
+                }
+                LobbyControl.getInstance().reqRoundStrtus(info).then(
+                    (res: any) => {
+                        let isSC = false;
+                        if (res.code == 0 && res.data.records != null && res.data.records.length > 0) {
+                            for (let i = 0; i < res.data.records.length; i++) {
+                                let t1 = param.info.id;
+                                let t2 = res.data.records[i].id;
+                                if (t1 == t2) {
+                                    isSC = true;
+                                }
                             }
                         }
+                        this.isSC = isSC;
+                        this.refreshBtnUI();
+                    },
+                    (res) => {
                     }
-                    this.isSC = isSC;
-                    this.refreshBtnUI();
-                },
-                (res) => {
-                }
-            )
+                )
+            }
+
         }
         let btn_get: cc.Node = this.getChildNodeOrComponent("btn_get");
         btn_get.on("click", this.onClickGet, this);
@@ -835,10 +925,10 @@ export default class UIMine_Poker extends BaseForm {
     protected regiterTouchEvents() {
         super.regiterTouchEvents();
     }
-    /**
-     * 注册广播事件
-     */
-    protected regiterDispatchEvent() {
-    }
+    // /**
+    //  * 注册广播事件
+    //  */
+    // protected regiterDispatchEvent() {
+    // }
 
 }

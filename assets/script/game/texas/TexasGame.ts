@@ -3070,7 +3070,18 @@ export default class TexasGame {
         historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
         historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
         historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
-        UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.uirc.Common_Con })
+        historyInfoData.roomId = GameCache.Instance.room_id;
+        historyInfoData.match_id = GameCache.Instance.match_id
+        historyInfoData.room_unique_id = GameCache.Instance.CurGame.cacheUniqueId
+
+
+        let page = GameCache.Instance.CurGame.mHandNum == 0 ? GameCache.Instance.CurGame.mHandNum : GameCache.Instance.CurGame.mHandNum - 1;
+        if (page == 0) {
+            //第一手没打完不请求
+            return;
+        }
+        UIComponent.open(UIDefine.UIMine_Poker, { info: historyInfoData, enterType: 1 }, { parentUI: this.uirc.Common_Con })
+        // UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.uirc.Common_Con })
     }
 
     public UpdateMenu() {

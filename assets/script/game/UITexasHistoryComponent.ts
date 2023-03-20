@@ -3,7 +3,7 @@
  * @Date: 2022-09-06 16:14:44
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-14 16:53:28
+ * @LastEditTime: 2023-03-20 10:54:44
  * @FilePath: /pokerqueen/assets/script/game/UITexasHistoryComponent.ts
  */
 
@@ -25,6 +25,9 @@ export class HistoryInfoData {
     public Blindstr: string;
     public bgroupBet: number;
     public handNum: number;
+    public roomId: number;
+    public match_id: number;
+    public room_unique_id: string;
     // public ReferenceCollector rcPokerSprite;
 }
 export class PlayerInfo {

@@ -1596,10 +1596,11 @@ export default class GameUtil {
      */
     public static async EnterRoomAPI(enter_room_info: EnterRoomInfo, enter_param: any = null) {
         //, fromUIs?: UIDefineType[]) {
-        if (!GameCache.Instance.hasClub) {
-            UIComponent.Instance.ToastLanguage("error2005");
-            return;
-        }
+        //注释掉  2023/3/20
+        // if (!GameCache.Instance.hasClub) {
+        //     UIComponent.Instance.ToastLanguage("error2005");
+        //     return;
+        // }
         let room_type: number = enter_room_info.room_type;
         //未开放房间类型
         if (!GameUtil.IsOpenRoomType(room_type)) {

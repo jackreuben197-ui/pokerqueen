@@ -2,6 +2,7 @@
  * 登录内容
  */
 import { GameConfig } from "../config/GameConfig";
+import { ClubCache } from "../frame/data/club/ClubCache";
 import GC from "../frame/GameControl";
 import LocalStoreManager from "../frame/manager/LocalStoreManager";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
@@ -248,7 +249,7 @@ export default class LoginSession {
         GameCache.Instance.nick = info.nickname;
         GameCache.Instance.headPic = info.avatar;
         GameCache.Instance.userType = info.ut;
-        GameCache.Instance.hasClub =  info.club_id > 0;
+        GameCache.Instance.hasClub = ClubCache.club_id > 0;
 
         //localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
         //localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);

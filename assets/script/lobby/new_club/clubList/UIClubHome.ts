@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-16 11:10:00
+ * @LastEditTime: 2023-03-20 10:22:31
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -98,7 +98,7 @@ export default class UIClubHome extends BaseForm {
         menuRed.active = flag
 
         let menuShow = cc.find('menuShow', this.menuNode)
-        let meberRed = menuShow.children[2].getChildByName('Ellipse')
+        let meberRed = menuShow.children[3].getChildByName('Ellipse')
         let jjRed = menuShow.children[5].getChildByName('Ellipse')
         let messRed = menuShow.children[6].getChildByName('Ellipse')
         redData.forEach((element) => {
