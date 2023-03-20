@@ -3,7 +3,7 @@
  * @Date: 2022-11-12 11:38:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-07 10:07:30
+ * @LastEditTime: 2023-03-20 14:34:45
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messPfItem.ts
  */
 
@@ -79,7 +79,7 @@ export default class messPfItem extends cc.Component {
             UIComponent.open(UIDefine.UIRecordDetail, { info: content })
         }
         else if (this._data.message_type == 4) {
-            UIComponent.open(UIDefine.UIMine_Poker, { info: content });
+            UIComponent.open(UIDefine.UIMine_Poker, { info: content, enterType: 2 });
         }
     }
 }

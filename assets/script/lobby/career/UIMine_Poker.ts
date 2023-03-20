@@ -68,6 +68,7 @@ export default class UIMine_Poker extends BaseForm {
     buttonNextPage: cc.Button = null;
     Text_num: cc.Label = null;
     ScrollBar: cc.Node = null;
+    btnNode: cc.Node = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -173,46 +174,44 @@ export default class UIMine_Poker extends BaseForm {
         this.buttonNextPage = this.getChildNodeOrComponent("Button_NextPage", cc.Button);
         this.Text_num = this.getChildNodeOrComponent("Text_num", cc.Label);
         this.ScrollBar = this.getChildNodeOrComponent("ScrollBar");
+        this.btnNode = this.getChildNodeOrComponent("btnNode");
         // this.comFormTitle.initData('', this);
 
         // this.comFormTitle.title.string = "牌谱详情";
-        this.ScrollBar.active = false
+        this.ScrollBar.active = param.enterType == 1
+        this.btnNode.active = param.enterType == 2
+        this._enterInfo = param.info;
         if (param.enterType == 1) {
             this.totalPage = param.info.handNum == 0 ? param.info.handNum : param.info.handNum - 1;
             this.RefreshData(this.totalPage);
-            this.ScrollBar.active = true
-            this.isSC = false;
         } else {
             if (param.info) {
-                this._enterInfo = param.info;
                 this.reqInfo(param.info);
-
-                let info = {
-                    room_id: param.info.room_id, //普通牌局，
-                    room_unique_id: param.info.room_unique_id, // room唯一标识
-                    hand_num: param.info.hand_num, //手数
-                }
-                LobbyControl.getInstance().reqRoundStrtus(info).then(
-                    (res: any) => {
-                        let isSC = false;
-                        if (res.code == 0 && res.data.records != null && res.data.records.length > 0) {
-                            for (let i = 0; i < res.data.records.length; i++) {
-                                let t1 = param.info.id;
-                                let t2 = res.data.records[i].id;
-                                if (t1 == t2) {
-                                    isSC = true;
-                                }
-                            }
-                        }
-                        this.isSC = isSC;
-                        this.refreshBtnUI();
-                    },
-                    (res) => {
-                    }
-                )
             }
 
+        } let info = {
+            room_id: param.info.room_id, //普通牌局，
+            room_unique_id: param.info.room_unique_id, // room唯一标识
+            hand_num: param.info.hand_num, //手数
         }
+        LobbyControl.getInstance().reqRoundStrtus(info).then(
+            (res: any) => {
+                let isSC = false;
+                if (res.code == 0 && res.data.records != null && res.data.records.length > 0) {
+                    for (let i = 0; i < res.data.records.length; i++) {
+                        let t1 = param.info.id;
+                        let t2 = res.data.records[i].id;
+                        if (t1 == t2) {
+                            isSC = true;
+                        }
+                    }
+                }
+                this.isSC = isSC;
+                this.refreshBtnUI();
+            },
+            (res) => {
+            }
+        )
         let btn_get: cc.Node = this.getChildNodeOrComponent("btn_get");
         btn_get.on("click", this.onClickGet, this);
 
@@ -621,8 +620,9 @@ export default class UIMine_Poker extends BaseForm {
             let clone_item: cc.Node = cc.instantiate(this.item_player);
             clone_item.x = 0;
             clone_item.y = 0;
-            this.updateHandcards(responseData, clone_item, i);
             this.updateLeftStr(responseData, clone_item, i);
+            this.updateHandcards(responseData, clone_item, i);
+
             this.panel_player_up.addChild(clone_item);
         }
         this.panel_player_down.removeAllChildren();
@@ -630,8 +630,9 @@ export default class UIMine_Poker extends BaseForm {
             let clone_item: cc.Node = cc.instantiate(this.item_player);
             clone_item.x = 0;
             clone_item.y = 0;
-            this.updateHandcards(responseData, clone_item, (plLen - 1 - i));
             this.updateLeftStr(responseData, clone_item, i);
+            this.updateHandcards(responseData, clone_item, (plLen - 1 - i));
+
             this.panel_player_down.addChild(clone_item);
         }
     }
@@ -657,12 +658,23 @@ export default class UIMine_Poker extends BaseForm {
         let handcards = [];
         let publicCards1 = [];
         let publicCards2 = [];
+        let result = info[index];
+        let card = result.card;
+        // let card = this.playerInfos[index].handCards
+        let playerId = data.s.table.pl[index].uid;
+        if (playerId == GameCache.Instance.nUserId) {
+            if (data.d != null && data.d.length >= 0) {
+                card = data.d;
+            }
+        }
+        else {
+            card = data.s.result[index].card;
+        }
+        let publicCardLen = this.PublicCards.length;
 
         if (this.HaveSecondCard) {
             // 有二套牌 手牌不带公共牌 公共牌后面上下显示
-            let result = info[index];
-            let card = result.card;
-            let publicCardLen = this.PublicCards.length;
+
             let secondPublicCardLen = this.SecondPublicCards.length;
             let cardLen = card.length;
             item_hand_public.removeAllChildren();
@@ -704,10 +716,10 @@ export default class UIMine_Poker extends BaseForm {
             this.updateMaxCardUI(result, handcards, publicCards1, publicCards2);
         } else {
             // 没有二套牌情况 手牌后 空格 公共牌
-            let result = info[index];
-            let card = result.card;
+            // let result = info[index];
+            // let card = result.card;
             let maxCardIndex = result.maxcard_idx;
-            let publicCardLen = this.PublicCards.length;
+            // let publicCardLen = this.PublicCards.length;
             let cardLen = card.length;
             let total = cardLen + 1 + publicCardLen;
             item_hand_public.removeAllChildren();
@@ -829,6 +841,15 @@ export default class UIMine_Poker extends BaseForm {
         // let handBet1 = handBet / 2;
         // let handBet2 = handBet - handBet1;
 
+        // if (player.playerId == GameCache.Instance.nUserId) {
+        //     player.isMine = true;
+        //     if (ResponseData.d != null && ResponseData.d.length >= 0) {
+        //         player.handCards = ResponseData.d;
+        //     }
+        // }
+        // else {
+        //     player.isMine = false;
+        // }
         if (player.playerId == GameCache.Instance.nUserId) {
             player.isMine = true;
             if (ResponseData.d != null && ResponseData.d.length >= 0) {
@@ -836,8 +857,10 @@ export default class UIMine_Poker extends BaseForm {
             }
         }
         else {
+            player.handCards = ResponseData.s.result[i].card;
             player.isMine = false;
         }
+
         this.playerInfos.push(player);
 
         let card_type = ResponseData.s.result[i].card_type;

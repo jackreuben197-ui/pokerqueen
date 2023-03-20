@@ -140,7 +140,6 @@ export default class UICollectScore extends BaseForm {
         let node = event.target;
         let info = node.info;
         let e = { info: info }
-
         if (this._fromParm && this._fromParm.Name == UIDefine.UILaborPlayViewForm.Name) {
             UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
                 {
@@ -164,7 +163,7 @@ export default class UICollectScore extends BaseForm {
             return
         }
 
-        UIComponent.open(UIDefine.UIMine_Poker, { info: e });
+        UIComponent.open(UIDefine.UIMine_Poker, { info: info, enterType: 2 });
     }
 
 }

@@ -104,7 +104,7 @@ export default class UIRecordScore extends BaseForm {
     onClickItem(event) {
         let node = event.target;
         let info = node.info;
-        UIComponent.open(UIDefine.UIMine_Poker, { info: info });
+        UIComponent.open(UIDefine.UIMine_Poker, { info: info, enterType: 2 });
     }
 
 }

@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 19:04:50
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-07 18:02:20
+ * @LastEditTime: 2023-03-20 14:47:47
  * @FilePath: /pokerqueen/assets/script/lobby/career/recordScoreItem.ts
  */
 
@@ -40,8 +40,9 @@ export default class recordScoreItem extends UIBase {
         this.setTextColor(this.wins, this._data.change < 0 ? '#FF7C7C' : '#B0FFAE')
 
         this.node.getComponent(cc.Sprite).enabled = index % 2 == 0;
+
     }
     itemClick() {
-        UIComponent.open(UIDefine.UIMine_Poker, { info: this._data })
+        UIComponent.open(UIDefine.UIMine_Poker, { info: this._data, enterType: 2 })
     }
 }
