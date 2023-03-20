@@ -5,11 +5,13 @@ import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
+import { UIClubModel } from "../lobby/labor/UIClubModel";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
 import { ClientMessageRoomers } from "../protobuf/holdem/req_roomers_pb";
+import BaseForm from "../ui/form/BaseForm";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
@@ -43,30 +45,34 @@ export default class UITexasReportComponent extends UIBase {
     isLoad = true;
     tInfo_0 = []
     tInfo_1 = []
+
+
+    @property(cc.Prefab)
+    peopleItem: cc.Prefab = null;
+    @property(cc.Prefab)
+    dataItem: cc.Prefab = null;
+
+    text_Time: cc.Label = null;
+    room_id: cc.Label = null;
+    data_content: cc.Node = null;
+    people_content: cc.Node = null;
+    peopelNum: cc.Label = null;
     protected lateLoad(): void {
         super.lateLoad();
-        // this.registerHandler();
+        this.text_Time = this.getChildNodeOrComponent('Text_Time', cc.Label);
+        this.room_id = this.getChildNodeOrComponent('room_id', cc.Label);
+        this.data_content = this.getChildNodeOrComponent('data_content');
+        this.people_content = this.getChildNodeOrComponent('people_content');
+        this.peopelNum = this.getChildNodeOrComponent('peopelNum', cc.Label);
+
 
     }
-
-    // private registerHandler() {
-    //     CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
-    // }
-
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler)
     }
 
-    onClose(param?: any): void {
-        super.onClose();
-        this.unscheduleAllCallbacks();
-        // this.removeHandler();
-    }
 
-    // private removeHandler() {
-    //     CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler, this);
-    // }
     RequestRoomers() {
         ProtocolAgency.Send<ClientMessageRoomers.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_Roomers,
@@ -85,20 +91,31 @@ export default class UITexasReportComponent extends UIBase {
             this.UpdateViewList(response);
         }
     }
-
+    onShow(param?: any): void {
+        super.onShow();
+        // this.btnShowProblem = this.getChildNodeOrComponent('BtnShowProblem');
+        // this.btnShowProblem.on('click', this.btnShowProblemClick, this)
+        this.room_id.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
+        this.text_Time.string = ''
+        this.RequestRoomers();
+    }
     async UpdateViewList(RoomersData) {
-
         //玩家 
-        this.content = this.getChildNodeOrComponent('content')
-        this.content.removeAllChildren();
         this.tInfo_0 = []
         this.tInfo_1 = []
-        let text_Insnum = this.getChildNodeOrComponent('Text_Insnum').getComponent(cc.Label);
-        text_Insnum.string = RoomersData.insurance != 0 ? StringHelper.getStringDiv100(RoomersData.insurance) : 0 + "";
-        let textTitle = this.getChildNodeOrComponent('Title').getComponent(cc.Label);
-        textTitle.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
-        let tAllNum = 0;
-        let totalLen = 0;
+        this.people_content.removeAllChildren();
+        this.data_content.removeAllChildren();
+        this.peopelNum.string = RoomersData.observersList.length
+        for (let index = 0; index < RoomersData.observersList.length; index++) {
+            let tItem: cc.Node = cc.instantiate(this.peopleItem);
+            tItem.parent = this.people_content;
+            let nick_name = StringHelper.LengthNick(RoomersData.observersList[index].name);
+            let nameLbl = tItem.getChildByName('Text_Name').getComponent(cc.Label)
+            nameLbl.string = nick_name
+
+            let icon = tItem.getChildByName('icon')
+            WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
+        }
         for (let i = 0; i < RoomersData.playersList.length; i++) {
             let tSignPlayer = new ReportPlayer();
             tSignPlayer.userId = RoomersData.playersList[i].userRid;
@@ -113,11 +130,7 @@ export default class UITexasReportComponent extends UIBase {
             else {
                 this.tInfo_1.push(tSignPlayer);
             }
-
-            tAllNum = tAllNum + RoomersData.playersList[i].bringInTotal;
         }
-        let textAllnum = this.getChildNodeOrComponent('Text_Allnum').getComponent(cc.Label);
-        textAllnum.string = tAllNum + "";
         try {
             this.tInfo_0.sort((x, y) => { return -x.score.CompareTo(y.score); });
             this.tInfo_1.sort((x, y) => { return -x.score.CompareTo(y.score); });
@@ -127,152 +140,122 @@ export default class UITexasReportComponent extends UIBase {
 
         }
 
-        let OnLine = this.getChildNodeOrComponent('OnLine')
         for (let index = 0; index < this.tInfo_0.length; index++) {
-            const element: any = cc.instantiate(OnLine);
-            element.parent = this.content;
+            const element: any = cc.instantiate(this.dataItem);
+            element.parent = this.data_content;
             this.setInfos(element, this.tInfo_0[index], true);
-            element.active = true;
         }
         for (let index1 = 0; index1 < this.tInfo_1.length; index1++) {
-            const element: any = cc.instantiate(OnLine);
-            element.parent = this.content;
+            const element: any = cc.instantiate(this.dataItem);
+            element.parent = this.data_content;
             this.setInfos(element, this.tInfo_1[index1], false);
-            element.active = true;
         }
 
+        let parms = {
+            name: "",
+            ante_min: 0,
+            ante_max: 0,
+            sb_min: 10,
+            sb_max: 100000,
+            tribe_id: 0,
+            start_time_s: 0,
+            start_time_e: 0,
+            enter_time_s: 0,
+            enter_time_e: 0,
+            game_type: [],
+            poker_type: [0, 2],
+            limit_bet_type: [],
+            order: ["sb_asc"],
 
-        totalLen = totalLen + 100 * (this.tInfo_0.length + this.tInfo_1.length);
-        //观众
-        let title_viewer: cc.Node = this.getChildNodeOrComponent('title_viewer');
-        let element: cc.Node = cc.instantiate(title_viewer);
-        element.parent = this.content;
-        element.active = true;
-        let text_ReportViewer = cc.find('Text_ReportViewer', element)
-        text_ReportViewer.getComponent(cc.Label).string = i18nMgr.Get(`adaptation${20052}`) + '(' + RoomersData.observersList.length + ')';
-        //Viewer_List
-        let _viewer_List: cc.Node = this.getChildNodeOrComponent('Viewer_List');
-        let viewer_List: cc.Node = cc.instantiate(_viewer_List);
-        viewer_List.parent = this.content;
-        viewer_List.active = true;
-        let item: any = this.getChildNodeOrComponent('item');
-        for (let index = 1; index < RoomersData.observersList.length; index++) {
-            const element = cc.instantiate(item);
-            element.parent = viewer_List
         }
-        for (let index = 0; index < RoomersData.observersList.length; index++) {
-            let tItem: cc.Node = viewer_List.children[index]
-            tItem.getChildByName('Text').getComponent(cc.Label).string = StringHelper.LengthNick(RoomersData.observersList[index].name);
-            if (RoomersData.observersList[index].avatar != "") {
-                let icon = cc.find('mask/icon', tItem);
-                WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
-            }
-            tItem.active = true;
-            cc.find("mask/ImageGray", tItem).active = (RoomersData.observersList[index].sex == 1);
-            // tItem.getChildByName("ImageGray").active = (RoomersData.observersList[index].sex == 1);
-
-            let watcherId = RoomersData.observersList[index].userRid;
-            // UIEventListener.Get(tItem).onClick = (go) => {
-            //     UIComponent.Instance.ShowUI(UIType.UITexasPlayerInfo, new object[] { watcherId, true });
-            // };
-        }
-        // let param = Web_Room_Center_Rooms.RequestParams
-        // param.room_ids = [GameCache.Instance.room_id];
-        // let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms(param)
-        // let roomsInfoData: any = await LobbyControl.getInstance().APIWebRoomCenterRooms({ room_ids: [GameCache.Instance.room_id] })
-        GC.data.lobby.reqRoomByIds([GameCache.Instance.room_id], (roomsInfoData) => {
-            cc.log('roomsInfoData====', roomsInfoData);
-            if (roomsInfoData.data.records.length == 0) textTitle.string = '';
+        UIClubModel.mInstance.APIOrgClubRoom(parms).then((roomsInfoData: any) => {
             roomsInfoData.data.records.forEach(item => {
                 if (item.rid == GameCache.Instance.room_id) {
                     if (item.start_time == null) {
-                        // textTitle.string = '';
                         return;
                     }
                     let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(item.start_time)
                     let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000
                     if (roomLeftTime > 0) {
                         this.mRoomLeaveTime = roomLeftTime;
-                        let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.RichText);
-                        textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
-                        this.ShowLeaveTimer(textTitle);
+                        let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.Label);
+                        textTitle.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
+                        this.ShowLeaveTimer();
                     }
                 }
-            });
+            })
         })
-
     }
-    ShowLeaveTimer(textTitle) {
-        // TimerComponent mTC = Game.Scene.ModelScene.GetComponent<TimerComponent>();
+
+    ShowLeaveTimer() {
         this.schedule(() => {
             if (this.mRoomLeaveTime >= 0 && this.node.isValid) {
                 this.mRoomLeaveTime--;
-                if (textTitle != null)
-                    textTitle.string = "<color=\"#E9BF80FF\">" + TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime) + "</color>";
+                if (this.text_Time != null)
+                    this.text_Time.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
             } else {
-                if (textTitle != null && !cc.isValid(this.node, true)) {
-                    textTitle.string = "00:00";
+                if (this.text_Time != null && !cc.isValid(this.node, true)) {
+                    this.text_Time.string = "00:00";
                 }
             }
         }, 1)
     }
     setInfos(objTemp, pDto, onLine) {
-        objTemp.getChildByName('Text_Name').getComponent(cc.RichText).string = StringHelper.LengthNick(this.colorText(onLine, pDto.nickName))
-        objTemp.getChildByName('Text_Num').getComponent(cc.RichText).string = this.colorText(onLine, pDto.hand + '')
-        objTemp.getChildByName('Text_All').getComponent(cc.RichText).string = this.colorText(onLine, StringHelper.getStringDiv100(pDto.bringIn))
-        objTemp.getChildByName('Text_All').getChildByName('Text_outChip').getComponent(cc.RichText).string = pDto.outChip != 0 ? StringHelper.getStringDiv100(pDto.outChip) : 0;
-        objTemp.getChildByName('Text_Count').getComponent(cc.RichText).string = StringHelper.getStringDiv100(pDto.score);
+        let color = cc.color().fromHEX('#7187FF')
+        let opactiy = 255
 
-        if (pDto.userId == GameCache.Instance.nUserId) {
-            objTemp.getChildByName('SelfGo').active = true;
-        } else {
-            // let a = onLine ? 255 : 125;
-            // if (pDto.score > 0) {
-            //     objTemp.getChildByName('Text_Count').color = cc.color(184, 43, 48, a);
-            // }
-            // else if (pDto.score < 0)
-            //     objTemp.getChildByName('Text_Count').color = cc.color(66, 200, 113, a);
+
+
+
+        // if (!onLine) {
+        //     color = cc.color().fromHEX('#FFFFFF')
+        //     opactiy = 255 * 0.4
+        //     objTemp.getChildByName('Text_Count').color = color
+        //     objTemp.getChildByName('Text_Count').opactiy = opactiy
+        // }
+        // else 
+        {
+            if (pDto.userId == GameCache.Instance.nUserId) {
+                color = cc.color().fromHEX('#7187FF')
+
+            } else {
+                color = cc.color().fromHEX('#EEF5FF')
+            }
+
+            objTemp.getChildByName('Text_Count').color = pDto.score >= 0 ? cc.color().fromHEX('#B0FFAE') : cc.color().fromHEX('#FF7C7C')
+            objTemp.getChildByName('Text_Count').opactiy = opactiy
+
         }
+        objTemp.getChildByName('Text_Name').color = color
+        objTemp.getChildByName('Text_Num').color = color
+        objTemp.getChildByName('Text_All').color = color
+        objTemp.getChildByName('Text_All1').color = color
+
+        objTemp.getChildByName('Text_Name').opactiy = opactiy
+        objTemp.getChildByName('Text_Num').opactiy = opactiy
+        objTemp.getChildByName('Text_All').opactiy = opactiy
+        objTemp.getChildByName('Text_All1').opactiy = opactiy
+
+
+
+        objTemp.getChildByName('Text_Name').getComponent(cc.Label).string = StringHelper.LengthNick(pDto.nickName)
+        objTemp.getChildByName('Text_Num').getComponent(cc.Label).string = pDto.hand + ''
+        objTemp.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn)
+        let outChip = pDto.outChip != 0 ? StringHelper.GetLongString(pDto.outChip) : 0;
+        objTemp.getChildByName('Text_All1').getComponent(cc.Label).string = '(' + outChip + ')'
+        objTemp.getChildByName('Text_Count').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.score);
+        objTemp.getChildByName('own').active = pDto.userId == GameCache.Instance.nUserId;
+
+
     }
-    colorText(onLine, str) {
-        let tt = "";
-        if (onLine) {
-            tt = str //"<color=\"#E9BF80FF\">" + str + "</color>";
-        }
-        else {
-            tt = str // "<color=\"#E9BF807D\">" + str + "</color>";
-        }
-        return tt;
-    }
-
-    initUI() {
-        this.btnShowProblem = this.getChildNodeOrComponent('BtnShowProblem');
-        this.btnShowProblem.on('click', this.btnShowProblemClick, this)
-        this.imageMaskClose = this.getChildNodeOrComponent('ImageMaskClose');
-        this.imageMaskClose.on('click', this.imageMaskCloseClick, this)
-        let insurancePool: any = this.getChildNodeOrComponent('InsurancePool');
-        if (GameCache.Instance.CurGame != null && !GameCache.Instance.CurGame.insurance) {
-            insurancePool.active = false;
-        }
-        let textTitle = this.getChildNodeOrComponent('Title').getComponent(cc.Label);
-        textTitle.string = ''
-
-        let Text_Time = this.getChildNodeOrComponent('Text_Time').getComponent(cc.RichText);
-        Text_Time.string = '';
-    }
-
     btnShowProblemClick() {
         UIComponent.close(this.UIDefine);
         UIComponent.open(UIDefine.UITexasRule, null, { parentUI: this.node.parent });
     }
     imageMaskCloseClick() {
+        this.unscheduleAllCallbacks();
         UIComponent.close(this.UIDefine);
+    }
 
-    }
-    onShow(param?: any): void {
-        super.onShow();
-        this.initUI();
-        this.RequestRoomers();
-    }
 
 }

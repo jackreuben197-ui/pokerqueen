@@ -580,10 +580,10 @@ export default class UIMine_Poker extends BaseForm {
 
         let lbl_4 = panel_top_1.getChildByName("lbl_4").getComponent(cc.Label);
         if (ante > 0) {
-            lbl_2.string = blind.toString() + "/" + (blind * 2).toString() + "(" + ante.toString() + ")";
+            lbl_2.string = StringHelper.GetLongString(blind) + "/" + StringHelper.GetLongString(blind * 2).toString() + "(" + ante.toString() + ")";
         }
         else {
-            lbl_2.string = blind.toString() + "/" + (blind * 2).toString();
+            lbl_2.string = StringHelper.GetLongString(blind).toString() + "/" + StringHelper.GetLongString(blind * 2).toString();
         }
         lbl_3.string = playerNum.toString();
         lbl_4.string = roomId + "-" + handNum;
