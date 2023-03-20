@@ -78,6 +78,7 @@ export default class HttpClient {
                             }
                             break;
                         case 90003:
+                        case 20038:
                             ToastManager.Instance.createToast(response_json.message);
                             break;
                         default:

@@ -102,6 +102,26 @@ export class GameCache {
     /// 当前客户端的ip地址，在牌局内坐下带入时要用到
     /// </summary>
     public client_ip: string = "";
+
+    /// 用户限制类型 0，1,不限制，2 除巴西 外其他国家注册账号，
+    /// </summary>
+    public UserlimitType: number = 2;
+    /// <summary>
+    /// VIP 0 否 ，1 是 
+    /// </summary>
+    public Vip: number = 0;
+    /// <summary>
+    /// VIP到期时间
+    /// </summary>
+    public vip_endtime: string = null;
+    /// <summary>
+    /// 是否有公会
+    /// </summary>
+    public isHadClub: boolean = false;
+    /// <summary>
+    /// 是否已经有过人脸验证
+    /// </summary>
+    public isSaveFace: boolean = false;
     /// <summary>
     /// 房间名称
     /// </summary>
@@ -282,9 +302,14 @@ export class GameCache {
     public gold_type: number = 0;//
 
 
-    public limit_bring_in: number = null  //是否开启带入  0/1
-    public invitation_code: any = null  //邀请码  
+    //public limit_bring_in: number = null  //是否开启带入  0/1
+    //public invitation_code: any = null  //邀请码  
     public friendBringInStatus: number = 0; // 朋友桌带入申请的状态
+
+    public FriendsTableCode: string = null;//朋友桌邀请码
+    public FriendsTableLimitBringIn: boolean = false;//朋友桌公会桌是否控制带入
+
+
 
     public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
 
@@ -326,10 +351,13 @@ export class GameCache {
         GameCache.Instance.voiceprint_verify_duration = room_info.voiceprint_verify_duration;
         GameCache.Instance.origin_type = room_info.origin_type || 0;
         GameCache.Instance.share_table = room_info.share_table || 0;
-        GameCache.Instance.limit_bring_in = room_info.limit_bring_in || 0
-        GameCache.Instance.invitation_code = room_info.invitation_code;
+        //GameCache.Instance.limit_bring_in = room_info.limit_bring_in || 0
+        //GameCache.Instance.invitation_code = room_info.invitation_code;
         GameCache.Instance.gold_type = room_info.gold_type || 0;
         GameCache.Instance.anti_cheat_type = room_info.anti_cheat_type || 0;
+
+        GameCache.Instance.FriendsTableCode = room_info.invitation_code;
+        GameCache.Instance.FriendsTableLimitBringIn = room_info.limit_bring_in > 0;
 
         console.log("GameCache.Instance.gold_type", room_info.gold_type);
     }

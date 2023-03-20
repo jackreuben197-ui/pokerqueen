@@ -161,7 +161,7 @@ export default class SliderPlus extends cc.Component {
             value = l.y;
         }
 
-        console.log(value, this.min);
+        //console.log(value, this.min);
 
         if (value < this.min) value = Math.max(this.min, value);
         if (value > this.max) value = Math.min(this.max, value);
@@ -169,7 +169,7 @@ export default class SliderPlus extends cc.Component {
 
         let count = this.getCount(value);
 
-        console.log(count);
+        //console.log(count);
 
         let curr_value = this.data.min_value + count * this.data.step;
 
@@ -208,7 +208,7 @@ export default class SliderPlus extends cc.Component {
         this.initData(data);
     }
     initData(data: data_type) {
-
+        this.bar_offset = this.min;
         this.refreshValueLabel(this.data.min_value);
         if (data.min_value == data.max_value) {
             return;

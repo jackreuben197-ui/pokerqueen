@@ -62,6 +62,10 @@ export class SeatFSM {
         this.seat.uirc.imageRecyclingWinChip.node.active = false;
         // Image_OtherWinner.gameObject.SetActive(false);
         this.seat.uirc.WaitforthenextmoveTips.node.active = false;
+
+
+        this.seat.uirc.TextRequesting.node.active = false;
+
         this.seat.FoldHeadGray(false);
 
         this.seat.StopAllActions();
@@ -99,6 +103,7 @@ export class SeatFSM {
         this.seat.UpdateHead();
         this.seat.UpdateNickName();
         this.seat.UpdateCoin();
+        this.seat.UpdateRequesting();
         //this.seat.UpdateHolding();
         this.seat.UpdateCurRoundHaveBet();
         this.seat.UpdateCards();
@@ -140,6 +145,7 @@ export class SeatFSM {
         this.seat.UpdateHead();
         //this.seat.UpdateNickname();
         this.seat.UpdateCoin();
+        this.seat.UpdateRequesting();
         this.seat.uirc.imageHeadFrame.node.active = true;
         this.seat.uirc.imageEmpty.node.active = false;
     }
@@ -502,6 +508,7 @@ export class SeatFSM {
     //#region 带入
     public AddChipsEnter(): void {
         this.seat.UpdateCoin();
+        this.seat.UpdateRequesting();
         //this.seat.UpdateHolding();
     }
     public AddChipsExecute(): void {

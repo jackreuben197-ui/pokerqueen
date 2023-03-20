@@ -54,7 +54,9 @@ export class CPlayer {
     public Sponsor_rid: string = null;//发起声纹验证人的id
     public UpdateStateTime: number = 0;//声纹改变状态的时间
 
-
+    public isVip: number = 0;//（0否、1是）
+    public KeepSeatLeftTime: number = 0;//申请带入留坐时间
+    public keepSeatReason: number = 0;//留坐原因 
     /// <summary>
     /// 当前玩家藏钱缓存
     /// </summary>
@@ -172,6 +174,11 @@ export class CPlayer {
         this.Sponsor_name = null;
         this.Sponsor_rid = null;
         this.UpdateStateTime = 0;
+
+        this.isVip = 0;
+        //this.ChannelId = string.Empty;
+        this.KeepSeatLeftTime = 0;
+
     }
 
 }

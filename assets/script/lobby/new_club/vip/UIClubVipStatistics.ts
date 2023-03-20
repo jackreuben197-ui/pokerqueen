@@ -6,8 +6,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { Web_Club_Agent_Friend_Data, Web_Club_Agent_Friend_Info, WWW } from "../../../net/https/WebRequest";
-import GGCombobox from "../../../ui/component/GGCombobox";
+import { Web_Club_Agent_Friend_Data, Web_Club_Agent_Friend_Info, Web_GuildDataVipInfo, WWW } from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 //贵宾统计
@@ -51,18 +50,12 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         { show: "6+", index: 3 },
         { show: "MTT", index: 4 }
     ];
-    //gold_type 1-金豆,2-USDT，4-记分牌
+    //filter_type 1 金豆（UC） 2 USDT（GC） 3 记分牌（chip）
     Com_Gold_List = [
-        { show: "UIGuild_CoinType2", index: 0, gold_type: 1 },
-        { show: "UIGuild_CoinType3", index: 1, gold_type: 2 },
-        { show: "UIGuild_CoinType1", index: 2, gold_type: 4 },
+        { show: "UIGuild_CoinType1", index: 0, filter_type: 3 },
+        { show: "UIGuild_CoinType2", index: 1, filter_type: 1 },
+        { show: "UIGuild_CoinType3", index: 2, filter_type: 2 },
     ];
-
-
-    // UIGuild_CoinType1=Chip
-    // UIGuild_CoinType2=UC
-    // UIGuild_CoinType3=GC
-
 
     request_quene: any[] = [];
 
@@ -86,8 +79,8 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         //初始化界面
         ////////////////////////////////////////////////////
         this.RefreshHeader([param.user.avatar, param.user.nickname, param.user.random_id, param.user_level]);
+        this.reset();
         this.reqAgentFriendInfo();
-
     }
     fadeInComplete() {
         super.fadeInComplete();
@@ -96,8 +89,8 @@ export default class UIClubVipStatistics extends BaseFormPlus {
 
     reset() {
         this.gold_index = 0;
-        this.gameTypeTabs.reset(-1);
         this.refreshDownListLabel();
+        this.gameTypeTabs.reset(-1);
     }
     refreshDownListLabel() {
         this.cc_Label$down_list.string = i18nMgr.Get(this.Com_Gold_List[this.gold_index].show);
@@ -145,13 +138,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         this.RefreshDetailItem(this.$Detail.getChildByName("Item2"), [a_4.total_game_cnt, a_1.total_game_cnt, a_2.total_game_cnt]);
         this.RefreshDetailItem(this.$Detail.getChildByName("Item3"), [a_4.total_profit, a_1.total_profit, a_2.total_profit]);
     }
-    ////////////////////////////////////
-    executeQuene() {
-        if (this.request_quene.length) {
-            let request = this.request_quene.shift();
-            request.call(this, this.executeQuene);
-        }
-    }
+    ///////////////////////////////////
     //Web_Club_Agent_Friend_Info
     //Web_Club_Agent_Friend_Data
     //////////////////////////////////////////////请求
@@ -171,7 +158,8 @@ export default class UIClubVipStatistics extends BaseFormPlus {
             (res: any) => {
 
                 this.RefreshUICount([res.data.data.user_num, res.data.data.gold_total / 100, res.data.data.usdt_total / 100]);
-                this.gameTypeTabs.reset(0);
+                //this.gameTypeTabs.reset(0);
+                this.reqAgentFriendData(0);
             },
             (res: any) => {
 
@@ -179,25 +167,49 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         )
     }
     // -> 请求贵宾统计数据
-    reqAgentFriendData(game_type: number = 0) {
+    reqAgentFriendData(filter_index: number = 0) {
+        let filter_type = this.Com_Gold_List[filter_index].filter_type;
+        // WWW.Instance.CommonAPI(
+        //     {
+        //         web_class: Web_Club_Agent_Friend_Data,
+        //         body: {
+        //             "club_id": ClubCache.club_id,
+        //             "user_id": this._param.user.user_id,
+        //             "game_type": game_type,//游戏类型 0-all,1-NLH，2-PLO，3-6+ 4MTT
+        //             "time_long": TimeHelper.Now,
+        //             "start_time": 0,
+        //             "end_time": 0,
+        //         },
+        //         //club_id: ClubCache.club_id
+        //     }
+        // ).then(
+        //     (res: any) => {
+        //         //UIComponent.Instance.Toast("成功解除绑定");
+        //         this.currData = res.data.data;
+        //         this.refreshFriendData();
+        //     },
+        //     (res: any) => {
+
+        //     }
+        // )
+
         WWW.Instance.CommonAPI(
             {
-                web_class: Web_Club_Agent_Friend_Data,
+                web_class: Web_GuildDataVipInfo,
                 body: {
-                    "club_id": ClubCache.club_id,
-                    "user_id": this._param.user.user_id,
-                    "game_type": game_type,//游戏类型 0-all,1-NLH，2-PLO，3-6+ 4MTT
-                    "time_long": TimeHelper.Now,
-                    "start_time": 0,
-                    "end_time": 0,
+                    user_id: this._param.user.user_id,//用户id
+                    filter_type: filter_type,// 1 金豆（UC） 2 USDT（GC） 3 记分牌（chip）
+                    time_long: TimeHelper.Now,//时间戳
+                    start_time: 0,//开始时间戳
+                    end_time: 0,//结束时间戳
                 },
-                //club_id: ClubCache.club_id
+                club_id: ClubCache.club_id
             }
         ).then(
             (res: any) => {
-                //UIComponent.Instance.Toast("成功解除绑定");
-                this.currData = res.data.data;
-                this.refreshFriendData();
+
+                //this.currData = res.data.data;
+                //this.refreshFriendData();
             },
             (res: any) => {
 
@@ -215,7 +227,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         })
         //////////////////////////////////
         if (index == -1) return;
-        this.reqAgentFriendData(index);
+        //this.reqAgentFriendData(index);
     }
 
     //选择器点击

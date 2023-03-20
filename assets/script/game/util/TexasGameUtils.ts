@@ -288,7 +288,10 @@ export default class TexasGameUtils {
         GameCache.Instance.bet_type = 0;
 
         GameCache.Instance.origin_type = 0;
-        GameCache.Instance.invitation_code = null;
+
+        GameCache.Instance.FriendsTableCode = null;
+        GameCache.Instance.share_table = 0;
+
         // GameCache.Instance.share_table = 0;
         // GameCache.Instance.limit_bring_in = 0
 

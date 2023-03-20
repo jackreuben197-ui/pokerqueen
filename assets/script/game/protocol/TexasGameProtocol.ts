@@ -1,5 +1,3 @@
-import internal = require("stream");
-import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
@@ -7,7 +5,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
-import { Broadcast, BroadcastCode, BroadcastMsg, ServerMessageRoomBringInApply } from "../../net/websocket/ProtocolHoldemMessages";
+import { BringInApplyMsg, Broadcast, BroadcastCode, BroadcastMsg } from "../../net/websocket/ProtocolHoldemMessages";
 import { Def, Operator, PlayerCards, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
@@ -50,8 +48,6 @@ import { TexasGameState } from "../TexasGameState";
 import UIAgreeSecondPcsComponent from "../ui/UIAgreeSecondPcsComponent";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
-//import UIInsuranceComponent, { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
-import UIOperationComponent from "../ui/UIOperationComponent";
 import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 
@@ -154,6 +150,8 @@ export default class TexasGameProtocol {
         mPlayer.cards = this.game.GetEmptyHandCards();
         mPlayer.HunterHeadValue = rec.hunterHeadValue;
         mPlayer.HunterKillAwardOther = rec.hunterKillAwardOther;
+        mPlayer.isVip = rec.vip;
+        mPlayer.KeepSeatLeftTime = rec.keepSeatLeftTime;
         mSeat.Player = mPlayer;
         mSeat.isBank = false;
         mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
@@ -175,7 +173,7 @@ export default class TexasGameProtocol {
         this.game.mainPlayer.leavelChips = rec.accountChips;
         // GameCache.Instance.gold = rec.accountChips;
         GC.data.user.info.gold = rec.accountChips;
-        
+
         this.game.mainPlayer.cacheStoreChips = rec.storeChips;
 
         this.game.mainPlayer.actionStatus = Def.Action.NONE;
@@ -184,6 +182,11 @@ export default class TexasGameProtocol {
         this.game.mainPlayer.ante = 0;
         this.game.mainPlayer.anteNumber = 0;
         this.game.mainPlayer.cards = this.game.GetEmptyHandCards();
+
+        this.game.mainPlayer.KeepSeatLeftTime = rec.keepSeatLeftTime;
+        if (rec.keepSeatLeftTime > 0) {
+            UIComponent.Instance.Toast(i18nMgr.Get("UITexas_FriendtableapplyBringinTips001") + rec.keepSeatLeftTime + "s");
+        }
 
         let mSeat: Seat = null;
         mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.recvSeatId));
@@ -216,6 +219,12 @@ export default class TexasGameProtocol {
         if (mSeat.ClientSeatId > 0) {
             this.game.ResetSeatUIInfo(mSeat.ClientSeatId);
         }
+
+        if (GameCache.Instance.Vip == 1) {
+            //ShowVipSeatDownTips(GameCache.Instance.nick);
+        }
+        //JudgeOnAudioVideoAndJoinChannel();
+
         //房间坐下时时添加firebase事件触发
         // Dictionary < string, string > paramMap = new Dictionary<string, string>();
         // paramMap.Add("game_type", GameCache.Instance.game_type + "");//游戏类型
@@ -461,6 +470,15 @@ export default class TexasGameProtocol {
         if (null == mSeat) {
             return;
         }
+
+        mSeat.Player.keepSeatReason = rec.keepSeatReason;
+
+        if (rec.keep && rec.keepSeatReason == Def.KeepSeatReason.KSR_TAKE_SEAT) {
+            mSeat.Player.KeepSeatLeftTime = rec.leftTime;
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+            return;
+        }
+
         if (rec.keep) {
             mSeat.keepSeatLeftTime = rec.leftTime - 5;//由于留座消息下发时间是每手结束，需要在清理桌面时才显示留座，中间间隔五秒。
             mSeat.Player.canPlayStatus = Def.CanPlayStatus.KEEP_SEAT;
@@ -1495,7 +1513,7 @@ export default class TexasGameProtocol {
         if (rec == null) {
             return;
         }
-
+        console.log("ProtocolHoldemGetMsgHandler :: ", rec);
         let json = Buffer.from(rec.extra.toString(), 'base64').toString();
         let responseData = Broadcast.Response(json);
         let code: number = responseData.code;
@@ -1531,22 +1549,24 @@ export default class TexasGameProtocol {
                 //         break;
                 // }
                 break;
-            case BroadcastCode.Friend_BringIn://朋友桌申请结果
-                let bringInData = ServerMessageRoomBringInApply.Response(data);
-                switch (bringInData.status) {
-                    case 1:
-                        //缺少多语言
-                        UIComponent.Instance.Toast("有玩家请求带入申请");
-                        GameCache.Instance.CurGame.uirc.ShowBringIn();
-                        break;
-                    case 2:
-                        UIComponent.Instance.Toast("房主已通过您的带入申请");
-                        break;
-                    case 3:
-                        UIComponent.Instance.Toast("房主拒绝了您的申请");
-                        break;
+            case BroadcastCode.SeatFriendBringInApply://朋友桌申请带入
+            case BroadcastCode.SeatClubBringInApply://公会桌申请带入
+                var BringInApplyData = BringInApplyMsg.Response(responseData.data);
+                if (BringInApplyData.status == 2) {
+                    UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips003");
+                }
+                else if (BringInApplyData.status == 3) {
+                    UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips002");
+                }
+                else if (BringInApplyData.status == 1) {
+                    UIComponent.Instance.ToastLanguage("UITexas_FriendtableapplyBringinTips001");
                 }
                 break;
+            case BroadcastCode.SeatFriendApplyRefreshMsgNum:
+            case BroadcastCode.SeatClubApplyRefreshMsgNum:
+                this.game.UpdateMsgBtnSprite();
+                break;
+
             default:
                 break;
         }
@@ -1565,6 +1585,9 @@ export default class TexasGameProtocol {
             let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(playerChipChange.seatId));
             if (null == mSeat) return;
             mSeat.Player.chips = playerChipChange.chips;
+            if (playerChipChange.chips > 0) {
+                mSeat.Player.KeepSeatLeftTime = -1;
+            }
             mSeat.Player.MttHunterKillAwardOtherPlus += playerChipChange.mttHunterHeadPlus;
             if (this.game.mainPlayer.seatID == this.game.GetLocalSeatID(playerChipChange.seatId)) {
                 if (playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE1 || playerChipChange.reason == Def.ChipChangeReason.CC_MTT_ADD_ON_PLUS_MODE2) {

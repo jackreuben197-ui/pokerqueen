@@ -8,6 +8,7 @@ import { UIMineModel } from "../lobby/UIMineModel";
 import { Web_User_Room_Bringin, WWW } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { Def } from "../protobuf/holdem/define_pb";
 import { ClientMessageKeepSeatActive } from "../protobuf/holdem/req_keep_seat_active_pb";
 import { ClientMessageShowdown } from "../protobuf/holdem/req_showdown_pb";
 import UIDialogComponent, { UIDialogParam } from "../ui/dialog/UIDialogComponent";
@@ -58,7 +59,7 @@ export default class SeatUIRC extends UIBase {
     Nick_Coin: cc.Node = null;
     Text_Coin: cc.Label = null;
     Text_NickName: cc.Label = null;
-
+    TextRequesting: cc.Label = null;//带入申请提示中
 
 
 
@@ -150,6 +151,7 @@ export default class SeatUIRC extends UIBase {
 
         this.Text_Coin = this.getChildNodeOrComponent("Text_Coin", cc.Label);
         this.Text_NickName = this.getChildNodeOrComponent("Text_NickName", cc.Label);
+        this.TextRequesting = this.getChildNodeOrComponent("TextRequesting", cc.Label);
 
         this.WaitforthenextmoveTips = this.getChildNodeOrComponent("WaitforthenextmoveTips", cc.Label);
 
@@ -222,7 +224,26 @@ export default class SeatUIRC extends UIBase {
         // this.voiceprintList.Add(VoiceprintVoting);
 
     }
+    protected update(dt: number): void {
+        //刷新带入申请中倒计时
 
+        if (this.seat?.Player && this.seat.Player.KeepSeatLeftTime > 0) {
+
+            this.seat.Player.KeepSeatLeftTime -= dt;
+
+            let int_left_time = Math.ceil(this.seat.Player.KeepSeatLeftTime);
+
+            this.TextRequesting.string = `${i18nMgr.Get("UITEXAS_PLAYERSEATDOWNTIPS01")}${int_left_time}s`;
+
+            if (int_left_time <= 0) {
+                this.seat.Player.KeepSeatLeftTime = -1;
+                //this.seat.UpdateRequesting();
+                this.TextRequesting.string = "";
+            }
+
+        }
+
+    }
 
     protected regiterTouchEvents(): void {
         for (let i = 0; i < this.imageCards.length; i++) {
