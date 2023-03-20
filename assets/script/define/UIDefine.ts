@@ -739,7 +739,7 @@ export const UIDefine = {
         Name: "UIClubVipStatistics",
         Bundle: null,
         Path: "main/new_club/vip/UIClubVipStatistics",
-        Title: "Agent statistics"
+        Title: "UIGuild_MemberDetails_VipCount"
     },
     //绑定贵宾
     UIAgentLink: {
@@ -762,6 +762,7 @@ export const UIDefine = {
         Name: "UIClubVipOffline",
         Bundle: null,
         Path: "main/new_club/vip/UIClubVipOffline",
+        Title: "UIGuild_MemberDetails_VipManager"
     },
 
     //贵宾管理
