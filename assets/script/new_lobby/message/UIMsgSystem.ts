@@ -47,6 +47,7 @@ export default class UIMsgSystem extends BaseFormPlus {
                 let item_node = this.item_pool.GetNode();
                 let item_sc = item_node.getComponent(ItemMsgSystem);
                 item_node.parent = this.$content;
+                item_sc.index = 9;
                 item_sc.onShow({ data: item, type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1 });
             })
         } else {

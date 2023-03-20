@@ -83,8 +83,6 @@ export default class UIClubHome extends BaseForm {
         this.initCoin();
         this.initChessView();
         this.initRedTip()
-
-
     }
     async initRedTip() {
         await UIClubModel.mInstance.APIMessageRed_num()

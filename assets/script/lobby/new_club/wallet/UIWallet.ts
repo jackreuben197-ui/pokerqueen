@@ -242,6 +242,9 @@ export default class UIWallet extends BaseFormPlus {
 
         this.showEX();
 
+        //刷红点位置
+        this.scheduleOnce(() => { this.$red.getComponent(cc.Widget).updateAlignment(); }, 0);
+
     }
     //刷新红点
     private refreshRed() {
@@ -532,7 +535,7 @@ export default class UIWallet extends BaseFormPlus {
         this.executeQuene();
     }
     //请求公积金申请列表
-    reqApplyList() {
+    reqApplyList(next: Function = null) {
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_Club_Fund_ApplyList,
@@ -547,6 +550,7 @@ export default class UIWallet extends BaseFormPlus {
         ).then(
             (res: any) => {
                 this.refreshApplyList(res);
+                next?.call(this);
             },
             (res: any) => {
 
@@ -599,13 +603,33 @@ export default class UIWallet extends BaseFormPlus {
             }
         ).then(
             (res: any) => {
-                this.reqApplyList();
+                this.reqApplyList(this.reqApplyReddot);
             },
             (res: any) => {
 
             }
         )
     }
+    //请求申请红点
+    reqApplyReddot() {
+        WWW.Instance.CommonAPI(
+            {
+                web_class: APIMessageRed_num,
+
+                body: { club_id: ClubCache.club_id },
+
+                club_id: ClubCache.club_id
+            }
+        ).then(
+            (res: any) => {
+                this.refreshRed();
+            },
+            (res: any) => {
+
+            }
+        )
+    }
+
     // ordet_type转换 1充值 2提取 4转换
     transformOrderType(index: number): number {
         if (index == 0) return 1;
