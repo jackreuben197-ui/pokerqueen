@@ -57,6 +57,7 @@ export default class UITexasReportComponent extends UIBase {
     data_content: cc.Node = null;
     people_content: cc.Node = null;
     peopelNum: cc.Label = null;
+    line: cc.Node = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.text_Time = this.getChildNodeOrComponent('Text_Time', cc.Label);
@@ -64,7 +65,7 @@ export default class UITexasReportComponent extends UIBase {
         this.data_content = this.getChildNodeOrComponent('data_content');
         this.people_content = this.getChildNodeOrComponent('people_content');
         this.peopelNum = this.getChildNodeOrComponent('peopelNum', cc.Label);
-
+        this.line = this.getChildNodeOrComponent('Line');
 
     }
     protected regiterDispatchEvent(): void {
@@ -115,7 +116,14 @@ export default class UITexasReportComponent extends UIBase {
 
             let icon = tItem.getChildByName('icon')
             WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
+            tItem['user_id'] = RoomersData.observersList[index].userRid
+            this.bindClick(tItem, () => {
+                UIComponent.open(UIDefine.UITexasReportPlayerInfo, [tItem['user_id'], false, null]);
+
+            })
+
         }
+        this.line.active = RoomersData.playersList.length != 0
         for (let i = 0; i < RoomersData.playersList.length; i++) {
             let tSignPlayer = new ReportPlayer();
             tSignPlayer.userId = RoomersData.playersList[i].userRid;

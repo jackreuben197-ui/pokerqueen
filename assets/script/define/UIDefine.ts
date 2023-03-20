@@ -380,6 +380,12 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/ui/UITexasPlayerInfo",
     },
+    UITexasReportPlayerInfo: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasReportPlayerInfo",
+        Bundle: 'texas',
+        Path: "prefab/widgetLayer/UITexasReportPlayerInfo",
+    },
 
     UITexasInsuranceComponent: {
         UIType: UIType.CommonUI,
