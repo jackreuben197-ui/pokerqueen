@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "ced5c19b-e5fe-4bb4-904c-7f21a5583d3a",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2689,
+  "platformSettings": {},
+  "subMetas": {
+    "朋友桌 公会内部桌": {
+      "ver": "1.0.6",
+      "uuid": "dcc6095e-a546-496c-8c8e-ba4855acedf1",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ced5c19b-e5fe-4bb4-904c-7f21a5583d3a",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2689,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

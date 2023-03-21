@@ -9,6 +9,7 @@ import ProcedureManager from "../manager/ProcedureManager";
 import { Pre_Login_Define, Pre_Login_Main_Define } from "../manager/ResManager";
 import SceneManager from "../manager/SceneManager";
 import GlobalSession from "../session/GlobalSession";
+import LobbySession from "../session/LobbySession";
 import LoginSession from "../session/LoginSession";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import ProcedureBase from "./ProcedureBase";
@@ -51,7 +52,8 @@ export default class ProcedureEnterLobby extends ProcedureBase {
     //2.用户信息请求
     SyncUserInfo() {
         cc.log("登陆步骤2 ------>SyncUserInfo")
-        return LoginSession.SyncUserInfo();
+        return LobbySession.APIUserInfo();
+        //LoginSession.SyncUserInfo();
     }
     //3.websocket port
     SyncWS() {

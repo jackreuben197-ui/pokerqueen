@@ -388,7 +388,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Scroller",
+    "_name": "cc_ScrollView$list",
     "_objFlags": 0,
     "_parent": {
       "__id__": 9
@@ -1093,7 +1093,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 101.38,
+      "width": 16.33,
       "height": 57.96
     },
     "_anchorPoint": {
@@ -1176,7 +1176,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        986.525,
+        975.698,
         0,
         0,
         0,
@@ -1661,8 +1661,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "2022",
-    "_N$string": "2022",
+    "_string": "-",
+    "_N$string": "-",
     "_fontSize": 46,
     "_lineHeight": 46,
     "_enableWrapText": true,

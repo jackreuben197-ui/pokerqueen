@@ -158,20 +158,19 @@ export default class UIMeSettings extends BaseFormPlus {
     }
 
     click_layout() {
-
-        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent, {
-            type: UIDialogComponent.DialogType.CommitCancel,
-            title: "退出登录",
-            content: '是否退出登录?',
-            contentCommit: "确定",
-            contentCancel: "取消",
-            actionCommit: () => {
-                GlobalSession.Logout();
-            },
-            noAnimation: true,
-        });
+        GlobalSession.Logout();
+        // UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent, {
+        //     type: UIDialogComponent.DialogType.CommitCancel,
+        //     title: "退出登录",
+        //     content: '是否退出登录?',
+        //     contentCommit: "确定",
+        //     contentCancel: "取消",
+        //     actionCommit: () => {
+        //         GlobalSession.Logout();
+        //     },
+        //     noAnimation: true,
+        // });
     }
-
     sound_change() {
 
     }
