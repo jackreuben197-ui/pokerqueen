@@ -3,7 +3,7 @@
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-15 19:18:29
+ * @LastEditTime: 2023-03-21 16:14:59
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 
@@ -200,7 +200,8 @@ export default class UIFriendMatch extends UIBase {
         }
     }
     openMessageList() {
-        UIComponent.open(UIDefine.UIMyMessage, { from: 0 });
+        UIComponent.open(UIDefine.UIMsgBring, { from: 0, name: 'UIClub_RoomSitApplyRecords_title' });
+        // UIComponent.open(UIDefine.UIMsgBring, { from: 0 });
     }
     // update (dt) {}
 }

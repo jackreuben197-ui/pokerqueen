@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-17 17:55:25
+ * @LastEditTime: 2023-03-21 16:25:28
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -429,6 +429,7 @@ export default class UIClubCreateMatch extends BaseForm {
     }
     initTabNode() {
         this.sr_zw.active = ClubCache.joinCreateMatchType == 2
+        this.sryy.active = true
         this.tabNode.initData(createMatchTabConfig, (customData) => {
             this._selectTitle = customData
             this.initDiamond();

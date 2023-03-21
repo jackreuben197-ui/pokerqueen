@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-12-19 15:49:57
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-03-21 16:09:06
+ * @FilePath: /pokerqueen/assets/script/lobby/view/PlayViewItem.ts
+ */
 import LobbyRoomListItem from "../../frame/data/lobby/LobbyRoomListItem";
 import TimeHelper from "../../helper/TimeHelper";
 import UIBase from "../../ui/UIBase";
@@ -47,7 +55,7 @@ export default class PlayViewItem extends UIBase {
         }
         let textTitle = this.getComponent(cc.Label);
         if (textTitle != null && cc.isValid(this.node, true)) {
-            textTitle.string = `${this.getTime(data)}/${this.getTime(data)}`
+            textTitle.string = data / 3600 + ' h'
         }
     }
 
