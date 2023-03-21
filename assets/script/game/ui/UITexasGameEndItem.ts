@@ -40,7 +40,7 @@ export default class UITexasGameEndItem extends UIBase {
         this.Image_BaseBg = this.getChildNodeOrComponent("Image_BaseBg");
 
     }
-    onShow(param?: typeof Web_User_Room_Settle_Detail.UsersInfo): void {
+    onShow(param?: any): void {
         super.onShow(param);
         this.MemberNumTxt.string = `${this.index}`;
         this.MemberNameTxt.string = StringHelper.LengthNick(param.nick_name);
@@ -66,7 +66,7 @@ export default class UITexasGameEndItem extends UIBase {
         let value = + this.MemberScoreTxt.string;
         this.MemberScoreTxt.node.color = value < 0 ? CommonDefine.Text_Yellow_Color : CommonDefine.Text_Green_Color;
     }
-    get param(): typeof Web_User_Room_Settle_Detail.UsersInfo {
+    get param(): any {
         return this._param;
     }
 

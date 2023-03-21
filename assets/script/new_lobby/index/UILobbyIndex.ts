@@ -1,5 +1,6 @@
 import SimpleNodePool from "../../common/MyNodePool";
 import { UIDefine } from "../../define/UIDefine";
+import { ClubCache } from "../../frame/data/club/ClubCache";
 import { GameCache } from "../../game/GameCache";
 import GameUtil, { GameEnterType, GameType, PokerType } from "../../game/util/GameUtil";
 import { StringHelper } from "../../helper/StringHelper";
@@ -195,6 +196,7 @@ export default class UILobbyIndex extends UIBasePlus {
 
     async reqLanguageTemplete() {
         await LobbySession.APIConfig_Multi_Language_Template();
+        //await LobbySession.APIUserInfo();
         this.reqRooms();
     }
 
@@ -270,11 +272,18 @@ export default class UILobbyIndex extends UIBasePlus {
         }
     }
     onRoomClick(button: cc.Button) {
+
+        if (!GameCache.Instance.hasClub) {
+            UIComponent.Instance.ToastLanguage("UIGuides_clubetips");
+            return;
+        }
+
         let room = button.node["room"];
         if (room.private_room != 1) {
             GameUtil.EnterRoomAPI(room, { game_enter_type: GameEnterType.Lobby });
             return;
         }
+
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_Guild_AdminHas,

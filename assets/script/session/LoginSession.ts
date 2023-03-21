@@ -97,24 +97,6 @@ export default class LoginSession {
         });
     }
     /**
-     * 用户信息请求
-     */
-    static async SyncUserInfo() {
-        return new Promise((resolve, reject) => {
-            HttpRequest.Send({
-                request: Web_User_Info,
-                onSuccess: function () {
-                    this.CacheUserInfo(Web_User_Info.Response.data.user);
-                    resolve(Web_User_Info.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this)
-            });
-        });
-    }
-
-    /**
      * socket port 请求
      */
     static async SyncChannel() {
@@ -237,26 +219,6 @@ export default class LoginSession {
     }
     //////////////////////////////////////////////////////////////////////////////
 
-    //缓存用户信息
-    public static CacheUserInfo(info: typeof Web_User_Info.UserInfo) {
-
-        GameCache.Instance.nUserId = info.un_id;
-        // GameCache.Instance.gold = info.gold;
-        GC.data.user.info.gold = info.gold;
-        GameCache.Instance.strPhone = info.phone;
-        GameCache.Instance.kDouNum = 0;
-        GameCache.Instance.sex = info.sex;
-        GameCache.Instance.nick = info.nickname;
-        GameCache.Instance.headPic = info.avatar;
-        GameCache.Instance.userType = info.ut;
-        GameCache.Instance.hasClub = ClubCache.club_id > 0;
-
-        //localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
-        //localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);
-        //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, info.area.replace("+", ""));
-        //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, `${info.area}`);
-
-    }
 
 
     /**

@@ -1,4 +1,5 @@
 import List from "../../../common/List";
+import ListEx from "../../../common/ListEx";
 import SimpleNodePool from "../../../common/MyNodePool";
 import TabsGroup from "../../../common/TabsGroup";
 import { Tabs_Status, TextColor } from "../../../config/GameConfig";
@@ -9,11 +10,9 @@ import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { WWW, Web_Club_Fund_ApplyList, Web_Club_Fund_OrderList, Web_Club_Player_Order_Record, Web_Club_Fund_Audit, API_CLUB_USER_WALLET, APIMessageRed_num } from "../../../net/https/WebRequest";
-import LobbySession from "../../../session/LobbySession";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
-import Data from "../../labor/script/Data";
 import { UIClubModel } from "../../labor/UIClubModel";
 import UIWalletApplyItem from "./UIWalletApplyItem";
 import WalletModel from "./WalletModel";
@@ -466,7 +465,7 @@ export default class UIWallet extends BaseFormPlus {
 
                 this.refreshGold();
                 //next?.call(this);
-                this.reqGoldChangeLog(0);
+                this.change_log_list_ex.dropRequest();
             },
             (res: any) => {
 
@@ -474,7 +473,7 @@ export default class UIWallet extends BaseFormPlus {
         )
     }
     //请求公会钱包变动
-    reqGoldChangeLog(offset: number) {
+    reqGoldChangeLog(offset: number = 0) {
         let info = {
             limit: 10,
             offset: offset
@@ -484,7 +483,7 @@ export default class UIWallet extends BaseFormPlus {
                 //this.refreshChangeList(res);
                 this.change_log_list_ex.refresh(res.data.list, res.data.total);
 
-                this.List$change_log.numItems = this.change_log_list_ex.offset;
+                //this.List$change_log.numItems = this.change_log_list_ex.offset;
 
             },
             (res) => {
@@ -504,7 +503,8 @@ export default class UIWallet extends BaseFormPlus {
                 GC.wallet.USDT = data?.usdt || 0;
                 this.refreshGold();
                 //next.call(this);
-                this.reqClubFundChangeLog(0);
+                //this.reqClubFundChangeLog(0);
+                this.change_log_list_ex.dropRequest();
             },
             (res) => {
             }
@@ -646,11 +646,11 @@ export default class UIWallet extends BaseFormPlus {
     /////////////////////////////////list///////////////////////////////
     private List$change_log: List = null;
 
-    private change_log_list_ex: List_EX = null;
+    private change_log_list_ex: ListEx = null;
 
     //初始化滚动列表的补充数据
     private initEX() {
-        this.change_log_list_ex = new List_EX;
+        this.change_log_list_ex = new ListEx;
     }
     private showEX() {
         this.change_log_list_ex.init({
@@ -678,58 +678,6 @@ export default class UIWallet extends BaseFormPlus {
     }
 
 }
-///////////////////////////
-
-class List_EX {
-    data: any[] = null;
-    offset: number = 0;
-    req_ing: boolean = false;
-    req_end: boolean = false;
-    constructor(public param: { list: List, nullNode: cc.Node, request: Function, this: any } = null) {
-        this.reset();
-        this.init(param);
-    }
-    init(param: { list: List, nullNode: cc.Node, request: Function, this: any }) {
-        this.param = param;
-        param && (param.list.scrollingCB = this.scrolling);
-    }
-    reset() {
-        this.offset = 0;
-        this.data = [];
-        this.req_ing = false;
-        this.req_end = false;
-        this.param?.list.scrollView.scrollToTop(0);
-    }
-    refresh(data: any[], total: number) {
-        this.req_ing = false;
-        this.data = this.data.concat(data);
-        this.offset = this.data.length;
-        this.param.nullNode.active = this.offset == 0;
-        if (this.offset == total) this.req_end = true;
-    }
-    error() {
-        this.req_ing = false;
-    }
-    scrolling = (scrollView) => {
-        if (scrollView) {
-            let cur = scrollView.getScrollOffset();
-            let max = scrollView.getMaxScrollOffset();
-            let isDown = cur.y >= max.y;
-            if (isDown) {
-                //GC.data.mtt.list.dropDownReq();
-                //console.log("滚动到结尾");
-                if (!this.req_ing && !this.req_end) {
-                    this.dropRequest();
-                }
-            }
-        }
-    }
-    dropRequest() {
-        this.req_ing = true;
-        this.param.request.call(this.param.this, this.offset);
-    }
-}
-
 
 let changeItem = {
     data: null,

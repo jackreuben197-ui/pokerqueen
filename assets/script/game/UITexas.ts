@@ -31,6 +31,7 @@ import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
+import UITexasMenu from "./ui/UITexasMenu";
 import UITexasMenuComponent from "./ui/UITexasMenuComponent";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
 
@@ -155,6 +156,7 @@ export default class UITexas extends BaseScene {
     //3.左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
     UITexasMenu_Com: UITexasMenuComponent = null;
+    UITexasMenu: UITexasMenu = null;
     //4.通用容器 放置 桌面设置，实时战况，战绩
     Common_Con: cc.Node = null;
     //5.带入带出 OutChips提示
@@ -290,6 +292,7 @@ export default class UITexas extends BaseScene {
         //3.菜单
         this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
         this.UITexasMenu_Com = this.AddComponents(PrefabUI.UITexasMenuComponent, this.UITexasMenu_Con, true);
+        //this.UITexasMenu = this.AddComponents(PrefabUI.UITexasMenu, this.UITexasMenu_Con, true);
         //4.通用容器 放置 桌面设置，实时战况，战绩
         this.Common_Con = this.getChildNodeOrComponent("Common_Con");
         //5.带入面板 带出面板
@@ -480,9 +483,11 @@ export default class UITexas extends BaseScene {
 
     public ShowMenu(): void {
         this.UITexasMenu_Com?.onShow();
+        //this.UITexasMenu?.onShow();
     }
     public HideMenu(animation: boolean = true): void {
         this.UITexasMenu_Com?.onClose(animation);
+        //this.UITexasMenu?.onClose(animation);
     }
 
     Click_Report_Btn() {

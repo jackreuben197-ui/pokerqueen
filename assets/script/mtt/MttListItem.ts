@@ -5,6 +5,7 @@ import { UIDefine } from "../define/UIDefine";
 import { ClubCache } from "../frame/data/club/ClubCache";
 import MttListItemModel from "../frame/data/mtt/MttListItemModel";
 import GC from "../frame/GameControl";
+import { GameCache } from "../game/GameCache";
 import TimeHelper from "../helper/TimeHelper";
 import ToastManager from "../manager/ToastManager";
 import { Web_Org_Club_Get } from "../net/https/WebRequest";
@@ -138,7 +139,7 @@ export default class MttListItem extends ListItem {
             GC.data.mtt.list.select = this._data;
             UIComponent.open(UIDefine.MttDetailForm, this._data);
         } else {
-            if (ClubCache.club_id > 0) {
+            if (GameCache.Instance.hasClub) {
                 GC.data.mtt.list.select = this._data;
                 UIComponent.open(UIDefine.MttDetailForm, this._data);
                 // UIComponent.open(UIDefine.MttRealTime, this._data);

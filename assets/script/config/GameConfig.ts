@@ -18,8 +18,6 @@ export class GameConfig {
 
     //需要清理storage,就递增这个值
     static clean_all_flag: number = 2;
-
-    static debug: boolean = true;
     static Web_Host_Test1 = "test1.awanptest.com";
     static Web_Host_Dev1 = "dev1.awanptest.com";
     static Web_Host_Dev = "dev.awanptest.com";
@@ -31,7 +29,7 @@ export class GameConfig {
     //4: https://dev1.awanptest.com 
     static BuildType: number = 5;
     //版本号
-    static Version: string = "20230320_1700";
+    static Version: string = "20230321_1100";
 
     static Default_Language: string = "cn";
     //是否使用代理

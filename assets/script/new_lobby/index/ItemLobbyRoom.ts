@@ -40,7 +40,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
     }
     onShow(data: any): void {
         super.onShow(data);
-        //this.hasClub = Web_Org_Club_Get.Response.data?.length > 0;
+
         this.refreshUI(data);
     }
     refreshUI(data: any) {
@@ -71,6 +71,8 @@ export default class ItemLobbyRoom extends UIBasePlus {
         this.$icon_lock.active = data.room_password?.length > 0;
 
         //判断禁用
+        //this.$arrow.active = GameCache.Instance.hasClub;
+        //this.$stop.active = !GameCache.Instance.hasClub;
         this.$arrow.active = GameCache.Instance.hasClub;
         this.$stop.active = !GameCache.Instance.hasClub;
 

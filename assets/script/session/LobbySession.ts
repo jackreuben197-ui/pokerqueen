@@ -16,6 +16,7 @@ import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
 
 import GlobalSession from "./GlobalSession";
+import LoginSession from "./LoginSession";
 
 
 export default class LobbySession {
@@ -198,7 +199,7 @@ export default class LobbySession {
             HttpRequest.Send({
                 request: Web_User_Info,
                 onSuccess: function () {
-                    this.CacheUserInfo(Web_User_Info.Response.data.user);
+                    LobbySession.CacheUserInfo(Web_User_Info.Response.data.user);
                     resolve(Web_User_Info.Response);
                 }.bind(this),
                 onFailure: function (content) {
@@ -207,6 +208,30 @@ export default class LobbySession {
             });
         });
     }
+
+    //缓存用户信息
+    public static CacheUserInfo(info: typeof Web_User_Info.UserInfo) {
+
+        GameCache.Instance.nUserId = info.un_id;
+        // GameCache.Instance.gold = info.gold;
+        GC.data.user.info.gold = info.gold;
+        GameCache.Instance.strPhone = info.phone;
+        GameCache.Instance.kDouNum = 0;
+        GameCache.Instance.sex = info.sex;
+        GameCache.Instance.nick = info.nickname;
+        GameCache.Instance.headPic = info.avatar;
+        GameCache.Instance.userType = info.ut;
+
+        GameCache.Instance.hasClub = info.club_id > 0;
+
+        //localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
+        //localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);
+        //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, info.area.replace("+", ""));
+        //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, `${info.area}`);
+
+    }
+
+
 
 
     // <summary>
@@ -284,7 +309,7 @@ export default class LobbySession {
     public static getLanguageValueByKey(key: string): string {
 
         key = key.split("-")[0];
-        
+
         let dic = null;
         switch (i18nMgr.language) {
             case "cn":
