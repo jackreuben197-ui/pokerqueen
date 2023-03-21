@@ -61,8 +61,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        621,
-        1344,
+        0,
+        0,
         0,
         0,
         0,
@@ -581,7 +581,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 25.09,
+      "width": 41.18,
       "height": 73.08
     },
     "_anchorPoint": {
@@ -633,13 +633,13 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "-",
-    "_N$string": "-",
+    "_string": "--",
+    "_N$string": "--",
     "_fontSize": 58,
     "_lineHeight": 58,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
+      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -695,9 +695,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 113,
-      "g": 135,
-      "b": 255,
+      "r": 53,
+      "g": 163,
+      "b": 179,
       "a": 255
     },
     "_contentSize": {
