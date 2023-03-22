@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-16 10:33:39
+ * @LastEditTime: 2023-03-22 11:14:45
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -14,6 +14,7 @@
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
 import { EventName } from "../../../config/EventName";
+import { GameCache } from "../../../game/GameCache";
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import GC from "../../GameControl";
 import ClubInfoModel from "./ClubInfoModel";
@@ -33,7 +34,7 @@ export class ClubCache {
     static mttPayWallat = null;   //mtt支付钱包
     static setClubData(data) {
         this._msg = data
-
+        GameCache.Instance.hasClub = this._msg?.club_id > 0;
     }
     static get club_table() {
         return this._msg?.tables;

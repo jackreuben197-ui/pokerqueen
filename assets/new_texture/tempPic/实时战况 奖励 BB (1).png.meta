@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "f32341f8-4e39-4593-906b-5acd7cea019a",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1242,
+  "height": 2689,
+  "platformSettings": {},
+  "subMetas": {
+    "实时战况 奖励 BB (1)": {
+      "ver": "1.0.6",
+      "uuid": "011f8b2a-dc8e-4a23-b89b-0fe8e62ae51c",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "f32341f8-4e39-4593-906b-5acd7cea019a",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1242,
+      "rawHeight": 2689,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

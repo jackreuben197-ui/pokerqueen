@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-08 19:30:50
+ * @LastEditTime: 2023-03-22 12:38:36
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 
@@ -257,16 +257,18 @@ export default class MttPayforHome extends BaseForm {
             this.rebuySecond = deadLineTime - TimeHelper.Now / 10000000;
             if (this.rebuySecond > 15) {
                 this.rebuySecond = 14;
-                this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(15s)";
+                UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(10012) + "(15s)")
                 // textCommit.text = CPErrorCode.LanguageDescription(10012) + "(15s)";
             }
             else {
                 this.rebuySecond -= -1;
                 if (this.rebuySecond < 0) {
-                    this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(" + 0 + "s)";
+                    UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(10012) + "(" + 0 + "s)")
+                    // this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(" + 0 + "s)";
                 }
                 else {
-                    this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(" + this.rebuySecond + "s)";
+                    UIComponent.Instance.Toast(CPErrorCode.LanguageDescription(10012) + "(" + this.rebuySecond + "s)")
+                    // this.textCommit.string = CPErrorCode.LanguageDescription(10012) + "(" + this.rebuySecond + "s)";
                 }
             }
             this.isRebuySecondStart = true;

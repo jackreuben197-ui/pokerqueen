@@ -1,6 +1,8 @@
 import ComTabToggles, { ETabToggle } from "../../common/ComTabToggles";
 import List from "../../common/List";
+import TabNode from "../../common/tabNode";
 import { EMttRealTimeTabType } from "../../config/EEnumConfig";
+import { mttRealTimeTabConfig } from "../../frame/config/tabConfig";
 import GC from "../../frame/GameControl";
 import { Web_Mtt } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
@@ -16,9 +18,9 @@ const { ccclass, property, menu } = cc._decorator;
 @menu('脚本分组/mtt/realTime/MttRealTime')
 export default class MttRealTime extends UIBase {
     private shadows: cc.Node = null;
-    private tabToggles: ComTabToggles = null;
+    // private tabToggles: ComTabToggles = null;
     private rankList: List = null;
-
+    private tabNode: TabNode = null;
     private firstBtn: cc.Node = null;
     private frontBtn: cc.Node = null;
     private nextBtn: cc.Node = null;
@@ -31,7 +33,8 @@ export default class MttRealTime extends UIBase {
     lateLoad() {
         super.lateLoad();
         this.shadows = this.getChildNodeOrComponent("shadows");
-        this.tabToggles = this.getChildNodeOrComponent("tabToggles", ComTabToggles);
+        // this.tabToggles = this.getChildNodeOrComponent("tabToggles", ComTabToggles);
+        this.tabNode = this.getChildNodeOrComponent("tabNode", TabNode);
         this.rankList = this.getChildNodeOrComponent("rankList", List);
 
         this.firstBtn = this.getChildNodeOrComponent("firstBtn");
@@ -75,39 +78,40 @@ export default class MttRealTime extends UIBase {
 
         this._tabViewInitStatus.clear();
 
-        GC.data.mtt.realTime.reqRankList();
-        this.tabToggles.initData(this.onToggle, ETabToggle.sprite, {
-            title: ["UITexasReport_Label_AllBarSK", "UITexasReport_Label_AllBarPZ", "UITexasReport_Label_AllBarJL", "UITexasReport_Label_AllBarMZ"],
-            params: [EMttRealTimeTabType.sk, EMttRealTimeTabType.pz, EMttRealTimeTabType.jl, EMttRealTimeTabType.mz]
-        });
-        this.tabToggles.clickTab(0);
+        // GC.data.mtt.realTime.reqRankList();
+        this.tabNode.initData(mttRealTimeTabConfig, this.onToggle, this)
+        // this.tabToggles.initData(this.onToggle, ETabToggle.sprite, {
+        //     title: ["UITexasReport_Label_AllBarSK", "UITexasReport_Label_AllBarPZ", "UITexasReport_Label_AllBarJL", "UITexasReport_Label_AllBarMZ"],
+        //     params: [EMttRealTimeTabType.sk, EMttRealTimeTabType.pz, EMttRealTimeTabType.jl, EMttRealTimeTabType.mz]
+        // });
+        // this.tabToggles.clickTab(0);
     }
 
-    onToggle = (index: number, type: EMttRealTimeTabType) => {
+    onToggle = (index: number) => {
         this._tabViewParents.forEach((node, t) => {
-            this.setActive(node, type == t);
+            this.setActive(node, index == t);
         })
 
-        let item = this._tabVievs.get(type);
-        if (!item && !this._tabViewLoadStatus.get(type)) {
-            this._tabViewLoadStatus.set(type, true);
+        let item = this._tabVievs.get(index);
+        if (!item && !this._tabViewLoadStatus.get(index)) {
+            this._tabViewLoadStatus.set(index, true);
 
             this.loadPrefab([
                 "main/mtt/realTime/MttRealTimeActionNode",
                 "main/mtt/realTime/MttRealTimeTablesNode",
                 "main/mtt/realTime/MttRealTimeRewardNode",
                 "main/mtt/realTime/MttRealTimeBlindsNode",
-            ][type], node => {
-                this._tabViewLoadStatus.set(type, false);
-                let scprpt = [MttRealTimeActionNode, MttRealTimeTablesNode, MttRealTimeRewardNode, MttRealTimeBlindsNode][type];
+            ][index], node => {
+                this._tabViewLoadStatus.set(index, false);
+                let scprpt = [MttRealTimeActionNode, MttRealTimeTablesNode, MttRealTimeRewardNode, MttRealTimeBlindsNode][index];
                 item = node.getComponent(scprpt);
-                this._tabVievs.set(type, item);
-                node.parent = this._tabViewParents.get(type);
-                if (!this._tabViewInitStatus.get(type)) {
+                this._tabVievs.set(index, item);
+                node.parent = this._tabViewParents.get(index);
+                if (!this._tabViewInitStatus.get(index)) {
                     item?.initData();
                 }
             })
-        } else if (!this._tabViewInitStatus.get(type)) {
+        } else if (!this._tabViewInitStatus.get(index)) {
             item?.initData();
 
         }
