@@ -1,1 +1,0 @@
-cc.dynamicAtlasManager.maxFrameSize = 1024;
