@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 17:24:08
+ * @LastEditTime: 2023-03-22 17:54:06
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
@@ -167,7 +167,7 @@ export default class UIJoinUnion extends BaseForm {
         switch (Number(customData)) {
             case 10:
                 this.tempString = ''
-                this.setText(this.search_id, this.type == 1 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
+                this.setText(this.search_id, this.type == 0 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
                 break;
             case 11:
                 if (this.tempString == '') {
@@ -176,7 +176,7 @@ export default class UIJoinUnion extends BaseForm {
                 this.search_id.string = this.search_id.string.substring(0, this.search_id.string.length - 1)
                 this.tempString = this.search_id.string;
                 if (this.tempString.length == 0) {
-                    this.setText(this.search_id, this.type == 1 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
+                    this.setText(this.search_id, this.type == 0 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
                     this.tempString = ''
                 }
                 break;
