@@ -291,8 +291,9 @@ export default class UITexas extends BaseScene {
         this.UIAutoOperation_Com = this.AddComponents(PrefabUI.UIAutoOperationComponent, this.UIOperation_Con);
         //3.菜单
         this.UITexasMenu_Con = this.getChildNodeOrComponent("UITexasMenu_Con");
-        this.UITexasMenu_Com = this.AddComponents(PrefabUI.UITexasMenuComponent, this.UITexasMenu_Con, true);
-        //this.UITexasMenu = this.AddComponents(PrefabUI.UITexasMenu, this.UITexasMenu_Con, true);
+        //this.UITexasMenu_Com = this.AddComponents(PrefabUI.UITexasMenuComponent, this.UITexasMenu_Con, true);
+        this.UITexasMenu = this.AddComponents(PrefabUI.UITexasMenu, this.UITexasMenu_Con, true);
+
         //4.通用容器 放置 桌面设置，实时战况，战绩
         this.Common_Con = this.getChildNodeOrComponent("Common_Con");
         //5.带入面板 带出面板
@@ -331,7 +332,7 @@ export default class UITexas extends BaseScene {
     //从预制体添加到容器
     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
-        //console.log("AddComponents", prefab_name, prefab);
+        console.log("AddComponents", prefab_name, prefab);
         let com = null;
         if (prefab) {
             com = cc.instantiate(prefab).getComponent(prefab_name);
@@ -339,6 +340,9 @@ export default class UITexas extends BaseScene {
                 UIComponent.Instance.SetPrefabNode(prefab_name, com.node);
                 com.node.parent = parent;
                 com.node.active = show;
+                if (show) {
+
+                }
             }
         }
         return com;
@@ -482,12 +486,12 @@ export default class UITexas extends BaseScene {
     }
 
     public ShowMenu(): void {
-        this.UITexasMenu_Com?.onShow();
-        //this.UITexasMenu?.onShow();
+        //this.UITexasMenu_Com?.onShow();
+        this.UITexasMenu?.onShow();
     }
     public HideMenu(animation: boolean = true): void {
-        this.UITexasMenu_Com?.onClose(animation);
-        //this.UITexasMenu?.onClose(animation);
+        //this.UITexasMenu_Com?.onClose(animation);
+        this.UITexasMenu?.onClose(animation);
     }
 
     Click_Report_Btn() {

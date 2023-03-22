@@ -3090,67 +3090,64 @@ export default class TexasGame {
             // this.setText(this.textTotalBean, GC.data.user.info.displayGold);
         });
 
-        let UserSitdown = this.UserSitdown();
-        let menu = this.uirc.UITexasMenu_Com;
+        let menu = this.uirc.UITexasMenu;
+        menu.clearOptions();
+        let show = [3, 4, 10];//设置|规则|离开
 
-        menu.MenuButtons_Dic.Button_Setting.node.active = true;
-        menu.MenuButtons_Dic.Button_Rule.node.active = true;
-        menu.MenuButtons_Dic.Button_Exit.node.active = true;
-
-        menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = false;
-
-        if (UserSitdown) //已坐下
+        if (this.UserSitdown()) //已坐下
         {
 
-            menu.MenuButtons_Dic.Button_Standup.node.active = true;
-            menu.MenuButtons_Dic.Button_AddChips.node.active = true;
+
+            show.push(0, 6, 9);// 站起 | 带入 | 离座留桌
+
+            //menu.MenuButtons_Dic.Button_Standup.node.active = true;
+            //menu.MenuButtons_Dic.Button_AddChips.node.active = true;
 
             if (this.mainPlayer.chips >= GameCache.Instance.carry_small * (this.currentMaxRate + 1)) {
-                //已带入最大值,不可点击
-                //this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = false;
-                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_AddChips.node, false);
+                menu.setOptionInteractable(6, false);
             }
             else {
-                //this.MenuButtons_Dic.Button_AddChips.node.getComponent(cc.Button).interactable = true;
-                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_AddChips.node, true);
+                menu.setOptionInteractable(6, true);
             }
-
 
             if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL && this.gamestatus >= 1 && this.gamestatus < 7) {
-                menu.MenuButtons_Dic.Button_TakeOut.node.active = true;
-                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_TakeOut.node, true);
+                //menu.MenuButtons_Dic.Button_TakeOut.node.active = true;
+                show.push(7);
+                //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_TakeOut.node, true);
+                menu.setOptionInteractable(7, true);
             }
             else if (this.CurlimitOutChip == RoomInfo.RetainType.RT_MANUAL && this.gamestatus != 1 && this.gamestatus < 7) {
-                menu.MenuButtons_Dic.Button_TakeOut.node.active = true;
-                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_TakeOut.node, false);
+                show.push(7);
+                menu.setOptionInteractable(7, false);
             }
             else {
-                menu.MenuButtons_Dic.Button_TakeOut.node.active = false;
-                menu.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable = false;
+                //menu.MenuButtons_Dic.Button_TakeOut.node.active = false;
+                //menu.MenuButtons_Dic.Button_TakeOut.node.getComponent(cc.Button).interactable = false;
             }
 
-            menu.MenuButtons_Dic.Button_LeaveDesk.node.active = true;
+            //menu.MenuButtons_Dic.Button_LeaveDesk.node.active = true;
 
             if (this.gamestatus != 1)//游戏没开始的时候，座离桌按钮显示不可点击状态   !HasStarted()
             {
-                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, false);
+                //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, false);
+                menu.setOptionInteractable(9, false);
             }
             else {
-                this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, true);
+                menu.setOptionInteractable(9, true);
+                //this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_LeaveDesk.node, true);
             }
 
-            menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = (this.isMTT ? false : this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO);
+            if (!this.isMTT && this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+                //this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO
+                show.push(5);
+            }
 
         }
-        else //未坐下
-        {
-            menu.MenuButtons_Dic.Button_Standup.node.active = false;
-            menu.MenuButtons_Dic.Button_AddChips.node.active = false;
-            menu.MenuButtons_Dic.Button_Trust.node.active = false;
-            menu.MenuButtons_Dic.Button_TakeOut.node.active = false;
-            menu.MenuButtons_Dic.Button_LeaveDesk.node.active = false;
-            menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = false;
-        }
+        show.forEach(index => {
+            let option = menu.getOption(index);
+            option.node.active = true;
+        })
+
     }
     protected __MenuButtonInteractable(node: cc.Node, interactable: boolean) {
         node.getChildByName("Text").color = cc.Color.WHITE;

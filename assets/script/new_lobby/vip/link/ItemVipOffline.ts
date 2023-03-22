@@ -60,7 +60,7 @@ export default class ItemVipOffline extends UIBasePlus {
 
         this.cc_Label$id.string = `ID:${data.random_num}`;
 
-        this.cc_Label$time.string = TimeHelper.UTCToLocal(data.last_login_time_str);
+        this.cc_Label$time.string = data.last_login_time_str;
 
         this.cc_Label$remark.node.active = data.remark_desc.length > 0;
 

@@ -1295,19 +1295,69 @@ export default class GameUtil {
         return GameCache.Instance.CurrentRoomID != 0;
     }
 
-    public static GetCardNameByNum(cardNum: number): string {
-        if (cardNum <= 0) {
-            return "poker_88";
-        }
-        if (cardNum < 10) {
-            return `poker_dz_0${cardNum}`;
-        }
-        else {
-            return `poker_dz_${cardNum}`;
-        }
+    //扑克映射表 服务端 : 客户端
+    private static Poker_Map = {
+        //桃
+        2: 1,
+        3: 2,
+        4: 3,
+        5: 4,
+        6: 5,
+        7: 6,
+        8: 7,
+        9: 8,
+        10: 9,
+        11: 10,
+        12: 11,
+        13: 12,
+        14: 0,
+        //心
+        17: 14,
+        18: 15,
+        19: 16,
+        20: 17,
+        21: 18,
+        22: 19,
+        23: 20,
+        24: 21,
+        25: 22,
+        26: 23,
+        27: 24,
+        28: 25,
+        29: 13,
+        //梅
+        32: 27,
+        33: 28,
+        34: 29,
+        35: 30,
+        36: 31,
+        37: 32,
+        38: 33,
+        39: 34,
+        40: 35,
+        41: 36,
+        42: 37,
+        43: 38,
+        44: 26,
+        //方块
+        47: 40,
+        48: 41,
+        49: 42,
+        50: 43,
+        51: 44,
+        52: 45,
+        53: 46,
+        54: 47,
+        55: 48,
+        56: 49,
+        57: 50,
+        58: 51,
+        59: 39,
     }
-
-
+    public static GetCardNameByNum(n: number): string {
+        if (n <= 0) return "p_88";
+        return `p_${this.Poker_Map[n]}`;
+    }
     /// <summary>
     /// 判断是否是底池限注
     /// </summary>
@@ -1664,3 +1714,18 @@ export default class GameUtil {
 
 }
 (window as any).GameUtil = GameUtil;
+
+
+
+
+    // public static GetCardNameByNum(cardNum: number): string {
+    //     if (cardNum <= 0) {
+    //         return "poker_88";
+    //     }
+    //     if (cardNum < 10) {
+    //         return `poker_dz_0${cardNum}`;
+    //     }
+    //     else {
+    //         return `poker_dz_${cardNum}`;
+    //     }
+    // }
