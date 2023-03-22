@@ -3,7 +3,7 @@
  * @Date: 2022-12-19 15:49:57
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-30 21:45:45
+ * @LastEditTime: 2023-03-22 14:36:13
  * @FilePath: /pokerqueen/assets/script/frame/data/mtt/MttData.ts
  */
 import { Web_Mtt } from "../../../net/https/WebRequest";

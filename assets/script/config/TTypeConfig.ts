@@ -147,6 +147,7 @@ export type TUserInfo = {
     operator_id: number,
     vip: number,
     vip_endtime: number
+
 }
 
 export type TUserGoldChangeLogs = {

@@ -2,12 +2,13 @@
  * @Author: xfj
  * @Date: 2022-10-25 17:12:38
  * @description: 
- * @LastEditors: 
- * @LastEditTime: 2022-12-15 16:15:15
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-03-22 13:33:28
  * @FilePath: /pokerqueen/assets/script/mtt/realTime/MttRealTimeRankItem.ts
  */
 import ListItem from "../../common/ListItem";
 import MttRealTimeRankItemModel from "../../frame/data/mtt/realTime/MttRealTimeRankItemModel";
+import { StringHelper } from "../../helper/StringHelper";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -37,11 +38,22 @@ export default class MttRealTimeRankItem extends ListItem {
 
     initData(data: MttRealTimeRankItemModel) {
         this._data = data;
-
+        let color = '#757CAB'
+        let op = 180
+        if (this._data.isMySelf) {
+            color = '#7187FF'
+            op = 255
+        }
+        this.setTextColor(this.rank, color)
+        this.setTextColor(this.desk, color)
+        this.setTextColor(this.score, color)
+        this.rank.node.opacity = op
+        this.desk.node.opacity = op
+        this.score.node.opacity = op
         this.setActive(this.myselfFlag, this._data.isMySelf);
         this.rank.string = `${this._data.rank} ${this._data.name}`
         this.desk.string = this._data.rid + ''
-        this.score.string = this._data.chip + ''
+        this.score.string = StringHelper.GetLongString(this._data.chip)
         // this.setText(this.rank, `${this._data.rank} ${this._data.name}`);
         // this.setText(this.desk, this._data.rid);
         // this.setText(this.score, this._data.chip);

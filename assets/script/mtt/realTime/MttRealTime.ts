@@ -25,6 +25,7 @@ export default class MttRealTime extends UIBase {
     private frontBtn: cc.Node = null;
     private nextBtn: cc.Node = null;
     private lastBtn: cc.Node = null;
+    private pageNum: cc.Label = null;
 
     private _tabVievs: Map<EMttRealTimeTabType, any> = new Map();
     private _tabViewLoadStatus: Map<EMttRealTimeTabType, boolean> = new Map();
@@ -41,6 +42,7 @@ export default class MttRealTime extends UIBase {
         this.frontBtn = this.getChildNodeOrComponent("frontBtn");
         this.nextBtn = this.getChildNodeOrComponent("nextBtn");
         this.lastBtn = this.getChildNodeOrComponent("lastBtn");
+        this.pageNum = this.getChildNodeOrComponent("pageNum", cc.Label);
 
         this._tabViewParents.set(EMttRealTimeTabType.sk, this.getChildNodeOrComponent("subViewAction"))
         this._tabViewParents.set(EMttRealTimeTabType.pz, this.getChildNodeOrComponent("subViewTables"))
@@ -78,13 +80,9 @@ export default class MttRealTime extends UIBase {
 
         this._tabViewInitStatus.clear();
 
-        // GC.data.mtt.realTime.reqRankList();
+        GC.data.mtt.realTime.reqRankList();
         this.tabNode.initData(mttRealTimeTabConfig, this.onToggle, this)
-        // this.tabToggles.initData(this.onToggle, ETabToggle.sprite, {
-        //     title: ["UITexasReport_Label_AllBarSK", "UITexasReport_Label_AllBarPZ", "UITexasReport_Label_AllBarJL", "UITexasReport_Label_AllBarMZ"],
-        //     params: [EMttRealTimeTabType.sk, EMttRealTimeTabType.pz, EMttRealTimeTabType.jl, EMttRealTimeTabType.mz]
-        // });
-        // this.tabToggles.clickTab(0);
+        this.pageNum.string = `${GC.data.mtt.realTime.curPage + 1}/${GC.data.mtt.realTime.totlePage + 1}`
     }
 
     onToggle = (index: number) => {

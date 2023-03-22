@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-25 17:12:39
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2023-03-22 13:28:18
+ * @FilePath: /pokerqueen/assets/script/frame/data/mtt/realTime/MttRealTimeRankItemModel.ts
+ */
 import { TMttRankItem } from "../../../../config/TTypeConfig";
 import GC from "../../../GameControl";
 
@@ -26,7 +34,7 @@ export default class MttRealTimeRankItemModel {
     }
 
     get isMySelf() {
-        return this._msg.urid == GC.data.user.info.user_id;
+        return this._msg.urid == GC.data.user.info.un_id;
     }
 
 }

@@ -13,6 +13,7 @@ export default class UserInfoModel {
     get user_id() {
         return this._msg.user_id;
     }
+
     get area() {
         return this._msg.area;
     }
