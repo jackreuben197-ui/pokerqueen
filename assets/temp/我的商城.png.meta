@@ -10,7 +10,16 @@
   "packable": true,
   "width": 1242,
   "height": 3682,
-  "platformSettings": {},
+  "platformSettings": {
+    "default": {
+      "formats": [
+        {
+          "name": "webp",
+          "quality": 80
+        }
+      ]
+    }
+  },
   "subMetas": {
     "我的商城": {
       "ver": "1.0.6",

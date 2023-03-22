@@ -10,7 +10,16 @@
   "packable": true,
   "width": 1242,
   "height": 2688,
-  "platformSettings": {},
+  "platformSettings": {
+    "default": {
+      "formats": [
+        {
+          "name": "webp",
+          "quality": 80
+        }
+      ]
+    }
+  },
   "subMetas": {
     "玩家转换-兑换金豆": {
       "ver": "1.0.6",

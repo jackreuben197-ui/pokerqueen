@@ -10,7 +10,16 @@
   "packable": true,
   "width": 1242,
   "height": 3232,
-  "platformSettings": {},
+  "platformSettings": {
+    "default": {
+      "formats": [
+        {
+          "name": "webp",
+          "quality": 80
+        }
+      ]
+    }
+  },
   "subMetas": {
     "战绩首页": {
       "ver": "1.0.6",

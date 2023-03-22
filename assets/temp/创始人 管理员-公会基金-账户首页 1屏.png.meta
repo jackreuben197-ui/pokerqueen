@@ -10,7 +10,16 @@
   "packable": true,
   "width": 1243,
   "height": 2688,
-  "platformSettings": {},
+  "platformSettings": {
+    "default": {
+      "formats": [
+        {
+          "name": "webp",
+          "quality": 80
+        }
+      ]
+    }
+  },
   "subMetas": {
     "创始人 管理员-公会基金-账户首页 1屏": {
       "ver": "1.0.6",
