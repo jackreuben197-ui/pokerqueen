@@ -191,6 +191,7 @@ export default class UIWallet extends BaseFormPlus {
         this.reqRecord(index);
     }
 
+    club_id: number;
     /**
      * 每次打开面板处理的内容
      * param {type: 0:个人钱包 1:公会钱包 2:公会基金}
@@ -202,6 +203,7 @@ export default class UIWallet extends BaseFormPlus {
         console.log("当前钱包类型:", param.wallet_type);
 
         GC.wallet.wallet_type = param.wallet_type;
+
 
         //根据类型判断哪种钱包
         switch (param.wallet_type) {
