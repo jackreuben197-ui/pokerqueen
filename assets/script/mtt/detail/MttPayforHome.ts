@@ -3,7 +3,7 @@
  * @Date: 2023-01-16 10:33:59
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-22 12:38:36
+ * @LastEditTime: 2023-03-22 14:46:17
  * @FilePath: /pokerqueen/assets/script/mtt/detail/MttPayforHome.ts
  */
 
@@ -93,12 +93,15 @@ export default class MttPayforHome extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         this._data = param.data;
         this._type = param.type;
+
+        this.setText(this.title_lbl, this._type == 1 ? 'UIMTTSignDialogBuyTitle' : 'UIMTTSignDialogReBuyTitle')
+        await UIClubModel.mInstance.APIMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: 0, limit: 20 })
         if (this._type == 1) {
             ClubCache.mttPayWallat = null
         }
-        this.setText(this.title_lbl, this._type == 1 ? 'UIMTTSignDialogBuyTitle' : 'UIMTTSignDialogReBuyTitle')
-        await UIClubModel.mInstance.APIMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: 0, limit: 20 })
-
+        else {
+            ClubCache.mttPayWallat = ClubCache.mttPayWallat ? ClubCache.mttPayWallat : localStorage.getItem(GC.data.mtt.list.select.match_id + "")
+        }
         this.initSelectWallet()
         this.bindClick(this.payNode, () => {
             if (this._type == 2) return
@@ -135,7 +138,6 @@ export default class MttPayforHome extends BaseForm {
 
     }
     initSelectWallet() {
-
         if (ClubCache.mttPayWallat == null) {
             this.sure.active = false
             this.setText(this.select_lbl, 'UILogin_Select')
@@ -147,6 +149,7 @@ export default class MttPayforHome extends BaseForm {
                 walletData = element
                 return element.club_random_id == ClubCache.mttPayWallat.club_random_id
             });
+            localStorage.setItem(GC.data.mtt.list.select.match_id + "", walletData)
             this.sure.active = true;
             this.setText(this.select_lbl, ClubCache.mttPayWallat.club_name)
             this.rateNode.active = true
