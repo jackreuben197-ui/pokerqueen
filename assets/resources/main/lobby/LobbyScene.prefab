@@ -228,7 +228,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Layer",
+    "_name": "layer",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -330,7 +330,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "UILobby_Menu",
+    "_name": "menu",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1

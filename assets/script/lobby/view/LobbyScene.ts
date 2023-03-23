@@ -1,32 +1,30 @@
-const { ccclass, property } = cc._decorator;
+const { ccclass } = cc._decorator;
 import GC from "../../frame/GameControl";
-import { Web_Config_Global_Config, Web_Misc_Banner_List, WWW } from "../../net/https/WebRequest";
+import { Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
 import UILobbyIndex from "../../new_lobby/index/UILobbyIndex";
 import BaseScene from "../../ui/scene/BaseScene";
 import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
 import UILobbyMenu from "./UILobbyMenu";
-import UIMatchBanner from "./UIMatchBanner";
-import UIMatchRoom from "./UIMatchRoom";
 
 @ccclass
 export default class LobbyScene extends BaseScene {
-    private currUI: cc.Node = null;
-    private Layer: cc.Node = null;
 
-    UILobby_Menu: UILobbyMenu = null;
+    //private currUI: cc.Node = null;
+
+    private layer: cc.Node = null;
+
+    menu: UILobbyMenu = null;
 
     onLoad(): void {
         super.onLoad();
-        this.UILobby_Menu = this.getChildNodeOrComponent("UILobby_Menu", UILobbyMenu);
-        this.Layer = this.getChildNodeOrComponent("Layer");
 
-        // let widget: cc.Widget = this.node.getComponent(cc.Widget);
-        // widget.target = cc.find("Canvas");
+        this.layer = this.getChildNodeOrComponent("layer");
+        this.menu = this.getChildNodeOrComponent("menu", UILobbyMenu);
 
         LobbyControl.getInstance().setLobbyInfo({
-            curShowUI: this.currUI,
-            Layer: this.Layer
+            //curShowUI: this.currUI,
+            Layer: this.layer
         })
     }
     protected lateEnter(param) {
@@ -34,7 +32,7 @@ export default class LobbyScene extends BaseScene {
         console.log("进入大厅--->", param);
 
         if (param.mode == 0) {
-            this.UILobby_Menu.onShow();
+            this.menu.onShow();
             this.setLooby();
         }
 
@@ -47,27 +45,22 @@ export default class LobbyScene extends BaseScene {
      * @return {*}
      */
     public async setLooby() {
-
         await LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/index/");
-        //await LobbyControl.getInstance().switchContent("UILobby");
-        //刷新banner数据 
-        //this.refreshBanner();
-        //一些配置请求准备
         this.toReady();
     }
 
     //刷新banner
     public refreshBanner(): void {
-        let language = GC.localStore.getItem("language");
-        let data: typeof Web_Misc_Banner_List.RequestParams = {};
-        // data.lang = language||cc.sys.language;
-        data.lang = "zh_CN";
-        data.type = 1;
-        data.limit = 10;
-        data.offset = 0;
-        LobbyControl.getInstance().GetBannerList(data).then((res) => {
-            UIMatchBanner.instance.onShow(res);
-        })
+        // let language = GC.localStore.getItem("language");
+        // let data: typeof Web_Misc_Banner_List.RequestParams = {};
+        // // data.lang = language||cc.sys.language;
+        // data.lang = "zh_CN";
+        // data.type = 1;
+        // data.limit = 10;
+        // data.offset = 0;
+        // LobbyControl.getInstance().GetBannerList(data).then((res) => {
+        //     UIMatchBanner.instance.onShow(res);
+        // })
     }
     private toReady() {
         GC.data.lobby.reqLobbyGroupData(() => {

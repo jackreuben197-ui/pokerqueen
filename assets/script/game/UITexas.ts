@@ -75,17 +75,17 @@ export class PublicCardInfo {
     }
 }
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, executionOrder } = cc._decorator;
 
 @ccclass
+@executionOrder(-1)
 export default class UITexas extends BaseScene {
 
     /**
      * 节点|组件 定义
      */
-    //desk_bg: cc.Sprite = null;
-    //table_bg: cc.Sprite = null;
-    Desk: cc.Sprite = null;
+    //桌布
+    table_sp: cc.Sprite = null;
 
     menu_btn: cc.Node = null;
     report_btn: cc.Node = null;
@@ -220,9 +220,7 @@ export default class UITexas extends BaseScene {
 
         super.lateLoad();
 
-        //this.desk_bg = this.getChildNodeOrComponent("desk_bg", cc.Sprite);
-        //this.table_bg = this.getChildNodeOrComponent("table_bg", cc.Sprite);
-        this.Desk = this.getChildNodeOrComponent("Desk", cc.Sprite);
+        this.table_sp = this.getChildNodeOrComponent("table_sp", cc.Sprite);
 
         this.menu_btn = this.getChildNodeOrComponent("menu_btn");
         this.report_btn = this.getChildNodeOrComponent("report_btn");

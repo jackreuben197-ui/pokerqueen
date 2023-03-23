@@ -14,7 +14,7 @@ import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
 
-    static publish: boolean = true;
+    static publish: boolean = false;
 
     //需要清理storage,就递增这个值
     static clean_all_flag: number = 2;
@@ -29,7 +29,7 @@ export class GameConfig {
     //4: https://dev1.awanptest.com 
     static BuildType: number = 5;
     //版本号
-    static Version: string = "20230322_1730";
+    static Version: string = "20230323_1300";
 
     static Default_Language: string = "cn";
     //是否使用代理
