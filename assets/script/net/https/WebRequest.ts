@@ -2836,7 +2836,11 @@ export class APIOrgClubNotice_update extends WebCommon {
     public static API: string = "/api/cmsext/club/notice_update";
 }
 export class APIOrgClubNotice extends WebCommon {
-    public static API: string = "/api/cmsext/club/notice";
+    public static API: string = "/api/cmsext/club/notice_get";
+}
+
+export class APIOrgClubNotice_Ignore extends WebCommon {
+    public static API: string = "/api/cmsext/club/user/notice_ignore";
 }
 export class APIOrgClubSharePendingList extends WebCommon {
     public static API: string = "/api/cmsext/club/share/pending/list";

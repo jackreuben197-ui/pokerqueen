@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-08 20:42:03
+ * @LastEditTime: 2023-03-23 19:53:18
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIPlayerLookLabor.ts
  */
 
@@ -20,6 +20,7 @@ import ComFormTitle from "../../../common/ComFormTitle";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import UINewDialogComponent from "../../../ui/dialog/UINewDialogComponent";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
+import { EventName } from "../../../config/EventName";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -101,6 +102,7 @@ export default class UIPlayerLookLabor extends BaseForm {
             await UIClubModel.mInstance.APIOrgClubQuit();
             this.close()
             UIComponent.close(UIDefine.UIClubHome)
+            this.post(EventName.refreshClubList)
             return
         }
         UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,

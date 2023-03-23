@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-20 18:01:14
+ * @LastEditTime: 2023-03-23 19:12:15
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**

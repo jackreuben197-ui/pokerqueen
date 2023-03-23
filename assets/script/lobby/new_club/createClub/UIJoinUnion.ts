@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-22 17:54:06
+ * @LastEditTime: 2023-03-23 20:01:25
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
@@ -70,7 +70,7 @@ export default class UIJoinUnion extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         this.type = param.type
         let title = this.type == 0 ? "club_3" : "UIClub_TribeJoin"
-        this.setText(this.btn_lbl, this.type == 0 ? "UISearchClub" : "UISearchUnion")
+        this.setText(this.btn_lbl, this.type == 0 ? "UIGuild_SearchBtn" : "UIGuild_SearchUnionBtn")
         this.comFormTitle.initData(title, this);
         this.tabNode.initData(this.type == 0 ? joinClubConfig : joinUnionConfig, this.titleNodeClick.bind(this), this)
         this.titleNodeClick(0);

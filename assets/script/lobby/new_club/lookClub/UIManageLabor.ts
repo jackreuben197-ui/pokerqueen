@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-19 15:44:15
+ * @LastEditTime: 2023-03-23 19:54:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIManageLabor.ts
  */
 
@@ -19,6 +19,8 @@ import { UIClubModel } from "../../labor/UIClubModel";
 import ComFormTitle from "../../../common/ComFormTitle";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GGSwitch from "../../../ui/component/GGSwitch";
+import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
+import UINewDialogComponent from "../../../ui/dialog/UINewDialogComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -27,7 +29,8 @@ const { ccclass, property, menu } = cc._decorator;
 export default class UIManageLabor extends BaseForm {
     @property(cc.Node)
     contentNode: cc.Node = null;
-
+    @property(cc.Node)
+    exitbutton: cc.Node = null;
 
 
     @property(GGSwitch)
@@ -54,7 +57,7 @@ export default class UIManageLabor extends BaseForm {
         let title = "UIClub_Info"
         this.comFormTitle.initData(title, this);
         this.initTop();
-
+        this.exitbutton.active = ClubCache.user_level != 1
     }
 
     protected regiterDispatchEvent(): void {
@@ -165,6 +168,38 @@ export default class UIManageLabor extends BaseForm {
         if (ClubCache.tribe_name && ClubCache.tribe_name != '') return
         UIComponent.open(UIDefine.UIJoinUnion, { type: 1 })
 
+    }
+
+    async exitClub() {
+        if (ClubUserDataCache.gold == 0 && ClubUserDataCache.usdt == 0) {
+            await UIClubModel.mInstance.APIOrgClubQuit();
+            this.close()
+            UIComponent.close(UIDefine.UIClubHome)
+            this.post(EventName.refreshClubList)
+            return
+        }
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
+            {
+                type: UINewDialogComponent.DialogType.Commit,
+                title: "UIGuild_TipsTitle",
+                content: 'UIGuild_MoneyNotZero',
+                contentCommit: "adaptation10013",
+                noAnimation: true,
+            });
+    }
+    exitClubSure() {
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
+            {
+                type: UINewDialogComponent.DialogType.CommitCancel,
+                title: "sr_r9ccQuit",
+                content: 'UIGuild_QuitTips',
+                contentCommit: "adaptation10012",
+                contentCancel: "adaptation10013",
+                actionCommit: () => {
+                    this.exitClub()
+                },
+                noAnimation: true,
+            });
     }
 
 

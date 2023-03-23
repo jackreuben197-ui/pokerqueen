@@ -3,12 +3,14 @@
  * @Date: 2022-12-29 11:17:46
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-08 20:01:49
+ * @LastEditTime: 2023-03-23 20:24:18
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/active/UIClubActiveBord.ts
  */
 
+import { ClubCache } from "../../../frame/data/club/ClubCache";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
+import { UIClubModel } from "../../labor/UIClubModel";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -40,12 +42,13 @@ export default class UIClubActiveBord extends UIBase {
 
     sureClick() {
         if (this._isCheckNoitic) {
-            let now = new Date();
-            let year = now.getFullYear();
-            let month = now.getMonth();
-            let day = now.getDate();
-            let currenTime = new Date(year, month, day).getTime();
-            localStorage.setItem(this._data.id + '_' + currenTime, 1 + '');
+            // let now = new Date();
+            // let year = now.getFullYear();
+            // let month = now.getMonth();
+            // let day = now.getDate();
+            // let currenTime = new Date(year, month, day).getTime();
+            // localStorage.setItem(this._data.id + '_' + currenTime, 1 + '');
+            UIClubModel.mInstance.APIOrgClubNotice_Ignore({ "club_id": ClubCache.club_id })
         }
         UIComponent.close(this.UIDefine);
     }
