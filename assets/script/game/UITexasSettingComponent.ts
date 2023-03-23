@@ -3,7 +3,7 @@
  * @Date: 2022-08-25 16:13:45
  * @description:  个性设置界面
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-30 15:05:53
+ * @LastEditTime: 2023-03-23 11:25:30
  * @FilePath: /pokerqueen/assets/script/game/UITexasSettingComponent.ts
  */
 
@@ -101,31 +101,26 @@ export default class UITexasSettingComponent extends UIBase {
     * @method  牌的样式
     */
     initCardClickListen() {
-
-        let index = Number(GameCache.Instance.CurGame.pokerType);
-        this._selectCardType = this.CardGroup.children[index];
-        let Checkmark = cc.find('Background/Checkmark', this._selectCardType)
-        Checkmark.active = false;
+        let index1 = Number(GameCache.Instance.CurGame.pokerType);
         for (let index = 0; index < this.CardGroup.childrenCount; index++) {
             const element = this.CardGroup.children[index];
             element.on("click", this.setCardState, this);
             element['index'] = index
+            let Background = element.getChildByName('Background');
+            let Checkmark = element.getChildByName('Checkmark');
+            if (index1 == index) {
+                Background.active = true
+                Checkmark.active = false;
+            } else {
+                Background.active = false
+                Checkmark.active = true;
+            }
         }
     }
-
     setCardState(event): void {
-        this._selectCardType = event.node;
-        for (let index = 0; index < this.CardGroup.childrenCount; index++) {
-            const element = this.CardGroup.children[index];
-            let checkmark = cc.find('Background/Checkmark', element)
-            checkmark.active = true;
-        }
-        let checkmark = cc.find('Background/Checkmark', this._selectCardType)
-        checkmark.active = false;
-
-        let index = this._selectCardType['index'];
-        GC.localStore.setItem(StorageKey.SettingPokerType, String(index))
-        GameCache.Instance.CurGame.SetPokerType(index);
+        GC.localStore.setItem(StorageKey.SettingPokerType, String(event.node['index']))
+        GameCache.Instance.CurGame.SetPokerType(event.node['index']);
+        this.initCardClickListen()
     }
 
     /**
