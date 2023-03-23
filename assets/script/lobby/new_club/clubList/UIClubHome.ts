@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-20 10:22:31
+ * @LastEditTime: 2023-03-23 20:20:21
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -117,12 +117,15 @@ export default class UIClubHome extends BaseForm {
         if (ClubCache.show_notice_switch == 2) return
         await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
         let data: any = APIOrgClubNotice.Response.data;
-        let now = new Date();
-        let year = now.getFullYear();
-        let month = now.getMonth();
-        let day = now.getDate();
-        let currenTime = new Date(year, month, day).getTime();
-        if (data && data?.info && localStorage.getItem(data.info.id + '_' + currenTime) != '1') {
+        // let now = new Date();
+        // let year = now.getFullYear();
+        // let month = now.getMonth();
+        // let day = now.getDate();
+        // let currenTime = new Date(year, month, day).getTime();
+        // if (data && data?.info && localStorage.getItem(data.info.id + '_' + currenTime) != '1') {
+        //     UIComponent.open(UIDefine.UIClubActiveBord, data.info)
+        // }
+        if (data && data?.info?.title) {
             UIComponent.open(UIDefine.UIClubActiveBord, data.info)
         }
     }

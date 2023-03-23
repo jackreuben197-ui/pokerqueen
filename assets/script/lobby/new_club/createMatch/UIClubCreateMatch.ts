@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-21 16:25:28
+ * @LastEditTime: 2023-03-23 19:22:55
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -756,28 +756,32 @@ export default class UIClubCreateMatch extends BaseForm {
             }
             this.post(EventName.matchModelChange)
 
+
+        }
+        else {
+            if (ClubCache.joinCreateMatchType == 0) {
+                //公会牌桌
+                room_config.limit_friend_table = false
+                await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
+                // TimeHelper.Sleep(3000);
+                this.post(EventName.matchModelChange)
+            }
+            else if (ClubCache.joinCreateMatchType == 1) {
+                // //朋友桌
+                room_config.limit_friend_table = true
+                let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                this.top_block.active = true;
+                // await TimeHelper.Sleep(1000);
+                data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
+                this.post(EventName.updateFriendChessView)
+                this.top_block.active = false;
+                let _data = new LobbyRoomListItem(data.data.data);
+                //GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
+                GameUtil.EnterRoomAPI(_data, { game_enter_type: GameEnterType.Friend });
+            }
         }
 
-        if (ClubCache.joinCreateMatchType == 0) {
-            //公会牌桌
-            room_config.limit_friend_table = false
-            await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
-            // TimeHelper.Sleep(3000);
-            this.post(EventName.matchModelChange)
-        }
-        else if (ClubCache.joinCreateMatchType == 1) {
-            // //朋友桌
-            room_config.limit_friend_table = true
-            let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
-            this.top_block.active = true;
-            // await TimeHelper.Sleep(1000);
-            data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
-            this.post(EventName.updateFriendChessView)
-            this.top_block.active = false;
-            let _data = new LobbyRoomListItem(data.data.data);
-            //GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
-            GameUtil.EnterRoomAPI(_data, { game_enter_type: GameEnterType.Friend });
-        }
+
         this.close();
         this.room_config = null;
 

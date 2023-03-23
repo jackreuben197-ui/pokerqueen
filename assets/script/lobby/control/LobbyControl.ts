@@ -36,7 +36,7 @@ export class LobbyControl {
         2.1 设置大厅数据 存放控制器
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
     setLobbyInfo(param) {
-        this.curShowUI = param.curShowUI;
+        //this.curShowUI = param.curShowUI;
         this.Layer = param.Layer;
     }
 
@@ -44,7 +44,7 @@ export class LobbyControl {
         2.2 点击主界面下方4个按钮 切换中间不同显示
             name: UILobby UIChat UICareer UIMine
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-    public async switchContent(name: string,resPath:string = "main/lobby/prefab/") {
+    public async switchContent(name: string, resPath: string = "main/lobby/prefab/") {
 
         if (this.curShowUI && name === this.curShowUI.name) {
             return;

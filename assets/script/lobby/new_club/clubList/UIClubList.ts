@@ -3,10 +3,11 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-22 10:55:43
+ * @LastEditTime: 2023-03-23 19:54:43
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
+import { EventName } from "../../../config/EventName";
 import { UIDefine } from "../../../define/UIDefine";
 import { clubListConfig } from "../../../frame/data/rate/RateConfig";
 import { GameCache } from "../../../game/GameCache";
@@ -51,6 +52,23 @@ export default class UIClubList extends BaseForm {
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
+        this.refreshList();
+        // await UIClubModel.mInstance.APIOrgClubGet()
+        // let data: any = Web_Org_Club_Get.Response.data
+        // this.num.string = data.length;
+        // this.initListNode(data)
+        // this.initPageNode(data)
+        // this.initTop()
+        // this.sortData()
+        // this.setText(this.dropNode_lbl, clubListConfig[this._selectIndex].desc);
+    }
+    protected regiterDispatchEvent(): void {
+        super.regiterDispatchEvent();
+
+        this.listen(EventName.refreshClubList, this.refreshList);
+    }
+
+    async refreshList() {
         await UIClubModel.mInstance.APIOrgClubGet()
         let data: any = Web_Org_Club_Get.Response.data
         this.num.string = data.length;

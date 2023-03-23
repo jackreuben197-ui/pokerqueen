@@ -3,7 +3,7 @@
  * @Date: 2022-12-28 17:59:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-08 20:04:34
+ * @LastEditTime: 2023-03-23 20:16:09
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/active/UIClubActive.ts
  */
 // Learn TypeScript:
@@ -60,8 +60,10 @@ export default class UIClubActive extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.comFormTitle.initData('UIGuild_Notice', this);
-        this.titleEditBox.string = ''
-        this.textEditBox.string = ''
+        await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
+        let data: any = APIOrgClubNotice.Response.data;
+        this.titleEditBox.string = data?.info?.title
+        this.textEditBox.string = data?.info?.content
         this.editChange();
     }
     protected regiterDispatchEvent(): void {
@@ -108,7 +110,7 @@ export default class UIClubActive extends BaseForm {
             UIComponent.Instance.Toast('开始时间不得大于结束时间')
             return;
         }
-        await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
+        // await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
         let data: any = APIOrgClubNotice.Response.data;
 
         let parms = {

@@ -1,5 +1,6 @@
 
 import UIBase from "../UIBase";
+import UIBasePlus from "../UIBasePlus";
 
 const { ccclass, property } = cc._decorator;
 

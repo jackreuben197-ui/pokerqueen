@@ -416,7 +416,6 @@ export default class TexasGame {
         this.TexasGameProtocol.RemoveMsgHandler();
     }
 
-
     public GetSequencePlayDealAnimation() {
         return this.sequencePlayDealAnimation;
     }
@@ -428,7 +427,7 @@ export default class TexasGame {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_EnterRoom, this.TexasGameMessageHandler.Protocol_Holdem_EnterRoom_Handler, this.TexasGameMessageHandler);
     }
 
-    /////////////////////////////////获取桌面样式/////////////////////////////////
+    /////////////////////////////////桌面样式/////////////////////////////////
     public get deskType() {
 
         (this.setting.deskType == null) && (this.setting.deskType = +(GC.localStore.getItem(StorageKey.SettingDeskType) ?? TexasConfig.DefaultDeskType));
@@ -437,9 +436,10 @@ export default class TexasGame {
     }
     SetDeskType(type: number) {
         this.setting.deskType = type;
-        this.uirc.Desk.spriteFrame = AssetContext.getAsset("desk" + type, AssetFold.texture_TexasUINew_desk);
+        this.uirc.table_sp.spriteFrame = AssetContext.getAsset(`table_${type}`, AssetFold.texture_table);
     }
-    //获取扑克样式
+    //////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////扑克样式/////////////////////////////////
     public get pokerType() {
 
         (this.setting.pokerType == null) && (this.setting.pokerType = +(GC.localStore.getItem(StorageKey.SettingPokerType) ?? TexasConfig.DefaultDeskType));
@@ -456,7 +456,6 @@ export default class TexasGame {
     public GetSmallPokerSP(spriteName: string): cc.SpriteFrame {
         return AssetContext.getAsset(spriteName, this.pokerType == 0 ? AssetFold.texture_SmallCard0 : AssetFold.texture_SmallCard1);
     }
-
     // 设置扑克牌样式 0 - 1
     public SetPokerType(type: number) {
         this.setting.pokerType = type;
@@ -478,7 +477,7 @@ export default class TexasGame {
             })
         })
     }
-    /////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
 
 
