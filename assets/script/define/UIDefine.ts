@@ -41,7 +41,7 @@ export const UIDefine = {
         UIType: UIType.Scene,
         Name: "UITexas",
         Bundle: "texas",
-        Path: "prefab/scene/UITexas"
+        Path: "purple_prefab/scene/UITexas"
     },
     /**
      *  标题窗口

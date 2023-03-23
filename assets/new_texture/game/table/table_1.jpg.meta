@@ -14,7 +14,7 @@
   "subMetas": {
     "table_1": {
       "ver": "1.0.6",
-      "uuid": "ebed0da9-665e-4f76-9e90-c9d05d601b6b",
+      "uuid": "162c76d7-eb01-4d24-b277-dc11daee87ca",
       "importer": "sprite-frame",
       "rawTextureUuid": "16dff163-5218-4036-b04f-3e4947c1f290",
       "trimType": "auto",
@@ -28,7 +28,7 @@
       "height": 2688,
       "rawWidth": 1242,
       "rawHeight": 2688,
-      "borderTop": 2360,
+      "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,

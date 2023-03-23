@@ -436,7 +436,7 @@ export default class TexasGame {
     }
     SetDeskType(type: number) {
         this.setting.deskType = type;
-        this.uirc.table_sp.spriteFrame = AssetContext.getAsset(`table_${type}`, AssetFold.texture_TexasUINew_desk);
+        this.uirc.table_sp.spriteFrame = AssetContext.getAsset(`table_${type}`, AssetFold.texture_table);
     }
     //////////////////////////////////////////////////////////////////////////
     /////////////////////////////////扑克样式/////////////////////////////////

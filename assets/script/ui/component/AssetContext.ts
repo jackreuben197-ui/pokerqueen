@@ -22,7 +22,7 @@ export enum AssetFold {
     texture_atlas_HistorySecondCard,
     texture_match_view,
     //新素材
-    texture_TexasUINew_desk,
+    texture_table,
     texture_BigCard0,
     texture_BigCard1,
     texture_SmallCard0,
