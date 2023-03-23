@@ -10,7 +10,7 @@ import GameUtil, { GameType, PokerType } from "./util/GameUtil";
  * @Date: 2022-08-30 17:02:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-01 10:39:02
+ * @LastEditTime: 2023-03-23 10:20:08
  * @FilePath: /pokerqueen/assets/script/game/UITexasRule.ts
  */
 const { ccclass, property } = cc._decorator;
@@ -85,12 +85,12 @@ export default class UITexasRule extends UIBase {
             const element = this.titelGroup.children[index];
 
             let text = element.getChildByName('text');
-            text.color = new cc.Color().fromHEX("#FFFFFF");
+            text.color = new cc.Color().fromHEX("#757CAB");
             let Checkmark = text.getChildByName('Checkmark');
             Checkmark.active = false;
         }
         event.node.getChildByName('text').getChildByName('Checkmark').active = true
-        event.node.getChildByName('text').color = new cc.Color().fromHEX("#35A3B3");
+        event.node.getChildByName('text').color = new cc.Color().fromHEX("#EEF5FF");
         this.setWidgetState(event.node['index']);
 
         this.scrollReset();
