@@ -23,6 +23,95 @@ import TexasAofGame from "../texas/TexasAofGame";
 import TexasGame from "../texas/TexasGame";
 
 
+class some_pos {
+
+    //所有座位位置
+    public static readonly all_seat_pos = [
+        cc.v3(0, -1937), //  0 下中
+
+        cc.v3(-526, -1539),//1 左下
+        cc.v3(-526, -1062),//2 左中
+        cc.v3(-526, -586),//3 左上
+
+        cc.v3(-221, -182),//4 上左
+        cc.v3(0, -182),//5 上中
+        cc.v3(221, -182),//6 上右
+
+        cc.v3(526, -586),//7 右上
+        cc.v3(526, -1062),//8 右中
+        cc.v3(526, -1539),//9 右下
+    ];
+    // 所有庄家bank位置
+    public static readonly all_bank_pos: cc.Vec3[] = [
+        cc.v3(130, -181),//中下为自己的位置
+        cc.v3(0, -181),//除自己外所有方位的位置
+        cc.v3(0, -181),
+        cc.v3(0, -181),
+        cc.v3(0, -181),
+        cc.v3(0, -181),
+        cc.v3(0, -181),
+        cc.v3(0, -181),
+        cc.v3(0, -181),
+        cc.v3(0, -181),
+    ];
+    //所有背面牌坐标
+    public static readonly all_card_back_pos: cc.Vec3[] = [
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+        cc.v3(51, -42),
+    ];
+    //所有下注筹码位置
+    public static readonly all_bet_pos: cc.Vec3[] = [
+        cc.v3(426, -47), //  0 下中
+
+        cc.v3(211, 8),//1 左下
+        cc.v3(211, 8),//2 左中
+        cc.v3(211, 8),//3 左上
+
+        cc.v3(84, -203),//4 上左
+        cc.v3(0, -231),//5 上中
+        cc.v3(-84, -203),//6 上右
+
+        cc.v3(-211, 8),//7 右上
+        cc.v3(-211, 8),//8 右中
+        cc.v3(-211, 8),//9 右下
+    ];
+    //所有气泡位置
+    public static readonly all_bubble_pos: cc.Vec3[] = [
+        cc.v3(-102, 43),
+        cc.v3(-102, 43),
+        cc.v3(-102, 43),
+        cc.v3(-102, 43),
+        cc.v3(-102, 43),
+        cc.v3(111, 43),
+        cc.v3(111, 43),
+        cc.v3(111, 43),
+        cc.v3(111, 43),
+        cc.v3(111, 43),
+    ];
+
+}
+export class seat_info {
+    seat_pos: cc.Vec3 = null;
+    bank_pos: cc.Vec3 = null;
+    card_back_pos: cc.Vec3 = null;
+    bet_pos: cc.Vec3 = null;
+    bubble_pos: cc.Vec3 = null;
+    constructor(public index: number) {
+        this.seat_pos = some_pos.all_seat_pos[index];
+        this.bank_pos = some_pos.all_bank_pos[index];
+        this.card_back_pos = some_pos.all_card_back_pos[index];
+        this.bet_pos = some_pos.all_bet_pos[index];
+        this.bubble_pos = some_pos.all_bubble_pos[index];
+    }
+}
 /**
  * 游戏类型
  */
@@ -149,7 +238,7 @@ export default class GameUtil {
     //每套公共牌数量
     public static PublicCardMaxCount: number = 5;
 
-    public static SeatGoldPos = [cc.v2(0, -202), cc.v2(0, -104)];
+    public static SeatGoldPos = [cc.v2(0, -202), cc.v2(0, -104)]; roomtype映射Game
 
     //初始化 roomtype映射Game
     private static _SetGameMap() {
@@ -240,937 +329,83 @@ export default class GameUtil {
         return this.GetGame(roomType, this.GameMap.get(roomType));;
     }
 
-    //#region 牌局内座位UI信息   
-    // 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    //2: 0,7
-    //3: 0,4,10
-    //4: 0,3,7,11
-    //5: 0,3,6,8,11
-    //6: 0,1,5,7,9,13
-    //7: 0,2,4,6,8,10,12
-    //8: 0,1,3,5,7,9,11,13
-    //9: 0,1,3,5,6,8,9,11,13
-    public static SeatPosV3: cc.Vec3[] = [
-        cc.v3(0, -841 + 19),//0
-        cc.v3(-502, -248),//1 -cc.v3(-516, -272)
-        cc.v3(-502, -248),//2 -cc.v3(-516, -95)
-        cc.v3(-502, 254),//3 -cc.v3(-516, 155) 
-        cc.v3(-502, 300 + 19),//4 -cc.v3(-516, 495),
-        cc.v3(-496, 558),//5 -cc.v3(-516, 582)
-        cc.v3(-330, 893),//6 -cc.v3(-212, 987)
-        cc.v3(0, 1000),//7 -cc.v3(0, 987),
-        cc.v3(330, 893),//8 -cc.v3(214, 987)
-        cc.v3(496, 558),//9 -cc.v3(512, 582)
-        cc.v3(502, 300 + 19),//10 -cc.v3(512, 495),
-        cc.v3(502, 254),//11 -cc.v3(512, 155)
-        cc.v3(502, -248),//12 -cc.v3(502, -95)
-        cc.v3(502, -248),//13 -cc.v3(512, -272)
-    ];
 
+    //座位位置配置
+    public static pos_config = {
+        2: [
+            new seat_info(0),
+            new seat_info(5),
+        ],
+        3: [
+            new seat_info(0),
+            new seat_info(3),
+            new seat_info(7),
+        ],
+        4: [
+            new seat_info(0),
+            new seat_info(2),
+            new seat_info(5),
+            new seat_info(8),
+        ],
+        5: [
+            new seat_info(0),
+            new seat_info(2),
+            new seat_info(4),
+            new seat_info(6),
+            new seat_info(8),
+        ],
+        6: [
+            new seat_info(0),
+            new seat_info(1),
+            new seat_info(3),
+            new seat_info(5),
+            new seat_info(7),
+            new seat_info(9),
+        ],
+        7: [
+            new seat_info(0),
+            new seat_info(1),
+            new seat_info(3),
+            new seat_info(4),
+            new seat_info(6),
+            new seat_info(7),
+            new seat_info(9),
+        ],
+        8: [
+            new seat_info(0),
+            new seat_info(1),
+            new seat_info(2),
+            new seat_info(3),
+            new seat_info(5),
+            new seat_info(7),
+            new seat_info(8),
+            new seat_info(9),
+        ],
+        9: [
+            new seat_info(0),
+            new seat_info(1),
+            new seat_info(2),
+            new seat_info(3),
+            new seat_info(4),
+            new seat_info(6),
+            new seat_info(7),
+            new seat_info(8),
+            new seat_info(9),
+        ]
+    }
 
     //上下座位 适配位置
     public static SeatAdapterPos() {
 
-        if (cc.view.getVisibleSize().height < GameConfig.DesignResolution.height) {
-            this.SeatPosV3[0].y = 522 - cc.view.getVisibleSize().height / 2;
-            console.log("适配0位置:", this.SeatPosV3[0].toString());
-        }
-        if (cc.view.getVisibleSize().height < 2410) {
-            this.SeatPosV3[7].y = cc.view.getVisibleSize().height / 2 - 205;
-            console.log("适配7位置:", this.SeatPosV3[7].toString());
-        }
+        // if (cc.view.getVisibleSize().height < GameConfig.DesignResolution.height) {
+        //     this.SeatPosV3[0].y = 522 - cc.view.getVisibleSize().height / 2;
+        //     console.log("适配0位置:", this.SeatPosV3[0].toString());
+        // }
+        // if (cc.view.getVisibleSize().height < 2410) {
+        //     this.SeatPosV3[7].y = cc.view.getVisibleSize().height / 2 - 205;
+        //     console.log("适配7位置:", this.SeatPosV3[7].toString());
+        // }
     }
-
-
-
-    // Dealer标识坐标 0左、1右
-    public static readonly BankerLRV3: cc.Vec3[] = [
-
-        cc.v3(105, -200),//cc.v3(138, -175),
-        cc.v3(0, -180),
-    ];
-
-    // 牌背面坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly CardBackLRV3 =
-        [
-            cc.v3(51, -42),
-            cc.v3(51, -42),
-            cc.v3(51, -42),
-            cc.v3(51, -42),
-            cc.v3(51, -42),
-            cc.v3(51, -42),
-            cc.v3(51, -42),
-            cc.v3(51, -42),
-            cc.v3(51, -42),
-        ];
-
-    // 牌背面旋转 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly CardBackRotLRV3 =
-        [
-            cc.v3(0, 0, 45),
-            cc.v3(0, 0, -30),
-            cc.v3(0, 0, -30),
-            cc.v3(0, 0, -30),
-            cc.v3(0, 0, -30),
-            cc.v3(0, 0, -30),
-            cc.v3(0, 0, -120),
-            cc.v3(0, 0, -120),
-            cc.v3(0, 0, 140),
-            cc.v3(0, 0, 45),
-            cc.v3(0, 0, 45),
-            cc.v3(0, 0, 45),
-            cc.v3(0, 0, 45),
-            cc.v3(0, 0, 45),
-        ];
-
-    // 牌坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly CardsPosLRV3 =
-        [
-            cc.v3(-67, -292),
-            cc.v3(155, -22),
-            cc.v3(155, -22),
-            cc.v3(155, 20),
-            cc.v3(155, -77),
-            cc.v3(155, -77),
-            cc.v3(-155, 0),
-            cc.v3(155, 0),
-            cc.v3(155, 0),
-            cc.v3(-155, -77),
-            cc.v3(-155, -77),
-            cc.v3(-155, 20),
-            cc.v3(-155, -22),
-            cc.v3(-155, -22),
-        ];
-
-    // 本手已下注坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly CurRoundHaveBetPosLRV3 =
-        [
-            cc.v3(374, 22),//cc.v3(374, -12.5),
-            cc.v3(-200, -10),
-            cc.v3(-200, -10),
-            cc.v3(-200, -10),
-            cc.v3(200, -10),
-            cc.v3(200, -10),
-            cc.v3(200, -10),
-            cc.v3(200, -10),
-            cc.v3(200, -10),
-            cc.v3(160, -126),
-            cc.v3(-104, -126),
-        ];
-
-    // 操作气泡坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly BubblePosLRV3 =
-        [
-            cc.v3(-102, 43),
-            cc.v3(-102, 43),
-            cc.v3(-102, 43),
-            cc.v3(-102, 43),
-            cc.v3(-102, 43),
-            cc.v3(111, 43),
-            cc.v3(111, 43),
-            cc.v3(111, 43),
-            cc.v3(111, 43),
-        ];
-    // 保险倒计时气泡坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly InsurancePosLRV3 =
-        [
-            cc.v3(-175, 20),
-            cc.v3(-175, 20),
-            cc.v3(-175, 20),
-            cc.v3(-175, 20),
-            cc.v3(-175, 20),
-            cc.v3(175, 20),
-            cc.v3(175, 20),
-            cc.v3(175, 20),
-            cc.v3(175, 20),
-        ];
-    // aomaha保险倒计时气泡坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly AoMaHaInsurancePosLRV3 =
-        [
-            cc.v3(-207, 20),
-            cc.v3(-207, 20),
-            cc.v3(-207, 20),
-            cc.v3(-207, 20),
-            cc.v3(-207, 20),
-            cc.v3(207, 20),
-            cc.v3(207, 20),
-            cc.v3(207, 20),
-            cc.v3(207, 20),
-        ];
-    // 保险不保气泡坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly InsuranceBubaoPosLRV3 =
-        [
-            cc.v3(-153, 20),
-            cc.v3(-153, 20),
-            cc.v3(-153, 20),
-            cc.v3(-153, 20),
-            cc.v3(-153, 20),
-            cc.v3(153, 20),
-            cc.v3(153, 20),
-            cc.v3(153, 20),
-            cc.v3(153, 20),
-        ];
-    // aomaha保险不保气泡坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly AoMaHaInsuranceBubaoPosLRV3 =
-        [
-            cc.v3(-186, 20),
-            cc.v3(-186, 20),
-            cc.v3(-186, 20),
-            cc.v3(-186, 20),
-            cc.v3(-186, 20),
-            cc.v3(186, 20),
-            cc.v3(186, 20),
-            cc.v3(186, 20),
-            cc.v3(186, 20),
-        ];
-    // 保险投保气泡坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly InsuranceToubaoPosLRV3 =
-        [
-            cc.v3(-177, 20),
-            cc.v3(-177, 20),
-            cc.v3(-177, 20),
-            cc.v3(-177, 20),
-            cc.v3(-177, 20),
-            cc.v3(177, 20),
-            cc.v3(177, 20),
-            cc.v3(177, 20),
-            cc.v3(177, 20),
-        ];
-    // aomaha保险投保气泡坐标 0中下、1左下、2左中下、3左中、4左中上、5左上、6中上偏左、7中上、8中上偏右、9右上、10右中上、11右中、12右中下、13右下
-    public static readonly AoMaHaInsuranceToubaoPosLRV3 =
-        [
-            cc.v3(-209, 20),
-            cc.v3(-209, 20),
-            cc.v3(-209, 20),
-            cc.v3(-209, 20),
-            cc.v3(-209, 20),
-            cc.v3(209, 20),
-            cc.v3(209, 20),
-            cc.v3(209, 20),
-            cc.v3(209, 20),
-        ];
-
-
-    public static readonly SeatUIInfos: { [key: number]: SeatUIInfo[] } = {
-
-        2: [{
-            Pos: GameUtil.SeatPosV3[0],
-            BankerPos: GameUtil.BankerLRV3[0],
-            CardBackPos: GameUtil.CardBackLRV3[0],
-            CardBackRot: GameUtil.CardBackRotLRV3[0],
-            CardsPos: GameUtil.CardsPosLRV3[0],
-            CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[0],
-            BubblePos: GameUtil.BubblePosLRV3[0],
-            InsurancePos: GameUtil.InsurancePosLRV3[0],
-            AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[0],
-            InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[0],
-            AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[0],
-            InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[0],
-            AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[0]
-        },
-        {
-            Pos: GameUtil.SeatPosV3[7],
-            BankerPos: GameUtil.BankerLRV3[1],
-            CardBackPos: GameUtil.CardBackLRV3[8],
-            CardBackRot: GameUtil.CardBackRotLRV3[7],
-            CardsPos: GameUtil.CardsPosLRV3[7],
-            CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[9],
-            BubblePos: GameUtil.BubblePosLRV3[8],
-            InsurancePos: GameUtil.InsurancePosLRV3[8],
-            AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[8],
-            InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[8],
-            AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[8],
-            InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[8],
-            AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
-        },
-        ],
-        3: [{
-
-            Pos: GameUtil.SeatPosV3[0],
-            BankerPos: GameUtil.BankerLRV3[0],
-            CardBackPos: GameUtil.CardBackLRV3[0],
-            CardBackRot: GameUtil.CardBackRotLRV3[0],
-            CardsPos: GameUtil.CardsPosLRV3[0],
-            CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[0],
-            BubblePos: GameUtil.BubblePosLRV3[0],
-            InsurancePos: GameUtil.InsurancePosLRV3[0],
-            AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[0],
-            InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[0],
-            AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[0],
-            InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[0],
-            AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[0],
-        },
-
-        {
-            Pos: GameUtil.SeatPosV3[4],
-            BankerPos: GameUtil.BankerLRV3[1],
-            CardBackPos: GameUtil.CardBackLRV3[8],
-            CardBackRot: GameUtil.CardBackRotLRV3[4],
-            CardsPos: GameUtil.CardsPosLRV3[4],
-            CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[8],
-            BubblePos: GameUtil.BubblePosLRV3[8],
-            InsurancePos: GameUtil.InsurancePosLRV3[8],
-            AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[8],
-            InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[8],
-            AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[8],
-            InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[8],
-            AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
-        },
-
-        {
-            Pos: GameUtil.SeatPosV3[10],
-            BankerPos: GameUtil.BankerLRV3[1],
-            CardBackPos: GameUtil.CardBackLRV3[1],
-            CardBackRot: GameUtil.CardBackRotLRV3[10],
-            CardsPos: GameUtil.CardsPosLRV3[10],
-            CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[1],
-            BubblePos: GameUtil.BubblePosLRV3[1],
-            InsurancePos: GameUtil.InsurancePosLRV3[1],
-            AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[1],
-            InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[1],
-            AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[1],
-            InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[1],
-            AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[1],
-        },
-        ],
-        4: [
-
-            {
-                Pos: GameUtil.SeatPosV3[0],
-                BankerPos: GameUtil.BankerLRV3[0],
-                CardBackPos: GameUtil.CardBackLRV3[0],
-                CardBackRot: GameUtil.CardBackRotLRV3[0],
-                CardsPos: GameUtil.CardsPosLRV3[0],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[0],
-                BubblePos: GameUtil.BubblePosLRV3[0],
-                InsurancePos: GameUtil.InsurancePosLRV3[0],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[0],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[0],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[0],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[0],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[0],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[3],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[8],
-                CardBackRot: GameUtil.CardBackRotLRV3[3],
-                CardsPos: GameUtil.CardsPosLRV3[3],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[8],
-                BubblePos: GameUtil.BubblePosLRV3[8],
-                InsurancePos: GameUtil.InsurancePosLRV3[8],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[8],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[8],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[8],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[8],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[7],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[7],
-                CardBackRot: GameUtil.CardBackRotLRV3[7],
-                CardsPos: GameUtil.CardsPosLRV3[7],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[9],
-                BubblePos: GameUtil.BubblePosLRV3[7],
-                InsurancePos: GameUtil.InsurancePosLRV3[7],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[7],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[7],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[7],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[7],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[7],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[11],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[1],
-                CardBackRot: GameUtil.CardBackRotLRV3[11],
-                CardsPos: GameUtil.CardsPosLRV3[11],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[1],
-                BubblePos: GameUtil.BubblePosLRV3[1],
-                InsurancePos: GameUtil.InsurancePosLRV3[1],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[1],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[1],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[1],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[1],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[1],
-            },
-        ],
-        5: [
-            {
-                Pos: GameUtil.SeatPosV3[0],
-                BankerPos: GameUtil.BankerLRV3[0],
-                CardBackPos: GameUtil.CardBackLRV3[0],
-                CardBackRot: GameUtil.CardBackRotLRV3[0],
-                CardsPos: GameUtil.CardsPosLRV3[0],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[0],
-                BubblePos: GameUtil.BubblePosLRV3[0],
-                InsurancePos: GameUtil.InsurancePosLRV3[0],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[0],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[0],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[0],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[0],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[0],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[3],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[8],
-                CardBackRot: GameUtil.CardBackRotLRV3[3],
-                CardsPos: GameUtil.CardsPosLRV3[3],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[8],
-                BubblePos: GameUtil.BubblePosLRV3[8],
-                InsurancePos: GameUtil.InsurancePosLRV3[8],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[8],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[8],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[8],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[8],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[6],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[7],
-                CardBackRot: GameUtil.CardBackRotLRV3[6],
-                CardsPos: GameUtil.CardsPosLRV3[6],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[10],
-                BubblePos: GameUtil.BubblePosLRV3[7],
-                InsurancePos: GameUtil.InsurancePosLRV3[7],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[7],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[7],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[7],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[7],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[7],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[8],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[2],
-                CardBackRot: GameUtil.CardBackRotLRV3[8],
-                CardsPos: GameUtil.CardsPosLRV3[8],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[9],
-                BubblePos: GameUtil.BubblePosLRV3[2],
-                InsurancePos: GameUtil.InsurancePosLRV3[2],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[2],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[2],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[2],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[2],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[2],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[11],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[1],
-                CardBackRot: GameUtil.CardBackRotLRV3[11],
-                CardsPos: GameUtil.CardsPosLRV3[11],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[1],
-                BubblePos: GameUtil.BubblePosLRV3[1],
-                InsurancePos: GameUtil.InsurancePosLRV3[1],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[1],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[1],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[1],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[1],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[1],
-            },
-        ],
-        6: [
-
-            {
-                Pos: GameUtil.SeatPosV3[0],
-                BankerPos: GameUtil.BankerLRV3[0],
-                CardBackPos: GameUtil.CardBackLRV3[0],
-                CardBackRot: GameUtil.CardBackRotLRV3[0],
-                CardsPos: GameUtil.CardsPosLRV3[0],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[0],
-                BubblePos: GameUtil.BubblePosLRV3[0],
-                InsurancePos: GameUtil.InsurancePosLRV3[0],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[0],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[0],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[0],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[0],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[0],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[1],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[8],
-                CardBackRot: GameUtil.CardBackRotLRV3[2],
-                CardsPos: GameUtil.CardsPosLRV3[2],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[8],
-                BubblePos: GameUtil.BubblePosLRV3[8],
-                InsurancePos: GameUtil.InsurancePosLRV3[8],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[8],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[8],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[8],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[8],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[5],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[7],
-                CardBackRot: GameUtil.CardBackRotLRV3[4],
-                CardsPos: GameUtil.CardsPosLRV3[4],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[7],
-                BubblePos: GameUtil.BubblePosLRV3[7],
-                InsurancePos: GameUtil.InsurancePosLRV3[7],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[7],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[7],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[7],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[7],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[7],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[7],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[6],
-                CardBackRot: GameUtil.CardBackRotLRV3[7],
-                CardsPos: GameUtil.CardsPosLRV3[7],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[9],
-                BubblePos: GameUtil.BubblePosLRV3[6],
-                InsurancePos: GameUtil.InsurancePosLRV3[6],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[6],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[6],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[6],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[6],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[6],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[9],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[2],
-                CardBackRot: GameUtil.CardBackRotLRV3[10],
-                CardsPos: GameUtil.CardsPosLRV3[10],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[2],
-                BubblePos: GameUtil.BubblePosLRV3[2],
-                InsurancePos: GameUtil.InsurancePosLRV3[2],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[2],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[2],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[2],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[2],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[2],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[13],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[1],
-                CardBackRot: GameUtil.CardBackRotLRV3[12],
-                CardsPos: GameUtil.CardsPosLRV3[12],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[1],
-                BubblePos: GameUtil.BubblePosLRV3[1],
-                InsurancePos: GameUtil.InsurancePosLRV3[1],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[1],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[1],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[1],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[1],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[1],
-
-            },
-        ],
-        7: [
-
-            {
-                Pos: GameUtil.SeatPosV3[0],
-                BankerPos: GameUtil.BankerLRV3[0],
-                CardBackPos: GameUtil.CardBackLRV3[0],
-                CardBackRot: GameUtil.CardBackRotLRV3[0],
-                CardsPos: GameUtil.CardsPosLRV3[0],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[0],
-                BubblePos: GameUtil.BubblePosLRV3[0],
-                InsurancePos: GameUtil.InsurancePosLRV3[0],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[0],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[0],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[0],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[0],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[0],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[2],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[8],
-                CardBackRot: GameUtil.CardBackRotLRV3[2],
-                CardsPos: GameUtil.CardsPosLRV3[2],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[8],
-                BubblePos: GameUtil.BubblePosLRV3[8],
-                InsurancePos: GameUtil.InsurancePosLRV3[8],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[8],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[8],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[8],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[8],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[4],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[7],
-                CardBackRot: GameUtil.CardBackRotLRV3[4],
-                CardsPos: GameUtil.CardsPosLRV3[4],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[7],
-                BubblePos: GameUtil.BubblePosLRV3[7],
-                InsurancePos: GameUtil.InsurancePosLRV3[7],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[7],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[7],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[7],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[7],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[7],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[6],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[6],
-                CardBackRot: GameUtil.CardBackRotLRV3[6],
-                CardsPos: GameUtil.CardsPosLRV3[6],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[10],
-                BubblePos: GameUtil.BubblePosLRV3[6],
-                InsurancePos: GameUtil.InsurancePosLRV3[6],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[6],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[6],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[6],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[6],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[6],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[8],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[3],
-                CardBackRot: GameUtil.CardBackRotLRV3[8],
-                CardsPos: GameUtil.CardsPosLRV3[8],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[9],
-                BubblePos: GameUtil.BubblePosLRV3[3],
-                InsurancePos: GameUtil.InsurancePosLRV3[3],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[3],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[3],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[3],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[3],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[3],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[10],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[2],
-                CardBackRot: GameUtil.CardBackRotLRV3[10],
-                CardsPos: GameUtil.CardsPosLRV3[10],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[2],
-                BubblePos: GameUtil.BubblePosLRV3[2],
-                InsurancePos: GameUtil.InsurancePosLRV3[2],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[2],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[2],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[2],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[2],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[2],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[12],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[1],
-                CardBackRot: GameUtil.CardBackRotLRV3[12],
-                CardsPos: GameUtil.CardsPosLRV3[12],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[1],
-                BubblePos: GameUtil.BubblePosLRV3[1],
-                InsurancePos: GameUtil.InsurancePosLRV3[1],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[1],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[1],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[1],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[1],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[1],
-            },
-
-        ],
-        8: [
-
-            {
-                Pos: GameUtil.SeatPosV3[0],
-                BankerPos: GameUtil.BankerLRV3[0],
-                CardBackPos: GameUtil.CardBackLRV3[0],
-                CardBackRot: GameUtil.CardBackRotLRV3[0],
-                CardsPos: GameUtil.CardsPosLRV3[0],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[0],
-                BubblePos: GameUtil.BubblePosLRV3[0],
-                InsurancePos: GameUtil.InsurancePosLRV3[0],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[0],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[0],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[0],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[0],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[0],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[1],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[8],
-                CardBackRot: GameUtil.CardBackRotLRV3[1],
-                CardsPos: GameUtil.CardsPosLRV3[1],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[8],
-                BubblePos: GameUtil.BubblePosLRV3[8],
-                InsurancePos: GameUtil.InsurancePosLRV3[8],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[8],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[8],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[8],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[8],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[3],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[7],
-                CardBackRot: GameUtil.CardBackRotLRV3[3],
-                CardsPos: GameUtil.CardsPosLRV3[3],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[7],
-                BubblePos: GameUtil.BubblePosLRV3[7],
-                InsurancePos: GameUtil.InsurancePosLRV3[7],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[7],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[7],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[7],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[7],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[7],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[5],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[6],
-                CardBackRot: GameUtil.CardBackRotLRV3[5],
-                CardsPos: GameUtil.CardsPosLRV3[5],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[6],
-                BubblePos: GameUtil.BubblePosLRV3[6],
-                InsurancePos: GameUtil.InsurancePosLRV3[6],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[6],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[6],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[6],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[6],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[6],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[7],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[5],
-                CardBackRot: GameUtil.CardBackRotLRV3[7],
-                CardsPos: GameUtil.CardsPosLRV3[7],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[9],
-                BubblePos: GameUtil.BubblePosLRV3[5],
-                InsurancePos: GameUtil.InsurancePosLRV3[5],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[5],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[5],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[5],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[5],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[5],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[9],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[3],
-                CardBackRot: GameUtil.CardBackRotLRV3[9],
-                CardsPos: GameUtil.CardsPosLRV3[9],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[3],
-                BubblePos: GameUtil.BubblePosLRV3[3],
-                InsurancePos: GameUtil.InsurancePosLRV3[3],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[3],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[3],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[3],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[3],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[3],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[11],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[2],
-                CardBackRot: GameUtil.CardBackRotLRV3[11],
-                CardsPos: GameUtil.CardsPosLRV3[11],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[2],
-                BubblePos: GameUtil.BubblePosLRV3[2],
-                InsurancePos: GameUtil.InsurancePosLRV3[2],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[2],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[2],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[2],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[2],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[2],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[13],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[1],
-                CardBackRot: GameUtil.CardBackRotLRV3[13],
-                CardsPos: GameUtil.CardsPosLRV3[13],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[1],
-                BubblePos: GameUtil.BubblePosLRV3[1],
-                InsurancePos: GameUtil.InsurancePosLRV3[1],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[1],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[1],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[1],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[1],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[1],
-            },
-        ],
-        9: [
-
-            {
-                Pos: GameUtil.SeatPosV3[0],
-                BankerPos: GameUtil.BankerLRV3[0],
-                CardBackPos: GameUtil.CardBackLRV3[0],
-                CardBackRot: GameUtil.CardBackRotLRV3[0],
-                CardsPos: GameUtil.CardsPosLRV3[0],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[0],
-                BubblePos: GameUtil.BubblePosLRV3[0],
-                InsurancePos: GameUtil.InsurancePosLRV3[0],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[0],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[0],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[0],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[0],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[0],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[1],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[8],
-                CardBackRot: GameUtil.CardBackRotLRV3[1],
-                CardsPos: GameUtil.CardsPosLRV3[1],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[8],
-                BubblePos: GameUtil.BubblePosLRV3[8],
-                InsurancePos: GameUtil.InsurancePosLRV3[8],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[8],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[8],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[8],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[8],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[8],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[3],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[7],
-                CardBackRot: GameUtil.CardBackRotLRV3[3],
-                CardsPos: GameUtil.CardsPosLRV3[3],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[7],
-                BubblePos: GameUtil.BubblePosLRV3[7],
-                InsurancePos: GameUtil.InsurancePosLRV3[7],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[7],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[7],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[7],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[7],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[7],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[5],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[6],
-                CardBackRot: GameUtil.CardBackRotLRV3[5],
-                CardsPos: GameUtil.CardsPosLRV3[5],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[6],
-                BubblePos: GameUtil.BubblePosLRV3[6],
-                InsurancePos: GameUtil.InsurancePosLRV3[6],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[6],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[6],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[6],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[6],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[6],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[6],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[5],
-                CardBackRot: GameUtil.CardBackRotLRV3[6],
-                CardsPos: GameUtil.CardsPosLRV3[6],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[10],
-                BubblePos: GameUtil.BubblePosLRV3[5],
-                InsurancePos: GameUtil.InsurancePosLRV3[5],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[5],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[5],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[5],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[5],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[5],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[8],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[4],
-                CardBackRot: GameUtil.CardBackRotLRV3[8],
-                CardsPos: GameUtil.CardsPosLRV3[8],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[9],
-                BubblePos: GameUtil.BubblePosLRV3[4],
-                InsurancePos: GameUtil.InsurancePosLRV3[4],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[4],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[4],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[4],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[4],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[4],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[9],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[3],
-                CardBackRot: GameUtil.CardBackRotLRV3[9],
-                CardsPos: GameUtil.CardsPosLRV3[9],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[3],
-                BubblePos: GameUtil.BubblePosLRV3[3],
-                InsurancePos: GameUtil.InsurancePosLRV3[3],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[3],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[3],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[3],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[3],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[3],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[11],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[2],
-                CardBackRot: GameUtil.CardBackRotLRV3[11],
-                CardsPos: GameUtil.CardsPosLRV3[11],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[2],
-                BubblePos: GameUtil.BubblePosLRV3[2],
-                InsurancePos: GameUtil.InsurancePosLRV3[2],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[2],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[2],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[2],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[2],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[2],
-            },
-
-            {
-                Pos: GameUtil.SeatPosV3[13],
-                BankerPos: GameUtil.BankerLRV3[1],
-                CardBackPos: GameUtil.CardBackLRV3[1],
-                CardBackRot: GameUtil.CardBackRotLRV3[13],
-                CardsPos: GameUtil.CardsPosLRV3[13],
-                CurRoundHaveBetPos: GameUtil.CurRoundHaveBetPosLRV3[1],
-                BubblePos: GameUtil.BubblePosLRV3[1],
-                InsurancePos: GameUtil.InsurancePosLRV3[1],
-                AoMaHaInsurancePos: GameUtil.AoMaHaInsurancePosLRV3[1],
-                InsurancebubaoPos: GameUtil.InsuranceBubaoPosLRV3[1],
-                AoMaHaInsurancebubaoPos: GameUtil.AoMaHaInsuranceBubaoPosLRV3[1],
-                InsurancetoubaoPos: GameUtil.InsuranceToubaoPosLRV3[1],
-                AoMaHaInsurancetoubaoPos: GameUtil.AoMaHaInsuranceToubaoPosLRV3[1],
-            },
-        ],
-    };
 
     /// <summary>
     /// 判断是否是短牌
@@ -1267,15 +502,7 @@ export default class GameUtil {
     /// 牌局分池位置
     /// </summary>
     public static readonly TexasPots: cc.Vec3[] = [
-        // cc.v3(-71.8, 103),
-        // cc.v3(-332, -130),
-        // cc.v3(-65, -62.3),
-        // cc.v3(295, -130),
-        // cc.v3(-332, -130),
-        // cc.v3(-65, -146.4),
-        // cc.v3(295, -130),
-        // cc.v3(-332, -230.8),
-        // cc.v3(-65, -230.8),
+
         cc.v3(0, 103),
 
         cc.v3(-207, -90),
@@ -1714,8 +941,6 @@ export default class GameUtil {
 
 }
 (window as any).GameUtil = GameUtil;
-
-
 
 
     // public static GetCardNameByNum(cardNum: number): string {

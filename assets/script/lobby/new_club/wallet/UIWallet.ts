@@ -688,7 +688,17 @@ let changeItem = {
     },
     get opName() {
 
-        let str = GC.language.getLocal(`OpCodeString_${changeItem.data.op_code}`);
+        let str = "";
+        //暂时纠错一下
+        if (changeItem.data.op_code == "EXCHLOCK") {
+            let r = i18nMgr.Get("OpCodeString_EXCHLOCK");
+            if (r == "OpCodeString_EXCHLOCK") {
+                r = i18nMgr.Get("OpCodeString_EXCHUNLOCK");
+            }
+            str = r;
+        } else {
+            str = GC.language.getLocal(`OpCodeString_${changeItem.data.op_code}`);
+        }
 
         let after = changeItem.data.src_room_id > 0 ? ` · ${changeItem.data.src_room_id}` : "";
 

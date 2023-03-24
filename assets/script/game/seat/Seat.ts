@@ -19,7 +19,7 @@ import { GameCache } from "../GameCache";
 import { SeatFSM } from "../SeatFSM";
 import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from "../SeatStateHandler";
 import SeatUIRC, { CardUIInfo } from "../SeatUIRC";
-import GameUtil, { RoomType } from "../util/GameUtil";
+import GameUtil, { RoomType, seat_info } from "../util/GameUtil";
 
 /// </summary>
 export enum VoiceprintState {
@@ -95,7 +95,7 @@ export default class Seat {
     public optTotalTime: number = 0;
     public isCountDown: boolean = false;
 
-    public seatUIInfo: SeatUIInfo = null;
+    public seatUIInfo: seat_info = null;
 
     protected PlayerCount: number = 0;//最大人数
 
@@ -196,26 +196,18 @@ export default class Seat {
         this.uirc.node.stopAllActions();
     }
 
-
-    // public UpdateSeatUIInfo_1(dir: number) {
-    //     let infos = GameUtil.SeatUIInfos[GameCache.Instance.seat_count];
-    //     this.ClientSeatId = dir;
-    //     this.seatUIInfo = infos[dir];
-
-    // }
-
     //刷新座位信息 dir方位 (0下,顺时针)
     public UpdateSeatUIInfo(dir: number): void {
-        let info = GameUtil.SeatUIInfos[GameCache.Instance.seat_count][dir];
+
+        let info: seat_info = GameUtil.pos_config[GameCache.Instance.seat_count][dir];
+        //GameUtil.SeatUIInfos[GameCache.Instance.seat_count][dir];
         this.PlayerCount = GameCache.Instance.seat_count;
         this.ClientSeatId = dir;
-        //+ this.ui.name.substring(this.ui.name.length - 1);
         this.seatUIInfo = info;
-        this.ui.setPosition(info.Pos);
-        console.log("setpos == >> ", info.Pos.toString());
-        this.uirc.imageBanker.setPosition(info.BankerPos);
-        this.uirc.transSmallCardBacks.setPosition(info.CardBackPos);
-        this.uirc.transCurRoundHaveBet.setPosition(info.CurRoundHaveBetPos);
+        this.ui.setPosition(info.seat_pos);
+        this.uirc.imageBanker.setPosition(info.bank_pos);
+        this.uirc.transSmallCardBacks.setPosition(info.card_back_pos);
+        this.uirc.transCurRoundHaveBet.setPosition(info.bet_pos);
 
         //是自己座位设置筹码数量位置
         // if (this.IsMySeat) {//this.ClientSeatId == 0 && 
@@ -233,7 +225,7 @@ export default class Seat {
 
         let mRectTransform = this.uirc.imageBubble.node;
         //mRectTransform.SetParent(transBubble);
-        mRectTransform.setPosition(info.BubblePos);
+        mRectTransform.setPosition(info.bubble_pos);
 
 
         // mRectTransform = imageBubbleInsurance.rectTransform;
@@ -403,7 +395,7 @@ export default class Seat {
             sequence.push(cc.delayTime(.5));
 
             this.sequencePlayFoldAnimation.sequence.apply(this.sequencePlayFoldAnimation, sequence).call(() => {
-                this.uirc.transSmallCardBacks.position = this.seatUIInfo.CardBackPos;
+                this.uirc.transSmallCardBacks.position = this.seatUIInfo.card_back_pos;
                 for (let i = 0, n = this.listImageSmallCardBack.length; i < n; i++) {
                     this.listImageSmallCardBack[i].node.color = cc.Color.WHITE;
                     this.listImageSmallCardBack[i].node.opacity = 255;
@@ -1060,7 +1052,7 @@ export default class Seat {
             //listImageSmallCardBack[i].transform.localRotation = Quaternion.Euler(GetBackSmallCardRot(i));
         }
 
-        this.uirc.transSmallCardBacks.setPosition(this.seatUIInfo.CardBackPos);
+        this.uirc.transSmallCardBacks.setPosition(this.seatUIInfo.card_back_pos);
         this.uirc.transSmallCardBacks.active = true;
     }
     /// <summary>
@@ -1094,11 +1086,11 @@ export default class Seat {
 
         let imageBanker: cc.Node = this.uirc.imageBanker;
 
-        imageBanker.setPosition(GameUtil.ChangeToLocalPos(lastBankerSeat.seatUIInfo.BankerPos, lastBankerSeat.ui, this.ui));
+        imageBanker.setPosition(GameUtil.ChangeToLocalPos(lastBankerSeat.seatUIInfo.bank_pos, lastBankerSeat.ui, this.ui));
 
         imageBanker.active = true;
 
-        cc.tween(imageBanker).to(.3, { position: this.seatUIInfo.BankerPos }).start();
+        cc.tween(imageBanker).to(.3, { position: this.seatUIInfo.bank_pos }).start();
 
         return 0.3;
 
@@ -1149,24 +1141,27 @@ export default class Seat {
         else {
             //textCurRoundHaveBet.alignment = TextAnchor.MiddleLeft;
         }
-        if (mTmpV3.y > GameUtil.SeatPosV3[0].y && mTmpV3.y < GameUtil.SeatPosV3[7].y) {
-            if (mTmpV3.x < 0) {
-                // 左
-                //mRectTransform.pivot = new Vector2(0, 0.5f);
-                //mRectTransform.localPosition = new Vector3(-mOffset, 0);
-            }
-            else if (mTmpV3.x > 0) {
-                // 右
-                //mRectTransform.pivot = new Vector2(1f, 0.5f);
-                //mRectTransform.localPosition = new Vector3(mOffset, 0);
-            }
-            this.uirc.imageIconChip.node.setPosition(cc.Vec2.ZERO);
-        }
-        else {
-            //mRectTransform.pivot = new Vector2(0, 0.5f);
-            //mRectTransform.localPosition = new Vector3(-mRectTransform.sizeDelta.x / 2f - mOffset, mRectTransform.localPosition.y);
-            this.uirc.imageIconChip.node.setPosition(cc.Vec2.ZERO);
-        }
+        // if (mTmpV3.y > GameUtil.SeatPosV3[0].y && mTmpV3.y < GameUtil.SeatPosV3[7].y) {
+        //     if (mTmpV3.x < 0) {
+        //         // 左
+        //         //mRectTransform.pivot = new Vector2(0, 0.5f);
+        //         //mRectTransform.localPosition = new Vector3(-mOffset, 0);
+        //     }
+        //     else if (mTmpV3.x > 0) {
+        //         // 右
+        //         //mRectTransform.pivot = new Vector2(1f, 0.5f);
+        //         //mRectTransform.localPosition = new Vector3(mOffset, 0);
+        //     }
+        //     this.uirc.imageIconChip.node.setPosition(cc.Vec2.ZERO);
+        // }
+        // else {
+        //     //mRectTransform.pivot = new Vector2(0, 0.5f);
+        //     //mRectTransform.localPosition = new Vector3(-mRectTransform.sizeDelta.x / 2f - mOffset, mRectTransform.localPosition.y);
+        //     this.uirc.imageIconChip.node.setPosition(cc.Vec2.ZERO);
+        // }
+
+        this.uirc.imageIconChip.node.setPosition(cc.Vec2.ZERO);
+
 
         this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
         this.uirc.imageIconChip.node.active = true;

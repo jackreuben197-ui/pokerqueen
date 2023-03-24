@@ -479,8 +479,22 @@ export default class TexasGame {
     }
     //////////////////////////////////////////////////////////////////////////
 
+    //创建座位UI
+    createSeatUI() {
+        if (this.seatUI_pool.length) return this.seatUI_pool.pop();
+        return cc.instantiate(this.uirc.Seat_Temp);
+    }
+    //移除座位UI
+    removeSeatUI(seatUI: cc.Node) {
 
-
+        if (seatUI) {
+            seatUI.parent = null;
+            seatUI.scale = 1;
+            seatUI.stopAllActions();
+            seatUI.active = false;
+            this.seatUI_pool.push(seatUI);
+        }
+    }
 
     public EnterRoom() {
         this.TexasGameUtils.EnterRoom();
@@ -520,7 +534,7 @@ export default class TexasGame {
             this.ClearTableUI();
             this.HideCancelTrustBtn();
             this.HideWaitBlindBtn();
-            this.InitSeatByCount();
+            this.InitAllEmptySeat();
             this.InitOperationPos();
             this.HideAllPots();
         }
@@ -1077,23 +1091,22 @@ export default class TexasGame {
     public ResetSeatUIInfo(clientSeatId: number): void {
         if (clientSeatId == 0) return;
         this.dicSeatOnlyClient.clear();
-        let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[this.listSeat.length];
-        for (let i = 0, n = mInfos.length; i < n; i++) {
-            let mSeat: Seat = this.listSeat[i];
-            let tmp: number = mSeat.ClientSeatId - clientSeatId;
-            if (tmp < 0)
-                tmp += mInfos.length;
-            //mSeat.ClientSeatId = tmp;
-            //mSeat.ui.name = `Seat${tmp}`;
-            this.dicSeatOnlyClient.set(tmp, mSeat);
+        let seat_count = GameCache.Instance.seat_count;
+        let infos = GameUtil.pos_config[seat_count];
+
+        infos.forEach((info, index) => {
+            let seat: Seat = this.listSeat[index];
+            let tmp_index: number = index - clientSeatId;
+            if (tmp_index < 0) tmp_index += seat_count;
+            this.dicSeatOnlyClient.set(tmp_index, seat);
             //座位位移
-            cc.tween(mSeat.ui).to(0.3, { position: mInfos[tmp].Pos }).call(() => {
+            cc.tween(seat.ui).to(0.3, { position: infos[tmp_index].seat_pos }).call(() => {
                 cc.log("座位运动完毕");
-                //mSeat.UpdateSeatUIInfo(mInfos[tmp], this.listSeat.length);
-                mSeat.UpdateSeatUIInfo(tmp);
+                //更新方位配置
+                seat.UpdateSeatUIInfo(tmp_index);
                 this.SeatMoveEnd();
             }).start();
-        }
+        });
         this.SeatPlayRecord.SeatMove = true;
     }
 
@@ -2786,23 +2799,6 @@ export default class TexasGame {
             ShowCardsSeat: null,
         }
     }
-    //创建座位UI
-    createSeatUI() {
-        if (this.seatUI_pool.length) return this.seatUI_pool.pop();
-        return cc.instantiate(this.uirc.Seat_Temp);
-    }
-    //移除座位UI
-    removeSeatUI(seatUI: cc.Node) {
-        console.log("removeSeatUI", seatUI?.name);
-        if (seatUI) {
-            seatUI.parent = null;
-            seatUI.scale = 1;
-            seatUI.stopAllActions();
-            seatUI.active = false;
-            this.seatUI_pool.push(seatUI);
-            cc.log("移除 seatUI ");
-        }
-    }
     public InitPublicLocalPos() {
         // 第一套,第二套 公共牌默认位置
         if (this.listDefaultPublicCardsLPos == null) {
@@ -2959,20 +2955,15 @@ export default class TexasGame {
         return cards;
     }
 
-    //初始化座位
-    public InitSeatByCount() {
-        //let mInfos: SeatUIInfo[] = GameUtil.SeatUIInfos[seatCount];
+    //初始化当前房间内座位初始状态
+    public InitAllEmptySeat() {
         let count = GameCache.Instance.seat_count;
         for (let i = 0; i < count; i++) {
             let seatUI = this.createSeatUI();
             seatUI.active = true;
-            seatUI.parent = this.uirc.Seats;
-            //seatUI.scale = 1;
-            //seatUI.name = `Seat${i}`;
-            //seatUI.setPosition(mInfos[i].Pos);
+            seatUI.parent = this.uirc.seats_content;
             let seat: Seat = new Seat(i, seatUI);
             seat.UpdateSeatUIInfo(i);
-            //seat.UpdateSeatUIInfo_1(i);
             this.listSeat.push(seat);
             this.dicSeatOnlyClient.set(seat.ClientSeatId, seat);
         }
@@ -3159,12 +3150,6 @@ export default class TexasGame {
 
     }
 
-    CanClick(): boolean {
-        if (GlobalSession.NowTimeMS - this.lastClickTime > 500) {
-            return true;
-        }
-        return false;
-    }
     ///////////////////////////////////////////////////////////////////重构部分
     //多套公共牌
     public public_cards: number[][];
@@ -3247,8 +3232,8 @@ export default class TexasGame {
             ).then(
                 (res: any) => {
                     if (res.data?.data) {
-                        this.uirc.Button_Msg.getChildByName("red_icon").active = res.data.data.length > 0;
-                        this.uirc.Button_Msg.getChildByName("normal_icon").active = !(res.data.data.length > 0);
+                        this.uirc.btn_msg.getChildByName("red_icon").active = res.data.data.length > 0;
+                        this.uirc.btn_msg.getChildByName("normal_icon").active = !(res.data.data.length > 0);
                     }
                 },
                 (res: any) => {
@@ -3340,6 +3325,14 @@ export default class TexasGame {
         //GC.bundle.get(Bundle_Texas).releaseAll();
         //SceneManager.Instance.removeScene(UIDefine.UITexas);
 
+    }
+    //判断是否能够点击
+    CanClick(): boolean {
+        if (GlobalSession.NowTimeS - this.lastClickTime > 1) {
+            return true;
+        }
+        UIComponent.Instance.ToastLanguage("clickNum");
+        return false;
     }
 
 }

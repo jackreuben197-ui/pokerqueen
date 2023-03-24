@@ -10,6 +10,15 @@ export class ClientMessageRoomers extends jspb.Message {
   getRoom(): protobuf_holdem_define_pb.Room | undefined;
   setRoom(value?: protobuf_holdem_define_pb.Room): void;
 
+  getHistory(): boolean;
+  setHistory(value: boolean): void;
+
+  getHistoryOffset(): number;
+  setHistoryOffset(value: number): void;
+
+  getHistoryLimit(): number;
+  setHistoryLimit(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ClientMessageRoomers.AsObject;
   static toObject(includeInstance: boolean, msg: ClientMessageRoomers): ClientMessageRoomers.AsObject;
@@ -23,6 +32,9 @@ export class ClientMessageRoomers extends jspb.Message {
 export namespace ClientMessageRoomers {
   export type AsObject = {
     room?: protobuf_holdem_define_pb.Room.AsObject,
+    history: boolean,
+    historyOffset: number,
+    historyLimit: number,
   }
 }
 
@@ -43,6 +55,15 @@ export class ServerMessageRoomers extends jspb.Message {
   setPlayersList(value: Array<protobuf_holdem_define_pb.PlayerSummary>): void;
   addPlayers(value?: protobuf_holdem_define_pb.PlayerSummary, index?: number): protobuf_holdem_define_pb.PlayerSummary;
 
+  getHistoryOffset(): number;
+  setHistoryOffset(value: number): void;
+
+  getHistoryLimit(): number;
+  setHistoryLimit(value: number): void;
+
+  getTotal(): number;
+  setTotal(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageRoomers.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageRoomers): ServerMessageRoomers.AsObject;
@@ -59,6 +80,9 @@ export namespace ServerMessageRoomers {
     insurance: number,
     observersList: Array<protobuf_holdem_define_pb.Roomer.AsObject>,
     playersList: Array<protobuf_holdem_define_pb.PlayerSummary.AsObject>,
+    historyOffset: number,
+    historyLimit: number,
+    total: number,
   }
 }
 
