@@ -26,6 +26,9 @@ export class GameCache {
     /// 用户user id
     /// </summary>
     public nUserId: number = 0;
+
+    /// 短用户id
+    public userId: number = 0;
     /// <summary>
     /// 是否首次登录0、1
     /// </summary>
@@ -241,6 +244,12 @@ export class GameCache {
     public kDouNum: number = 0;
 
     public ClubID: number = 0;
+
+    public TribeId: number = 0;
+
+    public ClubRandomID: number = 0;
+
+    public ClubGold: number = 0;
     /// <summary>
     /// // 延迟看牌0否 1开启
     /// </summary>
@@ -299,7 +308,7 @@ export class GameCache {
 
     public origin_type: number = 0;   // 1 平台，2 联盟，3 公会 4 朋友桌
     public share_table: number = 0; //是否共享牌桌及共享牌桌类型  1 不共享 2 USDT桌 3 联盟币桌
-    public gold_type: number = 0;//
+    public gold_type: number = 0;//房间币种类型，1 联盟币， 2 usdt, 3 记分牌
 
 
     //public limit_bring_in: number = null  //是否开启带入  0/1
@@ -360,6 +369,9 @@ export class GameCache {
         GameCache.Instance.FriendsTableCode = room_info.invitation_code;
         GameCache.Instance.FriendsTableLimitBringIn = room_info.limit_bring_in > 0;
 
+        GameCache.Instance.ClubID = room_info.club_id;
+        GameCache.Instance.TribeId = room_info.tribe_id;
+
         console.log("GameCache.Instance.gold_type", room_info.gold_type);
     }
 
@@ -385,5 +397,7 @@ export interface EnterRoomInfo {
     share_table?;
     gold_type?;
     anti_cheat_type?;
+    club_id?;
+    tribe_id?;
 }
 (window as any).GameCache = GameCache;

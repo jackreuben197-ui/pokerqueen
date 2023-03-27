@@ -254,7 +254,7 @@ export default class UIOperationComponent extends UIBase {
 
         actions.forEach(action => {
 
-            this.ActionMap.set(action.action, action);
+            //this.ActionMap.set(action.action, action);
 
             switch (action.action) {
 
@@ -330,14 +330,14 @@ export default class UIOperationComponent extends UIBase {
         let min, max, action_min, action_max;
         //相同
         if (action.max == action.min) {
-            min = max = Math.ceil(action.max / this.calibrationWeight);
+            //min = max = Math.ceil(action.max / this.calibrationWeight);
             //this.sliderFreeCall.SetMinMax(0, 0);
             //this.textFreeCall.string = `ALL IN`;
             //this.textFreeCallMax.string = `${action.max / 100}`;
 
             this.slider.show({
-                min_value: min,
-                max_value: min,
+                min_value: action.max / 100,
+                max_value: action.max / 100,
                 step: 0,
                 change: this.sliderChange,
                 own: this
@@ -371,13 +371,17 @@ export default class UIOperationComponent extends UIBase {
                 this.slider_allin = false;
 
                 this.slider.show({
-                    min_value: action_min / this.calibrationWeight,
+                    min_value: min,
                     max_value: max,
                     step: 1,
                     change: this.sliderChange,
                     own: this
                 });
 
+
+                console.log("滑竿 --- ", min, max);
+
+                //this.sliderChange();
             }
             //设置滑动条组件
             //滑动条起始位置的刻度

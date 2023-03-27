@@ -26,6 +26,8 @@ import MTTGameMessageHandler from "../messageHandler/MTTGameMessageHandler";
 import UIMTTTimeComponent from "../ui/UIMTTTimeComponent";
 import MTTGameUtils from "../util/MTTGameUtils";
 import { GM } from "../../gm/GMAPI";
+import { APIOrgClubUserInfo, Web_Room_Center_Mtt_User_Wallet, Web_User_Room, WWW } from "../../net/https/WebRequest";
+import UITexasMenu from "../ui/UITexasMenu";
 
 enum MTTMatchStatus // mtt比赛状态
 {
@@ -502,53 +504,142 @@ export default class MTTGame extends TexasGame {
         if (!this.hadRequestEnterRoom) return;
         super.onClickCurSituation();
     }
+
+
+
+    public override refreshCoinAndChip(menu: UITexasMenu) {
+
+        if (GameCache.Instance.match_id > 0) {
+
+            WWW.Instance.CommonAPI(
+                {
+                    web_class: Web_Room_Center_Mtt_User_Wallet,
+                    api_id: GameCache.Instance.match_id
+                }
+            ).then(
+                (res: any) => {
+                    if (res.data.wallet != null) {
+                        if (res.data.wallet.length == 1) {
+                            GameCache.Instance.ClubID = res.data.wallet[0].club_id;
+                            GameCache.Instance.game_type = res.data.wallet[0].gold_type;
+                            GameCache.Instance.ClubRandomID = res.data.wallet[0].club_random_id;
+                            GameCache.Instance.ClubGold = res.data.wallet[0].gold;
+                        }
+                        else if (res.data.wallet.length > 1) {
+                            for (let i = 0; i < res.data.wallet.length; i++) {
+                                let wallet = res.data.wallet[i];
+                                if (GameCache.Instance.TribeId == wallet.tribe_id) {
+                                    GameCache.Instance.ClubID = wallet.club_id;
+                                    GameCache.Instance.game_type = wallet.gold_type;
+                                    GameCache.Instance.ClubRandomID = wallet.club_random_id;
+                                    GameCache.Instance.ClubGold = wallet.gold;
+                                    break;
+                                }
+                            }
+                        }
+                        if (GameCache.Instance.ClubID > 0) {
+
+
+                            WWW.Instance.CommonAPI(
+                                {
+                                    web_class: APIOrgClubUserInfo,
+                                    body: {
+                                        club_id: GameCache.Instance.ClubID,
+                                        user_id: GameCache.Instance.userId,
+                                    }
+                                }
+                            ).then(
+                                (res: any) => {
+
+                                    if (GameCache.Instance.game_type == 1) { //1 联盟币， 2 usdt, 3 记分牌
+
+                                        menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(res.data.user_info.gold);
+
+                                    }
+                                    else if (GameCache.Instance.game_type == 2) {
+
+                                        menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(res.data.user_info.usdt);
+                                    }
+                                    else if (GameCache.Instance.game_type == 3) {
+
+                                        /////////////////////////////////////////////////////
+                                        WWW.Instance.CommonAPI(
+                                            {
+                                                web_class: Web_User_Room,
+                                                api_id: GameCache.Instance.room_id,
+                                            }
+                                        ).then(
+                                            (res: any) => {
+                                                if (res.data?.last_bring_out != null) {
+                                                    menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = `${res.data.apply_bring_in}`;
+                                                }
+                                            },
+                                            () => {
+
+                                            }
+                                        );
+
+                                        /////////////////////////////////////////////////////
+                                    }
+                                },
+                                () => {
+
+                                }
+                            );
+                        }
+                        //buttonAddBean.transform.Find("chip_bg").gameObject.SetActive(GameCache.Instance.FriendsTableLimitBringIn);
+
+                        menu.$node_coin.getChildByName("uc").active = GameCache.Instance.game_type == 1;
+                        menu.$node_coin.getChildByName("gc").active = GameCache.Instance.game_type == 2;
+                        menu.$node_coin.getChildByName("add").active = menu.$node_coin.getChildByName("click").active = GameCache.Instance.game_type == 1 || GameCache.Instance.game_type == 2;
+                        let chips = GameCache.Instance.CurGame.mainPlayer?.cacheStoreChips || 0;
+                        menu.$node_storage.active = chips > 0;
+
+                    }
+
+                },
+                (res: any) => {
+
+                }
+            )
+        }
+
+    }
+
+
+
     //刷新边菜单
     public override UpdateMenu() {
-        //更新金豆
-        UIMineModel.mInstance.ObtainUserInfo(pDto => {
-
-        });
-
-        let UserSitdown = this.UserSitdown();
-
-        let menu = this.uirc.UITexasMenu_Com;
-
-        menu.MenuButtons_Dic.Button_Standup.node.active = false;
-
-        menu.MenuButtons_Dic.Button_AddChips.node.active = false;
-
-        menu.MenuButtons_Dic.Button_LeaveDesk.node.active = false;
-
-        //
-        menu.MenuButtons_Dic.Button_Setting.node.active = true;
-
-        menu.MenuButtons_Dic.Button_Exit.node.active = true;
-
-        menu.MenuButtons_Dic.Button_SetAutoOnTable.node.active = false;
-
-        //this.MenuButtons_Dic.Button_Rule.node.getChildByName("Text").getComponent(cc.Label).string = i18nMgr.Get("UITexas_RuleOfTips");
 
 
-        if (UserSitdown) //已坐下
+        let menu = this.uirc.UITexasMenu;
+
+        this.refreshCoinAndChip(menu);
+
+
+
+        //buttonRule.transform.Find("Text").GetComponent<Text>().text = LanguageManager.Get("UITexas_RuleOfTips");
+
+        menu.clearOptions();
+
+        let show = [3, 10];//设置|离开
+
+
+        if (this.UserSitdown()) //已坐下
         {
-            menu.MenuButtons_Dic.Button_Trust.node.active = true;
 
-            this.uirc.setButtonInteractable(menu.MenuButtons_Dic.Button_Trust.node, !this.uirc.Button_CancelTrust.activeInHierarchy);
+            show.push(8);
 
-        }
-        else //未坐下
-        {
-            menu.MenuButtons_Dic.Button_Trust.node.active = false;
+            menu.setOptionInteractable(8, !this.uirc.Button_CancelTrust.active);
+
         }
 
         if (this.gameStarted) {
-
-            this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_Trust.node, true);
+            menu.setOptionInteractable(8, true);
         }
         else {
-            this.__MenuButtonInteractable(menu.MenuButtons_Dic.Button_Trust.node, false);
+            menu.setOptionInteractable(8, false);
         }
-        menu.MenuButtons_Dic.Button_Rule.node.active = false;
 
     }
 

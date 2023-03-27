@@ -2781,7 +2781,7 @@ export class APIOrgGetNewMessNum extends WebCommon {
     //     "msg_id": number
     // } = null;
 }
-
+//公会成员的详细信息
 export class APIOrgClubUserInfo extends WebCommon {
     public static API: string = "/api/org/club/user/info";
 }
@@ -2982,6 +2982,23 @@ export class Web_GuildDataVipInfo extends WebCommon {
     static API: string = "/api/stats/club_data_stats/vip_game";
 }
 
+//MTT 报名可用钱包列表
+export class Web_Room_Center_Mtt_User_Wallet extends WebCommon {
+    static API: string = "/api/roomcenter/mtt/{id}/user_wallet";
+    // public sealed class Data
+    // 	{
+    // 		public Wallet wallet { get; set; }
+    // 	}
+    // 	public sealed class Wallet
+    // 	{
+    // 		public int user_id { get; set; }
+    // 		public int club_id { get; set; }
+    // 		public int tribe_id { get; set; }
+    // 		public long gold { get; set; }
+    // 		public int gold_type { get; set; }
+    // 		public string club_name { get; set; }
+    // 	}
+}
 /**
  * 注册全局访问
  */

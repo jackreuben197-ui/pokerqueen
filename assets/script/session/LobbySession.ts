@@ -214,6 +214,7 @@ export default class LobbySession {
 
         GameCache.Instance.nUserId = info.un_id;
         // GameCache.Instance.gold = info.gold;
+        GameCache.Instance.userId = info.user_id;
         GC.data.user.info.gold = info.gold;
         GameCache.Instance.strPhone = info.phone;
         GameCache.Instance.kDouNum = 0;
