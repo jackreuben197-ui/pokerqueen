@@ -108,7 +108,7 @@ export default class UITexas extends BaseScene {
     Seat_Temp: cc.Node = null;
 
 
-    textAlreadAnte: cc.Label = null;
+    Text_AlreadAnte: cc.Label = null;
     //个性设置界面
     //UITexasSetting: cc.Node = null;
 
@@ -238,7 +238,7 @@ export default class UITexas extends BaseScene {
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
 
-        this.textAlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
+        this.Text_AlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
 
 
         this.transPots = this.getChildNodeOrComponent("Pots");
@@ -489,6 +489,7 @@ export default class UITexas extends BaseScene {
     private onClickAddOn() {
         this.game.onClickAddOn();
     }
+    //加时点击
     private onClickDelay() {
         this.game.onClickDelay();
     }
@@ -509,7 +510,7 @@ export default class UITexas extends BaseScene {
     private click_side_button(e: cc.Button) {
 
         if (this.game.CanClick() == false) return;
-        this.game.lastClickTime = GlobalSession.NowTimeS;
+        this.game.lastClickTime = GlobalSession.NowTimeMS;
         switch (e.node) {
             case this.btn_menu://菜单按钮
                 this.ShowMenu();

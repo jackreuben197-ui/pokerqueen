@@ -1,4 +1,5 @@
 
+import SliderPlus from "../../common/SliderPlus";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
@@ -75,8 +76,10 @@ export default class UIOperationComponent extends UIBase {
 
     textCall: cc.Label = null;
 
-    sliderFreeCall: GGSlider = null;
-    buttonSliderHandle: cc.Node = null;
+    //sliderFreeCall: GGSlider = null;
+    //buttonSliderHandle: cc.Node = null;
+    slider: SliderPlus = null;
+    slider_bar: cc.Node = null;
 
     imageCheckCountDown: cc.Sprite = null;
     imageFoldCountDown: cc.Sprite = null;
@@ -116,7 +119,11 @@ export default class UIOperationComponent extends UIBase {
     private UI: cc.Node = null;
 
     //滑动条最底部位置
-    sliderMin: number = 0;
+    //sliderMin: number = 0;
+
+    //滑动条allin状态 
+    slider_allin: boolean = true;
+    slider_value: number = 0;
 
     ActionMap: Map<number, ActionLimit.AsObject> = new Map;
 
@@ -140,7 +147,8 @@ export default class UIOperationComponent extends UIBase {
         this.imageCheckCountDown = this.getChildNodeOrComponent("Image_CheckCountDown", cc.Sprite);
         this.imageFoldCountDown = this.getChildNodeOrComponent("Image_FoldCountDown", cc.Sprite);
 
-        this.sliderFreeCall = this.getChildNodeOrComponent("Slider_FreeCall", GGSlider);
+        //this.sliderFreeCall = this.getChildNodeOrComponent("Slider_FreeCall", GGSlider);
+        this.slider = this.getChildNodeOrComponent("slider", SliderPlus);
 
         this.textFreeCall = this.getChildNodeOrComponent("Text_FreeCall", cc.Label);
         this.textFreeCallMax = this.getChildNodeOrComponent("Text_FreeCall_Max", cc.Label);
@@ -169,7 +177,7 @@ export default class UIOperationComponent extends UIBase {
 
         this.textCall = this.buttonCall.getChildByName("Text_Call").getComponent(cc.Label);
 
-        this.buttonSliderHandle = this.sliderFreeCall.node.getChildByName("bar");
+        this.slider_bar = this.slider.node.getChildByName("bar");
 
         this.UI = this.getChildNodeOrComponent("UI");
 
@@ -192,9 +200,10 @@ export default class UIOperationComponent extends UIBase {
         this.setButtonClick(this.buttonFreeCallConfirm, this.onClickreeCallConfirm);
         this.setButtonClick(this.imageFreeCallMask, this.onClickFreeCallMask);
         this.setButtonClick(this.buttonFold, this.onClickFold);
-        this.setButtonClick(this.buttonSliderHandle, this.onClickSliderHandle);
+        //this.setButtonClick(this.buttonSliderHandle, this.onClickSliderHandle);
 
-        this.sliderFreeCall.onChange(this.onValueChangeFreeCall.bind(this));
+        //this.sliderFreeCall.onChange(this.onValueChangeFreeCall.bind(this));
+        //this.slider.onChange(this.onValueChangeFreeCall.bind(this));
     }
 
 
@@ -226,8 +235,12 @@ export default class UIOperationComponent extends UIBase {
         console.log("当前时间:> ", this.optCurTime, this.optTotalTime);
 
         this.isCountDown = false;
-        this.sliderMin = 0;
+        //this.sliderMin = 0;
         this.show(this.operationData.actionsList);
+
+        this.slider_allin = true;
+
+
 
     }
 
@@ -318,9 +331,20 @@ export default class UIOperationComponent extends UIBase {
         //相同
         if (action.max == action.min) {
             min = max = Math.ceil(action.max / this.calibrationWeight);
-            this.sliderFreeCall.SetMinMax(0, 0);
-            this.textFreeCall.string = `ALL IN`;
-            this.textFreeCallMax.string = `${action.max / 100}`;
+            //this.sliderFreeCall.SetMinMax(0, 0);
+            //this.textFreeCall.string = `ALL IN`;
+            //this.textFreeCallMax.string = `${action.max / 100}`;
+
+            this.slider.show({
+                min_value: min,
+                max_value: min,
+                step: 0,
+                change: this.sliderChange,
+                own: this
+            });
+
+
+
         } else {
             if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
                 action_max = action.max;
@@ -333,22 +357,40 @@ export default class UIOperationComponent extends UIBase {
 
             if (min >= max) {
                 min = max;
-                this.textFreeCall.string = `ALL IN`;
+                //this.textFreeCall.string = `ALL IN`;
+                this.slider.show({
+                    min_value: min,
+                    max_value: min,
+                    step: 0,
+                    change: this.sliderChange,
+                    own: this
+                });
             } else {
-                this.textFreeCall.string = `${action_min / 100}`;
+                //this.textFreeCall.string = `${action_min / this.calibrationWeight}`;
+
+                this.slider_allin = false;
+
+                this.slider.show({
+                    min_value: action_min / this.calibrationWeight,
+                    max_value: max,
+                    step: 1,
+                    change: this.sliderChange,
+                    own: this
+                });
+
             }
             //设置滑动条组件
             //滑动条起始位置的刻度
-            this.sliderMin = min;
-            this.sliderFreeCall.SetMinMax(min, max);
-            this.textFreeCallMax.string = `${action_max / 100}`;
+            // this.sliderMin = min;
+            // this.sliderFreeCall.SetMinMax(min, max);
+            // this.textFreeCallMax.string = `${action_max / 100}`;
 
         }
         console.log(" >> min max action_min action_max", min, max, action_min, action_max);
 
         this.setTopCallButtons();
 
-        this.sliderFreeCall.onShow({ index: 0 });
+        //this.sliderFreeCall.onShow({ index: 0 });
     }
     // 6 
     private showCall(action: ActionLimit.AsObject): void {
@@ -388,11 +430,19 @@ export default class UIOperationComponent extends UIBase {
         this.actionDataInfo.actionLimit = actionLimit;
         let max = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
         let min = max;
-        this.sliderFreeCall.SetMinMax(min, max);
-        this.textFreeCall.string = `ALL IN`;
-        this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
+        // this.sliderFreeCall.SetMinMax(min, max);
+        // this.textFreeCall.string = `ALL IN`;
+        // this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
         this.setTopCallButtons();
-        this.sliderFreeCall.onShow({ index: 0 });
+        //this.sliderFreeCall.onShow({ index: 0 });
+
+        this.slider.show({
+            min_value: min,
+            max_value: max,
+            step: 0,
+            change: this.sliderChange,
+            own: this
+        });
 
     }
     //10-2
@@ -405,7 +455,8 @@ export default class UIOperationComponent extends UIBase {
     private showFreeCall(show: boolean): void {
         if (show) {
             this.imageFreeCallMask.active = true;
-            this.sliderFreeCall.node.active = true;
+            //this.sliderFreeCall.node.active = true;
+            this.slider.node.active = true;
             this.buttonFreeCallConfirm.active = true;
             this.buttonFreeCall.active = false;
             this.buttonCall0.active = false;
@@ -416,7 +467,8 @@ export default class UIOperationComponent extends UIBase {
         }
         else {
             this.imageFreeCallMask.active = false;
-            this.sliderFreeCall.node.active = false;
+            //this.sliderFreeCall.node.active = false;
+            this.slider.node.active = false;
             this.buttonFreeCallConfirm.active = false;
             this.buttonFreeCall.active = true;
             this.showRaiseButton();
@@ -430,19 +482,26 @@ export default class UIOperationComponent extends UIBase {
 
     //点击自由加注滑块按钮
     private onClickSliderHandle(): void {
-        if (this.sliderFreeCall.moved) return;
+        //if (this.sliderFreeCall.moved) return;
         this.onClickreeCallConfirm();
     }
 
     //点击确定按钮 
     onClickreeCallConfirm() {
 
-        if (this.sliderMin == 0) {
+        // if (this.sliderMin == 0) {
+        //     this.callValue = this.actionDataInfo.AllInAmount;
+        // } else {
+        //     //this.callValue = (this.sliderMin + this.sliderFreeCall.Index) * this.calibrationWeight;
+
+        //     this.callValue = (this.sliderMin + this.sliderFreeCall.Index) * this.calibrationWeight;
+        // }
+
+        if (this.slider_allin) {
             this.callValue = this.actionDataInfo.AllInAmount;
         } else {
-            this.callValue = (this.sliderMin + this.sliderFreeCall.Index) * this.calibrationWeight;
+            this.callValue = this.slider_value * this.calibrationWeight;
         }
-
         this.CheckOpt();
         this.showFreeCall(false);
     }
@@ -453,36 +512,45 @@ export default class UIOperationComponent extends UIBase {
     /// <param name="arg0"></param>
     private onValueChangeFreeCall(arg0: number): void {
 
-        if (this.sliderMin == 0) return;
+        // if (this.sliderMin == 0) return;
 
-        let curr = this.sliderMin + arg0;
+        // let curr = this.sliderMin + arg0;
 
-        if (curr >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
-            this.textFreeCall.string = `ALL IN`;
-            this.textFreeCall.node.color = cc.Color.WHITE;
-            this.textFreeCall.fontSize = 60;
-            //this.buttonSliderHandle.GetComponent<Image>().color = new cc.Color(225, 181, 141, 0);
-            this.buttonSliderHandle.getChildByName("Image").active = true;
-            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("image_orthogon_c");
-        }
-        else if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) && curr >= this.actionDataInfo.actionLimit.max / this.calibrationWeight) {
-            this.textFreeCall.string = `${this.actionDataInfo.actionLimit.max / this.chipScale ^ 0}`;
-            this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
-            this.textFreeCall.fontSize = 45;
-            //this.buttonSliderHandle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-            this.buttonSliderHandle.getChildByName("Image").active = false;
-            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_FreeCall_handle_bg");
-        }
-        else {
-            this.textFreeCall.string = `${curr * this.calibrationWeight / this.chipScale}`;
-            this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
-            this.textFreeCall.fontSize = 45;
-            //this.buttonSliderHandle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-            this.buttonSliderHandle.getChildByName("Image").active = false;
-            //this.buttonSliderHandle.gameObject.GetComponent<Image>().sprite = rc.Get<Sprite>("icon_image_FreeCall_handle_bg");
-        }
+        // if (curr >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
+        //     this.textFreeCall.string = `ALL IN`;
+        //     this.textFreeCall.node.color = cc.Color.WHITE;
+        //     this.textFreeCall.fontSize = 60;
+
+        //     this.buttonSliderHandle.getChildByName("Image").active = true;
+
+        // }
+        // else if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) && curr >= this.actionDataInfo.actionLimit.max / this.calibrationWeight) {
+        //     this.textFreeCall.string = `${this.actionDataInfo.actionLimit.max / this.chipScale ^ 0}`;
+        //     this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
+        //     this.textFreeCall.fontSize = 45;
+
+        //     this.buttonSliderHandle.getChildByName("Image").active = false;
+
+        // }
+        // else {
+        //     this.textFreeCall.string = `${curr * this.calibrationWeight / this.chipScale}`;
+        //     this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
+        //     this.textFreeCall.fontSize = 45;
+
+        //     this.buttonSliderHandle.getChildByName("Image").active = false;
+
+        // }
 
     }
+
+    sliderChange(value: number) {
+
+        this.slider_value = value;
+
+    }
+
+
+
 
     private onClickFreeCallMask(): void {
         this.imageFreeCallMask.active = false;
@@ -841,7 +909,7 @@ export default class UIOperationComponent extends UIBase {
         this.buttonCheck.active = false;
         this.buttonCall.active = false;
         this.buttonAllin.active = false;
-        this.sliderFreeCall.node.active = false;
+        this.slider.node.active = false;
         this.buttonFreeCallConfirm.active = false;
         this.Button_Straddle.active = false;
     }
