@@ -291,6 +291,19 @@ export default class SeatUIRC extends UIBase {
 
                     }
                 )
+            } else {
+
+                UIComponent.Instance.ShowUI<AddClipsData>(
+                    PrefabUI.UIBringIn,
+                    {
+                        bigBlind: GameCache.Instance.CurGame.bigBlind,
+                        smallBlind: GameCache.Instance.CurGame.smallBlind,
+                        currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                        currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                        totalCoin: GC.data.user.info.gold,
+                        tableChips: this.seat.Player.chips,
+                    }
+                )
             }
         }
         else {

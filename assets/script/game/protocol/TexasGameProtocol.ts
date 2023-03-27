@@ -185,15 +185,21 @@ export default class TexasGameProtocol {
 
         this.game.mainPlayer.KeepSeatLeftTime = rec.keepSeatLeftTime;
         if (rec.keepSeatLeftTime > 0) {
-            UIComponent.Instance.Toast(i18nMgr.Get("UITexas_FriendtableapplyBringinTips001") + rec.keepSeatLeftTime + "s");
+            UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${rec.keepSeatLeftTime}s`);
         }
 
         let mSeat: Seat = null;
-        mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.recvSeatId));
+
+        //转换为本地id
+        let local_seat_id: number = this.game.GetLocalSeatID(rec.recvSeatId);
+
+        mSeat = this.game.GetSeatByLocalSeatID(local_seat_id);
+        
         if (null == mSeat)
             return;
 
-        this.game.mainPlayer.seatID = this.game.GetLocalSeatID(rec.recvSeatId);
+        this.game.mainPlayer.seatID = local_seat_id;
+
         mSeat.Player = this.game.mainPlayer;
         mSeat.isBank = false;
         if (!this.game.mainPlayer.isParticipateInTheGame) {
@@ -476,6 +482,9 @@ export default class TexasGameProtocol {
         if (rec.keep && rec.keepSeatReason == Def.KeepSeatReason.KSR_TAKE_SEAT) {
             mSeat.Player.KeepSeatLeftTime = rec.leftTime;
             mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+            if (rec.leftTime > 0) {
+                UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${rec.leftTime}s`);
+            }
             return;
         }
 

@@ -107,7 +107,7 @@ export default class UIAutoBringIn extends UIBasePlus {
     slider_obj = {
         min: 0,
         max: 0,
-        step: 0
+        step: 1
     };
 
     protected lateLoad(): void {
@@ -145,8 +145,6 @@ export default class UIAutoBringIn extends UIBasePlus {
                 own: this,
             });
             this.sliderChange(min);
-
-
 
             //com
             this.GGASCom$com.data = {
