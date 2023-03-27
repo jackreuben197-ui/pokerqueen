@@ -8,7 +8,7 @@ import WebSocketClient from "../../net/websocket/WebSocketClient";
 import LobbySession from "../../session/LobbySession";
 import UIComponent from "../../ui/UIComponent";
 import { EnterRoomInfo, GameCache } from "../GameCache";
-import { SeatUIInfo } from "../seat/Seat";
+import Seat, { SeatUIInfo } from "../seat/Seat";
 import MTTGame from "../texas/MTTGame";
 import MTTOmahaGame4 from "../texas/MTTOmahaGame4";
 import MTTOmahaGame5 from "../texas/MTTOmahaGame5";
@@ -23,7 +23,7 @@ import TexasAofGame from "../texas/TexasAofGame";
 import TexasGame from "../texas/TexasGame";
 
 
-class some_pos {
+export class some_pos {
 
     //所有座位位置
     public static readonly all_seat_pos = [
@@ -42,8 +42,8 @@ class some_pos {
         cc.v3(526, -1539),//9 右下
     ];
     // 所有庄家bank位置
-    public static readonly all_bank_pos: cc.Vec3[] = [
-        cc.v3(130, -181),//中下为自己的位置
+    public static all_bank_pos: cc.Vec3[] = [
+        cc.v3(0, -181),//中下为自己的位置
         cc.v3(0, -181),//除自己外所有方位的位置
         cc.v3(0, -181),
         cc.v3(0, -181),
@@ -53,19 +53,20 @@ class some_pos {
         cc.v3(0, -181),
         cc.v3(0, -181),
         cc.v3(0, -181),
+        cc.v3(130, -181),// 10 中下为自己的位置
     ];
-    //所有背面牌坐标
+    //所有手上背面牌容器坐标
     public static readonly all_card_back_pos: cc.Vec3[] = [
-        cc.v3(51, -42),
-        cc.v3(51, -42),
-        cc.v3(51, -42),
-        cc.v3(51, -42),
-        cc.v3(51, -42),
-        cc.v3(51, -42),
-        cc.v3(51, -42),
-        cc.v3(51, -42),
-        cc.v3(51, -42),
-        cc.v3(51, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
+        cc.v3(48, -42),
     ];
     //所有下注筹码位置
     public static readonly all_bet_pos: cc.Vec3[] = [
@@ -85,18 +86,17 @@ class some_pos {
     ];
     //所有气泡位置
     public static readonly all_bubble_pos: cc.Vec3[] = [
-        cc.v3(-102, 43),
-        cc.v3(-102, 43),
-        cc.v3(-102, 43),
-        cc.v3(-102, 43),
-        cc.v3(-102, 43),
-        cc.v3(111, 43),
-        cc.v3(111, 43),
-        cc.v3(111, 43),
-        cc.v3(111, 43),
-        cc.v3(111, 43),
+        cc.v3(123, 55),
+        cc.v3(123, 55),
+        cc.v3(123, 55),
+        cc.v3(123, 55),
+        cc.v3(123, 55),
+        cc.v3(123, 55),
+        cc.v3(-123, 55),
+        cc.v3(-123, 55),
+        cc.v3(-123, 55),
+        cc.v3(-123, 55),
     ];
-
 }
 export class seat_info {
     seat_pos: cc.Vec3 = null;
@@ -238,7 +238,7 @@ export default class GameUtil {
     //每套公共牌数量
     public static PublicCardMaxCount: number = 5;
 
-    public static SeatGoldPos = [cc.v2(0, -202), cc.v2(0, -104)]; roomtype映射Game
+    public static SeatGoldPos = [cc.v2(0, -109), cc.v2(0, -187)];
 
     //初始化 roomtype映射Game
     private static _SetGameMap() {
@@ -394,6 +394,26 @@ export default class GameUtil {
         ]
     }
 
+    //目前每次坐下需要重置0号位置的bankPos
+    public static ResetSeatInfo() {
+        some_pos.all_bank_pos[0].x = some_pos.all_bank_pos[1].x;
+        some_pos.all_bank_pos[0].y = some_pos.all_bank_pos[1].y;
+    }
+    //刷新自己位bank_pos
+    public static RefreshMeBankPos() {
+        some_pos.all_bank_pos[0].x = some_pos.all_bank_pos[10].x;
+        some_pos.all_bank_pos[0].y = some_pos.all_bank_pos[10].y;
+    }
+
+    //处理中下为自己的时候bank的位置
+    public static GetBankPos(seat: Seat, bank_pos: cc.Vec3) {
+        if (seat.IsMySeat) {
+            return some_pos.all_bank_pos[10];
+        }
+        return bank_pos;
+    }
+
+
     //上下座位 适配位置
     public static SeatAdapterPos() {
 
@@ -503,20 +523,23 @@ export default class GameUtil {
     /// </summary>
     public static readonly TexasPots: cc.Vec3[] = [
 
-        cc.v3(0, 103),
+        cc.v3(0, -650),
 
-        cc.v3(-207, -90),
-        cc.v3(0, -90),
-        cc.v3(207, -90),
+        cc.v3(-283, -791),
+        cc.v3(0, -791),
+        cc.v3(283, -791),
 
-        cc.v3(-207, -170),
-        cc.v3(0, -170),
-        cc.v3(207, -170),
+        cc.v3(-283, -858),
+        cc.v3(0, -858),
+        cc.v3(283, -858),
 
-        cc.v3(-97, -250),
-        cc.v3(97, -250),
+        cc.v3(-143, -923),
+        cc.v3(143, -923),
 
     ];
+
+
+
 
     static get isInGameplay() {
         return GameCache.Instance.CurrentRoomID != 0;
@@ -941,7 +964,7 @@ export default class GameUtil {
 
 }
 (window as any).GameUtil = GameUtil;
-
+(window as any).some_pos = some_pos;
 
     // public static GetCardNameByNum(cardNum: number): string {
     //     if (cardNum <= 0) {

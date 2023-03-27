@@ -192,7 +192,15 @@ export default class UITexasMenu extends UIBasePlus {
     }
     refreshCoinAndChip() {
 
-        this.$node_coin.active = false;
+        if (this.game.isMTT || GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) {
+
+            this.$node_coin.active = false;
+
+            this.$node_storage.active = false;
+
+            return;
+
+        }
 
         if (this.game.UserSitdown()) {
 

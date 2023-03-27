@@ -32,7 +32,7 @@ import { SeatStandupAnimation } from "../SeatStateHandler";
 import MTTGame from "../texas/MTTGame";
 import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
-import { RoomType } from "../util/GameUtil";
+import GameUtil, { RoomType } from "../util/GameUtil";
 
 
 export default class TexasGameMessageHandler {
@@ -272,6 +272,7 @@ export default class TexasGameMessageHandler {
 
         let isMainPlayer: boolean = seat.Player.userID == this.game.mainPlayer.userID;
         if (isMainPlayer) {
+            GameUtil.ResetSeatInfo();
             this.game.mainPlayer.cacheStoreChips = response.storeChips;
             this.game.HideOperationPanel();
             this.game.HideAutoOperationPanel();

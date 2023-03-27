@@ -19,7 +19,7 @@ import { GameCache } from "../GameCache";
 import { SeatFSM } from "../SeatFSM";
 import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from "../SeatStateHandler";
 import SeatUIRC, { CardUIInfo } from "../SeatUIRC";
-import GameUtil, { RoomType, seat_info } from "../util/GameUtil";
+import GameUtil, { RoomType, seat_info, some_pos } from "../util/GameUtil";
 
 /// </summary>
 export enum VoiceprintState {
@@ -209,67 +209,6 @@ export default class Seat {
         this.uirc.transSmallCardBacks.setPosition(info.card_back_pos);
         this.uirc.transCurRoundHaveBet.setPosition(info.bet_pos);
 
-        //是自己座位设置筹码数量位置
-        // if (this.IsMySeat) {//this.ClientSeatId == 0 && 
-        //     this.uirc.textCoin.node.setPosition(0, -130);
-        // } else {
-        //     this.uirc.textCoin.node.setPosition(0, -90);
-        // }
-
-        if (this.ui.x > 0) {
-            //this.uirc.armatureVoice.setPosition(-90, 50, 0);
-        }
-        else {
-            //this.uirc.armatureVoice.setPosition(90, 50, 0);
-        }
-
-        let mRectTransform = this.uirc.imageBubble.node;
-        //mRectTransform.SetParent(transBubble);
-        mRectTransform.setPosition(info.bubble_pos);
-
-
-        // mRectTransform = imageBubbleInsurance.rectTransform;
-        // mRectTransform.SetParent(transBubble);
-        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // mRectTransform.localPosition = info.BubblePos;
-
-        // mRectTransform = imageBubbleInsuranceCountDown.rectTransform;
-        // mRectTransform.SetParent(transBubble);
-        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
-        // {
-        //     mRectTransform.localPosition = info.AoMaHaInsurancePos;
-        // }
-        // else
-        // {
-        //     mRectTransform.localPosition = info.InsurancePos;
-        // }
-        // //
-        // mRectTransform = Image_BubbleInsuranceNum.rectTransform;
-        // mRectTransform.SetParent(transBubble);
-        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        // if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof.GetHashCode() && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit.GetHashCode())
-        // {
-        //     mRectTransform.localPosition = info.AoMaHaInsurancebubaoPos;
-        // }
-        // else
-        // {
-        //     mRectTransform.localPosition = info.InsurancebubaoPos;
-        // }
-        // //
-        // mRectTransform = Image_BubbleInsuranceToubao.rectTransform;
-        // mRectTransform.SetParent(transBubble);
-        // mRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        // mRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
-            // mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
-        }
-        else {
-            //mRectTransform.localPosition = info.InsurancetoubaoPos;
-        }
         if (this.IsMySeat) {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
             this.uirc.WaitforthenextmoveTips.node.setPosition(0, -416);
@@ -277,6 +216,26 @@ export default class Seat {
         else {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
             this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
+
+        }
+
+
+        //是自己座位设置筹码数量位置
+        // if (this.IsMySeat) {//this.ClientSeatId == 0 && 
+        //     this.uirc.textCoin.node.setPosition(0, -130);
+        // } else {
+        //     this.uirc.textCoin.node.setPosition(0, -90);
+        // }
+
+        let mRectTransform = this.uirc.Image_Bubble;
+        //mRectTransform.SetParent(transBubble);
+        mRectTransform.setPosition(info.bubble_pos);
+
+        if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
+            // mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
+        }
+        else {
+            //mRectTransform.localPosition = info.InsurancetoubaoPos;
         }
     }
 
@@ -479,10 +438,10 @@ export default class Seat {
     public UpdateHead(): void {
         if (null == this.Player) {
             this.uirc.imageEmpty.node.active = true;
-            this.uirc.imageHeadFrame.node.active = false;
+            this.uirc.Frame_Head.active = false;
         }
         else {
-            WebImageHelper.SetHeadImage(this.uirc.rawimageHead, this.Player.headPic);
+            WebImageHelper.SetHeadImage(this.uirc.Raw_Head, this.Player.headPic);
         }
     }
 
@@ -500,11 +459,10 @@ export default class Seat {
                 this.SetCoin(StringHelper.GetLongString(this.Player.chips));
             }
         }
-
         if (this.IsMySeat) {
-            this.uirc.Text_Coin.node.setPosition(GameUtil.SeatGoldPos[0]);
+            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[1]);
         } else {
-            this.uirc.Text_Coin.node.setPosition(GameUtil.SeatGoldPos[1]);
+            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
         }
     }
 
@@ -602,6 +560,19 @@ export default class Seat {
         }
     }
 
+
+
+    private ShowBubbleBG(bubble_node: cc.Node, key: string) {
+        bubble_node.children.forEach((item, index) => {
+            if (index < 6) {
+                item.active = false;
+            }
+        })
+        let t_node = bubble_node.getChildByName(key);
+        if (t_node) t_node.active = true;
+    }
+
+
     /// <summary>
     /// 刷新气泡
     /// </summary>
@@ -612,8 +583,8 @@ export default class Seat {
         // 1:下注  2:跟注  3:加注  4:全下 5:让牌  6:弃牌 10:straddle--客户端
 
         if (null == this.Player) {
-            if (this.uirc.imageBubble.node.activeInHierarchy)
-                this.uirc.imageBubble.node.active = false;
+            if (this.uirc.Image_Bubble.activeInHierarchy)
+                this.uirc.Image_Bubble.active = false;
             return;
         }
 
@@ -621,16 +592,12 @@ export default class Seat {
             return;
         }
 
-        let rc = GameCache.Instance.CurGame.GetBubbleSpriteBySpriteName;
+        this.uirc.Image_Bubble.active = true;
 
         switch (this.Player.actionStatus) {
             case Def.Action.CALL:
-                if (!this.GetRorL()) {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_genzhur");
-                }
-                else {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_genzhul");
-                }
+
+                this.ShowBubbleBG(this.uirc.Image_Bubble, "call");
                 // textBubble.text = "跟注";
                 this.uirc.textBubble.string = CPErrorCode.LanguageDescription(10044);
                 this.uirc.textBubble.node.active = true;
@@ -638,13 +605,7 @@ export default class Seat {
                 break;
             case Def.Action.BET:
             case Def.Action.RAISE:
-                if (!this.GetRorL()) {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_jiazhur");
-                }
-                else {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_jiazhul");
-
-                }
+                this.ShowBubbleBG(this.uirc.Image_Bubble, "raise");
 
                 // textBubble.text = "加注";
                 this.uirc.textBubble.string = CPErrorCode.LanguageDescription(10045);
@@ -652,36 +613,20 @@ export default class Seat {
                 this.StopAllinArmature();
                 break;
             case Def.Action.ALLIN:
-                if (!this.GetRorL()) {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_quanxiar");
-                }
-                else {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_quanxial");
-                }
-                this.uirc.textBubble.string = "All in";
+                this.ShowBubbleBG(this.uirc.Image_Bubble, "allin");
+                this.uirc.textBubble.string = CPErrorCode.LanguageDescription(30074);
                 this.uirc.textBubble.node.active = true;
                 this.PlayAllinArmature(isAllinShowVioce);
                 break;
             case Def.Action.CHECK:
-                if (!this.GetRorL()) {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_rangpair");
-                }
-                else {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_rangpail");
-                }
-
+                this.ShowBubbleBG(this.uirc.Image_Bubble, "check");
                 // textBubble.text = "看牌";
                 this.uirc.textBubble.string = CPErrorCode.LanguageDescription(10046);
                 this.uirc.textBubble.node.active = true;
                 this.StopAllinArmature();
                 break;
             case Def.Action.FOLD:
-                if (!this.GetRorL()) {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_qipair");
-                }
-                else {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_qipail");
-                }
+                this.ShowBubbleBG(this.uirc.Image_Bubble, "fold");
 
                 // textBubble.text = "弃牌";
                 this.uirc.textBubble.string = CPErrorCode.LanguageDescription(10047);
@@ -689,49 +634,57 @@ export default class Seat {
                 this.StopAllinArmature();
                 break;
             case Def.Action.STRADDLE:
-                if (!this.GetRorL()) {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_image_game_straddle");
-                }
-                else {
-                    this.uirc.imageBubble.spriteFrame = rc("icon_image_game_straddle_r");
-                }
+                this.ShowBubbleBG(this.uirc.Image_Bubble, "straddle");
                 this.uirc.textBubble.string = "Straddle";
                 this.uirc.textBubble.node.active = false;
                 this.StopAllinArmature();
                 break;
             default:
-                this.uirc.imageBubble.spriteFrame = null;
+                this.ShowBubbleBG(this.uirc.Image_Bubble, "null");
                 this.uirc.textBubble.string = "";
                 this.StopAllinArmature();
                 break;
         }
 
 
-        if (null == this.uirc.imageBubble.spriteFrame) {
-            this.uirc.imageBubble.node.color = cc.Color.WHITE;
-            this.uirc.imageBubble.node.setScale(cc.Vec3.ONE);
-            this.uirc.imageBubble.node.active = false;
-            this.sequenceUpdateBubble = null;
-            this.UpdateNickName();
+        console.log("播放气泡")
+
+
+        if (this.uirc.textBubble.string != "") {
+
+            if (null == this.sequenceUpdateBubble || !this.sequenceUpdateBubble.IsPlaying)
+                this.PlayUpdateBubbleAnimation();
         }
         else {
-
-            if (this.uirc.textBubble.string != "") {
-
-                if (null == this.sequenceUpdateBubble || !this.sequenceUpdateBubble.IsPlaying)
-                    this.PlayUpdateBubbleAnimation();
-            }
-            else {
-                if (this.sequenceUpdateBubble?.IsPlaying)
-                    this.sequenceUpdateBubble.Kill(true);
-
-                this.uirc.imageBubble.node.color = cc.Color.WHITE;
-                this.uirc.imageBubble.node.setScale(cc.Vec3.ONE);
-                this.uirc.imageBubble.node.active = false;
-                this.sequenceUpdateBubble = null;
-            }
+            if (this.sequenceUpdateBubble?.IsPlaying)
+                this.sequenceUpdateBubble.Kill(true);
+            this.uirc.Image_Bubble.setScale(cc.Vec3.ONE);
+            this.uirc.Image_Bubble.active = false;
+            this.sequenceUpdateBubble = null;
         }
 
+
+        // if (this.uirc.textBubble.string = "") {
+        //     this.uirc.Image_Bubble.setScale(cc.Vec3.ONE);
+        //     this.uirc.Image_Bubble.active = false;
+        //     this.sequenceUpdateBubble = null;
+        //     this.UpdateNickName();
+        // }
+        // else {
+
+        //     if (this.uirc.textBubble.string != "") {
+
+        //         if (null == this.sequenceUpdateBubble || !this.sequenceUpdateBubble.IsPlaying)
+        //             this.PlayUpdateBubbleAnimation();
+        //     }
+        //     else {
+        //         if (this.sequenceUpdateBubble?.IsPlaying)
+        //             this.sequenceUpdateBubble.Kill(true);
+        //         this.uirc.Image_Bubble.setScale(cc.Vec3.ONE);
+        //         this.uirc.Image_Bubble.active = false;
+        //         this.sequenceUpdateBubble = null;
+        //     }
+        // }
     }
 
 
@@ -937,12 +890,9 @@ export default class Seat {
 
                 if (this.Player.cards.length > 0 && mShow) {
                     this.ShowCards(this.listSmallCardUIInfos);
-                    // tweenerHideBubble = imageBubble.transform.DOScale(new Vector3(0, 0, 1), 0.2f).SetDelay(1f).OnComplete(() => {
-                    //     imageBubble.gameObject.SetActive(false);
 
-                    // });
-                    cc.tween(this.uirc.imageBubble.node).to(0.2, { scale: 0 }).call(() => {
-                        this.uirc.imageBubble.node.active = false;
+                    cc.tween(this.uirc.Image_Bubble).to(0.2, { scale: 0 }).call(() => {
+                        this.uirc.Image_Bubble.active = false;
                     }).start();
 
                     this.HideCardBack();
@@ -1193,7 +1143,7 @@ export default class Seat {
         // }
         // this.uirc.imageHeadFrame.node.active = istrue;
         // this.uirc.Text_NickName.node.active = !this.IsMySeat;
-        this.uirc.imageHeadFrame.node.active = istrue;
+        this.uirc.Frame_Head.active = istrue;
         this.uirc.Text_NickName.node.active = istrue;
 
         console.log("SetOperationHeadActive", istrue);
@@ -1241,10 +1191,10 @@ export default class Seat {
         }
         this.optTotalTime = defaultOpTime;
         this.isCountDown = true;
-        this.uirc.imageCountDown.fillRange = this.optCurTime / defaultOpTime;
-        this.uirc.imageCountDown.node.active = true;
-        this.uirc.Image_CountDownbg.node.active = true;
-        this.uirc.image_CountDownTime.string = `${this.optCurTime}`;
+
+        this.uirc.Head_CD.active = true;
+        this.uirc.Head_CD_Mask.fillRange = this.optCurTime / defaultOpTime;
+        this.uirc.Head_CD_Label.string = `${this.optCurTime}s`;
         //this.StopLightArmature();
     }
 
@@ -1254,9 +1204,7 @@ export default class Seat {
     public StopCountDown(): void {
         //if (this.isCountDown) {
         this.isCountDown = false;
-        this.uirc.imageCountDown.node.active = false;
-        this.uirc.Image_CountDownbg.node.active = false;
-        cc.log("停止D");
+        this.uirc.Head_CD.active = false;
         //}
         //this.StopLightArmature();
     }
@@ -1406,7 +1354,7 @@ export default class Seat {
 
 
     public FoldHeadGray(active: boolean): void {
-        this.uirc.imageHeadGray.node.active = active;
+        this.uirc.Gray_Head.active = active;
         if (this.IsMySeat) {
             let mCardUiInfo: CardUIInfo = null;
             for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
@@ -1485,10 +1433,9 @@ export default class Seat {
     /// <param name="addValue"></param>
     public AddCountDown(addValue: number): void {
         this.isCountDown = true;
-        this.uirc.imageCountDown.fillRange = 1;
-        this.uirc.imageCountDown.node.active = true;
-        this.uirc.Image_CountDownbg.node.active = true;
-        this.uirc.image_CountDownTime.string = `${addValue}`;
+        this.uirc.Head_CD.active = true;
+        this.uirc.Head_CD_Mask.fillRange = 1;
+        this.uirc.Head_CD_Label.string = `${addValue}s`;
         this.StopLightArmature();
     }
     /// <summary>
@@ -1504,18 +1451,18 @@ export default class Seat {
     /// 隐藏气泡
     /// </summary>
     public HideBubble(): void {
-        if (this.uirc.imageBubble.node.activeInHierarchy) {
+        if (this.uirc.Image_Bubble.activeInHierarchy) {
             if (null == this.sequenceUpdateBubble || !this.sequenceUpdateBubble.IsPlaying) {
-                this.uirc.imageBubble.node.color = cc.Color.WHITE;
-                this.uirc.imageBubble.node.setScale(1, 1);
+                //this.uirc.imageBubble.node.color = cc.Color.WHITE;
+                this.uirc.Image_Bubble.setScale(1, 1);
             }
         }
-        this.tweenerHideBubble = { tween: cc.tween(this.uirc.imageBubble.node), IsPlaying: true }
+        this.tweenerHideBubble = { tween: cc.tween(this.uirc.Image_Bubble), IsPlaying: true }
         let tween = this.tweenerHideBubble.tween;
         tween.to(.2, { scale: 0 })
         tween.delay(1);
         tween.call(() => {
-            this.uirc.imageBubble.node.active = false;
+            this.uirc.Image_Bubble.active = false;
             this.UpdateNickName();
             this.tweenerHideBubble.IsPlaying = false;
         });
@@ -1560,7 +1507,7 @@ export default class Seat {
             tween.then(cc.callFunc(() => {
                 imageRecyclingWinChip.node.active = true;
             }));
-            let pos = GameUtil.ChangeToLocalPos(this.uirc.imageHeadFrame.node.position, this.uirc.imageHeadFrame.node.parent, this.ui);
+            let pos = GameUtil.ChangeToLocalPos(this.uirc.Frame_Head.position, this.uirc.Frame_Head.parent, this.ui);
             tween.to(.5, { position: pos }, cc.easeQuadraticActionOut());
             tween.call(() => {
                 imageRecyclingWinChip.node.active = false;
@@ -1577,12 +1524,12 @@ export default class Seat {
     /// 播放更新气泡动画
     /// </summary>
     protected PlayUpdateBubbleAnimation(): void {
-        this.sequenceUpdateBubble = { tween: cc.tween(this.uirc.imageBubble.node), IsPlaying: true };
+        this.sequenceUpdateBubble = { tween: cc.tween(this.uirc.Image_Bubble), IsPlaying: true };
         let tween = this.sequenceUpdateBubble.tween;
-        this.uirc.imageBubble.node.setScale(.8, .8);
-        this.uirc.imageBubble.node.opacity = 0;
+        this.uirc.Image_Bubble.setScale(.8, .8);
+        this.uirc.Image_Bubble.opacity = 0;
         //自己仅有弃牌的图标可见
-        this.uirc.imageBubble.node.active = (!(this.IsMySeat && this.Player.actionStatus != Def.Action.FOLD));
+        this.uirc.Image_Bubble.active = (!(this.IsMySeat && this.Player.actionStatus != Def.Action.FOLD));
         tween.parallel(cc.scaleTo(.2, 1, 1), cc.fadeTo(0.1, 255));
         tween.to(.1, { scale: 0.95 });
         tween.to(.1, { scale: 1 });
@@ -1630,7 +1577,7 @@ export default class Seat {
         //}
     }
     public HideFold() {
-        this.uirc.imageBubble.node.active = false;
+        this.uirc.Image_Bubble.active = false;
     }
 
     /// <summary>
@@ -1774,10 +1721,7 @@ export default class Seat {
     // 刷新购买保险数量
     public UpdateBubbleInsurance() {
         this.isCountDown = false;
-        this.uirc.imageCountDown.node.active = false;
-        this.uirc.Image_CountDownbg.node.active = false;
-
-
+        this.uirc.Head_CD.active = false;
         //不保
         if (this.Player.totalInsuredAmount + this.Player.autoInsuredAmount == 0) {
             this.uirc.Image_BubbleInsuranceNum.active = !this.IsMySeat;

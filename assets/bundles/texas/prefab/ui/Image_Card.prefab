@@ -49,8 +49,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 134,
-      "height": 177
+      "width": 120,
+      "height": 176
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -113,8 +113,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 134,
-      "height": 177
+      "width": 120,
+      "height": 176
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -166,10 +166,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "8e5ae6e4-4f35-47bd-9939-8eb9a6b151ec"
+      "__uuid__": "23144899-2167-438b-917e-18998a7f46a0"
     },
     "_type": 0,
-    "_sizeMode": 0,
+    "_sizeMode": 2,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -220,8 +220,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 147,
-      "height": 190
+      "width": 126,
+      "height": 183
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -273,7 +273,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "7b521963-35ca-4331-8509-cab6081fff15"
+      "__uuid__": "8aa88fc8-88ae-4c37-bce2-144e131c88da"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -327,8 +327,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 40,
-      "height": 40
+      "width": 67,
+      "height": 67
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -339,8 +339,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -48,
-        -74,
+        0,
+        -138,
         0,
         0,
         0,
@@ -380,7 +380,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "e968b79c-0fe8-4845-b836-715cfe167530"
+      "__uuid__": "a523317e-79c8-4612-b7cc-54157937a5ef"
     },
     "_type": 0,
     "_sizeMode": 2,
@@ -423,7 +423,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "f1e2beb3-4384-4d9d-a997-333aba1412b2"
+      "__uuid__": "38e80b3f-4e11-496b-b709-8c5146411a29"
     },
     "_type": 0,
     "_sizeMode": 2,
