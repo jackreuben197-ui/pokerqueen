@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-23 19:22:55
+ * @LastEditTime: 2023-03-27 15:13:54
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -304,12 +304,12 @@ export default class UIClubCreateMatch extends BaseForm {
         this._kzwjdrState = room_config.limit_bring_in == 1
         this._aofState = room_config.bettype_aof_on == 1
         this._sryxState = room_config.private_room == 1
-        if (room_config.origin_type == 5) {
-            this._selectTitle = 0
-        } else if (room_config.origin_type == 3) {
-            this._selectTitle = 1
-        }
-
+        // if (room_config.origin_type == 5) {
+        //     this._selectTitle = 0
+        // } else if (room_config.origin_type == 3) {
+        //     this._selectTitle = 1
+        // }
+        this._selectTitle = room_config.share_table == 1 ? 1 : 0;
         this.zxblbs['levelData'] = { min: 1, total: 4, level: room_config.retain_min_rate }
         this.zwrs['levelData'] = { min: 2, total: 9, level: room_config.seat_count }
         this.zdks['levelData'] = { min: 2, total: 9, level: room_config.autostart_min_players }
@@ -430,6 +430,7 @@ export default class UIClubCreateMatch extends BaseForm {
     initTabNode() {
         this.sr_zw.active = ClubCache.joinCreateMatchType == 2
         this.sryy.active = true
+        createMatchTabConfig.defaultIndex = this._selectTitle;
         this.tabNode.initData(createMatchTabConfig, (customData) => {
             this._selectTitle = customData
             this.initDiamond();
@@ -695,7 +696,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.max_rate = Number(this.drjfp.getChildByName('labelNode').getChildByName('lblNum1').getComponent(cc.Label).string) * 100 / (room_config.sb * 2);
         room_config.op_duration = this._sksjNum;
         //功能为实现
-
+        room_config.share_table = this._selectTitle == 1 ? 2 : 1
         room_config.autostart_min_players = this.zdks['levelData'].level
         // room_config.min_players = this.zdks['levelData'].level
         room_config.straddle_max = this.Straddle['levelData'].level;
