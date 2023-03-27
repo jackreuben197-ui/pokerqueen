@@ -4,6 +4,8 @@ import TabNode from "../../common/tabNode";
 import { EMttRealTimeTabType } from "../../config/EEnumConfig";
 import { mttRealTimeTabConfig } from "../../frame/config/tabConfig";
 import GC from "../../frame/GameControl";
+import { GameCache } from "../../game/GameCache";
+import TimeHelper from "../../helper/TimeHelper";
 import { Web_Mtt } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -26,11 +28,15 @@ export default class MttRealTime extends UIBase {
     private nextBtn: cc.Node = null;
     private lastBtn: cc.Node = null;
     private pageNum: cc.Label = null;
+    private text_Time: cc.Label = null;
+    private ranking: cc.Node = null;
+    private HunterRanting: cc.Node = null;
 
     private _tabVievs: Map<EMttRealTimeTabType, any> = new Map();
     private _tabViewLoadStatus: Map<EMttRealTimeTabType, boolean> = new Map();
     private _tabViewInitStatus: Map<EMttRealTimeTabType, boolean> = new Map();
     private _tabViewParents: Map<EMttRealTimeTabType, cc.Node> = new Map();
+    mRoomLeaveTime: any = null;
     lateLoad() {
         super.lateLoad();
         this.shadows = this.getChildNodeOrComponent("shadows");
@@ -43,12 +49,14 @@ export default class MttRealTime extends UIBase {
         this.nextBtn = this.getChildNodeOrComponent("nextBtn");
         this.lastBtn = this.getChildNodeOrComponent("lastBtn");
         this.pageNum = this.getChildNodeOrComponent("pageNum", cc.Label);
+        this.ranking = this.getChildNodeOrComponent("ranking");
+        this.HunterRanting = this.getChildNodeOrComponent("HunterRanting");
 
         this._tabViewParents.set(EMttRealTimeTabType.sk, this.getChildNodeOrComponent("subViewAction"))
         this._tabViewParents.set(EMttRealTimeTabType.pz, this.getChildNodeOrComponent("subViewTables"))
         this._tabViewParents.set(EMttRealTimeTabType.jl, this.getChildNodeOrComponent("subViewReward"))
         this._tabViewParents.set(EMttRealTimeTabType.mz, this.getChildNodeOrComponent("subViewBlind"))
-
+        this.text_Time = this.getChildNodeOrComponent('Text_Time', cc.Label);
     }
 
     protected regiterDispatchEvent(): void {
@@ -64,6 +72,22 @@ export default class MttRealTime extends UIBase {
         this.bindClick(this.frontBtn, this.clickFront);
         this.bindClick(this.nextBtn, this.clickNext);
         this.bindClick(this.lastBtn, this.clickLast);
+
+        this.bindClick(this.ranking, this.titleClick, 0);
+        this.bindClick(this.HunterRanting, this.titleClick, 1);
+    }
+    titleClick(customdata) {
+        this.ranking.parent.children.forEach((evement, index) => {
+            if (customdata == index) {
+                evement.color = cc.color().fromHEX('#EEF5FF')
+                evement.getChildByName('block').active = true;
+            } else {
+                evement.color = cc.color().fromHEX('#757CAB')
+                evement.getChildByName('block').active = false;
+            }
+
+        })
+
     }
 
     // protected notify(id: any, msg: any, sendInfo?: any): void {
@@ -77,12 +101,13 @@ export default class MttRealTime extends UIBase {
 
     onShow(param: any, fromUI: any): void {
         super.onShow(param, fromUI);
-
+        this.unscheduleAllCallbacks();
         this._tabViewInitStatus.clear();
 
         GC.data.mtt.realTime.reqRankList();
         this.tabNode.initData(mttRealTimeTabConfig, this.onToggle, this)
         this.pageNum.string = `${GC.data.mtt.realTime.curPage + 1}/${GC.data.mtt.realTime.totlePage + 1}`
+        this.initRoomTime();
     }
 
     onToggle = (index: number) => {
@@ -114,6 +139,40 @@ export default class MttRealTime extends UIBase {
 
         }
     }
+    initRoomTime() {
+        GC.data.mtt.list.list.forEach(item => {
+            if (item.match_id == GameCache.Instance.match_id) {
+                if (item.start_time == null) {
+                    return;
+                }
+                let roomLeftTime = new Date().getTime() / 1000 - item.start_time
+                if (roomLeftTime > 0) {
+                    this.mRoomLeaveTime = roomLeftTime;
+                    let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.Label);
+                    textTitle.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
+                    this.ShowLeaveTimer();
+                }
+            }
+        })
+
+
+
+
+    }
+    ShowLeaveTimer() {
+        this.schedule(() => {
+            if (this.mRoomLeaveTime >= 0 && this.node.isValid) {
+                this.mRoomLeaveTime++;
+                if (this.text_Time != null)
+                    this.text_Time.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
+            } else {
+                if (this.text_Time != null && !cc.isValid(this.node, true)) {
+                    this.text_Time.string = "00:00";
+                }
+            }
+        }, 1)
+    }
+
 
     updateRankList() {
         let ranks = GC.data.mtt.realTime.ranks;

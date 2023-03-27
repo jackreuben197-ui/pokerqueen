@@ -3,7 +3,7 @@
  * @Date: 2022-12-19 15:49:57
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-09 15:38:44
+ * @LastEditTime: 2023-03-27 11:51:36
  * @FilePath: /pokerqueen/assets/script/mtt/realTime/MttRealTimeActionNode.ts
  */
 import GC from "../../frame/GameControl";
@@ -79,14 +79,13 @@ export default class MttRealTimeActionNode extends UIBase {
 
     ShowLeaveTimer() {
         // TimerComponent mTC = Game.Scene.ModelScene.GetComponent<TimerComponent>();
-        this.time.string = TimeHelper.ShowRemainingSemicolon(this._mRoomLeaveTime);
+        this.time.string = TimeHelper.ShowRemainingSemicolon2(this._mRoomLeaveTime);
         let id = setInterval(() => {
             if (this._mRoomLeaveTime >= 0 && this.node.isValid) {
                 this._mRoomLeaveTime--;
-                this.time.string = TimeHelper.ShowRemainingSemicolon(this._mRoomLeaveTime)
+                this.time.string = TimeHelper.ShowRemainingSemicolon2(this._mRoomLeaveTime)
             } else {
-                clearInterval(id);
-                this.time.string = "00:00";
+                this._mRoomLeaveTime = GC.data.mtt.detail.upblind_interval
             }
         }, 1000)
     }
