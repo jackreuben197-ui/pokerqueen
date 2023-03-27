@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-23 19:54:43
+ * @LastEditTime: 2023-03-27 10:30:58
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -18,7 +18,7 @@ import { Web_Org_Club_Get, Web_User_Info } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
-
+import GC from '../../../frame/GameControl'
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubList')
@@ -53,6 +53,7 @@ export default class UIClubList extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.refreshList();
+
         // await UIClubModel.mInstance.APIOrgClubGet()
         // let data: any = Web_Org_Club_Get.Response.data
         // this.num.string = data.length;
@@ -64,10 +65,10 @@ export default class UIClubList extends BaseForm {
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-
+        this.listen(EventName.myGoldChange, this.initTop)
         this.listen(EventName.refreshClubList, this.refreshList);
-    }
 
+    }
     async refreshList() {
         await UIClubModel.mInstance.APIOrgClubGet()
         let data: any = Web_Org_Club_Get.Response.data
@@ -104,7 +105,7 @@ export default class UIClubList extends BaseForm {
     }
     initTop() {
         let icon = cc.find('Round', this.topNode).getComponent(cc.Sprite);
-        WebImageHelper.SetHeadImage(icon, GameCache.Instance.headPic)
+        WebImageHelper.SetHeadImage(icon, GC.data.user.info.avatar)//GameCache.Instance.headPic
         this.topNode.getChildByName('name').getComponent(cc.Label).string = StringHelper.LengthNick(Web_User_Info.Response.data.user.nickname);
         this.topNode.getChildByName('id').getComponent(cc.Label).string = 'ID:' + Web_User_Info.Response.data.user.un_id
 
