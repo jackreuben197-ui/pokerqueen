@@ -521,7 +521,7 @@ export default class MTTGame extends TexasGame {
                     if (res.data.wallet != null) {
                         if (res.data.wallet.length == 1) {
                             GameCache.Instance.ClubID = res.data.wallet[0].club_id;
-                            GameCache.Instance.game_type = res.data.wallet[0].gold_type;
+                            GameCache.Instance.gold_type = res.data.wallet[0].gold_type;
                             GameCache.Instance.ClubRandomID = res.data.wallet[0].club_random_id;
                             GameCache.Instance.ClubGold = res.data.wallet[0].gold;
                         }
@@ -530,7 +530,7 @@ export default class MTTGame extends TexasGame {
                                 let wallet = res.data.wallet[i];
                                 if (GameCache.Instance.TribeId == wallet.tribe_id) {
                                     GameCache.Instance.ClubID = wallet.club_id;
-                                    GameCache.Instance.game_type = wallet.gold_type;
+                                    GameCache.Instance.gold_type = wallet.gold_type;
                                     GameCache.Instance.ClubRandomID = wallet.club_random_id;
                                     GameCache.Instance.ClubGold = wallet.gold;
                                     break;
@@ -551,16 +551,16 @@ export default class MTTGame extends TexasGame {
                             ).then(
                                 (res: any) => {
 
-                                    if (GameCache.Instance.game_type == 1) { //1 联盟币， 2 usdt, 3 记分牌
+                                    if (GameCache.Instance.gold_type == 1) { //1 联盟币， 2 usdt, 3 记分牌
 
                                         menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(res.data.user_info.gold);
 
                                     }
-                                    else if (GameCache.Instance.game_type == 2) {
+                                    else if (GameCache.Instance.gold_type == 2) {
 
                                         menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(res.data.user_info.usdt);
                                     }
-                                    else if (GameCache.Instance.game_type == 3) {
+                                    else if (GameCache.Instance.gold_type == 3) {
 
                                         /////////////////////////////////////////////////////
                                         WWW.Instance.CommonAPI(
@@ -589,9 +589,9 @@ export default class MTTGame extends TexasGame {
                         }
                         //buttonAddBean.transform.Find("chip_bg").gameObject.SetActive(GameCache.Instance.FriendsTableLimitBringIn);
 
-                        menu.$node_coin.getChildByName("uc").active = GameCache.Instance.game_type == 1;
-                        menu.$node_coin.getChildByName("gc").active = GameCache.Instance.game_type == 2;
-                        menu.$node_coin.getChildByName("add").active = menu.$node_coin.getChildByName("click").active = GameCache.Instance.game_type == 1 || GameCache.Instance.game_type == 2;
+                        menu.$node_coin.getChildByName("uc").active = GameCache.Instance.gold_type == 1;
+                        menu.$node_coin.getChildByName("gc").active = GameCache.Instance.gold_type == 2;
+                        menu.$node_coin.getChildByName("add").active = menu.$node_coin.getChildByName("click").active = GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2;
                         let chips = GameCache.Instance.CurGame.mainPlayer?.cacheStoreChips || 0;
                         menu.$node_storage.active = chips > 0;
 

@@ -336,7 +336,7 @@ export default class TexasGameMessageHandler {
             case Def.LeaveReason.LR_GAME_END: // 游戏结束
                 {
                     if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
-                        UIComponent.open(UIDefine.UITexasGameEndComponent, {
+                        UIComponent.open(UIDefine.UITexasGameEnd, {
                             roomID: GameCache.Instance.room_id.toString(),
                             blind: GameCache.Instance.CurGame.smallBlind,
                             roomName: GameCache.Instance.roomName,

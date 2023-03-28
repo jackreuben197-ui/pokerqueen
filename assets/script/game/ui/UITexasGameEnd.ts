@@ -1,9 +1,13 @@
+import ComFormTitle from "../../common/ComFormTitle";
+import { TextColor } from "../../config/GameConfig";
 import { CommonDefine } from "../../define/CommonDefine";
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { Web_User_Room, Web_User_Room_Settle_Detail } from "../../net/https/WebRequest";
+import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -24,7 +28,7 @@ export interface RecordDetailForNormalData {
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class UITexasGameEndComponent extends UIBase {
+export default class UITexasGameEnd extends UIBase {
 
     Button_back: cc.Node = null;
 
@@ -36,7 +40,7 @@ export default class UITexasGameEndComponent extends UIBase {
     m_ZongShou: cc.Label = null;
 
     Head: cc.Node = null;
-    img_head: cc.Sprite = null;
+    RadHead: cc.Sprite = null;
 
     m_ZhanJi: cc.Label = null;
 
@@ -50,6 +54,10 @@ export default class UITexasGameEndComponent extends UIBase {
 
     private mRoomId: string = null;
 
+    comFormTitle: ComFormTitle = null;
+
+    back_click: cc.Node = null;
+
 
 
     protected lateLoad(): void {
@@ -59,7 +67,7 @@ export default class UITexasGameEndComponent extends UIBase {
         this.TopLook_Con = this.getChildNodeOrComponent("TopLook_Con");
         this.Detail_Con = this.getChildNodeOrComponent("Detail_Con");
 
-        this.img_head = this.getChildNodeOrComponent("img_head", cc.Sprite);
+        this.RadHead = this.getChildNodeOrComponent("RadHead", cc.Sprite);
         this.Head = this.getChildNodeOrComponent("Head");
 
         this.tips = this.getChildNodeOrComponent("tips");
@@ -73,9 +81,17 @@ export default class UITexasGameEndComponent extends UIBase {
         this.UserInfoItem = this.getChildNodeOrComponent("UserInfoItem", UITexasGameEndItem);
 
         this.UserInfoItem.node.active = false;
+
+        this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+
+        this.back_click = this.getChildNodeOrComponent("back_click");
+
+
     }
     protected regiterTouchEvents(): void {
-        this.Button_back.getChildByName("BtnArea").on("click", this.onBackClick, this);
+        //this.Button_back.getChildByName("BtnArea").on("click", this.onBackClick, this);
+        super.regiterTouchEvents();
+        this.setButtonClick(this.back_click, this.click_close);
     }
     lateClose(params?: any): void {
         super.lateClose(params);
@@ -91,6 +107,7 @@ export default class UITexasGameEndComponent extends UIBase {
         this.SetFindLabelText("LeaveTxt", TimeHelper.TimeToString(TimeHelper.Now, "MM/dd HH:mm"));
         this.SetFindLabelText("Text_Type", StringHelper.GetRoomTypeNameByType(param.game_type, param.poker_type, param.bet_type));
         this.Head.active = false;
+        this.comFormTitle.title_label.string = i18nMgr.Get("UIMine_RecordDetailForMatch");
         this.GetGameEndData();
     }
 
@@ -119,11 +136,10 @@ export default class UITexasGameEndComponent extends UIBase {
         }
     }
     private SetMyData(score: number, hand: number): void {
-        this.m_ZhanJi.node.color = score >= 0 ? CommonDefine.Text_Green_Color : CommonDefine.Text_Yellow_Color;
+        this.m_ZhanJi.node.color = cc.Color.BLACK.fromHEX(score < 0 ? TextColor.Color6 : TextColor.Color5);
         this.m_ZhanJi.string = StringHelper.GetLongString(score);
         this.m_ZongShou.string = `${hand}`;
-        WebImageHelper.SetUrlImage(this.img_head, GameCache.Instance.headPic);
-        //this.img_head.node.parent.active = true;
+        WebImageHelper.SetUrlImage(this.RadHead, GameCache.Instance.headPic, AssetContext.getAsset("RadHead"));
         this.Head.active = true;
     }
     private InitSuperView(response: typeof Web_User_Room_Settle_Detail.Response): void {
@@ -132,7 +148,7 @@ export default class UITexasGameEndComponent extends UIBase {
             let info = list[i];
             let userInfoNode: cc.Node = this.getUserInfoItem();
             let userInfoItem: UITexasGameEndItem = userInfoNode.getComponent(UITexasGameEndItem);
-            userInfoItem.index = i + 1;
+            userInfoItem.index = i;
             userInfoItem.node.active = true;
             userInfoItem.node.parent = this.content;
             userInfoItem.onShow(info);
@@ -145,9 +161,6 @@ export default class UITexasGameEndComponent extends UIBase {
         this.TopLook_Con.active = !isTrue;
         this.Detail_Con.active = !isTrue;
     }
-    private onBackClick() {
-        UIComponent.close(UIDefine.UITexasGameEndComponent);
-    }
 
     private getUserInfoItem(): cc.Node {
         if (this.UserInfoPool.length) return this.UserInfoPool.shift();
@@ -156,6 +169,10 @@ export default class UITexasGameEndComponent extends UIBase {
     private removeUserInfoItem(node: cc.Node) {
         node.parent = null;
         this.UserInfoPool.push(node);
+    }
+
+    private click_close() {
+        UIComponent.close(UIDefine.UITexasGameEnd);
     }
 
 }

@@ -189,7 +189,7 @@ export default class UITexasMenu extends UIBasePlus {
         //this.refreshCoinAndChip()
 
     }
-    
+
     // refreshCoin(data: any) {
     //     this.$node_coin.active = true;
     //     this.$node_coin.getChildByName("uc").active = data.gold_type == 1;
@@ -232,8 +232,6 @@ export default class UITexasMenu extends UIBasePlus {
     //         ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
     //     }
     // }
-
-
 
     click_coin() {
 

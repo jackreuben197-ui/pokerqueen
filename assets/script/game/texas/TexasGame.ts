@@ -3122,16 +3122,16 @@ export default class TexasGame {
                         ).then(
                             (res: any) => {
 
-                                if (GameCache.Instance.game_type == 1) { //1 联盟币， 2 usdt, 3 记分牌
+                                if (GameCache.Instance.gold_type == 1) { //1 联盟币， 2 usdt, 3 记分牌
 
                                     menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(res.data.user_info.gold);
 
                                 }
-                                else if (GameCache.Instance.game_type == 2) {
+                                else if (GameCache.Instance.gold_type == 2) {
 
                                     menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(res.data.user_info.usdt);
                                 }
-                                else if (GameCache.Instance.game_type == 3) {
+                                else if (GameCache.Instance.gold_type == 3) {
 
                                     /////////////////////////////////////////////////////
                                     WWW.Instance.CommonAPI(
@@ -3166,9 +3166,9 @@ export default class TexasGame {
             }
         );
 
-        menu.$node_coin.getChildByName("uc").active = GameCache.Instance.game_type == 1;
-        menu.$node_coin.getChildByName("gc").active = GameCache.Instance.game_type == 2;
-        menu.$node_coin.getChildByName("add").active = menu.$node_coin.getChildByName("click").active = GameCache.Instance.game_type == 1 || GameCache.Instance.game_type == 2;
+        menu.$node_coin.getChildByName("uc").active = GameCache.Instance.gold_type == 1;
+        menu.$node_coin.getChildByName("gc").active = GameCache.Instance.gold_type == 2;
+        menu.$node_coin.getChildByName("add").active = menu.$node_coin.getChildByName("click").active = GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2;
         let chips = GameCache.Instance.CurGame.mainPlayer?.cacheStoreChips || 0;
         menu.$node_storage.active = chips > 0;
         //GameCache.Instance.FriendsTableLimitBringIn;
@@ -3183,7 +3183,7 @@ export default class TexasGame {
         this.refreshCoinAndChip(menu);
 
         menu.clearOptions();
-        
+
         let show = [3, 4, 10];//设置|规则|离开
 
         if (this.UserSitdown()) //已坐下

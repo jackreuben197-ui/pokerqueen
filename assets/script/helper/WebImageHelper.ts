@@ -41,15 +41,7 @@ export default class WebImageHelper {
     }
     public static SetUrlImage(rawImage: cc.Sprite, url: string, defaultImage: cc.SpriteFrame = null) {
         return new Promise<void>((resolve, reject) => {
-            // let fixUrl = url.replace("http:", "https:");
-            // let spriteFrame = this.mUrlTexture.get(fixUrl);
 
-            // if (spriteFrame) {
-            // rawImage.spriteFrame = spriteFrame;
-            // }
-            // else {
-
-            //if (defaultImage) rawImage.spriteFrame = defaultImage;
 
             rawImage.spriteFrame = defaultImage;
 

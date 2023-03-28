@@ -127,6 +127,10 @@ export default class UIOperationComponent extends UIBase {
 
     ActionMap: Map<number, ActionLimit.AsObject> = new Map;
 
+
+    Check_CountDown: cc.Node = null;
+    Fold_CountDown: cc.Node = null;
+
     protected lateLoad(): void {
         super.lateLoad();
         this.imageFreeCallMask = this.getChildNodeOrComponent("Image_FreeCallMask");
@@ -143,6 +147,10 @@ export default class UIOperationComponent extends UIBase {
         this.buttonFreeCall = this.getChildNodeOrComponent("Button_FreeCall");
         this.buttonFreeCallConfirm = this.getChildNodeOrComponent("Button_FreeCall_Confirm");
 
+
+
+        this.Check_CountDown = this.getChildNodeOrComponent("Check_CountDown");
+        this.Fold_CountDown = this.getChildNodeOrComponent("Fold_CountDown");
 
         this.imageCheckCountDown = this.getChildNodeOrComponent("Image_CheckCountDown", cc.Sprite);
         this.imageFoldCountDown = this.getChildNodeOrComponent("Image_FoldCountDown", cc.Sprite);
@@ -413,18 +421,21 @@ export default class UIOperationComponent extends UIBase {
         if (this.ActionMap.get(Def.Action.CHECK) != null) {
             return;
         }
-        this.imageFoldCountDown.node.active = true;
-        this.imageFoldCountDown.fillRange = 1;
         this._isFoldCountDown = true;
+        this.Fold_CountDown.active = true;
+        this.imageFoldCountDown.fillRange = 1;
+
     }
     // 8
     private showCheck(action: ActionLimit.AsObject): void {
         cc.log("+ showCheck");
         this.buttonCheck.active = true;
 
-        this.imageCheckCountDown.node.active = true;
-        this.imageCheckCountDown.fillRange = 1;
+        //this.imageCheckCountDown.node.active = true;
         this._isCheckCountDown = true;
+        this.Check_CountDown.active = true;
+        this.imageCheckCountDown.fillRange = 1;
+
     }
     //10-1
     private showAllInRaise(actionLimit: ActionLimit.AsObject): void {
@@ -839,7 +850,8 @@ export default class UIOperationComponent extends UIBase {
             }
             if (this.imageCheckCountDown.fillRange <= 0) {
                 this.isCountDown = false;
-                this.imageCheckCountDown.node.active = false;
+                //this.imageCheckCountDown.node.active = false;
+                this.Check_CountDown.active = false;
                 if (this.isShowingDialog)
                     //UIComponent.Instance.HideUI(UIType.UIDialog);
                     UIComponent.close(UIDefine.UIDialogComponent);
@@ -857,7 +869,8 @@ export default class UIOperationComponent extends UIBase {
             }
             if (this.imageFoldCountDown.fillRange <= 0) {
                 this.isCountDown = false;
-                this.imageFoldCountDown.node.active = false;
+                //this.imageFoldCountDown.node.active = false;
+                this.Fold_CountDown.active = false;
                 if (this.isShowingDialog)
                     //UIComponent.Instance.HideUI(UIType.UIDialog);
                     UIComponent.close(UIDefine.UIDialogComponent);
@@ -916,14 +929,18 @@ export default class UIOperationComponent extends UIBase {
         this.slider.node.active = false;
         this.buttonFreeCallConfirm.active = false;
         this.Button_Straddle.active = false;
+        this.Check_CountDown.active = false;
+        this.Fold_CountDown.active = false;
     }
     lateClose(param?: any): void {
         super.lateClose();
         this.isCountDown = false;
         this._isCheckCountDown = false;
         this._isFoldCountDown = false;
-        this.imageCheckCountDown.node.active = false;
-        this.imageFoldCountDown.node.active = false;
+        //this.imageCheckCountDown.node.active = false;
+        //this.imageFoldCountDown.node.active = false;
+        this.Check_CountDown.active = false;
+        this.Fold_CountDown.active = false;
         this.hideAllOperationButton();
     }
 }

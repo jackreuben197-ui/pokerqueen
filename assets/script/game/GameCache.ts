@@ -371,8 +371,6 @@ export class GameCache {
 
         GameCache.Instance.ClubID = room_info.club_id;
         GameCache.Instance.TribeId = room_info.tribe_id;
-
-        console.log("GameCache.Instance.gold_type", room_info.gold_type);
     }
 
 

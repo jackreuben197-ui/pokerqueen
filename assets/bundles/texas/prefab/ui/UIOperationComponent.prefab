@@ -4544,7 +4544,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "CountDown",
+    "_name": "Check_CountDown",
     "_objFlags": 0,
     "_parent": {
       "__id__": 113
@@ -5071,7 +5071,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "CountDown",
+    "_name": "Fold_CountDown",
     "_objFlags": 0,
     "_parent": {
       "__id__": 127
