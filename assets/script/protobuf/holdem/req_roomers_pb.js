@@ -61,7 +61,10 @@ proto.holdem.pb.ClientMessageRoomers.prototype.toObject = function(opt_includeIn
  */
 proto.holdem.pb.ClientMessageRoomers.toObject = function(includeInstance, msg) {
   var f, obj = {
-    room: (f = msg.getRoom()) && protobuf_holdem_define_pb.Room.toObject(includeInstance, f)
+    room: (f = msg.getRoom()) && protobuf_holdem_define_pb.Room.toObject(includeInstance, f),
+    history: jspb.Message.getFieldWithDefault(msg, 2, false),
+    historyOffset: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    historyLimit: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -103,6 +106,18 @@ proto.holdem.pb.ClientMessageRoomers.deserializeBinaryFromReader = function(msg,
       reader.readMessage(value,protobuf_holdem_define_pb.Room.deserializeBinaryFromReader);
       msg.setRoom(value);
       break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setHistory(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setHistoryOffset(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setHistoryLimit(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -140,6 +155,27 @@ proto.holdem.pb.ClientMessageRoomers.serializeBinaryToWriter = function(message,
       protobuf_holdem_define_pb.Room.serializeBinaryToWriter
     );
   }
+  f = message.getHistory();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
+  f = message.getHistoryOffset();
+  if (f !== 0) {
+    writer.writeInt32(
+      3,
+      f
+    );
+  }
+  f = message.getHistoryLimit();
+  if (f !== 0) {
+    writer.writeInt32(
+      4,
+      f
+    );
+  }
 };
 
 
@@ -170,6 +206,53 @@ proto.holdem.pb.ClientMessageRoomers.prototype.clearRoom = function() {
  */
 proto.holdem.pb.ClientMessageRoomers.prototype.hasRoom = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional bool history = 2;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.ClientMessageRoomers.prototype.getHistory = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.ClientMessageRoomers.prototype.setHistory = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional int32 history_offset = 3;
+ * @return {number}
+ */
+proto.holdem.pb.ClientMessageRoomers.prototype.getHistoryOffset = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ClientMessageRoomers.prototype.setHistoryOffset = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional int32 history_limit = 4;
+ * @return {number}
+ */
+proto.holdem.pb.ClientMessageRoomers.prototype.getHistoryLimit = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ClientMessageRoomers.prototype.setHistoryLimit = function(value) {
+  jspb.Message.setField(this, 4, value);
 };
 
 
@@ -232,7 +315,10 @@ proto.holdem.pb.ServerMessageRoomers.toObject = function(includeInstance, msg) {
     observersList: jspb.Message.toObjectList(msg.getObserversList(),
     protobuf_holdem_define_pb.Roomer.toObject, includeInstance),
     playersList: jspb.Message.toObjectList(msg.getPlayersList(),
-    protobuf_holdem_define_pb.PlayerSummary.toObject, includeInstance)
+    protobuf_holdem_define_pb.PlayerSummary.toObject, includeInstance),
+    historyOffset: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    historyLimit: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    total: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -286,6 +372,18 @@ proto.holdem.pb.ServerMessageRoomers.deserializeBinaryFromReader = function(msg,
       var value = new protobuf_holdem_define_pb.PlayerSummary;
       reader.readMessage(value,protobuf_holdem_define_pb.PlayerSummary.deserializeBinaryFromReader);
       msg.addPlayers(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setHistoryOffset(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setHistoryLimit(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setTotal(value);
       break;
     default:
       reader.skipField();
@@ -344,6 +442,27 @@ proto.holdem.pb.ServerMessageRoomers.serializeBinaryToWriter = function(message,
       4,
       f,
       protobuf_holdem_define_pb.PlayerSummary.serializeBinaryToWriter
+    );
+  }
+  f = message.getHistoryOffset();
+  if (f !== 0) {
+    writer.writeInt32(
+      5,
+      f
+    );
+  }
+  f = message.getHistoryLimit();
+  if (f !== 0) {
+    writer.writeInt32(
+      6,
+      f
+    );
+  }
+  f = message.getTotal();
+  if (f !== 0) {
+    writer.writeInt32(
+      7,
+      f
     );
   }
 };
@@ -438,6 +557,51 @@ proto.holdem.pb.ServerMessageRoomers.prototype.addPlayers = function(opt_value, 
 
 proto.holdem.pb.ServerMessageRoomers.prototype.clearPlayersList = function() {
   this.setPlayersList([]);
+};
+
+
+/**
+ * optional int32 history_offset = 5;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageRoomers.prototype.getHistoryOffset = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageRoomers.prototype.setHistoryOffset = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * optional int32 history_limit = 6;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageRoomers.prototype.getHistoryLimit = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageRoomers.prototype.setHistoryLimit = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+/**
+ * optional int32 total = 7;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageRoomers.prototype.getTotal = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageRoomers.prototype.setTotal = function(value) {
+  jspb.Message.setField(this, 7, value);
 };
 
 

@@ -94,6 +94,7 @@ export default class UITexasReportComponent extends UIBase {
     }
     onShow(param?: any): void {
         super.onShow();
+        this.unscheduleAllCallbacks();
         // this.btnShowProblem = this.getChildNodeOrComponent('BtnShowProblem');
         // this.btnShowProblem.on('click', this.btnShowProblemClick, this)
         this.room_id.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
@@ -187,7 +188,7 @@ export default class UITexasReportComponent extends UIBase {
                     if (roomLeftTime > 0) {
                         this.mRoomLeaveTime = roomLeftTime;
                         let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.Label);
-                        textTitle.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
+                        textTitle.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
                         this.ShowLeaveTimer();
                     }
                 }
@@ -200,7 +201,7 @@ export default class UITexasReportComponent extends UIBase {
             if (this.mRoomLeaveTime >= 0 && this.node.isValid) {
                 this.mRoomLeaveTime--;
                 if (this.text_Time != null)
-                    this.text_Time.string = TimeHelper.ShowRemainingSemicolon(this.mRoomLeaveTime);
+                    this.text_Time.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
             } else {
                 if (this.text_Time != null && !cc.isValid(this.node, true)) {
                     this.text_Time.string = "00:00";

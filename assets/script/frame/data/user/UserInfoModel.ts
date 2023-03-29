@@ -1,12 +1,13 @@
 import { EventName } from "../../../config/EventName";
 import { TUserInfo } from "../../../config/TTypeConfig";
+import UIBase from "../../../ui/UIBase";
 import GC from "../../GameControl";
 
-export default class UserInfoModel {
+export default class UserInfoModel extends UIBase {
     private _msg: TUserInfo = null;
     updateData(msg: TUserInfo) {
         this._msg = msg;
-        GC.notify.post(EventName.myGoldChange);
+        this.post(EventName.myGoldChange);
     }
 
 

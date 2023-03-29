@@ -86,11 +86,13 @@ export default class UITexas extends BaseScene {
      */
     //桌布
     table_sp: cc.Sprite = null;
-
-    menu_btn: cc.Node = null;
-    report_btn: cc.Node = null;
-    cursituation_btn: cc.Node = null;
-    chat_btn: cc.Node = null;
+    //桌上边缘按钮
+    btn_menu: cc.Node = null;
+    btn_msg: cc.Node = null;
+    btn_report: cc.Node = null;
+    btn_poker: cc.Node = null;
+    //座位节点容器
+    seats_content: cc.Node = null;
 
     textRoomInfo: cc.Label = null;
 
@@ -102,13 +104,11 @@ export default class UITexas extends BaseScene {
     Image_ReserveSeatTips: cc.Node = null;
     Image_InsuranceTips: cc.Node = null;
 
-    //座位节点容器
-    Seats: cc.Node = null;
     //座位模板
     Seat_Temp: cc.Node = null;
 
 
-    textAlreadAnte: cc.Label = null;
+    Text_AlreadAnte: cc.Label = null;
     //个性设置界面
     //UITexasSetting: cc.Node = null;
 
@@ -189,8 +189,6 @@ export default class UITexas extends BaseScene {
 
     game: TexasGame = null;
 
-    lastClickTime: number = 0;
-
     TransPot_Pool: SimpleNodePool = null;
     TransAllPot_Pool: SimpleNodePool = null;
 
@@ -210,8 +208,6 @@ export default class UITexas extends BaseScene {
     private barrageAnimationSequence: Sequence<{}> = null;
     //#endregion
 
-    Button_Msg: cc.Node = null;
-
     ///////////////////////////////////
     update(dt: number) {
         this.game?.Update(dt);
@@ -222,23 +218,27 @@ export default class UITexas extends BaseScene {
 
         this.table_sp = this.getChildNodeOrComponent("table_sp", cc.Sprite);
 
-        this.menu_btn = this.getChildNodeOrComponent("menu_btn");
-        this.report_btn = this.getChildNodeOrComponent("report_btn");
-        this.cursituation_btn = this.getChildNodeOrComponent("cursituation_btn");
-        this.chat_btn = this.getChildNodeOrComponent("chat_btn");
+        this.btn_menu = this.getChildNodeOrComponent("btn_menu");
+        this.btn_msg = this.getChildNodeOrComponent("btn_msg");
+        this.btn_report = this.getChildNodeOrComponent("btn_report");
+        this.btn_poker = this.getChildNodeOrComponent("btn_poker");
+
+        this.seats_content = this.getChildNodeOrComponent("seats_content");
+
+
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
         this.Image_SelectSeatTips = this.getChildNodeOrComponent("Image_SelectSeatTips");
         this.Image_WaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
         this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
 
-        this.Seats = this.getChildNodeOrComponent("Seats");
+        this.seats_content = this.getChildNodeOrComponent("seats_content");
         this.Seat_Temp = this.getChildNodeOrComponent("Seat_Temp");
 
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
 
-        this.textAlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
+        this.Text_AlreadAnte = this.getChildNodeOrComponent("Text_AlreadAnte", cc.Label);
 
 
         this.transPots = this.getChildNodeOrComponent("Pots");
@@ -321,16 +321,12 @@ export default class UITexas extends BaseScene {
         //Pot对象池
         this.TransPot_Pool = new SimpleNodePool(this.transPot);
         this.TransAllPot_Pool = new SimpleNodePool(this.transAllPot);
-
-        this.Button_Msg = this.getChildNodeOrComponent("Button_Msg");
-
     }
 
 
     //从预制体添加到容器
     AddComponents(prefab_name: string, parent: cc.Node, show: boolean = false, bundle: string = Bundle_Texas) {
         let prefab: cc.Prefab = AssetContext.getAsset(prefab_name, bundle);
-        console.log("AddComponents", prefab_name, prefab);
         let com = null;
         if (prefab) {
             com = cc.instantiate(prefab).getComponent(prefab_name);
@@ -347,11 +343,11 @@ export default class UITexas extends BaseScene {
     }
     protected regiterTouchEvents(): void {
 
-        this.setButtonClick(this.menu_btn.getChildByName("click"), this.sideClick);
-        this.setButtonClick(this.report_btn.getChildByName("click"), this.sideClick);
-        this.setButtonClick(this.cursituation_btn.getChildByName("click"), this.sideClick);
-        //this.setButtonClick(this.chat_btn, this.sideClick);
-
+        this.setButtonClick(this.btn_menu, this.click_side_button);
+        this.setButtonClick(this.btn_msg, this.click_side_button);
+        this.setButtonClick(this.btn_report, this.click_side_button);
+        this.setButtonClick(this.btn_poker, this.click_side_button);
+        ///////////////////////////
 
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
@@ -361,9 +357,6 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
 
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
-
-        this.setButtonClick(this.Button_Msg, this.onClickMsg);
-
 
     }
 
@@ -392,7 +385,7 @@ export default class UITexas extends BaseScene {
         this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
         //消息按钮显示
-        this.Button_Msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
+        this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
     }
     //清理UI
     CleanUI() {
@@ -459,25 +452,7 @@ export default class UITexas extends BaseScene {
         this.game.SendTrustAction(false);
     }
 
-    private sideClick(e: cc.Button) {
-        switch (e.node?.parent) {
-            case this.menu_btn://菜单按钮
-                //this.CallbackExit();
-                if (this.game.CanClick() == false) return;
-                this.lastClickTime = GlobalSession.NowTimeMS;
-                this.ShowMenu();
-                break;
-            case this.report_btn://报告按钮
-                this.Click_Report_Btn();
-                break;
-            case this.cursituation_btn://状况按钮
-                this.Click_Cursituation_btn();
-                break;
-            case this.chat_btn://聊天按钮
-                UIComponent.Instance.Toast();
-                break;
-        }
-    }
+
 
     public ShowBringIn() {
         this.setActive(this.Button_BringIn, true);
@@ -514,6 +489,7 @@ export default class UITexas extends BaseScene {
     private onClickAddOn() {
         this.game.onClickAddOn();
     }
+    //加时点击
     private onClickDelay() {
         this.game.onClickDelay();
     }
@@ -530,14 +506,29 @@ export default class UITexas extends BaseScene {
         }
     }
 
-    //消息点击
-    onClickMsg() {
-        if (GameUtil.GetFriendsOrClubTable() == 1) {
-            UIComponent.open(UIDefine.UIMsgBring, { from: 0, name: "UIClub_RoomSitApplyRecords_title" });
-        }
-        if (GameUtil.GetFriendsOrClubTable() == 2) {
-            UIComponent.open(UIDefine.UIMsgBring, { from: 1, name: "UIClub_RoomSitApplyRecords_title" });
+    //边角按钮点击
+    private click_side_button(e: cc.Button) {
+
+        if (this.game.CanClick() == false) return;
+        this.game.lastClickTime = GlobalSession.NowTimeMS;
+        switch (e.node) {
+            case this.btn_menu://菜单按钮
+                this.ShowMenu();
+                break;
+            case this.btn_msg://消息
+                if (GameUtil.GetFriendsOrClubTable() == 1) {
+                    UIComponent.open(UIDefine.UIMsgBring, { from: 0, name: "UIClub_RoomSitApplyRecords_title" });
+                }
+                if (GameUtil.GetFriendsOrClubTable() == 2) {
+                    UIComponent.open(UIDefine.UIMsgBring, { from: 1, name: "UIClub_RoomSitApplyRecords_title" });
+                }
+                break;
+            case this.btn_report://实时战况
+                this.Click_Report_Btn();
+                break;
+            case this.btn_poker://战绩牌谱
+                this.Click_Cursituation_btn();
+                break;
         }
     }
-
 }

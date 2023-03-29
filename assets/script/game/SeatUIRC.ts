@@ -49,16 +49,23 @@ export default class SeatUIRC extends UIBase {
      * 节点|组件 定义
      */
     Head: cc.Node = null;
-    imageHeadFrame: cc.Sprite = null;
-    imageHeadGray: cc.Sprite = null;
+    imageHeadFrame: cc.Node = null;
     imageEmpty: cc.Sprite = null;
-    rawimageHead: cc.Sprite = null;
 
+    //头像容器
+    Frame_Head: cc.Node = null;
+    //头像图片
+    Raw_Head: cc.Sprite = null;
+    //头像灰色蒙版
+    Gray_Head: cc.Node = null;
 
     //座位上下名字和筹码
     Nick_Coin: cc.Node = null;
-    Text_Coin: cc.Label = null;
     Text_NickName: cc.Label = null;
+
+
+    Coin_Con: cc.Node = null; //手上筹码容器 位置自己和Other -109 -187
+    Text_Coin: cc.Label = null;
     TextRequesting: cc.Label = null;//带入申请提示中
 
 
@@ -74,10 +81,9 @@ export default class SeatUIRC extends UIBase {
     imageBanker: cc.Node = null;
 
 
-    imageCountDown: cc.Sprite = null;
-    Image_CountDownbg: cc.Sprite = null;
-    image_CountDownTime: cc.Label = null;
-
+    Head_CD: cc.Node = null;
+    Head_CD_Label: cc.Label = null;
+    Head_CD_Mask: cc.Sprite = null;
 
 
     imageCardType: cc.Sprite = null;
@@ -94,7 +100,7 @@ export default class SeatUIRC extends UIBase {
 
     imageOffline: cc.Node = null;
 
-    imageBubble: cc.Sprite = null;
+    Image_Bubble: cc.Node = null;
     textBubble: cc.Label = null;
 
     //保险
@@ -144,11 +150,14 @@ export default class SeatUIRC extends UIBase {
     protected lateLoad(): void {
         super.lateLoad();
         this.Head = this.getChildNodeOrComponent("Head");
-        this.imageHeadFrame = this.getChildNodeOrComponent("Image_HeadFrame", cc.Sprite);
-        this.imageHeadGray = this.getChildNodeOrComponent("Image_HeadGray", cc.Sprite);
-        this.imageEmpty = this.getChildNodeOrComponent("Image_Empty", cc.Sprite);
-        this.rawimageHead = this.getChildNodeOrComponent("RawImage_Head", cc.Sprite);
 
+        this.imageEmpty = this.getChildNodeOrComponent("Image_Empty", cc.Sprite);
+
+        this.Frame_Head = this.getChildNodeOrComponent("Frame_Head");
+        this.Raw_Head = this.getChildNodeOrComponent("Raw_Head", cc.Sprite);
+        this.Gray_Head = this.getChildNodeOrComponent("Gray_Head");
+
+        this.Coin_Con = this.getChildNodeOrComponent("Coin_Con");
         this.Text_Coin = this.getChildNodeOrComponent("Text_Coin", cc.Label);
         this.Text_NickName = this.getChildNodeOrComponent("Text_NickName", cc.Label);
         this.TextRequesting = this.getChildNodeOrComponent("TextRequesting", cc.Label);
@@ -174,9 +183,10 @@ export default class SeatUIRC extends UIBase {
             this.imageSmallCardBacks.push(this.getChildNodeOrComponent(`Image_SmallCardBack${i}`, cc.Sprite));
         }
 
-        this.imageCountDown = this.getChildNodeOrComponent("Image_CountDown", cc.Sprite);
-        this.Image_CountDownbg = this.getChildNodeOrComponent("Image_CountDownbg", cc.Sprite);
-        this.image_CountDownTime = this.Image_CountDownbg.node.getChildByName("Text").getComponent(cc.Label);
+        this.Head_CD = this.getChildNodeOrComponent("Head_CD");
+        this.Head_CD_Label = this.getChildNodeOrComponent("Head_CD_Label", cc.Label);
+        this.Head_CD_Mask = this.getChildNodeOrComponent("Head_CD_Mask", cc.Sprite);
+
 
         this.imageCardType = this.getChildNodeOrComponent("Image_CardType", cc.Sprite);
         this.textCardType = this.getChildNodeOrComponent("Text_CardType", cc.Label);
@@ -199,7 +209,7 @@ export default class SeatUIRC extends UIBase {
         this.imageOffline = this.getChildNodeOrComponent("imageOffline");
 
 
-        this.imageBubble = this.getChildNodeOrComponent("Image_Bubble", cc.Sprite);
+        this.Image_Bubble = this.getChildNodeOrComponent("Image_Bubble");
         this.textBubble = this.getChildNodeOrComponent("Text_Bubble", cc.Label);
 
         this.Image_BubbleInsuranceNum = this.getChildNodeOrComponent("Image_BubbleInsuranceNum");
@@ -250,7 +260,7 @@ export default class SeatUIRC extends UIBase {
             this.setButtonClick(this.imageCards[i].imageCard, this.onClickCard);
         }
         this.setButtonClick(this.imageEmpty.node, this.onClickEmpty);
-        this.setButtonClick(this.rawimageHead.node, this.onClickHead);
+        this.setButtonClick(this.Frame_Head, this.onClickHead);
         this.setButtonClick(this.buttonCancelReserveSeat, this.onClickCancelReserveSeat);
     }
 
@@ -289,6 +299,19 @@ export default class SeatUIRC extends UIBase {
                     },
                     (res: any) => {
 
+                    }
+                )
+            } else {
+
+                UIComponent.Instance.ShowUI<AddClipsData>(
+                    PrefabUI.UIBringIn,
+                    {
+                        bigBlind: GameCache.Instance.CurGame.bigBlind,
+                        smallBlind: GameCache.Instance.CurGame.smallBlind,
+                        currentMinRate: GameCache.Instance.CurGame.currentMinRate,
+                        currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
+                        totalCoin: GC.data.user.info.gold,
+                        tableChips: this.seat.Player.chips,
                     }
                 )
             }

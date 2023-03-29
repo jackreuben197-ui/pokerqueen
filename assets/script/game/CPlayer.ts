@@ -4,7 +4,7 @@ const CanPlayStatus = Def.CanPlayStatus;
 const Action = Def.Action;
 export class CPlayer {
 
-    public seatID: number = 0; // 座位号
+    public seatID: number = 0; // 原始座位号
     public sex: number = 0; // 性别 0男，1女
     public headPic: string = null; // 头像id
     public nick: string = null; // 昵称

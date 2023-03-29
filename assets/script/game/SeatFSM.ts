@@ -38,7 +38,7 @@ export class SeatFSM {
         this.seat.uirc.imageBanker.active = false;
         this.seat.uirc.Image_CoinShadow.active = false;
         // imageStraddle.gameObject.SetActive(false);
-        this.seat.uirc.imageHeadFrame.node.active = false;
+        this.seat.uirc.Frame_Head.active = false;
         //this.seat.uirc.transSmallCardBacks.active = false;
         this.seat.HideCardBack();
         // imageHolding.gameObject.SetActive(false);
@@ -47,9 +47,9 @@ export class SeatFSM {
         // imageTrust.gameObject.SetActive(false);
         this.seat.uirc.imageOffline.active = false;
         this.seat.uirc.imageReserveSeat.active = false;
-        this.seat.uirc.imageCountDown.node.active = false;
-        this.seat.uirc.Image_CountDownbg.node.active = false;
-        this.seat.uirc.imageBubble.node.active = false;
+        this.seat.uirc.Head_CD.active = false;
+
+        this.seat.uirc.Image_Bubble.active = false;
         // Image_BubbleInsuranceNum.gameObject.SetActive(false);
         // Image_BubbleInsuranceToubao.gameObject.SetActive(false);
         this.seat.uirc.transCurRoundHaveBet.active = false;
@@ -112,7 +112,7 @@ export class SeatFSM {
         // this.seat.StopAllinArmature();
         this.seat.StopWinArmature();
 
-        this.seat.uirc.imageHeadFrame.node.active = true;
+        this.seat.uirc.Frame_Head.active = true;
         this.seat.uirc.imageEmpty.node.active = false;
 
     }
@@ -146,7 +146,7 @@ export class SeatFSM {
         //this.seat.UpdateNickname();
         this.seat.UpdateCoin();
         this.seat.UpdateRequesting();
-        this.seat.uirc.imageHeadFrame.node.active = true;
+        this.seat.uirc.Frame_Head.active = true;
         this.seat.uirc.imageEmpty.node.active = false;
     }
 
@@ -275,12 +275,11 @@ export class SeatFSM {
         if (!this.seat.isCountDown)
             return;
 
-        this.seat.uirc.imageCountDown.fillRange = (this.seat.optCurTime -= dt) / this.seat.optTotalTime;
-        this.seat.uirc.image_CountDownTime.string = `${this.seat.optCurTime ^ 0}`;
-        if (this.seat.uirc.imageCountDown.fillRange <= 0) {
+        this.seat.uirc.Head_CD_Mask.fillRange = (this.seat.optCurTime -= dt) / this.seat.optTotalTime;
+        this.seat.uirc.Head_CD_Label.string = `${this.seat.optCurTime ^ 0}s`;
+        if (this.seat.uirc.Head_CD_Mask.fillRange <= 0) {
             this.seat.isCountDown = false;
-            this.seat.uirc.imageCountDown.node.active = false;
-            this.seat.uirc.Image_CountDownbg.node.active = false;
+            this.seat.uirc.Head_CD.active = false;
             //PlayLightArmature();
         }
     }
@@ -306,14 +305,13 @@ export class SeatFSM {
         if (!this.seat.isCountDown)
             return;
 
-        this.seat.uirc.imageCountDown.fillRange = (this.seat.optCurTime -= dt) / this.seat.optTotalTime;
+        this.seat.uirc.Head_CD_Mask.fillRange = (this.seat.optCurTime -= dt) / this.seat.optTotalTime;
 
-        this.seat.uirc.image_CountDownTime.string = `${this.seat.optCurTime}`;
+        this.seat.uirc.Head_CD_Label.string = `${this.seat.optCurTime}s`;
 
-        if (this.seat.uirc.imageCountDown.fillRange <= 0) {
+        if (this.seat.uirc.Head_CD_Mask.fillRange <= 0) {
             this.seat.isCountDown = false;
-            this.seat.uirc.imageCountDown.node.active = false;
-            this.seat.uirc.Image_CountDownbg.node.active = false;
+            this.seat.uirc.Head_CD.active = false;
             //this.seat.PlayLightArmature();
         }
 
@@ -494,7 +492,7 @@ export class SeatFSM {
                 this.seat.bKeepSeatCounting = false;
             }
             else {
-                this.seat.uirc.textCancelReserveSeat.string = `${CPErrorCode.LanguageDescription(10011)}(${this.seat.keepSeatLeftTime}s)`;
+                this.seat.uirc.textCancelReserveSeat.string = `${CPErrorCode.LanguageDescription(10011)}\n${this.seat.keepSeatLeftTime}s`;
                 this.seat.uirc.m_ReserveTime.string = `${this.seat.keepSeatLeftTime}s`;
             }
         }

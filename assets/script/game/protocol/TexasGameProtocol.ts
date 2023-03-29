@@ -185,40 +185,48 @@ export default class TexasGameProtocol {
 
         this.game.mainPlayer.KeepSeatLeftTime = rec.keepSeatLeftTime;
         if (rec.keepSeatLeftTime > 0) {
-            UIComponent.Instance.Toast(i18nMgr.Get("UITexas_FriendtableapplyBringinTips001") + rec.keepSeatLeftTime + "s");
+            UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${rec.keepSeatLeftTime}s`);
         }
 
-        let mSeat: Seat = null;
-        mSeat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.recvSeatId));
-        if (null == mSeat)
-            return;
+        let seat: Seat = null;
 
-        this.game.mainPlayer.seatID = this.game.GetLocalSeatID(rec.recvSeatId);
-        mSeat.Player = this.game.mainPlayer;
-        mSeat.isBank = false;
+        //服务器记录的id
+        let me_seat_id: number = this.game.GetLocalSeatID(rec.recvSeatId);
+
+        seat = this.game.GetSeatByLocalSeatID(me_seat_id);
+
+        if (null == seat) return;
+
+        //设置自己的座位id
+        this.game.mainPlayer.seatID = me_seat_id;
+        seat.Player = this.game.mainPlayer;
+        seat.isBank = false;
         if (!this.game.mainPlayer.isParticipateInTheGame) {
-            mSeat.UpdateWaiteNextTips(true);
+            seat.UpdateWaiteNextTips(true);
         }
         this.game.HideWaitBlindBtn();
 
-        if (mSeat.Player.chips > this.game.GetMinPlayChips() && mSeat.seatID == this.game.mainPlayer.seatID) {
+        if (seat.Player.chips > this.game.GetMinPlayChips() && seat.seatID == this.game.mainPlayer.seatID) {
             if (this.game.mainPlayer.canPlayStatus == Def.CanPlayStatus.NEED_POST) {
                 // 需要补盲
                 this.game.ShowWaitBlindBtn();
-                mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind.Instance);
+                seat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind.Instance);
             }
             // else {
             //     mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
             // }
         }
 
-        mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
+        //翻转动画
+        seat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
 
         // todo 这里要搞十分十分十分酷炫的动画，把自己位移到最下方，0号位
 
-        if (mSeat.ClientSeatId > 0) {
-            this.game.ResetSeatUIInfo(mSeat.ClientSeatId);
-        }
+        //判断自己的方位id不在最下方,进行位移动画
+        // if (seat.ClientSeatId > 0) {
+        //     this.game.ResetSeatUIInfo(seat.ClientSeatId);
+        // }
+        this.game.ResetSeatUIInfo(seat.ClientSeatId);
 
         if (GameCache.Instance.Vip == 1) {
             //ShowVipSeatDownTips(GameCache.Instance.nick);
@@ -476,6 +484,9 @@ export default class TexasGameProtocol {
         if (rec.keep && rec.keepSeatReason == Def.KeepSeatReason.KSR_TAKE_SEAT) {
             mSeat.Player.KeepSeatLeftTime = rec.leftTime;
             mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+            if (rec.leftTime > 0) {
+                UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${rec.leftTime}s`);
+            }
             return;
         }
 
@@ -548,7 +559,9 @@ export default class TexasGameProtocol {
         this.game.cacheRound = rec.round;
         this.game.UpgradePublicCards(1, rec.publicCardsList);
         //启用按钮
-        this.game.uirc.Button_SeeMorePublic.getChildByName("click").getComponent(cc.Button).interactable = true;
+
+        this.game.InteractableSeeMorePublic(true);
+
         // 花费查看未发公共牌
         if (this.game.GetPublicCardsCount(1) == 5) {
             this.game.HideSeeMorePublic();
@@ -931,7 +944,7 @@ export default class TexasGameProtocol {
             Seat.PlayWinArmature();
             Seat.UpdateRecyclingWinChip();
 
-            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.textAlreadAnte.node.position));
+            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
 
             if (PlayRecyclingWinChipAnimation_Tween) {
 
@@ -1137,7 +1150,7 @@ export default class TexasGameProtocol {
             //     mSeat.UpdateHunterAward();
             // }
             let PlayRecyclingWinChipAnimation_Tween: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function }
-                = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.textAlreadAnte.node.position));
+                = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
 
             if (PlayRecyclingWinChipAnimation_Tween) {
 

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "24088155-b78e-457c-bb54-0c28f6666dcb",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 67,
+  "height": 67,
+  "platformSettings": {},
+  "subMetas": {
+    "牌局走势": {
+      "ver": "1.0.6",
+      "uuid": "81218f29-7aa6-41ed-a787-7e138bf8ffff",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "24088155-b78e-457c-bb54-0c28f6666dcb",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 67,
+      "height": 67,
+      "rawWidth": 67,
+      "rawHeight": 67,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
