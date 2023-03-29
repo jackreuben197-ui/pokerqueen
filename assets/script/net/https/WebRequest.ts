@@ -2835,9 +2835,15 @@ export class Web_Club_Fund_OrderList extends WebCommon {
 export class APIOrgClubNotice_update extends WebCommon {
     public static API: string = "/api/cmsext/club/notice_update";
 }
-export class APIOrgClubNotice extends WebCommon {
+export class APIOrgClubNoticeGet extends WebCommon {
     public static API: string = "/api/cmsext/club/notice_get";
 }
+
+export class APIOrgClubNotice extends WebCommon {
+    public static API: string = "/api/cmsext/club/notice";
+}
+
+
 
 export class APIOrgClubNotice_Ignore extends WebCommon {
     public static API: string = "/api/cmsext/club/user/notice_ignore";

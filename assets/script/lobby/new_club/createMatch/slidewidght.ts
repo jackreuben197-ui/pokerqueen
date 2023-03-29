@@ -3,9 +3,11 @@
  * @Date: 2022-10-17 15:01:00
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-15 18:19:12
+ * @LastEditTime: 2023-03-29 19:09:19
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/slidewidght.ts
  */
+
+import { i18nMgr } from "../../../i18n/i18nMgr";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -38,8 +40,8 @@ export default class slidewidght extends cc.Component {
         this.selectNum = this.node.getChildByName('selectNum')
         this.fillsp = this.node.getChildByName('fillsp')
         this.initListen();
-        this.node.x = -470
-        this.node.width = 930
+        this.node.x = -496
+        this.node.width = 977
         let _x = this.node.width / (data.length - 1)
         this._itemData = data
         for (let index = this.itemNode.childrenCount - 1; index > 0; index--) {
@@ -54,7 +56,7 @@ export default class slidewidght extends cc.Component {
         }
         for (let index = 0; index < data.length; index++) {
             let _nomalItem = this.itemNode.children[index];
-            _nomalItem.getChildByName('lbl').getComponent(cc.Label).string = data[index];
+            _nomalItem.getChildByName('lbl').getComponent(cc.Label).string = i18nMgr.Get(data[index]);
             const x = 0 + _x * index;
             _nomalItem.x = x;
             _nomalItem['clickIndex'] = index;
@@ -66,9 +68,9 @@ export default class slidewidght extends cc.Component {
         if (this.node.parent.parent.name == 'dxm') {
             this.setFdxmUi();
         } else {
-            this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = data[this._selectIndex];
+            this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = i18nMgr.Get(data[this._selectIndex]);
         }
-        cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
+        cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = data[this._selectIndex]
 
     }
 
@@ -102,7 +104,7 @@ export default class slidewidght extends cc.Component {
                     if (this.node.parent.parent.name == 'dxm') {
                         this.setFdxmUi();
                     } else {
-                        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[index];
+                        this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = i18nMgr.Get(this._itemData[index]);
                     }
 
 
@@ -150,14 +152,14 @@ export default class slidewidght extends cc.Component {
             node.x = 0
             this.fillsp.width = 0
         }
-        cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex]
+        cc.find('labelNode/lblNum', this.node.parent.parent)['_dataNum'] = this._itemData[this._selectIndex];
 
         if (this.node.parent.parent.name == 'dxm') {
             this.setFdxmUi();
             this._targetDe.changeQzsh(this._itemData[this._selectIndex]);
             this._targetDe.resetDrjfp();
         } else {
-            this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = this._itemData[this._selectIndex];
+            this.node.parent.parent.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string = i18nMgr.Get(this._itemData[this._selectIndex]);
         }
     }
 

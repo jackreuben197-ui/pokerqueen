@@ -3,7 +3,7 @@
  * @Date: 2022-12-20 17:42:31
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-17 12:49:09
+ * @LastEditTime: 2023-03-29 20:17:09
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMerberManager.ts
  */
 // Learn TypeScript:
@@ -109,6 +109,7 @@ export default class UIClubMerberManager extends BaseForm {
 
             }, self: this
         };
+        this.memberList.scrollingCB = this.scrollingCB;
 
     }
     initTop() {

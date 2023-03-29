@@ -3,7 +3,7 @@
  * @Date: 2022-12-28 17:59:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-23 20:16:09
+ * @LastEditTime: 2023-03-29 19:46:34
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/active/UIClubActive.ts
  */
 // Learn TypeScript:
@@ -22,7 +22,7 @@ import { EventName } from "../../../config/EventName";
 import TimeHelper from "../../../helper/TimeHelper";
 import { UIClubModel } from "../../labor/UIClubModel";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
-import { APIOrgClubNotice } from "../../../net/https/WebRequest";
+import { APIOrgClubNoticeGet, APIOrgClubNotice } from "../../../net/https/WebRequest";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 const { ccclass, property, menu } = cc._decorator;
 
@@ -60,10 +60,11 @@ export default class UIClubActive extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.comFormTitle.initData('UIGuild_Notice', this);
-        await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
-        let data: any = APIOrgClubNotice.Response.data;
-        this.titleEditBox.string = data?.info?.title
-        this.textEditBox.string = data?.info?.content
+        await UIClubModel.mInstance.APIOrgClubNoticeGet({ "club_id": ClubCache.club_id })
+        let data: any = APIOrgClubNoticeGet.Response.data;
+        this.titleEditBox.string = data?.info?.title || ''
+        this.textEditBox.string = data?.info?.content || ''
+
         this.editChange();
     }
     protected regiterDispatchEvent(): void {
@@ -111,7 +112,7 @@ export default class UIClubActive extends BaseForm {
             return;
         }
         // await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
-        let data: any = APIOrgClubNotice.Response.data;
+        let data: any = APIOrgClubNoticeGet.Response.data;
 
         let parms = {
             "club_id": ClubCache.club_id,
@@ -120,7 +121,7 @@ export default class UIClubActive extends BaseForm {
 
             "content": this.textEditBox.string,
 
-            "start_time": end['_data'].getTime() / 1000,
+            "start_time": began['_data'].getTime() / 1000,
 
             "end_time": end['_data'].getTime() / 1000
         }

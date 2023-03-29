@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-27 15:13:54
+ * @LastEditTime: 2023-03-29 19:10:37
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -103,9 +103,9 @@ export default class UIClubCreateMatch extends BaseForm {
     itemData = {
         qwsz: [0, 1, 2, 4, 8, 18, 20, 30],
         pjsc: [0.5, 1, 2, 3, 4, 5, 6],
-        zdcl: ['不限', 25, 30, 35, 40, 45],
-        zss: ['不限', 50, 100, 300, 1000],
-        fddm: ['不限', 0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3],
+        zdcl: ['UIClub_CreateRoom23', 25, 30, 35, 40, 45],
+        zss: ['UIClub_CreateRoom23', 50, 100, 300, 1000],
+        fddm: ['UIClub_CreateRoom23', 0.1, 0.2, 0.3, 0.4, 0.5, 1, 1.5, 2, 2.5, 3],
         fwfbl: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5],//5+
         dxm: [0.1, 0.2, 0.3, 0.4, 0.5],
     }
@@ -324,13 +324,13 @@ export default class UIClubCreateMatch extends BaseForm {
         this.calculateIndex('pjsc', room_config.play_duration / 3600)
         //最低池率
         if (room_config.limit_hc_pool_rate == 0) {
-            this.calculateIndex('zdcl', '不限')
+            this.calculateIndex('zdcl', 'UIClub_CreateRoom23')
         } else {
             this.calculateIndex('zdcl', room_config.limit_hc_pool_rate)
         }
         //总手数
         if (room_config.limit_hc_total_hands == 0) {
-            this.calculateIndex('zss', '不限')
+            this.calculateIndex('zss', 'UIClub_CreateRoom23')
         } else {
             this.calculateIndex('zss', room_config.limit_hc_total_hands)
         }
@@ -710,7 +710,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.retain_min_rate = this.zxblbs['levelData'].level;//最小倍率 最小保留记分牌倍数
         // room_config.tribe_id = ClubCache.tribe_id;
 
-        if (this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == '不限') {
+        if (this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == 'UIClub_CreateRoom23') {
             room_config.limit_hc_total_hands = 0;
             room_config.hc_total_hands_lv = false;
         } else {
@@ -718,7 +718,7 @@ export default class UIClubCreateMatch extends BaseForm {
             room_config.limit_hc_total_hands = Number(this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'])          //总手数限制 手数
         }
 
-        if (this.zdrcl.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == '不限') {
+        if (this.zdrcl.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == 'UIClub_CreateRoom23') {
             room_config.limit_hc_pool_rate = 0;
             room_config.hc_pool_rate_lv = false;
         } else {

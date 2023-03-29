@@ -3,7 +3,7 @@
  * @Date: 2023-01-03 11:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-24 18:21:44
+ * @LastEditTime: 2023-03-29 20:17:11
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatch.ts
  */
 // Learn TypeScript:
@@ -49,6 +49,7 @@ export default class UIClubShareMatch extends BaseForm {
         this.tabNode.initData(shareMatchTabConfig, this.titleNodeClick.bind(this), this)
         let title = "UIGuild_ShareGameManager"
         this.comFormTitle.initData(title, this);
+        this.memberList.scrollingCB = this.scrollingCB;
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
