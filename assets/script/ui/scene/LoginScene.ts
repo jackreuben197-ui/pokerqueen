@@ -55,6 +55,7 @@ export default class LoginScene extends BaseScene {
     private eyesBtn: cc.Node = null;
     private closeEyes: cc.Node = null;
     private openEyes: cc.Node = null;
+    private delBtn: cc.Node = null;
 
     private sureBtn: cc.Node = null;
     private sureBtnLab: cc.Label = null;
@@ -64,16 +65,15 @@ export default class LoginScene extends BaseScene {
     private backLoginBtn: cc.Node = null;
 
 
-    private facebook: cc.Node = null;
-    private google: cc.Node = null;
-    private instagram: cc.Node = null;
+    // private facebook: cc.Node = null;
+    // private google: cc.Node = null;
+    // private instagram: cc.Node = null;
 
     private btnAgreeNode: cc.Node = null;
-    private downAgreeNode: cc.Node = null;
-    private agreeNode: cc.Node = null;
+    // private agreeNode: cc.Node = null;
     private agreeToggle: cc.Toggle = null;
-    private agreeTip1: cc.Label = null;
-    private agreeTip2: cc.Label = null;
+    private agreeTip1: cc.Node = null;
+    // private agreeTip2: cc.Label = null;
 
     private otherLoginNode: cc.Node = null;
 
@@ -117,17 +117,17 @@ export default class LoginScene extends BaseScene {
         this.changeLoginBtn = this.getChildNodeOrComponent("changeLoginBtn")
         this.registerBtn = this.getChildNodeOrComponent("registerBtn")
         this.backLoginBtn = this.getChildNodeOrComponent("backLoginBtn")
-        this.facebook = this.getChildNodeOrComponent("facebook")
-        this.google = this.getChildNodeOrComponent("google")
-        this.instagram = this.getChildNodeOrComponent("instagram")
+        // this.facebook = this.getChildNodeOrComponent("facebook")
+        // this.google = this.getChildNodeOrComponent("google")
+        // this.instagram = this.getChildNodeOrComponent("instagram")
         this.btnAgreeNode = this.getChildNodeOrComponent("btnAgreeNode")
-        this.downAgreeNode = this.getChildNodeOrComponent("downAgreeNode")
-        this.agreeNode = this.getChildNodeOrComponent("agreeNode")
+        // this.agreeNode = this.getChildNodeOrComponent("agreeNode")
         this.agreeToggle = this.getChildNodeOrComponent("agreeToggle", cc.Toggle)
-        this.agreeTip1 = this.getChildNodeOrComponent("agreeTip1", cc.Label)
-        this.agreeTip2 = this.getChildNodeOrComponent("agreeTip2", cc.Label)
+        this.agreeTip1 = this.getChildNodeOrComponent("agreeTip1")
+        // this.agreeTip2 = this.getChildNodeOrComponent("agreeTip2", cc.Label)
         this.otherLoginNode = this.getChildNodeOrComponent('otherLoginNode')
         this.getVCDTime = this.getVLab.node.addComponent(LabelCDTime);
+        this.delBtn = this.getChildNodeOrComponent("delBtn")
     }
 
     protected regiterDispatchEvent(): void {
@@ -144,12 +144,13 @@ export default class LoginScene extends BaseScene {
         this.bindClick(this.areaNode, this.clickAreaNode)
         this.bindClick(this.languageBtn, this.clickLanguage);
         this.bindClick(this.languageLayer, this.clickLanguageLayer);
-        // this.bindClick(this.agreeTip2, this.clickUserAgreeRule);
         this.bindClick(this.changeLoginBtn, this.clickChangeLoginBtn);
         this.bindClick(this.backLoginBtn, this.clickBackLoginBtn);
-        this.bindClick(this.facebook, this.clickFaceBook, null, true);
-        this.bindClick(this.google, this.clickGoogle, null, true);
-        this.bindClick(this.instagram, this.clickInstagram, null, true);
+        this.bindClick(this.delBtn, this.updatePassPlaceholder)
+        this.bindClick(this.agreeTip1, this.clickUserAgreeRule)
+        // this.bindClick(this.facebook, this.clickFaceBook, null, true);
+        // this.bindClick(this.google, this.clickGoogle, null, true);
+        // this.bindClick(this.instagram, this.clickInstagram, null, true);
     }
 
     protected lateEnter() {
@@ -221,12 +222,12 @@ export default class LoginScene extends BaseScene {
     }
 
     setToggleTitles(pro: ELoginProcess = this._loginProcess) {
-        let titles = ["UILogin_phone_login", "UILogin_mail_login"];
+        let titles = ["UIloginPhone_logintext", "UIloginEmail_logintext"];
         if (this._loginProcess == ELoginProcess.register) {
-            titles = ["UILogin_phone_register", "UILogin_mail_register"];
+            titles = ["UIloginPhone_Registertext", "UIloginEmail_Registertext"];
         }
         else if (this._loginProcess == ELoginProcess.reset) {
-            titles = ["UILogin_phone_reset", "UILogin_mail_reset"];
+            titles = ["UIloginPhone_forgettext", "UIloginEmail_forgettext"];
         }
         this.tabToggles.setTitles(titles);
     }
@@ -238,36 +239,24 @@ export default class LoginScene extends BaseScene {
         this.updatePhonePlaceholder();
     }
 
+    updatePassPlaceholder() {
+        this.passwordEdit.string = '';
+    }
+
     updatePhonePlaceholder() {
-        let key = this._loginType == ELoginType.phone ? "UILogin_InputMoblie" : "UILogin_InputMail";
+        let key = this._loginType == ELoginType.phone ? "UILogin_InputMoblie" : "UILogin_InputEmail";
         this.phoneEdit.placeholder = GC.language.getLocal(key);
     }
 
     updateAgreeNodeStatus() {
         this.setActive(this.btnAgreeNode, this._loginProcess != ELoginProcess.reset);
         this.setActive(this.otherLoginNode, this._loginProcess != ELoginProcess.reset)
-
-        // if (this.agreeNode.active) {
-        //     if (this._loginProcess == ELoginProcess.login) {
-        //         this.agreeNode.parent = this.downAgreeNode;
-        //         this.agreeNode.anchorX = 0.5;
-        //         this.agreeNode.setPosition(cc.v2(0, 0))
-        //         this.agreeTip1.fontSize = 12 * 3.31;
-        //         this.agreeTip2.fontSize = 12 * 3.31;
-        //     } else if (this._loginProcess == ELoginProcess.register) {
-        //         this.agreeNode.parent = this.btnAgreeNode;
-        //         this.agreeNode.anchorX = 0;
-        //         this.agreeNode.setPosition(cc.v2(0, 0));
-        //         this.agreeTip1.fontSize = 10 * 3.31;
-        //         this.agreeTip2.fontSize = 10 * 3.31;
-        //     }
-        // }
     }
 
     updateQuiklyLoginStatus() {
         this.setActive(this.changeLoginBtn, this._loginType == ELoginType.phone && this._loginProcess == ELoginProcess.login);
         if (this.changeLoginBtn.active) {
-            this.setText(this.changeLoginBtn.getComponent(cc.Label), this._isQuiklyLogin ? "UILogin_phone_pwd_l" : "UILogin_phone_vcode_l");
+            this.setText(this.changeLoginBtn.getComponent(cc.Label), this._isQuiklyLogin ? "UIloginphonecode_logintext" : "UIloginphonecode_logintext");
             this.setActive(this.vcodeNode, this._isQuiklyLogin);
             this.setActive(this.passwordNode, !this._isQuiklyLogin);
         }
@@ -284,7 +273,6 @@ export default class LoginScene extends BaseScene {
             }
         }
     }
-
     setAreaAndPhone() {
         this.areaNum.string = LoginSession.AreaCode;
         this.phoneEdit.string = LoginSession.Phone;
@@ -384,6 +372,8 @@ export default class LoginScene extends BaseScene {
 
     //改变登录方式  手机号  快速登录  密码登录
     clickChangeLoginBtn() {
+        UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
+        return
         this._isQuiklyLogin = !this._isQuiklyLogin;
         this.updateViewStatus();
     }
@@ -582,7 +572,7 @@ export default class LoginScene extends BaseScene {
             if (this._loginType == ELoginType.phone) {
                 ToastManager.Instance.createToast(CPErrorCode.LanguageDescription(10329));
             } else {
-                ToastManager.Instance.createToast("请输入邮箱账号");
+                ToastManager.Instance.createToast("UILogin_InputEmail");
             }
             return true
         }

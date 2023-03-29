@@ -129,7 +129,8 @@ export default class ComTabToggles extends UIBase {
                 let text = node.getChildByName('text').getComponent(cc.Label);
                 let line = node.getChildByName('line');
                 line.active = this._tabIndex == index;
-                this.setTextColor(text, this._tabIndex == index ? "#35A3B3" : "#FFFFFF");
+                this.setTextColor(text, "#EEF5FF");
+                node.opacity = this._tabIndex == index ? 255 : 100
             } else {
                 let textNormal = node.getChildByName('normal');
                 let textSelected = node.getChildByName('selected');
