@@ -1036,6 +1036,12 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/prefab/UIClubList",
     },
+    UIEditMess: {
+        UIType: UIType.CommonUI,
+        Name: "UIEditMess",
+        Bundle: '',
+        Path: "login/form/UIEditMess",
+    },
 
 
 

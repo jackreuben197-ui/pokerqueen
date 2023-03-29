@@ -629,34 +629,45 @@ export default class LoginScene extends BaseScene {
 
     /*** Register ***/
     protected async checkRegister(area, account, password, vcode) {
+        let parms = {
+            password: Md5.hashStr(password),
+            area: area,
+            code: vcode,
+            platform: 5,
+        }
         if (this._loginType == ELoginType.phone) {
             //手机号注册
-            let result = await LoginSession.APISendRegister({
-                phone: account,
-                password: Md5.hashStr(password),
-                area: area,
-                code: vcode,
-                platform: 5,
-            }).catch(() => { });
+            parms['phone'] = account;
+            // let result = await LoginSession.APISendRegister(parms).catch(() => { });
 
-            if (result) {
-                this.resetData();
-                this.tryEnterGame(area, account, password);
-            }
+            // if (result) {
+            //     this.resetData();
+            //     this.tryEnterGame(area, account, password);
+            // }
         } else {
-            let result = await LoginSession.APISendRegister({
-                email: account,
-                password: Md5.hashStr(password),
-                area: area,
-                code: vcode,
-                platform: 5,
-            }).catch(() => { });
+            parms['email'] = account;
 
-            if (result) {
-                this.resetData();
-                this.tryEnterGame(area, account, password);
-            }
-            // ToastManager.Instance.createToast("邮箱注册  还没有！！！");
+            // let result = await LoginSession.APISendRegister({
+            //     email: account,
+            //     password: Md5.hashStr(password),
+            //     area: area,
+            //     code: vcode,
+            //     platform: 5,
+            // }).catch(() => { });
+
+            // if (result) {
+            //     this.resetData();
+            //     this.tryEnterGame(area, account, password);
+            // }
+        }
+        let result = await LoginSession.APISendRegister(parms).catch(() => { });
+        if (result) {
+            UIComponent.open(UIDefine.UIEditMess, {
+                callfuc: () => {
+                    this.resetData();
+                    this.tryEnterGame(area, account, password);
+                }
+            })
         }
     }
 
