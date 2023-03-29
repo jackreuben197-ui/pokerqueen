@@ -635,7 +635,6 @@ export const UIDefine = {
         Name: "UIClubMember",
         Bundle: null,
         Path: "main/new_club/memberAdmin/UIClubMember",
-        Title: "详细资料",
     },
     //创建比赛选择
     UIClubCreateMatchHome: {

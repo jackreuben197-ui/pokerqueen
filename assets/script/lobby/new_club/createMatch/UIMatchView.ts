@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 15:08:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-19 16:00:29
+ * @LastEditTime: 2023-03-29 20:15:28
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIMatchView.ts
  */
 
@@ -58,6 +58,7 @@ export default class UIMatchView extends UIBase {
         this.gameTypeNode.children.forEach((item, index) => {
             this.bindClick(item, this.clickGameType, index);
         })
+        this.list.scrollingCB = this.scrollingCB;
     }
     regiterDispatchEvent() {
         super.regiterDispatchEvent();

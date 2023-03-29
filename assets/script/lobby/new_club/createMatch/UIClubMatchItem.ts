@@ -3,13 +3,14 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 20:19:01
+ * @LastEditTime: 2023-03-29 20:05:09
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubMatchItem.ts
  */
 
 
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
+import GC from "../../../frame/GameControl";
 import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
 import { GM } from "../../../gm/GMAPI";
 import { i18nMgr } from "../../../i18n/i18nMgr";
@@ -128,6 +129,10 @@ export default class UIClubMatchItem extends UIBase {
                 ToastManager.Instance.createToast(i18nMgr.Get("error2005"));
             }
         }
+        if (this._data.private_room == 1 && localStorage.getItem(this._data.id + '_' + GC.data.user.info.un_id) == this._data.room_password) {
+            cb();
+            return
+        }
         if (this._data.private_room == 0 || ClubCache.user_level == 1 || ClubCache.user_level == 3) {
             cb();
             return;
@@ -141,6 +146,7 @@ export default class UIClubMatchItem extends UIBase {
                 contentCancel: "adaptation10013",
                 passWord: this._data.room_password,
                 actionCommit: async () => {
+                    localStorage.setItem(this._data.id + '_' + GC.data.user.info.un_id, this._data.room_password)
                     cb()
                 },
                 noAnimation: true,
