@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 17:20:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-23 19:12:15
+ * @LastEditTime: 2023-03-29 13:13:55
  * @FilePath: /pokerqueen/assets/script/config/GameConfig.ts
  */
 /**
@@ -77,9 +77,9 @@ export var NetWorkBase = {
  * 语言列表
  */
 export var LanguageList: { lan: string, name: string }[] = [
-    { lan: "en", name: "UILogin_USA" },
+    { lan: "en", name: "sl_K8cPNvxU" },
     { lan: "pt", name: "sl_ptyyPutao" },
-    { lan: "cn", name: "UILogin_China" },
+    { lan: "cn", name: "sl_bnftN7UY" },
 ];
 /**
  * Log样式

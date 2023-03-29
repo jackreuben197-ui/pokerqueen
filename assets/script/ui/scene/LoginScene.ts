@@ -167,21 +167,27 @@ export default class LoginScene extends BaseScene {
 
     }
 
-    initLanguageLayer() {
+    initLanguageLayer(init: boolean = true) {
         this.languageItem.active = false;
         LanguageList.forEach((value, index, list) => {
-            let item = cc.instantiate(this.languageItem);
-            item.parent = this.languageNode;
+            let item = this.languageItem
+            if (init) {
+                let item = cc.instantiate(this.languageItem);
+                item.parent = this.languageNode;
+            } else {
+                item = this.languageNode.children[index + 2]
+            }
             this.setActive(item, true);
             this.bindClick(item, this.clickLanguageItem, value);
-
             let flag = item.getChildByName("flag").getComponent(cc.Sprite);
             let lab = item.getChildByName("lab").getComponent(cc.Label);
-            let line = item.getChildByName("line");
-
+            let lab1 = item.getChildByName("lab1").getComponent(cc.Label);
+            let T1 = cc.find("T0/T1", item)
+            item.getChildByName('bg').active = i18nMgr.language == value.lan
+            T1.active = i18nMgr.language == value.lan
             flag.spriteFrame = AssetContext.getAsset<cc.SpriteFrame>(`flag_${value.lan}`, AssetFold.texture_flag);
             lab.node.getComponent(i18nLabel).i18NString = value.name;
-            this.setActive(line, index < list.length - 1);
+            lab1.node.getComponent(i18nLabel).i18NString = value.name;
         })
         this.setLanLayerActive(false);
     }
@@ -338,7 +344,9 @@ export default class LoginScene extends BaseScene {
      */
     clickLanguage() {
         cc.log("clickLanguage");
+        this.initLanguageLayer(false)
         this.setLanLayerActive(!this.languageLayer.active);
+
     }
     /**
      * 语言面板层点击
@@ -349,12 +357,12 @@ export default class LoginScene extends BaseScene {
 
     setLanLayerActive(boo: boolean) {
         this.languageLayer.active = boo;
-        this.languageNode.scale = 1;
-        if (boo) {
-            this.languageNode.stopAllActions();
-            this.languageNode.scale = 0;
-            cc.tween(this.languageNode).to(.2, { scale: 1 }, cc.easeBackOut()).start();
-        }
+        // this.languageNode.scale = 1;
+        // if (boo) {
+        //     this.languageNode.stopAllActions();
+        //     this.languageNode.scale = 0;
+        //     cc.tween(this.languageNode).to(.2, { scale: 1 }, cc.easeBackOut()).start();
+        // }
     }
 
     clickLanguageItem(data: { lan: string, name: string }) {
