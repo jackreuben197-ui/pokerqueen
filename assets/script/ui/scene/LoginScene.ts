@@ -602,6 +602,8 @@ export default class LoginScene extends BaseScene {
 
     /*** Login ***/
     checkLogin(area, account, password, vcode) {
+        GC.data.user.isRegist = false;
+
         if (this._loginType == ELoginType.phone) {
             this.checkPhoneLogin(area, account, password, vcode);
         } else {
@@ -662,12 +664,16 @@ export default class LoginScene extends BaseScene {
         }
         let result = await LoginSession.APISendRegister(parms).catch(() => { });
         if (result) {
-            UIComponent.open(UIDefine.UIEditMess, {
-                callfuc: () => {
-                    this.resetData();
-                    this.tryEnterGame(area, account, password);
-                }
-            })
+            GC.data.user.isRegist = true;
+            this.resetData();
+            this.tryEnterGame(area, account, password);
+            //   UIComponent.open(UIDefine.UIEditMess)
+            // UIComponent.open(UIDefine.UIEditMess, {
+            //     callfuc: () => {
+            //         this.resetData();
+            //         this.tryEnterGame(area, account, password);
+            //     }
+            // })
         }
     }
 

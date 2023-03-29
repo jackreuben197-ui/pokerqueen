@@ -1,3 +1,11 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 10:50:41
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2023-03-29 16:23:03
+ * @FilePath: /pokerqueen/assets/script/frame/data/user/UserInfoData.ts
+ */
 import { TUserInfo } from "../../../config/TTypeConfig";
 import { UIClubModel } from "../../../lobby/labor/UIClubModel";
 import { Web_Org_Club_Get, Web_User_Info } from "../../../net/https/WebRequest";
@@ -7,7 +15,7 @@ import UserInfoModel from "./UserInfoModel";
 
 export default class UserInfoData extends BaseData {
     info: UserInfoModel = new UserInfoModel();
-
+    isRegist = false
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
             case Web_User_Info.API: {

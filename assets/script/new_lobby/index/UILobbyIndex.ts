@@ -1,4 +1,5 @@
 import SimpleNodePool from "../../common/MyNodePool";
+import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { GameCache } from "../../game/GameCache";
@@ -90,6 +91,7 @@ export default class UILobbyIndex extends UIBasePlus {
         this.setButtonClick(this.$mtt, this.onMTTClick);
         this.setButtonClick(this.$banner, this.onBannerClick);
         this.setButtonClick(this.$game, this.onGameClick);
+        this.listen(EventName.refreshUserData, this.refreshUserInfo, this)
     }
 
     onShow(param: any): void {

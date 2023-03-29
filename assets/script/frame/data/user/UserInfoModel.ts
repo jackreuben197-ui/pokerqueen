@@ -5,6 +5,7 @@ import GC from "../../GameControl";
 
 export default class UserInfoModel extends UIBase {
     private _msg: TUserInfo = null;
+
     updateData(msg: TUserInfo) {
         this._msg = msg;
         this.post(EventName.myGoldChange);

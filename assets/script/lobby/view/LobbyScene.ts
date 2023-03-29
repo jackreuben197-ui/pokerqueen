@@ -1,4 +1,13 @@
+/*
+ * @Author: xfj
+ * @Date: 2023-03-23 20:28:06
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2023-03-29 16:25:37
+ * @FilePath: /pokerqueen/assets/script/lobby/view/LobbyScene.ts
+ */
 const { ccclass } = cc._decorator;
+import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
 import UILobbyIndex from "../../new_lobby/index/UILobbyIndex";
@@ -38,6 +47,10 @@ export default class LobbyScene extends BaseScene {
 
         if (param.mode == 1 && param.table_type == 0) {
             this.readyComplete();
+        }
+        //编辑界面
+        if (GC.data.user.isRegist) {
+            UIComponent.open(UIDefine.UIEditMess)
         }
     }
     /**

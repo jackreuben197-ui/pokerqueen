@@ -3,7 +3,7 @@
  * @Date: 2023-03-29 15:32:01
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-29 16:11:17
+ * @LastEditTime: 2023-03-29 16:57:10
  * @FilePath: /pokerqueen/assets/script/login/UIEditMess.ts
  */
 // Learn TypeScript:
@@ -15,12 +15,15 @@
 
 import UIBase from "../ui/UIBase";
 import { UIClubModel } from "../lobby/labor/UIClubModel";
-import { APIOrgClubUploadIcon } from "../net/https/WebRequest";
+import { APIOrgClubUploadIcon, Web_User_Modify_User_Info, WWW } from "../net/https/WebRequest";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { StringHelper } from "../helper/StringHelper";
 import LobbySession from "../session/LobbySession";
 import { Web_User_Info } from "../net/https/WebRequest";
+import UIComponent from "../ui/UIComponent";
+import { UIDefine } from "../define/UIDefine";
+import { EventName } from "../config/EventName";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
@@ -33,7 +36,7 @@ export default class UIEditMess extends UIBase {
     numTip: cc.Label = null;
     canClick: cc.Node = null;
     noClick: cc.Node = null;
-    _callfunc: Function = null;
+    iconData = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.icon = this.getChildNodeOrComponent('icon', cc.Sprite)
@@ -41,13 +44,13 @@ export default class UIEditMess extends UIBase {
         this.noClick = this.getChildNodeOrComponent('noClick')
         this.tip1 = this.getChildNodeOrComponent('tip1', cc.Label)
         this.numTip = this.getChildNodeOrComponent('numTip', cc.Label)
-        this.editName = this.getChildNodeOrComponent('editName', cc.EditBox)
+        this.editName = this.getChildNodeOrComponent('New EditBox', cc.EditBox)
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-        // await LobbySession.APIUserInfo();
-        this._callfunc = param.callfuc;
-        this.tip1.string = StringHelper.Format(i18nMgr.Get('UIMine_UserInfoSettingNick_tips'), ['10']);
+        this.iconData = null;
+        await LobbySession.APIUserInfo();
+        this.tip1.string = StringHelper.Format(i18nMgr.Get('UIMine_UserInfoSettingNick_tips'), ['10 ']);
         WebImageHelper.SetHeadImage(this.icon, Web_User_Info.Response.data.user.avatar);
         this.editName.string = Web_User_Info.Response.data.user.nickname
         this.editBoxChange();
@@ -56,18 +59,33 @@ export default class UIEditMess extends UIBase {
     editBoxChange() {
         this.noClick.active = this.editName.string == ''
         this.canClick.active = !this.noClick.active
+        this.numTip.string = this.editName.string.length + '/10'
     }
     async uploadIcon() {
 
         await UIClubModel.mInstance.APIOrgClubUploadIcon();
         let icon: any = APIOrgClubUploadIcon.Response.data
+        this.iconData = icon;
         if (icon) {
             WebImageHelper.SetHeadImage(this.icon, icon);
         }
     }
     sureClick() {
-        if (this._callfunc) {
-            this._callfunc();
+        let parms = { nick_name: this.editName.string }
+        if (this.iconData) {
+            parms['avatar'] = this.iconData
         }
+        Web_User_Modify_User_Info
+        WWW.Instance.CommonAPI(
+            {
+                web_class: Web_User_Modify_User_Info,
+                body: parms
+            }
+        ).then(() => {
+            Web_User_Info.Response.data.user.avatar = this.iconData
+            Web_User_Info.Response.data.user.nickname = this.editName.string
+            this.post(EventName.refreshUserData);
+            UIComponent.close(UIDefine.UIEditMess)
+        })
     }
 }
