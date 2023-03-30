@@ -63,6 +63,11 @@ export class StringHelper {
 
     }
 
+    static Replace(str: string, replaces: string): string {
+        return str.replace('{id}', replaces);
+
+    }
+
 
 
     /// <summary>

@@ -7087,7 +7087,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "agreeTip1",
+    "_name": "agreeTipNode",
     "_objFlags": 0,
     "_parent": {
       "__id__": 186
@@ -7741,7 +7741,7 @@
         "__id__": 245
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 259

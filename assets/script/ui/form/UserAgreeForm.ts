@@ -1,4 +1,13 @@
+/*
+ * @Author: xfj
+ * @Date: 2022-10-24 10:50:55
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-03-30 10:45:06
+ * @FilePath: /pokerqueen/assets/script/ui/form/UserAgreeForm.ts
+ */
 
+import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import BaseForm from "./BaseForm";
 
@@ -8,6 +17,8 @@ const { ccclass, property } = cc._decorator;
 export default class UserAgreeForm extends BaseForm {
 
     webview: cc.WebView = null;
+    UserAgentURL = "https://test2-h5-protocol.awanptest.com/#/?lan={id}";
+    private mUrl_Suffix = { "cn": 'cn', 'en': "en_US", 'pt': "pt_BR" };
 
     /**
      * 节点|组件 定义 
@@ -37,7 +48,15 @@ export default class UserAgreeForm extends BaseForm {
      */
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-        this.webview.url = i18nMgr.Get("UIWebViewURL");
+        this.webview.url = StringHelper.Replace(this.UserAgentURL, this.GetUrlSuffix());
+    }
+
+
+    /// <summary>
+    /// 得到 后缀语言  ?lan=cn   ?lan=en    ?lan=ft
+    /// </summary> 
+    public GetUrlSuffix() {
+        return this.mUrl_Suffix[i18nMgr.language];
     }
     /**
      * 注册触摸事件

@@ -72,7 +72,7 @@ export default class LoginScene extends BaseScene {
     private btnAgreeNode: cc.Node = null;
     // private agreeNode: cc.Node = null;
     private agreeToggle: cc.Toggle = null;
-    private agreeTip1: cc.Node = null;
+    private agreeTipNode: cc.Node = null;
     // private agreeTip2: cc.Label = null;
 
     private otherLoginNode: cc.Node = null;
@@ -123,7 +123,7 @@ export default class LoginScene extends BaseScene {
         this.btnAgreeNode = this.getChildNodeOrComponent("btnAgreeNode")
         // this.agreeNode = this.getChildNodeOrComponent("agreeNode")
         this.agreeToggle = this.getChildNodeOrComponent("agreeToggle", cc.Toggle)
-        this.agreeTip1 = this.getChildNodeOrComponent("agreeTip1")
+        this.agreeTipNode = this.getChildNodeOrComponent("agreeTipNode")
         // this.agreeTip2 = this.getChildNodeOrComponent("agreeTip2", cc.Label)
         this.otherLoginNode = this.getChildNodeOrComponent('otherLoginNode')
         this.getVCDTime = this.getVLab.node.addComponent(LabelCDTime);
@@ -147,7 +147,7 @@ export default class LoginScene extends BaseScene {
         this.bindClick(this.changeLoginBtn, this.clickChangeLoginBtn);
         this.bindClick(this.backLoginBtn, this.clickBackLoginBtn);
         this.bindClick(this.delBtn, this.updatePassPlaceholder)
-        this.bindClick(this.agreeTip1, this.clickUserAgreeRule)
+        this.bindClick(this.agreeTipNode, this.clickUserAgreeRule)
         // this.bindClick(this.facebook, this.clickFaceBook, null, true);
         // this.bindClick(this.google, this.clickGoogle, null, true);
         // this.bindClick(this.instagram, this.clickInstagram, null, true);
