@@ -186,8 +186,6 @@ export default class UITexasMenu extends UIBasePlus {
         this.game = GameCache.Instance.CurGame;
         this.game.UpdateMenu();
         this.fadeIn();
-        //this.refreshCoinAndChip()
-
     }
 
     // refreshCoin(data: any) {
@@ -257,13 +255,19 @@ export default class UITexasMenu extends UIBasePlus {
         }
         this.$black.active = true;
         this.$block.active = true;
+        
     }
     //面板移出
     fadeOut(animation: boolean = true) {
+
+        let view_width = cc.view.getVisibleSize().width;
+
+        this.$panel.width = view_width;
+
         if (animation) {
-            cc.tween(this.$panel).to(0.25, { x: - GameConfig.DesignResolution.width }).start();
+            cc.tween(this.$panel).to(0.25, { x: - view_width }).start();
         } else {
-            this.$panel.x = - GameConfig.DesignResolution.width;
+            this.$panel.x = - view_width;
         }
         this.$black.active = false;
         this.$block.active = false;

@@ -23,6 +23,10 @@ import TexasAofGame from "../texas/TexasAofGame";
 import TexasGame from "../texas/TexasGame";
 
 
+
+
+
+
 export class some_pos {
 
     //所有座位位置
@@ -161,6 +165,7 @@ export enum BetType {
  * 开放的房间类型
  */
 export var OpenRoomType = [];
+
 
 
 
@@ -961,6 +966,16 @@ export default class GameUtil {
     }
 
 
+    //桌布渐变色
+    public static Table_Colors = [
+        ["3B4374", "181B2A"],
+        ["3B6374", "142428"],
+        ["3B745F", "142821"],
+        ["583B74", "21182A"],
+        ["743B61", "2A1824"],
+        ["743B3B", "2A1818"],
+        ["5D473A", "2D231C"],
+    ]
 
 }
 (window as any).GameUtil = GameUtil;

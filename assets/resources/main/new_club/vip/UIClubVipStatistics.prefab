@@ -6971,7 +6971,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 91.27,
+      "width": 74.84,
       "height": 52
     },
     "_anchorPoint": {
@@ -7023,8 +7023,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "Free",
-    "_N$string": "Free",
+    "_string": "Fee",
+    "_N$string": "Fee",
     "_fontSize": 52,
     "_lineHeight": 52,
     "_enableWrapText": true,
@@ -7051,7 +7051,7 @@
       "__id__": 178
     },
     "_enabled": true,
-    "i18n_string": "UIChatFree",
+    "i18n_string": "UIFriendsTable_fee",
     "_id": ""
   },
   {

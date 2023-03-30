@@ -124,19 +124,22 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     }
 
     //刷新下面数据
-    refreshFriendData() {
-        //let gold_index = 0;
-        //let gold_type = this.Com_Gold_List[gold_index].gold_type;
-        ///let obj = this.currData[gold_type];
+    refreshDownList(index: number) {
 
-        //1 当天  2 :7天 4：所有
-        let a_1 = this.currData[1];
-        let a_2 = this.currData[2];
-        let a_4 = this.currData[4];
+        let a = [];
+        let b = [];
+        let c = [];
 
-        this.RefreshDetailItem(this.$Detail.getChildByName("Item1"), [a_4.total_hand, a_1.total_hand, a_2.total_hand]);
-        this.RefreshDetailItem(this.$Detail.getChildByName("Item2"), [a_4.total_game_cnt, a_1.total_game_cnt, a_2.total_game_cnt]);
-        this.RefreshDetailItem(this.$Detail.getChildByName("Item3"), [a_4.total_profit, a_1.total_profit, a_2.total_profit]);
+        this.currData.forEach(obj => {
+            if (obj.game_type == index) {
+                a.push(obj.hand_num);
+                b.push(obj.fee);
+                c.push(obj.profit);
+            }
+        })
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item1"), a);
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item2"), b);
+        this.RefreshDetailItem(this.$Detail.getChildByName("Item3"), c);
     }
     ///////////////////////////////////
     //Web_Club_Agent_Friend_Info
@@ -159,7 +162,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
 
                 this.RefreshUICount([res.data.data.user_num, res.data.data.gold_total / 100, res.data.data.usdt_total / 100]);
                 //this.gameTypeTabs.reset(0);
-                this.reqAgentFriendData(0);
+                this.reqAgentStatistics(0);
             },
             (res: any) => {
 
@@ -167,7 +170,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         )
     }
     // -> 请求贵宾统计数据
-    reqAgentFriendData(filter_index: number = 0) {
+    reqAgentStatistics(filter_index: number = 0) {
         let filter_type = this.Com_Gold_List[filter_index].filter_type;
         // WWW.Instance.CommonAPI(
         //     {
@@ -208,8 +211,9 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         ).then(
             (res: any) => {
 
-                //this.currData = res.data.data;
+                this.currData = res.data.list;
                 //this.refreshFriendData();
+                this.gameTypeTabs.reset(0);
             },
             (res: any) => {
 
@@ -217,7 +221,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         )
     }
 
-    //顶部标签点击切换响应
+    //顶部标签点击切换响应 0-all,1-NLH，2-PLO，3-6+
     onGameTypeClick(items: cc.Node[], index: number) {
         let status_list = Tabs_Status[index];
         items.forEach((item, index) => {
@@ -228,6 +232,9 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         //////////////////////////////////
         if (index == -1) return;
         //this.reqAgentFriendData(index);
+
+        this.refreshDownList(index);
+
     }
 
     //选择器点击
@@ -244,6 +251,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
             confirm_click: (index) => {
                 this.gold_index = index;
                 this.refreshDownListLabel();
+                this.reqAgentStatistics(index);
             }
         })
     }

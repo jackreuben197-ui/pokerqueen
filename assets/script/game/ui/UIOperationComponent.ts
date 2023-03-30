@@ -2,6 +2,7 @@
 import SliderPlus from "../../common/SliderPlus";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
+import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -94,6 +95,7 @@ export default class UIOperationComponent extends UIBase {
 
     //滑动条比例值 
     private calibrationWeight: number = 100;
+    //private slider_step: number = 0;
     private chipScale: number = 100;
 
 
@@ -122,7 +124,7 @@ export default class UIOperationComponent extends UIBase {
     //sliderMin: number = 0;
 
     //滑动条allin状态 
-    slider_allin: boolean = true;
+    slider_allin: boolean = false;
     slider_value: number = 0;
 
     ActionMap: Map<number, ActionLimit.AsObject> = new Map;
@@ -130,6 +132,15 @@ export default class UIOperationComponent extends UIBase {
 
     Check_CountDown: cc.Node = null;
     Fold_CountDown: cc.Node = null;
+
+
+    label_slider_max: cc.Label = null;
+
+    slider_min_value: number = 0;
+    slider_max_value: number = 0;
+
+    //倍数|比例
+    slider_ab: number = 0;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -189,6 +200,8 @@ export default class UIOperationComponent extends UIBase {
 
         this.UI = this.getChildNodeOrComponent("UI");
 
+        this.label_slider_max = this.getChildNodeOrComponent("label_slider_max", cc.Label);
+
     }
 
     protected regiterTouchEvents(): void {
@@ -205,27 +218,55 @@ export default class UIOperationComponent extends UIBase {
 
 
         this.setButtonClick(this.buttonFreeCall, this.onClickFreeCall);
-        this.setButtonClick(this.buttonFreeCallConfirm, this.onClickreeCallConfirm);
+        this.setButtonClick(this.buttonFreeCallConfirm, this.onClickFreeCallConfirm);
         this.setButtonClick(this.imageFreeCallMask, this.onClickFreeCallMask);
         this.setButtonClick(this.buttonFold, this.onClickFold);
-        //this.setButtonClick(this.buttonSliderHandle, this.onClickSliderHandle);
 
-        //this.sliderFreeCall.onChange(this.onValueChangeFreeCall.bind(this));
-        //this.slider.onChange(this.onValueChangeFreeCall.bind(this));
     }
 
 
     onShow(obj?: OperationData): void {
 
+        // obj = {
+
+        //     "actionsList": [
+        //         {
+        //             "action": 9,
+        //             "min": 189,
+        //             "max": 189,
+        //             "straddleLevel": 0
+        //         },
+        //         {
+        //             "action": 10,
+        //             "min": 190,
+        //             "max": 190,
+        //             "straddleLevel": 0
+        //         },
+        //         {
+        //             "action": 7,
+        //             "min": 0,
+        //             "max": 0,
+        //             "straddleLevel": 0
+        //         },
+        //         {
+        //             "action": 6,
+        //             "min": 10,
+        //             "max": 10,
+        //             "straddleLevel": 0
+        //         }
+        //     ]
+        // }
+
         super.onShow(obj);
 
         this.hideAllOperationButton();
+
+        this.SetCalibrationWeight();
 
         GameCache.Instance.IsAllowOpenDanmu = false;
 
         this.operationData = obj;
 
-        this.SetCalibrationWeight();
 
         if (this.isShowingDialog) {
             //UIComponent.Instance.HideUI(UIType.UIDialog);
@@ -243,329 +284,30 @@ export default class UIOperationComponent extends UIBase {
         console.log("当前时间:> ", this.optCurTime, this.optTotalTime);
 
         this.isCountDown = false;
+
+        this.slider_allin = false;
         //this.sliderMin = 0;
         this.show(this.operationData.actionsList);
 
-        this.slider_allin = true;
 
-
-
-    }
-
-    private show(actions: ActionLimit.AsObject[]): void {
-
-        this.ActionMap.clear();
-        actions.forEach(action => {
-            this.ActionMap.set(action.action, action);
-        });
-
-
-        actions.forEach(action => {
-
-            //this.ActionMap.set(action.action, action);
-
-            switch (action.action) {
-
-                case Def.Action.STRADDLE://4
-
-                    this.showStraddle(action);
-
-                    break;
-                case Def.Action.BET://5
-
-                    this.showBet(action);
-
-                    break;
-                case Def.Action.CALL://6
-
-                    this.showCall(action);
-
-                    break;
-                case Def.Action.FOLD://7
-
-                    this.showFold(action);
-
-                    break;
-                case Def.Action.CHECK://8
-
-                    this.showCheck(action);
-
-                    break;
-                case Def.Action.RAISE: // 9 筹码条上下拖动
-
-                    this.showBet(action);
-
-                    break;
-                case Def.Action.ALLIN://10
-
-
-                    if (this.ActionMap.get(Def.Action.BET) == null && this.ActionMap.get(Def.Action.RAISE) == null && this.ActionMap.get(Def.Action.CALL) != null) {
-                        this.showAllInRaise(action);
-                    }
-                    else if (this.ActionMap.get(Def.Action.BET) == null && this.ActionMap.get(Def.Action.RAISE) == null && this.ActionMap.get(Def.Action.CHECK) != null) {
-                        this.showAllInRaise(action);
-                    }
-                    else {
-                        this.showAllin(action);
-                    }
-
-                    break;
-                default:
-
-                    cc.warn(`UIOperationComponent: cannot recognize action: ${action.action}`);
-
-                    break;
-            }
-        })
-    }
-
-    //4 观
-    private showStraddle(action: ActionLimit.AsObject): void {
-        cc.log("+ showStraddle");
-        this.Button_Straddle.active = true;
-        this.actionDataInfo.StraddleAmount = action.min;
-        this.Text_Straddle.string = StringHelper.GetLongString(action.min);
-    }
-    //5 , 9 
-    private showBet(action: ActionLimit.AsObject): void {
-
-        cc.log("+ showBet");
-
-        this.buttonFreeCall.active = true;
-
-        this.actionDataInfo.actionLimit = action;
-        //滑动条最小最大，显示最小最大
-        let min, max, action_min, action_max;
-        //相同
-        if (action.max == action.min) {
-            //min = max = Math.ceil(action.max / this.calibrationWeight);
-            //this.sliderFreeCall.SetMinMax(0, 0);
-            //this.textFreeCall.string = `ALL IN`;
-            //this.textFreeCallMax.string = `${action.max / 100}`;
-
-            this.slider.show({
-                min_value: action.max / 100,
-                max_value: action.max / 100,
-                step: 0,
-                change: this.sliderChange,
-                own: this
-            });
-
-
-
-        } else {
-            if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
-                action_max = action.max;
-            } else {
-                action_max = action.max + 1;
-            }
-            action_min = action.min;
-            max = Math.ceil(action_max / this.calibrationWeight);
-            min = Math.ceil(action_min / this.calibrationWeight);
-
-            if (min >= max) {
-                min = max;
-                //this.textFreeCall.string = `ALL IN`;
-                this.slider.show({
-                    min_value: min,
-                    max_value: min,
-                    step: 0,
-                    change: this.sliderChange,
-                    own: this
-                });
-            } else {
-                //this.textFreeCall.string = `${action_min / this.calibrationWeight}`;
-
-                this.slider_allin = false;
-
-                this.slider.show({
-                    min_value: min,
-                    max_value: max,
-                    step: 1,
-                    change: this.sliderChange,
-                    own: this
-                });
-
-
-                console.log("滑竿 --- ", min, max);
-
-                //this.sliderChange();
-            }
-            //设置滑动条组件
-            //滑动条起始位置的刻度
-            // this.sliderMin = min;
-            // this.sliderFreeCall.SetMinMax(min, max);
-            // this.textFreeCallMax.string = `${action_max / 100}`;
-
-        }
-        console.log(" >> min max action_min action_max", min, max, action_min, action_max);
-
-        this.setTopCallButtons();
-
-        //this.sliderFreeCall.onShow({ index: 0 });
-    }
-    // 6 
-    private showCall(action: ActionLimit.AsObject): void {
-        cc.log("+ showCall");
-
-        this.buttonCall.active = true;
-
-        this.actionDataInfo.CallAmount = action.min;
-        this.textCall.string = StringHelper.GetLongString(action.min);
-    }
-    // 7 
-    private showFold(action: ActionLimit.AsObject): void {
-        cc.log("+ showFold");
-        this.buttonFold.active = true;
-
-        if (this.ActionMap.get(Def.Action.CHECK) != null) {
-            return;
-        }
-        this._isFoldCountDown = true;
-        this.Fold_CountDown.active = true;
-        this.imageFoldCountDown.fillRange = 1;
-
-    }
-    // 8
-    private showCheck(action: ActionLimit.AsObject): void {
-        cc.log("+ showCheck");
-        this.buttonCheck.active = true;
-
-        //this.imageCheckCountDown.node.active = true;
-        this._isCheckCountDown = true;
-        this.Check_CountDown.active = true;
-        this.imageCheckCountDown.fillRange = 1;
-
-    }
-    //10-1
-    private showAllInRaise(actionLimit: ActionLimit.AsObject): void {
-        cc.log("+ showRaise");
-        this.buttonFreeCall.active = true;
-        this.actionDataInfo.AllInAmount = actionLimit.min;
-        this.actionDataInfo.actionLimit = actionLimit;
-        let max = Math.ceil(actionLimit.max / this.calibrationWeight);//客户端滑动条滑到顶是allin 加注限制区间加一为当前玩家最大筹码
-        let min = max;
-        // this.sliderFreeCall.SetMinMax(min, max);
-        // this.textFreeCall.string = `ALL IN`;
-        // this.textFreeCallMax.string = `${(actionLimit.max) / this.chipScale}`;
-        this.setTopCallButtons();
-        //this.sliderFreeCall.onShow({ index: 0 });
-
-        this.slider.show({
-            min_value: min,
-            max_value: max,
-            step: 0,
-            change: this.sliderChange,
-            own: this
-        });
-
-    }
-    //10-2
-    private showAllin(actionLimit: ActionLimit.AsObject) {
-        cc.log("+ showAllin");
-        this.buttonAllin.active = true;
-        this.actionDataInfo.AllInAmount = actionLimit.min;
-    }
-    //显示或者隐藏 自由加注条
-    private showFreeCall(show: boolean): void {
-        if (show) {
-            this.imageFreeCallMask.active = true;
-            //this.sliderFreeCall.node.active = true;
-            this.slider.node.active = true;
-            this.buttonFreeCallConfirm.active = true;
-            this.buttonFreeCall.active = false;
-            this.buttonCall0.active = false;
-            this.buttonCall1.active = false;
-            this.buttonCall2.active = false;
-            this.buttonCallLeft.active = false;
-            this.buttonCallRight.active = false;
-        }
-        else {
-            this.imageFreeCallMask.active = false;
-            //this.sliderFreeCall.node.active = false;
-            this.slider.node.active = false;
-            this.buttonFreeCallConfirm.active = false;
-            this.buttonFreeCall.active = true;
-            this.showRaiseButton();
-        }
     }
 
     //设置UI位置
     public SetUIPos(pos: cc.Vec2) {
         this.UI.setPosition(pos);
     }
-
-    //点击自由加注滑块按钮
-    private onClickSliderHandle(): void {
-        //if (this.sliderFreeCall.moved) return;
-        this.onClickreeCallConfirm();
-    }
-
-    //点击确定按钮 
-    onClickreeCallConfirm() {
-
-        // if (this.sliderMin == 0) {
-        //     this.callValue = this.actionDataInfo.AllInAmount;
-        // } else {
-        //     //this.callValue = (this.sliderMin + this.sliderFreeCall.Index) * this.calibrationWeight;
-
-        //     this.callValue = (this.sliderMin + this.sliderFreeCall.Index) * this.calibrationWeight;
-        // }
-
-        if (this.slider_allin) {
-            this.callValue = this.actionDataInfo.AllInAmount;
-        } else {
-            this.callValue = this.slider_value * this.calibrationWeight;
-        }
-        this.CheckOpt();
-        this.showFreeCall(false);
-    }
-
-    /// <summary>
-    /// 自由加注slider值变化监听
-    /// </summary>
-    /// <param name="arg0"></param>
-    private onValueChangeFreeCall(arg0: number): void {
-
-        // if (this.sliderMin == 0) return;
-
-        // let curr = this.sliderMin + arg0;
-
-        // if (curr >= GameCache.Instance.CurGame.mainPlayer.chips / this.calibrationWeight) {
-        //     this.textFreeCall.string = `ALL IN`;
-        //     this.textFreeCall.node.color = cc.Color.WHITE;
-        //     this.textFreeCall.fontSize = 60;
-
-        //     this.buttonSliderHandle.getChildByName("Image").active = true;
-
-        // }
-        // else if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type) && curr >= this.actionDataInfo.actionLimit.max / this.calibrationWeight) {
-        //     this.textFreeCall.string = `${this.actionDataInfo.actionLimit.max / this.chipScale ^ 0}`;
-        //     this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
-        //     this.textFreeCall.fontSize = 45;
-
-        //     this.buttonSliderHandle.getChildByName("Image").active = false;
-
-        // }
-        // else {
-        //     this.textFreeCall.string = `${curr * this.calibrationWeight / this.chipScale}`;
-        //     this.textFreeCall.node.color = new cc.Color(225, 181, 141, 255);
-        //     this.textFreeCall.fontSize = 45;
-
-        //     this.buttonSliderHandle.getChildByName("Image").active = false;
-
-        // }
-
-    }
-
     sliderChange(value: number) {
 
-        this.slider_value = value;
+        this.slider.refreshValueLabel(PublicHelper.FixFloat(this.slider.value));
 
+        if (value >= this.slider_max_value) {
+            this.slider.refreshValueLabelStr(i18nMgr.Get("adaptation30074"));
+        }
     }
-
-
-
+    //点击显示滑竿
+    private onClickFreeCall(): void {
+        this.showFreeCall(true);
+    }
 
     private onClickFreeCallMask(): void {
         this.imageFreeCallMask.active = false;
@@ -610,9 +352,7 @@ export default class UIOperationComponent extends UIBase {
         GameCache.Instance.CurGame.OptAction(Def.Action.CHECK, 0);
         this.isCountDown = false;
     }
-    private onClickFreeCall(): void {
-        this.showFreeCall(true);
-    }
+
 
     private onClickFold(): void {
         if (this.buttonCheck.activeInHierarchy) {
@@ -829,16 +569,8 @@ export default class UIOperationComponent extends UIBase {
         return this.actionDataInfo.CallAmount + (GameCache.Instance.CurGame.alreadAnte + this.actionDataInfo.CallAmount) * times;
     }
 
-
-    //设置比例值
-    private SetCalibrationWeight(): void {
-
-        this.calibrationWeight = GameCache.Instance.CurGame.smallBlind < 100 ? 10 : 100;
-
-        console.log("SetCalibrationWeight", this.calibrationWeight);
-    }
-
     protected update(dt: number): void {
+
         if (!this._isCheckCountDown && !this._isFoldCountDown) {
             return;
         }
@@ -943,4 +675,261 @@ export default class UIOperationComponent extends UIBase {
         this.Fold_CountDown.active = false;
         this.hideAllOperationButton();
     }
+
+    ///////////////////////////////滑动条////////////////////////////////
+    //设置比例值
+    private SetCalibrationWeight(): void {
+
+        //this.calibrationWeight = GameCache.Instance.CurGame.smallBlind < 100 ? 10 : 100;
+        this.slider_ab = GameCache.Instance.CurGame.smallBlind < 100 ? 10 : 100;
+
+        console.log("slider_ab", this.slider_ab);
+    }
+
+    //点击滑动条下确定按钮 
+    onClickFreeCallConfirm() {
+
+        console.log("value :: ", this.slider.value);
+
+        if (this.slider_allin) {
+            this.callValue = this.actionDataInfo.AllInAmount;
+        } else {
+            this.callValue = this.slider.value;
+        }
+        this.CheckOpt();
+        this.showFreeCall(false);
+    }
+
+    setSliderMaxLabel(value: number) {
+
+        this.label_slider_max.string = `${value / 100}`;
+
+    }
+
+    private show(actions: ActionLimit.AsObject[]): void {
+
+        this.ActionMap.clear();
+        actions.forEach(action => {
+            this.ActionMap.set(action.action, action);
+        });
+
+
+        actions.forEach(action => {
+
+            //this.ActionMap.set(action.action, action);
+
+            switch (action.action) {
+
+                case Def.Action.STRADDLE://4
+
+                    this.showStraddle(action);
+
+                    break;
+                case Def.Action.BET://5
+
+                    this.showBet(action);
+
+                    break;
+                case Def.Action.CALL://6
+
+                    this.showCall(action);
+
+                    break;
+                case Def.Action.FOLD://7
+
+                    this.showFold(action);
+
+                    break;
+                case Def.Action.CHECK://8
+
+                    this.showCheck(action);
+
+                    break;
+                case Def.Action.RAISE: // 9 筹码条上下拖动
+
+                    this.showBet(action);
+
+                    break;
+                case Def.Action.ALLIN://10
+
+
+                    if (this.ActionMap.get(Def.Action.BET) == null && this.ActionMap.get(Def.Action.RAISE) == null && this.ActionMap.get(Def.Action.CALL) != null) {
+                        this.showAllInRaise(action);
+                    }
+                    else if (this.ActionMap.get(Def.Action.BET) == null && this.ActionMap.get(Def.Action.RAISE) == null && this.ActionMap.get(Def.Action.CHECK) != null) {
+                        this.showAllInRaise(action);
+                    }
+                    else {
+                        this.showAllin(action);
+                    }
+
+                    break;
+                default:
+
+                    cc.warn(`UIOperationComponent: cannot recognize action: ${action.action}`);
+
+                    break;
+            }
+        })
+    }
+
+    //4 观
+    private showStraddle(action: ActionLimit.AsObject): void {
+        cc.log("+ showStraddle");
+        this.Button_Straddle.active = true;
+        this.actionDataInfo.StraddleAmount = action.min;
+        this.Text_Straddle.string = StringHelper.GetLongString(action.min);
+    }
+    //5 , 9 
+    private showBet(action: ActionLimit.AsObject): void {
+
+        cc.log("+ showBet");
+
+        this.buttonFreeCall.active = true;
+
+        this.actionDataInfo.actionLimit = action;
+
+        //相同
+        if (action.max == action.min) {
+
+            this.slider_min_value = action.max;
+            this.slider_max_value = action.max;
+
+            this.slider.show({
+                min_value: this.slider_min_value,
+                max_value: this.slider_max_value,
+                step: 0,
+                change: this.sliderChange,
+                own: this,
+                scale: 100,
+            });
+
+            this.slider_allin = true;
+
+        } else {
+
+            if (GameUtil.JudgeIsPotLimitRoomPath(GameCache.Instance.room_type)) {
+                this.slider_max_value = action.max;
+            } else {
+                this.slider_max_value = action.max + 1;
+            }
+
+            this.slider_min_value = action.min;
+
+            if (this.slider_min_value >= this.slider_max_value) {
+                this.slider.show({
+                    min_value: this.slider_max_value,
+                    max_value: this.slider_max_value,
+                    step: 0,
+                    change: this.sliderChange,
+                    own: this,
+                    scale: 100,
+                });
+                this.slider_allin = true;
+            } else {
+                this.slider.show({
+                    min_value: this.slider_min_value,
+                    max_value: this.slider_max_value,
+                    step: this.slider_ab,
+                    change: this.sliderChange,
+                    own: this,
+                    scale: 100,
+                });
+                this.slider_allin = false;
+            }
+        }
+
+        this.setSliderMaxLabel(this.slider_max_value);
+
+        //this.sliderChange(min_value);
+
+        console.log(" >> slider = > ", this.slider_min_value, this.slider_max_value, this.slider_ab);
+
+        this.setTopCallButtons();
+    }
+    // 6 
+    private showCall(action: ActionLimit.AsObject): void {
+        cc.log("+ showCall");
+
+        this.buttonCall.active = true;
+
+        this.actionDataInfo.CallAmount = action.min;
+        this.textCall.string = StringHelper.GetLongString(action.min);
+    }
+    // 7 
+    private showFold(action: ActionLimit.AsObject): void {
+        cc.log("+ showFold");
+        this.buttonFold.active = true;
+
+        if (this.ActionMap.get(Def.Action.CHECK) != null) {
+            return;
+        }
+        this._isFoldCountDown = true;
+        this.Fold_CountDown.active = true;
+        this.imageFoldCountDown.fillRange = 1;
+
+    }
+    // 8
+    private showCheck(action: ActionLimit.AsObject): void {
+        cc.log("+ showCheck");
+        this.buttonCheck.active = true;
+
+        //this.imageCheckCountDown.node.active = true;
+        this._isCheckCountDown = true;
+        this.Check_CountDown.active = true;
+        this.imageCheckCountDown.fillRange = 1;
+
+    }
+    //10-1
+    private showAllInRaise(action: ActionLimit.AsObject): void {
+        cc.log("+ showRaise");
+        this.buttonFreeCall.active = true;
+        this.actionDataInfo.AllInAmount = action.min;
+        this.actionDataInfo.actionLimit = action;
+        this.setSliderMaxLabel(action.max);
+        this.setTopCallButtons();
+        this.slider_allin = true;
+        this.slider.show({
+            min_value: action.max,
+            max_value: action.max,
+            step: 0,
+            change: this.sliderChange,
+            own: this,
+            scale: 100
+        });
+
+    }
+    //10-2
+    private showAllin(actionLimit: ActionLimit.AsObject) {
+        cc.log("+ showAllin");
+        this.buttonAllin.active = true;
+        this.actionDataInfo.AllInAmount = actionLimit.min;
+    }
+    //显示或者隐藏 自由加注条
+    private showFreeCall(show: boolean): void {
+        if (show) {
+            this.imageFreeCallMask.active = true;
+            //this.sliderFreeCall.node.active = true;
+            this.slider.node.active = true;
+            this.buttonFreeCallConfirm.active = true;
+            this.buttonFreeCall.active = false;
+            this.buttonCall0.active = false;
+            this.buttonCall1.active = false;
+            this.buttonCall2.active = false;
+            this.buttonCallLeft.active = false;
+            this.buttonCallRight.active = false;
+            this.slider.reset();
+            if (this.slider_allin) this.slider.refreshValueLabelStr(i18nMgr.Get("adaptation30074"));
+        }
+        else {
+            this.imageFreeCallMask.active = false;
+            //this.sliderFreeCall.node.active = false;
+            this.slider.node.active = false;
+            this.buttonFreeCallConfirm.active = false;
+            this.buttonFreeCall.active = true;
+            this.showRaiseButton();
+        }
+    }
+
+
 }

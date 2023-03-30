@@ -490,7 +490,7 @@ export default class MTTGame extends TexasGame {
     }
 
     public override CheckPlayerInfo(userId: number, player: CPlayer = null) {
-        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false], { parentUI: Main.Marquee });
+        UIComponent.open(UIDefine.UITexasPlayerInfo, [userId, false], { parentUI: Main.Marquee });
     }
 
     // 实时战况

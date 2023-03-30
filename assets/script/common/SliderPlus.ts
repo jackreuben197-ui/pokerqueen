@@ -20,7 +20,8 @@ type data_type = {
     change?: Function,
     touch_start?: Function,
     touch_end?: Function,
-    own?: any
+    own?: any,
+    scale?: number, // 值的缩放比例
 }
 
 @ccclass
@@ -61,6 +62,8 @@ export default class SliderPlus extends cc.Component {
     };
     //步长距离
     private step_distance: number = 1;
+
+    private curr_value: number = 0;
 
     onLoad() {
         this.initView();
@@ -171,13 +174,13 @@ export default class SliderPlus extends cc.Component {
 
         //console.log(count);
 
-        let curr_value = this.data.min_value + count * this.data.step;
+        this.curr_value = this.data.min_value + count * this.data.step;
 
-        if (curr_value > this.data.max_value) curr_value = this.data.max_value;
+        if (this.curr_value > this.data.max_value) this.curr_value = this.data.max_value;
 
-        this.data.change?.call(this.data.own, curr_value, count);
+        this.refreshValueLabel(this.curr_value);
 
-        this.refreshValueLabel(curr_value);
+        this.data.change?.call(this.data.own, this.curr_value, count);
 
         let bar_move_target = this.min + count * this.step_distance;
 
@@ -192,7 +195,17 @@ export default class SliderPlus extends cc.Component {
     }
 
     refreshValueLabel(value: number) {
-        this.label_value && (this.label_value.string = `${value}`);
+
+        if (this.label_value) {
+
+            let scale = this.data.scale || 1;
+
+            this.refreshValueLabelStr(`${value / scale}`);
+        }
+    }
+
+    refreshValueLabelStr(str: string) {
+        this.label_value.string = str;
     }
 
 
@@ -205,17 +218,26 @@ export default class SliderPlus extends cc.Component {
     }
     show(data: data_type) {
         this.data = data;
-        this.initData(data);
+        this.initData(this.data);
     }
     initData(data: data_type) {
-        this.bar_offset = this.min;
-        this.refreshValueLabel(this.data.min_value);
+        this.reset();
         if (data.min_value == data.max_value) {
             return;
         }
         let a = data.max_value - data.min_value;//范围
         let b = Math.ceil(a / data.step);//份数
         this.step_distance = this.slider_distance / b;
+    }
+
+    get value() {
+        return this.curr_value;
+    }
+
+    reset(): void {
+        this.bar_offset = this.min;
+        this.curr_value = this.data.min_value;
+        this.refreshValueLabel(this.data.min_value);
     }
 }
 

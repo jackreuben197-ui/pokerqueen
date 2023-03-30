@@ -375,11 +375,11 @@ export const UIDefine = {
         Path: "main/prefab/UILaborPlayViewForm"
     },
 
-    UITexasPlayerInfoComponent: {
+    UITexasPlayerInfo: {
         UIType: UIType.CommonUI,
         Name: "UITexasPlayerInfo",
         Bundle: 'texas',
-        Path: "prefab/ui/UITexasPlayerInfo",
+        Path: "purple_prefab/ui/UITexasPlayerInfo",
     },
     UITexasReportPlayerInfo: {
         UIType: UIType.CommonUI,

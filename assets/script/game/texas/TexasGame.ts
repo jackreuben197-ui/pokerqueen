@@ -437,7 +437,13 @@ export default class TexasGame {
     }
     SetDeskType(type: number) {
         this.setting.deskType = type;
-        this.uirc.table_sp.spriteFrame = AssetContext.getAsset(`table_${type}`, AssetFold.texture_table);
+
+        let material: cc.Material = this.uirc.sp_table_bg.getMaterials()[0];
+        let colors = GameUtil.Table_Colors[type] || GameUtil.Table_Colors[0];
+        material.setProperty("color_top", PublicHelper.GetColorArr(colors[0]));
+        material.setProperty("color_bottom", PublicHelper.GetColorArr(colors[1]));
+
+        this.uirc.sp_table_face.spriteFrame = AssetContext.getAsset(`top_table_${type}`, AssetFold.texture_table);
     }
     //////////////////////////////////////////////////////////////////////////
     /////////////////////////////////扑克样式/////////////////////////////////
@@ -2794,7 +2800,8 @@ export default class TexasGame {
     // 牌桌玩家信息
     public CheckPlayerInfo(userId: number, player: CPlayer = null): void {
         // GameCache.Instance.CurGame.texasGameProtocol.HANDLER_REQ_INSURANCE_TRIGGED(null);
-        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, player], { parentUI: Main.Marquee });
+        //UIComponent.open(UIDefine.UITexasPlayerInfo, [userId, false, player], { parentUI: Main.Marquee });
+        UIComponent.open(UIDefine.UITexasPlayerInfo, player, { parentUI: Main.Marquee });
     }
     //隐藏查看底牌按钮
     public HideSeeMorePublic(): void {
@@ -3067,13 +3074,9 @@ export default class TexasGame {
         });
     }
     public onClickReport() {
-        if (this.CanClick() == false) return;
-        this.lastClickTime = GlobalSession.NowTimeMS;
         UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.uirc.node });
     }
     public onClickCurSituation() {
-        if (this.CanClick() == false) return;
-        this.lastClickTime = GlobalSession.NowTimeMS;
         let historyInfoData = new HistoryInfoData()
         historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
         historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;

@@ -42,8 +42,7 @@ export default class WebImageHelper {
     public static SetUrlImage(rawImage: cc.Sprite, url: string, defaultImage: cc.SpriteFrame = null) {
         return new Promise<void>((resolve, reject) => {
 
-
-            rawImage.spriteFrame = defaultImage;
+            defaultImage && (rawImage.spriteFrame = defaultImage);
 
             if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
 
