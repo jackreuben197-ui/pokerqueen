@@ -176,6 +176,7 @@ export default class Seat {
         this.HideReturnGame();
         this.HideCoinShadow();
         this.HideTrust();
+        this.HideHeadCD();
     }
 
 
@@ -1190,9 +1191,8 @@ export default class Seat {
             defaultOpTime = countDown;
         }
         this.optTotalTime = defaultOpTime;
-        this.isCountDown = true;
 
-        this.uirc.Head_CD.active = true;
+        this.ShowHeadCD();
         this.uirc.Head_CD_Mask.fillRange = this.optCurTime / defaultOpTime;
         this.uirc.Head_CD_Label.string = `${this.optCurTime}s`;
         //this.StopLightArmature();
@@ -1203,8 +1203,8 @@ export default class Seat {
     /// </summary>
     public StopCountDown(): void {
         //if (this.isCountDown) {
-        this.isCountDown = false;
-        this.uirc.Head_CD.active = false;
+
+        this.HideHeadCD();
         //}
         //this.StopLightArmature();
     }
@@ -1432,8 +1432,7 @@ export default class Seat {
     /// </summary>
     /// <param name="addValue"></param>
     public AddCountDown(addValue: number): void {
-        this.isCountDown = true;
-        this.uirc.Head_CD.active = true;
+        this.ShowHeadCD();
         this.uirc.Head_CD_Mask.fillRange = 1;
         this.uirc.Head_CD_Label.string = `${addValue}s`;
         this.StopLightArmature();
@@ -1632,6 +1631,7 @@ export default class Seat {
         this.UpdateVoiceprintState(VoiceprintState.None);
         this.HideReturnGame();
         this.HideCardBack();
+        this.HideHeadCD();
     }
     /// <summary>
     /// 删除所有Tweener动画
@@ -1720,8 +1720,7 @@ export default class Seat {
     }
     // 刷新购买保险数量
     public UpdateBubbleInsurance() {
-        this.isCountDown = false;
-        this.uirc.Head_CD.active = false;
+        this.HideHeadCD();
         //不保
         if (this.Player.totalInsuredAmount + this.Player.autoInsuredAmount == 0) {
             this.uirc.Image_BubbleInsuranceNum.active = !this.IsMySeat;
@@ -1786,6 +1785,19 @@ export default class Seat {
     public UpdateTrust() {
         this.uirc.Image_Trust.active = this.Player.IsAutoOp;
     }
+    //显示头像CD
+    ShowHeadCD() {
+        this.uirc.Head_CD.active = true;
+        this.isCountDown = true;
+    }
+    //隐藏头像CD
+    HideHeadCD() {
+        this.uirc.Head_CD.active = false;
+        this.isCountDown = false;
+    }
+
+
+
 }
 export interface SeatUIInfo {
     Pos: cc.Vec3;

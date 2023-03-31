@@ -64,4 +64,18 @@ export default class PublicHelper {
     static RandomIntRange(min: number, max: number): number {
         return min + (Math.random() * (max - min + 1) ^ 0);
     }
+    //修复很长浮点数，取一位小数位
+    static FixFloat(num: number) {
+        return +Number(num).toFixed(1);
+    }
+
+
+    //不带透明度的颜色转换
+    public static GetColorArr(color: string): number[] {
+        let color_value = parseInt(color, 16);
+        let r = color_value >> 16 & 0xFF;
+        let g = color_value >> 8 & 0xFF;
+        let b = color_value & 0xFF;
+        return [r / 255, g / 255, b / 255, 1];
+    }
 }

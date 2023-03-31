@@ -9,7 +9,7 @@ import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import ToastManager from "../../manager/ToastManager";
-import { Web_User_Room, Web_User_Room_Bringin, WWW } from "../../net/https/WebRequest";
+import { APIOrgClubUserInfo, Web_User_Room, Web_User_Room_Bringin, WWW } from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -186,59 +186,18 @@ export default class UITexasMenu extends UIBasePlus {
         this.game = GameCache.Instance.CurGame;
         this.game.UpdateMenu();
         this.fadeIn();
-
-        this.refreshCoinAndChip()
-
-    }
-    refreshCoinAndChip() {
-
-        if (this.game.isMTT || GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) {
-
-            this.$node_coin.active = false;
-
-            this.$node_storage.active = false;
-
-            return;
-
-        }
-
-        if (this.game.UserSitdown()) {
-
-            WWW.Instance.CommonAPI(
-                {
-                    web_class: Web_User_Room_Bringin,
-                    api_id: GameCache.Instance.room_id,
-                }
-            ).then(
-                (res: any) => {
-                    if (res.data) {
-                        this.refreshCoin(res.data);
-                    }
-                },
-                () => {
-
-                }
-            );
-
-        }
-
-        let chips = GameCache.Instance.CurGame?.mainPlayer?.cacheStoreChips || 0;
-
-        this.$node_storage.active = chips > 0;
-
-        this.$node_storage.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(chips);
-
-    }
-    refreshCoin(data: any) {
-        this.$node_coin.active = true;
-        this.$node_coin.getChildByName("uc").active = data.gold_type == 1;
-        this.$node_coin.getChildByName("gc").active = data.gold_type == 2;
-        this.refreshCoinValue(StringHelper.GetLongString(data.gold));
     }
 
-    refreshCoinValue(value: string) {
-        this.$node_coin.getChildByName("label").getComponent(cc.Label).string = value;
-    }
+    // refreshCoin(data: any) {
+    //     this.$node_coin.active = true;
+    //     this.$node_coin.getChildByName("uc").active = data.gold_type == 1;
+    //     this.$node_coin.getChildByName("gc").active = data.gold_type == 2;
+    //     this.refreshCoinValue(StringHelper.GetLongString(data.gold));
+    // }
+
+    // refreshCoinValue(value: string) {
+    //     this.$node_coin.getChildByName("label").getComponent(cc.Label).string = value;
+    // }
 
     regiterTouchEvents() {
         super.regiterTouchEvents();
@@ -272,8 +231,6 @@ export default class UITexasMenu extends UIBasePlus {
     //     }
     // }
 
-
-
     click_coin() {
 
         let data = Web_User_Room_Bringin.Response.data;
@@ -298,13 +255,19 @@ export default class UITexasMenu extends UIBasePlus {
         }
         this.$black.active = true;
         this.$block.active = true;
+        
     }
     //面板移出
     fadeOut(animation: boolean = true) {
+
+        let view_width = cc.view.getVisibleSize().width;
+
+        this.$panel.width = view_width;
+
         if (animation) {
-            cc.tween(this.$panel).to(0.25, { x: - GameConfig.DesignResolution.width }).start();
+            cc.tween(this.$panel).to(0.25, { x: - view_width }).start();
         } else {
-            this.$panel.x = - GameConfig.DesignResolution.width;
+            this.$panel.x = - view_width;
         }
         this.$black.active = false;
         this.$block.active = false;

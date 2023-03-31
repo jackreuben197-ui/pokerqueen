@@ -1,9 +1,11 @@
 import { isatty } from "tty";
+import { TextColor } from "../../config/GameConfig";
 import { CommonDefine } from "../../define/CommonDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { Web_User_Room_Settle_Detail } from "../../net/https/WebRequest";
+import AssetContext from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
 
@@ -13,7 +15,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class UITexasGameEndItem extends UIBase {
 
-    MemberNumTxt: cc.Label = null;
+
     MemberNameTxt: cc.Label = null;
     MemberIDTxt: cc.Label = null;
     MemberComeTxt: cc.Label = null;
@@ -23,48 +25,65 @@ export default class UITexasGameEndItem extends UIBase {
     MemberIcon: cc.Sprite = null;
 
 
-    Image_BaseBg: cc.Node = null;
-    Image_MyBg: cc.Node = null;
+    bg_a: cc.Node = null;
+    bg_b: cc.Node = null;
+
+    c_0: cc.Node = null;
+    c_1: cc.Node = null;
+    c_2: cc.Node = null;
+
 
 
     protected lateLoad(): void {
         super.lateLoad();
-        this.MemberNumTxt = this.getChildNodeOrComponent("MemberNumTxt", cc.Label);
+
         this.MemberNameTxt = this.getChildNodeOrComponent("MemberNameTxt", cc.Label);
         this.MemberIDTxt = this.getChildNodeOrComponent("MemberIDTxt", cc.Label);
         this.MemberComeTxt = this.getChildNodeOrComponent("MemberComeTxt", cc.Label);
         this.MemberHandleTxt = this.getChildNodeOrComponent("MemberHandleTxt", cc.Label);
         this.MemberScoreTxt = this.getChildNodeOrComponent("MemberScoreTxt", cc.Label);
         this.MemberIcon = this.getChildNodeOrComponent("MemberIcon", cc.Sprite);
-        this.Image_MyBg = this.getChildNodeOrComponent("Image_MyBg");
-        this.Image_BaseBg = this.getChildNodeOrComponent("Image_BaseBg");
+
+
+
+        this.bg_a = this.getChildNodeOrComponent("bg_a");
+        this.bg_b = this.getChildNodeOrComponent("bg_b");
+
+        this.c_0 = this.getChildNodeOrComponent("c_0");
+        this.c_1 = this.getChildNodeOrComponent("c_1");
+        this.c_2 = this.getChildNodeOrComponent("c_2");
+
+
 
     }
     onShow(param?: any): void {
         super.onShow(param);
-        this.MemberNumTxt.string = `${this.index}`;
         this.MemberNameTxt.string = StringHelper.LengthNick(param.nick_name);
         this.MemberIDTxt.string = `ID:${param.user_random_id}`;
         this.MemberComeTxt.string = `${i18nMgr.Get("UIMine_RecordItemsNormal_eodrjcHJ")} ${StringHelper.GetLongString(param.bring_in)}`;
         this.MemberHandleTxt.string = `${i18nMgr.Get("UIMine_RecordItemsNormal_3RCUa3w8")} ${param.user_hand_num}`;
         this.MemberScoreTxt.string = `${StringHelper.GetSignedLongString(param.bring_out - param.bring_in)}`;
-        WebImageHelper.SetHeadImage(this.MemberIcon, param.avatar);
+        WebImageHelper.SetUrlImage(this.MemberIcon, param.avatar, AssetContext.getAsset("RadHead"));
         this.setScoreColor();
         this.setBg();
+        this.setTop();
+    }
+    //设置背景颜色
+    setBg() {
+
+        this.bg_a.active = this.index % 2 == 0;
+        this.bg_b.active = this.index % 2 == 1;
     }
 
-    setBg() {
-        if (this.param.user_random_id == GameCache.Instance.nUserId) {
-            this.Image_MyBg.active = true;
-            this.Image_BaseBg.active = false;
-        } else {
-            this.Image_MyBg.active = false;
-            this.Image_BaseBg.active = true;
-        }
+    //设置排名图标
+    setTop() {
+        this.c_0.active = this.index == 0;
+        this.c_1.active = this.index == 1;
+        this.c_2.active = this.index == 2;
     }
     setScoreColor() {
         let value = + this.MemberScoreTxt.string;
-        this.MemberScoreTxt.node.color = value < 0 ? CommonDefine.Text_Yellow_Color : CommonDefine.Text_Green_Color;
+        this.MemberScoreTxt.node.color = cc.Color.BLACK.fromHEX(value < 0 ? TextColor.Color6 : TextColor.Color5);
     }
     get param(): any {
         return this._param;

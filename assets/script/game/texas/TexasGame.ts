@@ -11,7 +11,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import Main from "../../Main";
-import { API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_User_Room, WWW } from "../../net/https/WebRequest";
+import { APIOrgClubUserInfo, API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_User_Room, Web_User_Room_Bringin, WWW } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Def, RoomInfo } from "../../protobuf/holdem/define_pb";
@@ -37,6 +37,7 @@ import { AddClipsData } from "../new_ui/UIBringIn";
 import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
+import UITexasMenu from "../ui/UITexasMenu";
 import { HistoryInfoData } from "../UITexasHistoryComponent";
 import GameUtil, { RoomType, some_pos } from "../util/GameUtil";
 import TexasGameUtils from "../util/TexasGameUtils";
@@ -436,7 +437,13 @@ export default class TexasGame {
     }
     SetDeskType(type: number) {
         this.setting.deskType = type;
-        this.uirc.table_sp.spriteFrame = AssetContext.getAsset(`table_${type}`, AssetFold.texture_table);
+
+        let material: cc.Material = this.uirc.sp_table_bg.getMaterials()[0];
+        let colors = GameUtil.Table_Colors[type] || GameUtil.Table_Colors[0];
+        material.setProperty("color_top", PublicHelper.GetColorArr(colors[0]));
+        material.setProperty("color_bottom", PublicHelper.GetColorArr(colors[1]));
+
+        this.uirc.sp_table_face.spriteFrame = AssetContext.getAsset(`top_table_${type}`, AssetFold.texture_table);
     }
     //////////////////////////////////////////////////////////////////////////
     /////////////////////////////////扑克样式/////////////////////////////////
@@ -2793,7 +2800,8 @@ export default class TexasGame {
     // 牌桌玩家信息
     public CheckPlayerInfo(userId: number, player: CPlayer = null): void {
         // GameCache.Instance.CurGame.texasGameProtocol.HANDLER_REQ_INSURANCE_TRIGGED(null);
-        UIComponent.open(UIDefine.UITexasPlayerInfoComponent, [userId, false, player], { parentUI: Main.Marquee });
+        //UIComponent.open(UIDefine.UITexasPlayerInfo, [userId, false, player], { parentUI: Main.Marquee });
+        UIComponent.open(UIDefine.UITexasPlayerInfo, player, { parentUI: Main.Marquee });
     }
     //隐藏查看底牌按钮
     public HideSeeMorePublic(): void {
@@ -3066,13 +3074,9 @@ export default class TexasGame {
         });
     }
     public onClickReport() {
-        if (this.CanClick() == false) return;
-        this.lastClickTime = GlobalSession.NowTimeMS;
         UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.uirc.node });
     }
     public onClickCurSituation() {
-        if (this.CanClick() == false) return;
-        this.lastClickTime = GlobalSession.NowTimeMS;
         let historyInfoData = new HistoryInfoData()
         historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
         historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
@@ -3093,15 +3097,96 @@ export default class TexasGame {
         // UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.uirc.Common_Con })
     }
 
+    refreshCoinAndChip(menu: UITexasMenu) {
+
+        WWW.Instance.CommonAPI(
+            {
+                web_class: Web_User_Room_Bringin,
+                api_id: GameCache.Instance.room_id,
+            }
+        ).then(
+            (res: any) => {
+                if (res.data) {
+                    GameCache.Instance.ClubID = res.data.club_id;
+                    GameCache.Instance.ClubRandomID = res.data.club_random_id;
+                    menu.$node_coin.active = GameCache.Instance.ClubRandomID > 0;
+
+                    if (GameCache.Instance.ClubID > 0) {
+
+                        ////////////////////////////////////////////
+                        WWW.Instance.CommonAPI(
+                            {
+                                web_class: APIOrgClubUserInfo,
+                                body: {
+                                    club_id: GameCache.Instance.ClubID,
+                                    user_id: GameCache.Instance.userId,
+                                }
+                            }
+                        ).then(
+                            (res: any) => {
+
+                                if (GameCache.Instance.gold_type == 1) { //1 联盟币， 2 usdt, 3 记分牌
+
+                                    menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(res.data.user_info.gold);
+
+                                }
+                                else if (GameCache.Instance.gold_type == 2) {
+
+                                    menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(res.data.user_info.usdt);
+                                }
+                                else if (GameCache.Instance.gold_type == 3) {
+
+                                    /////////////////////////////////////////////////////
+                                    WWW.Instance.CommonAPI(
+                                        {
+                                            web_class: Web_User_Room,
+                                            api_id: GameCache.Instance.room_id,
+                                        }
+                                    ).then(
+                                        (res: any) => {
+                                            if (res.data?.last_bring_out != null) {
+                                                menu.$node_coin.getChildByName("label").getComponent(cc.Label).string = `${res.data.apply_bring_in}`;
+                                            }
+                                        },
+                                        () => {
+
+                                        }
+                                    );
+
+                                    /////////////////////////////////////////////////////
+                                }
+                            },
+                            () => {
+
+                            }
+                        );
+                        ////////////////////////////////////////////
+                    }
+                }
+            },
+            () => {
+
+            }
+        );
+
+        menu.$node_coin.getChildByName("uc").active = GameCache.Instance.gold_type == 1;
+        menu.$node_coin.getChildByName("gc").active = GameCache.Instance.gold_type == 2;
+        menu.$node_coin.getChildByName("add").active = menu.$node_coin.getChildByName("click").active = GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2;
+        let chips = GameCache.Instance.CurGame.mainPlayer?.cacheStoreChips || 0;
+        menu.$node_storage.active = chips > 0;
+        //GameCache.Instance.FriendsTableLimitBringIn;
+        menu.$node_storage.getChildByName("label").getComponent(cc.Label).string = StringHelper.GetLongString(chips);
+
+    }
+
     public UpdateMenu() {
 
-        // UIMineModel.mInstance.ObtainUserInfo(pDto => {
-        //     // this.textTotalBean.string = StringHelper.getStringDiv100(GameCache.Instance.gold);
-        //     // this.setText(this.textTotalBean, GC.data.user.info.displayGold);
-        // });
-
         let menu = this.uirc.UITexasMenu;
+
+        this.refreshCoinAndChip(menu);
+
         menu.clearOptions();
+
         let show = [3, 4, 10];//设置|规则|离开
 
         if (this.UserSitdown()) //已坐下

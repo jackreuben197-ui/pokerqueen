@@ -47,7 +47,7 @@ export class SeatFSM {
         // imageTrust.gameObject.SetActive(false);
         this.seat.uirc.imageOffline.active = false;
         this.seat.uirc.imageReserveSeat.active = false;
-        this.seat.uirc.Head_CD.active = false;
+        this.seat.HideHeadCD();
 
         this.seat.uirc.Image_Bubble.active = false;
         // Image_BubbleInsuranceNum.gameObject.SetActive(false);
@@ -278,8 +278,7 @@ export class SeatFSM {
         this.seat.uirc.Head_CD_Mask.fillRange = (this.seat.optCurTime -= dt) / this.seat.optTotalTime;
         this.seat.uirc.Head_CD_Label.string = `${this.seat.optCurTime ^ 0}s`;
         if (this.seat.uirc.Head_CD_Mask.fillRange <= 0) {
-            this.seat.isCountDown = false;
-            this.seat.uirc.Head_CD.active = false;
+            this.seat.HideHeadCD();
             //PlayLightArmature();
         }
     }
@@ -310,8 +309,7 @@ export class SeatFSM {
         this.seat.uirc.Head_CD_Label.string = `${this.seat.optCurTime}s`;
 
         if (this.seat.uirc.Head_CD_Mask.fillRange <= 0) {
-            this.seat.isCountDown = false;
-            this.seat.uirc.Head_CD.active = false;
+            this.seat.HideHeadCD();
             //this.seat.PlayLightArmature();
         }
 

@@ -84,8 +84,13 @@ export default class UITexas extends BaseScene {
     /**
      * 节点|组件 定义
      */
-    //桌布
-    table_sp: cc.Sprite = null;
+    //桌布背景
+    sp_table_bg: cc.Sprite = null;
+    //桌台
+    sp_table_face: cc.Sprite = null;
+    //桌面主容器
+    main: cc.Node = null;
+
     //桌上边缘按钮
     btn_menu: cc.Node = null;
     btn_msg: cc.Node = null;
@@ -216,7 +221,9 @@ export default class UITexas extends BaseScene {
 
         super.lateLoad();
 
-        this.table_sp = this.getChildNodeOrComponent("table_sp", cc.Sprite);
+        this.sp_table_bg = this.getChildNodeOrComponent("sp_table_bg", cc.Sprite);
+        this.sp_table_face = this.getChildNodeOrComponent("sp_table_face", cc.Sprite);
+        this.main = this.getChildNodeOrComponent("main");
 
         this.btn_menu = this.getChildNodeOrComponent("btn_menu");
         this.btn_msg = this.getChildNodeOrComponent("btn_msg");
@@ -364,6 +371,8 @@ export default class UITexas extends BaseScene {
 
         super.Enter(param);
 
+        this.AdaptiveMain();
+
         this.game = GameCache.Instance.CurGame;
 
         this.game.uirc = this;
@@ -377,8 +386,28 @@ export default class UITexas extends BaseScene {
         if (null == this.listPotInfo) this.listPotInfo = [];
 
         this.EnterInitUI();
-    }
 
+    }
+    //适配
+    AdaptiveMain() {
+        //高度小于目标进行缩放
+        let view_height = cc.view.getVisibleSize().height;
+
+        let limit_height = 2400;
+
+        if (view_height <= limit_height) {
+
+            this.main.height = 2688;
+
+            this.main.setScale(view_height / 2688, view_height / 2688);
+
+        } else {
+
+            this.main.setScale(1, 1);
+
+            this.main.height = view_height;
+        }
+    }
     //进入初始UI
     EnterInitUI() {
         //this.ShowInvateCode();
@@ -424,7 +453,8 @@ export default class UITexas extends BaseScene {
         });
         //关闭菜单
         this.HideMenu(false);
-
+        //关闭个人信息
+        UIComponent.close(UIDefine.UITexasPlayerInfo);
     }
     Exit(param) {
         super.Exit(param);

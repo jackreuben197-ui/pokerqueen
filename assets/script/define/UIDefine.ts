@@ -359,11 +359,12 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "prefab/widgetLayer/UITexasHistory",
     },
-    UITexasGameEndComponent: {
+    //普通桌结算
+    UITexasGameEnd: {
         UIType: UIType.CommonUI,
-        Name: "UITexasGameEndComponent",
+        Name: "UITexasGameEnd",
         Bundle: 'texas',
-        Path: "prefab/ui/UITexasGameEnd",
+        Path: "purple_prefab/ui/UITexasGameEnd",
     },
 
     //房间模版
@@ -374,11 +375,11 @@ export const UIDefine = {
         Path: "main/prefab/UILaborPlayViewForm"
     },
 
-    UITexasPlayerInfoComponent: {
+    UITexasPlayerInfo: {
         UIType: UIType.CommonUI,
         Name: "UITexasPlayerInfo",
         Bundle: 'texas',
-        Path: "prefab/ui/UITexasPlayerInfo",
+        Path: "purple_prefab/ui/UITexasPlayerInfo",
     },
     UITexasReportPlayerInfo: {
         UIType: UIType.CommonUI,
