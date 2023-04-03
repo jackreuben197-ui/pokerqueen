@@ -73,8 +73,8 @@ export default class ItemLobbyRoom extends UIBasePlus {
         //判断禁用
         //this.$arrow.active = GameCache.Instance.hasClub;
         //this.$stop.active = !GameCache.Instance.hasClub;
-        this.$arrow.active = GameCache.Instance.hasClub;
-        this.$stop.active = !GameCache.Instance.hasClub;
+        this.$arrow.active = GameCache.Instance.isHadClub;
+        this.$stop.active = !GameCache.Instance.isHadClub;
 
     }
 

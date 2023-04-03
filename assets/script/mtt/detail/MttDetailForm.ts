@@ -279,7 +279,7 @@ export default class MttDetailForm extends BaseForm {
             panel_item2.y = 0;
             panel_item2.parent = sv_status.content;
 
-            if (this._data && this._data._msg.match_id) {
+            if (this._data && this._data.match_id) {
                 // LobbyControl.getInstance().reqMTTDetailInfo(this._data._msg.match_id, {}).then(
                 //     (res: any) => {
                 //         this.refreshStatusUI(res);
@@ -306,7 +306,7 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Ranks.API.replace("{id}", this._data._msg.match_id.toString()),
+                api: Web_Room_Center_Mtt_Ranks.API.replace("{id}", this._data.match_id.toString()),
                 request: Web_Room_Center_Mtt_Ranks,
                 body: Web_Room_Center_Mtt_Ranks.Request(reqInfo),
                 onSuccess: function () {
@@ -337,7 +337,7 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Real_Prize.API.replace("{id}", this._data._msg.match_id.toString()),
+                api: Web_Room_Center_Mtt_Real_Prize.API.replace("{id}", this._data.match_id.toString()),
                 request: Web_Room_Center_Mtt_Real_Prize,
                 body: Web_Room_Center_Mtt_Real_Prize.Request(reqInfo),
                 onSuccess: function () {
@@ -368,7 +368,7 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Rooms.API.replace("{id}", this._data._msg.match_id.toString()),
+                api: Web_Room_Center_Mtt_Rooms.API.replace("{id}", this._data.match_id.toString()),
                 request: Web_Room_Center_Mtt_Rooms,
                 body: Web_Room_Center_Mtt_Rooms.Request(reqInfo),
                 onSuccess: function () {
@@ -399,7 +399,7 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Details.API.replace("{id}", this._data._msg.match_id.toString()),
+                api: Web_Room_Center_Mtt_Details.API.replace("{id}", this._data.match_id.toString()),
                 request: Web_Room_Center_Mtt_Details,
                 body: Web_Room_Center_Mtt_Details.Request(reqInfo),
                 onSuccess: function () {
@@ -620,7 +620,7 @@ export default class MttDetailForm extends BaseForm {
         //     return;
         // }
 
-        UIMatchMttModel.Instance.RequestMTTDetails(this._data._msg.match_id, code => {
+        UIMatchMttModel.Instance.RequestMTTDetails(this._data.match_id, code => {
             if (code == 0) {
                 this.UpdateBtn();
                 this.refreshStatusUI(UIMatchMttModel.Instance.MttInfo)

@@ -152,7 +152,8 @@ export default class UILobbyIndex extends UIBasePlus {
 
     //mtt入口点击
     onMTTClick() {
-        UIComponent.open(UIDefine.MttListForm, null, { SceneUI: SceneManager.Instance.currUI })
+        //UIComponent.open(UIDefine.MttListForm, null, { SceneUI: SceneManager.Instance.currUI })
+        UIComponent.open(UIDefine.UIMTTList, null, { SceneUI: SceneManager.Instance.currUI })
     }
     //游戏类型页签点击
     onGameTypeTabClick(button: cc.Button) {
@@ -275,7 +276,7 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     onRoomClick(button: cc.Button) {
 
-        if (!GameCache.Instance.hasClub) {
+        if (!GameCache.Instance.isHadClub) {
             UIComponent.Instance.ToastLanguage("UIGuides_clubetips");
             return;
         }

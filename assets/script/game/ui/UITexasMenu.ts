@@ -260,7 +260,7 @@ export default class UITexasMenu extends UIBasePlus {
     //面板移出
     fadeOut(animation: boolean = true) {
 
-        let view_width = cc.view.getVisibleSize().width;
+        let view_width = 1242;
 
         this.$panel.width = view_width;
 

@@ -1,4 +1,4 @@
-UserLanguage=Chinês Simplificado^Inglês^Chinês Tradicional^Português
+UserLanguage=Português
 errorDefault=Erro de conexão, favor tentar novamente. 
 error0=Sucesso
 error995=Solicitação inválida
@@ -1396,7 +1396,7 @@ club_tribe_3=Insira o nome da liga
 club_tribe_4=Liga criada, sujeito à aprovação
 club_tribe_5=A liga que você criou está sob revisão, enquanto isso nehuma outra liga pode ser criada
 club_tribe_6=Criador
-club_tribe_7=Percentual de participação
+club_tribe_7=Proporção de participação
 club_tribe_8=Clubes ingressados
 club_tribe_9=Desculpe, não foram encontrados nenhuma liga com esse ID
 club_tribe_10=Ingressado, favor aguardar por aprovação
@@ -3426,8 +3426,8 @@ OpCodeString_SNATCHTREASUREPFTDIV=Ganhos no Super 1
 UIMTT_MultiFree=Taxa única reduzida
 UIMTT_MultiFreeNoServer=Taxa única reduzida (Taxa de Serviço não incluso)
 UIHallOfFame_super1reward=Prêmios Super 1
-UIClub_AgentRate=Comissão
-UIClub_AgentEditor=Editar
+UIClub_AgentRate=Proporção 
+UIClub_AgentEditor=Operar
 UIClub_AgentCount=agentes
 UISHOPguide=Guia de Iniciante
 UIClub_belongLeague=liga afiliada
@@ -3452,13 +3452,13 @@ UIClub_DissolveTips=Tenha cuidado, pois o clube não será reintegrado após o r
 UIClub_DissolveTips_Risk=Aviso de risco
 UIClub_AuditRecords_ok=Solicitação Aprovada
 UIClub_AuditRecords_no=Rejeitado
-UIClub_CreateSuccessTips=Seu clube tem atualmente uma porcentagem inicial de participação nos lucros de <size=60><color=#DDBA82>{0}%</color></size>.
+UIClub_CreateSuccessTips=Seu clube tem atualmente uma Proporção inicial de participação nos lucros de <size=60><color=#DDBA82>{0}%</color></size>.
 UIClub_InputLeagueIdTips=Insira o ID correto da liga
 OpCodeString_SNATCHTREASUREAWARDD=Super 1
 MsgInfo_4010=O clube {0} que você criou não foi aprovado
 UIHappyShop_HasGiveState=Prêmio enviado
 MsgInfo_3014=Parabéns! Você resgatou seu prêmio {0} do Super 1 e recebeu {1}.
-UIClub_Dividend_Ratio=Porcentagem de lucro
+UIClub_Dividend_Ratio=Proporção de divisão de lucros
 UIClub_PhoneOrCodeError=Número de telefone celular ou código de verificação incorreto para cadastro
 WalletPlatform_Name=Nome
 UIMine_WalletPlatform_OnceAgainPix=Insira seu PIX novamente
@@ -3557,7 +3557,7 @@ UIGuild_MemberManagerSortByLastLoginTime=Classificar pelo último login
 UIGuild_MemberList=Lista de Membros
 UIGuild_MemberApplyList=Lista de solicitações
 UIGuild_FilterButtonAll=Todos
-UIGuild_FilterButtonManager=Administrador
+UIGuild_FilterButtonManager=Admin
 UIGuild_FilterButtonVip=Agente 
 UIGuild_FilterButtonMember=Membro
 UIGuild_MemberNumber=Número total de pessoas
@@ -3569,7 +3569,7 @@ UIGuild_ExchangeRateSettings=Configurações de tarifas
 UIGuild_ShareGameManager=Configurações do jogo compartilhado
 UIGuild_AllowSearch=Permitir que outros tenham acesso ao clube
 UIGuild_Approve=Não é necessária aprovação para se juntar a um clube
-UIGuild_NoUnion=Não há ligas atualmente
+UIGuild_NoUnionTips=Não há ligas atualmente
 UIGuild_ID=ID do clube
 UIGuild_Member=Número de membros do Clube
 UIGuild_ExchangeRateSettingsDesc=A taxa de conversão é definida pelo dono do clube e será exibida a todos os membros do clube para a proporção de membros do clube quando se converte UC e GC.
@@ -3623,8 +3623,7 @@ UIGuildFund_RtTips001=Confirmar recarregar {1} UC para {0} liga?
 UIGuildFund_RtTips002=Confirmar recarregar {1} GC a {0} liga?
 UIGuildFund_RtTips003=Confirmar o saque de {1} UC da {0} liga?
 UIGuildFund_RtTips004=Confirmar para retirar {1} GC a {0} liga?
-UIGuildFund_RtTips005=Pedido para recarga aprovado!
-Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
+UIGuildFund_RtTips005=Pedido para recarga aprovado!\n Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
 UIGuildFund_RtTips006=Solicitação de saque aprovada!
 Se você tiver alguma dúvida, entre em contato com o SAC em {0}.
 UIGuild_MemberDetails_title=Informações detalhadas
@@ -3775,7 +3774,7 @@ UIRoom_FDIncorrectPeople=Taxa de serviço   O número de participantes nesta mã
 UIRoom_FDIncorrectNo=Taxa de serviço   O número de participantes nesta mão é inferior a 2-{0}
 OpCodeString_EXCHUNLOCK=Bloqueio do Exchange
 UIVIDEOVIEW_TIPS01=Forçar vídeo ligado
-UITexas_FriendtableapplyBringinTips003=Homeowner concorda em revisar
+UITexas_FriendtableapplyBringinTips003=Room owner concorda em revisar
 UIAUDIOVIEWTIPS001=Câmera desligada
 UIAUDIOVIEWTIPS002=O microfone está desligado
 UIAUDIOVIEWTIPS003=Alto-falante desligado
@@ -3850,8 +3849,8 @@ UILogin_RegistNewDiamondsTitle=Benefícios para iniciantes
 UIMain_JoinGuildTips=Por favor, junte-se ou crie uma Cluba primeiro
 UIMain_JoinUnionTips=A Cluba não se juntou ao sindicato, entre em contato com o serviço de atendimento ao cliente do sindicato
 UIPaiJu_GameRhythm=Ritmo do jogo
-UIPaiJu_GGMode=Modo GG
-UIPaiJu_HHMode=Modo HH
+UIPaiJu_GGMode=Tempo Normal
+UIPaiJu_HHMode=Tempo Rápido
 UIRoom_LimitTimeFreeFace=Gratuito por um tempo limitado
 UITexas_FaceRecogDaoJiShi=Contagem regressiva: Você pode tentar novamente após {0}
 UITexas_FaceRecogSuccess=Validado!
@@ -3880,47 +3879,151 @@ UIClub_DJTip6=Confirma-se que o jogador {0}{1} está congelado e o jogador não 
 UIClub_DJTip7=Certifique-se de descongelar o jogador {0}{1}
 UIGuild_MemberEditTitle=Editar offline
 UIGuild_MemberEditHide=Esconder o leitor offline actual
-UIData_Today=
-UIData_7day=
-UIData_14day=
-UIData_game=
-UIData_PlayCount=
-UIData_HandsCount=
-UIData_BtnData=
-UIData_BtnRecord=
-UIClub_CreateTips=
-UIClub_CreateGuild=
+UIData_Today=Hoje
+UIData_7day=7 Dias
+UIData_14day=14 Dias
+UIData_game=Jogos
+UIData_PlayCount=Jogos para Jogadores
+UIData_HandsCount=Mãos Jogadas
+UIData_BtnData=Dados
+UIData_BtnRecord=Conquista
+UIClub_CreateTips=Crie um clube e convide amigos para jogar juntos
+UIClub_CreateGuild=CRIAR CLUBE
 UIGame_Type6p=6+
-UITexas_FaceRecogTip10=
-UIMessage_Default=
-UIMessage_Default2=
-UIMessage_Default3=
-UIExchange_InputTips=
-UIExchange_All=
-UIExchange_AutoExchange=
-UIExchange_From=
-UIExchange_To=
-UIGame_UserInfoTipsMtt=
-UIGame_UserInfoTips=
-UIExchange_reversal=
+UITexas_FaceRecogTip10=Tentar novamente
+UIMessage_Default=Sala do Amigo
+UIMessage_Default2=Sistema
+UIMessage_Default3=União
+UIExchange_InputTips=Inserir quantidade
+UIExchange_All=Resgatar tudo
+UIExchange_AutoExchange=Conversão automática
+UIExchange_From=de
+UIExchange_To=a
+UIGame_UserInfoTipsMtt=Carreira no campeonato
+UIGame_UserInfoTips=30 dia de informações gerais do jogo de cartas
+UIExchange_reversal=reversão
 UIInsurance_Total=total:
 UIInsurancePool=detalhes do seguro
-MsgInfo_2018=
-MsgInfo_2019=
-MsgInfo_4020=
-MsgInfo_5009=
-MsgInfo_5010=
-MsgInfo_5011=
+MsgInfo_2018=Sua solicitação de conversão de {0} em {1} foi rejeitada. Contate o serviço de atendimento ao consumidor do clube se tiver dúvidas
+MsgInfo_2019=Sua conta foi descongelada pelo Clube {0}
+MsgInfo_4020=O sindicato {1} do seu clube {0} foi congelado pela plataforma. Entre em contato com o clube {2} se tiver dúvidas
+MsgInfo_5009=Seu clube {0} foi descongelado pelo Union {1}
+MsgInfo_5010=Seu clube {0} foi congelado pelo Sindicato de {1}, entre em contato com o clube de {2} se tiver alguma dúvida
+MsgInfo_5011=Seu clube {0} foi descongelado pelo União de {1}
 UIInsurance_InsureIn=Adquirindo
-UIFaceDetection_tips001=
-UIFaceDetection_tips002=
-UIFaceDetection_tips003=
-UIFaceDetection_tips004=
+UIFaceDetection_tips001=Vá para o centro da tela
+UIFaceDetection_tips002=Mova para a esquerda para o centro da tela
+UIFaceDetection_tips003=Mova para o centro da tela
+UIFaceDetection_tips004=Mova para o centro da tela
 UITexas_ShowBB=Mostrar BB
-UITexas_ShowBBTips=Você pode mudar a unidade de ficha padrão para uma unidade alternativa (Big Blind)
-UITexas_storage=
-UIMain_BannerNewsTitle=
-UIChipsBB=Stack(BB)
-UIMain_NoClubTips=
-UIMain_NoTribeTips=
+UITexas_ShowBBTips=Você pode alternar a unidade de chip padrão para uma unidade alternativa (Big Blind)
+UITexas_storage=Armazenamento
+UIMain_BannerNewsTitle=Notícias
+UIChipsBB=Pilha(BB)
+UIMain_NoClubTips=Junte-se ao clube para procurar mais conteúdo
+UIMain_NoTribeTips=Para mais jogos de cartas, entre em contato com o serviço de atendimento ao cliente do clube
+UIMine_BindEmailTips=Você não ligou sua caixa de correio por enquanto. Depois de ligar sua caixa de correio, você pode fazer login com sua caixa de correio da próxima vez
+UIMine_BindMobilePhoneTips=Você não ligou o número do seu celular por enquanto. Depois de ligar o celular, você pode usar o número do celular para fazer login na próxima vez
+UIMine_ChangeEmailTips=Depois de alterar a caixa de correio, você pode fazer logon com a nova caixa de correio da próxima vez
+UIMine_ChangeMobilePhoneTips=Depois de alterar o telefone, você poderá usar o novo número de telefone para fazer logon da próxima vez
+UIClub_SelectedTotal=Pessoas selecionadas:
+UIClub_MaxRecycle=Valor máximo de recuperação:
+UIMine_ChangeMobilePhone=Substitua o telefone
+UIMine_ChangeEmail=Substituir caixa de correio
+UIClub_RecycleSucceed=Reciclado com êxito
+UIMine_ChangeEmailSend=O código de verificação foi enviado para a caixa de correio. Preencha o código de verificação
+UIMine_ChangeMobilePhoneSend=O código de verificação SMS foi enviado, preencha o código de verificação
+UIClub_UCSort=Classificar por UC
+UIClub_GCSort=Classificar por GC
+UIClub_RecycleFail=Falha na recuperação
+UIClub_GiveFail=Falha na ocorrência
+UIClub_LimitMaxGive=Valor de liberação máximo excedido
+UIClub_LimitMaxRecycle=Recuperação além do máximo
+UIMine_DiamondsPrice=custo original:
+UIMtt_MainLabel=Nota: A Apple não é patrocinadora, nem está envolvida em qualquer forma de participação em eventos.
+UIDigitalWallet=Carteira Digital
+UIERCAddress=Endereço ERC:
+UITRCAddress=Endereço TRC:
+UIERCAddressInput=Endereço ERC:
+UITRCAddressInput=Endereço TRC:
+UINoDigitalWalletTips=Configure primeiro o endereço da sua carteira
+CopyContact=copiar contato
+UIGuildFund_RtTips005NoTell=O aplicativo para o top-up é bem-sucedido! \nSe tiver alguma dúvida, entre em contato com o serviço de atendimento ao cliente
+UIMTT_SignTips=inscreva-se no concurso
+UIMTT_SignLbl=Moeda:
+UIMTT_SignLessBuy=Compra restante:
+UINiuZaiRule_jingang=
+UINiuZaiXiaZhuQu_jingang=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

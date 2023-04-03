@@ -34,7 +34,7 @@ export class ClubCache {
     static mttPayWallat = null;   //mtt支付钱包
     static setClubData(data) {
         this._msg = data
-        GameCache.Instance.hasClub = this._msg?.club_id > 0;
+        GameCache.Instance.isHadClub = this._msg?.club_id > 0;
     }
     static get club_table() {
         return this._msg?.tables;

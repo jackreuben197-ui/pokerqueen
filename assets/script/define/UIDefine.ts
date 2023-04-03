@@ -1009,6 +1009,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/message/UIMsgSystem",
     },
+    //系统消息面板文字扩充
+    UIMsgSystemEx: {
+        UIType: UIType.Form,
+        Name: "UIMsgSystemEx",
+        Bundle: null,
+        Path: "main/lobby/message/UIMsgSystemEx",
+    },
     //带入申请列表
     UIMsgBring: {
         UIType: UIType.Form,
@@ -1041,6 +1048,13 @@ export const UIDefine = {
         Name: "UIEditMess",
         Bundle: '',
         Path: "login/form/UIEditMess",
+    },
+    //MTT比赛列表界面
+    UIMTTList: {
+        UIType: UIType.Form,
+        Name: "UIMTTList",
+        Bundle: null,
+        Path: "main/new_mtt/UIMTTList",
     },
 
 

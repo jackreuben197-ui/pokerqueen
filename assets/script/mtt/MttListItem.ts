@@ -139,7 +139,7 @@ export default class MttListItem extends ListItem {
             GC.data.mtt.list.select = this._data;
             UIComponent.open(UIDefine.MttDetailForm, this._data);
         } else {
-            if (GameCache.Instance.hasClub) {
+            if (GameCache.Instance.isHadClub) {
                 GC.data.mtt.list.select = this._data;
                 UIComponent.open(UIDefine.MttDetailForm, this._data);
                 // UIComponent.open(UIDefine.MttRealTime, this._data);

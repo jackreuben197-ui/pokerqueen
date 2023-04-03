@@ -334,7 +334,7 @@ export class GameCache {
     enter_param: { game_enter_type: GameEnterType, isLookOn: boolean } = null;
 
 
-    hasClub: boolean = false;
+    //hasClub: boolean = false;
 
 
     public static get Instance(): GameCache {

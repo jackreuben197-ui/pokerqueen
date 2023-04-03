@@ -1,9 +1,10 @@
 import List from "../../common/List";
 import ListEx from "../../common/ListEx";
-import SimpleNodePool from "../../common/MyNodePool";
+import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { APIMsgMessageList, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
+import UIComponent from "../../ui/UIComponent";
 import ItemMsgSystem from "./ItemMsgSystem";
 import { EnumMSG } from "./MyMessageModel";
 
@@ -14,14 +15,14 @@ const { ccclass, property } = cc._decorator;
 export default class UIMsgSystem extends BaseFormPlus {
 
     ///////////////////////引用声明////////////////////////
-    $content: cc.Node = null;
-    $ItemMsgSystem: cc.Node = null;
+    //$content: cc.Node = null;
+    //$ItemMsgSystem: cc.Node = null;
     $Null: cc.Node = null;
     ////////////////////////////////////////////////////
-    item_pool: SimpleNodePool = null;
+    //item_pool: SimpleNodePool = null;
     protected lateLoad() {
         super.lateLoad();
-        this.item_pool = new SimpleNodePool(this.$ItemMsgSystem);
+        //this.item_pool = new SimpleNodePool(this.$ItemMsgSystem);
         this.initEX();
     }
     regiterTouchEvents() {
@@ -31,7 +32,7 @@ export default class UIMsgSystem extends BaseFormPlus {
         super.onShow(param, fromUI, sceneUI);
         this.title_label.i18NString = param.name;
         this.$Null.active = false;
-        this.clearList();
+        // this.clearList();
         this.listEx.reset();
     }
     fadeInComplete() {
@@ -40,29 +41,22 @@ export default class UIMsgSystem extends BaseFormPlus {
         //this.reqMsgList();
         this.listEx.dropRequest();
     }
-    refreshList(list: any[]) {
-        this.clearList();
-        if (list?.length) {
-            list.forEach(item => {
-                let item_node = this.item_pool.GetNode();
-                let item_sc = item_node.getComponent(ItemMsgSystem);
-                item_node.parent = this.$content;
-                item_sc.onShow({ data: item, type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1 });
-            })
-        } else {
-            this.$Null.active = true;
+    
+    click_item(button: cc.Button) {
+        let item_sc = button.node.getComponent(ItemMsgSystem);
+        if (item_sc.isLarge) {
+            //开启完整信息显示
+            console.log("打开完整信息");
+            UIComponent.open(UIDefine.UIMsgSystemEx, button.node["obj"]);
         }
     }
-    // onItemClick(button: cc.Button) {
-    //     //let index = button.node.getComponent(ItemMyMessage).index;
+    // clearList() {
+    //     this.$content.children.forEach(item => {
+    //         this.item_pool.BackNode(item);
+    //     })
+    //     this.$content.removeAllChildren();
+    //     //this.cc_ScrollView$list.scrollToTop(0);
     // }
-    clearList() {
-        this.$content.children.forEach(item => {
-            this.item_pool.BackNode(item);
-        })
-        this.$content.removeAllChildren();
-        //this.cc_ScrollView$list.scrollToTop(0);
-    }
 
 
     reqMsgList(offset: number = 0) {
@@ -104,7 +98,11 @@ export default class UIMsgSystem extends BaseFormPlus {
     //////////////////////////////////滚动节点渲染///////////////////////
     render_item(node: cc.Node, index: number) {
         let item_data = this.listEx.data[index];
-        node.getComponent(ItemMsgSystem).onShow({ data: item_data, type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1 });
+        let show_obj = { data: item_data, type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1 };
+        let click_obj = { name: this._param.name, isFromEx: true, data: item_data, type: this._param.msg_type == EnumMSG.MSG_System ? 0 : 1 }
+        node["obj"] = click_obj;
+        node.getComponent(ItemMsgSystem).onShow(show_obj);
+        node.on("click", this.click_item, this);
     }
 
 }

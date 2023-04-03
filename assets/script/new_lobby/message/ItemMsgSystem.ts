@@ -1,5 +1,6 @@
 
 import { MessageSubType } from "../../config/TTypeConfig";
+import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -7,6 +8,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import LobbySession from "../../session/LobbySession";
 import AssetContext from "../../ui/component/AssetContext";
 import UIBasePlus from "../../ui/UIBasePlus";
+import UIComponent from "../../ui/UIComponent";
 import MyMessageModel from "./MyMessageModel";
 
 const { ccclass, executionOrder, property } = cc._decorator;
@@ -51,14 +53,7 @@ export default class ItemMsgSystem extends UIBasePlus {
     }
     regiterTouchEvents() {
         super.regiterTouchEvents();
-        this.setButtonClick(this.node, this.onClick);
-    }
-
-    onClick() {
-        if (this.isLarge) {
-            //开启完整信息显示
-            console.log("打开完整信息");
-        }
+        //this.setButtonClick(this.node, this.onClick);
     }
 
     refreshSystem(data) {
@@ -103,14 +98,25 @@ export default class ItemMsgSystem extends UIBasePlus {
                     } else {
                         str = StringHelper.Format(msg, [data.title, data.content, data.remark]);
                     }
-                    this.cc_RichText$content.string = str;
-                    this.isLarge = StringHelper.SetLargeText(this.cc_RichText$content, 208);
+
                     var a = `<color=#E1B58D>${data.title}</color>`;
                     var b = `<color=#E1B58D>${data.content}</color>`;
                     var c = `<color=#E1B58D>${data.remark}</color>`;
-                    this.allText = StringHelper.Format(msg, [a, b, c]);
-                    this.isLarge || (this.cc_RichText$content.string = this.allText);
 
+                    if (this._param.isFromEx) {
+
+                        this.allText = StringHelper.Format(msg, [a, b, c]);
+
+                        this.cc_RichText$content.string = this.allText;
+
+                    } else {
+
+                        this.cc_RichText$content.string = str;
+                        this.isLarge = StringHelper.SetLargeText(this.cc_RichText$content, 208);
+                        this.allText = StringHelper.Format(msg, [a, b, c]);
+                        this.isLarge || (this.cc_RichText$content.string = this.allText);
+
+                    }
                 }
                 break;
         }
@@ -210,21 +216,28 @@ export default class ItemMsgSystem extends UIBasePlus {
                     if (data.game_type > 0) {
                         typename = LobbySession.getLanguageValueByKey(data.multi_language_id);
                     }
-                    tTxtContent = StringHelper.Format(msg, [`<color=#7187FF>${typename}${data.content}</color>`, c, a]);
+
+                    if (this._param.isFromEx) {
+
+                        tTxtContent = StringHelper.Format(msg, [`<color=#7187FF>${typename}${data.content}</color>`, c, a]);
+
+                    } else {
+                        let temp = StringHelper.Format(msg, [data.content, data.remark, data.title]);
+
+                        this.cc_RichText$content.string = temp;
+
+                        this.isLarge = StringHelper.SetLargeText(this.cc_RichText$content, 200);
+
+                        if (this.isLarge) {
+                            tTxtContent = null;
+                        } else {
+                            tTxtContent = StringHelper.Format(msg, [`<color=#7187FF>${typename}${data.content}</color>`, c, a]);
+                        }
+                    }
                     break;
             }
-            this.cc_RichText$content.string = tTxtContent;
+            tTxtContent && (this.cc_RichText$content.string = tTxtContent);
 
-            // if (AlineText(tTxt, tTxt.text)) {
-            //     //tTxt.raycastTarget = true;
-            //     UIEventListener.Get(go).onClick = (tmp) => {
-            //         UIComponent.Instance.ShowNoAnimation(UIType.UIMine_MsgSystemContent, tTxtContent);
-            //     };
-            // }
-            // else {
-            //     tTxt.text = tTxtContent;
-            //     tTxt.raycastTarget = false;
-            // }
         }
     }
     private refreshUI(param: any) {

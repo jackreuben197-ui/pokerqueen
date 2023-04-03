@@ -223,7 +223,7 @@ export default class LobbySession {
         GameCache.Instance.headPic = info.avatar;
         GameCache.Instance.userType = info.ut;
 
-        GameCache.Instance.hasClub = info.club_id > 0;
+        GameCache.Instance.isHadClub = info.club_id > 0;
 
         //localStorage.setItem(StorageKey.KEY_USERID, `${info.un_id}`);
         //localStorage.setItem(StorageKey.KEY_PHONE, `${info.phone}`);

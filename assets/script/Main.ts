@@ -43,6 +43,7 @@ export default class Main extends cc.Component {
     //重连提示
     static Reconnect: cc.Node = null;
 
+    static Diss: cc.Node = null;
     ////////////////////////////////////调试开关
 
     static ShowSeatID: number;//显示seat id
@@ -90,12 +91,14 @@ export default class Main extends cc.Component {
         Main.Orientation = this.node.parent.getChildByName("Orientation");
         Main.Reconnect = this.node.parent.getChildByName("Reconnect - 重连");
 
+        Main.Diss = this.node.parent.getChildByName("Diss - 出界遮挡");
 
         UIComponent.Instance.SetPrefabNode(PrefabUI.UIPreloading, Main.UIPreloading);
 
         this.scheduleOnce(() => {
             console.log("屏幕分辨率:", cc.view.getFrameSize().toString());
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
+            this.refreshDiss();
         }, 1);
         GC.uc.AddComponent(new OrientationComponent);
         ReconnectComponent.Instance.Start();
@@ -108,5 +111,18 @@ export default class Main extends cc.Component {
         console.log("start");
         ProcedureManager.Init();
     }
+
+    //刷新遮挡
+    private refreshDiss() {
+        let l_mask = Main.Diss.getChildByName("l_mask");
+        let r_mask = Main.Diss.getChildByName("r_mask");
+        //let u_mask = Main.Diss.getChildByName("u_mask");
+        //let b_mask = Main.Diss.getChildByName("b_mask");
+        l_mask.width = cc.view.getVisibleSize().width;
+        r_mask.width = cc.view.getVisibleSize().width;
+        //u_mask.width = cc.view.getVisibleSize().height;
+        //b_mask.width = cc.view.getVisibleSize().height;
+    }
+
 }
 (window as any).Main = Main;

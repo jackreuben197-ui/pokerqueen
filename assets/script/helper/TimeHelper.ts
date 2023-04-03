@@ -7,7 +7,10 @@
  * @FilePath: /pokerqueen/assets/script/helper/TimeHelper.ts
  */
 
+import { maxHeaderSize } from "http";
 import { i18nMgr } from "../i18n/i18nMgr";
+import { match } from "assert";
+import { measureMemory } from "vm";
 
 
 const { ccclass, property } = cc._decorator;
@@ -414,23 +417,23 @@ export default class TimeHelper {
             tHour = pNum / 3600 ^ 0;
             tMinutes = (pNum % 3600 / 60) ^ 0;
             tseconds = pNum % 3600 % 60;
-            return `${this.__PadZero(tHour)}:${this.__PadZero(tMinutes)}:${this.__PadZero(tseconds)}`;
+            return `${this.PadZero(tHour)}:${this.PadZero(tMinutes)}:${this.PadZero(tseconds)}`;
         }
         else if (pNum >= 60)//>1分钟
         {
             tMinutes = pNum / 60 ^ 0;
             tseconds = pNum % 60;
-            return `${this.__PadZero(tMinutes)}:${this.__PadZero(tseconds)}`;
+            return `${this.PadZero(tMinutes)}:${this.PadZero(tseconds)}`;
 
         }
         else if (pNum < 60) {
-            return `00:${this.__PadZero(pNum)}`
+            return `00:${this.PadZero(pNum)}`
         }
         return "";
     }
     //小于10,前补0
-    private static __PadZero(num: number) {
-        return num < 10 ? "0" + num : num;
+    public static PadZero(num: number) {
+        return num < 10 ? `0${num}` : `${num}`;
     }
     // 时间转换 2022-12-27T10:03:02Z 转换为本地时间
     public static UTCToLocal(time: string) {
@@ -439,6 +442,73 @@ export default class TimeHelper {
         time = time.replace(/-/g, "/");//苹果需要这样处理
         return TimeHelper.convertUTCTimeToLocalTime(time);
     }
+
+
+    //转换时间为本地时间
+    // style 
+    // 0:'01/01/2022 19:00'
+    // 1:'19:00'
+    //
+    public static TransformUTC(time: string, style: number = 0) {
+
+        let date = new Date(time);
+        let yy = date.getFullYear();
+        let mm = this.PadZero(date.getMonth() + 1);
+        let dd = this.PadZero(date.getDate());
+        let h = this.PadZero(date.getHours());
+        let m = this.PadZero(date.getMinutes());
+        let s = this.PadZero(date.getSeconds());
+
+        switch (style) {
+            case 0:
+                return `${dd}/${mm}/${yy} ${h}:${m}`;
+            case 1:
+                return `${h}:${m}`;
+        }
+
+    }
+
+
+    private static MonthLanMap = {
+        1: "StrJanuary",
+        2: "StrFebruary",
+        3: "StrMarch",
+        4: "StrApril",
+        5: "StrMay",
+        6: "StrJune",
+        7: "StrJuly",
+        8: "StrAugust",
+        9: "StrSeptember",
+        10: "StrOctober",
+        11: "StrNovember",
+        12: "StrDecember",
+    }
+    private static DayLanMap = {
+        1: "WeekMon",
+        2: "WeekTues",
+        3: "WeekWed",
+        4: "WeekThur",
+        5: "WeekFri",
+        6: "WeekSat",
+        7: "WeekSun",
+    }
+
+    //获取月份的多语言
+    public static MonthLanguage(month: number) {
+        return i18nMgr.Get(this.MonthLanMap[month]);
+    }
+    //获取星期几的多语言
+    public static DayLanguage(day: number) {
+        return i18nMgr.Get(this.DayLanMap[day]);
+    }
+
+    //获取分钟:秒
+    public static MinSec(second: number) {
+        let min = this.PadZero(second / 60 ^ 0);
+        let sec = this.PadZero(second % 60);
+        return `${min}:${sec}`;
+    }
+
 
 }
 (window as any).TimeHelper = TimeHelper;
