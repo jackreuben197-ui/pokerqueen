@@ -1,9 +1,17 @@
 /*
  * @Author: xfj
+ * @Date: 2023-03-23 10:00:32
+ * @description: 
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-04-06 13:57:27
+ * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
+ */
+/*
+ * @Author: xfj
  * @Date: 2022-10-20 15:47:35
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-21 16:14:59
+ * @LastEditTime: 2023-04-06 10:31:45
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 
@@ -13,7 +21,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import LobbyRoomListItem from "../../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
 import SceneManager from "../../../manager/SceneManager";
-import { APIOrgFriendRoomList, APIUserDiamondsWallet } from "../../../net/https/WebRequest";
+import { APIOrgFriendRoomList, APIUserDiamondsWallet, web_api_friend_room_stats } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -86,8 +94,35 @@ export default class UIFriendMatch extends UIBase {
         this._keyNodeString = ''
         this.reqDataAgain();
         this.initDiamond();
+        this.initFriendData()
 
     }
+    async initFriendData() {
+        await UIClubModel.mInstance.web_api_friend_room_stats()
+        let data = web_api_friend_room_stats.Response.data;
+        let lbl_7 = this.getChildNodeOrComponent('lb_7', cc.Label)
+        this.setText(lbl_7, data.friend_room_stats_nlh.game_num)
+        let lbl_8 = this.getChildNodeOrComponent('lb_8', cc.Label)
+        this.setText(lbl_8, data.friend_room_stats_nlh.hand_num)
+        let lbl_9 = this.getChildNodeOrComponent('lb_9', cc.Label)
+        this.setText(lbl_9, data.friend_room_stats_plo.game_num)
+        let lbl_10 = this.getChildNodeOrComponent('lb_10', cc.Label)
+        this.setText(lbl_10, data.friend_room_stats_plo.hand_num)
+        let lbl_11 = this.getChildNodeOrComponent('lb_11', cc.Label)
+        this.setText(lbl_11, data.friend_room_stats_6.game_num)
+        let lbl_12 = this.getChildNodeOrComponent('lb_12', cc.Label)
+        this.setText(lbl_12, data.friend_room_stats_6.hand_num)
+
+
+    }
+    openDataMange() {
+        UIComponent.open(UIDefine.UIFriendDataMange, { SceneUI: SceneManager.Instance.currUI })
+    }
+    openHistory() {
+        UIComponent.open(UIDefine.UIFriendDataMange, { SceneUI: SceneManager.Instance.currUI })
+
+    }
+
     onDiamondClick() {
         //跳转商城
         UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI });
@@ -96,9 +131,9 @@ export default class UIFriendMatch extends UIBase {
     titleNodeClick(event, customData) {
         this._selectTitle = Number(customData)
 
-        if (this._selectTitle == 2) {
-            UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
-        }
+        // if (this._selectTitle == 2) {
+        //     UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
+        // }
         this.fastBeganNode.active = this._selectTitle == 1;
         this.dataNode.active = this._selectTitle == 2;
         this.pjlbl.node.color = this._selectTitle == 1 ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#E6E8EC')

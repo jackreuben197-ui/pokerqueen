@@ -2999,6 +2999,13 @@ export class Web_Room_Center_Mtt_User_Wallet extends WebCommon {
     // 		public string club_name { get; set; }
     // 	}
 }
+
+export class web_api_friend_room_stats extends WebCommon {
+    static API: string = "/api/stats/friend_room_stats";
+
+}
+
+
 /**
  * 注册全局访问
  */
