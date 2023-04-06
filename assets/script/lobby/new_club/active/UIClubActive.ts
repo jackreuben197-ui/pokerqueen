@@ -3,7 +3,7 @@
  * @Date: 2022-12-28 17:59:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-29 19:46:34
+ * @LastEditTime: 2023-04-06 17:21:49
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/active/UIClubActive.ts
  */
 // Learn TypeScript:
@@ -39,24 +39,34 @@ export default class UIClubActive extends BaseForm {
 
     @property(cc.EditBox)
     textEditBox: cc.EditBox = null;
-
-    _clickDataItem = null;
+    btn_pd_4: cc.Label = null;
+    btn_pd_5: cc.Label = null;
+    _timeType = '1';
+    _start_time: number = 0
+    _end_time: number = 0
+    // _clickDataItem = null;
     private comFormTitle: ComFormTitle = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
 
-        let btn_pd_1: cc.Node = this.getChildNodeOrComponent("btn_pd_4");
-        btn_pd_1.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', true, false)
+        this.btn_pd_4 = this.getChildNodeOrComponent("btn_pd_4", cc.Label);
+        this.btn_pd_5 = this.getChildNodeOrComponent("btn_pd_5", cc.Label);
+        // let began = this.getChildNodeOrComponent("began",);
+        // began['_data'] = Data.getInstance().selDate;
+        // let end = this.getChildNodeOrComponent("end");
+        // end['_data'] = Data.getInstance().selDate;
 
-        let btn_pd_2: cc.Node = this.getChildNodeOrComponent("btn_pd_5");
-        btn_pd_2.getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', true, false)
-        let began = this.getChildNodeOrComponent("began",);
-        began['_data'] = Data.getInstance().selDate;
-        let end = this.getChildNodeOrComponent("end");
-        end['_data'] = Data.getInstance().selDate;
 
     }
+    setDataLbl(began, end) {
+        this._start_time = began;
+        this._end_time = end;
+        this.btn_pd_4.string = TimeHelper.getMDHMS(began)
+        this.btn_pd_5.string = TimeHelper.getMDHMS(end)
+
+    }
+
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.comFormTitle.initData('UIGuild_Notice', this);
@@ -64,7 +74,17 @@ export default class UIClubActive extends BaseForm {
         let data: any = APIOrgClubNoticeGet.Response.data;
         this.titleEditBox.string = data?.info?.title || ''
         this.textEditBox.string = data?.info?.content || ''
-
+        if (data?.info?.id) {
+            let time = new Date(data?.info.end_time).getTime()
+            if (time < TimeHelper.toDayBaganTime) {
+                this.setDataLbl(TimeHelper.toDayBaganTime, TimeHelper.toDayEndTime);
+            }
+            else {
+                this.setDataLbl(new Date(data?.info.start_time).getTime(), time);
+            }
+        } else {
+            this.setDataLbl(TimeHelper.toDayBaganTime, TimeHelper.toDayEndTime);
+        }
         this.editChange();
     }
     protected regiterDispatchEvent(): void {
@@ -77,11 +97,34 @@ export default class UIClubActive extends BaseForm {
     }
 
     chaneData() {
-        this._clickDataItem['_data'] = Data.getInstance().selDate;
-        this._clickDataItem.children[1].getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', true, false)
+        // this._clickDataItem['_data'] = Data.getInstance().selDate;
+        // this._clickDataItem.children[1].getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', true, false)
+        let _d = Data.getInstance().selDate
+        let _d1 = _d.getTime();
+        if (this._timeType == '1') {
+            if (_d1 < TimeHelper.toDayBaganTime) {
+                this.setDataLbl(TimeHelper.toDayBaganTime, this._end_time)
+            } else {
+                this.setDataLbl(_d1, this._end_time)
+            }
+            if (_d1 > this._end_time) {
+                this.setDataLbl(_d1, _d1 + 24 * 60 * 60 * 1000 - 1)
+            }
+
+        } else {
+            // if (_d1 > TimeHelper.toDayEndTime) {
+            //     this.setDataLbl(this._start_time, TimeHelper.toDayEndTime)
+            // } else {
+            //     this.setDataLbl(this._start_time, _d1 + 24 * 60 * 60 * 1000 - 1)
+            // }
+            if (_d1 > this._start_time && _d1 >= TimeHelper.toDayBaganTime) {
+                this.setDataLbl(this._start_time, _d1 + 24 * 60 * 60 * 1000 - 1)
+            }
+        }
     }
     openCalendar(event, customData) {
-        this._clickDataItem = event.target
+        this._timeType = customData
+        // this._clickDataItem = event.target
         UIComponent.open(UIDefine.UICalendar)
     }
     async saveClick() {
@@ -98,19 +141,19 @@ export default class UIClubActive extends BaseForm {
             UIComponent.Instance.Toast(i18nMgr.Get('UIGuild_NoticeContentInput'))
             return
         }
-        let now = new Date();
-        let year = now.getFullYear();
-        let month = now.getMonth();
-        let day = now.getDate();
-        let currenTime = new Date(year, month, day).getTime();
-        if (began['_data'].getTime() < currenTime) {
-            UIComponent.Instance.Toast('开始时间不得小于当前时间')
-            return;
-        }
-        if (began['_data'].getTime() > end['_data'].getTime()) {
-            UIComponent.Instance.Toast('开始时间不得大于结束时间')
-            return;
-        }
+        // let now = new Date();
+        // let year = now.getFullYear();
+        // let month = now.getMonth();
+        // let day = now.getDate();
+        // let currenTime = new Date(year, month, day).getTime();
+        // if (began['_data'].getTime() < currenTime) {
+        //     UIComponent.Instance.Toast('开始时间不得小于当前时间')
+        //     return;
+        // }
+        // if (began['_data'].getTime() > end['_data'].getTime()) {
+        //     UIComponent.Instance.Toast('开始时间不得大于结束时间')
+        //     return;
+        // }
         // await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
         let data: any = APIOrgClubNoticeGet.Response.data;
 
@@ -121,9 +164,9 @@ export default class UIClubActive extends BaseForm {
 
             "content": this.textEditBox.string,
 
-            "start_time": began['_data'].getTime() / 1000,
+            "start_time": Math.ceil(this._start_time / 1000),
 
-            "end_time": end['_data'].getTime() / 1000
+            "end_time": Math.ceil(this._end_time / 1000)
         }
         if (data?.info?.id) {
             parms['id'] = data?.info?.id

@@ -3022,7 +3022,7 @@
     "component": "",
     "_componentId": "67113m3Y9NEEIzYseE6PvfC",
     "handler": "openCalendar",
-    "customEventData": ""
+    "customEventData": "1"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -3792,7 +3792,7 @@
     "component": "",
     "_componentId": "67113m3Y9NEEIzYseE6PvfC",
     "handler": "openCalendar",
-    "customEventData": ""
+    "customEventData": "2"
   },
   {
     "__type__": "cc.PrefabInfo",
