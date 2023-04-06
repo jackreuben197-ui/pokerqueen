@@ -3,14 +3,14 @@
  * @Date: 2022-09-20 16:26:41
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-06 13:43:52
+ * @LastEditTime: 2023-04-06 15:39:53
  * @FilePath: /pokerqueen/assets/script/lobby/labor/UIClubModel.ts
  */
 
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import GC from "../../frame/GameControl";
 import HttpRequest from "../../net/https/HttpRequest";
-import { web_api_friend_room_stats, APIOrgClubNoticeGet, APIOrgClubNotice_Ignore, APIMessageRed_num, APIUserDiamondsWallet, APIMttUserWallet, APIOrgClubShareApproveList, APIOrgClubShareApplyList, APIOrgClubShareAudit, APIOrgClubSharePendingList, APIOrgClubNotice, APIOrgClubNotice_update, APIOrgRoomClubCreate, APIOrgRoomBatchCreate, APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, Web_RoomSitApplyRecords, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon, Web_Club_Fund_ChangeLog, Web_Recharge_Gold_Club, Web_Tiqu_Gold_Club, Web_Club_Fund_OrderList, Web_Club_Fund_ApplyList, Web_Club_Player_Order_Record, Web_Mtt } from "../../net/https/WebRequest";
+import { web_api_friend_room_stats_data_info, web_api_friend_room_stats_data, web_api_friend_room_stats, APIOrgClubNoticeGet, APIOrgClubNotice_Ignore, APIMessageRed_num, APIUserDiamondsWallet, APIMttUserWallet, APIOrgClubShareApproveList, APIOrgClubShareApplyList, APIOrgClubShareAudit, APIOrgClubSharePendingList, APIOrgClubNotice, APIOrgClubNotice_update, APIOrgRoomClubCreate, APIOrgRoomBatchCreate, APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, Web_RoomSitApplyRecords, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon, Web_Club_Fund_ChangeLog, Web_Recharge_Gold_Club, Web_Tiqu_Gold_Club, Web_Club_Fund_OrderList, Web_Club_Fund_ApplyList, Web_Club_Player_Order_Record, Web_Mtt } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -1193,9 +1193,37 @@ export class UIClubModel {
             });
         });
     }
+    web_api_friend_room_stats_data(param) {
 
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: web_api_friend_room_stats_data,
+                body: web_api_friend_room_stats_data.Request(param),
+                onSuccess: function () {
+                    resolve(web_api_friend_room_stats_data.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+            });
+        });
+    }
 
+    web_api_friend_room_stats_data_info(param) {
 
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: web_api_friend_room_stats_data_info,
+                body: web_api_friend_room_stats_data_info.Request(param),
+                onSuccess: function () {
+                    resolve(web_api_friend_room_stats_data_info.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+            });
+        });
+    }
     //////////////////////////////////////////////////////
 
 }

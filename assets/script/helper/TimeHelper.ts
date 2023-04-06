@@ -3,7 +3,7 @@
  * @Date: 2022-09-05 15:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 11:03:35
+ * @LastEditTime: 2023-04-06 15:19:07
  * @FilePath: /pokerqueen/assets/script/helper/TimeHelper.ts
  */
 
@@ -21,6 +21,17 @@ export default class TimeHelper {
     public static get Now() {
         return new Date().getTime();
     }
+
+    //获取当天毫秒
+    public static get toDayBaganTime() {
+        return new Date(new Date().toLocaleDateString()).getTime();
+    }
+    //当天截止毫秒
+    public static get toDayEndTime() {
+        return new Date(new Date().toLocaleDateString()).getTime() + 24 * 60 * 60 * 1000 - 1;
+    }
+
+
     //当前秒
     public static get NowS() {
         return (new Date().getTime() / 1000) ^ 0;
@@ -189,18 +200,13 @@ export default class TimeHelper {
         }
     }
 
-    static getMDHMS(t: number, flag: string = null, isMil: boolean = false) {
-        let data = this.getDateStructYMD(t, isMil);
-        let hms = this.getDateStructHMS(t, isMil)
-        if (flag) {
-            return `${data.month}${flag}${data.day}${flag}${hms.hour}${flag}${hms.min}${flag}${hms.sec}`;
-        }
-
-        if (i18nMgr.isCN) {
-            return `${data.month}月${data.day}日${hms.hour}时${hms.min}分${hms.sec}秒`;
-        } else {
-            return `${hms.hour}:${hms.min}:${hms.sec} on ${this.getMonthENName(data.month)} ${data.day}`;
-        }
+    static getMDHMS(t: number, flag: string = '/') {
+        // let data = this.getDateStructYMD(t, isMil);
+        // let hms = this.getDateStructHMS(t, isMil)
+        let year = new Date(t).getFullYear()
+        let month = new Date(t).getMonth() + 1
+        let day = new Date(t).getDate()
+        return `${year}${flag}${month}${flag}${day}`;
     }
 
     /**

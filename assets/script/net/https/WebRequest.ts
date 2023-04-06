@@ -3004,7 +3004,13 @@ export class web_api_friend_room_stats extends WebCommon {
     static API: string = "/api/stats/friend_room_stats";
 
 }
+export class web_api_friend_room_stats_data extends WebCommon {
+    static API: string = "/api/stats/friend_room_stats/data";
+}
 
+export class web_api_friend_room_stats_data_info extends WebCommon {
+    static API: string = "/api/stats/friend_room_stats/data_info";
+}
 
 /**
  * 注册全局访问
