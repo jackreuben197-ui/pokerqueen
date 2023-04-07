@@ -3,7 +3,7 @@
  * @Date: 2022-12-25 21:27:26
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 19:25:28
+ * @LastEditTime: 2023-04-07 11:11:11
  * @FilePath: /pokerqueen/assets/script/frame/data/rate/RateConfig.ts
  */
 
@@ -118,6 +118,15 @@ export const roleSortConfig = [
 
 
 ]
+export const dataDetailSortConfig = [
+    { type: 0, desc: "UIData_ServiceFee", model: 'fee' },
+    { type: 0, desc: "MTT_xq_buy", model: 'buy_in' },
+    { type: 0, desc: "adaptation10179", model: 'insurance' },
+    { type: 0, desc: "UIData_HandsCount", model: 'hand_num' },
+
+
+]
+
 
 
 

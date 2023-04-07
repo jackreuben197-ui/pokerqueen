@@ -3011,6 +3011,15 @@ export class web_api_friend_room_stats_data extends WebCommon {
 export class web_api_friend_room_stats_data_info extends WebCommon {
     static API: string = "/api/stats/friend_room_stats/data_info";
 }
+export class web_api_friend_room_stats_data_detail_info extends WebCommon {
+    static API: string = "/api/stats/friend_room_stats/data_detail_info";
+}
+
+export class web_api_friend_room_stats_data_detail extends WebCommon {
+    static API: string = "/api/stats/friend_room_stats/data_detail";
+}
+
+
 
 /**
  * 注册全局访问

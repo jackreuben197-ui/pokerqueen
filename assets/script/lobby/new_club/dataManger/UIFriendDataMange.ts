@@ -9,6 +9,7 @@ import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
 import dataItem from "./dataItem";
 import Data from "../../labor/script/Data";
+import { StringHelper } from "../../../helper/StringHelper";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -154,8 +155,8 @@ export default class UIFriendDataMange extends BaseForm {
 
         UIClubModel.mInstance.web_api_friend_room_stats_data_info(parms).then((res: any) => {
             this.lbl_4.string = `${res.data.info.hand_num}/${res.data.info.game_num}`
-            this.lbl_5.string = res.data.info.profit
-            this.lbl_6.string = res.data.info.fee
+            this.lbl_5.string = StringHelper.GetLongString(res.data.info.profit)
+            this.lbl_6.string = StringHelper.GetLongString(res.data.info.fee)
         })
     }
     onRender(node: cc.Node, index: number) {

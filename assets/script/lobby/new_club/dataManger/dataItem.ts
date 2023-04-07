@@ -3,12 +3,15 @@
  * @Date: 2023-04-06 13:24:06
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-06 16:15:21
+ * @LastEditTime: 2023-04-07 12:07:08
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/dataManger/dataItem.ts
  */
 
+import { UIDefine } from "../../../define/UIDefine";
 import { StringHelper } from "../../../helper/StringHelper";
+import TimeHelper from "../../../helper/TimeHelper";
 import UIBase from "../../../ui/UIBase";
+import UIComponent from "../../../ui/UIComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -46,8 +49,8 @@ export default class dataItem extends UIBase {
         this.setText(this.lbl_staus, this.staus)
         this.setText(this.lbl_game, this.gameType.type)
         this.setTextColor(this.lbl_game, this.gameType.color)
-        this.setText(this.lbl_date, this._data.game_start_time)
-        this.setText(this.lbl_fee, this._data.fee)
+        this.setText(this.lbl_date, `${new Date(this._data.start_time_str).getHours()}: ${TimeHelper.toTimeFormat(new Date(this._data.start_time_str).getMinutes())}`)
+        this.setText(this.lbl_fee, StringHelper.GetLongString(this._data.fee))
         this.setText(this.lbl_mr, StringHelper.getStringDiv100(this._data.buy_in))
         this.setText(this.lbl_mz, `${StringHelper.getStringDiv100(this._data.sb)}/${StringHelper.getStringDiv100(this._data.sb * 2)}`)
         this.setText(this.lbl_longTime, this._data.date)
@@ -93,6 +96,6 @@ export default class dataItem extends UIBase {
         return { type: string, color: color }
     }
     click() {
-
+        UIComponent.open(UIDefine.UIFriendDataDetail, this._data.room_id)
     }
 }

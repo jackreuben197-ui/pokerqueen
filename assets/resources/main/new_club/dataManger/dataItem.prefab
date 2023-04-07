@@ -1647,12 +1647,12 @@
     "_prefab": {
       "__id__": 46
     },
-    "_opacity": 180,
+    "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 248,
+      "g": 194,
+      "b": 85,
       "a": 255
     },
     "_contentSize": {
@@ -1830,7 +1830,7 @@
     },
     "component": "",
     "_componentId": "cb1069ZXcJOjr00CuwIQGv3",
-    "handler": "",
+    "handler": "click",
     "customEventData": ""
   },
   {

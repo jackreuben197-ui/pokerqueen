@@ -1063,6 +1063,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/dataManger/UIFriendDataMange",
     },
+    //朋友桌数据详情
+    UIFriendDataDetail: {
+        UIType: UIType.Form,
+        Name: "UIFriendDataDetail",
+        Bundle: null,
+        Path: "main/new_club/dataManger/UIFriendDataDetail",
+    },
 
 
 
