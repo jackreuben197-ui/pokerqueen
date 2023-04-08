@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-23 20:20:21
+ * @LastEditTime: 2023-04-08 14:27:48
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -26,6 +26,7 @@ import TabNode from "../../../common/tabNode";
 import { ClubTabConfig } from "../../../frame/config/tabConfig";
 import WalletModel from "../wallet/WalletModel";
 import { WalletType } from "../wallet/UIWallet";
+import { i18nMgr } from "../../../i18n/i18nMgr";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -247,7 +248,8 @@ export default class UIClubHome extends BaseForm {
                 }
                 break;
             case 4:
-                UIComponent.open(UIDefine.UIClubDataMange)
+                UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
+                // UIComponent.open(UIDefine.UIClubDataMange)
                 break;
             case 5:
                 UIComponent.open(UIDefine.UIWallet, { wallet_type: WalletType.Fund });

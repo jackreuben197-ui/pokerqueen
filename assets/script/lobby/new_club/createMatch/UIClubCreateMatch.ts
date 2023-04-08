@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-29 19:10:37
+ * @LastEditTime: 2023-04-08 14:46:01
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -27,6 +27,7 @@ import TabNode from "../../../common/tabNode";
 import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig, fzbTabConfig, bcTabConfig } from "../../../frame/config/tabConfig";
 import GGSlider from "../../../ui/component/GGSlider";
 import GGSwitch from "../../../ui/component/GGSwitch";
+import UIComponent from "../../../ui/UIComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -244,13 +245,12 @@ export default class UIClubCreateMatch extends BaseForm {
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
         own.string = ClubCache._diamonds_wallet.diamonds + '';
         let pay = cc.find('pay/num', this.coinNode).getComponent(cc.Label)
-        let num = this._selectTitle == 0 ? 15 : 0
-        pay.string = num + '';
+        pay.string = 15 + '';
         // if (ClubCache.CreateGameType == 2) {
         //     this._selectTitle = 1
         // }
-        this.friendNode.active = this._selectTitle == 1
-        this.clubNode.active = this._selectTitle == 0
+        this.friendNode.active = this._selectTitle == 1 && ClubCache.joinCreateMatchType == 0
+        this.clubNode.active = this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1
 
     }
     getMatchType() {
@@ -471,10 +471,14 @@ export default class UIClubCreateMatch extends BaseForm {
         }, this)
 
 
-        this.fzbTabNode.initData(fzbTabConfig, (customData) => {
-        }, this)
+        // this.fzbTabNode.initData(fzbTabConfig, (customData) => {
+        // }, this)
 
         this.bcTabNode.initData(bcTabConfig, (customData) => {
+            if (customData == 1) {
+                UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
+                return
+            }
             this.fddm.active = customData == 0
             this.ffrs.active = customData == 1
         }, this)

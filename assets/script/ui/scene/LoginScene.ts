@@ -193,6 +193,9 @@ export default class LoginScene extends BaseScene {
     }
 
     switchLanguages() {
+        if (this._vcodeBtnCanClick) {
+            this.setText(this.getVLab, "UILogin_GetCode");
+        }
         this.updatePhonePlaceholder();
     }
 
