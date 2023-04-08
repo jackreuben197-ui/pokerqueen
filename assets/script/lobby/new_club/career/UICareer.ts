@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 11:32:22
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 11:17:22
+ * @LastEditTime: 2023-04-08 13:51:22
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/career/UICareer.ts
  */
 
@@ -129,7 +129,7 @@ export default class UICareer extends UIBase {
 
     }
     recordClick() {
-        UIComponent.open(UIDefine.UICareerRecord, this._selectIndex + 1)
+        UIComponent.open(UIDefine.UICareerRecord, { coinType: this._selectIndex + 1, type: 2 })
     }
     cardScoreClick() {
         UIComponent.open(UIDefine.UIRecordHands, { type: 1 })

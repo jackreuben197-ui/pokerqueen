@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 12:26:39
+ * @LastEditTime: 2023-04-08 14:00:37
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 
@@ -50,6 +50,10 @@ export default class UICareerRecord extends BaseFormPlus {
     @property(cc.Node)
     mtt_lbl_Node: cc.Node = null;
 
+    @property(cc.Node)
+    item: cc.Node = null;
+
+
     _titleSelect = 0;
     _tabSelect = 0;
     _coinIndex = 1
@@ -58,18 +62,28 @@ export default class UICareerRecord extends BaseFormPlus {
     _total = 0;
     _reqing = false;
     _reqEnd = false;
+    _gameType = 2;
     protected lateLoad(): void {
         super.lateLoad();
     }
     async onShow(param?, fromUI?: cc.Node) {
         super.onShow(param, fromUI);
+        this._titleSelect = 0;
         this.tabNode.initData(CareerRecordTabConfig, this.titleNodeClick.bind(this), this);
         this.titleNode.children.forEach((item, index) => {
             item.getChildByName('title').color = this._titleSelect == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
             item.getChildByName('block').active = this._titleSelect == index
             this.bindClick(item, this.onClickTypeTabBtns, index);
         })
-        this._coinIndex = param || 1
+        this._coinIndex = param.coinType || 1
+        this._gameType = param.type
+        if (param.type == 2) {
+            this.item.active = true
+            this.titleNode.getComponent(cc.Layout).spacingX = 110
+        } else if (param.type == 1) {
+            this.item.active = false
+            this.titleNode.getComponent(cc.Layout).spacingX = 200
+        }
         // await LobbySession.APIConfig_Multi_Language_Template()
         this.onClickTypeTabBtns(0);
         this.list.scrollingCB = this.scrollingCB;
@@ -91,13 +105,6 @@ export default class UICareerRecord extends BaseFormPlus {
     }
 
     reqUpInfo() {
-        let info = {
-            game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
-            time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
-            time_long: TimeHelper.Now,      //客户端时间戳
-            filter_type: this._coinIndex
-        }
-
         let str = 'UIData_TodayMoney'
         switch (this._tabSelect + 1) {
             case 1:
@@ -117,14 +124,42 @@ export default class UICareerRecord extends BaseFormPlus {
                 break;
         }
         this.setText(this.lbl_13, str)
-        LobbyControl.getInstance().getUserStatsInfo(info).then(
-            (res) => {
-                this.refreshUpUI(res);
-            },
-            (res) => {
+        //生涯
+        if (this._gameType == 2) {
+            let info = {
+                game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
+                time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+                time_long: TimeHelper.Now,      //客户端时间戳
+                filter_type: this._coinIndex
             }
-        )
-        this.reqDataAgain()
+            LobbyControl.getInstance().getUserStatsInfo(info).then(
+                (res) => {
+                    this.refreshUpUI(res);
+                },
+                (res) => {
+                }
+            )
+            this.reqDataAgain()
+        }
+        //朋友桌
+        else if (this._gameType == 1) {
+            let info = {
+                game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
+                time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+                time_long: TimeHelper.Now,      //客户端时间戳
+                filter_type: this._coinIndex
+            }
+            LobbyControl.getInstance().getUserStatsInfo(info).then(
+                (res) => {
+                    this.refreshUpUI(res);
+                },
+                (res) => {
+                }
+            )
+            this.reqDataAgain()
+        }
+
+
     }
 
     refreshUpUI(data) {

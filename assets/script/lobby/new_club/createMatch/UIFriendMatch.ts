@@ -3,7 +3,7 @@
  * @Date: 2023-03-23 10:00:32
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-06 13:57:27
+ * @LastEditTime: 2023-04-08 13:50:31
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 /*
@@ -116,10 +116,10 @@ export default class UIFriendMatch extends UIBase {
 
     }
     openDataMange() {
-        UIComponent.open(UIDefine.UIFriendDataMange, { SceneUI: SceneManager.Instance.currUI })
+        UIComponent.open(UIDefine.UIFriendDataMange, null, { SceneUI: SceneManager.Instance.currUI })
     }
     openHistory() {
-        UIComponent.open(UIDefine.UIFriendDataMange, { SceneUI: SceneManager.Instance.currUI })
+        UIComponent.open(UIDefine.UICareerRecord, { type: 1, coinType: 1 }, { SceneUI: SceneManager.Instance.currUI })
 
     }
 
