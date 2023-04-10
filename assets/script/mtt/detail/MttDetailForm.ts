@@ -1,11 +1,9 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import MttListItemModel from "../../frame/data/mtt/MttListItemModel";
-import { MTTJoinAction, UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import MTTGame from "../../game/texas/MTTGame";
-import { GameEnterType } from "../../game/util/GameUtil";
 import MTTGameUtil from "../../game/util/MTTGameUtil";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
@@ -13,12 +11,11 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
 import { UIMineModel } from "../../lobby/UIMineModel";
-import ToastManager from "../../manager/ToastManager";
 import HttpRequest from "../../net/https/HttpRequest";
 import { Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Hranks, Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize, Web_Room_Center_Mtt_Rooms } from "../../net/https/WebRequest";
-
+import { MTTJoinAction, UIMTTModel } from "../../new_mtt/UIMTTModel";
+//import { MTTJoinAction, UIMTTModel } from "../../new_mtt/UIMTTModel";
 import BaseForm from "../../ui/form/BaseForm";
-import UIComponent from "../../ui/UIComponent";
 
 import UIMttSignDialogComponent from "./UIMttSignDialogComponent";
 
@@ -478,7 +475,7 @@ export default class MttDetailForm extends BaseForm {
                 lbl_jp.getComponent(cc.Label).string = rank.toString();
                 let lbl_score = _cloneNode.getChildByName("lbl_score");
                 lbl_jp.active = true;
-                if (UIMatchMttModel.Instance.MttInfo.mtt.hunter_on == 0) {
+                if (UIMTTModel.Instance.MttInfo.mtt.hunter_on == 0) {
                     //等于0是关闭猎人赛
                     lbl_score.getComponent(cc.Label).string = StringHelper.GetLongString(itemInfo.award);
                 }
@@ -620,12 +617,12 @@ export default class MttDetailForm extends BaseForm {
         //     return;
         // }
 
-        UIMatchMttModel.Instance.RequestMTTDetails(this._data.match_id, code => {
+        UIMTTModel.Instance.RequestMTTDetails(this._data.match_id, code => {
             if (code == 0) {
                 this.UpdateBtn();
-                this.refreshStatusUI(UIMatchMttModel.Instance.MttInfo)
+                this.refreshStatusUI(UIMTTModel.Instance.MttInfo)
                 //声纹获取麦克风权限
-                if (UIMatchMttModel.Instance.MttInfo.mtt.voiceprint_verify_on == 1) {
+                if (UIMTTModel.Instance.MttInfo.mtt.voiceprint_verify_on == 1) {
                     // if (!MicrophoneHelper.IsMicrophonePermissionAllowed())
                     // {
                     //     return;
@@ -643,8 +640,8 @@ export default class MttDetailForm extends BaseForm {
                     // });
                 }
                 ///免服务费逻辑
-                if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
-                    UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
+                if (UIMTTModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
+                    UIMTTModel.Instance.APIPropUserCheckPropInfo(res => {
 
                         if (res.code == 0) {
                             //GameCache.Instance.gold = res.data.wallet_balance;
@@ -653,13 +650,13 @@ export default class MttDetailForm extends BaseForm {
 
                             if (res.data.prop_property_type == 2)//如果Type == 2  免服务费 
                             {
-                                UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type = 0;
+                                UIMTTModel.Instance.MttInfo.mtt.prop_buy_type = 0;
                             }
                             // UI mUI = UIComponent.Instance.Get(UIType.UIMatch_MttDetailState);
                             // if (null != mUI)
                             // {
                             //     UIMatch_MttDetailStateComponent mUIComponent = mUI.UiBaseComponent as UIMatch_MttDetailStateComponent;
-                            //     mUIComponent.UpdateInfo(UIMatchMttModel.Instance.MttInfo);
+                            //     mUIComponent.UpdateInfo(UIMTTModel.Instance.MttInfo);
                             // }
                         }
                         else {
@@ -672,11 +669,11 @@ export default class MttDetailForm extends BaseForm {
                     // if (null != mUI)
                     // {
                     //     UIMatch_MttDetailStateComponent mUIComponent = mUI.UiBaseComponent as UIMatch_MttDetailStateComponent;
-                    //     mUIComponent.UpdateInfo(UIMatchMttModel.Instance.MttInfo);
+                    //     mUIComponent.UpdateInfo(UIMTTModel.Instance.MttInfo);
                     // }
                 }
                 //判断当前时间是否大于进入比赛时间
-                this.isCurTimeOverEnterTime = TimeHelper.Now >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMatchMttModel.Instance.MttInfo.mtt.enter_time);
+                this.isCurTimeOverEnterTime = TimeHelper.Now >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMTTModel.Instance.MttInfo.mtt.enter_time);
                 if (callback) {
                     callback();
                 }
@@ -690,10 +687,10 @@ export default class MttDetailForm extends BaseForm {
     }
 
     update() {
-        if (UIMatchMttModel.Instance.MttInfo == null || this.isCurTimeOverEnterTime) {
+        if (UIMTTModel.Instance.MttInfo == null || this.isCurTimeOverEnterTime) {
             return;
         }
-        if (TimeHelper.Now >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMatchMttModel.Instance.MttInfo.mtt.enter_time)) {
+        if (TimeHelper.Now >= TimeHelper.RFC3339TimeConvertToUTCTime(UIMTTModel.Instance.MttInfo.mtt.enter_time)) {
             this.RefreshMttDetails();
             this.isCurTimeOverEnterTime = true;
         }
@@ -730,13 +727,13 @@ export default class MttDetailForm extends BaseForm {
             // {
             //     return;
             // }
-            let mttInfo = UIMatchMttModel.Instance.MttInfo;
+            let mttInfo = UIMTTModel.Instance.MttInfo;
             switch (mttInfo.state_code) {
                 case MTTGame.MTTPlayerStatus.CanApplyNotStart:
                 case MTTGame.MTTPlayerStatus.CanApplyDelay:
                     {
                         // UIComponent.open(UIDefine.MttPayforHome, this._data)
-                        UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Apply, code => {
+                        UIMTTModel.Instance.HandleMTTJoinAction(MTTJoinAction.Apply, code => {
                             this.RefreshMttDetails();
                         }, httpState => {
                             // UIComponent.Instance.Toast($"{nameof(HTTPRequestStates)}: {httpState}");
@@ -745,7 +742,7 @@ export default class MttDetailForm extends BaseForm {
                     break;
                 case MTTGame.MTTPlayerStatus.CanJoin:
                     {
-                        UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.PartialBringIn, bringInCode => {
+                        UIMTTModel.Instance.HandleMTTJoinAction(MTTJoinAction.PartialBringIn, bringInCode => {
                             if (bringInCode == 0) {
                                 //进入MTT房间时添加firebase事件触发
                                 // let paramMap = [];
@@ -763,8 +760,8 @@ export default class MttDetailForm extends BaseForm {
                                 // valuesMap.push("room_type", GameCache.Instance.room_type + "");//房间类型
                                 // valuesMap.push("match_id", GameCache.Instance.match_id + "");//比赛id
                                 // AppsFlyerHelper.MTTGameEnterEvent(valuesMap);
-                                // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
-                                UIMatchMttModel.Instance.ShowGameplayUI(false, 0);
+                                // UIMTTModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
+                                UIMTTModel.Instance.ShowGameplayUI(false, 0);
                             }
                             else {
                                 this.RefreshMttDetails();
@@ -779,11 +776,11 @@ export default class MttDetailForm extends BaseForm {
                     {
                         //更新金豆
                         UIMineModel.mInstance.ObtainUserInfo(pDto => {
-                            UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
+                            UIMTTModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
                                 if (rebuyCode == 0) {
-                                    UIMatchMttModel.Instance.ShowGameplayUI(false, 0);
-                                    //UIMatchMttModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
-                                    // UIMatchMttModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
+                                    UIMTTModel.Instance.ShowGameplayUI(false, 0);
+                                    //UIMTTModel.Instance.ShowGameplayUI([UIDefine.MttDetailForm, UIDefine.MttListForm], false, 0);
+                                    // UIMTTModel.Instance.ShowGameplayUI(fromUI: UIType.UIMatch_MttDetail, isLookOn: false, roomid: 0);
                                 }
                                 else {
                                     this.RefreshMttDetails();
@@ -810,7 +807,7 @@ export default class MttDetailForm extends BaseForm {
         btnSignUp.interactable = false;
         img_can.active = false;
         img_no.active = true;
-        switch (UIMatchMttModel.Instance.MttInfo.state_code) {
+        switch (UIMTTModel.Instance.MttInfo.state_code) {
             case MTTGame.MTTPlayerStatus.WaitingApply:
                 {
                     lbl_signUp.string = i18nMgr.Get("mtt_btn_waiting_start");
@@ -862,11 +859,11 @@ export default class MttDetailForm extends BaseForm {
                 break;
             case MTTGame.MTTPlayerStatus.Lose:
                 {
-                    if (UIMatchMttModel.Instance.MttInfo.more.bl >= UIMatchMttModel.Instance.MttInfo.mtt.max_rebuy_bl) {
+                    if (UIMTTModel.Instance.MttInfo.more.bl >= UIMTTModel.Instance.MttInfo.mtt.max_rebuy_bl) {
                         lbl_signUp.string = i18nMgr.Get("mtt_btn_Stopbuying");
                     }
                     else {
-                        lbl_signUp.string = i18nMgr.Get("MTT_Rebuy") + " " + UIMatchMttModel.Instance.MttInfo.state.left_rebuy_times + "/" + UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
+                        lbl_signUp.string = i18nMgr.Get("MTT_Rebuy") + " " + UIMTTModel.Instance.MttInfo.state.left_rebuy_times + "/" + UIMTTModel.Instance.MttInfo.mtt.rebuy_times;
                     }
                 }
                 break;

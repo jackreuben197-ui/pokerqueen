@@ -3675,7 +3675,7 @@ UIGuildFund_RechargeText=充值
 UIGuildFund_WithdrawalText=提現
 UIGuildFund_ExchangeText=轉換
 UIloginNEW_thirdlogintips=第三方登錄
-UIloginPhone_logintext=手機登錄
+UIloginPhone_logintext=手機号登錄
 UIloginEmail_logintext=郵箱登錄
 UIloginphonecode_logintext=手機驗證碼登錄
 UIloginPhone_Registertext=手機號註冊
@@ -3939,12 +3939,12 @@ UIMTT_SignLbl=幣種:
 UIMTT_SignLessBuy=剩余购买:
 UINiuZaiRule_jingang=金剛
 UINiuZaiXiaZhuQu_jingang=1.牌型:皇同>同花順>金刚>葫蘆>同花>順子>三條>兩對>對子>
-
-
-
-
-
-
+UINiuZai_RankListTitle=排行榜
+UINiuZai_RankListCloseTime=遊戲關閉倒計時
+UINiuZai_ViewNum=觀眾數：{0}人
+UINiuZai_buyin=
+UINiuZai_RedZone=限紅區間
+UILogin_PhoneNum=
 
 
 

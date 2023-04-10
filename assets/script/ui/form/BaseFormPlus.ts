@@ -2,6 +2,7 @@
 
 import ComFormTitle from "../../common/ComFormTitle";
 import { i18nLabel } from "../../i18n/i18nLabel";
+import UIComponent from "../UIComponent";
 import BaseForm from "./BaseForm";
 
 const { ccclass, property } = cc._decorator;
@@ -13,6 +14,7 @@ export default class BaseFormPlus extends BaseForm {
 
     protected lateLoad() {
         super.lateLoad();
+        if (this.name) UIComponent.Instance.setComponent(this);
         this.move_node = this.node.getChildByName("main");
         if (this.ComFormTitle$title) {
             this.title_label = cc.find("comTopUI/title_label", this.ComFormTitle$title.node).getComponent(i18nLabel);

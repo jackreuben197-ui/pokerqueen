@@ -1,6 +1,5 @@
 import { GameConfig } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
-import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
@@ -9,6 +8,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import HttpRequest from "../../net/https/HttpRequest";
 import { Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Myaward } from "../../net/https/WebRequest";
+import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import UIBase from "../../ui/UIBase";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -358,7 +358,7 @@ export default class UIMTTMineRankComponent extends UIBase {
         }
         else
         {
-            // TextRank.text = string.Format(LanguageManager.Get("MTT_end_rank"), $"{responseData.data.rank}/{UIMatchMTTModel.Instance.MttInfo.mtt.participants}");
+            // TextRank.text = string.Format(LanguageManager.Get("MTT_end_rank"), $"{responseData.data.rank}/{UIMTTModel.Instance.MttInfo.mtt.participants}");
             // TextRank.gameObject.SetActive(true);
             this.WaitText.active = false;
             // FailText.gameObject.SetActive(true);
@@ -393,10 +393,10 @@ export default class UIMTTMineRankComponent extends UIBase {
         //     shareBtn.SetActive(false);
         // }
         // checkTips.SetActive(true);
-        // firstRank.transform.Find("firstRankNum").GetComponent<Text>().text = $"{responseData.data.rank}/{UIMatchMTTModel.Instance.MttInfo.mtt.participants}";
+        // firstRank.transform.Find("firstRankNum").GetComponent<Text>().text = $"{responseData.data.rank}/{UIMTTModel.Instance.MttInfo.mtt.participants}";
         // firstRank.transform.Find("firstGameNameBg/name").GetComponent<Text>().text = gameName;
         lbl_free.string = this.gameName;
-        let mttInfo = UIMatchMttModel.Instance.MttInfo;
+        let mttInfo = UIMTTModel.Instance.MttInfo;
         if (mttInfo && mttInfo.mtt) {
             lbl_rank.node.active = true;
             lbl_rank.string = "当前排名:" + responseData.data.rank.toString() + "/" + mttInfo.mtt.participants.toString();
@@ -474,7 +474,7 @@ export default class UIMTTMineRankComponent extends UIBase {
         this.panel_show.active = this.VerifyGoodsNullOrZero(responseData);
         this.btn_ok.active = true;
         // Text_Rank.gameObject.SetActive(true);
-        // Text_Rank.text = string.Format(LanguageManager.Get("MTT_end_rank"), $"{responseData.data.rank}/{UIMatchMTTModel.Instance.MttInfo.mtt.participants}");
+        // Text_Rank.text = string.Format(LanguageManager.Get("MTT_end_rank"), $"{responseData.data.rank}/{UIMTTModel.Instance.MttInfo.mtt.participants}");
         // checkTips.SetActive(VerifyGoodsNullOrZero(responseData));
         // AwardObj.SetActive(VerifyGoodsNullOrZero(responseData) || responseData.data.award_gold > 0 || responseData.data.award_gold > 0);
         // Text_GameName.transform.parent.gameObject.SetActive(true);
@@ -696,9 +696,9 @@ export default class UIMTTMineRankComponent extends UIBase {
         // resultCallback(data);
 
 
-        UIMatchMttModel.Instance.RequestMTTDetails(this.mineRankDate.matchId, code => {
+        UIMTTModel.Instance.RequestMTTDetails(this.mineRankDate.matchId, code => {
             if (code == 0) {
-                this.MttInfo = UIMatchMttModel.Instance.MttInfo;
+                this.MttInfo = UIMTTModel.Instance.MttInfo;
             }
             else {
                 // UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(code));

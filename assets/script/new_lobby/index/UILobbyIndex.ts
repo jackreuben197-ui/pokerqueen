@@ -91,7 +91,7 @@ export default class UILobbyIndex extends UIBasePlus {
         this.setButtonClick(this.$mtt, this.onMTTClick);
         this.setButtonClick(this.$banner, this.onBannerClick);
         this.setButtonClick(this.$game, this.onGameClick);
-        this.listen(EventName.refreshUserData, this.refreshUserInfo, this)
+        this.listen(EventName.refreshUserData, this.refreshUserInfo)
     }
 
     onShow(param: any): void {

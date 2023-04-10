@@ -1437,83 +1437,7 @@ export class Web_Room_Center_Mtt_Rebuy extends WebCommon {
     // } = null;
 }
 
-/// <summary>
-/// MTT 该比赛玩家排名信息
-/// </summary>
-export class Web_Room_Center_Mtt_Ranks extends WebCommon {
-    //接口地址
-    static API: string = "/api/roomcenter/mtt/{id}/ranks";
 
-    // //字段声明
-    // static RequestParams: {
-    //     limit: number,//几人池
-    //     offset: number,
-    // } = null;
-
-    // static ResponseData: {
-    //     data: typeof Web_Room_Center_Mtt_Ranks.Data[],
-    // } = null;
-
-    // static Data: {
-    //     limit: number,//条目
-    //     offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-    //     alive: number,//存活人数
-    //     total: number,//总人数
-    //     records: typeof Web_Room_Center_Mtt_Ranks.PlayerListElement[],// 玩家列表
-    // } = null;
-
-    // static PlayerListElement: {
-    //     rank: number,//排名
-    //     chip: number,//记分牌
-    //     alive: number,//是否被淘汰
-    //     rid: number,//桌号
-    //     urid: number,//玩家随机id
-    //     seat: number,//座位号
-    //     rebuy: number,//重构次数
-    //     addon: number,//是否重构
-    //     name: number,//名字
-    // } = null;
-
-}
-
-/// <summary>
-/// MTT 猎人赛排名信息
-/// </summary>
-export class Web_Room_Center_Mtt_Hranks extends WebCommon {
-    //接口地址
-    static API: string = "/api/roomcenter/room/{id}/hranks";
-
-    // //字段声明
-    // static RequestParams: {
-    //     limit: number,//几人池
-    //     offset: number,
-    // } = null;
-
-    // static ResponseData: {
-    //     data: typeof Web_Room_Center_Mtt_Hranks.Data[],
-    // } = null;
-
-    // static Data: {
-    //     limit: number,//条目
-    //     offset: number,//开始下标。例子（offset=0，limit=10，0-9。）
-    //     alive: number,//存活人数
-    //     total: number,//总人数
-    //     records: typeof Web_Room_Center_Mtt_Hranks.PlayerListElement[],
-    // } = null;
-
-    // static PlayerListElement: {
-    //     uid: number,//玩家id
-    //     rank: number,//排名
-    //     h: number,//猎头
-    //     award: number,//赏金
-    //     rid: number,//桌号
-    //     seat: number,//座位号
-    //     name: string,//名字
-    //     avatar: string,//头像
-    //     urid: number,//随机id
-    // } = null;
-
-}
 
 /// <summary>
 /// MTT 牌桌信息
@@ -1560,39 +1484,6 @@ export class Web_Room_Center_Mtt_Real_Prize extends WebCommon {
     //接口地址
     static API: string = "/api/roomcenter/mtt/{id}/real_prize";
 
-    //字段声明
-    // static RequestParams: {
-    //     limit: number,//几人池
-    //     offset: number,
-    // } = null;
-
-    // static ResponseData: {
-    //     data: typeof Web_Room_Center_Mtt_Real_Prize.Data[],
-    // } = null;
-
-    // static Data: {
-    //     dynamic: boolean,//是否是动态
-    //     award: boolean//总奖池
-    //     award_type: number,//奖励类型
-    //     award_num: number,//奖励圈人数
-    //     participants: number,//参与人数
-    //     next_award_count: number,//1. 如果是动态奖池 其实是下一等级参与人数, 会影响奖励人数  2. 如果是静态奖池 是下一个等级的买入人次, 会影响奖励人数
-    //     prizes: typeof Web_Room_Center_Mtt_Real_Prize.Prize[],
-    // } = null;
-
-    // static Prize: {
-    //     min: number,//最小名次
-    //     max: number,//最大名次
-    //     award: number,//奖励
-    //     goods: typeof Web_Room_Center_Mtt_Real_Prize.Goods[],
-    // } = null;
-
-    // static Goods: {
-    //     i: number,//道具id
-    //     na: string//道具名称
-    //     v: number,//价值等价货币
-    //     n: number,//数量
-    // } = null;
 }
 
 /// <summary>
@@ -3020,6 +2911,38 @@ export class web_api_friend_room_stats_data_detail extends WebCommon {
     static API: string = "/api/stats/friend_room_stats/data_detail";
 }
 
+// MTT 猎人赛排名列表
+export class Web_Room_Center_Mtt_Hranks extends WebCommon {
+    static API: string = "/api/roomcenter/mtt/{id}/hranks";
+    /*
+            public int uid { get; set; }//玩家id
+            public int rank { get; set; }//排名
+            public int h { get; set; }//猎头
+            public long award { get; set; }//赏金
+            public int rid { get; set; }//房间id
+            public int seat { get; set; }//座位号
+            public string name { get; set; }//名称
+            public string avatar { get; set; }//头像
+            public int urid { get; set; }//随机id
+    */
+}
+
+// MTT 该比赛玩家排名信息
+export class Web_Room_Center_Mtt_Ranks extends WebCommon {
+    //接口地址
+    static API: string = "/api/roomcenter/mtt/{id}/ranks";
+    /*records
+    public int rank { get; set; }//排名
+    public long chip { get; set; }//记分牌
+    public bool alive { get; set; }//是否被淘汰
+    public int rid { get; set; }//桌号
+    public int urid { get; set; }//玩家随机id
+    public int seat { get; set; }//座位号
+    public int rebuy { get; set; }//重构次数
+    public bool addon { get; set; }//是否重构
+    public string name { get; set; }//名字
+    */
+}
 
 
 /**

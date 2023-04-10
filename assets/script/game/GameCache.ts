@@ -247,6 +247,10 @@ export class GameCache {
 
     public TribeId: number = 0;
 
+    /// 指定初始桌布
+    /// </summary>
+    public TableClothTag: string = "";
+
     public ClubRandomID: number = 0;
 
     public ClubGold: number = 0;

@@ -6,7 +6,6 @@ export default class ListEx {
     req_ing: boolean = false;
     req_end: boolean = false;
     constructor(public param: { list: List, nullNode?: cc.Node, request?: Function, this?: any } = null) {
-
         this.reset();
         this.init(param);
     }
@@ -20,6 +19,7 @@ export default class ListEx {
         this.req_ing = false;
         this.req_end = false;
         this.param?.list.scrollView.scrollToTop(0);
+        if (this.param?.nullNode) this.param.nullNode.active = false;
     }
     refresh(data: any[], total: number) {
         this.req_ing = false;

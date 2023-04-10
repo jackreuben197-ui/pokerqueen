@@ -13,7 +13,6 @@ import { ClubCache } from "../../frame/data/club/ClubCache";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { EventName } from "../../config/EventName";
-import { MTTJoinAction, UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import TimeHelper from "../../helper/TimeHelper";
 import { APIMttUserWallet, Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Rebuy } from "../../net/https/WebRequest";
 import { i18nMgr } from "../../i18n/i18nMgr";
@@ -24,6 +23,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import UINewDialogComponent from "../../ui/dialog/UINewDialogComponent";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import { UIClubModel } from "../../lobby/labor/UIClubModel";
+import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 const { ccclass, property, menu } = cc._decorator;
 enum MTTJoinMode // 参与mtt玩法方式
 {
@@ -108,12 +108,12 @@ export default class MttPayforHome extends BaseForm {
             // if (ClubCache.mttPayWallat != null) return
             UIComponent.open(UIDefine.MttPayforList)
         })
-        this.USDT.active = UIMatchMttModel.Instance.MttInfo.mtt.gold_type == 2
-        this.USDT1.active = UIMatchMttModel.Instance.MttInfo.mtt.gold_type == 2
-        this.uc.string = UIMatchMttModel.Instance.MttInfo.mtt.gold_type == 2 ? 'USDT' : 'UC'
-        this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
-        if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
-            UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
+        this.USDT.active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 2
+        this.USDT1.active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 2
+        this.uc.string = UIMTTModel.Instance.MttInfo.mtt.gold_type == 2 ? 'USDT' : 'UC'
+        this.SingType = UIMTTModel.Instance.MttInfo.mtt.prop_buy_type;
+        if (UIMTTModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
+            UIMTTModel.Instance.APIPropUserCheckPropInfo(res => {
                 if (res.code == 0) {
                     this.cachePropPropertyType = res.data.prop_property_type;
                     this.cachePropBalance = res.data.prop_balance;
@@ -156,12 +156,12 @@ export default class MttPayforHome extends BaseForm {
             let num1 = cc.find('node1/num', this.rateNode).getComponent(cc.Label)
             num1.string = StringHelper.GetLongString(walletData.gold)
             let num2 = cc.find('node2/num', this.rateNode).getComponent(cc.Label)
-            this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
+            this.totalRebuyTimes = UIMTTModel.Instance.MttInfo.mtt.rebuy_times;
             if (this.totalRebuyTimes < 10000) {
                 //可重构次数   
                 //!!!!!特别注意:当后台设置不限制重构次数时,rebuy_times为10000,而left_rebuy_times在后端传输时做了int8转换越界变为16了,但只是传到前端的转化了后端正常,故在此做特别处理!!!!!!
-                if (UIMatchMttModel.Instance.MttInfo.state != null) {
-                    num2.string = UIMatchMttModel.Instance.MttInfo.state.left_rebuy_times.toString()
+                if (UIMTTModel.Instance.MttInfo.state != null) {
+                    num2.string = UIMTTModel.Instance.MttInfo.state.left_rebuy_times.toString()
                 } else {
                     num2.string = this.totalRebuyTimes.toString()
                 }
@@ -189,13 +189,13 @@ export default class MttPayforHome extends BaseForm {
         // ToggleTicket2.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), _data.buyRatio);
         // Text_Ratio.text = string.Format(LanguageManager.Get("UIMTTbuyinDialog"), _data.buyRatio);
         // AvailableTickets.text = string.Format(LanguageManager.Get("UIMTTSignDialogCanUseTickt"), cachePropBalance);
-        //if (UIMatchMTTModel.Instance.MttInfo.mtt.total_rebuy_times > 0) {
-        this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
+        //if (UIMTTModel.Instance.MttInfo.mtt.total_rebuy_times > 0) {
+        this.totalRebuyTimes = UIMTTModel.Instance.MttInfo.mtt.rebuy_times;
         if (this.totalRebuyTimes < 10000) {
             //可重构次数   
             //!!!!!特别注意:当后台设置不限制重构次数时,rebuy_times为10000,而left_rebuy_times在后端传输时做了int8转换越界变为16了,但只是传到前端的转化了后端正常,故在此做特别处理!!!!!!
-            if (UIMatchMttModel.Instance.MttInfo.state != null) {
-                // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), UIMatchMTTModel.Instance.MttInfo.state.left_rebuy_times);
+            if (UIMTTModel.Instance.MttInfo.state != null) {
+                // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), UIMTTModel.Instance.MttInfo.state.left_rebuy_times);
             } else {
                 // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), totalRebuyTimes);
             }
@@ -458,8 +458,8 @@ export default class MttPayforHome extends BaseForm {
                 });
             return
         }
-        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this._data.buyRatio == 1 && UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService) {
-            UIMatchMttModel.Instance.APIPropUserBuyProp(response => {
+        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this._data.buyRatio == 1 && UIMTTModel.Instance.MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService) {
+            UIMTTModel.Instance.APIPropUserBuyProp(response => {
                 if (response.code == 0) {
                     if (null != this._data && null != this._data.actionCommit) {
                         this._data.actionCommit.Invoke(true, 1, this.used_prop_id, this.prop_type, this.use_free);

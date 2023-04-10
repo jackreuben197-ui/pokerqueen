@@ -20,6 +20,7 @@ export class StringHelper {
     }
 
     public static GetLongStringUnit(num: number): string {
+
         if (num == 0) {
             return "0";
         }
@@ -27,11 +28,31 @@ export class StringHelper {
             return `${num / 100}`;
         }
         else if (num < 100000000) {
-            return `${this.DivFloat(num, 100000)}K`;
+            let thousand = num / 100000 ^ 0;
+            let others = (num % 100000) / 10000 ^ 0;
+            if (others != 0) {
+                return `${thousand}.${others}K`;
+            }
+            else {
+                return `${thousand}K`;
+            }
         }
         else {
-            return `${this.DivFloat(num, 100000000)}M`;
+            let million = num / 100000000 ^ 0;
+            let othersm = (num % 100000000) / 10000000 ^ 0;
+
+            if (othersm != 0) {
+                return `${million}.${othersm}M`;
+            }
+            else {
+                return `${million}M`;
+            }
         }
+
+
+
+
+
     }
 
 
@@ -55,9 +76,9 @@ export class StringHelper {
     // static Format(str: string, replace: string = ""): string {
     //     return str.replace("{0}", replace);
     // }
-    static Format(str: string, replaces: string[]): string {
+    static Format(str: string, replaces: string[] | number[]): string {
         for (let i = 0; i < replaces.length; i++) {
-            str = str.replace(`{${i}}`, replaces[i]);
+            str = str.replace(`{${i}}`, `${replaces[i]}`);
         }
         return str;
 

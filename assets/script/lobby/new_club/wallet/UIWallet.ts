@@ -340,7 +340,7 @@ export default class UIWallet extends BaseFormPlus {
             this.setChildLabel(item, "bg/lbl_amount", changeItem.gold_after);
             this.setChildLabel(item, "bg/lbl_time", changeItem.create_time_HM);
             this.setChildLabel(item, "bg/lbl_change", changeItem.changeNum);
-            this.setChildLabelColor(item, "bg/lbl_change", changeItem.changeNumColor);
+            this.setChildColor(item, "bg/lbl_change", changeItem.changeNumColor);
             this.setChildVisible(item, "bg/gc_icon", changeItem.gold_type == 1);
             this.setChildVisible(item, "bg/us_icon", changeItem.gold_type == 2);
         }
@@ -674,7 +674,7 @@ export default class UIWallet extends BaseFormPlus {
         this.setChildLabel(node, "bg/lbl_amount", changeItem.gold_after);
         this.setChildLabel(node, "bg/lbl_time", changeItem.create_time_HM);
         this.setChildLabel(node, "bg/lbl_change", changeItem.changeNum);
-        this.setChildLabelColor(node, "bg/lbl_change", changeItem.changeNumColor);
+        this.setChildColor(node, "bg/lbl_change", changeItem.changeNumColor);
         this.setChildVisible(node, "bg/gc_icon", changeItem.gold_type == 1);
         this.setChildVisible(node, "bg/us_icon", changeItem.gold_type == 2);
     }

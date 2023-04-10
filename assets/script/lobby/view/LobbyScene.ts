@@ -11,6 +11,7 @@ import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
 import UILobbyIndex from "../../new_lobby/index/UILobbyIndex";
+import UILobbyIndexNew from "../../new_lobby/index/UILobbyIndexNew";
 import BaseScene from "../../ui/scene/BaseScene";
 import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
@@ -59,6 +60,7 @@ export default class LobbyScene extends BaseScene {
      */
     public async setLooby() {
         await LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/index/");
+        //await LobbyControl.getInstance().switchContent("UILobbyIndexNew", "main/lobby/index/");
         this.toReady();
     }
 
@@ -88,5 +90,6 @@ export default class LobbyScene extends BaseScene {
     private readyComplete(): void {
         console.log("====== lobby readyComplete! ======");
         UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").run();
+        //UIComponent.Instance.getComponent<UILobbyIndexNew>("UILobbyIndexNew").run();
     }
 }

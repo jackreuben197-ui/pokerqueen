@@ -21,6 +21,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import UINewDialogComponent from "../../../ui/dialog/UINewDialogComponent";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import { EventName } from "../../../config/EventName";
+import AssetContext from "../../../ui/component/AssetContext";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -58,7 +59,7 @@ export default class UIPlayerLookLabor extends BaseForm {
         this.setText(dec, ClubCache.desc || 'UIClub_introduce')
 
         let icon = cc.find('Round', this.main1).getComponent(cc.Sprite);
-        WebImageHelper.SetHeadImage(icon, ClubCache.logo)
+        WebImageHelper.SetHeadImage(icon, ClubCache.logo, AssetContext.getAsset("default_club_head"))
         this.initClubData()
     }
     initClubData() {

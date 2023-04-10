@@ -61,6 +61,9 @@ export class UIFormMgr {
                 }
                 let ui_node = cc.instantiate(asset);
                 newUI = ui_node.getComponent(UIBase);
+                if (!newUI) {
+                    console.log(uiDefine.Name, "缺少脚本");
+                }
                 this.uiMap[uiDefine.Name] = newUI;
                 this.lateOpen(newUI, param, obj);
             });

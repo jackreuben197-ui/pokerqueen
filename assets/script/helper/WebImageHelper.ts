@@ -16,18 +16,18 @@ export default class WebImageHelper {
 
     private static mUrlTexture: Map<string, cc.SpriteFrame> = new Map();//key=后缀,value=SpriteFrame
 
-    public static SetHeadImage(rawImage: cc.Sprite, url: string): void {
+    public static SetHeadImage(rawImage: cc.Sprite, url: string, defaultImage: cc.SpriteFrame = null): void {
 
         let spriteFrame = this.mUrlTexture.get(url);
         if (spriteFrame) {
             rawImage.spriteFrame = spriteFrame;
         }
         else {
-            rawImage.spriteFrame = AssetContext.getAsset("default_avatar");
+            rawImage.spriteFrame = defaultImage || AssetContext.getAsset("default_avatar_r");
 
             if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
 
-            cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
+            cc.assetManager.loadRemote(url, { ext: '.png' }, (err, asset: cc.Texture2D) => {
 
                 if (err) {
 
@@ -40,13 +40,14 @@ export default class WebImageHelper {
         }
     }
     public static SetUrlImage(rawImage: cc.Sprite, url: string, defaultImage: cc.SpriteFrame = null) {
+
         return new Promise<void>((resolve, reject) => {
 
             defaultImage && (rawImage.spriteFrame = defaultImage);
 
             if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
 
-            cc.assetManager.loadRemote(url, cc.Texture2D, (err, asset: cc.Texture2D) => {
+            cc.assetManager.loadRemote(url, { ext: '.png' }, (err, asset: cc.Texture2D) => {
                 if (err) {
 
                 } else {
@@ -61,8 +62,9 @@ export default class WebImageHelper {
         })
     }
     public static loadRemoteSprite(url: string, sprite: cc.Sprite) {
+
         return new Promise((relove, reject) => {
-            cc.assetManager.loadRemote(url, cc.Texture2D, (error, texture: any) => {
+            cc.assetManager.loadRemote(url, { ext: '.png' }, (error, texture: any) => {
                 if (error || !texture) {
                     if (error) {
                         console.log('loadRemoteSprite', error);
@@ -87,5 +89,22 @@ export default class WebImageHelper {
         let scale_h = max_h / size.height;
         let scale = scale_w < scale_h ? scale_h : scale_w;
         iamge.node.scale = scale;
+    }
+
+    // //大写后缀映射小写
+    private static CapitalURLMap = [[".JPG", ".jpg"], [".PNG", ".png"], [".WEBP", ".webp"]];
+
+
+    //格式化地址 JPG->jpg
+    private static GetExt(url: string) {
+
+        if (url) {
+            this.CapitalURLMap.forEach(item => {
+                if (url.includes(item[0])) {
+                    //url = url.replace(item[0], item[1]);
+                }
+            })
+        }
+        return url;
     }
 }

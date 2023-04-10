@@ -101,6 +101,7 @@ export var TextColor = {
     Color5: "#B0FFAE",//亮绿
     Color6: "#FF7C7C",//亮红
     Color7: "#EEF5FF",//次白色
+    Color8: "#FEEC8E",//淺黃色
 
 }
 //成员管理排序表

@@ -1,12 +1,12 @@
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
-import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
 import TimeHelper from "../../helper/TimeHelper";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
+import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import { ActionLimit, Def } from "../../protobuf/holdem/define_pb";
 import { ClientMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_agree_second_pcs_active_pb";
 import { ClientMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
@@ -38,11 +38,11 @@ export default class TexasGameUtils {
         if (roomType >= RoomType.MTTTexasHoldemStandardNoLimit) {
             //MTT
 
-            GameCache.Instance.match_id = UIMatchMttModel.Instance.MttInfo.mtt.match_id;
-            GameCache.Instance.seat_count = UIMatchMttModel.Instance.MttInfo.mtt.seat_count;
-            GameCache.Instance.mtt_Hunter_game = UIMatchMttModel.Instance.MttInfo.mtt.hunter_on > 0;
-            GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMatchMttModel.Instance.MttInfo.mtt.name);
-            //UILoginModel.mInstance.GetRoomNameByKey(UIMatchMttModel.Instance.MttInfo.mtt.name);
+            GameCache.Instance.match_id = UIMTTModel.Instance.MttInfo.mtt.match_id;
+            GameCache.Instance.seat_count = UIMTTModel.Instance.MttInfo.mtt.seat_count;
+            GameCache.Instance.mtt_Hunter_game = UIMTTModel.Instance.MttInfo.mtt.hunter_on > 0;
+            GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(UIMTTModel.Instance.MttInfo.mtt.name);
+            //UILoginModel.mInstance.GetRoomNameByKey(UIMTTModel.Instance.MttInfo.mtt.name);
 
             ProtocolAgency.Send<ClientMessageEnterRoom.AsObject>({
                 Code: ProtocolCode.Protocol_Holdem_EnterRoom,
@@ -52,7 +52,7 @@ export default class TexasGameUtils {
                 {
                     room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                     gps: { longitude: GameCache.Instance.longitude, latitude: GameCache.Instance.latitude },
-                    mttPartialBringIn: UIMatchMttModel.Instance.PartialBringIn,
+                    mttPartialBringIn: UIMTTModel.Instance.PartialBringIn,
                     observer: GameCache.Instance.CurGame.IsLookOn,
                 },
             });

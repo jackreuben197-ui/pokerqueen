@@ -3,8 +3,8 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import LobbySession from "../session/LobbySession";
 import UIBasePlus from "../ui/UIBasePlus";
 import UIComponent from "../ui/UIComponent";
-import { MTTMatchStatus } from "./MTTModel";
 import UIMTTList from "./UIMTTList";
+import { MTTMatchStatus } from "./UIMTTModel";
 
 const { ccclass, property } = cc._decorator;
 
@@ -13,9 +13,13 @@ export default class ItemMTTList extends UIBasePlus {
 
     //距离开始倒计时开关
     is_start_delay: boolean = false;
+    //距离结束倒计时开关
+    is_end_delay: boolean = false;
 
     //倒计时秒数
     d_time: number = 0;
+    //
+    end_time: number = 0;
 
     onShow(param: any) {
         super.onShow(param);
@@ -25,7 +29,9 @@ export default class ItemMTTList extends UIBasePlus {
 
     private initData() {
         this.is_start_delay = false;
+        this.is_end_delay = false;
         this.d_time = 0;
+        this.end_time = 0;
     }
 
     protected update(dt: number): void {
@@ -40,6 +46,20 @@ export default class ItemMTTList extends UIBasePlus {
                     ui_mttlist.refreshReq();
                 }
                 this.is_start_delay = false;
+            }
+        }
+
+        if (this.is_end_delay) {
+
+            if (this.end_time - TimeHelper.Now > 0) {
+                this.refreshCloseDelay((this.end_time - TimeHelper.Now) / 1000 ^ 0);
+            }
+            else {
+                let ui_mttlist = UIComponent.Instance.getComponent<UIMTTList>("UIMTTList");
+                if (!ui_mttlist.isReqing) {
+                    ui_mttlist.refreshReq();
+                }
+                this.is_end_delay = false;
             }
         }
     }
@@ -61,9 +81,13 @@ export default class ItemMTTList extends UIBasePlus {
         this.setChildLabel(this.node, "b5/layout/people", data.participants);
         //设置带入数量
         this.setChildLabel(this.node, "b4/layout/buyin", (data.apply_fee_pool + data.apply_fee_service + data.apply_fee_hunter) / 100);
-
         //设置开始时间
         this.setChildLabel(this.node, "b3/layout1/time", TimeHelper.TransformUTC(data.start_time, 0));
+
+        let start_time: number = new Date(data.start_time).getTime();
+
+        this.end_time = start_time + data.upblind_interval * 1000 * (data.max_delay_apply_bl - 1);
+
 
         switch (data.bought) {
             case 1:
@@ -86,27 +110,46 @@ export default class ItemMTTList extends UIBasePlus {
         switch (data.status) // 游戏状态 0 = 可报名 1 = 等待开赛 2 = 延迟报名 3 = 进行中 4 = 立即进入 5 = 报名截止 6 = 等待审批 7 = 重购条件不足
         {
             case MTTMatchStatus.Created:
-                this.setChildVisible(this.node, "b2/status0", true);
-                // Registrationstatus(listItemInfo, bmtext, root, month, week, day1, day2);
-                //this.setChildLabel(this.node, "b2/status0/labels/time", i18nMgr.Get("UIMTT_Listdistancestart").replace("{0}", "888"));
+                this.setStatus(0);
                 this.Registrationstatus(data);
                 break;
             case MTTMatchStatus.Running:
-                // if (entime - TimeHelper.ClientNow() > 0) {
-                //     IsStart = true;
-                //     ShowDelayStatus();
-                // }
-                // else {
-                //     ShowRunStatus(changetext, jhtext, Imageyx, yxtext, listItemInfo);
-                // }
+                if (this.end_time - TimeHelper.Now > 0) {
+                    this.is_end_delay = true;
+                    this.setStatus(1);
+                }
+                else {
+                    this.ShowRunStatus(data);
+                }
                 break;
             case MTTMatchStatus.Closed:
-                //ShowRunStatus(changetext, jhtext, Imageyx, yxtext, listItemInfo);
+                this.ShowRunStatus(data);
                 break;
             default:
                 break;
         }
 
+    }
+
+    setStatus(status: number) {
+        this.setChildVisible(this.node, "b2/status0", status == 0);
+        this.setChildVisible(this.node, "b2/status1", status == 1);
+        this.setChildVisible(this.node, "b2/status2", status == 2);
+    }
+
+
+    ShowRunStatus(data: any) {
+        //进行中
+        this.setStatus(2);
+
+        //运行中剩余玩家/总玩家数量显示
+        if ((data.alive > 1000 && (data.participants + data.total_rebuy_times) > 1000) || data.alive > 100) {
+
+            this.setChildLabel(this.node, "b2/status2/time", data.alive + "/" + "\n" + data.participants);
+        }
+        else {
+            this.setChildLabel(this.node, "b2/status2/time", data.alive + "/" + data.participants);
+        }
     }
 
     Registrationstatus(data: any) {
@@ -147,6 +190,10 @@ export default class ItemMTTList extends UIBasePlus {
     //刷新比赛开始倒计时
     private refreshStartTimeDelay(second: number) {
         this.setChildLabel(this.node, "b2/status0/labels/a/time", i18nMgr.Get("UIMTT_Listdistancestart").replace("{0}", TimeHelper.MinSec(second)));
+    }
+    //刷新比赛关闭倒计时
+    private refreshCloseDelay(second: number) {
+        this.setChildLabel(this.node, "b2/status1/labels/time", i18nMgr.Get("UIMTT_Listdistancesclose").replace("{0}", TimeHelper.MinSec(second)));
     }
 
 

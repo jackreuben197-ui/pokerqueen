@@ -9,7 +9,7 @@ import { WWW, Web_Room_Center_Mtt_list } from "../net/https/WebRequest";
 import UIComponent from "../ui/UIComponent";
 import BaseFormPlus from "../ui/form/BaseFormPlus";
 import ItemMTTList from "./ItemMTTList";
-import { MTTListOrderTypeString } from "./MTTModel";
+import { MTTListOrderTypeString } from "./UIMTTModel";
 
 
 const { ccclass, property } = cc._decorator;
@@ -42,6 +42,7 @@ export default class UIMTTList extends BaseFormPlus {
 
     //刷新重新最初请求
     refreshReq() {
+        console.log("-----refreshReq ------");
         this.listEx.reset();
         this.listEx.dropRequest();
     }
@@ -111,7 +112,8 @@ export default class UIMTTList extends BaseFormPlus {
             // }, 0.25f, DG.Tweening.Ease.Unset, UIComponent.ShowAnimType.HThrough);
 
             GC.data.mtt.list.select = data;
-            UIComponent.open(UIDefine.MttDetailForm, data);
+            //UIComponent.open(UIDefine.MttDetailForm, data);
+            UIComponent.open(UIDefine.UIMTTDetail, data);
         }
         else {
             UIComponent.Instance.ToastLanguage("PleaseJoinAUnionFirs");

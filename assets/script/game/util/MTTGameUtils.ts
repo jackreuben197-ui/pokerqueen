@@ -1,4 +1,5 @@
-import { MTTJoinAction, UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
+
+import { MTTJoinAction, UIMTTModel } from "../../new_mtt/UIMTTModel";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import TexasGameUtils from "./TexasGameUtils";
@@ -6,7 +7,7 @@ import TexasGameUtils from "./TexasGameUtils";
 export default class MTTGameUtils extends TexasGameUtils {//Action<int> 
     public HandlePartialBringIn(storeChips: number, resultCallback: (code: number) => void) {
         GameCache.Instance.room_id = 0; // 置空room_id
-        UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.PartialBringIn, bringInCode => {
+        UIMTTModel.Instance.HandleMTTJoinAction(MTTJoinAction.PartialBringIn, bringInCode => {
             resultCallback?.(bringInCode);
         }, httpState => {
             // http请求异常处理
@@ -18,7 +19,7 @@ export default class MTTGameUtils extends TexasGameUtils {//Action<int>
 
     public HandleRebuy(resultCallback: (code: number) => void) {
         GameCache.Instance.room_id = 0; // 置空room_id
-        UIMatchMttModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
+        UIMTTModel.Instance.HandleMTTJoinAction(MTTJoinAction.Rebuy, rebuyCode => {
             resultCallback?.(rebuyCode);
         }, httpState => {
             // http请求异常处理

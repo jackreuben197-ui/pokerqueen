@@ -3939,12 +3939,12 @@ UIMTT_SignLbl=Currency:
 UIMTT_SignLessBuy=Remaining purchase:
 UINiuZaiRule_jingang=Four of a kind
 UINiuZaiXiaZhuQu_jingang=1. Card type: Royal Flush> Straight Flush> Four of a Kind> Full House> Flush> Straight> Three of a Kind> Two Pairs> Pairs>
-
-
-
-
-
-
+UINiuZai_RankListTitle=leaderboard
+UINiuZai_RankListCloseTime=Game Closing Countdown
+UINiuZai_ViewNum=Number of viewers: {0} people
+UINiuZai_buyin=balance
+UINiuZai_RedZone=restricted red zone
+UILogin_PhoneNum=
 
 
 

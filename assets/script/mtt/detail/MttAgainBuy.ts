@@ -9,7 +9,6 @@
 
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
-import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
@@ -22,6 +21,7 @@ import UIComponent from "../../ui/UIComponent";
 import Toast from "../../ui/toast/Toast";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import SliderPlus from "../../common/SliderPlus";
+import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 enum MTTJoinMode // 参与mtt玩法方式
 {
     None,
@@ -40,7 +40,7 @@ export default class MttAgainBuy extends BaseForm {
     @property(cc.ScrollView)
     scrow: cc.ScrollView = null;
     //private slider: GGSlider = null;
-    
+
     private slider_plus: SliderPlus = null;
 
 
@@ -103,10 +103,10 @@ export default class MttAgainBuy extends BaseForm {
 
         super.onShow(param, fromUI, sceneUI);
         this._data = param;
-        this.USDT.active = UIMatchMttModel.Instance.MttInfo.mtt.gold_type == 2
+        this.USDT.active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 2
         this.setText(this.select_lbl, ClubCache.mttPayWallat.club_name)
         this.setText(this.coinnum, Number(StringHelper.GetLongString(ClubCache.mttPayWallat.gold)))
-        this.setText(this.sb_lbl, StringHelper.GetLongString(UIMatchMttModel.Instance.MttInfo.more.sb) + '/' + StringHelper.GetLongString(UIMatchMttModel.Instance.MttInfo.more.nsb))
+        this.setText(this.sb_lbl, StringHelper.GetLongString(UIMTTModel.Instance.MttInfo.more.sb) + '/' + StringHelper.GetLongString(UIMTTModel.Instance.MttInfo.more.nsb))
 
         // this.slider.SetMinMax(0, Number(StringHelper.GetLongString(ClubCache.mttPayWallat.gold)));
         // this.slider.onShow({ index: 0 });
@@ -127,9 +127,9 @@ export default class MttAgainBuy extends BaseForm {
 
         //this.setText(this.buy_lbl, 0);
         this.sure.active = false
-        this.SingType = UIMatchMttModel.Instance.MttInfo.mtt.prop_buy_type;
-        if (UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
-            UIMatchMttModel.Instance.APIPropUserCheckPropInfo(res => {
+        this.SingType = UIMTTModel.Instance.MttInfo.mtt.prop_buy_type;
+        if (UIMTTModel.Instance.MttInfo.mtt.buy_prop_id != 0) {
+            UIMTTModel.Instance.APIPropUserCheckPropInfo(res => {
                 if (res.code == 0) {
                     this.cachePropPropertyType = res.data.prop_property_type;
                     this.cachePropBalance = res.data.prop_balance;
@@ -183,13 +183,13 @@ export default class MttAgainBuy extends BaseForm {
         // ToggleTicket2.transform.Find("Label").GetComponent<Text>().text = string.Format(LanguageManager.Get("UIMTTbuyinDialogRatio"), _data.buyRatio);
         // Text_Ratio.text = string.Format(LanguageManager.Get("UIMTTbuyinDialog"), _data.buyRatio);
         // AvailableTickets.text = string.Format(LanguageManager.Get("UIMTTSignDialogCanUseTickt"), cachePropBalance);
-        //if (UIMatchMTTModel.Instance.MttInfo.mtt.total_rebuy_times > 0) {
-        this.totalRebuyTimes = UIMatchMttModel.Instance.MttInfo.mtt.rebuy_times;
+        //if (UIMTTModel.Instance.MttInfo.mtt.total_rebuy_times > 0) {
+        this.totalRebuyTimes = UIMTTModel.Instance.MttInfo.mtt.rebuy_times;
         if (this.totalRebuyTimes < 10000) {
             //可重构次数   
             //!!!!!特别注意:当后台设置不限制重构次数时,rebuy_times为10000,而left_rebuy_times在后端传输时做了int8转换越界变为16了,但只是传到前端的转化了后端正常,故在此做特别处理!!!!!!
-            if (UIMatchMttModel.Instance.MttInfo.state != null) {
-                // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), UIMatchMTTModel.Instance.MttInfo.state.left_rebuy_times);
+            if (UIMTTModel.Instance.MttInfo.state != null) {
+                // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), UIMTTModel.Instance.MttInfo.state.left_rebuy_times);
             } else {
                 // Purchase.text = string.Format(LanguageManager.Get("UIMTTSignDialogRemainingBuy"), totalRebuyTimes);
             }
@@ -444,8 +444,8 @@ export default class MttAgainBuy extends BaseForm {
             return
         }
 
-        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this._data.buyRatio == 1 && UIMatchMttModel.Instance.MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService) {
-            UIMatchMttModel.Instance.APIPropUserBuyProp(response => {
+        if (this.cachePropPropertyType == 2 && this.cacheIsFreeServiceFee && this._data.buyRatio == 1 && UIMTTModel.Instance.MttInfo.mtt.buy_prop_id != 0 && this.isUseFreeService) {
+            UIMTTModel.Instance.APIPropUserBuyProp(response => {
                 if (response.code == 0) {
                     if (null != this._data && null != this._data.actionCommit) {
                         this._data.actionCommit.Invoke(true, 1, this.used_prop_id, this.prop_type, this.use_free);

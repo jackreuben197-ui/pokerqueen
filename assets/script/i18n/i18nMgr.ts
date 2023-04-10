@@ -36,6 +36,12 @@ export class i18nMgr {
     private static LanguageObject: { [key: string]: string } = {};   // 文字配置
     private static spriteArr: i18nSprite.i18nSprite[] = [];       // i18nSprite 列表
 
+    private static LanMap = {
+        cn: "sl_bnftN7UY",
+        pt: "sl_ptyyPutao",
+        en: "sl_K8cPNvxU",
+    }
+
     public static isCN() {
         return this.language == "cn";
     }
@@ -59,8 +65,11 @@ export class i18nMgr {
     }
 
     public static getLanguageText() {
-        return i18nMgr.Get("UserLanguage").split("^")[i18nMgr.getLanguage()];
+        //return i18nMgr.Get("UserLanguage").split("^")[i18nMgr.getLanguage()];
+        return i18nMgr.Get(this.LanMap[this.language]);
     }
+
+
 
     /**
      * 设置语言

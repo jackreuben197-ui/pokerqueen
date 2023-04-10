@@ -21,6 +21,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GGSwitch from "../../../ui/component/GGSwitch";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import UINewDialogComponent from "../../../ui/dialog/UINewDialogComponent";
+import AssetContext from "../../../ui/component/AssetContext";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -74,7 +75,7 @@ export default class UIManageLabor extends BaseForm {
         this.setText(dec, ClubCache.desc || 'UIClub_introduce')
 
         let icon = cc.find('messLayout/Round', this.contentNode).getComponent(cc.Sprite);
-        WebImageHelper.SetHeadImage(icon, ClubCache.logo)
+        WebImageHelper.SetHeadImage(icon, ClubCache.logo, AssetContext.getAsset("default_club_head"))
         this.initClubData();
     }
     initClubData() {

@@ -3954,12 +3954,12 @@ UIMTT_SignLbl=Moeda:
 UIMTT_SignLessBuy=Compra restante:
 UINiuZaiRule_jingang=
 UINiuZaiXiaZhuQu_jingang=
-
-
-
-
-
-
+UINiuZai_RankListTitle=
+UINiuZai_RankListCloseTime=
+UINiuZai_ViewNum=
+UINiuZai_buyin=
+UINiuZai_RedZone=
+UILogin_PhoneNum=
 
 
 

@@ -58,7 +58,7 @@ export default class clubPageItem extends UIBase {
         let icon = cc.find('Group_3340/Round', this.messNode);
         // WebImageHelper.setImageSize(icon.getComponent(cc.Sprite), 398, 398)
 
-        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo)
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo,AssetContext.getAsset("default_club_head"))
         // this.node['info'] = this._data;
         // this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         let hg = cc.find('node/iconRole/icon', this.messNode);

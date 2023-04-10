@@ -2,6 +2,7 @@ import { GameCache } from "../../game/GameCache";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import { UIMineModel } from "../../lobby/UIMineModel";
 import { APIUserDiamondsWallet, Web_Config_Global_Config, Web_User_Check_Nickname, Web_User_Info, Web_User_Modify_User_Info, WWW } from "../../net/https/WebRequest";
 import BottomSelector from "../../ui/component/BottomSelector";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
@@ -164,25 +165,38 @@ export default class UIChangeName extends BaseFormPlus {
     //请求用户信息，判断剩余修改次数
     reqUserInfo() {
 
-        WWW.Instance.CommonAPI(
-            {
-                web_class: Web_User_Info,
-            }
-        ).then(
-            (res: typeof Web_User_Info.Response) => {
+        // WWW.Instance.CommonAPI(
+        //     {
+        //         web_class: Web_User_Info,
+        //     }
+        // ).then(
+        //     (res: typeof Web_User_Info.Response) => {
 
-                this.refreshModifyCount();
+        //         this.refreshModifyCount();
 
-                this.refreshWallet();
+        //         this.refreshWallet();
 
-                UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
-                UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation")?.refreshNick();
-                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
-            },
-            (res: any) => {
+        //         UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
+        //         UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation")?.refreshNick();
+        //         UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
+        //     },
+        //     (res: any) => {
 
-            }
-        )
+        //     }
+        // )
+
+
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+            this.refreshModifyCount();
+
+            this.refreshWallet();
+
+            UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
+            UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation")?.refreshNick();
+            UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
+        });
+
+
     }
     //请求改变姓名
     reqChangeName() {

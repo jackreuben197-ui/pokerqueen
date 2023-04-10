@@ -221,7 +221,7 @@ export default class UIBase extends BaseComponent {
         }
     }
     //设置节点下的文本颜色
-    setChildLabelColor(node: cc.Node, path: string, color: string) {
+    setChildColor(node: cc.Node, path: string, color: string) {
         cc.find(path, node).color = cc.Color.BLACK.fromHEX(color);
     }
 
@@ -230,6 +230,9 @@ export default class UIBase extends BaseComponent {
     }
     setChildSprite(node: cc.Node, path: string, spriteFrame: cc.SpriteFrame) {
         cc.find(path, node).getComponent(cc.Sprite).spriteFrame = spriteFrame;
+    }
+    setChildOpacity(node: cc.Node, path: string, opacity: number) {
+        cc.find(path, node).opacity = opacity;
     }
 
 }

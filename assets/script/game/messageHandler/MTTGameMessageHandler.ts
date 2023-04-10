@@ -1,7 +1,7 @@
 import { UIDefine } from "../../define/UIDefine";
-import { UIMatchMttModel } from "../../frame/data/mtt/UIMatchMttModel";
 import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import { Def } from "../../protobuf/holdem/define_pb";
 import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_leave_notification_pb";
 import UIComponent from "../../ui/UIComponent";
@@ -32,7 +32,7 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
                     game.RemainRebuyCount = game.TotalRebuyCount - rec.rebuyTimes;
                     let isTriggerRebuy: boolean =
                         rec.storeChips == 0
-                        && rec.accountChips >= UIMatchMttModel.Instance.RebuyCost
+                        && rec.accountChips >= UIMTTModel.Instance.RebuyCost
                         && (game.MaxRebuyBlindLevel > 0 && game.MaxRebuyBlindLevel > game.BlindLevel)
                         && game.RemainRebuyCount > 0;
                     if (isTriggerPartialBringIn) {

@@ -20,13 +20,8 @@ export default class upLoadIcon extends cc.Component {
             if (input_imageFile == null) return;
             // 添加需要处理的代码
             input_imageFile.onchange = (event) => {
+                //@ts-ignore
                 let files = event.target.files;
-
-                for(var i in files[0]){
-                    console.log("?????????????????",i,files[0][i])
-                }
-
-
                 resolve(files[0]);
                 let upType = files[0].type;
                 if (upType == 'image/gif' || upType.indexOf("image") < 0) {

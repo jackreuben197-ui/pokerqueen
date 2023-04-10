@@ -27,6 +27,7 @@ import { ClubTabConfig } from "../../../frame/config/tabConfig";
 import WalletModel from "../wallet/WalletModel";
 import { WalletType } from "../wallet/UIWallet";
 import { i18nMgr } from "../../../i18n/i18nMgr";
+import AssetContext from "../../../ui/component/AssetContext";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -169,7 +170,7 @@ export default class UIClubHome extends BaseForm {
         this.refreshData();
         let messNode = this.layout.getChildByName('messNode');
         let icon = cc.find('Round', messNode)
-        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), ClubCache.logo)
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), ClubCache.logo,AssetContext.getAsset("default_club_head"))
         cc.find('messLayout/nameNode/name', messNode).getComponent(cc.Label).string = ClubCache.club_name;
         cc.find('messLayout/id', messNode).getComponent(cc.Label).string = 'ID:' + ClubCache.random_id;
         cc.find('people/data', messNode).getComponent(cc.Label).string = ClubCache.club_members;

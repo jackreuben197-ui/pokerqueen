@@ -217,7 +217,7 @@ export default class UIComponent {
     }
     //////////////////////////////
     setComponent(component: UIBase) {
-        //console.log("setComponent :； ", component.name);
+        console.log("setComponent :； ", component.name);
         this[component.name] = component;
     }
     getComponent<T>(component_name: string): T {
@@ -225,24 +225,6 @@ export default class UIComponent {
     }
     /////////////////////////////
 
-    // set UIMe(component:UIMe){
-    //     this["_UIMe"] = component;
-    // }
-    // get UIMe():UIMe{
-    //     return this["_UIMe"];
-    // }
-    // set UIEditInformation(component:UIEditInformation){
-    //     this["_UIEditInformation"] = component;
-    // }
-    // get UIEditInformation():UIEditInformation{
-    //     return this["_UIEditInformation"];
-    // }
-    // set UILobbyIndex(component:UILobbyIndex){
-    //     this["_UILobbyIndex"] = component;
-    // }
-    // get UILobbyIndex():UILobbyIndex{
-    //     return this["_UILobbyIndex"];
-    // }
 }
 (window as any).UIComponent = UIComponent;
 //(window as any).UIFormMgr = UIFormMgr;

@@ -3,6 +3,7 @@ import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIClubModel } from "../../lobby/labor/UIClubModel";
+import { UIMineModel } from "../../lobby/UIMineModel";
 import { APIOrgClubUploadIcon, Web_User_Info, Web_User_Modify_User_Info, WWW } from "../../net/https/WebRequest";
 import BottomSelector from "../../ui/component/BottomSelector";
 import UICommonDialog from "../../ui/dialog/UICommonDialog";
@@ -110,20 +111,29 @@ export default class UIEditInformation extends BaseFormPlus {
     //请求用户信息，判断剩余修改次数
     reqUserInfo() {
 
-        WWW.Instance.CommonAPI(
-            {
-                web_class: Web_User_Info,
-            }
-        ).then(
-            (res: typeof Web_User_Info.Response) => {
-                this.refreshUserInfo();
-                UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
-                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
-            },
-            (res: any) => {
+        // WWW.Instance.CommonAPI(
+        //     {
+        //         web_class: Web_User_Info,
+        //     }
+        // ).then(
+        //     (res: typeof Web_User_Info.Response) => {
+        //         this.refreshUserInfo();
+        //         UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
+        //         UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
+        //     },
+        //     (res: any) => {
 
-            }
-        )
+        //     }
+        // )
+
+        UIMineModel.mInstance.ObtainUserInfo(pDto => {
+            this.refreshUserInfo();
+            UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
+            UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
+        });
+
+
+
     }
     //修改头像
     reqUserHead(avatar: string) {
