@@ -5,6 +5,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIClubModel } from "../../lobby/labor/UIClubModel";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import { APIOrgClubUploadIcon, Web_User_Info, Web_User_Modify_User_Info, WWW } from "../../net/https/WebRequest";
+import LobbySession from "../../session/LobbySession";
 import BottomSelector from "../../ui/component/BottomSelector";
 import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
@@ -126,14 +127,13 @@ export default class UIEditInformation extends BaseFormPlus {
         //     }
         // )
 
-        UIMineModel.mInstance.ObtainUserInfo(pDto => {
-            this.refreshUserInfo();
-            UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
-            UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
-        });
-
-
-
+        LobbySession.APIUserInfo().then(
+            (res: any) => {
+                this.refreshUserInfo();
+                UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
+                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
+            }
+        )
     }
     //修改头像
     reqUserHead(avatar: string) {

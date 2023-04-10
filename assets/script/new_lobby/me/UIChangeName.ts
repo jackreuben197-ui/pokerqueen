@@ -4,6 +4,7 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import { APIUserDiamondsWallet, Web_Config_Global_Config, Web_User_Check_Nickname, Web_User_Info, Web_User_Modify_User_Info, WWW } from "../../net/https/WebRequest";
+import LobbySession from "../../session/LobbySession";
 import BottomSelector from "../../ui/component/BottomSelector";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
@@ -185,18 +186,17 @@ export default class UIChangeName extends BaseFormPlus {
         //     }
         // )
 
+        LobbySession.APIUserInfo().then(
+            (res: any) => {
+                this.refreshModifyCount();
 
-        UIMineModel.mInstance.ObtainUserInfo(pDto => {
-            this.refreshModifyCount();
+                this.refreshWallet();
 
-            this.refreshWallet();
-
-            UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
-            UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation")?.refreshNick();
-            UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
-        });
-
-
+                UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
+                UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation")?.refreshNick();
+                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
+            }
+        )
     }
     //请求改变姓名
     reqChangeName() {

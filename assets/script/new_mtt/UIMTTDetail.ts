@@ -1,23 +1,22 @@
-import { B } from "../common/Singleton";
+
 import TabsGroup from "../common/TabsGroup";
 import { Tabs_Status, TextColor } from "../config/GameConfig";
 import { GameCache } from "../game/GameCache";
 import MTTGame from "../game/texas/MTTGame";
-import GameUtil from "../game/util/GameUtil";
+
 import TimeHelper from "../helper/TimeHelper";
-import WebImageHelper from "../helper/WebImageHelper";
-import { CPErrorCode } from "../i18n/CPErrorCode";
+
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
 import { WWW } from "../net/https/WebRequest";
 import { Web_Prop_User_Check_Prop_Info } from "../net/https/WebRequest";
 import { Web_Room_Center_Mtt_Details } from "../net/https/WebRequest";
 import LobbySession from "../session/LobbySession";
-import UIBase from "../ui/UIBase";
+
 import UIBasePlus from "../ui/UIBasePlus";
-import UIComponent from "../ui/UIComponent";
+
 import BaseFormPlus from "../ui/form/BaseFormPlus";
-import UIMTTDetail_Player from "./UIMTTDetail_Player";
+
 import UIMTTDetail_State from "./UIMTTDetail_State";
 import { MTTJoinAction, UIMTTModel } from "./UIMTTModel";
 

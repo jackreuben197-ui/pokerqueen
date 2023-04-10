@@ -399,7 +399,11 @@ export default class UITexas extends BaseScene {
 
             this.main.height = 2688;
 
-            this.main.setScale(view_height / 2688, view_height / 2688);
+            let scale = view_height / 2688;
+
+            scale *= 1.09;
+
+            this.main.setScale(scale,scale);
 
         } else {
 
