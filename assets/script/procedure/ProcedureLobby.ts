@@ -1,5 +1,15 @@
+/*
+ * @Author: xfj
+ * @Date: 2023-03-14 20:17:12
+ * @description: 
+ * @LastEditors: 
+ * @LastEditTime: 2023-04-10 15:00:27
+ * @FilePath: /pokerqueen/assets/script/procedure/ProcedureLobby.ts
+ */
 
+import { EventName } from "../config/EventName";
 import { UIDefine } from "../define/UIDefine";
+import GC from "../frame/GameControl";
 import SceneManager from "../manager/SceneManager";
 import PacketHead from "../net/websocket/PacketHead";
 import WebSocketClient from "../net/websocket/WebSocketClient";
@@ -41,7 +51,7 @@ export default class ProcedureLobby extends ProcedureBase {
                     UIComponent.open(UIDefine.UIClubHome, null, { SceneUI: SceneManager.Instance.currUI, jumpShow: true });
                     break;
                 case 2://朋友
-
+                    GC.notify.post(EventName.updateFriendChessView)
                     break;
                 case 3://MTT
                     UIComponent.open(UIDefine.MttDetailForm, null, { SceneUI: SceneManager.Instance.currUI, jumpShow: true });
