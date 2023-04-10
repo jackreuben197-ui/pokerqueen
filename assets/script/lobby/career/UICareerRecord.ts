@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-10 12:42:45
+ * @LastEditTime: 2023-04-10 14:34:13
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 
@@ -62,7 +62,8 @@ export default class UICareerRecord extends BaseFormPlus {
     _total = 0;
     _reqing = false;
     _reqEnd = false;
-    _room_type = 2;
+    _room_type = 0;
+
     protected lateLoad(): void {
         super.lateLoad();
     }
@@ -77,7 +78,7 @@ export default class UICareerRecord extends BaseFormPlus {
         })
         this._coinIndex = param.coinType || 1
         this._room_type = param.type
-        if (param.type == 2) {
+        if (param.type == 0) {
             this.item.active = true
             this.titleNode.getComponent(cc.Layout).spacingX = 110
         } else if (param.type == 1) {
@@ -85,7 +86,7 @@ export default class UICareerRecord extends BaseFormPlus {
             this.titleNode.getComponent(cc.Layout).spacingX = 200
         }
         // await LobbySession.APIConfig_Multi_Language_Template()
-        this.onClickTypeTabBtns(0);
+        this.onClickTypeTabBtns(0, true);
         this.list.scrollingCB = this.scrollingCB;
     }
     titleNodeClick(customData) {
@@ -93,7 +94,7 @@ export default class UICareerRecord extends BaseFormPlus {
         this.reqUpInfo()
     }
 
-    onClickTypeTabBtns(_index) {
+    onClickTypeTabBtns(_index, isInit = false) {
         this._titleSelect = _index
         this.titleNode.children.forEach((item, index) => {
             item.getChildByName('title').color = this._titleSelect == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
@@ -101,7 +102,9 @@ export default class UICareerRecord extends BaseFormPlus {
         })
         this.mtt.active = this._titleSelect == 3
         this.Rectangle.active = !this.mtt.active
-        this.reqUpInfo();
+        if (!isInit) {
+            this.reqUpInfo();
+        }
     }
 
     reqUpInfo() {
