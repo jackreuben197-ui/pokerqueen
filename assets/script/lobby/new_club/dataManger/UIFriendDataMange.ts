@@ -19,7 +19,7 @@ export default class UIFriendDataMange extends BaseForm {
     private comFormTitle: ComFormTitle = null;
     // _dataType: number = 1
     time_range: cc.Node = null;
-
+    timeNode: cc.Node = null;
     btn_pd_4: cc.Label = null;
     btn_pd_5: cc.Label = null;
     lbl_1: cc.Label = null;
@@ -49,7 +49,7 @@ export default class UIFriendDataMange extends BaseForm {
         this.lbl_6 = this.getChildNodeOrComponent("lbl_6", cc.Label);
         this.noDataTip = this.getChildNodeOrComponent("noDataTip");
         this.dataList = this.getChildNodeOrComponent("sv_scrow", List);
-
+        this.timeNode = this.getChildNodeOrComponent("timeNode");
     }
 
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
@@ -58,6 +58,8 @@ export default class UIFriendDataMange extends BaseForm {
         this.lbl_1.string = i18nMgr.Get('UITexasReport_hand') + '/' + i18nMgr.Get('UIData_YGvXd5iXr_003')
         let title = "UIClub_DataManager"
         this.comFormTitle.initData(title, this)
+        this.time_range.position = this.timeNode.getChildByName('time_4').position
+
         this.setDataLbl(TimeHelper.toDayBaganTime, TimeHelper.toDayEndTime);
 
     }

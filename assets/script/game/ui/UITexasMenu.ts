@@ -255,7 +255,7 @@ export default class UITexasMenu extends UIBasePlus {
         }
         this.$black.active = true;
         this.$block.active = true;
-        
+
     }
     //面板移出
     fadeOut(animation: boolean = true) {
@@ -443,10 +443,12 @@ export default class UITexasMenu extends UIBasePlus {
     }
     //留座离桌
     click_leave_table() {
+        this.post(EventName.updateFriendChessView)
         this.game.uirc.HideMenu();
         this.game.SendReserveSeatAction(true);
     }
     click_leave() {
+        this.post(EventName.updateFriendChessView)
         this.game.onClickExit();
     }
 
