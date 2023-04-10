@@ -352,6 +352,7 @@ export class Web_Stats_User_Stats extends WebCommon {
         game_type?: number,      //游戏类型0-all,1-常规桌，2-OMAHA4，3-OMAHA5，4-OMAHA6,5-mtt
         time_type?: number,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
         time_long?: number,      //客户端时间戳
+        room_Type?: number,
     } = null;
 
     static MTTRoomData: {

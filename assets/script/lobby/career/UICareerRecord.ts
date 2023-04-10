@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-08 14:00:37
+ * @LastEditTime: 2023-04-10 12:42:45
  * @FilePath: /pokerqueen/assets/script/lobby/career/UICareerRecord.ts
  */
 
@@ -62,7 +62,7 @@ export default class UICareerRecord extends BaseFormPlus {
     _total = 0;
     _reqing = false;
     _reqEnd = false;
-    _gameType = 2;
+    _room_type = 2;
     protected lateLoad(): void {
         super.lateLoad();
     }
@@ -76,7 +76,7 @@ export default class UICareerRecord extends BaseFormPlus {
             this.bindClick(item, this.onClickTypeTabBtns, index);
         })
         this._coinIndex = param.coinType || 1
-        this._gameType = param.type
+        this._room_type = param.type
         if (param.type == 2) {
             this.item.active = true
             this.titleNode.getComponent(cc.Layout).spacingX = 110
@@ -124,40 +124,21 @@ export default class UICareerRecord extends BaseFormPlus {
                 break;
         }
         this.setText(this.lbl_13, str)
-        //生涯
-        if (this._gameType == 2) {
-            let info = {
-                game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
-                time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
-                time_long: TimeHelper.Now,      //客户端时间戳
-                filter_type: this._coinIndex
-            }
-            LobbyControl.getInstance().getUserStatsInfo(info).then(
-                (res) => {
-                    this.refreshUpUI(res);
-                },
-                (res) => {
-                }
-            )
-            this.reqDataAgain()
+        let info = {
+            game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
+            time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
+            time_long: TimeHelper.Now,      //客户端时间戳
+            filter_type: this._coinIndex,
+            room_type: this._room_type,
         }
-        //朋友桌
-        else if (this._gameType == 1) {
-            let info = {
-                game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
-                time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
-                time_long: TimeHelper.Now,      //客户端时间戳
-                filter_type: this._coinIndex
+        LobbyControl.getInstance().getUserStatsInfo(info).then(
+            (res) => {
+                this.refreshUpUI(res);
+            },
+            (res) => {
             }
-            LobbyControl.getInstance().getUserStatsInfo(info).then(
-                (res) => {
-                    this.refreshUpUI(res);
-                },
-                (res) => {
-                }
-            )
-            this.reqDataAgain()
-        }
+        )
+        this.reqDataAgain()
 
 
     }
@@ -256,18 +237,21 @@ export default class UICareerRecord extends BaseFormPlus {
         this._reqing = true
         let group_by = 1;
         let _data = null;
+        // if (this._gameType == 1) {
+        //     group_by = 2;
+        // }
         if (this._titleSelect == 3) {
             group_by = 2;
             let info = {
                 group_by: group_by,      //1 room 2 mtt 3 mttroom
                 limit: 20,         //条目
                 offset: this._offset,        //开始下标。例子（offset=0，limit=10，0-9。）
-                filter_type: this._coinIndex
+                filter_type: this._coinIndex,
+                room_type: this._room_type,
             }
             _data = await UICareerModel.mInstance.api_roomcenter_history_group(info)
 
         } else {
-            group_by = 1;
             let info = {
                 group_by: group_by,      //1 room 2 mtt 3 mttroom
                 limit: 20,         //条目
@@ -275,10 +259,12 @@ export default class UICareerRecord extends BaseFormPlus {
                 game_type: this._titleSelect + 1,       //游戏类型0-all,1-常规桌，2pl0，3-6,4-mtt
                 time_type: this._tabSelect + 1,      //游戏类型1-今日, 2-7天, 3-30天, 4-生涯
                 time_long: TimeHelper.Now,      //客户端时间戳
-                filter_type: this._coinIndex
+                filter_type: this._coinIndex,
+                room_type: this._room_type,
             }
             _data = await LobbyControl.getInstance().getHistoryInfo(info)
         }
+
         this._reqing = false
         if (!_data?.data.records) {
             _data.data.records = [];
