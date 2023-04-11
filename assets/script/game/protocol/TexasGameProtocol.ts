@@ -50,6 +50,7 @@ import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
 import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
+import MTTGame from "../texas/MTTGame";
 
 
 //const CanPlayStatus = Def.CanPlayStatus;
@@ -1145,10 +1146,9 @@ export default class TexasGameProtocol {
             mSeat.PlayWinArmature();
             mSeat.UpdateRecyclingWinChip();
             //猎人赛人头奖励刷新
-            // if (GameCache.Instance.room_type > RoomType.Omaha6SixPlusFixedAof && (GameCache.Instance.CurGame as MTTGame).huntMode)
-            // {
-            //     mSeat.UpdateHunterAward();
-            // }
+            if (GameCache.Instance.room_type > RoomType.Omaha6SixPlusFixedAof && (GameCache.Instance.CurGame as MTTGame).huntMode) {
+                mSeat.UpdateHunterAward();
+            }
             let PlayRecyclingWinChipAnimation_Tween: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function }
                 = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
 

@@ -131,9 +131,6 @@ export default class UITexasPlayerInfo extends UIBasePlus {
         }
     }
 
-
-
-
     click_panel() {
         UIComponent.close(UIDefine.UITexasPlayerInfo);
     }

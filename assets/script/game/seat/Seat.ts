@@ -10,6 +10,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import { Def } from "../../protobuf/holdem/define_pb";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import { CardType, CardTypeUtil } from "../CardTypeUtil";
@@ -212,7 +213,7 @@ export default class Seat {
 
         if (this.IsMySeat) {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
-            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -416);
+            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -455);
         }
         else {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
@@ -1332,7 +1333,7 @@ export default class Seat {
     public UpdateWaiteNextTips(ishow: boolean): void {
         if (this.IsMySeat) {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
-            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -416);
+            this.uirc.WaitforthenextmoveTips.node.setPosition(0, -455);
         }
         else {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
@@ -1756,6 +1757,11 @@ export default class Seat {
         let value = this.Player.HunterHeadValue + this.Player.HunterKillAwardOther + this.Player.MttHunterKillAwardOtherPlus;
         this.uirc.Image_CoinShadow.active = value > 0;
         this.uirc.Image_CoinShadow.getChildByName("Text").getComponent(cc.Label).string = StringHelper.GetLongString(value);
+
+        if (UIMTTModel.Instance.MttInfo.mtt != null) {
+            this.uirc.Image_CoinShadow.getChildByName("uc").active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 1;
+            this.uirc.Image_CoinShadow.getChildByName("gc").active = UIMTTModel.Instance.MttInfo.mtt.gold_type == 2;
+        }
     }
 
     //////////////////////////////////////
