@@ -27,11 +27,20 @@ export default class UIFriendDataDetail extends BaseForm {
     lbl_55: cc.Label = null;
     lbl_66: cc.Label = null;
 
+    lbl_1: cc.Label = null;
+    lbl_2: cc.Label = null;
+    lbl_3: cc.Label = null;
+    lbl_11: cc.Label = null;
+    lbl_12: cc.Label = null;
+    lbl_13: cc.Label = null;
+
     lbl_staus: cc.Label = null;
     lbl_id: cc.Label = null;
     lbl_create: cc.Label = null;
     noDataTip: cc.Node
     dropNode_lbl: cc.Label = null;
+    mtt_bottom: cc.Node = null;
+    bottom: cc.Node = null;
     dataList: List = null;
     _offset: number = 0;
     _reqing: boolean = false;
@@ -41,6 +50,8 @@ export default class UIFriendDataDetail extends BaseForm {
     _roomId: number = 0
     _selectIndex: number = 0
     _order_by: string = 'fee'
+    _roomType: number = 1;
+    _match_id: any = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -51,18 +62,30 @@ export default class UIFriendDataDetail extends BaseForm {
         this.lbl_55 = this.getChildNodeOrComponent("lbl_55", cc.Label);
         this.lbl_66 = this.getChildNodeOrComponent("lbl_66", cc.Label);
 
+        this.lbl_1 = this.getChildNodeOrComponent("lbl_1", cc.Label);
+        this.lbl_2 = this.getChildNodeOrComponent("lbl_2", cc.Label);
+        this.lbl_3 = this.getChildNodeOrComponent("lbl_3", cc.Label);
+        this.lbl_11 = this.getChildNodeOrComponent("lbl_11", cc.Label);
+        this.lbl_12 = this.getChildNodeOrComponent("lbl_22", cc.Label);
+        this.lbl_13 = this.getChildNodeOrComponent("lbl_33", cc.Label);
+
         this.lbl_staus = this.getChildNodeOrComponent("lbl_staus", cc.Label);
         this.lbl_id = this.getChildNodeOrComponent("lbl_id", cc.Label);
         this.lbl_create = this.getChildNodeOrComponent("lbl_create", cc.Label);
         this.dropNode_lbl = this.getChildNodeOrComponent("dropNode_lbl", cc.Label);
         this.noDataTip = this.getChildNodeOrComponent("noDataTip");
         this.dataList = this.getChildNodeOrComponent("sv_scrow", List);
-
+        this.mtt_bottom = this.getChildNodeOrComponent("mtt_bottom");
+        this.bottom = this.getChildNodeOrComponent("bottom");
     }
 
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-        this._roomId = param
+        this._roomId = param.room_id
+        this._roomType = param.type
+        this._match_id = param._match_id
+        this.mtt_bottom.active = this._match_id > 0
+        this.bottom.active = !this.mtt_bottom.active;
         this.dataList.scrollingCB = this.scrollingCB;
         let title = "UIClub_DataManager"
         this.comFormTitle.initData(title, this)
@@ -102,7 +125,13 @@ export default class UIFriendDataDetail extends BaseForm {
             'limit': 20,
             'offset': this._offset
         }
-        _data = await UIClubModel.mInstance.web_api_friend_room_stats_data_detail(parms)
+        if (this._roomType == 1) {
+            _data = await UIClubModel.mInstance.web_api_friend_room_stats_data_detail(parms)
+        } else if (this._roomType == 2) {
+            parms['match_id'] = this._match_id
+            _data = await UIClubModel.mInstance.web_api_club_data_stats_data_detail(parms)
+
+        }
         this._reqing = false
         if (!_data.data) {
             _data.data = [];
@@ -123,18 +152,70 @@ export default class UIFriendDataDetail extends BaseForm {
         let parms = {
             'room_id': this._roomId,
         }
-        UIClubModel.mInstance.web_api_friend_room_stats_data_detail_info(parms).then((res: any) => {
-            this.lbl_4.string = `${StringHelper.getStringDiv100(res.data.info.min_buy_in)}-${StringHelper.getStringDiv100(res.data.info.max_buy_in)}`
-            this.lbl_5.string = `${StringHelper.getStringDiv100(res.data.info.sb)}/${StringHelper.getStringDiv100(res.data.info.sb * 2)}`
-            this.lbl_6.string = res.data.info.fee_ratio / 10 + '%'
-            this.lbl_44.string = res.data.info.player_num
-            this.lbl_55.string = res.data.info.insurance
-            this.lbl_66.string = StringHelper.GetLongString(res.data.info.total_fee)
-            this.lbl_staus.string = i18nMgr.Get(this.getStaus(res.data.info.game_status))
-            this.lbl_id.string = i18nMgr.Get('UIData_GameID') + this._roomId
-            res.data.info.creator_id
-            this.lbl_create.string = `${i18nMgr.Get('UIClub_PlanRomList_Creator')}${res.data.info.creator_name}（ID:${res.data.info.creator_id}）`
-        })
+
+        this.setText(this.lbl_1, 'MTT_xq_buy')
+        this.setText(this.lbl_2, 'adaptation20006')
+        this.setText(this.lbl_3, 'UIData_ServiceFee')
+        this.setText(this.lbl_11, 'UIFriendsTable_playercount')
+        this.setText(this.lbl_12, 'adaptation10179')
+        this.setText(this.lbl_13, 'UIFriendsTable_totalfee')
+        this.lbl_13.node.active = true
+        this.lbl_66.node.active = true
+        if (this._roomType == 1) {
+            UIClubModel.mInstance.web_api_friend_room_stats_data_detail_info(parms).then((res: any) => {
+                this.lbl_4.string = `${StringHelper.getStringDiv100(res.data.info.min_buy_in)}-${StringHelper.getStringDiv100(res.data.info.max_buy_in)}`
+                this.lbl_5.string = `${StringHelper.getStringDiv100(res.data.info.sb)}/${StringHelper.getStringDiv100(res.data.info.sb * 2)}`
+                this.lbl_6.string = res.data.info.fee_ratio / 10 + '%'
+                this.lbl_44.string = res.data.info.player_num
+                this.lbl_55.string = res.data.info.insurance
+                this.lbl_66.string = StringHelper.GetLongString(res.data.info.total_fee)
+                this.lbl_staus.string = i18nMgr.Get(this.getStaus(res.data.info.game_status))
+                this.lbl_id.string = i18nMgr.Get('UIData_GameID') + this._roomId
+                res.data.info.creator_id
+                this.lbl_create.string = `${i18nMgr.Get('UIClub_PlanRomList_Creator')}${res.data.info.creator_name}（ID:${res.data.info.creator_id}）`
+            })
+        } else if (this._roomType == 2) {
+            parms['match_id'] = this._match_id
+            UIClubModel.mInstance.web_api_club_data_stats_data_detail_info(parms).then((res: any) => {
+                //mtt
+                if (this._match_id > 0) {
+                    this.setText(this.lbl_1, 'MTT_List_type')
+                    this.setText(this.lbl_2, 'UIMine_RecordDetailForMatchPariticipants')
+                    this.setText(this.lbl_3, 'UIMineDetail_UsedTime')
+                    this.setText(this.lbl_11, 'MTT_xq_buy')
+                    this.setText(this.lbl_12, 'UIFriendsTable_fee')
+                    this.lbl_13.node.active = false
+                    this.lbl_66.node.active = false
+
+                    this.lbl_4.string = `${StringHelper.getStringDiv100(res.data.info.min_buy_in)}-${StringHelper.getStringDiv100(res.data.info.max_buy_in)}`
+                    this.lbl_5.string = `${StringHelper.getStringDiv100(res.data.info.sb)}/${StringHelper.getStringDiv100(res.data.info.sb * 2)}`
+                    this.lbl_6.string = res.data.info.fee_ratio / 10 + '%'
+                    this.lbl_44.string = res.data.info.player_num
+                    this.lbl_55.string = res.data.info.insurance
+                    this.lbl_66.string = StringHelper.GetLongString(res.data.info.total_fee)
+                    this.lbl_staus.string = i18nMgr.Get(this.getStaus(res.data.info.game_status))
+                    this.lbl_id.string = i18nMgr.Get('UIData_GameID') + this._roomId
+                    this.lbl_create.string = `${i18nMgr.Get('UIClub_PlanRomList_Creator')}${res.data.info.creator_name}（ID:${res.data.info.creator_id}）`
+
+
+
+                } else {
+                    this.lbl_4.string = `${StringHelper.getStringDiv100(res.data.info.min_buy_in)}-${StringHelper.getStringDiv100(res.data.info.max_buy_in)}`
+                    this.lbl_5.string = `${StringHelper.getStringDiv100(res.data.info.sb)}/${StringHelper.getStringDiv100(res.data.info.sb * 2)}`
+                    this.lbl_6.string = res.data.info.fee_ratio / 10 + '%'
+                    this.lbl_44.string = res.data.info.player_num
+                    this.lbl_55.string = res.data.info.insurance
+                    this.lbl_66.string = StringHelper.GetLongString(res.data.info.total_fee)
+                    this.lbl_staus.string = i18nMgr.Get(this.getStaus(res.data.info.game_status))
+                    this.lbl_id.string = i18nMgr.Get('UIData_GameID') + this._roomId
+                    this.lbl_create.string = `${i18nMgr.Get('UIClub_PlanRomList_Creator')}${res.data.info.creator_name}（ID:${res.data.info.creator_id}）`
+                }
+
+            })
+
+
+        }
+
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(dataDetailItem);

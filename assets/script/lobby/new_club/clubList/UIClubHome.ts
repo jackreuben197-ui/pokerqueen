@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-08 14:27:48
+ * @LastEditTime: 2023-04-11 10:20:16
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -170,7 +170,7 @@ export default class UIClubHome extends BaseForm {
         this.refreshData();
         let messNode = this.layout.getChildByName('messNode');
         let icon = cc.find('Round', messNode)
-        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), ClubCache.logo,AssetContext.getAsset("default_club_head"))
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), ClubCache.logo, AssetContext.getAsset("default_club_head"))
         cc.find('messLayout/nameNode/name', messNode).getComponent(cc.Label).string = ClubCache.club_name;
         cc.find('messLayout/id', messNode).getComponent(cc.Label).string = 'ID:' + ClubCache.random_id;
         cc.find('people/data', messNode).getComponent(cc.Label).string = ClubCache.club_members;
@@ -249,7 +249,9 @@ export default class UIClubHome extends BaseForm {
                 }
                 break;
             case 4:
-                UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
+                UIComponent.open(UIDefine.UIFriendDataMange, { type: 2 })
+
+                // UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
                 // UIComponent.open(UIDefine.UIClubDataMange)
                 break;
             case 5:

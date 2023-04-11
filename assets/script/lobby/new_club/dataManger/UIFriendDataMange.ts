@@ -10,6 +10,7 @@ import { UIClubModel } from "../../labor/UIClubModel";
 import dataItem from "./dataItem";
 import Data from "../../labor/script/Data";
 import { StringHelper } from "../../../helper/StringHelper";
+import { careerConfig } from "../../../frame/data/rate/RateConfig";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -22,6 +23,8 @@ export default class UIFriendDataMange extends BaseForm {
     timeNode: cc.Node = null;
     btn_pd_4: cc.Label = null;
     btn_pd_5: cc.Label = null;
+    dropNode: cc.Node = null;
+    dropNode_lbl: cc.Label = null;
     lbl_1: cc.Label = null;
     lbl_4: cc.Label = null;
     lbl_5: cc.Label = null;
@@ -36,7 +39,8 @@ export default class UIFriendDataMange extends BaseForm {
     _total: number = 0
     _timeType = '1';
     noDataTip: cc.Node
-
+    _roomType: number = 1;
+    _selectIndex: number = 0;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -50,6 +54,10 @@ export default class UIFriendDataMange extends BaseForm {
         this.noDataTip = this.getChildNodeOrComponent("noDataTip");
         this.dataList = this.getChildNodeOrComponent("sv_scrow", List);
         this.timeNode = this.getChildNodeOrComponent("timeNode");
+        this.dropNode_lbl = this.getChildNodeOrComponent("dropNode_lbl", cc.Label);
+        this.dropNode = this.getChildNodeOrComponent("dropNode");
+
+
     }
 
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
@@ -59,13 +67,24 @@ export default class UIFriendDataMange extends BaseForm {
         let title = "UIClub_DataManager"
         this.comFormTitle.initData(title, this)
         this.time_range.position = this.timeNode.getChildByName('time_4').position
-
+        this._roomType = param.type;
+        this.dropNode.active = param.type == 2
+        this.setText(this.dropNode_lbl, careerConfig[this._selectIndex].desc);
         this.setDataLbl(TimeHelper.toDayBaganTime, TimeHelper.toDayEndTime);
 
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.refresh_Btn_Data, this.chaneData)
+    }
+    openDropDownBox() {
+        UIComponent.open(UIDefine.dropDownBoxNew, { data: careerConfig, index: this._selectIndex, cb: this.selectSort.bind(this) })
+    }
+    selectSort(data, index) {
+        this._selectIndex = index;
+        this.setText(this.dropNode_lbl, data.desc);
+        this.initUI()
+        this.reqDataAgain();
     }
 
     setDataLbl(began, end) {
@@ -130,7 +149,14 @@ export default class UIFriendDataMange extends BaseForm {
             'limit': 20,
             'offset': this._offset
         }
-        _data = await UIClubModel.mInstance.web_api_friend_room_stats_data(parms)
+        if (this._roomType == 1) {
+            _data = await UIClubModel.mInstance.web_api_friend_room_stats_data(parms)
+
+        } else if (this._roomType == 2) {
+            parms['filter_type'] = this._selectIndex + 1
+            _data = await UIClubModel.mInstance.web_api_club_data_stats_data(parms)
+
+        }
         this._reqing = false
         if (!_data.data) {
             _data.data = [];
@@ -153,17 +179,27 @@ export default class UIFriendDataMange extends BaseForm {
             'end_time': this._end_time,
             'time_long': TimeHelper.Now,
         }
+        if (this._roomType == 1) {
+            UIClubModel.mInstance.web_api_friend_room_stats_data_info(parms).then((res: any) => {
+                this.lbl_4.string = `${res.data.info.hand_num}/${res.data.info.game_num}`
+                this.lbl_5.string = StringHelper.GetLongString(res.data.info.profit)
+                this.lbl_6.string = StringHelper.GetLongString(res.data.info.fee)
+            })
+        }
+        else if (this._roomType == 2) {
+            parms['filter_type'] = this._selectIndex + 1
+            UIClubModel.mInstance.web_api_club_data_stats_data_info(parms).then((res: any) => {
+                this.lbl_4.string = `${res.data.info.hand_num}/${res.data.info.game_num}`
+                this.lbl_5.string = StringHelper.GetLongString(res.data.info.profit)
+                this.lbl_6.string = StringHelper.GetLongString(res.data.info.fee)
+            })
+        }
 
 
-        UIClubModel.mInstance.web_api_friend_room_stats_data_info(parms).then((res: any) => {
-            this.lbl_4.string = `${res.data.info.hand_num}/${res.data.info.game_num}`
-            this.lbl_5.string = StringHelper.GetLongString(res.data.info.profit)
-            this.lbl_6.string = StringHelper.GetLongString(res.data.info.fee)
-        })
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(dataItem);
-        item.initData(this._list[index]);
+        item.initData(this._list[index], this._roomType);
     }
     scrollingCB = async (scrollView: cc.ScrollView) => {
         if (scrollView) {

@@ -3,7 +3,7 @@
  * @Date: 2023-04-06 13:24:06
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-07 12:07:08
+ * @LastEditTime: 2023-04-11 11:12:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/dataManger/dataItem.ts
  */
 
@@ -27,6 +27,10 @@ export default class dataItem extends UIBase {
     lbl_fee: cc.Label = null;
     lbl_mr: cc.Label = null;
     lbl_mz: cc.Label = null;
+    lbl_mzt: cc.Label = null;
+    lbl_mrt: cc.Label = null;
+    _roomType: number = 1;
+    _isMathch: boolean = false
     protected lateLoad(): void {
         super.lateLoad();
         this.lbl_game = this.getChildNodeOrComponent('lbl_game', cc.Label)
@@ -35,24 +39,40 @@ export default class dataItem extends UIBase {
         this.lbl_fee = this.getChildNodeOrComponent('lbl_fee', cc.Label)
         this.lbl_mr = this.getChildNodeOrComponent('lbl_mr', cc.Label)
         this.lbl_mz = this.getChildNodeOrComponent('lbl_mz', cc.Label)
+        this.lbl_mzt = this.getChildNodeOrComponent('lbl_mzt', cc.Label)
+        this.lbl_mrt = this.getChildNodeOrComponent('lbl_mrt', cc.Label)
+
         this.lbl_longTime = this.getChildNodeOrComponent('lbl_longTime', cc.Label)
 
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
     }
-    initData(data) {
+    initData(data, _roomType) {
         this._data = data;
+        this._roomType = _roomType
+        this._isMathch = this._data.is_match
         this.initUI();
     }
     initUI() {
+        if (this._isMathch) {
+            this.setText(this.lbl_mzt, 'UIMine_RecordDetailForMatchPariticipants')
+            this.setText(this.lbl_mrt, 'MTT_xq_buy')
+            this.setText(this.lbl_mr, this._data.match_player_num)
+            this.setText(this.lbl_mz, StringHelper.getStringDiv100(this._data.buy_in))
+
+        } else {
+            this.setText(this.lbl_mzt, 'adaptation20006')
+            this.setText(this.lbl_mrt, 'UIMTTSignDialog_Rebuy')
+            this.setText(this.lbl_mr, StringHelper.getStringDiv100(this._data.buy_in))
+            this.setText(this.lbl_mz, `${StringHelper.getStringDiv100(this._data.sb)}/${StringHelper.getStringDiv100(this._data.sb * 2)}`)
+        }
         this.setText(this.lbl_staus, this.staus)
         this.setText(this.lbl_game, this.gameType.type)
         this.setTextColor(this.lbl_game, this.gameType.color)
         this.setText(this.lbl_date, `${new Date(this._data.start_time_str).getHours()}: ${TimeHelper.toTimeFormat(new Date(this._data.start_time_str).getMinutes())}`)
         this.setText(this.lbl_fee, StringHelper.GetLongString(this._data.fee))
-        this.setText(this.lbl_mr, StringHelper.getStringDiv100(this._data.buy_in))
-        this.setText(this.lbl_mz, `${StringHelper.getStringDiv100(this._data.sb)}/${StringHelper.getStringDiv100(this._data.sb * 2)}`)
+
         this.setText(this.lbl_longTime, this._data.date)
     }
     get staus() {
@@ -96,6 +116,7 @@ export default class dataItem extends UIBase {
         return { type: string, color: color }
     }
     click() {
-        UIComponent.open(UIDefine.UIFriendDataDetail, this._data.room_id)
+        UIComponent.open(UIDefine.UIFriendDataDetail, { room_id: this._data.room_id, type: this._roomType, match_id: this._data.match_id || null })
+
     }
 }
