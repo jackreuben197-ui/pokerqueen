@@ -156,17 +156,25 @@ export default class ItemMTTList extends UIBasePlus {
 
         //判断时间是否大于一天
         let start_date = new Date(data.start_time);
-        let second = (new Date(data.start_time).getTime() - new Date().getTime()) / 1000 ^ 0;
-        let month = start_date.getMonth() + 1;
-        let day = start_date.getDay();
-        let date = start_date.getDate();
+        let now = new Date();
+        let second = (start_date.getTime() - now.getTime()) / 1000 ^ 0;
+        let s_year = start_date.getFullYear();
+        let s_month = start_date.getMonth() + 1;
+        let s_day = start_date.getDay();
+        let s_date = start_date.getDate();
 
-        if (second > 3600 * 24) {
+        let n_year = now.getFullYear();
+        let n_month = now.getMonth() + 1;
+        let n_date = now.getDate();
+
+        let same = s_year == n_year && s_month == n_month && s_date == n_date;
+
+        if (!same) {
             this.setChildVisible(this.node, "b2/status0/labels/b", true);
             this.setChildVisible(this.node, "b2/status0/labels/a", false);
-            this.setChildLabel(this.node, "b2/status0/labels/b/month", TimeHelper.MonthLanguage(month).split("^")[0]);
-            this.setChildLabel(this.node, "b2/status0/labels/b/day", TimeHelper.DayLanguage(day));
-            this.setChildLabel(this.node, "b2/status0/labels/b/date", TimeHelper.PadZero(date));
+            this.setChildLabel(this.node, "b2/status0/labels/b/month", TimeHelper.MonthLanguage(s_month).split("^")[0]);
+            this.setChildLabel(this.node, "b2/status0/labels/b/day", TimeHelper.DayLanguage(s_day));
+            this.setChildLabel(this.node, "b2/status0/labels/b/date", TimeHelper.PadZero(s_date));
         } else {
 
             this.setChildVisible(this.node, "b2/status0/labels/b", false);

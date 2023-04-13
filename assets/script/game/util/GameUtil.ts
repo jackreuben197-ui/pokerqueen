@@ -58,6 +58,7 @@ export class some_pos {
         cc.v3(0, -181),
         cc.v3(0, -181),
         cc.v3(130, -181),// 10 中下为自己的位置
+        cc.v3(0, -181),// 11 中下为其他玩家的位置
     ];
     //所有手上背面牌容器坐标
     public static readonly all_card_back_pos: cc.Vec3[] = [
@@ -87,6 +88,11 @@ export class some_pos {
         cc.v3(-211, 8),//7 右上
         cc.v3(-211, 8),//8 右中
         cc.v3(-211, 8),//9 右下
+
+        cc.v3(426, -47),// 10 中下为自己时候的位置
+        cc.v3(0, 261),//11 中下为其他玩家时候的位置
+
+
     ];
     //所有气泡位置
     public static readonly all_bubble_pos: cc.Vec3[] = [
@@ -401,23 +407,24 @@ export default class GameUtil {
 
     //目前每次坐下需要重置0号位置的bankPos
     public static ResetSeatInfo() {
-        some_pos.all_bank_pos[0].x = some_pos.all_bank_pos[1].x;
-        some_pos.all_bank_pos[0].y = some_pos.all_bank_pos[1].y;
+        //bank庄家位置
+        some_pos.all_bank_pos[0].x = some_pos.all_bank_pos[11].x;
+        some_pos.all_bank_pos[0].y = some_pos.all_bank_pos[11].y;
+        //筹码位置
+        some_pos.all_bet_pos[0].x = some_pos.all_bet_pos[11].x;
+        some_pos.all_bet_pos[0].y = some_pos.all_bet_pos[11].y;
+
+
     }
     //刷新自己位bank_pos
     public static RefreshMeBankPos() {
+        //bank庄家位置
         some_pos.all_bank_pos[0].x = some_pos.all_bank_pos[10].x;
         some_pos.all_bank_pos[0].y = some_pos.all_bank_pos[10].y;
+        //筹码位置
+        some_pos.all_bet_pos[0].x = some_pos.all_bet_pos[10].x;
+        some_pos.all_bet_pos[0].y = some_pos.all_bet_pos[10].y;
     }
-
-    //处理中下为自己的时候bank的位置
-    public static GetBankPos(seat: Seat, bank_pos: cc.Vec3) {
-        if (seat.IsMySeat) {
-            return some_pos.all_bank_pos[10];
-        }
-        return bank_pos;
-    }
-
 
     //上下座位 适配位置
     public static SeatAdapterPos() {

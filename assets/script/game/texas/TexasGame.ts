@@ -517,11 +517,11 @@ export default class TexasGame {
             this.uirc.Image_WaitForStartTips.active = false;
         }
     }
-    protected HideSelectSeatTips() {
-        if (this.uirc.Image_SelectSeatTips.activeInHierarchy) {
-            this.uirc.Image_SelectSeatTips.active = false;
-        }
-    }
+    // protected HideSelectSeatTips() {
+    //     if (this.uirc.Image_SelectSeatTips.activeInHierarchy) {
+    //         this.uirc.Image_SelectSeatTips.active = false;
+    //     }
+    // }
 
     //清理所有Pots
     public HideAllPots() {
@@ -1101,7 +1101,7 @@ export default class TexasGame {
 
     // 刷新自己的位置信息和位移到中下位置
     public ResetSeatUIInfo(clientSeatId: number): void {
-        GameUtil.ResetSeatInfo();
+        //GameUtil.ResetSeatInfo();
         GameUtil.RefreshMeBankPos();
         if (clientSeatId == 0) {
             let seat = this.dicSeatOnlyClient.get(0);

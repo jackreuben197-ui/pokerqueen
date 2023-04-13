@@ -103,7 +103,7 @@ export default class UITexas extends BaseScene {
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
 
-    Image_SelectSeatTips: cc.Node = null;
+    
     Image_WaitForStartTips: cc.Node = null;
     Image_ReserveSeatTips: cc.Node = null;
     Image_InsuranceTips: cc.Node = null;
@@ -145,7 +145,7 @@ export default class UITexas extends BaseScene {
 
 
     //带入申请按钮
-    Button_BringIn: cc.Node = null;
+    //Button_BringIn: cc.Node = null;
     //朋友桌邀请码
     Text_InvateCode: cc.Label = null;
 
@@ -233,7 +233,7 @@ export default class UITexas extends BaseScene {
 
 
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
-        this.Image_SelectSeatTips = this.getChildNodeOrComponent("Image_SelectSeatTips");
+        
         this.Image_WaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
         this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
@@ -271,7 +271,7 @@ export default class UITexas extends BaseScene {
         //this.armatureRewardCircleEN = rc.Get<GameObject>("Armature_RewardCircle_en").GetComponent<UnityArmatureComponent>();
         this.Image_WaitForStartBathTips = this.getChildNodeOrComponent("Image_WaitForStartBathTips");
         this.BathText = this.Image_WaitForStartBathTips?.getChildByName("Text_Tips")?.getComponent(cc.Label);
-        this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
+        //this.Button_BringIn = this.getChildNodeOrComponent("Button_BringIn");
         //朋友桌邀请码
         this.Text_InvateCode = this.getChildNodeOrComponent("Text_InvateCode", cc.Label);
 
@@ -360,7 +360,7 @@ export default class UITexas extends BaseScene {
 
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
 
-        this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
+        //this.setButtonClick(this.Button_BringIn, this.onClickBringIn);
 
         this.setButtonClick(this.Button_CancelTrust, this.onClickCancelTrust);
 
@@ -414,7 +414,7 @@ export default class UITexas extends BaseScene {
     //进入初始UI
     EnterInitUI() {
         //this.ShowInvateCode();
-        this.setActive(this.Button_BringIn, false);
+        //this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
         //消息按钮显示
         this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
@@ -441,11 +441,11 @@ export default class UITexas extends BaseScene {
         });
         //隐藏节点
         [
-            this.Button_BringIn,
+            //this.Button_BringIn,
             this.Button_AddOn,
             this.Button_CancelTrust,
             this.buttonWaitBlind,
-            this.Image_SelectSeatTips,
+            
             this.Image_WaitForStartTips,
             this.Image_RedistributionTips,
             this.Image_WaitForStartBathTips,
@@ -495,9 +495,9 @@ export default class UITexas extends BaseScene {
 
 
 
-    public ShowBringIn() {
-        this.setActive(this.Button_BringIn, true);
-    }
+    // public ShowBringIn() {
+    //     this.setActive(this.Button_BringIn, true);
+    // }
 
     public ShowMenu(): void {
         //this.UITexasMenu_Com?.onShow();
@@ -523,10 +523,10 @@ export default class UITexas extends BaseScene {
         this.barrageIndex = 0;
     }
 
-    onClickBringIn() {
-        UIComponent.open(UIDefine.UIApplyJoin);
-        this.setActive(this.Button_BringIn, false);
-    }
+    // onClickBringIn() {
+    //     UIComponent.open(UIDefine.UIApplyJoin);
+    //     this.setActive(this.Button_BringIn, false);
+    // }
     private onClickAddOn() {
         this.game.onClickAddOn();
     }
