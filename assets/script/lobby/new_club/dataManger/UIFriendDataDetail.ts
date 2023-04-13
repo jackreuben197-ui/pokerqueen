@@ -219,7 +219,7 @@ export default class UIFriendDataDetail extends BaseForm {
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(dataDetailItem);
-        item.initData(this._list[index], this._order_by);
+        item.initData(this._list[index], this._order_by, index);
     }
     scrollingCB = async (scrollView: cc.ScrollView) => {
         if (scrollView) {
