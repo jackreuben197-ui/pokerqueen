@@ -489,9 +489,9 @@ export default class MTTGame extends TexasGame {
         });
     }
 
-    public override CheckPlayerInfo(userId: number, player: CPlayer = null) {
-        UIComponent.open(UIDefine.UITexasPlayerInfo, [userId, false], { parentUI: Main.Marquee });
-    }
+    // public override CheckPlayerInfo(userId: number, player: CPlayer = null) {
+    //     UIComponent.open(UIDefine.UITexasPlayerInfo, [userId, false], { parentUI: Main.Marquee });
+    // }
 
     // 实时战况
     public override onClickReport() {
@@ -616,8 +616,6 @@ export default class MTTGame extends TexasGame {
 
         this.refreshCoinAndChip(menu);
 
-
-
         //buttonRule.transform.Find("Text").GetComponent<Text>().text = LanguageManager.Get("UITexas_RuleOfTips");
 
         menu.clearOptions();
@@ -640,6 +638,11 @@ export default class MTTGame extends TexasGame {
         else {
             menu.setOptionInteractable(8, false);
         }
+
+        show.forEach(index => {
+            let option = menu.getOption(index);
+            option.node.active = true;
+        })
 
     }
 

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "005bbafd-99cb-40d6-bdc4-9e7851a4a2a2",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1243,
+  "height": 2689,
+  "platformSettings": {},
+  "subMetas": {
+    "MTT 有排名 有奖励 USDT (1)": {
+      "ver": "1.0.6",
+      "uuid": "c532b6c5-eb8d-48d9-a8b4-31c4b947c093",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "005bbafd-99cb-40d6-bdc4-9e7851a4a2a2",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -0.5,
+      "offsetY": 0.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1243,
+      "rawHeight": 2689,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

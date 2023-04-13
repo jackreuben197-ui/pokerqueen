@@ -32,7 +32,6 @@ import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
 import UITexasMenu from "./ui/UITexasMenu";
-import UITexasMenuComponent from "./ui/UITexasMenuComponent";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
 
 export class PlayerBarrageRecord {
@@ -160,7 +159,7 @@ export default class UITexas extends BaseScene {
     UIAutoOperation_Com: UIAutoOperationComponent = null;
     //3.左侧菜单容器
     UITexasMenu_Con: cc.Node = null;
-    UITexasMenu_Com: UITexasMenuComponent = null;
+    //UITexasMenu_Com: UITexasMenuComponent = null;
     UITexasMenu: UITexasMenu = null;
     //4.通用容器 放置 桌面设置，实时战况，战绩
     Common_Con: cc.Node = null;
@@ -424,7 +423,7 @@ export default class UITexas extends BaseScene {
     CleanUI() {
         //隐藏面板
         [
-            PrefabUI.UIAddChipsComponent,
+            //PrefabUI.UIAddChipsComponent,
             PrefabUI.UIOutChipsComponent,
             PrefabUI.UIOperationComponent,
             PrefabUI.UIAutoOperationComponent,

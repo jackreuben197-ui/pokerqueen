@@ -175,8 +175,10 @@ export default class TexasGameMessageHandler {
                         UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubCreateMatch);
                         break;
                     case 3://MTT
-                        UIComponent.Instance.CloseNoAnimation(UIDefine.MttDetailForm);
-                        UIComponent.Instance.CloseNoAnimation(UIDefine.MttListForm);
+                        //UIComponent.Instance.CloseNoAnimation(UIDefine.MttDetailForm);
+                        // UIComponent.Instance.CloseNoAnimation(UIDefine.MttListForm);
+                        UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTDetail);
+                        UIComponent.Instance.CloseNoAnimation(UIDefine.UIMTTList);
                         break;
                 }
 

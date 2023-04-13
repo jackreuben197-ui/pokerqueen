@@ -289,11 +289,20 @@ export class UIMTTModel {
                     },
                     actionCancel: () => {
                         if (curGame != null) {
-                            UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
-                                matchId: GameCache.Instance.match_id,
-                                matchName: GameCache.Instance.roomName,
-                                isRebuy: true
-                            }))
+                            // UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
+                            //     matchId: GameCache.Instance.match_id,
+                            //     matchName: GameCache.Instance.roomName,
+                            //     isRebuy: true
+                            // }))
+
+                            UIComponent.open(UIDefine.UIMTTMineRank,
+                                {
+                                    matchId: GameCache.Instance.match_id,
+                                    matchName: GameCache.Instance.roomName,
+                                    isRebuy: true
+                                });
+
+
                             GameCache.Instance.CurGame.SMAgency.ChangeGameState(TexasGameState.Exit, null);
                         }
                     }

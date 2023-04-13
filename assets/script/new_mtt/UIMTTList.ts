@@ -30,13 +30,19 @@ export default class UIMTTList extends BaseFormPlus {
         super.regiterTouchEvents();
     }
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
-        super.onShow(param, fromUI, sceneUI);
         this.isReqing = false;
         this.listEx.reset();
+        super.onShow(param, fromUI, sceneUI);
     }
     fadeInComplete() {
         super.fadeInComplete();
         //打开完成进行处理
+        this._param?.jumpRequest || this.listEx.dropRequest();
+    }
+    //返回刷新
+    backRefresh() {
+        this.isReqing = false;
+        this.listEx.reset();
         this.listEx.dropRequest();
     }
 

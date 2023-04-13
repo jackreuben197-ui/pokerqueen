@@ -102,7 +102,7 @@ export default class UITexasPlayerInfo extends UIBasePlus {
             this.$values.children[1].getComponent(cc.Label).string = `${data.mtt_room_data.second_times}`;
             this.$values.children[2].getComponent(cc.Label).string = `${data.mtt_room_data.third_times}`;
             this.$values.children[3].getComponent(cc.Label).string = `${data.mtt_room_data.play_times}`;
-            this.$values.children[4].getComponent(cc.Label).string = `${data.mtt_room_data.allinWins}%`;
+            this.$values.children[4].getComponent(cc.Label).string = `${data.mtt_room_data.win_times}%`;
         }
         else {
             this.$values.children[0].getComponent(cc.Label).string = `${data.room_data.total_game_cnt}%`;
@@ -111,7 +111,6 @@ export default class UITexasPlayerInfo extends UIBasePlus {
             this.$values.children[3].getComponent(cc.Label).string = `${data.room_data.total_hand}`;
             this.$values.children[4].getComponent(cc.Label).string = `${data.room_data.wins}%`;
         }
-
     }
 
     refreshDownTips() {

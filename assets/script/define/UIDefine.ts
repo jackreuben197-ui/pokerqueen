@@ -1070,12 +1070,19 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/dataManger/UIFriendDataDetail",
     },
-        //MTT比赛报名页面
+    //MTT比赛报名页面
     UIMTTDetail: {
         UIType: UIType.Form,
         Name: "UIMTTDetail",
         Bundle: null,
         Path: "main/new_mtt/UIMTTDetail",
+    },
+    //MTT结算
+    UIMTTMineRank: {
+        UIType: UIType.CommonUI,
+        Name: "UIMTTMineRank",
+        Bundle: null,
+        Path: "main/new_mtt/UIMTTMineRank",
     },
 
 

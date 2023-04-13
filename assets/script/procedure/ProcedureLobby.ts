@@ -54,8 +54,9 @@ export default class ProcedureLobby extends ProcedureBase {
                     GC.notify.post(EventName.updateFriendChessView)
                     break;
                 case 3://MTT
-                    UIComponent.open(UIDefine.MttDetailForm, null, { SceneUI: SceneManager.Instance.currUI, jumpShow: true });
-                    UIComponent.open(UIDefine.MttListForm, null, { jumpShow: true });
+                    UIComponent.open(UIDefine.UIMTTList, { jumpRequest: true }, { SceneUI: SceneManager.Instance.currUI, jumpShow: false, animation: false });
+                    UIComponent.open(UIDefine.UIMTTDetail, GC.data.mtt.list.select, { SceneUI: SceneManager.Instance.currUI, jumpShow: false, animation: false });
+
                     break;
 
             }

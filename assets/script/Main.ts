@@ -123,6 +123,6 @@ export default class Main extends cc.Component {
         //u_mask.width = cc.view.getVisibleSize().height;
         //b_mask.width = cc.view.getVisibleSize().height;
     }
-
 }
 (window as any).Main = Main;
+//http://localhost:7456/assets/resources/native/8c/8c598b78-6324-492f-adf1-b4a23bb90339.png

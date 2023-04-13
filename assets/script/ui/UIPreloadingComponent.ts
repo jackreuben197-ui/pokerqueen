@@ -62,7 +62,9 @@ export default class UIPreloadingComponent extends UIBase {
                     //纠错，保证当前进度不会小于上次进度
                     percent = Math.max(percent, this.prevPercent);
                     this.setProgress(percent);
-                    //console.log(finish, total);
+
+                    //console.log("=====>", Bundle_Resources, item.url);
+
                 }, (error: Error, assets) => {
                     if (error) {
                         console.warn(`资源加载失败:${bundle}/${dir}`);
@@ -70,30 +72,30 @@ export default class UIPreloadingComponent extends UIBase {
                     } else {
                         console.log(`资源加载完成:${bundle}/${dir}`, assets.length);
 
-                        assets.forEach((item) => {
-                            if (item instanceof cc.Prefab) {
-                                AssetContext.setAsset(Bundle_Resources, item.name, item);
-                                let ac = item.data?.getComponent(AssetContext);
-    
-                                if (ac) {
-                                    this.asset_count++;
-                                    //console.log("解析:", item, this.asset_count);
-                                    item.data.children.forEach((item) => {
-                                        let sprite = item.getComponent(cc.Sprite);
-                                        if (sprite) {
-                                            AssetContext.setAsset(ac.fold, item.name, sprite.spriteFrame);
-                                            
-                                        }
-                                        let sound = item.getComponent(cc.AudioSource);
-                                        if (sound) {
-                                            AssetContext.setAsset(ac.fold, item.name, sound.clip);
-                                        }
-                                    })
-                                }
-                            }
-                        }
-                        )
+                        ResManager.AssetForeach(assets, Bundle_Resources);
+                        // assets.forEach((item) => {
+                        //     if (item instanceof cc.Prefab) {
+                        //         AssetContext.setAsset(Bundle_Resources, item.name, item);
+                        //         let ac = item.data?.getComponent(AssetContext);
 
+                        //         if (ac) {
+                        //             this.asset_count++;
+                        //             //console.log("解析:", item, this.asset_count);
+                        //             item.data.children.forEach((item) => {
+                        //                 let sprite = item.getComponent(cc.Sprite);
+                        //                 if (sprite) {
+                        //                     AssetContext.setAsset(ac.fold, item.name, sprite.spriteFrame);
+
+                        //                 }
+                        //                 let sound = item.getComponent(cc.AudioSource);
+                        //                 if (sound) {
+                        //                     AssetContext.setAsset(ac.fold, item.name, sound.clip);
+                        //                 }
+                        //             })
+                        //         }
+                        //     }
+                        // }
+                        // )
                         param?.complete();
                     }
                 })

@@ -83,14 +83,23 @@ export default class MTTGameMessageHandler extends TexasGameMessageHandler {
         }
     }
     private async ShowMineRank(isRebuy: boolean = false) {
-        
+
         await TimeHelper.Sleep(2000);
 
-        UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
-            matchId: GameCache.Instance.match_id,
-            matchName: GameCache.Instance.roomName,
-            isRebuy: isRebuy
-        }))
+        // UIComponent.open(UIDefine.UIMTTMineRankComponent, new MineRankData({
+        //     matchId: GameCache.Instance.match_id,
+        //     matchName: GameCache.Instance.roomName,
+        //     isRebuy: isRebuy
+        // }))
+
+        UIComponent.open(UIDefine.UIMTTMineRank,
+            {
+                matchId: GameCache.Instance.match_id,
+                matchName: GameCache.Instance.roomName,
+                isRebuy: isRebuy
+            });
+
+
         this.game.SMAgency.ChangeGameState(TexasGameState.Exit, null);
     }
 }

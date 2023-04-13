@@ -11,9 +11,9 @@ const { ccclass } = cc._decorator;
 
 export enum PrefabUI {
     UIPreloading = "UIPreloading",
-    UITexasMenuComponent = "UITexasMenuComponent",
+    //UITexasMenuComponent = "UITexasMenuComponent",
     UITexasMenu = "UITexasMenu",
-    UIAddChipsComponent = "UIAddChipsComponent",
+    //UIAddChipsComponent = "UIAddChipsComponent",
     UIOutChipsComponent = "UIOutChipsComponent",
     UIOperationComponent = "UIOperationComponent",
     UIAutoOperationComponent = "UIAutoOperationComponent",

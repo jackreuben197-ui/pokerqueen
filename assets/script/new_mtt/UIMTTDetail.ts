@@ -14,10 +14,12 @@ import { Web_Room_Center_Mtt_Details } from "../net/https/WebRequest";
 import LobbySession from "../session/LobbySession";
 
 import UIBasePlus from "../ui/UIBasePlus";
+import UIComponent from "../ui/UIComponent";
 
 import BaseFormPlus from "../ui/form/BaseFormPlus";
 
 import UIMTTDetail_State from "./UIMTTDetail_State";
+import UIMTTList from "./UIMTTList";
 import { MTTJoinAction, UIMTTModel } from "./UIMTTModel";
 
 
@@ -89,14 +91,13 @@ export default class UIMTTDetail extends BaseFormPlus {
         this.setButtonClick(this.$btn_signup, this.click_signup);
     }
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
-        super.onShow(param, fromUI, sceneUI);
         this.setChildLabel(this.$btn_signup, "label", i18nMgr.Get("MTT-Apply"));
         this.cc_Sprite$logo.spriteFrame = null;
         this.$buyin_coin.children[0].active = false;
         this.$buyin_coin.children[1].active = false;
         this.closeAllPages();
         this.refreshIndexTexts();
-        //this.$mtt_state.getComponent(UIMTTDetail_State).onShow();
+        super.onShow(param, fromUI, sceneUI);
     }
     fadeInComplete() {
         super.fadeInComplete();
@@ -369,6 +370,12 @@ export default class UIMTTDetail extends BaseFormPlus {
             }
         });
 
+    }
+
+    //关闭界面
+    override close() {
+        super.close();
+        UIComponent.Instance.getComponent<UIMTTList>("UIMTTList").backRefresh();
     }
 
 }

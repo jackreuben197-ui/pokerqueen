@@ -2960,6 +2960,11 @@ export class Web_Room_Center_Mtt_Ranks extends WebCommon {
 }
 
 
+
+// 分享按钮显示开关
+export class Web_Share_usable extends WebCommon {
+    static API: string = "/api/prop/share/usable";
+}
 /**
  * 注册全局访问
  */

@@ -80,6 +80,29 @@ export class ResManager {
         }
     }
 
+
+    static AssetForeach(assets, bundleName) {
+        assets.forEach((item) => {
+            if (item instanceof cc.Prefab) {
+                AssetContext.setAsset(bundleName, item.name, item);
+                let ac = item.data?.getComponent(AssetContext);
+                if (ac) {
+                    item.data.children.forEach((item) => {
+                        let sprite = item.getComponent(cc.Sprite);
+                        if (sprite) {
+                            AssetContext.setAsset(ac.fold, item.name, sprite.spriteFrame);
+
+                        }
+                        let sound = item.getComponent(cc.AudioSource);
+                        if (sound) {
+                            AssetContext.setAsset(ac.fold, item.name, sound.clip);
+                        }
+                    })
+                }
+            }
+        }
+        )
+    }
     //读取整个bundle包内资源
     static LoadABs(bundleName: string, progressHandler?: Function) {
         let percent = 0;
@@ -91,36 +114,16 @@ export class ResManager {
                 } else {
                     Bundle_Map.set(bundleName, bundle);
                     bundle.loadDir("/",
-                        (finish: number, total: number) => {
+                        (finish: number, total: number, item: cc.AssetManager.RequestItem) => {
                             percent = Math.max(percent, finish / total);
                             if (progressHandler) progressHandler(percent);
+                            //console.log("=====>", bundleName, item.url);
                         }, (error: Error, assets) => {
                             if (error) {
                                 cc.log("load dir error:", error);
                                 reject(0);
                             } else {
-
-                                assets.forEach((item) => {
-                                    if (item instanceof cc.Prefab) {
-                                        AssetContext.setAsset(bundleName, item.name, item);
-                                        let ac = item.data?.getComponent(AssetContext);
-            
-                                        if (ac) {
-                                            item.data.children.forEach((item) => {
-                                                let sprite = item.getComponent(cc.Sprite);
-                                                if (sprite) {
-                                                    AssetContext.setAsset(ac.fold, item.name, sprite.spriteFrame);
-
-                                                }
-                                                let sound = item.getComponent(cc.AudioSource);
-                                                if (sound) {
-                                                    AssetContext.setAsset(ac.fold, item.name, sound.clip);
-                                                }
-                                            })
-                                        }
-                                    }
-                                }
-                                )
+                                this.AssetForeach(assets, bundleName);
                                 resolve(1);
                             }
                         })
@@ -352,6 +355,28 @@ export class ResManager {
             prefab.path = path;
         }
         cb && cb(node, res);
+    }
+    //通过md5图片找到原始图片
+    public getOriginImage(code: string) {
+
+        let textture_id = cc.assetManager.assets.get(code)["_id"];
+
+        console.log(textture_id)
+
+        let result = null;
+
+        for (var key in cc.assetManager.assets["_map"]) {
+
+            let item = cc.assetManager.assets["_map"][key];
+
+            if (item?.["_texture"]?.["_id"] == textture_id) {
+
+                result = key;
+
+                break;
+            }
+        }
+        return result
     }
 }
 
