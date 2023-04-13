@@ -6,6 +6,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Def } from "../../protobuf/holdem/define_pb";
 import { ServerMessageAutoOp } from "../../protobuf/holdem/recv_auto_op_pb";
+import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
 import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
 import { ServerMessageNotificationRoomReady } from "../../protobuf/holdem/recv_notification_room_ready_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
@@ -223,7 +224,19 @@ export default class MTTGameProtocol extends TexasGameProtocol {
         (this.game as MTTGame).ClearRoundDate(4000);
     }
     Protocol_Holdem_HandClear_Handler(rec) {
+        if (rec == null) return;
+        this.HandleRoundFinish(null);
+    }
 
+    override HANDLER_REQ_GAME_CHANGE_CHIPS(rec: ServerMessageChipsChange.AsObject) {
+        super.HANDLER_REQ_GAME_CHANGE_CHIPS(rec);
+        let mSeat: Seat = null;
+        for (let i = 0, n = this.game.listSeat.length; i < n; i++) {
+            mSeat = this.game.listSeat[i];
+            if (null == mSeat || null == mSeat.Player)
+                continue;
+            mSeat.UpdateHunterAward();
+        }
     }
 
 }

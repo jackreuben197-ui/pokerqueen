@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "ae937ac4-9e8f-45db-a0f5-2d90760d65a8",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1243,
+  "height": 2688,
+  "platformSettings": {},
+  "subMetas": {
+    "猎人赛": {
+      "ver": "1.0.6",
+      "uuid": "3ef75269-73f0-40b0-9327-30a167c89e17",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ae937ac4-9e8f-45db-a0f5-2d90760d65a8",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -0.5,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1242,
+      "height": 2688,
+      "rawWidth": 1243,
+      "rawHeight": 2688,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

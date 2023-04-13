@@ -403,7 +403,7 @@ export default class UITexas extends BaseScene {
 
             scale *= 1.09;
 
-            this.main.setScale(scale,scale);
+            this.main.setScale(scale, scale);
 
         } else {
 
@@ -459,6 +459,14 @@ export default class UITexas extends BaseScene {
         this.HideMenu(false);
         //关闭个人信息
         UIComponent.close(UIDefine.UITexasPlayerInfo);
+        //关闭设置
+        UIComponent.close(UIDefine.UITexasSettingComponent);
+        //关闭规则
+        UIComponent.close(UIDefine.UITexasRule);
+        //关闭战况
+        UIComponent.close(UIDefine.UITexasReportComponent);
+        //关闭战绩
+        UIComponent.close(UIDefine.UITexasHistoryComponent);
     }
     Exit(param) {
         super.Exit(param);
