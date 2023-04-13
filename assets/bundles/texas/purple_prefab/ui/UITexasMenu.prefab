@@ -608,10 +608,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "ac1d91e4-0ed2-4d9e-ac6d-fa5e4aa3412e"
+      "__uuid__": "458c7efe-2344-437e-968b-7acfef554490"
     },
     "_type": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
