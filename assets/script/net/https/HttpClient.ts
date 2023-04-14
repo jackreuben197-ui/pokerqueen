@@ -7,7 +7,7 @@ import LoginSession from "../../session/LoginSession";
 import CCTools from "../../tools/CCTools";
 import UIComponent from "../../ui/UIComponent";
 import WebHelper from "./WebHelper";
-import { APIOrgFriendBringIn, Web_Club_Fund_Audit } from "./WebRequest";
+import { APIOrgFriendBringIn, API_CLUB_APPLY_LIST, Web_Club_Fund_Audit } from "./WebRequest";
 
 /**
  * Http端
@@ -67,25 +67,8 @@ export default class HttpClient {
                 if (response_json?.code == 0) {
                     onSuccess && onSuccess(response_json);
                 } else {
-                    //错误码提示 
-                    switch (response_json.code) {
-                        case 90001://玩家充值失败
-                            if (api == Web_Club_Fund_Audit.API) {
-                                //friend room bringin applied
-                                //ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response_json.code));
-                                UIComponent.Instance.ToastLanguage("UISupplememtDetails_cz_fail");
-                            } else {
-                                ToastManager.Instance.createToast(response_json.message);
-                            }
-                            break;
-                        case 90003:
-                        case 20038:
-                            ToastManager.Instance.createToast(response_json.message);
-                            break;
-                        default:
-                            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(response_json.code));
-                            break;
-                    }
+                    //错误码处理
+                    HttpCodeHandler(api, response_json.code, response_json.message);
                     onFailure && onFailure(response_json);
                 }
                 break;
@@ -114,7 +97,7 @@ export default class HttpClient {
             xhr.onerror = function (err) {
 
                 if (isTimeout) return;//请求已经超时，忽略
-                clearTimeout(timer);//取消等待的超时
+                clearTimeout(timer);//取消等待的超时d
                 resolve("error");
             };
             xhr.ontimeout = function () {
@@ -157,5 +140,28 @@ export default class HttpClient {
             url += "?" + paramStr.slice(1);
         }
         return url;
+    }
+}
+
+//HTTP请求的错误码处理
+let HttpCodeHandler = (api: string, code: number, message: string = "") => {
+    //充值失败
+    if (Web_Club_Fund_Audit.API == api) {
+        UIComponent.Instance.ToastLanguage("UISupplememtDetails_cz_fail");
+        return;
+    }
+    //公会内部桌请求申请列表d
+    if (API_CLUB_APPLY_LIST.API == api) {
+        return;
+    }
+    switch (code) {
+        case 90001:
+        case 90003:
+        case 20038:
+            message?.length > 0 && ToastManager.Instance.createToast(message);
+            break;
+        default:
+            ToastManager.Instance.createToast(CPErrorCode.ServerErrorDescription(code));
+            break;
     }
 }

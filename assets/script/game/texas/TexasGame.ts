@@ -3336,27 +3336,61 @@ export default class TexasGame {
 
         if (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) {
 
-            WWW.Instance.CommonAPI(
-                {
-                    web_class: Web_RoomSitApplyRecords,
-                    body: {
-                        "limit": 1,
-                        "offset": 0,
-                        "status": 1
-                    },
-                }
-            ).then(
-                (res: any) => {
-                    if (res.data?.data) {
-                        this.uirc.btn_msg.getChildByName("red_icon").active = res.data.data.length > 0;
-                        this.uirc.btn_msg.getChildByName("normal_icon").active = !(res.data.data.length > 0);
-                    }
-                },
-                (res: any) => {
+            if (GameUtil.GetFriendsOrClubTable() == 1) {//朋友桌
 
-                }
-            )
+                WWW.Instance.CommonAPI(
+                    {
+                        web_class: Web_RoomSitApplyRecords,
+                        body: {
+                            "limit": 1,
+                            "offsetd": 0,
+                            "status": 1
+                        },
+                    }
+                ).then(
+                    (res: any) => {
+                        if (res.data?.data) {
+                            this.uirc.btn_msg.getChildByName("red_icon").active = res.data.data.length > 0;
+                            this.uirc.btn_msg.getChildByName("normal_icon").active = !(res.data.data.length > 0);
+                        }
+                    },
+                    (res: any) => {
+
+                    }
+                )
+            }
+
+            if (GameUtil.GetFriendsOrClubTable() == 2) {//公会内部桌子
+
+                WWW.Instance.CommonAPI(
+                    {
+                        web_class: API_CLUB_APPLY_LIST,
+                        body: {
+                            "limit": 1,
+                            "offset": 0,
+                        },
+                        club_id: ClubCache.club_id
+                    }
+                ).then(
+                    (res: any) => {
+                        if (res.code == 0 && res.data.data != null) {
+                            let isShow = false;
+                            res.data.data.forEach(item => {
+                                if (item.status == 1) {
+                                    isShow = true;
+                                }
+                            })
+                            this.uirc.btn_msg.getChildByName("red_icon").active = isShow;
+                            this.uirc.btn_msg.getChildByName("normal_icon").active = !isShow;
+                        }
+                    },
+                    (res: any) => {
+
+                    }
+                )
+            }
         }
+
     }
 
     //重连清理

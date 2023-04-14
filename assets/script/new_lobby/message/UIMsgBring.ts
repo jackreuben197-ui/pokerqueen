@@ -227,7 +227,7 @@ export default class UIMsgBring extends BaseFormPlus {
                 this.refreshList(res.data.data);
             },
             (res: any) => {
-
+                this.refreshList(null);
             }
         )
     }

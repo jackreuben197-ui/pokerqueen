@@ -485,7 +485,7 @@ export default class TexasGameProtocol {
         if (rec.keep && rec.keepSeatReason == Def.KeepSeatReason.KSR_TAKE_SEAT) {
             mSeat.Player.KeepSeatLeftTime = rec.leftTime;
             mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
-            if (rec.leftTime > 0) {
+            if (rec.leftTime > 0 && mSeat.IsMySeat) {
                 UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${rec.leftTime}s`);
             }
             return;
