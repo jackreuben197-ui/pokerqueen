@@ -1567,18 +1567,18 @@ export default class TexasGame {
     /// </summary>
     /// <param name="spriteName"></param>
     /// <returns></returns>
-    public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        let sf: cc.SpriteFrame = AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
-        if (!sf) console.log("素材获取失败:", spriteName);
-        return sf;
-    }
+    // public GetChipSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
+    //     let sf: cc.SpriteFrame = AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
+    //     if (!sf) console.log("素材获取失败:", spriteName);
+    //     return sf;
+    // }
 
-    //获取气泡相关的spriteframe
-    public GetBubbleSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
-        let sf: cc.SpriteFrame = AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
-        if (!sf) console.log("素材获取失败:", spriteName);
-        return sf;
-    }
+    // //获取气泡相关的spriteframe
+    // public GetBubbleSpriteBySpriteName(spriteName: string): cc.SpriteFrame {
+    //     let sf: cc.SpriteFrame = AssetContext.getAsset(spriteName, AssetFold.texture_TexasUI);
+    //     if (!sf) console.log("素材获取失败:", spriteName);
+    //     return sf;
+    // }
 
 
 
@@ -3011,19 +3011,30 @@ export default class TexasGame {
 
         if (this.mainPlayer?.isPlaying) {
 
-            UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
-                {
-                    type: UIDialogComponent.DialogType.CommitCancel,
-                    title: "",
-                    //"退出游戏，在这手牌结束后将自动站起",
-                    content: CPErrorCode.LanguageDescription(20003),
-                    contentCommit: CPErrorCode.LanguageDescription(10012),
-                    contentCancel: CPErrorCode.LanguageDescription(10013),
-                    actionCommit: () => {
-                        this.CallbackExit();
-                    },
-                    noAnimation: true,
-                });
+            // UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
+            //     {
+            //         type: UIDialogComponent.DialogType.CommitCancel,
+            //         title: "",
+            //         //"退出游戏，在这手牌结束后将自动站起",
+            //         content: CPErrorCode.LanguageDescription(20003),
+            //         contentCommit: CPErrorCode.LanguageDescription(10012),
+            //         contentCancel: CPErrorCode.LanguageDescription(10013),
+            //         actionCommit: () => {
+            //             this.CallbackExit();
+            //         },
+            //         noAnimation: true,
+            //     });
+
+            UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+                this: this,
+                //title: i18nMgr.Get("WalletServiceCharge_eeydpBno"),
+                //"退出游戏，在这手牌结束后将自动站起",
+                content: CPErrorCode.LanguageDescription(20003),
+                commit: CPErrorCode.LanguageDescription(10012),
+                cancel: CPErrorCode.LanguageDescription(10013),
+                commit_click: this.CallbackExit,
+            });
+
         } else {
             this.CallbackExit();
         }

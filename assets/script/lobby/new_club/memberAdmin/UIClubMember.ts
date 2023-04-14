@@ -30,6 +30,9 @@ import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import { APIOrgClubUserInfo, APIOrgClubUserRole_change, Web_User_Info } from "../../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import Data from "../../labor/script/Data";
+import { UISuperDialogType } from "../../../ui/dialog/UISuperDialog";
+import { CPErrorCode } from "../../../i18n/CPErrorCode";
+import { i18nMgr } from "../../../i18n/i18nMgr";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/new_club/UIClubMember')
@@ -301,7 +304,9 @@ export default class UIClubMember extends BaseForm {
         if (index == 1) {
             // 冻结
             title = "冻结";
-            content = "确定冻结 " + this._info.info.user_info.nickname + "?";
+            //content = "确定冻结 " + this._info.info.user_info.nickname + "?";
+            content = StringHelper.Format(i18nMgr.Get("UIGuild_MemberDetails_Frozen"), [this._info.info.user_info.nickname])
+
         } else if (index == 3) {
             // 解冻
             title = "解冻";
@@ -309,15 +314,17 @@ export default class UIClubMember extends BaseForm {
         } else if (index == 2) {
             // 删除
             title = "删除";
-            content = "确定删除 " + this._info.info.user_info.nickname + "?";
+            //content = "确定删除 " + this._info.info.user_info.nickname + "?";
+            content = StringHelper.Format(i18nMgr.Get("UIGuild_MemberDetails_Delete"), [this._info.info.user_info.nickname])
         }
-        UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent, {
-            type: UIDialogComponent.DialogType.CommitCancel,
+
+        UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+            this: this,
             title: title,
             content: content,
-            contentCommit: "确定",
-            contentCancel: "取消",
-            actionCommit: () => {
+            commit: CPErrorCode.LanguageDescription(10012),
+            cancel: CPErrorCode.LanguageDescription(10013),
+            commit_click: () => {
                 let btn_1: cc.Node = this.getChildNodeOrComponent("btn_1");
                 let btn_3: cc.Node = this.getChildNodeOrComponent("btn_3");
                 if (index == 1) {
@@ -368,7 +375,6 @@ export default class UIClubMember extends BaseForm {
                     )
                 }
             },
-            noAnimation: true,
         });
     }
     async editNameCb() {

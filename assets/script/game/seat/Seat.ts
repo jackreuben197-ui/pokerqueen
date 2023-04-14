@@ -1073,7 +1073,7 @@ export default class Seat {
 
         let mOffset = 10;
 
-        this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+        //this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
 
         let str = StringHelper.FormatIntOrFloat1(GameCache.Instance.CurGame.groupBet / 100);
@@ -1414,7 +1414,7 @@ export default class Seat {
     /// 刷新回收赢的筹码
     /// </summary>
     public UpdateRecyclingWinChip(): void {
-        this.uirc.imageRecyclingWinChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
+        //this.uirc.imageRecyclingWinChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
     }
 
 

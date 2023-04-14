@@ -2,6 +2,7 @@ import { UIDefine } from "../define/UIDefine";
 import ToastManager from "../manager/ToastManager";
 import UIBase from "./UIBase";
 import UIComponent from "./UIComponent";
+import { UISuperDialogType } from "./dialog/UISuperDialog";
 
 
 const { ccclass, property } = cc._decorator;
@@ -47,6 +48,11 @@ export default class MainTest extends UIBase {
                         }
                     }
                 });
+
+                
+
+
+
                 break;
             case "Toast":
                 let dic = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789阿克苏据了解阿卡链接发圣诞节快乐收到简历咖决胜巅峰";

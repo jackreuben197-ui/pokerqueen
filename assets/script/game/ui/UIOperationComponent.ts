@@ -11,6 +11,7 @@ import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/def
 import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
 import GGSlider from "../../ui/component/GGSlider";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
+import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -270,7 +271,7 @@ export default class UIOperationComponent extends UIBase {
 
         if (this.isShowingDialog) {
             //UIComponent.Instance.HideUI(UIType.UIDialog);
-            UIComponent.close(UIDefine.UIDialogComponent);
+            UIComponent.close(UIDefine.UISuperDialog);
         }
         this.isShowingDialog = false;
         this.actionDataInfo = new ActionDataInfo();
@@ -358,27 +359,32 @@ export default class UIOperationComponent extends UIBase {
         if (this.buttonCheck.activeInHierarchy) {
             //如果可以让牌，需要弹窗询问弃牌还是让牌
             this.isShowingDialog = true;
-            UIComponent.open(UIDefine.UIDialogComponent,
-                {
-                    type: UIDialogComponent.DialogType.CommitCancel,
-                    // title = $"确定弃牌？",
-                    title: CPErrorCode.LanguageDescription(20037),
-                    // content = $"你可以让牌而不需要任何记分牌",
-                    content: CPErrorCode.LanguageDescription(20038),
-                    // contentCommit = "弃牌",
-                    contentCommit: CPErrorCode.LanguageDescription(10047),
-                    // contentCancel = "让牌",
-                    contentCancel: CPErrorCode.LanguageDescription(10315),
-                    actionCommit: () => {
-                        GameCache.Instance.CurGame?.OptAction(Def.Action.FOLD, 0);
-                        this.isCountDown = false;
-                    },
-                    actionCancel: () => {
-                        GameCache.Instance.CurGame?.OptAction(Def.Action.CHECK, 0);
-                        this.isCountDown = false;
-                    },
-                    noAnimation: true,
-                });
+            
+            UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+                this: this,
+                // title = $"确定弃牌？",
+                title: CPErrorCode.LanguageDescription(20037),
+                // content = $"你可以让牌而不需要任何记分牌",
+                content: CPErrorCode.LanguageDescription(20038),
+                // contentCommit = "弃牌",
+                commit: CPErrorCode.LanguageDescription(10047),
+                // contentCancel = "让牌",
+                cancel: CPErrorCode.LanguageDescription(10315),
+                commit_click: () => {
+                    GameCache.Instance.CurGame?.OptAction(Def.Action.FOLD, 0);
+                    this.isCountDown = false;
+                },
+                cancel_click: () => {
+                    GameCache.Instance.CurGame?.OptAction(Def.Action.CHECK, 0);
+                    this.isCountDown = false;
+                }
+            })
+
+
+
+
+
+
             return;
         }
         GameCache.Instance.CurGame.OptAction(Def.Action.FOLD, 0);

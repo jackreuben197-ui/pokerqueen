@@ -1,9 +1,12 @@
 import { UIDefine } from "../../define/UIDefine";
 import RateItemModel from "../../frame/data/rate/RateItemModel";
 import GC from "../../frame/GameControl";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { Web_Rate_Api } from "../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
+import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 
@@ -63,17 +66,18 @@ export default class RateSetItem extends UIBase {
 
     clickDelete() {
         let tips = GC.language.getLocal("UIDeletRateTostTip", this._data.fromDesc, this._data.desc);
-        UIComponent.open(UIDefine.UIDialogComponent,
-            {
-                type: UIDialogComponent.DialogType.CommitCancel,
-                title: "adaptation10007",
-                content: tips,
-                contentCommit: "adaptation10012",
-                contentCancel: "adaptation10013",
-                actionCommit: () => {
-                    GC.data.rate.reqDeleteRate(this._data.id);
-                },
-                noAnimation: true,
-            });
+
+        UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+            this: this,
+            title: i18nMgr.Get("adaptation10007"),
+            content: tips,
+            commit: CPErrorCode.LanguageDescription(10012),
+            cancel: CPErrorCode.LanguageDescription(10013),
+            commit_click: () => {
+                GC.data.rate.reqDeleteRate(this._data.id);
+            }
+        })
+
+
     }
 }

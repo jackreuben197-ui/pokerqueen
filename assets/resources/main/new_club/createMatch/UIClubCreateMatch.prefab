@@ -38402,7 +38402,7 @@
     "node": {
       "__id__": 19
     },
-    "_enabled": false,
+    "_enabled": true,
     "_materials": [
       {
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
@@ -40908,9 +40908,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 44,
+      "g": 50,
+      "b": 87,
       "a": 255
     },
     "_contentSize": {
@@ -42213,10 +42213,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "70cd586e-2dc0-4bb2-be2b-d3c3b1d1fe16"
+      "__uuid__": "d8c350d7-38b8-4384-92a7-16cfcb96c0e4"
     },
-    "_type": 0,
-    "_sizeMode": 1,
+    "_type": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -42312,9 +42312,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "dropDownBox": {
-      "__uuid__": "8c9a4a8f-6bb0-4cdf-8cbe-3053e685c17b"
-    },
+    "dropDownBox": null,
     "ScrollView": {
       "__id__": 1062
     },

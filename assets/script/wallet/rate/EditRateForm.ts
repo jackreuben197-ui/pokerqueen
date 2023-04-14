@@ -5,10 +5,13 @@ import { RateConfig } from "../../frame/data/rate/RateConfig";
 import RateItemModel from "../../frame/data/rate/RateItemModel";
 import RateModel from "../../frame/data/rate/RateModel";
 import GC from "../../frame/GameControl";
+import { CPErrorCode } from "../../i18n/CPErrorCode";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import { Web_Rate_Api } from "../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
+import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import SelectRateTypeNode from "./SelectRateTypeNode";
@@ -144,18 +147,18 @@ export default class EditRateForm extends BaseForm {
         let rate = Number(this.toRate.string)
         if (this._from && this._to && rate) {
             let tips = GC.language.getLocal("UISetRateTostTip", this._from.desc, this._from.country, this._to.desc, this._to.country, this.rateTip.string);
-            UIComponent.open(UIDefine.UIDialogComponent,
-                {
-                    type: UIDialogComponent.DialogType.CommitCancel,
-                    title: "adaptation10007",
-                    content: tips,
-                    contentCommit: "adaptation10012",
-                    contentCancel: "adaptation10013",
-                    actionCommit: () => {
-                        GC.data.rate.reqSetRate(this._to.country, rate, this._data?.id || null, false);
-                    },
-                    noAnimation: true,
-                });
+
+            UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+                this: this,
+                title: i18nMgr.Get("adaptation10007"),
+                content: tips,
+                commit: CPErrorCode.LanguageDescription(10012),
+                cancel: CPErrorCode.LanguageDescription(10013),
+                commit_click: () => {
+                    GC.data.rate.reqSetRate(this._to.country, rate, this._data?.id || null, false);
+                }
+            })
+
         } else {
             ToastManager.Instance.createToast("UIRateSetEditIsNullTip");
         }
