@@ -2,6 +2,7 @@
 import { i18nMgr } from "../i18n/i18nMgr";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
+import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import { GameCache } from "./GameCache";
 import GameUtil, { GameType, PokerType } from "./util/GameUtil";
 
@@ -24,39 +25,18 @@ export default class UITexasRule extends UIBase {
     RulerText: cc.RichText = null;
     CardType: cc.Node = null;
 
-    CardType_Config = {
-        0: {
-            cards: [14, 13, 12, 11, 10],
-        },
-        1: {
-            cards: [28, 27, 26, 25, 24],
-        },
-        2: {
-            cards: [14, 29, 44, 59, 8],
-        },
-        3: {
-            cards: [28, 43, 58, 37, 52],
-        },
-        4: {
-            cards: [27, 25, 23, 21, 22],
-        },
-        5: {
-            cards: [26, 10, 24, 38, 52],
-        },
-        6: {
-            cards: [25, 40, 55, 39, 51],
-        },
-        7: {
-            cards: [24, 9, 22, 7, 51],
-        },
-        8: {
-            cards: [23, 38, 51, 39, 52],
-        },
-        9: {
-            cards: [22, 6, 24, 25, 28],
-        }
-    }
-
+    list = [
+        [9, 10, 11, 12, 0],//皇家同花顺
+        [19, 20, 21, 22, 23],//同花顺
+        [0, 13, 26, 39, 37],//四条
+        [38, 51, 12, 35, 48],//葫芦
+        [17, 18, 20, 21, 23],//同花
+        [18, 32, 33, 21, 22],//顺子
+        [24, 37, 11, 35, 0],//三条
+        [19, 24, 50, 0, 13],//两对
+        [6, 19, 33, 44, 48],//一对
+        [7, 24, 0, 48, 29],//高牌
+    ]
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -71,7 +51,21 @@ export default class UITexasRule extends UIBase {
         this.titelGroup = this.getChildNodeOrComponent('ToggleGroup')
         this.initTitle();
         this.setWidgetState();
+        this.initPoker();
     }
+
+    initPoker() {
+
+        this.CardType.children.forEach((item, index) => {
+            //this.setChildSprite()
+            for (let i = 0; i < 5; i++) {
+                item.children[i].getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(`p_${this.list[index][i]}`, AssetFold.texture_BigCard0);
+            }
+        })
+
+    }
+
+
     initTitle() {
 
         for (let index = 0; index < this.titelGroup.childrenCount; index++) {

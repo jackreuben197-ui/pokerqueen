@@ -1,4 +1,4 @@
-UserLanguage=Português
+UserLanguage=简体中文^English^繁體中文^Português^Español^Русский^German^Hindi^Tiếng Việt
 errorDefault=Erro de conexão, favor tentar novamente. 
 error0=Sucesso
 error995=Solicitação inválida
@@ -3960,22 +3960,22 @@ UINiuZai_ViewNum=
 UINiuZai_buyin=
 UINiuZai_RedZone=
 UILogin_PhoneNum=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UISend_Done=
+UISend_InputNonum=
+UISend_Input0=
+UISend_btn=
+UISend_diamondsNum=
+UIGuildSendDiamonds=
+sl_xibanyayu=Espanhol
+sl_eluosiyu=Russo
+sl_deyu=Alemão
+sl_yinduyu=Hindi
+sl_yuenanyu=Vietnamita
+UIClub_FreeLimit=
+UIClub_xiaohao1=
+UIClub_xiaohao2=
+UIClub_xiaohao3=
+UIClub_xiaohao4=
 
 
 

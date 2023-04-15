@@ -64,8 +64,6 @@ export default class UIClubVipStatistics extends BaseFormPlus {
 
     protected lateLoad() {
         super.lateLoad();
-
-
         this.gameTypeTabs = new TabsGroup(this.$GameTypeTabs.children, this.onGameTypeClick, this);
     }
 
@@ -79,6 +77,7 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         //初始化界面
         ////////////////////////////////////////////////////
         this.RefreshHeader([param.user.avatar, param.user.nickname, param.user.random_id, param.user_level]);
+        this.title_label.i18NString = i18nMgr.Get("UIGuild_MemberDetails_VipCount").replace(/[：|:]/, "");
         this.reset();
         this.reqAgentFriendInfo();
     }

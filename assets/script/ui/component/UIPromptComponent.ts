@@ -74,7 +74,6 @@ export default class UIPromptComponent extends UIBase {
     }
     //切换状态
     translateStatus(status: number) {
-        cc.log("设置状态", status);
         this.status = status;
         if (status == this.statusType.Showing) {
             this.loading.active = true;
