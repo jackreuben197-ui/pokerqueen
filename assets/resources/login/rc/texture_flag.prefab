@@ -131,8 +131,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 38,
-      "height": 28
+      "width": 106,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -144,7 +144,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        -698.361,
         0,
         0,
         0,
@@ -251,7 +251,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        902.338,
         0,
         0,
         0,
@@ -358,7 +358,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        760.592,
         0,
         0,
         0,
@@ -452,8 +452,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 38,
-      "height": 28
+      "width": 106,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -465,7 +465,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        -487.47,
         0,
         0,
         0,
@@ -572,7 +572,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        -328.437,
         0,
         0,
         0,
@@ -666,8 +666,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 38,
-      "height": 28
+      "width": 106,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -679,7 +679,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        -176.319,
         0,
         0,
         0,
@@ -786,7 +786,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        179.776,
         0,
         0,
         0,
@@ -893,7 +893,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        487.47,
         0,
         0,
         0,
@@ -1000,7 +1000,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        321.523,
         0,
         0,
         0,
@@ -1107,7 +1107,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        0,
+        611.931,
         0,
         0,
         0,

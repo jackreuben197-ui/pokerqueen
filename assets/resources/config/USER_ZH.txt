@@ -1,4 +1,4 @@
-UserLanguage=简体中文^English^繁体中文^Português
+UserLanguage=简体中文^English^繁體中文^Português^Español^Русский^German^Hindi^Tiếng Việt
 errorDefault=网络错误，请稍后重试
 error0=操作成功
 error995=非法请求
@@ -3945,22 +3945,22 @@ UINiuZai_ViewNum=观众数：{0}人
 UINiuZai_buyin=平衡
 UINiuZai_RedZone=限红区间
 UILogin_PhoneNum=手机号登录
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UISend_Done=赠送成功
+UISend_InputNonum=请输入发放钻石数量
+UISend_Input0=不能输入0钻石
+UISend_btn=赠送
+UISend_diamondsNum=钻石数量
+UIGuildSendDiamonds=发送钻石
+sl_xibanyayu=西班牙语
+sl_eluosiyu=俄语
+sl_deyu=德语
+sl_yinduyu=印度语
+sl_yuenanyu=越南语
+UIClub_FreeLimit=限免
+UIClub_xiaohao1=创建房间消耗：
+UIClub_xiaohao2=实时语音消耗（{0}人桌）：
+UIClub_xiaohao3=实时视频消耗（{0}人桌）：
+UIClub_xiaohao4=人脸验证消耗（{0}人桌）：
 
 
 
