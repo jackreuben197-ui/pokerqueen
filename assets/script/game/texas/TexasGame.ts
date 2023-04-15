@@ -1106,6 +1106,7 @@ export default class TexasGame {
         if (clientSeatId == 0) {
             let seat = this.dicSeatOnlyClient.get(0);
             seat.uirc.imageBanker.setPosition(seat.seatUIInfo.bank_pos);
+            seat.uirc.transCurRoundHaveBet.setPosition(seat.seatUIInfo.bet_pos);
             return;
         }
         this.dicSeatOnlyClient.clear();
@@ -1651,7 +1652,7 @@ export default class TexasGame {
             //this.isMTT ? false : true;
         }
         //从小盲位置开始发牌
-        let mStartPos: cc.Vec3 = this.uirc.node.convertToWorldSpaceAR(cc.Vec3.ZERO);
+        let mStartPos: cc.Vec3 = this.uirc.main.convertToWorldSpaceAR(cc.v3(0, -1000));
 
 
         let mTmpIndex = 0;
@@ -1772,7 +1773,7 @@ export default class TexasGame {
     /// <returns></returns>
     public GetRecyclingChipPosV3(): cc.Vec3 {
         //return rc.transform.TransformPoint(this.gameUI.textAlreadAnte.transform.localPosition);
-        return this.uirc.node.convertToWorldSpaceAR(this.uirc.Text_AlreadAnte.node.position);
+        return this.uirc.main.convertToWorldSpaceAR(this.uirc.Text_AlreadAnte.node.position);
     }
     /// <summary>
     /// 当前玩法的手牌数量
@@ -3253,6 +3254,8 @@ export default class TexasGame {
             let option = menu.getOption(index);
             option.node.active = true;
         })
+
+
 
     }
     protected __MenuButtonInteractable(node: cc.Node, interactable: boolean) {

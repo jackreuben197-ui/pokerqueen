@@ -337,9 +337,8 @@ export class GameCache {
     //存儲進入房間的參數
     enter_param: { game_enter_type: GameEnterType, isLookOn: boolean } = null;
 
-
-    //hasClub: boolean = false;
-
+    //存储bb开关的状态 room_id || match_id
+    bb_status_map = {};
 
     public static get Instance(): GameCache {
         return (this as any).instance ??= new GameCache;
@@ -375,6 +374,17 @@ export class GameCache {
 
         GameCache.Instance.ClubID = room_info.club_id;
         GameCache.Instance.TribeId = room_info.tribe_id;
+    }
+
+    //获取bb开关
+    get bb_switch() {
+        let id = GameCache.Instance.room_id || GameCache.Instance.match_id;
+        return this.bb_status_map[id] || false;
+    }
+    //设置bb开关
+    set bb_switch(boo: boolean) {
+        let id = GameCache.Instance.room_id || GameCache.Instance.match_id;
+        this.bb_status_map[id] = boo;
     }
 
 

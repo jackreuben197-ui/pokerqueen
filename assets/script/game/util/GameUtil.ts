@@ -415,15 +415,19 @@ export default class GameUtil {
         some_pos.all_bet_pos[0].y = some_pos.all_bet_pos[11].y;
 
 
+        console.log("重置位置:", some_pos.all_bet_pos[0].x, some_pos.all_bet_pos[0].y);
+
     }
     //刷新自己位bank_pos
-    public static RefreshMeBankPos() {
+    public static RefreshMeBankPos() { 
         //bank庄家位置
         some_pos.all_bank_pos[0].x = some_pos.all_bank_pos[10].x;
         some_pos.all_bank_pos[0].y = some_pos.all_bank_pos[10].y;
         //筹码位置
         some_pos.all_bet_pos[0].x = some_pos.all_bet_pos[10].x;
         some_pos.all_bet_pos[0].y = some_pos.all_bet_pos[10].y;
+
+        console.log("刷新位置:", some_pos.all_bet_pos[0].x, some_pos.all_bet_pos[0].y);
     }
 
     //上下座位 适配位置

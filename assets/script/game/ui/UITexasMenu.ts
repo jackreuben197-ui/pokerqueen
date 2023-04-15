@@ -52,7 +52,8 @@ export default class UITexasMenu extends UIBasePlus {
     //容器
     $layout: cc.Node = null;
     //选项
-    $option: cc.Node = null;
+    $option_0: cc.Node = null;
+    $option_bb: cc.Node = null;
     //金币节点
     $node_coin: cc.Node = null;
     //仓库存储节点
@@ -186,18 +187,16 @@ export default class UITexasMenu extends UIBasePlus {
         this.game = GameCache.Instance.CurGame;
         this.game.UpdateMenu();
         this.fadeIn();
+
+        //刷新bb
+        this.refreshBB();
+
+
     }
-
-    // refreshCoin(data: any) {
-    //     this.$node_coin.active = true;
-    //     this.$node_coin.getChildByName("uc").active = data.gold_type == 1;
-    //     this.$node_coin.getChildByName("gc").active = data.gold_type == 2;
-    //     this.refreshCoinValue(StringHelper.GetLongString(data.gold));
-    // }
-
-    // refreshCoinValue(value: string) {
-    //     this.$node_coin.getChildByName("label").getComponent(cc.Label).string = value;
-    // }
+    refreshBB() {
+        this.refreshBB_switch(GameCache.Instance.bb_switch);
+        this.click_bb_hidetips();
+    }
 
     regiterTouchEvents() {
         super.regiterTouchEvents();
@@ -211,7 +210,7 @@ export default class UITexasMenu extends UIBasePlus {
 
     private buildMenuButtons() {
         this.options.forEach(item => {
-            let button = cc.instantiate(this.$option);
+            let button = cc.instantiate(this.$option_0);
             let label = button.getChildByName("label");
             button.parent = this.$layout;
             button.active = false;
@@ -219,8 +218,18 @@ export default class UITexasMenu extends UIBasePlus {
             this.setButtonClick(button, item.onClick);
             item.node = button;
         })
-        this.$option.active = false;
+        this.$option_0.active = false;
+        this.$option_bb.setSiblingIndex(this.$layout.childrenCount - 1);
+        this.setOptionBB();
+
     }
+
+    setOptionBB() {
+        this.setChildButtonClick(this.$option_bb, "click", this.click_bb);
+        this.setChildButtonClick(this.$option_bb, "label_con/btn_showtips", this.click_bb_showtips);
+        this.setChildButtonClick(this.$option_bb, "tips/close_con/close", this.click_bb_hidetips);
+    }
+
     //金币点击跳转钱包
     // onGold() {
     //     if (GC.data.club?.info?.club_id) {
@@ -452,6 +461,21 @@ export default class UITexasMenu extends UIBasePlus {
         this.game.onClickExit();
     }
 
+    click_bb() {
+        GameCache.Instance.bb_switch = !GameCache.Instance.bb_switch;
+        this.refreshBB_switch(GameCache.Instance.bb_switch);
+    }
 
+    click_bb_showtips() {
+        this.setChildVisible(this.$option_bb, "tips", true);
+    }
+    click_bb_hidetips() {
+        this.setChildVisible(this.$option_bb, "tips", false);
+    }
+
+    refreshBB_switch(boo: boolean) {
+        this.setChildVisible(this.$option_bb, "switch/on", boo);
+        this.setChildVisible(this.$option_bb, "switch/off", !boo);
+    }
 
 }
