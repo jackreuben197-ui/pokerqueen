@@ -7,8 +7,6 @@ import { i18nMgr } from "../../../i18n/i18nMgr";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
-import dataItem from "./dataItem";
-import Data from "../../labor/script/Data";
 import { StringHelper } from "../../../helper/StringHelper";
 import { dataDetailSortConfig } from "../../../frame/data/rate/RateConfig";
 import dataDetailItem from "./dataDetailItem";
@@ -52,6 +50,7 @@ export default class UIFriendDataDetail extends BaseForm {
     _order_by: string = 'fee'
     _roomType: number = 1;
     _match_id: any = null;
+    _game_type: any = null
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
@@ -83,7 +82,8 @@ export default class UIFriendDataDetail extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         this._roomId = param.room_id
         this._roomType = param.type
-        this._match_id = param._match_id
+        this._match_id = param.match_id
+        this._game_type = param.game_type
         this.mtt_bottom.active = this._match_id > 0
         this.bottom.active = !this.mtt_bottom.active;
         this.dataList.scrollingCB = this.scrollingCB;
@@ -171,7 +171,6 @@ export default class UIFriendDataDetail extends BaseForm {
                 this.lbl_66.string = StringHelper.GetLongString(res.data.info.total_fee)
                 this.lbl_staus.string = i18nMgr.Get(this.getStaus(res.data.info.game_status))
                 this.lbl_id.string = i18nMgr.Get('UIData_GameID') + this._roomId
-                res.data.info.creator_id
                 this.lbl_create.string = `${i18nMgr.Get('UIClub_PlanRomList_Creator')}${res.data.info.creator_name}（ID:${res.data.info.creator_id}）`
             })
         } else if (this._roomType == 2) {
@@ -187,17 +186,16 @@ export default class UIFriendDataDetail extends BaseForm {
                     this.lbl_13.node.active = false
                     this.lbl_66.node.active = false
 
-                    this.lbl_4.string = `${StringHelper.getStringDiv100(res.data.info.min_buy_in)}-${StringHelper.getStringDiv100(res.data.info.max_buy_in)}`
-                    this.lbl_5.string = `${StringHelper.getStringDiv100(res.data.info.sb)}/${StringHelper.getStringDiv100(res.data.info.sb * 2)}`
-                    this.lbl_6.string = res.data.info.fee_ratio / 10 + '%'
-                    this.lbl_44.string = res.data.info.player_num
-                    this.lbl_55.string = res.data.info.insurance
-                    this.lbl_66.string = StringHelper.GetLongString(res.data.info.total_fee)
+                    this.lbl_4.string = this._game_type
+                    this.lbl_5.string = res.data.info.player_num
+                    this.lbl_6.string = StringHelper.Format(i18nMgr.Get('UITexasReport_Text_MatchZmsysj'), [res.data.info.use_time])
+
+                    this.lbl_44.string = res.data.info.buy_in_times
+                    this.lbl_55.string = StringHelper.GetLongString(res.data.info.total_fee)
+                    // this.lbl_66.string = StringHelper.GetLongString(res.data.info.total_fee)
                     this.lbl_staus.string = i18nMgr.Get(this.getStaus(res.data.info.game_status))
-                    this.lbl_id.string = i18nMgr.Get('UIData_GameID') + this._roomId
-                    this.lbl_create.string = `${i18nMgr.Get('UIClub_PlanRomList_Creator')}${res.data.info.creator_name}（ID:${res.data.info.creator_id}）`
-
-
+                    this.lbl_id.string = i18nMgr.Get('UIData_GameID') + this._match_id
+                    this.lbl_create.string = ''
 
                 } else {
                     this.lbl_4.string = `${StringHelper.getStringDiv100(res.data.info.min_buy_in)}-${StringHelper.getStringDiv100(res.data.info.max_buy_in)}`
@@ -219,7 +217,7 @@ export default class UIFriendDataDetail extends BaseForm {
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(dataDetailItem);
-        item.initData(this._list[index], this._order_by, index);
+        item.initData(this._list[index], this._order_by, this._match_id);
     }
     scrollingCB = async (scrollView: cc.ScrollView) => {
         if (scrollView) {

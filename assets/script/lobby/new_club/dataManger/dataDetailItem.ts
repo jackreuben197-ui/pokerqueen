@@ -3,7 +3,7 @@
  * @Date: 2023-04-06 13:24:06
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-11 12:03:32
+ * @LastEditTime: 2023-04-15 15:06:36
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/dataManger/dataDetailItem.ts
  */
 
@@ -29,7 +29,7 @@ export default class dataDetailItem extends UIBase {
     lbl_id: cc.Label = null;
     lbl_win: cc.Label = null;
     lbl_runk: cc.Label = null;
-
+    _isMatch: boolean = false
     protected lateLoad(): void {
         super.lateLoad();
         this.pt = this.getChildNodeOrComponent('pt')
@@ -45,16 +45,17 @@ export default class dataDetailItem extends UIBase {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
     }
-    initData(data, order_by, index) {
+    initData(data, order_by, match_id) {
         let node = this.pt;
         this._data = data;
-        this.mtt.active = this._data.is_match
+        this._isMatch = match_id > 0
+        this.mtt.active = this._isMatch
         this.pt.active = !this.mtt.active
 
-        if (this._data.is_match) {
+        if (this._isMatch) {
             node = this.mtt
             this.lbl_runk = cc.find('lblNode/lbl_runk', node).getComponent(cc.Label)
-            this.lbl_runk.string = index
+            this.lbl_runk.string = this._data.rank
         }
         this.lbl_name = cc.find('lblNode/lbl_name', node).getComponent(cc.Label)
         this.lbl_fee = cc.find('lblNode/lbl_fee', node).getComponent(cc.Label)
@@ -66,20 +67,27 @@ export default class dataDetailItem extends UIBase {
     }
     initUI() {
         this.setText(this.lbl_name, StringHelper.LengthNick(this._data.nick_name))
-        this.setText(this.lbl_id, this._data.random_id)
+        this.setText(this.lbl_id, 'ID: ' + this._data.random_id)
         WebImageHelper.SetHeadImage(this.sp_icon, this._data.avatar)
         this.setFeeType()
         this.setColor()
 
     }
     setColor() {
-        if (this._data.win > 0) {
-            this.setText(this.lbl_win, "+" + StringHelper.GetLongString(this._data.win))
-            this.setTextColor(this.lbl_win, '#47AB8D')
+        if (this._isMatch) {
+            this.setText(this.lbl_win, this._data.buy_in_times)
+            this.setTextColor(this.lbl_win, '#FFFFFF')
         } else {
-            this.setText(this.lbl_win, StringHelper.GetLongString(this._data.win))
-            this.setTextColor(this.lbl_win, '#CC4629')
+            if (this._data.win > 0) {
+
+                this.setText(this.lbl_win, "+" + StringHelper.GetLongString(this._data.win))
+                this.setTextColor(this.lbl_win, '#47AB8D')
+            } else {
+                this.setText(this.lbl_win, StringHelper.GetLongString(this._data.win))
+                this.setTextColor(this.lbl_win, '#CC4629')
+            }
         }
+
     }
     setFeeType() {
         switch (this._order_by) {

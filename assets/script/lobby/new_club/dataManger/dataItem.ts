@@ -3,7 +3,7 @@
  * @Date: 2023-04-06 13:24:06
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-11 11:12:15
+ * @LastEditTime: 2023-04-15 14:55:58
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/dataManger/dataItem.ts
  */
 
@@ -31,6 +31,7 @@ export default class dataItem extends UIBase {
     lbl_mrt: cc.Label = null;
     _roomType: number = 1;
     _isMathch: boolean = false
+    _gameType: any = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.lbl_game = this.getChildNodeOrComponent('lbl_game', cc.Label)
@@ -58,8 +59,8 @@ export default class dataItem extends UIBase {
         if (this._isMathch) {
             this.setText(this.lbl_mzt, 'UIMine_RecordDetailForMatchPariticipants')
             this.setText(this.lbl_mrt, 'MTT_xq_buy')
-            this.setText(this.lbl_mr, this._data.match_player_num)
-            this.setText(this.lbl_mz, StringHelper.getStringDiv100(this._data.buy_in))
+            this.setText(this.lbl_mr, StringHelper.getStringDiv100(this._data.buy_in_times))
+            this.setText(this.lbl_mz, this._data.match_player_num)
 
         } else {
             this.setText(this.lbl_mzt, 'adaptation20006')
@@ -113,10 +114,11 @@ export default class dataItem extends UIBase {
             default:
                 break;
         }
+        this._gameType = string
         return { type: string, color: color }
     }
     click() {
-        UIComponent.open(UIDefine.UIFriendDataDetail, { room_id: this._data.room_id, type: this._roomType, match_id: this._data.match_id || null })
+        UIComponent.open(UIDefine.UIFriendDataDetail, { room_id: this._data.room_id, type: this._roomType, match_id: this._data.match_id || null, game_type: this._gameType })
 
     }
 }
