@@ -1,6 +1,7 @@
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
+import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import ProcedureManager from "../../manager/ProcedureManager";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
@@ -298,7 +299,6 @@ export default class TexasGameUtils {
         //#endregion
     }
 
-
     //得到 当前 在场玩家     不包括自己
     public GetCurrentPlayers(): CPlayer[] {
         var tCurPlayers = [];
@@ -313,4 +313,5 @@ export default class TexasGameUtils {
         }
         return tCurPlayers;
     }
+
 }

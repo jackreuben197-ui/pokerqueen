@@ -194,7 +194,7 @@ export default class UITexasMenu extends UIBasePlus {
 
     }
     refreshBB() {
-        this.refreshBB_switch(GameCache.Instance.bb_switch);
+        this.refreshBB_switch(GameCache.Instance.bb_on);
         this.click_bb_hidetips();
     }
 
@@ -462,8 +462,9 @@ export default class UITexasMenu extends UIBasePlus {
     }
 
     click_bb() {
-        GameCache.Instance.bb_switch = !GameCache.Instance.bb_switch;
-        this.refreshBB_switch(GameCache.Instance.bb_switch);
+        GameCache.Instance.bb_on = !GameCache.Instance.bb_on;
+        this.refreshBB_switch(GameCache.Instance.bb_on);
+        this.game.UpdateAllBB();
     }
 
     click_bb_showtips() {

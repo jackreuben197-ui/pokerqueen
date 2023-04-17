@@ -218,7 +218,6 @@ export default class Seat {
         else {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20091)}`;
             this.uirc.WaitforthenextmoveTips.node.setPosition(0, -240);
-
         }
 
 
@@ -447,26 +446,6 @@ export default class Seat {
         }
     }
 
-
-    //刷新座位下方筹码数
-    public UpdateCoin(): void {
-
-        if (this.Player == null) {
-            this.SetCoin("");
-        } else {
-            if (this.Player.chips < 0) {
-                this.SetCoin("");
-            }
-            else {
-                this.SetCoin(StringHelper.GetLongString(this.Player.chips));
-            }
-        }
-        if (this.IsMySeat) {
-            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[1]);
-        } else {
-            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
-        }
-    }
 
     /// <summary>
     /// 刷新占座
@@ -797,16 +776,17 @@ export default class Seat {
 
         }
 
-        let str = StringHelper.FormatIntOrFloat1(this.Player.anteNumber / 100);
+        // let str = StringHelper.FormatIntOrFloat1(this.Player.anteNumber / 100);
 
-        this.uirc.textCurRoundHaveBet.string = str;
+        // this.uirc.textCurRoundHaveBet.string = str;
 
         this.uirc.textCurRoundHaveBet.node.active = true;
 
+        this.UpdateBet();
 
         this.uirc.imageIconChip.node.setPosition(cc.Vec3.ZERO);
 
-        this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
+        //this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
         //this.defaultIconChipLocalPos = this.uirc.imageIconChip.node.position.clone();
         this.uirc.imageIconChip.node.active = true;
 
@@ -815,6 +795,10 @@ export default class Seat {
             this.uirc.transCurRoundHaveBet.active = true;
         }
     }
+
+
+
+
 
     /// <summary>
     /// 隐藏手牌
@@ -859,7 +843,7 @@ export default class Seat {
                     hadCard = true;
                 }
                 //主位位移中显示卡牌
-                if ((hadCard || this.Player.isPlaying)) {
+                if (hadCard || this.Player.isPlaying) {
 
                     if (GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
 
@@ -1075,13 +1059,12 @@ export default class Seat {
 
         //this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
+        //let str = StringHelper.FormatIntOrFloat1(GameCache.Instance.CurGame.groupBet / 100);
 
-        let str = StringHelper.FormatIntOrFloat1(GameCache.Instance.CurGame.groupBet / 100);
+        //this.uirc.textCurRoundHaveBet.string = str;
 
+        this.UpdateBet(GameCache.Instance.CurGame.groupBet);
 
-        this.uirc.textCurRoundHaveBet.string = str;
-
-        //textCurRoundHaveBet.text = string.Format("{0:N0}", GameCache.Instance.CurGame.groupBet / 100D); //StringHelper.GetLongString(GameCache.Instance.CurGame.groupBet);
         this.uirc.textCurRoundHaveBet.node.active = true;
         //RectTransform mRectTransform = imageCurRoundHaveBetFrame.transform as RectTransform;
         //mRectTransform.sizeDelta = new Vector2(textCurRoundHaveBet.preferredWidth + imageIconChip.rectTransform.sizeDelta.x, mRectTransform.sizeDelta.y);
@@ -1113,11 +1096,8 @@ export default class Seat {
         // }
 
         this.uirc.imageIconChip.node.setPosition(cc.Vec2.ZERO);
-
-
-        this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
+        ////this.uirc.imageIconChip.node.getPosition(this.defaultIconChipLocalPos);
         this.uirc.imageIconChip.node.active = true;
-        this.uirc.transCurRoundHaveBet.active = true;
     }
 
 
@@ -1802,7 +1782,25 @@ export default class Seat {
         this.isCountDown = false;
     }
 
+    //刷新座位下方筹码数
+    public UpdateCoin(): void {
 
+        if (this.Player?.chips >= 0) {
+            this.SetCoin(GameUtil.TransBetValue(this.Player.chips));
+        } else {
+            this.SetCoin("");
+        }
+        if (this.IsMySeat) {
+            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[1]);
+        } else {
+            this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
+        }
+    }
+    //刷新下注的筹码数
+    public UpdateBet(bet: number = -1) {
+        let value = bet > -1 ? bet : this.Player?.anteNumber || 0;
+        this.uirc.textCurRoundHaveBet.string = GameUtil.TransBetValue(value);
+    }
 
 }
 export interface SeatUIInfo {

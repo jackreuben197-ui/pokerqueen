@@ -945,7 +945,7 @@ export default class TexasGameProtocol {
             Seat.PlayWinArmature();
             Seat.UpdateRecyclingWinChip();
 
-            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
+            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.uirc.main.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
 
             if (PlayRecyclingWinChipAnimation_Tween) {
 
@@ -1141,7 +1141,7 @@ export default class TexasGameProtocol {
             mSeat.Player.recyclingChip = result.win;
             mSeat.Player.cardType = result.handValueType;
             mSeat.Player.isWin = result.win > result.handBet;
-            cc.log(result.win, result.handBet);
+
             mSeat.StopAllinArmature();
             mSeat.PlayWinArmature();
             mSeat.UpdateRecyclingWinChip();
@@ -1150,7 +1150,7 @@ export default class TexasGameProtocol {
                 mSeat.UpdateHunterAward();
             }
             let PlayRecyclingWinChipAnimation_Tween: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function }
-                = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
+                = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.main.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
 
             if (PlayRecyclingWinChipAnimation_Tween) {
 
