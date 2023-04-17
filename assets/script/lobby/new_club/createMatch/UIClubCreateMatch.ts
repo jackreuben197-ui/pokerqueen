@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-10 10:36:11
+ * @LastEditTime: 2023-04-17 19:10:30
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -28,6 +28,7 @@ import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig, fzbTabConf
 import GGSlider from "../../../ui/component/GGSlider";
 import GGSwitch from "../../../ui/component/GGSwitch";
 import UIComponent from "../../../ui/UIComponent";
+import { StringHelper } from "../../../helper/StringHelper";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -165,6 +166,7 @@ export default class UIClubCreateMatch extends BaseForm {
     bcNode: cc.Node = null;
     bcTabNode: TabNode = null;
     ffrs: cc.Node = null;
+    ffrsItem: cc.Node = null;
     // etpSwitch: GGSwitch = null;
     _isFromModel = false
     protected lateLoad(): void {
@@ -221,6 +223,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.bcTabNode = this.getChildNodeOrComponent("bcTabNode", TabNode);
         this.ffrs = this.getChildNodeOrComponent("ffrs");
         this.yxjz = this.getChildNodeOrComponent("yxjz");
+        this.ffrsItem = this.getChildNodeOrComponent("Item");
     }
     async onShow(data?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(data, fromUI, sceneUI);
@@ -246,7 +249,7 @@ export default class UIClubCreateMatch extends BaseForm {
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
         own.string = ClubCache._diamonds_wallet.diamonds + '';
         let pay = cc.find('pay/num', this.coinNode).getComponent(cc.Label)
-        pay.string = 15 + '';
+        pay.string = 12 + '';
         // if (ClubCache.CreateGameType == 2) {
         //     this._selectTitle = 1
         // }
@@ -476,19 +479,24 @@ export default class UIClubCreateMatch extends BaseForm {
         // }, this)
 
         this.bcTabNode.initData(bcTabConfig, (customData) => {
-            if (customData == 1) {
-                UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
-                return
-            }
+            // if (customData == 1) {
+            //     UIComponent.Instance.Toast(i18nMgr.Get('adaptation10113'))
+            //     return
+            // }
             this.fddm.active = customData == 0
             this.ffrs.active = customData == 1
         }, this)
+    }
+    fdrsButton(event, customData) {
+        if (customData == '1') {
+            let item = cc.instantiate(this.ffrsItem);
+            item.getChildByName('nomalItem').active = false
+            item.getChildByName('cloneItem').active = true
 
-
-
-
-
-
+            item.parent = this.ffrs;
+        } else {
+            event.target.parent.parent.removeFromParent()
+        }
     }
 
     ipCilck() {
@@ -673,9 +681,120 @@ export default class UIClubCreateMatch extends BaseForm {
 
     }
     creatMatch() {
-        this._btnType = 1
-        this.upLoadData()
+        if (this._jslxNum == 1) {
+            let arr = []
+            for (let index = 1; index < this.ffrs.childrenCount; index++) {
+                const element = this.ffrs.children[index];
+                let _arr = []
+                let cloneItem = element.getChildByName('cloneItem')
+                let edit = cc.find('fuwu/fuwuBox', cloneItem).getComponent(cc.EditBox);
+                let leftBox = cc.find('left/leftBox', cloneItem).getComponent(cc.EditBox);
+                let rightBox = cc.find('right/rightBox', cloneItem).getComponent(cc.EditBox);
+                if (Number(rightBox.string) <= Number(leftBox.string) || Number(edit.string) > 9999.99) {
+                    UIComponent.Instance.Toast(i18nMgr.Get('UIRoom_FDIncorrect'))
+                    return
+                }
+                _arr[0] = Number(leftBox.string)
+                _arr[1] = Number(rightBox.string)
+                arr.push(_arr)
+            }
+            let min = arr[0][0];
+            let max = arr[0][1];
+            for (let index = 1; index < arr.length; index++) {
+                min = Math.min(min, arr[index][0])
+                max = Math.max(max, arr[index][0])
+            }
+            if (min > 2 || max < this.zwrs['levelData'].level) {
+                UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get('UIRoom_FDIncorrectNo'), [this.zwrs['levelData'].level]))
+                return;
+            }
+
+            let result = this.checkIfArrayIntervalOverLap(arr);
+            switch (result) {
+                case 0:
+                    this._btnType = 1
+                    this.upLoadData()
+                    break;
+                case 1:
+                    UIComponent.Instance.Toast(i18nMgr.Get('UIRoom_FDIncorrectPeople'))
+                    break;
+                case 2:
+                    UIComponent.Instance.Toast(i18nMgr.Get('UIRoom_FDIncorrect'))
+                    break;
+                case 3:
+                    UIComponent.Instance.Toast(StringHelper.Format(i18nMgr.Get('UIRoom_FDIncorrectNo'), [this.zwrs['levelData'].level]))
+                    break;
+            }
+        } else {
+            this._btnType = 1
+            this.upLoadData()
+        }
+
     }
+
+    /**
+    * 多区间判断
+    * @param area
+    * @returns {number}   错误类型(0正常 1区间重合 2最小值大于最大值 3区间没有连续)
+    */
+    checkIfArrayIntervalOverLap(area) {
+        let result = 0
+        let areaLength = area.length
+        if (areaLength > 0) {
+            let maxStartArr = []
+            let minEndArr = []
+            let minStart1 = 0
+            let minStart2 = 0
+            let maxEnd1 = 0
+            let maxEnd2 = 0
+            let secondResult = false
+            let seriesNumber = 0
+            let newMaxEnd = 0
+            for (let i = 0; i < areaLength; i++) {
+                minStart1 = area[i][0]
+                maxEnd1 = area[i][1]
+                secondResult = false
+                seriesNumber = 0
+                // 判断最小值是否大于最大值
+                if (minStart1 > maxEnd1 && maxEnd1 !== 0) {
+                    result = 2
+                    break;
+                }
+                for (let t = 0; t < areaLength; t++) {
+                    minStart2 = area[t][0]
+                    maxEnd2 = area[t][1]
+                    if (i !== t) { // 不与自身比  
+                        maxStartArr = [minStart1, minStart2];// 开始课时数组
+                        minEndArr = [maxEnd1, maxEnd2];// 结束课时数组
+                        newMaxEnd = Number(maxEnd1 + 1);
+                        // 判断数字是否连续
+                        if (newMaxEnd === minStart2) {
+                            seriesNumber = seriesNumber + 1;
+                        }
+                        // 判断是否有重合区间
+                        if (Math.max(...maxStartArr) <= Math.min(...minEndArr)) {
+                            secondResult = true
+                            result = 1
+                            break;
+                        }
+                    }
+                }
+                // 判断是否有重合区间返回结果
+                if (secondResult === true) {
+                    break;
+                }
+                // 判断区间是否连续
+                if (seriesNumber !== 1 && i !== areaLength - 1) {
+                    result = 3
+                    break;
+                }
+
+            }
+        }
+        return result
+    }
+
+
     async upLoadData(modelName = ' ') {
         cc.log('modelName==', modelName);
         let room_config: any = {}
@@ -713,6 +832,12 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.seat_count = this.zwrs['levelData'].level;
         room_config.play_duration = Number(this.pjsc.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) * 3600    //房间有效时长 秒,必填
         room_config.retain_min_rate = this.zxblbs['levelData'].level;//最小倍率 最小保留记分牌倍数
+
+
+        //封顶服务费人数
+
+
+
         // room_config.tribe_id = ClubCache.tribe_id;
 
         if (this.zssxz.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] == 'UIClub_CreateRoom23') {
@@ -732,6 +857,25 @@ export default class UIClubCreateMatch extends BaseForm {
         }
         room_config.retain_type = Number(this._dcjfpNum)
         room_config.settlement_type = this._jslxNum
+        if (this._jslxNum == 0) {
+            room_config.cap_type = 1
+        } else {
+            room_config.cap_type = 2
+            let arr = []
+            for (let index = 1; index < this.ffrs.childrenCount; index++) {
+                const element = this.ffrs.children[index];
+                let _arr = {}
+                let cloneItem = element.getChildByName('cloneItem')
+                let edit = cc.find('fuwu/fuwuBox', cloneItem).getComponent(cc.EditBox);
+                let leftBox = cc.find('left/leftBox', cloneItem).getComponent(cc.EditBox);
+                let rightBox = cc.find('right/rightBox', cloneItem).getComponent(cc.EditBox);
+                _arr['min'] = Number(leftBox.string)
+                _arr['max'] = Number(rightBox.string)
+                _arr['cap'] = Number(edit.string)
+                arr.push(_arr)
+            }
+            room_config.sec_cap_list = arr
+        }
         room_config.fee_permillage = Number(this.fwfbl.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) //服务费比例(0-100)
         room_config.second_public_cards = this._etpState;
         room_config.limit_bet_type = ClubCache.CreateGameType == 2 ? 1 : 0
