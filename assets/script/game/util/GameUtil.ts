@@ -414,8 +414,7 @@ export default class GameUtil {
         //筹码位置
         some_pos.all_bet_pos[0].x = some_pos.all_bet_pos[11].x;
         some_pos.all_bet_pos[0].y = some_pos.all_bet_pos[11].y;
-
-
+        
         console.log("重置位置:", some_pos.all_bet_pos[0].x, some_pos.all_bet_pos[0].y);
 
     }

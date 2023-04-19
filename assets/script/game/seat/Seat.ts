@@ -20,6 +20,7 @@ import { GameCache } from "../GameCache";
 import { SeatFSM } from "../SeatFSM";
 import { SeatEmpty, SeatKeep, SeatSit, SeatWaitOther, SeatWaitStart } from "../SeatStateHandler";
 import SeatUIRC, { CardUIInfo } from "../SeatUIRC";
+import TexasGame from "../texas/TexasGame";
 import GameUtil, { RoomType, seat_info, some_pos } from "../util/GameUtil";
 
 /// </summary>
@@ -228,9 +229,9 @@ export default class Seat {
         //     this.uirc.textCoin.node.setPosition(0, -90);
         // }
 
-        let mRectTransform = this.uirc.Image_Bubble;
+        //let mRectTransform = this.uirc.Image_Bubble;
         //mRectTransform.SetParent(transBubble);
-        mRectTransform.setPosition(info.bubble_pos);
+        this.uirc.Image_Bubble.setPosition(info.bubble_pos);
 
         if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
             // mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
@@ -755,13 +756,21 @@ export default class Seat {
     /// 刷新本手下注筹码
     /// </summary>
     public UpdateCurRoundHaveBet(): void {
-        let mOffset: number = 5;
+
+        if (GC.game.seatMoveStruct.moving) {
+            GC.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__UpdateCurRoundHaveBet, c: null, d: "__UpdateCurRoundHaveBet" });
+        } else {
+            this.__UpdateCurRoundHaveBet();
+        }
+
+    }
+
+    private __UpdateCurRoundHaveBet() {
         // 0不显示
         if (null == this.Player || this.Player.anteNumber <= 0) {
             this.uirc.transCurRoundHaveBet.active = false;
             return;
         }
-
 
         if (this.isBig && GameCache.Instance.CurGame.cacheRound == Def.Round.PREFLOP) {
             //this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_big_chip");
@@ -775,7 +784,6 @@ export default class Seat {
             //this.uirc.imageIconChip.spriteFrame = GameCache.Instance.CurGame.GetChipSpriteBySpriteName("icon_image_nor_chip");
 
         }
-
         // let str = StringHelper.FormatIntOrFloat1(this.Player.anteNumber / 100);
 
         // this.uirc.textCurRoundHaveBet.string = str;
@@ -790,13 +798,10 @@ export default class Seat {
         //this.defaultIconChipLocalPos = this.uirc.imageIconChip.node.position.clone();
         this.uirc.imageIconChip.node.active = true;
 
-        //座位运动中不显示
-        if (!GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
-            this.uirc.transCurRoundHaveBet.active = true;
-        }
+        //if (!GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
+        this.uirc.transCurRoundHaveBet.active = true;
+        //}
     }
-
-
 
 
 
@@ -827,6 +832,16 @@ export default class Seat {
     /// 刷新手牌
     /// </summary>
     public UpdateCards(isAllin: boolean = false): void {
+
+        if (GC.game.seatMoveStruct.moving) {
+            GC.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__UpdateCards, c: isAllin, d: "__UpdateCards" })
+
+        } else {
+            this.__UpdateCards(isAllin);
+        }
+    }
+
+    private __UpdateCards(isAllin: boolean) {
         if (this.IsMySeat) {
 
             this.HideCards(this.listSmallCardUIInfos);
@@ -845,14 +860,18 @@ export default class Seat {
                 //主位位移中显示卡牌
                 if (hadCard || this.Player.isPlaying) {
 
-                    if (GameCache.Instance.CurGame.SeatPlayRecord.SeatMove) {
+                    // if (GC.game.seatMoveStruct.moving) {
 
-                        GameCache.Instance.CurGame.SeatPlayRecord.ShowCardsSeat = this;
+                    //     GameCache.Instance.CurGame.SeatPlayRecord.ShowCardsSeat = this;
 
-                    } else {
+                    // } else {
 
-                        this.AfterMoveShowCards();
+                    //     this.AfterMoveShowCards();
+                    // }
+                    for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
+                        this.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
                     }
+                    this.ShowCards(this.listCardUIInfos);
                 }
                 else {
                     this.HideCards(this.listCardUIInfos);
@@ -898,14 +917,6 @@ export default class Seat {
                 this.HideCardBack();
             }
         }
-    }
-
-    //座位运动完显示手牌
-    public AfterMoveShowCards() {
-        for (let i = 0, n = this.listCardUIInfos.length; i < n; i++) {
-            this.listCardUIInfos[i].imageCard.color = this.Player.isFold ? cc.Color.GRAY : cc.Color.WHITE;
-        }
-        this.ShowCards(this.listCardUIInfos);
     }
 
     /// <summary>
@@ -1795,6 +1806,9 @@ export default class Seat {
         } else {
             this.uirc.Coin_Con.setPosition(GameUtil.SeatGoldPos[0]);
         }
+
+        console.log("刷新下方筹码位置");
+
     }
     //刷新下注的筹码数
     public UpdateBet(bet: number = -1) {

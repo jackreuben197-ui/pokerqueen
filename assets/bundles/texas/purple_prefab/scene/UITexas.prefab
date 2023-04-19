@@ -6107,7 +6107,7 @@
       "__id__": 150
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 152
@@ -6214,7 +6214,7 @@
       "__id__": 150
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 155
@@ -6321,7 +6321,7 @@
       "__id__": 150
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 158
@@ -6428,7 +6428,7 @@
       "__id__": 150
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 161
@@ -6535,7 +6535,7 @@
       "__id__": 150
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 164
@@ -6642,7 +6642,7 @@
       "__id__": 150
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 167
@@ -8754,7 +8754,7 @@
       "__id__": 228
     },
     "_name": "Image_SmallCard0",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -8800,7 +8800,7 @@
       "__id__": 230
     },
     "_name": "Image_SmallCard1",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -8846,7 +8846,7 @@
       "__id__": 232
     },
     "_name": "Image_SmallCard2",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -8892,7 +8892,7 @@
       "__id__": 234
     },
     "_name": "Image_SmallCard3",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -8938,7 +8938,7 @@
       "__id__": 236
     },
     "_name": "Image_SmallCard4",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
@@ -8984,7 +8984,7 @@
       "__id__": 238
     },
     "_name": "Image_SmallCard5",
-    "_active": false,
+    "_active": true,
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",

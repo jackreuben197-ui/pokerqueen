@@ -1,4 +1,3 @@
-import SimpleNodePool from "../../common/MyNodePool";
 import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { DOTween, Sequence } from "../../dotween/DOTween";
@@ -9,7 +8,6 @@ import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
-import { UIMineModel } from "../../lobby/UIMineModel";
 import Main from "../../Main";
 import { APIOrgClubUserInfo, API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_User_Room, Web_User_Room_Bringin, WWW } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
@@ -53,9 +51,21 @@ import TexasSMAgency from "./../TexasSMAgency";
 import UIOperationComponent, { OperationData } from "./../ui/UIOperationComponent";
 import UITexas, { PotInfo, PublicCardInfo } from "./../UITexas";
 import { UITexasModel } from "./../UITexasModel";
-import MTTGame from "./MTTGame";
 //const PBTypes = Def.Types;
 
+class SeatMoveStruct {
+
+    //SeatMove?, PlayDealFunc?, ShowCardsSeat?, StartInfo, Count 
+
+    //移动中
+    moving: boolean;
+    //移动完成个数
+    move_cp_count: number;
+
+    //this func param id标记
+    cacheFuncs: { a?, b?, c?, d?}[] = [];
+
+}
 
 export default class TexasGame {
     protected Seat_Cls = Seat;
@@ -91,7 +101,7 @@ export default class TexasGame {
     //PlayDeal_TweenSequence: TweenSequence = new TweenSequence;
 
     /// <summary>
-    /// key:客户端seatId
+    /// 可以通过方位id获取seat
     /// </summary>
     protected dicSeatOnlyClient: Map<number, Seat> = null;
 
@@ -384,12 +394,14 @@ export default class TexasGame {
     IsDispose: boolean = false;
 
     //记录座位运动状态,发牌函数和开局消息
-    SeatPlayRecord: { SeatMove?, PlayDealFunc?, ShowCardsSeat?, StartInfo } = null;
+    seatMoveStruct: SeatMoveStruct = null;
+
 
     constructor() {
         this.GameLogicSMComponent = new FSMLogicComponent(this);
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
+        this.seatMoveStruct = new SeatMoveStruct();
         this.RCInit();
     }
     protected RCInit() {
@@ -635,9 +647,10 @@ export default class TexasGame {
                 continue;
             }
             //let mAnte = rec.playersList[i].roundActioned ? rec.playersList[i].roundBet : 0;
-            let mAnte = rec.playersList[i].roundActioned ? 0 : rec.playersList[i].roundBet;
+            let mAnte = rec.playersList[i]?.roundBet || 0;
+            //rec.playersList[i].roundActioned ? 0 : rec.playersList[i].roundBet;
             let mNickname = rec.playersList[i].name;
-            let mChips = rec.playersList[i].chip;
+            //let mChips = rec.playersList[i].chip;
             let OffLineState = 0;
             let mHeadPic = rec.playersList[i].avatar;
             mSeat.isBig = this.bigIndex == player_local_seadID;
@@ -1058,9 +1071,10 @@ export default class TexasGame {
         this.uirc.Image_SeeMorePublicTips.active = true;
     }
 
-    // 刷新自己的位置信息和位移到中下位置
+    //clientSeatId方位移动到中下自己位置
     public ResetSeatUIInfo(clientSeatId: number): void {
         //GameUtil.ResetSeatInfo();
+        //刷新bank和筹码位置
         GameUtil.RefreshMeBankPos();
         if (clientSeatId == 0) {
             let seat = this.dicSeatOnlyClient.get(0);
@@ -1072,43 +1086,48 @@ export default class TexasGame {
         let seat_count = GameCache.Instance.seat_count;
         let infos = GameUtil.pos_config[seat_count];
 
+
+        this.seatMoveStruct.move_cp_count = 0;
+        this.seatMoveStruct.moving = true;
+
         for (let i = 0; i < seat_count; i++) {
 
             let seat: Seat = this.listSeat[i];
+            //获取目标新方位
             let target_dir = seat.ClientSeatId - clientSeatId;
             if (target_dir < 0) target_dir += seat_count;
             this.dicSeatOnlyClient.set(target_dir, seat);
             //座位运动到目标位置
-            cc.tween(seat.ui).to(0.3, { position: infos[target_dir].seat_pos }).call(() => {
-                cc.log("座位运动完毕");
+            cc.tween(seat.ui).to(0.3, { position: infos[target_dir].seat_pos }, cc.easeQuadraticActionOut()).call(() => {
                 //更新方位配置
                 seat.UpdateSeatUIInfo(target_dir);
-                this.SeatMoveEnd();
+
+                this.seatMoveStruct.move_cp_count++;
+
+                if (this.seatMoveStruct.move_cp_count >= seat_count) this.AllSeatMoveEnd();
+
             }).start();
         }
-        this.SeatPlayRecord.SeatMove = true;
+
     }
 
     //座位运动结束的处理
-    private SeatMoveEnd() {
+    private AllSeatMoveEnd() {
 
-        if (this.SeatPlayRecord.SeatMove) {
+        cc.log("所有座位运动完毕");
 
-            this.SeatPlayRecord.PlayDealFunc?.(this.SeatPlayRecord.StartInfo);
+        while (this.seatMoveStruct.cacheFuncs?.length) {
 
-            this.SeatPlayRecord.ShowCardsSeat?.AfterMoveShowCards();
+            let f = this.seatMoveStruct.cacheFuncs.shift();
 
-            // let seat: Seat = this.SeatPlayRecord.ShowCardsSeat;
+            cc.log(f);
 
-            // if (seat) {
-
-            //     seat.AfterMoveShowCards();
-            // }
-            this.ResetSeatPlayRecord();
-
-            
+            f.b.call(f.a, f.c);
 
         }
+
+        this.ResetSeatPlayRecord();
+
     }
 
     /// <summary>
@@ -2787,12 +2806,9 @@ export default class TexasGame {
 
     //重置座位运动和发牌动画记录
     public ResetSeatPlayRecord() {
-        this.SeatPlayRecord = {
-            SeatMove: false,
-            PlayDealFunc: null,
-            StartInfo: null,
-            ShowCardsSeat: null,
-        }
+        this.seatMoveStruct.moving = false;
+        this.seatMoveStruct.cacheFuncs = [];
+        this.seatMoveStruct.move_cp_count = 0;
     }
     public InitPublicLocalPos() {
         // 第一套,第二套 公共牌默认位置

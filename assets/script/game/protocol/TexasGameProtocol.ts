@@ -370,9 +370,11 @@ export default class TexasGameProtocol {
         }
 
         //判断座位是否运动中,做延迟处理
-        if (this.game.SeatPlayRecord.SeatMove) {
-            this.game.SeatPlayRecord.StartInfo = rec;
-            this.game.SeatPlayRecord.PlayDealFunc = this.__PlayDealAnimation.bind(this);
+        if (this.game.seatMoveStruct.moving) {
+
+            this.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__PlayDealAnimation, c: rec, d: "__PlayDealAnimation" })
+            //this.game.SeatPlayRecord.StartInfo = rec;
+            //this.game.SeatPlayRecord.PlayDealFunc = this.__PlayDealAnimation.bind(this);
             cc.log("————————>延迟执行发牌");
         } else {
             this.__PlayDealAnimation(rec);

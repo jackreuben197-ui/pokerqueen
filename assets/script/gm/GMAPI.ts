@@ -438,6 +438,8 @@ export class GM {
 
     static refreshRoom() {
 
+        cc.log(this._room_data);
+
         GC.game.UpdateRoomCommon(<ServerMessageEnterRoom.AsObject>this._room_data);
 
     }
