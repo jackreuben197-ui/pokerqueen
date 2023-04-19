@@ -3,7 +3,7 @@
  * @Date: 2023-04-19 10:13:09
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-19 13:40:36
+ * @LastEditTime: 2023-04-19 14:49:55
  * @FilePath: /pokerqueen/assets/script/common/calendarCommpent.ts
  */
 // Learn TypeScript:
@@ -54,18 +54,16 @@ export default class calendarCommpent extends UIBase {
         this.year.node.on("scroll-ended", this.yearScrollEnd, this);
         this.month.node.on("scroll-ended", this.monthScrollEnd, this);
         this.day.node.on("scroll-ended", this.dayScrollEnd, this);
-
         this.initYear();
         this.initMonth();
         this.initDay()
-        this._selectDay = new Date().getDate()
-        this.dayContent.y = (this._selectDay - 1) * 130 + this._starOff
+
     }
     close() {
         UIComponent.close(UIDefine.calendarCommpent)
     }
     okBtn() {
-        let _date = new Date(this._selectYear, this._selectMonth - 1, this._selectDay);
+        let _date = new Date(this._selectYear, this._selectMonth - 1, this._selectDay + 1);
         if (this.cb) {
             this.cb(_date);
         }
@@ -82,6 +80,7 @@ export default class calendarCommpent extends UIBase {
             this.initItem(element, this._selectYear - this._defaultYear + index)
         }
         this.yearContent.y = (this._defaultYear - 1) * 130 + this._starOff
+        this.setOp(this.yearContent, this._defaultYear - 1)
     }
     yearScrollEnd() {
         let off = this.yearContent.y - this._starOff
@@ -89,24 +88,26 @@ export default class calendarCommpent extends UIBase {
         index = index < 0 ? 0 : index
         this._selectYear = new Date().getFullYear() - this._defaultYear + index + 1
         this.yearContent.y = index * 130 + this._starOff;
+        this.setOp(this.yearContent, index)
         this.initDay()
     }
 
     initMonth() {
         this.monthContent.removeAllChildren()
         this._selectMonth = new Date().getMonth() + 1
-        this.monthContent.y = new Date().getMonth() * 130 + this._starOff
         for (let index = 1; index < 13; index++) {
             const element = cc.instantiate(this.item)
             element.parent = this.monthContent
             this.initItem(element, index)
         }
-
+        this.setOp(this.monthContent, this._selectMonth - 1)
+        this.monthContent.y = new Date().getMonth() * 130 + this._starOff
     }
     monthScrollEnd() {
         let off = this.monthContent.y - this._starOff
         let index = Math.round(off / 130);
         index = index < 0 ? 0 : index
+        this.setOp(this.monthContent, index)
         this._selectMonth = index + 1
         this.monthContent.y = index * 130 + this._starOff;
         this.initDay()
@@ -129,13 +130,17 @@ export default class calendarCommpent extends UIBase {
             element.parent = this.dayContent
             this.initItem(element, index)
         }
+        this._selectDay = new Date().getDate()
+        this.dayContent.y = (new Date().getDate() - 1) * 130 + this._starOff
+        this.setOp(this.dayContent, this._selectDay - 1)
     }
     dayScrollEnd() {
         let off = this.dayContent.y - this._starOff
         let index = Math.round(off / 130);
         index = index < 0 ? 0 : index
-        this._selectDay = index + 1
+        this._selectDay = index
         this.dayContent.y = index * 130 + this._starOff;
+        this.setOp(this.dayContent, this._selectDay)
     }
     initItem(node, num) {
         node.getChildByName('num').getComponent(cc.Label).string = num
@@ -161,6 +166,9 @@ export default class calendarCommpent extends UIBase {
         }
         return num
     }
-
-    // update (dt) {}
+    setOp(node, _index) {
+        node.children.forEach((item: cc.Node, index) => {
+            item.opacity = index == _index ? 255 : 150
+        })
+    }
 }
