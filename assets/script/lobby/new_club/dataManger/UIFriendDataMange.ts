@@ -90,7 +90,6 @@ export default class UIFriendDataMange extends BaseForm {
     setDataLbl(began, end) {
         this._start_time = began;
         this._end_time = end;
-        cc.log(new Date(this._start_time));
         this.btn_pd_4.string = TimeHelper.getMDHMS(began)
         this.btn_pd_5.string = TimeHelper.getMDHMS(end)
         this.initUI()

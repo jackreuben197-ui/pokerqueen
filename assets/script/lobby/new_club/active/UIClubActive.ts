@@ -3,7 +3,7 @@
  * @Date: 2022-12-28 17:59:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-06 17:21:49
+ * @LastEditTime: 2023-04-19 13:47:09
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/active/UIClubActive.ts
  */
 // Learn TypeScript:
@@ -89,18 +89,16 @@ export default class UIClubActive extends BaseForm {
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(EventName.refresh_Btn_Data, this.chaneData)
+        // this.listen(EventName.refresh_Btn_Data, this.chaneData)
     }
     editChange() {
         this.title_Num.string = `${this.titleEditBox.string.length}/30`
         this.text_Num.string = `${this.textEditBox.string.length}/300`
     }
 
-    chaneData() {
-        // this._clickDataItem['_data'] = Data.getInstance().selDate;
-        // this._clickDataItem.children[1].getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(Data.getInstance().selDate, '/', true, false)
-        let _d = Data.getInstance().selDate
-        let _d1 = _d.getTime();
+    chaneData(dayTime) {
+        // let _d = Data.getInstance().selDate
+        let _d1 = dayTime.getTime();
         if (this._timeType == '1') {
             if (_d1 < TimeHelper.toDayBaganTime) {
                 this.setDataLbl(TimeHelper.toDayBaganTime, this._end_time)
@@ -125,7 +123,9 @@ export default class UIClubActive extends BaseForm {
     openCalendar(event, customData) {
         this._timeType = customData
         // this._clickDataItem = event.target
-        UIComponent.open(UIDefine.UICalendar)
+        // UIComponent.open(UIDefine.UICalendar)
+        UIComponent.open(UIDefine.calendarCommpent, { cb: this.chaneData.bind(this) })
+
     }
     async saveClick() {
         let began = this.getChildNodeOrComponent("began",);
