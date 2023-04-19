@@ -3,15 +3,10 @@
  */
 
 import GC from "../../frame/GameControl";
-import { StringHelper } from "../../helper/StringHelper";
 import GGSlider from "../../ui/component/GGSlider";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";
 import { AddClipsData } from "../new_ui/UIBringIn";
-import { UITexasModel } from "../UITexasModel";
-//import { AddClipsData } from "./UIBringIn";
-
-
 
 const { ccclass } = cc._decorator;
 

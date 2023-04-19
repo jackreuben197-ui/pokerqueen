@@ -338,7 +338,7 @@ export class GameCache {
     enter_param: { game_enter_type: GameEnterType, isLookOn: boolean } = null;
 
     //存储bb开关的状态 room_id || match_id
-    bb_status_map = {};
+    private bb_status_map = {};
 
     public static get Instance(): GameCache {
         return (this as any).instance ??= new GameCache;
@@ -377,12 +377,12 @@ export class GameCache {
     }
 
     //获取bb开关
-    get bb_switch() {
+    get bb_on() {
         let id = GameCache.Instance.room_id || GameCache.Instance.match_id;
         return this.bb_status_map[id] || false;
     }
     //设置bb开关
-    set bb_switch(boo: boolean) {
+    set bb_on(boo: boolean) {
         let id = GameCache.Instance.room_id || GameCache.Instance.match_id;
         this.bb_status_map[id] = boo;
     }

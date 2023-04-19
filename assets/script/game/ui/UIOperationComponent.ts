@@ -359,7 +359,7 @@ export default class UIOperationComponent extends UIBase {
         if (this.buttonCheck.activeInHierarchy) {
             //如果可以让牌，需要弹窗询问弃牌还是让牌
             this.isShowingDialog = true;
-            
+
             UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
                 this: this,
                 // title = $"确定弃牌？",
@@ -468,15 +468,36 @@ export default class UIOperationComponent extends UIBase {
         this.textCallPotRight.string = UITexasSettingComponent.GetCurQuickActionNum(4);
         //}
 
-        this.textCallPotValue0.string = this.callValue0 <= 0 ? "" : (this.callValue0 < totalChips ? StringHelper.getStringDiv100(this.callValue0) : "All in");
-        this.textCallPotValue1.string = this.callValue1 <= 0 ? "" : (this.callValue1 < totalChips ? StringHelper.getStringDiv100(this.callValue1) : "All in");
-        this.textCallPotValue2.string = this.callValue2 <= 0 ? "" : (this.callValue2 < totalChips ? StringHelper.getStringDiv100(this.callValue2) : "All in");
-        this.textCallPotValueLeft.string = this.callValueLeft <= 0 ? "" : (this.callValueLeft < totalChips ? StringHelper.getStringDiv100(this.callValueLeft) : "All in");
-        this.textCallPotValueRight.string = this.callValueRight <= 0 ? "" : (this.callValueRight < totalChips ? StringHelper.getStringDiv100(this.callValueRight) : "All in");
+        // this.textCallPotValue0.string = this.callValue0 <= 0 ? "" : (this.callValue0 < totalChips ? StringHelper.getStringDiv100(this.callValue0) : "All in");
+        // this.textCallPotValue1.string = this.callValue1 <= 0 ? "" : (this.callValue1 < totalChips ? StringHelper.getStringDiv100(this.callValue1) : "All in");
+        // this.textCallPotValue2.string = this.callValue2 <= 0 ? "" : (this.callValue2 < totalChips ? StringHelper.getStringDiv100(this.callValue2) : "All in");
+        // this.textCallPotValueLeft.string = this.callValueLeft <= 0 ? "" : (this.callValueLeft < totalChips ? StringHelper.getStringDiv100(this.callValueLeft) : "All in");
+        // this.textCallPotValueRight.string = this.callValueRight <= 0 ? "" : (this.callValueRight < totalChips ? StringHelper.getStringDiv100(this.callValueRight) : "All in");
+
+        this.UpdateAllValue();
 
         //展示加注按钮和自由加注按钮
         this.showRaiseButton();
     }
+
+    UpdateAllValue() {
+
+        let totalChips: number = GameCache.Instance.CurGame.mainPlayer.chips;
+
+        let a = GameUtil.TransBetValue(this.callValue0);
+        let b = GameUtil.TransBetValue(this.callValue1);
+        let c = GameUtil.TransBetValue(this.callValue2);
+        let d = GameUtil.TransBetValue(this.callValueLeft);
+        let e = GameUtil.TransBetValue(this.callValueRight);
+
+        this.textCallPotValue0.string = this.callValue0 <= 0 ? "" : (this.callValue0 < totalChips ? a : "All in");
+        this.textCallPotValue1.string = this.callValue1 <= 0 ? "" : (this.callValue1 < totalChips ? b : "All in");
+        this.textCallPotValue2.string = this.callValue2 <= 0 ? "" : (this.callValue2 < totalChips ? c : "All in");
+        this.textCallPotValueLeft.string = this.callValueLeft <= 0 ? "" : (this.callValueLeft < totalChips ? d : "All in");
+        this.textCallPotValueRight.string = this.callValueRight <= 0 ? "" : (this.callValueRight < totalChips ? e : "All in");
+
+    }
+
 
 
     /// <summary>

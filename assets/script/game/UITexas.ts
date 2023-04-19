@@ -52,7 +52,7 @@ export class PotInfo {
             this.imagePotFrame = trans.getChildByName("Image_PotFrame").getComponent(cc.Sprite);
             this.imagePot = trans.getChildByName("Image_Pot").getComponent(cc.Sprite);
             this.textPot = trans.getChildByName("Text_Pot").getComponent(cc.Label);
-            this.imagePotText = this.imagePot.node.getChildByName("Image_PotText").getComponent(cc.Label);
+            this.imagePotText = trans.getChildByName("Image_PotText")?.getComponent(cc.Label);
         }
     }
 }
@@ -103,7 +103,7 @@ export default class UITexas extends BaseScene {
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
 
-    
+
     Image_WaitForStartTips: cc.Node = null;
     Image_ReserveSeatTips: cc.Node = null;
     Image_InsuranceTips: cc.Node = null;
@@ -233,7 +233,7 @@ export default class UITexas extends BaseScene {
 
 
         this.textRoomInfo = this.getChildNodeOrComponent("Text_RoomInfo", cc.Label);
-        
+
         this.Image_WaitForStartTips = this.getChildNodeOrComponent("Image_WaitForStartTips");
         this.Image_ReserveSeatTips = this.getChildNodeOrComponent("Image_ReserveSeatTips");
         this.Image_InsuranceTips = this.getChildNodeOrComponent("Image_InsuranceTips");
@@ -445,7 +445,7 @@ export default class UITexas extends BaseScene {
             this.Button_AddOn,
             this.Button_CancelTrust,
             this.buttonWaitBlind,
-            
+
             this.Image_WaitForStartTips,
             this.Image_RedistributionTips,
             this.Image_WaitForStartBathTips,

@@ -2,6 +2,7 @@ import { GameConfig } from "../../config/GameConfig";
 import { ProcedureEnum } from "../../define/EIDefine";
 import { UIDefineType } from "../../define/UIDefine";
 import { GM } from "../../gm/GMAPI";
+import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import WebSocketClient from "../../net/websocket/WebSocketClient";
@@ -413,13 +414,12 @@ export default class GameUtil {
         //筹码位置
         some_pos.all_bet_pos[0].x = some_pos.all_bet_pos[11].x;
         some_pos.all_bet_pos[0].y = some_pos.all_bet_pos[11].y;
-
-
+        
         console.log("重置位置:", some_pos.all_bet_pos[0].x, some_pos.all_bet_pos[0].y);
 
     }
     //刷新自己位bank_pos
-    public static RefreshMeBankPos() { 
+    public static RefreshMeBankPos() {
         //bank庄家位置
         some_pos.all_bank_pos[0].x = some_pos.all_bank_pos[10].x;
         some_pos.all_bank_pos[0].y = some_pos.all_bank_pos[10].y;
@@ -987,6 +987,17 @@ export default class GameUtil {
         ["743B3B", "2A1818"],
         ["5D473A", "2D231C"],
     ]
+
+
+    //转换筹码值(BB开关显示BB单位)
+    public static TransBetValue(value: number): string {
+        let ratio = GameCache.Instance.bb_on ? GameCache.Instance.carry_small : 100;
+        let ex: string = GameCache.Instance.bb_on ? "BB" : "";
+        return `${StringHelper.GetDecimalN(value / ratio)}${ex}`;
+    }
+
+
+
 
 }
 (window as any).GameUtil = GameUtil;

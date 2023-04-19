@@ -178,8 +178,11 @@ export default class SeatUIRC extends UIBase {
         this.imageSmallCards = [];
         this.imageSmallCardBacks = [];
         for (let i = 0; i < 6; i++) {
+            //自己手牌
             this.imageCards.push(new CardUIInfo(this.getChildNodeOrComponent(`Image_Card${i}`)));
+            //最后胜利展示牌
             this.imageSmallCards.push(new CardUIInfo(this.getChildNodeOrComponent(`Image_SmallCard${i}`)));
+            //其他玩家手牌
             this.imageSmallCardBacks.push(this.getChildNodeOrComponent(`Image_SmallCardBack${i}`, cc.Sprite));
         }
 

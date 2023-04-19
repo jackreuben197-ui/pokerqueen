@@ -370,9 +370,11 @@ export default class TexasGameProtocol {
         }
 
         //判断座位是否运动中,做延迟处理
-        if (this.game.SeatPlayRecord.SeatMove) {
-            this.game.SeatPlayRecord.StartInfo = rec;
-            this.game.SeatPlayRecord.PlayDealFunc = this.__PlayDealAnimation.bind(this);
+        if (this.game.seatMoveStruct.moving) {
+
+            this.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__PlayDealAnimation, c: rec, d: "__PlayDealAnimation" })
+            //this.game.SeatPlayRecord.StartInfo = rec;
+            //this.game.SeatPlayRecord.PlayDealFunc = this.__PlayDealAnimation.bind(this);
             cc.log("————————>延迟执行发牌");
         } else {
             this.__PlayDealAnimation(rec);
@@ -945,7 +947,7 @@ export default class TexasGameProtocol {
             Seat.PlayWinArmature();
             Seat.UpdateRecyclingWinChip();
 
-            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
+            let PlayRecyclingWinChipAnimation_Tween = Seat.PlayRecyclingWinChipAnimation(this.game.uirc.main.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
 
             if (PlayRecyclingWinChipAnimation_Tween) {
 
@@ -1141,7 +1143,7 @@ export default class TexasGameProtocol {
             mSeat.Player.recyclingChip = result.win;
             mSeat.Player.cardType = result.handValueType;
             mSeat.Player.isWin = result.win > result.handBet;
-            cc.log(result.win, result.handBet);
+
             mSeat.StopAllinArmature();
             mSeat.PlayWinArmature();
             mSeat.UpdateRecyclingWinChip();
@@ -1150,7 +1152,7 @@ export default class TexasGameProtocol {
                 mSeat.UpdateHunterAward();
             }
             let PlayRecyclingWinChipAnimation_Tween: { tween?: cc.Tween, complete?: Function, IsPlaying?: boolean, Kill?: Function }
-                = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.node.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
+                = mSeat.PlayRecyclingWinChipAnimation(this.game.uirc.main.convertToWorldSpaceAR(this.game.uirc.Text_AlreadAnte.node.position));
 
             if (PlayRecyclingWinChipAnimation_Tween) {
 

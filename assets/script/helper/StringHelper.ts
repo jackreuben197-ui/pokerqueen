@@ -286,5 +286,14 @@ export class StringHelper {
         return `<color=${color}>${text}</color>`;
     }
 
+    //有小数取N位小数,不进行四舍五入
+    public static GetDecimalN(num: number, n: number = 1) {
+        let s = `${num}`;
+        let arr = s.split(".");
+        if (arr.length == 1 || n < 1) return arr[0];
+        let a = arr[0];
+        let b = arr[1].substring(0, n);
+        return `${+`${a}.${b}`}`;
+    }
 }
 (window as any).StringHelper = StringHelper;

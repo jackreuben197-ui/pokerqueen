@@ -1,5 +1,6 @@
 
 import { UIDefine } from "../define/UIDefine";
+import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
 import Seat from "../game/seat/Seat";
 import { i18nMgr } from "../i18n/i18nMgr";
@@ -282,6 +283,172 @@ export class GM {
         }
         UIComponent.open(UIDefine.UIBackDialog, dialog_param);
     }
+
+
+
+    static _room_data = {
+        "status": 0,
+        "gameStatus": 3,
+        "roomInfo": {
+            "ante": 0,
+            "smallBlind": 10,
+            "scheduleStartTime": 0,
+            "schedulePlayDuration": 1800,
+            "startTime": 1681617623,
+            "currentMinRate": 10,
+            "currentMaxRate": 80,
+            "limitIp": false,
+            "limitGps": false,
+            "insurance": false,
+            "limitPoolRateAllLv": false,
+            "limitMinPoolRate": 0,
+            "limitRetainMinRate": 0,
+            "limitTotalHandNumAllLv": false,
+            "limitTotalHandNum": 0,
+            "delaySeeCard": false,
+            "straddle": true,
+            "opDuration": 15,
+            "retainType": 0,
+            "muck": false,
+            "uniqueId": "1681617603",
+            "isAgreeSecondPcs": false
+        },
+        "handInfo": {
+            "handNum": 3,
+            "buSeatId": 1,
+            "sbSeatId": 1,
+            "bbSeatId": 2,
+            "publicCardsList": [
+
+            ],
+            "allBet": 30,
+            "potsList": [
+
+            ],
+            "roundBet": 20,
+            "insurancePool": 0,
+            "extPublicCardsList": [
+
+            ]
+        },
+        "playersList": [
+            {
+                "seatId": 1,
+                "userRid": 98015834,
+                "action": 2,
+                "cardsList": [
+                    0,
+                    0
+                ],
+                "name": "Player3",
+                "avatar": "https://static.awanptest.com/awanptesting-intl-test/image-normal/20220310094520-FKeDL.png",
+                "sex": 0,
+                "chip": 190,
+                "handBet": 10,
+                "roundBet": 10,
+                "status": 1,
+                "keepSeatLeftTime": -1,
+                "buyInsuranceStep": 0,
+                "buyInsuranceList": [
+
+                ],
+                "isAutoop": false,
+                "roundActioned": false,
+                "hunterKill": 0,
+                "hunterKillAward": 0,
+                "hunterKillAwardOther": 0,
+                "hunterHeadValue": 0,
+                "vip": 0,
+                "keepSeatDeadline": 0,
+                "keepSeatReason": 0
+            },
+            {
+                "seatId": 2,
+                "userRid": 96615706,
+                "action": 3,
+                "cardsList": [
+                    54,
+                    11
+                ],
+                "name": "三个核桃",
+                "avatar": "https://static.awanptest.com/awanptesting-intl-test/image-avatar/96615706-ruxgl.JPG",
+                "sex": 0,
+                "chip": 180,
+                "handBet": 20,
+                "roundBet": 20,
+                "status": 1,
+                "keepSeatLeftTime": -1,
+                "buyInsuranceStep": 0,
+                "buyInsuranceList": [
+
+                ],
+                "isAutoop": false,
+                "roundActioned": false,
+                "hunterKill": 0,
+                "hunterKillAward": 0,
+                "hunterKillAwardOther": 0,
+                "hunterHeadValue": 0,
+                "vip": 0,
+                "keepSeatDeadline": 0,
+                "keepSeatReason": 0
+            }
+        ],
+        "myInfo": {
+            "chip": 180,
+            "seatId": 2,
+            "mttCurrentRank": 0,
+            "rebuyTimes": 0,
+            "addon": false,
+            "hunterKill": 0,
+            "hunterKillAward": 0,
+            "hunterRank": 0,
+            "storeChips": 0,
+            "isAutoop": false,
+            "roundActioned": false,
+            "addonPlusMode1Times": 0,
+            "addonPlusMode2Times": 0,
+            "hunterKillAwardOther": 0,
+            "hunterHeadValue": 0
+        },
+        "operatorList": [
+            {
+                "seatId": 1,
+                "actionsList": [
+
+                ],
+                "insuranceLimitList": [
+
+                ],
+                "leftOpTime": 4,
+                "delayTimes": 0,
+                "shortcutsList": [
+
+                ],
+                "isInsurance": false,
+                "isAgreeSecondPc": false,
+                "opDeadline": 1681617758
+            }
+        ],
+        "mttRoom": {
+            "roomId": 94411898,
+            "matchId": 0
+        }
+    }
+
+
+    static refreshRoom() {
+
+        cc.log(this._room_data);
+
+        GC.game.UpdateRoomCommon(<ServerMessageEnterRoom.AsObject>this._room_data);
+
+    }
+
+
+
+
+
+
 }
 (window as any).GM = GM;
 export var GM_Templete = {
