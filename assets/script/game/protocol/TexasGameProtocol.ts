@@ -382,7 +382,7 @@ export default class TexasGameProtocol {
         }
     }
     private __PlayDealAnimation(responseData) {
-        this.game.ResetSeatPlayRecord();
+        this.game.ResetSeatMoveStruct();
         this.game.PlayDealAnimation(() => {
             cc.log("发牌结束");
             this.game.UpdateAlreadAnte();
@@ -1487,8 +1487,7 @@ export default class TexasGameProtocol {
         this.game.alreadAnte = 0;
         this.game.UpdateAlreadAnte();
         // 刷新分池
-        this.game.pots = [];
-        this.game.UpdatePots();
+        GameUtil.ResetSeatInfo();
 
         this.game.ClearTableUI();
 
@@ -1516,7 +1515,7 @@ export default class TexasGameProtocol {
             }
         }
 
-        this.game.ResetSeatPlayRecord();
+        this.game.ResetSeatMoveStruct();
 
     }
 

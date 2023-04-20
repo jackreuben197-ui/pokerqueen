@@ -8,6 +8,7 @@
  */
 import ListItem from "../../common/ListItem";
 import MttRealTimeRankItemModel from "../../frame/data/mtt/realTime/MttRealTimeRankItemModel";
+import { GameCache } from "../../game/GameCache";
 import { StringHelper } from "../../helper/StringHelper";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -53,9 +54,11 @@ export default class MttRealTimeRankItem extends ListItem {
         this.setActive(this.myselfFlag, this._data.isMySelf);
         this.rank.string = `${this._data.rank} ${this._data.name}`
         this.desk.string = this._data.rid + ''
-        this.score.string = StringHelper.GetLongString(this._data.chip)
+        this.score.string = `${StringHelper.GetDecimalN(this._data.chip / 100)}(${StringHelper.GetDecimalN(this._data.chip / GameCache.Instance.carry_small)}BB)`
+        //StringHelper.GetLongString(this._data.chip)
         // this.setText(this.rank, `${this._data.rank} ${this._data.name}`);
         // this.setText(this.desk, this._data.rid);
         // this.setText(this.score, this._data.chip);
+        StringHelper.GetDecimalN
     }
 }

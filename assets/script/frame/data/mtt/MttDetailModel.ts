@@ -1,4 +1,5 @@
 import { TMttDetailData } from "../../../config/TTypeConfig";
+import GameUtil from "../../../game/util/GameUtil";
 
 export default class MttDetailModel {
     private _msg: TMttDetailData = null;
@@ -9,7 +10,8 @@ export default class MttDetailModel {
 
     /// 最大记分牌
     get top() {
-        return Math.floor(this._msg.top) / 100;
+        return GameUtil.TransBetValue(this._msg.top, this._msg.more.sb * 2);
+        //Math.floor(this._msg.top) / 100;
     }
     /// 存活人数
     get alive() {

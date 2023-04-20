@@ -373,12 +373,6 @@ export default class Seat {
 
 
 
-
-
-
-
-
-
     public UpdateVoiceprintState(voiceprintState: VoiceprintState, time: number = 0): void {
         this.SeatVoiceprintState = voiceprintState;
         switch (voiceprintState) {
@@ -495,7 +489,7 @@ export default class Seat {
                 break;
             case Def.Action.CALL:
                 // 跟注
-                this.UpdateCards();
+                //this.UpdateCards();
                 this.FsmLogicComponent.SM.ChangeState(SeatWaitOther.Instance);
                 break;
             case Def.Action.RAISE:
@@ -832,6 +826,8 @@ export default class Seat {
     /// 刷新手牌
     /// </summary>
     public UpdateCards(isAllin: boolean = false): void {
+
+        console.log("---UpdateCards---", this.id);
 
         if (GC.game.seatMoveStruct.moving) {
             GC.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__UpdateCards, c: isAllin, d: "__UpdateCards" })

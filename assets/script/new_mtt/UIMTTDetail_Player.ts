@@ -196,7 +196,7 @@ export default class UIMTTDetail_Player extends UIBasePlus {
             this.setChildVisible(node, "rebuy", true);
             this.setChildVisible(node, "award", true);
             this.setChildVisible(node, "hunter", false);
-            this.setChildLabel(node, "award", `${data.chip / 100}\n(${data.chip / (MTTGameUtil.BlindAtLevel(0, UIMTTModel.Instance.MttInfo.mtt.blindtable_type, 1) * 2) ^ 0}BB)`);
+            this.setChildLabel(node, "award", `${data.chip / 100}\n(${StringHelper.GetDecimalN(data.chip / (MTTGameUtil.BlindAtLevel(0, UIMTTModel.Instance.MttInfo.mtt.blindtable_type, 1) * 2))}BB)`);
         }
 
     }

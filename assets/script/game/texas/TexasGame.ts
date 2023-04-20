@@ -58,13 +58,21 @@ class SeatMoveStruct {
     //SeatMove?, PlayDealFunc?, ShowCardsSeat?, StartInfo, Count 
 
     //移动中
-    moving: boolean;
+    public moving: boolean;
     //移动完成个数
-    move_cp_count: number;
+    public move_cp_count: number;
 
-    //this func param id标记
-    cacheFuncs: { a?, b?, c?, d?}[] = [];
+    //this func param id标记 id flag
+    public cacheFuncs: { a?, b?, c?, d?}[] = null;
 
+    constructor() {
+        this.reset();
+    }
+    reset() {
+        this.moving = false;
+        this.move_cp_count = 0;
+        this.cacheFuncs = [];
+    }
 }
 
 export default class TexasGame {
@@ -396,6 +404,7 @@ export default class TexasGame {
     //记录座位运动状态,发牌函数和开局消息
     seatMoveStruct: SeatMoveStruct = null;
 
+    last_pots_count: number = 0;
 
     constructor() {
         this.GameLogicSMComponent = new FSMLogicComponent(this);
@@ -415,6 +424,7 @@ export default class TexasGame {
 
     Enter() {
         this.listSeat = [];
+        this.pots = [];
         this.dicSeatOnlyClient = new Map<number, Seat>();
         this.SMAgency.LoadGameStateConf();
         GC.uc.AddComponent(this.GameLogicSMComponent);
@@ -602,7 +612,7 @@ export default class TexasGame {
         this.isGPSRestrictions = rec.roomInfo.limitGps;
 
         GameCache.Instance.insurance = this.insurance;
-        this.pots = [];
+
         for (let i = 0; i < rec.handInfo.potsList.length; i++) {
             this.pots.push(rec.handInfo.potsList[i].amount);
             cc.log("排池子数据:", this.pots);
@@ -712,9 +722,8 @@ export default class TexasGame {
 
             let mPlayerId = rec.playersList[i].userRid;
 
-            if (mPlayerId == 0) {
-                continue;
-            }
+            if (mPlayerId == 0) continue;
+
             mSeat.UpdateFSMbyStatus(true);
         }
 
@@ -782,6 +791,7 @@ export default class TexasGame {
             this.HideOperationPanel();
             this.HideAutoOperationPanel();
         }
+        //刷新池子
         this.UpdatePots();
         // 切换游戏状态机
         switch (rec.gameStatus) {
@@ -834,11 +844,44 @@ export default class TexasGame {
         this.UpdateMsgBtnSprite();
     }
 
+    // 刷新分池
+    public UpdatePots(): void {
+
+        this.HideAllPots();
+
+        for (let i = 0; i < this.pots.length; i++) {
+
+            let pot_info = this.uirc.listPotInfo[i];
+
+            pot_info.trans.active = this.pots[i] > 0;
+
+            pot_info.textPot.string = GameUtil.TransBetValue(this.pots[i]);
+
+            //判断进行位移
+            if (i > 0 && i >= this.last_pots_count) {
+
+                pot_info.trans.setPosition(GameUtil.TexasPots[0]);
+
+                cc.tween(pot_info.trans).to(.3, { position: GameUtil.TexasPots[i] }).start();
+
+            } else {
+                pot_info.trans.setPosition(GameUtil.TexasPots[i]);
+            }
+
+        }
+        this.last_pots_count = this.pots.length;
+    }
+
+    public ResetPots() {
+        this.pots = [];
+        this.last_pots_count = 0;
+        this.HideAllPots();
+    }
 
     /// <summary>
-    /// 刷新分池
+    /// --刷新分池
     /// </summary>
-    public UpdatePots(): void {
+    public _UpdatePots(): void {
 
         let mNewStart = 0, mNewEnd = 0;
         let mUpdateStart = 0, mUpdateEnd = 0;
@@ -884,7 +927,7 @@ export default class TexasGame {
                 mPotInfo = new PotInfo(mObj);
                 mPotInfo.potType = 2;
                 this.uirc.listPotInfo.push(mPotInfo);
-                mPotInfo.textPot.string = StringHelper.getStringDiv100(this.pots[i]);
+                mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
                 mObj.active = this.pots[i] > 0;
             }
             else {
@@ -898,11 +941,7 @@ export default class TexasGame {
                 mPotInfo.potType = 1;
                 this.uirc.listPotInfo.push(mPotInfo);
 
-                //mPotInfo.imagePot.sprite = rcChipSprite.Get<Sprite>(GameUtil.GetChipSpriteName(pots[i]));
-
-                let str = StringHelper.FormatIntOrFloat1(this.pots[i] / 100);
-
-                mPotInfo.textPot.string = str;
+                mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
 
                 mPotInfo.imagePotText.string = `${i}`;
 
@@ -920,7 +959,7 @@ export default class TexasGame {
 
         for (let i = mUpdateStart; i < mUpdateEnd; i++) {
             if (i == 0) {
-                this.uirc.listPotInfo[0].textPot.string = `${this.pots[0] / 100}`;
+                this.uirc.listPotInfo[0].textPot.string = GameUtil.TransBetValue(this.pots[i]);
                 continue;
             }
             mPotInfo = this.uirc.listPotInfo[i];
@@ -928,9 +967,8 @@ export default class TexasGame {
 
             //mPotInfo.imagePot.sprite = rcChipSprite.Get<Sprite>(GameUtil.GetChipSpriteName(pots[i]));
 
-            let str = StringHelper.FormatIntOrFloat1(this.pots[i] / 100);
 
-            mPotInfo.textPot.string = str;
+            mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
 
             mPotInfo.imagePotText.string = `${i}`;
 
@@ -1126,7 +1164,7 @@ export default class TexasGame {
 
         }
 
-        this.ResetSeatPlayRecord();
+        this.ResetSeatMoveStruct();
 
     }
 
@@ -2800,16 +2838,6 @@ export default class TexasGame {
         this.uirc.Image_SeeMorePublicTips.active = false;
     }
 
-
-
-
-
-    //重置座位运动和发牌动画记录
-    public ResetSeatPlayRecord() {
-        this.seatMoveStruct.moving = false;
-        this.seatMoveStruct.cacheFuncs = [];
-        this.seatMoveStruct.move_cp_count = 0;
-    }
     public InitPublicLocalPos() {
         // 第一套,第二套 公共牌默认位置
         if (this.listDefaultPublicCardsLPos == null) {
@@ -2821,6 +2849,8 @@ export default class TexasGame {
             }
         }
     }
+
+
     /// <summary>
     /// 杀死所有DoTweener动画
     /// </summary>
@@ -2871,9 +2901,6 @@ export default class TexasGame {
         this.cacheRound = Def.Round.UNDEFINED;
         this.MessageWinnerData = null;
         this.IsSecondPsc = false;
-        if (null != this.pots) {
-            this.pots = null;
-        }
         this.minAnteNum = 0;
         this.canRaise = 0;
         this.insurance = false;
@@ -2920,9 +2947,11 @@ export default class TexasGame {
         this.cacheBuyInsurancePotUserCount = 0;
         // this.VIPTipsStatus = TipsStatus.isStop;
         // this.VipTipslist.Clear();
-        this.ResetSeatPlayRecord();
+        this.ResetSeatMoveStruct();
 
         GameUtil.ResetSeatInfo();
+
+        this.ResetPots();
 
     }
     ClearAllPlayers() {
@@ -3424,17 +3453,17 @@ export default class TexasGame {
             this.dicSeatOnlyClient = null;
         }
         // 清空分池
-        if (null != this.uirc?.listPotInfo) {
-            while (this.uirc.listPotInfo.length) {
-                let potInfo = this.uirc.listPotInfo.shift();
-                potInfo.trans.active = false;
-                if (potInfo.potType == 1) {
-                    this.uirc.TransPot_Pool.BackNode(potInfo.trans);
-                } else {
-                    this.uirc.TransAllPot_Pool.BackNode(potInfo.trans);
-                }
-            }
-        }
+        // if (null != this.uirc?.listPotInfo) {
+        //     while (this.uirc.listPotInfo.length) {
+        //         let potInfo = this.uirc.listPotInfo.shift();
+        //         potInfo.trans.active = false;
+        //         if (potInfo.potType == 1) {
+        //             this.uirc.TransPot_Pool.BackNode(potInfo.trans);
+        //         } else {
+        //             this.uirc.TransAllPot_Pool.BackNode(potInfo.trans);
+        //         }
+        //     }
+        // }
         // 清空自己
         this.mainPlayer?.Dispose();
         this.mainPlayer = null;
@@ -3468,7 +3497,9 @@ export default class TexasGame {
         return false;
     }
 
-
+    ResetSeatMoveStruct() {
+        this.seatMoveStruct.reset();
+    }
 
     // 刷新底池
     public UpdateAlreadAnte(): void {
@@ -3482,8 +3513,10 @@ export default class TexasGame {
             seat.UpdateBet();
         });
         this.UpdateAlreadAnte();
+        this.UpdatePots();
         this.uirc.UIOperation_Com.UpdateAllValue();
-
+        this.uirc.UIOperation_Com.refreshSliderValueStr();
+        this.uirc.UIOperation_Com.refreshSliderMaxLabel();
     }
 }
 

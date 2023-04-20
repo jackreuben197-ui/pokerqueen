@@ -60,6 +60,8 @@ export default class UITexasMenu extends UIBasePlus {
     $node_storage: cc.Node = null;
 
 
+    tips_show: boolean = false;
+
     IMenuButton_Type: {
         node: cc.Node;
         text: string;
@@ -67,6 +69,7 @@ export default class UITexasMenu extends UIBasePlus {
         hideLine?: boolean;
         onClick?: Function;
     };
+
 
 
     options = [
@@ -468,9 +471,11 @@ export default class UITexasMenu extends UIBasePlus {
     }
 
     click_bb_showtips() {
-        this.setChildVisible(this.$option_bb, "tips", true);
+        this.tips_show = !this.tips_show;
+        this.setChildVisible(this.$option_bb, "tips", this.tips_show);
     }
     click_bb_hidetips() {
+        this.tips_show = false;
         this.setChildVisible(this.$option_bb, "tips", false);
     }
 

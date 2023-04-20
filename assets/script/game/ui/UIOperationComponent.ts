@@ -299,12 +299,24 @@ export default class UIOperationComponent extends UIBase {
     }
     sliderChange(value: number) {
 
-        this.slider.refreshValueLabel(PublicHelper.FixFloat(this.slider.value));
+        // this.slider.refreshValueLabel(PublicHelper.FixFloat(this.slider.value));
 
-        if (value >= this.slider_max_value) {
-            this.slider.refreshValueLabelStr(i18nMgr.Get("adaptation30074"));
-        }
+        // if (value >= this.slider_max_value) {
+        //     this.slider.refreshValueLabelStr(i18nMgr.Get("adaptation30074"));
+        // }
+        this.refreshSliderValueStr();
     }
+
+    refreshSliderValueStr() {
+
+        if (this.slider.value >= this.slider_max_value) {
+            this.slider.refreshValueLabelStr(i18nMgr.Get("adaptation30074"));
+        } else {
+            this.slider.refreshValueLabelStr(GameUtil.TransBetValue(this.slider.value));
+        }
+
+    }
+
     //点击显示滑竿
     private onClickFreeCall(): void {
         this.showFreeCall(true);
@@ -727,10 +739,8 @@ export default class UIOperationComponent extends UIBase {
         this.showFreeCall(false);
     }
 
-    setSliderMaxLabel(value: number) {
-
-        this.label_slider_max.string = `${value / 100}`;
-
+    refreshSliderMaxLabel() {
+        this.label_slider_max.string = GameUtil.TransBetValue(this.slider_max_value);
     }
 
     private show(actions: ActionLimit.AsObject[]): void {
@@ -866,7 +876,7 @@ export default class UIOperationComponent extends UIBase {
             }
         }
 
-        this.setSliderMaxLabel(this.slider_max_value);
+        this.refreshSliderMaxLabel();
 
         //this.sliderChange(min_value);
 
@@ -913,7 +923,8 @@ export default class UIOperationComponent extends UIBase {
         this.buttonFreeCall.active = true;
         this.actionDataInfo.AllInAmount = action.min;
         this.actionDataInfo.actionLimit = action;
-        this.setSliderMaxLabel(action.max);
+        this.slider_max_value = action.max;
+        this.refreshSliderMaxLabel();
         this.setTopCallButtons();
         this.slider_allin = true;
         this.slider.show({
@@ -946,6 +957,7 @@ export default class UIOperationComponent extends UIBase {
             this.buttonCallLeft.active = false;
             this.buttonCallRight.active = false;
             this.slider.reset();
+            this.refreshSliderValueStr();
             if (this.slider_allin) this.slider.refreshValueLabelStr(i18nMgr.Get("adaptation30074"));
         }
         else {

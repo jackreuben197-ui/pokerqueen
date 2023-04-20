@@ -287,151 +287,206 @@ export class GM {
 
 
     static _room_data = {
-        "status": 0,
-        "gameStatus": 3,
-        "roomInfo": {
-            "ante": 0,
-            "smallBlind": 10,
-            "scheduleStartTime": 0,
-            "schedulePlayDuration": 1800,
-            "startTime": 1681617623,
-            "currentMinRate": 10,
-            "currentMaxRate": 80,
-            "limitIp": false,
-            "limitGps": false,
-            "insurance": false,
-            "limitPoolRateAllLv": false,
-            "limitMinPoolRate": 0,
-            "limitRetainMinRate": 0,
-            "limitTotalHandNumAllLv": false,
-            "limitTotalHandNum": 0,
-            "delaySeeCard": false,
-            "straddle": true,
-            "opDuration": 15,
-            "retainType": 0,
-            "muck": false,
-            "uniqueId": "1681617603",
-            "isAgreeSecondPcs": false
+        "status":0,
+        "gameStatus":3,
+        "roomInfo":{
+            "ante":0,
+            "smallBlind":10,
+            "scheduleStartTime":0,
+            "schedulePlayDuration":1800,
+            "startTime":1681959426,
+            "currentMinRate":10,
+            "currentMaxRate":80,
+            "limitIp":false,
+            "limitGps":false,
+            "insurance":false,
+            "limitPoolRateAllLv":false,
+            "limitMinPoolRate":0,
+            "limitRetainMinRate":0,
+            "limitTotalHandNumAllLv":false,
+            "limitTotalHandNum":0,
+            "delaySeeCard":false,
+            "straddle":true,
+            "opDuration":15,
+            "retainType":0,
+            "muck":false,
+            "uniqueId":"1681959384",
+            "isAgreeSecondPcs":false
         },
-        "handInfo": {
-            "handNum": 3,
-            "buSeatId": 1,
-            "sbSeatId": 1,
-            "bbSeatId": 2,
-            "publicCardsList": [
-
+        "handInfo":{
+            "handNum":2,
+            "buSeatId":2,
+            "sbSeatId":2,
+            "bbSeatId":1,
+            "publicCardsList":[
+                8,
+                49,
+                50
             ],
-            "allBet": 30,
-            "potsList": [
-
+            "allBet":40,
+            "potsList":[
+                {
+                    "potId":0,
+                    "amount":40,
+                    "seatIdsList":[
+                        2,
+                        1
+                    ]
+                }
             ],
-            "roundBet": 20,
-            "insurancePool": 0,
-            "extPublicCardsList": [
-
+            "roundBet":0,
+            "insurancePool":0,
+            "extPublicCardsList":[
+    
             ]
         },
-        "playersList": [
+        "playersList":[
             {
-                "seatId": 1,
-                "userRid": 98015834,
-                "action": 2,
-                "cardsList": [
+                "seatId":1,
+                "userRid":96615706,
+                "action":8,
+                "cardsList":[
+                    20,
+                    58
+                ],
+                "name":"三个核桃",
+                "avatar":"https://static.awanptest.com/awanptesting-intl-test/image-avatar/96615706-GBgac.JPG",
+                "sex":0,
+                "chip":170,
+                "handBet":20,
+                "roundBet":0,
+                "status":1,
+                "keepSeatLeftTime":-1,
+                "buyInsuranceStep":0,
+                "buyInsuranceList":[
+    
+                ],
+                "isAutoop":false,
+                "roundActioned":false,
+                "hunterKill":0,
+                "hunterKillAward":0,
+                "hunterKillAwardOther":0,
+                "hunterHeadValue":0,
+                "vip":0,
+                "keepSeatDeadline":0,
+                "keepSeatReason":0
+            },
+            {
+                "seatId":2,
+                "userRid":98015834,
+                "action":6,
+                "cardsList":[
                     0,
                     0
                 ],
-                "name": "Player3",
-                "avatar": "https://static.awanptest.com/awanptesting-intl-test/image-normal/20220310094520-FKeDL.png",
-                "sex": 0,
-                "chip": 190,
-                "handBet": 10,
-                "roundBet": 10,
-                "status": 1,
-                "keepSeatLeftTime": -1,
-                "buyInsuranceStep": 0,
-                "buyInsuranceList": [
-
+                "name":"Player3",
+                "avatar":"https://static.awanptest.com/awanptesting-intl-test/image-normal/20220310094520-FKeDL.png",
+                "sex":0,
+                "chip":190,
+                "handBet":20,
+                "roundBet":0,
+                "status":1,
+                "keepSeatLeftTime":-1,
+                "buyInsuranceStep":0,
+                "buyInsuranceList":[
+    
                 ],
-                "isAutoop": false,
-                "roundActioned": false,
-                "hunterKill": 0,
-                "hunterKillAward": 0,
-                "hunterKillAwardOther": 0,
-                "hunterHeadValue": 0,
-                "vip": 0,
-                "keepSeatDeadline": 0,
-                "keepSeatReason": 0
-            },
-            {
-                "seatId": 2,
-                "userRid": 96615706,
-                "action": 3,
-                "cardsList": [
-                    54,
-                    11
-                ],
-                "name": "三个核桃",
-                "avatar": "https://static.awanptest.com/awanptesting-intl-test/image-avatar/96615706-ruxgl.JPG",
-                "sex": 0,
-                "chip": 180,
-                "handBet": 20,
-                "roundBet": 20,
-                "status": 1,
-                "keepSeatLeftTime": -1,
-                "buyInsuranceStep": 0,
-                "buyInsuranceList": [
-
-                ],
-                "isAutoop": false,
-                "roundActioned": false,
-                "hunterKill": 0,
-                "hunterKillAward": 0,
-                "hunterKillAwardOther": 0,
-                "hunterHeadValue": 0,
-                "vip": 0,
-                "keepSeatDeadline": 0,
-                "keepSeatReason": 0
+                "isAutoop":false,
+                "roundActioned":false,
+                "hunterKill":0,
+                "hunterKillAward":0,
+                "hunterKillAwardOther":0,
+                "hunterHeadValue":0,
+                "vip":0,
+                "keepSeatDeadline":0,
+                "keepSeatReason":0
             }
         ],
-        "myInfo": {
-            "chip": 180,
-            "seatId": 2,
-            "mttCurrentRank": 0,
-            "rebuyTimes": 0,
-            "addon": false,
-            "hunterKill": 0,
-            "hunterKillAward": 0,
-            "hunterRank": 0,
-            "storeChips": 0,
-            "isAutoop": false,
-            "roundActioned": false,
-            "addonPlusMode1Times": 0,
-            "addonPlusMode2Times": 0,
-            "hunterKillAwardOther": 0,
-            "hunterHeadValue": 0
+        "myInfo":{
+            "chip":170,
+            "seatId":1,
+            "mttCurrentRank":0,
+            "rebuyTimes":0,
+            "addon":false,
+            "hunterKill":0,
+            "hunterKillAward":0,
+            "hunterRank":0,
+            "storeChips":0,
+            "isAutoop":false,
+            "roundActioned":false,
+            "addonPlusMode1Times":0,
+            "addonPlusMode2Times":0,
+            "hunterKillAwardOther":0,
+            "hunterHeadValue":0
         },
-        "operatorList": [
+        "operatorList":[
             {
-                "seatId": 1,
-                "actionsList": [
-
+                "seatId":1,
+                "actionsList":[
+                    {
+                        "action":7,
+                        "min":0,
+                        "max":0,
+                        "straddleLevel":0
+                    },
+                    {
+                        "action":5,
+                        "min":20,
+                        "max":169,
+                        "straddleLevel":0
+                    },
+                    {
+                        "action":8,
+                        "min":0,
+                        "max":0,
+                        "straddleLevel":0
+                    },
+                    {
+                        "action":10,
+                        "min":170,
+                        "max":170,
+                        "straddleLevel":0
+                    }
                 ],
-                "insuranceLimitList": [
-
+                "insuranceLimitList":[
+    
                 ],
-                "leftOpTime": 4,
-                "delayTimes": 0,
-                "shortcutsList": [
-
+                "leftOpTime":100000,
+                "delayTimes":0,
+                "shortcutsList":[
+                    {
+                        "sc":0,
+                        "amount":20
+                    },
+                    {
+                        "sc":3,
+                        "amount":26
+                    },
+                    {
+                        "sc":4,
+                        "amount":30
+                    },
+                    {
+                        "sc":5,
+                        "amount":24
+                    },
+                    {
+                        "sc":6,
+                        "amount":40
+                    },
+                    {
+                        "sc":7,
+                        "amount":60
+                    }
                 ],
-                "isInsurance": false,
-                "isAgreeSecondPc": false,
-                "opDeadline": 1681617758
+                "isInsurance":false,
+                "isAgreeSecondPc":false,
+                "opDeadline":1681959525
             }
         ],
-        "mttRoom": {
-            "roomId": 94411898,
-            "matchId": 0
+        "mttRoom":{
+            "roomId":91748082,
+            "matchId":0
         }
     }
 

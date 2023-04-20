@@ -283,7 +283,17 @@ export default class UITexas extends BaseScene {
             this.listCards.push(new PublicCardInfo(-1, this.getChildNodeOrComponent(`Image_PublicCard${i}`)));
             this.listSecondCards.push(new PublicCardInfo(-1, this.getChildNodeOrComponent(`Image_SecondPublicCard${i}`)));
         }
-        //////////////////////////////////////////////////////////////////////
+        //////////////////创建Pot/////////////////////////////////
+        this.transAllPot.active = false;
+        this.transPot.active = false;
+        this.listPotInfo = [new PotInfo(this.transAllPot)];
+        for (let i = 0; i < 8; i++) {
+            let pot = cc.instantiate(this.transPot);
+            pot.parent = this.transPots;
+            this.listPotInfo.push(new PotInfo(pot));
+        }
+
+
         //////////////////装载容器
 
         //1.MTT比赛倒计时

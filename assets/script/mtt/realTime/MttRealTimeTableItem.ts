@@ -8,6 +8,11 @@
  */
 import ListItem from "../../common/ListItem";
 import { TMttRoomsDeskItem, TMttRoomsDeskPlayer } from "../../config/TTypeConfig";
+import GC from "../../frame/GameControl";
+import { GameCache } from "../../game/GameCache";
+import MTTGameUtil from "../../game/util/MTTGameUtil";
+import { StringHelper } from "../../helper/StringHelper";
+import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -38,16 +43,18 @@ export default class MttRealTimeTableItem extends ListItem {
         this.setText(this.deskNum, data.rid)
         this.setText(this.playerNum, data.roomers.length)
         let [min, max] = this.getMaxMinScore(data.roomers);
-        this.setText(this.scoreNum, max);
-        this.setText(this.scoreNum1, min);
+        this.setText(this.scoreNum, GameCache.Instance.bb_on ? (max[1] + "BB") : max[0]);
+        this.setText(this.scoreNum1, GameCache.Instance.bb_on ? (min[1] + "BB") : min[0]);
     }
 
     getMaxMinScore(players: Array<TMttRoomsDeskPlayer>) {
         if (players.length == 0) {
             return [0, 0];
         }
-        let scores = players.map(p => Math.floor(p.chip) / 100)
-        scores.sort((a, b) => a - b)
+        //大盲 计算BB
+        let bigBlind = GameCache.Instance.carry_small;
+        let scores = players.map(p => [Math.floor(p.chip) / 100, StringHelper.GetDecimalN(p.chip / bigBlind)]);
+        scores.sort((a: any, b: any) => a[0] - b[0])
         return [scores[0], scores[scores.length - 1]];
     }
 }

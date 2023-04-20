@@ -131,13 +131,13 @@ export default class UIMTTDetail_State extends UIBasePlus {
 
         //起始记分牌
         this.$Qishi.children[0].getComponent(cc.Label).string = i18nMgr.Get("MTT_State_Starting_Scoreboard");
-        this.$Qishi.children[1].getComponent(cc.Label).string = `${mtt_detail.mtt.initial_score / 100}(${mtt_detail.mtt.initial_score / (MTTGameUtil.BlindAtLevel(0, mtt_detail.mtt.blindtable_type, 1) * 2)}BB)`;// /roomInfo.mtt.sb[0] * 2 / 100
+        this.$Qishi.children[1].getComponent(cc.Label).string = `${StringHelper.GetDecimalN(mtt_detail.mtt.initial_score / 100)}(${StringHelper.GetDecimalN(mtt_detail.mtt.initial_score / (MTTGameUtil.BlindAtLevel(0, mtt_detail.mtt.blindtable_type, 1) * 2))}BB)`;// /roomInfo.mtt.sb[0] * 2 / 100
 
         if (mtt_detail.mtt.hunter_on > 0) {
             this.$HuntReward.active = true;
             this.$HuntReward.children[0].getComponent(cc.Label).string = i18nMgr.Get("UIMTT_StateReward");
             this.$HuntReward.children[1].children[0].getComponent(cc.Label).string = i18nMgr.Get("UIMTT_StateHuntChampionships");
-            this.$HuntReward.children[2].getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("UIMTT_StateHuntChampionshipsDetail"), [`${mtt_detail.mtt.apply_fee_hunter / 100}`]);
+            this.$HuntReward.children[2].getComponent(cc.Label).string = StringHelper.Format(i18nMgr.Get("UIMTT_StateHuntChampionshipsDetail"), [`${StringHelper.GetDecimalN(mtt_detail.mtt.apply_fee_hunter / 100)}`]);
             this.setButtonClick(this.$HuntReward.children[1].children[1], this.hunt_click);
         }
         else {

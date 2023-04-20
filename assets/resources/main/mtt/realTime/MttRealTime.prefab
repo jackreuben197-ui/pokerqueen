@@ -3636,7 +3636,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 99,
+      "width": 120.71,
       "height": 41.58
     },
     "_anchorPoint": {
@@ -3688,8 +3688,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "记分牌",
-    "_N$string": "记分牌",
+    "_string": "筹码(BB)",
+    "_N$string": "筹码(BB)",
     "_fontSize": 33,
     "_lineHeight": 33,
     "_enableWrapText": true,
@@ -3716,7 +3716,7 @@
       "__id__": 103
     },
     "_enabled": true,
-    "i18n_string": "UITexasReport_Text_ListBarScore",
+    "i18n_string": "UIChipsBB",
     "_id": ""
   },
   {

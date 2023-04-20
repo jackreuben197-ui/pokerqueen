@@ -414,7 +414,7 @@ export default class GameUtil {
         //筹码位置
         some_pos.all_bet_pos[0].x = some_pos.all_bet_pos[11].x;
         some_pos.all_bet_pos[0].y = some_pos.all_bet_pos[11].y;
-        
+
         console.log("重置位置:", some_pos.all_bet_pos[0].x, some_pos.all_bet_pos[0].y);
 
     }
@@ -990,8 +990,9 @@ export default class GameUtil {
 
 
     //转换筹码值(BB开关显示BB单位)
-    public static TransBetValue(value: number): string {
-        let ratio = GameCache.Instance.bb_on ? GameCache.Instance.carry_small : 100;
+    public static TransBetValue(value: number, bigBlind: number = 0): string {
+        bigBlind > 0 || (bigBlind = GameCache.Instance.carry_small);
+        let ratio = GameCache.Instance.bb_on ? bigBlind : 100;
         let ex: string = GameCache.Instance.bb_on ? "BB" : "";
         return `${StringHelper.GetDecimalN(value / ratio)}${ex}`;
     }
