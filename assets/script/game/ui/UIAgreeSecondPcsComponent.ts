@@ -31,6 +31,9 @@ const { ccclass } = cc._decorator;
 @ccclass
 export default class UIAgreeSecondPcsComponent extends UIBase {
 
+    private static Color_Off = "#363C65";
+    private static Color_On = "#5FFF65";
+
     public static AgreeSecondData: typeof AgreeSecondData = AgreeSecondData;
 
     Text_Title: cc.Label = null;
@@ -136,9 +139,10 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
             head.active = true;
 
-            let head_icon: cc.Sprite = cc.find("Mask/Icon", head).getComponent(cc.Sprite);
+            //let head_icon: cc.Sprite = cc.find("Mask/Icon", head).getComponent(cc.Sprite);
+            let head_sp = head.getChildByName("head").getComponent(cc.Sprite);
 
-            WebImageHelper.SetHeadImage(head_icon, seat.Player.headPic);
+            WebImageHelper.SetHeadImage(head_sp, seat.Player.headPic);
 
             this.PlayerIndexMap.set(i, this.Player_Count);
 
@@ -146,7 +150,7 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
         }
         //判断长度设置头像总容器的缩放值(5个头像以内保持1,>5 进行递减)
-        this.Heads.scale = (1 - (Math.max(0, this.Player_Count - 5)) * 0.1);
+        //this.Heads.scale = (1 - (Math.max(0, this.Player_Count - 5)) * 0.1);
 
     }
 
@@ -157,14 +161,11 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
         this.UpdateTextAgreeNum();
 
-
         let index = this.PlayerIndexMap.get(seatId);
 
         let head = this.Heads.children[index];
 
-        console.log("head index:", index);
-
-        head.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(isAgree ? Agree_HeadAsset : DeAgree_HeadAsset, AssetFold.texture_TexasUI);
+        this.setChildColor(head, "head_bg", isAgree ? UIAgreeSecondPcsComponent.Color_On : UIAgreeSecondPcsComponent.Color_Off);
     }
 
     UpdateTextAgreeNum() {
@@ -173,14 +174,13 @@ export default class UIAgreeSecondPcsComponent extends UIBase {
 
     lateClose(param?: any) {
         this.Agree_Count = 0;
-        //this.unregiterAllDispatchEvent();
         this.PlayerIndexMap.clear();
     }
 
     private ClearAllHeads() {
         for (let i = 0; i < this.Heads.children.length; i++) {
             let head = this.Heads.children[i];
-            head.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(DeAgree_HeadAsset, AssetFold.texture_TexasUI);
+            this.setChildColor(head, "head_bg", UIAgreeSecondPcsComponent.Color_Off);
             head.active = false;
         }
     }

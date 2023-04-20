@@ -1453,7 +1453,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 435.34,
+      "width": 411.84,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -1510,9 +1510,7 @@
     "_fontSize": 80,
     "_lineHeight": 80,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
@@ -1747,7 +1745,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 67.56,
+      "width": 66.44,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -1804,9 +1802,7 @@
     "_fontSize": 46,
     "_lineHeight": 80,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
@@ -1868,7 +1864,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 26.19,
+      "width": 23.36,
       "height": 52.92
     },
     "_anchorPoint": {
@@ -1925,9 +1921,7 @@
     "_fontSize": 42,
     "_lineHeight": 42,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
@@ -2205,7 +2199,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 67.63,
+      "width": 69,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -2262,9 +2256,7 @@
     "_fontSize": 46,
     "_lineHeight": 80,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
@@ -2326,7 +2318,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 26.19,
+      "width": 23.36,
       "height": 52.92
     },
     "_anchorPoint": {
@@ -2383,9 +2375,7 @@
     "_fontSize": 42,
     "_lineHeight": 42,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
@@ -3296,7 +3286,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 82.85,
+      "width": 81.85,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -3353,9 +3343,7 @@
     "_fontSize": 46,
     "_lineHeight": 80,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
@@ -3663,7 +3651,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 94.55,
+      "width": 92.02,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -3720,9 +3708,7 @@
     "_fontSize": 46,
     "_lineHeight": 80,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
@@ -4030,7 +4016,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 88.8,
+      "width": 92.04,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -4087,9 +4073,7 @@
     "_fontSize": 46,
     "_lineHeight": 80,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
@@ -4397,7 +4381,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 59,
+      "width": 52.45,
       "height": 100.8
     },
     "_anchorPoint": {
@@ -4454,9 +4438,7 @@
     "_fontSize": 46,
     "_lineHeight": 80,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "bd6870fb-43e2-4612-a4ca-e0d6b7811be0"
-    },
+    "_N$file": null,
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
