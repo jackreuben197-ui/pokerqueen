@@ -75,7 +75,7 @@ export default class UIFriendDataMange extends BaseForm {
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        this.listen(EventName.refresh_Btn_Data, this.chaneData)
+        // this.listen(EventName.refresh_Btn_Data, this.chaneData)
     }
     openDropDownBox() {
         UIComponent.open(UIDefine.dropDownBoxNew, { data: careerConfig, index: this._selectIndex, cb: this.selectSort.bind(this) })
@@ -90,7 +90,6 @@ export default class UIFriendDataMange extends BaseForm {
     setDataLbl(began, end) {
         this._start_time = began;
         this._end_time = end;
-        cc.log(new Date(this._start_time));
         this.btn_pd_4.string = TimeHelper.getMDHMS(began)
         this.btn_pd_5.string = TimeHelper.getMDHMS(end)
         this.initUI()
@@ -99,11 +98,13 @@ export default class UIFriendDataMange extends BaseForm {
     }
     caucateClick(event, customData) {
         this._timeType = customData
-        UIComponent.open(UIDefine.UICalendar)
+        // UIComponent.open(UIDefine.UICalendar)
+        UIComponent.open(UIDefine.calendarCommpent, { cb: this.chaneData.bind(this) })
+
     }
-    chaneData() {
-        let _d = Data.getInstance().selDate
-        let _d1 = _d.getTime();
+    chaneData(dayTime) {
+        // let _d = Data.getInstance().selDate
+        let _d1 = dayTime.getTime();
         if (this._timeType == '1') {
             if (_d1 > this._end_time) {
                 this.setDataLbl(this._end_time - 24 * 60 * 60 * 1000 + 1, this._end_time)

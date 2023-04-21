@@ -7324,8 +7324,8 @@
     },
     "component": "",
     "_componentId": "b9fd47K9L9Ht4hzJnFO/y+W",
-    "handler": "openCalendar",
-    "customEventData": ""
+    "handler": "caucateClick",
+    "customEventData": "1"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -7740,8 +7740,8 @@
     },
     "component": "",
     "_componentId": "b9fd47K9L9Ht4hzJnFO/y+W",
-    "handler": "openCalendar",
-    "customEventData": ""
+    "handler": "caucateClick",
+    "customEventData": "2"
   },
   {
     "__type__": "cc.PrefabInfo",

@@ -1084,6 +1084,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_mtt/UIMTTMineRank",
     },
+    //日历
+    calendarCommpent: {
+        UIType: UIType.Board,
+        Name: "calendarCommpent",
+        Bundle: null,
+        Path: "common/calendarCommpent",
+    },
 
 
 
