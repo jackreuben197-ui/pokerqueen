@@ -1,1 +1,0 @@
-{"NetLineSwitchUrl":"https://dev.k8s.awanptesting.com/api/config/network/linklist","AssetBundleServerUrl":"https://tf.bestpathforyou.com:8456/","Address":"https://test.kefu.mayipoker.com/index/index/client","OpenIMApiUrl":"http://10.102.53.38:10000","OpenIMWSUrl":"ws://10.102.53.38:17778","PropIconUrl":"http://static.awanptesting.com/"}

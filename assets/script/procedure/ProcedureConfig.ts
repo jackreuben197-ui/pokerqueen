@@ -26,9 +26,6 @@ export default class ProcedureConfig extends ProcedureBase {
 
         UIComponent.Instance.ShowUI(PrefabUI.UIPreloading, {
             pre_define: Pre_Config_Define, stopProgress: true, complete: () => {
-                console.log("Config Set");
-                GameConfig.GlobalProto = this.getGlobalProto();
-                console.log("config :: GameConfig.GlobalProto : ", GameConfig.GlobalProto);
                 //解析 语言配置
                 i18nMgr.praseConfig();
                 i18nMgr.initLanguage();
@@ -149,11 +146,4 @@ export default class ProcedureConfig extends ProcedureBase {
         // return network;
     }
 
-    private getGlobalProto() {
-        let GlobalProto: cc.TextAsset = cc.resources.get("config/GlobalProto", cc.TextAsset);
-        if (GlobalProto && GlobalProto.text) {
-            return JSON.parse(GlobalProto.text)
-        }
-        return null;
-    }
 }
