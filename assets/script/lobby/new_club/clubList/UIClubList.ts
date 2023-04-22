@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-27 10:30:58
+ * @LastEditTime: 2023-04-22 10:42:13
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -73,7 +73,7 @@ export default class UIClubList extends BaseForm {
         await UIClubModel.mInstance.APIOrgClubGet()
         let data: any = Web_Org_Club_Get.Response.data
         this.num.string = data.length;
-        this.initListNode(data)
+        // this.initListNode(data)
         this.initPageNode(data)
         this.initTop()
         this.sortData()
@@ -155,7 +155,7 @@ export default class UIClubList extends BaseForm {
         let list = cc.find('menuChange/list', this.topNode);
 
         this.listType = this.listType == 1 ? 2 : 1
-        this.pageNode.active = this.listType == 2
+        this.pageNode.opacity = this.listType == 2 ? 255 : 0
         this.listNode.active = this.listType == 1
         union.active = this.pageNode.active
         list.active = this.listNode.active

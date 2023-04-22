@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-17 19:10:30
+ * @LastEditTime: 2023-04-22 10:44:47
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -241,13 +241,13 @@ export default class UIClubCreateMatch extends BaseForm {
         this.initUI()
         await UIClubModel.mInstance.APIUserDiamondsWallet();
         let wallet = APIUserDiamondsWallet.Response.data;
-        ClubCache._diamonds_wallet = wallet.diamonds_wallet
+        ClubCache._diamonds_wallet = wallet?.diamonds_wallet
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
-        own.string = ClubCache._diamonds_wallet.diamonds + '';
+        own.string = ClubCache._diamonds_wallet?.diamonds || 0 + '';
     }
     async initDiamond() {
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
-        own.string = ClubCache._diamonds_wallet.diamonds + '';
+        own.string = ClubCache._diamonds_wallet?.diamonds || 0 + '';
         let pay = cc.find('pay/num', this.coinNode).getComponent(cc.Label)
         pay.string = 12 + '';
         // if (ClubCache.CreateGameType == 2) {
