@@ -3,7 +3,7 @@
  * @Date: 2022-11-05 11:55:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-24 11:44:10
+ * @LastEditTime: 2023-04-24 12:18:37
  * @FilePath: /pokerqueen/assets/script/new_lobby/me/UIChangeAccount.ts
  */
 import ComFormTitle from "../../common/ComFormTitle";
@@ -17,8 +17,6 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIChangeAccount extends BaseForm {
-    @property(cc.Label)
-    title: cc.Label = null;
     @property(cc.Node)
     phone: cc.Node = null;
     @property(cc.Node)
@@ -48,14 +46,15 @@ export default class UIChangeAccount extends BaseForm {
     }
     initUI() {
         let data: any = APIGetBlindStatus.Response?.data
+        if (this.type == 1) {
+            this.setBindStatue(this.phone, data.phone_status.status, this.type)
 
-        this.setBindStatue(this.phone, data.phone_status.status, this.type)
-        this.setBindStatue(this.email, data.email_status.status, this.type)
+        } else {
+            this.setBindStatue(this.email, data.email_status.status, this.type)
+        }
 
-        console.log('aaaa===', data);
         this.phone.active = this.type == 1
         this.email.active = this.type == 2
-        let title = this.type == 1 ? 'UIMine_BindPhone' : 'UIMine_BindEmail'
 
         if (this.type == 1) {
             if (data.phone_status.status) {
@@ -76,13 +75,26 @@ export default class UIChangeAccount extends BaseForm {
     setBindStatue(node, flag, type) {
         node.getChildByName('haveBind').active = flag
         node.getChildByName('noBind').active = !flag
+        let lbl_phone: cc.Node = node.getChildByName('Text_title')
+        let lbl_tip: cc.Label = node.getChildByName('Text_tip').getComponent(cc.Label)
+
         let data: any = APIGetBlindStatus.Response?.data
-        if (flag && type == 1) {
-            let lbl_phone: cc.Node = node.getChildByName('haveBind').getChildByName('Text_title')
-            lbl_phone.getComponent(cc.Label).string = '你的手机号: ' + data.phone_status.phone
+        if (type == 1) {
+            if (flag) {
+                lbl_phone.getComponent(cc.Label).string = '+' + data.phone_status.area + ' ' + data.phone_status.phone
+                lbl_tip.string = i18nMgr.Get('UISetting_SecurityBindYes') + i18nMgr.Get('UISetting_SecurityBindTelNum')
+            } else {
+                lbl_tip.string = i18nMgr.Get('UISetting_SecurityBindNo') + i18nMgr.Get('UISetting_SecurityBindTelNum')
+                lbl_phone.getComponent(cc.Label).string = ''
+            }
         } else {
-            let lbl_phone: cc.Node = node.getChildByName('haveBind').getChildByName('Text_title')
-            lbl_phone.getComponent(cc.Label).string = '你的邮箱号: ' + data.email_status.email
+            if (flag) {
+                lbl_phone.getComponent(cc.Label).string = data.email_status.email
+                lbl_tip.string = i18nMgr.Get('UISetting_SecurityBindYes') + i18nMgr.Get('UISetting_SecurityBindEmailNum')
+            } else {
+                lbl_phone.getComponent(cc.Label).string = ''
+                lbl_tip.string = i18nMgr.Get('UISetting_SecurityBindNo') + i18nMgr.Get('UISetting_SecurityBindEmailNum')
+            }
         }
     }
     btnClick() {

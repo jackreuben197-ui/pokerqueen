@@ -3,7 +3,7 @@
  * @Date: 2022-11-05 10:09:19
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-24 11:35:40
+ * @LastEditTime: 2023-04-24 11:50:43
  * @FilePath: /pokerqueen/assets/script/new_lobby/me/UIAccountManagement.ts
  */
 
@@ -68,7 +68,7 @@ export default class UIAccountManagement extends BaseForm {
     initBlindStatue() {
         let data: any = APIGetBlindStatus.Response?.data
         if (data.phone_status.status) {
-            this.phone.string = this.splitString(data.phone_status.phone)
+            this.phone.string = '+' + data.phone_status.area + ' ' + this.splitString(data.phone_status.phone)
         } else {
             this.phone.string = i18nMgr.Get('UISetting_SecurityBindNo')
         }
@@ -79,7 +79,7 @@ export default class UIAccountManagement extends BaseForm {
         }
     }
     splitString(str: string) {
-        str = str.substring(0, 4)
+        str = str.substring(0, 5)
         return str + '...'
     }
 }
