@@ -3,19 +3,20 @@
  * @Date: 2022-11-05 11:55:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-06 10:30:45
- * @FilePath: /pokerqueen/assets/script/lobby/view/UIMine_bindMess.ts
+ * @LastEditTime: 2023-04-24 11:44:10
+ * @FilePath: /pokerqueen/assets/script/new_lobby/me/UIChangeAccount.ts
  */
 import ComFormTitle from "../../common/ComFormTitle";
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
+import { i18nMgr } from "../../i18n/i18nMgr";
 import { APIGetBlindStatus } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class UIMine_bindMess extends BaseForm {
+export default class UIChangeAccount extends BaseForm {
     @property(cc.Label)
     title: cc.Label = null;
     @property(cc.Node)
@@ -52,26 +53,25 @@ export default class UIMine_bindMess extends BaseForm {
         this.setBindStatue(this.email, data.email_status.status, this.type)
 
         console.log('aaaa===', data);
-
-
         this.phone.active = this.type == 1
         this.email.active = this.type == 2
         let title = this.type == 1 ? 'UIMine_BindPhone' : 'UIMine_BindEmail'
-        this.comFormTitle.initData(title, this);
 
         if (this.type == 1) {
             if (data.phone_status.status) {
-                this.sureBtnLab.string = '更换手机号'
+                this.sureBtnLab.string = i18nMgr.Get('UISetting_SecurityBindChange') + i18nMgr.Get('UISetting_SecurityBindTelNum')
             } else {
-                this.sureBtnLab.string = '绑定手机号'
+                this.sureBtnLab.string = i18nMgr.Get('UISetting_SecurityBindTel')
             }
         } else {
             if (data.email_status.status) {
-                this.sureBtnLab.string = '更换邮箱'
+                this.sureBtnLab.string = i18nMgr.Get('UISetting_SecurityBindChange') + i18nMgr.Get('UISetting_SecurityBindEmailNum')
             } else {
-                this.sureBtnLab.string = '绑定邮箱'
+                this.sureBtnLab.string = i18nMgr.Get('UISetting_SecurityBindEmail')
             }
         }
+        this.comFormTitle.initData(this.sureBtnLab.string, this);
+
     }
     setBindStatue(node, flag, type) {
         node.getChildByName('haveBind').active = flag

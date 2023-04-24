@@ -99,7 +99,7 @@ export default class UIMeSettings extends BaseFormPlus {
     }
     // 账号管理 重置密码
     click_reset_password() {
-        UIComponent.open(UIDefine.UIResetPassword);
+        UIComponent.open(UIDefine.UIAccountManagement)
     }
     // 游戏声音
     click_sound(button: cc.Button) {

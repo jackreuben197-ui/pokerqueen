@@ -583,18 +583,18 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/club/prefab/UICalendar",
     },
-    UIMine_SafeAdmin: {
+    UIAccountManagement: {
         UIType: UIType.Form,
         Name: "UIMine_SafeAdmin",
         Bundle: null,
-        Path: "main/lobby/prefab/UIMine_SafeAdmin",
-        Title: "UIMine_SafeAdmin"
+        Path: "main/lobby/me/UIAccountManagement",
+        Title: "UISettingPassword001"
     },
-    UIMine_bindMess: {
+    UIChangeAccount: {
         UIType: UIType.Form,
-        Name: "UIMine_bindMess",
+        Name: "UIChangeAccount",
         Bundle: null,
-        Path: "main/lobby/prefab/UIMine_bindMess",
+        Path: "main/lobby/me/UIChangeAccount",
     },
     UIMineChangeBind: {
         UIType: UIType.Form,
