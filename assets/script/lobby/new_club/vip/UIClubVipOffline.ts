@@ -305,13 +305,8 @@ export default class UIClubVipOffline extends BaseFormPlus {
     onClickDownlist() {
         UIComponent.open<UIDownSelectorParam>(UIDefine.UIDownSelector, {
             this: this,
-            select_texts: [
-                i18nMgr.Get(Member_Order_List[0].show),
-                i18nMgr.Get(Member_Order_List[1].show),
-                i18nMgr.Get(Member_Order_List[2].show),
-                i18nMgr.Get(Member_Order_List[3].show),
-            ],
-            confirm_text: i18nMgr.Get("CommitOK"),
+            select_texts: Member_Order_List,
+            confirm_text: "CommitOK",
             confirm_click: this.onSortSelect,
             select: this.downSelectIndex
         })

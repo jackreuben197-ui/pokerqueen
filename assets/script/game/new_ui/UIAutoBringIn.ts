@@ -10,7 +10,6 @@ import { Web_User_Room } from "../../net/https/WebRequest";
 import GGASCom from "../../ui/component/GGASCom";
 import GGSlider from "../../ui/component/GGSlider";
 import GGToggle from "../../ui/component/GGToggle";
-import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
