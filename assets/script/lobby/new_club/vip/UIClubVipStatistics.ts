@@ -240,12 +240,8 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     onClickDownlist() {
         UIComponent.open<UIDownSelectorParam>(UIDefine.UIDownSelector, {
             this: this,
-            select_texts: [
-                i18nMgr.Get(this.Com_Gold_List[0].show),
-                i18nMgr.Get(this.Com_Gold_List[1].show),
-                i18nMgr.Get(this.Com_Gold_List[2].show),
-            ],
-            confirm_text: i18nMgr.Get("CommitOK"),
+            select_texts: this.Com_Gold_List,
+            confirm_text: "CommitOK",
             select: this.gold_index,
             confirm_click: (index) => {
                 this.gold_index = index;

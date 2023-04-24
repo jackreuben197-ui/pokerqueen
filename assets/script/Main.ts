@@ -127,4 +127,4 @@ export default class Main extends cc.Component {
 (window as any).Main = Main;
 
 //http://localhost:7456/assets/resources/native/eb/ebdcd742-e944-4ca4-81a3-ce82954796de.png
-//http://localhost:7456/assets/resources/native/cb/cbf1d0fd-cea7-497f-8b96-4a8865c4be7f.png
+//http://localhost:7456/assets/others/native/19/19dc920e-c416-45c1-bbd6-7d74efabca0f.png

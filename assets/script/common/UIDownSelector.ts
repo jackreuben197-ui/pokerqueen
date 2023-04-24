@@ -3,11 +3,12 @@ import { Tabs_Status } from "../config/GameConfig";
 import UIBasePlus from "../ui/UIBasePlus"
 import UIComponent from "../ui/UIComponent";
 import SimpleNodePool from "./MyNodePool";
+import { i18nMgr } from "../i18n/i18nMgr";
 
 const { ccclass, menu } = cc._decorator;
 
 export type UIDownSelectorParam = {
-    select_texts: string[],
+    select_texts: (string | any)[],
     confirm_text?: string,
     confirm_click?: Function,
     this?: any,
@@ -49,13 +50,13 @@ export default class UIDownSelector extends UIBasePlus {
 
         let status = Tabs_Status[this.select];
 
-        this.cc_Label$confirm_text.string = data.confirm_text || "OK";
+        this.cc_Label$confirm_text.string = i18nMgr.Get(data.confirm_text || "CommitOK");
 
         data.select_texts.forEach((text, index) => {
             let item = this.pool.GetNode();
             item["index"] = index;
             item.parent = this.$content_layout;
-            this.setChildLabel(item, "text", text);
+            this.setChildLabel(item, "text", i18nMgr.Get(text?.show || text));
             this.setButtonClick(item, this.onItemClick);
             this.setChildVisible(item, "unselect", !status[index]);
             this.setChildVisible(item, "select", !!status[index]);

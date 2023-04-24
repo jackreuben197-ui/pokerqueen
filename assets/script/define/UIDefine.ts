@@ -818,15 +818,6 @@ export const UIDefine = {
         Path: "main/mtt/detail/MttAgainBuy",
     },
 
-    /////////////////
-    //通用提示面板
-    UICommonDialog: {
-        UIType: UIType.CommonUI,
-        Name: "UICommonDialog",
-        Bundle: null,
-        Path: "main/prefab/dialog/UICommonDialog",
-    },
-
     //标题通用提示面板
     UISuperDialog: {
         UIType: UIType.CommonUI,

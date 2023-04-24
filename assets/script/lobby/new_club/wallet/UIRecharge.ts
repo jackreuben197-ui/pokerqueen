@@ -49,6 +49,9 @@ export default class UIRecharge extends BaseFormPlus {
 
     lateLoad() {
         super.lateLoad();
+
+        this.cc_EditBox$Recharge.placeholder = i18nMgr.Get("Uimine_ptcz_playgold");
+
         this.$GoldOptions.children.forEach((item, index) => {
             item.getChildByName("lbl_gold").getComponent(cc.Label).string = `${this.Gold_Text[index]}`;
             item["index"] = index;

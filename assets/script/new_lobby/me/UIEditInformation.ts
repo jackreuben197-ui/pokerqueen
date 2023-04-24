@@ -1,13 +1,10 @@
 import { UIDefine } from "../../define/UIDefine";
-import { GameCache } from "../../game/GameCache";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIClubModel } from "../../lobby/labor/UIClubModel";
-import { UIMineModel } from "../../lobby/UIMineModel";
 import { APIOrgClubUploadIcon, Web_User_Info, Web_User_Modify_User_Info, WWW } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import BottomSelector from "../../ui/component/BottomSelector";
-import UICommonDialog from "../../ui/dialog/UICommonDialog";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import UILobbyIndex from "../index/UILobbyIndex";

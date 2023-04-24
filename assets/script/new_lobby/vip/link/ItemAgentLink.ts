@@ -6,6 +6,7 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class ItemAgentLink extends UIBasePlus {
     /////////////////////声明界面节点组件引用
+    $bg: cc.Node = null;
     $On: cc.Node = null;
     $Off: cc.Node = null;
     $SwitchClick: cc.Node = null;
@@ -31,6 +32,7 @@ export default class ItemAgentLink extends UIBasePlus {
     }
 
     private refreshUI() {
+        this.$bg.active = this._param.index % 2 == 0;
         this.cc_Label$Nick.string = this._param.data.nick_name;
         this.cc_Label$ID.string = `ID:  ${this._param.data.random_num}`;
         WebImageHelper.SetHeadImage(this.cc_Sprite$Head, this._param.data.avatar || "");
