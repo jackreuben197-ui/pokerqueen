@@ -3,7 +3,7 @@
  * @Date: 2022-11-05 11:55:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-24 12:18:37
+ * @LastEditTime: 2023-04-24 12:30:02
  * @FilePath: /pokerqueen/assets/script/new_lobby/me/UIChangeAccount.ts
  */
 import ComFormTitle from "../../common/ComFormTitle";
@@ -98,6 +98,6 @@ export default class UIChangeAccount extends BaseForm {
         }
     }
     btnClick() {
-        UIComponent.open(UIDefine.UIMineChangeBind, this.type);
+        UIComponent.open(UIDefine.UIChangeBind, this.type);
     }
 }

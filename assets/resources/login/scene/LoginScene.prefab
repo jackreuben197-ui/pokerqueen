@@ -2506,7 +2506,7 @@
     "_enabled": true,
     "_string": "",
     "returnType": 0,
-    "maxLength": 20,
+    "maxLength": 30,
     "_tabIndex": 0,
     "editingDidBegan": [],
     "textChanged": [],
@@ -5596,7 +5596,7 @@
         1,
         1,
         1,
-        null
+        0
       ]
     },
     "_eulerAngles": {

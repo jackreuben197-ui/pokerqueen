@@ -596,11 +596,11 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/lobby/me/UIChangeAccount",
     },
-    UIMineChangeBind: {
+    UIChangeBind: {
         UIType: UIType.Form,
-        Name: "UIMineChangeBind",
+        Name: "UIChangeBind",
         Bundle: null,
-        Path: "main/lobby/prefab/UIMineChangeBind",
+        Path: "main/lobby/me/UIChangeBind",
     },
 
     UIMineThridBind: {
