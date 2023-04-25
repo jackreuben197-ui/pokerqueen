@@ -1,13 +1,11 @@
-import { executionAsyncResource } from "async_hooks";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
-import GC from "../../frame/GameControl";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { APIMsgMessageList, Web_Msg_Message_Unread, Web_Msg_Message_UnreadClear, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemMyMessage from "./ItemMyMessage";
-import MyMessageModel, { EnumMSG } from "./MyMessageModel";
+import MyMessageModel from "./MyMessageModel";
 
 const { ccclass, property } = cc._decorator;
 
