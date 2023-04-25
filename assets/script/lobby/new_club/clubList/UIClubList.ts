@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-22 10:42:13
+ * @LastEditTime: 2023-04-25 12:11:12
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -157,7 +157,7 @@ export default class UIClubList extends BaseForm {
         this.listType = this.listType == 1 ? 2 : 1
         this.pageNode.opacity = this.listType == 2 ? 255 : 0
         this.listNode.active = this.listType == 1
-        union.active = this.pageNode.active
+        union.active = !this.listNode.active
         list.active = this.listNode.active
     }
 
