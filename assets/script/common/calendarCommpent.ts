@@ -3,7 +3,7 @@
  * @Date: 2023-04-19 10:13:09
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-19 14:49:55
+ * @LastEditTime: 2023-04-25 12:38:00
  * @FilePath: /pokerqueen/assets/script/common/calendarCommpent.ts
  */
 // Learn TypeScript:
@@ -63,7 +63,7 @@ export default class calendarCommpent extends UIBase {
         UIComponent.close(UIDefine.calendarCommpent)
     }
     okBtn() {
-        let _date = new Date(this._selectYear, this._selectMonth - 1, this._selectDay + 1);
+        let _date = new Date(this._selectYear, this._selectMonth - 1, this._selectDay);
         if (this.cb) {
             this.cb(_date);
         }
@@ -138,9 +138,9 @@ export default class calendarCommpent extends UIBase {
         let off = this.dayContent.y - this._starOff
         let index = Math.round(off / 130);
         index = index < 0 ? 0 : index
-        this._selectDay = index
+        this._selectDay = index + 1
         this.dayContent.y = index * 130 + this._starOff;
-        this.setOp(this.dayContent, this._selectDay)
+        this.setOp(this.dayContent, index)
     }
     initItem(node, num) {
         node.getChildByName('num').getComponent(cc.Label).string = num
