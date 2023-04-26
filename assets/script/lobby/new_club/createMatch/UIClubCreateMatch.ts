@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-22 10:44:47
+ * @LastEditTime: 2023-04-26 10:39:36
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -160,6 +160,7 @@ export default class UIClubCreateMatch extends BaseForm {
     drsqSwitch: GGSwitch = null;
     yckpSwitch: GGSwitch = null;
     bmSwitch: GGSwitch = null;
+    bxSwitch: GGSwitch = null;
     sr_zw: cc.Node = null;
     clubNode: cc.Node = null;
     friendNode: cc.Node = null;
@@ -214,6 +215,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.dxmTabNode = this.getChildNodeOrComponent("dxmTabNode", TabNode);
         this.drsqSwitch = this.getChildNodeOrComponent("drsqSwitch", GGSwitch);
         this.bmSwitch = this.getChildNodeOrComponent("bmSwitch", GGSwitch);
+        this.bxSwitch = this.getChildNodeOrComponent("bxSwitch", GGSwitch);
         this.yckpSwitch = this.getChildNodeOrComponent("yckpSwitch", GGSwitch);
         this.fzbTabNode = this.getChildNodeOrComponent("fzbTabNode", TabNode);
         this.sr_zw = this.getChildNodeOrComponent("sr_zw");
@@ -426,6 +428,13 @@ export default class UIClubCreateMatch extends BaseForm {
         this.yckpSwitch.clickObj = {
             click: () => {
                 this._yckpState = !this._yckpState
+            }, self: this
+        };
+
+        this.bxSwitch.setIsOn(this._bxState)
+        this.bxSwitch.clickObj = {
+            click: () => {
+                this._bxState = !this._bxState
             }, self: this
         };
 

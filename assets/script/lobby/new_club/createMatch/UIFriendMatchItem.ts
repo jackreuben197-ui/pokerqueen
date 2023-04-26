@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-07 11:16:01
+ * @LastEditTime: 2023-04-26 11:06:48
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatchItem.ts
  */
 
@@ -51,7 +51,9 @@ export default class UIFriendMatchItem extends UIBase {
         let lbl_center_left = this.labelNode.getChildByName('lbl_1').getComponent(cc.Label)
         let sb = this._data.sb / 100;
         lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`
-
+        lbl_center_left._forceUpdateRenderData()
+        let bx = lbl_center_left.node.getChildByName('bx');
+        bx.active = this._data.insurance_on
 
         let lbl_time = cc.find('lbl_2', this.labelNode).getComponent(cc.Label)
         let isJoin = this._data.participation_status == 1;

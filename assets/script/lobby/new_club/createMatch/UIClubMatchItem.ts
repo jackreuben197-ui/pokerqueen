@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-29 20:05:09
+ * @LastEditTime: 2023-04-26 11:10:49
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubMatchItem.ts
  */
 
@@ -63,9 +63,12 @@ export default class UIClubMatchItem extends UIBase {
         this.lbl_num.string = `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`
         this.lbl_status = this.labelNode.getChildByName('lbl_3').getComponent(cc.Label)
         this.setText(this.lbl_status, this._data.status == 1 ? 'MTT_State_NotStart' : 'adaptation10186');
-
+        lbl_center_left._forceUpdateRenderData()
         let lock = this.node.getChildByName('lock');
         lock.active = this._data.private_room == 1
+
+        let bx = lbl_center_left.node.getChildByName('bx');
+        bx.active = this._data.insurance_on
 
         let isJoin = this._data.participation_status == 1;
 

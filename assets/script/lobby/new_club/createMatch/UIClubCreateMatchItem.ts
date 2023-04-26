@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-15 19:05:51
+ * @LastEditTime: 2023-04-26 11:07:12
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -91,7 +91,9 @@ export default class UIClubCreateMatchItem extends UIBase {
         lock.active = this._data.private_room == 1
         let beSide = this.node.getChildByName('beSide')
         beSide.active = this._data.share_table == 2
-
+        this.labelNode.getChildByName('lbl_1').getComponent(cc.Label)._forceUpdateRenderData()
+        let bx = this.labelNode.getChildByName('lbl_1').getChildByName('bx');
+        bx.active = this._data.insurance
 
     }
     setGameType() {
