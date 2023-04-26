@@ -2924,6 +2924,9 @@ export class web_api_club_data_stats_data_detail_info extends WebCommon {
 export class web_api_club_data_stats_data_detail extends WebCommon {
     static API: string = "/api/stats/club_data_stats/data_detail";
 }
+export class web_api_stats_room_insurance_info extends WebCommon {
+    static API: string = "/api/stats/room/insurance_info";
+}
 
 
 // MTT 猎人赛排名列表

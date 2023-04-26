@@ -1082,6 +1082,14 @@ export const UIDefine = {
         Bundle: null,
         Path: "common/calendarCommpent",
     },
+    //保险列表
+    UIInsurance: {
+        UIType: UIType.Form,
+        Name: "UIInsurance",
+        Bundle: null,
+        Path: "main/career/UIInsurance",
+        Title: "UIInsurancePool"
+    }
 
 
 

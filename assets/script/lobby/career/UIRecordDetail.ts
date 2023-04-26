@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 16:40:21
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 11:07:29
+ * @LastEditTime: 2023-04-26 12:17:50
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIRecordDetail.ts
  */
 
@@ -37,6 +37,8 @@ export default class UIRecordDetail extends BaseFormPlus {
     @property(cc.Node)
     lbl_Node: cc.Node = null;
 
+    @property(cc.Node)
+    bx_title: cc.Node = null;
 
     @property(List)
     list: List = null;
@@ -49,6 +51,7 @@ export default class UIRecordDetail extends BaseFormPlus {
     _reqEnd = false;
     _roomId = null;
     _respInfo = null;
+    _roomData = null;
     protected lateLoad(): void {
         super.lateLoad();
 
@@ -78,6 +81,7 @@ export default class UIRecordDetail extends BaseFormPlus {
             (data: any) => {
                 this._respInfo = data;
                 let roomData = data.data.room_data;
+
                 this.refreshUpUI(roomData);
                 let user_list = roomData.user_list;
                 this._reqing = false
@@ -93,15 +97,18 @@ export default class UIRecordDetail extends BaseFormPlus {
                 this._offset = this._list.length;
                 this._reqEnd = true //this._list.length == this._total;
                 this.lb_tip.active = this.list.numItems == 0
+
             },
             (res) => {
             }
         )
     }
     refreshUpUI(roomData) {
+        this._roomData = roomData
         this.id.string = 'ID:' + roomData.room_id;
         this.data_date.string = TimeHelper.convertUTCTimeToLocalTime(roomData.start_time) + ' - ' + TimeHelper.convertUTCTimeToLocalTime(roomData.end_time)
-
+        this.bx_title.active = roomData.insurance_on
+        this.bx_title.getChildByName('bxNum').getComponent(cc.Label).string = roomData.insurance_total
         for (let index = 0; index < this.lbl_Node.childrenCount; index++) {
             const lbl_1 = this.lbl_Node.children[index].getComponent(cc.Label)
             switch (index) {
@@ -139,6 +146,9 @@ export default class UIRecordDetail extends BaseFormPlus {
     }
     itemClick() {
         UIComponent.open(UIDefine.UIRecordHands, { type: 2, roomData: this._respInfo.data.room_data })
+    }
+    bxClick() {
+        UIComponent.open(UIDefine.UIInsurance, { roomData: this._roomData })
     }
 
 }
