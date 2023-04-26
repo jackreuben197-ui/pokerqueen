@@ -31,26 +31,26 @@ class UserOutsCardsData {
     }
 }
 
-export class WrapTriggedInsuranceData {
-    public outsCards: OutsCard.AsObject[];//所有玩家
-    public subPot: number;
-    public leastAmount: number;//最小限制购买
-    public mostAmount: number;//最大限制购买
-    public potAllowOutSelection: number;//是否允许部分选择outs。已经在本池投入的保费>0，不可选择
-    public potTotalCost: number;//池中总投入
-    public pot: number;//要购买的保险池大小
-    public userNames: string[];//参与保险得玩家名字
-    public outsPerUser: number[];//outs数量
-    public playerCards: number[];//手牌
-    public PotUserCount: number;//池内人数
-    public PotLeaderCount: number;//池内领先人数
-}
-export class InsuranceData {
-    public publicCards: number[];//公共牌
-    public triggedDatas: WrapTriggedInsuranceData[];
-    public timeLeft: number;//剩余时间
-    public delayTimes: number;//已加时次数
-}
+// export class WrapTriggedInsuranceData {
+//     public outsCards: OutsCard.AsObject[];//所有玩家
+//     public subPot: number;
+//     public leastAmount: number;//最小限制购买
+//     public mostAmount: number;//最大限制购买
+//     public potAllowOutSelection: number;//是否允许部分选择outs。已经在本池投入的保费>0，不可选择
+//     public potTotalCost: number;//池中总投入
+//     public pot: number;//要购买的保险池大小
+//     public userNames: string[];//参与保险得玩家名字
+//     public outsPerUser: number[];//outs数量
+//     public playerCards: number[];//手牌
+//     public PotUserCount: number;//池内人数
+//     public PotLeaderCount: number;//池内领先人数
+// }
+// export class InsuranceData {
+//     public publicCards: number[];//公共牌
+//     public triggedDatas: WrapTriggedInsuranceData[];
+//     public timeLeft: number;//剩余时间
+//     public delayTimes: number;//已加时次数
+// }
 
 
 @ccclass
@@ -223,12 +223,12 @@ export default class UIInsuranceComponent extends UIBase {
         //     this.listCards = [];
         // }
         // if (this.listCards.length > 0) {
-            this.listCards = [];
-            this.listCards.push(imagePublicCard0);
-            this.listCards.push(imagePublicCard1);
-            this.listCards.push(imagePublicCard2);
-            this.listCards.push(imagePublicCard3);
-            this.listCards.push(imagePublicCard4);
+        this.listCards = [];
+        this.listCards.push(imagePublicCard0);
+        this.listCards.push(imagePublicCard1);
+        this.listCards.push(imagePublicCard2);
+        this.listCards.push(imagePublicCard3);
+        this.listCards.push(imagePublicCard4);
         // }
 
         this.CountDownText = this.getChildNodeOrComponent("lbl_21", cc.Label);
@@ -416,7 +416,7 @@ export default class UIInsuranceComponent extends UIBase {
             this.listCards[i].active = this.data.publicCards[i] >= 0;
         }
 
-        
+
     }
 
     /// <summary>
@@ -981,7 +981,7 @@ export default class UIInsuranceComponent extends UIBase {
     }
 
     private onClickClose(): void {
-        UIComponent.Instance.HideUI(PrefabUI.UIInsuranceComponent);
+        //UIComponent.Instance.HideUI(PrefabUI.UIInsuranceComponent);
     }
 
     onClickAll(go) {

@@ -6,7 +6,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { BringInApplyMsg, Broadcast, BroadcastCode, BroadcastMsg } from "../../net/websocket/ProtocolHoldemMessages";
-import { Def, Operator, PlayerCards, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
+import { Def, Operator, OutsCard, PlayerCards, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
 import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_agree_second_pcs_pb";
@@ -47,10 +47,10 @@ import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
 import UIAgreeSecondPcsComponent from "../ui/UIAgreeSecondPcsComponent";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
-import { InsuranceData, WrapTriggedInsuranceData } from "../ui/UIInsuranceComponent";
 import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 import MTTGame from "../texas/MTTGame";
+import { InsuranceData, WrapTriggedInsuranceData } from "../new_ui/UIInsurance";
 
 
 //const CanPlayStatus = Def.CanPlayStatus;
@@ -1247,7 +1247,7 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="source"></param>
     public HandleGetPublicCards(source: ServerMessagePublicCards.AsObject): void {
-        UIComponent.Instance.HideUI(PrefabUI.UIInsuranceComponent);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsurance);
         UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
         this.game.autoCall = false;
         this.game.autoAllin = false;
@@ -1720,7 +1720,7 @@ export default class TexasGameProtocol {
                 return;
 
             //List < UIInsuranceComponent.WrapTriggedInsuranceData > wrapTriggedInsuranceDatas = new List<UIInsuranceComponent.WrapTriggedInsuranceData>();
-            let wrapTriggedInsuranceDatas = [];
+            let wrapTriggedInsuranceDatas: WrapTriggedInsuranceData[] = [];
 
             //UIInsuranceComponent.WrapTriggedInsuranceData mWrapTriggedInsuranceData = null;
             let mWrapTriggedInsuranceData: WrapTriggedInsuranceData = null;
@@ -1749,12 +1749,12 @@ export default class TexasGameProtocol {
                         continue;
                     }
                     //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
-                    // mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
-                    // mWrapTriggedInsuranceData.playerCards.push(...ins_Seat.Player.cards);
+                    mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
+                    mWrapTriggedInsuranceData.playerCards.push(...ins_Seat.Player.cards);
                     //各个玩家
                     mWrapTriggedInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
                     //添加所有玩家outs ，在保险界面处理是否平分outs
-                    mWrapTriggedInsuranceData.outsCards.push(...userOuts.outsCardsList);
+                    mWrapTriggedInsuranceData.outsCards.push(userOuts.outsCardsList);
                 }
 
                 wrapTriggedInsuranceDatas.push(mWrapTriggedInsuranceData);
@@ -1766,7 +1766,7 @@ export default class TexasGameProtocol {
             data.triggedDatas = wrapTriggedInsuranceDatas;
             data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
             data.delayTimes = this.game.mainPlayer.delayTimes;
-            UIComponent.Instance.ShowUI(PrefabUI.UIInsuranceComponent, data);
+            UIComponent.Instance.ShowUI(PrefabUI.UIInsurance, data);
             //UIComponent.open(UIDefine.UITexasInsuranceComponent, data);
 
         };
