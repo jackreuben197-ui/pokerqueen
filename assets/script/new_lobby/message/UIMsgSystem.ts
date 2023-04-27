@@ -15,7 +15,7 @@ const { ccclass, property } = cc._decorator;
 export default class UIMsgSystem extends BaseFormPlus {
 
     ///////////////////////引用声明////////////////////////
-    //$content: cc.Node = null;
+    $content: cc.Node = null;
     //$ItemMsgSystem: cc.Node = null;
     $Null: cc.Node = null;
     ////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ export default class UIMsgSystem extends BaseFormPlus {
         super.onShow(param, fromUI, sceneUI);
         this.title_label.i18NString = param.name;
         this.$Null.active = false;
-        // this.clearList();
+        this.clearList();
         this.listEx.reset();
     }
     fadeInComplete() {
@@ -41,7 +41,7 @@ export default class UIMsgSystem extends BaseFormPlus {
         //this.reqMsgList();
         this.listEx.dropRequest();
     }
-    
+
     click_item(button: cc.Button) {
         let item_sc = button.node.getComponent(ItemMsgSystem);
         if (item_sc.isLarge) {
@@ -50,13 +50,9 @@ export default class UIMsgSystem extends BaseFormPlus {
             UIComponent.open(UIDefine.UIMsgSystemEx, button.node["obj"]);
         }
     }
-    // clearList() {
-    //     this.$content.children.forEach(item => {
-    //         this.item_pool.BackNode(item);
-    //     })
-    //     this.$content.removeAllChildren();
-    //     //this.cc_ScrollView$list.scrollToTop(0);
-    // }
+    clearList() {
+        this.$content.removeAllChildren();
+    }
 
 
     reqMsgList(offset: number = 0) {

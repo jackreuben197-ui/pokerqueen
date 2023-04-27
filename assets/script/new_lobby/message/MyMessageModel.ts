@@ -61,8 +61,9 @@ export default class MyMessageModel {
 
     //通过code值获取消息内容
     public GetMsg(code: number): string {
-        var str = i18nMgr.Get(`MsgInfo_${code}`);
-        return str;
+        let key = `MsgInfo_${code}`;
+        var str = i18nMgr.Get(key);
+        return str == key ? null : str;
     }
 }
 
