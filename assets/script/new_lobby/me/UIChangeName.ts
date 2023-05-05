@@ -1,3 +1,4 @@
+import { UIDefine } from "../../define/UIDefine";
 import { GameCache } from "../../game/GameCache";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -32,11 +33,19 @@ export default class UIChangeName extends BaseFormPlus {
     $confirm: cc.Node = null;
     $blight: cc.Node = null;
     cc_Label$confirm: cc.Label = null;
-    cc_RichText$cost: cc.RichText = null;
+
     cc_Label$Tips: cc.Label = null;
+
+    cc_RichText$diamond: cc.RichText = null;
+    cc_RichText$diamond_dis: cc.RichText = null;
     /////////////////////////////////////////////
     user_modify_name_cost: number = 0;
+    priceData: any = null;
 
+    protected lateLoad(): void {
+        this.name = "UIChangeName";
+        super.lateLoad();
+    }
     /**
      * 每次打开面板处理的内容
      */
@@ -69,7 +78,7 @@ export default class UIChangeName extends BaseFormPlus {
 
         this.user_modify_name_cost = Web_Config_Global_Config.Response.data.user_modify_name_cost;
 
-        this.cc_Label$Tips.string = i18nMgr.Get("UIMine_ChangeNameTipsZS").replace("{0}", `${this.user_modify_name_cost}`);
+        //this.cc_Label$Tips.string = i18nMgr.Get("UIMine_ChangeNameTipsZS").replace("{0}", `${this.user_modify_name_cost}`);
 
         this.refreshModifyCount();
 
@@ -77,7 +86,29 @@ export default class UIChangeName extends BaseFormPlus {
     }
     //刷新次数，显示消耗
     refreshModifyCount() {
-        this.cc_RichText$cost.string = `<color=#757CAB>消耗：</color><color=#7187FF><color=#7187FF>${Web_User_Info.Response.data.user.mnt > 0 ? this.user_modify_name_cost : 0}</color>`;
+
+        //let user_modify_name_cost = Web_Config_Global_Config.Response.data.user_modify_name_cost;
+
+        if (Web_Config_Global_Config.Response.data.user_modify_name_price?.length > 0) {
+
+            this.priceData = JSON.parse(Web_Config_Global_Config.Response.data.user_modify_name_price);
+            this.cc_RichText$diamond.string = `<color=#757CAB>${i18nMgr.Get("UIMine_XHZS")}</color><color=#7187FF>${this.priceData.pay_price}</color>`;
+            this.cc_RichText$diamond_dis.string = `${i18nMgr.Get("UIMine_DiamondsPrice")}${this.priceData.raw_price}`;
+            this.cc_Label$Tips.string = StringHelper.Format(i18nMgr.Get("UIMine_ChangeNameTipsZS"), [this.priceData.raw_price]);
+
+            this.cc_RichText$diamond.node.active = true;
+            this.cc_RichText$diamond_dis.node.active = true;
+            this.cc_Label$Tips.node.active = true;
+        }
+        else {
+            this.cc_RichText$diamond.node.active = false;
+            this.cc_RichText$diamond_dis.node.active = false;
+            this.cc_Label$Tips.node.active = false;
+            //layout_right.transform.Find("text_cost_coin").GetComponent<Text>().text = GameCache.Instance.modifyNickNum > 0 ? `${user_modify_name_cost}` : "0";
+            //textTips.text = string.Format(LanguageManager.Get("UIMine_ChangeNameTipsZS"), user_modify_name_cost);
+        }
+
+        //this.cc_RichText$cost.string = `<color=#757CAB>消耗：</color><color=#7187FF><color=#7187FF>${Web_User_Info.Response.data.user.mnt > 0 ? this.user_modify_name_cost : 0}</color>`;
     }
 
     //刷新钱包获取钻石
@@ -109,9 +140,9 @@ export default class UIChangeName extends BaseFormPlus {
 
     }
     ////////////click////////////
-    //跳转钱包
+    //跳转商城
     onWalletClick() {
-
+        UIComponent.open(UIDefine.UIMall, null, { fromComponent: this });
     }
     //输入清空
     onInputCloseClick() {
@@ -125,6 +156,10 @@ export default class UIChangeName extends BaseFormPlus {
             UIComponent.Instance.ToastLanguage("UIMine_Setting112");
             return;
         }
+        if (this.characterLength > 10) {
+            UIComponent.Instance.ToastLanguage("UIMine_UserInfoNick_tooLong");
+            return;
+        }
         //判断特殊字符
         if (StringHelper.IsContainSpecialCharacter(text)) {
             UIComponent.Instance.ToastLanguage("UIMine_UserInfoNick_Include_Special");
@@ -132,7 +167,7 @@ export default class UIChangeName extends BaseFormPlus {
         }
         //判断钻石数量 非免费情况
         if (Web_User_Info.Response.data.user.mnt > 0 &&
-            APIUserDiamondsWallet.Response.data.diamonds_wallet?.diamonds < this.user_modify_name_cost) {
+            APIUserDiamondsWallet.Response.data.diamonds_wallet?.diamonds < this.priceData.pay_price) {
             UIComponent.Instance.ToastLanguage("UIMine_DiamondsNotEnough");
             return;
         }
@@ -140,7 +175,8 @@ export default class UIChangeName extends BaseFormPlus {
 
     }
     onNickInputChange() {
-        this.cc_Label$count.string = `${this.cc_EditBox$input.string.length}/10`
+        //this.cc_Label$count.string = `${this.cc_EditBox$input.string.length}/10`;
+        this.RefreshNameLength(this.cc_EditBox$input.string);
     }
 
     //////////////请求消息//////////////
@@ -165,26 +201,6 @@ export default class UIChangeName extends BaseFormPlus {
     }
     //请求用户信息，判断剩余修改次数
     reqUserInfo() {
-
-        // WWW.Instance.CommonAPI(
-        //     {
-        //         web_class: Web_User_Info,
-        //     }
-        // ).then(
-        //     (res: typeof Web_User_Info.Response) => {
-
-        //         this.refreshModifyCount();
-
-        //         this.refreshWallet();
-
-        //         UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshNick();
-        //         UIComponent.Instance.getComponent<UIEditInformation>("UIEditInformation")?.refreshNick();
-        //         UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
-        //     },
-        //     (res: any) => {
-
-        //     }
-        // )
 
         LobbySession.APIUserInfo().then(
             (res: any) => {
@@ -221,5 +237,29 @@ export default class UIChangeName extends BaseFormPlus {
 
             }
         )
+    }
+
+    characterLength: number = 0;
+    //获取名称长度
+    private RefreshNameLength(name: string) {
+
+        let number = 0;
+        let zimu = 0;
+        let chinese = 0;
+
+        for (let i = 0; i < name.length; i++) {
+
+            if (name[i].match(/^[\u4e00-\u9fa5]$/)) {
+                chinese++;
+            }
+            if (name[i].match(/^[0-9]$/)) {
+                number++;
+            }
+            if (name[i].match(/^[a-zA-Z]$/)) {
+                zimu++;
+            }
+        }
+        this.characterLength = chinese * 2 + number + zimu;
+        this.cc_Label$count.string = this.characterLength + "/" + 10;
     }
 }

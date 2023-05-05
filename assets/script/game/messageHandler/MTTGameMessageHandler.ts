@@ -8,7 +8,6 @@ import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
 import MTTGame from "../texas/MTTGame";
 import { TexasGameState } from "../TexasGameState";
-import { MineRankData } from "../ui/UIMTTMineRankComponent";
 import MTTGameUtils from "../util/MTTGameUtils";
 import TexasGameMessageHandler from "./TexasGameMessageHandler";
 

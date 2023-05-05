@@ -847,6 +847,13 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UIBackDialog",
     },
+    //数字钱包复制地址面板
+    UIRechargeDialog: {
+        UIType: UIType.CommonUI,
+        Name: "UIRechargeDialog",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIRechargeDialog",
+    },
     //公会钱包列表
     UIClubWalletList: {
         UIType: UIType.CommonUI,

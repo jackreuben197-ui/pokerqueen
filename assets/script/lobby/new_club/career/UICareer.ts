@@ -9,6 +9,7 @@
 
 import { UIDefine } from "../../../define/UIDefine";
 import { careerConfig } from "../../../frame/data/rate/RateConfig";
+import PublicHelper from "../../../helper/PublicHelper";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import { api_stats_user_stats_all } from "../../../net/https/WebRequest";
@@ -38,6 +39,7 @@ export default class UICareer extends UIBase {
     lbl_profit_4: cc.Label = null;
     _selectIndex = 0;
     dropNode_lbl: cc.Label = null;
+
     // _dropDownBox = null;
     protected lateLoad(): void {
         super.lateLoad();
@@ -51,7 +53,10 @@ export default class UICareer extends UIBase {
         this.lbl_profit_3 = this.getChildNodeOrComponent("lbl_profit_3", cc.Label);
         this.lbl_profit_4 = this.getChildNodeOrComponent("lbl_profit_4", cc.Label);
         this.dropNode_lbl = this.getChildNodeOrComponent("dropNode_lbl", cc.Label);
+
     }
+
+
     openDropDownBox() {
         UIComponent.open(UIDefine.dropDownBoxNew, { data: careerConfig, index: this._selectIndex, cb: this.selectSort.bind(this) })
     }

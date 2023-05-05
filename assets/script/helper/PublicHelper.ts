@@ -1,5 +1,6 @@
 import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
+import UIComponent from "../ui/UIComponent";
 
 export default class PublicHelper {
 
@@ -27,14 +28,15 @@ export default class PublicHelper {
                 const flag = document.execCommand('copy');
                 document.body.removeChild(textarea);
                 if (flag) {
-                    ToastManager.Instance.createToast("已经复制到剪贴板");
+                    //ToastManager.Instance.createToast("已经复制到剪贴板");
+                    UIComponent.Instance.ToastLanguage("adaptation10106");
                     return true;
                 } else {
-                    ToastManager.Instance.createToast("复制到剪贴板失败");
+                    UIComponent.Instance.ToastLanguage("UIReplicationFailed");
                     return false;
                 }
             } catch (err) {
-                ToastManager.Instance.createToast("复制到剪贴板失败");
+                UIComponent.Instance.ToastLanguage("UIReplicationFailed");
                 return false;
             }
         }
@@ -71,11 +73,12 @@ export default class PublicHelper {
 
 
     //不带透明度的颜色转换
-    public static GetColorArr(color: string): number[] {
+    public static GetColorArr(color: string, opacity: number = 255): number[] {
         let color_value = parseInt(color, 16);
         let r = color_value >> 16 & 0xFF;
         let g = color_value >> 8 & 0xFF;
         let b = color_value & 0xFF;
-        return [r / 255, g / 255, b / 255, 1];
+        return [r / 255, g / 255, b / 255, opacity / 255];
     }
 }
+(window as any).PublicHelper = PublicHelper;

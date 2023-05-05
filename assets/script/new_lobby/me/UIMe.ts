@@ -73,7 +73,7 @@ export default class UIMe extends UIBasePlus {
     }
     onDiamondClick() {
         //跳转商城
-        UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI });
+        UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI, fromComponent: this });
     }
     onCopyClick() {
         //拷贝id号码
@@ -91,7 +91,8 @@ export default class UIMe extends UIBasePlus {
         //选项点击
         switch (index) {
             case 0://钻石商城
-                UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI });
+                //UIComponent.open(UIDefine.UIMall, null, { SceneUI: SceneManager.Instance.currUI });
+                this.onDiamondClick();
                 break;
             case 1://我的背包
                 UIComponent.open(UIDefine.UIMyPack, null, { SceneUI: SceneManager.Instance.currUI });

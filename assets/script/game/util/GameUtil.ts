@@ -108,6 +108,21 @@ export class some_pos {
         cc.v3(-123, 55),
         cc.v3(-123, 55),
     ];
+    //保险时间位置
+
+    public static readonly all_insurance_pos: cc.Vec3[] = [
+        cc.v3(190, 28),
+        cc.v3(190, 28),
+        cc.v3(190, 28),
+        cc.v3(190, 28),
+        cc.v3(190, 28),
+        cc.v3(190, 28),
+        cc.v3(-190, 28),
+        cc.v3(-190, 28),
+        cc.v3(-190, 28),
+        cc.v3(-190, 28),
+    ];
+
 }
 export class seat_info {
     seat_pos: cc.Vec3 = null;
@@ -115,12 +130,14 @@ export class seat_info {
     card_back_pos: cc.Vec3 = null;
     bet_pos: cc.Vec3 = null;
     bubble_pos: cc.Vec3 = null;
+    insurance_pos: cc.Vec3 = null;
     constructor(public index: number) {
         this.seat_pos = some_pos.all_seat_pos[index];
         this.bank_pos = some_pos.all_bank_pos[index];
         this.card_back_pos = some_pos.all_card_back_pos[index];
         this.bet_pos = some_pos.all_bet_pos[index];
         this.bubble_pos = some_pos.all_bubble_pos[index];
+        this.insurance_pos = some_pos.all_insurance_pos[index];
     }
 }
 /**
@@ -621,8 +638,11 @@ export default class GameUtil {
         59: 39,
     }
     public static GetCardNameByNum(n: number): string {
-        if (n <= 0) return "p_88";
-        return `p_${this.Poker_Map[n]}`;
+
+        if (n > 0) {
+            return `p_${this.Poker_Map[n]}`;
+        }
+        return "p_88";
     }
     /// <summary>
     /// 判断是否是底池限注
@@ -895,11 +915,8 @@ export default class GameUtil {
         if (selectOuts > outs.length && selectOuts <= 30) {
             return outs[outs.length - 1];
         }
-        if (selectOuts > 30)
-            return 0;
-        if (selectOuts < 0) {
-            return 0;
-        }
+        if (selectOuts > 30 || selectOuts < 0) return 0;
+
         return outs[selectOuts];
     }
 
@@ -996,9 +1013,6 @@ export default class GameUtil {
         let ex: string = GameCache.Instance.bb_on ? "BB" : "";
         return `${StringHelper.GetDecimalN(value / ratio)}${ex}`;
     }
-
-
-
 
 }
 (window as any).GameUtil = GameUtil;

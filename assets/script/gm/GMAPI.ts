@@ -1,16 +1,31 @@
 
+import { TextColor } from "../config/GameConfig";
 import { UIDefine } from "../define/UIDefine";
 import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
 import { InsuranceData } from "../game/new_ui/UIInsurance";
 import Seat from "../game/seat/Seat";
+import PublicHelper from "../helper/PublicHelper";
+import { StringHelper } from "../helper/StringHelper";
+import TimeHelper from "../helper/TimeHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import HttpRequest from "../net/https/HttpRequest";
+import { ProtocolCode } from "../net/websocket/ProtocolCode";
+import { ServerMessageInsuranceTrigged } from "../protobuf/holdem/recv_insurance_trigged_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
+import { UIRechargeDialogType } from "../ui/dialog/UIRechargeDialog";
 
 export class GM {
     private static __DebugSwitch: number[] = null;
+
+
+    public static get Instance(): GM {
+        return (this as any).__Instance ??= new GM();
+    }
+
+
+
     public static SetDebugSwitch(obj: string) {
         if (!obj) return;
         let list: any[] = obj.split(",");
@@ -500,17 +515,328 @@ export class GM {
 
     }
 
-    //显示保险
-    static showIns() {
 
-        let data: InsuranceData = new InsuranceData;
-        data.publicCards = [11, -1, -1, -1, -1];
-        //data.triggedDatas = wrapTriggedInsuranceDatas;
-        //data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
-        //data.delayTimes = this.game.mainPlayer.delayTimes;
-        UIComponent.Instance.ShowUI(PrefabUI.UIInsurance, data);
+
+    private steps = [
+        {
+            key: "Protocol_Holdem_SeatedOthers", value:
+            {
+                "seatId": 1,
+                "sex": 0,
+                "avatar": "https://static.awanptest.com/awanptesting-intl-test/image-avatar/96615706-GBgac.JPG",
+                "name": "三个核桃",
+                "userRid": 96615706,
+                "chips": 200,
+                "storeChips": 0,
+                "hunterKill": 0,
+                "hunterKillAward": 0,
+                "hunterKillAwardOther": 0,
+                "hunterHeadValue": 0,
+                "vip": 0,
+                "keepSeatLeftTime": 0,
+                "keepSeatDeadline": 0
+            }
+        },
+        {
+            key: "Protocol_Holdem_Seated", value:
+            {
+                "status": 0,
+                "chips": 200,
+                "accountChips": 0,
+                "recvSeatId": 2,
+                "postStatus": 1,
+                "storeChips": 0,
+                "keepSeatLeftTime": 0,
+                "keepSeatDeadline": 0
+            }
+        },
+        {
+            key: "Protocol_Holdem_StartInfo", value:
+            {
+                "handInfo": {
+                    "handNum": 1,
+                    "buSeatId": 2,
+                    "sbSeatId": 2,
+                    "bbSeatId": 1,
+                    "publicCardsList": [
+
+                    ],
+                    "allBet": 30,
+                    "potsList": [
+
+                    ],
+                    "roundBet": 20,
+                    "insurancePool": 0,
+                    "extPublicCardsList": [
+
+                    ]
+                },
+                "nextOperator": {
+                    "seatId": 2,
+                    "actionsList": [
+                        {
+                            "action": 9,
+                            "min": 30,
+                            "max": 189,
+                            "straddleLevel": 0
+                        },
+                        {
+                            "action": 10,
+                            "min": 190,
+                            "max": 190,
+                            "straddleLevel": 0
+                        },
+                        {
+                            "action": 7,
+                            "min": 0,
+                            "max": 0,
+                            "straddleLevel": 0
+                        },
+                        {
+                            "action": 6,
+                            "min": 10,
+                            "max": 10,
+                            "straddleLevel": 0
+                        }
+                    ],
+                    "insuranceLimitList": [
+
+                    ],
+                    "leftOpTime": 15,
+                    "delayTimes": 0,
+                    "shortcutsList": [
+                        {
+                            "sc": 0,
+                            "amount": 30
+                        },
+                        {
+                            "sc": 3,
+                            "amount": 36
+                        },
+                        {
+                            "sc": 4,
+                            "amount": 40
+                        },
+                        {
+                            "sc": 5,
+                            "amount": 34
+                        },
+                        {
+                            "sc": 6,
+                            "amount": 50
+                        },
+                        {
+                            "sc": 7,
+                            "amount": 70
+                        }
+                    ],
+                    "isInsurance": false,
+                    "isAgreeSecondPc": false,
+                    "opDeadline": 1682592033
+                },
+                "playersList": [
+                    {
+                        "seatId": 2,
+                        "cardsList": [
+                            27,
+                            19
+                        ],
+                        "ante": 0,
+                        "action": 2,
+                        "roundBet": 10,
+                        "chip": 190,
+                        "storeChips": 0
+                    },
+                    {
+                        "seatId": 1,
+                        "cardsList": [
+
+                        ],
+                        "ante": 0,
+                        "action": 3,
+                        "roundBet": 20,
+                        "chip": 180,
+                        "storeChips": 0
+                    }
+                ]
+            }
+        },
+        {
+            key: "Protocol_Holdem_PublicCards", value:
+            {
+                "publicCardsArrayList": [
+                    14,
+                    22,
+                    52
+                ],
+                "nextOperator": {
+                    "seatId": 1,
+                    "actionsList": [
+
+                    ],
+                    "insuranceLimitList": [
+
+                    ],
+                    "leftOpTime": 16,
+                    "delayTimes": 0,
+                    "shortcutsList": [
+
+                    ],
+                    "isInsurance": false,
+                    "isAgreeSecondPc": false,
+                    "opDeadline": 1682592042
+                },
+                "extPublicCardsArrayList": [
+
+                ],
+                "rnd": 2
+            }
+        },
+        {
+            key: "Protocol_Holdem_Showcards", value:
+            {
+                "playerCardsList": [
+                    {
+                        "seatId": 1,
+                        "cardsList": [
+                            11,
+                            6
+                        ]
+                    },
+                    {
+                        "seatId": 2,
+                        "cardsList": [
+                            27,
+                            19
+                        ]
+                    }
+                ],
+                "isAll": true
+            }
+        },
+        {
+            key: "Protocol_Holdem_InsuranceTrigged", value:
+            {
+                "round": 2,
+                "operatorList": [
+                    {
+                        "seatId": 2,
+                        "actionsList": [
+
+                        ],
+                        "insuranceLimitList": [
+                            {
+                                "potId": 0,
+                                "potAmount": 400,
+                                "bet": 200,
+                                "max": 100,
+                                "min": 1,
+                                "insuranced": 0,
+                                "outs": 6,
+                                "outsDetailList": [
+                                    {
+                                        "seatId": 1,
+                                        "outsCardsList": [
+                                            {
+                                                "card": 51,
+                                                "isEqual": false
+                                            },
+                                            {
+                                                "card": 21,
+                                                "isEqual": false
+                                            },
+                                            {
+                                                "card": 56,
+                                                "isEqual": false
+                                            },
+                                            {
+                                                "card": 26,
+                                                "isEqual": false
+                                            },
+                                            {
+                                                "card": 41,
+                                                "isEqual": false
+                                            },
+                                            {
+                                                "card": 36,
+                                                "isEqual": false
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "potUserCount": 2,
+                                "potLeaderCount": 1
+                            }
+                        ],
+                        "leftOpTime": 15,
+                        "delayTimes": 0,
+                        "shortcutsList": [
+
+                        ],
+                        "isInsurance": true,
+                        "isAgreeSecondPc": false,
+                        "opDeadline": 1682592050
+                    }
+                ]
+            }
+        },
+        {
+            key: "Protocol_Holdem_BuyInsurance", value:
+                { "round": 2, "seatId": 2, "buyList": [] }
+        }
+    ]
+
+    //显示保险
+    public async showIns() {
+
+
+        //GC.game.TexasGameProtocol.HANDLER_REQ_INSURANCE_TRIGGED(this._insurance_data);
+
+
+        // let data: InsuranceData = new InsuranceData;
+        // data.publicCards = [11, -1, -1, -1, -1];
+        // data.triggedDatas = [];
+        // data.timeLeft = 30;
+        // //data.delayTimes = this.game.mainPlayer.delayTimes;
+        // UIComponent.Instance.ShowUI(PrefabUI.UIInsurance, data);
+        //this.steps.length = 3;
+        for (let i = 0; i < this.steps.length; i++) {
+            let code = this.steps[i].key;
+            let value = this.steps[i].value;
+            cc.log(" == >执行", code);
+            GC.notify.post(ProtocolCode[code], value);
+            await TimeHelper.Sleep(1000);
+        }
+
+        //GC.notify.post(ProtocolCode.Protocol_Holdem_SeatedOthers)
     }
 
+
+    public showDialog() {
+        let data = { more_contact: "1111", digital_wallet_erc: "2222", digital_wallet_trc: "3333" };
+        //requestSuccess(data: any) {
+        //act.data.more_contact, act.data.digital_wallet_erc, act.data.digital_wallet_trc
+        if (data?.more_contact) {
+            let copy_list = [];
+            data.digital_wallet_erc && copy_list.push({ show: `ERC:${data.digital_wallet_erc}`, copy: `${data.digital_wallet_erc}` });
+            data.digital_wallet_trc && copy_list.push({ show: `TRC:${data.digital_wallet_trc}`, copy: `${data.digital_wallet_trc}` });
+
+            UIComponent.open<UIRechargeDialogType>(UIDefine.UIRechargeDialog, {
+                this: this,
+                title: i18nMgr.Get("UIGuild_TipsTitle"),
+                cancel: i18nMgr.Get("UIBackDialog_ticketsbtnClose"),
+                commit: i18nMgr.Get("CopyContact"),
+                content: StringHelper.Format(i18nMgr.Get("UIGuildFund_RtTips005"), [` ${StringHelper.GetColorText(data.more_contact, TextColor.Color4)} `]),
+                copy_list: copy_list.length > 0 ? copy_list : null,
+                commit_click: () => {
+                    PublicHelper.copyToClipBoard(data.more_contact);
+                }
+            });
+        } else {
+            UIComponent.Instance.ToastLanguage("roomError171_5");
+        }
+        //}
+    }
 
 
 }

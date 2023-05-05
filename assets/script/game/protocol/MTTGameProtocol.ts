@@ -22,9 +22,7 @@ import MTTGame from "../texas/MTTGame";
 import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
 import TexasGameProtocol from "./TexasGameProtocol";
-
-
-
+/////////////////////////////////////////////////////////////
 
 export default class MTTGameProtocol extends TexasGameProtocol {
 
