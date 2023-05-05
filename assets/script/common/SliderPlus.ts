@@ -104,6 +104,8 @@ export default class SliderPlus extends cc.Component {
 
         this.refreshValueLabel(this.data.min_value);
 
+
+
     }
     initEvents() {
         this.top_touch.on(cc.Node.EventType.TOUCH_START, this.backTouchStart, this);
@@ -172,8 +174,6 @@ export default class SliderPlus extends cc.Component {
 
         let count = this.getCount(value);
 
-        //console.log(count);
-
         this.curr_value = this.data.min_value + count * this.data.step;
 
         if (this.curr_value > this.data.max_value) this.curr_value = this.data.max_value;
@@ -191,7 +191,6 @@ export default class SliderPlus extends cc.Component {
         } else {
             this.bar_offset = bar_move_target;
         }
-
     }
 
     refreshValueLabel(value: number) {
@@ -232,6 +231,20 @@ export default class SliderPlus extends cc.Component {
 
     get value() {
         return this.curr_value;
+    }
+
+    set value(v: number) {
+
+        this.curr_value = v;
+
+        let k = (v - this.data.min_value) / (this.data.max_value - this.data.min_value);
+
+        if (this.data.max_value == this.data.min_value) k = 0;
+
+        this.bar_offset = this.min + (this.max - this.min) * k;
+
+        this.data.change?.call(this.data.own, this.curr_value);
+
     }
 
     reset(): void {

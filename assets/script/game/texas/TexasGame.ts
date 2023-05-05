@@ -1,3 +1,4 @@
+import { GameConfig } from "../../config/GameConfig";
 import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
 import { DOTween, Sequence } from "../../dotween/DOTween";
@@ -9,7 +10,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import Main from "../../Main";
-import { APIOrgClubUserInfo, API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_User_Room, Web_User_Room_Bringin, WWW } from "../../net/https/WebRequest";
+import { APIOrgClubUserInfo, API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_User_Room, Web_User_Room_Bringin, WWW, Web_GetDiamondConfig } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Def, RoomInfo } from "../../protobuf/holdem/define_pb";
@@ -841,8 +842,26 @@ export default class TexasGame {
                 }
                 break;
         }
-        this.UpdateMsgBtnSprite();
+
+        this.roomReqList = [
+            { name: "UpdateMsgBtnSprite", func: this.UpdateMsgBtnSprite },
+            { name: "GetDiamondConfig_2", func: this.GetDiamondConfig_2 },
+            { name: "GetDiamondConfig_8", func: this.GetDiamondConfig_8 },
+        ];
+        this.RunRoomReqlist();
     }
+
+    //奔跑请求队列
+    RunRoomReqlist() {
+        if (this.roomReqList.length) {
+            let obj = this.roomReqList.shift();
+            console.log("请求---->", obj.name);
+            obj.func.call(this, this.RunRoomReqlist);
+        } else {
+            console.log("房间队列请求完毕---->");
+        }
+    }
+    roomReqList = [];
 
     // 刷新分池
     public UpdatePots(): void {
@@ -881,112 +900,112 @@ export default class TexasGame {
     /// <summary>
     /// --刷新分池
     /// </summary>
-    public _UpdatePots(): void {
+    // public _UpdatePots(): void {
 
-        let mNewStart = 0, mNewEnd = 0;
-        let mUpdateStart = 0, mUpdateEnd = 0;
-        let mHideStart = 0, mHideEnd = 0;
+    //     let mNewStart = 0, mNewEnd = 0;
+    //     let mUpdateStart = 0, mUpdateEnd = 0;
+    //     let mHideStart = 0, mHideEnd = 0;
 
-        if (this.pots.length < this.uirc.listPotInfo.length) {
-            mUpdateStart = 0;
-            mUpdateEnd = this.pots.length;
-            mHideStart = this.pots.length;
-            mHideEnd = this.uirc.listPotInfo.length;
-        }
-        else if (this.pots.length > this.uirc.listPotInfo.length) {
-            mUpdateStart = 0;
-            mUpdateEnd = this.uirc.listPotInfo.length;
-            mNewStart = this.uirc.listPotInfo.length;
-            mNewEnd = this.pots.length;
-        }
-        else {
-            mUpdateStart = 0;
-            mUpdateEnd = this.uirc.listPotInfo.length;
-        }
+    //     if (this.pots.length < this.uirc.listPotInfo.length) {
+    //         mUpdateStart = 0;
+    //         mUpdateEnd = this.pots.length;
+    //         mHideStart = this.pots.length;
+    //         mHideEnd = this.uirc.listPotInfo.length;
+    //     }
+    //     else if (this.pots.length > this.uirc.listPotInfo.length) {
+    //         mUpdateStart = 0;
+    //         mUpdateEnd = this.uirc.listPotInfo.length;
+    //         mNewStart = this.uirc.listPotInfo.length;
+    //         mNewEnd = this.pots.length;
+    //     }
+    //     else {
+    //         mUpdateStart = 0;
+    //         mUpdateEnd = this.uirc.listPotInfo.length;
+    //     }
 
-        let mObj: cc.Node = null;
-        let mPotInfo: PotInfo = null;
+    //     let mObj: cc.Node = null;
+    //     let mPotInfo: PotInfo = null;
 
-        // 隐藏放最前面
-        for (let i = mHideStart; i < mHideEnd; i++) {
+    //     // 隐藏放最前面
+    //     for (let i = mHideStart; i < mHideEnd; i++) {
 
-            mObj = this.uirc.listPotInfo[i].trans;//.gameObject;
+    //         mObj = this.uirc.listPotInfo[i].trans;//.gameObject;
 
-            mObj.active = false;
-        }
+    //         mObj.active = false;
+    //     }
 
-        for (let i = mNewStart; i < mNewEnd; i++) {
+    //     for (let i = mNewStart; i < mNewEnd; i++) {
 
-            if (i == 0) {
+    //         if (i == 0) {
 
-                mObj = this.uirc.TransAllPot_Pool.GetNode();
+    //             mObj = this.uirc.TransAllPot_Pool.GetNode();
 
-                mObj.setParent(this.uirc.transPots);
-                mObj.setPosition(GameUtil.TexasPots[0]);
-                mObj.name = `Pot${i}`;
-                mPotInfo = new PotInfo(mObj);
-                mPotInfo.potType = 2;
-                this.uirc.listPotInfo.push(mPotInfo);
-                mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
-                mObj.active = this.pots[i] > 0;
-            }
-            else {
-                mObj = this.uirc.TransPot_Pool.GetNode();
+    //             mObj.setParent(this.uirc.transPots);
+    //             mObj.setPosition(GameUtil.TexasPots[0]);
+    //             mObj.name = `Pot${i}`;
+    //             mPotInfo = new PotInfo(mObj);
+    //             mPotInfo.potType = 2;
+    //             this.uirc.listPotInfo.push(mPotInfo);
+    //             mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
+    //             mObj.active = this.pots[i] > 0;
+    //         }
+    //         else {
+    //             mObj = this.uirc.TransPot_Pool.GetNode();
 
-                mObj.setParent(this.uirc.transPots);
+    //             mObj.setParent(this.uirc.transPots);
 
-                mObj.name = `Pot${i}`;
+    //             mObj.name = `Pot${i}`;
 
-                mPotInfo = new PotInfo(mObj);
-                mPotInfo.potType = 1;
-                this.uirc.listPotInfo.push(mPotInfo);
+    //             mPotInfo = new PotInfo(mObj);
+    //             mPotInfo.potType = 1;
+    //             this.uirc.listPotInfo.push(mPotInfo);
 
-                mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
+    //             mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
 
-                mPotInfo.imagePotText.string = `${i}`;
+    //             mPotInfo.imagePotText.string = `${i}`;
 
-                if (this.pots[i] > 0) {
+    //             if (this.pots[i] > 0) {
 
-                    mPotInfo.trans.setPosition(GameUtil.TexasPots[0]);
+    //                 mPotInfo.trans.setPosition(GameUtil.TexasPots[0]);
 
-                    cc.tween(mPotInfo.trans).to(.3, { position: GameUtil.TexasPots[i] }).start();
+    //                 cc.tween(mPotInfo.trans).to(.3, { position: GameUtil.TexasPots[i] }).start();
 
-                }
-                mObj.active = this.pots[i] > 0;
-            }
+    //             }
+    //             mObj.active = this.pots[i] > 0;
+    //         }
 
-        }
+    //     }
 
-        for (let i = mUpdateStart; i < mUpdateEnd; i++) {
-            if (i == 0) {
-                this.uirc.listPotInfo[0].textPot.string = GameUtil.TransBetValue(this.pots[i]);
-                continue;
-            }
-            mPotInfo = this.uirc.listPotInfo[i];
-            mObj = this.uirc.listPotInfo[i].trans;
+    //     for (let i = mUpdateStart; i < mUpdateEnd; i++) {
+    //         if (i == 0) {
+    //             this.uirc.listPotInfo[0].textPot.string = GameUtil.TransBetValue(this.pots[i]);
+    //             continue;
+    //         }
+    //         mPotInfo = this.uirc.listPotInfo[i];
+    //         mObj = this.uirc.listPotInfo[i].trans;
 
-            //mPotInfo.imagePot.sprite = rcChipSprite.Get<Sprite>(GameUtil.GetChipSpriteName(pots[i]));
-
-
-            mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
-
-            mPotInfo.imagePotText.string = `${i}`;
+    //         //mPotInfo.imagePot.sprite = rcChipSprite.Get<Sprite>(GameUtil.GetChipSpriteName(pots[i]));
 
 
-            if (this.pots[i] > 0 && !mObj.activeInHierarchy) {
+    //         mPotInfo.textPot.string = GameUtil.TransBetValue(this.pots[i]);
 
-                mObj.setPosition(GameUtil.TexasPots[0]);
-                cc.tween(mObj).to(.3, { position: GameUtil.TexasPots[i] }).start();
+    //         mPotInfo.imagePotText.string = `${i}`;
 
-            }
 
-            mObj.active = this.pots[i] > 0;
-        }
-        // //比赛隐藏金币显示(暂时)
-        // if (this.isMTT && this.uirc.listPotInfo?.[0]) {
-        //     this.uirc.listPotInfo[0].trans.active = false;
-        // }
-    }
+    //         if (this.pots[i] > 0 && !mObj.activeInHierarchy) {
+
+    //             mObj.setPosition(GameUtil.TexasPots[0]);
+    //             cc.tween(mObj).to(.3, { position: GameUtil.TexasPots[i] }).start();
+
+    //         }
+
+    //         mObj.active = this.pots[i] > 0;
+    //     }
+    //     // //比赛隐藏金币显示(暂时)
+    //     // if (this.isMTT && this.uirc.listPotInfo?.[0]) {
+    //     //     this.uirc.listPotInfo[0].trans.active = false;
+    //     // }
+    // }
 
 
 
@@ -1650,24 +1669,7 @@ export default class TexasGame {
                 mSeat.PlayRecyclingChipAnimation();
             }
 
-            let mObj: cc.Node = null;
-            let mPotInfo: PotInfo = null;
-            if (this.uirc.listPotInfo.length == 0) {
-                mObj = this.uirc.TransAllPot_Pool.GetNode();
-                //cc.instantiate(this.uirc.transAllPot);
-                mObj.setParent(this.uirc.transPots);
-                mObj.setPosition(GameUtil.TexasPots[0]);
-                //mObj.transform.localRotation = Quaternion.identity;
-                mObj.setScale(cc.Vec3.ONE);
-                mObj.name = `Pot${0}`;
-                mPotInfo = new PotInfo(mObj);
-                mPotInfo.potType = 2;
-                this.uirc.listPotInfo.push(mPotInfo);
-            }
-            else {
-                mPotInfo = this.uirc.listPotInfo[0];
-            }
-
+            let mPotInfo: PotInfo = this.uirc.listPotInfo[0];
             mPotInfo.textPot.string = StringHelper.getStringDiv100(allGroupBet);
             mPotInfo.trans.active = true;
             //this.isMTT ? false : true;
@@ -2439,7 +2441,7 @@ export default class TexasGame {
         let mCacheCardIds = [];
         let cards = this.GetPublicCards(1);
         for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
-            for (let j = 0, m = mTmpCardSorts[mWinnerIndex].Count; j < m; j++) {
+            for (let j = 0, m = mTmpCardSorts[mWinnerIndex].length; j < m; j++) {
                 if (mCacheCardIds.includes(this.uirc.listCards[i].cardId))
                     continue;
                 if (mTmpCardSorts[mWinnerIndex][j] > 4 || mTmpCardSorts[mWinnerIndex][j] < 0)
@@ -2491,28 +2493,10 @@ export default class TexasGame {
     }
 
     public PlayFirstRecyclingChipSubAnimation(tweenCallback?: Function): void {
+
         this.fuck4thPCardByInsuranceState = 2;
 
-        let mObj: cc.Node = null;
-        let mPotInfo: PotInfo = null;
-
-        if (this.uirc.listPotInfo.length == 0) {
-            mObj = this.uirc.TransAllPot_Pool.GetNode();
-            //cc.instantiate(this.uirc.transAllPot);
-            mObj.parent = this.uirc.transAllPot.parent;
-            mObj.setPosition(GameUtil.TexasPots[0]);
-            //mObj.transform.localRotation = Quaternion.identity;
-            mObj.setScale(cc.Vec3.ONE);
-            mObj.name = `Pot${0}`;
-
-            mPotInfo = new PotInfo(mObj);
-            mPotInfo.potType = 2;
-
-            this.uirc.listPotInfo.push(mPotInfo);
-        }
-        else {
-            mPotInfo = this.uirc.listPotInfo[0];
-        }
+        let mPotInfo: PotInfo = this.uirc.listPotInfo[0];
 
         mPotInfo.textPot.string = StringHelper.getStringDiv100(this.alreadAnte);
         //判断MTT就不显示(暂时修改)
@@ -2527,27 +2511,7 @@ export default class TexasGame {
             this.UpdatePots();
         }
     }
-    /// <summary>
-    /// 刷新加时按钮样式
-    /// </summary>
-    public UpdateDelayBtn(): void {
-        this.HideBtnDelay(true);
-        //使用次数
-        if (this.delayCount >= 2) {
-            this.uirc.Button_Delay.getComponent(cc.Button).interactable = false;
-            this.uirc.Button_Delay.getChildByName("Text_Time").getComponent(cc.Label).string = "0";
-            this.uirc.Button_Delay.opacity = 178;
-        }
-        else {
-            this.uirc.Button_Delay.getComponent(cc.Button).interactable = true;
-            this.uirc.Button_Delay.getChildByName("Text_Coin").getComponent(cc.Label).string = `${this.TexasGameUtils.AddTimeCost() / 100}`;
-            this.uirc.Button_Delay.getChildByName("Text_Time").getComponent(cc.Label).string = this.delayCount > 0 ? "20" : "30";
-            this.uirc.Button_Delay.opacity = 255;
-        }
-    }
-    public HideBtnDelay(isActive: boolean): void {
-        this.uirc.Button_Delay.active = isActive;
-    }
+
 
     /// <summary>
     /// 带出
@@ -2571,9 +2535,74 @@ export default class TexasGame {
     }
 
 
-    /// <summary>
-    /// 显示查看更多公共牌
-    /// </summary>
+    private SetSeeMorePublicCardPrice() {
+
+        let normal = this.uirc.Button_SeeMorePublic.getChildByName("normal");
+        let discount = this.uirc.Button_SeeMorePublic.getChildByName("discount");
+        let free = this.uirc.Button_SeeMorePublic.getChildByName("free");
+
+        normal.active = false;
+        discount.active = false;
+        free.active = false;
+
+        let thousand = 0;
+
+        let public_card_count = this.GetPublicCardsCount(1);
+
+        if (public_card_count == 0) {
+            thousand = 1;
+        }
+        else if (public_card_count == 3) {
+            thousand = 2;
+        }
+        else {
+            thousand = 3;
+        }
+
+        let diamondConfig = this.GetDiamondConfig(this.GetDiamondTypeText(8, thousand), 8);
+        if (diamondConfig == null) {
+            console.log("未拿到查看翻牌配置");
+            return;
+        }
+        let DiamondConfigSetting = this.GetSetting(diamondConfig);
+
+        if (diamondConfig == null || DiamondConfigSetting == null) {
+            console.log("未拿到查看翻牌配置");
+            return;
+        }
+
+        console.log("DiamondConfigSetting", DiamondConfigSetting);
+
+        if (DiamondConfigSetting.discount_price == 0) {
+
+            free.active = true;
+            this.uirc.setChildLabel(free, "label", `${DiamondConfigSetting.price}`);
+        }
+        else if (DiamondConfigSetting.discount_price == DiamondConfigSetting.price) {
+
+            normal.active = true;
+
+            this.uirc.setChildLabel(normal, "label", `${DiamondConfigSetting.price}`);
+        }
+        else if (DiamondConfigSetting.discount_price < DiamondConfigSetting.price) {
+
+            discount.active = true;
+
+            this.uirc.setChildLabel(discount, "old_label", `${DiamondConfigSetting.price}`);
+            this.uirc.setChildLabel(discount, "new_label", `${DiamondConfigSetting.discount_price}`);
+        }
+    }
+    private GetSetting(diamondConfig) {
+        if (diamondConfig.setting) {
+            for (let item of diamondConfig.setting) {
+                if (item.sb == this.smallBlind) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+    // 显示查看更多公共牌
     public ShowSeeMorePublic(): void {
         if (!this.mainPlayer.isParticipateInTheGame)
             return;
@@ -2582,8 +2611,9 @@ export default class TexasGame {
 
         if (public_card_count == 5) return;
 
-        let mCost = GameUtil.GetSeeMoreCost(this.smallBlind / 100 ^ 0);
-        this.uirc.textSeeMorePublicGold.string = `${StringHelper.GetLongString(mCost)}`;
+        this.SetSeeMorePublicCardPrice();
+        //let mCost = GameUtil.GetSeeMoreCost(this.smallBlind / 100 ^ 0);
+        //this.uirc.textSeeMorePublicGold.string = `${StringHelper.GetLongString(mCost)}`;
 
         switch (public_card_count) {
             case 0:
@@ -2698,7 +2728,7 @@ export default class TexasGame {
 
             for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
                 this.uirc.listCards[i].imageSelect.node.active = false;
-                for (let j = 0, m = highlightCards.Count; j < m; j++) {
+                for (let j = 0, m = highlightCards.length; j < m; j++) {
                     if (this.uirc.listCards[i].cardId == highlightCards[j]) {
                         this.uirc.listCards[i].imageSelect.node.active = true;
                         break;
@@ -3343,8 +3373,7 @@ export default class TexasGame {
     /// <summary>
     /// 刷新申请消息红点
     /// </summary>
-    public UpdateMsgBtnSprite() {
-
+    public UpdateMsgBtnSprite(next?: Function) {
 
         if (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) {
 
@@ -3365,9 +3394,10 @@ export default class TexasGame {
                             this.uirc.btn_msg.getChildByName("red_icon").active = res.data.data.length > 0;
                             this.uirc.btn_msg.getChildByName("normal_icon").active = !(res.data.data.length > 0);
                         }
+                        next?.call(this);
                     },
                     (res: any) => {
-
+                        next?.call(this);
                     }
                 )
             }
@@ -3395,14 +3425,16 @@ export default class TexasGame {
                             this.uirc.btn_msg.getChildByName("red_icon").active = isShow;
                             this.uirc.btn_msg.getChildByName("normal_icon").active = !isShow;
                         }
+                        next?.call(this);
                     },
                     (res: any) => {
-
+                        next?.call(this);
                     }
                 )
             }
+        } else {
+            next?.call(this);
         }
-
     }
 
     //重连清理
@@ -3518,5 +3550,262 @@ export default class TexasGame {
         this.uirc.UIOperation_Com.refreshSliderValueStr();
         this.uirc.UIOperation_Com.refreshSliderMaxLabel();
     }
+    ////////////////////////////////////////////////////
+
+    //private DiamondConfigs diamondConfigs;
+    //private DiamondConfig diamondConfig;
+
+    private GetDiamondConfig_2(next?: Function) {
+        // diamondConfigs = new DiamondConfigs();
+        // diamondConfig = new DiamondConfig();
+
+        // UIGuildModel.mInstance.GetDiamondConfig(2, res => {
+        //     if (res.code == 0) {
+        //         diamondConfigs = res.data;
+        //     }
+        // }, (isAutoUpdate) => {
+
+        //     if (this.GameObject != null && this.GameObject.activeInHierarchy) {
+        //         var paramas = new Web_GetDiamondConfig.RequestData(){ config_type = 2 };
+        // 		string responseData = HttpDataCacheMgr.mInstance.GetAlreadyHttpCacheData(Web_GetDiamondConfig.API, Web_GetDiamondConfig.Request(paramas));
+        //         if (!string.IsNullOrEmpty(responseData)) {
+        //             var tResp = Web_GetDiamondConfig.Response(responseData);
+        //             if (tResp.code == 0) {
+        //                 diamondConfigs = tResp.data;
+        //             }
+        //         }
+
+        //     }
+        // });
+
+        if (!GameConfig.DiamondConfig_2) {
+
+            WWW.Instance.CommonAPI(
+                {
+                    web_class: Web_GetDiamondConfig,
+                    body: {
+                        config_type: 2,
+                    }
+                }
+            ).then(
+                (res: any) => {
+                    GameConfig.DiamondConfig_2 = res.data;
+                    next?.call(this);
+                },
+                (res: any) => {
+                    next?.call(this);
+                }
+            )
+        } else {
+            next?.call(this);
+        }
+    }
+    private GetDiamondConfig_8(next?: Function) {
+
+        if (!GameConfig.DiamondConfig_8) {
+
+            WWW.Instance.CommonAPI(
+                {
+                    web_class: Web_GetDiamondConfig,
+                    body: {
+                        config_type: 8,
+                    }
+                }
+            ).then(
+                (res: any) => {
+                    GameConfig.DiamondConfig_8 = res.data;
+                    next?.call(this);
+                },
+                (res: any) => {
+                    next?.call(this);
+                }
+            )
+        } else {
+            next?.call(this);
+        }
+    }
+
+    private GetDiamondTypeText(config_type = 0, Thousand = 0) {
+        let typeText = 0;
+        let thousand = 0;// 千位数：config_type =2  为 0第一次加时，1第二次加时。config_type =8 为 1 PREFLOP 2 FLOP 3 TURN 
+        let hundred = 0;//百位数 ：1 平台，2 联盟，3 公会 4 个人（朋友桌）
+        let ten = 0;//十位数：是否共享牌桌 1 不共享 2 共享 （如果再区分币种，预留 2 USDT桌 3 联盟币）
+        let one = 0;//个位数：是否比赛 0 不是， 1 是
+        switch (config_type) {
+            case 2:
+                thousand = Thousand * 1000;
+                break;
+            case 8:
+                thousand = Thousand * 1000;
+                break;
+            default:
+                thousand = 0;
+                break;
+        }
+        //hundred = GameCache.Instance.OriginType * 100;
+        //ten = GameCache.Instance.ShareTableType > 1 ? 2 * 10 : 1 * 10;//1 不共享 2 共享 （如果再区分币种，预留 2 USDT桌 3 联盟币）
+        //one = 0;//暂不处理比赛
+        typeText = thousand + hundred + ten + one;
+        return typeText;
+    }
+
+    private GetTypeText(times: number)// 百位数：创建来源 1 平台，2 联盟，3 公会 4 个人（朋友桌）// 十位数：是否共享牌桌 1 不共享 2 共享 （如果再区分币种，预留 2 USDT桌 3 联盟币）// 个位数：是否比赛 0 不是， 1 是示例：210 （表示联盟创建的内部牌桌）										  //千位数：0第一次加时，1第二次加时
+    {
+        let numStr = "";
+        numStr += times;
+        if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) //string.Format("{0:N1}", str)
+        {
+            numStr += GameCache.Instance.origin_type;
+        }
+
+        else if (GameCache.Instance.room_type >= RoomType.MTTTexasHoldemStandardNoLimit && GameCache.Instance.room_type <= RoomType.MTTOmaha6SixPlusFixedAof) {
+            return +(times + "001");
+        }
+
+        if (GameCache.Instance.share_table == 1) {
+            numStr += GameCache.Instance.share_table;
+        }
+        else {
+            numStr += "2";
+        }
+
+        if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) //string.Format("{0:N1}", str)
+        {
+            numStr += "0";
+        }
+        else if (GameCache.Instance.room_type >= RoomType.MTTTexasHoldemStandardNoLimit && GameCache.Instance.room_type <= RoomType.MTTOmaha6SixPlusFixedAof) {
+            numStr += "1";
+        }
+
+        return +numStr || 0;
+    }
+
+    private GetDiamondConfig(num: number, config_type: number = 0) {
+        if (config_type == 8) {
+            if (GameConfig.DiamondConfig_8.data?.length > 0) {
+                for (let i = 0; i < GameConfig.DiamondConfig_8.data.length; i++) {
+                    if (GameConfig.DiamondConfig_8.data[i].type_ext == num) {
+                        return GameConfig.DiamondConfig_8.data[i];
+                    }
+                }
+            }
+        }
+        else {
+            if (GameConfig.DiamondConfig_2.data?.length > 0) {
+                for (let i = 0; i < GameConfig.DiamondConfig_2.data.length; i++) {
+                    if (GameConfig.DiamondConfig_2.data[i].type_ext == num) {
+                        return GameConfig.DiamondConfig_2.data[i];
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
+    //刷新加时按钮样式
+    public UpdateDelayBtn(): void {
+        this.HideBtnDelay(true);
+
+        let dis_diamond = cc.find("layout/dis_diamond", this.uirc.Button_Delay);
+        let nor_diamond = cc.find("layout/nor_diamond", this.uirc.Button_Delay);
+        let free_diamond = cc.find("layout/free_diamond", this.uirc.Button_Delay);
+
+        nor_diamond.active = false;
+        dis_diamond.active = false;
+        free_diamond.active = false;
+
+        //使用次数
+        if (this.delayCount >= 2) {
+            this.uirc.Button_Delay.getComponent(cc.Button).interactable = false;
+            this.uirc.Button_Delay.getChildByName("Text_Time").getComponent(cc.Label).string = "0";
+            this.uirc.Button_Delay.opacity = 178;
+
+            this.uirc.setChildLabel(nor_diamond, "label", "0");
+            nor_diamond.active = true;
+
+        }
+        else {
+
+            let diamondConfig = this.GetDiamondConfig(this.GetTypeText(this.delayCount + 1));
+
+            if (diamondConfig?.config_type == 2) {
+                let smallBlind = 0;
+                if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) //string.Format("{0:N1}", str)
+                {
+                    smallBlind = GameCache.Instance.CurGame.smallBlind;
+                    for (let i = 0; i < diamondConfig.setting.length; i++) {
+                        if (diamondConfig.setting[i].sb * 100 == smallBlind * 100) {
+                            if (diamondConfig.setting[i].discount_price == 0) {
+                                //DisDiamond.transform.Find("num").GetComponent<Text>().text = diamondConfig.setting[i].price.ToString();
+
+                                this.uirc.setChildLabel(dis_diamond, "label", `${diamondConfig.setting[i].price}`);
+
+                                dis_diamond.active = true;
+                                free_diamond.active = true;
+                            }
+                            else {
+                                if (diamondConfig.setting[i].discount_price < diamondConfig.setting[i].price) {
+
+                                    this.uirc.setChildLabel(dis_diamond, "label", `${diamondConfig.setting[i].price}`);
+                                    this.uirc.setChildLabel(nor_diamond, "label", `${diamondConfig.setting[i].discount_price}`);
+                                    nor_diamond.active = true;
+                                    dis_diamond.active = true;
+   
+                                }
+                                else {
+                                    this.uirc.setChildLabel(nor_diamond, "label", `${diamondConfig.setting[i].price}`);
+                                    nor_diamond.active = true;
+
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                else if (GameCache.Instance.room_type >= RoomType.MTTTexasHoldemStandardNoLimit && GameCache.Instance.room_type <= RoomType.MTTOmaha6SixPlusFixedAof) {
+                    if (diamondConfig.setting[0].discount_price == 0) {
+
+                        this.uirc.setChildLabel(dis_diamond, "label", `${diamondConfig.setting[0].price}`);
+                        nor_diamond.active = false;
+                        dis_diamond.active = true;
+                        free_diamond.active = true;
+
+
+
+                    }
+                    else {
+                        if (diamondConfig.setting[0].discount_price < diamondConfig.setting[0].price) {
+
+
+                            this.uirc.setChildLabel(dis_diamond, "label", `${diamondConfig.setting[0].price}`);
+                            this.uirc.setChildLabel(nor_diamond, "label", `${diamondConfig.setting[0].discount_price}`);
+                            nor_diamond.active = true;
+                            dis_diamond.active = true;
+                            free_diamond.active = false;
+
+
+
+                        }
+                        else {
+
+                            this.uirc.setChildLabel(nor_diamond, "label", `${diamondConfig.setting[0].price}`);
+                            nor_diamond.active = true;
+                            dis_diamond.active = false;
+                            free_diamond.active = false;
+                        }
+                    }
+                }
+
+            }
+            this.uirc.Button_Delay.getComponent(cc.Button).interactable = true;
+            this.uirc.Button_Delay.getChildByName("Text_Time").getComponent(cc.Label).string = this.delayCount > 0 ? "20" : "30";
+            this.uirc.Button_Delay.opacity = 255;
+        }
+    }
+    public HideBtnDelay(isActive: boolean): void {
+        this.uirc.Button_Delay.active = isActive;
+    }
+
 }
 

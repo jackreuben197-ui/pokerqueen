@@ -110,7 +110,7 @@ export class SeatFSM {
         this.seat.UpdateBanker();
 
         // this.seat.StopAllinArmature();
-        this.seat.StopWinArmature(); 
+        this.seat.StopWinArmature();
 
         this.seat.uirc.Frame_Head.active = true;
         this.seat.uirc.imageEmpty.node.active = false;
@@ -304,20 +304,25 @@ export class SeatFSM {
         if (!this.seat.isCountDown)
             return;
 
-        this.seat.uirc.Head_CD_Mask.fillRange = (this.seat.optCurTime -= dt) / this.seat.optTotalTime;
 
-        this.seat.uirc.Head_CD_Label.string = `${this.seat.optCurTime}s`;
+        this.seat.optCurTime -= dt;
+
+        let show_time = Math.ceil(this.seat.optCurTime);
+
+        if (this.seat.optCurTime < 0) {
+            this.seat.optCurTime = 0;
+            show_time = 0;
+        }
+        this.seat.uirc.Head_CD_Mask.fillRange = this.seat.optCurTime / this.seat.optTotalTime;
+
+        this.seat.uirc.Head_CD_Label.string = `${show_time}s`;
 
         if (this.seat.uirc.Head_CD_Mask.fillRange <= 0) {
             this.seat.HideHeadCD();
-            //this.seat.PlayLightArmature();
         }
-
         if (this.seat.Player.userID != GameCache.Instance.CurGame.mainPlayer.userID) {
-            let leftTime = Math.ceil(this.seat.optCurTime);
-            if (leftTime < 0)
-                leftTime = 0;
-            this.seat.uirc.Text_BubbleInsuranceCountDown.string = CPErrorCode.LanguageDescription(20062, [leftTime]);
+
+            this.seat.uirc.Text_BubbleInsuranceCountDown.string = CPErrorCode.LanguageDescription(20062, [show_time]);
         }
     }
     public InsuranceExit(): void {

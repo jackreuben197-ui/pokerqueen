@@ -233,6 +233,8 @@ export default class Seat {
         //mRectTransform.SetParent(transBubble);
         this.uirc.Image_Bubble.setPosition(info.bubble_pos);
 
+        this.uirc.Image_BubbleInsuranceCountDown.setPosition(info.insurance_pos);
+
         if (GameCache.Instance.room_type > RoomType.TexasHoldemSixPlusFixedAof && GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
             // mRectTransform.localPosition = info.AoMaHaInsurancetoubaoPos;
         }
@@ -1207,13 +1209,9 @@ export default class Seat {
         }
         // textBubbleInsuranceCountDown.text = $"购买剩余{Player.timeLeft_insurance}秒";
         this.uirc.Image_BubbleInsuranceCountDown.active = true;
-        this.uirc.Text_BubbleInsuranceCountDown.string = CPErrorCode.LanguageDescription(20062, [this.Player.timeLeft_insurance < 0 ? 0 : this.Player.timeLeft_insurance]);
+        this.uirc.Text_BubbleInsuranceCountDown.string = `${CPErrorCode.LanguageDescription(10298)} ${this.Player.timeLeft_insurance < 0 ? 0 : this.Player.timeLeft_insurance}s`;
         this.HideBubbleInsurance();
     }
-
-
-
-
 
     public UpdateImageBackActive(istrue: boolean = false): void {
         for (let i = 0, n = this.Player.cards.length; i < n; i++) {

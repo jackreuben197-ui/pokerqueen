@@ -330,10 +330,10 @@ export default class UIMttSignDialogComponent extends UIBase {
         // propInfos = new List<Web_Prop_User_Prop_List.Record>();
         UIMTTModel.Instance.APIMtt_GetDiscounts(pAct => {
             if (pAct.code == 0) {
-                if (pAct.data.excludefee_list.Count > 0 && pAct.data.excludefee_list != null) {
+                if (pAct.data.excludefee_list.length > 0 && pAct.data.excludefee_list != null) {
                     // propInfos.AddRange(pAct.data.excludefee_list);
                 }
-                if (pAct.data.includefee_list.Count > 0 && pAct.data.includefee_list != null) {
+                if (pAct.data.includefee_list.length > 0 && pAct.data.includefee_list != null) {
                     // propInfos.AddRange(pAct.data.includefee_list);
                 }
                 // int count = 0;

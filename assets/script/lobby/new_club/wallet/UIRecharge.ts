@@ -6,6 +6,7 @@ import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { Web_Recharge_Gold, Web_Tiqu_Gold, WWW } from "../../../net/https/WebRequest";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
+import { UIRechargeDialogType } from "../../../ui/dialog/UIRechargeDialog";
 import UISuperDialog, { UISuperDialogType } from "../../../ui/dialog/UISuperDialog";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
@@ -247,13 +248,19 @@ export default class UIRecharge extends BaseFormPlus {
     }
     //申请成功响应弹窗
     requestSuccess(data: any) {
+        //act.data.more_contact, act.data.digital_wallet_erc, act.data.digital_wallet_trc
         if (data?.more_contact) {
-            UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+            let copy_list = [];
+            data.digital_wallet_erc && copy_list.push({ show: `ERC:${data.digital_wallet_erc}`, copy: `${data.digital_wallet_erc}` });
+            data.digital_wallet_trc && copy_list.push({ show: `TRC:${data.digital_wallet_trc}`, copy: `${data.digital_wallet_trc}` });
+
+            UIComponent.open<UIRechargeDialogType>(UIDefine.UIRechargeDialog, {
                 this: this,
-                title: i18nMgr.Get("adaptation10007"),
+                title: i18nMgr.Get("UIGuild_TipsTitle"),
                 cancel: i18nMgr.Get("UIBackDialog_ticketsbtnClose"),
-                commit: i18nMgr.Get("UIClub_Info_gL1Ehrnk"),
+                commit: i18nMgr.Get("CopyContact"),
                 content: StringHelper.Format(i18nMgr.Get("UIGuildFund_RtTips005"), [` ${StringHelper.GetColorText(data.more_contact, TextColor.Color4)} `]),
+                copy_list: copy_list.length > 0 ? copy_list : null,
                 commit_click: () => {
                     PublicHelper.copyToClipBoard(data.more_contact);
                 }
@@ -262,5 +269,4 @@ export default class UIRecharge extends BaseFormPlus {
             UIComponent.Instance.ToastLanguage("roomError171_5");
         }
     }
-
 }

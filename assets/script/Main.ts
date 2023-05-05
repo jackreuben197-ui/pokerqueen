@@ -17,6 +17,7 @@ import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
 import CCTools from "./tools/CCTools";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
+///////////////////////////////////////////////
 
 const { ccclass, property } = cc._decorator;
 
@@ -58,13 +59,6 @@ export default class Main extends cc.Component {
         GC.init();
 
         GC.localStore.keyPre = CCTools.getQueryString("player") || "";
-
-        // let flag = GC.localStore.getItem(StorageKey.CLEAN_ALL_FLAG);
-
-        // if (+flag > 0 && +flag != GameConfig.clean_all_flag) {
-        //     GC.localStore.clear();
-        //     GC.localStore.setItem(StorageKey.CLEAN_ALL_FLAG, GameConfig.clean_all_flag);
-        // }
 
         Main.instance = this;
         //设置是否代理模式(根据地址栏配置proxy字段)
@@ -126,5 +120,5 @@ export default class Main extends cc.Component {
 }
 (window as any).Main = Main;
 
-//http://localhost:7456/assets/resources/native/eb/ebdcd742-e944-4ca4-81a3-ce82954796de.png
-//http://localhost:7456/assets/others/native/19/19dc920e-c416-45c1-bbd6-7d74efabca0f.png
+//http://localhost:7456/assets/resources/native/01/01c6d3da-4f95-40d5-8c63-b9b7ebef7461.png
+//http://localhost:7456/assets/resources/native/31/310952bf-e832-4f99-985f-7da18d2051bc.png

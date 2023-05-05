@@ -6,7 +6,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { BringInApplyMsg, Broadcast, BroadcastCode, BroadcastMsg } from "../../net/websocket/ProtocolHoldemMessages";
-import { Def, Operator, OutsCard, PlayerCards, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
+import { Def, Operator, PlayerCards, PlayerChipChange, Result } from "../../protobuf/holdem/define_pb";
 import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
 import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
 import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_agree_second_pcs_pb";
@@ -665,6 +665,7 @@ export default class TexasGameProtocol {
         mSeat.AddOperationTime(rec.duration);
         this.game.UpdateDelayBtn();
         this.game.ClickAddTime = false;
+        UIComponent.Instance.ToastLanguage("UITexas_AddTimeSuccess");
     }
 
     /// <summary>
@@ -1487,8 +1488,8 @@ export default class TexasGameProtocol {
         this.game.alreadAnte = 0;
         this.game.UpdateAlreadAnte();
         // 刷新分池
-        GameUtil.ResetSeatInfo();
-
+        this.game.HideAllPots();
+        //GameUtil.ResetSeatInfo();
         this.game.ClearTableUI();
 
 
@@ -1691,31 +1692,37 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="operators"></param>
     public HandlerInsueranceData(operators: Operator.AsObject[]) {
+
+
         //显示玩家买保险动画，及如果有自己，缓存操作数据。
         let CanInsurance = false;
         let Seat: Seat = null;
         let mOperator: Operator.AsObject = null;
 
+
         for (let itemOperator of operators) {
             Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(itemOperator.seatId));
-            if (null == Seat || null == Seat.Player) {
-                continue;
-            }
-            Seat.Player.playerStatus_insurance = itemOperator.isInsurance;
-            Seat.Player.timeLeft_insurance = itemOperator.leftOpTime;
-            Seat.Player.delayTimes = itemOperator.delayTimes;
-            if (Seat.Player.userID == this.game.mainPlayer.userID && Seat.Player.playerStatus_insurance) {
-                mOperator = itemOperator;
-                CanInsurance = true;
-            }
 
-            if (Seat.Player.playerStatus_insurance) {
-                Seat.FsmLogicComponent.SM.ChangeState(SeatInsurance.Instance);
+            if (Seat?.Player) {
+
+                Seat.Player.playerStatus_insurance = itemOperator.isInsurance;
+                Seat.Player.timeLeft_insurance = itemOperator.leftOpTime;
+                Seat.Player.delayTimes = itemOperator.delayTimes;
+                if (Seat.Player.userID == this.game.mainPlayer.userID && Seat.Player.playerStatus_insurance) {
+                    mOperator = itemOperator;
+                    CanInsurance = true;
+                }
+
+                if (Seat.Player.playerStatus_insurance) {
+                    Seat.FsmLogicComponent.SM.ChangeState(SeatInsurance.Instance);
+                }
+
             }
         }
 
 
         let mTweenCallback = () => {
+
             if (!CanInsurance || mOperator == null) // 如果可购买保险用户中没有自己，不用往下执行
                 return;
 
@@ -1750,7 +1757,7 @@ export default class TexasGameProtocol {
                     }
                     //需要显示玩家手牌和名字，通过座位号在牌局中缓存座位，获取已下发得手牌和名字。
                     mWrapTriggedInsuranceData.userNames.push(ins_Seat.Player.nick);
-                    mWrapTriggedInsuranceData.playerCards.push(...ins_Seat.Player.cards);
+                    mWrapTriggedInsuranceData.playerCards.push(ins_Seat.Player.cards);
                     //各个玩家
                     mWrapTriggedInsuranceData.outsPerUser.push(userOuts.outsCardsList.length);
                     //添加所有玩家outs ，在保险界面处理是否平分outs

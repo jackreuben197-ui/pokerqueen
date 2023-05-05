@@ -4,12 +4,15 @@ import LanguageManager from "../frame/manager/LanguageManager";
 import { i18nLabel } from "../i18n/i18nLabel";
 import { ResManager } from "../manager/ResManager";
 import CCTools from "../tools/CCTools";
+import { Open_Obj } from "./UIComponent";
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class UIBase extends BaseComponent {
     // 索引
     public index: number = 0;
+
+    public obj: Open_Obj;
 
     public show_animation: boolean = false;
     public close_animation: boolean = false;

@@ -29,7 +29,7 @@ export class GameConfig {
     //4: https://dev1.awanptest.com 
     static BuildType: number = 5;
     //版本号
-    static Version: string = "20230421_1800";
+    static Version: string = "20230426_1600";
 
     static Default_Language: string = "cn";
     //是否使用代理
@@ -53,6 +53,10 @@ export class GameConfig {
 
     //默认区号
     static DefaultAreaCode: string = "+55";
+
+    //钻石配置
+    public static DiamondConfig_2: any;
+    public static DiamondConfig_8: any;
 
 }
 /**

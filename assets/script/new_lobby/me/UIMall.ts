@@ -1,8 +1,10 @@
 import SimpleNodePool from "../../common/MyNodePool";
 import { Web_MallShopList, Web_Mall_Buy, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
+import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import ItemMall from "./ItemMall";
+import UIChangeName from "./UIChangeName";
 import UIMe from "./UIMe";
 
 
@@ -15,7 +17,6 @@ export default class UIMall extends BaseFormPlus {
     $content: cc.Node = null;
     /////////////////////////////////////////////
     item_pool: SimpleNodePool = null;
-
 
     lateLoad() {
         super.lateLoad();
@@ -93,8 +94,11 @@ export default class UIMall extends BaseFormPlus {
         ).then(
             (res: any) => {
                 UIComponent.Instance.ToastLanguage("钻石购买成功");
-                let uime: UIMe = UIComponent.Instance.getComponent("UIMe");
-                uime.refreshWallet();
+                //let uime: UIMe = UIComponent.Instance.getComponent("UIMe");
+                //uime.refreshWallet();
+                // let changeName: UIChangeName = UIComponent.Instance.getComponent("UIChangeName");
+                // changeName.refreshWallet();
+                this.obj.fromComponent?.refreshWallet?.();
             },
             (res: any) => {
 

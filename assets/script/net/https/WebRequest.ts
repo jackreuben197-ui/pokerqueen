@@ -831,6 +831,9 @@ export class Web_Config_Global_Config extends WebCommon {
         android_pay_switch?: number,//android支付功能开关 1 开 2 关
         apple_mtt_switch?: number,//iosMTT功能开关 1 开 2 关
         support_email?: string,
+        scoreboard_club_price?:string,
+        scoreboard_friend_price?:string,
+        user_modify_name_price?:string,
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -2974,6 +2977,39 @@ export class Web_Room_Center_Mtt_Ranks extends WebCommon {
 export class Web_Share_usable extends WebCommon {
     static API: string = "/api/prop/share/usable";
 }
+
+
+//得到盲注钻石折扣表
+export class Web_GetDiamondConfig extends WebCommon {
+    static API: string = "/api/config/diamond/config";
+    /*request
+    --config_type //1 创建牌桌；2 牌桌内加时
+    --type_ext // 百位数：创建来源 1 平台，2 联盟，3 公会 4 个人（朋友桌）// 十位数：是否共享牌桌 1 不共享 2 共享 （如果再区分币种，预留 2 USDT桌 3 联盟币）// 个位数：是否比赛 0 不是， 1 是示例：210 （表示联盟创建的内部牌桌）//千位数：0第一次加时，1第二次加时
+    */
+    /*response data.data
+     --id
+     --config_type //1 创建牌桌；2 牌桌内加时 3 语音桌 4 人脸识别桌 5 视频桌（全时长)  6 视频桌（随机验证）7 视频桌（麦序）8 延迟看牌
+     --status //1 开启； 2 关闭
+     --type_ext
+     // 千位数：config_type =2  为 0第一次加时，1第二次加时。config_type =8 为 1 PREFLOP 2 FLOP 3 TURN
+     // 百位数：创建来源 1 平台，2 联盟，3 公会 4 个人（朋友桌）
+     // 十位数：是否共享牌桌 1 不共享 2 共享 （如果再区分币种，预留 2 USDT桌 3 联盟币）
+     // 个位数：是否比赛 0 不是， 1 是
+     // 示例：210 （表示联盟创建的内部牌桌）       3\4\5\6\7 type_ext为牌桌座位数
+     --create_time
+     --update_time
+     --setting
+        --sb //小盲 显示时除以100
+        --blind_type //盲注分级 1 微 2 小 3 中 4 大
+        --price //原价
+        --discount_price //折扣价
+    */
+}
+
+
+
+
+
 /**
  * 注册全局访问
  */

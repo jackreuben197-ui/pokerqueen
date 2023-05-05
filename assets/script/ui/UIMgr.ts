@@ -97,11 +97,12 @@ export class UIFormMgr {
             }
         }
     }
-    protected lateOpen(ui: UIBase, param: any = null, obj: Open_Obj) {
+    protected lateOpen(ui: UIBase, param: any = null, obj: Open_Obj = null) {
         if (ui) {
             ui.node.active = true;
             ui.node.parent = this.UILayer;
             ui.show_animation = obj?.animation == null ? true : obj?.animation;
+            ui.obj = obj;
             if (obj?.animation == false) ui.show_animation = false;
 
             if (obj?.jumpShow) {
