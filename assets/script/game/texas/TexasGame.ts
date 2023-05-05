@@ -3556,28 +3556,7 @@ export default class TexasGame {
     //private DiamondConfig diamondConfig;
 
     private GetDiamondConfig_2(next?: Function) {
-        // diamondConfigs = new DiamondConfigs();
-        // diamondConfig = new DiamondConfig();
-
-        // UIGuildModel.mInstance.GetDiamondConfig(2, res => {
-        //     if (res.code == 0) {
-        //         diamondConfigs = res.data;
-        //     }
-        // }, (isAutoUpdate) => {
-
-        //     if (this.GameObject != null && this.GameObject.activeInHierarchy) {
-        //         var paramas = new Web_GetDiamondConfig.RequestData(){ config_type = 2 };
-        // 		string responseData = HttpDataCacheMgr.mInstance.GetAlreadyHttpCacheData(Web_GetDiamondConfig.API, Web_GetDiamondConfig.Request(paramas));
-        //         if (!string.IsNullOrEmpty(responseData)) {
-        //             var tResp = Web_GetDiamondConfig.Response(responseData);
-        //             if (tResp.code == 0) {
-        //                 diamondConfigs = tResp.data;
-        //             }
-        //         }
-
-        //     }
-        // });
-
+       
         if (!GameConfig.DiamondConfig_2) {
 
             WWW.Instance.CommonAPI(
