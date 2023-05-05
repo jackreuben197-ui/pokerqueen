@@ -2347,6 +2347,12 @@ export class APIOrgChangeClubData extends WebCommon {
     static API: string = "/api/org/club/modify/club_info";
 }
 
+
+export class modify_digital_wallet_address extends WebCommon {
+    //接口地址
+    static API: string = "/api/org/club/modify/digital_wallet_address";
+}
+
 export class APIOrgCreateTemplate extends WebCommon {
     //接口地址
     static API: string = "/api/cmsext/room/template/create";

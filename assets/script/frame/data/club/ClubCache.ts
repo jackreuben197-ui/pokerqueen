@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:38:03
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-22 11:14:45
+ * @LastEditTime: 2023-05-05 11:00:13
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubCache.ts
  */
 // Learn TypeScript:
@@ -129,6 +129,16 @@ export class ClubCache {
     }
     static get tribe_logo() {
         return this._msg?.tribe_logo;
+    }
+    static get digital_wallet_switch() {
+        return this._msg?.digital_wallet_switch;
+    }
+    static get digital_wallet_erc() {
+        return this._msg?.digital_wallet_erc;
+    }
+
+    static get digital_wallet_trc() {
+        return this._msg?.digital_wallet_trc;
     }
 
 

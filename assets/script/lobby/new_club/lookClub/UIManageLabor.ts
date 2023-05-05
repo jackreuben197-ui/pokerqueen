@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-23 19:54:15
+ * @LastEditTime: 2023-05-05 11:20:43
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIManageLabor.ts
  */
 
@@ -45,6 +45,9 @@ export default class UIManageLabor extends BaseForm {
 
     @property(GGSwitch)
     tgllfs_st: GGSwitch = null;
+
+    @property(GGSwitch)
+    szqb_st: GGSwitch = null;
 
     private comFormTitle: ComFormTitle = null;
 
@@ -143,7 +146,20 @@ export default class UIManageLabor extends BaseForm {
                 UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, show_contact_switch: ClubCache.show_contact_switch })
             }, self: this
         };
+        this.szqb_st.setIsOn(ClubCache.digital_wallet_switch == 1)
+        this.szqb_st.clickObj = {
+            click: () => {
+                ClubCache._msg.digital_wallet_switch = ClubCache.digital_wallet_switch == 1 ? 2 : 1
+                UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, digital_wallet_switch: ClubCache.digital_wallet_switch })
+            }, self: this
+        };
 
+
+    }
+
+    clickSzqb() {
+        // this.node.active = false
+        UIComponent.open(UIDefine.UIClubDigitalWallet)
     }
 
     clickLevel() {

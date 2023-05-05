@@ -665,6 +665,14 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/new_club/upLevel/UIClubUpLevel",
     },
+    //数字钱包
+    UIClubDigitalWallet: {
+        UIType: UIType.Form,
+        Name: "UIClubUpLevel",
+        Bundle: null,
+        Path: "main/new_club/lookClub/UIClubDigitalWallet",
+        Title: "UIDigitalWallet"
+    },
     //汇率设置
     UIClubRateSet: {
         UIType: UIType.Form,
