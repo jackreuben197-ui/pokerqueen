@@ -1,6 +1,7 @@
 import { GameConfig } from "../../config/GameConfig";
 import TexasConfig from "../../config/TexasConfig";
 import { UIDefine } from "../../define/UIDefine";
+import DiamondModel from "../../diamond/DiamondModel";
 import { DOTween, Sequence } from "../../dotween/DOTween";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import GC from "../../frame/GameControl";
@@ -26,6 +27,7 @@ import { ClientMessageShowPublicCards } from "../../protobuf/holdem/req_show_pub
 import { ClientMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
 import { ClientMessageStoreChips } from "../../protobuf/holdem/req_store_chips_pb";
 import GlobalSession from "../../session/GlobalSession";
+import LobbySession from "../../session/LobbySession";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
@@ -845,8 +847,8 @@ export default class TexasGame {
 
         this.roomReqList = [
             { name: "UpdateMsgBtnSprite", func: this.UpdateMsgBtnSprite },
-            { name: "GetDiamondConfig_2", func: this.GetDiamondConfig_2 },
-            { name: "GetDiamondConfig_8", func: this.GetDiamondConfig_8 },
+            { name: "ReqDiamondConfig_2", func: this.ReqDiamondConfig_2 },
+            { name: "ReqDiamondConfig_8", func: this.ReqDiamondConfig_8 },
         ];
         this.RunRoomReqlist();
     }
@@ -2559,7 +2561,8 @@ export default class TexasGame {
             thousand = 3;
         }
 
-        let diamondConfig = this.GetDiamondConfig(this.GetDiamondTypeText(8, thousand), 8);
+
+        let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetDiamondTypeText(8, thousand), 8);
         if (diamondConfig == null) {
             console.log("未拿到查看翻牌配置");
             return;
@@ -3551,59 +3554,28 @@ export default class TexasGame {
         this.uirc.UIOperation_Com.refreshSliderMaxLabel();
     }
     ////////////////////////////////////////////////////
+    private ReqDiamondConfig_2(next?: Function) {
 
-    //private DiamondConfigs diamondConfigs;
-    //private DiamondConfig diamondConfig;
-
-    private GetDiamondConfig_2(next?: Function) {
-       
-        if (!GameConfig.DiamondConfig_2) {
-
-            WWW.Instance.CommonAPI(
-                {
-                    web_class: Web_GetDiamondConfig,
-                    body: {
-                        config_type: 2,
-                    }
-                }
-            ).then(
-                (res: any) => {
-                    GameConfig.DiamondConfig_2 = res.data;
-                    next?.call(this);
-                },
-                (res: any) => {
-                    next?.call(this);
-                }
-            )
-        } else {
-            next?.call(this);
-        }
+        DiamondModel.Instance.ReqDiamondConfig(2).then(
+            () => {
+                next?.call(this);
+            },
+            () => {
+                next?.call(this);
+            }
+        )
     }
-    private GetDiamondConfig_8(next?: Function) {
+    private ReqDiamondConfig_8(next?: Function) {
 
-        if (!GameConfig.DiamondConfig_8) {
-
-            WWW.Instance.CommonAPI(
-                {
-                    web_class: Web_GetDiamondConfig,
-                    body: {
-                        config_type: 8,
-                    }
-                }
-            ).then(
-                (res: any) => {
-                    GameConfig.DiamondConfig_8 = res.data;
-                    next?.call(this);
-                },
-                (res: any) => {
-                    next?.call(this);
-                }
-            )
-        } else {
-            next?.call(this);
-        }
+        DiamondModel.Instance.ReqDiamondConfig(8).then(
+            () => {
+                next?.call(this);
+            },
+            () => {
+                next?.call(this);
+            }
+        )
     }
-
     private GetDiamondTypeText(config_type = 0, Thousand = 0) {
         let typeText = 0;
         let thousand = 0;// 千位数：config_type =2  为 0第一次加时，1第二次加时。config_type =8 为 1 PREFLOP 2 FLOP 3 TURN 
@@ -3659,28 +3631,6 @@ export default class TexasGame {
         return +numStr || 0;
     }
 
-    private GetDiamondConfig(num: number, config_type: number = 0) {
-        if (config_type == 8) {
-            if (GameConfig.DiamondConfig_8.data?.length > 0) {
-                for (let i = 0; i < GameConfig.DiamondConfig_8.data.length; i++) {
-                    if (GameConfig.DiamondConfig_8.data[i].type_ext == num) {
-                        return GameConfig.DiamondConfig_8.data[i];
-                    }
-                }
-            }
-        }
-        else {
-            if (GameConfig.DiamondConfig_2.data?.length > 0) {
-                for (let i = 0; i < GameConfig.DiamondConfig_2.data.length; i++) {
-                    if (GameConfig.DiamondConfig_2.data[i].type_ext == num) {
-                        return GameConfig.DiamondConfig_2.data[i];
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
 
     //刷新加时按钮样式
     public UpdateDelayBtn(): void {
@@ -3706,7 +3656,7 @@ export default class TexasGame {
         }
         else {
 
-            let diamondConfig = this.GetDiamondConfig(this.GetTypeText(this.delayCount + 1));
+            let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetTypeText(this.delayCount + 1), 2);
 
             if (diamondConfig?.config_type == 2) {
                 let smallBlind = 0;
@@ -3730,7 +3680,7 @@ export default class TexasGame {
                                     this.uirc.setChildLabel(nor_diamond, "label", `${diamondConfig.setting[i].discount_price}`);
                                     nor_diamond.active = true;
                                     dis_diamond.active = true;
-   
+
                                 }
                                 else {
                                     this.uirc.setChildLabel(nor_diamond, "label", `${diamondConfig.setting[i].price}`);

@@ -2,6 +2,7 @@
  * 大厅Session
  */
 
+import { GameConfig } from "../config/GameConfig";
 import GC from "../frame/GameControl";
 import HeartbeatComponent from "../funcomponent/HeartbeatComponent";
 import ReconnectComponent from "../funcomponent/ReconnectComponent";
@@ -11,7 +12,7 @@ import { GameCache } from "../game/GameCache";
 import GameUtil from "../game/util/GameUtil";
 import { i18nMgr } from "../i18n/i18nMgr";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
+import { WWW, Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_GetDiamondConfig, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
 
@@ -231,46 +232,6 @@ export default class LobbySession {
         //localStorage.setItem(StorageKey.KEY_PHONE_FIRST, `${info.area}`);
 
     }
-
-
-
-
-    // <summary>
-    /// 设置该房间保险赔率表
-    /// </summary>
-    /// <param name="pAct"></param>
-    // public void APIWebUserRoominsur(Action<Web_User_Room_insur.ResponseData> pAct)
-    // {
-    // 	var paramas = new Web_User_Room_insur.RequestData() { };
-    // 	HttpRequestComponent.Instance.Send(StringHelper.GetWebUrlString(Web_User_Room_insur.API, GameCache.Instance.room_id.ToString()), Web_User_Room_insur.Request(paramas), RequestData =>
-    // 	{
-    // 		var tResp = Web_User_Room_insur.Response(RequestData);
-
-    // 		if (pAct != null)
-    // 		{
-    // 			if (tResp.code == 0)
-    // 			{
-    // 				GameUtil.OutsList.Clear();
-    // 				foreach (var outs in tResp.data)
-    // 				{
-    // 					List<float> OddsAndOuts = new List<float>();
-    // 					foreach (var item in outs.detail)
-    // 					{
-    // 						OddsAndOuts.Add((float)item.odds);
-    // 					}
-    // 					GameUtil.OutsList.Add((uint)outs.pot_user_count, OddsAndOuts);
-    // 				}
-    // 			}
-    // 			pAct(tResp);
-    // 		}
-    // 	});
-    // }
-
-
-
-
-
-
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /**

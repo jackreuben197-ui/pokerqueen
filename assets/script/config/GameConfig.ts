@@ -53,11 +53,6 @@ export class GameConfig {
 
     //默认区号
     static DefaultAreaCode: string = "+55";
-
-    //钻石配置
-    public static DiamondConfig_2: any;
-    public static DiamondConfig_8: any;
-
 }
 /**
  * 网络配置
