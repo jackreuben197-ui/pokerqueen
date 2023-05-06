@@ -135,7 +135,7 @@ class WrapPlayerData {
 
 
 @ccclass
-export default class UIInsurance extends UIBasePlus {
+export default class UIInsurancePanel extends UIBasePlus {
 
 
 
@@ -806,7 +806,7 @@ export default class UIInsurance extends UIBasePlus {
 
 
     private click_back() {
-        UIComponent.Instance.HideUI(PrefabUI.UIInsurance);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsurancePanel);
     }
 
 
@@ -850,7 +850,7 @@ export default class UIInsurance extends UIBasePlus {
                 buyList: []
             },
         });
-        UIComponent.Instance.HideUI(PrefabUI.UIInsurance);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsurancePanel);
 
         this.pingfenOutsCount = 0;
     }
@@ -904,7 +904,7 @@ export default class UIInsurance extends UIBasePlus {
             },
         })
 
-        UIComponent.Instance.HideUI(PrefabUI.UIInsurance);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsurancePanel);
     }
 
     lateClose(param?: any) {

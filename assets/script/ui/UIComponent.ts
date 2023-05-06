@@ -29,7 +29,7 @@ export enum PrefabUI {
     UIBringIn = "UIBringIn",//带入记分牌
     UIAutoBringIn = "UIAutoBringIn",//自动记分牌
     UIBringOut = "UIBringOut",//带出记分牌
-    UIInsurance = "UIInsurance",//保险面板
+    UIInsurancePanel = "UIInsurancePanel",//保险面板
 
 }
 (window as any).PrefabUI = PrefabUI;

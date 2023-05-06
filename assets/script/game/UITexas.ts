@@ -22,13 +22,12 @@ import { GameCache } from "./GameCache";
 import UIAutoBringIn from "./new_ui/UIAutoBringIn";
 import UIBringIn from "./new_ui/UIBringIn";
 import UIBringOut from "./new_ui/UIBringOut";
-import UIInsurance from "./new_ui/UIInsurance";
+import UIInsurancePanel from "./new_ui/UIInsurancePanel";
 import TexasGame from "./texas/TexasGame";
 
 import UIAgreeSecondPcsComponent from "./ui/UIAgreeSecondPcsComponent";
 
 import UIAutoOperationComponent from "./ui/UIAutoOperationComponent";
-import UIInsuranceComponent from "./ui/UIInsuranceComponent";
 import UIMTTTimeComponent from "./ui/UIMTTTimeComponent";
 import UIOperationComponent from "./ui/UIOperationComponent";
 import UIOutChipsTipComponent from "./ui/UIOutChipsTipComponent";
@@ -176,7 +175,7 @@ export default class UITexas extends BaseScene {
     UIBringOut: UIBringOut = null;
     //6.保险面板
     UIInsurance_Con: cc.Node = null;
-    UIInsurance: UIInsurance = null;
+    UIInsurancePanel: UIInsurancePanel = null;
     //7.二套牌投票面板
     UIAgreeSecondPcs_Con: cc.Node = null;
     UIAgreeSecondPcs_Com: UIAgreeSecondPcsComponent = null;
@@ -322,7 +321,7 @@ export default class UITexas extends BaseScene {
         this.UIBringOut = this.AddComponents(PrefabUI.UIBringOut, this.UIChips_Con);
         //6.保险面板
         this.UIInsurance_Con = this.getChildNodeOrComponent("UIInsurance_Con");
-        this.UIInsurance = this.AddComponents(PrefabUI.UIInsurance, this.UIInsurance_Con);
+        this.UIInsurancePanel = this.AddComponents(PrefabUI.UIInsurancePanel, this.UIInsurance_Con);
         //7.二套牌投票面板
         this.UIAgreeSecondPcs_Con = this.getChildNodeOrComponent("UIAgreeSecondPcs_Con");
         this.UIAgreeSecondPcs_Com = this.AddComponents(PrefabUI.UIAgreeSecondPcsComponent, this.UIAgreeSecondPcs_Con);
@@ -446,7 +445,7 @@ export default class UITexas extends BaseScene {
             PrefabUI.UIBringIn,
             PrefabUI.UIBringOut,
             PrefabUI.UIAutoBringIn,
-            PrefabUI.UIInsurance,
+            PrefabUI.UIInsurancePanel,
         ].forEach(item => {
             UIComponent.Instance.HideUI(item);
         });
