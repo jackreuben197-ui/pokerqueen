@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-06 11:48:09
+ * @LastEditTime: 2023-05-06 11:55:02
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -287,8 +287,8 @@ export default class UIClubCreateMatch extends BaseForm {
             noPay.active = false
             pay1.node.parent.active = true
         }
-        pay.string = element.discount_price
-        pay1.string = element.price
+        pay.string = element.discount_price || 0
+        pay1.string = element.price || 0
         pay1._forceUpdateRenderData()
         let Rectangle = cc.find('dynamicPay/pay1/zs/Rectangle', this.coinNode)
         Rectangle.width = pay1.node.width + 50
