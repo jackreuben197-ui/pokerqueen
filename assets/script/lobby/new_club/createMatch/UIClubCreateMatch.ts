@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-26 10:39:36
+ * @LastEditTime: 2023-05-06 11:48:09
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -29,6 +29,7 @@ import GGSlider from "../../../ui/component/GGSlider";
 import GGSwitch from "../../../ui/component/GGSwitch";
 import UIComponent from "../../../ui/UIComponent";
 import { StringHelper } from "../../../helper/StringHelper";
+import DiamondModel from "../../../diamond/DiamondModel";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -231,6 +232,8 @@ export default class UIClubCreateMatch extends BaseForm {
         super.onShow(data, fromUI, sceneUI);
         let title = "UIGuild_CreateTable"
         let _title = i18nMgr.Get(title)
+        //获取钻石配置
+        DiamondModel.Instance.ReqDiamondConfig(1)
         _title = _title + this.getMatchType()
         this.comFormTitle.initData(_title, this);
         if (data) {
@@ -246,18 +249,90 @@ export default class UIClubCreateMatch extends BaseForm {
         ClubCache._diamonds_wallet = wallet?.diamonds_wallet
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
         own.string = ClubCache._diamonds_wallet?.diamonds || 0 + '';
+        let tip = cc.find('dynamicPay/tip', this.coinNode)
+        let pricTip = this.node.getChildByName('pricTip')
+        this.bindClick(tip, () => {
+            pricTip.active = true;
+        })
+
     }
     async initDiamond() {
+        if (ClubCache.joinCreateMatchType == 1) {
+            this._selectTitle = 0
+        }
+        let diamondConfig = DiamondModel.Instance.GetDiamondConfig(this.GetDiamondTypeText(1), 1);
+        if (diamondConfig == null) {
+            return;
+        }
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
         own.string = ClubCache._diamonds_wallet?.diamonds || 0 + '';
-        let pay = cc.find('pay/num', this.coinNode).getComponent(cc.Label)
-        pay.string = 12 + '';
-        // if (ClubCache.CreateGameType == 2) {
-        //     this._selectTitle = 1
-        // }
-        this.friendNode.active = this._selectTitle == 1 && ClubCache.joinCreateMatchType == 0
-        this.clubNode.active = this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1
 
+        let pay = cc.find('dynamicPay/pay/num', this.coinNode).getComponent(cc.Label)
+        let pay1 = cc.find('dynamicPay/pay1/num', this.coinNode).getComponent(cc.Label)
+        let noPay = cc.find('dynamicPay/noPay', this.coinNode)
+
+        let element = this.getPriceBySb(diamondConfig.setting)
+        if (element.discount_price == 0) {
+            pay.node.parent.active = false
+            noPay.active = true
+            pay1.node.parent.active = true
+        }
+        else if (element.price == element.discount_price) {
+            pay.node.parent.active = true
+            noPay.active = false
+            pay1.node.parent.active = false
+
+        } else {
+            pay.node.parent.active = true
+            noPay.active = false
+            pay1.node.parent.active = true
+        }
+        pay.string = element.discount_price
+        pay1.string = element.price
+        pay1._forceUpdateRenderData()
+        let Rectangle = cc.find('dynamicPay/pay1/zs/Rectangle', this.coinNode)
+        Rectangle.width = pay1.node.width + 50
+        let PricTipScript = this.node.getChildByName('pricTip').getComponent('pricTip')
+        PricTipScript.price.string = element.discount_price + i18nMgr.Get('UIMine_VIP_diamond')
+
+        // this.friendNode.active = this._selectTitle == 1 && ClubCache.joinCreateMatchType == 0
+        // this.clubNode.active = this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1
+
+    }
+    getPriceBySb(diamondConfig) {
+        let sb = this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'] * 100
+        let data = null
+        diamondConfig.forEach(element => {
+            if (element.sb == sb) {
+                data = element
+            }
+        });
+        return data
+    }
+    GetDiamondTypeText(config_type) {
+        let typeText = 0;
+        let hundred = 0;//百位数 ：1 平台，2 联盟，3 公会 4 个人（朋友桌）
+        let ten = 0;//十位数：是否共享牌桌 1 不共享 2 共享 （如果再区分币种，预留 2 USDT桌 3 联盟币）
+        let one = 0;//个位数：是否比赛 0 不是， 1 是
+        if (config_type == 1) {
+
+            hundred = ClubCache.joinCreateMatchType == 0 ? 300 : 400
+            ten = this._selectTitle == 1 ? 20 : 10;
+        }
+
+        // switch (config_type) {
+        //     case 2:
+        //         thousand = Thousand * 1000;
+        //         break;
+        //     case 8:
+        //         thousand = Thousand * 1000;
+        //         break;
+        //     default:
+        //         thousand = 0;
+        //         break;
+        // }
+        typeText = hundred + ten + one;
+        return typeText;
     }
     getMatchType() {
         let _string = 'NLH'
@@ -315,7 +390,7 @@ export default class UIClubCreateMatch extends BaseForm {
         // } else if (room_config.origin_type == 3) {
         //     this._selectTitle = 1
         // }
-        this._selectTitle = room_config.share_table == 1 ? 1 : 0;
+        this._selectTitle = room_config.share_table == 1 ? 0 : 1;
         this.zxblbs['levelData'] = { min: 1, total: 4, level: room_config.retain_min_rate }
         this.zwrs['levelData'] = { min: 2, total: 9, level: room_config.seat_count }
         this.zdks['levelData'] = { min: 2, total: 9, level: room_config.autostart_min_players }
@@ -598,6 +673,7 @@ export default class UIClubCreateMatch extends BaseForm {
         }
 
         drjfp.initUi(small, big, this.itemDataIndex.jfpbs, this.itemDataIndex.jfpbs1)
+        this.initDiamond();
     }
     initSlideNode() {
         let dxm: any = cc.find('slideItem/Rectangle', this.dxm).getComponent('slidewidght');
