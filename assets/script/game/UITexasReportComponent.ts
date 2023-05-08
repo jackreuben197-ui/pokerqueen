@@ -32,6 +32,7 @@ export class ReportPlayer {
     public bringIn;//带入
     public score;//输赢
     public outChip;//带出
+    public isOnline;//是否在线
 }
 
 @ccclass
@@ -118,6 +119,11 @@ export default class UITexasReportComponent extends UIBase {
             let icon = tItem.getChildByName('icon')
             WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
             tItem['user_id'] = RoomersData.observersList[index].userRid
+            if (!RoomersData.observersList[index].isOnline && GameCache.Instance.origin_type == 4) {
+                tItem.opacity = 50
+            } else {
+                tItem.opacity = 255
+            }
             this.bindClick(tItem, () => {
                 UIComponent.open(UIDefine.UITexasReportPlayerInfo, [tItem['user_id'], false, null]);
 
@@ -133,7 +139,8 @@ export default class UITexasReportComponent extends UIBase {
             tSignPlayer.bringIn = RoomersData.playersList[i].bringInTotal;
             tSignPlayer.score = RoomersData.playersList[i].win;
             tSignPlayer.outChip = RoomersData.playersList[i].bringOutTotal;
-            if (RoomersData.playersList[i].Status == Def.CanPlayStatus.NORMAL || RoomersData.playersList[i].Status == Def.CanPlayStatus.AGREE_POST) {
+            tSignPlayer.isOnline = RoomersData.playersList[i].isOnline;
+            if (RoomersData.playersList[i].status == Def.CanPlayStatus.NORMAL || RoomersData.playersList[i].Status == Def.CanPlayStatus.AGREE_POST) {
                 this.tInfo_0.push(tSignPlayer);
             }
             else {
@@ -212,18 +219,13 @@ export default class UITexasReportComponent extends UIBase {
     setInfos(objTemp, pDto, onLine) {
         let color = cc.color().fromHEX('#7187FF')
         let opactiy = 255
-
-
-
-
-        // if (!onLine) {
-        //     color = cc.color().fromHEX('#FFFFFF')
-        //     opactiy = 255 * 0.4
-        //     objTemp.getChildByName('Text_Count').color = color
-        //     objTemp.getChildByName('Text_Count').opactiy = opactiy
-        // }
-        // else 
-        {
+        if (!pDto.isOnline && GameCache.Instance.origin_type == 4) {
+            color = cc.color().fromHEX('#FFFFFF')
+            opactiy = 255 * 0.2
+            objTemp.getChildByName('Text_Count').color = color
+            objTemp.getChildByName('Text_Count').opactiy = opactiy
+        }
+        else {
             if (pDto.userId == GameCache.Instance.nUserId) {
                 color = cc.color().fromHEX('#7187FF')
 
