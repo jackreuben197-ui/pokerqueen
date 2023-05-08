@@ -113,6 +113,7 @@ export default class UIWallet extends BaseFormPlus {
         this.apply_item_pool = new SimpleNodePool(this.$apply_item);
 
         this.initEX();
+
     }
 
     //顶部标题点击
@@ -163,6 +164,13 @@ export default class UIWallet extends BaseFormPlus {
                     club_id: ClubCache.club_id,
                     club_name: ClubCache.club_name,
                     tribe_name: ClubCache.tribe_name,
+                });
+                break;
+            case 2://管理
+                UIComponent.open(UIDefine.UIFunManage, {
+                    club_id: ClubCache.club_id,
+                    random_id: ClubCache.random_id,
+                    club_members: ClubCache.club_members,
                 });
                 break;
         }
@@ -220,6 +228,11 @@ export default class UIWallet extends BaseFormPlus {
                 this.$TopTabs.children[1].active = true;
                 this.$TopTabs.children[2].active = false;
                 this.$TopTabs.getComponent(cc.Layout).spacingX = 220;
+
+                
+                this.$OpTabs.children[2].active = false;
+                this.$OpTabs.getComponent(cc.Layout).updateLayout();
+
                 break;
             case 2:
                 this.ComFormTitle$title.setTitle("UIClub_FundDetail");
@@ -228,8 +241,15 @@ export default class UIWallet extends BaseFormPlus {
                 this.$TopTabs.children[2].active = true;
                 //this.root_layout.spacingX = 220;
                 this.$TopTabs.getComponent(cc.Layout).spacingX = 0;
+
+
+               
+                this.$OpTabs.children[2].active = true;
+                this.$OpTabs.getComponent(cc.Layout).updateLayout();
+
                 break;
         }
+
 
         this.resetData();
 
@@ -390,7 +410,6 @@ export default class UIWallet extends BaseFormPlus {
                     break;
                 case 4:
                     status_des = WalletModel.Instance.Record_Exchange_Status[status];
-
                     break;
             }
             this.setChildLabel(item, "lbl_name", StringHelper.LengthNick(order_no, 8));

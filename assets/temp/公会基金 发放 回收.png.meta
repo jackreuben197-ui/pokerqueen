@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "fc2960ed-8e94-4a95-a402-3d1bc745aee2",
+  "uuid": "1cb9581d-1aaa-4745-b8dd-99eb5d43ea21",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -8,34 +8,25 @@
   "premultiplyAlpha": false,
   "genMipmaps": false,
   "packable": true,
-  "width": 1242,
+  "width": 1243,
   "height": 2689,
-  "platformSettings": {
-    "default": {
-      "formats": [
-        {
-          "name": "webp",
-          "quality": 80
-        }
-      ]
-    }
-  },
+  "platformSettings": {},
   "subMetas": {
-    "创始人 管理员-公会基金-账户首页 1屏": {
+    "公会基金 发放 回收": {
       "ver": "1.0.6",
-      "uuid": "d7e90bbe-0db2-49b4-958b-8e43df45d193",
+      "uuid": "81da9dd0-73da-452f-9017-36809d0c72e9",
       "importer": "sprite-frame",
-      "rawTextureUuid": "fc2960ed-8e94-4a95-a402-3d1bc745aee2",
+      "rawTextureUuid": "1cb9581d-1aaa-4745-b8dd-99eb5d43ea21",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
-      "offsetX": 0,
+      "offsetX": -0.5,
       "offsetY": 0.5,
       "trimX": 0,
       "trimY": 0,
       "width": 1242,
       "height": 2688,
-      "rawWidth": 1242,
+      "rawWidth": 1243,
       "rawHeight": 2689,
       "borderTop": 0,
       "borderBottom": 0,

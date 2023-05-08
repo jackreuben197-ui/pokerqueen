@@ -21,6 +21,9 @@ export default class BaseForm extends UIBase {
     //顶部block节点
     top_block: cc.Node = null;
     ////////////////////////////////////
+
+    //返回触发上个面板reback();
+    activeBack: boolean = true;
     /**
      * 声明内容
      */
@@ -116,7 +119,7 @@ export default class BaseForm extends UIBase {
     fadeOutComplete(resolve?) {
         resolve?.(0);
         this.move_node.x = this.move_node.width;
-        this.fromUI?.getComponent(UIBase).reback();
+        this.activeBack && this.fromUI?.getComponent(UIBase).reback();
     }
     /**
      * 显示隐藏来源界面

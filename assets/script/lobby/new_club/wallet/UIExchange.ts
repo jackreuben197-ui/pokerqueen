@@ -318,7 +318,7 @@ export default class UIExchange extends BaseFormPlus {
             }
         ).then(
             (res: any) => {
-                UIComponent.Instance.Toast(i18nMgr.Get(GC.wallet.Change_Success));
+                UIComponent.Instance.Toast(i18nMgr.Get("UIData_ApplyJoinTips"));
                 //判断钱包类型
 
                 switch (GC.wallet.wallet_type) {
