@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-11 10:20:16
+ * @LastEditTime: 2023-05-08 21:14:13
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -77,7 +77,7 @@ export default class UIClubHome extends BaseForm {
         this.initTabBnts()
         this.initTop();
         await UIClubModel.mInstance.APIOrgClubUserInfo({
-            "user_id": Web_User_Info.Response.data.user.user_id,
+            "user_id": Web_User_Info.Response.data.user.p_u_id,
             "club_id": ClubCache.club_id
         })
         let data = APIOrgClubUserInfo.Response.data
@@ -243,7 +243,7 @@ export default class UIClubHome extends BaseForm {
                 break;
             case 3:
                 if (ClubCache.user_level == 4) {
-                    UIComponent.open(UIDefine.UIClubVipOffline, { user_id: Web_User_Info.Response.data.user.user_id, from: 1 });
+                    UIComponent.open(UIDefine.UIClubVipOffline, { user_id: Web_User_Info.Response.data.user.p_u_id, from: 1 });
                 } else {
                     UIComponent.open(UIDefine.UIClubMerberManager)
                 }

@@ -704,6 +704,7 @@ export class Web_User_Info extends WebCommon {
         forbid_bring_in?: number,        //带入冻结，1 开启，2 关闭
         user_id?: number,
         club_id?: number,
+        p_u_id?: number,
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -831,9 +832,9 @@ export class Web_Config_Global_Config extends WebCommon {
         android_pay_switch?: number,//android支付功能开关 1 开 2 关
         apple_mtt_switch?: number,//iosMTT功能开关 1 开 2 关
         support_email?: string,
-        scoreboard_club_price?:string,
-        scoreboard_friend_price?:string,
-        user_modify_name_price?:string,
+        scoreboard_club_price?: string,
+        scoreboard_friend_price?: string,
+        user_modify_name_price?: string,
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;

@@ -3,7 +3,7 @@
  * @Date: 2022-11-12 11:38:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-20 14:34:45
+ * @LastEditTime: 2023-05-08 21:14:34
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messPfItem.ts
  */
 
@@ -50,7 +50,7 @@ export default class messPfItem extends cc.Component {
     initData(data) {
         this._data = data
         // this.dm.string = this._data.time
-        let id = Web_User_Info.Response.data.user.user_id
+        let id = Web_User_Info.Response.data.user.p_u_id
         this.ower.active = this._data.sender_id == id
         this.other.active = !this.ower.active
         this.iconMask.x = this._data.sender_id == id ? 447 : -447;

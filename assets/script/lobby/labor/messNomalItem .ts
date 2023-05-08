@@ -3,7 +3,7 @@
  * @Date: 2022-11-12 11:36:57
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-16 19:18:28
+ * @LastEditTime: 2023-05-08 21:14:25
  * @FilePath: /pokerqueen/assets/script/lobby/labor/messNomalItem .ts
  */
 
@@ -34,7 +34,7 @@ export default class messNomalItem extends cc.Component {
     initData(data) {
 
         this._data = data
-        let id = Web_User_Info.Response.data.user.user_id
+        let id = Web_User_Info.Response.data.user.p_u_id
         this.ower.active = this._data.sender_id == id
         this.other.active = !this.ower.active
         this.iconMask.x = this._data.sender_id == id ? 447 : -447;

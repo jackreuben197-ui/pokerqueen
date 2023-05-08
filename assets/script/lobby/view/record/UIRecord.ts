@@ -339,7 +339,7 @@ export default class UIRecord extends BaseForm {
                             {
                                 "content": JSON.stringify(info),
                                 "message_type": 3,
-                                "standings_user_id": Web_User_Info.Response.data.user.user_id,
+                                "standings_user_id": Web_User_Info.Response.data.user.p_u_id,
                                 "game_round_id": 0,
                             }
                         )
