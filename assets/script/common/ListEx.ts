@@ -22,6 +22,12 @@ export default class ListEx {
         if (this.param?.nullNode) this.param.nullNode.active = false;
     }
     refresh(data: any[], total: number) {
+
+        if (data == null) {
+            this.param?.nullNode && (this.param.nullNode.active = true);
+            return;
+        }
+
         this.req_ing = false;
         this.data = this.data.concat(data);
         this.offset = this.data.length;

@@ -1104,6 +1104,22 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/career/UIInsurance",
         Title: "UIInsurancePool"
+    },
+    //基金管理(发放回收)
+    UIFunManage: {
+        UIType: UIType.Form,
+        Name: "UIFunManage",
+        Bundle: null,
+        Path: "main/new_club/wallet/UIFunManage",
+        Title: "账户管理",
+    },
+
+    //基金发放和回收
+    UIFunRecycleGive: {
+        UIType: UIType.Form,
+        Name: "UIFunRecycleGive",
+        Bundle: null,
+        Path: "main/new_club/wallet/UIFunRecycleGive",
     }
 
 

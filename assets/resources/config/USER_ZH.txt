@@ -1,4 +1,4 @@
-UserLanguage=简体中文^English^繁體中文^Português^Español^Русский^German^Hindi^Tiếng Việt
+UserLanguage=简体中文
 errorDefault=网络错误，请稍后重试
 error0=操作成功
 error995=非法请求
@@ -484,7 +484,7 @@ UIMine_WalletFlow_BoptsRJx=充豆订单
 UIMine_WalletFlow_c2DKDYMA=充豆数量
 UIMine_WalletFlow_sCnJuwSl=状态
 UIMine_WalletFlow_Zxkp4H2K=充豆时间
-UIOwner_GrIjPhof=房主功能
+UIOwner_GrIjPhof=管理员功能
 UIOwner_gLSdJX0D=暂停游戏
 UIOwner_3hvt5EXj=解散游戏
 UIOwner_GBUKP7d2=分享房间
@@ -587,10 +587,10 @@ adaptation10023=最短上桌时间
 adaptation10024=知道了
 adaptation10025=余额不足
 adaptation10026=去充豆
-adaptation10027=房主已开启观众语音
-adaptation10028=房主已关闭观众语音
+adaptation10027=管理员已开启观众语音
+adaptation10028=管理员已关闭观众语音
 adaptation10029=已选择过庄模式
-adaptation10030=房主已经解散房间
+adaptation10030=管理员已经解散房间
 adaptation10031=座位已被别的玩家坐下
 adaptation10032=游戏即将结束
 adaptation10033=信用额度不足
@@ -601,8 +601,8 @@ adaptation10037=强制踢出玩家成功
 adaptation10038=你将在这手牌结束后提前离桌
 adaptation10039=提前离桌成功
 adaptation10040=你已被冻结
-adaptation10041=您被房主强制站起
-adaptation10042=您被房主强制踢出
+adaptation10041=您被管理员强制站起
+adaptation10042=您被管理员强制踢出
 adaptation10043=过庄
 adaptation10044=跟注
 adaptation10045=加注
@@ -779,7 +779,7 @@ adaptation10215=你输入的ID或昵称##并无搜索到
 adaptation10216=并无搜索到
 adaptation10217=战绩详情
 adaptation10218=欢乐锦标赛
-adaptation10219=房主:##
+adaptation10219=管理员:##
 adaptation10220=小六子
 adaptation10221=玩玩俱乐部##
 adaptation10222=查看牌谱
@@ -1467,13 +1467,13 @@ adaptation20005=底池
 adaptation20006=盲注
 adaptation20007=前注
 adaptation20008=限制
-adaptation20009=房主设置玩家的最短打牌时间为<color=#ff0000>##小时</color>,玩家在此期间内不能离桌,否则将实行留盲代打得托管模式.
+adaptation20009=管理员设置玩家的最短打牌时间为<color=#ff0000>##小时</color>,玩家在此期间内不能离桌,否则将实行留盲代打得托管模式.
 adaptation20010=联盟币余额不足，请先充值
-adaptation20011=房主已开启Muck
-adaptation20012=房主已关闭Muck
-adaptation20013=房主已开启强制Straddle
-adaptation20014=房主已关闭强制Straddle
-adaptation20015=房主进行延时##分钟
+adaptation20011=管理员已开启Muck
+adaptation20012=管理员已关闭Muck
+adaptation20013=管理员已开启强制Straddle
+adaptation20014=管理员已关闭强制Straddle
+adaptation20015=管理员进行延时##分钟
 adaptation20016=您在 ## 牌局中处于留座状态，无法加入本局游戏
 adaptation20017=OUTS>16 或 OUTS=0，不能购买保险
 adaptation20018=系统自动背保险，购买##UC
@@ -1481,7 +1481,7 @@ adaptation20019=您本次投保额最大为自身投入底池积分的0.45，已
 adaptation20020=二次投保额最高为1/2底池，已自动购买最高值##
 adaptation20021=当前局若不是大盲位，你将在扣至大盲数额的UC后，加入牌局
 adaptation20022=在 ## 房间被托管
-adaptation20023=房主设置带入倍数为##-##倍
+adaptation20023=管理员设置带入倍数为##-##倍
 adaptation20024=公平起见，轮到你是大盲位时才能加入牌局
 adaptation20025=查看翻牌圈的牌
 adaptation20026=查看转牌圈的牌
@@ -1566,7 +1566,7 @@ UITexas_needBean=所需UC:
 UITexas_leftBean=账户UC:
 UITexas_InsuranceMode=保险模式
 UITexas_standUp=站起围观
-UITexas_OwerFund=房主功能
+UITexas_OwerFund=管理员功能
 UITexas_PreLeave=提前离桌
 UITexas_AddChipsMenu=补充筹码
 UITexas_BringOutChipsMenu=带出筹码
@@ -1598,7 +1598,7 @@ UIJackPotInfo_tonghuashun=同花顺
 UIJackPotInfo_huangjia=皇家同花顺
 UIJackPotInfo_shitiao=四条
 UIJackPotInfo_rewardRatio=获奖比例
-UIOwner_title=房主功能
+UIOwner_title=管理员功能
 UIOwner_pause=暂停游戏
 UIOwner_dismiss=解散游戏
 UIOwner_share=分享房间
@@ -1972,7 +1972,7 @@ UITexasRule_detail1=需要等到自己是大盲位时，才能加入牌局
 UITexasRule_title112=补盲
 UITexasRule_detail2=下一手时，玩家若不是大小盲位，将在扣除大盲数额的UC后，立即加入牌局回合。小盲位玩家将在扣至大盲数额的UC后，立即加入牌局回合。大盲位玩家将直接加入牌局回合。
 UITexasRule_title113=最短上桌时间
-UITexasRule_detail3=当房主开启最短打牌时间，玩家在牌局内打牌时间必须满足该最短时间，否则系统将实行留盲代打的托管模式。
+UITexasRule_detail3=当管理员开启最短打牌时间，玩家在牌局内打牌时间必须满足该最短时间，否则系统将实行留盲代打的托管模式。
 UITexasRule_detail4=1.当全部玩家All in后激活保险
 UITexasRule_detail5=2.由当前牌型最大玩家进行购买,若出现多个底池则由最大底池中领先的玩家购买，且只能购买最大底池
 UITexasRule_detail6=3.当保险涉及的底池中超过3个玩家的时候,保险不激活。（2人或者3人时可以买保险）。
@@ -2845,7 +2845,7 @@ ServerErrorCode_90010=未经身份验证
 ServerErrorCode_90011=您的地区或国家不能访问
 ServerErrorCode_10000=没有报名
 ServerErrorCode_10001=未开始
-ServerErrorCode_10002=还未准备完毕 没有ROOM
+ServerErrorCode_10002=还未准备完毕 没有table 
 ServerErrorCode_10003=已淘汰
 ServerErrorCode_10004=比赛已经结束
 ServerErrorCode_10005=购买截止了
@@ -3640,7 +3640,7 @@ UIGuild_MemberDetails_Frozen=确定冻结{0}?
 UIGuild_MemberDetails_VipOffLine=下线成员
 UIGuild_MemberDetails_OffLineEdit=编辑下线
 UIGuild_Level=当前俱乐部等级
-UIGuild_LevelUp=确定给花费{0}钻石购买Level {1}（{2}天）?
+UIGuild_LevelUp=确定花费{0}钻石购买Level {1}（{2}天）?
 UIGuild_Beside=外
 UIGuild_EditorTemplate=编辑
 UIGuild_TipsTitle=提示
@@ -3669,7 +3669,7 @@ UIGuild_MemberOffLineListSearch=请输入成员名称或ID
 UIGuild_PrivateGame=私人游戏
 UIGuild_PassworldLimit=4-8位字符密码
 UIFriendsTable_JoinRoomNumberWrong=您输入的房间号{0}错误
-UIGuild_PassworldLimit=等待房主审核
+UIGuild_PassworldLimit=等待管理员审核
 UIGuild_JoinUnionTips={0}确定申请加入{1}
 UIGuildFund_RechargeText=充值
 UIGuildFund_WithdrawalText=提现
@@ -3697,7 +3697,7 @@ UIMine_XHZS=消耗:
 UIMine_ZSYE=钻石余额：
 UIMine_ChangeNameTipsZS=*首次更改昵称免费，之后每次消耗{0}钻石
 UIGuild_ReceiveGame=接收牌局
-UITexas_FriendtableapplyBringinTips001=等待房主审核
+UITexas_FriendtableapplyBringinTips001=等待管理员审核
 UITexas_FriendtableapplyBringinTips002=申请被拒绝
 UIFriendsTable_CreateRoom=创建房间
 ServerErrorCode_20044=俱乐部共享牌桌，必须是同联盟才能共享
@@ -3759,7 +3759,7 @@ UIRoom_FDIncorrectPeople=服务费 本手参与人数设置重复
 UIRoom_FDIncorrectNo=服务费 本手参与人数不满足2-{0}人
 OpCodeString_EXCHUNLOCK=转换锁定
 UIVIDEOVIEW_TIPS01=强制开启视频
-UITexas_FriendtableapplyBringinTips003=房主同意审核
+UITexas_FriendtableapplyBringinTips003=管理员同意审核
 UIAUDIOVIEWTIPS001=摄像头已关闭
 UIAUDIOVIEWTIPS002=麦克风已关闭
 UIAUDIOVIEWTIPS003=扬声器已关闭
@@ -3961,6 +3961,108 @@ UIClub_xiaohao1=创建房间消耗：
 UIClub_xiaohao2=实时语音消耗（{0}人桌）：
 UIClub_xiaohao3=实时视频消耗（{0}人桌）：
 UIClub_xiaohao4=人脸验证消耗（{0}人桌）：
+UISend_diamondsNo=钻石不足
+UISend_DoneFail=赠送失败
+MsgInfo_3022={0}赠送您{1}钻石
+UIGuild_LevelUpTips1=确定花费{0}钻石购买Level {1}（{2}天）?购买成功后将覆盖你当前Level{3}
+ServerErrorCode_20042=公会成员人数已达上限，提升公会等级可以增加成员上限
+UIGuild_LevelUpGoTo=去升级
+UITexasRoomManagerOp0=解散牌桌
+UITexasRoomManagerOp1=站起玩家
+UITexasRoomManagerOpTips0=使玩家离开桌子
+UITexasRoomManagerOpTips1=使玩家站起观战
+
+UITexasRoomManagerOpTips2=确定解散牌局吗？
+UITexasRoomManagerOpTips3=本手结束后将解散牌局
+UITexasRoomManagerOpTips4=牌局已解散
+UITexasRoomManagerOpTips5=您已被管理员请出桌子
+UITexasRoomManagerOpTips6=您已被管理员请出房间
+UIMessageHandlertostApring01=带入申请-朋友桌
+UIMessageHandlertostApring02=带入申请-俱乐部
+UIApplyRecordsBringin01=申请带入
+UIApplyRecordsBringin02=申请返回
+UITexasJFP=带入记分牌
+UITexasJLF=记录费
+UITexasTotalResult=总战绩(NLH+PLO+6+)
+UITexasPlayerInfo1=参与牌局的总局数
+UITexasPlayerInfo2=Voluntary Put Money In Pot,主动往底池投注的频率
+UITexasPlayerInfo3=Pre-flop Raise,翻牌前加注的频率
+UITexasPlayerInfo4=参与牌局的总手数
+UITexasPlayerInfo5=主动往底池投注并获胜的频率
+UITexasRoomManagerOpTips7=确定将{0}从当前牌桌站起吗？
+UITexasRoomManagerOpTips8=确定将{0}踢出当前牌桌吗？
+UITexasRoomManagerOpTips9=您已被管理员请出牌桌，本手结束后将会站起
+UITexasRoomManagerOpTips10=您已被管理员请出房间，本手结束后将会离开房间
+UILevelForever=永久
+UIClubBalance=公会余额
+UIOutChipsTip01=成功带出{0}记分牌！
+UIOutChipsTip02=记分牌不足！
+UIOutChipsTip03=超过最大可带出记分牌！
+UIOutChipsTip04=您所在房间即将结束，无法继续带出！
+UIOutChipsTip05=俱樂部、联盟处于关闭状态时不允许带出！
+UIOutChipsTip06=带出记分牌失败！
+UIOutChipsTip07=本房间不支持带出记分牌！
+UIOutChipsTip08=本手已带出过记分牌！
+MsgInfo_3021={0}赠送您{1}钻石
+MsgInfo_3023={0}给您发放{1}{2}
+MsgInfo_3024={0}给您回收{1}{2}
+OpCodeString_CLUBTOUSER=俱乐部发放
+OpCodeString_CLUBRECOVEUSER=俱乐部回收
+UIDialogShareCodetips01=牌局邀请码
+UIDialogShareCodetips02=1.保存图片至相册
+UIDialogShareCodetips03=2.打开相机扫码可见
+UIDialogShareCodetips04=已复制链接，快去粘贴吧
+UIFaceFullCreenTips01=请将脸移入屏幕
+UIFaceFullCreenTips02=倒计时结束您将被踢出牌桌
+UIFaceFullCreenTips03=您已被踢出房间
+UINextAnte=下一前注
+UICurrentAnte=当前前注
+UIApplying=申请中
+UIlobbyfilterTips01=盲注筛选
+UIlobbyfilterTips02=重置
+UIMTTChampionships=<b><size=80>MTT</size></b>\nChampionships
+UITexasPlayerInfoCloseAudio=关闭声音
+UITexasPlayerInfoCloseVideo=关闭视频
+GametypeFiltertip01=没有桌子，无法筛选
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -4948,7 +4948,7 @@
     "_spriteFrame": {
       "__uuid__": "3ebe7b52-89a6-4e1c-9463-921c481b36e8"
     },
-    "_type": 0,
+    "_type": 1,
     "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
@@ -20511,7 +20511,7 @@
         "__id__": 590
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 656
@@ -22029,7 +22029,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 56.2,
+      "width": 18.73,
       "height": 42.84
     },
     "_anchorPoint": {
@@ -22081,8 +22081,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "121",
-    "_N$string": "121",
+    "_string": "1",
+    "_N$string": "1",
     "_fontSize": 34,
     "_lineHeight": 34,
     "_enableWrapText": true,

@@ -58,7 +58,7 @@ export default class clubPageItem extends UIBase {
         let icon = cc.find('Group_3340/Round', this.messNode);
         // WebImageHelper.setImageSize(icon.getComponent(cc.Sprite), 398, 398)
 
-        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo,AssetContext.getAsset("default_club_head"))
+        WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.logo, AssetContext.getAsset("default_club_head"))
         // this.node['info'] = this._data;
         // this.node.on(cc.Node.EventType.TOUCH_END, this.onClickItem, this)
         let hg = cc.find('node/iconRole/icon', this.messNode);
@@ -77,7 +77,7 @@ export default class clubPageItem extends UIBase {
             let data: any = Web_Org_Club_Search_By_Id.Response.data
             ClubCache.setClubData(data);
             // , { SceneUI: SceneManager.Instance.currUI }
-            UIComponent.open(UIDefine.UIClubHome, null);
+            UIComponent.open(UIDefine.UIClubHome, null, { SceneUI: SceneManager.Instance.currUI });
         }
 
     }

@@ -78,7 +78,8 @@ CCProgram fs %{
     //o.a = step(.1,mask.r);
     //o.a = step(.1,mask.r);
 
-    o.a = smoothstep(0.0,1.,mask.a);
+    o.a = smoothstep(0.01,.99,mask.a);
+    
     
     // if(o.a > 0. && o.a < 1.) {
     //   o.r = o.a*1.;

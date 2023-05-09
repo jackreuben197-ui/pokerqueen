@@ -50,7 +50,8 @@ import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 import MTTGame from "../texas/MTTGame";
-import { InsuranceData, WrapTriggedInsuranceData } from "../new_ui/UIInsurance";
+import { InsuranceData, WrapTriggedInsuranceData } from "../new_ui/UIInsurancePanel";
+
 
 
 //const CanPlayStatus = Def.CanPlayStatus;
@@ -1248,7 +1249,7 @@ export default class TexasGameProtocol {
     /// </summary>
     /// <param name="source"></param>
     public HandleGetPublicCards(source: ServerMessagePublicCards.AsObject): void {
-        UIComponent.Instance.HideUI(PrefabUI.UIInsurance);
+        UIComponent.Instance.HideUI(PrefabUI.UIInsurancePanel);
         UIComponent.Instance.HideUI(PrefabUI.UIAgreeSecondPcsComponent);
         this.game.autoCall = false;
         this.game.autoAllin = false;
@@ -1773,9 +1774,7 @@ export default class TexasGameProtocol {
             data.triggedDatas = wrapTriggedInsuranceDatas;
             data.timeLeft = this.game.mainPlayer.timeLeft_insurance;
             data.delayTimes = this.game.mainPlayer.delayTimes;
-            UIComponent.Instance.ShowUI(PrefabUI.UIInsurance, data);
-            //UIComponent.open(UIDefine.UITexasInsuranceComponent, data);
-
+            UIComponent.Instance.ShowUI(PrefabUI.UIInsurancePanel, data);
         };
         mTweenCallback();
     }

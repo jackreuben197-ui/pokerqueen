@@ -7,7 +7,7 @@ import LoginSession from "../../session/LoginSession";
 import CCTools from "../../tools/CCTools";
 import UIComponent from "../../ui/UIComponent";
 import WebHelper from "./WebHelper";
-import { APIOrgFriendBringIn, API_CLUB_APPLY_LIST, Web_Club_Fund_Audit } from "./WebRequest";
+import { APIOrgFriendBringIn, API_CLUB_APPLY_LIST, Web_Club_Fund_Audit, Web_Guild_GiveRecycle } from "./WebRequest";
 
 /**
  * Http端
@@ -151,7 +151,7 @@ let HttpCodeHandler = (api: string, code: number, message: string = "") => {
         return;
     }
     //公会内部桌请求申请列表d
-    if (API_CLUB_APPLY_LIST.API == api) {
+    if (API_CLUB_APPLY_LIST.API == api || Web_Guild_GiveRecycle.API == api) {
         return;
     }
     switch (code) {

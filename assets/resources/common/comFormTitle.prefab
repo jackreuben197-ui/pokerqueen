@@ -546,7 +546,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 26.69,
+      "width": 900,
       "height": 73.08
     },
     "_anchorPoint": {
@@ -614,7 +614,7 @@
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
+    "_N$overflow": 3,
     "_N$cacheMode": 0,
     "_id": ""
   },

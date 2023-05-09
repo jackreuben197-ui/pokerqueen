@@ -21,6 +21,8 @@ import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
 import PlayViewItem from "../../view/PlayViewItem";
+import { i18nMgr } from "../../../i18n/i18nMgr";
+import { StringHelper } from "../../../helper/StringHelper";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -151,7 +153,9 @@ export default class UIClubCreateMatchItem extends UIBase {
             {
                 type: UINewDialogComponent.DialogType.CommitCancel,
                 title: "UIGuild_TipsTitle",
-                content: `确定删除模版 ${this._data.name} `,
+                content: StringHelper.Format(i18nMgr.Get("UIGuild_DeleteTemplateTips"),[this._data.name]),
+                //UIGuild_DeleteTemplateTips
+                //`确定删除模版 ${this._data.name} `,
                 contentCommit: "adaptation10012",
                 contentCancel: "adaptation10013",
                 actionCommit: async () => {

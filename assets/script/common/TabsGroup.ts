@@ -24,4 +24,8 @@ export default class TabsGroup {
         this._select = index;
         this.change?.call(this._this, this.items, index);
     }
+
+    public get select(): number {
+        return this._select;
+    }
 }

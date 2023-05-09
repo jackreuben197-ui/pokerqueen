@@ -6,6 +6,7 @@ export default class WalletModel {
     public static get Instance(): WalletModel {
         return (this as any).__Instance ??= new WalletModel();
     }
+    //缓存当前货币
     public Gold: string = "0";
     public USDT: string = "0";
 
@@ -15,11 +16,7 @@ export default class WalletModel {
     //     1: "充值数量", 2: "提现数量", 4: "兑换数量"
     // };
 
-    Record_Exchange_Status = ["", "兑换中", "兑换成功", "兑换失败"];
-
-    Change_Button_Text = ["全部", "兑 换"];
-
-    Change_Success = "兑换申请成功";
+    Record_Exchange_Status = ["", "adaptation10204", "adaptation10199", "Uibacklistgoods_erro"];
 
     //兑换率
     gold_to_usdt_rate: number = 0;
