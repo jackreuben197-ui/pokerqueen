@@ -3008,6 +3008,11 @@ export class Web_GetDiamondConfig extends WebCommon {
 }
 
 
+// 回收或发放
+export class Web_Guild_GiveRecycle extends WebCommon {
+    static API: string = "/api/order/club/member/grant";
+}
+
 
 
 

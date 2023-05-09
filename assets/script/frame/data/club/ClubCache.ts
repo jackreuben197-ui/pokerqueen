@@ -198,7 +198,7 @@ export class ClubCache {
         let spriteFrame = null;
         switch (user_level) {
             case 0:
-                spriteFrame = null;
+                spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);;
                 break;
             case 1:
                 spriteFrame = AssetContext.getAsset('hg03', AssetFold.texture_new_club);
@@ -207,7 +207,7 @@ export class ClubCache {
                 spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club);
                 break;
             case 4:
-                spriteFrame = AssetContext.getAsset('hg01', AssetFold.texture_new_club);
+                spriteFrame = AssetContext.getAsset('hg02', AssetFold.texture_new_club);
                 break;
         }
         return spriteFrame;

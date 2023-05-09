@@ -3,11 +3,13 @@ import List from "../../../common/List";
 import ListEx from "../../../common/ListEx";
 import TabsGroup from "../../../common/TabsGroup";
 import { Tabs_Status, TextColor } from "../../../config/GameConfig";
+import { UIDefine } from "../../../define/UIDefine";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { WWW } from "../../../net/https/WebRequest";
 import { APIOrgMemberList } from "../../../net/https/WebRequest";
+import UIComponent from "../../../ui/UIComponent";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import FunMemberItem from "./FunMemberItem";
 
@@ -23,6 +25,8 @@ export default class UIFunManage extends BaseFormPlus {
     $rank_tabs: cc.Node = null;
 
     $balance: cc.Node = null;
+
+    cc_Label$balance: cc.Label = null;
 
     cc_Label$members: cc.Label = null;
 
@@ -51,6 +55,13 @@ export default class UIFunManage extends BaseFormPlus {
     sort_index: number;
 
 
+    user_type_of_index = {
+        0: 0,
+        1: 3,
+        2: 4,
+        3: 1
+    };
+
     user_type: number = 0;//0-所有;1-普通;3-管理员;4-代理;
 
     sort_type: number = 5;//1-输赢数;2-手数;3-服务费;4-最后登陆时间;5-按金币
@@ -64,6 +75,7 @@ export default class UIFunManage extends BaseFormPlus {
     ////////////////////////////////////
 
     protected lateLoad(): void {
+        this.name = "UIFunManage";
         super.lateLoad();
         this.activeBack = false;
         this.top_tabs_group = new TabsGroup(this.$top_tabs.children, this.top_tabs_click, this);
@@ -84,15 +96,17 @@ export default class UIFunManage extends BaseFormPlus {
 
         super.onShow(param, fromUI, sceneUI);
         this.data = param;
+        this._onShow();
+    }
+
+    _onShow() {
+        this.cc_EditBox$searcher.string = "";
         this.top_tabs_group.reset();
         this.user_type_tabs_group.reset();
-        //this.refreshSortBox(0);
-        this.cc_Label$members.string = `${param?.club_members}`;
-
+        this.cc_Label$members.string = `${this.data?.club_members}`;
         this.templateInfos = [];
         this.clearList();
         this.listEx.reset();
-
         this.refreshGiveRecycleBtn();
     }
 
@@ -101,6 +115,16 @@ export default class UIFunManage extends BaseFormPlus {
         //打开完成进行处理
         this.listEx.dropRequest();
     }
+
+    //刷新面板
+    refreshPanel(): void {
+        this.top_block.active = true;
+        this._onShow();
+        this.top_block.active = false;
+        this.listEx.dropRequest();
+    }
+
+
 
     private refreshGiveRecycleBtn() {
 
@@ -131,7 +155,7 @@ export default class UIFunManage extends BaseFormPlus {
                     club_random_id: this.data.random_id,
                     club_id: this.data.club_id,
                     search: this.cc_EditBox$searcher.string,
-                    user_type: this.user_type_tabs_group.select > 1 ? this.user_type_tabs_group.select + 1 : this.user_type_tabs_group.select,
+                    user_type: this.user_type_of_index[this.user_type_tabs_group.select],
                     sort_type: this.sort_type,
                     order_type: this.order_type,
                     gold_type: this.top_tabs_group.select + 1,
@@ -145,7 +169,6 @@ export default class UIFunManage extends BaseFormPlus {
                 if (offset == 0) {
                     this.clearList();
                 }
-
                 this.listEx.refresh(res.data.data, res.data.total);
 
             },
@@ -182,6 +205,8 @@ export default class UIFunManage extends BaseFormPlus {
                 break;
         }
 
+        this.cc_EditBox$searcher.string = "";
+
         if (this.top_block.active) {
 
         } else {
@@ -210,7 +235,7 @@ export default class UIFunManage extends BaseFormPlus {
     private refreshBalance(gold_type: number) {
         this.setChildVisible(this.$balance, "icon/uc", gold_type == 1);
         this.setChildVisible(this.$balance, "icon/gc", gold_type == 2);
-        this.setChildLabel(this.$balance, "coin", StringHelper.GetLongString(gold_type == 1 ? GC.wallet.Gold : GC.wallet.USDT));
+        this.cc_Label$balance.string = StringHelper.GetLongString(gold_type == 1 ? GC.wallet.Gold : GC.wallet.USDT);
     }
 
 
@@ -231,13 +256,23 @@ export default class UIFunManage extends BaseFormPlus {
         this.refreshGiveRecycleBtn();
     }
 
+
+    getTempList() {
+        let temp = [];
+        this.templateInfos.forEach(item => {
+            temp.push(this.listEx.data[item]);
+        })
+        return temp;
+    }
+
+
     //回收点击
     onClickRecycle() {
-
+        UIComponent.open(UIDefine.UIFunRecycleGive, { balance: +this.cc_Label$balance.string, op_type: 2, gold_type: this.top_tabs_group.select + 1, list: this.getTempList() });
     }
     //发放点击
     onClickGive() {
-
+        UIComponent.open(UIDefine.UIFunRecycleGive, { balance: +this.cc_Label$balance.string, op_type: 1, gold_type: this.top_tabs_group.select + 1, list: this.getTempList() });
     }
 
     //////////////////////////////////
@@ -270,7 +305,7 @@ export default class UIFunManage extends BaseFormPlus {
 
         let check = this.isCheckByIndex(index);
 
-        node.getComponent(FunMemberItem).onShow({ data: item_data, index: index, check: check, handler: this });
+        node.getComponent(FunMemberItem).onShow({ data: item_data, index: index, gold_type: this.top_tabs_group.select + 1, check: check, handler: this });
 
     }
 
