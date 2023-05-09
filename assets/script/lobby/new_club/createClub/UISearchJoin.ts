@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 17:34:03
+ * @LastEditTime: 2023-05-09 09:55:50
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UISearchJoin.ts
  */
 
@@ -31,8 +31,8 @@ export default class UISearchJoin extends BaseForm {
 
     @property(cc.Label)
     nickName: cc.Label = null;
-    @property(cc.Label)
-    id: cc.Label = null;
+    @property(cc.RichText)
+    id: cc.RichText = null;
     @property(cc.Label)
     memberNum = null;
     @property(cc.EditBox)
@@ -71,7 +71,7 @@ export default class UISearchJoin extends BaseForm {
         this.comFormTitle.initData(title, this);
         WebImageHelper.SetHeadImage(this.Round, this._data.logo)
         this.nickName.string = this._data.club_name || this._data.name;
-        this.id.string = 'ID:' + this._data.random_id;
+        this.id.string = `<color=#757CAB>ID:</color><color=#FEEC8E>${this._data.random_id}</color>`
         this.club.active = this.type == 0
         this.union.active = this.type == 1
         this.sousuo.interactable = false;
