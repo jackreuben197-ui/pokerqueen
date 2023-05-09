@@ -3,7 +3,7 @@
  * @Date: 2023-03-23 10:00:32
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-11 10:10:54
+ * @LastEditTime: 2023-05-09 13:46:59
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 /*
@@ -46,11 +46,11 @@ export default class UIFriendMatch extends UIBase {
 
     @property(cc.Node)
     lb_tip: cc.Node = null;
-
-
-
     @property(List)
     list: List = null;
+
+    @property(cc.Node)
+    red: cc.Node = null;
 
     @property(cc.Node)
     joinBtnBg: cc.Node = null;
@@ -95,7 +95,10 @@ export default class UIFriendMatch extends UIBase {
         this.reqDataAgain();
         this.initDiamond();
         this.initFriendData()
-
+        this.refreshRedTip()
+    }
+    refreshRedTip() {
+        this.red.active = true;
     }
     async initFriendData() {
         await UIClubModel.mInstance.web_api_friend_room_stats()
