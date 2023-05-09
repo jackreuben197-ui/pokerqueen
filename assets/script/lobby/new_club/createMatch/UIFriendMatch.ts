@@ -3,7 +3,7 @@
  * @Date: 2023-03-23 10:00:32
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-09 13:46:59
+ * @LastEditTime: 2023-05-09 17:26:06
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 /*
@@ -98,7 +98,7 @@ export default class UIFriendMatch extends UIBase {
         this.refreshRedTip()
     }
     refreshRedTip() {
-        this.red.active = true;
+        // this.red.active = true;
     }
     async initFriendData() {
         await UIClubModel.mInstance.web_api_friend_room_stats()
