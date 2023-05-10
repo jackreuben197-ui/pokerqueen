@@ -3,7 +3,7 @@
  * @Date: 2022-12-22 13:13:05
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-19 14:00:01
+ * @LastEditTime: 2023-05-10 10:41:55
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/UIClubMember.ts
  */
 // Learn TypeScript:
@@ -346,20 +346,20 @@ export default class UIClubMember extends BaseForm {
 
         let title = "";
         let content = "";
+        let id = `( ID:${this._info.info.user_info.random_id} )`
         if (index == 1) {
             // 冻结
-            title = "冻结";
+            title = i18nMgr.Get("OpCodeString_LOCK")
             //content = "确定冻结 " + this._info.info.user_info.nickname + "?";
-            content = StringHelper.Format(i18nMgr.Get("UIGuild_MemberDetails_Frozen"), [this._info.info.user_info.nickname])
+            content = StringHelper.Format(i18nMgr.Get("UIClub_DJTip6"), [this._info.info.user_info.nickname, id])
 
         } else if (index == 3) {
             // 解冻
-            title = "解冻";
-            content = "确定解冻 " + this._info.info.user_info.nickname + "?";
+            title = i18nMgr.Get("OpCodeString_UNLOCK")
+            content = StringHelper.Format(i18nMgr.Get("UIClub_DJTip7"), [this._info.info.user_info.nickname, id])
         } else if (index == 2) {
             // 删除
-            title = "删除";
-            //content = "确定删除 " + this._info.info.user_info.nickname + "?";
+            title = i18nMgr.Get("UIClub_DeleteSomeone")
             content = StringHelper.Format(i18nMgr.Get("UIGuild_MemberDetails_Delete"), [this._info.info.user_info.nickname])
         }
 

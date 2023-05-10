@@ -3,7 +3,7 @@
  * @Date: 2022-12-27 11:14:08
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-06 13:04:08
+ * @LastEditTime: 2023-05-10 11:41:40
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/upLevel/UIClubUpLevel.ts
  */
 
@@ -94,21 +94,28 @@ export default class UIClubUpLevel extends BaseForm {
     }
     upBtn(node) {
         let data = node.target.parent['levelData']
-        if (ClubCache.level >= data.club_level) {
-            UIComponent.Instance.Toast('公会等级大于当前选择的等级')
-            return
-        }
+
         if (ClubCache._diamonds_wallet.diamonds < data.level_count) {
             UIComponent.Instance.Toast('钻石余额不足')
             return
         }
-
+        if (data.level_count <= 1) {
+            return
+        }
         let UIGuild_LevelUp = i18nMgr.Get('UIGuild_LevelUp')
+
+        let tip = StringHelper.Format(UIGuild_LevelUp, [data.level_count, data.club_level, data.level_duration])
+        if (ClubCache.level == data.club_level) {
+            tip = StringHelper.Format(UIGuild_LevelUp, [data.level_count, data.club_level, data.level_duration])
+        } else if (ClubCache.level > data.club_level) {
+            tip = StringHelper.Format(i18nMgr.Get('UIGuild_LevelUpTips1'), [data.level_count, data.club_level, data.level_duration, ClubCache.level])
+        }
+
         UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
             {
                 type: UINewDialogComponent.DialogType.CommitCancel,
                 title: "提示",
-                content: StringHelper.Format(UIGuild_LevelUp, [data.level_count, data.club_level, data.level_duration]),
+                content: tip,
                 contentCommit: "adaptation10012",
                 contentCancel: "adaptation10013",
                 actionCommit: async () => {

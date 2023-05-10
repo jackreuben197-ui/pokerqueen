@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-06 11:55:02
+ * @LastEditTime: 2023-05-10 11:35:13
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -44,6 +44,10 @@ export default class UIClubCreateMatch extends BaseForm {
 
     @property(cc.Prefab)
     UISaveModel: cc.Prefab = null;
+
+    @property(cc.EditBox)
+    tableNameEd: cc.EditBox = null;
+
 
     @property(cc.EditBox)
     passNodeEd: cc.EditBox = null;
@@ -169,7 +173,7 @@ export default class UIClubCreateMatch extends BaseForm {
     bcTabNode: TabNode = null;
     ffrs: cc.Node = null;
     ffrsItem: cc.Node = null;
-    // etpSwitch: GGSwitch = null;
+    etpSwitch: GGSwitch = null;
     _isFromModel = false
     protected lateLoad(): void {
         super.lateLoad();
@@ -218,6 +222,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.bmSwitch = this.getChildNodeOrComponent("bmSwitch", GGSwitch);
         this.bxSwitch = this.getChildNodeOrComponent("bxSwitch", GGSwitch);
         this.yckpSwitch = this.getChildNodeOrComponent("yckpSwitch", GGSwitch);
+        this.etpSwitch = this.getChildNodeOrComponent("etpSwitch", GGSwitch);
         this.fzbTabNode = this.getChildNodeOrComponent("fzbTabNode", TabNode);
         this.sr_zw = this.getChildNodeOrComponent("sr_zw");
         this.friendNode = this.getChildNodeOrComponent("friendNode");
@@ -427,7 +432,7 @@ export default class UIClubCreateMatch extends BaseForm {
 
         this.passNodeEd.string = room_config.room_password;
         this.shareClubIdEd.string = room_config.share_clubs
-
+        this.tableNameEd.string = room_config.name
 
         // let small = room_config.sb / 2 
         // this.itemDataIndex.jfpbs = room_config.min_rate / 100 / small
@@ -454,6 +459,10 @@ export default class UIClubCreateMatch extends BaseForm {
             this.drsq.active = true
         } else {
             this.drsq.active = false
+        }
+        this.etp.active = false
+        if (ClubCache.CreateGameType == 1 || this._yxbzNum == 4 || ClubCache.CreateGameType == 3) {
+            this.etp.active = true
         }
         this.initSwitch();
         this.initTabNode();
@@ -513,6 +522,12 @@ export default class UIClubCreateMatch extends BaseForm {
             }, self: this
         };
 
+        this.etpSwitch.setIsOn(this._etpState)
+        this.etpSwitch.clickObj = {
+            click: () => {
+                this._etpState = !this._etpState
+            }, self: this
+        };
 
     }
     initTabNode() {
@@ -542,6 +557,8 @@ export default class UIClubCreateMatch extends BaseForm {
         gameChangeTypeTabConfig.defaultIndex = this._yxbzNum - 4 < 0 ? 0 : this._yxbzNum - 4;
         this.yxbzTabNode.initData(gameChangeTypeTabConfig, (customData) => {
             this._yxbzNum = Number(customData) + 4;
+            this.etp.active = this._yxbzNum == 4
+
         }, this)
 
         this.yxbz.active = ClubCache.CreateGameType == 2
@@ -649,17 +666,7 @@ export default class UIClubCreateMatch extends BaseForm {
         }
         this.setState(node);
     }
-
-    etpClick() {
-        this._etpState = !this._etpState
-        cc.find('btn_switch/open', this.etp).active = this._etpState;
-        cc.find('btn_switch/close', this.etp).active = !this._etpState;
-    }
-
     /**************** */
-
-
-
     resetDrjfp() {
         let sb = Number(this.dxm.getChildByName('labelNode').getChildByName('lblNum')['_dataNum'])
         let drjfp: any = cc.find('item/Rectangle', this.drjfp).getComponent('slidewidght1');
@@ -750,8 +757,8 @@ export default class UIClubCreateMatch extends BaseForm {
 
     saveModel(event, customData) {
         this._btnType = Number(customData)
-
-        this.fillName();
+        this.upLoadData();
+        // this.fillName();
     }
     fillName() {
         if (this.room_config) {
@@ -881,7 +888,10 @@ export default class UIClubCreateMatch extends BaseForm {
 
 
     async upLoadData(modelName = ' ') {
-        cc.log('modelName==', modelName);
+        if (this.tableNameEd.string == '') {
+            UIComponent.Instance.Toast(i18nMgr.Get('adaptation10112'))
+            return
+        }
         let room_config: any = {}
         room_config.game_play_type = ClubCache.CreateGameType;
         // nlh plo=2 6+  plo ---4,5,6
@@ -962,13 +972,13 @@ export default class UIClubCreateMatch extends BaseForm {
             room_config.sec_cap_list = arr
         }
         room_config.fee_permillage = Number(this.fwfbl.getChildByName('labelNode').getChildByName('lblNum')['_dataNum']) //服务费比例(0-100)
-        room_config.second_public_cards = this._etpState;
+        room_config.second_public_cards = this._etpState && this.etp.active;
         room_config.limit_bet_type = ClubCache.CreateGameType == 2 ? 1 : 0
         room_config.anti_cheat_type = this.deal_delayNum;
 
         room_config.deal_delay = 1
 
-        let params: any = { name: modelName, room_config: room_config }
+        let params: any = { name: this.tableNameEd.string, room_config: room_config }
 
         room_config.limit_bring_in = this._kzwjdrState ? 1 : 0
 
