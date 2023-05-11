@@ -3,7 +3,7 @@
  * @Date: 2023-03-29 15:32:01
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-29 16:57:10
+ * @LastEditTime: 2023-05-11 15:50:32
  * @FilePath: /pokerqueen/assets/script/login/UIEditMess.ts
  */
 // Learn TypeScript:
@@ -15,7 +15,7 @@
 
 import UIBase from "../ui/UIBase";
 import { UIClubModel } from "../lobby/labor/UIClubModel";
-import { APIOrgClubUploadIcon, Web_User_Modify_User_Info, WWW } from "../net/https/WebRequest";
+import { APIOrgClubUploadIcon, Web_Config_Global_Config, Web_User_Modify_User_Info, WWW } from "../net/https/WebRequest";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { StringHelper } from "../helper/StringHelper";
@@ -50,14 +50,16 @@ export default class UIEditMess extends UIBase {
         super.onShow(param, fromUI, sceneUI);
         this.iconData = null;
         await LobbySession.APIUserInfo();
-        this.tip1.string = StringHelper.Format(i18nMgr.Get('UIMine_UserInfoSettingNick_tips'), ['10 ']);
+
+        let priceData = JSON.parse(Web_Config_Global_Config.Response.data.user_modify_name_price);
+        this.tip1.string = StringHelper.Format(i18nMgr.Get('UIMine_ChangeNameTipsZS'), [priceData.raw_price]);
         WebImageHelper.SetHeadImage(this.icon, Web_User_Info.Response.data.user.avatar);
         this.editName.string = Web_User_Info.Response.data.user.nickname
         this.editBoxChange();
     }
 
     editBoxChange() {
-        this.noClick.active = this.editName.string == ''
+        this.noClick.active = this.editName.string == '' || this.editName.string.toLowerCase() == 'player'
         this.canClick.active = !this.noClick.active
         this.numTip.string = this.editName.string.length + '/10'
     }
@@ -75,7 +77,6 @@ export default class UIEditMess extends UIBase {
         if (this.iconData) {
             parms['avatar'] = this.iconData
         }
-        Web_User_Modify_User_Info
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_User_Modify_User_Info,

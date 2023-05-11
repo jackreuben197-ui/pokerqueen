@@ -1587,8 +1587,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "137f8iXTU1N2qfasH+YvCWJ",
-    "handler": "openMessageList",
+    "_componentId": "41a686CvMJHGJZBvHndErQr",
+    "handler": "onOptionClick",
     "customEventData": ""
   },
   {

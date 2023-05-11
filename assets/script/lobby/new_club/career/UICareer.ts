@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 11:32:22
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-10 14:13:10
+ * @LastEditTime: 2023-05-11 16:15:47
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/career/UICareer.ts
  */
 
@@ -12,6 +12,7 @@ import { careerConfig } from "../../../frame/data/rate/RateConfig";
 import PublicHelper from "../../../helper/PublicHelper";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
+import SceneManager from "../../../manager/SceneManager";
 import { api_stats_user_stats_all } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
@@ -138,6 +139,9 @@ export default class UICareer extends UIBase {
     }
     cardScoreClick() {
         UIComponent.open(UIDefine.UIRecordHands, { type: 1 })
+    }
+    onOptionClick() {
+        UIComponent.open(UIDefine.UIMyMessage, { from: 2 }, { SceneUI: SceneManager.Instance.currUI });
     }
 
     // update (dt) {}
