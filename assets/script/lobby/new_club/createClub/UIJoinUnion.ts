@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-11 17:49:07
+ * @LastEditTime: 2023-05-11 18:35:47
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
@@ -54,9 +54,12 @@ export default class UIJoinUnion extends BaseForm {
 
     @property(cc.Label)
     pjlbl: cc.Label = null;
-
     @property(cc.Label)
     datalbl: cc.Label = null;
+    @property(cc.Toggle)
+    toggle1: cc.Toggle = null;
+    @property(cc.Toggle)
+    toggle2: cc.Toggle = null;
 
     tempString = ''
     protected lateLoad(): void {
@@ -81,6 +84,8 @@ export default class UIJoinUnion extends BaseForm {
         this.pjlbl.string = this.type == 0 ? i18nMgr.Get('UIGuild_SearchBtn') : i18nMgr.Get('UIGuild_SearchUnionBtn')
         this.datalbl.string = i18nMgr.Get('UIGuild_RecordBtn')
         this.titleNodeClick(null, 1);
+        this.toggle1.isChecked = true
+        this.toggle2.isChecked = false
         this.setText(this.search_id, this.type == 0 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
         this.initList();
         this.tempString = ''

@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-19 15:54:34
+ * @LastEditTime: 2023-05-11 19:00:56
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatchItem.ts
  */
 
@@ -74,12 +74,12 @@ export default class UIClubShareMatchItem extends UIBase {
     }
 
     setGameType() {
-        this.Rectangle.color = cc.color().fromHEX('#57CDDD')
+        this.Rectangle.color = cc.color().fromHEX('#5096FF')
         if (this._data.poker_type == 0) {
             switch (this._data.game_type) {
                 case 0:
                     this.gameType.string = 'NLH'
-                    this.Rectangle.color = cc.color().fromHEX('#F1BD02')
+                    this.Rectangle.color = cc.color().fromHEX('#83B518')
                     break;
                 case 1:
                     this.gameType.string = 'PLO4'
@@ -96,7 +96,7 @@ export default class UIClubShareMatchItem extends UIBase {
             }
         } else {
             this.gameType.string = '6+'
-            this.Rectangle.color = cc.color().fromHEX('#DD5778')
+            this.Rectangle.color = cc.color().fromHEX('#DE5C5C')
         }
 
     }

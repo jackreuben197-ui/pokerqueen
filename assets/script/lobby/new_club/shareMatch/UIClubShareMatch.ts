@@ -3,7 +3,7 @@
  * @Date: 2023-01-03 11:28:55
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-29 20:17:11
+ * @LastEditTime: 2023-05-11 18:38:44
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatch.ts
  */
 // Learn TypeScript:
@@ -35,6 +35,18 @@ export default class UIClubShareMatch extends BaseForm {
     _total: number = 0
     noDataTip: cc.Node
     tabNode: TabNode = null;
+
+    @property(cc.Label)
+    pjlbl: cc.Label = null;
+    @property(cc.Label)
+    datalbl: cc.Label = null;
+    @property(cc.Toggle)
+    toggle1: cc.Toggle = null;
+    @property(cc.Toggle)
+    toggle2: cc.Toggle = null;
+
+
+
     private comFormTitle: ComFormTitle = null;
     @property(List)
     memberList: List = null;
@@ -50,14 +62,21 @@ export default class UIClubShareMatch extends BaseForm {
         let title = "UIGuild_ShareGameManager"
         this.comFormTitle.initData(title, this);
         this.memberList.scrollingCB = this.scrollingCB;
+
+        this.titleNodeClick(null, 0);
+        this.toggle1.isChecked = true
+        this.toggle2.isChecked = false
+
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.refreshShareMatch, this.reqDataAgain);
     }
 
-    titleNodeClick(customData) {
-        this._selectTitle = customData
+    titleNodeClick(event, customData) {
+        this._selectTitle = Number(customData)
+        this.pjlbl.node.opacity = Number(customData) == 0 ? 255 : 100
+        this.datalbl.node.opacity = Number(customData) == 1 ? 255 : 100
         this.reqDataAgain();
     }
     async reqDataAgain() {
