@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-23 20:01:25
+ * @LastEditTime: 2023-05-11 17:49:07
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
@@ -28,7 +28,7 @@ export default class UIJoinUnion extends BaseForm {
     @property(cc.Label)
     search_id: cc.Label = null;
     private comFormTitle: ComFormTitle = null;
-    tabNode: TabNode = null;
+    // tabNode: TabNode = null;
     list: cc.Node = null;
     searchNode: cc.Node = null;
     @property(cc.Label)
@@ -52,12 +52,17 @@ export default class UIJoinUnion extends BaseForm {
     @property(cc.Label)
     btnTip: cc.Label = null;
 
+    @property(cc.Label)
+    pjlbl: cc.Label = null;
+
+    @property(cc.Label)
+    datalbl: cc.Label = null;
 
     tempString = ''
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
-        this.tabNode = this.getChildNodeOrComponent('tabNode', TabNode);
+        // this.tabNode = this.getChildNodeOrComponent('tabNode', TabNode);
         this.searchNode = this.getChildNodeOrComponent('searchNode');
         this.list = this.getChildNodeOrComponent('list');
     }
@@ -72,8 +77,10 @@ export default class UIJoinUnion extends BaseForm {
         let title = this.type == 0 ? "club_3" : "UIClub_TribeJoin"
         this.setText(this.btn_lbl, this.type == 0 ? "UIGuild_SearchBtn" : "UIGuild_SearchUnionBtn")
         this.comFormTitle.initData(title, this);
-        this.tabNode.initData(this.type == 0 ? joinClubConfig : joinUnionConfig, this.titleNodeClick.bind(this), this)
-        this.titleNodeClick(0);
+        // this.tabNode.initData(this.type == 0 ? joinClubConfig : joinUnionConfig, this.titleNodeClick.bind(this), this)
+        this.pjlbl.string = this.type == 0 ? i18nMgr.Get('UIGuild_SearchBtn') : i18nMgr.Get('UIGuild_SearchUnionBtn')
+        this.datalbl.string = i18nMgr.Get('UIGuild_RecordBtn')
+        this.titleNodeClick(null, 1);
         this.setText(this.search_id, this.type == 0 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
         this.initList();
         this.tempString = ''
@@ -157,9 +164,11 @@ export default class UIJoinUnion extends BaseForm {
         join.on(cc.Node.EventType.TOUCH_END, cb, this)
     }
 
-    titleNodeClick(customData) {
-        this.searchNode.active = customData === 0;
-        this.list.active = customData === 1;
+    titleNodeClick(event, customData) {
+        this.searchNode.active = Number(customData) === 1;
+        this.list.active = Number(customData) === 2;
+        this.pjlbl.node.opacity = Number(customData) == 1 ? 255 : 100
+        this.datalbl.node.opacity = Number(customData) == 2 ? 255 : 100
     }
 
     keyNodeClick(event, customData) {
