@@ -996,12 +996,12 @@
     "_prefab": {
       "__id__": 28
     },
-    "_opacity": 255,
+    "_opacity": 100,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -1265,12 +1265,12 @@
     "_prefab": {
       "__id__": 36
     },
-    "_opacity": 255,
+    "_opacity": 100,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -1550,14 +1550,14 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 54,
-      "g": 60,
-      "b": 101,
+      "r": 251,
+      "g": 252,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1109,
+      "width": 1083,
       "height": 186
     },
     "_anchorPoint": {
@@ -1610,10 +1610,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0a7ea3ca-6180-40ca-8006-425fc651bd6b"
+      "__uuid__": "221e6722-5f0f-4431-960b-dfd70b634212"
     },
-    "_type": 1,
-    "_sizeMode": 0,
+    "_type": 0,
+    "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -1724,7 +1724,7 @@
     "_dstBlendFactor": 771,
     "_string": "创始人",
     "_N$string": "创始人",
-    "_fontSize": 53,
+    "_fontSize": 46,
     "_lineHeight": 53,
     "_enableWrapText": true,
     "_N$file": {
@@ -1882,12 +1882,12 @@
     "_prefab": {
       "__id__": 51
     },
-    "_opacity": 255,
+    "_opacity": 100,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -2284,14 +2284,14 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 54,
-      "g": 60,
-      "b": 101,
+      "r": 251,
+      "g": 252,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1109,
+      "width": 1083,
       "height": 186
     },
     "_anchorPoint": {
@@ -2344,10 +2344,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0a7ea3ca-6180-40ca-8006-425fc651bd6b"
+      "__uuid__": "221e6722-5f0f-4431-960b-dfd70b634212"
     },
-    "_type": 1,
-    "_sizeMode": 0,
+    "_type": 0,
+    "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -2458,7 +2458,7 @@
     "_dstBlendFactor": 771,
     "_string": "联盟",
     "_N$string": "联盟",
-    "_fontSize": 53,
+    "_fontSize": 46,
     "_lineHeight": 53,
     "_enableWrapText": true,
     "_N$file": {
@@ -2616,12 +2616,12 @@
     "_prefab": {
       "__id__": 72
     },
-    "_opacity": 255,
+    "_opacity": 100,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -3018,14 +3018,14 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 54,
-      "g": 60,
-      "b": 101,
+      "r": 251,
+      "g": 252,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1109,
+      "width": 1083,
       "height": 186
     },
     "_anchorPoint": {
@@ -3078,10 +3078,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0a7ea3ca-6180-40ca-8006-425fc651bd6b"
+      "__uuid__": "221e6722-5f0f-4431-960b-dfd70b634212"
     },
-    "_type": 1,
-    "_sizeMode": 0,
+    "_type": 0,
+    "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -3192,7 +3192,7 @@
     "_dstBlendFactor": 771,
     "_string": "公会联系方式",
     "_N$string": "公会联系方式",
-    "_fontSize": 53,
+    "_fontSize": 46,
     "_lineHeight": 53,
     "_enableWrapText": true,
     "_N$file": null,
@@ -3274,12 +3274,12 @@
     "_prefab": {
       "__id__": 92
     },
-    "_opacity": 255,
+    "_opacity": 100,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -3499,14 +3499,14 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 54,
-      "g": 60,
-      "b": 101,
+      "r": 251,
+      "g": 252,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1109,
+      "width": 1083,
       "height": 186
     },
     "_anchorPoint": {
@@ -3559,10 +3559,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0a7ea3ca-6180-40ca-8006-425fc651bd6b"
+      "__uuid__": "221e6722-5f0f-4431-960b-dfd70b634212"
     },
-    "_type": 1,
-    "_sizeMode": 0,
+    "_type": 0,
+    "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -3673,7 +3673,7 @@
     "_dstBlendFactor": 771,
     "_string": "创建时间",
     "_N$string": "创建时间",
-    "_fontSize": 53,
+    "_fontSize": 46,
     "_lineHeight": 53,
     "_enableWrapText": true,
     "_N$file": {
@@ -3760,12 +3760,12 @@
     "_prefab": {
       "__id__": 107
     },
-    "_opacity": 255,
+    "_opacity": 100,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -4022,7 +4022,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 963,
+      "width": 1083,
       "height": 201
     },
     "_anchorPoint": {
@@ -4090,7 +4090,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 977,
+      "width": 1083,
       "height": 186
     },
     "_anchorPoint": {
@@ -4150,9 +4150,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 124,
-      "b": 124,
+      "r": 222,
+      "g": 92,
+      "b": 92,
       "a": 255
     },
     "_contentSize": {
@@ -4267,9 +4267,9 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "2887fa45-fdf7-433e-ad1a-3cc304d19e66"
+      "__uuid__": "ff3a043c-b6c0-49ef-aa52-befa1f0221fa"
     },
-    "_type": 1,
+    "_type": 0,
     "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {

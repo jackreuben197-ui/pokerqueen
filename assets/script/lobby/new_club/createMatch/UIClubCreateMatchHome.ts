@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 10:33:15
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-19 14:44:52
+ * @LastEditTime: 2023-05-11 20:50:56
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -108,7 +108,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
     switchTabBtnState(index: number, isInit = false) {
         this._selectRoleType = index
         this.toggleNode.children.forEach((item, index) => {
-            item.getChildByName("title").color = this._selectRoleType == index ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#757CAB')
+            item.getChildByName("title").opacity = this._selectRoleType == index ? 255 : 100
             item.getChildByName("Rectangle").active = this._selectRoleType == index
         })
         if (!isInit) {

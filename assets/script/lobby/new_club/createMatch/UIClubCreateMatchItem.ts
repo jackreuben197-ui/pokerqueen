@@ -3,7 +3,7 @@
  * @Date: 2022-12-24 11:05:34
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-26 11:07:12
+ * @LastEditTime: 2023-05-11 20:53:48
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchItem.ts
  */
 // Learn TypeScript:
@@ -23,6 +23,7 @@ import { UIClubModel } from "../../labor/UIClubModel";
 import PlayViewItem from "../../view/PlayViewItem";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { StringHelper } from "../../../helper/StringHelper";
+import { stringify } from "querystring";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -74,13 +75,14 @@ export default class UIClubCreateMatchItem extends UIBase {
         this.ToggleClick()
         this.setState();
 
-        this.labelNode.getChildByName('lbl_1').getComponent(cc.Label).string = this._data.apply_club_name
-        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = 'ID:' + this._data.apply_club_random_id
+        // this.labelNode.getChildByName('lbl_1').getComponent(cc.Label).string = this._data.apply_club_name
+        // this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = 'ID:' + this._data.apply_club_random_id
 
         let sb = this._data.sb / 100;
         this.labelNode.getChildByName('lbl_1').getComponent(cc.Label).string = `${sb}/${sb * 2}（${this._data.ante}）`
         let lbl_time = this.labelNode.getChildByName('lbl_2')
-        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = this._data.name
+        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = StringHelper.LengthNick(this._data.name, 10)
+        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label)._forceUpdateRenderData()
 
         let playView = lbl_time.getComponent(PlayViewItem)
         playView.updateNormalItem(this._data.play_duration);
@@ -89,22 +91,21 @@ export default class UIClubCreateMatchItem extends UIBase {
         this.lbl_num.string = this._data.seat_count
         this.setGameType()
 
-        let lock = this.node.getChildByName('lock');
+        let lock = this.labelNode.getChildByName('lbl_4').getChildByName('lock');
         lock.active = this._data.private_room == 1
         let beSide = this.node.getChildByName('beSide')
         beSide.active = this._data.share_table == 2
-        this.labelNode.getChildByName('lbl_1').getComponent(cc.Label)._forceUpdateRenderData()
-        let bx = this.labelNode.getChildByName('lbl_1').getChildByName('bx');
+        let bx = this.node.getChildByName('bx');
         bx.active = this._data.insurance
 
     }
     setGameType() {
-        this.Rectangle.color = cc.color().fromHEX('#57CDDD')
+        this.gameType.node.color = cc.color().fromHEX('#5096FF')
         if (this._data.poker_type == 0) {
             switch (this._data.game_type) {
                 case 0:
                     this.gameType.string = 'NLH'
-                    this.Rectangle.color = cc.color().fromHEX('#F1BD02')
+                    this.gameType.node.color = cc.color().fromHEX('#83B518')
                     break;
                 case 1:
                     this.gameType.string = 'PLO4'
@@ -121,7 +122,7 @@ export default class UIClubCreateMatchItem extends UIBase {
             }
         } else {
             this.gameType.string = '6+'
-            this.Rectangle.color = cc.color().fromHEX('#DD5778')
+            this.gameType.node.color = cc.color().fromHEX('#DE5C5C')
         }
 
     }
@@ -153,7 +154,7 @@ export default class UIClubCreateMatchItem extends UIBase {
             {
                 type: UINewDialogComponent.DialogType.CommitCancel,
                 title: "UIGuild_TipsTitle",
-                content: StringHelper.Format(i18nMgr.Get("UIGuild_DeleteTemplateTips"),[this._data.name]),
+                content: StringHelper.Format(i18nMgr.Get("UIGuild_DeleteTemplateTips"), [this._data.name]),
                 //UIGuild_DeleteTemplateTips
                 //`确定删除模版 ${this._data.name} `,
                 contentCommit: "adaptation10012",
