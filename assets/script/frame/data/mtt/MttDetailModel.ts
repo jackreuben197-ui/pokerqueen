@@ -1,3 +1,4 @@
+import { TMttDetail } from "../../../config/TTypeConfig";
 import { TMttDetailData } from "../../../config/TTypeConfig";
 import GameUtil from "../../../game/util/GameUtil";
 
@@ -39,5 +40,7 @@ export default class MttDetailModel {
         return this._msg.mtt.upblind_interval;
     }
 
-
+    get mtt(): TMttDetail {
+        return this._msg.mtt;
+    }
 }

@@ -17,6 +17,10 @@ const { ccclass, property, menu } = cc._decorator;
 @ccclass
 @menu('脚本分组/mtt/realTime/MttRealTimeActionNode')
 export default class MttRealTimeActionNode extends UIBase {
+
+    private Gold_Type: cc.Label = null;
+    private DC: cc.Node = null;
+
     private time: cc.Label = null;
     private reward: cc.Label = null;
     private max: cc.Label = null;
@@ -34,6 +38,10 @@ export default class MttRealTimeActionNode extends UIBase {
         this.cur = this.getChildNodeOrComponent("cur", cc.Label);
         this.next = this.getChildNodeOrComponent("next", cc.Label);
         this.nextTime = this.getChildNodeOrComponent("nextTime", cc.Label);
+
+        this.Gold_Type = this.getChildNodeOrComponent("Gold_Type", cc.Label);
+        this.DC = this.getChildNodeOrComponent("DC");
+
     }
 
     protected regiterDispatchEvent(): void {
@@ -73,6 +81,27 @@ export default class MttRealTimeActionNode extends UIBase {
             this._mRoomLeaveTime = info.upblind_interval
             this.ShowLeaveTimer()
         }
+
+        //刷新货币类型显示
+        switch (info.mtt.gold_type) {
+            case 1://UC
+                this.Gold_Type.string = "UC";
+                this.DC.active = false;
+                break;
+            case 2://GC
+                this.Gold_Type.string = "GC";
+                this.DC.active = false;
+                break;
+            case 4://钻石
+                this.Gold_Type.string = "";
+                this.DC.active = true;
+                break;
+            default:
+                this.Gold_Type.string = "";
+                this.DC.active = false;
+                break;
+        }
+
         // 进入游戏时才能拿到
         // this.textMatchZmsysj.text = TimeHelper.ShowRemainingSemicolonPure(raiseBlindTime);
     }

@@ -56,18 +56,22 @@ export default class recordDetailItem extends UIBase {
             this.setText(this.wins, StringHelper.GetLongString(this._data.bring_out - this._data.bring_in))
             this.setTextColor(this.wins, this._data.bring_out - this._data.bring_in < 0 ? '#FF7C7C' : '#B0FFAE')
         } else {
-            let USDT = this.mtt.getChildByName('USDT')
-            let uc_big = USDT.getChildByName('uc_big')
-            uc_big.active = UICareerModel.mInstance._coinType == 1
-            let num = USDT.getChildByName('num').getComponent(cc.Label)
-            num.string = StringHelper.GetLongString(this._data.award)
 
-            let USDT1 = this.mtt.getChildByName('USDT1')
-            let uc_big1 = USDT1.getChildByName('uc_big')
-            uc_big1.active = UICareerModel.mInstance._coinType == 1
-            let num1 = USDT1.getChildByName('num').getComponent(cc.Label)
-            num1.string = StringHelper.GetLongString(this._data.hunter_award)
-            USDT1.active = this._data.hunter_award != 0
+
+            this.setChildVisible(this.mtt, "Gold1/uc", UICareerModel.mInstance._coinType == 1);
+            this.setChildVisible(this.mtt, "Gold1/gc", UICareerModel.mInstance._coinType == 2);
+            this.setChildVisible(this.mtt, "Gold1/dc", UICareerModel.mInstance._coinType == 4);
+            this.setChildLabel(this.mtt, "Gold1/num", UICareerModel.mInstance._coinType == 4 ? this._data.award : StringHelper.GetLongString(this._data.award));
+
+
+
+            this.setChildVisible(this.mtt, "Gold2", this._data.hunter_award != 0);
+            this.setChildVisible(this.mtt, "Gold2/uc", UICareerModel.mInstance._coinType == 1);
+            this.setChildVisible(this.mtt, "Gold2/gc", UICareerModel.mInstance._coinType == 2);
+            this.setChildVisible(this.mtt, "Gold2/dc", UICareerModel.mInstance._coinType == 4);
+            this.setChildLabel(this.mtt, "Gold2/num", UICareerModel.mInstance._coinType == 4 ? this._data.hunter_award : StringHelper.GetLongString(this._data.hunter_award));
+
+
         }
         WebImageHelper.SetHeadImage(this.icon, this._data.avatar);
         let num = this.sortNode.getChildByName('num' + (index + 1))

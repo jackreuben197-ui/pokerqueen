@@ -18,7 +18,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
-import MttPayforHome from "./MttPayforHome";
+//import MttPayforHome from "./MttPayforHome";
 import MttPayforList from "./MttPayforList";
 
 const { ccclass, property, menu } = cc._decorator;

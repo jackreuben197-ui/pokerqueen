@@ -10,13 +10,8 @@
 
 import List from "../../common/List";
 import { EventName } from "../../config/EventName";
-import { ClubCache } from "../../frame/data/club/ClubCache";
-import GC from "../../frame/GameControl";
-import { UIClubModel } from "../../lobby/labor/UIClubModel";
 import { APIMttUserWallet, Web_Mtt } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
-import UIBase from "../../ui/UIBase";
-import UIComponent from "../../ui/UIComponent";
 import MttPayforItem from "./MttPayforItem";
 
 const { ccclass, property, menu } = cc._decorator;

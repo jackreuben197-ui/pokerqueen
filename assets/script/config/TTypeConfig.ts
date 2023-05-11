@@ -599,6 +599,7 @@ export type TMttDetail = {
     pre_buyin_bonus: number,//赛前报名多得记分牌
     tablecloth_tag: string,//桌布id
     limit_tag: string,//相同比赛检测tag
+    gold_type: number,// 币种类型 0 未知 1 联盟币 2 USDT 4 鑽石
 }
 
 export type TMttDetailPlayerStatus = {

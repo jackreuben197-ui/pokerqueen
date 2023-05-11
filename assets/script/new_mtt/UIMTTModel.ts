@@ -4,7 +4,6 @@ import { ClubCache } from "../frame/data/club/ClubCache";
 import { GameCache } from "../game/GameCache";
 import { TexasGameState } from "../game/TexasGameState";
 import MTTGame from "../game/texas/MTTGame";
-import { MineRankData } from "../game/ui/UIMTTMineRankComponent";
 import GameUtil, { GameEnterType } from "../game/util/GameUtil";
 import { StringHelper } from "../helper/StringHelper";
 import { CPErrorCode } from "../i18n/CPErrorCode";
@@ -58,7 +57,7 @@ export enum MTTJoinAction // 参与mtt玩法动作
 }
 
 
-enum MTTJoinMode // 参与mtt玩法方式
+export enum MTTJoinMode // 参与mtt玩法方式
 {
     None,
     Apply,          // 报名
@@ -142,6 +141,8 @@ export class UIMTTModel {
             contentCancel: CPErrorCode.LanguageDescription(10013),
             buyRatio: this.MttInfo.mtt.buy_ratio,
             buyTimes: this.MttInfo.mtt.rebuy_times - this.MttInfo.mtt.total_rebuy_times,
+            gold_type : this.MttInfo.mtt.gold_type,
+
             actionCommit: (isticket, buyRatio, used_prop_id, prop_type, use_free) => {
                 let req =
                 {
@@ -199,7 +200,10 @@ export class UIMTTModel {
         }
         if (GameCache.Instance.CurGame) {
             UIComponent.open(UIDefine.MttPayforHome, { data: dialogData, type: 1 })
-            // UIComponent.Instance.ShowUI(PrefabUI.MttPayforHome, dialogData);
+
+            
+            UIComponent.open(UIDefine.MttPayforHome, { data: dialogData, type: 1 })
+
         } else {
             UIComponent.open(UIDefine.MttPayforHome, { data: dialogData, type: 1 })
         }
@@ -599,5 +603,18 @@ export class UIMTTModel {
         GameCache.Instance.TribeId = data.mtt.tribe_id;
         GameCache.Instance.TableClothTag = data.mtt.tablecloth_tag;//指定桌布
     }
+
+    //获取货币类型名
+    GetGoldTypeName(gold_type: number): string {
+        switch (gold_type) {
+            case 1:
+                return "UC";
+            case 2:
+                return "GC";
+            default:
+                return "";
+        }
+    }
+
 }
 (window as any).UIMTTModel = UIMTTModel;

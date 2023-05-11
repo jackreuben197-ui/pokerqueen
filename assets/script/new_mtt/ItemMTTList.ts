@@ -73,10 +73,11 @@ export default class ItemMTTList extends UIBasePlus {
         //设置比赛名称
         this.setChildLabel(this.node, "b1/info", LobbySession.getLanguageValueByKey(data.name));
         //设置比赛奖金
-        this.setChildLabel(this.node, "b6/layout/coin", data.prize_base_pool / 100);
+        this.setChildLabel(this.node, "b6/layout/coin", data.prize_base_pool / (data.gold_type == 4 ? 1 : 100));
         //比赛奖金图标
         this.setChildVisible(this.node, "b6/layout/icon/uc", data.gold_type == 1);
         this.setChildVisible(this.node, "b6/layout/icon/gc", data.gold_type == 2);
+        this.setChildVisible(this.node, "b6/layout/icon/dc", data.gold_type == 4);
         //设置玩家数量
         this.setChildLabel(this.node, "b5/layout/people", data.participants);
         //设置带入数量
@@ -145,10 +146,10 @@ export default class ItemMTTList extends UIBasePlus {
         //运行中剩余玩家/总玩家数量显示
         if ((data.alive > 1000 && (data.participants + data.total_rebuy_times) > 1000) || data.alive > 100) {
 
-            this.setChildLabel(this.node, "b2/status2/time", data.alive + "/" + "\n" + data.participants);
+            this.setChildLabel(this.node, "b2/status2/labels/time", data.alive + "/" + "\n" + data.participants);
         }
         else {
-            this.setChildLabel(this.node, "b2/status2/time", data.alive + "/" + data.participants);
+            this.setChildLabel(this.node, "b2/status2/labels/time", data.alive + "/" + data.participants);
         }
     }
 

@@ -254,6 +254,7 @@ export default class UIMTTMineRank extends UIBasePlus {
 
                 this.setChildVisible(this.$pool_reward, "uc", this.MttInfo.mtt.gold_type == 1);
                 this.setChildVisible(this.$pool_reward, "gc", this.MttInfo.mtt.gold_type == 2);
+                this.setChildVisible(this.$pool_reward, "dc", this.MttInfo.mtt.gold_type == 4);
                 this.setChildLabel(this.$pool_reward, "label_coin", StringHelper.GetSignedLongString(res.data.award_gold));
             }
             if (res.data.hunter_award > 0) {
@@ -262,6 +263,7 @@ export default class UIMTTMineRank extends UIBasePlus {
 
                 this.setChildVisible(this.$hunter_reward, "uc", this.MttInfo.mtt.gold_type == 1);
                 this.setChildVisible(this.$hunter_reward, "gc", this.MttInfo.mtt.gold_type == 2);
+                this.setChildVisible(this.$hunter_reward, "dc", this.MttInfo.mtt.gold_type == 4);
                 this.setChildLabel(this.$hunter_reward, "label_coin", StringHelper.GetSignedLongString(res.data.hunter_award));
 
 

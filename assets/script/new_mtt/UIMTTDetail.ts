@@ -173,12 +173,16 @@ export default class UIMTTDetail extends BaseFormPlus {
         this.cc_Label$mtt_bonus.string = `${data.more.prize_pool / 100}`;
         this.$buyin_coin.children[0].active = data.mtt.gold_type == 1;
         this.$buyin_coin.children[1].active = data.mtt.gold_type == 2;
+        this.$buyin_coin.children[2].active = data.mtt.gold_type == 4;
+
+
+        let div_value = data.mtt.gold_type == 4 ? 1 : 100;
 
         if (data.mtt.hunter_on > 0) {
-            this.cc_Label$mtt_fee.string = `${data.mtt.apply_fee_pool / 100}+${data.mtt.apply_fee_service / 100}+${data.mtt.apply_fee_hunter / 100}`;
+            this.cc_Label$mtt_fee.string = `${data.mtt.apply_fee_pool / div_value}+${data.mtt.apply_fee_service / div_value}+${data.mtt.apply_fee_hunter / div_value}`;
         }
         else {
-            this.cc_Label$mtt_fee.string = `${data.mtt.apply_fee_pool / 100}+${data.mtt.apply_fee_service / 100}`;
+            this.cc_Label$mtt_fee.string = `${data.mtt.apply_fee_pool / div_value}+${data.mtt.apply_fee_service / div_value}`;
         }
 
         //判断当前时间是否大于进入比赛时间

@@ -275,10 +275,10 @@ export default class UIMTTDetail_State extends UIBasePlus {
         //运行中剩余玩家/总玩家数量显示
         if ((data.alive > 1000 && (data.participants + data.total_rebuy_times) > 1000) || data.alive > 100) {
 
-            this.setChildLabel(this.node, "b2/status2/time", data.alive + "/" + "\n" + data.participants);
+            this.setChildLabel(this.$Status, "b2/status2/labels/time", data.alive + "/" + "\n" + data.participants);
         }
         else {
-            this.setChildLabel(this.node, "b2/status2/time", data.alive + "/" + data.participants);
+            this.setChildLabel(this.$Status, "b2/status2/labels/time", data.alive + "/" + data.participants);
         }
     }
 

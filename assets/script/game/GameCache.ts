@@ -340,6 +340,8 @@ export class GameCache {
     //存储bb开关的状态 room_id || match_id
     private bb_status_map = {};
 
+    public curSelectWalletType;//当前选择钱包类别，1 基金，2 玩家钱包
+
     public static get Instance(): GameCache {
         return (this as any).instance ??= new GameCache;
     }
