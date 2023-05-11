@@ -1581,6 +1581,8 @@ export default class TexasGameProtocol {
             case BroadcastCode.SeatFriendApplyRefreshMsgNum:
             case BroadcastCode.SeatClubApplyRefreshMsgNum:
                 this.game.UpdateMsgBtnSprite();
+                GC.notify.post(GGEvent.Apply_Refresh_MsgNum, data);
+                //{"code":2001,"data":"{\"room_id\":90619954,\"user_id\":6922,\"bring_in\":200,\"status\":1,\"origin_type\":4}"}
                 break;
 
             default:

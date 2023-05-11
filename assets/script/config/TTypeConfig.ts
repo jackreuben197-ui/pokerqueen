@@ -106,7 +106,7 @@ export type TRoomListItem = {
     settlement_type: number,//0局抽 1把抽
     tablecloth_tag: string, // 桌布
     club_id: number, // 公会ID
-    origin_type: number,    // 创建来源 1 平台，2 联盟，3 公会
+    origin_type: number,    // 创建来源 1 平台，2 联盟，3 公会 ,4 朋友桌
     invitation_code: string
     limit_bring_in: number,
     gold_type: number,

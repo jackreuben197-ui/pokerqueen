@@ -30,4 +30,7 @@ export default class GGEvent {
     //刷新未读消息
     static Refresh_Unread: string = "Refresh_Unread";
 
+    //刷新申请带入提示
+    static Apply_Refresh_MsgNum:string = "Apply_Refresh_MsgNum";
+
 }

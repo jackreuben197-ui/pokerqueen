@@ -838,6 +838,11 @@ export class GM {
         //}
     }
 
+    //解析msg结构
+    public showMSG(str: string) {
+        console.log(Buffer.from(str, 'base64').toString());
+    }
+
 
 }
 (window as any).GM = GM;
