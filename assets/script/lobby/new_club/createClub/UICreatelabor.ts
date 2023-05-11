@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:01:53
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 17:17:59
+ * @LastEditTime: 2023-05-11 17:07:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UICreatelabor.ts
  */
 
@@ -48,6 +48,10 @@ export default class UICreatelabor extends BaseForm {
     @property(cc.Label)
     btnTip: cc.Label = null;
 
+    @property(cc.Label)
+    tip: cc.Label = null;
+
+
     iconUrl = null;
     private comFormTitle: ComFormTitle = null;
     commit: cc.Button = null;
@@ -64,7 +68,9 @@ export default class UICreatelabor extends BaseForm {
         this.comFormTitle.initData('club_2', this);
         this.camera.node.active = true
         this.Round.node.active = false
+        this.tip.string = i18nMgr.Get('UIMine_XHZS') + 10
         this.clubNamechange()
+
     }
     async commitClick() {
         this.editName.string = this.editName.string.trim()

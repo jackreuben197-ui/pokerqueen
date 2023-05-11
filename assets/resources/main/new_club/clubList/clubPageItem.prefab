@@ -107,7 +107,7 @@
         "__id__": 42
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 61
@@ -404,7 +404,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.04,
+      "width": 24.2,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -462,7 +462,7 @@
     "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -544,7 +544,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 72.36,
+      "width": 83.57,
       "height": 34.02
     },
     "_anchorPoint": {
@@ -556,7 +556,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -105.557,
+        -105.55700000000002,
         -5.663,
         0,
         0,
@@ -602,7 +602,7 @@
     "_lineHeight": 27,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -628,7 +628,7 @@
     "_target": null,
     "_alignFlags": 32,
     "_left": 0,
-    "_right": 256.697,
+    "_right": 245.48700000000002,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,
@@ -938,7 +938,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80.95,
+      "width": 92.62,
       "height": 34.02
     },
     "_anchorPoint": {
@@ -950,7 +950,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -109.21100000000003,
+        -109.21100000000001,
         -6,
         0,
         0,
@@ -996,7 +996,7 @@
     "_lineHeight": 27,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -1022,7 +1022,7 @@
     "_target": null,
     "_alignFlags": 32,
     "_left": 0,
-    "_right": 251.76100000000002,
+    "_right": 240.091,
     "_top": 0,
     "_bottom": 0,
     "_verticalCenter": 0,
@@ -1078,7 +1078,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.04,
+      "width": 24.2,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1136,7 +1136,7 @@
     "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -2031,8 +2031,10 @@
     "_fontSize": 45,
     "_lineHeight": 45,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -2139,8 +2141,10 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 0,
@@ -2305,7 +2309,7 @@
         "__id__": 81
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [],
     "_prefab": {
       "__id__": 94
@@ -2845,18 +2849,18 @@
     "_prefab": {
       "__id__": 80
     },
-    "_opacity": 255,
+    "_opacity": 180,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 662.41,
-      "height": 44.1
+      "width": 855.57,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2909,11 +2913,11 @@
     "_dstBlendFactor": 771,
     "_string": "create a guild invalite friends to play together",
     "_N$string": "create a guild invalite friends to play together",
-    "_fontSize": 35,
-    "_lineHeight": 35,
+    "_fontSize": 40,
+    "_lineHeight": 40,
     "_enableWrapText": false,
     "_N$file": {
-      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -2935,7 +2939,7 @@
       "__id__": 77
     },
     "_enabled": true,
-    "i18n_string": "",
+    "i18n_string": "UIClub_CreateTips",
     "_id": ""
   },
   {

@@ -3,7 +3,7 @@
  * @Date: 2023-02-02 11:32:22
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-11 16:15:47
+ * @LastEditTime: 2023-05-11 16:32:02
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/career/UICareer.ts
  */
 
@@ -95,17 +95,17 @@ export default class UICareer extends UIBase {
 
 
         this.lbl_profit_1.string = (room_data_total?.one_day?.total_earn < 0 ? '' : '+') + StringHelper.GetLongString(room_data_total?.one_day?.total_earn || 0)
-        this.setTextColor(this.lbl_profit_1, room_data_total?.one_day?.total_earn < 0 ? '#FF7C7C' : '#B0FFAE')
+        this.setTextColor(this.lbl_profit_1, room_data_total?.one_day?.total_earn < 0 ? '#CC4629' : '#47AB8D')
 
         this.lbl_profit_2.string = (room_data_total?.week_day?.total_earn < 0 ? '' : '+') + StringHelper.GetLongString(room_data_total?.week_day?.total_earn || 0)
-        this.setTextColor(this.lbl_profit_2, room_data_total?.week_day?.total_earn < 0 ? '#FF7C7C' : '#B0FFAE')
+        this.setTextColor(this.lbl_profit_2, room_data_total?.week_day?.total_earn < 0 ? '#CC4629' : '#47AB8D')
 
 
         this.lbl_profit_3.string = (room_data_total?.mon_day?.total_earn < 0 ? '' : '+') + StringHelper.GetLongString(room_data_total?.mon_day?.total_earn || 0)
-        this.setTextColor(this.lbl_profit_3, room_data_total?.mon_day?.total_earn < 0 ? '#FF7C7C' : '#B0FFAE')
+        this.setTextColor(this.lbl_profit_3, room_data_total?.mon_day?.total_earn < 0 ? '#CC4629' : '#47AB8D')
 
         this.lbl_profit_4.string = (room_data_total?.all_day?.total_earn < 0 ? '' : '+') + StringHelper.GetLongString(room_data_total?.all_day?.total_earn || 0)
-        this.setTextColor(this.lbl_profit_4, room_data_total?.all_day?.total_earn < 0 ? '#FF7C7C' : '#B0FFAE')
+        this.setTextColor(this.lbl_profit_4, room_data_total?.all_day?.total_earn < 0 ? '#CC4629' : '#47AB8D')
         this.initScrow(_data.mtt_room_data)
     }
     initScrow(mtt_room_data) {
