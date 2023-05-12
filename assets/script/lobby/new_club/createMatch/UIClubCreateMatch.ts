@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-12 13:23:05
+ * @LastEditTime: 2023-05-12 13:39:28
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -22,7 +22,7 @@ import TimeHelper from "../../../helper/TimeHelper";
 import LobbyRoomListItem from "../../../frame/data/lobby/LobbyRoomListItem";
 import { UIDefine } from "../../../define/UIDefine";
 import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
-import { APIUserDiamondsWallet } from "../../../net/https/WebRequest";
+import { APIOrgClubGold, APIUserDiamondsWallet } from "../../../net/https/WebRequest";
 import TabNode from "../../../common/tabNode";
 import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig, fzbTabConfig, bcTabConfig, sksjTabConfig } from "../../../frame/config/tabConfig";
 import GGSlider from "../../../ui/component/GGSlider";
@@ -253,11 +253,10 @@ export default class UIClubCreateMatch extends BaseForm {
             this.room_config = null;
         }
         this.initUI()
-        await UIClubModel.mInstance.APIUserDiamondsWallet();
-        let wallet = APIUserDiamondsWallet.Response.data;
-        ClubCache._diamonds_wallet = wallet?.diamonds_wallet
+        await UIClubModel.mInstance.APIOrgClubGold(ClubCache.random_id);
+        let wallet = APIOrgClubGold.Response.data;
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
-        own.string = ClubCache._diamonds_wallet?.diamonds || 0 + '';
+        own.string = wallet?.diamond || 0 + '';
         let tip = cc.find('dynamicPay/tip', this.coinNode)
         let pricTip = this.node.getChildByName('pricTip')
         this.bindClick(tip, () => {
@@ -273,8 +272,8 @@ export default class UIClubCreateMatch extends BaseForm {
         if (diamondConfig == null) {
             return;
         }
-        let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
-        own.string = ClubCache._diamonds_wallet?.diamonds || 0 + '';
+        // let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
+        // own.string = ClubCache._diamonds_wallet?.diamonds || 0 + '';
 
         let pay = cc.find('dynamicPay/pay/num', this.coinNode).getComponent(cc.Label)
         let pay1 = cc.find('dynamicPay/pay1/num', this.coinNode).getComponent(cc.Label)
