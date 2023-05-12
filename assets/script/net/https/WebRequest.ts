@@ -1692,7 +1692,7 @@ export class Web_Org_Club_Join extends WebCommon {
     //接口地址
     static API: string = "/api/org/club/user/join/apply";
     //字段声明
-    // static RequestParams: {
+    // static RequestPara·ms: {
     //     club_id: null;
     // } = null;
 
