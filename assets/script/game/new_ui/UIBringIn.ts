@@ -23,6 +23,7 @@ export type AddClipsData = {
     totalCoin?: number, // 总金豆
     tableChips: number, // 玩家剩余记分牌
     wallets?: any,//钱包列表
+    fromMenu?: boolean,
 }
 
 @ccclass
