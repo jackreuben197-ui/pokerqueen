@@ -43,21 +43,31 @@ export default class WebImageHelper {
 
         return new Promise<void>((resolve, reject) => {
 
-            defaultImage && (rawImage.spriteFrame = defaultImage);
+            let spriteFrame = this.mUrlTexture.get(url);
 
-            if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
+            if (spriteFrame) {
 
-            cc.assetManager.loadRemote(url, { ext: '.png' }, (err, asset: cc.Texture2D) => {
-                if (err) {
+                rawImage.spriteFrame = spriteFrame;
 
-                } else {
-                    let spriteframe = new cc.SpriteFrame(asset);
-                    rawImage.spriteFrame = spriteframe;
-                    this.mUrlTexture.set(url, spriteframe);
-                    resolve();
-                }
-            })
+                resolve();
 
+            } else {
+
+                defaultImage && (rawImage.spriteFrame = defaultImage);
+
+                if (url == null || url == "" || url == "-1" || ~url.indexOf("awanptesting.com")) return;
+
+                cc.assetManager.loadRemote(url, { ext: '.png' }, (err, asset: cc.Texture2D) => {
+                    if (err) {
+
+                    } else {
+                        let spriteframe = new cc.SpriteFrame(asset);
+                        rawImage.spriteFrame = spriteframe;
+                        this.mUrlTexture.set(url, spriteframe);
+                        resolve();
+                    }
+                })
+            }
         })
     }
     public static loadRemoteSprite(url: string, sprite: cc.Sprite) {

@@ -1,4 +1,5 @@
 
+import GC from "../frame/GameControl";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
 import TexasGame from "./texas/TexasGame";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
@@ -352,7 +353,7 @@ export class GameCache {
 
     InitEnterRoomInfo(room_info: EnterRoomInfo) {
         GameCache.Instance.serviceId = room_info.service_id;
-        GameCache.Instance.roomName = room_info.name;
+        GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;

@@ -23,14 +23,18 @@ import LabelCDTime from "../component/LabelCDTime";
 import UIComponent from "../UIComponent";
 import BaseScene from "./BaseScene";
 import { WWW, Web_misc_popup_newer } from "../../net/https/WebRequest";
+import WebImageHelper from "../../helper/WebImageHelper";
 
 const { ccclass, property } = cc._decorator;
+
+cc.macro.ENABLE_TRANSPARENT_CANVAS = true;
 
 @ccclass
 export default class LoginScene extends BaseScene {
     /**
      * 节点|组件 定义
      */
+
     private languageBtn: cc.Node = null;
     private languageFlag: cc.Sprite = null;
     private languageLayer: cc.Node = null;
@@ -86,7 +90,11 @@ export default class LoginScene extends BaseScene {
 
     _curretnLanguage: Number = 0;
 
-    video_player: cc.VideoPlayer = null;
+
+    Scene_bg: cc.Node = null;
+
+    Image_adv: cc.Sprite = null;
+    Video_adv: cc.VideoPlayer = null;
 
     onLoad() {
         super.onLoad();
@@ -132,13 +140,24 @@ export default class LoginScene extends BaseScene {
         this.otherLoginNode = this.getChildNodeOrComponent('otherLoginNode')
         this.getVCDTime = this.getVLab.node.addComponent(LabelCDTime);
         this.delBtn = this.getChildNodeOrComponent("delBtn");
-        this.video_player = this.getChildNodeOrComponent("video_player", cc.VideoPlayer);
+
+        this.Scene_bg = this.getChildNodeOrComponent("Scene_bg");
+        this.Video_adv = this.getChildNodeOrComponent("Video_adv", cc.VideoPlayer);
+        this.Image_adv = this.getChildNodeOrComponent("Image_adv", cc.Sprite);
     }
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(GGEvent.Change_AreaCode, this.onChangeAreaCode);
-        this.listen(EventName.switchLanguages, this.switchLanguages)
+        this.listen(EventName.switchLanguages, this.switchLanguages);
+
+
+        let handler = new cc.Component.EventHandler();
+        handler.target = this.node;
+        handler.component = "LoginScene";
+        handler.handler = "onVideoHandler";
+        this.Video_adv.videoPlayerEvent = [handler];
+
     }
 
     protected regiterTouchEvents() {
@@ -161,7 +180,7 @@ export default class LoginScene extends BaseScene {
     protected lateEnter() {
         super.lateEnter();
         this.refreshLanguageFlag();
-        this.ShowLoginBg();
+        this.refreshLoginBG();
     }
 
     initView() {
@@ -738,26 +757,59 @@ export default class LoginScene extends BaseScene {
         //VConsoleComponent.Instance.Update(dt);
     }
 
-    //显示背景图片视频
-    ShowLoginBg() {
+    image_url: string = null;
+    vodeo_url: string = null;
+
+    //请求背景图片视频
+    refreshLoginBG() {
+
+        this.Scene_bg.active = true;
+        this.Image_adv.node.active = false;
+        this.Video_adv.node.active = false;
+        this.Scene_bg.active = true;
 
 
+        //测试视频播放
+        //this.vodeo_url = "https://media.w3.org/2010/05/sintel/trailer.mp4";
+        //this.ShowVideo();
+        /////////////////////////////////
 
-        this.video_player.remoteURL = "https://media.w3.org/2010/05/sintel/trailer.mp4";
-        this.video_player.play();
+
         let type = 2;//1开屏 2登录 3主界面
         var tLangs = ["zh_CN", "en_US", "zh_HK", "pt_BR"];
+        let LanguageIndex = i18nMgr.getLanguage();
+        if (i18nMgr.getLanguage() >= tLangs.length) {
+            LanguageIndex = 1;
+        }
+
+        if (this.image_url != null) {
+            this.ShowImage();
+        }
+
         WWW.Instance.CommonAPI(
             {
                 web_class: Web_misc_popup_newer,
                 body: {
-                    lang: tLangs[1],
+                    lang: tLangs[LanguageIndex],
                     type: type
                 }
             }
         ).then(
             (res: any) => {
+                if (res.data.popup == null || res.data.popup.url == "") {
+                    return;
+                }
+                if (res.data.popup.type == 1)//图片
+                {
+                    this.image_url = res.data.popup.url;
+                    this.ShowImage();
+                }
+                else { //视频
 
+                    this.vodeo_url = res.data.popup.url;
+                    this.ShowVideo();
+
+                }
             },
             (res: any) => {
 
@@ -766,4 +818,33 @@ export default class LoginScene extends BaseScene {
     }
 
 
+    ShowImage() {
+        this.Image_adv.node.active = true;
+        WebImageHelper.SetUrlImage(this.Image_adv, this.image_url);
+
+    }
+
+    ShowVideo() {
+        this.Scene_bg.active = false;
+        this.Image_adv.node.active = false;
+        this.Image_adv.node.active = false;
+
+        this.Video_adv.node.active = true;
+        this.Video_adv.remoteURL = this.vodeo_url;
+        this.Video_adv.play();
+    }
+
+    onVideoHandler(video: cc.VideoPlayer, code: number) {
+        //判断播放结束进行再次播放
+        if (code == cc.VideoPlayer.EventType.COMPLETED) {
+            video.play();
+        }
+    }
+    protected lateExit(param: any = null) {
+        //关闭视频播放
+        if (this.Video_adv.isPlaying) {
+            cc.log("关闭视频");
+            this.Video_adv.stop();
+        }
+    }
 }
