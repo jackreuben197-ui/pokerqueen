@@ -41,7 +41,7 @@ export default class UIClubList extends BaseForm {
     listType = 2;
     _selectIndex = 0;
     protected lateLoad(): void {
-        this.name  = "UIClubList";
+        this.name = "UIClubList";
         super.lateLoad();
         this.topNode = this.getChildNodeOrComponent("topNode");
         this.pageNode = this.getChildNodeOrComponent("PageNode");
@@ -133,7 +133,9 @@ export default class UIClubList extends BaseForm {
     }
 
     initPageNode(clubList) {
+
         this.pageViews.removeAllPages();
+        
         for (let index = 0; index < clubList.length; index++) {
             const element = clubList[index];
             let clubPageItem = cc.instantiate(this.clubPageItem);

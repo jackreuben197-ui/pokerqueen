@@ -70,8 +70,7 @@ export default class SceneManager {
             this.currUI.getComponent(BaseScene)?.Exit(currExitParams);
         }
         if (newUI) {
-            //newUI.active = true;
-            newUI.opacity = 255;
+            newUI.active = true;
             newUI.parent = this.UILayer;
             newUI.getComponent(BaseScene)?.Enter(newEnterParams);
             this.currUI = newUI;
