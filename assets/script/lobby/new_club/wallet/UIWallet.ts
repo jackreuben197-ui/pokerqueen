@@ -229,7 +229,7 @@ export default class UIWallet extends BaseFormPlus {
                 this.$TopTabs.children[2].active = false;
                 this.$TopTabs.getComponent(cc.Layout).spacingX = 220;
 
-                
+
                 this.$OpTabs.children[2].active = false;
                 this.$OpTabs.getComponent(cc.Layout).updateLayout();
 
@@ -243,7 +243,7 @@ export default class UIWallet extends BaseFormPlus {
                 this.$TopTabs.getComponent(cc.Layout).spacingX = 0;
 
 
-               
+
                 this.$OpTabs.children[2].active = true;
                 this.$OpTabs.getComponent(cc.Layout).updateLayout();
 

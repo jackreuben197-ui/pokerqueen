@@ -218,6 +218,8 @@ export default class UITexas extends BaseScene {
     }
     protected lateLoad(): void {
 
+        this.name = "UITexas";
+
         super.lateLoad();
 
         this.sp_table_bg = this.getChildNodeOrComponent("sp_table_bg", cc.Sprite);

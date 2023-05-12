@@ -928,7 +928,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        300,
+        392.891,
         0,
         0,
         0,
@@ -953,9 +953,9 @@
       "__id__": 27
     },
     "asset": {
-      "__uuid__": "75e640f8-6155-4053-a5d9-09d16310baf2"
+      "__uuid__": "848a8441-fcf4-4d72-99b3-3c054febc4e5"
     },
-    "fileId": "5c2d9U5ANJ8r8QSyT/uQ+q",
+    "fileId": "e81oduuJxLWrldbKZB3NmH",
     "sync": true
   },
   {

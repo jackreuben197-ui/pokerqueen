@@ -3013,8 +3013,10 @@ export class Web_Guild_GiveRecycle extends WebCommon {
     static API: string = "/api/order/club/member/grant";
 }
 
-
-
+//获取弹窗数据
+export class Web_misc_popup_newer extends WebCommon {
+    static API: string = "/api/misc/popup/newer";
+}
 
 /**
  * 注册全局访问

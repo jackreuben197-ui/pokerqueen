@@ -59,72 +59,6 @@ export default class ItemMsgSystem extends UIBasePlus {
         //this.setButtonClick(this.node, this.onClick);
     }
 
-    // refreshSystem(data) {
-
-    //     let msg = "";
-    //     switch (data.msg_type) {
-    //         case MessageSubType.MsgSuper1Winner:
-    //             msg = i18nMgr.Get("UIHappyShop_Super1WinLuckNewsTC");
-    //             this.cc_RichText$content.string = msg;
-    //             break;
-    //         case MessageSubType.MsgSuper1WinNormal:
-    //             if (~data.content.indexOf(":")) {
-    //                 var str = data.content.split(':');
-    //                 let QiHao = +str[1];
-    //                 //是数字
-    //                 if (!isNaN(QiHao)) {
-    //                     msg = StringHelper.Format(i18nMgr.Get("UIHappyShop_Super1WinUnLuckNews"), [` <color=#E1B58D> ${str[0]} </color> `, ` <color=#E1B58D> ${QiHao} </color> `]);
-    //                     this.cc_RichText$content.string = msg;
-    //                 } else {
-    //                     console.log("一元购未获奖消息期号错误");
-    //                 }
-    //             }
-    //             break;
-    //         case MessageSubType.MsgSuper1WinTocken:
-    //             if (~data.content.indexOf(":")) {
-    //                 var str = data.content.split(':');
-    //                 let QiHao = +str[1];
-    //                 //是数字
-    //                 if (!isNaN(QiHao)) {
-    //                     msg = StringHelper.Format(i18nMgr.Get("UIHappyShop_Super1WinLuckNewsBag"), [` <color=#E1B58D> ${str[0]} </color> `, ` <color=#E1B58D> ${QiHao} </color> `]);
-    //                     this.cc_RichText$content.string = msg;
-    //                 } else {
-    //                     console.log("一元购获奖消息数量错误");
-    //                 }
-    //             }
-    //             break;
-    //         default:
-    //             msg = MyMessageModel.Instance.GetMsg(data.msg_type);
-    //             if (msg?.length) {
-    //                 let str = "";
-    //                 if (data.title == "999") {
-    //                     str = i18nMgr.Get("MessgainfoForever");
-    //                 } else {
-    //                     str = StringHelper.Format(msg, [data.title, data.content, data.remark]);
-    //                 }
-
-    //                 var a = `<color=#7187FF>${data.title}</color>`;
-    //                 var b = `<color=#7187FF>${data.content}</color>`;
-    //                 var c = `<color=#7187FF>${data.remark}</color>`;
-
-    //                 if (this._param.isFromEx) {
-
-    //                     this.allText = StringHelper.Format(msg, [a, b, c]);
-
-    //                     this.cc_RichText$content.string = this.allText;
-
-    //                 } else {
-
-    //                     this.cc_RichText$content.string = str;
-    //                     this.isLarge = StringHelper.SetLargeText(this.cc_RichText$content, 208);
-    //                     this.allText = StringHelper.Format(msg, [a, b, c]);
-    //                     this.isLarge || (this.cc_RichText$content.string = this.allText);
-
-    //                 }
-    //             }
-    //             break;
-    //     }
-    // }
     refreshNormal(data) {
         //刷新右下角内容
         if (data.sender_icon == null || data.sender_icon == "")//联盟图
@@ -173,7 +107,7 @@ export default class ItemMsgSystem extends UIBasePlus {
                         let QiHao = +str[1];
                         //是数字
                         if (!isNaN(QiHao)) {
-                            this.cc_RichText$content.string = StringHelper.Format(i18nMgr.Get("UIHappyShop_Super1WinUnLuckNews"), [` <color=#E1B58D> ${str[0]} </color> `, ` <color=#E1B58D> ${QiHao} </color> `]);
+                            this.cc_RichText$content.string = StringHelper.Format(i18nMgr.Get("UIHappyShop_Super1WinUnLuckNews"), [` <color=#FEEC8E> ${str[0]} </color> `, ` <color=#FEEC8E> ${QiHao} </color> `]);
                         } else {
                             console.log("一元购未获奖消息期号错误");
                         }
@@ -185,7 +119,7 @@ export default class ItemMsgSystem extends UIBasePlus {
                         let QiHao = +str[1];
                         //是数字
                         if (!isNaN(QiHao)) {
-                            this.cc_RichText$content.string = StringHelper.Format(i18nMgr.Get("UIHappyShop_Super1WinLuckNewsBag"), [` <color=#E1B58D> ${str[0]} </color> `, ` <color=#E1B58D> ${QiHao} </color> `]);
+                            this.cc_RichText$content.string = StringHelper.Format(i18nMgr.Get("UIHappyShop_Super1WinLuckNewsBag"), [` <color=#FEEC8E> ${str[0]} </color> `, ` <color=#FEEC8E> ${QiHao} </color> `]);
                         } else {
                             console.log("一元购获奖消息数量错误");
                         }
@@ -203,9 +137,9 @@ export default class ItemMsgSystem extends UIBasePlus {
                 } else {
                     str = StringHelper.Format(msg, [data.title, data.content, data.remark]);
                 }
-                var a = `<color=#7187FF>${data.title}</color>`;
-                var b = `<color=#7187FF>${data.content}</color>`;
-                var c = `<color=#7187FF>${data.remark}</color>`;
+                var a = `<color=#FEEC8E>${data.title}</color>`;
+                var b = `<color=#FEEC8E>${data.content}</color>`;
+                var c = `<color=#FEEC8E>${data.remark}</color>`;
                 if (this._param.isFromEx) {
                     this.allText = StringHelper.Format(msg, [b, c, a]);
                     this.cc_RichText$content.string = this.allText;

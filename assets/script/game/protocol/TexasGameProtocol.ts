@@ -51,6 +51,8 @@ import UIOutChipsTipComponent from "../ui/UIOutChipsTipComponent";
 import GameUtil, { RoomType } from "../util/GameUtil";
 import MTTGame from "../texas/MTTGame";
 import { InsuranceData, WrapTriggedInsuranceData } from "../new_ui/UIInsurancePanel";
+import SceneManager from "../../manager/SceneManager";
+import UIBase from "../../ui/UIBase";
 
 
 
@@ -1580,7 +1582,19 @@ export default class TexasGameProtocol {
                 break;
             case BroadcastCode.SeatFriendApplyRefreshMsgNum:
             case BroadcastCode.SeatClubApplyRefreshMsgNum:
-                this.game.UpdateMsgBtnSprite();
+
+                //牌桌
+                if (SceneManager.Instance.currUI.getComponent(UIBase).name == "UITexas") {
+                    this.game?.UpdateMsgBtnSprite();
+                }
+                
+
+
+                //GC.notify.post(GGEvent.Apply_Refresh_MsgNum, data);
+
+                //u.GetComponent<UIFriendsTableComponent>().RefreshMsgRed();
+
+                //{"code":2001,"data":"{\"room_id\":90619954,\"user_id\":6922,\"bring_in\":200,\"status\":1,\"origin_type\":4}"}
                 break;
 
             default:

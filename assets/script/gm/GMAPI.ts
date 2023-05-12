@@ -9,10 +9,12 @@ import PublicHelper from "../helper/PublicHelper";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
+import SceneManager from "../manager/SceneManager";
 import HttpRequest from "../net/https/HttpRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerMessageInsuranceTrigged } from "../protobuf/holdem/recv_insurance_trigged_pb";
 import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
+import UIBase from "../ui/UIBase";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 import { UIRechargeDialogType } from "../ui/dialog/UIRechargeDialog";
 
@@ -836,6 +838,16 @@ export class GM {
             UIComponent.Instance.ToastLanguage("roomError171_5");
         }
         //}
+    }
+
+    //解析msg结构
+    public showMSG(str: string) {
+        console.log(Buffer.from(str, 'base64').toString());
+    }
+
+
+    public show() {
+        console.log(SceneManager.Instance.currUI.getComponent(UIBase).name);
     }
 
 

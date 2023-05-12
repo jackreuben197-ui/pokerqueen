@@ -14,6 +14,8 @@ export default class ItemLobbyRoom extends UIBasePlus {
     cc_Sprite$type_icon: cc.Sprite = null;
     //大小盲注
     cc_Label$bb: cc.Label = null;
+    //id
+    cc_Label$id: cc.Label = null;
     //货币类型
     $icon_coin: cc.Node = null;
     //上锁
@@ -50,6 +52,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
         this.cc_Label$bb.string = `${StringHelper.GetLongString(data.sb)}/${StringHelper.GetLongString(data.sb * 2)}(${data.ante})`;
         this.cc_Label$player.string = `${data.seat_count - data.empty_seat}/${data.seat_count}`;
         this.$icon_bring.active = !!data.limit_bring_in;
+        this.cc_Label$id.string = `ID:${data.rid}`;
         //1-联盟 2-usdt
         this.$icon_coin.active = (data.gold_type == 1 || data.gold_type == 2);
         this.$icon_coin.getChildByName("uc").active = data.gold_type == 1;

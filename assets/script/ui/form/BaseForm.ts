@@ -125,20 +125,24 @@ export default class BaseForm extends UIBase {
      * 显示隐藏来源界面
      */
     hideFromUI() {
-        if (this.fromUI) this.fromUI.active = false;
+        if (this.fromUI) this.fromUI.opacity = 0;
+        //this.fromUI.active = false;
     }
     showFromUI() {
-        if (this.fromUI) this.fromUI.active = true;
+        if (this.fromUI) this.fromUI.opacity = 255;
+        //this.fromUI.active = true;
     }
 
     /**
      * 显示隐藏场景界面
      */
     hideSceneUI() {
-        if (this.sceneUI) this.sceneUI.active = false;
+        if (this.sceneUI) this.sceneUI.opacity = 0;
+        //active = false;
     }
     showSceneUI() {
-        if (this.sceneUI) this.sceneUI.active = true;
+        if (this.sceneUI) this.sceneUI.opacity = 255;
+        //this.sceneUI.active = true;
     }
 
 

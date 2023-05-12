@@ -22,10 +22,10 @@ export default class Toast extends UIBase {
         // this.label.getComponent(cc.Label).string = content;
         this.setText(this.label, content);
         //@ts-ignore
-        this.label._forceUpdateRenderData();
-        let layout = this.node.getComponent(cc.Layout);
-        layout.resizeMode = cc.Layout.ResizeMode.CONTAINER;
-        layout.updateLayout();
+        //this.label._forceUpdateRenderData();
+        // let layout = this.node.getComponent(cc.Layout);
+        // layout.resizeMode = cc.Layout.ResizeMode.CONTAINER;
+        // layout.updateLayout();
 
     }
     reset() {
