@@ -398,6 +398,7 @@ export default class UITexasMenu extends UIBasePlus {
                             totalCoin: GC.data.user.info.gold,
                             tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
                             wallets: [res.data],
+                            fromMenu: true,
                         }
                     )
                 },
@@ -417,6 +418,7 @@ export default class UITexasMenu extends UIBasePlus {
                     currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
                     totalCoin: GC.data.user.info.gold,
                     tableChips: GameCache.Instance.CurGame.mainPlayer.chips,
+                    fromMenu: true,
                 }
             )
         }

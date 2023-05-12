@@ -776,7 +776,7 @@ export const UIDefine = {
         Name: "UIClubVipOffline",
         Bundle: null,
         Path: "main/new_club/vip/UIClubVipOffline",
-        Title: "UIGuild_MemberDetails_VipManager"
+        Title: "UIGuild_MemberDetails_VipOffLine"
     },
 
     //贵宾管理

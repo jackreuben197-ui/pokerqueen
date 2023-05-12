@@ -5386,9 +5386,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 117,
-      "g": 124,
-      "b": 171,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_contentSize": {
@@ -5406,7 +5406,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -823.495,
+        -812.359,
         0,
         0,
         0,
@@ -5445,10 +5445,10 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "",
-    "_N$string": "",
-    "_fontSize": 40,
-    "_lineHeight": 43,
+    "_string": "sadf",
+    "_N$string": "sadf",
+    "_fontSize": 41,
+    "_lineHeight": 49,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
@@ -15305,11 +15305,11 @@
     "_dstBlendFactor": 771,
     "_string": "Please wait for start",
     "_N$string": "Please wait for start",
-    "_fontSize": 45,
+    "_fontSize": 46,
     "_lineHeight": 46,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "b5e5c594-a25a-4f0e-807c-9127292c289c"
+      "__uuid__": "4ddaf238-f782-4af9-8e3e-7eaa94d96ede"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,

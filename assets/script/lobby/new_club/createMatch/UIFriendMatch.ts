@@ -30,6 +30,13 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import UIFriendMatchItem from "./../createMatch/UIFriendMatchItem";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { StringHelper } from "../../../helper/StringHelper";
+import { WWW } from "../../../net/https/WebRequest";
+import { Web_RoomSitApplyRecords } from "../../../net/https/WebRequest";
+import GC from "../../../frame/GameControl";
+import { ProtocolCode } from "../../../net/websocket/ProtocolCode";
+import { ServerMessageGetMsg } from "../../../protobuf/holdem/recv_get_msg_pb";
+import { Broadcast, BroadcastCode } from "../../../net/websocket/ProtocolHoldemMessages";
+import PublicHelper from "../../../helper/PublicHelper";
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
 
@@ -79,8 +86,19 @@ export default class UIFriendMatch extends UIBase {
         this.dataNode = this.getChildNodeOrComponent('dataNode')
         this.node0 = this.getChildNodeOrComponent('node0')
         this.node1 = this.getChildNodeOrComponent('node1')
-
+        GC.notify.register(ProtocolCode.Protocol_Holdem_GetMsg, this.ProtocolHoldemGetMsgHandler, this);  // 广播表情
     }
+    ProtocolHoldemGetMsgHandler(rec: ServerMessageGetMsg.AsObject) {
+        let json = PublicHelper.Base64ToJsonString(rec.extra.toString());
+        let responseData = Broadcast.Response(json);
+        let code: number = responseData.code;
+        //let data: string = responseData.data;
+        if (code == BroadcastCode.SeatFriendApplyRefreshMsgNum) {
+            this.RefreshMsgRed();
+        }
+    }
+
+
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         let title = "UIClub_RoomJoin_Title"
@@ -94,11 +112,9 @@ export default class UIFriendMatch extends UIBase {
         this._keyNodeString = ''
         this.reqDataAgain();
         this.initDiamond();
-        this.initFriendData()
-        this.refreshRedTip()
-    }
-    refreshRedTip() {
-        // this.red.active = true;
+        this.initFriendData();
+        this.red.active = false;
+        this.RefreshMsgRed();
     }
     async initFriendData() {
         await UIClubModel.mInstance.web_api_friend_room_stats()
@@ -242,4 +258,34 @@ export default class UIFriendMatch extends UIBase {
         // UIComponent.open(UIDefine.UIMsgBring, { from: 0 });
     }
     // update (dt) {}
+
+    //刷新带入红点
+    RefreshMsgRed() {
+
+        WWW.Instance.CommonAPI(
+            {
+                web_class: Web_RoomSitApplyRecords,
+                body: {
+                    status: 1,
+                    limit: 1,
+                    offset: 0,
+                }
+            }
+        ).then(
+            (res: any) => {
+                if (res.data?.data) {
+                    let isShow = false;
+                    res.data.data.forEach(recd => {
+                        if (recd.status == 1) {
+                            isShow = true;
+                        }
+                    });
+                    isShow && (this.red.active = true);
+                }
+            },
+            (res: any) => {
+
+            }
+        )
+    }
 }
