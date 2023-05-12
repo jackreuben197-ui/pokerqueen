@@ -30,7 +30,7 @@ export default class UICareerRecord extends BaseFormPlus {
     @property(TabNode)
     tabNode: TabNode = null;
     @property(cc.Node)
-    lb_tip: cc.Node = null;
+    noDataTip: cc.Node = null;
 
     @property(cc.Node)
     Rectangle: cc.Node = null;
@@ -281,7 +281,8 @@ export default class UICareerRecord extends BaseFormPlus {
         this.list.numItems = this._list.length;
         this._offset = this._list.length;
         this._reqEnd = this._list.length == this._total;
-        this.lb_tip.active = this.list.numItems == 0
+        //this.lb_tip.active = this.list.numItems == 0
+        this.noDataTip.active = this.list.numItems == 0;
     }
     onRender(node: cc.Node, index: number) {
         let item = node.getComponent(recordItem);

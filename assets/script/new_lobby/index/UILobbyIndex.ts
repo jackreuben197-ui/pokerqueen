@@ -119,7 +119,7 @@ export default class UILobbyIndex extends UIBasePlus {
     //游戏类型选择
     gametype_select(tab: cc.Node, on: number) {
         tab.getChildByName("label").opacity = on == 1 ? 255 : 102;
-        tab.getChildByName("bg").active = Boolean(on);
+        tab.getChildByName("line").active = Boolean(on);
     }
     set gametype_status(value: number) {
         //if (this._gametype_status == value) return;

@@ -99,10 +99,11 @@ export default class UIPlayerLookLabor extends BaseForm {
 
     }
     async exitClub() {
+
         if (ClubUserDataCache.gold == 0 && ClubUserDataCache.usdt == 0) {
             await UIClubModel.mInstance.APIOrgClubQuit();
-            this.close()
-            UIComponent.close(UIDefine.UIClubHome)
+            UIComponent.Instance.CloseNoAnimation(UIDefine.UIPlayerLookLabor);
+            UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubHome);
             this.post(EventName.refreshClubList)
             return
         }

@@ -20,7 +20,8 @@ export default class UIAgentLink extends UIBasePlus {
     $ItemAgentLink: cc.Node = null;
     cc_ScrollView$Scroller: cc.ScrollView = null;
     $Center: cc.Node = null;
-    cc_Label$Des_Null: cc.Label = null;
+    //cc_Label$Des_Null: cc.Label = null;
+    $null: cc.Node = null;
     ///////////////////////////////////
     Item_Pool: SimpleNodePool = null;
     //选中的条目索引
@@ -54,7 +55,7 @@ export default class UIAgentLink extends UIBasePlus {
 
         this.list = res.data?.data;
 
-        this.cc_Label$Des_Null.node.active = !this.list?.length;
+        this.$null.active = !this.list?.length;
 
         if (this.list?.length) {
             this.list.forEach((child, index) => {

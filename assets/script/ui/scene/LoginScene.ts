@@ -22,6 +22,7 @@ import AssetContext, { AssetFold } from "../component/AssetContext";
 import LabelCDTime from "../component/LabelCDTime";
 import UIComponent from "../UIComponent";
 import BaseScene from "./BaseScene";
+import { WWW, Web_misc_popup_newer } from "../../net/https/WebRequest";
 
 const { ccclass, property } = cc._decorator;
 
@@ -84,6 +85,9 @@ export default class LoginScene extends BaseScene {
     private _vcodeBtnCanClick: boolean = true;
 
     _curretnLanguage: Number = 0;
+
+    video_player: cc.VideoPlayer = null;
+
     onLoad() {
         super.onLoad();
         this.initView();
@@ -127,7 +131,8 @@ export default class LoginScene extends BaseScene {
         // this.agreeTip2 = this.getChildNodeOrComponent("agreeTip2", cc.Label)
         this.otherLoginNode = this.getChildNodeOrComponent('otherLoginNode')
         this.getVCDTime = this.getVLab.node.addComponent(LabelCDTime);
-        this.delBtn = this.getChildNodeOrComponent("delBtn")
+        this.delBtn = this.getChildNodeOrComponent("delBtn");
+        this.video_player = this.getChildNodeOrComponent("video_player", cc.VideoPlayer);
     }
 
     protected regiterDispatchEvent(): void {
@@ -156,6 +161,7 @@ export default class LoginScene extends BaseScene {
     protected lateEnter() {
         super.lateEnter();
         this.refreshLanguageFlag();
+        this.ShowLoginBg();
     }
 
     initView() {
@@ -726,9 +732,38 @@ export default class LoginScene extends BaseScene {
     }
 
     clickShowVconsole() {
-        VConsoleComponent.Instance.Click();
+        //VConsoleComponent.Instance.Click();
     }
     update(dt) {
-        VConsoleComponent.Instance.Update(dt);
+        //VConsoleComponent.Instance.Update(dt);
     }
+
+    //显示背景图片视频
+    ShowLoginBg() {
+
+
+
+        this.video_player.remoteURL = "https://media.w3.org/2010/05/sintel/trailer.mp4";
+        this.video_player.play();
+        let type = 2;//1开屏 2登录 3主界面
+        var tLangs = ["zh_CN", "en_US", "zh_HK", "pt_BR"];
+        WWW.Instance.CommonAPI(
+            {
+                web_class: Web_misc_popup_newer,
+                body: {
+                    lang: tLangs[1],
+                    type: type
+                }
+            }
+        ).then(
+            (res: any) => {
+
+            },
+            (res: any) => {
+
+            }
+        )
+    }
+
+
 }
