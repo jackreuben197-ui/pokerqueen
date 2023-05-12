@@ -41,6 +41,7 @@ export default class UIClubList extends BaseForm {
     listType = 2;
     _selectIndex = 0;
     protected lateLoad(): void {
+        this.name  = "UIClubList";
         super.lateLoad();
         this.topNode = this.getChildNodeOrComponent("topNode");
         this.pageNode = this.getChildNodeOrComponent("PageNode");
