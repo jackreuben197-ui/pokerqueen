@@ -27,6 +27,9 @@ export default class LobbyScene extends BaseScene {
     menu: UILobbyMenu = null;
 
     onLoad(): void {
+
+        this.name = "LobbyScene";
+
         super.onLoad();
 
         this.layer = this.getChildNodeOrComponent("layer");
