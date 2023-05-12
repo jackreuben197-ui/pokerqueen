@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-11 18:35:47
+ * @LastEditTime: 2023-05-12 10:18:14
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
@@ -202,7 +202,7 @@ export default class UIJoinUnion extends BaseForm {
                 };
                 break;
         }
-        this.sousuo.interactable = this.tempString.length == 6
+        this.sousuo.interactable = this.tempString.length > 0
         this.canClick.active = this.sousuo.interactable
         this.noClick.active = !this.sousuo.interactable
         this.btnTip.node.color = this.sousuo.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')

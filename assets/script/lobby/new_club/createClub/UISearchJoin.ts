@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-09 10:23:22
+ * @LastEditTime: 2023-05-12 10:21:23
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UISearchJoin.ts
  */
 
@@ -101,6 +101,7 @@ export default class UISearchJoin extends BaseForm {
             await UIClubModel.mInstance.APIOrgJoinTrip(parms)
             this.post(EventName.refreshApplyList)
         }
+        // this.post(EventName.refreshClubList)
         this.close()
     }
     // update (dt) {}

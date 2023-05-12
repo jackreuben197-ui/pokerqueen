@@ -2511,7 +2511,7 @@
       "__id__": 64
     },
     "_enabled": true,
-    "i18n_string": "UICareer_Union",
+    "i18n_string": "UIClub_Tribe",
     "_id": ""
   },
   {
@@ -3243,7 +3243,7 @@
       "__id__": 85
     },
     "_enabled": true,
-    "i18n_string": "UIClub_mess",
+    "i18n_string": "UIGuild_ContactInfo",
     "_id": ""
   },
   {

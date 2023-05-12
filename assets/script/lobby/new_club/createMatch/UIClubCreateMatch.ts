@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-10 11:35:13
+ * @LastEditTime: 2023-05-12 12:40:54
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -58,7 +58,7 @@ export default class UIClubCreateMatch extends BaseForm {
     saveBtn: cc.Node = null;
 
     private comFormTitle: ComFormTitle = null;
-    tabNode: TabNode
+    tabNode: cc.Node
     clubIdNode: cc.Node = null;
     sryy: cc.Node = null;
     passNode: cc.Node = null;
@@ -100,6 +100,7 @@ export default class UIClubCreateMatch extends BaseForm {
     _dcjfpNum = 0;
     _sksjNum = 15;
     _yxbzNum = 4;
+    _ipNum = 1;
     _selectRoleType = 0;
     _btnType = 0;
     _selectTitle = 0;
@@ -213,7 +214,7 @@ export default class UIClubCreateMatch extends BaseForm {
         this.zdks['levelData'] = { min: 2, total: 9, level: 2 }
         this.Straddle['levelData'] = { min: 0, total: 6, level: 2 }
 
-        this.tabNode = this.getChildNodeOrComponent("tabNode", TabNode);
+        this.tabNode = this.getChildNodeOrComponent("tabNode");
         this.sryxSwitch = this.getChildNodeOrComponent("sryxSwitch", GGSwitch);
         this.aofSwitch = this.getChildNodeOrComponent("aofSwitch", GGSwitch);
         this.yxbzTabNode = this.getChildNodeOrComponent("yxbzTabNode", TabNode);
@@ -453,6 +454,8 @@ export default class UIClubCreateMatch extends BaseForm {
         cc.find(`ToggleContainer/toggle${this._dcjfpNum}`, this.dcjfp).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this._sksjNum}`, this.sksj).getComponent(cc.Toggle).isChecked = true;
         cc.find(`ToggleContainer/toggle${this.deal_delayNum}`, this.yxjz).getComponent(cc.Toggle).isChecked = true;
+        cc.find(`toggle${this._selectTitle}`, this.tabNode).getComponent(cc.Toggle).isChecked = true;
+
         this.saveBtn.active = ClubCache.joinCreateMatchType == 0
         this.bcNode.active = this._jslxNum == 1
         if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
@@ -530,29 +533,50 @@ export default class UIClubCreateMatch extends BaseForm {
         };
 
     }
+    tableTypeToggle(event, customData) {
+        this._selectTitle = Number(customData)
+        this.initDiamond();
+        if (ClubCache.joinCreateMatchType == 1) {
+            this.tabNode.active = false
+            this.clubIdNode.active = false
+            this.passNode.active = false
+            this.sryy.active = false
+
+        } else {
+            this.clubIdNode.active = this._selectTitle == 1
+            this.tabNode.active = ClubCache.tribe_name ? true : false;
+        }
+        if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
+            this.drsq.active = true
+        } else {
+            this.drsq.active = false
+        }
+    }
     initTabNode() {
         this.sr_zw.active = ClubCache.joinCreateMatchType == 2
         this.sryy.active = true
-        createMatchTabConfig.defaultIndex = this._selectTitle;
-        this.tabNode.initData(createMatchTabConfig, (customData) => {
-            this._selectTitle = customData
-            this.initDiamond();
-            if (ClubCache.joinCreateMatchType == 1) {
-                this.tabNode.node.active = false
-                this.clubIdNode.active = false
-                this.passNode.active = false
-                this.sryy.active = false
+        this.tableTypeToggle(null, this._selectTitle);
 
-            } else {
-                this.clubIdNode.active = this._selectTitle == 1
-                this.tabNode.node.active = ClubCache.tribe_name ? true : false;
-            }
-            if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
-                this.drsq.active = true
-            } else {
-                this.drsq.active = false
-            }
-        }, this)
+        // createMatchTabConfig.defaultIndex = this._selectTitle;
+        // this.tabNode.initData(createMatchTabConfig, (customData) => {
+        //     this._selectTitle = customData
+        //     this.initDiamond();
+        //     if (ClubCache.joinCreateMatchType == 1) {
+        //         this.tabNode.node.active = false
+        //         this.clubIdNode.active = false
+        //         this.passNode.active = false
+        //         this.sryy.active = false
+
+        //     } else {
+        //         this.clubIdNode.active = this._selectTitle == 1
+        //         this.tabNode.node.active = ClubCache.tribe_name ? true : false;
+        //     }
+        //     if (this._selectTitle == 0 || ClubCache.joinCreateMatchType == 1) {
+        //         this.drsq.active = true
+        //     } else {
+        //         this.drsq.active = false
+        //     }
+        // }, this)
 
         gameChangeTypeTabConfig.defaultIndex = this._yxbzNum - 4 < 0 ? 0 : this._yxbzNum - 4;
         this.yxbzTabNode.initData(gameChangeTypeTabConfig, (customData) => {
@@ -754,6 +778,7 @@ export default class UIClubCreateMatch extends BaseForm {
     yxjzToggle(event, customData) {
         this.deal_delayNum = Number(customData)
     }
+
 
     saveModel(event, customData) {
         this._btnType = Number(customData)

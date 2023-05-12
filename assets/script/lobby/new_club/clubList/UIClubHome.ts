@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-08 21:14:13
+ * @LastEditTime: 2023-05-12 10:38:13
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -86,6 +86,7 @@ export default class UIClubHome extends BaseForm {
         this.initChessView();
         this.initRedTip()
     }
+
     async initRedTip() {
         await UIClubModel.mInstance.APIMessageRed_num()
         let redData = APIMessageRed_num.Response.data

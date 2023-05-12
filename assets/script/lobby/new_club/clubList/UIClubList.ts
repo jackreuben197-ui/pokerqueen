@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-04-25 12:11:12
+ * @LastEditTime: 2023-05-12 10:38:18
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -63,6 +63,7 @@ export default class UIClubList extends BaseForm {
         // this.sortData()
         // this.setText(this.dropNode_lbl, clubListConfig[this._selectIndex].desc);
     }
+
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(EventName.myGoldChange, this.initTop)

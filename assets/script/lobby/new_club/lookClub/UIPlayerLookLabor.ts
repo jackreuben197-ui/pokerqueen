@@ -3,7 +3,7 @@
  * @Date: 2022-09-19 18:39:47
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-23 19:53:18
+ * @LastEditTime: 2023-05-12 10:19:53
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIPlayerLookLabor.ts
  */
 
