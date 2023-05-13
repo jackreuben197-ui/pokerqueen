@@ -1,4 +1,5 @@
 
+import Common_Button_Ex from "../common/Common_Button_Ex";
 import BaseComponent from "../frame/base/BaseComponent";
 import LanguageManager from "../frame/manager/LanguageManager";
 import { i18nLabel } from "../i18n/i18nLabel";
@@ -151,6 +152,8 @@ export default class UIBase extends BaseComponent {
         let button_com = button.getComponent(cc.Button) || button.getChildByName("BtnArea")?.getComponent(cc.Button) || button.getChildByName("click")?.getComponent(cc.Button);
         if (button_com) {
             button_com.interactable = boo;
+            let ex = button_com.node.getComponent(Common_Button_Ex);
+            if (ex) ex.interactable = boo;
         }
     }
     /**

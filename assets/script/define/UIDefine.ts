@@ -459,7 +459,7 @@ export const UIDefine = {
         Name: "UIExchange",
         Bundle: null,
         Path: "main/new_club/wallet/UIExchange",
-        Title: "UIGuildFund_ExchangeText",
+        Title: "adaptation10203",
     },
 
     // WalletJumpForm: {

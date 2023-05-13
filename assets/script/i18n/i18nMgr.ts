@@ -50,6 +50,7 @@ export class i18nMgr {
         this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
         this.LanguageObject = LanguageAllObject[this.language];
     }
+    //当前的语言 0简中 1英文 2繁中 3葡语 4西班牙语 5 俄语 6 德语 7 印度语 8 越南语
     public static getLanguage() {
         this.language = GC.localStore.getItem(StorageKey.Language) || GameConfig.Default_Language;
         switch (this.language) {

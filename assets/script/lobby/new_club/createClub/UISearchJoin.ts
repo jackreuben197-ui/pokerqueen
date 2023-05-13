@@ -16,6 +16,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import EventEmitter = require("events");
 import { EventName } from "../../../config/EventName";
 import SceneManager from "../../../manager/SceneManager";
+import UIComponent from "../../../ui/UIComponent";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -97,7 +98,7 @@ export default class UISearchJoin extends BaseForm {
         if (this.type == 0) {
             await UIClubModel.mInstance.APIOrgClubJoinClub(this._data.club_id);
             SceneManager.Instance.currUI.active = true;
-            this.post(EventName.refreshApplyList);
+            this.post(EventName.refreshApplyList, this._data.club_id);
             this.post(EventName.refreshClubList);
         } else {
             let parms: any = { tribe_random_id: this._data.random_id, contact: this.contentEdit.string, club_id: ClubCache.club_id };

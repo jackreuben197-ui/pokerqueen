@@ -23,7 +23,7 @@ export default class LobbyRoomListModel {
     set selected(v) {
         this._selected = v;
         GameCache.Instance.serviceId = v.service_id;
-        GameCache.Instance.roomName = v.name;
+        GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(v.name);
         GameCache.Instance.room_type = v.room_type;
         GameCache.Instance.game_type = v.game_type;
         GameCache.Instance.poker_type = v.poker_type;

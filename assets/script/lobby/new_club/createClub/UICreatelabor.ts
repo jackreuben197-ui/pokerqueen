@@ -41,12 +41,13 @@ export default class UICreatelabor extends BaseForm {
     @property(cc.Sprite)
     Round: cc.Sprite = null;
 
-    @property(cc.Node)
-    canClick: cc.Node = null;
-    @property(cc.Node)
-    noClick: cc.Node = null;
-    @property(cc.Label)
-    btnTip: cc.Label = null;
+
+    // @property(cc.Node)
+    // canClick: cc.Node = null;
+    // @property(cc.Node)
+    // noClick: cc.Node = null;
+    // @property(cc.Label)
+    // btnTip: cc.Label = null;
 
     @property(cc.Label)
     tip: cc.Label = null;
@@ -54,11 +55,11 @@ export default class UICreatelabor extends BaseForm {
 
     iconUrl = null;
     private comFormTitle: ComFormTitle = null;
-    commit: cc.Button = null;
+    commit: cc.Node = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
-        this.commit = this.getChildNodeOrComponent("commit", cc.Button);
+        this.commit = this.getChildNodeOrComponent("commit");
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -107,16 +108,11 @@ export default class UICreatelabor extends BaseForm {
         this.labelNum.string = this.editjieshao.string.length + '/50'
         if (this.editName.string == '' || this.editjieshao.string == '' || this.xinxi.string == '') {
 
-            this.commit.interactable = false
-            this.canClick.active = false
-            this.noClick.active = true
-            this.btnTip.node.color = cc.color().fromHEX('#515774')
-        } else {
-            this.canClick.active = true
-            this.noClick.active = false
-            this.commit.interactable = true;
-            this.btnTip.node.color = cc.color().fromHEX('#EEF5FF')
 
+            this.setButtonInteractable(this.commit, false);
+        } else {
+
+            this.setButtonInteractable(this.commit, true);
         }
     }
     changeIntroduce() {

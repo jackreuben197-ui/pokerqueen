@@ -137,9 +137,9 @@ export default class ItemMsgSystem extends UIBasePlus {
                 } else {
                     str = StringHelper.Format(msg, [data.title, data.content, data.remark]);
                 }
-                var a = `<color=#FEEC8E>${data.title}</color>`;
-                var b = `<color=#FEEC8E>${data.content}</color>`;
-                var c = `<color=#FEEC8E>${data.remark}</color>`;
+                var a = `<color=#F8C255>${data.title}</color>`;
+                var b = `<color=#F8C255>${data.content}</color>`;
+                var c = `<color=#F8C255>${data.remark}</color>`;
                 if (this._param.isFromEx) {
                     this.allText = StringHelper.Format(msg, [b, c, a]);
                     this.cc_RichText$content.string = this.allText;

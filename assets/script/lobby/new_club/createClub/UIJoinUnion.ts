@@ -94,29 +94,35 @@ export default class UIJoinUnion extends BaseForm {
         this.noClick.active = !this.sousuo.interactable
         this.btnTip.node.color = this.sousuo.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
     }
-    initList() {
+    initList(club_id: number = -1) {
         if (this.type == 0) {
-            this.initApplyList();
+            this.initApplyList(club_id);
 
         } else {
             this.initUnionList()
         }
 
     }
-    async initApplyList() {
+    async initApplyList(club_id: number = -1) {
         this.contentList.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
         let data: any = Web_Org_Club_Player_Apply_List.Response.data
-        this.noDataTip.active = data?.items.length == 0
+        this.noDataTip.active = data?.items.length == 0;
+        let apply_join: boolean = false;
         for (let index = 0; index < data?.items?.length; index++) {
             const element = data?.items[index];
             let item = cc.instantiate(this.joinNode);
             item.parent = this.contentList;
+            if (club_id == element.club_id) {
+                apply_join = true;
+            }
             this.initItem(item, element, async () => {
                 await UIClubModel.mInstance.APIOrgClubCancleJoinClub(element.id);
                 item.active = false;
-            }, index)
+            }, index);
         }
+        //判断加入俱乐部页面中申请或加入的状态
+        if (club_id > -1) UIComponent.Instance.ToastLanguage(apply_join ? "roomError171_5" : "club_join_3");
     }
     async initUnionList() {
         this.contentList.removeAllChildren();
