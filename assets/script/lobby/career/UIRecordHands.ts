@@ -3,7 +3,7 @@
  * @Date: 2023-02-03 16:57:42
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-09 12:18:07
+ * @LastEditTime: 2023-05-13 09:55:16
  * @FilePath: /pokerqueen/assets/script/lobby/career/UIRecordHands.ts
  */
 // Learn TypeScript:
@@ -86,7 +86,7 @@ export default class UIRecordHands extends BaseFormPlus {
         if (!_data?.data?.records) {
             _data.data.records = [];
         }
-        this.hands.string = str.replace('{0}', _data.data.records.length);
+        this.hands.string = str.replace('{0}', _data.data.total);
 
         _data.data.records.forEach(element => {
             this._list.push(element);

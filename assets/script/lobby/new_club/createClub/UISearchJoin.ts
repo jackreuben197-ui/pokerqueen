@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-12 10:21:23
+ * @LastEditTime: 2023-05-13 10:06:54
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UISearchJoin.ts
  */
 
@@ -77,7 +77,7 @@ export default class UISearchJoin extends BaseForm {
         this.club.active = this.type == 0
         this.union.active = this.type == 1
         this.sousuo.interactable = false;
-
+        this.contentEdit.string = ''
         if (this.type == 0) {
             this.sousuo.interactable = true;
             this.memberNum.string = this._data.club_members
