@@ -770,8 +770,8 @@ export default class LoginScene extends BaseScene {
 
 
         //测试视频播放
-        //this.vodeo_url = "https://media.w3.org/2010/05/sintel/trailer.mp4";
-        //this.ShowVideo();
+        // this.vodeo_url = "https://media.w3.org/2010/05/sintel/trailer.mp4";
+        // this.ShowVideo();
         /////////////////////////////////
 
 
