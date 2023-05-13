@@ -48,8 +48,11 @@ export default class UIMe extends UIBasePlus {
     //刷新用户信息
     refreshUserInfo() {
         this.cc_Label$id.string = `ID:${Web_User_Info.Response.data.user.un_id}`;
+        this.cc_Label$id["_forceUpdateRenderData"]?.();
         WebImageHelper.SetHeadImage(this.cc_Sprite$head, Web_User_Info.Response.data.user.avatar);
         this.refreshNick();
+
+
     }
     //刷新钱包获取钻石
     refreshWallet() {

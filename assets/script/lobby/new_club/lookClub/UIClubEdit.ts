@@ -18,6 +18,7 @@ import { UIClubModel } from "../../labor/UIClubModel";
 import ComFormTitle from "../../../common/ComFormTitle";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { EventName } from "../../../config/EventName";
+import Common_Button_Ex from "../../../common/Common_Button_Ex";
 
 const { ccclass, property, menu } = cc._decorator;
 @ccclass
@@ -30,17 +31,17 @@ export default class UIClubEdit extends BaseForm {
     @property(cc.EditBox)
     more_contect: cc.EditBox = null;
 
-    @property(cc.Button)
-    sure_btn: cc.Button = null
-
     @property(cc.Node)
-    canClick: cc.Node = null;
+    sure_btn: cc.Node = null
 
-    @property(cc.Node)
-    noClick: cc.Node = null;
+    // @property(cc.Node)
+    // canClick: cc.Node = null;
 
-    @property(cc.Label)
-    btn_lbl: cc.Label = null;
+    // @property(cc.Node)
+    // noClick: cc.Node = null;
+
+    // @property(cc.Label)
+    // btn_lbl: cc.Label = null;
 
     private comFormTitle: ComFormTitle = null;
     _type = 0
@@ -61,16 +62,10 @@ export default class UIClubEdit extends BaseForm {
     }
     editChange() {
         if (this._type == 0) {
-            this.sure_btn.interactable = this.introduce.string != ''
+            this.setButtonInteractable(this.sure_btn, this.introduce.string != '');
         } else {
-            this.sure_btn.interactable = this.more_contect.string != ''
+            this.setButtonInteractable(this.sure_btn, this.more_contect.string != '');
         }
-        this.setBtnState()
-    }
-    setBtnState() {
-        this.canClick.active = this.sure_btn.interactable
-        this.noClick.active = !this.sure_btn.interactable
-        this.btn_lbl.node.color = this.sure_btn.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
     }
 
     async sureClick() {

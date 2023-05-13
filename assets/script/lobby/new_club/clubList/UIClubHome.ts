@@ -44,8 +44,8 @@ export default class UIClubHome extends BaseForm {
     @property(cc.Node)
     menuShow: cc.Node = null;
 
-    @property(cc.Button)
-    createBtn: cc.Button = null;
+    @property(cc.Node)
+    createBtn: cc.Node = null;
     _chessView
     _loadingChessBiew
     _showTsMessIndex = 0;
@@ -164,7 +164,7 @@ export default class UIClubHome extends BaseForm {
             let up: cc.Node = this.getChildNodeOrComponent("up")
             up.active = true;
         }
-        this.createBtn.node.active = ClubCache.user_level == 1 || ClubCache.user_level == 3
+        this.createBtn.active = ClubCache.user_level == 1 || ClubCache.user_level == 3
     }
 
     initTop() {
@@ -200,8 +200,8 @@ export default class UIClubHome extends BaseForm {
     }
 
     initTabBnts() {
-        let createBtn: cc.Node = this.getChildNodeOrComponent('createBtn')
-        createBtn.active = true
+        //let createBtn: cc.Node = this.getChildNodeOrComponent('createBtn')
+        this.createBtn.active = true
         for (let index = 1; index < this.menuShow.childrenCount; index++) {
             const element = this.menuShow.children[index];
             element.active = true
@@ -213,7 +213,7 @@ export default class UIClubHome extends BaseForm {
                 this.menuShow.children[3].active = false
                 this.menuShow.children[4].active = false
                 this.menuShow.children[5].active = false
-                createBtn.active = false
+                this.createBtn.active = false
                 break;
             case 1:
             case 3:
@@ -222,7 +222,7 @@ export default class UIClubHome extends BaseForm {
             case 2:
                 break;
             case 4:
-                createBtn.active = false
+                this.createBtn.active = false
                 this.menuShow.children[5].active = false
                 this.menuShow.children[2].active = false
                 break;

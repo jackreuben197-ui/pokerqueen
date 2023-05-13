@@ -276,14 +276,9 @@ export default class UIFunRecycleGive extends BaseFormPlus {
 
             this.setButtonInteractable(this.$btn_commit, true);
 
-            this.setChildOpacity(this.$btn_commit, "label", 255);
-
-            this.setChildColor(this.$btn_commit, "bg", "FFFFFF");
-
         } else {
             this.setButtonInteractable(this.$btn_commit, false);
-            this.setChildOpacity(this.$btn_commit, "label", 52);
-            this.setChildColor(this.$btn_commit, "bg", "1E223C");
+
         }
 
     }

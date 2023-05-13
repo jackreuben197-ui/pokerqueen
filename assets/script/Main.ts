@@ -9,6 +9,7 @@
 /**
  * 入口函数
  */
+import Common_Button_Ex from "./common/Common_Button_Ex";
 import { GameConfig } from "./config/GameConfig";
 import GC from "./frame/GameControl";
 import OrientationComponent from "./funcomponent/OrientationComponent";
@@ -94,7 +95,9 @@ export default class Main extends cc.Component {
             console.log("逻辑分辨率:", cc.view.getVisibleSize().toString());
             this.refreshDiss();
         }, 1);
+
         GC.uc.AddComponent(new OrientationComponent);
+
         ReconnectComponent.Instance.Start();
 
     }
