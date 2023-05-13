@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-05 11:20:43
+ * @LastEditTime: 2023-05-13 14:12:18
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIManageLabor.ts
  */
 
@@ -12,7 +12,7 @@ import { EventName } from "../../../config/EventName";
 import { UIDefine } from "../../../define/UIDefine";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
-import { APIOrgClubGold, APIOrgClubLevelInfo, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../../net/https/WebRequest";
+import { APIMessageRed_num, APIOrgClubGold, APIOrgClubLevelInfo, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -49,6 +49,11 @@ export default class UIManageLabor extends BaseForm {
     @property(GGSwitch)
     szqb_st: GGSwitch = null;
 
+    @property(cc.Node)
+    hlRed: cc.Node = null;
+    @property(cc.Node)
+    gxpjRed: cc.Node = null;
+
     private comFormTitle: ComFormTitle = null;
 
     protected lateLoad(): void {
@@ -62,6 +67,19 @@ export default class UIManageLabor extends BaseForm {
         this.comFormTitle.initData(title, this);
         this.initTop();
         this.exitbutton.active = ClubCache.user_level != 1
+
+        await UIClubModel.mInstance.APIMessageRed_num()
+        let redData = APIMessageRed_num.Response.data
+        redData.forEach((element) => {
+            if (element.type == 4) {
+                this.gxpjRed.active = element.num != 0
+            } else if (element.type == 5) {
+                this.hlRed.active = element.num != 0
+            }
+
+        })
+
+
     }
 
     protected regiterDispatchEvent(): void {

@@ -3,7 +3,7 @@
  * @Date: 2023-03-23 10:00:32
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-09 17:26:06
+ * @LastEditTime: 2023-05-13 14:26:20
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 /*
@@ -225,7 +225,7 @@ export default class UIFriendMatch extends UIBase {
             UIComponent.close(UIDefine.UIKeyNode)
         }
         this.joinBtn.interactable = this._keyNodeNumArr.length == 6
-        this.joinBtn.node.getChildByName('Rectangle').active = !this.joinBtn.interactable
+        this.joinBtn.node.getChildByName('Rectangle').active = this.joinBtn.interactable
         for (let index = 0; index < this.numNode.childrenCount; index++) {
             const element = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
             element.string = '';
