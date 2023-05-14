@@ -29,15 +29,15 @@ const { ccclass, property, menu } = cc._decorator;
 export default class UIClubCreateMatchHome extends BaseForm {
     @property(cc.Node)
     contentModel: cc.Node = null;
-    @property(cc.Button)
-    createBtn: cc.Button = null;
+    @property(cc.Node)
+    createBtn: cc.Node = null;
 
-    @property(cc.Node)
-    canClick: cc.Node = null;
-    @property(cc.Node)
-    noClick: cc.Node = null;
-    @property(cc.Label)
-    btnTip: cc.Label = null;
+    // @property(cc.Node)
+    // canClick: cc.Node = null;
+    // @property(cc.Node)
+    // noClick: cc.Node = null;
+    // @property(cc.Label)
+    // btnTip: cc.Label = null;
 
 
     @property(cc.Prefab)
@@ -142,18 +142,20 @@ export default class UIClubCreateMatchHome extends BaseForm {
             }
         }
         if (modelNum <= 0 || modelNum > 5) {
-            this.createBtn.interactable = false;
+            
+            this.setButtonInteractable(this.createBtn,false);
         } else {
-            this.createBtn.interactable = true;
+            
+            this.setButtonInteractable(this.createBtn,true);
         }
         this.setBtnState()
 
 
     }
     setBtnState() {
-        this.canClick.active = this.createBtn.interactable
-        this.noClick.active = !this.createBtn.interactable
-        this.btnTip.node.color = this.createBtn.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
+        // this.canClick.active = this.createBtn.interactable
+        // this.noClick.active = !this.createBtn.interactable
+        // this.btnTip.node.color = this.createBtn.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
 
     }
     async createBtnClick() {

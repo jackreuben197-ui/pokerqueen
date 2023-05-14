@@ -10,6 +10,7 @@
 import GC from "../frame/GameControl";
 import { i18nMgr } from "../i18n/i18nMgr";
 import StorageKey from "../session/StorageKey";
+import SoundComponent from "../sound/SoundComponent";
 import UIBase from "../ui/UIBase";
 import UIComponent from "../ui/UIComponent";
 import { GameCache } from "./GameCache";
@@ -31,7 +32,7 @@ export default class UITexasSettingComponent extends UIBase {
 
 
     curQuickActionIndex = 2;
-    soundIsOpen = true;
+    //soundIsOpen = true;
     protected lateLoad(): void {
         super.lateLoad();
         this.DeskGroup = this.getChildNodeOrComponent("DeskGroup");
@@ -51,20 +52,24 @@ export default class UITexasSettingComponent extends UIBase {
 
         let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
         let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
-        if (!GC.localStore.getItem(StorageKey.soundIsOpen)) {
-            this.soundIsOpen = true;
-            closeVoice.active = false
-            openVoice.active = true;
-        }
-        else if (GC.localStore.getItem(StorageKey.soundIsOpen) == 1 + '') {
-            closeVoice.active = false
-            openVoice.active = true;
-            this.soundIsOpen = true;
-        } else {
-            closeVoice.active = true
-            openVoice.active = false;
-            this.soundIsOpen = false;
-        }
+
+        openVoice.active = SoundComponent.Instance.sound_switch_on == true;
+        closeVoice.active = SoundComponent.Instance.sound_switch_on == false;
+
+        // if (!GC.localStore.getItem(StorageKey.soundIsOpen)) {
+        //     this.soundIsOpen = true;
+        //     closeVoice.active = false
+        //     openVoice.active = true;
+        // }
+        // else if (GC.localStore.getItem(StorageKey.soundIsOpen) == 1 + '') {
+        //     closeVoice.active = false
+        //     openVoice.active = true;
+        //     this.soundIsOpen = true;
+        // } else {
+        //     closeVoice.active = true
+        //     openVoice.active = false;
+        //     this.soundIsOpen = false;
+        // }
 
 
         this.initDeskClickListen();
@@ -235,15 +240,22 @@ export default class UITexasSettingComponent extends UIBase {
     onValueChangedVoice() {
         let closeVoice = cc.find('Background/closeVoice', this.Toggle_Voice);
         let openVoice = cc.find('Background/openVoice', this.Toggle_Voice);
-        this.soundIsOpen = !this.soundIsOpen
-        if (this.soundIsOpen) {
-            closeVoice.active = false
-            openVoice.active = true;
-        } else {
-            closeVoice.active = true
-            openVoice.active = false;
-        }
-        GC.localStore.setItem(StorageKey.soundIsOpen, this.soundIsOpen ? 1 + "" : 0 + "")
+
+        SoundComponent.Instance.sound_switch_on = !SoundComponent.Instance.sound_switch_on;
+
+        openVoice.active = SoundComponent.Instance.sound_switch_on == true;
+        closeVoice.active = SoundComponent.Instance.sound_switch_on == false;
+
+
+        // this.soundIsOpen = !this.soundIsOpen
+        // if (this.soundIsOpen) {
+        //     closeVoice.active = false
+        //     openVoice.active = true;
+        // } else {
+        //     closeVoice.active = true
+        //     openVoice.active = false;
+        // }
+        GC.localStore.setItem(StorageKey.soundIsOpen, SoundComponent.Instance.sound_switch_on ? 1 + "" : 0 + "")
     }
 
     public static GetCurQuickActionNumValue(index) {

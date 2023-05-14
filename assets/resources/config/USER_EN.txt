@@ -334,10 +334,10 @@ UIMine_MsgSystem=System Messages
 UIMine_PromotersBecomeBook=View Campaign Poster
 UIMine_MsgNormal=Items Messages^Club Messages^Wallet Messages^System Messages^Union Messages^Tournament Messages
 UIRecordList=Texas^Omaha^AOF^Ante^MTT
-MySelfRecord=Personal Achievement
+MySelfRecord=Personal ACHV
 UICareerRecord_History=Game Records
 UICareerRecord=Achievements
-UICareerRecord_HundredHands=Achievement/100 hands
+UICareerRecord_HundredHands=ACHV/100 hands
 UIMine_RecordList=Achievements
 UIMatch_Filter=Filter
 UIDataList=Texas^Omaha^AOF^MTT
@@ -371,7 +371,7 @@ UIMine_VIP_normal=Normal
 UIMine_VIP_gold=Gold
 UIMine_VIP_platinum=Platinum
 UIMine_VIP_diamond=Diamond
-UIMine_VIP_dataAll=Records
+UIMine_VIP_dataAll=Career
 UIMine_VIP_cardTitle_month=Activate Monthly Subscription
 UIMine_VIP_cardTitle_year=Activate Annual Subscription
 UIMine_VIP_cardTitle_month_add=Renew monthly subscription
@@ -388,7 +388,7 @@ UIMine_VIP_right_des_4=Advanced data stealth from all users
 UIMine_VIP_right_name_5=Unlock Stealth
 UIMine_VIP_right_des_5=View advanced data for stealth players
 UIMine_VIP_right_name_6=Panoramic Image
-UIMine_VIP_right_des_6=Records Panoramic Image
+UIMine_VIP_right_des_6=Career Panoramic Image
 UIMine_VIPPurchase_title=VIP Purchase
 UIMine_VIPPurchase_month=Months
 UIMine_VIPPurchas_vipName=VIP
@@ -411,7 +411,7 @@ UIMine_UserInfoSettingNick_title=Change Nickname
 Save=Save
 UILobby_Menu_menu_btn_discover=Explore
 UILobby_Menu_menu_btn_club=Club
-UILobby_Menu_menu_btn_data=Records
+UILobby_Menu_menu_btn_data=Career
 UILobby_Menu_menu_btn_my=Me
 UIMine_UserInfoNick_tooLong=Nickname should not exceed 10 characters
 UIMine_UserInfoNick_Include_Special=Please do not include special characters, try again.
@@ -655,7 +655,7 @@ adaptation10091=Scroll up to load more
 adaptation10092=Issue Fund
 adaptation10093=Recharge the fund's pool
 adaptation10094=Hand earnings
-adaptation10095=Commissions from the achievement stream
+adaptation10095=ACHV flow commissions
 adaptation10096=Platform recharge payment channel to fill UC
 adaptation10097=Records of UC withdrawals
 adaptation10098=Share and earn UC back!
@@ -777,7 +777,7 @@ adaptation10213=Logout
 adaptation10214=Become an agent
 adaptation10215=ID or nickname ## not found
 adaptation10216=Not found
-adaptation10217=Achievement details
+adaptation10217=ACHV details
 adaptation10218=Tournament
 adaptation10219=Table admin: ##
 adaptation10220=Xiaoliuzi
@@ -871,15 +871,15 @@ adaptation10307=Remark marks
 adaptation10308=The strongest stealth
 adaptation10309=Not viewable by all
 adaptation10310=Success in breaking invisibility
-adaptation10311=Win rate
-adaptation10312=Raise pre-flop
-adaptation10313=Re-raise pre-flop
-adaptation10314=Continuous raise
+adaptation10311=VPIP Wins
+adaptation10312=PFR
+adaptation10313=3bet
+adaptation10314=Cbet
 adaptation10315=Check
 adaptation10316=What is the current day
 adaptation10317=WTSD
 adaptation10318=All-in Wins
-adaptation10319=Wins
+adaptation10319=VPIP Wins
 adaptation10320=Unable to mark myself
 adaptation10321=None of them are filled in
 adaptation10322=Error
@@ -1536,7 +1536,7 @@ adaptation20072=Current  network is unstable. We have switched the line for you 
 User_LocationSeetingTrue=Distance 0m
 User_LocationSeetingFalse=Location not turned on
 UITexasPlayerInfo_PuTong=30-day hand records
-UITexasPlayerInfo_MTT=Tournaments Records
+UITexasPlayerInfo_MTT=Tournaments Career
 UITexas_BackDest=Return
 UITesas_Leave=Reserve Spot
 UITexas_Start=Start
@@ -1641,7 +1641,7 @@ UITexasInfo_sng=Sit and Go
 UITexasInfo_mtt=MTT
 UITexasInfo_default=Set as default page
 UITexasInfo_30day=Last 30 days
-UITexasInfo_all=Performance Data
+UITexasInfo_all=Career Data
 UITexasInfo_game=Games
 UITexasInfo_poolwin=Wins
 UITexasInfo_allhands=Total Hands
@@ -1679,7 +1679,7 @@ UIData_YGvXd5iXr=Data
 UIData_Today=Today
 UIData_Month=Month
 UIData_Week=Week
-UIData_KrVdD5WqB=Records 
+UIData_KrVdD5WqB=Career
 UIData_TodayMoney=Today's earnings
 UIData_WeekMoney=Week's earnings
 UIData_MonthMoney=Month's earnings
@@ -1695,15 +1695,15 @@ UIData_lh9TLd5Dz=Total Games
 UIData_Wk0vXh5dr=Avg Buy-in/game
 UIData_9uXzPe7nz=Advance Data
 UIData_86Rap5lYl=Platinum/Diamond VIP
-UIData_UkDjET60P=VPIP:
-UIData_TbfhUk81c=PRF:
+UIData_UkDjET60P=Voluntarily Put In Pot(VPIP):
+UIData_TbfhUk81c=Preflop Raise(PFR):
 UIData_tI5vAueGX=3Bet:
-UIData_KYcrpCuoH=Cbet:
-UIData_NmCApsmJP^=Aggressiveness Factor
-UIData_NmCApsmJP=Aggressiveness Factor (AF):
-UIData_Uyw2DepZB=WTSD:
-UIData_T9LPbz8rG=All-wins:
-UIData_oLKlAnibz=Wins:
+UIData_KYcrpCuoH=Continuation Bet(Cbet):
+UIData_NmCApsmJP^=AF
+UIData_NmCApsmJP=Aggression factor(AF):
+UIData_Uyw2DepZB=Went to showdown(WTSD):
+UIData_T9LPbz8rG=Win rate of All-in(All-in Wins):
+UIData_oLKlAnibz=Win rate of Voluntarily Put In Pot（VPIP Wins）:
 UIMine_WalletCardNames=Bank Card
 UIMine_WalletCardNames_plz=Please Select Bank
 UIMine_WalletTranschipsAlipay_j9O6YS7JR=My Account
@@ -1777,7 +1777,7 @@ WalletTranschipsBindingCard_rightNowAdd=Add now
 UIData_ShowProblem_zIwG=Basic Data
 UIData_ShowProblem_eZys=VIP Advanced Data
 UIData_ShowProblem_SM0y=Total hands: The hands player used to play in ALLIN.\n\nTotal games: The games player used to play in ALLIN.\n\nVPIP: The ratio player ever raises or calls before flop in total hands.\n\nWins: The ratio player wins after raising or calling before flop in total hands.\n\nAvg result: The average achievement of all games played.\n\nAvg buy-in: The average buy-in of all games played.
-UIData_ShowProblem_3xqp=VPIP: The ratio of players actively putting UC into the bottom pool before the flop. The rate of entry into the pool reflects how loose or tight a player plays the hand \n\n Pre-Flop Raise (PFR): The rate of pre-flop raises into the pool. Calculated by the number of pre-roll raises into the pool/the number of pre-roll entries \n\n Pre-flop re-raise (3Bet): the re-raise ratio after someone else bets and raises. The calculation is the number of re-raises/number of times in the pool \n\nContinuous betting (CBet): A player who actively bets or raises in the previous round and then actively bets again in the current round. The calculation is the number of sustained bets/number of active bets or raises in the previous round. \n\n Aggressiveness (AF): The higher this value is, the more aggressive the player is, and the more inclined to bet/raise. It is calculated as {(number of bets + number of raises)/number of calls}/50 (dividing by 50 is to convert to a percentage, which seals the value at 100%, i.e. the original maximum value of 50) \n\n Showdown rate (WTSD): i.e. the showdown rate, which is the percentage of times a player sees a flopped round and plays to a showdown. It is calculated as the number of hands in the showdown/the number of hands on the flop. \n\nAll-in wins (ALL-wins): A statistic of a player's hand win rate after going all-in. A higher value means that the player rarely staggers and basically wins when going all-in. \n\nWins in the pool (Wins): The ratio of players winning in the hands that are in the pool.
+UIData_ShowProblem_3xqp=Voluntarily Put In Pot (VPIP):  VPIP tracks the percentage of hands in which a particular player voluntarily puts money into the pot preflop. VPIP increases when a player could fold but instead commits money to the pot preflop. This includes limping (merely calling the big blind), calling, and raising. \n\n Pre-Flop Raise (PFR): PFR tracks the percentage of hands in which a particular player makes a preflop raise when having the opportunity to fold or call instead.(3Bet):A 3-bet is the third bet in a poker sequence, in which a player re-raises after the initial pre-flop raise, or 2-bet.  Continuation Bet (CBet): When a player initiates or raises a bet in the previous round, then initiates another active bet in the current round\n\n Aggression factor (AF): The higher this value is, the more aggressive the player is, and the more inclined to bet/raise. It is calculated as {(number of bets + number of raises)/number of calls}/50 (dividing by 50 is to convert to a percentage, which seals the value at 100%, i.e. the original maximum value of 50) \n\n Went to showdown (WTSD): The showdown rate is the percentage of a player who sees a flop circle and plays a showdown. The calculation is the number of hands in the showdown/the number of hands in the flop. \n\nWin rate of All-in (All-in Wins): A statistic of a player's hand win rate after going all-in. A higher value means that the player rarely staggers and basically wins when going all-in. \n\nWin rate of Voluntarily Put In Pot (VPIP Wins): The ratio of players winning in the hands that are put in the pot.
 UIMatchFilter_4Rj47D=Clear
 UIMatchFilter_DPY5kR=Game
 UIMineDetail_UsedTime=Time consumption
@@ -1980,7 +1980,7 @@ UITexasRule_detail7=4. It’s impossible to purchase insurance for the three car
 UITexasRule_detail8=5. If the turn card insurance is purchased, the system will automatically purchase a small amount of insurance for the river card, and the insurance investment of the back turn card
 UITexasRule_detail9=5. If the turn card insurance purchase is not successful, the river card must purchase all outs, and the payout of the river card must be greater than the insured amount of the turn card
 UITexasRule_detail10=6. If the player only buys part of the replacement card, the system will automatically purchase the remaining replacement card to avoid the risk of the player being BB, and bring back the player's insurance amount
-UITexasRule_detail11=7. [Real-time Achievement] [Review of the previous game] and insurance data displayed in the [Details of the game] in the card
+UITexasRule_detail11=7.  Insurance data displayed in the [Real-time Achievement] [Review of the previous game] and [Details of the game] in the career
 UITexasRule_detail12=8. When the Texas, Omaha outs exceeds 30 cards, the insurance is not activated
 UITexasRule_detail13=10. When most of the players do all-in, and appear more than one pot, the player with the leading hand can only purchase the outs insurance in the maximum pot that he has participated in.
 UITexasRule_title114=Operations
@@ -2049,7 +2049,7 @@ UIData_Terminol=Data description
 UIData_Terminola9XjGbUJ=Basic Data
 UIData_TerminolQ6ILftIz=Total hands: The hands player used to play in ALL-IN.\n\nTotal games: The games player used to play in ALL-IN. \n\nVPIP: The ratio player ever raises or calls before flop in total hands. \n\nWins: The ratio player wins after raising or calling before flop in total hands.\n\nAvg result: The average achievement of all games played. \n\nAvg buy-in: The average buy-in of all games played.
 UIData_TerminolD6qL3kUc=VIP Data
-UIData_TerminolbazUAGg6=PRF: The ratio player raise before flop of raising or calling before flop.\n\n3Bet: The ratio player raise after others bet or raise of raising or calling before flop.\n\nCBet: The ratio player bets or raises continuous of betting or raising.\n\nAF: Player tends to bet/raise more as the AF goes higher. \nFormula is (bet + raise) / call / 50 \n\nWTSD: The ratio player shows hand of flop. \n\nALL-wins: The ratio player wins after all in.
+UIData_TerminolbazUAGg6=Pre-Flop Raise（PFR）:  PFR tracks the percentage of hands in which a particular player makes a preflop raise when having the opportunity to fold or call instead.Calculated as the number of Pre-Flop Raise/the number of Pre-Flop bet\n\n3Bet: A 3-bet is the third bet in a poker sequence, in which a player re-raises after the initial pre-flop raise, or 2-bet.Calculated as the number of 3Bet/the number of Pre-Flop bet\n\nContinuation Bet（CBet）: When a player initiates or raises a bet in the previous round, then initiates another active bet in the current round\n\nAggression factor (AF): The higher this value is, the more aggressive the player is, and the more inclined to bet/raise. It is calculated as {(number of bets + number of raises)/number of calls}/50 (dividing by 50 is to convert to a percentage, which seals the value at 100%, i.e. the original maximum value of 50)  \nFormula is (bet + raise) / call / 50 \n\nWTSD: The showdown rate is the percentage of a player who sees a flop circle and plays a showdown. The calculation is the number of hands in the showdown/the number of hands in the flop.\n\nWin rate of All-in (All-in Wins): A statistic of a player's hand win rate after going all-in. A higher value means that the player rarely staggers and basically wins when going all-in.
 UIMine_WalletClubGetMoneyList=Withdraw
 UIMine_WalletClue_001=Club withdrawal
 UIMine_WalletClue_002=Platform withdrawal
@@ -2763,7 +2763,7 @@ Uiwithdrawsuccessfully=Submitted
 Uiwithdrawfailed=Submission failed
 Uiclubrechargeconfirmordersuccessfully=Operation successed
 Uiclubrechargeconfirmorderfailed=Operation failed
-UITeaxinDeailt=1. Activate insurance when all players are All-in\n\n2. Purchase by the player with the largest current card type. If there are multiple pots, the player who leads the largest pot will buy it, and only the largest pot can be purchased\n\n3.Insurance is only sold for all-in situations with 3 players in the pot or less.\n\n4.Three cards on the flop cannot be insured, the insured amount on the turn shall not exceed 0.25*pot, and the insured amount for river cards shall not exceed 0.5*pot\n\n5.If the turn card purchase insurance is not successful, the river card must purchase all outs, and the payout of the river card must be greater than the insured amount of the turn card\n\n6. If the player only buys part of the replacement card, the system will automatically purchase the remaining replacement card to avoid the risk of the player being BB, and bring back the player's insurance amount\n\n7.[Real-time Achievement] [Review of the previous game] and insurance data displayed in the [Details of the game] in the card\n\n8.Texas,Omaha,when the outs exceed 30, the insurance is not activated
+UITeaxinDeailt=1. Activate insurance when all players are All-in\n\n2. Purchase by the player with the largest current card type. If there are multiple pots, the player who leads the largest pot will buy it, and only the largest pot can be purchased\n\n3.Insurance is only sold for all-in situations with 3 players in the pot or less.\n\n4.Three cards on the flop cannot be insured, the insured amount on the turn shall not exceed 0.25*pot, and the insured amount for river cards shall not exceed 0.5*pot\n\n5.If the turn card purchase insurance is not successful, the river card must purchase all outs, and the payout of the river card must be greater than the insured amount of the turn card\n\n6. If the player only buys part of the replacement card, the system will automatically purchase the remaining replacement card to avoid the risk of the player being BB, and bring back the player's insurance amount\n\n7.Insurance data displayed in the [Real-time Achievement] [Review of the previous game] and [Details of the game] in the career\n\n8.Texas,Omaha,when the outs exceed 30, the insurance is not activated
 UITeaxinDeailt_PeiFu=1. Capital protection: payout = player input\n\n2. Full pool: no matter if the insurance is win or not, the income is equal\n\n3.The UC consumed by purchasing insurance are deducted from the pot\n\n4.If you buy, the system directly pays the player according to the outs\n\n5.If not purchased, the system will collect the amount of insurance purchase
 UILoginviolator=The account is suspected due to violation, please contact the Club administrator!
 UIBackDialog_ticketsbtnClose=Closure
@@ -2836,7 +2836,7 @@ ServerErrorCode_90001=Failed
 ServerErrorCode_90002=Unknown
 ServerErrorCode_90003=Invalid code
 ServerErrorCode_90004=Not Found
-ServerErrorCode_90005=user have joined this club
+ServerErrorCode_90005=The number has been registered
 ServerErrorCode_90006=You have been frozen, please contact the administrator
 ServerErrorCode_90007=Suspension
 ServerErrorCode_90008=Unimplemented
@@ -2880,7 +2880,6 @@ ServerErrorCode_20018=Buy-in less than the minimum amount
 ServerErrorCode_20019=You have been banned to withdraw UC. Please contact customer service If you have any questions.
 ServerErrorCode_20020=Login error
 ServerErrorCode_20021=You have many pending recharge orders, please go to the record to check
-ServerErrorCode_20040=club already join tribe apply,
 ServerErrorCode_20034=Format error, please re-enter
 ServerErrorCode_31001=Reduce stacks
 ServerErrorCode_31002=Out of game time
@@ -3830,7 +3829,7 @@ UIGuild_SearchTips=Please enter the club ID to search
 UIGuild_SearchUnionBtn=Search Union
 UIGuild_TitleName=Club name
 UILogin_RegistNewDiamondsContent=Congratulations on your successful registration
-UILogin_RegistNewDiamondsContentWish=I wish you a happy game!
+UILogin_RegistNewDiamondsContentWish=We wish you a happy game!
 UILogin_RegistNewDiamondsTitle=Novice benefits
 UIMain_JoinGuildTips=Please join or create a Club first
 UIMain_JoinUnionTips=The Club has not joined the Union, please contact the Union customer service
@@ -3885,7 +3884,7 @@ UIExchange_All=Redeem all
 UIExchange_AutoExchange=Automatic conversion
 UIExchange_From=from
 UIExchange_To=to
-UIGame_UserInfoTipsMtt=Championship career
+UIGame_UserInfoTipsMtt=Tournament Career
 UIGame_UserInfoTips=30 day general card game information
 UIExchange_reversal=reversal
 UIInsurance_Total=total:
@@ -4004,8 +4003,8 @@ UIOutChipsTip06=Failed to bring out the stack
 UIOutChipsTip07=This table does not support bring out stack
 UIOutChipsTip08=This hand stack has been bring out
 MsgInfo_3021={0} sent you {1} diamond
-MsgInfo_3023={0} give you {1}{2}
-MsgInfo_3024={0} give you back {1}{2}
+MsgInfo_3023={0} sent you {1}{2}
+MsgInfo_3024={0} sent you back {1}{2}
 OpCodeString_CLUBTOUSER=Issue by Club
 OpCodeString_CLUBRECOVEUSER=Reclaim by Club
 UIDialogShareCodetips01=Table invitation code
@@ -4020,67 +4019,63 @@ UICurrentAnte=Current ante
 UIApplying=Applying
 UIlobbyfilterTips01=Blind Selection
 UIlobbyfilterTips02=Reset
-UIMTTChampionships=<b><size=80>MTT</size></b>\nChampionships
+UIMTTChampionships=<b><size=80>MTT</size></b>\nTournaments
 UITexasPlayerInfoCloseAudio=Turn Off Sound
 UITexasPlayerInfoCloseVideo=Turn Off Video
 GametypeFiltertip01=There's no table to filter
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UICareer_DIAMOND=Diamond
+UIMTTBuyInBuyTip=Reminder
+UIMTTBuyInBuyContent=The Diamond balance is not enough, please recharge first
+UIMTTBuyInBuyCommit=Purchase
+UIMTTBuyInBuyCancel=Cancel
+UIDanmuShiledTaget=Reported user
+UIDanmuShiledPerson=Reported by
+UIDanmuReport=Select the reason for the report (multiple choice)
+UIDanmuShiled=Block
+UIVideoModeltips01=This mode is unable to turn off video and sound
+UICreateClubDiamondNowPrice=Current price
+UICreateClubOrgDimondCost=Create Diamond Consumption Original Price
+UICreatePriceafterdiscount=Discounted price
+UICreateClubActivityEffectiveDate=Valid until
+UICeateClubActivityIsFree=Currently free
+UIGuildChangeNameSuccess=Modified
+UIGuildChangeNameFail=Failed to change nickname, please try again after {0} hours
+UIGuildMemberDetailspermissions001=Admin permissions:
+UIGuildMemberDetailspermissions002=Create table
+UIGuildMemberDetailspermissions003=Club Management
+UIGuildMemberDetailspermissions004=Member Management
+UIGuildMemberDetailspermissions005=Fund Management
+UIGuildMemberDetailspermissions006=View Data
+UIGuildcreateroomtoggledoublecard=Second deck
+UIROOMNAMENick_tooLong=Nickname must not exceed 20 characters
+UIGuildcreateroomtoggleVideoModel01=Full time mode
+UIGuildcreateroomtoggleVideoModel02=Verification mode
+UIGuildcreateroomtoggleVideoModel03=McSequence mode
+UIClubScore=Club Scoreboard
+UIFriendScore=Home Games scoreboard
+UIMine_Bill=My Bill
+UIMinePutAway=Collect
+UIMineAllBringOut=Total brought out
+UIMineAllGC=GC Total
+UIMineAllUC=UC Total
+UIMineAllClub=Club Scoreboard Total Amount
+UIMineAllDiamond=Diamond Balance
+UIMineChangeBalance=Balance after changes
+UIGuildDataRecords001=
+UIGuildTablePersonDate01=
+UISettingOPmodetips=
+UISettingOPmodetips01=
+UISettingOPmodetips02=
+UIDisCountTips1_1=
+UIDisCountTips1_2=
+UIDisCountTips2_1=
+UIDisCountTips2_2=
+UIDisCountTips3_1=
+UIDisCountTips3_2=
+UIDisCountTips4_1=
+UIDisCountTips4_2=
+UIDisCountTips5=
+UIDisCountTips6=
 
 
 

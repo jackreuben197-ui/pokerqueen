@@ -16,10 +16,11 @@ import OrientationComponent from "./funcomponent/OrientationComponent";
 import ReconnectComponent from "./funcomponent/ReconnectComponent";
 import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
+import SoundComponent from "./sound/SoundComponent";
 import CCTools from "./tools/CCTools";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
 ///////////////////////////////////////////////
-
+cc.macro.ENABLE_TRANSPARENT_CANVAS = true;
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -97,6 +98,8 @@ export default class Main extends cc.Component {
         }, 1);
 
         GC.uc.AddComponent(new OrientationComponent);
+
+        SoundComponent.Instance.initSound();
 
         ReconnectComponent.Instance.Start();
 

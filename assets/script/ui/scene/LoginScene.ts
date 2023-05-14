@@ -27,8 +27,6 @@ import WebImageHelper from "../../helper/WebImageHelper";
 
 const { ccclass, property } = cc._decorator;
 
-cc.macro.ENABLE_TRANSPARENT_CANVAS = true;
-
 @ccclass
 export default class LoginScene extends BaseScene {
     /**
@@ -63,7 +61,7 @@ export default class LoginScene extends BaseScene {
     private delBtn: cc.Node = null;
 
     private sureBtn: cc.Node = null;
-    private sureBtnLab: cc.Label = null;
+    //private sureBtnLab: cc.Label = null;
     private forgotBtn: cc.Node = null;
     private changeLoginBtn: cc.Node = null;
     private registerBtn: cc.Node = null;
@@ -124,7 +122,7 @@ export default class LoginScene extends BaseScene {
         this.closeEyes = this.getChildNodeOrComponent("closeEyes")
         this.openEyes = this.getChildNodeOrComponent("openEyes")
         this.sureBtn = this.getChildNodeOrComponent("sureBtn")
-        this.sureBtnLab = this.getChildNodeOrComponent("sureBtnLab", cc.Label)
+        //this.sureBtnLab = this.getChildNodeOrComponent("sureBtnLab", cc.Label)
         this.forgotBtn = this.getChildNodeOrComponent("forgotBtn")
         this.changeLoginBtn = this.getChildNodeOrComponent("changeLoginBtn")
         this.registerBtn = this.getChildNodeOrComponent("registerBtn")
@@ -246,8 +244,8 @@ export default class LoginScene extends BaseScene {
         this.setActive(this.forgotBtn, this._loginProcess == ELoginProcess.login && !(this._loginType == ELoginType.phone && this._isQuiklyLogin));
         this.setActive(this.registerBtn, this._loginProcess == ELoginProcess.login);
         this.setActive(this.backLoginBtn, this._loginProcess != ELoginProcess.login);
-        this.sureBtnLab.node.getComponent(i18nLabel).i18NString = this._loginProcess == ELoginProcess.login ? "UILogin_BtnLogin" : "CommitOK";
-
+        //this.sureBtnLab.node.getComponent(i18nLabel).i18NString = this._loginProcess == ELoginProcess.login ? "UILogin_BtnLogin" : "CommitOK";
+        this.setChildLabel(this.sureBtn, "label", this._loginProcess == ELoginProcess.login ? "UILogin_BtnLogin" : "CommitOK");
         this.setToggleTitles();
         this.setPhoneNodeStatus();
         this.updateAgreeNodeStatus();
@@ -768,19 +766,17 @@ export default class LoginScene extends BaseScene {
         this.Video_adv.node.active = false;
         this.Scene_bg.active = true;
 
-
         //测试视频播放
         // this.vodeo_url = "https://media.w3.org/2010/05/sintel/trailer.mp4";
         // this.ShowVideo();
         /////////////////////////////////
 
-
         let type = 2;//1开屏 2登录 3主界面
         var tLangs = ["zh_CN", "en_US", "zh_HK", "pt_BR"];
         let LanguageIndex = i18nMgr.getLanguage();
-        if (i18nMgr.getLanguage() >= tLangs.length) {
-            LanguageIndex = 1;
-        }
+        //if (i18nMgr.getLanguage() >= tLangs.length) {
+        LanguageIndex = 1;
+        //}
 
         if (this.image_url != null) {
             this.ShowImage();
@@ -842,9 +838,9 @@ export default class LoginScene extends BaseScene {
     }
     protected lateExit(param: any = null) {
         //关闭视频播放
-        if (this.Video_adv.isPlaying) {
-            cc.log("关闭视频");
-            this.Video_adv.stop();
-        }
+        cc.log("关闭视频");
+        this.Video_adv.node.active = true;
+        this.Video_adv.stop();
+
     }
 }
