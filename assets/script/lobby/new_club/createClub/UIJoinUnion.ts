@@ -3,7 +3,7 @@
  * @Date: 2022-09-14 19:02:14
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-12 10:18:14
+ * @LastEditTime: 2023-05-14 13:54:44
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
@@ -146,32 +146,39 @@ export default class UIJoinUnion extends BaseForm {
         club.active = false
         let union = node.getChildByName('union')
         union.active = false
-        let flag = index % 2 != 0
-        node.getChildByName('Rectangle').active = flag
-        node.getChildByName('Rectangle1').active = !flag
+        // let flag = index % 2 != 0
+        // node.getChildByName('Rectangle').active = flag
+        // node.getChildByName('Rectangle1').active = !flag
+
         if (this.type == 0) {
             let name = club.getChildByName('name').getComponent(cc.Label)
             name.string = data.club_name
             let id = club.getChildByName('id').getComponent(cc.Label)
             id.string = 'ID: ' + data.random_id
             let num = club.getChildByName('num').getComponent(cc.Label)
+            let icon = cc.find("Round", club).getComponent(cc.Sprite)
 
             num.string = `${i18nMgr.Get('UIGuild_Member')} :${data.club_members}`
             club.active = true
+            WebImageHelper.SetHeadImage(icon, data.logo)
+            let join = club.getChildByName('join')
+            join.on(cc.Node.EventType.TOUCH_END, cb, this)
 
         } else {
             let name = union.getChildByName('name').getComponent(cc.Label)
-            name.string = data.club_name
+            name.string = data.tribe_name
             let id = union.getChildByName('id').getComponent(cc.Label)
             id.string = 'ID: ' + data.tribe_random_id
             union.active = true;
+            let icon = cc.find("Round", union).getComponent(cc.Sprite)
+
+            WebImageHelper.SetHeadImage(icon, data.tribe_logo)
+            let join = union.getChildByName('join')
+            join.on(cc.Node.EventType.TOUCH_END, cb, this)
         }
-        let icon = cc.find("Round", node).getComponent(cc.Sprite)
-        WebImageHelper.SetHeadImage(icon, data.logo)
 
         node.active = true;
-        let join = node.getChildByName('join')
-        join.on(cc.Node.EventType.TOUCH_END, cb, this)
+
     }
 
     titleNodeClick(event, customData) {
