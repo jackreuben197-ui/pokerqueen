@@ -19,7 +19,7 @@ export class UICareerModel {
         }
         return this.instance;
     }
-    api_stats_user_stats_all(parms) {
+    api_stats_user_stats_all(parms, juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: api_stats_user_stats_all,
@@ -29,7 +29,8 @@ export class UICareerModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                juhua: juhua
             });
         });
     }

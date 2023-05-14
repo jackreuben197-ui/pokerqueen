@@ -18,12 +18,12 @@ import WebHelper from "./WebHelper";
 
 export default class HttpRequest {
 
-    static async Send({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null, isJson = true, isGet = false }) {
+    static async Send({ api = null, request = null, body = {}, cuscomHost = null, onSuccess = null, onFailure = null, headers = null, isJson = true, isGet = false, juhua = true }) {
         let host = cuscomHost || GameConfig.Network.WebHost;
         api = api || request.API
         let url = host + api;
         url = this.handleUrl(url);
-        let needJuhua = WebHelper.NeedJuhua(api);
+        let needJuhua = WebHelper.NeedJuhua(api) && juhua;
         let needConsole = WebHelper.NeedConsole(api);
         await HttpClient[`${isGet ? "get" : "post"}`]({
             url: url,

@@ -33,7 +33,7 @@ export default class HttpClient {
     /**
      * get 请求
      */
-    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true, api = null }) {
+    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true, api = null}) {
         body = JSON.stringify(body);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);

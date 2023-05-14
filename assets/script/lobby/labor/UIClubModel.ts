@@ -47,7 +47,7 @@ export class UIClubModel {
      * @method  俱乐部信息
      * @returns 
      */
-    public APIOrgClubGet() {
+    public APIOrgClubGet(juhua: boolean = true) {
         let paramas: any = {};
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -58,7 +58,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                juhua: juhua
             });
         });
     };
@@ -196,7 +197,7 @@ export class UIClubModel {
 
     async APIOrgClubUploadIcon() {
         let _data: any = await upLoadIcon.openFile();
-        console.log('data====', _data)
+        console.log('data====', _data, _data.name)
 
         let data = new FormData()
         data.append("file", _data, _data.name)
@@ -484,7 +485,7 @@ export class UIClubModel {
         });
     }
 
-    APIOrgFriendRoomList() {
+    APIOrgFriendRoomList(juhua: boolean = true) {
         let params = {}
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
@@ -495,7 +496,8 @@ export class UIClubModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                juhua: juhua
             });
         });
     }
@@ -1149,7 +1151,7 @@ export class UIClubModel {
             });
         });
     }
-    APIUserDiamondsWallet() {
+    APIUserDiamondsWallet(juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: APIUserDiamondsWallet,
@@ -1160,6 +1162,7 @@ export class UIClubModel {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
+                juhua: juhua
             });
         });
     }
@@ -1179,7 +1182,7 @@ export class UIClubModel {
         });
     }
 
-    web_api_friend_room_stats() {
+    web_api_friend_room_stats(juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: web_api_friend_room_stats,
@@ -1190,6 +1193,7 @@ export class UIClubModel {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
+                juhua: juhua
             });
         });
     }

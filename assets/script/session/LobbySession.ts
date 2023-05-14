@@ -86,7 +86,7 @@ export default class LobbySession {
     /**
     * 获取房间名多语言配置
     */
-    static APIConfig_Multi_Language_Template() {
+    static APIConfig_Multi_Language_Template(juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
                 request: Web_Config_Multi_Language_Template,
@@ -96,7 +96,8 @@ export default class LobbySession {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                juhua: juhua
             });
         });
     }

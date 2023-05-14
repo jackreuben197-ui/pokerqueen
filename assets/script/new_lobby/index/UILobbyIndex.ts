@@ -169,7 +169,8 @@ export default class UILobbyIndex extends UIBasePlus {
         this.gametype_status = 0;
         this.refreshUserInfo();
         this.resetCurrRoom();
-        this.reqWalletTotal();
+        //this.reqWalletTotal();
+        this.reqLanguageTemplete();
     }
     //重置当前房间的数据
     resetCurrRoom() {
@@ -177,36 +178,34 @@ export default class UILobbyIndex extends UIBasePlus {
         this.curr_room_list = [];
         this.offset_end = false;
     }
-    //请求总钱包
-    reqWalletTotal() {
+    // //请求总钱包
+    // reqWalletTotal() {
 
-        WWW.Instance.CommonAPI(
-            {
-                web_class: api_wallet_total,
-            }
-        ).then(
-            (res: any) => {
+    //     WWW.Instance.CommonAPI(
+    //         {
+    //             web_class: api_wallet_total,
+    //         }
+    //     ).then(
+    //         (res: any) => {
 
-                this.cc_Label$uc_num.string = `${StringHelper.GetLongString(res.data.tribe_total)}`;
-                this.cc_Label$gc_num.string = `${StringHelper.GetLongString(res.data.usdt_total)}`;
-                this.reqLanguageTemplete();
-            },
-            (res: any) => {
-                this.reqLanguageTemplete();
-            }
-        )
-    }
+    //             this.cc_Label$uc_num.string = `${StringHelper.GetLongString(res.data.tribe_total)}`;
+    //             this.cc_Label$gc_num.string = `${StringHelper.GetLongString(res.data.usdt_total)}`;
+    //             this.reqLanguageTemplete();
+    //         },
+    //         (res: any) => {
+    //             this.reqLanguageTemplete();
+    //         }
+    //     )
+    // }
 
     async reqLanguageTemplete() {
-        await LobbySession.APIConfig_Multi_Language_Template();
+        await LobbySession.APIConfig_Multi_Language_Template(false);
         //await LobbySession.APIUserInfo();
         this.reqRooms();
     }
 
     //请求所有房间  
     reqRooms() {
-
-        console.log("......reqRooms", this.gametype_status);
 
         if (this.offset_end) {
             console.log("请求到头");
@@ -221,7 +220,8 @@ export default class UILobbyIndex extends UIBasePlus {
                     game_type: this.GameTypeTabs[this.gametype_status].game_type,
                     poker_type: this.GameTypeTabs[this.gametype_status].poker_type,
                     order: ["players_desc", "game_type"]
-                }
+                },
+                juhua: false
             }
         ).then(
             (res: any) => {

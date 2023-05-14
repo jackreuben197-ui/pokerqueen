@@ -118,7 +118,7 @@ export default class UIFriendMatch extends UIBase {
         this.refreshJoinBtn();
     }
     async initFriendData() {
-        await UIClubModel.mInstance.web_api_friend_room_stats()
+        await UIClubModel.mInstance.web_api_friend_room_stats(false);
         let data = web_api_friend_room_stats.Response.data;
         let lbl_7 = this.getChildNodeOrComponent('lb_7', cc.Label)
         this.setText(lbl_7, data.friend_room_stats_nlh.game_num)
@@ -160,7 +160,7 @@ export default class UIFriendMatch extends UIBase {
         this.datalbl.node.color = this._selectTitle == 2 ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#E6E8EC')
     }
     async initDiamond() {
-        await UIClubModel.mInstance.APIUserDiamondsWallet();
+        await UIClubModel.mInstance.APIUserDiamondsWallet(false);
         let wallet = APIUserDiamondsWallet.Response.data;
         ClubCache._diamonds_wallet = wallet.diamonds_wallet
         this.num_diamond.string = ClubCache._diamonds_wallet.diamonds
@@ -175,7 +175,7 @@ export default class UIFriendMatch extends UIBase {
         this.listen(EventName.updateFriendChessView, this.reqDataAgain);
     }
     async reqDataAgain() {
-        let result: any = await UIClubModel.mInstance.APIOrgFriendRoomList().catch((content) => { console.log(`>> catch error:${APIOrgFriendRoomList.API}`, content) });
+        let result: any = await UIClubModel.mInstance.APIOrgFriendRoomList(false).catch((content) => { console.log(`>> catch error:${APIOrgFriendRoomList.API}`, content) });
         if (!result) return;
         let data: any = APIOrgFriendRoomList.Response.data
         this._roomList = data?.records;
@@ -277,7 +277,8 @@ export default class UIFriendMatch extends UIBase {
                     status: 1,
                     limit: 1,
                     offset: 0,
-                }
+                },
+                juhua: false
             }
         ).then(
             (res: any) => {
