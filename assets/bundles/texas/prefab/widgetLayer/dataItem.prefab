@@ -54,8 +54,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1242,
-      "height": 260
+      "width": 970,
+      "height": 100
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -67,7 +67,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -130,
+        -50,
         0,
         0,
         0,
@@ -118,7 +118,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
+      "width": 66,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -130,7 +130,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -488.105,
+        -427.776,
         28.04,
         0,
         0,
@@ -172,7 +172,7 @@
     "_dstBlendFactor": 771,
     "_string": "玩家",
     "_N$string": "玩家",
-    "_fontSize": 40,
+    "_fontSize": 33,
     "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
@@ -228,7 +228,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
+      "width": 66,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -282,7 +282,7 @@
     "_dstBlendFactor": 771,
     "_string": "手数",
     "_N$string": "手数",
-    "_fontSize": 40,
+    "_fontSize": 33,
     "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
@@ -338,7 +338,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
+      "width": 66,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -350,7 +350,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        153.637,
+        123.302,
         26.978,
         0,
         0,
@@ -392,7 +392,7 @@
     "_dstBlendFactor": 771,
     "_string": "带入",
     "_N$string": "带入",
-    "_fontSize": 40,
+    "_fontSize": 33,
     "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
@@ -448,7 +448,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
+      "width": 66,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -460,7 +460,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        153.637,
+        123.302,
         -24.547,
         0,
         0,
@@ -502,7 +502,7 @@
     "_dstBlendFactor": 771,
     "_string": "带入",
     "_N$string": "带入",
-    "_fontSize": 40,
+    "_fontSize": 33,
     "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
@@ -558,7 +558,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 80,
+      "width": 66,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -570,7 +570,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        478,
+        396.692,
         26.447,
         0,
         0,
@@ -612,7 +612,7 @@
     "_dstBlendFactor": 771,
     "_string": "积分",
     "_N$string": "积分",
-    "_fontSize": 40,
+    "_fontSize": 33,
     "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
@@ -775,8 +775,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 37,
-      "height": 39
+      "width": 34,
+      "height": 35
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -787,7 +787,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -524.17,
+        -456.877,
         23.582,
         0,
         0,
