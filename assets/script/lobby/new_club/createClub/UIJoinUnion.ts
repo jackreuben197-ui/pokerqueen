@@ -31,11 +31,10 @@ export default class UIJoinUnion extends BaseForm {
     // tabNode: TabNode = null;
     list: cc.Node = null;
     searchNode: cc.Node = null;
-    @property(cc.Label)
-    btn_lbl: cc.Label = null;
 
-    @property(cc.Button)
-    sousuo: cc.Button = null;
+
+    @property(cc.Node)
+    sousuo: cc.Node = null;
 
     @property(cc.Node)
     contentList: cc.Node = null;
@@ -45,12 +44,8 @@ export default class UIJoinUnion extends BaseForm {
     @property(cc.Node)
     noDataTip: cc.Node = null;
 
-    @property(cc.Node)
-    canClick: cc.Node = null;
-    @property(cc.Node)
-    noClick: cc.Node = null;
-    @property(cc.Label)
-    btnTip: cc.Label = null;
+
+
 
     @property(cc.Label)
     pjlbl: cc.Label = null;
@@ -78,7 +73,10 @@ export default class UIJoinUnion extends BaseForm {
         super.onShow(param, fromUI, sceneUI);
         this.type = param.type
         let title = this.type == 0 ? "club_3" : "UIClub_TribeJoin"
-        this.setText(this.btn_lbl, this.type == 0 ? "UIGuild_SearchBtn" : "UIGuild_SearchUnionBtn")
+        //this.setText(this.btn_lbl, this.type == 0 ? "UIGuild_SearchBtn" : "UIGuild_SearchUnionBtn")
+
+        this.setChildLabel(this.sousuo, "label", this.type == 0 ? "UIGuild_SearchBtn" : "UIGuild_SearchUnionBtn");
+
         this.comFormTitle.initData(title, this);
         // this.tabNode.initData(this.type == 0 ? joinClubConfig : joinUnionConfig, this.titleNodeClick.bind(this), this)
         this.pjlbl.string = this.type == 0 ? i18nMgr.Get('UIGuild_SearchBtn') : i18nMgr.Get('UIGuild_SearchUnionBtn')
@@ -89,10 +87,11 @@ export default class UIJoinUnion extends BaseForm {
         this.setText(this.search_id, this.type == 0 ? "UIClub_JoinQuery_ISNSnu1A" : "UIClub_InputLeagueId")
         this.initList();
         this.tempString = ''
-        this.sousuo.interactable = false;
-        this.canClick.active = this.sousuo.interactable
-        this.noClick.active = !this.sousuo.interactable
-        this.btnTip.node.color = this.sousuo.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
+        this.setButtonInteractable(this.sousuo, false);
+        // this.sousuo.interactable = false;
+        // this.canClick.active = this.sousuo.interactable
+        // this.noClick.active = !this.sousuo.interactable
+        // this.btnTip.node.color = this.sousuo.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
     }
     initList(club_id: number = -1) {
         if (this.type == 0) {
@@ -208,10 +207,9 @@ export default class UIJoinUnion extends BaseForm {
                 };
                 break;
         }
-        this.sousuo.interactable = this.tempString.length > 0
-        this.canClick.active = this.sousuo.interactable
-        this.noClick.active = !this.sousuo.interactable
-        this.btnTip.node.color = this.sousuo.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
+
+        this.setButtonInteractable(this.sousuo, this.tempString.length > 0);
+
 
     }
 

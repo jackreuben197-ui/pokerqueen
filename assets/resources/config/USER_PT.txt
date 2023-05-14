@@ -1336,22 +1336,22 @@ area9994017=Quzhou
 area9994018=Shaoxing
 area9994019=Taizhou
 area9994020=Wenzhou
-area9994021=Zhoushan
-club_fund_0=Ganhos do Clube
-club_fund_1=Operador
-club_fund_2=Solte para atualizar
-club_fund_3=Puxe para baixo para atualizar
-club_fund_4=Solte para atualizar mais dados
-club_fund_5=Não possui mais dados
-club_fund_6=Puxe para cima para atualizar
-club_fund_7=Emissão de fundos
-club_fund_8=Liquidação(recarga){0}UC
-club_fund_9=Ganhos do clube em jogos
-club_fund_10=Extrato de bônus por performance
-club_fund_11=Recarga através do canal de pagamento da plataforma
-club_fund_12=Históricos de saque
-club_fund_13=Compartilhe e ganhe UC!
-club_fund_14=Resgatado
+area9994021=
+club_fund_0=
+club_fund_1=
+club_fund_2=Zhoushan
+club_fund_3=Ganhos do Clube
+club_fund_4=Operador
+club_fund_5=Solte para atualizar
+club_fund_6=Puxe para baixo para atualizar
+club_fund_7=Solte para atualizar mais dados
+club_fund_8=Não possui mais dados
+club_fund_9=Puxe para cima para atualizar
+club_fund_10=Emissão de fundos
+club_fund_11=Liquidação(recarga){0}UC
+club_fund_12=Ganhos do clube em jogos
+club_fund_13=Extrato de bônus por performance
+club_fund_14=Recarga através do canal de pagamento da plataforma
 club_fund_15=Recarregado
 club_fund_16=Por favor insira o valor correto de UC
 club_fund_17=UC insuficientes
@@ -1697,7 +1697,7 @@ UIData_Wk0vXh5dr=Média de buy-in
 UIData_9uXzPe7nz=Dados avançados
 UIData_86Rap5lYl=VIP Platinum/Diamante 
 UIData_UkDjET60P=VPIP:
-UIData_TbfhUk81c=PRF:
+UIData_TbfhUk81c=PFR:
 UIData_tI5vAueGX=3Bet:
 UIData_KYcrpCuoH=Cbet:
 UIData_NmCApsmJP^=Fator de Agressividade
@@ -3844,7 +3844,7 @@ UIGuild_SearchTips=Insira por favor o ID do clube para pesquisar
 UIGuild_SearchUnionBtn=Buscar União
 UIGuild_TitleName=Nome do clube
 UILogin_RegistNewDiamondsContent=Parabéns pelo seu registro bem-sucedido
-UILogin_RegistNewDiamondsContentWish=Desejo-lhe um jogo feliz!
+UILogin_RegistNewDiamondsContentWish=Bom jogo!
 UILogin_RegistNewDiamondsTitle=Benefícios para iniciantes
 UIMain_JoinGuildTips=Por favor, junte-se ou crie uma Cluba primeiro
 UIMain_JoinUnionTips=A Cluba não se juntou ao sindicato, entre em contato com o serviço de atendimento ao cliente do sindicato
@@ -4016,7 +4016,7 @@ UIOutChipsTip04=Sua mesa está prestes a terminar e não pode ser tirada!
 UIOutChipsTip05=Não é permitido trazer para fora enquanto clube ou união em um status de congelado
 UIOutChipsTip06=Falha ao trazer o stack
 UIOutChipsTip07=Esta mesa não oferece suporte à retirada de stack
-UIOutChipsTip08=Este stack de mãos foi trazido para fora
+UIOutChipsTip08=Os stack dessa mão foi trazido para fora
 MsgInfo_3021={0} te mandou {1} diamante(s)
 MsgInfo_3023={0} deu à você {1}{2}
 MsgInfo_3024={0} devolveu {1}{2}
@@ -4034,67 +4034,63 @@ UICurrentAnte=Ante atual
 UIApplying=Pedido em andamento
 UIlobbyfilterTips01=Selecionar Blind
 UIlobbyfilterTips02=Reiniciar
-UIMTTChampionships=<b><size=80>MTT</size></b>\nChampionships
+UIMTTChampionships=<b><size=80>MTT</size></b>\nTorneios
 UITexasPlayerInfoCloseAudio=Desligar Som
 UITexasPlayerInfoCloseVideo=Desligar Vídeo
-GametypeFiltertip01=Não há uma tabela para filtrar
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+GametypeFiltertip01=Não há mesas para ser filtrado
+UICareer_DIAMOND=Diamante
+UIMTTBuyInBuyTip=Lembrete
+UIMTTBuyInBuyContent=O saldo de diamantes é insuficiente, por favor, recarregue primeiro
+UIMTTBuyInBuyCommit=Comprar
+UIMTTBuyInBuyCancel=Cancelar
+UIDanmuShiledTaget=Usuário denunciado
+UIDanmuShiledPerson=Denunciado por
+UIDanmuReport=Selecione o motivo da denúncia (múltipla escolha)
+UIDanmuShiled=Bloquear
+UIVideoModeltips01=Não é possível desativar o vídeo e o som nesse modo
+UICreateClubDiamondNowPrice=Preço atual
+UICreateClubOrgDimondCost=Criar consumo de diamante Preço original
+UICreatePriceafterdiscount=Preço após o desconto
+UICreateClubActivityEffectiveDate=Válido até
+UICeateClubActivityIsFree=O evento atual é gratuito
+UIGuildChangeNameSuccess=Modificado
+UIGuildChangeNameFail=Falha ao alterar o apelido, tente novamente após {0} horas
+UIGuildMemberDetailspermissions001=Permissões de administrador:
+UIGuildMemberDetailspermissions002=Criar mesa
+UIGuildMemberDetailspermissions003=Gerenciamento de clubes
+UIGuildMemberDetailspermissions004=Gerenciamento de associados
+UIGuildMemberDetailspermissions005=Gerenciamento de fundos
+UIGuildMemberDetailspermissions006=Visualizar dados
+UIGuildcreateroomtoggledoublecard=Segundo Deck
+UIROOMNAMENick_tooLong=o nickname não deve exceder 20 caracteres
+UIGuildcreateroomtoggleVideoModel01=Modo Tempo Inteiro
+UIGuildcreateroomtoggleVideoModel02=Modo de verificação
+UIGuildcreateroomtoggleVideoModel03=Modo McSequência
+UIClubScore=Placar do clube
+UIFriendScore=Placar dos Home Games
+UIMine_Bill=A minha Fatura
+UIMinePutAway=Recolher
+UIMineAllBringOut=Total retirado
+UIMineAllGC=Total GC
+UIMineAllUC=Total UC
+UIMineAllClub=Placar do clube Valor total
+UIMineAllDiamond=Saldo Diamante
+UIMineChangeBalance=Saldo após alterações
+UIGuildDataRecords001=
+UIGuildTablePersonDate01=
+UISettingOPmodetips=
+UISettingOPmodetips01=
+UISettingOPmodetips02=
+UIDisCountTips1_1=
+UIDisCountTips1_2=
+UIDisCountTips2_1=
+UIDisCountTips2_2=
+UIDisCountTips3_1=
+UIDisCountTips3_2=
+UIDisCountTips4_1=
+UIDisCountTips4_2=
+UIDisCountTips5=
+UIDisCountTips6=
 
 
 

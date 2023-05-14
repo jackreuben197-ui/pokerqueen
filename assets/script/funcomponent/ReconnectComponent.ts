@@ -95,8 +95,8 @@ export default class ReconnectComponent {
         }
     }
     public ShowMask() {
-        Main.Reconnect.active = true;
-        Main.Reconnect.getChildByName("warn_label").getComponent(cc.Label).string = i18nMgr.Get("adaptation20072");
+        //Main.Reconnect.active = true;
+        //Main.Reconnect.getChildByName("warn_label").getComponent(cc.Label).string = i18nMgr.Get("adaptation20072");
     }
     public HideMask() {
         Main.Reconnect.active = false;

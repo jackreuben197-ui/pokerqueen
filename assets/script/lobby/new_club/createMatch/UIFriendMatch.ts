@@ -115,6 +115,7 @@ export default class UIFriendMatch extends UIBase {
         this.initFriendData();
         this.red.active = false;
         this.RefreshMsgRed();
+        this.refreshJoinBtn();
     }
     async initFriendData() {
         await UIClubModel.mInstance.web_api_friend_room_stats()
@@ -224,8 +225,8 @@ export default class UIFriendMatch extends UIBase {
         if (this._keyNodeNumArr.length >= 6) {
             UIComponent.close(UIDefine.UIKeyNode)
         }
-        this.joinBtn.interactable = this._keyNodeNumArr.length == 6
-        this.joinBtn.node.getChildByName('Rectangle').active = this.joinBtn.interactable
+        this.refreshJoinBtn();
+
         for (let index = 0; index < this.numNode.childrenCount; index++) {
             const element = this.numNode.children[index].getChildByName('New Label').getComponent(cc.Label);
             element.string = '';
@@ -238,6 +239,13 @@ export default class UIFriendMatch extends UIBase {
         }
 
     }
+
+    refreshJoinBtn() {
+        this.joinBtn.interactable = this._keyNodeNumArr.length == 6
+        this.joinBtn.node.getChildByName('Rectangle').active = this.joinBtn.interactable
+    }
+
+
 
     async joinMatch() {
 

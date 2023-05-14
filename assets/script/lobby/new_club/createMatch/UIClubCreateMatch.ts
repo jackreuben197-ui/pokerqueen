@@ -297,7 +297,7 @@ export default class UIClubCreateMatch extends BaseForm {
         }
         pay.string = element.discount_price || 0
         pay1.string = element.price || 0
-        pay1._forceUpdateRenderData()
+        pay1["_forceUpdateRenderData"]()
         let Rectangle = cc.find('dynamicPay/pay1/zs/Rectangle', this.coinNode)
         Rectangle.width = pay1.node.width + 50
         let PricTipScript = this.node.getChildByName('pricTip').getComponent('pricTip')
@@ -1029,7 +1029,7 @@ export default class UIClubCreateMatch extends BaseForm {
         room_config.second_public_cards = this._etpState && this.etp.active;
         room_config.limit_bet_type = ClubCache.CreateGameType == 2 ? 1 : 0
         room_config.anti_cheat_type = this.deal_delayNum;
-        room_config.limit_delay_times = 1;  //延迟加时
+        room_config.limit_delay_times = 2;  //延迟加时
         room_config.deal_delay = 1
 
         let params: any = { name: this.tableNameEd.string, room_config: room_config }

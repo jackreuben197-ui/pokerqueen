@@ -34,17 +34,19 @@ export default class UIEditMess extends UIBase {
     tip1: cc.Label = null;
     editName: cc.EditBox = null;
     numTip: cc.Label = null;
-    canClick: cc.Node = null;
-    noClick: cc.Node = null;
+    commit: cc.Node = null;
+    // canClick: cc.Node = null;
+    // noClick: cc.Node = null;
     iconData = null;
     protected lateLoad(): void {
         super.lateLoad();
         this.icon = this.getChildNodeOrComponent('icon', cc.Sprite)
-        this.canClick = this.getChildNodeOrComponent('canClick')
-        this.noClick = this.getChildNodeOrComponent('noClick')
+        // this.canClick = this.getChildNodeOrComponent('canClick')
+        // this.noClick = this.getChildNodeOrComponent('noClick')
         this.tip1 = this.getChildNodeOrComponent('tip1', cc.Label)
         this.numTip = this.getChildNodeOrComponent('numTip', cc.Label)
-        this.editName = this.getChildNodeOrComponent('New EditBox', cc.EditBox)
+        this.editName = this.getChildNodeOrComponent('New EditBox', cc.EditBox);
+        this.commit = this.getChildNodeOrComponent('commit');
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -59,9 +61,15 @@ export default class UIEditMess extends UIBase {
     }
 
     editBoxChange() {
-        this.noClick.active = this.editName.string == '' || this.editName.string.toLowerCase() == 'player'
-        this.canClick.active = !this.noClick.active
-        this.numTip.string = this.editName.string.length + '/10'
+        //this.noClick.active = this.editName.string == '' || this.editName.string.toLowerCase() == 'player'
+
+
+        console.log(this.editName.string != '', this.editName.string.toLowerCase() != 'player');
+
+        this.setButtonInteractable(this.commit, (this.editName.string != '') && (this.editName.string.toLowerCase() != 'player'));
+
+        //this.canClick.active = !this.noClick.active
+        this.numTip.string = this.editName.string.length + '/10';
     }
     async uploadIcon() {
 

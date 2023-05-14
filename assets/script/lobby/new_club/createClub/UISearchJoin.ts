@@ -48,15 +48,15 @@ export default class UISearchJoin extends BaseForm {
     @property(cc.Label)
     btn_lbl: cc.Label = null;
 
-    @property(cc.Button)
-    sousuo: cc.Button = null;
-
     @property(cc.Node)
-    canClick: cc.Node = null;
+    sousuo: cc.Node = null;
 
-    @property(cc.Node)
-    noClick: cc.Node = null;
+    // @property(cc.Node)
+    // canClick: cc.Node = null;
 
+    // @property(cc.Node)
+    // noClick: cc.Node = null;
+    count_label: cc.Label = null;
 
 
     type = 0;
@@ -64,6 +64,7 @@ export default class UISearchJoin extends BaseForm {
     protected lateLoad(): void {
         super.lateLoad();
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
+        this.count_label = this.getChildNodeOrComponent("count_label", cc.Label);
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
@@ -76,23 +77,26 @@ export default class UISearchJoin extends BaseForm {
         this.id.string = 'ID:' + this._data.random_id //`<color=#757CAB>ID:</color><color=#FEEC8E>${this._data.random_id}</color>`
         this.club.active = this.type == 0
         this.union.active = this.type == 1
-        this.sousuo.interactable = false;
+
+        this.setButtonInteractable(this.sousuo, false);
+
+
         this.contentEdit.string = ''
         if (this.type == 0) {
-            this.sousuo.interactable = true;
+            this.setButtonInteractable(this.sousuo, true);
             this.memberNum.string = this._data.club_members
         }
-        this.setBtnState()
-    }
-    setBtnState() {
-        this.canClick.active = this.sousuo.interactable
-        this.noClick.active = !this.sousuo.interactable
-        this.btn_lbl.node.color = this.sousuo.interactable ? cc.color().fromHEX('#EEF5FF') : cc.color().fromHEX('#515774')
+
+        this.editBoxChange();
 
     }
+
     editBoxChange() {
-        this.sousuo.interactable = this.contentEdit.string != ''
-        this.setBtnState()
+
+        this.setButtonInteractable(this.sousuo, this.contentEdit.string != '');
+
+        this.count_label.string = `${this.contentEdit.string.length}/30`;
+
     }
     async sousuoBtn() {
         if (this.type == 0) {

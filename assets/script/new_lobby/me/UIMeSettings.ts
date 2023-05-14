@@ -5,6 +5,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { Web_User_Delete, WWW } from "../../net/https/WebRequest";
 import GlobalSession from "../../session/GlobalSession";
 import StorageKey from "../../session/StorageKey";
+import SoundComponent from "../../sound/SoundComponent";
 import GGSwitch from "../../ui/component/GGSwitch";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
@@ -53,13 +54,15 @@ export default class UIMeSettings extends BaseFormPlus {
     }
     private sound_show(ggswitch: GGSwitch) {
         //設置聲音
-        let sound = GC.localStore.getItem(StorageKey.soundIsOpen);
+        // let sound = GC.localStore.getItem(StorageKey.soundIsOpen);
 
-        if (!sound || sound == "1") {
-            ggswitch.setIsOn(true);
-        } else {
-            ggswitch.setIsOn(false);
-        }
+        // if (!sound || sound == "1") {
+        //     ggswitch.setIsOn(true);
+        // } else {
+        //     ggswitch.setIsOn(false);
+        // }
+
+        ggswitch.setIsOn(SoundComponent.Instance.sound_switch_on);
     }
 
     initView() {
@@ -106,6 +109,7 @@ export default class UIMeSettings extends BaseFormPlus {
         let ggswitch = button.node.getChildByName("switch").getComponent(GGSwitch);
         ggswitch.click();
         GC.localStore.setItem(StorageKey.soundIsOpen, ggswitch.isOn ? "1" : "0");
+        SoundComponent.Instance.sound_switch_on = ggswitch.isOn;
     }
     // 上报
     click_report() {

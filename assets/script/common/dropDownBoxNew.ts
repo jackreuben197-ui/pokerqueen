@@ -38,7 +38,7 @@ export default class dropDownBoxNew extends UIBase {
             let up = cc.find('flag/up', element).getComponent(cc.Sprite)
             up.spriteFrame = AssetContext.getAsset(this._dataConfig.type + '', AssetFold.texture_new_club)
             this.setText(flag, this._dataConfig[index].desc);
-            flag._forceUpdateRenderData()
+            flag["_forceUpdateRenderData"]();
             element.on("click", (event) => {
                 this.setState(event.node['_index'])
             }, this)
