@@ -47,7 +47,7 @@ export class WWW {
         )
      * @returns 
      */
-    CommonAPI(param: { web_class: { API: string, Request, Response }, body?: any, api_id?: number, club_id?: number }) {
+    CommonAPI(param: { web_class: { API: string, Request, Response }, body?: any, api_id?: number, club_id?: number, juhua?: boolean }) {
         return new Promise((resolve, reject) => {
             let obj: any = {
                 request: param.web_class,
@@ -57,7 +57,8 @@ export class WWW {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
+                juhua: param.juhua
             }
             //设置动态id参数
             param.api_id > 0 && (obj.api = param.web_class.API.replace("{id}", `${param.api_id}`));

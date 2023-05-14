@@ -72,7 +72,7 @@ export default class UIClubList extends BaseForm {
 
     }
     async refreshList() {
-        await UIClubModel.mInstance.APIOrgClubGet()
+        await UIClubModel.mInstance.APIOrgClubGet(false);
         let data: any = Web_Org_Club_Get.Response.data
         this.num.string = data.length;
         // this.initListNode(data)
@@ -135,7 +135,7 @@ export default class UIClubList extends BaseForm {
     initPageNode(clubList) {
 
         this.pageViews.removeAllPages();
-        
+
         for (let index = 0; index < clubList.length; index++) {
             const element = clubList[index];
             let clubPageItem = cc.instantiate(this.clubPageItem);

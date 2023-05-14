@@ -82,7 +82,7 @@ export default class UICareer extends UIBase {
             filter_type: this._selectIndex + 1
         }
         UICareerModel.mInstance._coinType = this._selectIndex + 1
-        await UICareerModel.mInstance.api_stats_user_stats_all(parm);
+        await UICareerModel.mInstance.api_stats_user_stats_all(parm, false);
         let _data = api_stats_user_stats_all.Response.data
         let room_data_total = _data?.room_data_total
         if (!room_data_total) return

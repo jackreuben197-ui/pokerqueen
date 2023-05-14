@@ -42,11 +42,10 @@ export default class ItemLobbyRoom extends UIBasePlus {
     }
     onShow(data: any): void {
         super.onShow(data);
-
+        if (this.node.activeInHierarchy == false) return;
         this.refreshUI(data);
     }
     refreshUI(data: any) {
-
         //gametype 图标
         this.cc_Sprite$type_icon.spriteFrame = this.getIconSpriteFrame(data.poker_type, data.game_type);
         this.cc_Label$bb.string = `${StringHelper.GetLongString(data.sb)}/${StringHelper.GetLongString(data.sb * 2)}(${data.ante})`;
@@ -84,6 +83,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
     getIconSpriteFrame(poker_type: number, game_type: number) {
         //return this.$room_type_icons.children[index].getComponent(cc.Sprite).spriteFrame;
         if (poker_type == 0) {
+
             return this.$room_type_icons.children[game_type].getComponent(cc.Sprite).spriteFrame;
         }
         if (poker_type == 2) {

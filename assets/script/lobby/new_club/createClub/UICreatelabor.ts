@@ -145,27 +145,27 @@ export default class UICreatelabor extends BaseForm {
         this.editName_label.string = this.editName_label.string.trim();
         this.editName_count_label.string = this.editName_label.string.length + '/20';
 
-        if (this.editName_label.string == '' || this.editName_label.string == '') {
-
-            this.setButtonInteractable(this.commit, false);
-        } else {
-
-            this.setButtonInteractable(this.commit, true);
-        }
+        this.refreshCommitBtn();
     }
     changeIntroduce() {
         this.editjieshao_label.string = this.editjieshao_label.string.trim();
         this.editjieshao_count_label.string = this.editjieshao_label.string.length + '/160';
 
-        if (this.editjieshao_label.string == '' || this.editjieshao_label.string == '') {
+        this.refreshCommitBtn();
+    }
+
+    refreshCommitBtn() {
+
+        if (this.editName_label.string == '' || this.editjieshao_label.string == '') {
 
             this.setButtonInteractable(this.commit, false);
         } else {
 
             this.setButtonInteractable(this.commit, true);
         }
-
     }
+
+
     async uploadIcon() {
         await UIClubModel.mInstance.APIOrgClubUploadIcon();
         let icon: any = APIOrgClubUploadIcon.Response.data

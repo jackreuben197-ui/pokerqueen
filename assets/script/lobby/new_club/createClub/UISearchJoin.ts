@@ -85,9 +85,10 @@ export default class UISearchJoin extends BaseForm {
         if (this.type == 0) {
             this.setButtonInteractable(this.sousuo, true);
             this.memberNum.string = this._data.club_members
+        } else {
+            this.editBoxChange();
         }
 
-        this.editBoxChange();
 
     }
 

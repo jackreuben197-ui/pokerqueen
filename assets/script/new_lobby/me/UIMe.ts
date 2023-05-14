@@ -59,6 +59,7 @@ export default class UIMe extends UIBasePlus {
         WWW.Instance.CommonAPI(
             {
                 web_class: APIUserDiamondsWallet,
+                juhua: false,
             }
         ).then(
             (res: any) => {
