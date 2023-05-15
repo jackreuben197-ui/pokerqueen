@@ -44,6 +44,7 @@ export enum ProtocolCode {
     Protocol_Holdem_PrivateMsg                    = Code.MSG_D_PRIVATE_MSG, // Code: 1020 私聊消息
     Protocol_Holdem_Roomers                       = Code.MSG_D_ROOMERS, // Code: 1021 房间内人员信息
     Protocol_Holdem_AgreeSecondPcsActive          = Code.MSG_D_AGREE_SECOND_PCS_ACTIVE, // Code: 1022 同意/拒绝发第2套公共牌
+    Protocol_Holdem_Observers                     = Code.MSG_D_OBSERVERS,//Code: 1023 旁观者信息(包含历史)
     Protocol_Holdem_ShowPublicCardsOthers         = Code.MSG_S_SHOW_PUBLIC_CARDS_OTHERS, // Code: 1100 其他人收到有人看公共牌
     Protocol_Holdem_Showcards                     = Code.MSG_S_SHOWCARDS, // Code: 1101 亮牌
     Protocol_Holdem_SeatedOthers                  = Code.MSG_S_SEATED_OTHERS, // Code: 1102 房间内人收到有人坐下的信息（不包括坐下的本人）

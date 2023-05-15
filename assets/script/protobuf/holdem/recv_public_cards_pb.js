@@ -36,7 +36,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.holdem.pb.ServerMessagePublicCards.repeatedFields_ = [1,3];
+proto.holdem.pb.ServerMessagePublicCards.repeatedFields_ = [1,3,5,6];
 
 
 
@@ -70,7 +70,11 @@ proto.holdem.pb.ServerMessagePublicCards.toObject = function(includeInstance, ms
     publicCardsArrayList: jspb.Message.getRepeatedField(msg, 1),
     nextOperator: (f = msg.getNextOperator()) && protobuf_holdem_define_pb.Operator.toObject(includeInstance, f),
     extPublicCardsArrayList: jspb.Message.getRepeatedField(msg, 3),
-    rnd: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    rnd: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    allinUsersList: jspb.Message.toObjectList(msg.getAllinUsersList(),
+    protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength.toObject, includeInstance),
+    extPublicCardsAllinSummaryList: jspb.Message.toObjectList(msg.getExtPublicCardsAllinSummaryList(),
+    protobuf_holdem_define_pb.SecondPublicCardsPlayerAllInShowCardSummary.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -123,6 +127,16 @@ proto.holdem.pb.ServerMessagePublicCards.deserializeBinaryFromReader = function(
     case 4:
       var value = /** @type {!proto.holdem.pb.Def.Round} */ (reader.readEnum());
       msg.setRnd(value);
+      break;
+    case 5:
+      var value = new protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength;
+      reader.readMessage(value,protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength.deserializeBinaryFromReader);
+      msg.addAllinUsers(value);
+      break;
+    case 6:
+      var value = new protobuf_holdem_define_pb.SecondPublicCardsPlayerAllInShowCardSummary;
+      reader.readMessage(value,protobuf_holdem_define_pb.SecondPublicCardsPlayerAllInShowCardSummary.deserializeBinaryFromReader);
+      msg.addExtPublicCardsAllinSummary(value);
       break;
     default:
       reader.skipField();
@@ -180,6 +194,22 @@ proto.holdem.pb.ServerMessagePublicCards.serializeBinaryToWriter = function(mess
     writer.writeEnum(
       4,
       f
+    );
+  }
+  f = message.getAllinUsersList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      5,
+      f,
+      protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength.serializeBinaryToWriter
+    );
+  }
+  f = message.getExtPublicCardsAllinSummaryList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      6,
+      f,
+      protobuf_holdem_define_pb.SecondPublicCardsPlayerAllInShowCardSummary.serializeBinaryToWriter
     );
   }
 };
@@ -285,6 +315,68 @@ proto.holdem.pb.ServerMessagePublicCards.prototype.getRnd = function() {
 /** @param {!proto.holdem.pb.Def.Round} value */
 proto.holdem.pb.ServerMessagePublicCards.prototype.setRnd = function(value) {
   jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * repeated PlayerAllInShowCardWinCardsLength allin_users = 5;
+ * @return {!Array.<!proto.holdem.pb.PlayerAllInShowCardWinCardsLength>}
+ */
+proto.holdem.pb.ServerMessagePublicCards.prototype.getAllinUsersList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.PlayerAllInShowCardWinCardsLength>} */ (
+    jspb.Message.getRepeatedWrapperField(this, protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength, 5));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.PlayerAllInShowCardWinCardsLength>} value */
+proto.holdem.pb.ServerMessagePublicCards.prototype.setAllinUsersList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 5, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.PlayerAllInShowCardWinCardsLength=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.PlayerAllInShowCardWinCardsLength}
+ */
+proto.holdem.pb.ServerMessagePublicCards.prototype.addAllinUsers = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.holdem.pb.PlayerAllInShowCardWinCardsLength, opt_index);
+};
+
+
+proto.holdem.pb.ServerMessagePublicCards.prototype.clearAllinUsersList = function() {
+  this.setAllinUsersList([]);
+};
+
+
+/**
+ * repeated SecondPublicCardsPlayerAllInShowCardSummary ext_public_cards_allin_summary = 6;
+ * @return {!Array.<!proto.holdem.pb.SecondPublicCardsPlayerAllInShowCardSummary>}
+ */
+proto.holdem.pb.ServerMessagePublicCards.prototype.getExtPublicCardsAllinSummaryList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.SecondPublicCardsPlayerAllInShowCardSummary>} */ (
+    jspb.Message.getRepeatedWrapperField(this, protobuf_holdem_define_pb.SecondPublicCardsPlayerAllInShowCardSummary, 6));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.SecondPublicCardsPlayerAllInShowCardSummary>} value */
+proto.holdem.pb.ServerMessagePublicCards.prototype.setExtPublicCardsAllinSummaryList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 6, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.SecondPublicCardsPlayerAllInShowCardSummary=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.SecondPublicCardsPlayerAllInShowCardSummary}
+ */
+proto.holdem.pb.ServerMessagePublicCards.prototype.addExtPublicCardsAllinSummary = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 6, opt_value, proto.holdem.pb.SecondPublicCardsPlayerAllInShowCardSummary, opt_index);
+};
+
+
+proto.holdem.pb.ServerMessagePublicCards.prototype.clearExtPublicCardsAllinSummaryList = function() {
+  this.setExtPublicCardsAllinSummaryList([]);
 };
 
 
