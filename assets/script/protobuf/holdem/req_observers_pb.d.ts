@@ -2,8 +2,8 @@
  * @Author: xfj
  * @Date: 2023-04-24 12:25:06
  * @description: 
- * @LastEditors: 
- * @LastEditTime: 2023-05-15 11:53:33
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-05-15 12:36:07
  * @FilePath: /pokerqueen/assets/script/protobuf/holdem/req_observers_pb.d.ts
  */
 // package: holdem.pb
@@ -37,7 +37,7 @@ export class ClientMessageObservers extends jspb.Message {
 export namespace ClientMessageObservers {
     export type AsObject = {
         room?: protobuf_holdem_define_pb.Room.AsObject,
-        history?: boolean
+        // history?: boolean
         offset?: number,
         limit?: number,
     }

@@ -6,6 +6,7 @@ import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIClubModel } from "../lobby/labor/UIClubModel";
+import { APIOrgFriendRoomList } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
@@ -97,7 +98,7 @@ export default class UITexasReportComponent extends UIBase {
             MatchID: GameCache.Instance.match_id,
             Body: {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id, },
-                history: GameCache.Instance.origin_type == 4,
+                // history: GameCache.Instance.origin_type == 4,
                 limit: 1000,
                 offset: 0,
             },
@@ -173,26 +174,12 @@ export default class UITexasReportComponent extends UIBase {
             element.parent = this.data_content;
             this.setInfos(element, this.tInfo_1[index1], false);
         }
+        if (GameCache.Instance.origin_type == 4) {
+            let result: any = await UIClubModel.mInstance.APIOrgFriendRoomList(false).catch((content) => { console.log(`>> catch error:${APIOrgFriendRoomList.API}`, content) });
+            if (!result) return;
+            let data: any = APIOrgFriendRoomList.Response.data
 
-        let parms = {
-            name: "",
-            ante_min: 0,
-            ante_max: 0,
-            sb_min: 10,
-            sb_max: 100000,
-            tribe_id: 0,
-            start_time_s: 0,
-            start_time_e: 0,
-            enter_time_s: 0,
-            enter_time_e: 0,
-            game_type: [],
-            poker_type: [0, 2],
-            limit_bet_type: [],
-            order: ["sb_asc"],
-
-        }
-        UIClubModel.mInstance.APIOrgClubRoom(parms).then((roomsInfoData: any) => {
-            roomsInfoData.data.records.forEach(item => {
+            data.records.forEach(item => {
                 if (item.rid == GameCache.Instance.room_id) {
                     if (item.start_time == null) {
                         return;
@@ -207,7 +194,43 @@ export default class UITexasReportComponent extends UIBase {
                     }
                 }
             })
-        })
+        } else {
+            let parms = {
+                name: "",
+                ante_min: 0,
+                ante_max: 0,
+                sb_min: 10,
+                sb_max: 100000,
+                tribe_id: 0,
+                start_time_s: 0,
+                start_time_e: 0,
+                enter_time_s: 0,
+                enter_time_e: 0,
+                game_type: [],
+                poker_type: [0, 2],
+                limit_bet_type: [],
+                order: ["sb_asc"],
+
+            }
+            UIClubModel.mInstance.APIOrgClubRoom(parms).then((roomsInfoData: any) => {
+                roomsInfoData.data.records.forEach(item => {
+                    if (item.rid == GameCache.Instance.room_id) {
+                        if (item.start_time == null) {
+                            return;
+                        }
+                        let deadLineTime = TimeHelper.RFC3339TimeConvertToUTCTime(item.start_time)
+                        let roomLeftTime = deadLineTime / 1000 + item.play_duration - new Date().getTime() / 1000
+                        if (roomLeftTime > 0) {
+                            this.mRoomLeaveTime = roomLeftTime;
+                            let textTitle = this.getChildNodeOrComponent('Text_Time').getComponent(cc.Label);
+                            textTitle.string = TimeHelper.ShowRemainingSemicolon2(this.mRoomLeaveTime);
+                            this.ShowLeaveTimer();
+                        }
+                    }
+                })
+            })
+        }
+
     }
 
     async UpdateObViewList(RoomersData) {

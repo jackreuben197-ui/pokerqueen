@@ -3,7 +3,7 @@
  * @Date: 2023-01-13 11:05:06
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-12 13:05:28
+ * @LastEditTime: 2023-05-15 12:19:13
  * @FilePath: /pokerqueen/assets/script/common/tabNode1.ts
  */
 
@@ -42,7 +42,7 @@ export default class TabNode1 extends UIBase {
         this._cb = cb
         // this.node.width = param.defaultWidth || 977
         // this.node.height = param.defaultHeight || 159
-        this._selectBg.width = (this.node.width - 100) / param.data.length;
+        this._selectBg.width = (this.node.width - 150) / param.data.length;
         this._title.width = this.node.width / param.data.length;
         this._title.height = this._selectBg.height
         for (let index = 1; index < param.data.length; index++) {
