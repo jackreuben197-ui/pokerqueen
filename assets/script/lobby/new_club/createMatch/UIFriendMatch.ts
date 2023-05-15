@@ -79,6 +79,10 @@ export default class UIFriendMatch extends UIBase {
     _keyNodeString = ''
     protected lateLoad(): void {
         super.lateLoad();
+
+        //UIScriptManager.Instance.RegeditScript("UIFriendMatch", this);
+        UIComponent.Instance.setComponentByName("UIFriendMatch", this);
+
         this.comFormTitle = this.getChildNodeOrComponent("title_lbl", cc.Label);
 
         this.tabNode = this.getChildNodeOrComponent('tabNode', TabNode)
@@ -94,7 +98,7 @@ export default class UIFriendMatch extends UIBase {
         let code: number = responseData.code;
         //let data: string = responseData.data;
         if (code == BroadcastCode.SeatFriendApplyRefreshMsgNum) {
-            this.RefreshMsgRed();
+            this.ReqMsgRed();
         }
     }
 
@@ -114,7 +118,7 @@ export default class UIFriendMatch extends UIBase {
         this.initDiamond();
         this.initFriendData();
         this.red.active = false;
-        this.RefreshMsgRed();
+        this.ReqMsgRed();
         this.refreshJoinBtn();
     }
     async initFriendData() {
@@ -268,7 +272,7 @@ export default class UIFriendMatch extends UIBase {
     // update (dt) {}
 
     //刷新带入红点
-    RefreshMsgRed() {
+    ReqMsgRed() {
 
         WWW.Instance.CommonAPI(
             {
@@ -289,7 +293,7 @@ export default class UIFriendMatch extends UIBase {
                             isShow = true;
                         }
                     });
-                    isShow && (this.red.active = true);
+                    this.red.active = isShow;
                 }
             },
             (res: any) => {

@@ -1120,6 +1120,13 @@ export const UIDefine = {
         Name: "UIFunRecycleGive",
         Bundle: null,
         Path: "main/new_club/wallet/UIFunRecycleGive",
+    },
+    //牌局内牌谱
+    UITexasHistory: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasHistory",
+        Bundle: 'texas',
+        Path: "prefab/widgetLayer/UITexasHistory",
     }
 
 

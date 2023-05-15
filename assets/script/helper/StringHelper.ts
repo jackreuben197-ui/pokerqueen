@@ -5,7 +5,7 @@ import { i18nMgr } from "../i18n/i18nMgr";
  */
 export class StringHelper {
 
-    //返回缩小100倍字符串
+    //返回缩小100倍整数字符串
     static getStringDiv100(num: number): string {
         return `${num / 100 ^ 0}`;
     }
