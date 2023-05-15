@@ -3134,13 +3134,12 @@ export default class TexasGame {
         let historyInfoData = new HistoryInfoData()
         historyInfoData.bInsurance = GameCache.Instance.CurGame.insurance;
         historyInfoData.bJackPot = GameCache.Instance.jackPot_on == 1;
-        historyInfoData.Blindstr = StringHelper.getStringDiv100(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.getStringDiv100(GameCache.Instance.CurGame.bigBlind);
+        historyInfoData.Blindstr = StringHelper.GetLongString(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.GetLongString(GameCache.Instance.CurGame.bigBlind);
         historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
         historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
         historyInfoData.roomId = GameCache.Instance.room_id;
         historyInfoData.match_id = GameCache.Instance.match_id
         historyInfoData.room_unique_id = GameCache.Instance.CurGame.cacheUniqueId
-
 
         let page = GameCache.Instance.CurGame.mHandNum == 0 ? GameCache.Instance.CurGame.mHandNum : GameCache.Instance.CurGame.mHandNum - 1;
         if (page == 0) {
@@ -3148,7 +3147,7 @@ export default class TexasGame {
             return;
         }
         UIComponent.open(UIDefine.UIMine_Poker, { info: historyInfoData, enterType: 1 }, { parentUI: this.uirc.Common_Con })
-        // UIComponent.open(UIDefine.UITexasHistoryComponent, historyInfoData, { parentUI: this.uirc.Common_Con })
+        //UIComponent.open(UIDefine.UITexasHistory, historyInfoData, { parentUI: this.uirc.Common_Con })
     }
 
     refreshCoinAndChip(menu: UITexasMenu) {

@@ -6,6 +6,8 @@ import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import UIFriendMatch from "../../lobby/new_club/createMatch/UIFriendMatch";
+
 import { API_CLUB_APPLY_AUDIT, API_CLUB_APPLY_LIST, Web_Me_Apply, Web_RoomSitApplyAudit, Web_RoomSitApplyRecords, WWW } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
@@ -225,6 +227,10 @@ export default class UIMsgBring extends BaseFormPlus {
         ).then(
             (res: any) => {
                 this.refreshList(res.data.data);
+                if (from == 0) {
+                    let friend = UIComponent.Instance.getComponent<UIFriendMatch>("UIFriendMatch");
+                    if (friend) friend.ReqMsgRed();
+                }
             },
             (res: any) => {
                 this.refreshList(null);

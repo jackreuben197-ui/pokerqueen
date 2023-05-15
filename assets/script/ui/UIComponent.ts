@@ -226,6 +226,9 @@ export default class UIComponent {
     getComponent<T>(component_name: string): T {
         return this[component_name] as T;
     }
+    setComponentByName(name: string, component: cc.Component) {
+        this[name] = component;
+    }
     /////////////////////////////
 
 }
