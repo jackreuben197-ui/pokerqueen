@@ -668,7 +668,7 @@ export const UIDefine = {
     //数字钱包
     UIClubDigitalWallet: {
         UIType: UIType.Form,
-        Name: "UIClubUpLevel",
+        Name: "UIDigitalWallet",
         Bundle: null,
         Path: "main/new_club/lookClub/UIClubDigitalWallet",
         Title: "UIDigitalWallet"
