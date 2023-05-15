@@ -1,5 +1,6 @@
 import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
 import { StringHelper } from "../../helper/StringHelper";
+import TimeHelper from "../../helper/TimeHelper";
 import { Web_Room_Center_History_Replay } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
@@ -26,22 +27,22 @@ export class HistoryInfoData {
     // public ReferenceCollector rcPokerSprite;
 }
 export class PlayerInfo {
-    public playerId;//uid 随机ID
-    public userName;//名字
-    public headPic;//头像
-    public seatID;//座位号
-    public initChip;//初始筹码
-    public maxCardIndex;//最大牌型数组下标
-    public maxCardType;//最大牌型
-    public winAnte;//输赢筹码
-    public insuranceGain;//保险
-    public handCards;//手牌
-    public isMine;//是否是自己
-    public playerPosition;
-    public handBet;
-    public maxCardType2;//最大牌型
-    public maxCardIndex2;//最大牌型数组下标
-    public winAnte2;//第二套公共牌输赢筹码
+    public playerId: number;//uid 随机ID
+    public userName: string;//名字
+    public headPic: string;//头像
+    public seatID: number;//座位号
+    public initChip: number;//初始筹码
+    public maxCardIndex: number[];//最大牌型数组下标
+    public maxCardType: number;//最大牌型
+    public winAnte: number;//输赢筹码
+    public insuranceGain: number;//保险
+    public handCards: number[];//手牌
+    public isMine: boolean;//是否是自己
+    public playerPosition: number;
+    public handBet: number;
+    public maxCardType2: number;//最大牌型
+    public maxCardIndex2: number[];//最大牌型数组下标
+    public winAnte2: number[];//第二套公共牌输赢筹码
 }
 
 export class PlayerActionDataInfo {
@@ -133,7 +134,9 @@ export default class UITexasHistory extends UIBasePlus {
     $Preflop: cc.Node = null;
     $Preflop_title_childs: cc.Node = null;
 
+    //公共牌 1-2 
     $PublicCards: cc.Node = null;
+    $PublicCards_second: cc.Node = null;
 
     //总滚动容器
     $content: cc.Node = null;
@@ -386,47 +389,29 @@ export default class UITexasHistory extends UIBasePlus {
                 }
             }
         }
-        //显示公共牌
+        //显示第一套公共牌
         this.$PublicCards.children.forEach((item, index) => {
             item.active = this.PublicCards[index] > 0;
             item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
             //最下方进行重复显示
         })
 
+        //显示第二套公共牌
         if (this.HaveSecondCard) {
 
+            this.$PublicCards_second.children.forEach((item, index) => {
+                item.active = this.SecondPublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[index]), AssetFold.texture_SmallCard0);
+                //最下方进行重复显示
+            })
 
-            // this.$PublicCards.children.forEach((item, index) => {
-            //     item.active = this.PublicCards[index] > 0;
-            //     item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
-            //     //最下方进行重复显示
-            // })
-
-
-
-            // for (int i = 0; i < 5; i++)
-            // {
-
-            // 		Image publicCardDown = ShowdownInfoList2.transform.Find($"PublicCard{i}").GetComponent<Image>();
-
-            //     if (SecondPublicCards[i] == 0) {
-            //         //没发完的公共牌不显示
-            //         publicCardDown.gameObject.SetActive(false);
-            //     }
-            //     else {
-            //         publicCardDown.gameObject.SetActive(true);
-            //         publicCardDown.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)SecondPublicCards[i]));
-            //     }
-            // }
         }
-
-
-        // playerInfos.Clear();
-        // playerInfosPreFlop.Clear();
-        // playerInfosFlop.Clear();
-        // playerInfosTurn.Clear();
-        // playerInfosRiver.Clear();
-        // playerInfosWinner.Clear();
+        this.playerInfos = [];
+        this.playerInfosPreFlop = [];
+        this.playerInfosFlop = [];
+        this.playerInfosTurn = [];
+        this.playerInfosRiver = [];
+        this.playerInfosWinner = [];
         // DestoryGameObj(AllPlayerCardsInfos);
         // DestoryGameObj(AllPlayerCardsInfosPreFlop);
         // DestoryGameObj(AllPlayerCardsInfosFlop);
@@ -436,48 +421,44 @@ export default class UITexasHistory extends UIBasePlus {
 
 
 
-        // List < int > tableSeatIds = new List<int>();//本手参与玩家座位号
-        // 	int banerSeatId = ResponseData.s.table.btn;//庄位
+        let tableSeatIds = [];//本手参与玩家座位号
 
-        // for (int i = 0; i < ResponseData.s.table.pl.Count; i++)
-        // {
-        //     tableSeatIds.Add(ResponseData.s.table.pl[i].sn);
+        let banerSeatId = ResponseData.s.table.btn;//庄位
 
-        // }
+        for (let i = 0; i < ResponseData.s.table.pl.length; i++) {
+            tableSeatIds.push(ResponseData.s.table.pl[i].sn);
+        }
 
-        // for (int i = 0; i < ResponseData.s.table.pl.Count; i++)
-        // {
-        // 		PlayerInfo player = new PlayerInfo();
-        //     player.playerId = ResponseData.s.table.pl[i].uid;
-        //     player.playerPosition = getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.table.pl[i].sn);
-        //     player.userName = ResponseData.s.table.pl[i].name;
-        //     player.headPic = ResponseData.s.table.pl[i].avatar;
-        //     player.seatID = ResponseData.s.table.pl[i].sn;
-        //     player.initChip = ResponseData.s.table.pl[i].c;
+        for (let i = 0; i < ResponseData.s.table.pl.length; i++) {
+            let player: PlayerInfo = new PlayerInfo();
+            player.playerId = ResponseData.s.table.pl[i].uid;
+            player.playerPosition = this.getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.table.pl[i].sn);
+            player.userName = ResponseData.s.table.pl[i].name;
+            player.headPic = ResponseData.s.table.pl[i].avatar;
+            player.seatID = ResponseData.s.table.pl[i].sn;
+            player.initChip = ResponseData.s.table.pl[i].c;
 
-        //     if (player.playerId == GameCache.Instance.nUserId) {
-        //         player.isMine = true;
-        //         if (ResponseData.d != null && ResponseData.d.Count >= 0) {
-        //             player.handCards = ResponseData.d;
-        //         }
-        //     }
-        //     else {
-        //         player.isMine = false;
-        //     }
-        //     playerInfos.Add(player);
+            if (player.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
+                if (ResponseData.d != null && ResponseData.d.length >= 0) {
+                    player.handCards = ResponseData.d;
+                }
+            }
+            else {
+                player.isMine = false;
+            }
+            this.playerInfos.push(player);
+        }
 
-        // }
-        // //await Game.Scene.ModelScene.GetComponent<TimerComponent>().WaitAsync(100);
         // if (IsDisposed) {
         //     return;
         // }
-        // 	int mInsurancePool = 0;//保险池
-        // 	long mPool = 0;//各底池
-        // for (int i = 0; i < ResponseData.s.result.Count; i++)
-        // {
+        let mInsurancePool = 0;//保险池
+        let mPool = 0;//各底池
+        // for (let i = 0; i < ResponseData.s.result.length; i++) {
         //     mInsurancePool -= ResponseData.s.result[i].ins;
-        // 		int seatID = ResponseData.s.result[i].sn;
-        // 		PlayerInfo playerInfo = GetPlayerInfoByPlayerInfoList(playerInfos, seatID);
+        //     let seatID = ResponseData.s.result[i].sn;
+        //     let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
         //     if (playerInfo == null) {
         //         continue;
         //     }
