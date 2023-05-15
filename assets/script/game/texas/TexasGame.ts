@@ -3141,13 +3141,13 @@ export default class TexasGame {
         historyInfoData.match_id = GameCache.Instance.match_id
         historyInfoData.room_unique_id = GameCache.Instance.CurGame.cacheUniqueId
 
-        let page = GameCache.Instance.CurGame.mHandNum == 0 ? GameCache.Instance.CurGame.mHandNum : GameCache.Instance.CurGame.mHandNum - 1;
-        if (page == 0) {
-            //第一手没打完不请求
-            return;
-        }
-        UIComponent.open(UIDefine.UIMine_Poker, { info: historyInfoData, enterType: 1 }, { parentUI: this.uirc.Common_Con })
-        //UIComponent.open(UIDefine.UITexasHistory, historyInfoData, { parentUI: this.uirc.Common_Con })
+        // let page = GameCache.Instance.CurGame.mHandNum == 0 ? GameCache.Instance.CurGame.mHandNum : GameCache.Instance.CurGame.mHandNum - 1;
+        // if (page == 0) {
+        //     //第一手没打完不请求
+        //     return;
+        // }
+        // UIComponent.open(UIDefine.UIMine_Poker, { info: historyInfoData, enterType: 1 }, { parentUI: this.uirc.Common_Con })
+        UIComponent.open(UIDefine.UITexasHistory, historyInfoData, { parentUI: this.uirc.Common_Con })
     }
 
     refreshCoinAndChip(menu: UITexasMenu) {

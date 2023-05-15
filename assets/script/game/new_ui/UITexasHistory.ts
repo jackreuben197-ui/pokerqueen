@@ -1,4 +1,7 @@
+import SimpleNodePool from "../../common/MyNodePool";
+import { TextColor } from "../../config/GameConfig";
 import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import { Web_Room_Center_History_Replay } from "../../net/https/WebRequest";
@@ -98,7 +101,7 @@ export default class UITexasHistory extends UIBasePlus {
     AllPlayerCardsInfosFlop = []
     AllPlayerCardsInfosTurn = []
     AllPlayerCardsInfosRiver = []
-    AllPlayerCardsInfoswinner = []
+    AllPlayerCardsInfosWinner = []
 
     buttonFirstPage: cc.Button = null;
     buttonLastPage: cc.Button = null;
@@ -117,6 +120,7 @@ export default class UITexasHistory extends UIBasePlus {
 
 
 
+
     playerInfos: PlayerInfo[] = null;
     playerInfosPreFlop: PlayerActionDataInfo[] = null;
     playerInfosFlop: PlayerActionDataInfo[] = null;
@@ -130,17 +134,80 @@ export default class UITexasHistory extends UIBasePlus {
 
     //顶部包含房间信息
     $Top: cc.Node = null;
-
+    $Score: cc.Node = null;
     $Preflop: cc.Node = null;
-    $Preflop_title_childs: cc.Node = null;
+    $Flop: cc.Node = null;
+    $Turn: cc.Node = null;
+    $River: cc.Node = null;
+    $Showdown: cc.Node = null;
 
+    /////////////////////////////////////
+    //1.Score
+    $Score_Childs: cc.Node = null;
+    //child模板
+    $Score_Child: cc.Node = null;
+    $Score_Second_Child: cc.Node = null;
+    Score_Child_Pool: SimpleNodePool = null;
+    Score_Second_Child_Pool: SimpleNodePool = null;
     //公共牌 1-2 
-    $PublicCards: cc.Node = null;
-    $PublicCards_second: cc.Node = null;
+    $Score_PublicCards: cc.Node = null;
+    //$Score_PublicCards2: cc.Node = null;
+    /////////////////////////////////////
+
+    /////////////////////////////////////
+    //2.Preflop
+    $Preflop_Childs: cc.Node = null;
+    //child模板
+    $Preflop_Child: cc.Node = null;
+    Preflop_Child_Pool: SimpleNodePool = null;
+    $Preflop_title_childs: cc.Node = null;
+    ////////////////////////////////////
+
+    /////////////////////////////////////
+    //3.Flop
+    $Flop_Childs: cc.Node = null;
+    //child模板
+    $Flop_Child: cc.Node = null;
+    Flop_Child_Pool: SimpleNodePool = null;
+    $Flop_Cards: cc.Node = null;
+    ////////////////////////////////////
+
+    /////////////////////////////////////
+    //4.Flop
+    $Turn_Childs: cc.Node = null;
+    //child模板
+    $Turn_Child: cc.Node = null;
+    Turn_Child_Pool: SimpleNodePool = null;
+    $Turn_Cards: cc.Node = null;
+    ////////////////////////////////////
+
+    /////////////////////////////////////
+    //5.River
+    $River_Childs: cc.Node = null;
+    //child模板
+    $River_Child: cc.Node = null;
+    River_Child_Pool: SimpleNodePool = null;
+    $River_Cards: cc.Node = null;
+    ////////////////////////////////////
+
+    $Showdown_Childs: cc.Node = null;
+    Showdown_Child_Pool: SimpleNodePool = null;
+    $Showdown_PublicCards: cc.Node = null;
 
     //总滚动容器
     $content: cc.Node = null;
 
+    //不同手牌数不同的位置
+    cards_position = {
+        2: -142,
+        4: -155,
+        5: -198,
+        6: -241,
+    };
+    color_green = cc.color(86, 181, 87);
+    color_red = cc.color(230, 68, 85);
+    color_yellow = cc.color(255, 184, 83, 255);
+    color_gray = cc.color(198, 198, 198);
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -152,6 +219,13 @@ export default class UITexasHistory extends UIBasePlus {
         this.playerInfosTurn = []
         this.playerInfosRiver = []
         this.playerInfosWinner = []
+
+        this.Score_Child_Pool = new SimpleNodePool(this.$Score_Child);
+        this.Score_Second_Child_Pool = new SimpleNodePool(this.$Score_Second_Child);
+        this.Preflop_Child_Pool = new SimpleNodePool(this.$Preflop_Child);
+        this.Flop_Child_Pool = new SimpleNodePool(this.$Flop_Child);
+        this.Turn_Child_Pool = new SimpleNodePool(this.$Turn_Child);
+        this.River_Child_Pool = new SimpleNodePool(this.$River_Child);
     }
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$bg_click, this.click_bg);
@@ -228,7 +302,7 @@ export default class UITexasHistory extends UIBasePlus {
             //没有数据
             return;
         }
-        let data = Buffer.from(response.data, 'base64').toString();
+        let data = PublicHelper.Base64ToJsonString(response.data);
         this.HandleHistoryReplay(JSON.parse(data));
     }
     //请求个人历史并刷新界面
@@ -390,20 +464,25 @@ export default class UITexasHistory extends UIBasePlus {
             }
         }
         //显示第一套公共牌
-        this.$PublicCards.children.forEach((item, index) => {
+        //let Cards = cc.find("Title/Cards", this.$Score);
+        this.$Score_PublicCards.children.forEach((item, index) => {
             item.active = this.PublicCards[index] > 0;
             item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
-            //最下方进行重复显示
+        })
+        //Showdown 显示和score相同
+        //Cards = cc.find("Title/Cards", this.$Showdown);
+        this.$Showdown_PublicCards.children.forEach((item, index) => {
+            item.active = this.PublicCards[index] > 0;
+            item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
         })
 
         //显示第二套公共牌
         if (this.HaveSecondCard) {
 
-            this.$PublicCards_second.children.forEach((item, index) => {
-                item.active = this.SecondPublicCards[index] > 0;
-                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[index]), AssetFold.texture_SmallCard0);
-                //最下方进行重复显示
-            })
+            // this.$Public_Second_Cards.children.forEach((item, index) => {
+            //     item.active = this.SecondPublicCards[index] > 0;
+            //     item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[index]), AssetFold.texture_SmallCard0);
+            // })
 
         }
         this.playerInfos = [];
@@ -412,12 +491,14 @@ export default class UITexasHistory extends UIBasePlus {
         this.playerInfosTurn = [];
         this.playerInfosRiver = [];
         this.playerInfosWinner = [];
-        // DestoryGameObj(AllPlayerCardsInfos);
-        // DestoryGameObj(AllPlayerCardsInfosPreFlop);
-        // DestoryGameObj(AllPlayerCardsInfosFlop);
-        // DestoryGameObj(AllPlayerCardsInfosTurn);
-        // DestoryGameObj(AllPlayerCardsInfosRiver);
-        // DestoryGameObj(AllPlayerCardsInfoswinner);
+
+        this.AllPlayerCardsInfos = [];
+        this.AllPlayerCardsInfosPreFlop = [];
+        this.AllPlayerCardsInfosFlop = [];
+        this.AllPlayerCardsInfosTurn = [];
+        this.AllPlayerCardsInfosRiver = [];
+        this.AllPlayerCardsInfosWinner = [];
+
 
 
 
@@ -455,1056 +536,441 @@ export default class UITexasHistory extends UIBasePlus {
         // }
         let mInsurancePool = 0;//保险池
         let mPool = 0;//各底池
-        // for (let i = 0; i < ResponseData.s.result.length; i++) {
-        //     mInsurancePool -= ResponseData.s.result[i].ins;
-        //     let seatID = ResponseData.s.result[i].sn;
-        //     let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-        //     if (playerInfo == null) {
-        //         continue;
-        //     }
-        //     if (playerInfo.playerId != GameCache.Instance.nUserId) {
-        //         playerInfo.handCards = ResponseData.s.result[i].card;
-        //     }
-        //     playerInfo.maxCardType = (sbyte)ResponseData.s.result[i].card_type;
-        //     playerInfo.winAnte = ResponseData.s.result[i].win;
-        //     playerInfo.insuranceGain = ResponseData.s.result[i].ins;
-        //     playerInfo.maxCardIndex = ResponseData.s.result[i].maxcard_idx;
+        for (let i = 0; i < ResponseData.s.result.length; i++) {
+            mInsurancePool -= ResponseData.s.result[i].ins;
+            let seatID = ResponseData.s.result[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+                continue;
+            }
+            if (playerInfo.playerId != GameCache.Instance.nUserId) {
+                playerInfo.handCards = ResponseData.s.result[i].card;
+            }
+            playerInfo.maxCardType = ResponseData.s.result[i].card_type;
+            playerInfo.winAnte = ResponseData.s.result[i].win;
+            playerInfo.insuranceGain = ResponseData.s.result[i].ins;
+            playerInfo.maxCardIndex = ResponseData.s.result[i].maxcard_idx;
 
-        // }
-        // InfoList.gameObject.SetActive(ResponseData.s.result.Count > 0);
-        // AllPlayerPaiPu.gameObject.SetActive(ResponseData.s.result.Count > 0);
-        // InfoList.Find("PlayerNumText").GetComponent<Text>().text = ResponseData.s.result.Count.ToString();
+        }
 
+
+        this.$Score.active = ResponseData.s.result.length > 0;
+
+        this.setChildLabel(this.$Score, "Title/player/num", `${ResponseData.s.result.length}`);
 
         // #region Ante
-        // if (ResponseData.s.procedure.ante != null) {
-        //     for (int i = 0; i < ResponseData.s.procedure.ante.pl.Count; i++)
-        //     {
-        // 			int seatID = ResponseData.s.procedure.ante.pl[i].sn;
-        // 			PlayerInfo playerInfo = GetPlayerInfoByPlayerInfoList(playerInfos, seatID);
-        //         if (playerInfo == null) {
-        //             Log.Error("playerInfo is null");
-        //             continue;
-        //         }
-        // 			PlayerActionDataInfo player = new PlayerActionDataInfo();
-        //         playerInfo.handBet += ResponseData.s.procedure.ante.pl[i].act_amt;//统计本手下注筹码
-        //         if (ResponseData.s.procedure.ante.pl[i].pot_out > 0) {
-        //             mPool = ResponseData.s.procedure.ante.pl[i].pot_out;
-        //         }
-        //     }
-        // }
+        if (ResponseData.s.procedure.ante != null) {
+            for (let i = 0; i < ResponseData.s.procedure.ante.pl.length; i++) {
+                let seatID = ResponseData.s.procedure.ante.pl[i].sn;
+                let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+                if (playerInfo == null) {
+                    cc.log("playerInfo is null");
+                    continue;
+                }
+                //PlayerActionDataInfo player = new PlayerActionDataInfo();
+                playerInfo.handBet += ResponseData.s.procedure.ante.pl[i].act_amt;//统计本手下注筹码
+                if (ResponseData.s.procedure.ante.pl[i].pot_out > 0) {
+                    mPool = ResponseData.s.procedure.ante.pl[i].pot_out;
+                }
+            }
+        }
         // #endregion
 
 
         // #region PreFlop
-        // //PreFlop
+        this.$Preflop.active = ResponseData.s.procedure.preflop.pl.length > 0;
+
         // Preflop.gameObject.SetActive(ResponseData.s.procedure.preflop.pl.Count > 0);
         // PreflopInfoList.gameObject.SetActive(ResponseData.s.procedure.preflop.pl.Count > 0);
 
+        let times = 0;
+        for (let i = 0; i < ResponseData.s.procedure.preflop.pl.length; i++) {
+            let seatID: number = ResponseData.s.procedure.preflop.pl[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+                cc.log("playerInfo is null");
+                continue;
+            }
+            let player: PlayerActionDataInfo = new PlayerActionDataInfo();
+            player.nickNameStr = playerInfo.userName;
+            player.headStr = playerInfo.headPic;
 
+            player.playerPosition = this.getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.procedure.preflop.pl[i].sn);
+            player.actList = this.getActionNumByName(ResponseData.s.procedure.preflop.pl[i].act);
 
+            if (ResponseData.s.procedure.preflop.pl[i].act == "bet" || ResponseData.s.procedure.preflop.pl[i].act == "raise") {
+                times++;
+                player.raiseTimes = times;
+            }
+            player.actChipList = ResponseData.s.procedure.preflop.pl[i].act_amt;
+            player.playerId = playerInfo.playerId;
+            playerInfo.handBet += ResponseData.s.procedure.preflop.pl[i].act_amt;//统计本手下注筹码
 
-        // 	//string[] headStrPreFlops = rec.headStrPreFlop.Split(new string[] { "@%" }, StringSplitOptions.None);
-        // 	int times = 0;
-        // for (int i = 0; i < ResponseData.s.procedure.preflop.pl.Count; i++)
-        // {
-        // 		int seatID = ResponseData.s.procedure.preflop.pl[i].sn;
-        // 		PlayerInfo playerInfo = GetPlayerInfoByPlayerInfoList(playerInfos, seatID);
-        //     if (playerInfo == null) {
-        //         Log.Error("playerInfo is null");
-        //         continue;
-        //     }
-        // 		PlayerActionDataInfo player = new PlayerActionDataInfo();
-        //     player.nickNameStr = playerInfo.userName;
-        //     player.headStr = playerInfo.headPic;
+            if (player.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
+            }
+            else {
+                player.isMine = false;
+            }
+            if (ResponseData.s.procedure.preflop.pl[i].pot_out > 0) {
+                mPool = ResponseData.s.procedure.preflop.pl[i].pot_out;
+            }
 
-        //     player.playerPosition = getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.procedure.preflop.pl[i].sn);
-        //     player.actList = getActionNumByName(ResponseData.s.procedure.preflop.pl[i].act);
-
-        //     if (ResponseData.s.procedure.preflop.pl[i].act == "bet" || ResponseData.s.procedure.preflop.pl[i].act == "raise") {
-        //         times++;
-        //         player.raiseTimes = times;
-        //     }
-        //     player.actChipList = ResponseData.s.procedure.preflop.pl[i].act_amt;
-        //     player.playerId = playerInfo.playerId;
-        //     playerInfo.handBet += ResponseData.s.procedure.preflop.pl[i].act_amt;//统计本手下注筹码
-
-        //     if (player.playerId == GameCache.Instance.nUserId) {
-        //         player.isMine = true;
-
-        //     }
-        //     else {
-        //         player.isMine = false;
-        //     }
-        //     if (ResponseData.s.procedure.preflop.pl[i].pot_out > 0) {
-        //         mPool = ResponseData.s.procedure.preflop.pl[i].pot_out;
-        //     }
-
-        //     player.leftChips = ResponseData.s.procedure.preflop.pl[i].c;
-        //     playerInfosPreFlop.Add(player);
-
-        // }
-        // if (ResponseData.s.procedure.preflop.pl == null || ResponseData.s.procedure.preflop.pl.Count <= 0) {
-        //     PreflopInfoList.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool);
-        // }
+            player.leftChips = ResponseData.s.procedure.preflop.pl[i].c;
+            this.playerInfosPreFlop.push(player);
+        }
+        if (ResponseData.s.procedure.preflop.pl == null || ResponseData.s.procedure.preflop.pl.length <= 0) {
+            this.setChildLabel(this.$Preflop, "Title/coin/num", StringHelper.GetLongString(mPool));
+        }
         // #endregion
 
         // #region Flop
         // //Flop
+        this.$Flop.active = ResponseData.s.procedure.flop.pl.length > 0;
+        this.setChildLabel(this.$Flop, "Title/player/num", `${ResponseData.s.procedure.flop.pl.length}`);
+        if (ResponseData.s.procedure.flop.pl.length > 0) {
+            this.$Flop_Cards.children.forEach((item, index) => {
+                item.active = this.PublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+            })
+        }
 
-        // FlopInfoList.gameObject.SetActive(ResponseData.s.procedure.flop.pl.Count > 0);
-        // FlopNum.gameObject.SetActive(ResponseData.s.procedure.flop.pl.Count > 0);
-        // if (ResponseData.s.procedure.flop.pl.Count > 0) {
-        //     for (int i = 0; i < 3; i++)
-        //     {
-        // 			Image publicCard = FlopInfoList.transform.Find($"PublicCard{i}").GetComponent<Image>();
+        times = 0;
+        for (let i = 0; i < ResponseData.s.procedure.flop.pl.length; i++) {
+            let seatID = ResponseData.s.procedure.flop.pl[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+                cc.log("playerInfo is null");
+                continue;
+            }
+            let player: PlayerActionDataInfo = new PlayerActionDataInfo();
+            player.nickNameStr = playerInfo.userName;
+            player.headStr = playerInfo.headPic;
+            if (ResponseData.s.procedure.flop.pl[i].act == "bet" || ResponseData.s.procedure.flop.pl[i].act == "raise") {
+                times++;
+                player.raiseTimes = times;
+            }
+            player.playerPosition = this.getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.procedure.flop.pl[i].sn);
 
-        //         if (PublicCards[i] == 0) {
-        //             //没发完的公共牌不显示
-        //             publicCard.gameObject.SetActive(false);
+            player.actList = this.getActionNumByName(ResponseData.s.procedure.flop.pl[i].act);
+            player.actChipList = ResponseData.s.procedure.flop.pl[i].act_amt;
+            playerInfo.handBet += ResponseData.s.procedure.flop.pl[i].act_amt;//统计本手下注筹码
 
-        //         }
-        //         else {
+            player.leftChips = ResponseData.s.procedure.flop.pl[i].c;
+            player.playerId = playerInfo.playerId;
+            if (player.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
+            }
+            else {
+                player.isMine = false;
+            }
+            if (ResponseData.s.procedure.flop.pl[i].pot_out > 0) {
+                mPool = ResponseData.s.procedure.flop.pl[i].pot_out;
+            }
+            this.playerInfosFlop.push(player);
 
-        //             publicCard.gameObject.SetActive(true);
-        //             publicCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)PublicCards[i]));
-
-        //         }
-        //     }
-        // }
-        // FlopInfoList.Find("PlayerNumText").GetComponent<Text>().text = ResponseData.s.procedure.flop.pl.Count.ToString();
-
-
-
-        // times = 0;
-        // for (int i = 0; i < ResponseData.s.procedure.flop.pl.Count; i++)
-        // {
-        // 		int seatID = ResponseData.s.procedure.flop.pl[i].sn;
-        // 		PlayerInfo playerInfo = GetPlayerInfoByPlayerInfoList(playerInfos, seatID);
-        //     if (playerInfo == null) {
-        //         Log.Error("playerInfo is null");
-        //         continue;
-        //     }
-        // 		PlayerActionDataInfo player = new PlayerActionDataInfo();
-        //     player.nickNameStr = playerInfo.userName;
-        //     player.headStr = playerInfo.headPic;
-        //     if (ResponseData.s.procedure.flop.pl[i].act == "bet" || ResponseData.s.procedure.flop.pl[i].act == "raise") {
-        //         times++;
-        //         player.raiseTimes = times;
-
-        //     }
-        //     player.playerPosition = getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.procedure.flop.pl[i].sn);
-
-        //     player.actList = getActionNumByName(ResponseData.s.procedure.flop.pl[i].act);
-        //     player.actChipList = ResponseData.s.procedure.flop.pl[i].act_amt;
-        //     playerInfo.handBet += ResponseData.s.procedure.flop.pl[i].act_amt;//统计本手下注筹码
-
-        //     player.leftChips = ResponseData.s.procedure.flop.pl[i].c;
-        //     player.playerId = playerInfo.playerId;
-        //     if (player.playerId == GameCache.Instance.nUserId) {
-        //         player.isMine = true;
-
-        //     }
-        //     else {
-        //         player.isMine = false;
-        //     }
-        //     if (ResponseData.s.procedure.flop.pl[i].pot_out > 0) {
-        //         mPool = ResponseData.s.procedure.flop.pl[i].pot_out;
-        //     }
-        //     playerInfosFlop.Add(player);
-
-        // }
-        // if (ResponseData.s.procedure.flop.pl != null && ResponseData.s.procedure.flop.pl.Count > 0) {
-        //     FlopInfoList.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool);
-        // }
+        }
+        if (ResponseData.s.procedure.flop.pl != null && ResponseData.s.procedure.flop.pl.length > 0) {
+            this.setChildLabel(this.$Flop, "Title/coin/num", StringHelper.GetLongString(mPool));
+        }
         // #endregion
 
         // #region Turn
         // //Turn
-        // TurnNum.gameObject.SetActive(ResponseData.s.procedure.turn.pl.Count > 0);
-        // TurnInfoList.gameObject.SetActive(ResponseData.s.procedure.turn.pl.Count > 0);
-        // if (ResponseData.s.procedure.turn.pl.Count > 0) {
-        //     for (int i = 0; i < 4; i++)
-        //     {
-        // 			Image publicCard = TurnInfoList.transform.Find($"PublicCard{i}").GetComponent<Image>();
+        this.$Turn.active = ResponseData.s.procedure.turn.pl.length > 0;
+        this.setChildLabel(this.$Turn, "Title/player/num", `${ResponseData.s.procedure.turn.pl.length}`);
+        if (ResponseData.s.procedure.turn.pl.length > 0) {
+            this.$Turn_Cards.children.forEach((item, index) => {
+                item.active = this.PublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+            })
+        }
 
-        //         if (PublicCards[i] == 0) {
-        //             //没发完的公共牌不显示
-        //             publicCard.gameObject.SetActive(false);
+        times = 0;
+        for (let i = 0; i < ResponseData.s.procedure.turn.pl.length; i++) {
+            let seatID = ResponseData.s.procedure.turn.pl[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+                cc.log("playerInfo is null");
+                continue;
+            }
+            let player: PlayerActionDataInfo = new PlayerActionDataInfo();
+            player.nickNameStr = playerInfo.userName;
+            player.headStr = playerInfo.headPic;
+            player.playerPosition = this.getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.procedure.turn.pl[i].sn);
 
-        //         }
-        //         else {
+            player.actList = this.getActionNumByName(ResponseData.s.procedure.turn.pl[i].act);
+            player.actChipList = ResponseData.s.procedure.turn.pl[i].act_amt;
+            playerInfo.handBet += ResponseData.s.procedure.turn.pl[i].act_amt;//统计本手下注筹码
 
-        //             publicCard.gameObject.SetActive(true);
-        //             publicCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)PublicCards[i]));
+            player.playerId = playerInfo.playerId;
+            if (ResponseData.s.procedure.turn.pl[i].act == "bet" || ResponseData.s.procedure.turn.pl[i].act == "raise") {
+                times++;
+                player.raiseTimes = times;
 
-        //         }
-        //     }
-        // }
-        // TurnInfoList.Find("PlayerNumText").GetComponent<Text>().text = ResponseData.s.procedure.turn.pl.Count.ToString();
+            }
+            if (player.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
 
+            }
+            else {
+                player.isMine = false;
+            }
+            player.leftChips = ResponseData.s.procedure.turn.pl[i].c;
+            if (ResponseData.s.procedure.turn.pl[i].pot_out > 0) {
+                mPool = ResponseData.s.procedure.turn.pl[i].pot_out;
+            }
+            this.playerInfosTurn.push(player);
 
-        // times = 0;
-        // for (int i = 0; i < ResponseData.s.procedure.turn.pl.Count; i++)
-        // {
-        // 		int seatID = ResponseData.s.procedure.turn.pl[i].sn;
-        // 		PlayerInfo playerInfo = GetPlayerInfoByPlayerInfoList(playerInfos, seatID);
-        //     if (playerInfo == null) {
-        //         Log.Error("playerInfo is null");
-        //         continue;
-        //     }
-        // 		PlayerActionDataInfo player = new PlayerActionDataInfo();
-        //     player.nickNameStr = playerInfo.userName;
-        //     player.headStr = playerInfo.headPic;
-        //     player.playerPosition = getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.procedure.turn.pl[i].sn);
-
-        //     player.actList = getActionNumByName(ResponseData.s.procedure.turn.pl[i].act);
-        //     player.actChipList = ResponseData.s.procedure.turn.pl[i].act_amt;
-        //     playerInfo.handBet += ResponseData.s.procedure.turn.pl[i].act_amt;//统计本手下注筹码
-
-        //     player.playerId = playerInfo.playerId;
-        //     if (ResponseData.s.procedure.turn.pl[i].act == "bet" || ResponseData.s.procedure.turn.pl[i].act == "raise") {
-        //         times++;
-        //         player.raiseTimes = times;
-
-        //     }
-        //     if (player.playerId == GameCache.Instance.nUserId) {
-        //         player.isMine = true;
-
-        //     }
-        //     else {
-        //         player.isMine = false;
-        //     }
-        //     player.leftChips = ResponseData.s.procedure.turn.pl[i].c;
-        //     if (ResponseData.s.procedure.turn.pl[i].pot_out > 0) {
-        //         mPool = ResponseData.s.procedure.turn.pl[i].pot_out;
-        //     }
-        //     playerInfosTurn.Add(player);
-
-        // }
-        // if (ResponseData.s.procedure.turn.pl != null && ResponseData.s.procedure.turn.pl.Count > 0) {
-        //     TurnInfoList.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool);
-        // }
+        }
+        if (ResponseData.s.procedure.turn.pl != null && ResponseData.s.procedure.turn.pl.length > 0) {
+            this.setChildLabel(this.$Turn, "Title/coin/num", StringHelper.GetLongString(mPool));
+        }
         // #endregion
 
         // #region River
         // //River
-        // RiverNum.gameObject.SetActive(ResponseData.s.procedure.river.pl.Count > 0);
-        // RiverInfoList.gameObject.SetActive(ResponseData.s.procedure.river.pl.Count > 0);
-        // if (ResponseData.s.procedure.river.pl.Count > 0) {
-        //     for (int i = 0; i < 5; i++)
-        //     {
-        // 			Image publicCard = RiverInfoList.transform.Find($"PublicCard{i}").GetComponent<Image>();
+        this.$River.active = ResponseData.s.procedure.river.pl.length > 0;
+        this.setChildLabel(this.$River, "Title/player/num", `${ResponseData.s.procedure.river.pl.length}`);
 
-        //         if (PublicCards[i] == 0) {
-        //             //没发完的公共牌不显示
-        //             publicCard.gameObject.SetActive(false);
+        if (ResponseData.s.procedure.river.pl.length > 0) {
+            this.$River_Cards.children.forEach((item, index) => {
+                item.active = this.PublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+            })
+        }
 
-        //         }
-        //         else {
+        times = 0;
+        for (let i = 0; i < ResponseData.s.procedure.river.pl.length; i++) {
+            let seatID = ResponseData.s.procedure.river.pl[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+                cc.log("playerInfo is null");
+                continue;
+            }
+            let player: PlayerActionDataInfo = new PlayerActionDataInfo();
+            player.nickNameStr = playerInfo.userName;
+            player.headStr = playerInfo.headPic;
+            player.playerPosition = this.getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.procedure.river.pl[i].sn);
+            player.actList = this.getActionNumByName(ResponseData.s.procedure.river.pl[i].act);
+            player.actChipList = ResponseData.s.procedure.river.pl[i].act_amt;
+            playerInfo.handBet += ResponseData.s.procedure.river.pl[i].act_amt;//统计本手下注筹码
 
-        //             publicCard.gameObject.SetActive(true);
-        //             publicCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)PublicCards[i]));
+            player.leftChips = ResponseData.s.procedure.river.pl[i].c;
+            player.playerId = playerInfo.playerId;
+            if (ResponseData.s.procedure.river.pl[i].act == "bet" || ResponseData.s.procedure.river.pl[i].act == "raise") {
+                times++;
+                player.raiseTimes = times;
 
-        //         }
-        //     }
-        // }
-        // RiverInfoList.Find("PlayerNumText").GetComponent<Text>().text = ResponseData.s.procedure.river.pl.Count.ToString();
+            }
+            if (playerInfo.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
 
-        // times = 0;
-        // for (int i = 0; i < ResponseData.s.procedure.river.pl.Count; i++)
-        // {
-        // 		int seatID = ResponseData.s.procedure.river.pl[i].sn;
-        // 		PlayerInfo playerInfo = GetPlayerInfoByPlayerInfoList(playerInfos, seatID);
-        //     if (playerInfo == null) {
-        //         Log.Error("playerInfo is null");
-        //         continue;
-        //     }
-        // 		PlayerActionDataInfo player = new PlayerActionDataInfo();
-        //     player.nickNameStr = playerInfo.userName;
-        //     player.headStr = playerInfo.headPic;
-        //     player.playerPosition = getPositionNumByBaner(tableSeatIds, banerSeatId, ResponseData.s.procedure.river.pl[i].sn);
-        //     player.actList = getActionNumByName(ResponseData.s.procedure.river.pl[i].act);
-        //     player.actChipList = ResponseData.s.procedure.river.pl[i].act_amt;
-        //     playerInfo.handBet += ResponseData.s.procedure.river.pl[i].act_amt;//统计本手下注筹码
+            }
+            else {
+                player.isMine = false;
+            }
+            if (ResponseData.s.procedure.river.pl[i].pot_out > 0) {
+                mPool = ResponseData.s.procedure.river.pl[i].pot_out;
+            }
+            this.playerInfosRiver.push(player);
 
-        //     player.leftChips = ResponseData.s.procedure.river.pl[i].c;
-        //     player.playerId = playerInfo.playerId;
-        //     if (ResponseData.s.procedure.river.pl[i].act == "bet" || ResponseData.s.procedure.river.pl[i].act == "raise") {
-        //         times++;
-        //         player.raiseTimes = times;
-
-        //     }
-        //     if (playerInfo.playerId == GameCache.Instance.nUserId) {
-        //         player.isMine = true;
-
-        //     }
-        //     else {
-        //         player.isMine = false;
-        //     }
-        //     if (ResponseData.s.procedure.river.pl[i].pot_out > 0) {
-        //         mPool = ResponseData.s.procedure.river.pl[i].pot_out;
-        //     }
-        //     playerInfosRiver.Add(player);
-
-        // }
-        // if (ResponseData.s.procedure.river.pl != null && ResponseData.s.procedure.river.pl.Count > 0) {
-        //     RiverInfoList.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool);
-        // }
+        }
+        if (ResponseData.s.procedure.river.pl != null && ResponseData.s.procedure.river.pl.length > 0) {
+            this.setChildLabel(this.$River, "Title/coin/num", StringHelper.GetLongString(mPool));
+        }
 
         // #endregion
         // //Winner
 
-        // for (int i = 0; i < ResponseData.s.result.Count; i++)
-        // {
-        // 		int seatID = ResponseData.s.result[i].sn;
-        // 		PlayerInfo playerInfo = GetPlayerInfoByPlayerInfoList(playerInfos, seatID);
-        //     if (playerInfo == null) {
-        //         continue;
-        //     }
-        //     playerInfo.maxCardType = (sbyte)ResponseData.s.result[i].card_type;
-        //     playerInfo.winAnte = ResponseData.s.result[i].win;
-        //     playerInfo.insuranceGain = ResponseData.s.result[i].ins;
+        for (let i = 0; i < ResponseData.s.result.length; i++) {
+            let seatID = ResponseData.s.result[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+                continue;
+            }
+            playerInfo.maxCardType = ResponseData.s.result[i].card_type;
+            playerInfo.winAnte = ResponseData.s.result[i].win;
+            playerInfo.insuranceGain = ResponseData.s.result[i].ins;
+        }
 
-        // }
-        // ShowdownInfoList.gameObject.SetActive(ResponseData.s.result.Count > 0);
-        // ShowdownNum.gameObject.SetActive(ResponseData.s.result.Count > 0);
-        // ShowdownInfoList.Find("PlayerNumText").GetComponent<Text>().text = ResponseData.s.result.Count.ToString();
-        // //赢牌底池
-        // ShowdownInfoList.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool);
+        this.$Showdown.active = ResponseData.s.result.length > 0;
 
-        // ShowdownInfoList2.gameObject.SetActive(ResponseData.s.result.Count > 0 && HaveSecondCard);
-        // ShowdownNum2.gameObject.SetActive(ResponseData.s.result.Count > 0 && HaveSecondCard);
+        this.setChildLabel(this.$Showdown, "Title/player/num", `${ResponseData.s.result.length}`);
+        //赢牌底池
+        this.setChildLabel(this.$Showdown, "Title/coin/num", StringHelper.GetLongString(mPool));
+
+        this.setChildLabel(this.$Score, "Title/coin/num", StringHelper.GetLongString(mPool));
+
+
+        //ShowdownInfoList2.gameObject.SetActive(ResponseData.s.result.Count > 0 && HaveSecondCard);
+        //ShowdownNum2.gameObject.SetActive(ResponseData.s.result.Count > 0 && HaveSecondCard);
+
         // //本手结束时底池
-        // if (HaveSecondCard) {
-        //     //赢牌底池
-        //     ShowdownInfoList.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool / 2);
-        //     ShowdownInfoList2.Find("PlayerNumText").GetComponent<Text>().text = ResponseData.s.result.Count.ToString();
-        //     //赢牌底池
-        //     ShowdownInfoList2.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool / 2);
-        // }
-        // InfoList.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool);
+        if (this.HaveSecondCard) {
+            //赢牌底池
+            this.setChildLabel(this.$Showdown, "Title/coin/num", StringHelper.GetLongString(mPool / 2));
 
-        // for (int i = 0; i < ResponseData.s.result.Count; i++)
-        // {
-        // 		int seatID = ResponseData.s.result[i].sn;
-        // 		PlayerInfo playerInfo = GetPlayerInfoByPlayerInfoList(playerInfos, seatID);
-        //     if (playerInfo == null) {
-        //         continue;
-        //     }
-        // 		PlayerInfo player = new PlayerInfo();
-        //     player.userName = playerInfo.userName;
-
-        //     player.playerPosition = playerInfo.playerPosition;
-
-        //     player.winAnte = ResponseData.s.result[i].win;
-
-        //     player.playerId = playerInfo.playerId;
-        //     if (player.playerId == GameCache.Instance.nUserId) {
-        //         player.isMine = true;
-        //         if (ResponseData.d != null && ResponseData.d.Count >= 0) {
-        //             player.handCards = ResponseData.d;
-        //         }
-        //     }
-        //     else {
-        //         player.handCards = ResponseData.s.result[i].card;
-        //         player.isMine = false;
-        //     }
-        //     player.maxCardType = (sbyte)ResponseData.s.result[i].card_type;
-        //     player.maxCardIndex = playerInfo.maxCardIndex;
-        //     player.insuranceGain = ResponseData.s.result[i].ins;
-        //     if (HaveSecondCard) {
-        //         player.winAnte2 = new List<long>();
-        //         playerInfo.winAnte2 = new List<long>();
-        // 			bool isWin1 = ResponseData.s.result[i].sp_detail[0].is_winner;
-        // 			bool isWin2 = ResponseData.s.result[i].sp_detail[1].is_winner;
-        // 			long win1 = ResponseData.s.result[i].sp_detail[0].win;
-        // 			long win2 = ResponseData.s.result[i].sp_detail[1].win;
-        // 			long fee = ResponseData.s.result[i].fee;
-        // 			long fee1 = 0;
-        // 			long fee2 = 0;
-        //         if (isWin1 && isWin2) {
-        //             if (fee != 0) {
-        //                 fee1 = win1 * fee / (win1 + win2);
-        //                 fee2 = fee - fee1;
-        //             }
-        //         }
-        //         else {
-        //             fee1 = isWin1 ? fee : 0;
-        //             fee2 = isWin2 ? fee : 0;
-        //         }
-        // 			long handBet1 = playerInfo.handBet / 2;
-        // 			long handBet2 = playerInfo.handBet - handBet1;
-        //         player.winAnte2.Add(win1 - fee1 - handBet1);
-        //         player.winAnte2.Add(win2 - fee2 - handBet2);
-
-        //         player.maxCardType2 = (sbyte)ResponseData.s.result[i].card_type2;
-        //         player.maxCardIndex2 = ResponseData.s.result[i].maxcard_idx2;
-
-        //         playerInfo.winAnte2.Add(win1 - fee1 - handBet1);
-        //         playerInfo.winAnte2.Add(win2 - fee2 - handBet2);
-        //         playerInfo.maxCardIndex2 = ResponseData.s.result[i].maxcard_idx2;
-        //     }
-        //     playerInfosWinner.Add(player);
-
-        // }
+            // ShowdownInfoList2.Find("PlayerNumText").GetComponent<Text>().text = ResponseData.s.result.Count.ToString();
+            // //赢牌底池
+            // ShowdownInfoList2.Find("ChipNumText").GetComponent<Text>().text = StringHelper.GetLongString(mPool / 2);
+        }
 
 
-        // 	//赋值玩家数据
-        // 	int ContentHeight = 137 + 199 + 109 + 109 + 109 + 109;
-        // for (int i = 0; i < playerInfos.Count; i++)
-        // {
-        // 		Transform allPlayerObj = HaveSecondCard ? AllPlayerSecondInfoObj : AllPlayerPaiPuInfoObj;
-        // 		GameObject go = GetCreatePrefab(allPlayerObj.gameObject, AllPlayerPaiPu);
-        //     AllPlayerCardsInfos.Add(go);
-        //     go.SetActive(true);
-        //     if (HaveSecondCard) {
-        //         SetPlayerSecondCardItem(go, playerInfos[i]);
-        //     }
-        //     else {
-        //         SetPlayerCardItem(go, playerInfos[i]);
-        //     }
 
-        //     ContentHeight += 180;
-        // }
-        // for (int i = 0; i < playerInfosPreFlop.Count; i++)
-        // {
-        // 		GameObject go = GetCreatePrefab(PreflopInfoObj.gameObject, Preflop);
-        //     AllPlayerCardsInfosPreFlop.Add(go);
-        //     go.SetActive(true);
-        //     SetPlayerItem(go, playerInfosPreFlop[i], true);
-        //     ContentHeight += 80;
-        // }
-        // for (int i = 0; i < playerInfosFlop.Count; i++)
-        // {
-        // 		GameObject go = GetCreatePrefab(PreflopInfoObj.gameObject, FlopNum);
-        //     AllPlayerCardsInfosFlop.Add(go);
-        //     go.SetActive(true);
-        //     SetPlayerItem(go, playerInfosFlop[i]);
-        //     ContentHeight += 80;
-        // }
-        // for (int i = 0; i < playerInfosTurn.Count; i++)
-        // {
-        // 		GameObject go = GetCreatePrefab(PreflopInfoObj.gameObject, TurnNum);
-        //     AllPlayerCardsInfosTurn.Add(go);
-        //     go.SetActive(true);
-        //     SetPlayerItem(go, playerInfosTurn[i]);
-        //     ContentHeight += 80;
-        // }
-        // for (int i = 0; i < playerInfosRiver.Count; i++)
-        // {
-        // 		GameObject go = GetCreatePrefab(PreflopInfoObj.gameObject, RiverNum);
-        //     AllPlayerCardsInfosRiver.Add(go);
-        //     go.SetActive(true);
-        //     SetPlayerItem(go, playerInfosRiver[i]);
-        //     ContentHeight += 80;
-        // }
-        // for (int i = 0; i < playerInfosWinner.Count; i++)
-        // {
-        // 		GameObject go = GetCreatePrefab(AllPlayerPaiPuInfoObj.gameObject, ShowdownNum);
-        //     AllPlayerCardsInfoswinner.Add(go);
-        //     go.SetActive(true);
-        //     SetPlayerCardItem(go, playerInfosWinner[i], HaveSecondCard);
-        //     m_winUserId = playerInfosWinner[i].playerId;
-        //     ContentHeight += 180;
-        // }
-        // if (HaveSecondCard) {
-        //     for (int i = 0; i < playerInfosWinner.Count; i++)
-        //     {
-        // 			GameObject go = GetCreatePrefab(AllPlayerPaiPuInfoObj.gameObject, ShowdownNum2);
-        //         AllPlayerCardsInfoswinner.Add(go);
-        //         go.SetActive(true);
-        //         SetPlayerCardItem(go, playerInfosWinner[i], HaveSecondCard, 1);
-        //         m_winUserId = playerInfosWinner[i].playerId;
-        //         ContentHeight += 180;
-        //     }
-        // }
-        // if (historyInfoData.bInsurance) {
+        for (let i = 0; i < ResponseData.s.result.length; i++) {
+            let seatID = ResponseData.s.result[i].sn;
+            let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
+            if (playerInfo == null) {
+                continue;
+            }
+            let player: PlayerInfo = new PlayerInfo();
+            player.userName = playerInfo.userName;
+
+            player.playerPosition = playerInfo.playerPosition;
+
+            player.winAnte = ResponseData.s.result[i].win;
+
+            player.playerId = playerInfo.playerId;
+            if (player.playerId == GameCache.Instance.nUserId) {
+                player.isMine = true;
+                if (ResponseData.d != null && ResponseData.d.length >= 0) {
+                    player.handCards = ResponseData.d;
+                }
+            }
+            else {
+                player.handCards = ResponseData.s.result[i].card;
+                player.isMine = false;
+            }
+            player.maxCardType = ResponseData.s.result[i].card_type;
+            player.maxCardIndex = playerInfo.maxCardIndex;
+            player.insuranceGain = ResponseData.s.result[i].ins;
+            if (this.HaveSecondCard) {
+                player.winAnte2 = [];
+                playerInfo.winAnte2 = [];
+                let isWin1: boolean = ResponseData.s.result[i].sp_detail[0].is_winner;
+                let isWin2: boolean = ResponseData.s.result[i].sp_detail[1].is_winner;
+                let win1: number = ResponseData.s.result[i].sp_detail[0].win;
+                let win2: number = ResponseData.s.result[i].sp_detail[1].win;
+                let fee: number = ResponseData.s.result[i].fee;
+                let fee1: number = 0;
+                let fee2: number = 0;
+                if (isWin1 && isWin2) {
+                    if (fee != 0) {
+                        fee1 = win1 * fee / (win1 + win2);
+                        fee2 = fee - fee1;
+                    }
+                }
+                else {
+                    fee1 = isWin1 ? fee : 0;
+                    fee2 = isWin2 ? fee : 0;
+                }
+                let handBet1: number = playerInfo.handBet / 2;
+                let handBet2: number = playerInfo.handBet - handBet1;
+                player.winAnte2.push(win1 - fee1 - handBet1);
+                player.winAnte2.push(win2 - fee2 - handBet2);
+
+                player.maxCardType2 = ResponseData.s.result[i].card_type2;
+                player.maxCardIndex2 = ResponseData.s.result[i].maxcard_idx2;
+
+                playerInfo.winAnte2.push(win1 - fee1 - handBet1);
+                playerInfo.winAnte2.push(win2 - fee2 - handBet2);
+                playerInfo.maxCardIndex2 = ResponseData.s.result[i].maxcard_idx2;
+            }
+            this.playerInfosWinner.push(player);
+        }
+
+
+        //刷新手牌位置
+        let offsetx_x = this.cards_position[this.historyInfoData.handNum];
+        //赋值玩家数据
+
+        this.clearChilds(this.$Score_Childs, this.Score_Child_Pool);
+        this.clearChilds(this.$Preflop_Childs, this.Preflop_Child_Pool);
+        this.clearChilds(this.$Flop_Childs, this.Flop_Child_Pool);
+        this.clearChilds(this.$Turn_Childs, this.Turn_Child_Pool);
+        this.clearChilds(this.$River_Childs, this.River_Child_Pool);
+        this.clearChilds(this.$Showdown_Childs, this.Score_Child_Pool);
+
+
+        for (let i = 0; i < this.playerInfos.length; i++) {
+            let pool = this.HaveSecondCard ? this.Score_Second_Child_Pool : this.Score_Child_Pool;
+            let go = this.GetCreatePrefab(pool, this.$Score_Childs);
+            this.AllPlayerCardsInfos.push(go);
+            go.active = true;
+            if (this.HaveSecondCard) {
+                this.SetPlayerSecondCardItem(go, this.playerInfos[i]);
+            }
+            else {
+                this.SetPlayerCardItem(go, this.playerInfos[i]);
+            }
+            go.getChildByName("cards_position").x = offsetx_x;
+        }
+        for (let i = 0; i < this.playerInfosPreFlop.length; i++) {
+            let go = this.GetCreatePrefab(this.Preflop_Child_Pool, this.$Preflop_Childs);
+            this.AllPlayerCardsInfosPreFlop.push(go);
+            go.active = true;
+            this.SetPlayerItem(go, this.playerInfosPreFlop[i], true);
+        }
+        for (let i = 0; i < this.playerInfosFlop.length; i++) {
+            let go = this.GetCreatePrefab(this.Flop_Child_Pool, this.$Flop_Childs);
+            this.AllPlayerCardsInfosFlop.push(go);
+            go.active = true;
+            this.SetPlayerItem(go, this.playerInfosFlop[i]);
+
+
+        }
+        for (let i = 0; i < this.playerInfosTurn.length; i++) {
+            let go = this.GetCreatePrefab(this.Turn_Child_Pool, this.$Turn_Childs);
+            this.AllPlayerCardsInfosTurn.push(go);
+            go.active = true;
+            this.SetPlayerItem(go, this.playerInfosTurn[i]);
+        }
+
+        for (let i = 0; i < this.playerInfosRiver.length; i++) {
+            let go = this.GetCreatePrefab(this.River_Child_Pool, this.$River_Childs);
+            this.AllPlayerCardsInfosRiver.push(go);
+            go.active = true;
+            this.SetPlayerItem(go, this.playerInfosRiver[i]);
+        }
+
+
+        for (let i = 0; i < this.playerInfosWinner.length; i++) {
+            let go = this.GetCreatePrefab(this.Score_Child_Pool, this.$Showdown_Childs);
+            this.AllPlayerCardsInfosWinner.push(go);
+            go.active = true;
+            this.SetPlayerCardItem(go, this.playerInfosWinner[i], this.HaveSecondCard);
+            this.m_winUserId = this.playerInfosWinner[i].playerId;
+        }
+        //结果的第二套牌
+        if (this.HaveSecondCard) {
+            for (let i = 0; i < this.playerInfosWinner.length; i++) {
+                // 	GameObject go = GetCreatePrefab(AllPlayerPaiPuInfoObj.gameObject, ShowdownNum2);
+                // AllPlayerCardsInfoswinner.Add(go);
+                // go.SetActive(true);
+                // SetPlayerCardItem(go, playerInfosWinner[i], HaveSecondCard, 1);
+                // m_winUserId = playerInfosWinner[i].playerId;
+                // ContentHeight += 180;
+
+                // let go = this.GetCreatePrefab(this.Score_Child_Pool, this.$Showdown_Cards);
+                // this.AllPlayerCardsInfosRiver.push(go);
+                // go.active = true;
+                // this.SetPlayerCardItem(go, this.playerInfosWinner[i], this.HaveSecondCard);
+                // this.m_winUserId = this.playerInfosWinner[i].playerId;
+            }
+        }
+        // if (this.historyInfoData.bInsurance) {
         //     ContentHeight += 200;
         // }
         // //保险
-        // AllPlayerPaiPu.Find("Image_Insurance").gameObject.SetActive(mInsurancePool != 0);
-        // AllPlayerPaiPu.Find("Image_Insurance").SetAsLastSibling();
-        // AllPlayerPaiPu.Find("Image_Insurance/Text_insuranceValue").GetComponent<Text>().text = StringHelper.GetSignedLongString(mInsurancePool);
-        // ShowdownNum.Find("Image_Insurance").gameObject.SetActive(mInsurancePool != 0);
-        // ShowdownNum.Find("Image_Insurance").SetAsLastSibling();
-        // ShowdownNum.Find("Image_Insurance/Text_insuranceValue").GetComponent<Text>().text = StringHelper.GetSignedLongString(mInsurancePool);
-        // if (ContentHeight < 2108) {
-        //     ContentHeight = 2108;
-        // }
-        // scrollview_Content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ContentHeight);
 
+        this.setChildVisible(this.$Score, "Shows/insurance", mInsurancePool != 0);
+        this.setChildLabel(this.$Score, "Shows/insurance/value", StringHelper.GetSignedLongString(mInsurancePool));
 
-
+        this.setChildVisible(this.$Showdown, "Shows/insurance", mInsurancePool != 0);
+        this.setChildLabel(this.$Showdown, "Shows/insurance/value", StringHelper.GetSignedLongString(mInsurancePool));
 
     }
-
-
-
-    //#region 
-    // HandleHistoryReplay(ResponseData) {
-    //     this.PublicCards = [0, 0, 0, 0, 0]
-    //     this.HaveSecondCard = false;
-    //     this.RefreshTopHandAndPlayerNumInfo(ResponseData.s.table.pl.length.toString());
-    //     //缓存公共牌
-    //     if (ResponseData.s.procedure.flop.card != null) {
-    //         for (let i = 0; i < ResponseData.s.procedure.flop.card.length; i++) {
-    //             this.PublicCards[i] = ResponseData.s.procedure.flop.card[i];
-    //         }
-    //     }
-    //     if (ResponseData.s.procedure.turn.card != null && ResponseData.s.procedure.turn.card.length > 0) {
-    //         this.PublicCards[3] = ResponseData.s.procedure.turn.card[0];
-    //     }
-    //     if (ResponseData.s.procedure.river.card != null && ResponseData.s.procedure.river.card.length > 0) {
-    //         this.PublicCards[4] = ResponseData.s.procedure.river.card[0];
-    //     }
-    //     //判断是否有第二套牌，并赋值
-    //     if (ResponseData.s.procedure.river.scard != null && ResponseData.s.procedure.river.scard.length > 0) {
-    //         this.SecondPublicCards = [0, 0, 0, 0, 0]
-    //         this.HaveSecondCard = true;
-    //         if (ResponseData.s.procedure.river.scard.length < this.PublicCards.length) {
-    //             for (let i = 0; i < this.PublicCards.length - ResponseData.s.procedure.river.scard.length; i++) {
-    //                 this.SecondPublicCards[i] = this.PublicCards[i];
-    //             }
-    //             for (let i = 0; i < ResponseData.s.procedure.river.scard.length; i++) {
-    //                 this.SecondPublicCards[this.PublicCards.length - ResponseData.s.procedure.river.scard.length + i] = this.PublicCards[i];
-    //             }
-    //         }
-    //         else {
-    //             for (let i = 0; i < ResponseData.s.procedure.river.scard.length; i++) {
-    //                 this.SecondPublicCards[i] = ResponseData.s.procedure.river.scard[i];
-    //             }
-    //         }
-
-    //     }
-    //     //显示公共牌
-
-    //     for (let i = 0; i < 5; i++) {
-    //         let publicCard = this.InfoList.getChildByName('PublicCard').children[i].getComponent(cc.Sprite)
-    //         let publicCardDown = this.ShowdownInfoList.getChildByName('PublicCard' + i).getComponent(cc.Sprite)
-
-    //         if (this.PublicCards[i] == 0) {
-    //             //没发完的公共牌不显示
-    //             publicCard.node.active = (false);
-    //             publicCardDown.node.active = (false);
-    //         }
-    //         else {
-    //             publicCard.node.active = (true);
-    //             publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-
-    //             publicCardDown.node.active = (true);
-    //             publicCardDown.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-    //         }
-    //     }
-    //     if (this.HaveSecondCard) {
-    //         for (let i = 0; i < 5; i++) {
-    //             let publicCardDown = this.ShowdownInfoList2.getChildByName('PublicCard' + i).getComponent(cc.Sprite)
-    //             if (this.SecondPublicCards[i] == 0) {
-    //                 //没发完的公共牌不显示
-    //                 publicCardDown.node.active = (false);
-    //             }
-    //             else {
-    //                 publicCardDown.node.active = (true);
-    //                 publicCardDown.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-    //             }
-    //         }
-    //     }
-    //     this.resetData();
-
-    //     this.tableSeatIds = [];//本手参与玩家座位号
-    //     let banerSeatId = ResponseData.s.table.btn;//庄位
-
-    //     for (let i = 0; i < ResponseData.s.table.pl.length; i++) {
-    //         this.tableSeatIds.push(ResponseData.s.table.pl[i].sn);
-    //     }
-
-    //     for (let i = 0; i < ResponseData.s.table.pl.length; i++) {
-    //         let player: PlayerInfo = new PlayerInfo();
-    //         player.playerId = ResponseData.s.table.pl[i].uid;
-    //         player.playerPosition = this.getPositionNumByBaner(this.tableSeatIds, banerSeatId, ResponseData.s.table.pl[i].sn);
-    //         player.userName = ResponseData.s.table.pl[i].name;
-    //         player.headPic = ResponseData.s.table.pl[i].avatar;
-    //         player.seatID = ResponseData.s.table.pl[i].sn;
-    //         player.initChip = ResponseData.s.table.pl[i].c;
-
-    //         if (player.playerId == GameCache.Instance.nUserId) {
-    //             player.isMine = true;
-    //             if (ResponseData.d != null && ResponseData.d.length >= 0) {
-    //                 player.handCards = ResponseData.d;
-    //             }
-    //         }
-    //         else {
-    //             player.isMine = false;
-    //         }
-    //         this.playerInfos.push(player);
-    //     }
-
-    //     // if (IsDisposed) {
-    //     //     return;
-    //     // }
-    //     let mInsurancePool = 0;//保险池
-    //     let mPool = 0;//各底池
-    //     for (let i = 0; i < ResponseData.s.result.length; i++) {
-    //         mInsurancePool -= ResponseData.s.result[i].ins;
-    //         let seatID = ResponseData.s.result[i].sn;
-    //         let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-    //         if (playerInfo == null) {
-    //             continue;
-    //         }
-    //         if (playerInfo.playerId != GameCache.Instance.nUserId) {
-    //             playerInfo.handCards = ResponseData.s.result[i].card;
-    //         }
-    //         playerInfo.maxCardType = ResponseData.s.result[i].card_type;
-    //         playerInfo.winAnte = ResponseData.s.result[i].win;
-    //         playerInfo.insuranceGain = ResponseData.s.result[i].ins;
-    //         playerInfo.maxCardIndex = ResponseData.s.result[i].maxcard_idx;
-    //     }
-    //     this.InfoList.active = (ResponseData.s.result.length > 0);
-    //     this.AllPlayerPaiPu.active = (ResponseData.s.result.length > 0);
-    //     this.InfoList.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.result.length.toString();
-    //     //region Ante
-    //     if (ResponseData.s.procedure.ante != null) {
-    //         for (let i = 0; i < ResponseData.s.procedure.ante.pl.length; i++) {
-    //             let seatID = ResponseData.s.procedure.ante.pl[i].sn;
-    //             let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-    //             if (playerInfo == null) {
-    //                 console.error("playerInfo is null");
-    //                 continue;
-    //             }
-    //             let player: PlayerActionDataInfo = new PlayerActionDataInfo();
-    //             playerInfo.handBet += ResponseData.s.procedure.ante.pl[i].act_amt;//统计本手下注筹码
-    //             if (ResponseData.s.procedure.ante.pl[i].pot_out > 0) {
-    //                 mPool = ResponseData.s.procedure.ante.pl[i].pot_out;
-    //             }
-    //         }
-    //     }
-    //     //endregion
-
-    //     //PreFlop
-    //     this.Preflop.active = (ResponseData.s.procedure.preflop.pl.length > 0);
-    //     this.PreflopInfoList.active = (ResponseData.s.procedure.preflop.pl.length > 0);
-
-    //     //string[] headStrPreFlops = rec.headStrPreFlop.Split(new string[] { "@%" }, StringSplitOptions.None);
-    //     let times = 0;
-    //     for (let i = 0; i < ResponseData.s.procedure.preflop.pl.length; i++) {
-    //         let seatID = ResponseData.s.procedure.preflop.pl[i].sn;
-    //         let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-    //         if (playerInfo == null) {
-    //             console.error("playerInfo is null");
-    //             continue;
-    //         }
-    //         let player: PlayerActionDataInfo = new PlayerActionDataInfo();
-    //         player.nickNameStr = playerInfo.userName;
-    //         player.headStr = playerInfo.headPic;
-
-    //         player.playerPosition = this.getPositionNumByBaner(this.tableSeatIds, banerSeatId, ResponseData.s.procedure.preflop.pl[i].sn);
-    //         player.actList = this.getActionNumByName(ResponseData.s.procedure.preflop.pl[i].act);
-
-    //         if (ResponseData.s.procedure.preflop.pl[i].act == "bet" || ResponseData.s.procedure.preflop.pl[i].act == "raise") {
-    //             times++;
-    //             player.raiseTimes = times;
-    //         }
-    //         player.actChipList = ResponseData.s.procedure.preflop.pl[i].act_amt;
-    //         player.playerId = playerInfo.playerId;
-    //         playerInfo.handBet += ResponseData.s.procedure.preflop.pl[i].act_amt;//统计本手下注筹码
-
-    //         if (player.playerId == GameCache.Instance.nUserId) {
-    //             player.isMine = true;
-
-    //         }
-    //         else {
-    //             player.isMine = false;
-    //         }
-    //         if (ResponseData.s.procedure.preflop.pl[i].pot_out > 0) {
-    //             mPool = ResponseData.s.procedure.preflop.pl[i].pot_out;
-    //         }
-
-    //         player.leftChips = ResponseData.s.procedure.preflop.pl[i].c;
-    //         this.playerInfosPreFlop.push(player);
-
-    //     }
-    //     if (ResponseData.s.procedure.preflop.pl == null || ResponseData.s.procedure.preflop.pl.length <= 0) {
-    //         this.PreflopInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
-    //     }
-
-    //     //Flop
-    //     this.FlopInfoList.active = (ResponseData.s.procedure.flop.pl.length > 0);
-    //     this.FlopNum.active = (ResponseData.s.procedure.flop.pl.length > 0);
-    //     if (ResponseData.s.procedure.flop.pl.length > 0) {
-    //         for (let i = 0; i < 3; i++) {
-    //             let publicCard = this.FlopInfoList.getChildByName("ImageCard" + i).getComponent(cc.Sprite);
-
-    //             if (this.PublicCards[i] == 0) {
-    //                 //没发完的公共牌不显示
-    //                 publicCard.node.active = (false);
-
-    //             }
-    //             else {
-    //                 publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-    //                 publicCard.node.active = (true);
-
-    //             }
-    //         }
-    //     }
-    //     this.FlopInfoList.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.procedure.flop.pl.length.toString();
-
-
-
-    //     times = 0;
-    //     for (let i = 0; i < ResponseData.s.procedure.flop.pl.length; i++) {
-    //         let seatID = ResponseData.s.procedure.flop.pl[i].sn;
-    //         let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-    //         if (playerInfo == null) {
-
-    //             continue;
-    //         }
-    //         let player: PlayerActionDataInfo = new PlayerActionDataInfo();
-    //         player.nickNameStr = playerInfo.userName;
-    //         player.headStr = playerInfo.headPic;
-    //         if (ResponseData.s.procedure.flop.pl[i].act == "bet" || ResponseData.s.procedure.flop.pl[i].act == "raise") {
-    //             times++;
-    //             player.raiseTimes = times;
-
-    //         }
-    //         player.playerPosition = this.getPositionNumByBaner(this.tableSeatIds, banerSeatId, ResponseData.s.procedure.flop.pl[i].sn);
-
-    //         player.actList = this.getActionNumByName(ResponseData.s.procedure.flop.pl[i].act);
-    //         player.actChipList = ResponseData.s.procedure.flop.pl[i].act_amt;
-    //         playerInfo.handBet += ResponseData.s.procedure.flop.pl[i].act_amt;//统计本手下注筹码
-
-    //         player.leftChips = ResponseData.s.procedure.flop.pl[i].c;
-    //         player.playerId = playerInfo.playerId;
-    //         if (player.playerId == GameCache.Instance.nUserId) {
-    //             player.isMine = true;
-
-    //         }
-    //         else {
-    //             player.isMine = false;
-    //         }
-    //         if (ResponseData.s.procedure.flop.pl[i].pot_out > 0) {
-    //             mPool = ResponseData.s.procedure.flop.pl[i].pot_out;
-    //         }
-    //         this.playerInfosFlop.push(player);
-
-    //     }
-    //     if (ResponseData.s.procedure.flop.pl != null && ResponseData.s.procedure.flop.pl.length > 0) {
-    //         this.FlopInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
-    //     }
-
-
-    //     //Turn
-    //     this.TurnNum.active = (ResponseData.s.procedure.turn.pl.length > 0);
-    //     this.TurnInfoList.active = (ResponseData.s.procedure.turn.pl.length > 0);
-    //     if (ResponseData.s.procedure.turn.pl.length > 0) {
-    //         for (let i = 0; i < 4; i++) {
-    //             let publicCard = this.TurnInfoList.getChildByName("PublicCard" + i).getComponent(cc.Sprite);
-
-    //             if (this.PublicCards[i] == 0) {
-    //                 //没发完的公共牌不显示
-    //                 publicCard.node.active = false;
-    //             }
-    //             else {
-
-    //                 publicCard.node.active = true;
-    //                 publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-
-    //             }
-    //         }
-    //     }
-    //     this.TurnInfoList.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.procedure.turn.pl.length.toString();
-
-    //     times = 0;
-    //     for (let i = 0; i < ResponseData.s.procedure.turn.pl.length; i++) {
-    //         let seatID = ResponseData.s.procedure.turn.pl[i].sn;
-    //         let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-    //         if (playerInfo == null) {
-
-    //             continue;
-    //         }
-    //         let player: PlayerActionDataInfo = new PlayerActionDataInfo();
-    //         player.nickNameStr = playerInfo.userName;
-    //         player.headStr = playerInfo.headPic;
-    //         player.playerPosition = this.getPositionNumByBaner(this.tableSeatIds, banerSeatId, ResponseData.s.procedure.turn.pl[i].sn);
-
-    //         player.actList = this.getActionNumByName(ResponseData.s.procedure.turn.pl[i].act);
-    //         player.actChipList = ResponseData.s.procedure.turn.pl[i].act_amt;
-    //         playerInfo.handBet += ResponseData.s.procedure.turn.pl[i].act_amt;//统计本手下注筹码
-
-    //         player.playerId = playerInfo.playerId;
-    //         if (ResponseData.s.procedure.turn.pl[i].act == "bet" || ResponseData.s.procedure.turn.pl[i].act == "raise") {
-    //             times++;
-    //             player.raiseTimes = times;
-
-    //         }
-    //         if (player.playerId == GameCache.Instance.nUserId) {
-    //             player.isMine = true;
-
-    //         }
-    //         else {
-    //             player.isMine = false;
-    //         }
-    //         player.leftChips = ResponseData.s.procedure.turn.pl[i].c;
-    //         if (ResponseData.s.procedure.turn.pl[i].pot_out > 0) {
-    //             mPool = ResponseData.s.procedure.turn.pl[i].pot_out;
-    //         }
-    //         this.playerInfosTurn.push(player);
-
-    //     }
-    //     if (ResponseData.s.procedure.turn.pl != null && ResponseData.s.procedure.turn.pl.length > 0) {
-    //         this.TurnInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
-    //     }
-
-    //     //River
-    //     this.RiverNum.active = (ResponseData.s.procedure.river.pl.length > 0);
-    //     this.RiverInfoList.active = (ResponseData.s.procedure.river.pl.length > 0);
-    //     if (ResponseData.s.procedure.river.pl.length > 0) {
-    //         for (let i = 0; i < 5; i++) {
-    //             let publicCard = this.RiverInfoList.getChildByName('PublicCard' + i).getComponent(cc.Sprite)
-    //             if (this.PublicCards[i] == 0) {
-    //                 //没发完的公共牌不显示
-    //                 publicCard.node.active = (false);
-
-    //             }
-    //             else {
-
-    //                 publicCard.node.active = (true);
-    //                 publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-
-    //             }
-    //         }
-    //     }
-    //     this.RiverInfoList.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.procedure.river.pl.length.toString();
-
-    //     times = 0;
-    //     for (let i = 0; i < ResponseData.s.procedure.river.pl.length; i++) {
-    //         let seatID = ResponseData.s.procedure.river.pl[i].sn;
-    //         let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-    //         if (playerInfo == null) {
-
-    //             continue;
-    //         }
-    //         let player: PlayerActionDataInfo = new PlayerActionDataInfo();
-    //         player.nickNameStr = playerInfo.userName;
-    //         player.headStr = playerInfo.headPic;
-    //         player.playerPosition = this.getPositionNumByBaner(this.tableSeatIds, banerSeatId, ResponseData.s.procedure.river.pl[i].sn);
-    //         player.actList = this.getActionNumByName(ResponseData.s.procedure.river.pl[i].act);
-    //         player.actChipList = ResponseData.s.procedure.river.pl[i].act_amt;
-    //         playerInfo.handBet += ResponseData.s.procedure.river.pl[i].act_amt;//统计本手下注筹码
-
-    //         player.leftChips = ResponseData.s.procedure.river.pl[i].c;
-    //         player.playerId = playerInfo.playerId;
-    //         if (ResponseData.s.procedure.river.pl[i].act == "bet" || ResponseData.s.procedure.river.pl[i].act == "raise") {
-    //             times++;
-    //             player.raiseTimes = times;
-
-    //         }
-    //         if (playerInfo.playerId == GameCache.Instance.nUserId) {
-    //             player.isMine = true;
-
-    //         }
-    //         else {
-    //             player.isMine = false;
-    //         }
-    //         if (ResponseData.s.procedure.river.pl[i].pot_out > 0) {
-    //             mPool = ResponseData.s.procedure.river.pl[i].pot_out;
-    //         }
-    //         this.playerInfosRiver.push(player);
-
-    //     }
-    //     if (ResponseData.s.procedure.river.pl != null && ResponseData.s.procedure.river.pl.length > 0) {
-    //         this.RiverInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
-    //     }
-
-
-    //     //Winner
-    //     for (let i = 0; i < ResponseData.s.result.length; i++) {
-    //         let seatID = ResponseData.s.result[i].sn;
-    //         let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-    //         if (playerInfo == null) {
-    //             continue;
-    //         }
-    //         playerInfo.maxCardType = ResponseData.s.result[i].card_type;
-    //         playerInfo.winAnte = ResponseData.s.result[i].win;
-    //         playerInfo.insuranceGain = ResponseData.s.result[i].ins;
-
-    //     }
-    //     this.ShowdownInfoList.active = (ResponseData.s.result.length > 0);
-    //     this.ShowdownNum.active = (ResponseData.s.result.length > 0);
-    //     this.ShowdownInfoList.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.result.length.toString();
-    //     //赢牌底池
-    //     this.ShowdownInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
-
-    //     this.ShowdownInfoList2.active = (ResponseData.s.result.length > 0 && this.HaveSecondCard);
-    //     this.ShowdownNum2.active = (ResponseData.s.result.length > 0 && this.HaveSecondCard);
-    //     //本手结束时底池
-    //     if (this.HaveSecondCard) {
-    //         //赢牌底池
-    //         this.ShowdownInfoList.getChildByName("ChipNumText").active = true
-    //         this.ShowdownInfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool / 2);
-    //         this.ShowdownInfoList2.getChildByName("PlayerNumText").getComponent(cc.Label).string = ResponseData.s.result.length.toString();
-    //         this.ShowdownInfoList2.getChildByName("PlayerNumText").active = true
-    //         //赢牌底池
-    //         this.ShowdownInfoList2.getChildByName("ChipNumText").active = true
-    //         this.ShowdownInfoList2.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool / 2);
-    //     }
-    //     this.InfoList.getChildByName("ChipNumText").getComponent(cc.Label).string = StringHelper.getStringDiv100(mPool);
-
-    //     for (let i = 0; i < ResponseData.s.result.length; i++) {
-    //         let seatID = ResponseData.s.result[i].sn;
-    //         let playerInfo: PlayerInfo = this.GetPlayerInfoByPlayerInfoList(this.playerInfos, seatID);
-    //         if (playerInfo == null) {
-    //             continue;
-    //         }
-    //         let player: PlayerInfo = new PlayerInfo();
-    //         player.userName = playerInfo.userName;
-
-    //         player.playerPosition = playerInfo.playerPosition;
-
-    //         player.winAnte = ResponseData.s.result[i].win;
-
-    //         player.playerId = playerInfo.playerId;
-    //         if (player.playerId == GameCache.Instance.nUserId) {
-    //             player.isMine = true;
-    //             if (ResponseData.d != null && ResponseData.d.length >= 0) {
-    //                 player.handCards = ResponseData.d;
-    //             }
-    //         }
-    //         else {
-    //             player.handCards = ResponseData.s.result[i].card;
-    //             player.isMine = false;
-    //         }
-    //         player.maxCardType = ResponseData.s.result[i].card_type;
-    //         player.maxCardIndex = playerInfo.maxCardIndex;
-    //         player.insuranceGain = ResponseData.s.result[i].ins;
-    //         if (this.HaveSecondCard) {
-    //             player.winAnte2 = [];
-    //             playerInfo.winAnte2 = [];
-    //             let isWin1 = ResponseData.s.result[i].sp_detail[0].is_winner;
-    //             let isWin2 = ResponseData.s.result[i].sp_detail[1].is_winner;
-    //             let win1 = ResponseData.s.result[i].sp_detail[0].win;
-    //             let win2 = ResponseData.s.result[i].sp_detail[1].win;
-    //             let fee = ResponseData.s.result[i].fee;
-    //             let fee1 = 0;
-    //             let fee2 = 0;
-    //             if (isWin1 && isWin2) {
-    //                 if (fee != 0) {
-    //                     fee1 = win1 * fee / (win1 + win2);
-    //                     fee2 = fee - fee1;
-    //                 }
-    //             }
-    //             else {
-    //                 fee1 = isWin1 ? fee : 0;
-    //                 fee2 = isWin2 ? fee : 0;
-    //             }
-    //             let handBet1 = playerInfo.handBet / 2;
-    //             let handBet2 = playerInfo.handBet - handBet1;
-    //             player.winAnte2.push(win1 - fee1 - handBet1);
-    //             player.winAnte2.push(win2 - fee2 - handBet2);
-
-    //             player.maxCardType2 = ResponseData.s.result[i].card_type2;
-    //             player.maxCardIndex2 = ResponseData.s.result[i].maxcard_idx2;
-
-    //             playerInfo.winAnte2.push(win1 - fee1 - handBet1);
-    //             playerInfo.winAnte2.push(win2 - fee2 - handBet2);
-    //             playerInfo.maxCardIndex2 = ResponseData.s.result[i].maxcard_idx2;
-    //         }
-    //         this.playerInfosWinner.push(player);
-
-    //     }
-
-    //     //赋值玩家数据
-    //     // let ContentHeight = 137 + 199 + 109 + 109 + 109 + 109;
-    //     for (let i = 0; i < this.playerInfos.length; i++) {
-    //         let allPlayerObj = this.HaveSecondCard ? this.AllPlayerSecondInfoObj : this.AllPlayerPaiPuInfoObj;
-    //         let _cloneNode = this.GetCreatePrefab(allPlayerObj, this.AllPlayerPaiPu);
-    //         this.AllPlayerCardsInfos.push(_cloneNode);
-    //         _cloneNode.active = (true);
-    //         if (this.HaveSecondCard) {
-    //             this.SetPlayerSecondCardItem(_cloneNode, this.playerInfos[i]);
-    //         }
-    //         else {
-    //             this.SetPlayerCardItem(_cloneNode, this.playerInfos[i]);
-    //         }
-
-    //         // ContentHeight += 180;
-    //     }
-
-    //     for (let i = 0; i < this.playerInfosPreFlop.length; i++) {
-    //         let go = this.GetCreatePrefab(this.PreflopInfoObj, this.Preflop);
-    //         this.AllPlayerCardsInfosPreFlop.push(go);
-    //         go.active = (true);
-    //         this.SetPlayerItem(go, this.playerInfosPreFlop[i], true);
-    //         // ContentHeight += 80;
-    //     }
-    //     for (let i = 0; i < this.playerInfosFlop.length; i++) {
-    //         let go = this.GetCreatePrefab(this.PreflopInfoObj, this.FlopNum);
-    //         this.AllPlayerCardsInfosFlop.push(go);
-    //         go.active = (true)
-    //         this.SetPlayerItem(go, this.playerInfosFlop[i]);
-    //         // ContentHeight += 80;
-    //     }
-
-    //     for (let i = 0; i < this.playerInfosTurn.length; i++) {
-    //         let go = this.GetCreatePrefab(this.PreflopInfoObj, this.TurnNum);
-    //         this.AllPlayerCardsInfosTurn.push(go);
-    //         go.active = true;
-    //         this.SetPlayerItem(go, this.playerInfosTurn[i]);
-    //         // ContentHeight += 80;
-    //     }
-
-    //     for (let i = 0; i < this.playerInfosRiver.length; i++) {
-    //         let go = this.GetCreatePrefab(this.PreflopInfoObj, this.RiverNum);
-    //         this.AllPlayerCardsInfosRiver.push(go);
-    //         go.active = true;
-    //         this.SetPlayerItem(go, this.playerInfosRiver[i]);
-    //         // ContentHeight += 80;
-    //     }
-    //     for (let i = 0; i < this.playerInfosWinner.length; i++) {
-    //         let go = this.GetCreatePrefab(this.AllPlayerPaiPuInfoObj, this.ShowdownNum);
-    //         this.AllPlayerCardsInfoswinner.push(go);
-    //         go.active = true;
-    //         this.SetPlayerCardItem(go, this.playerInfosWinner[i], this.HaveSecondCard);
-    //         this.m_winUserId = this.playerInfosWinner[i].playerId;
-    //         // ContentHeight += 180;
-    //     }
-    //     if (this.HaveSecondCard) {
-    //         for (let i = 0; i < this.playerInfosWinner.length; i++) {
-    //             let go = this.GetCreatePrefab(this.AllPlayerPaiPuInfoObj, this.ShowdownNum2);
-    //             this.AllPlayerCardsInfoswinner.push(go);
-    //             go.active = true;
-    //             this.SetPlayerCardItem(go, this.playerInfosWinner[i], this.HaveSecondCard, 1);
-    //             this.m_winUserId = this.playerInfosWinner[i].playerId;
-    //             // ContentHeight += 180;
-    //         }
-    //     }
-    //     if (this.historyInfoData.bInsurance) {
-    //         // ContentHeight += 200;
-    //     }
-    //     //保险
-    //     this.AllPlayerPaiPu.getChildByName("Image_Insurance").active = (mInsurancePool != 0);
-    //     // this.AllPlayerPaiPu.getChildByName("Image_Insurance").SetAsLastSibling();
-    //     cc.find('Image_Insurance/Text_insuranceValue', this.AllPlayerPaiPu).getComponent(cc.Label).string = StringHelper.getStringDiv100(mInsurancePool);
-    //     this.ShowdownNum.getChildByName("Image_Insurance").active = (mInsurancePool != 0);
-    //     // this.ShowdownNum.getChildByName("Image_Insurance").SetAsLastSibling();
-    //     cc.find('Image_Insurance/Text_insuranceValue', this.AllPlayerPaiPu).getComponent(cc.Label).string = StringHelper.getStringDiv100(mInsurancePool);
-    //     cc.find("Image_Insurance/Text_insuranceValue", this.ShowdownNum).getComponent(cc.Label).string = StringHelper.getStringDiv100(mInsurancePool);
-    //     // if (ContentHeight < 2108) {
-    //     //     ContentHeight = 2108;
-    //     // }
-    //     // scrollview_Content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ContentHeight);
-
-    //     //  #region 收藏牌谱和分享牌谱逻辑
-    //     let DownBar: cc.Node = this.getChildNodeOrComponent('DownBar')
-    //     // DownBar.active = true
-    //     let textShareTip = cc.find('Button_Share/Text_ShareTip', DownBar)
-    //     textShareTip.color = cc.color(233, 191, 128, 255);
-    //     let textCollectTip = cc.find('Button_Collect/Text_ShareTip', DownBar)
-    //     textCollectTip.color = cc.color(233, 191, 128, 255);
-
-    // }
-    //#endregion
-
-
 
 
     setBtnState() {
@@ -1565,11 +1031,11 @@ export default class UITexasHistory extends UIBasePlus {
             element.destroy();
         }
         this.AllPlayerCardsInfosRiver = []
-        for (let index = 0; index < this.AllPlayerCardsInfoswinner.length; index++) {
-            const element: cc.Node = this.AllPlayerCardsInfoswinner[index];
+        for (let index = 0; index < this.AllPlayerCardsInfosWinner.length; index++) {
+            const element: cc.Node = this.AllPlayerCardsInfosWinner[index];
             element.destroy();
         }
-        this.AllPlayerCardsInfoswinner = []
+        this.AllPlayerCardsInfosWinner = []
 
         this.playerInfos = []
         this.playerInfosPreFlop = []
@@ -1588,63 +1054,75 @@ export default class UITexasHistory extends UIBasePlus {
     /// 设置无牌预制体
     /// </summary>
     SetPlayerItem(go, element, isoutchip = false) {
-        go.getChildByName("Text_name").getComponent(cc.Label).string = StringHelper.LengthNick(element.nickNameStr);
+        //go.getChildByName("Text_name").getComponent(cc.Label).string = StringHelper.LengthNick(element.nickNameStr);
+
+        this.setChildLabel(go, "player_nick", element.nickNameStr);
+
         if (isoutchip) {
-            let str = (element.leftChips / 100).toString();
-            go.getChildByName("Text_wins").getComponent(cc.Label).string = this.tryParse(str)
+            this.setChildLabel(go, "win", StringHelper.GetDecimalN(element.leftChips / 100));
         }
         else {
-            let str = (element.leftChips / 100).toString();
-            go.getChildByName("Text_wins").getComponent(cc.Label).string = "P:" + this.tryParse(str)
+            this.setChildLabel(go, "win", "P:" + StringHelper.GetDecimalN(element.leftChips / 100));
         }
         if (element.isMine) {
-            cc.find('PositionImageBg/PositionText', go).color = cc.color(225, 181, 141, 255);
-            go.getChildByName("Text_name").color = cc.color(225, 181, 141, 255);
-            cc.find('PositionImageChipBg/Text', go).color = cc.color(225, 181, 141, 255);
-            go.getChildByName("Text_wins").color = cc.color(225, 181, 141, 255);
+            // cc.find('PositionImageBg/PositionText', go).color = cc.color(225, 181, 141, 255);
+            // go.getChildByName("Text_name").color = cc.color(225, 181, 141, 255);
+            // cc.find('PositionImageChipBg/Text', go).color = cc.color(225, 181, 141, 255);
+            // go.getChildByName("Text_wins").color = cc.color(225, 181, 141, 255);
         }
         else {
-            cc.find('PositionImageBg/PositionText', go).color = cc.color(255, 255, 255, 255);
-            go.getChildByName("Text_name").color = cc.color(255, 255, 255, 255);
-            cc.find('PositionImageChipBg/Text', go).color = cc.color(255, 255, 255, 255);
-            go.getChildByName("Text_wins").color = cc.color(255, 255, 255, 255);
+            // cc.find('PositionImageBg/PositionText', go).color = cc.color(255, 255, 255, 255);
+            // go.getChildByName("Text_name").color = cc.color(255, 255, 255, 255);
+            // cc.find('PositionImageChipBg/Text', go).color = cc.color(255, 255, 255, 255);
+            // go.getChildByName("Text_wins").color = cc.color(255, 255, 255, 255);
         }
-        cc.find('PositionImageBg/PositionText', go).getComponent(cc.Label).string = this.PlayerPositionStr[element.playerPosition];
+
+        this.setChildLabel(go, "SB/label", this.PlayerPositionStr[element.playerPosition]);
+
 
         if (element.actList == 6 || element.actList == 7) {
             if (element.raiseTimes == 1) {
-
-                cc.find('PositionImageChipBg/PositionChipText', go).getComponent(cc.Label).string = this.PlayerActionStr[element.actList];
+                this.setChildLabel(go, "CC/action", this.PlayerActionStr[element.actList]);
             }
             else if (element.raiseTimes == 2) {
-                cc.find('PositionImageChipBg/PositionChipText', go).getComponent(cc.Label).string = this.PlayerActionStr[7];
+
+                this.setChildLabel(go, "CC/action", this.PlayerActionStr[7]);
             }
             else {
-                cc.find('PositionImageChipBg/PositionChipText', go).getComponent(cc.Label).string = element.raiseTimes + "B";
+                this.setChildLabel(go, "CC/action", element.raiseTimes + "B");
             }
-
         }
         else {
-            cc.find('PositionImageChipBg/PositionChipText', go).getComponent(cc.Label).string = this.PlayerActionStr[element.actList];
+            this.setChildLabel(go, "CC/action", this.PlayerActionStr[element.actList]);
         }
         //
-        cc.find('PositionImageChipBg/Text', go).getComponent(cc.Label).string = "" + StringHelper.getStringDiv100(element.actChipList);//下注数
-        let chipbg = go.getChildByName("PositionImageChipBg")
+        this.setChildLabel(go, "CC/chip", StringHelper.GetLongString(element.actChipList));//下注数
+
+
         if (element.actList > 0 && element.actList < 5) {
-            chipbg.color = cc.color(86, 181, 87, 255);//绿
+            this.setChildColor(go, "CC/BG", this.color_green);//绿
+            this.setChildOpacity(go, "CC/BG", 255);
         }
         else if (element.actList > 4 && element.actList < 10) {
-            chipbg.color = cc.color(230, 68, 85, 255);//红
+            this.setChildColor(go, "CC/BG", this.color_red);//红
+            this.setChildOpacity(go, "CC/BG", 255);
         }
         else if (element.actList == 11)//黄，新加保险，暂时
         {
-            chipbg.color = cc.color(255, 184, 83, 255);//黄
+            this.setChildColor(go, "CC/BG", this.color_yellow);//黄
+            this.setChildOpacity(go, "CC/BG", 255);
         }
         else {
-            chipbg.color = cc.color(198, 198, 198, 198);//灰
+            this.setChildColor(go, "CC/BG", this.color_gray);//灰
+            this.setChildOpacity(go, "CC/BG", 198);
         }
+
         if (element.actList == 9) {
-            go.getChildByName("Text_wins").color = cc.color(198, 198, 198, 160);
+            this.setChildColor(go, "win", cc.color(198, 198, 198));
+            this.setChildOpacity(go, "win", 160);
+        } else {
+            this.setChildColor(go, "win", TextColor.Color1);
+            this.setChildOpacity(go, "win", 255);
         }
     }
     tryParse(x: string) {
@@ -1660,175 +1138,185 @@ export default class UITexasHistory extends UIBasePlus {
     GetShowCardType(cardType) {
         return CardTypeUtil.GetCardTypeEnglishName(cardType);
     }
+
+
     SetPlayerCardItem(go, element, isSecond = false, SpcsIndex = 0) {
-        go.getChildByName("Text_name").getComponent(cc.Label).string = StringHelper.LengthNick(element.userName);//名字
-        //输赢筹码
-        let str = StringHelper.getStringDiv100(element.winAnte);
+        //玩家名字
+        this.setChildLabel(go, "cards_position/nick/label", element.userName);
+        //StringHelper.LengthNick(element.userName));
+
+        //输赢筹码f
+        let str = StringHelper.GetLongString(element.winAnte);
         if (isSecond) {
-            str = StringHelper.getStringDiv100(element.winAnte2[SpcsIndex]);
+            str = StringHelper.GetLongString(element.winAnte2[SpcsIndex]);
         }
-
-        go.getChildByName("Text_wins").getComponent(cc.Label).string = str;
-
+        this.setChildLabel(go, "win", str);
 
         //保险
         if (element.insuranceGain != 0) {
-            go.getChildByName("Image_InsuranceText").getComponent(cc.Label).string = StringHelper.getStringDiv100(element.insuranceGain);
+
+            this.setChildLabel(go, "score", StringHelper.GetSignedLongString(element.insuranceGain));
         }
         else {
-            go.getChildByName("Image_InsuranceText").getComponent(cc.Label).string = "";
+            this.setChildLabel(go, "score", "");
         }
 
         //判断是否是自己
         if (element.isMine) {
-            cc.find("PositionImageBg/PositionText", go).color = cc.color(225, 181, 141, 255);
-            go.getChildByName("Text_name").color = cc.color(225, 181, 141, 255);
-            go.getChildByName("Text_wins").color = cc.color(225, 181, 141, 255);
+            //go.transform.Find("PositionImageBg/PositionText").GetComponent<Text>().color = meColor;
         }
         else {
-            cc.find("PositionImageBg/PositionText", go).color = cc.color(255, 255, 255, 255);
-            go.getChildByName("Text_name").color = cc.color(255, 255, 255, 255);
-            go.getChildByName("Text_wins").color = cc.color(255, 255, 255, 255);
+            //go.transform.Find("PositionImageBg/PositionText").GetComponent<Text>().color = otherColor;
         }
         //位置
-        cc.find('PositionImageBg/PositionText', go).getComponent(cc.Label).string = this.PlayerPositionStr[element.playerPosition];
+        this.setChildLabel(go, "SB/label", this.PlayerPositionStr[element.playerPosition]);
+
         //牌型
         if (isSecond && SpcsIndex != 0) {
-            go.getChildByName("FoldText").getComponent(cc.Label).string = this.GetShowCardType(element.maxCardType2);
+            this.setChildLabel(go, "pai_type", this.GetShowCardType(element.maxCardType2));
         }
         else {
-            go.getChildByName("FoldText").getComponent(cc.Label).string = this.GetShowCardType(element.maxCardType);
+            this.setChildLabel(go, "pai_type", this.GetShowCardType(element.maxCardType));
         }
-
-
-        // #region  牌
+        //#region  牌
         //手牌
-        let handcards = []
-        let Image_handCard = cc.find('Image_handCard', go)
-        for (let i = 1; i <= 6; i++) {
-            let handCard = Image_handCard.getChildByName("Image_handCard" + i).getComponent(cc.Sprite);
-            handCard.node.active = false;
-            handcards.push(handCard);
-        }
-        //手牌显示
-        for (let i = 0; i < element.handCards.length; i++) {
-            handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-            handcards[i].node.active = true;
-        }
-        if (element.handCards.length <= 0) {
-            for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
-                handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[0]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-                handcards[i].active = true;
-            }
-        }
-
-
-        //公共牌
-        let publicCards = []
-        let PublicCardpos = cc.find('PublicCardpos', go)
-        for (let i = 0; i < 5; i++) {
-            let publicCard = PublicCardpos.getChildByName("Image_publicCard" + i).getComponent(cc.Sprite);
-            publicCard.node.active = true;
-            publicCards.push(publicCard);
-        }
-
-        // //公共牌位置
-        // GameObject publiccardpos = go.getChildByName("PublicCardpos").gameObject;
-        let handCardNum = GameCache.Instance.CurGame.HandCards;
-        // switch (handCardNum) {
-        //     case 2:
-        //         PublicCardpos.position = cc.v3(-78.1, 0, 0);
-        //         break;
-        //     case 4:
-        //         PublicCardpos.position = cc.v3(30, 0, 0);
-        //         break;
-        //     case 5:
-        //         PublicCardpos.position = cc.v3(75, 0, 0);
-        //         break;
-        //     case 6:
-        //         PublicCardpos.position = cc.v3(120, 0, 0);
-        //         break;
-        //     default:
-        //         PublicCardpos.position = cc.v3(-78.1, 0, 0);
-        //         break;
+        // let handcards = [];
+        // for (int i = 1; i <= 6; i++)
+        // {
+        //     Image handCard = go.transform.Find("Image_handCard" + i).GetComponent<Image>();
+        //     handCard.gameObject.SetActive(false);
+        //     handcards.Add(handCard);
         // }
 
-        if (isSecond && SpcsIndex != 0) {
-            //公共牌显示
-            for (let i = 0; i < 5; i++) {
-                let publicCard = PublicCardpos.getChildByName("Image_publicCard" + i).getComponent(cc.Sprite);
-                if (this.SecondPublicCards[i] == 0) {
-                    //没发完的公共牌不显示
-                    publicCard.node.active = false;
-                }
-                else {
+        //         //公共牌
+        //         List < Image > publicCards = new List<Image>();
+        //         for (int i = 1; i <= 5; i++)
+        //         {
+        //     Image publicCard = go.transform.Find("PublicCardpos/Image_publicCard" + i).GetComponent<Image>();
+        //             publicCard.gameObject.SetActive(false);
+        //             publicCards.Add(publicCard);
+        //         }
 
-                    publicCard.node.active = true;
-                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-                }
-            }
-        }
-        else {
-            //公共牌显示
-            for (let i = 0; i < 5; i++) {
-                let publicCard = PublicCardpos.getChildByName("Image_publicCard" + i).getComponent(cc.Sprite);
-                if (this.PublicCards[i] == 0) {
-                    //没发完的公共牌不显示
-                    publicCard.node.active = false;
-                }
-                else {
-                    publicCard.node.active = true;
-                    publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-                }
-            }
+        //手牌显示
+        let hand_cards: cc.Node = cc.find("cards_position/hand_cards", go);
+        if (element.handCards.length <= 0) {
+            hand_cards.children.forEach((item, index) => {
+                item.active = index < GameCache.Instance.CurGame.HandCards;
+                item.active && (item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(0), AssetFold.texture_SmallCard0));
+            })
+        } else {
+            hand_cards.children.forEach((item, index) => {
+                item.active = index < GameCache.Instance.CurGame.HandCards;
+                let card = element.handCards[index] || 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(card), AssetFold.texture_SmallCard0);
+            })
         }
 
-        if (isSecond && SpcsIndex != 0) {
-            //高亮牌显示
-            if (element.maxCardIndex2 != null && element.maxCardIndex2.length > 0) {
-                //手牌置灰
-                for (let i = 0; i < handcards.length; i++) {
-                    handcards[i].node.color = cc.color(127, 127, 127, 255);
-                }
-                //公共牌置灰
-                for (let i = 0; i < publicCards.length; i++) {
-                    publicCards[i].color = cc.color(127, 127, 127, 255);
-                }
-                for (let i = 0; i < element.maxCardIndex2.length; i++) {
-                    if (element.maxCardIndex2[i] >= 5) {
-                        handcards[element.maxCardIndex2[i] - 5].node.color = cc.color(255, 255, 255, 255);
-                    }
-                    else {
-                        publicCards[element.maxCardIndex2[i]].node.color = cc.color(255, 255, 255, 255);
-                    }
 
-                }
-            }
-        }
-        else {
-            //高亮牌显示
-            if (element.maxCardIndex != null && element.maxCardIndex.length > 0) {
-                //手牌置灰
-                for (let i = 0; i < handcards.length; i++) {
-                    handcards[i].node.color = cc.color(127, 127, 127, 255);
-                }
-                //公共牌置灰
-                for (let i = 0; i < publicCards.length; i++) {
-                    publicCards[i].node.color = cc.color(127, 127, 127, 255);
-                }
-                for (let i = 0; i < element.maxCardIndex.length; i++) {
-                    if (element.maxCardIndex[i] >= 5) {
-                        handcards[element.maxCardIndex[i] - 5].node.color = cc.color(255, 255, 255, 255);
-                    }
-                    else {
-                        publicCards[element.maxCardIndex[i]].node.color = cc.color(255, 255, 255, 255);
-                    }
 
-                }
-            }
-        }
+        // //公共牌位置
+        // GameObject publiccardpos = go.transform.Find("PublicCardpos").gameObject;
+        // int handCardNum = GameCache.Instance.CurGame.HandCards;
+        //         switch (handCardNum) {
+        //             case 2:
+        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-78.1f, -18.7f, 0);
+        //                 break;
+        //             case 4:
+        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(30, -18.7f, 0);
+        //                 break;
+        //             case 5:
+        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(75, -18.7f, 0);
+        //                 break;
+        //             case 6:
+        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(120, -18.7f, 0);
+        //                 break;
+        //             default:
+        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-78.1f, -18.7f, 0);
+        //                 break;
+        //         }
+        //         if (isSecond && SpcsIndex != 0) {
+        //             //公共牌显示
+        //             for (int i = 0; i < 5; i++)
+        //             {
+        //         Image publicCard = go.transform.Find($"PublicCardpos/Image_publicCard{i + 1}").GetComponent<Image>();
+        //                 if (SecondPublicCards[i] == 0) {
+        //                     //没发完的公共牌不显示
+        //                     publicCard.gameObject.SetActive(false);
+        //                 }
+        //                 else {
 
-        // #endregion
+        //                     publicCard.gameObject.SetActive(true);
+        //                     publicCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)SecondPublicCards[i]));
+        //                 }
+        //             }
+        //         }
+        //         else {
+        //             //公共牌显示
+        //             for (int i = 0; i < 5; i++)
+        //             {
+        //         Image publicCard = go.transform.Find($"PublicCardpos/Image_publicCard{i + 1}").GetComponent<Image>();
+        //                 if (PublicCards[i] == 0) {
+        //                     //没发完的公共牌不显示
+        //                     publicCard.gameObject.SetActive(false);
+        //                 }
+        //                 else {
+
+        //                     publicCard.gameObject.SetActive(true);
+        //                     publicCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)PublicCards[i]));
+        //                 }
+        //             }
+        //         }
+
+        //         if (isSecond && SpcsIndex != 0) {
+        //             //高亮牌显示
+        //             if (element.maxCardIndex2 != null && element.maxCardIndex2.Count > 0) {
+        //                 //手牌置灰
+        //                 for (int i = 0; i < handcards.Count; i++)
+        //                 {
+        //                     handcards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
+        //                 }
+        //                 //公共牌置灰
+        //                 for (int i = 0; i < publicCards.Count; i++)
+        //                 {
+        //                     publicCards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
+        //                 }
+        //                 for (int i = 0; i < element.maxCardIndex2.Count; i++)
+        //                 {
+        //                     if (element.maxCardIndex2[i] >= 5) {
+        //                         handcards[element.maxCardIndex2[i] - 5].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        //                     }
+        //                     else {
+        //                         publicCards[element.maxCardIndex2[i]].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        //                     }
+
+        //                 }
+        //             }
+        //         }
+        //         else {
+        //             //高亮牌显示
+        //             if (element.maxCardIndex != null && element.maxCardIndex.Count > 0) {
+        //                 //手牌置灰
+        //                 for (int i = 0; i < handcards.Count; i++)
+        //                 {
+        //                     handcards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
+        //                 }
+        //                 //公共牌置灰
+        //                 for (int i = 0; i < publicCards.Count; i++)
+        //                 {
+        //                     publicCards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
+        //                 }
+        //                 for (int i = 0; i < element.maxCardIndex.Count; i++)
+        //                 {
+        //                     if (element.maxCardIndex[i] >= 5) {
+        //                         handcards[element.maxCardIndex[i] - 5].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        //                     }
+        //                     else {
+        //                         publicCards[element.maxCardIndex[i]].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+        //                     }
+
+        //                 }
+        //             }
+        //         }
     }
     SetPlayerSecondCardItem(go, element) {
         go.getChildByName("Text_name").getComponent(cc.Label).string = StringHelper.LengthNick(element.userName);//名字
@@ -1993,11 +1481,10 @@ export default class UITexasHistory extends UIBasePlus {
         // #endregion
     }
 
-    GetCreatePrefab(cloneNode, parentNode) {
-        let _cloneNode = cc.instantiate(cloneNode);
-        _cloneNode.parent = parentNode;
-        return _cloneNode;
-
+    GetCreatePrefab(pool: SimpleNodePool, parentNode) {
+        let node = pool.GetNode();
+        node.parent = parentNode;
+        return node;
     }
     /// 通过操作名字，取得对应缩写数组下标
     /// </summary>
@@ -2092,4 +1579,11 @@ export default class UITexasHistory extends UIBasePlus {
     }
 
 
+    //清理child节点
+    clearChilds(childs: cc.Node, pool: SimpleNodePool) {
+        childs.children.forEach(item => {
+            pool.BackNode(item)
+        });
+        childs.removeAllChildren();
+    }
 }
