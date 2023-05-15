@@ -13,6 +13,11 @@ export class ServerMessageShowcards extends jspb.Message {
   getIsAll(): boolean;
   setIsAll(value: boolean): void;
 
+  clearAllinUsersList(): void;
+  getAllinUsersList(): Array<protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength>;
+  setAllinUsersList(value: Array<protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength>): void;
+  addAllinUsers(value?: protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength, index?: number): protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageShowcards.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageShowcards): ServerMessageShowcards.AsObject;
@@ -27,6 +32,7 @@ export namespace ServerMessageShowcards {
   export type AsObject = {
     playerCardsList: Array<protobuf_holdem_define_pb.PlayerCards.AsObject>,
     isAll: boolean,
+    allinUsersList: Array<protobuf_holdem_define_pb.PlayerAllInShowCardWinCardsLength.AsObject>,
   }
 }
 

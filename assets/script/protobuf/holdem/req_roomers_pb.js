@@ -360,7 +360,7 @@ proto.holdem.pb.ServerMessageRoomers.deserializeBinaryFromReader = function(msg,
       msg.setStatus(value);
       break;
     case 2:
-      var value = /** @type {number} */ (reader.readUint64());
+      var value = /** @type {number} */ (reader.readInt64());
       msg.setInsurance(value);
       break;
     case 3:
@@ -423,7 +423,7 @@ proto.holdem.pb.ServerMessageRoomers.serializeBinaryToWriter = function(message,
   }
   f = message.getInsurance();
   if (f !== 0) {
-    writer.writeUint64(
+    writer.writeInt64(
       2,
       f
     );
@@ -484,7 +484,7 @@ proto.holdem.pb.ServerMessageRoomers.prototype.setStatus = function(value) {
 
 
 /**
- * optional uint64 insurance = 2;
+ * optional int64 insurance = 2;
  * @return {number}
  */
 proto.holdem.pb.ServerMessageRoomers.prototype.getInsurance = function() {
