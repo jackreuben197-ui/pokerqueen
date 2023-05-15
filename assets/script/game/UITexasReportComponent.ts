@@ -72,8 +72,8 @@ export default class UITexasReportComponent extends UIBase {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler)
+        // this.listen(ProtocolCode.Protocol_Holdem_Observers, this.ProtocolHoldemRoomersHandler)
     }
-
 
     RequestRoomers() {
         ProtocolAgency.Send<ClientMessageRoomers.AsObject>({
@@ -81,7 +81,10 @@ export default class UITexasReportComponent extends UIBase {
             RoomID: GameCache.Instance.room_id,
             MatchID: GameCache.Instance.match_id,
             Body: {
-                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id, },
+                history: GameCache.Instance.origin_type == 4,
+                historyLimit: 1000,
+                historyOffset: 0,
             },
         })
     }
@@ -217,36 +220,40 @@ export default class UITexasReportComponent extends UIBase {
         }, 1)
     }
     setInfos(objTemp, pDto, onLine) {
-        let color = cc.color().fromHEX('#7187FF')
-        let opactiy = 255
+        // let color = cc.color().fromHEX('#7187FF')
+        // let opactiy = 255
+        // if (!pDto.isOnline && GameCache.Instance.origin_type == 4) {
+        //     color = cc.color().fromHEX('#FFFFFF')
+        //     opactiy = 255 * 0.2
+        //     objTemp.getChildByName('Text_Count').color = color
+        //     objTemp.getChildByName('Text_Count').opactiy = opactiy
+        // }
+        // else {
+        //     if (pDto.userId == GameCache.Instance.nUserId) {
+        //         color = cc.color().fromHEX('#7187FF')
+
+        //     } else {
+        //         color = cc.color().fromHEX('#EEF5FF')
+        //     }
+
+        //     objTemp.getChildByName('Text_Count').color = pDto.score >= 0 ? cc.color().fromHEX('#B0FFAE') : cc.color().fromHEX('#FF7C7C')
+        //     objTemp.getChildByName('Text_Count').opactiy = opactiy
+
+        // }
+        // objTemp.getChildByName('Text_Name').color = color
+        // objTemp.getChildByName('Text_Num').color = color
+        // objTemp.getChildByName('Text_All').color = color
+        // objTemp.getChildByName('Text_All1').color = color
+
+        // objTemp.getChildByName('Text_Name').opactiy = opactiy
+        // objTemp.getChildByName('Text_Num').opactiy = opactiy
+        // objTemp.getChildByName('Text_All').opactiy = opactiy
+        // objTemp.getChildByName('Text_All1').opactiy = opactiy
         if (!pDto.isOnline && GameCache.Instance.origin_type == 4) {
-            color = cc.color().fromHEX('#FFFFFF')
-            opactiy = 255 * 0.2
-            objTemp.getChildByName('Text_Count').color = color
-            objTemp.getChildByName('Text_Count').opactiy = opactiy
+            objTemp.opacity = 50
+        } else {
+            objTemp.opacity = 255
         }
-        else {
-            if (pDto.userId == GameCache.Instance.nUserId) {
-                color = cc.color().fromHEX('#7187FF')
-
-            } else {
-                color = cc.color().fromHEX('#EEF5FF')
-            }
-
-            objTemp.getChildByName('Text_Count').color = pDto.score >= 0 ? cc.color().fromHEX('#B0FFAE') : cc.color().fromHEX('#FF7C7C')
-            objTemp.getChildByName('Text_Count').opactiy = opactiy
-
-        }
-        objTemp.getChildByName('Text_Name').color = color
-        objTemp.getChildByName('Text_Num').color = color
-        objTemp.getChildByName('Text_All').color = color
-        objTemp.getChildByName('Text_All1').color = color
-
-        objTemp.getChildByName('Text_Name').opactiy = opactiy
-        objTemp.getChildByName('Text_Num').opactiy = opactiy
-        objTemp.getChildByName('Text_All').opactiy = opactiy
-        objTemp.getChildByName('Text_All1').opactiy = opactiy
-
 
 
         objTemp.getChildByName('Text_Name').getComponent(cc.Label).string = StringHelper.LengthNick(pDto.nickName)

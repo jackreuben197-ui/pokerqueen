@@ -46,6 +46,7 @@ import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_up_blind_pb";
 import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_buy_insurance_pb";
 import { ClientMessageAutoOpActive, ServerMessageAutoOpActive } from "../../protobuf/holdem/req_auto_op_active_pb";
 import { ServerMessageAutoOp } from "../../protobuf/holdem/recv_auto_op_pb";
+import { ClientMessageObservers, ServerMessageObservers } from "../../protobuf/holdem/req_observers_pb";
 
 export class ProtocolCommon {
 
@@ -252,6 +253,10 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_Roomers]: {
         Client: ClientMessageRoomers,
         Server: ServerMessageRoomers,
+    },
+    [ProtocolCode.Protocol_Holdem_Observers]: {
+        Client: ClientMessageObservers,
+        Server: ServerMessageObservers,
     },
     [ProtocolCode.Protocol_Holdem_PublicReplay]: {
         Client: ClientMessagePublicReplay,
