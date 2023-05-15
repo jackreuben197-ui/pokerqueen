@@ -3,7 +3,7 @@
  * @Date: 2022-09-21 13:59:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-13 14:12:18
+ * @LastEditTime: 2023-05-15 20:13:13
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIManageLabor.ts
  */
 
@@ -120,7 +120,7 @@ export default class UIManageLabor extends BaseForm {
             this.setText(name, ClubCache.tribe_name)
             WebImageHelper.SetHeadImage(union_icon.getComponent(cc.Sprite), ClubCache.tribe_logo)
         } else {
-            this.setText(name, 'UIGuild_NoUnion')
+            this.setText(name, 'UIGuild_NoUnionTips')
             union_icon.active = false;
         }
         //联系方式
@@ -132,6 +132,20 @@ export default class UIManageLabor extends BaseForm {
         let chsj = this.contentNode.getChildByName('chsj')
         chsj.getChildByName('time').getComponent(cc.Label).string = TimeHelper.convertUTCTimeToLocalTime(ClubCache.create_time)
         this.initSwitch()
+
+        let hl = this.contentNode.getChildByName('hl')
+        let yxss = this.contentNode.getChildByName('yxss')
+        let rusp = this.contentNode.getChildByName('rusp')
+        hl.active = true;
+        yxss.active = true;
+        rusp.active = true;
+
+        if (ClubCache.user_level == 3) {
+            hl.active = false;
+            yxss.active = false;
+            rusp.active = false;
+        }
+
     }
     initSwitch() {
         this.rusp_st.setIsOn(ClubCache.auto_audit_switch == 1)
