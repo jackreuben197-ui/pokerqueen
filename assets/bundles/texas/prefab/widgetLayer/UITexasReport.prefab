@@ -3163,7 +3163,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 579,
+      "width": 304,
       "height": 250
     },
     "_anchorPoint": {
@@ -3210,7 +3210,7 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 579,
+      "width": 304,
       "height": 250
     },
     "_resize": 1,
@@ -3221,7 +3221,7 @@
       "height": 40
     },
     "_N$startAxis": 0,
-    "_N$paddingLeft": 153,
+    "_N$paddingLeft": 91,
     "_N$paddingRight": 80,
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,

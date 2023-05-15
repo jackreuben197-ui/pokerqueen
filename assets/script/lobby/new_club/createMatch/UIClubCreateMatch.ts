@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-13 10:30:05
+ * @LastEditTime: 2023-05-15 12:13:19
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -57,6 +57,12 @@ export default class UIClubCreateMatch extends BaseForm {
     shareClubIdEd: cc.EditBox = null;
     @property(cc.Node)
     saveBtn: cc.Node = null;
+
+
+    @property(cc.Label)
+    ownTip: cc.Label = null;
+
+
 
     private comFormTitle: ComFormTitle = null;
     tabNode: cc.Node
@@ -253,10 +259,22 @@ export default class UIClubCreateMatch extends BaseForm {
             this.room_config = null;
         }
         this.initUI()
-        await UIClubModel.mInstance.APIOrgClubGold(ClubCache.random_id);
-        let wallet = APIOrgClubGold.Response.data;
+        let wallet = null;
+        if (ClubCache.joinCreateMatchType == 0) {
+            await UIClubModel.mInstance.APIOrgClubGold(ClubCache.random_id);
+            wallet = APIOrgClubGold.Response.data.diamond;
+            this.ownTip.string = i18nMgr.Get('UIClubBalance')
+        } else if (ClubCache.joinCreateMatchType == 1) {
+            await UIClubModel.mInstance.APIUserDiamondsWallet();
+            wallet = APIUserDiamondsWallet.Response.data;
+            ClubCache._diamonds_wallet = wallet.diamonds_wallet
+            wallet = wallet.diamonds_wallet.diamonds
+            this.ownTip.string = i18nMgr.Get('UIClub_CreateRoom31')
+        }
+
+
         let own = cc.find('own/num', this.coinNode).getComponent(cc.Label)
-        own.string = wallet?.diamond || 0 + '';
+        own.string = wallet || 0 + '';
         let tip = cc.find('dynamicPay/tip', this.coinNode)
         let pricTip = this.node.getChildByName('pricTip')
         this.bindClick(tip, () => {

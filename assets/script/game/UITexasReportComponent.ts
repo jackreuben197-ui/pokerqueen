@@ -10,6 +10,7 @@ import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
 import { ServerMessageLeave } from "../protobuf/holdem/req_leave_pb";
+import { ClientMessageObservers } from "../protobuf/holdem/req_observers_pb";
 import { ClientMessageRoomers } from "../protobuf/holdem/req_roomers_pb";
 import BaseForm from "../ui/form/BaseForm";
 import UIBase from "../ui/UIBase";
@@ -72,7 +73,7 @@ export default class UITexasReportComponent extends UIBase {
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
         this.listen(ProtocolCode.Protocol_Holdem_Roomers, this.ProtocolHoldemRoomersHandler)
-        // this.listen(ProtocolCode.Protocol_Holdem_Observers, this.ProtocolHoldemRoomersHandler)
+        this.listen(ProtocolCode.Protocol_Holdem_Observers, this.ProtocolHoldemObserverHandler)
     }
 
     RequestRoomers() {
@@ -88,6 +89,30 @@ export default class UITexasReportComponent extends UIBase {
             },
         })
     }
+
+    RequestObservers() {
+        ProtocolAgency.Send<ClientMessageObservers.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_Observers,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id, },
+                history: GameCache.Instance.origin_type == 4,
+                limit: 1000,
+                offset: 0,
+            },
+        })
+    }
+    ProtocolHoldemObserverHandler(response: ServerMessageLeave.AsObject) {
+        if (response == null) {
+            return;
+        }
+        if (response.status == 0) {
+            this.UpdateObViewList(response);
+        }
+    }
+
+
     ProtocolHoldemRoomersHandler(response: ServerMessageLeave.AsObject) {
         if (response == null) {
             return;
@@ -104,35 +129,14 @@ export default class UITexasReportComponent extends UIBase {
         this.room_id.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
         this.text_Time.string = ''
         this.RequestRoomers();
+        this.RequestObservers();
     }
     async UpdateViewList(RoomersData) {
         //玩家 
         this.tInfo_0 = []
         this.tInfo_1 = []
-        this.people_content.removeAllChildren();
+
         this.data_content.removeAllChildren();
-        this.peopelNum.string = RoomersData.observersList.length
-        for (let index = 0; index < RoomersData.observersList.length; index++) {
-            let tItem: cc.Node = cc.instantiate(this.peopleItem);
-            tItem.parent = this.people_content;
-            let nick_name = StringHelper.LengthNick(RoomersData.observersList[index].name);
-            let nameLbl = tItem.getChildByName('Text_Name').getComponent(cc.Label)
-            nameLbl.string = nick_name
-
-            let icon = tItem.getChildByName('icon')
-            WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
-            tItem['user_id'] = RoomersData.observersList[index].userRid
-            if (!RoomersData.observersList[index].isOnline && GameCache.Instance.origin_type == 4) {
-                tItem.opacity = 50
-            } else {
-                tItem.opacity = 255
-            }
-            this.bindClick(tItem, () => {
-                UIComponent.open(UIDefine.UITexasReportPlayerInfo, [tItem['user_id'], false, null]);
-
-            })
-
-        }
         this.line.active = RoomersData.playersList.length != 0
         for (let i = 0; i < RoomersData.playersList.length; i++) {
             let tSignPlayer = new ReportPlayer();
@@ -204,6 +208,32 @@ export default class UITexasReportComponent extends UIBase {
                 }
             })
         })
+    }
+
+    async UpdateObViewList(RoomersData) {
+        this.people_content.removeAllChildren();
+        this.peopelNum.string = RoomersData.observersList.length
+        for (let index = 0; index < RoomersData.observersList.length; index++) {
+            let tItem: cc.Node = cc.instantiate(this.peopleItem);
+            tItem.parent = this.people_content;
+            let nick_name = StringHelper.LengthNick(RoomersData.observersList[index].name);
+            let nameLbl = tItem.getChildByName('Text_Name').getComponent(cc.Label)
+            nameLbl.string = nick_name
+
+            let icon = tItem.getChildByName('icon')
+            WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), RoomersData.observersList[index].avatar)
+            tItem['user_id'] = RoomersData.observersList[index].userRid
+            if (!RoomersData.observersList[index].isOnline && GameCache.Instance.origin_type == 4) {
+                tItem.opacity = 50
+            } else {
+                tItem.opacity = 255
+            }
+            this.bindClick(tItem, () => {
+                UIComponent.open(UIDefine.UITexasReportPlayerInfo, [tItem['user_id'], false, null]);
+
+            })
+
+        }
     }
 
     ShowLeaveTimer() {
