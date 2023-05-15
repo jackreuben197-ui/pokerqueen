@@ -14,7 +14,7 @@ import { INetWork } from "../define/EIDefine";
 
 export class GameConfig {
 
-    static publish: boolean = true;
+    static publish: boolean = false;
 
     //需要清理storage,就递增这个值
     static clean_all_flag: number = 2;
