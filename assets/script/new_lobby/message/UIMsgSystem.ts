@@ -55,16 +55,24 @@ export default class UIMsgSystem extends BaseFormPlus {
     }
 
     reqMsgList(offset: number = 0) {
+        // let tribe_id = ClubCache.tribe_id;
+
+        // if (this._param.from == 2 || this._param.from.from == 1) tribe_id = 0;
+
+        let club_id = 0;
+        if (this._param.from == 1) club_id = ClubCache.club_id;
+
         WWW.Instance.CommonAPI(
             {
                 web_class: APIMsgMessageList,
                 body: {
-                    clubID: ClubCache.club_id,
-                    TribeID: ClubCache.tribe_id,
+                    //clubID: ClubCache.club_id,
+                    //TribeID: tribe_id,
                     msg_type: this._param.msg_type,
                     limit: 10,
                     offset: offset
                 },
+                club_id: club_id
             }
         ).then(
             (res: any) => {

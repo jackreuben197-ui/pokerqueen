@@ -1566,7 +1566,7 @@ export default class TexasGame {
                 applyBringIn: (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.FriendsTableLimitBringIn,
             },
         });
-        UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${150}s`);
+        GameCache.Instance.FriendsTableLimitBringIn && UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${150}s`);
     }
 
     SetAutoOnTableChips(autoOnTable: number = 0, autoUseWallet: boolean = false) {

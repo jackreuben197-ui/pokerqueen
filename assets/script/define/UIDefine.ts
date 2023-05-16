@@ -700,6 +700,7 @@ export const UIDefine = {
         Name: "UIClubShareMatch",
         Bundle: null,
         Path: "main/new_club/shareMatch/UIClubShareMatch",
+        Title:"UIGuild_ShareGameManager",
     },
     //创建俱乐部
     UICreatelabor: {

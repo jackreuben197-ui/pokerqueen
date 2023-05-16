@@ -103,7 +103,7 @@ export default class UIMe extends UIBasePlus {
                 break;
             case 2://我的消息
                 //UIComponent.open(UIDefine.UIMine_MessageList, { enterType: 2 });
-                UIComponent.open(UIDefine.UIMyMessage, { from: 2 }, { SceneUI: SceneManager.Instance.currUI });
+                UIComponent.open(UIDefine.UIMyMessage, { from: 2}, { SceneUI: SceneManager.Instance.currUI });
                 break;
             case 3://设置
                 //UIComponent.open(UIDefine.SettingsForm);

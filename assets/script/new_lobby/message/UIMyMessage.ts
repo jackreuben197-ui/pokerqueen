@@ -115,24 +115,24 @@ export default class UIMyMessage extends BaseFormPlus {
         }
         switch (index) {
             case 0://系统消息
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name });
+                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
                 break;
             case 1://钱包消息
                 //this.reqMsgList(EnumMSG.MSG_Money);
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name });
+                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
                 break;
             case 2://背包消息
                 //this.reqMsgList(EnumMSG.MSG_Backpack);
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name });
+                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
                 break;
             case 3://公会消息
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name });
+                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
                 break;
             case 4://联盟消息
-                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name });
+                UIComponent.open(UIDefine.UIMsgSystem, { msg_type: item.msg_type, name: item.name, from: this._param.from });
                 break;
             case 5://带入申请
-                UIComponent.open(UIDefine.UIMsgBring, { from: this._param.from, name: item.name });
+                UIComponent.open(UIDefine.UIMsgBring, { from: this._param.from, name: item.name, });
                 break;
         }
     }
