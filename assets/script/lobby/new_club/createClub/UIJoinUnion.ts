@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2022-09-14 19:02:14
- * @description: 
+ * @description: 搜索联盟或者工会
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-14 13:54:44
+ * @LastEditTime: 2023-05-16 11:08:31
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UIJoinUnion.ts
  */
 
@@ -214,7 +214,11 @@ export default class UIJoinUnion extends BaseForm {
                 };
                 break;
         }
-
+        if (this.tempString == '') {
+            this.search_id.node.opacity = 100
+        } else {
+            this.search_id.node.opacity = 255
+        }
         this.setButtonInteractable(this.sousuo, this.tempString.length > 0);
 
 

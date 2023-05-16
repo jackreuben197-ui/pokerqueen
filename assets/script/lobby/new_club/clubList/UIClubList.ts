@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2022-12-21 11:16:27
- * @description: 
+ * @description: 俱乐部列表页
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-12 10:38:18
+ * @LastEditTime: 2023-05-16 11:09:14
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 

@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2022-09-14 19:02:14
- * @description: 
+ * @description: 加入联盟或者公会
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-13 10:06:54
+ * @LastEditTime: 2023-05-16 11:09:15
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UISearchJoin.ts
  */
 

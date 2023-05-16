@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2022-10-17 13:50:18
- * @description: 
+ * @description: 创建牌桌
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-15 12:13:19
+ * @LastEditTime: 2023-05-16 11:11:57
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {

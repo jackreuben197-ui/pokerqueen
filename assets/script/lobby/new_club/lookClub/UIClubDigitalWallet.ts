@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2023-02-24 13:22:46
- * @description: 
+ * @description:  数字钱包
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-05 11:41:37
+ * @LastEditTime: 2023-05-16 11:11:55
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIClubDigitalWallet.ts
  */
 // Learn TypeScript:

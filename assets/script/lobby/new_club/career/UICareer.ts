@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2023-02-02 11:32:22
- * @description: 
+ * @description: 生涯
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-11 16:32:02
+ * @LastEditTime: 2023-05-16 11:09:11
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/career/UICareer.ts
  */
 

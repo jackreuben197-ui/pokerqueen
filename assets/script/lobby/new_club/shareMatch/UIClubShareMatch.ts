@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2023-01-03 11:28:55
- * @description: 
+ * @description: 共享牌局
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-11 18:38:44
+ * @LastEditTime: 2023-05-16 11:08:05
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatch.ts
  */
 // Learn TypeScript:
@@ -18,7 +18,7 @@ import ComFormTitle from "../../../common/ComFormTitle";
 import UIClubShareMatchItem from "./UIClubShareMatchItem";
 import List from "../../../common/List";
 import { UIClubModel } from "../../labor/UIClubModel";
-import { APIOrgClubShareApplyList, APIOrgClubShareApproveList, APIOrgClubSharePendingList } from "../../../net/https/WebRequest";
+import { APIMessageRed_num, APIOrgClubShareApplyList, APIOrgClubShareApproveList, APIOrgClubSharePendingList } from "../../../net/https/WebRequest";
 import { EventName } from "../../../config/EventName";
 import TabNode from "../../../common/tabNode";
 import { shareMatchTabConfig } from "../../../frame/config/tabConfig";
@@ -44,8 +44,8 @@ export default class UIClubShareMatch extends BaseForm {
     toggle1: cc.Toggle = null;
     @property(cc.Toggle)
     toggle2: cc.Toggle = null;
-
-
+    @property(cc.Node)
+    Ellipse: cc.Node = null;
 
     private comFormTitle: ComFormTitle = null;
     @property(List)
@@ -67,6 +67,14 @@ export default class UIClubShareMatch extends BaseForm {
         this.toggle1.isChecked = true
         this.toggle2.isChecked = false
 
+        await UIClubModel.mInstance.APIMessageRed_num()
+        let redData = APIMessageRed_num.Response.data
+        redData.forEach((element) => {
+            if (element.type == 4) {
+                this.Ellipse.active = element.num != 0
+            }
+
+        })
     }
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
@@ -94,6 +102,7 @@ export default class UIClubShareMatch extends BaseForm {
         if (this._selectTitle == 1) {
             await UIClubModel.mInstance.APIOrgClubSharePendingList({ limit: 10, offset: this._offset })
             _data = APIOrgClubSharePendingList.Response.data
+            this.Ellipse.active = _data.data.length != 0
         } else if (this._selectTitle == 0) {
             await UIClubModel.mInstance.APIOrgClubShareApproveList({ limit: 10, offset: this._offset })
             _data = APIOrgClubShareApproveList.Response.data

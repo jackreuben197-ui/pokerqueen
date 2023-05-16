@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2022-12-24 10:33:15
- * @description: 
+ * @description: 创建牌桌类型
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-11 20:50:56
+ * @LastEditTime: 2023-05-16 11:11:56
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchHome.ts
  */
 enum TITALTYPE {
@@ -142,11 +142,11 @@ export default class UIClubCreateMatchHome extends BaseForm {
             }
         }
         if (modelNum <= 0 || modelNum > 5) {
-            
-            this.setButtonInteractable(this.createBtn,false);
+
+            this.setButtonInteractable(this.createBtn, false);
         } else {
-            
-            this.setButtonInteractable(this.createBtn,true);
+
+            this.setButtonInteractable(this.createBtn, true);
         }
         this.setBtnState()
 

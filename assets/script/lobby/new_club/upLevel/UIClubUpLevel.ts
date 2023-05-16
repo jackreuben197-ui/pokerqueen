@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2022-12-27 11:14:08
- * @description: 
+ * @description: 公会等级
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-15 20:42:00
+ * @LastEditTime: 2023-05-16 11:08:14
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/upLevel/UIClubUpLevel.ts
  */
 
@@ -87,7 +87,10 @@ export default class UIClubUpLevel extends BaseForm {
         node.getChildByName('Rectangle').active = index % 2 == 0
         node.getChildByName('itemLevel_1').getComponent(cc.Label).string = '—LV.' + data.club_level + '—'
         node.getChildByName('itemLevel_2').getComponent(cc.Label).string = data.club_level
-        let dur = data.club_level > 10 ? i18nMgr.Get('UILevelForever') : data.level_duration + ' Day'
+        let dur = data.level_duration + ' Day'
+        if (data.club_level == 1 || data.club_level > 10) {
+            dur = i18nMgr.Get('UILevelForever') :
+        }
         node.getChildByName('levelNum').getComponent(cc.Label).string = `Level ${data.club_level}(${dur})`
         node.getChildByName('peopleNum').getComponent(cc.Label).string = data.user_num + ' People'
         node.getChildByName('diamondNum').getComponent(cc.Label).string = data.level_count

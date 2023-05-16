@@ -3,7 +3,7 @@
  * @Date: 2022-10-28 17:58:45
  * @description: 
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-17 12:52:00
+ * @LastEditTime: 2023-05-16 11:01:57
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/memberAdmin/MemberItem.ts
  */
 
@@ -42,9 +42,9 @@ export default class MemberItem extends UIBase {
 
         cc.find('messLayout/id', this.node).getComponent(cc.Label).string = 'ID:' + this._data.random_num
         let beizhu = cc.find('messLayout/beizhu', this.node)
-        if (this._data.remark_desc && this._data.remark_desc != '') {
+        if (this._data.remark_name && this._data.remark_name != '') {
             beizhu.active = true;
-            beizhu.getComponent(cc.Label).string = '备注: ' + this._data.remark_desc
+            beizhu.getComponent(cc.Label).string = '备注: ' + this._data.remark_name
 
         } else {
             beizhu.active = false;

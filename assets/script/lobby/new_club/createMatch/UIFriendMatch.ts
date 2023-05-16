@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2023-03-23 10:00:32
- * @description: 
+ * @description:  朋友桌
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-13 14:26:20
+ * @LastEditTime: 2023-05-16 11:11:57
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIFriendMatch.ts
  */
 /*

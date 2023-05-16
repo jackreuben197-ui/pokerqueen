@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2022-09-14 19:01:53
- * @description: 
+ * @description: 创建俱乐部
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-11 17:07:32
+ * @LastEditTime: 2023-05-16 11:10:24
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UICreatelabor.ts
  */
 

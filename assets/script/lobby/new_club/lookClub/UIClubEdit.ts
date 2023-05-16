@@ -1,9 +1,9 @@
 /*
  * @Author: xfj
  * @Date: 2023-02-24 13:22:46
- * @description: 
+ * @description: 编辑俱乐部介绍
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-03-10 18:15:31
+ * @LastEditTime: 2023-05-16 11:11:54
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/lookClub/UIClubEdit.ts
  */
 // Learn TypeScript:
