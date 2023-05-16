@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 11:16:27
  * @description: 俱乐部列表页
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-16 11:09:14
+ * @LastEditTime: 2023-05-16 18:20:14
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubList.ts
  */
 
@@ -81,6 +81,7 @@ export default class UIClubList extends BaseForm {
         this.sortData()
         this.setText(this.dropNode_lbl, clubListConfig[this._selectIndex].desc);
     }
+    //根据条件排序
     sortData() {
         let data: any = Web_Org_Club_Get.Response.data
         let _data = data.sort((a, b) => {
@@ -153,6 +154,7 @@ export default class UIClubList extends BaseForm {
     joinClub() {
         UIComponent.open(UIDefine.UIJoinUnion, { type: 0 }, { SceneUI: SceneManager.Instance.currUI });
     }
+    //切换 列表形式
     changeMenu() {
 
         let union = cc.find('menuChange/union', this.topNode);

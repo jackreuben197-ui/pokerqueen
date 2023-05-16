@@ -3,7 +3,7 @@
  * @Date: 2022-10-17 13:50:18
  * @description: 创建牌桌
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-16 11:11:57
+ * @LastEditTime: 2023-05-16 18:25:27
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatch.ts
  */
 enum TITALTYPE {
@@ -399,7 +399,7 @@ export default class UIClubCreateMatch extends BaseForm {
     }
 
 
-
+    //编辑模版数据
     editModel(room_config) {
         this.room_config = room_config;
         this._bxState = room_config.insurance;

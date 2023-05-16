@@ -3,7 +3,7 @@
  * @Date: 2022-12-21 12:49:12
  * @description: 俱乐部详情页
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-16 11:09:13
+ * @LastEditTime: 2023-05-16 18:20:32
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/clubList/UIClubHome.ts
  */
 
@@ -86,7 +86,7 @@ export default class UIClubHome extends BaseForm {
         this.initChessView();
         this.initRedTip()
     }
-
+    //红点提示
     async initRedTip() {
         await UIClubModel.mInstance.APIMessageRed_num()
         let redData = APIMessageRed_num.Response.data
@@ -115,7 +115,7 @@ export default class UIClubHome extends BaseForm {
 
 
     }
-
+    //获取通知
     async initAcTiveBord() {
         if (ClubCache.show_notice_switch == 2) return
         await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })

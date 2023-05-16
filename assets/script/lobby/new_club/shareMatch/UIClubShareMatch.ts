@@ -3,7 +3,7 @@
  * @Date: 2023-01-03 11:28:55
  * @description: 共享牌局
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-05-16 11:08:05
+ * @LastEditTime: 2023-05-16 19:27:09
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/shareMatch/UIClubShareMatch.ts
  */
 // Learn TypeScript:
@@ -34,7 +34,7 @@ export default class UIClubShareMatch extends BaseForm {
     _list: Array<any> = [];
     _total: number = 0
     noDataTip: cc.Node
-    tabNode: TabNode = null;
+    // tabNode: TabNode = null;
 
     @property(cc.Label)
     pjlbl: cc.Label = null;
@@ -52,13 +52,13 @@ export default class UIClubShareMatch extends BaseForm {
     memberList: List = null;
     protected lateLoad(): void {
         super.lateLoad();
-        this.tabNode = this.getChildNodeOrComponent("tabNode", TabNode);
+        // this.tabNode = this.getChildNodeOrComponent("tabNode", TabNode);
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.noDataTip = this.getChildNodeOrComponent("noDataTip");
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-        this.tabNode.initData(shareMatchTabConfig, this.titleNodeClick.bind(this), this)
+        // this.tabNode.initData(shareMatchTabConfig, this.titleNodeClick.bind(this), this)
         let title = "UIGuild_ShareGameManager"
         this.comFormTitle.initData(title, this);
         this.memberList.scrollingCB = this.scrollingCB;
