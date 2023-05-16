@@ -2242,7 +2242,7 @@ export class Web_Room_Center_History_Replay extends WebCommon {
             active: boolean,//是否存活
             maxcard_idx: number[],//最大牌型数组下标
             card_type: number,//最大牌型
-            pcard: number[],//玩家手牌
+            card: number[],//玩家手牌
             maxcard_idx2: number[],//第二套牌，最大牌型数组下标
             card_type2: number,//最大牌型
             sp_detail: typeof Web_Room_Center_History_Replay.SpDetail[],//第二套牌赢牌详情

@@ -82,7 +82,7 @@ export class ProtocolCommon {
 
             let func = `set${key[0].toLocaleUpperCase()}${key.slice(1)}`;
 
-            //cc.log("set 对象", func, value);
+            cc.log("set 对象", func, value);
 
             if (classDic && classDic[key]) {
                 //如果是数组

@@ -227,8 +227,10 @@ export default class UIBase extends BaseComponent {
         }
     }
     //设置节点下的文本颜色
-    setChildColor(node: cc.Node, path: string, color: string) {
-        cc.find(path, node).color = cc.Color.BLACK.fromHEX(color);
+    setChildColor(node: cc.Node, path: string, color: string | cc.Color) {
+
+        cc.find(path, node).color = (color instanceof cc.Color) ? color : cc.Color.BLACK.fromHEX(color);
+        // cc.Color.BLACK.fromHEX(color);
     }
 
     setChildVisible(node: cc.Node, path: string, visible: boolean) {
