@@ -1,6 +1,8 @@
 import SimpleNodePool from "../../common/MyNodePool";
+import SliderPlus from "../../common/SliderPlus";
 import { TextColor } from "../../config/GameConfig";
 import CPMessageDispatherComponent from "../../event/CPMessageDispatherComponent";
+import GC from "../../frame/GameControl";
 import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
@@ -34,15 +36,15 @@ export class PlayerInfo {
     public userName: string;//名字
     public headPic: string;//头像
     public seatID: number;//座位号
-    public initChip: number;//初始筹码
+    public initChip: number = 0;//初始筹码
     public maxCardIndex: number[];//最大牌型数组下标
     public maxCardType: number;//最大牌型
-    public winAnte: number;//输赢筹码
-    public insuranceGain: number;//保险
+    public winAnte: number = 0;//输赢筹码
+    public insuranceGain: number = 0;//保险
     public handCards: number[];//手牌
     public isMine: boolean;//是否是自己
     public playerPosition: number;
-    public handBet: number;
+    public handBet: number = 0;
     public maxCardType2: number;//最大牌型
     public maxCardIndex2: number[];//最大牌型数组下标
     public winAnte2: number[];//第二套公共牌输赢筹码
@@ -190,9 +192,16 @@ export default class UITexasHistory extends UIBasePlus {
     $River_Cards: cc.Node = null;
     ////////////////////////////////////
 
+    //第一套结算
     $Showdown_Childs: cc.Node = null;
     Showdown_Child_Pool: SimpleNodePool = null;
     $Showdown_PublicCards: cc.Node = null;
+
+    //第二套结算
+    $Showdown2_Childs: cc.Node = null;
+    Showdown2_Child_Pool: SimpleNodePool = null;
+    $Showdown2_PublicCards: cc.Node = null;
+
 
     //总滚动容器
     $content: cc.Node = null;
@@ -209,9 +218,16 @@ export default class UITexasHistory extends UIBasePlus {
     color_yellow = cc.color(255, 184, 83, 255);
     color_gray = cc.color(198, 198, 198);
 
+
+    SliderPlus$slider: SliderPlus = null;
+
+    cc_Label$page: cc.Label = null;
+
+    $left_btn: cc.Node = null;
+    $right_btn: cc.Node = null;
+
     protected lateLoad(): void {
         super.lateLoad();
-        this.registerHandler();
         this.InitUI();
         this.playerInfos = []
         this.playerInfosPreFlop = []
@@ -226,9 +242,13 @@ export default class UITexasHistory extends UIBasePlus {
         this.Flop_Child_Pool = new SimpleNodePool(this.$Flop_Child);
         this.Turn_Child_Pool = new SimpleNodePool(this.$Turn_Child);
         this.River_Child_Pool = new SimpleNodePool(this.$River_Child);
+        this.$Score_Childs.removeAllChildren();
     }
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.$bg_click, this.click_bg);
+
+        this.setButtonClick(this.$left_btn, this.click_left);
+        this.setButtonClick(this.$right_btn, this.click_right);
     }
     onShow(obj?: any): void {
         super.onShow(obj);
@@ -253,47 +273,100 @@ export default class UITexasHistory extends UIBasePlus {
         })
 
         //模拟数据
-        this.Protocol_Holdem_PublicReplay_Handler(this.moni_data);
+        // this.Protocol_Holdem_PublicReplay_Handler(this.moni_data);
+
+
+        // this.SliderPlus$slider.show({
+        //     min_value: 1,
+        //     max_value: 3,
+        //     step: 1,
+        //     change: this.sliderChange,
+        //     own: this
+        // });
+        // this.sliderChange(3);
+        ///////////////////////////////////////////////////
+
 
         //总页数
         this.totalPage = Math.max(0, this.historyInfoData.handNum - 1);
 
         //PageSlider.minValue = 1;
-        if (this.totalPage < 1) {
-            //PageSlider.maxValue = 1;
-        }
-        else {
-            //PageSlider.maxValue = totalPage;
-        }
+        // if (this.totalPage < 1) {
+        //     //PageSlider.maxValue = 1;
+        // }
+        // else {
+        //     //PageSlider.maxValue = totalPage;
+        // }
         if (this.totalPage == 0) {
             //第一手没打完不请求
+            this.SliderPlus$slider.show({
+                min_value: 0,
+                max_value: 0,
+                step: 1,
+                change: this.sliderChange,
+                own: this
+            });
+            this.cc_Label$page.string = "0/0";
             return;
         }
 
-        this.RefreshData(this.totalPage);
+        this.registerHandler();
 
-        // UICareerModel.mInstance.APIRoomCenterHistoryHand(GameCache.Instance.room_id, 0, 10, 0, 0, 0, responseData => {
-        //     Web_Room_Center_History_Hand.ResponseData tResp = Web_Room_Center_History_Hand.Response(responseData);
-        //     foreach(Web_Room_Center_History_Hand.Record data in tResp.data.records)
-        //     {
-        //         if (!recordMap.ContainsKey(data.hand_num)) {
-        //             recordMap.Add(data.hand_num, data);
-        //         }
-        //     }
-        // });
+        this.SliderPlus$slider.show({
+            min_value: 1,
+            max_value: this.totalPage,
+            step: 1,
+            change: this.sliderChange,
+            own: this
+        });
+        this.SliderPlus$slider.value = this.totalPage;
+
+        //this.RefreshData(this.totalPage);
 
     }
+    click_left() {
+        if (this.currentPage - 1 > 0) {
+            // this.RefreshData(this.currentPage - 1);
+            // this.refreshPageLabel();
+            this.SliderPlus$slider.value = this.currentPage - 1;
+        }
+    }
+    click_right() {
+        if (this.currentPage + 1 <= this.totalPage) {
+            // this.RefreshData(this.currentPage + 1);
+            // this.refreshPageLabel();
+            this.SliderPlus$slider.value = this.currentPage + 1;
+        }
+    }
+
+    /*
+     * 滑动条改变触发
+     */
+    sliderChange(value: number) {
+
+        if (this.currentPage == value) return;
+
+        this.RefreshData(value);
+
+        this.refreshPageLabel();
+
+    }
+
+    refreshPageLabel() {
+        this.cc_Label$page.string = `${this.currentPage}/${this.totalPage}`;
+    }
+
 
     click_bg() {
         UIComponent.close(this.UIDefine);
     }
 
     private registerHandler() {
-        CPMessageDispatherComponent.Instance.RegisterHandler(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
+        GC.notify.register(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
 
     }
     private removeHandler() {
-        CPMessageDispatherComponent.Instance.RemoveHandler(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_PublicReplay, this.Protocol_Holdem_PublicReplay_Handler, this);//自己坐下
     }
 
     Protocol_Holdem_PublicReplay_Handler(response) {
@@ -362,64 +435,6 @@ export default class UITexasHistory extends UIBasePlus {
      * @methos 初始化UI
      */
     private InitUI() {
-        // this.GameObject = this.getChildNodeOrComponent('GameObject')
-        // let RoomNameText = this.GameObject.getChildByName('RoomNameText').getComponent(cc.Label);
-        // let RoomIDText = this.GameObject.getChildByName('RoomIDText').getComponent(cc.Label);
-        // let BlindText = this.GameObject.getChildByName('BlindText').getComponent(cc.Label);
-        // let PlayerNumText = this.GameObject.getChildByName('PlayerNumText').getComponent(cc.Label);
-        // let Title = this.GameObject.getChildByName('Title')
-
-        // this.InfoList = this.getChildNodeOrComponent('InfoList')
-        // this.PreflopInfoList = this.getChildNodeOrComponent('PreflopInfoList')
-        // this.Preflop = this.getChildNodeOrComponent('Preflop')
-
-        // this.PreflopInfoObj = this.Preflop.getChildByName('player_info')
-        // this.PreflopInfoObj.active = false;
-        // this.FlopInfoList = this.getChildNodeOrComponent('FlopInfoList')
-        // this.TurnNum = this.getChildNodeOrComponent('TurnNum')
-        // this.TurnInfoList = this.getChildNodeOrComponent('TurnInfoList')
-        // this.FlopNum = this.getChildNodeOrComponent('FlopNum')
-        // this.RiverInfoList = this.getChildNodeOrComponent('RiverInfoList')
-        // this.RiverNum = this.getChildNodeOrComponent('RiverNum')
-        // this.ShowdownInfoList = this.getChildNodeOrComponent('ShowdownInfoList')
-
-        // this.ShowdownNum = this.getChildNodeOrComponent('ShowdownNum')
-
-        // this.ShowdownInfoList2 = this.getChildNodeOrComponent('ShowdownInfoList2')
-
-        // this.ShowdownNum2 = this.getChildNodeOrComponent('ShowdownNum2')
-
-        // this.AllPlayerPaiPu = this.getChildNodeOrComponent('AllPlayerPaiPu')
-        // RoomNameText.string = GameCache.Instance.roomName;
-        // this.rcPokerSprite = this.getChildNodeOrComponent('rcPokerSprite')
-
-        // this.AllPlayerPaiPuInfoObj = this.AllPlayerPaiPu.getChildByName('player_info')
-        // this.Image_Insurance = this.getChildNodeOrComponent('Image_Insurance')
-        // this.AllPlayerSecondInfoObj = this.getChildNodeOrComponent('player_infoSecond')
-
-
-        // if (this.historyInfoData.bgroupBet > 0) {
-        //     BlindText.string = this.historyInfoData.Blindstr + "(" + StringHelper.getStringDiv100(this.historyInfoData.bgroupBet) + ")";
-        // }
-        // else {
-        //     BlindText.string = this.historyInfoData.Blindstr;
-        // }
-        // PlayerNumText.string = "0";
-        // RoomIDText.string = GameCache.Instance.room_id + "-" + 0;
-        // //按钮
-        // this.buttonFirstPage = this.getChildNodeOrComponent('Button_FirstPage', cc.Button);
-        // this.buttonFirstPage.node.on('click', this.onClickFirstPage, this)
-
-        // this.buttonLastPage = this.getChildNodeOrComponent('Button_LastPage', cc.Button);
-        // this.buttonLastPage.node.on('click', this.onClickLastPage, this)
-
-        // this.buttonPrePage = this.getChildNodeOrComponent('Button_PrePage', cc.Button);
-        // this.buttonPrePage.node.on('click', this.onClickPrePage, this)
-
-        // this.buttonNextPage = this.getChildNodeOrComponent('Button_NextPage', cc.Button);
-        // this.buttonNextPage.node.on('click', this.onClickNextPage, this)
-        // let ScrollBar: cc.Node = this.getChildNodeOrComponent('ScrollBar');
-        // this.Text_num = ScrollBar.getChildByName("Text_num").getComponent(cc.Label)
 
     }
 
@@ -475,14 +490,12 @@ export default class UITexasHistory extends UIBasePlus {
             item.active = this.PublicCards[index] > 0;
             item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
         })
-
         //显示第二套公共牌
         if (this.HaveSecondCard) {
-
-            // this.$Public_Second_Cards.children.forEach((item, index) => {
-            //     item.active = this.SecondPublicCards[index] > 0;
-            //     item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[index]), AssetFold.texture_SmallCard0);
-            // })
+            this.$Showdown2_PublicCards.children.forEach((item, index) => {
+                item.active = this.SecondPublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[index]), AssetFold.texture_SmallCard0);
+            })
 
         }
         this.playerInfos = [];
@@ -498,9 +511,6 @@ export default class UITexasHistory extends UIBasePlus {
         this.AllPlayerCardsInfosTurn = [];
         this.AllPlayerCardsInfosRiver = [];
         this.AllPlayerCardsInfosWinner = [];
-
-
-
 
         let tableSeatIds = [];//本手参与玩家座位号
 
@@ -880,9 +890,8 @@ export default class UITexasHistory extends UIBasePlus {
             this.playerInfosWinner.push(player);
         }
 
-
         //刷新手牌位置
-        let offsetx_x = this.cards_position[this.historyInfoData.handNum];
+        let offsetx_x = this.cards_position[GameCache.Instance.CurGame.HandCards];
         //赋值玩家数据
 
         this.clearChilds(this.$Score_Childs, this.Score_Child_Pool);
@@ -1142,8 +1151,8 @@ export default class UITexasHistory extends UIBasePlus {
 
     SetPlayerCardItem(go, element, isSecond = false, SpcsIndex = 0) {
         //玩家名字
-        this.setChildLabel(go, "cards_position/nick/label", element.userName);
-        //StringHelper.LengthNick(element.userName));
+        this.setChildLabel(go, "cards_position/nick/label", StringHelper.LengthNick(element.userName));
+
 
         //输赢筹码f
         let str = StringHelper.GetLongString(element.winAnte);
@@ -1197,8 +1206,12 @@ export default class UITexasHistory extends UIBasePlus {
         //             publicCards.Add(publicCard);
         //         }
 
-        //手牌显示
+
         let hand_cards: cc.Node = cc.find("cards_position/hand_cards", go);
+        let public_cards = cc.find("cards_position/public_cards", go);
+
+        //手牌显示
+
         if (element.handCards.length <= 0) {
             hand_cards.children.forEach((item, index) => {
                 item.active = index < GameCache.Instance.CurGame.HandCards;
@@ -1212,272 +1225,200 @@ export default class UITexasHistory extends UIBasePlus {
             })
         }
 
+        if (isSecond) public_cards = public_cards.children[0];
 
+        if (isSecond && SpcsIndex != 0) {
 
-        // //公共牌位置
-        // GameObject publiccardpos = go.transform.Find("PublicCardpos").gameObject;
-        // int handCardNum = GameCache.Instance.CurGame.HandCards;
-        //         switch (handCardNum) {
-        //             case 2:
-        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-78.1f, -18.7f, 0);
-        //                 break;
-        //             case 4:
-        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(30, -18.7f, 0);
-        //                 break;
-        //             case 5:
-        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(75, -18.7f, 0);
-        //                 break;
-        //             case 6:
-        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(120, -18.7f, 0);
-        //                 break;
-        //             default:
-        //                 publiccardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-78.1f, -18.7f, 0);
-        //                 break;
-        //         }
-        //         if (isSecond && SpcsIndex != 0) {
-        //             //公共牌显示
-        //             for (int i = 0; i < 5; i++)
-        //             {
-        //         Image publicCard = go.transform.Find($"PublicCardpos/Image_publicCard{i + 1}").GetComponent<Image>();
-        //                 if (SecondPublicCards[i] == 0) {
-        //                     //没发完的公共牌不显示
-        //                     publicCard.gameObject.SetActive(false);
-        //                 }
-        //                 else {
+            //公共牌显示
+            // for (int i = 0; i < 5; i++)
+            // {
+            //     Image publicCard = go.transform.Find($"PublicCardpos/Image_publicCard{i + 1}").GetComponent<Image>();
+            //     if (SecondPublicCards[i] == 0) {
+            //         //没发完的公共牌不显示
+            //         publicCard.gameObject.SetActive(false);
+            //     }
+            //     else {
 
-        //                     publicCard.gameObject.SetActive(true);
-        //                     publicCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)SecondPublicCards[i]));
-        //                 }
-        //             }
-        //         }
-        //         else {
-        //             //公共牌显示
-        //             for (int i = 0; i < 5; i++)
-        //             {
-        //         Image publicCard = go.transform.Find($"PublicCardpos/Image_publicCard{i + 1}").GetComponent<Image>();
-        //                 if (PublicCards[i] == 0) {
-        //                     //没发完的公共牌不显示
-        //                     publicCard.gameObject.SetActive(false);
-        //                 }
-        //                 else {
+            //         publicCard.gameObject.SetActive(true);
+            //         publicCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)SecondPublicCards[i]));
+            //     }
+            // }
+        }
+        else {
+            //第一套公共牌显示
+            public_cards.children.forEach((item, index) => {
+                item.active = this.PublicCards[index] > 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[index]), AssetFold.texture_SmallCard0);
+            })
+        }
 
-        //                     publicCard.gameObject.SetActive(true);
-        //                     publicCard.sprite = rcPokerSprite.Get<Sprite>(GameUtil.GetCardNameByNum((sbyte)PublicCards[i]));
-        //                 }
-        //             }
-        //         }
+        if (isSecond && SpcsIndex != 0) {
+            //高亮牌显示
+            // if (element.maxCardIndex2 != null && element.maxCardIndex2.Count > 0) {
+            //     //手牌置灰
+            //     for (int i = 0; i < handcards.Count; i++)
+            //     {
+            //         handcards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
+            //     }
+            //     //公共牌置灰
+            //     for (int i = 0; i < publicCards.Count; i++)
+            //     {
+            //         publicCards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
+            //     }
+            //     for (int i = 0; i < element.maxCardIndex2.Count; i++)
+            //     {
+            //         if (element.maxCardIndex2[i] >= 5) {
+            //             handcards[element.maxCardIndex2[i] - 5].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            //         }
+            //         else {
+            //             publicCards[element.maxCardIndex2[i]].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            //         }
 
-        //         if (isSecond && SpcsIndex != 0) {
-        //             //高亮牌显示
-        //             if (element.maxCardIndex2 != null && element.maxCardIndex2.Count > 0) {
-        //                 //手牌置灰
-        //                 for (int i = 0; i < handcards.Count; i++)
-        //                 {
-        //                     handcards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
-        //                 }
-        //                 //公共牌置灰
-        //                 for (int i = 0; i < publicCards.Count; i++)
-        //                 {
-        //                     publicCards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
-        //                 }
-        //                 for (int i = 0; i < element.maxCardIndex2.Count; i++)
-        //                 {
-        //                     if (element.maxCardIndex2[i] >= 5) {
-        //                         handcards[element.maxCardIndex2[i] - 5].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-        //                     }
-        //                     else {
-        //                         publicCards[element.maxCardIndex2[i]].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-        //                     }
+            //     }
+            // }
+        }
+        else {
+            //高亮牌显示
+            if (element.maxCardIndex != null && element.maxCardIndex.length > 0) {
+                //手牌置灰
+                hand_cards.children.forEach(item => {
+                    item.color = cc.color(127, 127, 127);
+                })
+                //公共牌置灰
+                public_cards.children.forEach(item => {
+                    item.color = cc.color(127, 127, 127);
+                })
 
-        //                 }
-        //             }
-        //         }
-        //         else {
-        //             //高亮牌显示
-        //             if (element.maxCardIndex != null && element.maxCardIndex.Count > 0) {
-        //                 //手牌置灰
-        //                 for (int i = 0; i < handcards.Count; i++)
-        //                 {
-        //                     handcards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
-        //                 }
-        //                 //公共牌置灰
-        //                 for (int i = 0; i < publicCards.Count; i++)
-        //                 {
-        //                     publicCards[i].GetComponent<Image>().color = new Color32(127, 127, 127, 255);
-        //                 }
-        //                 for (int i = 0; i < element.maxCardIndex.Count; i++)
-        //                 {
-        //                     if (element.maxCardIndex[i] >= 5) {
-        //                         handcards[element.maxCardIndex[i] - 5].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-        //                     }
-        //                     else {
-        //                         publicCards[element.maxCardIndex[i]].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-        //                     }
+                for (let i = 0; i < element.maxCardIndex.length; i++) {
+                    if (element.maxCardIndex[i] >= 5) {
+                        hand_cards.children[element.maxCardIndex[i] - 5].color = cc.color(255, 255, 255);
+                    }
+                    else {
+                        public_cards.children[element.maxCardIndex[i]].color = cc.color(255, 255, 255);
+                    }
 
-        //                 }
-        //             }
-        //         }
+                }
+            }
+        }
     }
     SetPlayerSecondCardItem(go, element) {
-        go.getChildByName("Text_name").getComponent(cc.Label).string = StringHelper.LengthNick(element.userName);//名字
+
+        //玩家名字
+        this.setChildLabel(go, "cards_position/nick/label", StringHelper.LengthNick(element.userName));
+
         //输赢筹码
         let str;
-        str = StringHelper.getStringDiv100(element.winAnte2[0]);
-        if (go.getChildByName("Text_wins")) {
-            go.getChildByName("Text_wins").getComponent(cc.Label).string = this.tryParse(str)
-        }
+        str = element.winAnte2[0] / 100;
 
 
-        str = StringHelper.getStringDiv100(element.winAnte);
-        str = StringHelper.getStringDiv100(element.winAnte2[1]);
-        if (go.getChildByName("Text_secondWins")) {
-            go.getChildByName("Text_secondWins").getComponent(cc.Label).string = this.tryParse(str)
+        this.setChildLabel(go, "win1", StringHelper.GetDecimalN(element.winAnte2[0] / 100));
+        this.setChildLabel(go, "win2", StringHelper.GetDecimalN(element.winAnte2[1] / 100));
 
-        }
 
         //判断是否是自己
         if (element.isMine) {
-            cc.find('PositionImageBg/PositionText', go).color = cc.color(220, 186, 130, 255);
-            go.getChildByName("Text_name").getComponent(cc.Label).color = cc.color(220, 186, 130, 255);
-            if (go.getChildByName("Text_wins")) {
-                go.getChildByName("Text_wins").getComponent(cc.Label).color = cc.color(220, 186, 130, 255);
-            }
-            if (go.getChildByName("Text_secondWins")) {
-                go.getChildByName("Text_secondWins").getComponent(cc.Label).color = cc.color(220, 186, 130, 255);
-            }
+            // cc.find('PositionImageBg/PositionText', go).color = cc.color(220, 186, 130, 255);
+            // go.getChildByName("Text_name").getComponent(cc.Label).color = cc.color(220, 186, 130, 255);
+            // if (go.getChildByName("Text_wins")) {
+            //     go.getChildByName("Text_wins").getComponent(cc.Label).color = cc.color(220, 186, 130, 255);
+            // }
+            // if (go.getChildByName("Text_secondWins")) {
+            //     go.getChildByName("Text_secondWins").getComponent(cc.Label).color = cc.color(220, 186, 130, 255);
+            // }
         }
         else {
-            cc.find('PositionImageBg/PositionText', go).color = cc.color(255, 255, 255, 255);
-            go.getChildByName("Text_name").color = cc.color(255, 255, 255, 255);
-            if (go.getChildByName("Text_wins")) {
-                go.getChildByName("Text_wins").color = cc.color(255, 255, 255, 255);
-            }
-            if (go.getChildByName("Text_secondWins")) {
-                go.getChildByName("Text_secondWins").color = cc.color(255, 255, 255, 255);
-            }
+            // cc.find('PositionImageBg/PositionText', go).color = cc.color(255, 255, 255, 255);
+            // go.getChildByName("Text_name").color = cc.color(255, 255, 255, 255);
+            // if (go.getChildByName("Text_wins")) {
+            //     go.getChildByName("Text_wins").color = cc.color(255, 255, 255, 255);
+            // }
+            // if (go.getChildByName("Text_secondWins")) {
+            //     go.getChildByName("Text_secondWins").color = cc.color(255, 255, 255, 255);
+            // }
         }
         //位置
-        cc.find('PositionImageBg/PositionText', go).getComponent(cc.Label).string = this.PlayerPositionStr[element.playerPosition];
 
-        //     #region  牌
-        //手牌
-        let handcards = []
-        let Image_handCard = cc.find('Image_handCard', go)
-        for (let i = 1; i <= 6; i++) {
-            let handCard = Image_handCard.getChildByName("Image_handCard" + i).getComponent(cc.Sprite);
-            handCard.node.active = true;
-            handcards.push(handCard);
-        }
+        this.setChildLabel(go, "SB/label", this.PlayerPositionStr[element.playerPosition]);
 
-        //公共牌
-        let publicCards = []
-        let PublicCardpos = cc.find('PublicCardpos', go)
-        for (let i = 0; i < 5; i++) {
-            let publicCard = PublicCardpos.getChildByName("Image_publicCard" + i).getComponent(cc.Sprite);
-            publicCard.node.active = true;
-            publicCards.push(publicCard);
-        }
-        let secondPublicCards = [];
 
-        for (let i = 0; i < 5; i++) {
-            let publicCard = PublicCardpos.getChildByName("Image_secondPublicCard" + i).getComponent(cc.Sprite);
-            publicCard.node.active = true;
-            secondPublicCards.push(publicCard);
-        }
+        //#region  牌
+
+        let hand_cards: cc.Node = cc.find("cards_position/hand_cards", go);
+        let public_cards1 = cc.find("cards_position/public_cards/cards1", go);
+        let public_cards2 = cc.find("cards_position/public_cards/cards2", go);
+
         //手牌显示
-        for (let i = 0; i < element.handCards.length; i++) {
-            handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-            handcards[i].node.active = true;
-        }
         if (element.handCards.length <= 0) {
-            for (let i = 0; i < GameCache.Instance.CurGame.HandCards; i++) {
-                handcards[i].spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(element.handCards[0]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-                handcards[i].active = true;
-            }
+            hand_cards.children.forEach((item, index) => {
+                item.active = index < GameCache.Instance.CurGame.HandCards;
+                item.active && (item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(0), AssetFold.texture_SmallCard0));
+            })
+        } else {
+            hand_cards.children.forEach((item, index) => {
+                item.active = index < GameCache.Instance.CurGame.HandCards;
+                let card = element.handCards[index] || 0;
+                item.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(card), AssetFold.texture_SmallCard0);
+            })
         }
-        //公共牌位置
-
-        // GameObject publiccardpos = go.getChildByName("PublicCardpos").gameObject;
-        let handCardNum = GameCache.Instance.CurGame.HandCards;
-        // switch (handCardNum) {
-        //     case 2:
-        //         PublicCardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-78.1f, 0, 0);
-        //         break;
-        //     case 4:
-        //         PublicCardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(30, 0, 0);
-        //         break;
-        //     case 5:
-        //         PublicCardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(75, 0, 0);
-        //         break;
-        //     case 6:
-        //         PublicCardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(120, 0, 0);
-        //         break;
-        //     default:
-        //         PublicCardpos.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(-78.1f, 0, 0);
-        //         break;
-        // }
 
         //公共牌显示
         for (let i = 0; i < 5; i++) {
-            let publicCard = publicCards[i]
-            let sPublicCard = secondPublicCards[i]
+            let publicCard1 = public_cards1.children[i];
+            let publicCard2 = public_cards2.children[i];
             if (this.PublicCards[i] == 0) {
                 //没发完的公共牌不显示
-                publicCard.node.active = false;
-                sPublicCard.node.active = false;
+                publicCard1.active = false;
+                publicCard2.active = false;
             }
             else {
-                sPublicCard.node.active = true;
-                sPublicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
-                publicCard.node.active = true;
-                publicCard.spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0) as cc.SpriteFrame;
+                publicCard1.active = true;
+                publicCard1.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.PublicCards[i]), AssetFold.texture_SmallCard0);
+                publicCard2.active = true;
+                publicCard2.getComponent(cc.Sprite).spriteFrame = AssetContext.getAsset(GameUtil.GetCardNameByNum(this.SecondPublicCards[i]), AssetFold.texture_SmallCard0);
+
             }
         }
-
-
-
         //高亮牌显示
-        if (element.maxCardIndex2 != null && element.maxCardIndex2.length > 0) {
+        if (element.maxCardIndex2 != null && element.maxCardIndex2.Count > 0) {
             //手牌置灰
-            for (let i = 0; i < handcards.length; i++) {
-                handcards[i].node.color = cc.color(127, 127, 127, 255);
-            }
+            hand_cards.children.forEach(item => {
+                item.color = cc.color(127, 127, 127);
+            })
             //公共牌置灰
-            for (let i = 0; i < secondPublicCards.length; i++) {
-                secondPublicCards[i].node.color = cc.color(127, 127, 127, 255);
-            }
+            public_cards2.children.forEach(item => {
+                item.color = cc.color(127, 127, 127);
+            })
+
             for (let i = 0; i < element.maxCardIndex2.length; i++) {
                 if (element.maxCardIndex2[i] >= 5) {
-                    handcards[element.maxCardIndex2[i] - 5].node.color = cc.color(255, 255, 255, 255);
+                    hand_cards.children[element.maxCardIndex2[i] - 5].color = cc.color(255, 255, 255);;
                 }
                 else {
-                    secondPublicCards[element.maxCardIndex2[i]].node.color = cc.color(255, 255, 255, 255);
-                }
 
+                    public_cards2.children[element.maxCardIndex2[i]].color = cc.color(255, 255, 255);;
+                }
             }
         }
 
         //高亮牌显示
-        if (element.maxCardIndex != null && element.maxCardIndex.length > 0) {
+        if (element.maxCardIndex != null && element.maxCardIndex.Count > 0) {
             //手牌置灰
-            for (let i = 0; i < handcards.length; i++) {
-                handcards[i].node.color = cc.color(127, 127, 127, 255);
-            }
+            hand_cards.children.forEach(item => {
+                item.color = cc.color(127, 127, 127);
+            })
             //公共牌置灰
-            for (let i = 0; i < publicCards.length; i++) {
-                publicCards[i].node.color = cc.color(127, 127, 127, 255);
-            }
+            public_cards1.children.forEach(item => {
+                item.color = cc.color(127, 127, 127);
+            })
             for (let i = 0; i < element.maxCardIndex.length; i++) {
                 if (element.maxCardIndex[i] >= 5) {
-                    handcards[element.maxCardIndex[i] - 5].node.color = cc.color(255, 255, 255, 255);
+                    hand_cards.children[element.maxCardIndex[i] - 5].color = cc.color(255, 255, 255);;
                 }
                 else {
-                    publicCards[element.maxCardIndex[i]].node.color = cc.color(255, 255, 255, 255);
+                    public_cards1.children[element.maxCardIndex[i]].color = cc.color(255, 255, 255);;
                 }
-
             }
         }
-
         // #endregion
     }
 
@@ -1578,12 +1519,17 @@ export default class UITexasHistory extends UIBasePlus {
         return { "status": 0, "data": "eyJkIjpbNTUsNTldLCJzIjp7InJlc3VsdCI6W3sic24iOjEsIndpbiI6LTIwLCJpbnMiOjAsImZlZSI6MCwiYWN0aXZlIjpmYWxzZSwibWF4Y2FyZF9pZHgiOlswLDIsMyw0LDZdLCJjYXJkX3R5cGUiOjIsImNhcmQiOls0LDE0XX0seyJzbiI6Miwid2luIjoyMCwiaW5zIjowLCJmZWUiOjAsImFjdGl2ZSI6ZmFsc2UsIm1heGNhcmRfaWR4IjpbMCwyLDQsNSw2XSwiY2FyZF90eXBlIjoyLCJjYXJkIjpbNTUsNTldfV0sImV0aW1lIjoxNjg0MDg0NTY4LCJzdHJhZGRsZSI6ZmFsc2UsInN0aW1lIjoxNjg0MDg0NTM5LCJoYW5kIjoxLCJ0YWJsZSI6eyJhbnRlIjowLCJwbCI6W3sic24iOjEsImMiOjIwMCwiYXZhdGFyIjoiaHR0cHM6Ly9zdGF0aWMuYXdhbnB0ZXN0LmNvbS9hd2FucHRlc3RpbmctaW50bC10ZXN0L2ltYWdlLWF2YXRhci85NjYxNTcwNi1qQ2Rkei5wbmciLCJuYW1lIjoi5LiJ5Liq5qC45qGDIiwidWlkIjo5NjYxNTcwNn0seyJzbiI6MiwiYyI6MjAwLCJhdmF0YXIiOiJodHRwczovL3N0YXRpYy5hd2FucHRlc3QuY29tL2F3YW5wdGVzdGluZy1pbnRsLXRlc3QvaW1hZ2Utbm9ybWFsLzIwMjIwMzEwMDk0NzIxLXpkQXJ0LnBuZyIsIm5hbWUiOiJQbGF5ZXI0IiwidWlkIjo5NTAxNTcwNn1dLCJzYiI6eyJzbiI6MSwiYmV0IjoxMH0sImJiIjp7InNuIjoyLCJiZXQiOjIwfSwic3RyYWRkbGUiOm51bGwsImJ0biI6MSwic2VhdGNvdW50IjoyfSwibmFtZSI6Inl5eS05MiIsInJpZCI6OTg2OTcwNjYsIm1pZCI6MCwidW5pcXVlIjoiMTY4NDA4NDM0NSIsInByb2NlZHVyZSI6eyJwcmVmbG9wIjp7InBsIjpbeyJjIjoxOTAsInBvdF9vdXQiOjEwLCJzbiI6MSwiYWN0Ijoic21hbGwgYmxpbmQiLCJhY3RfYW10IjoxMH0seyJjIjoxODAsInBvdF9vdXQiOjMwLCJzbiI6MiwiYWN0IjoiYmlnIGJsaW5kIiwiYWN0X2FtdCI6MjB9LHsiYyI6MTgwLCJwb3Rfb3V0Ijo0MCwic24iOjEsImFjdCI6ImNhbGwiLCJhY3RfYW10IjoxMH0seyJjIjoxODAsInBvdF9vdXQiOjQwLCJzbiI6MiwiYWN0IjoiY2hlY2siLCJhY3RfYW10IjowfV19LCJmbG9wIjp7InBsIjpbeyJjIjoxODAsInBvdF9vdXQiOjQwLCJzbiI6MiwiYWN0IjoiY2hlY2siLCJhY3RfYW10IjowfSx7ImMiOjE4MCwicG90X291dCI6NDAsInNuIjoxLCJhY3QiOiJjaGVjayIsImFjdF9hbXQiOjB9XSwiY2FyZCI6WzQyLDYsMjhdfSwidHVybiI6eyJwbCI6W3siYyI6MTgwLCJwb3Rfb3V0Ijo0MCwic24iOjIsImFjdCI6ImNoZWNrIiwiYWN0X2FtdCI6MH0seyJjIjoxODAsInBvdF9vdXQiOjQwLCJzbiI6MSwiYWN0IjoiY2hlY2siLCJhY3RfYW10IjowfV0sImNhcmQiOlsyMl19LCJyaXZlciI6eyJwbCI6W3siYyI6MTgwLCJwb3Rfb3V0Ijo0MCwic24iOjIsImFjdCI6ImNoZWNrIiwiYWN0X2FtdCI6MH0seyJjIjoxODAsInBvdF9vdXQiOjQwLCJzbiI6MSwiYWN0IjoiY2hlY2siLCJhY3RfYW10IjowfV0sImNhcmQiOls0M119fX0sInUiOjk1MDE1NzA2fQ==" }
     }
 
-
     //清理child节点
     clearChilds(childs: cc.Node, pool: SimpleNodePool) {
         childs.children.forEach(item => {
             pool.BackNode(item)
         });
         childs.removeAllChildren();
+    }
+
+    //关闭处理的内容
+    onClose(param?: any): void {
+        super.onClose(param);
+        this.removeHandler();
     }
 }

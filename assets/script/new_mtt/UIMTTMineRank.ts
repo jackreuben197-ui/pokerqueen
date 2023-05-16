@@ -223,7 +223,7 @@ export default class UIMTTMineRank extends UIBasePlus {
         this.$haveRewardColor.active = isHaveReward;
 
         this.$win.active = isHaveReward;
-        this.$lost.active = isHaveReward;
+        this.$lost.active = !isHaveReward;
 
         //设置排名文本
         if (res.data.is_final) {

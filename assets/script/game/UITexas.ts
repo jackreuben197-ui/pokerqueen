@@ -455,7 +455,6 @@ export default class UITexas extends BaseScene {
         [
             //this.Button_BringIn,
             this.Button_AddOn,
-            this.Button_CancelTrust,
             this.buttonWaitBlind,
 
             this.Image_WaitForStartTips,

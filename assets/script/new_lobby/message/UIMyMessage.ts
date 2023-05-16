@@ -43,8 +43,13 @@ export default class UIMyMessage extends BaseFormPlus {
     }
     refreshUI() {
         let from = this._param.from;
+        //公会来源判断用户级别
+        if (from == 1 && ClubCache.user_level == 0) {
+            from = 10;
+        }
         let indexs: number[] = MyMessageModel.Instance.ui_show_from[from];
         this.$content.children.forEach((item, index) => {
+
             //过滤显示当前应该展示的条目
             if (~indexs.indexOf(index)) {
                 item.active = true;

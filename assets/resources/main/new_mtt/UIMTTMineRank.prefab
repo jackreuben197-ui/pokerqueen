@@ -941,7 +941,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 18.81,
+      "width": 24.39,
       "height": 65.52
     },
     "_anchorPoint": {
@@ -1356,7 +1356,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 925,
-      "height": 1125.54
+      "height": 1212.54
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1420,7 +1420,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 925,
-      "height": 283.62
+      "height": 370.62
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1529,7 +1529,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 348.45,
+      "width": 372.72,
       "height": 65.52
     },
     "_anchorPoint": {
@@ -1542,7 +1542,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -336.38,
+        -423.38,
         0,
         0,
         0,
@@ -1659,7 +1659,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -389.14,
+        -476.14,
         0,
         0,
         0,
@@ -2111,7 +2111,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 286.68,
+      "width": 308.97,
       "height": 65.52
     },
     "_anchorPoint": {
@@ -2221,7 +2221,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 299.71,
+      "width": 330.57,
       "height": 52.92
     },
     "_anchorPoint": {
@@ -2775,7 +2775,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 286.68,
+      "width": 308.97,
       "height": 65.52
     },
     "_anchorPoint": {
@@ -2885,7 +2885,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 299.71,
+      "width": 330.57,
       "height": 52.92
     },
     "_anchorPoint": {
@@ -3097,7 +3097,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -967.3399999999999,
+        -1054.34,
         0,
         0,
         0,
@@ -3189,7 +3189,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 925,
-      "height": 1125.54
+      "height": 1212.54
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -3326,7 +3326,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 18.46,
+      "width": 23.93,
       "height": 65.52
     },
     "_anchorPoint": {
@@ -3510,7 +3510,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 23.43,
+      "width": 30.38,
       "height": 83.16
     },
     "_anchorPoint": {
@@ -3986,7 +3986,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 23.43,
+      "width": 30.38,
       "height": 83.16
     },
     "_anchorPoint": {

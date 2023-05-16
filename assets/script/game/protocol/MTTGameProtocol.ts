@@ -131,9 +131,15 @@ export default class MTTGameProtocol extends TexasGameProtocol {
 
         if (rec == null) return;
 
+
+        console.log("收到托管消息 开始");
+
         let seat: Seat = this.game.GetSeatByServerSeatID(rec.seatId);
 
         if (seat?.Player == null) return;
+
+        console.log("收到托管消息 结束");
+
 
         seat.Player.IsAutoOp = rec.enable;
         seat.UpdateTrust();
@@ -150,7 +156,9 @@ export default class MTTGameProtocol extends TexasGameProtocol {
                 this.game.HideAutoOperationPanel();
                 this.game.HideWaitBlindBtn();
                 this.game.uirc.Text_CancelTrust.string = CPErrorCode.LanguageDescription(10011);
+                console.log("进入托管模式---");
             }
+            console.log("显示托管按钮", rec.enable);
             this.game.uirc.Button_CancelTrust.active = rec.enable;
         }
     }

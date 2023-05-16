@@ -55,6 +55,7 @@ export default class MyMessageModel {
         0: [5],//朋友桌来源
         1: [0, 3, 4, 5],//公会来源
         2: [0, 1, 2, 3, 4, 5],//我的来源
+        10: [0, 3, 4],//公会来源，普通用户
     }
     //消息状态颜色
     content_colors = ["#757CAB", "#FF7C7C"]

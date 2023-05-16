@@ -54,7 +54,6 @@ export default class UIMsgSystem extends BaseFormPlus {
         this.$content.removeAllChildren();
     }
 
-
     reqMsgList(offset: number = 0) {
         WWW.Instance.CommonAPI(
             {
