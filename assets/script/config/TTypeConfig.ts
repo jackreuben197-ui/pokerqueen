@@ -41,6 +41,7 @@ export type TRoomList = {
 }
 
 export type TRoomListItem = {
+    room_id?: number,
     rid: number,//房间id
     name: string,//房间名称
     room_type: number,//room path 房间类型
@@ -111,7 +112,6 @@ export type TRoomListItem = {
     limit_bring_in: number,
     gold_type: number,
     share_table: number,
-
 }
 
 export type TUserInfo = {

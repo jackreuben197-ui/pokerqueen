@@ -1088,11 +1088,13 @@ export default class UIClubCreateMatch extends BaseForm {
                 room_config.limit_friend_table = true
                 let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
                 this.top_block.active = true;
+                let r_data = data;
                 // await TimeHelper.Sleep(1000);
-                data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id);
+                data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id).catch(() => { });
                 this.post(EventName.updateFriendChessView)
                 this.top_block.active = false;
                 let _data = new LobbyRoomListItem(data.data.data);
+
                 //GameUtil.EnterRoomAPI(_data, [UIDefine.UIClubCreateMatch, UIDefine.UIClubCreateMatchHome]);
                 GameUtil.EnterRoomAPI(_data, { game_enter_type: GameEnterType.Friend });
             }

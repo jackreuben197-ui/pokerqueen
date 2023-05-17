@@ -548,7 +548,7 @@ export class UIClubModel {
                 onFailure: function (content) {
                     reject(content);
                 }.bind(this),
-                headers: [['X-Club', ClubCache.club_id]]
+                headers: [['X-Club', ClubCache.club_id || 0]]
             });
         });
     }

@@ -33,7 +33,7 @@ export default class HttpClient {
     /**
      * get 请求
      */
-    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true, api = null}) {
+    static async get({ url = null, body = null, onFailure = null, onSuccess = null, headers = null, needJuhua = true, isJson = true, needConsole = true, api = null }) {
         body = JSON.stringify(body);
         needConsole && console.log("%c%s%s\n%s", LogStyle.http_request, ">>>>> http get - request : ", url, body);
         needJuhua && UIComponent.open(UIDefine.UIPromptComponent);
@@ -142,7 +142,7 @@ export default class HttpClient {
         return url;
     }
 }
-
+let filter_codes = [10014];
 //HTTP请求的错误码处理
 let HttpCodeHandler = (api: string, code: number, message: string = "") => {
     //充值失败
@@ -154,6 +154,7 @@ let HttpCodeHandler = (api: string, code: number, message: string = "") => {
     if (API_CLUB_APPLY_LIST.API == api || Web_Guild_GiveRecycle.API == api) {
         return;
     }
+    if (filter_codes.includes(code)) return;
     switch (code) {
         case 90001:
         case 90003:

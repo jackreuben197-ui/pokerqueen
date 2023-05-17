@@ -19,7 +19,7 @@ export default class LobbyRoomListItem {
         this._data.rid = rid
     }
     get rid() {
-        return this._data.rid;
+        return this._data.rid || this._data.room_id;
     }
     get name() {
         // return this._data.name;
@@ -99,7 +99,7 @@ export default class LobbyRoomListItem {
     get gold_type() {
         return this._data.gold_type;
     }
-    get share_table(){
+    get share_table() {
         return this._data.share_table;
     }
 

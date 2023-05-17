@@ -1555,6 +1555,9 @@ export default class TexasGame {
         if (this.mainPlayer.cacheStoreChips >= anteNumber) {
             IsUseWallet = false;
         }
+
+        let applyBringIn = (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.FriendsTableLimitBringIn;
+
         ProtocolAgency.Send<ClientMessageBringIn.AsObject>({
             Code: ProtocolCode.Protocol_Holdem_BringIn,
             RoomID: GameCache.Instance.room_id,
@@ -1563,10 +1566,13 @@ export default class TexasGame {
                 room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
                 bringIn: anteNumber,
                 useWallet: IsUseWallet,
-                applyBringIn: (GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2) && GameCache.Instance.FriendsTableLimitBringIn,
+                applyBringIn: applyBringIn
             },
         });
-        GameCache.Instance.FriendsTableLimitBringIn && UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${150}s`);
+        //需要审核的加入提示信息
+        // if (applyBringIn) {
+        //     UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${150}s`);
+        // }
     }
 
     SetAutoOnTableChips(autoOnTable: number = 0, autoUseWallet: boolean = false) {

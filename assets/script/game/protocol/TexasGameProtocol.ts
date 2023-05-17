@@ -191,6 +191,8 @@ export default class TexasGameProtocol {
         this.game.mainPlayer.KeepSeatLeftTime = rec.keepSeatLeftTime;
         if (rec.keepSeatLeftTime > 0) {
             UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${rec.keepSeatLeftTime}s`);
+            //记录这个需要申请审核的房间
+            GameCache.Instance.BringCheckRoomIdMap[GameCache.Instance.room_id] = true;
         }
 
         let seat: Seat = null;

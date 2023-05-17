@@ -17476,7 +17476,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "UIMTTTime_Con",
+    "_name": "UIOperation_Con",
     "_objFlags": 0,
     "_parent": {
       "__id__": 130
@@ -17562,7 +17562,7 @@
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
     "_originalWidth": 0,
-    "_originalHeight": 0,
+    "_originalHeight": 2688,
     "_id": ""
   },
   {
@@ -17573,12 +17573,12 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "c1wK6fWj1JopyVXykEFswv",
+    "fileId": "02I1sbb7pHUKZiyqrAHMFo",
     "sync": false
   },
   {
     "__type__": "cc.Node",
-    "_name": "UIOperation_Con",
+    "_name": "UIMTTTime_Con",
     "_objFlags": 0,
     "_parent": {
       "__id__": 130
@@ -17663,8 +17663,8 @@
     "_isAbsBottom": true,
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
-    "_originalWidth": 0,
-    "_originalHeight": 2688,
+    "_originalWidth": 1242,
+    "_originalHeight": 0,
     "_id": ""
   },
   {
@@ -17675,7 +17675,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "02I1sbb7pHUKZiyqrAHMFo",
+    "fileId": "fdJdOWgqBHVKFKzAnLGHRJ",
     "sync": false
   },
   {

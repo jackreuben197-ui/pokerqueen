@@ -937,12 +937,15 @@ export default class GameUtil {
         let room_type: number = enter_room_info.room_type;
         //未开放房间类型
         if (!GameUtil.IsOpenRoomType(room_type)) {
+            cc.log("未开放的房间类型:", room_type);
             UIComponent.Instance.Toast(i18nMgr.Get("adaptation10301"));
             return;
         }
         if (WebSocketClient.CheckOpen()) {
             if (RoomType[room_type]) {
-                let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch(() => { });
+                let response = await LobbySession.APIWebUserRoominsur(enter_room_info.rid).catch((e) => {
+                    console.log(e);
+                });
 
                 if (response) {
                     //GC.data.lobby.roomList.selected = this._data;

@@ -323,6 +323,7 @@ export class GameCache {
     public FriendsTableCode: string = null;//朋友桌邀请码
     public FriendsTableLimitBringIn: boolean = false;//朋友桌公会桌是否控制带入
 
+    public BringCheckRoomIdMap = {};
 
 
     public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
