@@ -30,14 +30,14 @@ export default class UIClubDigitalWallet extends BaseForm {
     @property(cc.EditBox)
     tpc: cc.EditBox = null;
 
-    @property(cc.Button)
-    sure_btn: cc.Button = null
-
     @property(cc.Node)
-    canClick: cc.Node = null;
+    sure_btn: cc.Node = null
 
-    @property(cc.Node)
-    noClick: cc.Node = null;
+    // @property(cc.Node)
+    // canClick: cc.Node = null;
+
+    // @property(cc.Node)
+    // noClick: cc.Node = null;
 
     @property(cc.Label)
     btn_lbl: cc.Label = null;
@@ -56,14 +56,12 @@ export default class UIClubDigitalWallet extends BaseForm {
         this.editChange()
     }
     editChange() {
-        this.sure_btn.interactable = this.erc.string != '' && this.tpc.string != ''
-        this.setBtnState()
+        //this.sure_btn.interactable = this.erc.string != '' && this.tpc.string != ''
+
+        this.setButtonInteractable(this.sure_btn, this.erc.string != '' && this.tpc.string != '');
+
     }
-    setBtnState() {
-        this.canClick.active = this.sure_btn.interactable
-        this.noClick.active = !this.sure_btn.interactable
-        this.btn_lbl.node.color = this.sure_btn.interactable ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#393956')
-    }
+
 
     async sureClick() {
         ClubCache._msg.digital_wallet_erc = this.erc.string;

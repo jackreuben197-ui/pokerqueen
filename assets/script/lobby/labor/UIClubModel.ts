@@ -196,9 +196,8 @@ export class UIClubModel {
     }
 
     async APIOrgClubUploadIcon() {
-        let _data: any = await upLoadIcon.openFile();
+        let _data: any = await upLoadIcon.Instance.openFile();
         console.log('data====', _data, _data.name)
-
         let data = new FormData()
         data.append("file", _data, _data.name)
         return new Promise((resolve, reject) => {

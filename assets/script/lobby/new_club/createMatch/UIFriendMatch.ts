@@ -261,8 +261,7 @@ export default class UIFriendMatch extends UIBase {
         }
         else {
             let str = i18nMgr.Get('UIFriendsTable_JoinRoomNumberWrong')
-            this._keyNodeString = StringHelper.Format(str, [this._keyNodeString])
-            UIComponent.Instance.Toast(this._keyNodeString)
+            UIComponent.Instance.Toast(StringHelper.Format(str, [this._keyNodeString]));
         }
     }
     openMessageList() {

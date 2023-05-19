@@ -84,7 +84,7 @@ export default class UIClubMember extends BaseForm {
     }
     onShow(param?: any, fromUI?: cc.Node): void {
         super.onShow(param, fromUI);
-        this.comFormTitle.initData('UIClub_MlistInfo', this);
+        //this.comFormTitle.initData('UIClub_MlistInfo', this);
         this._info = param;
         if (this._info == null) {
             return;

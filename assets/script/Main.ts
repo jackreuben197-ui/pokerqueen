@@ -122,6 +122,7 @@ export default class Main extends cc.Component {
         r_mask.width = cc.view.getVisibleSize().width;
         //u_mask.width = cc.view.getVisibleSize().height;
         //b_mask.width = cc.view.getVisibleSize().height;
+    
     }
 }
 (window as any).Main = Main;

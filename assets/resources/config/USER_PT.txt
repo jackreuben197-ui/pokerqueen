@@ -2974,7 +2974,7 @@ MTT_end_gift=Bônus
 UITexas_Bring_in_num=Buy-in pela Conta
 UITexas_Bring_Desk=Retenção automática na mesa
 UITexas_Bring_inandout=Coloque cada mão dentro e fora
-UITexas_Bring_inandout_content=Esta mesa foi ativada para trazer/saída automaticamente, clique para confirmar para definir a entrada/saída, cancele-a, ela não será definida
+UITexas_Bring_inandout_content=Esta mesa foi ativada para buy-in/retirar automaticamente, clique para confirmar para definir o buy-in/retirada, cancele-a e ela não será definida
 Uimine_ptcz_payp=Candidato
 Uimine_ptcz_payfs=Pagamento
 Uimine_ptcz_playgold=Insira o valor da recarga
@@ -3891,7 +3891,7 @@ UIClub_CreateTips=Crie um clube e convide amigos para jogar juntos
 UIClub_CreateGuild=CRIAR CLUBE
 UIGame_Type6p=6+
 UITexas_FaceRecogTip10=Tentar novamente
-UIMessage_Default=Sala do Amigo
+UIMessage_Default=Home Games
 UIMessage_Default2=Sistema
 UIMessage_Default3=União
 UIExchange_InputTips=Inserir quantidade
@@ -3991,7 +3991,7 @@ UITexasRoomManagerOpTips3=O jogo será dispensado ao final desta mão.
 UITexasRoomManagerOpTips4=O jogo foi dispensado
 UITexasRoomManagerOpTips5=O admin te levantou
 UITexasRoomManagerOpTips6=O admin te expulsou
-UIMessageHandlertostApring01=Solicitação de Buy-in - Mesa de amigos
+UIMessageHandlertostApring01=Solicitação de Buy-in - Home Games
 UIMessageHandlertostApring02=Solicitação de Buy-in - Clube
 UIApplyRecordsBringin01=Solicitação de Buy-in
 UIApplyRecordsBringin02=Solicitação de retorno
@@ -4076,48 +4076,48 @@ UIMineAllUC=Total UC
 UIMineAllClub=Placar do clube Valor total
 UIMineAllDiamond=Saldo Diamante
 UIMineChangeBalance=Saldo após alterações
-UIGuildDataRecords001=
-UIGuildTablePersonDate01=
-UISettingOPmodetips=
-UISettingOPmodetips01=
-UISettingOPmodetips02=
-UIDisCountTips1_1=
-UIDisCountTips1_2=
-UIDisCountTips2_1=
-UIDisCountTips2_2=
-UIDisCountTips3_1=
-UIDisCountTips3_2=
-UIDisCountTips4_1=
-UIDisCountTips4_2=
-UIDisCountTips5=
-UIDisCountTips6=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UIGuildDataRecords001=Ganhos do jogador
+UIGuildTablePersonDate01=Dados pessoais
+UISettingOPmodetips=Painel de operações
+UISettingOPmodetips01=Padrão
+UISettingOPmodetips02=Geral
+UIDisCountTips1_1=Preço original:
+UIDisCountTips1_2=Preço com desconto:
+UIDisCountTips2_1=Mesa de voz (mesa para {0} pessoas) Preço original:
+UIDisCountTips2_2=Mesa de voz (mesa para {0} pessoas) preço com desconto:
+UIDisCountTips3_1=Mesa de vídeo em modo integral (mesa para {0} pessoas) Preço original:
+UIDisCountTips3_2=Mesa de vídeo em modo integral (mesa de {0} pessoas) preço com desconto:
+UIDisCountTips4_1=Reconhecimento facial (tabela de {0} pessoas) Preço original:
+UIDisCountTips4_2=Reconhecimento facial ({0} pessoa mesa) Preço com desconto:
+UIDisCountTips5=Data de validade para criar sala:
+UIDisCountTips6=Data de validade:
+UIDisCountTips7=Preço original:
+UIDisCountTips8=Preço com desconto:
+UISettingOPmodetips03=Não pode ser alterado durante operação
+uipowerconsumptiontips=A desativação de alguns dos vídeos dos usuários pode economizar tráfego e energia
+UItexasUCyuebuzutips=Saldo de UC insuficiente, favor recarregar
+UItexasGCyuebuzutips=Saldo de GC insuficiente, favor recarregar
+OpCodeString_CLUBLEAVELUP=Upgrade de nível de clube
+OpCodeString_CREATEFRIENDTABLE=
+OpCodeString_CLOSEFRIENDTABLE=
+OpCodeString_CREATEINSIDETABLE=Taxa de abertura de mesa - Mesa interna do clube
+OpCodeString_CLOSEINSIDETABLE=
+OpCodeString_DIAMONDPLATTOUSER=Diamante emitido pela plataforma
+OpCodeString_CLUBTOUSER=
+OpCodeString_SCOREBOARDFEE=
+OpCodeString_CLUBLEAVELUP=Taxa de Transcrição - Mesa de Clube Interna
+OpCodeString_CLUBTOUSER=
+OpCodeString_DIAMONDCLUBTOUSER=
+OpCodeString_SCOREBOARDFEERTN=
+OpCodeString_CRETECLUBFEE=
+OpCodeString_CREATECLUBFEERTN=
+OpCodeString_FIXCLUBNAME=
+OpCodeString_VIDEOTABLEFEE=
+OpCodeString_VIDEOTABLEFEERTN=
+UIDisCountTips3_1_1=
+UIDisCountTips3_2_1=
+UIDisCountTips3_1_2=
+UIDisCountTips3_2_2=
 
 
 

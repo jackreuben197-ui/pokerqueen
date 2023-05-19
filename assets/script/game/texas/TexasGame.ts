@@ -35,11 +35,11 @@ import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
 import { AddClipsData } from "../new_ui/UIBringIn";
+import { HistoryInfoData } from "../new_ui/UITexasHistory";
 import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import UITexasMenu from "../ui/UITexasMenu";
-import { HistoryInfoData } from "../UITexasHistoryComponent";
 import GameUtil, { RoomType, some_pos } from "../util/GameUtil";
 import TexasGameUtils from "../util/TexasGameUtils";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
@@ -3146,7 +3146,7 @@ export default class TexasGame {
         historyInfoData.Blindstr = StringHelper.GetLongString(GameCache.Instance.CurGame.smallBlind) + '/' + StringHelper.GetLongString(GameCache.Instance.CurGame.bigBlind);
         historyInfoData.bgroupBet = GameCache.Instance.CurGame.groupBet;
         historyInfoData.handNum = GameCache.Instance.CurGame.mHandNum;
-        historyInfoData.roomId = GameCache.Instance.room_id;
+        historyInfoData.room_id = GameCache.Instance.room_id;
         historyInfoData.match_id = GameCache.Instance.match_id
         historyInfoData.room_unique_id = GameCache.Instance.CurGame.cacheUniqueId
 

@@ -26,9 +26,9 @@ export class HistoryInfoData {
     public Blindstr: string;
     public bgroupBet: number;
     public handNum: number;
-    // public roomId: number;
-    // public match_id: number;
-    // public room_unique_id: string;
+    public room_id: number;
+    public match_id: number;
+    public room_unique_id: string;
     // public ReferenceCollector rcPokerSprite;
 }
 export class PlayerInfo {

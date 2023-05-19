@@ -1342,7 +1342,7 @@
     "_prefab": {
       "__id__": 42
     },
-    "_opacity": 100,
+    "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -1717,7 +1717,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 54
+        "__id__": 53
+      },
+      {
+        "__id__": 55
       }
     ],
     "_prefab": {
@@ -1999,13 +2002,10 @@
     "_components": [
       {
         "__id__": 51
-      },
-      {
-        "__id__": 52
       }
     ],
     "_prefab": {
-      "__id__": 53
+      "__id__": 52
     },
     "_opacity": 100,
     "_color": {
@@ -2090,17 +2090,6 @@
     "_id": ""
   },
   {
-    "__type__": "9bfc327oKRNEYZBVCrkUjhI",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 50
-    },
-    "_enabled": true,
-    "i18n_string": "adaptation10081",
-    "_id": ""
-  },
-  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -2126,7 +2115,7 @@
     "editingDidBegan": [],
     "textChanged": [
       {
-        "__id__": 55
+        "__id__": 54
       }
     ],
     "editingDidEnded": [],
@@ -2154,6 +2143,17 @@
     "_componentId": "b3027kF2XBNr6M/7gtc1uA7",
     "handler": "clubNamechange",
     "customEventData": ""
+  },
+  {
+    "__type__": "9bfc327oKRNEYZBVCrkUjhI",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 43
+    },
+    "_enabled": true,
+    "i18n_string": "adaptation10081",
+    "_id": ""
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2412,7 +2412,7 @@
     "_prefab": {
       "__id__": 73
     },
-    "_opacity": 100,
+    "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -2787,7 +2787,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 85
+        "__id__": 84
+      },
+      {
+        "__id__": 86
       }
     ],
     "_prefab": {
@@ -3069,13 +3072,10 @@
     "_components": [
       {
         "__id__": 82
-      },
-      {
-        "__id__": 83
       }
     ],
     "_prefab": {
-      "__id__": 84
+      "__id__": 83
     },
     "_opacity": 100,
     "_color": {
@@ -3160,17 +3160,6 @@
     "_id": ""
   },
   {
-    "__type__": "9bfc327oKRNEYZBVCrkUjhI",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 81
-    },
-    "_enabled": true,
-    "i18n_string": "UIGuild_InputDetail",
-    "_id": ""
-  },
-  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -3196,7 +3185,7 @@
     "editingDidBegan": [],
     "textChanged": [
       {
-        "__id__": 86
+        "__id__": 85
       }
     ],
     "editingDidEnded": [],
@@ -3224,6 +3213,17 @@
     "_componentId": "b3027kF2XBNr6M/7gtc1uA7",
     "handler": "clubNamechange",
     "customEventData": ""
+  },
+  {
+    "__type__": "9bfc327oKRNEYZBVCrkUjhI",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 74
+    },
+    "_enabled": true,
+    "i18n_string": "UIGuild_InputDetail",
+    "_id": ""
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -3600,7 +3600,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 109
+        "__id__": 108
+      },
+      {
+        "__id__": 110
       }
     ],
     "_prefab": {
@@ -3882,13 +3885,10 @@
     "_components": [
       {
         "__id__": 106
-      },
-      {
-        "__id__": 107
       }
     ],
     "_prefab": {
-      "__id__": 108
+      "__id__": 107
     },
     "_opacity": 80,
     "_color": {
@@ -3973,17 +3973,6 @@
     "_id": ""
   },
   {
-    "__type__": "9bfc327oKRNEYZBVCrkUjhI",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 105
-    },
-    "_enabled": true,
-    "i18n_string": "UIGuild_InputContactInformation",
-    "_id": ""
-  },
-  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -4004,12 +3993,12 @@
     "_enabled": true,
     "_string": "",
     "returnType": 0,
-    "maxLength": 10,
+    "maxLength": 15,
     "_tabIndex": 0,
     "editingDidBegan": [],
     "textChanged": [
       {
-        "__id__": 110
+        "__id__": 109
       }
     ],
     "editingDidEnded": [],
@@ -4037,6 +4026,17 @@
     "_componentId": "b3027kF2XBNr6M/7gtc1uA7",
     "handler": "clubNamechange",
     "customEventData": ""
+  },
+  {
+    "__type__": "9bfc327oKRNEYZBVCrkUjhI",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 98
+    },
+    "_enabled": true,
+    "i18n_string": "UIGuild_InputContactInformation",
+    "_id": ""
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -5015,7 +5015,7 @@
     },
     "_enabled": true,
     "xinxi": {
-      "__id__": 109
+      "__id__": 108
     },
     "camera": {
       "__id__": 17

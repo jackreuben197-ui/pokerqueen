@@ -6756,7 +6756,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 105,
+      "width": 99,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -6810,7 +6810,7 @@
     "_dstBlendFactor": 771,
     "_string": "管理员",
     "_N$string": "管理员",
-    "_fontSize": 35,
+    "_fontSize": 33,
     "_lineHeight": 35,
     "_enableWrapText": true,
     "_N$file": null,
@@ -7245,7 +7245,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 105,
+      "width": 99,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -7299,7 +7299,7 @@
     "_dstBlendFactor": 771,
     "_string": "管理员",
     "_N$string": "管理员",
-    "_fontSize": 35,
+    "_fontSize": 33,
     "_lineHeight": 35,
     "_enableWrapText": true,
     "_N$file": null,
@@ -7734,7 +7734,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 70,
+      "width": 66,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -7788,7 +7788,7 @@
     "_dstBlendFactor": 771,
     "_string": "成员",
     "_N$string": "成员",
-    "_fontSize": 35,
+    "_fontSize": 33,
     "_lineHeight": 35,
     "_enableWrapText": true,
     "_N$file": null,
@@ -8223,7 +8223,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 19.47,
+      "width": 18.35,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -8277,7 +8277,7 @@
     "_dstBlendFactor": 771,
     "_string": "q",
     "_N$string": "q",
-    "_fontSize": 35,
+    "_fontSize": 33,
     "_lineHeight": 35,
     "_enableWrapText": true,
     "_N$file": null,
@@ -8712,7 +8712,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 85.64,
+      "width": 80.74,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -8766,7 +8766,7 @@
     "_dstBlendFactor": 771,
     "_string": "Label",
     "_N$string": "Label",
-    "_fontSize": 35,
+    "_fontSize": 33,
     "_lineHeight": 35,
     "_enableWrapText": true,
     "_N$file": null,
@@ -9201,7 +9201,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 70,
+      "width": 66,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -9255,7 +9255,7 @@
     "_dstBlendFactor": 771,
     "_string": "消息",
     "_N$string": "消息",
-    "_fontSize": 35,
+    "_fontSize": 33,
     "_lineHeight": 35,
     "_enableWrapText": true,
     "_N$file": null,

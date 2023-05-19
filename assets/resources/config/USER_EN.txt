@@ -2966,7 +2966,7 @@ MTT_end_gift=Prizes
 UITexas_Bring_in_num=Buy-in from account
 UITexas_Bring_Desk=Automatic hold on table
 UITexas_Bring_inandout=Set each hand buy-in and bring out
-UITexas_Bring_inandout_content=This table has been turned on to automatically buy in/bring out, please click to confirm to set the bring-in/out, cancel it, it will not be set
+UITexas_Bring_inandout_content=This table has been turned on to automatically buy in/bring out, please click to confirm to set the bring-in/out, cancel it and it will not be set
 Uimine_ptcz_payp=Applicant
 Uimine_ptcz_payfs=Payment
 Uimine_ptcz_playgold=Amount
@@ -3876,7 +3876,7 @@ UIClub_CreateTips=Create a club and invite friends to play together
 UIClub_CreateGuild=CREATE CLUB
 UIGame_Type6p=6+
 UITexas_FaceRecogTip10=Try again
-UIMessage_Default=Friend Game
+UIMessage_Default=Home Games
 UIMessage_Default2=System
 UIMessage_Default3=Union
 UIExchange_InputTips=Enter quantity
@@ -4061,48 +4061,48 @@ UIMineAllUC=UC Total
 UIMineAllClub=Club Scoreboard Total Amount
 UIMineAllDiamond=Diamond Balance
 UIMineChangeBalance=Balance after changes
-UIGuildDataRecords001=
-UIGuildTablePersonDate01=
-UISettingOPmodetips=
-UISettingOPmodetips01=
-UISettingOPmodetips02=
-UIDisCountTips1_1=
-UIDisCountTips1_2=
-UIDisCountTips2_1=
-UIDisCountTips2_2=
-UIDisCountTips3_1=
-UIDisCountTips3_2=
-UIDisCountTips4_1=
-UIDisCountTips4_2=
-UIDisCountTips5=
-UIDisCountTips6=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+UIGuildDataRecords001=Player Gains
+UIGuildTablePersonDate01=Personal Data
+UISettingOPmodetips=Operation Dashboard
+UISettingOPmodetips01=Default
+UISettingOPmodetips02=General
+UIDisCountTips1_1=Original Price:
+UIDisCountTips1_2=Discounted price:
+UIDisCountTips2_1=Voice Table ({0} person table) Original Price:
+UIDisCountTips2_2=Voice table ({0} person table) discounted price:
+UIDisCountTips3_1=Video table full time mode ({0} person table) Original Price:
+UIDisCountTips3_2=Video table full time mode ({0} person table) discount price:
+UIDisCountTips4_1=Face Recognition ({0} person table) Original Price:
+UIDisCountTips4_2=Face Recognition ({0} person table) Discounted price:
+UIDisCountTips5=Create Room Valid Date:
+UIDisCountTips6=Valid Date:
+UIDisCountTips7=Original Price:
+UIDisCountTips8=Discounted price:
+UISettingOPmodetips03=Cannot be changed during operation
+uipowerconsumptiontips=Disabling some user videos can save traffic and power
+UItexasUCyuebuzutips=Insufficient UC funds, please recharge
+UItexasGCyuebuzutips=Insufficient GC funds, please recharge
+OpCodeString_CLUBLEAVELUP=Club Level Upgrade
+OpCodeString_CREATEFRIENDTABLE=
+OpCodeString_CLOSEFRIENDTABLE=
+OpCodeString_CREATEINSIDETABLE=Open Table Fee - Internal Club Table
+OpCodeString_CLOSEINSIDETABLE=
+OpCodeString_DIAMONDPLATTOUSER=Diamond issued by platform
+OpCodeString_CLUBTOUSER=
+OpCodeString_SCOREBOARDFEE=
+OpCodeString_CLUBLEAVELUP=Transcribing Fee - Internal Club Table
+OpCodeString_CLUBTOUSER=
+OpCodeString_DIAMONDCLUBTOUSER=
+OpCodeString_SCOREBOARDFEERTN=
+OpCodeString_CRETECLUBFEE=
+OpCodeString_CREATECLUBFEERTN=
+OpCodeString_FIXCLUBNAME=
+OpCodeString_VIDEOTABLEFEE=
+OpCodeString_VIDEOTABLEFEERTN=
+UIDisCountTips3_1_1=
+UIDisCountTips3_2_1=
+UIDisCountTips3_1_2=
+UIDisCountTips3_2_2=
 
 
 

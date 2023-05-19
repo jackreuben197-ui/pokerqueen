@@ -7,17 +7,14 @@
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createClub/UICreatelabor.ts
  */
 
-import { UIDefine } from "../../../define/UIDefine";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { APIOrgClubUploadIcon } from "../../../net/https/WebRequest";
-import LoginSession from "../../../session/LoginSession";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
-import upLoadIcon from "../../upLoadIcon";
 import { UIClubModel } from "../../labor/UIClubModel";
 import ComFormTitle from "../../../common/ComFormTitle";
-import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
+
 
 
 

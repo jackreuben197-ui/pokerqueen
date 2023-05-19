@@ -581,69 +581,79 @@ export default class GameUtil {
     //扑克映射表 服务端 : 客户端
     private static Poker_Map = {
         //桃
-        2: 1,
-        3: 2,
-        4: 3,
-        5: 4,
-        6: 5,
-        7: 6,
-        8: 7,
-        9: 8,
-        10: 9,
-        11: 10,
-        12: 11,
-        13: 12,
-        14: 0,
+        2: { res: 1, show: "♠2" },
+        3: { res: 2, show: "♠3" },
+        4: { res: 3, show: "♠4" },
+        5: { res: 4, show: "♠5" },
+        6: { res: 5, show: "♠6" },
+        7: { res: 6, show: "♠7" },
+        8: { res: 7, show: "♠8" },
+        9: { res: 8, show: "♠9" },
+        10: { res: 9, show: "♠10" },
+        11: { res: 10, show: "♠J" },
+        12: { res: 11, show: "♠Q" },
+        13: { res: 12, show: "♠K" },
+        14: { res: 0, show: "♠A" },
         //心
-        17: 14,
-        18: 15,
-        19: 16,
-        20: 17,
-        21: 18,
-        22: 19,
-        23: 20,
-        24: 21,
-        25: 22,
-        26: 23,
-        27: 24,
-        28: 25,
-        29: 13,
+        17: { res: 14, show: "♥2" },
+        18: { res: 15, show: "♥3" },
+        19: { res: 16, show: "♥4" },
+        20: { res: 17, show: "♥5" },
+        21: { res: 18, show: "♥6" },
+        22: { res: 19, show: "♥7" },
+        23: { res: 20, show: "♥8" },
+        24: { res: 21, show: "♥9" },
+        25: { res: 22, show: "♥10" },
+        26: { res: 23, show: "♥J" },
+        27: { res: 24, show: "♥Q" },
+        28: { res: 25, show: "♥K" },
+        29: { res: 13, show: "♥A" },
         //梅
-        32: 27,
-        33: 28,
-        34: 29,
-        35: 30,
-        36: 31,
-        37: 32,
-        38: 33,
-        39: 34,
-        40: 35,
-        41: 36,
-        42: 37,
-        43: 38,
-        44: 26,
+        32: { res: 27, show: "♣2" },
+        33: { res: 28, show: "♣3" },
+        34: { res: 29, show: "♣4" },
+        35: { res: 30, show: "♣5" },
+        36: { res: 31, show: "♣6" },
+        37: { res: 32, show: "♣7" },
+        38: { res: 33, show: "♣8" },
+        39: { res: 34, show: "♣9" },
+        40: { res: 35, show: "♣10" },
+        41: { res: 36, show: "♣J" },
+        42: { res: 37, show: "♣Q" },
+        43: { res: 38, show: "♣K" },
+        44: { res: 26, show: "♣A" },
         //方块
-        47: 40,
-        48: 41,
-        49: 42,
-        50: 43,
-        51: 44,
-        52: 45,
-        53: 46,
-        54: 47,
-        55: 48,
-        56: 49,
-        57: 50,
-        58: 51,
-        59: 39,
+        47: { res: 40, show: "♢2" },
+        48: { res: 41, show: "♢3" },
+        49: { res: 42, show: "♢4" },
+        50: { res: 43, show: "♢5" },
+        51: { res: 44, show: "♢6" },
+        52: { res: 45, show: "♢7" },
+        53: { res: 46, show: "♢8" },
+        54: { res: 47, show: "♢9" },
+        55: { res: 48, show: "♢10" },
+        56: { res: 49, show: "♢J" },
+        57: { res: 50, show: "♢Q" },
+        58: { res: 51, show: "♢K" },
+        59: { res: 39, show: "♢A" },
     }
     public static GetCardNameByNum(n: number): string {
 
         if (n > 0) {
-            return `p_${this.Poker_Map[n]}`;
+            return `p_${this.Poker_Map[n].res}`;
         }
         return "p_88";
     }
+
+    public static showPais(list: number[], flag: string = "卡牌:") {
+        let pais = [];
+        list.forEach(item => {
+            pais.push(this.Poker_Map[item].show);
+        })
+        console.log(flag, pais);
+    }
+
+
     /// <summary>
     /// 判断是否是底池限注
     /// </summary>
