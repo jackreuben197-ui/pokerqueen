@@ -73,7 +73,7 @@ export default class UICreateMatch extends BaseForm {
     gpsState = false;
     bmState = false;
     yckpState = false;
-    kzwjdrState = false;
+    kzwjdrState = 0;
     bxState = false;
     etpState = false;
     // smallAndBigM = [];
@@ -398,8 +398,8 @@ export default class UICreateMatch extends BaseForm {
 
         cc.find('btn_switch/open', this.bx).active = this.bxState;
         cc.find('btn_switch/close', this.bx).active = !this.bxState;
-        cc.find('btn_switch/open', this.kzwjdr).active = this.kzwjdrState;
-        cc.find('btn_switch/close', this.kzwjdr).active = !this.kzwjdrState;
+        cc.find('btn_switch/open', this.kzwjdr).active = this.kzwjdrState == 1;
+        cc.find('btn_switch/close', this.kzwjdr).active = this.kzwjdrState == 0;
 
         cc.find('btn_switch/open', this.etp).active = this.etpState;
         cc.find('btn_switch/close', this.etp).active = !this.etpState;
@@ -446,9 +446,9 @@ export default class UICreateMatch extends BaseForm {
         cc.find('btn_switch/close', this.gpszx).active = !this.gpsState;
     }
     kzwjdrCilck() {
-        this.kzwjdrState = !this.kzwjdrState
-        cc.find('btn_switch/open', this.kzwjdr).active = this.kzwjdrState;
-        cc.find('btn_switch/close', this.kzwjdr).active = !this.kzwjdrState;
+        this.kzwjdrState = this.kzwjdrState
+        cc.find('btn_switch/open', this.kzwjdr).active = this.kzwjdrState == 1;
+        cc.find('btn_switch/close', this.kzwjdr).active = this.kzwjdrState == 0;
     }
     bxCilck() {
         this.bxState = !this.bxState
@@ -538,6 +538,13 @@ export default class UICreateMatch extends BaseForm {
         room_config.limit_bet_type = Number(this.xzlxNum)      //底池限制类型：0-无底池限制，1-底池限制，2-AOF,必填
         room_config.settlement_type = Number(this.fwfbNum)    //0-每局结算 per game，1-每手结算 per hand,必填
         room_config.retain_type = Number(this.jfpNum)
+        
+        //TODO临时数据
+        room_config.origin_type = 4
+        room_config.blind_type = 1 //1-微 2-小 3-中 4-大盲注
+        room_config.anti_cheat_type = 1//反作弊类型 1 无 2 实时语音 3 实时视频 4 人脸验证
+
+
         room_config.ante = Number(this.qwsz.getChildByName('labelNode').getChildByName('lblNum').getComponent(cc.Label).string) //前注筹码,必填
 
         room_config.sb = Number(this.fdxm.getChildByName('jfplbl').getComponent(cc.Label).string) / 2 //小盲注,必填
@@ -594,7 +601,7 @@ export default class UICreateMatch extends BaseForm {
             if (this._fromUI == 'UICreateMatchHome') {
                 room_config.insurance = this.bxState
                 room_config.limit_friend_table = false
-                room_config.limit_bring_in = false
+                room_config.limit_bring_in = 0
                 let data = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
                 this.post(EventName.updateChessView);
             }

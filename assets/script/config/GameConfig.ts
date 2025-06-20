@@ -18,7 +18,7 @@ export class GameConfig {
     static clean_all_flag: number = 2;
 
     static debug: boolean = true;
-    static Web_Host_Test1 = "test1.awanptest.com";
+    static Web_Host_Test1 = "test2.awanptest.com";
     static Web_Host_Dev1 = "dev1.awanptest.com";
     static Web_Host_Dev = "dev.awanptest.com";
     //0: http://dev.awanptest.com 

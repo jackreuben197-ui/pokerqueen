@@ -22,7 +22,7 @@ export default class WebSocketClient {
     static Host_Port: string = null;
 
     //static Host: string = null;
-    static Port: number = 0;
+    static Port: number = 25201;
 
 
     static WS: WebSocket = null;
@@ -32,6 +32,7 @@ export default class WebSocketClient {
 
 
     public static SetPort(port: number) {
+        console.error("%c%s", LogStyle.ws_request, ">>>>> websocket connect Port:" + this.Port);
         this.Port = port;
         this.Host_Port = port ? GameConfig.Network.WSS.replace("{0}", `:${this.Port}`) : null;
     }
@@ -44,7 +45,8 @@ export default class WebSocketClient {
         }
     }
     private static __connect() {
-        console.log("%c%s", LogStyle.ws_request, ">>>>> websocket connect:" + this.Host_Port);
+        this.Host_Port = this.Host_Port.replace("wss://test2.awanptest.com/api/channel/", `ws://test2.awanptest.com:25201/`);
+        console.error("%c%s", LogStyle.ws_request, ">>>>> websocket connect Sanmi:" + this.Host_Port);
         this.WS = new WebSocket(this.Host_Port);
         this.WS.binaryType = "arraybuffer";
         this.WS.onopen = this.onopen;
@@ -53,7 +55,7 @@ export default class WebSocketClient {
         this.WS.onclose = this.onclose;
     }
     private static onopen(ev: Event) {
-        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket connect success:" + WebSocketClient.Host_Port);
+        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket connect success Sanmi:" + WebSocketClient.Host_Port);
         ReconnectComponent.Instance.ResetReconnectTime();
         //发送握手后的注册
         ProtocolAgency.Send({
@@ -63,15 +65,15 @@ export default class WebSocketClient {
         });
     }
     private static onerror(ev: Event) {
-        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onerror:" + WebSocketClient.Host_Port);
+        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onerror Sanmi:" + WebSocketClient.Host_Port);
     }
     private static onmessage(ev: MessageEvent) {
         //console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onmessage:", ev?.lastEventId);
         ProtocolAgency.Receive(ev?.data);
     }
     private static onclose(ev: CloseEvent) {
-        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose:" + WebSocketClient.Host_Port);
-        console.log("close reason : > ", ev.code, ev.reason, ev.wasClean);
+        console.log("%c%s", LogStyle.ws_response, ">>>>> websocket onclose Sanmi:" + WebSocketClient.Host_Port);
+        console.log("close reason  Sanmi: > ", ev.code, ev.reason, ev.wasClean);
         //停止心跳
         LobbySession.heartbeatComponent.active = false;
         WebSocketClient.CleanWS();
