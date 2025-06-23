@@ -91,7 +91,7 @@ export default class UICreateFriendMatchHome extends UIBase {
     }
     async joinMatch() {
         this.EditBox.string.trim();
-        if (this.EditBox.string.length != 6) {
+        if (this.EditBox.string.length != 7) {
             return;
         }
         let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this.EditBox.string);
