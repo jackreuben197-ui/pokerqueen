@@ -22,11 +22,11 @@ export class GameConfig {
     static Web_Host_Dev1 = "dev1.awanptest.com";
     static Web_Host_Dev = "dev.awanptest.com";
     //0: http://dev.awanptest.com 
-    //1: http://test1.awanptest.com  
+    //1: http://test2.awanptest.com  
     //2: http://dev1.awanptest.com 
-    //3: https://test1.awanptest.com  
+    //3: https://test2.awanptest.com  
     //4: https://dev1.awanptest.com 
-    static BuildType: number = 3;
+    static BuildType: number = 1;
     //版本号
     static Version: string = "20230109_2130";
 

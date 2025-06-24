@@ -45,7 +45,7 @@ export default class WebSocketClient {
         }
     }
     private static __connect() {
-        this.Host_Port = this.Host_Port.replace("wss://test2.awanptest.com/api/channel/", `ws://test2.awanptest.com:25201/`);
+        //this.Host_Port = this.Host_Port.replace("wss://test2.awanptest.com/api/channel/", `ws://test2.awanptest.com:25201/`);
         console.error("%c%s", LogStyle.ws_request, ">>>>> websocket connect Sanmi:" + this.Host_Port);
         this.WS = new WebSocket(this.Host_Port);
         this.WS.binaryType = "arraybuffer";
