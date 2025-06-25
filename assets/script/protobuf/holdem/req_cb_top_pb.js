@@ -63,8 +63,7 @@ proto.holdem.pb.ClientMessageCbTop.toObject = function(includeInstance, msg) {
   var f, obj = {
     offset: jspb.Message.getFieldWithDefault(msg, 1, 0),
     limit: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    roomId: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    orderbyType: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    roomId: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -112,10 +111,6 @@ proto.holdem.pb.ClientMessageCbTop.deserializeBinaryFromReader = function(msg, r
     case 3:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setRoomId(value);
-      break;
-    case 4:
-      var value = /** @type {!proto.holdem.pb.DefCB.OrderByType} */ (reader.readEnum());
-      msg.setOrderbyType(value);
       break;
     default:
       reader.skipField();
@@ -167,13 +162,6 @@ proto.holdem.pb.ClientMessageCbTop.serializeBinaryToWriter = function(message, w
       f
     );
   }
-  f = message.getOrderbyType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      4,
-      f
-    );
-  }
 };
 
 
@@ -219,21 +207,6 @@ proto.holdem.pb.ClientMessageCbTop.prototype.getRoomId = function() {
 /** @param {number} value */
 proto.holdem.pb.ClientMessageCbTop.prototype.setRoomId = function(value) {
   jspb.Message.setField(this, 3, value);
-};
-
-
-/**
- * optional DefCB.OrderByType orderby_type = 4;
- * @return {!proto.holdem.pb.DefCB.OrderByType}
- */
-proto.holdem.pb.ClientMessageCbTop.prototype.getOrderbyType = function() {
-  return /** @type {!proto.holdem.pb.DefCB.OrderByType} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
-};
-
-
-/** @param {!proto.holdem.pb.DefCB.OrderByType} value */
-proto.holdem.pb.ClientMessageCbTop.prototype.setOrderbyType = function(value) {
-  jspb.Message.setField(this, 4, value);
 };
 
 
@@ -295,8 +268,7 @@ proto.holdem.pb.ServerMessageCbTop.toObject = function(includeInstance, msg) {
     offset: jspb.Message.getFieldWithDefault(msg, 2, 0),
     limit: jspb.Message.getFieldWithDefault(msg, 3, 0),
     usersList: jspb.Message.toObjectList(msg.getUsersList(),
-    protobuf_holdem_define_cb_pb.CBUserPlay.toObject, includeInstance),
-    orderbyType: jspb.Message.getFieldWithDefault(msg, 5, 0)
+    protobuf_holdem_define_cb_pb.CBUserPlay.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -349,10 +321,6 @@ proto.holdem.pb.ServerMessageCbTop.deserializeBinaryFromReader = function(msg, r
       var value = new protobuf_holdem_define_cb_pb.CBUserPlay;
       reader.readMessage(value,protobuf_holdem_define_cb_pb.CBUserPlay.deserializeBinaryFromReader);
       msg.addUsers(value);
-      break;
-    case 5:
-      var value = /** @type {!proto.holdem.pb.DefCB.OrderByType} */ (reader.readEnum());
-      msg.setOrderbyType(value);
       break;
     default:
       reader.skipField();
@@ -410,13 +378,6 @@ proto.holdem.pb.ServerMessageCbTop.serializeBinaryToWriter = function(message, w
       4,
       f,
       protobuf_holdem_define_cb_pb.CBUserPlay.serializeBinaryToWriter
-    );
-  }
-  f = message.getOrderbyType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      5,
-      f
     );
   }
 };
@@ -495,21 +456,6 @@ proto.holdem.pb.ServerMessageCbTop.prototype.addUsers = function(opt_value, opt_
 
 proto.holdem.pb.ServerMessageCbTop.prototype.clearUsersList = function() {
   this.setUsersList([]);
-};
-
-
-/**
- * optional DefCB.OrderByType orderby_type = 5;
- * @return {!proto.holdem.pb.DefCB.OrderByType}
- */
-proto.holdem.pb.ServerMessageCbTop.prototype.getOrderbyType = function() {
-  return /** @type {!proto.holdem.pb.DefCB.OrderByType} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
-};
-
-
-/** @param {!proto.holdem.pb.DefCB.OrderByType} value */
-proto.holdem.pb.ServerMessageCbTop.prototype.setOrderbyType = function(value) {
-  jspb.Message.setField(this, 5, value);
 };
 
 
