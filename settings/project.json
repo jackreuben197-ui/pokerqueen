@@ -25,8 +25,8 @@
     "3D Particle"
   ],
   "preview-port": 7456,
-  "design-resolution-width": 960,
-  "design-resolution-height": 640,
+  "design-resolution-width": 1125,
+  "design-resolution-height": 2436,
   "fit-width": true,
   "fit-height": false,
   "use-project-simulator-setting": false,
@@ -47,6 +47,6 @@
       "enable": false
     }
   },
-  "last-module-event-record-time": 1673270395853,
+  "last-module-event-record-time": 1750408536790,
   "start-scene": "2150695d-c6ba-48c4-bbab-056d91c1262c"
 }
