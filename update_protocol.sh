@@ -4,8 +4,8 @@ repo_url=https://gitlab.com/darkalliance/agreement-web.git
 repo_dir=agreement-web
 holdem_pb_dir=${repo_dir}/holdem/pb
 cowboy_pb_dir=${repo_dir}/cowboy/pb
-holdem_cs_dir=protobuf/Holdem
-cowboy_cs_dir=protobuf/Cowboy
+holdem_cs_dir=assets/script/protobuf/holdem
+cowboy_cs_dir=assets/script/protobuf/cowboy
 
 function main {
     if [ ! -d $repo_dir ]; then

@@ -229,7 +229,9 @@ proto.holdem.pb.ServerMessageCbCancelPlay.prototype.toObject = function(opt_incl
  */
 proto.holdem.pb.ServerMessageCbCancelPlay.toObject = function(includeInstance, msg) {
   var f, obj = {
-    status: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    status: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    amount: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    current: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -270,6 +272,14 @@ proto.holdem.pb.ServerMessageCbCancelPlay.deserializeBinaryFromReader = function
       var value = /** @type {number} */ (reader.readInt32());
       msg.setStatus(value);
       break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setAmount(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setCurrent(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -306,6 +316,20 @@ proto.holdem.pb.ServerMessageCbCancelPlay.serializeBinaryToWriter = function(mes
       f
     );
   }
+  f = message.getAmount();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+  f = message.getCurrent();
+  if (f !== 0) {
+    writer.writeUint64(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -321,6 +345,36 @@ proto.holdem.pb.ServerMessageCbCancelPlay.prototype.getStatus = function() {
 /** @param {number} value */
 proto.holdem.pb.ServerMessageCbCancelPlay.prototype.setStatus = function(value) {
   jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 amount = 2;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageCbCancelPlay.prototype.getAmount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageCbCancelPlay.prototype.setAmount = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional uint64 current = 3;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageCbCancelPlay.prototype.getCurrent = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageCbCancelPlay.prototype.setCurrent = function(value) {
+  jspb.Message.setField(this, 3, value);
 };
 
 
