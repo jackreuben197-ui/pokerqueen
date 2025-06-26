@@ -16,6 +16,9 @@ export class ClientMessageCbPlay extends jspb.Message {
   setSlotsList(value: Array<protobuf_holdem_define_cb_pb.CBPlaySummary>): void;
   addSlots(value?: protobuf_holdem_define_cb_pb.CBPlaySummary, index?: number): protobuf_holdem_define_cb_pb.CBPlaySummary;
 
+  getClubId(): number;
+  setClubId(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ClientMessageCbPlay.AsObject;
   static toObject(includeInstance: boolean, msg: ClientMessageCbPlay): ClientMessageCbPlay.AsObject;
@@ -31,12 +34,16 @@ export namespace ClientMessageCbPlay {
     gameNum: number,
     roomId: number,
     slotsList: Array<protobuf_holdem_define_cb_pb.CBPlaySummary.AsObject>,
+    clubId: number,
   }
 }
 
 export class ServerMessageCbPlay extends jspb.Message {
   getStatus(): number;
   setStatus(value: number): void;
+
+  getCurrent(): number;
+  setCurrent(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbPlay.AsObject;
@@ -51,6 +58,7 @@ export class ServerMessageCbPlay extends jspb.Message {
 export namespace ServerMessageCbPlay {
   export type AsObject = {
     status: number,
+    current: number,
   }
 }
 

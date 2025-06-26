@@ -27,6 +27,16 @@ export class ServerMessageCbGameResult extends jspb.Message {
   getOnline(): number;
   setOnline(value: number): void;
 
+  clearItemsList(): void;
+  getItemsList(): Array<protobuf_holdem_define_cb_pb.CBHistoryItem>;
+  setItemsList(value: Array<protobuf_holdem_define_cb_pb.CBHistoryItem>): void;
+  addItems(value?: protobuf_holdem_define_cb_pb.CBHistoryItem, index?: number): protobuf_holdem_define_cb_pb.CBHistoryItem;
+
+  clearOtherUserPlaysList(): void;
+  getOtherUserPlaysList(): Array<protobuf_holdem_define_cb_pb.CBUserPlaySummary>;
+  setOtherUserPlaysList(value: Array<protobuf_holdem_define_cb_pb.CBUserPlaySummary>): void;
+  addOtherUserPlays(value?: protobuf_holdem_define_cb_pb.CBUserPlaySummary, index?: number): protobuf_holdem_define_cb_pb.CBUserPlaySummary;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbGameResult.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbGameResult): ServerMessageCbGameResult.AsObject;
@@ -45,6 +55,8 @@ export namespace ServerMessageCbGameResult {
     myPlayList: Array<protobuf_holdem_define_cb_pb.CBPlayResult.AsObject>,
     myWin: number,
     online: number,
+    itemsList: Array<protobuf_holdem_define_cb_pb.CBHistoryItem.AsObject>,
+    otherUserPlaysList: Array<protobuf_holdem_define_cb_pb.CBUserPlaySummary.AsObject>,
   }
 }
 

@@ -73,6 +73,16 @@ export namespace Def {
 
   export const Round: RoundMap;
 
+  export interface KeepSeatReasonMap {
+    KSR_NONE: 0;
+    KSR_TAKE_SEAT: 1;
+    KSR_ACTIVE: 2;
+    KSR_NOCHIP: 3;
+    KSR_DELAY_LEAVE: 4;
+  }
+
+  export const KeepSeatReason: KeepSeatReasonMap;
+
   export interface StandUpReasonMap {
     SUR_NONE: 0;
     SUR_NOCHIP: 1;
@@ -83,6 +93,7 @@ export namespace Def {
     SUR_AUTO_EXCEED_MAX_TIMES: 6;
     SUR_KEEPSEAT_TIMEOUT: 7;
     SUR_ACTIVE_LEAVE: 8;
+    SUR_AUTO_CHANGE_ROOM: 9;
   }
 
   export const StandUpReason: StandUpReasonMap;
@@ -96,6 +107,7 @@ export namespace Def {
     LR_EXCHANGE: 5;
     LR_AUTO_EXCEED_MAX_TIMES: 6;
     LR_OFFLINE: 7;
+    LR_AUTO_CHANGE_ROOM: 8;
   }
 
   export const LeaveReason: LeaveReasonMap;
@@ -108,6 +120,8 @@ export namespace Def {
     CC_MTT_STORE_RETURN: 4;
     CC_MTT_ADD_ON_PLUS_MODE1: 5;
     CC_MTT_ADD_ON_PLUS_MODE2: 6;
+    CC_MUSHROOM_SPLIT: 7;
+    CC_SQUID_SPLIT: 8;
   }
 
   export const ChipChangeReason: ChipChangeReasonMap;
@@ -149,6 +163,8 @@ export namespace Def {
     CT_DELAY_4: 12;
     CT_VC_1: 13;
     CT_VC_2: 14;
+    CT_DELAY_5: 15;
+    CT_DELAY_6: 16;
   }
 
   export const ConsumeType: ConsumeTypeMap;
@@ -185,6 +201,93 @@ export namespace Def {
   }
 
   export const AddOnMode: AddOnModeMap;
+
+  export interface EHCTypeMap {
+    EHC_NONE: 0;
+    EHC_MUSHROOM: 1;
+    EHC_LUCKYCARDS: 2;
+    EHC_SQUID: 3;
+  }
+
+  export const EHCType: EHCTypeMap;
+
+  export interface IIReasonMap {
+    IIR_NONE: 0;
+    IIR_ZERO_OUTS: 1;
+    IIR_NO_ODDS_FOUND: 2;
+    IIR_NO_ODDS_TABLE_FOUND: 3;
+    IIR_LEADER_LIMIT: 4;
+    IIR_EV_LIMIT: 5;
+  }
+
+  export const IIReason: IIReasonMap;
+
+  export interface PropBuyTypeMap {
+    NOT_SUPPORT: 0;
+    ONLY_PROP: 1;
+    MIX: 2;
+  }
+
+  export const PropBuyType: PropBuyTypeMap;
+
+  export interface DealDelayTypeMap {
+    UNKOWN: 0;
+    GG: 1;
+    HH: 2;
+  }
+
+  export const DealDelayType: DealDelayTypeMap;
+
+  export interface BroadcastMsgTypeMap {
+    BC_MSG_NONE: 0;
+    BC_MSG_EMOJI: 1;
+    BC_MSG_BULLET: 2;
+    BC_MSG_AVATAR: 3;
+    BC_MSG_THROW: 4;
+  }
+
+  export const BroadcastMsgType: BroadcastMsgTypeMap;
+
+  export interface MatchingResultStatusMap {
+    MR_STATUS_NONE: 0;
+    MR_STATUS_SUCCESS: 1;
+    MR_STATUS_TIME_OUT: 2;
+    MR_STATUS_LESS_GOLD: 3;
+  }
+
+  export const MatchingResultStatus: MatchingResultStatusMap;
+
+  export interface RoomModeMap {
+    RM_NORMAL: 0;
+    RM_MATCHING: 1;
+    RM_MATCHING_WAITING: 2;
+  }
+
+  export const RoomMode: RoomModeMap;
+
+  export interface IsuranceModeMap {
+    IM_NORMAL: 0;
+    IM_WPK: 1;
+    IM_EV: 2;
+  }
+
+  export const IsuranceMode: IsuranceModeMap;
+
+  export interface UserQuitClubReasonMap {
+    UQCR_QUIT: 0;
+    UQCR_KICKOUT: 1;
+    UQCR_CLOSECLUB: 2;
+  }
+
+  export const UserQuitClubReason: UserQuitClubReasonMap;
+
+  export interface WantSeatTypeMap {
+    WST_BOTH: 0;
+    WST_YES: 1;
+    WST_NO: 2;
+  }
+
+  export const WantSeatType: WantSeatTypeMap;
 }
 
 export class Room extends jspb.Message {
@@ -245,6 +348,21 @@ export class Operator extends jspb.Message {
   getOpDeadline(): number;
   setOpDeadline(value: number): void;
 
+  clearInvalidInsurancePotsList(): void;
+  getInvalidInsurancePotsList(): Array<InsurancePotInvalid>;
+  setInvalidInsurancePotsList(value: Array<InsurancePotInvalid>): void;
+  addInvalidInsurancePots(value?: InsurancePotInvalid, index?: number): InsurancePotInvalid;
+
+  clearCardsList(): void;
+  getCardsList(): Array<number>;
+  setCardsList(value: Array<number>): void;
+  addCards(value: number, index?: number): number;
+
+  clearPlayerCardsList(): void;
+  getPlayerCardsList(): Array<PlayerCards>;
+  setPlayerCardsList(value: Array<PlayerCards>): void;
+  addPlayerCards(value?: PlayerCards, index?: number): PlayerCards;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Operator.AsObject;
   static toObject(includeInstance: boolean, msg: Operator): Operator.AsObject;
@@ -266,6 +384,9 @@ export namespace Operator {
     isInsurance: boolean,
     isAgreeSecondPc: boolean,
     opDeadline: number,
+    invalidInsurancePotsList: Array<InsurancePotInvalid.AsObject>,
+    cardsList: Array<number>,
+    playerCardsList: Array<PlayerCards.AsObject>,
   }
 }
 
@@ -336,6 +457,83 @@ export class RoomInfo extends jspb.Message {
   getIsAgreeSecondPcs(): boolean;
   setIsAgreeSecondPcs(value: boolean): void;
 
+  getIgnorePreflop(): boolean;
+  setIgnorePreflop(value: boolean): void;
+
+  getIsAlwaysSecondPcs(): boolean;
+  setIsAlwaysSecondPcs(value: boolean): void;
+
+  getMushroomBase(): number;
+  setMushroomBase(value: number): void;
+
+  getDeposit(): number;
+  setDeposit(value: number): void;
+
+  clearLuckycardsList(): void;
+  getLuckycardsList(): Array<Luckycards>;
+  setLuckycardsList(value: Array<Luckycards>): void;
+  addLuckycards(value?: Luckycards, index?: number): Luckycards;
+
+  getAnteMin(): number;
+  setAnteMin(value: number): void;
+
+  getAnteMax(): number;
+  setAnteMax(value: number): void;
+
+  getSeatedMessaging(): boolean;
+  setSeatedMessaging(value: boolean): void;
+
+  getRoomType(): number;
+  setRoomType(value: number): void;
+
+  getAntiCheatType(): number;
+  setAntiCheatType(value: number): void;
+
+  getAntiCheatVideoType(): number;
+  setAntiCheatVideoType(value: number): void;
+
+  getSquidBase(): number;
+  setSquidBase(value: number): void;
+
+  getPersonalType(): number;
+  setPersonalType(value: number): void;
+
+  getWinTotal(): number;
+  setWinTotal(value: number): void;
+
+  getCallTimeCount(): number;
+  setCallTimeCount(value: number): void;
+
+  getJackpot(): number;
+  setJackpot(value: number): void;
+
+  getJackpotGold(): number;
+  setJackpotGold(value: number): void;
+
+  getJackpotParentGold(): number;
+  setJackpotParentGold(value: number): void;
+
+  getMode(): Def.RoomModeMap[keyof Def.RoomModeMap];
+  setMode(value: Def.RoomModeMap[keyof Def.RoomModeMap]): void;
+
+  getRandomAnte(): string;
+  setRandomAnte(value: string): void;
+
+  getCriticalHit(): number;
+  setCriticalHit(value: number): void;
+
+  getAutoChangeRoomLimitHand(): number;
+  setAutoChangeRoomLimitHand(value: number): void;
+
+  getInsuranceMode(): Def.IsuranceModeMap[keyof Def.IsuranceModeMap];
+  setInsuranceMode(value: Def.IsuranceModeMap[keyof Def.IsuranceModeMap]): void;
+
+  getWheelTemplateId(): number;
+  setWheelTemplateId(value: number): void;
+
+  getSquidTotalLimit(): number;
+  setSquidTotalLimit(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RoomInfo.AsObject;
   static toObject(includeInstance: boolean, msg: RoomInfo): RoomInfo.AsObject;
@@ -370,15 +568,68 @@ export namespace RoomInfo {
     muck: boolean,
     uniqueId: string,
     isAgreeSecondPcs: boolean,
+    ignorePreflop: boolean,
+    isAlwaysSecondPcs: boolean,
+    mushroomBase: number,
+    deposit: number,
+    luckycardsList: Array<Luckycards.AsObject>,
+    anteMin: number,
+    anteMax: number,
+    seatedMessaging: boolean,
+    roomType: number,
+    antiCheatType: number,
+    antiCheatVideoType: number,
+    squidBase: number,
+    personalType: number,
+    winTotal: number,
+    callTimeCount: number,
+    jackpot: number,
+    jackpotGold: number,
+    jackpotParentGold: number,
+    mode: Def.RoomModeMap[keyof Def.RoomModeMap],
+    randomAnte: string,
+    criticalHit: number,
+    autoChangeRoomLimitHand: number,
+    insuranceMode: Def.IsuranceModeMap[keyof Def.IsuranceModeMap],
+    wheelTemplateId: number,
+    squidTotalLimit: number,
   }
 
   export interface RetainTypeMap {
-    RT_DISABLE: 0;  //不支持
-    RT_AUTO: 1;     //自动
-    RT_MANUAL: 2;   //手动
+    RT_DISABLE: 0;
+    RT_AUTO: 1;
+    RT_MANUAL: 2;
   }
 
   export const RetainType: RetainTypeMap;
+}
+
+export class Luckycards extends jspb.Message {
+  clearCardsList(): void;
+  getCardsList(): Array<number>;
+  setCardsList(value: Array<number>): void;
+  addCards(value: number, index?: number): number;
+
+  clearAwardsList(): void;
+  getAwardsList(): Array<number>;
+  setAwardsList(value: Array<number>): void;
+  addAwards(value: number, index?: number): number;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Luckycards.AsObject;
+  static toObject(includeInstance: boolean, msg: Luckycards): Luckycards.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Luckycards, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Luckycards;
+  static deserializeBinaryFromReader(message: Luckycards, reader: jspb.BinaryReader): Luckycards;
+}
+
+export namespace Luckycards {
+  export type AsObject = {
+    cardsList: Array<number>,
+    awardsList: Array<number>,
+  }
 }
 
 export class HandInfo extends jspb.Message {
@@ -418,6 +669,35 @@ export class HandInfo extends jspb.Message {
   setExtPublicCardsList(value: Array<number>): void;
   addExtPublicCards(value: number, index?: number): number;
 
+  clearSecondPublicCardsList(): void;
+  getSecondPublicCardsList(): Array<number>;
+  setSecondPublicCardsList(value: Array<number>): void;
+  addSecondPublicCards(value: number, index?: number): number;
+
+  hasPools(): boolean;
+  clearPools(): void;
+  getPools(): ExternalPools | undefined;
+  setPools(value?: ExternalPools): void;
+
+  getInSquid(): boolean;
+  setInSquid(value: boolean): void;
+
+  clearSecondPotsList(): void;
+  getSecondPotsList(): Array<SidePot>;
+  setSecondPotsList(value: Array<SidePot>): void;
+  addSecondPots(value?: SidePot, index?: number): SidePot;
+
+  getConRounds(): number;
+  setConRounds(value: number): void;
+
+  clearDealOrderList(): void;
+  getDealOrderList(): Array<number>;
+  setDealOrderList(value: Array<number>): void;
+  addDealOrder(value: number, index?: number): number;
+
+  getCriticalHitOpen(): boolean;
+  setCriticalHitOpen(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): HandInfo.AsObject;
   static toObject(includeInstance: boolean, msg: HandInfo): HandInfo.AsObject;
@@ -440,6 +720,13 @@ export namespace HandInfo {
     roundBet: number,
     insurancePool: number,
     extPublicCardsList: Array<number>,
+    secondPublicCardsList: Array<number>,
+    pools?: ExternalPools.AsObject,
+    inSquid: boolean,
+    secondPotsList: Array<SidePot.AsObject>,
+    conRounds: number,
+    dealOrderList: Array<number>,
+    criticalHitOpen: boolean,
   }
 }
 
@@ -522,6 +809,9 @@ export class MTTInfo extends jspb.Message {
   getBuyRatio(): number;
   setBuyRatio(value: number): void;
 
+  getSngId(): number;
+  setSngId(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): MTTInfo.AsObject;
   static toObject(includeInstance: boolean, msg: MTTInfo): MTTInfo.AsObject;
@@ -560,6 +850,7 @@ export namespace MTTInfo {
     addOnPlusMode2EndBl: number,
     addOnPlusMode2MaxTimes: number,
     buyRatio: number,
+    sngId: number,
   }
 }
 
@@ -657,6 +948,45 @@ export class MyGameInfo extends jspb.Message {
   getHunterHeadValue(): number;
   setHunterHeadValue(value: number): void;
 
+  getName(): string;
+  setName(value: string): void;
+
+  getAvatar(): string;
+  setAvatar(value: string): void;
+
+  getSex(): number;
+  setSex(value: number): void;
+
+  getUserSubscriptionId(): number;
+  setUserSubscriptionId(value: number): void;
+
+  getWinTotal(): number;
+  setWinTotal(value: number): void;
+
+  getCallTimeCount(): number;
+  setCallTimeCount(value: number): void;
+
+  getCallTimeStay(): boolean;
+  setCallTimeStay(value: boolean): void;
+
+  getTotalChips(): number;
+  setTotalChips(value: number): void;
+
+  getAutoChangeRoomHand(): number;
+  setAutoChangeRoomHand(value: number): void;
+
+  getLastStoreHandNum(): number;
+  setLastStoreHandNum(value: number): void;
+
+  getWantSeat(): Def.WantSeatTypeMap[keyof Def.WantSeatTypeMap];
+  setWantSeat(value: Def.WantSeatTypeMap[keyof Def.WantSeatTypeMap]): void;
+
+  getAlreadySeated(): boolean;
+  setAlreadySeated(value: boolean): void;
+
+  getSquidRoundSeated(): boolean;
+  setSquidRoundSeated(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): MyGameInfo.AsObject;
   static toObject(includeInstance: boolean, msg: MyGameInfo): MyGameInfo.AsObject;
@@ -684,6 +1014,19 @@ export namespace MyGameInfo {
     addonPlusMode2Times: number,
     hunterKillAwardOther: number,
     hunterHeadValue: number,
+    name: string,
+    avatar: string,
+    sex: number,
+    userSubscriptionId: number,
+    winTotal: number,
+    callTimeCount: number,
+    callTimeStay: boolean,
+    totalChips: number,
+    autoChangeRoomHand: number,
+    lastStoreHandNum: number,
+    wantSeat: Def.WantSeatTypeMap[keyof Def.WantSeatTypeMap],
+    alreadySeated: boolean,
+    squidRoundSeated: boolean,
   }
 }
 
@@ -806,6 +1149,14 @@ export class InsurancePotLimit extends jspb.Message {
   getPotLeaderCount(): number;
   setPotLeaderCount(value: number): void;
 
+  clearCantBuyOutsList(): void;
+  getCantBuyOutsList(): Array<OutsCard>;
+  setCantBuyOutsList(value: Array<OutsCard>): void;
+  addCantBuyOuts(value?: OutsCard, index?: number): OutsCard;
+
+  getOdds(): number;
+  setOdds(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): InsurancePotLimit.AsObject;
   static toObject(includeInstance: boolean, msg: InsurancePotLimit): InsurancePotLimit.AsObject;
@@ -828,6 +1179,44 @@ export namespace InsurancePotLimit {
     outsDetailList: Array<UserOuts.AsObject>,
     potUserCount: number,
     potLeaderCount: number,
+    cantBuyOutsList: Array<OutsCard.AsObject>,
+    odds: number,
+  }
+}
+
+export class InsurancePotInvalid extends jspb.Message {
+  getPotId(): number;
+  setPotId(value: number): void;
+
+  getPotAmount(): number;
+  setPotAmount(value: number): void;
+
+  getOuts(): number;
+  setOuts(value: number): void;
+
+  getPotUserCount(): number;
+  setPotUserCount(value: number): void;
+
+  getReason(): Def.IIReasonMap[keyof Def.IIReasonMap];
+  setReason(value: Def.IIReasonMap[keyof Def.IIReasonMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): InsurancePotInvalid.AsObject;
+  static toObject(includeInstance: boolean, msg: InsurancePotInvalid): InsurancePotInvalid.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: InsurancePotInvalid, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InsurancePotInvalid;
+  static deserializeBinaryFromReader(message: InsurancePotInvalid, reader: jspb.BinaryReader): InsurancePotInvalid;
+}
+
+export namespace InsurancePotInvalid {
+  export type AsObject = {
+    potId: number,
+    potAmount: number,
+    outs: number,
+    potUserCount: number,
+    reason: Def.IIReasonMap[keyof Def.IIReasonMap],
   }
 }
 
@@ -904,6 +1293,9 @@ export class PotInsuranceBuy extends jspb.Message {
   setPassiveOutsList(value: Array<number>): void;
   addPassiveOuts(value: number, index?: number): number;
 
+  getInsurEv(): number;
+  setInsurEv(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PotInsuranceBuy.AsObject;
   static toObject(includeInstance: boolean, msg: PotInsuranceBuy): PotInsuranceBuy.AsObject;
@@ -922,6 +1314,7 @@ export namespace PotInsuranceBuy {
     activeOutsList: Array<number>,
     passiveAmount: number,
     passiveOutsList: Array<number>,
+    insurEv: number,
   }
 }
 
@@ -933,6 +1326,15 @@ export class PlayerCards extends jspb.Message {
   getCardsList(): Array<number>;
   setCardsList(value: Array<number>): void;
   addCards(value: number, index?: number): number;
+
+  getUserRid(): number;
+  setUserRid(value: number): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getAvatar(): string;
+  setAvatar(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PlayerCards.AsObject;
@@ -948,6 +1350,9 @@ export namespace PlayerCards {
   export type AsObject = {
     seatId: number,
     cardsList: Array<number>,
+    userRid: number,
+    name: string,
+    avatar: string,
   }
 }
 
@@ -975,6 +1380,24 @@ export class PlayerStartInfo extends jspb.Message {
   getStoreChips(): number;
   setStoreChips(value: number): void;
 
+  getDeposit(): number;
+  setDeposit(value: number): void;
+
+  getCostMushroom(): number;
+  setCostMushroom(value: number): void;
+
+  getInMushroom(): boolean;
+  setInMushroom(value: boolean): void;
+
+  getSquidEscaped(): boolean;
+  setSquidEscaped(value: boolean): void;
+
+  getSquidCount(): number;
+  setSquidCount(value: number): void;
+
+  getInSquid(): boolean;
+  setInSquid(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PlayerStartInfo.AsObject;
   static toObject(includeInstance: boolean, msg: PlayerStartInfo): PlayerStartInfo.AsObject;
@@ -994,6 +1417,12 @@ export namespace PlayerStartInfo {
     roundBet: number,
     chip: number,
     storeChips: number,
+    deposit: number,
+    costMushroom: number,
+    inMushroom: boolean,
+    squidEscaped: boolean,
+    squidCount: number,
+    inSquid: boolean,
   }
 }
 
@@ -1089,6 +1518,38 @@ export class Player extends jspb.Message {
   getVip(): number;
   setVip(value: number): void;
 
+  getKeepSeatDeadline(): number;
+  setKeepSeatDeadline(value: number): void;
+
+  getKeepSeatReason(): Def.KeepSeatReasonMap[keyof Def.KeepSeatReasonMap];
+  setKeepSeatReason(value: Def.KeepSeatReasonMap[keyof Def.KeepSeatReasonMap]): void;
+
+  getDeposit(): number;
+  setDeposit(value: number): void;
+
+  getInMushroom(): boolean;
+  setInMushroom(value: boolean): void;
+
+  getCostMushroom(): number;
+  setCostMushroom(value: number): void;
+
+  hasWinCardsInfo(): boolean;
+  clearWinCardsInfo(): void;
+  getWinCardsInfo(): AllInWinCardsInfo | undefined;
+  setWinCardsInfo(value?: AllInWinCardsInfo): void;
+
+  getSquidEscaped(): boolean;
+  setSquidEscaped(value: boolean): void;
+
+  getUserSubscriptionId(): number;
+  setUserSubscriptionId(value: number): void;
+
+  getSquidCount(): number;
+  setSquidCount(value: number): void;
+
+  getInSquid(): boolean;
+  setInSquid(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Player.AsObject;
   static toObject(includeInstance: boolean, msg: Player): Player.AsObject;
@@ -1122,6 +1583,16 @@ export namespace Player {
     hunterKillAwardOther: number,
     hunterHeadValue: number,
     vip: number,
+    keepSeatDeadline: number,
+    keepSeatReason: Def.KeepSeatReasonMap[keyof Def.KeepSeatReasonMap],
+    deposit: number,
+    inMushroom: boolean,
+    costMushroom: number,
+    winCardsInfo?: AllInWinCardsInfo.AsObject,
+    squidEscaped: boolean,
+    userSubscriptionId: number,
+    squidCount: number,
+    inSquid: boolean,
   }
 }
 
@@ -1200,6 +1671,35 @@ export class Result extends jspb.Message {
   getStandUp(): boolean;
   setStandUp(value: boolean): void;
 
+  clearEhcsList(): void;
+  getEhcsList(): Array<ExternalHandChange>;
+  setEhcsList(value: Array<ExternalHandChange>): void;
+  addEhcs(value?: ExternalHandChange, index?: number): ExternalHandChange;
+
+  getDeposit(): number;
+  setDeposit(value: number): void;
+
+  getSquidEscaped(): boolean;
+  setSquidEscaped(value: boolean): void;
+
+  getWinTotal(): number;
+  setWinTotal(value: number): void;
+
+  getCallTimeCount(): number;
+  setCallTimeCount(value: number): void;
+
+  getCallTimeStay(): boolean;
+  setCallTimeStay(value: boolean): void;
+
+  getSquidCount(): number;
+  setSquidCount(value: number): void;
+
+  getAutoChangeRoomHand(): number;
+  setAutoChangeRoomHand(value: number): void;
+
+  getTotalChips(): number;
+  setTotalChips(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Result.AsObject;
   static toObject(includeInstance: boolean, msg: Result): Result.AsObject;
@@ -1234,6 +1734,105 @@ export namespace Result {
     mttHunterKillAwardOther: number,
     mttHunterKillAwardOtherPlus: number,
     standUp: boolean,
+    ehcsList: Array<ExternalHandChange.AsObject>,
+    deposit: number,
+    squidEscaped: boolean,
+    winTotal: number,
+    callTimeCount: number,
+    callTimeStay: boolean,
+    squidCount: number,
+    autoChangeRoomHand: number,
+    totalChips: number,
+  }
+}
+
+export class ExternalHandChange extends jspb.Message {
+  getEhcType(): Def.EHCTypeMap[keyof Def.EHCTypeMap];
+  setEhcType(value: Def.EHCTypeMap[keyof Def.EHCTypeMap]): void;
+
+  getIn(): number;
+  setIn(value: number): void;
+
+  getOut(): number;
+  setOut(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ExternalHandChange.AsObject;
+  static toObject(includeInstance: boolean, msg: ExternalHandChange): ExternalHandChange.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ExternalHandChange, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ExternalHandChange;
+  static deserializeBinaryFromReader(message: ExternalHandChange, reader: jspb.BinaryReader): ExternalHandChange;
+}
+
+export namespace ExternalHandChange {
+  export type AsObject = {
+    ehcType: Def.EHCTypeMap[keyof Def.EHCTypeMap],
+    pb_in: number,
+    out: number,
+  }
+}
+
+export class SquidDetail extends jspb.Message {
+  getUserRid(): number;
+  setUserRid(value: number): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getAvatar(): string;
+  setAvatar(value: string): void;
+
+  getPunishFee(): number;
+  setPunishFee(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SquidDetail.AsObject;
+  static toObject(includeInstance: boolean, msg: SquidDetail): SquidDetail.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SquidDetail, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SquidDetail;
+  static deserializeBinaryFromReader(message: SquidDetail, reader: jspb.BinaryReader): SquidDetail;
+}
+
+export namespace SquidDetail {
+  export type AsObject = {
+    userRid: number,
+    name: string,
+    avatar: string,
+    punishFee: number,
+  }
+}
+
+export class ExternalPools extends jspb.Message {
+  getMushroomPool(): number;
+  setMushroomPool(value: number): void;
+
+  getSquidPool(): number;
+  setSquidPool(value: number): void;
+
+  clearSquidDetailsList(): void;
+  getSquidDetailsList(): Array<SquidDetail>;
+  setSquidDetailsList(value: Array<SquidDetail>): void;
+  addSquidDetails(value?: SquidDetail, index?: number): SquidDetail;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ExternalPools.AsObject;
+  static toObject(includeInstance: boolean, msg: ExternalPools): ExternalPools.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ExternalPools, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ExternalPools;
+  static deserializeBinaryFromReader(message: ExternalPools, reader: jspb.BinaryReader): ExternalPools;
+}
+
+export namespace ExternalPools {
+  export type AsObject = {
+    mushroomPool: number,
+    squidPool: number,
+    squidDetailsList: Array<SquidDetail.AsObject>,
   }
 }
 
@@ -1335,6 +1934,9 @@ export class PlayerChipChange extends jspb.Message {
   getMttHunterHeadPlus(): number;
   setMttHunterHeadPlus(value: number): void;
 
+  getDepositChange(): number;
+  setDepositChange(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PlayerChipChange.AsObject;
   static toObject(includeInstance: boolean, msg: PlayerChipChange): PlayerChipChange.AsObject;
@@ -1354,6 +1956,7 @@ export namespace PlayerChipChange {
     auto: boolean,
     reason: Def.ChipChangeReasonMap[keyof Def.ChipChangeReasonMap],
     mttHunterHeadPlus: number,
+    depositChange: number,
   }
 }
 
@@ -1373,6 +1976,9 @@ export class Roomer extends jspb.Message {
   getVip(): number;
   setVip(value: number): void;
 
+  getIsOnline(): boolean;
+  setIsOnline(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Roomer.AsObject;
   static toObject(includeInstance: boolean, msg: Roomer): Roomer.AsObject;
@@ -1390,6 +1996,7 @@ export namespace Roomer {
     avatar: string,
     sex: number,
     vip: number,
+    isOnline: boolean,
   }
 }
 
@@ -1427,6 +2034,36 @@ export class PlayerSummary extends jspb.Message {
   getVip(): number;
   setVip(value: number): void;
 
+  getIsOnline(): boolean;
+  setIsOnline(value: boolean): void;
+
+  getStoreChips(): number;
+  setStoreChips(value: number): void;
+
+  getMushroomCount(): number;
+  setMushroomCount(value: number): void;
+
+  getMushroomAmount(): number;
+  setMushroomAmount(value: number): void;
+
+  getPoolRate(): number;
+  setPoolRate(value: number): void;
+
+  getSquidInTotal(): number;
+  setSquidInTotal(value: number): void;
+
+  getSquidOutTotal(): number;
+  setSquidOutTotal(value: number): void;
+
+  getSquidCount(): number;
+  setSquidCount(value: number): void;
+
+  getSquidPunishTotal(): number;
+  setSquidPunishTotal(value: number): void;
+
+  getDeposit(): number;
+  setDeposit(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PlayerSummary.AsObject;
   static toObject(includeInstance: boolean, msg: PlayerSummary): PlayerSummary.AsObject;
@@ -1450,6 +2087,2272 @@ export namespace PlayerSummary {
     win: number,
     status: Def.CanPlayStatusMap[keyof Def.CanPlayStatusMap],
     vip: number,
+    isOnline: boolean,
+    storeChips: number,
+    mushroomCount: number,
+    mushroomAmount: number,
+    poolRate: number,
+    squidInTotal: number,
+    squidOutTotal: number,
+    squidCount: number,
+    squidPunishTotal: number,
+    deposit: number,
+  }
+}
+
+export class PlayerAllInShowCardWinCardsLength extends jspb.Message {
+  getSeatId(): number;
+  setSeatId(value: number): void;
+
+  getWinCardsCount(): number;
+  setWinCardsCount(value: number): void;
+
+  getLeftCardsCount(): number;
+  setLeftCardsCount(value: number): void;
+
+  clearWinCardsList(): void;
+  getWinCardsList(): Array<number>;
+  setWinCardsList(value: Array<number>): void;
+  addWinCards(value: number, index?: number): number;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PlayerAllInShowCardWinCardsLength.AsObject;
+  static toObject(includeInstance: boolean, msg: PlayerAllInShowCardWinCardsLength): PlayerAllInShowCardWinCardsLength.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PlayerAllInShowCardWinCardsLength, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PlayerAllInShowCardWinCardsLength;
+  static deserializeBinaryFromReader(message: PlayerAllInShowCardWinCardsLength, reader: jspb.BinaryReader): PlayerAllInShowCardWinCardsLength;
+}
+
+export namespace PlayerAllInShowCardWinCardsLength {
+  export type AsObject = {
+    seatId: number,
+    winCardsCount: number,
+    leftCardsCount: number,
+    winCardsList: Array<number>,
+  }
+}
+
+export class SecondPublicCardsPlayerAllInShowCardSummary extends jspb.Message {
+  getRnd(): Def.RoundMap[keyof Def.RoundMap];
+  setRnd(value: Def.RoundMap[keyof Def.RoundMap]): void;
+
+  clearAllinUsersList(): void;
+  getAllinUsersList(): Array<PlayerAllInShowCardWinCardsLength>;
+  setAllinUsersList(value: Array<PlayerAllInShowCardWinCardsLength>): void;
+  addAllinUsers(value?: PlayerAllInShowCardWinCardsLength, index?: number): PlayerAllInShowCardWinCardsLength;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SecondPublicCardsPlayerAllInShowCardSummary.AsObject;
+  static toObject(includeInstance: boolean, msg: SecondPublicCardsPlayerAllInShowCardSummary): SecondPublicCardsPlayerAllInShowCardSummary.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SecondPublicCardsPlayerAllInShowCardSummary, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SecondPublicCardsPlayerAllInShowCardSummary;
+  static deserializeBinaryFromReader(message: SecondPublicCardsPlayerAllInShowCardSummary, reader: jspb.BinaryReader): SecondPublicCardsPlayerAllInShowCardSummary;
+}
+
+export namespace SecondPublicCardsPlayerAllInShowCardSummary {
+  export type AsObject = {
+    rnd: Def.RoundMap[keyof Def.RoundMap],
+    allinUsersList: Array<PlayerAllInShowCardWinCardsLength.AsObject>,
+  }
+}
+
+export class AllInWinCardsInfo extends jspb.Message {
+  getWcCount(): number;
+  setWcCount(value: number): void;
+
+  getLcCount(): number;
+  setLcCount(value: number): void;
+
+  getWcCount2(): number;
+  setWcCount2(value: number): void;
+
+  getLcCount2(): number;
+  setLcCount2(value: number): void;
+
+  getFlopWcCount(): number;
+  setFlopWcCount(value: number): void;
+
+  getFlopLcCount(): number;
+  setFlopLcCount(value: number): void;
+
+  getTurnWcCount(): number;
+  setTurnWcCount(value: number): void;
+
+  getTurnLcCount(): number;
+  setTurnLcCount(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AllInWinCardsInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: AllInWinCardsInfo): AllInWinCardsInfo.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AllInWinCardsInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AllInWinCardsInfo;
+  static deserializeBinaryFromReader(message: AllInWinCardsInfo, reader: jspb.BinaryReader): AllInWinCardsInfo;
+}
+
+export namespace AllInWinCardsInfo {
+  export type AsObject = {
+    wcCount: number,
+    lcCount: number,
+    wcCount2: number,
+    lcCount2: number,
+    flopWcCount: number,
+    flopLcCount: number,
+    turnWcCount: number,
+    turnLcCount: number,
+  }
+}
+
+export class UserPlayStatus extends jspb.Message {
+  getMuted(): boolean;
+  setMuted(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UserPlayStatus.AsObject;
+  static toObject(includeInstance: boolean, msg: UserPlayStatus): UserPlayStatus.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UserPlayStatus, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UserPlayStatus;
+  static deserializeBinaryFromReader(message: UserPlayStatus, reader: jspb.BinaryReader): UserPlayStatus;
+}
+
+export namespace UserPlayStatus {
+  export type AsObject = {
+    muted: boolean,
+  }
+}
+
+export class RoomWithType extends jspb.Message {
+  getRoomId(): number;
+  setRoomId(value: number): void;
+
+  getMatchId(): number;
+  setMatchId(value: number): void;
+
+  getRoomType(): number;
+  setRoomType(value: number): void;
+
+  getAntiCheatType(): number;
+  setAntiCheatType(value: number): void;
+
+  getAntiCheatVideoType(): number;
+  setAntiCheatVideoType(value: number): void;
+
+  hasUserPlayStatus(): boolean;
+  clearUserPlayStatus(): void;
+  getUserPlayStatus(): UserPlayStatus | undefined;
+  setUserPlayStatus(value?: UserPlayStatus): void;
+
+  getBombpot(): number;
+  setBombpot(value: number): void;
+
+  getMode(): Def.RoomModeMap[keyof Def.RoomModeMap];
+  setMode(value: Def.RoomModeMap[keyof Def.RoomModeMap]): void;
+
+  getMatchingBeginTime(): number;
+  setMatchingBeginTime(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RoomWithType.AsObject;
+  static toObject(includeInstance: boolean, msg: RoomWithType): RoomWithType.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RoomWithType, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RoomWithType;
+  static deserializeBinaryFromReader(message: RoomWithType, reader: jspb.BinaryReader): RoomWithType;
+}
+
+export namespace RoomWithType {
+  export type AsObject = {
+    roomId: number,
+    matchId: number,
+    roomType: number,
+    antiCheatType: number,
+    antiCheatVideoType: number,
+    userPlayStatus?: UserPlayStatus.AsObject,
+    bombpot: number,
+    mode: Def.RoomModeMap[keyof Def.RoomModeMap],
+    matchingBeginTime: number,
+  }
+}
+
+export class RoomRecord extends jspb.Message {
+  getRid(): number;
+  setRid(value: number): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getRoomType(): number;
+  setRoomType(value: number): void;
+
+  getGameType(): number;
+  setGameType(value: number): void;
+
+  getPokerType(): number;
+  setPokerType(value: number): void;
+
+  getLimitBetType(): number;
+  setLimitBetType(value: number): void;
+
+  getStatus(): number;
+  setStatus(value: number): void;
+
+  getAnte(): number;
+  setAnte(value: number): void;
+
+  getSb(): number;
+  setSb(value: number): void;
+
+  getOpDuration(): number;
+  setOpDuration(value: number): void;
+
+  getNoUserWaitDuration(): number;
+  setNoUserWaitDuration(value: number): void;
+
+  getKeepSeatDuration(): number;
+  setKeepSeatDuration(value: number): void;
+
+  getTotalBringIn(): number;
+  setTotalBringIn(value: number): void;
+
+  getTotalBringOut(): number;
+  setTotalBringOut(value: number): void;
+
+  getTotalChip(): number;
+  setTotalChip(value: number): void;
+
+  getMinRate(): number;
+  setMinRate(value: number): void;
+
+  getMaxRate(): number;
+  setMaxRate(value: number): void;
+
+  getMinPlayers(): number;
+  setMinPlayers(value: number): void;
+
+  getAutostartMinPlayers(): number;
+  setAutostartMinPlayers(value: number): void;
+
+  getStraddleOn(): number;
+  setStraddleOn(value: number): void;
+
+  getStraddleMax(): number;
+  setStraddleMax(value: number): void;
+
+  getInsuranceOn(): number;
+  setInsuranceOn(value: number): void;
+
+  getInsuranceOpDuration(): number;
+  setInsuranceOpDuration(value: number): void;
+
+  getSecondPcsOn(): number;
+  setSecondPcsOn(value: number): void;
+
+  getSecondPcsOpDuration(): number;
+  setSecondPcsOpDuration(value: number): void;
+
+  getSecondPcsUserLimit(): number;
+  setSecondPcsUserLimit(value: number): void;
+
+  getDelayViewCardOn(): number;
+  setDelayViewCardOn(value: number): void;
+
+  getPostOn(): number;
+  setPostOn(value: number): void;
+
+  getMuckOn(): number;
+  setMuckOn(value: number): void;
+
+  getLimitIpOn(): number;
+  setLimitIpOn(value: number): void;
+
+  getLimitGpsOn(): number;
+  setLimitGpsOn(value: number): void;
+
+  getLimitGpsDistance(): number;
+  setLimitGpsDistance(value: number): void;
+
+  getLimitDelayTimes(): number;
+  setLimitDelayTimes(value: number): void;
+
+  getLimitAutoCheckTimes(): number;
+  setLimitAutoCheckTimes(value: number): void;
+
+  getLimitAutoFoldTimes(): number;
+  setLimitAutoFoldTimes(value: number): void;
+
+  getSeatCount(): number;
+  setSeatCount(value: number): void;
+
+  getEmptySeat(): number;
+  setEmptySeat(value: number): void;
+
+  getRoomers(): number;
+  setRoomers(value: number): void;
+
+  getEnterTime(): number;
+  setEnterTime(value: number): void;
+
+  getPlayDuration(): number;
+  setPlayDuration(value: number): void;
+
+  getNoUserCloseDuration(): number;
+  setNoUserCloseDuration(value: number): void;
+
+  getRetainMinRate(): number;
+  setRetainMinRate(value: number): void;
+
+  getScheduleStartTime(): number;
+  setScheduleStartTime(value: number): void;
+
+  getStartTime(): number;
+  setStartTime(value: number): void;
+
+  getEndTime(): number;
+  setEndTime(value: number): void;
+
+  getSettlementType(): number;
+  setSettlementType(value: number): void;
+
+  getHandNum(): number;
+  setHandNum(value: number): void;
+
+  getTribeId(): number;
+  setTribeId(value: number): void;
+
+  getEndReason(): string;
+  setEndReason(value: string): void;
+
+  getHcTotalHandLv(): number;
+  setHcTotalHandLv(value: number): void;
+
+  getHcTotalHand(): number;
+  setHcTotalHand(value: number): void;
+
+  getHcPoolRateLv(): number;
+  setHcPoolRateLv(value: number): void;
+
+  getHcPoolRate(): number;
+  setHcPoolRate(value: number): void;
+
+  getServiceId(): string;
+  setServiceId(value: string): void;
+
+  getCreateTime(): number;
+  setCreateTime(value: number): void;
+
+  getUpdateTime(): number;
+  setUpdateTime(value: number): void;
+
+  clearInsuranceOddsList(): void;
+  getInsuranceOddsList(): Array<InsuranceOddsForPotsUserCount>;
+  setInsuranceOddsList(value: Array<InsuranceOddsForPotsUserCount>): void;
+  addInsuranceOdds(value?: InsuranceOddsForPotsUserCount, index?: number): InsuranceOddsForPotsUserCount;
+
+  getVoiceprintVerifyOn(): number;
+  setVoiceprintVerifyOn(value: number): void;
+
+  getVoiceprintVerifyLimitTimes(): number;
+  setVoiceprintVerifyLimitTimes(value: number): void;
+
+  getVoiceprintVerifyDuration(): number;
+  setVoiceprintVerifyDuration(value: number): void;
+
+  getVoiceprintVerifyIntervalDuration(): number;
+  setVoiceprintVerifyIntervalDuration(value: number): void;
+
+  getParticipationStatus(): number;
+  setParticipationStatus(value: number): void;
+
+  getTableclothTag(): string;
+  setTableclothTag(value: string): void;
+
+  getClubId(): number;
+  setClubId(value: number): void;
+
+  getOriginType(): number;
+  setOriginType(value: number): void;
+
+  getLimitBringIn(): number;
+  setLimitBringIn(value: number): void;
+
+  getInvitationCode(): string;
+  setInvitationCode(value: string): void;
+
+  getShareTable(): number;
+  setShareTable(value: number): void;
+
+  getTemplateId(): number;
+  setTemplateId(value: number): void;
+
+  getPrivateRoom(): number;
+  setPrivateRoom(value: number): void;
+
+  getRoomPassword(): string;
+  setRoomPassword(value: string): void;
+
+  getGoldType(): number;
+  setGoldType(value: number): void;
+
+  getRealTimeVoiceOn(): number;
+  setRealTimeVoiceOn(value: number): void;
+
+  getAntiCheatType(): number;
+  setAntiCheatType(value: number): void;
+
+  getAntiCheatTimelimit(): number;
+  setAntiCheatTimelimit(value: number): void;
+
+  getDealDelay(): number;
+  setDealDelay(value: number): void;
+
+  getAntiCheatVideoType(): number;
+  setAntiCheatVideoType(value: number): void;
+
+  getVideoVerifyCount(): number;
+  setVideoVerifyCount(value: number): void;
+
+  getCreatorRandomId(): number;
+  setCreatorRandomId(value: number): void;
+
+  clearMultiLangNamesList(): void;
+  getMultiLangNamesList(): Array<MultiLangName>;
+  setMultiLangNamesList(value: Array<MultiLangName>): void;
+  addMultiLangNames(value?: MultiLangName, index?: number): MultiLangName;
+
+  getAntiCheatFeeType(): number;
+  setAntiCheatFeeType(value: number): void;
+
+  getAntiCheatOrderType(): number;
+  setAntiCheatOrderType(value: number): void;
+
+  getAntiCheatOrderMicType(): number;
+  setAntiCheatOrderMicType(value: number): void;
+
+  getSelectOuts(): number;
+  setSelectOuts(value: number): void;
+
+  getBringinLimitType(): number;
+  setBringinLimitType(value: number): void;
+
+  getBombpot(): number;
+  setBombpot(value: number): void;
+
+  getMushroomMode(): number;
+  setMushroomMode(value: number): void;
+
+  getMushroomBase(): number;
+  setMushroomBase(value: number): void;
+
+  getMushroomStatic(): number;
+  setMushroomStatic(value: number): void;
+
+  getRandomAnte(): string;
+  setRandomAnte(value: string): void;
+
+  clearLuckycardsNumList(): void;
+  getLuckycardsNumList(): Array<Luckycards>;
+  setLuckycardsNumList(value: Array<Luckycards>): void;
+  addLuckycardsNum(value?: Luckycards, index?: number): Luckycards;
+
+  getVideoEffectType(): number;
+  setVideoEffectType(value: number): void;
+
+  getVideoVerifyType(): number;
+  setVideoVerifyType(value: number): void;
+
+  getVideoQualityType(): number;
+  setVideoQualityType(value: number): void;
+
+  getSeatedMessaging(): number;
+  setSeatedMessaging(value: number): void;
+
+  getChatType(): number;
+  setChatType(value: number): void;
+
+  getAutoOnTableSwitch(): number;
+  setAutoOnTableSwitch(value: number): void;
+
+  getRetainType(): number;
+  setRetainType(value: number): void;
+
+  hasRoomAdmin(): boolean;
+  clearRoomAdmin(): void;
+  getRoomAdmin(): RoomAdmin | undefined;
+  setRoomAdmin(value?: RoomAdmin): void;
+
+  getPersonalType(): number;
+  setPersonalType(value: number): void;
+
+  getRandomSeat(): number;
+  setRandomSeat(value: number): void;
+
+  getSquidBase(): number;
+  setSquidBase(value: number): void;
+
+  getForceShowCard(): number;
+  setForceShowCard(value: number): void;
+
+  getOnlyIos(): number;
+  setOnlyIos(value: number): void;
+
+  getViewPlayerCards(): number;
+  setViewPlayerCards(value: number): void;
+
+  getCut(): number;
+  setCut(value: number): void;
+
+  getEncryptCards(): number;
+  setEncryptCards(value: number): void;
+
+  getMinPlayerChipRate(): number;
+  setMinPlayerChipRate(value: number): void;
+
+  getMaxBringinTotalRate(): number;
+  setMaxBringinTotalRate(value: number): void;
+
+  getBringinEqualLeader(): number;
+  setBringinEqualLeader(value: number): void;
+
+  getCalltimeLimit(): number;
+  setCalltimeLimit(value: number): void;
+
+  getCalltimeWinLine(): number;
+  setCalltimeWinLine(value: number): void;
+
+  getJackpot(): number;
+  setJackpot(value: number): void;
+
+  getJackpotId(): number;
+  setJackpotId(value: number): void;
+
+  getJackpotGold(): number;
+  setJackpotGold(value: number): void;
+
+  hasJackpotConfig(): boolean;
+  clearJackpotConfig(): void;
+  getJackpotConfig(): RoomJackpotConfig | undefined;
+  setJackpotConfig(value?: RoomJackpotConfig): void;
+
+  clearSubConfigsList(): void;
+  getSubConfigsList(): Array<SubRoomConfig>;
+  setSubConfigsList(value: Array<SubRoomConfig>): void;
+  addSubConfigs(value?: SubRoomConfig, index?: number): SubRoomConfig;
+
+  getSquidMax(): number;
+  setSquidMax(value: number): void;
+
+  getSquidMostGet(): number;
+  setSquidMostGet(value: number): void;
+
+  getSquidBetGet(): number;
+  setSquidBetGet(value: number): void;
+
+  getSquidHead(): number;
+  setSquidHead(value: number): void;
+
+  getSquidTail(): number;
+  setSquidTail(value: number): void;
+
+  getRounds(): number;
+  setRounds(value: number): void;
+
+  getMode(): Def.RoomModeMap[keyof Def.RoomModeMap];
+  setMode(value: Def.RoomModeMap[keyof Def.RoomModeMap]): void;
+
+  hasModeSetting(): boolean;
+  clearModeSetting(): void;
+  getModeSetting(): ModeSetting | undefined;
+  setModeSetting(value?: ModeSetting): void;
+
+  getEnterRoomType(): number;
+  setEnterRoomType(value: number): void;
+
+  getJackpotParentGold(): number;
+  setJackpotParentGold(value: number): void;
+
+  getIsWhitelist(): boolean;
+  setIsWhitelist(value: boolean): void;
+
+  getCriticalHit(): number;
+  setCriticalHit(value: number): void;
+
+  getKongTransfer(): number;
+  setKongTransfer(value: number): void;
+
+  getKongWinOfDiscard(): number;
+  setKongWinOfDiscard(value: number): void;
+
+  getSelfDrawnType(): number;
+  setSelfDrawnType(value: number): void;
+
+  hasWinTypeRule(): boolean;
+  clearWinTypeRule(): void;
+  getWinTypeRule(): WinTypeRule | undefined;
+  setWinTypeRule(value?: WinTypeRule): void;
+
+  getKongWinOfDiscardType(): number;
+  setKongWinOfDiscardType(value: number): void;
+
+  getJoker(): number;
+  setJoker(value: number): void;
+
+  getWinWay(): number;
+  setWinWay(value: number): void;
+
+  getSingleHolder(): number;
+  setSingleHolder(value: number): void;
+
+  getRobKongHolder(): number;
+  setRobKongHolder(value: number): void;
+
+  getRobKong(): number;
+  setRobKong(value: number): void;
+
+  getWallType(): number;
+  setWallType(value: number): void;
+
+  getFollowDealer(): number;
+  setFollowDealer(value: number): void;
+
+  getRaise(): number;
+  setRaise(value: number): void;
+
+  getRaiseOpDuration(): number;
+  setRaiseOpDuration(value: number): void;
+
+  getJokerCount(): number;
+  setJokerCount(value: number): void;
+
+  getOneMatchMoreWin(): number;
+  setOneMatchMoreWin(value: number): void;
+
+  getAutoChangeRoomLimitHand(): number;
+  setAutoChangeRoomLimitHand(value: number): void;
+
+  getCalltime(): number;
+  setCalltime(value: number): void;
+
+  clearRuleUnitList(): void;
+  getRuleUnitList(): Array<RuleUnit>;
+  setRuleUnitList(value: Array<RuleUnit>): void;
+  addRuleUnit(value?: RuleUnit, index?: number): RuleUnit;
+
+  getSimpleHorseMode(): number;
+  setSimpleHorseMode(value: number): void;
+
+  getSimpleHorseCount(): number;
+  setSimpleHorseCount(value: number): void;
+
+  getSquidForceShowCard(): number;
+  setSquidForceShowCard(value: number): void;
+
+  hasSettleSetting(): boolean;
+  clearSettleSetting(): void;
+  getSettleSetting(): SettleSetting | undefined;
+  setSettleSetting(value?: SettleSetting): void;
+
+  getSquidMode(): number;
+  setSquidMode(value: number): void;
+
+  getSquidExtraCount(): number;
+  setSquidExtraCount(value: number): void;
+
+  getQuickChangeRoom(): number;
+  setQuickChangeRoom(value: number): void;
+
+  getNotEnoughCloseDuration(): number;
+  setNotEnoughCloseDuration(value: number): void;
+
+  getPlayDurationType(): number;
+  setPlayDurationType(value: number): void;
+
+  getPlayHandsLimit(): number;
+  setPlayHandsLimit(value: number): void;
+
+  getInsuranceMode(): Def.IsuranceModeMap[keyof Def.IsuranceModeMap];
+  setInsuranceMode(value: Def.IsuranceModeMap[keyof Def.IsuranceModeMap]): void;
+
+  getRetainMaxRate(): number;
+  setRetainMaxRate(value: number): void;
+
+  getWheelTemplateId(): number;
+  setWheelTemplateId(value: number): void;
+
+  getAllInMute(): number;
+  setAllInMute(value: number): void;
+
+  clearSquidCountRateList(): void;
+  getSquidCountRateList(): Array<SquidCountRateConfig>;
+  setSquidCountRateList(value: Array<SquidCountRateConfig>): void;
+  addSquidCountRate(value?: SquidCountRateConfig, index?: number): SquidCountRateConfig;
+
+  getDepositPercent(): number;
+  setDepositPercent(value: number): void;
+
+  getInsuranceForceBuyRatio(): number;
+  setInsuranceForceBuyRatio(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RoomRecord.AsObject;
+  static toObject(includeInstance: boolean, msg: RoomRecord): RoomRecord.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RoomRecord, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RoomRecord;
+  static deserializeBinaryFromReader(message: RoomRecord, reader: jspb.BinaryReader): RoomRecord;
+}
+
+export namespace RoomRecord {
+  export type AsObject = {
+    rid: number,
+    name: string,
+    roomType: number,
+    gameType: number,
+    pokerType: number,
+    limitBetType: number,
+    status: number,
+    ante: number,
+    sb: number,
+    opDuration: number,
+    noUserWaitDuration: number,
+    keepSeatDuration: number,
+    totalBringIn: number,
+    totalBringOut: number,
+    totalChip: number,
+    minRate: number,
+    maxRate: number,
+    minPlayers: number,
+    autostartMinPlayers: number,
+    straddleOn: number,
+    straddleMax: number,
+    insuranceOn: number,
+    insuranceOpDuration: number,
+    secondPcsOn: number,
+    secondPcsOpDuration: number,
+    secondPcsUserLimit: number,
+    delayViewCardOn: number,
+    postOn: number,
+    muckOn: number,
+    limitIpOn: number,
+    limitGpsOn: number,
+    limitGpsDistance: number,
+    limitDelayTimes: number,
+    limitAutoCheckTimes: number,
+    limitAutoFoldTimes: number,
+    seatCount: number,
+    emptySeat: number,
+    roomers: number,
+    enterTime: number,
+    playDuration: number,
+    noUserCloseDuration: number,
+    retainMinRate: number,
+    scheduleStartTime: number,
+    startTime: number,
+    endTime: number,
+    settlementType: number,
+    handNum: number,
+    tribeId: number,
+    endReason: string,
+    hcTotalHandLv: number,
+    hcTotalHand: number,
+    hcPoolRateLv: number,
+    hcPoolRate: number,
+    serviceId: string,
+    createTime: number,
+    updateTime: number,
+    insuranceOddsList: Array<InsuranceOddsForPotsUserCount.AsObject>,
+    voiceprintVerifyOn: number,
+    voiceprintVerifyLimitTimes: number,
+    voiceprintVerifyDuration: number,
+    voiceprintVerifyIntervalDuration: number,
+    participationStatus: number,
+    tableclothTag: string,
+    clubId: number,
+    originType: number,
+    limitBringIn: number,
+    invitationCode: string,
+    shareTable: number,
+    templateId: number,
+    privateRoom: number,
+    roomPassword: string,
+    goldType: number,
+    realTimeVoiceOn: number,
+    antiCheatType: number,
+    antiCheatTimelimit: number,
+    dealDelay: number,
+    antiCheatVideoType: number,
+    videoVerifyCount: number,
+    creatorRandomId: number,
+    multiLangNamesList: Array<MultiLangName.AsObject>,
+    antiCheatFeeType: number,
+    antiCheatOrderType: number,
+    antiCheatOrderMicType: number,
+    selectOuts: number,
+    bringinLimitType: number,
+    bombpot: number,
+    mushroomMode: number,
+    mushroomBase: number,
+    mushroomStatic: number,
+    randomAnte: string,
+    luckycardsNumList: Array<Luckycards.AsObject>,
+    videoEffectType: number,
+    videoVerifyType: number,
+    videoQualityType: number,
+    seatedMessaging: number,
+    chatType: number,
+    autoOnTableSwitch: number,
+    retainType: number,
+    roomAdmin?: RoomAdmin.AsObject,
+    personalType: number,
+    randomSeat: number,
+    squidBase: number,
+    forceShowCard: number,
+    onlyIos: number,
+    viewPlayerCards: number,
+    cut: number,
+    encryptCards: number,
+    minPlayerChipRate: number,
+    maxBringinTotalRate: number,
+    bringinEqualLeader: number,
+    calltimeLimit: number,
+    calltimeWinLine: number,
+    jackpot: number,
+    jackpotId: number,
+    jackpotGold: number,
+    jackpotConfig?: RoomJackpotConfig.AsObject,
+    subConfigsList: Array<SubRoomConfig.AsObject>,
+    squidMax: number,
+    squidMostGet: number,
+    squidBetGet: number,
+    squidHead: number,
+    squidTail: number,
+    rounds: number,
+    mode: Def.RoomModeMap[keyof Def.RoomModeMap],
+    modeSetting?: ModeSetting.AsObject,
+    enterRoomType: number,
+    jackpotParentGold: number,
+    isWhitelist: boolean,
+    criticalHit: number,
+    kongTransfer: number,
+    kongWinOfDiscard: number,
+    selfDrawnType: number,
+    winTypeRule?: WinTypeRule.AsObject,
+    kongWinOfDiscardType: number,
+    joker: number,
+    winWay: number,
+    singleHolder: number,
+    robKongHolder: number,
+    robKong: number,
+    wallType: number,
+    followDealer: number,
+    raise: number,
+    raiseOpDuration: number,
+    jokerCount: number,
+    oneMatchMoreWin: number,
+    autoChangeRoomLimitHand: number,
+    calltime: number,
+    ruleUnitList: Array<RuleUnit.AsObject>,
+    simpleHorseMode: number,
+    simpleHorseCount: number,
+    squidForceShowCard: number,
+    settleSetting?: SettleSetting.AsObject,
+    squidMode: number,
+    squidExtraCount: number,
+    quickChangeRoom: number,
+    notEnoughCloseDuration: number,
+    playDurationType: number,
+    playHandsLimit: number,
+    insuranceMode: Def.IsuranceModeMap[keyof Def.IsuranceModeMap],
+    retainMaxRate: number,
+    wheelTemplateId: number,
+    allInMute: number,
+    squidCountRateList: Array<SquidCountRateConfig.AsObject>,
+    depositPercent: number,
+    insuranceForceBuyRatio: number,
+  }
+}
+
+export class SquidCountRateConfig extends jspb.Message {
+  getCount(): number;
+  setCount(value: number): void;
+
+  getRate(): number;
+  setRate(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SquidCountRateConfig.AsObject;
+  static toObject(includeInstance: boolean, msg: SquidCountRateConfig): SquidCountRateConfig.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SquidCountRateConfig, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SquidCountRateConfig;
+  static deserializeBinaryFromReader(message: SquidCountRateConfig, reader: jspb.BinaryReader): SquidCountRateConfig;
+}
+
+export namespace SquidCountRateConfig {
+  export type AsObject = {
+    count: number,
+    rate: number,
+  }
+}
+
+export class SettleSetting extends jspb.Message {
+  getType(): number;
+  setType(value: number): void;
+
+  getFeePermillage(): number;
+  setFeePermillage(value: number): void;
+
+  getMaxPerHand(): number;
+  setMaxPerHand(value: number): void;
+
+  getWinProfitPercent(): number;
+  setWinProfitPercent(value: number): void;
+
+  getCapType(): number;
+  setCapType(value: number): void;
+
+  getSecCaps(): string;
+  setSecCaps(value: string): void;
+
+  getHandFeeType(): number;
+  setHandFeeType(value: number): void;
+
+  getPreflopFree(): number;
+  setPreflopFree(value: number): void;
+
+  getFewPlayerHalfOff(): number;
+  setFewPlayerHalfOff(value: number): void;
+
+  getFreePotsValue(): number;
+  setFreePotsValue(value: number): void;
+
+  getWinDivideValue(): number;
+  setWinDivideValue(value: number): void;
+
+  getAboveDivideFee(): number;
+  setAboveDivideFee(value: number): void;
+
+  getBelowDivideRatio(): number;
+  setBelowDivideRatio(value: number): void;
+
+  getJackpotRatio(): number;
+  setJackpotRatio(value: number): void;
+
+  getJackpotRatioHand(): number;
+  setJackpotRatioHand(value: number): void;
+
+  getSettleProfitType(): number;
+  setSettleProfitType(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SettleSetting.AsObject;
+  static toObject(includeInstance: boolean, msg: SettleSetting): SettleSetting.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SettleSetting, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SettleSetting;
+  static deserializeBinaryFromReader(message: SettleSetting, reader: jspb.BinaryReader): SettleSetting;
+}
+
+export namespace SettleSetting {
+  export type AsObject = {
+    type: number,
+    feePermillage: number,
+    maxPerHand: number,
+    winProfitPercent: number,
+    capType: number,
+    secCaps: string,
+    handFeeType: number,
+    preflopFree: number,
+    fewPlayerHalfOff: number,
+    freePotsValue: number,
+    winDivideValue: number,
+    aboveDivideFee: number,
+    belowDivideRatio: number,
+    jackpotRatio: number,
+    jackpotRatioHand: number,
+    settleProfitType: number,
+  }
+}
+
+export class ModeSetting extends jspb.Message {
+  getDeposit(): number;
+  setDeposit(value: number): void;
+
+  getMinUsers(): number;
+  setMinUsers(value: number): void;
+
+  getTime(): number;
+  setTime(value: number): void;
+
+  getTimeOutType(): number;
+  setTimeOutType(value: number): void;
+
+  getDepositTo(): number;
+  setDepositTo(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ModeSetting.AsObject;
+  static toObject(includeInstance: boolean, msg: ModeSetting): ModeSetting.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ModeSetting, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ModeSetting;
+  static deserializeBinaryFromReader(message: ModeSetting, reader: jspb.BinaryReader): ModeSetting;
+}
+
+export namespace ModeSetting {
+  export type AsObject = {
+    deposit: number,
+    minUsers: number,
+    time: number,
+    timeOutType: number,
+    depositTo: number,
+  }
+}
+
+export class InsuranceOdds extends jspb.Message {
+  getOuts(): number;
+  setOuts(value: number): void;
+
+  getOdds(): number;
+  setOdds(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): InsuranceOdds.AsObject;
+  static toObject(includeInstance: boolean, msg: InsuranceOdds): InsuranceOdds.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: InsuranceOdds, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InsuranceOdds;
+  static deserializeBinaryFromReader(message: InsuranceOdds, reader: jspb.BinaryReader): InsuranceOdds;
+}
+
+export namespace InsuranceOdds {
+  export type AsObject = {
+    outs: number,
+    odds: number,
+  }
+}
+
+export class InsuranceOddsForPotsUserCount extends jspb.Message {
+  getPotUserCount(): number;
+  setPotUserCount(value: number): void;
+
+  clearOddsList(): void;
+  getOddsList(): Array<InsuranceOdds>;
+  setOddsList(value: Array<InsuranceOdds>): void;
+  addOdds(value?: InsuranceOdds, index?: number): InsuranceOdds;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): InsuranceOddsForPotsUserCount.AsObject;
+  static toObject(includeInstance: boolean, msg: InsuranceOddsForPotsUserCount): InsuranceOddsForPotsUserCount.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: InsuranceOddsForPotsUserCount, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InsuranceOddsForPotsUserCount;
+  static deserializeBinaryFromReader(message: InsuranceOddsForPotsUserCount, reader: jspb.BinaryReader): InsuranceOddsForPotsUserCount;
+}
+
+export namespace InsuranceOddsForPotsUserCount {
+  export type AsObject = {
+    potUserCount: number,
+    oddsList: Array<InsuranceOdds.AsObject>,
+  }
+}
+
+export class MultiLangName extends jspb.Message {
+  getLang(): string;
+  setLang(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MultiLangName.AsObject;
+  static toObject(includeInstance: boolean, msg: MultiLangName): MultiLangName.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MultiLangName, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MultiLangName;
+  static deserializeBinaryFromReader(message: MultiLangName, reader: jspb.BinaryReader): MultiLangName;
+}
+
+export namespace MultiLangName {
+  export type AsObject = {
+    lang: string,
+    name: string,
+  }
+}
+
+export class RoomAdmin extends jspb.Message {
+  getDisbandRoom(): number;
+  setDisbandRoom(value: number): void;
+
+  getUserStandUp(): number;
+  setUserStandUp(value: number): void;
+
+  getUserLeave(): number;
+  setUserLeave(value: number): void;
+
+  getViewVideo(): number;
+  setViewVideo(value: number): void;
+
+  getVideoVerify(): number;
+  setVideoVerify(value: number): void;
+
+  getIsAdmin(): boolean;
+  setIsAdmin(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RoomAdmin.AsObject;
+  static toObject(includeInstance: boolean, msg: RoomAdmin): RoomAdmin.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RoomAdmin, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RoomAdmin;
+  static deserializeBinaryFromReader(message: RoomAdmin, reader: jspb.BinaryReader): RoomAdmin;
+}
+
+export namespace RoomAdmin {
+  export type AsObject = {
+    disbandRoom: number,
+    userStandUp: number,
+    userLeave: number,
+    viewVideo: number,
+    videoVerify: number,
+    isAdmin: boolean,
+  }
+}
+
+export class MTTRecord extends jspb.Message {
+  getMatchId(): number;
+  setMatchId(value: number): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getType(): number;
+  setType(value: number): void;
+
+  getGameType(): Def.GameTypeMap[keyof Def.GameTypeMap];
+  setGameType(value: Def.GameTypeMap[keyof Def.GameTypeMap]): void;
+
+  getPokerType(): Def.PokerTypeMap[keyof Def.PokerTypeMap];
+  setPokerType(value: Def.PokerTypeMap[keyof Def.PokerTypeMap]): void;
+
+  getLimitBetType(): Def.LimitBetTypeMap[keyof Def.LimitBetTypeMap];
+  setLimitBetType(value: Def.LimitBetTypeMap[keyof Def.LimitBetTypeMap]): void;
+
+  getRankType(): number;
+  setRankType(value: number): void;
+
+  getEnterTime(): string;
+  setEnterTime(value: string): void;
+
+  getStartTime(): string;
+  setStartTime(value: string): void;
+
+  getEndTime(): string;
+  setEndTime(value: string): void;
+
+  getHunterOn(): number;
+  setHunterOn(value: number): void;
+
+  getHunterBonus(): number;
+  setHunterBonus(value: number): void;
+
+  getPartialOn(): number;
+  setPartialOn(value: number): void;
+
+  getParitalReturnBl(): number;
+  setParitalReturnBl(value: number): void;
+
+  getStraddleOn(): number;
+  setStraddleOn(value: number): void;
+
+  getStraddleMax(): number;
+  setStraddleMax(value: number): void;
+
+  getMuckOn(): number;
+  setMuckOn(value: number): void;
+
+  getRooms(): number;
+  setRooms(value: number): void;
+
+  getMaxRoomId(): number;
+  setMaxRoomId(value: number): void;
+
+  getDelayViewCardOn(): number;
+  setDelayViewCardOn(value: number): void;
+
+  getLimitMin(): number;
+  setLimitMin(value: number): void;
+
+  getLimitDelayTimes(): number;
+  setLimitDelayTimes(value: number): void;
+
+  getLimitAutoCheckTimes(): number;
+  setLimitAutoCheckTimes(value: number): void;
+
+  getLimitAutoFoldTimes(): number;
+  setLimitAutoFoldTimes(value: number): void;
+
+  getParticipants(): number;
+  setParticipants(value: number): void;
+
+  getAlive(): number;
+  setAlive(value: number): void;
+
+  getAwardNum(): number;
+  setAwardNum(value: number): void;
+
+  getMoneySync(): number;
+  setMoneySync(value: number): void;
+
+  getStatus(): number;
+  setStatus(value: number): void;
+
+  getSeatCount(): number;
+  setSeatCount(value: number): void;
+
+  getFinalSeatCount(): number;
+  setFinalSeatCount(value: number): void;
+
+  getNoUserWaitDuration(): number;
+  setNoUserWaitDuration(value: number): void;
+
+  getInitialScore(): number;
+  setInitialScore(value: number): void;
+
+  getBlindtableType(): number;
+  setBlindtableType(value: number): void;
+
+  getUpblindInterval(): number;
+  setUpblindInterval(value: number): void;
+
+  getApplyStartTime(): string;
+  setApplyStartTime(value: string): void;
+
+  getOpDuration(): number;
+  setOpDuration(value: number): void;
+
+  getMaxDelayApplyBl(): number;
+  setMaxDelayApplyBl(value: number): void;
+
+  getRebuyTimes(): number;
+  setRebuyTimes(value: number): void;
+
+  getMaxRebuyBl(): number;
+  setMaxRebuyBl(value: number): void;
+
+  getLimitTotalBuyTimes(): number;
+  setLimitTotalBuyTimes(value: number): void;
+
+  getTotalBuyTimes(): number;
+  setTotalBuyTimes(value: number): void;
+
+  getTotalBuyinTimes(): number;
+  setTotalBuyinTimes(value: number): void;
+
+  getTotalRebuyTimes(): number;
+  setTotalRebuyTimes(value: number): void;
+
+  getAddonBeginBl(): number;
+  setAddonBeginBl(value: number): void;
+
+  getAddonEndBl(): number;
+  setAddonEndBl(value: number): void;
+
+  getAddonScore(): number;
+  setAddonScore(value: number): void;
+
+  getTotalAddonTimes(): number;
+  setTotalAddonTimes(value: number): void;
+
+  getApplyFeePool(): number;
+  setApplyFeePool(value: number): void;
+
+  getApplyFeeService(): number;
+  setApplyFeeService(value: number): void;
+
+  getApplyFeeHunter(): number;
+  setApplyFeeHunter(value: number): void;
+
+  getPrizeType(): number;
+  setPrizeType(value: number): void;
+
+  getPrizeBasePool(): number;
+  setPrizeBasePool(value: number): void;
+
+  getTribeId(): number;
+  setTribeId(value: number): void;
+
+  getCreateTime(): string;
+  setCreateTime(value: string): void;
+
+  getUpdateTime(): string;
+  setUpdateTime(value: string): void;
+
+  getBuyPropId(): number;
+  setBuyPropId(value: number): void;
+
+  getPropBuyType(): Def.PropBuyTypeMap[keyof Def.PropBuyTypeMap];
+  setPropBuyType(value: Def.PropBuyTypeMap[keyof Def.PropBuyTypeMap]): void;
+
+  getGameIcon(): string;
+  setGameIcon(value: string): void;
+
+  getVoiceprintVerifyOn(): number;
+  setVoiceprintVerifyOn(value: number): void;
+
+  getVoiceprintVerifyDuration(): number;
+  setVoiceprintVerifyDuration(value: number): void;
+
+  getAddonplusM1On(): number;
+  setAddonplusM1On(value: number): void;
+
+  getAddonplusM1MaxTimes(): number;
+  setAddonplusM1MaxTimes(value: number): void;
+
+  getAddonplusM1Limit(): number;
+  setAddonplusM1Limit(value: number): void;
+
+  getTotalAddonplusM1Times(): number;
+  setTotalAddonplusM1Times(value: number): void;
+
+  getAddonplusM2On(): number;
+  setAddonplusM2On(value: number): void;
+
+  getAddonplusM2MaxTimes(): number;
+  setAddonplusM2MaxTimes(value: number): void;
+
+  getAddonplusM2MaxBl(): number;
+  setAddonplusM2MaxBl(value: number): void;
+
+  getTotalAddonplusM2Times(): number;
+  setTotalAddonplusM2Times(value: number): void;
+
+  getBuyRatio(): number;
+  setBuyRatio(value: number): void;
+
+  getPreBuyinBonus(): number;
+  setPreBuyinBonus(value: number): void;
+
+  getTableclothTag(): string;
+  setTableclothTag(value: string): void;
+
+  getLimitTag(): string;
+  setLimitTag(value: string): void;
+
+  getBonustableType(): number;
+  setBonustableType(value: number): void;
+
+  getBuyinFreeTimes(): number;
+  setBuyinFreeTimes(value: number): void;
+
+  getRebuyFreeTimes(): number;
+  setRebuyFreeTimes(value: number): void;
+
+  getMultiRatioFreeTimes(): number;
+  setMultiRatioFreeTimes(value: number): void;
+
+  getAddonFreeTimes(): number;
+  setAddonFreeTimes(value: number): void;
+
+  getBuyinFreeInclSvr(): number;
+  setBuyinFreeInclSvr(value: number): void;
+
+  getRebuyFreeInclSvr(): number;
+  setRebuyFreeInclSvr(value: number): void;
+
+  getMultiRatioFreeInclSvr(): number;
+  setMultiRatioFreeInclSvr(value: number): void;
+
+  getAddonFreeInclSvr(): number;
+  setAddonFreeInclSvr(value: number): void;
+
+  getAwardReplacePropId(): number;
+  setAwardReplacePropId(value: number): void;
+
+  getAwardReplacePropValue(): number;
+  setAwardReplacePropValue(value: number): void;
+
+  getAwardExtraBuyTimes(): number;
+  setAwardExtraBuyTimes(value: number): void;
+
+  getAwardExtraAddCount(): number;
+  setAwardExtraAddCount(value: number): void;
+
+  getAwardExtraPropId(): number;
+  setAwardExtraPropId(value: number): void;
+
+  getAwardExtraGoldValue(): number;
+  setAwardExtraGoldValue(value: number): void;
+
+  getAwardExtraGoldBuy(): number;
+  setAwardExtraGoldBuy(value: number): void;
+
+  getAwardExtraTicketBuy(): number;
+  setAwardExtraTicketBuy(value: number): void;
+
+  getAwardExtraFreeBuy(): number;
+  setAwardExtraFreeBuy(value: number): void;
+
+  getBreakBasePool(): number;
+  setBreakBasePool(value: number): void;
+
+  getTotalExtraBuyTimes(): number;
+  setTotalExtraBuyTimes(value: number): void;
+
+  getAwardExtraPropValue(): number;
+  setAwardExtraPropValue(value: number): void;
+
+  getRebuyTicketLimitTimes(): number;
+  setRebuyTicketLimitTimes(value: number): void;
+
+  getAddonTicketLimitTimes(): number;
+  setAddonTicketLimitTimes(value: number): void;
+
+  getCreatorId(): number;
+  setCreatorId(value: number): void;
+
+  getShareMtt(): number;
+  setShareMtt(value: number): void;
+
+  getTemplateId(): number;
+  setTemplateId(value: number): void;
+
+  getGoldType(): number;
+  setGoldType(value: number): void;
+
+  getDealDelay(): number;
+  setDealDelay(value: number): void;
+
+  getBombpot(): number;
+  setBombpot(value: number): void;
+
+  getAntiCheatType(): number;
+  setAntiCheatType(value: number): void;
+
+  getAntiCheatTimelimit(): number;
+  setAntiCheatTimelimit(value: number): void;
+
+  getAntiCheatVideoType(): number;
+  setAntiCheatVideoType(value: number): void;
+
+  getPopupMessage(): string;
+  setPopupMessage(value: string): void;
+
+  getVideoVerifyType(): number;
+  setVideoVerifyType(value: number): void;
+
+  getAntiCheatOrderType(): number;
+  setAntiCheatOrderType(value: number): void;
+
+  getAntiCheatOrderMicType(): number;
+  setAntiCheatOrderMicType(value: number): void;
+
+  getSngId(): number;
+  setSngId(value: number): void;
+
+  getSngInvitationCode(): string;
+  setSngInvitationCode(value: string): void;
+
+  getForceVideoTimingAward(): number;
+  setForceVideoTimingAward(value: number): void;
+
+  getForceVideoTimingFinals(): number;
+  setForceVideoTimingFinals(value: number): void;
+
+  getForceVideoClose(): number;
+  setForceVideoClose(value: number): void;
+
+  getForceVideoCloseTime(): number;
+  setForceVideoCloseTime(value: number): void;
+
+  getForceVideoStartTime(): number;
+  setForceVideoStartTime(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MTTRecord.AsObject;
+  static toObject(includeInstance: boolean, msg: MTTRecord): MTTRecord.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MTTRecord, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MTTRecord;
+  static deserializeBinaryFromReader(message: MTTRecord, reader: jspb.BinaryReader): MTTRecord;
+}
+
+export namespace MTTRecord {
+  export type AsObject = {
+    matchId: number,
+    name: string,
+    type: number,
+    gameType: Def.GameTypeMap[keyof Def.GameTypeMap],
+    pokerType: Def.PokerTypeMap[keyof Def.PokerTypeMap],
+    limitBetType: Def.LimitBetTypeMap[keyof Def.LimitBetTypeMap],
+    rankType: number,
+    enterTime: string,
+    startTime: string,
+    endTime: string,
+    hunterOn: number,
+    hunterBonus: number,
+    partialOn: number,
+    paritalReturnBl: number,
+    straddleOn: number,
+    straddleMax: number,
+    muckOn: number,
+    rooms: number,
+    maxRoomId: number,
+    delayViewCardOn: number,
+    limitMin: number,
+    limitDelayTimes: number,
+    limitAutoCheckTimes: number,
+    limitAutoFoldTimes: number,
+    participants: number,
+    alive: number,
+    awardNum: number,
+    moneySync: number,
+    status: number,
+    seatCount: number,
+    finalSeatCount: number,
+    noUserWaitDuration: number,
+    initialScore: number,
+    blindtableType: number,
+    upblindInterval: number,
+    applyStartTime: string,
+    opDuration: number,
+    maxDelayApplyBl: number,
+    rebuyTimes: number,
+    maxRebuyBl: number,
+    limitTotalBuyTimes: number,
+    totalBuyTimes: number,
+    totalBuyinTimes: number,
+    totalRebuyTimes: number,
+    addonBeginBl: number,
+    addonEndBl: number,
+    addonScore: number,
+    totalAddonTimes: number,
+    applyFeePool: number,
+    applyFeeService: number,
+    applyFeeHunter: number,
+    prizeType: number,
+    prizeBasePool: number,
+    tribeId: number,
+    createTime: string,
+    updateTime: string,
+    buyPropId: number,
+    propBuyType: Def.PropBuyTypeMap[keyof Def.PropBuyTypeMap],
+    gameIcon: string,
+    voiceprintVerifyOn: number,
+    voiceprintVerifyDuration: number,
+    addonplusM1On: number,
+    addonplusM1MaxTimes: number,
+    addonplusM1Limit: number,
+    totalAddonplusM1Times: number,
+    addonplusM2On: number,
+    addonplusM2MaxTimes: number,
+    addonplusM2MaxBl: number,
+    totalAddonplusM2Times: number,
+    buyRatio: number,
+    preBuyinBonus: number,
+    tableclothTag: string,
+    limitTag: string,
+    bonustableType: number,
+    buyinFreeTimes: number,
+    rebuyFreeTimes: number,
+    multiRatioFreeTimes: number,
+    addonFreeTimes: number,
+    buyinFreeInclSvr: number,
+    rebuyFreeInclSvr: number,
+    multiRatioFreeInclSvr: number,
+    addonFreeInclSvr: number,
+    awardReplacePropId: number,
+    awardReplacePropValue: number,
+    awardExtraBuyTimes: number,
+    awardExtraAddCount: number,
+    awardExtraPropId: number,
+    awardExtraGoldValue: number,
+    awardExtraGoldBuy: number,
+    awardExtraTicketBuy: number,
+    awardExtraFreeBuy: number,
+    breakBasePool: number,
+    totalExtraBuyTimes: number,
+    awardExtraPropValue: number,
+    rebuyTicketLimitTimes: number,
+    addonTicketLimitTimes: number,
+    creatorId: number,
+    shareMtt: number,
+    templateId: number,
+    goldType: number,
+    dealDelay: number,
+    bombpot: number,
+    antiCheatType: number,
+    antiCheatTimelimit: number,
+    antiCheatVideoType: number,
+    popupMessage: string,
+    videoVerifyType: number,
+    antiCheatOrderType: number,
+    antiCheatOrderMicType: number,
+    sngId: number,
+    sngInvitationCode: string,
+    forceVideoTimingAward: number,
+    forceVideoTimingFinals: number,
+    forceVideoClose: number,
+    forceVideoCloseTime: number,
+    forceVideoStartTime: number,
+  }
+}
+
+export class MTTMore extends jspb.Message {
+  getBl(): number;
+  setBl(value: number): void;
+
+  getSb(): number;
+  setSb(value: number): void;
+
+  getAnte(): number;
+  setAnte(value: number): void;
+
+  getNsb(): number;
+  setNsb(value: number): void;
+
+  getNante(): number;
+  setNante(value: number): void;
+
+  getNbl(): number;
+  setNbl(value: number): void;
+
+  getPrizePool(): number;
+  setPrizePool(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MTTMore.AsObject;
+  static toObject(includeInstance: boolean, msg: MTTMore): MTTMore.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MTTMore, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MTTMore;
+  static deserializeBinaryFromReader(message: MTTMore, reader: jspb.BinaryReader): MTTMore;
+}
+
+export namespace MTTMore {
+  export type AsObject = {
+    bl: number,
+    sb: number,
+    ante: number,
+    nsb: number,
+    nante: number,
+    nbl: number,
+    prizePool: number,
+  }
+}
+
+export class MTTUserStatus extends jspb.Message {
+  getLeftRebuyTimes(): number;
+  setLeftRebuyTimes(value: number): void;
+
+  getChip(): number;
+  setChip(value: number): void;
+
+  getStore(): number;
+  setStore(value: number): void;
+
+  getInitScore(): number;
+  setInitScore(value: number): void;
+
+  getPartialEnable(): boolean;
+  setPartialEnable(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MTTUserStatus.AsObject;
+  static toObject(includeInstance: boolean, msg: MTTUserStatus): MTTUserStatus.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MTTUserStatus, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MTTUserStatus;
+  static deserializeBinaryFromReader(message: MTTUserStatus, reader: jspb.BinaryReader): MTTUserStatus;
+}
+
+export namespace MTTUserStatus {
+  export type AsObject = {
+    leftRebuyTimes: number,
+    chip: number,
+    store: number,
+    initScore: number,
+    partialEnable: boolean,
+  }
+}
+
+export class PlayerJackpotSummary extends jspb.Message {
+  getUserRid(): number;
+  setUserRid(value: number): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getAvatar(): string;
+  setAvatar(value: string): void;
+
+  getSex(): number;
+  setSex(value: number): void;
+
+  getContributeTotal(): number;
+  setContributeTotal(value: number): void;
+
+  getAwardTotal(): number;
+  setAwardTotal(value: number): void;
+
+  getRoyalFlushCount(): number;
+  setRoyalFlushCount(value: number): void;
+
+  getStraightFlushCount(): number;
+  setStraightFlushCount(value: number): void;
+
+  getFourOfaKindCount(): number;
+  setFourOfaKindCount(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PlayerJackpotSummary.AsObject;
+  static toObject(includeInstance: boolean, msg: PlayerJackpotSummary): PlayerJackpotSummary.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PlayerJackpotSummary, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PlayerJackpotSummary;
+  static deserializeBinaryFromReader(message: PlayerJackpotSummary, reader: jspb.BinaryReader): PlayerJackpotSummary;
+}
+
+export namespace PlayerJackpotSummary {
+  export type AsObject = {
+    userRid: number,
+    name: string,
+    avatar: string,
+    sex: number,
+    contributeTotal: number,
+    awardTotal: number,
+    royalFlushCount: number,
+    straightFlushCount: number,
+    fourOfaKindCount: number,
+  }
+}
+
+export class RoomJackpotConfig extends jspb.Message {
+  getContributePotSwitch(): number;
+  setContributePotSwitch(value: number): void;
+
+  getContributePotLimit(): number;
+  setContributePotLimit(value: number): void;
+
+  getAwardBetSwitch(): number;
+  setAwardBetSwitch(value: number): void;
+
+  getAwardBetLimit(): number;
+  setAwardBetLimit(value: number): void;
+
+  getAwardOtherSwitch(): number;
+  setAwardOtherSwitch(value: number): void;
+
+  getAwardOtherRatio(): number;
+  setAwardOtherRatio(value: number): void;
+
+  getContributeType(): number;
+  setContributeType(value: number): void;
+
+  getContributeFixedLimit(): number;
+  setContributeFixedLimit(value: number): void;
+
+  getContributeFixedRate(): number;
+  setContributeFixedRate(value: number): void;
+
+  getContributeRatio(): number;
+  setContributeRatio(value: number): void;
+
+  getContributePotRatio(): number;
+  setContributePotRatio(value: number): void;
+
+  getGamePlayRatio(): number;
+  setGamePlayRatio(value: number): void;
+
+  getBlindRatio(): number;
+  setBlindRatio(value: number): void;
+
+  getRoyalFlushSwitch(): number;
+  setRoyalFlushSwitch(value: number): void;
+
+  getRoyalFlushRatio(): number;
+  setRoyalFlushRatio(value: number): void;
+
+  getStraightFlushSwitch(): number;
+  setStraightFlushSwitch(value: number): void;
+
+  getStraightFlushRatio(): number;
+  setStraightFlushRatio(value: number): void;
+
+  getFourOfaKindSwitch(): number;
+  setFourOfaKindSwitch(value: number): void;
+
+  getFourOfaKindRatio(): number;
+  setFourOfaKindRatio(value: number): void;
+
+  getAwardRoundType(): number;
+  setAwardRoundType(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RoomJackpotConfig.AsObject;
+  static toObject(includeInstance: boolean, msg: RoomJackpotConfig): RoomJackpotConfig.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RoomJackpotConfig, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RoomJackpotConfig;
+  static deserializeBinaryFromReader(message: RoomJackpotConfig, reader: jspb.BinaryReader): RoomJackpotConfig;
+}
+
+export namespace RoomJackpotConfig {
+  export type AsObject = {
+    contributePotSwitch: number,
+    contributePotLimit: number,
+    awardBetSwitch: number,
+    awardBetLimit: number,
+    awardOtherSwitch: number,
+    awardOtherRatio: number,
+    contributeType: number,
+    contributeFixedLimit: number,
+    contributeFixedRate: number,
+    contributeRatio: number,
+    contributePotRatio: number,
+    gamePlayRatio: number,
+    blindRatio: number,
+    royalFlushSwitch: number,
+    royalFlushRatio: number,
+    straightFlushSwitch: number,
+    straightFlushRatio: number,
+    fourOfaKindSwitch: number,
+    fourOfaKindRatio: number,
+    awardRoundType: number,
+  }
+}
+
+export class SubRoomConfig extends jspb.Message {
+  getAnte(): number;
+  setAnte(value: number): void;
+
+  getSb(): number;
+  setSb(value: number): void;
+
+  getGameType(): number;
+  setGameType(value: number): void;
+
+  getPokerType(): number;
+  setPokerType(value: number): void;
+
+  getLimitBetType(): number;
+  setLimitBetType(value: number): void;
+
+  getBombpot(): number;
+  setBombpot(value: number): void;
+
+  getSquidBase(): number;
+  setSquidBase(value: number): void;
+
+  getRounds(): number;
+  setRounds(value: number): void;
+
+  getCriticalHit(): number;
+  setCriticalHit(value: number): void;
+
+  getPlayingPlayerCountLimit(): number;
+  setPlayingPlayerCountLimit(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SubRoomConfig.AsObject;
+  static toObject(includeInstance: boolean, msg: SubRoomConfig): SubRoomConfig.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SubRoomConfig, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SubRoomConfig;
+  static deserializeBinaryFromReader(message: SubRoomConfig, reader: jspb.BinaryReader): SubRoomConfig;
+}
+
+export namespace SubRoomConfig {
+  export type AsObject = {
+    ante: number,
+    sb: number,
+    gameType: number,
+    pokerType: number,
+    limitBetType: number,
+    bombpot: number,
+    squidBase: number,
+    rounds: number,
+    criticalHit: number,
+    playingPlayerCountLimit: number,
+  }
+}
+
+export class JackpotAward extends jspb.Message {
+  getUserRid(): number;
+  setUserRid(value: number): void;
+
+  getNickname(): string;
+  setNickname(value: string): void;
+
+  getAvatar(): string;
+  setAvatar(value: string): void;
+
+  getAward(): number;
+  setAward(value: number): void;
+
+  getCardsType(): number;
+  setCardsType(value: number): void;
+
+  getHandValue(): number;
+  setHandValue(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): JackpotAward.AsObject;
+  static toObject(includeInstance: boolean, msg: JackpotAward): JackpotAward.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: JackpotAward, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): JackpotAward;
+  static deserializeBinaryFromReader(message: JackpotAward, reader: jspb.BinaryReader): JackpotAward;
+}
+
+export namespace JackpotAward {
+  export type AsObject = {
+    userRid: number,
+    nickname: string,
+    avatar: string,
+    award: number,
+    cardsType: number,
+    handValue: number,
+  }
+}
+
+export class WinTypeRule extends jspb.Message {
+  getOutsideHand(): number;
+  setOutsideHand(value: number): void;
+
+  getAllSimple(): number;
+  setAllSimple(value: number): void;
+
+  getEyesPair(): number;
+  setEyesPair(value: number): void;
+
+  getConcealed(): number;
+  setConcealed(value: number): void;
+
+  getBlessingOfHeavenAndEarth(): number;
+  setBlessingOfHeavenAndEarth(value: number): void;
+
+  getTdNoJokerMultiplyTwo(): number;
+  setTdNoJokerMultiplyTwo(value: number): void;
+
+  getEyesSevenPairs(): number;
+  setEyesSevenPairs(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): WinTypeRule.AsObject;
+  static toObject(includeInstance: boolean, msg: WinTypeRule): WinTypeRule.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: WinTypeRule, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): WinTypeRule;
+  static deserializeBinaryFromReader(message: WinTypeRule, reader: jspb.BinaryReader): WinTypeRule;
+}
+
+export namespace WinTypeRule {
+  export type AsObject = {
+    outsideHand: number,
+    allSimple: number,
+    eyesPair: number,
+    concealed: number,
+    blessingOfHeavenAndEarth: number,
+    tdNoJokerMultiplyTwo: number,
+    eyesSevenPairs: number,
+  }
+}
+
+export class RuleUnit extends jspb.Message {
+  getW(): number;
+  setW(value: number): void;
+
+  getD(): number;
+  setD(value: number): void;
+
+  getP(): boolean;
+  setP(value: boolean): void;
+
+  clearFesList(): void;
+  getFesList(): Array<number>;
+  setFesList(value: Array<number>): void;
+  addFes(value: number, index?: number): number;
+
+  clearFisList(): void;
+  getFisList(): Array<number>;
+  setFisList(value: Array<number>): void;
+  addFis(value: number, index?: number): number;
+
+  getIg(): boolean;
+  setIg(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RuleUnit.AsObject;
+  static toObject(includeInstance: boolean, msg: RuleUnit): RuleUnit.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RuleUnit, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RuleUnit;
+  static deserializeBinaryFromReader(message: RuleUnit, reader: jspb.BinaryReader): RuleUnit;
+}
+
+export namespace RuleUnit {
+  export type AsObject = {
+    w: number,
+    d: number,
+    p: boolean,
+    fesList: Array<number>,
+    fisList: Array<number>,
+    ig: boolean,
+  }
+}
+
+export class PlayerInsuranceOutsCards extends jspb.Message {
+  getSeatId(): number;
+  setSeatId(value: number): void;
+
+  clearWinCardsList(): void;
+  getWinCardsList(): Array<number>;
+  setWinCardsList(value: Array<number>): void;
+  addWinCards(value: number, index?: number): number;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PlayerInsuranceOutsCards.AsObject;
+  static toObject(includeInstance: boolean, msg: PlayerInsuranceOutsCards): PlayerInsuranceOutsCards.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PlayerInsuranceOutsCards, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PlayerInsuranceOutsCards;
+  static deserializeBinaryFromReader(message: PlayerInsuranceOutsCards, reader: jspb.BinaryReader): PlayerInsuranceOutsCards;
+}
+
+export namespace PlayerInsuranceOutsCards {
+  export type AsObject = {
+    seatId: number,
+    winCardsList: Array<number>,
+  }
+}
+
+export class PlayerInsurance extends jspb.Message {
+  getUserRid(): number;
+  setUserRid(value: number): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getAvatar(): string;
+  setAvatar(value: string): void;
+
+  getInsurance(): number;
+  setInsurance(value: number): void;
+
+  getInsuranceBet(): number;
+  setInsuranceBet(value: number): void;
+
+  getInsuranceEv(): number;
+  setInsuranceEv(value: number): void;
+
+  getCreateTime(): number;
+  setCreateTime(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PlayerInsurance.AsObject;
+  static toObject(includeInstance: boolean, msg: PlayerInsurance): PlayerInsurance.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PlayerInsurance, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PlayerInsurance;
+  static deserializeBinaryFromReader(message: PlayerInsurance, reader: jspb.BinaryReader): PlayerInsurance;
+}
+
+export namespace PlayerInsurance {
+  export type AsObject = {
+    userRid: number,
+    name: string,
+    avatar: string,
+    insurance: number,
+    insuranceBet: number,
+    insuranceEv: number,
+    createTime: number,
+  }
+}
+
+export class ChangeRoomInfo extends jspb.Message {
+  getRoomId(): number;
+  setRoomId(value: number): void;
+
+  getRoomType(): number;
+  setRoomType(value: number): void;
+
+  getAntiCheatType(): number;
+  setAntiCheatType(value: number): void;
+
+  getAntiCheatVideoType(): number;
+  setAntiCheatVideoType(value: number): void;
+
+  getBombpot(): number;
+  setBombpot(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ChangeRoomInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: ChangeRoomInfo): ChangeRoomInfo.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ChangeRoomInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ChangeRoomInfo;
+  static deserializeBinaryFromReader(message: ChangeRoomInfo, reader: jspb.BinaryReader): ChangeRoomInfo;
+}
+
+export namespace ChangeRoomInfo {
+  export type AsObject = {
+    roomId: number,
+    roomType: number,
+    antiCheatType: number,
+    antiCheatVideoType: number,
+    bombpot: number,
+  }
+}
+
+export class RoomTemplateUpdateInfo extends jspb.Message {
+  getId(): number;
+  setId(value: number): void;
+
+  getUpdateType(): number;
+  setUpdateType(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RoomTemplateUpdateInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: RoomTemplateUpdateInfo): RoomTemplateUpdateInfo.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RoomTemplateUpdateInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RoomTemplateUpdateInfo;
+  static deserializeBinaryFromReader(message: RoomTemplateUpdateInfo, reader: jspb.BinaryReader): RoomTemplateUpdateInfo;
+}
+
+export namespace RoomTemplateUpdateInfo {
+  export type AsObject = {
+    id: number,
+    updateType: number,
+  }
+}
+
+export class JackpotTemplateUpdateInfo extends jspb.Message {
+  getId(): number;
+  setId(value: number): void;
+
+  getClubId(): number;
+  setClubId(value: number): void;
+
+  getUpdateType(): number;
+  setUpdateType(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): JackpotTemplateUpdateInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: JackpotTemplateUpdateInfo): JackpotTemplateUpdateInfo.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: JackpotTemplateUpdateInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): JackpotTemplateUpdateInfo;
+  static deserializeBinaryFromReader(message: JackpotTemplateUpdateInfo, reader: jspb.BinaryReader): JackpotTemplateUpdateInfo;
+}
+
+export namespace JackpotTemplateUpdateInfo {
+  export type AsObject = {
+    id: number,
+    clubId: number,
+    updateType: number,
+  }
+}
+
+export class RoomRecordSimple extends jspb.Message {
+  getRoomId(): number;
+  setRoomId(value: number): void;
+
+  getStatus(): number;
+  setStatus(value: number): void;
+
+  getEmptySeat(): number;
+  setEmptySeat(value: number): void;
+
+  getPlayDuration(): number;
+  setPlayDuration(value: number): void;
+
+  getStartTime(): number;
+  setStartTime(value: number): void;
+
+  getHandNum(): number;
+  setHandNum(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RoomRecordSimple.AsObject;
+  static toObject(includeInstance: boolean, msg: RoomRecordSimple): RoomRecordSimple.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RoomRecordSimple, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RoomRecordSimple;
+  static deserializeBinaryFromReader(message: RoomRecordSimple, reader: jspb.BinaryReader): RoomRecordSimple;
+}
+
+export namespace RoomRecordSimple {
+  export type AsObject = {
+    roomId: number,
+    status: number,
+    emptySeat: number,
+    playDuration: number,
+    startTime: number,
+    handNum: number,
+  }
+}
+
+export class MyWheelInfo extends jspb.Message {
+  getWheelTemplateId(): number;
+  setWheelTemplateId(value: number): void;
+
+  getLotteryHandNum(): number;
+  setLotteryHandNum(value: number): void;
+
+  getUserHandNum(): number;
+  setUserHandNum(value: number): void;
+
+  getUserParticipateState(): number;
+  setUserParticipateState(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): MyWheelInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: MyWheelInfo): MyWheelInfo.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: MyWheelInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): MyWheelInfo;
+  static deserializeBinaryFromReader(message: MyWheelInfo, reader: jspb.BinaryReader): MyWheelInfo;
+}
+
+export namespace MyWheelInfo {
+  export type AsObject = {
+    wheelTemplateId: number,
+    lotteryHandNum: number,
+    userHandNum: number,
+    userParticipateState: number,
   }
 }
 

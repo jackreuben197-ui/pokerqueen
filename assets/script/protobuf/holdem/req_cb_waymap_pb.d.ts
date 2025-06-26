@@ -43,6 +43,16 @@ export class ServerMessageCbWaymap extends jspb.Message {
   getPanMap(): protobuf_holdem_define_cb_pb.CBWayPointMap | undefined;
   setPanMap(value?: protobuf_holdem_define_cb_pb.CBWayPointMap): void;
 
+  clearPreviewList(): void;
+  getPreviewList(): Array<protobuf_holdem_define_cb_pb.CBWayPointPreview>;
+  setPreviewList(value: Array<protobuf_holdem_define_cb_pb.CBWayPointPreview>): void;
+  addPreview(value?: protobuf_holdem_define_cb_pb.CBWayPointPreview, index?: number): protobuf_holdem_define_cb_pb.CBWayPointPreview;
+
+  clearItemsList(): void;
+  getItemsList(): Array<protobuf_holdem_define_cb_pb.CBHistorySimpleItem>;
+  setItemsList(value: Array<protobuf_holdem_define_cb_pb.CBHistorySimpleItem>): void;
+  addItems(value?: protobuf_holdem_define_cb_pb.CBHistorySimpleItem, index?: number): protobuf_holdem_define_cb_pb.CBHistorySimpleItem;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbWaymap.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbWaymap): ServerMessageCbWaymap.AsObject;
@@ -59,6 +69,8 @@ export namespace ServerMessageCbWaymap {
     bigMap?: protobuf_holdem_define_cb_pb.CBWayPointMap.AsObject,
     smallMap?: protobuf_holdem_define_cb_pb.CBWayPointMap.AsObject,
     panMap?: protobuf_holdem_define_cb_pb.CBWayPointMap.AsObject,
+    previewList: Array<protobuf_holdem_define_cb_pb.CBWayPointPreview.AsObject>,
+    itemsList: Array<protobuf_holdem_define_cb_pb.CBHistorySimpleItem.AsObject>,
   }
 }
 

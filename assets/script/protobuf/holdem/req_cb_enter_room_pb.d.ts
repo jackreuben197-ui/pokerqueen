@@ -54,6 +54,12 @@ export class ServerMessageCbEnterRoom extends jspb.Message {
   getMyWin(): number;
   setMyWin(value: number): void;
 
+  getOnTable(): boolean;
+  setOnTable(value: boolean): void;
+
+  getMyWallet(): number;
+  setMyWallet(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbEnterRoom.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbEnterRoom): ServerMessageCbEnterRoom.AsObject;
@@ -73,6 +79,8 @@ export namespace ServerMessageCbEnterRoom {
     online: number,
     myPlayList: Array<protobuf_holdem_define_cb_pb.CBPlayResult.AsObject>,
     myWin: number,
+    onTable: boolean,
+    myWallet: number,
   }
 }
 

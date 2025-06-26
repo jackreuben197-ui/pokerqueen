@@ -14,6 +14,9 @@ export class ClientMessageCbTop extends jspb.Message {
   getRoomId(): number;
   setRoomId(value: number): void;
 
+  getOrderbyType(): protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap[keyof protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap];
+  setOrderbyType(value: protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap[keyof protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap]): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ClientMessageCbTop.AsObject;
   static toObject(includeInstance: boolean, msg: ClientMessageCbTop): ClientMessageCbTop.AsObject;
@@ -29,6 +32,7 @@ export namespace ClientMessageCbTop {
     offset: number,
     limit: number,
     roomId: number,
+    orderbyType: protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap[keyof protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap],
   }
 }
 
@@ -47,6 +51,9 @@ export class ServerMessageCbTop extends jspb.Message {
   setUsersList(value: Array<protobuf_holdem_define_cb_pb.CBUserPlay>): void;
   addUsers(value?: protobuf_holdem_define_cb_pb.CBUserPlay, index?: number): protobuf_holdem_define_cb_pb.CBUserPlay;
 
+  getOrderbyType(): protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap[keyof protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap];
+  setOrderbyType(value: protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap[keyof protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap]): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbTop.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbTop): ServerMessageCbTop.AsObject;
@@ -63,6 +70,7 @@ export namespace ServerMessageCbTop {
     offset: number,
     limit: number,
     usersList: Array<protobuf_holdem_define_cb_pb.CBUserPlay.AsObject>,
+    orderbyType: protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap[keyof protobuf_holdem_define_cb_pb.DefCB.OrderByTypeMap],
   }
 }
 

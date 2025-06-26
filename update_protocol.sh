@@ -97,6 +97,15 @@ function copy_files {
         echo "# error: cannot copy ${src}/*.js to ${dst}."
         return 1
     fi
+
+    if cp ${src}/*.ts ${dst}/
+    then
+        echo "# copy ${src}/*.ts to ${dst}."
+        return 0
+    else
+        echo "# error: cannot copy ${src}/*.ts to ${dst}."
+        return 1
+    fi
 }
 
 main
