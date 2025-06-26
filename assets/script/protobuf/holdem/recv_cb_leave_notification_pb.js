@@ -60,8 +60,7 @@ proto.holdem.pb.ServerMessageCbLeaveNotification.prototype.toObject = function(o
  */
 proto.holdem.pb.ServerMessageCbLeaveNotification.toObject = function(includeInstance, msg) {
   var f, obj = {
-    reason: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    bringOut: jspb.Message.getFieldWithDefault(msg, 2, 0)
+    reason: jspb.Message.getFieldWithDefault(msg, 1, 0)
   };
 
   if (includeInstance) {
@@ -102,10 +101,6 @@ proto.holdem.pb.ServerMessageCbLeaveNotification.deserializeBinaryFromReader = f
       var value = /** @type {!proto.holdem.pb.DefCB.LeaveReason} */ (reader.readEnum());
       msg.setReason(value);
       break;
-    case 2:
-      var value = /** @type {number} */ (reader.readUint64());
-      msg.setBringOut(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -142,13 +137,6 @@ proto.holdem.pb.ServerMessageCbLeaveNotification.serializeBinaryToWriter = funct
       f
     );
   }
-  f = message.getBringOut();
-  if (f !== 0) {
-    writer.writeUint64(
-      2,
-      f
-    );
-  }
 };
 
 
@@ -164,21 +152,6 @@ proto.holdem.pb.ServerMessageCbLeaveNotification.prototype.getReason = function(
 /** @param {!proto.holdem.pb.DefCB.LeaveReason} value */
 proto.holdem.pb.ServerMessageCbLeaveNotification.prototype.setReason = function(value) {
   jspb.Message.setField(this, 1, value);
-};
-
-
-/**
- * optional uint64 bring_out = 2;
- * @return {number}
- */
-proto.holdem.pb.ServerMessageCbLeaveNotification.prototype.getBringOut = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
-};
-
-
-/** @param {number} value */
-proto.holdem.pb.ServerMessageCbLeaveNotification.prototype.setBringOut = function(value) {
-  jspb.Message.setField(this, 2, value);
 };
 
 

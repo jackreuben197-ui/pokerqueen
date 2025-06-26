@@ -218,9 +218,7 @@ proto.holdem.pb.ServerMessageCbEnterRoom.toObject = function(includeInstance, ms
     online: jspb.Message.getFieldWithDefault(msg, 5, 0),
     myPlayList: jspb.Message.toObjectList(msg.getMyPlayList(),
     protobuf_holdem_define_cb_pb.CBPlayResult.toObject, includeInstance),
-    myWin: jspb.Message.getFieldWithDefault(msg, 7, 0),
-    onTable: jspb.Message.getFieldWithDefault(msg, 8, false),
-    myWallet: jspb.Message.getFieldWithDefault(msg, 9, 0)
+    myWin: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -288,14 +286,6 @@ proto.holdem.pb.ServerMessageCbEnterRoom.deserializeBinaryFromReader = function(
     case 7:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setMyWin(value);
-      break;
-    case 8:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setOnTable(value);
-      break;
-    case 9:
-      var value = /** @type {number} */ (reader.readUint64());
-      msg.setMyWallet(value);
       break;
     default:
       reader.skipField();
@@ -376,20 +366,6 @@ proto.holdem.pb.ServerMessageCbEnterRoom.serializeBinaryToWriter = function(mess
   if (f !== 0) {
     writer.writeUint64(
       7,
-      f
-    );
-  }
-  f = message.getOnTable();
-  if (f) {
-    writer.writeBool(
-      8,
-      f
-    );
-  }
-  f = message.getMyWallet();
-  if (f !== 0) {
-    writer.writeUint64(
-      9,
       f
     );
   }
@@ -560,38 +536,6 @@ proto.holdem.pb.ServerMessageCbEnterRoom.prototype.getMyWin = function() {
 /** @param {number} value */
 proto.holdem.pb.ServerMessageCbEnterRoom.prototype.setMyWin = function(value) {
   jspb.Message.setField(this, 7, value);
-};
-
-
-/**
- * optional bool on_table = 8;
- * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
- * You should avoid comparisons like {@code val === true/false} in those cases.
- * @return {boolean}
- */
-proto.holdem.pb.ServerMessageCbEnterRoom.prototype.getOnTable = function() {
-  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 8, false));
-};
-
-
-/** @param {boolean} value */
-proto.holdem.pb.ServerMessageCbEnterRoom.prototype.setOnTable = function(value) {
-  jspb.Message.setField(this, 8, value);
-};
-
-
-/**
- * optional uint64 my_wallet = 9;
- * @return {number}
- */
-proto.holdem.pb.ServerMessageCbEnterRoom.prototype.getMyWallet = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
-};
-
-
-/** @param {number} value */
-proto.holdem.pb.ServerMessageCbEnterRoom.prototype.setMyWallet = function(value) {
-  jspb.Message.setField(this, 9, value);
 };
 
 
