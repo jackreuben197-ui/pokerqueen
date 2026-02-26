@@ -72,6 +72,9 @@ export class Card extends jspb.Message {
   getCard(): number;
   setCard(value: number): void;
 
+  getReplaceCard(): number;
+  setReplaceCard(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Card.AsObject;
   static toObject(includeInstance: boolean, msg: Card): Card.AsObject;
@@ -86,6 +89,7 @@ export namespace Card {
   export type AsObject = {
     index: number,
     card: number,
+    replaceCard: number,
   }
 }
 
@@ -177,6 +181,33 @@ export class RoomInfoGD extends jspb.Message {
   getMode(): protobuf_holdem_define_pb.Def.RoomModeMap[keyof protobuf_holdem_define_pb.Def.RoomModeMap];
   setMode(value: protobuf_holdem_define_pb.Def.RoomModeMap[keyof protobuf_holdem_define_pb.Def.RoomModeMap]): void;
 
+  getBombFour(): number;
+  setBombFour(value: number): void;
+
+  getBombFive(): number;
+  setBombFive(value: number): void;
+
+  getStraightFlush(): number;
+  setStraightFlush(value: number): void;
+
+  getBombSix(): number;
+  setBombSix(value: number): void;
+
+  getBombSeven(): number;
+  setBombSeven(value: number): void;
+
+  getBombEight(): number;
+  setBombEight(value: number): void;
+
+  getBombNine(): number;
+  setBombNine(value: number): void;
+
+  getBombTen(): number;
+  setBombTen(value: number): void;
+
+  getJokerBomb(): number;
+  setJokerBomb(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RoomInfoGD.AsObject;
   static toObject(includeInstance: boolean, msg: RoomInfoGD): RoomInfoGD.AsObject;
@@ -208,6 +239,15 @@ export namespace RoomInfoGD {
     personalType: number,
     levelType: number,
     mode: protobuf_holdem_define_pb.Def.RoomModeMap[keyof protobuf_holdem_define_pb.Def.RoomModeMap],
+    bombFour: number,
+    bombFive: number,
+    straightFlush: number,
+    bombSix: number,
+    bombSeven: number,
+    bombEight: number,
+    bombNine: number,
+    bombTen: number,
+    jokerBomb: number,
   }
 }
 
@@ -381,6 +421,12 @@ export class PlayerGD extends jspb.Message {
   getGold(): number;
   setGold(value: number): void;
 
+  getIpAddr(): string;
+  setIpAddr(value: string): void;
+
+  getVideoMaskId(): number;
+  setVideoMaskId(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PlayerGD.AsObject;
   static toObject(includeInstance: boolean, msg: PlayerGD): PlayerGD.AsObject;
@@ -416,6 +462,8 @@ export namespace PlayerGD {
     lastAction: DefGD.ActionGdMap[keyof DefGD.ActionGdMap],
     lastDiscard?: ValidCards.AsObject,
     gold: number,
+    ipAddr: string,
+    videoMaskId: number,
   }
 }
 

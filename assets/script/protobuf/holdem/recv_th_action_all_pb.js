@@ -66,7 +66,8 @@ proto.holdem.pb.ServerMessageActionAll.toObject = function(includeInstance, msg)
     nextOperator: (f = msg.getNextOperator()) && protobuf_holdem_define_pb.Operator.toObject(includeInstance, f),
     allBet: jspb.Message.getFieldWithDefault(msg, 5, 0),
     roundBet: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    isAuto: jspb.Message.getFieldWithDefault(msg, 7, false)
+    isAuto: jspb.Message.getFieldWithDefault(msg, 7, false),
+    leftChips: jspb.Message.getFieldWithDefault(msg, 8, 0)
   };
 
   if (includeInstance) {
@@ -131,6 +132,10 @@ proto.holdem.pb.ServerMessageActionAll.deserializeBinaryFromReader = function(ms
     case 7:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIsAuto(value);
+      break;
+    case 8:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setLeftChips(value);
       break;
     default:
       reader.skipField();
@@ -208,6 +213,13 @@ proto.holdem.pb.ServerMessageActionAll.serializeBinaryToWriter = function(messag
   if (f) {
     writer.writeBool(
       7,
+      f
+    );
+  }
+  f = message.getLeftChips();
+  if (f !== 0) {
+    writer.writeUint64(
+      8,
       f
     );
   }
@@ -333,6 +345,21 @@ proto.holdem.pb.ServerMessageActionAll.prototype.getIsAuto = function() {
 /** @param {boolean} value */
 proto.holdem.pb.ServerMessageActionAll.prototype.setIsAuto = function(value) {
   jspb.Message.setField(this, 7, value);
+};
+
+
+/**
+ * optional uint64 left_chips = 8;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageActionAll.prototype.getLeftChips = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 8, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageActionAll.prototype.setLeftChips = function(value) {
+  jspb.Message.setField(this, 8, value);
 };
 
 

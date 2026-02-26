@@ -60,7 +60,11 @@ proto.holdem.pb.ServerMessageUserOrderAudit.prototype.toObject = function(opt_in
 proto.holdem.pb.ServerMessageUserOrderAudit.toObject = function(includeInstance, msg) {
   var f, obj = {
     orderNo: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    status: jspb.Message.getFieldWithDefault(msg, 2, 0)
+    status: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    orderCategory: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    orderType: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    closeChat: jspb.Message.getFieldWithDefault(msg, 5, false),
+    delay: jspb.Message.getFieldWithDefault(msg, 6, 0)
   };
 
   if (includeInstance) {
@@ -105,6 +109,22 @@ proto.holdem.pb.ServerMessageUserOrderAudit.deserializeBinaryFromReader = functi
       var value = /** @type {number} */ (reader.readInt32());
       msg.setStatus(value);
       break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setOrderCategory(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setOrderType(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setCloseChat(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setDelay(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -148,6 +168,34 @@ proto.holdem.pb.ServerMessageUserOrderAudit.serializeBinaryToWriter = function(m
       f
     );
   }
+  f = message.getOrderCategory();
+  if (f !== 0) {
+    writer.writeInt32(
+      3,
+      f
+    );
+  }
+  f = message.getOrderType();
+  if (f !== 0) {
+    writer.writeInt32(
+      4,
+      f
+    );
+  }
+  f = message.getCloseChat();
+  if (f) {
+    writer.writeBool(
+      5,
+      f
+    );
+  }
+  f = message.getDelay();
+  if (f !== 0) {
+    writer.writeInt32(
+      6,
+      f
+    );
+  }
 };
 
 
@@ -178,6 +226,68 @@ proto.holdem.pb.ServerMessageUserOrderAudit.prototype.getStatus = function() {
 /** @param {number} value */
 proto.holdem.pb.ServerMessageUserOrderAudit.prototype.setStatus = function(value) {
   jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional int32 order_category = 3;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageUserOrderAudit.prototype.getOrderCategory = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageUserOrderAudit.prototype.setOrderCategory = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional int32 order_type = 4;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageUserOrderAudit.prototype.getOrderType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageUserOrderAudit.prototype.setOrderType = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional bool close_chat = 5;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.ServerMessageUserOrderAudit.prototype.getCloseChat = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 5, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.ServerMessageUserOrderAudit.prototype.setCloseChat = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * optional int32 delay = 6;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageUserOrderAudit.prototype.getDelay = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageUserOrderAudit.prototype.setDelay = function(value) {
+  jspb.Message.setField(this, 6, value);
 };
 
 

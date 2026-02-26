@@ -68,7 +68,9 @@ proto.holdem.pb.ServerMessageFtSeatedOthers.toObject = function(includeInstance,
     vip: jspb.Message.getFieldWithDefault(msg, 7, 0),
     keepSeatLeftTime: jspb.Message.getFieldWithDefault(msg, 8, 0),
     keepSeatDeadline: jspb.Message.getFieldWithDefault(msg, 9, 0),
-    userSubscriptionId: jspb.Message.getFieldWithDefault(msg, 10, 0)
+    userSubscriptionId: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    ipAddr: jspb.Message.getFieldWithDefault(msg, 11, ""),
+    videoMaskId: jspb.Message.getFieldWithDefault(msg, 12, 0)
   };
 
   if (includeInstance) {
@@ -144,6 +146,14 @@ proto.holdem.pb.ServerMessageFtSeatedOthers.deserializeBinaryFromReader = functi
     case 10:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setUserSubscriptionId(value);
+      break;
+    case 11:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIpAddr(value);
+      break;
+    case 12:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setVideoMaskId(value);
       break;
     default:
       reader.skipField();
@@ -241,6 +251,20 @@ proto.holdem.pb.ServerMessageFtSeatedOthers.serializeBinaryToWriter = function(m
   if (f !== 0) {
     writer.writeUint64(
       10,
+      f
+    );
+  }
+  f = message.getIpAddr();
+  if (f.length > 0) {
+    writer.writeString(
+      11,
+      f
+    );
+  }
+  f = message.getVideoMaskId();
+  if (f !== 0) {
+    writer.writeUint64(
+      12,
       f
     );
   }
@@ -394,6 +418,36 @@ proto.holdem.pb.ServerMessageFtSeatedOthers.prototype.getUserSubscriptionId = fu
 /** @param {number} value */
 proto.holdem.pb.ServerMessageFtSeatedOthers.prototype.setUserSubscriptionId = function(value) {
   jspb.Message.setField(this, 10, value);
+};
+
+
+/**
+ * optional string ip_addr = 11;
+ * @return {string}
+ */
+proto.holdem.pb.ServerMessageFtSeatedOthers.prototype.getIpAddr = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.ServerMessageFtSeatedOthers.prototype.setIpAddr = function(value) {
+  jspb.Message.setField(this, 11, value);
+};
+
+
+/**
+ * optional uint64 video_mask_id = 12;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageFtSeatedOthers.prototype.getVideoMaskId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageFtSeatedOthers.prototype.setVideoMaskId = function(value) {
+  jspb.Message.setField(this, 12, value);
 };
 
 

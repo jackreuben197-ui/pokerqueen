@@ -61,7 +61,8 @@ proto.holdem.pb.ServerMessageCacheDataUpdate.prototype.toObject = function(opt_i
 proto.holdem.pb.ServerMessageCacheDataUpdate.toObject = function(includeInstance, msg) {
   var f, obj = {
     rtInfo: (f = msg.getRtInfo()) && protobuf_holdem_define_pb.RoomTemplateUpdateInfo.toObject(includeInstance, f),
-    jtInfo: (f = msg.getJtInfo()) && protobuf_holdem_define_pb.JackpotTemplateUpdateInfo.toObject(includeInstance, f)
+    jtInfo: (f = msg.getJtInfo()) && protobuf_holdem_define_pb.JackpotTemplateUpdateInfo.toObject(includeInstance, f),
+    wtInfo: (f = msg.getWtInfo()) && protobuf_holdem_define_pb.WheelTemplateUpdateInfo.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -108,6 +109,11 @@ proto.holdem.pb.ServerMessageCacheDataUpdate.deserializeBinaryFromReader = funct
       reader.readMessage(value,protobuf_holdem_define_pb.JackpotTemplateUpdateInfo.deserializeBinaryFromReader);
       msg.setJtInfo(value);
       break;
+    case 3:
+      var value = new protobuf_holdem_define_pb.WheelTemplateUpdateInfo;
+      reader.readMessage(value,protobuf_holdem_define_pb.WheelTemplateUpdateInfo.deserializeBinaryFromReader);
+      msg.setWtInfo(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -151,6 +157,14 @@ proto.holdem.pb.ServerMessageCacheDataUpdate.serializeBinaryToWriter = function(
       2,
       f,
       protobuf_holdem_define_pb.JackpotTemplateUpdateInfo.serializeBinaryToWriter
+    );
+  }
+  f = message.getWtInfo();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      protobuf_holdem_define_pb.WheelTemplateUpdateInfo.serializeBinaryToWriter
     );
   }
 };
@@ -213,6 +227,36 @@ proto.holdem.pb.ServerMessageCacheDataUpdate.prototype.clearJtInfo = function() 
  */
 proto.holdem.pb.ServerMessageCacheDataUpdate.prototype.hasJtInfo = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional WheelTemplateUpdateInfo wt_info = 3;
+ * @return {?proto.holdem.pb.WheelTemplateUpdateInfo}
+ */
+proto.holdem.pb.ServerMessageCacheDataUpdate.prototype.getWtInfo = function() {
+  return /** @type{?proto.holdem.pb.WheelTemplateUpdateInfo} */ (
+    jspb.Message.getWrapperField(this, protobuf_holdem_define_pb.WheelTemplateUpdateInfo, 3));
+};
+
+
+/** @param {?proto.holdem.pb.WheelTemplateUpdateInfo|undefined} value */
+proto.holdem.pb.ServerMessageCacheDataUpdate.prototype.setWtInfo = function(value) {
+  jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+proto.holdem.pb.ServerMessageCacheDataUpdate.prototype.clearWtInfo = function() {
+  this.setWtInfo(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.holdem.pb.ServerMessageCacheDataUpdate.prototype.hasWtInfo = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 

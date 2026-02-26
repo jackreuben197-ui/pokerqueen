@@ -15,6 +15,12 @@ export class ClientMessageBuyInsuranceActive extends jspb.Message {
   setBuyList(value: Array<protobuf_holdem_define_pb.PotInsuranceBuy>): void;
   addBuy(value?: protobuf_holdem_define_pb.PotInsuranceBuy, index?: number): protobuf_holdem_define_pb.PotInsuranceBuy;
 
+  getConfirm(): boolean;
+  setConfirm(value: boolean): void;
+
+  getStep(): boolean;
+  setStep(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ClientMessageBuyInsuranceActive.AsObject;
   static toObject(includeInstance: boolean, msg: ClientMessageBuyInsuranceActive): ClientMessageBuyInsuranceActive.AsObject;
@@ -29,6 +35,8 @@ export namespace ClientMessageBuyInsuranceActive {
   export type AsObject = {
     room?: protobuf_holdem_define_pb.Room.AsObject,
     buyList: Array<protobuf_holdem_define_pb.PotInsuranceBuy.AsObject>,
+    confirm: boolean,
+    step: boolean,
   }
 }
 

@@ -34,6 +34,12 @@ export class ServerMessageFtSeatedOthers extends jspb.Message {
   getUserSubscriptionId(): number;
   setUserSubscriptionId(value: number): void;
 
+  getIpAddr(): string;
+  setIpAddr(value: string): void;
+
+  getVideoMaskId(): number;
+  setVideoMaskId(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageFtSeatedOthers.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageFtSeatedOthers): ServerMessageFtSeatedOthers.AsObject;
@@ -56,6 +62,8 @@ export namespace ServerMessageFtSeatedOthers {
     keepSeatLeftTime: number,
     keepSeatDeadline: number,
     userSubscriptionId: number,
+    ipAddr: string,
+    videoMaskId: number,
   }
 }
 

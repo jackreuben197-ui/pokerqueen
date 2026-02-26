@@ -14,7 +14,9 @@ var global = Function('return this')();
 goog.exportSymbol('proto.holdem.pb.ActionLimit', null, global);
 goog.exportSymbol('proto.holdem.pb.ActionShortcutLimit', null, global);
 goog.exportSymbol('proto.holdem.pb.AllInWinCardsInfo', null, global);
+goog.exportSymbol('proto.holdem.pb.BlackInfo', null, global);
 goog.exportSymbol('proto.holdem.pb.ChangeRoomInfo', null, global);
+goog.exportSymbol('proto.holdem.pb.CowboyConfig', null, global);
 goog.exportSymbol('proto.holdem.pb.Def', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.Action', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.ActionShortcut', null, global);
@@ -38,6 +40,7 @@ goog.exportSymbol('proto.holdem.pb.Def.PokerType', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.PropBuyType', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.RoomMode', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.Round', null, global);
+goog.exportSymbol('proto.holdem.pb.Def.SeriesListType', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.StandUpReason', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.UserQuitClubReason', null, global);
 goog.exportSymbol('proto.holdem.pb.Def.WantSeatType', null, global);
@@ -50,10 +53,13 @@ goog.exportSymbol('proto.holdem.pb.InsuranceOddsForPotsUserCount', null, global)
 goog.exportSymbol('proto.holdem.pb.InsurancePotInvalid', null, global);
 goog.exportSymbol('proto.holdem.pb.InsurancePotLimit', null, global);
 goog.exportSymbol('proto.holdem.pb.JackpotAward', null, global);
+goog.exportSymbol('proto.holdem.pb.JackpotAwardLog', null, global);
 goog.exportSymbol('proto.holdem.pb.JackpotTemplateUpdateInfo', null, global);
 goog.exportSymbol('proto.holdem.pb.Luckycards', null, global);
+goog.exportSymbol('proto.holdem.pb.MTTBlindLevelDelayTime', null, global);
 goog.exportSymbol('proto.holdem.pb.MTTInfo', null, global);
 goog.exportSymbol('proto.holdem.pb.MTTMore', null, global);
+goog.exportSymbol('proto.holdem.pb.MTTPrize', null, global);
 goog.exportSymbol('proto.holdem.pb.MTTProgress', null, global);
 goog.exportSymbol('proto.holdem.pb.MTTRecord', null, global);
 goog.exportSymbol('proto.holdem.pb.MTTUserStatus', null, global);
@@ -74,15 +80,19 @@ goog.exportSymbol('proto.holdem.pb.PlayerStartInfo', null, global);
 goog.exportSymbol('proto.holdem.pb.PlayerSummary', null, global);
 goog.exportSymbol('proto.holdem.pb.PostStatusChange', null, global);
 goog.exportSymbol('proto.holdem.pb.PotInsuranceBuy', null, global);
+goog.exportSymbol('proto.holdem.pb.PrizeGoods', null, global);
 goog.exportSymbol('proto.holdem.pb.Result', null, global);
 goog.exportSymbol('proto.holdem.pb.Room', null, global);
 goog.exportSymbol('proto.holdem.pb.RoomAdmin', null, global);
+goog.exportSymbol('proto.holdem.pb.RoomChange', null, global);
 goog.exportSymbol('proto.holdem.pb.RoomInfo', null, global);
 goog.exportSymbol('proto.holdem.pb.RoomInfo.RetainType', null, global);
 goog.exportSymbol('proto.holdem.pb.RoomJackpotConfig', null, global);
 goog.exportSymbol('proto.holdem.pb.RoomRecord', null, global);
 goog.exportSymbol('proto.holdem.pb.RoomRecordSimple', null, global);
 goog.exportSymbol('proto.holdem.pb.RoomTemplateUpdateInfo', null, global);
+goog.exportSymbol('proto.holdem.pb.RoomTribeClubRelate', null, global);
+goog.exportSymbol('proto.holdem.pb.RoomUserInfo', null, global);
 goog.exportSymbol('proto.holdem.pb.RoomWithType', null, global);
 goog.exportSymbol('proto.holdem.pb.Roomer', null, global);
 goog.exportSymbol('proto.holdem.pb.RuleUnit', null, global);
@@ -93,8 +103,14 @@ goog.exportSymbol('proto.holdem.pb.SplitedResult', null, global);
 goog.exportSymbol('proto.holdem.pb.SquidCountRateConfig', null, global);
 goog.exportSymbol('proto.holdem.pb.SquidDetail', null, global);
 goog.exportSymbol('proto.holdem.pb.SubRoomConfig', null, global);
+goog.exportSymbol('proto.holdem.pb.UserInsuranceResult', null, global);
+goog.exportSymbol('proto.holdem.pb.UserMttRecord', null, global);
+goog.exportSymbol('proto.holdem.pb.UserMttRecordChange', null, global);
 goog.exportSymbol('proto.holdem.pb.UserOuts', null, global);
 goog.exportSymbol('proto.holdem.pb.UserPlayStatus', null, global);
+goog.exportSymbol('proto.holdem.pb.UserSNGRecord', null, global);
+goog.exportSymbol('proto.holdem.pb.UserSNGRecordChange', null, global);
+goog.exportSymbol('proto.holdem.pb.WheelTemplateUpdateInfo', null, global);
 goog.exportSymbol('proto.holdem.pb.WinCard', null, global);
 goog.exportSymbol('proto.holdem.pb.WinTypeRule', null, global);
 
@@ -296,7 +312,8 @@ proto.holdem.pb.Def.StandUpReason = {
   SUR_AUTO_EXCEED_MAX_TIMES: 6,
   SUR_KEEPSEAT_TIMEOUT: 7,
   SUR_ACTIVE_LEAVE: 8,
-  SUR_AUTO_CHANGE_ROOM: 9
+  SUR_AUTO_CHANGE_ROOM: 9,
+  SUR_MANUAL_CHANGE_ROOM: 10
 };
 
 /**
@@ -311,7 +328,8 @@ proto.holdem.pb.Def.LeaveReason = {
   LR_EXCHANGE: 5,
   LR_AUTO_EXCEED_MAX_TIMES: 6,
   LR_OFFLINE: 7,
-  LR_AUTO_CHANGE_ROOM: 8
+  LR_AUTO_CHANGE_ROOM: 8,
+  LR_PLAYER_NOT_ENOUGH: 9
 };
 
 /**
@@ -488,7 +506,8 @@ proto.holdem.pb.Def.RoomMode = {
 proto.holdem.pb.Def.IsuranceMode = {
   IM_NORMAL: 0,
   IM_WPK: 1,
-  IM_EV: 2
+  IM_EV: 2,
+  IM_NEW_NORMAL: 3
 };
 
 /**
@@ -507,6 +526,16 @@ proto.holdem.pb.Def.WantSeatType = {
   WST_BOTH: 0,
   WST_YES: 1,
   WST_NO: 2
+};
+
+/**
+ * @enum {number}
+ */
+proto.holdem.pb.Def.SeriesListType = {
+  SLT_0: 0,
+  SLT_1: 1,
+  SLT_2: 2,
+  SLT_3: 3
 };
 
 
@@ -1338,7 +1367,8 @@ proto.holdem.pb.RoomInfo.toObject = function(includeInstance, msg) {
     autoChangeRoomLimitHand: jspb.Message.getFieldWithDefault(msg, 46, 0),
     insuranceMode: jspb.Message.getFieldWithDefault(msg, 47, 0),
     wheelTemplateId: jspb.Message.getFieldWithDefault(msg, 48, 0),
-    squidTotalLimit: jspb.Message.getFieldWithDefault(msg, 49, 0)
+    squidTotalLimit: jspb.Message.getFieldWithDefault(msg, 49, 0),
+    limitRetainMaxRate: jspb.Message.getFieldWithDefault(msg, 50, 0)
   };
 
   if (includeInstance) {
@@ -1563,6 +1593,10 @@ proto.holdem.pb.RoomInfo.deserializeBinaryFromReader = function(msg, reader) {
     case 49:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setSquidTotalLimit(value);
+      break;
+    case 50:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setLimitRetainMaxRate(value);
       break;
     default:
       reader.skipField();
@@ -1920,6 +1954,13 @@ proto.holdem.pb.RoomInfo.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt32(
       49,
+      f
+    );
+  }
+  f = message.getLimitRetainMaxRate();
+  if (f !== 0) {
+    writer.writeInt32(
+      50,
       f
     );
   }
@@ -2677,6 +2718,21 @@ proto.holdem.pb.RoomInfo.prototype.getSquidTotalLimit = function() {
 /** @param {number} value */
 proto.holdem.pb.RoomInfo.prototype.setSquidTotalLimit = function(value) {
   jspb.Message.setField(this, 49, value);
+};
+
+
+/**
+ * optional int32 limit_retain_max_rate = 50;
+ * @return {number}
+ */
+proto.holdem.pb.RoomInfo.prototype.getLimitRetainMaxRate = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 50, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomInfo.prototype.setLimitRetainMaxRate = function(value) {
+  jspb.Message.setField(this, 50, value);
 };
 
 
@@ -4845,7 +4901,9 @@ proto.holdem.pb.MyGameInfo.toObject = function(includeInstance, msg) {
     lastStoreHandNum: jspb.Message.getFieldWithDefault(msg, 25, 0),
     wantSeat: jspb.Message.getFieldWithDefault(msg, 26, 0),
     alreadySeated: jspb.Message.getFieldWithDefault(msg, 27, false),
-    squidRoundSeated: jspb.Message.getFieldWithDefault(msg, 28, false)
+    squidRoundSeated: jspb.Message.getFieldWithDefault(msg, 28, false),
+    willStandup: jspb.Message.getFieldWithDefault(msg, 29, false),
+    mttRemaindDelayTimes: jspb.Message.getFieldWithDefault(msg, 30, 0)
   };
 
   if (includeInstance) {
@@ -4993,6 +5051,14 @@ proto.holdem.pb.MyGameInfo.deserializeBinaryFromReader = function(msg, reader) {
     case 28:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setSquidRoundSeated(value);
+      break;
+    case 29:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setWillStandup(value);
+      break;
+    case 30:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setMttRemaindDelayTimes(value);
       break;
     default:
       reader.skipField();
@@ -5216,6 +5282,20 @@ proto.holdem.pb.MyGameInfo.serializeBinaryToWriter = function(message, writer) {
   if (f) {
     writer.writeBool(
       28,
+      f
+    );
+  }
+  f = message.getWillStandup();
+  if (f) {
+    writer.writeBool(
+      29,
+      f
+    );
+  }
+  f = message.getMttRemaindDelayTimes();
+  if (f !== 0) {
+    writer.writeUint32(
+      30,
       f
     );
   }
@@ -5651,6 +5731,38 @@ proto.holdem.pb.MyGameInfo.prototype.getSquidRoundSeated = function() {
 /** @param {boolean} value */
 proto.holdem.pb.MyGameInfo.prototype.setSquidRoundSeated = function(value) {
   jspb.Message.setField(this, 28, value);
+};
+
+
+/**
+ * optional bool will_standup = 29;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.MyGameInfo.prototype.getWillStandup = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 29, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.MyGameInfo.prototype.setWillStandup = function(value) {
+  jspb.Message.setField(this, 29, value);
+};
+
+
+/**
+ * optional uint32 mtt_remaind_delay_times = 30;
+ * @return {number}
+ */
+proto.holdem.pb.MyGameInfo.prototype.getMttRemaindDelayTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 30, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MyGameInfo.prototype.setMttRemaindDelayTimes = function(value) {
+  jspb.Message.setField(this, 30, value);
 };
 
 
@@ -8720,7 +8832,9 @@ proto.holdem.pb.Player.toObject = function(includeInstance, msg) {
     squidEscaped: jspb.Message.getFieldWithDefault(msg, 29, false),
     userSubscriptionId: jspb.Message.getFieldWithDefault(msg, 30, 0),
     squidCount: jspb.Message.getFieldWithDefault(msg, 31, 0),
-    inSquid: jspb.Message.getFieldWithDefault(msg, 32, false)
+    inSquid: jspb.Message.getFieldWithDefault(msg, 32, false),
+    ipAddr: jspb.Message.getFieldWithDefault(msg, 33, ""),
+    videoMaskId: jspb.Message.getFieldWithDefault(msg, 34, 0)
   };
 
   if (includeInstance) {
@@ -8882,6 +8996,14 @@ proto.holdem.pb.Player.deserializeBinaryFromReader = function(msg, reader) {
     case 32:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setInSquid(value);
+      break;
+    case 33:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIpAddr(value);
+      break;
+    case 34:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setVideoMaskId(value);
       break;
     default:
       reader.skipField();
@@ -9128,6 +9250,20 @@ proto.holdem.pb.Player.serializeBinaryToWriter = function(message, writer) {
   if (f) {
     writer.writeBool(
       32,
+      f
+    );
+  }
+  f = message.getIpAddr();
+  if (f.length > 0) {
+    writer.writeString(
+      33,
+      f
+    );
+  }
+  f = message.getVideoMaskId();
+  if (f !== 0) {
+    writer.writeUint64(
+      34,
       f
     );
   }
@@ -9654,6 +9790,36 @@ proto.holdem.pb.Player.prototype.setInSquid = function(value) {
 };
 
 
+/**
+ * optional string ip_addr = 33;
+ * @return {string}
+ */
+proto.holdem.pb.Player.prototype.getIpAddr = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 33, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.Player.prototype.setIpAddr = function(value) {
+  jspb.Message.setField(this, 33, value);
+};
+
+
+/**
+ * optional uint64 video_mask_id = 34;
+ * @return {number}
+ */
+proto.holdem.pb.Player.prototype.getVideoMaskId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 34, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.Player.prototype.setVideoMaskId = function(value) {
+  jspb.Message.setField(this, 34, value);
+};
+
+
 
 /**
  * Generated by JsPbCodeGenerator.
@@ -9677,7 +9843,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.holdem.pb.Result.repeatedFields_ = [4,5,18,19,23];
+proto.holdem.pb.Result.repeatedFields_ = [4,5,18,19,23,35];
 
 
 
@@ -9742,7 +9908,12 @@ proto.holdem.pb.Result.toObject = function(includeInstance, msg) {
     callTimeStay: jspb.Message.getFieldWithDefault(msg, 28, false),
     squidCount: jspb.Message.getFieldWithDefault(msg, 29, 0),
     autoChangeRoomHand: jspb.Message.getFieldWithDefault(msg, 30, 0),
-    totalChips: jspb.Message.getFieldWithDefault(msg, 31, 0)
+    totalChips: jspb.Message.getFieldWithDefault(msg, 31, 0),
+    inPool: jspb.Message.getFieldWithDefault(msg, 32, false),
+    jawd: jspb.Message.getFieldWithDefault(msg, 33, 0),
+    jackpotFee: jspb.Message.getFieldWithDefault(msg, 34, 0),
+    userInsuranceResultList: jspb.Message.toObjectList(msg.getUserInsuranceResultList(),
+    proto.holdem.pb.UserInsuranceResult.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -9906,6 +10077,23 @@ proto.holdem.pb.Result.deserializeBinaryFromReader = function(msg, reader) {
     case 31:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setTotalChips(value);
+      break;
+    case 32:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setInPool(value);
+      break;
+    case 33:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setJawd(value);
+      break;
+    case 34:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setJackpotFee(value);
+      break;
+    case 35:
+      var value = new proto.holdem.pb.UserInsuranceResult;
+      reader.readMessage(value,proto.holdem.pb.UserInsuranceResult.deserializeBinaryFromReader);
+      msg.addUserInsuranceResult(value);
       break;
     default:
       reader.skipField();
@@ -10155,6 +10343,35 @@ proto.holdem.pb.Result.serializeBinaryToWriter = function(message, writer) {
     writer.writeUint64(
       31,
       f
+    );
+  }
+  f = message.getInPool();
+  if (f) {
+    writer.writeBool(
+      32,
+      f
+    );
+  }
+  f = message.getJawd();
+  if (f !== 0) {
+    writer.writeUint64(
+      33,
+      f
+    );
+  }
+  f = message.getJackpotFee();
+  if (f !== 0) {
+    writer.writeUint64(
+      34,
+      f
+    );
+  }
+  f = message.getUserInsuranceResultList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      35,
+      f,
+      proto.holdem.pb.UserInsuranceResult.serializeBinaryToWriter
     );
   }
 };
@@ -10708,6 +10925,84 @@ proto.holdem.pb.Result.prototype.getTotalChips = function() {
 /** @param {number} value */
 proto.holdem.pb.Result.prototype.setTotalChips = function(value) {
   jspb.Message.setField(this, 31, value);
+};
+
+
+/**
+ * optional bool in_pool = 32;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.Result.prototype.getInPool = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 32, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.Result.prototype.setInPool = function(value) {
+  jspb.Message.setField(this, 32, value);
+};
+
+
+/**
+ * optional uint64 jawd = 33;
+ * @return {number}
+ */
+proto.holdem.pb.Result.prototype.getJawd = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 33, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.Result.prototype.setJawd = function(value) {
+  jspb.Message.setField(this, 33, value);
+};
+
+
+/**
+ * optional uint64 jackpot_fee = 34;
+ * @return {number}
+ */
+proto.holdem.pb.Result.prototype.getJackpotFee = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 34, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.Result.prototype.setJackpotFee = function(value) {
+  jspb.Message.setField(this, 34, value);
+};
+
+
+/**
+ * repeated UserInsuranceResult user_insurance_result = 35;
+ * @return {!Array.<!proto.holdem.pb.UserInsuranceResult>}
+ */
+proto.holdem.pb.Result.prototype.getUserInsuranceResultList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.UserInsuranceResult>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.UserInsuranceResult, 35));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.UserInsuranceResult>} value */
+proto.holdem.pb.Result.prototype.setUserInsuranceResultList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 35, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.UserInsuranceResult=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.UserInsuranceResult}
+ */
+proto.holdem.pb.Result.prototype.addUserInsuranceResult = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 35, opt_value, proto.holdem.pb.UserInsuranceResult, opt_index);
+};
+
+
+proto.holdem.pb.Result.prototype.clearUserInsuranceResultList = function() {
+  this.setUserInsuranceResultList([]);
 };
 
 
@@ -12275,7 +12570,8 @@ proto.holdem.pb.Roomer.toObject = function(includeInstance, msg) {
     avatar: jspb.Message.getFieldWithDefault(msg, 3, ""),
     sex: jspb.Message.getFieldWithDefault(msg, 4, 0),
     vip: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    isOnline: jspb.Message.getFieldWithDefault(msg, 6, false)
+    isOnline: jspb.Message.getFieldWithDefault(msg, 6, false),
+    ipAddr: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
   if (includeInstance) {
@@ -12335,6 +12631,10 @@ proto.holdem.pb.Roomer.deserializeBinaryFromReader = function(msg, reader) {
     case 6:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIsOnline(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIpAddr(value);
       break;
     default:
       reader.skipField();
@@ -12404,6 +12704,13 @@ proto.holdem.pb.Roomer.serializeBinaryToWriter = function(message, writer) {
   if (f) {
     writer.writeBool(
       6,
+      f
+    );
+  }
+  f = message.getIpAddr();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
       f
     );
   }
@@ -12502,6 +12809,21 @@ proto.holdem.pb.Roomer.prototype.setIsOnline = function(value) {
 };
 
 
+/**
+ * optional string ip_addr = 7;
+ * @return {string}
+ */
+proto.holdem.pb.Roomer.prototype.getIpAddr = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.Roomer.prototype.setIpAddr = function(value) {
+  jspb.Message.setField(this, 7, value);
+};
+
+
 
 /**
  * Generated by JsPbCodeGenerator.
@@ -12569,7 +12891,9 @@ proto.holdem.pb.PlayerSummary.toObject = function(includeInstance, msg) {
     squidOutTotal: jspb.Message.getFieldWithDefault(msg, 18, 0),
     squidCount: jspb.Message.getFieldWithDefault(msg, 19, 0),
     squidPunishTotal: jspb.Message.getFieldWithDefault(msg, 20, 0),
-    deposit: jspb.Message.getFieldWithDefault(msg, 21, 0)
+    deposit: jspb.Message.getFieldWithDefault(msg, 21, 0),
+    ipAddr: jspb.Message.getFieldWithDefault(msg, 22, ""),
+    poolCount: jspb.Message.getFieldWithDefault(msg, 23, 0)
   };
 
   if (includeInstance) {
@@ -12689,6 +13013,14 @@ proto.holdem.pb.PlayerSummary.deserializeBinaryFromReader = function(msg, reader
     case 21:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setDeposit(value);
+      break;
+    case 22:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIpAddr(value);
+      break;
+    case 23:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPoolCount(value);
       break;
     default:
       reader.skipField();
@@ -12863,6 +13195,20 @@ proto.holdem.pb.PlayerSummary.serializeBinaryToWriter = function(message, writer
   if (f !== 0) {
     writer.writeUint64(
       21,
+      f
+    );
+  }
+  f = message.getIpAddr();
+  if (f.length > 0) {
+    writer.writeString(
+      22,
+      f
+    );
+  }
+  f = message.getPoolCount();
+  if (f !== 0) {
+    writer.writeInt32(
+      23,
       f
     );
   }
@@ -13183,6 +13529,36 @@ proto.holdem.pb.PlayerSummary.prototype.getDeposit = function() {
 /** @param {number} value */
 proto.holdem.pb.PlayerSummary.prototype.setDeposit = function(value) {
   jspb.Message.setField(this, 21, value);
+};
+
+
+/**
+ * optional string ip_addr = 22;
+ * @return {string}
+ */
+proto.holdem.pb.PlayerSummary.prototype.getIpAddr = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 22, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.PlayerSummary.prototype.setIpAddr = function(value) {
+  jspb.Message.setField(this, 22, value);
+};
+
+
+/**
+ * optional int32 pool_count = 23;
+ * @return {number}
+ */
+proto.holdem.pb.PlayerSummary.prototype.getPoolCount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 23, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.PlayerSummary.prototype.setPoolCount = function(value) {
+  jspb.Message.setField(this, 23, value);
 };
 
 
@@ -14498,7 +14874,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.holdem.pb.RoomRecord.repeatedFields_ = [58,82,93,119,150,165];
+proto.holdem.pb.RoomRecord.repeatedFields_ = [58,82,93,119,150,165,175,176,177];
 
 
 
@@ -14699,7 +15075,21 @@ proto.holdem.pb.RoomRecord.toObject = function(includeInstance, msg) {
     squidCountRateList: jspb.Message.toObjectList(msg.getSquidCountRateList(),
     proto.holdem.pb.SquidCountRateConfig.toObject, includeInstance),
     depositPercent: jspb.Message.getFieldWithDefault(msg, 166, 0),
-    insuranceForceBuyRatio: jspb.Message.getFieldWithDefault(msg, 167, 0)
+    insuranceForceBuyRatio: jspb.Message.getFieldWithDefault(msg, 167, 0),
+    bombDoubleType: jspb.Message.getFieldWithDefault(msg, 168, 0),
+    bombSixBeginReward: jspb.Message.getFieldWithDefault(msg, 169, 0),
+    passAceThreeTime: jspb.Message.getFieldWithDefault(msg, 170, 0),
+    doubleLowLevelUpType: jspb.Message.getFieldWithDefault(msg, 171, 0),
+    squidLeaveMode: jspb.Message.getFieldWithDefault(msg, 172, 0),
+    powerSaving: jspb.Message.getFieldWithDefault(msg, 173, 0),
+    squidPlayerCount: jspb.Message.getFieldWithDefault(msg, 174, 0),
+    usersList: jspb.Message.toObjectList(msg.getUsersList(),
+    proto.holdem.pb.RoomUserInfo.toObject, includeInstance),
+    relateClubIdsList: jspb.Message.getRepeatedField(msg, 176),
+    relateTribeClubListList: jspb.Message.toObjectList(msg.getRelateTribeClubListList(),
+    proto.holdem.pb.RoomTribeClubRelate.toObject, includeInstance),
+    currency: jspb.Message.getFieldWithDefault(msg, 178, ""),
+    cowboyConfig: (f = msg.getCowboyConfig()) && proto.holdem.pb.CowboyConfig.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -15406,6 +15796,57 @@ proto.holdem.pb.RoomRecord.deserializeBinaryFromReader = function(msg, reader) {
     case 167:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setInsuranceForceBuyRatio(value);
+      break;
+    case 168:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setBombDoubleType(value);
+      break;
+    case 169:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setBombSixBeginReward(value);
+      break;
+    case 170:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPassAceThreeTime(value);
+      break;
+    case 171:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setDoubleLowLevelUpType(value);
+      break;
+    case 172:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setSquidLeaveMode(value);
+      break;
+    case 173:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPowerSaving(value);
+      break;
+    case 174:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setSquidPlayerCount(value);
+      break;
+    case 175:
+      var value = new proto.holdem.pb.RoomUserInfo;
+      reader.readMessage(value,proto.holdem.pb.RoomUserInfo.deserializeBinaryFromReader);
+      msg.addUsers(value);
+      break;
+    case 176:
+      var value = /** @type {!Array.<number>} */ (reader.readPackedUint64());
+      msg.setRelateClubIdsList(value);
+      break;
+    case 177:
+      var value = new proto.holdem.pb.RoomTribeClubRelate;
+      reader.readMessage(value,proto.holdem.pb.RoomTribeClubRelate.deserializeBinaryFromReader);
+      msg.addRelateTribeClubList(value);
+      break;
+    case 178:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setCurrency(value);
+      break;
+    case 179:
+      var value = new proto.holdem.pb.CowboyConfig;
+      reader.readMessage(value,proto.holdem.pb.CowboyConfig.deserializeBinaryFromReader);
+      msg.setCowboyConfig(value);
       break;
     default:
       reader.skipField();
@@ -16600,6 +17041,93 @@ proto.holdem.pb.RoomRecord.serializeBinaryToWriter = function(message, writer) {
     writer.writeUint64(
       167,
       f
+    );
+  }
+  f = message.getBombDoubleType();
+  if (f !== 0) {
+    writer.writeInt32(
+      168,
+      f
+    );
+  }
+  f = message.getBombSixBeginReward();
+  if (f !== 0) {
+    writer.writeInt32(
+      169,
+      f
+    );
+  }
+  f = message.getPassAceThreeTime();
+  if (f !== 0) {
+    writer.writeInt32(
+      170,
+      f
+    );
+  }
+  f = message.getDoubleLowLevelUpType();
+  if (f !== 0) {
+    writer.writeInt32(
+      171,
+      f
+    );
+  }
+  f = message.getSquidLeaveMode();
+  if (f !== 0) {
+    writer.writeInt32(
+      172,
+      f
+    );
+  }
+  f = message.getPowerSaving();
+  if (f !== 0) {
+    writer.writeInt32(
+      173,
+      f
+    );
+  }
+  f = message.getSquidPlayerCount();
+  if (f !== 0) {
+    writer.writeInt32(
+      174,
+      f
+    );
+  }
+  f = message.getUsersList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      175,
+      f,
+      proto.holdem.pb.RoomUserInfo.serializeBinaryToWriter
+    );
+  }
+  f = message.getRelateClubIdsList();
+  if (f.length > 0) {
+    writer.writePackedUint64(
+      176,
+      f
+    );
+  }
+  f = message.getRelateTribeClubListList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      177,
+      f,
+      proto.holdem.pb.RoomTribeClubRelate.serializeBinaryToWriter
+    );
+  }
+  f = message.getCurrency();
+  if (f.length > 0) {
+    writer.writeString(
+      178,
+      f
+    );
+  }
+  f = message.getCowboyConfig();
+  if (f != null) {
+    writer.writeMessage(
+      179,
+      f,
+      proto.holdem.pb.CowboyConfig.serializeBinaryToWriter
     );
   }
 };
@@ -19253,6 +19781,247 @@ proto.holdem.pb.RoomRecord.prototype.setInsuranceForceBuyRatio = function(value)
 };
 
 
+/**
+ * optional int32 bomb_double_type = 168;
+ * @return {number}
+ */
+proto.holdem.pb.RoomRecord.prototype.getBombDoubleType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 168, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomRecord.prototype.setBombDoubleType = function(value) {
+  jspb.Message.setField(this, 168, value);
+};
+
+
+/**
+ * optional int32 bomb_six_begin_reward = 169;
+ * @return {number}
+ */
+proto.holdem.pb.RoomRecord.prototype.getBombSixBeginReward = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 169, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomRecord.prototype.setBombSixBeginReward = function(value) {
+  jspb.Message.setField(this, 169, value);
+};
+
+
+/**
+ * optional int32 pass_ace_three_time = 170;
+ * @return {number}
+ */
+proto.holdem.pb.RoomRecord.prototype.getPassAceThreeTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 170, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomRecord.prototype.setPassAceThreeTime = function(value) {
+  jspb.Message.setField(this, 170, value);
+};
+
+
+/**
+ * optional int32 double_low_level_up_type = 171;
+ * @return {number}
+ */
+proto.holdem.pb.RoomRecord.prototype.getDoubleLowLevelUpType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 171, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomRecord.prototype.setDoubleLowLevelUpType = function(value) {
+  jspb.Message.setField(this, 171, value);
+};
+
+
+/**
+ * optional int32 squid_leave_mode = 172;
+ * @return {number}
+ */
+proto.holdem.pb.RoomRecord.prototype.getSquidLeaveMode = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 172, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomRecord.prototype.setSquidLeaveMode = function(value) {
+  jspb.Message.setField(this, 172, value);
+};
+
+
+/**
+ * optional int32 power_saving = 173;
+ * @return {number}
+ */
+proto.holdem.pb.RoomRecord.prototype.getPowerSaving = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 173, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomRecord.prototype.setPowerSaving = function(value) {
+  jspb.Message.setField(this, 173, value);
+};
+
+
+/**
+ * optional int32 squid_player_count = 174;
+ * @return {number}
+ */
+proto.holdem.pb.RoomRecord.prototype.getSquidPlayerCount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 174, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomRecord.prototype.setSquidPlayerCount = function(value) {
+  jspb.Message.setField(this, 174, value);
+};
+
+
+/**
+ * repeated RoomUserInfo users = 175;
+ * @return {!Array.<!proto.holdem.pb.RoomUserInfo>}
+ */
+proto.holdem.pb.RoomRecord.prototype.getUsersList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.RoomUserInfo>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.RoomUserInfo, 175));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.RoomUserInfo>} value */
+proto.holdem.pb.RoomRecord.prototype.setUsersList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 175, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.RoomUserInfo=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.RoomUserInfo}
+ */
+proto.holdem.pb.RoomRecord.prototype.addUsers = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 175, opt_value, proto.holdem.pb.RoomUserInfo, opt_index);
+};
+
+
+proto.holdem.pb.RoomRecord.prototype.clearUsersList = function() {
+  this.setUsersList([]);
+};
+
+
+/**
+ * repeated uint64 relate_club_ids = 176;
+ * @return {!Array.<number>}
+ */
+proto.holdem.pb.RoomRecord.prototype.getRelateClubIdsList = function() {
+  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 176));
+};
+
+
+/** @param {!Array.<number>} value */
+proto.holdem.pb.RoomRecord.prototype.setRelateClubIdsList = function(value) {
+  jspb.Message.setField(this, 176, value || []);
+};
+
+
+/**
+ * @param {!number} value
+ * @param {number=} opt_index
+ */
+proto.holdem.pb.RoomRecord.prototype.addRelateClubIds = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 176, value, opt_index);
+};
+
+
+proto.holdem.pb.RoomRecord.prototype.clearRelateClubIdsList = function() {
+  this.setRelateClubIdsList([]);
+};
+
+
+/**
+ * repeated RoomTribeClubRelate relate_tribe_club_list = 177;
+ * @return {!Array.<!proto.holdem.pb.RoomTribeClubRelate>}
+ */
+proto.holdem.pb.RoomRecord.prototype.getRelateTribeClubListList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.RoomTribeClubRelate>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.RoomTribeClubRelate, 177));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.RoomTribeClubRelate>} value */
+proto.holdem.pb.RoomRecord.prototype.setRelateTribeClubListList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 177, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.RoomTribeClubRelate=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.RoomTribeClubRelate}
+ */
+proto.holdem.pb.RoomRecord.prototype.addRelateTribeClubList = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 177, opt_value, proto.holdem.pb.RoomTribeClubRelate, opt_index);
+};
+
+
+proto.holdem.pb.RoomRecord.prototype.clearRelateTribeClubListList = function() {
+  this.setRelateTribeClubListList([]);
+};
+
+
+/**
+ * optional string currency = 178;
+ * @return {string}
+ */
+proto.holdem.pb.RoomRecord.prototype.getCurrency = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 178, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.RoomRecord.prototype.setCurrency = function(value) {
+  jspb.Message.setField(this, 178, value);
+};
+
+
+/**
+ * optional CowboyConfig cowboy_config = 179;
+ * @return {?proto.holdem.pb.CowboyConfig}
+ */
+proto.holdem.pb.RoomRecord.prototype.getCowboyConfig = function() {
+  return /** @type{?proto.holdem.pb.CowboyConfig} */ (
+    jspb.Message.getWrapperField(this, proto.holdem.pb.CowboyConfig, 179));
+};
+
+
+/** @param {?proto.holdem.pb.CowboyConfig|undefined} value */
+proto.holdem.pb.RoomRecord.prototype.setCowboyConfig = function(value) {
+  jspb.Message.setWrapperField(this, 179, value);
+};
+
+
+proto.holdem.pb.RoomRecord.prototype.clearCowboyConfig = function() {
+  this.setCowboyConfig(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.holdem.pb.RoomRecord.prototype.hasCowboyConfig = function() {
+  return jspb.Message.getField(this, 179) != null;
+};
+
+
 
 /**
  * Generated by JsPbCodeGenerator.
@@ -21043,12 +21812,19 @@ proto.holdem.pb.RoomAdmin.prototype.setIsAdmin = function(value) {
  * @constructor
  */
 proto.holdem.pb.MTTRecord = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.holdem.pb.MTTRecord.repeatedFields_, null);
 };
 goog.inherits(proto.holdem.pb.MTTRecord, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   proto.holdem.pb.MTTRecord.displayName = 'proto.holdem.pb.MTTRecord';
 }
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.holdem.pb.MTTRecord.repeatedFields_ = [123];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -21193,7 +21969,23 @@ proto.holdem.pb.MTTRecord.toObject = function(includeInstance, msg) {
     forceVideoTimingFinals: jspb.Message.getFieldWithDefault(msg, 113, 0),
     forceVideoClose: jspb.Message.getFieldWithDefault(msg, 114, 0),
     forceVideoCloseTime: jspb.Message.getFieldWithDefault(msg, 115, 0),
-    forceVideoStartTime: jspb.Message.getFieldWithDefault(msg, 116, 0)
+    forceVideoStartTime: jspb.Message.getFieldWithDefault(msg, 116, 0),
+    forceCloseTime: jspb.Message.getFieldWithDefault(msg, 117, 0),
+    chatType: jspb.Message.getFieldWithDefault(msg, 118, 0),
+    forceVideoTimingReorg: jspb.Message.getFieldWithDefault(msg, 119, 0),
+    forceVideoTimingUpBlind: jspb.Message.getFieldWithDefault(msg, 120, 0),
+    forceVideoTimingUpBlindTimes: jspb.Message.getFieldWithDefault(msg, 121, 0),
+    delayTimeType: jspb.Message.getFieldWithDefault(msg, 122, 0),
+    blindLevelDelayTimeTableList: jspb.Message.toObjectList(msg.getBlindLevelDelayTimeTableList(),
+    proto.holdem.pb.MTTBlindLevelDelayTime.toObject, includeInstance),
+    maxDelayTimes: jspb.Message.getFieldWithDefault(msg, 124, 0),
+    autoDelayTime: jspb.Message.getFieldWithDefault(msg, 125, 0),
+    mjTotalHands: jspb.Message.getFieldWithDefault(msg, 131, 0),
+    mjShuffleHands: jspb.Message.getFieldWithDefault(msg, 132, 0),
+    mjBlindUpHands: jspb.Message.getFieldWithDefault(msg, 133, 0),
+    invitationCode: jspb.Message.getFieldWithDefault(msg, 134, ""),
+    clubId: jspb.Message.getFieldWithDefault(msg, 135, 0),
+    originType: jspb.Message.getFieldWithDefault(msg, 136, 0)
   };
 
   if (includeInstance) {
@@ -21693,6 +22485,67 @@ proto.holdem.pb.MTTRecord.deserializeBinaryFromReader = function(msg, reader) {
     case 116:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setForceVideoStartTime(value);
+      break;
+    case 117:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setForceCloseTime(value);
+      break;
+    case 118:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setChatType(value);
+      break;
+    case 119:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setForceVideoTimingReorg(value);
+      break;
+    case 120:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setForceVideoTimingUpBlind(value);
+      break;
+    case 121:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setForceVideoTimingUpBlindTimes(value);
+      break;
+    case 122:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setDelayTimeType(value);
+      break;
+    case 123:
+      var value = new proto.holdem.pb.MTTBlindLevelDelayTime;
+      reader.readMessage(value,proto.holdem.pb.MTTBlindLevelDelayTime.deserializeBinaryFromReader);
+      msg.addBlindLevelDelayTimeTable(value);
+      break;
+    case 124:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setMaxDelayTimes(value);
+      break;
+    case 125:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAutoDelayTime(value);
+      break;
+    case 131:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMjTotalHands(value);
+      break;
+    case 132:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMjShuffleHands(value);
+      break;
+    case 133:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMjBlindUpHands(value);
+      break;
+    case 134:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setInvitationCode(value);
+      break;
+    case 135:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setClubId(value);
+      break;
+    case 136:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setOriginType(value);
       break;
     default:
       reader.skipField();
@@ -22532,6 +23385,112 @@ proto.holdem.pb.MTTRecord.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt64(
       116,
+      f
+    );
+  }
+  f = message.getForceCloseTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      117,
+      f
+    );
+  }
+  f = message.getChatType();
+  if (f !== 0) {
+    writer.writeInt32(
+      118,
+      f
+    );
+  }
+  f = message.getForceVideoTimingReorg();
+  if (f !== 0) {
+    writer.writeInt32(
+      119,
+      f
+    );
+  }
+  f = message.getForceVideoTimingUpBlind();
+  if (f !== 0) {
+    writer.writeInt32(
+      120,
+      f
+    );
+  }
+  f = message.getForceVideoTimingUpBlindTimes();
+  if (f !== 0) {
+    writer.writeInt32(
+      121,
+      f
+    );
+  }
+  f = message.getDelayTimeType();
+  if (f !== 0) {
+    writer.writeInt32(
+      122,
+      f
+    );
+  }
+  f = message.getBlindLevelDelayTimeTableList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      123,
+      f,
+      proto.holdem.pb.MTTBlindLevelDelayTime.serializeBinaryToWriter
+    );
+  }
+  f = message.getMaxDelayTimes();
+  if (f !== 0) {
+    writer.writeUint32(
+      124,
+      f
+    );
+  }
+  f = message.getAutoDelayTime();
+  if (f !== 0) {
+    writer.writeInt32(
+      125,
+      f
+    );
+  }
+  f = message.getMjTotalHands();
+  if (f !== 0) {
+    writer.writeInt32(
+      131,
+      f
+    );
+  }
+  f = message.getMjShuffleHands();
+  if (f !== 0) {
+    writer.writeInt32(
+      132,
+      f
+    );
+  }
+  f = message.getMjBlindUpHands();
+  if (f !== 0) {
+    writer.writeInt32(
+      133,
+      f
+    );
+  }
+  f = message.getInvitationCode();
+  if (f.length > 0) {
+    writer.writeString(
+      134,
+      f
+    );
+  }
+  f = message.getClubId();
+  if (f !== 0) {
+    writer.writeUint64(
+      135,
+      f
+    );
+  }
+  f = message.getOriginType();
+  if (f !== 0) {
+    writer.writeInt32(
+      136,
       f
     );
   }
@@ -24275,6 +25234,247 @@ proto.holdem.pb.MTTRecord.prototype.getForceVideoStartTime = function() {
 /** @param {number} value */
 proto.holdem.pb.MTTRecord.prototype.setForceVideoStartTime = function(value) {
   jspb.Message.setField(this, 116, value);
+};
+
+
+/**
+ * optional int64 force_close_time = 117;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getForceCloseTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 117, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setForceCloseTime = function(value) {
+  jspb.Message.setField(this, 117, value);
+};
+
+
+/**
+ * optional int32 chat_type = 118;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getChatType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 118, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setChatType = function(value) {
+  jspb.Message.setField(this, 118, value);
+};
+
+
+/**
+ * optional int32 force_video_timing_reorg = 119;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getForceVideoTimingReorg = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 119, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setForceVideoTimingReorg = function(value) {
+  jspb.Message.setField(this, 119, value);
+};
+
+
+/**
+ * optional int32 force_video_timing_up_blind = 120;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getForceVideoTimingUpBlind = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 120, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setForceVideoTimingUpBlind = function(value) {
+  jspb.Message.setField(this, 120, value);
+};
+
+
+/**
+ * optional int32 force_video_timing_up_blind_times = 121;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getForceVideoTimingUpBlindTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 121, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setForceVideoTimingUpBlindTimes = function(value) {
+  jspb.Message.setField(this, 121, value);
+};
+
+
+/**
+ * optional int32 delay_time_type = 122;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getDelayTimeType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 122, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setDelayTimeType = function(value) {
+  jspb.Message.setField(this, 122, value);
+};
+
+
+/**
+ * repeated MTTBlindLevelDelayTime blind_level_delay_time_table = 123;
+ * @return {!Array.<!proto.holdem.pb.MTTBlindLevelDelayTime>}
+ */
+proto.holdem.pb.MTTRecord.prototype.getBlindLevelDelayTimeTableList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.MTTBlindLevelDelayTime>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.MTTBlindLevelDelayTime, 123));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.MTTBlindLevelDelayTime>} value */
+proto.holdem.pb.MTTRecord.prototype.setBlindLevelDelayTimeTableList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 123, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.MTTBlindLevelDelayTime=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.MTTBlindLevelDelayTime}
+ */
+proto.holdem.pb.MTTRecord.prototype.addBlindLevelDelayTimeTable = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 123, opt_value, proto.holdem.pb.MTTBlindLevelDelayTime, opt_index);
+};
+
+
+proto.holdem.pb.MTTRecord.prototype.clearBlindLevelDelayTimeTableList = function() {
+  this.setBlindLevelDelayTimeTableList([]);
+};
+
+
+/**
+ * optional uint32 max_delay_times = 124;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getMaxDelayTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 124, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setMaxDelayTimes = function(value) {
+  jspb.Message.setField(this, 124, value);
+};
+
+
+/**
+ * optional int32 auto_delay_time = 125;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getAutoDelayTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 125, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setAutoDelayTime = function(value) {
+  jspb.Message.setField(this, 125, value);
+};
+
+
+/**
+ * optional int32 mj_total_hands = 131;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getMjTotalHands = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 131, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setMjTotalHands = function(value) {
+  jspb.Message.setField(this, 131, value);
+};
+
+
+/**
+ * optional int32 mj_shuffle_hands = 132;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getMjShuffleHands = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 132, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setMjShuffleHands = function(value) {
+  jspb.Message.setField(this, 132, value);
+};
+
+
+/**
+ * optional int32 mj_blind_up_hands = 133;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getMjBlindUpHands = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 133, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setMjBlindUpHands = function(value) {
+  jspb.Message.setField(this, 133, value);
+};
+
+
+/**
+ * optional string invitation_code = 134;
+ * @return {string}
+ */
+proto.holdem.pb.MTTRecord.prototype.getInvitationCode = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 134, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.MTTRecord.prototype.setInvitationCode = function(value) {
+  jspb.Message.setField(this, 134, value);
+};
+
+
+/**
+ * optional uint64 club_id = 135;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getClubId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 135, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setClubId = function(value) {
+  jspb.Message.setField(this, 135, value);
+};
+
+
+/**
+ * optional int32 origin_type = 136;
+ * @return {number}
+ */
+proto.holdem.pb.MTTRecord.prototype.getOriginType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 136, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTRecord.prototype.setOriginType = function(value) {
+  jspb.Message.setField(this, 136, value);
 };
 
 
@@ -28054,12 +29254,19 @@ proto.holdem.pb.RoomTemplateUpdateInfo.prototype.setUpdateType = function(value)
  * @constructor
  */
 proto.holdem.pb.JackpotTemplateUpdateInfo = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.holdem.pb.JackpotTemplateUpdateInfo.repeatedFields_, null);
 };
 goog.inherits(proto.holdem.pb.JackpotTemplateUpdateInfo, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   proto.holdem.pb.JackpotTemplateUpdateInfo.displayName = 'proto.holdem.pb.JackpotTemplateUpdateInfo';
 }
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.holdem.pb.JackpotTemplateUpdateInfo.repeatedFields_ = [6];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -28091,7 +29298,11 @@ proto.holdem.pb.JackpotTemplateUpdateInfo.toObject = function(includeInstance, m
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, 0),
     clubId: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    updateType: jspb.Message.getFieldWithDefault(msg, 3, 0)
+    updateType: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    tribeId: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    gold: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    awardListList: jspb.Message.toObjectList(msg.getAwardListList(),
+    proto.holdem.pb.JackpotAwardLog.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -28139,6 +29350,19 @@ proto.holdem.pb.JackpotTemplateUpdateInfo.deserializeBinaryFromReader = function
     case 3:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setUpdateType(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setTribeId(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setGold(value);
+      break;
+    case 6:
+      var value = new proto.holdem.pb.JackpotAwardLog;
+      reader.readMessage(value,proto.holdem.pb.JackpotAwardLog.deserializeBinaryFromReader);
+      msg.addAwardList(value);
       break;
     default:
       reader.skipField();
@@ -28190,6 +29414,28 @@ proto.holdem.pb.JackpotTemplateUpdateInfo.serializeBinaryToWriter = function(mes
       f
     );
   }
+  f = message.getTribeId();
+  if (f !== 0) {
+    writer.writeUint64(
+      4,
+      f
+    );
+  }
+  f = message.getGold();
+  if (f !== 0) {
+    writer.writeInt64(
+      5,
+      f
+    );
+  }
+  f = message.getAwardListList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      6,
+      f,
+      proto.holdem.pb.JackpotAwardLog.serializeBinaryToWriter
+    );
+  }
 };
 
 
@@ -28235,6 +29481,67 @@ proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.getUpdateType = function() {
 /** @param {number} value */
 proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.setUpdateType = function(value) {
   jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional uint64 tribe_id = 4;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.getTribeId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.setTribeId = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional int64 gold = 5;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.getGold = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.setGold = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * repeated JackpotAwardLog award_list = 6;
+ * @return {!Array.<!proto.holdem.pb.JackpotAwardLog>}
+ */
+proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.getAwardListList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.JackpotAwardLog>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.JackpotAwardLog, 6));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.JackpotAwardLog>} value */
+proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.setAwardListList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 6, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.JackpotAwardLog=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.JackpotAwardLog}
+ */
+proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.addAwardList = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 6, opt_value, proto.holdem.pb.JackpotAwardLog, opt_index);
+};
+
+
+proto.holdem.pb.JackpotTemplateUpdateInfo.prototype.clearAwardListList = function() {
+  this.setAwardListList([]);
 };
 
 
@@ -28734,6 +30041,6117 @@ proto.holdem.pb.MyWheelInfo.prototype.getUserParticipateState = function() {
 
 /** @param {number} value */
 proto.holdem.pb.MyWheelInfo.prototype.setUserParticipateState = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.BlackInfo = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.BlackInfo, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.BlackInfo.displayName = 'proto.holdem.pb.BlackInfo';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.BlackInfo.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.BlackInfo.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.BlackInfo} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.BlackInfo.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    tribeId: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    tribeRid: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    tribeName: jspb.Message.getFieldWithDefault(msg, 3, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.BlackInfo}
+ */
+proto.holdem.pb.BlackInfo.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.BlackInfo;
+  return proto.holdem.pb.BlackInfo.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.BlackInfo} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.BlackInfo}
+ */
+proto.holdem.pb.BlackInfo.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setTribeId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setTribeRid(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTribeName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.BlackInfo.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.BlackInfo.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.BlackInfo} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.BlackInfo.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getTribeId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getTribeRid();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+  f = message.getTribeName();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 tribe_id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.BlackInfo.prototype.getTribeId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.BlackInfo.prototype.setTribeId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 tribe_rid = 2;
+ * @return {number}
+ */
+proto.holdem.pb.BlackInfo.prototype.getTribeRid = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.BlackInfo.prototype.setTribeRid = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional string tribe_name = 3;
+ * @return {string}
+ */
+proto.holdem.pb.BlackInfo.prototype.getTribeName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.BlackInfo.prototype.setTribeName = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.MTTBlindLevelDelayTime, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.MTTBlindLevelDelayTime.displayName = 'proto.holdem.pb.MTTBlindLevelDelayTime';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.MTTBlindLevelDelayTime.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.MTTBlindLevelDelayTime} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    level: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    smallBlind: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    ante: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    delayTimes: jspb.Message.getFieldWithDefault(msg, 4, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.MTTBlindLevelDelayTime}
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.MTTBlindLevelDelayTime;
+  return proto.holdem.pb.MTTBlindLevelDelayTime.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.MTTBlindLevelDelayTime} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.MTTBlindLevelDelayTime}
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setLevel(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setSmallBlind(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setAnte(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setDelayTimes(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.MTTBlindLevelDelayTime.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.MTTBlindLevelDelayTime} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getLevel();
+  if (f !== 0) {
+    writer.writeUint32(
+      1,
+      f
+    );
+  }
+  f = message.getSmallBlind();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+  f = message.getAnte();
+  if (f !== 0) {
+    writer.writeUint64(
+      3,
+      f
+    );
+  }
+  f = message.getDelayTimes();
+  if (f !== 0) {
+    writer.writeUint32(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint32 level = 1;
+ * @return {number}
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.getLevel = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.setLevel = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 small_blind = 2;
+ * @return {number}
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.getSmallBlind = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.setSmallBlind = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional uint64 ante = 3;
+ * @return {number}
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.getAnte = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.setAnte = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional uint32 delay_times = 4;
+ * @return {number}
+ */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.getDelayTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTBlindLevelDelayTime.prototype.setDelayTimes = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.RoomUserInfo = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.RoomUserInfo, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.RoomUserInfo.displayName = 'proto.holdem.pb.RoomUserInfo';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.RoomUserInfo.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.RoomUserInfo.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.RoomUserInfo} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.RoomUserInfo.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    un: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    name: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    avatar: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    seat: jspb.Message.getFieldWithDefault(msg, 5, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.RoomUserInfo}
+ */
+proto.holdem.pb.RoomUserInfo.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.RoomUserInfo;
+  return proto.holdem.pb.RoomUserInfo.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.RoomUserInfo} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.RoomUserInfo}
+ */
+proto.holdem.pb.RoomUserInfo.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setUn(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAvatar(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setSeat(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.RoomUserInfo.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.RoomUserInfo.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.RoomUserInfo} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.RoomUserInfo.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getUn();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+  f = message.getName();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = message.getAvatar();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
+  f = message.getSeat();
+  if (f !== 0) {
+    writer.writeInt32(
+      5,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.RoomUserInfo.prototype.getId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomUserInfo.prototype.setId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 un = 2;
+ * @return {number}
+ */
+proto.holdem.pb.RoomUserInfo.prototype.getUn = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomUserInfo.prototype.setUn = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional string name = 3;
+ * @return {string}
+ */
+proto.holdem.pb.RoomUserInfo.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.RoomUserInfo.prototype.setName = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional string avatar = 4;
+ * @return {string}
+ */
+proto.holdem.pb.RoomUserInfo.prototype.getAvatar = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.RoomUserInfo.prototype.setAvatar = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional int32 seat = 5;
+ * @return {number}
+ */
+proto.holdem.pb.RoomUserInfo.prototype.getSeat = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomUserInfo.prototype.setSeat = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.RoomTribeClubRelate = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.holdem.pb.RoomTribeClubRelate.repeatedFields_, null);
+};
+goog.inherits(proto.holdem.pb.RoomTribeClubRelate, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.RoomTribeClubRelate.displayName = 'proto.holdem.pb.RoomTribeClubRelate';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.holdem.pb.RoomTribeClubRelate.repeatedFields_ = [2];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.RoomTribeClubRelate.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.RoomTribeClubRelate.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.RoomTribeClubRelate} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.RoomTribeClubRelate.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    tribeId: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    clubIdsList: jspb.Message.getRepeatedField(msg, 2)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.RoomTribeClubRelate}
+ */
+proto.holdem.pb.RoomTribeClubRelate.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.RoomTribeClubRelate;
+  return proto.holdem.pb.RoomTribeClubRelate.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.RoomTribeClubRelate} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.RoomTribeClubRelate}
+ */
+proto.holdem.pb.RoomTribeClubRelate.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setTribeId(value);
+      break;
+    case 2:
+      var value = /** @type {!Array.<number>} */ (reader.readPackedUint64());
+      msg.setClubIdsList(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.RoomTribeClubRelate.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.RoomTribeClubRelate.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.RoomTribeClubRelate} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.RoomTribeClubRelate.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getTribeId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getClubIdsList();
+  if (f.length > 0) {
+    writer.writePackedUint64(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 tribe_id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.RoomTribeClubRelate.prototype.getTribeId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomTribeClubRelate.prototype.setTribeId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * repeated uint64 club_ids = 2;
+ * @return {!Array.<number>}
+ */
+proto.holdem.pb.RoomTribeClubRelate.prototype.getClubIdsList = function() {
+  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 2));
+};
+
+
+/** @param {!Array.<number>} value */
+proto.holdem.pb.RoomTribeClubRelate.prototype.setClubIdsList = function(value) {
+  jspb.Message.setField(this, 2, value || []);
+};
+
+
+/**
+ * @param {!number} value
+ * @param {number=} opt_index
+ */
+proto.holdem.pb.RoomTribeClubRelate.prototype.addClubIds = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 2, value, opt_index);
+};
+
+
+proto.holdem.pb.RoomTribeClubRelate.prototype.clearClubIdsList = function() {
+  this.setClubIdsList([]);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.RoomChange = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.holdem.pb.RoomChange.repeatedFields_, null);
+};
+goog.inherits(proto.holdem.pb.RoomChange, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.RoomChange.displayName = 'proto.holdem.pb.RoomChange';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.holdem.pb.RoomChange.repeatedFields_ = [5,6,7];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.RoomChange.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.RoomChange.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.RoomChange} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.RoomChange.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    rid: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    status: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    emptySeat: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    handNum: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    usersList: jspb.Message.toObjectList(msg.getUsersList(),
+    proto.holdem.pb.RoomUserInfo.toObject, includeInstance),
+    relateClubIdsList: jspb.Message.getRepeatedField(msg, 6),
+    relateTribeClubListList: jspb.Message.toObjectList(msg.getRelateTribeClubListList(),
+    proto.holdem.pb.RoomTribeClubRelate.toObject, includeInstance)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.RoomChange}
+ */
+proto.holdem.pb.RoomChange.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.RoomChange;
+  return proto.holdem.pb.RoomChange.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.RoomChange} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.RoomChange}
+ */
+proto.holdem.pb.RoomChange.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setRid(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setStatus(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setEmptySeat(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setHandNum(value);
+      break;
+    case 5:
+      var value = new proto.holdem.pb.RoomUserInfo;
+      reader.readMessage(value,proto.holdem.pb.RoomUserInfo.deserializeBinaryFromReader);
+      msg.addUsers(value);
+      break;
+    case 6:
+      var value = /** @type {!Array.<number>} */ (reader.readPackedUint64());
+      msg.setRelateClubIdsList(value);
+      break;
+    case 7:
+      var value = new proto.holdem.pb.RoomTribeClubRelate;
+      reader.readMessage(value,proto.holdem.pb.RoomTribeClubRelate.deserializeBinaryFromReader);
+      msg.addRelateTribeClubList(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.RoomChange.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.RoomChange.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.RoomChange} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.RoomChange.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getRid();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getStatus();
+  if (f !== 0) {
+    writer.writeInt32(
+      2,
+      f
+    );
+  }
+  f = message.getEmptySeat();
+  if (f !== 0) {
+    writer.writeInt32(
+      3,
+      f
+    );
+  }
+  f = message.getHandNum();
+  if (f !== 0) {
+    writer.writeUint32(
+      4,
+      f
+    );
+  }
+  f = message.getUsersList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      5,
+      f,
+      proto.holdem.pb.RoomUserInfo.serializeBinaryToWriter
+    );
+  }
+  f = message.getRelateClubIdsList();
+  if (f.length > 0) {
+    writer.writePackedUint64(
+      6,
+      f
+    );
+  }
+  f = message.getRelateTribeClubListList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      7,
+      f,
+      proto.holdem.pb.RoomTribeClubRelate.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional uint64 rid = 1;
+ * @return {number}
+ */
+proto.holdem.pb.RoomChange.prototype.getRid = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomChange.prototype.setRid = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional int32 status = 2;
+ * @return {number}
+ */
+proto.holdem.pb.RoomChange.prototype.getStatus = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomChange.prototype.setStatus = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional int32 empty_seat = 3;
+ * @return {number}
+ */
+proto.holdem.pb.RoomChange.prototype.getEmptySeat = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomChange.prototype.setEmptySeat = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional uint32 hand_num = 4;
+ * @return {number}
+ */
+proto.holdem.pb.RoomChange.prototype.getHandNum = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.RoomChange.prototype.setHandNum = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * repeated RoomUserInfo users = 5;
+ * @return {!Array.<!proto.holdem.pb.RoomUserInfo>}
+ */
+proto.holdem.pb.RoomChange.prototype.getUsersList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.RoomUserInfo>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.RoomUserInfo, 5));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.RoomUserInfo>} value */
+proto.holdem.pb.RoomChange.prototype.setUsersList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 5, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.RoomUserInfo=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.RoomUserInfo}
+ */
+proto.holdem.pb.RoomChange.prototype.addUsers = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.holdem.pb.RoomUserInfo, opt_index);
+};
+
+
+proto.holdem.pb.RoomChange.prototype.clearUsersList = function() {
+  this.setUsersList([]);
+};
+
+
+/**
+ * repeated uint64 relate_club_ids = 6;
+ * @return {!Array.<number>}
+ */
+proto.holdem.pb.RoomChange.prototype.getRelateClubIdsList = function() {
+  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 6));
+};
+
+
+/** @param {!Array.<number>} value */
+proto.holdem.pb.RoomChange.prototype.setRelateClubIdsList = function(value) {
+  jspb.Message.setField(this, 6, value || []);
+};
+
+
+/**
+ * @param {!number} value
+ * @param {number=} opt_index
+ */
+proto.holdem.pb.RoomChange.prototype.addRelateClubIds = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 6, value, opt_index);
+};
+
+
+proto.holdem.pb.RoomChange.prototype.clearRelateClubIdsList = function() {
+  this.setRelateClubIdsList([]);
+};
+
+
+/**
+ * repeated RoomTribeClubRelate relate_tribe_club_list = 7;
+ * @return {!Array.<!proto.holdem.pb.RoomTribeClubRelate>}
+ */
+proto.holdem.pb.RoomChange.prototype.getRelateTribeClubListList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.RoomTribeClubRelate>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.RoomTribeClubRelate, 7));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.RoomTribeClubRelate>} value */
+proto.holdem.pb.RoomChange.prototype.setRelateTribeClubListList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 7, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.RoomTribeClubRelate=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.RoomTribeClubRelate}
+ */
+proto.holdem.pb.RoomChange.prototype.addRelateTribeClubList = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.holdem.pb.RoomTribeClubRelate, opt_index);
+};
+
+
+proto.holdem.pb.RoomChange.prototype.clearRelateTribeClubListList = function() {
+  this.setRelateTribeClubListList([]);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.CowboyConfig = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.CowboyConfig, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.CowboyConfig.displayName = 'proto.holdem.pb.CowboyConfig';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.CowboyConfig.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.CowboyConfig.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.CowboyConfig} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.CowboyConfig.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    maxAmountMin: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    maxAmountMax: jspb.Message.getFieldWithDefault(msg, 2, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.CowboyConfig}
+ */
+proto.holdem.pb.CowboyConfig.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.CowboyConfig;
+  return proto.holdem.pb.CowboyConfig.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.CowboyConfig} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.CowboyConfig}
+ */
+proto.holdem.pb.CowboyConfig.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setMaxAmountMin(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setMaxAmountMax(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.CowboyConfig.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.CowboyConfig.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.CowboyConfig} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.CowboyConfig.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getMaxAmountMin();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getMaxAmountMax();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 max_amount_min = 1;
+ * @return {number}
+ */
+proto.holdem.pb.CowboyConfig.prototype.getMaxAmountMin = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.CowboyConfig.prototype.setMaxAmountMin = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 max_amount_max = 2;
+ * @return {number}
+ */
+proto.holdem.pb.CowboyConfig.prototype.getMaxAmountMax = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.CowboyConfig.prototype.setMaxAmountMax = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.UserInsuranceResult = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.UserInsuranceResult, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.UserInsuranceResult.displayName = 'proto.holdem.pb.UserInsuranceResult';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.UserInsuranceResult.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.UserInsuranceResult.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.UserInsuranceResult} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserInsuranceResult.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    rnd: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    insurance: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    insuranceWin: jspb.Message.getFieldWithDefault(msg, 3, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.UserInsuranceResult}
+ */
+proto.holdem.pb.UserInsuranceResult.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.UserInsuranceResult;
+  return proto.holdem.pb.UserInsuranceResult.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.UserInsuranceResult} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.UserInsuranceResult}
+ */
+proto.holdem.pb.UserInsuranceResult.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {!proto.holdem.pb.Def.Round} */ (reader.readEnum());
+      msg.setRnd(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setInsurance(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setInsuranceWin(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.UserInsuranceResult.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.UserInsuranceResult.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.UserInsuranceResult} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserInsuranceResult.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getRnd();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      1,
+      f
+    );
+  }
+  f = message.getInsurance();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+  f = message.getInsuranceWin();
+  if (f !== 0) {
+    writer.writeUint64(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional Def.Round rnd = 1;
+ * @return {!proto.holdem.pb.Def.Round}
+ */
+proto.holdem.pb.UserInsuranceResult.prototype.getRnd = function() {
+  return /** @type {!proto.holdem.pb.Def.Round} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {!proto.holdem.pb.Def.Round} value */
+proto.holdem.pb.UserInsuranceResult.prototype.setRnd = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 insurance = 2;
+ * @return {number}
+ */
+proto.holdem.pb.UserInsuranceResult.prototype.getInsurance = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserInsuranceResult.prototype.setInsurance = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional uint64 insurance_win = 3;
+ * @return {number}
+ */
+proto.holdem.pb.UserInsuranceResult.prototype.getInsuranceWin = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserInsuranceResult.prototype.setInsuranceWin = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.WheelTemplateUpdateInfo, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.WheelTemplateUpdateInfo.displayName = 'proto.holdem.pb.WheelTemplateUpdateInfo';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.WheelTemplateUpdateInfo.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.WheelTemplateUpdateInfo} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    updateType: jspb.Message.getFieldWithDefault(msg, 2, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.WheelTemplateUpdateInfo}
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.WheelTemplateUpdateInfo;
+  return proto.holdem.pb.WheelTemplateUpdateInfo.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.WheelTemplateUpdateInfo} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.WheelTemplateUpdateInfo}
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setUpdateType(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.WheelTemplateUpdateInfo.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.WheelTemplateUpdateInfo} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getUpdateType();
+  if (f !== 0) {
+    writer.writeInt32(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo.prototype.getId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.WheelTemplateUpdateInfo.prototype.setId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional int32 update_type = 2;
+ * @return {number}
+ */
+proto.holdem.pb.WheelTemplateUpdateInfo.prototype.getUpdateType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.WheelTemplateUpdateInfo.prototype.setUpdateType = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.JackpotAwardLog = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.JackpotAwardLog, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.JackpotAwardLog.displayName = 'proto.holdem.pb.JackpotAwardLog';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.JackpotAwardLog.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.JackpotAwardLog} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.JackpotAwardLog.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    userId: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    userRid: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    userName: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    roomId: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    roomName: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    roomMultiLangNames: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    gameType: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    pokerType: jspb.Message.getFieldWithDefault(msg, 8, 0),
+    limitBetType: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    bombpot: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    cardsType: jspb.Message.getFieldWithDefault(msg, 11, 0),
+    goldChange: jspb.Message.getFieldWithDefault(msg, 12, 0),
+    cardData: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    createTime: jspb.Message.getFieldWithDefault(msg, 14, 0),
+    jackpotId: jspb.Message.getFieldWithDefault(msg, 15, 0),
+    smallBlind: jspb.Message.getFieldWithDefault(msg, 16, 0),
+    ante: jspb.Message.getFieldWithDefault(msg, 17, 0),
+    userAvatar: jspb.Message.getFieldWithDefault(msg, 18, ""),
+    marsEarth: jspb.Message.getFieldWithDefault(msg, 19, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.JackpotAwardLog}
+ */
+proto.holdem.pb.JackpotAwardLog.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.JackpotAwardLog;
+  return proto.holdem.pb.JackpotAwardLog.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.JackpotAwardLog} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.JackpotAwardLog}
+ */
+proto.holdem.pb.JackpotAwardLog.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setUserId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setUserRid(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUserName(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setRoomId(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setRoomName(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setRoomMultiLangNames(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setGameType(value);
+      break;
+    case 8:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPokerType(value);
+      break;
+    case 9:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setLimitBetType(value);
+      break;
+    case 10:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setBombpot(value);
+      break;
+    case 11:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setCardsType(value);
+      break;
+    case 12:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setGoldChange(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setCardData(value);
+      break;
+    case 14:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setCreateTime(value);
+      break;
+    case 15:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setJackpotId(value);
+      break;
+    case 16:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setSmallBlind(value);
+      break;
+    case 17:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setAnte(value);
+      break;
+    case 18:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUserAvatar(value);
+      break;
+    case 19:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMarsEarth(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.JackpotAwardLog.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.JackpotAwardLog} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.JackpotAwardLog.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getUserId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getUserRid();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+  f = message.getUserName();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = message.getRoomId();
+  if (f !== 0) {
+    writer.writeUint64(
+      4,
+      f
+    );
+  }
+  f = message.getRoomName();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = message.getRoomMultiLangNames();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
+  f = message.getGameType();
+  if (f !== 0) {
+    writer.writeInt32(
+      7,
+      f
+    );
+  }
+  f = message.getPokerType();
+  if (f !== 0) {
+    writer.writeInt32(
+      8,
+      f
+    );
+  }
+  f = message.getLimitBetType();
+  if (f !== 0) {
+    writer.writeInt32(
+      9,
+      f
+    );
+  }
+  f = message.getBombpot();
+  if (f !== 0) {
+    writer.writeInt32(
+      10,
+      f
+    );
+  }
+  f = message.getCardsType();
+  if (f !== 0) {
+    writer.writeInt32(
+      11,
+      f
+    );
+  }
+  f = message.getGoldChange();
+  if (f !== 0) {
+    writer.writeInt64(
+      12,
+      f
+    );
+  }
+  f = message.getCardData();
+  if (f.length > 0) {
+    writer.writeString(
+      13,
+      f
+    );
+  }
+  f = message.getCreateTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      14,
+      f
+    );
+  }
+  f = message.getJackpotId();
+  if (f !== 0) {
+    writer.writeUint64(
+      15,
+      f
+    );
+  }
+  f = message.getSmallBlind();
+  if (f !== 0) {
+    writer.writeUint64(
+      16,
+      f
+    );
+  }
+  f = message.getAnte();
+  if (f !== 0) {
+    writer.writeUint64(
+      17,
+      f
+    );
+  }
+  f = message.getUserAvatar();
+  if (f.length > 0) {
+    writer.writeString(
+      18,
+      f
+    );
+  }
+  f = message.getMarsEarth();
+  if (f !== 0) {
+    writer.writeInt32(
+      19,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 user_id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getUserId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setUserId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 user_rid = 2;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getUserRid = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setUserRid = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional string user_name = 3;
+ * @return {string}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getUserName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setUserName = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional uint64 room_id = 4;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getRoomId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setRoomId = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional string room_name = 5;
+ * @return {string}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getRoomName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setRoomName = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * optional string room_multi_lang_names = 6;
+ * @return {string}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getRoomMultiLangNames = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setRoomMultiLangNames = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+/**
+ * optional int32 game_type = 7;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getGameType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setGameType = function(value) {
+  jspb.Message.setField(this, 7, value);
+};
+
+
+/**
+ * optional int32 poker_type = 8;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getPokerType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 8, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setPokerType = function(value) {
+  jspb.Message.setField(this, 8, value);
+};
+
+
+/**
+ * optional int32 limit_bet_type = 9;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getLimitBetType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setLimitBetType = function(value) {
+  jspb.Message.setField(this, 9, value);
+};
+
+
+/**
+ * optional int32 bombpot = 10;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getBombpot = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setBombpot = function(value) {
+  jspb.Message.setField(this, 10, value);
+};
+
+
+/**
+ * optional int32 cards_type = 11;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getCardsType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 11, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setCardsType = function(value) {
+  jspb.Message.setField(this, 11, value);
+};
+
+
+/**
+ * optional int64 gold_change = 12;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getGoldChange = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setGoldChange = function(value) {
+  jspb.Message.setField(this, 12, value);
+};
+
+
+/**
+ * optional string card_data = 13;
+ * @return {string}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getCardData = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setCardData = function(value) {
+  jspb.Message.setField(this, 13, value);
+};
+
+
+/**
+ * optional int64 create_time = 14;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getCreateTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 14, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setCreateTime = function(value) {
+  jspb.Message.setField(this, 14, value);
+};
+
+
+/**
+ * optional uint64 jackpot_id = 15;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getJackpotId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 15, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setJackpotId = function(value) {
+  jspb.Message.setField(this, 15, value);
+};
+
+
+/**
+ * optional uint64 small_blind = 16;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getSmallBlind = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 16, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setSmallBlind = function(value) {
+  jspb.Message.setField(this, 16, value);
+};
+
+
+/**
+ * optional uint64 ante = 17;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getAnte = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 17, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setAnte = function(value) {
+  jspb.Message.setField(this, 17, value);
+};
+
+
+/**
+ * optional string user_avatar = 18;
+ * @return {string}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getUserAvatar = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 18, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setUserAvatar = function(value) {
+  jspb.Message.setField(this, 18, value);
+};
+
+
+/**
+ * optional int32 mars_earth = 19;
+ * @return {number}
+ */
+proto.holdem.pb.JackpotAwardLog.prototype.getMarsEarth = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 19, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.JackpotAwardLog.prototype.setMarsEarth = function(value) {
+  jspb.Message.setField(this, 19, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.UserMttRecord = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.holdem.pb.UserMttRecord.repeatedFields_, null);
+};
+goog.inherits(proto.holdem.pb.UserMttRecord, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.UserMttRecord.displayName = 'proto.holdem.pb.UserMttRecord';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.holdem.pb.UserMttRecord.repeatedFields_ = [22,52,53];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.UserMttRecord.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.UserMttRecord.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.UserMttRecord} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserMttRecord.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    matchId: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    startTime: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    status: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    upblindInterval: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    totalRebuyTimes: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    applyFeePool: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    applyFeeService: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    applyFeeHunter: jspb.Message.getFieldWithDefault(msg, 8, 0),
+    prizeBasePool: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    goldType: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    antiCheatType: jspb.Message.getFieldWithDefault(msg, 11, 0),
+    antiCheatVideoType: jspb.Message.getFieldWithDefault(msg, 12, 0),
+    type: jspb.Message.getFieldWithDefault(msg, 13, 0),
+    limitMin: jspb.Message.getFieldWithDefault(msg, 14, 0),
+    initialScore: jspb.Message.getFieldWithDefault(msg, 15, 0),
+    totalBuyinTimes: jspb.Message.getFieldWithDefault(msg, 16, 0),
+    joker: jspb.Message.getFieldWithDefault(msg, 17, 0),
+    jokerCount: jspb.Message.getFieldWithDefault(msg, 18, 0),
+    mjTotalHands: jspb.Message.getFieldWithDefault(msg, 19, 0),
+    mjBlindUpHands: jspb.Message.getFieldWithDefault(msg, 20, 0),
+    gameIcon: jspb.Message.getFieldWithDefault(msg, 21, ""),
+    prizesList: jspb.Message.toObjectList(msg.getPrizesList(),
+    proto.holdem.pb.MTTPrize.toObject, includeInstance),
+    isAdmin: jspb.Message.getFieldWithDefault(msg, 23, false),
+    isTop: jspb.Message.getFieldWithDefault(msg, 24, 0),
+    name: jspb.Message.getFieldWithDefault(msg, 25, ""),
+    gameType: jspb.Message.getFieldWithDefault(msg, 26, 0),
+    pokerType: jspb.Message.getFieldWithDefault(msg, 27, 0),
+    hunterOn: jspb.Message.getFieldWithDefault(msg, 28, 0),
+    participants: jspb.Message.getFieldWithDefault(msg, 29, 0),
+    alive: jspb.Message.getFieldWithDefault(msg, 30, 0),
+    applyStartTime: jspb.Message.getFieldWithDefault(msg, 31, 0),
+    maxDelayApplyBl: jspb.Message.getFieldWithDefault(msg, 32, 0),
+    rebuyTimes: jspb.Message.getFieldWithDefault(msg, 33, 0),
+    addonBeginBl: jspb.Message.getFieldWithDefault(msg, 34, 0),
+    addonEndBl: jspb.Message.getFieldWithDefault(msg, 35, 0),
+    prizeType: jspb.Message.getFieldWithDefault(msg, 36, 0),
+    propBuyType: jspb.Message.getFieldWithDefault(msg, 37, 0),
+    buyinFreeTimes: jspb.Message.getFieldWithDefault(msg, 38, 0),
+    rebuyFreeTimes: jspb.Message.getFieldWithDefault(msg, 39, 0),
+    multiRatioFreeTimes: jspb.Message.getFieldWithDefault(msg, 40, 0),
+    addonFreeTimes: jspb.Message.getFieldWithDefault(msg, 41, 0),
+    buyinFreeInclSvr: jspb.Message.getFieldWithDefault(msg, 42, 0),
+    rebuyFreeInclSvr: jspb.Message.getFieldWithDefault(msg, 43, 0),
+    multiRatioFreeInclSvr: jspb.Message.getFieldWithDefault(msg, 44, 0),
+    addonFreeInclSvr: jspb.Message.getFieldWithDefault(msg, 45, 0),
+    antiCheatTimelimit: jspb.Message.getFieldWithDefault(msg, 46, 0),
+    videoVerifyType: jspb.Message.getFieldWithDefault(msg, 47, 0),
+    antiCheatOrderType: jspb.Message.getFieldWithDefault(msg, 48, 0),
+    antiCheatOrderMicType: jspb.Message.getFieldWithDefault(msg, 49, 0),
+    mttBannerUrl: jspb.Message.getFieldWithDefault(msg, 50, ""),
+    forceCloseTime: jspb.Message.getFieldWithDefault(msg, 51, 0),
+    relateClubIdsList: jspb.Message.getRepeatedField(msg, 52),
+    relateTribeClubListList: jspb.Message.toObjectList(msg.getRelateTribeClubListList(),
+    proto.holdem.pb.RoomTribeClubRelate.toObject, includeInstance),
+    originType: jspb.Message.getFieldWithDefault(msg, 54, 0),
+    seriesId: jspb.Message.getFieldWithDefault(msg, 55, 0),
+    pinnedTime: jspb.Message.getFieldWithDefault(msg, 56, 0),
+    createTime: jspb.Message.getFieldWithDefault(msg, 57, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.UserMttRecord}
+ */
+proto.holdem.pb.UserMttRecord.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.UserMttRecord;
+  return proto.holdem.pb.UserMttRecord.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.UserMttRecord} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.UserMttRecord}
+ */
+proto.holdem.pb.UserMttRecord.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setMatchId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setStartTime(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setStatus(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setUpblindInterval(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setTotalRebuyTimes(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setApplyFeePool(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setApplyFeeService(value);
+      break;
+    case 8:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setApplyFeeHunter(value);
+      break;
+    case 9:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setPrizeBasePool(value);
+      break;
+    case 10:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setGoldType(value);
+      break;
+    case 11:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAntiCheatType(value);
+      break;
+    case 12:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAntiCheatVideoType(value);
+      break;
+    case 13:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setType(value);
+      break;
+    case 14:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setLimitMin(value);
+      break;
+    case 15:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setInitialScore(value);
+      break;
+    case 16:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setTotalBuyinTimes(value);
+      break;
+    case 17:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setJoker(value);
+      break;
+    case 18:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setJokerCount(value);
+      break;
+    case 19:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMjTotalHands(value);
+      break;
+    case 20:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMjBlindUpHands(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setGameIcon(value);
+      break;
+    case 22:
+      var value = new proto.holdem.pb.MTTPrize;
+      reader.readMessage(value,proto.holdem.pb.MTTPrize.deserializeBinaryFromReader);
+      msg.addPrizes(value);
+      break;
+    case 23:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsAdmin(value);
+      break;
+    case 24:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setIsTop(value);
+      break;
+    case 25:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 26:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setGameType(value);
+      break;
+    case 27:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPokerType(value);
+      break;
+    case 28:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setHunterOn(value);
+      break;
+    case 29:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setParticipants(value);
+      break;
+    case 30:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setAlive(value);
+      break;
+    case 31:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setApplyStartTime(value);
+      break;
+    case 32:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMaxDelayApplyBl(value);
+      break;
+    case 33:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setRebuyTimes(value);
+      break;
+    case 34:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAddonBeginBl(value);
+      break;
+    case 35:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAddonEndBl(value);
+      break;
+    case 36:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPrizeType(value);
+      break;
+    case 37:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPropBuyType(value);
+      break;
+    case 38:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setBuyinFreeTimes(value);
+      break;
+    case 39:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setRebuyFreeTimes(value);
+      break;
+    case 40:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMultiRatioFreeTimes(value);
+      break;
+    case 41:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAddonFreeTimes(value);
+      break;
+    case 42:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setBuyinFreeInclSvr(value);
+      break;
+    case 43:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setRebuyFreeInclSvr(value);
+      break;
+    case 44:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setMultiRatioFreeInclSvr(value);
+      break;
+    case 45:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAddonFreeInclSvr(value);
+      break;
+    case 46:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setAntiCheatTimelimit(value);
+      break;
+    case 47:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setVideoVerifyType(value);
+      break;
+    case 48:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAntiCheatOrderType(value);
+      break;
+    case 49:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAntiCheatOrderMicType(value);
+      break;
+    case 50:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setMttBannerUrl(value);
+      break;
+    case 51:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setForceCloseTime(value);
+      break;
+    case 52:
+      var value = /** @type {!Array.<number>} */ (reader.readPackedUint64());
+      msg.setRelateClubIdsList(value);
+      break;
+    case 53:
+      var value = new proto.holdem.pb.RoomTribeClubRelate;
+      reader.readMessage(value,proto.holdem.pb.RoomTribeClubRelate.deserializeBinaryFromReader);
+      msg.addRelateTribeClubList(value);
+      break;
+    case 54:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setOriginType(value);
+      break;
+    case 55:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setSeriesId(value);
+      break;
+    case 56:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setPinnedTime(value);
+      break;
+    case 57:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setCreateTime(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.UserMttRecord.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.UserMttRecord.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.UserMttRecord} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserMttRecord.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getMatchId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getStartTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      2,
+      f
+    );
+  }
+  f = message.getStatus();
+  if (f !== 0) {
+    writer.writeInt32(
+      3,
+      f
+    );
+  }
+  f = message.getUpblindInterval();
+  if (f !== 0) {
+    writer.writeUint32(
+      4,
+      f
+    );
+  }
+  f = message.getTotalRebuyTimes();
+  if (f !== 0) {
+    writer.writeUint32(
+      5,
+      f
+    );
+  }
+  f = message.getApplyFeePool();
+  if (f !== 0) {
+    writer.writeUint32(
+      6,
+      f
+    );
+  }
+  f = message.getApplyFeeService();
+  if (f !== 0) {
+    writer.writeUint32(
+      7,
+      f
+    );
+  }
+  f = message.getApplyFeeHunter();
+  if (f !== 0) {
+    writer.writeUint32(
+      8,
+      f
+    );
+  }
+  f = message.getPrizeBasePool();
+  if (f !== 0) {
+    writer.writeUint64(
+      9,
+      f
+    );
+  }
+  f = message.getGoldType();
+  if (f !== 0) {
+    writer.writeInt32(
+      10,
+      f
+    );
+  }
+  f = message.getAntiCheatType();
+  if (f !== 0) {
+    writer.writeInt32(
+      11,
+      f
+    );
+  }
+  f = message.getAntiCheatVideoType();
+  if (f !== 0) {
+    writer.writeInt32(
+      12,
+      f
+    );
+  }
+  f = message.getType();
+  if (f !== 0) {
+    writer.writeInt32(
+      13,
+      f
+    );
+  }
+  f = message.getLimitMin();
+  if (f !== 0) {
+    writer.writeUint32(
+      14,
+      f
+    );
+  }
+  f = message.getInitialScore();
+  if (f !== 0) {
+    writer.writeUint64(
+      15,
+      f
+    );
+  }
+  f = message.getTotalBuyinTimes();
+  if (f !== 0) {
+    writer.writeUint32(
+      16,
+      f
+    );
+  }
+  f = message.getJoker();
+  if (f !== 0) {
+    writer.writeInt32(
+      17,
+      f
+    );
+  }
+  f = message.getJokerCount();
+  if (f !== 0) {
+    writer.writeInt32(
+      18,
+      f
+    );
+  }
+  f = message.getMjTotalHands();
+  if (f !== 0) {
+    writer.writeInt32(
+      19,
+      f
+    );
+  }
+  f = message.getMjBlindUpHands();
+  if (f !== 0) {
+    writer.writeInt32(
+      20,
+      f
+    );
+  }
+  f = message.getGameIcon();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
+      f
+    );
+  }
+  f = message.getPrizesList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      22,
+      f,
+      proto.holdem.pb.MTTPrize.serializeBinaryToWriter
+    );
+  }
+  f = message.getIsAdmin();
+  if (f) {
+    writer.writeBool(
+      23,
+      f
+    );
+  }
+  f = message.getIsTop();
+  if (f !== 0) {
+    writer.writeInt32(
+      24,
+      f
+    );
+  }
+  f = message.getName();
+  if (f.length > 0) {
+    writer.writeString(
+      25,
+      f
+    );
+  }
+  f = message.getGameType();
+  if (f !== 0) {
+    writer.writeInt32(
+      26,
+      f
+    );
+  }
+  f = message.getPokerType();
+  if (f !== 0) {
+    writer.writeInt32(
+      27,
+      f
+    );
+  }
+  f = message.getHunterOn();
+  if (f !== 0) {
+    writer.writeInt32(
+      28,
+      f
+    );
+  }
+  f = message.getParticipants();
+  if (f !== 0) {
+    writer.writeUint32(
+      29,
+      f
+    );
+  }
+  f = message.getAlive();
+  if (f !== 0) {
+    writer.writeUint32(
+      30,
+      f
+    );
+  }
+  f = message.getApplyStartTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      31,
+      f
+    );
+  }
+  f = message.getMaxDelayApplyBl();
+  if (f !== 0) {
+    writer.writeInt32(
+      32,
+      f
+    );
+  }
+  f = message.getRebuyTimes();
+  if (f !== 0) {
+    writer.writeInt32(
+      33,
+      f
+    );
+  }
+  f = message.getAddonBeginBl();
+  if (f !== 0) {
+    writer.writeInt32(
+      34,
+      f
+    );
+  }
+  f = message.getAddonEndBl();
+  if (f !== 0) {
+    writer.writeInt32(
+      35,
+      f
+    );
+  }
+  f = message.getPrizeType();
+  if (f !== 0) {
+    writer.writeInt32(
+      36,
+      f
+    );
+  }
+  f = message.getPropBuyType();
+  if (f !== 0) {
+    writer.writeInt32(
+      37,
+      f
+    );
+  }
+  f = message.getBuyinFreeTimes();
+  if (f !== 0) {
+    writer.writeInt32(
+      38,
+      f
+    );
+  }
+  f = message.getRebuyFreeTimes();
+  if (f !== 0) {
+    writer.writeInt32(
+      39,
+      f
+    );
+  }
+  f = message.getMultiRatioFreeTimes();
+  if (f !== 0) {
+    writer.writeInt32(
+      40,
+      f
+    );
+  }
+  f = message.getAddonFreeTimes();
+  if (f !== 0) {
+    writer.writeInt32(
+      41,
+      f
+    );
+  }
+  f = message.getBuyinFreeInclSvr();
+  if (f !== 0) {
+    writer.writeInt32(
+      42,
+      f
+    );
+  }
+  f = message.getRebuyFreeInclSvr();
+  if (f !== 0) {
+    writer.writeInt32(
+      43,
+      f
+    );
+  }
+  f = message.getMultiRatioFreeInclSvr();
+  if (f !== 0) {
+    writer.writeInt32(
+      44,
+      f
+    );
+  }
+  f = message.getAddonFreeInclSvr();
+  if (f !== 0) {
+    writer.writeInt32(
+      45,
+      f
+    );
+  }
+  f = message.getAntiCheatTimelimit();
+  if (f !== 0) {
+    writer.writeUint32(
+      46,
+      f
+    );
+  }
+  f = message.getVideoVerifyType();
+  if (f !== 0) {
+    writer.writeInt32(
+      47,
+      f
+    );
+  }
+  f = message.getAntiCheatOrderType();
+  if (f !== 0) {
+    writer.writeInt32(
+      48,
+      f
+    );
+  }
+  f = message.getAntiCheatOrderMicType();
+  if (f !== 0) {
+    writer.writeInt32(
+      49,
+      f
+    );
+  }
+  f = message.getMttBannerUrl();
+  if (f.length > 0) {
+    writer.writeString(
+      50,
+      f
+    );
+  }
+  f = message.getForceCloseTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      51,
+      f
+    );
+  }
+  f = message.getRelateClubIdsList();
+  if (f.length > 0) {
+    writer.writePackedUint64(
+      52,
+      f
+    );
+  }
+  f = message.getRelateTribeClubListList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      53,
+      f,
+      proto.holdem.pb.RoomTribeClubRelate.serializeBinaryToWriter
+    );
+  }
+  f = message.getOriginType();
+  if (f !== 0) {
+    writer.writeInt32(
+      54,
+      f
+    );
+  }
+  f = message.getSeriesId();
+  if (f !== 0) {
+    writer.writeUint64(
+      55,
+      f
+    );
+  }
+  f = message.getPinnedTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      56,
+      f
+    );
+  }
+  f = message.getCreateTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      57,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 match_id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getMatchId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setMatchId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional int64 start_time = 2;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getStartTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setStartTime = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional int32 status = 3;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getStatus = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setStatus = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional uint32 upblind_interval = 4;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getUpblindInterval = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setUpblindInterval = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional uint32 total_rebuy_times = 5;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getTotalRebuyTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setTotalRebuyTimes = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * optional uint32 apply_fee_pool = 6;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getApplyFeePool = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setApplyFeePool = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+/**
+ * optional uint32 apply_fee_service = 7;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getApplyFeeService = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setApplyFeeService = function(value) {
+  jspb.Message.setField(this, 7, value);
+};
+
+
+/**
+ * optional uint32 apply_fee_hunter = 8;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getApplyFeeHunter = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 8, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setApplyFeeHunter = function(value) {
+  jspb.Message.setField(this, 8, value);
+};
+
+
+/**
+ * optional uint64 prize_base_pool = 9;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getPrizeBasePool = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setPrizeBasePool = function(value) {
+  jspb.Message.setField(this, 9, value);
+};
+
+
+/**
+ * optional int32 gold_type = 10;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getGoldType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setGoldType = function(value) {
+  jspb.Message.setField(this, 10, value);
+};
+
+
+/**
+ * optional int32 anti_cheat_type = 11;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAntiCheatType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 11, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAntiCheatType = function(value) {
+  jspb.Message.setField(this, 11, value);
+};
+
+
+/**
+ * optional int32 anti_cheat_video_type = 12;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAntiCheatVideoType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAntiCheatVideoType = function(value) {
+  jspb.Message.setField(this, 12, value);
+};
+
+
+/**
+ * optional int32 type = 13;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 13, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setType = function(value) {
+  jspb.Message.setField(this, 13, value);
+};
+
+
+/**
+ * optional uint32 limit_min = 14;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getLimitMin = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 14, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setLimitMin = function(value) {
+  jspb.Message.setField(this, 14, value);
+};
+
+
+/**
+ * optional uint64 initial_score = 15;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getInitialScore = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 15, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setInitialScore = function(value) {
+  jspb.Message.setField(this, 15, value);
+};
+
+
+/**
+ * optional uint32 total_buyin_times = 16;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getTotalBuyinTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 16, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setTotalBuyinTimes = function(value) {
+  jspb.Message.setField(this, 16, value);
+};
+
+
+/**
+ * optional int32 joker = 17;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getJoker = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 17, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setJoker = function(value) {
+  jspb.Message.setField(this, 17, value);
+};
+
+
+/**
+ * optional int32 joker_count = 18;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getJokerCount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 18, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setJokerCount = function(value) {
+  jspb.Message.setField(this, 18, value);
+};
+
+
+/**
+ * optional int32 mj_total_hands = 19;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getMjTotalHands = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 19, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setMjTotalHands = function(value) {
+  jspb.Message.setField(this, 19, value);
+};
+
+
+/**
+ * optional int32 mj_blind_up_hands = 20;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getMjBlindUpHands = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 20, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setMjBlindUpHands = function(value) {
+  jspb.Message.setField(this, 20, value);
+};
+
+
+/**
+ * optional string game_icon = 21;
+ * @return {string}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getGameIcon = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.UserMttRecord.prototype.setGameIcon = function(value) {
+  jspb.Message.setField(this, 21, value);
+};
+
+
+/**
+ * repeated MTTPrize prizes = 22;
+ * @return {!Array.<!proto.holdem.pb.MTTPrize>}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getPrizesList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.MTTPrize>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.MTTPrize, 22));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.MTTPrize>} value */
+proto.holdem.pb.UserMttRecord.prototype.setPrizesList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 22, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.MTTPrize=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.MTTPrize}
+ */
+proto.holdem.pb.UserMttRecord.prototype.addPrizes = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 22, opt_value, proto.holdem.pb.MTTPrize, opt_index);
+};
+
+
+proto.holdem.pb.UserMttRecord.prototype.clearPrizesList = function() {
+  this.setPrizesList([]);
+};
+
+
+/**
+ * optional bool is_admin = 23;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getIsAdmin = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 23, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.UserMttRecord.prototype.setIsAdmin = function(value) {
+  jspb.Message.setField(this, 23, value);
+};
+
+
+/**
+ * optional int32 is_top = 24;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getIsTop = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 24, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setIsTop = function(value) {
+  jspb.Message.setField(this, 24, value);
+};
+
+
+/**
+ * optional string name = 25;
+ * @return {string}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 25, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.UserMttRecord.prototype.setName = function(value) {
+  jspb.Message.setField(this, 25, value);
+};
+
+
+/**
+ * optional int32 game_type = 26;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getGameType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 26, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setGameType = function(value) {
+  jspb.Message.setField(this, 26, value);
+};
+
+
+/**
+ * optional int32 poker_type = 27;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getPokerType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 27, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setPokerType = function(value) {
+  jspb.Message.setField(this, 27, value);
+};
+
+
+/**
+ * optional int32 hunter_on = 28;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getHunterOn = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 28, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setHunterOn = function(value) {
+  jspb.Message.setField(this, 28, value);
+};
+
+
+/**
+ * optional uint32 participants = 29;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getParticipants = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 29, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setParticipants = function(value) {
+  jspb.Message.setField(this, 29, value);
+};
+
+
+/**
+ * optional uint32 alive = 30;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAlive = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 30, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAlive = function(value) {
+  jspb.Message.setField(this, 30, value);
+};
+
+
+/**
+ * optional int64 apply_start_time = 31;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getApplyStartTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 31, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setApplyStartTime = function(value) {
+  jspb.Message.setField(this, 31, value);
+};
+
+
+/**
+ * optional int32 max_delay_apply_bl = 32;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getMaxDelayApplyBl = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 32, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setMaxDelayApplyBl = function(value) {
+  jspb.Message.setField(this, 32, value);
+};
+
+
+/**
+ * optional int32 rebuy_times = 33;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getRebuyTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 33, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setRebuyTimes = function(value) {
+  jspb.Message.setField(this, 33, value);
+};
+
+
+/**
+ * optional int32 addon_begin_bl = 34;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAddonBeginBl = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 34, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAddonBeginBl = function(value) {
+  jspb.Message.setField(this, 34, value);
+};
+
+
+/**
+ * optional int32 addon_end_bl = 35;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAddonEndBl = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 35, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAddonEndBl = function(value) {
+  jspb.Message.setField(this, 35, value);
+};
+
+
+/**
+ * optional int32 prize_type = 36;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getPrizeType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 36, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setPrizeType = function(value) {
+  jspb.Message.setField(this, 36, value);
+};
+
+
+/**
+ * optional int32 prop_buy_type = 37;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getPropBuyType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 37, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setPropBuyType = function(value) {
+  jspb.Message.setField(this, 37, value);
+};
+
+
+/**
+ * optional int32 buyin_free_times = 38;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getBuyinFreeTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 38, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setBuyinFreeTimes = function(value) {
+  jspb.Message.setField(this, 38, value);
+};
+
+
+/**
+ * optional int32 rebuy_free_times = 39;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getRebuyFreeTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 39, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setRebuyFreeTimes = function(value) {
+  jspb.Message.setField(this, 39, value);
+};
+
+
+/**
+ * optional int32 multi_ratio_free_times = 40;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getMultiRatioFreeTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 40, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setMultiRatioFreeTimes = function(value) {
+  jspb.Message.setField(this, 40, value);
+};
+
+
+/**
+ * optional int32 addon_free_times = 41;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAddonFreeTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 41, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAddonFreeTimes = function(value) {
+  jspb.Message.setField(this, 41, value);
+};
+
+
+/**
+ * optional int32 buyin_free_incl_svr = 42;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getBuyinFreeInclSvr = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 42, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setBuyinFreeInclSvr = function(value) {
+  jspb.Message.setField(this, 42, value);
+};
+
+
+/**
+ * optional int32 rebuy_free_incl_svr = 43;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getRebuyFreeInclSvr = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 43, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setRebuyFreeInclSvr = function(value) {
+  jspb.Message.setField(this, 43, value);
+};
+
+
+/**
+ * optional int32 multi_ratio_free_incl_svr = 44;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getMultiRatioFreeInclSvr = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 44, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setMultiRatioFreeInclSvr = function(value) {
+  jspb.Message.setField(this, 44, value);
+};
+
+
+/**
+ * optional int32 addon_free_incl_svr = 45;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAddonFreeInclSvr = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 45, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAddonFreeInclSvr = function(value) {
+  jspb.Message.setField(this, 45, value);
+};
+
+
+/**
+ * optional uint32 anti_cheat_timelimit = 46;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAntiCheatTimelimit = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 46, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAntiCheatTimelimit = function(value) {
+  jspb.Message.setField(this, 46, value);
+};
+
+
+/**
+ * optional int32 video_verify_type = 47;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getVideoVerifyType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 47, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setVideoVerifyType = function(value) {
+  jspb.Message.setField(this, 47, value);
+};
+
+
+/**
+ * optional int32 anti_cheat_order_type = 48;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAntiCheatOrderType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 48, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAntiCheatOrderType = function(value) {
+  jspb.Message.setField(this, 48, value);
+};
+
+
+/**
+ * optional int32 anti_cheat_order_mic_type = 49;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getAntiCheatOrderMicType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 49, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setAntiCheatOrderMicType = function(value) {
+  jspb.Message.setField(this, 49, value);
+};
+
+
+/**
+ * optional string mtt_banner_url = 50;
+ * @return {string}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getMttBannerUrl = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 50, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.UserMttRecord.prototype.setMttBannerUrl = function(value) {
+  jspb.Message.setField(this, 50, value);
+};
+
+
+/**
+ * optional int64 force_close_time = 51;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getForceCloseTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 51, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setForceCloseTime = function(value) {
+  jspb.Message.setField(this, 51, value);
+};
+
+
+/**
+ * repeated uint64 relate_club_ids = 52;
+ * @return {!Array.<number>}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getRelateClubIdsList = function() {
+  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 52));
+};
+
+
+/** @param {!Array.<number>} value */
+proto.holdem.pb.UserMttRecord.prototype.setRelateClubIdsList = function(value) {
+  jspb.Message.setField(this, 52, value || []);
+};
+
+
+/**
+ * @param {!number} value
+ * @param {number=} opt_index
+ */
+proto.holdem.pb.UserMttRecord.prototype.addRelateClubIds = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 52, value, opt_index);
+};
+
+
+proto.holdem.pb.UserMttRecord.prototype.clearRelateClubIdsList = function() {
+  this.setRelateClubIdsList([]);
+};
+
+
+/**
+ * repeated RoomTribeClubRelate relate_tribe_club_list = 53;
+ * @return {!Array.<!proto.holdem.pb.RoomTribeClubRelate>}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getRelateTribeClubListList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.RoomTribeClubRelate>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.RoomTribeClubRelate, 53));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.RoomTribeClubRelate>} value */
+proto.holdem.pb.UserMttRecord.prototype.setRelateTribeClubListList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 53, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.RoomTribeClubRelate=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.RoomTribeClubRelate}
+ */
+proto.holdem.pb.UserMttRecord.prototype.addRelateTribeClubList = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 53, opt_value, proto.holdem.pb.RoomTribeClubRelate, opt_index);
+};
+
+
+proto.holdem.pb.UserMttRecord.prototype.clearRelateTribeClubListList = function() {
+  this.setRelateTribeClubListList([]);
+};
+
+
+/**
+ * optional int32 origin_type = 54;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getOriginType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 54, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setOriginType = function(value) {
+  jspb.Message.setField(this, 54, value);
+};
+
+
+/**
+ * optional uint64 series_id = 55;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getSeriesId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 55, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setSeriesId = function(value) {
+  jspb.Message.setField(this, 55, value);
+};
+
+
+/**
+ * optional int64 pinned_time = 56;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getPinnedTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 56, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setPinnedTime = function(value) {
+  jspb.Message.setField(this, 56, value);
+};
+
+
+/**
+ * optional int64 create_time = 57;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecord.prototype.getCreateTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 57, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecord.prototype.setCreateTime = function(value) {
+  jspb.Message.setField(this, 57, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.MTTPrize = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.holdem.pb.MTTPrize.repeatedFields_, null);
+};
+goog.inherits(proto.holdem.pb.MTTPrize, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.MTTPrize.displayName = 'proto.holdem.pb.MTTPrize';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.holdem.pb.MTTPrize.repeatedFields_ = [4];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.MTTPrize.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.MTTPrize.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.MTTPrize} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.MTTPrize.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    rankMin: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    rankMax: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    award: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    goodsList: jspb.Message.toObjectList(msg.getGoodsList(),
+    proto.holdem.pb.PrizeGoods.toObject, includeInstance),
+    awardRatio: jspb.Message.getFieldWithDefault(msg, 5, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.MTTPrize}
+ */
+proto.holdem.pb.MTTPrize.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.MTTPrize;
+  return proto.holdem.pb.MTTPrize.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.MTTPrize} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.MTTPrize}
+ */
+proto.holdem.pb.MTTPrize.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setRankMin(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setRankMax(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setAward(value);
+      break;
+    case 4:
+      var value = new proto.holdem.pb.PrizeGoods;
+      reader.readMessage(value,proto.holdem.pb.PrizeGoods.deserializeBinaryFromReader);
+      msg.addGoods(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setAwardRatio(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.MTTPrize.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.MTTPrize.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.MTTPrize} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.MTTPrize.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getRankMin();
+  if (f !== 0) {
+    writer.writeUint32(
+      1,
+      f
+    );
+  }
+  f = message.getRankMax();
+  if (f !== 0) {
+    writer.writeUint32(
+      2,
+      f
+    );
+  }
+  f = message.getAward();
+  if (f !== 0) {
+    writer.writeUint64(
+      3,
+      f
+    );
+  }
+  f = message.getGoodsList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      4,
+      f,
+      proto.holdem.pb.PrizeGoods.serializeBinaryToWriter
+    );
+  }
+  f = message.getAwardRatio();
+  if (f !== 0) {
+    writer.writeUint64(
+      5,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint32 rank_min = 1;
+ * @return {number}
+ */
+proto.holdem.pb.MTTPrize.prototype.getRankMin = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTPrize.prototype.setRankMin = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional uint32 rank_max = 2;
+ * @return {number}
+ */
+proto.holdem.pb.MTTPrize.prototype.getRankMax = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTPrize.prototype.setRankMax = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional uint64 award = 3;
+ * @return {number}
+ */
+proto.holdem.pb.MTTPrize.prototype.getAward = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTPrize.prototype.setAward = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * repeated PrizeGoods goods = 4;
+ * @return {!Array.<!proto.holdem.pb.PrizeGoods>}
+ */
+proto.holdem.pb.MTTPrize.prototype.getGoodsList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.PrizeGoods>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.PrizeGoods, 4));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.PrizeGoods>} value */
+proto.holdem.pb.MTTPrize.prototype.setGoodsList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 4, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.PrizeGoods=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.PrizeGoods}
+ */
+proto.holdem.pb.MTTPrize.prototype.addGoods = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 4, opt_value, proto.holdem.pb.PrizeGoods, opt_index);
+};
+
+
+proto.holdem.pb.MTTPrize.prototype.clearGoodsList = function() {
+  this.setGoodsList([]);
+};
+
+
+/**
+ * optional uint64 award_ratio = 5;
+ * @return {number}
+ */
+proto.holdem.pb.MTTPrize.prototype.getAwardRatio = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.MTTPrize.prototype.setAwardRatio = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.PrizeGoods = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.PrizeGoods, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.PrizeGoods.displayName = 'proto.holdem.pb.PrizeGoods';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.PrizeGoods.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.PrizeGoods.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.PrizeGoods} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.PrizeGoods.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    i: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    na: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    v: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    n: jspb.Message.getFieldWithDefault(msg, 4, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.PrizeGoods}
+ */
+proto.holdem.pb.PrizeGoods.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.PrizeGoods;
+  return proto.holdem.pb.PrizeGoods.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.PrizeGoods} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.PrizeGoods}
+ */
+proto.holdem.pb.PrizeGoods.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setI(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setNa(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setV(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setN(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.PrizeGoods.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.PrizeGoods.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.PrizeGoods} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.PrizeGoods.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getI();
+  if (f !== 0) {
+    writer.writeUint32(
+      1,
+      f
+    );
+  }
+  f = message.getNa();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = message.getV();
+  if (f !== 0) {
+    writer.writeUint64(
+      3,
+      f
+    );
+  }
+  f = message.getN();
+  if (f !== 0) {
+    writer.writeUint32(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint32 i = 1;
+ * @return {number}
+ */
+proto.holdem.pb.PrizeGoods.prototype.getI = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.PrizeGoods.prototype.setI = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional string na = 2;
+ * @return {string}
+ */
+proto.holdem.pb.PrizeGoods.prototype.getNa = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.PrizeGoods.prototype.setNa = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional uint64 v = 3;
+ * @return {number}
+ */
+proto.holdem.pb.PrizeGoods.prototype.getV = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.PrizeGoods.prototype.setV = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional uint32 n = 4;
+ * @return {number}
+ */
+proto.holdem.pb.PrizeGoods.prototype.getN = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.PrizeGoods.prototype.setN = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.UserMttRecordChange = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.UserMttRecordChange, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.UserMttRecordChange.displayName = 'proto.holdem.pb.UserMttRecordChange';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.UserMttRecordChange.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.UserMttRecordChange.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.UserMttRecordChange} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserMttRecordChange.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    matchId: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    status: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    participants: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    seriesId: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    pinnedTime: jspb.Message.getFieldWithDefault(msg, 5, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.UserMttRecordChange}
+ */
+proto.holdem.pb.UserMttRecordChange.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.UserMttRecordChange;
+  return proto.holdem.pb.UserMttRecordChange.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.UserMttRecordChange} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.UserMttRecordChange}
+ */
+proto.holdem.pb.UserMttRecordChange.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setMatchId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setStatus(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setParticipants(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setSeriesId(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setPinnedTime(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.UserMttRecordChange.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.UserMttRecordChange.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.UserMttRecordChange} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserMttRecordChange.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getMatchId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getStatus();
+  if (f !== 0) {
+    writer.writeInt32(
+      2,
+      f
+    );
+  }
+  f = message.getParticipants();
+  if (f !== 0) {
+    writer.writeUint32(
+      3,
+      f
+    );
+  }
+  f = message.getSeriesId();
+  if (f !== 0) {
+    writer.writeUint64(
+      4,
+      f
+    );
+  }
+  f = message.getPinnedTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      5,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 match_id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecordChange.prototype.getMatchId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecordChange.prototype.setMatchId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional int32 status = 2;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecordChange.prototype.getStatus = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecordChange.prototype.setStatus = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional uint32 participants = 3;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecordChange.prototype.getParticipants = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecordChange.prototype.setParticipants = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional uint64 series_id = 4;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecordChange.prototype.getSeriesId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecordChange.prototype.setSeriesId = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional int64 pinned_time = 5;
+ * @return {number}
+ */
+proto.holdem.pb.UserMttRecordChange.prototype.getPinnedTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserMttRecordChange.prototype.setPinnedTime = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.UserSNGRecord = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.holdem.pb.UserSNGRecord.repeatedFields_, null);
+};
+goog.inherits(proto.holdem.pb.UserSNGRecord, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.UserSNGRecord.displayName = 'proto.holdem.pb.UserSNGRecord';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.holdem.pb.UserSNGRecord.repeatedFields_ = [25,28,29];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.UserSNGRecord.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.UserSNGRecord} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserSNGRecord.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    sngId: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    antiCheatType: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    antiCheatVideoType: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    applyFeePool: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    applyFeeService: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    buyStatus: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    limitParticipants: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    name: jspb.Message.getFieldWithDefault(msg, 8, ""),
+    bombpot: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    gameType: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    limitBetType: jspb.Message.getFieldWithDefault(msg, 11, 0),
+    originType: jspb.Message.getFieldWithDefault(msg, 12, 0),
+    pokerType: jspb.Message.getFieldWithDefault(msg, 13, 0),
+    currency: jspb.Message.getFieldWithDefault(msg, 14, ""),
+    blindtableType: jspb.Message.getFieldWithDefault(msg, 15, 0),
+    clubId: jspb.Message.getFieldWithDefault(msg, 16, 0),
+    gameIcon: jspb.Message.getFieldWithDefault(msg, 17, ""),
+    goldType: jspb.Message.getFieldWithDefault(msg, 18, 0),
+    initialScore: jspb.Message.getFieldWithDefault(msg, 19, 0),
+    invitationCode: jspb.Message.getFieldWithDefault(msg, 20, ""),
+    prizeType: jspb.Message.getFieldWithDefault(msg, 21, 0),
+    tribeId: jspb.Message.getFieldWithDefault(msg, 22, 0),
+    type: jspb.Message.getFieldWithDefault(msg, 23, 0),
+    upblindInterval: jspb.Message.getFieldWithDefault(msg, 24, 0),
+    prizesList: jspb.Message.toObjectList(msg.getPrizesList(),
+    proto.holdem.pb.MTTPrize.toObject, includeInstance),
+    isAdmin: jspb.Message.getFieldWithDefault(msg, 26, false),
+    status: jspb.Message.getFieldWithDefault(msg, 27, 0),
+    relateClubIdsList: jspb.Message.getRepeatedField(msg, 28),
+    relateTribeClubListList: jspb.Message.toObjectList(msg.getRelateTribeClubListList(),
+    proto.holdem.pb.RoomTribeClubRelate.toObject, includeInstance),
+    seriesId: jspb.Message.getFieldWithDefault(msg, 30, 0),
+    pinnedTime: jspb.Message.getFieldWithDefault(msg, 31, 0),
+    createTime: jspb.Message.getFieldWithDefault(msg, 32, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.UserSNGRecord}
+ */
+proto.holdem.pb.UserSNGRecord.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.UserSNGRecord;
+  return proto.holdem.pb.UserSNGRecord.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.UserSNGRecord} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.UserSNGRecord}
+ */
+proto.holdem.pb.UserSNGRecord.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setSngId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAntiCheatType(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setAntiCheatVideoType(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setApplyFeePool(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setApplyFeeService(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setBuyStatus(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setLimitParticipants(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 9:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setBombpot(value);
+      break;
+    case 10:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setGameType(value);
+      break;
+    case 11:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setLimitBetType(value);
+      break;
+    case 12:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setOriginType(value);
+      break;
+    case 13:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPokerType(value);
+      break;
+    case 14:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setCurrency(value);
+      break;
+    case 15:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setBlindtableType(value);
+      break;
+    case 16:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setClubId(value);
+      break;
+    case 17:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setGameIcon(value);
+      break;
+    case 18:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setGoldType(value);
+      break;
+    case 19:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setInitialScore(value);
+      break;
+    case 20:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setInvitationCode(value);
+      break;
+    case 21:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPrizeType(value);
+      break;
+    case 22:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setTribeId(value);
+      break;
+    case 23:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setType(value);
+      break;
+    case 24:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setUpblindInterval(value);
+      break;
+    case 25:
+      var value = new proto.holdem.pb.MTTPrize;
+      reader.readMessage(value,proto.holdem.pb.MTTPrize.deserializeBinaryFromReader);
+      msg.addPrizes(value);
+      break;
+    case 26:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsAdmin(value);
+      break;
+    case 27:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setStatus(value);
+      break;
+    case 28:
+      var value = /** @type {!Array.<number>} */ (reader.readPackedUint64());
+      msg.setRelateClubIdsList(value);
+      break;
+    case 29:
+      var value = new proto.holdem.pb.RoomTribeClubRelate;
+      reader.readMessage(value,proto.holdem.pb.RoomTribeClubRelate.deserializeBinaryFromReader);
+      msg.addRelateTribeClubList(value);
+      break;
+    case 30:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setSeriesId(value);
+      break;
+    case 31:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setPinnedTime(value);
+      break;
+    case 32:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setCreateTime(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.UserSNGRecord.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.UserSNGRecord} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserSNGRecord.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getSngId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getAntiCheatType();
+  if (f !== 0) {
+    writer.writeInt32(
+      2,
+      f
+    );
+  }
+  f = message.getAntiCheatVideoType();
+  if (f !== 0) {
+    writer.writeInt32(
+      3,
+      f
+    );
+  }
+  f = message.getApplyFeePool();
+  if (f !== 0) {
+    writer.writeUint32(
+      4,
+      f
+    );
+  }
+  f = message.getApplyFeeService();
+  if (f !== 0) {
+    writer.writeUint32(
+      5,
+      f
+    );
+  }
+  f = message.getBuyStatus();
+  if (f !== 0) {
+    writer.writeInt32(
+      6,
+      f
+    );
+  }
+  f = message.getLimitParticipants();
+  if (f !== 0) {
+    writer.writeUint32(
+      7,
+      f
+    );
+  }
+  f = message.getName();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
+    );
+  }
+  f = message.getBombpot();
+  if (f !== 0) {
+    writer.writeInt32(
+      9,
+      f
+    );
+  }
+  f = message.getGameType();
+  if (f !== 0) {
+    writer.writeInt32(
+      10,
+      f
+    );
+  }
+  f = message.getLimitBetType();
+  if (f !== 0) {
+    writer.writeInt32(
+      11,
+      f
+    );
+  }
+  f = message.getOriginType();
+  if (f !== 0) {
+    writer.writeInt32(
+      12,
+      f
+    );
+  }
+  f = message.getPokerType();
+  if (f !== 0) {
+    writer.writeInt32(
+      13,
+      f
+    );
+  }
+  f = message.getCurrency();
+  if (f.length > 0) {
+    writer.writeString(
+      14,
+      f
+    );
+  }
+  f = message.getBlindtableType();
+  if (f !== 0) {
+    writer.writeInt32(
+      15,
+      f
+    );
+  }
+  f = message.getClubId();
+  if (f !== 0) {
+    writer.writeUint64(
+      16,
+      f
+    );
+  }
+  f = message.getGameIcon();
+  if (f.length > 0) {
+    writer.writeString(
+      17,
+      f
+    );
+  }
+  f = message.getGoldType();
+  if (f !== 0) {
+    writer.writeInt32(
+      18,
+      f
+    );
+  }
+  f = message.getInitialScore();
+  if (f !== 0) {
+    writer.writeUint64(
+      19,
+      f
+    );
+  }
+  f = message.getInvitationCode();
+  if (f.length > 0) {
+    writer.writeString(
+      20,
+      f
+    );
+  }
+  f = message.getPrizeType();
+  if (f !== 0) {
+    writer.writeInt32(
+      21,
+      f
+    );
+  }
+  f = message.getTribeId();
+  if (f !== 0) {
+    writer.writeUint32(
+      22,
+      f
+    );
+  }
+  f = message.getType();
+  if (f !== 0) {
+    writer.writeInt32(
+      23,
+      f
+    );
+  }
+  f = message.getUpblindInterval();
+  if (f !== 0) {
+    writer.writeUint32(
+      24,
+      f
+    );
+  }
+  f = message.getPrizesList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      25,
+      f,
+      proto.holdem.pb.MTTPrize.serializeBinaryToWriter
+    );
+  }
+  f = message.getIsAdmin();
+  if (f) {
+    writer.writeBool(
+      26,
+      f
+    );
+  }
+  f = message.getStatus();
+  if (f !== 0) {
+    writer.writeInt32(
+      27,
+      f
+    );
+  }
+  f = message.getRelateClubIdsList();
+  if (f.length > 0) {
+    writer.writePackedUint64(
+      28,
+      f
+    );
+  }
+  f = message.getRelateTribeClubListList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      29,
+      f,
+      proto.holdem.pb.RoomTribeClubRelate.serializeBinaryToWriter
+    );
+  }
+  f = message.getSeriesId();
+  if (f !== 0) {
+    writer.writeUint64(
+      30,
+      f
+    );
+  }
+  f = message.getPinnedTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      31,
+      f
+    );
+  }
+  f = message.getCreateTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      32,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 sng_id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getSngId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setSngId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional int32 anti_cheat_type = 2;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getAntiCheatType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setAntiCheatType = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional int32 anti_cheat_video_type = 3;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getAntiCheatVideoType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setAntiCheatVideoType = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional uint32 apply_fee_pool = 4;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getApplyFeePool = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setApplyFeePool = function(value) {
+  jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * optional uint32 apply_fee_service = 5;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getApplyFeeService = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setApplyFeeService = function(value) {
+  jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * optional int32 buy_status = 6;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getBuyStatus = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setBuyStatus = function(value) {
+  jspb.Message.setField(this, 6, value);
+};
+
+
+/**
+ * optional uint32 limit_participants = 7;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getLimitParticipants = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setLimitParticipants = function(value) {
+  jspb.Message.setField(this, 7, value);
+};
+
+
+/**
+ * optional string name = 8;
+ * @return {string}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.UserSNGRecord.prototype.setName = function(value) {
+  jspb.Message.setField(this, 8, value);
+};
+
+
+/**
+ * optional int32 bombpot = 9;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getBombpot = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setBombpot = function(value) {
+  jspb.Message.setField(this, 9, value);
+};
+
+
+/**
+ * optional int32 game_type = 10;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getGameType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setGameType = function(value) {
+  jspb.Message.setField(this, 10, value);
+};
+
+
+/**
+ * optional int32 limit_bet_type = 11;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getLimitBetType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 11, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setLimitBetType = function(value) {
+  jspb.Message.setField(this, 11, value);
+};
+
+
+/**
+ * optional int32 origin_type = 12;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getOriginType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setOriginType = function(value) {
+  jspb.Message.setField(this, 12, value);
+};
+
+
+/**
+ * optional int32 poker_type = 13;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getPokerType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 13, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setPokerType = function(value) {
+  jspb.Message.setField(this, 13, value);
+};
+
+
+/**
+ * optional string currency = 14;
+ * @return {string}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getCurrency = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 14, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.UserSNGRecord.prototype.setCurrency = function(value) {
+  jspb.Message.setField(this, 14, value);
+};
+
+
+/**
+ * optional int32 blindtable_type = 15;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getBlindtableType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 15, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setBlindtableType = function(value) {
+  jspb.Message.setField(this, 15, value);
+};
+
+
+/**
+ * optional uint64 club_id = 16;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getClubId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 16, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setClubId = function(value) {
+  jspb.Message.setField(this, 16, value);
+};
+
+
+/**
+ * optional string game_icon = 17;
+ * @return {string}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getGameIcon = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.UserSNGRecord.prototype.setGameIcon = function(value) {
+  jspb.Message.setField(this, 17, value);
+};
+
+
+/**
+ * optional int32 gold_type = 18;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getGoldType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 18, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setGoldType = function(value) {
+  jspb.Message.setField(this, 18, value);
+};
+
+
+/**
+ * optional uint64 initial_score = 19;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getInitialScore = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 19, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setInitialScore = function(value) {
+  jspb.Message.setField(this, 19, value);
+};
+
+
+/**
+ * optional string invitation_code = 20;
+ * @return {string}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getInvitationCode = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 20, ""));
+};
+
+
+/** @param {string} value */
+proto.holdem.pb.UserSNGRecord.prototype.setInvitationCode = function(value) {
+  jspb.Message.setField(this, 20, value);
+};
+
+
+/**
+ * optional int32 prize_type = 21;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getPrizeType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 21, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setPrizeType = function(value) {
+  jspb.Message.setField(this, 21, value);
+};
+
+
+/**
+ * optional uint32 tribe_id = 22;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getTribeId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 22, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setTribeId = function(value) {
+  jspb.Message.setField(this, 22, value);
+};
+
+
+/**
+ * optional int32 type = 23;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getType = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 23, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setType = function(value) {
+  jspb.Message.setField(this, 23, value);
+};
+
+
+/**
+ * optional uint32 upblind_interval = 24;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getUpblindInterval = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 24, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setUpblindInterval = function(value) {
+  jspb.Message.setField(this, 24, value);
+};
+
+
+/**
+ * repeated MTTPrize prizes = 25;
+ * @return {!Array.<!proto.holdem.pb.MTTPrize>}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getPrizesList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.MTTPrize>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.MTTPrize, 25));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.MTTPrize>} value */
+proto.holdem.pb.UserSNGRecord.prototype.setPrizesList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 25, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.MTTPrize=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.MTTPrize}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.addPrizes = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 25, opt_value, proto.holdem.pb.MTTPrize, opt_index);
+};
+
+
+proto.holdem.pb.UserSNGRecord.prototype.clearPrizesList = function() {
+  this.setPrizesList([]);
+};
+
+
+/**
+ * optional bool is_admin = 26;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getIsAdmin = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 26, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.UserSNGRecord.prototype.setIsAdmin = function(value) {
+  jspb.Message.setField(this, 26, value);
+};
+
+
+/**
+ * optional int32 status = 27;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getStatus = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 27, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setStatus = function(value) {
+  jspb.Message.setField(this, 27, value);
+};
+
+
+/**
+ * repeated uint64 relate_club_ids = 28;
+ * @return {!Array.<number>}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getRelateClubIdsList = function() {
+  return /** @type {!Array.<number>} */ (jspb.Message.getRepeatedField(this, 28));
+};
+
+
+/** @param {!Array.<number>} value */
+proto.holdem.pb.UserSNGRecord.prototype.setRelateClubIdsList = function(value) {
+  jspb.Message.setField(this, 28, value || []);
+};
+
+
+/**
+ * @param {!number} value
+ * @param {number=} opt_index
+ */
+proto.holdem.pb.UserSNGRecord.prototype.addRelateClubIds = function(value, opt_index) {
+  jspb.Message.addToRepeatedField(this, 28, value, opt_index);
+};
+
+
+proto.holdem.pb.UserSNGRecord.prototype.clearRelateClubIdsList = function() {
+  this.setRelateClubIdsList([]);
+};
+
+
+/**
+ * repeated RoomTribeClubRelate relate_tribe_club_list = 29;
+ * @return {!Array.<!proto.holdem.pb.RoomTribeClubRelate>}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getRelateTribeClubListList = function() {
+  return /** @type{!Array.<!proto.holdem.pb.RoomTribeClubRelate>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.holdem.pb.RoomTribeClubRelate, 29));
+};
+
+
+/** @param {!Array.<!proto.holdem.pb.RoomTribeClubRelate>} value */
+proto.holdem.pb.UserSNGRecord.prototype.setRelateTribeClubListList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 29, value);
+};
+
+
+/**
+ * @param {!proto.holdem.pb.RoomTribeClubRelate=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.holdem.pb.RoomTribeClubRelate}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.addRelateTribeClubList = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 29, opt_value, proto.holdem.pb.RoomTribeClubRelate, opt_index);
+};
+
+
+proto.holdem.pb.UserSNGRecord.prototype.clearRelateTribeClubListList = function() {
+  this.setRelateTribeClubListList([]);
+};
+
+
+/**
+ * optional uint64 series_id = 30;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getSeriesId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 30, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setSeriesId = function(value) {
+  jspb.Message.setField(this, 30, value);
+};
+
+
+/**
+ * optional int64 pinned_time = 31;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getPinnedTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 31, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setPinnedTime = function(value) {
+  jspb.Message.setField(this, 31, value);
+};
+
+
+/**
+ * optional int64 create_time = 32;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecord.prototype.getCreateTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 32, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecord.prototype.setCreateTime = function(value) {
+  jspb.Message.setField(this, 32, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.holdem.pb.UserSNGRecordChange = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.holdem.pb.UserSNGRecordChange, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.holdem.pb.UserSNGRecordChange.displayName = 'proto.holdem.pb.UserSNGRecordChange';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.holdem.pb.UserSNGRecordChange.prototype.toObject = function(opt_includeInstance) {
+  return proto.holdem.pb.UserSNGRecordChange.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.holdem.pb.UserSNGRecordChange} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserSNGRecordChange.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    sngId: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    status: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    seriesId: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    pinnedTime: jspb.Message.getFieldWithDefault(msg, 4, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.holdem.pb.UserSNGRecordChange}
+ */
+proto.holdem.pb.UserSNGRecordChange.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.holdem.pb.UserSNGRecordChange;
+  return proto.holdem.pb.UserSNGRecordChange.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.holdem.pb.UserSNGRecordChange} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.holdem.pb.UserSNGRecordChange}
+ */
+proto.holdem.pb.UserSNGRecordChange.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setSngId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setStatus(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setSeriesId(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setPinnedTime(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.holdem.pb.UserSNGRecordChange.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.holdem.pb.UserSNGRecordChange.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.holdem.pb.UserSNGRecordChange} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.holdem.pb.UserSNGRecordChange.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getSngId();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getStatus();
+  if (f !== 0) {
+    writer.writeInt32(
+      2,
+      f
+    );
+  }
+  f = message.getSeriesId();
+  if (f !== 0) {
+    writer.writeUint64(
+      3,
+      f
+    );
+  }
+  f = message.getPinnedTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      4,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 sng_id = 1;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecordChange.prototype.getSngId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecordChange.prototype.setSngId = function(value) {
+  jspb.Message.setField(this, 1, value);
+};
+
+
+/**
+ * optional int32 status = 2;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecordChange.prototype.getStatus = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecordChange.prototype.setStatus = function(value) {
+  jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * optional uint64 series_id = 3;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecordChange.prototype.getSeriesId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecordChange.prototype.setSeriesId = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional int64 pinned_time = 4;
+ * @return {number}
+ */
+proto.holdem.pb.UserSNGRecordChange.prototype.getPinnedTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.UserSNGRecordChange.prototype.setPinnedTime = function(value) {
   jspb.Message.setField(this, 4, value);
 };
 

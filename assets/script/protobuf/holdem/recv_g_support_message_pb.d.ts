@@ -46,6 +46,21 @@ export class ServerMessageSupportMessage extends jspb.Message {
   getSupportUserId(): number;
   setSupportUserId(value: number): void;
 
+  getImServiceType(): number;
+  setImServiceType(value: number): void;
+
+  getTribeId(): number;
+  setTribeId(value: number): void;
+
+  getSubType(): number;
+  setSubType(value: number): void;
+
+  getExtra(): string;
+  setExtra(value: string): void;
+
+  getSeq(): number;
+  setSeq(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageSupportMessage.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageSupportMessage): ServerMessageSupportMessage.AsObject;
@@ -72,6 +87,11 @@ export namespace ServerMessageSupportMessage {
     timeToken: number,
     userSend: boolean,
     supportUserId: number,
+    imServiceType: number,
+    tribeId: number,
+    subType: number,
+    extra: string,
+    seq: number,
   }
 }
 

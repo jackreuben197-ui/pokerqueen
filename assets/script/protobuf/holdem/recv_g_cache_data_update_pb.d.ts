@@ -15,6 +15,11 @@ export class ServerMessageCacheDataUpdate extends jspb.Message {
   getJtInfo(): protobuf_holdem_define_pb.JackpotTemplateUpdateInfo | undefined;
   setJtInfo(value?: protobuf_holdem_define_pb.JackpotTemplateUpdateInfo): void;
 
+  hasWtInfo(): boolean;
+  clearWtInfo(): void;
+  getWtInfo(): protobuf_holdem_define_pb.WheelTemplateUpdateInfo | undefined;
+  setWtInfo(value?: protobuf_holdem_define_pb.WheelTemplateUpdateInfo): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCacheDataUpdate.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCacheDataUpdate): ServerMessageCacheDataUpdate.AsObject;
@@ -29,6 +34,7 @@ export namespace ServerMessageCacheDataUpdate {
   export type AsObject = {
     rtInfo?: protobuf_holdem_define_pb.RoomTemplateUpdateInfo.AsObject,
     jtInfo?: protobuf_holdem_define_pb.JackpotTemplateUpdateInfo.AsObject,
+    wtInfo?: protobuf_holdem_define_pb.WheelTemplateUpdateInfo.AsObject,
   }
 }
 

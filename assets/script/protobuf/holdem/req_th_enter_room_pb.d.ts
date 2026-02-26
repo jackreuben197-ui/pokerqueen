@@ -102,6 +102,11 @@ export class ServerMessageEnterRoom extends jspb.Message {
   getMyWheelInfo(): protobuf_holdem_define_pb.MyWheelInfo | undefined;
   setMyWheelInfo(value?: protobuf_holdem_define_pb.MyWheelInfo): void;
 
+  hasBlackInfo(): boolean;
+  clearBlackInfo(): void;
+  getBlackInfo(): protobuf_holdem_define_pb.BlackInfo | undefined;
+  setBlackInfo(value?: protobuf_holdem_define_pb.BlackInfo): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageEnterRoom.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageEnterRoom): ServerMessageEnterRoom.AsObject;
@@ -127,6 +132,7 @@ export namespace ServerMessageEnterRoom {
     muted: boolean,
     payTimes: number,
     myWheelInfo?: protobuf_holdem_define_pb.MyWheelInfo.AsObject,
+    blackInfo?: protobuf_holdem_define_pb.BlackInfo.AsObject,
   }
 }
 

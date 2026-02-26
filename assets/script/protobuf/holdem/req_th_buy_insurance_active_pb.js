@@ -70,7 +70,9 @@ proto.holdem.pb.ClientMessageBuyInsuranceActive.toObject = function(includeInsta
   var f, obj = {
     room: (f = msg.getRoom()) && protobuf_holdem_define_pb.Room.toObject(includeInstance, f),
     buyList: jspb.Message.toObjectList(msg.getBuyList(),
-    protobuf_holdem_define_pb.PotInsuranceBuy.toObject, includeInstance)
+    protobuf_holdem_define_pb.PotInsuranceBuy.toObject, includeInstance),
+    confirm: jspb.Message.getFieldWithDefault(msg, 3, false),
+    step: jspb.Message.getFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -117,6 +119,14 @@ proto.holdem.pb.ClientMessageBuyInsuranceActive.deserializeBinaryFromReader = fu
       reader.readMessage(value,protobuf_holdem_define_pb.PotInsuranceBuy.deserializeBinaryFromReader);
       msg.addBuy(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setConfirm(value);
+      break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setStep(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -160,6 +170,20 @@ proto.holdem.pb.ClientMessageBuyInsuranceActive.serializeBinaryToWriter = functi
       2,
       f,
       protobuf_holdem_define_pb.PotInsuranceBuy.serializeBinaryToWriter
+    );
+  }
+  f = message.getConfirm();
+  if (f) {
+    writer.writeBool(
+      3,
+      f
+    );
+  }
+  f = message.getStep();
+  if (f) {
+    writer.writeBool(
+      4,
+      f
     );
   }
 };
@@ -223,6 +247,40 @@ proto.holdem.pb.ClientMessageBuyInsuranceActive.prototype.addBuy = function(opt_
 
 proto.holdem.pb.ClientMessageBuyInsuranceActive.prototype.clearBuyList = function() {
   this.setBuyList([]);
+};
+
+
+/**
+ * optional bool confirm = 3;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.ClientMessageBuyInsuranceActive.prototype.getConfirm = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 3, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.ClientMessageBuyInsuranceActive.prototype.setConfirm = function(value) {
+  jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional bool step = 4;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.holdem.pb.ClientMessageBuyInsuranceActive.prototype.getStep = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 4, false));
+};
+
+
+/** @param {boolean} value */
+proto.holdem.pb.ClientMessageBuyInsuranceActive.prototype.setStep = function(value) {
+  jspb.Message.setField(this, 4, value);
 };
 
 

@@ -28,6 +28,9 @@ export class ServerMessageActionAll extends jspb.Message {
   getIsAuto(): boolean;
   setIsAuto(value: boolean): void;
 
+  getLeftChips(): number;
+  setLeftChips(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageActionAll.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageActionAll): ServerMessageActionAll.AsObject;
@@ -47,6 +50,7 @@ export namespace ServerMessageActionAll {
     allBet: number,
     roundBet: number,
     isAuto: boolean,
+    leftChips: number,
   }
 }
 

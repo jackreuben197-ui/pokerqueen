@@ -368,7 +368,8 @@ proto.holdem.pb.ServerMessageEnterRoom.toObject = function(includeInstance, msg)
     mttRoom: (f = msg.getMttRoom()) && protobuf_holdem_define_pb.Room.toObject(includeInstance, f),
     muted: jspb.Message.getFieldWithDefault(msg, 12, false),
     payTimes: jspb.Message.getFieldWithDefault(msg, 13, 0),
-    myWheelInfo: (f = msg.getMyWheelInfo()) && protobuf_holdem_define_pb.MyWheelInfo.toObject(includeInstance, f)
+    myWheelInfo: (f = msg.getMyWheelInfo()) && protobuf_holdem_define_pb.MyWheelInfo.toObject(includeInstance, f),
+    blackInfo: (f = msg.getBlackInfo()) && protobuf_holdem_define_pb.BlackInfo.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -465,6 +466,11 @@ proto.holdem.pb.ServerMessageEnterRoom.deserializeBinaryFromReader = function(ms
       var value = new protobuf_holdem_define_pb.MyWheelInfo;
       reader.readMessage(value,protobuf_holdem_define_pb.MyWheelInfo.deserializeBinaryFromReader);
       msg.setMyWheelInfo(value);
+      break;
+    case 15:
+      var value = new protobuf_holdem_define_pb.BlackInfo;
+      reader.readMessage(value,protobuf_holdem_define_pb.BlackInfo.deserializeBinaryFromReader);
+      msg.setBlackInfo(value);
       break;
     default:
       reader.skipField();
@@ -593,6 +599,14 @@ proto.holdem.pb.ServerMessageEnterRoom.serializeBinaryToWriter = function(messag
       14,
       f,
       protobuf_holdem_define_pb.MyWheelInfo.serializeBinaryToWriter
+    );
+  }
+  f = message.getBlackInfo();
+  if (f != null) {
+    writer.writeMessage(
+      15,
+      f,
+      protobuf_holdem_define_pb.BlackInfo.serializeBinaryToWriter
     );
   }
 };
@@ -929,6 +943,36 @@ proto.holdem.pb.ServerMessageEnterRoom.prototype.clearMyWheelInfo = function() {
  */
 proto.holdem.pb.ServerMessageEnterRoom.prototype.hasMyWheelInfo = function() {
   return jspb.Message.getField(this, 14) != null;
+};
+
+
+/**
+ * optional BlackInfo black_info = 15;
+ * @return {?proto.holdem.pb.BlackInfo}
+ */
+proto.holdem.pb.ServerMessageEnterRoom.prototype.getBlackInfo = function() {
+  return /** @type{?proto.holdem.pb.BlackInfo} */ (
+    jspb.Message.getWrapperField(this, protobuf_holdem_define_pb.BlackInfo, 15));
+};
+
+
+/** @param {?proto.holdem.pb.BlackInfo|undefined} value */
+proto.holdem.pb.ServerMessageEnterRoom.prototype.setBlackInfo = function(value) {
+  jspb.Message.setWrapperField(this, 15, value);
+};
+
+
+proto.holdem.pb.ServerMessageEnterRoom.prototype.clearBlackInfo = function() {
+  this.setBlackInfo(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.holdem.pb.ServerMessageEnterRoom.prototype.hasBlackInfo = function() {
+  return jspb.Message.getField(this, 15) != null;
 };
 
 

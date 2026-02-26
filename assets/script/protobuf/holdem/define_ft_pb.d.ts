@@ -293,6 +293,12 @@ export class PlayerFT extends jspb.Message {
   getPairConfirm(): boolean;
   setPairConfirm(value: boolean): void;
 
+  getIpAddr(): string;
+  setIpAddr(value: string): void;
+
+  getVideoMaskId(): number;
+  setVideoMaskId(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PlayerFT.AsObject;
   static toObject(includeInstance: boolean, msg: PlayerFT): PlayerFT.AsObject;
@@ -325,6 +331,8 @@ export namespace PlayerFT {
     userSubscriptionId: number,
     groupConfirm: boolean,
     pairConfirm: boolean,
+    ipAddr: string,
+    videoMaskId: number,
   }
 }
 

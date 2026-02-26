@@ -62,6 +62,34 @@ export class ServerMessageMjSyncEnter extends jspb.Message {
   getMuted(): boolean;
   setMuted(value: boolean): void;
 
+  hasMyWheelInfo(): boolean;
+  clearMyWheelInfo(): void;
+  getMyWheelInfo(): protobuf_holdem_define_pb.MyWheelInfo | undefined;
+  setMyWheelInfo(value?: protobuf_holdem_define_pb.MyWheelInfo): void;
+
+  hasMttRoom(): boolean;
+  clearMttRoom(): void;
+  getMttRoom(): protobuf_holdem_define_pb.Room | undefined;
+  setMttRoom(value?: protobuf_holdem_define_pb.Room): void;
+
+  hasMttInfo(): boolean;
+  clearMttInfo(): void;
+  getMttInfo(): protobuf_holdem_define_pb.MTTInfo | undefined;
+  setMttInfo(value?: protobuf_holdem_define_pb.MTTInfo): void;
+
+  getPayTimes(): number;
+  setPayTimes(value: number): void;
+
+  hasBlackInfo(): boolean;
+  clearBlackInfo(): void;
+  getBlackInfo(): protobuf_holdem_define_pb.BlackInfo | undefined;
+  setBlackInfo(value?: protobuf_holdem_define_pb.BlackInfo): void;
+
+  hasMttProgress(): boolean;
+  clearMttProgress(): void;
+  getMttProgress(): protobuf_holdem_define_pb.MTTProgress | undefined;
+  setMttProgress(value?: protobuf_holdem_define_pb.MTTProgress): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageMjSyncEnter.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageMjSyncEnter): ServerMessageMjSyncEnter.AsObject;
@@ -82,6 +110,12 @@ export namespace ServerMessageMjSyncEnter {
     myInfo?: protobuf_holdem_define_mj_pb.MyGameInfoMJ.AsObject,
     operatorList: Array<protobuf_holdem_define_mj_pb.OperatorMJ.AsObject>,
     muted: boolean,
+    myWheelInfo?: protobuf_holdem_define_pb.MyWheelInfo.AsObject,
+    mttRoom?: protobuf_holdem_define_pb.Room.AsObject,
+    mttInfo?: protobuf_holdem_define_pb.MTTInfo.AsObject,
+    payTimes: number,
+    blackInfo?: protobuf_holdem_define_pb.BlackInfo.AsObject,
+    mttProgress?: protobuf_holdem_define_pb.MTTProgress.AsObject,
   }
 }
 

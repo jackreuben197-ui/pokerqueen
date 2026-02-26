@@ -237,7 +237,13 @@ proto.holdem.pb.ServerMessageMjSyncEnter.toObject = function(includeInstance, ms
     myInfo: (f = msg.getMyInfo()) && protobuf_holdem_define_mj_pb.MyGameInfoMJ.toObject(includeInstance, f),
     operatorList: jspb.Message.toObjectList(msg.getOperatorList(),
     protobuf_holdem_define_mj_pb.OperatorMJ.toObject, includeInstance),
-    muted: jspb.Message.getFieldWithDefault(msg, 8, false)
+    muted: jspb.Message.getFieldWithDefault(msg, 8, false),
+    myWheelInfo: (f = msg.getMyWheelInfo()) && protobuf_holdem_define_pb.MyWheelInfo.toObject(includeInstance, f),
+    mttRoom: (f = msg.getMttRoom()) && protobuf_holdem_define_pb.Room.toObject(includeInstance, f),
+    mttInfo: (f = msg.getMttInfo()) && protobuf_holdem_define_pb.MTTInfo.toObject(includeInstance, f),
+    payTimes: jspb.Message.getFieldWithDefault(msg, 13, 0),
+    blackInfo: (f = msg.getBlackInfo()) && protobuf_holdem_define_pb.BlackInfo.toObject(includeInstance, f),
+    mttProgress: (f = msg.getMttProgress()) && protobuf_holdem_define_pb.MTTProgress.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -310,6 +316,35 @@ proto.holdem.pb.ServerMessageMjSyncEnter.deserializeBinaryFromReader = function(
     case 8:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setMuted(value);
+      break;
+    case 9:
+      var value = new protobuf_holdem_define_pb.MyWheelInfo;
+      reader.readMessage(value,protobuf_holdem_define_pb.MyWheelInfo.deserializeBinaryFromReader);
+      msg.setMyWheelInfo(value);
+      break;
+    case 10:
+      var value = new protobuf_holdem_define_pb.Room;
+      reader.readMessage(value,protobuf_holdem_define_pb.Room.deserializeBinaryFromReader);
+      msg.setMttRoom(value);
+      break;
+    case 11:
+      var value = new protobuf_holdem_define_pb.MTTInfo;
+      reader.readMessage(value,protobuf_holdem_define_pb.MTTInfo.deserializeBinaryFromReader);
+      msg.setMttInfo(value);
+      break;
+    case 13:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPayTimes(value);
+      break;
+    case 14:
+      var value = new protobuf_holdem_define_pb.BlackInfo;
+      reader.readMessage(value,protobuf_holdem_define_pb.BlackInfo.deserializeBinaryFromReader);
+      msg.setBlackInfo(value);
+      break;
+    case 15:
+      var value = new protobuf_holdem_define_pb.MTTProgress;
+      reader.readMessage(value,protobuf_holdem_define_pb.MTTProgress.deserializeBinaryFromReader);
+      msg.setMttProgress(value);
       break;
     default:
       reader.skipField();
@@ -399,6 +434,53 @@ proto.holdem.pb.ServerMessageMjSyncEnter.serializeBinaryToWriter = function(mess
     writer.writeBool(
       8,
       f
+    );
+  }
+  f = message.getMyWheelInfo();
+  if (f != null) {
+    writer.writeMessage(
+      9,
+      f,
+      protobuf_holdem_define_pb.MyWheelInfo.serializeBinaryToWriter
+    );
+  }
+  f = message.getMttRoom();
+  if (f != null) {
+    writer.writeMessage(
+      10,
+      f,
+      protobuf_holdem_define_pb.Room.serializeBinaryToWriter
+    );
+  }
+  f = message.getMttInfo();
+  if (f != null) {
+    writer.writeMessage(
+      11,
+      f,
+      protobuf_holdem_define_pb.MTTInfo.serializeBinaryToWriter
+    );
+  }
+  f = message.getPayTimes();
+  if (f !== 0) {
+    writer.writeInt32(
+      13,
+      f
+    );
+  }
+  f = message.getBlackInfo();
+  if (f != null) {
+    writer.writeMessage(
+      14,
+      f,
+      protobuf_holdem_define_pb.BlackInfo.serializeBinaryToWriter
+    );
+  }
+  f = message.getMttProgress();
+  if (f != null) {
+    writer.writeMessage(
+      15,
+      f,
+      protobuf_holdem_define_pb.MTTProgress.serializeBinaryToWriter
     );
   }
 };
@@ -600,6 +682,171 @@ proto.holdem.pb.ServerMessageMjSyncEnter.prototype.getMuted = function() {
 /** @param {boolean} value */
 proto.holdem.pb.ServerMessageMjSyncEnter.prototype.setMuted = function(value) {
   jspb.Message.setField(this, 8, value);
+};
+
+
+/**
+ * optional MyWheelInfo my_wheel_info = 9;
+ * @return {?proto.holdem.pb.MyWheelInfo}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.getMyWheelInfo = function() {
+  return /** @type{?proto.holdem.pb.MyWheelInfo} */ (
+    jspb.Message.getWrapperField(this, protobuf_holdem_define_pb.MyWheelInfo, 9));
+};
+
+
+/** @param {?proto.holdem.pb.MyWheelInfo|undefined} value */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.setMyWheelInfo = function(value) {
+  jspb.Message.setWrapperField(this, 9, value);
+};
+
+
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.clearMyWheelInfo = function() {
+  this.setMyWheelInfo(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.hasMyWheelInfo = function() {
+  return jspb.Message.getField(this, 9) != null;
+};
+
+
+/**
+ * optional Room mtt_room = 10;
+ * @return {?proto.holdem.pb.Room}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.getMttRoom = function() {
+  return /** @type{?proto.holdem.pb.Room} */ (
+    jspb.Message.getWrapperField(this, protobuf_holdem_define_pb.Room, 10));
+};
+
+
+/** @param {?proto.holdem.pb.Room|undefined} value */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.setMttRoom = function(value) {
+  jspb.Message.setWrapperField(this, 10, value);
+};
+
+
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.clearMttRoom = function() {
+  this.setMttRoom(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.hasMttRoom = function() {
+  return jspb.Message.getField(this, 10) != null;
+};
+
+
+/**
+ * optional MTTInfo mtt_info = 11;
+ * @return {?proto.holdem.pb.MTTInfo}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.getMttInfo = function() {
+  return /** @type{?proto.holdem.pb.MTTInfo} */ (
+    jspb.Message.getWrapperField(this, protobuf_holdem_define_pb.MTTInfo, 11));
+};
+
+
+/** @param {?proto.holdem.pb.MTTInfo|undefined} value */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.setMttInfo = function(value) {
+  jspb.Message.setWrapperField(this, 11, value);
+};
+
+
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.clearMttInfo = function() {
+  this.setMttInfo(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.hasMttInfo = function() {
+  return jspb.Message.getField(this, 11) != null;
+};
+
+
+/**
+ * optional int32 pay_times = 13;
+ * @return {number}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.getPayTimes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 13, 0));
+};
+
+
+/** @param {number} value */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.setPayTimes = function(value) {
+  jspb.Message.setField(this, 13, value);
+};
+
+
+/**
+ * optional BlackInfo black_info = 14;
+ * @return {?proto.holdem.pb.BlackInfo}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.getBlackInfo = function() {
+  return /** @type{?proto.holdem.pb.BlackInfo} */ (
+    jspb.Message.getWrapperField(this, protobuf_holdem_define_pb.BlackInfo, 14));
+};
+
+
+/** @param {?proto.holdem.pb.BlackInfo|undefined} value */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.setBlackInfo = function(value) {
+  jspb.Message.setWrapperField(this, 14, value);
+};
+
+
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.clearBlackInfo = function() {
+  this.setBlackInfo(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.hasBlackInfo = function() {
+  return jspb.Message.getField(this, 14) != null;
+};
+
+
+/**
+ * optional MTTProgress mtt_progress = 15;
+ * @return {?proto.holdem.pb.MTTProgress}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.getMttProgress = function() {
+  return /** @type{?proto.holdem.pb.MTTProgress} */ (
+    jspb.Message.getWrapperField(this, protobuf_holdem_define_pb.MTTProgress, 15));
+};
+
+
+/** @param {?proto.holdem.pb.MTTProgress|undefined} value */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.setMttProgress = function(value) {
+  jspb.Message.setWrapperField(this, 15, value);
+};
+
+
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.clearMttProgress = function() {
+  this.setMttProgress(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.holdem.pb.ServerMessageMjSyncEnter.prototype.hasMttProgress = function() {
+  return jspb.Message.getField(this, 15) != null;
 };
 
 

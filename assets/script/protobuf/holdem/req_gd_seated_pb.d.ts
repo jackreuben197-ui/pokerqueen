@@ -80,6 +80,9 @@ export class ServerMessageGdSeated extends jspb.Message {
   getUserSubscriptionId(): number;
   setUserSubscriptionId(value: number): void;
 
+  getVideoMaskId(): number;
+  setVideoMaskId(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageGdSeated.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageGdSeated): ServerMessageGdSeated.AsObject;
@@ -99,6 +102,7 @@ export namespace ServerMessageGdSeated {
     keepSeatLeftTime: number,
     keepSeatDeadline: number,
     userSubscriptionId: number,
+    videoMaskId: number,
   }
 }
 
