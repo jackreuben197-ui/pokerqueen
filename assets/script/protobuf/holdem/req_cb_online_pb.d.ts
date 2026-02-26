@@ -50,6 +50,9 @@ export class ServerMessageCbOnline extends jspb.Message {
   getOnline(): number;
   setOnline(value: number): void;
 
+  getGuestCount(): number;
+  setGuestCount(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ServerMessageCbOnline.AsObject;
   static toObject(includeInstance: boolean, msg: ServerMessageCbOnline): ServerMessageCbOnline.AsObject;
@@ -67,6 +70,7 @@ export namespace ServerMessageCbOnline {
     limit: number,
     usersList: Array<protobuf_holdem_define_cb_pb.CBUser.AsObject>,
     online: number,
+    guestCount: number,
   }
 }
 

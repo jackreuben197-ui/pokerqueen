@@ -1,52 +1,51 @@
 
 import { Def, GPS, PotInsuranceBuy, Room } from "../../protobuf/holdem/define_pb";
-import { ServerMessageActionAll } from "../../protobuf/holdem/recv_action_all_pb";
-import { ServerMessageError } from "../../protobuf/holdem/recv_error_pb";
-import { ServerMessageHandClear } from "../../protobuf/holdem/recv_hand_clear_pb";
-import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_leave_notification_pb";
-import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_post_status_change_pb";
-import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_public_cards_pb";
-import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_seated_others_pb";
-import { ServerMessageSidePots } from "../../protobuf/holdem/recv_side_pots_pb";
-import { ServerMessageStandup } from "../../protobuf/holdem/recv_stand_up_pb";
-import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_start_info_pb";
-import { ServerMessageWinner } from "../../protobuf/holdem/recv_winner_pb";
-import { ClientMessageAction, ServerMessageAction } from "../../protobuf/holdem/req_action_pb";
-import { ClientMessageBringIn, ServerMessageBringIn } from "../../protobuf/holdem/req_bring_in_pb";
-import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_enter_room_pb";
-import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_heartbeat_pb";
-import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_leave_pb";
-import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_register_pb";
-import { ClientMessageRoomers, ServerMessageRoomers } from "../../protobuf/holdem/req_roomers_pb";
-import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_seated_pb";
-import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_stand_up_active_pb";
-import { ClientMessagePublicReplay, ServerMessagePublicReplay } from "../../protobuf/holdem/req_replay_pb";
-import { ClientMessageKeepSeatActive, ServerMessageKeepSeatActive } from "../../protobuf/holdem/req_keep_seat_active_pb";
+import { ServerMessageActionAll } from "../../protobuf/holdem/recv_th_action_all_pb";
+import { ServerMessageError } from "../../protobuf/holdem/recv_g_error_pb";
+import { ServerMessageHandClear } from "../../protobuf/holdem/recv_th_hand_clear_pb";
+import { ServerMessageLeaveNotification } from "../../protobuf/holdem/recv_th_leave_notification_pb";
+import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_th_post_status_change_pb";
+import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_th_public_cards_pb";
+import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_th_seated_others_pb";
+import { ServerMessageSidePots } from "../../protobuf/holdem/recv_th_side_pots_pb";
+import { ServerMessageStandup } from "../../protobuf/holdem/recv_th_stand_up_pb";
+import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_th_start_info_pb";
+import { ServerMessageWinner } from "../../protobuf/holdem/recv_th_winner_pb";
+import { ClientMessageAction, ServerMessageAction } from "../../protobuf/holdem/req_th_action_pb";
+import { ClientMessageBringIn, ServerMessageBringIn } from "../../protobuf/holdem/req_th_bring_in_pb";
+import { ClientMessageEnterRoom, ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
+import { ClientMessageHeartbeat, ServerMessageHeartbeat } from "../../protobuf/holdem/req_g_heartbeat_pb";
+import { ClientMessageLeave, ServerMessageLeave } from "../../protobuf/holdem/req_th_leave_pb";
+import { ClientMessageRegister, ServerMessageRegister } from "../../protobuf/holdem/req_g_register_pb";
+import { ClientMessageRoomers, ServerMessageRoomers } from "../../protobuf/holdem/req_th_roomers_pb";
+import { ClientMessageSeated, ServerMessageSeated } from "../../protobuf/holdem/req_th_seated_pb";
+import { ClientMessageStandupActive, ServerMessageStandupActive } from "../../protobuf/holdem/req_th_stand_up_active_pb";
+import { ClientMessagePublicReplay, ServerMessagePublicReplay } from "../../protobuf/holdem/req_th_replay_pb";
+import { ClientMessageKeepSeatActive, ServerMessageKeepSeatActive } from "../../protobuf/holdem/req_th_keep_seat_active_pb";
 
-import { ClientMessageAddTime, ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
+import { ClientMessageAddTime, ServerMessageAddTime } from "../../protobuf/holdem/req_th_add_time_pb";
 
 import { ProtocolCode } from "./ProtocolCode";
-import { ClientMessageShowdown, ServerMessageShowdown } from "../../protobuf/holdem/req_showdown_pb";
-import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_add_time_others_pb";
-import { ServerMessageKeepSeat } from "../../protobuf/holdem/recv_keep_seat_pb";
-import { ClientMessageShowPublicCards, ServerMessageShowPublicCards } from "../../protobuf/holdem/req_show_public_cards_pb";
-import { ServerMessageShowPublicCardsOthers } from "../../protobuf/holdem/recv_show_public_cards_others_pb";
-import { ClientMessageSetAutoOnTable, ServerMessageSetAutoOnTable } from "../../protobuf/holdem/req_set_auto_on_table_pb";
-import { ClientMessageStoreChips, ServerMessageStoreChips } from "../../protobuf/holdem/req_store_chips_pb";
-import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_chips_change_pb";
-import { ServerMessageInsuranceTrigged } from "../../protobuf/holdem/recv_insurance_trigged_pb";
-import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_get_msg_pb";
-import { ClientMessageAddOn, ServerMessageAddOn } from "../../protobuf/holdem/req_add_on_pb";
-import { ServerMessageAgreeSecondPcsTrigged } from "../../protobuf/holdem/recv_agree_second_pcs_trigged_pb";
-import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_agree_second_pcs_pb";
-import { ClientMessageAgreeSecondPcsActive, ServerMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_agree_second_pcs_active_pb";
-import { ClientMessageBuyInsuranceActive, ServerMessageBuyInsuranceActive } from "../../protobuf/holdem/req_buy_insurance_active_pb";
-import { ServerMessageShowcards } from "../../protobuf/holdem/recv_showcards_pb";
-import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_up_blind_pb";
-import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_buy_insurance_pb";
-import { ClientMessageAutoOpActive, ServerMessageAutoOpActive } from "../../protobuf/holdem/req_auto_op_active_pb";
-import { ServerMessageAutoOp } from "../../protobuf/holdem/recv_auto_op_pb";
-import { ClientMessageObservers, ServerMessageObservers } from "../../protobuf/holdem/req_observers_pb";
+import { ClientMessageShowdown, ServerMessageShowdown } from "../../protobuf/holdem/req_th_showdown_pb";
+import { ServerMessageAddTimeOthers } from "../../protobuf/holdem/recv_th_add_time_others_pb";
+import { ServerMessageKeepSeat } from "../../protobuf/holdem/recv_th_keep_seat_pb";
+import { ClientMessageShowPublicCards, ServerMessageShowPublicCards } from "../../protobuf/holdem/req_th_show_public_cards_pb";
+import { ServerMessageShowPublicCardsOthers } from "../../protobuf/holdem/recv_th_show_public_cards_others_pb";
+import { ClientMessageSetAutoOnTable, ServerMessageSetAutoOnTable } from "../../protobuf/holdem/req_th_set_auto_on_table_pb";
+import { ClientMessageStoreChips, ServerMessageStoreChips } from "../../protobuf/holdem/req_th_store_chips_pb";
+import { ServerMessageChipsChange } from "../../protobuf/holdem/recv_th_chips_change_pb";
+import { ServerMessageInsuranceTrigged } from "../../protobuf/holdem/recv_th_insurance_trigged_pb";
+import { ServerMessageGetMsg } from "../../protobuf/holdem/recv_th_get_msg_pb";
+import { ClientMessageAddOn, ServerMessageAddOn } from "../../protobuf/holdem/req_th_add_on_pb";
+import { ServerMessageAgreeSecondPcsTrigged } from "../../protobuf/holdem/recv_th_agree_second_pcs_trigged_pb";
+import { ServerMessageAgreeSecondPcs } from "../../protobuf/holdem/recv_th_agree_second_pcs_pb";
+import { ClientMessageAgreeSecondPcsActive, ServerMessageAgreeSecondPcsActive } from "../../protobuf/holdem/req_th_agree_second_pcs_active_pb";
+import { ClientMessageBuyInsuranceActive, ServerMessageBuyInsuranceActive } from "../../protobuf/holdem/req_th_buy_insurance_active_pb";
+import { ServerMessageShowcards } from "../../protobuf/holdem/recv_th_showcards_pb";
+import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_th_up_blind_pb";
+import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_th_buy_insurance_pb";
+import { ClientMessageAutoOpActive, ServerMessageAutoOpActive } from "../../protobuf/holdem/req_th_auto_op_active_pb";
+import { ServerMessageAutoOp } from "../../protobuf/holdem/recv_th_auto_op_pb";
 
 export class ProtocolCommon {
 
@@ -82,7 +81,7 @@ export class ProtocolCommon {
 
             let func = `set${key[0].toLocaleUpperCase()}${key.slice(1)}`;
 
-            cc.log("set 对象", func, value);
+            //cc.log("set 对象", func, value);
 
             if (classDic && classDic[key]) {
                 //如果是数组
@@ -123,12 +122,7 @@ export enum BroadcastCode {
     VerifyTickets = 1004,//验证门票
     Super1_PMD = 1005,//一元购开奖中奖_跑马灯消息
     Super1_TC = 1006,//一元购开奖中奖_弹窗消息
-    FaceRecognizeCode = 1007,// 房间人脸识别消息
-    SeatFriendApplyRefreshMsgNum = 2001,//朋友桌房主提示
-    SeatFriendBringInApply = 2002,//朋友桌房主同意坐下
-    SeatClubApplyRefreshMsgNum = 2003,//公会桌房主提示
-    SeatClubBringInApply = 2004,//公会房主同意坐下
-    AntiCheatRoomVideoMsgCode = 2005,//随机触发强制视频		
+    Friend_BringIn = 2001 // 朋友桌带入申请
 
 }
 
@@ -193,14 +187,14 @@ export class BroadcastMsg {
     }
 }
 //朋友桌带入申请返回结构
-export class BringInApplyMsg {
+export class ServerMessageRoomBringInApply {
     public static ResponseData: {
         room_id: number,//房间ID
         user_id: number,//用户ID
         bring_in: number,//带入筹码
         status: number,// 状态 1 待审批，2通过，3拒绝，4取消
     } = null;
-    public static Response(json: string): typeof BringInApplyMsg.ResponseData {
+    public static Response(json: string): typeof ServerMessageRoomBringInApply.ResponseData {
         return JSON.parse(json);
     }
 }
@@ -253,10 +247,6 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_Roomers]: {
         Client: ClientMessageRoomers,
         Server: ServerMessageRoomers,
-    },
-    [ProtocolCode.Protocol_Holdem_Observers]: {
-        Client: ClientMessageObservers,
-        Server: ServerMessageObservers,
     },
     [ProtocolCode.Protocol_Holdem_PublicReplay]: {
         Client: ClientMessagePublicReplay,

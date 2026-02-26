@@ -32,6 +32,9 @@ export namespace DefCB {
     HS_STA_FLUSH_THREE: 9;
     HS_FULL_HOUSE: 10;
     HS_FOUR_STAFLUSH_ROYALFLUSH: 11;
+    HS_FLUSH: 12;
+    HS_STA: 13;
+    HS_STAFLUSH: 14;
   }
 
   export const HistorySlot: HistorySlotMap;
@@ -60,6 +63,9 @@ export namespace DefCB {
     PS_STA_FLUSH_THREE: 9;
     PS_FULL_HOUSE: 10;
     PS_FOUR_STAFLUSH_ROYALFLUSH: 11;
+    PS_FLUSH: 12;
+    PS_STA: 13;
+    PS_STAFLUSH: 14;
   }
 
   export const PlaySlot: PlaySlotMap;
@@ -103,9 +109,19 @@ export namespace DefCB {
     LR_FORCE: 2;
     LR_GAMEOVER: 3;
     LR_OFFLINE: 4;
+    LR_STAND_UP: 5;
   }
 
   export const LeaveReason: LeaveReasonMap;
+
+  export interface OrderByTypeMap {
+    OT_ORDER_BY_NONE: 0;
+    OT_ORDER_BY_PLAY: 1;
+    OT_ORDER_BY_WALLET: 2;
+    OT_ORDER_BY_RATE: 3;
+  }
+
+  export const OrderByType: OrderByTypeMap;
 }
 
 export class CBRoom extends jspb.Message {
@@ -134,6 +150,12 @@ export class CBRoom extends jspb.Message {
   getGameDuration(): number;
   setGameDuration(value: number): void;
 
+  getBringInMinLimit(): number;
+  setBringInMinLimit(value: number): void;
+
+  getPlayBetMinLimit(): number;
+  setPlayBetMinLimit(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CBRoom.AsObject;
   static toObject(includeInstance: boolean, msg: CBRoom): CBRoom.AsObject;
@@ -153,6 +175,8 @@ export namespace CBRoom {
     startTime: number,
     duration: number,
     gameDuration: number,
+    bringInMinLimit: number,
+    playBetMinLimit: number,
   }
 }
 
@@ -361,6 +385,9 @@ export class CBUserPlaySummary extends jspb.Message {
   getAmount(): number;
   setAmount(value: number): void;
 
+  getWin(): number;
+  setWin(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CBUserPlaySummary.AsObject;
   static toObject(includeInstance: boolean, msg: CBUserPlaySummary): CBUserPlaySummary.AsObject;
@@ -377,6 +404,7 @@ export namespace CBUserPlaySummary {
     name: string,
     avatar: string,
     amount: number,
+    win: number,
   }
 }
 

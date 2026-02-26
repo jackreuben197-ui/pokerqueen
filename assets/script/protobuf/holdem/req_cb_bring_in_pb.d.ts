@@ -13,6 +13,9 @@ export class ClientMessageCbBringIn extends jspb.Message {
   getClubId(): number;
   setClubId(value: number): void;
 
+  getReturnOrNew(): number;
+  setReturnOrNew(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ClientMessageCbBringIn.AsObject;
   static toObject(includeInstance: boolean, msg: ClientMessageCbBringIn): ClientMessageCbBringIn.AsObject;
@@ -28,6 +31,7 @@ export namespace ClientMessageCbBringIn {
     roomId: number,
     bringIn: number,
     clubId: number,
+    returnOrNew: number,
   }
 }
 
