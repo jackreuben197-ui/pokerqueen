@@ -89,3 +89,45 @@ export var LogStyle = {
     ws_request: "color:#E3C127;background:#47100A",
     ws_response: "color:#19FF00;background:#47100A",
 }
+
+export var TextColor = {
+    Color1: "#FFFFFF",
+    Color2: "#35A3B3",
+    Color3: "#757CAB",
+    Color4: "#7187FF",
+    Color5: "#B0FFAE",
+    Color6: "#FF7C7C",
+    Color7: "#EEF5FF",
+    Color8: "#FEEC8E",
+}
+
+export var Member_Order_List = [
+    { show: "UIGuild_MemberManagerSortByWinOrLose", index: 0, icon: "Up", sort_type: 1, order_type: 1 },
+    { show: "UIGuild_MemberManagerSortByHands", index: 2, icon: "Up", sort_type: 2, order_type: 1 },
+    { show: "UIGuild_MemberManagerSortByServiceFee", index: 4, icon: "Up", sort_type: 3, order_type: 1 },
+    { show: "UIGuild_MemberManagerSortByLastLoginTime", index: 6, icon: "Up", sort_type: 4, order_type: 1 },
+];
+
+export var Tabs_Status = {
+    [-1]: [0, 0, 0, 0, 0, 0],
+    0: [1, 0, 0, 0, 0, 0],
+    1: [0, 1, 0, 0, 0, 0],
+    2: [0, 0, 1, 0, 0, 0],
+    3: [0, 0, 0, 1, 0, 0],
+    4: [0, 0, 0, 0, 1, 0],
+    5: [0, 0, 0, 0, 0, 1],
+};
+
+export function GetGameTypeName(data: any): string {
+    let str = "NLH";
+    if (data.game_type == 1) {
+        str = "PLO4";
+    } else if (data.game_type == 2) {
+        str = "PLO5";
+    } else if (data.game_type == 3) {
+        str = "PLO6";
+    } else if (data.poker_type == 2) {
+        str = "6+";
+    }
+    return str;
+}
