@@ -14,7 +14,7 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import HttpRequest from "../net/https/HttpRequest";
 import { WWW, Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_GetDiamondConfig, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
-import { ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
+import { ServerMessageRegister } from "../protobuf/holdem/req_g_register_pb";
 
 import GlobalSession from "./GlobalSession";
 import LoginSession from "./LoginSession";

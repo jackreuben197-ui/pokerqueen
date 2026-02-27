@@ -1,6 +1,6 @@
 
 import GC from "../frame/GameControl";
-import { ServerMessageEnterRoom } from "../protobuf/holdem/req_enter_room_pb";
+import { ServerMessageEnterRoom } from "../protobuf/holdem/req_th_enter_room_pb";
 import TexasGame from "./texas/TexasGame";
 import GameUtil, { GameEnterType } from "./util/GameUtil";
 

@@ -8,7 +8,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { ActionLimit, ActionShortcutLimit, Def } from "../../protobuf/holdem/define_pb";
-import { ServerMessageAddTime } from "../../protobuf/holdem/req_add_time_pb";
+import { ServerMessageAddTime } from "../../protobuf/holdem/req_th_add_time_pb";
 import GGSlider from "../../ui/component/GGSlider";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
