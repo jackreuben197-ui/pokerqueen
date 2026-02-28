@@ -161,6 +161,14 @@ export default class TexasGame {
     /// 房间的时间总长度（分钟）
     /// </summary>
     public maxPlayTime: number = 0;
+    /** 蘑菇玩法是否开启 */
+    public mushroomEnabled: boolean = false;
+    /** 一颗蘑菇等于多少筹码 */
+    public mushroomBase: number = 0;
+    /** 蘑菇模式（押金倍率/参与方式） */
+    public mushroomMode: number = 0;
+    /** 当前蘑菇池金额 */
+    public mushroomPool: number = 0;
     /// <summary>
     /// 当前最小带入倍数
     /// </summary>
@@ -581,6 +589,14 @@ export default class TexasGame {
             this.mainPlayer.seatID = this.GetLocalSeatID(rec.myInfo.seatId);
             this.mainPlayer.chips = rec.myInfo.chip;
             this.mainPlayer.cacheStoreChips = rec.myInfo.storeChips;
+            if (this.mushroomEnabled) {
+                // 服务端下发的蘑菇参与与成本
+                (this.mainPlayer as any).inMushroom = (rec.myInfo as any).inMushroom || false;
+                (this.mainPlayer as any).costMushroom = (rec.myInfo as any).costMushroom || 0;
+                if (this.mushroomPool > 0 && (rec.myInfo as any).inMushroom == null) {
+                    (this.mainPlayer as any).inMushroom = false;
+                }
+            }
         }
 
         this.cacheUniqueId = rec.roomInfo.uniqueId;
@@ -610,6 +626,26 @@ export default class TexasGame {
 
         this.opTime = rec.roomInfo.opDuration;
         this.groupBet = rec.roomInfo.ante;
+        // 蘑菇玩法字段（房间级别配置）
+        this.mushroomBase = (rec.roomInfo as any).mushroomBase || 0;
+        this.mushroomMode = (rec.roomInfo as any).mushroomMode || 0;
+        // 正确读取 handInfo.pools.mushroomPool（与 Unity 一致）
+        const handPools = (rec.handInfo as any)?.pools;
+        this.mushroomPool = (handPools && handPools.mushroomPool) || (rec.roomInfo as any).mushroomPool || 0;
+        if (this.mushroomBase > 0) {
+            let maxCost = 0;
+            rec.playersList?.forEach(p => {
+                const c = (p as any).costMushroom || 0;
+                if (c > maxCost) maxCost = c;
+            });
+            if (maxCost > 0) {
+                this.mushroomMode = Math.max(1, Math.round(maxCost / this.mushroomBase));
+            } else {
+                this.mushroomMode = 1;
+            }
+        }
+        this.mushroomEnabled = this.mushroomBase > 0;
+        this.uirc.UpdateMushroomPool(this.mushroomPool, this.mushroomBase, this.mushroomEnabled);
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
@@ -1055,6 +1091,10 @@ export default class TexasGame {
         if (GameCache.Instance.CurlimitDelaySeeCard) {
             info += `\n${CPErrorCode.LanguageDescription(20088)}`;
         }
+        if (this.mushroomEnabled) {
+            info += `\n1${i18nMgr.Get("UIMush")} = ${StringHelper.GetLongString(this.mushroomBase)} `;
+            info += `\n${i18nMgr.Get("UIMushYaJin")}: ${StringHelper.GetLongString(this.mushroomBase * (this.mushroomMode || 1))}`;
+        }
         info += "\n\n";
         this.uirc.textRoomInfo.string = info;
     }
@@ -1375,6 +1415,13 @@ export default class TexasGame {
         if (null == this.uirc.buttonWaitBlind || !this.uirc.buttonWaitBlind.activeInHierarchy)
             return;
         this.uirc.buttonWaitBlind.active = false;
+    }
+    /** 获取当前最小带入（含蘑菇押金） */
+    public GetMinBringInWithMush(): number {
+        const blindMin = this.currentMinRate * this.bigBlind;
+        if (!this.mushroomEnabled) return blindMin;
+        const mushCost = this.mushroomBase * this.mushroomMode;
+        return Math.max(blindMin, mushCost);
     }
     /// <summary>
     /// 带入
@@ -2840,6 +2887,7 @@ export default class TexasGame {
                 currentMaxRate: this.currentMaxRate,
                 totalCoin: GC.data.user.info.gold,
                 tableChips: this.mainPlayer.chips,
+                minBringIn: this.GetMinBringInWithMush(),
                 wallets: wallets
             }
         )
@@ -2856,6 +2904,7 @@ export default class TexasGame {
                 totalCoin: GameCache.Instance.gold,
                 tableChips: this.mainPlayer.chips,
                 storeChips: this.mainPlayer.cacheStoreChips,
+                minBringIn: this.GetMinBringInWithMush(),
                 wallets: wallets
             }
         )
@@ -2949,6 +2998,17 @@ export default class TexasGame {
         this.waitBlind = 0;
         this.isIpRestrictions = false;
         this.isGPSRestrictions = false;
+        this.mushroomEnabled = false;
+        this.mushroomBase = 0;
+        this.mushroomMode = 0;
+        this.mushroomPool = 0;
+        this.uirc.UpdateMushroomPool(0, 0, false);
+        // 座位蘑菇标识隐藏
+        if (this.listSeat) {
+            this.listSeat.forEach(seat => {
+                seat?.ClearMushroomTag();
+            });
+        }
         this.tribeId = 0;
         this.ServerVersion = "";
         this.autoFold = false;

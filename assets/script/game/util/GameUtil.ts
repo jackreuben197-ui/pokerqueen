@@ -122,7 +122,22 @@ export class some_pos {
         cc.v3(-190, 28),
         cc.v3(-190, 28),
     ];
-
+    
+    //蘑菇位置
+    public static readonly all_mushroom_pos: cc.Vec3[] = [
+        cc.v3(-130, -181),//中下为自己的位置
+        cc.v3(20, -181),//除自己外所有方位的位置
+        cc.v3(20, -181),
+        cc.v3(20, -181),
+        cc.v3(20, -181),
+        cc.v3(-20, -181),
+        cc.v3(-20, -181),
+        cc.v3(0, -181),
+        cc.v3(-20, -181),
+        cc.v3(-20, -181),
+        cc.v3(-130, -181),// 10 中下为自己的位置
+        cc.v3(-130, -181),// 11 中下为其他玩家的位置
+    ]
 }
 export class seat_info {
     seat_pos: cc.Vec3 = null;
@@ -131,6 +146,7 @@ export class seat_info {
     bet_pos: cc.Vec3 = null;
     bubble_pos: cc.Vec3 = null;
     insurance_pos: cc.Vec3 = null;
+    mushroom_pos: cc.Vec3 = null;
     constructor(public index: number) {
         this.seat_pos = some_pos.all_seat_pos[index];
         this.bank_pos = some_pos.all_bank_pos[index];
@@ -138,6 +154,7 @@ export class seat_info {
         this.bet_pos = some_pos.all_bet_pos[index];
         this.bubble_pos = some_pos.all_bubble_pos[index];
         this.insurance_pos = some_pos.all_insurance_pos[index];
+        this.mushroom_pos = some_pos.all_mushroom_pos[index];
     }
 }
 /**

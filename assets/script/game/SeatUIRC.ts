@@ -80,6 +80,12 @@ export default class SeatUIRC extends UIBase {
     transSmallCardBacks: cc.Node = null;
     imageBanker: cc.Node = null;
 
+    // 蘑菇池（座位级，靠近庄家位）
+    MushroomPool: cc.Node = null;
+    MushroomLabel: cc.Node = null;
+    Label_MushroomCount: cc.Label = null;
+    Label_MushroomChip: cc.Label = null;
+
 
     Head_CD: cc.Node = null;
     Head_CD_Label: cc.Label = null;
@@ -170,6 +176,12 @@ export default class SeatUIRC extends UIBase {
 
         this.transSmallCardBacks = this.getChildNodeOrComponent("SmallCardBacks");
         this.imageBanker = this.getChildNodeOrComponent("Image_Banker");
+
+        // 蘑菇池（座位模板内，固定路径）
+        this.MushroomPool = this.getChildNodeOrComponent("MushroomPool");
+        this.MushroomLabel = this.getChildNodeOrComponent("MushroomPool/MushroomLabel");
+        this.Label_MushroomCount = this.getChildNodeOrComponent("MushroomPool/MushroomLabel/Label_Count", cc.Label);
+        this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomPool/MushroomLabel/Label_Chip", cc.Label);
 
         this.Spine_Winner = this.getChildNodeOrComponent("Spine_Winner", sp.Skeleton);
 
@@ -295,8 +307,9 @@ export default class SeatUIRC extends UIBase {
                                 currentMinRate: GameCache.Instance.CurGame.currentMinRate,
                                 currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
                                 totalCoin: GC.data.user.info.gold,
-                                tableChips: this.seat.Player.chips,
-                                wallets: [res.data],
+                            tableChips: this.seat.Player.chips,
+                            wallets: [res.data],
+                            minBringIn: GameCache.Instance.CurGame.GetMinBringInWithMush(),
                             }
                         )
                     },
@@ -315,6 +328,7 @@ export default class SeatUIRC extends UIBase {
                         currentMaxRate: GameCache.Instance.CurGame.currentMaxRate,
                         totalCoin: GC.data.user.info.gold,
                         tableChips: this.seat.Player.chips,
+                        minBringIn: GameCache.Instance.CurGame.GetMinBringInWithMush(),
                     }
                 )
             }

@@ -327,6 +327,20 @@ export default class TexasGameProtocol {
             if (null == Seat || null == Seat.Player) {
                 continue;
             }
+            // 蘑菇玩法标记
+            if (this.game.mushroomEnabled) {
+                Seat.Player.inMushroom = (rec.playersList[i] as any).inMushroom || false;
+                Seat.Player.costMushroom = (rec.playersList[i] as any).costMushroom || 0;
+                Seat.Player.mushroomCount = (rec.playersList[i] as any).mushroomCount || Seat.Player.mushroomCount;
+                Seat.Player.mushroomAmount = (rec.playersList[i] as any).mushroomAmount || Seat.Player.mushroomAmount;
+                // 如果池未清空且服务端未标记，默认新入玩家不参与本手蘑菇
+                if (this.game.mushroomPool > 0 && (rec.playersList[i] as any).inMushroom == null) {
+                    Seat.Player.inMushroom = false;
+                }
+            } else {
+                Seat.Player.inMushroom = false;
+                Seat.Player.costMushroom = 0;
+            }
             SeverSeatIds.push(this.game.GetLocalSeatID(rec.playersList[i].seatId));
             Seat.isBank = Seat.seatID == this.game.bankerIndex;
             Seat.isBig = Seat.seatID == this.game.bigIndex;
@@ -363,6 +377,25 @@ export default class TexasGameProtocol {
                 Seat.listSmallCardUIInfos[i].imageSelect.node.active = false;
             }
 
+        }
+        // 开局庄家投入蘑菇到池
+        if (this.game.mushroomEnabled && this.game.bankerIndex >= 0) {
+            console.log(`======开局庄家投入蘑菇到池============`);
+            const bankSeat = this.game.listSeat[this.game.bankerIndex];
+            if (bankSeat && bankSeat.Player && bankSeat.Player.inMushroom) {
+                const mushCost = this.game.mushroomBase * this.game.mushroomMode;
+                this.game.mushroomPool += mushCost;
+                // 扣除庄家筹码（不足则置0）
+                bankSeat.Player.chips = Math.max(0, bankSeat.Player.chips - mushCost);
+            }
+        }
+        console.log(`==========确认是否开启蘑菇=${this.game.mushroomEnabled}=======`);
+        
+        if (this.game.mushroomEnabled) {
+            this.game.UpdateRoomDes();
+            this.game.uirc.UpdateMushroomPool(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled);
+            // 刷新所有座位蘑菇标识（避免旧庄家残留）
+            this.game.listSeat.forEach(s => s?.UpdateMushroomTag(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled));
         }
         if (this.game.smallIndex >= 0) {
             GC.sound.Play("sfx_desk_bet_first");
@@ -1441,6 +1474,50 @@ export default class TexasGameProtocol {
         this.game.ClearSeatBubble(true);
         this.game.SetPublicCardInfosId();
         this.game.MessageWinnerData = rec;
+
+        // 蘑菇结算：读取 Ehcs 的 EhcMushroom，统计获胜者并清空蘑菇池
+        if (this.game.mushroomEnabled && rec?.resultsList?.length) {
+            let hasMushWinner = false;
+            let mushWinners: number[] = [];
+            rec.resultsList.forEach(r => {
+                const seat = this.game.listSeat[this.game.GetLocalSeatID(r.seatId)];
+                if (!seat || !seat.Player) { return; }
+                if (r.ehcsList && r.ehcsList.length) {
+                    r.ehcsList.forEach(ehc => {
+                        if (ehc.ehcType === Def.EHCType.EHC_MUSHROOM) {
+                            const mushCount = (ehc as any).pb_in || (ehc as any).in || 0;
+                            if (mushCount > 0) {
+                                hasMushWinner = true;
+                                mushWinners.push(seat.seatID);
+                                seat.Player.mushroomCount += mushCount;
+                                seat.Player.mushroomAmount += mushCount * this.game.mushroomBase;
+                            }
+                        }
+                    });
+                }
+            });
+            if (hasMushWinner) {
+                this.game.mushroomPool = 0;
+            } else if (this.game.mushroomPool > 0) {
+                // 无明确蘑菇赢家时，将池按本手结果中的 inMushroom 玩家平分
+                const eligibleSeats = rec.resultsList
+                    .map(r => this.game.listSeat[this.game.GetLocalSeatID(r.seatId)])
+                    .filter(s => s && s.Player && s.Player.inMushroom && !s.Player.isFold);
+                if (eligibleSeats.length > 0) {
+                    const share = Math.floor(this.game.mushroomPool / eligibleSeats.length);
+                    eligibleSeats.forEach(s => {
+                        s.Player.mushroomAmount += share;
+                    });
+                    this.game.mushroomPool = 0;
+                }
+            }
+            if (this.game.mushroomEnabled) {
+                this.game.UpdateRoomDes();
+                this.game.uirc.UpdateMushroomPool(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled);
+                const bankerSeat = this.game.listSeat[this.game.bankerIndex];
+                bankerSeat?.UpdateMushroomTag(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled);
+            }
+        }
 
         if (this.game.IsSecondPsc) {
             cc.log("is second public cards ");

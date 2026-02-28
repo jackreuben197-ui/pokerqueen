@@ -211,6 +211,14 @@ export default class Seat {
         this.uirc.imageBanker.setPosition(info.bank_pos);
         this.uirc.transSmallCardBacks.setPosition(info.card_back_pos);
         this.uirc.transCurRoundHaveBet.setPosition(info.bet_pos);
+        // 蘑菇标位置：按座位方位设置
+        if (this.uirc.MushroomPool || true) {
+            const mushPos = info.mushroom_pos || cc.Vec3.ZERO;
+            console.log(`======显示蘑菇s=${mushPos}============`);
+            this.uirc.MushroomPool.setPosition(mushPos);
+            this.uirc.MushroomPool.active = true;
+            // this.ClearMushroomTag(); // 切换座位时先隐藏
+        }
 
         if (this.IsMySeat) {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
@@ -465,6 +473,31 @@ export default class Seat {
     }
     public SetCoin(coin: string) {
         this.uirc.Text_Coin.string = coin;
+    }
+
+    /** 刷新座位蘑菇标识（庄家池） */
+    public UpdateMushroomTag(pool: number, base: number, enabled: boolean): void {
+        if (!this.uirc || !this.uirc.MushroomPool) {
+            cc.log(`[MUSH-TAG] seat=${this.seatID} local=${this.ClientSeatId} missing MushroomPool`);
+            return;
+        }
+        const show = enabled && this.isBank && pool > 0 && base > 0;
+        // this.uirc.MushroomPool.active = show;
+        this.uirc.MushroomPool.active = true;
+        console.log(`======show=${show}==${this.ClientSeatId}==${this.seatID}============show:${show}`);
+        const cnt = Math.floor(pool / base);
+        console.log(`=======${this.ClientSeatId}==${this.seatID}============pool:${pool} base:${base}`);
+        this.uirc.Label_MushroomCount && (this.uirc.Label_MushroomCount.string = `${88}`);
+        this.uirc.Label_MushroomChip && (this.uirc.Label_MushroomChip.string = `${77}`);
+
+        cc.log(`[MUSH-TAG] seat=${this.seatID} local=${this.ClientSeatId} show cnt=${cnt} chip=${pool}`);
+    }
+
+    /** 清理/隐藏蘑菇标识（换桌/重置时调用） */
+    public ClearMushroomTag(): void {
+        if (this.uirc?.MushroomPool) {
+            this.uirc.MushroomPool.active = false;
+        }
     }
     /// <summary>
     /// 刷新状态机，主要用户刷新冒泡

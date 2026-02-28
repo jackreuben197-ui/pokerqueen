@@ -62,6 +62,15 @@ export class CPlayer {
     /// </summary>
     public cacheStoreChips: number = 0;
 
+    /** 是否参与蘑菇玩法 */
+    public inMushroom: boolean = false;
+    /** 蘑菇投入次数/个数 */
+    public mushroomCount: number = 0;
+    /** 蘑菇对应金额（筹码） */
+    public mushroomAmount: number = 0;
+    /** 本手或当前带入的蘑菇押金成本 */
+    public costMushroom: number = 0;
+
 
     constructor(public id: number) {
         this.seatID = -1;

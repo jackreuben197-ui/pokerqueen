@@ -24,6 +24,8 @@ export type AddClipsData = {
     tableChips: number, // 玩家剩余记分牌
     wallets?: any,//钱包列表
     fromMenu?: boolean,
+    /** 直接指定最小带入（已含蘑菇押金），单位与 bigBlind 一致 */
+    minBringIn?: number,
 }
 
 @ccclass
@@ -112,7 +114,9 @@ export default class UIBringIn extends UIBasePlus {
             this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
             //最大带入值
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
-            let min = data.currentMinRate * data.bigBlind / 100;
+            let min = data.minBringIn != null
+                ? data.minBringIn / 100
+                : data.currentMinRate * data.bigBlind / 100;
             max = Math.max(min, max);
 
             this.SliderPlus$slider.show({
