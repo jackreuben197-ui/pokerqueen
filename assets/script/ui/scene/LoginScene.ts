@@ -234,7 +234,7 @@ export default class LoginScene extends BaseScene {
     }
 
     updateViewStatus() {
-        this.phoneEdit.string = "";
+        this.phoneEdit.string = "18410105002";
         this.vcodeEdit.string = "";
         this.passwordEdit.string = "";
 
