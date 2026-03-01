@@ -1712,6 +1712,9 @@ export default class TexasGame {
             //let rtween = mSeat.PlayBankerAnimation(tween);
             //rtween?.delay(0.2);
             tween.delay(mSeat.PlayBankerAnimation() + 0.2);
+            if (this.mushroomPool > 0) {
+                mSeat.PlayMushroomBetAnimation();
+            }
         }
         // 前注
         if (this.groupBet > 0) {

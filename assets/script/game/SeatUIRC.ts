@@ -82,6 +82,7 @@ export default class SeatUIRC extends UIBase {
 
     // 蘑菇池（座位级，靠近庄家位）
     MushroomPool: cc.Node = null;
+    MushroomIcon: cc.Sprite = null;
     MushroomLabel: cc.Node = null;
     Label_MushroomCount: cc.Label = null;
     Label_MushroomChip: cc.Label = null;
@@ -179,6 +180,7 @@ export default class SeatUIRC extends UIBase {
 
         // 蘑菇池（座位模板内，固定路径）
         this.MushroomPool = this.getChildNodeOrComponent("MushroomPool");
+        this.MushroomIcon = this.getChildNodeOrComponent("MushroomIcon", cc.Sprite);
         this.MushroomLabel = this.getChildNodeOrComponent("MushroomLabel");
         this.Label_MushroomCount = this.getChildNodeOrComponent("MushroomLabelCount", cc.Label);
         this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomLabelChip", cc.Label);

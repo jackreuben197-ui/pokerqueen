@@ -23,6 +23,9 @@ export default class ItemLobbyRoom extends UIBasePlus {
 
     // 1 平台，2 联盟，3 公会 4 朋友桌
     $icon_origin_type: cc.Node = null;
+    //玩法类型
+    $icon_mushroom: cc.Node = null;
+    $icon_squid: cc.Node = null;
 
     //防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
     $icon_anti_cheat_type: cc.Node = null;
@@ -62,6 +65,9 @@ export default class ItemLobbyRoom extends UIBasePlus {
         this.$icon_origin_type.getChildByName("union").active = data.origin_type == 2;
         this.$icon_origin_type.getChildByName("club").active = data.origin_type == 3;
         this.$icon_origin_type.getChildByName("friend").active = data.origin_type == 4;
+        //玩法类型
+        this.$icon_mushroom.active = data.mushroom_mode > 0 && data.mushroom_base > 0;
+        this.$icon_squid.active = data.squid_base > 0;
 
         //刷新 anti_cheat_type 图标
         this.$icon_anti_cheat_type.active = data.anti_cheat_type > 1;

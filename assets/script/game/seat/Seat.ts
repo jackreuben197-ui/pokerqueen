@@ -1066,6 +1066,42 @@ export default class Seat {
 
     }
 
+    /**
+     * 播放庄家位蘑菇投注动画。
+     * 蘑菇图标从玩家头像位置出发，缩放由 0 到原始大小并移动到蘑菇池位置；
+     * 动画完成后显示蘑菇文案。
+     * @returns 动画时长（秒）
+     */
+    public PlayMushroomBetAnimation(): number {
+        if (!this.uirc?.MushroomIcon?.node || !this.uirc?.MushroomLabel || !this.uirc?.Frame_Head) {
+            return 0;
+        }
+
+        const iconNode = this.uirc.MushroomIcon.node;
+        const labelNode = this.uirc.MushroomLabel;
+        const sourceWorldPos = this.uirc.Frame_Head.parent.convertToWorldSpaceAR(this.uirc.Frame_Head.position);
+        const targetPos = iconNode.position.clone();
+        const targetScaleX = iconNode.scaleX;
+        const targetScaleY = iconNode.scaleY;
+        const duration = 0.35;
+
+        // 开始动画前先隐藏文字，仅展示飞行中的蘑菇图标
+        labelNode.active = false;
+        iconNode.stopAllActions();
+        iconNode.active = true;
+        iconNode.setPosition(iconNode.parent.convertToNodeSpaceAR(sourceWorldPos));
+        iconNode.setScale(0, 0);
+
+        cc.tween(iconNode)
+            .to(duration, { position: targetPos, scaleX: targetScaleX, scaleY: targetScaleY }, cc.easeQuadraticActionOut())
+            .call(() => {
+                labelNode.active = true;
+            })
+            .start();
+
+        return duration;
+    }
+
 
     /// <summary>
     /// 播放回收筹码动画

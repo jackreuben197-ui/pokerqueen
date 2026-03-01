@@ -1490,16 +1490,16 @@ export default class TexasGameProtocol {
                 this.game.mushroomPool = 0;
             } else if (this.game.mushroomPool > 0) {
                 // 无明确蘑菇赢家时，将池按本手结果中的 inMushroom 玩家平分
-                const eligibleSeats = rec.resultsList
-                    .map(r => this.game.listSeat[this.game.GetLocalSeatID(r.seatId)])
-                    .filter(s => s && s.Player && s.Player.inMushroom && !s.Player.isFold);
-                if (eligibleSeats.length > 0) {
-                    const share = Math.floor(this.game.mushroomPool / eligibleSeats.length);
-                    eligibleSeats.forEach(s => {
-                        s.Player.mushroomAmount += share;
-                    });
-                    this.game.mushroomPool = 0;
-                }
+                // const eligibleSeats = rec.resultsList
+                //     .map(r => this.game.listSeat[this.game.GetLocalSeatID(r.seatId)])
+                //     .filter(s => s && s.Player && s.Player.inMushroom && !s.Player.isFold);
+                // if (eligibleSeats.length > 0) {
+                //     const share = Math.floor(this.game.mushroomPool / eligibleSeats.length);
+                //     eligibleSeats.forEach(s => {
+                //         s.Player.mushroomAmount += share;
+                //     });
+                //     this.game.mushroomPool = 0;
+                // }
             }
             if (this.game.mushroomEnabled) {
                 this.game.UpdateRoomDes();
