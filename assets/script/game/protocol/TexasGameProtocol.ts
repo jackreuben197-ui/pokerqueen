@@ -393,7 +393,6 @@ export default class TexasGameProtocol {
         
         if (this.game.mushroomEnabled) {
             this.game.UpdateRoomDes();
-            this.game.uirc.UpdateMushroomPool(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled);
             // 刷新所有座位蘑菇标识（避免旧庄家残留）
             this.game.listSeat.forEach(s => s?.UpdateMushroomTag(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled));
         }
@@ -1513,7 +1512,6 @@ export default class TexasGameProtocol {
             }
             if (this.game.mushroomEnabled) {
                 this.game.UpdateRoomDes();
-                this.game.uirc.UpdateMushroomPool(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled);
                 const bankerSeat = this.game.listSeat[this.game.bankerIndex];
                 bankerSeat?.UpdateMushroomTag(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled);
             }

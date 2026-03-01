@@ -645,7 +645,6 @@ export default class TexasGame {
             }
         }
         this.mushroomEnabled = this.mushroomBase > 0;
-        this.uirc.UpdateMushroomPool(this.mushroomPool, this.mushroomBase, this.mushroomEnabled);
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
@@ -3002,7 +3001,6 @@ export default class TexasGame {
         this.mushroomBase = 0;
         this.mushroomMode = 0;
         this.mushroomPool = 0;
-        this.uirc.UpdateMushroomPool(0, 0, false);
         // 座位蘑菇标识隐藏
         if (this.listSeat) {
             this.listSeat.forEach(seat => {

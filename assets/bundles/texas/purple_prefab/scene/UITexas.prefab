@@ -8831,8 +8831,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        130,
-        -181,
+        -235.068,
+        -189.724,
         0,
         0,
         0,
@@ -8883,8 +8883,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 66,
-      "height": 66
+      "width": 50,
+      "height": 50
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -8895,7 +8895,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -334.044,
+        0,
         22.251,
         0,
         0,
@@ -9005,7 +9005,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -262.527,
+        80,
         -3.818,
         0,
         0,
@@ -9057,8 +9057,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 19.47,
-      "height": 44.1
+      "width": 16.68,
+      "height": 37.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -9069,8 +9069,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        37.292,
+        -18.132,
+        35.897,
         0,
         0,
         0,
@@ -9111,8 +9111,8 @@
     "_dstBlendFactor": 771,
     "_string": "1",
     "_N$string": "1",
-    "_fontSize": 35,
-    "_lineHeight": 35,
+    "_fontSize": 30,
+    "_lineHeight": 30,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -9165,8 +9165,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 41.71,
-      "height": 31.5
+      "width": 33.37,
+      "height": 25.2
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -9177,8 +9177,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        0.683,
+        -14.766,
+        6.992,
         0,
         0,
         0,
@@ -9219,8 +9219,8 @@
     "_dstBlendFactor": 771,
     "_string": "100",
     "_N$string": "100",
-    "_fontSize": 25,
-    "_lineHeight": 25,
+    "_fontSize": 20,
+    "_lineHeight": 20,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,

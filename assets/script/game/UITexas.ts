@@ -197,11 +197,6 @@ export default class UITexas extends BaseScene {
     TransPot_Pool: SimpleNodePool = null;
     TransAllPot_Pool: SimpleNodePool = null;
 
-    // 蘑菇池 UI
-    public Node_MushroomPool: cc.Node = null;
-    public Label_MushroomCount: cc.Label = null;
-    public Label_MushroomChip: cc.Label = null;
-    public Node_MushroomLabel: cc.Node = null;
 
     //#region 弹幕界面
     /// <summary>
@@ -260,11 +255,7 @@ export default class UITexas extends BaseScene {
         this.transPot = this.getChildNodeOrComponent("Pot");
         this.transAllPot = this.getChildNodeOrComponent("AllPot");
 
-        // 蘑菇池节点（如不存在则保持 null，不影响老场景）
-        this.Node_MushroomPool = this.getChildNodeOrComponent("MushroomPool");
-        this.Node_MushroomLabel = this.getChildNodeOrComponent("MushroomPool/MushroomLabel");
-        this.Label_MushroomCount = this.getChildNodeOrComponent("MushroomPool/MushroomLabel/Label_Count", cc.Label);
-        this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomPool/MushroomLabel/Label_Chip", cc.Label);
+
 
 
         this.Button_Delay = this.getChildNodeOrComponent("Button_Delay");
@@ -391,19 +382,6 @@ export default class UITexas extends BaseScene {
 
     }
 
-    /** 刷新蘑菇池显示 */
-    public UpdateMushroomPool(pool: number, base: number, enabled: boolean): void {
-        if (!this.Node_MushroomPool || !this.Label_MushroomCount || !this.Label_MushroomChip) {
-            cc.log("[MUSH-UI] mushroom pool node/label missing on UITexas, skip.");
-            return;
-        }
-        const show = enabled && pool > 0 && base > 0;
-        this.Node_MushroomPool.active = show;
-        if (!show) return;
-        const cnt = Math.floor(pool / base);
-        this.Label_MushroomCount.string = `${cnt}`;
-        this.Label_MushroomChip.string = `${pool}`;
-    }
 
     Enter(param: { game_enter_type: GameEnterType, isLookOn: boolean }): void {
 

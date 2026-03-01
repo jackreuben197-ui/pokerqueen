@@ -88,7 +88,7 @@ export default class ProcedureConfig extends ProcedureBase {
             case 5:
                 GameConfig.Network = {
                     WebHost: `https://${GameConfig.Web_Host_Test1}`,
-                    WSS: `wss://${GameConfig.Web_Host_Test1}/api/channel/`
+                    WSS: `wss://${GameConfig.Web_Host_Test1}{0}`
                 };
                 break;
 
