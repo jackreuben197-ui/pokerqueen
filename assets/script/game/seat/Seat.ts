@@ -212,12 +212,10 @@ export default class Seat {
         this.uirc.transSmallCardBacks.setPosition(info.card_back_pos);
         this.uirc.transCurRoundHaveBet.setPosition(info.bet_pos);
         // 蘑菇标位置：按座位方位设置
-        if (this.uirc.MushroomPool || true) {
+        if (this.uirc.MushroomPool) {
             const mushPos = info.mushroom_pos || cc.Vec3.ZERO;
-            console.log(`======显示蘑菇s=${mushPos}============`);
             this.uirc.MushroomPool.setPosition(mushPos);
-            this.uirc.MushroomPool.active = true;
-            // this.ClearMushroomTag(); // 切换座位时先隐藏
+            this.ClearMushroomTag(); // 切换座位时先隐藏
         }
 
         if (this.IsMySeat) {
@@ -477,20 +475,14 @@ export default class Seat {
 
     /** 刷新座位蘑菇标识（庄家池） */
     public UpdateMushroomTag(pool: number, base: number, enabled: boolean): void {
-        if (!this.uirc || !this.uirc.MushroomPool) {
-            cc.log(`[MUSH-TAG] seat=${this.seatID} local=${this.ClientSeatId} missing MushroomPool`);
-            return;
-        }
         const show = enabled && this.isBank && pool > 0 && base > 0;
-        // this.uirc.MushroomPool.active = show;
-        this.uirc.MushroomPool.active = true;
-        console.log(`======show=${show}==${this.ClientSeatId}==${this.seatID}============show:${show}`);
+        this.uirc.MushroomPool.active = show;
+        console.log(`==>enabled${enabled}==>pool${pool}==>base${base}==>show${show}`);
+        if (!show) return;
+        console.log(`==>显示蘑菇=>${this.ClientSeatId}==>${this.seatID}`);
         const cnt = Math.floor(pool / base);
-        console.log(`=======${this.ClientSeatId}==${this.seatID}============pool:${pool} base:${base}`);
-        this.uirc.Label_MushroomCount && (this.uirc.Label_MushroomCount.string = `${88}`);
-        this.uirc.Label_MushroomChip && (this.uirc.Label_MushroomChip.string = `${77}`);
-
-        cc.log(`[MUSH-TAG] seat=${this.seatID} local=${this.ClientSeatId} show cnt=${cnt} chip=${pool}`);
+        this.uirc.Label_MushroomCount && (this.uirc.Label_MushroomCount.string = `${cnt}`);
+        this.uirc.Label_MushroomChip && (this.uirc.Label_MushroomChip.string = `(${pool / 100})`);
     }
 
     /** 清理/隐藏蘑菇标识（换桌/重置时调用） */

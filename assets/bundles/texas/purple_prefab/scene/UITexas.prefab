@@ -9032,7 +9032,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label_Count",
+    "_name": "MushroomLabelCount",
     "_objFlags": 0,
     "_parent": {
       "__id__": 229
@@ -9057,8 +9057,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 16.68,
-      "height": 37.8
+      "width": 19.47,
+      "height": 44.1
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -9069,8 +9069,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -18.132,
-        35.897,
+        -16.179,
+        34.725,
         0,
         0,
         0,
@@ -9111,8 +9111,8 @@
     "_dstBlendFactor": 771,
     "_string": "1",
     "_N$string": "1",
-    "_fontSize": 30,
-    "_lineHeight": 30,
+    "_fontSize": 35,
+    "_lineHeight": 35,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -9140,7 +9140,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label_Chip",
+    "_name": "MushroomLabelChip",
     "_objFlags": 0,
     "_parent": {
       "__id__": 229
@@ -9165,8 +9165,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 33.37,
-      "height": 25.2
+      "width": 41.71,
+      "height": 31.5
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -9219,8 +9219,8 @@
     "_dstBlendFactor": 771,
     "_string": "100",
     "_N$string": "100",
-    "_fontSize": 20,
-    "_lineHeight": 20,
+    "_fontSize": 25,
+    "_lineHeight": 25,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,

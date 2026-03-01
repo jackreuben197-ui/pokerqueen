@@ -729,6 +729,11 @@ export default class TexasGame {
             }
             mPlayer.SetCards(this.GetHandCardsByRecList(rec.playersList[i].cardsList));
             mPlayer.RoundActioned = rec.playersList[i].roundActioned;
+            // 蘑菇玩法玩家状态（EnterRoom 同步）
+            mPlayer.inMushroom = (rec.playersList[i] as any).inMushroom || false;
+            mPlayer.costMushroom = (rec.playersList[i] as any).costMushroom || 0;
+            mPlayer.mushroomCount = (rec.playersList[i] as any).mushroomCount || 0;
+            mPlayer.mushroomAmount = (rec.playersList[i] as any).mushroomAmount || 0;
             mSeat.Player = mPlayer;
 
             if (rec.myInfo != null && this.GetLocalSeatID(rec.myInfo.seatId) == player_local_seadID) {
@@ -763,6 +768,14 @@ export default class TexasGame {
             if (mPlayerId == 0) continue;
 
             mSeat.UpdateFSMbyStatus(true);
+        }
+
+        // EnterRoom 即刷新蘑菇标识（不等待 StartInfo）
+        if (this.mushroomEnabled) {
+            this.listSeat.forEach(seat => {
+                seat?.UpdateMushroomTag(this.mushroomPool, this.mushroomBase, this.mushroomEnabled);
+            });
+            cc.log(`[MUSH-ENTER] hand=${this.mHandNum} pool=${this.mushroomPool} base=${this.mushroomBase} mode=${this.mushroomMode}`);
         }
 
         let LeftOpTime = 0;

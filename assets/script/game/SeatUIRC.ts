@@ -179,9 +179,9 @@ export default class SeatUIRC extends UIBase {
 
         // 蘑菇池（座位模板内，固定路径）
         this.MushroomPool = this.getChildNodeOrComponent("MushroomPool");
-        this.MushroomLabel = this.getChildNodeOrComponent("MushroomPool/MushroomLabel");
-        this.Label_MushroomCount = this.getChildNodeOrComponent("MushroomPool/MushroomLabel/Label_Count", cc.Label);
-        this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomPool/MushroomLabel/Label_Chip", cc.Label);
+        this.MushroomLabel = this.getChildNodeOrComponent("MushroomLabel");
+        this.Label_MushroomCount = this.getChildNodeOrComponent("MushroomLabelCount", cc.Label);
+        this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomLabelChip", cc.Label);
 
         this.Spine_Winner = this.getChildNodeOrComponent("Spine_Winner", sp.Skeleton);
 

@@ -310,6 +310,9 @@ export default class TexasGameProtocol {
         if (rec.nextOperator != null) {
             this.game.operationID = this.game.GetLocalSeatID(rec.nextOperator.seatId);
         }
+        // 蘑菇池以 StartInfo 下发为准，不做客户端累加
+        const pools = (rec.handInfo as any)?.pools;
+        this.game.mushroomPool = (pools && pools.mushroomPool) || 0;
         this.game.mHandNum = rec.handInfo.handNum;
         this.game.UpdateRoomDes();
         // this.game.ResetPublicCardsId_1();
@@ -378,19 +381,7 @@ export default class TexasGameProtocol {
             }
 
         }
-        // 开局庄家投入蘑菇到池
-        if (this.game.mushroomEnabled && this.game.bankerIndex >= 0) {
-            console.log(`======开局庄家投入蘑菇到池============`);
-            const bankSeat = this.game.listSeat[this.game.bankerIndex];
-            if (bankSeat && bankSeat.Player && bankSeat.Player.inMushroom) {
-                const mushCost = this.game.mushroomBase * this.game.mushroomMode;
-                this.game.mushroomPool += mushCost;
-                // 扣除庄家筹码（不足则置0）
-                bankSeat.Player.chips = Math.max(0, bankSeat.Player.chips - mushCost);
-            }
-        }
-        console.log(`==========确认是否开启蘑菇=${this.game.mushroomEnabled}=======`);
-        
+        // 不在客户端本地累加蘑菇池，完全以服务端 StartInfo 下发值为准
         if (this.game.mushroomEnabled) {
             this.game.UpdateRoomDes();
             // 刷新所有座位蘑菇标识（避免旧庄家残留）
