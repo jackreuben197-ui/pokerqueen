@@ -46,6 +46,9 @@ import { ServerMessageUpBlind } from "../../protobuf/holdem/recv_th_up_blind_pb"
 import { ServerMessageBuyInsurance } from "../../protobuf/holdem/recv_th_buy_insurance_pb";
 import { ClientMessageAutoOpActive, ServerMessageAutoOpActive } from "../../protobuf/holdem/req_th_auto_op_active_pb";
 import { ServerMessageAutoOp } from "../../protobuf/holdem/recv_th_auto_op_pb";
+import { ClientMessageSquidInActive, ServerMessageSquidInActive } from "../../protobuf/holdem/req_th_squid_in_active_pb";
+import { ServerMessageSquidIn } from "../../protobuf/holdem/recv_th_squid_in_pb";
+import { ServerMessageNextChange } from "../../protobuf/holdem/recv_th_next_change_pb";
 
 export class ProtocolCommon {
 
@@ -358,6 +361,15 @@ export const ProtocolMap = {
     //被动自动操作
     [ProtocolCode.Protocol_Holdem_AutoOp]: {
         Server: ServerMessageAutoOp,
+    },
+    [ProtocolCode.Protocol_Holdem_SquidInActive]: {
+        Client: ClientMessageSquidInActive,
+        Server: ServerMessageSquidInActive,
+    },
+    [ProtocolCode.Protocol_Holdem_SquidIn]: {
+        Server: ServerMessageSquidIn,
+    },
+    [ProtocolCode.Protocol_Holdem_NextChange]: {
+        Server: ServerMessageNextChange,
     }
 }
-

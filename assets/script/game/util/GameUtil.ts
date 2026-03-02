@@ -122,9 +122,24 @@ export class some_pos {
         cc.v3(-190, 28),
         cc.v3(-190, 28),
     ];
-    
+
     //蘑菇位置
     public static readonly all_mushroom_pos: cc.Vec3[] = [
+        cc.v3(100, -190),//中下为自己的位置
+        cc.v3(80, -190),//除自己外所有方位的位置
+        cc.v3(80, -190),
+        cc.v3(80, -190),
+        cc.v3(-120, -190),
+        cc.v3(80, -190),
+        cc.v3(80, -190),
+        cc.v3(-120, -190),
+        cc.v3(-120, -190),
+        cc.v3(-120, -190),
+        cc.v3(210, -190),// 10 中下为自己的位置
+        cc.v3(80, -190),// 11 中下为其他玩家的位置
+    ]
+    //鱿鱼位置
+    public static readonly all_squid_pos: cc.Vec3[] = [
         cc.v3(100, -190),//中下为自己的位置
         cc.v3(80, -190),//除自己外所有方位的位置
         cc.v3(80, -190),
@@ -147,6 +162,7 @@ export class seat_info {
     bubble_pos: cc.Vec3 = null;
     insurance_pos: cc.Vec3 = null;
     mushroom_pos: cc.Vec3 = null;
+    squid_pos: cc.Vec3 = null;
     constructor(public index: number) {
         this.seat_pos = some_pos.all_seat_pos[index];
         this.bank_pos = some_pos.all_bank_pos[index];
@@ -155,6 +171,7 @@ export class seat_info {
         this.bubble_pos = some_pos.all_bubble_pos[index];
         this.insurance_pos = some_pos.all_insurance_pos[index];
         this.mushroom_pos = some_pos.all_mushroom_pos[index];
+        this.squid_pos = some_pos.all_squid_pos[index];
     }
 }
 /**
@@ -1048,14 +1065,14 @@ export default class GameUtil {
 (window as any).GameUtil = GameUtil;
 (window as any).some_pos = some_pos;
 
-    // public static GetCardNameByNum(cardNum: number): string {
-    //     if (cardNum <= 0) {
-    //         return "poker_88";
-    //     }
-    //     if (cardNum < 10) {
-    //         return `poker_dz_0${cardNum}`;
-    //     }
-    //     else {
-    //         return `poker_dz_${cardNum}`;
-    //     }
-    // }
+// public static GetCardNameByNum(cardNum: number): string {
+//     if (cardNum <= 0) {
+//         return "poker_88";
+//     }
+//     if (cardNum < 10) {
+//         return `poker_dz_0${cardNum}`;
+//     }
+//     else {
+//         return `poker_dz_${cardNum}`;
+//     }
+// }

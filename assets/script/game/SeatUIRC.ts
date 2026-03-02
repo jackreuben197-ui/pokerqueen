@@ -86,6 +86,11 @@ export default class SeatUIRC extends UIBase {
     MushroomLabel: cc.Node = null;
     Label_MushroomCount: cc.Label = null;
     Label_MushroomChip: cc.Label = null;
+    // 鱿鱼数量组件（玩家）
+    PlayerSquidCount: cc.Node = null;
+    PlayerSquidIcon: cc.Node = null;
+    PlayerSquidLabel: cc.Node = null;
+    Label_SquidCount: cc.Label = null;
 
 
     Head_CD: cc.Node = null;
@@ -184,6 +189,15 @@ export default class SeatUIRC extends UIBase {
         this.MushroomLabel = this.getChildNodeOrComponent("MushroomLabel");
         this.Label_MushroomCount = this.getChildNodeOrComponent("MushroomLabelCount", cc.Label);
         this.Label_MushroomChip = this.getChildNodeOrComponent("MushroomLabelChip", cc.Label);
+        this.PlayerSquidCount = this.getChildNodeOrComponent("PlayerSquidCount");
+        this.PlayerSquidIcon = this.PlayerSquidCount?.getChildByName("PlayerSquidIcon");
+        this.PlayerSquidLabel = this.PlayerSquidCount?.getChildByName("PlayerSquidLabel");
+        this.Label_SquidCount = this.PlayerSquidLabel
+            ?.getChildByName("PlayerSquidLabelCount")
+            ?.getComponent(cc.Label);
+        if (this.PlayerSquidCount) {
+            this.PlayerSquidCount.active = false;
+        }
 
         this.Spine_Winner = this.getChildNodeOrComponent("Spine_Winner", sp.Skeleton);
 
@@ -251,6 +265,7 @@ export default class SeatUIRC extends UIBase {
         // this.voiceprintList.Add(VoiceprintVoting);
 
     }
+
     protected update(dt: number): void {
         //刷新带入申请中倒计时
 

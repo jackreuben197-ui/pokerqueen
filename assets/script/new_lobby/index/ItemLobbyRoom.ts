@@ -67,7 +67,8 @@ export default class ItemLobbyRoom extends UIBasePlus {
         this.$icon_origin_type.getChildByName("friend").active = data.origin_type == 4;
         //玩法类型
         this.$icon_mushroom.active = data.mushroom_mode > 0 && data.mushroom_base > 0;
-        this.$icon_squid.active = data.squid_base > 0;
+        const isSquidVaild: boolean = data.sub_configs && data.sub_configs.length > 0 && data.sub_configs[0].sqb > 0;
+        this.$icon_squid.active = data.squid_base > 0 || isSquidVaild;
 
         //刷新 anti_cheat_type 图标
         this.$icon_anti_cheat_type.active = data.anti_cheat_type > 1;

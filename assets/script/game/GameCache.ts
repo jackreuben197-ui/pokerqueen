@@ -130,6 +130,20 @@ export class GameCache {
     /// 房间名称
     /// </summary>
     public roomName: string = "";
+    /** 大厅入口缓存：是否鱿鱼桌（来自列表/分享房间信息） */
+    public room_squid_on: number = 0;
+    /** 大厅入口缓存：鱿鱼价值（优先 room.squid_base） */
+    public room_squid_base: number = 0;
+    /** 大厅入口缓存：子配置鱿鱼价值（兜底 sub_configs[0].squid_base） */
+    public room_squid_sub_base: number = 0;
+    /** 大厅入口缓存：鱿鱼模式（0普通，1血战） */
+    public room_squid_mode: number = 0;
+    /** 大厅入口缓存：头鱿鱼开关 */
+    public room_squid_head: number = 0;
+    /** 大厅入口缓存：尾鱿鱼开关 */
+    public room_squid_tail: number = 0;
+    /** 大厅入口缓存：鱿鱼上限配置 */
+    public room_squid_max: number = 0;
     /// <summary>
     /// 房间类型 RoomType枚举
     /// </summary>
@@ -353,8 +367,25 @@ export class GameCache {
     }
 
     InitEnterRoomInfo(room_info: EnterRoomInfo) {
+        const subConfigs = room_info.sub_configs || [];
+        const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
+        const squidBase = room_info.squid_base || 0;
+        const squidSubBase = sub0?.sqb || 0;
+        const squidMode = room_info.squid_mode || 0;
+        const squidHead = room_info.squid_head || 0;
+        const squidTail = room_info.squid_tail || 0;
+        const squidMax = room_info.squid_max || 0;
+        const squidOn = room_info.squid_on ?? ((squidBase > 0 || squidSubBase > 0) ? 1 : 0);
+
         GameCache.Instance.serviceId = room_info.service_id;
         GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
+        GameCache.Instance.room_squid_on = squidOn;
+        GameCache.Instance.room_squid_base = squidBase > 0 ? squidBase : squidSubBase;
+        GameCache.Instance.room_squid_sub_base = squidSubBase;
+        GameCache.Instance.room_squid_mode = squidMode;
+        GameCache.Instance.room_squid_head = squidHead;
+        GameCache.Instance.room_squid_tail = squidTail;
+        GameCache.Instance.room_squid_max = squidMax;
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;
@@ -415,5 +446,12 @@ export interface EnterRoomInfo {
     anti_cheat_type?;
     club_id?;
     tribe_id?;
+    squid_on?;
+    squid_base?;
+    squid_mode?;
+    squid_head?;
+    squid_tail?;
+    squid_max?;
+    sub_configs?;
 }
 (window as any).GameCache = GameCache;

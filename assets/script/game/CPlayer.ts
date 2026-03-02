@@ -70,6 +70,14 @@ export class CPlayer {
     public mushroomAmount: number = 0;
     /** 本手或当前带入的蘑菇押金成本 */
     public costMushroom: number = 0;
+    /** 是否参与当前鱿鱼轮 */
+    public inSquid: boolean = false;
+    /** 当前轮累计获得的鱿鱼标记数量 */
+    public squidCount: number = 0;
+    /** 是否已在本轮鱿鱼中判定逃跑/出局 */
+    public squidEscaped: boolean = false;
+    /** 是否在本轮鱿鱼开始前已落座（用于等待标记判断） */
+    public squidRoundSeated: boolean = false;
 
 
     constructor(public id: number) {
@@ -187,6 +195,10 @@ export class CPlayer {
         this.isVip = 0;
         //this.ChannelId = string.Empty;
         this.KeepSeatLeftTime = 0;
+        this.inSquid = false;
+        this.squidCount = 0;
+        this.squidEscaped = false;
+        this.squidRoundSeated = false;
 
     }
 

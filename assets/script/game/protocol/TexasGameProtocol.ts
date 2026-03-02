@@ -19,10 +19,12 @@ import { ServerMessageInsuranceTrigged } from "../../protobuf/holdem/recv_th_ins
 import { ServerMessageKeepSeat } from "../../protobuf/holdem/recv_th_keep_seat_pb";
 import { ServerMessagePostStatusChange } from "../../protobuf/holdem/recv_th_post_status_change_pb";
 import { ServerMessagePublicCards } from "../../protobuf/holdem/recv_th_public_cards_pb";
+import { ServerMessageNextChange } from "../../protobuf/holdem/recv_th_next_change_pb";
 import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_th_seated_others_pb";
 import { ServerMessageShowcards } from "../../protobuf/holdem/recv_th_showcards_pb";
 import { ServerMessageShowPublicCardsOthers } from "../../protobuf/holdem/recv_th_show_public_cards_others_pb";
 import { ServerMessageSidePots } from "../../protobuf/holdem/recv_th_side_pots_pb";
+import { ServerMessageSquidIn } from "../../protobuf/holdem/recv_th_squid_in_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_th_start_info_pb";
 import { ServerMessageWinner } from "../../protobuf/holdem/recv_th_winner_pb";
 import { ServerMessageAction } from "../../protobuf/holdem/req_th_action_pb";
@@ -36,6 +38,7 @@ import { ServerMessageSeated } from "../../protobuf/holdem/req_th_seated_pb";
 import { ServerMessageSetAutoOnTable } from "../../protobuf/holdem/req_th_set_auto_on_table_pb";
 import { ServerMessageShowdown } from "../../protobuf/holdem/req_th_showdown_pb";
 import { ServerMessageShowPublicCards } from "../../protobuf/holdem/req_th_show_public_cards_pb";
+import { ServerMessageSquidInActive } from "../../protobuf/holdem/req_th_squid_in_active_pb";
 import { ServerMessageStoreChips } from "../../protobuf/holdem/req_th_store_chips_pb";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { CardType } from "../CardTypeUtil";
@@ -95,6 +98,9 @@ export default class TexasGameProtocol {
         GC.notify.register(ProtocolCode.Protocol_Holdem_AgreeSecondPcsActive, this.ProtocolHoldemAgreeSecondPcsActiveHandler, this);  // 当前玩家同意拒绝第二张牌结果（不处理）
         GC.notify.register(ProtocolCode.Protocol_Holdem_AgreeSecondPcsTrigged, this.Protocol_Holdem_AgreeSecondPcsTriggedHandler, this);//触发 是否允许第二套牌
         GC.notify.register(ProtocolCode.Protocol_Holdem_AgreeSecondPcs, this.Protocol_Holdem_AgreeSecondPcsHandler, this); //玩家同意拒绝第二套牌结果
+        GC.notify.register(ProtocolCode.Protocol_Holdem_SquidInActive, this.HANDLER_REQ_SQUID_IN_ACTIVE, this); // 主动加入鱿鱼返回
+        GC.notify.register(ProtocolCode.Protocol_Holdem_SquidIn, this.HANDLER_REQ_SQUID_IN, this); // 鱿鱼加入状态广播
+        GC.notify.register(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
     }
     public RemoveMsgHandler(): void {
         console.log(`TexasGame : RemoveMsgHandler`);
@@ -125,6 +131,9 @@ export default class TexasGameProtocol {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_AgreeSecondPcsActive, this.ProtocolHoldemAgreeSecondPcsActiveHandler, this);  // 同意拒绝第二张牌结果
         GC.notify.remove(ProtocolCode.Protocol_Holdem_AgreeSecondPcsTrigged, this.Protocol_Holdem_AgreeSecondPcsTriggedHandler, this);//触发 是否允许第二套牌
         GC.notify.remove(ProtocolCode.Protocol_Holdem_AgreeSecondPcs, this.Protocol_Holdem_AgreeSecondPcsHandler, this); //玩家同意拒绝第二套牌结果
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_SquidInActive, this.HANDLER_REQ_SQUID_IN_ACTIVE, this); // 主动加入鱿鱼返回
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_SquidIn, this.HANDLER_REQ_SQUID_IN, this); // 鱿鱼加入状态广播
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_NextChange, this.HANDLER_REQ_NEXT_CHANGE, this); // 下一手配置变更
     }
 
     /// <summary>
@@ -157,9 +166,17 @@ export default class TexasGameProtocol {
         mPlayer.HunterKillAwardOther = rec.hunterKillAwardOther;
         mPlayer.isVip = rec.vip;
         mPlayer.KeepSeatLeftTime = rec.keepSeatLeftTime;
+        mPlayer.inSquid = rec.squidIn || false;
+        mPlayer.squidRoundSeated = mPlayer.inSquid;
+        mPlayer.squidCount = 0;
+        mPlayer.squidEscaped = false;
         mSeat.Player = mPlayer;
         mSeat.isBank = false;
         mSeat.FsmLogicComponent.SM.ChangeState(SeatSitAnimation.Instance);
+        if (this.game.squidEnabled) {
+            this.game.RefreshSquidMarks();
+            this.game.UpdateRoomDes();
+        }
     }
     /// <summary>
     /// 自己坐下
@@ -187,6 +204,11 @@ export default class TexasGameProtocol {
         this.game.mainPlayer.ante = 0;
         this.game.mainPlayer.anteNumber = 0;
         this.game.mainPlayer.cards = this.game.GetEmptyHandCards();
+        this.game.mainPlayer.inSquid = rec.squidIn || false;
+        this.game.mainPlayer.squidRoundSeated = rec.squidRoundSeated || this.game.mainPlayer.inSquid;
+        this.game.mainPlayer.squidEscaped = false;
+        this.game.mainPlayer.squidCount = 0;
+        this.game.squidTotalLimit = rec.squidTotalLimit || this.game.squidTotalLimit;
 
         this.game.mainPlayer.KeepSeatLeftTime = rec.keepSeatLeftTime;
         if (rec.keepSeatLeftTime > 0) {
@@ -234,6 +256,10 @@ export default class TexasGameProtocol {
         //     this.game.ResetSeatUIInfo(seat.ClientSeatId);
         // }
         this.game.ResetSeatUIInfo(seat.ClientSeatId);
+        if (this.game.squidEnabled) {
+            this.game.RefreshSquidMarks();
+            this.game.UpdateRoomDes();
+        }
 
         if (GameCache.Instance.Vip == 1) {
             //ShowVipSeatDownTips(GameCache.Instance.nick);
@@ -297,6 +323,7 @@ export default class TexasGameProtocol {
     /// <param name="responseData"></param>
     /// <param name="obj"></param>
     public handleRecvStartInfoCommon(rec: ServerMessageStartInfo.AsObject): void {
+        const wasInSquidRound = this.game.isGameInSquidRound;
         this.game.gamestatus = 1;
         GameCache.Instance.GameStatus = this.game.gamestatus;
         this.game.cacheRound = Def.Round.PREFLOP;
@@ -311,8 +338,10 @@ export default class TexasGameProtocol {
             this.game.operationID = this.game.GetLocalSeatID(rec.nextOperator.seatId);
         }
         // 蘑菇池以 StartInfo 下发为准，不做客户端累加
-        const pools = (rec.handInfo as any)?.pools;
+        const pools = rec.handInfo.pools;
         this.game.mushroomPool = (pools && pools.mushroomPool) || 0;
+        this.game.squidPool = (pools && pools.squidPool) || 0;
+        this.game.isGameInSquidRound = rec.handInfo.inSquid || false;
         this.game.mHandNum = rec.handInfo.handNum;
         this.game.UpdateRoomDes();
         // this.game.ResetPublicCardsId_1();
@@ -332,17 +361,29 @@ export default class TexasGameProtocol {
             }
             // 蘑菇玩法标记
             if (this.game.mushroomEnabled) {
-                Seat.Player.inMushroom = (rec.playersList[i] as any).inMushroom || false;
-                Seat.Player.costMushroom = (rec.playersList[i] as any).costMushroom || 0;
+                Seat.Player.inMushroom = rec.playersList[i].inMushroom || false;
+                Seat.Player.costMushroom = rec.playersList[i].costMushroom || 0;
                 Seat.Player.mushroomCount = (rec.playersList[i] as any).mushroomCount || Seat.Player.mushroomCount;
                 Seat.Player.mushroomAmount = (rec.playersList[i] as any).mushroomAmount || Seat.Player.mushroomAmount;
                 // 如果池未清空且服务端未标记，默认新入玩家不参与本手蘑菇
-                if (this.game.mushroomPool > 0 && (rec.playersList[i] as any).inMushroom == null) {
+                if (this.game.mushroomPool > 0 && rec.playersList[i].inMushroom == null) {
                     Seat.Player.inMushroom = false;
                 }
             } else {
                 Seat.Player.inMushroom = false;
                 Seat.Player.costMushroom = 0;
+            }
+            // 鱿鱼玩法标记
+            if (this.game.squidEnabled && this.game.isGameInSquidRound) {
+                Seat.Player.inSquid = rec.playersList[i].inSquid || false;
+                Seat.Player.squidCount = rec.playersList[i].squidCount || 0;
+                Seat.Player.squidEscaped = rec.playersList[i].squidEscaped || false;
+                Seat.Player.squidRoundSeated = true;
+            } else {
+                Seat.Player.inSquid = false;
+                Seat.Player.squidCount = 0;
+                Seat.Player.squidEscaped = false;
+                Seat.Player.squidRoundSeated = false;
             }
             SeverSeatIds.push(this.game.GetLocalSeatID(rec.playersList[i].seatId));
             Seat.isBank = Seat.seatID == this.game.bankerIndex;
@@ -386,6 +427,15 @@ export default class TexasGameProtocol {
             this.game.UpdateRoomDes();
             // 刷新所有座位蘑菇标识（避免旧庄家残留）
             this.game.listSeat.forEach(s => s?.UpdateMushroomTag(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled));
+        }
+        if (this.game.squidEnabled) {
+            if (!wasInSquidRound && this.game.isGameInSquidRound) {
+                this.game.PlaySquidRoundStartAnim();
+            }
+            this.game.UpdateRoomDes();
+            this.game.RefreshSquidMarks();
+        } else {
+            this.game.listSeat.forEach(s => s?.ClearSquidTag());
         }
         if (this.game.smallIndex >= 0) {
             GC.sound.Play("sfx_desk_bet_first");
@@ -1448,6 +1498,15 @@ export default class TexasGameProtocol {
 
         UIComponent.Instance.HideUI(PrefabUI.UIAutoOperationComponent);
         UIComponent.Instance.HideUI(PrefabUI.UIOperationComponent);
+        const squidOldCountMap = new Map<number, number>();
+        const squidNoMarkCountBefore = this.game.CountSquidNoMarkPlayers();
+        if (this.game.squidEnabled) {
+            this.game.listSeat.forEach(seat => {
+                if (seat?.Player) {
+                    squidOldCountMap.set(seat.seatID, seat.Player.squidCount || 0);
+                }
+            });
+        }
 
         let mSeat: Seat = null;
         for (let i = 0, n = rec.resultsList.length; i < n; i++) {
@@ -1468,17 +1527,15 @@ export default class TexasGameProtocol {
         // 蘑菇结算：读取 Ehcs 的 EhcMushroom，统计获胜者并清空蘑菇池
         if (this.game.mushroomEnabled && rec?.resultsList?.length) {
             let hasMushWinner = false;
-            let mushWinners: number[] = [];
             rec.resultsList.forEach(r => {
                 const seat = this.game.listSeat[this.game.GetLocalSeatID(r.seatId)];
                 if (!seat || !seat.Player) { return; }
                 if (r.ehcsList && r.ehcsList.length) {
                     r.ehcsList.forEach(ehc => {
                         if (ehc.ehcType === Def.EHCType.EHC_MUSHROOM) {
-                            const mushCount = (ehc as any).pb_in || (ehc as any).in || 0;
+                            const mushCount = ehc.pb_in || (ehc as any).in || 0;
                             if (mushCount > 0) {
                                 hasMushWinner = true;
-                                mushWinners.push(seat.seatID);
                                 seat.Player.mushroomCount += mushCount;
                                 seat.Player.mushroomAmount += mushCount * this.game.mushroomBase;
                             }
@@ -1505,6 +1562,59 @@ export default class TexasGameProtocol {
                 this.game.UpdateRoomDes();
                 const bankerSeat = this.game.listSeat[this.game.bankerIndex];
                 bankerSeat?.UpdateMushroomTag(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled);
+            }
+        }
+        // 鱿鱼结算：同步玩家标记、播放首获动画，满足条件时触发轮结束并重置
+        if (this.game.squidEnabled && rec?.resultsList?.length) {
+            const newSquidSeats: Seat[] = [];
+            let hasSquidSettlement = false;
+            const pools = rec.pools as any;
+            if (pools && pools.squidPool != null) {
+                this.game.squidPool = pools.squidPool;
+            }
+
+            rec.resultsList.forEach(r => {
+                const seat = this.game.listSeat[this.game.GetLocalSeatID(r.seatId)];
+                if (!seat || !seat.Player) return;
+
+                const oldCount = squidOldCountMap.get(seat.seatID) || 0;
+                seat.Player.squidEscaped = (r as any).squidEscaped || false;
+                seat.Player.squidCount = (r as any).squidCount || 0;
+
+                if (oldCount === 0 && seat.Player.squidCount > oldCount) {
+                    newSquidSeats.push(seat);
+                }
+
+                if (r.ehcsList?.length) {
+                    const hasEhcSquid = r.ehcsList.some(ehc => {
+                        if (ehc.ehcType !== Def.EHCType.EHC_SQUID) return false;
+                        const inNum = (ehc as any).in || 0;
+                        const outNum = (ehc as any).out || 0;
+                        return inNum > 0 || outNum > 0;
+                    });
+                    if (hasEhcSquid) {
+                        hasSquidSettlement = true;
+                    }
+                }
+            });
+
+            this.game.RefreshSquidMarks();
+            newSquidSeats.forEach(seat => {
+                seat.PlaySquidGetMarkAnim();
+            });
+
+            const squidNoMarkCountAfter = this.game.CountSquidNoMarkPlayers();
+            const reachEndByCount = newSquidSeats.length > 0 && squidNoMarkCountBefore > 1 && squidNoMarkCountAfter <= 1;
+            const reachEndBySettle = hasSquidSettlement || !!(pools?.squidDetailsList && pools.squidDetailsList.length > 0);
+
+            if (reachEndByCount || reachEndBySettle) {
+                this.game.PlaySquidRoundEndAnim();
+            }
+
+            if (reachEndBySettle) {
+                this.game.ResetSquidRoundState();
+            } else {
+                this.game.UpdateRoomDes();
             }
         }
 
@@ -1739,6 +1849,65 @@ export default class TexasGameProtocol {
         UIComponent.Instance.HideUI(PrefabUI.UIBringIn);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatAddChips.Instance);
         mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
+    }
+
+    /** 主动加入/退出鱿鱼轮返回 */
+    protected HANDLER_REQ_SQUID_IN_ACTIVE(rec: ServerMessageSquidInActive.AsObject): void {
+        if (!rec) return;
+        if (rec.status != 0) {
+            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(rec.status));
+        }
+    }
+
+    /** 鱿鱼加入状态广播 */
+    protected HANDLER_REQ_SQUID_IN(rec: ServerMessageSquidIn.AsObject): void {
+        if (!rec) return;
+        const seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
+        if (!seat?.Player) return;
+
+        seat.Player.inSquid = rec.enable;
+        seat.Player.squidEscaped = false;
+        if (rec.enable) {
+            seat.Player.squidRoundSeated = true;
+        } else {
+            seat.Player.squidCount = 0;
+            seat.ClearSquidTag();
+        }
+
+        if (rec.squidTotalLimit > 0) {
+            this.game.squidTotalLimit = rec.squidTotalLimit;
+        }
+
+        this.game.RefreshSquidMarks();
+        this.game.UpdateRoomDes();
+    }
+
+    /** 下一手配置变化（鱿鱼开关/价值） */
+    protected HANDLER_REQ_NEXT_CHANGE(rec: ServerMessageNextChange.AsObject): void {
+        if (!rec) return;
+
+        if (rec.squidBase > 0) {
+            this.game.squidBase = rec.squidBase;
+            this.game.squidEnabled = true;
+        }
+        if (rec.squidOpen) {
+            this.game.squidEnabled = true;
+        }
+        if (rec.squidTotalLimit > 0) {
+            this.game.squidTotalLimit = rec.squidTotalLimit;
+        }
+
+        if (this.game.squidEnabled) {
+            if (rec.squidOpen && !this.game.isGameInSquidRound) {
+                this.game.PlaySquidRoundStartAnim();
+                this.game.squidPool = 0;
+            } else if (!rec.squidOpen && this.game.isGameInSquidRound) {
+                this.game.PlaySquidRoundEndAnim();
+                this.game.ResetSquidRoundState();
+            } else {
+                this.game.UpdateRoomDes();
+            }
+        }
     }
 
 

@@ -217,6 +217,11 @@ export default class Seat {
             this.uirc.MushroomPool.setPosition(mushPos);
             this.ClearMushroomTag(); // 切换座位时先隐藏
         }
+        if (this.uirc.PlayerSquidCount) {
+            const squidPos = info.squid_pos || cc.Vec3.ZERO;
+            this.uirc.PlayerSquidCount.setPosition(squidPos);
+        }
+        this.ClearSquidTag();
 
         if (this.IsMySeat) {
             this.uirc.WaitforthenextmoveTips.string = `${CPErrorCode.LanguageDescription(20090)}`;
@@ -443,6 +448,7 @@ export default class Seat {
         if (null == this.Player) {
             this.uirc.imageEmpty.node.active = true;
             this.uirc.Frame_Head.active = false;
+            this.ClearSquidTag();
         }
         else {
             WebImageHelper.SetHeadImage(this.uirc.Raw_Head, this.Player.headPic);
@@ -490,6 +496,37 @@ export default class Seat {
         if (this.uirc?.MushroomPool) {
             this.uirc.MushroomPool.active = false;
         }
+    }
+
+    /** 刷新头像上的鱿鱼标记 */
+    public UpdateSquidTag(enabled: boolean, inRound: boolean): void {
+        if (!this.uirc?.PlayerSquidCount) return;
+        const p = this.Player;
+        // Unity 对齐：只要在鱿鱼轮内且 squidCount>0 就显示数量，不受 squidEscaped 限制
+        const show = !!(enabled && inRound && p && p.inSquid && p.squidCount > 0);
+        this.uirc.PlayerSquidCount.active = show;
+        if (!show) return;
+        if (this.uirc.Label_SquidCount) {
+            this.uirc.Label_SquidCount.string = `${p.squidCount}`;
+        }
+    }
+
+    /** 清理/隐藏鱿鱼标记 */
+    public ClearSquidTag(): void {
+        if (this.uirc?.PlayerSquidCount) {
+            this.uirc.PlayerSquidCount.active = false;
+        }
+    }
+
+    /** 首次获得鱿鱼标记时播放头像提示动画 */
+    public PlaySquidGetMarkAnim(): void {
+        if (!this.uirc?.PlayerSquidCount || !this.uirc.PlayerSquidCount.activeInHierarchy) return;
+        this.uirc.PlayerSquidCount.stopAllActions();
+        this.uirc.PlayerSquidCount.setScale(0.7);
+        cc.tween(this.uirc.PlayerSquidCount)
+            .to(0.12, { scale: 1.2 }, cc.easeBackOut())
+            .to(0.1, { scale: 1.0 }, cc.easeSineOut())
+            .start();
     }
     /// <summary>
     /// 刷新状态机，主要用户刷新冒泡
@@ -1679,6 +1716,7 @@ export default class Seat {
         this.HideReturnGame();
         this.HideCardBack();
         this.HideHeadCD();
+        this.ClearSquidTag();
     }
     /// <summary>
     /// 删除所有Tweener动画
@@ -1887,4 +1925,3 @@ export interface SeatUIInfo {
     InsurancetoubaoPos: cc.Vec3;
     AoMaHaInsurancetoubaoPos: cc.Vec3;
 }
-

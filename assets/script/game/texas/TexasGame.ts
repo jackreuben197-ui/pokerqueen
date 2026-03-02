@@ -42,6 +42,8 @@ import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import UITexasMenu from "../ui/UITexasMenu";
 import GameUtil, { RoomType, some_pos } from "../util/GameUtil";
 import TexasGameUtils from "../util/TexasGameUtils";
+import TexasGameMushroom from "./TexasGameMushroom";
+import TexasGameSquid from "./TexasGameSquid";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
@@ -82,6 +84,8 @@ export default class TexasGame {
     protected Seat_Cls = Seat;
     //座位UI节点缓存池
     private seatUI_pool: cc.Node[] = [];
+    private mushroomFeature: TexasGameMushroom = null;
+    private squidFeature: TexasGameSquid = null;
     ///////////////////////////////
     private setting = {
         deskType: null,
@@ -169,6 +173,24 @@ export default class TexasGame {
     public mushroomMode: number = 0;
     /** 当前蘑菇池金额 */
     public mushroomPool: number = 0;
+    /** 鱿鱼玩法是否开启 */
+    public squidEnabled: boolean = false;
+    /** 单个鱿鱼价值 */
+    public squidBase: number = 0;
+    /** 鱿鱼模式（0普通，1血战） */
+    public squidMode: number = 0;
+    /** 头鱿鱼翻倍开关 */
+    public squidHead: number = 0;
+    /** 尾鱿鱼翻倍开关 */
+    public squidTail: number = 0;
+    /** 鱿鱼配置上限（房间配置） */
+    public squidMaxCount: number = 0;
+    /** 鱿鱼总数上限（血战模式） */
+    public squidTotalLimit: number = 0;
+    /** 鱿鱼惩罚池 */
+    public squidPool: number = 0;
+    /** 当前是否在鱿鱼轮 */
+    public isGameInSquidRound: boolean = false;
     /// <summary>
     /// 当前最小带入倍数
     /// </summary>
@@ -421,6 +443,8 @@ export default class TexasGame {
         this.GameLogicSMComponent = new FSMLogicComponent(this);
         this.SMAgency = new TexasSMAgency(this);
         this.TexasGameUtils = new TexasGameUtils(this);
+        this.mushroomFeature = new TexasGameMushroom(this);
+        this.squidFeature = new TexasGameSquid(this);
         this.seatMoveStruct = new SeatMoveStruct();
         this.RCInit();
     }
@@ -589,14 +613,8 @@ export default class TexasGame {
             this.mainPlayer.seatID = this.GetLocalSeatID(rec.myInfo.seatId);
             this.mainPlayer.chips = rec.myInfo.chip;
             this.mainPlayer.cacheStoreChips = rec.myInfo.storeChips;
-            if (this.mushroomEnabled) {
-                // 服务端下发的蘑菇参与与成本
-                (this.mainPlayer as any).inMushroom = (rec.myInfo as any).inMushroom || false;
-                (this.mainPlayer as any).costMushroom = (rec.myInfo as any).costMushroom || 0;
-                if (this.mushroomPool > 0 && (rec.myInfo as any).inMushroom == null) {
-                    (this.mainPlayer as any).inMushroom = false;
-                }
-            }
+            // Unity 对齐：MyInfo 仅使用 squidRoundSeated，玩法状态由 Players/HandInfo 同步
+            this.mainPlayer.squidRoundSeated = (rec.myInfo as any).squidRoundSeated || false;
         }
 
         this.cacheUniqueId = rec.roomInfo.uniqueId;
@@ -626,25 +644,8 @@ export default class TexasGame {
 
         this.opTime = rec.roomInfo.opDuration;
         this.groupBet = rec.roomInfo.ante;
-        // 蘑菇玩法字段（房间级别配置）
-        this.mushroomBase = (rec.roomInfo as any).mushroomBase || 0;
-        this.mushroomMode = (rec.roomInfo as any).mushroomMode || 0;
-        // 正确读取 handInfo.pools.mushroomPool（与 Unity 一致）
-        const handPools = (rec.handInfo as any)?.pools;
-        this.mushroomPool = (handPools && handPools.mushroomPool) || (rec.roomInfo as any).mushroomPool || 0;
-        if (this.mushroomBase > 0) {
-            let maxCost = 0;
-            rec.playersList?.forEach(p => {
-                const c = (p as any).costMushroom || 0;
-                if (c > maxCost) maxCost = c;
-            });
-            if (maxCost > 0) {
-                this.mushroomMode = Math.max(1, Math.round(maxCost / this.mushroomBase));
-            } else {
-                this.mushroomMode = 1;
-            }
-        }
-        this.mushroomEnabled = this.mushroomBase > 0;
+        this.mushroomFeature.UpdateRoomConfig(rec);
+        this.squidFeature.UpdateRoomConfig(rec);
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
@@ -729,14 +730,12 @@ export default class TexasGame {
             }
             mPlayer.SetCards(this.GetHandCardsByRecList(rec.playersList[i].cardsList));
             mPlayer.RoundActioned = rec.playersList[i].roundActioned;
-            // 蘑菇玩法玩家状态（EnterRoom 同步）
-            mPlayer.inMushroom = (rec.playersList[i] as any).inMushroom || false;
-            mPlayer.costMushroom = (rec.playersList[i] as any).costMushroom || 0;
-            mPlayer.mushroomCount = (rec.playersList[i] as any).mushroomCount || 0;
-            mPlayer.mushroomAmount = (rec.playersList[i] as any).mushroomAmount || 0;
+            this.mushroomFeature.ApplyPlayerState(mPlayer, rec.playersList[i] as any);
+            const isMainSeat = rec.myInfo != null && this.GetLocalSeatID(rec.myInfo.seatId) == player_local_seadID;
+            this.squidFeature.ApplyPlayerState(mPlayer, rec.playersList[i] as any, rec.myInfo as any, isMainSeat);
             mSeat.Player = mPlayer;
 
-            if (rec.myInfo != null && this.GetLocalSeatID(rec.myInfo.seatId) == player_local_seadID) {
+            if (isMainSeat) {
                 if (null != this.mainPlayer) {
                     this.mainPlayer.Dispose();
                     this.mainPlayer = null;
@@ -772,10 +771,10 @@ export default class TexasGame {
 
         // EnterRoom 即刷新蘑菇标识（不等待 StartInfo）
         if (this.mushroomEnabled) {
-            this.listSeat.forEach(seat => {
-                seat?.UpdateMushroomTag(this.mushroomPool, this.mushroomBase, this.mushroomEnabled);
-            });
-            cc.log(`[MUSH-ENTER] hand=${this.mHandNum} pool=${this.mushroomPool} base=${this.mushroomBase} mode=${this.mushroomMode}`);
+            this.mushroomFeature.RefreshSeatMarks();
+        }
+        if (this.squidEnabled) {
+            this.squidFeature.RefreshMarks();
         }
 
         let LeftOpTime = 0;
@@ -1103,12 +1102,35 @@ export default class TexasGame {
         if (GameCache.Instance.CurlimitDelaySeeCard) {
             info += `\n${CPErrorCode.LanguageDescription(20088)}`;
         }
-        if (this.mushroomEnabled) {
-            info += `\n1${i18nMgr.Get("UIMush")} = ${StringHelper.GetLongString(this.mushroomBase)} `;
-            info += `\n${i18nMgr.Get("UIMushYaJin")}: ${StringHelper.GetLongString(this.mushroomBase * (this.mushroomMode || 1))}`;
-        }
+        info += this.mushroomFeature.BuildRoomDesc();
+        info += this.squidFeature.BuildRoomDesc();
         info += "\n\n";
         this.uirc.textRoomInfo.string = info;
+    }
+
+    /** 刷新座位鱿鱼标记 */
+    public RefreshSquidMarks(): void {
+        this.squidFeature.RefreshMarks();
+    }
+
+    /** 统计本轮鱿鱼中仍未拿到标记的人数 */
+    public CountSquidNoMarkPlayers(): number {
+        return this.squidFeature.CountNoMarkPlayers();
+    }
+
+    /** 鱿鱼轮开始动画（旧版先用提示代替） */
+    public PlaySquidRoundStartAnim(): void {
+        this.squidFeature.PlayRoundStartAnim();
+    }
+
+    /** 鱿鱼轮结束动画（旧版先用提示代替） */
+    public PlaySquidRoundEndAnim(): void {
+        this.squidFeature.PlayRoundEndAnim();
+    }
+
+    /** 本轮鱿鱼结束后重置状态 */
+    public ResetSquidRoundState(): void {
+        this.squidFeature.ResetRoundState();
     }
 
 
@@ -1430,10 +1452,7 @@ export default class TexasGame {
     }
     /** 获取当前最小带入（含蘑菇押金） */
     public GetMinBringInWithMush(): number {
-        const blindMin = this.currentMinRate * this.bigBlind;
-        if (!this.mushroomEnabled) return blindMin;
-        const mushCost = this.mushroomBase * this.mushroomMode;
-        return Math.max(blindMin, mushCost);
+        return this.mushroomFeature.GetMinBringIn();
     }
     /// <summary>
     /// 带入
@@ -3013,14 +3032,13 @@ export default class TexasGame {
         this.waitBlind = 0;
         this.isIpRestrictions = false;
         this.isGPSRestrictions = false;
-        this.mushroomEnabled = false;
-        this.mushroomBase = 0;
-        this.mushroomMode = 0;
-        this.mushroomPool = 0;
+        this.mushroomFeature.ResetState();
+        this.squidFeature.ResetState();
         // 座位蘑菇标识隐藏
         if (this.listSeat) {
             this.listSeat.forEach(seat => {
                 seat?.ClearMushroomTag();
+                seat?.ClearSquidTag();
             });
         }
         this.tribeId = 0;
@@ -3819,4 +3837,3 @@ export default class TexasGame {
     }
 
 }
-
