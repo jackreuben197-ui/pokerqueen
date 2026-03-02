@@ -48,6 +48,113 @@
 
     <link rel="stylesheet" type="text/css" href="style-mobile.css" />
     <link rel="icon" href="favicon.ico" />
+    
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Telegram 全屏样式优化 -->
+    <style>
+        /* 强制全屏显示 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh; /* 动态视口高度，更好的移动端支持 */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        #GameCanvas {
+            width: 100% !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            display: block;
+        }
+        
+        /* Telegram 特定优化 */
+        body.telegram-app {
+            -webkit-overflow-scrolling: touch;
+            touch-action: none;
+        }
+    </style>
+    
+    <!-- Telegram 初始化脚本 -->
+    <script>
+        // 在 SDK 加载后立即执行
+        (function() {
+            console.log("=== Telegram Mini App 初始化脚本 ===");
+            
+            // 检查是否在 Telegram 中
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                
+                // 添加标识类
+                document.body.classList.add('telegram-app');
+                
+                console.log("Telegram WebApp 检测到");
+                console.log("版本:", tg.version);
+                console.log("平台:", tg.platform);
+                console.log("初始展开状态:", tg.isExpanded);
+                
+                // 立即调用 ready
+                tg.ready();
+                console.log("已调用 ready()");
+                
+                // 创建一个函数来尝试展开
+                function tryExpand() {
+                    try {
+                        if (typeof tg.expand === 'function') {
+                            tg.expand();
+                            console.log("已调用 expand() - 时间:", Date.now());
+                        } else {
+                            console.warn("expand() 方法不可用");
+                        }
+                    } catch (e) {
+                        console.error("expand() 调用失败:", e);
+                    }
+                }
+                
+                // 立即尝试展开
+                tryExpand();
+                
+                // 多次重试以确保展开成功（兼容性处理）
+                setTimeout(tryExpand, 50);
+                setTimeout(tryExpand, 150);
+                setTimeout(tryExpand, 300);
+                setTimeout(tryExpand, 500);
+                
+                // 监听视口变化
+                if (tg.onEvent) {
+                    tg.onEvent('viewportChanged', function(event) {
+                        console.log("视口变化:", event);
+                        console.log("是否已展开:", tg.isExpanded);
+                        console.log("视口高度:", tg.viewportHeight);
+                    });
+                }
+                
+                // 禁用垂直滑动（如果支持）
+                setTimeout(function() {
+                    try {
+                        if (typeof tg.disableVerticalSwipes === 'function') {
+                            tg.disableVerticalSwipes();
+                            console.log("已禁用垂直滑动");
+                        }
+                    } catch (e) {
+                        console.error("禁用垂直滑动失败:", e);
+                    }
+                }, 100);
+                
+            } else {
+                console.log("不在 Telegram 环境中");
+            }
+        })();
+    </script>
+    
     <!--
     <script src="https://accounts.google.com/gsi/client"></script>
     -->

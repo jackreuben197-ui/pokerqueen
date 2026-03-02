@@ -18,6 +18,7 @@ import { GM } from "./gm/GMAPI";
 import ProcedureManager from "./manager/ProcedureManager";
 import SoundComponent from "./sound/SoundComponent";
 import CCTools from "./tools/CCTools";
+import TelegramUtils from "./tools/TelegramUtils";
 import UIComponent, { PrefabUI } from "./ui/UIComponent";
 ///////////////////////////////////////////////
 cc.macro.ENABLE_TRANSPARENT_CANVAS = true;
@@ -53,6 +54,14 @@ export default class Main extends cc.Component {
 
     async onLoad() {
 
+        // 初始化 Telegram WebApp SDK（必须在最开始）
+        TelegramUtils.Instance;
+        
+        // 输出 Telegram 调试信息（在 log 被禁用之前）
+        if (TelegramUtils.Instance.isInTelegram) {
+            TelegramUtils.Instance.printDebugInfo();
+        }
+        
         if (!CCTools.getQueryString("log") && GameConfig.publish) {
             console.log = function () { }
         }
