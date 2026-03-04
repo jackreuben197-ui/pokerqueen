@@ -438,9 +438,6 @@ export default class TexasGameProtocol {
             this.game.listSeat.forEach(s => s?.UpdateMushroomTag(this.game.mushroomPool, this.game.mushroomBase, this.game.mushroomEnabled));
         }
         if (this.game.squidEnabled) {
-            if (!wasInSquidRound && this.game.isGameInSquidRound) {
-                this.game.PlaySquidRoundStartAnim();
-            }
             this.game.UpdateRoomDes();
             this.game.RefreshSquidMarks();
         } else {

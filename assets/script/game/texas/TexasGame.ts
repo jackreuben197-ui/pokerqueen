@@ -1126,7 +1126,10 @@ export default class TexasGame {
         return this.squidFeature.CountNoMarkPlayers();
     }
 
-    /** 鱿鱼轮开始动画（旧版先用提示代替） */
+    /**
+     * 鱿鱼轮开始动画。
+     * @param onFinished 动画结束回调
+     */
     public PlaySquidRoundStartAnim(): void {
         this.squidFeature.PlayRoundStartAnim();
     }

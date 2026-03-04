@@ -40,7 +40,7 @@ export default class UIBringIn extends UIBasePlus {
     //part2
     cc_Label$blind: cc.Label = null;
     cc_Label$blind_d: cc.Label = null;
-    cc_Label$buyin: cc.Label = null;
+    cc_RichText$buyin: cc.RichText = null;
     cc_Label$buyin_d: cc.Label = null;
     //part3
     cc_Label$min: cc.Label = null;
@@ -108,10 +108,16 @@ export default class UIBringIn extends UIBasePlus {
 
             this.diamond_wallet_data = null;
             this.recordFeeData = null;
+            this.cc_Label$blind_d.string = i18nMgr.Get("UIAddChips_OhZuXhM0");
+            this.cc_Label$buyin_d.string = i18nMgr.Get("UIAddChips_dIyU7Svz");
+            // 有固定押金时，文案追加“+押金”
+            if (this.IsNeedFixedDeposit()) {
+                this.cc_Label$buyin_d.string += `+${i18nMgr.Get("UIFantasy_dairuyajin")}`;
+            }
 
             //小盲值/100
             this.cc_Label$blind.string = `${StringHelper.GetLongString(data.smallBlind)}/${StringHelper.GetLongString(data.bigBlind)}`;//SB/BB
-            this.cc_Label$buyin.string = `${data.bigBlind}`; // Buy-in
+            this.cc_RichText$buyin.string = `${data.bigBlind}`; // Buy-in
             //最大带入值
             let max = (data.currentMaxRate * data.bigBlind - data.tableChips) / 100;
             let min = data.minBringIn != null
@@ -174,8 +180,12 @@ export default class UIBringIn extends UIBasePlus {
     sliderChange(value: number) {
 
         this.sendCoin = value;
-
-        this.cc_Label$buyin.string = `${this.sendCoin}`;
+        const fixedDepositDisplay = this.GetFixedDeposit() / 100;
+        if (fixedDepositDisplay > 0) {
+            this.cc_RichText$buyin.string = this.BuildBuyInRichText(this.sendCoin, fixedDepositDisplay);
+        } else {
+            this.cc_RichText$buyin.string = `${this.FormatDisplayAmount(this.sendCoin)}`;
+        }
 
         this.refreshSliderTextColor();
 
@@ -209,7 +219,7 @@ export default class UIBringIn extends UIBasePlus {
     refreshSliderTextColor() {
         let label = this.SliderPlus$slider.label_value;
         label.node.color = cc.Color.BLACK.fromHEX("#EEF5FF");
-        if ((GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2) && this.sendCoin > this.ownCoin) {
+        if ((GameCache.Instance.gold_type == 1 || GameCache.Instance.gold_type == 2) && this.GetTotalBringIn() > this.ownCoin) {
             label.node.color = cc.Color.BLACK.fromHEX("#ee8380");
         }
     }
@@ -223,7 +233,7 @@ export default class UIBringIn extends UIBasePlus {
             UIComponent.Instance.ToastLanguage("UILogin_Select");
             return;
         }
-        let mAnteNumber: number = this.sendCoin * 100;
+        let mAnteNumber: number = this.GetTotalBringIn();
 
         if (GameUtil.GetFriendsOrClubTable() == 3) {
 
@@ -290,7 +300,8 @@ export default class UIBringIn extends UIBasePlus {
 
         if (this.recordFeeData == null) return null;
 
-        let bringIn: number = + this.cc_Label$buyin.string;
+        // 记录费按选中带入（不含押金）计算，和 Unity 保持一致
+        let bringIn: number = this.sendCoin;
 
 
 
@@ -354,5 +365,60 @@ export default class UIBringIn extends UIBasePlus {
         else if (type == 4) {
             this.recordFeeData = JSON.parse(Web_Config_Global_Config.Response.data.scoreboard_friend_price);
         }
+    }
+
+    /** 鱿鱼押金（Cocos 里 roomInfo.deposit 统一落在 squidDeposit 字段） */
+    private GetSquidDeposit(): number {
+        const game = GameCache.Instance?.CurGame as any;
+        if (!game || GameCache.Instance.gold_type == 3) return 0;
+        return Math.max(0, game.squidDeposit || 0);
+    }
+
+    /** 蘑菇押金（预留 Unity 同结构；当前若无独立字段则为 0） */
+    private GetMushroomDeposit(): number {
+        const game = GameCache.Instance?.CurGame as any;
+        if (!game || GameCache.Instance.gold_type == 3) return 0;
+        return Math.max(0, game.mushroomDeposit || 0);
+    }
+
+    /** 随机匹配押金（预留 Unity 同结构） */
+    private GetRandomMatchDeposit(): number {
+        const game = GameCache.Instance?.CurGame as any;
+        if (!game || GameCache.Instance.gold_type == 3) return 0;
+        return Math.max(0, game.randomMatchDeposit || 0);
+    }
+
+    /** Fantasy 押金（预留 Unity 同结构） */
+    private GetFantasyDeposit(): number {
+        const game = GameCache.Instance?.CurGame as any;
+        if (!game || GameCache.Instance.gold_type == 3) return 0;
+        return Math.max(0, game.fantasyDeposit || 0);
+    }
+
+    /** 是否有押金（Unity 对齐：鱿鱼+蘑菇+随机匹配+Fantasy） */
+    private IsNeedFixedDeposit(): boolean {
+        return this.GetFixedDeposit() > 0;
+    }
+
+    /** 固定押金总和（单位：原始筹码） */
+    private GetFixedDeposit(): number {
+        return this.GetSquidDeposit() + this.GetMushroomDeposit() + this.GetRandomMatchDeposit() + this.GetFantasyDeposit();
+    }
+
+    /** 总带入金额（选中金额+固定押金），单位：原始筹码 */
+    private GetTotalBringIn(): number {
+        return Math.round(this.sendCoin * 100) + this.GetFixedDeposit();
+    }
+
+    /** 展示单位金额格式化（项目统一按 1/100 展示） */
+    private FormatDisplayAmount(displayAmount: number): string {
+        return StringHelper.GetLongString(Math.round(displayAmount * 100));
+    }
+
+    /** Buy-in 富文本：押金金额高亮 */
+    private BuildBuyInRichText(baseDisplay: number, depositDisplay: number): string {
+        const base = this.FormatDisplayAmount(baseDisplay);
+        const deposit = this.FormatDisplayAmount(depositDisplay);
+        return `${base}+<color=#FFC706>${deposit}</color>`;
     }
 }

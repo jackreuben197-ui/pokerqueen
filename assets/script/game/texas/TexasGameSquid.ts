@@ -109,7 +109,30 @@ export default class TexasGameSquid {
     }
 
     public PlayRoundStartAnim(): void {
-        UIComponent.Instance.Toast(i18nMgr.Get("UISquidOpen"));
+        const node = this.host?.uirc?.SquidStart as cc.Node;
+        const anim = this.host?.uirc?.SquidStartAnim as cc.Animation;
+        if (!node || !anim) {
+            UIComponent.Instance.Toast(i18nMgr.Get("UISquidOpen"));
+            return;
+        }
+
+        const clips = anim.getClips?.() || [];
+        if (!anim.defaultClip && clips.length > 0) {
+            anim.defaultClip = clips[0];
+        }
+
+        node.active = true;
+        anim.stop();
+        anim.off("finished", this.OnSquidStartAnimFinished, this);
+        anim.on("finished", this.OnSquidStartAnimFinished, this);
+        anim.play(anim.defaultClip?.name || "squid_start");
+    }
+
+    private OnSquidStartAnimFinished(): void {
+        const node = this.host?.uirc?.SquidStart as cc.Node;
+        if (node && cc.isValid(node)) {
+            node.active = false;
+        }
     }
 
     public PlayRoundEndAnim(): void {

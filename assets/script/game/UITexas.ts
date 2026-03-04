@@ -102,6 +102,8 @@ export default class UITexas extends BaseScene {
     textRoomInfo: cc.Label = null;
     RemainingSquidCount: cc.Node = null;
     RemainingSquidLabelCount: cc.Label = null;
+    SquidStart: cc.Node = null;
+    SquidStartAnim: cc.Animation = null;
 
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
@@ -253,6 +255,12 @@ export default class UITexas extends BaseScene {
             ?.getComponent(cc.Label);
         if (this.RemainingSquidCount) {
             this.RemainingSquidCount.active = false;
+        }
+        this.SquidStart = this.getChildNodeOrComponent("squid_start");
+        this.SquidStartAnim = this.SquidStart?.getComponent(cc.Animation);
+        if (this.SquidStart) {
+            this.SquidStart.active = false;
+            this.SquidStartAnim?.stop();
         }
 
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);

@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "GGSwitch",
+    "_name": "GGSwitch2",
     "_objFlags": 0,
     "_parent": null,
     "_children": [
@@ -107,9 +107,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 73,
+      "g": 73,
+      "b": 73,
       "a": 255
     },
     "_contentSize": {
@@ -193,7 +193,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -10,
+        -25,
         0,
         0,
         0,
@@ -261,7 +261,7 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 8,
-    "_left": 25,
+    "_left": 10,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -285,7 +285,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "abt24uO7ZBFrsNUvUH6grE",
+    "fileId": "40VzlLE7JElrhW/qv1Ochj",
     "sync": false
   },
   {
@@ -304,9 +304,9 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "22a52041-c1fe-4b9c-b7b1-782c6e52a5c2"
+      "__uuid__": "6a2d18ef-7bb8-44cb-9cdd-e6a1e4171736"
     },
-    "_type": 0,
+    "_type": 1,
     "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
@@ -328,7 +328,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "b2SfiY3apITbOiOID5DXbr",
+    "fileId": "0atTS3iBFIyLt+OPmytYyf",
     "sync": false
   },
   {
@@ -355,9 +355,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
+      "r": 128,
+      "g": 205,
+      "b": 16,
       "a": 255
     },
     "_contentSize": {
@@ -482,7 +482,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "ca16b3a8-301b-4868-af9d-bc4ca042b441"
+      "__uuid__": "6a2d18ef-7bb8-44cb-9cdd-e6a1e4171736"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -552,9 +552,9 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "22a52041-c1fe-4b9c-b7b1-782c6e52a5c2"
+      "__uuid__": "6a2d18ef-7bb8-44cb-9cdd-e6a1e4171736"
     },
-    "_type": 0,
+    "_type": 1,
     "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
@@ -648,7 +648,7 @@
     "_id": ""
   },
   {
-    "__type__": "ccae7+kzDFI/JosWePV+dS7",
+    "__type__": "81de7ZynGdOeJpJy5jFbJuA",
     "_name": "",
     "_objFlags": 0,
     "node": {
