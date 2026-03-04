@@ -500,13 +500,20 @@ export default class Seat {
 
     /** 刷新头像上的鱿鱼标记 */
     public UpdateSquidTag(enabled: boolean, inRound: boolean): void {
-        if (!this.uirc?.PlayerSquidCount) return;
+        if (!this.uirc) return;
         const p = this.Player;
-        // Unity 对齐：只要在鱿鱼轮内且 squidCount>0 就显示数量，不受 squidEscaped 限制
-        const show = !!(enabled && inRound && p && p.inSquid && p.squidCount > 0);
-        this.uirc.PlayerSquidCount.active = show;
-        if (!show) return;
-        if (this.uirc.Label_SquidCount) {
+        const inSquidRound = !!(enabled && inRound && p && p.inSquid);
+        const hasSquidMark = !!(inSquidRound && p.squidCount > 0);
+        const showSquidMask = !!(inSquidRound && p.squidCount <= 0);
+
+        if (this.uirc.PlayerSquidCount) {
+            this.uirc.PlayerSquidCount.active = hasSquidMark;
+        }
+        if (this.uirc.Head_Squid_Mask) {
+            this.uirc.Head_Squid_Mask.active = showSquidMask;
+        }
+
+        if (hasSquidMark && this.uirc.Label_SquidCount) {
             this.uirc.Label_SquidCount.string = `${p.squidCount}`;
         }
     }
@@ -515,6 +522,9 @@ export default class Seat {
     public ClearSquidTag(): void {
         if (this.uirc?.PlayerSquidCount) {
             this.uirc.PlayerSquidCount.active = false;
+        }
+        if (this.uirc?.Head_Squid_Mask) {
+            this.uirc.Head_Squid_Mask.active = false;
         }
     }
 

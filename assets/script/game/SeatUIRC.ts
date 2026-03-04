@@ -91,6 +91,7 @@ export default class SeatUIRC extends UIBase {
     PlayerSquidIcon: cc.Node = null;
     PlayerSquidLabel: cc.Node = null;
     Label_SquidCount: cc.Label = null;
+    Head_Squid_Mask: cc.Node = null;
 
 
     Head_CD: cc.Node = null;
@@ -197,6 +198,10 @@ export default class SeatUIRC extends UIBase {
             ?.getComponent(cc.Label);
         if (this.PlayerSquidCount) {
             this.PlayerSquidCount.active = false;
+        }
+        this.Head_Squid_Mask = this.getChildNodeOrComponent("Head_Squid_Mask");
+        if (this.Head_Squid_Mask) {
+            this.Head_Squid_Mask.active = false;
         }
 
         this.Spine_Winner = this.getChildNodeOrComponent("Spine_Winner", sp.Skeleton);

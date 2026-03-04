@@ -144,6 +144,8 @@ export class GameCache {
     public room_squid_tail: number = 0;
     /** 大厅入口缓存：鱿鱼上限配置 */
     public room_squid_max: number = 0;
+    /** 大厅入口缓存：鱿鱼开启人数配置 */
+    public room_squid_open_number: number = 0;
     /// <summary>
     /// 房间类型 RoomType枚举
     /// </summary>
@@ -369,23 +371,19 @@ export class GameCache {
     InitEnterRoomInfo(room_info: EnterRoomInfo) {
         const subConfigs = room_info.sub_configs || [];
         const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
-        const squidBase = room_info.squid_base || 0;
-        const squidSubBase = sub0?.sqb || 0;
-        const squidMode = room_info.squid_mode || 0;
-        const squidHead = room_info.squid_head || 0;
-        const squidTail = room_info.squid_tail || 0;
-        const squidMax = room_info.squid_max || 0;
-        const squidOn = room_info.squid_on ?? ((squidBase > 0 || squidSubBase > 0) ? 1 : 0);
 
         GameCache.Instance.serviceId = room_info.service_id;
         GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
-        GameCache.Instance.room_squid_on = squidOn;
-        GameCache.Instance.room_squid_base = squidBase > 0 ? squidBase : squidSubBase;
-        GameCache.Instance.room_squid_sub_base = squidSubBase;
-        GameCache.Instance.room_squid_mode = squidMode;
-        GameCache.Instance.room_squid_head = squidHead;
-        GameCache.Instance.room_squid_tail = squidTail;
-        GameCache.Instance.room_squid_max = squidMax;
+        GameCache.Instance.room_squid_sub_base = sub0?.sqb || 0;
+        GameCache.Instance.room_squid_base =
+        (room_info.squid_base || 0) > 0 ? room_info.squid_base : GameCache.Instance.room_squid_sub_base;
+        GameCache.Instance.room_squid_mode = room_info.squid_mode || 0;
+        GameCache.Instance.room_squid_head = room_info.squid_head || 0;
+        GameCache.Instance.room_squid_tail = room_info.squid_tail || 0;
+        GameCache.Instance.room_squid_max = room_info.squid_max || 0;
+        GameCache.Instance.room_squid_on =
+        room_info.squid_on ?? ((GameCache.Instance.room_squid_base > 0 || GameCache.Instance.room_squid_sub_base > 0) ? 1 : 0);
+        GameCache.Instance.room_squid_open_number = sub0?.ppcl || 28;
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;

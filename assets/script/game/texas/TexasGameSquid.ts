@@ -14,6 +14,10 @@ interface TexasGameSquidHost {
     squidMaxCount: number;
     squidTotalLimit: number;
     squidPool: number;
+    squidRound: number;
+    squidCurrentRound: number;
+    squidOpenNumber: number;
+    squidDeposit: number;
     isGameInSquidRound: boolean;
     listSeat: any[];
     uirc: any;
@@ -27,20 +31,22 @@ export default class TexasGameSquid {
     public UpdateRoomConfig(rec: ServerMessageEnterRoom.AsObject): void {
         const roomInfoAny = rec.roomInfo as any;
         const entryAny = GameCache.Instance as any;
-
-        const squidBaseFromRoom = roomInfoAny.squidBase || 0;
-        const squidBaseFromEntry = entryAny.room_squid_base || 0;
-        const squidOnFromEntry = (entryAny.room_squid_on || 0) > 0;
+        const subConfigs = roomInfoAny.subConfigsList || [];
+        const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
 
         this.host.squidMode = entryAny.room_squid_mode || 0;
         this.host.squidHead = entryAny.room_squid_head || 0;
         this.host.squidTail = entryAny.room_squid_tail || 0;
         this.host.squidMaxCount = entryAny.room_squid_max || 0;
-        this.host.squidBase = squidBaseFromRoom > 0 ? squidBaseFromRoom : squidBaseFromEntry;
+        this.host.squidBase = (roomInfoAny.squidBase || 0) > 0 ? roomInfoAny.squidBase : (entryAny.room_squid_base || 0);
         this.host.squidTotalLimit = roomInfoAny.squidTotalLimit || 0;
         this.host.squidPool = ((rec.handInfo as any)?.pools?.squidPool) || 0;
+        this.host.squidRound = roomInfoAny.rounds || 0;
+        this.host.squidCurrentRound = (rec.handInfo as any)?.conRounds || 0;
+        this.host.squidOpenNumber = entryAny.room_squid_open_number || 0;
+        this.host.squidDeposit = roomInfoAny.deposit || 0;
         this.host.isGameInSquidRound = (rec.handInfo as any).inSquid || false;
-        this.host.squidEnabled = this.host.squidBase > 0 || this.host.isGameInSquidRound || squidOnFromEntry;
+        this.host.squidEnabled = this.host.squidBase > 0 || this.host.isGameInSquidRound || (entryAny.room_squid_on || 0) > 0;
     }
 
     public ApplyPlayerState(player: CPlayer, playerRec: any, myInfo: any, isMainSeat: boolean): void {
@@ -92,10 +98,13 @@ export default class TexasGameSquid {
         if (this.host.isGameInSquidRound) {
             info += `\n${i18nMgr.Get("UISquidOpen")}:1/1`;
         } else {
-            info += `\n${i18nMgr.Get("UISquidWaitOpen")}`;
+            const currentRound = (this.host.squidCurrentRound || 0) + 1;
+            const totalRound = this.host.squidRound || 1;
+            info += `\n${i18nMgr.Get("UISquidWaitOpen")}:${currentRound}/${totalRound}`;
         }
         info += `\n${i18nMgr.Get("UIGameTableSquidShow")}:${StringHelper.GetLongString(this.host.squidBase)}`;
-        info += `\n${i18nMgr.Get("UISquidOpenPeopleNumber")}:${this.CountInRoundPlayers()}/${GameCache.Instance.seat_count}`;
+        info += `\n${i18nMgr.Get("UIFantasy_dairuyajin")}:${StringHelper.GetLongString(this.host.squidDeposit)}`;
+        info += `\n${i18nMgr.Get("UISquidOpenPeopleNumber")}:${this.host.squidOpenNumber}/${GameCache.Instance.seat_count}`;
         return info;
     }
 
@@ -134,6 +143,10 @@ export default class TexasGameSquid {
         this.host.squidMaxCount = 0;
         this.host.squidTotalLimit = 0;
         this.host.squidPool = 0;
+        this.host.squidRound = 0;
+        this.host.squidCurrentRound = 0;
+        this.host.squidOpenNumber = 0;
+        this.host.squidDeposit = 0;
         this.host.isGameInSquidRound = false;
         if (this.host.uirc?.RemainingSquidCount) {
             this.host.uirc.RemainingSquidCount.active = false;

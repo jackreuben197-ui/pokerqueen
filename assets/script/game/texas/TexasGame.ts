@@ -189,6 +189,14 @@ export default class TexasGame {
     public squidTotalLimit: number = 0;
     /** 鱿鱼惩罚池 */
     public squidPool: number = 0;
+    /** 鱿鱼总轮次配置 */
+    public squidRound: number = 0;
+    /** 当前鱿鱼轮次（从0开始） */
+    public squidCurrentRound: number = 0;
+    /** 鱿鱼开启人数配置 */
+    public squidOpenNumber: number = 0;
+    /** 鱿鱼押金 */
+    public squidDeposit: number = 0;
     /** 当前是否在鱿鱼轮 */
     public isGameInSquidRound: boolean = false;
     /// <summary>

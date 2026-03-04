@@ -341,6 +341,7 @@ export default class TexasGameProtocol {
         const pools = rec.handInfo.pools;
         this.game.mushroomPool = (pools && pools.mushroomPool) || 0;
         this.game.squidPool = (pools && pools.squidPool) || 0;
+        this.game.squidCurrentRound = rec.handInfo.conRounds || 0;
         this.game.isGameInSquidRound = rec.handInfo.inSquid || false;
         this.game.mHandNum = rec.handInfo.handNum;
         this.game.UpdateRoomDes();
