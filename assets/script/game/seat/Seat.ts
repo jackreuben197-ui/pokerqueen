@@ -448,6 +448,7 @@ export default class Seat {
         if (null == this.Player) {
             this.uirc.imageEmpty.node.active = true;
             this.uirc.Frame_Head.active = false;
+            this.ClearMushroomTag();
             this.ClearSquidTag();
         }
         else {
@@ -483,9 +484,7 @@ export default class Seat {
     public UpdateMushroomTag(pool: number, base: number, enabled: boolean): void {
         const show = enabled && this.isBank && pool > 0 && base > 0;
         this.uirc.MushroomPool.active = show;
-        console.log(`==>enabled${enabled}==>pool${pool}==>base${base}==>show${show}`);
         if (!show) return;
-        console.log(`==>显示蘑菇=>${this.ClientSeatId}==>${this.seatID}`);
         const cnt = Math.floor(pool / base);
         this.uirc.Label_MushroomCount && (this.uirc.Label_MushroomCount.string = `${cnt}`);
         this.uirc.Label_MushroomChip && (this.uirc.Label_MushroomChip.string = `(${pool / 100})`);
@@ -1726,6 +1725,7 @@ export default class Seat {
         this.HideReturnGame();
         this.HideCardBack();
         this.HideHeadCD();
+        this.ClearMushroomTag();
         this.ClearSquidTag();
     }
     /// <summary>

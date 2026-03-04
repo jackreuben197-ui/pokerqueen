@@ -287,6 +287,9 @@ export default class TexasGameMessageHandler {
             //         UITexasPlayerInfoComponent uiComponent = uiTexasPlayerInfo.GetComponent<UITexasPlayerInfoComponent>();
             //     uiComponent.PlayerStandUp((int)seat.Player.userID);
             // }
+            // 站起消息到达时先清理扩展玩法角标，避免动画期间残留
+            seat.ClearMushroomTag();
+            seat.ClearSquidTag();
             seat.HideFold();
             seat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
         }

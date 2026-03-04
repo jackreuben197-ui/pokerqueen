@@ -79,6 +79,9 @@ export class SeatFSM {
         this.seat.StopLightArmature();
 
         this.seat.uirc.imageEmpty.node.active = true;
+        // 进入空座位时，和头像置空同步清理扩展玩法角标，避免离座残留
+        this.seat.ClearMushroomTag();
+        this.seat.ClearSquidTag();
         this.seat.UpdateVoiceprintState(VoiceprintState.None);
 
         this.seat.HideReturnGame();

@@ -353,6 +353,14 @@ export default class TexasGameProtocol {
         this.game.ResetPublicCardsImage();
         this.game.ResetSecondPublicCardsImage();
         this.game.HideWaitBlindBtn();
+        // 每手开始先重置全部座位庄/盲状态，避免未在 playersList 的旧状态残留
+        this.game.listSeat.forEach(s => {
+            if (!s) return;
+            s.isBank = false;
+            s.isBig = false;
+            s.isSmall = false;
+            s.isStraddle = false;
+        });
         let Seat: Seat = null;
         let SeverSeatIds: number[] = [];
         for (let i = 0, n = rec.playersList.length; i < n; i++) {
