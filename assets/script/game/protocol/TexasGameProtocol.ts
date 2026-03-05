@@ -297,9 +297,8 @@ export default class TexasGameProtocol {
 
         for (let i = 0; i < rec.changesList.length; i++) {
             let mSeat: Seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.changesList[i].seatId));
-            if (null != mSeat) {
-                mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
-            }
+            if (null == mSeat) continue;
+            mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitStart.Instance);
             if (mSeat.seatID == this.game.mainPlayer.seatID) {
                 if (rec.changesList[i].currentPostStatus == Def.CanPlayStatus.NORMAL || rec.changesList[i].currentPostStatus == Def.CanPlayStatus.AGREE_POST) {
                     mSeat.Player.canPlayStatus = Def.CanPlayStatus.NORMAL;
@@ -308,6 +307,7 @@ export default class TexasGameProtocol {
                 else if (rec.changesList[i].currentPostStatus == Def.CanPlayStatus.NEED_POST) {
                     // 需要补盲
                     this.game.ShowWaitBlindBtn();
+                    this.game.onClickWaitBlind();
                     mSeat.FsmLogicComponent.SM.ChangeState(SeatWaitBlind.Instance);
                 }
             }
@@ -334,8 +334,15 @@ export default class TexasGameProtocol {
         this.game.bankerIndex = this.game.GetLocalSeatID(rec.handInfo.buSeatId);
         this.game.bigIndex = this.game.GetLocalSeatID(rec.handInfo.bbSeatId);
         this.game.smallIndex = this.game.GetLocalSeatID(rec.handInfo.sbSeatId);
+        this.game.operationID = -1;
         if (rec.nextOperator != null) {
             this.game.operationID = this.game.GetLocalSeatID(rec.nextOperator.seatId);
+        }
+        this.game.dealStartIndex = -1;
+        if (rec.handInfo?.dealOrderList?.length > 0) {
+            this.game.dealStartIndex = this.game.GetLocalSeatID(rec.handInfo.dealOrderList[0]);
+        } else if (this.game.operationID >= 0) {
+            this.game.dealStartIndex = this.game.operationID;
         }
         // 蘑菇池以 StartInfo 下发为准，不做客户端累加
         const pools = rec.handInfo.pools;
@@ -363,6 +370,7 @@ export default class TexasGameProtocol {
         });
         let Seat: Seat = null;
         let SeverSeatIds: number[] = [];
+        let hasMainSeatInPlayers = false;
         for (let i = 0, n = rec.playersList.length; i < n; i++) {
             Seat = this.game.listSeat[this.game.GetLocalSeatID(rec.playersList[i].seatId)];
             if (null == Seat || null == Seat.Player) {
@@ -419,6 +427,15 @@ export default class TexasGameProtocol {
                 this.game.alreadAnte += rec.playersList[i].roundBet;
             }
             if (Seat.seatID == this.game.mainPlayer.seatID) {
+                hasMainSeatInPlayers = true;
+                if (Seat.Player.actionStatus == Def.Action.NONE) {
+                    console.warn("[StartInfo] main seat in playersList but action is NONE", {
+                        handNum: rec.handInfo?.handNum,
+                        mainSeatID: this.game.mainPlayer.seatID,
+                        mainCanPlayStatus: Seat.Player.canPlayStatus,
+                        playersSeatIds: rec.playersList?.map(p => p.seatId) || [],
+                    });
+                }
                 this.game.HideWaitBlindBtn();
             }
 
@@ -447,24 +464,45 @@ export default class TexasGameProtocol {
             GC.sound.Play("sfx_desk_bet_first");
         }
         else {
-            //（短牌没有小盲注位置）当小盲位小于零，算出小盲位置，用于首位发牌人座位。
-            this.game.smallIndex = this.game.TexasGameUtils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
+            // Unity 对齐：小盲无效时，使用当前操作者作为发牌起点兜底。
+            this.game.smallIndex = this.game.operationID >= 0
+                ? this.game.operationID
+                : this.game.TexasGameUtils.GetSmallSeatIdByPlayingSeatIds(SeverSeatIds, this.game.bigIndex);
+        }
+        if (this.game.dealStartIndex < 0) {
+            this.game.dealStartIndex = this.game.smallIndex >= 0
+                ? this.game.smallIndex
+                : (SeverSeatIds[0] ?? 0);
         }
         if (this.game.bigIndex >= 0) {
             GC.sound.Play("sfx_desk_bet_second");
         }
 
-        //判断座位是否运动中,做延迟处理
-        if (this.game.seatMoveStruct.moving) {
-
-            this.game.seatMoveStruct.cacheFuncs.push({ a: this, b: this.__PlayDealAnimation, c: rec, d: "__PlayDealAnimation" })
-            //this.game.SeatPlayRecord.StartInfo = rec;
-            //this.game.SeatPlayRecord.PlayDealFunc = this.__PlayDealAnimation.bind(this);
-            cc.log("————————>延迟执行发牌");
-        } else {
-            this.__PlayDealAnimation(rec);
-            cc.log("————————>立刻执行发牌");
+        if (this.game.mainPlayer?.seatID >= 0 && !hasMainSeatInPlayers) {
+            const mainSeat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
+            const mainServerSeatID = this.game.GetRemoteSeatID(this.game.mainPlayer.seatID);
+            console.warn("[StartInfo] main seat is not in playersList", {
+                handNum: rec.handInfo?.handNum,
+                mainSeatID: this.game.mainPlayer.seatID,
+                mainServerSeatID: mainServerSeatID,
+                mainCanPlayStatus: mainSeat?.Player?.canPlayStatus,
+                mainActionStatus: mainSeat?.Player?.actionStatus,
+                mainChips: mainSeat?.Player?.chips,
+                mainInSquid: mainSeat?.Player?.inSquid,
+                inSquidRound: this.game.isGameInSquidRound,
+                playersSeatIds: rec.playersList?.map(p => p.seatId) || [],
+                dealOrderList: rec.handInfo?.dealOrderList || [],
+            });
         }
+
+        // Unity 对齐：本手开始直接发牌，避免入座换位期间缓存队列导致漏发。
+        if (this.game.seatMoveStruct.moving) {
+            cc.warn("StartInfo arrived while seat moving, play deal immediately", {
+                handNum: rec.handInfo?.handNum,
+            });
+        }
+        this.__PlayDealAnimation(rec);
+        cc.log("————————>立刻执行发牌");
     }
     private __PlayDealAnimation(responseData) {
         this.game.ResetSeatMoveStruct();
@@ -493,7 +531,7 @@ export default class TexasGameProtocol {
             let mMySeat: Seat = this.game.GetSeatByLocalSeatID(this.game.mainPlayer.seatID);
 
             //if (null != mMySeat && mMySeat.seatID == mSeat0.seatID && mMySeat.Player.userID == mSeat0.Player.userID) {
-            if (this.game.operationID == this.game.mainPlayer.seatID) {
+            if (mMySeat?.Player && this.game.operationID == this.game.mainPlayer.seatID) {
                 // 到自己操作
                 this.game.HideAutoOperationPanel();
                 if (mMySeat.Player.isParticipateInTheGame && !mMySeat.Player.IsAutoOp) {
@@ -1868,6 +1906,14 @@ export default class TexasGameProtocol {
     /** 鱿鱼加入状态广播 */
     protected HANDLER_REQ_SQUID_IN(rec: ServerMessageSquidIn.AsObject): void {
         if (!rec) return;
+        const meServerSeatID = this.game.mainPlayer?.seatID >= 0 ? this.game.GetRemoteSeatID(this.game.mainPlayer.seatID) : -1;
+        console.log("[SquidIn] recv", {
+            seatId: rec.seatId,
+            enable: rec.enable,
+            firstIn: rec.firstIn,
+            meServerSeatID,
+            isMe: rec.seatId === meServerSeatID,
+        });
         const seat = this.game.GetSeatByLocalSeatID(this.game.GetLocalSeatID(rec.seatId));
         if (!seat?.Player) return;
 

@@ -18,12 +18,14 @@ import { Def, RoomInfo } from "../../protobuf/holdem/define_pb";
 import { ServerMessageWinner } from "../../protobuf/holdem/recv_th_winner_pb";
 import { ClientMessageAction } from "../../protobuf/holdem/req_th_action_pb";
 import { ClientMessageAddTime } from "../../protobuf/holdem/req_th_add_time_pb";
+import { ClientMessageAgreePost } from "../../protobuf/holdem/req_th_agree_post_pb";
 import { ClientMessageBringIn } from "../../protobuf/holdem/req_th_bring_in_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
 import { ClientMessageKeepSeatActive } from "../../protobuf/holdem/req_th_keep_seat_active_pb";
 import { ClientMessageSeated } from "../../protobuf/holdem/req_th_seated_pb";
 import { ClientMessageSetAutoOnTable } from "../../protobuf/holdem/req_th_set_auto_on_table_pb";
 import { ClientMessageShowPublicCards } from "../../protobuf/holdem/req_th_show_public_cards_pb";
+import { ClientMessageSquidInActive } from "../../protobuf/holdem/req_th_squid_in_active_pb";
 import { ClientMessageStandupActive } from "../../protobuf/holdem/req_th_stand_up_active_pb";
 import { ClientMessageStoreChips } from "../../protobuf/holdem/req_th_store_chips_pb";
 import GlobalSession from "../../session/GlobalSession";
@@ -132,6 +134,10 @@ export default class TexasGame {
     /// 小盲所在位置
     /// </summary>
     public smallIndex: number = 0;
+    /// <summary>
+    /// 发牌起始位置（优先使用服务端 dealOrder[0]）
+    /// </summary>
+    public dealStartIndex: number = -1;
     /// <summary>
     /// 庄家所在位置
     /// </summary>
@@ -423,6 +429,7 @@ export default class TexasGame {
     public isPlayingBigWinAnimation: boolean = false;
     //////////////////////////////////////
     lastClickTime: number = 0;
+    private lastAgreePostReqTime: number = 0;
 
     //分池节点对象池
     //TransPot_Pool: SimpleNodePool = null;
@@ -1121,6 +1128,11 @@ export default class TexasGame {
         this.squidFeature.RefreshMarks();
     }
 
+    /** 点击加入鱿鱼轮开关 */
+    public OnClickSquidJoinSwitch(): void {
+        this.squidFeature.OnClickJoinSwitch();
+    }
+
     /** 统计本轮鱿鱼中仍未拿到标记的人数 */
     public CountSquidNoMarkPlayers(): number {
         return this.squidFeature.CountNoMarkPlayers();
@@ -1142,6 +1154,19 @@ export default class TexasGame {
     /** 本轮鱿鱼结束后重置状态 */
     public ResetSquidRoundState(): void {
         this.squidFeature.ResetRoundState();
+    }
+
+    /** 主动加入/退出鱿鱼轮 */
+    public SendSquidInActive(enable: boolean): void {
+        ProtocolAgency.Send<ClientMessageSquidInActive.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_SquidInActive,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+                enable: enable
+            }
+        });
     }
 
 
@@ -1449,9 +1474,11 @@ export default class TexasGame {
     /// 展示补盲按钮
     /// </summary>
     public ShowWaitBlindBtn(): void {
-        if (null == this.uirc.buttonWaitBlind || this.uirc.buttonWaitBlind.activeInHierarchy)
-            return;
-        this.uirc.buttonWaitBlind.active = true;
+        // Unity 对齐：出现补盲状态时直接发同意补盲请求，避免长时间等手。
+        this.onClickWaitBlind();
+        if (this.uirc.buttonWaitBlind) {
+            this.uirc.buttonWaitBlind.active = false;
+        }
     }
     /// <summary>
     /// 隐藏补盲按钮
@@ -1460,6 +1487,26 @@ export default class TexasGame {
         if (null == this.uirc.buttonWaitBlind || !this.uirc.buttonWaitBlind.activeInHierarchy)
             return;
         this.uirc.buttonWaitBlind.active = false;
+    }
+
+    public onClickWaitBlind(): void {
+        const now = GlobalSession.NowTimeMS || 0;
+        if (now - this.lastAgreePostReqTime < 200) {
+            return;
+        }
+        this.lastAgreePostReqTime = now;
+        console.log("[WaitBlind] send agree post", {
+            localSeatID: this.mainPlayer?.seatID,
+            serverSeatID: (this.mainPlayer?.seatID ?? -1) + 1,
+        });
+        ProtocolAgency.Send<ClientMessageAgreePost.AsObject>({
+            Code: ProtocolCode.Protocol_Holdem_AgreePost,
+            RoomID: GameCache.Instance.room_id,
+            MatchID: GameCache.Instance.match_id,
+            Body: {
+                room: { roomId: GameCache.Instance.room_id, matchId: GameCache.Instance.match_id },
+            },
+        });
     }
     /** 获取当前最小带入（含蘑菇押金） */
     public GetMinBringInWithMush(): number {
@@ -1780,7 +1827,10 @@ export default class TexasGame {
 
         let mTmpIndex = 0;
         let endTime = 0;
-        for (let i = this.smallIndex, n = i + GameCache.Instance.seat_count; i < n; i++) {
+        const seatCount = GameCache.Instance.seat_count;
+        const rawStartIndex = this.dealStartIndex >= 0 ? this.dealStartIndex : this.smallIndex;
+        const startIndex = ((rawStartIndex % seatCount) + seatCount) % seatCount;
+        for (let i = startIndex, n = i + seatCount; i < n; i++) {
             let index = i % GameCache.Instance.seat_count;
             let mSeat = this.listSeat[index];
             //mSeat = this.listSeat[index];
@@ -3016,6 +3066,7 @@ export default class TexasGame {
         GameCache.Instance.GameStatus = this.gamestatus;
         this.bigIndex = 0;
         this.smallIndex = 0;
+        this.dealStartIndex = -1;
         this.bankerIndex = 0;
         this.operationID = -1;
 

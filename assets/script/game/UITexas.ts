@@ -102,6 +102,9 @@ export default class UITexas extends BaseScene {
     textRoomInfo: cc.Label = null;
     RemainingSquidCount: cc.Node = null;
     RemainingSquidLabelCount: cc.Label = null;
+    SquidSwitch: cc.Node = null;
+    private SquidSwitchClickNode: cc.Node = null;
+    SquidJoinLabel: cc.Label = null;
     SquidStart: cc.Node = null;
     SquidStartAnim: cc.Animation = null;
 
@@ -256,6 +259,21 @@ export default class UITexas extends BaseScene {
         if (this.RemainingSquidCount) {
             this.RemainingSquidCount.active = false;
         }
+        this.SquidSwitch = this.main?.getChildByName("SquidSwitch");
+        this.SquidSwitchClickNode = this.SquidSwitch
+            ?.getChildByName("content")
+            ?.getChildByName("GGSwitch2") || this.SquidSwitch;
+
+        this.SquidJoinLabel = this.SquidSwitch
+            ?.getChildByName("content")
+            ?.getChildByName("$joinLabel")
+            ?.getComponent(cc.Label);
+        if (this.SquidJoinLabel) {
+            this.SquidJoinLabel.string = i18nMgr.Get("UIClub_RoomJoin");
+        }
+        if (this.SquidSwitch) {
+            this.SquidSwitch.active = false;
+        }
         this.SquidStart = this.getChildNodeOrComponent("squid_start");
         this.SquidStartAnim = this.SquidStart?.getComponent(cc.Animation);
         if (this.SquidStart) {
@@ -391,6 +409,8 @@ export default class UITexas extends BaseScene {
 
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
+        this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
+        this.setButtonClick(this.SquidSwitchClickNode, this.onClickJoinGame);
 
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
 
@@ -451,6 +471,7 @@ export default class UITexas extends BaseScene {
         //this.ShowInvateCode();
         //this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
+        this.setActive(this.SquidSwitch, false);
         //消息按钮显示
         this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
     }
@@ -485,6 +506,7 @@ export default class UITexas extends BaseScene {
             this.Image_WaitForStartBathTips,
             this.Image_ReserveSeatTips,
             this.Image_InsuranceTips,
+            this.SquidSwitch,
         ].forEach(item => {
             this.setActive(item, false);
         });
@@ -570,6 +592,13 @@ export default class UITexas extends BaseScene {
     }
     private onClickSeeMorePublic() {
         this.game.onClickSeeMorePublic();
+    }
+    private onClickWaitBlind() {
+        this.game?.onClickWaitBlind();
+    }
+    private onClickJoinGame() {
+        console.log(`==>onClickJoinGame`);
+        this.game?.OnClickSquidJoinSwitch();
     }
 
     public async ShowInsuranceTipJieSuan(paynum: number) {

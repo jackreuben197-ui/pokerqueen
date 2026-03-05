@@ -1,6 +1,8 @@
 import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
+import { UIDefine } from "../../define/UIDefine";
+import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIComponent from "../../ui/UIComponent";
 import { CPlayer } from "../CPlayer";
 import { GameCache } from "../GameCache";
@@ -20,8 +22,10 @@ interface TexasGameSquidHost {
     squidDeposit: number;
     isGameInSquidRound: boolean;
     listSeat: any[];
+    mainPlayer: CPlayer;
     uirc: any;
     UpdateRoomDes(): void;
+    SendSquidInActive(enable: boolean): void;
 }
 
 export default class TexasGameSquid {
@@ -31,8 +35,6 @@ export default class TexasGameSquid {
     public UpdateRoomConfig(rec: ServerMessageEnterRoom.AsObject): void {
         const roomInfoAny = rec.roomInfo as any;
         const entryAny = GameCache.Instance as any;
-        const subConfigs = roomInfoAny.subConfigsList || [];
-        const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
 
         this.host.squidMode = entryAny.room_squid_mode || 0;
         this.host.squidHead = entryAny.room_squid_head || 0;
@@ -47,6 +49,7 @@ export default class TexasGameSquid {
         this.host.squidDeposit = roomInfoAny.deposit || 0;
         this.host.isGameInSquidRound = (rec.handInfo as any).inSquid || false;
         this.host.squidEnabled = this.host.squidBase > 0 || this.host.isGameInSquidRound || (entryAny.room_squid_on || 0) > 0;
+        this.RefreshJoinSwitch();
     }
 
     public ApplyPlayerState(player: CPlayer, playerRec: any, myInfo: any, isMainSeat: boolean): void {
@@ -64,7 +67,21 @@ export default class TexasGameSquid {
         this.host.listSeat.forEach(seat => {
             seat?.UpdateSquidTag(this.host.squidEnabled, this.host.isGameInSquidRound);
         });
+        this.RefreshJoinSwitch();
         this.RefreshGlobalRemain();
+    }
+
+    public OnClickJoinSwitch(): void {
+        const localSeatID = this.host.mainPlayer?.seatID ?? -1;
+        if (!this.CanShowJoinSwitch()) return;
+        UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
+            content: this.GetJoinDialogContent(),
+            commit: i18nMgr.Get("UIClub_RoomJoin"),
+            cancel: i18nMgr.Get("UITexas_Holding"),
+            commit_click: () => {
+                this.host.SendSquidInActive(true);
+            }
+        });
     }
 
     public CountInRoundPlayers(): number {
@@ -154,6 +171,7 @@ export default class TexasGameSquid {
         if (this.host.uirc?.RemainingSquidCount) {
             this.host.uirc.RemainingSquidCount.active = false;
         }
+        this.RefreshJoinSwitch();
         this.host.UpdateRoomDes();
     }
 
@@ -174,6 +192,7 @@ export default class TexasGameSquid {
         if (this.host.uirc?.RemainingSquidCount) {
             this.host.uirc.RemainingSquidCount.active = false;
         }
+        this.RefreshJoinSwitch();
     }
 
     private GetMarkedTotal(): number {
@@ -220,6 +239,33 @@ export default class TexasGameSquid {
         if (!show) return;
         if (label) {
             label.string = `${this.GetRemainCount()}`;
+        }
+    }
+
+    private CanShowJoinSwitch(): boolean {
+        const p = this.host.mainPlayer;
+        if (!p) return false;
+        if (p.seatID < 0) return false;
+        return this.host.squidEnabled && this.host.isGameInSquidRound && !p.inSquid;
+    }
+
+    private GetJoinDialogContent(): string {
+        const p = this.host.mainPlayer;
+        if (this.host.squidMode === 1 && p && !p.squidRoundSeated) {
+            const remain = Math.max(0, this.GetRemainCount());
+            return StringHelper.Format(i18nMgr.Get("UISquidJoinInNewTips2"), [remain, remain + 1]);
+        }
+        return i18nMgr.Get("UISquidJoinTips");
+    }
+
+    private RefreshJoinSwitch(): void {
+        const switchNode = this.host.uirc?.SquidSwitch as cc.Node;
+        const label = this.host.uirc?.SquidJoinLabel as cc.Label;
+        if (label) {
+            label.string = i18nMgr.Get("UIClub_RoomJoin");
+        }
+        if (switchNode) {
+            switchNode.active = this.CanShowJoinSwitch();
         }
     }
 }

@@ -164,7 +164,11 @@ export class SeatFSM {
 
     //#region 等待补盲
     public WaitBlindEnter(): void {
-
+        // 兜底：自己进入补盲状态时直接发送同意补盲，避免状态卡住导致多手不发牌。
+        if (this.seat?.IsMySeat) {
+            console.log("[WaitBlind] enter my seat, trigger agree post");
+            (GameCache.Instance.CurGame as any)?.onClickWaitBlind?.();
+        }
     }
 
     public WaitBlindExecute(): void {
