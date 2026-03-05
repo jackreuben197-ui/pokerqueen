@@ -203,6 +203,8 @@ export default class TexasGame {
     public squidOpenNumber: number = 0;
     /** 鱿鱼押金 */
     public squidDeposit: number = 0;
+    /** 鱿鱼倍率配置（按鱿鱼数取倍率） */
+    public squidCountRates: { count: number, rate: number }[] = [];
     /** 当前是否在鱿鱼轮 */
     public isGameInSquidRound: boolean = false;
     /// <summary>
@@ -1146,9 +1148,9 @@ export default class TexasGame {
         this.squidFeature.PlayRoundStartAnim();
     }
 
-    /** 鱿鱼轮结束动画（旧版先用提示代替） */
-    public PlaySquidRoundEndAnim(): void {
-        this.squidFeature.PlayRoundEndAnim();
+    /** 鱿鱼轮结束动画/结算弹窗 */
+    public PlaySquidRoundEndAnim(rec?: ServerMessageWinner.AsObject): void {
+        this.squidFeature.PlayRoundEndAnim(rec);
     }
 
     /** 本轮鱿鱼结束后重置状态 */

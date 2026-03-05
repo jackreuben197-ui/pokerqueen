@@ -1,6 +1,9 @@
 import { StringHelper } from "../../helper/StringHelper";
+import TimeHelper from "../../helper/TimeHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
+import { Def } from "../../protobuf/holdem/define_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
+import { ServerMessageWinner } from "../../protobuf/holdem/recv_th_winner_pb";
 import { UIDefine } from "../../define/UIDefine";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIComponent from "../../ui/UIComponent";
@@ -20,15 +23,29 @@ interface TexasGameSquidHost {
     squidCurrentRound: number;
     squidOpenNumber: number;
     squidDeposit: number;
+    squidCountRates: { count: number, rate: number }[];
     isGameInSquidRound: boolean;
     listSeat: any[];
     mainPlayer: CPlayer;
     uirc: any;
+    GetLocalSeatID(serverSeatID: number): number;
     UpdateRoomDes(): void;
     SendSquidInActive(enable: boolean): void;
 }
 
+interface SquidEndRowData {
+    userID: number;
+    nick: string;
+    avatar: string;
+    money: number;
+    squidNum: number;
+    rate: number;
+    isPunish: boolean;
+}
+
 export default class TexasGameSquid {
+    private roundEndPopupToken: number = 0;
+
     constructor(private host: TexasGameSquidHost) {
     }
 
@@ -47,6 +64,9 @@ export default class TexasGameSquid {
         this.host.squidCurrentRound = (rec.handInfo as any)?.conRounds || 0;
         this.host.squidOpenNumber = entryAny.room_squid_open_number || 0;
         this.host.squidDeposit = roomInfoAny.deposit || 0;
+        this.host.squidCountRates = (roomInfoAny.squidCountRateList || [])
+            .map(cfg => ({ count: Number(cfg.count || 0), rate: Number(cfg.rate || 0) }))
+            .sort((a, b) => a.count - b.count);
         this.host.isGameInSquidRound = (rec.handInfo as any).inSquid || false;
         this.host.squidEnabled = this.host.squidBase > 0 || this.host.isGameInSquidRound || (entryAny.room_squid_on || 0) > 0;
         this.RefreshJoinSwitch();
@@ -72,7 +92,6 @@ export default class TexasGameSquid {
     }
 
     public OnClickJoinSwitch(): void {
-        const localSeatID = this.host.mainPlayer?.seatID ?? -1;
         if (!this.CanShowJoinSwitch()) return;
         UIComponent.open<UISuperDialogType>(UIDefine.UISuperDialog, {
             content: this.GetJoinDialogContent(),
@@ -152,8 +171,25 @@ export default class TexasGameSquid {
         }
     }
 
-    public PlayRoundEndAnim(): void {
-        UIComponent.Instance.Toast(i18nMgr.Get("UISquidEndReward"));
+    public async PlayRoundEndAnim(rec?: ServerMessageWinner.AsObject): Promise<void> {
+        const rows = this.BuildRoundEndRows(rec);
+        if (!rows.length) {
+            return;
+        }
+
+        const token = ++this.roundEndPopupToken;
+        const cacheRoomID = GameCache.Instance.room_id;
+        await TimeHelper.Sleep(2000);
+
+        if (token !== this.roundEndPopupToken) {
+            return;
+        }
+        if (cacheRoomID !== GameCache.Instance.room_id) {
+            return;
+        }
+
+        UIComponent.close(UIDefine.UISquidEnd);
+        UIComponent.open(UIDefine.UISquidEnd, { rows: rows });
     }
 
     public ResetRoundState(): void {
@@ -188,7 +224,10 @@ export default class TexasGameSquid {
         this.host.squidCurrentRound = 0;
         this.host.squidOpenNumber = 0;
         this.host.squidDeposit = 0;
+        this.host.squidCountRates = [];
         this.host.isGameInSquidRound = false;
+        this.roundEndPopupToken++;
+        UIComponent.close(UIDefine.UISquidEnd);
         if (this.host.uirc?.RemainingSquidCount) {
             this.host.uirc.RemainingSquidCount.active = false;
         }
@@ -267,5 +306,78 @@ export default class TexasGameSquid {
         if (switchNode) {
             switchNode.active = this.CanShowJoinSwitch();
         }
+    }
+
+    private BuildRoundEndRows(rec?: ServerMessageWinner.AsObject): SquidEndRowData[] {
+        if (!rec?.resultsList?.length) {
+            return [];
+        }
+
+        const rows: SquidEndRowData[] = [];
+        rec.resultsList.forEach(r => {
+            const player = this.GetPlayerByServerSeatID(r.seatId);
+            if (!player) {
+                return;
+            }
+
+            r.ehcsList?.forEach(ehc => {
+                if (ehc.ehcType !== Def.EHCType.EHC_SQUID) {
+                    return;
+                }
+
+                const inNum = Number((ehc as any).pb_in || (ehc as any).in || 0);
+                const outNum = Number((ehc as any).out || 0);
+                if (inNum <= 0 && outNum <= 0) {
+                    return;
+                }
+
+                rows.push({
+                    userID: Number(player.userID || 0),
+                    nick: player.nick || "",
+                    avatar: player.headPic || "",
+                    money: inNum > 0 ? inNum : -outNum,
+                    squidNum: Number((r as any).squidCount || 0),
+                    rate: this.GetRateBySquidNum(Number((r as any).squidCount || 0)),
+                    isPunish: false,
+                });
+            });
+        });
+
+        const punishList = rec.pools?.squidDetailsList || [];
+        if (rows.length > 0 && punishList.length > 0) {
+            punishList.forEach(p => {
+                rows.push({
+                    userID: Number(p.userRid || 0),
+                    nick: p.name || "",
+                    avatar: p.avatar || "",
+                    money: -Number(p.punishFee || 0),
+                    squidNum: 0,
+                    rate: 0,
+                    isPunish: true,
+                });
+            });
+        }
+
+        return rows;
+    }
+
+    private GetPlayerByServerSeatID(serverSeatID: number): CPlayer | null {
+        const localSeatID = this.host.GetLocalSeatID(serverSeatID);
+        const seat = this.host.listSeat?.[localSeatID];
+        return seat?.Player || null;
+    }
+
+    private GetRateBySquidNum(squidNum: number): number {
+        if (!this.host.squidCountRates?.length) {
+            return 0;
+        }
+
+        let rate = 0;
+        this.host.squidCountRates.forEach(cfg => {
+            if (squidNum >= cfg.count) {
+                rate = cfg.rate;
+            }
+        });
+        return Math.max(0, rate);
     }
 }

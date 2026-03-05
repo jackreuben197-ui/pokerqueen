@@ -1652,7 +1652,7 @@ export default class TexasGameProtocol {
             const reachEndBySettle = hasSquidSettlement || !!(pools?.squidDetailsList && pools.squidDetailsList.length > 0);
 
             if (reachEndByCount || reachEndBySettle) {
-                this.game.PlaySquidRoundEndAnim();
+                this.game.PlaySquidRoundEndAnim(rec);
             }
 
             if (reachEndBySettle) {

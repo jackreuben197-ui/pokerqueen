@@ -49,6 +49,7 @@ import { ServerMessageAutoOp } from "../../protobuf/holdem/recv_th_auto_op_pb";
 import { ClientMessageSquidInActive, ServerMessageSquidInActive } from "../../protobuf/holdem/req_th_squid_in_active_pb";
 import { ServerMessageSquidIn } from "../../protobuf/holdem/recv_th_squid_in_pb";
 import { ServerMessageNextChange } from "../../protobuf/holdem/recv_th_next_change_pb";
+import { ClientMessageAgreePost, ServerMessageAgreePost } from "../../protobuf/holdem/req_th_agree_post_pb";
 
 export class ProtocolCommon {
 
@@ -297,6 +298,10 @@ export const ProtocolMap = {
     [ProtocolCode.Protocol_Holdem_KeepSeatActive]: {
         Client: ClientMessageKeepSeatActive,
         Server: ServerMessageKeepSeatActive,
+    },
+    [ProtocolCode.Protocol_Holdem_AgreePost]: {
+        Client: ClientMessageAgreePost,
+        Server: ServerMessageAgreePost,
     },
     [ProtocolCode.Protocol_Holdem_ShowPublicCards]: {
         Client: ClientMessageShowPublicCards,

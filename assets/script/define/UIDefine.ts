@@ -366,6 +366,13 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "purple_prefab/ui/UITexasGameEnd",
     },
+    //鱿鱼轮结算
+    UISquidEnd: {
+        UIType: UIType.CommonUI,
+        Name: "UISquidEnd",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UISquidOver",
+    },
 
     //房间模版
     UILaborPlayViewForm: {
