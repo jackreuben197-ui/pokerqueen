@@ -32,6 +32,7 @@ import { SeatStandupAnimation } from "../SeatStateHandler";
 import MTTGame from "../texas/MTTGame";
 import TexasGame from "../texas/TexasGame";
 import { TexasGameState } from "../TexasGameState";
+import { GamePlaySubType } from "../ui/UITexasGameEnd";
 import GameUtil, { RoomType } from "../util/GameUtil";
 
 
@@ -341,6 +342,9 @@ export default class TexasGameMessageHandler {
             case Def.LeaveReason.LR_GAME_END: // 游戏结束
                 {
                     if (GameCache.Instance.room_type < RoomType.MTTTexasHoldemStandardNoLimit) {
+                        const gamePlaySubType = this.game?.squidEnabled
+                            ? GamePlaySubType.SQUID
+                            : (this.game?.mushroomEnabled ? GamePlaySubType.MUSH : GamePlaySubType.NONE);
                         UIComponent.open(UIDefine.UITexasGameEnd, {
                             roomID: GameCache.Instance.room_id.toString(),
                             blind: GameCache.Instance.CurGame.smallBlind,
@@ -348,6 +352,7 @@ export default class TexasGameMessageHandler {
                             game_type: GameCache.Instance.game_type,
                             bet_type: GameCache.Instance.bet_type,
                             poker_type: GameCache.Instance.poker_type,
+                            gamePlaySubType: gamePlaySubType,
                         },
                             { parentUI: Main.Dialog }
                         )
