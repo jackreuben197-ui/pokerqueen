@@ -54,21 +54,27 @@ export default class UIClubMatchItem extends UIBase {
     initData(data) {
         this._data = data;
 
-        let lbl_center_left = this.labelNode.getChildByName('lbl_1').getComponent(cc.Label)
+        const lbl1 = this.labelNode.getChildByName('lbl_1');
+        const lbl_center_left = lbl1?.getChildByName('name')?.getComponent(cc.Label);
         let sb = this._data.sb / 100;
-        lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`
+        if (lbl_center_left) {
+            lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`
+        }
 
 
 
         this.lbl_num.string = `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`
         this.lbl_status = this.labelNode.getChildByName('lbl_3').getComponent(cc.Label)
         this.setText(this.lbl_status, this._data.status == 1 ? 'MTT_State_NotStart' : 'adaptation10186');
-        lbl_center_left._forceUpdateRenderData()
+        lbl_center_left?._forceUpdateRenderData()
         let lock = this.node.getChildByName('lock');
         lock.active = this._data.private_room == 1
-
-        let bx = lbl_center_left.node.getChildByName('bx');
-        bx.active = this._data.insurance_on
+        const icon_bx = lbl1?.getChildByName('icon_bx');
+        if (icon_bx) icon_bx.active = !!this._data.insurance_on;
+        const icon_squid = lbl1?.getChildByName('icon_squid');
+        if (icon_squid) icon_squid.active = this._data.squid_on == 1;
+        const icon_mushroom = lbl1?.getChildByName('icon_mushroom');
+        if (icon_mushroom) icon_mushroom.active = this._data.mushroom_mode == 1;
 
         let isJoin = this._data.participation_status == 1;
 
@@ -157,4 +163,3 @@ export default class UIClubMatchItem extends UIBase {
     }
 
 }
-
