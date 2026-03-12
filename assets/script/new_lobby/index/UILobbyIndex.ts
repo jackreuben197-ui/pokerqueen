@@ -220,8 +220,6 @@ export default class UILobbyIndex extends UIBasePlus {
                     game_type: this.GameTypeTabs[this.gametype_status].game_type,
                     poker_type: this.GameTypeTabs[this.gametype_status].poker_type,
                     order: ["players_desc", "game_type"],
-                    sb_min: 400,
-                    sb_max: 400,
                 },
                 juhua: false
             }

@@ -88,6 +88,8 @@ export default class ItemLobbyRoom extends UIBasePlus {
     }
 
     getIconSpriteFrame(poker_type: number, game_type: number) {
+        //额外玩法暂不处理
+        game_type = game_type >= 6 ? 1 : game_type
         //return this.$room_type_icons.children[index].getComponent(cc.Sprite).spriteFrame;
         if (poker_type == 0) {
 

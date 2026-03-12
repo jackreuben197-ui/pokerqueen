@@ -383,7 +383,7 @@ export class GameCache {
         GameCache.Instance.room_squid_max = room_info.squid_max || 0;
         GameCache.Instance.room_squid_on =
         room_info.squid_on ?? ((GameCache.Instance.room_squid_base > 0 || GameCache.Instance.room_squid_sub_base > 0) ? 1 : 0);
-        GameCache.Instance.room_squid_open_number = sub0?.ppcl || 28;
+        GameCache.Instance.room_squid_open_number = sub0?.ppcl || room_info.squid_player_count || 2;
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;
@@ -451,5 +451,6 @@ export interface EnterRoomInfo {
     squid_tail?;
     squid_max?;
     sub_configs?;
+    squid_player_count?;
 }
 (window as any).GameCache = GameCache;

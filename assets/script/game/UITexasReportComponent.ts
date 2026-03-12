@@ -1,5 +1,6 @@
 
 import { UIDefine } from "../define/UIDefine";
+import { TextColor } from "../config/GameConfig";
 import GC from "../frame/GameControl";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
@@ -35,6 +36,12 @@ export class ReportPlayer {
     public score;//输赢
     public outChip;//带出
     public isOnline;//是否在线
+    public deposit;//押金
+    public mushroomCount;//蘑菇数
+    public mushroomAmount;//蘑菇额
+    public squidInTotal;//鱿鱼入
+    public squidOutTotal;//鱿鱼出
+    public squidPunishTotal;//鱿鱼惩罚
 }
 
 @ccclass
@@ -61,6 +68,10 @@ export default class UITexasReportComponent extends UIBase {
     people_content: cc.Node = null;
     peopelNum: cc.Label = null;
     line: cc.Node = null;
+    listBar1: cc.Node = null;
+    listBar3: cc.Node = null;
+    listBar3ModeLabel: cc.Label = null;
+    reportSubType: 'none' | 'mush' | 'squid' = 'none';
     protected lateLoad(): void {
         super.lateLoad();
         this.text_Time = this.getChildNodeOrComponent('Text_Time', cc.Label);
@@ -69,6 +80,9 @@ export default class UITexasReportComponent extends UIBase {
         this.people_content = this.getChildNodeOrComponent('people_content');
         this.peopelNum = this.getChildNodeOrComponent('peopelNum', cc.Label);
         this.line = this.getChildNodeOrComponent('Line');
+        this.listBar1 = cc.find('layer/ListBar1', this.node);
+        this.listBar3 = cc.find('layer/ListBar3', this.node);
+        this.listBar3ModeLabel = cc.find('layer/ListBar3/Text_Mode', this.node)?.getComponent(cc.Label) || null;
 
     }
     protected regiterDispatchEvent(): void {
@@ -105,6 +119,7 @@ export default class UITexasReportComponent extends UIBase {
         })
     }
     ProtocolHoldemObserverHandler(response: ServerMessageLeave.AsObject) {
+        console.log(7777,response);
         if (response == null) {
             return;
         }
@@ -120,15 +135,24 @@ export default class UITexasReportComponent extends UIBase {
         }
         if (response.status == 0) {
             this.UpdateViewList(response);
+            const anyResp: any = response as any;
+            if (anyResp.observersList) {
+                this.UpdateObViewList(anyResp);
+            } else {
+                this.UpdateObViewList({ observersList: [] });
+            }
         }
     }
     onShow(param?: any): void {
         super.onShow();
         this.unscheduleAllCallbacks();
+        this.clearView();
         // this.btnShowProblem = this.getChildNodeOrComponent('BtnShowProblem');
         // this.btnShowProblem.on('click', this.btnShowProblemClick, this)
         this.room_id.string = GameCache.Instance.room_id + '-' + GameCache.Instance.CurGame.mHandNum;
         this.text_Time.string = ''
+        this.reportSubType = this.resolveReportSubType();
+        this.refreshListBar();
         this.RequestRoomers();
         this.RequestObservers();
     }
@@ -148,6 +172,12 @@ export default class UITexasReportComponent extends UIBase {
             tSignPlayer.score = RoomersData.playersList[i].win;
             tSignPlayer.outChip = RoomersData.playersList[i].bringOutTotal;
             tSignPlayer.isOnline = RoomersData.playersList[i].isOnline;
+            tSignPlayer.deposit = RoomersData.playersList[i].deposit || 0;
+            tSignPlayer.mushroomCount = RoomersData.playersList[i].mushroomCount || 0;
+            tSignPlayer.mushroomAmount = RoomersData.playersList[i].mushroomAmount || 0;
+            tSignPlayer.squidInTotal = RoomersData.playersList[i].squidInTotal || 0;
+            tSignPlayer.squidOutTotal = RoomersData.playersList[i].squidOutTotal || 0;
+            tSignPlayer.squidPunishTotal = RoomersData.playersList[i].squidPunishTotal || 0;
             if (RoomersData.playersList[i].status == Def.CanPlayStatus.NORMAL || RoomersData.playersList[i].Status == Def.CanPlayStatus.AGREE_POST) {
                 this.tInfo_0.push(tSignPlayer);
             }
@@ -159,8 +189,7 @@ export default class UITexasReportComponent extends UIBase {
             this.tInfo_0.sort((x, y) => { return -x.score.CompareTo(y.score); });
             this.tInfo_1.sort((x, y) => { return -x.score.CompareTo(y.score); });
         }
-        catch
-        {
+        catch {
 
         }
 
@@ -234,6 +263,11 @@ export default class UITexasReportComponent extends UIBase {
     }
 
     async UpdateObViewList(RoomersData) {
+        if (!RoomersData || !RoomersData.observersList) {
+            if (this.people_content) this.people_content.removeAllChildren();
+            if (this.peopelNum) this.peopelNum.string = '0';
+            return;
+        }
         this.people_content.removeAllChildren();
         this.peopelNum.string = RoomersData.observersList.length
         for (let index = 0; index < RoomersData.observersList.length; index++) {
@@ -273,6 +307,16 @@ export default class UITexasReportComponent extends UIBase {
         }, 1)
     }
     setInfos(objTemp, pDto, onLine) {
+        const info1 = objTemp.getChildByName('item_info1');
+        const info3 = objTemp.getChildByName('item_info3');
+        const subType = this.reportSubType;
+        const useInfo3 = subType !== 'none';
+        if (info1) info1.active = !useInfo3;
+        if (info3) info3.active = useInfo3;
+        const ele = useInfo3 ? info3 : info1;
+        if (!ele) {
+            return;
+        }
         // let color = cc.color().fromHEX('#7187FF')
         // let opactiy = 255
         // if (!pDto.isOnline && GameCache.Instance.origin_type == 4) {
@@ -303,19 +347,24 @@ export default class UITexasReportComponent extends UIBase {
         // objTemp.getChildByName('Text_All').opactiy = opactiy
         // objTemp.getChildByName('Text_All1').opactiy = opactiy
         if (!pDto.isOnline && GameCache.Instance.origin_type == 4) {
-            objTemp.opacity = 50
+            ele.opacity = 50
         } else {
-            objTemp.opacity = 255
+            ele.opacity = 255
         }
 
 
-        objTemp.getChildByName('Text_Name').getComponent(cc.Label).string = StringHelper.LengthNick(pDto.nickName)
-        objTemp.getChildByName('Text_Num').getComponent(cc.Label).string = pDto.hand + ''
-        objTemp.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn)
+        ele.getChildByName('Text_Name').getComponent(cc.Label).string = StringHelper.LengthNick(pDto.nickName)
+        ele.getChildByName('Text_Num').getComponent(cc.Label).string = pDto.hand + ''
+        ele.getChildByName('Text_All').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.bringIn)
         let outChip = pDto.outChip != 0 ? StringHelper.GetLongString(pDto.outChip) : 0;
-        objTemp.getChildByName('Text_All1').getComponent(cc.Label).string = '(' + outChip + ')'
-        objTemp.getChildByName('Text_Count').getComponent(cc.Label).string = StringHelper.GetLongString(pDto.score);
-        objTemp.getChildByName('own').active = pDto.userId == GameCache.Instance.nUserId;
+        ele.getChildByName('Text_All1').getComponent(cc.Label).string = '(' + outChip + ')'
+        this.setCountText(ele.getChildByName('Text_Count'), pDto.score);
+        if (useInfo3) {
+            const depositLabel = ele.getChildByName('Text_Deposit')?.getComponent(cc.Label);
+            if (depositLabel) depositLabel.string = StringHelper.GetLongString(pDto.deposit || 0);
+            this.applyMushSquidInfo(ele, subType, pDto);
+        }
+        ele.getChildByName('own').active = pDto.userId == GameCache.Instance.nUserId;
 
 
     }
@@ -326,6 +375,98 @@ export default class UITexasReportComponent extends UIBase {
     imageMaskCloseClick() {
         this.unscheduleAllCallbacks();
         UIComponent.close(this.UIDefine);
+    }
+
+    private clearView(): void {
+        this.tInfo_0 = [];
+        this.tInfo_1 = [];
+        if (this.data_content) this.data_content.removeAllChildren();
+        if (this.people_content) this.people_content.removeAllChildren();
+        if (this.peopelNum) this.peopelNum.string = '0';
+        if (this.line) this.line.active = false;
+    }
+
+    private refreshListBar(): void {
+        const subType = this.reportSubType;
+        const useBar3 = subType !== 'none';
+        if (this.listBar1) this.listBar1.active = !useBar3;
+        if (this.listBar3) this.listBar3.active = useBar3;
+        if (this.listBar3ModeLabel) {
+            this.listBar3ModeLabel.string = subType === 'squid' ? i18nMgr.Get('UISquid') : i18nMgr.Get('UIMush');
+        }
+    }
+
+    private setCountText(node: cc.Node, score: number): void {
+        if (!node) return;
+        const text = StringHelper.GetLongString(score);
+        const color = score > 0 ? TextColor.Color6 : (score < 0 ? TextColor.Color5 : '#FFFFFF');
+        const rich = node.getComponent(cc.RichText);
+        if (rich) {
+            rich.string = `<color=${color}>${text}</color>`;
+            return;
+        }
+        const label = node.getComponent(cc.Label);
+        if (label) {
+            label.string = text;
+            label.node.color = cc.Color.BLACK.fromHEX(color);
+        }
+    }
+
+    private resolveReportSubType(): 'none' | 'mush' | 'squid' {
+        const curGame: any = GameCache.Instance.CurGame;
+        const squidOn =
+            (GameCache.Instance.room_squid_on || 0) > 0
+            || (GameCache.Instance.room_squid_base || 0) > 0
+            || (GameCache.Instance.room_squid_sub_base || 0) > 0
+            || (curGame?.squidBase || 0) > 0;
+        if (squidOn) return 'squid';
+        const mushOn = (curGame?.mushroomBase || 0) > 0 || !!curGame?.mushroomEnabled;
+        if (mushOn) return 'mush';
+        return 'none';
+    }
+
+    private applyMushSquidInfo(parent: cc.Node, subType: 'none' | 'mush' | 'squid', pDto: ReportPlayer): void {
+        const mushNode = parent.getChildByName('mush');
+        const squidNode = parent.getChildByName('Text_Squid');
+
+        if (mushNode) mushNode.active = subType === 'mush';
+        if (squidNode) squidNode.active = subType === 'squid';
+
+        if (subType === 'mush' && mushNode) {
+            const mushNum = mushNode.getChildByName('mushNum')?.getComponent(cc.Label);
+            const mushChips = mushNode.getChildByName('mushChips')?.getComponent(cc.Label);
+            if (pDto.mushroomAmount > 0) {
+                if (mushNum) mushNum.string = '+' + StringHelper.FormatToString("{0:N0}", pDto.mushroomCount || 0);
+                if (mushChips) {
+                    mushChips.string = `(+${StringHelper.GetLongString(pDto.mushroomAmount || 0)})`;
+                    mushChips.node.active = true;
+                }
+            } else {
+                if (mushNum) mushNum.string = '-';
+                if (mushChips) mushChips.node.active = false;
+            }
+        }
+
+        if (subType === 'squid' && squidNode) {
+            const net = Number(pDto.squidInTotal || 0) - Number(pDto.squidOutTotal || 0) - Number(pDto.squidPunishTotal || 0);
+            this.setSignedText(squidNode, net);
+        }
+    }
+
+    private setSignedText(node: cc.Node, value: number): void {
+        if (!node) return;
+        const text = StringHelper.GetSignedLongString(value);
+        const color = value > 0 ? TextColor.Color6 : (value < 0 ? TextColor.Color5 : '#FFFFFF');
+        const rich = node.getComponent(cc.RichText);
+        if (rich) {
+            rich.string = `<color=${color}>${text}</color>`;
+            return;
+        }
+        const label = node.getComponent(cc.Label);
+        if (label) {
+            label.string = text;
+            label.node.color = cc.Color.BLACK.fromHEX(color);
+        }
     }
 
 
