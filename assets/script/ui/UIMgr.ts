@@ -191,6 +191,11 @@ export class UICommonMgr {
     constructor() {
 
     }
+    find(uiDefine: IUIDefine): UIBase {
+        const node = this.uiMap.get(uiDefine);
+        if (!node) return null;
+        return node.getComponent(UIBase);
+    }
     open(uiDefine: IUIDefine, param: any = null, obj: Open_Obj) {
         let node: cc.Node = this.uiMap.get(uiDefine);
         if (!node) {

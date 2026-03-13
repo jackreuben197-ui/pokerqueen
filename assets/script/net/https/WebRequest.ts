@@ -478,6 +478,92 @@ export class Web_Room_Center_History_Hand extends WebCommon {
 }
 
 /// <summary>
+/// 鱿鱼战况轮次数据
+/// </summary>
+export class Web_Room_Center_History_Squid extends WebCommon {
+    static API: string = "/api/roomcenter/history/{id}/squid";
+
+    static RequestParams: {
+        round?: number,
+    } = null;
+
+    static Record: {
+        name?: string,
+        in_num?: number,
+        in_amount?: number,
+        out_num?: number,
+        out_amount?: number,
+        user_random_id?: number,
+    } = null;
+
+    static ResponseData: {
+        round?: number,
+        start_hand?: number,
+        end_hand?: number,
+        total?: number,
+        records?: Array<typeof Web_Room_Center_History_Squid.Record>,
+    } = null;
+
+    static Request(param: typeof Web_Room_Center_History_Squid.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_History_Squid.ResponseData };
+}
+
+/// <summary>
+/// 蘑菇战况轮次数据
+/// </summary>
+export class Web_Room_Center_History_Mushroom extends WebCommon {
+    static API: string = "/api/roomcenter/history/{id}/mushroom";
+
+    static RequestParams: {
+        round?: number,
+    } = null;
+
+    static Record: {
+        name?: string,
+        in_num?: number,
+        in_amount?: number,
+        out_num?: number,
+        out_amount?: number,
+        user_random_id?: number,
+    } = null;
+
+    static ResponseData: {
+        round?: number,
+        start_hand?: number,
+        end_hand?: number,
+        total?: number,
+        records?: Array<typeof Web_Room_Center_History_Mushroom.Record>,
+    } = null;
+
+    static Request(param: typeof Web_Room_Center_History_Mushroom.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Room_Center_History_Mushroom.ResponseData };
+}
+
+/** 战况页：鱿鱼轮次记录（稳定对象导出，避免运行态 class 取值异常） */
+export const APITexasSituationSquidRound = {
+    API: "/api/roomcenter/history/{id}/squid",
+    Request(param: { round?: number }) {
+        return param;
+    },
+    Response: {} as { code?: number, message?: string, data?: any },
+};
+
+/** 战况页：蘑菇轮次记录（稳定对象导出，避免运行态 class 取值异常） */
+export const APITexasSituationMushRound = {
+    API: "/api/roomcenter/history/{id}/mushroom",
+    Request(param: { round?: number }) {
+        return param;
+    },
+    Response: {} as { code?: number, message?: string, data?: any },
+};
+
+/// <summary>
 /// 7.玩家查看带入申请列表
 /// </summary>
 export class APIFriendApplyList extends WebCommon {
@@ -3026,4 +3112,3 @@ export class Web_misc_popup_newer extends WebCommon {
 (window as any).Web_User_Room_Settle_Detail = Web_User_Room_Settle_Detail;
 (window as any).Web_Room_Center_Mtt_list = Web_Room_Center_Mtt_list;
 (window as any).Web_User_Room = Web_User_Room;
-

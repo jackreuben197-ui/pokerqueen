@@ -432,6 +432,7 @@ export default class TexasGame {
     //////////////////////////////////////
     lastClickTime: number = 0;
     private lastAgreePostReqTime: number = 0;
+    private reportKeepOpen: boolean = false;
 
     //分池节点对象池
     //TransPot_Pool: SimpleNodePool = null;
@@ -3293,7 +3294,24 @@ export default class TexasGame {
         });
     }
     public onClickReport() {
-        UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: this.uirc.node });
+        this.reportKeepOpen = true;
+        const reportUI = UIComponent.find(UIDefine.UITexasReportComponent);
+        if (reportUI && reportUI.node && reportUI.node.activeInHierarchy) {
+            if (reportUI.node.parent !== Main.Dialog) {
+                reportUI.node.parent = Main.Dialog;
+            }
+            reportUI.node.active = true;
+            return;
+        }
+        UIComponent.open(UIDefine.UITexasReportComponent, null, { parentUI: Main.Dialog });
+    }
+
+    public SetReportKeepOpen(keep: boolean): void {
+        this.reportKeepOpen = keep;
+    }
+
+    public IsReportKeepOpen(): boolean {
+        return this.reportKeepOpen;
     }
     public onClickCurSituation() {
         let historyInfoData = new HistoryInfoData()
@@ -3618,6 +3636,7 @@ export default class TexasGame {
     ClearTableUI() {
 
         if (!this.uirc) return;
+        const needKeepReport = this.reportKeepOpen;
 
         this.ResetPublicCards();
         this.ClearPublicCardsUI();
@@ -3633,6 +3652,21 @@ export default class TexasGame {
         this.HideAutoOperationPanel();
 
         this.uirc.CleanUI();
+        if (needKeepReport) {
+            const reportUI = UIComponent.find(UIDefine.UITexasReportComponent);
+            if (reportUI && reportUI.node) {
+                if (reportUI.node.parent !== Main.Dialog) {
+                    reportUI.node.parent = Main.Dialog;
+                }
+                const shouldRestoreShow = !reportUI.node.activeInHierarchy;
+                reportUI.node.active = true;
+                if (shouldRestoreShow) {
+                    reportUI.onShow({ __keepState: true });
+                }
+            } else {
+                UIComponent.open(UIDefine.UITexasReportComponent, { __keepState: true }, { parentUI: Main.Dialog });
+            }
+        }
 
         this.KillAllTweener();
 
@@ -3673,6 +3707,7 @@ export default class TexasGame {
     Dispose() {
 
         console.log("TexasGame >>>> Dispose");
+        this.reportKeepOpen = false;
 
         this.ClearTableUI();
 

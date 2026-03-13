@@ -173,6 +173,9 @@ export default class UIComponent {
             case UIType.TexasPreLoad:
                 ui = UIPromptMgr.Instance.find(UIDefine);
                 break;
+            case UIType.CommonUI:
+                ui = UICommonMgr.Instance.find(UIDefine);
+                break;
             default:
                 break;
         }
