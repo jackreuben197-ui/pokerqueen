@@ -104,6 +104,7 @@ export default class UITexas extends BaseScene {
     RemainingSquidLabelCount: cc.Label = null;
     SquidSwitch: cc.Node = null;
     private SquidSwitchClickNode: cc.Node = null;
+    SquidStandUp: cc.Node = null;
     SquidJoinLabel: cc.Label = null;
     SquidStart: cc.Node = null;
     SquidStartAnim: cc.Animation = null;
@@ -274,6 +275,10 @@ export default class UITexas extends BaseScene {
         if (this.SquidSwitch) {
             this.SquidSwitch.active = false;
         }
+        this.SquidStandUp = this.main?.getChildByName("squidStandUp");
+        if (this.SquidStandUp) {
+            this.SquidStandUp.active = false;
+        }
         this.SquidStart = this.getChildNodeOrComponent("squid_start");
         this.SquidStartAnim = this.SquidStart?.getComponent(cc.Animation);
         if (this.SquidStart) {
@@ -411,6 +416,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
         this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
         this.setButtonClick(this.SquidSwitchClickNode, this.onClickJoinGame);
+        this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
 
         this.setButtonClick(this.Button_AddOn, this.onClickAddOn);
 
@@ -472,6 +478,7 @@ export default class UITexas extends BaseScene {
         //this.setActive(this.Button_BringIn, false);
         this.setActive(this.Button_AddOn, false);
         this.setActive(this.SquidSwitch, false);
+        this.setActive(this.SquidStandUp, false);
         //消息按钮显示
         this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
     }
@@ -507,6 +514,7 @@ export default class UITexas extends BaseScene {
             this.Image_ReserveSeatTips,
             this.Image_InsuranceTips,
             this.SquidSwitch,
+            this.SquidStandUp,
         ].forEach(item => {
             this.setActive(item, false);
         });
@@ -597,6 +605,9 @@ export default class UITexas extends BaseScene {
     private onClickJoinGame() {
         console.log(`==>onClickJoinGame`);
         this.game?.OnClickSquidJoinSwitch();
+    }
+    private onClickSquidStandUp() {
+        this.game?.OnClickSquidStandUp();
     }
 
     public async ShowInsuranceTipJieSuan(paynum: number) {

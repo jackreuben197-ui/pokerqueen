@@ -47,6 +47,8 @@ export default class UISquidEndItem extends UIBase {
         }
 
         const showRate = !data.isPunish && (data.rate || 0) > 0;
+        console.log(666,showRate,data.rate,data.isPunish);
+        
         if (this.rewardBg) {
             this.rewardBg.active = showRate;
         }

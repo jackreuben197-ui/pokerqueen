@@ -1136,6 +1136,11 @@ export default class TexasGame {
         this.squidFeature.OnClickJoinSwitch();
     }
 
+    /** 点击鱿鱼玩法快捷站起 */
+    public OnClickSquidStandUp(): void {
+        this.squidFeature.OnClickStandUp();
+    }
+
     /** 统计本轮鱿鱼中仍未拿到标记的人数 */
     public CountSquidNoMarkPlayers(): number {
         return this.squidFeature.CountNoMarkPlayers();
