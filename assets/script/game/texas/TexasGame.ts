@@ -207,6 +207,16 @@ export default class TexasGame {
     public squidCountRates: { count: number, rate: number }[] = [];
     /** 当前是否在鱿鱼轮 */
     public isGameInSquidRound: boolean = false;
+    /** 子玩法 ante（暴击玩法） */
+    public subGamePlayAnte: number = 0;
+    /** 暴击玩法是否开启 */
+    public criticalHitEnabled: boolean = false;
+    /** 暴击玩法轮次 */
+    public criticalHitRound: number = 0;
+    /** 当前暴击轮次 */
+    public curCriticalHitRound: number = 0;
+    /** 本轮是否暴击开启 */
+    public isCriticalHitOpen: boolean = false;
     /// <summary>
     /// 当前最小带入倍数
     /// </summary>
@@ -664,6 +674,9 @@ export default class TexasGame {
         this.groupBet = rec.roomInfo.ante;
         this.mushroomFeature.UpdateRoomConfig(rec);
         this.squidFeature.UpdateRoomConfig(rec);
+        console.log(8888,rec);
+        
+        this.UpdateCriticalHitConfig(rec);
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
@@ -1122,8 +1135,49 @@ export default class TexasGame {
         }
         info += this.mushroomFeature.BuildRoomDesc();
         info += this.squidFeature.BuildRoomDesc();
+        info += this.BuildCriticalHitRoomDesc();
         info += "\n\n";
         this.uirc.textRoomInfo.string = info;
+    }
+
+    private UpdateCriticalHitConfig(rec: ServerMessageEnterRoom.AsObject): void {
+        if (this.squidEnabled) {
+            this.subGamePlayAnte = 0;
+            this.criticalHitEnabled = false;
+            this.criticalHitRound = 0;
+            this.curCriticalHitRound = 0;
+            this.isCriticalHitOpen = false;
+            return;
+        }
+
+        const roomInfoAny = rec.roomInfo as any;
+        const handInfoAny = rec.handInfo as any;
+        const entryAny = GameCache.Instance as any;
+        const subConfigs = roomInfoAny?.subConfigsList || roomInfoAny?.sub_configs || roomInfoAny?.subConfigs || [];
+        const subCfg = subConfigs && subConfigs.length > 0 ? subConfigs[0] : null;
+        const criticalHitFlag = subCfg?.criticalHit ?? subCfg?.critical_hit ?? roomInfoAny?.criticalHit ?? roomInfoAny?.critical_hit;
+        const criticalHitValue = (Number(criticalHitFlag || 0) > 0) ? Number(criticalHitFlag) : Number(entryAny.room_critical_hit || 0);
+
+        const subAnteValue = Number(subCfg?.ante || 0);
+        const roundValue = Number(roomInfoAny?.rounds || roomInfoAny?.criticalHitRound || 0);
+
+        this.subGamePlayAnte = subAnteValue > 0
+            ? subAnteValue
+            : Number(entryAny.room_critical_hit_ante || roomInfoAny?.ante || 0);
+        this.criticalHitEnabled = criticalHitValue === 1;
+        this.criticalHitRound = roundValue > 0 ? roundValue : Number(entryAny.room_critical_hit_round || 0);
+        this.curCriticalHitRound = Number(handInfoAny?.conRounds || 0);
+        this.isCriticalHitOpen = !!handInfoAny?.criticalHitOpen;
+    }
+
+    private BuildCriticalHitRoomDesc(): string {
+        if (!this.criticalHitEnabled) return "";
+        const criticalHitBB = this.bigBlind > 0 ? Math.floor(this.subGamePlayAnte / this.bigBlind) : 0;
+        let info = "";
+        info += `\n${i18nMgr.Get("UIHitGamePlayTips4")}:${StringHelper.GetLongString(criticalHitBB)}BB`;
+        const cur = this.isCriticalHitOpen ? 0 : this.curCriticalHitRound;
+        info += `\n${i18nMgr.Get("UIHitGamePlayOpen")}:${cur}/${this.criticalHitRound}`;
+        return info;
     }
 
     /** 刷新座位鱿鱼标记 */
@@ -3102,6 +3156,11 @@ export default class TexasGame {
         this.waitBlind = 0;
         this.isIpRestrictions = false;
         this.isGPSRestrictions = false;
+        this.subGamePlayAnte = 0;
+        this.criticalHitEnabled = false;
+        this.criticalHitRound = 0;
+        this.curCriticalHitRound = 0;
+        this.isCriticalHitOpen = false;
         this.mushroomFeature.ResetState();
         this.squidFeature.ResetState();
         // 座位蘑菇标识隐藏

@@ -150,6 +150,12 @@ export class GameCache {
     public room_mushroom_mode: number = 0;
     /** 大厅入口缓存：蘑菇基础值 */
     public room_mushroom_base: number = 0;
+    /** 大厅入口缓存：暴击开关 */
+    public room_critical_hit: number = 0;
+    /** 大厅入口缓存：暴击轮次 */
+    public room_critical_hit_round: number = 0;
+    /** 大厅入口缓存：暴击子玩法 ante */
+    public room_critical_hit_ante: number = 0;
     /// <summary>
     /// 房间类型 RoomType枚举
     /// </summary>
@@ -390,6 +396,12 @@ export class GameCache {
         GameCache.Instance.room_squid_open_number = sub0?.ppcl || room_info.squid_player_count || 2;
         GameCache.Instance.room_mushroom_mode = room_info.mushroom_mode || 0;
         GameCache.Instance.room_mushroom_base = room_info.mushroom_base || 0;
+        GameCache.Instance.room_critical_hit =
+        room_info.critical_hit ?? sub0?.critical_hit ?? sub0?.criticalHit ?? 0;
+        GameCache.Instance.room_critical_hit_round =
+        room_info.rounds ?? 0;
+        GameCache.Instance.room_critical_hit_ante =
+        sub0?.ante ?? room_info.sub_game_play_ante ?? 0;
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;
@@ -458,6 +470,9 @@ export interface EnterRoomInfo {
     squid_max?;
     mushroom_mode?;
     mushroom_base?;
+    critical_hit?;
+    sub_game_play_ante?;
+    rounds?;
     sub_configs?;
     squid_player_count?;
 }
