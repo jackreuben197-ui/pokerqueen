@@ -75,6 +75,8 @@ export default class UIClubMatchItem extends UIBase {
         if (icon_squid) icon_squid.active = this._data.squid_on == 1;
         const icon_mushroom = lbl1?.getChildByName('icon_mushroom');
         if (icon_mushroom) icon_mushroom.active = this._data.mushroom_mode == 1;
+        const icon_critical_hit = lbl1?.getChildByName('icon_critical_hit');
+        if (icon_critical_hit) icon_critical_hit.active = this._data.critical_hit == 1;
 
         let isJoin = this._data.participation_status == 1;
 

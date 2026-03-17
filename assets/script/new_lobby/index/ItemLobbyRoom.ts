@@ -26,6 +26,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
     //玩法类型
     $icon_mushroom: cc.Node = null;
     $icon_squid: cc.Node = null;
+    $icon_critical_hit: cc.Node = null;
 
     //防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
     $icon_anti_cheat_type: cc.Node = null;
@@ -69,6 +70,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
         this.$icon_mushroom.active = data.mushroom_mode > 0 && data.mushroom_base > 0;
         const isSquidVaild: boolean = data.sub_configs && data.sub_configs.length > 0 && data.sub_configs[0].sqb > 0;
         this.$icon_squid.active = data.squid_base > 0 || isSquidVaild;
+        this.$icon_critical_hit.active = data.critical_hit == 1;
 
         //刷新 anti_cheat_type 图标
         this.$icon_anti_cheat_type.active = data.anti_cheat_type > 1;
