@@ -674,8 +674,6 @@ export default class TexasGame {
         this.groupBet = rec.roomInfo.ante;
         this.mushroomFeature.UpdateRoomConfig(rec);
         this.squidFeature.UpdateRoomConfig(rec);
-        console.log(8888,rec);
-        
         this.UpdateCriticalHitConfig(rec);
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
@@ -1158,7 +1156,7 @@ export default class TexasGame {
         const criticalHitFlag = subCfg?.criticalHit ?? subCfg?.critical_hit ?? roomInfoAny?.criticalHit ?? roomInfoAny?.critical_hit;
         const criticalHitValue = (Number(criticalHitFlag || 0) > 0) ? Number(criticalHitFlag) : Number(entryAny.room_critical_hit || 0);
 
-        const subAnteValue = Number(subCfg?.ante || 0);
+        const subAnteValue = Number(subCfg?.ante ?? subCfg?.an ?? 0);
         const roundValue = Number(roomInfoAny?.rounds || roomInfoAny?.criticalHitRound || 0);
 
         this.subGamePlayAnte = subAnteValue > 0
@@ -1174,8 +1172,8 @@ export default class TexasGame {
         if (!this.criticalHitEnabled) return "";
         const criticalHitBB = this.bigBlind > 0 ? Math.floor(this.subGamePlayAnte / this.bigBlind) : 0;
         let info = "";
-        info += `\n${i18nMgr.Get("UIHitGamePlayTips4")}:${StringHelper.GetLongString(criticalHitBB)}BB`;
-        const cur = this.isCriticalHitOpen ? 0 : this.curCriticalHitRound;
+        info += `\n${i18nMgr.Get("UIHitGamePlayTips4")}:${(criticalHitBB)}BB`;
+        const cur = this.isCriticalHitOpen ? 0 : (this.curCriticalHitRound + 1);
         info += `\n${i18nMgr.Get("UIHitGamePlayOpen")}:${cur}/${this.criticalHitRound}`;
         return info;
     }
@@ -1206,6 +1204,32 @@ export default class TexasGame {
      */
     public PlaySquidRoundStartAnim(): void {
         this.squidFeature.PlayRoundStartAnim();
+    }
+
+    public PlayCriticalHitStartAnim(): void {
+        const node = this.uirc?.CriticalHitStart;
+        const anim = this.uirc?.CriticalHitStartAnim;
+        if (!node || !anim) {
+            return;
+        }
+
+        const clips = anim.getClips?.() || [];
+        if (!anim.defaultClip && clips.length > 0) {
+            anim.defaultClip = clips[0];
+        }
+
+        node.active = true;
+        anim.stop();
+        anim.off("finished", this.OnCriticalHitStartAnimFinished, this);
+        anim.on("finished", this.OnCriticalHitStartAnimFinished, this);
+        anim.play(anim.defaultClip?.name || "critical_hit_start");
+    }
+
+    private OnCriticalHitStartAnimFinished(): void {
+        const node = this.uirc?.CriticalHitStart;
+        if (node && cc.isValid(node)) {
+            node.active = false;
+        }
     }
 
     /** 鱿鱼轮结束动画/结算弹窗 */

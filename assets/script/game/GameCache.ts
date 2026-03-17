@@ -401,7 +401,7 @@ export class GameCache {
         GameCache.Instance.room_critical_hit_round =
         room_info.rounds ?? 0;
         GameCache.Instance.room_critical_hit_ante =
-        sub0?.ante ?? room_info.sub_game_play_ante ?? 0;
+        sub0?.ante ?? sub0?.an ?? room_info.sub_game_play_ante ?? 0;
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;

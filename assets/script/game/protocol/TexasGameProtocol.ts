@@ -351,6 +351,7 @@ export default class TexasGameProtocol {
         this.game.squidCurrentRound = rec.handInfo.conRounds || 0;
         this.game.isGameInSquidRound = rec.handInfo.inSquid || false;
         this.game.mHandNum = rec.handInfo.handNum;
+        this.game.curCriticalHitRound = rec.handInfo.conRounds || 0;
         this.game.UpdateRoomDes();
         // this.game.ResetPublicCardsId_1();
         // this.game.ResetPublicCardsId_2();
@@ -1959,6 +1960,13 @@ export default class TexasGameProtocol {
             } else {
                 this.game.UpdateRoomDes();
             }
+        } else if (this.game.criticalHitEnabled) {
+            const prevCriticalHitOpen = this.game.isCriticalHitOpen;
+            this.game.isCriticalHitOpen = !!rec.criticalHitOpen;
+            if (!prevCriticalHitOpen && this.game.isCriticalHitOpen) {
+                this.game.PlayCriticalHitStartAnim();
+            }
+            this.game.UpdateRoomDes();
         }
     }
 
