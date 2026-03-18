@@ -71,7 +71,7 @@ export default class recordItem extends UIBase {
             this.lbl_node.active = true;
             this.setText(this.lbl_1, StringHelper.LengthNick(GC.data.languageTemp.temp.getName(this._data.Name)))
             this.lbl_11.string = 'ID:' + this._data.RoomID
-            this.lbl_11._forceUpdateRenderData()
+            (this.lbl_11 as any)?._forceUpdateRenderData()
             let bx = this.lbl_11.node.getChildByName('bx');
             bx.active = this._data.insurance_on
             this.setText(this.lbl_22, this._data.hand_num)

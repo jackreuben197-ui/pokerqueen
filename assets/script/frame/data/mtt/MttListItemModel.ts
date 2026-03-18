@@ -1,6 +1,6 @@
 import { EMTTGameType, EMttItemStatus } from "../../../config/EEnumConfig";
 import { TMttListItem } from "../../../config/TTypeConfig";
-import { MTT_GameType } from "../../../game/util/MTTGameUtils";
+import { MTT_GameType } from "../../../game/util/MTTGameUtil";
 import GC from "../../GameControl";
 
 export default class MttListItemModel {

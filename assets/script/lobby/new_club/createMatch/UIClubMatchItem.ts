@@ -63,7 +63,7 @@ export default class UIClubMatchItem extends UIBase {
         this.lbl_num.string = `${this._data.seat_count - this._data.empty_seat}/${this._data.seat_count}`
         this.lbl_status = this.labelNode.getChildByName('lbl_3').getComponent(cc.Label)
         this.setText(this.lbl_status, this._data.status == 1 ? 'MTT_State_NotStart' : 'adaptation10186');
-        lbl_center_left._forceUpdateRenderData()
+        (lbl_center_left as any)._forceUpdateRenderData()
         let lock = this.node.getChildByName('lock');
         lock.active = this._data.private_room == 1
 

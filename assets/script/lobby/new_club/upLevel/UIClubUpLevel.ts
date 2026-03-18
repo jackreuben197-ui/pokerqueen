@@ -89,7 +89,7 @@ export default class UIClubUpLevel extends BaseForm {
         node.getChildByName('itemLevel_2').getComponent(cc.Label).string = data.club_level
         let dur = data.level_duration + ' Day'
         if (data.club_level == 1 || data.club_level > 10) {
-            dur = i18nMgr.Get('UILevelForever') :
+            dur = i18nMgr.Get('UILevelForever');
         }
         node.getChildByName('levelNum').getComponent(cc.Label).string = `Level ${data.club_level}(${dur})`
         node.getChildByName('peopleNum').getComponent(cc.Label).string = data.user_num + ' People'

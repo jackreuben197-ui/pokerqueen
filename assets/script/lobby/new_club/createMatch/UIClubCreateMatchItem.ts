@@ -81,8 +81,8 @@ export default class UIClubCreateMatchItem extends UIBase {
         let sb = this._data.sb / 100;
         this.labelNode.getChildByName('lbl_1').getComponent(cc.Label).string = `${sb}/${sb * 2}（${this._data.ante}）`
         let lbl_time = this.labelNode.getChildByName('lbl_2')
-        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = StringHelper.LengthNick(this._data.name, 10)
-        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label)._forceUpdateRenderData()
+        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = StringHelper.LengthNick(this._data.name, 10);
+        (this.labelNode.getChildByName('lbl_4').getComponent(cc.Label) as any)._forceUpdateRenderData()
 
         let playView = lbl_time.getComponent(PlayViewItem)
         playView.updateNormalItem(this._data.play_duration);

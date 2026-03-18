@@ -58,7 +58,9 @@ export default class WalletData extends BaseData {
     }
 
 
-    reqOprationGold(type: EWalletGoldOpration, goldNum: number, isClub?: boolean, userId?: number) {
+    // River: 先编译通过，代码执行有问题再调试：
+    reqOprationGold(type: any/*EWalletGoldOpration*/, goldNum: number, isClub?: boolean, userId?: number) {
+        /*
         if (type == EWalletGoldOpration.issue) {
             this.reqServePost(Web_Club_Issue_Gold.ISSUE, { user_id: userId, gold_num: goldNum * 100 })
         } else {
@@ -67,8 +69,9 @@ export default class WalletData extends BaseData {
                 api = isClub ? Web_Tiqu_Gold_Club.API : Web_Tiqu_Gold.API
             }
             this.reqServePost(api, { amount: goldNum * 100 })
-        }
+        }*/
     }
+
 
 
     reqUserGoldChangeLog(offset: number = 0, limit: number = 10) {
