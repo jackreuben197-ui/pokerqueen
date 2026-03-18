@@ -302,6 +302,15 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UIDialogComponent",
     },
+    /**
+     * 自适应内容对话框(不再提示)
+     */
+    UIDialogContentSizeLimit: {
+        UIType: UIType.Dialog,
+        Name: "UIDialogContentSizeLimit",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIDialogContentSizeLimit",
+    },
 
     /**
     * 确认取消 弹窗面板(默认触摸全屏可关闭)

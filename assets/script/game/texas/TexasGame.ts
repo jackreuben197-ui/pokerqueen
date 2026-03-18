@@ -33,6 +33,7 @@ import LobbySession from "../../session/LobbySession";
 import StorageKey from "../../session/StorageKey";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIDialogComponent from "../../ui/dialog/UIDialogComponent";
+import UIDialogContentSizeLimit from "../../ui/dialog/UIDialogContentSizeLimit";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import TexasGameMessageHandler from "../messageHandler/TexasGameMessageHandler";
@@ -927,6 +928,7 @@ export default class TexasGame {
             { name: "ReqDiamondConfig_8", func: this.ReqDiamondConfig_8 },
         ];
         this.RunRoomReqlist();
+        this.ShowCriticalInfo();
     }
 
     //奔跑请求队列
@@ -1176,6 +1178,66 @@ export default class TexasGame {
         const cur = this.isCriticalHitOpen ? 0 : (this.curCriticalHitRound + 1);
         info += `\n${i18nMgr.Get("UIHitGamePlayOpen")}:${cur}/${this.criticalHitRound}`;
         return info;
+    }
+
+    public ShowCriticalInfo(): void {
+        const criticalHitKey = "CriticalHit";
+        const mushroomKey = "Mushroom";
+        const canShowMushroom = () => this.mushroomEnabled && UIDialogContentSizeLimit.IsOverDayLastUpload(mushroomKey);
+
+        if (this.criticalHitEnabled && UIDialogContentSizeLimit.IsOverDayLastUpload(criticalHitKey)) {
+            const anteValue = this.subGamePlayAnte / 100;
+            const anteBB = this.smallBlind > 0 ? (this.subGamePlayAnte / 2 / this.smallBlind) : 0;
+            const content = `${anteValue}(${anteBB}BB)`;
+            const color = "#FFC706";
+            const popupContent = StringHelper.Format(i18nMgr.Get("UICriticalHit_StartGameTips"), [
+                StringHelper.GetColorText(`${this.criticalHitRound}`, color),
+            ]) + StringHelper.GetColorText(content, color);
+
+            const showMushroomNext = (noPrompt?: boolean) => {
+                void noPrompt;
+                if (!canShowMushroom()) return;
+                this.ShowMushroomInfo(mushroomKey);
+            };
+
+            UIComponent.open(UIDefine.UIDialogContentSizeLimit, {
+                type: UIDialogContentSizeLimit.DialogType.Commit,
+                title: "",
+                showTitleBg: false,
+                contentCommit: i18nMgr.Get("adaptation10012"),
+                content: popupContent,
+                isCenter: true,
+                promptKey: criticalHitKey,
+                noAnimation: true,
+                actionClose: showMushroomNext,
+                actionCancel: showMushroomNext,
+                actionCommit: showMushroomNext,
+            });
+            return;
+        }
+
+        if (canShowMushroom()) {
+            this.ShowMushroomInfo(mushroomKey);
+        }
+    }
+
+    private ShowMushroomInfo(promptKey: string): void {
+        // 延后一帧打开，避免与当前同类弹窗的关闭操作冲突
+        setTimeout(() => {
+            const color = "#FFC706";
+            const content = StringHelper.Format(i18nMgr.Get("UIMushroom_StartGameTips"), [
+                StringHelper.GetColorText(StringHelper.GetLongString(this.mushroomBase), color),
+            ]);
+            UIComponent.open(UIDefine.UIDialogContentSizeLimit, {
+                type: UIDialogContentSizeLimit.DialogType.Commit,
+                showTitleBg: false,
+                contentCommit: i18nMgr.Get("adaptation10012"),
+                content: content,
+                isCenter: true,
+                promptKey: promptKey,
+                noAnimation: true,
+            });
+        }, 0);
     }
 
     /** 刷新座位鱿鱼标记 */
