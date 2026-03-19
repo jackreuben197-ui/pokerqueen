@@ -5,6 +5,7 @@ import { Def } from "../../protobuf/holdem/define_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
 import { ServerMessageWinner } from "../../protobuf/holdem/recv_th_winner_pb";
 import { UIDefine } from "../../define/UIDefine";
+import UIDialogSquid from "../../ui/dialog/UIDialogSquid";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
 import UIComponent from "../../ui/UIComponent";
 import { CPlayer } from "../CPlayer";
@@ -23,6 +24,7 @@ interface TexasGameSquidHost {
     squidCurrentRound: number;
     squidOpenNumber: number;
     squidDeposit: number;
+    squidExtraCount: number;
     squidCountRates: { count: number, rate: number }[];
     isGameInSquidRound: boolean;
     listSeat: any[];
@@ -65,13 +67,30 @@ export default class TexasGameSquid {
         this.host.squidCurrentRound = (rec.handInfo as any)?.conRounds || 0;
         this.host.squidOpenNumber = entryAny.room_squid_open_number || 0;
         this.host.squidDeposit = roomInfoAny.deposit || 0;
-        this.host.squidCountRates = (roomInfoAny.squidCountRateList || [])
-            .map(cfg => ({ count: Number(cfg.count || 0), rate: Number(cfg.rate || 0) }))
+        this.host.squidExtraCount = Number(entryAny.room_squid_extra_count || roomInfoAny.squidExtraCount || roomInfoAny.squid_extra_count || 0);
+        this.host.squidCountRates = (entryAny.room_squid_count_rate || [])
+            .map((cfg: any) => ({ count: Number(cfg?.count || 0), rate: Number(cfg?.rate || 0) }))
+            .filter(cfg => cfg.count > 0 && cfg.rate > 0)
             .sort((a, b) => a.count - b.count);
         this.host.isGameInSquidRound = (rec.handInfo as any).inSquid || false;
         this.host.squidEnabled = this.host.squidBase > 0 || this.host.isGameInSquidRound || (entryAny.room_squid_on || 0) > 0;
         this.RefreshJoinSwitch();
         this.RefreshStandUpBtn();
+    }
+
+    public TryShowGuideDialog(): void {
+        if (!this.host.squidEnabled) return;
+        if (!UIDialogSquid.IsOverDayLastUpload()) return;
+        UIComponent.open(UIDefine.UIDialogSquid, {
+            squidMode: this.host.squidMode,
+            squidBase: this.host.squidBase,
+            squidHead: this.host.squidHead,
+            squidTail: this.host.squidTail,
+            squidExtraCount: this.host.squidExtraCount,
+            squidCountRates: this.host.squidCountRates,
+            seatCount: GameCache.Instance.seat_count,
+            noAnimation: true,
+        });
     }
 
     public ApplyPlayerState(player: CPlayer, playerRec: any, myInfo: any, isMainSeat: boolean): void {
@@ -266,9 +285,11 @@ export default class TexasGameSquid {
         this.host.squidCurrentRound = 0;
         this.host.squidOpenNumber = 0;
         this.host.squidDeposit = 0;
+        this.host.squidExtraCount = 0;
         this.host.squidCountRates = [];
         this.host.isGameInSquidRound = false;
         this.roundEndPopupToken++;
+        UIComponent.close(UIDefine.UIDialogSquid);
         UIComponent.close(UIDefine.UISquidEnd);
         if (this.host.uirc?.RemainingSquidCount) {
             this.host.uirc.RemainingSquidCount.active = false;

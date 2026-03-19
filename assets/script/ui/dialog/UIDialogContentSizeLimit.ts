@@ -120,7 +120,7 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
 
         if (this.NoToggle) {
             this.NoToggle.node.active = !!data.promptKey;
-            this.NoToggle.isChecked = false;
+            this.NoToggle.isChecked = true;
         }
 
         this._actionCommit = data.actionCommit || null;
@@ -248,6 +248,7 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         const data = (this.param || {}) as UIDialogContentSizeLimitParam;
         const promptKey = data?.promptKey || "";
         const noPrompt = !!this.NoToggle?.isChecked;
+        console.log('noPrompt', noPrompt);
 
         if (promptKey) {
             if (noPrompt) {
@@ -274,7 +275,6 @@ export default class UIDialogContentSizeLimit extends BaseTouchBoard {
         if (Number.isNaN(lastUploadTime.getTime())) {
             return true;
         }
-        // return (Date.now() - lastUploadTime.getTime()) >= 24 * 60 * 60 * 1000;
-        return (Date.now() - lastUploadTime.getTime()) >= 60000;
+        return (Date.now() - lastUploadTime.getTime()) >= 24 * 60 * 60 * 1000;
     }
 }

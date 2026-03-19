@@ -146,6 +146,10 @@ export class GameCache {
     public room_squid_max: number = 0;
     /** 大厅入口缓存：鱿鱼开启人数配置 */
     public room_squid_open_number: number = 0;
+    /** 大厅入口缓存：血战鱿鱼额外数量 */
+    public room_squid_extra_count: number = 0;
+    /** 大厅入口缓存：鱿鱼翻倍配置 */
+    public room_squid_count_rate: { count: number, rate: number }[] = [];
     /** 大厅入口缓存：蘑菇开关 */
     public room_mushroom_mode: number = 0;
     /** 大厅入口缓存：蘑菇基础值 */
@@ -394,6 +398,11 @@ export class GameCache {
         GameCache.Instance.room_squid_on =
         room_info.squid_on ?? ((GameCache.Instance.room_squid_base > 0 || GameCache.Instance.room_squid_sub_base > 0) ? 1 : 0);
         GameCache.Instance.room_squid_open_number = sub0?.ppcl || room_info.squid_player_count || 2;
+        GameCache.Instance.room_squid_extra_count = Number(room_info.squid_extra_count || 0);
+        GameCache.Instance.room_squid_count_rate = (room_info.squid_count_rate || [])
+            .map((cfg: any) => ({ count: Number(cfg?.count || 0), rate: Number(cfg?.rate || 0) }))
+            .filter(cfg => cfg.count > 0 && cfg.rate > 0)
+            .sort((a, b) => a.count - b.count);
         GameCache.Instance.room_mushroom_mode = room_info.mushroom_mode || 0;
         GameCache.Instance.room_mushroom_base = room_info.mushroom_base || 0;
         GameCache.Instance.room_critical_hit =
@@ -468,6 +477,8 @@ export interface EnterRoomInfo {
     squid_head?;
     squid_tail?;
     squid_max?;
+    squid_extra_count?;
+    squid_count_rate?: { count?: number, rate?: number }[];
     mushroom_mode?;
     mushroom_base?;
     critical_hit?;

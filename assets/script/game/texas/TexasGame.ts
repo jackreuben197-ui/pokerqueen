@@ -204,6 +204,8 @@ export default class TexasGame {
     public squidOpenNumber: number = 0;
     /** 鱿鱼押金 */
     public squidDeposit: number = 0;
+    /** 鱿鱼额外数量（用于引导页奖励列表） */
+    public squidExtraCount: number = 0;
     /** 鱿鱼倍率配置（按鱿鱼数取倍率） */
     public squidCountRates: { count: number, rate: number }[] = [];
     /** 当前是否在鱿鱼轮 */
@@ -1184,6 +1186,15 @@ export default class TexasGame {
         const criticalHitKey = "CriticalHit";
         const mushroomKey = "Mushroom";
         const canShowMushroom = () => this.mushroomEnabled && UIDialogContentSizeLimit.IsOverDayLastUpload(mushroomKey);
+        const showSquidIfNeeded = () => this.squidFeature?.TryShowGuideDialog();
+        const showMushroomOrSquid = (noPrompt?: boolean) => {
+            void noPrompt;
+            if (canShowMushroom()) {
+                this.ShowMushroomInfo(mushroomKey, showSquidIfNeeded);
+                return;
+            }
+            showSquidIfNeeded();
+        };
 
         if (this.criticalHitEnabled && UIDialogContentSizeLimit.IsOverDayLastUpload(criticalHitKey)) {
             const anteValue = this.subGamePlayAnte / 100;
@@ -1194,12 +1205,6 @@ export default class TexasGame {
                 StringHelper.GetColorText(`${this.criticalHitRound}`, color),
             ]) + StringHelper.GetColorText(content, color);
 
-            const showMushroomNext = (noPrompt?: boolean) => {
-                void noPrompt;
-                if (!canShowMushroom()) return;
-                this.ShowMushroomInfo(mushroomKey);
-            };
-
             UIComponent.open(UIDefine.UIDialogContentSizeLimit, {
                 type: UIDialogContentSizeLimit.DialogType.Commit,
                 title: "",
@@ -1209,19 +1214,17 @@ export default class TexasGame {
                 isCenter: true,
                 promptKey: criticalHitKey,
                 noAnimation: true,
-                actionClose: showMushroomNext,
-                actionCancel: showMushroomNext,
-                actionCommit: showMushroomNext,
+                actionClose: showMushroomOrSquid,
+                actionCancel: showMushroomOrSquid,
+                actionCommit: showMushroomOrSquid,
             });
             return;
         }
 
-        if (canShowMushroom()) {
-            this.ShowMushroomInfo(mushroomKey);
-        }
+        showMushroomOrSquid();
     }
 
-    private ShowMushroomInfo(promptKey: string): void {
+    private ShowMushroomInfo(promptKey: string, onDone?: () => void): void {
         // 延后一帧打开，避免与当前同类弹窗的关闭操作冲突
         setTimeout(() => {
             const color = "#FFC706";
@@ -1236,6 +1239,9 @@ export default class TexasGame {
                 isCenter: true,
                 promptKey: promptKey,
                 noAnimation: true,
+                actionClose: onDone,
+                actionCancel: onDone,
+                actionCommit: () => onDone?.(),
             });
         }, 0);
     }

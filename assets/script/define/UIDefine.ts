@@ -311,6 +311,15 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UIDialogContentSizeLimit",
     },
+    /**
+     * 鱿鱼玩法引导弹窗
+     */
+    UIDialogSquid: {
+        UIType: UIType.Dialog,
+        Name: "UIDialogSquid",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIDialogSquid",
+    },
 
     /**
     * 确认取消 弹窗面板(默认触摸全屏可关闭)
