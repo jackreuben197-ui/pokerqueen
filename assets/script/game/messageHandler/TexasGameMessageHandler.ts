@@ -213,8 +213,11 @@ export default class TexasGameMessageHandler {
         if (response == null) return;
 
         if (response.status != 0) {
-            UIComponent.Instance.Toast(CPErrorCode.ServerErrorDescription(response.status));
+            console.warn(`Protocol_Holdem_Leave: status = ${response.status}`);
+            return;
         }
+
+        UIComponent.Instance.Toast(i18nMgr.Get(`LeaveReason${Def.LeaveReason.LR_ACTIVE}`));
         this.game.TexasGameUtils.ExitRoom();
 
     }
@@ -280,6 +283,9 @@ export default class TexasGameMessageHandler {
             this.game.HideOperationPanel();
             this.game.HideAutoOperationPanel();
             this.game.HideSeeMorePublic();
+            this.game.callTimeStay = false;
+            this.game.callTimeCount = 0;
+            this.game.ShowCallTime();
             this.game.TexasGameUtils.doStandUp(localSeatID);
         }
         else {

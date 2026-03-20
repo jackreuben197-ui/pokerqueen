@@ -160,6 +160,12 @@ export class GameCache {
     public room_critical_hit_round: number = 0;
     /** 大厅入口缓存：暴击子玩法 ante */
     public room_critical_hit_ante: number = 0;
+    /** 大厅入口缓存：CallTime 开关（1 开，2 关） */
+    public room_call_time: number = 0;
+    /** 大厅入口缓存：CallTime 盈利阈值（BB） */
+    public room_call_time_winline: number = 0;
+    /** 大厅入口缓存：CallTime 连续手数限制 */
+    public room_call_time_count: number = 0;
     /// <summary>
     /// 房间类型 RoomType枚举
     /// </summary>
@@ -411,6 +417,9 @@ export class GameCache {
         room_info.rounds ?? 0;
         GameCache.Instance.room_critical_hit_ante =
         sub0?.ante ?? sub0?.an ?? room_info.sub_game_play_ante ?? 0;
+        GameCache.Instance.room_call_time = Number(room_info.call_time || 0);
+        GameCache.Instance.room_call_time_winline = Number(room_info.call_time_winline || 0);
+        GameCache.Instance.room_call_time_count = Number(room_info.call_time_count || 0);
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;
@@ -482,6 +491,9 @@ export interface EnterRoomInfo {
     mushroom_mode?;
     mushroom_base?;
     critical_hit?;
+    call_time?;
+    call_time_winline?;
+    call_time_count?;
     sub_game_play_ante?;
     rounds?;
     sub_configs?;

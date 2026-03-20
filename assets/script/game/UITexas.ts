@@ -110,6 +110,8 @@ export default class UITexas extends BaseScene {
     SquidStartAnim: cc.Animation = null;
     CriticalHitStart: cc.Node = null;
     CriticalHitStartAnim: cc.Animation = null;
+    callTimeArea: cc.Node = null;
+    callTimeDes: cc.Label = null;
 
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
@@ -292,6 +294,11 @@ export default class UITexas extends BaseScene {
         if (this.CriticalHitStart) {
             this.CriticalHitStart.active = false;
             this.CriticalHitStartAnim?.stop();
+        }
+        this.callTimeArea = this.main?.getChildByName("callTimeArea");
+        this.callTimeDes = this.callTimeArea?.getChildByName("callTimeDes")?.getComponent(cc.Label) || null;
+        if (this.callTimeArea) {
+            this.callTimeArea.active = false;
         }
 
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);

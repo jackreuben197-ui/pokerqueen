@@ -220,6 +220,16 @@ export default class TexasGame {
     public curCriticalHitRound: number = 0;
     /** 本轮是否暴击开启 */
     public isCriticalHitOpen: boolean = false;
+    /** CallTime 开关（1 开，2 关） */
+    public callTime: number = 0;
+    /** CallTime 盈利阈值（BB） */
+    public callTimeWinline: number = 0;
+    /** CallTime 连续手数限制 */
+    public callTimeLimitCount: number = 0;
+    /** CallTime 当前连续手数 */
+    public callTimeCount: number = 0;
+    /** 是否触发 CallTime 限制 */
+    public callTimeStay: boolean = false;
     /// <summary>
     /// 当前最小带入倍数
     /// </summary>
@@ -678,6 +688,14 @@ export default class TexasGame {
         this.mushroomFeature.UpdateRoomConfig(rec);
         this.squidFeature.UpdateRoomConfig(rec);
         this.UpdateCriticalHitConfig(rec);
+        this.callTime = Number(GameCache.Instance.room_call_time || 0);
+        this.callTimeWinline = Number(GameCache.Instance.room_call_time_winline || 0);
+        this.callTimeLimitCount = Number(GameCache.Instance.room_call_time_count || 0);
+        this.callTimeCount = Number((rec.roomInfo as any).callTimeCount || 0);
+        this.callTimeStay = !!(rec.myInfo as any)?.callTimeStay;
+        if (rec.myInfo != null) {
+            this.callTimeCount = Number((rec.myInfo as any).callTimeCount || this.callTimeCount || 0);
+        }
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
@@ -1138,8 +1156,29 @@ export default class TexasGame {
         info += this.mushroomFeature.BuildRoomDesc();
         info += this.squidFeature.BuildRoomDesc();
         info += this.BuildCriticalHitRoomDesc();
+        if (this.callTime == 1) {
+            info += `\nCallTime:${i18nMgr.Get("UIClub_GainNum")}${this.callTimeWinline}BB ${this.callTimeLimitCount}${i18nMgr.Get("UIMine_RecordDetailForNormal_ss")}`;
+        }
         info += "\n\n";
         this.uirc.textRoomInfo.string = info;
+        this.ShowCallTime();
+    }
+
+    public ShowCallTime(): void {
+        if (!this.uirc?.callTimeArea) {
+            return;
+        }
+        if (this.callTime == 1 && this.callTimeStay) {
+            this.uirc.callTimeArea.active = true;
+            if (this.uirc.callTimeDes) {
+                this.uirc.callTimeDes.string = `Profit ${this.callTimeWinline}BB ${this.callTimeCount}/${this.callTimeLimitCount} hands`;
+            }
+        } else {
+            this.uirc.callTimeArea.active = false;
+            if (this.uirc.callTimeDes) {
+                this.uirc.callTimeDes.string = "";
+            }
+        }
     }
 
     private UpdateCriticalHitConfig(rec: ServerMessageEnterRoom.AsObject): void {
@@ -3253,8 +3292,14 @@ export default class TexasGame {
         this.criticalHitRound = 0;
         this.curCriticalHitRound = 0;
         this.isCriticalHitOpen = false;
+        this.callTime = 0;
+        this.callTimeWinline = 0;
+        this.callTimeLimitCount = 0;
+        this.callTimeCount = 0;
+        this.callTimeStay = false;
         this.mushroomFeature.ResetState();
         this.squidFeature.ResetState();
+        this.ShowCallTime();
         // 座位蘑菇标识隐藏
         if (this.listSeat) {
             this.listSeat.forEach(seat => {
@@ -3375,6 +3420,39 @@ export default class TexasGame {
         this.uirc.HideMenu(false);
 
         if (this.mainPlayer?.isPlaying) {
+            let content = CPErrorCode.LanguageDescription(20003);
+            let commit = CPErrorCode.LanguageDescription(10012);
+            let cancel = CPErrorCode.LanguageDescription(10013);
+            if (this.callTime == 1 && this.callTimeStay) {
+                content = StringHelper.Format(i18nMgr.Get("UICallTimeQuitRoom"), [
+                    this.callTimeWinline,
+                    this.callTimeLimitCount,
+                    this.callTimeWinline
+                ]);
+                commit = i18nMgr.Get("UITexas_LeaveTheTable");
+            } else if (this.squidEnabled && this.isGameInSquidRound && this.mainPlayer.inSquid) {
+                if (this.squidMode == 0) {
+                    if (this.mainPlayer.squidCount == 0) {
+                        content = i18nMgr.Get("UISquid_Tips4");
+                        commit = i18nMgr.Get("UILeave");
+                        cancel = i18nMgr.Get("UIPause_sdXLZk7S");
+                    } else {
+                        content = i18nMgr.Get("UIDelayLeaveTips");
+                        commit = i18nMgr.Get("UILeave");
+                        cancel = i18nMgr.Get("UIPause_sdXLZk7S");
+                    }
+                } else if (this.squidMode == 1) {
+                    if (this.mainPlayer.squidCount == 0) {
+                        content = i18nMgr.Get("UISquid_Tips3");
+                        commit = CPErrorCode.LanguageDescription(10012);
+                        cancel = CPErrorCode.LanguageDescription(10013);
+                    } else {
+                        content = i18nMgr.Get("UIDelayLeaveTips");
+                        commit = i18nMgr.Get("UILeave");
+                        cancel = i18nMgr.Get("UIPause_sdXLZk7S");
+                    }
+                }
+            }
 
             // UIComponent.Instance.OpenNoAnimation(UIDefine.UIDialogComponent,
             //     {
@@ -3394,9 +3472,9 @@ export default class TexasGame {
                 this: this,
                 //title: i18nMgr.Get("WalletServiceCharge_eeydpBno"),
                 //"退出游戏，在这手牌结束后将自动站起",
-                content: CPErrorCode.LanguageDescription(20003),
-                commit: CPErrorCode.LanguageDescription(10012),
-                cancel: CPErrorCode.LanguageDescription(10013),
+                content: content,
+                commit: commit,
+                cancel: cancel,
                 commit_click: this.CallbackExit,
             });
 

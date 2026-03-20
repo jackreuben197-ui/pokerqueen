@@ -1560,11 +1560,14 @@ export default class TexasGameProtocol {
                 continue;
 
             if (mSeat.IsMySeat) {
+                this.game.callTimeCount = Number((rec.resultsList[i] as any).callTimeCount || 0);
+                this.game.callTimeStay = !!(rec.resultsList[i] as any).callTimeStay;
                 if (!rec.resultsList[i].standUp) {
                     this.game.ShowSeeMorePublic();
                 }
             }
         }
+        this.game.ShowCallTime();
         this.game.ClearSeatBubble(true);
         this.game.SetPublicCardInfosId();
         this.game.MessageWinnerData = rec;
