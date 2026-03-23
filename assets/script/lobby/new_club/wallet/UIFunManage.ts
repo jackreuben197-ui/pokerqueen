@@ -7,8 +7,8 @@ import { UIDefine } from "../../../define/UIDefine";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { WWW } from "../../../net/https/WebRequest";
-import { APIOrgMemberList } from "../../../net/https/WebRequest";
+import { WebWww } from "../../../net/https/WebRequest";
+import { WebOrgMemberList } from "../../../net/https/WebRequest";
 import UIComponent from "../../../ui/UIComponent";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import FunMemberItem from "./FunMemberItem";
@@ -148,9 +148,9 @@ export default class UIFunManage extends BaseFormPlus {
 
     private reqMemberList(offset: number = 0) {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: APIOrgMemberList,
+                web_class: WebOrgMemberList,
                 body: {
                     club_random_id: this.data.random_id,
                     club_id: this.data.club_id,

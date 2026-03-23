@@ -7,7 +7,7 @@ import { HistoryInfoData } from "../../../game/UITexasHistoryComponent";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
-import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
+import { WebStatsUserStats } from "../../../net/https/WebRequest";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
@@ -149,7 +149,7 @@ export default class UICollectScore extends BaseForm {
                     contentCommit: "确定",
                     contentCancel: "取消",
                     actionCommit: () => {
-                        UIClubModel.mInstance.APIOrgSendMess(
+                        UIClubModel.mInstance.WebOrgSendMess(
                             {
                                 "content": JSON.stringify(e),
                                 "message_type": 4,

@@ -1,7 +1,7 @@
 
 import GC from "../frame/GameControl";
 import HttpRequest from "../net/https/HttpRequest";
-import { APIOrgFriendBringIn, Web_Stats_Other_User_Stats, Web_User_Info, Web_User_Room, Web_User_Room_Settle_Detail } from "../net/https/WebRequest";
+import { WebOrgFriendBringIn, WebStatsOtherUserStats, WebUserInfo, WebUserRoom, WebUserRoomSettleDetail } from "../net/https/WebRequest";
 import { GameCache } from "./GameCache";
 
 export class UITexasModel {
@@ -19,13 +19,13 @@ export class UITexasModel {
     public APIUserRoom() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_User_Room.API.replace("{id}", GameCache.Instance.room_id.toString()),
-                request: Web_User_Room,
+                api: WebUserRoom.API.replace("{id}", GameCache.Instance.room_id.toString()),
+                request: WebUserRoom,
                 onSuccess: function () {
-                    // if (Web_User_Room.Response.code == 0) {
-                    //     GameCache.Instance.gold = Web_User_Room.Response.data.wallet.gold;
+                    // if (WebUserRoom.Response.code == 0) {
+                    //     GameCache.Instance.gold = WebUserRoom.Response.data.wallet.gold;
                     // }
-                    resolve(Web_User_Room.Response);
+                    resolve(WebUserRoom.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -41,10 +41,10 @@ export class UITexasModel {
     public APIUserRoomSettleDetail(roomId: string) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_User_Room_Settle_Detail.API.replace("{id}", roomId),
-                request: Web_User_Room_Settle_Detail,
+                api: WebUserRoomSettleDetail.API.replace("{id}", roomId),
+                request: WebUserRoomSettleDetail,
                 onSuccess: function () {
-                    resolve(Web_User_Room_Settle_Detail.Response);
+                    resolve(WebUserRoomSettleDetail.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -58,11 +58,11 @@ export class UITexasModel {
     public getOtherUserStats(user_id) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_Stats_Other_User_Stats.API.replace("{id}", user_id.toString()),
-                body: Web_Stats_Other_User_Stats.Request(user_id),
-                request: Web_Stats_Other_User_Stats,
+                api: WebStatsOtherUserStats.API.replace("{id}", user_id.toString()),
+                body: WebStatsOtherUserStats.Request(user_id),
+                request: WebStatsOtherUserStats,
                 onSuccess: function () {
-                    resolve(Web_Stats_Other_User_Stats.Response);
+                    resolve(WebStatsOtherUserStats.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -75,7 +75,7 @@ export class UITexasModel {
 
         let gold = 0;
 
-        let wallet = Web_User_Room.Response?.data?.wallet;
+        let wallet = WebUserRoom.Response?.data?.wallet;
 
         if (wallet?.length) {
             for (let item of wallet) {

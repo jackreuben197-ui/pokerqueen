@@ -1,4 +1,4 @@
-import { WWW, Web_Share_usable } from "../net/https/WebRequest";
+import { WebWww, WebShareUsable } from "../net/https/WebRequest";
 
 export default class UIShareModel {
     public static get Instance(): UIShareModel {
@@ -16,9 +16,9 @@ export default class UIShareModel {
 
     public APIShareUsable(entry_type: number, callback: Function) {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Share_usable,
+                web_class: WebShareUsable,
                 body: { entry_type: entry_type }
             }
         ).then(

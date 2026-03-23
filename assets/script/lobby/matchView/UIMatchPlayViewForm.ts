@@ -5,7 +5,7 @@ import { GameCache } from "../../game/GameCache";
 import { GameType } from "../../game/util/GameUtil";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
-import { Web_User_Info } from "../../net/https/WebRequest";
+import { WebUserInfo } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -95,7 +95,7 @@ export default class UIMatchPlayViewForm extends BaseForm {
 
     refreshUserName() {
         let lbl_nickname = this.getChildNodeOrComponent("Text_LeftTop", cc.Label);
-        lbl_nickname.string = StringHelper.LengthNick(Web_User_Info.Response.data.user.nickname);
+        lbl_nickname.string = StringHelper.LengthNick(WebUserInfo.Response.data.user.nickname);
     }
 
     private initTopUI(): void {

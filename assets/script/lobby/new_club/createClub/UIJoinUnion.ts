@@ -9,7 +9,7 @@
 
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { Web_Org_Club_Get, APIOrgTribeSearchByID, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, APIOrgClubApplyTribeList } from "../../../net/https/WebRequest";
+import { WebOrgClubGet, WebOrgTribeSearchById, WebOrgClubPlayerApplyList, WebOrgClubSearchById, WebOrgClubApplyTribeList } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -105,7 +105,7 @@ export default class UIJoinUnion extends BaseForm {
     async initApplyList(club_id: number = -1) {
         this.contentList.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubPlayerApplyList()
-        let data: any = Web_Org_Club_Player_Apply_List.Response.data
+        let data: any = WebOrgClubPlayerApplyList.Response.data
         this.noDataTip.active = data?.items.length == 0;
         let apply_join: boolean = false;
         for (let index = 0; index < data?.items?.length; index++) {
@@ -116,7 +116,7 @@ export default class UIJoinUnion extends BaseForm {
                 apply_join = true;
             }
             this.initItem(item, element, async () => {
-                await UIClubModel.mInstance.APIOrgClubCancleJoinClub(element.id);
+                await UIClubModel.mInstance.WebOrgClubCancleJoinClub(element.id);
                 item.active = false;
             }, index);
         }
@@ -125,15 +125,15 @@ export default class UIJoinUnion extends BaseForm {
     }
     async initUnionList() {
         this.contentList.removeAllChildren();
-        await UIClubModel.mInstance.APIOrgClubApplyTribeList({ club_id: ClubCache.club_id })
-        let data: any = APIOrgClubApplyTribeList.Response.data
+        await UIClubModel.mInstance.WebOrgClubApplyTribeList({ club_id: ClubCache.club_id })
+        let data: any = WebOrgClubApplyTribeList.Response.data
         this.noDataTip.active = data?.list.length == 0
         for (let index = 0; index < data?.list?.length; index++) {
             const element = data?.list[index];
             let item = cc.instantiate(this.joinNode);
             item.parent = this.contentList;
             this.initItem(item, element, async () => {
-                await UIClubModel.mInstance.APIOrgClubCancleJoinTribe({ apply_id: element.id });
+                await UIClubModel.mInstance.WebOrgClubCancleJoinTribe({ apply_id: element.id });
                 item.active = false;
 
             }, index)
@@ -228,13 +228,13 @@ export default class UIJoinUnion extends BaseForm {
 
         if (this.type == 0) {
             await UIClubModel.mInstance.APIOrgClubSearchByID(Number(this.tempString));
-            let data: any = Web_Org_Club_Search_By_Id.Response.data
+            let data: any = WebOrgClubSearchById.Response.data
             if (data) {
                 UIComponent.open(UIDefine.UISearchJoin, { data: data, type: this.type })
             }
         } else {
-            await UIClubModel.mInstance.APIOrgTribeSearchByID(Number(this.tempString));
-            let data: any = APIOrgTribeSearchByID.Response.data
+            await UIClubModel.mInstance.WebOrgTribeSearchById(Number(this.tempString));
+            let data: any = WebOrgTribeSearchById.Response.data
             if (data) {
                 UIComponent.open(UIDefine.UISearchJoin, { data: data, type: this.type })
             }

@@ -8,7 +8,7 @@ import LocalStoreManager from "../frame/manager/LocalStoreManager";
 import TokenRefreshComponent from "../funcomponent/TokenRefreshComponent";
 import { GameCache } from "../game/GameCache";
 import HttpRequest from "../net/https/HttpRequest";
-import { APIBindThrid, APIBindPhone, APIBindEmail, APIGetBlindStatus, APIEmailExist, APISendEmailCode, Web_Channel, Web_Login, Web_Login_Third_Party, Web_Refresh_Token, Web_User_Check_Phone, Web_User_Info, Web_User_Modify_Password, Web_User_Register, Web_User_Send_Code, Web_WS } from "../net/https/WebRequest";
+import { WebBindThrid, WebBindPhone, WebBindEmail, WebGetBlindStatus, WebEmailExist, WebSendEmailCode, WebChannel, WebLogin, WebLoginThirdParty, WebRefreshToken, WebUserCheckPhone, WebUserInfo, WebUserModifyPassword, WebUserRegister, WebUserSendCode, WebWs } from "../net/https/WebRequest";
 import WebSocketClient from "../net/websocket/WebSocketClient";
 import GlobalSession from "./GlobalSession";
 import StorageKey from "./StorageKey";
@@ -35,16 +35,16 @@ export default class LoginSession {
     /**
      * 登录请求
      */
-    static async Login(param: typeof Web_Login.RequestParams) {
+    static async Login(param: typeof WebLogin.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Login,
-                body: Web_Login.Request(param),
+                request: WebLogin,
+                body: WebLogin.Request(param),
                 onSuccess: function () {
-                    this.Token = Web_Login.Response.data.token;
-                    this.TokenExpireAt = Web_Login.Response.data.expire_at;
+                    this.Token = WebLogin.Response.data.token;
+                    this.TokenExpireAt = WebLogin.Response.data.expire_at;
                     this.Phone = param.phone;
-                    resolve(Web_Login.Response);
+                    resolve(WebLogin.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     this.Phone = param.phone;
@@ -58,12 +58,12 @@ export default class LoginSession {
         console.log('WebLoginThirdParty=====', param)
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Login_Third_Party,
-                body: Web_Login_Third_Party.Request(param),
+                request: WebLoginThirdParty,
+                body: WebLoginThirdParty.Request(param),
                 onSuccess: function () {
-                    this.Token = Web_Login_Third_Party.Response.data.token;
-                    this.TokenExpireAt = Web_Login_Third_Party.Response.data.expire_at;
-                    resolve(Web_Login_Third_Party.Response);
+                    this.Token = WebLoginThirdParty.Response.data.token;
+                    this.TokenExpireAt = WebLoginThirdParty.Response.data.expire_at;
+                    resolve(WebLoginThirdParty.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -77,13 +77,13 @@ export default class LoginSession {
     static async SyncRefreshToken() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Refresh_Token,
+                request: WebRefreshToken,
                 onSuccess: function () {
-                    let token = Web_Login.Response.data?.token;
+                    let token = WebLogin.Response.data?.token;
                     if (token) {
-                        this.Token = Web_Login.Response.data.token;
-                        this.TokenExpireAt = Web_Login.Response.data.expire_at;
-                        resolve(Web_Refresh_Token.Response);
+                        this.Token = WebLogin.Response.data.token;
+                        this.TokenExpireAt = WebLogin.Response.data.expire_at;
+                        resolve(WebRefreshToken.Response);
                     } else {
                         this.Token = null;
                         reject(0);
@@ -102,9 +102,9 @@ export default class LoginSession {
     static async SyncChannel() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Channel,
+                request: WebChannel,
                 onSuccess: function () {
-                    resolve(Web_Channel.Response);
+                    resolve(WebChannel.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -118,10 +118,10 @@ export default class LoginSession {
     static async SyncWS() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_WS,
+                request: WebWs,
                 onSuccess: function () {
-                    resolve(Web_WS.Response);
-                    WebSocketClient.SetPort(Web_WS.Response?.data?.port);
+                    resolve(WebWs.Response);
+                    WebSocketClient.SetPort(WebWs.Response?.data?.port);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -133,13 +133,13 @@ export default class LoginSession {
     /**
      * 用户手机号注册
      */
-    static async APISendRegister(param: typeof Web_User_Register.RequestParams) {
+    static async APISendRegister(param: typeof WebUserRegister.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_User_Register,
-                body: Web_User_Register.Request(param),
+                request: WebUserRegister,
+                body: WebUserRegister.Request(param),
                 onSuccess: function () {
-                    resolve(Web_User_Register.Response);
+                    resolve(WebUserRegister.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -150,13 +150,13 @@ export default class LoginSession {
     /**
      * 验证手机号
      */
-    static async APIPHoneExist(param: typeof Web_User_Check_Phone.RequestParams) {
+    static async APIPHoneExist(param: typeof WebUserCheckPhone.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_User_Check_Phone,
-                body: Web_User_Check_Phone.Request(param),
+                request: WebUserCheckPhone,
+                body: WebUserCheckPhone.Request(param),
                 onSuccess: function () {
-                    resolve(Web_User_Check_Phone.Response);
+                    resolve(WebUserCheckPhone.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -167,13 +167,13 @@ export default class LoginSession {
     /**
    * 验证手机号
    */
-    static async APIEmailExist(param: typeof APIEmailExist.RequestParams) {
+    static async WebEmailExist(param: typeof WebEmailExist.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIEmailExist,
-                body: APIEmailExist.Request(param),
+                request: WebEmailExist,
+                body: WebEmailExist.Request(param),
                 onSuccess: function () {
-                    resolve(APIEmailExist.Response);
+                    resolve(WebEmailExist.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -184,13 +184,13 @@ export default class LoginSession {
     /**
      * 获取验证码
      */
-    static async APISendCode(param: typeof Web_User_Send_Code.RequestParams) {
+    static async APISendCode(param: typeof WebUserSendCode.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_User_Send_Code,
-                body: Web_User_Send_Code.Request(param),
+                request: WebUserSendCode,
+                body: WebUserSendCode.Request(param),
                 onSuccess: function () {
-                    resolve(Web_User_Send_Code.Response);
+                    resolve(WebUserSendCode.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -203,13 +203,13 @@ export default class LoginSession {
      * @param param 
      * @returns 
      */
-    static async APISendModifyPW(param: typeof Web_User_Modify_Password.RequestParams) {
+    static async APISendModifyPW(param: typeof WebUserModifyPassword.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_User_Modify_Password,
-                body: Web_User_Modify_Password.Request(param),
+                request: WebUserModifyPassword,
+                body: WebUserModifyPassword.Request(param),
                 onSuccess: function () {
-                    resolve(Web_User_Modify_Password.Response);
+                    resolve(WebUserModifyPassword.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -288,13 +288,13 @@ export default class LoginSession {
     /**
          * 获取验证码
          */
-    static async APISendEmailCode(param: typeof APISendEmailCode.RequestParams) {
+    static async WebSendEmailCode(param: typeof WebSendEmailCode.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APISendEmailCode,
-                body: APISendEmailCode.Request(param),
+                request: WebSendEmailCode,
+                body: WebSendEmailCode.Request(param),
                 onSuccess: function () {
-                    resolve(APISendEmailCode.Response);
+                    resolve(WebSendEmailCode.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -306,13 +306,13 @@ export default class LoginSession {
     /**
     * 获取绑定信息
     */
-    static async APIGetBlindStatus() {
+    static async WebGetBlindStatus() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIGetBlindStatus,
-                body: APIGetBlindStatus.Request({}),
+                request: WebGetBlindStatus,
+                body: WebGetBlindStatus.Request({}),
                 onSuccess: function () {
-                    resolve(APIGetBlindStatus.Response);
+                    resolve(WebGetBlindStatus.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -323,14 +323,14 @@ export default class LoginSession {
     /**
    * 绑定Email
    */
-    static async APIBindEmail(param: typeof APIBindEmail.RequestParams) {
+    static async WebBindEmail(param: typeof WebBindEmail.RequestParams) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIBindEmail,
-                body: APIBindEmail.Request(param),
+                request: WebBindEmail,
+                body: WebBindEmail.Request(param),
                 onSuccess: function () {
-                    resolve(APIBindEmail.Response);
+                    resolve(WebBindEmail.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -341,13 +341,13 @@ export default class LoginSession {
     /**
        * 绑定Phone
        */
-    static async APIBindPhone(param: typeof APIBindPhone.RequestParams) {
+    static async WebBindPhone(param: typeof WebBindPhone.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIBindPhone,
-                body: APIBindPhone.Request(param),
+                request: WebBindPhone,
+                body: WebBindPhone.Request(param),
                 onSuccess: function () {
-                    resolve(APIBindPhone.Response);
+                    resolve(WebBindPhone.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -358,13 +358,13 @@ export default class LoginSession {
     /**
        * 绑定Phone
        */
-    static async APIBindThrid(param) {
+    static async WebBindThrid(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIBindThrid,
-                body: APIBindThrid.Request(param),
+                request: WebBindThrid,
+                body: WebBindThrid.Request(param),
                 onSuccess: function () {
-                    resolve(APIBindThrid.Response);
+                    resolve(WebBindThrid.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

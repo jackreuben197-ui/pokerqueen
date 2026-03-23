@@ -14,7 +14,7 @@ import GC from "../../../frame/GameControl";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import SceneManager from "../../../manager/SceneManager";
-import { Web_Org_Club_Search_By_Id } from "../../../net/https/WebRequest";
+import { WebOrgClubSearchById } from "../../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
@@ -74,7 +74,7 @@ export default class clubPageItem extends UIBase {
     async onClickItem(event) {
         if (this._data) {
             await UIClubModel.mInstance.APIOrgClubSearchByID(this._data.random_id);
-            let data: any = Web_Org_Club_Search_By_Id.Response.data
+            let data: any = WebOrgClubSearchById.Response.data
             ClubCache.setClubData(data);
             // , { SceneUI: SceneManager.Instance.currUI }
             UIComponent.open(UIDefine.UIClubHome, null, { SceneUI: SceneManager.Instance.currUI });

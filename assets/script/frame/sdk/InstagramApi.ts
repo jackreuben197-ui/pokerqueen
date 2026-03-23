@@ -41,7 +41,7 @@ export default class InstagramApi {
                 // this.func({ code: code, source: "instagram", app_source: 3 });
             }
             LoginSession.WebLoginThirdParty({ code: code, source: "instagram", app_source: 3 }).then(() => ProcedureManager.StartProcedure(ProcedureEnum.EnterLobby));
-            LoginSession.APIBindThrid({ code: code, source: "instagram", app_source: 3 })
+            LoginSession.WebBindThrid({ code: code, source: "instagram", app_source: 3 })
         }
     }
 

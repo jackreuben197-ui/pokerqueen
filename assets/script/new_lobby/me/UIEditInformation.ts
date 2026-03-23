@@ -2,7 +2,7 @@ import { UIDefine } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIClubModel } from "../../lobby/labor/UIClubModel";
-import { APIOrgClubUploadIcon, Web_User_Info, Web_User_Modify_User_Info, WWW } from "../../net/https/WebRequest";
+import { WebOrgClubUploadIcon, WebUserInfo, WebUserModifyUserInfo, WebWww } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import BottomSelector from "../../ui/component/BottomSelector";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
@@ -48,24 +48,24 @@ export default class UIEditInformation extends BaseFormPlus {
     }
     //刷新用户信息
     refreshUserInfo() {
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head, Web_User_Info.Response.data.user.avatar);
+        WebImageHelper.SetHeadImage(this.cc_Sprite$head, WebUserInfo.Response.data.user.avatar);
         this.refreshNick();
         this.refreshSex();
     }
 
     refreshNick() {
-        this.cc_Label$name.string = Web_User_Info.Response.data.user.nickname;
+        this.cc_Label$name.string = WebUserInfo.Response.data.user.nickname;
     }
     // 1女 2男
     refreshSex() {
-        console.log("刷新性别,", Web_User_Info.Response.data.user.sex);
-        this.cc_Label$sex.string = i18nMgr.Get(Web_User_Info.Response.data.user.sex == 1 ? "UIMine_UserInfoSetting_Female" : "UIMine_UserInfoSetting_Male");
+        console.log("刷新性别,", WebUserInfo.Response.data.user.sex);
+        this.cc_Label$sex.string = i18nMgr.Get(WebUserInfo.Response.data.user.sex == 1 ? "UIMine_UserInfoSetting_Female" : "UIMine_UserInfoSetting_Male");
     }
     ////////////click////////////
 
     async onHeadClick() {
-        await UIClubModel.mInstance.APIOrgClubUploadIcon();
-        let icon: any = APIOrgClubUploadIcon.Response.data;
+        await UIClubModel.mInstance.WebOrgClubUploadIcon();
+        let icon: any = WebOrgClubUploadIcon.Response.data;
         if (icon) {
             await WebImageHelper.SetUrlImage(this.cc_Sprite$head, icon, null);
             this.reqUserHead(icon);
@@ -89,16 +89,16 @@ export default class UIEditInformation extends BaseFormPlus {
 
     //请求改变性别
     reqChangeSex(sex: number) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_User_Modify_User_Info,
+                web_class: WebUserModifyUserInfo,
                 body: {
                     sex: sex,
                     used_prop_id: 0,
                 }
             }
         ).then(
-            (res: typeof Web_User_Modify_User_Info.Response) => {
+            (res: typeof WebUserModifyUserInfo.Response) => {
                 UIComponent.Instance.ToastLanguage("UIMine_Setting117");
                 this.reqUserInfo();
             },
@@ -109,12 +109,12 @@ export default class UIEditInformation extends BaseFormPlus {
     //请求用户信息，判断剩余修改次数
     reqUserInfo() {
 
-        // WWW.Instance.CommonAPI(
+        // WebWww.Instance.CommonAPI(
         //     {
-        //         web_class: Web_User_Info,
+        //         web_class: WebUserInfo,
         //     }
         // ).then(
-        //     (res: typeof Web_User_Info.Response) => {
+        //     (res: typeof WebUserInfo.Response) => {
         //         this.refreshUserInfo();
         //         UIComponent.Instance.getComponent<UIMe>("UIMe")?.refreshUserInfo();
         //         UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex")?.refreshUserInfo();
@@ -135,15 +135,15 @@ export default class UIEditInformation extends BaseFormPlus {
     //修改头像
     reqUserHead(avatar: string) {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_User_Modify_User_Info,
+                web_class: WebUserModifyUserInfo,
                 body: {
                     avatar: avatar,
                 }
             }
         ).then(
-            (res: typeof Web_User_Info.Response) => {
+            (res: typeof WebUserInfo.Response) => {
                 this.reqUserInfo();
             },
             (res: any) => {

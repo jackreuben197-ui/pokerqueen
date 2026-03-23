@@ -1,6 +1,6 @@
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import WebImageHelper from "../../helper/WebImageHelper";
-import { Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { WebOrgClubGet } from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
 
 const { ccclass, property } = cc._decorator;

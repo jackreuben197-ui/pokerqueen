@@ -5,7 +5,7 @@ import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
 import GameUtil from "../../../game/util/GameUtil";
 import TimeHelper from "../../../helper/TimeHelper";
-import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
+import { WebStatsUserStats } from "../../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";

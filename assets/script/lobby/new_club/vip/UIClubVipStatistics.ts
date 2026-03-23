@@ -6,7 +6,7 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { Web_Club_Agent_Friend_Data, Web_Club_Agent_Friend_Info, Web_GuildDataVipInfo, WWW } from "../../../net/https/WebRequest";
+import { WebClubAgentFriendData, WebClubAgentFriendInfo, WebGuildDataVipInfo, WebWww } from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 //贵宾统计
@@ -141,14 +141,14 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         this.RefreshDetailItem(this.$Detail.getChildByName("Item3"), c);
     }
     ///////////////////////////////////
-    //Web_Club_Agent_Friend_Info
-    //Web_Club_Agent_Friend_Data
+    //WebClubAgentFriendInfo
+    //WebClubAgentFriendData
     //////////////////////////////////////////////请求
     // -> 请求贵宾统计信息
     reqAgentFriendInfo() {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Club_Agent_Friend_Info,
+                web_class: WebClubAgentFriendInfo,
                 body: {
                     "user_id": this._param.user.user_id,
                     "club_id": ClubCache.club_id,
@@ -171,9 +171,9 @@ export default class UIClubVipStatistics extends BaseFormPlus {
     // -> 请求贵宾统计数据
     reqAgentStatistics(filter_index: number = 0) {
         let filter_type = this.Com_Gold_List[filter_index].filter_type;
-        // WWW.Instance.CommonAPI(
+        // WebWww.Instance.CommonAPI(
         //     {
-        //         web_class: Web_Club_Agent_Friend_Data,
+        //         web_class: WebClubAgentFriendData,
         //         body: {
         //             "club_id": ClubCache.club_id,
         //             "user_id": this._param.user.user_id,
@@ -195,9 +195,9 @@ export default class UIClubVipStatistics extends BaseFormPlus {
         //     }
         // )
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_GuildDataVipInfo,
+                web_class: WebGuildDataVipInfo,
                 body: {
                     user_id: this._param.user.user_id,//用户id
                     filter_type: filter_type,// 1 金豆（UC） 2 USDT（GC） 3 记分牌（chip）

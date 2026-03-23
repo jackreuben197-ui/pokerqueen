@@ -126,10 +126,10 @@ export default class UIFriendDataDetail extends BaseForm {
             'offset': this._offset
         }
         if (this._roomType == 1) {
-            _data = await UIClubModel.mInstance.web_api_friend_room_stats_data_detail(parms)
+            _data = await UIClubModel.mInstance.WebFriendRoomStatsDataDetail(parms)
         } else if (this._roomType == 2) {
             parms['match_id'] = this._match_id
-            _data = await UIClubModel.mInstance.web_api_club_data_stats_data_detail(parms)
+            _data = await UIClubModel.mInstance.WebClubDataStatsDataDetail(parms)
 
         }
         this._reqing = false
@@ -162,7 +162,7 @@ export default class UIFriendDataDetail extends BaseForm {
         this.lbl_13.node.active = true
         this.lbl_66.node.active = true
         if (this._roomType == 1) {
-            UIClubModel.mInstance.web_api_friend_room_stats_data_detail_info(parms).then((res: any) => {
+            UIClubModel.mInstance.WebFriendRoomStatsDataDetailInfo(parms).then((res: any) => {
                 this.lbl_4.string = `${StringHelper.getStringDiv100(res.data.info.min_buy_in)}-${StringHelper.getStringDiv100(res.data.info.max_buy_in)}`
                 this.lbl_5.string = `${StringHelper.getStringDiv100(res.data.info.sb)}/${StringHelper.getStringDiv100(res.data.info.sb * 2)}`
                 this.lbl_6.string = res.data.info.fee_ratio / 10 + '%'
@@ -175,7 +175,7 @@ export default class UIFriendDataDetail extends BaseForm {
             })
         } else if (this._roomType == 2) {
             parms['match_id'] = this._match_id
-            UIClubModel.mInstance.web_api_club_data_stats_data_detail_info(parms).then((res: any) => {
+            UIClubModel.mInstance.WebClubDataStatsDataDetailInfo(parms).then((res: any) => {
                 //mtt
                 if (this._match_id > 0) {
                     this.setText(this.lbl_1, 'MTT_List_type')

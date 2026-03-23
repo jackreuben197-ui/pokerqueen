@@ -12,7 +12,7 @@ import { GameCache } from "../game/GameCache";
 import GameUtil from "../game/util/GameUtil";
 import { i18nMgr } from "../i18n/i18nMgr";
 import HttpRequest from "../net/https/HttpRequest";
-import { WWW, Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_GetDiamondConfig, Web_Misc_Banner_List, Web_Msg_Message_Unread, Web_Room_Center_Groups, Web_User_Info, Web_User_Room_insur } from "../net/https/WebRequest";
+import { WebWww, WebConfigGlobalConfig, WebConfigMultiLanguageTemplate, WebGetDiamondConfig, WebMiscBannerList, WebMsgMessageUnread, WebRoomCenterGroups, WebUserInfo, WebUserRoomInsur } from "../net/https/WebRequest";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { ServerMessageRegister } from "../protobuf/holdem/req_register_pb";
 
@@ -72,10 +72,10 @@ export default class LobbySession {
     static APIConfig_Global_Config() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Config_Global_Config,
+                request: WebConfigGlobalConfig,
                 onSuccess: function () {
                     LobbySession.parseGlobalConfig();
-                    resolve(Web_Config_Global_Config.Response);
+                    resolve(WebConfigGlobalConfig.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -89,10 +89,10 @@ export default class LobbySession {
     static APIConfig_Multi_Language_Template(juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Config_Multi_Language_Template,
+                request: WebConfigMultiLanguageTemplate,
                 onSuccess: function () {
                     LobbySession.parseRoomLanguase();
-                    resolve(Web_Config_Multi_Language_Template.Response);
+                    resolve(WebConfigMultiLanguageTemplate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -110,8 +110,8 @@ export default class LobbySession {
     static APIMiscBannerList(type: number, limit: number, offset: number) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Misc_Banner_List,
-                body: Web_Misc_Banner_List.Request(
+                request: WebMiscBannerList,
+                body: WebMiscBannerList.Request(
                     {
                         lang: "en_US",//当前语言
                         type: type,
@@ -120,8 +120,8 @@ export default class LobbySession {
                     }),
                 onSuccess: function () {
                     //TODO 广播刷新
-                    //Web_Misc_Banner_List.Response.data
-                    resolve(Web_Misc_Banner_List.Response);
+                    //WebMiscBannerList.Response.data
+                    resolve(WebMiscBannerList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -136,11 +136,11 @@ export default class LobbySession {
     static RequestListSummary() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Room_Center_Groups,
+                request: WebRoomCenterGroups,
                 onSuccess: function () {
                     //TODO 广播刷新
-                    //Web_Room_Center_Groups.Response.data
-                    resolve(Web_Room_Center_Groups.Response);
+                    //WebRoomCenterGroups.Response.data
+                    resolve(WebRoomCenterGroups.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -155,11 +155,11 @@ export default class LobbySession {
     static APIMsgMessageUnread() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Msg_Message_Unread,
+                request: WebMsgMessageUnread,
                 onSuccess: function () {
                     //TODO 广播刷新
-                    //Web_Msg_Message_Unread.Response.data
-                    resolve(Web_Msg_Message_Unread.Response);
+                    //WebMsgMessageUnread.Response.data
+                    resolve(WebMsgMessageUnread.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -173,20 +173,20 @@ export default class LobbySession {
     static APIWebUserRoominsur(room_id: number) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_User_Room_insur.API.replace("{id}", room_id.toString()),
-                request: Web_User_Room_insur,
+                api: WebUserRoomInsur.API.replace("{id}", room_id.toString()),
+                request: WebUserRoomInsur,
                 onSuccess: function () {
                     //TODO 广播刷新
-                    //Web_User_Room_insur.Response.data
+                    //WebUserRoomInsur.Response.data
                     GameUtil.OutsList.clear();
-                    Web_User_Room_insur.Response.data.forEach(outs => {
+                    WebUserRoomInsur.Response.data.forEach(outs => {
                         let OddsAndOuts: number[] = [];
                         outs.detail.forEach(item => {
                             OddsAndOuts.push(item.odds);
                         });
                         GameUtil.OutsList.set(outs.pot_user_count, OddsAndOuts);
                     });
-                    resolve(Web_User_Room_insur.Response);
+                    resolve(WebUserRoomInsur.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -199,10 +199,10 @@ export default class LobbySession {
     static APIUserInfo() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_User_Info,
+                request: WebUserInfo,
                 onSuccess: function () {
-                    LobbySession.CacheUserInfo(Web_User_Info.Response.data.user);
-                    resolve(Web_User_Info.Response);
+                    LobbySession.CacheUserInfo(WebUserInfo.Response.data.user);
+                    resolve(WebUserInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -212,7 +212,7 @@ export default class LobbySession {
     }
 
     //缓存用户信息
-    public static CacheUserInfo(info: typeof Web_User_Info.UserInfo) {
+    public static CacheUserInfo(info: typeof WebUserInfo.UserInfo) {
 
         GameCache.Instance.nUserId = info.un_id;
         // GameCache.Instance.gold = info.gold;
@@ -239,7 +239,7 @@ export default class LobbySession {
     * 解析开关
     */
     private static parseGlobalConfig() {
-        let data = Web_Config_Global_Config.Response.data;
+        let data = WebConfigGlobalConfig.Response.data;
         LobbySession.Switch.mtt_switch = data.mtt_switch;
         LobbySession.Switch.normal_return_profit_switch = data.normal_return_profit_switch;
         LobbySession.Switch.apple_pay_switch = data.apple_pay_switch;
@@ -252,7 +252,7 @@ export default class LobbySession {
      * 解析房间多语言配置
      */
     private static parseRoomLanguase() {
-        let data = Web_Config_Multi_Language_Template.Response.data;
+        let data = WebConfigMultiLanguageTemplate.Response.data;
         LobbySession.cleanRoomLanguageDic();
         for (let room of data) {
             this.RoomLanguageDic_CN[room.template_id] = room.cn_name;

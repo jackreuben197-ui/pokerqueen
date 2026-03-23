@@ -84,7 +84,7 @@ export default class UIClubRateSet extends BaseForm {
             ClubCache._msg.usdt_to_gold_rate = Number(this.editBox.string)
 
         }
-        await UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, usdt_to_gold_rate: ClubCache.usdt_to_gold_rate, gold_to_usdt_rate: ClubCache.gold_to_usdt_rate })
+        await UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, usdt_to_gold_rate: ClubCache.usdt_to_gold_rate, gold_to_usdt_rate: ClubCache.gold_to_usdt_rate })
         ToastManager.Instance.createToast(i18nMgr.Get("error0"));
     }
 

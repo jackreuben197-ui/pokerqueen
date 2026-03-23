@@ -5,7 +5,7 @@ import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { APIUserDiamondsWallet, WWW, Web_Config_Global_Config } from "../../net/https/WebRequest";
+import { WebUserDiamondsWallet, WebWww, WebConfigGlobalConfig } from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { UISuperDialogType } from "../../ui/dialog/UISuperDialog";
@@ -314,11 +314,11 @@ export default class UIBringIn extends UIBasePlus {
         return `${fee}`;
     }
 
-    private APIUserDiamondsWallet(next?: Function) {
+    private WebUserDiamondsWallet(next?: Function) {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: APIUserDiamondsWallet,
+                web_class: WebUserDiamondsWallet,
             }
         ).then(
             (res: any) => {
@@ -338,17 +338,17 @@ export default class UIBringIn extends UIBasePlus {
         }
 
         this.reqList = [
-            { name: "APIUserDiamondsWallet", func: this.APIUserDiamondsWallet },
+            { name: "WebUserDiamondsWallet", func: this.WebUserDiamondsWallet },
         ];
 
         this.RunReqlist();
 
         if (type == 3)//1 平台，2 联盟，3 公会 4 个人（朋友桌）
         {
-            this.recordFeeData = JSON.parse(Web_Config_Global_Config.Response.data.scoreboard_club_price);
+            this.recordFeeData = JSON.parse(WebConfigGlobalConfig.Response.data.scoreboard_club_price);
         }
         else if (type == 4) {
-            this.recordFeeData = JSON.parse(Web_Config_Global_Config.Response.data.scoreboard_friend_price);
+            this.recordFeeData = JSON.parse(WebConfigGlobalConfig.Response.data.scoreboard_friend_price);
         }
     }
 }

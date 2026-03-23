@@ -10,7 +10,7 @@
 
 import List from "../../common/List";
 import { EventName } from "../../config/EventName";
-import { APIMttUserWallet, Web_Mtt } from "../../net/https/WebRequest";
+import { WebMttUserWallet, WebMtt } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import MttPayforItem from "./MttPayforItem";
 
@@ -51,7 +51,7 @@ export default class MttPayforList extends BaseForm {
     }
     async dealData() {
         this._reqing = true
-        let _data: any = APIMttUserWallet.Response.data
+        let _data: any = WebMttUserWallet.Response.data
         this._reqing = false
         if (!_data.wallet) {
             _data.wallet = [];

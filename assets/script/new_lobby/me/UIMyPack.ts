@@ -1,7 +1,7 @@
 import SimpleNodePool from "../../common/MyNodePool";
 import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_Prop_User_Prop_List, Web_Prop_User_Prop_Used, WWW } from "../../net/https/WebRequest";
+import { WebPropUserPropList, WebPropUserPropUsed, WebWww } from "../../net/https/WebRequest";
 import UIBackDialog from "../../ui/dialog/UIBackDialog";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
@@ -46,9 +46,9 @@ export default class UIMyPack extends BaseFormPlus {
     //11-道具代替劵
     //请求背包列表
     reqPackList() {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Prop_User_Prop_List,
+                web_class: WebPropUserPropList,
                 body: {
                     prop_type: 0,
                     limit: 20,
@@ -92,7 +92,7 @@ export default class UIMyPack extends BaseFormPlus {
         // let item_sc:ItemMall = button.node.getComponent(ItemMall);
         // console.log("购买",item_sc.index);
         let index = button.node["index"];
-        let item_data = Web_Prop_User_Prop_List.Response.data.list[index];
+        let item_data = WebPropUserPropList.Response.data.list[index];
         let dialog_param: typeof UIBackDialog.type = null;
         switch (item_data.prop_type) {
             case 1://门票使用
@@ -163,9 +163,9 @@ export default class UIMyPack extends BaseFormPlus {
 
     }
     reqUsed(item_data: any) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Prop_User_Prop_Used,
+                web_class: WebPropUserPropUsed,
                 body: {
                     prop_id: item_data.prop_id,//道具id
                     type: 0,//"道具类型(type):2-转金豆，3-转平台，4-转IM钱包" 

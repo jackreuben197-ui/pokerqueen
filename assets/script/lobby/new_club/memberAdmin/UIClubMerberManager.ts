@@ -17,7 +17,7 @@ const { ccclass, property, menu } = cc._decorator;
 import BaseForm from "../../../ui/form/BaseForm";
 import ComFormTitle from "../../../common/ComFormTitle";
 import List from "../../../common/List";
-import { APIOrgClubGetJoinlList, APIOrgMemberList, Web_Org_Club_Get } from "../../../net/https/WebRequest";
+import { WebOrgClubGetJoinlList, WebOrgMemberList, WebOrgClubGet } from "../../../net/https/WebRequest";
 import { UIClubModel } from "../../labor/UIClubModel";
 import MemberItem from "./MemberItem";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
@@ -105,7 +105,7 @@ export default class UIClubMerberManager extends BaseForm {
         this.kqmsp_st.clickObj = {
             click: () => {
                 ClubCache._msg.auto_audit_switch = ClubCache.auto_audit_switch == 1 ? 2 : 1
-                UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, auto_audit_switch: ClubCache.auto_audit_switch })
+                UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, auto_audit_switch: ClubCache.auto_audit_switch })
 
             }, self: this
         };
@@ -193,8 +193,8 @@ export default class UIClubMerberManager extends BaseForm {
             "club_id": ClubCache.club_id,
             'search': this._search,
         }
-        await UIClubModel.mInstance.APIOrgMemberList(params);
-        let _data: any = APIOrgMemberList.Response.data
+        await UIClubModel.mInstance.WebOrgMemberList(params);
+        let _data: any = WebOrgMemberList.Response.data
         this._reqing = false
         if (!_data.data) {
             _data.data = [];
@@ -228,7 +228,7 @@ export default class UIClubMerberManager extends BaseForm {
         let sv_content = cc.find('view/sv_content', this.applyList)
         sv_content.removeAllChildren();
         await UIClubModel.mInstance.APIOrgClubGetJoinList(ClubCache.club_id)
-        let data: any = APIOrgClubGetJoinlList.Response.data
+        let data: any = WebOrgClubGetJoinlList.Response.data
         this.applyNode.getChildByName('noDataTip').active = data.length == 0
         for (let index = 0; index < data?.data.length; index++) {
             const element = data?.data[index];

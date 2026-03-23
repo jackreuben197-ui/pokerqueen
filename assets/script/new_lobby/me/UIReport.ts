@@ -1,5 +1,5 @@
 import { UIDefine } from "../../define/UIDefine";
-import { Web_misc_report_feedback_question, WWW } from "../../net/https/WebRequest";
+import { WebMiscReportFeedbackQuestIon, WebWww } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 
@@ -29,9 +29,9 @@ export default class UIReport extends BaseFormPlus {
             UIComponent.Instance.ToastLanguage("UIMine_Setting109");//Toast("请先输入内容");
             return;
         }
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_misc_report_feedback_question,
+                web_class: WebMiscReportFeedbackQuestIon,
                 body: {
                     description: this.cc_EditBox$report.string
                 }

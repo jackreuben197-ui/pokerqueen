@@ -2,7 +2,7 @@ import { GameConfig } from "../../config/GameConfig";
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_User_Delete, WWW } from "../../net/https/WebRequest";
+import { WebUserDelete, WebWww } from "../../net/https/WebRequest";
 import GlobalSession from "../../session/GlobalSession";
 import StorageKey from "../../session/StorageKey";
 import SoundComponent from "../../sound/SoundComponent";
@@ -140,9 +140,9 @@ export default class UIMeSettings extends BaseFormPlus {
             cancel: i18nMgr.Get("adaptation10013"),
             commit_click: () => {
 
-                WWW.Instance.CommonAPI(
+                WebWww.Instance.CommonAPI(
                     {
-                        web_class: Web_User_Delete,
+                        web_class: WebUserDelete,
                     }
                 ).then(
                     (res: any) => {

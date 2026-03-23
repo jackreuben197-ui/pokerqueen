@@ -12,7 +12,7 @@ import TabNode from "../../common/tabNode";
 import { CareerRecordTabConfig } from "../../frame/config/tabConfig";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
-import { Web_Config_Multi_Language_Template } from "../../net/https/WebRequest";
+import { WebConfigMultiLanguageTemplate } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import { LobbyControl } from "../control/LobbyControl";
@@ -252,7 +252,7 @@ export default class UICareerRecord extends BaseFormPlus {
                 filter_type: this._coinIndex,
                 room_type: this._room_type,
             }
-            _data = await UICareerModel.mInstance.api_roomcenter_history_group(info)
+            _data = await UICareerModel.mInstance.WebRoomCenterHistoryGroup(info)
 
         } else {
             let info = {

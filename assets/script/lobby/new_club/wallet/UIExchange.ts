@@ -4,7 +4,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { API_CLUB_USER_WALLET, Web_Club_Fund_Exchange, Web_Club_Player_Exchange, Web_ExchangeRate, WWW } from "../../../net/https/WebRequest";
+import { WebClubUserWallet, WebClubFundExchange, WebClubPlayerExchange, WebExchangeRate, WebWww } from "../../../net/https/WebRequest";
 import { UISuperDialogType } from "../../../ui/dialog/UISuperDialog";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
@@ -58,7 +58,7 @@ export default class UIExchange extends BaseFormPlus {
 
     gold: string = "";
 
-    changeReq = [null, Web_Club_Player_Exchange, Web_Club_Fund_Exchange];
+    changeReq = [null, WebClubPlayerExchange, WebClubFundExchange];
 
     //转换模式 0: union -> usdt  1 usdt: -> union 
     _mode: number = 0;
@@ -194,9 +194,9 @@ export default class UIExchange extends BaseFormPlus {
         //公会基金需要请求转换率
         if (GC.wallet.wallet_type == WalletType.Fund) {
 
-            WWW.Instance.CommonAPI(
+            WebWww.Instance.CommonAPI(
                 {
-                    web_class: Web_ExchangeRate,
+                    web_class: WebExchangeRate,
                     body: {
                         "src_gold_type": 1,
                         "dest_gold_type": 2,
@@ -286,9 +286,9 @@ export default class UIExchange extends BaseFormPlus {
     ///////////////////////////////
     reqWallet() {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: API_CLUB_USER_WALLET,
+                web_class: WebClubUserWallet,
                 club_id: this._param.club_id
             }
         ).then(
@@ -306,7 +306,7 @@ export default class UIExchange extends BaseFormPlus {
     }
     reqExchange() {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
                 web_class: this.changeReq[GC.wallet.wallet_type],
                 body: {

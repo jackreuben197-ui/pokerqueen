@@ -2,7 +2,7 @@ import { ClubCache } from "../../frame/data/club/ClubCache";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { WebOrgClubGet } from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
 
 const { ccclass, property } = cc._decorator;

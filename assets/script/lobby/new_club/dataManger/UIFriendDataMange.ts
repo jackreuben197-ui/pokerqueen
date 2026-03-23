@@ -151,11 +151,11 @@ export default class UIFriendDataMange extends BaseForm {
             'offset': this._offset
         }
         if (this._roomType == 1) {
-            _data = await UIClubModel.mInstance.web_api_friend_room_stats_data(parms)
+            _data = await UIClubModel.mInstance.WebFriendRoomStatsData(parms)
 
         } else if (this._roomType == 2) {
             parms['filter_type'] = this._selectIndex + 1
-            _data = await UIClubModel.mInstance.web_api_club_data_stats_data(parms)
+            _data = await UIClubModel.mInstance.WebClubDataStatsData(parms)
 
         }
         this._reqing = false
@@ -181,7 +181,7 @@ export default class UIFriendDataMange extends BaseForm {
             'time_long': TimeHelper.Now,
         }
         if (this._roomType == 1) {
-            UIClubModel.mInstance.web_api_friend_room_stats_data_info(parms).then((res: any) => {
+            UIClubModel.mInstance.WebFriendRoomStatsDataInfo(parms).then((res: any) => {
                 this.lbl_4.string = `${res.data.info.hand_num}/${res.data.info.game_num}`
                 this.lbl_5.string = StringHelper.GetLongString(res.data.info.profit)
                 this.lbl_6.string = StringHelper.GetLongString(res.data.info.fee)
@@ -189,7 +189,7 @@ export default class UIFriendDataMange extends BaseForm {
         }
         else if (this._roomType == 2) {
             parms['filter_type'] = this._selectIndex + 1
-            UIClubModel.mInstance.web_api_club_data_stats_data_info(parms).then((res: any) => {
+            UIClubModel.mInstance.WebClubDataStatsDataInfo(parms).then((res: any) => {
                 this.lbl_4.string = `${res.data.info.hand_num}/${res.data.info.game_num}`
                 this.lbl_5.string = StringHelper.GetLongString(res.data.info.profit)
                 this.lbl_6.string = StringHelper.GetLongString(res.data.info.fee)

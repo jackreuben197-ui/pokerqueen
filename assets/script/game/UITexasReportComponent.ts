@@ -6,7 +6,7 @@ import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIClubModel } from "../lobby/labor/UIClubModel";
-import { APIOrgFriendRoomList } from "../net/https/WebRequest";
+import { WebOrgFriendRoomList } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
@@ -175,9 +175,9 @@ export default class UITexasReportComponent extends UIBase {
             this.setInfos(element, this.tInfo_1[index1], false);
         }
         if (GameCache.Instance.origin_type == 4) {
-            let result: any = await UIClubModel.mInstance.APIOrgFriendRoomList(false).catch((content) => { console.log(`>> catch error:${APIOrgFriendRoomList.API}`, content) });
+            let result: any = await UIClubModel.mInstance.WebOrgFriendRoomList(false).catch((content) => { console.log(`>> catch error:${WebOrgFriendRoomList.API}`, content) });
             if (!result) return;
-            let data: any = APIOrgFriendRoomList.Response.data
+            let data: any = WebOrgFriendRoomList.Response.data
 
             data.records.forEach(item => {
                 if (item.rid == GameCache.Instance.room_id) {
@@ -212,7 +212,7 @@ export default class UITexasReportComponent extends UIBase {
                 order: ["sb_asc"],
 
             }
-            UIClubModel.mInstance.APIOrgClubRoom(parms).then((roomsInfoData: any) => {
+            UIClubModel.mInstance.WebOrgClubRoom(parms).then((roomsInfoData: any) => {
                 roomsInfoData.data.records.forEach(item => {
                     if (item.rid == GameCache.Instance.room_id) {
                         if (item.start_time == null) {

@@ -9,7 +9,7 @@ import { i18nLabel } from "../../i18n/i18nLabel";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import ToastManager from "../../manager/ToastManager";
-import { APIOrgClubUserInfo, Web_User_Room, Web_User_Room_Bringin, WWW } from "../../net/https/WebRequest";
+import { WebOrgClubUserInfo, WebUserRoom, WebUserRoomBringin, WebWww } from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent, { PrefabUI } from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -245,7 +245,7 @@ export default class UITexasMenu extends UIBasePlus {
 
     click_coin() {
 
-        let data = Web_User_Room_Bringin.Response.data;
+        let data = WebUserRoomBringin.Response.data;
 
         UIComponent.open(UIDefine.UIToRecharge,
             {
@@ -334,9 +334,9 @@ export default class UITexasMenu extends UIBasePlus {
 
         if (GameUtil.GetFriendsOrClubTable() == 3) {
 
-            WWW.Instance.CommonAPI(
+            WebWww.Instance.CommonAPI(
                 {
-                    web_class: Web_User_Room_Bringin,
+                    web_class: WebUserRoomBringin,
                     api_id: GameCache.Instance.room_id,
                 }
             ).then(
@@ -383,8 +383,8 @@ export default class UITexasMenu extends UIBasePlus {
 
         if (GameUtil.GetFriendsOrClubTable() == 3) {
 
-            WWW.Instance.CommonAPI({
-                web_class: Web_User_Room_Bringin,
+            WebWww.Instance.CommonAPI({
+                web_class: WebUserRoomBringin,
                 api_id: GameCache.Instance.room_id,
             }).then(
                 (res: any) => {

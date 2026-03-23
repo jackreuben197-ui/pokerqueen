@@ -4,7 +4,7 @@ import { CommonDefine } from "../../define/CommonDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_User_Room_Settle_Detail } from "../../net/https/WebRequest";
+import { WebUserRoomSettleDetail } from "../../net/https/WebRequest";
 import AssetContext from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
 import { GameCache } from "../GameCache";

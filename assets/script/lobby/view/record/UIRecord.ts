@@ -3,7 +3,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import LobbyData from "../../../frame/data/lobby/LobbyData";
 import GC from "../../../frame/GameControl";
 import TimeHelper from "../../../helper/TimeHelper";
-import { Web_Stats_User_Stats, Web_User_Info } from "../../../net/https/WebRequest";
+import { WebStatsUserStats, WebUserInfo } from "../../../net/https/WebRequest";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
@@ -335,11 +335,11 @@ export default class UIRecord extends BaseForm {
                     contentCommit: "确定",
                     contentCancel: "取消",
                     actionCommit: () => {
-                        UIClubModel.mInstance.APIOrgSendMess(
+                        UIClubModel.mInstance.WebOrgSendMess(
                             {
                                 "content": JSON.stringify(info),
                                 "message_type": 3,
-                                "standings_user_id": Web_User_Info.Response.data.user.p_u_id,
+                                "standings_user_id": WebUserInfo.Response.data.user.p_u_id,
                                 "game_round_id": 0,
                             }
                         )

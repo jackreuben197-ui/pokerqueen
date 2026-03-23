@@ -77,7 +77,7 @@ export default class UIMttRecordDetail extends BaseFormPlus {
             limit: 20,         //条目
             offset: this._offset,        //开始下标。例子（offset=0，limit=10，0-9。）
         }
-        let data: any = await UICareerModel.mInstance.api_stats_mtt_room_detail(this._roomId, info)
+        let data: any = await UICareerModel.mInstance.WebStatsMttRoomDetailApi(this._roomId, info)
         let mtt_room_data = data.data.mtt_room_data;
         this.refreshUpUI(mtt_room_data);
         let user_list = mtt_room_data.user_list;

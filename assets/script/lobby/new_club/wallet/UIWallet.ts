@@ -9,7 +9,7 @@ import GC from "../../../frame/GameControl";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { WWW, Web_Club_Fund_ApplyList, Web_Club_Fund_OrderList, Web_Club_Player_Order_Record, Web_Club_Fund_Audit, API_CLUB_USER_WALLET, APIMessageRed_num } from "../../../net/https/WebRequest";
+import { WebWww, WebClubFundApplyList, WebClubFundOrderList, WebClubPlayerOrderRecord, WebClubFundAudit, WebClubUserWallet, WebMessageRednum } from "../../../net/https/WebRequest";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";
@@ -76,7 +76,7 @@ export default class UIWallet extends BaseFormPlus {
 
     $red: cc.Node = null;
 
-    //APIMessageRed_num
+    //WebMessageRednum
 
     //请求账户配置
     ReqAccountBean = {
@@ -269,7 +269,7 @@ export default class UIWallet extends BaseFormPlus {
     }
     //刷新红点
     private refreshRed() {
-        let data = APIMessageRed_num.Response.data;
+        let data = WebMessageRednum.Response.data;
         let hasRed: boolean = false;
         if (data) {
             data.forEach(obj => {
@@ -287,14 +287,14 @@ export default class UIWallet extends BaseFormPlus {
     //请求公会玩家充值记录 order_type 1,2,4
     reqClubRecord(order_type: number) {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
                 body: {
                     "order_type": order_type,
                     "limit": 100,
                     "offset": 0
                 },
-                web_class: Web_Club_Player_Order_Record,
+                web_class: WebClubPlayerOrderRecord,
                 club_id: ClubCache.club_id
             }
         ).then(
@@ -309,10 +309,10 @@ export default class UIWallet extends BaseFormPlus {
     }
     //请求公会基金充值记录 order_type 1,2,4
     reqFundRecord(order_type: number) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
 
-                web_class: Web_Club_Fund_OrderList,
+                web_class: WebClubFundOrderList,
 
                 body: {
                     "order_type": order_type,
@@ -470,9 +470,9 @@ export default class UIWallet extends BaseFormPlus {
     ////////////////////////////////////////////////////
     //请求公会钱包
     reqClubUserWallet(next) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: API_CLUB_USER_WALLET,
+                web_class: WebClubUserWallet,
                 club_id: ClubCache.club_id
             }
         ).then(
@@ -557,9 +557,9 @@ export default class UIWallet extends BaseFormPlus {
     }
     //请求公积金申请列表
     reqApplyList(next: Function = null) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Club_Fund_ApplyList,
+                web_class: WebClubFundApplyList,
 
                 body: {
                     "order_type": 0, //0-全部;1-充豆;2-提豆;4-转换
@@ -599,7 +599,7 @@ export default class UIWallet extends BaseFormPlus {
     refuseClick(index: number) {
         console.log("refuseClick", index);
         let obj = {
-            "order_no": Web_Club_Fund_ApplyList.Response.data.list[index].order_no,//订单号
+            "order_no": WebClubFundApplyList.Response.data.list[index].order_no,//订单号
             "audit_type": 2,//审计类型(audit_type):1-同意;2-拒绝
         }
         this.reqAudit(obj);
@@ -607,16 +607,16 @@ export default class UIWallet extends BaseFormPlus {
     agreeClick(index: number) {
         console.log("agreeClick", index);
         let obj = {
-            "order_no": Web_Club_Fund_ApplyList.Response.data.list[index].order_no,//订单号
+            "order_no": WebClubFundApplyList.Response.data.list[index].order_no,//订单号
             "audit_type": 1,//审计类型(audit_type):1-同意;2-拒绝
         }
         this.reqAudit(obj);
     }
     //审核同意和拒绝
     reqAudit(obj) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Club_Fund_Audit,
+                web_class: WebClubFundAudit,
 
                 body: obj,
 
@@ -633,9 +633,9 @@ export default class UIWallet extends BaseFormPlus {
     }
     //请求申请红点
     reqApplyReddot() {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: APIMessageRed_num,
+                web_class: WebMessageRednum,
 
                 body: { club_id: ClubCache.club_id },
 

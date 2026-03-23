@@ -7,7 +7,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import ToastManager from "../../manager/ToastManager";
-import { Web_Room_Center_Mtt_Details } from "../../net/https/WebRequest";
+import { WebRoomCenterMttDetailS } from "../../net/https/WebRequest";
 import { UIMTTModel } from "../../new_mtt/UIMTTModel";
 import BaseForm from "../../ui/form/BaseForm";
 import UIBase from "../../ui/UIBase";
@@ -327,7 +327,7 @@ export default class UIMttSignDialogComponent extends UIBase {
         // MultLimitFree.GetComponent<Toggle>().onValueChanged.AddListener(ClickMultFree);
         //UpdateLimitFree();
         //SetMultLimitFreeName();
-        // propInfos = new List<Web_Prop_User_Prop_List.Record>();
+        // propInfos = new List<WebPropUserPropList.Record>();
         UIMTTModel.Instance.APIMtt_GetDiscounts(pAct => {
             if (pAct.code == 0) {
                 if (pAct.data.excludefee_list.length > 0 && pAct.data.excludefee_list != null) {

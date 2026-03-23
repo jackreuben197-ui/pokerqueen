@@ -8,7 +8,7 @@ import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
 import TimeHelper from "../helper/TimeHelper";
 import ToastManager from "../manager/ToastManager";
-import { Web_Org_Club_Get } from "../net/https/WebRequest";
+import { WebOrgClubGet } from "../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../ui/component/AssetContext";
 import UIComponent from "../ui/UIComponent";
 

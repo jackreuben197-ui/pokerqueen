@@ -1,7 +1,7 @@
 import ComFormTitle from "../common/ComFormTitle";
 import List from "../common/List";
 import GC from "../frame/GameControl";
-import { Web_Mtt } from "../net/https/WebRequest";
+import { WebMtt } from "../net/https/WebRequest";
 import BaseForm from "../ui/form/BaseForm";
 import MttListItem from "./MttListItem";
 
@@ -27,7 +27,7 @@ export default class MttListForm extends BaseForm {
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
-            case Web_Mtt.LIST: {
+            case WebMtt.LIST: {
                 this.updateList();
             } break;
         }

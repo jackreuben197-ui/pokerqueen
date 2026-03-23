@@ -6,7 +6,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import ProcedureManager from "../../manager/ProcedureManager";
 import { ResManager } from "../../manager/ResManager";
 import HttpRequest from "../../net/https/HttpRequest";
-import { APIClubJoinList, APIClubQuitList, APIClubStandings, APIDeleleUser, APIFriendApplyList, APIIsPhoneUser, APILockUser, APIMsgMessageList, APIOrgClubGold, APITicketCreate, APIUnlockUser, API_BAG_CURRENT_PENDANT_LIST, API_BAG_PANDANT_DOWN, API_BAG_PANDANT_UP, API_BAG_PENDANT_LIST, API_CLUB_APPLY_AUDIT, API_CLUB_APPLY_LIST, API_CLUB_USER_WALLET, API_DEL_MSG_TEMPLATE, API_GET_MSG_LIST, API_GOLD_CHANGE_LOG, API_PROP_TASK_LIST, API_PROP_TASK_RECEIVE, API_SEND_MSG, API_SET_MSG_TEMPLATE, WEB2_data_stat_person, Web_Config_Multi_Language_Template, Web_Misc_Banner_List, Web_Misc_Game_Record_Round, Web_Misc_Game_Remove_Round, Web_Misc_Game_Round_List, Web_Misc_Game_Round_Status, Web_Other_User_Info, Web_Prop_User_Prop_List, Web_Room_Center_Groups, Web_Room_Center_History_Hand, Web_Room_Center_History_List, Web_Room_Center_History_Replay, Web_Room_Center_Mtt_Details, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Stats_Room_Detail, Web_Stats_User_Stats, Web_User_Check_Nickname, Web_User_Modify_User_Info } from "../../net/https/WebRequest";
+import { WebClubJoinList, WebClubQuitList, WebClubStandiNgs, WebDeleleUser, WebFriendApplyList, WebIsPhoneUser, WebLockUser, WebMsgMessageList, WebOrgClubGold, WebTicketCreate, WebUnlockUser, WebBagCurrentPendantList, WebBagpAndantDown, WebBagpandantup, WebBagPendantList, WebClubApplyAudit, WebClubApplyList, WebClubUserWallet, WebDelmsgTemplate, WebGetmsgList, WebGoldChangeLogApi, WebPropTaskList, WebPropTaskReceIve, WebSendMsg, WebSetmsgTemplate, WebWeb2DataStatPerson, WebConfigMultiLanguageTemplate, WebMiscBannerList, WebMiscGameRecordRound, WebMiscGameRemoveRound, WebMiscGameRoundList, WebMiscGameRoundStatus, WebOtherUserInfo, WebPropUserPropList, WebRoomCenterGroups, WebRoomCenterHistoryHand, WebRoomCenterHistoryList, WebRoomCenterHistoryReplay, WebRoomCenterMttDetailS, WebRoomCenterRooms, WebRoomCenterRoomsBlinds, WebStatsRoomDetail, WebStatsUserStats, WebUserCheckNickname, WebUserModifyUserInfo } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import UIBase from "../../ui/UIBase";
 
@@ -81,11 +81,11 @@ export class LobbyControl {
     /**≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈
         3.1 请求banner数据
     ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
-    async GetBannerList(param: typeof Web_Misc_Banner_List.RequestParams) {
+    async GetBannerList(param: typeof WebMiscBannerList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Misc_Banner_List,
-                body: Web_Misc_Banner_List.Request(
+                request: WebMiscBannerList,
+                body: WebMiscBannerList.Request(
                     {
                         lang: param.lang,               // 语言(zh_CN:简体中文,zh_HK:繁体中文,en_US:英文，pt_BR：葡萄牙语
                         type: param.type,               // 1-大厅Banner,2-发现页(公会)Banner
@@ -93,7 +93,7 @@ export class LobbyControl {
                         offset: param.offset,           // 开始下标。例子（offset=0，limit=10，0-9。)默认0
                     }),
                 onSuccess: function () {
-                    resolve(Web_Misc_Banner_List.Response);
+                    resolve(WebMiscBannerList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -104,15 +104,15 @@ export class LobbyControl {
 
     /**
      * @description: 请求房间列表统计信息
-     * @return {Web_Room_Center_Groups.Response}
+     * @return {WebRoomCenterGroups.Response}
      */
-    async RequestListSummary(param: typeof Web_Room_Center_Groups.RequestParams) {
+    async RequestListSummary(param: typeof WebRoomCenterGroups.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Room_Center_Groups,
-                body: Web_Room_Center_Groups.Request(param),
+                request: WebRoomCenterGroups,
+                body: WebRoomCenterGroups.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Room_Center_Groups.Response);
+                    resolve(WebRoomCenterGroups.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -122,15 +122,15 @@ export class LobbyControl {
     }
     /**
     * @description: 请求mang信息
-    * @return {Web_Room_Center_Rooms_Blinds.Response}
+    * @return {WebRoomCenterRoomsBlinds.Response}
     */
-    async RequestSbList(param: typeof Web_Room_Center_Rooms_Blinds.RequestParams) {
+    async RequestSbList(param: typeof WebRoomCenterRoomsBlinds.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Room_Center_Rooms_Blinds,
-                body: Web_Room_Center_Rooms_Blinds.Request(param),
+                request: WebRoomCenterRoomsBlinds,
+                body: WebRoomCenterRoomsBlinds.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Room_Center_Rooms_Blinds.Response);
+                    resolve(WebRoomCenterRoomsBlinds.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -140,15 +140,15 @@ export class LobbyControl {
     }
     /**
      * @description: 请求rooms信息
-     * @return {Web_Room_Center_Rooms.Response}
+     * @return {WebRoomCenterRooms.Response}
      */
-    // async APIWebRoomCenterRooms(param: typeof Web_Room_Center_Rooms.RequestParams) {
+    // async APIWebRoomCenterRooms(param: typeof WebRoomCenterRooms.RequestParams) {
     //     return new Promise((resolve, reject) => {
     //         HttpRequest.Send({
-    //             request: Web_Room_Center_Rooms,
-    //             body: Web_Room_Center_Rooms.Request(param),
+    //             request: WebRoomCenterRooms,
+    //             body: WebRoomCenterRooms.Request(param),
     //             onSuccess: function () {
-    //                 resolve(Web_Room_Center_Rooms.Response);
+    //                 resolve(WebRoomCenterRooms.Response);
     //             }.bind(this),
     //             onFailure: function (content) {
     //                 reject(content);
@@ -158,15 +158,15 @@ export class LobbyControl {
     // }
     /**
     * @description: 请求rooms信息
-    * @return {Web_Config_Multi_Language_Template.Response}
+    * @return {WebConfigMultiLanguageTemplate.Response}
     */
-    async APIConfig_Multi_Language_Template(param: typeof Web_Config_Multi_Language_Template.RequestParams) {
+    async APIConfig_Multi_Language_Template(param: typeof WebConfigMultiLanguageTemplate.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Config_Multi_Language_Template,
-                body: Web_Config_Multi_Language_Template.Request(param),
+                request: WebConfigMultiLanguageTemplate,
+                body: WebConfigMultiLanguageTemplate.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Config_Multi_Language_Template.Response);
+                    resolve(WebConfigMultiLanguageTemplate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -178,13 +178,13 @@ export class LobbyControl {
     /**
      * 验证用户昵称
      */
-    async CheckNickName(param: typeof Web_User_Check_Nickname.RequestParams) {
+    async CheckNickName(param: typeof WebUserCheckNickname.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_User_Check_Nickname,
-                body: Web_User_Check_Nickname.Request(param),
+                request: WebUserCheckNickname,
+                body: WebUserCheckNickname.Request(param),
                 onSuccess: function () {
-                    resolve(Web_User_Check_Nickname.Response);
+                    resolve(WebUserCheckNickname.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -196,13 +196,13 @@ export class LobbyControl {
     /**
      * 修改个人信息
      */
-    async fixUserInfo(param: typeof Web_User_Modify_User_Info.RequestParams) {
+    async fixUserInfo(param: typeof WebUserModifyUserInfo.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_User_Modify_User_Info,
-                body: Web_User_Modify_User_Info.Request(param),
+                request: WebUserModifyUserInfo,
+                body: WebUserModifyUserInfo.Request(param),
                 onSuccess: function () {
-                    resolve(Web_User_Modify_User_Info.Response);
+                    resolve(WebUserModifyUserInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -214,13 +214,13 @@ export class LobbyControl {
     /**
      * 获取战绩数据 int group_by, int match_id, int limit, int offset, int type, sbyte game_type,
      */
-    async getHistoryInfo(param: typeof Web_Room_Center_History_List.RequestParams) {
+    async getHistoryInfo(param: typeof WebRoomCenterHistoryList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Room_Center_History_List,
-                body: Web_Room_Center_History_List.Request(param),
+                request: WebRoomCenterHistoryList,
+                body: WebRoomCenterHistoryList.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Room_Center_History_List.Response);
+                    resolve(WebRoomCenterHistoryList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -232,13 +232,13 @@ export class LobbyControl {
     /**
      * 查询他人统计数据 - 【数据统计模块】
      */
-    async getPersionInfo(param: typeof WEB2_data_stat_person.RequestParams) {
+    async getPersionInfo(param: typeof WebWeb2DataStatPerson.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: WEB2_data_stat_person,
-                body: WEB2_data_stat_person.Request(param),
+                request: WebWeb2DataStatPerson,
+                body: WebWeb2DataStatPerson.Request(param),
                 onSuccess: function () {
-                    resolve(WEB2_data_stat_person.Response);
+                    resolve(WebWeb2DataStatPerson.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -250,13 +250,13 @@ export class LobbyControl {
     /**
      * 战绩7，30,生涯数据(MTT,Room)
      */
-    async getUserStatsInfo(param: typeof Web_Stats_User_Stats.RequestParams) {
+    async getUserStatsInfo(param: typeof WebStatsUserStats.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Stats_User_Stats,
-                body: Web_Stats_User_Stats.Request(param),
+                request: WebStatsUserStats,
+                body: WebStatsUserStats.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Stats_User_Stats.Response);
+                    resolve(WebStatsUserStats.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -268,14 +268,14 @@ export class LobbyControl {
     /**
      * 战绩详情  
      */
-    async getRecordDetailInfo(roomId, param: typeof Web_Stats_Room_Detail.RequestParams) {
+    async getRecordDetailInfo(roomId, param: typeof WebStatsRoomDetail.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_Stats_Room_Detail.API.replace("{id}", roomId.toString()),
-                request: Web_Stats_Room_Detail,
-                body: Web_Stats_Room_Detail.Request(param),
+                api: WebStatsRoomDetail.API.replace("{id}", roomId.toString()),
+                request: WebStatsRoomDetail,
+                body: WebStatsRoomDetail.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Stats_Room_Detail.Response);
+                    resolve(WebStatsRoomDetail.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -287,13 +287,13 @@ export class LobbyControl {
     /**
      * 手数列表  
      */
-    async getRecordHandInfo(param: typeof Web_Room_Center_History_Hand.RequestParams) {
+    async getRecordHandInfo(param: typeof WebRoomCenterHistoryHand.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Room_Center_History_Hand,
-                body: Web_Room_Center_History_Hand.Request(param),
+                request: WebRoomCenterHistoryHand,
+                body: WebRoomCenterHistoryHand.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Room_Center_History_Hand.Response);
+                    resolve(WebRoomCenterHistoryHand.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -306,14 +306,14 @@ export class LobbyControl {
     /**
      * MTT 比赛列表详情  
      */
-    async reqMTTDetailInfo(matchID, param: typeof Web_Room_Center_Mtt_Details.RequestParams) {
+    async reqMTTDetailInfo(matchID, param: typeof WebRoomCenterMttDetailS.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Details.API.replace("{id}", matchID.toString()),
-                request: Web_Room_Center_Mtt_Details,
-                body: Web_Room_Center_Mtt_Details.Request(param),
+                api: WebRoomCenterMttDetailS.API.replace("{id}", matchID.toString()),
+                request: WebRoomCenterMttDetailS,
+                body: WebRoomCenterMttDetailS.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Room_Center_Mtt_Details.Response);
+                    resolve(WebRoomCenterMttDetailS.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -325,13 +325,13 @@ export class LobbyControl {
     /**
      * 玩家申请加入公会列表
      */
-    async reqClubJoinList(param: typeof APIClubJoinList.RequestParams) {
+    async reqClubJoinList(param: typeof WebClubJoinList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIClubJoinList,
-                body: APIClubJoinList.Request(param),
+                request: WebClubJoinList,
+                body: WebClubJoinList.Request(param),
                 onSuccess: function () {
-                    resolve(APIClubJoinList.Response);
+                    resolve(WebClubJoinList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -343,13 +343,13 @@ export class LobbyControl {
     /**
      * 公会管理员冻结公会成员
      */
-    async reqClubLockUser(param: typeof APILockUser.RequestParams) {
+    async reqClubLockUser(param: typeof WebLockUser.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APILockUser,
-                body: APILockUser.Request(param),
+                request: WebLockUser,
+                body: WebLockUser.Request(param),
                 onSuccess: function () {
-                    resolve(APILockUser.Response);
+                    resolve(WebLockUser.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -361,13 +361,13 @@ export class LobbyControl {
     /**
      * 公会管理员解冻公会成员
      */
-    async reqClubUnlockUser(param: typeof APIUnlockUser.RequestParams) {
+    async reqClubUnlockUser(param: typeof WebUnlockUser.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIUnlockUser,
-                body: APIUnlockUser.Request(param),
+                request: WebUnlockUser,
+                body: WebUnlockUser.Request(param),
                 onSuccess: function () {
-                    resolve(APIUnlockUser.Response);
+                    resolve(WebUnlockUser.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -379,13 +379,13 @@ export class LobbyControl {
     /**
      * 公会管理员删除公会成员
      */
-    async reqClubDeleleUser(param: typeof APIDeleleUser.RequestParams) {
+    async reqClubDeleleUser(param: typeof WebDeleleUser.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIDeleleUser,
-                body: APIDeleleUser.Request(param),
+                request: WebDeleleUser,
+                body: WebDeleleUser.Request(param),
                 onSuccess: function () {
-                    resolve(APIDeleleUser.Response);
+                    resolve(WebDeleleUser.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -397,13 +397,13 @@ export class LobbyControl {
     /**
      * 管理员查看玩家退会记录
      */
-    async reqClubQuitList(param: typeof APIClubQuitList.RequestParams) {
+    async reqClubQuitList(param: typeof WebClubQuitList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIClubQuitList,
-                body: APIClubQuitList.Request(param),
+                request: WebClubQuitList,
+                body: WebClubQuitList.Request(param),
                 onSuccess: function () {
-                    resolve(APIClubQuitList.Response);
+                    resolve(WebClubQuitList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -415,13 +415,13 @@ export class LobbyControl {
     /**
      * 查看成员战绩
      */
-    async reqClubStandings(param: typeof APIClubStandings.RequestParams) {
+    async reqClubStandings(param: typeof WebClubStandiNgs.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIClubStandings,
-                body: APIClubStandings.Request(param),
+                request: WebClubStandiNgs,
+                body: WebClubStandiNgs.Request(param),
                 onSuccess: function () {
-                    resolve(APIClubStandings.Response);
+                    resolve(WebClubStandiNgs.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -433,13 +433,13 @@ export class LobbyControl {
     /**
      * 战绩带入数据列表
      */
-    async reqFriendAppleList(param: typeof APIFriendApplyList.RequestParams) {
+    async reqFriendAppleList(param: typeof WebFriendApplyList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIFriendApplyList,
-                body: APIFriendApplyList.Request(param),
+                request: WebFriendApplyList,
+                body: WebFriendApplyList.Request(param),
                 onSuccess: function () {
-                    resolve(APIFriendApplyList.Response);
+                    resolve(WebFriendApplyList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -451,13 +451,13 @@ export class LobbyControl {
     /**
     * 获取消息列表
     */
-    async reqMessageList(param: typeof APIMsgMessageList.RequestParams) {
+    async reqMessageList(param: typeof WebMsgMessageList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIMsgMessageList,
-                body: APIMsgMessageList.Request(param),
+                request: WebMsgMessageList,
+                body: WebMsgMessageList.Request(param),
                 onSuccess: function () {
-                    resolve(APIMsgMessageList.Response);
+                    resolve(WebMsgMessageList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -469,13 +469,13 @@ export class LobbyControl {
     /**
      * 发送客服数据
      */
-    async reqServiceInfo(param: typeof APITicketCreate.RequestParams) {
+    async reqServiceInfo(param: typeof WebTicketCreate.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APITicketCreate,
-                body: APITicketCreate.Request(param),
+                request: WebTicketCreate,
+                body: WebTicketCreate.Request(param),
                 onSuccess: function () {
-                    resolve(APITicketCreate.Response);
+                    resolve(WebTicketCreate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -487,13 +487,13 @@ export class LobbyControl {
     /**
      * 判断用户是否绑定手机  返回布尔值
      */
-    async reqIsPhoneUser(param: typeof APIIsPhoneUser.RequestParams) {
+    async reqIsPhoneUser(param: typeof WebIsPhoneUser.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIIsPhoneUser,
-                body: APIIsPhoneUser.Request(param),
+                request: WebIsPhoneUser,
+                body: WebIsPhoneUser.Request(param),
                 onSuccess: function () {
-                    resolve(APIIsPhoneUser.Response);
+                    resolve(WebIsPhoneUser.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -505,14 +505,14 @@ export class LobbyControl {
     /**
      * 牌谱详情
      */
-    async reqHistoryReplay(matchID, param: typeof Web_Room_Center_History_Replay.RequestParams) {
+    async reqHistoryReplay(matchID, param: typeof WebRoomCenterHistoryReplay.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_Room_Center_History_Replay.API.replace("{id}", matchID.toString()),
-                request: Web_Room_Center_History_Replay,
-                body: Web_Room_Center_History_Replay.Request(param),
+                api: WebRoomCenterHistoryReplay.API.replace("{id}", matchID.toString()),
+                request: WebRoomCenterHistoryReplay,
+                body: WebRoomCenterHistoryReplay.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Room_Center_History_Replay.Response);
+                    resolve(WebRoomCenterHistoryReplay.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -524,13 +524,13 @@ export class LobbyControl {
     /**
      * 收藏
      */
-    async reqRecordRound(param: typeof Web_Misc_Game_Record_Round.RequestParams) {
+    async reqRecordRound(param: typeof WebMiscGameRecordRound.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Misc_Game_Record_Round,
-                body: Web_Misc_Game_Record_Round.Request(param),
+                request: WebMiscGameRecordRound,
+                body: WebMiscGameRecordRound.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Misc_Game_Record_Round.Response);
+                    resolve(WebMiscGameRecordRound.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -542,13 +542,13 @@ export class LobbyControl {
     /**
      * 取消收藏
      */
-    async reqRemoveRound(param: typeof Web_Misc_Game_Remove_Round.RequestParams) {
+    async reqRemoveRound(param: typeof WebMiscGameRemoveRound.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Misc_Game_Remove_Round,
-                body: Web_Misc_Game_Remove_Round.Request(param),
+                request: WebMiscGameRemoveRound,
+                body: WebMiscGameRemoveRound.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Misc_Game_Remove_Round.Response);
+                    resolve(WebMiscGameRemoveRound.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -560,13 +560,13 @@ export class LobbyControl {
     /**
      * 收藏列表
      */
-    async reqRoundList(param: typeof Web_Misc_Game_Round_List.RequestParams) {
+    async reqRoundList(param: typeof WebMiscGameRoundList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Misc_Game_Round_List,
-                body: Web_Misc_Game_Round_List.Request(param),
+                request: WebMiscGameRoundList,
+                body: WebMiscGameRoundList.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Misc_Game_Round_List.Response);
+                    resolve(WebMiscGameRoundList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -578,13 +578,13 @@ export class LobbyControl {
     /**
      * 查询牌普列表是否是状态
      */
-    async reqRoundStrtus(param: typeof Web_Misc_Game_Round_Status.RequestParams) {
+    async reqRoundStrtus(param: typeof WebMiscGameRoundStatus.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Misc_Game_Round_Status,
-                body: Web_Misc_Game_Round_Status.Request(param),
+                request: WebMiscGameRoundStatus,
+                body: WebMiscGameRoundStatus.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Misc_Game_Round_Status.Response);
+                    resolve(WebMiscGameRoundStatus.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -596,13 +596,13 @@ export class LobbyControl {
     /**
      * 查询成就任务列表
      */
-    async reqPropTaskList(param: typeof API_PROP_TASK_LIST.RequestParams) {
+    async reqPropTaskList(param: typeof WebPropTaskList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_PROP_TASK_LIST,
-                body: API_PROP_TASK_LIST.Request(param),
+                request: WebPropTaskList,
+                body: WebPropTaskList.Request(param),
                 onSuccess: function () {
-                    resolve(API_PROP_TASK_LIST.Response);
+                    resolve(WebPropTaskList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -614,13 +614,13 @@ export class LobbyControl {
     /**
      * 成就任务领取奖励
      */
-    async reqPropTaskReceive(param: typeof API_PROP_TASK_RECEIVE.RequestParams) {
+    async reqPropTaskReceive(param: typeof WebPropTaskReceIve.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_PROP_TASK_RECEIVE,
-                body: API_PROP_TASK_RECEIVE.Request(param),
+                request: WebPropTaskReceIve,
+                body: WebPropTaskReceIve.Request(param),
                 onSuccess: function () {
-                    resolve(API_PROP_TASK_RECEIVE.Response);
+                    resolve(WebPropTaskReceIve.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -632,13 +632,13 @@ export class LobbyControl {
     /**
     * 用户的装扮道具背包
     */
-    async reqBagPendantList(param: typeof API_BAG_PENDANT_LIST.RequestParams) {
+    async reqBagPendantList(param: typeof WebBagPendantList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_BAG_PENDANT_LIST,
-                body: API_BAG_PENDANT_LIST.Request(param),
+                request: WebBagPendantList,
+                body: WebBagPendantList.Request(param),
                 onSuccess: function () {
-                    resolve(API_BAG_PENDANT_LIST.Response);
+                    resolve(WebBagPendantList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -650,13 +650,13 @@ export class LobbyControl {
     /**
      * 用户当前装扮的道具
      */
-    async reqBagCurrentPendantList(param: typeof API_BAG_CURRENT_PENDANT_LIST.RequestParams) {
+    async reqBagCurrentPendantList(param: typeof WebBagCurrentPendantList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_BAG_CURRENT_PENDANT_LIST,
-                body: API_BAG_CURRENT_PENDANT_LIST.Request(param),
+                request: WebBagCurrentPendantList,
+                body: WebBagCurrentPendantList.Request(param),
                 onSuccess: function () {
-                    resolve(API_BAG_CURRENT_PENDANT_LIST.Response);
+                    resolve(WebBagCurrentPendantList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -668,13 +668,13 @@ export class LobbyControl {
     /**
      * 用户穿上装扮道具
      */
-    async reqBagPandantUp(param: typeof API_BAG_PANDANT_UP.RequestParams) {
+    async reqBagPandantUp(param: typeof WebBagpandantup.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_BAG_PANDANT_UP,
-                body: API_BAG_PANDANT_UP.Request(param),
+                request: WebBagpandantup,
+                body: WebBagpandantup.Request(param),
                 onSuccess: function () {
-                    resolve(API_BAG_PANDANT_UP.Response);
+                    resolve(WebBagpandantup.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -686,13 +686,13 @@ export class LobbyControl {
     /**
     * 用户移除装扮道具
     */
-    async reqBagPandantDown(param: typeof API_BAG_PANDANT_DOWN.RequestParams) {
+    async reqBagPandantDown(param: typeof WebBagpAndantDown.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_BAG_PANDANT_DOWN,
-                body: API_BAG_PANDANT_DOWN.Request(param),
+                request: WebBagpAndantDown,
+                body: WebBagpAndantDown.Request(param),
                 onSuccess: function () {
-                    resolve(API_BAG_PANDANT_DOWN.Response);
+                    resolve(WebBagpAndantDown.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -704,13 +704,13 @@ export class LobbyControl {
     /**
      * 我的背包
      */
-    async reqBagPropList(param: typeof Web_Prop_User_Prop_List.RequestParams) {
+    async reqBagPropList(param: typeof WebPropUserPropList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Prop_User_Prop_List,
-                body: Web_Prop_User_Prop_List.Request(param),
+                request: WebPropUserPropList,
+                body: WebPropUserPropList.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Prop_User_Prop_List.Response);
+                    resolve(WebPropUserPropList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -722,13 +722,13 @@ export class LobbyControl {
     /**
      * 设置消息模版
      */
-    async reqSetMsgTempLate(param: typeof API_SET_MSG_TEMPLATE.RequestParams) {
+    async reqSetMsgTempLate(param: typeof WebSetmsgTemplate.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_SET_MSG_TEMPLATE,
-                body: API_SET_MSG_TEMPLATE.Request(param),
+                request: WebSetmsgTemplate,
+                body: WebSetmsgTemplate.Request(param),
                 onSuccess: function () {
-                    resolve(API_SET_MSG_TEMPLATE.Response);
+                    resolve(WebSetmsgTemplate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -741,13 +741,13 @@ export class LobbyControl {
     /**
      * 获取用户消息模版列表
      */
-    async reqGetMsgList(param: typeof API_GET_MSG_LIST.RequestParams) {
+    async reqGetMsgList(param: typeof WebGetmsgList.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_GET_MSG_LIST,
-                body: API_GET_MSG_LIST.Request(param),
+                request: WebGetmsgList,
+                body: WebGetmsgList.Request(param),
                 onSuccess: function () {
-                    resolve(API_GET_MSG_LIST.Response);
+                    resolve(WebGetmsgList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -760,13 +760,13 @@ export class LobbyControl {
     /**
      * 删除消息模版
      */
-    async reqDelMsgTempLate(param: typeof API_DEL_MSG_TEMPLATE.RequestParams) {
+    async reqDelMsgTempLate(param: typeof WebDelmsgTemplate.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_DEL_MSG_TEMPLATE,
-                body: API_DEL_MSG_TEMPLATE.Request(param),
+                request: WebDelmsgTemplate,
+                body: WebDelmsgTemplate.Request(param),
                 onSuccess: function () {
-                    resolve(API_DEL_MSG_TEMPLATE.Response);
+                    resolve(WebDelmsgTemplate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -778,13 +778,13 @@ export class LobbyControl {
     /**
      * 发送消息
      */
-    async reqSendMsg(param: typeof API_SEND_MSG.RequestParams) {
+    async reqSendMsg(param: typeof WebSendMsg.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_SEND_MSG,
-                body: API_SEND_MSG.Request(param),
+                request: WebSendMsg,
+                body: WebSendMsg.Request(param),
                 onSuccess: function () {
-                    resolve(API_SEND_MSG.Response);
+                    resolve(WebSendMsg.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -796,14 +796,14 @@ export class LobbyControl {
     /**
      * 发送消息
      */
-    async reqOherUserInfo(uid, param: typeof Web_Other_User_Info.RequestParams) {
+    async reqOherUserInfo(uid, param: typeof WebOtherUserInfo.RequestParams) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: Web_Other_User_Info.API.replace("{id}", uid.toString()),
-                request: Web_Other_User_Info,
-                body: Web_Other_User_Info.Request(param),
+                api: WebOtherUserInfo.API.replace("{id}", uid.toString()),
+                request: WebOtherUserInfo,
+                body: WebOtherUserInfo.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Other_User_Info.Response);
+                    resolve(WebOtherUserInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -818,10 +818,10 @@ export class LobbyControl {
     async reqClubApplyList(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_CLUB_APPLY_LIST,
-                body: API_CLUB_APPLY_LIST.Request(param),
+                request: WebClubApplyList,
+                body: WebClubApplyList.Request(param),
                 onSuccess: function () {
-                    resolve(API_CLUB_APPLY_LIST.Response);
+                    resolve(WebClubApplyList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -837,10 +837,10 @@ export class LobbyControl {
     async reqClubApplyAudit(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_CLUB_APPLY_AUDIT,
-                body: API_CLUB_APPLY_AUDIT.Request(param),
+                request: WebClubApplyAudit,
+                body: WebClubApplyAudit.Request(param),
                 onSuccess: function () {
-                    resolve(API_CLUB_APPLY_AUDIT.Response);
+                    resolve(WebClubApplyAudit.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -856,10 +856,10 @@ export class LobbyControl {
     async reqGoldChangeLog(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_GOLD_CHANGE_LOG,
-                body: API_GOLD_CHANGE_LOG.Request(param),
+                request: WebGoldChangeLogApi,
+                body: WebGoldChangeLogApi.Request(param),
                 onSuccess: function () {
-                    resolve(API_GOLD_CHANGE_LOG.Response);
+                    resolve(WebGoldChangeLogApi.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -874,10 +874,10 @@ export class LobbyControl {
     async reqClubUserWallet(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: API_CLUB_USER_WALLET,
-                body: API_CLUB_USER_WALLET.Request(param),
+                request: WebClubUserWallet,
+                body: WebClubUserWallet.Request(param),
                 onSuccess: function () {
-                    resolve(API_CLUB_USER_WALLET.Response);
+                    resolve(WebClubUserWallet.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

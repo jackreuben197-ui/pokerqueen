@@ -1,4 +1,4 @@
-import { WWW, Web_GetDiamondConfig } from "../net/https/WebRequest";
+import { WebWww, WebGetDiamondConfig } from "../net/https/WebRequest";
 
 export default class DiamondModel {
 
@@ -24,9 +24,9 @@ export default class DiamondModel {
 
             } else {
 
-                WWW.Instance.CommonAPI(
+                WebWww.Instance.CommonAPI(
                     {
-                        web_class: Web_GetDiamondConfig,
+                        web_class: WebGetDiamondConfig,
                         body: {
                             config_type: type,
                         }

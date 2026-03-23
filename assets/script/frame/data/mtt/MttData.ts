@@ -6,7 +6,7 @@
  * @LastEditTime: 2023-03-22 14:36:13
  * @FilePath: /pokerqueen/assets/script/frame/data/mtt/MttData.ts
  */
-import { Web_Mtt } from "../../../net/https/WebRequest";
+import { WebMtt } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
 import GC from "../../GameControl";
 import { ClubCache } from "../club/ClubCache";
@@ -23,58 +23,58 @@ export default class MttData extends BaseData {
         // id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
         id = id.replace(/\d+/, "{0}")
         switch (id) {
-            case Web_Mtt.LIST: {
+            case WebMtt.LIST: {
                 this.list.updateData(msg);
-                GC.notify.post(Web_Mtt.LIST)
+                GC.notify.post(WebMtt.LIST)
             } break;
-            case Web_Mtt.RANKS: {
+            case WebMtt.RANKS: {
                 this.realTime.updateRankList(msg);
-                GC.notify.post(Web_Mtt.RANKS)
+                GC.notify.post(WebMtt.RANKS)
             } break;
-            case Web_Mtt.DETAIL: {
+            case WebMtt.DETAIL: {
                 this.detail.updateData(msg);
-                GC.notify.post(Web_Mtt.DETAIL)
+                GC.notify.post(WebMtt.DETAIL)
             } break;
-            case Web_Mtt.REAL_PRIZE: {
+            case WebMtt.REAL_PRIZE: {
                 this.realTime.updateRealPrize(msg);
-                GC.notify.post(Web_Mtt.REAL_PRIZE)
+                GC.notify.post(WebMtt.REAL_PRIZE)
             } break;
-            case Web_Mtt.ROOMS: {
+            case WebMtt.ROOMS: {
                 this.realTime.updateRooms(msg);
-                GC.notify.post(Web_Mtt.ROOMS)
+                GC.notify.post(WebMtt.ROOMS)
             } break;
-            case Web_Mtt.USER_WALLET: {
+            case WebMtt.USER_WALLET: {
                 this.user_wallet = (msg);
-                GC.notify.post(Web_Mtt.USER_WALLET)
+                GC.notify.post(WebMtt.USER_WALLET)
             } break;
         }
     }
 
     reqMttList(offset: number = 0, limit: number = 10) {
-        this.reqServePost(Web_Mtt.LIST, { limit: limit, offset: offset });
+        this.reqServePost(WebMtt.LIST, { limit: limit, offset: offset });
     }
 
     reqMttDetail() {
-        let api = GC.language.formatString(Web_Mtt.DETAIL, this.list.select.match_id);
+        let api = GC.language.formatString(WebMtt.DETAIL, this.list.select.match_id);
         this.reqServePost(api);
     }
 
     reqRealTimeRankList(offset: number = 0, limit: number = 10) {
-        let api = GC.language.formatString(Web_Mtt.RANKS, this.list.select.match_id);
+        let api = GC.language.formatString(WebMtt.RANKS, this.list.select.match_id);
         this.reqServePost(api, { limit: limit, offset: offset });
     }
 
     reqRealTimeRooms(offset: number = 0, limit: number = 10) {
-        let api = GC.language.formatString(Web_Mtt.ROOMS, this.list.select.match_id);
+        let api = GC.language.formatString(WebMtt.ROOMS, this.list.select.match_id);
         this.reqServePost(api, { limit: limit, offset: offset });
     }
 
     reqRealTimeRealPrize() {
-        let api = GC.language.formatString(Web_Mtt.REAL_PRIZE, this.list.select.match_id);
+        let api = GC.language.formatString(WebMtt.REAL_PRIZE, this.list.select.match_id);
         this.reqServePost(api);
     }
     // reqUserWallet(offset: number = 0, limit: number = 10) {
-    //     let api = GC.language.formatString(Web_Mtt.USER_WALLET, this.list.select.match_id);
+    //     let api = GC.language.formatString(WebMtt.USER_WALLET, this.list.select.match_id);
     //     this.reqServePost(api, { club_id: ClubCache.club_id, limit: limit, offset: offset });
     // }
 }

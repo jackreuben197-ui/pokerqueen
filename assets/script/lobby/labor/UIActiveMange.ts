@@ -9,7 +9,7 @@
 
 import { EventName } from "../../config/EventName";
 import WebImageHelper from "../../helper/WebImageHelper";
-import { APIOrgClubActivityCreate, APIOrgClubUploadIcon, Web_Org_Club_Get } from "../../net/https/WebRequest";
+import { WebOrgClubActivityCreate, WebOrgClubUploadIcon, WebOrgClubGet } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { UIClubModel } from "./UIClubModel";
@@ -56,8 +56,8 @@ export default class UIActiveMange extends BaseForm {
 
     async uploadIcon() {
 
-        await UIClubModel.mInstance.APIOrgClubUploadIcon();
-        let icon: any = APIOrgClubUploadIcon.Response.data
+        await UIClubModel.mInstance.WebOrgClubUploadIcon();
+        let icon: any = WebOrgClubUploadIcon.Response.data
         if (icon) {
             this.iconUrl = icon
             await WebImageHelper.loadRemoteSprite(icon, this.image);
@@ -74,9 +74,9 @@ export default class UIActiveMange extends BaseForm {
             this.iconUrl = this.picType
             description = this.editBox.string;
         }
-        let data: any = Web_Org_Club_Get.Response.data;
+        let data: any = WebOrgClubGet.Response.data;
         param = { club_id: data.club_id, activity_type: this.activeType, description: description, img_url: this.iconUrl };
-        let _data: any = await UIClubModel.mInstance.APIOrgClubActivityCreate(param)
+        let _data: any = await UIClubModel.mInstance.WebOrgClubActivityCreate(param)
         if (_data.code == 0) {
             this.post(EventName.refreshActive);
             UIComponent.Instance.Toast("发布成功")

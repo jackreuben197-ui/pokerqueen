@@ -8,7 +8,7 @@
  */
 import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
-import { Web_Mtt } from "../../net/https/WebRequest";
+import { WebMtt } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import TimeHelper from "../../helper/TimeHelper";
 import { setInterval } from "timers";
@@ -52,13 +52,13 @@ export default class MttRealTimeActionNode extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        GC.notify.register(Web_Mtt.DETAIL, this.updateView, this)
+        GC.notify.register(WebMtt.DETAIL, this.updateView, this)
     }
 
     // protected notify(id: any, msg: any, sendInfo?: any): void {
     //     // id = id.replace(/\d+/, "{0}")
     //     switch (id) {
-    //         case Web_Mtt.DETAIL: {
+    //         case WebMtt.DETAIL: {
     //             this.updateView();
     //         } break;
     //     }

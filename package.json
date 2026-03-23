@@ -1,4 +1,12 @@
 {
+  "scripts": {
+    "sync:hot-config": "node ./scripts/fetch-hot-update-config.js",
+    "check:ts": "tsc -p tsconfig.json --noEmit",
+    "cocos:detect": "node ./scripts/cocos_cli.js detect",
+    "cocos:build:web": "node ./scripts/cocos_cli.js build \"platform=web-mobile;debug=true\"",
+    "cocos:build:web:release": "node ./scripts/cocos_cli.js build \"platform=web-mobile;debug=false;md5Cache=true\"",
+    "verify:code": "npm run check:ts && npm run cocos:build:web"
+  },
   "dependencies": {
     "@types/gapi": "^0.0.43",
     "google-protobuf": "^3.21.0",
@@ -7,6 +15,7 @@
     "ts-md5": "^1.2.11"
   },
   "devDependencies": {
-    "@types/node": "^18.0.4"
+    "@types/node": "^18.0.4",
+    "typescript": "^5.8.2"
   }
 }

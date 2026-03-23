@@ -1,5 +1,5 @@
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_Prop_User_Prop_Used, WWW } from "../../net/https/WebRequest";
+import { WebPropUserPropUsed, WebWww } from "../../net/https/WebRequest";
 import UIMyPack from "../../new_lobby/me/UIMyPack";
 import UIBasePlus from "../UIBasePlus";
 import UIComponent from "../UIComponent";
@@ -126,9 +126,9 @@ export default class UIBackDialog extends UIBasePlus {
     //////////////////
 
     private SendMessageOptions(prop_id: number, type: number, phoneNum = "", quantity = 1) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Prop_User_Prop_Used,
+                web_class: WebPropUserPropUsed,
                 body: {
                     prop_id: prop_id,//道具id
                     quantity: quantity,//道具数量

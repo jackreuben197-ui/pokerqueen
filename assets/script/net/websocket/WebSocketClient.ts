@@ -9,7 +9,7 @@ import GlobalSession from "../../session/GlobalSession";
 import LobbySession from "../../session/LobbySession";
 import LoginSession from "../../session/LoginSession";
 import UIComponent from "../../ui/UIComponent";
-import { Web_WS } from "../https/WebRequest";
+import { WebWs } from "../https/WebRequest";
 import ProtocolAgency from "./ProtocolAgency";
 import { ProtocolCode } from "./ProtocolCode";
 import { ProtocolCommon } from "./ProtocolHoldemMessages";

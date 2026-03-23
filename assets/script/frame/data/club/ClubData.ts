@@ -6,7 +6,7 @@
  * @LastEditTime: 2023-01-04 16:02:15
  * @FilePath: /pokerqueen/assets/script/frame/data/club/ClubData.ts
  */
-import { APIOrgClubGold, Web_Org_Club_Get } from "../../../net/https/WebRequest";
+import { WebOrgClubGold, WebOrgClubGet } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
 import ClubInfoModel from "./ClubInfoModel";
 
@@ -15,10 +15,10 @@ export default class ClubData extends BaseData {
 
     protected notify(id: any, msg: any, sendInfo?: any) {
         switch (id) {
-            case Web_Org_Club_Get.API: {
+            case WebOrgClubGet.API: {
                 this.info.updateData(msg);
             } break;
-            case APIOrgClubGold.API: {
+            case WebOrgClubGold.API: {
                 this.info.updateGold(msg);
             } break;
         }

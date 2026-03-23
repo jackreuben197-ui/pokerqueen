@@ -12,7 +12,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
 import { UIMineModel } from "../../lobby/UIMineModel";
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Hranks, Web_Room_Center_Mtt_Myaward, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize, Web_Room_Center_Mtt_Rooms } from "../../net/https/WebRequest";
+import { WebRoomCenterMttDetailS, WebRoomCenterMttHranks, WebRoomCenterMttMyawArd, WebRoomCenterMttRanks, WebRoomCenterMttRealPrize, WebRoomCenterMttRooms } from "../../net/https/WebRequest";
 import { MTTJoinAction, UIMTTModel } from "../../new_mtt/UIMTTModel";
 //import { MTTJoinAction, UIMTTModel } from "../../new_mtt/UIMTTModel";
 import BaseForm from "../../ui/form/BaseForm";
@@ -303,11 +303,11 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Ranks.API.replace("{id}", this._data.match_id.toString()),
-                request: Web_Room_Center_Mtt_Ranks,
-                body: Web_Room_Center_Mtt_Ranks.Request(reqInfo),
+                api: WebRoomCenterMttRanks.API.replace("{id}", this._data.match_id.toString()),
+                request: WebRoomCenterMttRanks,
+                body: WebRoomCenterMttRanks.Request(reqInfo),
                 onSuccess: function () {
-                    let tResp = Web_Room_Center_Mtt_Ranks.Response;
+                    let tResp = WebRoomCenterMttRanks.Response;
                     if (tResp.code == 0) {
                         this.refreshListView(2, tResp.data);
                     }
@@ -334,11 +334,11 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Real_Prize.API.replace("{id}", this._data.match_id.toString()),
-                request: Web_Room_Center_Mtt_Real_Prize,
-                body: Web_Room_Center_Mtt_Real_Prize.Request(reqInfo),
+                api: WebRoomCenterMttRealPrize.API.replace("{id}", this._data.match_id.toString()),
+                request: WebRoomCenterMttRealPrize,
+                body: WebRoomCenterMttRealPrize.Request(reqInfo),
                 onSuccess: function () {
-                    let tResp = Web_Room_Center_Mtt_Real_Prize.Response;
+                    let tResp = WebRoomCenterMttRealPrize.Response;
                     if (tResp.code == 0) {
                         this.refreshListView(3, tResp);
                     }
@@ -365,11 +365,11 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Rooms.API.replace("{id}", this._data.match_id.toString()),
-                request: Web_Room_Center_Mtt_Rooms,
-                body: Web_Room_Center_Mtt_Rooms.Request(reqInfo),
+                api: WebRoomCenterMttRooms.API.replace("{id}", this._data.match_id.toString()),
+                request: WebRoomCenterMttRooms,
+                body: WebRoomCenterMttRooms.Request(reqInfo),
                 onSuccess: function () {
-                    let tResp = Web_Room_Center_Mtt_Rooms.Response;
+                    let tResp = WebRoomCenterMttRooms.Response;
                     if (tResp.code == 0) {
                         this.refreshListView(4, tResp);
                     }
@@ -396,11 +396,11 @@ export default class MttDetailForm extends BaseForm {
                 offset: 0,
             }
             HttpRequest.Send({
-                api: Web_Room_Center_Mtt_Details.API.replace("{id}", this._data.match_id.toString()),
-                request: Web_Room_Center_Mtt_Details,
-                body: Web_Room_Center_Mtt_Details.Request(reqInfo),
+                api: WebRoomCenterMttDetailS.API.replace("{id}", this._data.match_id.toString()),
+                request: WebRoomCenterMttDetailS,
+                body: WebRoomCenterMttDetailS.Request(reqInfo),
                 onSuccess: function () {
-                    let tResp = Web_Room_Center_Mtt_Details.Response;
+                    let tResp = WebRoomCenterMttDetailS.Response;
                     if (tResp.code == 0) {
                         this.refreshListView(5, tResp);
                     }

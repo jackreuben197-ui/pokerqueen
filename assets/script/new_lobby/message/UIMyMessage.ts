@@ -1,7 +1,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { APIMsgMessageList, Web_Msg_Message_Unread, Web_Msg_Message_UnreadClear, WWW } from "../../net/https/WebRequest";
+import { WebMsgMessageList, WebMsgMessageUnread, WebMsgMessageUnreadClear, WebWww } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemMyMessage from "./ItemMyMessage";
@@ -77,9 +77,9 @@ export default class UIMyMessage extends BaseFormPlus {
     }
     //请求未读消息
     reqUnreads() {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Msg_Message_Unread,
+                web_class: WebMsgMessageUnread,
             }
         ).then(
             (res: any) => {
@@ -93,9 +93,9 @@ export default class UIMyMessage extends BaseFormPlus {
 
     //清理未读消息
     reqUnreadClear(msg_type: number) {
-        return WWW.Instance.CommonAPI(
+        return WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Msg_Message_UnreadClear,
+                web_class: WebMsgMessageUnreadClear,
                 body: {
                     msg_type: msg_type
                 },
@@ -148,9 +148,9 @@ export default class UIMyMessage extends BaseFormPlus {
 
 
     reqMsgList(type: number) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: APIMsgMessageList,
+                web_class: WebMsgMessageList,
                 body: {
                     clubID: ClubCache.club_id,
                     TribeID: ClubCache.tribe_id,

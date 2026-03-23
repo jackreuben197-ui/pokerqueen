@@ -6,7 +6,7 @@ import { GameConfig, Member_Order_List, Tabs_Status, TextColor } from "../../../
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { APIOrgMemberList, Web_Club_Agent_UserList, Web_Club_Agent_UserListCover, WWW } from "../../../net/https/WebRequest";
+import { WebOrgMemberList, WebClubAgentUserList, WebClubAgentUserListCover, WebWww } from "../../../net/https/WebRequest";
 import ItemVipOffline from "../../../new_lobby/vip/link/ItemVipOffline";
 
 import GGCombobox from "../../../ui/component/GGCombobox";
@@ -162,9 +162,9 @@ export default class UIClubVipOffline extends BaseFormPlus {
     //请求公会内所有普通成员列表
     reqMemberList(search: string = "") {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: APIOrgMemberList,
+                web_class: WebOrgMemberList,
                 body: {
                     "club_random_id": ClubCache.random_id,
                     "club_id": ClubCache.club_id,
@@ -193,9 +193,9 @@ export default class UIClubVipOffline extends BaseFormPlus {
         //sort_type 排序类别(sort_type):1-输赢数;2-手数;3-服务费;4-最后登录时间
         //order_type 顺序类别(order_type):1-顺序;2-倒叙;
         let order_obj = Member_Order_List[index];
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Club_Agent_UserList,
+                web_class: WebClubAgentUserList,
                 body: {
                     "club_random_id": ClubCache.random_id,
                     "club_id": ClubCache.club_id,
@@ -238,9 +238,9 @@ export default class UIClubVipOffline extends BaseFormPlus {
             "user_ids": this.ids
         }
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Club_Agent_UserListCover,
+                web_class: WebClubAgentUserListCover,
                 body: body,
                 club_id: ClubCache.club_id
             }
@@ -327,6 +327,6 @@ export default class UIClubVipOffline extends BaseFormPlus {
         this.reqMemberSave();
     }
     private followClick() {
-        this.refreshMemberEditList(APIOrgMemberList.Response.data?.data);
+        this.refreshMemberEditList(WebOrgMemberList.Response.data?.data);
     }
 }

@@ -1,13 +1,23 @@
 /*
  * @Author: xfj
  * @Date: 2022-10-24 10:50:41
- * @description: 
+ * @description:
  * @LastEditors: Please set LastEditors
  * @LastEditTime: 2022-12-06 13:42:51
  * @FilePath: /pokerqueen/assets/script/frame/data/wallet/WalletData.ts
  */
 import { EOrderOprationStatus, EOrderType } from "../../../config/EEnumConfig";
-import { Web_Club_Issue_Gold, Web_Gold_Change_Log, Web_Order_apply, Web_Order_Rcords, Web_Org_Club_Get, Web_Recharge_Gold, Web_Recharge_Gold_Club, Web_Tiqu_Gold, Web_Tiqu_Gold_Club } from "../../../net/https/WebRequest";
+import {
+  WebClubIssueGold,
+  WebGoldChangeLog,
+  WebOrderApply,
+  WebOrderRcords,
+  WebOrgClubGet,
+  WebRechargeGold,
+  WebRechargeGoldClub,
+  WebTiquGold,
+  WebTiquGoldClub,
+} from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
 import GC from "../../GameControl";
 import OrderApplyModel from "./apply/OrderApplyModel";
@@ -16,92 +26,132 @@ import GoldIssueModel from "./issue/GoldIssueModel";
 import OrderRecordModel from "./record/OrderRecordModel";
 
 export default class WalletData extends BaseData {
-    goldChangeLogs: GoldChangeLogModel = new GoldChangeLogModel();
-    orderRecord: OrderRecordModel = new OrderRecordModel();
-    issue: GoldIssueModel = new GoldIssueModel();
-    apply: OrderApplyModel = new OrderApplyModel();
+  goldChangeLogs: GoldChangeLogModel = new GoldChangeLogModel();
+  orderRecord: OrderRecordModel = new OrderRecordModel();
+  issue: GoldIssueModel = new GoldIssueModel();
+  apply: OrderApplyModel = new OrderApplyModel();
 
-    protected notify(id: any, msg: any, sendInfo?: any): void {
-        switch (id) {
-            case Web_Gold_Change_Log.User: {
-                this.goldChangeLogs.updateData(msg, false);
-            } break;
-            case Web_Gold_Change_Log.Club: {
-                this.goldChangeLogs.updateData(msg, true);
-            } break;
-            case Web_Order_Rcords.USER_RECORD:
-            case Web_Order_Rcords.CLUB_GRANT:
-            case Web_Order_Rcords.CLUB_RECORD: {
-                this.orderRecord.updateData(msg, sendInfo.order_type);
-            } break;
-            case Web_Club_Issue_Gold.USER_LIST: {
-                this.issue.updateData(msg);
-            } break;
-            case Web_Order_apply.APPLY_LIST: {
-                this.apply.updateData(msg);
-            } break;
-            case Web_Order_apply.OPRATION_APPLY: {
-                this.apply.updateItem(msg);
-            } break;
-            case Web_Tiqu_Gold.API: {
-                GC.data.user.info.goldTiquApplySuc(msg);
-            } break;
-            case Web_Tiqu_Gold_Club.API: {
-                GC.data.club.info.goldTiquApplySuc(msg);
-            } break;
-            case Web_Club_Issue_Gold.ISSUE: {
-                GC.data.club.info.goldIssueSuc(msg);
-            } break;
-            default:
-                break;
+  protected notify(id: any, msg: any, sendInfo?: any): void {
+    switch (id) {
+      case WebGoldChangeLog.User:
+        {
+          this.goldChangeLogs.updateData(msg, false);
         }
-    }
-
-
-    reqOprationGold(type: EWalletGoldOpration, goldNum: number, isClub?: boolean, userId?: number) {
-        if (type == EWalletGoldOpration.issue) {
-            this.reqServePost(Web_Club_Issue_Gold.ISSUE, { user_id: userId, gold_num: goldNum * 100 })
-        } else {
-            let api = isClub ? Web_Recharge_Gold_Club.API : Web_Recharge_Gold.API
-            if (type == EWalletGoldOpration.out) {
-                api = isClub ? Web_Tiqu_Gold_Club.API : Web_Tiqu_Gold.API
-            }
-            this.reqServePost(api, { amount: goldNum * 100 })
+        break;
+      case WebGoldChangeLog.Club:
+        {
+          this.goldChangeLogs.updateData(msg, true);
         }
-    }
-
-
-    reqUserGoldChangeLog(offset: number = 0, limit: number = 10) {
-        this.reqServePost(Web_Gold_Change_Log.User, { limit: limit, offset: offset })
-    }
-
-    reqClubGoldChangeLog(offset: number = 0, limit: number = 10) {
-        this.reqServePost(Web_Gold_Change_Log.Club, { limit: limit, offset: offset, club_random_id: Web_Org_Club_Get.Response.data.random_id })
-    }
-
-    reqOrderRecord(type: EOrderType, offset: number = 0, isClub: boolean, limit: number = 25) {
-        let sendData: any = { limit: limit, offset: offset, order_type: type };
-        if (!isClub) {
-            sendData = { limit: limit, offset: offset, order_type: type, user_type: 1 };
+        break;
+      case WebOrderRcords.USER_RECORD:
+      case WebOrderRcords.CLUB_GRANT:
+      case WebOrderRcords.CLUB_RECORD:
+        {
+          this.orderRecord.updateData(msg, sendInfo.order_type);
         }
-        let api = isClub ? Web_Order_Rcords.CLUB_RECORD : Web_Order_Rcords.USER_RECORD;
-        if (isClub && type == EOrderType.fafang) {
-            api = Web_Order_Rcords.CLUB_GRANT
+        break;
+      case WebClubIssueGold.USER_LIST:
+        {
+          this.issue.updateData(msg);
         }
-        this.reqServePost(api, sendData);
+        break;
+      case WebOrderApply.APPLY_LIST:
+        {
+          this.apply.updateData(msg);
+        }
+        break;
+      case WebOrderApply.OPRATION_APPLY:
+        {
+          this.apply.updateItem(msg);
+        }
+        break;
+      case WebTiquGold.API:
+        {
+          GC.data.user.info.goldTiquApplySuc(msg);
+        }
+        break;
+      case WebTiquGoldClub.API:
+        {
+          GC.data.club.info.goldTiquApplySuc(msg);
+        }
+        break;
+      case WebClubIssueGold.ISSUE:
+        {
+          GC.data.club.info.goldIssueSuc(msg);
+        }
+        break;
+      default:
+        break;
     }
+  }
 
-    reqIssueList(offset: number = 0, limit: number = 10) {
-        this.reqServePost(Web_Club_Issue_Gold.USER_LIST, { limit: limit, offset: offset });
-    }
-    reqIssueSearchUser(search) {
-        this.reqServePost(Web_Club_Issue_Gold.USER_LIST, { search: search });
-    }
+  // reqOprationGold(type: EWalletGoldOpration, goldNum: number, isClub?: boolean, userId?: number) {
+  //     if (type == EWalletGoldOpration.issue) {
+  //         this.reqServePost(WebClubIssueGold.ISSUE, { user_id: userId, gold_num: goldNum * 100 })
+  //     } else {
+  //         let api = isClub ? WebRechargeGoldClub.API : WebRechargeGold.API
+  //         if (type == EWalletGoldOpration.out) {
+  //             api = isClub ? WebTiquGoldClub.API : WebTiquGold.API
+  //         }
+  //         this.reqServePost(api, { amount: goldNum * 100 })
+  //     }
+  // }
 
-    reqOrderApplyList(type: EOrderType, offset: number = 0, limit: number = 10) {
-        this.reqServePost(Web_Order_apply.APPLY_LIST, { limit: limit, offset: offset, order_type: type })
+  reqUserGoldChangeLog(offset: number = 0, limit: number = 10) {
+    this.reqServePost(WebGoldChangeLog.User, { limit: limit, offset: offset });
+  }
+
+  reqClubGoldChangeLog(offset: number = 0, limit: number = 10) {
+    this.reqServePost(WebGoldChangeLog.Club, {
+      limit: limit,
+      offset: offset,
+      club_random_id: WebOrgClubGet.Response.data.random_id,
+    });
+  }
+
+  reqOrderRecord(
+    type: EOrderType,
+    offset: number = 0,
+    isClub: boolean,
+    limit: number = 25,
+  ) {
+    let sendData: any = { limit: limit, offset: offset, order_type: type };
+    if (!isClub) {
+      sendData = {
+        limit: limit,
+        offset: offset,
+        order_type: type,
+        user_type: 1,
+      };
     }
-    reqOrderApplyOpration(order_no: string, audit_type: EOrderOprationStatus) {
-        this.reqServePost(Web_Order_apply.OPRATION_APPLY, { order_no: order_no, audit_type: audit_type })
+    let api = isClub ? WebOrderRcords.CLUB_RECORD : WebOrderRcords.USER_RECORD;
+    if (isClub && type == EOrderType.fafang) {
+      api = WebOrderRcords.CLUB_GRANT;
     }
+    this.reqServePost(api, sendData);
+  }
+
+  reqIssueList(offset: number = 0, limit: number = 10) {
+    this.reqServePost(WebClubIssueGold.USER_LIST, {
+      limit: limit,
+      offset: offset,
+    });
+  }
+  reqIssueSearchUser(search) {
+    this.reqServePost(WebClubIssueGold.USER_LIST, { search: search });
+  }
+
+  reqOrderApplyList(type: EOrderType, offset: number = 0, limit: number = 10) {
+    this.reqServePost(WebOrderApply.APPLY_LIST, {
+      limit: limit,
+      offset: offset,
+      order_type: type,
+    });
+  }
+  reqOrderApplyOpration(order_no: string, audit_type: EOrderOprationStatus) {
+    this.reqServePost(WebOrderApply.OPRATION_APPLY, {
+      order_no: order_no,
+      audit_type: audit_type,
+    });
+  }
 }

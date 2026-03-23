@@ -1,7 +1,7 @@
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { UIClubModel } from "../../../lobby/labor/UIClubModel";
-import { Web_Club_Agent_Del, WWW } from "../../../net/https/WebRequest";
+import { WebClubAgentDel, WebWww } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIBasePlus from "../../../ui/UIBasePlus";
 import UIComponent from "../../../ui/UIComponent";
@@ -67,7 +67,7 @@ export default class UIAgentUnlink extends UIBasePlus {
     //////////////////////////////////////////////请求
     // -> 请求绑定对象信息
     reqAgentInfo() {
-        UIClubModel.mInstance.APIOrgClubUserInfo({
+        UIClubModel.mInstance.WebOrgClubUserInfo({
             "user_id": this._param.agent_id,
             "club_id": ClubCache.club_id
         }).then(
@@ -81,9 +81,9 @@ export default class UIAgentUnlink extends UIBasePlus {
     }
     // -> 请求解绑
     reqUnlink() {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Club_Agent_Del,
+                web_class: WebClubAgentDel,
                 body: {
                     "user_id": this._param.user.user_id,
                     "club_id": ClubCache.club_id,

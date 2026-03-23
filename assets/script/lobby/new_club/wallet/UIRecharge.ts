@@ -4,7 +4,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import PublicHelper from "../../../helper/PublicHelper";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { Web_Recharge_Gold, Web_Tiqu_Gold, WWW } from "../../../net/https/WebRequest";
+import { WebRechargeGold, WebTiquGold, WebWww } from "../../../net/https/WebRequest";
 import UIDialogComponent from "../../../ui/dialog/UIDialogComponent";
 import { UIRechargeDialogType } from "../../../ui/dialog/UIRechargeDialog";
 import UISuperDialog, { UISuperDialogType } from "../../../ui/dialog/UISuperDialog";
@@ -103,9 +103,9 @@ export default class UIRecharge extends BaseFormPlus {
                 //充
                 if (this._param.type == 1) {
 
-                    WWW.Instance.CommonAPI(
+                    WebWww.Instance.CommonAPI(
                         {
-                            web_class: Web_Recharge_Gold,
+                            web_class: WebRechargeGold,
 
                             body: { amount: value, gold_type: gold_type },
 
@@ -123,9 +123,9 @@ export default class UIRecharge extends BaseFormPlus {
                 //提
                 // if (this._param.type == 2) {
 
-                //     WWW.Instance.CommonAPI(
+                //     WebWww.Instance.CommonAPI(
                 //         {
-                //             web_class: Web_Tiqu_Gold,
+                //             web_class: WebTiquGold,
 
                 //             body: { amount: value, gold_type: gold_type },
 

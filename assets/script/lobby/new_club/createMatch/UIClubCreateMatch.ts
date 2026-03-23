@@ -22,7 +22,7 @@ import TimeHelper from "../../../helper/TimeHelper";
 import LobbyRoomListItem from "../../../frame/data/lobby/LobbyRoomListItem";
 import { UIDefine } from "../../../define/UIDefine";
 import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
-import { APIOrgClubGold, APIUserDiamondsWallet } from "../../../net/https/WebRequest";
+import { WebOrgClubGold, WebUserDiamondsWallet } from "../../../net/https/WebRequest";
 import TabNode from "../../../common/tabNode";
 import { createMatchTabConfig, dxmTabConfig, gameChangeTypeTabConfig, fzbTabConfig, bcTabConfig, sksjTabConfig } from "../../../frame/config/tabConfig";
 import GGSlider from "../../../ui/component/GGSlider";
@@ -261,12 +261,12 @@ export default class UIClubCreateMatch extends BaseForm {
         this.initUI()
         let wallet = null;
         if (ClubCache.joinCreateMatchType == 0) {
-            await UIClubModel.mInstance.APIOrgClubGold(ClubCache.random_id);
-            wallet = APIOrgClubGold.Response.data.diamond;
+            await UIClubModel.mInstance.WebOrgClubGold(ClubCache.random_id);
+            wallet = WebOrgClubGold.Response.data.diamond;
             this.ownTip.string = i18nMgr.Get('UIClubBalance')
         } else if (ClubCache.joinCreateMatchType == 1) {
-            await UIClubModel.mInstance.APIUserDiamondsWallet();
-            wallet = APIUserDiamondsWallet.Response.data;
+            await UIClubModel.mInstance.WebUserDiamondsWallet();
+            wallet = WebUserDiamondsWallet.Response.data;
             ClubCache._diamonds_wallet = wallet.diamonds_wallet
             wallet = wallet.diamonds_wallet.diamonds
             this.ownTip.string = i18nMgr.Get('UIClub_CreateRoom31')
@@ -1066,9 +1066,9 @@ export default class UIClubCreateMatch extends BaseForm {
         if (this._btnType == 0) {
             if (this.room_config) {
                 params.id = this.room_config.id
-                await UIClubModel.mInstance.APIOrgUpdateTemplate(params);
+                await UIClubModel.mInstance.WebOrgUpdateTemplate(params);
             } else {
-                await UIClubModel.mInstance.APIOrgCreateTemplate(params);
+                await UIClubModel.mInstance.WebOrgCreateTemplate(params);
 
             }
             this.post(EventName.matchModelChange)
@@ -1079,18 +1079,18 @@ export default class UIClubCreateMatch extends BaseForm {
             if (ClubCache.joinCreateMatchType == 0) {
                 //公会牌桌
                 room_config.limit_friend_table = false
-                await UIClubModel.mInstance.APIOrgRoomClubCreate(params);
+                await UIClubModel.mInstance.WebOrgRoomClubCreate(params);
                 // TimeHelper.Sleep(3000);
                 this.post(EventName.matchModelChange)
             }
             else if (ClubCache.joinCreateMatchType == 1) {
                 // //朋友桌
                 room_config.limit_friend_table = true
-                let data: any = await UIClubModel.mInstance.APIOrgRoomConfigCreate(params);
+                let data: any = await UIClubModel.mInstance.WebOrgRoomConfigCreate(params);
                 this.top_block.active = true;
                 let r_data = data;
                 // await TimeHelper.Sleep(1000);
-                data = await UIClubModel.mInstance.APIOrgFriendRoomInfo(data.data.room_id).catch(() => { });
+                data = await UIClubModel.mInstance.WebOrgFriendRoomInfo(data.data.room_id).catch(() => { });
                 this.post(EventName.updateFriendChessView)
                 this.top_block.active = false;
                 let _data = new LobbyRoomListItem(data.data.data);

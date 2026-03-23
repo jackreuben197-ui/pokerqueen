@@ -5,7 +5,7 @@ import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
 import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
-import { WWW, Web_Room_Center_Mtt_list } from "../net/https/WebRequest";
+import { WebWww, WebRoomCenterMttList } from "../net/https/WebRequest";
 import UIComponent from "../ui/UIComponent";
 import BaseFormPlus from "../ui/form/BaseFormPlus";
 import ItemMTTList from "./ItemMTTList";
@@ -57,9 +57,9 @@ export default class UIMTTList extends BaseFormPlus {
 
         this.isReqing = true;
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Room_Center_Mtt_list,
+                web_class: WebRoomCenterMttList,
                 body: {
 
                     limit: 10,

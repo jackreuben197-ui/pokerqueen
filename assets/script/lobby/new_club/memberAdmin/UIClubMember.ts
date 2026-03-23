@@ -27,7 +27,7 @@ import { UIClubModel } from "../../labor/UIClubModel";
 import { EventName } from "../../../config/EventName";
 import { memberRoleConfig, roleSortConfig } from "../../../frame/data/rate/RateConfig";
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
-import { APIOrgClubUserInfo, APIOrgClubUserRole_change, Web_User_Info } from "../../../net/https/WebRequest";
+import { WebOrgClubUserInfo, WebOrgClubUserRoleChange, WebUserInfo } from "../../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import Data from "../../labor/script/Data";
 import { UISuperDialogType } from "../../../ui/dialog/UISuperDialog";
@@ -149,13 +149,13 @@ export default class UIClubMember extends BaseForm {
             user_id: this._info.info.user_info.user_id,
             "user_level": this._sort_type  //用户等级 0 普通 1会长  3管理员 4代理
         }
-        await UIClubModel.mInstance.APIOrgClubUserRole_change(parms);
-        await UIClubModel.mInstance.APIOrgClubUserInfo({
+        await UIClubModel.mInstance.WebOrgClubUserRoleChange(parms);
+        await UIClubModel.mInstance.WebOrgClubUserInfo({
             "user_id": this._info.info.user_info.user_id,
             "club_id": ClubCache.club_id,
         })
         this.post(EventName.requestClubMemList);
-        let data: any = APIOrgClubUserInfo.Response.data
+        let data: any = WebOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
         this._info = { info: data };
         this.initTop()
@@ -312,7 +312,7 @@ export default class UIClubMember extends BaseForm {
             info["end_time"] = Math.ceil(this._end_time / 1000)
         }
 
-        UIClubModel.mInstance.APIOrgClubUserGameInfo(info).then(
+        UIClubModel.mInstance.WebOrgClubUserGameInfo(info).then(
             (res) => {
                 this.refreshUpUI(res);
             },
@@ -431,7 +431,7 @@ export default class UIClubMember extends BaseForm {
             "remark_name": this.editName.string,
         }
 
-        await UIClubModel.mInstance.APIOrgClubUserRemarks(parms)
+        await UIClubModel.mInstance.WebOrgClubUserRemaRks(parms)
         this.post(EventName.requestClubMemList);
     }
     async editjieshaoCb() {
@@ -444,7 +444,7 @@ export default class UIClubMember extends BaseForm {
             "remark_desc": this.editjieshao.string
         }
 
-        await UIClubModel.mInstance.APIOrgClubUserRemarks(parms)
+        await UIClubModel.mInstance.WebOrgClubUserRemaRks(parms)
         this.post(EventName.requestClubMemList);
     }
 
@@ -473,7 +473,7 @@ export default class UIClubMember extends BaseForm {
         if (this._info.info.agent_user_id > 0) {
             noHave.active = false
             haveData.active = true
-            UIClubModel.mInstance.APIOrgClubUserInfo({
+            UIClubModel.mInstance.WebOrgClubUserInfo({
                 "user_id": this._info.info.agent_user_id,
                 "club_id": ClubCache.club_id
             }).then(

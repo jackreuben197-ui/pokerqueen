@@ -6,7 +6,7 @@ import { mttRealTimeTabConfig } from "../../frame/config/tabConfig";
 import GC from "../../frame/GameControl";
 import { GameCache } from "../../game/GameCache";
 import TimeHelper from "../../helper/TimeHelper";
-import { Web_Mtt } from "../../net/https/WebRequest";
+import { WebMtt } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import MttRealTimeActionNode from "./MttRealTimeActionNode";
@@ -61,7 +61,7 @@ export default class MttRealTime extends UIBase {
 
     protected regiterDispatchEvent(): void {
         super.regiterDispatchEvent();
-        GC.notify.register(Web_Mtt.RANKS, this.updateRankList, this)
+        GC.notify.register(WebMtt.RANKS, this.updateRankList, this)
     }
 
     protected regiterTouchEvents(): void {
@@ -93,7 +93,7 @@ export default class MttRealTime extends UIBase {
     // protected notify(id: any, msg: any, sendInfo?: any): void {
     //     //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
     //     switch (id) {
-    //         case Web_Mtt.RANKS: {
+    //         case WebMtt.RANKS: {
     //             this.updateRankList();
     //         } break;
     //     }

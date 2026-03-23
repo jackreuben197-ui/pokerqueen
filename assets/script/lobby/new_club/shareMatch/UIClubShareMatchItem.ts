@@ -66,7 +66,7 @@ export default class UIClubShareMatchItem extends UIBase {
         canclebtnNode.active = this._type == 0
     }
     async sendRequest(event, customData) {
-        await UIClubModel.mInstance.APIOrgClubShareAudit({
+        await UIClubModel.mInstance.WebOrgClubShareAudit({
             "apply_id": this._data.id,
             "audit_op": Number(customData)
         });

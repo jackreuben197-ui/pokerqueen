@@ -6,7 +6,7 @@ import { HistoryInfoData } from "../../../game/UITexasHistoryComponent";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
-import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
+import { WebStatsUserStats } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { LobbyControl } from "../../control/LobbyControl";

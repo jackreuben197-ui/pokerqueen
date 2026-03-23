@@ -14,7 +14,7 @@ import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 import { EventName } from "../../config/EventName";
 import TimeHelper from "../../helper/TimeHelper";
-import { APIMttUserWallet, APIUserDiamondsWallet, WWW, Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Rebuy } from "../../net/https/WebRequest";
+import { WebMttUserWallet, WebUserDiamondsWallet, WebWww, WebPropUserBuyProp, WebPropUserCheckPropInfo, WebRoomCenterMttBuyin, WebRoomCenterMttDetailS, WebRoomCenterMttRebuy } from "../../net/https/WebRequest";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
@@ -133,7 +133,7 @@ export default class MttPayforHome extends BaseForm {
             //显示钱包选择
             this.payNode.active = true;
 
-            await UIClubModel.mInstance.APIMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: 0, limit: 20 })
+            await UIClubModel.mInstance.WebMttUserWallet(GC.data.mtt.list.select.match_id, { club_id: ClubCache.club_id, offset: 0, limit: 20 })
             if (this._type == 1) {
                 ClubCache.mttPayWallat = null
             }
@@ -182,7 +182,7 @@ export default class MttPayforHome extends BaseForm {
             this.setText(this.select_lbl, 'UILogin_Select')
             this.rateNode.active = false
         } else {
-            let _data: any = APIMttUserWallet.Response.data
+            let _data: any = WebMttUserWallet.Response.data
             let walletData = null;
             _data.wallet.some(element => {
                 walletData = element
@@ -534,9 +534,9 @@ export default class MttPayforHome extends BaseForm {
     //显示钻石并且不足提示
     public ShowDiamond() {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: APIUserDiamondsWallet,
+                web_class: WebUserDiamondsWallet,
             }
         ).then(
             (res: any) => {

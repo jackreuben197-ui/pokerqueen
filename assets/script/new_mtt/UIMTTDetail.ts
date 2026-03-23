@@ -8,9 +8,9 @@ import TimeHelper from "../helper/TimeHelper";
 
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
-import { WWW } from "../net/https/WebRequest";
-import { Web_Prop_User_Check_Prop_Info } from "../net/https/WebRequest";
-import { Web_Room_Center_Mtt_Details } from "../net/https/WebRequest";
+import { WebWww } from "../net/https/WebRequest";
+import { WebPropUserCheckPropInfo } from "../net/https/WebRequest";
+import { WebRoomCenterMttDetailS } from "../net/https/WebRequest";
 import LobbySession from "../session/LobbySession";
 
 import UIBasePlus from "../ui/UIBasePlus";
@@ -113,9 +113,9 @@ export default class UIMTTDetail extends BaseFormPlus {
     //请求比赛详情
     reqMTTDetail(callback?: Function) {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Room_Center_Mtt_Details,
+                web_class: WebRoomCenterMttDetailS,
                 api_id: this._param.match_id
             }
         ).then(
@@ -139,9 +139,9 @@ export default class UIMTTDetail extends BaseFormPlus {
 
         if (data.mtt.buy_prop_id != 0) {
 
-            WWW.Instance.CommonAPI(
+            WebWww.Instance.CommonAPI(
                 {
-                    web_class: Web_Prop_User_Check_Prop_Info,
+                    web_class: WebPropUserCheckPropInfo,
                     body: {
                         prop_id: data.mtt.buy_prop_id
                     }

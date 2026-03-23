@@ -14,7 +14,7 @@ import UIComponent from "../../../ui/UIComponent";
 import { UIDefine } from "../../../define/UIDefine";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { UIClubModel } from "../../labor/UIClubModel";
-import { APIMessageRed_num, APIOrgClubNotice, APIOrgClubUserInfo, APIOrgGetMessList, APIOrgGetNewMessNum, Web_User_Info } from "../../../net/https/WebRequest";
+import { WebMessageRednum, WebOrgClubNotice, WebOrgClubUserInfo, WebOrggetMessList, WebOrggetNewMessNum, WebUserInfo } from "../../../net/https/WebRequest";
 import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import { StringHelper } from "../../../helper/StringHelper";
 import UIBase from "../../../ui/UIBase";
@@ -76,11 +76,11 @@ export default class UIClubHome extends BaseForm {
         this.initAcTiveBord()
         this.initTabBnts()
         this.initTop();
-        await UIClubModel.mInstance.APIOrgClubUserInfo({
-            "user_id": Web_User_Info.Response.data.user.p_u_id,
+        await UIClubModel.mInstance.WebOrgClubUserInfo({
+            "user_id": WebUserInfo.Response.data.user.p_u_id,
             "club_id": ClubCache.club_id
         })
-        let data = APIOrgClubUserInfo.Response.data
+        let data = WebOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
         this.initCoin();
         this.initChessView();
@@ -88,8 +88,8 @@ export default class UIClubHome extends BaseForm {
     }
     //红点提示
     async initRedTip() {
-        await UIClubModel.mInstance.APIMessageRed_num()
-        let redData = APIMessageRed_num.Response.data
+        await UIClubModel.mInstance.WebMessageRednum()
+        let redData = WebMessageRednum.Response.data
 
 
         let flag = redData.some((element) => {
@@ -118,8 +118,8 @@ export default class UIClubHome extends BaseForm {
     //获取通知
     async initAcTiveBord() {
         if (ClubCache.show_notice_switch == 2) return
-        await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
-        let data: any = APIOrgClubNotice.Response.data;
+        await UIClubModel.mInstance.WebOrgClubNotice({ "club_id": ClubCache.club_id })
+        let data: any = WebOrgClubNotice.Response.data;
         // let now = new Date();
         // let year = now.getFullYear();
         // let month = now.getMonth();
@@ -244,7 +244,7 @@ export default class UIClubHome extends BaseForm {
                 break;
             case 3:
                 if (ClubCache.user_level == 4) {
-                    UIComponent.open(UIDefine.UIClubVipOffline, { user_id: Web_User_Info.Response.data.user.p_u_id, from: 1 });
+                    UIComponent.open(UIDefine.UIClubVipOffline, { user_id: WebUserInfo.Response.data.user.p_u_id, from: 1 });
                 } else {
                     UIComponent.open(UIDefine.UIClubMerberManager)
                 }
@@ -319,9 +319,9 @@ export default class UIClubHome extends BaseForm {
 
     // async initChat() {
     //     this._reqing = true
-    //     await UIClubModel.mInstance.APIOrgGetMessList({ last_id: 0, limit: 50, offset: this._offset })
+    //     await UIClubModel.mInstance.WebOrggetMessList({ last_id: 0, limit: 50, offset: this._offset })
     //     this._reqing = false
-    //     let data: any = APIOrgGetMessList.Response.data
+    //     let data: any = WebOrggetMessList.Response.data
     //     let node = null;
     //     data = data.data
     //     // data.sort((a: any, b: any) => {
@@ -367,8 +367,8 @@ export default class UIClubHome extends BaseForm {
     // }
     // async getNewMess() {
     //     this.changeTsMes()
-    //     await UIClubModel.mInstance.APIOrgGetNewMessNum({ msg_id: this._lastGetId });
-    //     let data: any = APIOrgGetNewMessNum.Response.data
+    //     await UIClubModel.mInstance.WebOrggetNewMessNum({ msg_id: this._lastGetId });
+    //     let data: any = WebOrggetNewMessNum.Response.data
     //     this._reqEnd = data == 0;
     //     this.setNewNum(data);
     // }
@@ -388,7 +388,7 @@ export default class UIClubHome extends BaseForm {
     // }
     // async clicka() {
     //     let param = { content: this.EditBox.string, message_type: 1 }
-    //     await UIClubModel.mInstance.APIOrgSendMess(param)
+    //     await UIClubModel.mInstance.WebOrgSendMess(param)
     //     this.initChat();
     //     this.EditBox.string = ''
     //     this.editChange()

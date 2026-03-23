@@ -3,7 +3,7 @@ import SimpleNodePool from "../../../common/MyNodePool";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import UserInfoData from "../../../frame/data/user/UserInfoData";
 import GC from "../../../frame/GameControl";
-import { Web_Club_Agent_Add, Web_Club_Agent_List, WWW } from "../../../net/https/WebRequest";
+import { WebClubAgentAdd, WebClubAgentList, WebWww } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIBasePlus from "../../../ui/UIBasePlus";
 import UIComponent from "../../../ui/UIComponent";
@@ -123,9 +123,9 @@ export default class UIAgentLink extends UIBasePlus {
     //////////////////////////////////////////////请求
     // -> 请求贵宾列表
     reqAgentList() {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Club_Agent_List,
+                web_class: WebClubAgentList,
                 body: {
                     "club_random_id": ClubCache.random_id,
                     "search": "",
@@ -147,9 +147,9 @@ export default class UIAgentLink extends UIBasePlus {
     reqAgentAdd() {
 
         let user: any = this.list[this.select_index];
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Club_Agent_Add,
+                web_class: WebClubAgentAdd,
                 body: {
                     "user_id": this._param.user_id,
                     "club_id": ClubCache.club_id,

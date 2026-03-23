@@ -6,7 +6,7 @@ import GC from "../frame/GameControl";
 import { GameCache } from "../game/GameCache";
 import ToastManager from "../manager/ToastManager";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_User_Info } from "../net/https/WebRequest";
+import { WebUserInfo } from "../net/https/WebRequest";
 
 export class UIMineModel {
 
@@ -19,14 +19,14 @@ export class UIMineModel {
         return this._instance;
     }
 
-    public UserInfoDto: typeof Web_User_Info.ResponseData = null;
+    public UserInfoDto: typeof WebUserInfo.ResponseData = null;
 
     public modifyHeadTime: number = null;
 
     //#region  自已的个人信息
     public ObtainUserInfo(pAct) {
         this.APIUserInfo().then(
-            (tDto: typeof Web_User_Info.Response) => {
+            (tDto: typeof WebUserInfo.Response) => {
                 if (tDto.code == 0) {
                     this.UserInfoDto = tDto.data;
                     this.modifyHeadTime = tDto.data.user.mat;
@@ -52,9 +52,9 @@ export class UIMineModel {
     public APIUserInfo() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_User_Info,
+                request: WebUserInfo,
                 onSuccess: function () {
-                    resolve(Web_User_Info.Response);
+                    resolve(WebUserInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

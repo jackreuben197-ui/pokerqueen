@@ -8,7 +8,7 @@ import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { WWW, Web_Room_Center_Mtt_Hranks, Web_Room_Center_Mtt_Ranks, Web_Room_Center_Mtt_Real_Prize } from "../net/https/WebRequest";
+import { WebWww, WebRoomCenterMttHranks, WebRoomCenterMttRanks, WebRoomCenterMttRealPrize } from "../net/https/WebRequest";
 import LobbySession from "../session/LobbySession";
 import UIBasePlus from "../ui/UIBasePlus";
 import { MTTMatchStatus, UIMTTModel } from "./UIMTTModel";
@@ -57,9 +57,9 @@ export default class UIMTTDetail_Reward extends UIBasePlus {
 
     reqList() {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Room_Center_Mtt_Real_Prize,
+                web_class: WebRoomCenterMttRealPrize,
                 api_id: this.mtt_detail.mtt.match_id
             }
         ).then(

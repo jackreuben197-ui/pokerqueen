@@ -6,7 +6,7 @@ import GC from "../../frame/GameControl";
 import PublicHelper from "../../helper/PublicHelper";
 import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
-import { Web_Room_Center_History_Replay } from "../../net/https/WebRequest";
+import { WebRoomCenterHistoryReplay } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import UIBase from "../../ui/UIBase";
@@ -438,7 +438,7 @@ export default class UITexasHistory extends UIBasePlus {
 
     }
 
-    protected async HandleHistoryReplay(ResponseData: typeof Web_Room_Center_History_Replay.Data) {
+    protected async HandleHistoryReplay(ResponseData: typeof WebRoomCenterHistoryReplay.Data) {
 
         this.PublicCards = [0, 0, 0, 0, 0];
         this.HaveSecondCard = false;

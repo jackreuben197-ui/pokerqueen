@@ -8,7 +8,7 @@
  */
 
 import HttpRequest from "../../net/https/HttpRequest";
-import { api_stats_mtt_room_detail, api_roomcenter_history_group, api_stats_user_stats_all } from "../../net/https/WebRequest";
+import { WebStatsMttRoomDetailApi, WebRoomCenterHistoryGroup, WebStatsUserStatsAll } from "../../net/https/WebRequest";
 
 export class UICareerModel {
     private static instance: UICareerModel = null;
@@ -19,13 +19,13 @@ export class UICareerModel {
         }
         return this.instance;
     }
-    api_stats_user_stats_all(parms, juhua: boolean = true) {
+    WebStatsUserStatsAll(parms, juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: api_stats_user_stats_all,
-                body: api_stats_user_stats_all.Request(parms),
+                request: WebStatsUserStatsAll,
+                body: WebStatsUserStatsAll.Request(parms),
                 onSuccess: function () {
-                    resolve(api_stats_user_stats_all.Response);
+                    resolve(WebStatsUserStatsAll.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -34,13 +34,13 @@ export class UICareerModel {
             });
         });
     }
-    api_roomcenter_history_group(parms) {
+    WebRoomCenterHistoryGroup(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: api_roomcenter_history_group,
-                body: api_roomcenter_history_group.Request(parms),
+                request: WebRoomCenterHistoryGroup,
+                body: WebRoomCenterHistoryGroup.Request(parms),
                 onSuccess: function () {
-                    resolve(api_roomcenter_history_group.Response);
+                    resolve(WebRoomCenterHistoryGroup.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -51,14 +51,14 @@ export class UICareerModel {
     /**
     * MTT 比赛列表详情
     */
-    async api_stats_mtt_room_detail(matchID, param) {
+    async WebStatsMttRoomDetailApi(matchID, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: api_stats_mtt_room_detail.API.replace("{id}", matchID.toString()),
-                request: api_stats_mtt_room_detail,
-                body: api_stats_mtt_room_detail.Request(param),
+                api: WebStatsMttRoomDetailApi.API.replace("{id}", matchID.toString()),
+                request: WebStatsMttRoomDetailApi,
+                body: WebStatsMttRoomDetailApi.Request(param),
                 onSuccess: function () {
-                    resolve(api_stats_mtt_room_detail.Response);
+                    resolve(WebStatsMttRoomDetailApi.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

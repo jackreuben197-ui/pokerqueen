@@ -22,7 +22,7 @@ import AssetContext, { AssetFold } from "../component/AssetContext";
 import LabelCDTime from "../component/LabelCDTime";
 import UIComponent from "../UIComponent";
 import BaseScene from "./BaseScene";
-import { WWW, Web_misc_popup_newer } from "../../net/https/WebRequest";
+import { WebWww, WebMiscPopupNewer } from "../../net/https/WebRequest";
 import WebImageHelper from "../../helper/WebImageHelper";
 
 const { ccclass, property } = cc._decorator;
@@ -460,7 +460,7 @@ export default class LoginScene extends BaseScene {
             //获取邮箱验证码
             if (this._loginProcess == ELoginProcess.register) {
                 //验证邮箱是否已注册
-                let result: any = await LoginSession.APIEmailExist({ email: account }).catch((e) => { });
+                let result: any = await LoginSession.WebEmailExist({ email: account }).catch((e) => { });
                 if (result == undefined) return;
                 if (result?.data) {
                     ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1006"));//("此号码已注册");
@@ -470,7 +470,7 @@ export default class LoginScene extends BaseScene {
 
             //验证获取验证码是否发送成功
             let lang = i18nMgr.getLanguage()
-            let result = await LoginSession.APISendEmailCode({ email: account, lang: lang }).catch(() => { });
+            let result = await LoginSession.WebSendEmailCode({ email: account, lang: lang }).catch(() => { });
             if (result == undefined) return;
 
             this.startVCodeTime();
@@ -782,9 +782,9 @@ export default class LoginScene extends BaseScene {
             this.ShowImage();
         }
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_misc_popup_newer,
+                web_class: WebMiscPopupNewer,
                 body: {
                     lang: tLangs[LanguageIndex],
                     type: type

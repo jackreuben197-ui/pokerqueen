@@ -1,5 +1,5 @@
 import HttpRequest from "../../net/https/HttpRequest";
-import { Web_Room_Center_Mtt_list } from "../../net/https/WebRequest";
+import { WebRoomCenterMttList } from "../../net/https/WebRequest";
 
 export default class UIMatchModel {
     static get Instance(): UIMatchModel {
@@ -7,8 +7,8 @@ export default class UIMatchModel {
     }
 
     //MTT官方赛列表         
-    public APIMTTRoomList(param: typeof Web_Room_Center_Mtt_list.RequestParams) {
-        // var requestData = new Web_Room_Center_Mtt_list.RequestData()
+    public APIMTTRoomList(param: typeof WebRoomCenterMttList.RequestParams) {
+        // var requestData = new WebRoomCenterMttList.RequestData()
         // {
         //     offset = offset,
         //         limit = limit,
@@ -17,10 +17,10 @@ export default class UIMatchModel {
         // };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Room_Center_Mtt_list,
-                body: Web_Room_Center_Mtt_list.Request(param),
+                request: WebRoomCenterMttList,
+                body: WebRoomCenterMttList.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Room_Center_Mtt_list.Response);
+                    resolve(WebRoomCenterMttList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

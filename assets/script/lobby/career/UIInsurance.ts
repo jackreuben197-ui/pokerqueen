@@ -72,7 +72,7 @@ export default class UIInsurance extends BaseFormPlus {
             limit: 20,
             offset: this._offset,
         }
-        _data = await UIClubModel.mInstance.web_api_stats_room_insurance_info(info)
+        _data = await UIClubModel.mInstance.WebStatsRoomInsuranceInfo(info)
         this._reqing = false
         if (!_data?.data?.list) {
             _data.data.list = [];

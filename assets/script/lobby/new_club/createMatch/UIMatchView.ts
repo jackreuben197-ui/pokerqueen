@@ -14,7 +14,7 @@ import { ClubTabConfig } from "../../../frame/config/tabConfig";
 import { dxmConfig } from "../../../frame/data/rate/RateConfig";
 import GC from "../../../frame/GameControl";
 import { GameType, Game_Type, Table_Type } from "../../../game/util/GameUtil";
-import { APIOrgClubRoom } from "../../../net/https/WebRequest";
+import { WebOrgClubRoom } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import { UIClubModel } from "../../labor/UIClubModel";
 import UIClubMatchItem from "./UIClubMatchItem";
@@ -186,14 +186,14 @@ export default class UIMatchView extends UIBase {
 
             }
 
-            await UIClubModel.mInstance.APIOrgClubRoom(parms)
-            _data = APIOrgClubRoom.Response.data;
+            await UIClubModel.mInstance.WebOrgClubRoom(parms)
+            _data = WebOrgClubRoom.Response.data;
         }
         else if (this._tableType == Table_Type.holl) {
             let params = {
 
             }
-            await UIClubModel.mInstance.APIOrgMemberList(params);
+            await UIClubModel.mInstance.WebOrgMemberList(params);
             _data = []
         }
         this._reqing = false

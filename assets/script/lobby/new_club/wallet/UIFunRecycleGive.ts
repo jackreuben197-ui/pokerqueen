@@ -8,8 +8,8 @@ import GC from "../../../frame/GameControl";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { StringHelper } from "../../../helper/StringHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { WWW, Web_Guild_GiveRecycle } from "../../../net/https/WebRequest";
-import { APIOrgMemberList } from "../../../net/https/WebRequest";
+import { WebWww, WebGuildGiveRecyCle } from "../../../net/https/WebRequest";
+import { WebOrgMemberList } from "../../../net/https/WebRequest";
 import UIComponent from "../../../ui/UIComponent";
 import BaseFormPlus from "../../../ui/form/BaseFormPlus";
 import FunMemberItem from "./FunMemberItem";
@@ -183,9 +183,9 @@ export default class UIFunRecycleGive extends BaseFormPlus {
             }
         }
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Guild_GiveRecycle,
+                web_class: WebGuildGiveRecyCle,
                 body: {
                     user_ids: this.getUserIds(),
                     gold_num: (+this.cc_Label$show_label.string) * 100,

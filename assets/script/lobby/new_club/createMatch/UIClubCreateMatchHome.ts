@@ -16,7 +16,7 @@ import { EventName } from "../../../config/EventName";
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { APIOrgGetTemplate } from "../../../net/https/WebRequest";
+import { WebOrggetTemplate } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -64,7 +64,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
 
     protected lateLoad(): void {
         super.lateLoad();
-        // UIClubModel.mInstance.APIOrgGetRoomConfig()
+        // UIClubModel.mInstance.WebOrggetRoomConfig()
         this.comFormTitle = this.getChildNodeOrComponent("comFormTitle", ComFormTitle);
         this.titleNode = this.getChildNodeOrComponent("titleNode");
         this.matchTypeNode = this.getChildNodeOrComponent("matchTypeNode");
@@ -159,7 +159,7 @@ export default class UIClubCreateMatchHome extends BaseForm {
 
     }
     async createBtnClick() {
-        await UIClubModel.mInstance.APIOrgRoomBatchCreate({ data: this._modelData });
+        await UIClubModel.mInstance.WebOrgRoomBatchCreate({ data: this._modelData });
         UIComponent.Instance.Toast(i18nMgr.Get('UIClub_CreateSuccess'))
         this.close();
         // this.refreshModel()
@@ -176,8 +176,8 @@ export default class UIClubCreateMatchHome extends BaseForm {
     async dealData() {
         this._reqing = true
 
-        await UIClubModel.mInstance.APIOrgGetTemplate({ game_play_type: this._selectRoleType });
-        let _data: any = APIOrgGetTemplate.Response.data;
+        await UIClubModel.mInstance.WebOrggetTemplate({ game_play_type: this._selectRoleType });
+        let _data: any = WebOrggetTemplate.Response.data;
         this._reqing = false
         if (!_data.data) {
             _data.data = [];

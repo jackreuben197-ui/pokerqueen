@@ -11,7 +11,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import Main from "../../Main";
-import { APIOrgClubUserInfo, API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_User_Room, Web_User_Room_Bringin, WWW, Web_GetDiamondConfig } from "../../net/https/WebRequest";
+import { WebOrgClubUserInfo, WebClubApplyList, WebOrgClubSearchById, WebRoomSitApplyRecords, WebUserRoom, WebUserRoomBringin, WebWww, WebGetDiamondConfig } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Def, RoomInfo } from "../../protobuf/holdem/define_pb";
@@ -1232,11 +1232,11 @@ export default class TexasGame {
 
         this.cacheSitdownSeatId = mSeat.seatID;
 
-        WWW.Instance.CommonAPI({
-            web_class: Web_User_Room,
+        WebWww.Instance.CommonAPI({
+            web_class: WebUserRoom,
             api_id: GameCache.Instance.room_id,
         }).then(
-            (res: typeof Web_User_Room.Response) => {
+            (res: typeof WebUserRoom.Response) => {
 
                 if (res.code == 0 && res.data.last_bring_out != null) {
                     let fee = res.data.last_bring_out.fee;
@@ -1400,9 +1400,9 @@ export default class TexasGame {
 
                         commit_click: () => {
 
-                            WWW.Instance.CommonAPI(
+                            WebWww.Instance.CommonAPI(
                                 {
-                                    web_class: Web_Org_Club_Search_By_Id,
+                                    web_class: WebOrgClubSearchById,
                                     body: {
                                         club_random_id: club_random_id
                                     }
@@ -1439,9 +1439,9 @@ export default class TexasGame {
 
                         ok_click: () => {
 
-                            WWW.Instance.CommonAPI(
+                            WebWww.Instance.CommonAPI(
                                 {
-                                    web_class: Web_Org_Club_Search_By_Id,
+                                    web_class: WebOrgClubSearchById,
                                     body: {
                                         club_random_id: club_random_id
                                     }
@@ -3161,9 +3161,9 @@ export default class TexasGame {
 
     refreshCoinAndChip(menu: UITexasMenu) {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_User_Room_Bringin,
+                web_class: WebUserRoomBringin,
                 api_id: GameCache.Instance.room_id,
             }
         ).then(
@@ -3176,9 +3176,9 @@ export default class TexasGame {
                     if (GameCache.Instance.ClubID > 0) {
 
                         ////////////////////////////////////////////
-                        WWW.Instance.CommonAPI(
+                        WebWww.Instance.CommonAPI(
                             {
-                                web_class: APIOrgClubUserInfo,
+                                web_class: WebOrgClubUserInfo,
                                 body: {
                                     club_id: GameCache.Instance.ClubID,
                                     user_id: GameCache.Instance.userId,
@@ -3199,9 +3199,9 @@ export default class TexasGame {
                                 else if (GameCache.Instance.gold_type == 3) {
 
                                     /////////////////////////////////////////////////////
-                                    WWW.Instance.CommonAPI(
+                                    WebWww.Instance.CommonAPI(
                                         {
-                                            web_class: Web_User_Room,
+                                            web_class: WebUserRoom,
                                             api_id: GameCache.Instance.room_id,
                                         }
                                     ).then(
@@ -3390,9 +3390,9 @@ export default class TexasGame {
 
             if (GameUtil.GetFriendsOrClubTable() == 1) {//朋友桌
 
-                WWW.Instance.CommonAPI(
+                WebWww.Instance.CommonAPI(
                     {
-                        web_class: Web_RoomSitApplyRecords,
+                        web_class: WebRoomSitApplyRecords,
                         body: {
                             "limit": 1,
                             "offsetd": 0,
@@ -3415,9 +3415,9 @@ export default class TexasGame {
 
             if (GameUtil.GetFriendsOrClubTable() == 2) {//公会内部桌子
 
-                WWW.Instance.CommonAPI(
+                WebWww.Instance.CommonAPI(
                     {
-                        web_class: API_CLUB_APPLY_LIST,
+                        web_class: WebClubApplyList,
                         body: {
                             "limit": 1,
                             "offset": 0,

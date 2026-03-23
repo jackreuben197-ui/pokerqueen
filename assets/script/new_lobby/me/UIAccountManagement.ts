@@ -11,7 +11,7 @@ import { match } from "assert";
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
-import { APIGetBlindStatus } from "../../net/https/WebRequest";
+import { WebGetBlindStatus } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import BaseForm from "../../ui/form/BaseForm";
 import LoginScene from "../../ui/scene/LoginScene";
@@ -44,7 +44,7 @@ export default class UIAccountManagement extends BaseForm {
             item["index"] = i;
             item.on(cc.Node.EventType.TOUCH_END, this.onItemClick, this)
         });
-        await LoginSession.APIGetBlindStatus()
+        await LoginSession.WebGetBlindStatus()
         this.initBlindStatue();
     }
     /**
@@ -66,7 +66,7 @@ export default class UIAccountManagement extends BaseForm {
         }
     }
     initBlindStatue() {
-        let data: any = APIGetBlindStatus.Response?.data
+        let data: any = WebGetBlindStatus.Response?.data
         if (data.phone_status.status) {
             this.phone.string = '+' + data.phone_status.area + ' ' + this.splitString(data.phone_status.phone)
         } else {

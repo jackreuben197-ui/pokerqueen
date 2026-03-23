@@ -71,11 +71,11 @@ export default class UIClubEdit extends BaseForm {
     async sureClick() {
         if (this._type == 0) {
             ClubCache._msg.desc = this.introduce.string;
-            await UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, desc: this.introduce.string })
+            await UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, desc: this.introduce.string })
 
         } else {
             ClubCache._msg.more_contact = this.more_contect.string
-            await UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, more_contact: this.more_contect.string })
+            await UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, more_contact: this.more_contect.string })
 
         }
         this.post(EventName.refreshMess)

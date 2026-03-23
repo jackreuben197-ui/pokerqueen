@@ -107,7 +107,7 @@ export default class UISearchJoin extends BaseForm {
             this.post(EventName.refreshClubList);
         } else {
             let parms: any = { tribe_random_id: this._data.random_id, contact: this.contentEdit.string, club_id: ClubCache.club_id };
-            await UIClubModel.mInstance.APIOrgJoinTrip(parms)
+            await UIClubModel.mInstance.WebOrgJoinTrip(parms)
             this.post(EventName.refreshApplyList)
         }
         // this.post(EventName.refreshClubList)

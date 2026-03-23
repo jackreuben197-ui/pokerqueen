@@ -1,5 +1,5 @@
 import SimpleNodePool from "../../common/MyNodePool";
-import { Web_MallShopList, Web_Mall_Buy, WWW } from "../../net/https/WebRequest";
+import { WebMallShopList, WebMallBuy, WebWww } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -36,9 +36,9 @@ export default class UIMall extends BaseFormPlus {
     //请求商城列表P
     reqMallList() {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_MallShopList,
+                web_class: WebMallShopList,
                 body: {
                     channel: 1,
                     shopping_type_id: 1
@@ -82,11 +82,11 @@ export default class UIMall extends BaseFormPlus {
 
         console.log("购买", index);
 
-        let goods_id: number = Web_MallShopList.Response.data.list[index].id;
+        let goods_id: number = WebMallShopList.Response.data.list[index].id;
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Mall_Buy,
+                web_class: WebMallBuy,
                 body: {
                     goods_id: goods_id,
                 }

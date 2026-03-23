@@ -3,7 +3,7 @@ import GC from "../../frame/GameControl";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { LobbyControl } from "../../lobby/control/LobbyControl";
-import { Web_Stats_Other_User_Stats, Web_User_Info } from "../../net/https/WebRequest";
+import { WebStatsOtherUserStats, WebUserInfo } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
 import { GameCache } from "../GameCache";
@@ -32,11 +32,11 @@ export default class UITexasReportPlayerInfo extends UIBase {
         this.isShowDown = false;
         this.openInfo = param;
         UITexasModel.mInstance.getOtherUserStats(param[0]).then(
-            (tResp: typeof Web_Stats_Other_User_Stats.Response) => {
+            (tResp: typeof WebStatsOtherUserStats.Response) => {
                 if (tResp.code == 0) {
                     this.refreshCenterInfo(tResp);
                 }
-            }, (tResp: typeof Web_Stats_Other_User_Stats.Response) => {
+            }, (tResp: typeof WebStatsOtherUserStats.Response) => {
             })
 
         let info = {

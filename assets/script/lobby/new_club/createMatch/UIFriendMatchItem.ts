@@ -39,7 +39,7 @@ export default class UIFriendMatchItem extends UIBase {
 
     protected lateLoad(): void {
         super.lateLoad();
-        // UIClubModel.mInstance.APIOrgGetRoomConfig()
+        // UIClubModel.mInstance.WebOrggetRoomConfig()
     }
 
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {

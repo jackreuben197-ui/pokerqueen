@@ -48,7 +48,7 @@ export default class UIClubActiveBord extends UIBase {
             // let day = now.getDate();
             // let currenTime = new Date(year, month, day).getTime();
             // localStorage.setItem(this._data.id + '_' + currenTime, 1 + '');
-            UIClubModel.mInstance.APIOrgClubNotice_Ignore({ "club_id": ClubCache.club_id })
+            UIClubModel.mInstance.WebOrgClubNoticeIgnore({ "club_id": ClubCache.club_id })
         }
         UIComponent.close(this.UIDefine);
     }

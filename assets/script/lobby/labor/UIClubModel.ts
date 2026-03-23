@@ -10,7 +10,7 @@
 import { ClubCache } from "../../frame/data/club/ClubCache";
 import GC from "../../frame/GameControl";
 import HttpRequest from "../../net/https/HttpRequest";
-import { modify_digital_wallet_address, web_api_stats_room_insurance_info, web_api_club_data_stats_data_detail, web_api_club_data_stats_data_detail_info, web_api_club_data_stats_data, web_api_club_data_stats_data_info, web_api_friend_room_stats_data_detail, web_api_friend_room_stats_data_detail_info, web_api_friend_room_stats_data_info, web_api_friend_room_stats_data, web_api_friend_room_stats, APIOrgClubNoticeGet, APIOrgClubNotice_Ignore, APIMessageRed_num, APIUserDiamondsWallet, APIMttUserWallet, APIOrgClubShareApproveList, APIOrgClubShareApplyList, APIOrgClubShareAudit, APIOrgClubSharePendingList, APIOrgClubNotice, APIOrgClubNotice_update, APIOrgRoomClubCreate, APIOrgRoomBatchCreate, APIOrgClubCancleJoinTribe, APIOrgClubApplyTribeList, APIOrgClubUserRole_change, APIOrgClubUserGameInfo, APIOrgClubUserRemarks, APIOrgClubUserInfo, APIOrgGetNewMessNum, APIOrgGetMessList, APIOrgSendMess, APIOrgClubRoom, APIOrgClubUpLevel, APIOrgClubLevelCost, APIOrgClubLevelInfo, APIOrgClubLevelBenefit, APIOrgClubMemberEarning, APIOrgClubEarning, APIOrgClubActivityInfo, APIOrgClubActivityCreate, APIOrgClubDelAdmin, APIOrgClubCreateRoomChange, APIOrgClubMember, APIOrgClubAddAdmin, APIOrgFriendRoomInfo, Web_RoomSitApplyRecords, APIOrgFriendRoomList, APIOrgInvitationRoom, APIOrgRoomConfigCreate, APIOrgGetRoomConfig, APIOrgRoomCreate, APIOrgUpdateTemplate, APIOrgTemplateDelete, APIOrgGetTemplate, APIOrgCreateTemplate, APIOrgChangeClubData, APIOrgJoinTrip, APIOrgTribeSearchByID, APIOrgClubGold, APIOrgMemberList, APIOrgMangerList, Web_Org_Club_Create, Web_Org_Club_Get, Web_Org_Club_Player_Apply_List, Web_Org_Club_Search_By_Id, Web_Org_Club_Join, APIOrgClubCancleJoinClub, APIOrgClubIsManger, APIOrgClubGetJoinlList, APIOrgClubApprovalJoin, APIOrgClubQuit, APIOrgClubUploadIcon, Web_Club_Fund_ChangeLog, Web_Recharge_Gold_Club, Web_Tiqu_Gold_Club, Web_Club_Fund_OrderList, Web_Club_Fund_ApplyList, Web_Club_Player_Order_Record, Web_Mtt } from "../../net/https/WebRequest";
+import { WebModifyDigitalWalletAddress, WebStatsRoomInsuranceInfo, WebClubDataStatsDataDetail, WebClubDataStatsDataDetailInfo, WebClubDataStatsData, WebClubDataStatsDataInfo, WebFriendRoomStatsDataDetail, WebFriendRoomStatsDataDetailInfo, WebFriendRoomStatsDataInfo, WebFriendRoomStatsData, WebFriendRoomStats, WebOrgClubNoticeGet, WebOrgClubNoticeIgnore, WebMessageRednum, WebUserDiamondsWallet, WebMttUserWallet, WebOrgClubShareApproveList, WebOrgClubShareApplyList, WebOrgClubShareAudit, WebOrgClubSharePendingList, WebOrgClubNotice, WebOrgClubNoticeUpdate, WebOrgRoomClubCreate, WebOrgRoomBatchCreate, WebOrgClubCancleJoinTribe, WebOrgClubApplyTribeList, WebOrgClubUserRoleChange, WebOrgClubUserGameInfo, WebOrgClubUserRemaRks, WebOrgClubUserInfo, WebOrggetNewMessNum, WebOrggetMessList, WebOrgSendMess, WebOrgClubRoom, WebOrgClubUpLevel, WebOrgClubLevelCost, WebOrgClubLevelInfo, WebOrgClubLevelBenefit, WebOrgClubMemberEarnIng, WebOrgClubEarnIng, WebOrgClubActivityInfo, WebOrgClubActivityCreate, WebOrgClubDelAdmin, WebOrgClubCreateRoomChange, WebOrgClubMember, WebOrgClubAddAdmin, WebOrgFriendRoomInfo, WebRoomSitApplyRecords, WebOrgFriendRoomList, WebOrgiNvitatIonRoom, WebOrgRoomConfigCreate, WebOrggetRoomConfig, WebOrgRoomCreate, WebOrgUpdateTemplate, WebOrgTemplateDelete, WebOrggetTemplate, WebOrgCreateTemplate, WebOrgchaNgeClubData, WebOrgJoinTrip, WebOrgTribeSearchById, WebOrgClubGold, WebOrgMemberList, WebOrgMangerList, WebOrgClubCreate, WebOrgClubGet, WebOrgClubPlayerApplyList, WebOrgClubSearchById, WebOrgClubJoin, WebOrgClubCancleJoinClub, WebOrgClubIsManger, WebOrgClubGetJoinlList, WebOrgClubApproValJoin, WebOrgClubQuit, WebOrgClubUploadIcon, WebClubFundChangeLog, WebRechargeGoldClub, WebTiquGoldClub, WebClubFundOrderList, WebClubFundApplyList, WebClubPlayerOrderRecord, WebMtt } from "../../net/https/WebRequest";
 import upLoadIcon from "../upLoadIcon";
 
 export class UIClubModel {
@@ -32,10 +32,10 @@ export class UIClubModel {
         paramas.more_contact = contact
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Org_Club_Create,
-                body: Web_Org_Club_Create.Request(paramas),
+                request: WebOrgClubCreate,
+                body: WebOrgClubCreate.Request(paramas),
                 onSuccess: function () {
-                    resolve(Web_Org_Club_Create.Response);
+                    resolve(WebOrgClubCreate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -51,10 +51,10 @@ export class UIClubModel {
         let paramas: any = {};
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Org_Club_Get,
-                body: Web_Org_Club_Get.Request(paramas),
+                request: WebOrgClubGet,
+                body: WebOrgClubGet.Request(paramas),
                 onSuccess: function () {
-                    resolve(Web_Org_Club_Get.Response);
+                    resolve(WebOrgClubGet.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -67,10 +67,10 @@ export class UIClubModel {
         let paramas: any = {};
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Org_Club_Player_Apply_List,
-                body: Web_Org_Club_Player_Apply_List.Request(paramas),
+                request: WebOrgClubPlayerApplyList,
+                body: WebOrgClubPlayerApplyList.Request(paramas),
                 onSuccess: function () {
-                    resolve(Web_Org_Club_Player_Apply_List.Response);
+                    resolve(WebOrgClubPlayerApplyList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -82,10 +82,10 @@ export class UIClubModel {
         let paramas: any = { club_random_id: id };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Org_Club_Search_By_Id,
-                body: Web_Org_Club_Search_By_Id.Request(paramas),
+                request: WebOrgClubSearchById,
+                body: WebOrgClubSearchById.Request(paramas),
                 onSuccess: function () {
-                    resolve(Web_Org_Club_Search_By_Id.Response);
+                    resolve(WebOrgClubSearchById.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -97,10 +97,10 @@ export class UIClubModel {
         let paramas: any = { club_id: id };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Org_Club_Join,
-                body: Web_Org_Club_Join.Request(paramas),
+                request: WebOrgClubJoin,
+                body: WebOrgClubJoin.Request(paramas),
                 onSuccess: function () {
-                    resolve(Web_Org_Club_Join.Response);
+                    resolve(WebOrgClubJoin.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -108,14 +108,14 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubCancleJoinClub(id) {
+    WebOrgClubCancleJoinClub(id) {
         let paramas: any = { apply_id: id };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubCancleJoinClub,
-                body: APIOrgClubCancleJoinClub.Request(paramas),
+                request: WebOrgClubCancleJoinClub,
+                body: WebOrgClubCancleJoinClub.Request(paramas),
                 onSuccess: function () {
-                    resolve(APIOrgClubCancleJoinClub.Response);
+                    resolve(WebOrgClubCancleJoinClub.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -124,14 +124,14 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubIsManger(id) {
+    WebOrgClubIsManger(id) {
         let paramas: any = { club_id: id };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubIsManger,
-                body: APIOrgClubIsManger.Request(paramas),
+                request: WebOrgClubIsManger,
+                body: WebOrgClubIsManger.Request(paramas),
                 onSuccess: function () {
-                    resolve(APIOrgClubIsManger.Response);
+                    resolve(WebOrgClubIsManger.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -148,10 +148,10 @@ export class UIClubModel {
         };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubGetJoinlList,
-                body: APIOrgClubGetJoinlList.Request(parms),
+                request: WebOrgClubGetJoinlList,
+                body: WebOrgClubGetJoinlList.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgClubGetJoinlList.Response);
+                    resolve(WebOrgClubGetJoinlList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -160,17 +160,17 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubApprovalJoin(apply_id, audit_op) {
+    WebOrgClubApproValJoin(apply_id, audit_op) {
         let paramas: any = {
             apply_id: apply_id,
             audit_op: audit_op
         };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubApprovalJoin,
-                body: APIOrgClubApprovalJoin.Request(paramas),
+                request: WebOrgClubApproValJoin,
+                body: WebOrgClubApproValJoin.Request(paramas),
                 onSuccess: function () {
-                    resolve(APIOrgClubApprovalJoin.Response);
+                    resolve(WebOrgClubApproValJoin.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -179,14 +179,14 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubQuit() {
+    WebOrgClubQuit() {
         let paramas: any = { club_id: ClubCache.club_id };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubQuit,
-                body: APIOrgClubQuit.Request(paramas),
+                request: WebOrgClubQuit,
+                body: WebOrgClubQuit.Request(paramas),
                 onSuccess: function () {
-                    resolve(APIOrgClubQuit.Response);
+                    resolve(WebOrgClubQuit.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -195,17 +195,17 @@ export class UIClubModel {
         });
     }
 
-    async APIOrgClubUploadIcon() {
+    async WebOrgClubUploadIcon() {
         let _data: any = await upLoadIcon.Instance.openFile();
         console.log('data====', _data, _data.name)
         let data = new FormData()
         data.append("file", _data, _data.name)
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubUploadIcon,
-                body: APIOrgClubUploadIcon.Request(data),
+                request: WebOrgClubUploadIcon,
+                body: WebOrgClubUploadIcon.Request(data),
                 onSuccess: function () {
-                    resolve(APIOrgClubUploadIcon.Response);
+                    resolve(WebOrgClubUploadIcon.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -215,7 +215,7 @@ export class UIClubModel {
         });
     }
 
-    APIOrgMangerList(id, limit = 5, offset = 0) {
+    WebOrgMangerList(id, limit = 5, offset = 0) {
         let params: any = {
             club_random_id: id,
             "limit": limit,
@@ -224,10 +224,10 @@ export class UIClubModel {
         };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgMangerList,
-                body: APIOrgMangerList.Request(params),
+                request: WebOrgMangerList,
+                body: WebOrgMangerList.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgMangerList.Response);
+                    resolve(WebOrgMangerList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -237,7 +237,7 @@ export class UIClubModel {
         });
     }
 
-    APIOrgMemberList(params) {
+    WebOrgMemberList(params) {
         // let params: any = {
         //     club_id: id,
         //     club_random_id:
@@ -247,10 +247,10 @@ export class UIClubModel {
         // };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgMemberList,
-                body: APIOrgMemberList.Request(params),
+                request: WebOrgMemberList,
+                body: WebOrgMemberList.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgMemberList.Response);
+                    resolve(WebOrgMemberList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -260,16 +260,16 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubGold(id) {
+    WebOrgClubGold(id) {
         let params: any = {
             club_random_id: id,
         };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubGold,
-                body: APIOrgClubGold.Request(params),
+                request: WebOrgClubGold,
+                body: WebOrgClubGold.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubGold.Response);
+                    resolve(WebOrgClubGold.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -279,14 +279,14 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgTribeSearchByID(id) {
+    WebOrgTribeSearchById(id) {
         let paramas: any = { tribe_random_id: id };
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgTribeSearchByID,
-                body: APIOrgTribeSearchByID.Request(paramas),
+                request: WebOrgTribeSearchById,
+                body: WebOrgTribeSearchById.Request(paramas),
                 onSuccess: function () {
-                    resolve(APIOrgTribeSearchByID.Response);
+                    resolve(WebOrgTribeSearchById.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -294,14 +294,14 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgJoinTrip(parms) {
+    WebOrgJoinTrip(parms) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgJoinTrip,
-                body: APIOrgJoinTrip.Request(parms),
+                request: WebOrgJoinTrip,
+                body: WebOrgJoinTrip.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgJoinTrip.Response);
+                    resolve(WebOrgJoinTrip.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -309,13 +309,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgChangeClubData(params) {
+    WebOrgchaNgeClubData(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgChangeClubData,
-                body: APIOrgChangeClubData.Request(params),
+                request: WebOrgchaNgeClubData,
+                body: WebOrgchaNgeClubData.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgChangeClubData.Response);
+                    resolve(WebOrgchaNgeClubData.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -324,13 +324,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgCreateTemplate(params) {
+    WebOrgCreateTemplate(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgCreateTemplate,
-                body: APIOrgCreateTemplate.Request(params),
+                request: WebOrgCreateTemplate,
+                body: WebOrgCreateTemplate.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgCreateTemplate.Response);
+                    resolve(WebOrgCreateTemplate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -339,13 +339,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgUpdateTemplate(params) {
+    WebOrgUpdateTemplate(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgUpdateTemplate,
-                body: APIOrgUpdateTemplate.Request(params),
+                request: WebOrgUpdateTemplate,
+                body: WebOrgUpdateTemplate.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgUpdateTemplate.Response);
+                    resolve(WebOrgUpdateTemplate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -354,13 +354,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgGetTemplate(params) {
+    WebOrggetTemplate(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgGetTemplate,
-                body: APIOrgGetTemplate.Request(params),
+                request: WebOrggetTemplate,
+                body: WebOrggetTemplate.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgGetTemplate.Response);
+                    resolve(WebOrggetTemplate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -369,14 +369,14 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgTemplateDelete(id) {
+    WebOrgTemplateDelete(id) {
         let params = { id: id }
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgTemplateDelete,
-                body: APIOrgTemplateDelete.Request(params),
+                request: WebOrgTemplateDelete,
+                body: WebOrgTemplateDelete.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgTemplateDelete.Response);
+                    resolve(WebOrgTemplateDelete.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -385,14 +385,14 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgRoomCreate(id) {
+    WebOrgRoomCreate(id) {
         let params = { template_id: id }
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgRoomCreate,
-                body: APIOrgRoomCreate.Request(params),
+                request: WebOrgRoomCreate,
+                body: WebOrgRoomCreate.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgRoomCreate.Response);
+                    resolve(WebOrgRoomCreate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -403,13 +403,13 @@ export class UIClubModel {
 
     }
 
-    APIOrgRoomConfigCreate(params) {
+    WebOrgRoomConfigCreate(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgRoomConfigCreate,
-                body: APIOrgRoomConfigCreate.Request(params),
+                request: WebOrgRoomConfigCreate,
+                body: WebOrgRoomConfigCreate.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgRoomConfigCreate.Response);
+                    resolve(WebOrgRoomConfigCreate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -419,28 +419,13 @@ export class UIClubModel {
     }
 
 
-    APIOrgRoomBatchCreate(params) {
+    WebOrgRoomBatchCreate(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgRoomBatchCreate,
-                body: APIOrgRoomBatchCreate.Request(params),
+                request: WebOrgRoomBatchCreate,
+                body: WebOrgRoomBatchCreate.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgRoomBatchCreate.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this),
-                headers: [['X-Club', ClubCache.club_id]]
-            });
-        });
-    }
-    APIOrgRoomClubCreate(params) {
-        return new Promise((resolve, reject) => {
-            HttpRequest.Send({
-                request: APIOrgRoomClubCreate,
-                body: APIOrgRoomClubCreate.Request(params),
-                onSuccess: function () {
-                    resolve(APIOrgRoomClubCreate.Response);
+                    resolve(WebOrgRoomBatchCreate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -449,18 +434,33 @@ export class UIClubModel {
             });
         });
     }
+    WebOrgRoomClubCreate(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: WebOrgRoomClubCreate,
+                body: WebOrgRoomClubCreate.Request(params),
+                onSuccess: function () {
+                    resolve(WebOrgRoomClubCreate.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: [['X-Club', ClubCache.club_id]]
+            });
+        });
+    }
 
 
 
 
-    APIOrgGetRoomConfig() {
+    WebOrggetRoomConfig() {
         let params = {}
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgGetRoomConfig,
-                body: APIOrgGetRoomConfig.Request(params),
+                request: WebOrggetRoomConfig,
+                body: WebOrggetRoomConfig.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgGetRoomConfig.Response);
+                    resolve(WebOrggetRoomConfig.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -468,14 +468,14 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgInvitationRoom(code) {
+    WebOrgiNvitatIonRoom(code) {
         let params = { code: code }
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgInvitationRoom,
-                body: APIOrgInvitationRoom.Request(params),
+                request: WebOrgiNvitatIonRoom,
+                body: WebOrgiNvitatIonRoom.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgInvitationRoom.Response);
+                    resolve(WebOrgiNvitatIonRoom.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -484,14 +484,14 @@ export class UIClubModel {
         });
     }
 
-    APIOrgFriendRoomList(juhua: boolean = true) {
+    WebOrgFriendRoomList(juhua: boolean = true) {
         let params = {}
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgFriendRoomList,
-                body: APIOrgFriendRoomList.Request(params),
+                request: WebOrgFriendRoomList,
+                body: WebOrgFriendRoomList.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgFriendRoomList.Response);
+                    resolve(WebOrgFriendRoomList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -533,16 +533,16 @@ export class UIClubModel {
     //         });
     //     });
     // }
-    APIOrgFriendRoomInfo(room_id) {
+    WebOrgFriendRoomInfo(room_id) {
         let params = {
             room_id: room_id,
         }//offset: offset, limit: limit
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgFriendRoomInfo,
-                body: APIOrgFriendRoomInfo.Request(params),
+                request: WebOrgFriendRoomInfo,
+                body: WebOrgFriendRoomInfo.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgFriendRoomInfo.Response);
+                    resolve(WebOrgFriendRoomInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -552,17 +552,17 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubCreateRoomChange(user_id, create_room) {
+    WebOrgClubCreateRoomChange(user_id, create_room) {
         let params = {
             user_id: user_id,
             create_room: create_room
         }//offset: offset, limit: limit
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubCreateRoomChange,
-                body: APIOrgClubCreateRoomChange.Request(params),
+                request: WebOrgClubCreateRoomChange,
+                body: WebOrgClubCreateRoomChange.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubCreateRoomChange.Response);
+                    resolve(WebOrgClubCreateRoomChange.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -571,16 +571,16 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubAddAdmin(user_id) {
+    WebOrgClubAddAdmin(user_id) {
         let params = {
             user_id: user_id,
         }//offset: offset, limit: limit
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubAddAdmin,
-                body: APIOrgClubAddAdmin.Request(params),
+                request: WebOrgClubAddAdmin,
+                body: WebOrgClubAddAdmin.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubAddAdmin.Response);
+                    resolve(WebOrgClubAddAdmin.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -589,16 +589,16 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubDelAdmin(user_id) {
+    WebOrgClubDelAdmin(user_id) {
         let params = {
             user_id: user_id,
         }//offset: offset, limit: limit
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubDelAdmin,
-                body: APIOrgClubDelAdmin.Request(params),
+                request: WebOrgClubDelAdmin,
+                body: WebOrgClubDelAdmin.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubDelAdmin.Response);
+                    resolve(WebOrgClubDelAdmin.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -606,7 +606,7 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubMember(club_random_id, offset = 0, limit = 10, search = null) {
+    WebOrgClubMember(club_random_id, offset = 0, limit = 10, search = null) {
         let params = {
             club_random_id: club_random_id,
             "limit": offset,
@@ -615,10 +615,10 @@ export class UIClubModel {
         }//offset: offset, limit: limit
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubMember,
-                body: APIOrgClubMember.Request(params),
+                request: WebOrgClubMember,
+                body: WebOrgClubMember.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubMember.Response);
+                    resolve(WebOrgClubMember.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -627,14 +627,14 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubActivityCreate(params) {
+    WebOrgClubActivityCreate(params) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubActivityCreate,
-                body: APIOrgClubActivityCreate.Request(params),
+                request: WebOrgClubActivityCreate,
+                body: WebOrgClubActivityCreate.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubActivityCreate.Response);
+                    resolve(WebOrgClubActivityCreate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -642,14 +642,14 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubActivityInfo() {
+    WebOrgClubActivityInfo() {
         let params = {}
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubActivityInfo,
-                body: APIOrgClubActivityInfo.Request(params),
+                request: WebOrgClubActivityInfo,
+                body: WebOrgClubActivityInfo.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubActivityInfo.Response);
+                    resolve(WebOrgClubActivityInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -657,13 +657,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubEarning(params) {
+    WebOrgClubEarnIng(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubEarning,
-                body: APIOrgClubEarning.Request(params),
+                request: WebOrgClubEarnIng,
+                body: WebOrgClubEarnIng.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubEarning.Response);
+                    resolve(WebOrgClubEarnIng.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -671,28 +671,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubMemberEarning(params) {
+    WebOrgClubMemberEarnIng(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubMemberEarning,
-                body: APIOrgClubMemberEarning.Request(params),
+                request: WebOrgClubMemberEarnIng,
+                body: WebOrgClubMemberEarnIng.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubMemberEarning.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this)
-            });
-        });
-    }
-
-    APIOrgClubLevelBenefit(params) {
-        return new Promise((resolve, reject) => {
-            HttpRequest.Send({
-                request: APIOrgClubLevelBenefit,
-                body: APIOrgClubLevelBenefit.Request(params),
-                onSuccess: function () {
-                    resolve(APIOrgClubLevelBenefit.Response);
+                    resolve(WebOrgClubMemberEarnIng.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -701,13 +686,13 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubLevelInfo(params) {
+    WebOrgClubLevelBenefit(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubLevelInfo,
-                body: APIOrgClubLevelInfo.Request(params),
+                request: WebOrgClubLevelBenefit,
+                body: WebOrgClubLevelBenefit.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubLevelInfo.Response);
+                    resolve(WebOrgClubLevelBenefit.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -716,13 +701,28 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubLevelCost(params) {
+    WebOrgClubLevelInfo(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubLevelCost,
-                body: APIOrgClubLevelCost.Request(params),
+                request: WebOrgClubLevelInfo,
+                body: WebOrgClubLevelInfo.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubLevelCost.Response);
+                    resolve(WebOrgClubLevelInfo.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this)
+            });
+        });
+    }
+
+    WebOrgClubLevelCost(params) {
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: WebOrgClubLevelCost,
+                body: WebOrgClubLevelCost.Request(params),
+                onSuccess: function () {
+                    resolve(WebOrgClubLevelCost.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -732,13 +732,13 @@ export class UIClubModel {
     }
 
 
-    APIOrgClubUpLevel(params) {
+    WebOrgClubUpLevel(params) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubUpLevel,
-                body: APIOrgClubUpLevel.Request(params),
+                request: WebOrgClubUpLevel,
+                body: WebOrgClubUpLevel.Request(params),
                 onSuccess: function () {
-                    resolve(APIOrgClubUpLevel.Response);
+                    resolve(WebOrgClubUpLevel.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -747,13 +747,13 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubRoom(parms) {
+    WebOrgClubRoom(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubRoom,
-                body: APIOrgClubRoom.Request(parms),
+                request: WebOrgClubRoom,
+                body: WebOrgClubRoom.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgClubRoom.Response);
+                    resolve(WebOrgClubRoom.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -763,13 +763,13 @@ export class UIClubModel {
         });
     }
 
-    APIOrgSendMess(parms) {
+    WebOrgSendMess(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgSendMess,
-                body: APIOrgSendMess.Request(parms),
+                request: WebOrgSendMess,
+                body: WebOrgSendMess.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgSendMess.Response);
+                    resolve(WebOrgSendMess.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -779,13 +779,13 @@ export class UIClubModel {
         });
     }
 
-    APIOrgGetMessList(parms) {
+    WebOrggetMessList(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgGetMessList,
-                body: APIOrgGetMessList.Request(parms),
+                request: WebOrggetMessList,
+                body: WebOrggetMessList.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgGetMessList.Response);
+                    resolve(WebOrggetMessList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -795,13 +795,13 @@ export class UIClubModel {
         });
     }
 
-    APIOrgGetNewMessNum(parms) {
+    WebOrggetNewMessNum(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgGetNewMessNum,
-                body: APIOrgGetNewMessNum.Request(parms),
+                request: WebOrggetNewMessNum,
+                body: WebOrggetNewMessNum.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgGetNewMessNum.Response);
+                    resolve(WebOrggetNewMessNum.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -811,13 +811,13 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubUserInfo(parms) {
+    WebOrgClubUserInfo(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubUserInfo,
-                body: APIOrgClubUserInfo.Request(parms),
+                request: WebOrgClubUserInfo,
+                body: WebOrgClubUserInfo.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgClubUserInfo.Response);
+                    resolve(WebOrgClubUserInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -825,13 +825,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubUserRemarks(parms) {
+    WebOrgClubUserRemaRks(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubUserRemarks,
-                body: APIOrgClubUserRemarks.Request(parms),
+                request: WebOrgClubUserRemaRks,
+                body: WebOrgClubUserRemaRks.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgClubUserRemarks.Response);
+                    resolve(WebOrgClubUserRemaRks.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -839,13 +839,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubUserGameInfo(parms) {
+    WebOrgClubUserGameInfo(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubUserGameInfo,
-                body: APIOrgClubUserGameInfo.Request(parms),
+                request: WebOrgClubUserGameInfo,
+                body: WebOrgClubUserGameInfo.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgClubUserGameInfo.Response);
+                    resolve(WebOrgClubUserGameInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -853,13 +853,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubUserRole_change(parms) {
+    WebOrgClubUserRoleChange(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubUserRole_change,
-                body: APIOrgClubUserRole_change.Request(parms),
+                request: WebOrgClubUserRoleChange,
+                body: WebOrgClubUserRoleChange.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgClubUserRole_change.Response);
+                    resolve(WebOrgClubUserRoleChange.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -867,13 +867,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubApplyTribeList(parms) {
+    WebOrgClubApplyTribeList(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubApplyTribeList,
-                body: APIOrgClubApplyTribeList.Request(parms),
+                request: WebOrgClubApplyTribeList,
+                body: WebOrgClubApplyTribeList.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgClubApplyTribeList.Response);
+                    resolve(WebOrgClubApplyTribeList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -881,13 +881,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubCancleJoinTribe(parms) {
+    WebOrgClubCancleJoinTribe(parms) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubCancleJoinTribe,
-                body: APIOrgClubCancleJoinTribe.Request(parms),
+                request: WebOrgClubCancleJoinTribe,
+                body: WebOrgClubCancleJoinTribe.Request(parms),
                 onSuccess: function () {
-                    resolve(APIOrgClubCancleJoinTribe.Response);
+                    resolve(WebOrgClubCancleJoinTribe.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -904,10 +904,10 @@ export class UIClubModel {
     reqClubFundChangeLog(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Club_Fund_ChangeLog,
-                body: Web_Club_Fund_ChangeLog.Request(param),
+                request: WebClubFundChangeLog,
+                body: WebClubFundChangeLog.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Club_Fund_ChangeLog.Response);
+                    resolve(WebClubFundChangeLog.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -923,10 +923,10 @@ export class UIClubModel {
     reqClubFund(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubGold,
-                body: APIOrgClubGold.Request(param),
+                request: WebOrgClubGold,
+                body: WebOrgClubGold.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubGold.Response);
+                    resolve(WebOrgClubGold.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -938,10 +938,10 @@ export class UIClubModel {
     reqClubFundRecharge(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Recharge_Gold_Club,
-                body: Web_Recharge_Gold_Club.Request(param),
+                request: WebRechargeGoldClub,
+                body: WebRechargeGoldClub.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Recharge_Gold_Club.Response);
+                    resolve(WebRechargeGoldClub.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -955,10 +955,10 @@ export class UIClubModel {
     reqClubFundWithDraw(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Tiqu_Gold_Club,
-                body: Web_Tiqu_Gold_Club.Request(param),
+                request: WebTiquGoldClub,
+                body: WebTiquGoldClub.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Tiqu_Gold_Club.Response);
+                    resolve(WebTiquGoldClub.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -971,10 +971,10 @@ export class UIClubModel {
     reqClubFundOrderList(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Club_Fund_OrderList,
-                body: Web_Club_Fund_OrderList.Request(param),
+                request: WebClubFundOrderList,
+                body: WebClubFundOrderList.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Club_Fund_OrderList.Response);
+                    resolve(WebClubFundOrderList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -987,10 +987,10 @@ export class UIClubModel {
     reqClubFundList(club_id, param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: Web_Club_Fund_ApplyList,
-                body: Web_Club_Fund_ApplyList.Request(param),
+                request: WebClubFundApplyList,
+                body: WebClubFundApplyList.Request(param),
                 onSuccess: function () {
-                    resolve(Web_Club_Fund_ApplyList.Response);
+                    resolve(WebClubFundApplyList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -999,13 +999,13 @@ export class UIClubModel {
             });
         });
     }
-    APIOrgClubNotice_update(param) {
+    WebOrgClubNoticeUpdate(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubNotice_update,
-                body: APIOrgClubNotice_update.Request(param),
+                request: WebOrgClubNoticeUpdate,
+                body: WebOrgClubNoticeUpdate.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubNotice_update.Response);
+                    resolve(WebOrgClubNoticeUpdate.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1016,13 +1016,13 @@ export class UIClubModel {
     }
 
 
-    APIOrgClubNoticeGet(param) {
+    WebOrgClubNoticeGet(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubNoticeGet,
-                body: APIOrgClubNoticeGet.Request(param),
+                request: WebOrgClubNoticeGet,
+                body: WebOrgClubNoticeGet.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubNoticeGet.Response);
+                    resolve(WebOrgClubNoticeGet.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1033,13 +1033,13 @@ export class UIClubModel {
     }
 
 
-    APIOrgClubNotice(param) {
+    WebOrgClubNotice(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubNotice,
-                body: APIOrgClubNotice.Request(param),
+                request: WebOrgClubNotice,
+                body: WebOrgClubNotice.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubNotice.Response);
+                    resolve(WebOrgClubNotice.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1049,13 +1049,13 @@ export class UIClubModel {
         });
     }
 
-    APIOrgClubNotice_Ignore(param) {
+    WebOrgClubNoticeIgnore(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubNotice_Ignore,
-                body: APIOrgClubNotice_Ignore.Request(param),
+                request: WebOrgClubNoticeIgnore,
+                body: WebOrgClubNoticeIgnore.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubNotice_Ignore.Response);
+                    resolve(WebOrgClubNoticeIgnore.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1068,13 +1068,13 @@ export class UIClubModel {
 
 
     //.共享申请待审批列表（共享目标公会查看
-    APIOrgClubSharePendingList(param) {
+    WebOrgClubSharePendingList(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubSharePendingList,
-                body: APIOrgClubSharePendingList.Request(param),
+                request: WebOrgClubSharePendingList,
+                body: WebOrgClubSharePendingList.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubSharePendingList.Response);
+                    resolve(WebOrgClubSharePendingList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1085,13 +1085,13 @@ export class UIClubModel {
     }
 
     //.共享申请审批操作（共享目标公会查看
-    APIOrgClubShareAudit(param) {
+    WebOrgClubShareAudit(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubShareAudit,
-                body: APIOrgClubShareAudit.Request(param),
+                request: WebOrgClubShareAudit,
+                body: WebOrgClubShareAudit.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubShareAudit.Response);
+                    resolve(WebOrgClubShareAudit.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1102,13 +1102,13 @@ export class UIClubModel {
     }
 
     //.共享申请审批操作（共享目标公会查看
-    APIOrgClubShareApproveList(param) {
+    WebOrgClubShareApproveList(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubShareApproveList,
-                body: APIOrgClubShareApproveList.Request(param),
+                request: WebOrgClubShareApproveList,
+                body: WebOrgClubShareApproveList.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubShareApproveList.Response);
+                    resolve(WebOrgClubShareApproveList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1119,13 +1119,13 @@ export class UIClubModel {
     }
 
     //共享申请列表（发起共享的公会查看）
-    APIOrgClubShareApplyList(param) {
+    WebOrgClubShareApplyList(param) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIOrgClubShareApplyList,
-                body: APIOrgClubShareApplyList.Request(param),
+                request: WebOrgClubShareApplyList,
+                body: WebOrgClubShareApplyList.Request(param),
                 onSuccess: function () {
-                    resolve(APIOrgClubShareApplyList.Response);
+                    resolve(WebOrgClubShareApplyList.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1135,14 +1135,14 @@ export class UIClubModel {
         });
     }
     //mtt钱包
-    APIMttUserWallet(match_id, param) {
-        APIMttUserWallet.API = GC.language.formatString(Web_Mtt.USER_WALLET, match_id);
+    WebMttUserWallet(match_id, param) {
+        WebMttUserWallet.API = GC.language.formatString(WebMtt.USER_WALLET, match_id);
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIMttUserWallet,
-                body: APIMttUserWallet.Request(param),
+                request: WebMttUserWallet,
+                body: WebMttUserWallet.Request(param),
                 onSuccess: function () {
-                    resolve(APIMttUserWallet.Response);
+                    resolve(WebMttUserWallet.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1150,13 +1150,13 @@ export class UIClubModel {
             });
         });
     }
-    APIUserDiamondsWallet(juhua: boolean = true) {
+    WebUserDiamondsWallet(juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIUserDiamondsWallet,
-                body: APIUserDiamondsWallet.Request({}),
+                request: WebUserDiamondsWallet,
+                body: WebUserDiamondsWallet.Request({}),
                 onSuccess: function () {
-                    resolve(APIUserDiamondsWallet.Response);
+                    resolve(WebUserDiamondsWallet.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1165,13 +1165,13 @@ export class UIClubModel {
             });
         });
     }
-    APIMessageRed_num() {
+    WebMessageRednum() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: APIMessageRed_num,
-                body: APIMessageRed_num.Request({ club_id: ClubCache.club_id }),
+                request: WebMessageRednum,
+                body: WebMessageRednum.Request({ club_id: ClubCache.club_id }),
                 onSuccess: function () {
-                    resolve(APIMessageRed_num.Response);
+                    resolve(WebMessageRednum.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1181,13 +1181,13 @@ export class UIClubModel {
         });
     }
 
-    web_api_friend_room_stats(juhua: boolean = true) {
+    WebFriendRoomStats(juhua: boolean = true) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_friend_room_stats,
-                body: web_api_friend_room_stats.Request({}),
+                request: WebFriendRoomStats,
+                body: WebFriendRoomStats.Request({}),
                 onSuccess: function () {
-                    resolve(web_api_friend_room_stats.Response);
+                    resolve(WebFriendRoomStats.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1196,14 +1196,14 @@ export class UIClubModel {
             });
         });
     }
-    web_api_friend_room_stats_data(param) {
+    WebFriendRoomStatsData(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_friend_room_stats_data,
-                body: web_api_friend_room_stats_data.Request(param),
+                request: WebFriendRoomStatsData,
+                body: WebFriendRoomStatsData.Request(param),
                 onSuccess: function () {
-                    resolve(web_api_friend_room_stats_data.Response);
+                    resolve(WebFriendRoomStatsData.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1212,14 +1212,14 @@ export class UIClubModel {
         });
     }
 
-    web_api_friend_room_stats_data_info(param) {
+    WebFriendRoomStatsDataInfo(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_friend_room_stats_data_info,
-                body: web_api_friend_room_stats_data_info.Request(param),
+                request: WebFriendRoomStatsDataInfo,
+                body: WebFriendRoomStatsDataInfo.Request(param),
                 onSuccess: function () {
-                    resolve(web_api_friend_room_stats_data_info.Response);
+                    resolve(WebFriendRoomStatsDataInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1228,14 +1228,14 @@ export class UIClubModel {
         });
     }
 
-    web_api_friend_room_stats_data_detail_info(param) {
+    WebFriendRoomStatsDataDetailInfo(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_friend_room_stats_data_detail_info,
-                body: web_api_friend_room_stats_data_detail_info.Request(param),
+                request: WebFriendRoomStatsDataDetailInfo,
+                body: WebFriendRoomStatsDataDetailInfo.Request(param),
                 onSuccess: function () {
-                    resolve(web_api_friend_room_stats_data_detail_info.Response);
+                    resolve(WebFriendRoomStatsDataDetailInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1243,14 +1243,14 @@ export class UIClubModel {
             });
         });
     }
-    web_api_friend_room_stats_data_detail(param) {
+    WebFriendRoomStatsDataDetail(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_friend_room_stats_data_detail,
-                body: web_api_friend_room_stats_data_detail.Request(param),
+                request: WebFriendRoomStatsDataDetail,
+                body: WebFriendRoomStatsDataDetail.Request(param),
                 onSuccess: function () {
-                    resolve(web_api_friend_room_stats_data_detail.Response);
+                    resolve(WebFriendRoomStatsDataDetail.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1259,31 +1259,14 @@ export class UIClubModel {
         });
     }
 
-    web_api_club_data_stats_data_info(param) {
+    WebClubDataStatsDataInfo(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_club_data_stats_data_info,
-                body: web_api_club_data_stats_data_info.Request(param),
+                request: WebClubDataStatsDataInfo,
+                body: WebClubDataStatsDataInfo.Request(param),
                 onSuccess: function () {
-                    resolve(web_api_club_data_stats_data_info.Response);
-                }.bind(this),
-                onFailure: function (content) {
-                    reject(content);
-                }.bind(this),
-                headers: [["X-Club", ClubCache.club_id]]
-            });
-        });
-    }
-
-    web_api_club_data_stats_data(param) {
-
-        return new Promise((resolve, reject) => {
-            HttpRequest.Send({
-                request: web_api_club_data_stats_data,
-                body: web_api_club_data_stats_data.Request(param),
-                onSuccess: function () {
-                    resolve(web_api_club_data_stats_data.Response);
+                    resolve(WebClubDataStatsDataInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1293,14 +1276,31 @@ export class UIClubModel {
         });
     }
 
-    web_api_club_data_stats_data_detail_info(param) {
+    WebClubDataStatsData(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_club_data_stats_data_detail_info,
-                body: web_api_club_data_stats_data_detail_info.Request(param),
+                request: WebClubDataStatsData,
+                body: WebClubDataStatsData.Request(param),
                 onSuccess: function () {
-                    resolve(web_api_club_data_stats_data_detail_info.Response);
+                    resolve(WebClubDataStatsData.Response);
+                }.bind(this),
+                onFailure: function (content) {
+                    reject(content);
+                }.bind(this),
+                headers: [["X-Club", ClubCache.club_id]]
+            });
+        });
+    }
+
+    WebClubDataStatsDataDetailInfo(param) {
+
+        return new Promise((resolve, reject) => {
+            HttpRequest.Send({
+                request: WebClubDataStatsDataDetailInfo,
+                body: WebClubDataStatsDataDetailInfo.Request(param),
+                onSuccess: function () {
+                    resolve(WebClubDataStatsDataDetailInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1311,14 +1311,14 @@ export class UIClubModel {
     }
 
 
-    web_api_club_data_stats_data_detail(param) {
+    WebClubDataStatsDataDetail(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_club_data_stats_data_detail,
-                body: web_api_club_data_stats_data_detail.Request(param),
+                request: WebClubDataStatsDataDetail,
+                body: WebClubDataStatsDataDetail.Request(param),
                 onSuccess: function () {
-                    resolve(web_api_club_data_stats_data_detail.Response);
+                    resolve(WebClubDataStatsDataDetail.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1327,14 +1327,14 @@ export class UIClubModel {
             });
         });
     }
-    web_api_stats_room_insurance_info(param) {
+    WebStatsRoomInsuranceInfo(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: web_api_stats_room_insurance_info,
-                body: web_api_stats_room_insurance_info.Request(param),
+                request: WebStatsRoomInsuranceInfo,
+                body: WebStatsRoomInsuranceInfo.Request(param),
                 onSuccess: function () {
-                    resolve(web_api_stats_room_insurance_info.Response);
+                    resolve(WebStatsRoomInsuranceInfo.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
@@ -1342,14 +1342,14 @@ export class UIClubModel {
             });
         });
     }
-    modify_digital_wallet_address(param) {
+    WebModifyDigitalWalletAddress(param) {
 
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                request: modify_digital_wallet_address,
-                body: modify_digital_wallet_address.Request(param),
+                request: WebModifyDigitalWalletAddress,
+                body: WebModifyDigitalWalletAddress.Request(param),
                 onSuccess: function () {
-                    resolve(modify_digital_wallet_address.Response);
+                    resolve(WebModifyDigitalWalletAddress.Response);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);

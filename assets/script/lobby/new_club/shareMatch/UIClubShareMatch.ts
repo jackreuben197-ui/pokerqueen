@@ -18,7 +18,7 @@ import ComFormTitle from "../../../common/ComFormTitle";
 import UIClubShareMatchItem from "./UIClubShareMatchItem";
 import List from "../../../common/List";
 import { UIClubModel } from "../../labor/UIClubModel";
-import { APIMessageRed_num, APIOrgClubShareApplyList, APIOrgClubShareApproveList, APIOrgClubSharePendingList } from "../../../net/https/WebRequest";
+import { WebMessageRednum, WebOrgClubShareApplyList, WebOrgClubShareApproveList, WebOrgClubSharePendingList } from "../../../net/https/WebRequest";
 import { EventName } from "../../../config/EventName";
 import TabNode from "../../../common/tabNode";
 import { shareMatchTabConfig } from "../../../frame/config/tabConfig";
@@ -67,8 +67,8 @@ export default class UIClubShareMatch extends BaseForm {
         this.toggle1.isChecked = true
         this.toggle2.isChecked = false
 
-        await UIClubModel.mInstance.APIMessageRed_num()
-        let redData = APIMessageRed_num.Response.data
+        await UIClubModel.mInstance.WebMessageRednum()
+        let redData = WebMessageRednum.Response.data
         redData.forEach((element) => {
             if (element.type == 4) {
                 this.Ellipse.active = element.num != 0
@@ -100,12 +100,12 @@ export default class UIClubShareMatch extends BaseForm {
         let _data: any = [];
 
         if (this._selectTitle == 1) {
-            await UIClubModel.mInstance.APIOrgClubSharePendingList({ limit: 10, offset: this._offset })
-            _data = APIOrgClubSharePendingList.Response.data
+            await UIClubModel.mInstance.WebOrgClubSharePendingList({ limit: 10, offset: this._offset })
+            _data = WebOrgClubSharePendingList.Response.data
             this.Ellipse.active = _data.data.length != 0
         } else if (this._selectTitle == 0) {
-            await UIClubModel.mInstance.APIOrgClubShareApproveList({ limit: 10, offset: this._offset })
-            _data = APIOrgClubShareApproveList.Response.data
+            await UIClubModel.mInstance.WebOrgClubShareApproveList({ limit: 10, offset: this._offset })
+            _data = WebOrgClubShareApproveList.Response.data
         }
         this._reqing = false
         if (!_data.data) {

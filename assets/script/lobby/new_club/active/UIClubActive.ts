@@ -22,7 +22,7 @@ import { EventName } from "../../../config/EventName";
 import TimeHelper from "../../../helper/TimeHelper";
 import { UIClubModel } from "../../labor/UIClubModel";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
-import { APIOrgClubNoticeGet, APIOrgClubNotice } from "../../../net/https/WebRequest";
+import { WebOrgClubNoticeGet, WebOrgClubNotice } from "../../../net/https/WebRequest";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 const { ccclass, property, menu } = cc._decorator;
 
@@ -70,8 +70,8 @@ export default class UIClubActive extends BaseForm {
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
         this.comFormTitle.initData('UIGuild_Notice', this);
-        await UIClubModel.mInstance.APIOrgClubNoticeGet({ "club_id": ClubCache.club_id })
-        let data: any = APIOrgClubNoticeGet.Response.data;
+        await UIClubModel.mInstance.WebOrgClubNoticeGet({ "club_id": ClubCache.club_id })
+        let data: any = WebOrgClubNoticeGet.Response.data;
         this.titleEditBox.string = data?.info?.title || ''
         this.textEditBox.string = data?.info?.content || ''
         if (data?.info?.id) {
@@ -154,8 +154,8 @@ export default class UIClubActive extends BaseForm {
         //     UIComponent.Instance.Toast('开始时间不得大于结束时间')
         //     return;
         // }
-        // await UIClubModel.mInstance.APIOrgClubNotice({ "club_id": ClubCache.club_id })
-        let data: any = APIOrgClubNoticeGet.Response.data;
+        // await UIClubModel.mInstance.WebOrgClubNotice({ "club_id": ClubCache.club_id })
+        let data: any = WebOrgClubNoticeGet.Response.data;
 
         let parms = {
             "club_id": ClubCache.club_id,
@@ -172,7 +172,7 @@ export default class UIClubActive extends BaseForm {
             parms['id'] = data?.info?.id
         }
 
-        await UIClubModel.mInstance.APIOrgClubNotice_update(parms)
+        await UIClubModel.mInstance.WebOrgClubNoticeUpdate(parms)
         this.close();
     }
 }

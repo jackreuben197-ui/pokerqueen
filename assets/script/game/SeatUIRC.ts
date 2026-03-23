@@ -5,7 +5,7 @@ import GC from "../frame/GameControl";
 import { CPErrorCode } from "../i18n/CPErrorCode";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { UIMineModel } from "../lobby/UIMineModel";
-import { Web_User_Room_Bringin, WWW } from "../net/https/WebRequest";
+import { WebUserRoomBringin, WebWww } from "../net/https/WebRequest";
 import ProtocolAgency from "../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../net/websocket/ProtocolCode";
 import { Def } from "../protobuf/holdem/define_pb";
@@ -279,9 +279,9 @@ export default class SeatUIRC extends UIBase {
 
             if (GameUtil.GetFriendsOrClubTable() == 3) {
 
-                WWW.Instance.CommonAPI(
+                WebWww.Instance.CommonAPI(
                     {
-                        web_class: Web_User_Room_Bringin,
+                        web_class: WebUserRoomBringin,
                         api_id: GameCache.Instance.room_id,
                     }
                 ).then(

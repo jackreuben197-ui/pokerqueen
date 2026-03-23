@@ -7,7 +7,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import TimeHelper from "../../helper/TimeHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_User_Room, Web_User_Room_Settle_Detail } from "../../net/https/WebRequest";
+import { WebUserRoom, WebUserRoomSettleDetail } from "../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";
 import UIBase from "../../ui/UIBase";
 import UIComponent from "../../ui/UIComponent";
@@ -121,7 +121,7 @@ export default class UITexasGameEnd extends UIBase {
         this.ShowEndTips(true);
         await TimeHelper.Sleep(2000);
         this.ShowEndTips(false);
-        let response: typeof Web_User_Room_Settle_Detail.Response = await UITexasModel.mInstance.APIUserRoomSettleDetail(this.mRoomId);
+        let response: typeof WebUserRoomSettleDetail.Response = await UITexasModel.mInstance.APIUserRoomSettleDetail(this.mRoomId);
         if (response) {
             if (!this.node.activeInHierarchy) return;
             this.InitSuperView(response);
@@ -143,7 +143,7 @@ export default class UITexasGameEnd extends UIBase {
         WebImageHelper.SetUrlImage(this.RadHead, GameCache.Instance.headPic, AssetContext.getAsset("RadHead"));
         this.Head.active = true;
     }
-    private InitSuperView(response: typeof Web_User_Room_Settle_Detail.Response): void {
+    private InitSuperView(response: typeof WebUserRoomSettleDetail.Response): void {
         let list = response.data.list;
         for (let i = 0; i < list.length; i++) {
             let info = list[i];

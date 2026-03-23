@@ -3,7 +3,7 @@ import GC from "../../../frame/GameControl";
 import { GameCache } from "../../../game/GameCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
-import { Web_Stats_User_Stats } from "../../../net/https/WebRequest";
+import { WebStatsUserStats } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import { LobbyControl } from "../../control/LobbyControl";
 

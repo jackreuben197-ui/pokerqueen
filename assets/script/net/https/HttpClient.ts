@@ -7,7 +7,7 @@ import LoginSession from "../../session/LoginSession";
 import CCTools from "../../tools/CCTools";
 import UIComponent from "../../ui/UIComponent";
 import WebHelper from "./WebHelper";
-import { APIOrgFriendBringIn, API_CLUB_APPLY_LIST, Web_Club_Fund_Audit, Web_Guild_GiveRecycle } from "./WebRequest";
+import { WebOrgFriendBringIn, WebClubApplyList, WebClubFundAudit, WebGuildGiveRecyCle } from "./WebRequest";
 
 /**
  * Http端
@@ -146,12 +146,12 @@ let filter_codes = [10014];
 //HTTP请求的错误码处理
 let HttpCodeHandler = (api: string, code: number, message: string = "") => {
     //充值失败
-    if (Web_Club_Fund_Audit.API == api) {
+    if (WebClubFundAudit.API == api) {
         UIComponent.Instance.ToastLanguage("UISupplememtDetails_cz_fail");
         return;
     }
     //公会内部桌请求申请列表d
-    if (API_CLUB_APPLY_LIST.API == api || Web_Guild_GiveRecycle.API == api) {
+    if (WebClubApplyList.API == api || WebGuildGiveRecyCle.API == api) {
         return;
     }
     if (filter_codes.includes(code)) return;

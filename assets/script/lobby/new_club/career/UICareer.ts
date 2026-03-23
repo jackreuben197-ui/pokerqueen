@@ -13,7 +13,7 @@ import PublicHelper from "../../../helper/PublicHelper";
 import { StringHelper } from "../../../helper/StringHelper";
 import TimeHelper from "../../../helper/TimeHelper";
 import SceneManager from "../../../manager/SceneManager";
-import { api_stats_user_stats_all } from "../../../net/https/WebRequest";
+import { WebStatsUserStatsAll } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
 import { UICareerModel } from "../../career/UICareerModel";
@@ -82,8 +82,8 @@ export default class UICareer extends UIBase {
             filter_type: this._selectIndex + 1
         }
         UICareerModel.mInstance._coinType = this._selectIndex + 1
-        await UICareerModel.mInstance.api_stats_user_stats_all(parm, false);
-        let _data = api_stats_user_stats_all.Response.data
+        await UICareerModel.mInstance.WebStatsUserStatsAll(parm, false);
+        let _data = WebStatsUserStatsAll.Response.data
         let room_data_total = _data?.room_data_total
         if (!room_data_total) return
 

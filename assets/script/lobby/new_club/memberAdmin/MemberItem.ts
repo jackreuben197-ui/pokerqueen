@@ -13,7 +13,7 @@ import { ClubUserDataCache } from "../../../frame/data/club/ClubUserDataCache";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { APIOrgClubUserInfo, Web_User_Info } from "../../../net/https/WebRequest";
+import { WebOrgClubUserInfo, WebUserInfo } from "../../../net/https/WebRequest";
 import AssetContext, { AssetFold } from "../../../ui/component/AssetContext";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
@@ -83,11 +83,11 @@ export default class MemberItem extends UIBase {
     }
 
     async onClickItem(event) {
-        await UIClubModel.mInstance.APIOrgClubUserInfo({
+        await UIClubModel.mInstance.WebOrgClubUserInfo({
             "user_id": this._data.user_id,
             "club_id": ClubCache.club_id
         })
-        let data: any = APIOrgClubUserInfo.Response.data
+        let data: any = WebOrgClubUserInfo.Response.data
         ClubUserDataCache.setUserData(data);
         // data.user_info.user_join_club_time = this._data.user_join_club_time
         // data.user_info.remark_desc = this._data.remark_desc

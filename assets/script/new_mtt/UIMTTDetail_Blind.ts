@@ -4,7 +4,7 @@ import { TextColor } from "../config/GameConfig";
 import MTTGameUtil from "../game/util/MTTGameUtil";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { WWW } from "../net/https/WebRequest";
+import { WebWww } from "../net/https/WebRequest";
 import UIBasePlus from "../ui/UIBasePlus";
 
 

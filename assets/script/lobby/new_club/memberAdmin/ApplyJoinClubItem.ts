@@ -31,13 +31,13 @@ export default class ApplyJoinClubItem extends UIBase {
         WebImageHelper.SetHeadImage(icon.getComponent(cc.Sprite), this._data.avatar)
         let refuse = cc.find('btnNode/refuse', this.node)
         refuse.on(cc.Node.EventType.TOUCH_END, () => {
-            UIClubModel.mInstance.APIOrgClubApprovalJoin(this._data.id, 3);
+            UIClubModel.mInstance.WebOrgClubApproValJoin(this._data.id, 3);
             this.node.active = false
         }, this)
 
         let agree = cc.find('btnNode/agree', this.node)
         agree.on(cc.Node.EventType.TOUCH_END, async () => {
-            await UIClubModel.mInstance.APIOrgClubApprovalJoin(this._data.id, 2);
+            await UIClubModel.mInstance.WebOrgClubApproValJoin(this._data.id, 2);
             this.node.active = false
             this.post(GGEvent.CLUB_DELE_USER);
         }, this)

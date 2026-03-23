@@ -8,7 +8,7 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import UIFriendMatch from "../../lobby/new_club/createMatch/UIFriendMatch";
 
-import { API_CLUB_APPLY_AUDIT, API_CLUB_APPLY_LIST, Web_Me_Apply, Web_RoomSitApplyAudit, Web_RoomSitApplyRecords, WWW } from "../../net/https/WebRequest";
+import { WebClubApplyAudit, WebClubApplyList, WebMeApply, WebRoomSitApplyAudit, WebRoomSitApplyRecords, WebWww } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 
@@ -163,13 +163,13 @@ export default class UIMsgBring extends BaseFormPlus {
             "audit_op": op
         }
         if (data.origin_type == 4) {
-            web_class = Web_RoomSitApplyAudit;
+            web_class = WebRoomSitApplyAudit;
         } else {
-            web_class = API_CLUB_APPLY_AUDIT;
+            web_class = WebClubApplyAudit;
             club_id = data.club_id;
 
         }
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
                 web_class: web_class,
                 body: body,
@@ -195,7 +195,7 @@ export default class UIMsgBring extends BaseFormPlus {
         let body: any = null;
         switch (from) {
             case 0://朋友桌
-                web_class = Web_RoomSitApplyRecords;
+                web_class = WebRoomSitApplyRecords;
                 body = {
                     "limit": 10,
                     "offset": 0,
@@ -203,7 +203,7 @@ export default class UIMsgBring extends BaseFormPlus {
                 }
                 break;
             case 1://公会桌
-                web_class = API_CLUB_APPLY_LIST;
+                web_class = WebClubApplyList;
                 club_id = ClubCache.club_id;
                 body = {
                     "limit": 10,
@@ -211,14 +211,14 @@ export default class UIMsgBring extends BaseFormPlus {
                 }
                 break;
             case 2://我的
-                web_class = Web_Me_Apply;
+                web_class = WebMeApply;
                 body = {
                     "limit": 10,
                     "offset": 0,
                 }
                 break;
         }
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
                 web_class: web_class,
                 body: body,

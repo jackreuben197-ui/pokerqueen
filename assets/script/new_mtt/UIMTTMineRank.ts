@@ -4,7 +4,7 @@ import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { WWW, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Myaward } from "../net/https/WebRequest";
+import { WebWww, WebRoomCenterMttDetailS, WebRoomCenterMttMyawArd } from "../net/https/WebRequest";
 import UIShareModel from "../share/UIShareModel";
 import UIBasePlus from "../ui/UIBasePlus";
 import UIComponent from "../ui/UIComponent";
@@ -132,9 +132,9 @@ export default class UIMTTMineRank extends UIBasePlus {
         });
     }
     private GetMatchRoomsInfo(resultCallback: Function) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Room_Center_Mtt_Details,
+                web_class: WebRoomCenterMttDetailS,
                 api_id: this.mineRankDate.matchId
             }
         ).then(
@@ -151,9 +151,9 @@ export default class UIMTTMineRank extends UIBasePlus {
     // 得到我的奖励
     private GetMyawardApi() {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Room_Center_Mtt_Myaward,
+                web_class: WebRoomCenterMttMyawArd,
                 api_id: this.mineRankDate.matchId
             }
         ).then(

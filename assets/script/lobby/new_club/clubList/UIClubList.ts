@@ -14,7 +14,7 @@ import { GameCache } from "../../../game/GameCache";
 import { StringHelper } from "../../../helper/StringHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
 import SceneManager from "../../../manager/SceneManager";
-import { Web_Org_Club_Get, Web_User_Info } from "../../../net/https/WebRequest";
+import { WebOrgClubGet, WebUserInfo } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -56,7 +56,7 @@ export default class UIClubList extends BaseForm {
         this.refreshList();
 
         // await UIClubModel.mInstance.APIOrgClubGet()
-        // let data: any = Web_Org_Club_Get.Response.data
+        // let data: any = WebOrgClubGet.Response.data
         // this.num.string = data.length;
         // this.initListNode(data)
         // this.initPageNode(data)
@@ -73,7 +73,7 @@ export default class UIClubList extends BaseForm {
     }
     async refreshList() {
         await UIClubModel.mInstance.APIOrgClubGet(false);
-        let data: any = Web_Org_Club_Get.Response.data
+        let data: any = WebOrgClubGet.Response.data
         this.num.string = data.length;
         // this.initListNode(data)
         this.initPageNode(data)
@@ -83,7 +83,7 @@ export default class UIClubList extends BaseForm {
     }
     //根据条件排序
     sortData() {
-        let data: any = Web_Org_Club_Get.Response.data
+        let data: any = WebOrgClubGet.Response.data
         let _data = data.sort((a, b) => {
             if (this._selectIndex == 0) {
                 return new Date(a.create_time).getTime() - new Date(b.create_time).getTime()
@@ -109,8 +109,8 @@ export default class UIClubList extends BaseForm {
     initTop() {
         let icon = cc.find('Round', this.topNode).getComponent(cc.Sprite);
         WebImageHelper.SetHeadImage(icon, GC.data.user.info.avatar)//GameCache.Instance.headPic
-        this.topNode.getChildByName('name').getComponent(cc.Label).string = StringHelper.LengthNick(Web_User_Info.Response.data.user.nickname);
-        this.topNode.getChildByName('id').getComponent(cc.Label).string = 'ID:' + Web_User_Info.Response.data.user.un_id
+        this.topNode.getChildByName('name').getComponent(cc.Label).string = StringHelper.LengthNick(WebUserInfo.Response.data.user.nickname);
+        this.topNode.getChildByName('id').getComponent(cc.Label).string = 'ID:' + WebUserInfo.Response.data.user.un_id
 
     }
     initListNode(clubList) {

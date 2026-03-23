@@ -9,7 +9,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
-import { APIOrgClubUploadIcon, Web_User_Info } from "../../net/https/WebRequest";
+import { WebOrgClubUploadIcon, WebUserInfo } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import AssetContext, { AssetFold } from "../../ui/component/AssetContext";

@@ -11,7 +11,7 @@ import { i18nMgr } from "../i18n/i18nMgr";
 import ToastManager from "../manager/ToastManager";
 import { DialogType } from "../mtt/detail/UIMttSignDialogComponent";
 import HttpRequest from "../net/https/HttpRequest";
-import { Web_Prop_User_Buy_Prop, Web_Prop_User_Check_Prop_Info, Web_Room_Center_Mtt_Buyin, Web_Room_Center_Mtt_Details, Web_Room_Center_Mtt_Rebuy } from "../net/https/WebRequest";
+import { WebPropUserBuyProp, WebPropUserCheckPropInfo, WebRoomCenterMttBuyin, WebRoomCenterMttDetailS, WebRoomCenterMttRebuy } from "../net/https/WebRequest";
 import { ServerErrorCode } from "../net/websocket/ServerErrorCode";
 import UIComponent, { PrefabUI } from "../ui/UIComponent";
 
@@ -71,7 +71,7 @@ export class UIMTTModel {
     _actionResultCallback: any = null;
     _args: any = null;
     _actionExceptionCallback: any = null;
-    //MttInfo: typeof Web_Room_Center_Mtt_Details.Response.data;
+    //MttInfo: typeof WebRoomCenterMttDetailS.Response.data;
     PartialBringIn: number = 0;
 
     public HandleMTTJoinAction(
@@ -155,11 +155,11 @@ export class UIMTTModel {
                 };
 
                 HttpRequest.Send({
-                    api: Web_Room_Center_Mtt_Buyin.API.replace("{id}", this.MttInfo.mtt.match_id.toString()),
-                    request: Web_Room_Center_Mtt_Buyin,
-                    body: Web_Room_Center_Mtt_Buyin.Request(req),
+                    api: WebRoomCenterMttBuyin.API.replace("{id}", this.MttInfo.mtt.match_id.toString()),
+                    request: WebRoomCenterMttBuyin,
+                    body: WebRoomCenterMttBuyin.Request(req),
                     onSuccess: function () {
-                        let response = Web_Room_Center_Mtt_Buyin.Response;
+                        let response = WebRoomCenterMttBuyin.Response;
                         if (response.code == 0) {
                             let content = i18nMgr.Get("MTT_Apply_Success");
                             UIComponent.Instance.Toast(content);
@@ -270,11 +270,11 @@ export class UIMTTModel {
                         {
                         };
                         HttpRequest.Send({
-                            api: Web_Room_Center_Mtt_Rebuy.API.replace("{id}", this.MttInfo.mtt.match_id.toString()),
-                            request: Web_Room_Center_Mtt_Rebuy,
-                            body: Web_Room_Center_Mtt_Rebuy.Request(requestData),
+                            api: WebRoomCenterMttRebuy.API.replace("{id}", this.MttInfo.mtt.match_id.toString()),
+                            request: WebRoomCenterMttRebuy,
+                            body: WebRoomCenterMttRebuy.Request(requestData),
                             onSuccess: function () {
-                                var responseData = Web_Room_Center_Mtt_Rebuy.Response;
+                                var responseData = WebRoomCenterMttRebuy.Response;
                                 if (responseData.code == 0) {
                                     ToastManager.Instance.createToast(i18nMgr.Get("Repurchase_successful"));
                                 } else {
@@ -466,11 +466,11 @@ export class UIMTTModel {
             match_id: this.MttInfo.mtt.match_id,
         }
         HttpRequest.Send({
-            api: Web_Prop_User_Buy_Prop.API,
-            request: Web_Prop_User_Buy_Prop,
-            body: Web_Prop_User_Buy_Prop.Request(request),
+            api: WebPropUserBuyProp.API,
+            request: WebPropUserBuyProp,
+            body: WebPropUserBuyProp.Request(request),
             onSuccess: function () {
-                let tResp = Web_Prop_User_Buy_Prop.Response;
+                let tResp = WebPropUserBuyProp.Response;
                 if (pAct != null) {
                     pAct(tResp);
                 }
@@ -491,11 +491,11 @@ export class UIMTTModel {
             prop_id: this.MttInfo.mtt.buy_prop_id,
         };
         HttpRequest.Send({
-            api: Web_Prop_User_Check_Prop_Info.API,
-            request: Web_Prop_User_Check_Prop_Info,
-            body: Web_Prop_User_Check_Prop_Info.Request(request),
+            api: WebPropUserCheckPropInfo.API,
+            request: WebPropUserCheckPropInfo,
+            body: WebPropUserCheckPropInfo.Request(request),
             onSuccess: function () {
-                let tResp = Web_Prop_User_Check_Prop_Info.Response;
+                let tResp = WebPropUserCheckPropInfo.Response;
                 if (pAct != null) {
                     pAct(tResp);
                 }
@@ -510,13 +510,13 @@ export class UIMTTModel {
     /// </summary>
     /// <param name="pAct"></param>
     APIMtt_GetDiscounts(pAct) {
-        // Web_Room_Center_Mtt_GetDiscounts.RequestData request = new Web_Room_Center_Mtt_GetDiscounts.RequestData()
+        // WebRoomCenterMttGetdisCountS.RequestData request = new WebRoomCenterMttGetdisCountS.RequestData()
         // {
 
         // };
-        // HttpRequestComponent.Instance.Send(Web_Room_Center_Mtt_GetDiscounts.API, Web_Room_Center_Mtt_GetDiscounts.Request(request), (Action<string>)(resData =>
+        // HttpRequestComponent.Instance.Send(WebRoomCenterMttGetdisCountS.API, WebRoomCenterMttGetdisCountS.Request(request), (Action<string>)(resData =>
         // {
-        //     var tResp = Web_Room_Center_Mtt_GetDiscounts.Response(resData);
+        //     var tResp = WebRoomCenterMttGetdisCountS.Response(resData);
         //     if (pAct != null)
         //     {
         //         pAct(tResp);
@@ -536,11 +536,11 @@ export class UIMTTModel {
         let self = this;
 
         HttpRequest.Send({
-            api: Web_Room_Center_Mtt_Details.API.replace("{id}", matchID.toString()),
-            request: Web_Room_Center_Mtt_Details,
-            body: Web_Room_Center_Mtt_Details.Request(requestData),
+            api: WebRoomCenterMttDetailS.API.replace("{id}", matchID.toString()),
+            request: WebRoomCenterMttDetailS,
+            body: WebRoomCenterMttDetailS.Request(requestData),
             onSuccess: function () {
-                var responseData = Web_Room_Center_Mtt_Details.Response;
+                var responseData = WebRoomCenterMttDetailS.Response;
                 if (responseData.code == 0) {
                     // 核心数据缓存
                     self.MttInfo = responseData.data;

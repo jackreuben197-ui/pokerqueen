@@ -2,7 +2,7 @@ import { i18nMgr } from "../../i18n/i18nMgr";
 import UIBasePlus from "../../ui/UIBasePlus";
 import { CPlayer } from "../CPlayer";
 import { GameCache } from "../GameCache";
-import { Web_Other_User_Info, Web_Stats_Other_User_Stats, WWW } from "../../net/https/WebRequest";
+import { WebOtherUserInfo, WebStatsOtherUserStats, WebWww } from "../../net/https/WebRequest";
 import UIComponent from "../../ui/UIComponent";
 import { UIDefine } from "../../define/UIDefine";
 import WebImageHelper from "../../helper/WebImageHelper";
@@ -55,9 +55,9 @@ export default class UITexasPlayerInfo extends UIBasePlus {
     }
     reqUserInfo(userid: number) {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Other_User_Info,
+                web_class: WebOtherUserInfo,
                 api_id: userid,
             }
         ).then(
@@ -71,9 +71,9 @@ export default class UITexasPlayerInfo extends UIBasePlus {
         )
     }
     reqUserStats(random_num: number) {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Stats_Other_User_Stats,
+                web_class: WebStatsOtherUserStats,
                 api_id: random_num,
             }
         ).then(

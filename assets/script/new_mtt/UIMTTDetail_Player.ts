@@ -8,7 +8,7 @@ import { StringHelper } from "../helper/StringHelper";
 import TimeHelper from "../helper/TimeHelper";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { WWW, Web_Room_Center_Mtt_Hranks, Web_Room_Center_Mtt_Ranks } from "../net/https/WebRequest";
+import { WebWww, WebRoomCenterMttHranks, WebRoomCenterMttRanks } from "../net/https/WebRequest";
 import LobbySession from "../session/LobbySession";
 import UIBasePlus from "../ui/UIBasePlus";
 import { MTTMatchStatus, UIMTTModel } from "./UIMTTModel";
@@ -100,9 +100,9 @@ export default class UIMTTDetail_Player extends UIBasePlus {
     reqList() {
 
         if (this.select_hunter) {//猎人
-            WWW.Instance.CommonAPI(
+            WebWww.Instance.CommonAPI(
                 {
-                    web_class: Web_Room_Center_Mtt_Hranks,
+                    web_class: WebRoomCenterMttHranks,
                     api_id: this.mtt_detail.mtt.match_id
                 }
             ).then(
@@ -132,9 +132,9 @@ export default class UIMTTDetail_Player extends UIBasePlus {
                 }
             )
         } else {//非猎人
-            WWW.Instance.CommonAPI(
+            WebWww.Instance.CommonAPI(
                 {
-                    web_class: Web_Room_Center_Mtt_Ranks,
+                    web_class: WebRoomCenterMttRanks,
                     api_id: this.mtt_detail.mtt.match_id
                 }
             ).then(

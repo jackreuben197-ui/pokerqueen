@@ -3,7 +3,7 @@ import { EventName } from "../../config/EventName";
 import LobbyRoomListModel from "../../frame/data/lobby/LobbyRoomListModel";
 import GC from "../../frame/GameControl";
 import { GameType, PokerType } from "../../game/util/GameUtil";
-import { Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../net/https/WebRequest";
+import { WebRoomCenterRooms, WebRoomCenterRoomsBlinds, WebRoomCenterRoomsBlindsClub, WebRoomCenterRoomsClub } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import UIMatchChessItem from "./UIMatchChessItem";
 
@@ -63,22 +63,22 @@ export default class UIMatchChessView extends UIBase {
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
-            case Web_Room_Center_Rooms_Blinds.API: {
+            case WebRoomCenterRoomsBlinds.API: {
                 if (!this._isClub) {
                     this.updateSBTabs();
                 }
             } break;
-            case Web_Room_Center_Rooms_Blinds_CLUB.API: {
+            case WebRoomCenterRoomsBlindsClub.API: {
                 if (this._isClub) {
                     this.updateSBTabs();
                 }
             } break;
-            case Web_Room_Center_Rooms.API: {
+            case WebRoomCenterRooms.API: {
                 if (sendInfo.limit && !this._isClub) {
                     this.updateList();
                 }
             } break;
-            case Web_Room_Center_Rooms_CLUB.API: {
+            case WebRoomCenterRoomsClub.API: {
                 if (sendInfo.limit && this._isClub) {
                     this.updateList();
                 }

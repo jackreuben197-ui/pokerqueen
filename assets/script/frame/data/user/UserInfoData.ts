@@ -8,7 +8,7 @@
  */
 import { TUserInfo } from "../../../config/TTypeConfig";
 import { UIClubModel } from "../../../lobby/labor/UIClubModel";
-import { Web_Org_Club_Get, Web_User_Info } from "../../../net/https/WebRequest";
+import { WebOrgClubGet, WebUserInfo } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
 import GC from "../../GameControl";
 import UserInfoModel from "./UserInfoModel";
@@ -18,7 +18,7 @@ export default class UserInfoData extends BaseData {
     isRegist = false
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
-            case Web_User_Info.API: {
+            case WebUserInfo.API: {
                 this.rspUserInfo(msg.user);
             } break;
         }
@@ -26,7 +26,7 @@ export default class UserInfoData extends BaseData {
 
     rspUserInfo(msg: TUserInfo) {
         this.info.updateData(msg);
-        !Web_Org_Club_Get?.Response && UIClubModel.mInstance.APIOrgClubGet()
+        !WebOrgClubGet?.Response && UIClubModel.mInstance.APIOrgClubGet()
         !GC.data.languageTemp.temp.haveReq && GC.data.languageTemp.reqLanguageTemp();
     }
 }

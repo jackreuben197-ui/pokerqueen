@@ -10,7 +10,7 @@ import ComFormTitle from "../../common/ComFormTitle";
 import { EventName } from "../../config/EventName";
 import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { APIGetBlindStatus } from "../../net/https/WebRequest";
+import { WebGetBlindStatus } from "../../net/https/WebRequest";
 import BaseForm from "../../ui/form/BaseForm";
 import UIComponent from "../../ui/UIComponent";
 const { ccclass, property } = cc._decorator;
@@ -45,7 +45,7 @@ export default class UIChangeAccount extends BaseForm {
 
     }
     initUI() {
-        let data: any = APIGetBlindStatus.Response?.data
+        let data: any = WebGetBlindStatus.Response?.data
         if (this.type == 1) {
             this.setBindStatue(this.phone, data.phone_status.status, this.type)
 
@@ -78,7 +78,7 @@ export default class UIChangeAccount extends BaseForm {
         let lbl_phone: cc.Node = node.getChildByName('Text_title')
         let lbl_tip: cc.Label = node.getChildByName('Text_tip').getComponent(cc.Label)
 
-        let data: any = APIGetBlindStatus.Response?.data
+        let data: any = WebGetBlindStatus.Response?.data
         if (type == 1) {
             if (flag) {
                 lbl_phone.getComponent(cc.Label).string = '+' + data.phone_status.area + ' ' + data.phone_status.phone

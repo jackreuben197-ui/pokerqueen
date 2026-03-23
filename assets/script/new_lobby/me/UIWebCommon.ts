@@ -1,5 +1,5 @@
 import SimpleNodePool from "../../common/MyNodePool";
-import { Web_MallShopList, Web_Mall_Buy, WWW } from "../../net/https/WebRequest";
+import { WebMallShopList, WebMallBuy, WebWww } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemMall from "./ItemMall";

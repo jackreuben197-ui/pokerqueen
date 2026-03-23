@@ -15,12 +15,12 @@
 
 import UIBase from "../ui/UIBase";
 import { UIClubModel } from "../lobby/labor/UIClubModel";
-import { APIOrgClubUploadIcon, Web_Config_Global_Config, Web_User_Modify_User_Info, WWW } from "../net/https/WebRequest";
+import { WebOrgClubUploadIcon, WebConfigGlobalConfig, WebUserModifyUserInfo, WebWww } from "../net/https/WebRequest";
 import WebImageHelper from "../helper/WebImageHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
 import { StringHelper } from "../helper/StringHelper";
 import LobbySession from "../session/LobbySession";
-import { Web_User_Info } from "../net/https/WebRequest";
+import { WebUserInfo } from "../net/https/WebRequest";
 import UIComponent from "../ui/UIComponent";
 import { UIDefine } from "../define/UIDefine";
 import { EventName } from "../config/EventName";
@@ -53,10 +53,10 @@ export default class UIEditMess extends UIBase {
         this.iconData = null;
         await LobbySession.APIUserInfo();
 
-        let priceData = JSON.parse(Web_Config_Global_Config.Response.data.user_modify_name_price);
+        let priceData = JSON.parse(WebConfigGlobalConfig.Response.data.user_modify_name_price);
         this.tip1.string = StringHelper.Format(i18nMgr.Get('UIMine_ChangeNameTipsZS'), [priceData.raw_price]);
-        WebImageHelper.SetHeadImage(this.icon, Web_User_Info.Response.data.user.avatar);
-        this.editName.string = Web_User_Info.Response.data.user.nickname
+        WebImageHelper.SetHeadImage(this.icon, WebUserInfo.Response.data.user.avatar);
+        this.editName.string = WebUserInfo.Response.data.user.nickname
         this.editBoxChange();
     }
 
@@ -73,8 +73,8 @@ export default class UIEditMess extends UIBase {
     }
     async uploadIcon() {
 
-        await UIClubModel.mInstance.APIOrgClubUploadIcon();
-        let icon: any = APIOrgClubUploadIcon.Response.data
+        await UIClubModel.mInstance.WebOrgClubUploadIcon();
+        let icon: any = WebOrgClubUploadIcon.Response.data
         this.iconData = icon;
         if (icon) {
             WebImageHelper.SetHeadImage(this.icon, icon);
@@ -85,14 +85,14 @@ export default class UIEditMess extends UIBase {
         if (this.iconData) {
             parms['avatar'] = this.iconData
         }
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_User_Modify_User_Info,
+                web_class: WebUserModifyUserInfo,
                 body: parms
             }
         ).then(() => {
-            Web_User_Info.Response.data.user.avatar = this.iconData
-            Web_User_Info.Response.data.user.nickname = this.editName.string
+            WebUserInfo.Response.data.user.avatar = this.iconData
+            WebUserInfo.Response.data.user.nickname = this.editName.string
             this.post(EventName.refreshUserData);
             UIComponent.close(UIDefine.UIEditMess)
         })

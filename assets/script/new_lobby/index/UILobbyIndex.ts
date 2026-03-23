@@ -9,7 +9,7 @@ import WebImageHelper from "../../helper/WebImageHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { Bundle_Resources } from "../../manager/ResManager";
 import SceneManager from "../../manager/SceneManager";
-import { api_wallet_total, Web_Guild_AdminHas, Web_Room_Center_Rooms, Web_User_Info, WWW } from "../../net/https/WebRequest";
+import { WebWalletTotal, WebGuildAdminHas, WebRoomCenterRooms, WebUserInfo, WebWww } from "../../net/https/WebRequest";
 import LobbySession from "../../session/LobbySession";
 import AssetContext from "../../ui/component/AssetContext";
 import { UIPasswordDialogType } from "../../ui/dialog/UIPasswordDialog";
@@ -100,8 +100,8 @@ export default class UILobbyIndex extends UIBasePlus {
         this.activeRooms(false);
     }
     refreshUserInfo() {
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head, Web_User_Info.Response.data.user.avatar);
-        this.cc_Label$welcome.string = "Hey," + Web_User_Info.Response.data.user.nickname + "!";
+        WebImageHelper.SetHeadImage(this.cc_Sprite$head, WebUserInfo.Response.data.user.avatar);
+        this.cc_Label$welcome.string = "Hey," + WebUserInfo.Response.data.user.nickname + "!";
     }
     private showGameTypeTabs() {
         this.$GameTypeTabs.children.forEach((item, index) => {
@@ -181,9 +181,9 @@ export default class UILobbyIndex extends UIBasePlus {
     // //请求总钱包
     // reqWalletTotal() {
 
-    //     WWW.Instance.CommonAPI(
+    //     WebWww.Instance.CommonAPI(
     //         {
-    //             web_class: api_wallet_total,
+    //             web_class: WebWalletTotal,
     //         }
     //     ).then(
     //         (res: any) => {
@@ -211,9 +211,9 @@ export default class UILobbyIndex extends UIBasePlus {
             console.log("请求到头");
             return;
         }
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Room_Center_Rooms,
+                web_class: WebRoomCenterRooms,
                 body: {
                     limit: this.room_limit,
                     offset: this.curr_room_offset,
@@ -287,9 +287,9 @@ export default class UILobbyIndex extends UIBasePlus {
             return;
         }
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Guild_AdminHas,
+                web_class: WebGuildAdminHas,
                 body: {
                     club_id: room.club_id
                 }

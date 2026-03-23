@@ -10,7 +10,7 @@
 import { UIDefine } from "../../define/UIDefine";
 import { StringHelper } from "../../helper/StringHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
-import { Web_User_Info } from "../../net/https/WebRequest";
+import { WebUserInfo } from "../../net/https/WebRequest";
 import UIComponent from "../../ui/UIComponent";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -50,7 +50,7 @@ export default class messPfItem extends cc.Component {
     initData(data) {
         this._data = data
         // this.dm.string = this._data.time
-        let id = Web_User_Info.Response.data.user.p_u_id
+        let id = WebUserInfo.Response.data.user.p_u_id
         this.ower.active = this._data.sender_id == id
         this.other.active = !this.ower.active
         this.iconMask.x = this._data.sender_id == id ? 447 : -447;

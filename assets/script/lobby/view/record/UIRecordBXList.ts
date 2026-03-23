@@ -2,7 +2,7 @@ import ComFormTitle from "../../../common/ComFormTitle";
 import List from "../../../common/List";
 import { TSendInfo } from "../../../config/TTypeConfig";
 import { HttpLink } from "../../../net/https/HttpLink";
-import { Web_Gold_Change_Insure_Log } from "../../../net/https/WebRequest";
+import { WebGoldChangeInsureLog } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIRecordBXListItem from "./UIRecordBXListItem";
 
@@ -41,7 +41,7 @@ export default class UIRecordBXList extends BaseForm {
         }
 
         let sendInfo: TSendInfo = {
-            api: Web_Gold_Change_Insure_Log.API,
+            api: WebGoldChangeInsureLog.API,
             body: { src_room_id: this._detail.info.data.room_data.room_id, limit: 15, offset: offset },
             isGet: false,
         }
@@ -81,7 +81,7 @@ export default class UIRecordBXList extends BaseForm {
 
     protected notify(id: any, msg: any, sendInfo?: any): void {
         switch (id) {
-            case Web_Gold_Change_Insure_Log.API: {
+            case WebGoldChangeInsureLog.API: {
                 this.updateData(msg);
                 this.updateList();
             } break;

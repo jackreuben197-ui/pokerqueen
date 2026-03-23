@@ -2,7 +2,7 @@ import List from "../common/List";
 import ListEx from "../common/ListEx";
 import { StringHelper } from "../helper/StringHelper";
 import { i18nMgr } from "../i18n/i18nMgr";
-import { WWW, Web_Room_Center_Mtt_Rooms } from "../net/https/WebRequest";
+import { WebWww, WebRoomCenterMttRooms } from "../net/https/WebRequest";
 import LobbySession from "../session/LobbySession";
 import UIBasePlus from "../ui/UIBasePlus";
 import { UIMTTModel } from "./UIMTTModel";
@@ -50,9 +50,9 @@ export default class UIMTTDetail_Desk extends UIBasePlus {
 
     reqList() {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_Room_Center_Mtt_Rooms,
+                web_class: WebRoomCenterMttRooms,
                 api_id: this.mtt_detail.mtt.match_id
             }
         ).then(

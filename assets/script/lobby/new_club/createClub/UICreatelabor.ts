@@ -9,7 +9,7 @@
 
 import WebImageHelper from "../../../helper/WebImageHelper";
 import { i18nMgr } from "../../../i18n/i18nMgr";
-import { APIOrgClubUploadIcon } from "../../../net/https/WebRequest";
+import { WebOrgClubUploadIcon } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -164,8 +164,8 @@ export default class UICreatelabor extends BaseForm {
 
 
     async uploadIcon() {
-        await UIClubModel.mInstance.APIOrgClubUploadIcon();
-        let icon: any = APIOrgClubUploadIcon.Response.data
+        await UIClubModel.mInstance.WebOrgClubUploadIcon();
+        let icon: any = WebOrgClubUploadIcon.Response.data
         if (icon) {
             this.iconUrl = icon
             WebImageHelper.SetHeadImage(this.Round, icon);

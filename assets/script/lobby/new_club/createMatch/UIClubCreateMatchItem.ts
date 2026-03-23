@@ -161,7 +161,7 @@ export default class UIClubCreateMatchItem extends UIBase {
                 contentCancel: "adaptation10013",
                 actionCommit: async () => {
                     // this.node.active = false;
-                    await UIClubModel.mInstance.APIOrgTemplateDelete(this._data.id)
+                    await UIClubModel.mInstance.WebOrgTemplateDelete(this._data.id)
                     this.post('matchModelChange')
 
                 },

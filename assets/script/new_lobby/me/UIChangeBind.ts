@@ -16,7 +16,7 @@ import TimeHelper from "../../helper/TimeHelper";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import ToastManager from "../../manager/ToastManager";
-import { APIGetBlindStatus } from "../../net/https/WebRequest";
+import { WebGetBlindStatus } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import StorageKey from "../../session/StorageKey";
 import LabelCDTime from "../../ui/component/LabelCDTime";
@@ -94,7 +94,7 @@ export default class UIMineChangeBind extends BaseForm {
         this.vcodeEdit.string = "";
         this.passwordEdit.string = "";
         this.areaNum.string = LoginSession.AreaCode;
-        let data: any = APIGetBlindStatus.Response?.data
+        let data: any = WebGetBlindStatus.Response?.data
         this._isNoAllHave = !data.phone_status.status && !data.email_status.status
         this.passwordNode.active = this._isNoAllHave
         let key = param == 1 ? "UILogin_InputMoblie" : "UILogin_InputEmail";
@@ -153,14 +153,14 @@ export default class UIMineChangeBind extends BaseForm {
         }
 
         if (this.type == 1) {
-            await LoginSession.APIBindPhone({ phone: account, code: vcode, area, password })
+            await LoginSession.WebBindPhone({ phone: account, code: vcode, area, password })
             // this.checkLogin(area, account, password, vcode);
         } else {
-            let data = await LoginSession.APIBindEmail({ email: account, code: vcode, password });
+            let data = await LoginSession.WebBindEmail({ email: account, code: vcode, password });
             console.log(";;;;;;;;;;", data)
             // this.checkRegister(area, account, password, vcode);
         }
-        await LoginSession.APIGetBlindStatus()
+        await LoginSession.WebGetBlindStatus()
         this.post(EventName.refresh_bind)
         this.close();
     }
@@ -200,7 +200,7 @@ export default class UIMineChangeBind extends BaseForm {
 
             //获取邮箱验证码
             //验证邮箱是否已注册
-            let result: any = await LoginSession.APIEmailExist({ email: account }).catch((e) => { });
+            let result: any = await LoginSession.WebEmailExist({ email: account }).catch((e) => { });
             if (result == undefined) return;
             if (result?.data) {
                 ToastManager.Instance.createToast(i18nMgr.Get("UILogin_1006"));//("此号码已注册");
@@ -208,7 +208,7 @@ export default class UIMineChangeBind extends BaseForm {
             }
             //验证获取验证码是否发送成功
             let lang = i18nMgr.getLanguage()
-            result = await LoginSession.APISendEmailCode({ email: account, lang: lang }).catch(() => { });
+            result = await LoginSession.WebSendEmailCode({ email: account, lang: lang }).catch(() => { });
             if (result == undefined) return;
 
             this.startVCodeTime();

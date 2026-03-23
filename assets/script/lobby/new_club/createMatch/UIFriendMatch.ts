@@ -21,7 +21,7 @@ import { UIDefine } from "../../../define/UIDefine";
 import LobbyRoomListItem from "../../../frame/data/lobby/LobbyRoomListItem";
 import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
 import SceneManager from "../../../manager/SceneManager";
-import { APIOrgFriendRoomList, APIUserDiamondsWallet, web_api_friend_room_stats } from "../../../net/https/WebRequest";
+import { WebOrgFriendRoomList, WebUserDiamondsWallet, WebFriendRoomStats } from "../../../net/https/WebRequest";
 import UIBase from "../../../ui/UIBase";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -30,8 +30,8 @@ import { ClubCache } from "../../../frame/data/club/ClubCache";
 import UIFriendMatchItem from "./../createMatch/UIFriendMatchItem";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import { StringHelper } from "../../../helper/StringHelper";
-import { WWW } from "../../../net/https/WebRequest";
-import { Web_RoomSitApplyRecords } from "../../../net/https/WebRequest";
+import { WebWww } from "../../../net/https/WebRequest";
+import { WebRoomSitApplyRecords } from "../../../net/https/WebRequest";
 import GC from "../../../frame/GameControl";
 import { ProtocolCode } from "../../../net/websocket/ProtocolCode";
 import { ServerMessageGetMsg } from "../../../protobuf/holdem/recv_get_msg_pb";
@@ -122,8 +122,8 @@ export default class UIFriendMatch extends UIBase {
         this.refreshJoinBtn();
     }
     async initFriendData() {
-        await UIClubModel.mInstance.web_api_friend_room_stats(false);
-        let data = web_api_friend_room_stats.Response.data;
+        await UIClubModel.mInstance.WebFriendRoomStats(false);
+        let data = WebFriendRoomStats.Response.data;
         let lbl_7 = this.getChildNodeOrComponent('lb_7', cc.Label)
         this.setText(lbl_7, data.friend_room_stats_nlh.game_num)
         let lbl_8 = this.getChildNodeOrComponent('lb_8', cc.Label)
@@ -164,8 +164,8 @@ export default class UIFriendMatch extends UIBase {
         this.datalbl.node.color = this._selectTitle == 2 ? cc.color().fromHEX('#FFFFFF') : cc.color().fromHEX('#E6E8EC')
     }
     async initDiamond() {
-        await UIClubModel.mInstance.APIUserDiamondsWallet(false);
-        let wallet = APIUserDiamondsWallet.Response.data;
+        await UIClubModel.mInstance.WebUserDiamondsWallet(false);
+        let wallet = WebUserDiamondsWallet.Response.data;
         ClubCache._diamonds_wallet = wallet.diamonds_wallet
         this.num_diamond.string = ClubCache._diamonds_wallet.diamonds
     }
@@ -179,9 +179,9 @@ export default class UIFriendMatch extends UIBase {
         this.listen(EventName.updateFriendChessView, this.reqDataAgain);
     }
     async reqDataAgain() {
-        let result: any = await UIClubModel.mInstance.APIOrgFriendRoomList(false).catch((content) => { console.log(`>> catch error:${APIOrgFriendRoomList.API}`, content) });
+        let result: any = await UIClubModel.mInstance.WebOrgFriendRoomList(false).catch((content) => { console.log(`>> catch error:${WebOrgFriendRoomList.API}`, content) });
         if (!result) return;
-        let data: any = APIOrgFriendRoomList.Response.data
+        let data: any = WebOrgFriendRoomList.Response.data
         this._roomList = data?.records;
         this.list.numItems = data?.records?.length;
 
@@ -253,7 +253,7 @@ export default class UIFriendMatch extends UIBase {
 
     async joinMatch() {
 
-        let _data: any = await UIClubModel.mInstance.APIOrgInvitationRoom(this._keyNodeString);
+        let _data: any = await UIClubModel.mInstance.WebOrgiNvitatIonRoom(this._keyNodeString);
         if (_data?.data?.data) {
             _data = new LobbyRoomListItem(_data?.data?.data);
             //GameUtil.EnterRoomAPI(_data, [UIDefine.UICreateMatch]);
@@ -273,9 +273,9 @@ export default class UIFriendMatch extends UIBase {
     //刷新带入红点
     ReqMsgRed() {
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_RoomSitApplyRecords,
+                web_class: WebRoomSitApplyRecords,
                 body: {
                     status: 1,
                     limit: 1,

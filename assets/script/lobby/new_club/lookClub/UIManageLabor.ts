@@ -12,7 +12,7 @@ import { EventName } from "../../../config/EventName";
 import { UIDefine } from "../../../define/UIDefine";
 import TimeHelper from "../../../helper/TimeHelper";
 import WebImageHelper from "../../../helper/WebImageHelper";
-import { APIMessageRed_num, APIOrgClubGold, APIOrgClubLevelInfo, APIOrgMangerList, APIOrgMemberList, Web_Org_Club_Get, Web_Org_Club_Search_By_Id } from "../../../net/https/WebRequest";
+import { WebMessageRednum, WebOrgClubGold, WebOrgClubLevelInfo, WebOrgMangerList, WebOrgMemberList, WebOrgClubGet, WebOrgClubSearchById } from "../../../net/https/WebRequest";
 import BaseForm from "../../../ui/form/BaseForm";
 import UIComponent from "../../../ui/UIComponent";
 import { UIClubModel } from "../../labor/UIClubModel";
@@ -68,8 +68,8 @@ export default class UIManageLabor extends BaseForm {
         this.initTop();
         this.exitbutton.active = ClubCache.user_level != 1
 
-        await UIClubModel.mInstance.APIMessageRed_num()
-        let redData = APIMessageRed_num.Response.data
+        await UIClubModel.mInstance.WebMessageRednum()
+        let redData = WebMessageRednum.Response.data
         redData.forEach((element) => {
             if (element.type == 4) {
                 this.gxpjRed.active = element.num != 0
@@ -152,7 +152,7 @@ export default class UIManageLabor extends BaseForm {
         this.rusp_st.clickObj = {
             click: () => {
                 ClubCache._msg.auto_audit_switch = ClubCache.auto_audit_switch == 1 ? 2 : 1
-                UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, auto_audit_switch: ClubCache.auto_audit_switch })
+                UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, auto_audit_switch: ClubCache.auto_audit_switch })
 
             }, self: this
         };
@@ -160,7 +160,7 @@ export default class UIManageLabor extends BaseForm {
         this.yxss_st.clickObj = {
             click: () => {
                 ClubCache._msg.search_switch = ClubCache.search_switch == 1 ? 2 : 1
-                UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, search_switch: ClubCache.search_switch })
+                UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, search_switch: ClubCache.search_switch })
 
             }, self: this
         };
@@ -168,21 +168,21 @@ export default class UIManageLabor extends BaseForm {
         this.tstz_st.clickObj = {
             click: () => {
                 ClubCache._msg.show_notice_switch = ClubCache.show_notice_switch == 1 ? 2 : 1
-                UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, show_notice_switch: ClubCache.show_notice_switch })
+                UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, show_notice_switch: ClubCache.show_notice_switch })
             }, self: this
         };
         this.tgllfs_st.setIsOn(ClubCache.show_contact_switch == 1)
         this.tgllfs_st.clickObj = {
             click: () => {
                 ClubCache._msg.show_contact_switch = ClubCache.show_contact_switch == 1 ? 2 : 1
-                UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, show_contact_switch: ClubCache.show_contact_switch })
+                UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, show_contact_switch: ClubCache.show_contact_switch })
             }, self: this
         };
         this.szqb_st.setIsOn(ClubCache.digital_wallet_switch == 1)
         this.szqb_st.clickObj = {
             click: () => {
                 ClubCache._msg.digital_wallet_switch = ClubCache.digital_wallet_switch == 1 ? 2 : 1
-                UIClubModel.mInstance.APIOrgChangeClubData({ club_id: ClubCache.club_id, digital_wallet_switch: ClubCache.digital_wallet_switch })
+                UIClubModel.mInstance.WebOrgchaNgeClubData({ club_id: ClubCache.club_id, digital_wallet_switch: ClubCache.digital_wallet_switch })
             }, self: this
         };
 
@@ -221,7 +221,7 @@ export default class UIManageLabor extends BaseForm {
 
     async exitClub() {
         if (ClubUserDataCache.gold == 0 && ClubUserDataCache.usdt == 0) {
-            await UIClubModel.mInstance.APIOrgClubQuit();
+            await UIClubModel.mInstance.WebOrgClubQuit();
             UIComponent.Instance.CloseNoAnimation(UIDefine.UIManageLabor);
             UIComponent.Instance.CloseNoAnimation(UIDefine.UIClubHome);
             this.post(EventName.refreshClubList)

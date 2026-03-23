@@ -4,7 +4,7 @@ import { UIDefine } from "../../define/UIDefine";
 import GGEvent from "../../event/GGEvent";
 import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
-import { Web_MallShopList, Web_Mall_Buy, Web_User_Modify_Password, Web_User_Send_Code, WWW } from "../../net/https/WebRequest";
+import { WebMallShopList, WebMallBuy, WebUserModifyPassword, WebUserSendCode, WebWww } from "../../net/https/WebRequest";
 import LoginSession from "../../session/LoginSession";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
@@ -112,9 +112,9 @@ export default class UIResetPassword extends BaseFormPlus {
         this.mIsCanClickCode = false;
 
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_User_Send_Code,
+                web_class: WebUserSendCode,
                 body: {
                     area: area,
                     phone: phone,
@@ -157,9 +157,9 @@ export default class UIResetPassword extends BaseFormPlus {
             return;
         }
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: Web_User_Modify_Password,
+                web_class: WebUserModifyPassword,
                 body: {
                     area: area,
                     phone: phone,

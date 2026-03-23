@@ -26,7 +26,7 @@ import MTTGameMessageHandler from "../messageHandler/MTTGameMessageHandler";
 import UIMTTTimeComponent from "../ui/UIMTTTimeComponent";
 import MTTGameUtils from "../util/MTTGameUtils";
 import { GM } from "../../gm/GMAPI";
-import { APIOrgClubUserInfo, Web_Room_Center_Mtt_User_Wallet, Web_User_Room, WWW } from "../../net/https/WebRequest";
+import { WebOrgClubUserInfo, WebRoomCenterMttUserWallet, WebUserRoom, WebWww } from "../../net/https/WebRequest";
 import UITexasMenu from "../ui/UITexasMenu";
 
 enum MTTMatchStatus // mtt比赛状态
@@ -511,9 +511,9 @@ export default class MTTGame extends TexasGame {
 
         if (GameCache.Instance.match_id > 0) {
 
-            WWW.Instance.CommonAPI(
+            WebWww.Instance.CommonAPI(
                 {
-                    web_class: Web_Room_Center_Mtt_User_Wallet,
+                    web_class: WebRoomCenterMttUserWallet,
                     api_id: GameCache.Instance.match_id
                 }
             ).then(
@@ -540,9 +540,9 @@ export default class MTTGame extends TexasGame {
                         if (GameCache.Instance.ClubID > 0) {
 
 
-                            WWW.Instance.CommonAPI(
+                            WebWww.Instance.CommonAPI(
                                 {
-                                    web_class: APIOrgClubUserInfo,
+                                    web_class: WebOrgClubUserInfo,
                                     body: {
                                         club_id: GameCache.Instance.ClubID,
                                         user_id: GameCache.Instance.userId,
@@ -563,9 +563,9 @@ export default class MTTGame extends TexasGame {
                                     else if (GameCache.Instance.gold_type == 3) {
 
                                         /////////////////////////////////////////////////////
-                                        WWW.Instance.CommonAPI(
+                                        WebWww.Instance.CommonAPI(
                                             {
-                                                web_class: Web_User_Room,
+                                                web_class: WebUserRoom,
                                                 api_id: GameCache.Instance.room_id,
                                             }
                                         ).then(

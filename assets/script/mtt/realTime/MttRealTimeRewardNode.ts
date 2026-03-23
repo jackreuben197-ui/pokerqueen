@@ -1,6 +1,6 @@
 import List from "../../common/List";
 import GC from "../../frame/GameControl";
-import { Web_Mtt } from "../../net/https/WebRequest";
+import { WebMtt } from "../../net/https/WebRequest";
 import UIBase from "../../ui/UIBase";
 import MttRealTimeRewardItem from "./MttRealTimeRewardItem";
 
@@ -24,14 +24,14 @@ export default class MttRealTimeRewardNode extends UIBase {
 
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
-        GC.notify.register(Web_Mtt.REAL_PRIZE, this.updateView, this)
+        GC.notify.register(WebMtt.REAL_PRIZE, this.updateView, this)
 
     }
 
     // protected notify(id: any, msg: any, sendInfo?: any): void {
     //     //id = id.replace(/(?<=mtt\/)\d+/g, "{0}");
     //     switch (id) {
-    //         case Web_Mtt.REAL_PRIZE: {
+    //         case WebMtt.REAL_PRIZE: {
     //             this.updateView();
     //         } break;
     //     }

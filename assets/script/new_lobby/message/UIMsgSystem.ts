@@ -2,7 +2,7 @@ import List from "../../common/List";
 import ListEx from "../../common/ListEx";
 import { UIDefine } from "../../define/UIDefine";
 import { ClubCache } from "../../frame/data/club/ClubCache";
-import { APIMsgMessageList, WWW } from "../../net/https/WebRequest";
+import { WebMsgMessageList, WebWww } from "../../net/https/WebRequest";
 import BaseFormPlus from "../../ui/form/BaseFormPlus";
 import UIComponent from "../../ui/UIComponent";
 import ItemMsgSystem from "./ItemMsgSystem";
@@ -62,9 +62,9 @@ export default class UIMsgSystem extends BaseFormPlus {
         let club_id = 0;
         if (this._param.from == 1) club_id = ClubCache.club_id;
 
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: APIMsgMessageList,
+                web_class: WebMsgMessageList,
                 body: {
                     //clubID: ClubCache.club_id,
                     //TribeID: tribe_id,

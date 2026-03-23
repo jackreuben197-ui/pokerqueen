@@ -9,7 +9,7 @@
 const { ccclass } = cc._decorator;
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
-import { Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
+import { WebConfigGlobalConfig, WebWww } from "../../net/https/WebRequest";
 import UILobbyIndex from "../../new_lobby/index/UILobbyIndex";
 import UILobbyIndexNew from "../../new_lobby/index/UILobbyIndexNew";
 import BaseScene from "../../ui/scene/BaseScene";
@@ -70,7 +70,7 @@ export default class LobbyScene extends BaseScene {
     //刷新banner
     public refreshBanner(): void {
         // let language = GC.localStore.getItem("language");
-        // let data: typeof Web_Misc_Banner_List.RequestParams = {};
+        // let data: typeof WebMiscBannerList.RequestParams = {};
         // // data.lang = language||cc.sys.language;
         // data.lang = "zh_CN";
         // data.type = 1;
@@ -86,7 +86,7 @@ export default class LobbyScene extends BaseScene {
         });
     }
     private async refreshConfig() {
-        await WWW.Instance.CommonAPI({ web_class: Web_Config_Global_Config });
+        await WebWww.Instance.CommonAPI({ web_class: WebConfigGlobalConfig });
         this.readyComplete();
     }
     //大厅相关数据加载完成

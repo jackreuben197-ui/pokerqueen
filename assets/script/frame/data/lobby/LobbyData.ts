@@ -1,7 +1,7 @@
 import { EventName } from "../../../config/EventName";
 import { TRoomList } from "../../../config/TTypeConfig";
 import { GameCache } from "../../../game/GameCache";
-import { APIOrgFriendRoomList, Web_Config_Global_Config, Web_Config_Multi_Language_Template, Web_Room_Center_Groups, Web_Room_Center_Rooms, Web_Room_Center_Rooms_Blinds, Web_Room_Center_Rooms_Blinds_CLUB, Web_Room_Center_Rooms_CLUB } from "../../../net/https/WebRequest";
+import { WebOrgFriendRoomList, WebConfigGlobalConfig, WebConfigMultiLanguageTemplate, WebRoomCenterGroups, WebRoomCenterRooms, WebRoomCenterRoomsBlinds, WebRoomCenterRoomsBlindsClub, WebRoomCenterRoomsClub } from "../../../net/https/WebRequest";
 import { BaseData } from "../../base/BaseData";
 import GC from "../../GameControl";
 import LobbyGroupModel from "./LobbyGroupModel";
@@ -14,23 +14,23 @@ export default class LobbyData extends BaseData {
     roomList: LobbyRoomListModel = new LobbyRoomListModel();
     protected notify(api: any, msg: any, sendInfo?: any): void {
         switch (api) {
-            case Web_Room_Center_Rooms_Blinds.API: {
+            case WebRoomCenterRoomsBlinds.API: {
                 this.respRoomBlinds(msg, sendInfo, false);
             } break;
-            case Web_Room_Center_Rooms_Blinds_CLUB.API: {
+            case WebRoomCenterRoomsBlindsClub.API: {
                 this.respRoomBlinds(msg, sendInfo, true);
             } break;
-            case Web_Room_Center_Groups.API: {
+            case WebRoomCenterGroups.API: {
                 this.respLobbyBaseData(msg, sendInfo);
                 GC.notify.post(EventName.refreshLobby);
             } break;
-            // case Web_Config_Multi_Language_Template.API: {
+            // case WebConfigMultiLanguageTemplate.API: {
             //     this.respDeskNameTemp(msg, sendInfo);
             // } break;
-            case Web_Room_Center_Rooms.API: {
+            case WebRoomCenterRooms.API: {
                 sendInfo.limit && this.respRoomList(msg, sendInfo, false);
             } break;
-            case Web_Room_Center_Rooms_CLUB.API: {
+            case WebRoomCenterRoomsClub.API: {
                 sendInfo.limit && this.respRoomList(msg, sendInfo, true);
             } break;
         }
@@ -55,18 +55,18 @@ export default class LobbyData extends BaseData {
 
     //请求盲注信息
     reqRoomBlinds(game_type: number, poker_type: number, isClub: boolean = false, onSuccess?: Function) {
-        let url = isClub ? Web_Room_Center_Rooms_Blinds_CLUB.API : Web_Room_Center_Rooms_Blinds.API;
+        let url = isClub ? WebRoomCenterRoomsBlindsClub.API : WebRoomCenterRoomsBlinds.API;
         this.reqServePost(url, { game_type: game_type, poker_type: poker_type }, onSuccess);
     }
 
     //请求桌子名字模版
     // reqDeskNameTemp(onSuccess?: Function): void {
-    //     this.reqServePost(Web_Config_Multi_Language_Template.API, null, onSuccess)
+    //     this.reqServePost(WebConfigMultiLanguageTemplate.API, null, onSuccess)
     // }
 
     //请求大厅基础数据
     reqLobbyGroupData(onSuccess?: Function) {
-        this.reqServePost(Web_Room_Center_Groups.API, null, onSuccess)
+        this.reqServePost(WebRoomCenterGroups.API, null, onSuccess)
     }
 
     //请求房间牌桌列表   大标签
@@ -79,7 +79,7 @@ export default class LobbyData extends BaseData {
     //请求房间牌桌列表   小标签
     reqRoomListSB(offset: number, sb_min: number, sb_max: number, game_type: number, poker_type: number, isClub = false, limit = 7) {
         GC.data.languageTemp.reqLanguageTemp(() => {
-            let url = isClub ? Web_Room_Center_Rooms_CLUB.API : Web_Room_Center_Rooms.API;
+            let url = isClub ? WebRoomCenterRoomsClub.API : WebRoomCenterRooms.API;
             this.reqServePost(url, {
                 name: "",
                 ante_min: 0,
@@ -102,13 +102,13 @@ export default class LobbyData extends BaseData {
     }
 
     reqRoomByIds(ids: Array<number>, callBack?: Function, isClub = false) {
-        let url = Web_Room_Center_Rooms.API
+        let url = WebRoomCenterRooms.API
         if (GameCache.Instance.origin_type == 4) {
-            url = APIOrgFriendRoomList.API
+            url = WebOrgFriendRoomList.API
         } else if (GameCache.Instance.origin_type == 3) {
-            url = Web_Room_Center_Rooms_CLUB.API
+            url = WebRoomCenterRoomsClub.API
         }
-        // let url = isClub ? Web_Room_Center_Rooms_CLUB.API : Web_Room_Center_Rooms.API;
+        // let url = isClub ? WebRoomCenterRoomsClub.API : WebRoomCenterRooms.API;
         this.reqServePost(url, {
             room_ids: ids,
             order: ["sb_asc"]

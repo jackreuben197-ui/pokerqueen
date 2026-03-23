@@ -66,7 +66,7 @@ export default class UIClubDigitalWallet extends BaseForm {
     async sureClick() {
         ClubCache._msg.digital_wallet_erc = this.erc.string;
         ClubCache._msg.digital_wallet_trc = this.tpc.string;
-        await UIClubModel.mInstance.modify_digital_wallet_address({ club_id: ClubCache.club_id, digital_wallet_erc: this.erc.string, digital_wallet_trc: this.tpc.string })
+        await UIClubModel.mInstance.WebModifyDigitalWalletAddress({ club_id: ClubCache.club_id, digital_wallet_erc: this.erc.string, digital_wallet_trc: this.tpc.string })
         this.close();
     }
 

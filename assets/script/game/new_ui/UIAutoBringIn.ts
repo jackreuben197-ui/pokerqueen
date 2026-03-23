@@ -6,7 +6,7 @@ import { StringHelper } from "../../helper/StringHelper";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import WalletModel from "../../lobby/new_club/wallet/WalletModel";
-import { Web_User_Room } from "../../net/https/WebRequest";
+import { WebUserRoom } from "../../net/https/WebRequest";
 import GGASCom from "../../ui/component/GGASCom";
 import GGSlider from "../../ui/component/GGSlider";
 import GGToggle from "../../ui/component/GGToggle";
@@ -29,7 +29,7 @@ const { ccclass, menu } = cc._decorator;
 //     public ulong tableChips { get; set; } // 玩家剩余记分牌
 //     public ulong storeChips { get; set; } // 藏钱记分牌
 //     public bool isFromSetting { get; set; }//是否来自设置界面
-//     public List < Web_User_Room.Wallet > wallets { get; set; }//钱包列表
+//     public List < WebUserRoom.Wallet > wallets { get; set; }//钱包列表
 // }
 
 

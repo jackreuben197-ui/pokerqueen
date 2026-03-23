@@ -3,7 +3,7 @@ import { GameCache } from "../../game/GameCache";
 import PublicHelper from "../../helper/PublicHelper";
 import WebImageHelper from "../../helper/WebImageHelper";
 import SceneManager from "../../manager/SceneManager";
-import { APIUserDiamondsWallet, Web_Config_Global_Config, Web_User_Info, WWW } from "../../net/https/WebRequest";
+import { WebUserDiamondsWallet, WebConfigGlobalConfig, WebUserInfo, WebWww } from "../../net/https/WebRequest";
 import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent from "../../ui/UIComponent";
 
@@ -47,18 +47,18 @@ export default class UIMe extends UIBasePlus {
     }
     //刷新用户信息
     refreshUserInfo() {
-        this.cc_Label$id.string = `ID:${Web_User_Info.Response.data.user.un_id}`;
+        this.cc_Label$id.string = `ID:${WebUserInfo.Response.data.user.un_id}`;
         this.cc_Label$id["_forceUpdateRenderData"]?.();
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head, Web_User_Info.Response.data.user.avatar);
+        WebImageHelper.SetHeadImage(this.cc_Sprite$head, WebUserInfo.Response.data.user.avatar);
         this.refreshNick();
 
 
     }
     //刷新钱包获取钻石
     refreshWallet() {
-        WWW.Instance.CommonAPI(
+        WebWww.Instance.CommonAPI(
             {
-                web_class: APIUserDiamondsWallet,
+                web_class: WebUserDiamondsWallet,
                 juhua: false,
             }
         ).then(
@@ -81,11 +81,11 @@ export default class UIMe extends UIBasePlus {
     }
     onCopyClick() {
         //拷贝id号码
-        PublicHelper.copyToClipBoard(Web_User_Info.Response.data.user.un_id);
+        PublicHelper.copyToClipBoard(WebUserInfo.Response.data.user.un_id);
     }
     onKefuClick() {
         //打开客服
-        let email = Web_Config_Global_Config.Response.data.support_email;//目标邮箱
+        let email = WebConfigGlobalConfig.Response.data.support_email;//目标邮箱
         let subject = "";//主题
         let body = "";//内容
         window.location.href = "mailto:" + email + "?subject=" + subject + "&body=" + body
@@ -112,7 +112,7 @@ export default class UIMe extends UIBasePlus {
         }
     }
     refreshNick() {
-        this.cc_Label$nick.string = Web_User_Info.Response.data.user.nickname;
+        this.cc_Label$nick.string = WebUserInfo.Response.data.user.nickname;
     }
 
 }
