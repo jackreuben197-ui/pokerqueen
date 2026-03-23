@@ -320,6 +320,24 @@ export const UIDefine = {
         Bundle: null,
         Path: "main/prefab/dialog/UIDialogSquid",
     },
+    /**
+     * 牌局安全设置（代入前）
+     */
+    UIGameplaySecuritySetting: {
+        UIType: UIType.Dialog,
+        Name: "UIGameplaySecuritySetting",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIGameplaySecuritySetting",
+    },
+    /**
+     * 牌局开桌设置（安全设置后）
+     */
+    UIGameplayTableSetting: {
+        UIType: UIType.Dialog,
+        Name: "UIGameplayTableSetting",
+        Bundle: null,
+        Path: "main/prefab/dialog/UIGameplayTableSetting",
+    },
 
     /**
     * 确认取消 弹窗面板(默认触摸全屏可关闭)

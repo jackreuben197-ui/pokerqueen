@@ -166,6 +166,10 @@ export class GameCache {
     public room_call_time_winline: number = 0;
     /** 大厅入口缓存：CallTime 连续手数限制 */
     public room_call_time_count: number = 0;
+    /** 大厅入口缓存：随机入座开关 */
+    public room_random_seat: number = 0;
+    /** 大厅入口缓存：安全牌桌开关（seated_messaging） */
+    public room_seated_messaging: number = 0;
     /// <summary>
     /// 房间类型 RoomType枚举
     /// </summary>
@@ -364,6 +368,7 @@ export class GameCache {
 
     public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
 
+    private securitySettingRoomsPrivate: number[] = null;
 
     //密码存储
     privateRoomPdDic: Map<number, string> = new Map();
@@ -382,6 +387,37 @@ export class GameCache {
 
     public static get Instance(): GameCache {
         return (this as any).instance ??= new GameCache;
+    }
+
+    private get securitySettingRooms(): number[] {
+        if (this.securitySettingRoomsPrivate == null) {
+            const value = cc.sys.localStorage.getItem("SecuritySettingRooms") || "";
+            this.securitySettingRoomsPrivate = value
+                .split(",")
+                .map(v => Number(v))
+                .filter(v => Number.isFinite(v) && v > 0);
+        }
+        return this.securitySettingRoomsPrivate;
+    }
+
+    public HasSecuritySettingRoom(roomId: number): boolean {
+        if (roomId <= 0) return false;
+        return this.securitySettingRooms.indexOf(roomId) >= 0;
+    }
+
+    public SetSecuritySettingRoom(roomId: number): void {
+        if (roomId <= 0) return;
+
+        const list = this.securitySettingRooms;
+        const idx = list.indexOf(roomId);
+        if (idx >= 0) {
+            list.splice(idx, 1);
+        }
+        list.push(roomId);
+        if (list.length > 10) {
+            list.splice(0, list.length - 10);
+        }
+        cc.sys.localStorage.setItem("SecuritySettingRooms", list.join(","));
     }
 
     InitTexasGame() {
@@ -420,6 +456,8 @@ export class GameCache {
         GameCache.Instance.room_call_time = Number(room_info.call_time || 0);
         GameCache.Instance.room_call_time_winline = Number(room_info.call_time_winline || 0);
         GameCache.Instance.room_call_time_count = Number(room_info.call_time_count || 0);
+        GameCache.Instance.room_random_seat = Number(room_info.random_seat || 0);
+        GameCache.Instance.room_seated_messaging = Number(room_info.seated_messaging || 0);
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;
@@ -494,6 +532,8 @@ export interface EnterRoomInfo {
     call_time?;
     call_time_winline?;
     call_time_count?;
+    random_seat?;
+    seated_messaging?;
     sub_game_play_ante?;
     rounds?;
     sub_configs?;

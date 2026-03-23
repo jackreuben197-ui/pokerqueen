@@ -43,7 +43,7 @@ import TexasGameProtocol from "../protocol/TexasGameProtocol";
 import Seat, { SeatUIInfo } from "../seat/Seat";
 import UIAutoOperationComponent from "../ui/UIAutoOperationComponent";
 import UITexasMenu from "../ui/UITexasMenu";
-import GameUtil, { RoomType, some_pos } from "../util/GameUtil";
+import GameUtil, { GameType, RoomType, some_pos } from "../util/GameUtil";
 import TexasGameUtils from "../util/TexasGameUtils";
 import TexasGameMushroom from "./TexasGameMushroom";
 import TexasGameSquid from "./TexasGameSquid";
@@ -282,6 +282,8 @@ export default class TexasGame {
     /// 是否开启GPS限制，1 开启 0关闭
     /// </summary>
     public isGPSRestrictions: boolean = false;
+    /** 是否安全牌桌（SeatedMessaging） */
+    public isSafeRoom: boolean = false;
     /// <summary>
     /// 同步到同盟的id 未同步时为0
     /// </summary>
@@ -699,6 +701,7 @@ export default class TexasGame {
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
+        this.isSafeRoom = !!(rec.roomInfo as any)?.seatedMessaging || Number(GameCache.Instance.room_seated_messaging || 0) === 1;
 
         GameCache.Instance.insurance = this.insurance;
 
@@ -1590,10 +1593,10 @@ export default class TexasGame {
                     }
                     else {
                         if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                            this.ShowAutoAddChips(res.data.wallet);
+                            this.OpenBringInWithSecurity(res.data.wallet);
                         }
                         else {
-                            this.ShowAddChips(res.data.wallet);
+                            this.OpenBringInWithSecurity(res.data.wallet);
                         }
                     }
                 }
@@ -1620,10 +1623,10 @@ export default class TexasGame {
                 }
                 else {
                     if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
-                        this.ShowAutoAddChips(res.data.wallet);
+                        this.OpenBringInWithSecurity(res.data.wallet);
                     }
                     else {
-                        this.ShowAddChips(res.data.wallet);
+                        this.OpenBringInWithSecurity(res.data.wallet);
                     }
                 }
 
@@ -3163,6 +3166,46 @@ export default class TexasGame {
         }
     }
     /**
+     * 代入前安全设置（Unity 对齐）
+     */
+    private OpenBringInWithSecurity(wallets: any): void {
+        const openBringIn = () => {
+            if (this.CurlimitOutChip == RoomInfo.RetainType.RT_AUTO) {
+                this.ShowAutoAddChips(wallets);
+            } else {
+                this.ShowAddChips(wallets);
+            }
+        };
+
+        if (!this.ShouldShowBringInSecuritySetting()) {
+            openBringIn();
+            return;
+        }
+        // 非首次不显示
+        // GameCache.Instance.SetSecuritySettingRoom(GameCache.Instance.room_id);
+        UIComponent.open(UIDefine.UIGameplaySecuritySetting, {
+            isFromBringIn: true,
+            bringInAct: openBringIn,
+            noAnimation: true,
+        });
+    }
+
+    private ShouldShowBringInSecuritySetting(): boolean {
+        if (GameCache.Instance.match_id != 0) return false;
+        if (this.mainPlayer?.seatID != -1) return false;
+        if (GameCache.Instance.HasSecuritySettingRoom(GameCache.Instance.room_id)) return false;
+        switch (GameCache.Instance.game_type) {
+            case GameType.Holdem:
+            case GameType.Omaha4:
+            case GameType.Omaha5:
+            case GameType.Omaha6:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
      * 显示手动设置面板 
      */
     private ShowAddChips(wallets): void {
@@ -3287,6 +3330,7 @@ export default class TexasGame {
         this.waitBlind = 0;
         this.isIpRestrictions = false;
         this.isGPSRestrictions = false;
+        this.isSafeRoom = false;
         this.subGamePlayAnte = 0;
         this.criticalHitEnabled = false;
         this.criticalHitRound = 0;
