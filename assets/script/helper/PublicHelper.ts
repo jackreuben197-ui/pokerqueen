@@ -3,7 +3,6 @@ import ToastManager from "../manager/ToastManager";
 import UIComponent from "../ui/UIComponent";
 
 export default class PublicHelper {
-
     static InitSprite(sprite: cc.Sprite) {
         sprite.node.color = cc.Color.WHITE;
         //sprite.spriteFrame = spriteFrame;
@@ -25,7 +24,7 @@ export default class PublicHelper {
             textarea.select();
             textarea.setSelectionRange(0, textarea.textContent.length);
             try {
-                const flag = document.execCommand('copy');
+                const flag = document.execCommand("copy");
                 document.body.removeChild(textarea);
                 if (flag) {
                     //ToastManager.Instance.createToast("已经复制到剪贴板");
@@ -45,7 +44,7 @@ export default class PublicHelper {
     static ossUploadImage() {
         // WARNING: For POST requests, body is set to null by browsers.
         var data = new FormData();
-        data.append("file", "", "bnt.jpg");
+        data.append("file", new Blob([""]), "bnt.jpg");
 
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
@@ -56,7 +55,10 @@ export default class PublicHelper {
             }
         });
 
-        xhr.open("POST", "http://dev.k8s.awanptesting.com/api/oss/upload/image");
+        xhr.open(
+            "POST",
+            "http://dev.k8s.awanptesting.com/api/oss/upload/image",
+        );
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.setRequestHeader("md5at", "d7126b25afd37362092b0aa7852095cc");
 
@@ -64,26 +66,24 @@ export default class PublicHelper {
     }
     //min ,max 包括min/max取随机整数
     static RandomIntRange(min: number, max: number): number {
-        return min + (Math.random() * (max - min + 1) ^ 0);
+        return min + ((Math.random() * (max - min + 1)) ^ 0);
     }
     //修复很长浮点数，取一位小数位
     static FixFloat(num: number) {
         return +Number(num).toFixed(1);
     }
 
-
     //不带透明度的颜色转换
     public static GetColorArr(color: string, opacity: number = 255): number[] {
         let color_value = parseInt(color, 16);
-        let r = color_value >> 16 & 0xFF;
-        let g = color_value >> 8 & 0xFF;
-        let b = color_value & 0xFF;
+        let r = (color_value >> 16) & 0xff;
+        let g = (color_value >> 8) & 0xff;
+        let b = color_value & 0xff;
         return [r / 255, g / 255, b / 255, opacity / 255];
     }
     //base64 to json
     public static Base64ToJsonString(str: string): string {
-        return Buffer.from(str, 'base64').toString();
+        return Buffer.from(str, "base64").toString();
     }
-    
 }
 (window as any).PublicHelper = PublicHelper;

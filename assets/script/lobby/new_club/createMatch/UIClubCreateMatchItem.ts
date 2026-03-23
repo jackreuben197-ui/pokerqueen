@@ -1,7 +1,7 @@
 /*
  * @Author: xfj
  * @Date: 2022-12-24 11:05:34
- * @description: 
+ * @description:
  * @LastEditors: Please set LastEditors
  * @LastEditTime: 2023-05-11 20:53:48
  * @FilePath: /pokerqueen/assets/script/lobby/new_club/createMatch/UIClubCreateMatchItem.ts
@@ -28,7 +28,7 @@ import { stringify } from "querystring";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
-@menu('脚本分组/new_club/UIClubCreateMatchItem')
+@menu("脚本分组/new_club/UIClubCreateMatchItem")
 export default class UIClubCreateMatchItem extends UIBase {
     @property(cc.Node)
     labelNode: cc.Node = null;
@@ -65,74 +65,76 @@ export default class UIClubCreateMatchItem extends UIBase {
     }
     async onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         super.onShow(param, fromUI, sceneUI);
-
     }
     initData(data, target) {
         this._data = data;
         this._delegate = target;
         this._currentNum = 1;
-        this.Toggle.isChecked = false
-        this.ToggleClick()
+        this.Toggle.isChecked = false;
+        this.ToggleClick();
         this.setState();
 
         // this.labelNode.getChildByName('lbl_1').getComponent(cc.Label).string = this._data.apply_club_name
         // this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = 'ID:' + this._data.apply_club_random_id
 
         let sb = this._data.sb / 100;
-        this.labelNode.getChildByName('lbl_1').getComponent(cc.Label).string = `${sb}/${sb * 2}（${this._data.ante}）`
-        let lbl_time = this.labelNode.getChildByName('lbl_2')
-        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label).string = StringHelper.LengthNick(this._data.name, 10)
-        this.labelNode.getChildByName('lbl_4').getComponent(cc.Label)._forceUpdateRenderData()
+        this.labelNode.getChildByName("lbl_1").getComponent(cc.Label).string =
+            `${sb}/${sb * 2}（${this._data.ante}）`;
+        let lbl_time = this.labelNode.getChildByName("lbl_2");
+        this.labelNode.getChildByName("lbl_4").getComponent(cc.Label).string =
+            StringHelper.LengthNick(this._data.name, 10);
+        (
+            this.labelNode.getChildByName("lbl_4").getComponent(cc.Label) as any
+        )._forceUpdateRenderData?.();
 
-        let playView = lbl_time.getComponent(PlayViewItem)
+        let playView = lbl_time.getComponent(PlayViewItem);
         playView.updateNormalItem(this._data.play_duration);
 
+        this.lbl_num.string = this._data.seat_count;
+        this.setGameType();
 
-        this.lbl_num.string = this._data.seat_count
-        this.setGameType()
-
-        let lock = this.labelNode.getChildByName('lbl_4').getChildByName('lock');
-        lock.active = this._data.private_room == 1
-        let beSide = this.node.getChildByName('beSide')
-        beSide.active = this._data.share_table == 2
-        let bx = this.node.getChildByName('bx');
-        bx.active = this._data.insurance
-
+        let lock = this.labelNode
+            .getChildByName("lbl_4")
+            .getChildByName("lock");
+        lock.active = this._data.private_room == 1;
+        let beSide = this.node.getChildByName("beSide");
+        beSide.active = this._data.share_table == 2;
+        let bx = this.node.getChildByName("bx");
+        bx.active = this._data.insurance;
     }
     setGameType() {
-        this.gameType.node.color = cc.color().fromHEX('#5096FF')
+        this.gameType.node.color = cc.color().fromHEX("#5096FF");
         if (this._data.poker_type == 0) {
             switch (this._data.game_type) {
                 case 0:
-                    this.gameType.string = 'NLH'
-                    this.gameType.node.color = cc.color().fromHEX('#83B518')
+                    this.gameType.string = "NLH";
+                    this.gameType.node.color = cc.color().fromHEX("#83B518");
                     break;
                 case 1:
-                    this.gameType.string = 'PLO4'
+                    this.gameType.string = "PLO4";
                     break;
                 case 2:
-                    this.gameType.string = 'PLO5'
+                    this.gameType.string = "PLO5";
                     break;
                 case 3:
-                    this.gameType.string = 'PLO6'
+                    this.gameType.string = "PLO6";
                     break;
 
                 default:
                     break;
             }
         } else {
-            this.gameType.string = '6+'
-            this.gameType.node.color = cc.color().fromHEX('#DE5C5C')
+            this.gameType.string = "6+";
+            this.gameType.node.color = cc.color().fromHEX("#DE5C5C");
         }
-
     }
     ToggleClick() {
-        this.btnNode.active = !this.Toggle.isChecked
-        this.Rectang.active = this.Toggle.isChecked
-        this._delegate.dealItemSelect()
+        this.btnNode.active = !this.Toggle.isChecked;
+        this.Rectang.active = this.Toggle.isChecked;
+        this._delegate.dealItemSelect();
     }
     addClick() {
-        this._currentNum++
+        this._currentNum++;
         this.setState();
     }
     reduceClick() {
@@ -140,33 +142,36 @@ export default class UIClubCreateMatchItem extends UIBase {
         this.setState();
     }
     setState() {
-        this.reduceButton.interactable = this._currentNum > 1
-        this.addButton.interactable = this._currentNum < this._maxNum
-        this.lbl_level.string = this._currentNum + '';
-        this.node['_modelData'] = { template_id: this._data.id, count: this._currentNum }
-        this._delegate.dealItemSelect()
+        this.reduceButton.interactable = this._currentNum > 1;
+        this.addButton.interactable = this._currentNum < this._maxNum;
+        this.lbl_level.string = this._currentNum + "";
+        this.node["_modelData"] = {
+            template_id: this._data.id,
+            count: this._currentNum,
+        };
+        this._delegate.dealItemSelect();
     }
     editModel() {
         UIComponent.open(UIDefine.UIClubCreateMatch, this._data);
     }
     delateModel() {
-        UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent,
-            {
-                type: UINewDialogComponent.DialogType.CommitCancel,
-                title: "UIGuild_TipsTitle",
-                content: StringHelper.Format(i18nMgr.Get("UIGuild_DeleteTemplateTips"), [this._data.name]),
-                //UIGuild_DeleteTemplateTips
-                //`确定删除模版 ${this._data.name} `,
-                contentCommit: "adaptation10012",
-                contentCancel: "adaptation10013",
-                actionCommit: async () => {
-                    // this.node.active = false;
-                    await UIClubModel.mInstance.WebOrgTemplateDelete(this._data.id)
-                    this.post('matchModelChange')
-
-                },
-                noAnimation: true,
-            });
+        UIComponent.Instance.OpenNoAnimation(UIDefine.UINewDialogComponent, {
+            type: UINewDialogComponent.DialogType.CommitCancel,
+            title: "UIGuild_TipsTitle",
+            content: StringHelper.Format(
+                i18nMgr.Get("UIGuild_DeleteTemplateTips"),
+                [this._data.name],
+            ),
+            //UIGuild_DeleteTemplateTips
+            //`确定删除模版 ${this._data.name} `,
+            contentCommit: "adaptation10012",
+            contentCancel: "adaptation10013",
+            actionCommit: async () => {
+                // this.node.active = false;
+                await UIClubModel.mInstance.WebOrgTemplateDelete(this._data.id);
+                this.post("matchModelChange");
+            },
+            noAnimation: true,
+        });
     }
-
 }
