@@ -7,11 +7,21 @@ import UIBasePlus from "../../ui/UIBasePlus";
 import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
 
+
 @ccclass
 export default class UILobbyMenu extends UIBasePlus {
 
     $buttons: cc.Node = null;
     menu_group: TabsGroup = null;
+
+    // 
+    // 背景底板替换:
+    @property({ type: [cc.SpriteFrame] })
+    spriteFrames: cc.SpriteFrame[] = [];
+
+
+    protected ACTIVE_YOFFSET: number = 18;
+    protected ACTIVE_SCALE: number = 1.45;
 
     protected lateLoad(): void {
         super.lateLoad();
@@ -23,12 +33,47 @@ export default class UILobbyMenu extends UIBasePlus {
     }
     onMenuItemClick(items: cc.Node[], index: number) {
         let status_list = Tabs_Status[index];
+
+        // 
+        // 先替换按钮的背板:
+        let sprite: cc.Sprite = this.$buttons.getComponent(cc.Sprite);
+        if (sprite)
+            sprite.spriteFrame = this.spriteFrames[index];
+
         items.forEach((item, index) => {
             let status = status_list[index];
-            item.getChildByName("icon_gray").active = !status;
-            item.getChildByName("icon_light").active = status;
-            item.getChildByName("select").active = status;
-        })
+            //item.getChildByName("icon_gray").active = !status;
+            //item.getChildByName("select").active = status;
+
+            // 只有icon_light这个结点了：
+            const light = item.getChildByName("icon_light");
+            if (light) {
+                light.active = true;
+
+                if (status && light.scaleX > 1)
+                    return;
+
+                // 非选中状态，回到原来的位置
+                if (!status && light.scaleX > 1) {
+                    light.y -= this.ACTIVE_YOFFSET;
+                }
+                light.setScale(status ? this.ACTIVE_SCALE : 1);
+                if (status) {
+                    cc.Tween.stopAllByTarget(light);
+                    // 加入缓动：
+                    //light.y += this.ACTIVE_YOFFSET;
+                    cc.tween(light)
+                        .to(0.1, {
+                            y: light.y + this.ACTIVE_YOFFSET
+                        }, {
+                            easing: 'sineOut'
+                        }).start();
+                }
+
+            }
+        });
+
+
         //////////////////////////////////
         if (this.index == -1) {
             this.index = index;
@@ -36,8 +81,8 @@ export default class UILobbyMenu extends UIBasePlus {
         }
         switch (index) {
             case 0://大厅
-                LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/index/");
-                UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").run();
+                LobbyControl.getInstance().switchContent("UILobbyIndexNew", "main/lobby/index/");
+                //UIComponent.Instance.getComponent<UILobbyIndex>("UILobbyIndex").run();
                 break;
             case 1://朋友
                 LobbyControl.getInstance().switchContent("UIFriendMatch")

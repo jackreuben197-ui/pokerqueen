@@ -17,14 +17,17 @@ import UIComponent from "../../ui/UIComponent";
 import { LobbyControl } from "../control/LobbyControl";
 import UILobbyMenu from "./UILobbyMenu";
 
+
 @ccclass
 export default class LobbyScene extends BaseScene {
 
     //private currUI: cc.Node = null;
 
+
     private layer: cc.Node = null;
 
     menu: UILobbyMenu = null;
+
 
     onLoad(): void {
 
@@ -62,7 +65,7 @@ export default class LobbyScene extends BaseScene {
      * @return {*}
      */
     public async setLooby() {
-        await LobbyControl.getInstance().switchContent("UILobbyIndex", "main/lobby/index/");
+        await LobbyControl.getInstance().switchContent("UILobbyIndexNew", "main/lobby/index/");
         //await LobbyControl.getInstance().switchContent("UILobbyIndexNew", "main/lobby/index/");
         this.toReady();
     }

@@ -112,6 +112,7 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     //激活房间选项和房间列表
     private activeRooms(boo: boolean) {
+        if( !this.$table || !this.$list ) return;
         this.$table.active = boo;
         this.$list.active = boo;
     }
