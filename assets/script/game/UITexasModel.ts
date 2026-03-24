@@ -1,7 +1,12 @@
-
 import GC from "../frame/GameControl";
 import HttpRequest from "../net/https/HttpRequest";
-import { WebOrgFriendBringIn, WebStatsOtherUserStats, WebUserInfo, WebUserRoom, WebUserRoomSettleDetail } from "../net/https/WebRequest";
+import {
+    WebOrgFriendBringIn,
+    WebStatsOtherUserStats,
+    WebUserInfo,
+    WebUserRoom,
+    WebUserRoomSettleDetail,
+} from "../net/https/WebRequest";
 import { GameCache } from "./GameCache";
 
 export class UITexasModel {
@@ -19,7 +24,10 @@ export class UITexasModel {
     public APIUserRoom() {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebUserRoom.API.replace("{id}", GameCache.Instance.room_id.toString()),
+                api: WebUserRoom.API.replace(
+                    "{id}",
+                    GameCache.Instance.room_id.toString(),
+                ),
                 request: WebUserRoom,
                 onSuccess: function () {
                     // if (WebUserRoom.Response.code == 0) {
@@ -29,7 +37,7 @@ export class UITexasModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
@@ -48,31 +56,39 @@ export class UITexasModel {
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
 
     /// 牌局内玩家战绩数据
     /// </summary>
-    public getOtherUserStats(user_id) {
+    public getOtherUserStats(
+        user_id: number,
+        onData?: (tResp: typeof WebStatsOtherUserStats.Response) => void,
+    ) {
         return new Promise((resolve, reject) => {
             HttpRequest.Send({
-                api: WebStatsOtherUserStats.API.replace("{id}", user_id.toString()),
+                api: WebStatsOtherUserStats.API.replace(
+                    "{id}",
+                    user_id.toString(),
+                ),
                 body: WebStatsOtherUserStats.Request(user_id),
                 request: WebStatsOtherUserStats,
+                useCache: true,
                 onSuccess: function () {
-                    resolve(WebStatsOtherUserStats.Response);
+                    const resp = WebStatsOtherUserStats.Response;
+                    onData && onData(resp);
+                    resolve(resp);
                 }.bind(this),
                 onFailure: function (content) {
                     reject(content);
-                }.bind(this)
+                }.bind(this),
             });
         });
     }
     /// 通过俱乐部id 获取钱包
-    public GetGoldByClubID(club_id: number,): number {
-
+    public GetGoldByClubID(club_id: number): number {
         let gold = 0;
 
         let wallet = WebUserRoom.Response?.data?.wallet;

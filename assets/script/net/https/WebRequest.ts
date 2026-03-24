@@ -4,7 +4,7 @@ export * from "./web_request/WebRequestChat";
 export * from "./web_request/WebRequestChromedp";
 export * from "./web_request/WebRequestCmsExt";
 export * from "./web_request/WebRequestConfig";
-export * from "./web_request/WebRequestCore";
+export * from "./web_request/WebRequestMiscCombine";
 export * from "./web_request/WebRequestDataStat";
 export * from "./web_request/WebRequestFunction";
 export * from "./web_request/WebRequestGc";
@@ -26,29 +26,29 @@ export * from "./web_request/WebRequestUserTask";
 export * from "./web_request/WebRequestUserProxy";
 
 import {
-  WebOrgClubApproValJoin,
-  WebOrgClubCancleJoinClub,
-  WebOrgClubGetJoinlList,
-  WebOrgClubIsManger,
-  WebOrgClubQuit,
-  WebOrgClubCreate,
-  WebOrgClubGet,
-  WebOrgClubJoin,
-  WebOrgClubPlayerApplyList,
-  WebOrgClubSearchById,
+    WebOrgClubApproValJoin,
+    WebOrgClubCancleJoinClub,
+    WebOrgClubGetJoinlList,
+    WebOrgClubIsManger,
+    WebOrgClubQuit,
+    WebOrgClubCreate,
+    WebOrgClubGet,
+    WebOrgClubJoin,
+    WebOrgClubPlayerApplyList,
+    WebOrgClubSearchById,
 } from "./web_request/WebRequestOrg";
 
 import {
-  WebConfigGlobalConfig,
-  WebConfigMultiLanguageTemplate,
+    WebConfigGlobalConfig,
+    WebConfigMultiLanguageTemplate,
 } from "./web_request/WebRequestConfig";
 
 import {
-  WebChannel,
-  WebLogin,
-  WebUserInfo,
-  WebUserRoom,
-  WebUserRoomSettleDetail,
+    WebChannel,
+    WebLogin,
+    WebUserInfo,
+    WebUserRoom,
+    WebUserRoomSettleDetail,
 } from "./web_request/WebRequestUser";
 
 import { WebMiscBannerList } from "./web_request/WebRequestMisc";
@@ -56,10 +56,10 @@ import { WebMiscBannerList } from "./web_request/WebRequestMisc";
 import { WebMsgMessageUnread } from "./web_request/WebRequestMsg";
 
 import {
-  WebRoomCenterGroups,
-  WebRoomCenterMttList,
-  WebRoomCenterRooms,
-  WebRoomCenterRoomsBlinds,
+    WebRoomCenterGroups,
+    WebRoomCenterMttList,
+    WebRoomCenterRooms,
+    WebRoomCenterRoomsBlinds,
 } from "./web_request/WebRequestRoomCenter";
 
 /**
