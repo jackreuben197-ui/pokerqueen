@@ -108,6 +108,10 @@ export default class UITexas extends BaseScene {
     SquidJoinLabel: cc.Label = null;
     SquidStart: cc.Node = null;
     SquidStartAnim: cc.Animation = null;
+    BombPotOpen: cc.Node = null;
+    BombPotOpenAnim: cc.Animation = null;
+    BombPotLogo: cc.Node = null;
+    BombPotLogoAnim: cc.Animation = null;
     CriticalHitStart: cc.Node = null;
     CriticalHitStartAnim: cc.Animation = null;
     callTimeArea: cc.Node = null;
@@ -288,6 +292,18 @@ export default class UITexas extends BaseScene {
         if (this.SquidStart) {
             this.SquidStart.active = false;
             this.SquidStartAnim?.stop();
+        }
+        this.BombPotOpen = this.main?.getChildByName("bombpot_open");
+        this.BombPotOpenAnim = this.BombPotOpen?.getComponent(cc.Animation);
+        if (this.BombPotOpen) {
+            this.BombPotOpen.active = false;
+            this.BombPotOpenAnim?.stop();
+        }
+        this.BombPotLogo = this.main?.getChildByName("bombpot_logo");
+        this.BombPotLogoAnim = this.BombPotLogo?.getComponent(cc.Animation);
+        if (this.BombPotLogo) {
+            this.BombPotLogo.active = false;
+            this.BombPotLogoAnim?.stop();
         }
         this.CriticalHitStart = this.main?.getChildByName("critical_hit_start");
         this.CriticalHitStartAnim = this.CriticalHitStart?.getComponent(cc.Animation);
@@ -494,6 +510,8 @@ export default class UITexas extends BaseScene {
         this.setActive(this.Button_AddOn, false);
         this.setActive(this.SquidSwitch, false);
         this.setActive(this.SquidStandUp, false);
+        this.setActive(this.BombPotOpen, false);
+        this.setActive(this.BombPotLogo, false);
         //消息按钮显示
         this.btn_msg.active = GameUtil.GetFriendsOrClubTable() == 1 || GameUtil.GetFriendsOrClubTable() == 2;
     }
@@ -530,6 +548,8 @@ export default class UITexas extends BaseScene {
             this.Image_InsuranceTips,
             this.SquidSwitch,
             this.SquidStandUp,
+            this.BombPotOpen,
+            this.BombPotLogo,
         ].forEach(item => {
             this.setActive(item, false);
         });

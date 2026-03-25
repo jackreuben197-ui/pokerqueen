@@ -47,6 +47,7 @@ import GameUtil, { GameType, RoomType, some_pos } from "../util/GameUtil";
 import TexasGameUtils from "../util/TexasGameUtils";
 import TexasGameMushroom from "./TexasGameMushroom";
 import TexasGameSquid from "./TexasGameSquid";
+import TexasGameBombPot from "./TexasGameBombPot";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
@@ -89,6 +90,7 @@ export default class TexasGame {
     private seatUI_pool: cc.Node[] = [];
     private mushroomFeature: TexasGameMushroom = null;
     private squidFeature: TexasGameSquid = null;
+    private bombPotFeature: TexasGameBombPot = null;
     ///////////////////////////////
     private setting = {
         deskType: null,
@@ -530,6 +532,7 @@ export default class TexasGame {
         this.TexasGameUtils = new TexasGameUtils(this);
         this.mushroomFeature = new TexasGameMushroom(this);
         this.squidFeature = new TexasGameSquid(this);
+        this.bombPotFeature = new TexasGameBombPot(this);
         this.seatMoveStruct = new SeatMoveStruct();
         this.RCInit();
     }
@@ -586,6 +589,9 @@ export default class TexasGame {
         material.setProperty("color_bottom", PublicHelper.GetColorArr(colors[1]));
 
         this.uirc.sp_table_face.spriteFrame = AssetContext.getAsset(`top_table_${type}`, AssetFold.texture_table);
+        if (this.isBombPot) {
+            this.bombPotFeature?.PlayOpenScreen();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     /////////////////////////////////扑克样式/////////////////////////////////
@@ -702,6 +708,11 @@ export default class TexasGame {
             this.mainPlayer.squidRoundSeated = (rec.myInfo as any).squidRoundSeated || false;
         }
 
+        const roomInfoAny = rec.roomInfo as any;
+        const bombpotFlag = Number(roomInfoAny?.bombpot || roomInfoAny?.bombPot || 0) > 0;
+        const byRule = !!roomInfoAny?.ignorePreflop && !!roomInfoAny?.isAlwaysSecondPcs;
+        this.isBombPot = bombpotFlag || byRule;
+
         this.cacheUniqueId = rec.roomInfo.uniqueId;
         this.gamestatus = rec.gameStatus;
         GameCache.Instance.GameStatus = this.gamestatus;
@@ -711,6 +722,14 @@ export default class TexasGame {
         this.bankerIndex = this.GetLocalSeatID(rec.handInfo.buSeatId);
         if (rec.mttProgress == null || !(rec.mttProgress.isBubbleWait && rec.gameStatus == Def.GameStatus.HAND_END)) {
             this.UpgradePublicCards(1, rec.handInfo.publicCardsList);
+            const handInfoAny = rec.handInfo as any;
+            if (this.isBombPot) {
+                this.AddSecondPublicCardsBombPot(handInfoAny?.secondPublicCardsList || []);
+                this.IsSecondPsc = this.GetPublicCardsCount(2) > 0;
+            } else if (handInfoAny?.extPublicCardsList?.length > 0) {
+                this.UpgradePublicCards(2, handInfoAny.extPublicCardsList);
+                this.IsSecondPsc = true;
+            }
         }
         this.smallBlind = rec.roomInfo.smallBlind;
         GameCache.Instance.carry_small = rec.roomInfo.smallBlind * 2;
@@ -732,7 +751,6 @@ export default class TexasGame {
         this.mushroomFeature.UpdateRoomConfig(rec);
         this.squidFeature.UpdateRoomConfig(rec);
         this.UpdateCriticalHitConfig(rec);
-        const roomInfoAny = rec.roomInfo as any;
         this.callTime = Number(roomInfoAny?.callTime || GameCache.Instance.room_call_time || 0);
         this.callTimeWinline = Number(roomInfoAny?.callTimeWinline || GameCache.Instance.room_call_time_winline || 0);
         this.callTimeLimitCount = Number(roomInfoAny?.callTimeCount || GameCache.Instance.room_call_time_count || 0);
@@ -774,7 +792,6 @@ export default class TexasGame {
             ?? GameCache.Instance.room_jackpot_config
             ?? null
         );
-        this.isBombPot = Number(roomInfoAny?.bombpot || roomInfoAny?.bombPot || 0) > 0;
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
@@ -1028,6 +1045,7 @@ export default class TexasGame {
             { name: "ReqDiamondConfig_8", func: this.ReqDiamondConfig_8 },
         ];
         this.RunRoomReqlist();
+        this.bombPotFeature?.EnterGame();
         this.ShowCriticalInfo();
     }
 
@@ -1202,7 +1220,9 @@ export default class TexasGame {
         info += `\n${this.GetRoomTypeDes()}`;
         info += `\n${GameCache.Instance.room_id}-${this.mHandNum}`;
         let straddleStr: string = "";
-        if (this.groupBet > 0) {
+        if (this.isBombPot) {
+            info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.GetLongString(this.smallBlind * 2)} ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
+        } else if (this.groupBet > 0) {
             info += `\n${CPErrorCode.LanguageDescription(20006)}${StringHelper.GetLongString(this.smallBlind)}/${StringHelper.GetLongString(this.bigBlind)}(${StringHelper.GetLongString(this.groupBet)}) ${straddleStr = this.CurStraddle ? "straddle" : ""}`;
         }
         else {
@@ -2427,21 +2447,21 @@ export default class TexasGame {
             }
         }
 
-        // 参与了牌局，才能看到牌型提示
-        let mClientSeat: Seat = this.GetSeatByClientId(0);
-
-        if (null != mClientSeat.Player && mClientSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isParticipateInTheGame) {
-            this.sequenceUpdatePublicCards.OnComplete(() => {
-
+        const firstComplete = () => {
+            // 参与了牌局，才能看到牌型提示
+            let mClientSeat: Seat = this.GetSeatByClientId(0);
+            if (null != mClientSeat.Player && mClientSeat.Player.userID == this.mainPlayer.userID && this.mainPlayer.isParticipateInTheGame) {
                 let highlightCards_ref = { highlightCards: null };
                 let cardType: CardType = this.GetCardType(highlightCards_ref, cards);
                 let highlightCards = highlightCards_ref.highlightCards;
                 for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
                     this.uirc.listCards[i].imageSelect.node.active = false;
-                    for (let j = 0, m = highlightCards.length; j < m; j++) {
-                        if (this.uirc.listCards[i].cardId == highlightCards[j]) {
-                            this.uirc.listCards[i].imageSelect.node.active = true;
-                            break;
+                    if (!this.isBombPot) {
+                        for (let j = 0, m = highlightCards.length; j < m; j++) {
+                            if (this.uirc.listCards[i].cardId == highlightCards[j]) {
+                                this.uirc.listCards[i].imageSelect.node.active = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -2450,24 +2470,25 @@ export default class TexasGame {
                 if (null != mSeat) {
                     mSeat.UpdateCardType(cardType, highlightCards);
                 }
-                tweenCallback?.();
+            }
+            tweenCallback?.();
+        };
 
-
-            })
-        }
-        else {
-
-            this.sequenceUpdatePublicCards.OnComplete(() => {
-                tweenCallback?.();
-            })
-        }
-
-        if (mCacheCount == 5 && SecondtweenCallback != null && this.IsSecondPsc) {
-
+        const needSecondTween = !!SecondtweenCallback && this.IsSecondPsc && (this.isBombPot || mCacheCount == 5);
+        if (needSecondTween) {
             this.sequenceUpdatePublicCards.AppendInterval(0.5);
-
             this.sequenceUpdatePublicCards.OnComplete(() => {
-                SecondtweenCallback();
+                SecondtweenCallback?.();
+                if (this.isBombPot) {
+                    // BombPot 要先发第二套牌，再恢复第一套牌后续逻辑
+                    cc.tween(this.uirc.node).delay(0.6).call(() => firstComplete()).start();
+                } else {
+                    firstComplete();
+                }
+            });
+        } else {
+            this.sequenceUpdatePublicCards.OnComplete(() => {
+                firstComplete();
             });
         }
         this.sequenceUpdatePublicCards.Play();
@@ -2608,7 +2629,18 @@ export default class TexasGame {
             //#endregion
         }
         else {
-            for (let i = 0; i < CacheCount - cards_2Count; i++) {
+            if (this.isBombPot) {
+                // BombPot：首轮三张，后续每轮一张（3 + 1 + 1）
+                const sendCount = cards_2Count;
+                if (sendCount === 3) {
+                    for (let i = 0; i < sendCount; i++) {
+                        this.bombPotFeature?.AppendDealSecondCardTween(tween, i);
+                    }
+                } else if (sendCount === 1) {
+                    this.bombPotFeature?.AppendDealSecondCardTween(tween, CardsCount);
+                }
+            } else {
+                for (let i = 0; i < CacheCount - cards_2Count; i++) {
                 let cardTypeIndex = i;
                 let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
                 //PublicCardInfo.cardId = this.cards_2[i];
@@ -2640,9 +2672,9 @@ export default class TexasGame {
                 }));
                 //以上时间累加 0.2 +0.4
                 tween.delay(0.6);
-            }
-            tween.delay(0.4);
-            for (let i = CacheCount - cards_2Count, n = CacheCount; i < n; i++) {
+                }
+                tween.delay(0.4);
+                for (let i = CacheCount - cards_2Count, n = CacheCount; i < n; i++) {
                 let cardTypeIndex = i;
                 let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
                 //PublicCardInfo.cardId = this.cards_2[i];
@@ -2675,7 +2707,8 @@ export default class TexasGame {
                         }
                     }).start();
                 }));
-                tween.delay(0.4);
+                    tween.delay(0.4);
+                }
             }
         }
         tween.call(() => {
@@ -2688,7 +2721,7 @@ export default class TexasGame {
     /// <summary>
     /// 刷新第二套当前玩家牌型显示
     /// </summary>
-    protected UpdateSecondPublicCardsCardType(secondPublicCards: number[]): void {
+    public UpdateSecondPublicCardsCardType(secondPublicCards: number[]): void {
         // 参与了牌局，才能看到牌型提示
         if (null != this.mainPlayer && this.mainPlayer.cards.length > 0) {
 
@@ -2701,10 +2734,12 @@ export default class TexasGame {
 
             for (let i = 0, n = this.uirc.listSecondCards.length; i < n; i++) {
                 this.uirc.listSecondCards[i].imageSelect.node.active = false;
-                for (let j = 0, m = highlightCards.length; j < m; j++) {
-                    if (this.uirc.listSecondCards[i].cardId == highlightCards[j]) {
-                        this.uirc.listSecondCards[i].imageSelect.node.active = true;
-                        break;
+                if (!this.isBombPot) {
+                    for (let j = 0, m = highlightCards.length; j < m; j++) {
+                        if (this.uirc.listSecondCards[i].cardId == highlightCards[j]) {
+                            this.uirc.listSecondCards[i].imageSelect.node.active = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -2734,6 +2769,67 @@ export default class TexasGame {
     /// 添加公共牌Id
     /// </summary>
     /// <param name="list"></param>
+    public AddSecondPublicCardsBombPot(list: number[]): void {
+        if (!list || list.length <= 0) return;
+
+        const cards = this.GetPublicCards(2);
+        if (!cards || cards.length !== GameUtil.PublicCardMaxCount) {
+            this.public_cards[1] = [-1, -1, -1, -1, -1];
+        }
+
+        if (list.length === GameUtil.PublicCardMaxCount) {
+            for (let i = 0; i < GameUtil.PublicCardMaxCount; i++) {
+                this.SetPublicCards(2, i, list[i]);
+            }
+            return;
+        }
+
+        const curCards = this.GetPublicCards(2);
+        let startIndex = 0;
+        for (let i = 0; i < curCards.length; i++) {
+            if (curCards[i] === -1) {
+                startIndex = i;
+                break;
+            }
+        }
+
+        if (list.length > curCards.length - startIndex) {
+            cc.warn(`[BombPot] AddSecondPublicCardsBombPot overflow start=${startIndex}, add=${list.length}`);
+            return;
+        }
+
+        for (let i = 0; i < list.length; i++) {
+            this.SetPublicCards(2, i + startIndex, list[i]);
+        }
+    }
+
+    public ShowSecondPublicCardsFast(): void {
+        const cards = this.GetPublicCards(2);
+        const cardCount = this.GetPublicCardsCount(2);
+
+        for (let i = 0; i < cardCount; i++) {
+            const info = this.uirc.listSecondCards[i];
+            info.trans.setPosition(this.listDefaultSecondPublicCardsLPos[i]);
+            info.trans.setScale(cc.Vec3.ONE);
+            info.trans.active = true;
+            info.imageCard.node.color = cc.Color.WHITE;
+            info.SetSpriteFrame(cards[i]);
+            info.imageSelect.node.active = false;
+        }
+
+        for (let i = cardCount; i < this.uirc.listSecondCards.length; i++) {
+            const info = this.uirc.listSecondCards[i];
+            info.trans.setPosition(this.listDefaultSecondPublicCardsLPos[i]);
+            info.trans.setScale(cc.Vec3.ONE);
+            info.trans.active = false;
+            info.imageCard.node.color = cc.Color.WHITE;
+            info.SetSpriteFrame(-1);
+            info.imageSelect.node.active = false;
+        }
+
+        this.UpdateSecondPublicCardsCardType(cards);
+    }
+
     // public AddSecondPublicCards(list: number[]): void {
     //     // // 判断一下cards的合法性
     //     // if (null == this.cards_2)
@@ -3157,6 +3253,22 @@ export default class TexasGame {
             mPublicCardInfo.SetSpriteFrame(-1);
         }
 
+        // BombPot / 二套牌重连场景：第一套直接刷新后，同步刷新第二套
+        const secondCount = this.GetPublicCardsCount(2);
+        if (this.isBombPot) {
+            if (secondCount > 0) {
+                this.IsSecondPsc = true;
+                this.ShowSecondPublicCardsFast();
+            } else {
+                this.IsSecondPsc = false;
+                this.ClearSecondPublicCardsUI();
+            }
+        } else if (this.IsSecondPsc && secondCount > 0) {
+            this.ShowSecondPublicCardsFast();
+        } else {
+            this.ClearSecondPublicCardsUI();
+        }
+
         // 参与了牌局，才能看到牌型提示
         if (null != this.mainPlayer && this.mainPlayer.isPlaying) {
             let highlightCards_ref = { highlightCards: null };
@@ -3167,10 +3279,12 @@ export default class TexasGame {
 
             for (let i = 0, n = this.uirc.listCards.length; i < n; i++) {
                 this.uirc.listCards[i].imageSelect.node.active = false;
-                for (let j = 0, m = highlightCards.length; j < m; j++) {
-                    if (this.uirc.listCards[i].cardId == highlightCards[j]) {
-                        this.uirc.listCards[i].imageSelect.node.active = true;
-                        break;
+                if (!this.isBombPot) {
+                    for (let j = 0, m = highlightCards.length; j < m; j++) {
+                        if (this.uirc.listCards[i].cardId == highlightCards[j]) {
+                            this.uirc.listCards[i].imageSelect.node.active = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -3451,6 +3565,7 @@ export default class TexasGame {
         this.jackpot = 0;
         this.jackpotConfig = null;
         this.isBombPot = false;
+        this.bombPotFeature?.ResetState();
         this.mushroomFeature.ResetState();
         this.squidFeature.ResetState();
         this.ShowCallTime();

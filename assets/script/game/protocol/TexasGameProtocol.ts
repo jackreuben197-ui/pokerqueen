@@ -685,6 +685,10 @@ export default class TexasGameProtocol {
         GC.data.user.info.gold -= this.game.checkPublicCardsCost;
         this.game.cacheRound = rec.round;
         this.game.UpgradePublicCards(1, rec.publicCardsList);
+        if (this.game.isBombPot) {
+            this.game.AddSecondPublicCardsBombPot(rec.publicCards2List || []);
+            this.game.IsSecondPsc = this.game.GetPublicCardsCount(2) > 0;
+        }
         //启用按钮
 
         this.game.InteractableSeeMorePublic(true);
@@ -1397,7 +1401,10 @@ export default class TexasGameProtocol {
         }
 
         let lastPubicCard: number = source.publicCardsArrayList[source.publicCardsArrayList.length - 1];
-        this.game.IsSecondPsc = source.extPublicCardsArrayList != null && source.extPublicCardsArrayList.length > 0;
+        const secondCards = this.game.isBombPot
+            ? (source.publicCardsArray2List || [])
+            : (source.extPublicCardsArrayList || []);
+        this.game.IsSecondPsc = secondCards.length > 0;
         let bust: boolean = false;
         let mRoomType: RoomType = GameCache.Instance.room_type;
         if (this.game.cacheTrunOutsCards != null) {
@@ -1465,14 +1472,19 @@ export default class TexasGameProtocol {
 
         //TweenCallback SecondTweenCallback = () => {
         let SecondTweenCallback = () => {
-            if (source.extPublicCardsArrayList != null && source.extPublicCardsArrayList.length > 0) {
-
+            if (this.game.isBombPot) {
+                if (source.publicCardsArray2List != null && source.publicCardsArray2List.length > 0) {
+                    this.game.AddSecondPublicCardsBombPot(source.publicCardsArray2List);
+                    //执行第二套牌动画
+                    this.game.UpdateSecondPublicCards(iCount, source.publicCardsArray2List.length, null);
+                } else {
+                    this.game.IsSecondPsc = false;
+                }
+            } else if (source.extPublicCardsArrayList != null && source.extPublicCardsArrayList.length > 0) {
                 this.game.UpgradePublicCards(2, source.extPublicCardsArrayList);
                 //执行第二套牌动画
                 this.game.UpdateSecondPublicCards(iCount, source.extPublicCardsArrayList.length, null);
-
-            }
-            else {
+            } else {
                 this.game.IsSecondPsc = false;
             }
         };
