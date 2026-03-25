@@ -230,6 +230,48 @@ export default class TexasGame {
     public callTimeCount: number = 0;
     /** 是否触发 CallTime 限制 */
     public callTimeStay: boolean = false;
+    /** 带入追平领先者 (%) */
+    public bringinEqualLeader: number = 0;
+    /** 带入最小记分牌倍率 */
+    public minPlayerChipRate: number = 0;
+    /** 带入最大记分牌倍率 */
+    public maxBringinTotalRate: number = 0;
+    /** 强制亮牌 */
+    public forceShowCard: number = 0;
+    /** 随机入座 */
+    public randomSeat: number = 0;
+    /** 仅 iOS */
+    public onlyIOS: number = 0;
+    /** 入池率限制 */
+    public poolRate: number = 0;
+    /** 付费看手牌 */
+    public lookHandCard: number = 0;
+    /** 聊天开关 */
+    public chatType: number = 1;
+    /** Straddle 上限 */
+    public straddleMax: number = 2;
+    /** 双牌开关 */
+    public secondPcsOn: boolean = false;
+    /** 保险模式 */
+    public insuranceMode: number = 0;
+    /** 区块链加密开关 */
+    public blockchainType: number = 0;
+    /** 随机前注配置原串 */
+    public anteRandomJumpConfig: string = "";
+    /** 是否开启随机前注 */
+    public isAnteRandomJumpEnable: boolean = false;
+    /** 自动换桌触发手数 */
+    public autoChangeRoomLimitHand: number = 0;
+    /** 是否开启自动换桌 */
+    public isAutoChangeTable: boolean = false;
+    /** 自动换桌手数 */
+    public autoChangeTable: number = 0;
+    /** Jackpot 开关 */
+    public jackpot: number = 0;
+    /** Jackpot 配置 */
+    public jackpotConfig: any = null;
+    /** BombPot 开关 */
+    public isBombPot: boolean = false;
     /// <summary>
     /// 当前最小带入倍数
     /// </summary>
@@ -690,14 +732,49 @@ export default class TexasGame {
         this.mushroomFeature.UpdateRoomConfig(rec);
         this.squidFeature.UpdateRoomConfig(rec);
         this.UpdateCriticalHitConfig(rec);
-        this.callTime = Number(GameCache.Instance.room_call_time || 0);
-        this.callTimeWinline = Number(GameCache.Instance.room_call_time_winline || 0);
-        this.callTimeLimitCount = Number(GameCache.Instance.room_call_time_count || 0);
-        this.callTimeCount = Number((rec.roomInfo as any).callTimeCount || 0);
+        const roomInfoAny = rec.roomInfo as any;
+        this.callTime = Number(roomInfoAny?.callTime || GameCache.Instance.room_call_time || 0);
+        this.callTimeWinline = Number(roomInfoAny?.callTimeWinline || GameCache.Instance.room_call_time_winline || 0);
+        this.callTimeLimitCount = Number(roomInfoAny?.callTimeCount || GameCache.Instance.room_call_time_count || 0);
+        this.callTimeCount = Number(roomInfoAny?.callTimeCount || 0);
         this.callTimeStay = !!(rec.myInfo as any)?.callTimeStay;
         if (rec.myInfo != null) {
             this.callTimeCount = Number((rec.myInfo as any).callTimeCount || this.callTimeCount || 0);
         }
+
+        this.bringinEqualLeader = Number(roomInfoAny?.bringinEqualLeader || roomInfoAny?.bringin_equal_leader || 0);
+        this.minPlayerChipRate = Number(roomInfoAny?.minPlayerChipRate || roomInfoAny?.min_player_chip_rate || 0);
+        this.maxBringinTotalRate = Number(roomInfoAny?.maxBringinTotalRate || roomInfoAny?.max_bringin_total_rate || 0);
+        this.forceShowCard = Number(roomInfoAny?.forceShowCard || roomInfoAny?.force_show_card || 0);
+        this.randomSeat = Number(roomInfoAny?.randomSeat || roomInfoAny?.random_seat || GameCache.Instance.room_random_seat || 0);
+        this.onlyIOS = Number(roomInfoAny?.onlyIOS || roomInfoAny?.only_ios || 0);
+        this.poolRate = Number(roomInfoAny?.poolRate || roomInfoAny?.pool_rate || roomInfoAny?.limitMinPoolRate || roomInfoAny?.limit_min_pool_rate || 0);
+        this.lookHandCard = Number(
+            roomInfoAny?.lookHandCard
+            ?? roomInfoAny?.look_hand_card
+            ?? roomInfoAny?.viewPlayerCards
+            ?? roomInfoAny?.view_player_cards
+            ?? GameCache.Instance.room_view_player_cards
+            ?? 0
+        );
+        this.chatType = Number(roomInfoAny?.chatType || roomInfoAny?.chat_type || 1);
+        this.straddleMax = Number(roomInfoAny?.straddleMax || roomInfoAny?.straddle_max || 2);
+        this.secondPcsOn = Number(roomInfoAny?.secondPcsOn || roomInfoAny?.second_pcs_on || 0) > 0;
+        this.insuranceMode = Number(roomInfoAny?.insuranceMode || roomInfoAny?.insurance_mode || 0);
+        this.blockchainType = Number(roomInfoAny?.encryptCards || roomInfoAny?.encrypt_cards || roomInfoAny?.blockchainType || 0);
+        this.anteRandomJumpConfig = String(roomInfoAny?.randomAnte || roomInfoAny?.random_ante || "");
+        this.isAnteRandomJumpEnable = this.anteRandomJumpConfig.length > 0;
+        this.autoChangeRoomLimitHand = Number(roomInfoAny?.autoChangeRoomLimitHand || roomInfoAny?.auto_change_room_limit_hand || 0);
+        this.isAutoChangeTable = this.autoChangeRoomLimitHand > 0;
+        this.autoChangeTable = this.autoChangeRoomLimitHand;
+        this.jackpot = Number(roomInfoAny?.jackpot || 0);
+        this.jackpotConfig = this.ResolveJackpotConfig(
+            roomInfoAny?.jackpotConfig
+            ?? roomInfoAny?.jackpot_config
+            ?? GameCache.Instance.room_jackpot_config
+            ?? null
+        );
+        this.isBombPot = Number(roomInfoAny?.bombpot || roomInfoAny?.bombPot || 0) > 0;
         this.insurance = rec.roomInfo.insurance;
         this.isIpRestrictions = rec.roomInfo.limitIp;
         this.isGPSRestrictions = rec.roomInfo.limitGps;
@@ -1212,6 +1289,18 @@ export default class TexasGame {
         this.criticalHitRound = roundValue > 0 ? roundValue : Number(entryAny.room_critical_hit_round || 0);
         this.curCriticalHitRound = Number(handInfoAny?.conRounds || 0);
         this.isCriticalHitOpen = !!handInfoAny?.criticalHitOpen;
+    }
+
+    private ResolveJackpotConfig(raw: any): any {
+        if (!raw) return null;
+        if (typeof raw === "string") {
+            try {
+                return JSON.parse(raw);
+            } catch {
+                return null;
+            }
+        }
+        return raw;
     }
 
     private BuildCriticalHitRoomDesc(): string {
@@ -3193,7 +3282,7 @@ export default class TexasGame {
     private ShouldShowBringInSecuritySetting(): boolean {
         if (GameCache.Instance.match_id != 0) return false;
         if (this.mainPlayer?.seatID != -1) return false;
-        if (GameCache.Instance.HasSecuritySettingRoom(GameCache.Instance.room_id)) return false;
+        // if (GameCache.Instance.HasSecuritySettingRoom(GameCache.Instance.room_id)) return false;
         switch (GameCache.Instance.game_type) {
             case GameType.Holdem:
             case GameType.Omaha4:
@@ -3341,6 +3430,27 @@ export default class TexasGame {
         this.callTimeLimitCount = 0;
         this.callTimeCount = 0;
         this.callTimeStay = false;
+        this.bringinEqualLeader = 0;
+        this.minPlayerChipRate = 0;
+        this.maxBringinTotalRate = 0;
+        this.forceShowCard = 0;
+        this.randomSeat = 0;
+        this.onlyIOS = 0;
+        this.poolRate = 0;
+        this.lookHandCard = 0;
+        this.chatType = 1;
+        this.straddleMax = 2;
+        this.secondPcsOn = false;
+        this.insuranceMode = 0;
+        this.blockchainType = 0;
+        this.anteRandomJumpConfig = "";
+        this.isAnteRandomJumpEnable = false;
+        this.autoChangeRoomLimitHand = 0;
+        this.isAutoChangeTable = false;
+        this.autoChangeTable = 0;
+        this.jackpot = 0;
+        this.jackpotConfig = null;
+        this.isBombPot = false;
         this.mushroomFeature.ResetState();
         this.squidFeature.ResetState();
         this.ShowCallTime();

@@ -2,15 +2,14 @@ import { UIDefine } from "../../define/UIDefine";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { StringHelper } from "../../helper/StringHelper";
 import { GameCache } from "../../game/GameCache";
+import { APIOrgTribeRoomPermissions, Web_Config_Global_Config, WWW } from "../../net/https/WebRequest";
 import BaseTouchBoard from "../board/BaseTouchBoard";
 import UIComponent from "../UIComponent";
 
 export type UIGameplaySecuritySettingParam = {
     isFromBringIn?: boolean;
     bringInAct?: () => void;
-    roomPermissions?: {
-        room_random_seat?: number;
-    };
+    roomPermissions?: Record<string, number>;
     noAnimation?: boolean;
 };
 
@@ -38,8 +37,9 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
 
     private isFromBringIn = false;
     private bringInAct: (() => void) | null = null;
-    private roomPermissions: { room_random_seat?: number } = {};
+    private roomPermissions: Record<string, number> = {};
 
+    /** 初始化节点引用 */
     protected lateLoad(): void {
         super.lateLoad();
 
@@ -62,24 +62,85 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         if (this.tipsMask) this.tipsMask.active = false;
     }
 
+    /** 注册点击事件 */
     protected regiterTouchEvents(): void {
         this.setButtonClick(this.Button_Commit, this.OnClickCommit);
         this.setButtonClick(this.Button_Cancel, this.OnClickCancel);
         this.setButtonClick(this.tipsMask, this.OnClickTipsMask);
     }
 
+    /** 展示入口 */
     protected lateShow(param?: UIGameplaySecuritySettingParam): void {
         super.lateShow(param);
 
         this.isFromBringIn = !!param?.isFromBringIn;
         this.bringInAct = param?.bringInAct || null;
-        this.roomPermissions = param?.roomPermissions || {
-            room_random_seat: 1,
-        };
+        this.roomPermissions = this.ParsePermissions(param?.roomPermissions);
+        void this.ResolveRoomPermissionsAndRefresh();
+    }
+
+    /** Unity 对齐：俱乐部/联盟桌走 club permission，其它走全局权限 */
+    private async ResolveRoomPermissionsAndRefresh(): Promise<void> {
+        const clubId = Number(GameCache.Instance.ClubID || 0);
+        const tribeId = Number(GameCache.Instance.TribeId || 0);
+
+        if (clubId !== 0 || tribeId > 1) {
+            try {
+                const resp: any = await WWW.Instance.CommonAPI({
+                    web_class: APIOrgTribeRoomPermissions,
+                    body: {
+                        club_id: clubId,
+                        tribe_id: tribeId,
+                    },
+                    juhua: false,
+                });
+                const roomPermissions = this.ParsePermissions(resp?.data?.room_permissions);
+                if (Object.keys(roomPermissions).length > 0) {
+                    this.roomPermissions = roomPermissions;
+                }
+            } catch (err) {
+                cc.warn("[UIGameplaySecuritySetting] request club room permissions failed", err);
+                this.roomPermissions = this.GetGlobalRoomPermissions();
+            }
+        } else {
+            this.roomPermissions = this.GetGlobalRoomPermissions();
+        }
 
         this.RefreshUI();
     }
 
+    /** Unity GetRoomPermissions(false) 对齐：只取全局 room_permissions */
+    private GetGlobalRoomPermissions(): Record<string, number> {
+        const cfg: any = Web_Config_Global_Config?.Response?.data || null;
+        if (!cfg) return {};
+        return this.ParsePermissions(cfg.room_permissions);
+    }
+
+    private ParsePermissions(raw: any): Record<string, number> {
+        if (!raw) return {};
+
+        let obj: any = raw;
+        if (typeof raw === "string") {
+            try {
+                obj = JSON.parse(raw);
+            } catch (err) {
+                cc.warn("[UIGameplaySecuritySetting] parse room permissions failed", err);
+                return {};
+            }
+        }
+
+        if (!obj || typeof obj !== "object" || Array.isArray(obj)) {
+            return {};
+        }
+
+        const ret: Record<string, number> = {};
+        Object.keys(obj).forEach((k) => {
+            ret[k] = Number(obj[k] || 0);
+        });
+        return ret;
+    }
+
+    /** 刷新安全设置内容 */
     private RefreshUI(): void {
         const game: any = GameCache.Instance.CurGame;
         const callTime = Number(game?.callTime || GameCache.Instance.room_call_time || 0);
@@ -147,6 +208,7 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         this.RefreshContentLayout();
     }
 
+    /** 填充开/关状态项 */
     private FillDataByOpen(titleKey: string, open: boolean, tipsKey = ""): void {
         this.FillData(
             i18nMgr.Get(titleKey),
@@ -156,6 +218,7 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         );
     }
 
+    /** 填充多语言开/关状态项 */
     private FillDataByLanguageOpen(titleKey: string, open: boolean, tipsKey = ""): void {
         this.FillData(
             i18nMgr.Get(titleKey),
@@ -165,6 +228,7 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         );
     }
 
+    /** 填充普通项与提示项 */
     private FillData(title: string, state: string, stateColor: string, tips = ""): void {
         if (!tips) {
             const item = this.GetNormalItem(this.normalIndex++);
@@ -204,11 +268,13 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         item.active = true;
     }
 
+    /** 节点移动到父节点末位 */
     private MoveToLast(node: cc.Node | null): void {
         if (!node || !node.parent) return;
         node.setSiblingIndex(node.parent.childrenCount - 1);
     }
 
+    /** 刷新内容布局 */
     private RefreshContentLayout(): void {
         if (!this.contentRoot) return;
 
@@ -217,6 +283,7 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         layout.updateLayout();
     }
 
+    /** 获取/创建普通项 */
     private GetNormalItem(index: number): cc.Node | null {
         if (!this.itemNormalTemplate) return null;
         if (index < this.itemNormalCache.length) return this.itemNormalCache[index];
@@ -228,6 +295,7 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         return node;
     }
 
+    /** 获取/创建提示项 */
     private GetAndTipsItem(index: number): cc.Node | null {
         if (!this.itemAndTipsTemplate) return null;
         if (index < this.itemAndTipsCache.length) return this.itemAndTipsCache[index];
@@ -239,6 +307,7 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         return node;
     }
 
+    /** 设置文本 */
     private SetTextByPath(root: cc.Node, path: string, text: string): void {
         const node = cc.find(path, root);
         if (!node) return;
@@ -253,6 +322,7 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         }
     }
 
+    /** 设置状态文本和颜色 */
     private SetStateByPath(root: cc.Node, path: string, text: string, color: string): void {
         const node = cc.find(path, root);
         if (!node) return;
@@ -269,16 +339,24 @@ export default class UIGameplaySecuritySetting extends BaseTouchBoard {
         }
     }
 
+    /** 取消：关闭并继续带入 */
     private OnClickCancel(): void {
         UIComponent.close(UIDefine.UIGameplaySecuritySetting);
         this.bringInAct?.();
     }
 
+    /** 确认：进入牌桌设置弹窗 */
     private OnClickCommit(): void {
         UIComponent.close(UIDefine.UIGameplaySecuritySetting);
-        this.bringInAct?.();
+        UIComponent.open(UIDefine.UIGameplayTableSetting, {
+            isFromBringIn: this.isFromBringIn,
+            bringInAct: this.bringInAct || undefined,
+            roomPermissions: this.roomPermissions,
+            noAnimation: true,
+        });
     }
 
+    /** 关闭提示蒙层 */
     private OnClickTipsMask(): void {
         for (let i = 0; i < this.itemAndTipsCache.length; i++) {
             const node = this.itemAndTipsCache[i];

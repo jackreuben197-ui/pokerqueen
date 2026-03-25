@@ -923,6 +923,9 @@ export class Web_Config_Global_Config extends WebCommon {
         scoreboard_club_price?: string,
         scoreboard_friend_price?: string,
         user_modify_name_price?: string,
+        tribe_permission_new_label_view_num?: number,//新标签最大展示次数
+        room_permissions?: string,//联盟房间权限
+        friend_room_permissions?: string,//朋友桌房间权限
     } = null;
     static Request(param: typeof Web_Login.RequestParams) {
         this.RequestParams = param;
@@ -2407,6 +2410,27 @@ export class APIOrgTribeSearchByID extends WebCommon {
     static API: string = "/api/org/tribe/info";
 }
 
+/**
+ * 查询玩家已读新标签次数
+ */
+export class APIOrgUserNewLabelReadNum extends WebCommon {
+    static API: string = "/api/org/user/new_label/read/num";
+}
+
+/**
+ * 上报玩家已读新标签
+ */
+export class APIOrgUserNewLabelRead extends WebCommon {
+    static API: string = "/api/org/user/new_label/read";
+}
+
+/**
+ * 获取俱乐部/联盟房间权限
+ */
+export class APIOrgTribeRoomPermissions extends WebCommon {
+    static API: string = "/api/org/tribe/room_permissions";
+}
+
 export class APIOrgJoinTrip extends WebCommon {
     //接口地址
     static API: string = "/api/org/tribe/club/join/apply";
@@ -3107,6 +3131,8 @@ export class Web_misc_popup_newer extends WebCommon {
 (window as any).APIOrgClubApprovalJoin = APIOrgClubApprovalJoin;
 (window as any).APIOrgClubGetJoinlList = APIOrgClubGetJoinlList;
 (window as any).APIOrgClubQuit = APIOrgClubQuit;
+(window as any).APIOrgUserNewLabelReadNum = APIOrgUserNewLabelReadNum;
+(window as any).APIOrgUserNewLabelRead = APIOrgUserNewLabelRead;
 
 (window as any).APIOrgClubIsManger = APIOrgClubIsManger;
 (window as any).Web_User_Room_Settle_Detail = Web_User_Room_Settle_Detail;

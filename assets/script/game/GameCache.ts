@@ -166,6 +166,10 @@ export class GameCache {
     public room_call_time_winline: number = 0;
     /** 大厅入口缓存：CallTime 连续手数限制 */
     public room_call_time_count: number = 0;
+    /** 大厅入口缓存：付费看手牌模式（0关 1看全部 2看单家） */
+    public room_view_player_cards: number = 0;
+    /** 大厅入口缓存：Jackpot 配置 */
+    public room_jackpot_config: any = null;
     /** 大厅入口缓存：随机入座开关 */
     public room_random_seat: number = 0;
     /** 大厅入口缓存：安全牌桌开关（seated_messaging） */
@@ -367,6 +371,8 @@ export class GameCache {
 
 
     public anti_cheat_type: number = 0;//防作弊类型 0 未知 1 无 2 实时语音 3 实时视频 4 人脸验证 
+    /** 新标签可展示最大次数（全局配置） */
+    public newLabelsMaxNumber: number = 0;
 
     private securitySettingRoomsPrivate: number[] = null;
 
@@ -456,6 +462,17 @@ export class GameCache {
         GameCache.Instance.room_call_time = Number(room_info.call_time || 0);
         GameCache.Instance.room_call_time_winline = Number(room_info.call_time_winline || 0);
         GameCache.Instance.room_call_time_count = Number(room_info.call_time_count || 0);
+        GameCache.Instance.room_view_player_cards = Number(room_info.view_player_cards ?? room_info.viewPlayerCards ?? 0);
+        const jackpotConfigRaw = room_info.jackpot_config ?? room_info.jackpotConfig ?? null;
+        if (typeof jackpotConfigRaw === "string") {
+            try {
+                GameCache.Instance.room_jackpot_config = JSON.parse(jackpotConfigRaw);
+            } catch {
+                GameCache.Instance.room_jackpot_config = null;
+            }
+        } else {
+            GameCache.Instance.room_jackpot_config = jackpotConfigRaw || null;
+        }
         GameCache.Instance.room_random_seat = Number(room_info.random_seat || 0);
         GameCache.Instance.room_seated_messaging = Number(room_info.seated_messaging || 0);
         GameCache.Instance.room_type = room_info.room_type;
@@ -532,6 +549,10 @@ export interface EnterRoomInfo {
     call_time?;
     call_time_winline?;
     call_time_count?;
+    view_player_cards?;
+    viewPlayerCards?;
+    jackpot_config?;
+    jackpotConfig?;
     random_seat?;
     seated_messaging?;
     sub_game_play_ante?;
