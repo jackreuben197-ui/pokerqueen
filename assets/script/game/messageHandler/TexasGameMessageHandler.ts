@@ -228,7 +228,10 @@ export default class TexasGameMessageHandler {
      */
     Protocol_Holdem_SeatedOthers_Handler(response: ServerMessageSeatedOthers.AsObject) {
         console.log(`# MSG_CALLBACK: Protocol_Holdem_SeatedOthers_Handler`);
-
+        // 协议层会先更新座位数据，这里下一帧再刷新开始按钮，避免回调顺序导致人数未更新
+        setTimeout(() => {
+            this.game?.UpdateStartGameState?.();
+        }, 0);
     }
     /// <summary>
     /// 主动坐下(非MTT使用) 消息回调
@@ -237,7 +240,10 @@ export default class TexasGameMessageHandler {
     Protocol_Holdem_Seated_Handler(response: ServerMessageSeated.AsObject) {
 
         console.log(`# MSG_CALLBACK: Protocol_Holdem_Seated_Handler`);
-
+        // 协议层会先更新自己座位数据，这里下一帧再刷新开始按钮，避免回调顺序导致人数未更新
+        setTimeout(() => {
+            this.game?.UpdateStartGameState?.();
+        }, 0);
     }
 
     /// <summary>
@@ -300,6 +306,7 @@ export default class TexasGameMessageHandler {
             seat.HideFold();
             seat.FsmLogicComponent.SM.ChangeState(SeatStandupAnimation.Instance);
         }
+        this.game.UpdateStartGameState();
     }
 
     /// <summary>

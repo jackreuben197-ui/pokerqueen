@@ -177,6 +177,7 @@ export default class TexasGameProtocol {
             this.game.RefreshSquidMarks();
             this.game.UpdateRoomDes();
         }
+        this.game.UpdateStartGameState();
     }
     /// <summary>
     /// 自己坐下
@@ -280,6 +281,7 @@ export default class TexasGameProtocol {
         // valuesMap.Add("roomName", GameCache.Instance.roomName + "");//房间名称
         // valuesMap.Add("room_type", GameCache.Instance.room_type + "");//房间类型
         // AppsFlyerHelper.GameEnterEvent(valuesMap);
+        this.game.UpdateStartGameState();
     }
     /// <summary>
     /// 补盲状态变化
@@ -504,6 +506,7 @@ export default class TexasGameProtocol {
         }
         this.__PlayDealAnimation(rec);
         cc.log("————————>立刻执行发牌");
+        this.game.UpdateStartGameState();
     }
     private __PlayDealAnimation(responseData) {
         this.game.ResetSeatMoveStruct();
@@ -614,6 +617,7 @@ export default class TexasGameProtocol {
             if (rec.leftTime > 0 && mSeat.IsMySeat) {
                 UIComponent.Instance.Toast(`${i18nMgr.Get("UITexas_FriendtableapplyBringinTips001")}${rec.leftTime}s`);
             }
+            this.game.UpdateStartGameState();
             return;
         }
 
@@ -644,6 +648,7 @@ export default class TexasGameProtocol {
             }
             this.game.SetIsEixt(false);
         }
+        this.game.UpdateStartGameState();
     }
     /// <summary>
     /// 底池筹码（分池，主池）
@@ -1759,6 +1764,7 @@ export default class TexasGameProtocol {
         }
 
         this.game.ResetSeatMoveStruct();
+        this.game.UpdateStartGameState();
 
     }
 

@@ -11,7 +11,7 @@ import { CPErrorCode } from "../../i18n/CPErrorCode";
 import { i18nMgr } from "../../i18n/i18nMgr";
 import { WalletType } from "../../lobby/new_club/wallet/UIWallet";
 import Main from "../../Main";
-import { APIOrgClubUserInfo, API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_User_Room, Web_User_Room_Bringin, WWW, Web_GetDiamondConfig } from "../../net/https/WebRequest";
+import { APIOrgClubUserInfo, API_CLUB_APPLY_LIST, Web_Org_Club_Search_By_Id, Web_RoomSitApplyRecords, Web_Room_Center_Is_Room_Admin, Web_Room_Center_Room_Start, Web_User_Room, Web_User_Room_Bringin, WWW, Web_GetDiamondConfig } from "../../net/https/WebRequest";
 import ProtocolAgency from "../../net/websocket/ProtocolAgency";
 import { ProtocolCode } from "../../net/websocket/ProtocolCode";
 import { Def, RoomInfo } from "../../protobuf/holdem/define_pb";
@@ -1047,6 +1047,7 @@ export default class TexasGame {
         this.RunRoomReqlist();
         this.bombPotFeature?.EnterGame();
         this.ShowCriticalInfo();
+        this.RefreshRoomManagerStateAndStartButton();
     }
 
     //奔跑请求队列
@@ -1279,6 +1280,66 @@ export default class TexasGame {
                 this.uirc.callTimeDes.string = "";
             }
         }
+    }
+
+    protected IsGameNotStart(): boolean {
+        console.log('777.IsGameNotStart', this.gamestatus, this.mHandNum);
+        return this.gamestatus == Def.GameStatus.NOT_START && this.mHandNum == 0;
+    }
+
+    private RefreshRoomManagerStateAndStartButton(): void {
+        this.UpdateStartGameState();
+
+        if (GameCache.Instance.match_id != 0) {
+            return;
+        }
+
+        const roomId = Number(GameCache.Instance.room_id || 0);
+        if (roomId <= 0) {
+            return;
+        }
+
+        WWW.Instance.CommonAPI({
+            web_class: Web_Room_Center_Is_Room_Admin,
+            body: { room_id: roomId },
+            juhua: false,
+        }).then(
+            (res: any) => {
+                console.log("[StartGameButton] is_room_admin", roomId, res?.code, res?.data?.is_admin);
+                if (res && (res.code === undefined || Number(res.code) === 0)) {
+                    const apiIsAdmin = res?.data?.is_admin;
+                    if (apiIsAdmin !== undefined && apiIsAdmin !== null) {
+                        GameCache.Instance.room_is_manager = !!apiIsAdmin;
+                    }
+                }
+                this.UpdateStartGameState();
+            },
+            () => {
+                this.UpdateStartGameState();
+            }
+        );
+    }
+
+    public UpdateStartGameState(): void {
+        const btn = this.uirc?.StartGameButton;
+        if (!btn) {
+            return;
+        }
+
+        let playerCount = 0;
+        if (this.listSeat != null) {
+            this.listSeat.forEach((seat) => {
+                if (seat?.Player != null && (seat.Player.KeepSeatLeftTime || 0) <= 0) {
+                    playerCount++;
+                }
+            });
+        }
+
+        const minPlayersCfg = Number(GameCache.Instance.room_min_players || 0);
+        const minPlayers = minPlayersCfg > 0 ? minPlayersCfg : 2;
+        const autoStartMinPlayers = Number(GameCache.Instance.room_autostart_min_players || 0);
+        const isRoomManager = !!GameCache.Instance.room_is_manager;
+        btn.active = playerCount >= minPlayers && this.IsGameNotStart() && autoStartMinPlayers === 0 && isRoomManager;
     }
 
     private UpdateCriticalHitConfig(rec: ServerMessageEnterRoom.AsObject): void {
@@ -2641,72 +2702,72 @@ export default class TexasGame {
                 }
             } else {
                 for (let i = 0; i < CacheCount - cards_2Count; i++) {
-                let cardTypeIndex = i;
-                let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
-                //PublicCardInfo.cardId = this.cards_2[i];
-                PublicCardInfo.trans.setPosition(this.listDefaultPublicCardsLPos[i]);
-                PublicCardInfo.trans.setScale(cc.Vec3.ONE);
-                PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                PublicCardInfo.SetSpriteFrame(cards[i]);
-                //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(this.cards_2[i]));
-                //let mCacheCardId = PublicCardInfo.cardId;
-                //let mCacheImage = PublicCardInfo.imageCard;
-                let mCacheTrans = PublicCardInfo.trans;
-                let CacheDefaultPublicCardsLPos = cc.v2(this.listDefaultSecondPublicCardsLPos[i].x, this.listDefaultSecondPublicCardsLPos[i].y);
-                mCacheTrans.active = true;
-                tween.then(cc.callFunc(() => {
+                    let cardTypeIndex = i;
+                    let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
+                    //PublicCardInfo.cardId = this.cards_2[i];
+                    PublicCardInfo.trans.setPosition(this.listDefaultPublicCardsLPos[i]);
+                    PublicCardInfo.trans.setScale(cc.Vec3.ONE);
+                    PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
+                    PublicCardInfo.SetSpriteFrame(cards[i]);
+                    //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(this.cards_2[i]));
+                    //let mCacheCardId = PublicCardInfo.cardId;
+                    //let mCacheImage = PublicCardInfo.imageCard;
+                    let mCacheTrans = PublicCardInfo.trans;
+                    let CacheDefaultPublicCardsLPos = cc.v2(this.listDefaultSecondPublicCardsLPos[i].x, this.listDefaultSecondPublicCardsLPos[i].y);
+                    mCacheTrans.active = true;
+                    tween.then(cc.callFunc(() => {
 
-                    cc.tween(mCacheTrans).to(.2, { scaleX: 1.2 }).then(cc.callFunc(() => {
+                        cc.tween(mCacheTrans).to(.2, { scaleX: 1.2 }).then(cc.callFunc(() => {
 
-                        GC.sound.Play("sfx_desk_chat");
+                            GC.sound.Play("sfx_desk_chat");
 
-                    })).parallel(cc.scaleTo(.2, 1), cc.moveTo(0.4, CacheDefaultPublicCardsLPos)).then(cc.callFunc(() => {
-                        if (cardTypeIndex == 2) {
-                            let sCards = [];
-                            sCards.push(...cards);
-                            sCards[cardTypeIndex + 1] = -1;
-                            sCards[cardTypeIndex + 2] = -1;
-                            this.UpdateSecondPublicCardsCardType(sCards);
-                        }
-                    })).start();
-                }));
-                //以上时间累加 0.2 +0.4
-                tween.delay(0.6);
+                        })).parallel(cc.scaleTo(.2, 1), cc.moveTo(0.4, CacheDefaultPublicCardsLPos)).then(cc.callFunc(() => {
+                            if (cardTypeIndex == 2) {
+                                let sCards = [];
+                                sCards.push(...cards);
+                                sCards[cardTypeIndex + 1] = -1;
+                                sCards[cardTypeIndex + 2] = -1;
+                                this.UpdateSecondPublicCardsCardType(sCards);
+                            }
+                        })).start();
+                    }));
+                    //以上时间累加 0.2 +0.4
+                    tween.delay(0.6);
                 }
                 tween.delay(0.4);
                 for (let i = CacheCount - cards_2Count, n = CacheCount; i < n; i++) {
-                let cardTypeIndex = i;
-                let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
-                //PublicCardInfo.cardId = this.cards_2[i];
-                PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[i]);
-                PublicCardInfo.trans.setScale(cc.Vec3.ONE);
-                PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
-                //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
-                PublicCardInfo.SetSpriteFrame(-1);
-                let mCacheCardId = cards[i];
-                //PublicCardInfo.cardId;
-                let mCacheImage = PublicCardInfo.imageCard;
-                let mCacheTrans = PublicCardInfo.trans;
+                    let cardTypeIndex = i;
+                    let PublicCardInfo: PublicCardInfo = this.uirc.listSecondCards[i];
+                    //PublicCardInfo.cardId = this.cards_2[i];
+                    PublicCardInfo.trans.setPosition(this.listDefaultSecondPublicCardsLPos[i]);
+                    PublicCardInfo.trans.setScale(cc.Vec3.ONE);
+                    PublicCardInfo.imageCard.node.color = cc.Color.WHITE;
+                    //PublicCardInfo.imageCard.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(-1));
+                    PublicCardInfo.SetSpriteFrame(-1);
+                    let mCacheCardId = cards[i];
+                    //PublicCardInfo.cardId;
+                    let mCacheImage = PublicCardInfo.imageCard;
+                    let mCacheTrans = PublicCardInfo.trans;
 
-                tween.then(cc.callFunc(() => {
-                    mCacheTrans.active = true;
-                    cc.tween(mCacheTrans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
-                        PublicCardInfo.SetSpriteFrame(mCacheCardId);
-                        //mCacheImage.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mCacheCardId));
-                        GC.sound.Play("sfx_desk_chat");
-                    })).to(.2, { scaleX: 1 }).call(() => {
-                        if (cardTypeIndex == 3) {
-                            let sCards = [];
-                            sCards.push(...cards);
-                            sCards[cardTypeIndex + 1] = -1;
-                            sCards[cardTypeIndex + 2] = -1;
-                            this.UpdateSecondPublicCardsCardType(sCards);
-                        }
-                        else {
-                            this.UpdateSecondPublicCardsCardType(cards);
-                        }
-                    }).start();
-                }));
+                    tween.then(cc.callFunc(() => {
+                        mCacheTrans.active = true;
+                        cc.tween(mCacheTrans).to(.2, { scaleX: 0 }).then(cc.callFunc(() => {
+                            PublicCardInfo.SetSpriteFrame(mCacheCardId);
+                            //mCacheImage.spriteFrame = this.GetBigPokerSP(GameUtil.GetCardNameByNum(mCacheCardId));
+                            GC.sound.Play("sfx_desk_chat");
+                        })).to(.2, { scaleX: 1 }).call(() => {
+                            if (cardTypeIndex == 3) {
+                                let sCards = [];
+                                sCards.push(...cards);
+                                sCards[cardTypeIndex + 1] = -1;
+                                sCards[cardTypeIndex + 2] = -1;
+                                this.UpdateSecondPublicCardsCardType(sCards);
+                            }
+                            else {
+                                this.UpdateSecondPublicCardsCardType(cards);
+                            }
+                        }).start();
+                    }));
                     tween.delay(0.4);
                 }
             }
@@ -3683,6 +3744,37 @@ export default class TexasGame {
 
     //点击AddOn按钮响应,子类覆盖
     public onClickAddOn() { }
+    //点击开始游戏
+    public onClickStartGame(): void {
+        console.log('7778.onClickStartGame',this.CanClick());
+        if (this.CanClick() == false) return;
+        this.lastClickTime = GlobalSession.NowTimeMS;
+
+        if (!GameCache.Instance.room_is_manager) {
+            return;
+        }
+        if (this.uirc?.StartGameButton) {
+            this.uirc.StartGameButton.active = false;
+        }
+
+        WWW.Instance.CommonAPI({
+            web_class: Web_Room_Center_Room_Start,
+            body: {
+                room_id: GameCache.Instance.room_id,
+            },
+        }).then(
+            (res: any) => {
+                if (res?.code && res.code !== 0) {
+                    UIComponent.Instance.Toast(res.message || CPErrorCode.ServerErrorDescription(res.code));
+                    this.UpdateStartGameState();
+                }
+            },
+            (err: any) => {
+                UIComponent.Instance.Toast(err?.message || i18nMgr.Get("adaptation10301"));
+                this.UpdateStartGameState();
+            }
+        );
+    }
     //点击退出按钮响应
     public onClickExit() {
 

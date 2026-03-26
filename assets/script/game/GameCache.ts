@@ -174,6 +174,12 @@ export class GameCache {
     public room_random_seat: number = 0;
     /** 大厅入口缓存：安全牌桌开关（seated_messaging） */
     public room_seated_messaging: number = 0;
+    /** 大厅入口缓存：最小开局人数 */
+    public room_min_players: number = 0;
+    /** 大厅入口缓存：自动开局最小人数（0 表示手动开始） */
+    public room_autostart_min_players: number = 0;
+    /** 大厅入口缓存：是否房管/房主 */
+    public room_is_manager: boolean = false;
     /// <summary>
     /// 房间类型 RoomType枚举
     /// </summary>
@@ -433,6 +439,10 @@ export class GameCache {
     InitEnterRoomInfo(room_info: EnterRoomInfo) {
         const subConfigs = room_info.sub_configs || [];
         const sub0 = (subConfigs && subConfigs.length > 0) ? subConfigs[0] : null;
+        const roomAdminAny = (room_info as any).room_admin ?? (room_info as any).roomAdmin ?? null;
+        const roomAdminFlag = roomAdminAny?.is_admin ?? roomAdminAny?.isAdmin;
+        const creatorRandomId = Number((room_info as any).creator_random_id ?? (room_info as any).creatorRandomId ?? 0);
+        const creatorId = Number((room_info as any).creator_id ?? (room_info as any).creatorId ?? 0);
 
         GameCache.Instance.serviceId = room_info.service_id;
         GameCache.Instance.roomName = GC.data.languageTemp.temp.getName(room_info.name);
@@ -475,6 +485,15 @@ export class GameCache {
         }
         GameCache.Instance.room_random_seat = Number(room_info.random_seat || 0);
         GameCache.Instance.room_seated_messaging = Number(room_info.seated_messaging || 0);
+        GameCache.Instance.room_min_players = Number((room_info as any).min_players ?? (room_info as any).minPlayers ?? 0);
+        GameCache.Instance.room_autostart_min_players = Number((room_info as any).autostart_min_players ?? (room_info as any).autostartMinPlayers ?? 0);
+        if (roomAdminFlag !== undefined && roomAdminFlag !== null) {
+            GameCache.Instance.room_is_manager = roomAdminFlag === true || Number(roomAdminFlag) === 1;
+        } else {
+            GameCache.Instance.room_is_manager =
+                (creatorRandomId > 0 && creatorRandomId === Number(GameCache.Instance.nUserId || 0)) ||
+                (creatorId > 0 && creatorId === Number(GameCache.Instance.userId || 0));
+        }
         GameCache.Instance.room_type = room_info.room_type;
         GameCache.Instance.game_type = room_info.game_type;
         GameCache.Instance.poker_type = room_info.poker_type;
@@ -555,6 +574,16 @@ export interface EnterRoomInfo {
     jackpotConfig?;
     random_seat?;
     seated_messaging?;
+    min_players?;
+    minPlayers?;
+    autostart_min_players?;
+    autostartMinPlayers?;
+    room_admin?: { is_admin?: number | boolean };
+    roomAdmin?: { isAdmin?: number | boolean };
+    creator_random_id?;
+    creatorRandomId?;
+    creator_id?;
+    creatorId?;
     sub_game_play_ante?;
     rounds?;
     sub_configs?;

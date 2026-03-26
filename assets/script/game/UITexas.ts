@@ -116,6 +116,7 @@ export default class UITexas extends BaseScene {
     CriticalHitStartAnim: cc.Animation = null;
     callTimeArea: cc.Node = null;
     callTimeDes: cc.Label = null;
+    StartGameButton: cc.Node = null;
 
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
@@ -316,6 +317,15 @@ export default class UITexas extends BaseScene {
         if (this.callTimeArea) {
             this.callTimeArea.active = false;
         }
+        this.StartGameButton =
+            this.main?.getChildByName("StartGameButton")
+            || this.getChildNodeOrComponent("StartGameButton")
+            || cc.find("main/StartGameButton", this.node);
+        if (this.StartGameButton) {
+            this.StartGameButton.active = false;
+        } else {
+            cc.warn("[UITexas] StartGameButton not found");
+        }
 
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
@@ -446,6 +456,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.Button_Delay, this.onClickDelay);
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
         this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
+        this.setButtonClick(this.StartGameButton, this.onClickStartGame);
         this.setButtonClick(this.SquidSwitchClickNode, this.onClickJoinGame);
         this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
 
@@ -510,6 +521,7 @@ export default class UITexas extends BaseScene {
         this.setActive(this.Button_AddOn, false);
         this.setActive(this.SquidSwitch, false);
         this.setActive(this.SquidStandUp, false);
+        this.setActive(this.StartGameButton, false);
         this.setActive(this.BombPotOpen, false);
         this.setActive(this.BombPotLogo, false);
         //消息按钮显示
@@ -548,6 +560,7 @@ export default class UITexas extends BaseScene {
             this.Image_InsuranceTips,
             this.SquidSwitch,
             this.SquidStandUp,
+            this.StartGameButton,
             this.BombPotOpen,
             this.BombPotLogo,
         ].forEach(item => {
@@ -636,6 +649,9 @@ export default class UITexas extends BaseScene {
     }
     private onClickWaitBlind() {
         this.game?.onClickWaitBlind();
+    }
+    private onClickStartGame() {
+        this.game?.onClickStartGame();
     }
     private onClickJoinGame() {
         console.log(`==>onClickJoinGame`);

@@ -11,7 +11,7 @@
 import { UIDefine } from "../../../define/UIDefine";
 import { ClubCache } from "../../../frame/data/club/ClubCache";
 import GC from "../../../frame/GameControl";
-import GameUtil, { GameEnterType } from "../../../game/util/GameUtil";
+import GameUtil, { GameEnterType, GameType } from "../../../game/util/GameUtil";
 import { GM } from "../../../gm/GMAPI";
 import { i18nMgr } from "../../../i18n/i18nMgr";
 import ToastManager from "../../../manager/ToastManager";
@@ -75,6 +75,16 @@ export default class UIClubMatchItem extends UIBase {
         if (icon_squid) icon_squid.active = this._data.squid_on == 1;
         const icon_mushroom = lbl1?.getChildByName('icon_mushroom');
         if (icon_mushroom) icon_mushroom.active = this._data.mushroom_mode == 1;
+        const icon_bombpot = lbl1?.getChildByName('icon_bombpot');
+        if (icon_bombpot) {
+            const gameType = Number(this._data?.game_type ?? -1);
+            const isTexasOrOmaha =
+                gameType === GameType.Holdem
+                || gameType === GameType.Omaha4
+                || gameType === GameType.Omaha5
+                || gameType === GameType.Omaha6;
+            icon_bombpot.active = Number(this._data?.bombpot ?? this._data?.bomb_pot ?? 0) === 1 && isTexasOrOmaha;
+        }
         const icon_critical_hit = lbl1?.getChildByName('icon_critical_hit');
         if (icon_critical_hit) icon_critical_hit.active = this._data.critical_hit == 1;
         const icon_calltime = lbl1?.getChildByName('icon_calltime');

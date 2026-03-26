@@ -1642,6 +1642,20 @@ export class Web_User_Room_insur extends WebCommon {
 
 }
 
+/// <summary>
+/// 房主手动开始牌局
+/// </summary>
+export class Web_Room_Center_Room_Start extends WebCommon {
+    static API: string = "/api/roomcenter/room/start";
+}
+
+/// <summary>
+/// 查询当前用户是否为该房间管理员
+/// </summary>
+export class Web_Room_Center_Is_Room_Admin extends WebCommon {
+    static API: string = "/api/roomcenter/room/is_room_admin";
+}
+
 
 /// <summary>
 /// 查询在该房间带出信息
