@@ -28,6 +28,7 @@ export default class UILobbyIndex extends UIBasePlus {
     cc_Label$gc_num: cc.Label = null;
     cc_Label$welcome: cc.Label = null;
     cc_Sprite$head: cc.Sprite = null;
+
     $message: cc.Node = null;
     //Part2
     $mtt: cc.Node = null;
@@ -50,6 +51,35 @@ export default class UILobbyIndex extends UIBasePlus {
     offset_end: boolean = false;
     //一次请求的房间数量限制
     room_limit: number = 50;
+
+    /**
+     * 测试毛玻璃的遮罩背景
+     */
+    $scroller: cc.Node = null;
+    $mahjong: cc.Node = null;
+    $glass: cc.Node = null;
+    private baseYVal : number = 0;
+
+    $glass1: cc.Node = null;
+    private baseYVal1 : number = 0;
+
+    $glass2: cc.Node = null;
+    private baseYVal2 : number = 0;
+
+    mScrollView: cc.ScrollView = null;
+    // 记录上一次的滚动位置，用于判断是否在滚动
+    private lastScrollOffset: cc.Vec2 = cc.Vec2.ZERO;
+    // 滚动状态标志
+    private isScrolling: boolean = false;
+    // 滚动停止的计时器（用于判断滚动是否结束）
+    private scrollStopTimer: number = 0;
+
+
+    /**
+     * River: 新加入变量的测试，后期删除上面的旧数据与变量。
+     */
+    protected cc_Label$noticelabel: cc.Label = null;
+
     ///////////////////////////////
     GameTypeTabs = {
         0: {
@@ -77,12 +107,136 @@ export default class UILobbyIndex extends UIBasePlus {
     _gametype_status: number = 0;
 
 
+    /**
+     * 实时滚动回调
+     * @param offset 当前滚动偏移量
+     * @param scrollSpeed 滚动速度（像素/帧）
+     */
+    protected onScrolling(offset: cc.Vec2, scrollSpeed: number = 0): void {
+        // 每次滚动都会触发此回调
+
+        // 获取 content 节点相对于 view 的绝对世界坐标
+        let contentWorldPos = this.mScrollView.content.convertToWorldSpaceAR(cc.Vec2.ZERO);
+
+        //console.log("正在滚动，当前 Y 偏移:", offset.y, "滚动速度:", scrollSpeed.toFixed(2));
+        this.$glass.y = this.baseYVal - offset.y;
+        this.$glass1.y = this.baseYVal1 - offset.y;
+        this.$glass2.y = this.baseYVal2 - offset.y;
+
+        // 进阶：判断是否滚动到了底部
+        let maxOffset = this.mScrollView.getMaxScrollOffset();
+        if (offset.y >= maxOffset.y - 10) { // 增加10像素容差
+            console.log("已滚动到底部");
+        }
+    }
+
+    /**
+     * 滚动开始时触发
+     */
+    protected onScrollBegan(): void {
+        console.log("滚动开始");
+        this.isScrolling = true;
+    }
+
+    /**
+     * 滚动停止时触发
+     */
+    protected onScrollEnded(): void {
+        console.log("滚动停止");
+        this.isScrolling = false;
+
+        // 可以在这里执行滚动结束后的操作，例如加载更多数据
+        let offset = this.mScrollView.getScrollOffset();
+        let maxOffset = this.mScrollView.getMaxScrollOffset();
+        if (offset.y >= maxOffset.y - 10) {
+            console.log("滚动停止在底部，加载更多数据");
+            this.reqRooms();
+        }
+    }
+
     protected lateLoad(): void {
         this.name = "UILobbyIndex";
         super.lateLoad();
+
+        if (this.cc_Label$noticelabel) {
+            this.cc_Label$noticelabel.string = 'hello,world!此处播放广播消息，长度过长的话，会被截断。';
+        }
+
+        debugger;
+        // 获取 ScrollView 组件
+        if (this.$scroller) {
+
+            this.mScrollView = this.$scroller.getComponent(cc.ScrollView);
+            // 初始化滚动位置记录
+            this.lastScrollOffset = this.mScrollView.getScrollOffset();
+
+            this.baseYVal = this.$glass.y;
+            this.baseYVal1 = this.$glass1.y;
+            this.baseYVal2 = this.$glass2.y;
+            
+        }
+
+        // 旧代码本身后期也需要删除:
+        // 以下旧代码会产生异常，暂不执行：
+        return;
         this.showGameTypeTabs();
         this.room_item_pool = new SimpleNodePool(this.$ItemLobbyRoom);
         this.curr_room_list = [];
+
+    }
+
+    /**
+     * 每帧更新，用于实时检测滚动状态
+     */
+    protected update(dt: number): void {
+        // 如果没有 ScrollView 组件，直接返回
+        if (!this.mScrollView) return;
+
+        // 获取当前滚动位置
+        let currentOffset = this.mScrollView.getScrollOffset();
+
+        // 计算滚动速度（像素/秒）
+        let scrollSpeed = 0;
+        if (this.isScrolling) {
+            let distance = currentOffset.y - this.lastScrollOffset.y;
+            scrollSpeed = Math.abs(distance) / dt;
+        }
+
+        // 判断位置是否发生变化
+        if (!currentOffset.equals(this.lastScrollOffset)) {
+            // 位置发生变化，说明正在滚动
+            if (!this.isScrolling) {
+                // 从静止状态进入滚动状态
+                this.onScrollBegan();
+            }
+            // 触发滚动回调
+            this.onScrolling(currentOffset, scrollSpeed);
+            // 更新记录的位置
+            this.lastScrollOffset = currentOffset;
+            // 重置停止计时器
+            this.scrollStopTimer = 0;
+        } else {
+            // 位置没有变化
+            if (this.isScrolling) {
+                // 累计停止时间
+                this.scrollStopTimer += dt;
+                // 如果连续多帧位置不变（例如超过0.2秒），认为滚动停止
+                if (this.scrollStopTimer > 0.2) {
+                    this.onScrollEnded();
+                }
+            }
+        }
+    }
+
+    /**
+     * 组件销毁时调用，清理资源
+     */
+    public onDestroy(): void {
+        // 清理滚动相关的状态
+        this.isScrolling = false;
+        this.scrollStopTimer = 0;
+        this.lastScrollOffset = cc.Vec2.ZERO;
+        super.onDestroy();
     }
     protected regiterTouchEvents(): void {
         super.regiterTouchEvents();
@@ -100,7 +254,7 @@ export default class UILobbyIndex extends UIBasePlus {
         this.activeRooms(false);
     }
     refreshUserInfo() {
-        WebImageHelper.SetHeadImage(this.cc_Sprite$head, Web_User_Info.Response.data.user.avatar);
+        //WebImageHelper.SetHeadImage(this.cc_Sprite$head, Web_User_Info.Response.data.user.avatar);
         this.cc_Label$welcome.string = "Hey," + Web_User_Info.Response.data.user.nickname + "!";
     }
     private showGameTypeTabs() {
@@ -112,7 +266,7 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     //激活房间选项和房间列表
     private activeRooms(boo: boolean) {
-        if( !this.$table || !this.$list ) return;
+        if (!this.$table || !this.$list) return;
         this.$table.active = boo;
         this.$list.active = boo;
     }
@@ -167,6 +321,10 @@ export default class UILobbyIndex extends UIBasePlus {
     ///////////////////////request////////////////////
     //启动
     public run() {
+
+        // River:先不管消息处理：
+        return;
+
         this.gametype_status = 0;
         this.refreshUserInfo();
         this.resetCurrRoom();
@@ -179,25 +337,6 @@ export default class UILobbyIndex extends UIBasePlus {
         this.curr_room_list = [];
         this.offset_end = false;
     }
-    // //请求总钱包
-    // reqWalletTotal() {
-
-    //     WWW.Instance.CommonAPI(
-    //         {
-    //             web_class: api_wallet_total,
-    //         }
-    //     ).then(
-    //         (res: any) => {
-
-    //             this.cc_Label$uc_num.string = `${StringHelper.GetLongString(res.data.tribe_total)}`;
-    //             this.cc_Label$gc_num.string = `${StringHelper.GetLongString(res.data.usdt_total)}`;
-    //             this.reqLanguageTemplete();
-    //         },
-    //         (res: any) => {
-    //             this.reqLanguageTemplete();
-    //         }
-    //     )
-    // }
 
     async reqLanguageTemplete() {
         await LobbySession.APIConfig_Multi_Language_Template(false);
@@ -253,12 +392,14 @@ export default class UILobbyIndex extends UIBasePlus {
     //////////////////////////////////
     //清理列表
     cleanList() {
-        this.$list.children.forEach(item => {
-            if (item.getComponent(ItemLobbyRoom)) {
-                this.room_item_pool.BackNode(item);
-            }
-        })
-        this.$list.removeAllChildren();
+        if (this.$list) {
+            this.$list.children.forEach(item => {
+                if (item.getComponent(ItemLobbyRoom)) {
+                    this.room_item_pool.BackNode(item);
+                }
+            })
+            this.$list.removeAllChildren();
+        }
     }
     //刷新显示房间列表 
     refreshRooms() {

@@ -59,17 +59,19 @@ export class LobbyControl {
                 this.curShowUI.getComponent(UIBase)?.onShow();
                 resolve(newUI);
             } else {
+                let $this = this;
                 ResManager.Load(null, resPath + name, cc.Prefab, (err, asset: cc.Prefab) => {
                     if (err) {
                         return;
                     }
-                    if (this.curShowUI) this.curShowUI.active = false;
+
+                    if ($this.curShowUI) $this.curShowUI.active = false;
                     newUI = cc.instantiate(asset);
-                    this.Layer.addChild(newUI);
-                    this.curShowUI = newUI;
-                    this.uiMap[name] = newUI;
+                    $this.Layer.addChild(newUI);
+                    $this.curShowUI = newUI;
+                    $this.uiMap[name] = newUI;
                     newUI.active = true;
-                    this.curShowUI.getComponent(UIBase)?.onShow();
+                    $this.curShowUI.getComponent(UIBase)?.onShow();
                     resolve(newUI);
                 });
             }
