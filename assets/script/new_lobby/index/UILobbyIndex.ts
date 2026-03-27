@@ -56,7 +56,6 @@ export default class UILobbyIndex extends UIBasePlus {
      * 测试毛玻璃的遮罩背景
      */
     $scroller: cc.Node = null;
-    $mahjong: cc.Node = null;
     $glass: cc.Node = null;
     private baseYVal : number = 0;
 
@@ -66,6 +65,9 @@ export default class UILobbyIndex extends UIBasePlus {
     $glass2: cc.Node = null;
     private baseYVal2 : number = 0;
 
+    $pokerglass : cc.Node = null;
+    private baseYValPoker : number = 0;
+
     mScrollView: cc.ScrollView = null;
     // 记录上一次的滚动位置，用于判断是否在滚动
     private lastScrollOffset: cc.Vec2 = cc.Vec2.ZERO;
@@ -73,6 +75,21 @@ export default class UILobbyIndex extends UIBasePlus {
     private isScrolling: boolean = false;
     // 滚动停止的计时器（用于判断滚动是否结束）
     private scrollStopTimer: number = 0;
+
+    /**
+     * 客服区的按钮：
+     */
+    cc_Button$service: cc.Button = null;
+    cc_Button$game1 : cc.Button = null;
+    cc_Button$game2 : cc.Button = null;
+
+    /**
+     * 几大游戏板块:
+     */
+    $mahjong: cc.Node = null;
+    $match : cc.Node = null;
+    $xgame : cc.Node = null;
+    $poker : cc.Node = null;
 
 
     /**
@@ -122,6 +139,7 @@ export default class UILobbyIndex extends UIBasePlus {
         this.$glass.y = this.baseYVal - offset.y;
         this.$glass1.y = this.baseYVal1 - offset.y;
         this.$glass2.y = this.baseYVal2 - offset.y;
+        this.$pokerglass.y = this.baseYValPoker - offset.y;
 
         // 进阶：判断是否滚动到了底部
         let maxOffset = this.mScrollView.getMaxScrollOffset();
@@ -159,7 +177,7 @@ export default class UILobbyIndex extends UIBasePlus {
         super.lateLoad();
 
         if (this.cc_Label$noticelabel) {
-            this.cc_Label$noticelabel.string = 'hello,world!此处播放广播消息，长度过长的话，会被截断。';
+            this.cc_Label$noticelabel.string = 'hello,world! 此处播放广播消息，长度过长的话，会被截断。';
         }
 
         debugger;
@@ -173,7 +191,22 @@ export default class UILobbyIndex extends UIBasePlus {
             this.baseYVal = this.$glass.y;
             this.baseYVal1 = this.$glass1.y;
             this.baseYVal2 = this.$glass2.y;
+            this.baseYValPoker = this.$pokerglass.y;
             
+        }
+
+        // 注册按钮点击事件:
+        if( this.cc_Button$game1 ){
+            this.cc_Button$game1.node.on(cc.Node.EventType.TOUCH_END, this.onGame1Click, this);
+            this.cc_Button$game2.node.on(cc.Node.EventType.TOUCH_END, this.onGame2Click, this);
+            this.cc_Button$service.node.on(cc.Node.EventType.TOUCH_END, this.onServiceClick, this);
+        }
+
+        if( this.$mahjong ) {
+            this.$mahjong.on( cc.Node.EventType.TOUCH_END,this.onMahjong,this );    
+            this.$match.on( cc.Node.EventType.TOUCH_END,this.onMatch,this );    
+            this.$xgame.on( cc.Node.EventType.TOUCH_END,this.onXgame,this );        
+            this.$poker.on( cc.Node.EventType.TOUCH_END,this.onPoker,this );    
         }
 
         // 旧代码本身后期也需要删除:
@@ -184,6 +217,29 @@ export default class UILobbyIndex extends UIBasePlus {
         this.curr_room_list = [];
 
     }
+
+    protected onGame1Click(event: cc.Event.EventTouch): void {
+       console.log('Game 1 clicked');
+    }
+    protected onGame2Click(event: cc.Event.EventTouch) : void{
+        console.log('Game 2 clicked');
+    }
+    protected onServiceClick(event: cc.Event.EventTouch) : void{
+        console.log( 'Service clicked');
+    }
+    protected onMahjong( event : cc.Event.EventTouch ) : void{
+        console.log('麻将区域被点击.');
+    }
+    protected onMatch( event : cc.Event.EventTouch ) : void{
+        console.log('赛事区域被点击.');
+    }
+    protected onXgame( event : cc.Event.EventTouch ) : void{
+        console.log('小游戏区域被点击.');
+    }
+    protected onPoker( event : cc.Event.EventTouch ) : void{
+        console.log('扑克区域被点击.');
+    }
+    
 
     /**
      * 每帧更新，用于实时检测滚动状态
