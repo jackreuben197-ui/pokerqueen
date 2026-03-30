@@ -57,16 +57,16 @@ export default class UILobbyIndex extends UIBasePlus {
      */
     $scroller: cc.Node = null;
     $glass: cc.Node = null;
-    private baseYVal : number = 0;
+    private baseYVal: number = 0;
 
     $glass1: cc.Node = null;
-    private baseYVal1 : number = 0;
+    private baseYVal1: number = 0;
 
     $glass2: cc.Node = null;
-    private baseYVal2 : number = 0;
+    private baseYVal2: number = 0;
 
-    $pokerglass : cc.Node = null;
-    private baseYValPoker : number = 0;
+    $pokerglass: cc.Node = null;
+    private baseYValPoker: number = 0;
 
     mScrollView: cc.ScrollView = null;
     // 记录上一次的滚动位置，用于判断是否在滚动
@@ -80,16 +80,16 @@ export default class UILobbyIndex extends UIBasePlus {
      * 客服区的按钮：
      */
     cc_Button$service: cc.Button = null;
-    cc_Button$game1 : cc.Button = null;
-    cc_Button$game2 : cc.Button = null;
+    cc_Button$game1: cc.Button = null;
+    cc_Button$game2: cc.Button = null;
 
     /**
      * 几大游戏板块:
      */
     $mahjong: cc.Node = null;
-    $match : cc.Node = null;
-    $xgame : cc.Node = null;
-    $poker : cc.Node = null;
+    $match: cc.Node = null;
+    $xgame: cc.Node = null;
+    $poker: cc.Node = null;
 
 
     /**
@@ -152,7 +152,7 @@ export default class UILobbyIndex extends UIBasePlus {
      * 滚动开始时触发
      */
     protected onScrollBegan(): void {
-        console.log("滚动开始");
+        //console.log("滚动开始");
         this.isScrolling = true;
     }
 
@@ -160,7 +160,7 @@ export default class UILobbyIndex extends UIBasePlus {
      * 滚动停止时触发
      */
     protected onScrollEnded(): void {
-        console.log("滚动停止");
+        //console.log("滚动停止");
         this.isScrolling = false;
 
         // 可以在这里执行滚动结束后的操作，例如加载更多数据
@@ -192,21 +192,21 @@ export default class UILobbyIndex extends UIBasePlus {
             this.baseYVal1 = this.$glass1.y;
             this.baseYVal2 = this.$glass2.y;
             this.baseYValPoker = this.$pokerglass.y;
-            
+
         }
 
         // 注册按钮点击事件:
-        if( this.cc_Button$game1 ){
+        if (this.cc_Button$game1) {
             this.cc_Button$game1.node.on(cc.Node.EventType.TOUCH_END, this.onGame1Click, this);
             this.cc_Button$game2.node.on(cc.Node.EventType.TOUCH_END, this.onGame2Click, this);
             this.cc_Button$service.node.on(cc.Node.EventType.TOUCH_END, this.onServiceClick, this);
         }
 
-        if( this.$mahjong ) {
-            this.$mahjong.on( cc.Node.EventType.TOUCH_END,this.onMahjong,this );    
-            this.$match.on( cc.Node.EventType.TOUCH_END,this.onMatch,this );    
-            this.$xgame.on( cc.Node.EventType.TOUCH_END,this.onXgame,this );        
-            this.$poker.on( cc.Node.EventType.TOUCH_END,this.onPoker,this );    
+        if (this.$mahjong) {
+            this.$mahjong.on(cc.Node.EventType.TOUCH_END, this.onMahjong, this);
+            this.$match.on(cc.Node.EventType.TOUCH_END, this.onMatch, this);
+            this.$xgame.on(cc.Node.EventType.TOUCH_END, this.onXgame, this);
+            this.$poker.on(cc.Node.EventType.TOUCH_END, this.onPoker, this);
         }
 
         // 旧代码本身后期也需要删除:
@@ -219,27 +219,28 @@ export default class UILobbyIndex extends UIBasePlus {
     }
 
     protected onGame1Click(event: cc.Event.EventTouch): void {
-       console.log('Game 1 clicked');
+        console.log('Game 1 clicked');
     }
-    protected onGame2Click(event: cc.Event.EventTouch) : void{
+    protected onGame2Click(event: cc.Event.EventTouch): void {
         console.log('Game 2 clicked');
     }
-    protected onServiceClick(event: cc.Event.EventTouch) : void{
-        console.log( 'Service clicked');
+    protected onServiceClick(event: cc.Event.EventTouch): void {
+        console.log('Service clicked');
     }
-    protected onMahjong( event : cc.Event.EventTouch ) : void{
+    protected onMahjong(event: cc.Event.EventTouch): void {
         console.log('麻将区域被点击.');
     }
-    protected onMatch( event : cc.Event.EventTouch ) : void{
+    protected onMatch(event: cc.Event.EventTouch): void {
         console.log('赛事区域被点击.');
     }
-    protected onXgame( event : cc.Event.EventTouch ) : void{
+    protected onXgame(event: cc.Event.EventTouch): void {
         console.log('小游戏区域被点击.');
     }
-    protected onPoker( event : cc.Event.EventTouch ) : void{
+    protected onPoker(event: cc.Event.EventTouch): void {
         console.log('扑克区域被点击.');
+        UIComponent.open(UIDefine.UIMTTList, null, { SceneUI: SceneManager.Instance.currUI })
     }
-    
+
 
     /**
      * 每帧更新，用于实时检测滚动状态
@@ -350,6 +351,7 @@ export default class UILobbyIndex extends UIBasePlus {
     }
     //消息点击
     onMessageClick() {
+        console.log("消息点击处理.");
         UIComponent.open(UIDefine.UIMyMessage, { from: 2 }, { SceneUI: SceneManager.Instance.currUI });
     }
     //banner点击
@@ -366,6 +368,8 @@ export default class UILobbyIndex extends UIBasePlus {
         //UIComponent.open(UIDefine.MttListForm, null, { SceneUI: SceneManager.Instance.currUI })
         UIComponent.open(UIDefine.UIMTTList, null, { SceneUI: SceneManager.Instance.currUI })
     }
+
+
     //游戏类型页签点击
     onGameTypeTabClick(button: cc.Button) {
         let index = button.node["index"];

@@ -20,7 +20,8 @@ export default class BaseFormPlus extends BaseForm {
             this.title_label = cc.find("comTopUI/title_label", this.ComFormTitle$title.node).getComponent(i18nLabel);
             this.back_click = cc.find("comTopUI/back_click", this.ComFormTitle$title.node)
         } else {
-            this.title_label = cc.find("comFormTitle/comTopUI/title_label", this.move_node).getComponent(i18nLabel);
+            let tnode : cc.Node = cc.find("comFormTitle/comTopUI/title_label", this.move_node);
+            this.title_label = tnode.getComponent(i18nLabel);
             this.back_click = cc.find("comFormTitle/comTopUI/back_click", this.move_node)
         }
         this.content = this.move_node.getChildByName("content - 内容填充");
