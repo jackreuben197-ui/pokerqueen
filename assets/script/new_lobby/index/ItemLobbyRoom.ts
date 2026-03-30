@@ -28,6 +28,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
     $icon_mushroom: cc.Node = null;
     $icon_squid: cc.Node = null;
     $icon_bombpot: cc.Node = null;
+    $icon_jackpot: cc.Node = null;
     $icon_critical_hit: cc.Node = null;
     $icon_calltime: cc.Node = null;
 
@@ -60,6 +61,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
             || gameType === GameType.Omaha5
             || gameType === GameType.Omaha6;
         const isBombPot = Number(data?.bombpot ?? data?.bomb_pot ?? 0) === 1 && isTexasOrOmaha;
+        const isJackpot = Number(data?.jackpot ?? 0) === 1;
 
         //gametype 图标
         this.cc_Sprite$type_icon.spriteFrame = this.getIconSpriteFrame(data.poker_type, data.game_type);
@@ -82,6 +84,7 @@ export default class ItemLobbyRoom extends UIBasePlus {
         const isSquidVaild: boolean = data.sub_configs && data.sub_configs.length > 0 && data.sub_configs[0].sqb > 0;
         this.$icon_squid.active = data.squid_base > 0 || isSquidVaild;
         if (this.$icon_bombpot) this.$icon_bombpot.active = isBombPot;
+        if (this.$icon_jackpot) this.$icon_jackpot.active = isJackpot;
         this.$icon_critical_hit.active = data.critical_hit == 1;
         this.$icon_calltime.active = data.call_time == 1;
 

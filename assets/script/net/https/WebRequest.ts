@@ -563,6 +563,68 @@ export const APITexasSituationMushRound = {
     Response: {} as { code?: number, message?: string, data?: any },
 };
 
+//////////////////////////////////////////////Jackpot
+export class Web_Org_Jackpot_Template_Info extends WebCommon {
+    static API: string = "/api/org/jackpot/template/info";
+    static RequestParams: {
+        jackpot_id?: number,
+    } = null;
+    static ResponseData: {
+        item?: any,
+    } = null;
+    static Request(param: typeof Web_Org_Jackpot_Template_Info.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Org_Jackpot_Template_Info.ResponseData };
+}
+
+export class Web_Stats_Jackpot_Award_Logs extends WebCommon {
+    static API: string = "/api/stats/jackpot/award_logs";
+    static RequestParams: {
+        jackpot_id?: number,
+        game_type?: number[],
+        poker_type?: number[],
+        limit_bet_type?: number[],
+        bombpot?: number[],
+        start_time?: number,
+        end_time?: number,
+        limit?: number,
+        offset?: number,
+    } = null;
+    static ResponseData: {
+        limit?: number,
+        offset?: number,
+        items?: any[],
+        top_cards_type_data?: any,
+    } = null;
+    static Request(param: typeof Web_Stats_Jackpot_Award_Logs.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Stats_Jackpot_Award_Logs.ResponseData };
+}
+
+export class Web_Stats_Jackpot_Gold_Change_Logs extends WebCommon {
+    static API: string = "/api/stats/jackpot/gold_change_logs";
+    static RequestParams: {
+        jackpot_id?: number,
+        op_codes?: string[],
+        limit?: number,
+        offset?: number,
+    } = null;
+    static ResponseData: {
+        limit?: number,
+        offset?: number,
+        items?: any[],
+    } = null;
+    static Request(param: typeof Web_Stats_Jackpot_Gold_Change_Logs.RequestParams) {
+        this.RequestParams = param;
+        return param;
+    }
+    static Response: { code?: number, message?: string, data?: typeof Web_Stats_Jackpot_Gold_Change_Logs.ResponseData };
+}
+
 /// <summary>
 /// 7.玩家查看带入申请列表
 /// </summary>

@@ -1,7 +1,7 @@
-import { UIDefine } from "../../define/UIDefine";
-import TimeHelper from "../../helper/TimeHelper";
-import UIBase from "../../ui/UIBase";
-import UIComponent from "../../ui/UIComponent";
+import { UIDefine } from "../../../define/UIDefine";
+import TimeHelper from "../../../helper/TimeHelper";
+import UIBase from "../../../ui/UIBase";
+import UIComponent from "../../../ui/UIComponent";
 import UISquidEndItem, { UISquidEndItemShowData } from "./UISquidEndItem";
 
 export interface UISquidEndShowData {

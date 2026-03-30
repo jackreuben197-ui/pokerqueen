@@ -50,6 +50,9 @@ import { ClientMessageSquidInActive, ServerMessageSquidInActive } from "../../pr
 import { ServerMessageSquidIn } from "../../protobuf/holdem/recv_th_squid_in_pb";
 import { ServerMessageNextChange } from "../../protobuf/holdem/recv_th_next_change_pb";
 import { ClientMessageAgreePost, ServerMessageAgreePost } from "../../protobuf/holdem/req_th_agree_post_pb";
+import { ClientMessagePlayerJackpotSummary, ServerMessagePlayerJackpotSummary } from "../../protobuf/holdem/req_th_player_jackpot_summary_pb";
+import { ServerMessageJackpotGoldChange } from "../../protobuf/holdem/recv_th_jackpot_gold_change_pb";
+import { ServerMessageJackpotAward } from "../../protobuf/holdem/recv_th_jackpot_award_pb";
 
 export class ProtocolCommon {
 
@@ -376,5 +379,15 @@ export const ProtocolMap = {
     },
     [ProtocolCode.Protocol_Holdem_NextChange]: {
         Server: ServerMessageNextChange,
+    },
+    [ProtocolCode.Protocol_Holdem_PlayerJackpotSummary]: {
+        Client: ClientMessagePlayerJackpotSummary,
+        Server: ServerMessagePlayerJackpotSummary,
+    },
+    [ProtocolCode.Protocol_Holdem_JackpotGoldChange]: {
+        Server: ServerMessageJackpotGoldChange,
+    },
+    [ProtocolCode.Protocol_Holdem_JackpotAward]: {
+        Server: ServerMessageJackpotAward,
     }
 }

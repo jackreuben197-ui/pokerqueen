@@ -1,8 +1,8 @@
-import { StringHelper } from "../../helper/StringHelper";
-import WebImageHelper from "../../helper/WebImageHelper";
-import { i18nMgr } from "../../i18n/i18nMgr";
-import AssetContext from "../../ui/component/AssetContext";
-import UIBase from "../../ui/UIBase";
+import { StringHelper } from "../../../helper/StringHelper";
+import WebImageHelper from "../../../helper/WebImageHelper";
+import { i18nMgr } from "../../../i18n/i18nMgr";
+import AssetContext from "../../../ui/component/AssetContext";
+import UIBase from "../../../ui/UIBase";
 
 export interface UISquidEndItemShowData {
     userID: number;

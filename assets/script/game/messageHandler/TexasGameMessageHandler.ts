@@ -20,6 +20,8 @@ import { ServerMessageSeatedOthers } from "../../protobuf/holdem/recv_th_seated_
 import { ServerMessageStandup } from "../../protobuf/holdem/recv_th_stand_up_pb";
 import { ServerMessageStartInfo } from "../../protobuf/holdem/recv_th_start_info_pb";
 import { ServerMessageWinner } from "../../protobuf/holdem/recv_th_winner_pb";
+import { ServerMessageJackpotGoldChange } from "../../protobuf/holdem/recv_th_jackpot_gold_change_pb";
+import { ServerMessageJackpotAward } from "../../protobuf/holdem/recv_th_jackpot_award_pb";
 import { ServerMessageEnterRoom } from "../../protobuf/holdem/req_th_enter_room_pb";
 import { ServerMessageLeave } from "../../protobuf/holdem/req_th_leave_pb";
 import { ServerMessageSeated } from "../../protobuf/holdem/req_th_seated_pb";
@@ -78,6 +80,8 @@ export default class TexasGameMessageHandler {
         GC.notify.register(ProtocolCode.Protocol_Holdem_BringInOrStoreFail, this.Protocol_Holdem_BringInOrStoreFail_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_HandClear, this.Protocol_Holdem_HandClear_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_UpBlind, this.Protocol_Holdem_UpBlind_Handler, this);
+        GC.notify.register(ProtocolCode.Protocol_Holdem_JackpotGoldChange, this.Protocol_Holdem_JackpotGoldChange_Handler, this);
+        GC.notify.register(ProtocolCode.Protocol_Holdem_JackpotAward, this.Protocol_Holdem_JackpotAward_Handler, this);
         GC.notify.register(ProtocolCode.Protocol_Holdem_Error, this.Protocol_Holdem_Error_Handler, this);
     }
 
@@ -117,6 +121,8 @@ export default class TexasGameMessageHandler {
         GC.notify.remove(ProtocolCode.Protocol_Holdem_BringInOrStoreFail, this.Protocol_Holdem_BringInOrStoreFail_Handler, this);
         GC.notify.remove(ProtocolCode.Protocol_Holdem_HandClear, this.Protocol_Holdem_HandClear_Handler, this);
         GC.notify.remove(ProtocolCode.Protocol_Holdem_UpBlind, this.Protocol_Holdem_UpBlind_Handler, this);
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_JackpotGoldChange, this.Protocol_Holdem_JackpotGoldChange_Handler, this);
+        GC.notify.remove(ProtocolCode.Protocol_Holdem_JackpotAward, this.Protocol_Holdem_JackpotAward_Handler, this);
         GC.notify.remove(ProtocolCode.Protocol_Holdem_Error, this.Protocol_Holdem_Error_Handler, this);
     }
 
@@ -243,7 +249,20 @@ export default class TexasGameMessageHandler {
         // 协议层会先更新自己座位数据，这里下一帧再刷新开始按钮，避免回调顺序导致人数未更新
         setTimeout(() => {
             this.game?.UpdateStartGameState?.();
+            this.game?.PlayJackpotStartAnim?.();
         }, 0);
+    }
+
+    Protocol_Holdem_JackpotGoldChange_Handler(response: ServerMessageJackpotGoldChange.AsObject) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_JackpotGoldChange_Handler`);
+        if (!response) return;
+        this.game?.OnJackpotGoldChange?.(response);
+    }
+
+    Protocol_Holdem_JackpotAward_Handler(response: ServerMessageJackpotAward.AsObject) {
+        console.log(`# MSG_CALLBACK: Protocol_Holdem_JackpotAward_Handler`);
+        if (!response) return;
+        this.game?.OnJackpotAward?.(response);
     }
 
     /// <summary>

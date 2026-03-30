@@ -409,6 +409,24 @@ export const UIDefine = {
         Bundle: 'texas',
         Path: "purple_prefab/ui/UISquidOver",
     },
+    UITexasJackpotRecentAwardRecord: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasJackpotRecentAwardRecord",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UITexasJackpotRecentAwardRecord",
+    },
+    UITexasJackpotRewardDescription: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasJackpotRewardDescription",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UITexasJackpotRewardDescription",
+    },
+    UITexasDialogJackpotAwards: {
+        UIType: UIType.CommonUI,
+        Name: "UITexasDialogJackpotAwards",
+        Bundle: 'texas',
+        Path: "purple_prefab/ui/UITexasDialogJackpotAwards",
+    },
 
     //房间模版
     UILaborPlayViewForm: {

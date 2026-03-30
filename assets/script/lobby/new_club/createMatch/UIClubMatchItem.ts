@@ -85,6 +85,8 @@ export default class UIClubMatchItem extends UIBase {
                 || gameType === GameType.Omaha6;
             icon_bombpot.active = Number(this._data?.bombpot ?? this._data?.bomb_pot ?? 0) === 1 && isTexasOrOmaha;
         }
+        const icon_jackpot = lbl1?.getChildByName('icon_jackpot');
+        if (icon_jackpot) icon_jackpot.active = Number(this._data?.jackpot ?? 0) === 1;
         const icon_critical_hit = lbl1?.getChildByName('icon_critical_hit');
         if (icon_critical_hit) icon_critical_hit.active = this._data.critical_hit == 1;
         const icon_calltime = lbl1?.getChildByName('icon_calltime');

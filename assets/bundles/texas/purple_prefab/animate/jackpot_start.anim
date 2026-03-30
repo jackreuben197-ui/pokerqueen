@@ -1,6 +1,6 @@
 {
   "__type__": "cc.AnimationClip",
-  "_name": "squid_start",
+  "_name": "jackpot_start",
   "_objFlags": 0,
   "_native": "",
   "_duration": 2,
@@ -43,14 +43,6 @@
             -1200,
             0
           ]
-        },
-        {
-          "frame": 1.35,
-          "value": [
-            0,
-            -1200,
-            0
-          ]
         }
       ],
       "opacity": [
@@ -71,7 +63,7 @@
   },
   "events": [
     {
-      "frame": 1,
+      "frame": 0.85,
       "func": "",
       "params": []
     }

@@ -48,6 +48,7 @@ import TexasGameUtils from "../util/TexasGameUtils";
 import TexasGameMushroom from "./TexasGameMushroom";
 import TexasGameSquid from "./TexasGameSquid";
 import TexasGameBombPot from "./TexasGameBombPot";
+import TexasGameJackpot from "./TexasGameJackpot";
 import { CardType, CardTypeUtil } from "./../CardTypeUtil";
 import { CPlayer } from "./../CPlayer";
 import FSMLogicComponent from "./../FSMLogicComponent";
@@ -91,6 +92,7 @@ export default class TexasGame {
     private mushroomFeature: TexasGameMushroom = null;
     private squidFeature: TexasGameSquid = null;
     private bombPotFeature: TexasGameBombPot = null;
+    private jackpotFeature: TexasGameJackpot = null;
     ///////////////////////////////
     private setting = {
         deskType: null,
@@ -533,6 +535,7 @@ export default class TexasGame {
         this.mushroomFeature = new TexasGameMushroom(this);
         this.squidFeature = new TexasGameSquid(this);
         this.bombPotFeature = new TexasGameBombPot(this);
+        this.jackpotFeature = new TexasGameJackpot(this);
         this.seatMoveStruct = new SeatMoveStruct();
         this.RCInit();
     }
@@ -751,6 +754,7 @@ export default class TexasGame {
         this.mushroomFeature.UpdateRoomConfig(rec);
         this.squidFeature.UpdateRoomConfig(rec);
         this.UpdateCriticalHitConfig(rec);
+        this.jackpotFeature.UpdateRoomConfig(rec);
         this.callTime = Number(roomInfoAny?.callTime || GameCache.Instance.room_call_time || 0);
         this.callTimeWinline = Number(roomInfoAny?.callTimeWinline || GameCache.Instance.room_call_time_winline || 0);
         this.callTimeLimitCount = Number(roomInfoAny?.callTimeCount || GameCache.Instance.room_call_time_count || 0);
@@ -786,6 +790,27 @@ export default class TexasGame {
         this.isAutoChangeTable = this.autoChangeRoomLimitHand > 0;
         this.autoChangeTable = this.autoChangeRoomLimitHand;
         this.jackpot = Number(roomInfoAny?.jackpot || 0);
+        GameCache.Instance.jackPot_on = this.jackpot;
+        GameCache.Instance.jackPot_id = Number(
+            roomInfoAny?.jackpotId
+            ?? roomInfoAny?.jackpot_id
+            ?? GameCache.Instance.jackPot_id
+            ?? 0
+        );
+        GameCache.Instance.jackPot_gold = Number(
+            roomInfoAny?.jackpotGold
+            ?? roomInfoAny?.jackpot_gold
+            ?? GameCache.Instance.jackPot_gold
+            ?? 0
+        );
+        GameCache.Instance.jackPot_parent_gold = Number(
+            roomInfoAny?.jackpotParentGold
+            ?? roomInfoAny?.jackpot_parent_gold
+            ?? GameCache.Instance.jackPot_parent_gold
+            ?? GameCache.Instance.jackPot_gold
+            ?? 0
+        );
+        GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
         this.jackpotConfig = this.ResolveJackpotConfig(
             roomInfoAny?.jackpotConfig
             ?? roomInfoAny?.jackpot_config
@@ -1046,6 +1071,7 @@ export default class TexasGame {
         ];
         this.RunRoomReqlist();
         this.bombPotFeature?.EnterGame();
+        this.jackpotFeature?.EnterGame();
         this.ShowCriticalInfo();
         this.RefreshRoomManagerStateAndStartButton();
     }
@@ -1486,6 +1512,10 @@ export default class TexasGame {
         this.squidFeature.PlayRoundStartAnim();
     }
 
+    public PlayJackpotStartAnim(): void {
+        this.jackpotFeature?.PlayStartAnim();
+    }
+
     public PlayCriticalHitStartAnim(): void {
         const node = this.uirc?.CriticalHitStart;
         const anim = this.uirc?.CriticalHitStartAnim;
@@ -1515,6 +1545,18 @@ export default class TexasGame {
     /** 鱿鱼轮结束动画/结算弹窗 */
     public PlaySquidRoundEndAnim(rec?: ServerMessageWinner.AsObject): void {
         this.squidFeature.PlayRoundEndAnim(rec);
+    }
+
+    public OnClickJackpot(): void {
+        this.jackpotFeature?.OnClickJackpot();
+    }
+
+    public OnJackpotGoldChange(rec: any): void {
+        this.jackpotFeature?.OnGoldChange(rec);
+    }
+
+    public OnJackpotAward(rec: any): void {
+        this.jackpotFeature?.OnAward(rec);
     }
 
     /** 本轮鱿鱼结束后重置状态 */
@@ -3627,6 +3669,7 @@ export default class TexasGame {
         this.jackpotConfig = null;
         this.isBombPot = false;
         this.bombPotFeature?.ResetState();
+        this.jackpotFeature?.ResetState();
         this.mushroomFeature.ResetState();
         this.squidFeature.ResetState();
         this.ShowCallTime();
@@ -4247,6 +4290,7 @@ export default class TexasGame {
         this.HideAutoOperationPanel();
 
         this.uirc.CleanUI();
+        this.jackpotFeature?.RestoreAfterTableClear();
         if (needKeepReport) {
             const reportUI = UIComponent.find(UIDefine.UITexasReportComponent);
             if (reportUI && reportUI.node) {

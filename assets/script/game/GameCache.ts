@@ -261,6 +261,14 @@ export class GameCache {
     /// jackPot基金，如60824
     /// </summary>
     public jackPot_fund: number = 0;
+    /**
+     * 当前 Jackpot 金额
+     */
+    public jackPot_gold: number = 0;
+    /**
+     * 当前展示 Jackpot 金额
+     */
+    public jackPot_parent_gold: number = 0;
     /// <summary>
     /// 是否开启JackPot，0 1
     /// </summary>
@@ -483,6 +491,16 @@ export class GameCache {
         } else {
             GameCache.Instance.room_jackpot_config = jackpotConfigRaw || null;
         }
+        GameCache.Instance.jackPot_on = Number(room_info.jackpot || 0);
+        GameCache.Instance.jackPot_id = Number(room_info.jackpot_id ?? room_info.jackpotId ?? 0);
+        GameCache.Instance.jackPot_gold = Number(room_info.jackpot_gold ?? room_info.jackpotGold ?? 0);
+        GameCache.Instance.jackPot_parent_gold = Number(
+            room_info.jackpot_parent_gold
+            ?? room_info.jackpotParentGold
+            ?? GameCache.Instance.jackPot_gold
+            ?? 0
+        );
+        GameCache.Instance.jackPot_fund = GameCache.Instance.jackPot_parent_gold;
         GameCache.Instance.room_random_seat = Number(room_info.random_seat || 0);
         GameCache.Instance.room_seated_messaging = Number(room_info.seated_messaging || 0);
         GameCache.Instance.room_min_players = Number((room_info as any).min_players ?? (room_info as any).minPlayers ?? 0);

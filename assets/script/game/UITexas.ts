@@ -117,6 +117,9 @@ export default class UITexas extends BaseScene {
     callTimeArea: cc.Node = null;
     callTimeDes: cc.Label = null;
     StartGameButton: cc.Node = null;
+    JackpotButton: cc.Node = null;
+    JackpotGoldLabel: cc.Label | cc.RichText = null;
+    JackpotAnimRoot: cc.Node = null;
 
     //补盲按钮
     buttonWaitBlind: cc.Node = null;
@@ -326,6 +329,17 @@ export default class UITexas extends BaseScene {
         } else {
             cc.warn("[UITexas] StartGameButton not found");
         }
+        this.JackpotButton = this.main?.getChildByName("Button_Jackpot");
+        if (this.JackpotButton) {
+            this.JackpotButton.active = false;
+            const jackpotTextNode = this.JackpotButton.getChildByName("Label_Gold");
+            this.JackpotGoldLabel = jackpotTextNode?.getComponent(cc.Label) || jackpotTextNode?.getComponent(cc.RichText) || null;
+        }
+        this.JackpotAnimRoot = this.main?.getChildByName("JackpotAnimRoot");
+        if (this.JackpotAnimRoot) {
+            this.JackpotAnimRoot.active = false;
+            this.JackpotAnimRoot.getComponent(cc.Animation)?.stop();
+        }
 
         //this.UIOutChips = this.getChildNodeOrComponent("UIOutChips", UIOutChipsComponent);
         this.buttonWaitBlind = this.getChildNodeOrComponent("Button_WaitBlind");
@@ -457,6 +471,7 @@ export default class UITexas extends BaseScene {
         this.setButtonClick(this.Button_SeeMorePublic, this.onClickSeeMorePublic);
         this.setButtonClick(this.buttonWaitBlind, this.onClickWaitBlind);
         this.setButtonClick(this.StartGameButton, this.onClickStartGame);
+        this.setButtonClick(this.JackpotButton, this.onClickJackpot);
         this.setButtonClick(this.SquidSwitchClickNode, this.onClickJoinGame);
         this.setButtonClick(this.SquidStandUp, this.onClickSquidStandUp);
 
@@ -561,6 +576,8 @@ export default class UITexas extends BaseScene {
             this.SquidSwitch,
             this.SquidStandUp,
             this.StartGameButton,
+            this.JackpotButton,
+            this.JackpotAnimRoot,
             this.BombPotOpen,
             this.BombPotLogo,
         ].forEach(item => {
@@ -652,6 +669,9 @@ export default class UITexas extends BaseScene {
     }
     private onClickStartGame() {
         this.game?.onClickStartGame();
+    }
+    private onClickJackpot() {
+        this.game?.OnClickJackpot();
     }
     private onClickJoinGame() {
         console.log(`==>onClickJoinGame`);
