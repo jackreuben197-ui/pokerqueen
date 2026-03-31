@@ -6,9 +6,10 @@
  * @LastEditTime: 2023-03-29 16:25:37
  * @FilePath: /pokerqueen/assets/script/lobby/view/LobbyScene.ts
  */
-const { ccclass } = cc._decorator;
+const { ccclass, property } = cc._decorator;
 import { UIDefine } from "../../define/UIDefine";
 import GC from "../../frame/GameControl";
+import WebImageHelper from "../../helper/WebImageHelper";
 import { WebConfigGlobalConfig, WWW } from "../../net/https/WebRequest";
 import UILobbyIndex from "../../new_lobby/index/UILobbyIndex";
 import UILobbyIndexNew from "../../new_lobby/index/UILobbyIndexNew";
@@ -22,8 +23,14 @@ export default class LobbyScene extends BaseScene {
     //private currUI: cc.Node = null;
 
     private layer: cc.Node = null;
+    private bDisStats: boolean = false;
 
     menu: UILobbyMenu = null;
+
+    @property(cc.SpriteFrame)
+    testHeadSprite: cc.SpriteFrame = null;
+
+    $headimg: cc.Node = null;
 
     onLoad(): void {
         this.name = "LobbyScene";
@@ -32,12 +39,48 @@ export default class LobbyScene extends BaseScene {
 
         this.layer = this.getChildNodeOrComponent("layer");
         this.menu = this.getChildNodeOrComponent("menu", UILobbyMenu);
+        this.$headimg = this.getChildNodeOrComponent("headimg");
 
         LobbyControl.getInstance().setLobbyInfo({
             //curShowUI: this.currUI,
             Layer: this.layer,
         });
+
+        // 监听键盘事件
+        cc.systemEvent.on(
+            cc.SystemEvent.EventType.KEY_DOWN,
+            this.onKeyDown,
+            this,
+        );
     }
+
+    //
+    // 按键按下时触发
+    protected onKeyDown(event): void {
+        switch (event.keyCode) {
+            case 192: // 按下 ~ 键
+                this.bDisStats = !this.bDisStats;
+                cc.debug.setDisplayStats(this.bDisStats);
+                break;
+            case cc.macro.KEY.a:
+                //WebImageHelper.SetHeadImage(this.$headimg.getComponent(cc.Sprite), 'resources/ttex/newhead.png');
+                let sp = this.$headimg.getComponent(cc.Sprite);
+                if (sp) {
+                    const originalMaterial: any = sp.getMaterial(0);
+
+                    sp.spriteFrame = this.testHeadSprite;
+
+                    this.scheduleOnce(() => {
+                        sp.setMaterial(0, originalMaterial);
+                    }, 0);
+                }
+
+                break;
+            default:
+                break;
+        }
+    }
+
     protected lateEnter(param) {
         console.log("进入大厅--->", param);
 
@@ -53,6 +96,8 @@ export default class LobbyScene extends BaseScene {
         if (GC.data.user.isRegist) {
             UIComponent.open(UIDefine.UIEditMess);
         }
+
+        cc.debug.setDisplayStats(false);
     }
     /**
      * @description: 首次进入大厅的时候异步处理一些数据
@@ -60,7 +105,7 @@ export default class LobbyScene extends BaseScene {
      */
     public async setLooby() {
         await LobbyControl.getInstance().switchContent(
-            "UILobbyIndex",
+            "UILobbyIndexNew",
             "main/lobby/index/",
         );
         //await LobbyControl.getInstance().switchContent("UILobbyIndexNew", "main/lobby/index/");

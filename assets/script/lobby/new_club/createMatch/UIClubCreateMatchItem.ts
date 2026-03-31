@@ -85,7 +85,7 @@ export default class UIClubCreateMatchItem extends UIBase {
             StringHelper.LengthNick(this._data.name, 10);
         (
             this.labelNode.getChildByName("lbl_4").getComponent(cc.Label) as any
-        )._forceUpdateRenderData?.();
+        )._forceUpdateRenderData();
 
         let playView = lbl_time.getComponent(PlayViewItem);
         playView.updateNormalItem(this._data.play_duration);

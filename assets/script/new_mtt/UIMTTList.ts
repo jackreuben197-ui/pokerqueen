@@ -29,8 +29,10 @@ export default class UIMTTList extends BaseFormPlus {
     }
     onShow(param?: any, fromUI?: cc.Node, sceneUI?: cc.Node) {
         this.isReqing = false;
-        this.listEx.reset();
-        super.onShow(param, fromUI, sceneUI);
+        setTimeout(() => {
+            this.listEx.reset();
+            super.onShow(param, fromUI, sceneUI);
+        }, 30);
     }
     fadeInComplete() {
         super.fadeInComplete();
@@ -47,8 +49,10 @@ export default class UIMTTList extends BaseFormPlus {
     //刷新重新最初请求
     refreshReq() {
         console.log("-----refreshReq ------");
-        this.listEx.reset();
-        this.listEx.dropRequest();
+        if (this.listEx) {
+            this.listEx.reset();
+            this.listEx.dropRequest();
+        }
     }
 
     reqList(offset: number = 0) {

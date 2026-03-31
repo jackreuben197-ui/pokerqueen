@@ -86,9 +86,7 @@ export default class recordItem extends UIBase {
             );
             this.lbl_11.string =
                 "ID:" +
-                this._data
-                    .RoomID(this.lbl_11 as any)
-                    ._forceUpdateRenderData?.();
+                this._data.RoomID(this.lbl_11 as any)?._forceUpdateRenderData();
             let bx = this.lbl_11.node.getChildByName("bx");
             bx.active = this._data.insurance_on;
             this.setText(this.lbl_22, this._data.hand_num);

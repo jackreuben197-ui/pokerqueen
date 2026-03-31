@@ -1,51 +1,44 @@
 {
-  "group-list": [
-    "default"
-  ],
-  "collision-matrix": [
-    [
-      true
-    ]
-  ],
-  "excluded-modules": [
-    "Animation",
-    "Collider",
-    "Dynamic Atlas",
-    "Geom Utils",
-    "MotionStreak",
-    "Native Socket",
-    "Physics",
-    "ParticleSystem",
-    "TiledMap",
-    "3D",
-    "3D Primitive",
-    "3D Physics/cannon.js",
-    "3D Physics/Builtin",
-    "3D Particle"
-  ],
-  "preview-port": 7456,
-  "design-resolution-width": 960,
-  "design-resolution-height": 640,
-  "fit-width": true,
-  "fit-height": false,
-  "use-project-simulator-setting": false,
-  "simulator-orientation": false,
-  "use-customize-simulator": true,
-  "simulator-resolution": {
-    "width": 960,
-    "height": 640
-  },
-  "clear-simulator-cache": true,
-  "facebook": {
-    "enable": false,
-    "appID": "",
-    "live": {
-      "enable": false
+    "group-list": ["default"],
+    "collision-matrix": [[true]],
+    "excluded-modules": [
+        "Collider",
+        "Dynamic Atlas",
+        "Geom Utils",
+        "MotionStreak",
+        "Native Socket",
+        "Physics",
+        "ParticleSystem",
+        "TiledMap",
+        "3D",
+        "3D Primitive",
+        "3D Physics/cannon.js",
+        "3D Physics/Builtin",
+        "3D Particle"
+    ],
+    "preview-port": 7456,
+    "design-resolution-width": 960,
+    "design-resolution-height": 640,
+    "fit-width": true,
+    "fit-height": false,
+    "use-project-simulator-setting": false,
+    "simulator-orientation": false,
+    "use-customize-simulator": true,
+    "simulator-resolution": {
+        "width": 960,
+        "height": 640
     },
-    "audience": {
-      "enable": false
-    }
-  },
-  "last-module-event-record-time": 1773721138768,
-  "start-scene": "2150695d-c6ba-48c4-bbab-056d91c1262c"
+    "clear-simulator-cache": true,
+    "facebook": {
+        "enable": false,
+        "appID": "",
+        "live": {
+            "enable": false
+        },
+        "audience": {
+            "enable": false
+        }
+    },
+    "last-module-event-record-time": 1773721138768,
+    "start-scene": "2150695d-c6ba-48c4-bbab-056d91c1262c"
 }

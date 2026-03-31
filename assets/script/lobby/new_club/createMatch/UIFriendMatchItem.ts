@@ -49,7 +49,7 @@ export default class UIFriendMatchItem extends UIBase {
             .getComponent(cc.Label);
         let sb = this._data.sb / 100;
         lbl_center_left.string = `${sb}/${sb * 2}（${this._data.ante}）`;
-        (lbl_center_left as any)._forceUpdateRenderData?.();
+        (lbl_center_left as any)._forceUpdateRenderData();
         let bx = lbl_center_left.node.getChildByName("bx");
         bx.active = this._data.insurance_on;
 

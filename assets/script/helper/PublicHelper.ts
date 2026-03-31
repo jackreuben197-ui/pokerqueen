@@ -44,7 +44,7 @@ export default class PublicHelper {
     static ossUploadImage() {
         // WARNING: For POST requests, body is set to null by browsers.
         var data = new FormData();
-        data.append("file", new Blob([""]), "bnt.jpg");
+        data.append("file", new Blob(), "bnt.jpg");
 
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = true;

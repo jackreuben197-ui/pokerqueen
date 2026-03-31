@@ -142,7 +142,9 @@ export default class SettingsForm extends BaseForm {
         } else if (index == 1) {
             UIComponent.open(UIDefine.LanguageForm);
         } else if (index == 2) {
-            UIComponent.open(UIDefine.UIAccountManagement);
+            // River ATTENTION TO FIX: UIDefine.UIMine_SafeAdmin 没有这个定义。'
+            throw new Error("UIDefine.UIMine_SafeAdmin 没有这个定义。");
+            //UIComponent.open(UIDefine.UIMine_SafeAdmin);
         } else if (index == 3) {
             this.changeSwitchStyle(target.getChildByName("btn_switch"));
         } else if (index == 4) {
