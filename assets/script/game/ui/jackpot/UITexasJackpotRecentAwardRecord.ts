@@ -8,6 +8,7 @@ import { GameType } from "../../util/GameUtil";
 
 type JackpotAwardItem = {
     gold_change?: number;
+    user_id?: number;
     create_time?: string;
     create_timestamp?: number;
     user_name?: string;
@@ -31,7 +32,7 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
 
     private totalPoolText: cc.Label | cc.RichText = null;
     private listTip: cc.Label | cc.RichText = null;
-    private awardListTip: cc.Label | cc.RichText = null;
+    // private awardListTip: cc.Label | cc.RichText = null;
 
     private totalScrollView: cc.Node = null;
     private totalContent: cc.Node = null;
@@ -50,6 +51,14 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
     private awardView: cc.Node = null;
     private awardContent: cc.Node = null;
     private awardItem: cc.Node = null;
+    private biggestWinnerRoot: cc.Node = null;
+    private biggestWinnerPlayer: cc.Label | cc.RichText = null;
+    private biggestWinnerBlind: cc.Label | cc.RichText = null;
+    private biggestWinnerGold: cc.Label | cc.RichText = null;
+    private biggestWinnerTime: cc.Label | cc.RichText = null;
+    private biggestWinnerType: cc.Label | cc.RichText = null;
+    private biggestWinnerHead: cc.Sprite = null;
+    private hasBiggestWinnerData: boolean = false;
 
     private totalItems: cc.Node[] = [];
     private awardItems: cc.Node[] = [];
@@ -63,15 +72,15 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
 
         this.totalPoolText = this.GetTextComp("TotalPoolText");
         this.listTip = this.GetTextComp("ListTip");
-        this.awardListTip = this.GetTextComp("AwardListTip");
+        // this.awardListTip = this.GetTextComp("AwardListTip");
 
         this.totalScrollView = this.getChildNodeOrComponent("TotalScrollView");
         this.totalContent = (this.totalScrollView && cc.find("view/content", this.totalScrollView)) || this.totalScrollView?.getChildByName("content") || this.totalScrollView;
         this.totalPoolItem = this.getChildNodeOrComponent("TotalPoolItem");
         if (this.totalPoolItem) this.totalPoolItem.active = false;
 
-        this.poolRewardScrollView = this.getChildNodeOrComponent("PoolRewardScrollView");
-        this.royalFlush = this.getChildNodeOrComponent("RoyalFush") || this.getChildNodeOrComponent("RoyalFlush");
+        this.poolRewardScrollView = this.getChildNodeOrComponent("PoolRewardScroolView");
+        this.royalFlush = this.getChildNodeOrComponent("RoyalFlush");
         this.straightFlush = this.getChildNodeOrComponent("StraightFlush");
         this.fourOfAKind = this.getChildNodeOrComponent("Fourofakind") || this.getChildNodeOrComponent("FourOfAKind");
         this.poolRewardContent = this.GetTextComp("PoolRewardContent");
@@ -80,10 +89,20 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
         this.earthValue2 = this.GetTextComp("EarthValue2");
         this.earthContent = this.GetTextComp("EarthContent");
 
-        this.awardView = this.getChildNodeOrComponent("AwardScrollview") || this.getChildNodeOrComponent("AwardView");
+        this.awardView = this.getChildNodeOrComponent("AwardScrollView");
         this.awardContent = (this.awardView && cc.find("view/content", this.awardView)) || this.awardView?.getChildByName("content") || this.awardView;
         this.awardItem = (this.awardContent && cc.find("AwardItem", this.awardContent)) || this.getChildNodeOrComponent("AwardItem");
         if (this.awardItem) this.awardItem.active = false;
+
+        this.biggestWinnerRoot = cc.find("main/BiggestWinner", this.node);
+        if (this.biggestWinnerRoot) {
+            this.biggestWinnerPlayer = this.GetNodeText(this.biggestWinnerRoot, "TotalPoolItem/Player");
+            this.biggestWinnerBlind = this.GetNodeText(this.biggestWinnerRoot, "TotalPoolItem/Blind");
+            this.biggestWinnerGold = this.GetNodeText(this.biggestWinnerRoot, "TotalPoolItem/Gold");
+            this.biggestWinnerTime = this.GetNodeText(this.biggestWinnerRoot, "TotalPoolItem/Time");
+            this.biggestWinnerType = this.GetNodeText(this.biggestWinnerRoot, "TotalPoolItem/Type");
+            this.biggestWinnerHead = cc.find("TotalPoolItem/UserHead", this.biggestWinnerRoot)?.getComponent(cc.Sprite) || null;
+        }
     }
 
     protected regiterTouchEvents(): void {
@@ -113,7 +132,7 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
         const jackpotId = Number(GameCache.Instance.jackPot_id || 0);
         if (jackpotId <= 0) return;
         try {
-            const [templateRes, awardRes] = await Promise.all([
+            const [templateResRaw, awardResRaw] = await Promise.all([
                 WWW.Instance.CommonAPI({
                     web_class: Web_Org_Jackpot_Template_Info,
                     body: { jackpot_id: jackpotId },
@@ -135,12 +154,16 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
                     juhua: false,
                 }),
             ]);
+            const templateRes = (templateResRaw || {}) as any;
+            const awardRes = (awardResRaw || {}) as any;
 
             const item = templateRes?.data?.item || null;
             const setting = this.ResolveCurrentSetting(item);
             const gold = Number(item?.gold || GameCache.Instance.jackPot_parent_gold || 0);
             this.FillTemplateData(setting, gold);
-            this.FillAwardData(awardRes?.data?.items || []);
+            const awardData = awardRes?.data || {};
+            this.FillBiggestWinner(awardData?.top_cards_type_data || null);
+            this.FillAwardData(awardData?.items || []);
         } catch (err) {
             cc.warn("[UITexasJackpotRecentAwardRecord] load data failed", err);
         }
@@ -154,13 +177,14 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
         if (this.earthValue?.node?.parent) this.earthValue.node.parent.active = index === 2;
         if (this.earthValue2?.node?.parent) this.earthValue2.node.parent.active = index === 2;
         if (this.awardView) this.awardView.active = index === 3;
+        if (this.biggestWinnerRoot) this.biggestWinnerRoot.active = index === 3 && this.hasBiggestWinnerData;
 
         if (index === 0) {
-            if (this.listTip) this.listTip.string = i18nMgr.Get("UIJackpotRecentAwardRecord_ColorfulTotal");
+            if (this.listTip) this.listTip.string = i18nMgr.Get("UIJackpotRecentAwardRecord_ColorfulNum");
         } else if (index === 1 || index === 2) {
             if (this.listTip) this.listTip.string = i18nMgr.Get("UIJackpotRecentAwardRecord_RewardSet");
         } else if (index === 3) {
-            if (this.awardListTip) this.awardListTip.string = i18nMgr.Get("UIJackpotRecentAwardRecord_PoolRecond");
+            if (this.listTip) this.listTip.string = i18nMgr.Get("UIJackpotRecentAwardRecord_PoolRecond");
         }
     }
 
@@ -232,10 +256,10 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
     private FillAwardData(items: JackpotAwardItem[]): void {
         this.awardItems.forEach(v => v.destroy());
         this.awardItems.length = 0;
-        if (this.awardListTip) {
-            this.awardListTip.string = items.length > 0
-                ? i18nMgr.Get("UIJackpotRecentAwardRecord_PoolRecond")
-                : i18nMgr.Get("UIClub_FundDetail_xYlV8VBZ");
+        if (this.listTip) {
+            this.listTip.string = items.length <= 1
+                ? i18nMgr.Get("UIClub_FundDetail_xYlV8VBZ")
+                : i18nMgr.Get("UIJackpotRecentAwardRecord_PoolRecond");
         }
         if (!this.awardItem || !this.awardContent) {
             return;
@@ -254,7 +278,7 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
             if (gold) gold.string = this.FormatAmount(Number(data.gold_change || 0) / 100);
             if (time) time.string = this.FormatTime(data.create_time, data.create_timestamp);
             if (type) type.string = this.GetRewardTypeText(Number(data.cards_type || 0));
-            const headNode = cc.find("UserHead", node) || cc.find("img_head", node);
+            const headNode = cc.find("UserHead", node);
             const headSprite = headNode?.getComponent(cc.Sprite) || null;
             if (headSprite && data.user_avatar) {
                 this.setSprite(headSprite, data.user_avatar);
@@ -272,6 +296,36 @@ export default class UITexasJackpotRecentAwardRecord extends BaseTouchBoard {
             this.awardItems.push(node);
         });
         this.awardContent?.getComponent(cc.Layout)?.updateLayout();
+    }
+
+    private FillBiggestWinner(top: JackpotAwardItem | null): void {
+        const hasData = !!top && Number(top.user_id || 0) !== 0;
+        this.hasBiggestWinnerData = hasData;
+        if (!this.biggestWinnerRoot) {
+            return;
+        }
+        this.biggestWinnerRoot.active = hasData && this.awardView?.active;
+        if (!hasData) {
+            return;
+        }
+
+        if (this.biggestWinnerPlayer) this.biggestWinnerPlayer.string = top.user_name || "";
+        if (this.biggestWinnerGold) this.biggestWinnerGold.string = this.FormatAmount(Number(top.gold_change || 0) / 100);
+        if (this.biggestWinnerTime) this.biggestWinnerTime.string = this.FormatTime(top.create_time, top.create_timestamp).split(' ')[0];
+        if (this.biggestWinnerType) this.biggestWinnerType.string = this.GetRewardTypeText(Number(top.cards_type || 0));
+        console.log('====>',this.biggestWinnerHead , top.user_avatar);
+        
+        if (this.biggestWinnerHead && top.user_avatar) {
+            this.setSprite(this.biggestWinnerHead, top.user_avatar);
+        }
+        if (this.biggestWinnerBlind) {
+            if (Number(top.bombpot || 0) === 1 || Number(top.poker_type || 0) === 2) {
+                this.biggestWinnerBlind.string = `${Number(top.ante || 0) / 100}`;
+            } else {
+                const sb = Number(top.small_blind || 0) / 100;
+                this.biggestWinnerBlind.string = `${sb}/${sb * 2}`;
+            }
+        }
     }
 
     private ResolveCurrentSetting(item: any): any {

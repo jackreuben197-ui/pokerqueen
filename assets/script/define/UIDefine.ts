@@ -412,8 +412,8 @@ export const UIDefine = {
     UITexasJackpotRecentAwardRecord: {
         UIType: UIType.CommonUI,
         Name: "UITexasJackpotRecentAwardRecord",
-        Bundle: 'texas',
-        Path: "purple_prefab/ui/UITexasJackpotRecentAwardRecord",
+        Bundle: null,
+        Path: "main/prefab/dialog/UITexasJackpotRecentAwardRecord",
     },
     UITexasJackpotRewardDescription: {
         UIType: UIType.CommonUI,

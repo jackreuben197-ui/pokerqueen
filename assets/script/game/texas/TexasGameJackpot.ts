@@ -55,9 +55,6 @@ export default class TexasGameJackpot {
     }
 
     public OnClickJackpot(): void {
-        if (this.host.jackpot !== 1 || Number(GameCache.Instance.jackPot_id || 0) <= 0) {
-            return;
-        }
         UIComponent.open(UIDefine.UITexasJackpotRecentAwardRecord, {
             noAnimation: true,
         });
